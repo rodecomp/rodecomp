@@ -24,24 +24,43 @@ namespace {
 
   // INLINED
   bool HiddenInterfaceIndex(int index) {
-    switch (index) {
-    case HK_BATTLEFIELDWND:
-    case HK_PARTY_RECRUIT:
-    case HK_PARTY_BOOKING_LIST:
-    case HK_EXMACRO_SETUPWND:
-    case HK_BUTTONS_RELOCATE:
-    case HK_MENUICON_HIDE:
-    case HK_TWITTERWND:
-    case HK_HUNTINGQUEST_INFO_ONOFF:
-    case HK_UNKNOWN_62:
-    case HK_UNKNOWN_64:
-    case HK_UNKNOWN_65:
-    case HK_UNKNOWN_66:
-    case HK_UNKNOWN_67:
+    if (index == HK_BATTLEFIELDWND) {
       return true;
-    default:
-      return false;
     }
+    if (index == HK_PARTY_RECRUIT) {
+      return true;
+    }
+    if (index == HK_PARTY_BOOKING_LIST) {
+      return true;
+    }
+    if (index == HK_EXMACRO_SETUPWND) {
+      return true;
+    }
+    if (index == HK_TWITTERWND) {
+      return true;
+    }
+    if (index == HK_HUNTINGQUEST_INFO_ONOFF) {
+      return true;
+    }
+    if (index == HK_UNKNOWN_62) {
+      return true;
+    }
+    if (index == HK_UNKNOWN_64) {
+      return true;
+    }
+    if (index == HK_UNKNOWN_66) {
+      return true;
+    }
+    if (index == HK_UNKNOWN_65) {
+      return true;
+    }
+    if (index == HK_UNKNOWN_67) {
+      return true;
+    }
+    if (index == HK_BUTTONS_RELOCATE) {
+      return true;
+    }
+    return index == HK_MENUICON_HIDE;
   }
 
   // OFFSET: 0x00E12E50
@@ -84,7 +103,10 @@ CUserHotkeyMgr* g_userHotkeyMgr;
 
 // OFFSET: 0x005F7AA0
 // FUNCTION: fn_04052
-CUserHotkeyMgr::CUserHotkeyMgr() : m_enabled(true), m_loaded(false), m_changes(0), m_version2(false) {
+CUserHotkeyMgr::CUserHotkeyMgr() : m_loaded(false), m_changes(0), m_version2(false) {
+  this->m_enabled = false;
+  this->m_original.clear();
+  this->m_enabled = true;
 }
 
 CUserHotkeyMgr::~CUserHotkeyMgr() = default;
