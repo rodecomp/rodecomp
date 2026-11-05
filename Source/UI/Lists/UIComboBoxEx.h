@@ -6,7 +6,7 @@
 
 class UIComboBoxEx : public UIListBoxEx {
 public:
-  UIComboBoxEx();
+  __declspec(noinline) UIComboBoxEx();
   ~UIComboBoxEx() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
