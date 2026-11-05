@@ -44,7 +44,7 @@ struct ChangeMaterialResult {
 };
 
 struct MaterialKey {
-  explicit MaterialKey(const std::vector<ChangeMaterialEntry>& materials);
+  explicit __declspec(noinline) MaterialKey(const std::vector<ChangeMaterialEntry>& materials);
 
   /* 0000 */ std::vector<int> itemIds;
 };
