@@ -48,17 +48,9 @@ SpriteAtlas::~SpriteAtlas() {
 // OFFSET: 0x0056EA60
 // FUNCTION: fn_02397
 std::size_t SpriteAtlas::Hash::operator()(const Key& key) const {
-  const auto hashPointer = [](std::uintptr_t pointer) {
-    std::uint32_t hash = 0x811C9DC5;
-
-    for (unsigned i = 0; i < sizeof(pointer); ++i) {
-      hash = (hash ^ ((pointer >> (i * 8)) & 255)) * 16777619u;
-    }
-
-    return hash;
-  };
-  const std::uint32_t first = hashPointer(reinterpret_cast<std::uintptr_t>(key.image));
-  return first ^ (hashPointer(reinterpret_cast<std::uintptr_t>(key.palette)) + (first << 6) + (first >> 2) + 0x9E3779B9u);
+  std::size_t seed = std::hash<const SpriteRleImage*>{}(key.image);
+  seed ^= std::hash<const std::uint32_t*>{}(key.palette) + 0x9E3779B9 + (seed << 6) + (seed >> 2);
+  return seed;
 }
 
 // OFFSET: 0x0056FB00
@@ -84,9 +76,9 @@ void SpriteAtlas::Initialize(unsigned spareCount) {
 // OFFSET: 0x0056FD70
 // FUNCTION: fn_02411
 void SpriteAtlas::Clear() {
-  for (Node*& head : this->m_classes) {
-    for (Node* node = head; node; node = node->next) {
-      CTexture* texture = node->page.texture;
+  for (std::forward_list<SpriteAtlasPage>& pages : this->m_classes) {
+    for (SpriteAtlasPage& page : pages) {
+      CTexture* texture = page.texture;
       if (texture->unknown_001C) {
         this->m_spare.push_back(texture);
       } else {
@@ -94,11 +86,7 @@ void SpriteAtlas::Clear() {
       }
     }
 
-    while (head) {
-      Node* next = head->next;
-      delete head;
-      head = next;
-    }
+    pages.clear();
   }
 
   this->m_lookup.clear();
@@ -107,7 +95,7 @@ void SpriteAtlas::Clear() {
 // OFFSET: 0x0056FC40
 // FUNCTION: fn_02409
 void SpriteAtlas::ClearSpare() {
-  for (CTexture* texture : this->m_spare) {
+  for (CTexture*& texture : this->m_spare) {
     texture->Release();
     delete texture;
   }
@@ -119,31 +107,33 @@ void SpriteAtlas::ClearSpare() {
 // FUNCTION: fn_02408
 CTexture* SpriteAtlas::Find(const SpriteRleImage* image, const std::uint32_t* palette, SpriteAtlasRecord& output) {
   auto found = this->m_lookup.find({image, palette});
-  if (found == this->m_lookup.end()) {
-    return nullptr;
+  if (found != this->m_lookup.end()) {
+    SpriteAtlasRecord& record = *found->second;
+    record.lastUsed = timeGetTime();
+    record.page->lastUsed = record.lastUsed;
+    output = record;
+    return record.page->texture;
   }
 
-  SpriteAtlasRecord& record = *found->second;
-  record.lastUsed = timeGetTime();
-  record.page->lastUsed = record.lastUsed;
-  output = record;
-
-  return record.page->texture;
+  return nullptr;
 }
 
 // OFFSET: 0x0056F830
 // FUNCTION: fn_02406
-SpriteAtlasPage* SpriteAtlas::Allocate(CRenderSystemBase& system, unsigned category, unsigned width, unsigned height) {
-  Node* node = new Node{};
-  node->next = this->m_classes[category];
-  this->m_classes[category] = node;
-  SpriteAtlasPage& page = node->page;
+SpriteAtlasPage* SpriteAtlas::Allocate(unsigned category, unsigned width, unsigned height) {
+  std::forward_list<SpriteAtlasPage>& pages = this->m_classes[category];
+  pages.emplace_front();
+  SpriteAtlasPage& page = pages.front();
 
-  if (width <= 256 && height <= 256 && !this->m_spare.empty()) {
-    page.texture = this->m_spare.back();
-    this->m_spare.pop_back();
+  if (width <= 256 && height <= 256) {
+    if (this->m_spare.empty()) {
+      page.texture = CreateTexture(256, 256, TextureFormat::A1R5G5B5, false, false);
+    } else {
+      page.texture = this->m_spare.back();
+      this->m_spare.pop_back();
+    }
   } else {
-    page.texture = system.CreateTexture(width, height, TextureFormat::A1R5G5B5, false, false);
+    page.texture = CreateTexture(width, height, TextureFormat::A1R5G5B5, false, false);
   }
 
   page.texture->Fill(nullptr, 0);
@@ -173,13 +163,14 @@ CTexture* SpriteAtlas::Insert(
   CRenderSystemBase& system, const SpriteRleImage* image, const std::uint32_t* palette, SpriteAtlasRecord& output, int serviceType, std::uint32_t reuseDelay
 ) {
   const std::uint32_t threshold = timeGetTime() - (reuseDelay >> 2);
-  const unsigned width = image->width > 256 ? (image->width / 256 + 1) * 256 : 256;
-  const unsigned height = image->height > 256 ? (image->height / 256 + 1) * 256 : 256;
+  const float width = image->width > 256 ? (image->width / 256 + 1) * 256.0f : 256.0f;
+  const float height = image->height > 256 ? (image->height / 256 + 1) * 256.0f : 256.0f;
   const unsigned category = Category(image->width) * 5 + Category(image->height);
   SpriteAtlasRecord* selected = nullptr;
 
-  for (Node* node = this->m_classes[category]; node && !selected; node = node->next) {
-    for (SpriteAtlasRecord& record : node->page.records) {
+  std::forward_list<SpriteAtlasPage>& pages = this->m_classes[category];
+  for (auto page = pages.begin(); page != pages.end() && !selected; ++page) {
+    for (SpriteAtlasRecord& record : page->records) {
       if (record.lastUsed < threshold) {
         selected = &record;
         this->m_lookup.erase({record.image, record.palette});
@@ -189,14 +180,14 @@ CTexture* SpriteAtlas::Insert(
   }
 
   if (!selected) {
-    selected = &this->Allocate(system, category, width, height)->records[0];
+    selected = &this->Allocate(category, static_cast<unsigned>(width), static_cast<unsigned>(height))->records[0];
   }
 
   SpriteAtlasRecord& record = *selected;
   record.image = image;
   record.palette = palette;
-  float u1 = static_cast<float>(record.x + image->width) / static_cast<float>(width);
-  float v1 = static_cast<float>(record.y + image->height) / static_cast<float>(height);
+  float u1 = static_cast<float>(record.x + image->width) / width;
+  float v1 = static_cast<float>(record.y + image->height) / height;
 
   if (serviceType == 10) {
     if (image->width > 64) {
@@ -227,28 +218,27 @@ CTexture* SpriteAtlas::Insert(
 void SpriteAtlas::ClearExpired(std::uint32_t reuseDelay) {
   const std::uint32_t threshold = timeGetTime() - reuseDelay;
 
-  for (Node*& head : this->m_classes) {
-    Node** link = &head;
+  for (std::forward_list<SpriteAtlasPage>& pages : this->m_classes) {
+    auto previous = pages.before_begin();
 
-    while (Node* node = *link) {
-      if (node->page.lastUsed >= threshold) {
-        link = &node->next;
-        continue;
-      }
+    for (auto it = pages.begin(); it != pages.end();) {
+      if (it->lastUsed < threshold) {
+        for (const SpriteAtlasRecord& record : it->records) {
+          this->m_lookup.erase({record.image, record.palette});
+        }
 
-      for (const SpriteAtlasRecord& record : node->page.records) {
-        this->m_lookup.erase({record.image, record.palette});
-      }
+        CTexture* texture = it->texture;
+        if (texture->unknown_001C) {
+          this->m_spare.push_back(texture);
+        } else {
+          delete texture;
+        }
 
-      CTexture* texture = node->page.texture;
-      if (texture->unknown_001C) {
-        this->m_spare.push_back(texture);
+        it = pages.erase_after(previous);
       } else {
-        delete texture;
+        previous = it;
+        ++it;
       }
-
-      *link = node->next;
-      delete node;
     }
   }
 }

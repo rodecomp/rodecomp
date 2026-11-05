@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <forward_list>
 #include <unordered_map>
 #include <vector>
 
@@ -46,10 +47,6 @@ public:
   void ClearExpired(std::uint32_t reuseDelay);
 
 private:
-  struct Node {
-    /* 0000 */ Node* next;
-    /* 0004 */ SpriteAtlasPage page;
-  };
   struct Key {
     /* 0000 */ const SpriteRleImage* image;
     /* 0004 */ const std::uint32_t* palette;
@@ -58,9 +55,9 @@ private:
   struct Hash {
     std::size_t operator()(const Key& key) const;
   };
-  SpriteAtlasPage* Allocate(CRenderSystemBase& system, unsigned category, unsigned width, unsigned height);
+  SpriteAtlasPage* Allocate(unsigned category, unsigned width, unsigned height);
   void ClearSpare();
-  /* 0000 */ Node* m_classes[25];
+  /* 0000 */ std::forward_list<SpriteAtlasPage> m_classes[25];
   /* 0064 */ std::unordered_map<Key, SpriteAtlasRecord*, Hash> m_lookup;
   /* 0084 */ std::vector<CTexture*> m_spare;
 };
