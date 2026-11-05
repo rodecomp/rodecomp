@@ -23,9 +23,7 @@ struct FlareElement {
     this->red = other.red;
     this->green = other.green;
     this->blue = other.blue;
-    this->position.x = other.position.x;
-    this->position.y = other.position.y;
-    this->position.z = other.position.z;
+    this->position = other.position;
     this->scaledSize = other.scaledSize;
     return *this;
   }
