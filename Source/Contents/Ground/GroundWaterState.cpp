@@ -37,8 +37,8 @@ bool GroundWaterState::Import(const CGndRes& resource) {
     }
 
     this->animation = resource.waterDefault.animation;
-    this->pitch = TruncateToInt(resource.waterDefault.pitch);
-    this->phase = TruncateToInt(resource.waterDefault.speed) % 360;
+    this->pitch = static_cast<int>(resource.waterDefault.pitch);
+    this->phase = static_cast<int>(resource.waterDefault.speed) % 360;
     this->type = resource.waterDefault.type;
     this->height = resource.waterDefault.height;
   } else {
