@@ -188,7 +188,8 @@ void UISwapEquipmentWnd::Slot32(int x, int y) {
 // OFFSET: 0x008316A0
 // FUNCTION: fn_10401
 int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     switch (argument1) {
     case 0xB9:
       g_session.m_swapEquipmentMode = 0;
@@ -199,27 +200,26 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case 0xC9:
       g_windowMgr.CloseWindow(0x128);
       return 1;
-    case 0x1FC: {
-      int messageId;
+    case 0x1FC:
       if (g_windowMgr.LookupWindow(10011)) {
-        messageId = 0xBB9;
-      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0250) {
-        messageId = 0xBB7;
-      } else if (g_windowMgr.unknown_0304 || g_windowMgr.unknown_0308 || g_windowMgr.unknown_02FC) {
-        messageId = 0xBBA;
-      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->unknown_0264[3]) {
-        messageId = 0xBB8;
-      } else if (g_windowMgr.unknown_01F0 || g_windowMgr.unknown_01F8) {
-        messageId = 0xBBB;
-      } else {
-        g_modeMgr.GetGameMode()->SendMsg(0x130, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB9)), 0xFF, 0, 0, 0);
         return 1;
       }
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(messageId)), 0xFF, 0, 0, 0);
+      if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0250) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB7)), 0xFF, 0, 0, 0);
+      } else if (g_windowMgr.unknown_0304 || g_windowMgr.unknown_0308 || g_windowMgr.unknown_02FC) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBBA)), 0xFF, 0, 0, 0);
+      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->unknown_0264[3]) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB8)), 0xFF, 0, 0, 0);
+      } else if (g_windowMgr.unknown_01F0 || g_windowMgr.unknown_01F8) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBBB)), 0xFF, 0, 0, 0);
+      } else {
+        g_modeMgr.GetGameMode()->SendMsg(0x130, 0, 0, 0, 0);
+      }
       return 1;
     }
-    }
-  } else if (message == 60) {
+    break;
+  case 60:
     this->Invalidate();
     this->InvalidateChildren();
     return 1;
