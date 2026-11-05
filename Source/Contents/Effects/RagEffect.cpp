@@ -3370,7 +3370,10 @@ void CRagEffect::TorchDustRing(const char* name, char kind, std::int16_t angle) 
 // OFFSET: 0x00C6E6F0
 // FUNCTION: fn_20303
 void CRagEffect::TexturedDualSpin(const char* first, const char* second, int) {
-  this->render.position = this->state.parent->render.position;
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
 
   if (this->state.stateCnt != 0) {
     return;
