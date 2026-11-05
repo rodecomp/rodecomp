@@ -1355,20 +1355,24 @@ AdventureGuideResult CAdventureGuideMgr::InsertEntryContents(int type, int id, i
 // FUNCTION: fn_05247
 AdventureGuideResult CAdventureGuideMgr::InsertObtainGuide(int type, int id, std::string_view text) {
   std::map<int, std::map<int, AdventureGuideEntry>>::iterator it{};
-  const auto contains = [&](const auto& entry) {
-    return entry.second.find(id) != entry.second.end();
-  };
 
-  if (type == 5) {
-    it = std::find_if(unknown_0054.begin(), unknown_0054.end(), contains);
+  switch (type) {
+  case 5:
+    it = std::find_if(unknown_0054.begin(), unknown_0054.end(), [id](const auto& entry) {
+      return entry.second.find(id) != entry.second.end();
+    });
     if (it == unknown_0054.end()) {
       return AdventureGuideResult(false, FormatOwnedString("[%d] cannot be find", id));
     }
-  } else if (type == 6) {
-    it = std::find_if(unknown_005C.begin(), unknown_005C.end(), contains);
+    break;
+  case 6:
+    it = std::find_if(unknown_005C.begin(), unknown_005C.end(), [id](const auto& entry) {
+      return entry.second.find(id) != entry.second.end();
+    });
     if (it == unknown_005C.end()) {
       return AdventureGuideResult(false, FormatOwnedString("[%d] cannot be find", id));
     }
+    break;
   }
 
   it->second[id].values.emplace_back(text.data());
@@ -1570,21 +1574,57 @@ bool CAdventureGuideMgr::Load() {
 // OFFSET: 0x00667200
 // FUNCTION: fn_05256
 bool CAdventureGuideMgr::IsAvailable(int type, int id) {
-  std::map<int, std::map<int, AdventureGuideContents>>* contents = nullptr;
   switch (type) {
-  case 1:
-    contents = &this->unknown_003C;
-    break;
-  case 3:
-    contents = &this->unknown_0044;
-    break;
-  case 4:
-    contents = &this->unknown_004C;
-    break;
-  case 5:
+  case 1: {
+    const std::optional<std::map<int, AdventureGuideContents>*> found = FindMapped(this->unknown_003C, id);
+    if (!found) {
+      return true;
+    }
+    for (const auto& entry : **found) {
+      if (entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008) {
+        return true;
+      }
+    }
+    return false;
+  }
+  case 3: {
+    const std::optional<std::map<int, AdventureGuideContents>*> found = FindMapped(this->unknown_0044, id);
+    if (!found) {
+      return true;
+    }
+    for (const auto& entry : **found) {
+      if (entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008) {
+        return true;
+      }
+    }
+    return false;
+  }
+  case 4: {
+    const std::optional<std::map<int, AdventureGuideContents>*> found = FindMapped(this->unknown_004C, id);
+    if (!found) {
+      return true;
+    }
+    for (const auto& entry : **found) {
+      if (entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008) {
+        return true;
+      }
+    }
+    return false;
+  }
+  case 5: {
+    const std::optional<std::map<int, AdventureGuideEntry>*> found = FindMapped(this->unknown_0054, id);
+    if (!found) {
+      return true;
+    }
+    for (const auto& entry : **found) {
+      if (entry.second.IsAvailable(entry.first)) {
+        return true;
+      }
+    }
+    return false;
+  }
   case 6: {
-    auto& entries = type == 5 ? this->unknown_0054 : this->unknown_005C;
-    const std::optional<std::map<int, AdventureGuideEntry>*> found = FindMapped(entries, id);
+    const std::optional<std::map<int, AdventureGuideEntry>*> found = FindMapped(this->unknown_005C, id);
     if (!found) {
       return true;
     }
@@ -1598,17 +1638,6 @@ bool CAdventureGuideMgr::IsAvailable(int type, int id) {
   default:
     return true;
   }
-
-  const std::optional<std::map<int, AdventureGuideContents>*> found = FindMapped(*contents, id);
-  if (!found) {
-    return true;
-  }
-  for (const auto& entry : **found) {
-    if (entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008) {
-      return true;
-    }
-  }
-  return false;
 }
 
 // OFFSET: 0x00667510
