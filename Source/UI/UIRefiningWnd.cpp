@@ -33,19 +33,19 @@
 
 #pragma pack(push, 1)
 struct RefiningSelectPacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t index;
 };
 
 struct RefiningRequestPacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t index;
   /* 0004 */ std::uint32_t materialId;
   /* 0008 */ unsigned char useCatalyst;
 };
 
 struct RefiningClosePacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
 };
 #pragma pack(pop)
 
@@ -415,7 +415,7 @@ void UIRefining_Notice::Paint() {
 // OFFSET: 0x007F72A0
 // FUNCTION: fn_09913
 void UIRefiningWnd::Slot26(int x, int y) {
-  if (this->item.unknown_0000[1] != 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
+  if (this->item.unknown_0000[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
     this->Reset();
   }
 }
