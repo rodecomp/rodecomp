@@ -143,7 +143,10 @@ void UIShortCutWnd::Show(int visible) {
 void UIShortCutWnd::Slot19() {
   const int x = (g_mouse.x - this->geometry.x);
   const int y = (g_mouse.y - this->geometry.y);
-  this->m_grid.hovered = this->m_grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
+  const int hovered = this->m_grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
+  if (this->m_grid.hovered != hovered) {
+    this->m_grid.hovered = hovered;
+  }
   this->Invalidate();
 }
 
