@@ -9,17 +9,68 @@
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
+#include "Utility/Cipher/XorBytes.h"
 
 #include <json/reader.h>
 #include <json/writer.h>
+#include <cstddef>
 #include <new>
+
+namespace {
+  template <std::size_t Length, std::uint64_t Key>
+  class EncryptedText {
+  public:
+    // INLINED
+    explicit EncryptedText(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = source[index];
+      }
+    }
+
+    // INLINED
+    ~EncryptedText() {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = 0;
+      }
+    }
+
+    // INLINED
+    const char* Text() {
+      if (this->m_encrypted) {
+        utility::XorBytes(this->m_text, Length, Key);
+        this->m_encrypted = false;
+      }
+
+      return reinterpret_cast<const char*>(this->m_text);
+    }
+
+  private:
+    /* 0000 */ std::uint8_t m_text[Length];
+    bool m_encrypted;
+  };
+
+  // INLINED
+  template <std::uint64_t Key, std::size_t Length>
+  const char* DecryptText(const std::uint8_t (&source)[Length]) {
+    thread_local EncryptedText<Length, Key> text(source);
+    return text.Text();
+  }
+
+  // INLINED
+  const char* UnknownAccountName() {
+    const std::uint8_t source[] = {0x6A, 0x5F, 0xA6, 0x89, 0x82, 0x02, 0x03, 0x1D};
+    return DecryptText<0x1D6D75EDE7CD311FULL>(source);
+  }
+}
 
 // STATIC: 0x01389760
 // GLOBAL: gl_24351
 CAccountLinkedUserDataMgr* g_accountLinkedUserDataMgr;
 
 // INLINED
-CAccountLinkedUserDataMgr::CAccountLinkedUserDataMgr() : m_enabled(true), m_accountId(0), m_accountName("unknown"), m_loaded(false), unknown_0028(0) {
+CAccountLinkedUserDataMgr::CAccountLinkedUserDataMgr()
+    : m_accountId(0), m_accountName(UnknownAccountName()), m_loaded(false), unknown_0028(0), m_saveUrl(""), m_loadUrl("") {
+  this->m_enabled = true;
 }
 
 // INLINED
