@@ -123,7 +123,7 @@ void C3dNodeV2::Initialize(const ModelNode& base) {
 // OFFSET: 0x00AB9120
 // FUNCTION: fn_17507
 void C3dNodeV1::Animate(double frame) {
-  const int selected = TruncateToInt(frame);
+  const int selected = static_cast<int>(frame);
   matrix position;
   matrix scale;
   matrix rotation;
@@ -137,8 +137,8 @@ void C3dNodeV1::Animate(double frame) {
   combined.Compose(scale, rotation);
   this->transform.Compose(combined, position);
 
-  for (C3dNode* child : this->children) {
-    child->Animate(frame);
+  for (auto it = this->children.begin(); it != this->children.end(); ++it) {
+    (*it)->Animate(frame);
   }
 }
 
@@ -152,11 +152,11 @@ void C3dNodeV2::Animate(double frame) {
   SampleModelPosition(this->positionKeys, selected, this->localTransform, this->transform);
   this->textureTransforms.clear();
 
-  for (const auto& [texture, channels] : this->textureKeys) {
-    SampleModelTexture(channels, selected, this->textureTransforms[texture]);
+  for (auto it = this->textureKeys.begin(); it != this->textureKeys.end(); ++it) {
+    SampleModelTexture(it->second, selected, this->textureTransforms[it->first]);
   }
 
-  for (C3dNode* child : this->children) {
-    child->Animate(frame);
+  for (auto it = this->children.begin(); it != this->children.end(); ++it) {
+    (*it)->Animate(frame);
   }
 }
