@@ -220,6 +220,45 @@ HRESULT DeviceOwnerDX9::Initialize(HWND value, UINT selectedAdapter) {
   return D3D_OK;
 }
 
+// OFFSET: 0x0054C2A0
+// FUNCTION: fn_01919
+void DeviceOwnerDX9::SetInitialStates() {
+  this->state.SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+  this->state.SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+  this->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
+  this->state.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+  this->state.SetRenderState(D3DRS_ALPHAREF, 240);
+  this->state.SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+  this->state.SetRenderState(D3DRS_ZWRITEENABLE, 1);
+  this->state.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+  this->state.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+  this->state.SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
+  this->state.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+  this->state.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  this->state.SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+  this->state.SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+  this->state.SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  this->state.SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+  this->state.SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+  this->state.SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  this->state.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+  this->state.SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
+  this->state.SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+
+  this->state.SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+  this->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+  this->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+  this->state.SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_BORDER);
+  this->state.SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_BORDER);
+  this->state.SetSamplerState(1, D3DSAMP_BORDERCOLOR, 0xFF000000u);
+}
+
 // OFFSET: 0x0054BFA0
 // FUNCTION: fn_01915
 HRESULT DeviceOwnerDX9::Close() {

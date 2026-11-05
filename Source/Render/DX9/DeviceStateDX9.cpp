@@ -20,7 +20,7 @@ void DeviceStateDX9::Initialize(IDirect3DDevice9* value) {
 
   for (int state = 0; state < 210; ++state) {
     DWORD result;
-    if (SUCCEEDED(value->GetRenderState(static_cast<D3DRENDERSTATETYPE>(state), &result))) {
+    if (SUCCEEDED(this->device->GetRenderState(static_cast<D3DRENDERSTATETYPE>(state), &result))) {
       this->render[state] = result;
     }
   }
@@ -28,57 +28,18 @@ void DeviceStateDX9::Initialize(IDirect3DDevice9* value) {
   for (int stage = 0; stage < 2; ++stage) {
     for (int state = 0; state < 33; ++state) {
       DWORD result;
-      if (SUCCEEDED(value->GetTextureStageState(stage, static_cast<D3DTEXTURESTAGESTATETYPE>(state), &result))) {
+      if (SUCCEEDED(this->device->GetTextureStageState(stage, static_cast<D3DTEXTURESTAGESTATETYPE>(state), &result))) {
         this->textureStage[stage][state] = result;
       }
     }
 
     for (int state = 0; state < 14; ++state) {
       DWORD result;
-      if (SUCCEEDED(value->GetSamplerState(stage, static_cast<D3DSAMPLERSTATETYPE>(state), &result))) {
+      if (SUCCEEDED(this->device->GetSamplerState(stage, static_cast<D3DSAMPLERSTATETYPE>(state), &result))) {
         this->sampler[stage][state] = result;
       }
     }
   }
-}
-
-// OFFSET: 0x0054C2A0
-// FUNCTION: fn_01919
-void DeviceOwnerDX9::SetInitialStates() {
-  this->state.SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-  this->state.SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-  this->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
-  this->state.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-  this->state.SetRenderState(D3DRS_ALPHAREF, 240);
-  this->state.SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
-  this->state.SetRenderState(D3DRS_ZWRITEENABLE, 1);
-  this->state.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-  this->state.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-  this->state.SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
-  this->state.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-  this->state.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-  this->state.SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-  this->state.SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-  this->state.SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-  this->state.SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-  this->state.SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
-  this->state.SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-  this->state.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-  this->state.SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
-  this->state.SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-
-  this->state.SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-  this->state.SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-  this->state.SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-  this->state.SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-  this->state.SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-  this->state.SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-  this->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-  this->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-  this->state.SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_BORDER);
-  this->state.SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_BORDER);
-  this->state.SetSamplerState(1, D3DSAMP_BORDERCOLOR, 0xFF000000u);
 }
 
 // OFFSET: 0x00550C00
@@ -93,7 +54,8 @@ void DeviceStateDX9::Begin() {
 // OFFSET: 0x00550F50
 // FUNCTION: fn_01994
 void DeviceStateDX9::End() {
-  this->textures[0] = this->textures[1] = nullptr;
+  this->textures[0] = nullptr;
+  this->textures[1] = nullptr;
 }
 
 // OFFSET: 0x005517E0
@@ -206,9 +168,9 @@ HRESULT DeviceStateDX9::SetTextureStageState(UINT stage, D3DTEXTURESTAGESTATETYP
 // OFFSET: 0x00550B20
 // FUNCTION: fn_01992
 ScopedDeviceStateDX9::ScopedDeviceStateDX9(DeviceStateDX9& state) : m_state(&state) {
-  std::memcpy(this->m_render, state.render, sizeof(this->m_render));
-  std::memcpy(this->m_textureStage, state.textureStage, sizeof(this->m_textureStage));
-  std::memcpy(this->m_sampler, state.sampler, sizeof(this->m_sampler));
+  memcpy_s(this->m_render, sizeof(this->m_render), this->m_state->render, sizeof(this->m_render));
+  memcpy_s(this->m_textureStage, sizeof(this->m_textureStage), this->m_state->textureStage, sizeof(this->m_textureStage));
+  memcpy_s(this->m_sampler, sizeof(this->m_sampler), this->m_state->sampler, sizeof(this->m_sampler));
 }
 
 // OFFSET: 0x005516A0
