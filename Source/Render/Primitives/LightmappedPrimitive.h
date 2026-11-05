@@ -9,6 +9,10 @@
 class CTexture;
 
 struct LightmappedVertex {
+  // INLINED
+  LightmappedVertex() : x(0.0f), y(0.0f), z(0.0f), rhw(0.0f), diffuse(0), specular(0xFF000000u), u(0.0f), v(0.0f) {
+  }
+
   /* 0000 */ float x;
   /* 0004 */ float y;
   /* 0008 */ float z;

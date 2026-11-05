@@ -44,21 +44,12 @@ void LightmappedBuffer::Clear() {
 // OFFSET: 0x00569020
 // FUNCTION: fn_02246
 LightmappedPrimitive::LightmappedPrimitive() : vertices(this->quad), vertexCount(4), indices(nullptr), indexCount(0), primitiveType(D3DPT_TRIANGLESTRIP) {
-  for (LightmappedVertex& vertex : this->quad) {
-    vertex.x = 0.0f;
-    vertex.y = 0.0f;
-    vertex.z = 0.0f;
-    vertex.rhw = 0.0f;
-    vertex.diffuse = 0;
-    vertex.specular = 0xFF000000u;
-    vertex.u = 0.0f;
-    vertex.v = 0.0f;
-  }
 }
 
 // OFFSET: 0x00568F90
 // FUNCTION: fn_02245
-LightmappedPrimitive::LightmappedPrimitive(const LightmappedPrimitive& other) : LightmappedPrimitive() {
+LightmappedPrimitive::LightmappedPrimitive(const LightmappedPrimitive& other)
+    : vertices(this->quad), vertexCount(4), indices(nullptr), indexCount(0), primitiveType(D3DPT_TRIANGLESTRIP) {
   std::memcpy(this->quad, other.quad, sizeof(this->quad));
 }
 
