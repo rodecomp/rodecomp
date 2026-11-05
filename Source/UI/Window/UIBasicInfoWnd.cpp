@@ -368,12 +368,6 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 // OFFSET: 0x009974F0
 // FUNCTION: fn_13487
 void UIBasicInfoWnd::DrawExpanded() {
-  const int width = this->geometry.width;
-  const int job = g_session.GetDisplayJob();
-  const bool compact = g_serviceType == 0 || g_serviceType == 14;
-  const int family = compact ? 0 : 1;
-  const int fontHeight = compact ? 12 : 14;
-
   CBitmapRes* background = static_cast<CBitmapRes*>(
     ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\w_basewin_bg2.bmp"))
   );
@@ -382,6 +376,10 @@ void UIBasicInfoWnd::DrawExpanded() {
   this->DrawTextAt(18, 3, LookupMessage(238), 0, 0, 12, 0xFFFFFF, 0, 0);
   this->DrawTextAt(17, 2, LookupMessage(238), 0, 0, 12, 0, 0, 0);
 
+  const bool compact = g_serviceType == 0 || g_serviceType == 14;
+  const int family = compact ? 0 : 1;
+  const int fontHeight = compact ? 12 : 14;
+  const int job = g_session.GetDisplayJob();
   this->DrawTextAt(9, 36, g_session.GetJobName(job, -1), 0, family, fontHeight, 0, 0, 0
   );
   this->DrawTextAt(9, 51, LookupMessage(3068), 0, 1, 14, 0, 0, 0);
@@ -402,9 +400,9 @@ void UIBasicInfoWnd::DrawExpanded() {
     this->DrawTextAt(173, 65, text.c_str(), 0, 1, 14, 0, 0, 0);
   }
 
-  const int apMax = g_session.GetTraitStat(233);
-  if (apMax > 0) {
-    std::string text = FormatOwnedString("%d%%", 100 * g_session.GetTraitStat(232) / apMax);
+  if (g_session.GetTraitStat(233) > 0) {
+    const int ap = g_session.GetTraitStat(232);
+    std::string text = FormatOwnedString("%d%%", 100 * ap / g_session.GetTraitStat(233));
     this->DrawTextAt(173, 80, text.c_str(), 0, 1, 14, 0, 0, 0);
   }
 
@@ -424,17 +422,19 @@ void UIBasicInfoWnd::DrawExpanded() {
   FormatGroupedInteger(g_session.m_zeny, zenyBuffer, 64);
   std::string zenyText = FormatOwnedString(LookupMessage(1997), zenyBuffer);
   zenyText = " | " + zenyText;
-  this->DrawRightAlignedText(width - 5, this->layoutOffset + 103, zenyText.c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(this->geometry.width - 5, this->layoutOffset + 103, zenyText.c_str(), 0, 1, 14, 0, 0);
   const int zenyWidth = this->TextWidth(zenyText.c_str(), 0, 1, 14, 0, 0
   );
 
-  const int denominator = g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight;
-  const std::uint32_t weightColor = 100 * g_session.m_weight / denominator >= g_unknown173A5BC ? 255 : 0;
-  std::string weightText = g_serviceType == 12
+  std::string weightText;
+  weightText = g_serviceType == 12
     ? FormatOwnedString("Peso : %3d / %3d", g_session.m_weight, g_session.m_maxWeight)
     : FormatOwnedString(LookupMessage(1992), g_session.m_weight, g_session.m_maxWeight);
+
+  const int denominator = g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight;
+  const std::uint32_t weightColor = 100 * g_session.m_weight / denominator >= g_unknown173A5BC ? 255 : 0;
   this->DrawRightAlignedText(
-    width - zenyWidth - 5, this->layoutOffset + 103, weightText.c_str(), 0, 1, 14, weightColor, 0
+    this->geometry.width - zenyWidth - 5, this->layoutOffset + 103, weightText.c_str(), 0, 1, 14, weightColor, 0
   );
 }
 
