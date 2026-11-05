@@ -682,12 +682,7 @@ void UIEditCtrl::MoveCandidateWindow(int x) {
 
   int left = x;
   int top = this->geometry.height + 6;
-  left += this->geometry.x;
-  top += this->geometry.y;
-  for (const UIWindow* node = this->parent; node != nullptr; node = node->parent) {
-    left += node->geometry.x;
-    top += node->geometry.y;
-  }
+  this->ToScreen(left, top);
 
   if (window->geometry.width + left > g_renderer->viewport.width) {
     left = g_renderer->viewport.width - window->geometry.width;
@@ -710,12 +705,7 @@ void UIEditCtrl::MoveReadingWindow(int x) {
 
   int left = x;
   int top = this->geometry.height + 6;
-  left += this->geometry.x;
-  top += this->geometry.y;
-  for (const UIWindow* node = this->parent; node != nullptr; node = node->parent) {
-    left += node->geometry.x;
-    top += node->geometry.y;
-  }
+  this->ToScreen(left, top);
 
   if (window->geometry.width + left > g_renderer->viewport.width) {
     left = g_renderer->viewport.width - window->geometry.width;
