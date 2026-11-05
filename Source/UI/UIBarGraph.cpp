@@ -47,28 +47,28 @@ UIBarGraphPlayer::~UIBarGraphPlayer() = default;
 // OFFSET: 0x00887440
 // FUNCTION: fn_11337
 void UIBarGraph2::Paint() {
-  const std::uint32_t backgroundColor = RGB(this->m_backgroundRed, this->m_backgroundGreen, this->m_backgroundBlue);
-  const std::uint32_t fillColor = RGB(this->m_fillRed, this->m_fillGreen, this->m_fillBlue);
-
-  if (this->m_vertical == 0) {
-    this->FillRegion(0, 0, this->geometry.width, this->geometry.height, 0x00FFFF00);
-    this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, backgroundColor);
+  if (this->m_vertical != 0) {
+    this->ClearSurface(RGB(this->m_backgroundRed, this->m_backgroundGreen, this->m_backgroundBlue));
     if (this->m_value != 0.0f) {
-      this->FillRegion(1, 1, static_cast<int>((this->geometry.width - 2) * this->m_value / 100.0f), this->geometry.height - 2, fillColor);
+      const int fillHeight = static_cast<int>(this->geometry.height * this->m_value / 100.0f);
+      this->FillRegion(0, this->geometry.height - fillHeight, this->geometry.width, fillHeight,
+        RGB(this->m_fillRed, this->m_fillGreen, this->m_fillBlue));
     }
-    char text[16];
-    sprintf_s(text, sizeof(text), "%3ld", static_cast<long>(this->m_value));
-    this->DrawTextAt((this->geometry.width >> 1) - 20, (this->geometry.height >> 1) - 7,
-      text, 0, 1, 16, 0xFFFF, 0, 0
-    );
     return;
   }
 
-  this->ClearSurface(backgroundColor);
-  if (this->m_value != 0.0f) {
-    const int fillHeight = static_cast<int>(this->geometry.height * this->m_value / 100.0f);
-    this->FillRegion(0, this->geometry.height - fillHeight, this->geometry.width, fillHeight, fillColor);
+  this->FillRegion(0, 0, this->geometry.width, this->geometry.height, 0x00FFFF00);
+  this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(this->m_backgroundRed, this->m_backgroundGreen, this->m_backgroundBlue));
+  if (0.0f != this->m_value) {
+    this->FillRegion(1, 1, static_cast<int>((this->geometry.width - 2) * this->m_value / 100.0f), this->geometry.height - 2,
+      RGB(this->m_fillRed, this->m_fillGreen, this->m_fillBlue));
   }
+
+  char text[12];
+  sprintf(text, "%3ld%%", static_cast<long>(this->m_value));
+  this->DrawTextAt((this->geometry.width >> 1) - 20, (this->geometry.height >> 1) - 7,
+    text, 0, 1, 16, 0xFFFF, 0, 0
+  );
 }
 
 // OFFSET: 0x00887600
