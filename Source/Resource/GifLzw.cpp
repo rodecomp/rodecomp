@@ -62,7 +62,9 @@ int __stdcall DecodeGifLzw(int minimumCodeSize, const unsigned char* input, int 
 
     if (code == endCode) {
       if (inputBytes > 1) {
-        std::free(dictionary);
+        if (dictionary) {
+          std::free(dictionary);
+        }
         return -1;
       }
 
@@ -71,7 +73,9 @@ int __stdcall DecodeGifLzw(int minimumCodeSize, const unsigned char* input, int 
 
     if (previousCode > -1 && codeSize < 12) {
       if (code > nextCode) {
-        std::free(dictionary);
+        if (dictionary) {
+          std::free(dictionary);
+        }
         return -1;
       }
 
@@ -96,7 +100,9 @@ int __stdcall DecodeGifLzw(int minimumCodeSize, const unsigned char* input, int 
       output[dictionary[code].length - 1] = dictionary[code].value;
       const int prefix = dictionary[code].prefix;
       if (prefix == code) {
-        std::free(dictionary);
+        if (dictionary) {
+          std::free(dictionary);
+        }
         return -1;
       }
 
@@ -106,6 +112,8 @@ int __stdcall DecodeGifLzw(int minimumCodeSize, const unsigned char* input, int 
     output += lastLength;
   }
 
-  std::free(dictionary);
+  if (dictionary) {
+    std::free(dictionary);
+  }
   return lastLength;
 }
