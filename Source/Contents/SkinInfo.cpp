@@ -2,6 +2,7 @@
 #include "Resource/ResourceMgr.h"
 
 #include <cstdio>
+#include <cstring>
 #include <direct.h>
 #include <io.h>
 #include <process.h>
@@ -59,25 +60,37 @@ void CSkinMgr::Prepare() {
     return;
   }
 
-  char directory[2048];
-  std::sprintf(directory, "%s\\_tmpskin_", g_applicationDirectory);
-  const std::string target = std::string(directory) + "\\" + this->names[this->selected];
-
-  if (_access(target.c_str(), 0) == 0) {
+  char path[2048];
+  std::sprintf(path, "%s\\_tmpskin_", g_applicationDirectory);
+  std::strcat(path, "\\");
+  std::strcat(path, this->names[this->selected].c_str());
+  if (_access(path, 0) == 0) {
     return;
   }
 
-  if (_access(directory, 0) != 0 && _mkdir(directory) != 0) {
+  std::sprintf(path, "%s\\_tmpskin_", g_applicationDirectory);
+  if (_access(path, 0) != 0 && _mkdir(path) != 0) {
     return;
   }
 
-  if (_access(target.c_str(), 0) != 0 && _mkdir(target.c_str()) != 0) {
+  std::sprintf(path, "%s\\_tmpskin_", g_applicationDirectory);
+  std::strcat(path, "\\");
+  std::strcat(path, this->names[this->selected].c_str());
+  if (_access(path, 0) != 0 && _mkdir(path) != 0) {
     return;
   }
 
-  const std::string input = std::string("skin/") + this->names[this->selected];
-  const std::string output = std::string("_tmpskin_/") + this->names[this->selected];
-  _spawnl(_P_WAIT, "runzip.exe", "runzip.exe", "-n", input.c_str(), "-d", output.c_str(), nullptr);
+  char noOverwrite[128];
+  char input[128];
+  char directoryOption[128];
+  char output[128];
+  std::strcpy(noOverwrite, "-n");
+  std::strcpy(input, "skin/");
+  std::strcat(input, this->names[this->selected].c_str());
+  std::strcpy(directoryOption, "-d");
+  std::strcpy(output, "_tmpskin_/");
+  std::strcat(output, this->names[this->selected].c_str());
+  _spawnl(_P_WAIT, "runzip.exe", "runzip.exe", noOverwrite, input, directoryOption, output, nullptr);
 
   this->prepared[this->selected] = 1;
 }
