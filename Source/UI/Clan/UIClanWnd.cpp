@@ -168,26 +168,19 @@ void UIClanInfoManageWnd::Slot25(int x, int y) {
 // OFFSET: 0x0084DA40
 // FUNCTION: fn_10633
 int UIClanInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     if (a1 == 201) {
       g_windowMgr.CloseWindow(237);
     }
     return 0;
-  }
-  if (message == 60) {
+  case 60:
     this->LoadEmblem();
     this->InvalidateChildren();
     return 0;
   }
-  if (message == 34) {
-    this->m_saved = reinterpret_cast<ClanWndInfo*>(a1);
-    if (!this->m_saved->IsValid()) {
-      this->m_saved->Reset();
-    }
-    this->Move(this->m_saved->x, this->m_saved->y);
-    return 0;
-  }
-  return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
+
+  return UIClanWnd::SendMsg(sender, message, a1, a2, a3, a4);
 }
 
 // OFFSET: 0x0084DAE0
