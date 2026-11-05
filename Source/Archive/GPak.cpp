@@ -2845,6 +2845,19 @@ namespace GPakEx {
   }
 
   // OFFSET: 0x00642EB0
+  // FUNCTION: fn_04831
+  void CFB_Decryption::ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) {
+    const std::size_t blockSize = this->m_cipher->BlockSize();
+    if (length == 0) {
+      return;
+    }
+    std::memcpy(this->m_temp.data(), input ? input + length - blockSize : nullptr, blockSize);
+    if (length > blockSize) {
+      this->m_cipher->AdvancedProcessBlocks(input, input ? input + blockSize : nullptr, output ? output + blockSize : nullptr, length - blockSize, BlockCipher::Reverse);
+    }
+    this->m_cipher->ProcessAndXorBlock(this->m_register.data(), input, output);
+    this->m_register.swap(this->m_temp);
+  }
 
   class OFB_Base : public CipherModeBase {
   public:
