@@ -266,7 +266,7 @@ public:
   bool AddObject(CNavi_Link* link);
   CNavi_Link* FindLink(unsigned int key, bool byId);
   int FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allowGates, bool includeObjects, bool allowWarps, int side);
-  void ResetLinkDepths();
+  __declspec(noinline) void ResetLinkDepths();
   __declspec(noinline) bool CollectLinksTo(CNaviInfo* target, std::vector<CNavi_Link*>* out);
   bool Search(std::string query, int type, std::vector<NavigationTarget>& out);
   int ParseSearchKind(std::vector<std::string>& tokens);
