@@ -48,19 +48,19 @@ struct RouletteReceiveItemPacket {
 // OFFSET: 0x0080B930
 // FUNCTION: fn_10083
 UIRoulletteWnd::UIRoulletteWnd()
-    : UIFrameWnd(0),
-      m_prizeButton(nullptr),
-      m_prizeSprite(nullptr),
-      m_stageArrow(nullptr),
-      m_enabled(1),
-      m_startButton(nullptr),
-      m_column(0),
-      m_row(0),
-      m_goldText(nullptr),
-      m_silverText(nullptr),
-      m_bronzeText(nullptr),
-      m_startSprite(nullptr) {
+    : UIFrameWnd(0) {
+  this->m_startButton = nullptr;
+  this->m_startSprite = nullptr;
+  this->m_prizeButton = nullptr;
+  this->m_prizeSprite = nullptr;
+  this->m_stageArrow = nullptr;
+  this->m_enabled = 1;
   this->m_items.clear();
+  this->m_column = 0;
+  this->m_row = 0;
+  this->m_goldText = nullptr;
+  this->m_silverText = nullptr;
+  this->m_bronzeText = nullptr;
 }
 
 // OFFSET: 0x0080BAF0
@@ -357,29 +357,35 @@ void UIRoulletteWnd::Slot32(int x, int y) {
 // FUNCTION: fn_10092
 int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   if (message == 6) {
-    if (argument1 == 201) {
-      if (g_rouletteMgr->m_spinning == 0) {
-        if (g_windowMgr.unknown_0464 != nullptr) {
-          g_windowMgr.CloseWindow(269);
+    switch (argument1) {
+      case 201:
+        if (g_rouletteMgr->m_spinning == 0) {
+          if (g_windowMgr.unknown_0464 != nullptr) {
+            g_windowMgr.CloseWindow(269);
+            return 0;
+          }
+        } else {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2640)), 0x6464FF, 0, 0, 0);
+        }
+        break;
+      case 409:
+        if (this->m_enabled == 1) {
+          RouletteGeneratePacket packet;
+          packet.id = ID_CZ_REQ_GENERATE_ROULETTE;
+          GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+          this->m_enabled = 0;
           return 0;
         }
-      } else {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2640)), 0x6464FF, 0, 0, 0);
-      }
-    } else if (argument1 == 409) {
-      if (this->m_enabled == 1) {
-        RouletteGeneratePacket packet;
-        packet.id = ID_CZ_REQ_GENERATE_ROULETTE;
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
-        this->m_enabled = 0;
-        return 0;
-      }
-    } else if (argument1 == 410 && g_rouletteMgr->m_resultShown == 1) {
-      RouletteReceiveItemPacket packet;
-      packet.id = ID_CZ_RECV_ROULETTE_ITEM;
-      packet.condition = static_cast<unsigned char>(argument2);
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
-      return 0;
+        break;
+      case 410:
+        if (g_rouletteMgr->m_resultShown == 1) {
+          RouletteReceiveItemPacket packet;
+          packet.id = ID_CZ_RECV_ROULETTE_ITEM;
+          packet.condition = static_cast<unsigned char>(argument2);
+          GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+          return 0;
+        }
+        break;
     }
     return 0;
   }
