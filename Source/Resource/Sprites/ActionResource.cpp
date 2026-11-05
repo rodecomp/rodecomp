@@ -22,12 +22,13 @@ namespace {
   }
 }
 
-// INLINED
-CActRes::CActRes() : maximumCells(0) {
-}
-
 // OFFSET: 0x00745FB0
 // FUNCTION: fn_07767
+CActRes::CActRes() {
+  this->maximumCells = 0;
+}
+
+// INLINED
 CActRes::~CActRes() = default;
 
 // OFFSET: 0x007436B0
@@ -238,7 +239,11 @@ const SpriteFrameCell& ActionFrame::Cell(unsigned index) const {
 // OFFSET: 0x00747090
 // FUNCTION: fn_07785
 float CActRes::Speed(unsigned index) const {
-  return index < this->speeds.size() ? this->speeds[index] : 4.0f;
+  if (index < this->speeds.size()) {
+    return this->speeds[index];
+  }
+
+  return 4.0f;
 }
 
 // OFFSET: 0x007470E0
@@ -267,5 +272,5 @@ const ActionFrame& CActRes::Frame(unsigned animation, unsigned frame) const {
 // FUNCTION: fn_07788
 unsigned CActRes::FrameCount(unsigned animation) const {
   const auto& frames = this->Animation(animation);
-  return frames.empty() ? 1u : static_cast<unsigned>(frames.size());
+  return (std::max)(static_cast<unsigned>(frames.size()), 1u);
 }
