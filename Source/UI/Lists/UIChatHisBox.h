@@ -50,7 +50,7 @@ public:
   bool Name(const std::string& encoded, std::string& output);
   bool Next(std::string& remaining, std::string& encoded, unsigned& position, const char* original);
   std::string Convert(const std::string& text);
-  std::string BracketName(const std::string& name);
+  const std::string BracketName(const std::string& name);
 
   /* 00D4 */ std::list<std::vector<UIItemTagButton*>> itemTags;
 
