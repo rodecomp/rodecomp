@@ -221,7 +221,7 @@ public:
   void Refresh(const char* filter) override;
   const char* Filter() override;
 
-  void UpdateExpiry(int packId, Timestamp* expiry);
+  __declspec(noinline) void UpdateExpiry(int packId, Timestamp* expiry);
 
 protected:
   /* 00B0 */ std::vector<UICashEmotionPack*> m_items;
@@ -289,7 +289,7 @@ public:
   int SetPeriod(int packId);
   void SetTab(char tab);
   void StartExpirySchedule();
-  void UpdateExpiry(int packId, Timestamp* expiry);
+  __declspec(noinline) void UpdateExpiry(int packId, Timestamp* expiry);
   __declspec(noinline) void RefreshSelection();
   void RestartExpirySchedule();
 
@@ -2390,12 +2390,10 @@ int UICashEmotionListWnd::SetPeriod(int packId) {
 // OFFSET: 0x007C80C0
 // FUNCTION: fn_09416
 void UICashEmotionListWnd::RestartExpirySchedule() {
-  CTimeScheduler* scheduler = g_timeScheduler;
-  scheduler->sub_BA95F0(7);
+  g_timeScheduler->sub_BA95F0(7);
   if (g_cashEmotionMgr->m_expiry.size() != 0) {
     const std::uint64_t now = _Xtime_get_ticks();
-    const std::int64_t interval = 30000;
-    scheduler->AddSchedule(new CEmotionPurchaseUseableTimeUISchedule(now, interval, 1));
+    g_timeScheduler->AddSchedule(new CEmotionPurchaseUseableTimeUISchedule(now, 30000, 1));
   }
 }
 
@@ -2627,8 +2625,7 @@ void UICashEmotionListWnd::SetTab(char tab) {
 void UICashEmotionListWnd::StartExpirySchedule() {
   if (g_cashEmotionMgr->m_expiry.size() != 0) {
     const std::uint64_t now = _Xtime_get_ticks();
-    const std::int64_t interval = 30000;
-    g_timeScheduler->AddSchedule(new CEmotionPurchaseUseableTimeUISchedule(now, interval, 1));
+    g_timeScheduler->AddSchedule(new CEmotionPurchaseUseableTimeUISchedule(now, 30000, 1));
   }
 }
 
