@@ -127,20 +127,25 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
     Json::Value root;
     Json::Reader reader;
     if (reader.parse(response, root, true)) {
-      const int type = root["Type"].asInt();
-      if (type == 1) {
-        LoadWhisperBlockList(root["data"]);
-        g_session.m_emotionHotkeys.Load(root["data"]);
-        g_userHotkeyMgr->LoadV2(*g_session.m_hotkeyScript, root["data"]);
+      const std::uint8_t typeSource[] = {0x43, 0x80, 0x3F, 0xDC, 0xFB};
+      switch (root[DecryptText<0xC52FB5FBB94FF917ULL>(typeSource)].asInt()) {
+      case 1: {
+        const std::uint8_t whisperSource[] = {0xA1, 0xAC, 0xF3, 0x94, 0xA1};
+        LoadWhisperBlockList(root[DecryptText<0x93E7A3A1F587CDC5ULL>(whisperSource)]);
+        const std::uint8_t emotionSource[] = {0x43, 0x60, 0x73, 0x0C, 0x03};
+        g_session.m_emotionHotkeys.Load(root[DecryptText<0x2FF3C5036D070127ULL>(emotionSource)]);
+        const std::uint8_t hotkeySource[] = {0xD7, 0x06, 0xB7, 0x32, 0xF9};
+        g_userHotkeyMgr->LoadV2(*g_session.m_hotkeyScript, root[DecryptText<0x17359BF953C367B3ULL>(hotkeySource)]);
       }
-
-      if (type == 1 || type == 2) {
+        [[fallthrough]];
+      case 2:
         g_whisperBlockMgr->m_tracking = true;
         g_userHotkeyMgr->m_loaded = true;
         this->m_accountId = accountId;
         this->m_accountName = accountName;
         this->m_loaded = true;
         g_session.m_emotionHotkeys.Save(g_session.m_aid, GetRenderSystemHolder()->system);
+        break;
       }
     }
   }
@@ -217,6 +222,5 @@ void CAccountLinkedUserDataMgr::Load(std::uint32_t accountId, std::string accoun
     return;
   }
 
-  const std::string url = this->LoadUrl();
-  g_asyncWorkMgr->LoadAccount(accountId, accountName, url);
+  g_asyncWorkMgr->LoadAccount(accountId, accountName, this->LoadUrl());
 }
