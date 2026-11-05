@@ -61,32 +61,24 @@ int MiniPartyGrid::FindCell(int x, int y) const {
 
 // OFFSET: 0x00737FE0
 // FUNCTION: fn_07662
-int MiniPartyGrid::BuildAvailableCells() {
-  int index = 0;
+void MiniPartyGrid::BuildAvailableCells() {
   this->columns = (this->right - this->left) / g_miniPartyCellWidth;
-  int rowCount = (this->bottom - this->top) / g_miniPartyCellHeight;
-  this->rows = rowCount;
-  int result = rowCount;
-  if (this->columns * rowCount > 0) {
-    int cellWidth = g_miniPartyCellWidth;
-    do {
-      const int x = this->left + cellWidth * (index / rowCount);
-      const int y = this->top + g_miniPartyCellHeight * (index % rowCount);
-      bool excluded = false;
-      for (const MiniPartyGridRectangle& rectangle : this->exclusions) {
-        if (x < rectangle.right && x + cellWidth > rectangle.left && y < rectangle.bottom && y + g_miniPartyCellHeight > rectangle.top) {
-          excluded = true;
-          break;
-        }
+  this->rows = (this->bottom - this->top) / g_miniPartyCellHeight;
+
+  for (int index = 0; index < this->columns * this->rows; ++index) {
+    const int x = this->left + g_miniPartyCellWidth * (index / this->rows);
+    const int y = this->top + g_miniPartyCellHeight * (index % this->rows);
+    bool excluded = false;
+
+    for (const MiniPartyGridRectangle& rectangle : this->exclusions) {
+      if (x < rectangle.right && x + g_miniPartyCellWidth > rectangle.left && y < rectangle.bottom && y + g_miniPartyCellHeight > rectangle.top) {
+        excluded = true;
+        break;
       }
-      if (!excluded) {
-        this->availableCells.push_back(index);
-        cellWidth = g_miniPartyCellWidth;
-      }
-      rowCount = this->rows;
-      result = rowCount * this->columns;
-      ++index;
-    } while (index < result);
+    }
+
+    if (!excluded) {
+      this->availableCells.push_back(index);
+    }
   }
-  return result;
 }

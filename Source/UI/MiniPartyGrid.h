@@ -21,7 +21,7 @@ struct MiniPartyGrid {
   MiniPartyGridPoint* GetCellPosition(MiniPartyGridPoint* position, int index) const;
   MiniPartyGridPoint* GetWindowPosition(MiniPartyGridPoint* position, int index) const;
   int FindCell(int x, int y) const;
-  int BuildAvailableCells();
+  void BuildAvailableCells();
 
   /* 0000 */ std::uint32_t unknown_0000;
   /* 0004 */ int left;
