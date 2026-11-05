@@ -97,19 +97,6 @@ void sub_E198F0() {
   }
 }
 
-namespace {
-  // INLINED
-  CSkillInfo Find(const std::list<CSkillInfo>& values, std::uint32_t id) {
-    for (const CSkillInfo& value : values) {
-      if (value.id == id) {
-        return value;
-      }
-    }
-
-    return CSkillInfo(-1);
-  }
-}
-
 // OFFSET: 0x00E1DF20
 // FUNCTION: fn_23886
 bool CSession::HasSkillEffect(std::uint32_t id) const {
@@ -125,37 +112,66 @@ bool CSession::HasSkillEffect(std::uint32_t id) const {
 // OFFSET: 0x00E096F0
 // FUNCTION: fn_23782
 CSkillInfo CSession::LookupHomunSkill(std::uint32_t id) const {
-  return Find(this->m_homunSkills, id);
+  if (this->m_homunSkills.size() == 0) {
+    return CSkillInfo(-1);
+  }
+
+  for (auto it = this->m_homunSkills.begin(); it != this->m_homunSkills.end(); ++it) {
+    if (it->id == id) {
+      return *it;
+    }
+  }
+
+  return CSkillInfo(-1);
 }
 
 // OFFSET: 0x00E09A10
 // FUNCTION: fn_23787
 CSkillInfo CSession::LookupMercSkill(std::uint32_t id) const {
-  return Find(this->m_mercSkills, id);
+  if (this->m_mercSkills.size() == 0) {
+    return CSkillInfo(-1);
+  }
+
+  for (auto it = this->m_mercSkills.begin(); it != this->m_mercSkills.end(); ++it) {
+    if (it->id == id) {
+      return *it;
+    }
+  }
+
+  return CSkillInfo(-1);
 }
 
 // OFFSET: 0x00E095B0
 // FUNCTION: fn_23780
 CSkillInfo CSession::LookupAdditionalSkill(std::uint32_t id) const {
-  return Find(this->m_additionalSkills, id);
+  if (this->m_additionalSkills.size() == 0) {
+    return CSkillInfo(-1);
+  }
+
+  for (auto it = this->m_additionalSkills.begin(); it != this->m_additionalSkills.end(); ++it) {
+    if (it->id == id) {
+      return *it;
+    }
+  }
+
+  return CSkillInfo(-1);
 }
 
 // OFFSET: 0x00E088A0
 // FUNCTION: fn_23767
 CSkillInfo CSession::LookupSkill(std::uint32_t id) {
+  CSkillInfo skill(0);
   if (id - 8000u <= 60) {
-    return this->LookupHomunSkill(id);
+    skill = g_session.LookupHomunSkill(id);
+  } else if (id - 8200u <= 41 || id - 8400u <= 57) {
+    skill = g_session.LookupMercSkill(id);
+  } else if (id - 10000u <= 19) {
+    skill = g_session.LookupAdditionalSkill(id);
+  } else {
+    skill = g_session.m_skillBundle.Lookup(id);
   }
 
-  if (id - 8200u <= 41 || id - 8400u <= 57) {
-    return this->LookupMercSkill(id);
-  }
-
-  if (id - 10000u <= 19) {
-    return this->LookupAdditionalSkill(id);
-  }
-
-  return this->m_skillBundle.Lookup(id);
+  return skill;
 }
 
 // OFFSET: 0x00E25240
@@ -673,9 +689,9 @@ CSkillInfo CSession::AdditionalSkillAt(int index) const {
   }
 
   int position = 0;
-  for (const CSkillInfo& skill : this->m_additionalSkills) {
+  for (auto it = this->m_additionalSkills.begin(); it != this->m_additionalSkills.end(); ++it) {
     if (position == index) {
-      return skill;
+      return *it;
     }
 
     ++position;
@@ -692,9 +708,9 @@ CSkillInfo CSession::HomunSkillAt(int index) const {
   }
 
   int position = 0;
-  for (const CSkillInfo& skill : this->m_homunSkills) {
+  for (auto it = this->m_homunSkills.begin(); it != this->m_homunSkills.end(); ++it) {
     if (position == index) {
-      return skill;
+      return *it;
     }
 
     ++position;
@@ -705,7 +721,7 @@ CSkillInfo CSession::HomunSkillAt(int index) const {
 
 // OFFSET: 0x00E251C0
 // FUNCTION: fn_23902
-void CSession::NotifyHomunSkillWindows() {
+__declspec(noinline) void CSession::NotifyHomunSkillWindows() {
   if (g_windowMgr.window_03C4) {
     g_windowMgr.window_03C4->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
@@ -717,7 +733,7 @@ void CSession::NotifyHomunSkillWindows() {
 
 // OFFSET: 0x00E25200
 // FUNCTION: fn_23903
-void CSession::NotifyMercSkillWindows() {
+__declspec(noinline) void CSession::NotifyMercSkillWindows() {
   if (g_windowMgr.window_03CC) {
     g_windowMgr.window_03CC->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
@@ -976,9 +992,9 @@ CSkillInfo CSession::MercSkillAt(int index) const {
   }
 
   int position = 0;
-  for (const CSkillInfo& skill : this->m_mercSkills) {
+  for (auto it = this->m_mercSkills.begin(); it != this->m_mercSkills.end(); ++it) {
     if (position == index) {
-      return skill;
+      return *it;
     }
 
     ++position;
