@@ -12,18 +12,16 @@ namespace {
   }
 
   // INLINED
-  DDSURFACEDESC2 Description(DeviceOwnerDX7& owner, DWORD width, DWORD height) {
-    DDSURFACEDESC2 description{};
+  void Describe(DDSURFACEDESC2& description, DeviceOwnerDX7& owner, DWORD width, DWORD height) {
     description.dwSize = sizeof(description);
     description.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CKSRCBLT;
     description.dwWidth = width;
     description.dwHeight = height;
     description.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+
     description.ddpfPixelFormat = owner.primaryDescription.ddpfPixelFormat;
     description.ddckCKSrcBlt.dwColorSpaceLowValue = description.ddpfPixelFormat.dwRBitMask | description.ddpfPixelFormat.dwBBitMask;
     description.ddckCKSrcBlt.dwColorSpaceHighValue = description.ddckCKSrcBlt.dwColorSpaceLowValue;
-
-    return description;
   }
 }
 
@@ -41,7 +39,8 @@ std::uint16_t DeviceOwnerDX7::PackColor(int red, int green, int blue) {
 // FUNCTION: fn_01776
 CSurfaceDX7::CSurfaceDX7(DeviceOwnerDX7& owner, int width, int height)
     : m_owner(&owner), m_surface(nullptr), m_width(AlignDimension(width)), m_height(AlignDimension(height)) {
-  auto description = Description(owner, this->m_width, this->m_height);
+  DDSURFACEDESC2 description{};
+  Describe(description, owner, this->m_width, this->m_height);
   owner.draw->CreateSurface(&description, &this->m_surface, nullptr);
 }
 
@@ -93,7 +92,8 @@ bool CSurfaceDX7::Resize(int width, int height) {
     this->m_surface = nullptr;
   }
 
-  auto description = Description(*this->m_owner, this->m_width, this->m_height);
+  DDSURFACEDESC2 description{};
+  Describe(description, *this->m_owner, this->m_width, this->m_height);
   return SUCCEEDED(this->m_owner->draw->CreateSurface(&description, &this->m_surface, nullptr));
 }
 
