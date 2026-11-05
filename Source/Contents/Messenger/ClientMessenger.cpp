@@ -5033,13 +5033,9 @@ MessengerMember CSession::PartyByAccount(std::uint32_t accountId) const {
 // OFFSET: 0x00DE01C0
 // FUNCTION: fn_23453
 MessengerMember CSession::PartyByCharacter(std::uint32_t characterId) const {
-  for (const MessengerMember& member : this->m_partyMembers) {
-    if (member.characterId == characterId) {
-      return member;
-    }
-  }
-
-  return MessengerMember(0);
+  std::list<MessengerMember>::const_iterator it = std::find_if(this->m_partyMembers.begin(), this->m_partyMembers.end(),
+                                                               [characterId](const MessengerMember& member) { return member.characterId == characterId; });
+  return it != this->m_partyMembers.end() ? *it : MessengerMember(0);
 }
 
 // OFFSET: 0x00DE03E0
