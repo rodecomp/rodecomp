@@ -5,74 +5,64 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <malloc.h>
 
 namespace {
 #pragma pack(push, 1)
   struct EmblemPacket {
-    std::uint16_t id;
-    std::uint16_t bytes;
-    std::uint16_t state;
-    std::uint32_t guildId;
-    std::uint32_t version;
-    unsigned char data[1010];
+    /* 0000 */ std::uint16_t id;
+    /* 0002 */ std::int16_t bytes;
+    /* 0004 */ std::uint16_t state;
+    /* 0006 */ std::uint32_t guildId;
+    /* 000A */ std::uint32_t version;
+    /* 000E */ unsigned char data[1010];
   };
 #pragma pack(pop)
   static_assert(sizeof(EmblemPacket) == 1024);
-
-  struct EmblemPacketAllocation {
-    std::uint32_t marker;
-    std::uint32_t unused;
-    EmblemPacket packet;
-  };
-  static_assert(sizeof(EmblemPacketAllocation) == 1032);
 }
 
 // OFFSET: 0x005EB800
 // FUNCTION: fn_03975
-void CompleteEmblemDownload(
-  AsyncDiagnostic diagnostic, int responseCode, std::string response, std::uint32_t guildId, std::uint32_t version, CConnection& connection
-) {
+void CEmblemDataMgr::CompleteDownload(AsyncDiagnostic diagnostic, int responseCode, std::string response, std::uint32_t guildId, std::uint32_t version) {
   if (!diagnostic.success || responseCode != 200) {
     return;
   }
 
-  auto* storage = static_cast<EmblemPacketAllocation*>(std::malloc(sizeof(EmblemPacketAllocation)));
-
-  if (!storage) {
+  auto* packet = static_cast<EmblemPacket*>(
+    _MallocaComputeSize(sizeof(EmblemPacket)) <= _ALLOCA_S_THRESHOLD
+      ? _MarkAllocaS(_alloca(_MallocaComputeSize(sizeof(EmblemPacket))), _ALLOCA_S_STACK_MARKER)
+      : _MarkAllocaS(std::malloc(_MallocaComputeSize(sizeof(EmblemPacket))), _ALLOCA_S_HEAP_MARKER)
+  );
+  if (!packet) {
     return;
   }
 
-  storage->marker = 0xDDDD;
-  EmblemPacket& packet = storage->packet;
-  packet.id = 0x0B36;
-  packet.bytes = 14;
-  packet.state = 2;
-  packet.guildId = guildId;
-  packet.version = version;
-  connection.Prepend(packet.bytes, &packet);
+  packet->id = 0x0B36;
+  packet->bytes = 14;
+  packet->state = 2;
+  packet->guildId = guildId;
+  packet->version = version;
+  GetRagConnection().Prepend(packet->bytes, packet);
+
   int remaining = static_cast<int>(response.size());
-
   while (remaining > 0) {
-    const int bytes = std::min(remaining, 1010);
+    const int bytes = std::min(1010, remaining);
+    packet->id = 0x0B36;
+    packet->state = 1;
+    packet->bytes = static_cast<std::int16_t>(bytes + 14);
+    packet->guildId = guildId;
+    packet->version = version;
+    memcpy_s(packet->data, packet->bytes - 14, response.substr(remaining - bytes, remaining).c_str(), bytes);
+    GetRagConnection().Prepend(packet->bytes, packet);
     remaining -= bytes;
-    packet.id = 0x0B36;
-    packet.bytes = static_cast<std::uint16_t>(bytes + 14);
-    packet.state = 1;
-    packet.guildId = guildId;
-    packet.version = version;
-
-    std::memcpy(packet.data, response.data() + remaining, bytes);
-    connection.Prepend(packet.bytes, &packet);
   }
 
-  packet.id = 0x0B36;
-  packet.bytes = 14;
-  packet.state = 0;
-  packet.guildId = guildId;
-  packet.version = version;
-  connection.Prepend(packet.bytes, &packet);
+  packet->id = 0x0B36;
+  packet->bytes = 14;
+  packet->state = 0;
+  packet->guildId = guildId;
+  packet->version = version;
+  GetRagConnection().Prepend(packet->bytes, packet);
 
-  if (storage->marker == 0xDDDD) {
-    std::free(storage);
-  }
+  _freea(packet);
 }

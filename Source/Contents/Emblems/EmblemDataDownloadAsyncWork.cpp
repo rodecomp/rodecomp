@@ -1,5 +1,5 @@
 #include "Contents/Emblems/EmblemDataDownloadAsyncWork.h"
-#include "Contents/Emblems/EmblemDownload.h"
+#include "Contents/Emblems/EmblemDataMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -128,5 +128,6 @@ bool CEmblemDataDownloadAsyncWork::Execute() {
 // OFFSET: 0x005EA360
 // FUNCTION: fn_03967
 void CEmblemDataDownloadAsyncWork::Complete() {
-  CompleteEmblemDownload(this->m_diagnostic, this->m_responseCode, this->m_response, this->m_guildId, this->m_version, *this->m_connection);
+  CEmblemDataMgr* emblems = g_emblemDataMgr;
+  emblems->CompleteDownload(this->m_diagnostic, this->m_responseCode, this->m_response, this->m_guildId, this->m_version);
 }

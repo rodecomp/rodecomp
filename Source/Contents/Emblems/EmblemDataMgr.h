@@ -22,6 +22,7 @@ public:
   );
   bool Upload(std::uint32_t guildId, std::string path);
   void CompleteUpload(AsyncDiagnostic diagnostic, std::string response, std::uint32_t guildId);
+  void CompleteDownload(AsyncDiagnostic diagnostic, int responseCode, std::string response, std::uint32_t guildId, std::uint32_t version);
 
 protected:
   /* 0004 */ bool m_enabled;
