@@ -1725,60 +1725,6 @@ __declspec(noinline) PakKeyBlock48 PakMaskedKey48::Unmask() const {
   return result;
 }
 
-// OFFSET: 0x00658FA0
-// FUNCTION: fn_05114
-int OptimalDataAlignmentDS8OP34T() {
-  return 8;
-}
-
-// OFFSET: 0x00658FB0
-// FUNCTION: fn_05115
-int BlockSizeDS8OP34T() {
-  return 32;
-}
-
-// OFFSET: 0x00659AF0
-// FUNCTION: fn_45528
-bool PakAuxiliaryFlag45528() {
-  return false;
-}
-
-// OFFSET: 0x00659B00
-// FUNCTION: fn_45529
-bool PakAuxiliaryFlag45529() {
-  return false;
-}
-
-// OFFSET: 0x00659B10
-// FUNCTION: fn_45530
-bool PakAuxiliaryFlag45530() {
-  return true;
-}
-
-// OFFSET: 0x00659B20
-// FUNCTION: fn_45531
-bool PakAuxiliaryFlag45531() {
-  return false;
-}
-
-// OFFSET: 0x00659B30
-// FUNCTION: fn_45532
-bool PakAuxiliaryFlag45532() {
-  return false;
-}
-
-// OFFSET: 0x00659B40
-// FUNCTION: fn_45533
-bool PakAuxiliaryFlag45533() {
-  return false;
-}
-
-// OFFSET: 0x00659B50
-// FUNCTION: fn_45534
-bool PakAuxiliaryFlag45534() {
-  return false;
-}
-
 // OFFSET: 0x0065AA00
 // FUNCTION: fn_05133
 std::uint32_t IdeaMulInv(std::uint32_t x) {
@@ -2436,7 +2382,7 @@ namespace GPakEx {
       std::size_t OptimalDataAlignment() const override;
       void SetKey(std::span<const std::uint8_t> key) override;
 
-      /* 0004 */ std::uint32_t m_key[3];
+      /* 0004 */ std::uint32_t m_key[3]{};
     };
 
     class Enc : public Base {
@@ -2546,6 +2492,12 @@ namespace GPakEx {
   public:
     class Base : public BlockCipher {
     public:
+      ~Base() override {
+        SecureWipe(this->m_key, sizeof(this->m_key));
+      }
+
+      std::size_t BlockSize() const override;
+      std::size_t OptimalDataAlignment() const override;
       void SetKey(std::span<const std::uint8_t> key) override;
 
       static void PrecalculateSTable();
@@ -2554,7 +2506,7 @@ namespace GPakEx {
       static bool s_sTableCalculated;
       static std::uint32_t s_sTable[4][256];
 
-      /* 0004 */ std::uint32_t m_key[8];
+      /* 0004 */ std::uint32_t m_key[8]{};
     };
 
     class Enc : public Base {
@@ -2567,6 +2519,18 @@ namespace GPakEx {
       void ProcessAndXorBlock(const std::uint8_t* input, const std::uint8_t* xorBlock, std::uint8_t* output) const override;
     };
   };
+
+  // OFFSET: 0x00658FA0
+  // FUNCTION: fn_05114
+  std::size_t GOST::Base::BlockSize() const {
+    return 8;
+  }
+
+  // OFFSET: 0x00658FB0
+  // FUNCTION: fn_05115
+  std::size_t GOST::Base::OptimalDataAlignment() const {
+    return 32;
+  }
 
   // GLOBAL: gl_25481
   const std::uint8_t GOST::Base::s_sbox[8][16] = {
@@ -3219,6 +3183,118 @@ namespace GPakEx {
   }
 
   static_assert(offsetof(IdeaCbcEncryption, m_blockCipher) == 0x20);
+
+  // OFFSET: 0x00659AF0
+  // FUNCTION: fn_45528
+  template<>
+  bool BlockCipherFinal<true, IDEA::Base>::IsForwardTransformation() const {
+    return false;
+  }
+
+  using IdeaCbcDecryption = CipherModeFinal<IDEA, true, BlockCipherFinal<true, IDEA::Base>, CBC_Decryption>;
+
+  // OFFSET: 0x00659B50
+  // FUNCTION: fn_45534
+  template<>
+  bool IdeaCbcDecryption::IsForwardTransformation() const {
+    return false;
+  }
+
+  // OFFSET: 0x00656AC0
+  // FUNCTION: fn_05077
+  template<>
+  __declspec(noinline) IdeaCbcDecryption::CipherModeFinal() {
+    this->m_cipher = &this->m_blockCipher;
+    this->ResizeBuffers();
+  }
+
+  // INLINED
+  template<>
+  __forceinline IdeaCbcDecryption::~CipherModeFinal() {
+    SecureWipe(this->m_blockCipher.m_key, sizeof(this->m_blockCipher.m_key));
+  }
+
+  static_assert(offsetof(IdeaCbcDecryption, m_blockCipher) == 0x2C);
+
+  using ThreeWayCfbDecryption = CipherModeFinal<ThreeWay, true, BlockCipherFinal<false, ThreeWay::Enc>, CFB_Decryption>;
+
+  // OFFSET: 0x00659B40
+  // FUNCTION: fn_45533
+  template<>
+  bool ThreeWayCfbDecryption::IsForwardTransformation() const {
+    return false;
+  }
+
+  // OFFSET: 0x00656A20
+
+  // INLINED
+  template<>
+  __forceinline ThreeWayCfbDecryption::~CipherModeFinal() {
+  }
+
+  static_assert(offsetof(ThreeWayCfbDecryption, m_blockCipher) == 0x2C);
+
+  // OFFSET: 0x00659B00
+  // FUNCTION: fn_45529
+  template<>
+  bool BlockCipherFinal<true, GOST::Dec>::IsForwardTransformation() const {
+    return false;
+  }
+
+  // OFFSET: 0x00659B10
+  // FUNCTION: fn_45530
+  template<>
+  bool BlockCipherFinal<false, GOST::Enc>::IsForwardTransformation() const {
+    return true;
+  }
+
+  using GostCbcDecryption = CipherModeFinal<GOST, true, BlockCipherFinal<true, GOST::Dec>, CBC_Decryption>;
+
+  // OFFSET: 0x00659B20
+  // FUNCTION: fn_45531
+  template<>
+  bool GostCbcDecryption::IsForwardTransformation() const {
+    return false;
+  }
+
+  // OFFSET: 0x006568E0
+  // FUNCTION: fn_05074
+  template<>
+  __declspec(noinline) GostCbcDecryption::CipherModeFinal() {
+    this->m_cipher = &this->m_blockCipher;
+    this->ResizeBuffers();
+  }
+
+  // INLINED
+  template<>
+  __forceinline GostCbcDecryption::~CipherModeFinal() {
+  }
+
+  static_assert(offsetof(GostCbcDecryption, m_blockCipher) == 0x2C);
+
+  using GostCfbDecryption = CipherModeFinal<GOST, true, BlockCipherFinal<false, GOST::Enc>, CFB_Decryption>;
+
+  // OFFSET: 0x00659B30
+  // FUNCTION: fn_45532
+  template<>
+  bool GostCfbDecryption::IsForwardTransformation() const {
+    return false;
+  }
+
+  // OFFSET: 0x00656980
+  // FUNCTION: fn_05075
+  template<>
+  __declspec(noinline) GostCfbDecryption::CipherModeFinal() {
+    this->m_cipher = &this->m_blockCipher;
+    this->ResizeBuffers();
+  }
+
+  // INLINED
+  template<>
+  __forceinline GostCfbDecryption::~CipherModeFinal() {
+  }
+
+  static_assert(offsetof(GostCfbDecryption, m_blockCipher) == 0x2C);
 
   class CipherModeFinal_6470D0 : public CipherModeStub {
   public:
