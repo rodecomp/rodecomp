@@ -265,9 +265,11 @@ void CEntryQueueMgr::OnReady(const EntryQueueReady* packet) {
 // OFFSET: 0x00BA2E50
 // FUNCTION: fn_19673
 void CEntryQueueMgr::OnResultNotice(const EntryQueueNotice* notice) {
-  if (notice->result == 3) {
+  switch (notice->result) {
+  case 3:
     g_windowMgr.Confirm(LookupMessage(0x83F), 0, false, false, 0, "Message", 0x118, 0x78, 0);
-  } else if (notice->result == 11) {
+    break;
+  case 11:
     g_windowMgr.Confirm(LookupMessage(0x840), 0, false, false, 0, "Message", 0x118, 0x78, 0);
   }
 }
@@ -275,7 +277,8 @@ void CEntryQueueMgr::OnResultNotice(const EntryQueueNotice* notice) {
 // OFFSET: 0x00BA2EB0
 // FUNCTION: fn_19674
 void CEntryQueueMgr::OnNotify(const EntryQueueNotice* notice) {
-  if (notice->result == 1) {
+  switch (notice->result) {
+  case 1:
     g_soundMgr->PlayWave("se_btg_forward.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 }
