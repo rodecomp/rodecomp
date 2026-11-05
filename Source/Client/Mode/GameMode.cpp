@@ -5234,15 +5234,16 @@ void WriteMyLog(const char* file, int line, const char* format, ...) {
 std::string CGameMode::HuntTargetText(const RenewQuestOngoingInfo& quest, int index) {
   std::string text;
   if (std::strlen(quest.m_huntName[index]) == 0) {
-    text.assign(g_renewQuestMgr->GetMonsterConditionText(quest.m_huntUnknown01A0[index], quest.m_huntUnknown01AC[index], quest.m_huntUnknown01B2[index]));
+    text = static_cast<const std::string&>(
+        g_renewQuestMgr->GetMonsterConditionText(quest.m_huntUnknown01A0[index], quest.m_huntUnknown01AC[index], quest.m_huntUnknown01B2[index]));
   } else {
-    text.assign(FormatOwnedString("%s", quest.m_huntName[index]));
+    text = static_cast<const std::string&>(FormatOwnedString("%s", quest.m_huntName[index]));
   }
 
   if (quest.m_huntUnknown00E0[index] == quest.m_huntUnknown0180[index]) {
-    text.assign(FormatOwnedString("%s [ %s ]", text.c_str(), LookupMessage(0x7EE)));
+    text = static_cast<const std::string&>(FormatOwnedString("%s [ %s ]", text.c_str(), LookupMessage(0x7EE)));
   } else {
-    text.assign(FormatOwnedString("%s [ %d / %d ]", text.c_str(), quest.m_huntUnknown00E0[index], quest.m_huntUnknown0180[index]));
+    text = static_cast<const std::string&>(FormatOwnedString("%s [ %d / %d ]", text.c_str(), quest.m_huntUnknown00E0[index], quest.m_huntUnknown0180[index]));
   }
 
   return text;
