@@ -70,7 +70,7 @@ public:
   /* 0288 */ ITEM_INFO m_resultItem;
   /* 0380 */ ITEM_INFO m_additionItem;
 
-  RouletteMgr();
+  __declspec(noinline) RouletteMgr();
   void AddItem(RouletteSlot slot);
   void Reset();
   void Draw();
