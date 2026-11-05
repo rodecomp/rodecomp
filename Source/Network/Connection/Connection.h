@@ -18,7 +18,7 @@ public:
   CConnection();
   virtual ~CConnection();
   virtual bool Connect(const ConnectionEndpoint& endpoint);
-  void Close();
+  __declspec(noinline) void Close();
   bool Receive();
   bool Flush();
   bool Update();
