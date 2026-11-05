@@ -1053,7 +1053,7 @@ public:
   bool HasInventoryItem(std::uint32_t id) const;
   bool HasItemId(int itemId) const;
   bool HasItemCount(int itemId, int count) const;
-  void NormalizeHead(int* head, int job);
+  __declspec(noinline) void NormalizeHead(int* head, int job);
   int GetDisplayJob();
   const char* GetHitWaveName(int job);
   const char* GetWeaponHitWaveName(int weapon);
