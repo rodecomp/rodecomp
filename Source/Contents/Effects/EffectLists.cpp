@@ -143,8 +143,8 @@ void EffectLists::Render() {
     return;
   }
 
-  for (auto& entry : this->active) {
-    for (CEffect* effect : entry.second) {
+  for (auto entry = this->active.begin(), end = this->active.end(); entry != end; ++entry) {
+    for (CEffect* effect : entry->second) {
       effect->UpdateVisibility();
     }
   }
