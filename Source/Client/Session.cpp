@@ -1637,9 +1637,9 @@ const char* CSession::GetMonsterRmaName(int job) const {
 // OFFSET: 0x00DE08F0
 // FUNCTION: fn_23463
 ITEM_INFO CSession::FindItem1730(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1730) {
-    if (item.unknown_0000[1] == id) {
-      return item;
+  for (auto item = this->unknown_1730.begin(); item != this->unknown_1730.end(); ++item) {
+    if (item->unknown_0000[1] == id) {
+      return *item;
     }
   }
 
@@ -1715,9 +1715,9 @@ const char* CSession::GetHotkeyDescription(int index) const {
 // OFFSET: 0x00DE0EB0
 // FUNCTION: fn_23475
 ITEM_INFO CSession::FindItem1738(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1738) {
-    if (item.unknown_0000[1] == id) {
-      return item;
+  for (auto item = this->unknown_1738.begin(); item != this->unknown_1738.end(); ++item) {
+    if (item->unknown_0000[1] == id) {
+      return *item;
     }
   }
 
