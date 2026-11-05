@@ -2,6 +2,7 @@
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Text/TextMarkup.h"
@@ -67,7 +68,11 @@ void UITextViewEX::Clear() {
 // OFFSET: 0x0087B780
 // FUNCTION: fn_11249
 void UITextViewer::Configure(int x, int y, int width, int height, unsigned char value) {
-  UIListBox::Configure(x, y, width, height, value);
+  this->transparent = value;
+  UIWindow::Resize(width, height);
+  this->Move(x, y);
+  this->Slot15(width, height);
+  this->Slot22(width, height);
 }
 
 // OFFSET: 0x008760C0
@@ -81,8 +86,8 @@ void UITextViewer::AddLine(const char* text) {
 void UITextViewer::Clear() {
   UIListBox::Clear();
 
-  for (UITextButton* link : this->links) {
-    this->RemoveChild(link, 1);
+  for (auto it = this->links.begin(); it != this->links.end(); ++it) {
+    this->RemoveChild(*it, 1);
   }
 
   this->links.clear();
