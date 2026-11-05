@@ -201,7 +201,7 @@ void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t c
   this->unknown_19EC.clear();
   if (x > 26 && x < this->geometry.width - 26 && static_cast<unsigned>(y - 95) < 270 && (y > 249 || y < 211)) {
     const int index = (y - 95) / 135 * this->m_columns + (x - 27) / 81;
-    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, index, 0, 0, 0));
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, index, 0, 0, 0));
     if (info) {
       char name[25];
       std::memcpy(name, info->name, sizeof(info->name));
