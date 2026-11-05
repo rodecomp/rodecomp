@@ -8,10 +8,6 @@ class GroundGeometry;
 class C3dAttr;
 class C3dActor;
 
-void InitializeWorldSpatial(
-  WorldSpatialTree& root, GroundGeometry& ground, C3dAttr& terrain, std::span<C3dActor* const> models, const WorldSpatialTree* serialized
-);
-
 void PublishWorldModels(WorldSpatialTree& root, C3dActor* const* models, int& published, int& pending);
 
 #endif
