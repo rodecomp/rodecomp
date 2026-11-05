@@ -794,10 +794,16 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
         angle -= 360;
       }
 
-      const int low = angle - 15;
+      int leftAngle = angle - 15;
+      if (leftAngle < 0) {
+        leftAngle += 360;
+      }
+      int rightAngle = angle + 15;
+      if (rightAngle >= 360) {
+        rightAngle -= 360;
+      }
       const int high = angle + 15;
-      const int leftAngle = low < 0 ? low + 360 : low;
-      const int rightAngle = high < 360 ? high : high - 360;
+      const int low = angle - 15;
       const int backRightAngle = high - 180 < 0 ? high - 180 + 360 : high - 180;
       const int backLeftAngle = low + 180 < 360 ? low + 180 : low + 180 - 360;
       const float rotCos = g_cosTable[slot.rotStart];
@@ -940,10 +946,16 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
         angle -= 360;
       }
 
-      const int low = angle - 25;
+      int leftAngle = angle - 25;
+      if (leftAngle < 0) {
+        leftAngle += 360;
+      }
+      int rightAngle = angle + 25;
+      if (rightAngle >= 360) {
+        rightAngle -= 360;
+      }
       const int high = angle + 25;
-      const int leftAngle = low < 0 ? low + 360 : low;
-      const int rightAngle = high < 360 ? high : high - 360;
+      const int low = angle - 25;
       const int backRightAngle = high - 180 < 0 ? high - 180 + 360 : high - 180;
       const int backLeftAngle = low + 180 < 360 ? low + 180 : low + 180 - 360;
       const float rotCos = g_cosTable[slot.rotStart];
