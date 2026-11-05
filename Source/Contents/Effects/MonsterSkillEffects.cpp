@@ -762,24 +762,24 @@ CEternalSlashAttackEffect::CEternalSlashAttackEffect() : CEffect(-1) {
 // OFFSET: 0x00710C80
 // FUNCTION: fn_07209
 void CEternalSlashAttackEffect::Slot01() {
-  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  EZ2STREmitter* bottom =
+      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
   if (bottom) {
-    bottom->Load(std::string("eternal_slash\\eternal_slash_bottom\\eternal_slash_bottom.str"));
-    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(bottom);
-    emitter->offset.x = 0.0f;
-    emitter->offset.y = -13.0f;
-    emitter->offset.z = 0.0f;
-    this->emitters.push_back(emitter);
+    AsParticle(bottom)->Load(std::string("eternal_slash\\eternal_slash_bottom\\eternal_slash_bottom.str"));
+    bottom->offset.x = 0.0f;
+    bottom->offset.y = -13.0f;
+    bottom->offset.z = 0.0f;
+    this->emitters.push_back(bottom);
   }
 
-  CEZ2STRParticle* slash = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  EZ2STREmitter* slash =
+      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (slash) {
-    slash->Load(std::string("eternal_slash\\eternal_slash\\eternal_slash.str"));
-    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(slash);
-    emitter->offset.x = 0.0f;
-    emitter->offset.y = -13.0f;
-    emitter->offset.z = 0.0f;
-    this->emitters.push_back(emitter);
+    AsParticle(slash)->Load(std::string("eternal_slash\\eternal_slash\\eternal_slash.str"));
+    slash->offset.x = 0.0f;
+    slash->offset.y = -13.0f;
+    slash->offset.z = 0.0f;
+    this->emitters.push_back(slash);
   }
 }
 
@@ -4012,10 +4012,13 @@ void CCrimsonArrowEffect::Slot01() {
 // OFFSET: 0x0070DE90
 // FUNCTION: fn_07166
 void CTunaPartyEffect::Slot01() {
-  CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
-  if (!particle) {
+  EZ2STREmitter* emitter =
+      reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+  if (!emitter) {
     return;
   }
+
+  CSpriteParticle* particle = AsSprite(emitter);
 
   particle->unknown_0004 = this->id;
   particle->unknown_000C = 1;
@@ -4026,7 +4029,7 @@ void CTunaPartyEffect::Slot01() {
   particle->unknown_0054 = 0.0f;
   particle->loopMode = 3;
   this->unknown_002C = 9999;
-  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  this->emitters.push_back(emitter);
 }
 
 // OFFSET: 0x0070DF40
@@ -4061,8 +4064,10 @@ void CTunaPartyEffect::Slot03() {
 // OFFSET: 0x0070C2F0
 // FUNCTION: fn_07129
 void CRootTwistEffect::Slot01() {
-  CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
-  if (particle) {
+  EZ2STREmitter* emitter =
+      reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+  if (emitter) {
+    CSpriteParticle* particle = AsSprite(emitter);
     particle->unknown_0004 = this->id;
     particle->unknown_000C = 0;
     particle->unknown_0010 = 0;
@@ -4072,7 +4077,7 @@ void CRootTwistEffect::Slot01() {
     particle->unknown_00EC |= 0x200;
     particle->frameDelay = 8.0f;
     particle->depthOffset = 0.00015f;
-    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    this->emitters.push_back(emitter);
   }
   this->unknown_002C = 9999;
 }
