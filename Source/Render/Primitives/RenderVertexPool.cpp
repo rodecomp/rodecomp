@@ -27,7 +27,7 @@ RenderVertexPool::~RenderVertexPool() {
 
 // OFFSET: 0x00562290
 // FUNCTION: fn_02177
-void RenderVertexPool::Release() {
+__declspec(noinline) void RenderVertexPool::Release() {
   for (Block* block : this->m_active) {
     delete block;
   }
