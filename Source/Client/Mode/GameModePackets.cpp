@@ -2693,7 +2693,10 @@ __declspec(noinline) void CGameMode::ReceiveWindow308TextEntries(unsigned char* 
   char* text = reinterpret_cast<char*>(packet + 4);
   for (int i = 0; i < count; ++i, text += 16) {
     text[15] = '\0';
-    if (std::strlen(text) != 0) {
+    char* end = text;
+    do {
+    } while (*end++ != '\0');
+    if (*text != '\0') {
       window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     }
   }
