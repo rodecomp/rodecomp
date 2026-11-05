@@ -130,8 +130,8 @@ CNyanggrassEffect::CNyanggrassEffect() : CEffect(-1), unknown_00D8(0) {
 // OFFSET: 0x007085B0
 // FUNCTION: fn_07072
 void CNyanggrassEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();
@@ -186,7 +186,8 @@ bool CNyanggrassEffect::Slot06() {
 // OFFSET: 0x00708830
 // FUNCTION: fn_07075
 void CNyanggrassEffect::Slot03() {
-  for (CParticle* particle : this->particles) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
     if (particle) {
       static_cast<CEZ2STRParticle*>(particle)->Process(0.0f, 0.0f, 0.0f);
     }

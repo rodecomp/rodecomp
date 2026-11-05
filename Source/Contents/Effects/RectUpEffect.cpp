@@ -123,8 +123,8 @@ void CRectUpEffect::Slot35(CParticle* particle) {
 // OFFSET: 0x0070A220
 // FUNCTION: fn_07098
 void CRectUpEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
   this->particles.clear();
 }

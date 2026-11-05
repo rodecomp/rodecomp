@@ -10,8 +10,8 @@
 // OFFSET: 0x00705040
 // FUNCTION: fn_07035
 void CHitLineEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

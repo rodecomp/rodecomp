@@ -83,8 +83,8 @@ void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
 // OFFSET: 0x00B75270
 // FUNCTION: fn_19162
 void CSaintCastingEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

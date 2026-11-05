@@ -82,8 +82,8 @@ void CSteal::SpawnParticles() {
 // OFFSET: 0x00B4D200
 // FUNCTION: fn_18971
 void CSteal::Close() {
-  for (CSpriteParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

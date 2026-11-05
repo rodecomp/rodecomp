@@ -14,8 +14,8 @@
 // OFFSET: 0x00B781E0
 // FUNCTION: fn_19188
 void CSphereWindEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

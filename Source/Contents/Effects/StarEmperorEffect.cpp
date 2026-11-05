@@ -66,14 +66,14 @@ void CStarEmperorEffect::BuildSphere() {
 // OFFSET: 0x0072C420
 // FUNCTION: fn_07477
 void CStarEmperorEffect::Close() {
-  for (CParticle* particle : this->sphere) {
-    FreeParticle(particle);
+  for (auto it = this->sphere.begin(); it != this->sphere.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->sphere.clear();
 
-  for (CParticle* particle : this->rings) {
-    FreeParticle(particle);
+  for (auto it = this->rings.begin(); it != this->rings.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->rings.clear();
@@ -234,13 +234,15 @@ void CStarEmperorEffect::Slot03() {
 // OFFSET: 0x0072CCA0
 // FUNCTION: fn_07483
 void CStarEmperorEffect::Slot04() {
-  for (CParticle* particle : this->sphere) {
+  for (auto it = this->sphere.begin(); it != this->sphere.end(); ++it) {
+    CParticle* particle = *it;
     if (particle) {
       particle->Render(false, particle->vertices[0].v, particle->vertices[3].v, particle->vertices[0].u, particle->vertices[3].u, false, true);
     }
   }
 
-  for (CParticle* particle : this->rings) {
+  for (auto it = this->rings.begin(); it != this->rings.end(); ++it) {
+    CParticle* particle = *it;
     if (particle) {
       particle->Render(false, 0.0f, 1.0f, 0.0f, 0.25f, false, true);
     }

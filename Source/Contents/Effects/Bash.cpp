@@ -18,14 +18,14 @@
 // OFFSET: 0x00B42270
 // FUNCTION: fn_18869
 void CBash::Close() {
-  for (CParticle* particle : this->rays) {
-    FreeParticle(particle);
+  for (auto it = this->rays.begin(); it != this->rays.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->rays.clear();
 
-  for (CParticle* particle : this->sparks) {
-    FreeParticle(particle);
+  for (auto it = this->sparks.begin(); it != this->sparks.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->sparks.clear();

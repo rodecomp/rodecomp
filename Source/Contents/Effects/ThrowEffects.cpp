@@ -22,8 +22,8 @@ CThrowItemEffect::CThrowItemEffect()
 // OFFSET: 0x00B7CCC0
 // FUNCTION: fn_19229
 void CThrowItemEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();
@@ -514,8 +514,8 @@ void CVolcanoEffect::AddRings() {
 // OFFSET: 0x00B7EE80
 // FUNCTION: fn_19241
 void CVolcanoEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

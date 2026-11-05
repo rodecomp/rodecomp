@@ -13,8 +13,8 @@
 // OFFSET: 0x007077D0
 // FUNCTION: fn_07055
 void CMeteorEffect::Close() {
-  for (CParticle* particle : this->unknown_00CC) {
-    FreeParticle(particle);
+  for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->unknown_00CC.clear();

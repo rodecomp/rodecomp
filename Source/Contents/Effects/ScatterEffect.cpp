@@ -16,8 +16,8 @@ CScatterEffect::CScatterEffect() : CEffect(-1) {
 // OFFSET: 0x00B75E70
 // FUNCTION: fn_19169
 void CScatterEffect::Close() {
-  for (CSpriteParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

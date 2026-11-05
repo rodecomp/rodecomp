@@ -52,8 +52,8 @@ CSpriteEffect::CSpriteEffect() : CEffect(-1) {
 // OFFSET: 0x00B78B00
 // FUNCTION: fn_19196
 void CSpriteEffect::Close() {
-  for (CSpriteParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();
