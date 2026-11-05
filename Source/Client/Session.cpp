@@ -2614,8 +2614,8 @@ const char* CSession::GetMonsterW3dName(int job) const {
 // OFFSET: 0x00DE38E0
 // FUNCTION: fn_23483
 unsigned char CSession::GetShopType(int id) {
-  auto it = this->m_shops.find(id);
-  if (it == this->m_shops.end()) {
+  auto it = this->m_shops.lower_bound(id);
+  if (it == this->m_shops.end() || it->first != id) {
     return 0;
   }
 
