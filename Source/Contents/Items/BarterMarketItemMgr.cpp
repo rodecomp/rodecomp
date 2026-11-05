@@ -36,8 +36,8 @@ struct BarterTree {
   /* 0004 */ std::size_t size;
 
   BarterTreeLookup FindBound(const int& key);
-  void EraseSubtree(BarterTree* owner, BarterTreeNode* node);
-  void Clear();
+  void EraseSubtree(BarterTree* owner, BarterTreeNode* node) noexcept;
+  void Clear() noexcept;
   ~BarterTree();
 };
 
@@ -98,11 +98,12 @@ bool CBarterMarketItemMgr::CreateInstance()
   if (g_barterMarketItemMgr == NULL) {
     g_barterMarketItemMgr = new (std::nothrow) CBarterMarketItemMgr();
     if (g_barterMarketItemMgr != NULL) {
-      if (g_barterMarketItemMgr->initialized) {
-        return true;
+      if (!g_barterMarketItemMgr->initialized) {
+        delete g_barterMarketItemMgr;
+        g_barterMarketItemMgr = NULL;
+        return false;
       }
-      delete g_barterMarketItemMgr;
-      g_barterMarketItemMgr = NULL;
+      return true;
     }
   }
   return false;
@@ -190,14 +191,14 @@ bool CBarterMarketItemMgr::HasItemByName(std::string name)
 
 // OFFSET: 0x005D6F60
 // FUNCTION: fn_03717
-void BarterTree::EraseSubtree(BarterTree* owner, BarterTreeNode* root)
+void BarterTree::EraseSubtree(BarterTree* owner, BarterTreeNode* root) noexcept
 {
   BarterTreeNode* node = root;
   while (node->isnil == 0) {
     EraseSubtree(owner, node->right);
-    BarterTreeNode* next = node->left;
-    delete node;
-    node = next;
+    BarterTreeNode* erased = node;
+    node = node->left;
+    std::allocator<BarterTreeNode>().deallocate(erased, 1);
   }
 }
 
@@ -213,16 +214,14 @@ BarterTreeLookup BarterTree::FindBound(const int& key)
   result.bound = head;
   while (node->isnil == 0) {
     result.node = node;
-    int direction;
-    if (node->key >= key) {
-      result.bound = node;
-      direction = 1;
-      node = node->left;
-    } else {
-      direction = 0;
+    if (node->key < key) {
+      result.direction = 0;
       node = node->right;
+    } else {
+      result.bound = node;
+      result.direction = 1;
+      node = node->left;
     }
-    result.direction = direction;
   }
   return result;
 }
@@ -231,29 +230,16 @@ BarterTreeLookup BarterTree::FindBound(const int& key)
 // FUNCTION: fn_03720
 BarterTree::~BarterTree()
 {
-  BarterTreeNode* head = this->head;
-  BarterTreeNode* node = head->parent;
-  while (node->isnil == 0) {
-    EraseSubtree(this, node->right);
-    BarterTreeNode* next = node->left;
-    delete node;
-    node = next;
-  }
-  delete head;
+  EraseSubtree(this, this->head->parent);
+  std::allocator<BarterTreeNode>().deallocate(this->head, 1);
 }
 
 // OFFSET: 0x005D84F0
 // FUNCTION: fn_03743
-void BarterTree::Clear()
+void BarterTree::Clear() noexcept
 {
   BarterTreeNode* head = this->head;
-  BarterTreeNode* node = head->parent;
-  while (node->isnil == 0) {
-    EraseSubtree(this, node->right);
-    BarterTreeNode* next = node->left;
-    delete node;
-    node = next;
-  }
+  EraseSubtree(this, head->parent);
   head->parent = head;
   head->left = head;
   head->right = head;
@@ -264,16 +250,14 @@ void BarterTree::Clear()
 // FUNCTION: fn_03756
 BarterTreeIterator& BarterTreeIterator::operator++()
 {
-  BarterTreeNode* node = this->node;
-  if (node->right->isnil != 0) {
-    BarterTreeNode* parent = node->parent;
-    while (parent->isnil == 0 && node == parent->right) {
-      node = parent;
-      parent = parent->parent;
+  if (this->node->right->isnil != 0) {
+    BarterTreeNode* parent;
+    while ((parent = this->node->parent)->isnil == 0 && this->node == parent->right) {
+      this->node = parent;
     }
     this->node = parent;
   } else {
-    BarterTreeNode* child = node->right;
+    BarterTreeNode* child = this->node->right;
     while (child->left->isnil == 0) {
       child = child->left;
     }
@@ -415,11 +399,12 @@ bool CExpandedBarterMarketItemMgr::CreateInstance()
   if (g_expandedBarterMarketItemMgr == NULL) {
     g_expandedBarterMarketItemMgr = new (std::nothrow) CExpandedBarterMarketItemMgr();
     if (g_expandedBarterMarketItemMgr != NULL) {
-      if (g_expandedBarterMarketItemMgr->initialized) {
-        return true;
+      if (!g_expandedBarterMarketItemMgr->initialized) {
+        delete g_expandedBarterMarketItemMgr;
+        g_expandedBarterMarketItemMgr = NULL;
+        return false;
       }
-      delete g_expandedBarterMarketItemMgr;
-      g_expandedBarterMarketItemMgr = NULL;
+      return true;
     }
   }
   return false;
@@ -703,20 +688,12 @@ struct BarterEntryAllocator {
 // FUNCTION: fn_03790
 void BarterEntryAllocator::Deallocate(BarterMarketEntry* entries, std::size_t count)
 {
-  std::size_t bytes = count * sizeof(BarterMarketEntry);
-  if (bytes >= 0x1000) {
-    unsigned int block = *(unsigned int*)((char*)entries - sizeof(unsigned int));
-    bytes += 0x23;
-    if ((std::size_t)entries - block - sizeof(unsigned int) > 0x1f) {
-      _invalid_parameter_noinfo_noreturn();
-    }
-    entries = (BarterMarketEntry*)block;
-  }
-  ::operator delete(entries, bytes);
+  std::allocator<BarterMarketEntry>().deallocate(entries, count);
 }
 
 struct BarterChunkVector {
   BarterChunk16* Umove(BarterChunk16* first, BarterChunk16* last, BarterChunk16* dest);
+  BarterChunk16* MoveChunks16(BarterChunk16* first, BarterChunk16* last, BarterChunk16* dest);
 };
 
 // OFFSET: 0x005DB160
@@ -771,25 +748,17 @@ struct BarterChunkAllocator {
 // FUNCTION: fn_03791
 void BarterChunkAllocator::Deallocate(BarterChunk16* chunks, std::size_t count)
 {
-  std::size_t bytes = count * sizeof(BarterChunk16);
-  if (bytes >= 0x1000) {
-    unsigned int block = *(unsigned int*)((char*)chunks - sizeof(unsigned int));
-    bytes += 0x23;
-    if ((std::size_t)chunks - block - sizeof(unsigned int) > 0x1f) {
-      _invalid_parameter_noinfo_noreturn();
-    }
-    chunks = (BarterChunk16*)block;
-  }
-  ::operator delete(chunks, bytes);
+  std::allocator<BarterChunk16>().deallocate(chunks, count);
 }
 
 // OFFSET: 0x005DBD40
 // FUNCTION: fn_03800
-void AdjustHeap(BarterEntryPair* first, int hole, int top, BarterEntryPair* value)
+void AdjustHeap(BarterEntryPair* first, int hole, int bottom, BarterEntryPair* value)
 {
-  const int bottom = hole;
+  const int top = hole;
   int idx = hole;
-  for (; idx < (top - 1) / 2; ) {
+  const int maxNonLeaf = (bottom - 1) >> 1;
+  while (idx < maxNonLeaf) {
     idx = 2 * idx + 2;
     if (first[idx].id < first[idx - 1].id) {
       --idx;
@@ -797,16 +766,13 @@ void AdjustHeap(BarterEntryPair* first, int hole, int top, BarterEntryPair* valu
     first[hole] = first[idx];
     hole = idx;
   }
-  if (idx == (top - 1) / 2 && top % 2 == 0) {
-    first[hole] = first[top - 1];
-    hole = top - 1;
+  if (idx == maxNonLeaf && bottom % 2 == 0) {
+    first[hole] = first[bottom - 1];
+    hole = bottom - 1;
   }
-  for (; bottom < hole; hole = idx) {
-    idx = (hole - 1) >> 1;
-    if (!(first[idx].id < value->id)) {
-      break;
-    }
+  for (idx = (hole - 1) >> 1; top < hole && first[idx].id < value->id; idx = (hole - 1) >> 1) {
     first[hole] = first[idx];
+    hole = idx;
   }
   first[hole] = *value;
 }
