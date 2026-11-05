@@ -550,7 +550,7 @@ void CCashEmotionMgr::ClearCommands() {
     delete reinterpret_cast<CashEmotionCommand*>(entry.second);
   }
 
-  this->m_commands.erase(this->m_commands.begin(), this->m_commands.end());
+  this->m_commands.clear();
 }
 
 // OFFSET: 0x005994B0
@@ -673,11 +673,7 @@ int CCashEmotionMgr::GetActFilePath(const char* name, bool add) {
 // FUNCTION: fn_02943
 const char* CCashEmotionMgr::GetPackName(int packId) {
   auto it = this->m_packNames.find(packId);
-  if (it == this->m_packNames.end()) {
-    return nullptr;
-  }
-
-  return it->second.c_str();
+  return it != this->m_packNames.end() ? it->second.c_str() : nullptr;
 }
 
 // OFFSET: 0x00599930
@@ -2316,9 +2312,7 @@ void UICashEmotionListWnd::ShowPack(int packId) {
     this->m_searchEdit->SetText(title);
   }
 
-  if (this->m_currentList) {
-    this->m_currentList->Refresh(this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
-  }
+  this->RefreshCurrentList();
 
   if (this->m_searchEdit) {
     this->m_searchEdit->SetText("");
@@ -2713,7 +2707,7 @@ void UICashEmotionMiniWnd::Refresh(int first) {
   if (this->m_pieces[0]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first);
-      bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
+      const bool owned = entry.first == g_cashEmotionMgr->BasePackId() ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
       this->m_pieces[0]->Set(entry.first, entry.second, false, false, !owned);
     } else {
       this->m_pieces[0]->Set(-1, -1, false, false, false);
@@ -2723,7 +2717,7 @@ void UICashEmotionMiniWnd::Refresh(int first) {
   if (this->m_pieces[1]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first + 1);
-      bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
+      const bool owned = entry.first == g_cashEmotionMgr->BasePackId() ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
       this->m_pieces[1]->Set(entry.first, entry.second, false, false, !owned);
     } else {
       this->m_pieces[1]->Set(-1, -1, false, false, false);
@@ -2733,7 +2727,7 @@ void UICashEmotionMiniWnd::Refresh(int first) {
   if (this->m_pieces[2]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first + 2);
-      bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
+      const bool owned = entry.first == g_cashEmotionMgr->BasePackId() ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
       this->m_pieces[2]->Set(entry.first, entry.second, false, false, !owned);
     } else {
       this->m_pieces[2]->Set(-1, -1, false, false, false);
