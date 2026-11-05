@@ -14,8 +14,6 @@ struct CameraFrame {
   /* 0098 */ matrix view;
   /* 00C8 */ matrix inverse;
 
-  void Build(const CameraState& camera);
-  void Refresh(const CameraState& camera, CRenderer& renderer);
   void Forward(const CameraState& camera, float* output) const;
 };
 
