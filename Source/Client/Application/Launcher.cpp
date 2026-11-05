@@ -112,7 +112,9 @@ char g_applicationDirectory[0x80];
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  template <typename Source>
+  explicit EncryptedName(const Source (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -141,6 +143,13 @@ private:
   /* 0000 */ std::uint8_t m_text[Length];
   bool m_encrypted;
 };
+
+// INLINED
+template <std::uint64_t Key, typename Source, std::size_t Length>
+EncryptedName<Length, Key>& ThreadLocalName(const Source (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name;
+}
 
 struct AdtestexeProcessName {
   EncryptedName<14, 0xD98F03A52D35636DULL>& operator()() const;
@@ -529,8 +538,8 @@ EncryptedName<10, 0x490FFB43A12F0DB9ULL>& PsapiLibraryName::operator()() const {
 // OFFSET: 0x00E562D0
 // FUNCTION: fn_24336
 EncryptedName<25, 0x2FF3C5036D070127ULL>& CreateToolhelp32SnapshotName::operator()() const {
-  const std::uint8_t source[] = {0x64, 0x73, 0x62, 0x0C, 0x77, 0xA0, 0xA7, 0x40, 0x48, 0x6D, 0x6F, 0x08, 0x6F, 0xB5, 0xC0, 0x1D,
-                                 0x74, 0x6F, 0x66, 0x1D, 0x70, 0xAD, 0x9C, 0x5B, 0x27};
+  const char source[] = {'\x64', '\x73', '\x62', '\x0C', '\x77', '\xA0', '\xA7', '\x40', '\x48', '\x6D', '\x6F', '\x08', '\x6F', '\xB5', '\xC0', '\x1D',
+                         '\x74', '\x6F', '\x66', '\x1D', '\x70', '\xAD', '\x9C', '\x5B', '\x27'};
   thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> name(source);
   return name;
 }
@@ -546,9 +555,9 @@ EncryptedName<14, 0x3FAF85D995034FD7ULL>& EnumProcessesName::operator()() const 
 // OFFSET: 0x00E56480
 // FUNCTION: fn_24338
 EncryptedName<39, 0x6961FF056999A303ULL>& AdventurerAgencyCreateInstanceName::operator()() const {
-  const std::uint8_t source[] = {0x40, 0xE2, 0xFD, 0x1F, 0x60, 0x91, 0x15, 0x1C, 0x71, 0xC6, 0xEB, 0x28, 0x62, 0x9A, 0x0F, 0x0A,
-                                 0x7A, 0xEE, 0xFE, 0x1B, 0x3F, 0xC5, 0x22, 0x1B, 0x66, 0xC2, 0xED, 0x0C, 0x4C, 0x91, 0x12, 0x1D,
-                                 0x62, 0xCD, 0xFA, 0x0C, 0x2D, 0xD6, 0x61};
+  const char source[] = {'\x40', '\xE2', '\xFD', '\x1F', '\x60', '\x91', '\x15', '\x1C', '\x71', '\xC6', '\xEB', '\x28', '\x62', '\x9A', '\x0F', '\x0A',
+                         '\x7A', '\xEE', '\xFE', '\x1B', '\x3F', '\xC5', '\x22', '\x1B', '\x66', '\xC2', '\xED', '\x0C', '\x4C', '\x91', '\x12', '\x1D',
+                         '\x62', '\xCD', '\xFA', '\x0C', '\x2D', '\xD6', '\x61'};
   thread_local EncryptedName<sizeof(source), 0x6961FF056999A303ULL> name(source);
   return name;
 }
@@ -556,9 +565,9 @@ EncryptedName<39, 0x6961FF056999A303ULL>& AdventurerAgencyCreateInstanceName::op
 // OFFSET: 0x00E56560
 // FUNCTION: fn_24339
 EncryptedName<40, 0x9DEFC105A1EB2F71ULL>& RequestJoinPartyCreateInstanceName::operator()() const {
-  const std::uint8_t source[] = {0x24, 0x66, 0xB9, 0xC4, 0x74, 0xB4, 0x8A, 0xEE, 0x05, 0x65, 0x84, 0xC8, 0x6B, 0x91, 0x8E, 0xEF,
-                                 0x05, 0x56, 0xA6, 0xC6, 0x77, 0xFB, 0xD5, 0xDE, 0x03, 0x4A, 0x8A, 0xD5, 0x60, 0x88, 0x81, 0xEE,
-                                 0x05, 0x4E, 0x85, 0xC2, 0x60, 0xE9, 0xC6, 0x9D};
+  const char source[] = {'\x24', '\x66', '\xB9', '\xC4', '\x74', '\xB4', '\x8A', '\xEE', '\x05', '\x65', '\x84', '\xC8', '\x6B', '\x91', '\x8E', '\xEF',
+                         '\x05', '\x56', '\xA6', '\xC6', '\x77', '\xFB', '\xD5', '\xDE', '\x03', '\x4A', '\x8A', '\xD5', '\x60', '\x88', '\x81', '\xEE',
+                         '\x05', '\x4E', '\x85', '\xC2', '\x60', '\xE9', '\xC6', '\x9D'};
   thread_local EncryptedName<sizeof(source), 0x9DEFC105A1EB2F71ULL> name(source);
   return name;
 }
@@ -566,9 +575,9 @@ EncryptedName<40, 0x9DEFC105A1EB2F71ULL>& RequestJoinPartyCreateInstanceName::op
 // OFFSET: 0x00E56640
 // FUNCTION: fn_24340
 EncryptedName<37, 0x0DF5B33D9F21EB79ULL>& AdventureGuideCreateInstanceName::operator()() const {
-  const std::uint8_t source[] = {0x3A, 0xAA, 0x45, 0xE9, 0x58, 0xDD, 0x81, 0x78, 0x0B, 0x8E, 0x66, 0xEA, 0x54, 0xD7, 0x90, 0x40,
-                                 0x1E, 0x99, 0x1B, 0xA5, 0x7E, 0xC1, 0x90, 0x6C, 0x0D, 0x8E, 0x68, 0xF1, 0x4E, 0xC7, 0x94, 0x63,
-                                 0x1A, 0x8E, 0x09, 0xB6, 0x3D};
+  const char source[] = {'\x3A', '\xAA', '\x45', '\xE9', '\x58', '\xDD', '\x81', '\x78', '\x0B', '\x8E', '\x66', '\xEA', '\x54', '\xD7', '\x90', '\x40',
+                         '\x1E', '\x99', '\x1B', '\xA5', '\x7E', '\xC1', '\x90', '\x6C', '\x0D', '\x8E', '\x68', '\xF1', '\x4E', '\xC7', '\x94', '\x63',
+                         '\x1A', '\x8E', '\x09', '\xB6', '\x3D'};
   thread_local EncryptedName<sizeof(source), 0x0DF5B33D9F21EB79ULL> name(source);
   return name;
 }
@@ -592,7 +601,7 @@ EncryptedName<15, 0x1D6D75EDE7CD311FULL>& Process32FirstName::operator()() const
 // OFFSET: 0x00E568C0
 // FUNCTION: fn_24343
 EncryptedName<19, 0x151F77EBEBBB2147ULL>& EnumProcessModulesName::operator()() const {
-  const std::uint8_t source[] = {0x02, 0x4F, 0xCE, 0x86, 0xBB, 0x05, 0x70, 0x76, 0x22, 0x52, 0xC8, 0xA6, 0x84, 0x13, 0x6A, 0x79, 0x22, 0x52, 0xBB};
+  const char source[] = {'\x02', '\x4F', '\xCE', '\x86', '\xBB', '\x05', '\x70', '\x76', '\x22', '\x52', '\xC8', '\xA6', '\x84', '\x13', '\x6A', '\x79', '\x22', '\x52', '\xBB'};
   thread_local EncryptedName<sizeof(source), 0x151F77EBEBBB2147ULL> name(source);
   return name;
 }
@@ -608,7 +617,7 @@ EncryptedName<14, 0x3375B1C7DBB5FD55ULL>& Process32NextName::operator()() const 
 // OFFSET: 0x00E56A60
 // FUNCTION: fn_24345
 EncryptedName<19, 0x2D394DBD0F332733ULL>& GetModuleBaseNameAName::operator()() const {
-  const std::uint8_t source[] = {0x74, 0x42, 0x47, 0x42, 0xD2, 0x29, 0x4C, 0x41, 0x56, 0x65, 0x52, 0x7C, 0xD8, 0x03, 0x58, 0x40, 0x56, 0x66, 0x33};
+  const char source[] = {'\x74', '\x42', '\x47', '\x42', '\xD2', '\x29', '\x4C', '\x41', '\x56', '\x65', '\x52', '\x7C', '\xD8', '\x03', '\x58', '\x40', '\x56', '\x66', '\x33'};
   thread_local EncryptedName<sizeof(source), 0x2D394DBD0F332733ULL> name(source);
   return name;
 }
@@ -732,19 +741,21 @@ int RemovePath(std::string path, int depth, bool file) {
 // OFFSET: 0x00E58820
 // FUNCTION: fn_24363
 bool RestartFromCommandLine() {
-  const std::uint8_t markerSource[] = {0x2E, 0xDF, 0x58, 0x2E, 0xF5, 0x1C, 0x2F, 0x4E, 0x73, 0xE1, 0x7C, 0x08, 0xCF, 0x3E, 0x15, 0x7F, 0x3B, 0xB3};
-  thread_local EncryptedName<sizeof(markerSource), 0x2B477F9B5B39B301ULL> markerName(markerSource);
+  const char markerSource[] = {'\x2E', '\xDF', '\x58', '\x2E', '\xF5', '\x1C', '\x2F', '\x4E', '\x73', '\xE1', '\x7C', '\x08', '\xCF', '\x3E', '\x15', '\x7F', '\x3B', '\xB3'};
+  EncryptedName<sizeof(markerSource), 0x2B477F9B5B39B301ULL>& markerName = ThreadLocalName<0x2B477F9B5B39B301ULL>(markerSource);
   char* marker = std::strstr(g_commandLine, markerName.Text());
   if (!marker) {
     return false;
   }
-  const std::uint8_t prefixSource[] = {0xB8, 0x1D, 0xC6, 0xC8, 0x0F, 0x40, 0xEB, 0x3E, 0xE5, 0x23, 0xE2, 0xEE, 0x35, 0x62, 0xD1, 0x0F, 0xAD, 0x71};
-  thread_local EncryptedName<sizeof(prefixSource), 0x5B832361BDA77197ULL> prefixName(prefixSource);
-  STARTUPINFOA startup = {sizeof(startup)};
+  const char prefixSource[] = {'\xB8', '\x1D', '\xC6', '\xC8', '\x0F', '\x40', '\xEB', '\x3E', '\xE5', '\x23', '\xE2', '\xEE', '\x35', '\x62', '\xD1', '\x0F', '\xAD', '\x71'};
+  EncryptedName<sizeof(prefixSource), 0x5B832361BDA77197ULL>& prefixName = ThreadLocalName<0x5B832361BDA77197ULL>(prefixSource);
+  char* commandLine = marker + std::strlen(prefixName.Text());
+  STARTUPINFOA startup = {};
+  startup.cb = sizeof(startup);
   startup.dwFlags = STARTF_USESHOWWINDOW;
   startup.wShowWindow = SW_SHOWNORMAL;
   PROCESS_INFORMATION process;
-  CreateProcessA(nullptr, marker + std::strlen(prefixName.Text()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startup, &process);
+  CreateProcessA(nullptr, commandLine, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startup, &process);
   CloseHandle(process.hProcess);
   CloseHandle(process.hThread);
   return true;
@@ -803,7 +814,7 @@ void ApplyAiPatch() {
 // INLINED
 void ExitForProtectionCheck(const char* commandLine) {
   const std::uint8_t checkSource[] = {0x64, 0xB0, 0x1F, 0xE0, 0x92, 0x06, 0xA4, 0xB3, 0x23, 0xB6, 0x1A, 0xEC, 0x95, 0x0C, 0xFB};
-  thread_local EncryptedName<sizeof(checkSource), 0xC7FB6DF18577D34BULL> check(checkSource);
+  EncryptedName<sizeof(checkSource), 0xC7FB6DF18577D34BULL>& check = ThreadLocalName<0xC7FB6DF18577D34BULL>(checkSource);
   if (std::strstr(commandLine, check.Text())) {
     ExitProcess(0);
   }
