@@ -38,6 +38,7 @@
 #include "Contents/MovementRouteInterpolation.h"
 #include "Contents/NavigationManager.h"
 #include "Contents/TerrainPathSearch.h"
+#include "Render/DX9/RendererDX9.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
@@ -4075,12 +4076,16 @@ void CPlayer::SendMsg(
 void CGrannyPc::RenderModel(
   const matrix& view, const GrannyPcLight& light, C3dGrannyModelRes* model, int layer, C3dGrannyModelRes* animation
 ) {
-  if (!this->render.visible || this->render.accountId == 0xFFFFFFFF) {
+  if (!this->render.visible) {
     return;
   }
 
   CTexture* texture = nullptr;
   std::uint16_t* indices = nullptr;
+
+  if (this->render.accountId == 0xFFFFFFFF) {
+    return;
+  }
 
   this->brightness = (this->alpha << 24) + 0xFFFFFF;
   g_modeMgr.GetGameMode();
@@ -4200,7 +4205,7 @@ void CGrannyPc::RenderModel(
 
     command->texture = texture;
     command->vertexCount = vertexCount;
-    g_renderer->queues.Submit(command, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    static_cast<CRendererDX9*>(g_renderer)->Submit(command, 0);
     this->meshTextures[layer][mesh] = texture;
     this->meshIndices[layer][mesh] = indices;
     this->meshTriangleCounts[layer][mesh] = triangleCount;
@@ -4307,13 +4312,15 @@ void CPc::ChangeState(int state, int resetPosition) {
     return;
   }
 
+  if (state != 3 && (current == 0x51 || state == -1)) {
+    return;
+  }
+
   if (state == 3) {
     const int job = this->GetEffectiveJob(JobNames::BaseJob(this->unknown_025C));
     this->LoadEquipAction(0, GetBodyActionResourceName(job, this->unknown_0260, this->unknown_04D0, this->Slot56()).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(job, this->unknown_0260, this->unknown_04D0, this->Slot56()).c_str());
     current = this->render.unknown_0070;
-  } else if (current == 0x51 || state == -1) {
-    return;
   }
 
   if (current == 4 && static_cast<char>(resetPosition) == 1) {
