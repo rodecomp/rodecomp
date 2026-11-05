@@ -54,11 +54,11 @@ void UITagButton::AddString(std::string text) {
 // OFFSET: 0x009B5600
 // FUNCTION: fn_13846
 std::string UITagButton::GetString(std::size_t index) {
-  if (index < this->m_strings.size()) {
-    return this->m_strings[index];
+  if (index >= this->m_strings.size()) {
+    return std::string();
   }
 
-  return std::string();
+  return this->m_strings[index];
 }
 
 // OFFSET: 0x009B56C0
