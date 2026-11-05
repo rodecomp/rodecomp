@@ -86,7 +86,7 @@ void CMCStoreInfoBackupLoadAsyncWork::Bind(
   this->m_accountName = accountName;
   this->m_url = url;
   this->m_token = token;
-  this->m_response.clear();
+  this->m_response = "";
   const std::uint8_t unknown[] = {0xA4, 0x0F, 0x9A, 0xE7, 0x18, 0x3E, 0x8B, 0xD3};
   AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xD3E5516F89F161D1ULL>(unknown), loadSource, 55);
   this->m_diagnostic.MoveFrom(diagnostic);
@@ -96,10 +96,12 @@ void CMCStoreInfoBackupLoadAsyncWork::Bind(
 // OFFSET: 0x00608350
 // FUNCTION: fn_04246
 bool CMCStoreInfoBackupLoadAsyncWork::Execute() {
-  char account[64] = {}, character[64] = {}, type[64] = {};
+  char account[64] = {};
   StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
+  char character[64] = {};
   StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
   std::string name = ToUtf8(this->m_accountName);
+  char type[64] = {};
   StringFormat(type, sizeof(type), _TRUNCATE, "%d", this->m_type);
 
   CCURLPostHander handler(this->m_url);
@@ -167,9 +169,11 @@ void CMCStoreInfoBackupSaveAsyncWork::Bind(
 // OFFSET: 0x006095F0
 // FUNCTION: fn_04252
 bool CMCStoreInfoBackupSaveAsyncWork::Execute() {
-  char account[64] = {}, character[64] = {}, type[64] = {};
+  char account[64] = {};
   StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
+  char character[64] = {};
   StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
+  char type[64] = {};
   StringFormat(type, sizeof(type), _TRUNCATE, "%d", this->m_type);
   std::string name = ToUtf8(this->m_accountName);
 
