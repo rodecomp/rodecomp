@@ -2803,11 +2803,18 @@ namespace GPakEx {
 
   class CBC_Decryption : public CipherModeBase {
   public:
+    CBC_Decryption();
+
     void ResizeBuffers() override;
     void ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) override;
 
     /* 0020 */ std::vector<std::uint8_t> m_temp;
   };
+
+  // OFFSET: 0x00656BC0
+  // FUNCTION: fn_05079
+  __declspec(noinline) CBC_Decryption::CBC_Decryption() {
+  }
 
   // OFFSET: 0x006432C0
   // FUNCTION: fn_04834
@@ -2833,11 +2840,18 @@ namespace GPakEx {
 
   class CFB_Decryption : public CipherModeBase {
   public:
+    CFB_Decryption();
+
     void ResizeBuffers() override;
     void ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) override;
 
     /* 0020 */ std::vector<std::uint8_t> m_temp;
   };
+
+  // OFFSET: 0x006471C0
+  // FUNCTION: fn_04896
+  __declspec(noinline) CFB_Decryption::CFB_Decryption() {
+  }
 
   // OFFSET: 0x00643330
   // FUNCTION: fn_04835
@@ -2863,8 +2877,15 @@ namespace GPakEx {
 
   class OFB_Base : public CipherModeBase {
   public:
+    OFB_Base();
+
     void ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) override;
   };
+
+  // OFFSET: 0x00647270
+  // FUNCTION: fn_04897
+  __declspec(noinline) OFB_Base::OFB_Base() {
+  }
 
   // OFFSET: 0x006430F0
   // FUNCTION: fn_04832
