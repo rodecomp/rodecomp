@@ -722,7 +722,16 @@ XXH128_hash_t XXH3_128bits(const void* data, std::size_t length) {
 // FUNCTION: fn_00165
 XXH128_hash_t XXH3_128bits_withSecret(const void* data, std::size_t length, const void* secret,
                                       std::size_t secretSize) {
-  return Hash128bitsInternal(data, length, 0, secret, secretSize, HashLong128bWithSecret);
+  if (length <= 16) {
+    return Len0to16_128b(static_cast<const std::uint8_t*>(data), length, static_cast<const std::uint8_t*>(secret), 0);
+  }
+  if (length <= 128) {
+    return Len17to128_128b(static_cast<const std::uint8_t*>(data), length, static_cast<const std::uint8_t*>(secret), 0);
+  }
+  if (length <= XXH3_MIDSIZE_MAX) {
+    return XXH3_len_129to240_128b(data, length, secret, secretSize, 0);
+  }
+  return HashLong128bWithSecret(data, length, 0, secret, secretSize);
 }
 
 // OFFSET: 0x004D7930
