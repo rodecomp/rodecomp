@@ -543,39 +543,38 @@ void UINewChatWnd::Slot27(int x, int y) {
 // OFFSET: 0x00930D40
 // FUNCTION: fn_12695
 void UINewChatWnd::Slot25(int x, int y) {
-  if (static_cast<unsigned int>(y - 1) > 19) {
+  if (static_cast<unsigned int>(y - 1) <= 19) {
+    if (static_cast<int>(this->geometry.unknown_0030) <= 0) {
+      return;
+    }
+
+    if (y < 14 && x > this->m_lockButtonX && x < this->m_lockButtonX + 9) {
+      g_chatInputFlag = g_chatInputFlag == 0;
+      this->ApplyHeaderLayout();
+      for (unsigned int i = 0; i < g_windowMgr.retainedWindows.size(); ++i) {
+        static_cast<UISubChatHisWnd*>(g_windowMgr.retainedWindows[i])->ApplyButtonLayout();
+        g_windowMgr.retainedWindows[i]->Invalidate();
+      }
+
+      RECT rectangle;
+      rectangle.left = this->m_lockButtonX;
+      rectangle.top = 4;
+      rectangle.right = this->m_lockButtonX + 15;
+      rectangle.bottom = 13;
+      this->FillSurface(0xFFFF00FF, &rectangle);
+      this->Invalidate();
+    }
+
+    if (g_windowMgr.chatModeChanged && y < 14 && x > this->m_chatModeX && x < this->m_chatModeX + 14) {
+      g_windowMgr.inputSuggestionsEnabled = g_windowMgr.inputSuggestionsEnabled == 0;
+      if (ChatWindow()) {
+        ChatWindow()->ApplyInputLayout();
+      }
+      this->Invalidate();
+    }
+  } else {
     g_windowMgr.SetFocus(this->m_inputEdit);
     this->UIFrameWnd::Slot25(x, y);
-    return;
-  }
-
-  if (static_cast<int>(this->geometry.unknown_0030) <= 0) {
-    return;
-  }
-
-  if (y < 14 && x > this->m_lockButtonX && x < this->m_lockButtonX + 9) {
-    g_chatInputFlag = g_chatInputFlag == 0;
-    this->ApplyHeaderLayout();
-    for (unsigned int i = 0; i < g_windowMgr.retainedWindows.size(); ++i) {
-      static_cast<UISubChatHisWnd*>(g_windowMgr.retainedWindows[i])->ApplyButtonLayout();
-      g_windowMgr.retainedWindows[i]->Invalidate();
-    }
-
-    RECT rectangle;
-    rectangle.left = this->m_lockButtonX;
-    rectangle.top = 4;
-    rectangle.right = this->m_lockButtonX + 15;
-    rectangle.bottom = 13;
-    this->FillSurface(0xFFFF00FF, &rectangle);
-    this->Invalidate();
-  }
-
-  if (g_windowMgr.chatModeChanged && y < 14 && x > this->m_chatModeX && x < this->m_chatModeX + 14) {
-    g_windowMgr.inputSuggestionsEnabled = g_windowMgr.inputSuggestionsEnabled == 0;
-    if (ChatWindow()) {
-      ChatWindow()->ApplyInputLayout();
-    }
-    this->Invalidate();
   }
 }
 
