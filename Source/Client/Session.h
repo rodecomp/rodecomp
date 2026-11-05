@@ -755,7 +755,7 @@ public:
   bool ToggleTrackedAchievement(int id);
   void RefreshTrackedAchievement(int id);
   const char* GetPetTalkName(int job);
-  const char* GetPetTalkActionName(int action);
+  __declspec(noinline) const char* GetPetTalkActionName(int action);
   void GetPetTalkText(int job, int hungerState, int action, char* text);
   __declspec(noinline) const char* GetMonsterTalkEventName(int event);
   void GetMonsterTalkText(int job, int event, int skill, char* text, std::uint32_t aid);
