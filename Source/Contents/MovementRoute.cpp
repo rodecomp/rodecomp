@@ -3,7 +3,8 @@
 
 // OFFSET: 0x00AD7F70
 // FUNCTION: fn_17861
-MovementRouteInterpolation::MovementRouteInterpolation() : segment(0), startX(0), startY(0) {
+MovementRouteInterpolation::MovementRouteInterpolation() : startX(0), startY(0) {
+  this->segment = 0;
 }
 
 // OFFSET: 0x00AD87A0
