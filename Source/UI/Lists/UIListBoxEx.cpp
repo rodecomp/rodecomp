@@ -162,33 +162,30 @@ void UIListBoxEx::Slot35(int value) {
 // FUNCTION: fn_11367
 void UIListBoxEx::Paint() {
   if (this->transparent != 0) {
-    this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
+    this->ClearSurface(0xFFFF00FF);
 
     if (this->parent) {
       this->parent->Invalidate();
     }
   } else {
-    const unsigned color = static_cast<unsigned char>(this->backgroundRed) | (static_cast<unsigned char>(this->backgroundGreen) << 8) |
-                           (static_cast<unsigned char>(this->backgroundBlue) << 16);
-    this->geometry.surface->Fill(nullptr, color);
+    this->ClearSurface(RGB(this->backgroundRed, this->backgroundGreen, this->backgroundBlue));
   }
 
   const unsigned end = std::min(
-    static_cast<unsigned>(this->lines.size()), static_cast<unsigned>((this->topLine + (this->geometry.height / this->lineHeight - this->bottomMargin)))
+    static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(this->topLine + (this->geometry.height / this->lineHeight - this->bottomMargin))
   );
 
-  for (int index = this->topLine; index < static_cast<int>(end); index = (index + 1)) {
-    const int y = (this->lineHeight * (index - this->topLine));
+  for (int index = this->topLine; index < static_cast<int>(end); ++index) {
+    const int y = this->lineHeight * (index - this->topLine);
 
     if (index == this->selected) {
-      this->FillRegion(0, y, this->geometry.width, (this->lineHeight - 1), this->selectionColor);
+      this->FillRegion(0, y, this->geometry.width, this->lineHeight - 1, this->selectionColor);
     }
 
-    auto& line = this->lines[index];
-    auto color = line.color;
+    std::uint32_t color = this->lines[index].color;
     DrawColoredText(
-      *this, (3 - this->horizontalOffset), y, line.text.c_str(), static_cast<unsigned>(line.text.size()), color, 0,
-      12, false
+      *this, 3 - this->horizontalOffset, y, this->lines[index].text.c_str(), static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12,
+      false
     );
   }
 }
@@ -205,7 +202,12 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     const int previous = this->topLine;
     const int visible = this->geometry.height / this->lineHeight;
     const int delta = message == 9 ? (1 - visible) : message == 10 ? (visible - 1) : value;
-    this->topLine = std::max((previous + delta), 0);
+    this->topLine = previous + delta;
+
+    if (this->topLine < 0) {
+      this->topLine = 0;
+    }
+
     const int maximum = ((static_cast<int>(this->lines.size()) - visible) + this->bottomMargin);
 
     if (static_cast<unsigned>(this->topLine) > static_cast<unsigned>(maximum)) {
@@ -230,7 +232,12 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case 12: {
     const int previous = this->horizontalOffset;
     const int delta = message == 11 ? -15 : message == 12 ? 15 : value;
-    this->horizontalOffset = std::max((previous + delta), 0);
+    this->horizontalOffset = previous + delta;
+
+    if (this->horizontalOffset < 0) {
+      this->horizontalOffset = 0;
+    }
+
     const int maximum = (((16 * this->verticalOverflow) - this->geometry.width) + this->contentWidth);
 
     if (this->horizontalOffset > maximum) {
@@ -248,7 +255,9 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     return (this->horizontalOffset - previous);
   }
   case 18:
-    this->selected = std::max((this->selected - 1), 0);
+    if (--this->selected < 0) {
+      this->selected = 0;
+    }
 
     if (this->selected < this->topLine) {
       this->SendMsg(nullptr, 7, -1, 0, 0, 0);
@@ -256,29 +265,37 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
     break;
   case 19:
-  case 40: {
-    this->selected = message == 19 ? (this->selected + 1) : std::max(value, 0);
-    const int last = (static_cast<int>(this->lines.size()) - 1);
+    ++this->selected;
 
-    if (static_cast<unsigned>(this->selected) > static_cast<unsigned>(last)) {
-      this->selected = last;
+    if (static_cast<unsigned>(this->selected) > this->lines.size() - 1) {
+      this->selected = static_cast<int>(this->lines.size()) - 1;
     }
 
-    int top = this->topLine;
-
-    if (message == 40 && this->selected < top) {
-      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
-      top = this->topLine;
-    }
-
-    const int bottom = ((top + this->geometry.height / this->lineHeight) - 1);
-
-    if (this->selected > bottom) {
+    if (this->selected > this->topLine + this->geometry.height / this->lineHeight - 1) {
       this->SendMsg(nullptr, 7, 1, 0, 0, 0);
     }
 
     break;
-  }
+  case 40:
+    this->selected = value;
+
+    if (this->selected < 0) {
+      this->selected = 0;
+    }
+
+    if (static_cast<unsigned>(this->selected) > this->lines.size() - 1) {
+      this->selected = static_cast<int>(this->lines.size()) - 1;
+    }
+
+    if (this->selected < this->topLine) {
+      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
+    }
+
+    if (this->selected > this->topLine + this->geometry.height / this->lineHeight - 1) {
+      this->SendMsg(nullptr, 7, 1, 0, 0, 0);
+    }
+
+    break;
   default:
     return UIWindow::SendMsg(sender, message, a, b, c, d);
   }
