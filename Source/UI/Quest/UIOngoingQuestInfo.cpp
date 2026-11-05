@@ -291,10 +291,8 @@ void CUIRewards::OnBindItem(CUIRewardItem* item, const CRewardItemData& data) {
   info.identified = 1;
   item->gameItem->SetItem(info);
 
-  std::string name = info.DisplayName(0);
-  item->nameText->SetText(name.c_str(), name.size());
-  std::string count = FormatOwnedString(LookupMessage(0xB6), data.count);
-  item->countText->SetText(count.c_str(), count.size());
+  item->nameText->SetText(info.DisplayName(0));
+  item->countText->SetText(FormatOwnedString(LookupMessage(0xB6), data.count));
 }
 
 }
