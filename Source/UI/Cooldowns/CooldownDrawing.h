@@ -19,7 +19,7 @@ struct CooldownDrawing {
   void SubmitReverse(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
 
 private:
-  void DrawReverse(CooldownState& value);
+  __declspec(noinline) void DrawReverse(CooldownState& value);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
