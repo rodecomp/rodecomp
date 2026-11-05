@@ -112,22 +112,17 @@ inline void WindowGeometry::SetId(int value) {
 
 // INLINED
 inline std::uint32_t WindowGeometry::Color() {
-  std::uint32_t value = this->currentAlpha;
-  if (value != this->targetAlpha) {
-    const std::uint32_t step = (timeGetTime() - this->alphaStart) >> 4;
-    const std::uint32_t candidate = value < this->targetAlpha ? value + step : value - step;
-    const bool keepCandidate = value < this->targetAlpha ? candidate < this->targetAlpha : this->targetAlpha < candidate;
-
-    value = keepCandidate ? candidate : this->targetAlpha;
-    this->currentAlpha = value;
+  if (this->currentAlpha < this->targetAlpha) {
+    this->currentAlpha = std::min<std::uint32_t>(this->targetAlpha, this->currentAlpha + ((timeGetTime() - this->alphaStart) >> 4));
+  } else if (this->currentAlpha > this->targetAlpha) {
+    this->currentAlpha = std::max<std::uint32_t>(this->targetAlpha, this->currentAlpha - ((timeGetTime() - this->alphaStart) >> 4));
   }
 
-  if (value > 255) {
-    value = this->targetAlpha;
-    this->currentAlpha = value;
+  if (this->currentAlpha > 255) {
+    this->currentAlpha = this->targetAlpha;
   }
 
-  return (value << 24) + 0xFFFFFF;
+  return (this->currentAlpha << 24) + 0xFFFFFF;
 }
 
 // STATIC: 0x0145723C
@@ -184,35 +179,6 @@ int g_navigationRoadIcon;
 
 // GLOBAL: gl_24632
 CTexture* g_navigationMapTexture;
-
-// INLINED
-static const char* FindColorCode(const char* text, const char* end) {
-  if (!text) {
-    return nullptr;
-  }
-
-  while (text < end) {
-    if (*text == '^' && end - text >= 6) {
-      int index = 1;
-      while (index <= 6) {
-        const unsigned char digit = static_cast<unsigned char>(text[index]);
-        if (!((digit >= '0' && digit <= '9') || (digit >= 'a' && digit <= 'f') || (digit >= 'A' && digit <= 'F'))) {
-          break;
-        }
-
-        ++index;
-      }
-
-      if (index > 6) {
-        return text;
-      }
-    }
-
-    text = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
-  }
-
-  return text;
-}
 
 // OFFSET: 0x00A79A90
 // FUNCTION: fn_16914
@@ -447,8 +413,17 @@ void UIWindow::Slot36() {
 // OFFSET: 0x00A83660
 // FUNCTION: fn_17005
 int UIWindow::SendMsg(UIWindow*, int message, std::intptr_t, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if ((message == 0 || message == 1) && this->parent) {
-    this->Parent()->SendMsg(this, message, 0, 0, 0, 0);
+  switch (message) {
+  case 0:
+    if (this->parent) {
+      this->Parent()->SendMsg(this, 0, 0, 0, 0, 0);
+    }
+    break;
+  case 1:
+    if (this->parent) {
+      this->Parent()->SendMsg(this, 1, 0, 0, 0, 0);
+    }
+    break;
   }
 
   return 0;
@@ -469,7 +444,8 @@ void UIWindow::InvalidateChildren() {
   this->m_dirty = 1;
   this->Slot39();
 
-  for (UIWindow* child : this->m_children) {
+  for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
+    UIWindow* child = *it;
     if (child->geometry.visible != 0) {
       child->InvalidateChildren();
     }
@@ -498,7 +474,8 @@ bool UIWindow::Update(int redraw) {
 
   bool changed = false;
 
-  for (UIWindow* child : this->m_children) {
+  for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
+    UIWindow* child = *it;
     if (child->geometry.visible == 1) {
       changed = child->Update(redraw) || changed;
     }
@@ -511,7 +488,8 @@ bool UIWindow::Update(int redraw) {
 
     std::list<RenderPrimitive*> primitives(this->m_primitives);
 
-    for (UIWindow* child : this->m_children) {
+    for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
+      UIWindow* child = *it;
       if (child->geometry.visible == 1) {
         primitives.push_back(child->DrawPrimitive());
       }
@@ -668,7 +646,8 @@ UIWindow* UIWindow::HitTest(int x, int y) {
 // OFFSET: 0x00A7C4B0
 // FUNCTION: fn_16945
 void UIWindow::VisitChildren() {
-  for (UIWindow* child : this->m_children) {
+  for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
+    UIWindow* child = *it;
     if (child) {
       child->VisitChildren();
     }
@@ -708,21 +687,19 @@ void UIWindow::PlaceBeside(UIWindow* anchor) {
     anchorY += node->geometry.y;
   }
 
+  const int screenWidth = g_renderer->viewport.width;
   const int anchorWidth = anchor->geometry.width;
   const int width = this->geometry.width;
-  const int screenWidth = g_renderer->viewport.width;
   int x;
-  if (screenWidth < width + anchorWidth + anchorX) {
-    if (anchorX < width) {
-      x = 0;
-      if (anchorX <= screenWidth - anchorWidth - anchorX) {
-        x = screenWidth - width;
-      }
-    } else {
-      x = anchorX - width;
-    }
-  } else {
+  if (width + anchorWidth + anchorX <= screenWidth) {
     x = anchorX + anchorWidth;
+  } else {
+    const int rightSpace = screenWidth - anchorWidth - anchorX;
+    if (anchorX >= width) {
+      x = anchorX - width;
+    } else {
+      x = rightSpace >= anchorX ? screenWidth - width : 0;
+    }
   }
 
   int y = g_renderer->viewport.height - this->geometry.height;
@@ -770,21 +747,15 @@ UIWindow* UIWindow::Root() {
 // OFFSET: 0x00A7ED50
 // FUNCTION: fn_16960
 UIWindow* UIWindow::NextFocusable(UIWindow* child) {
-  auto it = this->m_children.begin();
+  for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
+    if (*it == child && (*it)->Slot05()) {
+      for (++it; it != this->m_children.end(); ++it) {
+        if ((*it)->Slot05()) {
+          return *it;
+        }
+      }
 
-  for (; it != this->m_children.end(); ++it) {
-    if (*it == child && child->Slot05()) {
-      break;
-    }
-  }
-
-  if (it == this->m_children.end()) {
-    return nullptr;
-  }
-
-  for (++it; it != this->m_children.end(); ++it) {
-    if ((*it)->Slot05()) {
-      return *it;
+      return nullptr;
     }
   }
 
@@ -794,23 +765,17 @@ UIWindow* UIWindow::NextFocusable(UIWindow* child) {
 // OFFSET: 0x00A7FF30
 // FUNCTION: fn_16969
 UIWindow* UIWindow::PreviousFocusable(UIWindow* child) {
-  auto it = this->m_children.end();
-
-  for (; it != this->m_children.begin(); --it) {
+  for (auto it = this->m_children.end(); it != this->m_children.begin(); --it) {
     UIWindow* window = *std::prev(it);
     if (window == child && window->Slot05()) {
-      break;
-    }
-  }
+      for (--it; it != this->m_children.begin(); --it) {
+        UIWindow* previous = *std::prev(it);
+        if (previous->Slot05()) {
+          return previous;
+        }
+      }
 
-  if (it == this->m_children.begin()) {
-    return nullptr;
-  }
-
-  for (--it; it != this->m_children.begin(); --it) {
-    UIWindow* window = *std::prev(it);
-    if (window->Slot05()) {
-      return window;
+      return nullptr;
     }
   }
 
@@ -820,7 +785,8 @@ UIWindow* UIWindow::PreviousFocusable(UIWindow* child) {
 // OFFSET: 0x00A82DD0
 // FUNCTION: fn_16995
 void UIWindow::DeleteChildren() {
-  for (UIWindow* child : this->m_children) {
+  for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
+    UIWindow* child = *it;
     delete child;
   }
 
@@ -844,16 +810,16 @@ void UIWindow::RemoveChild(UIWindow* child, unsigned char destroy) {
     return;
   }
 
-  for (auto entry = this->m_children.begin(); entry != this->m_children.end(); ++entry) {
-    if (*entry == child) {
-      if (destroy == 1) {
-        g_windowMgr.DeferDeletion(child);
-      }
-
-      this->m_children.erase(entry);
-      return;
-    }
+  const auto entry = std::find(this->m_children.begin(), this->m_children.end(), child);
+  if (entry == this->m_children.end()) {
+    return;
   }
+
+  if (destroy == 1) {
+    g_windowMgr.DeferDeletion(child);
+  }
+
+  this->m_children.erase(entry);
 }
 
 // OFFSET: 0x00A81CC0
@@ -867,7 +833,8 @@ bool UIWindow::Contains(const UIWindow* window) const {
     return true;
   }
 
-  for (UIWindow* child : this->m_children) {
+  for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
+    UIWindow* child = *it;
     if (child->Contains(window)) {
       return true;
     }
@@ -966,7 +933,7 @@ int UIWindow::ColoredTextWidth(const char* text, unsigned bytes, int family, int
 
   int width = this->TextWidth(text, bytes, family, height, bold, 0);
   std::uint32_t color = 0;
-  if (ParseColorCode(FindColorCode(text, text + bytes), color) && color) {
+  if (ParseColorCode(SegmentEnd(text, text + bytes), color) && color) {
     TextContext context(*this->geometry.surface);
     context.SetFont(0, 12, 0, 0);
     const int marker = context.Measure("^000000", 7).cx;
@@ -1325,17 +1292,10 @@ void UIWindow::DrawAmount(int amount, std::string text, int x, int y) {
     color = 0xFFFF00;
   }
 
-  const char* characters = text.c_str();
-  const int bytes = static_cast<int>(std::strlen(characters));
-  TextContext context(*this->geometry.surface);
-  context.SetFont(0, 12, 0, 0);
-  context.SetColor(color);
   if (outlined) {
-    context.Draw(x, y, characters, bytes);
-    context.SetColor(shadow);
-    context.Draw(x - 1, y, characters, bytes);
+    this->DrawEmboldenedText(x, y, text.c_str(), color, shadow, 0, 0, 12);
   } else {
-    context.Draw(x, y, characters, bytes);
+    this->DrawTextAt(x, y, text.c_str(), 0, 0, 12, color, 0, 0);
   }
 }
 
@@ -1970,7 +1930,11 @@ void UIListBox_NaviSearch::Slot25(int x, int y) {
 // FUNCTION: fn_03614
 void UIListBox_NaviSearch::Slot35(int value) {
   if (this->verticalOverflow != 0) {
-    this->SendMsg(this->verticalBar, 7, value >= 0 ? -6 : 6, 0, 0, 0);
+    if (value < 0) {
+      this->SendMsg(this->verticalBar, 7, 6, 0, 0, 0);
+    } else {
+      this->SendMsg(this->verticalBar, 7, -6, 0, 0, 0);
+    }
   }
 }
 
@@ -1992,7 +1956,7 @@ bool UINavigationV4Wnd::ClearRouteTexts() {
     text.clear();
   }
 
-  this->unknown_0104.erase(this->unknown_0104.begin(), this->unknown_0104.end());
+  this->unknown_0104.clear();
   return true;
 }
 
@@ -3085,16 +3049,18 @@ int UIListBox_NaviSearch::SendMsg(
 // OFFSET: 0x005C7C70
 // FUNCTION: fn_03625
 int UINavigationRuideWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     if (a == 201) {
       g_windowMgr.CloseWindow(314);
     }
-  } else if (message != 60) {
-    return 0;
+    [[fallthrough]];
+  case 60:
+    this->RefreshRoute();
+    this->Invalidate();
+    break;
   }
 
-  this->RefreshRoute();
-  this->Invalidate();
   return 0;
 }
 
@@ -3199,8 +3165,7 @@ std::string UINavigationV4Wnd::ObjectLabel(int type, void* object) {
     label.assign(static_cast<CNavi_Object*>(object)->GetInfo()->GetName());
     const int level = static_cast<CNavi_Object*>(object)->GetFlag();
     if (level > 0) {
-      std::string text;
-      text.assign(LookupMessage(2453));
+      std::string text(LookupMessage(2453));
       if (level > 99) {
         text.assign(LookupMessage(2449));
       } else if (level > 49) {
@@ -3653,8 +3618,7 @@ void UIPrivateAirplaneWnd::Slot15(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  const int count = static_cast<int>(g_privateAirplaneItems->m_needItems.size());
-  for (int index = 0, y = 26; index < count; ++index, y += 26) {
+  for (int index = 0, y = 26; index < static_cast<int>(g_privateAirplaneItems->m_needItems.size()); ++index, y += 26) {
     const int itemId = g_privateAirplaneItems->GetNeedItem(index);
     ITEM_INFO item;
     item.SetItemId(itemId);
