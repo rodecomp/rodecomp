@@ -144,19 +144,6 @@ namespace {
 
     return ((pixel & 255) << 16) | (pixel & 0xFF00) | ((pixel >> 16) & 255);
   }
-
-  // INLINED
-  void DrawTextRight(UIWindow& window, int x, int y, const char* text, int bytes,
-                     int family, int height, std::uint32_t color, unsigned char bold) {
-    if (!bytes) {
-      bytes = static_cast<int>(std::strlen(text));
-    }
-    TextContext context(*window.geometry.surface);
-    context.SetFont(family, height, bold, 0);
-    const int width = context.Measure(text, static_cast<int>(std::strlen(text))).cx;
-    context.SetColor(color);
-    context.Draw(x - width, y, text, bytes);
-  }
 }
 
 // OFFSET: 0x008A39C0
@@ -394,7 +381,7 @@ void UIMerInfoWnd::Paint() {
   for (int i = 0; i < 8; ++i) {
     const int value = i == 7 ? (2000 - g_session.m_mercenaryStats[i]) / 10 : g_session.m_mercenaryStats[i];
     const int bytes = std::sprintf(number, "%d", value);
-    DrawTextRight(*this, 79, 24 + 18 * i, number, bytes, 1, 14, 0, 0);
+    this->DrawRightAlignedText(79, 24 + 18 * i, number, bytes, 1, 14, 0, 0);
   }
   this->DrawTextAt(136, 24, g_session.m_mercenaryName, 0, 0, 12, 0x646464, 0, 0);
   this->DrawTextAt(135, 24, g_session.m_mercenaryName, 0, 0, 12, 0, 0, 0);
