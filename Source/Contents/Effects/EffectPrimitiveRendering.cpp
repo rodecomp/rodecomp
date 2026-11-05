@@ -772,11 +772,7 @@ void CEffectPrim::RenderTeiRect(
     vec4.z += position.z;
   }
 
-  const vector3d* const corners[2][3] = {{&vec1, &vec2, &vec3}, {&vec4, &vec3, &vec1}};
-  const float us[2][3] = {{tx, tx2, tx2}, {tx, tx2, tx}};
-  const float vs[2][3] = {{ty2, ty2, ty1}, {ty1, ty1, ty2}};
-
-  for (int half = 0; half < 2; ++half) {
+  {
     RenderTriangle& triangle = this->state.triangles[*rpCnt];
 
     if (pw == 10) {
@@ -787,14 +783,27 @@ void CEffectPrim::RenderTeiRect(
       triangle.unknown_0068 = pw == 99 ? 6 : destBlend;
     }
 
-    for (int index = 0; index < 3; ++index) {
-      RenderVertex& vertex = triangle.vertices[index];
-      vertex = TransformVert(wtm, *corners[half][index]);
-      vertex.diffuse = color;
-      vertex.u = us[half][index];
-      vertex.v = vs[half][index];
-    }
-
+    RenderVertex first{};
+    first.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec1.x, wtm.values, first);
+    triangle.vertices[0] = first;
+    triangle.vertices[0].diffuse = color;
+    triangle.vertices[0].u = tx;
+    triangle.vertices[0].v = ty2;
+    RenderVertex second{};
+    second.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec2.x, wtm.values, second);
+    triangle.vertices[1] = second;
+    triangle.vertices[1].diffuse = color;
+    triangle.vertices[1].u = tx2;
+    triangle.vertices[1].v = ty2;
+    RenderVertex third{};
+    third.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec3.x, wtm.values, third);
+    triangle.vertices[2] = third;
+    triangle.vertices[2].diffuse = color;
+    triangle.vertices[2].u = tx2;
+    triangle.vertices[2].v = ty1;
     triangle.texture = this->state.textures[tn];
 
     if (extra == 2) {
@@ -809,7 +818,74 @@ void CEffectPrim::RenderTeiRect(
         const float width = std::fabs(triangle.vertices[0].x - triangle.vertices[1].x) * 0.5f;
         triangle.vertices[0].x = center.x + width;
         triangle.vertices[1].x = center.x - width;
-        triangle.vertices[2].x = half == 0 ? center.x - width : center.x + width;
+        triangle.vertices[2].x = center.x - width;
+
+        for (int index = 0; index < 3; ++index) {
+          triangle.vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.unknown_005C;
+        }
+      }
+
+      for (int index = 0; index < 3; ++index) {
+        triangle.vertices[index].z = 1e-09f;
+        triangle.vertices[index].rhw = 1.0f;
+      }
+    }
+
+    if (triangle.Visible()) {
+      g_renderer->queues.SubmitTriangle(
+        triangle, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+      );
+      ++*rpCnt;
+    }
+  }
+
+  {
+    RenderTriangle& triangle = this->state.triangles[*rpCnt];
+
+    if (pw == 10) {
+      triangle.unknown_0064 = 2;
+      triangle.unknown_0068 = 1;
+    } else {
+      triangle.unknown_0064 = 5;
+      triangle.unknown_0068 = pw == 99 ? 6 : destBlend;
+    }
+
+    RenderVertex first{};
+    first.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec4.x, wtm.values, first);
+    triangle.vertices[0] = first;
+    triangle.vertices[0].diffuse = color;
+    triangle.vertices[0].u = tx;
+    triangle.vertices[0].v = ty1;
+    RenderVertex second{};
+    second.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec3.x, wtm.values, second);
+    triangle.vertices[1] = second;
+    triangle.vertices[1].diffuse = color;
+    triangle.vertices[1].u = tx2;
+    triangle.vertices[1].v = ty1;
+    RenderVertex third{};
+    third.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec1.x, wtm.values, third);
+    triangle.vertices[2] = third;
+    triangle.vertices[2].diffuse = color;
+    triangle.vertices[2].u = tx;
+    triangle.vertices[2].v = ty2;
+    triangle.texture = this->state.textures[tn];
+
+    if (extra == 2) {
+      for (int index = 0; index < 3; ++index) {
+        RenderVertex& vertex = triangle.vertices[index];
+        vertex.rhw += 0.000045f;
+        vertex.z = RhwToDepth(vertex.rhw);
+      }
+    } else if (extra == 1 || extra == 3) {
+      if (extra == 3) {
+        const RenderVertex center = TransformVert(wtm, this->render.position);
+        const float width = std::fabs(triangle.vertices[0].x - triangle.vertices[1].x) * 0.5f;
+        triangle.vertices[0].x = center.x + width;
+        triangle.vertices[1].x = center.x - width;
+        triangle.vertices[2].x = center.x + width;
 
         for (int index = 0; index < 3; ++index) {
           triangle.vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.unknown_005C;
