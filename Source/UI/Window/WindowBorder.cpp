@@ -135,12 +135,13 @@ int UIWindow::DrawButtonBar(int style, int width, int rows) {
     return 0;
   }
 
-  const int extent = width - rightWidth - leftWidth;
-  const int count = extent / middle->image.width + (extent % middle->image.width != 0);
+  width = width - rightWidth - leftWidth;
+  const int middleWidth = middle->image.width;
+  const int count = width / middleWidth + (width % middleWidth != 0);
 
   for (int row = 1; row <= rows; ++row) {
     for (int column = 0; column < count; ++column) {
-      this->DrawBitmap(leftWidth + column * middle->image.width, this->geometry.height - row * barHeight, &middle->image, false);
+      this->DrawBitmap(leftWidth + column * middleWidth, this->geometry.height - row * barHeight, &middle->image, false);
     }
   }
 
