@@ -31,7 +31,7 @@ bool CPaletteRes::Load(const char* name) {
     return true;
   }
 
-  const std::string message = std::string("CPaletteRes :: Cannot find File : ") + name;
+  const std::string message = std::string("CPaletteRes :: Cannot find File : ") + std::string(name);
   ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
   return false;
 }
