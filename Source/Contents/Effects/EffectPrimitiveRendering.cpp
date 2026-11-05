@@ -4222,26 +4222,81 @@ void CEffectPrim::RenderOrbitIcons(matrix& wtm, float scale, unsigned char red, 
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     const vector3d quad[4] = {vec1, vec2, vec3, vec4};
 
-    const auto renderItem = [&](int item, const vector3d& point) {
-      const float mode = slot.height[2 + 4 * item];
-      const int delta = static_cast<int>(slot.height[3 + 4 * item] - static_cast<float>(this->state.slots[0].alphaT));
-      const bool back = (delta >= 70 || delta <= -80) && static_cast<unsigned>(delta + 270) <= 540;
-      const bool flipped = mode == 0.0f || mode == 2.0f ? back : !back;
-      const int order[4] = {flipped ? 1 : 0, flipped ? 0 : 1, flipped ? 3 : 2, flipped ? 2 : 3};
-      vector3d corners[4];
-      for (int corner = 0; corner < 4; ++corner) {
-        const vector3d& local = quad[order[corner]];
-        corners[corner] = {local.x + point.x, local.y + point.y - slot.height[20], local.z + point.z};
-      }
-      this->RenderTeiRect(
-        &rpCnt, static_cast<short>(static_cast<int>(slot.height[1 + 4 * item])), corners[0], corners[1], corners[2], corners[3], wtm, 0,
-        static_cast<unsigned char>(static_cast<int>(mode)), 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 2
-      );
-    };
-    renderItem(0, slot.vecBPre);
-    renderItem(1, slot.vecBNow);
-    renderItem(2, slot.vecTPre);
-    renderItem(3, slot.vecTNow);
+    const int delta0 = static_cast<int>(slot.height[3] - static_cast<float>(this->state.slots[0].alphaT));
+    const bool back0 = (delta0 >= 70 || delta0 <= -80) && static_cast<unsigned>(delta0 + 270) <= 540;
+    const float mode0 = slot.height[2];
+    const bool flipped0 = mode0 == 0.0f || mode0 == 2.0f ? back0 : !back0;
+    const vector3d corner00{(flipped0 ? vec2.x : vec1.x) + slot.vecBPre.x,
+                            (flipped0 ? vec2.y : vec1.y) + slot.vecBPre.y - slot.height[20],
+                            (flipped0 ? vec2.z : vec1.z) + slot.vecBPre.z};
+    const vector3d corner01{(flipped0 ? vec1.x : vec2.x) + slot.vecBPre.x,
+                            (flipped0 ? vec1.y : vec2.y) + slot.vecBPre.y - slot.height[20],
+                            (flipped0 ? vec1.z : vec2.z) + slot.vecBPre.z};
+    const vector3d corner02{(flipped0 ? vec4.x : vec3.x) + slot.vecBPre.x,
+                            (flipped0 ? vec4.y : vec3.y) + slot.vecBPre.y - slot.height[20],
+                            (flipped0 ? vec4.z : vec3.z) + slot.vecBPre.z};
+    const vector3d corner03{(flipped0 ? vec3.x : vec4.x) + slot.vecBPre.x,
+                            (flipped0 ? vec3.y : vec4.y) + slot.vecBPre.y - slot.height[20],
+                            (flipped0 ? vec3.z : vec4.z) + slot.vecBPre.z};
+    this->RenderTeiRect(&rpCnt, static_cast<short>(static_cast<int>(slot.height[1])), corner00, corner01, corner02, corner03, wtm, 0,
+                        static_cast<unsigned char>(static_cast<int>(mode0)), 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 2);
+
+    const int delta1 = static_cast<int>(slot.height[7] - static_cast<float>(this->state.slots[0].alphaT));
+    const bool back1 = (delta1 >= 70 || delta1 <= -80) && static_cast<unsigned>(delta1 + 270) <= 540;
+    const float mode1 = slot.height[6];
+    const bool flipped1 = mode1 == 0.0f || mode1 == 2.0f ? back1 : !back1;
+    const vector3d corner10{(flipped1 ? vec2.x : vec1.x) + slot.vecBNow.x,
+                            (flipped1 ? vec2.y : vec1.y) + slot.vecBNow.y - slot.height[20],
+                            (flipped1 ? vec2.z : vec1.z) + slot.vecBNow.z};
+    const vector3d corner11{(flipped1 ? vec1.x : vec2.x) + slot.vecBNow.x,
+                            (flipped1 ? vec1.y : vec2.y) + slot.vecBNow.y - slot.height[20],
+                            (flipped1 ? vec1.z : vec2.z) + slot.vecBNow.z};
+    const vector3d corner12{(flipped1 ? vec4.x : vec3.x) + slot.vecBNow.x,
+                            (flipped1 ? vec4.y : vec3.y) + slot.vecBNow.y - slot.height[20],
+                            (flipped1 ? vec4.z : vec3.z) + slot.vecBNow.z};
+    const vector3d corner13{(flipped1 ? vec3.x : vec4.x) + slot.vecBNow.x,
+                            (flipped1 ? vec3.y : vec4.y) + slot.vecBNow.y - slot.height[20],
+                            (flipped1 ? vec3.z : vec4.z) + slot.vecBNow.z};
+    this->RenderTeiRect(&rpCnt, static_cast<short>(static_cast<int>(slot.height[5])), corner10, corner11, corner12, corner13, wtm, 0,
+                        static_cast<unsigned char>(static_cast<int>(mode1)), 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 2);
+
+    const int delta2 = static_cast<int>(slot.height[11] - static_cast<float>(this->state.slots[0].alphaT));
+    const bool back2 = (delta2 >= 70 || delta2 <= -80) && static_cast<unsigned>(delta2 + 270) <= 540;
+    const float mode2 = slot.height[10];
+    const bool flipped2 = mode2 == 0.0f || mode2 == 2.0f ? back2 : !back2;
+    const vector3d corner20{(flipped2 ? vec2.x : vec1.x) + slot.vecTPre.x,
+                            (flipped2 ? vec2.y : vec1.y) + slot.vecTPre.y - slot.height[20],
+                            (flipped2 ? vec2.z : vec1.z) + slot.vecTPre.z};
+    const vector3d corner21{(flipped2 ? vec1.x : vec2.x) + slot.vecTPre.x,
+                            (flipped2 ? vec1.y : vec2.y) + slot.vecTPre.y - slot.height[20],
+                            (flipped2 ? vec1.z : vec2.z) + slot.vecTPre.z};
+    const vector3d corner22{(flipped2 ? vec4.x : vec3.x) + slot.vecTPre.x,
+                            (flipped2 ? vec4.y : vec3.y) + slot.vecTPre.y - slot.height[20],
+                            (flipped2 ? vec4.z : vec3.z) + slot.vecTPre.z};
+    const vector3d corner23{(flipped2 ? vec3.x : vec4.x) + slot.vecTPre.x,
+                            (flipped2 ? vec3.y : vec4.y) + slot.vecTPre.y - slot.height[20],
+                            (flipped2 ? vec3.z : vec4.z) + slot.vecTPre.z};
+    this->RenderTeiRect(&rpCnt, static_cast<short>(static_cast<int>(slot.height[9])), corner20, corner21, corner22, corner23, wtm, 0,
+                        static_cast<unsigned char>(static_cast<int>(mode2)), 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 2);
+
+    const int delta3 = static_cast<int>(slot.height[15] - static_cast<float>(this->state.slots[0].alphaT));
+    const bool back3 = (delta3 >= 70 || delta3 <= -80) && static_cast<unsigned>(delta3 + 270) <= 540;
+    const float mode3 = slot.height[14];
+    const bool flipped3 = mode3 == 0.0f || mode3 == 2.0f ? back3 : !back3;
+    const vector3d corner30{(flipped3 ? vec2.x : vec1.x) + slot.vecTNow.x,
+                            (flipped3 ? vec2.y : vec1.y) + slot.vecTNow.y - slot.height[20],
+                            (flipped3 ? vec2.z : vec1.z) + slot.vecTNow.z};
+    const vector3d corner31{(flipped3 ? vec1.x : vec2.x) + slot.vecTNow.x,
+                            (flipped3 ? vec1.y : vec2.y) + slot.vecTNow.y - slot.height[20],
+                            (flipped3 ? vec1.z : vec2.z) + slot.vecTNow.z};
+    const vector3d corner32{(flipped3 ? vec4.x : vec3.x) + slot.vecTNow.x,
+                            (flipped3 ? vec4.y : vec3.y) + slot.vecTNow.y - slot.height[20],
+                            (flipped3 ? vec4.z : vec3.z) + slot.vecTNow.z};
+    const vector3d corner33{(flipped3 ? vec3.x : vec4.x) + slot.vecTNow.x,
+                            (flipped3 ? vec3.y : vec4.y) + slot.vecTNow.y - slot.height[20],
+                            (flipped3 ? vec3.z : vec4.z) + slot.vecTNow.z};
+    this->RenderTeiRect(&rpCnt, static_cast<short>(static_cast<int>(slot.height[13])), corner30, corner31, corner32, corner33, wtm, 0,
+                        static_cast<unsigned char>(static_cast<int>(mode3)), 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 2);
   }
 }
 
