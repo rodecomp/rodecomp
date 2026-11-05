@@ -1319,29 +1319,26 @@ void CUITitleBar::Resize(int width, int height) {
 // OFFSET: 0x009F19E0
 // FUNCTION: fn_14698
 void CUITitleBar::Paint() {
-  if (!this->resizable) {
+  if (this->resizable) {
+    const int end = this->geometry.width - (this->right ? this->right->image.width : 0);
+    int x = 0;
+    if (this->left) {
+      this->DrawBitmap(0, 0, &this->left->image, false);
+      x = this->left->image.width;
+    }
+
     if (this->middle) {
-      this->DrawBitmap(0, 0, &this->middle->image, false);
+      while (x < end) {
+        this->DrawBitmap(x, 0, &this->middle->image, false);
+        x += this->middle->image.width;
+      }
     }
-    return;
-  }
 
-  const int end = this->geometry.width - (this->right ? this->right->image.width : 0);
-  int x = 0;
-  if (this->left) {
-    this->DrawBitmap(0, 0, &this->left->image, false);
-    x = this->left->image.width;
-  }
-
-  if (this->middle) {
-    while (x < end) {
-      this->DrawBitmap(x, 0, &this->middle->image, false);
-      x += this->middle->image.width;
+    if (this->right) {
+      this->DrawBitmap(this->geometry.width - this->right->image.width, 0, &this->right->image, false);
     }
-  }
-
-  if (this->right) {
-    this->DrawBitmap(this->geometry.width - this->right->image.width, 0, &this->right->image, false);
+  } else if (this->middle) {
+    this->DrawBitmap(0, 0, &this->middle->image, false);
   }
 }
 
@@ -2510,10 +2507,12 @@ void CUIResizer::Slot25(int x, int y) {
   }
 
   g_windowMgr.SetCapture(this);
-  this->ToScreen(x, y);
+  int screenX = x;
+  int screenY = y;
+  this->ToScreen(screenX, screenY);
 
-  this->startX = x;
-  this->startY = y;
+  this->startX = screenX;
+  this->startY = screenY;
   this->startWidth = this->parent->geometry.width;
   this->startHeight = this->parent->geometry.height;
   this->deltaX = 0;
@@ -2529,10 +2528,12 @@ void CUIResizer::Slot31(int x, int y) {
 
   g_windowMgr.ReleaseCapture();
   this->parent->Slot36();
-  this->ToScreen(x, y);
+  int screenX = x;
+  int screenY = y;
+  this->ToScreen(screenX, screenY);
 
-  this->startX = x;
-  this->startY = y;
+  this->startX = screenX;
+  this->startY = screenY;
   this->startWidth = this->parent->geometry.width;
   this->startHeight = this->parent->geometry.height;
   this->deltaX = 0;
