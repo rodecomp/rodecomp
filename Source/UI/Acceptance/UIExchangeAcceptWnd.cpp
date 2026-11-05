@@ -77,84 +77,68 @@ void UIExchangeAcceptWnd::Slot15(int width, int height) {
 // OFFSET: 0x008FA8C0
 // FUNCTION: fn_12343
 int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
-    const int response = static_cast<int>(a);
-    this->RecordResponse(response, b, c, d);
-
-    if (response == 184 || response == 185) {
+  switch (message) {
+  case 6:
+    this->RecordResponse(static_cast<int>(a), b, c, d);
+    switch (a) {
+    case 184:
       g_windowMgr.CloseWindow(32);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(50, response == 184 ? 3 : 4, 0, 0, 0);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(50, 3, 0, 0, 0);
+      return 0;
+    case 185:
+      g_windowMgr.CloseWindow(32);
+      static_cast<CMode*>(g_charViewMode)->SendMsg(50, 4, 0, 0, 0);
+      return 0;
     }
-
     return 0;
-  }
-
-  if (message == 34) {
+  case 34:
     this->saved = reinterpret_cast<NormalItemSlotWindow*>(a);
-
-    if (this->saved->width != 280 || this->saved->height != 120 || this->saved->x < 0 || this->saved->x > g_renderer->viewport.width - 280 || this->saved->y < 0 ||
-        this->saved->y > g_renderer->viewport.height - 120) {
-      this->saved->x = 200;
-      this->saved->y = 200;
-      this->saved->width = 280;
-      this->saved->height = 120;
+    if (!reinterpret_cast<ExchangeAcceptWndInfo*>(this->saved)->IsValid()) {
+      reinterpret_cast<ExchangeAcceptWndInfo*>(this->saved)->Reset();
     }
-
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  }
-
-  if (message == 50) {
+  case 50: {
     std::string text = "(";
     text += reinterpret_cast<const char*>(a);
     text += ")";
     text += LookupMessage(93);
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 138, 0, 0);
-    text = "C-Code : ";
-    text += ShortcutFilename(static_cast<std::uint32_t>(b));
-    text += "     ";
-    text += g_serviceType == 12 ? "Nv." : "Lv.";
-    text += std::to_string(static_cast<int>(c));
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 138, 0, 0);
-
+    const std::string code = std::format("C-Code : {}     {}{}", ShortcutFilename(static_cast<std::uint32_t>(b)), g_serviceType == 12 ? "Nv." : "Lv.", c);
+    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(code.c_str()), 138, 0, 0);
     return 0;
   }
-
-  if (message == 123) {
+  case 123: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    std::uint16_t marker;
-    std::memcpy(&marker, bytes, sizeof(marker));
-    unsigned offset = 6;
-
-    if (marker == 21650) {
-      while (static_cast<unsigned>(b) > offset) {
-        std::uint16_t kind;
-        std::uint32_t size;
-        std::memcpy(&kind, bytes + offset, sizeof(kind));
-        std::memcpy(&size, bytes + offset + 2, sizeof(size));
-        offset += 6;
-
-        if (kind == 21651) {
+    ExchangeRecordHeader header = {};
+    std::memcpy(&header, bytes, sizeof(header));
+    unsigned offset = sizeof(header);
+    if (header.type == 21650) {
+      while (offset < static_cast<unsigned>(b)) {
+        std::memcpy(&header, bytes + offset, sizeof(header));
+        offset += sizeof(header);
+        if (header.type == 21651) {
           break;
         }
-
-        if (kind == 21652) {
+        if (header.type == 21652) {
           char text[260] = {};
-          std::memcpy(text, bytes + offset, size);
-          offset += size;
+          std::memcpy(text, bytes + offset, header.length);
+          offset += header.length;
           this->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
-          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->exchangeName = text;
+          const std::string name = text;
+          CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+          SetExchangeName(mode, name);
         } else {
-          offset += size;
+          offset += header.length;
         }
       }
     }
-
     return 0;
   }
-
-  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  default:
+    return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
 }
 
 // OFFSET: 0x00909EC0
