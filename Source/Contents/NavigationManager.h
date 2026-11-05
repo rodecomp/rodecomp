@@ -328,7 +328,7 @@ public:
   void BuildSingleNodePaths();
   CNaviInfo* GetLinkedPlayerInfo();
   bool CollectStartLinks();
-  bool UpdateGround();
+  __declspec(noinline) bool UpdateGround();
   bool PlayerCell(int* column, int* row);
   bool LoadStates(std::vector<char> packet);
   bool AddState(const std::vector<std::string>& tokens);
