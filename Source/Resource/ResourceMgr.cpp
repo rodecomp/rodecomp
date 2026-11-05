@@ -58,17 +58,7 @@ ResourceMgr& ResourceMgr::Instance() {
 // OFFSET: 0x00AEE070
 // FUNCTION: fn_18169
 ResourceMgr::~ResourceMgr() {
-  this->m_transient.clear();
-
-  for (auto& resources : this->m_resources) {
-    for (auto& [name, resource] : resources) {
-      resource->Unload();
-      delete resource;
-    }
-
-    resources.clear();
-  }
-
+  this->UnloadAll();
   DeleteCriticalSection(&this->m_lock);
 }
 
@@ -120,19 +110,17 @@ bool ResourceMgr::Exists(const char* name) {
   char normalized[260] = {};
   strncpy_s(normalized, sizeof(normalized), name, _TRUNCATE);
 
-  for (unsigned char* byte = reinterpret_cast<unsigned char*>(normalized); *byte; ++byte) {
-    if (*byte >= 'A' && *byte <= 'Z') {
-      *byte += 'a' - 'A';
-    }
+  for (char* c = normalized; *c; ++c) {
+    *c = g_lowercaseTable[static_cast<unsigned char>(*c)];
   }
 
-  const char* dot = std::strrchr(normalized, '.');
+  const char* dot = ReverseFindChar(normalized, '.');
   const int type = this->FindType(dot ? dot + 1 : nullptr);
   if (type < 0) {
     return false;
   }
 
-  const std::string resolved = AddResourcePrefix(this->aliases.Resolve(normalized), this->m_prefixes[type]);
+  const std::string resolved = AddResourcePrefix(normalized, this->m_prefixes[type]);
   if (CRes* existing = this->Find(type, resolved.c_str())) {
     existing->lastUse = timeGetTime();
     return true;
@@ -277,7 +265,8 @@ void ResourceMgr::ClearUnused(const char* extension) {
 void ResourceMgr::ClearUnused() {
   timeGetTime();
 
-  for (auto& resources : this->m_resources) {
+  for (std::size_t type = 0; type < this->m_resources.size(); ++type) {
+    auto& resources = this->m_resources[type];
     for (auto entry = resources.begin(); entry != resources.end();) {
       CRes* resource = entry->second;
       if (resource->references != 0) {
@@ -298,7 +287,8 @@ void ResourceMgr::ClearUnused() {
 void ResourceMgr::ClearExpired() {
   const unsigned threshold = timeGetTime() - g_resourceReuseDelay;
 
-  for (auto& resources : this->m_resources) {
+  for (std::size_t type = 0; type < this->m_resources.size(); ++type) {
+    auto& resources = this->m_resources[type];
     for (auto entry = resources.begin(); entry != resources.end();) {
       CRes* resource = entry->second;
 
