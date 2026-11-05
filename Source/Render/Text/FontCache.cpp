@@ -32,11 +32,6 @@ namespace {
   int CALLBACK MatchFont(const LOGFONTA* font, const TEXTMETRICA*, DWORD, LPARAM name) {
     return _stricmp(reinterpret_cast<const char*>(name), font->lfFaceName);
   }
-
-  // INLINED
-  const char* PrivatePath(unsigned char bold) {
-    return bold == 1 ? "system\\font\\SCDream6.otf" : "system\\font\\SCDream4.otf";
-  }
 }
 
 // GLOBAL: gl_24541
@@ -53,10 +48,7 @@ FontCache::FontCache() {
 FontCache::~FontCache() {
   for (const FontEntry& entry : this->m_fonts) {
     DeleteObject(entry.font);
-
-    if (entry.privateResources > 0 && entry.family == 29) {
-      RemoveFontResourceExA(PrivatePath(entry.bold), FR_PRIVATE, nullptr);
-    }
+    entry.RemovePrivateFont();
   }
 
   this->m_fonts.clear();
@@ -65,20 +57,21 @@ FontCache::~FontCache() {
 
 // OFFSET: 0x0054DC90
 // FUNCTION: fn_01947
-void FontCache::CreateSystemFont(FontEntry& entry) {
+__declspec(noinline) void FontEntry::CreateSystemFont() {
   LOGFONTA description = {};
-  description.lfCharSet = static_cast<BYTE>(entry.charset);
-  const char* face = primary[entry.family];
+  description.lfCharSet = static_cast<BYTE>(this->charset);
 
-  if (EnumFontFamiliesExA(GetDC(nullptr), &description, MatchFont, reinterpret_cast<LPARAM>(face), 0) != 0) {
-    face = fallback[entry.family];
-    if (EnumFontFamiliesExA(GetDC(nullptr), &description, MatchFont, reinterpret_cast<LPARAM>(face), 0) != 0) {
-      face = nullptr;
-    }
+  const char* face;
+  if (EnumFontFamiliesExA(GetDC(nullptr), &description, MatchFont, reinterpret_cast<LPARAM>(primary[this->family]), 0) == 0) {
+    face = primary[this->family];
+  } else if (EnumFontFamiliesExA(GetDC(nullptr), &description, MatchFont, reinterpret_cast<LPARAM>(fallback[this->family]), 0) == 0) {
+    face = fallback[this->family];
+  } else {
+    face = nullptr;
   }
 
-  entry.font = CreateFontA(
-    entry.height, 0, 0, 0, entry.bold ? FW_BOLD : FW_NORMAL, entry.italic != 0, 0, 0, entry.charset, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+  this->font = CreateFontA(
+    this->height, 0, 0, 0, this->bold ? FW_BOLD : FW_NORMAL, this->italic != 0, 0, 0, this->charset, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
     NONANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, face
   );
 }
@@ -92,34 +85,26 @@ HFONT __stdcall CreateEmbeddedFont(int height, std::int16_t family) {
   description.lfOutPrecision = OUT_RASTER_PRECIS;
   description.lfQuality = PROOF_QUALITY;
 
-  switch (family) {
-  case 20:
+  if (family == 20) {
     std::strcpy(description.lfFaceName, "RixSquirrel_10.eot");
-    break;
-  case 21:
+  } else if (family == 21) {
     std::strcpy(description.lfFaceName, "RixLoveangel_10.eot");
-    break;
-  case 23:
-    std::strcpy(description.lfFaceName, "RixDiary_10.eot");
-    break;
-  case 24:
-    std::strcpy(description.lfFaceName, "RixMiniHeart_10.eot");
-    break;
-  case 25:
-    std::strcpy(description.lfFaceName, "RixFreshman_10.eot");
-    break;
-  case 26:
-    std::strcpy(description.lfFaceName, "RixKid_10.eot");
-    break;
-  case 27:
-    std::strcpy(description.lfFaceName, "RixMagic_10.eot");
-    break;
-  case 28:
-    std::strcpy(description.lfFaceName, "RixJJangu_10.eot");
-    break;
-  default:
+  } else if (family == 22) {
     std::strcpy(description.lfFaceName, "RixNHCgogo_10.eot");
-    break;
+  } else if (family == 23) {
+    std::strcpy(description.lfFaceName, "RixDiary_10.eot");
+  } else if (family == 24) {
+    std::strcpy(description.lfFaceName, "RixMiniHeart_10.eot");
+  } else if (family == 25) {
+    std::strcpy(description.lfFaceName, "RixFreshman_10.eot");
+  } else if (family == 26) {
+    std::strcpy(description.lfFaceName, "RixKid_10.eot");
+  } else if (family == 27) {
+    std::strcpy(description.lfFaceName, "RixMagic_10.eot");
+  } else if (family == 28) {
+    std::strcpy(description.lfFaceName, "RixJJangu_10.eot");
+  } else {
+    std::strcpy(description.lfFaceName, "RixNHCgogo_10.eot");
   }
 
   description.lfHeight = -MulDiv(13, 72, 72);
@@ -128,36 +113,28 @@ HFONT __stdcall CreateEmbeddedFont(int height, std::int16_t family) {
 
 // OFFSET: 0x0054DEE0
 // FUNCTION: fn_01949
-bool FontCache::CreatePrivateFont(FontEntry& entry) {
-  const char* path = entry.family == 29 ? PrivatePath(entry.bold) : "";
-  entry.privateResources = AddFontResourceExA(path, FR_PRIVATE, nullptr);
-  if (entry.privateResources != 0) {
-    LOGFONTA description = {};
-    description.lfHeight = -MulDiv(entry.height, 72, 72);
-    description.lfWeight = entry.bold ? FW_BOLD : FW_NORMAL;
-    description.lfItalic = entry.italic != 0;
-    description.lfCharSet = static_cast<BYTE>(entry.charset);
-
-    std::wstring wide;
-
-    for (const char* byte = path; *byte; ++byte) {
-      wide.push_back(static_cast<wchar_t>(*byte));
+__declspec(noinline) bool FontEntry::CreatePrivateFont() {
+  std::string path;
+  if (this->family == 29) {
+    if (this->bold == 1) {
+      path = "system\\font\\SCDream6.otf";
+    } else {
+      path = "system\\font\\SCDream4.otf";
     }
-
-    Gdiplus::PrivateFontCollection collection;
-    collection.AddFontFile(wide.c_str());
-    Gdiplus::FontFamily family;
-    int found = 0;
-    collection.GetFamilies(1, &family, &found);
-    WCHAR name[32] = {};
-    family.GetFamilyName(name, 0);
-    char narrow[128] = {};
-    WideCharToMultiByte(CP_THREAD_ACP, 0, name, -1, narrow, sizeof(narrow), nullptr, nullptr);
-    strncpy_s(description.lfFaceName, narrow, _TRUNCATE);
-    entry.font = CreateFontIndirectA(&description);
   }
 
-  return entry.privateResources > 0;
+  this->privateResources = AddFontResourceExA(path.c_str(), FR_PRIVATE, nullptr);
+  if (this->privateResources != 0) {
+    LOGFONTA description = {};
+    description.lfHeight = -MulDiv(this->height, 72, 72);
+    description.lfWeight = this->bold ? FW_BOLD : FW_NORMAL;
+    description.lfItalic = this->italic != 0;
+    description.lfCharSet = static_cast<BYTE>(this->charset);
+    strncpy_s(description.lfFaceName, PrivateFontFamilyName(path).c_str(), _TRUNCATE);
+    this->font = CreateFontIndirectA(&description);
+  }
+
+  return this->privateResources > 0;
 }
 
 // OFFSET: 0x0054E140
@@ -172,26 +149,98 @@ void FontEntry::RemovePrivateFont() const {
 // OFFSET: 0x0054F360
 // FUNCTION: fn_01958
 HFONT FontCache::Get(int family, int height, unsigned charset, unsigned char bold, unsigned char italic) {
-  for (const FontEntry& entry : this->m_fonts) {
-    if (entry.family == family && entry.height == height && entry.charset == charset && entry.bold == bold && entry.italic == italic) {
-      return entry.font;
-    }
+  FontEntry entry{family, height, charset, bold, italic, nullptr, 0};
+  const auto found = std::find_if(this->m_fonts.begin(), this->m_fonts.end(), [&entry](const FontEntry& font) {
+    return font.family == entry.family && font.height == entry.height && font.charset == entry.charset && font.bold == entry.bold &&
+           font.italic == entry.italic;
+  });
+  if (found != this->m_fonts.end()) {
+    return found->font;
   }
 
-  FontEntry entry{family, height, charset, bold, italic, nullptr, 0};
-  if (family >= 20 && family <= 28) {
-    static const char* const faces[] = {"RixSquirrel_10.eot", "RixLoveangel_10.eot", "RixNHCgogo_10.eot", "RixDiary_10.eot", "RixMiniHeart_10.eot",
-                                        "RixFreshman_10.eot", "RixKid_10.eot",       "RixMagic_10.eot",   "RixJJangu_10.eot"};
+  if (family == 20) {
     LOGFONTA description = {};
-    description.lfHeight = -MulDiv(13, 72, 72);
     description.lfWeight = FW_NORMAL;
     description.lfCharSet = DEFAULT_CHARSET;
     description.lfOutPrecision = OUT_RASTER_PRECIS;
     description.lfQuality = PROOF_QUALITY;
-    strcpy_s(description.lfFaceName, faces[family - 20]);
+    std::strcpy(description.lfFaceName, "RixSquirrel_10.eot");
+    description.lfHeight = -MulDiv(13, 72, 72);
     entry.font = CreateFontIndirectA(&description);
-  } else if (family != 29 || !CreatePrivateFont(entry)) {
-    CreateSystemFont(entry);
+  } else if (family == 21) {
+    LOGFONTA description = {};
+    description.lfWeight = FW_NORMAL;
+    description.lfCharSet = DEFAULT_CHARSET;
+    description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfQuality = PROOF_QUALITY;
+    std::strcpy(description.lfFaceName, "RixLoveangel_10.eot");
+    description.lfHeight = -MulDiv(13, 72, 72);
+    entry.font = CreateFontIndirectA(&description);
+  } else if (family == 22) {
+    LOGFONTA description = {};
+    description.lfWeight = FW_NORMAL;
+    description.lfCharSet = DEFAULT_CHARSET;
+    description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfQuality = PROOF_QUALITY;
+    std::strcpy(description.lfFaceName, "RixNHCgogo_10.eot");
+    description.lfHeight = -MulDiv(13, 72, 72);
+    entry.font = CreateFontIndirectA(&description);
+  } else if (family == 23) {
+    LOGFONTA description = {};
+    description.lfWeight = FW_NORMAL;
+    description.lfCharSet = DEFAULT_CHARSET;
+    description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfQuality = PROOF_QUALITY;
+    std::strcpy(description.lfFaceName, "RixDiary_10.eot");
+    description.lfHeight = -MulDiv(13, 72, 72);
+    entry.font = CreateFontIndirectA(&description);
+  } else if (family == 24) {
+    LOGFONTA description = {};
+    description.lfWeight = FW_NORMAL;
+    description.lfCharSet = DEFAULT_CHARSET;
+    description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfQuality = PROOF_QUALITY;
+    std::strcpy(description.lfFaceName, "RixMiniHeart_10.eot");
+    description.lfHeight = -MulDiv(13, 72, 72);
+    entry.font = CreateFontIndirectA(&description);
+  } else if (family == 25) {
+    LOGFONTA description = {};
+    description.lfWeight = FW_NORMAL;
+    description.lfCharSet = DEFAULT_CHARSET;
+    description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfQuality = PROOF_QUALITY;
+    std::strcpy(description.lfFaceName, "RixFreshman_10.eot");
+    description.lfHeight = -MulDiv(13, 72, 72);
+    entry.font = CreateFontIndirectA(&description);
+  } else if (family == 26) {
+    LOGFONTA description = {};
+    description.lfWeight = FW_NORMAL;
+    description.lfCharSet = DEFAULT_CHARSET;
+    description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfQuality = PROOF_QUALITY;
+    std::strcpy(description.lfFaceName, "RixKid_10.eot");
+    description.lfHeight = -MulDiv(13, 72, 72);
+    entry.font = CreateFontIndirectA(&description);
+  } else if (family == 27) {
+    LOGFONTA description = {};
+    description.lfWeight = FW_NORMAL;
+    description.lfCharSet = DEFAULT_CHARSET;
+    description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfQuality = PROOF_QUALITY;
+    std::strcpy(description.lfFaceName, "RixMagic_10.eot");
+    description.lfHeight = -MulDiv(13, 72, 72);
+    entry.font = CreateFontIndirectA(&description);
+  } else if (family == 28) {
+    LOGFONTA description = {};
+    description.lfWeight = FW_NORMAL;
+    description.lfCharSet = DEFAULT_CHARSET;
+    description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfQuality = PROOF_QUALITY;
+    std::strcpy(description.lfFaceName, "RixJJangu_10.eot");
+    description.lfHeight = -MulDiv(13, 72, 72);
+    entry.font = CreateFontIndirectA(&description);
+  } else if (family != 29 || !entry.CreatePrivateFont()) {
+    entry.CreateSystemFont();
   }
 
   this->m_fonts.push_back(entry);

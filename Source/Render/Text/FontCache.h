@@ -17,6 +17,8 @@ namespace Gdiplus {
 #include <gdiplus.h>
 
 struct FontEntry {
+  void CreateSystemFont();
+  bool CreatePrivateFont();
   void RemovePrivateFont() const;
 
   /* 0000 */ int family;
@@ -38,8 +40,6 @@ private:
   /* 0000 */ std::vector<FontEntry> m_fonts;
   /* 000C */ Gdiplus::GdiplusStartupInput m_startup;
   /* 001C */ ULONG_PTR m_gdiplus;
-  static void CreateSystemFont(FontEntry& entry);
-  static bool CreatePrivateFont(FontEntry& entry);
   FontCache(const FontCache&) = delete;
   FontCache& operator=(const FontCache&) = delete;
 
