@@ -2,10 +2,10 @@
 
 #include <algorithm>
 
+#include "Contents/MapSkyMgr.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Lists/UIScrollBar.h"
-
-void sub_83B7F0(UITextButton* button);
+#include "UI/Text/CreateLineInfo.h"
 
 // OFFSET: 0x0083E1B0
 // FUNCTION: fn_10515
@@ -134,6 +134,12 @@ int TagTextViewer::UIScroll::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
+  case 0x12:
+    this->SendMsg(this->m_scrollBar, 9, 0, 0, 0, 0);
+    break;
+  case 0x13:
+    this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
+    break;
   case 7:
   case 9:
   case 10: {
@@ -150,12 +156,6 @@ int TagTextViewer::UIScroll::SendMsg(
     }
     return this->m_scrollPos - previous;
   }
-  case 0x12:
-    this->SendMsg(this->m_scrollBar, 9, 0, 0, 0, 0);
-    break;
-  case 0x13:
-    this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
-    break;
   }
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
@@ -166,6 +166,33 @@ int UITagTextViewer::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
+  case 0x1D:
+    if (argument1 != 0) {
+      this->AddText(std::string(reinterpret_cast<const char*>(argument1)));
+    }
+    break;
+  case 0x62:
+    switch (argument1) {
+    case 0x1B5:
+      OpenTextButtonLink(static_cast<UITextButton*>(sender));
+      break;
+    case 0x1D0:
+      ShowTextButtonItem(static_cast<UITextButton*>(sender));
+      break;
+    case 0x1B6:
+      OpenTextButtonNavigation(static_cast<UITextButton*>(sender));
+      break;
+    case 0x21B:
+      RequestTextButtonService(static_cast<UITextButton*>(sender));
+      break;
+    case 0x205:
+      ShowTextButtonTip(static_cast<UITextButton*>(sender));
+      break;
+    }
+    break;
+  case 0x3C:
+    this->Layout();
+    break;
   case 7:
   case 9:
   case 10: {
@@ -174,7 +201,7 @@ int UITagTextViewer::SendMsg(
       this->m_scrollPos = previous - 30;
     } else if (message == 10) {
       this->m_scrollPos = previous + 30;
-    } else {
+    } else if (message == 7) {
       this->m_scrollPos = previous + static_cast<int>(argument1);
     }
 
@@ -183,40 +210,8 @@ int UITagTextViewer::SendMsg(
     }
     return this->m_scrollPos - previous;
   }
-  case 0x12:
-    this->SendMsg(this->m_scrollBar, 9, 0, 0, 0, 0);
-    break;
-  case 0x13:
-    this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
-    break;
-  case 0x1D:
-    if (argument1 != 0) {
-      const std::string text(reinterpret_cast<const char*>(argument1));
-      this->AddText(text);
-    }
-    break;
-  case 0x3C:
-    this->Layout();
-    break;
-  case 0x62:
-    switch (argument1) {
-    case 0x1B5:
-      OpenTextButtonLink(static_cast<UITextButton*>(sender));
-      break;
-    case 0x1B6:
-      sub_83B7F0(static_cast<UITextButton*>(sender));
-      break;
-    case 0x1D0:
-      ShowTextButtonItem(static_cast<UITextButton*>(sender));
-      break;
-    case 0x205:
-      ShowTextButtonTip(static_cast<UITextButton*>(sender));
-      break;
-    case 0x21B:
-      RequestTextButtonService(static_cast<UITextButton*>(sender));
-      break;
-    }
-    break;
+  default:
+    return TagTextViewer::UIScroll::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -239,71 +234,10 @@ void UITagTextViewer::SetAlign(unsigned char align) {
   }
 }
 
-#include "Contents/MapSkyMgr.h"
-#include "UI/Text/CreateLineInfo.h"
-
-static void* AllocateViewerBlock(std::size_t bytes) {
-  if (bytes >= 4096) {
-    void* raw = ::operator new(bytes + 35);
-    const std::size_t aligned = (reinterpret_cast<std::size_t>(raw) + 35) & ~static_cast<std::size_t>(31);
-    reinterpret_cast<void**>(aligned)[-1] = raw;
-    return reinterpret_cast<void*>(aligned);
-  }
-  if (bytes == 0) {
-    return nullptr;
-  }
-  return ::operator new(bytes);
-}
-
-static void FreeViewerBlock(void* block, std::size_t bytes) {
-  if (block == nullptr) {
-    return;
-  }
-  if (bytes >= 4096) {
-    bytes += 35;
-    void* raw = reinterpret_cast<void**>(block)[-1];
-    block = raw;
-  }
-  ::operator delete(block, bytes);
-}
-
-static void AppendViewerText(std::vector<std::string>& texts, const std::string& text) {
-  struct Layout {
-    std::string* first;
-    std::string* last;
-    std::string* cap;
-  };
-  Layout* view = reinterpret_cast<Layout*>(&texts);
-  if (view->last != view->cap) {
-    new (view->last) std::string(text);
-    ++view->last;
-    return;
-  }
-
-  const std::size_t count = static_cast<std::size_t>(view->last - view->first);
-  const std::size_t oldCapacity = static_cast<std::size_t>(view->cap - view->first);
-  std::size_t capacity = oldCapacity + (oldCapacity / 2);
-  if (capacity < count + 1) {
-    capacity = count + 1;
-  }
-  std::string* neu = static_cast<std::string*>(AllocateViewerBlock(capacity * sizeof(std::string)));
-  new (neu + count) std::string(text);
-  for (std::size_t index = 0; index < count; ++index) {
-    new (neu + index) std::string(view->first[index]);
-  }
-  for (std::size_t index = 0; index < count; ++index) {
-    view->first[index].~basic_string();
-  }
-  FreeViewerBlock(view->first, oldCapacity * sizeof(std::string));
-  view->first = neu;
-  view->last = neu + count + 1;
-  view->cap = neu + capacity;
-}
-
 // OFFSET: 0x0083E870
 // FUNCTION: fn_10521
 void UITagTextViewer::AddText(const std::string& text) {
-  AppendViewerText(this->m_texts, text);
+  this->m_texts.push_back(text);
   if (this->m_textWidth == 0) {
     this->m_textWidth = this->geometry.width - this->m_margin - 0xD;
   }
@@ -319,7 +253,7 @@ void UITagTextViewer::AddText(const std::string& text) {
   );
   this->m_cursorY += info.m_height;
 
-  int offset = this->m_topMargin < 0 ? 0 : this->m_topMargin;
+  int offset = std::max(this->m_topMargin, 0);
   if (this->m_topMargin + this->m_cursorY < this->geometry.height) {
     if (this->m_verticalAlign == 5) {
       offset = this->geometry.height - this->m_topMargin - this->m_cursorY;
@@ -331,8 +265,8 @@ void UITagTextViewer::AddText(const std::string& text) {
   for (std::map<UIWindow*, TagTextViewer::Position>::iterator it = this->m_positions.begin(); it != this->m_positions.end(); ++it) {
     UIWindow* window = it->first;
     window->Move(window->geometry.x, window->geometry.y - this->m_offsetY + offset);
-    it->second.x = static_cast<float>(window->geometry.x);
     it->second.y = static_cast<float>(window->geometry.y);
+    it->second.x = static_cast<float>(window->geometry.x);
   }
   this->m_offsetY = offset;
 
@@ -353,16 +287,11 @@ void UITagTextViewer::AddText(const std::string& text) {
 void UITagTextViewer::Layout() {
   std::string joined;
   for (std::vector<std::string>::iterator it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
-    joined += *it;
-    std::vector<std::string>::iterator next = it;
-    ++next;
-    if (next != this->m_texts.end()) {
-      joined += "\n";
-    }
+    joined += *it + (it + 1 != this->m_texts.end() ? "\n" : "");
   }
 
-  reinterpret_cast<void (__thiscall*)(UITagTextViewer*)>((*reinterpret_cast<void***>(this))[53])(this);
-  AppendViewerText(this->m_texts, joined);
+  this->Clear();
+  this->m_texts.push_back(joined);
   if (this->m_textWidth == 0) {
     this->m_textWidth = this->geometry.width - this->m_margin - 0xD;
   }
@@ -372,18 +301,17 @@ void UITagTextViewer::Layout() {
     this, joined.c_str(), this->m_textWidth, this->m_lineSpacing, this->m_font.color, this->m_font.height, flags, this->m_outlined != 0, this->m_outlineColor,
     false, 0xFFFFFF, this->m_horizontalAlign
   );
+  const std::vector<std::vector<UIWindow*>> lines = info.m_lines;
 
-  int offset = this->m_topMargin < 0 ? 0 : this->m_topMargin;
+  int offset = std::max(this->m_topMargin, 0);
   const unsigned int content = static_cast<unsigned int>(this->m_topMargin) + static_cast<unsigned int>(info.m_height);
   if (static_cast<unsigned int>(this->geometry.height) > content) {
     if (this->m_verticalAlign == 5) {
-      offset = this->geometry.height - this->m_topMargin - info.m_height;
+      offset = this->geometry.height - info.m_height - this->m_topMargin;
     } else if (this->m_verticalAlign == 4) {
-      offset = static_cast<int>(static_cast<float>(static_cast<unsigned int>(this->geometry.height - info.m_height)) * g_depthAverageHalf);
+      offset = static_cast<unsigned int>(static_cast<float>(static_cast<unsigned int>(this->geometry.height - info.m_height)) * g_depthAverageHalf);
     }
   }
-
-  const std::vector<std::vector<UIWindow*>> lines = info.m_lines;
   for (std::vector<UIWindow*> line : lines) {
     for (UIWindow* window : line) {
       window->Move(window->geometry.x + this->m_margin, window->geometry.y + offset);
