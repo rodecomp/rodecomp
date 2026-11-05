@@ -120,7 +120,10 @@ void UIScrollBar::Resize(int width, int height) {
 // OFFSET: 0x00882430
 // FUNCTION: fn_11303
 bool UIScrollBar::Slot08() {
-  return this->maximum == 0 && this->parent && this->parent->Slot08();
+  if (this->maximum == 0 && this->parent) {
+    return this->parent->Slot08();
+  }
+  return false;
 }
 
 // OFFSET: 0x00880C60
@@ -157,9 +160,16 @@ int UIScrollBar::Position() {
 // OFFSET: 0x00880AE0
 // FUNCTION: fn_11282
 int UIScrollBar::Travel() {
-  const int length = this->vertical == 0 ? this->geometry.width : this->geometry.height;
-  const int thumb = this->ThumbLength();
-  return ((length - (2 * this->arrowLength)) - thumb);
+  int length = this->geometry.height;
+  switch (this->vertical) {
+  case 0:
+    length = this->geometry.width;
+    break;
+  case 1:
+    length = this->geometry.height;
+    break;
+  }
+  return length - 2 * this->arrowLength - this->ThumbLength();
 }
 
 // OFFSET: 0x00880C00
@@ -450,13 +460,7 @@ void UIScrollBar::Configure(int x, int y, unsigned char vertical, int length) {
 // OFFSET: 0x00880800
 // FUNCTION: fn_11279
 int UIListBoxEx::FindLine(const std::string& text) {
-  const std::string key = text;
-  auto it = this->lines.begin();
-  for (; it != this->lines.end(); ++it) {
-    if (key == it->second.text) {
-      break;
-    }
-  }
+  const auto it = std::find_if(this->lines.begin(), this->lines.end(), [text](const auto& entry) { return text == entry.second.text; });
   return it == this->lines.end() ? -1 : it->first;
 }
 
@@ -656,12 +660,12 @@ void UIChatHisBox::Clear() {
 // FUNCTION: fn_11271
 void UIChatHisBox::PlaceNaviLinks(int line) {
   const int top = this->topLine;
-  unsigned int end = static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top);
-  if (this->lines.size() < end) {
-    end = static_cast<unsigned int>(this->lines.size());
-  }
+  const unsigned int end = std::min(
+    static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top), static_cast<unsigned int>(this->lines.size())
+  );
 
-  for (std::vector<UINaviLinkButton*>& row : this->naviLinks) {
+  for (auto it = this->naviLinks.begin(); it != this->naviLinks.end(); ++it) {
+    std::vector<UINaviLinkButton*>& row = *it;
     for (unsigned int index = 0; index < row.size(); ++index) {
       UINaviLinkButton* button = row[index];
       if (button->geometry.id != 438) {
@@ -1372,12 +1376,12 @@ int UITreeView::LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y) {
 // FUNCTION: fn_11268
 void UIChatHisBox::PlaceItemTags(int line) {
   const int top = this->topLine;
-  unsigned int end = static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top);
-  if (this->lines.size() < end) {
-    end = static_cast<unsigned int>(this->lines.size());
-  }
+  const unsigned int end = std::min(
+    static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top), static_cast<unsigned int>(this->lines.size())
+  );
 
-  for (std::vector<UIItemTagButton*>& row : this->itemTags) {
+  for (auto it = this->itemTags.begin(); it != this->itemTags.end(); ++it) {
+    std::vector<UIItemTagButton*>& row = *it;
     for (unsigned int index = 0; index < row.size(); ++index) {
       UIItemTagButton* button = row[index];
       const int buttonLine = button->line;
