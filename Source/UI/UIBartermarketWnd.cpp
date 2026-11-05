@@ -231,16 +231,16 @@ int UIBarterItemPurchaseWnd::GetInventoryItemCount(int itemId) {
 void UIExpandedBarterItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 31) {
+  if (drag->source == 31) {
+    if (g_session.IsEquipItemType(drag->type) == true || g_session.IsShadowItemType(drag->type) == true) {
+      this->SendMsg(0, 38, 0, 0, 0, 0);
+      return;
+    }
+    g_windowMgr.ShowWindowById(15, 1);
+    g_windowMgr.LookupWindow(15)->SendMsg(0, 13, 26, 0, 0, 0);
+  } else {
     mode->SendMsg(18, 0, 0, 0, 0);
-    return;
   }
-  if (g_session.IsEquipItemType(drag->type) == true || g_session.IsShadowItemType(drag->type) == true) {
-    this->SendMsg(0, 38, 0, 0, 0, 0);
-    return;
-  }
-  g_windowMgr.ShowWindowById(15, 1);
-  g_windowMgr.LookupWindow(15)->SendMsg(0, 13, 26, 0, 0, 0);
 }
 
 // OFFSET: 0x008459F0
