@@ -325,7 +325,8 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
                                                   std::intptr_t d) {
   switch (message) {
   case 6:
-    for (UILapineUpgradeBox_IngredientInfoWnd* entry : this->items) {
+    for (auto it = this->items.begin(); it != this->items.end(); ++it) {
+      UILapineUpgradeBox_IngredientInfoWnd* entry = *it;
       if (sender != entry) {
         entry->selected = 0;
         entry->Invalidate();
@@ -335,17 +336,16 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
     break;
 
   case 0x17:
-    for (const ITEM_INFO& material : this->materials) {
-      const int itemId = std::atoi(material.itemId.c_str());
-      for (int identity : g_session.FindInventoryIndicesByItemId(itemId, 1)) {
-        this->AddIngredient(static_cast<std::uint32_t>(identity));
+    for (auto material = this->materials.begin(); material != this->materials.end(); ++material) {
+      std::vector<int> identities = g_session.FindInventoryIndicesByItemId(std::atoi(material->itemId.c_str()), 1);
+      for (auto identity = identities.begin(); identity != identities.end(); ++identity) {
+        this->AddIngredient(static_cast<std::uint32_t>(*identity));
       }
     }
-
-    for (UILapineUpgradeBox_IngredientInfoWnd* entry : this->items) {
-      const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, entry->item.unknown_0000[1]);
+    for (auto it = this->items.begin(); it != this->items.end(); ++it) {
+      const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, (*it)->item.unknown_0000[1]);
       if (owned.unknown_0000[1] == 0) {
-        entry->Show(0);
+        (*it)->Show(0);
       }
     }
     this->SendMsg(this, 0x57, 0, 0, 0, 0);
@@ -532,21 +532,21 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
 __declspec(noinline) void UILapineUpgradeBox_IngredientInfoWnd::SetItem(std::uint32_t identity) {
   this->item = LookupClientItemByIdentity(g_session.m_inventoryItems, identity);
 
+  std::vector<char*> breaks;
   char name[0x104];
   std::memset(name, 0, sizeof(name));
-  int capacity = sizeof(name);
-  this->item.sub_6D5810(name, capacity, 0);
+  char* highlight = nullptr;
+  std::size_t remaining = sizeof(name);
+  char* cursor = name;
+  int highlightColor;
+  this->BuildItemName(&this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
   if (this->item.identified == 1 && this->item.unknown_0098 != 0) {
-    char formatted[0x104];
-    StringFormat(formatted, sizeof(formatted), static_cast<std::size_t>(-1), LookupMessage(0xA28), name, this->item.unknown_0098);
-    this->item.SetName(formatted);
-    this->tooltip.assign(formatted, std::strlen(formatted));
-  } else {
-    this->item.SetName(name);
-    this->tooltip.assign(name, std::strlen(name));
+    sprintf_s(name, sizeof(name), LookupMessage(0xA28), name, this->item.unknown_0098);
   }
 
+  this->item.SetName(name);
+  this->tooltip.assign(name, std::strlen(name));
   this->Invalidate();
 }
 
@@ -562,15 +562,18 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
 
   UILapineUpgradeBox_IngredientInfoWnd* entry = *entryIt;
   const ITEM_INFO& item = entry->item;
-  const int itemId = std::atoi(item.itemId.c_str());
-  const auto material = std::find_if(this->materials.begin(), this->materials.end(), [itemId](const ITEM_INFO& required) {
-    return std::atoi(required.itemId.c_str()) == itemId;
+
+  const auto material = std::find_if(this->materials.begin(), this->materials.end(), [&item](ITEM_INFO required) {
+    return std::atoi(required.itemId.c_str()) == std::atoi(item.itemId.c_str());
   });
   if (material == this->materials.end()) {
     return false;
   }
 
-  if (this->minRefine > item.unknown_0060 || item.unknown_0060 > this->maxRefine) {
+  if (this->minRefine > item.unknown_0060) {
+    return false;
+  }
+  if (this->maxRefine < item.unknown_0060) {
     return false;
   }
 
@@ -578,10 +581,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
     this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3D)), 0, 0, 0);
   }
 
-  const std::uint32_t itemType = item.unknown_0000[0];
-  const bool equipment = itemType == 4 || itemType == 5 || itemType == 8 || itemType == 9 || itemType == 11 ||
-                         itemType == 12 || itemType == 13 || itemType == 14 || itemType == 15 || itemType == 21;
-  if (equipment && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
+  if (Equipment(item) && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
     for (std::size_t offset = 0; offset < sizeof(item.unknown_001C); offset += sizeof(std::uint32_t)) {
       std::uint32_t card = 0;
       std::memcpy(&card, item.unknown_001C + offset, sizeof(card));
