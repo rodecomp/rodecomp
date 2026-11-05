@@ -6,7 +6,7 @@
 #include <string>
 
 class CTexture;
-class UIWindow;
+class UITransBalloonText;
 struct TextureRegion;
 struct tagRECT;
 
@@ -18,7 +18,7 @@ public:
   /* 0010 */ int fadeInRequested;
   /* 0014 */ int running;
   /* 0018 */ int unknown_0018;
-  /* 001C */ UIWindow* tooltip;
+  /* 001C */ UITransBalloonText* tooltip;
   /* 0020 */ std::uint32_t tooltipTick;
   /* 0024 */ std::uint32_t cursorTick;
   /* 0028 */ int unknown_0028;

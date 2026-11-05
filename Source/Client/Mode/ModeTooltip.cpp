@@ -17,7 +17,6 @@ void CMode::ShowTooltip(const char* value, int x, int y, std::uint32_t color, un
   }
 
   char text[1024];
-
   if (convert != 0) {
     g_session.ConvertTooltipText(value, text);
   } else {
@@ -26,28 +25,29 @@ void CMode::ShowTooltip(const char* value, int x, int y, std::uint32_t color, un
 
   this->tooltipTick = timeGetTime();
 
-  UITransBalloonText* balloon = static_cast<UITransBalloonText*>(this->tooltip);
-  if (balloon) {
-    g_windowMgr.Promote(balloon);
+  if (!this->tooltip) {
+    this->tooltip = new UITransBalloonText();
+    if (!this->tooltip) {
+      return;
+    }
+    this->tooltip->SetSize(8, 8);
+    g_windowMgr.AddRendered(this->tooltip);
   } else {
-    balloon = new UITransBalloonText();
-    this->tooltip = balloon;
-    balloon->SetSize(8, 8);
-    g_windowMgr.AddRendered(balloon);
+    g_windowMgr.Promote(this->tooltip);
   }
 
-  balloon->SetRichText(option);
-  balloon->SetText(text, 35);
+  this->tooltip->SetRichText(option);
+  this->tooltip->SetText(text, 35);
   const std::uint32_t rgb = ((color & 255) << 16) | (color & 0xFF00) | ((color >> 16) & 255);
-  balloon->SetColors(rgb, 0);
-  balloon->SetBackground(0x88000000u);
+  this->tooltip->SetColors(rgb, 0);
+  this->tooltip->SetBackground(0x88000000u);
 
-  const int maximumX = g_renderer->viewport.width - balloon->geometry.width + 3;
-  const int maximumY = g_renderer->viewport.height - balloon->geometry.height + 3;
+  const int maximumX = g_renderer->viewport.width - this->tooltip->geometry.width + 3;
+  const int maximumY = g_renderer->viewport.height - this->tooltip->geometry.height + 3;
   const int left = x < -3 ? -3 : x;
   const int top = y < -3 ? -3 : y;
 
-  balloon->Move(left < maximumX ? left : maximumX, top < maximumY ? top : maximumY);
+  this->tooltip->Move(left < maximumX ? left : maximumX, top < maximumY ? top : maximumY);
 }
 
 // OFFSET: 0x00AD67A0
