@@ -3,6 +3,7 @@
 
 #include <windows.h>
 #include <bcrypt.h>
+#include <VersionHelpers.h>
 #include <vector>
 
 class AES {

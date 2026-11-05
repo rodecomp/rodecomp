@@ -46,11 +46,9 @@ bool AES::Initialize(PUCHAR secret, ULONG secretSize, const UCHAR* iv, ULONG ivS
     m_algorithm = nullptr;
   }
 
-  if (ivSize != 16) {
+  if (!SetIV(iv, ivSize)) {
     return false;
   }
-  m_iv.resize(16);
-  std::memcpy(m_iv.data(), iv, 16);
   if (BCryptOpenAlgorithmProvider(&m_algorithm, BCRYPT_AES_ALGORITHM, nullptr, 0) < 0) {
     return false;
   }
@@ -64,41 +62,7 @@ bool AES::Initialize(PUCHAR secret, ULONG secretSize, const UCHAR* iv, ULONG ivS
   if (BCryptGenerateSymmetricKey(m_algorithm, &m_key, m_keyObject.data(), m_keyObject.size(), secret, secretSize, 0) < 0) {
     return false;
   }
-  OSVERSIONINFOEXW version{};
-  version.dwOSVersionInfoSize = sizeof(version);
-  DWORDLONG mask = VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL);
-  mask = VerSetConditionMask(mask, VER_MINORVERSION, VER_GREATER_EQUAL);
-  mask = VerSetConditionMask(mask, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
-  version.dwMajorVersion = 6;
-  version.dwMinorVersion = 2;
-  version.wServicePackMajor = 0;
-  if (!VerifyVersionInfoW(&version, VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR, mask)) {
-    if (mode == CBC) {
-      m_mode = CBC;
-      return true;
-    }
-    return false;
-  }
-
-  const wchar_t* chainingMode;
-  switch (mode) {
-    case ECB:
-      chainingMode = BCRYPT_CHAIN_MODE_ECB;
-      break;
-    case CBC:
-      chainingMode = BCRYPT_CHAIN_MODE_CBC;
-      break;
-    case CFB:
-      chainingMode = BCRYPT_CHAIN_MODE_CFB;
-      break;
-    default:
-      return false;
-  }
-  if (BCryptSetProperty(m_key, BCRYPT_CHAINING_MODE, reinterpret_cast<PUCHAR>(const_cast<wchar_t*>(chainingMode)), 32, 0) < 0) {
-    return false;
-  }
-  m_mode = mode;
-  return true;
+  return SetMode(mode);
 }
 
 // OFFSET: 0x0061B3C0
@@ -122,15 +86,7 @@ bool AES::SetIV(const UCHAR* iv, ULONG ivSize) {
 // OFFSET: 0x0061B440
 // FUNCTION: fn_04422
 bool AES::SetMode(int mode) {
-  OSVERSIONINFOEXW version{};
-  version.dwOSVersionInfoSize = sizeof(version);
-  DWORDLONG mask = VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL);
-  mask = VerSetConditionMask(mask, VER_MINORVERSION, VER_GREATER_EQUAL);
-  mask = VerSetConditionMask(mask, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
-  version.dwMajorVersion = 6;
-  version.dwMinorVersion = 2;
-  version.wServicePackMajor = 0;
-  if (!VerifyVersionInfoW(&version, VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR, mask)) {
+  if (!IsWindows8OrGreater()) {
     if (mode == CBC) {
       m_mode = CBC;
       return true;
