@@ -1,5 +1,10 @@
 #include "Utility/Timestamp.h"
 
+// OFFSET: 0x00AE8180
+// FUNCTION: fn_18082
+Timestamp::Timestamp(__time32_t value) : seconds(value) {
+}
+
 // OFFSET: 0x00AE81A0
 // FUNCTION: fn_18084
 Timestamp::~Timestamp() {
@@ -84,4 +89,10 @@ __time32_t Timestamp::SetDate(short year, short month, short day, short hour) {
   local.tm_year = year - 1900;
   this->seconds = _mktime32(&local);
   return this->seconds;
+}
+
+// OFFSET: 0x00AE8450
+// FUNCTION: fn_18095
+void Timestamp::Set(__time32_t value) {
+  this->seconds = value;
 }
