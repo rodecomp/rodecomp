@@ -3,8 +3,8 @@
 #include "Contents/MessageTable.h"
 #include "Contents/Party/PartyJoinResult.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
-#include <cstdio>
 #include <cstring>
 
 // OFFSET: 0x00D3B9E0
@@ -14,58 +14,78 @@ void ReceivePartyJoinResult(const void* packet) {
   g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
   std::uint32_t status;
   std::memcpy(&status, bytes + 54, sizeof(status));
-  const auto message = [&](int id) { return LookupMessage(id); };
-  const auto notify = [&](int id) { g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message(id)), 0xFF, 0, 0, 0); };
-  const auto format = [&](int id, unsigned offset, unsigned color) {
-    char text[500] = {};
-    _snprintf_s(text, sizeof(text), _TRUNCATE, message(id), reinterpret_cast<const char*>(bytes + offset));
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), color, 0, 0, 0);
-  };
 
   switch (status) {
-  case 0:
-    format(g_session.unknown_5464 == 1 ? 3501 : 3498, g_session.unknown_5464 == 1 ? 2 : 26, 0xFFFF64);
+  case 0: {
+    char text[500] = {};
+
+    if (g_session.unknown_5464 == 1) {
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3501), reinterpret_cast<const char*>(bytes + 2));
+    } else {
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3498), reinterpret_cast<const char*>(bytes + 26));
+    }
+
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF64, 0, 0, 0);
     break;
-  case 1:
-    format(g_session.unknown_5464 == 1 ? 3502 : 3499, g_session.unknown_5464 == 1 ? 2 : 26, 0xFF);
+  }
+  case 1: {
+    char text[500] = {};
+
+    if (g_session.unknown_5464 == 1) {
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3502), reinterpret_cast<const char*>(bytes + 2));
+    } else {
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3499), reinterpret_cast<const char*>(bytes + 26));
+    }
+
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     break;
+  }
   case 2:
-    notify(3497);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3497)), 0xFF, 0, 0, 0);
     break;
   case 3:
-    notify(3442);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3442)), 0xFF, 0, 0, 0);
     break;
   case 4:
-    notify(3496);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3496)), 0xFF, 0, 0, 0);
     break;
   case 5:
   case 6:
-    notify(3492);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3492)), 0xFF, 0, 0, 0);
     break;
-  case 7:
-    format(3500, 2, 0xFF);
+  case 7: {
+    char text[500] = {};
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3500), reinterpret_cast<const char*>(bytes + 2));
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     break;
-  case 8:
-    format(3503, 2, 0xFF);
+  }
+  case 8: {
+    char text[500] = {};
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3503), reinterpret_cast<const char*>(bytes + 2));
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     break;
+  }
   case 9: {
-    notify(3494);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3494)), 0xFF, 0, 0, 0);
     std::uint32_t master;
     std::memcpy(&master, bytes + 50, sizeof(master));
     g_adventurerAgencyMgr->RequestStop(master);
     break;
   }
   case 10:
-    notify(3443);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3443)), 0xFF, 0, 0, 0);
     break;
   case 11:
-    notify(3495);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3495)), 0xFF, 0, 0, 0);
     break;
-  case 12:
-    format(608, 2, 0xFF);
+  case 12: {
+    char text[500] = {};
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(608), reinterpret_cast<const char*>(bytes + 2));
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     break;
+  }
   case 13:
-    notify(1816);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1816)), 0xFF, 0, 0, 0);
     break;
   default:
     break;
