@@ -58,7 +58,7 @@ public:
   float CalcDist(float x, float y, float z) const;
   bool GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) const;
   void UpdateTlvertex(const float* matrix);
-  void SetAnimationSpeed(float speed);
+  __declspec(noinline) void SetAnimationSpeed(float speed);
   void SetActionSpeed(float speed);
   void DrawSprite(int argument, bool seasonal, float offset);
   void DrawShadow(int argument, float scale);
@@ -72,7 +72,7 @@ public:
   void SetColor(int alpha, int red, int green, int blue);
   void ModifyArgb(int alpha, int red, int green, int blue);
   void SetSequenceDeadline(std::uint32_t duration);
-  void SetSequenceInterval(unsigned char interval);
+  __declspec(noinline) void SetSequenceInterval(unsigned char interval);
   void SetAnimationSequence(
     unsigned char animation0, unsigned char frame0, unsigned char animation1, unsigned char frame1,
     unsigned char animation2, unsigned char frame2, unsigned char animation3, unsigned char frame3,
@@ -81,7 +81,7 @@ public:
   int HoverHeight();
   void ScaleByPulse(float& scale) const;
   void ScaleByFadePulse(float& scale) const;
-  void DrawPulseOutline(
+  __declspec(noinline) void DrawPulseOutline(
     const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw,
     const std::uint32_t* palette, const SpriteRleImage* image, std::uint32_t color
   );
@@ -93,7 +93,7 @@ public:
   void SetInstantValue(int key, std::int64_t value);
   std::int64_t GetInstant(int key) const;
   const char* GetActName();
-  CActRes* GetActRes();
+  __declspec(noinline) CActRes* GetActRes();
   void SetFrameSequence(
     unsigned char animation, unsigned char firstFrame, unsigned char lastFrame, unsigned char finishAnimation,
     unsigned char finishFrame, int timed, std::uint32_t duration, int loop

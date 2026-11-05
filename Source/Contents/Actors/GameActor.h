@@ -246,7 +246,7 @@ public:
   bool HasUnknown030CEntry();
   bool HasUnknown0310Entry();
   void SetCharm(int type, int count);
-  int ActionBase(int state);
+  __declspec(noinline) int ActionBase(int state);
   void SetUnknown03C4(int value);
   void SetUnknown0404(int value);
   void SetUnknown008C(const std::uint32_t* value);
@@ -262,7 +262,7 @@ public:
   void ResetJobEffects();
   void ClearUnknown037C(int value);
   void SpawnDamageDigits(int unused, int damage, std::uint32_t color, int type);
-  int WeaponActionBase(int weaponType);
+  __declspec(noinline) int WeaponActionBase(int weaponType);
   int GetUnknown0404();
   int MountHeightOffset();
   float sub_CAD4B0();
