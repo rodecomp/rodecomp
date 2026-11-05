@@ -30,33 +30,32 @@ std::vector<DisplayMode> EnumerateDisplayModes(int backend, unsigned deviceIndex
 // OFFSET: 0x0056DCF0
 // FUNCTION: fn_02372
 std::vector<DisplayMode> EnumerateDisplayModesDX9(UINT adapter) {
-  IDirect3D9Ex* direct3D = nullptr;
-  std::vector<DisplayMode> result;
+  Microsoft::WRL::ComPtr<IDirect3D9Ex> direct3D;
+  if (FAILED(Direct3DCreate9Ex(D3D_SDK_VERSION, direct3D.GetAddressOf()))) {
+    return {};
+  }
 
-  if (SUCCEEDED(Direct3DCreate9Ex(D3D_SDK_VERSION, &direct3D))) {
-    const UINT count = direct3D->GetAdapterModeCount(adapter, D3DFMT_X8R8G8B8);
-    std::vector<std::pair<unsigned, unsigned>> dimensions;
-    dimensions.reserve(count);
+  const UINT count = direct3D->GetAdapterModeCount(adapter, D3DFMT_X8R8G8B8);
+  std::vector<std::pair<unsigned, unsigned>> dimensions;
+  dimensions.reserve(count);
 
-    for (UINT index = 0; index < count; ++index) {
-      D3DDISPLAYMODE mode;
+  for (UINT index = 0; index < count; ++index) {
+    D3DDISPLAYMODE mode;
 
-      if (SUCCEEDED(direct3D->EnumAdapterModes(adapter, D3DFMT_X8R8G8B8, index, &mode)) && mode.Height >= 664) {
-        dimensions.emplace_back(mode.Width, mode.Height);
-      }
-    }
-
-    std::sort(dimensions.begin(), dimensions.end());
-    dimensions.erase(std::unique(dimensions.begin(), dimensions.end()), dimensions.end());
-    result.reserve(dimensions.size());
-
-    for (const auto& [width, height] : dimensions) {
-      result.push_back({width, height, 32, std::to_string(width) + " x " + std::to_string(height)});
+    if (SUCCEEDED(direct3D->EnumAdapterModes(adapter, D3DFMT_X8R8G8B8, index, &mode)) && mode.Height >= 664) {
+      dimensions.emplace_back(mode.Width, mode.Height);
     }
   }
 
-  if (direct3D) {
-    direct3D->Release();
+  std::sort(dimensions.begin(), dimensions.end());
+  dimensions.erase(std::unique(dimensions.begin(), dimensions.end()), dimensions.end());
+
+  std::vector<DisplayMode> result;
+  result.reserve(dimensions.size());
+
+  for (const auto& [width, height] : dimensions) {
+    const std::string description = std::format("{} x {}", width, height);
+    result.push_back({width, height, 32, description});
   }
 
   return result;
