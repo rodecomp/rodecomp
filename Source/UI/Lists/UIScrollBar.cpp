@@ -212,10 +212,8 @@ int UIScrollBar::Part(int x, int y) {
 // OFFSET: 0x00890720
 // FUNCTION: fn_11425
 void UIScrollBar::Slot25(int x, int y) {
-  UIWindow* owner = this->parent;
-
   if (this->maximum == 0) {
-    owner->Slot25((x + this->geometry.x), (y + this->geometry.y));
+    this->parent->Slot25((x + this->geometry.x), (y + this->geometry.y));
     return;
   }
 
@@ -225,29 +223,47 @@ void UIScrollBar::Slot25(int x, int y) {
   this->pressX = x;
   this->dragAmount = 0;
 
-  if (this->vertical == 0 || this->vertical == 1) {
-    const bool vertical = this->vertical == 1;
-
+  switch (this->vertical) {
+  case 0:
     switch (part) {
     case 0:
-      owner->SendMsg(this, vertical ? 7 : 8, (0 - (vertical ? this->verticalStep : this->horizontalStep)), 0, 0, 0);
+      this->parent->SendMsg(this, 8, -this->horizontalStep, 0, 0, 0);
       break;
     case 1:
-      owner->SendMsg(this, vertical ? 9 : 11, 0, 0, 0, 0);
+      this->parent->SendMsg(this, 11, 0, 0, 0, 0);
       break;
     case 2:
       g_windowMgr.SetCapture(this);
       this->state = 6;
       break;
     case 3:
-      owner->SendMsg(this, vertical ? 10 : 12, 0, 0, 0, 0);
+      this->parent->SendMsg(this, 12, 0, 0, 0, 0);
       break;
     case 4:
-      owner->SendMsg(this, vertical ? 7 : 8, vertical ? this->verticalStep : this->horizontalStep, 0, 0, 0);
-      break;
-    default:
+      this->parent->SendMsg(this, 8, this->horizontalStep, 0, 0, 0);
       break;
     }
+    break;
+  case 1:
+    switch (part) {
+    case 0:
+      this->parent->SendMsg(this, 7, -this->verticalStep, 0, 0, 0);
+      break;
+    case 1:
+      this->parent->SendMsg(this, 9, 0, 0, 0, 0);
+      break;
+    case 2:
+      g_windowMgr.SetCapture(this);
+      this->state = 6;
+      break;
+    case 3:
+      this->parent->SendMsg(this, 10, 0, 0, 0, 0);
+      break;
+    case 4:
+      this->parent->SendMsg(this, 7, this->verticalStep, 0, 0, 0);
+      break;
+    }
+    break;
   }
 
   if (previous != this->state) {
