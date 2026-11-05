@@ -476,7 +476,7 @@ public:
   void GetMiniPartyUsableArea(RECT* area);
   UIWindow* FindSnapExcludedWindow(int cell);
   void Schedule(UIWindow* window);
-  void AddRendered(UIWindow* window);
+  __declspec(noinline) void AddRendered(UIWindow* window);
   void RegisterWindow(UIWindow* window);
   void UnregisterWindow(UIWindow* window);
   void InvalidateRegisteredWindows();

@@ -30,7 +30,7 @@ public:
   friend void RequestTextButtonService(UITextButton* button);
   friend void OpenTextButtonNavigation(UITextButton* button);
 
-  UITextButton();
+  __declspec(noinline) UITextButton();
   ~UITextButton() override;
   void Paint() override;
   void Slot27(int x, int y) override;
