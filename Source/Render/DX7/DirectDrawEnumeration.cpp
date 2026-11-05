@@ -38,7 +38,7 @@ HRESULT DirectDrawEnumeration::Enumerate(Filter filter) {
 void DirectDrawEnumeration::ClearModes() {
   for (unsigned index = 0; index < g_directDrawModeCount; ++index) {
     if (g_directDrawModes[index].modes) {
-      std::free(g_directDrawModes[index].modes);
+      delete[] g_directDrawModes[index].modes;
       g_directDrawModes[index].modes = nullptr;
     }
   }
@@ -87,15 +87,9 @@ int __cdecl DirectDrawEnumeration::CompareModes(const void* left, const void* ri
 // FUNCTION: fn_09783
 HRESULT CALLBACK DirectDrawEnumeration::Mode(DDSURFACEDESC2* mode, void* context) {
   auto& record = *static_cast<DirectDrawDeviceRecord*>(context);
-  const unsigned count = record.modeCount + 1;
-  const std::size_t size = count > std::numeric_limits<std::size_t>::max() / sizeof(*mode) ? std::numeric_limits<std::size_t>::max() : count * sizeof(*mode);
-  auto* replacement = static_cast<DDSURFACEDESC2*>(std::malloc(size));
-
-  if (record.modeCount) {
-    std::memcpy(replacement, record.modes, record.modeCount * sizeof(*mode));
-  }
-
-  std::free(record.modes);
+  DDSURFACEDESC2* replacement = new DDSURFACEDESC2[record.modeCount + 1];
+  std::memcpy(replacement, record.modes, record.modeCount * sizeof(DDSURFACEDESC2));
+  delete[] record.modes;
   record.modes = replacement;
   record.modes[record.modeCount] = *mode;
   ++record.modeCount;
