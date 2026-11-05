@@ -1,6 +1,7 @@
 #include "Network/GameTickPacket.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Security/NProtectGameGuardMgr.h"
 
 #include <timeapi.h>
 
@@ -23,6 +24,7 @@ void SendGameTick(bool force, std::uint32_t& pendingTick, std::uint32_t& lastTic
     return;
   }
 
+  g_nProtectGameGuardMgr->Tick();
   pendingTick = 0;
   lastTick = timeGetTime();
 
