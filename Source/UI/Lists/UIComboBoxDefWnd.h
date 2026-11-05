@@ -19,6 +19,18 @@ public:
   void Select(int index);
   void Clear();
   std::string GetSelectedText();
+  // INLINED
+  void SetBorderColor(int r, int g, int b) {
+    this->borderRed = r;
+    this->borderGreen = g;
+    this->borderBlue = b;
+  }
+  // INLINED
+  void SetColor(int r, int g, int b) {
+    this->red = r;
+    this->green = g;
+    this->blue = b;
+  }
 
   /* 007C */ UIBitmapButton* button;
   /* 0080 */ UIComboBoxEx* list;

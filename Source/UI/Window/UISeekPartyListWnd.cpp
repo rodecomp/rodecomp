@@ -128,48 +128,32 @@ void UISeekPartyListWnd::Slot15(int width, int height) {
   this->m_jobCategoryCombo->dropdownHeight = 0x50;
   this->m_jobCategoryCombo->SetSize(0x96, 0x12);
   this->m_jobCategoryCombo->Move(0x32, 0x44);
-  this->m_jobCategoryCombo->borderRed = 0x64;
-  this->m_jobCategoryCombo->borderGreen = 0x64;
-  this->m_jobCategoryCombo->borderBlue = 0x64;
-  this->m_jobCategoryCombo->red = 0xE8;
-  this->m_jobCategoryCombo->green = 0xE8;
-  this->m_jobCategoryCombo->blue = 0xE8;
+  this->m_jobCategoryCombo->SetBorderColor(0x64, 0x64, 0x64);
+  this->m_jobCategoryCombo->SetColor(0xE8, 0xE8, 0xE8);
   this->AddChild(this->m_jobCategoryCombo);
 
   this->m_jobCombo = new UIComboBoxDefWnd();
   this->m_jobCombo->dropdownHeight = 0x50;
   this->m_jobCombo->SetSize(200, 0x12);
   this->m_jobCombo->Move(0xDC, 0x44);
-  this->m_jobCombo->borderRed = 0x64;
-  this->m_jobCombo->borderGreen = 0x64;
-  this->m_jobCombo->borderBlue = 0x64;
-  this->m_jobCombo->red = 0xE8;
-  this->m_jobCombo->green = 0xE8;
-  this->m_jobCombo->blue = 0xE8;
+  this->m_jobCombo->SetBorderColor(0x64, 0x64, 0x64);
+  this->m_jobCombo->SetColor(0xE8, 0xE8, 0xE8);
   this->AddChild(this->m_jobCombo);
 
   this->m_regionCombo = new UIComboBoxDefWnd();
   this->m_regionCombo->dropdownHeight = 0x50;
   this->m_regionCombo->SetSize(0x96, 0x12);
   this->m_regionCombo->Move(0x32, 0x2B);
-  this->m_regionCombo->borderRed = 0x64;
-  this->m_regionCombo->borderGreen = 0x64;
-  this->m_regionCombo->borderBlue = 0x64;
-  this->m_regionCombo->red = 0xE8;
-  this->m_regionCombo->green = 0xE8;
-  this->m_regionCombo->blue = 0xE8;
+  this->m_regionCombo->SetBorderColor(0x64, 0x64, 0x64);
+  this->m_regionCombo->SetColor(0xE8, 0xE8, 0xE8);
   this->AddChild(this->m_regionCombo);
 
   this->m_mapCombo = new UIComboBoxDefWnd();
   this->m_mapCombo->dropdownHeight = 0x50;
   this->m_mapCombo->SetSize(200, 0x12);
   this->m_mapCombo->Move(0xDC, 0x2B);
-  this->m_mapCombo->borderRed = 0x64;
-  this->m_mapCombo->borderGreen = 0x64;
-  this->m_mapCombo->borderBlue = 0x64;
-  this->m_mapCombo->red = 0xE8;
-  this->m_mapCombo->green = 0xE8;
-  this->m_mapCombo->blue = 0xE8;
+  this->m_mapCombo->SetBorderColor(0x64, 0x64, 0x64);
+  this->m_mapCombo->SetColor(0xE8, 0xE8, 0xE8);
   this->AddChild(this->m_mapCombo);
 
   this->m_alarmCheck = new UICheckBox();
@@ -444,7 +428,8 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 void UISeekPartyListWnd::NotifyNewAd() {
   if (this->m_alarmCheck->geometry.unknown_0030 != 0) {
     g_soundMgr->PlayWave("party_alarm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x6D9)), 0xFFFF00, 15, 0, 0);
+    const char* message = LookupMessage(0x6D9);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 15, 0, 0);
   }
 }
 
@@ -500,9 +485,8 @@ int UISeekPartyListWnd::HitTestRow(int x, int y) {
   const int row = (y - 0x78) / 0x28;
   int found = 0;
   int index = 0;
-  const int firstIndex = this->m_firstRow * this->m_columnCount;
   for (auto it = g_friendRows.begin(); it != g_friendRows.end(); ++it, ++index) {
-    if (index < firstIndex) {
+    if (index < this->m_firstRow * this->m_columnCount) {
       continue;
     }
 
