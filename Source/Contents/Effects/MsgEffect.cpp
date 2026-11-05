@@ -183,10 +183,7 @@ bool CMsgEffect::OnProcess() {
     if (this->m_type != 0x12 || !this->m_visible) {
       return false;
     }
-    if (this->unknown_01A0 > 35) {
-      if (this->unknown_01B4 == 0) {
-        return false;
-      }
+    if (this->unknown_01A0 > 35 && this->unknown_01B4 != 0) {
       this->unknown_01B4 = 0;
       this->m_finished = 0;
       return true;
@@ -207,15 +204,172 @@ bool CMsgEffect::OnProcess() {
     case 0x15:
     case 0x16:
     case 0x19:
-    case 0x72:
       break;
     default:
-      this->PlayFrameSounds();
+      if (this->m_type != 0x72) {
+        this->PlayFrameSounds();
+      }
       break;
   }
 
   float elapsed;
   switch (this->m_type) {
+    case 0x10:
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      MsgEffectDrift(this, elapsed);
+      if (this->render.scale > 1.3f) {
+        this->render.scale = this->m_scale - elapsed * 0.24f;
+      } else if (this->render.scale < 1.3f) {
+        this->render.scale = 1.3f;
+      }
+      this->SetColor(static_cast<int>(250.0f - elapsed * 3.4f), -1, -1, -1);
+      return !(elapsed > 70.0f);
+
+    case 0x1B:
+    case 0x1F: {
+      CActRes* action = this->GetActRes();
+      const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      if (frames == 0) {
+        return true;
+      }
+      const int tick = this->unknown_01A0;
+      this->render.curMotion = static_cast<int>(static_cast<float>(tick) / this->render.speed) % frames;
+      if (this->unknown_01B4 == 1) {
+        if (this->render.curMotion >= frames - 1) {
+          this->unknown_01B4 = 0;
+        }
+        if (tick < 8) {
+          this->render.position.x = this->m_velocity.x + this->render.position.x;
+          this->render.position.y = this->m_velocity.y + this->render.position.y;
+          this->render.position.z = this->m_velocity.z + this->render.position.z;
+        }
+      }
+      this->unknown_01A0 = tick + 1;
+      return true;
+    }
+
+    case 0xE:
+    case 0x15:
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      MsgEffectDrift(this, elapsed);
+      if (this->render.scale > 1.2f) {
+        this->render.scale = this->m_scale - elapsed * 0.24f;
+      } else if (this->render.scale < 1.2f) {
+        this->render.scale = 1.2f;
+      }
+      this->SetColor(static_cast<int>(250.0f - elapsed * 3.4f), -1, -1, -1);
+      return !(elapsed > 70.0f);
+
+    case 0x18: {
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      if (this->render.curMotion == 0) {
+        CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+        g_soundMgr->PlayWave("effect\\kyrie_guard.wav", this->render.position.x - player->render.position.x, 0.0f,
+                             this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0);
+      }
+      ++this->render.curMotion;
+      if (this->render.curMotion >= static_cast<int>(this->GetActRes()->FrameCount(this->render.previousAnimation))) {
+        this->render.curMotion = static_cast<int>(this->GetActRes()->FrameCount(this->render.previousAnimation)) - 1;
+      }
+      this->SetColor(250, -1, -1, -1);
+      this->render.scale = 1.2f;
+      this->m_scale = 1.2f;
+      return !(elapsed > 10.0f);
+    }
+
+    case 0xD:
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      this->render.position.y = this->m_baseY - elapsed * 0.54f;
+      this->SetColor(static_cast<int>(250.0f - elapsed * 3.0f), -1, -1, -1);
+      this->render.scale = 1.0f;
+      this->GetActRes();
+      return !(elapsed > 80.0f);
+
+    case 0x16: {
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      this->render.position.y = this->m_baseY - elapsed * 0.1f;
+      int fade = 0;
+      if (elapsed > 90.0f) {
+        fade = static_cast<int>((elapsed - 90.0f) * 8.0f);
+      }
+      this->SetColor(250 - fade, -1, -1, -1);
+      if (this->render.scale < 3.0f) {
+        this->render.scale = elapsed * 0.18f + this->render.scale;
+      } else if (this->render.scale > 3.0f) {
+        this->render.scale = 3.0f;
+      }
+      return !(elapsed > 120.0f);
+    }
+
+    case 0x19: {
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      this->render.curMotion = 0;
+      this->render.position.y = this->m_baseY - elapsed * 0.1f - 15.0f;
+      int fade = 0;
+      if (elapsed > 90.0f) {
+        fade = static_cast<int>((elapsed - 90.0f) * 8.0f);
+      }
+      int blue = -1;
+      int tint = -1;
+      if (fade <= 210) {
+        tint = 150;
+        blue = 255;
+      }
+      int alpha = 0;
+      if (fade <= 210) {
+        alpha = 210 - fade;
+      }
+      this->SetColor(alpha, tint, tint, blue);
+      if (this->render.scale < 2.0f) {
+        this->render.scale = elapsed * 0.15f + this->render.scale;
+      } else if (this->render.scale > 2.0f) {
+        this->render.scale = 2.0f;
+      }
+      return !(elapsed > 120.0f);
+    }
+
+    case 0xF: {
+      elapsed = MsgEffectElapsedFrames(this);
+      this->render.previousAnimation = this->render.animation;
+      MsgEffectDrift(this, elapsed);
+      if (this->render.scale > 1.0f) {
+        this->render.scale = this->m_scale - elapsed * 0.24f * 0.6f;
+      } else if (this->render.scale < 1.0f) {
+        this->render.scale = 1.0f;
+      }
+      CActRes* action = this->GetActRes();
+      if (this->render.curMotion < static_cast<int>(action->FrameCount(this->render.previousAnimation)) - 1) {
+        const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+        this->render.curMotion = static_cast<int>(elapsed * g_depthAverageHalf) % frames;
+      }
+      this->SetColor(static_cast<int>(255.0f - elapsed * 3.45f), -1, -1, -1);
+      return !(elapsed > 70.0f);
+    }
+
+    case 0x1C:
+    case 0x1D:
+    case 0x1E:
+    case 0x20:
+    case 0x21:
+    case 0x22:
+    case 0x23:
+    case 0x24: {
+      CActRes* action = this->GetActRes();
+      elapsed = MsgEffectElapsedFrames(this);
+      const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      if (frames == 0) {
+        return true;
+      }
+      this->render.curMotion = static_cast<int>(elapsed / this->render.speed) % frames;
+      return true;
+    }
+
     case 0:
     case 1:
     case 2:
@@ -247,6 +401,18 @@ bool CMsgEffect::OnProcess() {
       return false;
     }
 
+    case 6: {
+      elapsed = MsgEffectElapsedFrames(this);
+      CActRes* action = this->GetActRes();
+      const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      const float motion = elapsed * 1.2f;
+      this->render.curMotion = static_cast<int>(motion) % frames;
+      if (motion / static_cast<float>(frames) < 1.0f) {
+        return true;
+      }
+      return false;
+    }
+
     case 4:
     case 5:
     case 7:
@@ -263,18 +429,6 @@ bool CMsgEffect::OnProcess() {
       return true;
     }
 
-    case 6: {
-      elapsed = MsgEffectElapsedFrames(this);
-      CActRes* action = this->GetActRes();
-      const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
-      const float motion = elapsed * 1.2f;
-      this->render.curMotion = static_cast<int>(motion) % frames;
-      if (motion / static_cast<float>(frames) < 1.0f) {
-        return true;
-      }
-      return false;
-    }
-
     case 0xB:
     case 0xC:
       if (this->m_owner == nullptr) {
@@ -285,58 +439,6 @@ bool CMsgEffect::OnProcess() {
         this->m_owner->SendMsg(nullptr, 0x4D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       return true;
-
-    case 0xD:
-      elapsed = MsgEffectElapsedFrames(this);
-      this->render.previousAnimation = this->render.animation;
-      this->render.position.y = this->m_baseY - elapsed * 0.54f;
-      this->SetColor(static_cast<int>(250.0f - elapsed * 3.0f), -1, -1, -1);
-      this->render.scale = 1.0f;
-      this->GetActRes();
-      return !(elapsed > 80.0f);
-
-    case 0xE:
-    case 0x15:
-      elapsed = MsgEffectElapsedFrames(this);
-      this->render.previousAnimation = this->render.animation;
-      MsgEffectDrift(this, elapsed);
-      if (this->render.scale > 1.2f) {
-        this->render.scale = this->m_scale - elapsed * 0.24f;
-      } else if (this->render.scale < 1.2f) {
-        this->render.scale = 1.2f;
-      }
-      this->SetColor(static_cast<int>(250.0f - elapsed * 3.4f), -1, -1, -1);
-      return !(elapsed > 70.0f);
-
-    case 0xF: {
-      elapsed = MsgEffectElapsedFrames(this);
-      this->render.previousAnimation = this->render.animation;
-      MsgEffectDrift(this, elapsed);
-      if (this->render.scale > 1.0f) {
-        this->render.scale = this->m_scale - elapsed * 0.24f * 0.6f;
-      } else if (this->render.scale < 1.0f) {
-        this->render.scale = 1.0f;
-      }
-      CActRes* action = this->GetActRes();
-      if (this->render.curMotion < static_cast<int>(action->FrameCount(this->render.previousAnimation)) - 1) {
-        const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
-        this->render.curMotion = static_cast<int>(elapsed * g_depthAverageHalf) % frames;
-      }
-      this->SetColor(static_cast<int>(255.0f - elapsed * 3.45f), -1, -1, -1);
-      return !(elapsed > 70.0f);
-    }
-
-    case 0x10:
-      elapsed = MsgEffectElapsedFrames(this);
-      this->render.previousAnimation = this->render.animation;
-      MsgEffectDrift(this, elapsed);
-      if (this->render.scale > 1.3f) {
-        this->render.scale = this->m_scale - elapsed * 0.24f;
-      } else if (this->render.scale < 1.3f) {
-        this->render.scale = 1.3f;
-      }
-      this->SetColor(static_cast<int>(250.0f - elapsed * 3.4f), -1, -1, -1);
-      return !(elapsed > 70.0f);
 
     case 0x12:
       if (this->unknown_01B4 != 0 && this->m_owner != nullptr) {
@@ -388,111 +490,10 @@ bool CMsgEffect::OnProcess() {
       }
       return true;
 
-    case 0x16: {
-      elapsed = MsgEffectElapsedFrames(this);
-      this->render.previousAnimation = this->render.animation;
-      this->render.position.y = this->m_baseY - elapsed * 0.1f;
-      int fade = 0;
-      if (elapsed > 90.0f) {
-        fade = static_cast<int>((elapsed - 90.0f) * 8.0f);
-      }
-      this->SetColor(250 - fade, -1, -1, -1);
-      if (this->render.scale < 3.0f) {
-        this->render.scale = elapsed * 0.18f + this->render.scale;
-      } else if (this->render.scale > 3.0f) {
-        this->render.scale = 3.0f;
-      }
-      return !(elapsed > 120.0f);
-    }
-
-    case 0x18: {
-      elapsed = MsgEffectElapsedFrames(this);
-      this->render.previousAnimation = this->render.animation;
-      if (this->render.curMotion == 0) {
-        CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
-        g_soundMgr->PlayWave("effect\\kyrie_guard.wav", this->render.position.x - player->render.position.x, 0.0f,
-                             this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0);
-      }
-      ++this->render.curMotion;
-      if (this->render.curMotion >= static_cast<int>(this->GetActRes()->FrameCount(this->render.previousAnimation))) {
-        this->render.curMotion = static_cast<int>(this->GetActRes()->FrameCount(this->render.previousAnimation)) - 1;
-      }
-      this->SetColor(250, -1, -1, -1);
-      this->render.scale = 1.2f;
-      this->m_scale = 1.2f;
-      return !(elapsed > 10.0f);
-    }
-
-    case 0x19: {
-      elapsed = MsgEffectElapsedFrames(this);
-      this->render.previousAnimation = this->render.animation;
-      this->render.curMotion = 0;
-      this->render.position.y = this->m_baseY - elapsed * 0.1f - 15.0f;
-      int fade = 0;
-      if (elapsed > 90.0f) {
-        fade = static_cast<int>((elapsed - 90.0f) * 8.0f);
-      }
-      int blue = -1;
-      int tint = -1;
-      if (fade <= 210) {
-        tint = 150;
-        blue = 255;
-      }
-      int alpha = 0;
-      if (fade <= 210) {
-        alpha = 210 - fade;
-      }
-      this->SetColor(alpha, tint, tint, blue);
-      if (this->render.scale < 2.0f) {
-        this->render.scale = elapsed * 0.15f + this->render.scale;
-      } else if (this->render.scale > 2.0f) {
-        this->render.scale = 2.0f;
-      }
-      return !(elapsed > 120.0f);
-    }
-
-    case 0x1B:
-    case 0x1F: {
-      CActRes* action = this->GetActRes();
-      const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
-      if (frames == 0) {
+    default:
+      if (this->m_type != 0x72) {
         return true;
       }
-      const int tick = this->unknown_01A0;
-      this->render.curMotion = static_cast<int>(static_cast<float>(tick) / this->render.speed) % frames;
-      if (this->unknown_01B4 == 1) {
-        if (this->render.curMotion >= frames - 1) {
-          this->unknown_01B4 = 0;
-        }
-        if (tick < 8) {
-          this->render.position.x = this->m_velocity.x + this->render.position.x;
-          this->render.position.y = this->m_velocity.y + this->render.position.y;
-          this->render.position.z = this->m_velocity.z + this->render.position.z;
-        }
-      }
-      this->unknown_01A0 = tick + 1;
-      return true;
-    }
-
-    case 0x1C:
-    case 0x1D:
-    case 0x1E:
-    case 0x20:
-    case 0x21:
-    case 0x22:
-    case 0x23:
-    case 0x24: {
-      CActRes* action = this->GetActRes();
-      elapsed = MsgEffectElapsedFrames(this);
-      const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
-      if (frames == 0) {
-        return true;
-      }
-      this->render.curMotion = static_cast<int>(elapsed / this->render.speed) % frames;
-      return true;
-    }
-
-    case 0x72:
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
       this->render.position.y = this->m_baseY - elapsed * 0.18f;
@@ -503,9 +504,6 @@ bool CMsgEffect::OnProcess() {
         this->render.scale = 1.0f;
       }
       return !(elapsed > 120.0f);
-
-    default:
-      return true;
   }
 }
 
@@ -1491,6 +1489,174 @@ void CMsgEffect::Render(int argument) {
 void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
   const vector3d* position = reinterpret_cast<const vector3d*>(b);
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
+    case 29:
+      if (this->m_type == 18) {
+        this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
+        this->m_velocity.y = (position->y - this->render.position.y) / 10.0f;
+        this->unknown_01B4 = 1;
+        this->unknown_01B0 = 0;
+        this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
+        return;
+      }
+
+      if (this->m_type == 27 || this->m_type == 31) {
+        this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
+        this->m_velocity.y = (position->y - this->render.position.y) / 10.0f;
+        this->unknown_01B4 = 1;
+        this->unknown_01A0 = 0;
+        this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
+        return;
+      }
+      break;
+
+    case 49:
+      this->m_owner = nullptr;
+      switch (this->m_type) {
+        case 6:
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+        case 17:
+        case 21:
+        case 22:
+        case 25:
+          break;
+
+        default:
+          this->m_finished = 1;
+          break;
+      }
+      return;
+
+    case 53:
+      this->m_finished = 1;
+      return;
+
+    case 50:
+      this->m_owner = sender;
+      switch (this->m_type) {
+        case 3:
+        case 18:
+        case 27:
+        case 31:
+          if (sender != nullptr) {
+            const CRenderObject* owner = static_cast<const CRenderObject*>(sender);
+            this->render.position.x = owner->render.position.x - ClientSine(static_cast<int>(owner->render.angle)) * 5.0f;
+            owner = static_cast<const CRenderObject*>(this->m_owner);
+            this->render.position.z = ClientCosine(static_cast<int>(owner->render.angle)) * 5.0f + owner->render.position.z;
+          }
+          break;
+
+        case 6:
+          if (sender != nullptr) {
+            this->render.position = static_cast<const CRenderObject*>(sender)->render.position;
+          }
+          break;
+      }
+      return;
+
+    case 22:
+      this->m_type = d;
+      this->m_value = b;
+      switch (d) {
+        case 3:
+        case 31:
+          this->render.unknown_00A2 = 0;
+          this->render.unknown_0080 = 0;
+          this->render.unknown_00A4Bytes[0] = 1;
+          this->render.unknown_0054 = 1.0f;
+          break;
+
+        case 4:
+          this->SetColor(0x7F, 0xFF, 0, 0);
+          break;
+
+        case 7:
+          this->SetColor(0x7F, -1, -1, -1);
+          this->render.unknown_00A2 = 0;
+          this->render.unknown_0080 = 5;
+          break;
+
+        case 5:
+        case 6:
+          this->render.unknown_00A2 = 0;
+          this->render.unknown_0080 = 5;
+          break;
+
+        case 18:
+          this->render.unknown_00A2 = 0;
+          this->render.unknown_0080 = 0;
+          break;
+
+        case 27:
+          this->render.unknown_00A2 = 0;
+          this->render.unknown_0080 = 0;
+          this->render.unknown_00A4Bytes[0] = 1;
+          this->render.unknown_0054 = 2.0f;
+          break;
+      }
+      return;
+
+    case 64: {
+      int offset = 0;
+      switch (this->m_type) {
+        case 13:
+          this->m_baseX = this->render.position.x;
+          return;
+
+        case 22:
+          offset = 15;
+        case 14:
+        case 16:
+        case 21:
+          this->SetSpriteName(ResourceMgr::Instance(), FormatOwnedString("%s.spr", g_session.m_damageResourceName.c_str()).c_str());
+          this->SetActionName(ResourceMgr::Instance(), FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
+          this->render.animation = 0;
+          this->render.previousAnimation = 0;
+          this->render.position = *position;
+          this->render.position.y -= static_cast<float>(offset + 12);
+          this->m_baseY = this->render.position.y;
+          break;
+
+        case 15:
+        case 17:
+        case 18:
+        case 19:
+        case 20:
+          return;
+
+        default:
+          if (this->m_type != 114) {
+            return;
+          }
+
+          this->SetSpriteName(ResourceMgr::Instance(), FormatOwnedString("%s.spr", g_session.m_damageResourceName.c_str()).c_str());
+          this->SetActionName(ResourceMgr::Instance(), FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
+          this->render.animation = 0;
+          this->render.previousAnimation = 0;
+          this->render.position = *position;
+          this->m_baseX = this->render.position.x;
+          this->render.position.y -= 12.0f;
+          this->m_baseY = this->render.position.y;
+          break;
+      }
+
+      this->render.curMotion = d;
+      this->render.visible = 1;
+      if (d < 0 || d > 11) {
+        this->render.curMotion = 0;
+      }
+
+      this->render.unknown_0078 = f;
+      this->m_digit = f;
+      this->render.scale = 5.0f;
+      this->m_scale = 5.0f;
+      this->render.unknown_0080 = static_cast<std::uint32_t>(-2);
+      this->render.unknown_008C = timeGetTime();
+      return;
+    }
+
     case 14: {
       this->render.visible = 1;
       this->render.unknown_008C = timeGetTime();
@@ -1570,174 +1736,6 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           this->render.position.y -= 20.0f;
           break;
       }
-      return;
-    }
-
-    case 22:
-      this->m_type = d;
-      this->m_value = b;
-      switch (d) {
-        case 3:
-        case 31:
-          this->render.unknown_00A2 = 0;
-          this->render.unknown_0080 = 0;
-          this->render.unknown_00A4Bytes[0] = 1;
-          this->render.unknown_0054 = 1.0f;
-          break;
-
-        case 4:
-          this->SetColor(0x7F, 0xFF, 0, 0);
-          break;
-
-        case 7:
-          this->SetColor(0x7F, -1, -1, -1);
-          this->render.unknown_00A2 = 0;
-          this->render.unknown_0080 = 5;
-          break;
-
-        case 5:
-        case 6:
-          this->render.unknown_00A2 = 0;
-          this->render.unknown_0080 = 5;
-          break;
-
-        case 18:
-          this->render.unknown_00A2 = 0;
-          this->render.unknown_0080 = 0;
-          break;
-
-        case 27:
-          this->render.unknown_00A2 = 0;
-          this->render.unknown_0080 = 0;
-          this->render.unknown_00A4Bytes[0] = 1;
-          this->render.unknown_0054 = 2.0f;
-          break;
-      }
-      return;
-
-    case 29:
-      if (this->m_type == 18) {
-        this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
-        this->m_velocity.y = (position->y - this->render.position.y) / 10.0f;
-        this->unknown_01B4 = 1;
-        this->unknown_01B0 = 0;
-        this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
-        return;
-      }
-
-      if (this->m_type == 27 || this->m_type == 31) {
-        this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
-        this->m_velocity.y = (position->y - this->render.position.y) / 10.0f;
-        this->unknown_01B4 = 1;
-        this->unknown_01A0 = 0;
-        this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
-        return;
-      }
-      break;
-
-    case 49:
-      this->m_owner = nullptr;
-      switch (this->m_type) {
-        case 6:
-        case 13:
-        case 14:
-        case 15:
-        case 16:
-        case 17:
-        case 21:
-        case 22:
-        case 25:
-          break;
-
-        default:
-          this->m_finished = 1;
-          break;
-      }
-      return;
-
-    case 50:
-      this->m_owner = sender;
-      switch (this->m_type) {
-        case 3:
-        case 18:
-        case 27:
-        case 31:
-          if (sender != nullptr) {
-            const CRenderObject* owner = static_cast<const CRenderObject*>(sender);
-            this->render.position.x = owner->render.position.x - ClientSine(static_cast<int>(owner->render.angle)) * 5.0f;
-            owner = static_cast<const CRenderObject*>(this->m_owner);
-            this->render.position.z = ClientCosine(static_cast<int>(owner->render.angle)) * 5.0f + owner->render.position.z;
-          }
-          break;
-
-        case 6:
-          if (sender != nullptr) {
-            this->render.position = static_cast<const CRenderObject*>(sender)->render.position;
-          }
-          break;
-      }
-      return;
-
-    case 53:
-      this->m_finished = 1;
-      return;
-
-    case 64: {
-      int offset = 0;
-      switch (this->m_type) {
-        case 13:
-          this->m_baseX = this->render.position.x;
-          return;
-
-        case 22:
-          offset = 15;
-        case 14:
-        case 16:
-        case 21:
-          this->SetSpriteName(ResourceMgr::Instance(), FormatOwnedString("%s.spr", g_session.m_damageResourceName.c_str()).c_str());
-          this->SetActionName(ResourceMgr::Instance(), FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
-          this->render.animation = 0;
-          this->render.previousAnimation = 0;
-          this->render.position = *position;
-          this->render.position.y -= static_cast<float>(offset + 12);
-          this->m_baseY = this->render.position.y;
-          break;
-
-        case 15:
-        case 17:
-        case 18:
-        case 19:
-        case 20:
-          return;
-
-        default:
-          if (this->m_type != 114) {
-            return;
-          }
-
-          this->SetSpriteName(ResourceMgr::Instance(), FormatOwnedString("%s.spr", g_session.m_damageResourceName.c_str()).c_str());
-          this->SetActionName(ResourceMgr::Instance(), FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
-          this->render.animation = 0;
-          this->render.previousAnimation = 0;
-          this->render.position = *position;
-          this->m_baseX = this->render.position.x;
-          this->render.position.y -= 12.0f;
-          this->m_baseY = this->render.position.y;
-          break;
-      }
-
-      this->render.curMotion = d;
-      this->render.visible = 1;
-      if (d < 0 || d > 11) {
-        this->render.curMotion = 0;
-      }
-
-      this->render.unknown_0078 = f;
-      this->m_digit = f;
-      this->render.scale = 5.0f;
-      this->m_scale = 5.0f;
-      this->render.unknown_0080 = static_cast<std::uint32_t>(-2);
-      this->render.unknown_008C = timeGetTime();
       return;
     }
   }
