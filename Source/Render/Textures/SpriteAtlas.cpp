@@ -35,7 +35,7 @@ namespace {
 }
 
 // INLINED
-SpriteAtlas::SpriteAtlas() : m_classes{} {
+__forceinline SpriteAtlas::SpriteAtlas() : m_classes{} {
 }
 
 // OFFSET: 0x0056F280
