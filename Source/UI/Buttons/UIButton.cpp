@@ -4,6 +4,7 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -119,7 +120,7 @@ void UIButton::Slot28(int x, int y) {
       screenY = (screenY + window->geometry.y);
     }
 
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.gameMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 
   if (this->m_disabled == 0) {
@@ -141,7 +142,7 @@ void UIButton::Slot29(int x, int y) {
 // OFFSET: 0x0085F950
 // FUNCTION: fn_10875
 void UIButton::ResetCursor(int, int) {
-  static_cast<CMode*>(g_charViewMode)->SetCursorAction(this->m_disabled != 0 ? 0 : 2);
+  g_modeMgr.gameMode->SetCursorAction(this->m_disabled != 0 ? 0 : 2);
 }
 
 // OFFSET: 0x0085EED0
