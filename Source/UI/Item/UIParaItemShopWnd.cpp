@@ -755,7 +755,7 @@ void UIParaItemShopWnd::Paint() {
     FormatGroupedInteger(static_cast<int>(it->unknown_0014[1]), price, sizeof(price));
     std::string text = FormatOwnedString(" %s %s", price, currency.c_str());
     if (it->unknown_0014[0] != it->unknown_0014[1]) {
-      text = FormatOwnedString(" %d -> %s %s", it->unknown_0014[0], price, currency.c_str());
+      text = static_cast<const std::string&>(FormatOwnedString(" %d -> %s %s", it->unknown_0014[0], price, currency.c_str()));
     }
 
     this->DrawRightAlignedText(this->geometry.width - 18, top + 12, text.c_str(), text.size(), 0, 12, 0, 0);
@@ -768,13 +768,13 @@ void UIParaItemShopWnd::Paint() {
   if (this->unknown_010C == 1) {
     std::string text;
     if (g_serviceType == 0 && g_session.m_channelCopId == 1) {
-      text = FormatOwnedString(LookupMessage(1290), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid);
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(1290), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid));
     } else {
-      text = FormatOwnedString(LookupMessage(1210), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid);
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(1210), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid));
     }
     this->DrawTextAt(12, this->geometry.height - 21, text.c_str(), text.size(), 0, 12, 0, 0, 0);
 
-    text = FormatOwnedString(LookupMessage(1305), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingGid);
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(1305), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingGid));
     this->DrawTextAt(12, this->geometry.height - barHeight - 21, text.c_str(), text.size(), 0, 12, 0, 0, 0);
   }
 }
