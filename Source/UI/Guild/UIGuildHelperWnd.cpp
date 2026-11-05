@@ -291,12 +291,22 @@ void UICreateGuildWnd::Slot15(int, int) {
     int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     int ids[2] = {184, 185};
+    std::string name;
 
     for (unsigned int i = 0; i < 2; ++i) {
       auto* button = new UIBitmapButton();
-      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
-      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
-      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+      name.assign(prefix);
+      name += names[i][0];
+      name += ".bmp";
+      button->SetBitmap(name.c_str(), 0, 0);
+      name.assign(prefix);
+      name += names[i][1];
+      name += ".bmp";
+      button->SetBitmap(name.c_str(), 1, 0);
+      name.assign(prefix);
+      name += names[i][2];
+      name += ".bmp";
+      button->SetBitmap(name.c_str(), 2, 0);
       button->SetSize(button->BitmapWidth(), button->BitmapHeight());
       button->Move(positions[i][0], positions[i][1]);
       button->SetId(ids[i]);
@@ -316,11 +326,21 @@ void UIGuildHelperWnd::Slot15(int width, int height) {
   int ids[3] = {343, 448, 184};
 
   int x = 8;
+  std::string name;
   for (int i = 0; i < 3; ++i) {
     this->m_button = new UIBitmapButton();
-    this->m_button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
-    this->m_button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
-    this->m_button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+    name.assign(prefix);
+    name += names[i][0];
+    name += ".bmp";
+    this->m_button->SetBitmap(name.c_str(), 0, 0);
+    name.assign(prefix);
+    name += names[i][1];
+    name += ".bmp";
+    this->m_button->SetBitmap(name.c_str(), 1, 0);
+    name.assign(prefix);
+    name += names[i][2];
+    name += ".bmp";
+    this->m_button->SetBitmap(name.c_str(), 2, 0);
     this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
     this->m_button->Move(i < 2 ? x : width - 52, height - 24);
     this->m_button->SetId(ids[i]);
@@ -363,12 +383,22 @@ void UIGuildLeaveReasonDescWnd::Slot15(int, int) {
     int positions[2][2] = {{this->geometry.width - 101, this->geometry.height - 32}, {this->geometry.width - 55, this->geometry.height - 32}};
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     int ids[2] = {184, 185};
+    std::string name;
 
     for (int i = 0; i < 2; ++i) {
       auto* button = new UIBitmapButton();
-      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
-      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
-      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+      name.assign(prefix);
+      name += names[i][0];
+      name += ".bmp";
+      button->SetBitmap(name.c_str(), 0, 0);
+      name.assign(prefix);
+      name += names[i][1];
+      name += ".bmp";
+      button->SetBitmap(name.c_str(), 1, 0);
+      name.assign(prefix);
+      name += names[i][2];
+      name += ".bmp";
+      button->SetBitmap(name.c_str(), 2, 0);
       button->SetSize(button->BitmapWidth(), button->BitmapHeight());
       button->Move(positions[i][0], positions[i][1]);
       button->SetId(ids[i]);
