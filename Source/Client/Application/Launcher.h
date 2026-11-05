@@ -8,7 +8,7 @@ extern std::uint32_t g_clientVersion;
 extern char g_applicationDirectory[0x80];
 extern HINSTANCE g_instance;
 
-bool RestartFromCommandLine(char* commandLine);
+bool RestartFromCommandLine();
 
 void ExitForProtectionCheck(const char* commandLine);
 bool AcquireInstanceMutex(HANDLE* mutex);

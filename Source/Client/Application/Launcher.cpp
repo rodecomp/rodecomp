@@ -731,22 +731,22 @@ int RemovePath(std::string path, int depth, bool file) {
 
 // OFFSET: 0x00E58820
 // FUNCTION: fn_24363
-bool RestartFromCommandLine(char* commandLine) {
-  char* marker = std::strstr(commandLine, "/launcherRESTART:");
+bool RestartFromCommandLine() {
+  const std::uint8_t markerSource[] = {0x2E, 0xDF, 0x58, 0x2E, 0xF5, 0x1C, 0x2F, 0x4E, 0x73, 0xE1, 0x7C, 0x08, 0xCF, 0x3E, 0x15, 0x7F, 0x3B, 0xB3};
+  thread_local EncryptedName<sizeof(markerSource), 0x2B477F9B5B39B301ULL> markerName(markerSource);
+  char* marker = std::strstr(g_commandLine, markerName.Text());
   if (!marker) {
     return false;
   }
-
-  STARTUPINFOA startup = {};
-  startup.cb = sizeof(startup);
+  const std::uint8_t prefixSource[] = {0xB8, 0x1D, 0xC6, 0xC8, 0x0F, 0x40, 0xEB, 0x3E, 0xE5, 0x23, 0xE2, 0xEE, 0x35, 0x62, 0xD1, 0x0F, 0xAD, 0x71};
+  thread_local EncryptedName<sizeof(prefixSource), 0x5B832361BDA77197ULL> prefixName(prefixSource);
+  STARTUPINFOA startup = {sizeof(startup)};
   startup.dwFlags = STARTF_USESHOWWINDOW;
   startup.wShowWindow = SW_SHOWNORMAL;
   PROCESS_INFORMATION process;
-
-  CreateProcessA(nullptr, marker + std::strlen("/launcherRESTART:"), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startup, &process);
+  CreateProcessA(nullptr, marker + std::strlen(prefixName.Text()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startup, &process);
   CloseHandle(process.hProcess);
   CloseHandle(process.hThread);
-
   return true;
 }
 
@@ -1415,7 +1415,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   }
 
   g_commandLine = commandLine;
-  if (RestartFromCommandLine(commandLine) == true) {
+  if (RestartFromCommandLine() == true) {
     return 0;
   }
 
