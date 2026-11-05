@@ -31,6 +31,7 @@ void CGraffiSkill::ReleaseTexture() {
 void CGraffiSkill::BuildTexture() {
   this->m_penX = 0;
   this->m_penY = 0;
+
   this->m_font = g_texMgr.Load("effect\\alpabet.bmp", 0, false, true, false);
   this->m_canvas = CreateTexture(0x180, 0x180, 0, false, false);
 
@@ -51,6 +52,12 @@ void CGraffiSkill::BuildTexture() {
     } else if (letter >= '0' && letter <= '9') {
       glyph = letter - '0' + 54;
       width = 32;
+    } else if (letter == '?') {
+      glyph = 53;
+      width = 16;
+    } else if (letter == '!') {
+      glyph = 54;
+      width = 16;
     } else if (letter == ' ') {
       for (const char* next = &this->m_text[i + 1]; *next != ' ' && *next != '\0'; ++next) {
         x += 32;
@@ -66,14 +73,7 @@ void CGraffiSkill::BuildTexture() {
 
       glyph = 99;
     } else {
-      if (letter == '?') {
-        glyph = 53;
-      } else if (letter == '!') {
-        glyph = 54;
-      } else {
-        glyph = 99;
-      }
-
+      glyph = 99;
       width = 16;
     }
 
