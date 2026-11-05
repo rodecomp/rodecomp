@@ -10029,7 +10029,7 @@ bool UIItemStoreSubWnd::FilterByName1(std::string query) {
 
   for (auto it = this->items.begin(); it != this->items.end();) {
     ITEM_INFO item = *it;
-    const std::string& name = item.unknown_0044;
+    const std::string name = item.unknown_0044;
     auto next = std::next(it);
     if (!_mbsstr(reinterpret_cast<const unsigned char*>(name.c_str()), reinterpret_cast<const unsigned char*>(query.c_str()))) {
       this->items.erase(it);
@@ -10048,7 +10048,7 @@ bool UIItemStoreSubWnd::FilterByName2(std::string query) {
 
   for (auto it = this->items.begin(); it != this->items.end();) {
     ITEM_INFO item = *it;
-    const std::string& name = item.unknown_0044;
+    const std::string name = item.unknown_0044;
     if (name.find(query) == std::string::npos) {
       it = this->items.erase(it);
     } else {
@@ -10067,7 +10067,7 @@ bool UIItemStoreSubWnd::FilterByName3(std::string query) {
 
   for (auto it = this->items.begin(); it != this->items.end();) {
     ITEM_INFO item = *it;
-    const std::string& name = item.unknown_0044;
+    const std::string name = item.unknown_0044;
     if (name.find(query) == std::string::npos) {
       it = this->items.erase(it);
     } else {
