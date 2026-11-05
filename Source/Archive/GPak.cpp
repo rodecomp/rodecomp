@@ -2,6 +2,7 @@
 #include "Archive/GPakUpdate.h"
 #include "Archive/PakCipher.h"
 #include "Utility/AES.h"
+#include "Utility/Cipher/XorBytes.h"
 #include "Utility/Hash/XxHash32.h"
 #include "Utility/Random/RandomBytes.h"
 #include "Utility/XxHash3.h"
@@ -17,6 +18,37 @@
 #include <zlib.h>
 
 namespace {
+  template <std::size_t Length, std::uint64_t Key>
+  class EncryptedName {
+  public:
+    // INLINED
+    explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = source[index];
+      }
+    }
+
+    ~EncryptedName() {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = 0;
+      }
+    }
+
+    // INLINED
+    const char* Text() {
+      if (this->m_encrypted) {
+        utility::XorBytes(this->m_text, Length, Key);
+        this->m_encrypted = false;
+      }
+
+      return reinterpret_cast<const char*>(this->m_text);
+    }
+
+  private:
+    std::uint8_t m_text[Length];
+    bool m_encrypted;
+  };
+
 #pragma pack(push, 1)
 
   struct PakHeaderFile {
@@ -759,7 +791,7 @@ struct HashSearchResult_655D70 {
 struct HashTable_655340 {
   float max_load_factor;
   HashNode_655340* head;
-  int size;
+  unsigned int size;
   HashBucket_655340* buckets;
   unsigned int unknown_10;
   unsigned int unknown_14;
@@ -1998,11 +2030,20 @@ namespace GPakEx {
   // OFFSET: 0x006434B0
   // FUNCTION: fn_04838
   __declspec(noinline) void XorBuffers(std::uint8_t* output, const std::uint8_t* input, const std::uint8_t* mask, std::size_t length) {
-    for (; length >= 16; length -= 16, output += 16, input += 16, mask += 16) {
-      for (std::size_t i = 0; i < 16; ++i) {
-        output[i] = input[i] ^ mask[i];
-      }
+    while (length >= 16) {
+      const __m128i block = _mm_loadu_si128(reinterpret_cast<const __m128i*>(input));
+      const __m128i key = _mm_loadu_si128(reinterpret_cast<const __m128i*>(mask));
+      _mm_storeu_si128(reinterpret_cast<__m128i*>(output), _mm_xor_si128(block, key));
+      output += 16;
+      input += 16;
+      mask += 16;
+      length -= 16;
     }
+
+    if (length == 0) {
+      return;
+    }
+
     for (std::size_t i = 0; i < length; ++i) {
       output[i] = input[i] ^ mask[i];
     }
@@ -3294,7 +3335,7 @@ struct PakDecryptor {
 // INLINED
 __forceinline bool DecryptWithAes(PakBlockTransform transform, std::uint32_t keyOffset, std::uint32_t ivOffset, AES::Mode mode, std::size_t prefixSize,
                                   std::size_t chunkSize, std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData,
-                                  std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) {
+                                  std::span<const std::uint8_t, 16> block, const std::span<const std::uint8_t>& input, const std::span<std::uint8_t>& output) {
   if (input.empty()) {
     return true;
   }
@@ -3305,28 +3346,27 @@ __forceinline bool DecryptWithAes(PakBlockTransform transform, std::uint32_t key
   const auto key = keyData.subspan(Deobfuscate<0x508EF2F3, 0xBFDC0C82>(keyOffset), Deobfuscate<0x508EF2F3, 0xBFDC0C82>(16));
   const auto iv = keyData.subspan(Deobfuscate<0xA101B199, 0x10F4BC62>(ivOffset), Deobfuscate<0xA101B199, 0x10F4BC62>(16));
   AES cipher;
-  if (!cipher.Initialize(const_cast<PUCHAR>(key.data()), key.size(), iv.data(), iv.size(), mode)) {
-    return false;
+  bool result = false;
+  if (cipher.Initialize(const_cast<PUCHAR>(key.data()), key.size(), iv.data(), iv.size(), mode)) {
+    if (input.size() <= prefixSize) {
+      XorWithKey16(mask, input, output);
+      result = true;
+    } else {
+      XorWithKey16(mask, input.first(prefixSize), output.first(prefixSize));
+      const std::size_t encryptedSize = chunkSize + 16;
+      if (input.size() <= prefixSize + encryptedSize) {
+        const std::span<std::uint8_t> remaining = output.subspan(prefixSize);
+        if (cipher.Decrypt(const_cast<PUCHAR>(input.data()) + prefixSize, input.size() - prefixSize, remaining.data(), remaining.size(), 1) == remaining.size()) {
+          result = true;
+        }
+      } else if (cipher.Decrypt(const_cast<PUCHAR>(input.data()) + prefixSize, encryptedSize, output.data() + prefixSize, chunkSize, 1) == chunkSize) {
+        XorWithKey16(mask, input.subspan(prefixSize + encryptedSize), output.subspan(prefixSize + chunkSize));
+        result = true;
+      }
+    }
   }
 
-  if (input.size() <= prefixSize) {
-    XorWithKey16(mask, input, output);
-    return true;
-  }
-
-  XorWithKey16(mask, input.first(prefixSize), output.first(prefixSize));
-  const std::size_t encryptedSize = chunkSize + 16;
-  if (input.size() <= prefixSize + encryptedSize) {
-    const std::span<std::uint8_t> remaining = output.subspan(prefixSize);
-    return cipher.Decrypt(const_cast<PUCHAR>(input.data()) + prefixSize, input.size() - prefixSize, remaining.data(), remaining.size(), 1) == remaining.size();
-  }
-
-  if (cipher.Decrypt(const_cast<PUCHAR>(input.data()) + prefixSize, encryptedSize, output.data() + prefixSize, chunkSize, 1) != chunkSize) {
-    return false;
-  }
-
-  XorWithKey16(mask, input.subspan(prefixSize + encryptedSize), output.subspan(prefixSize + chunkSize));
-  return true;
+  return result;
 }
 
 // OFFSET: 0x0064BCE0
@@ -3424,7 +3464,7 @@ bool PakDecryptor::Decrypt00F(std::span<const std::uint8_t> data, std::span<cons
 template<class CipherMode>
 __forceinline bool DecryptWithCipherMode(PakBlockTransform transform, std::uint32_t keyOffset, std::uint32_t keySize, std::uint32_t ivOffset, std::uint32_t ivSize,
                                          std::size_t prefixSize, std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed,
-                                         std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) {
+                                         std::span<const std::uint8_t, 16> block, const std::span<const std::uint8_t>& input, std::span<std::uint8_t> output) {
   if (input.empty()) {
     return true;
   }
