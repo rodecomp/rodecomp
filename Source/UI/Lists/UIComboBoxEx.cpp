@@ -314,7 +314,7 @@ void UIComboBoxEx2::Resize(int width, int height) {
 // OFFSET: 0x00889E50
 // FUNCTION: fn_11353
 void UIComboBoxEx2::Paint() {
-  this->geometry.surface->Fill(nullptr, 0xC59582u);
+  this->ClearSurface(0xC59582u);
   this->FillRegion(1, 1, (this->geometry.width - 2), (this->geometry.height - 2), 0xFCF4F0u);
   const unsigned end = std::min(
     static_cast<unsigned>(this->lines.size()), static_cast<unsigned>((this->topLine + (this->geometry.height / this->lineHeight - this->bottomMargin)))
