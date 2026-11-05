@@ -473,7 +473,7 @@ void UINewChatWnd::Show(int visible) {
     tab->Show(this->geometry.visible);
   }
 
-  for (unsigned int i = 0; i < g_windowMgr.retainedWindows.size(); ++i) {
+  for (int i = 0; i < g_windowMgr.retainedWindows.size(); ++i) {
     g_windowMgr.retainedWindows[i]->Show(this->geometry.visible);
   }
 }
@@ -552,9 +552,9 @@ void UINewChatWnd::Slot25(int x, int y) {
     }
 
     if (y < 14 && x > this->m_lockButtonX && x < this->m_lockButtonX + 9) {
-      g_chatInputFlag = g_chatInputFlag == 0;
+      g_session.m_canDragWnd = g_session.m_canDragWnd == 0;
       this->ApplyHeaderLayout();
-      for (unsigned int i = 0; i < g_windowMgr.retainedWindows.size(); ++i) {
+      for (int i = 0; i < g_windowMgr.retainedWindows.size(); ++i) {
         static_cast<UISubChatHisWnd*>(g_windowMgr.retainedWindows[i])->ApplyButtonLayout();
         g_windowMgr.retainedWindows[i]->Invalidate();
       }
