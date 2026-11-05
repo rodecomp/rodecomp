@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <string_view>
 
 class CUIVScrollBar;
 
@@ -25,6 +26,10 @@ public:
   void SetOutline(bool enabled, std::uint32_t color);
   void SetShadow(bool enabled, std::uint32_t color);
   __declspec(noinline) void SetText(const char* value, std::size_t length);
+  // INLINED
+  void SetText(std::string_view value) {
+    this->SetText(value.data(), value.size());
+  }
   void SetTooltip(const char* value, std::size_t length);
 
   std::string& Tooltip() {

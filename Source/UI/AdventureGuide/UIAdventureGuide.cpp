@@ -698,8 +698,8 @@ void CUITabInfo::Slot16() {
 // OFFSET: 0x009DC0F0
 // FUNCTION: fn_14316
 void CUIIntro::BindContents(CUITabInfo* item, const Guide_Intro::Contents& contents) {
-  item->unknown_00E8->SetText(contents.first.c_str(), contents.first.size());
-  item->unknown_00EC->SetText(contents.second.c_str(), contents.second.size());
+  item->unknown_00E8->SetText(contents.first);
+  item->unknown_00EC->SetText(contents.second);
 }
 
 // OFFSET: 0x009E0350
@@ -845,8 +845,7 @@ void CUIQuest::Slot54(int type, int id) {
 // FUNCTION: fn_14353
 void CUITab::SetSelected(bool selected) {
   CUIListItem::SetSelected(selected);
-  volatile bool selectedState = selected;
-  const bool expand = selectedState && this->subTabs && !this->subTabs->geometry.visible;
+  const bool expand = selected && this->subTabs && !this->subTabs->geometry.visible;
   if (this->subTabs) {
     this->subTabs->Show(expand);
   }
@@ -1049,7 +1048,7 @@ void CUIAdventureGuide::MarkQuest(int questId) {
 // OFFSET: 0x009DC140
 // FUNCTION: fn_14317
 void CUIAdventureGuide::OnSelectTab(AdventureGuide::CUITab* tab) {
-  this->titleText->SetText(tab->unknown_00F0.c_str(), tab->unknown_00F0.size());
+  this->titleText->SetText(tab->unknown_00F0);
   AdventureGuide::CUIPage* page = tab->page;
   if (!page) {
     return;
@@ -1057,23 +1056,22 @@ void CUIAdventureGuide::OnSelectTab(AdventureGuide::CUITab* tab) {
 
   const int type = tab->type;
   CUIListBox<AdventureGuide::CUISubTab>* subTabs = tab->subTabs;
-  if (!subTabs) {
-    page->Slot54(type, 0);
-    return;
-  }
-
-  if (!subTabs->items.empty()) {
-    AdventureGuide::CUISubTab* first = subTabs->items.front();
-    if (first) {
-      subTabs->SelectItem(first);
-      if (first != subTabs->selected) {
-        return;
+  if (subTabs) {
+    if (!subTabs->items.empty()) {
+      AdventureGuide::CUISubTab* first = subTabs->items.front();
+      if (first) {
+        subTabs->SelectItem(first);
+        if (first != subTabs->selected) {
+          return;
+        }
       }
     }
-  }
 
-  if (subTabs->selected) {
-    page->Slot54(type, subTabs->selected->id);
+    if (subTabs->selected) {
+      page->Slot54(type, subTabs->selected->id);
+    } else {
+      page->Slot54(type, 0);
+    }
   } else {
     page->Slot54(type, 0);
   }
@@ -1804,8 +1802,7 @@ void CUIMonster::BindMonster(CUIMonsterInfo* item, const CMonsterData& data) {
 // OFFSET: 0x009DFCB0
 // FUNCTION: fn_14360
 void CUIMonsterInfo::SetMonster(const std::string& title) {
-  CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
-  details->Clear();
+  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->Clear();
 
   std::string name;
   std::string spriteName;
@@ -1816,7 +1813,7 @@ void CUIMonsterInfo::SetMonster(const std::string& title) {
   int race = 0;
   int type = 0;
   if (!g_navigationManager.GetMobInfo(title, &name, &spriteName, &x, &size, &element, &elementLevel, &race, &type)) {
-    this->unknown_00E8->SetText(title.c_str(), title.size());
+    this->unknown_00E8->SetText(title);
     return;
   }
 
@@ -1825,60 +1822,60 @@ void CUIMonsterInfo::SetMonster(const std::string& title) {
   this->action = static_cast<CActRes*>(ResourceMgr::Instance().Load(spriteName + ".act"));
 
   if (element == 1) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8D7), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8D7), elementLevel));
   } else if (element == 2) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8D8), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8D8), elementLevel));
   } else if (element == 3) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8D9), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8D9), elementLevel));
   } else if (element == 4) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8DA), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DA), elementLevel));
   } else if (element == 5) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8DB), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DB), elementLevel));
   } else if (element == 6) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8DC), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DC), elementLevel));
   } else if (element == 7) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8DD), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DD), elementLevel));
   } else if (element == 8) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8DE), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DE), elementLevel));
   } else if (element == 9) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8DF), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DF), elementLevel));
   } else {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8E0), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E0), elementLevel));
   }
 
   if (race == 1) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8E4)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E4)));
   } else if (race == 2) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8E5)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E5)));
   } else if (race == 3) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8E6)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E6)));
   } else if (race == 4) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8E7)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E7)));
   } else if (race == 5) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8E8)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E8)));
   } else if (race == 6) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8E9)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E9)));
   } else if (race == 7) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8EA)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8EA)));
   } else if (race == 8) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8EB)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8EB)));
   } else if (race == 9) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8EC)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8EC)));
   } else {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8ED)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8ED)));
   }
 
   if (size == 1) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8E1)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E1)));
   } else if (size == 2) {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8E2)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E2)));
   } else {
-    details->AddLine(FormatOwnedString(LookupMessage(0x8E3)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E3)));
   }
 
   if (type == 0x12D) {
-    details->SetTextColor(0x6464FFu);
-    details->AddLine(FormatOwnedString(LookupMessage(0x8B6)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetTextColor(0x6464FFu);
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8B6)));
   }
 }
 
