@@ -78,48 +78,34 @@ bool JsonCppLoader::sub_50B830(std::map<int, ReputeInfoRecord>* out) {
     return false;
   }
 
-  JsonValue infos;
-  this->GetValue(infos, "reputeInfo", this->document, JsonValue::OBJECT_VALUE);
-  if (infos.IsNull()) {
+  const JsonValue* infos = nullptr;
+  if (const JsonObject* root = this->document.ObjectRange()) {
+    for (const JsonMember& entry : *root) {
+      if (entry.first == "reputeInfo") {
+        infos = &entry.second;
+        break;
+      }
+    }
+  }
+
+  if (infos == nullptr) {
     this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "reputeInfo");
     return false;
   }
 
-  const JsonObject& members = infos.GetObject();
-  for (JsonObject::const_iterator member = members.begin(); member != members.end(); ++member) {
-    JsonValue nameValue;
-    JsonValue maxPositive;
-    JsonValue maxNegative;
-    JsonValue invisibleValue;
-    this->GetValue(nameValue, "Name", member->second, JsonValue::STRING_VALUE);
-    if (nameValue.IsNull()) {
-      this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "Name");
-    }
-    this->GetValue(maxPositive, "MaxPoint_Positive", member->second, JsonValue::INT64_VALUE);
-    if (maxPositive.IsNull()) {
-      this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "MaxPoint_Positive");
-    }
-    this->GetValue(maxNegative, "MaxPoint_Negative", member->second, JsonValue::INT64_VALUE);
-    if (maxNegative.IsNull()) {
-      this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "MaxPoint_Negative");
-    }
-    this->GetValue(invisibleValue, "Invisible", member->second, JsonValue::STRING_VALUE);
-    if (invisibleValue.IsNull()) {
-      this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "Invisible");
-    }
-
+  const JsonObject* members = infos->ObjectRange();
+  const JsonObject none;
+  for (const JsonMember& member : members ? *members : none) {
+    const std::string name = member.first;
+    const JsonValue node = member.second;
     ReputeInfoRecord record;
-    if (!nameValue.IsNull()) {
-      record.name = nameValue.AsString();
-    }
-    record.maxPointPositive = maxPositive.IsNull() ? 0 : maxPositive.AsInt();
-    record.maxPointNegative = maxNegative.IsNull() ? 0 : maxNegative.AsInt();
-    if (!invisibleValue.IsNull()) {
-      record.invisible = invisibleValue.AsString();
-    }
+    this->GetStringValue(node, "Name", &record.name);
+    this->GetIntValue(node, "MaxPoint_Positive", &record.maxPointPositive);
+    this->GetIntValue(node, "MaxPoint_Negative", &record.maxPointNegative);
+    this->GetStringValue(node, "Invisible", &record.invisible);
 
-    if (!out->insert(std::make_pair(std::stoi(member->first), record)).second) {
-      this->Fail("중복키가 입력되었습니다. (key : %s)", member->first.c_str());
+    if (!out->insert(std::make_pair(std::stoi(name), record)).second) {
+      this->Fail("중복키가 입력되었습니다. (key : %s)", name.c_str());
       return false;
     }
   }
