@@ -55,13 +55,10 @@ void UICheckBox::Paint() {
 // INLINED
 __forceinline void UICheckBox::Notify() {
   this->Invalidate();
-  UIWindow* root = this;
-
-  while (root->parent) {
-    root = root->parent;
+  if (this->Root()) {
+    this->Root()->Invalidate();
   }
 
-  root->Invalidate();
   if (this->parent) {
     this->parent->SendMsg(this, 6, this->geometry.id, this->geometry.unknown_0030, 0, 0);
   }
