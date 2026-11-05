@@ -93,11 +93,6 @@ void CMapChainEffect::Slot01() {
 // FUNCTION: fn_18950
 void CMapChainEffect::Slot07() {
   const char* base = reinterpret_cast<const char*>(this);
-  const float u44 = *reinterpret_cast<const float*>(base + 0x44);
-  const float u48 = *reinterpret_cast<const float*>(base + 0x48);
-  const int u54 = *reinterpret_cast<const int*>(base + 0x54);
-  const float u5C = *reinterpret_cast<const float*>(base + 0x5C);
-  const float u60 = *reinterpret_cast<const float*>(base + 0x60);
 
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
@@ -105,11 +100,11 @@ void CMapChainEffect::Slot07() {
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
-    particle->unknown_00C0 = u44;
-    particle->scale = u48;
-    particle->alpha = u54;
-    particle->unknown_0054 = u5C;
-    *reinterpret_cast<float*>(particle->unknown_0058) = u60;
+    particle->unknown_00C0 = *reinterpret_cast<const float*>(base + 0x44);
+    particle->scale = *reinterpret_cast<const float*>(base + 0x48);
+    particle->alpha = *reinterpret_cast<const int*>(base + 0x54);
+    particle->unknown_0054 = *reinterpret_cast<const float*>(base + 0x5C);
+    *reinterpret_cast<float*>(particle->unknown_0058) = *reinterpret_cast<const float*>(base + 0x60);
     particle->sourceBlend = 5;
     particle->destinationBlend = 7;
     InitParticleQuad(particle->vertices);
