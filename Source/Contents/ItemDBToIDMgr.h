@@ -7,7 +7,7 @@
 
 class CItemDBToIDMgr {
 public:
-  CItemDBToIDMgr();
+  __declspec(noinline) CItemDBToIDMgr();
   virtual ~CItemDBToIDMgr();
 
   static CItemDBToIDMgr* GetInstance();
