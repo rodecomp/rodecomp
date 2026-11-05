@@ -5328,14 +5328,14 @@ void CEffectPrim::RenderArcBand(matrix& wtm) {
 // OFFSET: 0x00BCB9F0
 // FUNCTION: fn_19862
 void CEffectPrim::RenderPyramid(matrix& wtm) {
-  vector3d corners[4][3]{};
+  vector3d corners[12]{};
   const float size = this->state.size;
   const float height = this->state.heightSize;
-  const vector3d table[4][3] = {
-    {{-size, -size, 0.0f}, {0.0f, 0.0f, height}, {size, -size, 0.0f}},
-    {{-size, -size, 0.0f}, {0.0f, 0.0f, height}, {-size, size, 0.0f}},
-    {{-size, size, 0.0f}, {0.0f, 0.0f, height}, {size, size, 0.0f}},
-    {{size, size, 0.0f}, {0.0f, 0.0f, height}, {size, -size, 0.0f}},
+  const vector3d table[12] = {
+    {-size, -size, 0.0f}, {0.0f, 0.0f, height}, {size, -size, 0.0f},
+    {-size, -size, 0.0f}, {0.0f, 0.0f, height}, {-size, size, 0.0f},
+    {-size, size, 0.0f}, {0.0f, 0.0f, height}, {size, size, 0.0f},
+    {size, size, 0.0f}, {0.0f, 0.0f, height}, {size, -size, 0.0f},
   };
   float uInc = 0.0f;
 
@@ -5347,30 +5347,33 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
 
   RenderTriangle* triangle = this->state.triangles;
   const float* tm = this->state.rotTransform;
-  for (int face = 0; face < 4; ++face) {
-    for (int corner = 0; corner < 3; ++corner) {
-      const vector3d& local = table[face][corner];
-      corners[face][corner] = {
-        local.y * tm[3] + local.x * tm[0] + local.z * tm[6] + tm[9], local.y * tm[4] + local.x * tm[1] + local.z * tm[7] + tm[10],
-        local.y * tm[5] + local.x * tm[2] + local.z * tm[8] + tm[11]
-      };
-    }
+  for (int index = 0; index < 12; ++index) {
+    const vector3d& local = table[index];
+    corners[index] = {
+      local.y * tm[3] + local.x * tm[0] + local.z * tm[6] + tm[9], local.y * tm[4] + local.x * tm[1] + local.z * tm[7] + tm[10],
+      local.y * tm[5] + local.x * tm[2] + local.z * tm[8] + tm[11]
+    };
+  }
 
+  for (int face = 0; face < 4; ++face) {
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    const float point0[3] = {corners[face][0].x + this->render.position.x, this->render.position.y + corners[face][0].y, this->render.position.z + corners[face][0].z};
+    const vector3d& corner0 = corners[face * 3 + 0];
+    const float point0[3] = {corner0.x + this->render.position.x, this->render.position.y + corner0.y, this->render.position.z + corner0.z};
     g_renderer->viewport.Project(point0, wtm.values, projected);
     triangle->vertices[0] = projected;
     triangle->vertices[0].diffuse = this->state.argb;
     triangle->vertices[0].u = uInc;
     triangle->vertices[0].v = 1.0f;
-    const float point1[3] = {corners[face][1].x + this->render.position.x, corners[face][1].y + this->render.position.y, this->render.position.z + corners[face][1].z};
+    const vector3d& corner1 = corners[face * 3 + 1];
+    const float point1[3] = {corner1.x + this->render.position.x, corner1.y + this->render.position.y, this->render.position.z + corner1.z};
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
     g_renderer->viewport.Project(point1, wtm.values, projected);
     triangle->vertices[1] = projected;
     triangle->vertices[1].diffuse = this->state.argb;
     triangle->vertices[1].u = uInc;
     triangle->vertices[1].v = 0.0f;
-    const float point2[3] = {corners[face][2].x + this->render.position.x, corners[face][2].y + this->render.position.y, this->render.position.z + corners[face][2].z};
+    const vector3d& corner2 = corners[face * 3 + 2];
+    const float point2[3] = {corner2.x + this->render.position.x, corner2.y + this->render.position.y, this->render.position.z + corner2.z};
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
     g_renderer->viewport.Project(point2, wtm.values, projected);
     triangle->vertices[2] = projected;
