@@ -137,19 +137,19 @@ void NaviDataEntry::Reset() {
 CNaviData::~CNaviData() {
   this->Clear();
 
-  for (CNavi_Link*& object : this->objects) {
-    if (object != nullptr) {
-      delete object;
+  for (std::vector<CNavi_Link*>::iterator it = this->objects.begin(); it != this->objects.end(); ++it) {
+    if (*it != nullptr) {
+      delete *it;
     }
-    object = nullptr;
+    *it = nullptr;
   }
   this->objects.clear();
 
-  for (CNaviInfo*& info : this->destinations) {
-    if (info != nullptr) {
-      delete info;
+  for (std::vector<CNaviInfo*>::iterator it = this->destinations.begin(); it != this->destinations.end(); ++it) {
+    if (*it != nullptr) {
+      delete *it;
     }
-    info = nullptr;
+    *it = nullptr;
   }
   this->destinations.clear();
 }
@@ -245,8 +245,8 @@ CNavigationManager::~CNavigationManager() {
 // OFFSET: 0x00B959D0
 // FUNCTION: fn_19574
 void CNavigationManager::ClearRouteNodes() {
-  for (NaviRouteLine& line : this->routeLines) {
-    line.text.clear();
+  for (std::vector<NaviRouteLine>::iterator it = this->routeLines.begin(); it != this->routeLines.end(); ++it) {
+    it->text.clear();
   }
   this->routeLines.clear();
 }
