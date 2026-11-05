@@ -138,41 +138,23 @@ void UITransBalloonText::Paint() {
     return;
   }
 
-  if (this->geometry.surface) {
-    this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
-  }
-
+  this->ClearSurface(0xFFFF00FF);
   DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, this->m_borderColor);
+  std::uint32_t color = this->m_textColor;
   const int family = Family(this->m_fontMode);
   const int height = this->m_fontMode == 0 ? this->m_fontHeight : 12;
   int y = 4;
 
   for (std::size_t index = 0; index < this->m_lines.size(); ++index) {
-    const std::string& line = this->m_lines[index];
-    std::uint32_t color = index < this->m_lineColors.size() && this->m_lineColors[index] != 0 ? this->m_lineColors[index] : this->m_textColor;
+    color = index < this->m_lineColors.size() && this->m_lineColors[index] != 0 ? this->m_lineColors[index] : this->m_textColor;
 
     if (this->m_richText != 0) {
-      DrawColoredText(
-        *this, 6, y, line.c_str(), 0, color, family, height, true
-      );
+      DrawColoredText(*this, 6, y, this->m_lines[index].c_str(), 0, color, family, height, true);
     } else {
-      TextContext context(*this->geometry.surface);
-      context.SetFont(family, height, 0, 0);
-      context.SetColor(this->m_outlineColor);
-      context.Draw(7, (y + 1), line.c_str(), static_cast<int>(line.size()));
-      context.SetColor(color);
-      context.Draw(6, y, line.c_str(), static_cast<int>(line.size()));
+      this->DrawShadowedText(6, y, this->m_lines[index].c_str(), 0, color, this->m_outlineColor, family, height, 0);
     }
 
-    int lineHeight = 0;
-
-    if (!line.empty()) {
-      TextContext context(*this->geometry.surface);
-      context.SetFont(0, this->m_fontHeight, 0, 0);
-      lineHeight = context.Measure(line.c_str(), static_cast<int>(line.size())).cy;
-    }
-
-    y = (y + (lineHeight + 4));
+    y += this->TextHeight(this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, 0, 0) + 4;
   }
 }
 
