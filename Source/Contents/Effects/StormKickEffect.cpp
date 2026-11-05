@@ -170,13 +170,13 @@ void CStormKickEffect::UpdateStorm(CParticle* particle) {
 // OFFSET: 0x00B7BC20
 // FUNCTION: fn_19221
 void CStormKickEffect::Close() {
-  for (CParticle* particle : this->storms) {
-    FreeParticle(particle);
+  for (auto it = this->storms.begin(); it != this->storms.end(); ++it) {
+    FreeParticle(*it);
   }
   this->storms.clear();
 
-  for (CParticle* particle : this->clouds) {
-    FreeParticle(particle);
+  for (auto it = this->clouds.begin(); it != this->clouds.end(); ++it) {
+    FreeParticle(*it);
   }
   this->clouds.clear();
 }
