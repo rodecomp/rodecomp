@@ -43,33 +43,27 @@ namespace {
   }
 
   // INLINED
-  vector3d Forward(float distance, const float* matrix) {
+  void Forward(vector3d& out, float distance, const float* matrix) {
     const vector3d point{0.0f, 0.0f, distance};
-    return {
-      ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9],
-      ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10],
-      ((matrix[5] * point.y + matrix[2] * point.x) + point.z * matrix[8]) + matrix[11]
-    };
+    out.x = ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9];
+    out.y = ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10];
+    out.z = ((matrix[5] * point.y + matrix[2] * point.x) + point.z * matrix[8]) + matrix[11];
   }
 
   // INLINED
-  vector3d Upward(float distance, const float* matrix) {
+  void Upward(vector3d& out, float distance, const float* matrix) {
     const vector3d point{0.0f, -distance, 0.0f};
-    return {
-      ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9],
-      ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10],
-      ((matrix[5] * point.y + matrix[2] * point.x) + point.z * matrix[8]) + matrix[11]
-    };
+    out.x = ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9];
+    out.y = ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10];
+    out.z = ((matrix[5] * point.y + matrix[2] * point.x) + point.z * matrix[8]) + matrix[11];
   }
 
   // INLINED
-  vector3d Lift(float distance, const float* matrix) {
+  void Lift(vector3d& out, float distance, const float* matrix) {
     const vector3d point{0.0f, distance, 0.0f};
-    return {
-      ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9],
-      ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10],
-      ((matrix[5] * point.y + matrix[2] * point.x) + point.z * matrix[8]) + matrix[11]
-    };
+    out.x = ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9];
+    out.y = ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10];
+    out.z = ((matrix[5] * point.y + matrix[2] * point.x) + point.z * matrix[8]) + matrix[11];
   }
 
   // INLINED
@@ -168,8 +162,10 @@ bool CEffectPrim::MoveEffectPrimitive() {
   this->state.latiSpeed = this->state.latiAccel + this->state.latiSpeed;
 
   if ((this->state.pattern & 0x400u) != 0) {
-    this->state.speed3d = {};
-    this->state.speed3d = Forward(this->state.speed, this->state.transform);
+    this->state.speed3d.x = 0;
+    this->state.speed3d.y = 0;
+    this->state.speed3d.z = 0;
+    Forward(this->state.speed3d, this->state.speed, this->state.transform);
     this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
     this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
@@ -178,18 +174,14 @@ bool CEffectPrim::MoveEffectPrimitive() {
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
     this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
   } else {
-    this->state.speed3d = Forward(this->state.speed, this->state.transform);
+    Forward(this->state.speed3d, this->state.speed, this->state.transform);
     this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
     this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
   }
 
   if ((this->state.pattern & 0x400u) != 0) {
-    const float x = this->state.master->state.deltaPos[0] - this->render.position.x;
-    const float z = this->state.master->state.deltaPos[2] - this->render.position.z;
-    const float distance = std::sqrt(z * z + x * x);
-
-    if (3.0f >= distance) {
+    if (3.0f >= this->CalcDist(this->state.master->state.deltaPos[0], this->state.master->state.deltaPos[2])) {
       this->state.unknown_014C.x = std::bit_cast<float>(1u);
       return false;
     }
@@ -205,28 +197,30 @@ bool CEffectPrim::MoveEffectPrimitive() {
   this->state.longitude = this->state.longitude + this->state.longSpeed;
   this->state.latitude = this->state.latitude + this->state.latiSpeed;
 
-  if (this->state.maxHeightSize <= this->state.heightSize && this->state.heightSize != this->state.maxHeightSize) {
+  if (this->state.heightSize > this->state.maxHeightSize) {
     this->state.heightAccel = 0;
     this->state.heightSpeed = 0;
   }
 
-  struct matrix matrix;
+  struct matrix& matrix = *reinterpret_cast<struct matrix*>(this->state.rotTransform);
 
   if ((this->state.pattern & 0x200u) != 0) {
     matrix.MakeZRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch);
   } else if ((this->state.pattern & 0x40u) != 0) {
     this->state.longitude = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw + 90.0f;
     this->state.roll = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch;
-    matrix.MakeXRotation(GetRadian(TruncateToInt(this->state.latitude)));
-    matrix.AppendZRotation(GetRadian(TruncateToInt(this->state.roll)));
+    matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+    matrix.AppendZRotation(GetRadian(static_cast<int>(this->state.roll)));
   } else {
-    matrix.MakeZRotation(GetRadian(TruncateToInt(this->state.roll)));
-    matrix.AppendXRotation(GetRadian(TruncateToInt(this->state.latitude)));
+    matrix.MakeZRotation(GetRadian(static_cast<int>(this->state.roll)));
+    matrix.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
   }
 
-  const float angle = (this->state.pattern & 0x200u) != 0 ? this->render.angle : this->state.longitude;
-  matrix.AppendYRotation(GetRadian(TruncateToInt(angle)));
-  std::memcpy(this->state.rotTransform, matrix.values, sizeof(this->state.rotTransform));
+  if ((this->state.pattern & 0x200u) != 0) {
+    matrix.AppendYRotation(GetRadian(static_cast<int>(this->render.angle)));
+  } else {
+    matrix.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+  }
 
   if ((this->state.pattern & 2u) != 0) {
     const auto index = this->state.chCnt;
@@ -255,29 +249,24 @@ bool CEffectPrim::MoveEffectPrimitive() {
     this->state.heightSpeed *= -1.0f;
   }
 
-  const bool wrap254 = (this->state.pattern & 0x800u) != 0;
-  const bool gated = wrap254 && (this->state.red == 254 || this->state.green == 254 || this->state.blue == 254);
-  bool advance = true;
-
-  if (gated) {
+  if ((this->state.pattern & 0x800u) != 0 && (this->state.red == 254 || this->state.blue == 254 || this->state.green == 254)) {
     if (this->state.RGBCycleDelay != 0) {
       ++this->state.RGBCycleCnt;
     }
 
-    advance = this->state.RGBCycleDelay == this->state.RGBCycleCnt;
-  }
-
-  if (advance) {
+    if (this->state.RGBCycleDelay == this->state.RGBCycleCnt) {
+      this->state.red += this->state.redSpeed;
+      this->state.green += this->state.greenSpeed;
+      this->state.blue += this->state.blueSpeed;
+      this->state.RGBCycleCnt = 0;
+    }
+  } else {
     this->state.red += this->state.redSpeed;
     this->state.green += this->state.greenSpeed;
     this->state.blue += this->state.blueSpeed;
-
-    if (gated) {
-      this->state.RGBCycleCnt = 0;
-    }
   }
 
-  if (wrap254) {
+  if ((this->state.pattern & 0x800u) != 0) {
     this->state.red = this->state.red > 254 ? 0 : this->state.red < 0 ? 254 : this->state.red;
     this->state.green = this->state.green > 254 ? 0 : this->state.green < 0 ? 254 : this->state.green;
     this->state.blue = this->state.blue > 254 ? 0 : this->state.blue < 0 ? 254 : this->state.blue;
@@ -452,7 +441,7 @@ bool CEffectPrim::Prim3DCylinder() {
   matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
   matrix.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
 
-  this->state.speed3d = Upward(this->state.speed, this->state.transform);
+  Upward(this->state.speed3d, this->state.speed, this->state.transform);
   this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
   this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
   this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
@@ -505,7 +494,7 @@ bool CEffectPrim::Prim3DCylinderHalf() {
   matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
   matrix.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
 
-  this->state.speed3d = Upward(this->state.speed, this->state.transform);
+  Upward(this->state.speed3d, this->state.speed, this->state.transform);
   this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
   this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
   this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
@@ -555,7 +544,7 @@ void CEffectPrim::AdvanceEffectPrimitive() {
   }
 
   this->state.speed = this->state.accel + this->state.speed;
-  this->state.speed3d = Forward(this->state.speed, this->state.transform);
+  Forward(this->state.speed3d, this->state.speed, this->state.transform);
   this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
   this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
   this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
@@ -840,7 +829,7 @@ void CEffectPrim::Prim3DCircle() {
   reinterpret_cast<struct matrix*>(this->state.transform)->AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
 
   const float distance = this->state.speed;
-  this->state.speed3d = Forward(distance, this->state.transform);
+  Forward(this->state.speed3d, distance, this->state.transform);
   const float offsetX = this->state.speed3d.x + this->state.deltaPos.x;
   const float offsetY = this->state.speed3d.y + this->state.deltaPos.y;
   const float offsetZ = this->state.speed3d.z + this->state.deltaPos.z;
@@ -2396,7 +2385,7 @@ bool CEffectPrim::Prim3DParticle() {
     this->state.size = lateral + this->state.size;
   } else if ((flags & 1u) != 0 || frame > this->state.fadeInCnt) {
     const float side = lateral + this->state.size;
-    this->state.speed3d = Forward(vertical, this->state.transform);
+    Forward(this->state.speed3d, vertical, this->state.transform);
     this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
     this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
@@ -2475,7 +2464,7 @@ bool CEffectPrim::Prim3DParticleGravity() {
 
   const float speed = this->state.accel + this->state.speed;
   this->state.speed = speed < 0.0f ? 0.0f : speed;
-  this->state.speed3d = Forward(this->state.speed, this->state.transform);
+  Forward(this->state.speed3d, this->state.speed, this->state.transform);
 
   this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
   this->state.deltaPos.y = this->state.deltaPos.y + this->state.gravSpeed;
@@ -2575,7 +2564,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
 
   if ((particle.pattern & 0x400u) != 0) {
     particle.speed3d = {};
-    particle.speed3d = Forward(particle.speed, particle.transform);
+    Forward(particle.speed3d, particle.speed, particle.transform);
     particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
     particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
     particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
@@ -2584,7 +2573,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
     particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
   } else {
-    particle.speed3d = Forward(particle.speed, particle.transform);
+    Forward(particle.speed3d, particle.speed, particle.transform);
     particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
     particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
     particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
@@ -2746,7 +2735,7 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
     this->state.size = lateral + this->state.size;
   } else if ((flags & 1u) != 0 || frame > this->state.fadeInCnt) {
     const float side = lateral + this->state.size;
-    this->state.speed3d = Forward(vertical, this->state.transform);
+    Forward(this->state.speed3d, vertical, this->state.transform);
     this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
     this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
@@ -2856,7 +2845,7 @@ bool CEffectPrim::Prim3DParticleOrbit() {
   reinterpret_cast<struct matrix*>(this->state.transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
 
   const float distance = this->state.radius;
-  this->state.deltaPos = Forward(distance, this->state.transform);
+  Forward(this->state.deltaPos, distance, this->state.transform);
   this->render.position.x = this->state.deltaPos.x + this->state.orgPos.x;
   this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y;
   this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
@@ -2888,11 +2877,11 @@ bool CEffectPrim::Prim3DParticleSpline() {
   this->state.gravSpeed = this->state.gravAccel + this->state.gravSpeed;
 
   const float distance = this->state.speed - this->state.gravSpeed;
-  this->state.speed3d = Forward(distance, this->state.transform);
+  Forward(this->state.speed3d, distance, this->state.transform);
   reinterpret_cast<struct matrix*>(this->state.rotTransform)->MakeTransform(this->state.rotAxis, GetRadian(angle));
 
   const float move = this->state.latitude;
-  this->state.deltaPos3 = Lift(move, this->state.rotTransform);
+  Lift(this->state.deltaPos3, move, this->state.rotTransform);
   this->state.size = this->state.sizeSpeed + this->state.size;
 
   this->state.deltaPos.x = this->state.deltaPos.x - this->state.speed3d.x;
@@ -5822,7 +5811,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
     particle.roll = particle.rollSpeed + particle.roll;
     particle.size = particle.size + particle.sizeSpeed;
   } else if ((particle.pattern & 1u) != 0 || particle.stateCnt > particle.fadeInCnt) {
-    particle.speed3d = Forward(particle.speed, particle.transform);
+    Forward(particle.speed3d, particle.speed, particle.transform);
     particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
     particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
     particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
