@@ -495,8 +495,8 @@ void CRenderObject::SetSpriteName(ResourceMgr& resources, const char* name) {
 // OFFSET: 0x00CC3DC0
 // FUNCTION: fn_21154
 void CRenderObject::SetTlvert(float x, float y) {
-  this->render.screenX = TruncateToInt(x);
-  this->render.screenY = TruncateToInt(y);
+  this->render.screenX = static_cast<int>(x);
+  this->render.screenY = static_cast<int>(y);
 }
 
 // OFFSET: 0x00CBFAE0
