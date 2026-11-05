@@ -65,7 +65,8 @@ namespace {
 
     while (current < end) {
       if (current >= limit || *current == '\n') {
-        lines.emplace_back(begin, current);
+        const std::string line(begin, current);
+        lines.push_back(line);
         begin = current;
         limit = current + width;
       }
@@ -103,15 +104,18 @@ CTipBoxMgr::~CTipBoxMgr() = default;
 // OFFSET: 0x007AC710
 // FUNCTION: fn_09122
 void CTipBoxMgr::AddParagraph(int id, std::string text) {
+  const std::string newline("\n");
+  const std::string escaped("\\n");
+
   for (;;) {
-    const auto pos = text.find("\\n");
+    const auto pos = text.find(escaped);
     if (pos == std::string::npos) {
       break;
     }
-    text.replace(pos, 2, "\n");
+    text.replace(pos, escaped.size(), newline);
   }
 
-  this->m_entries[id].paragraphs.push_back(std::move(text));
+  this->m_entries[id].paragraphs.push_back(text);
 }
 
 // OFFSET: 0x007AC990
@@ -156,12 +160,7 @@ TipBoxEntry& CTipBoxMgr::SelectRandomTip() {
   }
 
   const auto count = this->m_randomList.size();
-  const auto index = static_cast<unsigned>(rand()) % count;
-  const auto it = this->m_entries.find(this->m_randomList[index]);
-  if (it != this->m_entries.end()) {
-    this->unknown_0114 = this->m_randomList[index];
-    this->m_currentEntry = it->second;
-  }
+  this->SelectTip(this->m_randomList[static_cast<unsigned>(rand()) % count]);
   return this->m_currentEntry;
 }
 
@@ -215,11 +214,13 @@ void CTipBoxMgr::Sub7ACF50() {
 
   const int cell = entry.unknown_0044 - 1;
   const float cellWidth = static_cast<float>(this->m_width) / 3.0f;
+  const int row = cell / 3;
+  const int column = cell % 3;
   const float cellHeight = static_cast<float>(this->m_height) / 3.0f;
   const std::size_t found = entry.unknown_001C.find("유저인터페이스\\");
 
-  this->m_image.x = static_cast<float>(cell % 3) * cellWidth + cellWidth * 0.5f;
-  this->m_image.y = static_cast<float>(this->m_maximumId) + cellHeight * 0.5f + static_cast<float>(cell / 3) * cellHeight;
+  this->m_image.x = static_cast<float>(column) * cellWidth + cellWidth * 0.5f;
+  this->m_image.y = static_cast<float>(this->m_maximumId) + cellHeight * 0.5f + static_cast<float>(row) * cellHeight;
 
   if (found != std::string::npos) {
     this->m_imagePath = entry.unknown_001C + ".bmp";
@@ -359,7 +360,8 @@ bool CTipBoxMgr::RegisterLuaFunctions() {
     return true;
   }
 
-  MessageBoxA(nullptr, (std::string("error found :") + lua_tostring(state.GetState(), -1)).c_str(), "TipBox", MB_OK);
+  const std::string message = std::string("error found :") + lua_tostring(state.GetState(), -1);
+  MessageBoxA(nullptr, message.c_str(), "TipBox", MB_OK);
   return false;
 }
 
@@ -499,16 +501,7 @@ int sub_7AEC00(lua_State* state) {
   const char* title = lua_tostring(state, -3);
   const double flag = lua_tonumber(state, -2);
   const char* text = lua_tostring(state, -1);
-  CTipBoxMgr* owner = g_itemTagOwner;
-  const std::string textString(text);
-  const std::string titleString(title);
-  int key = id;
-  if (owner->m_maximumId < key) {
-    owner->m_maximumId = key;
-  }
-  owner->m_entries[key].title = titleString;
-  owner->m_entries[key].unknown_0018 = static_cast<int>(flag) == 1;
-  owner->m_entries[key].unknown_001C = textString;
+  g_itemTagOwner->AddTip(id, title, flag, text);
   lua_pushboolean(state, 1);
   lua_pushstring(state, "good");
   return 2;
