@@ -92,8 +92,13 @@ void CSoundMgr::StopStreams() {
 // OFFSET: 0x00639070
 // FUNCTION: fn_04750
 bool CSoundMgr::Initialize() {
-  std::memset(this->samples, 0, sizeof(this->samples));
-  std::memset(this->samples3D, 0, sizeof(this->samples3D));
+  for (int i = 0; i < 48; ++i) {
+    this->samples[i] = nullptr;
+  }
+
+  for (int i = 0; i < 48; ++i) {
+    this->samples3D[i] = nullptr;
+  }
 
   for (int i = 0; i < 64; ++i) {
     this->providerNames[i] = nullptr;
@@ -106,15 +111,19 @@ bool CSoundMgr::Initialize() {
     return true;
   }
 
-  if (configuration.numSampleType == 0) {
+  switch (configuration.numSampleType) {
+  case 0:
     this->sampleCount = 48;
     this->sample3DCount = 48;
-  } else if (configuration.numSampleType == 1) {
+    break;
+  case 1:
     this->sampleCount = 32;
     this->sample3DCount = 32;
-  } else {
+    break;
+  default:
     this->sampleCount = 16;
     this->sample3DCount = 16;
+    break;
   }
 
   MilesRuntime& miles = MilesRuntime::Get();
@@ -125,15 +134,33 @@ bool CSoundMgr::Initialize() {
 
   this->channels = configuration.mode == 1 ? 1 : 2;
 
-  if (configuration.digitalRateType == 0) {
+  switch (configuration.digitalRateType) {
+  case 0:
     this->rate = 44100;
-  } else if (configuration.digitalRateType == 1) {
+    break;
+  case 1:
     this->rate = 11025;
-  } else {
+    break;
+  case 2:
     this->rate = 8000;
+    break;
+  default:
+    this->rate = 8000;
+    break;
   }
 
-  this->bits = configuration.digitalBitsType == 0 ? 16 : 8;
+  switch (configuration.digitalBitsType) {
+  case 0:
+    this->bits = 16;
+    break;
+  case 1:
+    this->bits = 8;
+    break;
+  default:
+    this->bits = 8;
+    break;
+  }
+
   miles.setPreference(15, configuration.preference15);
   this->driver = miles.openDigitalDriver(this->rate, this->bits, this->channels, 1);
 
