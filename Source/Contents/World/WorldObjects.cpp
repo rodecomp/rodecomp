@@ -110,11 +110,11 @@ void CWorld::OnExitFrame() {
   this->spatial.ClearChildren();
   this->Clear();
 
-  for (C3dActor* model : this->models) {
-    delete model;
+  for (auto model = this->models.begin(); model != this->models.end(); ++model) {
+    delete *model;
   }
 
-  this->models.clear();
+  this->models.erase(this->models.begin(), this->models.end());
   delete this->ground;
   this->ground = nullptr;
   ResourceMgr::Instance().ClearExpired();
@@ -268,11 +268,10 @@ void CWorld::SendObjectMessage(CGameObject* sender, std::uint64_t identity, int 
     return;
   }
 
-  for (CRenderObject* object : this->objects) {
-    if (object->identity == identity) {
-      object->SendMsg(sender, message, message >> 31, a, a >> 31, b, b >> 31, c, c >> 31, d, d >> 31, 0, 0, 0, 0);
-      return;
-    }
+  auto it = std::find_if(this->objects.begin(), this->objects.end(), [identity](CRenderObject* object) { return object->identity == identity; });
+
+  if (it != this->objects.end()) {
+    (*it)->SendMsg(sender, message, message >> 31, a, a >> 31, b, b >> 31, c, c >> 31, d, d >> 31, 0, 0, 0, 0);
   }
 }
 
@@ -587,7 +586,7 @@ CMsgEffect* CGameMode::SpawnCashEmotion(int aid, int packId, int emotionId, std:
     effect = new (std::nothrow) CMsgEffect;
     if (effect) {
       if (this->scene) {
-        this->scene->objects.push_back(effect);
+        this->scene->objects.emplace_back(effect);
       }
 
       effect->SendMsg(nullptr, 22, 0, duration, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
