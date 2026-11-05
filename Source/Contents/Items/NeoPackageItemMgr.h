@@ -35,7 +35,7 @@ public:
   static int LuaInsertPackage(lua_State* state);
   static bool LoadScript();
 
-  CNeoPackageItemMgr();
+  __declspec(noinline) CNeoPackageItemMgr();
 
   void Init();
   void InsertPackage(int packageId, int groupId, int itemId, const std::string& name, int probability);
