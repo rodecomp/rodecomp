@@ -28,13 +28,16 @@ extern "C" {
 #pragma pack(push, 1)
 struct RenewQuestOngoingRecord {
   /* 0000 */ unsigned int questId;
-  /* 0004 */ unsigned short state;
+  /* 0004 */ unsigned char state;
+  /* 0005 */ unsigned char unknown_0005;
   /* 0006 */ short huntCount;
   /* 0008 */ short year;
   /* 000A */ short month;
   /* 000C */ short day;
   /* 000E */ short hour;
-  /* 0010 */ unsigned __int64 minute;
+  /* 0010 */ unsigned short minute;
+  /* 0012 */ unsigned short unknown_0012;
+  /* 0014 */ unsigned int unknown_0014;
 };
 
 struct RenewQuestHuntRecord {
@@ -171,12 +174,9 @@ void CRenewQuestMgr::RemoveStatusRequest(unsigned int id) {
 // OFFSET: 0x00677D80
 // FUNCTION: fn_05438
 std::string RenewQuestOngoingInfo::GetDateString() const {
-  if (this->m_year < 1971) {
-    return std::string();
-  }
-
-  return std::format("{0} [{1:04}/{2:02}/{3:02} {4:02}:{5:02}]", LookupMessage(2195), this->m_year, this->m_month,
-                     this->m_day, this->m_hour, this->m_minute);
+  return this->m_year > 1970 ? std::format("{0} [{1:04}/{2:02}/{3:02} {4:02}:{5:02}]", LookupMessage(2195), this->m_year,
+                                           this->m_month, this->m_day, this->m_hour, this->m_minute)
+                              : std::string("");
 }
 
 // OFFSET: 0x006779A0
@@ -331,8 +331,8 @@ std::string CRenewQuestMgr::GetMonsterConditionText(unsigned int flags, int minL
 // OFFSET: 0x006792A0
 // FUNCTION: fn_05441
 std::string CRenewQuestMgr::GetIconTooltip(std::string_view icon) {
-  const auto found = this->m_iconTooltips.find(std::string(icon));
-  return found == this->m_iconTooltips.end() ? std::string("QUEST") : found->second;
+  const std::map<std::string, std::string>::const_iterator found = this->m_iconTooltips.find(std::string(icon));
+  return found != this->m_iconTooltips.end() ? found->second : std::string("QUEST");
 }
 
 // OFFSET: 0x006794D0
@@ -393,7 +393,7 @@ const RenewQuestOngoingInfo& CRenewQuestMgr::GetOngoingQuest(unsigned int id) {
 // FUNCTION: fn_05444
 RenewQuestOngoingInfo* CRenewQuestMgr::FindOngoingQuest(unsigned int id) {
   const auto found = this->m_ongoingQuests.find(id);
-  if (found != this->m_ongoingQuests.end()) {
+  if (this->m_ongoingQuests.end() != found) {
     return &found->second;
   }
 
@@ -417,7 +417,7 @@ const RenewQuestRecommendedInfo& CRenewQuestMgr::GetRecommendedQuest(unsigned in
 // FUNCTION: fn_05446
 RenewQuestRecommendedInfo* CRenewQuestMgr::FindRecommendedQuest(unsigned int id) {
   const auto found = this->m_recommendedQuests.find(id);
-  if (found != this->m_recommendedQuests.end()) {
+  if (this->m_recommendedQuests.end() != found) {
     return &found->second;
   }
 
@@ -705,7 +705,7 @@ bool CRenewQuestMgr::SetOngoingQuestState(unsigned int id, unsigned char state) 
 // FUNCTION: fn_05463
 bool CRenewQuestMgr::SetRecommendedQuestActive(unsigned int id, bool active) {
   const auto found = this->m_recommendedQuests.find(id);
-  if (found != this->m_recommendedQuests.end()) {
+  if (this->m_recommendedQuests.end() != found) {
     found->second.m_active = active;
     return true;
   }
@@ -717,12 +717,12 @@ bool CRenewQuestMgr::SetRecommendedQuestActive(unsigned int id, bool active) {
 // FUNCTION: fn_05464
 bool CRenewQuestMgr::SetOngoingSimpleView(unsigned int id, bool simpleView) {
   const auto found = this->m_ongoingQuests.find(id);
-  if (found != this->m_ongoingQuests.end()) {
-    found->second.m_simpleView = simpleView;
-    return true;
+  if (this->m_ongoingQuests.end() == found) {
+    return false;
   }
 
-  return false;
+  found->second.m_simpleView = simpleView;
+  return true;
 }
 
 // OFFSET: 0x0067B8F0
