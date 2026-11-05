@@ -134,20 +134,21 @@ void UIListBox::Resize(int width, int height) {
 // OFFSET: 0x008750D0
 // FUNCTION: fn_11197
 void UIChatHisBox::AddTextWrapped(const char* text, int color, const char* style) {
+  std::vector<std::string> lines;
   const int width = this->verticalBar ? (this->geometry.width - 16) : this->geometry.width;
-  const std::string value(text);
 
-  if (g_navigationLinkParser->HasLink(value)) {
+  if (g_navigationLinkParser->HasLink(std::string(text))) {
     this->AddText(text, color, style);
     return;
   }
 
-  std::vector<std::string> lines;
   this->WrapPixelText(text, lines, width);
 
-  for (const std::string& line : lines) {
-    char* copy = static_cast<char*>(std::malloc(line.size() + 1));
-    std::strcpy(copy, line.c_str());
+  for (unsigned index = 0; index < lines.size(); ++index) {
+    const std::size_t length = std::strlen(lines[index].c_str());
+    char* copy = static_cast<char*>(std::malloc(length + 1));
+    std::strcpy(copy, lines[index].c_str());
+    copy[length] = 0;
     this->AddText(copy, color, style);
     std::free(copy);
   }
@@ -205,7 +206,7 @@ void UIChatHisBox::AddText(const char* text, int color, const char* style) {
   int mode = 4;
   const auto* bytes = reinterpret_cast<const unsigned char*>(text);
 
-  if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>("<ITEML>")) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>("</ITEML>"))) {
+  if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
     this->sub_89DC30(text, color, mode);
   } else if (g_navigationLinkParser->HasLink(std::string(text))) {
     this->sub_89E0F0(text, color, mode);
@@ -249,17 +250,17 @@ void UIListBox::Clear() {
 // FUNCTION: fn_11512
 void UIListBox::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
-  const int count = static_cast<int>(this->lines.size());
-  const int overflow = std::max((count - visible), 0);
+  const int overflow = std::max(0, (static_cast<int>(this->lines.size()) - visible));
 
   this->verticalOverflow = overflow != 0;
-  this->verticalBar->maximum = overflow != 0 ? (this->bottomMargin + overflow) : 0;
-  this->verticalBar->total = count;
-  this->verticalBar->visible = visible;
-  this->verticalBar->Invalidate();
+  UIScrollBar* bar = this->verticalBar;
+  bar->maximum = overflow != 0 ? (this->bottomMargin + overflow) : 0;
+  bar->total = static_cast<int>(this->lines.size());
+  bar->visible = visible;
+  bar->Invalidate();
 
-  if (this->verticalBar->position > this->verticalBar->maximum) {
-    this->verticalBar->position = this->verticalBar->maximum;
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
   }
 
   this->verticalBar->Invalidate();
