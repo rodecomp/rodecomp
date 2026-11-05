@@ -1,9 +1,9 @@
 #include "Client/Session.h"
 #include "File/File.h"
+#include "Utility/GuidParse.h"
+#include "Utility/Text/StringUtil.h"
 
 #include <cstdio>
-#include <cstring>
-#include <string>
 
 // OFFSET: 0x00E26B10
 // FUNCTION: fn_23917
@@ -16,7 +16,7 @@ void CSession::WriteOptionFloat(CFile& file, const char* key, float value) {
 // OFFSET: 0x00E26C00
 // FUNCTION: fn_23919
 void CSession::WriteOptionInteger(CFile& file, const char* key, int value) {
-  char line[204];
+  char line[200];
   std::sprintf(line, "OptionInfoList[\"%s\"] = %d\r\n", key, value);
   file.Write(line, static_cast<unsigned>(std::strlen(line)));
 }
@@ -25,15 +25,10 @@ void CSession::WriteOptionInteger(CFile& file, const char* key, int value) {
 // FUNCTION: fn_23920
 void CSession::WriteOptionString(CFile& file, const char* key, const char* value) {
   std::string escaped(value);
-  std::size_t offset = 0;
-
-  while ((offset = escaped.find('\\', offset)) != std::string::npos) {
-    escaped.replace(offset, 1, "\\\\");
-    offset += 2;
-  }
+  ReplaceAll(escaped, "\\", "\\\\");
 
   char line[200];
-  const int count = _snprintf_s(line, sizeof(line), _TRUNCATE, "OptionInfoList[\"%s\"] = \"%s\"\r\n", key, escaped.c_str());
+  const int count = _snprintf_s(line, _TRUNCATE, "OptionInfoList[\"%s\"] = \"%s\"\r\n", key, escaped.c_str());
 
   if (count > 0) {
     file.Write(line, count);
@@ -44,12 +39,10 @@ void CSession::WriteOptionString(CFile& file, const char* key, const char* value
 // FUNCTION: fn_23918
 void CSession::WriteOptionGuid(CFile& file, const char* key, const GUID& value) {
   char text[40];
-  _snprintf_s(
-    text, sizeof(text), _TRUNCATE, "{%08X-%04hX-%04hX-%02hhX%02hhX-%02hhX%02hhX%02hhX%02hhX%02hhX%02hhX}", value.Data1, value.Data2, value.Data3,
-    value.Data4[0], value.Data4[1], value.Data4[2], value.Data4[3], value.Data4[4], value.Data4[5], value.Data4[6], value.Data4[7]
-  );
+  FormatGuid(text, sizeof(text), value, true);
+
   char line[200];
-  const int count = _snprintf_s(line, sizeof(line), _TRUNCATE, "OptionInfoList[\"%s\"] = \"%s\"\r\n", key, text);
+  const int count = _snprintf_s(line, _TRUNCATE, "OptionInfoList[\"%s\"] = \"%s\"\r\n", key, text);
 
   if (count > 0) {
     file.Write(line, count);
