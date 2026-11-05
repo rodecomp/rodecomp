@@ -11,6 +11,7 @@
 #include <vector>
 
 class UIButton;
+class UIBitmapButton;
 class UIEditCtrl;
 class UIChangeMaterialWnd_List;
 
@@ -55,6 +56,7 @@ public:
   // INLINED
   UIChangeMaterialWnd_CheckBox() : UICheckBox() {}
   void Paint() override;
+  void SetLabels(std::string ascending, std::string descending);
 
   /* 010C */ std::string ascendingText;
   /* 0124 */ std::string descendingText;
@@ -77,7 +79,7 @@ public:
   /* 00B4 */ UIChangeMaterialWnd_List* unknown_00B4;
   /* 00B8 */ UIEditCtrl* unknown_00B8;
   /* 00BC */ UIChangeMaterialWnd_CheckBox* m_sortBox;
-  /* 00C0 */ UIButton* m_button;
+  /* 00C0 */ UIBitmapButton* m_button;
   /* 00C4 */ int m_resultX;
   /* 00C8 */ int m_resultY;
   /* 00D0 */ ITEM_INFO m_resultItem;

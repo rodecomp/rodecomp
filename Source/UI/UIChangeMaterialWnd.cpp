@@ -690,6 +690,19 @@ void UIChangeMaterialWnd_List::Slot28(int x, int y) {
   g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
 }
 
+// INLINED
+static __forceinline void SetButtonText(UIBmpTextButton* button, std::string value) {
+  button->text = value;
+  button->Invalidate();
+}
+
+// INLINED
+__forceinline void UIChangeMaterialWnd_CheckBox::SetLabels(std::string ascending, std::string descending) {
+  this->ascendingText = ascending;
+  this->descendingText = descending;
+  this->Invalidate();
+}
+
 // OFFSET: 0x005E1320
 // FUNCTION: fn_03876
 void UIChangeMaterialWnd::Slot15(int width, int height) {
@@ -702,17 +715,16 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   close->SetId(201);
   this->AddChild(close);
 
-  UIEditCtrl* edit = new UIEditCtrl();
-  this->unknown_00B8 = edit;
-  edit->SetSize(118, 13);
-  edit->Move(313, 262);
-  edit->maximum = 20;
-  edit->preserveInput = 1;
-  edit->SetText(LookupMessage(3776));
-  edit->TextColor(0xB1B1B1, 0xFFFFFFFFu);
-  edit->Background(255, 236, 207);
-  edit->topPadding = -1;
-  this->AddChild(edit);
+  this->unknown_00B8 = new UIEditCtrl();
+  this->unknown_00B8->SetSize(118, 13);
+  this->unknown_00B8->Move(313, 262);
+  this->unknown_00B8->maximum = 20;
+  this->unknown_00B8->preserveInput = 1;
+  this->unknown_00B8->SetText(LookupMessage(3776));
+  this->unknown_00B8->TextColor(0xB1B1B1, 0xFFFFFFFFu);
+  this->unknown_00B8->Background(255, 236, 207);
+  this->unknown_00B8->topPadding = -1;
+  this->AddChild(this->unknown_00B8);
 
   UIBmpTextButton* search = new UIBmpTextButton();
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search.bmp", 0, 0);
@@ -720,7 +732,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_press.bmp", 2, 0);
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_disable.bmp", 3, 0);
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
-  search->SetText(LookupMessage(3777));
+  SetButtonText(search, LookupMessage(3777));
   search->Move(432, 259);
   search->SetId(321);
   this->AddChild(search);
@@ -738,24 +750,21 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   this->m_sortBox = new UIChangeMaterialWnd_CheckBox();
   this->m_sortBox->SetSize(74, 14);
   this->m_sortBox->SetBitmaps("유저인터페이스\\ChangeMaterial\\btn_sort_up.bmp", "유저인터페이스\\ChangeMaterial\\btn_sort_down.bmp");
-  this->m_sortBox->ascendingText = LookupMessage(3722);
-  this->m_sortBox->descendingText = LookupMessage(3775);
-  this->m_sortBox->Invalidate();
+  this->m_sortBox->SetLabels(LookupMessage(3722), LookupMessage(3775));
   this->m_sortBox->Move(316, 24);
   this->m_sortBox->SetId(364);
   this->m_sortBox->SetChecked(1);
   this->AddChild(this->m_sortBox);
 
-  UIBitmapButton* change = new UIBitmapButton();
-  this->m_button = change;
-  change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_start.bmp", 0, 0);
-  change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_over.bmp", 1, 0);
-  change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_press.bmp", 2, 0);
-  change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_disable.bmp", 3, 0);
-  change->SetSize(change->BitmapWidth(), change->BitmapHeight());
-  change->Move(140, 171);
-  change->SetId(184);
-  this->AddChild(change);
+  this->m_button = new UIBitmapButton();
+  this->m_button->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_start.bmp", 0, 0);
+  this->m_button->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_over.bmp", 1, 0);
+  this->m_button->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_press.bmp", 2, 0);
+  this->m_button->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_disable.bmp", 3, 0);
+  this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
+  this->m_button->Move(140, 171);
+  this->m_button->SetId(184);
+  this->AddChild(this->m_button);
 
   UIBasicButton* cancel = new UIBasicButton();
   cancel->Configure(42, LookupMessage(3045));
@@ -763,12 +772,11 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   cancel->SetId(201);
   this->AddChild(cancel);
 
-  UIChangeMaterialWnd_List* list = new UIChangeMaterialWnd_List();
-  this->unknown_00B4 = list;
-  list->SetSize(186, 216);
-  list->Move(310, 41);
-  this->AddChild(list);
-  list->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  this->unknown_00B4 = new UIChangeMaterialWnd_List();
+  this->unknown_00B4->SetSize(186, 216);
+  this->unknown_00B4->Move(310, 41);
+  this->AddChild(this->unknown_00B4);
+  this->unknown_00B4->SendMsg(nullptr, 23, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x005E1E20
