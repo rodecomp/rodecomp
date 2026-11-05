@@ -86,7 +86,7 @@ int UIRune_Decom::HitTestItem(int x, int y) {
     return -1;
   }
 
-  if (static_cast<unsigned int>(index) < list->size()) {
+  if (list->size() > static_cast<unsigned int>(index)) {
     return index;
   }
   return -1;
@@ -537,14 +537,13 @@ int UIRuneSetList::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
 int UIRuneSetReWard::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message == 0x22) {
+  switch (message) {
+  case 0x22:
     if (static_cast<unsigned int>(argument1) <= 2 && argument2) {
       this->m_texts[argument1] = reinterpret_cast<const char*>(argument2);
     }
-    return 0;
-  }
-
-  if (message == 0x66) {
+    break;
+  case 0x66:
     this->m_itemId = argument2;
     this->SetDisabled(1);
     if (argument2 == 0) {
@@ -558,10 +557,12 @@ int UIRuneSetReWard::SendMsg(
       this->SetDisabled(0);
     }
     this->Invalidate();
-    return 0;
+    break;
+  default:
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  return 0;
 }
 
 // OFFSET: 0x0081DA20
@@ -589,24 +590,28 @@ int UIRuneSystemTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, st
 // OFFSET: 0x0081E520
 // FUNCTION: fn_10227
 int UIRuneSystem_tagListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t, std::intptr_t) {
-  if (message == 0xA9) {
-    this->Move(0, (argument1 == 0 ? argument2 : 0) + 44);
-    return 0;
-  }
-
-  if (message == 6) {
-    if (argument1 == 0x13C) {
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 0x13C:
       --this->m_firstTag;
       this->m_firstTag = this->m_firstTag < 0 ? 0 : this->m_firstTag;
       this->Invalidate();
-    } else if (argument1 == 0x13D) {
-      const int first = ++this->m_firstTag;
+      break;
+    case 0x13D: {
+      ++this->m_firstTag;
+      const int first = this->m_firstTag;
       if (g_runeSystemMgr->GetTagCount() < first + 10) {
         this->m_firstTag = first - 1;
       }
       this->Invalidate();
-      return 0;
+      break;
     }
+    }
+    break;
+  case 0xA9:
+    this->Move(0, (argument1 == 0 ? argument2 : 0) + 44);
+    break;
   }
   return 0;
 }
@@ -720,27 +725,22 @@ void UIRuneSet_Info::UpdateRewards() {
     reward->SendMsg(this, 0x66, 0, 0, 0, 0);
   }
 
-  if (!this->m_runeSet || this->m_runeSet->m_reward.values[0] == 0) {
-    return;
-  }
-
-  for (int index = 0; index < 7; ++index) {
-    RuneSetData* runeSet = this->m_runeSet;
-    const std::int64_t itemId = runeSet->m_reward.values[index + 1];
-    if (itemId == 0) {
-      continue;
-    }
-
-    if (index < runeSet->m_rewardStep) {
-      this->m_rewards[index]->SendMsg(this, 0x66, 3, static_cast<std::intptr_t>(itemId), 0, 0);
-    } else if (index == 0) {
-      this->m_rewards[0]->SendMsg(this, 0x66, runeSet->IsActive() ? 2 : 1, static_cast<std::intptr_t>(itemId), 0, 0);
-    } else {
-      int state = 2;
-      if ((index != 6 && runeSet->CountActiveSlots() <= index) || runeSet->FindLastReward(index + 1) > runeSet->m_rewardStep) {
-        state = 1;
+  if (this->m_runeSet && this->m_runeSet->m_reward.values[0] != 0) {
+    for (int index = 0; index < 7; ++index) {
+      const std::int64_t itemId = this->m_runeSet->m_reward.values[index + 1];
+      if (itemId != 0) {
+        if (index < this->m_runeSet->m_rewardStep) {
+          this->m_rewards[index]->SendMsg(this, 0x66, 3, static_cast<std::intptr_t>(itemId), 0, 0);
+        } else if (index == 0) {
+          this->m_rewards[0]->SendMsg(this, 0x66, this->m_runeSet->IsActive() ? 2 : 1, static_cast<std::intptr_t>(itemId), 0, 0);
+        } else {
+          int state = 2;
+          if ((index != 6 && this->m_runeSet->CountActiveSlots() <= index) || this->m_runeSet->FindLastReward(index + 1) > this->m_runeSet->m_rewardStep) {
+            state = 1;
+          }
+          this->m_rewards[index]->SendMsg(this, 0x66, state, static_cast<std::intptr_t>(this->m_runeSet->m_reward.values[index + 1]), 0, 0);
+        }
       }
-      this->m_rewards[index]->SendMsg(this, 0x66, state, static_cast<std::intptr_t>(runeSet->m_reward.values[index + 1]), 0, 0);
     }
   }
 }
