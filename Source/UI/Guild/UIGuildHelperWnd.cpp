@@ -197,22 +197,24 @@ int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
 // OFFSET: 0x00961540
 // FUNCTION: fn_13124
 int UIGuildBanReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
-  if (message == 6) {
-    if (a1 == 184) {
+  switch (message) {
+  case 6:
+    switch (a1) {
+    case 184:
       g_windowMgr.CloseWindow(76);
       g_modeMgr.gameMode->SendMsg(111, reinterpret_cast<int>(&this->m_target), reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0);
-    } else if (a1 == 185) {
+      break;
+    case 185:
       g_windowMgr.CloseWindow(76);
+      break;
     }
     return 0;
-  }
-
-  if (message == 34) {
+  case 34:
     this->m_target = *reinterpret_cast<const GuildBanTarget*>(a1);
     return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
   }
-
-  return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
 }
 
 // OFFSET: 0x00961710
