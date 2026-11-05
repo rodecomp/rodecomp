@@ -132,7 +132,7 @@ CTextureDX7::~CTextureDX7() {
 
 // OFFSET: 0x00544230
 // FUNCTION: fn_01815
-bool CTextureDX7::Create(int width, int height, int format) {
+__forceinline bool CTextureDX7::Create(int width, int height, int format) {
   this->m_textureWidth = width;
   this->m_textureHeight = height;
   this->m_format = format;
@@ -143,7 +143,7 @@ bool CTextureDX7::Create(int width, int height, int format) {
     this->m_surface = nullptr;
   }
 
-  if (static_cast<unsigned>(format) >= TextureFormat::R5G6B5 && format != TextureFormat::R5G6B5 && format != TextureFormat::A8R8G8B8) {
+  if (format != TextureFormat::A1R5G5B5 && format != TextureFormat::A4R4G4B4 && format != TextureFormat::A8R8G8B8 && format != TextureFormat::R5G6B5) {
     ShowErrorDialog(GetRenderSystemHolder()->system, "Create Texture::Unsupported pixelformat", 0);
   }
 
@@ -157,26 +157,22 @@ bool CTextureDX7::Create(int width, int height, int format) {
     ShowErrorDialog(GetRenderSystemHolder()->system, "GFC ", 0);
   }
 
-  DDSURFACEDESC2 description{};
-  description.dwSize = sizeof(description);
-  description.dwFlags = g_textureAllocationDX7.descriptorFlags | DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE;
-
-  if (selected == TextureFormat::R5G6B5) {
-    description.dwFlags |= DDSD_CKSRCBLT;
-  }
-
+  DDSURFACEDESC2 description = {sizeof(description),
+                                 (selected == TextureFormat::R5G6B5 ? DDSD_CKSRCBLT : 0) | g_textureAllocationDX7.descriptorFlags | DDSD_CAPS | DDSD_HEIGHT |
+                                     DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE};
   description.dwWidth = this->m_textureWidth;
   description.dwHeight = this->m_textureHeight;
   description.ddpfPixelFormat = formats[selected];
   description.ddsCaps.dwCaps = g_textureAllocationDX7.surfaceCaps | DDSCAPS_TEXTURE;
   description.ddsCaps.dwCaps2 = DDSCAPS2_TEXTUREMANAGE;
+  description.dwTextureStage = 0;
   description.ddckCKSrcBlt.dwColorSpaceLowValue = description.ddpfPixelFormat.dwRBitMask | description.ddpfPixelFormat.dwBBitMask;
   description.ddckCKSrcBlt.dwColorSpaceHighValue = description.ddckCKSrcBlt.dwColorSpaceLowValue;
   unsigned count = 1;
   description.dwMipMapCount = 1;
 
-  while (this->m_textureWidth > (1u << (count & 31))) {
-    if ((1u << (count & 31)) >= this->m_textureHeight) {
+  while (this->m_textureWidth > (1u << count)) {
+    if ((1u << count) >= this->m_textureHeight) {
       break;
     }
 
@@ -201,12 +197,12 @@ SurfaceLock CTextureDX7::Lock() {
     DDSURFACEDESC2 description{};
 
     if (SUCCEEDED(this->m_surface->Lock(nullptr, &description, DDLOCK_WAIT, nullptr))) {
-      output = {true,
-                description.lpSurface,
-                description.lPitch,
-                description.dwWidth,
-                description.dwHeight,
-                static_cast<int>(description.ddpfPixelFormat.dwRGBBitCount)};
+      output.success = true;
+      output.pixels = description.lpSurface;
+      output.pitch = description.lPitch;
+      output.width = description.dwWidth;
+      output.height = description.dwHeight;
+      output.bitsPerPixel = description.ddpfPixelFormat.dwRGBBitCount;
     }
   }
 
@@ -410,20 +406,19 @@ void CTextureDX7::UploadSprite(int x, int y, int width, int height, const Sprite
   }
 
   const RECT rectangle = Rectangle(x, y, width, height);
-  DDSURFACEDESC2 description{};
-  description.dwSize = sizeof(description);
+  DDSURFACEDESC2 description = {sizeof(description)};
 
   if (FAILED(this->m_surface->Lock(const_cast<RECT*>(&rectangle), &description, DDLOCK_WAIT, nullptr))) {
     return;
   }
 
-  if (this->m_format == TextureFormat::A1R5G5B5 || this->m_format == TextureFormat::A8R8G8B8) {
-    const unsigned bytes = this->m_format == TextureFormat::A1R5G5B5 ? 2 : 4;
-    auto* row = static_cast<unsigned char*>(description.lpSurface);
-
+  if (this->m_format == TextureFormat::A1R5G5B5) {
     for (int index = 0; index < height; ++index) {
-      std::memset(row, 0, bytes * static_cast<unsigned>(width));
-      row += description.lPitch;
+      std::memset(static_cast<unsigned char*>(description.lpSurface) + description.lPitch * index, 0, width * sizeof(std::uint16_t));
+    }
+  } else if (this->m_format == TextureFormat::A8R8G8B8) {
+    for (int index = 0; index < height; ++index) {
+      std::memset(static_cast<unsigned char*>(description.lpSurface) + description.lPitch * index, 0, width * sizeof(std::uint32_t));
     }
   }
 
