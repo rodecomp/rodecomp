@@ -473,7 +473,7 @@ public:
   UIWindow* EnsureWindow(int id);
   UIWindow* sub_A978D0(int id);
   UIWindow* CreateLayoutWindow(int id);
-  void GetMiniPartyUsableArea(RECT* area);
+  RECT GetMiniPartyUsableArea();
   UIWindow* FindSnapExcludedWindow(int cell);
   void Schedule(UIWindow* window);
   __declspec(noinline) void AddRendered(UIWindow* window);

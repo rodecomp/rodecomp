@@ -42,19 +42,19 @@ UIWindow* UIWindowMgr::FindSnapExcludedWindow(int cell) {
 // OFFSET: 0x00737B00
 // FUNCTION: fn_07657
 int CMiniPartyWndAreaMgr::FindFreeCell() {
-  RECT usable;
-  g_windowMgr.GetMiniPartyUsableArea(&usable);
-  CMiniPartyWndSortArea area(usable);
+  CMiniPartyWndSortArea area(g_windowMgr.GetMiniPartyUsableArea());
   const std::list<int> cells = area.GetCells();
 
-  for (int id : this->available) {
-    for (int cell : cells) {
-      if (cell == id) {
-        if (g_windowMgr.FindSnapExcludedWindow(id) == nullptr) {
-          return id;
-        }
-        break;
-      }
+  for (std::vector<int>::iterator it = this->available.begin(); it != this->available.end(); ++it) {
+    const std::list<int>::const_iterator found = std::find(cells.begin(), cells.end(), *it);
+
+    if (found == cells.end()) {
+      continue;
+    }
+
+    const UIWindow* const window = g_windowMgr.FindSnapExcludedWindow(*it);
+    if (window == nullptr) {
+      return *it;
     }
   }
 
