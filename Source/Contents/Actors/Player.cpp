@@ -4724,6 +4724,27 @@ void CPc::SendMsg(
 ) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
+  case 100:
+    if (this->render.unknown_0070 == 0 || this->render.unknown_0070 == 6) {
+      this->render.curMotion = b;
+    }
+    break;
+  case 35:
+    if (this->unknown_0490) {
+      g_windowMgr.Schedule(this->unknown_0490);
+      this->unknown_0490 = nullptr;
+    }
+    break;
+  case 34:
+    if (!this->unknown_0490) {
+      this->unknown_0490 = new UIPcGage();
+      this->unknown_0490->SetSize(60, 5);
+      g_windowMgr.AddRenderedFront(this->unknown_0490);
+    }
+    static_cast<UIPcGage*>(this->unknown_0490)->SetValues(b, d);
+    static_cast<UIPcGage*>(this->unknown_0490)->SetLimits(0, 0);
+    this->unknown_0490->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
+    break;
   case 3: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
@@ -4746,6 +4767,9 @@ void CPc::SendMsg(
     this->Slot49(entry->guildId, entry->guildVersion);
     this->Slot41(entry->unknown_0068, entry->unknown_006C);
     switch (entry->state) {
+    case 0:
+      this->Slot15(0, 1);
+      break;
     case 1:
       this->Slot15(3, 1);
       break;
@@ -4756,6 +4780,62 @@ void CPc::SendMsg(
       this->Slot15(0, 1);
       break;
     }
+    break;
+  }
+  case 124: {
+    PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
+    this->unknown_04D0 = entry->unknown_0078;
+    mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
+    this->render.position.y =
+      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
+    this->render.angle = static_cast<float>((entry->direction + 4) * 45);
+    this->unknown_0294 = entry->unknown_001C;
+    this->unknown_0298 = entry->unknown_0020;
+    this->unknown_0158[5] = entry->cellX;
+    *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
+    this->unknown_043C = entry->unknown_005C;
+    *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
+    entry->job = MountedJob(entry->job, entry->stateFlags);
+    this->Slot20(
+      entry->job, entry->unknown_0008, entry->unknown_0024, entry->unknown_0028, entry->unknown_002C, entry->unknown_0030, entry->unknown_004C,
+      entry->unknown_0050, entry->unknown_0054, entry->unknown_0058, entry->stateFlags
+    );
+    this->Slot43(entry->robe, 0);
+    this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
+    this->SetUnknown02C8(entry->unknown_0044);
+    this->Slot49(entry->guildId, entry->guildVersion);
+    this->Slot41(entry->unknown_0068, entry->unknown_006C);
+    this->unknown_04CC = entry->unknown_0074;
+    switch (entry->state) {
+    case 0:
+      this->Slot15(0, 1);
+      break;
+    case 1:
+      this->Slot15(3, 1);
+      break;
+    case 2:
+      this->Slot15(6, 1);
+      break;
+    default:
+      this->Slot15(0, 1);
+      break;
+    }
+    break;
+  }
+  case 105:
+  case 106:
+  case 136: {
+    this->Slot21(this->GetEffectiveJob(-1));
+    this->Slot30();
+    const std::int64_t weapon = this->Slot35();
+    if (weapon >= 1 && weapon <= 104) {
+      this->Slot23(static_cast<int>(weapon), static_cast<int>(weapon >> 32));
+    } else {
+      this->Slot24(static_cast<int>(weapon), static_cast<int>(weapon >> 32));
+    }
+    this->Slot28(this->unknown_045C);
+    this->Slot31();
+    this->Slot32();
     break;
   }
   case 4: {
@@ -4783,6 +4863,9 @@ void CPc::SendMsg(
     this->Slot49(entry->guildId, entry->guildVersion);
     this->Slot41(entry->unknown_0068, entry->unknown_006C);
     switch (entry->state) {
+    case 0:
+      this->Slot15(0, 1);
+      break;
     case 1:
       this->Slot15(3, 1);
       break;
@@ -4799,30 +4882,51 @@ void CPc::SendMsg(
     this->ShowPartyMemberEffect(entry->aid);
     break;
   }
-  case 5: {
-    PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
-    this->unknown_04D0 = entry->unknown_007C;
+  case 121: {
+    PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
+    this->unknown_04D0 = entry->unknown_0078;
     this->render.accountId = entry->aid;
+    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    gameMode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
+    this->render.position.y =
+      gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
+    this->render.angle = static_cast<float>((entry->direction + 4) * 45);
     *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
-    this->routeStartTick = entry->moveStartTick;
-    this->unknown_043C = 0;
+    this->unknown_0294 = entry->unknown_001C;
+    this->unknown_0298 = entry->unknown_0020;
+    this->unknown_0158[5] = entry->cellX;
+    *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
+    this->unknown_043C = entry->unknown_005C;
+    *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
     entry->job = MountedJob(entry->job, entry->stateFlags);
-    this->Slot19(
-      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
-      entry->unknown_0054, entry->unknown_004C, entry->unknown_0058, entry->unknown_005C
+    this->Slot20(
+      entry->job, entry->unknown_0008, entry->unknown_0024, entry->unknown_0028, entry->unknown_002C, entry->unknown_0030, entry->unknown_004C,
+      entry->unknown_0050, entry->unknown_0054, entry->unknown_0058, entry->stateFlags
     );
+    this->Slot43(entry->robe, 0);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0048);
+    this->SetUnknown02C8(entry->unknown_0044);
     this->Slot49(entry->guildId, entry->guildVersion);
-    this->Slot41(entry->unknown_006C, entry->unknown_0070);
-    if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
-      this->unknown_0158[5] = entry->destX;
-      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
-      this->Slot15(1, 1);
-      this->unknown_023C = 0;
+    this->Slot41(entry->unknown_0068, entry->unknown_006C);
+    switch (entry->state) {
+    case 0:
+      this->Slot15(0, 1);
+      break;
+    case 1:
+      this->Slot15(3, 1);
+      break;
+    case 2:
+      this->Slot15(6, 1);
+      break;
+    default:
+      this->Slot15(0, 1);
+      break;
+    }
+    if (d == 2 && e == 0 && !StateFlag06(this->stateFlags)) {
+      this->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     this->ShowPartyMemberEffect(entry->aid);
-    this->unknown_04CC = entry->unknown_0078;
+    this->unknown_04CC = entry->unknown_0074;
     break;
   }
   case 6: {
@@ -4856,28 +4960,97 @@ void CPc::SendMsg(
     this->ShowPartyMemberEffect(entry->aid);
     break;
   }
-  case 34:
-    if (!this->unknown_0490) {
-      this->unknown_0490 = new UIPcGage();
-      this->unknown_0490->SetSize(60, 5);
-      g_windowMgr.AddRenderedFront(this->unknown_0490);
+  case 122: {
+    PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
+    this->unknown_04D0 = entry->unknown_007C;
+    this->render.accountId = entry->aid;
+    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
+    this->routeStartTick = entry->moveStartTick;
+    this->unknown_043C = 0;
+    entry->job = MountedJob(entry->job, entry->stateFlags);
+    this->Slot20(
+      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
+      entry->unknown_0054, entry->unknown_0058, entry->unknown_005C, entry->stateFlags
+    );
+    this->Slot43(entry->robe, 0);
+    this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
+    this->SetUnknown02C8(entry->unknown_0048);
+    this->Slot49(entry->guildId, entry->guildVersion);
+    this->Slot41(entry->unknown_006C, entry->unknown_0070);
+    mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
+    this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
+    this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
+    this->render.position.y =
+      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
+    if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
+      this->unknown_0158[5] = entry->destX;
+      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
+      this->Slot15(1, 1);
+      this->unknown_023C = 0;
+    } else {
+      this->Slot15(0, 1);
     }
-    static_cast<UIPcGage*>(this->unknown_0490)->SetValues(b, d);
-    static_cast<UIPcGage*>(this->unknown_0490)->SetLimits(0, 0);
-    this->unknown_0490->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
+    this->ShowPartyMemberEffect(entry->aid);
+    this->unknown_04CC = entry->unknown_0078;
     break;
-  case 35:
-    if (this->unknown_0490) {
-      g_windowMgr.Schedule(this->unknown_0490);
-      this->unknown_0490 = nullptr;
+  }
+  case 5: {
+    PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
+    this->unknown_04D0 = entry->unknown_007C;
+    this->render.accountId = entry->aid;
+    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
+    this->routeStartTick = entry->moveStartTick;
+    this->unknown_043C = 0;
+    entry->job = MountedJob(entry->job, entry->stateFlags);
+    this->Slot19(
+      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
+      entry->unknown_0054, entry->unknown_004C, entry->unknown_0058, entry->unknown_005C
+    );
+    this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
+    this->SetUnknown02C8(entry->unknown_0048);
+    this->Slot49(entry->guildId, entry->guildVersion);
+    this->Slot41(entry->unknown_006C, entry->unknown_0070);
+    if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
+      this->unknown_0158[5] = entry->destX;
+      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
+      this->Slot15(1, 1);
+      this->unknown_023C = 0;
     }
+    this->ShowPartyMemberEffect(entry->aid);
+    this->unknown_04CC = entry->unknown_0078;
     break;
-  case 77:
-    break;
-  case 100:
-    if (this->render.unknown_0070 == 0 || this->render.unknown_0070 == 6) {
-      this->render.curMotion = b;
+  }
+  case 123: {
+    PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
+    this->unknown_04D0 = entry->unknown_007C;
+    this->render.accountId = entry->aid;
+    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
+    this->routeStartTick = entry->moveStartTick;
+    this->unknown_043C = 0;
+    entry->job = MountedJob(entry->job, entry->stateFlags);
+    this->Slot20(
+      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
+      entry->unknown_0054, entry->unknown_0058, entry->unknown_005C, entry->stateFlags
+    );
+    this->Slot43(entry->robe, 0);
+    this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
+    this->SetUnknown02C8(entry->unknown_0048);
+    this->Slot49(entry->guildId, entry->guildVersion);
+    this->Slot41(entry->unknown_006C, entry->unknown_0070);
+    if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
+      this->unknown_0158[5] = entry->destX;
+      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
+      this->Slot15(1, 1);
+      this->unknown_023C = 0;
     }
+    this->ShowPartyMemberEffect(entry->aid);
+    this->unknown_04CC = entry->unknown_0078;
+    this->unknown_04D0 = entry->unknown_007C;
+    break;
+  }
+  case 114:
+    this->unknown_0494 = d;
+    this->unknown_0498 = b;
     break;
   case 101: {
     if (this->unknown_037C[0] != 0) {
@@ -4922,169 +5095,6 @@ void CPc::SendMsg(
     this->unknown_037C[0] = reinterpret_cast<int>(effect);
     break;
   }
-  case 105:
-  case 106:
-  case 136: {
-    this->Slot21(this->GetEffectiveJob(-1));
-    this->Slot30();
-    const std::int64_t weapon = this->Slot35();
-    if (weapon >= 1 && weapon <= 104) {
-      this->Slot23(static_cast<int>(weapon), static_cast<int>(weapon >> 32));
-    } else {
-      this->Slot24(static_cast<int>(weapon), static_cast<int>(weapon >> 32));
-    }
-    this->Slot28(this->unknown_045C);
-    this->Slot31();
-    this->Slot32();
-    break;
-  }
-  case 114:
-    this->unknown_0494 = d;
-    this->unknown_0498 = b;
-    break;
-  case 121: {
-    PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
-    this->unknown_04D0 = entry->unknown_0078;
-    this->render.accountId = entry->aid;
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    gameMode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
-    this->render.position.y =
-      gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
-    this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
-    this->unknown_0294 = entry->unknown_001C;
-    this->unknown_0298 = entry->unknown_0020;
-    this->unknown_0158[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
-    this->unknown_043C = entry->unknown_005C;
-    *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
-    entry->job = MountedJob(entry->job, entry->stateFlags);
-    this->Slot20(
-      entry->job, entry->unknown_0008, entry->unknown_0024, entry->unknown_0028, entry->unknown_002C, entry->unknown_0030, entry->unknown_004C,
-      entry->unknown_0050, entry->unknown_0054, entry->unknown_0058, entry->stateFlags
-    );
-    this->Slot43(entry->robe, 0);
-    this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0044);
-    this->Slot49(entry->guildId, entry->guildVersion);
-    this->Slot41(entry->unknown_0068, entry->unknown_006C);
-    switch (entry->state) {
-    case 1:
-      this->Slot15(3, 1);
-      break;
-    case 2:
-      this->Slot15(6, 1);
-      break;
-    default:
-      this->Slot15(0, 1);
-      break;
-    }
-    if (d == 2 && e == 0 && !StateFlag06(this->stateFlags)) {
-      this->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    }
-    this->ShowPartyMemberEffect(entry->aid);
-    this->unknown_04CC = entry->unknown_0074;
-    break;
-  }
-  case 122: {
-    PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
-    this->unknown_04D0 = entry->unknown_007C;
-    this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
-    this->routeStartTick = entry->moveStartTick;
-    this->unknown_043C = 0;
-    entry->job = MountedJob(entry->job, entry->stateFlags);
-    this->Slot20(
-      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
-      entry->unknown_0054, entry->unknown_0058, entry->unknown_005C, entry->stateFlags
-    );
-    this->Slot43(entry->robe, 0);
-    this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0048);
-    this->Slot49(entry->guildId, entry->guildVersion);
-    this->Slot41(entry->unknown_006C, entry->unknown_0070);
-    mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
-    this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
-    this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
-    this->render.position.y =
-      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
-    if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
-      this->unknown_0158[5] = entry->destX;
-      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
-      this->Slot15(1, 1);
-      this->unknown_023C = 0;
-    } else {
-      this->Slot15(0, 1);
-    }
-    this->ShowPartyMemberEffect(entry->aid);
-    this->unknown_04CC = entry->unknown_0078;
-    break;
-  }
-  case 123: {
-    PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
-    this->unknown_04D0 = entry->unknown_007C;
-    this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
-    this->routeStartTick = entry->moveStartTick;
-    this->unknown_043C = 0;
-    entry->job = MountedJob(entry->job, entry->stateFlags);
-    this->Slot20(
-      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
-      entry->unknown_0054, entry->unknown_0058, entry->unknown_005C, entry->stateFlags
-    );
-    this->Slot43(entry->robe, 0);
-    this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0048);
-    this->Slot49(entry->guildId, entry->guildVersion);
-    this->Slot41(entry->unknown_006C, entry->unknown_0070);
-    if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
-      this->unknown_0158[5] = entry->destX;
-      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
-      this->Slot15(1, 1);
-      this->unknown_023C = 0;
-    }
-    this->ShowPartyMemberEffect(entry->aid);
-    this->unknown_04CC = entry->unknown_0078;
-    this->unknown_04D0 = entry->unknown_007C;
-    break;
-  }
-  case 124: {
-    PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
-    this->unknown_04D0 = entry->unknown_0078;
-    mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
-    this->render.position.y =
-      mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
-    this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    this->unknown_0294 = entry->unknown_001C;
-    this->unknown_0298 = entry->unknown_0020;
-    this->unknown_0158[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
-    this->unknown_043C = entry->unknown_005C;
-    *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
-    entry->job = MountedJob(entry->job, entry->stateFlags);
-    this->Slot20(
-      entry->job, entry->unknown_0008, entry->unknown_0024, entry->unknown_0028, entry->unknown_002C, entry->unknown_0030, entry->unknown_004C,
-      entry->unknown_0050, entry->unknown_0054, entry->unknown_0058, entry->stateFlags
-    );
-    this->Slot43(entry->robe, 0);
-    this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0044);
-    this->Slot49(entry->guildId, entry->guildVersion);
-    this->Slot41(entry->unknown_0068, entry->unknown_006C);
-    this->unknown_04CC = entry->unknown_0074;
-    switch (entry->state) {
-    case 1:
-      this->Slot15(3, 1);
-      break;
-    case 2:
-      this->Slot15(6, 1);
-      break;
-    default:
-      this->Slot15(0, 1);
-      break;
-    }
-    break;
-  }
   case 137: {
     if (this->unknown_037C[1] != 0) {
       break;
@@ -5123,6 +5133,8 @@ void CPc::SendMsg(
   }
   default:
     CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, j, k, l, m);
+    break;
+  case 77:
     break;
   }
 }
