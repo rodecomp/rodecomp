@@ -3,6 +3,8 @@
 #include <cmath>
 
 namespace {
+  __declspec(noinline) ModelRotationKey MatrixQuaternion(const matrix& matrix);
+
   // OFFSET: 0x00554340
   // FUNCTION: fn_02022
   ModelRotationKey MatrixQuaternion(const matrix& matrix) {
