@@ -94,40 +94,50 @@ void CSpriteParticle::sub_B40F30(char mode) {
     this->UpdateFrame();
   }
 
-  if ((this->life != 0.0f && static_cast<float>(this->unknown_00E8) >= this->life * 60.0f) || !this->sprite || !this->action) {
+  if (this->life != 0.0f && !(this->life * 60.0f > static_cast<float>(this->unknown_00E8))) {
+    return;
+  }
+  CSprRes* sprite = this->sprite;
+  if (!sprite) {
+    return;
+  }
+  CActRes* action = this->action;
+  if (!action) {
     return;
   }
 
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
   float screenX;
   float screenY;
   float distance;
-  g_renderer->ProjectViewport(&this->position.x, gameMode->camera->frame.view.values, &screenX, &screenY, &distance);
+  g_renderer->ProjectViewport(&this->position.x, view, &screenX, &screenY, &distance);
   float scaleDistance = g_renderer->ScaleDistance(distance);
   if (CRenderObject* renderObject = FindRenderObject(this->unknown_02F4)) {
     renderObject->ScaleByFadePulse(scaleDistance);
   }
 
-  const ActionFrame& frame = this->action->Frame(this->animation, this->frame);
+  const ActionFrame& frame = action->Frame(this->animation, this->frame);
   for (int i = 0; i < frame.cellCount; ++i) {
     const SpriteFrameCell& cell = frame.Cell(i);
     if (cell.image == -1) {
       continue;
     }
 
-    const SpriteRleImage* image = this->sprite->images[cell.imageType][cell.image];
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
     SpriteAtlasRecord record{};
     CTexture* texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
     if (!texture) {
-      texture = g_renderer->atlas.Find(image, this->sprite->palette, record);
+      texture = g_renderer->atlas.Find(image, sprite->palette, record);
       if (!texture) {
-        texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, this->sprite->palette, record, g_serviceType, g_resourceReuseDelay);
+        texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
       }
     } else {
       record.u0 = 0.0f;
       record.v0 = 0.0f;
-      record.u1 = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth());
-      record.v1 = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight());
+      const CTexture* widthTexture = static_cast<const CTexture*>(image->unknown_0008);
+      record.u1 = static_cast<float>(widthTexture->ImageWidth()) / static_cast<float>(widthTexture->TextureWidth());
+      const CTexture* heightTexture = static_cast<const CTexture*>(image->unknown_0008);
+      record.v1 = static_cast<float>(heightTexture->ImageHeight()) / static_cast<float>(heightTexture->TextureHeight());
     }
 
     float u0;
@@ -194,8 +204,8 @@ void CSpriteParticle::sub_B40F30(char mode) {
     worldScale.SetScale(this->scale, this->scale, 1.0f);
     matrix worldRotation;
     worldRotation.MakeZRotation(ToRadians(*reinterpret_cast<const float*>(&this->unknown_00C4)));
-    worldRotation.AppendXRotation(ToRadians(gameMode->camera->camera.pitch));
-    worldRotation.AppendYRotation(ToRadians(gameMode->camera->camera.yaw));
+    worldRotation.AppendXRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch));
+    worldRotation.AppendYRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw));
     matrix worldTranslate;
     worldTranslate.MakeTranslate(this->position.x, this->position.y, this->position.z);
 
@@ -219,14 +229,14 @@ void CSpriteParticle::sub_B40F30(char mode) {
       worldVertices[v].x = finalTransform.values[0] * vx + finalTransform.values[3] * vy + finalTransform.values[6] * vz + finalTransform.values[9];
       worldVertices[v].y = finalTransform.values[1] * vx + finalTransform.values[4] * vy + finalTransform.values[7] * vz + finalTransform.values[10];
       worldVertices[v].z = finalTransform.values[2] * vx + finalTransform.values[5] * vy + finalTransform.values[8] * vz + finalTransform.values[11];
-      g_renderer->viewport.Project(&worldVertices[v].x, gameMode->camera->frame.view.values, primitive->vertices[v]);
+      g_renderer->viewport.Project(&worldVertices[v].x, view, primitive->vertices[v]);
     }
 
     if (CRenderObject* renderObject = FindRenderObject(this->unknown_02F4)) {
       float offsetX = this->unknown_02C0;
       float offsetY = this->unknown_02C4;
       CGameActor* actor = static_cast<CGameActor*>(renderObject);
-      if (actor->Slot55() < 1) {
+      if (actor->Slot55() <= 0) {
         if (this->unknown_02BC != 0) {
           float extent[2];
           float* p = actor->GetExtent(extent);
