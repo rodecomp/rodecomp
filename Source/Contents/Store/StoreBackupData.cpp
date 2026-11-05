@@ -73,7 +73,9 @@ void CMCStoreInfoBackup::ExportData(Json::Value& data) const {
   data["Title"] = ToUtf8(this->title, g_textCodePage);
   Json::Value values;
 
-  for (const ITEM_INFO& item : g_session.unknown_1758) {
+  const int itemCount = g_session.GetList9Size();
+  for (int itemIndex = 0; itemIndex < itemCount; ++itemIndex) {
+    const ITEM_INFO item = g_session.GetItem1758At(itemIndex);
     Json::Value value;
     value["ID"] = std::atoi(item.itemId.c_str());
     value["Count"] = item.quantity;
