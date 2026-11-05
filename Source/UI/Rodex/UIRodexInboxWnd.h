@@ -24,16 +24,16 @@ using RodexMailEntry = std::pair<int, std::int64_t>;
 
 // INLINED
 inline std::map<std::int64_t, RodexMail>* RodexMailsOfType(int type) {
-  switch (type) {
-  case 0:
+  if (type == 0) {
     return &g_rodexMailStore->m_mails0;
-  case 1:
-    return &g_rodexMailStore->m_mails1;
-  case 2:
-    return &g_rodexMailStore->m_mails2;
-  default:
-    return nullptr;
   }
+  if (type == 1) {
+    return &g_rodexMailStore->m_mails1;
+  }
+  if (type == 2) {
+    return &g_rodexMailStore->m_mails2;
+  }
+  return nullptr;
 }
 
 struct RodexMailEntryLess {

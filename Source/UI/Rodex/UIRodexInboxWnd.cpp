@@ -62,15 +62,15 @@ UIRodexInboxWnd::UIRodexInboxWnd()
   packet.packetType = ID_CZ_OPEN_RODEXBOX;
   packet.lastMailId0 = 0;
   if (g_rodexMailStore->m_mails0.size() > 0) {
-    packet.lastMailId0 = (--g_rodexMailStore->m_mails0.end())->first;
+    packet.lastMailId0 = g_rodexMailStore->m_mails0.rbegin()->first;
   }
   packet.lastMailId2 = 0;
   if (g_rodexMailStore->m_mails2.size() > 0) {
-    packet.lastMailId2 = (--g_rodexMailStore->m_mails2.end())->first;
+    packet.lastMailId2 = g_rodexMailStore->m_mails2.rbegin()->first;
   }
   packet.lastMailId1 = 0;
   if (g_rodexMailStore->m_mails1.size() > 0) {
-    packet.lastMailId1 = (--g_rodexMailStore->m_mails1.end())->first;
+    packet.lastMailId1 = g_rodexMailStore->m_mails1.rbegin()->first;
   }
   GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
 }
@@ -605,11 +605,13 @@ void UIRodexInboxWnd::DrawExpireTime(int row, __time32_t sendTime, __time32_t ex
   }
 
   std::string text;
-  text.assign(
-    remaining / 86400 > 0   ? FormatOwnedString(LookupMessage(0xB24), remaining / 86400)
-    : remaining / 3600 > 0 ? FormatOwnedString(LookupMessage(0xB23), remaining / 3600)
-                           : FormatOwnedString(LookupMessage(0xB22), remaining / 60)
-  );
+  if (remaining / 86400 > 0) {
+    text.assign(FormatOwnedString(LookupMessage(0xB24), remaining / 86400));
+  } else if (remaining / 3600 > 0) {
+    text.assign(FormatOwnedString(LookupMessage(0xB23), remaining / 3600));
+  } else {
+    text.assign(FormatOwnedString(LookupMessage(0xB22), remaining / 60));
+  }
 
   if (returned == 1) {
     this->DrawCenteredText(0x104, row * 0x2C + 0x7D, LookupMessage(0xB25), 0, 0, 11, 0x666673, 0);
@@ -666,7 +668,7 @@ void UIRodexInboxWnd::RemoveInboxMail(int id) {
 
 // OFFSET: 0x00809C80
 // FUNCTION: fn_10067
-void UIRodexInboxWnd::SearchBySender(std::string keyword) {
+void UIRodexInboxWnd::SearchBySender(const std::string keyword) {
   this->searchResults.clear();
 
   std::vector<RodexMailEntry>& results = this->searchResults;
@@ -691,7 +693,7 @@ void UIRodexInboxWnd::SearchBySender(std::string keyword) {
 
 // OFFSET: 0x00809F70
 // FUNCTION: fn_10068
-void UIRodexInboxWnd::SearchByTitle(std::string keyword) {
+void UIRodexInboxWnd::SearchByTitle(const std::string keyword) {
   this->searchResults.clear();
 
   std::vector<RodexMailEntry>& results = this->searchResults;
@@ -717,11 +719,8 @@ void UIRodexInboxWnd::SearchByTitle(std::string keyword) {
 // OFFSET: 0x00807690
 // FUNCTION: fn_10053
 void __stdcall RequestRodexMailAttachments(int type, std::int64_t mailId) {
-  if (g_modeMgr.GetGameMode() != nullptr) {
-    g_modeMgr.GetGameMode();
-    if (g_windowMgr.LookupWindow(0x122) != nullptr || g_windowMgr.LookupWindow(0x12E) != nullptr || g_windowMgr.LookupWindow(0x15C) != nullptr || g_windowMgr.LookupWindow(0x2716) != nullptr || g_windowMgr.LookupWindow(0x169) != nullptr) {
-      return;
-    }
+  if (g_modeMgr.GetGameMode() != nullptr && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
+    return;
   }
 
   unsigned char flags = 0;
@@ -729,25 +728,22 @@ void __stdcall RequestRodexMailAttachments(int type, std::int64_t mailId) {
   if (mails != nullptr) {
     std::map<std::int64_t, RodexMail>::iterator mail = mails->find(mailId);
     if (mail != mails->end()) {
-      flags = reinterpret_cast<const std::uint8_t*>(&mail->second)[0x19];
+      flags = mail->second.unknown_0001;
     }
   }
 
+  RodexMailRequestPacket packet;
   if ((flags & 4) != 0) {
-    RodexMailRequestPacket packet;
     packet.id = ID_CZ_REQ_ITEM_FROM_RODEX;
     packet.mailId = mailId;
     packet.type = static_cast<std::uint8_t>(type);
-    CRagConnection& connection = GetRagConnection();
-    connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
   if ((flags & 2) != 0) {
-    RodexMailRequestPacket packet;
     packet.id = ID_CZ_REQ_ZENY_FROM_RODEX;
     packet.mailId = mailId;
     packet.type = static_cast<std::uint8_t>(type);
-    CRagConnection& connection = GetRagConnection();
-    connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
 }
 
@@ -798,13 +794,13 @@ bool RodexMailEntryLess::operator()(const RodexMailEntry& left, const RodexMailE
 
 // OFFSET: 0x008054D0
 // FUNCTION: fn_10043
-bool __stdcall RequestRodexMailAction(int type, std::uint64_t mailId) {
+bool __stdcall RequestRodexMailAction(int type, std::int64_t mailId) {
   std::map<std::int64_t, RodexMail>* mails = RodexMailsOfType(type);
   if (mails == nullptr) {
     return false;
   }
 
-  std::map<std::int64_t, RodexMail>::iterator mail = mails->find(static_cast<std::int64_t>(mailId));
+  std::map<std::int64_t, RodexMail>::iterator mail = mails->find(mailId);
   if (mail == mails->end() || (mail->second.unknown_0001 & 6) != 0) {
     return false;
   }
@@ -896,7 +892,8 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
           if (check->geometry.visible == 1 && check->geometry.unknown_0030 != 0 && check->m_message != -1) {
-            selected.push_back(this->searchResults[this->unknown_019C * 6 + i]);
+            const RodexMailEntry entry = this->searchResults[this->unknown_019C * 6 + i];
+            selected.push_back(entry);
           }
         }
 
@@ -920,8 +917,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         std::list<int> selected;
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
-          if (check->geometry.visible == 1 && check->geometry.unknown_0030 != 0 && check->m_message != -1) {
-            selected.push_back(check->m_message);
+          if (check->geometry.visible == 1 && check->geometry.unknown_0030 != 0) {
+            const int id = check->m_message;
+            if (id != -1) {
+              selected.push_back(id);
+            }
           }
         }
 
@@ -1061,15 +1061,15 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       packet.packetType = ID_CZ_OPEN_RODEXBOX;
       packet.lastMailId0 = 0;
       if (g_rodexMailStore->m_mails0.size() > 0) {
-        packet.lastMailId0 = (--g_rodexMailStore->m_mails0.end())->first;
+        packet.lastMailId0 = g_rodexMailStore->m_mails0.rbegin()->first;
       }
       packet.lastMailId2 = 0;
       if (g_rodexMailStore->m_mails2.size() > 0) {
-        packet.lastMailId2 = (--g_rodexMailStore->m_mails2.end())->first;
+        packet.lastMailId2 = g_rodexMailStore->m_mails2.rbegin()->first;
       }
       packet.lastMailId1 = 0;
       if (g_rodexMailStore->m_mails1.size() > 0) {
-        packet.lastMailId1 = (--g_rodexMailStore->m_mails1.end())->first;
+        packet.lastMailId1 = g_rodexMailStore->m_mails1.rbegin()->first;
       }
       GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
       this->SetButtonsDisabled(1);
@@ -1107,7 +1107,8 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
           if (check->geometry.visible == 1 && check->geometry.unknown_0030 != 0 && check->m_message != -1) {
-            selected.push_back(this->searchResults[this->unknown_019C * 6 + i]);
+            const RodexMailEntry entry = this->searchResults[this->unknown_019C * 6 + i];
+            selected.push_back(entry);
           }
         }
 
@@ -1125,8 +1126,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         std::vector<int> selected;
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
-          if (check->geometry.visible == 1 && check->geometry.unknown_0030 != 0 && check->m_message != -1) {
-            selected.push_back(check->m_message);
+          if (check->geometry.visible == 1 && check->geometry.unknown_0030 != 0) {
+            const int id = check->m_message;
+            if (id != -1) {
+              selected.push_back(id);
+            }
           }
         }
 
