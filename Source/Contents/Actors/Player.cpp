@@ -584,56 +584,93 @@ void CPc::LoadEquipAction(int slot, const char* name) {
     this->equipActions[slot]->Unlock();
   }
 
-  const int job = this->render.accountId;
-  const bool monster = IsMonsterJob(job);
-  const bool hidden = monster && IsObfuscatedMessage(job);
-  const bool male = this->unknown_0260 != 0;
-
-  if (monster && slot == 6) {
-    this->equipActions[slot] = nullptr;
+  if (IsMonsterJob(this->render.accountId)) {
+    if (IsObfuscatedMessage(this->render.accountId)) {
+      switch (slot) {
+        case 0:
+          if (this->unknown_0260 != 0) {
+            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자2_남.Act");
+          } else {
+            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자2_여.Act");
+          }
+          break;
+        case 5:
+          if (this->unknown_0260 != 0) {
+            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_남_검.Act");
+          } else {
+            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_여_검.Act");
+          }
+          break;
+        case 6:
+          this->equipActions[slot] = nullptr;
+          break;
+        default:
+          this->equipActions[slot] = ResourceMgr::Instance().Load(name);
+          break;
+      }
+    } else {
+      switch (slot) {
+        case 0:
+          if (this->unknown_0260 != 0) {
+            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자_남.Act");
+          } else {
+            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자_여.Act");
+          }
+          break;
+        case 5:
+          if (this->unknown_0260 != 0) {
+            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_남_검.Act");
+          } else {
+            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_여_검.Act");
+          }
+          break;
+        case 6:
+          this->equipActions[slot] = nullptr;
+          break;
+        default:
+          this->equipActions[slot] = ResourceMgr::Instance().Load(name);
+          break;
+      }
+    }
   } else {
-    if (monster && slot == 0) {
-      if (hidden) {
-        name = male ? "인간족\\몸통\\남\\운영자2_남.Act" : "인간족\\몸통\\여\\운영자2_여.Act";
-      } else {
-        name = male ? "인간족\\몸통\\남\\운영자_남.Act" : "인간족\\몸통\\여\\운영자_여.Act";
-      }
-    } else if (monster && slot == 5) {
-      if (hidden) {
-        name = male ? "인간족\\운영자\\운영자2_남_검.Act" : "인간족\\운영자\\운영자2_여_검.Act";
-      } else {
-        name = male ? "인간족\\운영자\\운영자_남_검.Act" : "인간족\\운영자\\운영자_여_검.Act";
-      }
-    }
-
     this->equipActions[slot] = ResourceMgr::Instance().Load(name);
-
-    if (this->equipActions[slot]) {
-      this->equipActions[slot]->Lock();
-    }
   }
 
-  if (this->equipActions.size() > 1) {
-    CActRes* baseAction = static_cast<CActRes*>(this->equipActions[1]);
+  if (this->equipActions[slot]) {
+    this->equipActions[slot]->Lock();
+  }
 
-    if (baseAction) {
-      const ActionFrame& baseFrame = baseAction->Frame(0, 0);
-      const SpriteFrameCell& cell = baseFrame.Cell(1);
-      const int baseJob = JobNames::BaseJob(this->GetEffectiveJob(-1));
-      const int costumeJob = this->Slot46();
-      const std::string actionName =
-        g_equipmentResourceMgr->GetBodyResourceName(0, baseJob, this->unknown_0260, costumeJob, 0);
-      CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
+  if (this->equipActions.size() <= 1) {
+    return;
+  }
 
-      if (action) {
-        const ActionFrame& actionFrame = action->Frame(0, 0);
+  CActRes* baseAction = static_cast<CActRes*>(this->equipActions[1]);
+  if (!baseAction) {
+    return;
+  }
 
-        if (!actionFrame.anchors.empty() && !baseFrame.anchors.empty()) {
-          this->unknown_04E4 = static_cast<float>(actionFrame.anchors[0].x - baseFrame.anchors[0].x + cell.x);
-          this->unknown_04E8 = static_cast<float>(actionFrame.anchors[0].y - baseFrame.anchors[0].y + cell.y);
-        }
-      }
-    }
+  const ActionFrame* baseFrame = &baseAction->Frame(0, 0);
+  if (!baseFrame) {
+    return;
+  }
+
+  const SpriteFrameCell* cell = &baseFrame->Cell(1);
+  if (!cell) {
+    return;
+  }
+
+  const int baseJob = JobNames::BaseJob(this->GetEffectiveJob(-1));
+  const int costumeJob = this->Slot46();
+  const std::string actionName = g_equipmentResourceMgr->GetBodyResourceName(0, baseJob, this->unknown_0260, costumeJob, 0);
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
+  if (!action) {
+    return;
+  }
+
+  const ActionFrame* actionFrame = &action->Frame(0, 0);
+  if (actionFrame && !actionFrame->anchors.empty() && !baseFrame->anchors.empty()) {
+    this->unknown_04E4 = static_cast<float>(actionFrame->anchors[0].x - baseFrame->anchors[0].x + cell->x);
+    this->unknown_04E8 = static_cast<float>(actionFrame->anchors[0].y - baseFrame->anchors[0].y + cell->y);
   }
 }
 
