@@ -40,31 +40,30 @@ bool EmotionHotkeys::HasChanges() const {
 
 // OFFSET: 0x00E48460
 // FUNCTION: fn_24220
-void EmotionHotkeys::Save(std::uint32_t accountId, CRenderSystemBase* renderSystem) const {
+void EmotionHotkeys::Save(std::uint32_t accountId, CRenderSystemBase*) const {
   if (this->current.empty()) {
     return;
   }
 
-  std::string output = "tbl = \r\n{\r\n";
-
+  std::string output;
+  output += "tbl = \r\n";
+  output += "{\r\n";
   for (const std::string& entry : this->current) {
-    output += "\t[=[";
-    output += entry;
-    output += "]=],\r\n";
+    output += std::format("\t[=[{}]=],\r\n", entry);
   }
-
   output += "}\r\n";
 
-  const char* directory = "savedata\\shortcutlist";
-  if (_access_s(directory, 0) != 0) {
-    _mkdir(directory);
-  }
+  if (!output.empty()) {
+    const std::string directory = "savedata\\shortcutlist";
+    if (_access_s(directory.c_str(), 0) != 0) {
+      _mkdir(directory.c_str());
+    }
 
-  CFile file;
-  const std::string path = std::string(directory) + "\\" + ShortcutFilename(accountId) + ".lua";
-  if (file.OpenWrite(path.c_str(), renderSystem)) {
-    file.Write(output.data(), static_cast<std::uint32_t>(output.size()));
-    file.Close();
+    CFile file;
+    if (file.Open(std::format("{}\\{}.lua", directory, ShortcutFilename(accountId)).c_str(), 0x1001, false, true)) {
+      file.Write(output.data(), static_cast<std::uint32_t>(output.size()));
+      file.Close();
+    }
   }
 }
 
