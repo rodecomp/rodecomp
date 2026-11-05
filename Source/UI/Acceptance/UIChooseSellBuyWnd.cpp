@@ -962,7 +962,7 @@ int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   if (message == 6) {
     this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     if (argument1 == 184 && this->edit->Length()) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(99, this->unknown_00B8, std::atoi(this->edit->Text()), 0, 0);
+      g_modeMgr.gameMode->SendMsg(99, this->unknown_00B8, std::atoi(this->edit->Text()), 0, 0);
       g_windowMgr.CloseWindow(56);
     }
     return 0;
@@ -1015,7 +1015,7 @@ int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     return 0;
   }
 
-  CMode* mode = static_cast<CMode*>(g_charViewMode);
+  CMode* mode = g_modeMgr.gameMode;
   if (g_navigationLinkParser->HasLink(std::string(this->edit->Text()))
       || (!this->edit->LinkedText().empty() && this->m_tagCtrl && !this->m_tagCtrl->unknown_0140.empty())) {
     this->edit->SetText("");
@@ -1349,7 +1349,7 @@ int UISpellListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   }
   case 6: {
     this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
-    CMode* mode = static_cast<CMode*>(g_charViewMode);
+    CMode* mode = g_modeMgr.gameMode;
     if (argument1 == 184) {
       const int selected = this->m_selected;
       if (selected < 0 || static_cast<unsigned>(selected) >= this->m_skills.size()) {
@@ -1939,7 +1939,7 @@ void UIMenuWnd::Slot31(int x, int y) {
   if (target) {
     target->SendMsg(nullptr, 48, choice, 0, 0, 0);
   } else if (this->m_menuId == 10041) {
-    static_cast<CMode*>(g_charViewMode)->SendMsg(24, choice, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(24, choice, 0, 0, 0);
   }
   g_windowMgr.CloseWindow(18);
 }
@@ -1962,7 +1962,7 @@ void UIItemCollectionWnd::Slot28(int x, int y) {
   card.unknown_0060 = 0;
   card.SetItemId(cardId);
 
-  CMode* tooltip = static_cast<CMode*>(g_charViewMode);
+  CMode* tooltip = g_modeMgr.gameMode;
   std::uint32_t color = 0xFFFFFFFF;
   if (index >= ItemSlotsCount(this->m_item)) {
     color = ItemCardColor(&this->m_item);
@@ -1997,7 +1997,7 @@ void UIStatusWnd::Slot28(int x, int y) {
       int tipX = point.x - this->m_offsetX;
       int tipY = this->m_titleHeight - this->m_offsetY - 19 + point.y;
       this->ToScreen(tipX, tipY);
-      static_cast<CMode*>(g_charViewMode)->ShowTooltip(statTexts[index], tipX, tipY, -1, true, true);
+      g_modeMgr.gameMode->ShowTooltip(statTexts[index], tipX, tipY, -1, true, true);
       break;
     }
   }
@@ -2020,7 +2020,7 @@ void UIStatusWnd::Slot28(int x, int y) {
       int tipX = point.x - 16;
       int tipY = point.y - 13;
       this->ToScreen(tipX, tipY);
-      static_cast<CMode*>(g_charViewMode)->ShowTooltip(traitTexts[index], tipX, tipY, -1, true, true);
+      g_modeMgr.gameMode->ShowTooltip(traitTexts[index], tipX, tipY, -1, true, true);
       return;
     }
   }
@@ -2232,7 +2232,7 @@ void UIEquipWnd::Slot10(int x, int y, std::intptr_t value) {
     }
   }
 
-  static_cast<CMode*>(g_charViewMode)->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008D02D0
@@ -2658,14 +2658,14 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         int found;
         ITEM_INFO item = this->GetItem(this->m_selected, &found);
         if (found != 0) {
-          static_cast<CMode*>(g_charViewMode)->SendMsg(0x7C, item.unknown_0000[1], this->m_compositionState, 0, 0);
+          g_modeMgr.gameMode->SendMsg(0x7C, item.unknown_0000[1], this->m_compositionState, 0, 0);
         } else {
-          static_cast<CMode*>(g_charViewMode)->SendMsg(0x7C, -1, -1, 0, 0);
+          g_modeMgr.gameMode->SendMsg(0x7C, -1, -1, 0, 0);
         }
         g_windowMgr.CloseWindow(0x4A);
       }
     } else if (a == 185) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(0x7C, -1, -1, 0, 0);
+      g_modeMgr.gameMode->SendMsg(0x7C, -1, -1, 0, 0);
       g_windowMgr.CloseWindow(0x4A);
     }
     return 0;
@@ -2732,12 +2732,12 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         int found;
         ITEM_INFO item = this->GetItem(this->m_selected, &found);
         if (found != 0) {
-          static_cast<CMode*>(g_charViewMode)->SendMsg(0x79, item.unknown_0000[1], 0, 0, 0);
+          g_modeMgr.gameMode->SendMsg(0x79, item.unknown_0000[1], 0, 0, 0);
         }
         g_windowMgr.CloseWindow(0x49);
       }
     } else if (a == 185) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(0x79, -1, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(0x79, -1, 0, 0, 0);
       g_windowMgr.CloseWindow(0x49);
     }
     return 0;
@@ -3486,10 +3486,10 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 184) {
       g_windowMgr.CloseWindow(110);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(173, this->identity, 1, 0, 0);
+      g_modeMgr.gameMode->SendMsg(173, this->identity, 1, 0, 0);
     } else if (a == 185) {
       g_windowMgr.CloseWindow(110);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(173, this->identity, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(173, this->identity, 0, 0, 0);
     }
     return 0;
   }
@@ -3539,7 +3539,7 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       g_windowMgr.EnsureWindow(110)->SendMsg(nullptr, 91, 184, b, 0, 0);
     } else if (a == 185) {
       g_windowMgr.CloseWindow(105);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(173, this->identity, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(173, this->identity, 0, 0, 0);
     }
     return 0;
   }
@@ -3772,10 +3772,10 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
     if (this->geometry.visible != 0) {
       if (response == 185) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(40, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(40, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(25);
       } else if (response == 223 || response == 224) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(response == 223 ? 37 : 38, this->identity, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(response == 223 ? 37 : 38, this->identity, 0, 0, 0);
         g_windowMgr.LookupWindow(25)->Show(0);
       } else {
         return 0;
@@ -5014,11 +5014,11 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         return 0;
       }
       *reinterpret_cast<DWORD*>(&g_session.unknown_5490[0x04]) = tick;
-      static_cast<CMode*>(g_charViewMode)->SendMsg(this->unknown_00C8, this->unknown_00CC, 218, 0, 0);
+      g_modeMgr.gameMode->SendMsg(this->unknown_00C8, this->unknown_00CC, 218, 0, 0);
       this->unknown_00D4 = 1;
       this->SendMsg(nullptr, 32, 0, 0, 0, 0);
     } else if (a != 600) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(this->unknown_00C8, this->unknown_00CC, static_cast<int>(a), 0, 0);
+      g_modeMgr.gameMode->SendMsg(this->unknown_00C8, this->unknown_00CC, static_cast<int>(a), 0, 0);
     }
     return 0;
   }
@@ -6028,7 +6028,7 @@ void UIStatusWnd::Slot11() {
 int UIWaitWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   if (message == 6) {
     if (argument1 == 185) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(10021, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(10021, 0, 0, 0, 0);
     }
   } else if (message == 88) {
     this->m_button->Move((this->geometry.width - this->m_button->BitmapWidth()) / 2, this->geometry.height - this->m_button->BitmapHeight() - 5);
@@ -6044,9 +6044,9 @@ int UINoticeConfirmWnd::SendMsg(
 ) {
   if (message == 6) {
     if (argument1 == 184) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(this->m_event, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(this->m_event, 0, 0, 0, 0);
     } else if (argument1 == 185) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
     }
 
     return 0;
@@ -7504,10 +7504,10 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(214);
       g_windowMgr.CloseWindow(213);
       g_windowMgr.CloseWindow(212);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(114, this->identity, 1, 0, 0);
+      g_modeMgr.gameMode->SendMsg(114, this->identity, 1, 0, 0);
     } else if (a == 185) {
       g_windowMgr.CloseWindow(70);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(114, this->identity, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(114, this->identity, 0, 0, 0);
     }
     return 0;
   }
@@ -7840,7 +7840,7 @@ int UICoupleAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     } else {
       return 0;
     }
-    static_cast<CMode*>(g_charViewMode)->SendMsg(167, this->identity, accepted, 0, 0);
+    g_modeMgr.gameMode->SendMsg(167, this->identity, accepted, 0, 0);
     return 0;
   }
 
@@ -7929,7 +7929,7 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     } else {
       return 0;
     }
-    static_cast<CMode*>(g_charViewMode)->SendMsg(175, this->m_accountId, this->m_characterId, accepted, 0);
+    g_modeMgr.gameMode->SendMsg(175, this->m_accountId, this->m_characterId, accepted, 0);
     return 0;
   }
 
@@ -7982,7 +7982,7 @@ int UIMixAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     if (a == 184) {
       g_windowMgr.CloseWindow(160);
       g_windowMgr.CloseWindow(161);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(266, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(266, 0, 0, 0, 0);
       g_windowMgr.CloseWindow(163);
       g_session.ClearTradeItems();
     } else if (a == 185) {
@@ -8151,7 +8151,7 @@ int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   if (message == 6) {
     if (a == 184) {
       if (this->m_skillId != -1 && this->m_edit->Length() != 0) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(98, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
+        g_modeMgr.gameMode->SendMsg(98, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
       }
       g_windowMgr.CloseWindow(55);
     }
@@ -8363,7 +8363,7 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 // OFFSET: 0x00905830
 // FUNCTION: fn_12383
 int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  CMode* mode = static_cast<CMode*>(g_charViewMode);
+  CMode* mode = g_modeMgr.gameMode;
   const int* statCosts = reinterpret_cast<const int*>(g_session.unknown_169C);
   const int statusPoint = *reinterpret_cast<const int*>(g_session.unknown_1654);
   switch (message) {
@@ -8485,7 +8485,7 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // OFFSET: 0x00905F40
 // FUNCTION: fn_12384
 int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  CMode* mode = static_cast<CMode*>(g_charViewMode);
+  CMode* mode = g_modeMgr.gameMode;
 
   if (message == 6) {
     switch (a) {
@@ -9586,7 +9586,7 @@ int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       int found = 0;
       ITEM_INFO item = this->GetItem(this->m_selected, &found);
       if (found) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(146, item.unknown_0000[1], 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(146, item.unknown_0000[1], 0, 0, 0);
       }
     } else if (argument1 == 185) {
       g_windowMgr.CloseWindow(90);
@@ -10014,17 +10014,17 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
       ITEM_INFO item = this->GetItem(this->m_selected, &found);
       if (found != 0) {
         if (this->unknown_00F0 == 2) {
-          static_cast<CMode*>(g_charViewMode)->SendMsg(0x99, item.GetItemId(), 0, 0, 0);
+          g_modeMgr.gameMode->SendMsg(0x99, item.GetItemId(), 0, 0, 0);
         } else {
-          static_cast<CMode*>(g_charViewMode)->SendMsg(0xCF, item.GetItemId(), this->unknown_00F0, 0, 0);
+          g_modeMgr.gameMode->SendMsg(0xCF, item.GetItemId(), this->unknown_00F0, 0, 0);
         }
         g_windowMgr.CloseWindow(0x5E);
       }
     } else if (a == 185) {
       if (this->unknown_00F0 == 2) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(0x99, -1, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(0x99, -1, 0, 0, 0);
       } else {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(0xCF, -1, this->unknown_00F0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(0xCF, -1, this->unknown_00F0, 0, 0);
       }
       g_windowMgr.CloseWindow(0x5E);
     }
