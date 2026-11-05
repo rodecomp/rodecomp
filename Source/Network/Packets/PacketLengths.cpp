@@ -56,7 +56,7 @@ namespace {
 // FUNCTION: fn_18387
 void PacketLengths::Initialize() {
   for (const PacketRegistration& value : registrations) {
-    this->m_values.try_emplace(value.id, PacketLengthValue{value.length, value.variable, value.record});
+    this->Register(value.id, value.length, value.variable, value.record);
   }
 }
 
@@ -73,7 +73,7 @@ PacketLengths::~PacketLengths() {
 
 // OFFSET: 0x00B02100
 // FUNCTION: fn_18385
-void PacketLengths::Register(int id, int length, int variable, int record) {
+__declspec(noinline) void PacketLengths::Register(int id, int length, int variable, int record) {
   this->m_values.insert(std::make_pair(id, PacketLengthValue{length, variable, record}));
 }
 
