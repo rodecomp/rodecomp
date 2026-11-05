@@ -1,61 +1,68 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemLink.h"
+#include "Network/TextEncoding.h"
+#include "UI/Text/NavigationLink.h"
 #include "UI/Text/UITextViewer.h"
 
-#include <cctype>
-#include <cstdio>
 #include <cstring>
 
 namespace {
   // OFFSET: 0x0087A700
   // FUNCTION: fn_11236
-  std::int32_t Number(const std::string& text) {
-    constexpr char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    std::uint32_t result = 0;
+  int Number(std::string text) {
+    char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    int result = 0;
+    const int size = static_cast<int>(text.size()) + 1;
+    char* buffer = new char[size];
+    strcpy_s(buffer, size, text.c_str());
+    const int length = size - 1;
 
-    for (std::size_t index = 0; index < text.size(); ++index) {
-      const char* digit = std::strchr(digits, text[index]);
+    for (int index = 0; index < length; ++index) {
+      for (int digit = 0; digit < 62; ++digit) {
+        if (digits[digit] == buffer[index]) {
+          int place = 1;
 
-      if (!digit || *digit == '\0') {
-        continue;
+          for (int exponent = 1; exponent < length - index; ++exponent) {
+            place *= 62;
+          }
+
+          result += place * digit;
+          break;
+        }
       }
-
-      std::uint32_t place = 1;
-
-      for (std::size_t exponent = index + 1; exponent < text.size(); ++exponent) {
-        place *= 62;
-      }
-
-      result += static_cast<std::uint32_t>(digit - digits) * place;
     }
 
-    return static_cast<int>(result);
+    if (buffer) {
+      delete[] buffer;
+    }
+
+    return result;
   }
 
   // OFFSET: 0x00893AE0
   // FUNCTION: fn_11507
-  int DecodeCards(const std::string& text, std::size_t& position, std::vector<std::int32_t>& fields) {
-    std::vector<std::int32_t> cards;
+  int DecodeCards(std::vector<std::int32_t>& fields, const char* text, int& position, const char& delimiter, const int& length, int field) {
     std::string value;
+    std::vector<std::int32_t> cards;
     int count = 1;
 
-    while (++position <= text.size()) {
-      const char byte = text.c_str()[position];
+    while (++position < length + 1) {
+      const char byte = text[position];
 
-      if (static_cast<signed char>(byte) >= '0') {
+      if (byte >= '0') {
         value += byte;
-      } else if (byte == '(') {
+      } else if (byte == delimiter) {
         ++count;
         cards.push_back(Number(value));
         value.clear();
       } else {
         --position;
         cards.push_back(Number(value));
-        fields[6] = count;
+        fields[field] = count;
 
         for (std::size_t index = 0; index < cards.size(); ++index) {
-          fields[7 + index] = cards[index];
+          fields[field + 1 + index] = cards[index];
         }
 
         break;
@@ -67,15 +74,16 @@ namespace {
 
   // OFFSET: 0x00893720
   // FUNCTION: fn_11506
-  void DecodeOptions(const std::string& text, std::size_t& position, std::vector<std::int32_t>& options) {
+  void DecodeOptions(std::vector<std::int32_t>& options, const char* text, int& position, const int& length, const char& separator,
+                     const char& recordSeparator) {
     std::string value;
 
-    while (++position <= text.size()) {
-      const char byte = text.c_str()[position];
+    while (++position < length + 1) {
+      const char byte = text[position];
 
-      if (static_cast<signed char>(byte) >= '0') {
+      if (byte >= '0') {
         value += byte;
-      } else if (byte == '-' || byte == '/') {
+      } else if (byte == separator || byte == recordSeparator) {
         options.push_back(Number(value));
         value.clear();
       } else {
@@ -113,50 +121,75 @@ std::string UITextViewer::ItemLinkNumberText(int value) {
 // OFFSET: 0x0087F7D0
 // FUNCTION: fn_11274
 void DecodeItemLinkFields(const std::string& text, std::vector<std::int32_t>& fields) {
-  if (text.size() + 1 < 6) {
+  char delimiters[] = "!#$%&'()*+,-/";
+  const int size = static_cast<int>(text.size()) + 1;
+
+  if (size < 6) {
     return;
   }
 
+  char* buffer = new char[size];
+  strcpy_s(buffer, size, text.c_str());
+  std::string value;
+  std::vector<std::int32_t> options;
+  int optionCount = 0;
+  int cardCount = 0;
   fields.resize(260);
   fields[6] = -1;
-  fields[0] = Number(text.substr(0, 5));
-  fields[1] = Number(text.substr(5, 1));
-  std::string value;
+
+  value += buffer[0];
+  value += buffer[1];
+  value += buffer[2];
+  value += buffer[3];
+  value += buffer[4];
+
+  fields[0] = Number(value);
+  value.clear();
+  value += buffer[5];
+  fields[1] = Number(value);
+  value.clear();
   int field = 2;
-  int cardCount = 0;
-  int optionCount = 0;
-  std::vector<std::int32_t> options;
-  constexpr char delimiters[] = "!#$%&'()*+,-/";
 
-  for (std::size_t position = 6; position <= text.size(); ++position) {
-    const char byte = text.c_str()[position];
-
-    if (static_cast<signed char>(byte) >= '0') {
-      value += byte;
+  for (int position = 6; position < text.size() + 1; ++position) {
+    if (buffer[position] >= '0') {
+      value += buffer[position];
       continue;
     }
 
-    const char* delimiter = std::strchr(delimiters, byte);
+    for (unsigned int delimiter = 0; delimiter < sizeof(delimiters); ++delimiter) {
+      if (delimiters[delimiter] != buffer[position]) {
+        continue;
+      }
 
-    if (!delimiter) {
-      continue;
+      switch (delimiter) {
+      case 7:
+        if (!value.empty()) {
+          fields[field] = Number(value);
+        }
+
+        cardCount = DecodeCards(fields, buffer, position, delimiters[7], static_cast<int>(text.size()), 6);
+        break;
+      case 9:
+        ++optionCount;
+
+        if (!value.empty()) {
+          fields[field] = Number(value);
+        }
+
+        DecodeOptions(options, buffer, position, static_cast<int>(text.size()), delimiters[10], delimiters[11]);
+        break;
+      default:
+        if (!value.empty()) {
+          fields[field] = Number(value);
+        }
+
+        break;
+      }
+
+      value.clear();
+      field = delimiter;
+      break;
     }
-
-    if (!value.empty()) {
-      fields[field] = Number(value);
-    }
-
-    const int nextField = static_cast<int>(delimiter - delimiters);
-
-    if (nextField == 7) {
-      cardCount = DecodeCards(text, position, fields);
-    } else if (nextField == 9) {
-      ++optionCount;
-      DecodeOptions(text, position, options);
-    }
-
-    value.clear();
-    field = nextField;
   }
 
   if (optionCount != 0) {
@@ -166,6 +199,8 @@ void DecodeItemLinkFields(const std::string& text, std::vector<std::int32_t>& fi
       fields[cardCount + 9 + index] = options[index];
     }
   }
+
+  delete[] buffer;
 }
 
 // OFFSET: 0x008933E0
@@ -175,26 +210,17 @@ bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item
     return false;
   }
 
-  const char* identified = FindItemDescription(fields[2]).identifiedName;
-  item.unknown_0044 = identified;
-  std::string name = identified;
-
-  for (std::size_t index = 0; index < name.size(); ++index) {
-    if (static_cast<signed char>(name[index]) <= 0) {
-      ++index;
-    } else if (std::isupper(static_cast<unsigned char>(name[index]))) {
-      name[index] += 'a' - 'A';
-    }
-  }
+  ITEM_DESC description = FindItemDescription(fields[2]);
+  item.SetName(description.identifiedName);
+  std::string name = description.identifiedName;
+  LowercaseText(name);
 
   if (name.find("unknown item") != std::string::npos) {
     return false;
   }
 
-  item.unknown_0000[2] = static_cast<std::uint32_t>(fields[0]);
-  char id[16];
-  std::sprintf(id, "%d", fields[2]);
-  item.itemId = id;
+  item.unknown_0000[2] = fields[0];
+  item.SetItemId(fields[2]);
 
   if (fields[1] != 0) {
     item.unknown_0000[0] = 4;
@@ -208,28 +234,24 @@ bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item
   if (fields.size() > 6) {
     cardCount = fields[6];
 
-    for (int index = 0; index < cardCount; ++index) {
-      if (index < 4) {
-        std::memcpy(item.unknown_001C + index * 4, &fields[index + 7], 4);
-      }
+    for (int card = 1; card < cardCount + 1; ++card) {
+      const int index = card - 1;
+      item.SetCard(fields[6 + card], index);
     }
   }
 
-  const auto optionIndex = static_cast<std::uint32_t>(cardCount) + 8u;
+  if (static_cast<unsigned int>(cardCount + 8) < fields.size()) {
+    const int optionCount = fields[cardCount + 8];
+    item.unknown_0098 = optionCount;
 
-  if (optionIndex < fields.size()) {
-    const int count = fields[optionIndex];
-    item.unknown_0098 = count;
-
-    for (int index = 0; index < count; ++index) {
-      if (index < 5) {
-        const auto* record = &fields[optionIndex + 1 + 3 * index];
-        const std::uint16_t idValue = static_cast<std::uint16_t>(record[0]);
-        const std::uint16_t amount = static_cast<std::uint16_t>(record[2]);
-        std::memcpy(item.unknown_009C + 5 * index, &idValue, 2);
-        std::memcpy(item.unknown_009C + 5 * index + 2, &amount, 2);
-        item.unknown_009C[5 * index + 4] = static_cast<unsigned char>(record[1]);
-      }
+    for (int option = 1; option < optionCount + 1; ++option) {
+      const int* record = &fields[cardCount + 9 + (option - 1) * 3];
+      ItemOption value;
+      value.id = static_cast<std::int16_t>(record[0]);
+      value.value = static_cast<std::int16_t>(record[2]);
+      value.parameter = static_cast<unsigned char>(record[1]);
+      const int index = option - 1;
+      item.SetOption(value, index);
     }
   }
 
@@ -240,17 +262,26 @@ bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item
 // OFFSET: 0x008345F0
 // FUNCTION: fn_10416
 int ItemLinkMessageId(const std::string& text) {
-  constexpr char delimiters[] = "!#$%&'()*+,-/";
+  char delimiters[] = "!#$%&'()*+,-/";
+  char* buffer = new char[text.size() + 1];
+  strcpy_s(buffer, text.size() + 1, text.c_str());
   std::string value;
 
-  for (std::size_t position = 6; position <= text.size(); ++position) {
-    const char byte = text.c_str()[position];
-
-    if (static_cast<signed char>(byte) >= '0') {
-      value += byte;
-    } else if (std::strchr(delimiters, byte) && !value.empty()) {
-      return Number(value);
+  for (std::size_t position = 6; position < text.size() + 1; ++position) {
+    if (buffer[position] >= '0') {
+      value += buffer[position];
+      continue;
     }
+
+    for (unsigned int delimiter = 0; delimiter < sizeof(delimiters); ++delimiter) {
+      if (delimiters[delimiter] == buffer[position] && !value.empty()) {
+        return DecodeNavigationNumber(value);
+      }
+    }
+  }
+
+  if (buffer) {
+    delete[] buffer;
   }
 
   return -1;
