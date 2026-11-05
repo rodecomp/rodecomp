@@ -1,6 +1,7 @@
 #include "UI/Item/UIEquipmentPropertiesWnd.h"
 
 #include "Contents/MessageTable.h"
+#include "Contents/Messenger/ClientMessenger.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
@@ -14,16 +15,28 @@
 #include <cstring>
 #include <list>
 #include <map>
+#include <new>
 #include <string>
 #include <windows.h>
 
 namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
 public:
+  CEquipmentPropertiesMgr();
   static CEquipmentPropertiesMgr* GetInstance();
   void SetWindow(UIWindow* window);
   void GetDescriptions(const int& group, std::list<std::string>& lines);
+
+  /* 0000 */ unsigned char unknown_0000[0x1FC];
 };
+
+// INLINED
+inline CEquipmentPropertiesMgr* CEquipmentPropertiesMgr::GetInstance() {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) CEquipmentPropertiesMgr;
+  }
+  return g_equipmentPropertiesMgr;
+}
 }
 
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Paint();
@@ -262,7 +275,8 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -297,28 +311,28 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   this->titleBar->SetSize(300, 17);
   this->titleBar->Move(0, 0);
   {
-    const std::uint8_t rightSource[] = {
-      0x47, 0xBC, 0xAB, 0x85, 0xF9, 0xC7, 0xB4, 0xC6, 0x41, 0xF7, 0xAB, 0xB3, 0x84, 0xB3, 0x2D, 0x69,
-      0xE6, 0x60, 0x02, 0x1C, 0x66, 0x60, 0x1F, 0x7F, 0xE2, 0x61, 0x0D, 0x1E, 0x5A, 0x6C, 0x2D, 0x7F,
-      0xEE, 0x67, 0x07, 0x1A, 0x5B, 0x68, 0x03, 0x54, 0xF5, 0x7A, 0x0C, 0x17, 0x4D, 0x27, 0x13, 0x66,
-      0xF7, 0x13
+    const char rightSource[] = {
+      '\x47', '\xBC', '\xAB', '\x85', '\xF9', '\xC7', '\xB4', '\xC6', '\x41', '\xF7', '\xAB', '\xB3', '\x84', '\xB3', '\x2D', '\x69',
+      '\xE6', '\x60', '\x02', '\x1C', '\x66', '\x60', '\x1F', '\x7F', '\xE2', '\x61', '\x0D', '\x1E', '\x5A', '\x6C', '\x2D', '\x7F',
+      '\xEE', '\x67', '\x07', '\x1A', '\x5B', '\x68', '\x03', '\x54', '\xF5', '\x7A', '\x0C', '\x17', '\x4D', '\x27', '\x13', '\x66',
+      '\xF7', '\x13'
     };
     // GLOBAL: gl_25321
     thread_local EncryptedName<sizeof(rightSource), 0x0B7109397F6B1387ULL> rightName(rightSource);
     const std::string right(rightName.Text());
-    const std::uint8_t middleSource[] = {
-      0x65, 0x32, 0xAD, 0x03, 0xA3, 0xE9, 0xB2, 0xCE, 0x63, 0x79, 0xAD, 0x35, 0xDE, 0x9D, 0x2B, 0x61,
-      0xC4, 0xEE, 0x04, 0x9A, 0x3C, 0x4E, 0x19, 0x77, 0xC0, 0xEF, 0x0B, 0x98, 0x00, 0x42, 0x2B, 0x77,
-      0xCC, 0xE9, 0x01, 0x9C, 0x01, 0x46, 0x05, 0x5C, 0xC8, 0xF4, 0x09, 0xD7, 0x01, 0x4A, 0x07, 0x03
+    const char middleSource[] = {
+      '\x65', '\x32', '\xAD', '\x03', '\xA3', '\xE9', '\xB2', '\xCE', '\x63', '\x79', '\xAD', '\x35', '\xDE', '\x9D', '\x2B', '\x61',
+      '\xC4', '\xEE', '\x04', '\x9A', '\x3C', '\x4E', '\x19', '\x77', '\xC0', '\xEF', '\x0B', '\x98', '\x00', '\x42', '\x2B', '\x77',
+      '\xCC', '\xE9', '\x01', '\x9C', '\x01', '\x46', '\x05', '\x5C', '\xC8', '\xF4', '\x09', '\xD7', '\x01', '\x4A', '\x07', '\x03'
     };
     // GLOBAL: gl_25322
     thread_local EncryptedName<sizeof(middleSource), 0x03772763F96D9DA5ULL> middleName(middleSource);
     const std::string middle(middleName.Text());
-    const std::uint8_t leftSource[] = {
-      0xAD, 0x14, 0x55, 0xD7, 0x53, 0x35, 0xD2, 0x08, 0xAB, 0x5F, 0x55, 0xE1, 0x2E, 0x41, 0x4B, 0xA7,
-      0x0C, 0xC8, 0xFC, 0x4E, 0xCC, 0x92, 0x79, 0xB1, 0x08, 0xC9, 0xF3, 0x4C, 0xF0, 0x9E, 0x4B, 0xB1,
-      0x04, 0xCF, 0xF9, 0x48, 0xF1, 0x9A, 0x65, 0x9A, 0x01, 0xDE, 0xF3, 0x59, 0xBD, 0x99, 0x7A, 0xB5,
-      0x6D
+    const char leftSource[] = {
+      '\xAD', '\x14', '\x55', '\xD7', '\x53', '\x35', '\xD2', '\x08', '\xAB', '\x5F', '\x55', '\xE1', '\x2E', '\x41', '\x4B', '\xA7',
+      '\x0C', '\xC8', '\xFC', '\x4E', '\xCC', '\x92', '\x79', '\xB1', '\x08', '\xC9', '\xF3', '\x4C', '\xF0', '\x9E', '\x4B', '\xB1',
+      '\x04', '\xCF', '\xF9', '\x48', '\xF1', '\x9A', '\x65', '\x9A', '\x01', '\xDE', '\xF3', '\x59', '\xBD', '\x99', '\x7A', '\xB5',
+      '\x6D'
     };
     // GLOBAL: gl_25323
     thread_local EncryptedName<sizeof(leftSource), 0xC517FB932D95BB6DULL> leftName(leftSource);
@@ -335,7 +349,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   title->SetFitText(0);
   title->SetAlign(0, 6);
   {
-    const std::uint8_t titleFontSource[] = {0x20, 0xDE, 0xFD, 0xCC, 0xCC, 0x3F};
+    const char titleFontSource[] = {'\x20', '\xDE', '\xFD', '\xCC', '\xCC', '\x3F'};
     // GLOBAL: gl_25324
     thread_local EncryptedName<sizeof(titleFontSource), 0x13E33FA1A591AB67ULL> titleFontName(titleFontSource);
     title->SetFont(std::string(titleFontName.Text()));
@@ -355,34 +369,34 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   baseButton->disabled = 0;
   baseButton->Invalidate();
   {
-    const std::uint8_t inactiveSource[] = {
-      0xC9, 0x88, 0xEF, 0x41, 0x7D, 0x93, 0xB8, 0x14, 0xCF, 0xC3, 0xEF, 0x77, 0x00, 0xE7, 0x21, 0xBB,
-      0x68, 0x54, 0x46, 0xD8, 0xE2, 0x34, 0x13, 0xAD, 0x6C, 0x55, 0x49, 0xDA, 0xDE, 0x38, 0x21, 0xAA,
-      0x70, 0x54, 0x70, 0xD9, 0xDC, 0x2E, 0x18, 0x86, 0x66, 0x41, 0x49, 0x95, 0xDF, 0x30, 0x0D, 0xD9
+    const char inactiveSource[] = {
+      '\xC9', '\x88', '\xEF', '\x41', '\x7D', '\x93', '\xB8', '\x14', '\xCF', '\xC3', '\xEF', '\x77', '\x00', '\xE7', '\x21', '\xBB',
+      '\x68', '\x54', '\x46', '\xD8', '\xE2', '\x34', '\x13', '\xAD', '\x6C', '\x55', '\x49', '\xDA', '\xDE', '\x38', '\x21', '\xAA',
+      '\x70', '\x54', '\x70', '\xD9', '\xDC', '\x2E', '\x18', '\x86', '\x66', '\x41', '\x49', '\x95', '\xDF', '\x30', '\x0D', '\xD9'
     };
     // GLOBAL: gl_25325
     thread_local EncryptedName<sizeof(inactiveSource), 0xD97D5DBDBB2F2709ULL> inactiveName(inactiveSource);
     const std::string inactive(inactiveName.Text());
-    const std::uint8_t pressedSource[] = {
-      0xAF, 0xD2, 0x3B, 0xD9, 0xB1, 0xC9, 0x4A, 0x00, 0xA9, 0x99, 0x3B, 0xEF, 0xCC, 0xBD, 0xD3, 0xAF,
-      0x0E, 0x0E, 0x92, 0x40, 0x2E, 0x6E, 0xE1, 0xB9, 0x0A, 0x0F, 0x9D, 0x42, 0x12, 0x62, 0xD3, 0xBE,
-      0x16, 0x0E, 0xA4, 0x41, 0x10, 0x74, 0xEA, 0x92, 0x00, 0x13, 0xD5, 0x41, 0x1C, 0x77, 0x8F
+    const char pressedSource[] = {
+      '\xAF', '\xD2', '\x3B', '\xD9', '\xB1', '\xC9', '\x4A', '\x00', '\xA9', '\x99', '\x3B', '\xEF', '\xCC', '\xBD', '\xD3', '\xAF',
+      '\x0E', '\x0E', '\x92', '\x40', '\x2E', '\x6E', '\xE1', '\xB9', '\x0A', '\x0F', '\x9D', '\x42', '\x12', '\x62', '\xD3', '\xBE',
+      '\x16', '\x0E', '\xA4', '\x41', '\x10', '\x74', '\xEA', '\x92', '\x00', '\x13', '\xD5', '\x41', '\x1C', '\x77', '\x8F'
     };
     // GLOBAL: gl_25326
     thread_local EncryptedName<sizeof(pressedSource), 0xCD8F077123FB7D6FULL> pressedName(pressedSource);
     const std::string pressed(pressedName.Text());
-    const std::uint8_t hoverSource[] = {
-      0x83, 0x86, 0x93, 0xDD, 0x15, 0x71, 0x8C, 0x54, 0x85, 0xCD, 0x93, 0xEB, 0x68, 0x05, 0x15, 0xFB,
-      0x22, 0x5A, 0x3A, 0x44, 0x8A, 0xD6, 0x27, 0xED, 0x26, 0x5B, 0x35, 0x46, 0xB6, 0xDA, 0x15, 0xEA,
-      0x3A, 0x5A, 0x0C, 0x45, 0xB4, 0xCC, 0x2C, 0xC6, 0x2C, 0x47, 0x7D, 0x45, 0xB8, 0xCF, 0x49
+    const char hoverSource[] = {
+      '\x83', '\x86', '\x93', '\xDD', '\x15', '\x71', '\x8C', '\x54', '\x85', '\xCD', '\x93', '\xEB', '\x68', '\x05', '\x15', '\xFB',
+      '\x22', '\x5A', '\x3A', '\x44', '\x8A', '\xD6', '\x27', '\xED', '\x26', '\x5B', '\x35', '\x46', '\xB6', '\xDA', '\x15', '\xEA',
+      '\x3A', '\x5A', '\x0C', '\x45', '\xB4', '\xCC', '\x2C', '\xC6', '\x2C', '\x47', '\x7D', '\x45', '\xB8', '\xCF', '\x49'
     };
     // GLOBAL: gl_25327
     thread_local EncryptedName<sizeof(hoverSource), 0x9949BFD527532943ULL> hoverName(hoverSource);
     const std::string hover(hoverName.Text());
-    const std::uint8_t normalSource[] = {
-      0xF7, 0xE8, 0x6D, 0xC3, 0x7F, 0x2B, 0x6C, 0xDA, 0xF1, 0xA3, 0x6D, 0xF5, 0x02, 0x5F, 0xF5, 0x75,
-      0x56, 0x34, 0xC4, 0x5A, 0xE0, 0x8C, 0xC7, 0x63, 0x52, 0x35, 0xCB, 0x58, 0xDC, 0x80, 0xF5, 0x64,
-      0x4E, 0x34, 0xF2, 0x5B, 0xDE, 0x96, 0xCC, 0x48, 0x58, 0x21, 0xCB, 0x17, 0xDD, 0x88, 0xD9, 0x17
+    const char normalSource[] = {
+      '\xF7', '\xE8', '\x6D', '\xC3', '\x7F', '\x2B', '\x6C', '\xDA', '\xF1', '\xA3', '\x6D', '\xF5', '\x02', '\x5F', '\xF5', '\x75',
+      '\x56', '\x34', '\xC4', '\x5A', '\xE0', '\x8C', '\xC7', '\x63', '\x52', '\x35', '\xCB', '\x58', '\xDC', '\x80', '\xF5', '\x64',
+      '\x4E', '\x34', '\xF2', '\x5B', '\xDE', '\x96', '\xCC', '\x48', '\x58', '\x21', '\xCB', '\x17', '\xDD', '\x88', '\xD9', '\x17'
     };
     // GLOBAL: gl_25328
     thread_local EncryptedName<sizeof(normalSource), 0x17A9E5BF39AD4737ULL> normalName(normalSource);
@@ -398,36 +412,36 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   closeButton->disabled = 0;
   closeButton->Invalidate();
   {
-    const std::uint8_t inactiveSource[] = {
-      0x21, 0xD4, 0x39, 0x2D, 0x15, 0xDD, 0xFC, 0x10, 0x27, 0x9F, 0x39, 0x1B, 0x68, 0xA9, 0x65, 0xBF,
-      0x80, 0x08, 0x90, 0xB4, 0x8A, 0x7A, 0x57, 0xA9, 0x84, 0x09, 0x9F, 0xB6, 0xB6, 0x76, 0x65, 0xAE,
-      0x98, 0x08, 0xA6, 0xB4, 0xB9, 0x7C, 0x4A, 0xB8, 0xBE, 0x14, 0x9F, 0xB1, 0xFB, 0x71, 0x54, 0xAD,
-      0xE1
+    const char inactiveSource[] = {
+      '\x21', '\xD4', '\x39', '\x2D', '\x15', '\xDD', '\xFC', '\x10', '\x27', '\x9F', '\x39', '\x1B', '\x68', '\xA9', '\x65', '\xBF',
+      '\x80', '\x08', '\x90', '\xB4', '\x8A', '\x7A', '\x57', '\xA9', '\x84', '\x09', '\x9F', '\xB6', '\xB6', '\x76', '\x65', '\xAE',
+      '\x98', '\x08', '\xA6', '\xB4', '\xB9', '\x7C', '\x4A', '\xB8', '\xBE', '\x14', '\x9F', '\xB1', '\xFB', '\x71', '\x54', '\xAD',
+      '\xE1'
     };
     // GLOBAL: gl_25329
     thread_local EncryptedName<sizeof(inactiveSource), 0xDD3913D5D7F97BE1ULL> inactiveName(inactiveSource);
     const std::string inactive(inactiveName.Text());
-    const std::uint8_t pressedSource[] = {
-      0x5F, 0x6A, 0xAD, 0x51, 0x17, 0xE7, 0x38, 0x68, 0x59, 0x21, 0xAD, 0x67, 0x6A, 0x93, 0xA1, 0xC7,
-      0xFE, 0xB6, 0x04, 0xC8, 0x88, 0x40, 0x93, 0xD1, 0xFA, 0xB7, 0x0B, 0xCA, 0xB4, 0x4C, 0xA1, 0xD6,
-      0xE6, 0xB6, 0x32, 0xC8, 0xBB, 0x46, 0x8E, 0xC0, 0xC0, 0xAA, 0x03, 0x85, 0xB5, 0x44, 0x8D, 0xA5
+    const char pressedSource[] = {
+      '\x5F', '\x6A', '\xAD', '\x51', '\x17', '\xE7', '\x38', '\x68', '\x59', '\x21', '\xAD', '\x67', '\x6A', '\x93', '\xA1', '\xC7',
+      '\xFE', '\xB6', '\x04', '\xC8', '\x88', '\x40', '\x93', '\xD1', '\xFA', '\xB7', '\x0B', '\xCA', '\xB4', '\x4C', '\xA1', '\xD6',
+      '\xE6', '\xB6', '\x32', '\xC8', '\xBB', '\x46', '\x8E', '\xC0', '\xC0', '\xAA', '\x03', '\x85', '\xB5', '\x44', '\x8D', '\xA5'
     };
     // GLOBAL: gl_25331
     thread_local EncryptedName<sizeof(pressedSource), 0xA5FD29D7AB6DC59FULL> pressedName(pressedSource);
     const std::string pressed(pressedName.Text());
-    const std::uint8_t hoverSource[] = {
-      0x31, 0x68, 0xF9, 0xF3, 0xD7, 0xB7, 0x8A, 0x3C, 0x37, 0x23, 0xF9, 0xC5, 0xAA, 0xC3, 0x13, 0x93,
-      0x90, 0xB4, 0x50, 0x6A, 0x48, 0x10, 0x21, 0x85, 0x94, 0xB5, 0x5F, 0x68, 0x74, 0x1C, 0x13, 0x82,
-      0x88, 0xB4, 0x66, 0x6A, 0x7B, 0x16, 0x3C, 0x94, 0xAE, 0xA8, 0x57, 0x27, 0x75, 0x14, 0x3F, 0xF1
+    const char hoverSource[] = {
+      '\x31', '\x68', '\xF9', '\xF3', '\xD7', '\xB7', '\x8A', '\x3C', '\x37', '\x23', '\xF9', '\xC5', '\xAA', '\xC3', '\x13', '\x93',
+      '\x90', '\xB4', '\x50', '\x6A', '\x48', '\x10', '\x21', '\x85', '\x94', '\xB5', '\x5F', '\x68', '\x74', '\x1C', '\x13', '\x82',
+      '\x88', '\xB4', '\x66', '\x6A', '\x7B', '\x16', '\x3C', '\x94', '\xAE', '\xA8', '\x57', '\x27', '\x75', '\x14', '\x3F', '\xF1'
     };
     // GLOBAL: gl_25333
     thread_local EncryptedName<sizeof(hoverSource), 0xF14F79170939C7F1ULL> hoverName(hoverSource);
     const std::string hover(hoverName.Text());
-    const std::uint8_t normalSource[] = {
-      0xBF, 0xBC, 0x1F, 0x2B, 0x45, 0xA9, 0xBC, 0x20, 0xB9, 0xF7, 0x1F, 0x1D, 0x38, 0xDD, 0x25, 0x8F,
-      0x1E, 0x60, 0xB6, 0xB2, 0xDA, 0x0E, 0x17, 0x99, 0x1A, 0x61, 0xB9, 0xB0, 0xE6, 0x02, 0x25, 0x9E,
-      0x06, 0x60, 0x80, 0xB2, 0xE9, 0x08, 0x0A, 0x88, 0x20, 0x7C, 0xB9, 0xB7, 0xAB, 0x05, 0x14, 0x9D,
-      0x7F
+    const char normalSource[] = {
+      '\xBF', '\xBC', '\x1F', '\x2B', '\x45', '\xA9', '\xBC', '\x20', '\xB9', '\xF7', '\x1F', '\x1D', '\x38', '\xDD', '\x25', '\x8F',
+      '\x1E', '\x60', '\xB6', '\xB2', '\xDA', '\x0E', '\x17', '\x99', '\x1A', '\x61', '\xB9', '\xB0', '\xE6', '\x02', '\x25', '\x9E',
+      '\x06', '\x60', '\x80', '\xB2', '\xE9', '\x08', '\x0A', '\x88', '\x20', '\x7C', '\xB9', '\xB7', '\xAB', '\x05', '\x14', '\x9D',
+      '\x7F'
     };
     // GLOBAL: gl_25335
     thread_local EncryptedName<sizeof(normalSource), 0xED796785D1DF137FULL> normalName(normalSource);
@@ -450,16 +464,16 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   this->list->scrollBar->Move(265, 0);
   this->list->scrollBar->step = 18;
   {
-    const std::uint8_t downSource[] = {
-      0x7D, 0x12, 0x2D, 0xCD, 0x7B, 0x71, 0x2A, 0x4E, 0x7B, 0x59, 0x2D, 0xFB, 0x06, 0x05, 0xB3, 0xF0,
-      0xDE, 0xCF, 0x82, 0x5B, 0xD7, 0x8F, 0x8B, 0xEC, 0xCA, 0xD3, 0xC3, 0x55, 0xD6, 0xCF, 0xEF
+    const char downSource[] = {
+      '\x7D', '\x12', '\x2D', '\xCD', '\x7B', '\x71', '\x2A', '\x4E', '\x7B', '\x59', '\x2D', '\xFB', '\x06', '\x05', '\xB3', '\xF0',
+      '\xDE', '\xCF', '\x82', '\x5B', '\xD7', '\x8F', '\x8B', '\xEC', '\xCA', '\xD3', '\xC3', '\x55', '\xD6', '\xCF', '\xEF'
     };
     // GLOBAL: gl_25336
     thread_local EncryptedName<sizeof(downSource), 0x83EFBFBB37EDBDBDULL> downName(downSource);
     const std::string down(downName.Text());
-    const std::uint8_t upSource[] = {
-      0x5B, 0xF8, 0xC3, 0x63, 0xA7, 0xCB, 0xC0, 0xC8, 0x5D, 0xB3, 0xC3, 0x55, 0xDA, 0xBF, 0x59, 0x76,
-      0xF8, 0x25, 0x6C, 0xF5, 0x0B, 0x35, 0x70, 0x75, 0xB5, 0x35, 0x6E, 0xE9, 0x67
+    const char upSource[] = {
+      '\x5B', '\xF8', '\xC3', '\x63', '\xA7', '\xCB', '\xC0', '\xC8', '\x5D', '\xB3', '\xC3', '\x55', '\xDA', '\xBF', '\x59', '\x76',
+      '\xF8', '\x25', '\x6C', '\xF5', '\x0B', '\x35', '\x70', '\x75', '\xB5', '\x35', '\x6E', '\xE9', '\x67'
     };
     // GLOBAL: gl_25337
     thread_local EncryptedName<sizeof(upSource), 0x050505679903579BULL> upName(upSource);
@@ -467,35 +481,35 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
     this->list->scrollBar->SetButtonImages(up, down);
   }
   {
-    const std::uint8_t backgroundSource[] = {
-      0x67, 0x5A, 0xBF, 0xC3, 0xF1, 0x85, 0xEE, 0x72, 0x61, 0x11, 0xBF, 0xF5, 0x8C, 0xF1, 0x77, 0xCC,
-      0xC4, 0x87, 0x10, 0x55, 0x5D, 0x7B, 0x46, 0xD6, 0xC3, 0xDB, 0x1D, 0x54, 0x41, 0x4B
+    const char backgroundSource[] = {
+      '\x67', '\x5A', '\xBF', '\xC3', '\xF1', '\x85', '\xEE', '\x72', '\x61', '\x11', '\xBF', '\xF5', '\x8C', '\xF1', '\x77', '\xCC',
+      '\xC4', '\x87', '\x10', '\x55', '\x5D', '\x7B', '\x46', '\xD6', '\xC3', '\xDB', '\x1D', '\x54', '\x41', '\x4B'
     };
     // GLOBAL: gl_25338
     thread_local EncryptedName<sizeof(backgroundSource), 0xBF2B4B31397FF5A7ULL> backgroundName(backgroundSource);
     this->list->scrollBar->SetBackground(std::string(backgroundName.Text()));
   }
   {
-    const std::uint8_t thumbBottomSource[] = {
-      0xBF, 0xBA, 0x4D, 0xEB, 0xF7, 0xC1, 0x4E, 0xE2, 0xB9, 0xF1, 0x4D, 0xDD, 0x8A, 0xB5, 0xD7, 0x5C,
-      0x1C, 0x67, 0xE2, 0x7D, 0x5B, 0x3F, 0xE9, 0x4E, 0x0D, 0x4A, 0xE9, 0x7E, 0x40, 0x61, 0xA5, 0x4D,
-      0x12, 0x65, 0x8D
+    const char thumbBottomSource[] = {
+      '\xBF', '\xBA', '\x4D', '\xEB', '\xF7', '\xC1', '\x4E', '\xE2', '\xB9', '\xF1', '\x4D', '\xDD', '\x8A', '\xB5', '\xD7', '\x5C',
+      '\x1C', '\x67', '\xE2', '\x7D', '\x5B', '\x3F', '\xE9', '\x4E', '\x0D', '\x4A', '\xE9', '\x7E', '\x40', '\x61', '\xA5', '\x4D',
+      '\x12', '\x65', '\x8D'
     };
     // GLOBAL: gl_25339
     thread_local EncryptedName<sizeof(thumbBottomSource), 0x2F8B0F37118D157FULL> thumbBottomName(thumbBottomSource);
     const std::string bottom(thumbBottomName.Text());
-    const std::uint8_t thumbMiddleSource[] = {
-      0x4F, 0x36, 0x2B, 0xF7, 0x75, 0xB1, 0x3A, 0xF4, 0x49, 0x7D, 0x2B, 0xC1, 0x08, 0xC5, 0xA3, 0x4A,
-      0xEC, 0xEB, 0x84, 0x61, 0xD9, 0x4F, 0x9D, 0x58, 0xFD, 0xC6, 0x86, 0x64, 0xD1, 0x51, 0x9D, 0x54,
-      0xFF, 0x99
+    const char thumbMiddleSource[] = {
+      '\x4F', '\x36', '\x2B', '\xF7', '\x75', '\xB1', '\x3A', '\xF4', '\x49', '\x7D', '\x2B', '\xC1', '\x08', '\xC5', '\xA3', '\x4A',
+      '\xEC', '\xEB', '\x84', '\x61', '\xD9', '\x4F', '\x9D', '\x58', '\xFD', '\xC6', '\x86', '\x64', '\xD1', '\x51', '\x9D', '\x54',
+      '\xFF', '\x99'
     };
     // GLOBAL: gl_25340
     thread_local EncryptedName<sizeof(thumbMiddleSource), 0x39FF7FB50DEB998FULL> thumbMiddleName(thumbMiddleSource);
     const std::string middle(thumbMiddleName.Text());
-    const std::uint8_t thumbTopSource[] = {
-      0x57, 0x5E, 0x21, 0x27, 0x11, 0x5D, 0x2C, 0xE2, 0x51, 0x15, 0x21, 0x11, 0x6C, 0x29, 0xB5, 0x5C,
-      0xF4, 0x83, 0x8E, 0xB1, 0xBD, 0xA3, 0x8B, 0x4E, 0xE5, 0xAE, 0x94, 0xAD, 0xFF, 0xF1, 0x84, 0x5F,
-      0x97
+    const char thumbTopSource[] = {
+      '\x57', '\x5E', '\x21', '\x27', '\x11', '\x5D', '\x2C', '\xE2', '\x51', '\x15', '\x21', '\x11', '\x6C', '\x29', '\xB5', '\x5C',
+      '\xF4', '\x83', '\x8E', '\xB1', '\xBD', '\xA3', '\x8B', '\x4E', '\xE5', '\xAE', '\x94', '\xAD', '\xFF', '\xF1', '\x84', '\x5F',
+      '\x97'
     };
     // GLOBAL: gl_25341
     thread_local EncryptedName<sizeof(thumbTopSource), 0x2FE993D1DDE1F197ULL> thumbTopName(thumbTopSource);
@@ -519,7 +533,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   allButton->Invalidate();
   allButton->SetId(0);
   {
-    const std::uint8_t allLabelSource[] = {0x0D, 0x0D, 0x5A, 0x09, 0x8D};
+    const char allLabelSource[] = {'\x0D', '\x0D', '\x5A', '\x09', '\x8D'};
     // GLOBAL: gl_25342
     thread_local EncryptedName<sizeof(allLabelSource), 0xAD075B8DB599F1CDULL> allLabelName(allLabelSource);
     allButton->SetText(std::string(allLabelName.Text()));
@@ -527,7 +541,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   allButton->SetFitText(0);
   allButton->SetAlign(6, 6);
   {
-    const std::uint8_t allFontSource[] = {0xBA, 0xCC, 0xD7, 0x48, 0xF2, 0xFD};
+    const char allFontSource[] = {'\xBA', '\xCC', '\xD7', '\x48', '\xF2', '\xFD'};
     // GLOBAL: gl_25343
     thread_local EncryptedName<sizeof(allFontSource), 0x4941FD9F21BBB9FDULL> allFontName(allFontSource);
     allButton->SetFont(std::string(allFontName.Text()));
@@ -549,7 +563,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   statButton->Invalidate();
   statButton->SetId(1);
   {
-    const std::uint8_t statLabelSource[] = {0xC8, 0x77, 0x28, 0x95, 0x6B};
+    const char statLabelSource[] = {'\xC8', '\x77', '\x28', '\x95', '\x6B'};
     // GLOBAL: gl_25344
     thread_local EncryptedName<sizeof(statLabelSource), 0x35E5656B5DEDCD75ULL> statLabelName(statLabelSource);
     statButton->SetText(std::string(statLabelName.Text()));
@@ -557,7 +571,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   statButton->SetFitText(0);
   statButton->SetAlign(6, 6);
   {
-    const std::uint8_t statFontSource[] = {0x2C, 0xCC, 0xAB, 0x66, 0x0A, 0x8F};
+    const char statFontSource[] = {'\x2C', '\xCC', '\xAB', '\x66', '\x0A', '\x8F'};
     // GLOBAL: gl_25345
     thread_local EncryptedName<sizeof(statFontSource), 0xB7FD8F670FC7B96BULL> statFontName(statFontSource);
     statButton->SetFont(std::string(statFontName.Text()));
@@ -579,7 +593,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   abilityButton->Invalidate();
   abilityButton->SetId(2);
   {
-    const std::uint8_t abilityLabelSource[] = {0x43, 0x39, 0xF7, 0x5D, 0xB5};
+    const char abilityLabelSource[] = {'\x43', '\x39', '\xF7', '\x5D', '\xB5'};
     // GLOBAL: gl_25346
     thread_local EncryptedName<sizeof(abilityLabelSource), 0xE7978FB5A94DD7FDULL> abilityLabelName(abilityLabelSource);
     abilityButton->SetText(std::string(abilityLabelName.Text()));
@@ -587,7 +601,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   abilityButton->SetFitText(0);
   abilityButton->SetAlign(6, 6);
   {
-    const std::uint8_t abilityFontSource[] = {0x8E, 0x66, 0x95, 0x1A, 0x94, 0xD9};
+    const char abilityFontSource[] = {'\x8E', '\x66', '\x95', '\x1A', '\x94', '\xD9'};
     // GLOBAL: gl_25347
     thread_local EncryptedName<sizeof(abilityFontSource), 0x7115D9F973F913C9ULL> abilityFontName(abilityFontSource);
     abilityButton->SetFont(std::string(abilityFontName.Text()));
@@ -609,7 +623,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   battleButton->Invalidate();
   battleButton->SetId(3);
   {
-    const std::uint8_t battleLabelSource[] = {0xA3, 0x09, 0x24, 0x8A, 0x3B};
+    const char battleLabelSource[] = {'\xA3', '\x09', '\x24', '\x8A', '\x3B'};
     // GLOBAL: gl_25348
     thread_local EncryptedName<sizeof(battleLabelSource), 0xCB1D253B7FE1F563ULL> battleLabelName(battleLabelSource);
     battleButton->SetText(std::string(battleLabelName.Text()));
@@ -617,7 +631,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   battleButton->SetFitText(0);
   battleButton->SetAlign(6, 6);
   {
-    const std::uint8_t battleFontSource[] = {0x08, 0x12, 0x81, 0xEC, 0x64, 0x37};
+    const char battleFontSource[] = {'\x08', '\x12', '\x81', '\xEC', '\x64', '\x37'};
     // GLOBAL: gl_25349
     thread_local EncryptedName<sizeof(battleFontSource), 0x793F370985ED674FULL> battleFontName(battleFontSource);
     battleButton->SetFont(std::string(battleFontName.Text()));
@@ -639,7 +653,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   elementButton->Invalidate();
   elementButton->SetId(4);
   {
-    const std::uint8_t elementLabelSource[] = {0xA1, 0xD6, 0x2F, 0x93, 0x71};
+    const char elementLabelSource[] = {'\xA1', '\xD6', '\x2F', '\x93', '\x71'};
     // GLOBAL: gl_25350
     thread_local EncryptedName<sizeof(elementLabelSource), 0xE55723712993051DULL> elementLabelName(elementLabelSource);
     elementButton->SetText(std::string(elementLabelName.Text()));
@@ -647,7 +661,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   elementButton->SetFitText(0);
   elementButton->SetAlign(6, 6);
   {
-    const std::uint8_t elementFontSource[] = {0x64, 0x84, 0xBB, 0x7E, 0xBA, 0x49};
+    const char elementFontSource[] = {'\x64', '\x84', '\xBB', '\x7E', '\xBA', '\x49'};
     // GLOBAL: gl_25351
     thread_local EncryptedName<sizeof(elementFontSource), 0x7DE349D717D7F123ULL> elementFontName(elementFontSource);
     elementButton->SetFont(std::string(elementFontName.Text()));
@@ -669,7 +683,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   raceButton->Invalidate();
   raceButton->SetId(5);
   {
-    const std::uint8_t raceLabelSource[] = {0xBE, 0x6B, 0x6E, 0xEC, 0x6B};
+    const char raceLabelSource[] = {'\xBE', '\x6B', '\x6E', '\xEC', '\x6B'};
     // GLOBAL: gl_25352
     thread_local EncryptedName<sizeof(raceLabelSource), 0x0F15B16B5BAFD57FULL> raceLabelName(raceLabelSource);
     raceButton->SetText(std::string(raceLabelName.Text()));
@@ -677,7 +691,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   raceButton->SetFitText(0);
   raceButton->SetAlign(6, 6);
   {
-    const std::uint8_t raceFontSource[] = {0x08, 0xD4, 0xA3, 0x5C, 0x0E, 0xD7};
+    const char raceFontSource[] = {'\x08', '\xD4', '\xA3', '\x5C', '\x0E', '\xD7'};
     // GLOBAL: gl_25353
     thread_local EncryptedName<sizeof(raceFontSource), 0x7941D76335CFA14FULL> raceFontName(raceFontSource);
     raceButton->SetFont(std::string(raceFontName.Text()));
@@ -699,7 +713,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   skillButton->Invalidate();
   skillButton->SetId(6);
   {
-    const std::uint8_t skillLabelSource[] = {0x5C, 0x23, 0x42, 0xFC, 0x81};
+    const char skillLabelSource[] = {'\x5C', '\x23', '\x42', '\xFC', '\x81'};
     // GLOBAL: gl_25354
     thread_local EncryptedName<sizeof(skillLabelSource), 0x7321C3814F8799E1ULL> skillLabelName(skillLabelSource);
     skillButton->SetText(std::string(skillLabelName.Text()));
@@ -707,7 +721,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   skillButton->SetFitText(0);
   skillButton->SetAlign(6, 6);
   {
-    const std::uint8_t skillFontSource[] = {0xF4, 0x12, 0x35, 0xE6, 0xB2, 0x27};
+    const char skillFontSource[] = {'\xF4', '\x12', '\x35', '\xE6', '\xB2', '\x27'};
     // GLOBAL: gl_25355
     thread_local EncryptedName<sizeof(skillFontSource), 0x839B27DF8F5967B3ULL> skillFontName(skillFontSource);
     skillButton->SetFont(std::string(skillFontName.Text()));
@@ -729,7 +743,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   specialButton->Invalidate();
   specialButton->SetId(7);
   {
-    const std::uint8_t specialLabelSource[] = {0xAB, 0xB4, 0x1B, 0xE7, 0x77};
+    const char specialLabelSource[] = {'\xAB', '\xB4', '\x1B', '\xE7', '\x77'};
     // GLOBAL: gl_25356
     thread_local EncryptedName<sizeof(specialLabelSource), 0xF3CB6F7711A71B6DULL> specialLabelName(specialLabelSource);
     specialButton->SetText(std::string(specialLabelName.Text()));
@@ -737,7 +751,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   specialButton->SetFitText(0);
   specialButton->SetAlign(6, 6);
   {
-    const std::uint8_t specialFontSource[] = {0x22, 0x20, 0xA5, 0x16, 0x60, 0xEF};
+    const char specialFontSource[] = {'\x22', '\x20', '\xA5', '\x16', '\x60', '\xEF'};
     // GLOBAL: gl_25357
     thread_local EncryptedName<sizeof(specialFontSource), 0x452FEF0D7FC95565ULL> specialFontName(specialFontSource);
     specialButton->SetFont(std::string(specialFontName.Text()));
@@ -755,9 +769,9 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   this->resizer->SetSize(13, 13);
   this->resizer->Move(286, 294);
   {
-    const std::uint8_t resizeSource[] = {
-      0x9D, 0xA2, 0x89, 0x73, 0x61, 0xB3, 0x28, 0x52, 0x9B, 0xE9, 0x89, 0x45, 0x1C, 0xC7, 0xB1, 0xFD,
-      0x29, 0x63, 0x16, 0xFB, 0xC4, 0x0E, 0x84, 0xE5, 0x38, 0x23, 0x2B, 0xE4, 0xD1, 0x7D
+    const char resizeSource[] = {
+      '\x9D', '\xA2', '\x89', '\x73', '\x61', '\xB3', '\x28', '\x52', '\x9B', '\xE9', '\x89', '\x45', '\x1C', '\xC7', '\xB1', '\xFD',
+      '\x29', '\x63', '\x16', '\xFB', '\xC4', '\x0E', '\x84', '\xE5', '\x38', '\x23', '\x2B', '\xE4', '\xD1', '\x7D'
     };
     // GLOBAL: gl_25358
     thread_local EncryptedName<sizeof(resizeSource), 0x9FED7DA189490D5DULL> resizeName(resizeSource);
@@ -783,7 +797,7 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot15(int width, i
   this->unknown_00E8->SetText("", 0);
   this->unknown_00E8->SetFitText(0);
   this->unknown_00E8->SetAlign(6, 0);
-  const std::uint8_t titleFontSource[] = {0x9E, 0x8C, 0x8D, 0x8A, 0x00, 0x15};
+  const char titleFontSource[] = {'\x9E', '\x8C', '\x8D', '\x8A', '\x00', '\x15'};
   // GLOBAL: gl_25121
   thread_local EncryptedName<sizeof(titleFontSource), 0x2BAD156DE3E1F9D9ULL> titleFont(titleFontSource);
   this->unknown_00E8->SetFont(std::string(titleFont.Text()));
@@ -800,7 +814,7 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot15(int width, i
   this->unknown_00EC->SetText("", 0);
   this->unknown_00EC->SetFitText(1);
   this->unknown_00EC->SetAlign(0, 0);
-  const std::uint8_t textFontSource[] = {0x8E, 0x80, 0x33, 0xE2, 0xE2, 0xD5};
+  const char textFontSource[] = {'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'};
   // GLOBAL: gl_25122
   thread_local EncryptedName<sizeof(textFontSource), 0x23BBD58F8B5FF5C9ULL> textFont(textFontSource);
   this->unknown_00EC->SetFont(std::string(textFont.Text()));

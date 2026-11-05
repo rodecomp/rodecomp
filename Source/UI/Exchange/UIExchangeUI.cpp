@@ -588,7 +588,8 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -622,9 +623,9 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->unknown_00E8 = new CUIStaticImage();
   this->unknown_00E8->SetSize(32, 32);
   this->unknown_00E8->Move(9, 0);
-  const std::uint8_t backgroundSource[] = {0x4F, 0x12, 0x2F, 0x7D, 0xBD, 0x0B, 0x68, 0xB8, 0x49, 0x59, 0x2F, 0x4B, 0xC0, 0x7F, 0xF1, 0x17,
-                                           0xEE, 0xCE, 0x86, 0xE4, 0x22, 0xAC, 0xC3, 0x01, 0xEA, 0xCF, 0x89, 0xE6, 0x1E, 0xA0, 0xF1, 0x1C,
-                                           0xFB, 0xD8, 0x82, 0xF0, 0x14, 0xAB, 0xF2, 0x18, 0xE6, 0xD9, 0xC1, 0xE5, 0x10, 0xB5, 0xAD};
+  const char backgroundSource[] = {'\x4F', '\x12', '\x2F', '\x7D', '\xBD', '\x0B', '\x68', '\xB8', '\x49', '\x59', '\x2F', '\x4B', '\xC0', '\x7F', '\xF1', '\x17',
+                                   '\xEE', '\xCE', '\x86', '\xE4', '\x22', '\xAC', '\xC3', '\x01', '\xEA', '\xCF', '\x89', '\xE6', '\x1E', '\xA0', '\xF1', '\x1C',
+                                   '\xFB', '\xD8', '\x82', '\xF0', '\x14', '\xAB', '\xF2', '\x18', '\xE6', '\xD9', '\xC1', '\xE5', '\x10', '\xB5', '\xAD'};
   thread_local EncryptedName<sizeof(backgroundSource), 0x75ADC57D87EFBD8FULL> backgroundName(backgroundSource);
   std::string background(backgroundName.Text());
   this->unknown_00E8->SetImage(background);
@@ -644,7 +645,7 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->unknown_00F0->SetText("", 0);
   this->unknown_00F0->SetFitText(0);
   this->unknown_00F0->SetAlign(0, 6);
-  const std::uint8_t nameFontSource[] = {0x2A, 0xCE, 0xF9, 0x44, 0xFE, 0xFB};
+  const char nameFontSource[] = {'\x2A', '\xCE', '\xF9', '\x44', '\xFE', '\xFB'};
   thread_local EncryptedName<sizeof(nameFontSource), 0xC517FB932D95BB6DULL> nameFont(nameFontSource);
   this->unknown_00F0->SetFont(std::string(nameFont.Text()));
   this->unknown_00F0->SetFontHeight(11);
@@ -660,7 +661,7 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->unknown_00F4->SetText("", 0);
   this->unknown_00F4->SetFitText(1);
   this->unknown_00F4->SetAlign(0, 6);
-  const std::uint8_t countFontSource[] = {0x8E, 0x80, 0x33, 0xE2, 0xE2, 0xD5};
+  const char countFontSource[] = {'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'};
   thread_local EncryptedName<sizeof(countFontSource), 0x23BBD58F8B5FF5C9ULL> countFont(countFontSource);
   this->unknown_00F4->SetFont(std::string(countFont.Text()));
   this->unknown_00F4->SetFontHeight(12);
@@ -679,28 +680,28 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->titleBar->Move(0, 0);
   {
     CUITitleBar* titleBar = this->titleBar;
-    const std::uint8_t titleRightSource[] = {
-      0xF7, 0xE8, 0x6D, 0xC3, 0x7F, 0x2B, 0x6C, 0xDA, 0xF1, 0xA3, 0x6D, 0xF5, 0x02, 0x5F, 0xF5, 0x75,
-      0x56, 0x34, 0xC4, 0x5A, 0xE0, 0x8C, 0xC7, 0x63, 0x52, 0x35, 0xCB, 0x58, 0xDC, 0x80, 0xF5, 0x63,
-      0x5E, 0x33, 0xC1, 0x5C, 0xDD, 0x84, 0xDB, 0x48, 0x45, 0x2E, 0xCA, 0x51, 0xCB, 0xCB, 0xCB, 0x7A,
-      0x47, 0x47
+    const char titleRightSource[] = {
+      '\xF7', '\xE8', '\x6D', '\xC3', '\x7F', '\x2B', '\x6C', '\xDA', '\xF1', '\xA3', '\x6D', '\xF5', '\x02', '\x5F', '\xF5', '\x75',
+      '\x56', '\x34', '\xC4', '\x5A', '\xE0', '\x8C', '\xC7', '\x63', '\x52', '\x35', '\xCB', '\x58', '\xDC', '\x80', '\xF5', '\x63',
+      '\x5E', '\x33', '\xC1', '\x5C', '\xDD', '\x84', '\xDB', '\x48', '\x45', '\x2E', '\xCA', '\x51', '\xCB', '\xCB', '\xCB', '\x7A',
+      '\x47', '\x47'
     };
     // GLOBAL: gl_25394
     thread_local EncryptedName<sizeof(titleRightSource), 0x17A9E5BF39AD4737ULL> titleRightName(titleRightSource);
     const std::string titleRight(titleRightName.Text());
-    const std::uint8_t titleMiddleSource[] = {
-      0x65, 0x32, 0xAD, 0x03, 0xA3, 0xE9, 0xB2, 0xCE, 0x63, 0x79, 0xAD, 0x35, 0xDE, 0x9D, 0x2B, 0x61,
-      0xC4, 0xEE, 0x04, 0x9A, 0x3C, 0x4E, 0x19, 0x77, 0xC0, 0xEF, 0x0B, 0x98, 0x00, 0x42, 0x2B, 0x77,
-      0xCC, 0xE9, 0x01, 0x9C, 0x01, 0x46, 0x05, 0x5C, 0xC8, 0xF4, 0x09, 0xD7, 0x01, 0x4A, 0x07, 0x03
+    const char titleMiddleSource[] = {
+      '\x65', '\x32', '\xAD', '\x03', '\xA3', '\xE9', '\xB2', '\xCE', '\x63', '\x79', '\xAD', '\x35', '\xDE', '\x9D', '\x2B', '\x61',
+      '\xC4', '\xEE', '\x04', '\x9A', '\x3C', '\x4E', '\x19', '\x77', '\xC0', '\xEF', '\x0B', '\x98', '\x00', '\x42', '\x2B', '\x77',
+      '\xCC', '\xE9', '\x01', '\x9C', '\x01', '\x46', '\x05', '\x5C', '\xC8', '\xF4', '\x09', '\xD7', '\x01', '\x4A', '\x07', '\x03'
     };
     // GLOBAL: gl_25395
     thread_local EncryptedName<sizeof(titleMiddleSource), 0x03772763F96D9DA5ULL> titleMiddleName(titleMiddleSource);
     const std::string titleMiddle(titleMiddleName.Text());
-    const std::uint8_t titleLeftSource[] = {
-      0x47, 0xBC, 0xAB, 0x85, 0xF9, 0xC7, 0xB4, 0xC6, 0x41, 0xF7, 0xAB, 0xB3, 0x84, 0xB3, 0x2D, 0x69,
-      0xE6, 0x60, 0x02, 0x1C, 0x66, 0x60, 0x1F, 0x7F, 0xE2, 0x61, 0x0D, 0x1E, 0x5A, 0x6C, 0x2D, 0x7F,
-      0xEE, 0x67, 0x07, 0x1A, 0x5B, 0x68, 0x03, 0x54, 0xEB, 0x76, 0x0D, 0x0B, 0x17, 0x6B, 0x1C, 0x7B,
-      0x87
+    const char titleLeftSource[] = {
+      '\x47', '\xBC', '\xAB', '\x85', '\xF9', '\xC7', '\xB4', '\xC6', '\x41', '\xF7', '\xAB', '\xB3', '\x84', '\xB3', '\x2D', '\x69',
+      '\xE6', '\x60', '\x02', '\x1C', '\x66', '\x60', '\x1F', '\x7F', '\xE2', '\x61', '\x0D', '\x1E', '\x5A', '\x6C', '\x2D', '\x7F',
+      '\xEE', '\x67', '\x07', '\x1A', '\x5B', '\x68', '\x03', '\x54', '\xEB', '\x76', '\x0D', '\x0B', '\x17', '\x6B', '\x1C', '\x7B',
+      '\x87'
     };
     // GLOBAL: gl_25396
     thread_local EncryptedName<sizeof(titleLeftSource), 0x0B7109397F6B1387ULL> titleLeftName(titleLeftSource);
@@ -716,8 +717,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   title->SetFitText(0);
   title->SetAlign(0, 6);
   {
-    const std::uint8_t titleFontSource[] = {
-      0x20, 0xDE, 0xFD, 0xCC, 0xCC, 0x3F
+    const char titleFontSource[] = {
+      '\x20', '\xDE', '\xFD', '\xCC', '\xCC', '\x3F'
     };
     // GLOBAL: gl_25397
     thread_local EncryptedName<sizeof(titleFontSource), 0x13E33FA1A591AB67ULL> titleFontName(titleFontSource);
@@ -739,8 +740,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00DC->SetAlign(0, 6);
   {
     CUIStaticText* partner = this->unknown_00DC;
-    const std::uint8_t partnerFontSource[] = {
-      0x28, 0x08, 0x97, 0x4A, 0x1C, 0x07
+    const char partnerFontSource[] = {
+      '\x28', '\x08', '\x97', '\x4A', '\x1C', '\x07'
     };
     // GLOBAL: gl_25398
     thread_local EncryptedName<sizeof(partnerFontSource), 0xCD8F077123FB7D6FULL> partnerFontName(partnerFontSource);
@@ -758,10 +759,10 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00E0->Move(0, 17);
   {
     CUIStaticImage* background = this->unknown_00E0;
-    const std::uint8_t backgroundSource[] = {
-      0x83, 0x86, 0x93, 0xDD, 0x15, 0x71, 0x8C, 0x54, 0x85, 0xCD, 0x93, 0xEB, 0x68, 0x05, 0x15, 0xFB,
-      0x22, 0x5A, 0x3A, 0x44, 0x8A, 0xD6, 0x27, 0xED, 0x26, 0x5B, 0x35, 0x46, 0xB6, 0xDA, 0x15, 0xFC,
-      0x3B, 0x4A, 0x3B, 0x46, 0xBB, 0xD8, 0x2C, 0xC6, 0x21, 0x4E, 0x61, 0x09, 0xB7, 0xD2, 0x39, 0x99
+    const char backgroundSource[] = {
+      '\x83', '\x86', '\x93', '\xDD', '\x15', '\x71', '\x8C', '\x54', '\x85', '\xCD', '\x93', '\xEB', '\x68', '\x05', '\x15', '\xFB',
+      '\x22', '\x5A', '\x3A', '\x44', '\x8A', '\xD6', '\x27', '\xED', '\x26', '\x5B', '\x35', '\x46', '\xB6', '\xDA', '\x15', '\xFC',
+      '\x3B', '\x4A', '\x3B', '\x46', '\xBB', '\xD8', '\x2C', '\xC6', '\x21', '\x4E', '\x61', '\x09', '\xB7', '\xD2', '\x39', '\x99'
     };
     // GLOBAL: gl_25399
     thread_local EncryptedName<sizeof(backgroundSource), 0x9949BFD527532943ULL> backgroundName(backgroundSource);
@@ -783,16 +784,16 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->firstList->scrollBar->Move(259, 0);
   this->firstList->scrollBar->step = 30;
   {
-    const std::uint8_t downSource[] = {
-      0xC9, 0x88, 0xEF, 0x41, 0x7D, 0x93, 0xB8, 0x14, 0xCF, 0xC3, 0xEF, 0x77, 0x00, 0xE7, 0x21, 0xAA,
-      0x6A, 0x55, 0x40, 0xD7, 0xD1, 0x6D, 0x19, 0xB6, 0x7E, 0x49, 0x01, 0xD9, 0xD0, 0x2D, 0x7D
+    const char downSource[] = {
+      '\xC9', '\x88', '\xEF', '\x41', '\x7D', '\x93', '\xB8', '\x14', '\xCF', '\xC3', '\xEF', '\x77', '\x00', '\xE7', '\x21', '\xAA',
+      '\x6A', '\x55', '\x40', '\xD7', '\xD1', '\x6D', '\x19', '\xB6', '\x7E', '\x49', '\x01', '\xD9', '\xD0', '\x2D', '\x7D'
     };
     // GLOBAL: gl_25400
     thread_local EncryptedName<sizeof(downSource), 0xD97D5DBDBB2F2709ULL> downName(downSource);
     const std::string down(downName.Text());
-    const std::uint8_t upSource[] = {
-      0xBF, 0xBC, 0x1F, 0x2B, 0x45, 0xA9, 0xBC, 0x20, 0xB9, 0xF7, 0x1F, 0x1D, 0x38, 0xDD, 0x25, 0x9E,
-      0x1C, 0x61, 0xB0, 0xBD, 0xE9, 0x57, 0x0C, 0x9D, 0x51, 0x71, 0xB2, 0xA1, 0x85
+    const char upSource[] = {
+      '\xBF', '\xBC', '\x1F', '\x2B', '\x45', '\xA9', '\xBC', '\x20', '\xB9', '\xF7', '\x1F', '\x1D', '\x38', '\xDD', '\x25', '\x9E',
+      '\x1C', '\x61', '\xB0', '\xBD', '\xE9', '\x57', '\x0C', '\x9D', '\x51', '\x71', '\xB2', '\xA1', '\x85'
     };
     // GLOBAL: gl_25401
     thread_local EncryptedName<sizeof(upSource), 0xED796785D1DF137FULL> upName(upSource);
@@ -800,35 +801,35 @@ void CUIExchangeUI::Slot15(int width, int height) {
     this->firstList->scrollBar->SetButtonImages(up, down);
   }
   {
-    const std::uint8_t backgroundSource[] = {
-      0x5F, 0x6A, 0xAD, 0x51, 0x17, 0xE7, 0x38, 0x68, 0x59, 0x21, 0xAD, 0x67, 0x6A, 0x93, 0xA1, 0xD6,
-      0xFC, 0xB7, 0x02, 0xC7, 0xBB, 0x19, 0x90, 0xCC, 0xFB, 0xEB, 0x0F, 0xC6, 0xA7, 0x29
+    const char backgroundSource[] = {
+      '\x5F', '\x6A', '\xAD', '\x51', '\x17', '\xE7', '\x38', '\x68', '\x59', '\x21', '\xAD', '\x67', '\x6A', '\x93', '\xA1', '\xD6',
+      '\xFC', '\xB7', '\x02', '\xC7', '\xBB', '\x19', '\x90', '\xCC', '\xFB', '\xEB', '\x0F', '\xC6', '\xA7', '\x29'
     };
     // GLOBAL: gl_25402
     thread_local EncryptedName<sizeof(backgroundSource), 0xA5FD29D7AB6DC59FULL> backgroundName(backgroundSource);
     this->firstList->scrollBar->SetBackground(std::string(backgroundName.Text()));
   }
   {
-    const std::uint8_t thumbBottomSource[] = {
-      0x21, 0xD4, 0x39, 0x2D, 0x15, 0xDD, 0xFC, 0x10, 0x27, 0x9F, 0x39, 0x1B, 0x68, 0xA9, 0x65, 0xAE,
-      0x82, 0x09, 0x96, 0xBB, 0xB9, 0x23, 0x5B, 0xBC, 0x93, 0x24, 0x9D, 0xB8, 0xA2, 0x7D, 0x17, 0xBF,
-      0x8C, 0x0B, 0xF9
+    const char thumbBottomSource[] = {
+      '\x21', '\xD4', '\x39', '\x2D', '\x15', '\xDD', '\xFC', '\x10', '\x27', '\x9F', '\x39', '\x1B', '\x68', '\xA9', '\x65', '\xAE',
+      '\x82', '\x09', '\x96', '\xBB', '\xB9', '\x23', '\x5B', '\xBC', '\x93', '\x24', '\x9D', '\xB8', '\xA2', '\x7D', '\x17', '\xBF',
+      '\x8C', '\x0B', '\xF9'
     };
     // GLOBAL: gl_25403
     thread_local EncryptedName<sizeof(thumbBottomSource), 0xDD3913D5D7F97BE1ULL> thumbBottomName(thumbBottomSource);
     const std::string thumbBottom(thumbBottomName.Text());
-    const std::uint8_t thumbMiddleSource[] = {
-      0x5B, 0xF8, 0xC3, 0x63, 0xA7, 0xCB, 0xC0, 0xC8, 0x5D, 0xB3, 0xC3, 0x55, 0xDA, 0xBF, 0x59, 0x76,
-      0xF8, 0x25, 0x6C, 0xF5, 0x0B, 0x35, 0x67, 0x64, 0xE9, 0x08, 0x6E, 0xF0, 0x03, 0x2B, 0x67, 0x68,
-      0xEB, 0x57
+    const char thumbMiddleSource[] = {
+      '\x5B', '\xF8', '\xC3', '\x63', '\xA7', '\xCB', '\xC0', '\xC8', '\x5D', '\xB3', '\xC3', '\x55', '\xDA', '\xBF', '\x59', '\x76',
+      '\xF8', '\x25', '\x6C', '\xF5', '\x0B', '\x35', '\x67', '\x64', '\xE9', '\x08', '\x6E', '\xF0', '\x03', '\x2B', '\x67', '\x68',
+      '\xEB', '\x57'
     };
     // GLOBAL: gl_25404
     thread_local EncryptedName<sizeof(thumbMiddleSource), 0x050505679903579BULL> thumbMiddleName(thumbMiddleSource);
     const std::string thumbMiddle(thumbMiddleName.Text());
-    const std::uint8_t thumbTopSource[] = {
-      0x31, 0x68, 0xF9, 0xF3, 0xD7, 0xB7, 0x8A, 0x3C, 0x37, 0x23, 0xF9, 0xC5, 0xAA, 0xC3, 0x13, 0x82,
-      0x92, 0xB5, 0x56, 0x65, 0x7B, 0x49, 0x2D, 0x90, 0x83, 0x98, 0x4C, 0x79, 0x39, 0x1B, 0x22, 0x81,
-      0xF1
+    const char thumbTopSource[] = {
+      '\x31', '\x68', '\xF9', '\xF3', '\xD7', '\xB7', '\x8A', '\x3C', '\x37', '\x23', '\xF9', '\xC5', '\xAA', '\xC3', '\x13', '\x82',
+      '\x92', '\xB5', '\x56', '\x65', '\x7B', '\x49', '\x2D', '\x90', '\x83', '\x98', '\x4C', '\x79', '\x39', '\x1B', '\x22', '\x81',
+      '\xF1'
     };
     // GLOBAL: gl_25405
     thread_local EncryptedName<sizeof(thumbTopSource), 0xF14F79170939C7F1ULL> thumbTopName(thumbTopSource);
@@ -842,8 +843,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00E8->SetSize(150, 18);
   this->unknown_00E8->Move(69, 330);
   {
-    const std::uint8_t zenySource[] = {
-      0x97, 0xF5
+    const char zenySource[] = {
+      '\x97', '\xF5'
     };
     // GLOBAL: gl_25406
     thread_local EncryptedName<sizeof(zenySource), 0xBF2B4B31397FF5A7ULL> zenyName(zenySource);
@@ -854,8 +855,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00E8->SetAlign(2, 6);
   {
     CUIStaticText* text = this->unknown_00E8;
-    const std::uint8_t zenyFontSource[] = {
-      0xFC, 0xCF, 0x84, 0x56, 0xD7, 0xBF
+    const char zenyFontSource[] = {
+      '\xFC', '\xCF', '\x84', '\x56', '\xD7', '\xBF'
     };
     // GLOBAL: gl_25407
     thread_local EncryptedName<sizeof(zenyFontSource), 0x83EFBFBB37EDBDBDULL> zenyFontName(zenyFontSource);
@@ -872,8 +873,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00EC->SetSize(150, 18);
   this->unknown_00EC->Move(70, 330);
   {
-    const std::uint8_t zenySource[] = {
-      0xBF, 0x99
+    const char zenySource[] = {
+      '\xBF', '\x99'
     };
     // GLOBAL: gl_25408
     thread_local EncryptedName<sizeof(zenySource), 0x39FF7FB50DEB998FULL> zenyName(zenySource);
@@ -884,8 +885,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00EC->SetAlign(2, 6);
   {
     CUIStaticText* text = this->unknown_00EC;
-    const std::uint8_t zenyFontSource[] = {
-      0xD6, 0x83, 0x88, 0xBC, 0xBD, 0x93
+    const char zenyFontSource[] = {
+      '\xD6', '\x83', '\x88', '\xBC', '\xBD', '\x93'
     };
     // GLOBAL: gl_25409
     thread_local EncryptedName<sizeof(zenyFontSource), 0x2FE993D1DDE1F197ULL> zenyFontName(zenyFontSource);
@@ -902,8 +903,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00F0->SetSize(150, 18);
   this->unknown_00F0->Move(70, 331);
   {
-    const std::uint8_t zenySource[] = {
-      0xFD, 0xF1
+    const char zenySource[] = {
+      '\xFD', '\xF1'
     };
     // GLOBAL: gl_25410
     thread_local EncryptedName<sizeof(zenySource), 0xAD075B8DB599F1CDULL> zenyName(zenySource);
@@ -914,8 +915,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00F0->SetAlign(2, 6);
   {
     CUIStaticText* text = this->unknown_00F0;
-    const std::uint8_t zenyFontSource[] = {
-      0x3E, 0x67, 0xE4, 0x70, 0x5B, 0x0F
+    const char zenyFontSource[] = {
+      '\x3E', '\x67', '\xE4', '\x70', '\x5B', '\x0F'
     };
     // GLOBAL: gl_25411
     thread_local EncryptedName<sizeof(zenyFontSource), 0x2F8B0F37118D157FULL> zenyFontName(zenyFontSource);
@@ -957,16 +958,16 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->secondList->scrollBar->Move(259, 0);
   this->secondList->scrollBar->step = 30;
   {
-    const std::uint8_t downSource[] = {
-      0x3D, 0x16, 0x7B, 0xDB, 0x5F, 0x33, 0x84, 0x84, 0x3B, 0x5D, 0x7B, 0xED, 0x22, 0x47, 0x1D, 0x3A,
-      0x9E, 0xCB, 0xD4, 0x4D, 0xF3, 0xCD, 0x25, 0x26, 0x8A, 0xD7, 0x95, 0x43, 0xF2, 0x8D, 0x41
+    const char downSource[] = {
+      '\x3D', '\x16', '\x7B', '\xDB', '\x5F', '\x33', '\x84', '\x84', '\x3B', '\x5D', '\x7B', '\xED', '\x22', '\x47', '\x1D', '\x3A',
+      '\x9E', '\xCB', '\xD4', '\x4D', '\xF3', '\xCD', '\x25', '\x26', '\x8A', '\xD7', '\x95', '\x43', '\xF2', '\x8D', '\x41'
     };
     // GLOBAL: gl_25412
     thread_local EncryptedName<sizeof(downSource), 0x4941FD9F21BBB9FDULL> downName(downSource);
     const std::string down(downName.Text());
-    const std::uint8_t upSource[] = {
-      0xB5, 0x62, 0x2D, 0xA7, 0xAB, 0xAB, 0x20, 0xF8, 0xB3, 0x29, 0x2D, 0x91, 0xD6, 0xDF, 0xB9, 0x46,
-      0x16, 0xBF, 0x82, 0x31, 0x07, 0x55, 0x90, 0x45, 0x5B, 0xAF, 0x80, 0x2D, 0x6B
+    const char upSource[] = {
+      '\xB5', '\x62', '\x2D', '\xA7', '\xAB', '\xAB', '\x20', '\xF8', '\xB3', '\x29', '\x2D', '\x91', '\xD6', '\xDF', '\xB9', '\x46',
+      '\x16', '\xBF', '\x82', '\x31', '\x07', '\x55', '\x90', '\x45', '\x5B', '\xAF', '\x80', '\x2D', '\x6B'
     };
     // GLOBAL: gl_25413
     thread_local EncryptedName<sizeof(upSource), 0x35E5656B5DEDCD75ULL> upName(upSource);
@@ -974,35 +975,35 @@ void CUIExchangeUI::Slot15(int width, int height) {
     this->secondList->scrollBar->SetButtonImages(up, down);
   }
   {
-    const std::uint8_t backgroundSource[] = {
-      0x3D, 0x78, 0x8D, 0x53, 0x75, 0x41, 0x52, 0x2A, 0x3B, 0x33, 0x8D, 0x65, 0x08, 0x35, 0xCB, 0x94,
-      0x9E, 0xA5, 0x22, 0xC5, 0xD9, 0xBF, 0xFA, 0x8E, 0x99, 0xF9, 0x2F, 0xC4, 0xC5, 0x8F
+    const char backgroundSource[] = {
+      '\x3D', '\x78', '\x8D', '\x53', '\x75', '\x41', '\x52', '\x2A', '\x3B', '\x33', '\x8D', '\x65', '\x08', '\x35', '\xCB', '\x94',
+      '\x9E', '\xA5', '\x22', '\xC5', '\xD9', '\xBF', '\xFA', '\x8E', '\x99', '\xF9', '\x2F', '\xC4', '\xC5', '\x8F'
     };
     // GLOBAL: gl_25414
     thread_local EncryptedName<sizeof(backgroundSource), 0xE7978FB5A94DD7FDULL> backgroundName(backgroundSource);
     this->secondList->scrollBar->SetBackground(std::string(backgroundName.Text()));
   }
   {
-    const std::uint8_t thumbBottomSource[] = {
-      0x09, 0xBC, 0x39, 0x89, 0x39, 0x17, 0xD0, 0xBC, 0x0F, 0xF7, 0x39, 0xBF, 0x44, 0x63, 0x49, 0x02,
-      0xAA, 0x61, 0x96, 0x1F, 0x95, 0xE9, 0x77, 0x10, 0xBB, 0x4C, 0x9D, 0x1C, 0x8E, 0xB7, 0x3B, 0x13,
-      0xA4, 0x63, 0xF9
+    const char thumbBottomSource[] = {
+      '\x09', '\xBC', '\x39', '\x89', '\x39', '\x17', '\xD0', '\xBC', '\x0F', '\xF7', '\x39', '\xBF', '\x44', '\x63', '\x49', '\x02',
+      '\xAA', '\x61', '\x96', '\x1F', '\x95', '\xE9', '\x77', '\x10', '\xBB', '\x4C', '\x9D', '\x1C', '\x8E', '\xB7', '\x3B', '\x13',
+      '\xA4', '\x63', '\xF9'
     };
     // GLOBAL: gl_25415
     thread_local EncryptedName<sizeof(thumbBottomSource), 0x7115D9F973F913C9ULL> thumbBottomName(thumbBottomSource);
     const std::string thumbBottom(thumbBottomName.Text());
-    const std::uint8_t thumbMiddleSource[] = {
-      0xA3, 0x5A, 0x21, 0x85, 0xFB, 0xEB, 0xD8, 0x06, 0xA5, 0x11, 0x21, 0xB3, 0x86, 0x9F, 0x41, 0xB8,
-      0x00, 0x87, 0x8E, 0x13, 0x57, 0x15, 0x7F, 0xAA, 0x11, 0xAA, 0x8C, 0x16, 0x5F, 0x0B, 0x7F, 0xA6,
-      0x13, 0xF5
+    const char thumbMiddleSource[] = {
+      '\xA3', '\x5A', '\x21', '\x85', '\xFB', '\xEB', '\xD8', '\x06', '\xA5', '\x11', '\x21', '\xB3', '\x86', '\x9F', '\x41', '\xB8',
+      '\x00', '\x87', '\x8E', '\x13', '\x57', '\x15', '\x7F', '\xAA', '\x11', '\xAA', '\x8C', '\x16', '\x5F', '\x0B', '\x7F', '\xA6',
+      '\x13', '\xF5'
     };
     // GLOBAL: gl_25416
     thread_local EncryptedName<sizeof(thumbMiddleSource), 0xCB1D253B7FE1F563ULL> thumbMiddleName(thumbMiddleSource);
     const std::string thumbMiddle(thumbMiddleName.Text());
-    const std::uint8_t thumbTopSource[] = {
-      0xAB, 0x16, 0x07, 0xF5, 0xA7, 0x41, 0x38, 0x7A, 0xAD, 0x5D, 0x07, 0xC3, 0xDA, 0x35, 0xA1, 0xC4,
-      0x08, 0xCB, 0xA8, 0x63, 0x0B, 0xBF, 0x9F, 0xD6, 0x19, 0xE6, 0xB2, 0x7F, 0x49, 0xED, 0x90, 0xC7,
-      0x6B
+    const char thumbTopSource[] = {
+      '\xAB', '\x16', '\x07', '\xF5', '\xA7', '\x41', '\x38', '\x7A', '\xAD', '\x5D', '\x07', '\xC3', '\xDA', '\x35', '\xA1', '\xC4',
+      '\x08', '\xCB', '\xA8', '\x63', '\x0B', '\xBF', '\x9F', '\xD6', '\x19', '\xE6', '\xB2', '\x7F', '\x49', '\xED', '\x90', '\xC7',
+      '\x6B'
     };
     // GLOBAL: gl_25417
     thread_local EncryptedName<sizeof(thumbTopSource), 0xB7FD8F670FC7B96BULL> thumbTopName(thumbTopSource);
@@ -1016,8 +1017,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00FC->SetSize(150, 18);
   this->unknown_00FC->Move(349, 330);
   {
-    const std::uint8_t zenySource[] = {
-      0x2D, 0x05
+    const char zenySource[] = {
+      '\x2D', '\x05'
     };
     // GLOBAL: gl_25418
     thread_local EncryptedName<sizeof(zenySource), 0xE55723712993051DULL> zenyName(zenySource);
@@ -1028,8 +1029,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00FC->SetAlign(2, 6);
   {
     CUIStaticText* text = this->unknown_00FC;
-    const std::uint8_t zenyFontSource[] = {
-      0x0E, 0x15, 0x84, 0xE4, 0x65, 0x37
+    const char zenyFontSource[] = {
+      '\x0E', '\x15', '\x84', '\xE4', '\x65', '\x37'
     };
     // GLOBAL: gl_25419
     thread_local EncryptedName<sizeof(zenyFontSource), 0x793F370985ED674FULL> zenyFontName(zenyFontSource);
@@ -1046,8 +1047,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_0100->SetSize(150, 18);
   this->unknown_0100->Move(350, 330);
   {
-    const std::uint8_t zenySource[] = {
-      0x4F, 0xD5
+    const char zenySource[] = {
+      '\x4F', '\xD5'
     };
     // GLOBAL: gl_25420
     thread_local EncryptedName<sizeof(zenySource), 0x0F15B16B5BAFD57FULL> zenyName(zenySource);
@@ -1058,8 +1059,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_0100->SetAlign(2, 6);
   {
     CUIStaticText* text = this->unknown_0100;
-    const std::uint8_t zenyFontSource[] = {
-      0x62, 0x83, 0xBE, 0x76, 0xBB, 0x49
+    const char zenyFontSource[] = {
+      '\x62', '\x83', '\xBE', '\x76', '\xBB', '\x49'
     };
     // GLOBAL: gl_25421
     thread_local EncryptedName<sizeof(zenyFontSource), 0x7DE349D717D7F123ULL> zenyFontName(zenyFontSource);
@@ -1076,8 +1077,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_0104->SetSize(150, 18);
   this->unknown_0104->Move(350, 331);
   {
-    const std::uint8_t zenySource[] = {
-      0xD1, 0x99
+    const char zenySource[] = {
+      '\xD1', '\x99'
     };
     // GLOBAL: gl_25422
     thread_local EncryptedName<sizeof(zenySource), 0x7321C3814F8799E1ULL> zenyName(zenySource);
@@ -1088,8 +1089,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_0104->SetAlign(2, 6);
   {
     CUIStaticText* text = this->unknown_0104;
-    const std::uint8_t zenyFontSource[] = {
-      0x0E, 0xD3, 0xA6, 0x54, 0x0F, 0xD7
+    const char zenyFontSource[] = {
+      '\x0E', '\xD3', '\xA6', '\x54', '\x0F', '\xD7'
     };
     // GLOBAL: gl_25423
     thread_local EncryptedName<sizeof(zenyFontSource), 0x7941D76335CFA14FULL> zenyFontName(zenyFontSource);
@@ -1109,30 +1110,30 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->logCheckBox->disabled = 0;
   this->logCheckBox->Invalidate();
   {
-    const std::uint8_t disabledSource[] = {
-      0xA5, 0xFA, 0x09, 0x85, 0xCD, 0x21, 0xEA, 0x88, 0xA3, 0xB1, 0x09, 0xB3, 0xB0, 0x55, 0x73, 0x26,
-      0x0D, 0x30, 0xAA, 0x14, 0x6F, 0x80, 0x57, 0x1A, 0x55, 0x7B, 0xAB, 0x12, 0x7D, 0xEF
+    const char disabledSource[] = {
+      '\xA5', '\xFA', '\x09', '\x85', '\xCD', '\x21', '\xEA', '\x88', '\xA3', '\xB1', '\x09', '\xB3', '\xB0', '\x55', '\x73', '\x26',
+      '\x0D', '\x30', '\xAA', '\x14', '\x6F', '\x80', '\x57', '\x1A', '\x55', '\x7B', '\xAB', '\x12', '\x7D', '\xEF'
     };
     // GLOBAL: gl_25424
     thread_local EncryptedName<sizeof(disabledSource), 0x452FEF0D7FC95565ULL> disabledName(disabledSource);
     const std::string disabled(disabledName.Text());
-    const std::uint8_t pressedSource[] = {
-      0x9D, 0xA2, 0x89, 0x73, 0x61, 0xB3, 0x28, 0x52, 0x9B, 0xE9, 0x89, 0x45, 0x1C, 0xC7, 0xB1, 0xFC,
-      0x35, 0x68, 0x2A, 0xE2, 0xC3, 0x12, 0x95, 0xC0, 0x6D, 0x23, 0x2B, 0xE4, 0xD1, 0x7D
+    const char pressedSource[] = {
+      '\x9D', '\xA2', '\x89', '\x73', '\x61', '\xB3', '\x28', '\x52', '\x9B', '\xE9', '\x89', '\x45', '\x1C', '\xC7', '\xB1', '\xFC',
+      '\x35', '\x68', '\x2A', '\xE2', '\xC3', '\x12', '\x95', '\xC0', '\x6D', '\x23', '\x2B', '\xE4', '\xD1', '\x7D'
     };
     // GLOBAL: gl_25425
     thread_local EncryptedName<sizeof(pressedSource), 0x9FED7DA189490D5DULL> pressedName(pressedSource);
     const std::string pressed(pressedName.Text());
-    const std::uint8_t hoverSource[] = {
-      0x73, 0xC8, 0x99, 0x75, 0x1F, 0xE9, 0x5E, 0x4E, 0x75, 0x83, 0x99, 0x43, 0x62, 0x9D, 0xC7, 0xE0,
-      0xDB, 0x02, 0x3A, 0xE4, 0xBD, 0x48, 0xE3, 0xDC, 0x82, 0x49, 0x3B, 0xE2, 0xAF, 0x27
+    const char hoverSource[] = {
+      '\x73', '\xC8', '\x99', '\x75', '\x1F', '\xE9', '\x5E', '\x4E', '\x75', '\x83', '\x99', '\x43', '\x62', '\x9D', '\xC7', '\xE0',
+      '\xDB', '\x02', '\x3A', '\xE4', '\xBD', '\x48', '\xE3', '\xDC', '\x82', '\x49', '\x3B', '\xE2', '\xAF', '\x27'
     };
     // GLOBAL: gl_25426
     thread_local EncryptedName<sizeof(hoverSource), 0x839B27DF8F5967B3ULL> hoverName(hoverSource);
     const std::string hover(hoverName.Text());
-    const std::uint8_t normalSource[] = {
-      0xAD, 0xB4, 0x67, 0xEB, 0xB7, 0xA1, 0x0E, 0x3E, 0xAB, 0xFF, 0x67, 0xDD, 0xCA, 0xD5, 0x97, 0x90,
-      0x05, 0x7E, 0xC4, 0x7A, 0x15, 0x00, 0xB3, 0xAC, 0x5D, 0x35, 0xC5, 0x7C, 0x07, 0x6F
+    const char normalSource[] = {
+      '\xAD', '\xB4', '\x67', '\xEB', '\xB7', '\xA1', '\x0E', '\x3E', '\xAB', '\xFF', '\x67', '\xDD', '\xCA', '\xD5', '\x97', '\x90',
+      '\x05', '\x7E', '\xC4', '\x7A', '\x15', '\x00', '\xB3', '\xAC', '\x5D', '\x35', '\xC5', '\x7C', '\x07', '\x6F'
     };
     // GLOBAL: gl_25427
     thread_local EncryptedName<sizeof(normalSource), 0xF3CB6F7711A71B6DULL> normalName(normalSource);
@@ -1151,8 +1152,8 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_010C->SetAlign(0, 6);
   {
     CUIStaticText* label = this->unknown_010C;
-    const std::uint8_t labelFontSource[] = {
-      0x22, 0x86, 0xBB, 0x34, 0xE0, 0x13
+    const char labelFontSource[] = {
+      '\x22', '\x86', '\xBB', '\x34', '\xE0', '\x13'
     };
     // GLOBAL: gl_25428
     thread_local EncryptedName<sizeof(labelFontSource), 0x176F138D5DD7F365ULL> labelFontName(labelFontSource);
@@ -1172,30 +1173,30 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->lockButton->disabled = 0;
   this->lockButton->Invalidate();
   {
-    const std::uint8_t disabledSource[] = {
-      0x77, 0x9E, 0x2F, 0x39, 0xC3, 0x11, 0x5C, 0x82, 0x71, 0xD5, 0x2F, 0x0F, 0xBE, 0x65, 0xC5, 0x2D,
-      0xC3, 0x5F, 0xB0, 0xAC, 0x68, 0x80, 0xFD, 0x26, 0xC4, 0x1F, 0x8D, 0xAE, 0x73, 0xDF
+    const char disabledSource[] = {
+      '\x77', '\x9E', '\x2F', '\x39', '\xC3', '\x11', '\x5C', '\x82', '\x71', '\xD5', '\x2F', '\x0F', '\xBE', '\x65', '\xC5', '\x2D',
+      '\xC3', '\x5F', '\xB0', '\xAC', '\x68', '\x80', '\xFD', '\x26', '\xC4', '\x1F', '\x8D', '\xAE', '\x73', '\xDF'
     };
     // GLOBAL: gl_25429
     thread_local EncryptedName<sizeof(disabledSource), 0x4F99DF03C3EF31B7ULL> disabledName(disabledSource);
     const std::string disabled(disabledName.Text());
-    const std::uint8_t pressedSource[] = {
-      0x2D, 0xDA, 0xA1, 0xD9, 0x77, 0x2D, 0x94, 0xE0, 0x2B, 0x91, 0xA1, 0xEF, 0x0A, 0x59, 0x0D, 0x4F,
-      0x99, 0x1B, 0x3E, 0x4C, 0xDC, 0xBC, 0x30, 0x03, 0x8F, 0x18, 0x11, 0x23
+    const char pressedSource[] = {
+      '\x2D', '\xDA', '\xA1', '\xD9', '\x77', '\x2D', '\x94', '\xE0', '\x2B', '\x91', '\xA1', '\xEF', '\x0A', '\x59', '\x0D', '\x4F',
+      '\x99', '\x1B', '\x3E', '\x4C', '\xDC', '\xBC', '\x30', '\x03', '\x8F', '\x18', '\x11', '\x23'
     };
     // GLOBAL: gl_25430
     thread_local EncryptedName<sizeof(pressedSource), 0x2D51E3B7236175EDULL> pressedName(pressedSource);
     const std::string pressed(pressedName.Text());
-    const std::uint8_t hoverSource[] = {
-      0xD7, 0xB4, 0xED, 0x59, 0x7D, 0x25, 0x84, 0xC2, 0xD1, 0xFF, 0xED, 0x6F, 0x00, 0x51, 0x1D, 0x6D,
-      0x63, 0x75, 0x72, 0xCC, 0xD6, 0xB4, 0x23, 0x21, 0x75, 0x76, 0x5D, 0xA3
+    const char hoverSource[] = {
+      '\xD7', '\xB4', '\xED', '\x59', '\x7D', '\x25', '\x84', '\xC2', '\xD1', '\xFF', '\xED', '\x6F', '\x00', '\x51', '\x1D', '\x6D',
+      '\x63', '\x75', '\x72', '\xCC', '\xD6', '\xB4', '\x23', '\x21', '\x75', '\x76', '\x5D', '\xA3'
     };
     // GLOBAL: gl_25431
     thread_local EncryptedName<sizeof(hoverSource), 0x0F41EBBDA32D1B17ULL> hoverName(hoverSource);
     const std::string hover(hoverName.Text());
-    const std::uint8_t normalSource[] = {
-      0x01, 0xE8, 0x05, 0xED, 0x21, 0x57, 0x10, 0x36, 0x07, 0xA3, 0x05, 0xDB, 0x5C, 0x23, 0x89, 0x99,
-      0xB5, 0x29, 0x9A, 0x78, 0x8A, 0xB7, 0xB7, 0x96, 0xB1, 0x47
+    const char normalSource[] = {
+      '\x01', '\xE8', '\x05', '\xED', '\x21', '\x57', '\x10', '\x36', '\x07', '\xA3', '\x05', '\xDB', '\x5C', '\x23', '\x89', '\x99',
+      '\xB5', '\x29', '\x9A', '\x78', '\x8A', '\xB7', '\xB7', '\x96', '\xB1', '\x47'
     };
     // GLOBAL: gl_25432
     thread_local EncryptedName<sizeof(normalSource), 0xFBD599E117C547C1ULL> normalName(normalSource);
@@ -1211,33 +1212,33 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->tradeButton->disabled = 0;
   this->tradeButton->Invalidate();
   {
-    const std::uint8_t disabledSource[] = {
-      0x99, 0x18, 0xC7, 0xE9, 0x05, 0xB3, 0xA6, 0x82, 0x9F, 0x53, 0xC7, 0xDF, 0x78, 0xC7, 0x3F, 0x2D,
-      0x2D, 0xD9, 0x58, 0x76, 0xBD, 0x1E, 0x0B, 0x2E, 0x37, 0xD0, 0x62, 0x4C, 0xA1, 0x14, 0x10, 0x61,
-      0x3B, 0xDA, 0x77, 0x13
+    const char disabledSource[] = {
+      '\x99', '\x18', '\xC7', '\xE9', '\x05', '\xB3', '\xA6', '\x82', '\x9F', '\x53', '\xC7', '\xDF', '\x78', '\xC7', '\x3F', '\x2D',
+      '\x2D', '\xD9', '\x58', '\x76', '\xBD', '\x1E', '\x0B', '\x2E', '\x37', '\xD0', '\x62', '\x4C', '\xA1', '\x14', '\x10', '\x61',
+      '\x3B', '\xDA', '\x77', '\x13'
     };
     // GLOBAL: gl_25433
     thread_local EncryptedName<sizeof(disabledSource), 0x4F637DC51307B759ULL> disabledName(disabledSource);
     const std::string disabled(disabledName.Text());
-    const std::uint8_t pressedSource[] = {
-      0xE5, 0xDE, 0x6F, 0x31, 0xCD, 0x3D, 0xE8, 0x28, 0xE3, 0x95, 0x6F, 0x07, 0xB0, 0x49, 0x71, 0x87,
-      0x51, 0x1F, 0xF0, 0xAE, 0x75, 0x90, 0x45, 0x84, 0x4B, 0x16, 0xCA, 0x94, 0x6C, 0xDD, 0x4F, 0x88,
-      0x55, 0x71
+    const char pressedSource[] = {
+      '\xE5', '\xDE', '\x6F', '\x31', '\xCD', '\x3D', '\xE8', '\x28', '\xE3', '\x95', '\x6F', '\x07', '\xB0', '\x49', '\x71', '\x87',
+      '\x51', '\x1F', '\xF0', '\xAE', '\x75', '\x90', '\x45', '\x84', '\x4B', '\x16', '\xCA', '\x94', '\x6C', '\xDD', '\x4F', '\x88',
+      '\x55', '\x71'
     };
     // GLOBAL: gl_25434
     thread_local EncryptedName<sizeof(pressedSource), 0xE52DF30DCBAF7125ULL> pressedName(pressedSource);
     const std::string pressed(pressedName.Text());
-    const std::uint8_t hoverSource[] = {
-      0x9F, 0x9A, 0x6F, 0x6F, 0x5D, 0x47, 0x36, 0x02, 0x99, 0xD1, 0x6F, 0x59, 0x20, 0x33, 0xAF, 0xAD,
-      0x2B, 0x5B, 0xF0, 0xF0, 0xE5, 0xEA, 0x9B, 0xAE, 0x31, 0x52, 0xCA, 0xCA, 0xFF, 0xA7, 0x91, 0xA2,
-      0x2F, 0x35
+    const char hoverSource[] = {
+      '\x9F', '\x9A', '\x6F', '\x6F', '\x5D', '\x47', '\x36', '\x02', '\x99', '\xD1', '\x6F', '\x59', '\x20', '\x33', '\xAF', '\xAD',
+      '\x2B', '\x5B', '\xF0', '\xF0', '\xE5', '\xEA', '\x9B', '\xAE', '\x31', '\x52', '\xCA', '\xCA', '\xFF', '\xA7', '\x91', '\xA2',
+      '\x2F', '\x35'
     };
     // GLOBAL: gl_25435
     thread_local EncryptedName<sizeof(hoverSource), 0xCFF3899D95AF355FULL> hoverName(hoverSource);
     const std::string hover(hoverName.Text());
-    const std::uint8_t normalSource[] = {
-      0x37, 0x66, 0xA3, 0x93, 0xBD, 0x57, 0xB4, 0x5C, 0x31, 0x2D, 0xA3, 0xA5, 0xC0, 0x23, 0x2D, 0xF3,
-      0x83, 0xA7, 0x3C, 0x0C, 0x05, 0xFA, 0x19, 0xF0, 0x99, 0xAE, 0x06, 0x47, 0x1F, 0xF4, 0x01, 0x91
+    const char normalSource[] = {
+      '\x37', '\x66', '\xA3', '\x93', '\xBD', '\x57', '\xB4', '\x5C', '\x31', '\x2D', '\xA3', '\xA5', '\xC0', '\x23', '\x2D', '\xF3',
+      '\x83', '\xA7', '\x3C', '\x0C', '\x05', '\xFA', '\x19', '\xF0', '\x99', '\xAE', '\x06', '\x47', '\x1F', '\xF4', '\x01', '\x91'
     };
     // GLOBAL: gl_25436
     thread_local EncryptedName<sizeof(normalSource), 0x9171997D6963C9F7ULL> normalName(normalSource);
@@ -1253,30 +1254,30 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_0118->disabled = 0;
   this->unknown_0118->Invalidate();
   {
-    const std::uint8_t disabledSource[] = {
-      0x0D, 0xAC, 0x0D, 0x81, 0x57, 0xF5, 0xD6, 0xFE, 0x0B, 0xE7, 0x0D, 0xB7, 0x2A, 0x81, 0x4F, 0x51,
-      0xB9, 0x6D, 0x92, 0x18, 0xF6, 0x55, 0x70, 0x56, 0xA1, 0x2D, 0xAF, 0x16, 0xE7, 0x3B
+    const char disabledSource[] = {
+      '\x0D', '\xAC', '\x0D', '\x81', '\x57', '\xF5', '\xD6', '\xFE', '\x0B', '\xE7', '\x0D', '\xB7', '\x2A', '\x81', '\x4F', '\x51',
+      '\xB9', '\x6D', '\x92', '\x18', '\xF6', '\x55', '\x70', '\x56', '\xA1', '\x2D', '\xAF', '\x16', '\xE7', '\x3B'
     };
     // GLOBAL: gl_25437
     thread_local EncryptedName<sizeof(disabledSource), 0x33133B977BCD03CDULL> disabledName(disabledSource);
     const std::string disabled(disabledName.Text());
-    const std::uint8_t pressedSource[] = {
-      0x37, 0xBC, 0xEB, 0x55, 0x31, 0xC1, 0xD8, 0x40, 0x31, 0xF7, 0xEB, 0x63, 0x4C, 0xB5, 0x41, 0xEF,
-      0x83, 0x7D, 0x74, 0xCC, 0x90, 0x61, 0x7E, 0xE8, 0x9B, 0x4C, 0x4A, 0x81, 0x93, 0x62, 0x6D, 0x8D
+    const char pressedSource[] = {
+      '\x37', '\xBC', '\xEB', '\x55', '\x31', '\xC1', '\xD8', '\x40', '\x31', '\xF7', '\xEB', '\x63', '\x4C', '\xB5', '\x41', '\xEF',
+      '\x83', '\x7D', '\x74', '\xCC', '\x90', '\x61', '\x7E', '\xE8', '\x9B', '\x4C', '\x4A', '\x81', '\x93', '\x62', '\x6D', '\x8D'
     };
     // GLOBAL: gl_25438
     thread_local EncryptedName<sizeof(pressedSource), 0x8D1D0FF1AF2B13F7ULL> pressedName(pressedSource);
     const std::string pressed(pressedName.Text());
-    const std::uint8_t hoverSource[] = {
-      0x4D, 0x14, 0x0F, 0x81, 0x51, 0x69, 0x5A, 0x7E, 0x4B, 0x5F, 0x0F, 0xB7, 0x2C, 0x1D, 0xC3, 0xD1,
-      0xF9, 0xD5, 0x90, 0x18, 0xF0, 0xC9, 0xFC, 0xD6, 0xE1, 0xE4, 0xAD, 0x55, 0xF3, 0xCA, 0xEF, 0xB3
+    const char hoverSource[] = {
+      '\x4D', '\x14', '\x0F', '\x81', '\x51', '\x69', '\x5A', '\x7E', '\x4B', '\x5F', '\x0F', '\xB7', '\x2C', '\x1D', '\xC3', '\xD1',
+      '\xF9', '\xD5', '\x90', '\x18', '\xF0', '\xC9', '\xFC', '\xD6', '\xE1', '\xE4', '\xAD', '\x55', '\xF3', '\xCA', '\xEF', '\xB3'
     };
     // GLOBAL: gl_25439
     thread_local EncryptedName<sizeof(hoverSource), 0xB39FA7917BCFBB8DULL> hoverName(hoverSource);
     const std::string hover(hoverName.Text());
-    const std::uint8_t normalSource[] = {
-      0x6B, 0x6E, 0x8D, 0xC3, 0xA7, 0xBB, 0x0E, 0xE0, 0x6D, 0x25, 0x8D, 0xF5, 0xDA, 0xCF, 0x97, 0x4F,
-      0xDF, 0xAF, 0x12, 0x5A, 0x06, 0x1B, 0xA8, 0x48, 0xC7, 0xEF, 0x2F, 0x54, 0x17, 0x75
+    const char normalSource[] = {
+      '\x6B', '\x6E', '\x8D', '\xC3', '\xA7', '\xBB', '\x0E', '\xE0', '\x6D', '\x25', '\x8D', '\xF5', '\xDA', '\xCF', '\x97', '\x4F',
+      '\xDF', '\xAF', '\x12', '\x5A', '\x06', '\x1B', '\xA8', '\x48', '\xC7', '\xEF', '\x2F', '\x54', '\x17', '\x75'
     };
     // GLOBAL: gl_25440
     thread_local EncryptedName<sizeof(normalSource), 0x2DCB7567394DC1ABULL> normalName(normalSource);

@@ -46,7 +46,8 @@
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -129,11 +130,11 @@ UICashShopWnd::~UICashShopWnd() {
 // OFFSET: 0x007CE110
 // FUNCTION: fn_09523
 EncryptedName<85, 0x3B915119EFD523EFULL>& CashShopReplaceCartItemText::operator()() const {
-  const std::uint8_t source[] = {0x5E, 0x9B, 0x15, 0x3B, 0x39, 0xE9, 0x3F, 0x86, 0x55, 0xE5, 0x7B, 0x50, 0xB8, 0xE5, 0x53, 0x1B, 0x28, 0xF2, 0xF5, 0x2E,
-                                 0xA7, 0xE6, 0x68, 0xFB, 0x28, 0x03, 0x6B, 0x29, 0xD9, 0x9D, 0x54, 0xE0, 0x57, 0x9B, 0xF5, 0x5B, 0xFA, 0x91, 0x2A, 0x1B,
-                                 0x53, 0xD5, 0xF5, 0x2F, 0xCF, 0xEC, 0x51, 0x8F, 0x20, 0x97, 0x0C, 0xC1, 0x39, 0x0A, 0xB4, 0x48, 0xB2, 0x03, 0x6E, 0x1C,
-                                 0xDE, 0xE1, 0x51, 0x83, 0x58, 0xED, 0xF5, 0x5E, 0xAA, 0x92, 0x2D, 0xFC, 0x20, 0x9E, 0x16, 0x5F, 0xC3, 0xEC, 0x51, 0x8F,
-                                 0x20, 0x92, 0x3B, 0xD0, 0x19};
+  const char source[] = {'\x5E', '\x9B', '\x15', '\x3B', '\x39', '\xE9', '\x3F', '\x86', '\x55', '\xE5', '\x7B', '\x50', '\xB8', '\xE5', '\x53', '\x1B', '\x28', '\xF2', '\xF5', '\x2E',
+                         '\xA7', '\xE6', '\x68', '\xFB', '\x28', '\x03', '\x6B', '\x29', '\xD9', '\x9D', '\x54', '\xE0', '\x57', '\x9B', '\xF5', '\x5B', '\xFA', '\x91', '\x2A', '\x1B',
+                         '\x53', '\xD5', '\xF5', '\x2F', '\xCF', '\xEC', '\x51', '\x8F', '\x20', '\x97', '\x0C', '\xC1', '\x39', '\x0A', '\xB4', '\x48', '\xB2', '\x03', '\x6E', '\x1C',
+                         '\xDE', '\xE1', '\x51', '\x83', '\x58', '\xED', '\xF5', '\x5E', '\xAA', '\x92', '\x2D', '\xFC', '\x20', '\x9E', '\x16', '\x5F', '\xC3', '\xEC', '\x51', '\x8F',
+                         '\x20', '\x92', '\x3B', '\xD0', '\x19'};
   thread_local EncryptedName<sizeof(source), 0x3B915119EFD523EFULL> name(source);
   return name;
 }
@@ -482,12 +483,12 @@ void UICashShopWnd::Paint() {
     this->DrawRightAlignedText(0x2C4, 0x1D2, FormatOwnedString("%d C", 0).c_str(), 0, 0, 0xC, 0, 0);
   } else {
     {
-      const std::uint8_t source[] = {0xEA, 0x39, 0x2C, 0x31, 0x3B, 0x2F, 0x6D, 0xF6, 0xEF, 0x43, 0x3D, 0xF5, 0x39, 0x6B, 0xF0, 0xFD, 0x91, 0x2D, 0xE9};
+      const char source[] = {'\xEA', '\x39', '\x2C', '\x31', '\x3B', '\x2F', '\x6D', '\xF6', '\xEF', '\x43', '\x3D', '\xF5', '\x39', '\x6B', '\xF0', '\xFD', '\x91', '\x2D', '\xE9'};
       thread_local EncryptedName<sizeof(source), 0x474DC581D5E98357ULL> title(source);
       this->DrawCenteredText(0x21A, 0x1B, title.Text(), 0xB9, 0, 0xE, 0, 1);
     }
     {
-      const std::uint8_t source[] = {0xD0, 0xE5, 0x3C, 0xD7, 0x59, 0x91, 0x75, 0x8E, 0xD5, 0x9F, 0x2D, 0x13, 0x5B, 0xD5, 0xE8, 0x85, 0xAB, 0xF1, 0xF9};
+      const char source[] = {'\xD0', '\xE5', '\x3C', '\xD7', '\x59', '\x91', '\x75', '\x8E', '\xD5', '\x9F', '\x2D', '\x13', '\x5B', '\xD5', '\xE8', '\x85', '\xAB', '\xF1', '\xF9'};
       thread_local EncryptedName<sizeof(source), 0x3F557BE333F95F6DULL> title(source);
       this->DrawCenteredText(0x219, 0x1A, title.Text(), 0xB9, 0, 0xE, 0xFFFFFF, 1);
     }
