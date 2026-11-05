@@ -10,7 +10,6 @@
 #include "Resource/Models/AnimatedModelResource.h"
 #include "Resource/Models/GrannyModelResource.h"
 #include "Resource/Models/ModelResource.h"
-#include "Resource/ResourceByteReader.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
@@ -67,7 +66,7 @@ ModelNode::~ModelNode() {
 }
 
 // INLINED
-ModelNodeV1::ModelNodeV1() = default;
+__forceinline ModelNodeV1::ModelNodeV1() = default;
 
 // INLINED
 ModelNodeV1::~ModelNodeV1() = default;
@@ -103,9 +102,9 @@ C3dModelResV1* C3dModelResV1::Create() {
 
 // OFFSET: 0x007593C0
 // FUNCTION: fn_08012
-ModelNode* C3dModelRes::FindNode(const char* name) const {
+__declspec(noinline) ModelNode* C3dModelRes::FindNode(const char* name) const {
   for (ModelNode* node : this->nodes) {
-    if (node->name == name) {
+    if (node->name.compare(name) == 0) {
       return node;
     }
   }
@@ -133,21 +132,21 @@ void C3dModelRes::Unload() {
 }
 
 // INLINED
-__forceinline void C3dModelResV1::ReadNode(ResourceByteReader& input, unsigned minor, const std::vector<std::string>& textureNames) {
-  auto node = std::make_unique<ModelNodeV1>();
+__forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const std::vector<std::string>& textureNames) {
+  ModelNodeV1* node = new ModelNodeV1;
   node->model = this;
   node->alpha = this->alpha;
   char field[40]{};
-  input.Read(field, sizeof(field));
+  file.Read(field, sizeof(field));
   node->name = field;
-  input.Read(field, sizeof(field));
+  file.Read(field, sizeof(field));
   node->parentName = field;
   int textureCount = 0;
-  input.Read(&textureCount, 4);
+  file.Read(&textureCount, 4);
 
   for (int index = 0; index < textureCount; ++index) {
     int textureIndex = 0;
-    input.Read(&textureIndex, 4);
+    file.Read(&textureIndex, 4);
     CTexture* texture = g_texMgr.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
     node->textures.push_back(texture);
 
@@ -157,19 +156,22 @@ __forceinline void C3dModelResV1::ReadNode(ResourceByteReader& input, unsigned m
   }
 
   float matrix[12];
-  input.Read(matrix, sizeof(matrix));
-  input.Read(node->position, sizeof(node->position));
-  input.Read(&node->angle, 4);
-  input.Read(node->axis, sizeof(node->axis));
-  input.Read(node->scale, sizeof(node->scale));
+  file.Read(matrix, sizeof(matrix));
+  file.Read(node->position, sizeof(node->position));
+  file.Read(&node->angle, 4);
+  file.Read(node->axis, sizeof(node->axis));
+  file.Read(node->scale, sizeof(node->scale));
   node->mesh = std::make_unique<ModelMesh>();
   ModelMesh& mesh = *node->mesh;
-  input.Read(&mesh.vertexCount, 4);
-  mesh.vertices = new std::array<float, 3>[mesh.vertexCount]{};
-  input.Read(mesh.vertices, static_cast<unsigned>(mesh.vertexCount) * 12u);
+  int vertexCount = 0;
+  file.Read(&vertexCount, 4);
+  mesh.vertexCount = vertexCount;
+  auto* vertices = new std::array<float, 3>[vertexCount]{};
+  file.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
+  mesh.vertices = vertices;
 
-  for (int index = 0; index < mesh.vertexCount; ++index) {
-    auto& vertex = mesh.vertices[index];
+  for (int index = 0; index < vertexCount; ++index) {
+    auto& vertex = vertices[index];
     const float y = ((vertex[0] * matrix[1] + vertex[1] * matrix[4]) + matrix[7] * vertex[2]) + matrix[10];
     const float z = ((vertex[0] * matrix[2] + vertex[1] * matrix[5]) + matrix[8] * vertex[2]) + matrix[11];
     vertex[0] = ((vertex[0] * matrix[0] + vertex[1] * matrix[3]) + vertex[2] * matrix[6]) + matrix[9];
@@ -177,55 +179,74 @@ __forceinline void C3dModelResV1::ReadNode(ResourceByteReader& input, unsigned m
     vertex[2] = z;
   }
 
-  input.Read(&mesh.textureVertexCount, 4);
-  mesh.textureVertices = new ModelTextureVertex[mesh.textureVertexCount];
+  int textureVertexCount = 0;
+  file.Read(&textureVertexCount, 4);
+  mesh.textureVertexCount = textureVertexCount;
+  ModelTextureVertex* textureVertices = new ModelTextureVertex[textureVertexCount];
 
   if (minor == 1) {
-    float uv[2];
-
-    for (int index = 0; index < mesh.textureVertexCount; ++index) {
-      auto& vertex = mesh.textureVertices[index];
-      input.Read(uv, sizeof(uv));
-      vertex = {0xFFFFFFFFu, uv[0], uv[1]};
+    for (int index = 0; index < textureVertexCount; ++index) {
+      float uv[2];
+      file.Read(uv, sizeof(uv));
+      textureVertices[index] = {0xFFFFFFFFu, uv[0], uv[1]};
     }
   } else {
-    input.Read(mesh.textureVertices, static_cast<unsigned>(mesh.textureVertexCount) * 12u);
+    file.Read(textureVertices, static_cast<unsigned>(textureVertexCount) * 12u);
   }
 
-  input.Read(&mesh.faceCount, 4);
-  mesh.faces = new ModelFace[mesh.faceCount];
-  unsigned char record[24];
+  mesh.textureVertices = textureVertices;
+  int faceCount = 0;
+  file.Read(&faceCount, 4);
+  mesh.faceCount = faceCount;
+  ModelFace* faces = new ModelFace[faceCount];
 
-  for (int index = 0; index < mesh.faceCount; ++index) {
-    ModelFace& face = mesh.faces[index];
-    input.Read(record, minor == 1 ? 20 : 24);
-    std::memcpy(face.vertices, record, sizeof(face.vertices));
-    std::memcpy(face.textureVertices, record + 6, sizeof(face.textureVertices));
-    std::memcpy(&face.texture, record + 12, sizeof(face.texture));
-    std::memcpy(&face.twoSided, record + 16, sizeof(face.twoSided));
-    std::uint32_t group = 0;
+  if (minor == 1) {
+    for (int index = 0; index < faceCount; ++index) {
+      ModelFace& face = faces[index];
+      unsigned char record[20];
+      file.Read(record, sizeof(record));
+      std::memcpy(face.vertices, record, sizeof(face.vertices));
+      std::memcpy(face.textureVertices, record + 6, sizeof(face.textureVertices));
+      std::memcpy(&face.texture, record + 12, sizeof(face.texture));
+      std::memcpy(&face.twoSided, record + 16, sizeof(face.twoSided));
 
-    if (minor != 1) {
-      std::memcpy(&group, record + 20, sizeof(group));
+      if (face.smoothing.empty()) {
+        face.smoothing.push_back(0);
+      }
     }
+  } else {
+    for (int index = 0; index < faceCount; ++index) {
+      ModelFace& face = faces[index];
+      unsigned char record[24];
+      file.Read(record, sizeof(record));
+      std::memcpy(face.vertices, record, sizeof(face.vertices));
+      std::memcpy(face.textureVertices, record + 6, sizeof(face.textureVertices));
+      std::memcpy(&face.texture, record + 12, sizeof(face.texture));
+      std::memcpy(&face.twoSided, record + 16, sizeof(face.twoSided));
+      std::uint32_t group;
+      std::memcpy(&group, record + 20, sizeof(group));
 
-    face.smoothing.push_back(group);
+      if (face.smoothing.empty()) {
+        face.smoothing.push_back(group);
+      }
+    }
   }
 
+  mesh.faces = faces;
   // INLINED
   std::sort(mesh.faces, mesh.faces + mesh.faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
   mesh.CalculateNormals();
   int rotationCount;
-  input.Read(&rotationCount, 4);
+  file.Read(&rotationCount, 4);
 
   for (int index = 0; index < rotationCount; ++index) {
     ModelRotationKey key;
-    input.Read(&key, sizeof(key));
+    file.Read(&key, sizeof(key));
     node->rotationKeys.push_back(key);
   }
 
+  this->nodes.push_back(node);
   this->meshes[node->name] = node->mesh.get();
-  this->nodes.push_back(node.release());
 }
 
 // OFFSET: 0x00750B10
@@ -234,68 +255,62 @@ bool C3dModelResV1::Load(const char* name) {
   CFile file;
 
   if (!file.Open(name, 0, true, false)) {
-    file.Close();
     return false;
   }
 
-  ResourceByteReader input{static_cast<const unsigned char*>(file.GetData()), static_cast<unsigned>(file.GetSize())};
   char magic[5]{};
-  input.Read(magic, 4);
+  file.Read(magic, 4);
 
   if (std::strcmp(magic, "GRSM") != 0) {
     constexpr char message[] = "모델파일이 아닙니다. 형식을 다시한번 확인해주세요.";
     ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
-    file.Close();
-
     return false;
   }
 
   unsigned char major = 0;
-  unsigned char minor = 0;
-  input.Read(&major, 1);
+  file.Read(&major, 1);
   this->major = major;
-  input.Read(&minor, 1);
+  unsigned char minor = 0;
+  file.Read(&minor, 1);
 
   if (major != 1 || minor > 5) {
     constexpr char message[] = "지원되지 않는 버젼입니다. 내용물이 깨져있을 수 있습니다";
     ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
-    file.Close();
-
     return false;
   }
 
-  input.Read(&this->animationLength, 4);
-  input.Read(&this->shade, 4);
+  file.Read(&this->animationLength, 4);
+  file.Read(&this->shade, 4);
 
   if (minor < 4) {
     this->alpha = 255;
   } else {
-    input.Read(&this->alpha, 1);
+    file.Read(&this->alpha, 1);
   }
 
   unsigned char reserved[16]{};
-  input.Read(reserved, sizeof(reserved));
-  int textureCount = 0;
-  input.Read(&textureCount, 4);
+  file.Read(reserved, sizeof(reserved));
   std::vector<std::string> textureNames;
+  int textureCount = 0;
+  file.Read(&textureCount, 4);
   char textureName[40]{};
 
   for (int index = 0; index < textureCount; ++index) {
-    input.Read(textureName, sizeof(textureName));
-    textureNames.emplace_back(textureName);
+    file.Read(textureName, sizeof(textureName));
+    textureNames.push_back(textureName);
 
     if (std::strstr(textureName, ".bik")) {
-      this->movieNames.emplace_back(textureName);
+      this->movieNames.push_back(textureName);
     }
   }
 
   char rootName[40]{};
-  input.Read(rootName, sizeof(rootName));
+  file.Read(rootName, sizeof(rootName));
   int nodeCount = 0;
-  input.Read(&nodeCount, 4);
+  file.Read(&nodeCount, 4);
 
   for (int index = 0; index < nodeCount; ++index) {
-    this->ReadNode(input, minor, textureNames);
+    this->ReadNode(file, minor, textureNames);
   }
 
   for (ModelNode* node : this->nodes) {
@@ -305,34 +320,41 @@ bool C3dModelResV1::Load(const char* name) {
     }
   }
 
-  this->rootNames.emplace_back(rootName);
+  this->rootNames.push_back(rootName);
   int volumeCount = 0;
-  input.Read(&volumeCount, 4);
+  file.Read(&volumeCount, 4);
 
-  if (minor >= 2) {
-    for (int index = 0; index < volumeCount; ++index) {
-      auto* volume = new ModelVolume;
-      std::memset(volume, 0, 132);
-      volume->flag = 0;
-      unsigned char record[40]{};
-      input.Read(record, minor == 2 ? 36 : 40);
-      std::memcpy(volume, record, 36);
-
-      if (minor > 2) {
+  if (major == 1) {
+    if (minor >= 3) {
+      for (int index = 0; index < volumeCount; ++index) {
+        auto* volume = new ModelVolume;
+        std::memset(volume, 0, 132);
+        unsigned char record[40]{};
+        file.Read(record, sizeof(record));
         std::memcpy(&volume->flag, record + 36, 4);
-      }
+        std::memcpy(volume, record, 36);
 
-      if (minor > 2 && volume->flag == 0) {
-        volume->size[0] = volume->size[0] + 3.0f;
-        volume->size[2] = volume->size[2] + 3.0f;
-      }
+        if (volume->flag == 0) {
+          volume->size[0] = volume->size[0] + 3.0f;
+          volume->size[2] = volume->size[2] + 3.0f;
+        }
 
-      this->volumes.push_back(volume);
+        this->volumes.push_back(volume);
+      }
+    } else if (minor == 2) {
+      for (int index = 0; index < volumeCount; ++index) {
+        auto* volume = new ModelVolume;
+        std::memset(volume, 0, 132);
+        unsigned char record[36]{};
+        file.Read(record, sizeof(record));
+        volume->flag = 0;
+        std::memcpy(volume, record, 36);
+        this->volumes.push_back(volume);
+      }
     }
   }
 
   this->sourceName = name;
-  file.Close();
   file.Close();
 
   return true;
@@ -376,7 +398,11 @@ void C3dGrannyModelRes::InstantiateModel(GrannyModelInstance* target, const gran
 
     const int vertexBytes = GrannyGetMeshVertexCount(mesh) * 32;
     entry.vertices = nullptr;
-    if (!GrannyMeshIsRigid(mesh)) {
+    if (GrannyMeshIsRigid(mesh)) {
+      entry.vertices = new unsigned char[vertexBytes];
+      GrannyCopyMeshVertices(mesh, GrannyPNT332VertexType, entry.vertices);
+      entry.deformer = nullptr;
+    } else {
       if (this->deformBufferSize < vertexBytes) {
         this->deformBufferSize = vertexBytes;
       }
@@ -385,10 +411,6 @@ void C3dGrannyModelRes::InstantiateModel(GrannyModelInstance* target, const gran
       if (!entry.deformer) {
         ShowErrorDialog(GetRenderSystemHolder()->system, "Granny didn't find a matching deformer for the vertex format used by mesh", 0);
       }
-    } else {
-      entry.vertices = new unsigned char[vertexBytes];
-      GrannyCopyMeshVertices(mesh, GrannyPNT332VertexType, entry.vertices);
-      entry.deformer = nullptr;
     }
 
     entry.materialCount = mesh->materialBindingCount;
@@ -422,30 +444,38 @@ CTexture* C3dGrannyModelRes::CreateTexture(const granny_texture* texture, int) {
   GrannyCopyTextureImage(texture, 0, 0, &GrannyRGBA8888PixelFormat, width, height, width * 4, source);
 
   int format;
-  if (!hasAlpha) {
+  int offset = 0;
+  if (hasAlpha) {
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
-        const int offset = (y * width + x) * 4;
-        pixels[offset + 0] = source[offset + 2];
-        pixels[offset + 1] = source[offset + 1];
-        pixels[offset + 2] = source[offset + 0];
-        pixels[offset + 3] = 0xFF;
-      }
-    }
-
-    format = 0;
-  } else {
-    for (int y = 0; y < height; ++y) {
-      for (int x = 0; x < width; ++x) {
-        const int offset = (y * width + x) * 4;
-        pixels[offset + 0] = source[offset + 2];
-        pixels[offset + 1] = source[offset + 1];
-        pixels[offset + 2] = source[offset + 0];
-        pixels[offset + 3] = source[offset + 3];
+        const unsigned char red = source[offset + 0];
+        const unsigned char green = source[offset + 1];
+        const unsigned char blue = source[offset + 2];
+        const unsigned char alpha = source[offset + 3];
+        pixels[offset + 0] = blue;
+        pixels[offset + 1] = green;
+        pixels[offset + 2] = red;
+        pixels[offset + 3] = alpha;
+        offset += 4;
       }
     }
 
     format = 1;
+  } else {
+    for (int y = 0; y < height; ++y) {
+      for (int x = 0; x < width; ++x) {
+        const unsigned char red = source[offset + 0];
+        const unsigned char green = source[offset + 1];
+        const unsigned char blue = source[offset + 2];
+        pixels[offset + 0] = blue;
+        pixels[offset + 1] = green;
+        pixels[offset + 2] = red;
+        pixels[offset + 3] = 0xFF;
+        offset += 4;
+      }
+    }
+
+    format = 0;
   }
 
   CTexture* result = g_texMgr.Upload(width, height, reinterpret_cast<const std::uint32_t*>(pixels), format, 0, false, false, false);
@@ -470,9 +500,7 @@ granny_file* GrannyAnimationLibrary::ReadAnimationFile(const char* name, const c
   std::sprintf(g_animationPath, "%s%s.gr2", name, suffix);
 
   if (!file.Open(g_animationPath, 0, true, false)) {
-    const std::string path(g_animationPath);
-    const std::string prefix("Cannot find File : ");
-    ShowErrorDialog(GetRenderSystemHolder()->system, (prefix + path).c_str(), 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, (std::string("Cannot find File : ") + std::string(g_animationPath)).c_str(), 0);
     return nullptr;
   }
 
@@ -518,11 +546,11 @@ int C3dGrannyModelRes::GetTriangleCount(int mesh) const {
 unsigned char* C3dGrannyModelRes::GetRigidVertices(int mesh) const {
   const GrannyMeshEntry& entry = this->instance->meshes[mesh];
 
-  if (!GrannyMeshIsRigid(entry.mesh)) {
-    return nullptr;
+  if (GrannyMeshIsRigid(entry.mesh)) {
+    return entry.vertices;
   }
 
-  return entry.vertices;
+  return nullptr;
 }
 
 // OFFSET: 0x00759820
@@ -664,48 +692,48 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
 // OFFSET: 0x00757270
 // FUNCTION: fn_08004
 granny_control* C3dGrannyModelRes::PlayAnimation(unsigned action, granny_model_instance* instance, granny_control* control, int loopCount) {
-  if (control) {
-    GrannySetControlActive(control, true);
-    return control;
-  }
-
-  const unsigned job = this->job;
-  GrannyAnimationLibrary* library = this->animations;
-  granny_animation* const& animation = library->animations[job][action];
-
-  if (!animation) {
-    g_modelPath[0] = '\0';
-
-    if (job > 9 || action > 4) {
-      return nullptr;
-    }
-
-    if (action == 0) {
-      std::sprintf(g_modelPath, "model\\3dmob\\%s", g_session.GetJobName(g_animationJobs[job], -1));
-    } else {
-      std::sprintf(g_modelPath, "model\\3dmob_bone\\%d_%s.gr2", job, g_animationNames[action]);
-    }
-
-    if (!g_modelPath[0] || !ResourceExists(g_modelPath, 0)) {
-      return nullptr;
-    }
-
-    if (job != 1) {
-      library->Load(g_modelPath, job, action);
-    }
+  if (!control) {
+    const unsigned job = this->job;
+    GrannyAnimationLibrary* library = this->animations;
+    granny_animation* const& animation = library->animations[job][action];
 
     if (!animation) {
+      g_modelPath[0] = '\0';
+
+      if (job > 9 || action > 4) {
+        return nullptr;
+      }
+
+      if (action == 0) {
+        std::sprintf(g_modelPath, "model\\3dmob\\%s", g_session.GetJobName(g_animationJobs[job], -1));
+      } else {
+        std::sprintf(g_modelPath, "model\\3dmob_bone\\%d_%s.gr2", job, g_animationNames[action]);
+      }
+
+      if (!g_modelPath[0] || !ResourceExists(g_modelPath, 0)) {
+        return nullptr;
+      }
+
+      if (job != 1) {
+        library->Load(g_modelPath, job, action);
+      }
+
+      if (!animation) {
+        return nullptr;
+      }
+    }
+
+    granny_control* result = GrannyPlayControlledAnimation(0.0f, animation, instance);
+    if (!result) {
       return nullptr;
     }
+
+    GrannySetControlLoopCount(result, loopCount);
+    return result;
   }
 
-  granny_control* result = GrannyPlayControlledAnimation(0.0f, animation, instance);
-  if (!result) {
-    return nullptr;
-  }
-
-  GrannySetControlLoopCount(result, loopCount);
-  return result;
+  GrannySetControlActive(control, true);
+  return control;
 }
 
 // OFFSET: 0x00758710
@@ -754,14 +782,17 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
   std::list<int> groups[32];
   auto* colors = reinterpret_cast<std::array<std::uint32_t, 3>*>(this->faceNormals);
 
-  if (shadeType == 0) {
+  switch (shadeType) {
+  case 0: {
     for (int index = 0; index < this->faceCount; ++index) {
       const std::uint32_t color = (alpha << 24) + 0xFFFFFF;
       colors[index][0] = color;
       colors[index][1] = color;
       colors[index][2] = color;
     }
-  } else if (shadeType == 1) {
+    break;
+  }
+  case 1: {
     for (int index = 0; index < this->faceCount; ++index) {
       const AnimatedModelFace& face = this->faces[index];
       const std::array<float, 3>* vertices = this->frames[frame].vertices;
@@ -792,7 +823,9 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
         colors[index][corner] = ((((alpha << 8) | static_cast<int>(scale * red)) << 8 | static_cast<int>(scale * green)) << 8) | static_cast<int>(scale * blue);
       }
     }
-  } else if (shadeType == 2) {
+    break;
+  }
+  case 2: {
     for (int index = 0; index < this->faceCount; ++index) {
       const AnimatedModelFace& face = this->faces[index];
       const std::array<float, 3>* vertices = this->frames[frame].vertices;
@@ -862,7 +895,9 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
         }
       }
     }
-  } else {
+    break;
+  }
+  default: {
     for (int index = 0; index < this->faceCount; ++index) {
       const std::uint32_t color = (alpha << 24) + 0xFFFFFF;
       colors[index][0] = color;
@@ -871,6 +906,8 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
     }
 
     ShowErrorDialog(GetRenderSystemHolder()->system, "Invalid Shade Type", 0);
+    break;
+  }
   }
 
   for (AnimatedModelNode* child : this->children) {
@@ -902,7 +939,7 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
   const std::int32_t vertexCount = GrannyGetMeshVertexCount(meshes[mesh].mesh);
   const granny_tri_material_group* groups = GrannyGetMeshTriangleGroups(meshes[mesh].mesh);
   GrannyTextureEntry* entry = meshes[mesh].textures[groups->materialIndex];
-  *texture = entry != nullptr && groups->materialIndex < meshes[mesh].materialCount ? entry->texture : nullptr;
+  *texture = entry != nullptr && meshes[mesh].materialCount > groups->materialIndex ? entry->texture : nullptr;
 
   if (GrannyMeshIsRigid(meshes[mesh].mesh)) {
     const float* composite = GrannyGetWorldPoseComposite4x4(model->worldPose, boneIndices[0]);
@@ -929,17 +966,18 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
     return vertices;
   }
 
-  if (meshes[mesh].deformer == nullptr) {
-    return nullptr;
+  if (meshes[mesh].deformer != nullptr) {
+    GrannyDeformVertices(meshes[mesh].deformer, boneIndices, matrices, vertexCount, GrannyGetMeshVertices(meshes[mesh].mesh), this->deformBuffer);
+    GrannyGetMeshBytesPerIndex(meshes[mesh].mesh);
+    GrannyGetMeshIndices(meshes[mesh].mesh);
+    const void* vertices = this->deformBuffer;
+    *indices = meshes[mesh].indices;
+    *triangleCount = GrannyGetMeshIndexCount(meshes[mesh].mesh) / 3;
+    std::memcpy(transform->values, g_identityMatrix, sizeof(g_identityMatrix));
+    return vertices;
   }
 
-  GrannyDeformVertices(meshes[mesh].deformer, boneIndices, matrices, vertexCount, GrannyGetMeshVertices(meshes[mesh].mesh), this->deformBuffer);
-  GrannyGetMeshBytesPerIndex(meshes[mesh].mesh);
-  GrannyGetMeshIndices(meshes[mesh].mesh);
-  *indices = meshes[mesh].indices;
-  *triangleCount = GrannyGetMeshIndexCount(meshes[mesh].mesh) / 3;
-  std::memcpy(transform->values, g_identityMatrix, sizeof(g_identityMatrix));
-  return this->deformBuffer;
+  return nullptr;
 }
 
 // OFFSET: 0x0075CD90

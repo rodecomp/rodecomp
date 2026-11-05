@@ -126,7 +126,7 @@ public:
   int animationLength;
 
 private:
-  void ReadNode(ResourceByteReader& input, unsigned minor, const std::vector<std::string>& textureNames);
+  void ReadNode(CFile& file, unsigned minor, const std::vector<std::string>& textureNames);
 };
 
 class C3dModelResV2 : public C3dModelRes {
