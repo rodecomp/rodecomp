@@ -13,14 +13,14 @@ std::size_t CActorNameCardHolder::Save(std::vector<char>& output) {
   std::size_t offset = 4;
   *reinterpret_cast<std::size_t*>(&buffer[0]) = this->cards.size();
 
-  for (const auto& entry : this->cards) {
-    const CActorNameCard& card = entry.second;
+  for (auto it = this->cards.begin(); it != this->cards.end(); ++it) {
+    const CActorNameCard& card = it->second;
     const std::size_t needed = offset + card.name.size() + card.unknown_001C.size() + card.unknown_0034.size() + card.unknown_004C.size() + 0x14;
     if (buffer.size() < needed) {
       buffer.resize(needed + 1);
     }
 
-    *reinterpret_cast<std::uint32_t*>(&buffer[offset]) = entry.first;
+    *reinterpret_cast<std::uint32_t*>(&buffer[offset]) = it->first;
 
     int length = static_cast<int>(card.name.size());
     *reinterpret_cast<int*>(&buffer[offset + 4]) = length;
