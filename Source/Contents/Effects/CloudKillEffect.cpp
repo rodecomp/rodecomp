@@ -60,13 +60,13 @@ void CCloudKillEffect::AddSprites() {
 // OFFSET: 0x006FCBE0
 // FUNCTION: fn_06927
 void CCloudKillEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
   this->particles.clear();
 
-  for (CParticle* sprite : this->sprites) {
-    FreeParticle(sprite);
+  for (auto it = this->sprites.begin(); it != this->sprites.end(); ++it) {
+    FreeParticle(*it);
   }
   this->sprites.clear();
 }

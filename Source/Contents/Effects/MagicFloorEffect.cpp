@@ -86,14 +86,14 @@ void CMagicFloorEffect::AddClouds(int layer) {
 // OFFSET: 0x00B48D50
 // FUNCTION: fn_18931
 void CMagicFloorEffect::Close() {
-  for (CParticle* particle : this->floors) {
-    FreeParticle(particle);
+  for (auto it = this->floors.begin(); it != this->floors.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->floors.clear();
 
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

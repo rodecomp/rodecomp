@@ -23,8 +23,8 @@ CEnergyOrbEffect::~CEnergyOrbEffect() {
 // OFFSET: 0x00B50E80
 // FUNCTION: fn_19024
 void CEnergyOrbEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

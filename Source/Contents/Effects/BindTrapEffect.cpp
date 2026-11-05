@@ -39,8 +39,8 @@ void CBindTrapEffect::AddParticle(int index) {
 // OFFSET: 0x006FB5B0
 // FUNCTION: fn_06907
 void CBindTrapEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

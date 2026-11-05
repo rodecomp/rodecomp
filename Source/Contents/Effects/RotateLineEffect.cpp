@@ -15,8 +15,8 @@ CRotateLineEffect::CRotateLineEffect() : CEffect(-1), scale(0), angle(0), spread
 // OFFSET: 0x00B74360
 // FUNCTION: fn_19155
 void CRotateLineEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

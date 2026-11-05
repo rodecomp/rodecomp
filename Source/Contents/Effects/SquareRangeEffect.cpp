@@ -14,8 +14,8 @@ CSquareRangeEffect::CSquareRangeEffect() : CEffect(-1), size(1.0f), resize(0), p
 // OFFSET: 0x00B4C750
 // FUNCTION: fn_18962
 void CSquareRangeEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

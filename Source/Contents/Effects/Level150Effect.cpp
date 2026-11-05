@@ -183,14 +183,14 @@ void CLevel150Effect::AddShock(int kind) {
 // OFFSET: 0x00B46D10
 // FUNCTION: fn_18912
 void CLevel150Effect::Close() {
-  for (CParticle* particle : this->bubbles) {
-    FreeParticle(particle);
+  for (auto it = this->bubbles.begin(); it != this->bubbles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->bubbles.clear();
 
-  for (CParticle* particle : this->shocks) {
-    FreeParticle(particle);
+  for (auto it = this->shocks.begin(); it != this->shocks.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->shocks.clear();
@@ -376,8 +376,8 @@ void CLevel150SubEffect::Init() {
 // OFFSET: 0x00B47A90
 // FUNCTION: fn_18922
 void CLevel150SubEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

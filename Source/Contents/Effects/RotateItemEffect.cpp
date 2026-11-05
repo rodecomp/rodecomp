@@ -19,8 +19,8 @@ CRotateItemEffect::CRotateItemEffect() : CEffect(-1), alpha(0), angle(0) {
 // OFFSET: 0x00B739B0
 // FUNCTION: fn_19148
 void CRotateItemEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

@@ -12,8 +12,8 @@
 // OFFSET: 0x00B7AA20
 // FUNCTION: fn_19211
 void CStormGustEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

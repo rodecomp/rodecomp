@@ -29,8 +29,8 @@ CCompetentia::CCompetentia() : CEffect(1851) {
 // OFFSET: 0x00708A90
 // FUNCTION: fn_07079
 void CCompetentia::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

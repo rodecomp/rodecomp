@@ -30,8 +30,8 @@ static_assert(sizeof(StarParticleState) == 0x20);
 // OFFSET: 0x00B79ED0
 // FUNCTION: fn_19203
 void CStarEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

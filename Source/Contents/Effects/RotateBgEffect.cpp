@@ -11,14 +11,14 @@
 // OFFSET: 0x00B72760
 // FUNCTION: fn_19141
 void CRotateBgEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();
 
-  for (CParticle* particle : this->segmentParticles) {
-    FreeParticle(particle);
+  for (auto it = this->segmentParticles.begin(); it != this->segmentParticles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->segmentParticles.clear();

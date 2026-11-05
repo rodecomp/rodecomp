@@ -15,8 +15,8 @@ CEvilLandEffect::CEvilLandEffect() : CEffect(1555), particles() {
 // OFFSET: 0x006FE4F0
 // FUNCTION: fn_06947
 void CEvilLandEffect::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();

@@ -10,8 +10,8 @@
 // OFFSET: 0x00701520
 // FUNCTION: fn_06994
 void CFortuneKiss::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();
