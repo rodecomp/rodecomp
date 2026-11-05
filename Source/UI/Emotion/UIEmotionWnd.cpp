@@ -112,36 +112,36 @@ void UIEmotionWnd::Slot25(int x, int y) {
 // OFFSET: 0x008A3060
 // FUNCTION: fn_11647
 int UIEmotionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 0) {
-    return 0;
-  }
-
-  if (message == 6) {
-    if (argument1 == 201) {
+  switch (message) {
+  case 0:
+    break;
+  case 6:
+    switch (argument1) {
+    case 201:
       g_windowMgr.CloseWindow(0x56);
-      return 0;
-    }
-    if (argument1 == 283) {
+      break;
+    case 283:
       if (g_cashEmotionListWnd == nullptr) {
         g_windowMgr.EnsureWindow(0x57);
       } else {
         g_windowMgr.CloseWindow(0x57);
       }
-      return 0;
+      break;
     }
-    return 0;
-  }
-
-  if (message == 34) {
+    break;
+  case 34:
     this->m_saved = reinterpret_cast<EmotionWndInfo*>(argument1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();
     }
+
     this->Move(this->m_saved->x, this->m_saved->y);
-    return 0;
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  return 0;
 }
 
 // OFFSET: 0x008A3110
@@ -172,12 +172,10 @@ void UIEmotionWnd::Slot11() {
     this->m_saved->height = this->geometry.height;
   }
 
-  std::string* macros = g_session.m_emotionHotkeys.current.data();
   for (int i = 0; i < 10; ++i) {
-    const char* text = this->m_edits[i]->Text();
-    std::string value(text, std::strlen(text));
-    if (!value.empty() && &macros[i] != &value) {
-      macros[i].assign(value.data(), value.size());
+    std::string value = this->m_edits[i]->Text();
+    if (!value.empty()) {
+      g_session.m_emotionHotkeys.current[i] = value;
     }
   }
 
