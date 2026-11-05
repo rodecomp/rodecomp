@@ -424,10 +424,14 @@ void CSession::AddItemToFreeSlot(ITEM_INFO item) {
 // FUNCTION: fn_23752
 bool CSession::IsListedId(int id, int variant) const {
   if (variant == 0) {
-    return id == 19 || id == 4020 || id == 4042 || id == 4068 || id == 4075 || id == 4104 || id == 4263;
+    if (id == 19 || id == 4020 || id == 4042 || id == 4068 || id == 4075 || id == 4104 || id == 4263) {
+      return true;
+    }
+  } else if (id == 20 || id == 4021 || id == 4043 || id == 4069 || id == 4076 || id == 4105 || id == 4264) {
+    return true;
   }
 
-  return id == 20 || id == 4021 || id == 4043 || id == 4069 || id == 4076 || id == 4105 || id == 4264;
+  return false;
 }
 
 // OFFSET: 0x00E08290
@@ -924,12 +928,11 @@ void CSession::RestoreItems5C68() {
 // FUNCTION: fn_23905
 void CSession::ReturnStackedItem(int index, int count) {
   for (int slot = 0; slot < 5; ++slot) {
-    ITEM_INFO& item = this->unknown_5C68[slot];
-    const int quantity = item.quantity;
-    if (quantity != 0 && item.unknown_0000[1] == index) {
-      item.quantity = count;
-      g_session.AddItem1710(item, 0);
-      item.quantity = quantity - count;
+    const int quantity = this->unknown_5C68[slot].quantity;
+    if (quantity != 0 && this->unknown_5C68[slot].unknown_0000[1] == index) {
+      this->unknown_5C68[slot].quantity = count;
+      g_session.AddItem1710(this->unknown_5C68[slot], 0);
+      this->unknown_5C68[slot].quantity = quantity - count;
       RefreshItemWindows(&g_windowMgr);
       break;
     }
