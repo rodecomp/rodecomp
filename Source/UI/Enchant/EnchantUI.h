@@ -108,7 +108,6 @@ public:
   __declspec(noinline) void SetMaterial(int itemId, int required);
 };
 
-#pragma pack(push, 4)
 class CUIEnchantPage : public CUIControl {
 public:
   CUIEnchantPage();
@@ -154,7 +153,6 @@ public:
   __declspec(noinline) std::optional<EnchantOptionInfo*> FindOption(uint32_t key);
   __declspec(noinline) void SetCost(const EnchantPerfectInfo& info);
 };
-#pragma pack(pop)
 
 class CUINormalRandom : public CUIEnchantPage {
 public:

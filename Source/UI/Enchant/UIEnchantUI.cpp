@@ -1226,7 +1226,8 @@ void CUITargetItem::SetSelected(bool selected) {
 void CUINormalPerfect::Slot55() {
   CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* list = this->enchantList;
   if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
-    auto it = std::next(list->data.begin(), list->selected);
+    auto it = list->data.begin();
+    std::advance(it, static_cast<int>(list->selected));
     CEnchantMgr::GetInstance()->RequestPerfectEnchant(
       this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]), static_cast<int16_t>(this->unknown_00B0), it->itemId
     );
@@ -1259,7 +1260,8 @@ void CUIUpgradePerfect::Slot55() {
 
   CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* list = this->enchantList;
   if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
-    auto it = std::next(list->data.begin(), list->selected);
+    auto it = list->data.begin();
+    std::advance(it, static_cast<int>(list->selected));
     CEnchantMgr::GetInstance()->RequestUpgradePerfectEnchant(
       this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]), static_cast<int16_t>(this->unknown_00B0), it->itemId
     );
