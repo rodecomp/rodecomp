@@ -788,7 +788,7 @@ int CSkillAction_AT_FRENZY_FANG::Slot02() {
 // OFFSET: 0x005A6C70
 // FUNCTION: fn_03196
 void CSkillAction_AT_FRENZY_FANG::Slot11(int level, CGameActor* source, CGameActor* target) {
-  if (!source || !source->GetUnknown0404() || !this->Slot17(source)) {
+  if (!this->CanUse(source)) {
     return;
   }
 
