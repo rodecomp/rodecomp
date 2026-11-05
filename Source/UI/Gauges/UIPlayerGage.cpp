@@ -15,7 +15,8 @@ UIGage::UIGage() : UIWindow(0) {
 
 // OFFSET: 0x0086E120
 // FUNCTION: fn_11065
-UIPcGage::UIPcGage() : unknown_009C(0), current(0), maximum(0), unknown_00A8(0), unknown_00AC(0) {
+UIPcGage::UIPcGage() : current(0), maximum(0), unknown_00A8(0), unknown_00AC(0) {
+  this->unknown_009C = 0;
 }
 
 // OFFSET: 0x0086E3A0
@@ -30,11 +31,12 @@ UIPlayerGage::UIPlayerGage() : unknown_009C(0) {
 
 // OFFSET: 0x0086DE90
 // FUNCTION: fn_11061
-UIMonsterGage::UIMonsterGage() : m_threshold(0x19) {
+UIMonsterGage::UIMonsterGage() {
   this->colors[0] = 0x009C1810;
   this->colors[1] = 0x00424142;
   this->colors[2] = 0x00E700FF;
   this->colors[4] = 0x0000FFFF;
+  this->m_threshold = 0x19;
   this->unknown_009C = 1;
 }
 
