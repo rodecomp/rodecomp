@@ -187,7 +187,8 @@ void CElectricEffect::Slot03() {
 // OFFSET: 0x00B4F930
 // FUNCTION: fn_19007
 void CElectricEffect::Slot04() {
-  for (CParticle* bolt : this->bolts) {
+  for (auto it = this->bolts.begin(); it != this->bolts.end(); ++it) {
+    CParticle* bolt = *it;
     if (bolt && static_cast<unsigned>(bolt->unknown_000C - 1) <= 17 && bolt->unknown_0008 > 0) {
       const int frame = bolt->unknown_000C;
       const int alpha = bolt->alpha;

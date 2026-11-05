@@ -103,7 +103,8 @@ bool CBash::Slot06() {
 // OFFSET: 0x00B42720
 // FUNCTION: fn_18872
 void CBash::Slot03() {
-  for (CParticle* particle : this->rays) {
+  for (auto it = this->rays.begin(); it != this->rays.end(); ++it) {
+    CParticle* particle = *it;
     float* values = &particle->unknown_0054;
     const int fadeFrame = static_cast<int>(values[1]);
     const int limit = static_cast<int>(values[2]);
@@ -122,7 +123,8 @@ void CBash::Slot03() {
     particle->alpha = std::min(alpha, limit);
   }
 
-  for (CParticle* particle : this->sparks) {
+  for (auto it = this->sparks.begin(); it != this->sparks.end(); ++it) {
+    CParticle* particle = *it;
     float* values = &particle->unknown_0054;
     const int fadeFrame = static_cast<int>(values[8]);
     const int limit = static_cast<int>(values[6]);
@@ -151,7 +153,8 @@ void CBash::Slot03() {
 // OFFSET: 0x00B42C40
 // FUNCTION: fn_18873
 void CBash::Slot04() {
-  for (CParticle* particle : this->rays) {
+  for (auto it = this->rays.begin(); it != this->rays.end(); ++it) {
+    CParticle* particle = *it;
     const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4));
     const float scale = particle->scale;
     const float cosine = g_cosTable[angle];
@@ -198,7 +201,8 @@ void CBash::Slot04() {
     g_renderer->queues.Submit(&primitive, static_cast<std::uint16_t>(particle->flags), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
   }
 
-  for (CParticle* particle : this->sparks) {
+  for (auto it = this->sparks.begin(); it != this->sparks.end(); ++it) {
+    CParticle* particle = *it;
     const float* values = &particle->unknown_0054;
     const float angle = values[0];
     const float width = values[3];

@@ -38,7 +38,7 @@ void CRectUpEffect::Slot03() {
     particle->position.y = this->position[1] + particle->unknown_00D4;
     particle->position.z = this->position[2] + particle->unknown_00D8;
 
-    int& phase = *reinterpret_cast<int*>(particle->unknown_0050);
+    int& phase = particle->unknown_0050;
     phase += phase + 1 < 360 ? 1 : -359;
     if (particle->unknown_00E8 > this->unknown_00E4) {
       particle->alpha = std::max(particle->alpha - 2, 0);
