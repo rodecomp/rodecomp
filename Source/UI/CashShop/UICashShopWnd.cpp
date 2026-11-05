@@ -689,7 +689,7 @@ void UICashShopWnd_Item::Slot28(int x, int y) {
 // OFFSET: 0x007D1230
 // FUNCTION: fn_09550
 void UICashShopWnd_Banner::ResetCursor(int, int) {
-  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+  g_modeMgr.gameMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x007D1240
