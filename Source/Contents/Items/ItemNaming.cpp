@@ -83,8 +83,18 @@ bool ITEM_INFO::HasCards() const {
 // OFFSET: 0x006D5780
 // FUNCTION: fn_06577
 int ITEM_INFO::Grade(char* output, int& capacity, unsigned char consume) const {
-  const char grade[2] = {this->unknown_0088 >= 1 && this->unknown_0088 <= 4 ? "DCBA"[this->unknown_0088 - 1] : '\0', '\0'};
-  const int bytes = _snprintf_s(output, capacity, _TRUNCATE, "[%s] ", grade);
+  char grade[2] = {};
+  if (this->unknown_0088 == 1) {
+    grade[0] = 'D';
+  } else if (this->unknown_0088 == 2) {
+    grade[0] = 'C';
+  } else if (this->unknown_0088 == 3) {
+    grade[0] = 'B';
+  } else if (this->unknown_0088 == 4) {
+    grade[0] = 'A';
+  }
+
+  const int bytes = StringFormat(output, capacity, _TRUNCATE, "[%s] ", grade);
   if (bytes <= 0) {
     return 0;
   }
@@ -128,8 +138,8 @@ int ITEM_INFO::Prefixes(char* output, int& capacity, unsigned char consume) cons
       continue;
     }
 
-    const auto card = g_itemCardNames.find(ids[index]);
-    if (card == g_itemCardNames.end() || !card->second.prefix || !*card->second.prefix) {
+    const char* prefix = FindItemCardName(ids[index], g_itemCardNames).prefix;
+    if (!prefix || !*prefix) {
       continue;
     }
 
@@ -142,15 +152,28 @@ int ITEM_INFO::Prefixes(char* output, int& capacity, unsigned char consume) cons
       }
     }
 
-    if (count >= 2) {
-      const int bytes = _snprintf_s(cursor, remaining, _TRUNCATE, "%s ", LookupMessage(444 + count));
+    int message = 0;
+    switch (count) {
+    case 2:
+      message = 446;
+      break;
+    case 3:
+      message = 447;
+      break;
+    case 4:
+      message = 448;
+      break;
+    }
+
+    if (message) {
+      const int bytes = StringFormat(cursor, remaining, _TRUNCATE, "%s ", LookupMessage(message));
       if (bytes > 0) {
         cursor += bytes;
         remaining -= bytes;
       }
     }
 
-    const int bytes = _snprintf_s(cursor, remaining, _TRUNCATE, "%s ", card->second.prefix);
+    const int bytes = StringFormat(cursor, remaining, _TRUNCATE, "%s ", FindItemCardName(ids[index], g_itemCardNames).prefix);
     if (bytes > 0) {
       cursor += bytes;
       remaining -= bytes;
@@ -178,8 +201,8 @@ int ITEM_INFO::Suffixes(char* output, int& capacity, unsigned char consume) cons
       continue;
     }
 
-    const auto card = g_itemCardNames.find(ids[index]);
-    if (card == g_itemCardNames.end() || !card->second.suffix || !*card->second.suffix) {
+    const char* suffix = FindItemCardName(ids[index], g_itemCardNames).suffix;
+    if (!suffix || !*suffix) {
       continue;
     }
 
@@ -192,18 +215,34 @@ int ITEM_INFO::Suffixes(char* output, int& capacity, unsigned char consume) cons
       }
     }
 
-    int bytes = _snprintf_s(cursor, remaining, _TRUNCATE, " %s", card->second.suffix);
+    int bytes = StringFormat(cursor, remaining, _TRUNCATE, " %s", FindItemCardName(ids[index], g_itemCardNames).suffix);
     if (bytes > 0) {
       cursor += bytes;
       remaining -= bytes;
     }
 
-    if (count >= 2) {
-      bytes = _snprintf_s(cursor, remaining, _TRUNCATE, " %s", LookupMessage(444 + count));
+    switch (count) {
+    case 2:
+      bytes = StringFormat(cursor, remaining, _TRUNCATE, " %s", LookupMessage(446));
       if (bytes > 0) {
         cursor += bytes;
         remaining -= bytes;
       }
+      break;
+    case 3:
+      bytes = StringFormat(cursor, remaining, _TRUNCATE, " %s", LookupMessage(447));
+      if (bytes > 0) {
+        cursor += bytes;
+        remaining -= bytes;
+      }
+      break;
+    case 4:
+      bytes = StringFormat(cursor, remaining, _TRUNCATE, " %s", LookupMessage(448));
+      if (bytes > 0) {
+        cursor += bytes;
+        remaining -= bytes;
+      }
+      break;
     }
   }
 
@@ -243,37 +282,34 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
   std::string result;
   result.reserve(150);
   const auto append = [&](int bytes) {
-    if (bytes > 0) {
-      result += text;
-    }
+    result += bytes > 0 ? text : "";
   };
-  const int id = std::atoi(this->itemId.c_str());
-  ITEM_DESC& descriptor = FindItemDescription(id);
 
   if (this->identified != 1) {
-    append(Copy(text, capacity, descriptor.unidentifiedName));
+    append(Copy(text, capacity, FindItemDescription(std::atoi(this->itemId.c_str())).unidentifiedName));
     return result;
   }
 
+  const int id = std::atoi(this->itemId.c_str());
   int cards[4];
   CardIds(*this, cards);
   if ((static_cast<unsigned>(id) - 9001u <= 498 || static_cast<unsigned>(id) - 10000u <= 999) && cards[3] == 1) {
     append(Copy(text, capacity, LookupMessage(756)));
-    append(Copy(text, capacity, descriptor.identifiedName));
+    append(Copy(text, capacity, FindItemDescription(std::atoi(this->itemId.c_str())).identifiedName));
     return result;
   }
 
   const auto refine = [&]() {
-    const int value = this->unknown_0060;
-    if (value > 0) {
-      append(_snprintf_s(text, sizeof(text), _TRUNCATE, "+%d ", value));
+    if (this->unknown_0060 > 0) {
+      const int bytes = StringFormat(text, sizeof(text), _TRUNCATE, "+%d ", this->unknown_0060);
+      append(bytes > 0 ? bytes : 0);
     }
 
     if (this->unknown_0088 > 0) {
       append(this->Grade(text, capacity, 0));
     }
   };
-  const auto name = [&]() { append(Copy(text, capacity, descriptor.identifiedName)); };
+  const auto name = [&]() { append(Copy(text, capacity, FindItemDescription(std::atoi(this->itemId.c_str())).identifiedName)); };
   const auto element = [&]() {
     const unsigned value = this->unknown_001C[4];
     int message = 0;
@@ -463,9 +499,11 @@ bool IsItemCard(int id) {
 // OFFSET: 0x006D7660
 // FUNCTION: fn_06591
 const char* ItemResourcePath(const ITEM_INFO& item) {
-  int id = std::atoi(item.itemId.c_str());
-  ITEM_DESC& desc = FindItemDescription(id);
-  return item.identified == 1 ? desc.identifiedResource : desc.unidentifiedResource;
+  if (item.identified == 1) {
+    return FindItemDescription(std::atoi(item.itemId.c_str())).identifiedResource;
+  }
+
+  return FindItemDescription(std::atoi(item.itemId.c_str())).unidentifiedResource;
 }
 
 // OFFSET: 0x006D76B0
@@ -499,7 +537,7 @@ __declspec(noinline) ItemCardName& FindItemCardName(int id, std::map<int, ItemCa
 // FUNCTION: fn_45456
 ItemMoveInfo& FindItemMoveInfo(int id, std::map<int, ItemMoveInfo>& values) {
   // GLOBAL: gl_24789
-  static ItemMoveInfo missingMoveInfo{};
+  static ItemMoveInfo missingMoveInfo = MakeEmptyItemMoveInfo();
   const auto entry = values.find(id);
   return entry == values.end() ? missingMoveInfo : entry->second;
 }
@@ -845,38 +883,40 @@ std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item) {
 // OFFSET: 0x006D6AA0
 // FUNCTION: fn_06583
 int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const {
-  const unsigned value = this->unknown_001C[4];
-  int message = 0;
-  int id = std::atoi(this->itemId.c_str());
+  const char* text = nullptr;
 
-  switch (value) {
-  case 0:
-    message = id == 2634 || id == 2635 ? 2976 : 450;
+  switch (this->unknown_001C[4]) {
+  case 0: {
+    const int id = std::atoi(this->itemId.c_str());
+    text = LookupMessage(id == 2634 || id == 2635 ? 2976 : 450);
     break;
+  }
   case 1:
-    message = 452;
+    text = LookupMessage(452);
     break;
   case 2:
-    message = 454;
+    text = LookupMessage(454);
     break;
   case 3:
-    message = 451;
+    text = LookupMessage(451);
     break;
   case 4:
-    message = 453;
+    text = LookupMessage(453);
     break;
+  default:
+    return 0;
   }
 
-  if (message) {
-    const char* text = LookupMessage(message);
-    const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
-    int written = (error == 0 || error == 80) && output ? static_cast<int>(strnlen(output, capacity)) : 0;
-    if (written > 0 && consume) {
-      capacity -= written;
-    }
-    return written;
+  const int error = strncpy_s(output, capacity, text, _TRUNCATE);
+  if (error != 0 && error != 80) {
+    return 0;
   }
-  return 0;
+
+  const int written = output ? static_cast<int>(strnlen(output, capacity)) : 0;
+  if (consume) {
+    capacity -= written;
+  }
+  return written;
 }
 
 // OFFSET: 0x006D6B90
@@ -913,9 +953,13 @@ int ITEM_INFO::Star(char* output, int& capacity, unsigned char consume) const {
 // FUNCTION: fn_06586
 int ITEM_INFO::Apprentice(char* output, int& capacity, unsigned char consume) const {
   const char* text = LookupMessage(756);
-  const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
-  int written = (error == 0 || error == 80) && output ? static_cast<int>(strnlen(output, capacity)) : 0;
-  if (written > 0 && consume) {
+  const int error = strncpy_s(output, capacity, text, _TRUNCATE);
+  if (error != 0 && error != 80) {
+    return 0;
+  }
+
+  const int written = output ? static_cast<int>(strnlen(output, capacity)) : 0;
+  if (consume) {
     capacity -= written;
   }
   return written;
