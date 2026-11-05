@@ -467,45 +467,42 @@ CUIThumb::~CUIThumb() = default;
 void CUIHThumb::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
-  if (!this->resizable) {
+  if (this->resizable) {
+    const int end = this->geometry.width - (this->bottom ? this->bottom->image.width : 0);
+    int x = 0;
+    if (this->top) {
+      if (this->transparent) {
+        this->DrawAuxiliary(1, 0, 0, &this->top->image, true, false);
+      } else {
+        this->DrawBitmap(0, 0, &this->top->image, false);
+      }
+      x = this->top->image.width;
+    }
+
     if (this->middle) {
-      if (this->transparent) {
-        this->DrawAuxiliary(1, 0, 0, &this->middle->image, true, false);
-      } else {
-        this->DrawBitmap(0, 0, &this->middle->image, false);
+      while (x < end) {
+        if (this->transparent) {
+          this->DrawAuxiliary(1, x, 0, &this->middle->image, true, false);
+        } else {
+          this->DrawBitmap(x, 0, &this->middle->image, false);
+        }
+        x += this->middle->image.width;
       }
     }
-    return;
-  }
 
-  const int end = this->geometry.width - (this->bottom ? this->bottom->image.width : 0);
-  int x = 0;
-  if (this->top) {
-    if (this->transparent) {
-      this->DrawAuxiliary(1, 0, 0, &this->top->image, true, false);
-    } else {
-      this->DrawBitmap(0, 0, &this->top->image, false);
-    }
-    x = this->top->image.width;
-  }
-
-  if (this->middle) {
-    while (x < end) {
+    if (this->bottom) {
+      const int bottomX = this->geometry.width - this->bottom->image.width;
       if (this->transparent) {
-        this->DrawAuxiliary(1, x, 0, &this->middle->image, true, false);
+        this->DrawAuxiliary(1, bottomX, 0, &this->bottom->image, true, false);
       } else {
-        this->DrawBitmap(x, 0, &this->middle->image, false);
+        this->DrawBitmap(bottomX, 0, &this->bottom->image, false);
       }
-      x += this->middle->image.width;
     }
-  }
-
-  if (this->bottom) {
-    const int bottomX = this->geometry.width - this->bottom->image.width;
+  } else if (this->middle) {
     if (this->transparent) {
-      this->DrawAuxiliary(1, bottomX, 0, &this->bottom->image, true, false);
+      this->DrawAuxiliary(1, 0, 0, &this->middle->image, true, false);
     } else {
-      this->DrawBitmap(bottomX, 0, &this->bottom->image, false);
+      this->DrawBitmap(0, 0, &this->middle->image, false);
     }
   }
 }
@@ -731,45 +728,42 @@ void CUIVScrollBar::SetBackground(const std::string& name) {
 void CUIVThumb::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
-  if (!this->resizable) {
+  if (this->resizable) {
+    int y = 0;
+    const int end = this->geometry.height - (this->bottom ? this->bottom->image.height : 0);
+    if (this->top) {
+      if (this->transparent) {
+        this->DrawAuxiliary(1, 0, 0, &this->top->image, true, false);
+      } else {
+        this->DrawBitmap(0, 0, &this->top->image, false);
+      }
+      y = this->top->image.height;
+    }
+
     if (this->middle) {
-      if (this->transparent) {
-        this->DrawAuxiliary(1, 0, 0, &this->middle->image, true, false);
-      } else {
-        this->DrawBitmap(0, 0, &this->middle->image, false);
+      while (y < end) {
+        if (this->transparent) {
+          this->DrawAuxiliary(1, 0, y, &this->middle->image, true, false);
+        } else {
+          this->DrawBitmap(0, y, &this->middle->image, false);
+        }
+        y += this->middle->image.height;
       }
     }
-    return;
-  }
 
-  int y = 0;
-  const int end = this->geometry.height - (this->bottom ? this->bottom->image.height : 0);
-  if (this->top) {
-    if (this->transparent) {
-      this->DrawAuxiliary(1, 0, 0, &this->top->image, true, false);
-    } else {
-      this->DrawBitmap(0, 0, &this->top->image, false);
-    }
-    y = this->top->image.height;
-  }
-
-  if (this->middle) {
-    while (y < end) {
+    if (this->bottom) {
+      const int bottomY = this->geometry.height - this->bottom->image.height;
       if (this->transparent) {
-        this->DrawAuxiliary(1, 0, y, &this->middle->image, true, false);
+        this->DrawAuxiliary(1, 0, bottomY, &this->bottom->image, true, false);
       } else {
-        this->DrawBitmap(0, y, &this->middle->image, false);
+        this->DrawBitmap(0, bottomY, &this->bottom->image, false);
       }
-      y += this->middle->image.height;
     }
-  }
-
-  if (this->bottom) {
-    const int bottomY = this->geometry.height - this->bottom->image.height;
+  } else if (this->middle) {
     if (this->transparent) {
-      this->DrawAuxiliary(1, 0, bottomY, &this->bottom->image, true, false);
+      this->DrawAuxiliary(1, 0, 0, &this->middle->image, true, false);
     } else {
-      this->DrawBitmap(0, bottomY, &this->bottom->image, false);
+      this->DrawBitmap(0, 0, &this->middle->image, false);
     }
   }
 }
@@ -3122,15 +3116,15 @@ void CUITextButton::Slot55() {
         this->shadowColor, this->bold, 0
       );
     }
-    if (!this->outline) {
-      this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->fontIndex,
-        this->fontHeight, this->textColors[this->state], this->bold, 0
+    if (this->outline) {
+      DrawOutlinedText(
+        *this, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->textColors[this->state], this->outlineColor, this->fontIndex,
+        this->fontHeight, this->bold, 0
       );
       return;
     }
-    DrawOutlinedText(
-      *this, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->textColors[this->state], this->outlineColor, this->fontIndex,
-      this->fontHeight, this->bold, 0
+    this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->fontIndex,
+      this->fontHeight, this->textColors[this->state], this->bold, 0
     );
     return;
   }
