@@ -1123,19 +1123,7 @@ void UIMessengerGroupWnd::Slot25(int x, int y) {
   }
 
   const int previous = this->selected;
-  this->selected = -1;
-
-  if (x >= 2 && x <= this->geometry.width - 2 && y > 16 && y < this->visibleRows * this->rowHeight + 17) {
-    const int index = (y - 17) / this->rowHeight + this->scrollTop;
-    int position = 0;
-    for (auto member = this->members.begin(); member != this->members.end(); ++member, ++position) {
-      if (position == index) {
-        this->selected = index;
-        break;
-      }
-    }
-  }
-
+  const MessengerMember member = this->MemberAt(x, y);
   if (previous != this->selected) {
     this->Invalidate();
   }
