@@ -2,7 +2,7 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/Direct3DErrors.h"
 
-#include <string>
+#include <format>
 
 namespace {
   // STATIC: 0x01387430
@@ -13,7 +13,7 @@ namespace {
 
 // OFFSET: 0x0054BB60
 // FUNCTION: fn_01913
-HRESULT DeviceOwnerDX9::CheckState(CRenderSystemBase* renderSystem) {
+__declspec(noinline) HRESULT DeviceOwnerDX9::CheckState(CRenderSystemBase* renderSystem) {
   if (!this->device) {
     return invalidDevice;
   }
@@ -39,7 +39,7 @@ HRESULT DeviceOwnerDX9::CheckState(CRenderSystemBase* renderSystem) {
 
     result = this->device->ResetEx(&this->presentation, this->presentation.Windowed == 1 ? nullptr : &this->displayMode);
   } else if (FAILED(result) && lastReported != result) {
-    const std::string message = std::string(Direct3DErrorName(result)) + " : " + Direct3DErrorDescription(result);
+    const std::string message = std::format("{} : {}", Direct3DErrorName(result), Direct3DErrorDescription(result));
     ShowErrorDialog(renderSystem, message.c_str(), 0);
     lastReported = result;
     this->lastPresent = result;
