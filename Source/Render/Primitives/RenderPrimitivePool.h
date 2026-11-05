@@ -22,6 +22,11 @@ protected:
   /* 0084 */ std::deque<RenderPrimitive>::iterator m_current;
 };
 
+// INLINED
+inline void RenderPrimitivePool::Rewind() {
+  this->m_current = this->m_commands.begin();
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenderPrimitivePool) == 32);
 #endif

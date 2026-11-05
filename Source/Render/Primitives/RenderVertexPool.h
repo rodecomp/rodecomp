@@ -31,6 +31,17 @@ private:
   void Release();
 };
 
+// INLINED
+inline void RenderVertexPool::Rewind() {
+  for (auto& block : this->m_active) {
+    block->clear();
+  }
+
+  this->m_unused.splice_after(this->m_unused.before_begin(), this->m_active);
+  this->m_used = 0;
+  this->Activate(this->m_minimum);
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenderVertexPool) == 16);
 #endif

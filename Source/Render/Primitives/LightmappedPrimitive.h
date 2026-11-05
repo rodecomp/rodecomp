@@ -96,6 +96,17 @@ struct LightmappedQueues {
 };
 
 static_assert(sizeof(LightmappedVertex) == 40);
+// INLINED
+inline void LightmappedPrimitivePool::Rewind() {
+  this->m_current = this->m_commands.begin();
+}
+
+// INLINED
+inline void LightmappedQueues::Clear() {
+  this->first.clear();
+  this->second.clear();
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(LightmappedPrimitive) == 188);
 static_assert(sizeof(LightmappedCommand) == 28);

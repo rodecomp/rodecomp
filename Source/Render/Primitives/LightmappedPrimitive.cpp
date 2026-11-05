@@ -77,11 +77,6 @@ LightmappedPrimitive* LightmappedPrimitivePool::Acquire() {
   return new (primitive) LightmappedPrimitive;
 }
 
-// INLINED
-void LightmappedPrimitivePool::Rewind() {
-  this->m_current = this->m_commands.begin();
-}
-
 // OFFSET: 0x00559BE0
 // FUNCTION: fn_02071
 void LightmappedQueues::Submit(LightmappedPrimitive* primitive, int queue, bool depthAlpha, float depthStart, float depthEnd) {
@@ -94,10 +89,4 @@ void LightmappedQueues::Submit(LightmappedPrimitive* primitive, int queue, bool 
   } else if (queue == 1) {
     this->second.push_back(primitive);
   }
-}
-
-// INLINED
-void LightmappedQueues::Clear() {
-  this->first.clear();
-  this->second.clear();
 }

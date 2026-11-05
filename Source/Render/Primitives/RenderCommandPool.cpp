@@ -14,8 +14,3 @@ RenderCommand* RenderCommandPool::Acquire() {
   RenderCommand* command = &*this->m_current++;
   return new (command) RenderCommand;
 }
-
-// INLINED
-void RenderCommandPool::Rewind() {
-  this->m_current = this->m_commands.begin();
-}

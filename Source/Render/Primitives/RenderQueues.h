@@ -64,6 +64,29 @@ struct RenderQueues {
   void Clear();
 };
 
+// INLINED
+inline void RenderQueues::Clear() {
+  this->queue_015C.clear();
+  this->queue_0168.clear();
+  this->queue_0174.clear();
+  this->queue_0180.clear();
+  this->queue_018C.clear();
+  this->queue_0198.clear();
+  this->queue_01A4.clear();
+  this->queue_01B0.clear();
+  this->queue_01BC.clear();
+  this->queue_01C8.clear();
+  this->queue_01D4.clear();
+  this->queue_01E0.clear();
+  this->queue_01EC.clear();
+  this->lightmapped.Clear();
+  this->queue_0210.clear();
+  this->queue_021C.clear();
+  this->queue_0228.clear();
+  this->queue_0234.clear();
+  this->queue_0240.clear();
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(DepthPrimitive) == 8);
 static_assert(sizeof(RenderQueues) == 240);

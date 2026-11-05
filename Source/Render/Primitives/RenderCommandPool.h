@@ -21,6 +21,11 @@ private:
   /* 0064 */ std::deque<RenderCommand>::iterator m_current;
 };
 
+// INLINED
+inline void RenderCommandPool::Rewind() {
+  this->m_current = this->m_commands.begin();
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenderCommandPool) == 32);
 #endif

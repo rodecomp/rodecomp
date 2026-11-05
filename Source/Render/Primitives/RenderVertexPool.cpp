@@ -99,14 +99,3 @@ RenderVertex* RenderVertexPool::Block::Append(unsigned count) {
 
   return this->data() + (this->size() - count);
 }
-
-// INLINED
-void RenderVertexPool::Rewind() {
-  for (auto& block : this->m_active) {
-    block->clear();
-  }
-
-  this->m_unused.splice_after(this->m_unused.before_begin(), this->m_active);
-  this->m_used = 0;
-  this->Activate(this->m_minimum);
-}

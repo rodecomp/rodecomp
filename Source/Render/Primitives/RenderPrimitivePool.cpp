@@ -19,8 +19,3 @@ RenderPrimitive* RenderPrimitivePool::Acquire() {
 
   return new (command) RenderPrimitive;
 }
-
-// INLINED
-void RenderPrimitivePool::Rewind() {
-  this->m_current = this->m_commands.begin();
-}
