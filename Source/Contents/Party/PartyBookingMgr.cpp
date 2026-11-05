@@ -38,7 +38,7 @@ bool PartyBookingMgr::FlushPending() {
   }
 
   int count = 0;
-  for (auto it = this->m_pending.begin(); it != this->m_pending.end(); ++it, ++count) {
+  for (auto it = this->m_pending.begin(), end = this->m_pending.end(); it != end; ++it, ++count) {
     this->m_entries.insert(std::pair<const int, PartyBookingEntry>(it->first, it->second));
 
     if (this->m_pending.size() == 1) {
@@ -153,45 +153,50 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
 // FUNCTION: fn_18448
 void PartyBookingMgr::OnAdvertisement(PARTY_BOOKING_AD_INFO info) {
   UISeekPartyListWnd* window = static_cast<UISeekPartyListWnd*>(g_windowMgr.LookupWindow(0xA9));
-  if (window) {
-    if (window->MatchesFilter(info)) {
-      if (!this->m_lastPage) {
-        this->AddEntries(&info, 1, false);
-        window->NotifyNewAd();
-      } else {
-        std::pair<bool, PartyBookingEntry> result = this->MakeEntry(info);
-        if (result.first) {
-          this->m_pending.insert(std::pair<const int, PartyBookingEntry>(info.index, result.second));
-        }
-        window->NotifyNewAd();
+  if (window == nullptr) {
+    if (this->m_filterEnabled) {
+      PARTY_BOOKING_AD_INFO ad = info;
+      if (this->m_filterLevel > 0 && (this->m_filterLevel > ad.detail.level || this->m_filterLevel + 15 < ad.detail.level)) {
+        return;
       }
-    }
-    return;
-  }
 
-  if (this->m_filterEnabled) {
-    PARTY_BOOKING_AD_INFO ad = info;
-    if (this->m_filterLevel > 0 && (ad.detail.level < this->m_filterLevel || this->m_filterLevel + 15 < ad.detail.level)) {
-      return;
-    }
+      if (this->m_filterMap > 0 && this->m_filterMap != ad.detail.mapId) {
+        return;
+      }
 
-    if (this->m_filterMap > 0 && this->m_filterMap != ad.detail.mapId) {
-      return;
-    }
-
-    if (this->m_filterJob > 0) {
-      int i = 0;
-      while (this->m_filterJob != ad.detail.job[i]) {
-        if (++i >= 6) {
+      if (this->m_filterJob > 0) {
+        bool found = false;
+        for (int i = 0; i < 6; ++i) {
+          if (this->m_filterJob == ad.detail.job[i]) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
           return;
         }
       }
     }
+
+    if (this->m_alarm) {
+      g_soundMgr->PlayWave("party_alarm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      const char* message = LookupMessage(0x6D9);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 15, 0, 0);
+    }
+    return;
   }
 
-  if (this->m_alarm) {
-    g_soundMgr->PlayWave("party_alarm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x6D9)), 0xFFFF00, 15, 0, 0);
+  if (window->MatchesFilter(info)) {
+    if (this->m_lastPage) {
+      std::pair<bool, PartyBookingEntry> result = this->MakeEntry(info);
+      if (result.first) {
+        this->m_pending.insert(std::pair<const int, PartyBookingEntry>(info.index, result.second));
+      }
+      window->NotifyNewAd();
+    } else {
+      this->AddEntries(&info, 1, false);
+      window->NotifyNewAd();
+    }
   }
 }
 
@@ -251,7 +256,7 @@ void PartyBookingMgr::SetJobs(int index, const short* jobs) {
   std::memset(buffer, 0, sizeof(buffer));
   for (int i = 0; i < 6; ++i) {
     short job = jobs[i];
-    if (static_cast<unsigned short>(job) < 5) {
+    if (static_cast<unsigned short>(job) <= 4) {
       std::strcat(buffer, LookupMessage(job + 0x6AF));
       std::strcat(buffer, ",");
     } else if (job >= 0) {
