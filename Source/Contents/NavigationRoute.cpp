@@ -129,9 +129,10 @@ __declspec(noinline) CNaviInfo* CNavigationManager::FindObject(const char* name)
 // FUNCTION: fn_19377
 CNavi_Link* CNaviData::FindLink(unsigned int key, bool byId) {
   if (byId) {
-    for (CNavi_Link* object : this->objects) {
-      if (object->HasId(key)) {
-        return object;
+    const unsigned int id = key;
+    for (auto it = this->objects.begin(); it != this->objects.end(); ++it) {
+      if ((*it)->HasId(id)) {
+        return *it;
       }
     }
     return nullptr;
@@ -187,14 +188,14 @@ bool CNavi_Object::IsNamed(const char* name) const {
 
 // OFFSET: 0x00B8E8E0
 // FUNCTION: fn_19496
-int CNaviInfo::GetCellX() const {
+__declspec(noinline) int CNaviInfo::GetCellX() const {
   return this->cellX;
 }
 
 // OFFSET: 0x00B97750
 // FUNCTION: fn_19600
 bool CNavigationManager::BuildRoute(int startX, int startY, int destX, int destY, bool collectCells) {
-  this->movementRoute.points.clear();
+  this->movementRoute.points.erase(this->movementRoute.points.begin(), this->movementRoute.points.end());
   const bool found = this->pathFinder.FindPath(0, startX, startY, 8, 8, destX, destY, 1, this->movementRoute, 15);
   this->pathFinder.Reset();
   if (!collectCells) {
@@ -468,7 +469,11 @@ std::string CNavigationManager::SelectedNodeText() {
     const int y = node->GetCell(&cellY)->y;
     const int x = node->GetCell(&cellX)->x;
     std::sprintf(buffer, "%s %d %d...", node->GetInfo()->GetName(), x, y);
-  } else if (this->unknown_1258 == 2) {
+    this->selectedNodeText.assign(buffer, std::strlen(buffer));
+    return this->selectedNodeText;
+  }
+
+  if (this->unknown_1258 == 2) {
     CNaviInfo* info = this->data.GetInfo();
     if (info != nullptr) {
       NaviCell cellY;
@@ -525,7 +530,11 @@ std::string CNavigationManager::DestinationText() {
     const int y = node->GetCell(&cellY)->y;
     const int x = node->GetCell(&cellX)->x;
     std::sprintf(buffer, "%s %d %d", node->GetInfo()->GetName(), x, y);
-  } else if (this->unknown_1258 == 2) {
+    this->destinationText.assign(buffer, std::strlen(buffer));
+    return this->destinationText;
+  }
+
+  if (this->unknown_1258 == 2) {
     CNaviInfo* info = this->data.GetInfo();
     if (info != nullptr) {
       NaviCell cellY;
