@@ -142,24 +142,25 @@ std::uint32_t CRenderSystemDX7::Width() {
 HRESULT CRenderSystemDX7::Initialize(HWND window) {
   const std::vector<RenderAdapter> adapters = EnumerateAdaptersDX7();
 
-  if (adapters.empty()) {
+  if (adapters.size() == 0) {
     MessageBoxA(nullptr, "No compatible devices", "Error", 0);
     return static_cast<HRESULT>(0x81000004);
   }
 
-  GUID drawIdentity{};
-  GUID renderIdentity{};
+  GUID drawIdentity = g_defaultDrawGuidDX7;
+  GUID renderIdentity = IID_IDirect3DHALDevice;
   const RenderAdapter selected = SelectedRenderAdapter();
 
-  for (const RenderAdapter& adapter : adapters) {
-    if (adapter.Matches(selected)) {
-      drawIdentity = adapter.drawGuid;
-      renderIdentity = adapter.renderGuid;
+  for (std::size_t i = 0; i < adapters.size(); ++i) {
+    if (adapters[i].Matches(selected)) {
+      drawIdentity = adapters[i].drawGuid;
+      renderIdentity = adapters[i].renderGuid;
       break;
     }
   }
 
-  DDSURFACEDESC2 mode{};
+  DDSURFACEDESC2 mode;
+  mode.dwRefreshRate = 0;
   mode.dwWidth = static_cast<DWORD>(g_configuredScreenWidth);
   mode.dwHeight = static_cast<DWORD>(g_configuredScreenHeight);
   mode.ddpfPixelFormat.dwRGBBitCount = static_cast<DWORD>(g_configuredBitsPerPixel);
