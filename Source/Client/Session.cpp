@@ -1870,13 +1870,14 @@ void CSession::AddUnknown7F94(std::uint32_t id) {
 // OFFSET: 0x00E2F3B0
 // FUNCTION: fn_24153
 void CSession::EndSkillOption() {
-  if (this->GetOption(2) != 0) {
+  auto option = this->m_options.m_values.find(2);
+  if (option != this->m_options.m_values.end() && static_cast<int>(option->second) != 0) {
     this->unknown_61A4 = 0;
     PACKET_CZ_USE_SKILL_END packet;
     packet.packetType = ID_CZ_USE_SKILL_END;
     packet.skillId = GC_ROLLINGCUTTER;
     GetRagConnection().Send(sizeof(packet), &packet);
-    this->m_options.Set(2, 0);
+    this->m_options.m_values[2] = 0;
   }
 }
 

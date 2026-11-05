@@ -15,6 +15,7 @@ public:
   const std::map<int, std::int64_t>& Values() const;
 
 private:
+  friend class CSession;
   /* 0004 */ std::map<int, std::int64_t> m_values;
 };
 
