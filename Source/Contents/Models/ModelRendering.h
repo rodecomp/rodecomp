@@ -13,7 +13,6 @@ struct ModelFaceState {
 
 bool ModelTriangleVisible(const RenderVertex* a, const RenderVertex* b, const RenderVertex* c);
 void TransformModelUV(float& u, float& v, const ModelTextureTransform& transform);
-void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, RenderVertex* projected, bool modern);
 
 static_assert(sizeof(ModelFaceState) == 36);
 

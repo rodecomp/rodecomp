@@ -10,37 +10,32 @@
 #include "Render/TextureQuad.h"
 #include "Resource/World/WorldResource.h"
 #include "Render/Textures/Texture.h"
+#include "Render/SpriteGeometry.h"
+#include "Client/Mode/ModeMgr.h"
 
-#include "Utility/Math/ScalarConversion.h"
+#include <algorithm>
+#include <bit>
 #include <cstring>
 
 // INLINED
 bool ModelTriangleVisible(const RenderVertex* a, const RenderVertex* b, const RenderVertex* c) {
-  const float firstMinimumX = a->x > b->x ? b->x : a->x;
-  const float minimumX = firstMinimumX > c->x ? c->x : firstMinimumX;
-
-  if (minimumX >= static_cast<float>(g_renderer->viewport.width)) {
+  if (std::min(std::min(a->x, b->x), c->x) >= static_cast<float>(g_renderer->viewport.width)) {
     return false;
   }
 
-  const float firstMaximumX = b->x > a->x ? b->x : a->x;
-  const float maximumX = c->x > firstMaximumX ? c->x : firstMaximumX;
-
-  if (0.0f > maximumX) {
+  if (0.0f > std::max(std::max(a->x, b->x), c->x)) {
     return false;
   }
 
-  const float firstMinimumY = a->y > b->y ? b->y : a->y;
-  const float minimumY = firstMinimumY > c->y ? c->y : firstMinimumY;
-
-  if (minimumY >= static_cast<float>(g_renderer->viewport.height)) {
+  if (std::min(std::min(a->y, b->y), c->y) >= static_cast<float>(g_renderer->viewport.height)) {
     return false;
   }
 
-  const float firstMaximumY = b->y > a->y ? b->y : a->y;
-  const float maximumY = c->y > firstMaximumY ? c->y : firstMaximumY;
+  if (0.0f > std::max(std::max(a->y, b->y), c->y)) {
+    return false;
+  }
 
-  return !(0.0f > maximumY || 0.0f > a->rhw || 0.0f > b->rhw || 0.0f > c->rhw);
+  return !(0.0f > a->rhw || 0.0f > b->rhw || 0.0f > c->rhw);
 }
 
 namespace {
@@ -49,146 +44,15 @@ namespace {
     ProjectedVertex() : RenderVertex{0, 0, 0, 0, 0, 0xFF000000u, 0, 0} {
     }
   };
-
-  // INLINED
-  unsigned Byte(float value) {
-    return static_cast<unsigned>(TruncateToInt(value)) & 255u;
-  }
-
-  // INLINED
-  std::uint32_t Color(std::uint32_t source, unsigned char alpha, const float* scale) {
-    const unsigned red = Byte(static_cast<float>((source >> 16) & 255u) * scale[0]);
-    const unsigned green = Byte(static_cast<float>((source >> 8) & 255u) * scale[1]);
-    const unsigned blue = Byte(static_cast<float>(source & 255u) * scale[2]);
-
-    return (static_cast<unsigned>(alpha) << 24) | (red << 16) | (green << 8) | blue;
-  }
-
-  // INLINED
-  float Rotated(float sine, float delta, float cosineProduct, bool subtract) {
-    const double product = static_cast<double>(sine) * delta;
-    return static_cast<float>(subtract ? cosineProduct - product : product + cosineProduct);
-  }
 }
 
 // INLINED
 inline void TransformModelUV(float& u, float& v, const ModelTextureTransform& transform) {
-  const float cosineU = ClientCos(transform.values[4]);
-  const float productU = cosineU * (u - 0.5f);
-  const float sineU = ClientSin(transform.values[4]);
-  const float rotatedU = Rotated(sineU, v - 0.5f, productU, true);
-  const float resultU = (rotatedU * transform.values[2] + 0.5f) + transform.values[0];
-  const float cosineV = ClientCos(transform.values[4]);
-  const float productV = cosineV * (v - 0.5f);
-  const float sineV = ClientSin(transform.values[4]);
-  const float rotatedV = Rotated(sineV, u - 0.5f, productV, false);
-  const float resultV = (rotatedV * transform.values[3] + 0.5f) + transform.values[1];
+  const float resultU = (ClientCos(transform.values[4]) * (u - 0.5f) - ClientSin(transform.values[4]) * (v - 0.5f)) * transform.values[2] + 0.5f + transform.values[0];
+  const float resultV = (ClientCos(transform.values[4]) * (v - 0.5f) + ClientSin(transform.values[4]) * (u - 0.5f)) * transform.values[3] + 0.5f + transform.values[1];
 
   u = resultU;
   v = resultV;
-}
-
-// INLINED
-void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, RenderVertex* projected, bool modern) {
-  struct matrix camera;
-  std::memcpy(camera.values, matrix, sizeof(camera.values));
-  struct matrix combined;
-  combined.Compose(node.transform, camera);
-  float overrideScale[3];
-  std::memcpy(overrideScale, g_worldLighting.ambient, sizeof(overrideScale));
-  float colorScale[3];
-  std::memcpy(colorScale, g_weatherEffect.lightColor, sizeof(colorScale));
-  const unsigned char alpha = node.model->alpha;
-
-  for (int index = 0; index < node.mesh->vertexCount; ++index) {
-    g_renderer->viewport.Project(node.mesh->vertices[index].data(), combined.values, projected[index]);
-  }
-
-  RenderVertex* output = g_renderer->vertices.Acquire(static_cast<unsigned>(node.mesh->faceCount) * 3u);
-  int index = 0;
-
-  while (index < node.mesh->faceCount) {
-    const unsigned texture = node.mesh->faces[index].texture;
-    RenderVertex* first = output;
-
-    std::uint16_t flags = 0;
-
-    do {
-      const ModelFace& face = node.mesh->faces[index];
-      const RenderVertex& a = projected[face.vertices[0]];
-      const RenderVertex& b = projected[face.vertices[1]];
-      const RenderVertex& c = projected[face.vertices[2]];
-      bool visible = !clip || ModelTriangleVisible(&a, &b, &c);
-      const float left = (b.y - a.y) * (c.x - a.x);
-      const float right = (c.y - a.y) * (b.x - a.x);
-      const bool winding = modern ? right > left : left > right;
-      const bool accepted = modern ? (winding ? reversed == 0 : reversed == 1) : (winding ? reversed == 0 : reversed != 0);
-      visible = visible && (accepted || (modern ? face.twoSided == 1 : face.twoSided != 0));
-
-      if (visible) {
-        output[0] = a;
-        output[1] = b;
-        output[2] = c;
-        const ModelFaceState& state = node.faceState[index];
-
-        for (unsigned corner = 0; corner < 3; ++corner) {
-          output[corner].u = state.uv[corner][0];
-          output[corner].v = state.uv[corner][1];
-        }
-
-        if (modern) {
-          const auto& transforms = static_cast<C3dNodeV2&>(node).textureTransforms;
-          const auto found = transforms.find(static_cast<int>(texture));
-
-          if (found != transforms.end()) {
-            for (unsigned corner = 0; corner < 3; ++corner) {
-              TransformModelUV(output[corner].u, output[corner].v, found->second);
-            }
-
-            flags = 0x20;
-          }
-        }
-
-        for (unsigned corner = 0; corner < 3; ++corner) {
-          if (g_overrideColor) {
-            output[corner].diffuse = Color(state.colors[corner], alpha, overrideScale);
-          } else if (node.unknown_0088) {
-            output[corner].diffuse = (state.colors[corner] & 0x00FFFFFFu) | 0x80000000u;
-          } else if (g_weatherEffect.unknown_0001) {
-            const int* values = node.faceValues.data() + index * 9u + corner * 3u;
-            output[corner].diffuse = (static_cast<unsigned>(alpha) << 24) | (Byte(static_cast<float>(values[0]) * colorScale[0]) << 16) |
-                                     (Byte(static_cast<float>(values[1]) * colorScale[1]) << 8) | Byte(static_cast<float>(values[2]) * colorScale[2]);
-          } else {
-            output[corner].diffuse = Color(state.colors[corner], alpha, colorScale);
-          }
-        }
-
-        output += 3;
-      }
-
-      ++index;
-    } while (index < node.mesh->faceCount && node.mesh->faces[index].texture == texture);
-
-    if (output != first) {
-      RenderCommand* command = g_renderer->commands.Acquire();
-      command->vertices = first;
-      command->vertexCount = static_cast<unsigned>(output - first);
-      command->texture = node.textures[texture % node.textures.size()];
-      command->unknown_0014 = static_cast<std::uint16_t>((command->unknown_0014 & 0x00FFu) | (static_cast<unsigned>(commandMode) << 8));
-
-      if (alpha != 255 || command->texture->Format() == TextureFormat::A4R4G4B4) {
-        flags |= 1;
-      }
-
-      g_renderer->queues.Submit(command, flags, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
-    }
-  }
-
-  node.unknown_0088 = 0;
-
-  for (C3dNode* child : node.children) {
-    child->Draw(combined.values, reversed, clip, commandMode);
-  }
 }
 
 // OFFSET: 0x00AB7D40
@@ -196,7 +60,125 @@ void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, b
 void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode) {
   // GLOBAL: gl_24586
   static ProjectedVertex projected[30000];
-  DrawModelNode(*this, matrix, reversed, clip, commandMode, projected, false);
+  struct matrix camera;
+  std::memcpy(camera.values, matrix, sizeof(camera.values));
+  struct matrix combined;
+  combined.Compose(this->transform, camera);
+  float ambient[3];
+  std::memcpy(ambient, g_worldLighting.ambient, sizeof(ambient));
+  float lightColor[3];
+  std::memcpy(lightColor, g_weatherEffect.lightColor, sizeof(lightColor));
+
+  const int vertexCount = this->mesh->vertexCount;
+  const std::array<float, 3>* meshVertices = this->mesh->vertices;
+
+  if (g_weatherEffect.unknown_0001) {
+    g_modeMgr.GetGameMode();
+  }
+
+  const unsigned char alpha = this->model->alpha;
+
+  for (int index = 0; index < vertexCount; ++index) {
+    g_renderer->viewport.Project(meshVertices[index].data(), combined.values, projected[index]);
+  }
+
+  RenderVertex* vertices = g_renderer->vertices.Acquire(static_cast<unsigned>(this->mesh->faceCount) * 3u);
+  RenderVertex* output = vertices;
+  ModelFace* face = this->mesh->faces;
+  ModelFace* const faceEnd = face + this->mesh->faceCount;
+  ModelFaceState* state = this->faceState.empty() ? nullptr : &this->faceState[0];
+
+  while (face != faceEnd) {
+    const std::uint16_t texture = face->texture;
+    std::uint16_t flags = 0;
+
+    while (face != faceEnd && face->texture == texture) {
+      const RenderVertex& a = projected[face->vertices[0]];
+      const RenderVertex& b = projected[face->vertices[1]];
+      const RenderVertex& c = projected[face->vertices[2]];
+
+      if (!clip || ModelTriangleVisible(&a, &b, &c)) {
+        const bool winding = (b.y - a.y) * (c.x - a.x) > (c.y - a.y) * (b.x - a.x);
+
+        if ((winding && reversed == 0) || (!winding && reversed != 0) || face->twoSided != 0) {
+          output[0] = a;
+          output[1] = b;
+          output[2] = c;
+
+          for (int corner = 0; corner < 3; ++corner) {
+            output[corner].u = state->uv[corner][0];
+            output[corner].v = state->uv[corner][1];
+          }
+
+          if (g_overrideColor) {
+            for (int corner = 0; corner < 3; ++corner) {
+              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              color.alpha = alpha;
+              color.red = static_cast<std::uint8_t>(color.red * ambient[0]);
+              color.green = static_cast<std::uint8_t>(color.green * ambient[1]);
+              color.blue = static_cast<std::uint8_t>(color.blue * ambient[2]);
+              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+            }
+          } else if (this->unknown_0088) {
+            for (int corner = 0; corner < 3; ++corner) {
+              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              color.alpha = 0x80;
+              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+            }
+          } else if (g_weatherEffect.unknown_0001) {
+            const int faceIndex = static_cast<int>(state - (this->faceState.empty() ? nullptr : &this->faceState[0]));
+
+            for (int corner = 0; corner < 3; ++corner) {
+              const int* values = &this->faceValues[faceIndex * 9 + corner * 3];
+              SpriteColor color;
+              color.alpha = alpha;
+              color.red = static_cast<std::uint8_t>(values[0] * lightColor[0]);
+              color.green = static_cast<std::uint8_t>(values[1] * lightColor[1]);
+              color.blue = static_cast<std::uint8_t>(values[2] * lightColor[2]);
+              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+            }
+          } else {
+            for (int corner = 0; corner < 3; ++corner) {
+              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              color.alpha = alpha;
+              color.red = static_cast<std::uint8_t>(color.red * lightColor[0]);
+              color.green = static_cast<std::uint8_t>(color.green * lightColor[1]);
+              color.blue = static_cast<std::uint8_t>(color.blue * lightColor[2]);
+              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+            }
+          }
+
+          output += 3;
+        }
+      }
+
+      ++face;
+      ++state;
+    }
+
+    const int count = static_cast<int>(output - vertices);
+
+    if (count != 0) {
+      RenderCommand* command = g_renderer->commands.Acquire();
+      command->vertices = vertices;
+      command->vertexCount = count;
+      command->texture = this->textures[texture % this->textures.size()];
+      command->unknown_0014 = static_cast<std::uint16_t>((command->unknown_0014 & 0x00FFu) | (static_cast<unsigned>(commandMode) << 8));
+
+      if (alpha < 255 || command->texture->Format() == TextureFormat::A4R4G4B4) {
+        flags |= 1;
+      }
+
+      g_renderer->queues.Submit(command, flags, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      vertices = output;
+    }
+  }
+
+  this->unknown_0088 = 0;
+
+  for (std::list<C3dNode*>::iterator it = this->children.begin(); it != this->children.end(); ++it) {
+    (*it)->Draw(combined.values, reversed, clip, commandMode);
+  }
 }
 
 // OFFSET: 0x00AB84B0
@@ -204,102 +186,132 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
 void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode) {
   // GLOBAL: gl_24587
   static ProjectedVertex projected[30000];
-  C3dNode& node = *this;
   struct matrix camera;
   std::memcpy(camera.values, matrix, sizeof(camera.values));
   struct matrix combined;
-  combined.Compose(node.transform, camera);
-  float overrideScale[3];
-  std::memcpy(overrideScale, g_worldLighting.ambient, sizeof(overrideScale));
-  float colorScale[3];
-  std::memcpy(colorScale, g_weatherEffect.lightColor, sizeof(colorScale));
-  const unsigned char alpha = node.model->alpha;
+  combined.Compose(this->transform, camera);
+  float ambient[3];
+  std::memcpy(ambient, g_worldLighting.ambient, sizeof(ambient));
+  float lightColor[3];
+  std::memcpy(lightColor, g_weatherEffect.lightColor, sizeof(lightColor));
 
-  for (int index = 0; index < node.mesh->vertexCount; ++index) {
-    g_renderer->viewport.Project(node.mesh->vertices[index].data(), combined.values, projected[index]);
+  const int vertexCount = this->mesh->vertexCount;
+  const std::array<float, 3>* meshVertices = this->mesh->vertices;
+
+  if (g_weatherEffect.unknown_0001) {
+    g_modeMgr.GetGameMode();
   }
 
-  RenderVertex* output = g_renderer->vertices.Acquire(static_cast<unsigned>(node.mesh->faceCount) * 3u);
-  int index = 0;
+  const unsigned char alpha = this->model->alpha;
 
-  while (index < node.mesh->faceCount) {
-    const unsigned texture = node.mesh->faces[index].texture;
-    RenderVertex* first = output;
+  for (int index = 0; index < vertexCount; ++index) {
+    g_renderer->viewport.Project(meshVertices[index].data(), combined.values, projected[index]);
+  }
 
+  RenderVertex* vertices = g_renderer->vertices.Acquire(static_cast<unsigned>(this->mesh->faceCount) * 3u);
+  RenderVertex* output = vertices;
+  ModelFace* face = this->mesh->faces;
+  ModelFace* const faceEnd = face + this->mesh->faceCount;
+  ModelFaceState* state = this->faceState.empty() ? nullptr : &this->faceState[0];
+
+  while (face != faceEnd) {
+    const std::uint16_t texture = face->texture;
     std::uint16_t flags = 0;
 
-    do {
-      const ModelFace& face = node.mesh->faces[index];
-      const RenderVertex& a = projected[face.vertices[0]];
-      const RenderVertex& b = projected[face.vertices[1]];
-      const RenderVertex& c = projected[face.vertices[2]];
-      bool visible = !clip || ModelTriangleVisible(&a, &b, &c);
-      const float left = (b.y - a.y) * (c.x - a.x);
-      const float right = (c.y - a.y) * (b.x - a.x);
-      const bool winding = right > left;
-      const bool accepted = winding ? reversed == 0 : reversed == 1;
-      visible = visible && (accepted || face.twoSided == 1);
+    while (face != faceEnd && face->texture == texture) {
+      const RenderVertex& a = projected[face->vertices[0]];
+      const RenderVertex& b = projected[face->vertices[1]];
+      const RenderVertex& c = projected[face->vertices[2]];
 
-      if (visible) {
-        output[0] = a;
-        output[1] = b;
-        output[2] = c;
-        const ModelFaceState& state = node.faceState[index];
+      if (!clip || ModelTriangleVisible(&a, &b, &c)) {
+        const bool winding = (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
 
-        for (unsigned corner = 0; corner < 3; ++corner) {
-          output[corner].u = state.uv[corner][0];
-          output[corner].v = state.uv[corner][1];
-        }
+        if ((winding == true && reversed == 0) || (winding == false && reversed == 1) || face->twoSided == 1) {
+          output[0] = a;
+          output[1] = b;
+          output[2] = c;
 
-        const auto& transforms = this->textureTransforms;
-        const auto found = transforms.find(static_cast<int>(texture));
-
-        if (found != transforms.end()) {
-          for (unsigned corner = 0; corner < 3; ++corner) {
-            TransformModelUV(output[corner].u, output[corner].v, found->second);
+          for (int corner = 0; corner < 3; ++corner) {
+            output[corner].u = state->uv[corner][0];
+            output[corner].v = state->uv[corner][1];
           }
 
-          flags = 0x20;
-        }
+          for (int corner = 0; corner < 3; ++corner) {
+            const auto found = this->textureTransforms.find(face->texture);
 
-        for (unsigned corner = 0; corner < 3; ++corner) {
+            if (found != this->textureTransforms.end()) {
+              TransformModelUV(output[corner].u, output[corner].v, found->second);
+              flags = 0x20;
+            }
+          }
+
           if (g_overrideColor) {
-            output[corner].diffuse = Color(state.colors[corner], alpha, overrideScale);
-          } else if (node.unknown_0088) {
-            output[corner].diffuse = (state.colors[corner] & 0x00FFFFFFu) | 0x80000000u;
+            for (int corner = 0; corner < 3; ++corner) {
+              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              color.alpha = alpha;
+              color.red = static_cast<std::uint8_t>(color.red * ambient[0]);
+              color.green = static_cast<std::uint8_t>(color.green * ambient[1]);
+              color.blue = static_cast<std::uint8_t>(color.blue * ambient[2]);
+              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+            }
+          } else if (this->unknown_0088) {
+            for (int corner = 0; corner < 3; ++corner) {
+              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              color.alpha = 0x80;
+              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+            }
           } else if (g_weatherEffect.unknown_0001) {
-            const int* values = node.faceValues.data() + index * 9u + corner * 3u;
-            output[corner].diffuse = (static_cast<unsigned>(alpha) << 24) | (Byte(static_cast<float>(values[0]) * colorScale[0]) << 16) |
-                                     (Byte(static_cast<float>(values[1]) * colorScale[1]) << 8) | Byte(static_cast<float>(values[2]) * colorScale[2]);
-          } else {
-            output[corner].diffuse = Color(state.colors[corner], alpha, colorScale);
-          }
-        }
+            const int faceIndex = static_cast<int>(state - (this->faceState.empty() ? nullptr : &this->faceState[0]));
 
-        output += 3;
+            for (int corner = 0; corner < 3; ++corner) {
+              const int* values = &this->faceValues[faceIndex * 9 + corner * 3];
+              SpriteColor color;
+              color.alpha = alpha;
+              color.red = static_cast<std::uint8_t>(values[0] * lightColor[0]);
+              color.green = static_cast<std::uint8_t>(values[1] * lightColor[1]);
+              color.blue = static_cast<std::uint8_t>(values[2] * lightColor[2]);
+              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+            }
+          } else {
+            for (int corner = 0; corner < 3; ++corner) {
+              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              color.alpha = alpha;
+              color.red = static_cast<std::uint8_t>(color.red * lightColor[0]);
+              color.green = static_cast<std::uint8_t>(color.green * lightColor[1]);
+              color.blue = static_cast<std::uint8_t>(color.blue * lightColor[2]);
+              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+            }
+          }
+
+          output += 3;
+        }
       }
 
-      ++index;
-    } while (index < node.mesh->faceCount && node.mesh->faces[index].texture == texture);
+      ++face;
+      ++state;
+    }
 
-    if (output != first) {
+    const int count = static_cast<int>(output - vertices);
+
+    if (count != 0) {
       RenderCommand* command = g_renderer->commands.Acquire();
-      command->vertices = first;
-      command->vertexCount = static_cast<unsigned>(output - first);
-      command->texture = node.textures[texture % node.textures.size()];
+      command->vertices = vertices;
+      command->vertexCount = count;
+      command->texture = this->textures[texture % this->textures.size()];
       command->unknown_0014 = static_cast<std::uint16_t>((command->unknown_0014 & 0x00FFu) | (static_cast<unsigned>(commandMode) << 8));
 
-      if (alpha != 255 || command->texture->Format() == TextureFormat::A4R4G4B4) {
+      if (alpha < 255 || command->texture->Format() == TextureFormat::A4R4G4B4) {
         flags |= 1;
       }
 
       g_renderer->queues.Submit(command, flags, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      vertices = output;
     }
   }
 
-  node.unknown_0088 = 0;
+  this->unknown_0088 = 0;
 
-  for (C3dNode* child : node.children) {
-    child->Draw(combined.values, reversed, clip, commandMode);
+  for (std::list<C3dNode*>::iterator it = this->children.begin(); it != this->children.end(); ++it) {
+    (*it)->Draw(combined.values, reversed, clip, commandMode);
   }
 }
