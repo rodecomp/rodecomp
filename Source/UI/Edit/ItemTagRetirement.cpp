@@ -15,6 +15,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -40,13 +41,16 @@ void UIItemTagCtrl::RemoveTagChild(UIWindow* child) {
 // OFFSET: 0x00896EE0
 // FUNCTION: fn_11520
 void UIItemTagOnChat::RemoveTagChild(UIWindow* child) {
-  if (g_windowMgr.inputSuggestionsEnabled == 1 && ChatWindow()->m_chatEdit != nullptr && ChatWindow()->m_chatEdit->Contains(child)) {
-    ChatWindow()->m_chatEdit->RemoveChild(child, 1);
-    return;
+  if (g_windowMgr.inputSuggestionsEnabled == 1) {
+    UIEditCtrl* chatEdit = ChatWindow()->m_chatEdit;
+    if (chatEdit != nullptr && std::find(chatEdit->m_children.begin(), chatEdit->m_children.end(), child) != chatEdit->m_children.end()) {
+      chatEdit->RemoveChild(child, 1);
+      return;
+    }
   }
 
   UIWindow* hoverWindow = g_windowMgr.GetHoverWindow();
-  if (hoverWindow != nullptr && hoverWindow->Contains(child)) {
+  if (hoverWindow != nullptr && std::find(hoverWindow->m_children.begin(), hoverWindow->m_children.end(), child) != hoverWindow->m_children.end()) {
     hoverWindow->RemoveChild(child, 1);
   }
 }
