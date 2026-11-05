@@ -279,9 +279,9 @@ char* CSession::ConvertTooltipText(const char* source, char* output) const {
 // OFFSET: 0x00DDE890
 // FUNCTION: fn_23402
 ITEM_INFO CSession::FindItem1768(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1768) {
-    if (item.unknown_0000[1] == id) {
-      return item;
+  for (auto item = this->unknown_1768.begin(); item != this->unknown_1768.end(); ++item) {
+    if (item->unknown_0000[1] == id) {
+      return *item;
     }
   }
 
@@ -321,9 +321,9 @@ int CSession::GetItem1768Quantity(std::uint32_t id) const {
 // OFFSET: 0x00DDE9F0
 // FUNCTION: fn_23405
 ITEM_INFO CSession::FindItem1740(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1740) {
-    if (item.unknown_0000[1] == id) {
-      return item;
+  for (auto item = this->unknown_1740.begin(); item != this->unknown_1740.end(); ++item) {
+    if (item->unknown_0000[1] == id) {
+      return *item;
     }
   }
 
@@ -363,9 +363,9 @@ int CSession::GetItem1740Quantity(std::uint32_t id) const {
 // OFFSET: 0x00DDEB50
 // FUNCTION: fn_23408
 ITEM_INFO CSession::FindItem1750(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1750) {
-    if (item.unknown_0000[1] == id) {
-      return item;
+  for (auto item = this->unknown_1750.begin(); item != this->unknown_1750.end(); ++item) {
+    if (item->unknown_0000[1] == id) {
+      return *item;
     }
   }
 
@@ -447,9 +447,9 @@ ITEM_INFO CSession::GetItem1758At(int index) const {
 // OFFSET: 0x00DDEEB0
 // FUNCTION: fn_23414
 ITEM_INFO CSession::FindItem1760(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1760) {
-    if (item.unknown_0000[1] == id) {
-      return item;
+  for (auto item = this->unknown_1760.begin(); item != this->unknown_1760.end(); ++item) {
+    if (item->unknown_0000[1] == id) {
+      return *item;
     }
   }
 
@@ -485,9 +485,9 @@ int CSession::GetItem1760Quantity(std::uint32_t id) const {
 // OFFSET: 0x00DDF120
 // FUNCTION: fn_23419
 ITEM_INFO CSession::FindItem1770(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1770) {
-    if (item.unknown_0000[1] == id) {
-      return item;
+  for (auto item = this->unknown_1770.begin(); item != this->unknown_1770.end(); ++item) {
+    if (item->unknown_0000[1] == id) {
+      return *item;
     }
   }
 
