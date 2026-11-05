@@ -1,4 +1,4 @@
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "Resource/TextureNames.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -19,7 +19,7 @@ UIStaticBitmap::~UIStaticBitmap() = default;
 // FUNCTION: fn_10930
 void UIStaticBitmap::SetBitmap(const char* name) {
   this->bitmap = name;
-  const auto* resource = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->bitmap.c_str()));
+  const auto* resource = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmap.c_str())));
   this->geometry.width = resource->image.width;
   this->geometry.height = resource->image.height;
 }
@@ -39,11 +39,13 @@ void UIStaticBitmap::Paint() {
     return;
   }
 
-  if (this->geometry.unknown_0030 == 0) {
-    const auto* resource = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->bitmap.c_str()));
-    this->DrawBitmap(0, 0, resource ? &resource->image : nullptr, false);
-  } else if (this->geometry.unknown_0030 == 1 && this->geometry.surface) {
-    this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
+  switch (this->geometry.unknown_0030) {
+  case 0:
+    this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmap.c_str())))->image, false);
+    break;
+  case 1:
+    this->ClearSurface(0xFFFF00FFu);
+    break;
   }
 }
 
@@ -75,12 +77,7 @@ void UIStaticBitmap::Slot28(int x, int y) {
   if (!this->tooltip.empty()) {
     int screenX = this->tooltipX;
     int screenY = this->tooltipY;
-
-    for (const UIWindow* window = this; window; window = window->parent) {
-      screenX = (screenX + window->geometry.x);
-      screenY = (screenY + window->geometry.y);
-    }
-
+    this->ToScreen(screenX, screenY);
     g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
