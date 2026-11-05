@@ -171,7 +171,7 @@ void UIChatHisBox3::AddText(const char* text, int color) {
   int mode = 3;
   const auto* bytes = reinterpret_cast<const unsigned char*>(text);
 
-  if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>("<ITEML>")) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>("</ITEML>"))) {
+  if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
     this->sub_89DC30(text, color, mode);
   } else if (g_navigationLinkParser->HasLink(std::string(text))) {
     this->sub_89E0F0(text, color, mode);
@@ -313,16 +313,13 @@ void UIListBox::Slot35(int value) {
 // FUNCTION: fn_11366
 void UIListBox::Paint() {
   if (this->transparent != 0) {
-    if (this->geometry.surface) {
-      this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
-    }
+    this->ClearSurface(0xFFFF00FFu);
 
     if (this->parent) {
       this->parent->Invalidate();
     }
-  } else if (this->geometry.surface) {
-    const std::uint32_t color = (this->backgroundRed & 255) | ((this->backgroundGreen & 255) << 8) | ((this->backgroundBlue & 255) << 16);
-    this->geometry.surface->Fill(nullptr, color);
+  } else {
+    this->ClearSurface((this->backgroundRed & 255) | ((this->backgroundGreen & 255) << 8) | ((this->backgroundBlue & 255) << 16));
   }
 
   const int first = this->topLine;
@@ -332,28 +329,20 @@ void UIListBox::Paint() {
 
   for (int index = first; index < end; ++index) {
     const int row = (index - first);
-    int y = (row * this->lineHeight);
 
     if (index == this->selected) {
-      this->FillRegion(0, y, this->geometry.width, (this->lineHeight - 1), this->selectionColor);
+      this->FillRegion(0, (row * this->lineHeight), this->geometry.width, (this->lineHeight - 1), this->selectionColor);
     }
 
-    const auto& line = this->lines[index];
     const int x = (this->textInset - this->horizontalOffset);
+    int y = (row * this->lineHeight);
 
     if (this->centerVertically == 1) {
-      int height = 0;
-
-      if (!line.empty()) {
-        TextContext context(*this->geometry.surface);
-        context.SetFont(0, 12, 0, 0);
-        height = context.Measure(line.c_str(), static_cast<int>(std::strlen(line.c_str()))).cy;
-      }
-
-      y = static_cast<int>(static_cast<float>((this->lineHeight - height)) * 0.5f + static_cast<float>(y));
+      const int height = this->TextHeight(this->lines[index].c_str(), 0, 0, 12, 0, 0);
+      y = static_cast<int>(static_cast<float>((this->lineHeight - height)) * 0.5f + static_cast<float>((row * this->lineHeight)));
     }
 
-    DrawColoredText(*this, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
+    DrawColoredText(*this, x, y, this->lines[index].c_str(), static_cast<unsigned>(this->lines[index].size()), color, 0, 12, false);
   }
 }
 
