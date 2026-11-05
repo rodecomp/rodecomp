@@ -1,7 +1,6 @@
 #include "File/CommonObject.h"
 #include "Client/Input/InputCharset.h"
 #include "File/File.h"
-
 #include <cstdlib>
 #include <cstring>
 #include <memory>
@@ -15,10 +14,11 @@ CCommonObject::~CCommonObject() {
 // OFFSET: 0x005B7C90
 // FUNCTION: fn_03417
 void CCommonObject::Clear() {
-  for (char* buffer : this->m_buffers) {
-    delete[] buffer;
+  for (auto it = this->m_buffers.begin(); it != this->m_buffers.end(); ++it) {
+    if (*it) {
+      delete[] *it;
+    }
   }
-
   this->m_buffers.clear();
 }
 
