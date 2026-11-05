@@ -334,11 +334,12 @@ void ExchangeUI::CUIItem::Paint() {
 void CUIExchangeUI::Slot16() {
   this->Move((g_renderer->viewport.width - 640) / 2 + 100, g_renderer->viewport.height * 100 / 480);
 
-  const std::string title = std::format("{} : ", LookupMessage(0xCE));
-  this->titleBar->SetTitle(title.c_str(), title.size());
+  {
+    const std::string title = std::format("{} : ", LookupMessage(0xCE));
+    this->titleBar->SetTitle(title.c_str(), title.size());
+  }
 
-  const char* logText = LookupMessage(0x727);
-  this->unknown_010C->SetText(logText, std::strlen(logText));
+  this->unknown_010C->SetText(LookupMessage(0x727));
 
   for (int count = 10; count != 0; --count) {
     this->firstList->AddData(ExchangeUI::CItemData(ITEM_INFO(), 0), false);
@@ -353,8 +354,9 @@ void CUIExchangeUI::Slot16() {
   }
   this->secondList->UpdateScrollBar();
 
-  this->tradeButton->disabled = 1;
-  this->tradeButton->Invalidate();
+  CUIImageButton* button = this->tradeButton;
+  button->disabled = 1;
+  button->Invalidate();
 }
 
 // OFFSET: 0x00A17BD0
@@ -423,6 +425,50 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::UpdateScrollBar()
 // FUNCTION: fn_15304
 int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
+  case 0x32:
+    if (argument1 == 0) {
+      break;
+    }
+
+    this->partnerName = reinterpret_cast<const char*>(argument1);
+    if (argument2 > 0) {
+      if (g_serviceType == 6) {
+        this->unknown_00DC->SetText(std::format("{} Lv{}", this->partnerName, static_cast<int>(argument3)));
+      } else {
+        std::string job = ShortcutFilename(argument2);
+        this->unknown_00DC->SetText(std::format("{} Lv{} ({})", this->partnerName, static_cast<int>(argument3), job));
+      }
+    } else {
+      this->unknown_00DC->SetText(this->partnerName);
+    }
+    break;
+  case 0x33:
+    this->zenyEdit->Show(0);
+    this->FreezeItems(true);
+    this->UpdateZeny(true);
+    {
+      CUIImageButton* button = this->tradeButton;
+      if (this->firstList->unknown_00C4 && this->secondList->unknown_00C4) {
+        button->disabled = 0;
+      } else {
+        button->disabled = 1;
+      }
+      button->Invalidate();
+    }
+    break;
+  case 0x34:
+    this->FreezeItems(false);
+    this->UpdateZeny(false);
+    {
+      CUIImageButton* button = this->tradeButton;
+      if (this->firstList->unknown_00C4 && this->secondList->unknown_00C4) {
+        button->disabled = 0;
+      } else {
+        button->disabled = 1;
+      }
+      button->Invalidate();
+    }
+    break;
   case 0x17:
     this->firstList->ClearData();
     for (int index = 0; index < 10; ++index) {
@@ -458,46 +504,6 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     }
     break;
   }
-  case 0x32:
-    if (argument1 == 0) {
-      break;
-    }
-
-    this->partnerName = reinterpret_cast<const char*>(argument1);
-    if (argument2 > 0) {
-      if (g_serviceType == 6) {
-        const std::string text = std::format("{} Lv{}", this->partnerName, static_cast<int>(argument3));
-        this->unknown_00DC->SetText(text.c_str(), text.size());
-      } else {
-        const std::string job = ShortcutFilename(argument2);
-        const std::string text = std::format("{} Lv{} ({})", this->partnerName, static_cast<int>(argument3), job);
-        this->unknown_00DC->SetText(text.c_str(), text.size());
-      }
-    } else {
-      this->unknown_00DC->SetText(this->partnerName.c_str(), this->partnerName.size());
-    }
-    break;
-  case 0x33:
-    this->zenyEdit->Show(0);
-    this->FreezeItems(true);
-    this->UpdateZeny(true);
-    if (this->firstList->unknown_00C4 && this->secondList->unknown_00C4) {
-      this->tradeButton->disabled = 0;
-    } else {
-      this->tradeButton->disabled = 1;
-    }
-    this->tradeButton->Invalidate();
-    break;
-  case 0x34:
-    this->FreezeItems(false);
-    this->UpdateZeny(false);
-    if (this->firstList->unknown_00C4 && this->secondList->unknown_00C4) {
-      this->tradeButton->disabled = 0;
-    } else {
-      this->tradeButton->disabled = 1;
-    }
-    this->tradeButton->Invalidate();
-    break;
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -1313,9 +1319,9 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem() {
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
     this->items.resize(count);
