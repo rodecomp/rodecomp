@@ -36,14 +36,7 @@ bool CPathFinder::Walkable(int column, int row) const {
 // OFFSET: 0x00ADA690
 // FUNCTION: fn_17906
 CActorPickNode::~CActorPickNode() {
-  for (ActorPickInfo* info : this->pickInfos) {
-    delete info;
-  }
-  this->pickInfos.clear();
-
-  for (CActorPickNode* child : this->children) {
-    delete child;
-  }
+  this->Clear();
 }
 
 // OFFSET: 0x00AD9980
@@ -92,10 +85,10 @@ void CActorPickNode::AddPickInfo(ActorPickInfo* info) {
 // OFFSET: 0x00ADA850
 // FUNCTION: fn_17909
 void CActorPickNode::Clear() {
-  for (ActorPickInfo* info : this->pickInfos) {
-    delete info;
+  for (auto info = this->pickInfos.begin(); info != this->pickInfos.end(); ++info) {
+    delete *info;
   }
-  this->pickInfos.clear();
+  this->pickInfos.erase(this->pickInfos.begin(), this->pickInfos.end());
 
   for (CActorPickNode*& child : this->children) {
     if (child) {
