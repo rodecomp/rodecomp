@@ -2368,20 +2368,16 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
     const int rot = slot.riseAngle;
     const float back = slot.maxHeight;
     const float width = slot.height[0];
-    const int left = rot >= 90 ? rot - 90 : rot + 270;
-    const float baseX = width * g_cosTable[left] + back * g_cosTable[left];
-    const float baseZ = width * g_sinTable[left] + back * g_sinTable[left];
     const float length = slot.distance;
-    const int forward = rot < 0 ? rot + 360 : rot;
-    const int backward = rot - 180 < 0 ? rot - 180 + 360 : rot - 180;
-    const int right = rot < 270 ? rot + 90 : rot - 270;
-    const float sideX = back * g_cosTable[right] + width * g_cosTable[left];
-    const float sideZ = back * g_sinTable[right] + width * g_sinTable[left];
+    const float baseX = width * g_cosTable[rot >= 90 ? rot - 90 : rot + 270] + back * g_cosTable[rot >= 90 ? rot - 90 : rot + 270];
+    const float baseZ = width * g_sinTable[rot >= 90 ? rot - 90 : rot + 270] + back * g_sinTable[rot >= 90 ? rot - 90 : rot + 270];
+    const float sideX = back * g_cosTable[rot < 270 ? rot + 90 : rot - 270] + width * g_cosTable[rot >= 90 ? rot - 90 : rot + 270];
+    const float sideZ = back * g_sinTable[rot < 270 ? rot + 90 : rot - 270] + width * g_sinTable[rot >= 90 ? rot - 90 : rot + 270];
 
-    vec3 = {length * g_cosTable[forward] + baseX, 0.0f, length * g_sinTable[forward] + baseZ};
-    vec2 = {length * g_cosTable[backward] + baseX, 0.0f, length * g_sinTable[backward] + baseZ};
-    vec1 = {length * g_cosTable[forward] + sideX, 0.0f, length * g_sinTable[forward] + sideZ};
-    const vector3d vec4{length * g_cosTable[backward] + sideX, 0.0f, length * g_sinTable[backward] + sideZ};
+    vec3 = {length * g_cosTable[rot < 0 ? rot + 360 : rot] + baseX, 0.0f, length * g_sinTable[rot < 0 ? rot + 360 : rot] + baseZ};
+    vec2 = {length * g_cosTable[rot >= 180 ? rot - 180 : rot + 180] + baseX, 0.0f, length * g_sinTable[rot >= 180 ? rot - 180 : rot + 180] + baseZ};
+    vec1 = {length * g_cosTable[rot < 0 ? rot + 360 : rot] + sideX, 0.0f, length * g_sinTable[rot < 0 ? rot + 360 : rot] + sideZ};
+    const vector3d vec4{length * g_cosTable[rot >= 180 ? rot - 180 : rot + 180] + sideX, 0.0f, length * g_sinTable[rot >= 180 ? rot - 180 : rot + 180] + sideZ};
 
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec4, vec2, vec3, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
