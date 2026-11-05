@@ -31,8 +31,12 @@ namespace {
 // FUNCTION: fn_02224
 void CRendererDX9::DrawAlphaQueues(RenderQueues& queues, unsigned char twoPass) {
   ScopedDeviceStateDX9 restore(this->device->state);
-  std::sort(queues.queue_018C.begin(), queues.queue_018C.end(), Before);
-  std::sort(queues.queue_01BC.begin(), queues.queue_01BC.end(), Before);
+  const auto before = [](const DepthPrimitive& left, const DepthPrimitive& right) {
+    return Before(left, right);
+  };
+
+  std::sort(queues.queue_018C.begin(), queues.queue_018C.end(), before);
+  std::sort(queues.queue_01BC.begin(), queues.queue_01BC.end(), before);
   this->device->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
   this->device->state.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
   this->device->state.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
@@ -40,40 +44,48 @@ void CRendererDX9::DrawAlphaQueues(RenderQueues& queues, unsigned char twoPass) 
   this->device->state.SetRenderState(D3DRS_ALPHAREF, 1);
   this->device->state.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
 
-  const auto draw = [&](const std::vector<DepthPrimitive>& queue, bool alphaTest) {
-    for (const DepthPrimitive& entry : queue) {
-      RenderCommand& command = *entry.primitive;
-
-      if (alphaTest) {
-        this->device->state.SetRenderState(D3DRS_ALPHAREF, WritesDepth(command) ? 1 : 240);
-      } else {
-        this->device->state.SetRenderState(D3DRS_ZWRITEENABLE, WritesDepth(command));
-      }
-
-      this->device->state.SetTexture(0, command.texture ? static_cast<CTextureDX9*>(command.texture)->NativeTexture() : nullptr);
-      this->DrawPrimitive(&command);
-    }
-  };
-  const auto drawPair = [&](bool alphaTest) {
-    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-    draw(queues.queue_018C, alphaTest);
-    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-    draw(queues.queue_01BC, alphaTest);
-  };
-
   if (twoPass == 1) {
+    const auto drawAlphaTested = [this](const DepthPrimitive& entry) {
+      RenderCommand* command = entry.primitive;
+      this->device->state.SetRenderState(D3DRS_ALPHAREF, WritesDepth(*command) ? 1 : 240);
+      this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+      this->DrawPrimitive(command);
+    };
+
     this->device->state.SetRenderState(D3DRS_ZWRITEENABLE, 1);
     this->device->state.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-    drawPair(true);
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+    std::for_each(queues.queue_018C.begin(), queues.queue_018C.end(), drawAlphaTested);
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+    std::for_each(queues.queue_01BC.begin(), queues.queue_01BC.end(), drawAlphaTested);
+
     this->device->state.SetRenderState(D3DRS_ZWRITEENABLE, 0);
     this->device->state.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_LESS);
-    drawPair(true);
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+    std::for_each(queues.queue_018C.begin(), queues.queue_018C.end(), drawAlphaTested);
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+    std::for_each(queues.queue_01BC.begin(), queues.queue_01BC.end(), drawAlphaTested);
+
     this->device->state.SetRenderState(D3DRS_ALPHAREF, 1);
     this->device->state.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
     this->DrawDepthQueue(queues.queue_01A4, true);
   } else {
-    drawPair(false);
+    const auto drawDepthWriting = [this](const DepthPrimitive& entry) {
+      RenderCommand* command = entry.primitive;
+      this->device->state.SetRenderState(D3DRS_ZWRITEENABLE, WritesDepth(*command));
+      this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+      this->DrawPrimitive(command);
+    };
+
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+    std::for_each(queues.queue_018C.begin(), queues.queue_018C.end(), drawDepthWriting);
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+    this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+    std::for_each(queues.queue_01BC.begin(), queues.queue_01BC.end(), drawDepthWriting);
   }
 }
