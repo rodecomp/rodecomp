@@ -360,14 +360,51 @@ void CGameMode::ReceiveStatus(const unsigned char* data) {
 // FUNCTION: fn_21840
 void CGameMode::ReceiveStatusChange(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const StatusChangePacket*>(data);
-  const unsigned int type = packet->type;
-  if (type >= 32 && type <= 37) {
-    reinterpret_cast<int*>(g_session.unknown_169C)[type - 32] = packet->value;
-    g_session.InvalidateWindowFrames();
-  } else if (type >= 247 && type <= 252) {
-    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[type - 247] = packet->value;
-    g_session.InvalidateWindowFrames();
+  switch (packet->type) {
+  case 0x20:
+    reinterpret_cast<int*>(g_session.unknown_169C)[0] = packet->value;
+    break;
+  case 0x21:
+    reinterpret_cast<int*>(g_session.unknown_169C)[1] = packet->value;
+    break;
+  case 0x22:
+    reinterpret_cast<int*>(g_session.unknown_169C)[2] = packet->value;
+    break;
+  case 0x23:
+    reinterpret_cast<int*>(g_session.unknown_169C)[3] = packet->value;
+    break;
+  case 0x24:
+    reinterpret_cast<int*>(g_session.unknown_169C)[4] = packet->value;
+    break;
+  case 0x25:
+    reinterpret_cast<int*>(g_session.unknown_169C)[5] = packet->value;
+    break;
+  case 0xF7:
+    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[0] = packet->value;
+    break;
+  case 0xF8:
+    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[1] = packet->value;
+    break;
+  case 0xF9:
+    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[2] = packet->value;
+    break;
+  case 0xFA:
+    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[3] = packet->value;
+    break;
+  case 0xFB:
+    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[4] = packet->value;
+    break;
+  case 0xFC:
+    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[5] = packet->value;
+    break;
+  default:
+    if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C4)) {
+      window->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    }
+    return;
   }
+
+  g_session.InvalidateWindowFrames();
 
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C4)) {
     window->SendMsg(nullptr, 35, 0, 0, 0, 0);
