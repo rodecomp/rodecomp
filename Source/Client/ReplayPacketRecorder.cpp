@@ -198,25 +198,13 @@ bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, s
 // OFFSET: 0x00B86500
 // FUNCTION: fn_19330
 void Replay::RecordCachedPackets() {
-  ReplayCachedPacket* packets = this->cachedPackets.data();
-  Replay::Instance().RecordPacket(packets[2459].bytes, 41, 0);
-  Replay::Instance().RecordPacket(packets[470].bytes, 41, 0);
-
-  {
-    std::vector<unsigned char> packet = g_session.BuildSkillListReplayPacket(0x10F);
-    Replay::Instance().RecordPacket(packet, 41, 0);
-  }
-  {
-    std::vector<unsigned char> packet = g_session.BuildSkillListReplayPacket(0x235);
-    Replay::Instance().RecordPacket(packet, 41, 0);
-  }
-  {
-    std::vector<unsigned char> packet = g_session.BuildSkillListReplayPacket(0x29D);
-    Replay::Instance().RecordPacket(packet, 41, 0);
-  }
+  Replay::Instance().RecordPacket(this->cachedPackets[2459].bytes, 41, 0);
+  Replay::Instance().RecordPacket(this->cachedPackets[470].bytes, 41, 0);
+  Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(0x10F), 41, 0);
+  Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(0x235), 41, 0);
+  Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(0x29D), 41, 0);
   if (g_session.unknown_5C1C != 0) {
-    std::vector<unsigned char> packet = g_session.BuildStatusReplayPacket();
-    Replay::Instance().RecordPacket(packet, 41, 0);
+    Replay::Instance().RecordPacket(g_session.BuildStatusReplayPacket(), 41, 0);
   }
 }
 
