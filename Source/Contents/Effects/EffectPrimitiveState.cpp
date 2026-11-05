@@ -54,7 +54,7 @@ void __stdcall Get_Angle(float x, float y, std::int16_t* angle) {
   const float normalX = x / length;
 
   for (std::int16_t index = 0; index <= 180; ++index) {
-    if (normalX >= ClientCosine(index)) {
+    if (normalX >= g_cosTable[index]) {
       *angle = normalY < 0.0f ? 360 - index : index;
       return;
     }
