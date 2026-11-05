@@ -74,7 +74,7 @@ void RenderObjectState::Reset() {
   this->sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName));
 
   if (this->sprite) {
-    ++this->sprite->references;
+    this->sprite->Lock();
   }
 
   if (this->action) {
@@ -84,7 +84,7 @@ void RenderObjectState::Reset() {
   this->action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
 
   if (this->action) {
-    ++this->action->references;
+    this->action->Lock();
   }
 
   this->unknown_0090 = 0;
