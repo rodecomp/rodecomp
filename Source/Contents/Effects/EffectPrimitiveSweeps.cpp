@@ -2,6 +2,7 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <algorithm>
 #include <cstdlib>
 
 // OFFSET: 0x00BF1F00
@@ -163,41 +164,40 @@ void CEffectPrim::RenderSpinSquare(
 // OFFSET: 0x00BF27D0
 // FUNCTION: fn_19990
 void CEffectPrim::RenderTrailingArc(matrix& wtm) {
-  vector3d prevB{};
+  vector3d prevT{};
   vector3d curB{};
   vector3d curT{};
-  vector3d prevT{};
+  vector3d prevB{};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1 || slot.process <= 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].process <= 0) {
       continue;
     }
 
-    const int texture = slot.process % static_cast<int>(this->state.totalTexture);
-    const int step = slot.fullDisplayAngle / 20;
+    const int texture = this->state.slots[ec].process % static_cast<int>(this->state.totalTexture);
+    const int step = this->state.slots[ec].fullDisplayAngle / 20;
     int i = 0;
-    for (int offset = 0; offset <= slot.fullDisplayAngle; offset += step) {
-      int angle = (slot.rotStart + offset) % 360;
-      if (slot.fullDisplayAngle == 360 && i == 20) {
-        angle = slot.rotStart;
+    for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
+      int angle = (this->state.slots[ec].rotStart + offset) % 360;
+      if (this->state.slots[ec].fullDisplayAngle == 360 && i == 20) {
+        angle = this->state.slots[ec].rotStart;
       }
 
-      const float baseX = slot.distance * g_cosTable[angle];
-      const float baseZ = slot.distance * g_sinTable[angle];
-      const float rise = slot.height[i];
-      const float riseX = rise * g_cosTable[slot.riseAngle];
-      curT.y = -(rise * g_sinTable[slot.riseAngle]);
+      const float baseX = this->state.slots[ec].distance * g_cosTable[angle];
+      const float baseZ = this->state.slots[ec].distance * g_sinTable[angle];
+      const float rise = this->state.slots[ec].height[i];
+      const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
+      curT.y = -(rise * g_sinTable[this->state.slots[ec].riseAngle]);
       curB.x = baseX - this->state.slots[0].vecTNow.x * 0.75f;
+      curB.y = 0.0f;
       curB.z = baseZ - this->state.slots[0].vecTNow.z * 0.75f;
       curT.z = riseX * g_sinTable[angle] + baseZ - this->state.slots[0].vecTNow.z;
       curT.x = riseX * g_cosTable[angle] + baseX - this->state.slots[0].vecTNow.x;
 
       if (i > 0) {
-        this->state.size = slot.vecTPre.x;
-        this->RenderTeiRect(&rpCnt, i - 1, slot.alphaB, slot.alphaB, prevB, curB, curT, prevT, wtm, static_cast<char>(texture));
+        this->state.size = this->state.slots[ec].vecTPre.x;
+        this->RenderTeiRect(&rpCnt, i - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, prevB, curB, curT, prevT, wtm, static_cast<char>(texture));
       }
 
       ++i;
