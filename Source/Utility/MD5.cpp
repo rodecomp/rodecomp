@@ -12,6 +12,16 @@ namespace {
       | ((digest[8] ^ digest[9] ^ digest[10] ^ digest[11]) << 16)
       | (static_cast<std::uint32_t>(digest[12] ^ digest[13] ^ digest[14] ^ digest[15]) << 24);
   }
+
+  // INLINED
+  __forceinline void Encode(unsigned char* output, const std::uint32_t* input, std::uint32_t length) {
+    for (std::uint32_t i = 0; i < length / 4; ++i) {
+      output[i * 4] = static_cast<unsigned char>(input[i] & 0xFF);
+      output[i * 4 + 1] = static_cast<unsigned char>((input[i] >> 8) & 0xFF);
+      output[i * 4 + 2] = static_cast<unsigned char>((input[i] >> 16) & 0xFF);
+      output[i * 4 + 3] = static_cast<unsigned char>((input[i] >> 24) & 0xFF);
+    }
+  }
 }
 
 // OFFSET: 0x00401C40
@@ -202,6 +212,7 @@ __declspec(noinline) unsigned char* MD5::Finalize() {
   Transform(m_state, m_words);
 
   unsigned char* digest = reinterpret_cast<unsigned char*>(m_state);
+  Encode(digest, m_state, 16);
   return digest;
 }
 
