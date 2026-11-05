@@ -164,27 +164,27 @@ CNaviInfo::~CNaviInfo() {
   this->cellX = 0;
   this->cellY = 0;
 
-  for (CNavi_Object*& npc : this->npcs) {
-    if (npc != nullptr) {
-      delete npc;
+  for (std::vector<CNavi_Object*>::iterator it = this->npcs.begin(); it != this->npcs.end(); ++it) {
+    if (*it != nullptr) {
+      delete *it;
     }
-    npc = nullptr;
+    *it = nullptr;
   }
   this->npcs.clear();
 
-  for (CNavi_Object*& mob : this->mobs) {
-    if (mob != nullptr) {
-      delete mob;
+  for (std::vector<CNavi_Object*>::iterator it = this->mobs.begin(); it != this->mobs.end(); ++it) {
+    if (*it != nullptr) {
+      delete *it;
     }
-    mob = nullptr;
+    *it = nullptr;
   }
   this->mobs.clear();
 
-  for (CNavi_Link*& link : this->links) {
-    if (link != nullptr) {
-      delete link;
+  for (std::vector<CNavi_Link*>::iterator it = this->links.begin(); it != this->links.end(); ++it) {
+    if (*it != nullptr) {
+      delete *it;
     }
-    link = nullptr;
+    *it = nullptr;
   }
   this->links.clear();
 }
@@ -257,7 +257,7 @@ void CNavigationManager::ClearNodePaths() {
   for (std::size_t i = 0; i < this->nodePaths.size(); ++i) {
     this->nodePaths[i].clear();
   }
-  this->nodePaths.erase(this->nodePaths.begin(), this->nodePaths.end());
+  this->nodePaths.clear();
 }
 
 // OFFSET: 0x00B961A0
