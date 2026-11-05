@@ -154,6 +154,7 @@ public:
   void SubD97B20(int);
   void SubD97EF0(int);
   void SubD97F00(int);
+  void OpenAccountRegistration();
   void ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet);
   void ReceiveLoginError(const LoginErrorPacket* packet);
   void ReceiveBillingInfo(const unsigned char* packet);
@@ -189,7 +190,6 @@ extern int g_isAppActive;
 int GetClientType();
 std::string GetMacAddress();
 const char* GetUserCountText(unsigned short userCount);
-void OpenAccountRegistration();
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CharacterInfo) == 0xAF);

@@ -130,7 +130,7 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
   const NotifyBanPacket* packet = reinterpret_cast<const NotifyBanPacket*>(data);
   char text[256];
   text[0] = '\0';
-  const std::uint8_t errorCode = packet->errorCode;
+  const int errorCode = packet->errorCode;
   GetRagConnection().Close();
 
   switch (errorCode) {
@@ -156,7 +156,7 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
     strcpy(text, LookupMessage(438));
     if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) == 187) {
       g_modeMgr.Quit();
-      OpenAccountRegistration();
+      this->OpenAccountRegistration();
     }
     text[0] = '\0';
     break;
