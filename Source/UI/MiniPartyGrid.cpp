@@ -8,18 +8,18 @@ int g_miniPartyCellHeight = 55;
 // OFFSET: 0x00737EC0
 // FUNCTION: fn_07659
 MiniPartyGridPoint* MiniPartyGrid::GetCellPosition(MiniPartyGridPoint* position, int index) const {
-  const int y = this->top + g_miniPartyCellHeight * (index % this->rows);
   position->x = this->left + g_miniPartyCellWidth * (index / this->rows);
-  position->y = y;
+  position->y = this->top + g_miniPartyCellHeight * (index % this->rows);
+
   return position;
 }
 
 // OFFSET: 0x00737EF0
 // FUNCTION: fn_07660
 MiniPartyGridPoint* MiniPartyGrid::GetWindowPosition(MiniPartyGridPoint* position, int index) const {
-  const int y = this->top + g_miniPartyCellHeight * (index % this->rows);
   position->x = this->left + g_miniPartyCellWidth * (index / this->rows);
-  position->y = y;
+  position->y = this->top + g_miniPartyCellHeight * (index % this->rows);
+
   return position;
 }
 
