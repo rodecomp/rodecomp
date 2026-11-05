@@ -506,8 +506,13 @@ CCashEmotionMgr::CCashEmotionMgr()
 // FUNCTION: fn_02928
 CCashEmotionMgr::~CCashEmotionMgr() {
   if (this->m_action) {
+    delete this->m_action;
     this->m_action = nullptr;
   }
+
+  g_timeScheduler->sub_BA95F0(5);
+  g_timeScheduler->sub_BA95F0(6);
+  g_timeScheduler->sub_BA95F0(7);
 }
 
 // OFFSET: 0x00598C70
