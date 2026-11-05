@@ -6,10 +6,15 @@
 // GLOBAL: gl_24370
 WNDPROC lpPrevWndFunc;
 
+struct BrowserAddressBstr {
+  BSTR text;
+  ~BrowserAddressBstr();
+};
+
 // OFFSET: 0x00AB20F0
 // FUNCTION: fn_17411
-void __fastcall sub_AB20F0(BSTR* address) {
-  SysFreeString(*address);
+BrowserAddressBstr::~BrowserAddressBstr() {
+  SysFreeString(text);
 }
 
 // OFFSET: 0x00AB21F0
