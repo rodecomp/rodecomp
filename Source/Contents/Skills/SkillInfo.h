@@ -94,6 +94,13 @@ public:
 };
 
 struct SkillInfoEntry {
+  // INLINED
+  SkillInfoEntry& operator=(const SkillInfoEntry& other) {
+    this->unknown_0000 = other.unknown_0000;
+    this->unknown_0004 = other.unknown_0004;
+    return *this;
+  }
+
   /* 0000 */ std::uint32_t unknown_0000;
   /* 0004 */ std::uint32_t unknown_0004;
 };
