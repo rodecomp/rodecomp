@@ -42,26 +42,31 @@ bool CRendererDX7::RenderToTexture(
   description.ddpfPixelFormat.dwRGBAlphaBitMask = 0xFF000000;
   ComPtr<IDirectDrawSurface7> target;
 
-  if (FAILED(g_deviceOwnerDX7->draw->CreateSurface(&description, target.GetAddressOf(), nullptr))) {
+  if (FAILED((g_deviceOwnerDX7 ? g_deviceOwnerDX7->draw : nullptr)->CreateSurface(&description, target.GetAddressOf(), nullptr))) {
     return false;
   }
 
   ComPtr<IDirectDrawSurface7> previous;
-  DWORD depth = 0;
-  DWORD fog = 0;
-  auto* device = g_deviceOwnerDX7->device;
-
-  if (device->GetRenderTarget(previous.GetAddressOf()) != S_OK || device->GetRenderState(D3DRENDERSTATE_ZENABLE, &depth) != S_OK ||
-      device->GetRenderState(D3DRENDERSTATE_FOGENABLE, &fog) != S_OK) {
+  if ((g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->GetRenderTarget(previous.GetAddressOf()) != S_OK) {
     return false;
   }
 
-  if (device->SetRenderTarget(target.Get(), 0) == S_OK) {
-    device->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
-    device->SetRenderState(D3DRENDERSTATE_FOGENABLE, 0);
-    device->Clear(0, nullptr, D3DCLEAR_TARGET, 0, 0, 0);
+  DWORD depth = 0;
+  if ((g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->GetRenderState(D3DRENDERSTATE_ZENABLE, &depth) != S_OK) {
+    return false;
+  }
 
-    if (device->BeginScene() == S_OK) {
+  DWORD fog = 0;
+  if ((g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->GetRenderState(D3DRENDERSTATE_FOGENABLE, &fog) != S_OK) {
+    return false;
+  }
+
+  if ((g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderTarget(target.Get(), 0) == S_OK) {
+    (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
+    (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderState(D3DRENDERSTATE_FOGENABLE, 0);
+    (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->Clear(0, nullptr, D3DCLEAR_TARGET, 0, 0, 0);
+
+    if ((g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->BeginScene() == S_OK) {
       for (auto* primitive : primitives) {
         auto* selected = static_cast<CTextureDX7*>(primitive->texture);
 
@@ -69,14 +74,14 @@ bool CRendererDX7::RenderToTexture(
         primitive->Draw(reinterpret_cast<int>(g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr));
       }
 
-      device->EndScene();
+      (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->EndScene();
       RECT rectangle{0, 0, width, height};
       static_cast<CTextureDX7*>(texture)->CopySurface(target.Get(), &rectangle);
     }
 
-    device->SetRenderTarget(previous.Get(), 0);
-    device->SetRenderState(D3DRENDERSTATE_ZENABLE, depth);
-    device->SetRenderState(D3DRENDERSTATE_FOGENABLE, fog);
+    (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderTarget(previous.Get(), 0);
+    (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderState(D3DRENDERSTATE_ZENABLE, depth);
+    (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderState(D3DRENDERSTATE_FOGENABLE, fog);
   }
 
   return true;
