@@ -55,26 +55,26 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   unsigned char* const scrolling = reinterpret_cast<unsigned char*>(&this->unknown_015C);
   unsigned char* const lineMove = reinterpret_cast<unsigned char*>(&this->unknown_0184);
 
-  if (message == 0) {
-    if (lineMove[1] == 0 || (static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8) != 0 || lineMove[1] == 0) {
-      char newline[] = "\r\n";
+  switch (message) {
+  case 0:
+    if (lineMove[1] == 0 || HIBYTE(GetKeyState(VK_SHIFT)) != 0 || lineMove[1] == 0) {
+      char newline[3] = {'\r', '\n', '\0'};
       g_serverLanguage->Insert(newline);
       return 0;
     }
 
     this->UIWindow::SendMsg(sender, 0, a, b, c, d);
     return 0;
-  }
-
-  if (message == 7 || message == 9 || message == 10) {
+  case 7:
+  case 9:
+  case 10: {
     const int previous = this->unknown_0158;
-    const int visible = this->geometry.height / this->unknown_0138;
     scrolling[0] = 1;
 
     if (message == 9) {
-      this->unknown_0158 = previous - visible + 1;
+      this->unknown_0158 = previous - this->geometry.height / this->unknown_0138 + 1;
     } else if (message == 10) {
-      this->unknown_0158 = previous - 1 + visible;
+      this->unknown_0158 = previous - 1 + this->geometry.height / this->unknown_0138;
     } else {
       this->unknown_0158 = previous + a;
     }
@@ -97,8 +97,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
     return this->unknown_0158 - previous;
   }
-
-  if (message == 18) {
+  case 18: {
     lineMove[0] = 0;
 
     const unsigned count = this->unknown_0168.size();
@@ -146,7 +145,9 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     g_serverLanguage->RetreatCursor(this->unknown_0150);
     scrolling[1] = 1;
     lineMove[0] = 1;
-  } else if (message == 19) {
+    break;
+  }
+  case 19: {
     lineMove[0] = 0;
 
     const unsigned count = this->unknown_0168.size();
@@ -195,11 +196,13 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
     g_serverLanguage->AdvanceCursor(this->unknown_0150);
     this->unknown_015E = 1;
-  } else if (message == 256) {
+    break;
+  }
+  case 256:
     scrolling[0] = 0;
     this->HandleInputMessage(a, b);
     return 3;
-  } else {
+  default:
     this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
     return 0;
   }
@@ -218,42 +221,6 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
   this->unknown_0154 = 0;
 
   switch (key) {
-  case VK_BACK:
-    if (this->unknown_0168.size() != 0) {
-      g_serverLanguage->Selection(this->anchor, this->cursor);
-      int length = 0;
-      for (int line = 0; line < this->textY; ++line) {
-        length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
-      }
-      if (length == this->cursor && this->unknown_0174[this->textY - 1]) {
-        g_serverLanguage->Character(VK_BACK, data);
-      }
-    }
-    break;
-  case VK_END:
-    if (this->unknown_0168.size() != 0) {
-      g_serverLanguage->Selection(this->anchor, this->cursor);
-      int offset = this->cursor;
-      for (int line = 0; line < this->textY; ++line) {
-        offset -= static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
-      }
-      const int length = static_cast<int>(std::strlen(this->unknown_0168[this->textY].c_str()));
-      g_serverLanguage->AdvanceCursor(this->unknown_0174[this->textY] ? length - offset - 2 : length - offset);
-      g_serverLanguage->Selection(this->anchor, this->cursor);
-    }
-    reinterpret_cast<unsigned char*>(&this->unknown_0184)[0] = 1;
-    return;
-  case VK_HOME:
-    if (this->unknown_0168.size() != 0) {
-      g_serverLanguage->Selection(this->anchor, this->cursor);
-      int offset = this->cursor;
-      for (int line = 0; line < this->textY; ++line) {
-        offset -= static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
-      }
-      g_serverLanguage->RetreatCursor(offset);
-      g_serverLanguage->Selection(this->anchor, this->cursor);
-    }
-    break;
   case VK_LEFT:
     if (this->textY > 0) {
       g_serverLanguage->Selection(this->anchor, this->cursor);
@@ -281,6 +248,42 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
       }
     }
     g_serverLanguage->KeyDown(key, data);
+    break;
+  case VK_HOME:
+    if (this->unknown_0168.size() != 0) {
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+      int offset = this->cursor;
+      for (int line = 0; line < this->textY; ++line) {
+        offset -= static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+      }
+      g_serverLanguage->RetreatCursor(offset);
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+    }
+    break;
+  case VK_END:
+    if (this->unknown_0168.size() != 0) {
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+      int offset = this->cursor;
+      for (int line = 0; line < this->textY; ++line) {
+        offset -= static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+      }
+      const int length = static_cast<int>(std::strlen(this->unknown_0168[this->textY].c_str()));
+      g_serverLanguage->AdvanceCursor(this->unknown_0174[this->textY] ? length - offset - 2 : length - offset);
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+    }
+    reinterpret_cast<unsigned char*>(&this->unknown_0184)[0] = 1;
+    return;
+  case VK_BACK:
+    if (this->unknown_0168.size() != 0) {
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+      int length = 0;
+      for (int line = 0; line < this->textY; ++line) {
+        length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+      }
+      if (length == this->cursor && this->unknown_0174[this->textY - 1]) {
+        g_serverLanguage->Character(VK_BACK, data);
+      }
+    }
     break;
   case VK_INSERT:
   case VK_DELETE:
@@ -929,7 +932,8 @@ void UIChatEditCtrl::Slot25(int x, int y) {
 // OFFSET: 0x00863640
 // FUNCTION: fn_10909
 int UIChatEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 18) {
+  switch (message) {
+  case 18:
     if (this->history.size() != 0) {
       if (this->unknown_0140 == this->history.size()) {
         this->pending = this->Text();
@@ -941,13 +945,15 @@ int UIChatEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       this->SetText(this->history[this->unknown_0140].c_str());
       this->Slot23();
     }
-  } else if (message == 19) {
+    break;
+  case 19:
     if (this->history.size() != 0 && this->unknown_0140 < this->history.size()) {
       ++this->unknown_0140;
-      this->SetText(this->unknown_0140 == this->history.size() ? this->pending.c_str() : this->history[this->unknown_0140].c_str());
+      this->SetText((this->unknown_0140 == this->history.size() ? this->pending : this->history[this->unknown_0140]).c_str());
       this->Slot23();
     }
-  } else {
+    break;
+  default:
     return UIEditCtrl::SendMsg(sender, message, a, b, c, d);
   }
 
@@ -1162,8 +1168,7 @@ void UIEditCtrl3::SetText(const char* value) {
 
   if (g_windowMgr.GetHoverWindow() == this) {
     g_serverLanguage->ResetInput();
-    g_serverLanguage->ResetInput();
-    g_serverLanguage->Insert(this->text.c_str());
+    g_serverLanguage->ReplaceInput(this->text.c_str());
   }
 
   this->SelectAll();
