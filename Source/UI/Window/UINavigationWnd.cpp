@@ -398,7 +398,7 @@ void UINavigationWnd::RefreshRouteList() {
   }
 
   this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(LookupMessage(0x8BA)), 0, 0);
-  this->m_searchPanel->lineOffset = lineOffset;
+  this->m_searchPanel->SetLineOffset(lineOffset);
 
   CNavi_Link* previous = nullptr;
   for (int index = 0; index < nodeCount; ++index) {
@@ -686,8 +686,8 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         if (result >= 0) {
           this->SendMsg(this, 6, 0xBD, 0, 0, 0);
           this->RefreshRouteList();
-          if (g_windowMgr.window_0428) {
-            static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapMarks();
+          if (g_windowMgr.modal) {
+            static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapMarks();
           }
         }
       }
@@ -703,23 +703,11 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->LayoutTabs();
       return 0;
     case 0xBF: {
-      if (g_closeChatAfterGroups != 0) {
+      if (g_windowMgr.unknown_0214) {
         g_windowMgr.CloseWindow(0x1A);
       }
 
-      struct VectorStorage {
-        std::string* first;
-        std::string* last;
-        std::string* end;
-      };
-      VectorStorage& history = *reinterpret_cast<VectorStorage*>(&this->m_history);
-      for (std::string* item = history.first; item != history.last; ++item) {
-        item->clear();
-      }
-      for (std::string* item = history.first; item != history.last; ++item) {
-        item->~basic_string();
-      }
-      history.last = history.first;
+      this->ClearHistory();
 
       const std::string directory = FormatOwnedString("%s\\Navigationdata\\", g_applicationDirectory);
       EnumerateFileNames(this->m_history, directory.c_str(), "txt");
@@ -756,9 +744,9 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_navigationManager.Reset(true);
       g_navigationMinimized = false;
       g_navigationHidden = false;
-      if (g_windowMgr.window_0428) {
+      if (g_windowMgr.modal) {
         g_navigationMinimized = true;
-        static_cast<UIRoMapWnd*>(g_windowMgr.window_0428)->UpdateNavigationButtons();
+        static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
         return 0;
       }
       g_windowMgr.Schedule(this);
@@ -768,8 +756,8 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_navigationMinimized = !g_navigationMinimized;
       this->ApplyMinimized();
       this->RefreshHeaderTexts(g_navigationMode);
-      if (g_navigationMinimized && g_windowMgr.window_0428) {
-        static_cast<UIRoMapWnd*>(g_windowMgr.window_0428)->UpdateNavigationButtons();
+      if (g_navigationMinimized && g_windowMgr.modal) {
+        static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
         return 0;
       }
       break;
@@ -797,8 +785,8 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         g_navigationSearchText = this->m_titleBar->Text();
         g_navigationManager.RefreshSearch();
         this->SendMsg(this, 6, 0xBE, 0, 0, 0);
-        if (g_windowMgr.window_0428) {
-          static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapLevels();
+        if (g_windowMgr.modal) {
+          static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
           return 0;
         }
       }
@@ -811,8 +799,8 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
         const int index = static_cast<int>(argument2) - this->m_routePanel->LineOffset();
         if (index >= 0 && g_navigationManager.SelectState(index)) {
-          if (g_windowMgr.window_0428) {
-            static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapSelection();
+          if (g_windowMgr.modal) {
+            static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
           }
           this->Invalidate();
           return 0;
@@ -848,11 +836,9 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       if (argument2 != -1) {
         this->RecordResponse(0x1B9, argument2, argument3, argument4);
-        using SelectTargetFn = bool (CNavigationManager::*)(int);
-        if ((g_navigationManager.*reinterpret_cast<SelectTargetFn>(&CNavigationManager::SelectTarget))(
-                static_cast<int>(argument2) - this->m_searchPanel->LineOffset())) {
-          if (g_windowMgr.window_0428) {
-            static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapSelection();
+        if (g_navigationManager.SelectTarget(static_cast<int>(argument2) - this->m_searchPanel->LineOffset())) {
+          if (g_windowMgr.modal) {
+            static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
           }
           this->Invalidate();
           return 0;
@@ -891,7 +877,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
   case 0xE:
     if (argument1 == 7) {
-      const int height = (std::max)(0x152, (std::min)(static_cast<int>(argument3), 0x152));
+      const int height = (std::min)((std::max)(static_cast<int>(argument3), 0x152), 0x152);
       this->m_saved->height = height;
       this->ApplyMinimized();
     }
@@ -908,16 +894,15 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 void UINavigationWnd::FillRouteList() {
   this->m_routePanel->Invalidate();
   this->m_routePanel->Clear();
-  const int count = g_navigationManager.StateCount();
-  if (count == 0) {
+  if (g_navigationManager.StateCount() == 0) {
     return;
   }
 
   char text[64];
   std::memset(text, 0, sizeof(text));
-  std::sprintf(text, LookupMessage(0x8AE), count);
+  std::sprintf(text, LookupMessage(0x8AE), g_navigationManager.StateCount());
   this->SendMsg(nullptr, 0x1F, 0x150, reinterpret_cast<std::intptr_t>(text), 0, 0);
-  this->m_routePanel->lineOffset = 1;
+  this->m_routePanel->SetLineOffset(1);
 
   for (int index = 0; index < g_navigationManager.StateCount(); ++index) {
     std::memset(text, 0, sizeof(text));
@@ -928,22 +913,22 @@ void UINavigationWnd::FillRouteList() {
     } else if (state.type == 3) {
       CNavi_Object* object = static_cast<CNavi_Object*>(state.object);
       const int flag = object->GetFlag();
-      if (flag < 1) {
-        std::sprintf(text, LookupMessage(0x8B0), object->GetInfo()->GetName(), object->GetName());
-      } else {
-        const char* kind;
-        if (flag >= 100) {
+      if (flag > 0) {
+        std::string kind = "없음";
+        if (flag > 99) {
           kind = LookupMessage(0x991);
-        } else if (flag > 0x31) {
+        } else if (flag > 49) {
           kind = LookupMessage(0x992);
-        } else if (static_cast<unsigned int>(flag - 0x14) < 0x1E) {
+        } else if (flag >= 20 && flag <= 49) {
           kind = LookupMessage(0x993);
-        } else if (static_cast<unsigned int>(flag - 5) < 0xF) {
+        } else if (flag >= 5 && flag <= 19) {
           kind = LookupMessage(0x994);
-        } else {
+        } else if (flag >= 1 && flag <= 4) {
           kind = LookupMessage(0x995);
         }
-        std::sprintf(text, LookupMessage(0x98F), object->GetInfo()->GetName(), object->GetName(), kind);
+        std::sprintf(text, LookupMessage(0x98F), object->GetInfo()->GetName(), object->GetName(), kind.c_str());
+      } else {
+        std::sprintf(text, LookupMessage(0x8B0), object->GetInfo()->GetName(), object->GetName());
       }
     } else if (state.type == 1) {
       std::sprintf(text, LookupMessage(0x8B1), static_cast<CNaviInfo*>(state.object)->GetName());
