@@ -22,10 +22,9 @@ std::uint32_t LexiconSerializer::Serialize(LexiconNode* node, std::uint32_t offs
 
   std::uint32_t next = offset + static_cast<std::uint32_t>(siblings) * 3u + 1u;
   while (siblings > 0) {
-    this->buffer[offset] = static_cast<unsigned char>((terminal << 7) | (next >> 16));
-    this->buffer[offset + 1] = static_cast<unsigned char>(next >> 8);
-    this->buffer[offset + 2] = static_cast<unsigned char>(next);
-    offset += 3;
+    this->buffer[offset++] = static_cast<unsigned char>((terminal << 7) | (next >> 16));
+    this->buffer[offset++] = static_cast<unsigned char>(next >> 8);
+    this->buffer[offset++] = static_cast<unsigned char>(next);
 
     unsigned char chain = 0;
     for (LexiconNode* current = node; current != nullptr && current->sibling == nullptr; current = current->child) {
@@ -34,6 +33,7 @@ std::uint32_t LexiconSerializer::Serialize(LexiconNode* node, std::uint32_t offs
 
     if (chain > 1) {
       this->buffer[next++] = chain;
+
       LexiconNode* current = node;
       unsigned char lastTerminal;
       for (int remaining = chain; remaining != 0; --remaining) {
@@ -48,10 +48,10 @@ std::uint32_t LexiconSerializer::Serialize(LexiconNode* node, std::uint32_t offs
 
       if (current != nullptr) {
         const unsigned char last = this->buffer[next - 1];
-        if (last >= 0x20) {
-          this->buffer[next++] = 4;
-        } else {
+        if (last < 0x20) {
           this->buffer[next - 1] = last | 4;
+        } else {
+          this->buffer[next++] = 4;
         }
 
         next = this->Serialize(current, next, lastTerminal);
