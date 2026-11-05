@@ -3226,6 +3226,12 @@ namespace GPakEx {
   }
 
   // OFFSET: 0x00656A20
+  // FUNCTION: fn_05076
+  template<>
+  __declspec(noinline) ThreeWayCfbDecryption::CipherModeFinal() {
+    this->m_cipher = &this->m_blockCipher;
+    this->ResizeBuffers();
+  }
 
   // INLINED
   template<>
