@@ -160,35 +160,17 @@ void CUIEditCtrlEx::Paint() {
 // FUNCTION: fn_14445
 void CUIEditCtrlEx::UpdateScrollBar() {
   const int total = static_cast<int>(this->lines.size());
-  int visible = (this->geometry.height - this->verticalPadding) / this->unknown_0138;
-  if (visible < 1) {
-    visible = 1;
-  }
-  this->visibleLines = visible;
+  this->visibleLines = std::max(1, (this->geometry.height - this->verticalPadding) / this->unknown_0138);
+  this->scrollMaximum = std::max(0, total - this->visibleLines);
 
-  int maximum = total - visible;
-  if (maximum < 0) {
-    maximum = 0;
+  this->scrollPosition = std::min(this->scrollPosition, this->line);
+  if (this->line >= this->visibleLines + this->scrollPosition) {
+    this->scrollPosition = this->line - this->visibleLines + 1;
   }
-  this->scrollMaximum = maximum;
+  this->scrollPosition = std::clamp(this->scrollPosition, 0, this->scrollMaximum);
 
-  int position = this->scrollPosition;
-  if (this->line < position) {
-    position = this->line;
-  }
-  if (this->line >= visible + position) {
-    position = this->line - visible + 1;
-  }
-  if (position > maximum) {
-    position = maximum;
-  } else if (position < 0) {
-    position = 0;
-  }
-  this->scrollPosition = position;
-
-  UIScrollBar* scrollBar = static_cast<UIScrollBar*>(this->unknown_0130);
-  scrollBar->SetRange(maximum, visible, total);
-  scrollBar->SetPosition(this->scrollPosition);
+  static_cast<UIScrollBar*>(this->unknown_0130)->SetRange(this->scrollMaximum, this->visibleLines, total);
+  static_cast<UIScrollBar*>(this->unknown_0130)->SetPosition(this->scrollPosition);
   this->unknown_0134 = this->scrollMaximum > 0;
 }
 
@@ -208,15 +190,15 @@ void CUIEditCtrlEx::Synchronize() {
 
   const std::string prefix = g_serverLanguage->Prefix(false);
   const std::string fullText = prefix + this->text;
-  std::vector<bool> breaks;
   std::vector<std::string> lines;
-  if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] == 0) {
-    lines.push_back(fullText);
-    breaks.push_back(false);
-  } else {
+  std::vector<bool> breaks;
+  if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0) {
     int wrapWidth = this->geometry.width - this->unknown_0130->geometry.width - this->unknown_01B4;
     this->WrapTextWithBreaks(fullText.c_str(), &lines, &breaks, wrapWidth);
     this->sub_860C60(&lines);
+  } else {
+    lines.push_back(fullText);
+    breaks.push_back(false);
   }
 
   this->lines.clear();
@@ -438,13 +420,6 @@ void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
 int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   int position;
   switch (message) {
-  case 0:
-    if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && HIBYTE(GetKeyState(VK_SHIFT))) {
-      g_serverLanguage->Insert("\r\n");
-      return 0;
-    }
-    UIWindow::SendMsg(sender, 0, a, b, c, d);
-    return 0;
   case 7:
     position = this->scrollPosition + a;
     break;
@@ -454,6 +429,13 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case 10:
     position = this->scrollPosition - this->unknown_01F0;
     break;
+  case 0:
+    if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && HIBYTE(GetKeyState(VK_SHIFT))) {
+      g_serverLanguage->Insert("\r\n");
+      return 0;
+    }
+    UIWindow::SendMsg(sender, 0, a, b, c, d);
+    return 0;
   case 18:
     if (this->line > 0) {
       if (this->unknown_01D4 == this->line - 1) {
@@ -482,8 +464,29 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     this->selectedAll = 1;
     return 0;
+  case WM_KEYDOWN:
+    this->HandleKeyDown(a, b);
+    this->selectedAll = 1;
+    return 3;
+  case WM_CHAR:
+    if (this->unknown_01F8 != 0) {
+      if (this->unknown_01F8 == 1) {
+        if ((a < '0' || a > '9') && a != VK_BACK) {
+          return 3;
+        }
+      } else if (this->unknown_01F8 == 2) {
+        if ((a < '0' || a > '9') && a != '.' && a != VK_BACK) {
+          return 3;
+        }
+      } else {
+        return 3;
+      }
+    }
+    g_serverLanguage->Character(a, b);
+    this->selectedAll = 1;
+    return 3;
   case 19:
-    if (static_cast<unsigned>(this->line) < this->lines.size() - 1) {
+    if (this->lines.size() - 1 > static_cast<unsigned>(this->line)) {
       if (this->unknown_01D4 == this->line + 1) {
         g_serverLanguage->AdvanceCursor(this->unknown_01D8);
       } else {
@@ -510,27 +513,6 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     this->selectedAll = 1;
     return 0;
-  case WM_KEYDOWN:
-    this->HandleKeyDown(a, b);
-    this->selectedAll = 1;
-    return 3;
-  case WM_CHAR:
-    if (this->unknown_01F8 != 0) {
-      if (this->unknown_01F8 == 1) {
-        if ((a < '0' || a > '9') && a != VK_BACK) {
-          return 3;
-        }
-      } else if (this->unknown_01F8 == 2) {
-        if ((a < '0' || a > '9') && a != '.' && a != VK_BACK) {
-          return 3;
-        }
-      } else {
-        return 3;
-      }
-    }
-    g_serverLanguage->Character(a, b);
-    this->selectedAll = 1;
-    return 3;
   case WM_IME_COMPOSITION:
     this->selectedAll = 1;
     return 0;
@@ -539,13 +521,8 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return 0;
   }
 
-  if (position > this->scrollMaximum) {
-    position = this->scrollMaximum;
-  } else if (position < 0) {
-    position = 0;
-  }
-  this->scrollPosition = position;
-  static_cast<UIScrollBar*>(this->unknown_0130)->SetPosition(position);
+  this->scrollPosition = std::clamp(position, 0, this->scrollMaximum);
+  static_cast<UIScrollBar*>(this->unknown_0130)->SetPosition(this->scrollPosition);
   this->unknown_0134 = this->scrollMaximum > 0;
   return 0;
 }
