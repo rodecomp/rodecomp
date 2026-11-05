@@ -522,28 +522,27 @@ std::uint64_t XXH64_round(std::uint64_t acc, std::uint64_t input) {
 
 // OFFSET: 0x004DF400
 // FUNCTION: fn_00180
-std::uint64_t XXH64_finalize(std::uint64_t hash, const void* data, std::size_t length, XXH_alignment alignment) {
+std::uint64_t XXH64_finalize(std::uint64_t hash, const std::uint8_t* data, std::size_t length, XXH_alignment alignment) {
   (void)alignment;
-  const std::uint8_t* current = static_cast<const std::uint8_t*>(data);
   length &= 31;
 
   while (length >= 8) {
-    std::uint64_t const k1 = XXH64_round(0, ReadLE64(current));
-    current += 8;
+    std::uint64_t const k1 = XXH64_round(0, ReadLE64(data));
+    data += 8;
     hash ^= k1;
     hash = XXH_rotl64(hash, 27) * XXH_PRIME64_1 + XXH_PRIME64_4;
     length -= 8;
   }
 
   if (length >= 4) {
-    hash ^= static_cast<std::uint64_t>(ReadLE32(current)) * XXH_PRIME64_1;
-    current += 4;
+    hash ^= static_cast<std::uint64_t>(ReadLE32(data)) * XXH_PRIME64_1;
+    data += 4;
     hash = XXH_rotl64(hash, 23) * XXH_PRIME64_2 + XXH_PRIME64_3;
     length -= 4;
   }
 
   while (length > 0) {
-    hash ^= (*current++) * XXH_PRIME64_5;
+    hash ^= (*data++) * XXH_PRIME64_5;
     hash = XXH_rotl64(hash, 11) * XXH_PRIME64_1;
     --length;
   }

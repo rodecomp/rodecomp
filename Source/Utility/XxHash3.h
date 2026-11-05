@@ -66,6 +66,6 @@ void XXH3_reset_internal(XXH3_state_t* state, std::uint64_t seed, const void* se
 std::uint64_t XXH3_rrmxmx(std::uint64_t hash, std::uint64_t length);
 std::uint64_t XXH64_round(std::uint64_t acc, std::uint64_t input);
 std::uint64_t XXH64_avalanche(std::uint64_t hash);
-std::uint64_t XXH64_finalize(std::uint64_t hash, const void* data, std::size_t length, XXH_alignment alignment);
+std::uint64_t XXH64_finalize(std::uint64_t hash, const std::uint8_t* data, std::size_t length, XXH_alignment alignment);
 
 #endif
