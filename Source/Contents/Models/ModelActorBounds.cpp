@@ -1,6 +1,7 @@
 #include "Contents/Models/ModelActor.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <array>
 #include <cmath>
 #include <cstring>
 
@@ -121,7 +122,8 @@ __forceinline void C3dActor::FinishBounds(const float* bounds, bool modern) {
   SetAxis(this->oriented.axes[1], axes.values + 3);
   SetAxis(this->oriented.axes[2], axes.values + 6);
 
-  for (ModelVolume* volume : this->volumes) {
+  for (std::list<ModelVolume*>::iterator it = this->volumes.begin(); it != this->volumes.end(); ++it) {
+    ModelVolume* volume = *it;
     volume->transform.MakeXRotation(Radians(volume->rotation[0]));
     volume->transform.AppendYRotation(Radians(volume->rotation[1]));
     volume->transform.AppendZRotation(Radians(volume->rotation[2]));
@@ -147,10 +149,10 @@ __forceinline void C3dActor::FinishBounds(const float* bounds, bool modern) {
 // OFFSET: 0x00AB9660
 // FUNCTION: fn_17512
 void C3dActorV1::UpdateBounds() {
-  float bounds[6] = {100000, 100000, 100000, -100000, -100000, -100000};
+  std::array<float, 6> bounds = {100000, 100000, 100000, -100000, -100000, -100000};
   matrix identity;
   std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
-  this->root->AccumulateBounds(bounds, identity.values);
+  this->root->AccumulateBounds(bounds.data(), identity.values);
   this->offset[0] = -(bounds[3] + bounds[0]) * 0.5f;
   this->offset[1] = -bounds[4];
   this->offset[2] = -(bounds[5] + bounds[2]) * 0.5f;
@@ -160,20 +162,20 @@ void C3dActorV1::UpdateBounds() {
   this->transform.AppendXRotation(Radians(this->rotation[0]));
   this->transform.AppendZRotation(Radians(this->rotation[2]));
   this->transform.AppendTranslate(this->position);
-  this->FinishBounds(bounds, false);
+  this->FinishBounds(bounds.data(), false);
 }
 
 // OFFSET: 0x00ABA520
 // FUNCTION: fn_17513
 void C3dActorV2::UpdateBounds() {
-  float bounds[6] = {100000, 100000, 100000, -100000, -100000, -100000};
+  std::array<float, 6> bounds = {100000, 100000, 100000, -100000, -100000, -100000};
   matrix identity;
   std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
 
-  for (C3dNodeV2* root : this->roots) {
-    root->AccumulateBounds(bounds, identity.values);
+  for (std::list<C3dNodeV2*>::iterator it = this->roots.begin(); it != this->roots.end(); ++it) {
+    (*it)->AccumulateBounds(bounds.data(), identity.values);
   }
 
   this->UpdateMatrix();
-  this->FinishBounds(bounds, true);
+  this->FinishBounds(bounds.data(), true);
 }
