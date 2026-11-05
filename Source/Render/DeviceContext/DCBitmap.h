@@ -7,7 +7,7 @@
 
 class CDCBitmap : public CDC {
 public:
-  CDCBitmap(int width, int height);
+  __declspec(noinline) CDCBitmap(int width, int height);
   ~CDCBitmap() override;
   void Grow(std::uint32_t width, std::uint32_t height) override;
   bool GetDC(HDC* output) override;
