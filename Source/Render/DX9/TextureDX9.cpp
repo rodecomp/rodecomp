@@ -44,7 +44,8 @@ namespace {
 CTextureDX9::CTextureDX9(DeviceOwnerDX9& owner)
     : m_owner(&owner), m_renderTargetUsage(false), m_dynamic(false), m_allowDynamic(false), m_renderTarget(false), m_texture(nullptr), m_surface(nullptr),
       m_description{} {
-  this->m_textureWidth = this->m_textureHeight = this->m_width = this->m_height = 1;
+  this->m_textureWidth = this->m_width = 1;
+  this->m_textureHeight = this->m_height = 1;
   this->m_format = TextureFormat::A1R5G5B5;
 }
 
@@ -204,7 +205,7 @@ SurfaceLock CTextureDX9::Lock() {
 // OFFSET: 0x00572D50
 // FUNCTION: fn_02482
 void CTextureDX9::Filter() {
-  if (!this->m_dynamic && !this->m_renderTarget && this->m_texture && this->m_texture->GetLevelCount() > 1) {
+  if (!this->m_dynamic && !this->m_renderTarget && this->m_texture && static_cast<int>(this->m_texture->GetLevelCount()) > 1) {
     D3DXFilterTexture(this->m_texture, nullptr, UINT(-1), DWORD(-1));
   }
 }
