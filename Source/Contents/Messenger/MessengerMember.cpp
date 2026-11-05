@@ -1204,12 +1204,7 @@ void UIMessengerGroupWnd::Slot31(int x, int y) {
     window->geometry.alphaStart = timeGetTime();
   }
 
-  UIWindow* transient = g_windowMgr.window_4F250;
-  if (transient && static_cast<UIDragMiniPartyWnd*>(transient)->member.valid) {
-    transient->geometry.unknown_0030 = 1;
-    g_windowMgr.Schedule(g_windowMgr.window_4F250);
-    g_windowMgr.window_4F250 = nullptr;
-  }
+  g_windowMgr.RetireTransientWindow();
 }
 
 // OFFSET: 0x0073D0E0
