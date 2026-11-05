@@ -21,19 +21,19 @@ void GroundGeometry::CellBounds(int column, int row, float& minimum, float& maxi
     const float heights[4] = {quad->vertices[0][1], quad->vertices[1][1], quad->vertices[2][1], quad->vertices[3][1]};
     float high = -999999.0f;
 
-    for (float value : heights) {
-      if (value > high) {
-        maximum = value;
-        high = value;
+    for (unsigned corner = 0; corner < 4; ++corner) {
+      if (heights[corner] > high) {
+        maximum = heights[corner];
+        high = heights[corner];
       }
     }
 
     float low = minimum;
 
-    for (float value : heights) {
-      if (low > value) {
-        minimum = value;
-        low = value;
+    for (unsigned corner = 0; corner < 4; ++corner) {
+      if (low > heights[corner]) {
+        minimum = heights[corner];
+        low = heights[corner];
       }
     }
   }
@@ -88,6 +88,33 @@ bool GroundGeometry::CellVertices(const C3dAttr& terrain, float* vertices, int c
   return true;
 }
 
+// INLINED
+static __forceinline void MarkQuadRay(const float* ray, GroundQuad* const& quad, float limit) {
+  if (!quad) {
+    return;
+  }
+
+  float vertices[4][3] = {};
+
+  for (unsigned corner = 0; corner < 4; ++corner) {
+    vertices[corner][0] = quad->vertices[corner][0];
+    vertices[corner][1] = quad->vertices[corner][1];
+    vertices[corner][2] = quad->vertices[corner][2];
+  }
+
+  float u;
+  float v;
+  float distance;
+
+  if (IntersectRayTriangle(ray, vertices[0], vertices[1], vertices[2], u, v, distance) && limit > distance) {
+    quad->selected = 1;
+  }
+
+  if (quad->selected == 0 && IntersectRayTriangle(ray, vertices[1], vertices[3], vertices[2], u, v, distance) && limit > distance) {
+    quad->selected = 1;
+  }
+}
+
 // OFFSET: 0x00ABFD60
 // FUNCTION: fn_17560
 void GroundGeometry::MarkRay(const float* ray, int column, int row, float limit) {
@@ -95,32 +122,10 @@ void GroundGeometry::MarkRay(const float* ray, int column, int row, float limit)
     return;
   }
 
-  GroundCell& cell = this->cells[static_cast<unsigned>(column) + static_cast<unsigned>(row) * static_cast<unsigned>(this->width)];
-  GroundQuad* quads[3] = {cell.top, cell.side2, cell.side1};
-
-  for (GroundQuad* quad : quads) {
-    if (!quad) {
-      continue;
-    }
-
-    float vertices[4][3];
-
-    for (unsigned corner = 0; corner < 4; ++corner) {
-      std::memcpy(vertices[corner], quad->vertices[corner], sizeof(vertices[corner]));
-    }
-
-    float u;
-    float v;
-    float distance;
-
-    if (IntersectRayTriangle(ray, vertices[0], vertices[1], vertices[2], u, v, distance) && limit > distance) {
-      quad->selected = 1;
-    }
-
-    if (quad->selected == 0 && IntersectRayTriangle(ray, vertices[1], vertices[3], vertices[2], u, v, distance) && limit > distance) {
-      quad->selected = 1;
-    }
-  }
+  const GroundCell& cell = this->cells[static_cast<unsigned>(column) + static_cast<unsigned>(row) * static_cast<unsigned>(this->width)];
+  MarkQuadRay(ray, cell.top, limit);
+  MarkQuadRay(ray, cell.side2, limit);
+  MarkQuadRay(ray, cell.side1, limit);
 }
 
 // OFFSET: 0x00AC0170
