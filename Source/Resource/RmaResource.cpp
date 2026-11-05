@@ -9,7 +9,9 @@
 
 // OFFSET: 0x007461C0
 // FUNCTION: fn_07770
-CRmaRes::CRmaRes() = default;
+CRmaRes::CRmaRes() {
+  this->shadowZoom = 1.0f;
+}
 
 // OFFSET: 0x007467D0
 // FUNCTION: fn_07778

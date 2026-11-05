@@ -26,7 +26,7 @@ public:
   /* 011C */ std::vector<std::string> models;
   /* 0128 */ std::vector<int> actionModels;
   /* 0134 */ float interiorZoom = 1.0f;
-  /* 0138 */ float shadowZoom = 1.0f;
+  /* 0138 */ float shadowZoom;
   /* 013C */ int interiorOffsetX = 0;
   /* 0140 */ int interiorOffsetY = 0;
   /* 0144 */ int interiorFrameStart = 0;
