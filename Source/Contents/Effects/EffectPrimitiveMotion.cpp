@@ -4079,32 +4079,31 @@ void CEffectPrim::PrimGI4() {
   FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
-    EffectPrimitiveSlot& slot = this->state.slots[index];
-
-    if (slot.life != 1 || ++slot.process <= 0) {
+    if (this->state.slots[index].life != 1 || ++this->state.slots[index].process <= 0) {
       continue;
     }
 
-    slot.distance += 0.07f;
-    --slot.riseAngle;
+    this->state.slots[index].distance += 0.07f;
+    --this->state.slots[index].riseAngle;
 
-    if (slot.riseAngle < 10) {
-      slot.riseAngle = 10;
+    if (this->state.slots[index].riseAngle < 10) {
+      this->state.slots[index].riseAngle = 10;
+      this->state.slots[index].alphaB = 0;
     }
 
-    if (slot.distance >= 3.5f) {
-      slot.alphaB -= 3;
-
-      if (slot.alphaB <= 0) {
-        slot.distance = 2.87f;
-        slot.riseAngle = 74;
-        slot.alphaB = 0;
-      }
+    if (this->state.slots[index].distance < 3.5f) {
+      this->state.slots[index].alphaB += 10;
     } else {
-      slot.alphaB += 10;
+      this->state.slots[index].alphaB -= 3;
+
+      if (this->state.slots[index].alphaB < 1) {
+        this->state.slots[index].distance = 2.87f;
+        this->state.slots[index].riseAngle = 74;
+        this->state.slots[index].alphaB = 0;
+      }
     }
 
-    WaveSlotHeights(slot, index, 0.15f);
+    WaveSlotHeights(this->state.slots[index], index, 0.15f);
   }
 }
 
