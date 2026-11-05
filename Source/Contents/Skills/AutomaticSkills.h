@@ -8,7 +8,7 @@ class AutomaticSkills {
 public:
   AutomaticSkills();
   ~AutomaticSkills();
-  bool Contains(int id) const;
+  __declspec(noinline) bool Contains(int id) const;
   static int CancelOption(std::int16_t id);
   void DisableAll();
   void Use(std::int16_t id, std::int16_t level, std::uint32_t target);
