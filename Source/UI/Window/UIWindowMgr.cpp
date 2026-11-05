@@ -2289,6 +2289,12 @@ void CloseWindow10005B() {
   g_windowMgr.CloseWindow(10005);
 }
 
+// OFFSET: 0x00A05280
+// FUNCTION: fn_45510
+void CloseWindow10006() {
+  g_windowMgr.CloseWindow(10006);
+}
+
 // OFFSET: 0x00AA76F0
 // FUNCTION: fn_17239
 void UIWindowMgr::DrawLoginOverlay() {
