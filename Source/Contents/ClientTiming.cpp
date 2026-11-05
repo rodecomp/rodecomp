@@ -650,10 +650,6 @@ bool CSession::AddShopName(std::string name, int shopId) {
 // OFFSET: 0x00E00910
 // FUNCTION: fn_23644
 void CSession::LoadNavigationScripts() {
-  const char* npcDistance;
-  const char* scroll;
-  const char* pickNpc;
-
   if (g_serviceMode == 0) {
     if (!this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_f_krpri", true, false)) {
       return;
@@ -663,9 +659,9 @@ void CSession::LoadNavigationScripts() {
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_Mob_krpri", true, false);
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_Link_krpri", true, false);
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_LinkDistance_krpri", true, false);
-    npcDistance = "Lua Files\\Navigation\\Navi_NpcDistance_krpri";
-    scroll = "Lua Files\\Navigation\\Navi_Scroll_krpri";
-    pickNpc = "Lua Files\\Navigation\\navi_picknpc_krpri";
+    this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_NpcDistance_krpri", true, false);
+    this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_Scroll_krpri", true, false);
+    this->m_hotkeyScript->Load("Lua Files\\Navigation\\navi_picknpc_krpri", true, false);
   } else if (g_serviceMode == 1) {
     if (!this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_f_krSak", true, false)) {
       return;
@@ -675,9 +671,9 @@ void CSession::LoadNavigationScripts() {
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_Mob_krSak", true, false);
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_Link_krSak", true, false);
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_LinkDistance_krSak", true, false);
-    npcDistance = "Lua Files\\Navigation\\Navi_NpcDistance_krSak";
-    scroll = "Lua Files\\Navigation\\Navi_Scroll_krSak";
-    pickNpc = "Lua Files\\Navigation\\navi_picknpc_krSak";
+    this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_NpcDistance_krSak", true, false);
+    this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_Scroll_krSak", true, false);
+    this->m_hotkeyScript->Load("Lua Files\\Navigation\\navi_picknpc_krSak", true, false);
   } else {
     if (!this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_f_krLoc", true, false)) {
       return;
@@ -687,14 +683,11 @@ void CSession::LoadNavigationScripts() {
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_Mob_krLoc", true, false);
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_Link_krLoc", true, false);
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_LinkDistance_krLoc", true, false);
-    npcDistance = "Lua Files\\Navigation\\Navi_npcDistance_krLoc";
-    scroll = "Lua Files\\Navigation\\Navi_Scroll_krLoc";
-    pickNpc = "Lua Files\\Navigation\\navi_picknpc_krLoc";
+    this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_npcDistance_krLoc", true, false);
+    this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_Scroll_krLoc", true, false);
+    this->m_hotkeyScript->Load("Lua Files\\Navigation\\navi_picknpc_krLoc", true, false);
   }
 
-  this->m_hotkeyScript->Load(npcDistance, true, false);
-  this->m_hotkeyScript->Load(scroll, true, false);
-  this->m_hotkeyScript->Load(pickNpc, true, false);
   g_navigationManager.LoadScript(this->m_hotkeyScript);
 }
 
