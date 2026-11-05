@@ -4921,8 +4921,7 @@ bool CGameMode::RecordReplayMessage(int message, int value, int first, int secon
 // OFFSET: 0x00CED260
 // FUNCTION: fn_21364
 void CGameMode::UpdateReplayActionSpeeds() {
-  CPlayer* player = this->scene->player;
-  player->SetActionSpeed(Replay::Instance().AnimationScale());
+  this->scene->player->SetActionSpeed(Replay::Instance().AnimationScale());
   for (CRenderObject* actor : this->scene->actors) {
     actor->SetActionSpeed(Replay::Instance().AnimationScale());
   }
