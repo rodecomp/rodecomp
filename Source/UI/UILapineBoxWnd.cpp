@@ -335,78 +335,78 @@ void UILapineBox_IngredientListWnd::Slot35(int argument) {
 // OFFSET: 0x00600D60
 // FUNCTION: fn_04172
 int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 6) {
-    if (message == 0x68) {
-      std::vector<ITEM_INFO>& items = this->items;
-      const std::vector<ITEM_INFO>::iterator end = items.end();
-      std::vector<ITEM_INFO>::iterator found;
-      for (found = items.begin(); found != end; ++found) {
-        ITEM_INFO copy(*found);
-        if (a == copy.unknown_0000[1]) {
-          break;
-        }
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 0xC9:
+      g_windowMgr.CloseWindow(0x122);
+      break;
+    case 0x1F7: {
+      RandomCombineItemPacket* packet = new (std::nothrow) RandomCombineItemPacket;
+      packet->id = ID_CZ_REQ_RANDOM_COMBINE_ITEM;
+      const std::int16_t materialsLength = static_cast<std::int16_t>(this->items.size() * 4);
+      packet->length = materialsLength + 8;
+      packet->ingredientId = this->unknown_00C4;
+
+      char* payload = new (std::nothrow) char[materialsLength + 8];
+      memcpy_s(payload, packet->length, packet, 8);
+
+      for (std::size_t index = 0; index < this->items.size(); ++index) {
+        const ITEM_INFO& item = this->items[index];
+        const std::uint16_t material[2] = {static_cast<std::uint16_t>(item.unknown_0000[1]), static_cast<std::uint16_t>(item.quantity)};
+        memcpy_s(payload + 8 + index * 4, packet->length, material, sizeof(material));
       }
 
-      if (found != end) {
-        std::vector<ITEM_INFO>::iterator it = found + 1;
-        for (; it != end; ++it) {
-          *(it - 1) = *it;
-        }
-        items.pop_back();
+      GetRagConnection().Send(packet->length, payload);
 
-        if (items.size() < static_cast<size_t>(this->maxItems)) {
-          this->moveButton->SetDisabled(0);
-          this->moveButton->Invalidate();
-        }
-        this->Invalidate();
-      }
-    } else if (message == 0x6F) {
-      this->noticeTick = timeGetTime();
-      const char* text = reinterpret_cast<const char*>(a);
-      this->notice.assign(text, std::strlen(text));
+      this->waiting = 1;
+      this->makeButton->SetDisabled(1);
+      this->makeButton->Invalidate();
       this->Invalidate();
-    } else {
-      return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+
+      delete packet;
+      delete[] payload;
+      break;
     }
-  } else if (a == 0xC9) {
-    g_windowMgr.CloseWindow(0x122);
-  } else if (a == 0x1F7) {
-    const int count = static_cast<int>(this->items.size());
-    const int length = count * 4 + 8;
+    case 0x1F9: {
+      const std::vector<UIIngredientInfoWnd*>& entries = this->ingredientList->items;
+      const auto selected = std::find_if(entries.begin(), entries.end(), [](UIIngredientInfoWnd* entry) {
+        return entry->selected == 1;
+      });
 
-    RandomCombineItemPacket* packet = new (std::nothrow) RandomCombineItemPacket();
-    packet->id = ID_CZ_REQ_RANDOM_COMBINE_ITEM;
-    packet->length = static_cast<std::int16_t>(length);
-    packet->ingredientId = this->unknown_00C4;
+      if (selected != entries.end()) {
+        UIIngredientInfoWnd* entry = *selected;
 
-    unsigned char* payload = static_cast<unsigned char*>(std::malloc(length));
-    std::memcpy(payload, packet, 8);
-    for (int index = 0; index < count; ++index) {
-      const ITEM_INFO& material = this->items[index];
-      const std::uint32_t value = (static_cast<std::uint16_t>(material.quantity) << 16) | static_cast<std::uint16_t>(material.unknown_0000[1]);
-      std::memcpy(payload + 8 + index * 4, &value, sizeof(value));
-    }
-
-    GetRagConnection().Send(length, payload);
-
-    this->waiting = 1;
-    this->makeButton->SetDisabled(1);
-    this->makeButton->Invalidate();
-    this->Invalidate();
-
-    delete packet;
-    std::free(payload);
-  } else if (a == 0x1F9) {
-    for (UIIngredientInfoWnd* entry : this->ingredientList->items) {
-      if (entry->selected == 1) {
-        if (entry != nullptr && entry->insufficient != 1) {
-          if (this->ingredientList->SendMsg(this, 0x68, entry->item.unknown_0000[1], 0, 0, 0) >= 0) {
-            this->AddIngredient(entry->item.unknown_0000[1], entry->quantity);
-          }
+        if (entry != nullptr && entry->insufficient != 1 && this->ingredientList->SendMsg(this, 0x68, entry->item.unknown_0000[1], 0, 0, 0) >= 0) {
+          this->AddIngredient(entry->item.unknown_0000[1], entry->quantity);
         }
-        break;
       }
+      break;
     }
+    }
+    break;
+  case 0x68: {
+    const auto found = std::find_if(this->items.begin(), this->items.end(), [a](ITEM_INFO item) { return a == item.unknown_0000[1]; });
+
+    if (found != this->items.end()) {
+      this->items.erase(found);
+
+      if (this->items.size() < static_cast<std::size_t>(this->maxItems)) {
+        this->moveButton->SetDisabled(0);
+        this->moveButton->Invalidate();
+      }
+
+      this->Invalidate();
+    }
+    break;
+  }
+  case 0x6F:
+    this->noticeTick = timeGetTime();
+    this->notice = reinterpret_cast<const char*>(a);
+    this->Invalidate();
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
   return 0;
