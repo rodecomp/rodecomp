@@ -13,14 +13,14 @@ TIMESTAMP_STRUCT Timestamp::ToSqlTimestamp() {
     this->seconds = 0;
   }
 
-  const std::tm* local = _localtime32(&this->seconds);
+  const std::tm local = *_localtime32(&this->seconds);
   result.fraction = 0;
-  result.year = static_cast<SQLSMALLINT>(local->tm_year + 1900);
-  result.month = static_cast<SQLUSMALLINT>(local->tm_mon + 1);
-  result.day = static_cast<SQLUSMALLINT>(local->tm_mday);
-  result.hour = static_cast<SQLUSMALLINT>(local->tm_hour);
-  result.minute = static_cast<SQLUSMALLINT>(local->tm_min);
-  result.second = static_cast<SQLUSMALLINT>(local->tm_sec);
+  result.year = static_cast<SQLSMALLINT>(local.tm_year + 1900);
+  result.month = static_cast<SQLUSMALLINT>(local.tm_mon + 1);
+  result.day = static_cast<SQLUSMALLINT>(local.tm_mday);
+  result.hour = static_cast<SQLUSMALLINT>(local.tm_hour);
+  result.minute = static_cast<SQLUSMALLINT>(local.tm_min);
+  result.second = static_cast<SQLUSMALLINT>(local.tm_sec);
   return result;
 }
 
