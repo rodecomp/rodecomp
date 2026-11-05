@@ -110,6 +110,7 @@ public:
   void sub_5E1080(int delta);
   void ShiftSelectedIndex(int value);
   void CreateScrollBar(int width, int height);
+  const MaterialListEntry* GetEntry(unsigned int index) const;
 
   /* 00B4 */ int unknown_00B4;
   /* 00B8 */ int unknown_00B8;

@@ -36,6 +36,20 @@
 #include <malloc.h>
 #include <string>
 
+// INLINED
+inline const MaterialListEntry* UIChangeMaterialWnd_List::GetEntry(unsigned int index) const {
+  if (index >= this->m_items.size()) {
+    return nullptr;
+  }
+
+  const unsigned int entryIndex = static_cast<unsigned int>(this->m_items[index]);
+  if (entryIndex >= this->m_entries.size()) {
+    return nullptr;
+  }
+
+  return &this->m_entries[entryIndex];
+}
+
 // OFFSET: 0x005E03B0
 // FUNCTION: fn_03861
 UIChangeMaterialWnd::UIChangeMaterialWnd()
@@ -211,12 +225,9 @@ void UIChangeMaterialWnd_List::sub_5E2A70() {
     this->m_scrollBar->Show(1);
     this->m_scrollBar->SetRange(count - this->m_pageSize, this->m_pageSize, count);
 
-    const int offset = this->m_scrollOffset > 0 ? this->m_scrollOffset : 0;
-    this->m_scrollOffset = offset;
-    const int maximum = count - this->m_pageSize;
-    const int position = offset < maximum ? offset : maximum;
-    this->m_scrollOffset = position;
-    this->m_scrollBar->SetPosition(position);
+    this->m_scrollOffset = std::max(0, this->m_scrollOffset);
+    this->m_scrollOffset = std::min(count - this->m_pageSize, this->m_scrollOffset);
+    this->m_scrollBar->SetPosition(this->m_scrollOffset);
   } else {
     this->m_scrollOffset = 0;
     this->m_scrollBar->Show(0);
@@ -340,16 +351,7 @@ void UIChangeMaterialWnd_List::sub_5E3B80(int index) {
   this->m_selectedIndex = index;
   this->m_previousScrollOffset = this->m_scrollOffset;
   this->Invalidate();
-
-  const MaterialListEntry* entry = nullptr;
-  if (static_cast<std::uint32_t>(index) < this->m_items.size()) {
-    const int entryIndex = this->m_items[index];
-    if (static_cast<std::uint32_t>(entryIndex) < this->m_entries.size()) {
-      entry = &this->m_entries[entryIndex];
-    }
-  }
-
-  this->parent->SendMsg(nullptr, 23, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+  this->parent->SendMsg(nullptr, 23, reinterpret_cast<std::intptr_t>(this->GetEntry(index)), 0, 0, 0);
 }
 
 // OFFSET: 0x005E3C30
@@ -514,12 +516,7 @@ void UIChangeMaterialWnd_List::SortItems(bool ascending) {
 // OFFSET: 0x005E44C0
 // FUNCTION: fn_03898
 void UIChangeMaterialWnd_List::ShiftSelectedIndex(int value) {
-  int64_t target = this->m_selectedIndex - value;
-  if (target < 0) {
-    target = 0;
-  }
-
-  const int index = static_cast<int>(target);
+  const int index = static_cast<int>(std::max<int64_t>(0, this->m_selectedIndex - value));
   if (index < this->m_scrollOffset || index >= this->m_scrollOffset + this->m_pageSize) {
     int newOffset = this->m_previousScrollOffset;
     if (index < newOffset || index >= newOffset + this->m_pageSize) {
