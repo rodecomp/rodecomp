@@ -1566,28 +1566,15 @@ void CEffectPrim::RenderFacingQuads(matrix& wtm) {
       const vector3d corner4{position.x + vec4.x, position.y + vec4.y, position.z + vec4.z};
       const int alpha = std::max(alphas[corner] * 2, 0);
 
-      unsigned char red;
-      unsigned char green;
-      unsigned char blue;
       if (slot.flag1[5] == 7) {
-        red = 250;
-        green = 70;
-        blue = 100;
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (slot.flag1[5] == 8) {
-        red = 250;
-        green = 250;
-        blue = 10;
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (slot.flag1[5] == 10) {
-        red = 250;
-        green = 250;
-        blue = 250;
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
-        red = 70;
-        green = 120;
-        blue = 100;
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
   }
 }
@@ -4011,9 +3998,53 @@ void CEffectPrim::RenderGroundBubbles(matrix& wtm) {
   }
 }
 
+// INLINED
+static __forceinline void BuildSphereCageQuad(const EffectPrimitiveSlot& slot, int latitude, int turn, float radius, float drop, vector3d* out) {
+  int pitch = latitude + 360;
+  if (pitch >= 360) {
+    pitch -= 360;
+  }
+  if (pitch < 0) {
+    pitch += 360;
+  }
+  int tilt = latitude + 450;
+  if (tilt < 0) {
+    tilt += 360;
+  }
+  int yaw = slot.rotStart + turn - 90;
+  if (yaw >= 360) {
+    yaw -= 360;
+  }
+  if (yaw < 0) {
+    yaw += 360;
+  }
+  int side = slot.rotStart + turn - 180;
+  if (side >= 360) {
+    side -= 360;
+  }
+  if (side < 0) {
+    side += 360;
+  }
+
+  const float reach = radius * g_cosTable[pitch];
+  const vector3d offset{reach * g_cosTable[yaw], radius * g_sinTable[pitch] - drop, reach * g_sinTable[yaw]};
+  const float inside = static_cast<float>(static_cast<int>(slot.distance));
+  const float outside = static_cast<float>(static_cast<int>(-slot.distance));
+  const float lateral[4] = {inside, outside, outside, inside};
+  const float depth[4] = {inside, inside, outside, outside};
+  for (int corner = 0; corner < 4; ++corner) {
+    const float along = depth[corner] * g_cosTable[tilt];
+    out[corner] = {
+      lateral[corner] * g_cosTable[side] - along * g_sinTable[side] + offset.x, depth[corner] * g_sinTable[tilt] + offset.y,
+      along * g_cosTable[side] + lateral[corner] * g_sinTable[side] + offset.z
+    };
+  }
+}
+
 // OFFSET: 0x00BD95A0
 // FUNCTION: fn_19892
 void CEffectPrim::RenderSphereCage(matrix& wtm) {
+  vector3d quad[4]{};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -4026,105 +4057,63 @@ void CEffectPrim::RenderSphereCage(matrix& wtm) {
     int row = 0;
     for (int latitude = -405; latitude < -270; latitude += 45, ++row) {
       const float level = static_cast<float>(row - 1);
-      int pitch = latitude + 360;
-      if (pitch < 0) {
-        pitch += 360;
-      }
-      const int tilt = latitude + 450;
 
       for (int turn = 0; turn < 225; turn += 45) {
-        int yaw = slot.rotStart + turn - 90;
-        if (yaw >= 360) {
-          yaw -= 360;
-        }
-        if (yaw < 0) {
-          yaw += 360;
-        }
-        int side = slot.rotStart + turn - 180;
-        if (side >= 360) {
-          side -= 360;
-        }
-        if (side < 0) {
-          side += 360;
-        }
-
         slot.distance = 1.5f - (level < 0.0f ? level * -1.0f : level) + 1.5f;
 
-        const auto square = [&](float radius, float drop, vector3d* out) {
-          const float reach = radius * g_cosTable[pitch];
-          const vector3d offset{reach * g_cosTable[yaw], radius * g_sinTable[pitch] - drop, reach * g_sinTable[yaw]};
-          const float inside = static_cast<float>(static_cast<int>(slot.distance));
-          const float outside = static_cast<float>(static_cast<int>(-slot.distance));
-          const float lateral[4] = {inside, outside, outside, inside};
-          const float depth[4] = {inside, inside, outside, outside};
-          for (int corner = 0; corner < 4; ++corner) {
-            const float along = depth[corner] * g_cosTable[tilt];
-            out[corner] = {
-              lateral[corner] * g_cosTable[side] - along * g_sinTable[side] + offset.x, depth[corner] * g_sinTable[tilt] + offset.y,
-              along * g_cosTable[side] + lateral[corner] * g_sinTable[side] + offset.z
-            };
-          }
-        };
-
-        vector3d quad[4];
-        square(slot.maxHeight, slot.maxHeight + 2.0f, quad);
-        switch (slot.flag1[0]) {
-        case 2:
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        case 3:
+        BuildSphereCageQuad(slot, latitude, turn, slot.maxHeight, slot.maxHeight + 2.0f, quad);
+        if (slot.flag1[0] == 3) {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        case 4:
+        } else if (slot.flag1[0] == 2) {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (slot.flag1[0] == 4) {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        case 5:
+        } else if (slot.flag1[0] == 5) {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        default:
+        } else {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 205, 255, 205, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
         }
 
-        square(slot.maxHeight + 0.2f, slot.maxHeight, quad);
-        switch (slot.flag1[0]) {
-        case 2:
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        case 3:
+        BuildSphereCageQuad(slot, latitude, turn, slot.maxHeight + 0.2f, slot.maxHeight, quad);
+        if (slot.flag1[0] == 3) {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        case 4:
+        } else if (slot.flag1[0] == 2) {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (slot.flag1[0] == 4) {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        case 5:
+        } else if (slot.flag1[0] == 5) {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        default:
+        } else {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
         }
 
-        square(slot.maxHeight + 0.4f + slot.height[0], slot.maxHeight, quad);
-        switch (slot.flag1[0]) {
-        case 2:
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        case 3:
+        BuildSphereCageQuad(slot, latitude, turn, slot.maxHeight + 0.4f + slot.height[0], slot.maxHeight, quad);
+        if (slot.flag1[0] == 3) {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        case 4:
+        } else if (slot.flag1[0] == 2) {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (slot.flag1[0] == 4) {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        case 5:
+        } else if (slot.flag1[0] == 5) {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
-        default:
+        } else {
           this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 225, 255, 225, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          break;
         }
       }
     }
+  }
+}
+
+// INLINED
+static __forceinline void BuildLayeredGlowSquare(CEffectPrim& prim, const EffectPrimitiveSlot& slot, float scale, vector3d* corners) {
+  const float rx = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + slot.distance * scale;
+  corners[0] = {rx * g_cosTable[0], 0.0f, rx * g_sinTable[0]};
+  corners[1] = {rx * g_cosTable[90], 0.0f, rx * g_sinTable[90]};
+  corners[2] = {rx * g_cosTable[180], 0.0f, rx * g_sinTable[180]};
+  corners[3] = {rx * g_cosTable[270], 0.0f, rx * g_sinTable[270]};
+  prim.Tei_TowardScreen(corners[0], corners[1], corners[2], corners[3], slot.alphaT, prim.state.slots[1].alphaT);
+  for (int corner = 0; corner < 4; ++corner) {
+    corners[corner] = {slot.vecBNow.x + corners[corner].x, slot.vecBNow.y + corners[corner].y, slot.vecBNow.z + corners[corner].z};
   }
 }
 
@@ -4138,83 +4127,55 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
     return;
   }
 
-  const auto square = [&](float scale, vector3d* corners) {
-    const float rx = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + slot.distance * scale;
-    corners[0] = {rx * g_cosTable[0], 0.0f, rx * g_sinTable[0]};
-    corners[1] = {rx * g_cosTable[90], 0.0f, rx * g_sinTable[90]};
-    corners[2] = {rx * g_cosTable[180], 0.0f, rx * g_sinTable[180]};
-    corners[3] = {rx * g_cosTable[270], 0.0f, rx * g_sinTable[270]};
-    this->Tei_TowardScreen(corners[0], corners[1], corners[2], corners[3], slot.alphaT, this->state.slots[1].alphaT);
-    for (int corner = 0; corner < 4; ++corner) {
-      corners[corner] = {slot.vecBNow.x + corners[corner].x, slot.vecBNow.y + corners[corner].y, slot.vecBNow.z + corners[corner].z};
-    }
-  };
-
   vector3d quad[4];
   const char kind = slot.flag1[0];
   if (kind == 21) {
-    square(3.0f, quad);
+    BuildLayeredGlowSquare(*this, slot, 3.0f, quad);
     this->RenderTeiRect(&rpCnt, static_cast<short>(slot.alphaB / 2), quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    square(1.7f, quad);
+    BuildLayeredGlowSquare(*this, slot, 1.7f, quad);
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   } else if (kind == 20) {
-    square(1.3f, quad);
+    BuildLayeredGlowSquare(*this, slot, 1.3f, quad);
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 
-  square(1.0f, quad);
+  BuildLayeredGlowSquare(*this, slot, 1.0f, quad);
   const short pw = this->state.isChangeProcessed == 1 ? 0 : 10;
-  switch (slot.flag1[0]) {
-  case 1:
+  if (slot.flag1[0] == 1) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 68, 42, 30, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  case 10:
+  } else if (slot.flag1[0] == 10) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, pw, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  case 11:
+  } else if (slot.flag1[0] == 11) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, pw, 0, 0, 200, 200, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  case 12:
+  } else if (slot.flag1[0] == 12) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, pw, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  case 13:
+  } else if (slot.flag1[0] == 13) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, pw, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  case 20:
-  case 21:
+  } else if (slot.flag1[0] == 20) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 40, 40, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  default:
+  } else if (slot.flag1[0] == 21) {
+    this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 40, 40, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+  } else {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
   }
 
-  square(0.5f, quad);
-  switch (slot.flag1[0]) {
-  case 1:
+  BuildLayeredGlowSquare(*this, slot, 0.5f, quad);
+  if (slot.flag1[0] == 1) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  case 10:
+  } else if (slot.flag1[0] == 10) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  case 11:
+  } else if (slot.flag1[0] == 11) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 200, 200, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  case 12:
+  } else if (slot.flag1[0] == 12) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  case 13:
+  } else if (slot.flag1[0] == 13) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 150, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  case 20:
+  } else if (slot.flag1[0] == 20) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 150, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  case 21:
+  } else if (slot.flag1[0] == 21) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 250, 250, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
-  default:
+  } else {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 255, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    break;
   }
 }
 
@@ -5246,52 +5207,35 @@ void CEffectPrim::RenderSizedSquare(matrix& wtm) {
     slot.vecTPre = {static_cast<float>(g_cosTable[angle4] * radius), y, static_cast<float>(g_sinTable[angle4] * radius)};
 
     const float mode = this->state.size;
-    short pw = 0;
-    unsigned char red = 255;
-    unsigned char green = 255;
-    unsigned char blue = 255;
-    char extra = 0;
-
     if (mode == 101.0f) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 255, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      green = 0;
-      blue = 0;
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 255, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else if (mode == 102.0f) {
-      blue = 0;
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 255, 255, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else if (mode == 111.0f) {
-      red = 55;
-      green = 55;
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else if (mode == 112.0f) {
-      red = 105;
-      green = 225;
-      blue = 105;
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 105, 225, 105, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else if (mode == 100.0f) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else if (mode == 110.0f) {
-      pw = 1;
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else if (mode == 113.0f) {
-      red = 5;
-      green = 5;
-      extra = 1;
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     } else if (mode == 114.0f) {
-      red = 155;
-      green = 5;
-      blue = 5;
-      extra = 1;
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 155, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     } else if (mode == 15.0f) {
-      red = 35;
-      blue = 35;
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 35, 255, 35, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else if (mode == 17.0f) {
-      red = 105;
-      green = 105;
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 105, 105, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else if (mode == 18.0f) {
-      red = 35;
-      green = 35;
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 35, 35, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else if (mode == 0.0f) {
-      pw = 1;
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
-
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, pw, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, extra);
   }
 }
 
@@ -5515,6 +5459,81 @@ void CEffectPrim::RenderCrossPlanes(matrix& wtm) {
     triangle->texture = this->state.textures[this->render.curMotion];
     if (triangle->Visible()) {
       g_renderer->queues.SubmitTriangle(*triangle++, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    }
+  }
+}
+
+// INLINED
+static __forceinline void RenderGroundFogQuad(CEffectPrim& prim, int* rpCnt, const EffectPrimitiveSlot& slot, const vector3d* corners, const vector3d& point, int copy, vector3d& vec1, vector3d& vec2, vector3d& vec3, vector3d& vec4, matrix& wtm) {
+  vec1 = {point.x + corners[0].x, point.y + corners[0].y, point.z + corners[0].z};
+  vec2 = {point.x + corners[1].x, point.y + corners[1].y, point.z + corners[1].z};
+  vec3 = {point.x + corners[2].x, point.y + corners[2].y, point.z + corners[2].z};
+  vec4 = {point.x + corners[3].x, point.y + corners[3].y, point.z + corners[3].z};
+  const float y = vec1.y;
+  const char kind = slot.flag1[0];
+  int alpha;
+
+  if (kind <= 1) {
+    alpha = 250;
+    if (-20.0f > y) {
+      alpha = static_cast<int>((y + 20.0f) * 25.0f + 250.0f);
+    }
+  } else if (kind == 14 || kind == 16) {
+    alpha = 100;
+    if (y > -10.0f) {
+      alpha = static_cast<int>(150.0f - (y + 10.0f) * 15.0f);
+    } else if (-40.0f > y) {
+      alpha = 0;
+    }
+  } else if (kind == 11) {
+    alpha = 250;
+    if (-40.0f > y) {
+      alpha = static_cast<int>((y + 40.0f) * 25.0f + 250.0f);
+    }
+  } else if (kind == 15) {
+    alpha = 255 - 2 * slot.flag1[1 + copy];
+  } else {
+    alpha = 50;
+    if (-4.0f > y) {
+      alpha = static_cast<int>((y + 4.0f) * 15.0f + 50.0f);
+    }
+    if (y > -0.5f) {
+      alpha = static_cast<int>(y * -100.0f);
+    }
+  }
+  if (alpha < 0) {
+    alpha = 0;
+  }
+
+  if (kind == 15) {
+    if (slot.flag1[5] == 7) {
+      prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (slot.flag1[5] == 8) {
+      prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else {
+      prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    }
+    return;
+  }
+
+  if (y <= 0.0f) {
+    const short shade = static_cast<short>(alpha);
+    if (kind == 0) {
+      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (kind == 1) {
+      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (kind == 3) {
+      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (kind == 10 || kind == 14) {
+      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (kind == 11) {
+      if (copy == 0) {
+        prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 155, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+    } else {
+      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
   }
 }
