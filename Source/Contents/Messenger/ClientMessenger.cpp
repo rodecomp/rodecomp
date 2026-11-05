@@ -1506,21 +1506,6 @@ int GetFirstJob(int job) {
   case JT_SHADOW_CROSS:
   case JT_ABYSS_CHASER:
     return JT_THIEF;
-  case JT_GUNSLINGER:
-  case JT_REBELLION:
-  case JT_GUNSLINGER_B:
-  case JT_REBELLION_B:
-  case JT_NIGHT_WATCH:
-    return JT_GUNSLINGER;
-  case JT_NINJA:
-  case JT_KAGEROU:
-  case JT_OBORO:
-  case JT_NINJA_B:
-  case JT_KAGEROU_B:
-  case JT_OBORO_B:
-  case JT_SHINKIRO:
-  case JT_SHIRANUI:
-    return JT_NINJA;
   case JT_TAEKWON:
   case JT_STAR:
   case JT_STAR2:
@@ -1535,6 +1520,21 @@ int GetFirstJob(int job) {
   case JT_SKY_EMPEROR:
   case JT_SOUL_ASCETIC:
     return JT_TAEKWON;
+  case JT_NINJA:
+  case JT_KAGEROU:
+  case JT_OBORO:
+  case JT_NINJA_B:
+  case JT_KAGEROU_B:
+  case JT_OBORO_B:
+  case JT_SHINKIRO:
+  case JT_SHIRANUI:
+    return JT_NINJA;
+  case JT_GUNSLINGER:
+  case JT_REBELLION:
+  case JT_GUNSLINGER_B:
+  case JT_REBELLION_B:
+  case JT_NIGHT_WATCH:
+    return JT_GUNSLINGER;
   case JT_DO_SUMMONER:
   case JT_DO_SUMMONER_B:
   case JT_SPIRIT_HANDLER:
@@ -1637,12 +1637,28 @@ int GetNormalJob(int job) {
   case JT_SUPERNOVICE:
   case JT_SUPERNOVICE_B:
     return JT_SUPERNOVICE;
-  case JT_GUNSLINGER:
-  case JT_GUNSLINGER_B:
-    return JT_GUNSLINGER;
+  case JT_SUPERNOVICE2:
+  case JT_SUPERNOVICE2_B:
+  case JT_HYPER_NOVICE:
+    return JT_SUPERNOVICE2;
   case JT_NINJA:
   case JT_NINJA_B:
     return JT_NINJA;
+  case JT_OBORO:
+  case JT_OBORO_B:
+  case JT_SHIRANUI:
+    return JT_OBORO;
+  case JT_KAGEROU:
+  case JT_KAGEROU_B:
+  case JT_SHINKIRO:
+    return JT_KAGEROU;
+  case JT_GUNSLINGER:
+  case JT_GUNSLINGER_B:
+    return JT_GUNSLINGER;
+  case JT_REBELLION:
+  case JT_REBELLION_B:
+  case JT_NIGHT_WATCH:
+    return JT_REBELLION;
   case JT_TAEKWON:
   case JT_TAEKWON_B:
     return JT_TAEKWON;
@@ -1652,31 +1668,39 @@ int GetNormalJob(int job) {
   case JT_LINKER:
   case JT_LINKER_B:
     return JT_LINKER;
+  case JT_STAR_EMPEROR:
+  case JT_STAR_EMPEROR_B:
+  case JT_SKY_EMPEROR:
+    return JT_STAR_EMPEROR;
+  case JT_SOUL_REAPER:
+  case JT_SOUL_REAPER_B:
+  case JT_SOUL_ASCETIC:
+    return JT_SOUL_REAPER;
   case JT_RUNE_KNIGHT:
   case JT_RUNE_KNIGHT_H:
   case JT_RUNE_KNIGHT_B:
   case JT_DRAGON_KNIGHT:
     return JT_RUNE_KNIGHT;
-  case JT_WARLOCK:
-  case JT_WARLOCK_H:
-  case JT_WARLOCK_B:
-  case JT_ARCH_MAGE:
-    return JT_WARLOCK;
-  case JT_RANGER:
-  case JT_RANGER_H:
-  case JT_RANGER_B:
-  case JT_WINDHAWK:
-    return JT_RANGER;
   case JT_ARCHBISHOP:
   case JT_ARCHBISHOP_H:
   case JT_ARCHBISHOP_B:
   case JT_CARDINAL:
     return JT_ARCHBISHOP;
+  case JT_WARLOCK:
+  case JT_WARLOCK_H:
+  case JT_WARLOCK_B:
+  case JT_ARCH_MAGE:
+    return JT_WARLOCK;
   case JT_MECHANIC:
   case JT_MECHANIC_H:
   case JT_MECHANIC_B:
   case JT_MEISTER:
     return JT_MECHANIC;
+  case JT_RANGER:
+  case JT_RANGER_H:
+  case JT_RANGER_B:
+  case JT_WINDHAWK:
+    return JT_RANGER;
   case JT_GUILLOTINE_CROSS:
   case JT_GUILLOTINE_CROSS_H:
   case JT_GUILLOTINE_CROSS_B:
@@ -1687,11 +1711,26 @@ int GetNormalJob(int job) {
   case JT_ROYAL_GUARD_B:
   case JT_IMPERIAL_GUARD:
     return JT_ROYAL_GUARD;
+  case JT_SURA:
+  case JT_SURA_H:
+  case JT_SURA_B:
+  case JT_INQUISITOR:
+    return JT_SURA;
   case JT_SORCERER:
   case JT_SORCERER_H:
   case JT_SORCERER_B:
   case JT_ELEMENTAL_MASTER:
     return JT_SORCERER;
+  case JT_SHADOW_CHASER:
+  case JT_SHADOW_CHASER_H:
+  case JT_SHADOW_CHASER_B:
+  case JT_ABYSS_CHASER:
+    return JT_SHADOW_CHASER;
+  case JT_GENETIC:
+  case JT_GENETIC_H:
+  case JT_GENETIC_B:
+  case JT_BIOLO:
+    return JT_GENETIC;
   case JT_MINSTREL:
   case JT_MINSTREL_H:
   case JT_MINSTREL_B:
@@ -1702,49 +1741,10 @@ int GetNormalJob(int job) {
   case JT_WANDERER_B:
   case JT_TROUVERE:
     return JT_WANDERER;
-  case JT_SURA:
-  case JT_SURA_H:
-  case JT_SURA_B:
-  case JT_INQUISITOR:
-    return JT_SURA;
-  case JT_GENETIC:
-  case JT_GENETIC_H:
-  case JT_GENETIC_B:
-  case JT_BIOLO:
-    return JT_GENETIC;
-  case JT_SHADOW_CHASER:
-  case JT_SHADOW_CHASER_H:
-  case JT_SHADOW_CHASER_B:
-  case JT_ABYSS_CHASER:
-    return JT_SHADOW_CHASER;
-  case JT_SUPERNOVICE2:
-  case JT_SUPERNOVICE2_B:
-  case JT_HYPER_NOVICE:
-    return JT_SUPERNOVICE2;
-  case JT_KAGEROU:
-  case JT_KAGEROU_B:
-  case JT_SHINKIRO:
-    return JT_KAGEROU;
-  case JT_OBORO:
-  case JT_OBORO_B:
-  case JT_SHIRANUI:
-    return JT_OBORO;
-  case JT_REBELLION:
-  case JT_REBELLION_B:
-  case JT_NIGHT_WATCH:
-    return JT_REBELLION;
   case JT_DO_SUMMONER:
   case JT_DO_SUMMONER_B:
   case JT_SPIRIT_HANDLER:
     return JT_DO_SUMMONER;
-  case JT_STAR_EMPEROR:
-  case JT_STAR_EMPEROR_B:
-  case JT_SKY_EMPEROR:
-    return JT_STAR_EMPEROR;
-  case JT_SOUL_REAPER:
-  case JT_SOUL_REAPER_B:
-  case JT_SOUL_ASCETIC:
-    return JT_SOUL_REAPER;
   case JT_DRUID:
   case JT_DRUID_B:
     return JT_DRUID;
@@ -1844,12 +1844,24 @@ int GetNormalThirdJob(int job) {
   case JT_SUPERNOVICE:
   case JT_SUPERNOVICE_B:
     return JT_SUPERNOVICE;
-  case JT_GUNSLINGER:
-  case JT_GUNSLINGER_B:
-    return JT_GUNSLINGER;
+  case JT_SUPERNOVICE2:
+  case JT_SUPERNOVICE2_B:
+    return JT_SUPERNOVICE2;
   case JT_NINJA:
   case JT_NINJA_B:
     return JT_NINJA;
+  case JT_OBORO:
+  case JT_OBORO_B:
+    return JT_OBORO;
+  case JT_KAGEROU:
+  case JT_KAGEROU_B:
+    return JT_KAGEROU;
+  case JT_GUNSLINGER:
+  case JT_GUNSLINGER_B:
+    return JT_GUNSLINGER;
+  case JT_REBELLION:
+  case JT_REBELLION_B:
+    return JT_REBELLION;
   case JT_TAEKWON:
   case JT_TAEKWON_B:
     return JT_TAEKWON;
@@ -1859,26 +1871,32 @@ int GetNormalThirdJob(int job) {
   case JT_LINKER:
   case JT_LINKER_B:
     return JT_LINKER;
+  case JT_STAR_EMPEROR:
+  case JT_STAR_EMPEROR_B:
+    return JT_STAR_EMPEROR;
+  case JT_SOUL_REAPER:
+  case JT_SOUL_REAPER_B:
+    return JT_SOUL_REAPER;
   case JT_RUNE_KNIGHT:
   case JT_RUNE_KNIGHT_H:
   case JT_RUNE_KNIGHT_B:
     return JT_RUNE_KNIGHT;
-  case JT_WARLOCK:
-  case JT_WARLOCK_H:
-  case JT_WARLOCK_B:
-    return JT_WARLOCK;
-  case JT_RANGER:
-  case JT_RANGER_H:
-  case JT_RANGER_B:
-    return JT_RANGER;
   case JT_ARCHBISHOP:
   case JT_ARCHBISHOP_H:
   case JT_ARCHBISHOP_B:
     return JT_ARCHBISHOP;
+  case JT_WARLOCK:
+  case JT_WARLOCK_H:
+  case JT_WARLOCK_B:
+    return JT_WARLOCK;
   case JT_MECHANIC:
   case JT_MECHANIC_H:
   case JT_MECHANIC_B:
     return JT_MECHANIC;
+  case JT_RANGER:
+  case JT_RANGER_H:
+  case JT_RANGER_B:
+    return JT_RANGER;
   case JT_GUILLOTINE_CROSS:
   case JT_GUILLOTINE_CROSS_H:
   case JT_GUILLOTINE_CROSS_B:
@@ -1887,10 +1905,22 @@ int GetNormalThirdJob(int job) {
   case JT_ROYAL_GUARD_H:
   case JT_ROYAL_GUARD_B:
     return JT_ROYAL_GUARD;
+  case JT_SURA:
+  case JT_SURA_H:
+  case JT_SURA_B:
+    return JT_SURA;
   case JT_SORCERER:
   case JT_SORCERER_H:
   case JT_SORCERER_B:
     return JT_SORCERER;
+  case JT_SHADOW_CHASER:
+  case JT_SHADOW_CHASER_H:
+  case JT_SHADOW_CHASER_B:
+    return JT_SHADOW_CHASER;
+  case JT_GENETIC:
+  case JT_GENETIC_H:
+  case JT_GENETIC_B:
+    return JT_GENETIC;
   case JT_MINSTREL:
   case JT_MINSTREL_H:
   case JT_MINSTREL_B:
@@ -1899,45 +1929,37 @@ int GetNormalThirdJob(int job) {
   case JT_WANDERER_H:
   case JT_WANDERER_B:
     return JT_WANDERER;
-  case JT_SURA:
-  case JT_SURA_H:
-  case JT_SURA_B:
-    return JT_SURA;
-  case JT_GENETIC:
-  case JT_GENETIC_H:
-  case JT_GENETIC_B:
-    return JT_GENETIC;
-  case JT_SHADOW_CHASER:
-  case JT_SHADOW_CHASER_H:
-  case JT_SHADOW_CHASER_B:
-    return JT_SHADOW_CHASER;
-  case JT_SUPERNOVICE2:
-  case JT_SUPERNOVICE2_B:
-    return JT_SUPERNOVICE2;
-  case JT_KAGEROU:
-  case JT_KAGEROU_B:
-    return JT_KAGEROU;
-  case JT_OBORO:
-  case JT_OBORO_B:
-    return JT_OBORO;
-  case JT_REBELLION:
-  case JT_REBELLION_B:
-    return JT_REBELLION;
   case JT_DO_SUMMONER:
   case JT_DO_SUMMONER_B:
     return JT_DO_SUMMONER;
-  case JT_STAR_EMPEROR:
-  case JT_STAR_EMPEROR_B:
-    return JT_STAR_EMPEROR;
-  case JT_SOUL_REAPER:
-  case JT_SOUL_REAPER_B:
-    return JT_SOUL_REAPER;
   case JT_DRUID:
   case JT_DRUID_B:
     return JT_DRUID;
   case JT_KARNOS:
   case JT_KARNOS_B:
     return JT_KARNOS;
+  case JT_DRAGON_KNIGHT:
+  case JT_MEISTER:
+  case JT_SHADOW_CROSS:
+  case JT_ARCH_MAGE:
+  case JT_CARDINAL:
+  case JT_WINDHAWK:
+  case JT_IMPERIAL_GUARD:
+  case JT_BIOLO:
+  case JT_ABYSS_CHASER:
+  case JT_ELEMENTAL_MASTER:
+  case JT_INQUISITOR:
+  case JT_TROUBADOUR:
+  case JT_TROUVERE:
+  case JT_SKY_EMPEROR:
+  case JT_SOUL_ASCETIC:
+  case JT_SHINKIRO:
+  case JT_SHIRANUI:
+  case JT_NIGHT_WATCH:
+  case JT_HYPER_NOVICE:
+  case JT_SPIRIT_HANDLER:
+  case JT_ALITEA:
+    return job;
   default:
     return job;
   }
@@ -4205,6 +4227,9 @@ int CheckJobGroup2(lua_State* state) {
   case JT_NOVICE_B:
     group = 0;
     break;
+  case JT_NOVICE_H:
+    group = 10;
+    break;
   case JT_SWORDMAN:
   case JT_MAGICIAN:
   case JT_ARCHER:
@@ -4218,6 +4243,14 @@ int CheckJobGroup2(lua_State* state) {
   case JT_MERCHANT_B:
   case JT_THIEF_B:
     group = 1;
+    break;
+  case JT_SWORDMAN_H:
+  case JT_MAGICIAN_H:
+  case JT_ARCHER_H:
+  case JT_ACOLYTE_H:
+  case JT_MERCHANT_H:
+  case JT_THIEF_H:
+    group = 11;
     break;
   case JT_KNIGHT:
   case JT_PRIEST:
@@ -4247,29 +4280,6 @@ int CheckJobGroup2(lua_State* state) {
   case JT_DANCER_B:
     group = 2;
     break;
-  case JT_SUPERNOVICE:
-  case JT_GUNSLINGER:
-  case JT_NINJA:
-  case JT_SUPERNOVICE_B:
-  case JT_TAEKWON:
-  case JT_NINJA_B:
-  case JT_TAEKWON_B:
-  case JT_GUNSLINGER_B:
-  case JT_DRUID:
-  case JT_DRUID_B:
-    group = 9;
-    break;
-  case JT_NOVICE_H:
-    group = 10;
-    break;
-  case JT_SWORDMAN_H:
-  case JT_MAGICIAN_H:
-  case JT_ARCHER_H:
-  case JT_ACOLYTE_H:
-  case JT_MERCHANT_H:
-  case JT_THIEF_H:
-    group = 11;
-    break;
   case JT_KNIGHT_H:
   case JT_PRIEST_H:
   case JT_WIZARD_H:
@@ -4284,13 +4294,6 @@ int CheckJobGroup2(lua_State* state) {
   case JT_BARD_H:
   case JT_DANCER_H:
     group = 12;
-    break;
-  case JT_STAR:
-  case JT_STAR2:
-  case JT_LINKER:
-  case JT_STAR_B:
-  case JT_LINKER_B:
-    group = 19;
     break;
   case JT_RUNE_KNIGHT:
   case JT_WARLOCK:
@@ -4334,6 +4337,25 @@ int CheckJobGroup2(lua_State* state) {
   case JT_GENETIC_H:
   case JT_SHADOW_CHASER_H:
     group = 13;
+    break;
+  case JT_SUPERNOVICE:
+  case JT_GUNSLINGER:
+  case JT_NINJA:
+  case JT_SUPERNOVICE_B:
+  case JT_TAEKWON:
+  case JT_NINJA_B:
+  case JT_TAEKWON_B:
+  case JT_GUNSLINGER_B:
+  case JT_DRUID:
+  case JT_DRUID_B:
+    group = 9;
+    break;
+  case JT_STAR:
+  case JT_STAR2:
+  case JT_LINKER:
+  case JT_STAR_B:
+  case JT_LINKER_B:
+    group = 19;
     break;
   case JT_SUPERNOVICE2:
   case JT_SUPERNOVICE2_B:
@@ -5576,7 +5598,7 @@ int CSession::GetList1788(int index) const {
   if (index < 0) {
     return 0;
   }
-  if (index >= 11) {
+  if (index >= std::size(this->unknown_1784)) {
     return 0;
   }
   return static_cast<int>(this->unknown_1784[index].size());
