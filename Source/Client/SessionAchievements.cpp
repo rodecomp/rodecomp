@@ -37,7 +37,7 @@ int CSession::AddUnknown6160(int id) {
   }
 
   this->unknown_6160.push_back(value);
-  std::sort(this->unknown_6160.begin(), this->unknown_6160.end());
+  std::sort(this->unknown_6160.begin(), this->unknown_6160.end(), JobTitleLess());
 
   if (UIWindow* window = g_windowMgr.LookupWindow(10)) {
     window->SendMsg(nullptr, 60, 0, 0, 0, 0);
