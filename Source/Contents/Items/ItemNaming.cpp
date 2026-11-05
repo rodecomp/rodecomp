@@ -53,6 +53,16 @@ namespace {
     const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
     return error == 0 || error == 80 ? (output ? static_cast<int>(strnlen(output, capacity)) : 0) : 0;
   }
+
+  // INLINED
+  ItemCardName MakeEmptyItemCardName() {
+    return ItemCardName{nullptr, nullptr, nullptr};
+  }
+
+  // INLINED
+  ItemMoveInfo MakeEmptyItemMoveInfo() {
+    return ItemMoveInfo{};
+  }
 }
 
 // OFFSET: 0x006D77E0
@@ -470,7 +480,7 @@ int ItemSlotsCount(const ITEM_INFO& item) {
 int ItemUnidentifiedName(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
   int id = std::atoi(item.itemId.c_str());
   int written = Copy(output, capacity, FindItemDescription(id).unidentifiedName);
-  if (written > 0 && consume) {
+  if (consume) {
     capacity -= written;
   }
   return written;
@@ -480,7 +490,7 @@ int ItemUnidentifiedName(const ITEM_INFO& item, char* output, int& capacity, uns
 // FUNCTION: fn_06544
 __declspec(noinline) ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values) {
   // GLOBAL: gl_24676
-  static ItemCardName missing{};
+  static ItemCardName missing = MakeEmptyItemCardName();
   const auto entry = values.find(id);
   return entry == values.end() ? missing : entry->second;
 }
@@ -872,29 +882,31 @@ int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const
 // OFFSET: 0x006D6B90
 // FUNCTION: fn_06584
 int ITEM_INFO::Star(char* output, int& capacity, unsigned char consume) const {
-  int message = 0;
+  const char* text = nullptr;
   switch (this->unknown_001C[5]) {
   case 5:
-    message = 459;
+    text = LookupMessage(459);
     break;
   case 10:
-    message = 460;
+    text = LookupMessage(460);
     break;
   case 15:
-    message = 461;
+    text = LookupMessage(461);
     break;
+  default:
+    return 0;
   }
 
-  if (message) {
-    const char* text = LookupMessage(message);
-    const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
-    int written = (error == 0 || error == 80) && output ? static_cast<int>(strnlen(output, capacity)) : 0;
-    if (written > 0 && consume) {
-      capacity -= written;
-    }
-    return written;
+  const int error = strncpy_s(output, capacity, text, _TRUNCATE);
+  if (error != 0 && error != 80) {
+    return 0;
   }
-  return 0;
+
+  const int written = output ? static_cast<int>(strnlen(output, capacity)) : 0;
+  if (consume) {
+    capacity -= written;
+  }
+  return written;
 }
 
 // OFFSET: 0x006D6D50
