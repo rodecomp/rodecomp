@@ -15,6 +15,8 @@ public:
   CSprRes* Create() override;
   bool Load(const char* name) override;
   void Unload() override;
+  std::uint8_t* EncodeSpriteRuns(const std::uint8_t* pixels, int width, int height, std::uint16_t& bytes);
+  std::uint8_t* ReduceSprite(const std::uint8_t* pixels, int width, int height, int halfWidth, int halfHeight);
 
   /* 0110 */ std::uint32_t palette[256];
   /* 0510 */ std::vector<SpriteRleImage*> images[2];
@@ -22,8 +24,6 @@ public:
 
 };
 
-std::uint8_t* EncodeSpriteRuns(const std::uint8_t* pixels, int width, int height, std::uint16_t& bytes);
-std::uint8_t* ReduceSprite(const std::uint8_t* pixels, int width, int height, int halfWidth, int halfHeight);
 void ConvertSpritePalette(std::uint32_t* output, const std::uint8_t* input, int count);
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -32,18 +32,17 @@ CSprRes* CSprRes::Create() {
 bool CSprRes::Load(const char* name) {
   CFile file;
   if (!file.Open(name, 0, true, false)) {
-    const std::string message = std::string("Spr :: Cannot find File : ") + name;
+    const std::string message = std::string("Spr :: Cannot find File : ") + std::string(name);
     ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
     return false;
   }
 
-  ResourceByteReader input{static_cast<const unsigned char*>(file.GetData()), static_cast<unsigned>(file.GetSize())};
   struct Header {
     std::uint16_t magic;
     std::uint16_t version;
     std::uint16_t indexed;
   } header;
-  input.Read(&header, sizeof(header));
+  file.Read(&header, sizeof(header));
 
   if (header.magic != 0x5053) {
     ShowErrorDialog(GetRenderSystemHolder()->system, "Illegal File Format", 0);
@@ -60,21 +59,21 @@ bool CSprRes::Load(const char* name) {
 
   if (header.version >= 0x0101) {
     unsigned char colors[1024];
-    input.position = input.size - sizeof(colors);
-    input.Read(colors, sizeof(colors));
-    input.position = sizeof(header);
+    file.Seek(-1024, FILE_END);
+    file.Read(colors, sizeof(colors));
+    file.Seek(sizeof(header), FILE_BEGIN);
     ConvertSpritePalette(this->palette, colors, 256);
   }
 
   std::uint16_t trueColorCount;
 
   if (header.version >= 0x0200) {
-    input.Read(&trueColorCount, sizeof(trueColorCount));
+    file.Read(&trueColorCount, sizeof(trueColorCount));
   }
 
   for (int index = 0; index < this->indexedCount; ++index) {
     std::uint16_t dimensions[2];
-    input.Read(dimensions, sizeof(dimensions));
+    file.Read(dimensions, sizeof(dimensions));
     auto* image = new SpriteRleImage{};
     image->width = static_cast<std::int16_t>(dimensions[0]);
     image->height = static_cast<std::int16_t>(dimensions[1]);
@@ -83,24 +82,24 @@ bool CSprRes::Load(const char* name) {
     if (g_spriteHalfWidth == 0 && g_spriteHalfHeight == 0) {
       if (header.version < 0x0201) {
         const int count = image->width * image->height;
-        auto* pixels = static_cast<std::uint8_t*>(::operator new(count));
-        input.Read(pixels, count);
-        image->runs = EncodeSpriteRuns(pixels, image->width, image->height, encodedBytes);
-        std::free(pixels);
+        auto* pixels = new std::uint8_t[count];
+        file.Read(pixels, count);
+        image->runs = this->EncodeSpriteRuns(pixels, image->width, image->height, encodedBytes);
+        delete[] pixels;
       } else {
-        input.Read(&encodedBytes, sizeof(encodedBytes));
-        auto* runs = static_cast<std::uint8_t*>(::operator new(encodedBytes));
+        file.Read(&encodedBytes, sizeof(encodedBytes));
+        auto* runs = new std::uint8_t[encodedBytes];
         image->runs = runs;
-        input.Read(runs, encodedBytes);
+        file.Read(runs, encodedBytes);
       }
     } else {
       std::uint8_t* pixels;
 
       if (header.version >= 0x0201) {
-        input.Read(&encodedBytes, sizeof(encodedBytes));
-        auto* runs = static_cast<std::uint8_t*>(::operator new(encodedBytes));
-        input.Read(runs, encodedBytes);
-        pixels = static_cast<std::uint8_t*>(::operator new(dimensions[0] * dimensions[1]));
+        file.Read(&encodedBytes, sizeof(encodedBytes));
+        auto* runs = new std::uint8_t[encodedBytes];
+        file.Read(runs, encodedBytes);
+        pixels = new std::uint8_t[dimensions[0] * dimensions[1]];
         const std::uint8_t* current = runs;
         std::uint16_t zeroCount = 0;
         std::uint8_t value;
@@ -121,17 +120,17 @@ bool CSprRes::Load(const char* name) {
           }
         }
 
-        std::free(runs);
+        delete[] runs;
       } else {
         const int count = image->width * image->height;
-        pixels = static_cast<std::uint8_t*>(::operator new(count));
-        input.Read(pixels, count);
+        pixels = new std::uint8_t[count];
+        file.Read(pixels, count);
       }
 
-      auto* reduced = ReduceSprite(pixels, dimensions[0], dimensions[1], g_spriteHalfWidth, g_spriteHalfHeight);
-      std::free(pixels);
-      image->runs = EncodeSpriteRuns(reduced, dimensions[0] / (g_spriteHalfWidth + 1), dimensions[1] / (g_spriteHalfHeight + 1), encodedBytes);
-      std::free(reduced);
+      auto* reduced = this->ReduceSprite(pixels, dimensions[0], dimensions[1], g_spriteHalfWidth, g_spriteHalfHeight);
+      delete[] pixels;
+      image->runs = this->EncodeSpriteRuns(reduced, dimensions[0] / (g_spriteHalfWidth + 1), dimensions[1] / (g_spriteHalfHeight + 1), encodedBytes);
+      delete[] reduced;
 
       if (g_spriteHalfWidth != 0) {
         image->width /= 2;
@@ -150,16 +149,16 @@ bool CSprRes::Load(const char* name) {
   if (header.version >= 0x0200) {
     for (unsigned index = 0; index < trueColorCount; ++index) {
       std::uint16_t dimensions[2];
-      input.Read(dimensions, sizeof(dimensions));
+      file.Read(dimensions, sizeof(dimensions));
       auto* image = new SpriteRleImage{};
       image->width = static_cast<std::int16_t>(dimensions[0]);
       image->height = static_cast<std::int16_t>(dimensions[1]);
-      auto* pixels = static_cast<std::uint32_t*>(::operator new(static_cast<std::size_t>(image->width * image->height) * sizeof(std::uint32_t)));
+      auto* pixels = new std::uint32_t[image->width * image->height];
 
       for (int y = image->height - 1; y >= 0; --y) {
         for (int x = 0; x < image->width; ++x) {
           std::uint8_t pixel[4];
-          input.Read(pixel, sizeof(pixel));
+          file.Read(pixel, sizeof(pixel));
           pixels[y * image->width + x] = pixel[1] | (pixel[2] << 8) | (pixel[3] << 16) | (static_cast<std::uint32_t>(pixel[0]) << 24);
         }
       }
@@ -169,7 +168,7 @@ bool CSprRes::Load(const char* name) {
       CTexture* texture = CreateTexture(width, height, TextureFormat::A4R4G4B4, false, false);
       image->unknown_0008 = texture;
       texture->Upload(0, 0, image->width, image->height, pixels, 0, 0);
-      std::free(pixels);
+      delete[] pixels;
 
       if (g_spriteHalfWidth != 0) {
         image->width /= 2;
@@ -192,16 +191,16 @@ bool CSprRes::Load(const char* name) {
 // OFFSET: 0x00760B10
 // FUNCTION: fn_08055
 void CSprRes::Unload() {
-  for (unsigned type = 0; type < 2; ++type) {
-    for (SpriteRleImage* image : this->images[type]) {
+  for (int type = 0; type < 2; ++type) {
+    for (auto image = this->images[type].begin(); image != this->images[type].end(); ++image) {
       if (type == 0) {
-        std::free(const_cast<std::uint8_t*>(image->runs));
-      } else {
-        delete static_cast<const CTexture*>(image->unknown_0008);
-        image->unknown_0008 = nullptr;
+        delete[] (*image)->runs;
+      } else if ((*image)->unknown_0008) {
+        delete static_cast<const CTexture*>((*image)->unknown_0008);
+        (*image)->unknown_0008 = nullptr;
       }
 
-      delete image;
+      delete *image;
     }
 
     this->images[type].clear();
