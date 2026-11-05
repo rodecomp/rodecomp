@@ -346,7 +346,7 @@ void UIScrollBar::ResetCursor(int x, int y) {
   if (this->maximum == 0) {
     UIWindow::ResetCursor(x, y);
   } else {
-    static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+    g_modeMgr.gameMode->SetCursorAction(2);
   }
 }
 
@@ -937,7 +937,7 @@ void UIBasicSkillCtrl::Slot10(int, int, std::intptr_t argument3) {
       }
     }
   }
-  static_cast<CMode*>(g_charViewMode)->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0087E190
