@@ -7445,14 +7445,12 @@ void CGameMode::ReceiveGuildPositionInfo(const unsigned char* packet) {
   const unsigned char* entry = packet + 4;
   for (int index = 0; index < count; ++index, entry += 16) {
     const int positionId = *reinterpret_cast<const int*>(entry);
-    std::string name;
-    name = guildInfo->m_positions[positionId];
+    GuildInfo::Unknown00D4Entry position;
+    position.unknown_0008 = guildInfo->m_positions[positionId];
 
     const unsigned int mode = *reinterpret_cast<const unsigned int*>(entry + 4);
-    GuildInfo::Unknown00D4Entry position;
     position.unknown_0000 = *reinterpret_cast<const int*>(entry + 8);
     position.unknown_0004 = positionId;
-    position.unknown_0008 = name;
     position.unknown_0020 = mode & 1;
     position.unknown_0024 = (mode >> 4) & 1;
     position.unknown_0028 = *reinterpret_cast<const int*>(entry + 12);
@@ -9109,7 +9107,8 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
       break;
     }
     if (packet->value != 0) {
-      actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(packet->value));
+      const char* actionName = g_session.GetPetAccActName(packet->value);
+      actor->SetActionName(ResourceMgr::Instance(), actionName);
       g_session.unknown_1038 = packet->value;
     } else {
       g_session.unknown_1038 = 0;
