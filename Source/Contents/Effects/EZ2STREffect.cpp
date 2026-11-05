@@ -103,8 +103,8 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   bool ignored = false;
   if (id >= 0x9B5) {
     g_session.m_hotkeyScript->Call("IsIgnoredRidingState_Include_AttachedToHead", "d>b", id - 0x9B5, &ignored);
-  } else {
-    ignored = id == 0x719;
+  } else if (id == 0x719) {
+    ignored = true;
   }
 
   int offset = 0;
@@ -5332,12 +5332,15 @@ void CEZ2STRScreenEffect::Slot29(int id) {
 // OFFSET: 0x00B66540
 // FUNCTION: fn_19049
 void CEZ2STRScreenEffect::Slot24(int argument1, int argument2, int argument3, int argument4, int argument5) {
-  if (!this->particle) {
+  CEZ2STRParticle* particle = this->particle;
+  if (!particle) {
     return;
   }
 
   const vector3d offset = *reinterpret_cast<const vector3d*>(&argument1);
-  this->particle->m_windowOffset = offset;
+  particle->m_windowOffset.x = offset.x;
+  particle->m_windowOffset.y = offset.y;
+  particle->m_windowOffset.z = offset.z;
   if (static_cast<unsigned char>(argument4) == 1) {
     this->particle->m_attachToWindow = true;
     this->particle->m_windowId = argument5;
