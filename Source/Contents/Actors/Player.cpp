@@ -649,33 +649,60 @@ void CPc::LoadEquipSprite(int slot, const char* name) {
     this->equipSprites[slot]->Unlock();
   }
 
-  const int job = this->render.accountId;
-  const bool monster = IsMonsterJob(job);
-  const bool hidden = monster && IsObfuscatedMessage(job);
-  const bool male = this->unknown_0260 != 0;
-
-  if (monster && slot == 6) {
-    this->equipSprites[slot] = nullptr;
+  if (IsMonsterJob(this->render.accountId)) {
+    if (IsObfuscatedMessage(this->render.accountId)) {
+      switch (slot) {
+      case 0:
+        if (this->unknown_0260) {
+          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자2_남.Spr");
+        } else {
+          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자2_여.Spr");
+        }
+        break;
+      case 5:
+        if (this->unknown_0260) {
+          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_남_검.Spr");
+        } else {
+          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_여_검.Spr");
+        }
+        break;
+      case 6:
+        this->equipSprites[slot] = nullptr;
+        break;
+      default:
+        this->equipSprites[slot] = ResourceMgr::Instance().Load(name);
+        break;
+      }
+    } else {
+      switch (slot) {
+      case 0:
+        if (this->unknown_0260) {
+          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자_남.Spr");
+        } else {
+          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자_여.Spr");
+        }
+        break;
+      case 5:
+        if (this->unknown_0260) {
+          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_남_검.Spr");
+        } else {
+          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_여_검.Spr");
+        }
+        break;
+      case 6:
+        this->equipSprites[slot] = nullptr;
+        break;
+      default:
+        this->equipSprites[slot] = ResourceMgr::Instance().Load(name);
+        break;
+      }
+    }
   } else {
-    if (monster && slot == 0) {
-      if (hidden) {
-        name = male ? "인간족\\몸통\\남\\운영자2_남.Spr" : "인간족\\몸통\\여\\운영자2_여.Spr";
-      } else {
-        name = male ? "인간족\\몸통\\남\\운영자_남.Spr" : "인간족\\몸통\\여\\운영자_여.Spr";
-      }
-    } else if (monster && slot == 5) {
-      if (hidden) {
-        name = male ? "인간족\\운영자\\운영자2_남_검.Spr" : "인간족\\운영자\\운영자2_여_검.Spr";
-      } else {
-        name = male ? "인간족\\운영자\\운영자_남_검.Spr" : "인간족\\운영자\\운영자_여_검.Spr";
-      }
-    }
-
     this->equipSprites[slot] = ResourceMgr::Instance().Load(name);
+  }
 
-    if (this->equipSprites[slot]) {
-      this->equipSprites[slot]->Lock();
-    }
+  if (this->equipSprites[slot]) {
+    this->equipSprites[slot]->Lock();
   }
 }
 
