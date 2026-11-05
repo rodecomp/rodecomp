@@ -1,5 +1,6 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Client/Replay.h"
@@ -258,7 +259,7 @@ void UIBmpRadioBtn::Slot28(int, int) {
     int screenX = 0, screenY = -20;
     this->ToScreen(screenX, screenY);
 
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.gameMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -382,7 +383,7 @@ void UICaptchaImage::Slot28(int, int) {
     int screenX = 0, screenY = -20;
     this->ToScreen(screenX, screenY);
 
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.gameMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -404,7 +405,7 @@ void UIBarGraph4::Slot28(int, int) {
   std::memset(text, 0, sizeof(text));
   const int permille = static_cast<int>(static_cast<float>(*this->m_current) / static_cast<float>(*this->m_maximum) * 1000.0f);
   std::sprintf(text, "%.1f %%", static_cast<float>(permille) * 0.1f);
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip(text, screenX, screenY, -1, false, true);
+  g_modeMgr.gameMode->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x008918D0
@@ -425,7 +426,7 @@ void UIINT64BarGraph::Slot28(int, int) {
   std::memset(text, 0, sizeof(text));
   const int permille = static_cast<int>(static_cast<double>(this->m_current) / static_cast<double>(this->m_maximum) * 1000.0);
   std::sprintf(text, "%.1f %%", static_cast<float>(permille) * 0.1f);
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip(text, screenX, screenY, -1, false, true);
+  g_modeMgr.gameMode->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00891A40
@@ -472,7 +473,7 @@ void UITabControl::Slot28(int x, int y) {
     screenY = (screenY + window->geometry.y);
   }
 
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->tooltips[index].c_str(), screenX, screenY, -1, false, true);
+  g_modeMgr.gameMode->ShowTooltip(this->tooltips[index].c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00822660
@@ -518,7 +519,7 @@ void UIBasicItemCtrl::Slot28(int, int) {
   }
 
   if (!text.empty()) {
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -549,7 +550,7 @@ void UIBasicSkillCtrl::Slot28(int, int) {
   }
 
   if (!text.empty()) {
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -620,7 +621,7 @@ void UIMemberListBox::Slot28(int, int y) {
   int screenX = -4;
   y -= y % this->lineHeight;
   this->ToScreen(screenX, y);
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->lines[line].c_str(), screenX, y, -1, false, true);
+  g_modeMgr.gameMode->ShowTooltip(this->lines[line].c_str(), screenX, y, -1, false, true);
 }
 
 // OFFSET: 0x00891E40
@@ -642,7 +643,7 @@ void UIStaticItem::Slot28(int, int) {
     screenY = (screenY + window->geometry.y);
   }
 
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip(text, screenX, screenY, -1, false, true);
+  g_modeMgr.gameMode->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00892040
@@ -1037,14 +1038,14 @@ void UITreeView::Slot27(int x, int y) {
 // OFFSET: 0x00892560
 // FUNCTION: fn_11473
 void UIImgMenu::ResetCursor(int, int) {
-  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+  g_modeMgr.gameMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x008925A0
 // FUNCTION: fn_11475
 void UIString::ResetCursor(int, int) {
   if (!this->unknown_0084.empty() || !this->unknown_00AC.empty()) {
-    static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+    g_modeMgr.gameMode->SetCursorAction(2);
   }
 }
 
@@ -1063,7 +1064,7 @@ void UITVTextButton::ResetCursor(int x, int y) {
   if (this->m_disabled != 0) {
     UIWindow::ResetCursor(x, y);
   } else {
-    static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
+    g_modeMgr.gameMode->SetCursorAction(0);
   }
 }
 
@@ -3011,7 +3012,7 @@ void UISlotBmpButton::SetSlot(int slot, int fallback) {
     return;
   }
 
-  const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, this->m_slot, 0, 0, 0));
+  const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, this->m_slot, 0, 0, 0));
   if (!info) {
     this->icon->Show(0);
     return;
@@ -3603,7 +3604,7 @@ void UISlotBmpButton::Paint() {
   }
 
   if (this->m_slot >= 0) {
-    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, this->m_slot, 0, 0, 0));
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, this->m_slot, 0, 0, 0));
     if (info) {
       if (info->unknown_00AA > 0 || info->unknown_00A6 > 0) {
         if (this->m_inRange) {
