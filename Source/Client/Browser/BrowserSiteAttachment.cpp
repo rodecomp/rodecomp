@@ -6,7 +6,7 @@
 // OFFSET: 0x00AB2AB0
 // FUNCTION: fn_17417
 bool CWebBrowser::AttachSite() {
-  this->site = new (std::nothrow) BrowserClientSite(this->host, this->browser);
+  this->site = new BrowserClientSite(this->host, this->browser);
   IOleObject* object;
   HRESULT result = this->browser->QueryInterface(IID_IOleObject, reinterpret_cast<void**>(&object));
   if (FAILED(result)) {
