@@ -220,14 +220,14 @@ void CChargingPierceEffect::Slot03() {
 // OFFSET: 0x00704360
 // FUNCTION: fn_07031
 void CChargingPierceNewEffect::Slot03() {
-  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+  for (CEZ2STRParticle* particle : this->emitters) {
     const float x = this->position[0];
     const float y = this->position[1];
     const float z = this->position[2];
-    CEZ2STRParticle* particle = *it;
 
     const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
     const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+
     const float viewX = view[0] * x + view[3] * y + view[6] * z + view[9] + particle->unknown_00D0;
     const float viewY = view[1] * x + view[4] * y + view[7] * z + view[10] + particle->unknown_00D4;
     const float viewZ = view[2] * x + view[5] * y + view[8] * z + view[11] + particle->unknown_00D8;
@@ -244,11 +244,10 @@ void CChargingPierceEffect::Slot04() {
   for (int index = 0; index < 10; ++index) {
     CParticle* spark = this->sparks[index];
     if (spark) {
-      CTexture* texture = spark->texture;
-      const float left = g_textureOffsetX / texture->TextureWidth();
-      const float right = (texture->Width() + g_textureOffsetX) / texture->TextureWidth();
-      const float top = g_textureOffsetY / texture->TextureHeight();
-      const float bottom = (texture->Height() + g_textureOffsetY) / spark->texture->TextureHeight();
+      const float left = g_textureOffsetX / spark->texture->TextureWidth();
+      const float right = (spark->texture->Width() + g_textureOffsetX) / spark->texture->TextureWidth();
+      const float top = g_textureOffsetY / spark->texture->TextureHeight();
+      const float bottom = (spark->texture->Height() + g_textureOffsetY) / spark->texture->TextureHeight();
       spark->Render(true, bottom, top, left, right, false, true);
     }
 
@@ -261,7 +260,7 @@ void CChargingPierceEffect::Slot04() {
 // OFFSET: 0x00704BB0
 // FUNCTION: fn_07033
 void CChargingPierceNewEffect::Slot04() {
-  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  for (CEZ2STRParticle* particle : this->emitters) {
+    particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
 }
