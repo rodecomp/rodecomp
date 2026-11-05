@@ -105,7 +105,7 @@ public:
   void BroadcastMsg4();
   void BroadcastMsg3();
   void PropagateMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4);
-  void ToScreen(int& x, int& y) const;
+  __declspec(noinline) void ToScreen(int& x, int& y) const;
   void PlaceBeside(UIWindow* anchor);
   UIWindow* FindUid(std::uint32_t uid);
   // INLINED
