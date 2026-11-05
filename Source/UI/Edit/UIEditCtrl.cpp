@@ -244,17 +244,15 @@ void UIEditCtrl::Paint() {
   const unsigned color = component(this->red) | (component(this->green) << 8) | (component(this->blue) << 16);
   this->textY = 0;
 
-  if (this->geometry.surface) {
-    if (this->flat == 0) {
-      RECT rectangle{0, 0, this->geometry.width, this->geometry.height};
-      const unsigned border = static_cast<unsigned char>(this->borderRed) | (static_cast<unsigned char>(this->borderGreen) << 8) |
-                              (static_cast<unsigned char>(this->borderBlue) << 16);
-      this->geometry.surface->Fill(&rectangle, border);
-      rectangle = {1, 1, this->geometry.width - 1, this->geometry.height - 1};
-      this->geometry.surface->Fill(&rectangle, color);
-    } else {
-      this->geometry.surface->Fill(nullptr, color);
-    }
+  if (this->flat == 0) {
+    RECT rectangle{0, 0, this->geometry.width, this->geometry.height};
+    const unsigned border = static_cast<unsigned char>(this->borderRed) | (static_cast<unsigned char>(this->borderGreen) << 8) |
+                            (static_cast<unsigned char>(this->borderBlue) << 16);
+    this->FillSurface(border, &rectangle);
+    SetRect(&rectangle, 1, 1, this->geometry.width - 1, this->geometry.height - 1);
+    this->FillSurface(color, &rectangle);
+  } else {
+    this->ClearSurface(color);
   }
 
   this->textY = this->topPadding + 2;
