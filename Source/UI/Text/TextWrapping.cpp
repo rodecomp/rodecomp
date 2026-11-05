@@ -56,28 +56,6 @@ void WrapPlainText(const char* text, std::vector<std::string>& lines, int width)
   }
 }
 
-namespace {
-  // INLINED
-  bool Hex(unsigned char value) {
-    return (value >= '0' && value <= '9') || (value >= 'a' && value <= 'f') || (value >= 'A' && value <= 'F');
-  }
-
-  // INLINED
-  bool Color(const char* text, std::size_t bytes) {
-    if (bytes <= 6 || *text != '^') {
-      return false;
-    }
-
-    for (unsigned index = 1; index <= 6; ++index) {
-      if (!Hex(static_cast<unsigned char>(text[index]))) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-}
-
 // OFFSET: 0x009B4730
 // FUNCTION: fn_13833
 void WrapRichText(
@@ -104,49 +82,30 @@ void WrapRichText(
       continue;
     }
 
-    if (Color(current, end - current)) {
+    int length;
+    int id;
+
+    if (IsHexColorToken(current, end)) {
       current += 7;
       limit += 7;
       breakAt = current;
+    } else if (ParseItemIdTag(current, end, length, id)) {
+      lines.emplace_back(begin, current);
+      current += length;
+      limit += length;
+      begin = current;
+
+      if (id != 0) {
+        ITEM_INFO item;
+        item.SetItemId(id);
+
+        char name[260];
+        int capacity = sizeof(name);
+        item.sub_6D5810(name, capacity, 0);
+        lines.push_back(name);
+      }
     } else {
-      unsigned digits = 0;
-
-      if (std::strncmp(current, "^nItemID^", 9) == 0) {
-        while (current + digits < end && Hex(static_cast<unsigned char>(current[9 + digits]))) {
-          ++digits;
-        }
-      }
-
-      if (digits != 0) {
-        char number[12];
-
-        if (digits >= 10) {
-          __fastfail(FAST_FAIL_RANGE_CHECK_FAILURE);
-        }
-
-        std::memcpy(number, current + 9, digits);
-        number[digits] = '\0';
-        const int id = std::atoi(number);
-
-        lines.emplace_back(begin, current);
-        current += 9 + digits;
-        limit += 9 + digits;
-        begin = current;
-
-        if (id != 0) {
-          ITEM_INFO item;
-          char itemId[16];
-          std::sprintf(itemId, "%d", id);
-          item.itemId = itemId;
-
-          char name[260];
-          int capacity = sizeof(name);
-          item.sub_6D5810(name, capacity, 0);
-          lines.emplace_back(name);
-        }
-      } else {
-        current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
-      }
+      current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
     }
 
     while (*current == ' ') {
@@ -196,9 +155,9 @@ void WrapRichText(
     lines.emplace_back(begin, current);
   }
 
-  if (g_inlineCharset && *marker != '\0' && marker < end) {
+  if (g_inlineCharset && marker && *marker != '\0' && marker < end) {
     for (std::size_t index = 1; index < lines.size(); ++index) {
-      const unsigned position = Color(lines[index].data(), lines[index].size()) ? 7 : 0;
+      const unsigned position = IsHexColorToken(lines[index].data(), lines[index].data() + lines[index].size()) ? 7 : 0;
       lines[index].insert(position, marker, 3);
     }
   }
