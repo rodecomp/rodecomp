@@ -9,28 +9,28 @@
 namespace {
   // INLINED
   int Family(unsigned mode) {
-    switch (mode) {
-    case 1:
-      return 21;
-    case 2:
-      return 20;
-    case 3:
-      return 22;
-    case 4:
-      return 23;
-    case 5:
-      return 24;
-    case 6:
-      return 25;
-    case 7:
-      return 26;
-    case 8:
-      return 27;
-    case 9:
-      return 28;
-    default:
-      return 0;
+    int family = 0;
+    if (mode == 1) {
+      family = 21;
+    } else if (mode == 2) {
+      family = 20;
+    } else if (mode == 3) {
+      family = 22;
+    } else if (mode == 4) {
+      family = 23;
+    } else if (mode == 5) {
+      family = 24;
+    } else if (mode == 6) {
+      family = 25;
+    } else if (mode == 7) {
+      family = 26;
+    } else if (mode == 8) {
+      family = 27;
+    } else if (mode == 9) {
+      family = 28;
     }
+
+    return family;
   }
 }
 
@@ -141,8 +141,8 @@ void UITransBalloonText::Paint() {
   this->ClearSurface(0xFFFF00FF);
   DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, this->m_borderColor);
   std::uint32_t color = this->m_textColor;
-  const int family = Family(this->m_fontMode);
   const int height = this->m_fontMode == 0 ? this->m_fontHeight : 12;
+  const int family = Family(this->m_fontMode);
   int y = 4;
 
   for (std::size_t index = 0; index < this->m_lines.size(); ++index) {
