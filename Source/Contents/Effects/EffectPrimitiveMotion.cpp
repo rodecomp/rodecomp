@@ -1,4 +1,4 @@
-#include "Contents/Effects/EffectPrimitiveMotion.h"
+﻿#include "Contents/Effects/EffectPrimitiveMotion.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
@@ -5265,6 +5265,8 @@ void CEffectPrim::PrimExpandPulse() {
       if (slot.alphaB <= 0) {
         slot.alphaB = 0;
       }
+    } else if (slot.flag1[1] == 16) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
     } else if (slot.flag1[1] != 24) {
       slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
     } else {
