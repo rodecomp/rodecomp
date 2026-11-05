@@ -16,6 +16,8 @@ struct NavigationLinkParser {
 };
 
 extern NavigationLinkParser* g_navigationLinkParser;
+extern std::string g_naviLinkTagBegin;
+extern std::string g_naviLinkTagEnd;
 
 bool CreateNavigationLinkParser();
 void DestroyNavigationLinkParser();

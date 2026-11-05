@@ -12,7 +12,7 @@ UINaviLinkButton::~UINaviLinkButton() = default;
 // OFFSET: 0x00893050
 // FUNCTION: fn_11503
 void UINaviLinkButton::Slot25(int, int) {
-  const auto end = this->link.find("</NAVIL>");
+  const auto end = this->link.find(g_naviLinkTagEnd);
 
   if (end == std::string::npos) {
     return;
@@ -24,8 +24,8 @@ void UINaviLinkButton::Slot25(int, int) {
   const int y = DecodeNavigationNumber(coordinates.substr(2, 2));
   std::string map = this->link.substr(0, start);
 
-  if (map.find("<NAVIL>") != std::string::npos) {
-    map = map.substr(7);
+  if (map.find(g_naviLinkTagBegin) != std::string::npos) {
+    map = map.substr(std::strlen(g_naviLinkTagBegin.c_str()));
   }
 
   if (!map.empty()) {
