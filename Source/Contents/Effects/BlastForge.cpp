@@ -84,9 +84,8 @@ void CBlastForge::Slot03() {
     this->unknown_00CC->position.y = this->position[1];
     this->unknown_00CC->position.z = this->position[2];
 
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    const matrix& view = gameMode->camera->frame.view;
-    const matrix& inverse = gameMode->camera->frame.inverse;
+    const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+    const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
 
     float px = this->unknown_00CC->position.x;
     float py = this->unknown_00CC->position.y;
@@ -108,9 +107,8 @@ void CBlastForge::Slot03() {
     this->unknown_00D0->position.y = this->position[1];
     this->unknown_00D0->position.z = this->position[2];
 
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    const matrix& view = gameMode->camera->frame.view;
-    const matrix& inverse = gameMode->camera->frame.inverse;
+    const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+    const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
 
     float px = this->unknown_00D0->position.x;
     float py = this->unknown_00D0->position.y;
@@ -133,23 +131,20 @@ void CBlastForge::Slot03() {
 // OFFSET: 0x006F7EA0
 // FUNCTION: fn_06865
 void CBlastForge::Slot04() {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  const matrix& view = gameMode->camera->frame.view;
-
   if (!this->unknown_00D4) {
     if (this->unknown_00CC) {
-      this->unknown_00CC->DrawScreen(view);
+      this->unknown_00CC->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
     if (this->unknown_00D0) {
-      this->unknown_00D0->DrawScreen(view);
+      this->unknown_00D0->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
   }
 
   if (this->unknown_00D4) {
-    this->unknown_00D4->DrawScreen(view);
+    this->unknown_00D4->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
   if (this->unknown_00D8) {
-    this->unknown_00D8->DrawScreen(view);
+    this->unknown_00D8->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
 }
 
@@ -162,9 +157,8 @@ void CBlastForge::sub_6F7F80() {
       this->unknown_00D4->position.y = this->position[1];
       this->unknown_00D4->position.z = this->position[2];
 
-      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      const matrix& view = gameMode->camera->frame.view;
-      const matrix& inverse = gameMode->camera->frame.inverse;
+      const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+      const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
 
       float px = this->unknown_00D4->position.x;
       float py = this->unknown_00D4->position.y;
@@ -185,17 +179,20 @@ void CBlastForge::sub_6F7F80() {
         this->unknown_00D8->position.y = this->position[1];
         this->unknown_00D8->position.z = this->position[2];
 
+        const matrix& view2 = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+        const matrix& inverse2 = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+
         float px2 = this->unknown_00D8->position.x;
         float py2 = this->unknown_00D8->position.y;
         float pz2 = this->unknown_00D8->position.z;
 
-        float vx2 = py2 * view.values[3] + px2 * view.values[0] + pz2 * view.values[6] + view.values[9];
-        float vy2 = (py2 * view.values[4] + px2 * view.values[1] + pz2 * view.values[7] + view.values[10]) - 8.0f;
-        float vz2 = py2 * view.values[5] + px2 * view.values[2] + pz2 * view.values[8] + view.values[11];
+        float vx2 = py2 * view2.values[3] + px2 * view2.values[0] + pz2 * view2.values[6] + view2.values[9];
+        float vy2 = (py2 * view2.values[4] + px2 * view2.values[1] + pz2 * view2.values[7] + view2.values[10]) - 8.0f;
+        float vz2 = py2 * view2.values[5] + px2 * view2.values[2] + pz2 * view2.values[8] + view2.values[11];
 
-        this->unknown_00D8->position.x = vy2 * inverse.values[3] + vx2 * inverse.values[0] + vz2 * inverse.values[6] + inverse.values[9];
-        this->unknown_00D8->position.y = vy2 * inverse.values[4] + vx2 * inverse.values[1] + vz2 * inverse.values[7] + inverse.values[10];
-        this->unknown_00D8->position.z = vy2 * inverse.values[5] + vx2 * inverse.values[2] + vz2 * inverse.values[8] + inverse.values[11];
+        this->unknown_00D8->position.x = vy2 * inverse2.values[3] + vx2 * inverse2.values[0] + vz2 * inverse2.values[6] + inverse2.values[9];
+        this->unknown_00D8->position.y = vy2 * inverse2.values[4] + vx2 * inverse2.values[1] + vz2 * inverse2.values[7] + inverse2.values[10];
+        this->unknown_00D8->position.z = vy2 * inverse2.values[5] + vx2 * inverse2.values[2] + vz2 * inverse2.values[8] + inverse2.values[11];
 
         this->unknown_00D8->Process(0.0f, 0.0f, 0.0f);
       }
