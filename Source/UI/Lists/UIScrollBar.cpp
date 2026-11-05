@@ -387,46 +387,74 @@ void UIScrollBar::Slot35(int value) {
 // OFFSET: 0x0088E310
 // FUNCTION: fn_11381
 void UIScrollBar::Paint() {
-  if (this->geometry.surface) {
-    this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
-  }
+  this->ClearSurface(0xFFFF00FFu);
 
-  if (this->maximum == 0 || (this->vertical != 0 && this->vertical != 1)) {
+  if (this->maximum == 0) {
     return;
   }
 
-  constexpr char prefix[] = "유저인터페이스\\";
-  const bool vertical = this->vertical == 1;
-  const int length = vertical ? this->geometry.height : this->geometry.width;
-  const auto draw = [&](const char* name, int coordinate, bool transparent) {
-    const std::string path = std::string(prefix) + name;
-    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path.c_str()));
-    this->DrawBitmap(vertical ? 0 : coordinate, vertical ? coordinate : 0, bitmap ? &bitmap->image : nullptr, transparent);
-  };
-  draw(vertical ? "scroll0up.bmp" : "scroll1left.bmp", 1, false);
-  const char* middle = vertical ? "scroll0mid.bmp" : "scroll1mid.bmp";
-  const int interior = ((length - this->arrowLength) - 14);
-  const int count = interior / 13 + (interior % 13 != 0);
+  switch (this->vertical) {
+  case 0: {
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1left.bmp")));
+    this->DrawBitmap(1, 0, bitmap ? &bitmap->image : nullptr, false);
+    CBitmapRes* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1mid.bmp")));
+    const int interior = this->geometry.width - this->arrowLength - 14;
+    const int count = interior / 13 + (interior % 13 != 0);
 
-  for (int index = 0; index < count; ++index) {
-    draw(middle, ((index * 13) + this->arrowLength), false);
+    for (int index = 0; index < count; ++index) {
+      this->DrawBitmap(this->arrowLength + index * 13, 0, middle ? &middle->image : nullptr, false);
+    }
+
+    this->DrawBitmap(this->geometry.width - this->arrowLength - 13, 0, middle ? &middle->image : nullptr, false);
+    this->FillRegion(this->geometry.width - this->arrowLength, 0, 13, this->geometry.height, 0xFFFF00FFu);
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1right.bmp")));
+    this->DrawBitmap(this->geometry.width - this->arrowLength - 1, 0, bitmap ? &bitmap->image : nullptr, true);
+
+    const int thumb = this->arrowLength + this->ThumbOffset();
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_left.bmp")));
+    this->DrawBitmap(thumb, 0, bitmap ? &bitmap->image : nullptr, true);
+    const int end = thumb + this->ThumbLength() - 4;
+
+    for (int offset = thumb + 4; offset < end; offset += 4) {
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_mid.bmp")));
+      this->DrawBitmap(offset, 0, bitmap ? &bitmap->image : nullptr, true);
+    }
+
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_right.bmp")));
+    this->DrawBitmap(end, 0, bitmap ? &bitmap->image : nullptr, true);
+    break;
   }
+  case 1: {
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0up.bmp")));
+    this->DrawBitmap(0, 1, bitmap ? &bitmap->image : nullptr, false);
+    CBitmapRes* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0mid.bmp")));
+    const int interior = this->geometry.height - this->arrowLength - 14;
+    const int count = interior / 13 + (interior % 13 != 0);
 
-  draw(middle, ((length - this->arrowLength) - 13), false);
-  this->FillRegion(
-    vertical ? 0 : (length - this->arrowLength), vertical ? (length - this->arrowLength) : 0, vertical ? this->geometry.width : 13,
-    vertical ? 13 : this->geometry.height, 0xFFFF00FFu
-  );
-  draw(vertical ? "scroll0down.bmp" : "scroll1right.bmp", ((length - this->arrowLength) - 1), true);
-  const int thumb = (this->arrowLength + this->ThumbOffset());
-  draw(vertical ? "scroll0bar_up.bmp" : "scroll1bar_left.bmp", thumb, true);
-  const int end = ((thumb + this->ThumbLength()) - 4);
+    for (int index = 0; index < count; ++index) {
+      this->DrawBitmap(0, this->arrowLength + index * 13, middle ? &middle->image : nullptr, false);
+    }
 
-  for (int offset = (thumb + 4); offset < end; offset = (offset + 4)) {
-    draw(vertical ? "scroll0bar_mid.bmp" : "scroll1bar_mid.bmp", offset, true);
+    this->DrawBitmap(0, this->geometry.height - this->arrowLength - 13, middle ? &middle->image : nullptr, false);
+    this->FillRegion(0, this->geometry.height - this->arrowLength, this->geometry.width, 13, 0xFFFF00FFu);
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0down.bmp")));
+    this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, bitmap ? &bitmap->image : nullptr, true);
+
+    const int thumb = this->arrowLength + this->ThumbOffset();
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_up.bmp")));
+    this->DrawBitmap(0, thumb, bitmap ? &bitmap->image : nullptr, true);
+    const int end = thumb + this->ThumbLength() - 4;
+
+    for (int offset = thumb + 4; offset < end; offset += 4) {
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_mid.bmp")));
+      this->DrawBitmap(0, offset, bitmap ? &bitmap->image : nullptr, true);
+    }
+
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_down.bmp")));
+    this->DrawBitmap(0, end, bitmap ? &bitmap->image : nullptr, true);
+    break;
   }
-
-  draw(vertical ? "scroll0bar_down.bmp" : "scroll1bar_right.bmp", end, true);
+  }
 }
 
 // OFFSET: 0x0087BAA0
@@ -1532,7 +1560,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
     break;
   case 108:
-    static_cast<CMode*>(g_charViewMode)->SetCursorAction(0);
+    g_modeMgr.gameMode->SetCursorAction(0);
     if (this->unknown_008C && this->unknown_008C->id != a) {
       UITreeNode* target = reinterpret_cast<UITreeNode*>(a);
       this->unknown_0090 = target;
@@ -1556,7 +1584,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         break;
       }
 
-      static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+      g_modeMgr.gameMode->SetCursorAction(2);
       UITreeNode* node = this->unknown_008C;
       UITVTextButton* label = node->labelButton;
       this->RemoveChildNode(node->unknown_0170, node->id, true);
