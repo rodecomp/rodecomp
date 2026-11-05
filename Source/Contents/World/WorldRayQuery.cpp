@@ -16,7 +16,7 @@ WorldRayQuery::WorldRayQuery() {
 
 // OFFSET: 0x00AC7C50
 // FUNCTION: fn_17661
-bool WorldRayQuery::Intersects(const float* bounds) const {
+int WorldRayQuery::Intersects(const float* bounds) const {
   const float centers[3] = {(bounds[3] + bounds[0]) * 0.5f, (bounds[4] + bounds[1]) * 0.5f, (bounds[5] + bounds[2]) * 0.5f};
   const float extents[3] = {bounds[3] - centers[0], bounds[4] - centers[1], bounds[5] - centers[2]};
   const float offsets[3] = {centers[0] - this->origin[0], centers[1] - this->origin[1], centers[2] - this->origin[2]};
@@ -33,7 +33,7 @@ bool WorldRayQuery::Intersects(const float* bounds) const {
       const float extent = extents[axis] * parallelScale;
 
       if (-offsets[axis] - extent > 0.0f || extent - offsets[axis] < 0.0f) {
-        return false;
+        return 0;
       }
     } else {
       const float inverse = 1.0f / direction;
@@ -47,7 +47,7 @@ bool WorldRayQuery::Intersects(const float* bounds) const {
       exit = far < exit ? far : exit;
 
       if (entry > exit || exit < 0.0f) {
-        return false;
+        return 0;
       }
     }
   }
@@ -67,9 +67,9 @@ void WorldRayQuery::Collect(const float* ray, WorldSpatialTree* root) {
   this->limit = 999999.0f;
 
   if (root) {
-    for (WorldSpatialTree* child : root->children) {
-      if (child && this->Intersects(child->minimum)) {
-        this->CollectNode(child, 1);
+    for (int index = 0; index < 4; ++index) {
+      if (root->children[index] && this->Intersects(root->children[index]->minimum)) {
+        this->CollectNode(root->children[index], 1);
       }
     }
   }
@@ -85,9 +85,9 @@ void WorldRayQuery::CollectNode(WorldSpatialTree* node, int depth) {
   if (depth == 5) {
     this->nodes.push_back(node);
   } else {
-    for (WorldSpatialTree* child : node->children) {
-      if (child && this->Intersects(child->minimum)) {
-        this->CollectNode(child, depth + 1);
+    for (int index = 0; index < 4; ++index) {
+      if (node->children[index] && this->Intersects(node->children[index]->minimum)) {
+        this->CollectNode(node->children[index], depth + 1);
       }
     }
   }
