@@ -92,14 +92,14 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
 // OFFSET: 0x00879390
 // FUNCTION: fn_11216
 std::string UIChatHisBox::Convert(const std::string& text) {
-  if (!_mbsstr(reinterpret_cast<const unsigned char*>(text.c_str()), reinterpret_cast<const unsigned char*>("<ITEML>"))) {
+  if (!_mbsstr(reinterpret_cast<const unsigned char*>(text.c_str()), reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str()))) {
     return text;
   }
 
   std::string remaining = text;
   std::string result;
-  unsigned position = 0;
   unsigned previous = 0;
+  unsigned position = 0;
 
   for (;;) {
     std::string encoded;
@@ -108,14 +108,13 @@ std::string UIChatHisBox::Convert(const std::string& text) {
       break;
     }
 
-    result.append(text, previous, position - previous);
+    result += text.substr(previous, position - previous);
     std::string name;
 
     if (this->Name(encoded, name)) {
-      result += '<';
-      result += FitText(*this->geometry.surface, name, this->geometry.width / 2);
-      result += '>';
-      position += static_cast<unsigned>(15 + encoded.size());
+      name = this->BracketName(name);
+      result += name;
+      position += static_cast<unsigned>(encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());
     }
 
     previous = position;
