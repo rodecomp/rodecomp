@@ -230,7 +230,7 @@ public:
   void InitializeCamera();
   void ReloadScene();
   void InitializeState();
-  std::string GetUnknown0084(unsigned int index);
+  __declspec(noinline) std::string GetUnknown0084(unsigned int index);
   void RequestPlayerAction(int target, int argument);
   void UpdateLoopSounds();
   void AddSceneObject(CRenderObject* object);
@@ -405,12 +405,12 @@ public:
   void ShowHoverActorName(CGameActor* actor);
   const char* DragItemName();
   void PushUnknown01A4(int value);
-  bool IsOverWeight(bool notify);
+  __declspec(noinline) bool IsOverWeight(bool notify);
   void CompleteUnknown0194(std::uint32_t id, const std::string& text);
   std::string GetActiveSkillEffectTimeText(int skillId, int* activeSkillId);
   void ProcessStatusIconTooltip(int x, int y);
   bool IsActiveSkillEffectId(std::uint32_t id);
-  bool IsExcludedSkillEffectId(std::uint32_t id);
+  __declspec(noinline) bool IsExcludedSkillEffectId(std::uint32_t id);
   int SubD07740(int id, int defaultResult);
   bool AppendGuildEmblem(std::vector<char>& output, std::vector<std::string>& names, int guildId, int unused);
   void ReceiveResultNotice(int result);
@@ -571,7 +571,7 @@ public:
   void RequestAdminStatus();
   void sub_CEB8E0();
   unsigned sub_CEBBB0(const std::vector<unsigned char>& data);
-  unsigned sub_CEBF30(const std::vector<unsigned char>& data);
+  __declspec(noinline) unsigned sub_CEBF30(const std::vector<unsigned char>& data);
   unsigned sub_CEC100(const std::vector<unsigned char>& data);
   unsigned sub_CEC6A0(const std::vector<unsigned char>& data);
   void sub_D2DB80(const unsigned char* record);
@@ -720,7 +720,7 @@ public:
   void RemoveUnknown01A4(int value);
   bool RecordReplayMessage(int message, int value, int first, int second);
   void UpdateReplayActionSpeeds();
-  struct ReplayTime StopReplayRecording();
+  __declspec(noinline) struct ReplayTime StopReplayRecording();
   std::vector<unsigned char> WriteReplaySkillState();
   void ReceivePacket0AB8(const unsigned char* packet);
   void ReceivePacket0A29(int value);
