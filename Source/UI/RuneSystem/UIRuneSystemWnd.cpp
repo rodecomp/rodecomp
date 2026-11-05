@@ -56,14 +56,11 @@ int UIRuneSystem_ActiveWnd::HitTestItem(int x, int y) {
 
   int column = 0;
   if (x - 18 > 0) {
-    column = (x - 18) / 54;
-    if (column > this->m_columns - 1) {
-      column = this->m_columns - 1;
-    }
+    column = std::min((x - 18) / 54, this->m_columns - 1);
   }
   const int row = y - 11 > 54 ? this->m_columns : 0;
   const int index = row + column;
-  if (index < g_runeSystemMgr->GetItemListCount(this->m_listId)) {
+  if (g_runeSystemMgr->GetItemListCount(this->m_listId) > index) {
     return index;
   }
   return -1;
@@ -183,23 +180,18 @@ void UIRuneSetList::DrawScrollBar(bool drawLine) {
     return;
   }
 
-  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollbar_arrow_upper.bmp")));
-  this->DrawBitmap(x, 1, bitmap ? &bitmap->image : nullptr, true);
-  bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollbar_arrow_down.bmp")));
-  this->DrawBitmap(x, this->geometry.height - this->arrowLength - 1, bitmap ? &bitmap->image : nullptr, true);
+  this->DrawBitmap(x, 1, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollbar_arrow_upper.bmp"))), true);
+  this->DrawBitmap(x, this->geometry.height - this->arrowLength - 1, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollbar_arrow_down.bmp"))), true);
 
   const int top = this->arrowLength + 1 + this->ThumbOffset();
-  bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_up.bmp")));
-  this->DrawBitmap(x, top, bitmap ? &bitmap->image : nullptr, true);
+  this->DrawBitmap(x, top, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_up.bmp"))), true);
 
   const int bottom = this->ThumbLength() - 5 + top;
   for (int y = top + 3; y < bottom; y += 3) {
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_m.bmp")));
-    this->DrawBitmap(x, y, bitmap ? &bitmap->image : nullptr, true);
+    this->DrawBitmap(x, y, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_m.bmp"))), true);
   }
 
-  bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_down.bmp")));
-  this->DrawBitmap(x, bottom, bitmap ? &bitmap->image : nullptr, true);
+  this->DrawBitmap(x, bottom, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_down.bmp"))), true);
 }
 
 // OFFSET: 0x0081BE90
@@ -424,22 +416,22 @@ void UIRuneSetList::Slot28(int x, int y) {
 // OFFSET: 0x0081C6F0
 // FUNCTION: fn_10208
 void UIRuneSet_Info::Slot28(int x, int y) {
-  RuneSetData* runeSet = this->m_runeSet;
-  if (!runeSet || !runeSet->IsActive()) {
+  if (!this->m_runeSet || !this->m_runeSet->IsActive()) {
     return;
   }
 
-  for (unsigned int index = 0; index < runeSet->m_slots.size(); ++index) {
-    if (g_runeSetSlotX[index] < x && x < g_runeSetSlotX[index] + 90 && g_runeSetSlotY[index] < y && y < g_runeSetSlotY[index] + 120) {
-      if (!runeSet->m_slots[index]) {
+  for (unsigned int index = 0; index < this->m_runeSet->m_slots.size(); ++index) {
+    if (g_runeSetSlotX[index] < x && g_runeSetSlotX[index] + 90 > x && g_runeSetSlotY[index] < y && g_runeSetSlotY[index] + 120 > y) {
+      if (!this->m_runeSet->m_slots[index]) {
         break;
       }
 
       int screenX = g_runeSetSlotX[index] - 6;
       int screenY = g_runeSetSlotY[index] - 24;
       this->ToScreen(screenX, screenY);
-      if (g_modeMgr.gameMode) {
-        g_modeMgr.gameMode->ShowTooltip(runeSet->m_slots[index]->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
+      CMode* mode = g_modeMgr.gameMode;
+      if (mode) {
+        mode->ShowTooltip(this->m_runeSet->m_slots[index]->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
       }
     }
   }
@@ -524,20 +516,18 @@ void UIRuneSet_Info::UpdateActivation() {
 // OFFSET: 0x0081D580
 // FUNCTION: fn_10221
 int UIRuneSetList::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message == 0x3C) {
+  switch (message) {
+  case 0x3C:
     if (argument1 > 0 && this->total != argument1) {
-      int maximum = argument1 - this->visible;
-      if (maximum < 0) {
-        maximum = 0;
-      }
-      this->SetRange(maximum, this->visible, argument1);
+      this->SetRange(std::max(argument1 - this->visible, 0), this->visible, argument1);
       this->SetPosition(0);
     }
     this->Invalidate();
-  } else if (message == 0xAB) {
+    break;
+  case 0xAB:
     this->m_selected = argument1;
     this->Invalidate();
-    return 0;
+    break;
   }
   return 0;
 }
