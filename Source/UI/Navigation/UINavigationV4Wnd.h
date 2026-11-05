@@ -35,7 +35,7 @@ public:
   void LayoutWithoutDetails();
   void LayoutWithDetails();
   void RefreshLayout();
-  void SelectRouteNode(int node);
+  __declspec(noinline) void SelectRouteNode(int node);
   bool IsListShown() const;
   void DrawMapTexture(int x, int y, int size);
   std::string ObjectName(int type, void* object);

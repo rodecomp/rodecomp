@@ -2640,25 +2640,6 @@ void UINavigationroadiconWnd::Paint() {
 // OFFSET: 0x005C7CC0
 // FUNCTION: fn_03626
 int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  const auto recordResponse = [this](int response, std::intptr_t first, std::intptr_t second, std::intptr_t third) {
-    Replay& replay = Replay::Instance();
-    if (replay.state == 2) {
-      std::vector<unsigned char> packet(26, 0);
-      const std::uint32_t marker = 0x038408AE;
-      const std::uint16_t bytes = 26;
-      const int windowId = this->geometry.id;
-      const std::uint32_t values[3] = {
-        static_cast<std::uint32_t>(first), static_cast<std::uint32_t>(second), static_cast<std::uint32_t>(third)
-      };
-      std::memcpy(packet.data(), &marker, sizeof(marker));
-      std::memcpy(packet.data() + 4, &bytes, sizeof(bytes));
-      std::memcpy(packet.data() + 6, &windowId, sizeof(windowId));
-      std::memcpy(packet.data() + 10, &response, sizeof(response));
-      std::memcpy(packet.data() + 14, values, sizeof(values));
-      replay.RecordPacket(packet, 42, 0);
-    }
-  };
-
   switch (message) {
   case 0:
     if (sender == this->unknown_00E0 && static_cast<UIEditCtrl*>(this->unknown_00E0)->Length() > 0) {
@@ -2667,7 +2648,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     break;
   case 6:
     if (argument1 != 0x150 && argument1 != 0x1B9) {
-      recordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
+      this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
       if (argument1 > 499) {
         break;
       }
@@ -2767,7 +2748,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           g_worldViewMgr.ClearMarks();
         }
       } else {
-        if (g_windowMgr.window_0428) {
+        if (g_windowMgr.modal) {
           this->SendMsg(nullptr, 6, 0xCA, 0, 0, 0);
         }
         g_navigationTab = 0;
@@ -2784,8 +2765,8 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       g_navigationMinimized = true;
       this->geometry.targetAlpha = 0xAA;
       this->geometry.alphaStart = timeGetTime();
-      if (g_windowMgr.window_0428) {
-        static_cast<UIRoMapWnd*>(g_windowMgr.window_0428)->UpdateNavigationButtons();
+      if (g_windowMgr.modal) {
+        static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
       }
       this->RefreshLayout();
       break;
@@ -2825,12 +2806,12 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         g_navigationManager.UpdateSearchResults();
         this->unknown_00F0->Clear();
         this->unknown_00F0->Invalidate();
-        g_navigationManager.ClearData();
+        g_navigationManager.ResetCurrentTarget();
         g_navigationManager.LoadTargetPreview();
         this->FillRouteGroups();
         g_navigationTab = 0;
-        if (g_windowMgr.window_0428) {
-          static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapLevels();
+        if (g_windowMgr.modal) {
+          static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
         }
         this->LayoutWithDetails();
         g_serverLanguage->ResetInput();
@@ -2849,11 +2830,11 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         }
         this->unknown_00F0->selected = g_navigationSelectedNode;
         this->unknown_00F0->Invalidate();
-        if (g_windowMgr.window_0428) {
-          static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapSelection();
+        if (g_windowMgr.modal) {
+          static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
         }
         this->Invalidate();
-        recordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
+        this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
       }
       this->Invalidate();
       break;
@@ -2893,8 +2874,8 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         if (result >= 0) {
           g_navigationTab = 1;
           g_navigationManager.SelectTarget(g_navigationManager.GetSelectedNode());
-          if (g_windowMgr.window_0428) {
-            static_cast<UINavigationWnd*>(g_windowMgr.window_0428)->RefreshWorldMapMarks();
+          if (g_windowMgr.modal) {
+            static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapMarks();
           }
         }
       }
@@ -2911,7 +2892,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
       if (argument2 != -1) {
         this->SelectRouteNode(static_cast<int>(argument2));
-        recordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
+        this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
       }
       this->Invalidate();
       break;
