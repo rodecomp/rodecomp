@@ -142,7 +142,7 @@ public:
   void DrawVerticalLabel();
   __declspec(noinline) void SetAlign(int horizontal, int vertical);
   void SetOrientation(int value);
-  void SetFitText(bool enabled);
+  __declspec(noinline) void SetFitText(bool enabled);
   void SetBold(unsigned char enabled);
   void SetFontHeight(int height);
   void SetFont(const std::string& name);
