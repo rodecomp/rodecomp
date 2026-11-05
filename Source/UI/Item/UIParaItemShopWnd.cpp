@@ -102,28 +102,27 @@ void UIParaItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
 
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 3) {
-    mode->SendMsg(18, 0, 0, 0, 0);
-    return;
+  if (drag->source == 3) {
+    switch (drag->type) {
+    case 4:
+    case 5:
+    case 8:
+    case 9:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      return;
+    default:
+      g_windowMgr.ShowWindowById(15, 1);
+      dynamic_cast<UIItemDropCntWnd*>(g_windowMgr.LookupWindow(15))->SendMsg(nullptr, 13, 21, 0, 0, 0);
+      return;
+    }
   }
 
-  switch (drag->type) {
-  case 4:
-  case 5:
-  case 8:
-  case 9:
-  case 11:
-  case 12:
-  case 13:
-  case 14:
-  case 15:
-    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
-    return;
-  default:
-    g_windowMgr.ShowWindowById(15, 1);
-    dynamic_cast<UIItemDropCntWnd*>(g_windowMgr.LookupWindow(15))->SendMsg(nullptr, 13, 21, 0, 0, 0);
-    return;
-  }
+  mode->SendMsg(18, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x009A82E0
