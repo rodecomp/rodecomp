@@ -479,7 +479,7 @@ static void SplitMessageArguments(const char* text, std::vector<std::string>& ar
 // OFFSET: 0x00834C30
 // FUNCTION: fn_10418
 std::string FormatMessageArguments(std::string value, int messageId) {
-  const std::string text(value.data(), value.size());
+  const std::string text = value;
   std::string result = LookupMessage(messageId);
   const std::size_t separator = text.find(',');
 
