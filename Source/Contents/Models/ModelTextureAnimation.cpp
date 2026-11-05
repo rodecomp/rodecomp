@@ -44,7 +44,7 @@ void ModelKeyList1::Read(CFile& file) {
   int count = 0;
   file.Read(&count, sizeof(count));
   for (int i = 0; i < count; ++i) {
-    ModelRotationKey key{};
+    ModelRotationKey key;
     file.Read(&key, sizeof(key));
     this->push_back(key);
   }
@@ -57,10 +57,10 @@ struct ModelKeyList2 : std::vector<ModelRotationKey> {
 // OFFSET: 0x005411E0
 // FUNCTION: fn_01729
 void ModelKeyList2::Read(CFile& file) {
-  int count = 0;
+  int count;
   file.Read(&count, sizeof(count));
   for (int i = 0; i < count; ++i) {
-    ModelRotationKey key{};
+    ModelRotationKey key;
     file.Read(&key, sizeof(key));
     this->push_back(key);
   }
@@ -92,7 +92,7 @@ void ModelKeyList4::Read(CFile& file) {
   int count = 0;
   file.Read(&count, sizeof(count));
   for (int i = 0; i < count; ++i) {
-    ModelRotationKey key{};
+    ModelRotationKey key;
     file.Read(&key, sizeof(key));
     this->push_back(key);
   }
