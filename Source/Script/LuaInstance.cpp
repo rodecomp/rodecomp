@@ -6,7 +6,6 @@ extern "C" {
 #include <lualib.h>
 }
 #include <cstdlib>
-#include <cstring>
 #include <windows.h>
 
 // STATIC: 0x010D9630
@@ -15,7 +14,8 @@ static const char luaErrorCaption[] = "Lua Error";
 
 // OFFSET: 0x005221E0
 // FUNCTION: fn_01123
-CLuaInstance::CLuaInstance() : m_state(luaL_newstate()) {
+CLuaInstance::CLuaInstance() : m_state(nullptr) {
+  this->m_state = luaL_newstate();
   if (this->m_state) {
     luaL_openlibs(this->m_state);
     lua_register(this->m_state, "MessageBox", LuaMessageBox);
@@ -36,14 +36,14 @@ CLuaInstance::~CLuaInstance() {
 bool CLuaInstance::Execute(const std::string& name) {
   lua_getglobal(this->m_state, name.c_str());
 
-  if (lua_pcall(this->m_state, 0, 0, 0) == 0) {
-    return true;
+  const int result = lua_pcall(this->m_state, 0, 0, 0);
+
+  if (result != 0) {
+    MessageBoxA(nullptr, lua_tostring(this->m_state, -1), luaErrorCaption, MB_OK);
+    return false;
   }
 
-  const char* error = lua_tostring(this->m_state, -1);
-  MessageBoxA(nullptr, error, luaErrorCaption, MB_OK);
-
-  return false;
+  return true;
 }
 
 // OFFSET: 0x00522460
@@ -72,22 +72,16 @@ bool CLuaInstance::LoadFile(const std::string& path, bool showError) {
 // FUNCTION: fn_01131
 bool CLuaInstance::LoadFile(const std::string& path) {
   CFile file;
-  if (!file.Open(path.c_str())) {
+  if (!file.Open(path.c_str(), 0, true, false)) {
     return false;
   }
 
-  const std::uint32_t size = file.GetSize();
-  char* buffer = static_cast<char*>(std::malloc(size + 1));
-  if (!buffer) {
-    file.Close();
-    return false;
-  }
-
-  std::memset(buffer, 0, size + 1);
-  file.Read(buffer, size);
+  char* buffer = static_cast<char*>(std::malloc(file.GetSize() + 1));
+  SecureZeroMemory(buffer, file.GetSize() + 1);
+  file.Read(buffer, file.GetSize());
   file.Close();
 
-  if (luaL_loadbuffer(this->m_state, buffer, size, path.c_str()) == 0 && lua_pcall(this->m_state, 0, 0, 0) == 0) {
+  if (luaL_loadbuffer(this->m_state, buffer, file.GetSize(), "buf") == 0 && lua_pcall(this->m_state, 0, 0, 0) == 0) {
     std::free(buffer);
     return true;
   }
@@ -132,18 +126,18 @@ int CLuaInstance::ReadStrings(std::vector<std::string>& values, const char* glob
   }
 
   values.resize(lua_objlen(this->m_state, -1));
-  lua_pushnil(this->m_state);
   std::size_t index = 0;
 
-  while (lua_next(this->m_state, -2)) {
+  for (lua_pushnil(this->m_state); lua_next(this->m_state, -2); lua_pop(this->m_state, 1)) {
+    std::string value;
     type = lua_type(this->m_state, -1);
     if (type != LUA_TSTRING) {
       lua_pop(this->m_state, 3);
       return (type != LUA_TNIL) + 1;
     }
 
-    values[index++] = lua_tostring(this->m_state, -1);
-    lua_pop(this->m_state, 1);
+    value = lua_tostring(this->m_state, -1);
+    values[index++] = value;
   }
 
   lua_pop(this->m_state, 1);
