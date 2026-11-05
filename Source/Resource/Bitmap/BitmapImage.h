@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_RESOURCE_BITMAP_BITMAPIMAGE_H
 
 #include <cstdint>
+#include <cstdlib>
 
 
 struct BitmapImage {
@@ -21,6 +22,21 @@ struct BitmapImage {
   bool DecodePng(const void* data, int bytes, const char* name);
   bool DecodeJpeg(const void* data, int bytes);
 };
+
+// INLINED
+inline void BitmapImage::Clear() {
+  if (this->pixels) {
+    std::free(this->pixels);
+  }
+
+  if (this->auxiliary) {
+    std::free(this->auxiliary);
+  }
+
+  this->width = this->height = 0;
+  this->pixels = nullptr;
+  this->auxiliary = nullptr;
+}
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(BitmapImage) == 20);

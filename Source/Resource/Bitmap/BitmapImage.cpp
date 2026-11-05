@@ -41,21 +41,6 @@ namespace {
 BitmapImage::BitmapImage() : alpha(0), pixels(nullptr), auxiliary(nullptr) {
 }
 
-// INLINED
-void BitmapImage::Clear() {
-  if (this->pixels) {
-    std::free(this->pixels);
-  }
-
-  if (this->auxiliary) {
-    std::free(this->auxiliary);
-  }
-
-  this->width = this->height = 0;
-  this->pixels = nullptr;
-  this->auxiliary = nullptr;
-}
-
 // OFFSET: 0x0074A680
 // FUNCTION: fn_07866
 bool BitmapImage::CreateAuxiliary(int mode) {
