@@ -11,7 +11,7 @@ class CRenderSystemBase;
 struct ResourceName {
   /* 0000 */ std::uint32_t hash;
   /* 0004 */ char text[252];
-  explicit ResourceName(const char* name = "");
+  explicit __declspec(noinline) ResourceName(const char* name = "");
   void Assign(const char* name);
 };
 static_assert(sizeof(ResourceName) == 256);
