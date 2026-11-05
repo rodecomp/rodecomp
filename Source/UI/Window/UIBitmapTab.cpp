@@ -57,6 +57,19 @@ int UIBitmapTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::i
     this->geometry.unknown_0030 = argument1;
     this->Invalidate();
     break;
+  case 75:
+    this->tabs.clear();
+    break;
+  case 78:
+    if (argument1) {
+      const char* tabName = reinterpret_cast<const char*>(argument1);
+      const std::string name = FormatOwnedString(tabName, 'a');
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
+      if (bitmap) {
+        this->tabs.push_back(BitmapTabEntry{bitmap->image.height, tabName});
+      }
+    }
+    break;
   case 14:
     if (!this->tabs.empty()) {
       int width = 0;
@@ -71,19 +84,6 @@ int UIBitmapTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::i
       }
 
       this->Resize(width, height);
-    }
-    break;
-  case 75:
-    this->tabs.clear();
-    break;
-  case 78:
-    if (argument1) {
-      const char* tabName = reinterpret_cast<const char*>(argument1);
-      const std::string name = FormatOwnedString(tabName, 'a');
-      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
-      if (bitmap) {
-        this->tabs.push_back(BitmapTabEntry{bitmap->image.height, tabName});
-      }
     }
     break;
   }
