@@ -4,8 +4,8 @@
 #include "File/ShortcutFilename.h"
 #include "Network/TextEncoding.h"
 #include "Script/LuaInstance.h"
-
 #include <direct.h>
+#include <format>
 #include <json/value.h>
 #include <io.h>
 
@@ -26,7 +26,7 @@ void EmotionHotkeys::Load(Json::Value& data) {
 // FUNCTION: fn_23900
 bool EmotionHotkeys::HasChanges() const {
   if (!this->saved.empty()) {
-    for (unsigned i = 0; i < 10; ++i) {
+    for (int i = 0; i < 10; ++i) {
       if (this->saved[i] != this->current[i]) {
         return true;
       }
