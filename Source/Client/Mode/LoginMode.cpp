@@ -1622,7 +1622,7 @@ char g_zoneServerHost[129];
 // FUNCTION: fn_22290
 void CLoginMode::ConnectZoneServer(std::uint32_t gid, std::string mapName, std::uint32_t ip, int port, std::string host) {
   g_session.m_gid = gid;
-  static_cast<CMode*>(g_charViewMode)->SendMsg(10009, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(10009, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
   if (g_windowMgr.window_03D4) {
     g_windowMgr.Schedule(g_windowMgr.window_03D4);
   }
