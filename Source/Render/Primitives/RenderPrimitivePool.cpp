@@ -3,7 +3,7 @@
 #include <new>
 
 // INLINED
-RenderPrimitivePool::RenderPrimitivePool() {
+__forceinline RenderPrimitivePool::RenderPrimitivePool() {
   this->m_commands.resize(512, RenderPrimitive());
   this->m_current = this->m_commands.begin();
 }
