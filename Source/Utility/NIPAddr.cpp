@@ -17,7 +17,7 @@ NIPAddr::~NIPAddr() {
 // OFFSET: 0x00734CE0
 // FUNCTION: fn_07603
 bool NIPAddr::IsPrivateAddress(std::uint32_t address) {
-  const std::uint32_t swapped = (address >> 24) | ((address >> 8) & 0x0000FF00u) | ((address << 8) & 0x00FF0000u) | (address << 24);
+  const std::uint32_t swapped = MAKELONG(MAKEWORD(HIBYTE(HIWORD(address)), LOBYTE(HIWORD(address))), MAKEWORD(HIBYTE(LOWORD(address)), LOBYTE(LOWORD(address))));
   std::uint32_t lower;
   std::uint32_t upper;
   {
