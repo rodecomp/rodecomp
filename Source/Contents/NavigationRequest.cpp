@@ -369,9 +369,9 @@ std::vector<CNavi_Object*>* CNaviInfo::Mobs() {
 // OFFSET: 0x00B8E460
 // FUNCTION: fn_19472
 CNavi_Object* CNaviInfo::FindMobByIndex(int index) {
-  for (CNavi_Object* mob : this->mobs) {
-    if (index == mob->GetIndex()) {
-      return mob;
+  for (std::vector<CNavi_Object*>::iterator it = this->mobs.begin(); it != this->mobs.end(); ++it) {
+    if (index == (*it)->GetIndex()) {
+      return *it;
     }
   }
   return nullptr;
