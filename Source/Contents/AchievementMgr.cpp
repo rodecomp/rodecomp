@@ -208,7 +208,8 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -249,8 +250,8 @@ bool CAchievementMgr::sub_66EAA0() {
     lua_register(lua.GetState(), "InsertAchieveRewardBuff", CAchievementMgr::L_InsertAchieveRewardBuff);
     lua_register(lua.GetState(), "InsertAchieveUIType", CAchievementMgr::L_InsertAchieveUIType);
     lua_register(lua.GetState(), "SetAchieveIDByTab", CAchievementMgr::L_SetAchieveIDByTab);
-    const std::uint8_t source[] = {0xCA, 0x74, 0x5C, 0xD5, 0x26, 0x96, 0x53, 0x08, 0xDA, 0x65, 0x46, 0xC4, 0x35, 0x9E,
-                                   0x62, 0x2C, 0xD7, 0x79, 0x70, 0xCD, 0x2A, 0x88, 0x7B, 0x67, 0xD5, 0x78, 0x4D, 0xA1};
+    const char source[] = {'\xCA', '\x74', '\x5C', '\xD5', '\x26', '\x96', '\x53', '\x08', '\xDA', '\x65', '\x46', '\xC4', '\x35', '\x9E',
+                           '\x62', '\x2C', '\xD7', '\x79', '\x70', '\xCD', '\x2A', '\x88', '\x7B', '\x67', '\xD5', '\x78', '\x4D', '\xA1'};
     thread_local EncryptedName<sizeof(source), 0x490FFB43A12F0DB9ULL> path(source);
     if (luaL_loadfile(lua.GetState(), path.Text()) != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
       MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
@@ -276,14 +277,16 @@ bool CAchievementMgr::sub_66EAA0() {
 // FUNCTION: fn_05323
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveInfo(int id, std::string title, std::string unknown0018, std::string unknown0030, int unknown0048) {
   if (this->achievements.find(id) != this->achievements.end()) {
-    return std::pair<bool, std::string>(false, FormatOwnedString("duplicate achievement info [%d]", id));
+    const std::string message = FormatOwnedString("duplicate achievement info [%d]", id);
+    return std::make_pair(false, message);
   }
 
   if (this->achievements.insert(std::pair<int, AchievementInfo>(id, AchievementInfo(title, unknown0018, unknown0030, unknown0048))).second) {
-    return std::pair<bool, std::string>(true, "good");
+    return std::make_pair(true, "good");
   }
 
-  return std::pair<bool, std::string>(false, FormatOwnedString("achievement info [%d] insert fail", id));
+  const std::string message = FormatOwnedString("achievement info [%d] insert fail", id);
+  return std::make_pair(false, message);
 }
 
 // OFFSET: 0x0066F170
@@ -291,17 +294,19 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveInfo(int id, std::str
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveResource(int id, std::string text, int unknown0018, int unknown001C) {
   const auto found = this->achievements.find(id);
   if (found == this->achievements.end()) {
-    return std::pair<bool, std::string>(false, FormatOwnedString("achievement info [%d] cannot be find", id));
+    const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
+    return std::make_pair(false, message);
   }
 
-  for (auto it = found->second.rewards.begin(); it != found->second.rewards.end(); ++it) {
-    if (it->text == text) {
-      return std::pair<bool, std::string>(false, FormatOwnedString("achievement info [%d] - resource info already exist", id));
-    }
+  std::vector<AchievementReward>& rewards = found->second.rewards;
+  if (std::find_if(rewards.begin(), rewards.end(), [text](const AchievementReward& reward) { return reward.text == text; }) == rewards.end()) {
+    const AchievementReward reward(text, unknown0018, unknown001C);
+    rewards.push_back(reward);
+    return std::make_pair(true, "good");
   }
 
-  found->second.rewards.push_back({text, unknown0018, unknown001C});
-  return std::pair<bool, std::string>(true, "good");
+  const std::string message = FormatOwnedString("achievement info [%d] - resource info already exist", id);
+  return std::make_pair(false, message);
 }
 
 // OFFSET: 0x0066F450
@@ -309,11 +314,12 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveResource(int id, std:
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardBuff(int id, int value) {
   const auto found = this->achievements.find(id);
   if (found == this->achievements.end()) {
-    return std::pair<bool, std::string>(false, FormatOwnedString("achievement info [%d] cannot be find", id));
+    const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
+    return std::make_pair(false, message);
   }
 
   found->second.unknown_0054 = value;
-  return std::pair<bool, std::string>(true, "good");
+  return std::make_pair(true, "good");
 }
 
 // OFFSET: 0x0066F570
@@ -321,11 +327,12 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardBuff(int id, in
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardItem(int id, int value) {
   const auto found = this->achievements.find(id);
   if (found == this->achievements.end()) {
-    return std::pair<bool, std::string>(false, FormatOwnedString("achievement info [%d] cannot be find", id));
+    const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
+    return std::make_pair(false, message);
   }
 
   found->second.unknown_004C = value;
-  return std::pair<bool, std::string>(true, "good");
+  return std::make_pair(true, "good");
 }
 
 // OFFSET: 0x0066F690
@@ -333,11 +340,12 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardItem(int id, in
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardTitle(int id, int value) {
   const auto found = this->achievements.find(id);
   if (found == this->achievements.end()) {
-    return std::pair<bool, std::string>(false, FormatOwnedString("achievement info [%d] cannot be find", id));
+    const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
+    return std::make_pair(false, message);
   }
 
   found->second.unknown_0050 = value;
-  return std::pair<bool, std::string>(true, "good");
+  return std::make_pair(true, "good");
 }
 
 // OFFSET: 0x0066F7B0
@@ -345,12 +353,13 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardTitle(int id, i
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveUIType(int id, int type, std::string text) {
   const auto found = this->achievements.find(id);
   if (found == this->achievements.end()) {
-    return std::pair<bool, std::string>(false, FormatOwnedString("achievement info [%d] cannot be find", id));
+    const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
+    return std::make_pair(false, message);
   }
 
   found->second.unknown_0064 = type;
   found->second.unknown_0068 = text;
-  return std::pair<bool, std::string>(true, "good");
+  return std::make_pair(true, "good");
 }
 
 // OFFSET: 0x0066F900
@@ -375,10 +384,11 @@ std::pair<bool, std::string> CAchievementMgr::SetAchieveTab(int id, int group, i
   const int key = this->groupWidth * group + index;
   if (std::find(this->groups[key].begin(), this->groups[key].end(), id) == this->groups[key].end()) {
     this->groups[key].push_back(id);
-    return std::pair<bool, std::string>(true, "good");
+    return std::make_pair(true, "good");
   }
 
-  return std::pair<bool, std::string>(false, FormatOwnedString("duplicate achievement tab number info [%d]", id));
+  const std::string message = FormatOwnedString("duplicate achievement tab number info [%d]", id);
+  return std::make_pair(false, message);
 }
 
 // OFFSET: 0x0066FED0

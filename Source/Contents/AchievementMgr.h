@@ -9,6 +9,13 @@
 struct lua_State;
 
 struct AchievementReward {
+  // INLINED
+  AchievementReward(std::string text, int unknown0018, int unknown001C) {
+    this->text = text;
+    this->unknown_0018 = unknown0018;
+    this->unknown_001C = unknown001C;
+  }
+
   /* 0000 */ std::string text;
   /* 0018 */ int unknown_0018;
   /* 001C */ int unknown_001C;
