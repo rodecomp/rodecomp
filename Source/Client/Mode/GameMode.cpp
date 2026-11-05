@@ -5673,10 +5673,21 @@ static_assert(sizeof(SkillEntryPacket) == 16);
 // FUNCTION: fn_21351
 std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
   std::vector<unsigned char> output;
-  {
-    const auto record = BuildReplayTaggedRecord(17000, nullptr, 0);
+  auto appendRecord = [&output](std::uint16_t id, const void* data, std::uint32_t bytes) {
+    std::vector<unsigned char> record(bytes + 6u, 0);
+    record[0] = static_cast<unsigned char>(id);
+    record[1] = static_cast<unsigned char>(id >> 8);
+    record[2] = static_cast<unsigned char>(bytes);
+    record[3] = static_cast<unsigned char>(bytes >> 8);
+    record[4] = static_cast<unsigned char>(bytes >> 16);
+    record[5] = static_cast<unsigned char>(bytes >> 24);
+    if (bytes != 0) {
+      std::memcpy(record.data() + 6, data, bytes);
+    }
     output.insert(output.end(), record.begin(), record.end());
-  }
+  };
+
+  appendRecord(17000, nullptr, 0);
 
   for (CRenderObject* object : this->scene->unknown_0020) {
     CSkill* skill = static_cast<CSkill*>(object);
@@ -5693,14 +5704,10 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
     packet.x = static_cast<std::int16_t>(static_cast<int>(column));
     packet.y = static_cast<std::int16_t>(static_cast<int>(row));
 
-    const auto record = BuildReplayTaggedRecord(0xCD, &packet, sizeof(packet));
-    output.insert(output.end(), record.begin(), record.end());
+    appendRecord(0xCD, &packet, sizeof(packet));
   }
 
-  {
-    const auto record = BuildReplayTaggedRecord(17001, nullptr, 0);
-    output.insert(output.end(), record.begin(), record.end());
-  }
+  appendRecord(17001, nullptr, 0);
   return output;
 }
 
