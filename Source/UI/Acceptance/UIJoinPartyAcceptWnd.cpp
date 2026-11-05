@@ -22,19 +22,24 @@ UIJoinPartyAcceptWnd::~UIJoinPartyAcceptWnd() = default;
 // OFFSET: 0x008FE780
 // FUNCTION: fn_12353
 int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
-    const int response = static_cast<int>(a);
-    this->RecordResponse(response, b, c, d);
+  switch (message) {
+  case 6:
+    this->RecordResponse(static_cast<int>(a), b, c, d);
 
-    if (response == 184 || response == 185) {
+    switch (a) {
+    case 184:
       g_windowMgr.CloseWindow(35);
-      g_modeMgr.gameMode->SendMsg(60, this->identity, response == 184, 0, 0);
+      g_modeMgr.gameMode->SendMsg(60, this->identity, 1, 0, 0);
+      break;
+    case 185:
+      g_windowMgr.CloseWindow(35);
+      g_modeMgr.gameMode->SendMsg(60, this->identity, 0, 0, 0);
+      break;
     }
 
     return 0;
-  }
 
-  if (message == 56) {
+  case 56: {
     this->identity = static_cast<std::uint32_t>(a);
     std::string text = "(";
     text += reinterpret_cast<const char*>(b);
@@ -46,7 +51,7 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     return 0;
   }
 
-  if (message == 123) {
+  case 123: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     std::uint16_t marker;
     std::memcpy(&marker, bytes, sizeof(marker));
@@ -54,23 +59,25 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
     if (marker == 21750) {
       while (static_cast<unsigned>(b) > offset) {
-        std::uint16_t kind;
+        std::int16_t kind;
         std::uint32_t size;
         std::memcpy(&kind, bytes + offset, sizeof(kind));
         std::memcpy(&size, bytes + offset + 2, sizeof(size));
         offset += 6;
 
-        if (kind == 21751) {
-          break;
-        }
-
-        if (kind == 21752) {
+        switch (kind) {
+        case 21751:
+          return 0;
+        case 21752: {
           char text[260] = {};
           std::memcpy(text, bytes + offset, size);
           offset += size;
           this->SendMsg(nullptr, 56, 0, reinterpret_cast<std::intptr_t>(text), 0, 0);
-        } else {
+          break;
+        }
+        default:
           offset += size;
+          break;
         }
       }
     }
@@ -78,5 +85,7 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     return 0;
   }
 
-  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  default:
+    return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
 }
