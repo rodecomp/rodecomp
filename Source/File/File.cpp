@@ -152,14 +152,12 @@ bool CFile::Seek(std::uint32_t distance, DWORD origin) {
 // OFFSET: 0x0057B940
 // FUNCTION: fn_02592
 void CFile::Close() {
-  if (this->m_handle == INVALID_HANDLE_VALUE) {
-    if (this->m_data) {
-      VirtualFree(this->m_data, 0, MEM_RELEASE);
-      this->m_data = nullptr;
-    }
-  } else {
+  if (this->m_handle != INVALID_HANDLE_VALUE) {
     CloseHandle(this->m_handle);
     this->m_handle = INVALID_HANDLE_VALUE;
+  } else if (this->m_data) {
+    g_pakRegistry.Free(this->m_data);
+    this->m_data = nullptr;
   }
 }
 
