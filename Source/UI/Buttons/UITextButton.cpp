@@ -132,16 +132,36 @@ void UITextButton::Slot27(int x, int y) {
     return;
   }
 
-  const bool captured = g_windowMgr.Capture() == this;
-  const bool inside = x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height;
-  const unsigned state = inside ? (captured ? 2 : 1) : 0;
-  this->m_color = inside ? this->m_hoverColor : this->m_normalColor;
-
-  if (this->geometry.unknown_0030 != state) {
-    this->geometry.unknown_0030 = state;
-    this->Invalidate();
+  if (g_windowMgr.Capture() == this) {
+    if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
+      this->m_color = this->m_hoverColor;
+      if (this->geometry.unknown_0030 != 2) {
+        this->geometry.unknown_0030 = 2;
+        this->Invalidate();
+      }
+    } else {
+      this->m_color = this->m_normalColor;
+      if (this->geometry.unknown_0030 != 0) {
+        this->geometry.unknown_0030 = 0;
+        this->Invalidate();
+      }
+    }
+  } else if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
+    this->m_color = this->m_hoverColor;
+    if (this->geometry.unknown_0030 != 1) {
+      this->geometry.unknown_0030 = 1;
+      this->Invalidate();
+    }
+  } else {
+    this->m_color = this->m_normalColor;
+    if (this->geometry.unknown_0030 != 0) {
+      this->geometry.unknown_0030 = 0;
+      this->Invalidate();
+    }
   }
 }
+
+
 
 // OFFSET: 0x00892000
 // FUNCTION: fn_11461
@@ -396,10 +416,10 @@ void UIBarGraph4::Slot28(int, int) {
 
   int screenX = 0, screenY = -16;
 
-  for (const UIWindow* window = this; window; window = window->parent) {
-    screenX = (screenX + window->geometry.x);
-    screenY = (screenY + window->geometry.y);
-  }
+  this->ToScreen(screenX, screenY);
+
+
+
 
   char text[260];
   std::memset(text, 0, sizeof(text));
@@ -631,10 +651,10 @@ void UIStaticItem::Slot28(int, int) {
 
   int screenX = 0, screenY = -20;
 
-  for (const UIWindow* window = this; window; window = window->parent) {
-    screenX = (screenX + window->geometry.x);
-    screenY = (screenY + window->geometry.y);
-  }
+  this->ToScreen(screenX, screenY);
+
+
+
 
   g_modeMgr.gameMode->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
@@ -2600,19 +2620,19 @@ void UITreeView::HideNodes(std::list<UITreeNode*>& nodes) {
     return;
   }
 
-  for (UITreeNode* node : nodes) {
-    if (node->collapseButton) {
-      node->collapseButton->Move(-100, -100);
+  for (std::list<UITreeNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it) {
+    if ((*it)->collapseButton) {
+      (*it)->collapseButton->Move(-100, -100);
     }
 
-    if (node->expandButton) {
-      node->expandButton->Move(-100, -100);
+    if ((*it)->expandButton) {
+      (*it)->expandButton->Move(-100, -100);
     }
 
-    node->labelButton->Move(-100, -100);
+    (*it)->labelButton->Move(-100, -100);
 
-    if (static_cast<int>(node->children.size()) > 0) {
-      this->HideNodes(node->children);
+    if (static_cast<int>((*it)->children.size()) > 0) {
+      this->HideNodes((*it)->children);
     }
   }
 }
