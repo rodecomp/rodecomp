@@ -47,12 +47,12 @@ void UIRoMapWnd::DrawDashedArrow(
   float startX, float startY, float endX, float endY, int stepWidth, int thickness, CTexture* body, int headSize, CTexture* head, float progress,
   std::uint32_t color, int offset
 ) {
+  const float visibleDistance = SquareRoot((endY - startY) * (endY - startY) + (endX - startX) * (endX - startX)) * progress;
   const float deltaY = endY - startY;
   const float deltaX = endX - startX;
-  const float visibleDistance = SquareRoot(deltaY * deltaY + deltaX * deltaX) * progress;
-  const float directionLength = SquareRoot(deltaY * deltaY + deltaX * deltaX);
-  const float directionX = (1.0f / directionLength) * deltaX;
-  const float directionY = (1.0f / directionLength) * deltaY;
+  const float inverseLength = 1.0f / SquareRoot(deltaY * deltaY + deltaX * deltaX);
+  const float directionY = inverseLength * deltaY;
+  const float directionX = inverseLength * deltaX;
   float angle = static_cast<float>(std::acos(static_cast<double>(directionX)));
   if (directionY < 0.0f) {
     angle = 6.283184f - angle;
@@ -73,18 +73,21 @@ void UIRoMapWnd::DrawDashedArrow(
   float nextX = stepX + currentX;
   float nextY = stepY + currentY;
   std::uint32_t segmentColor = 0x33FFFFFF;
+  ScreenPoint quad[4];
 
   if (SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX)) < visibleDistance) {
     const float halfStepX = stepX * g_depthAverageHalf;
     const float halfStepY = stepY * g_depthAverageHalf;
     float distanceToNext;
     do {
+      quad[0] = {currentX, currentY};
+      quad[1] = {currentX + sideX, currentY + sideY};
+      quad[2] = {nextX, nextY};
+      quad[3] = {nextX + sideX, nextY + sideY};
       const float remainingX = (directionX * visibleDistance + startX) - currentX;
       const float remainingY = (directionY * visibleDistance + startY) - currentY;
       if (SquareRoot(remainingY * remainingY + remainingX * remainingX) < 100.0f) {
-        DrawScreenQuad(
-          currentX, currentY, currentX + sideX, currentY + sideY, nextX, nextY, nextX + sideX, nextY + sideY, body, segmentColor
-        );
+        DrawScreenQuad(quad[0], quad[1], quad[2], quad[3], body, segmentColor);
         segmentColor += 0x33000000;
       }
 
@@ -106,9 +109,11 @@ void UIRoMapWnd::DrawDashedArrow(
     const float otherBaseY = tipBaseY - headX * normalY;
     const float doubledStepX = headX * directionX + headX * directionX;
     const float doubledStepY = headX * directionY + headX * directionY;
-    DrawScreenQuad(
-      tipX + doubledStepX, tipY + doubledStepY, doubledStepX + otherBaseX, doubledStepY + otherBaseY, tipX, tipY, otherBaseX, otherBaseY, head, color
-    );
+    quad[0] = {otherBaseX, otherBaseY};
+    quad[1] = {tipX, tipY};
+    quad[2] = {doubledStepX + otherBaseX, doubledStepY + otherBaseY};
+    quad[3] = {tipX + doubledStepX, tipY + doubledStepY};
+    DrawScreenQuad(quad[3], quad[2], quad[1], quad[0], head, color);
   }
 }
 // GLOBAL: gl_25021
@@ -289,13 +294,13 @@ void UIRoMapWnd::DrawArrow(
   const float length = 1.0f / SquareRoot(dy * dy + dx * dx);
   const float dirY = length * dy;
   const float dirX = length * dx;
-  float angle = std::acos(dirX);
+  float angle = static_cast<float>(std::acos(static_cast<double>(dirX)));
   if (dirY < 0.0f) {
     angle = 6.283184f - angle;
   }
   angle += 1.570796f;
-  const float sine = std::sin(angle);
-  const float cosine = std::cos(angle);
+  const float sine = ScreenLineSine(angle);
+  const float cosine = ScreenLineCosine(angle);
   const float normal = 1.0f / SquareRoot(cosine * cosine + sine * sine);
   const float normalX = normal * cosine;
   const float normalY = normal * sine;
@@ -334,7 +339,7 @@ void UIRoMapWnd::DrawArrow(
     cornerX = midX + offsetX;
     cornerY = midY + offsetY;
   }
-  DrawScreenQuad(x0, y0, sideX0, sideY0, midX, midY, cornerX, cornerY, body, color);
+  DrawScreenQuad({x0, y0}, {sideX0, sideY0}, {midX, midY}, {cornerX, cornerY}, body, color);
 
   if (progress < 1.0f) {
     const float width = static_cast<float>(bodyWidth);
@@ -343,7 +348,7 @@ void UIRoMapWnd::DrawArrow(
     const float tipY = (offsetY * g_depthAverageHalf + midY) - width * dirY;
     const float halfX = size * normalX * g_depthAverageHalf;
     const float halfY = size * normalY * g_depthAverageHalf;
-    DrawScreenQuad(tipX, tipY, tipX - halfX, tipY - halfY, tipX + halfX, tipY + halfY, size * dirX + tipX, size * dirY + tipY, head, color);
+    DrawScreenQuad({tipX, tipY}, {tipX - halfX, tipY - halfY}, {tipX + halfX, tipY + halfY}, {size * dirX + tipX, size * dirY + tipY}, head, color);
   }
 }
 
