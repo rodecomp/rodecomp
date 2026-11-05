@@ -974,9 +974,10 @@ void CFloralFlareRoad::Slot01() {
     position.z = ClientCosine(angleZ) * static_cast<float>(distanceZ) + position.z;
 
     CEZ2STRParticle* flare = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+    EZ2STREmitter* flareEmitter = reinterpret_cast<EZ2STREmitter*>(flare);
     flare->Load(std::string("froral_flareroad\\froral_flareroad\\froral_flareroad.str"));
     flare->m_delay = delay;
-    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(flare));
+    this->emitters.push_back(flareEmitter);
     this->AddEvent(0, "effect\\AG_ALL_BLOOM.wav", delay / 16, 0);
   }
 }
@@ -1267,6 +1268,7 @@ void CFootprintStrEffect::SpawnFootprint() {
   const std::string& bottom = this->unknown_0169 ? this->unknown_00DC : this->unknown_00F4;
   if (bottom.size() != 0) {
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&spawn, 5));
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
     if (particle) {
       float angle;
       if (this->unknown_0168) {
@@ -1277,7 +1279,7 @@ void CFootprintStrEffect::SpawnFootprint() {
       particle->Open(bottom);
       particle->m_scale = static_cast<float>(this->unknown_0140);
       particle->m_angle = angle;
-      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+      this->emitters.push_back(emitter);
     }
   }
 
@@ -1287,11 +1289,12 @@ void CFootprintStrEffect::SpawnFootprint() {
     spawn.y = point.y + static_cast<float>(-this->unknown_0150);
     spawn.z = point.z + 0.0f;
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&spawn, 5));
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
     if (particle) {
       particle->Open(top);
       particle->depthOffset = 0.000035f;
       particle->m_scale = static_cast<float>(this->unknown_0148);
-      this->unknown_00D4.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+      this->unknown_00D4.push_back(emitter);
     }
   }
 
@@ -1896,11 +1899,12 @@ void CJupitelThunderHit::SpawnHit() {
   }
 
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x203);
+  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
   particle->unknown_00E8 = -10;
   particle->scale = 7.5f;
   particle->unknown_00A8 = 0;
   particle->SetTexture("effect\\thunder_plazma_blast_a.bmp");
-  this->unknown_00D8.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  this->unknown_00D8.push_back(emitter);
 }
 
 // OFFSET: 0x0071C270
@@ -1914,9 +1918,10 @@ void CJupitelThunderHit::SpawnSpark() {
   }
 
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x203);
+  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
   particle->SetTexture(texture);
   particle->unknown_00C0 = 2.5f;
-  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  this->emitters.push_back(emitter);
 }
 
 // OFFSET: 0x0071C520
@@ -2313,12 +2318,14 @@ void CPetitioEffect::Close() {
 // FUNCTION: fn_07347
 void CPetitioEffect::Slot01() {
   CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
   bottom->Load(std::string("petitio\\petitio_bottom\\petitio_bottom.str"));
-  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
+  this->emitters.push_back(bottomEmitter);
 
   CEZ2STRParticle* petitio = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  EZ2STREmitter* petitioEmitter = reinterpret_cast<EZ2STREmitter*>(petitio);
   petitio->Load(std::string("petitio\\petitio\\petitio.str"));
-  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(petitio));
+  this->emitters.push_back(petitioEmitter);
 
   this->AddEvent(1, nullptr, 6, 0);
   this->AddEvent(0, "effect\\CD_PETITIO.wav", 0, 0);
@@ -3195,6 +3202,7 @@ void CNewCloudKillEffect::Slot01() {
   this->unknown_00F8 = static_cast<int>(timeGetTime());
 
   CParticle* circle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  EZ2STREmitter* circleEmitter = reinterpret_cast<EZ2STREmitter*>(circle);
   if (circle) {
     circle->SetTexture("effect\\new_cloud_kill\\ef_cloud_circle.tga");
     circle->unknown_0004 = this->id;
@@ -3207,11 +3215,12 @@ void CNewCloudKillEffect::Slot01() {
     circle->unknown_00E8 = 60;
     circle->unknown_00A8 = 0;
     InitParticleQuad(circle->vertices);
-    this->unknown_00CC.push_back(reinterpret_cast<EZ2STREmitter*>(circle));
+    this->unknown_00CC.push_back(circleEmitter);
   }
 
   for (int i = 0; i < 100; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
     if (particle) {
       particle->unknown_0004 = this->id;
       particle->unknown_000C = i;
@@ -3219,12 +3228,13 @@ void CNewCloudKillEffect::Slot01() {
       particle->unknown_0008 = 1;
       particle->SetTexture("effect\\new_cloud_kill\\ef_cloud_kill.tga");
       fn_07337(particle);
-      this->unknown_00D4.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+      this->unknown_00D4.push_back(emitter);
     }
   }
 
   for (int i = 0; i < 30; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
     if (particle) {
       particle->unknown_0004 = this->id;
       particle->unknown_000C = i;
@@ -3233,11 +3243,12 @@ void CNewCloudKillEffect::Slot01() {
       particle->SetTexture("effect\\new_cloud_kill\\ef_cloud_kill.tga");
       fn_07339(particle);
       particle->unknown_00E8 = -std::max(0, rand() % 71);
-      this->unknown_00DC.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+      this->unknown_00DC.push_back(emitter);
     }
   }
 
   CParticle* lightning = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  EZ2STREmitter* lightningEmitter = reinterpret_cast<EZ2STREmitter*>(lightning);
   if (lightning) {
     lightning->unknown_0004 = this->id;
     lightning->unknown_000C = 1;
@@ -3248,11 +3259,12 @@ void CNewCloudKillEffect::Slot01() {
     lightning->depthOffset = 0.035f;
     fn_07338(lightning);
     lightning->unknown_004C = 50;
-    this->unknown_00E4.push_back(reinterpret_cast<EZ2STREmitter*>(lightning));
+    this->unknown_00E4.push_back(lightningEmitter);
   }
 
   for (int i = 0; i < 30; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
     if (particle) {
       particle->unknown_0004 = this->id;
       particle->unknown_000C = i;
@@ -3261,7 +3273,7 @@ void CNewCloudKillEffect::Slot01() {
       particle->SetTexture("effect\\new_cloud_kill\\ef_cloud_kill.tga");
       fn_07334(particle);
       particle->unknown_00E8 = -std::max(0, rand() % 80);
-      this->unknown_00EC.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+      this->unknown_00EC.push_back(emitter);
     }
   }
 }
@@ -3589,8 +3601,9 @@ void CSevereRainStorm::SpawnParticles() {
       position.z = (static_cast<float>(std::max(0, rand() % 451)) - 225.0f) * 0.1f + position.z;
 
       CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+      EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
       particle->Open(std::string("diamond_storm\\diamond_storm\\diamond_storm.str"));
-      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+      this->emitters.push_back(emitter);
     }
     break;
   case 2165:
@@ -3603,8 +3616,9 @@ void CSevereRainStorm::SpawnParticles() {
       position.z = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + position.z;
 
       CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+      EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
       particle->Load(std::string("crossrain\\cross_rain\\cross_rain.str"));
-      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+      this->emitters.push_back(emitter);
     }
     break;
   case 2348:
@@ -3654,8 +3668,9 @@ void CSevereRainStorm::SpawnCrossRain() {
   position.y -= 10.0f;
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
   particle->Load(std::string("IMPERIAL_GUARD\\IG_CROSS_RAIN\\new_crossrain\\new_cross_rain\\new_cross_rain.str"));
-  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  this->emitters.push_back(emitter);
 }
 
 // OFFSET: 0x00726110
@@ -4571,9 +4586,10 @@ void CGaleStorm::SpawnArrow() {
   position.z = static_cast<float>(offsetZ) - static_cast<float>(this->count * 5) * 0.5f + position.z;
 
   CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+  EZ2STREmitter* arrowEmitter = reinterpret_cast<EZ2STREmitter*>(arrow);
   if (arrow) {
     arrow->Load(std::string("galestorm\\galestorm_arrow\\galestorm_arrow.str"));
-    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(arrow));
+    this->emitters.push_back(arrowEmitter);
   }
 
   if (rand() % 7 == 0) {
