@@ -70,16 +70,16 @@ void CameraState::Smooth() {
   this->target[2] = next[2];
   this->target[1] = next[1];
   this->target[0] = next[0];
-  const int angle = TruncateToInt(-this->pitch);
-  const float sine = ClientSine(angle);
-  const float cosine = ClientCosine(angle);
-  const float tangent = static_cast<float>(static_cast<double>(sine) / cosine);
-  const float cotangent = static_cast<float>(static_cast<double>(cosine) / sine);
+
+  const float tangent = ClientSine(static_cast<int>(-this->pitch)) / ClientCosine(static_cast<int>(-this->pitch));
+  const float cotangent = ClientCosine(static_cast<int>(-this->pitch)) / ClientSine(static_cast<int>(-this->pitch));
+
   const float scaledTangent = tangent * g_projectionScale;
-  g_tangent = static_cast<float>(static_cast<double>(scaledTangent) / g_renderer->UiScaleY());
+  g_tangent = scaledTangent / g_renderer->UiScaleY();
   const float scaledCotangent = cotangent * g_projectionScale;
-  g_cotangent = static_cast<float>(static_cast<double>(scaledCotangent) / g_renderer->UiScaleY());
-  const float relativeSine = static_cast<float>((static_cast<double>(sine) / ClientSine(45)) * 0.000009f);
+  g_cotangent = scaledCotangent / g_renderer->UiScaleY();
+
+  const float relativeSine = ClientSine(static_cast<int>(-this->pitch)) / ClientSine(45) * 0.000009f;
   g_cameraScaleY = (g_cameraBaseDistance / this->distance) * relativeSine;
   g_cameraScaleX = (g_cameraBaseDistance / this->distance) * 0.000036f;
 }
