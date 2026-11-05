@@ -726,8 +726,8 @@ public:
   int IsLocalPlayerAid(std::uint32_t aid) const;
   bool IsHomunAid(std::uint32_t aid) const;
   bool IsMercenaryAid(std::uint32_t aid) const;
-  int IsHomunculusSkill(unsigned id) const;
-  int IsMercenarySkill(unsigned id) const;
+  __declspec(noinline) int IsHomunculusSkill(unsigned id) const;
+  __declspec(noinline) int IsMercenarySkill(unsigned id) const;
   int IsCompanionAid(std::uint32_t aid) const;
   bool IsPetAid(std::uint32_t aid) const;
   bool IsEquipItemType(int type) const;
