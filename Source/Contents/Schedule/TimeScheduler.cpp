@@ -39,14 +39,15 @@ bool CTimeScheduler::Create() {
 
   CTimeScheduler* scheduler = new (std::nothrow) CTimeScheduler();
   g_timeScheduler = scheduler;
-  if (scheduler != nullptr) {
-    if (scheduler->m_initialized) {
-      return true;
-    }
+  if (scheduler == nullptr) {
+    return false;
+  }
+  if (!scheduler->m_initialized) {
     delete scheduler;
     g_timeScheduler = nullptr;
+    return false;
   }
-  return false;
+  return true;
 }
 
 // OFFSET: 0x00BA9340
@@ -90,23 +91,21 @@ void CTimeScheduler::Process() {
   auto it = this->m_schedules.begin();
   while (it != this->m_schedules.end()) {
     CSchedule* schedule = *it;
-    if (schedule == nullptr) {
-      ++it;
-      continue;
-    }
-
-    if (schedule->active) {
-      uint64_t now = _Xtime_get_ticks();
-      if (!schedule->unknown_0025) {
-        if (schedule->CheckTime(now)) {
-          schedule->Process(now);
+    if (schedule != nullptr) {
+      if (schedule->active) {
+        uint64_t now = _Xtime_get_ticks();
+        if (!schedule->unknown_0025) {
+          if (schedule->CheckTime(now) == true) {
+            schedule->Process(now);
+          }
         }
+      } else {
+        it = this->m_schedules.erase(it);
+        delete schedule;
+        continue;
       }
-      ++it;
-    } else {
-      it = this->m_schedules.erase(it);
-      delete schedule;
     }
+    ++it;
   }
 }
 
