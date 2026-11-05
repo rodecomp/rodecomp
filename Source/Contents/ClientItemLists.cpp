@@ -723,7 +723,7 @@ void CGameMode::RefreshItemListWindow(unsigned char listType, bool partial) {
 
 // OFFSET: 0x00DD43A0
 // FUNCTION: fn_23232
-EquipSlots EquipSlotDecoder::Decode(int mask) const {
+__declspec(noinline) EquipSlots EquipSlotDecoder::Decode(int mask) const {
   std::vector<int> slots;
 
   for (int index = 0; index < 10; ++index) {
@@ -1212,15 +1212,16 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
 // OFFSET: 0x00DD7E10
 // FUNCTION: fn_23300
 EquipSlots CSession::GetEquipSlots(int location) {
-  int mask = location;
-  switch (location) {
-  case 0x8000: {
-    EquipSlots result;
+  EquipSlots result;
+  if (location == 0x8000) {
     result.values[0] = -1;
     result.values[1] = -1;
     result.values[2] = 15;
     return result;
   }
+
+  int mask = location;
+  switch (location) {
   case 0x400:
     mask = 0x100;
     break;
@@ -1266,8 +1267,8 @@ EquipSlots CSession::GetEquipSlots(int location) {
     break;
   }
 
-  const EquipSlots slots = EquipSlotDecoder().Decode(mask);
-  return slots;
+  result = EquipSlotDecoder().Decode(mask);
+  return result;
 }
 
 // OFFSET: 0x00DD8890
@@ -1438,7 +1439,7 @@ std::pair<bool, ITEM_INFO> CSession::FindItem1750(const ITEM_INFO& item, unsigne
 
 // OFFSET: 0x00DD91C0
 // FUNCTION: fn_23333
-int CSession::IsDifferentName(const char* name, const char* other) {
+__declspec(noinline) int CSession::IsDifferentName(const char* name, const char* other) {
   if (std::strlen(other) == 0) {
     return 1;
   }
