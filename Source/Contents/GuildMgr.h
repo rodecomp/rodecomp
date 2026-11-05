@@ -15,7 +15,7 @@ class CAsyncWorkMgr;
 
 class CGuild {
 public:
-  CGuild();
+  __declspec(noinline) CGuild();
   virtual ~CGuild();
 
   /* 0004 */ int m_emblemVersion;
