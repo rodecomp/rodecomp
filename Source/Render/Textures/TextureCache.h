@@ -17,7 +17,7 @@ public:
   CTexture* Load(const char* name, int option, bool fullSize, bool dynamic, bool renderTarget);
   CTexture* Default();
   CTexture* Create(const char* name, int option, bool fullSize, bool dynamic, bool renderTarget);
-  CTexture* Upload(int width, int height, const std::uint32_t* pixels, int format, int option, bool fullSize, bool dynamic, bool renderTarget);
+  __declspec(noinline) CTexture* Upload(int width, int height, const std::uint32_t* pixels, int format, int option, bool fullSize, bool dynamic, bool renderTarget);
   void Remove(CTexture* texture);
   void Clear();
   void ClearUnused();
