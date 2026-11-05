@@ -39,10 +39,10 @@ void CAMachineEffect::Slot01() {
 // OFFSET: 0x006F6940
 // FUNCTION: fn_06850
 void CAMachineEffect::Close() {
-  for (auto& entry : this->unknown_00CC) {
-    if (entry.second) {
-      FreeParticle(entry.second);
-      entry.second = nullptr;
+  for (std::map<int, CEZ2STRParticle*>::iterator it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
+    if (it->second) {
+      FreeParticle(it->second);
+      it->second = nullptr;
     }
   }
   this->unknown_00CC.clear();
