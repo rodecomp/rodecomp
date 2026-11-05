@@ -53,7 +53,7 @@ void CRendererDX9::ClearDepth(int clearColor) {
 void CRendererDX9::ClearWorld() {
   unsigned color = this->clearColor;
   if (this->fog.enabled == 1 && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_00FC == 1) {
-    color = BlendColor(this->clearColor, g_worldOverlayColor);
+    color = this->BlendColor(this->clearColor, g_worldOverlayColor);
   }
 
   this->nativeDevice->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0f, 0);

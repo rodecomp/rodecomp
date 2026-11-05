@@ -2,7 +2,7 @@
 
 // OFFSET: 0x0055CFC0
 // FUNCTION: fn_02095
-std::uint32_t BlendColor(std::uint32_t base, std::uint32_t overlay) {
+std::uint32_t CRenderer::BlendColor(std::uint32_t base, std::uint32_t overlay) {
   const float alpha = static_cast<float>(overlay >> 24) / 255.0f;
   const float inverse = 1.0f - alpha;
   const auto channel = [](std::uint32_t color, unsigned shift) { return static_cast<float>((color >> shift) & 255u); };

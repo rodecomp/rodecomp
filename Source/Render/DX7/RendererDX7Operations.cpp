@@ -52,7 +52,7 @@ void CRendererDX7::ClearDepth(int clearColor) {
 void CRendererDX7::ClearWorld() {
   unsigned color = this->clearColor;
   if (this->fog.enabled != 0 && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_00FC == 1) {
-    color = BlendColor(this->clearColor, g_worldOverlayColor);
+    color = this->BlendColor(this->clearColor, g_worldOverlayColor);
   }
 
   if (g_deviceOwnerDX7) {

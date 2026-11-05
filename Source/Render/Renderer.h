@@ -48,6 +48,7 @@ public:
   float ScaleDistance(float distance) const;
   float UiScaleX() const;
   float UiScaleY() const;
+  std::uint32_t BlendColor(std::uint32_t base, std::uint32_t overlay);
   void DrawBattleFieldIcon(CRenderSystemBase& system);
   void DrawOverlays(CRenderSystemBase& system);
   void ClearFrame();
