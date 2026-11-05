@@ -171,23 +171,43 @@ void UIMakeTargetProcessWnd::Slot25(int x, int y) {
 // FUNCTION: fn_13617
 int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 40:
+    this->makeType = static_cast<int>(a);
+    this->Invalidate();
+    return 0;
+
+  case 75: {
+    const char* name = reinterpret_cast<const char*>(a);
+    for (int index = 2; index >= 0; --index) {
+      ITEM_INFO& material = this->materials[index];
+      if (material.unknown_0000[1] > 0 && material.itemId == name) {
+        g_session.AddItem1710(material, 1);
+        material.Reset();
+        this->Invalidate();
+        return 0;
+      }
+    }
+
+    return 0;
+  }
+
   case 6: {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, d);
 
-    if (response == 184) {
+    switch (response) {
+    case 184:
       g_modeMgr.GetGameMode()->SendMsg(130, this->makeType, reinterpret_cast<int>(this->materials), 0, 0);
       g_windowMgr.CloseWindow(80);
       return 0;
-    }
 
-    if (response == 185) {
+    case 185: {
       g_modeMgr.GetGameMode()->SendMsg(130, 0, reinterpret_cast<int>(this->materials), 0, 0);
       bool restored = false;
-      for (ITEM_INFO& material : this->materials) {
-        if (material.unknown_0000[1] != 0) {
+      for (int index = 0; index < 3; ++index) {
+        if (this->materials[index].unknown_0000[1] > 0) {
           restored = true;
-          g_session.AddItem1710(material, 0);
+          g_session.AddItem1710(this->materials[index], 0);
         }
       }
 
@@ -202,54 +222,48 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       g_windowMgr.CloseWindow(80);
       return 0;
     }
-
-    return 0;
-  }
-
-  case 40:
-    this->makeType = static_cast<int>(a);
-    this->Invalidate();
-    return 0;
-
-  case 75: {
-    const char* name = reinterpret_cast<const char*>(a);
-    for (int index = 2; index >= 0; --index) {
-      ITEM_INFO& material = this->materials[index];
-      if (material.unknown_0000[1] != 0 && material.itemId == name) {
-        g_session.AddItem1710(material, 1);
-        material.Reset();
-        this->Invalidate();
-        return 0;
-      }
     }
 
     return 0;
   }
 
   case 123: {
+#pragma pack(push, 1)
+    struct ReplayTag {
+      /* 0000 */ std::int16_t id;
+      /* 0002 */ std::uint32_t bytes;
+
+      // INLINED
+      ReplayTag() : id(0), bytes(0) {}
+
+      // INLINED
+      ~ReplayTag() {
+        this->bytes = 0;
+        this->id = 0;
+      }
+    };
+#pragma pack(pop)
+
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    std::uint16_t marker;
-    std::memcpy(&marker, bytes, sizeof(marker));
-    unsigned offset = 6;
+    ReplayTag tag;
+    std::memcpy(&tag, bytes, sizeof(tag));
+    unsigned offset = sizeof(tag);
 
-    if (marker == 22000) {
+    if (tag.id == 22000) {
       while (static_cast<unsigned>(b) > offset) {
-        std::int16_t kind;
-        std::uint32_t size;
-        std::memcpy(&kind, bytes + offset, sizeof(kind));
-        std::memcpy(&size, bytes + offset + 2, sizeof(size));
-        offset += 6;
+        std::memcpy(&tag, bytes + offset, sizeof(tag));
+        offset += sizeof(tag);
 
-        if (kind == 22001) {
+        if (tag.id == 22001) {
           break;
         }
 
-        if (kind == 22002) {
-          std::memcpy(&this->makeType, bytes + offset, size);
-          offset += size;
+        if (tag.id == 22002) {
+          std::memcpy(&this->makeType, bytes + offset, tag.bytes);
+          offset += tag.bytes;
           this->SendMsg(nullptr, 40, this->makeType, 0, 0, 0);
         } else {
-          offset += size;
+          offset += tag.bytes;
         }
       }
     }
