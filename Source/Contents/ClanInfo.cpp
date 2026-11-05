@@ -1,5 +1,7 @@
 #include "Contents/ClanInfo.h"
 
+#include <new>
+
 // GLOBAL: gl_24376
 CClanInfo* g_clanInfo;
 
@@ -11,6 +13,27 @@ CClanInfo::CClanInfo() {
 
 CClanInfo::~CClanInfo() {
   this->m_relations.clear();
+}
+
+// OFFSET: 0x00ADF090
+// FUNCTION: fn_17964
+bool CClanInfo::Create() {
+  if (g_clanInfo) {
+    return false;
+  }
+
+  g_clanInfo = new (std::nothrow) CClanInfo();
+  if (!g_clanInfo) {
+    return false;
+  }
+
+  if (!g_clanInfo->m_isInitialized) {
+    delete g_clanInfo;
+    g_clanInfo = nullptr;
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00ADF240
