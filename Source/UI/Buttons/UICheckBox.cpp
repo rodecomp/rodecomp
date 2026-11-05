@@ -112,15 +112,15 @@ void UICheckBox::Slot28(int x, int y) {
     return;
   }
 
-  int screenX = 0, screenY = -20;
+  int screenX = 0;
+  int screenY = -20;
+  this->ToScreen(screenX, screenY);
 
-  for (const UIWindow* node = this; node; node = node->parent) {
-    screenX = (screenX + node->geometry.x);
-    screenY = (screenY + node->geometry.y);
+  if (this->geometry.unknown_0030 != 0 || this->m_uncheckedTooltip.empty()) {
+    g_modeMgr.gameMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+  } else {
+    g_modeMgr.gameMode->ShowTooltip(this->m_uncheckedTooltip.c_str(), screenX, screenY, -1, false, true);
   }
-
-  const std::string& tooltip = this->geometry.unknown_0030 != 0 || this->m_uncheckedTooltip.empty() ? this->m_tooltip : this->m_uncheckedTooltip;
-  g_modeMgr.gameMode->ShowTooltip(tooltip.c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x0085F9C0
