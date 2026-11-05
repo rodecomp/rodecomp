@@ -69,7 +69,11 @@ void FuncDrawWNDChar::Draw(bool option) {
         turn = 1;
       }
 
-      int direction = this->m_action % 8 + turn;
+      int direction = this->m_action % 8;
+      if (direction < 0) {
+        direction += 8;
+      }
+      direction += turn;
       if (direction < 0) {
         direction = 7;
       }
