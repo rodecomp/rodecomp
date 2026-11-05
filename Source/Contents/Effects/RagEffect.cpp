@@ -8603,41 +8603,44 @@ void CRagEffect::TetraVortexPillar(char kind) {
 
 // INLINED
 static __forceinline void LaunchFireballVolley(CRagEffect& effect, float turn, int shade, int fade) {
-  effect.state.unknown_11C84 = &CreateEffectParticle(effect, effect.render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  effect.state.unknown_11C84->renderFlag = 5;
-  effect.state.unknown_11C84->duration = 20;
-  effect.state.unknown_11C84->pattern |= 0x120u;
-  effect.state.unknown_11C84->deltaPos2 = {0.0f, -15.0f, 0.0f};
-  Owner(effect.state.unknown_11C84).Face(effect.state.deltaPos[0], effect.state.deltaPos[2]);
+  CEffectPrim* particle = CreateEffectParticle(effect, effect.render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
+  effect.state.unknown_11C84 = reinterpret_cast<EffectPrimitiveState*>(particle);
+  auto stored = [&]() -> CEffectPrim* {
+    return reinterpret_cast<CEffectPrim*>(effect.state.unknown_11C84);
+  };
+  stored()->state.renderFlag = 5;
+  stored()->state.duration = 20;
+  stored()->state.pattern |= 0x120u;
+  stored()->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
+  particle->Face(effect.state.deltaPos[0], effect.state.deltaPos[2]);
   if (turn != 0.0f) {
-    Owner(effect.state.unknown_11C84).render.angle = Owner(effect.state.unknown_11C84).render.angle + turn;
-    if (Owner(effect.state.unknown_11C84).render.angle < 0.0f) {
-      Owner(effect.state.unknown_11C84).render.angle = Owner(effect.state.unknown_11C84).render.angle + 360.0f;
+    stored()->render.angle = stored()->render.angle + turn;
+    if (stored()->render.angle < 0.0f) {
+      stored()->render.angle = stored()->render.angle + 360.0f;
     }
 
-    if (Owner(effect.state.unknown_11C84).render.angle >= 360.0f) {
-      Owner(effect.state.unknown_11C84).render.angle = Owner(effect.state.unknown_11C84).render.angle - 360.0f;
+    if (stored()->render.angle >= 360.0f) {
+      stored()->render.angle = stored()->render.angle - 360.0f;
     }
   }
 
-  effect.state.unknown_11C84->longitude = -Owner(effect.state.unknown_11C84).render.angle;
-  Owner(effect.state.unknown_11C84).render.angle = 180.0f - Owner(effect.state.unknown_11C84).render.angle;
-  if (Owner(effect.state.unknown_11C84).render.angle < 0.0f) {
-    Owner(effect.state.unknown_11C84).render.angle = Owner(effect.state.unknown_11C84).render.angle + 360.0f;
+  stored()->state.longitude = -stored()->render.angle;
+  stored()->render.angle = 180.0f - stored()->render.angle;
+  if (stored()->render.angle < 0.0f) {
+    stored()->render.angle = stored()->render.angle + 360.0f;
   }
 
-  CEffectPrim& particle = Owner(effect.state.unknown_11C84);
-  particle.state.speed = -(particle.CalcDist(effect.state.deltaPos[0], effect.state.deltaPos[2]) / particle.state.duration);
-  reinterpret_cast<matrix*>(effect.state.unknown_11C84->transform)->MakeYRotation(GetRadian(static_cast<int>(effect.state.unknown_11C84->longitude)));
-  effect.state.unknown_11C84->size = 1.0f;
-  effect.state.unknown_11C84->animSpeed = 1;
-  effect.state.unknown_11C84->red = shade;
-  effect.state.unknown_11C84->green = shade;
-  effect.state.unknown_11C84->blue = 255;
-  effect.state.unknown_11C84->alpha = static_cast<float>((fade - effect.state.stateCnt) * 40);
-  Owner(effect.state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\fireball.spr");
-  Owner(effect.state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\fireball.act");
-  Owner(effect.state.unknown_11C84).InitSegment();
+  stored()->state.speed = -(stored()->CalcDist(effect.state.deltaPos[0], effect.state.deltaPos[2]) / stored()->state.duration);
+  reinterpret_cast<matrix*>(stored()->state.transform)->MakeYRotation(GetRadian(static_cast<int>(stored()->state.longitude)));
+  stored()->state.size = 1.0f;
+  stored()->state.animSpeed = 1;
+  stored()->state.red = shade;
+  stored()->state.green = shade;
+  stored()->state.blue = 255;
+  stored()->state.alpha = static_cast<float>((fade - effect.state.stateCnt) * 40);
+  stored()->SetSpriteName(ResourceMgr::Instance(), "이팩트\\fireball.spr");
+  stored()->SetActionName(ResourceMgr::Instance(), "이팩트\\fireball.act");
+  stored()->InitSegment();
 }
 
 // OFFSET: 0x00C721A0
@@ -8647,8 +8650,7 @@ void CRagEffect::BlueFireballVolley() {
     g_soundMgr->PlayWave("effect\\EF_FireBall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 
-  const int frame = this->state.stateCnt;
-  if (frame == 0 || frame == 1 || frame == 2 || frame == 3) {
+  if (this->state.stateCnt == 0 || this->state.stateCnt == 1 || this->state.stateCnt == 2 || this->state.stateCnt == 3) {
     LaunchFireballVolley(*this, 0.0f, 55, 5);
   }
 
@@ -8668,8 +8670,7 @@ void CRagEffect::PaleFireballVolley() {
     g_soundMgr->PlayWave("effect\\EF_FireBall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 
-  const int frame = this->state.stateCnt;
-  if (frame == 0 || frame == 1 || frame == 2 || frame == 3) {
+  if (this->state.stateCnt == 0 || this->state.stateCnt == 1 || this->state.stateCnt == 2 || this->state.stateCnt == 3) {
     LaunchFireballVolley(*this, 0.0f, 155, 5);
   }
 
@@ -13401,8 +13402,7 @@ void CRagEffect::ShadedFireballVolley() {
     g_soundMgr->PlayWave("effect\\EF_FireBall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 
-  const int frame = this->state.stateCnt;
-  if (frame == 0 || frame == 1 || frame == 2 || frame == 3) {
+  if (this->state.stateCnt == 0 || this->state.stateCnt == 1 || this->state.stateCnt == 2 || this->state.stateCnt == 3) {
     LaunchTintedFireballVolley(*this, 0.0f, 155, 155, 255, 5);
   }
 
