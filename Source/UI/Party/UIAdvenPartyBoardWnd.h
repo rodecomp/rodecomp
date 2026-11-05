@@ -14,6 +14,7 @@ class UIEditCtrl;
 class UIJobSlotButton;
 class UIComboBoxDef2Wnd;
 class UIPartyInfoWnd;
+struct AdvenPartyBoardWndInfo;
 struct ExtendedListLine;
 struct PartyBoardPlacement {
   /* 0000 */ int x;
@@ -52,7 +53,7 @@ public:
   /* 0114 */ unsigned char unknown_0114;
   /* 0118 */ int unknown_0118;
   /* 011C */ std::uint32_t unknown_011C;
-  /* 0120 */ PartyBoardPlacement* saved;
+  /* 0120 */ AdvenPartyBoardWndInfo* saved;
   /* 0124 */ UIEditCtrl* minimum;
   /* 0128 */ UIEditCtrl* maximum;
   /* 012C */ UIJobSlotButton* jobs[4];

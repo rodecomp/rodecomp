@@ -1,10 +1,12 @@
 #include "Contents/MessageTable.h"
 #include "Client/Input/Language.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "Client/Session.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Party/UIAdvenPartyBoardWnd.h"
 #include "UI/Party/UIApplyForPartyWnd.h"
@@ -26,6 +28,12 @@
 
 namespace {
   constexpr char prefix[] = "유저인터페이스\\UIadventurerAgency\\";
+
+  // INLINED
+  void DisableButton(UIButton* button, unsigned char value) {
+    button->SetDisabled(value);
+    button->Invalidate();
+  }
 }
 
 // OFFSET: 0x007BAC40
@@ -231,14 +239,11 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
 // OFFSET: 0x007BC070
 // FUNCTION: fn_09296
 void UIAdvenPartyBoardWnd::LoadPage(int pageValue) {
-  this->previous->SetDisabled(1);
+  DisableButton(this->previous, 1);
   this->previous->Invalidate();
-  this->previous->Invalidate();
-  this->next->SetDisabled(1);
+  DisableButton(this->next, 1);
   this->next->Invalidate();
-  this->next->Invalidate();
-  this->refresh->SetDisabled(1);
-  this->refresh->Invalidate();
+  DisableButton(this->refresh, 1);
   this->refresh->Invalidate();
   g_adventurerAgencyMgr->RequestList(pageValue);
 
@@ -253,28 +258,32 @@ void UIAdvenPartyBoardWnd::Registration(bool value) {
 
   if (g_session.unknown_5464 != 0) {
     this->recruit->SetTooltip("");
-    this->ownParty->Enable(value ? 1 : 0);
-    this->ownParty->SetDisabled(value ? 0 : 1);
-    this->ownParty->Invalidate();
-    this->recruit->Enable(value ? 0 : 1);
-    this->recruit->SetDisabled(value ? 1 : 0);
-    this->recruit->Invalidate();
-    this->stop->Enable(value ? 1 : 0);
-    this->stop->SetDisabled(value ? 0 : 1);
-    this->stop->Invalidate();
+
+    if (value) {
+      this->ownParty->Enable(1);
+      DisableButton(this->ownParty, 0);
+      this->recruit->Enable(0);
+      DisableButton(this->recruit, 1);
+      this->stop->Enable(1);
+      DisableButton(this->stop, 0);
+    } else {
+      this->ownParty->Enable(0);
+      DisableButton(this->ownParty, 1);
+      this->recruit->Enable(1);
+      DisableButton(this->recruit, 0);
+      this->stop->Enable(0);
+      DisableButton(this->stop, 1);
+    }
   } else {
     this->recruit->SetTooltip(LookupMessage(2047));
     this->ownParty->Enable(0);
-    this->ownParty->SetDisabled(1);
-    this->ownParty->Invalidate();
+    DisableButton(this->ownParty, 1);
     this->recruit->Enable(1);
-    this->recruit->SetDisabled(1);
-    this->recruit->Invalidate();
-    static_cast<UIBmpTextButton*>(this->recruit)->text.clear();
-    this->recruit->Invalidate();
+    DisableButton(this->recruit, 1);
+    static_cast<UIBmpTextButton*>(this->recruit)->SetText(std::string());
   }
 
-  this->Invalidate();
+  this->InvalidateChildren();
 }
 
 // OFFSET: 0x007C1BC0
@@ -308,54 +317,50 @@ void UIAdvenPartyBoardWnd::RefreshRows() {
   this->Registration(g_adventurerAgencyMgr->registered);
   this->SendMsg(nullptr, 165, 0, 0, 0, 0);
   this->Invalidate();
-  this->Invalidate();
+  this->InvalidateChildren();
 }
 
 // INLINED
 void UIAdvenPartyBoardWnd::UpdatePagination() {
   if (this->page <= this->totalPages) {
     if (this->page != this->totalPages) {
-      this->next->SetDisabled(0);
-      this->next->Invalidate();
+      DisableButton(this->next, 0);
       this->next->Invalidate();
     }
   } else {
     this->page = this->totalPages;
   }
 
-  this->previous->SetDisabled(this->page == 1);
-  this->previous->Invalidate();
+  DisableButton(this->previous, this->page == 1);
   this->previous->Invalidate();
   this->Invalidate();
 
   if (g_session.unknown_5464 == 0) {
-    this->recruit->geometry.unknown_0030 = 3;
-    this->recruit->Invalidate();
+    this->ownParty->SetState(3);
   }
 
-  this->refresh->SetDisabled(0);
-  this->refresh->Invalidate();
+  DisableButton(this->refresh, 0);
   this->refresh->Invalidate();
 }
 
 // INLINED
 void UIAdvenPartyBoardWnd::ResetSearch() {
-  char number[10] = {};
-  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max((g_session.m_level - 5), 1));
-  this->minimum->SetText(number);
-  _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", (g_session.m_level + 5));
-  this->maximum->SetText(number);
+  char minimumText[10] = {};
+  _snprintf_s(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max((g_session.m_level - 5), 1));
+  this->minimum->SetText(minimumText);
+  char maximumText[10] = {};
+  _snprintf_s(maximumText, sizeof(maximumText), _TRUNCATE, "%d", (g_session.m_level + 5));
+  this->maximum->SetText(maximumText);
   this->types->Select(0);
 
   for (auto* job : this->jobs) {
-    job->geometry.unknown_0030 = 0;
-    job->Invalidate();
+    job->SetState(0);
     job->SetSelected(0);
   }
 
   this->searching = 0;
   this->memo->SetText("");
-  this->Invalidate();
+  this->InvalidateChildren();
 }
 
 // INLINED
@@ -408,8 +413,7 @@ void UIAdvenPartyBoardWnd::Search(int trigger) {
   filter.characterName = g_session.DecodePlayerName();
 
   for (auto* button : {this->previous, this->next, this->refresh}) {
-    button->SetDisabled(1);
-    button->Invalidate();
+    DisableButton(button, 1);
     button->Invalidate();
   }
 
@@ -433,11 +437,9 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       break;
     case 218:
       this->page = (this->page + 1);
-      this->previous->SetDisabled(1);
+      DisableButton(this->previous, 1);
       this->previous->Invalidate();
-      this->previous->Invalidate();
-      this->next->SetDisabled(1);
-      this->next->Invalidate();
+      DisableButton(this->next, 1);
       this->next->Invalidate();
 
       if (this->searching == 1) {
@@ -521,11 +523,10 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
     return 0;
   case 34:
-    this->saved = reinterpret_cast<PartyBoardPlacement*>(a);
+    this->saved = reinterpret_cast<AdvenPartyBoardWndInfo*>(a);
 
-    if (this->saved->width <= 0 || this->saved->height <= 0 || this->saved->x < 0 || this->saved->x > g_renderer->viewport.width - this->saved->width ||
-        this->saved->y < 0 || this->saved->y > g_renderer->viewport.height - this->saved->height) {
-      *this->saved = {200, 200, 480, 340};
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
     }
 
     this->Move(this->saved->x, this->saved->y);
@@ -550,58 +551,9 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // OFFSET: 0x007BF520
 // FUNCTION: fn_09302
 void UIAdvenPartyBoardWnd::Paint() {
-  this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
-  const auto load = [&](const char* path) { return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path)); };
-  auto* background = load((std::string(prefix) + "bg_agencyList.bmp").c_str());
-  this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
-  constexpr char basic[] = "유저인터페이스\\basic_interface\\";
-  const auto skin = [&](const char* name) { return load((std::string(basic) + name).c_str()); };
-  int left = 0;
-  int right = 0;
-  int titleHeight = 0;
-
-  if (auto* bitmap = skin("titlebar_left.bmp")) {
-    this->DrawBitmap(0, 0, &bitmap->image, false);
-    left = bitmap->image.width;
-  }
-
-  if (auto* bitmap = skin("titlebar_right.bmp")) {
-    right = bitmap->image.width;
-    this->DrawBitmap(this->geometry.width - right, 0, &bitmap->image, false);
-  }
-
-  if (auto* bitmap = skin("titlebar_mid.bmp")) {
-    titleHeight = bitmap->image.height;
-    const int extent = this->geometry.width - right - left;
-    const int count = extent / bitmap->image.width + (extent % bitmap->image.width != 0);
-
-    for (int index = 0; index < count; ++index, left = (left + bitmap->image.width)) {
-      this->DrawBitmap(left, 0, &bitmap->image, false);
-    }
-  }
-
-  const char* title = LookupMessage(3504);
-  this->DrawTextAt(19, titleHeight - 13, title, 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(18, titleHeight - 14, title, 0, 0, 12, 0, 0, 0);
-  auto* icon = skin("sys_base_off.bmp");
-  this->DrawBitmap(3, 3, icon ? &icon->image : nullptr, true);
-  auto* barLeft = skin("btnbar_left2.bmp");
-  auto* barRight = skin("btnbar_right2.bmp");
-  auto* barMiddle = skin("btnbar_mid2.bmp");
-  const int barHeight = barLeft ? barLeft->image.height : 0;
-  const int leftWidth = barLeft ? barLeft->image.width : 0;
-  const int rightWidth = barRight ? barRight->image.width : 0;
-  this->DrawBitmap(0, this->geometry.height - barHeight, barLeft ? &barLeft->image : nullptr, false);
-  this->DrawBitmap(this->geometry.width - rightWidth, this->geometry.height - barHeight, barRight ? &barRight->image : nullptr, false);
-
-  if (barMiddle) {
-    const int extent = this->geometry.width - rightWidth - leftWidth;
-    const int count = extent / barMiddle->image.width + (extent % barMiddle->image.width != 0);
-
-    for (int index = 0, x = leftWidth; index < count; ++index, x = (x + barMiddle->image.width)) {
-      this->DrawBitmap(x, this->geometry.height - barHeight, &barMiddle->image, false);
-    }
-  }
-
+  this->ClearSurface(0xFFFF00FF);
+  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agencyList.bmp"))), false);
+  this->DrawTitleBar(true, LookupMessage(3504), 0);
+  this->DrawButtonBar(2, 0, 1);
   this->DrawTextAt(36, 25, "~", 0, 0, 12, 0, 0, 0);
 }
