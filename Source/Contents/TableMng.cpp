@@ -6,71 +6,9 @@
 #include <utility>
 #include <vector>
 
+#include "BasicExcel.hpp"
+
 namespace YExcel {
-class BasicExcelCell {
-public:
-  int Type();
-  int GetInteger();
-  double GetDouble();
-  const char* GetString();
-  const wchar_t* GetWString();
-  void SetInteger(int val);
-  void SetIntegerAlt(int val);
-  void SetDouble(double val);
-  void SetString(const char* str);
-  void SetWString(const wchar_t* str);
-  void SetWStringAlt(const wchar_t* str);
-};
-
-class BasicExcelWorksheet {
-public:
-  int GetTotalRows();
-  int GetTotalCols();
-  BasicExcelCell* Cell(size_t row, size_t col);
-};
-
-class CompoundDocument {
-public:
-  CompoundDocument();
-  ~CompoundDocument();
-
-private:
-  unsigned char m_data[0x330];
-};
-
-class Workbook {
-public:
-  Workbook();
-  ~Workbook();
-
-private:
-  unsigned char m_data[0x158];
-};
-
-class Worksheet {
-public:
-  ~Worksheet();
-};
-
-class BasicExcel {
-public:
-  BasicExcel();
-  ~BasicExcel();
-
-  bool Load(const char* filename);
-  bool SaveAs(const char* filename);
-  void New(size_t sheets);
-  BasicExcelWorksheet* GetWorksheet(size_t sheetIndex);
-
-private:
-  /* 0000 */ CompoundDocument file_;
-  /* 0330 */ Workbook workbook_;
-  /* 0488 */ std::vector<Worksheet> worksheets_;
-  /* 0494 */ std::vector<BasicExcelWorksheet> yesheets_;
-  unsigned char m_tail[0x5A8 - 0x4A0];
-};
-static_assert(sizeof(BasicExcel) == 0x5A8);
-
 // OFFSET: 0x00C83CD0
 // FUNCTION: fn_20498
 BasicExcel::BasicExcel() {
@@ -154,7 +92,7 @@ bool CTableMng::ReadEntryQueueXls(void* excelPtr) {
     return false;
   }
 
-  BasicExcelWorksheet* sheet = excel->GetWorksheet(0);
+  BasicExcelWorksheet* sheet = excel->GetWorksheet(0u);
   if (sheet == nullptr) {
     return false;
   }
@@ -417,12 +355,12 @@ bool CTableMng::WriteEntryQueueXls() {
   BasicExcel* excel = new BasicExcel();
   if (excel != nullptr) {
     if (excel->Load("Data\\Table\\EntryQueue.xls")) {
-      BasicExcelWorksheet* sheet = excel->GetWorksheet(0);
+      BasicExcelWorksheet* sheet = excel->GetWorksheet(0u);
       if (sheet != nullptr) {
         BasicExcel* excel2 = new BasicExcel();
         if (excel2 != nullptr) {
           excel2->New(1);
-          BasicExcelWorksheet* sheet2 = excel2->GetWorksheet(0);
+          BasicExcelWorksheet* sheet2 = excel2->GetWorksheet(0u);
           if (sheet2 != nullptr) {
             int cols = sheet->GetTotalCols();
             for (int row = 0; row < 3; ++row) {
@@ -433,9 +371,9 @@ bool CTableMng::WriteEntryQueueXls() {
                   if (c1->Type() == 3) {
                     c2->SetString(c1->GetString());
                   } else if (c1->Type() == 4) {
-                    c2->SetWStringAlt(c1->GetWString());
+                    c2->Set(c1->GetWString());
                   } else if (c1->Type() == 1) {
-                    c2->SetIntegerAlt(c1->GetInteger());
+                    c2->Set(c1->GetInteger());
                   } else if (c1->Type() == 2) {
                     c2->SetDouble(c1->GetDouble());
                   }
