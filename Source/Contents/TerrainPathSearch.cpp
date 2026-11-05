@@ -133,35 +133,35 @@ bool CPathFinder::AddNeighbor(PathNode* current, int cost, int nextX, int nextY,
     return false;
   }
 
-  if (next->state == 0) {
-    next->parent = current;
-    next->state = 1;
-    next->cost = totalCost;
-    next->estimatedCost = totalCost + 10 * (std::abs(nextX - this->destinationX) + std::abs(nextY - this->destinationY));
-    next->metadata = metadata;
-    this->openList.Push(next);
+  if (next->state != 0) {
+    if (next->cost > totalCost) {
+      next->parent = current;
+      next->cost = totalCost;
+      next->estimatedCost = totalCost + 10 * (std::abs(nextX - this->destinationX) + std::abs(nextY - this->destinationY));
+      next->metadata = metadata;
+
+      if (next->state == 1) {
+        std::vector<PathNode*>& open = this->openList.Nodes();
+        for (auto it = open.begin(); it != open.end(); ++it) {
+          if ((*it)->x == next->x && (*it)->y == next->y) {
+            std::push_heap(open.begin(), it + 1, NodeTotalGreater());
+            return true;
+          }
+        }
+      } else if (next->state == 2) {
+        next->state = 1;
+      }
+    }
+
     return true;
   }
 
-  if (next->cost > totalCost) {
-    next->parent = current;
-    next->cost = totalCost;
-    next->estimatedCost = totalCost + 10 * (std::abs(nextX - this->destinationX) + std::abs(nextY - this->destinationY));
-    next->metadata = metadata;
-
-    if (next->state == 1) {
-      std::vector<PathNode*>& open = this->openList.Nodes();
-      for (auto it = open.begin(); it != open.end(); ++it) {
-        if ((*it)->x == next->x && (*it)->y == next->y) {
-          std::push_heap(open.begin(), it + 1, NodeTotalGreater());
-          return true;
-        }
-      }
-    } else if (next->state == 2) {
-      next->state = 1;
-    }
-  }
-
+  next->parent = current;
+  next->state = 1;
+  next->cost = totalCost;
+  next->estimatedCost = totalCost + 10 * (std::abs(nextX - this->destinationX) + std::abs(nextY - this->destinationY));
+  next->metadata = metadata;
+  this->openList.Push(next);
   return true;
 }
 
