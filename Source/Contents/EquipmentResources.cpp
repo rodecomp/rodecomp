@@ -25,13 +25,13 @@ bool EquipmentResourceMgr::Create() {
     return false;
   }
 
-  if (g_equipmentResourceMgr->m_initialized) {
-    return true;
+  if (!g_equipmentResourceMgr->m_initialized) {
+    delete g_equipmentResourceMgr;
+    g_equipmentResourceMgr = nullptr;
+    return false;
   }
 
-  delete g_equipmentResourceMgr;
-  g_equipmentResourceMgr = nullptr;
-  return false;
+  return true;
 }
 
 // OFFSET: 0x00BA9A60
