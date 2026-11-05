@@ -228,8 +228,8 @@ void CPc::Slot44(int first, int second) {
 // OFFSET: 0x00DB0000
 // FUNCTION: fn_22608
 void CPc::Slot33(int value) {
-  this->render.previousAnimation = value;
-  this->render.previousAnimation = g_session.GetBodyStyle(this->unknown_025C, this->render.previousAnimation, this->unknown_04D0);
+  this->render.unknown_0048 = value;
+  this->render.unknown_0048 = g_session.GetBodyStyle(this->unknown_025C, this->render.unknown_0048, this->unknown_04D0);
   this->Slot32();
 }
 
