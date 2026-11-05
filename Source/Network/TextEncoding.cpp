@@ -135,15 +135,15 @@ std::wstring DecodeText(UINT codePage, const std::string& text) {
 std::string EncodeText(UINT codePage, const std::wstring& text) {
   const int length = WideCharToMultiByte(codePage, 0, text.c_str(), -1, nullptr, 0, nullptr, nullptr);
   if (length == 0) {
-    return {};
+    return "";
   }
   char* converted = static_cast<char*>(std::malloc(length));
   if (converted == nullptr) {
-    return {};
+    return "";
   }
   if (WideCharToMultiByte(codePage, 0, text.c_str(), -1, converted, length, nullptr, nullptr) == 0) {
     std::free(converted);
-    return {};
+    return "";
   }
   std::string result(converted, std::strlen(converted));
   std::free(converted);
@@ -161,9 +161,6 @@ std::wstring LowercaseWide(const std::string& text) {
 // OFFSET: 0x0058D6B0
 // FUNCTION: fn_02795
 int FindSubstring(const char* text, int codePage, const char* pattern) {
-  std::wstring wideText = LowercaseWide(text);
-  std::wstring widePattern = LowercaseWide(pattern);
-  size_t pos = wideText.find(widePattern);
-  return (pos == std::wstring::npos) ? -1 : static_cast<int>(pos);
+  return static_cast<int>(LowercaseWide(text).find(LowercaseWide(pattern)));
 }
 
