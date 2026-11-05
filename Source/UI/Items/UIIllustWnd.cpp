@@ -98,132 +98,132 @@ void UIMultiIllustWnd::Slot27(int x, int y) {
 // OFFSET: 0x0096CDC0
 // FUNCTION: fn_13190
 int UIIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
-    if (argument1 == 201) {
-      g_modeMgr.GetGameMode()->SendMsg(100, reinterpret_cast<int>(""), -1, 1, 0);
-      g_windowMgr.ReleaseCapture();
-    }
-    return 0;
-  }
-  if (message == 34) {
-    if (argument1 == -1) {
-      this->m_titled = 0;
-      this->m_closable = 0;
-      this->DeleteChildren();
+  switch (message) {
+    case 6:
+      if (argument1 == 201) {
+        g_modeMgr.GetGameMode()->SendMsg(100, reinterpret_cast<int>(""), -1, 1, 0);
+        g_windowMgr.ReleaseCapture();
+      }
       return 0;
-    }
-    if (argument1 == -2) {
-      this->m_titled = 1;
+    case 34:
+      if (argument1 == -1) {
+        this->m_titled = 0;
+        this->m_closable = 0;
+        this->DeleteChildren();
+        return 0;
+      }
+      if (argument1 == -2) {
+        this->m_titled = 1;
+        return 0;
+      }
+      this->AddCloseButton("", 0)->Move(this->geometry.width - 16, 3);
+      this->m_closable = 1;
+      this->Invalidate();
       return 0;
-    }
-    this->AddCloseButton("", 0)->Move(this->geometry.width - 16, 3);
-    this->m_closable = 1;
-    this->Invalidate();
-    return 0;
-  }
-  if (message != 78) {
-    if (this->m_closable == 0) {
-      return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
-    }
-    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
-  }
-
-  const char* name = reinterpret_cast<const char*>(argument1);
-  this->m_bitmapName = "유저인터페이스\\Illust\\";
-  this->m_bitmapName += name;
-  CBitmapRes* bitmap;
-  if (!ResourceMgr::Instance().Exists(this->m_bitmapName.c_str()) ||
-      (bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapName.c_str())))) == nullptr) {
-    this->m_bitmapName = "유저인터페이스\\cardbmp\\";
-    this->m_bitmapName += name;
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapName.c_str())));
-    if (bitmap == nullptr) {
+    case 78: {
+      const char* name = reinterpret_cast<const char*>(argument1);
+      this->m_bitmapName = "유저인터페이스\\Illust\\";
+      this->m_bitmapName += name;
+      CBitmapRes* bitmap;
+      if (!ResourceMgr::Instance().Exists(this->m_bitmapName.c_str()) ||
+          (bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapName.c_str())))) == nullptr) {
+        this->m_bitmapName = "유저인터페이스\\cardbmp\\";
+        this->m_bitmapName += name;
+        bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapName.c_str())));
+        if (bitmap == nullptr) {
+          this->Invalidate();
+          return 0;
+        }
+      }
+      if (this->geometry.height != bitmap->image.height || this->geometry.width != bitmap->image.width) {
+        if (this->m_titled != 0) {
+          CBitmapRes* titlebar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp")));
+          this->Resize(bitmap->image.width, titlebar->image.height + bitmap->image.height);
+          this->Invalidate();
+          return 0;
+        }
+        this->Resize(bitmap->image.width, bitmap->image.height);
+      }
       this->Invalidate();
       return 0;
     }
+    default:
+      if (this->m_closable == 0) {
+        return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+      }
+      return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-  if (this->geometry.height != bitmap->image.height || this->geometry.width != bitmap->image.width) {
-    if (this->m_titled != 0) {
-      CBitmapRes* titlebar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp")));
-      this->Resize(bitmap->image.width, titlebar->image.height + bitmap->image.height);
-      this->Invalidate();
-      return 0;
-    }
-    this->Resize(bitmap->image.width, bitmap->image.height);
-  }
-  this->Invalidate();
-  return 0;
 }
 
 // OFFSET: 0x0096D010
 // FUNCTION: fn_13191
 int UIMultiIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
-    if (argument1 == 201) {
-      g_modeMgr.GetGameMode()->SendMsg(100, reinterpret_cast<int>(""), -1, 0, 0);
-      g_windowMgr.ReleaseCapture();
-    }
-    return 0;
-  }
-  if (message == 34) {
-    if (argument1 == 10) {
-      this->m_closable = 0;
-    } else if (argument1 == 12) {
-      this->m_titled = 0;
-      this->geometry.currentAlpha = 128;
-      this->m_state = -1;
-      this->m_closable = 0;
-    } else if (argument1 == -1) {
-      this->m_titled = 0;
-      this->m_closable = 0;
-      this->DeleteChildren();
+  switch (message) {
+    case 6:
+      if (argument1 == 201) {
+        g_modeMgr.GetGameMode()->SendMsg(100, reinterpret_cast<int>(""), -1, 0, 0);
+        g_windowMgr.ReleaseCapture();
+      }
       return 0;
-    } else if (argument1 == -2) {
-      this->m_titled = 1;
+    case 34:
+      if (argument1 == 10) {
+        this->m_closable = 0;
+      } else if (argument1 == 12) {
+        this->m_titled = 0;
+        this->geometry.currentAlpha = 128;
+        this->m_state = -1;
+        this->m_closable = 0;
+      } else if (argument1 == -1) {
+        this->m_titled = 0;
+        this->m_closable = 0;
+        this->DeleteChildren();
+        return 0;
+      } else if (argument1 == -2) {
+        this->m_titled = 1;
+        return 0;
+      } else if (argument1 == 5) {
+        this->m_state = 5;
+        this->m_titled = 0;
+        this->m_closable = 0;
+        return 0;
+      }
+      this->AddCloseButton("", 0)->Move(this->geometry.width - 16, 3);
+      this->m_closable = 1;
+      this->Invalidate();
       return 0;
-    } else if (argument1 == 5) {
-      this->m_state = 5;
-      this->m_titled = 0;
-      this->m_closable = 0;
-      return 0;
-    }
-    this->AddCloseButton("", 0)->Move(this->geometry.width - 16, 3);
-    this->m_closable = 1;
-    this->Invalidate();
-    return 0;
-  }
-  if (message != 78) {
-    if (this->m_closable == 0) {
-      return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
-    }
-    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
-  }
-
-  const char* name = reinterpret_cast<const char*>(argument1);
-  this->m_bitmapName = "유저인터페이스\\Illust\\";
-  this->m_bitmapName += name;
-  CBitmapRes* bitmap;
-  if (!ResourceMgr::Instance().Exists(this->m_bitmapName.c_str()) ||
-      (bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapName.c_str())))) == nullptr) {
-    this->m_bitmapName = "유저인터페이스\\cardbmp\\";
-    this->m_bitmapName += name;
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapName.c_str())));
-    if (bitmap == nullptr) {
+    case 78: {
+      const char* name = reinterpret_cast<const char*>(argument1);
+      this->m_bitmapName = "유저인터페이스\\Illust\\";
+      this->m_bitmapName += name;
+      CBitmapRes* bitmap;
+      if (!ResourceMgr::Instance().Exists(this->m_bitmapName.c_str()) ||
+          (bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapName.c_str())))) == nullptr) {
+        this->m_bitmapName = "유저인터페이스\\cardbmp\\";
+        this->m_bitmapName += name;
+        bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapName.c_str())));
+        if (bitmap == nullptr) {
+          this->Invalidate();
+          return 0;
+        }
+      }
+      if (this->geometry.height != bitmap->image.height || this->geometry.width != bitmap->image.width) {
+        if (this->m_titled != 0) {
+          CBitmapRes* titlebar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp")));
+          this->Resize(bitmap->image.width, titlebar->image.height + bitmap->image.height);
+          this->Invalidate();
+          return 0;
+        }
+        this->Resize(bitmap->image.width, bitmap->image.height);
+      }
       this->Invalidate();
       return 0;
     }
+    default:
+      if (this->m_closable == 0) {
+        return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+      }
+      return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-  if (this->geometry.height != bitmap->image.height || this->geometry.width != bitmap->image.width) {
-    if (this->m_titled != 0) {
-      CBitmapRes* titlebar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp")));
-      this->Resize(bitmap->image.width, titlebar->image.height + bitmap->image.height);
-      this->Invalidate();
-      return 0;
-    }
-    this->Resize(bitmap->image.width, bitmap->image.height);
-  }
-  this->Invalidate();
-  return 0;
 }
 
 // OFFSET: 0x0096D2C0
