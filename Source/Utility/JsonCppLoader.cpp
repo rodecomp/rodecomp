@@ -15,12 +15,14 @@ bool JsonCppLoader::GetMapStringBoolValue(const JsonValue& node, const std::stri
 
   const JsonObject& members = value.GetObject();
   for (JsonObject::const_iterator member = members.begin(); member != members.end(); ++member) {
-    if (member->second.GetType() != JsonValue::BOOL_VALUE) {
+    std::string name = member->first;
+    JsonValue element = member->second;
+    if (element.GetType() != JsonValue::BOOL_VALUE) {
       this->Fail("잘못된 데이터가 입력되었습니다. boolValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
     }
 
-    if (!out->insert(std::make_pair(member->first, member->second.AsBool())).second) {
+    if (!out->insert(std::make_pair(name, element.AsBool())).second) {
       this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
       return false;
     }
