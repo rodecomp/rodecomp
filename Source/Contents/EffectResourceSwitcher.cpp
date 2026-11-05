@@ -567,11 +567,14 @@ bool CEZ2STREffectMgr::Load() {
     return false;
   }
 
-  const auto* data = static_cast<const unsigned char*>(file.GetData());
-  std::vector<unsigned char> buffer(data, data + file.GetSize());
-
   JsonCppLoader loader;
-  if (!loader.sub_4F3C70(buffer, true)) {
+  bool failed;
+  {
+    const auto* data = static_cast<const unsigned char*>(file.GetData());
+    std::vector<unsigned char> buffer(data, data + file.GetSize());
+    failed = !loader.sub_4F3C70(buffer, true);
+  }
+  if (failed) {
     return false;
   }
 

@@ -17,7 +17,7 @@ struct EZ2STREffectInfo {
   /* 0004 */ std::string name;
   /* 001C */ float offsetX;
   /* 0020 */ float offsetY;
-  /* 0024 */ int unknown_0024 = 0;
+  /* 0024 */ unsigned int unknown_0024 = 0;
   /* 0028 */ std::string unknown_0028;
   /* 0040 */ int unknown_0040[2] = {-1, 0};
 };
