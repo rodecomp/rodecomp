@@ -773,7 +773,16 @@ int UIMonsterInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     return 0;
   case 79:
     if (a) {
-      this->info = *reinterpret_cast<const MonsterInfo*>(a);
+      const int* source = reinterpret_cast<const int*>(a);
+      int* destination = reinterpret_cast<int*>(&this->info);
+      destination[0] = source[0];
+      destination[1] = source[1];
+      destination[2] = source[2];
+      destination[3] = source[3];
+      destination[4] = source[4];
+      destination[5] = source[5];
+      destination[6] = source[6];
+      reinterpret_cast<char*>(destination)[0x1C] = reinterpret_cast<const char*>(source)[0x1C];
     }
 
     this->Invalidate();
