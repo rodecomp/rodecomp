@@ -101,7 +101,8 @@ void CStoveMgr::FetchCategoryProducts() {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -126,6 +127,13 @@ private:
   /* 0000 */ std::uint8_t m_text[Length];
   bool m_encrypted;
 };
+
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptName(const char (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
+}
 
 struct AccessTokenFailureMessage {
   EncryptedName<100, 0x3375B1C7DBB5FD55ULL>& operator()() const;
@@ -192,9 +200,8 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
     std::string message =
         EncodeText(CP_ACP, std::wstring(reinterpret_cast<const Stove::PCSDK::Base::StovePCLogEvent&>(shutdown).GetCategory1()));
     if (reinterpret_cast<const Stove::PCSDK::Base::StovePCToken&>(shutdown).GetAccessToken() == nullptr) {
-      const std::uint8_t captionSource[] = {0x27, 0x1D, 0xFA, 0x7E, 0x2A, 0xB1, 0xE1};
-      thread_local EncryptedName<sizeof(captionSource), 0x91E147EBBD47C39FULL> captionName(captionSource);
-      const char* caption = captionName.Text();
+      const char captionSource[] = {'\x27', '\x1D', '\xFA', '\x7E', '\x2A', '\xB1', '\xE1'};
+      const char* caption = DecryptName<0x91E147EBBD47C39FULL>(captionSource);
       MessageBoxA(hWnd, message.c_str(), caption, MB_OK);
       g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
     } else if (g_modeMgr.state == 0) {
@@ -212,9 +219,8 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
       g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(message.c_str()), 0x62B0FF, 0, 0, 0);
     }
   } else {
-    const std::uint8_t captionSource[] = {0x6B, 0x33, 0x2A, 0xD6, 0x8C, 0xAD, 0xA5};
-    thread_local EncryptedName<sizeof(captionSource), 0xA1A55B4D1597EDD3ULL> captionName(captionSource);
-    const char* caption = captionName.Text();
+    const char captionSource[] = {'\x6B', '\x33', '\x2A', '\xD6', '\x8C', '\xAD', '\xA5'};
+    const char* caption = DecryptName<0xA1A55B4D1597EDD3ULL>(captionSource);
     MessageBoxA(hWnd, FormatOwnedString(TokenCallbackFailureMessage()().Text()).c_str(), caption, MB_OK);
     PostQuitMessage(0);
   }
@@ -250,20 +256,17 @@ void FetchProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackResu
         const int guidQuantity = product.GetGuidQuantity();
         item.unknown_0078[3] = product.GetPurchaseLimitCount() - guidQuantity;
         item.quantity = product.GetPurchaseLimitCount();
-        item.unknown_0078[1] = static_cast<std::uint32_t>(product.GetSaleBeginDate() * 10000 / 10000000);
-        item.unknown_0078[2] = static_cast<std::uint32_t>(product.GetSaleEndDate() * 10000 / 10000000);
+        item.unknown_0078[1] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
+        item.unknown_0078[2] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
         g_session.AddItem1784(item, 9);
       }
     }
   } else {
-    const std::uint8_t captionSource[] = {0x7B, 0x1D, 0x68, 0x48, 0x9A, 0x1D, 0x3F};
-    thread_local EncryptedName<sizeof(captionSource), 0x8B3FEB5B8BD5C3C3ULL> caption(captionSource);
-    const std::uint8_t messageSource[] = {0x25, 0x6A, 0xF3, 0xC3, 0x87, 0xA0, 0x73, 0x4E, 0x3A, 0x34, 0xB0, 0x35, 0xF0, 0xCE, 0xEC, 0x43,
-                                          0x58, 0x4F, 0xF9, 0xDA, 0x83, 0xD8, 0x7D, 0xD7, 0xB6, 0xDB, 0x02, 0x43, 0x72, 0x21, 0xE3, 0x1A,
-                                          0x55, 0x3B, 0xF1, 0xAB, 0xF2, 0xCC, 0xE4, 0x39, 0xC5, 0x36, 0xE3, 0xD5, 0xF0, 0x21, 0xEA, 0x2E,
-                                          0x53, 0x77, 0xF9, 0xDA, 0x83, 0xD8, 0x7D, 0xF7};
-    thread_local EncryptedName<sizeof(messageSource), 0xF7530137154D8FE5ULL> message(messageSource);
-    MessageBoxA(hWnd, FormatOwnedString(message.Text()).c_str(), caption.Text(), MB_OK);
+    const char captionSource[] = {'\x7B', '\x1D', '\x68', '\x48', '\x9A', '\x1D', '\x3F'};
+    const char* caption = DecryptName<0x8B3FEB5B8BD5C3C3ULL>(captionSource);
+    const char messageSource[] = {'\x25', '\x6A', '\xF3', '\xC3', '\x87', '\xA0', '\x73', '\x4E', '\x3A', '\x34', '\xB0', '\x35', '\xF0', '\xCE', '\xEC', '\x43', '\x58', '\x4F', '\xF9', '\xDA', '\x83', '\xD8', '\x7D', '\xD7', '\xB6', '\xDB', '\x02', '\x43', '\x72', '\x21', '\xE3', '\x1A', '\x55', '\x3B', '\xF1', '\xAB', '\xF2', '\xCC', '\xE4', '\x39', '\xC5', '\x36', '\xE3', '\xD5', '\xF0', '\x21', '\xEA', '\x2E', '\x53', '\x77', '\xF9', '\xDA', '\x83', '\xD8', '\x7D', '\xF7'};
+    const char* message = DecryptName<0xF7530137154D8FE5ULL>(messageSource);
+    MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   }
 }
 
@@ -280,14 +283,11 @@ void PurchaseResultCallback::operator()(Stove::PCSDK::CallbackResult callbackRes
           EncodeText(CP_ACP, std::wstring(reinterpret_cast<const Stove::PCSDK::IAP::StovePCPurchasedProduct&>(purchaseResult).GetCategoryId())));
     }
   } else {
-    const std::uint8_t captionSource[] = {0x71, 0x69, 0x98, 0x54, 0x7A, 0xC5, 0x83};
-    thread_local EncryptedName<sizeof(captionSource), 0x078333BB9725B7C9ULL> caption(captionSource);
-    const std::uint8_t messageSource[] = {0x67, 0x56, 0xBB, 0x1F, 0x15, 0xC2, 0xCB, 0xB2, 0x78, 0x08, 0xF8, 0xE9, 0x62, 0xAC, 0x54, 0xBF,
-                                          0x1A, 0x73, 0xB1, 0x06, 0x11, 0xBA, 0xC5, 0x2B, 0xF4, 0xE7, 0x4A, 0x9F, 0xE0, 0x43, 0x5B, 0xE6,
-                                          0x17, 0x07, 0xB9, 0x77, 0x60, 0xAE, 0x5C, 0xC5, 0x87, 0x0A, 0xAB, 0x09, 0x62, 0x43, 0x52, 0xD2,
-                                          0x11, 0x4B, 0xB1, 0x06, 0x11, 0xBA, 0xC5, 0x0B};
-    thread_local EncryptedName<sizeof(messageSource), 0x0BEB63A5C905B3A7ULL> message(messageSource);
-    MessageBoxA(hWnd, FormatOwnedString(message.Text()).c_str(), caption.Text(), MB_OK);
+    const char captionSource[] = {'\x71', '\x69', '\x98', '\x54', '\x7A', '\xC5', '\x83'};
+    const char* caption = DecryptName<0x078333BB9725B7C9ULL>(captionSource);
+    const char messageSource[] = {'\x67', '\x56', '\xBB', '\x1F', '\x15', '\xC2', '\xCB', '\xB2', '\x78', '\x08', '\xF8', '\xE9', '\x62', '\xAC', '\x54', '\xBF', '\x1A', '\x73', '\xB1', '\x06', '\x11', '\xBA', '\xC5', '\x2B', '\xF4', '\xE7', '\x4A', '\x9F', '\xE0', '\x43', '\x5B', '\xE6', '\x17', '\x07', '\xB9', '\x77', '\x60', '\xAE', '\x5C', '\xC5', '\x87', '\x0A', '\xAB', '\x09', '\x62', '\x43', '\x52', '\xD2', '\x11', '\x4B', '\xB1', '\x06', '\x11', '\xBA', '\xC5', '\x0B'};
+    const char* message = DecryptName<0x0BEB63A5C905B3A7ULL>(messageSource);
+    MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   }
 }
 
@@ -322,14 +322,10 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
         } else if (std::strcmp(categoryId.c_str(), "44C71118750747D") == 0) {
           list = 8;
         } else {
-          const std::uint8_t captionSource[] = {0xAF, 0x27, 0xF2, 0x7A, 0x3A, 0x43, 0x2F};
-          thread_local EncryptedName<sizeof(captionSource), 0xC52FB5FBB94FF917ULL> captionName(captionSource);
-          const char* caption = captionName.Text();
-          const std::uint8_t messageSource[] = {0x06, 0x89, 0x74, 0x9C, 0x4C, 0x5C, 0xF4, 0xE1, 0x93, 0xD9, 0x09, 0x93, 0x43, 0xBB, 0xF1, 0xBC,
-                                                0x76, 0xB0, 0x73, 0xBE, 0x41, 0x35, 0xF5, 0xC3, 0x07, 0xA8, 0x77, 0x8A, 0xD9, 0xB3, 0x10, 0x64,
-                                                0x9A, 0x67};
-          thread_local EncryptedName<sizeof(messageSource), 0x17359BF953C367B3ULL> messageName(messageSource);
-          const char* message = messageName.Text();
+          const char captionSource[] = {'\xAF', '\x27', '\xF2', '\x7A', '\x3A', '\x43', '\x2F'};
+          const char* caption = DecryptName<0xC52FB5FBB94FF917ULL>(captionSource);
+          const char messageSource[] = {'\x06', '\x89', '\x74', '\x9C', '\x4C', '\x5C', '\xF4', '\xE1', '\x93', '\xD9', '\x09', '\x93', '\x43', '\xBB', '\xF1', '\xBC', '\x76', '\xB0', '\x73', '\xBE', '\x41', '\x35', '\xF5', '\xC3', '\x07', '\xA8', '\x77', '\x8A', '\xD9', '\xB3', '\x10', '\x64', '\x9A', '\x67'};
+          const char* message = DecryptName<0x17359BF953C367B3ULL>(messageSource);
           MessageBoxA(hWnd, FormatOwnedString(message, categoryId.c_str()).c_str(), caption, MB_OK);
           continue;
         }
@@ -353,14 +349,10 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
         } else if (std::strcmp(categoryId.c_str(), "14A6891F90E24D7") == 0) {
           list = 8;
         } else {
-          const std::uint8_t captionSource[] = {0x79, 0x11, 0x6E, 0xF0, 0x56, 0xEB, 0xFD};
-          thread_local EncryptedName<sizeof(captionSource), 0x69FD1D9733D3CFC1ULL> captionName(captionSource);
-          const char* caption = captionName.Text();
-          const std::uint8_t messageSource[] = {0x70, 0x23, 0x30, 0x3A, 0x14, 0x64, 0x26, 0x65, 0xE5, 0x73, 0x4D, 0x35, 0x1B, 0x83, 0x23, 0x38,
-                                                0x00, 0x1A, 0x37, 0x18, 0x19, 0x0D, 0x27, 0x47, 0x71, 0x02, 0x33, 0x2C, 0x81, 0x8B, 0xC2, 0xE0,
-                                                0xEC, 0xCD};
-          thread_local EncryptedName<sizeof(messageSource), 0x93E7A3A1F587CDC5ULL> messageName(messageSource);
-          const char* message = messageName.Text();
+          const char captionSource[] = {'\x79', '\x11', '\x6E', '\xF0', '\x56', '\xEB', '\xFD'};
+          const char* caption = DecryptName<0x69FD1D9733D3CFC1ULL>(captionSource);
+          const char messageSource[] = {'\x70', '\x23', '\x30', '\x3A', '\x14', '\x64', '\x26', '\x65', '\xE5', '\x73', '\x4D', '\x35', '\x1B', '\x83', '\x23', '\x38', '\x00', '\x1A', '\x37', '\x18', '\x19', '\x0D', '\x27', '\x47', '\x71', '\x02', '\x33', '\x2C', '\x81', '\x8B', '\xC2', '\xE0', '\xEC', '\xCD'};
+          const char* message = DecryptName<0x93E7A3A1F587CDC5ULL>(messageSource);
           MessageBoxA(hWnd, FormatOwnedString(message, categoryId.c_str()).c_str(), caption, MB_OK);
           continue;
         }
@@ -389,8 +381,8 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
           const int guidQuantity = product.GetGuidQuantity();
           item.unknown_0078[3] = product.GetPurchaseLimitCount() - guidQuantity;
           item.quantity = product.GetPurchaseLimitCount();
-          item.unknown_0078[1] = static_cast<std::uint32_t>(product.GetSaleBeginDate() * 10000 / 10000000);
-          item.unknown_0078[2] = static_cast<std::uint32_t>(product.GetSaleEndDate() * 10000 / 10000000);
+          item.unknown_0078[1] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
+          item.unknown_0078[2] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
           g_session.AddItem1784(item, 9);
         }
       } else if (product.GetPurchaseLimitCount() == 0 && product.GetSaleBeginDate() == 0 && product.GetSaleEndDate() == 0) {
@@ -399,15 +391,10 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
       }
     }
   } else {
-    const std::uint8_t captionSource[] = {0x89, 0x87, 0x96, 0xC2, 0xA0, 0x3B, 0x65};
-    thread_local EncryptedName<sizeof(captionSource), 0x8B65CD61012B5931ULL> captionName(captionSource);
-    const char* caption = captionName.Text();
-    const std::uint8_t messageSource[] = {0x07, 0x28, 0x5B, 0xEB, 0xAF, 0xDC, 0x45, 0x4C, 0x18, 0x76, 0x18, 0x1D, 0xD8, 0xB2, 0xDA, 0x41,
-                                          0x7A, 0x0D, 0x51, 0xF2, 0xAB, 0xA4, 0x4B, 0xD5, 0x94, 0x99, 0xAA, 0x6B, 0x5A, 0x5D, 0xD5, 0x18,
-                                          0x77, 0x79, 0x59, 0x83, 0xDA, 0xB0, 0xD2, 0x3B, 0xE7, 0x74, 0x4B, 0xFD, 0xD8, 0x5D, 0xDC, 0x2C,
-                                          0x71, 0x35, 0x51, 0xF2, 0xAB, 0xA4, 0x4B, 0xF5};
-    thread_local EncryptedName<sizeof(messageSource), 0xF5657D1F3DE5CDC7ULL> messageName(messageSource);
-    const char* message = messageName.Text();
+    const char captionSource[] = {'\x89', '\x87', '\x96', '\xC2', '\xA0', '\x3B', '\x65'};
+    const char* caption = DecryptName<0x8B65CD61012B5931ULL>(captionSource);
+    const char messageSource[] = {'\x07', '\x28', '\x5B', '\xEB', '\xAF', '\xDC', '\x45', '\x4C', '\x18', '\x76', '\x18', '\x1D', '\xD8', '\xB2', '\xDA', '\x41', '\x7A', '\x0D', '\x51', '\xF2', '\xAB', '\xA4', '\x4B', '\xD5', '\x94', '\x99', '\xAA', '\x6B', '\x5A', '\x5D', '\xD5', '\x18', '\x77', '\x79', '\x59', '\x83', '\xDA', '\xB0', '\xD2', '\x3B', '\xE7', '\x74', '\x4B', '\xFD', '\xD8', '\x5D', '\xDC', '\x2C', '\x71', '\x35', '\x51', '\xF2', '\xAB', '\xA4', '\x4B', '\xF5'};
+    const char* message = DecryptName<0xF5657D1F3DE5CDC7ULL>(messageSource);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   }
 }
@@ -415,13 +402,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
 // OFFSET: 0x0063CF60
 // FUNCTION: fn_04786
 EncryptedName<100, 0x3375B1C7DBB5FD55ULL>& AccessTokenFailureMessage::operator()() const {
-  const std::uint8_t source[] = {0x95, 0x18, 0x0B, 0x0D, 0x77, 0x10, 0x55, 0x8A, 0x8A, 0x46, 0x48, 0xFB, 0x00, 0x7E, 0xCA, 0x87,
-                                 0xE8, 0x3D, 0x01, 0x14, 0x73, 0x68, 0x5B, 0x13, 0xE5, 0x29, 0x75, 0x08, 0x07, 0x0A, 0x55, 0xF3,
-                                 0xB2, 0x40, 0x72, 0x1C, 0x27, 0x91, 0xB2, 0xEB, 0x94, 0x2B, 0x09, 0x67, 0x78, 0x55, 0x5B, 0x13,
-                                 0xEC, 0x53, 0x74, 0x7D, 0x77, 0x10, 0x55, 0xF2, 0xA3, 0x41, 0x66, 0x6E, 0x0E, 0x91, 0xC5, 0xD5,
-                                 0xEA, 0x11, 0x99, 0xFB, 0x94, 0xE5, 0x3A, 0x65, 0x10, 0xDD, 0x05, 0x36, 0x77, 0x05, 0xC9, 0x8D,
-                                 0x90, 0x30, 0x02, 0x15, 0xE7, 0x08, 0xDB, 0xF3, 0x92, 0xDD, 0x0C, 0x02, 0x71, 0x49, 0xC1, 0xFC,
-                                 0xE1, 0x24, 0x9B, 0xDB};
+  const char source[] = {'\x95', '\x18', '\x0B', '\x0D', '\x77', '\x10', '\x55', '\x8A', '\x8A', '\x46', '\x48', '\xFB', '\x00', '\x7E', '\xCA', '\x87', '\xE8', '\x3D', '\x01', '\x14', '\x73', '\x68', '\x5B', '\x13', '\xE5', '\x29', '\x75', '\x08', '\x07', '\x0A', '\x55', '\xF3', '\xB2', '\x40', '\x72', '\x1C', '\x27', '\x91', '\xB2', '\xEB', '\x94', '\x2B', '\x09', '\x67', '\x78', '\x55', '\x5B', '\x13', '\xEC', '\x53', '\x74', '\x7D', '\x77', '\x10', '\x55', '\xF2', '\xA3', '\x41', '\x66', '\x6E', '\x0E', '\x91', '\xC5', '\xD5', '\xEA', '\x11', '\x99', '\xFB', '\x94', '\xE5', '\x3A', '\x65', '\x10', '\xDD', '\x05', '\x36', '\x77', '\x05', '\xC9', '\x8D', '\x90', '\x30', '\x02', '\x15', '\xE7', '\x08', '\xDB', '\xF3', '\x92', '\xDD', '\x0C', '\x02', '\x71', '\x49', '\xC1', '\xFC', '\xE1', '\x24', '\x9B', '\xDB'};
   thread_local EncryptedName<sizeof(source), 0x3375B1C7DBB5FD55ULL> name(source);
   return name;
 }
@@ -429,13 +410,7 @@ EncryptedName<100, 0x3375B1C7DBB5FD55ULL>& AccessTokenFailureMessage::operator()
 // OFFSET: 0x0063D060
 // FUNCTION: fn_04787
 EncryptedName<100, 0x151F77EBEBBB2147ULL>& UserFailureMessage::operator()() const {
-  const std::uint8_t source[] = {0x87, 0xC4, 0x05, 0x3D, 0x5B, 0xD6, 0x3F, 0xAC, 0x98, 0x9A, 0x46, 0xCB, 0x2C, 0xB8, 0xA0, 0xA1,
-                                 0xFA, 0xE1, 0x0F, 0x24, 0x5F, 0xAE, 0x31, 0x35, 0xF7, 0xF5, 0x7B, 0x38, 0x2B, 0xCC, 0x3F, 0xD5,
-                                 0xA0, 0x9C, 0x7C, 0x2C, 0x0B, 0x57, 0xD8, 0xCD, 0x86, 0xF7, 0x07, 0x57, 0x54, 0x93, 0x31, 0x35,
-                                 0xFE, 0x8F, 0x7A, 0x4D, 0x5B, 0xD6, 0x3F, 0xD4, 0xB1, 0x9D, 0x68, 0x5E, 0x22, 0x57, 0xAF, 0xF3,
-                                 0xF8, 0xCD, 0x97, 0xCB, 0xB8, 0x23, 0x50, 0x43, 0x02, 0x01, 0x0B, 0x06, 0x5B, 0xC3, 0xA3, 0xAB,
-                                 0x82, 0xEC, 0x0C, 0x25, 0xCB, 0xCE, 0xB1, 0xD5, 0x80, 0x01, 0x02, 0x32, 0x5D, 0x8F, 0xAB, 0xDA,
-                                 0xF3, 0xF8, 0x95, 0xEB};
+  const char source[] = {'\x87', '\xC4', '\x05', '\x3D', '\x5B', '\xD6', '\x3F', '\xAC', '\x98', '\x9A', '\x46', '\xCB', '\x2C', '\xB8', '\xA0', '\xA1', '\xFA', '\xE1', '\x0F', '\x24', '\x5F', '\xAE', '\x31', '\x35', '\xF7', '\xF5', '\x7B', '\x38', '\x2B', '\xCC', '\x3F', '\xD5', '\xA0', '\x9C', '\x7C', '\x2C', '\x0B', '\x57', '\xD8', '\xCD', '\x86', '\xF7', '\x07', '\x57', '\x54', '\x93', '\x31', '\x35', '\xFE', '\x8F', '\x7A', '\x4D', '\x5B', '\xD6', '\x3F', '\xD4', '\xB1', '\x9D', '\x68', '\x5E', '\x22', '\x57', '\xAF', '\xF3', '\xF8', '\xCD', '\x97', '\xCB', '\xB8', '\x23', '\x50', '\x43', '\x02', '\x01', '\x0B', '\x06', '\x5B', '\xC3', '\xA3', '\xAB', '\x82', '\xEC', '\x0C', '\x25', '\xCB', '\xCE', '\xB1', '\xD5', '\x80', '\x01', '\x02', '\x32', '\x5D', '\x8F', '\xAB', '\xDA', '\xF3', '\xF8', '\x95', '\xEB'};
   thread_local EncryptedName<sizeof(source), 0x151F77EBEBBB2147ULL> name(source);
   return name;
 }
@@ -443,13 +418,7 @@ EncryptedName<100, 0x151F77EBEBBB2147ULL>& UserFailureMessage::operator()() cons
 // OFFSET: 0x0063D160
 // FUNCTION: fn_04788
 EncryptedName<100, 0x4F1791FB1503C713ULL>& TokenCallbackFailureMessage::operator()() const {
-  const std::uint8_t source[] = {0xD3, 0x22, 0xBD, 0xC3, 0x4B, 0x30, 0x37, 0xF6, 0xCC, 0x7C, 0xFE, 0x35, 0x3C, 0x5E, 0xA8, 0xFB,
-                                 0xAE, 0x07, 0xB7, 0xDA, 0x4F, 0x48, 0x39, 0x6F, 0xA3, 0x13, 0xC3, 0xC6, 0x3B, 0x2A, 0x37, 0x8F,
-                                 0xF4, 0x7A, 0xC4, 0xD2, 0x1B, 0xB1, 0xD0, 0x97, 0xD2, 0x11, 0xBF, 0xA9, 0x44, 0x75, 0x39, 0x6F,
-                                 0xAA, 0x69, 0xC2, 0xB3, 0x4B, 0x30, 0x37, 0x8E, 0xE5, 0x7B, 0xD0, 0xA0, 0x32, 0xB1, 0xA7, 0xA9,
-                                 0xAC, 0x2B, 0x2F, 0x35, 0xA8, 0xC5, 0x58, 0x19, 0x56, 0xE7, 0xB3, 0xF8, 0x4B, 0x25, 0xAB, 0xF1,
-                                 0xD6, 0x0A, 0xB4, 0xDB, 0xDB, 0x28, 0xB9, 0x8F, 0xD4, 0xE7, 0xBA, 0xCC, 0x4D, 0x69, 0xA3, 0x80,
-                                 0xA7, 0x1E, 0x2D, 0x15};
+  const char source[] = {'\xD3', '\x22', '\xBD', '\xC3', '\x4B', '\x30', '\x37', '\xF6', '\xCC', '\x7C', '\xFE', '\x35', '\x3C', '\x5E', '\xA8', '\xFB', '\xAE', '\x07', '\xB7', '\xDA', '\x4F', '\x48', '\x39', '\x6F', '\xA3', '\x13', '\xC3', '\xC6', '\x3B', '\x2A', '\x37', '\x8F', '\xF4', '\x7A', '\xC4', '\xD2', '\x1B', '\xB1', '\xD0', '\x97', '\xD2', '\x11', '\xBF', '\xA9', '\x44', '\x75', '\x39', '\x6F', '\xAA', '\x69', '\xC2', '\xB3', '\x4B', '\x30', '\x37', '\x8E', '\xE5', '\x7B', '\xD0', '\xA0', '\x32', '\xB1', '\xA7', '\xA9', '\xAC', '\x2B', '\x2F', '\x35', '\xA8', '\xC5', '\x58', '\x19', '\x56', '\xE7', '\xB3', '\xF8', '\x4B', '\x25', '\xAB', '\xF1', '\xD6', '\x0A', '\xB4', '\xDB', '\xDB', '\x28', '\xB9', '\x8F', '\xD4', '\xE7', '\xBA', '\xCC', '\x4D', '\x69', '\xA3', '\x80', '\xA7', '\x1E', '\x2D', '\x15'};
   thread_local EncryptedName<sizeof(source), 0x4F1791FB1503C713ULL> name(source);
   return name;
 }
@@ -459,13 +428,11 @@ EncryptedName<100, 0x4F1791FB1503C713ULL>& TokenCallbackFailureMessage::operator
 void CStoveMgr::OnInitializeCallback(Stove::PCSDK::CallbackResult callbackResult) {
   g_stoveWaitingCallback = false;
   if (!callbackResult.GetResult().IsSuccessful()) {
-    const std::uint8_t captionSource[] = {0xD5, 0x3D, 0xF8, 0x60, 0x2C, 0x37, 0xD7};
-    thread_local EncryptedName<sizeof(captionSource), 0x31D7C1EDA345E36DULL> caption(captionSource);
-    const std::uint8_t messageSource[] = {0xCE, 0x63, 0xFB, 0xA9, 0xF9, 0xE6, 0x92, 0x13, 0xF5, 0x89, 0x87, 0x84, 0x67, 0xAA, 0xB5, 0x1F,
-                                          0x29, 0x14, 0x80, 0x99, 0x09, 0x9A, 0xBA, 0x6C, 0xA0, 0x89, 0xF7, 0x8B, 0x19, 0x8E, 0xB5, 0x68,
-                                          0x29, 0x68, 0xF9, 0xE8, 0x38, 0x9A, 0xA0, 0x67, 0xC6, 0x1D, 0x9E, 0x71, 0xD9};
-    thread_local EncryptedName<sizeof(messageSource), 0xD3755DD95F47A909ULL> message(messageSource);
-    MessageBoxA(hWnd, FormatOwnedString(message.Text()).c_str(), caption.Text(), MB_OK);
+    const char captionSource[] = {'\xD5', '\x3D', '\xF8', '\x60', '\x2C', '\x37', '\xD7'};
+    const char* caption = DecryptName<0x31D7C1EDA345E36DULL>(captionSource);
+    const char messageSource[] = {'\xCE', '\x63', '\xFB', '\xA9', '\xF9', '\xE6', '\x92', '\x13', '\xF5', '\x89', '\x87', '\x84', '\x67', '\xAA', '\xB5', '\x1F', '\x29', '\x14', '\x80', '\x99', '\x09', '\x9A', '\xBA', '\x6C', '\xA0', '\x89', '\xF7', '\x8B', '\x19', '\x8E', '\xB5', '\x68', '\x29', '\x68', '\xF9', '\xE8', '\x38', '\x9A', '\xA0', '\x67', '\xC6', '\x1D', '\x9E', '\x71', '\xD9'};
+    const char* message = DecryptName<0xD3755DD95F47A909ULL>(messageSource);
+    MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
     PostQuitMessage(0);
   }
 }
@@ -473,15 +440,7 @@ void CStoveMgr::OnInitializeCallback(Stove::PCSDK::CallbackResult callbackResult
 // OFFSET: 0x0063D490
 // FUNCTION: fn_04790
 EncryptedName<129, 0x2D3B15774149D5DDULL>& PurchaseCheckingMessage::operator()() const {
-  const std::uint8_t source[] = {0x63, 0x13, 0x89, 0x8D, 0xB2, 0xCE, 0x1B, 0x9C, 0x65, 0x6D, 0x8C, 0x61, 0xBF, 0xBB, 0xFB, 0xE3,
-                                 0xFD, 0x14, 0x96, 0x81, 0xA3, 0xA1, 0xF4, 0x99, 0x04, 0xFB, 0x67, 0x6F, 0x59, 0x1F, 0x31, 0x27,
-                                 0x83, 0xB3, 0x2F, 0x71, 0x47, 0x25, 0x0B, 0xEC, 0x0B, 0x15, 0x8E, 0x60, 0x57, 0x46, 0x4F, 0x42,
-                                 0xAB, 0xB0, 0x69, 0x87, 0x93, 0xD5, 0xF7, 0xEC, 0x2B, 0x6A, 0xE8, 0xFD, 0xDA, 0x35, 0x8A, 0x95,
-                                 0x65, 0x10, 0x69, 0xFE, 0xB8, 0xA2, 0xDA, 0x0D, 0x15, 0x11, 0x69, 0x1A, 0xBF, 0xBB, 0xFB, 0xE3,
-                                 0x80, 0xF5, 0xF0, 0xB7, 0xB1, 0xA5, 0xFB, 0x96, 0xFD, 0x61, 0xE4, 0xF6, 0xD8, 0xAB, 0xE4, 0x0D,
-                                 0x63, 0x13, 0x89, 0x8D, 0xB2, 0xCE, 0xFB, 0xE1, 0xFD, 0x14, 0xED, 0xFA, 0x84, 0x35, 0xFA, 0xDB,
-                                 0x6C, 0x0B, 0xFC, 0x8A, 0xC3, 0xDA, 0x8F, 0xF4, 0xF3, 0x8B, 0x79, 0x71, 0x47, 0x25, 0x0B, 0x1D,
-                                 0xDD};
+  const char source[] = {'\x63', '\x13', '\x89', '\x8D', '\xB2', '\xCE', '\x1B', '\x9C', '\x65', '\x6D', '\x8C', '\x61', '\xBF', '\xBB', '\xFB', '\xE3', '\xFD', '\x14', '\x96', '\x81', '\xA3', '\xA1', '\xF4', '\x99', '\x04', '\xFB', '\x67', '\x6F', '\x59', '\x1F', '\x31', '\x27', '\x83', '\xB3', '\x2F', '\x71', '\x47', '\x25', '\x0B', '\xEC', '\x0B', '\x15', '\x8E', '\x60', '\x57', '\x46', '\x4F', '\x42', '\xAB', '\xB0', '\x69', '\x87', '\x93', '\xD5', '\xF7', '\xEC', '\x2B', '\x6A', '\xE8', '\xFD', '\xDA', '\x35', '\x8A', '\x95', '\x65', '\x10', '\x69', '\xFE', '\xB8', '\xA2', '\xDA', '\x0D', '\x15', '\x11', '\x69', '\x1A', '\xBF', '\xBB', '\xFB', '\xE3', '\x80', '\xF5', '\xF0', '\xB7', '\xB1', '\xA5', '\xFB', '\x96', '\xFD', '\x61', '\xE4', '\xF6', '\xD8', '\xAB', '\xE4', '\x0D', '\x63', '\x13', '\x89', '\x8D', '\xB2', '\xCE', '\xFB', '\xE1', '\xFD', '\x14', '\xED', '\xFA', '\x84', '\x35', '\xFA', '\xDB', '\x6C', '\x0B', '\xFC', '\x8A', '\xC3', '\xDA', '\x8F', '\xF4', '\xF3', '\x8B', '\x79', '\x71', '\x47', '\x25', '\x0B', '\x1D', '\xDD'};
   thread_local EncryptedName<sizeof(source), 0x2D3B15774149D5DDULL> name(source);
   return name;
 }
@@ -502,22 +461,15 @@ void ConfirmPurchaseCallback::operator()(Stove::PCSDK::CallbackResult callbackRe
       }
     } else {
       g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      const std::uint8_t noticeSource[] = {0x50, 0x23, 0x4B, 0xBE, 0x58, 0x4F, 0xDF, 0xDF, 0x27, 0x5B, 0x3F, 0xBE, 0x36, 0x47, 0x33, 0x41,
-                                           0x5F, 0x63, 0x4E, 0xBB, 0x59, 0x48, 0x4B, 0xB8, 0xCF, 0x9B};
-      thread_local EncryptedName<sizeof(noticeSource), 0x61FF87ED7BF39BE1ULL> noticeName(noticeSource);
-      const char* notice = noticeName.Text();
+      const char noticeSource[] = {'\x50', '\x23', '\x4B', '\xBE', '\x58', '\x4F', '\xDF', '\xDF', '\x27', '\x5B', '\x3F', '\xBE', '\x36', '\x47', '\x33', '\x41', '\x5F', '\x63', '\x4E', '\xBB', '\x59', '\x48', '\x4B', '\xB8', '\xCF', '\x9B'};
+      const char* notice = DecryptName<0x61FF87ED7BF39BE1ULL>(noticeSource);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice), 0xFFE6E6, 0, 0, 0);
     }
   } else {
-    const std::uint8_t captionSource[] = {0x8B, 0xF9, 0x8E, 0xCC, 0x7C, 0xBB, 0x39};
-    thread_local EncryptedName<sizeof(captionSource), 0x2D394DBD0F332733ULL> captionName(captionSource);
-    const char* caption = captionName.Text();
-    const std::uint8_t messageSource[] = {0x3F, 0x60, 0x99, 0xDB, 0xD5, 0x9E, 0xB9, 0xC4, 0x20, 0x3E, 0xDA, 0x2D, 0xA2, 0xF0, 0x26, 0xC9,
-                                          0x42, 0x45, 0x93, 0xC2, 0xD1, 0xE6, 0xB7, 0x5D, 0xAC, 0xD1, 0x68, 0x5B, 0x20, 0x1F, 0x29, 0x90,
-                                          0x4F, 0x31, 0x9B, 0xB3, 0xA0, 0xF2, 0x2E, 0xB3, 0xDF, 0x3C, 0x89, 0xCD, 0xA2, 0x1F, 0x20, 0xA4,
-                                          0x49, 0x7D, 0x93, 0xC2, 0xD1, 0xE6, 0xB7, 0x7D};
-    thread_local EncryptedName<sizeof(messageSource), 0x7D993F650D2785FFULL> messageName(messageSource);
-    const char* message = messageName.Text();
+    const char captionSource[] = {'\x8B', '\xF9', '\x8E', '\xCC', '\x7C', '\xBB', '\x39'};
+    const char* caption = DecryptName<0x2D394DBD0F332733ULL>(captionSource);
+    const char messageSource[] = {'\x3F', '\x60', '\x99', '\xDB', '\xD5', '\x9E', '\xB9', '\xC4', '\x20', '\x3E', '\xDA', '\x2D', '\xA2', '\xF0', '\x26', '\xC9', '\x42', '\x45', '\x93', '\xC2', '\xD1', '\xE6', '\xB7', '\x5D', '\xAC', '\xD1', '\x68', '\x5B', '\x20', '\x1F', '\x29', '\x90', '\x4F', '\x31', '\x9B', '\xB3', '\xA0', '\xF2', '\x2E', '\xB3', '\xDF', '\x3C', '\x89', '\xCD', '\xA2', '\x1F', '\x20', '\xA4', '\x49', '\x7D', '\x93', '\xC2', '\xD1', '\xE6', '\xB7', '\x7D'};
+    const char* message = DecryptName<0x7D993F650D2785FFULL>(messageSource);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   }
 }
@@ -538,9 +490,8 @@ bool CStoveMgr::Initialize() {
   }
 
   Stove::PCSDK::Base::StovePCInitializeParam param;
-  const std::uint8_t sandboxSource[] = {0x96, 0x7E, 0x5B, 0xCE, 0x35, 0x9E, 0x50, 0x3A, 0xD8, 0x63, 0x4B, 0xC3, 0x2C, 0x83, 0x0F};
-  thread_local EncryptedName<sizeof(sandboxSource), 0x490FFB43A12F0DB9ULL> sandboxName(sandboxSource);
-  const char* sandbox = sandboxName.Text();
+  const char sandboxSource[] = {'\x96', '\x7E', '\x5B', '\xCE', '\x35', '\x9E', '\x50', '\x3A', '\xD8', '\x63', '\x4B', '\xC3', '\x2C', '\x83', '\x0F'};
+  const char* sandbox = DecryptName<0x490FFB43A12F0DB9ULL>(sandboxSource);
   if (std::strstr(g_commandLine, sandbox) != nullptr) {
     this->m_environment = 1;
     param.SetEnvironment(L"SANDBOX");
@@ -548,9 +499,8 @@ bool CStoveMgr::Initialize() {
     param.SetApplicationKey(L"6b57af29764992a85cf793b01d4af15be6047715fd5f4687b23d0a1ba02337f5");
     this->unknown_02B8 = L"SB__SH_IPJVFX";
   } else {
-    const std::uint8_t liveSource[] = {0x5E, 0x8A, 0x2D, 0x9A, 0xF7, 0x78, 0x3A, 0xFD, 0x18, 0x8F, 0x3C, 0xF5};
-    thread_local EncryptedName<sizeof(liveSource), 0x91651D81F559F971ULL> liveName(liveSource);
-    const char* live = liveName.Text();
+    const char liveSource[] = {'\x5E', '\x8A', '\x2D', '\x9A', '\xF7', '\x78', '\x3A', '\xFD', '\x18', '\x8F', '\x3C', '\xF5'};
+    const char* live = DecryptName<0x91651D81F559F971ULL>(liveSource);
     if (std::strstr(g_commandLine, live) != nullptr) {
       this->m_environment = 2;
       param.SetEnvironment(L"LIVE");
@@ -560,18 +510,13 @@ bool CStoveMgr::Initialize() {
     }
   }
 
-  const std::uint8_t skipRestartSource[] = {0x24, 0x08, 0xAB, 0x0E, 0x3D, 0x02, 0x8E, 0x10, 0x6A, 0x1C, 0x80, 0x15, 0x24, 0x08, 0xBD, 0x73};
-  thread_local EncryptedName<sizeof(skipRestartSource), 0x73D1674B61DF7B0BULL> skipRestartName(skipRestartSource);
-  const char* skipRestart = skipRestartName.Text();
+  const char skipRestartSource[] = {'\x24', '\x08', '\xAB', '\x0E', '\x3D', '\x02', '\x8E', '\x10', '\x6A', '\x1C', '\x80', '\x15', '\x24', '\x08', '\xBD', '\x73'};
+  const char* skipRestart = DecryptName<0x73D1674B61DF7B0BULL>(skipRestartSource);
   if (std::strstr(g_commandLine, skipRestart) == nullptr && Base_RestartAppIfNecessary(&param) == true) {
-    const std::uint8_t captionSource[] = {0x69, 0xC7, 0x20, 0x4C, 0xAA, 0x7D, 0x0F};
-    thread_local EncryptedName<sizeof(captionSource), 0x0F0F8B6B8F9D19D1ULL> captionName(captionSource);
-    const char* caption = captionName.Text();
-    const std::uint8_t messageSource[] = {0x3E, 0x17, 0x5A, 0x5B, 0xC0, 0x23, 0x4A, 0x75, 0xDB, 0x90, 0xF5, 0xE1, 0x1B, 0xF3, 0x49, 0x77,
-                                          0xD5, 0xC5, 0x15, 0xE8, 0x4E, 0xC4, 0x57, 0xF9, 0xD0, 0xA4, 0xF2, 0xCD, 0x62, 0xDB, 0xAF, 0x18,
-                                          0xBB, 0xDF, 0x89, 0x92, 0x41, 0x03};
-    thread_local EncryptedName<sizeof(messageSource), 0xD98F03A52D35636DULL> messageName(messageSource);
-    const char* message = messageName.Text();
+    const char captionSource[] = {'\x69', '\xC7', '\x20', '\x4C', '\xAA', '\x7D', '\x0F'};
+    const char* caption = DecryptName<0x0F0F8B6B8F9D19D1ULL>(captionSource);
+    const char messageSource[] = {'\x3E', '\x17', '\x5A', '\x5B', '\xC0', '\x23', '\x4A', '\x75', '\xDB', '\x90', '\xF5', '\xE1', '\x1B', '\xF3', '\x49', '\x77', '\xD5', '\xC5', '\x15', '\xE8', '\x4E', '\xC4', '\x57', '\xF9', '\xD0', '\xA4', '\xF2', '\xCD', '\x62', '\xDB', '\xAF', '\x18', '\xBB', '\xDF', '\x89', '\x92', '\x41', '\x03'};
+    const char* message = DecryptName<0xD98F03A52D35636DULL>(messageSource);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
     return false;
   }
@@ -586,14 +531,10 @@ bool CStoveMgr::Initialize() {
     return true;
   }
 
-  const std::uint8_t captionSource[] = {0x0F, 0xD9, 0xEA, 0x0E, 0xEA, 0x11, 0x2B};
-  thread_local EncryptedName<sizeof(captionSource), 0x812BE72BCD5707B7ULL> captionName(captionSource);
-  const char* caption = captionName.Text();
-  const std::uint8_t messageSource[] = {0x66, 0xF7, 0x23, 0x21, 0x43, 0x34, 0xC0, 0x99, 0x5D, 0x1D, 0x5F, 0x0C, 0xDD, 0x78, 0xE7, 0x95,
-                                        0x81, 0x80, 0x58, 0x11, 0xB3, 0x48, 0xE8, 0xE6, 0x08, 0x1D, 0x2F, 0x03, 0xA3, 0x5C, 0xE7, 0xE2,
-                                        0x81, 0xFC, 0x21, 0x60, 0x82, 0x48, 0xF2, 0xED, 0x6E, 0x89, 0x46, 0xF9, 0x63};
-  thread_local EncryptedName<sizeof(messageSource), 0x59278F63D79F3DA1ULL> messageName(messageSource);
-  const char* message = messageName.Text();
+  const char captionSource[] = {'\x0F', '\xD9', '\xEA', '\x0E', '\xEA', '\x11', '\x2B'};
+  const char* caption = DecryptName<0x812BE72BCD5707B7ULL>(captionSource);
+  const char messageSource[] = {'\x66', '\xF7', '\x23', '\x21', '\x43', '\x34', '\xC0', '\x99', '\x5D', '\x1D', '\x5F', '\x0C', '\xDD', '\x78', '\xE7', '\x95', '\x81', '\x80', '\x58', '\x11', '\xB3', '\x48', '\xE8', '\xE6', '\x08', '\x1D', '\x2F', '\x03', '\xA3', '\x5C', '\xE7', '\xE2', '\x81', '\xFC', '\x21', '\x60', '\x82', '\x48', '\xF2', '\xED', '\x6E', '\x89', '\x46', '\xF9', '\x63'};
+  const char* message = DecryptName<0x59278F63D79F3DA1ULL>(messageSource);
   MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   return false;
 }
@@ -610,7 +551,7 @@ const char* CStoveMgr::GetAccessToken() {
     return this->m_accessToken;
   }
 
-  const std::uint8_t source[] = {0xA7, 0xEF, 0x70, 0x24, 0x2C, 0x83, 0x6D};
+  const char source[] = {'\xA7', '\xEF', '\x70', '\x24', '\x2C', '\x83', '\x6D'};
   thread_local EncryptedName<sizeof(source), 0x1D6D75EDE7CD311FULL> caption(source);
   MessageBoxA(hWnd, FormatOwnedString(AccessTokenFailureMessage()().Text()).c_str(), caption.Text(), MB_OK);
   PostQuitMessage(0);
@@ -626,7 +567,7 @@ void CStoveMgr::FetchUser() {
     StringFormat(this->m_memberNumber, sizeof(this->m_memberNumber), _TRUNCATE, "%llu", user.GetMemberNumber());
     StringFormat(this->m_gameUserId, sizeof(this->m_gameUserId), _TRUNCATE, "%llu", user.GetGameUserId());
   } else {
-    const std::uint8_t source[] = {0xB9, 0x89, 0x2A, 0x1C, 0xD2, 0x73, 0x53};
+    const char source[] = {'\xB9', '\x89', '\x2A', '\x1C', '\xD2', '\x73', '\x53'};
     thread_local EncryptedName<sizeof(source), 0xD1538513DF975701ULL> caption(source);
     MessageBoxA(hWnd, FormatOwnedString(UserFailureMessage()().Text()).c_str(), caption.Text(), MB_OK);
     PostQuitMessage(0);
@@ -659,25 +600,17 @@ void CStoveMgr::StartPurchase(const std::vector<ITEM_INFO>& items) {
   } while (g_stoveWaitingCallback);
 
   if (this->unknown_0018.size() == 0) {
-    const std::uint8_t parametersSource[] = {0x05, 0x47, 0x7B, 0xE5, 0xA8, 0x7F, 0xFC, 0x46, 0x0E, 0x40, 0x21, 0xFA, 0xB5, 0x36, 0xA7, 0x06,
-                                             0x1B, 0x56, 0x21, 0xF6, 0xB4, 0x28, 0xFC, 0x1A, 0x08, 0x41, 0x79, 0xFC, 0xB8, 0x20, 0xFC, 0x3B,
-                                             0x2C, 0x74, 0x41, 0xD4, 0x89, 0x0A, 0x98, 0x36, 0x24, 0x7D, 0x4B, 0x95};
-    thread_local EncryptedName<sizeof(parametersSource), 0x69D345DB950F336DULL> parametersName(parametersSource);
-    const char* parameters = parametersName.Text();
-    const std::uint8_t fileSource[] = {0x19, 0x6F, 0x87, 0x8F, 0xF4, 0x1F, 0xBE, 0xE8, 0x12, 0x68, 0xDD, 0x90, 0xE9, 0x56, 0xE5, 0xA8,
-                                       0x07, 0x7E, 0xDD, 0x9C, 0xE8, 0x48, 0xBE, 0xB4, 0x14, 0x69, 0x85, 0x96, 0xE4, 0x40, 0xBE, 0x95,
-                                       0x30, 0x5C, 0xBD, 0xBE, 0xD5, 0x6A, 0xDA, 0x98, 0x38, 0x55, 0xB7, 0xFF};
-    thread_local EncryptedName<sizeof(fileSource), 0xC7912587FFF31B71ULL> fileName(fileSource);
-    const char* file = fileName.Text();
-    const std::uint8_t verbSource[] = {0xFA, 0x25, 0x24, 0x11, 0xFD};
-    thread_local EncryptedName<sizeof(verbSource), 0x8F1B5BFD5F6175B5ULL> verbName(verbSource);
-    const char* verb = verbName.Text();
+    const char parametersSource[] = {'\x05', '\x47', '\x7B', '\xE5', '\xA8', '\x7F', '\xFC', '\x46', '\x0E', '\x40', '\x21', '\xFA', '\xB5', '\x36', '\xA7', '\x06', '\x1B', '\x56', '\x21', '\xF6', '\xB4', '\x28', '\xFC', '\x1A', '\x08', '\x41', '\x79', '\xFC', '\xB8', '\x20', '\xFC', '\x3B', '\x2C', '\x74', '\x41', '\xD4', '\x89', '\x0A', '\x98', '\x36', '\x24', '\x7D', '\x4B', '\x95'};
+    const char* parameters = DecryptName<0x69D345DB950F336DULL>(parametersSource);
+    const char fileSource[] = {'\x19', '\x6F', '\x87', '\x8F', '\xF4', '\x1F', '\xBE', '\xE8', '\x12', '\x68', '\xDD', '\x90', '\xE9', '\x56', '\xE5', '\xA8', '\x07', '\x7E', '\xDD', '\x9C', '\xE8', '\x48', '\xBE', '\xB4', '\x14', '\x69', '\x85', '\x96', '\xE4', '\x40', '\xBE', '\x95', '\x30', '\x5C', '\xBD', '\xBE', '\xD5', '\x6A', '\xDA', '\x98', '\x38', '\x55', '\xB7', '\xFF'};
+    const char* file = DecryptName<0xC7912587FFF31B71ULL>(fileSource);
+    const char verbSource[] = {'\xFA', '\x25', '\x24', '\x11', '\xFD'};
+    const char* verb = DecryptName<0x8F1B5BFD5F6175B5ULL>(verbSource);
     ShellExecuteA(nullptr, verb, file, parameters, nullptr, SW_SHOWNORMAL);
   } else {
     const char* url = this->unknown_0018.c_str();
-    const std::uint8_t verbSource[] = {0x60, 0xCF, 0xF6, 0x95, 0xEF};
-    thread_local EncryptedName<sizeof(verbSource), 0x9B17C9EFDBB39F2FULL> verbName(verbSource);
-    const char* verb = verbName.Text();
+    const char verbSource[] = {'\x60', '\xCF', '\xF6', '\x95', '\xEF'};
+    const char* verb = DecryptName<0x9B17C9EFDBB39F2FULL>(verbSource);
     ShellExecuteA(nullptr, verb, url, url, nullptr, SW_SHOWNORMAL);
     if (g_windowMgr.Confirm(PurchaseCheckingMessage()().Text(), 2, true, false, 0, "Message", 250, 170, 0) == 187) {
       IAP_ConfirmPurchase((static_cast<std::int64_t>(this->unknown_0014) << 32) | static_cast<std::uint32_t>(this->unknown_0010), sub_63A9D0);
@@ -708,7 +641,7 @@ void CStoveMgr::OnOpenUrlCallback(Stove::PCSDK::CallbackResult callbackResult, i
     g_modeMgr.GetGameMode()->SendMsg(323, 0, 0, 0, 0);
   } else {
     std::string path = EncodeText(CP_ACP, std::wstring(url));
-    const std::uint8_t source[] = {0x68, 0x51, 0x42, 0x23, 0x03};
+    const char source[] = {'\x68', '\x51', '\x42', '\x23', '\x03'};
     thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> verb(source);
     ShellExecuteA(nullptr, verb.Text(), path.c_str(), path.c_str(), nullptr, SW_SHOWNORMAL);
   }
