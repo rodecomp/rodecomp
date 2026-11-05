@@ -19,8 +19,8 @@ CCherryBlossomEffect::CCherryBlossomEffect() : CEffect(1013), offsets() {
 // OFFSET: 0x00B43B50
 // FUNCTION: fn_18884
 void CCherryBlossomEffect::Close() {
-  for (CParticle* particle : this->petals) {
-    FreeParticle(particle);
+  for (std::vector<CParticle*>::iterator it = this->petals.begin(); it != this->petals.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->petals.clear();
@@ -42,10 +42,7 @@ void CCherryBlossomEffect::Slot01() {
         particle->scale = 0.55f;
         particle->alpha = 0;
 
-        vector3d& offset = this->offsets[row * 4 + column];
-        offset.x = 0.0f;
-        offset.y = static_cast<float>(std::max(rand() % 100, 0));
-        offset.z = 0.0f;
+        this->offsets[row * 4 + column] = vector3d{0.0f, static_cast<float>(std::max(rand() % 100, 0)), 0.0f};
 
         float* angles = &particle->unknown_0054;
         for (int i = 0; i < 4; ++i) {
@@ -61,7 +58,8 @@ void CCherryBlossomEffect::Slot01() {
 // OFFSET: 0x00B43CE0
 // FUNCTION: fn_18887
 void CCherryBlossomEffect::Slot03() {
-  for (CParticle* particle : this->petals) {
+  for (std::vector<CParticle*>::iterator it = this->petals.begin(); it != this->petals.end(); ++it) {
+    CParticle* particle = *it;
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
@@ -71,9 +69,7 @@ void CCherryBlossomEffect::Slot03() {
       vector3d& offset = this->offsets[index];
       if (offset.y < 0.0f) {
         if (offset.y < -30.0f) {
-          offset.x = 0.0f;
-          offset.y = static_cast<float>(std::max(rand() % 100, 0));
-          offset.z = 0.0f;
+          offset = vector3d{0.0f, static_cast<float>(std::max(rand() % 100, 0)), 0.0f};
 
           float* angles = &particle->unknown_0054;
           for (int i = 0; i < 4; ++i) {
@@ -138,7 +134,8 @@ void CCherryBlossomEffect::Slot03() {
 // OFFSET: 0x00B44500
 // FUNCTION: fn_18888
 void CCherryBlossomEffect::Slot04() {
-  for (CParticle* particle : this->petals) {
+  for (std::vector<CParticle*>::iterator it = this->petals.begin(); it != this->petals.end(); ++it) {
+    CParticle* particle = *it;
     if (particle) {
       for (int i = 0; i < 2; ++i) {
         particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
