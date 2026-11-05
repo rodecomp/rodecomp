@@ -46,6 +46,23 @@ void UIWeaponRefineWnd::Paint() {
   this->DrawButtonBar(2, 0, 1);
 }
 
+#pragma pack(push, 1)
+struct UIWeaponRefineRecordHeader {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t bytes;
+
+  // INLINED
+  UIWeaponRefineRecordHeader() : id(0), bytes(0) {
+  }
+
+  // INLINED
+  ~UIWeaponRefineRecordHeader() {
+    this->bytes = 0;
+    this->id = 0;
+  }
+};
+#pragma pack(pop)
+
 // OFFSET: 0x009A4CA0
 // FUNCTION: fn_13619
 int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -56,7 +73,8 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, this->m_list->selected);
 
-    if (response == 184) {
+    switch (response) {
+    case 184: {
       if (g_replayAnimationScaling) {
         this->m_list->selected = static_cast<int>(d);
         this->m_list->Invalidate();
@@ -76,7 +94,9 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_windowMgr.CloseWindow(111);
         return 0;
       }
-    } else if (response == 185) {
+      break;
+    }
+    case 185:
       g_modeMgr.gameMode->SendMsg(182, -1, 0, 0, 0);
       g_windowMgr.CloseWindow(111);
       return 0;
@@ -96,7 +116,7 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case 31: {
     const int itemId = static_cast<int>(a);
     this->itemIds.push_back(itemId);
-    this->indices.push_back(static_cast<int>(b));
+    this->indices.push_back(b);
 
     item.SetItemId(itemId);
     item.unknown_0060 = 0;
@@ -107,29 +127,30 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
   case 123: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    std::uint16_t marker;
-    std::memcpy(&marker, bytes, sizeof(marker));
+    UIWeaponRefineRecordHeader header;
     unsigned offset = 6;
+    header = *reinterpret_cast<const UIWeaponRefineRecordHeader*>(bytes);
 
-    if (marker == 22200) {
+    if (header.id == 22200) {
       while (static_cast<unsigned>(b) > offset) {
-        std::int16_t kind;
-        std::uint32_t size;
-        std::memcpy(&kind, bytes + offset, sizeof(kind));
-        std::memcpy(&size, bytes + offset + 2, sizeof(size));
+        header = *reinterpret_cast<const UIWeaponRefineRecordHeader*>(bytes + offset);
         offset += 6;
 
-        if (kind == 22201) {
+        switch (header.id) {
+        case 22201:
+          return 0;
+
+        case 22202: {
+          int values[2] = {};
+          std::memcpy(values, bytes + offset, header.bytes);
+          offset += header.bytes;
+          this->SendMsg(nullptr, 31, values[0], values[1], 0, 0);
           break;
         }
 
-        if (kind == 22202) {
-          int values[2] = {};
-          std::memcpy(values, bytes + offset, size);
-          offset += size;
-          this->SendMsg(nullptr, 31, values[0], values[1], 0, 0);
-        } else {
-          offset += size;
+        default:
+          offset += header.bytes;
+          break;
         }
       }
     }
