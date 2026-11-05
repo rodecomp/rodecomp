@@ -47,10 +47,10 @@ bool JsonCppLoader::GetStringValue(const JsonValue& node, const std::string& key
 }
 
 
-#include <iosfwd>
+#include <fstream>
 
 struct JsonCppLoaderBsonOptions {
-  unsigned char storage[16];
+  void* storage[4];
 };
 
 struct JsonCppLoaderJsonOptions {
@@ -66,19 +66,15 @@ struct JsonCppLoaderJsonHandler {
   JsonCppLoaderJsonHandler() {
     reinterpret_cast<void(__thiscall*)(JsonCppLoaderJsonHandler*, JsonCppLoaderJsonHandler*)>(fn_00198)(this, this);
   }
-};
 
-struct JsonCppLoaderFileStream {
-  unsigned char unknown_0000[0x5C];
-  void* file;
-  unsigned char unknown_0060[0x30];
+  JsonCppLoaderJsonHandler(const JsonCppLoaderJsonHandler&) = delete;
+
+  // INLINED
+  ~JsonCppLoaderJsonHandler() {
+  }
 };
-static_assert(sizeof(JsonCppLoaderFileStream) == 0x90);
 
 extern "C" {
-void fn_00318();
-void fn_00414();
-void fn_00646();
 void fn_00349();
 void fn_00321();
 void fn_00368();
@@ -90,20 +86,6 @@ void* __cdecl fn_00734(JsonValue* out, const unsigned char* data, JsonCppLoaderJ
 void fn_00769();
 void fn_00367();
 }
-
-struct JsonCppLoaderOpenedStream {
-  JsonCppLoaderFileStream stream;
-
-  // INLINED
-  JsonCppLoaderOpenedStream(const char* path, int mode) {
-    reinterpret_cast<void(__thiscall*)(JsonCppLoaderFileStream*, const char*, int, int, int)>(fn_00318)(&this->stream, path, mode, 0x40, 1);
-  }
-
-  // INLINED
-  ~JsonCppLoaderOpenedStream() {
-    reinterpret_cast<void(__thiscall*)(JsonCppLoaderFileStream*)>(fn_00414)(&this->stream);
-  }
-};
 
 struct JsonCppLoaderParsedValue {
   JsonValue value;
@@ -127,50 +109,54 @@ struct JsonCppLoaderJsonOptionsGuard {
 // FUNCTION: fn_00487
 bool JsonCppLoader::sub_4F3CC0(const std::string& path) {
   try {
-    JsonCppLoaderOpenedStream file(path.c_str(), 0x20);
-    if (!file.stream.file) {
+    std::ifstream file(path.c_str(), std::ios::binary);
+    if (!file.is_open()) {
       return false;
     }
 
     JsonCppLoaderBsonOptions optionStorage;
     JsonCppLoaderBsonOptions* options = reinterpret_cast<JsonCppLoaderBsonOptions*(__thiscall*)(JsonCppLoaderBsonOptions*, int)>(fn_00349)(&optionStorage, 1);
-    JsonCppLoaderParsedValue parsed;
-    JsonValue* result = static_cast<JsonValue*>(fn_00272(&parsed.value, reinterpret_cast<std::ifstream*>(&file.stream), options));
-    if (&this->document != result) {
-      reinterpret_cast<void(__thiscall*)(JsonValue*, JsonValue*)>(fn_00769)(&this->document, result);
+    {
+      JsonCppLoaderParsedValue parsed;
+      JsonValue* result = static_cast<JsonValue*>(fn_00272(&parsed.value, &file, options));
+      if (&this->document != result) {
+        reinterpret_cast<void(__thiscall*)(JsonValue*, JsonValue*)>(fn_00769)(&this->document, result);
+      }
     }
-    reinterpret_cast<void(__thiscall*)(JsonCppLoaderFileStream*)>(fn_00646)(&file.stream);
-    return true;
+    file.close();
   } catch (const std::exception& exception) {
     this->Fail("error : JsonCppLoader::LoadBson failed (reason : %s)", exception.what());
+    return false;
   }
 
-  return false;
+  return true;
 }
 
 // OFFSET: 0x004F3ED0
 // FUNCTION: fn_00489
 bool JsonCppLoader::sub_4F3ED0(const std::string& path) {
   try {
-    JsonCppLoaderOpenedStream file(path.c_str(), 1);
-    if (!file.stream.file) {
+    std::ifstream file(path.c_str());
+    if (!file.is_open()) {
       return false;
     }
 
     JsonCppLoaderJsonOptions optionStorage;
     JsonCppLoaderJsonOptionsGuard options{reinterpret_cast<JsonCppLoaderJsonOptions*(__thiscall*)(JsonCppLoaderJsonOptions*, int)>(fn_00321)(&optionStorage, 1)};
-    JsonCppLoaderParsedValue parsed;
-    JsonValue* result = static_cast<JsonValue*>(fn_00733(&parsed.value, reinterpret_cast<std::ifstream*>(&file.stream), options.options, JsonCppLoaderJsonHandler{}));
-    if (&this->document != result) {
-      reinterpret_cast<void(__thiscall*)(JsonValue*, JsonValue*)>(fn_00769)(&this->document, result);
+    {
+      JsonCppLoaderParsedValue parsed;
+      JsonValue* result = static_cast<JsonValue*>(fn_00733(&parsed.value, &file, options.options, JsonCppLoaderJsonHandler{}));
+      if (&this->document != result) {
+        reinterpret_cast<void(__thiscall*)(JsonValue*, JsonValue*)>(fn_00769)(&this->document, result);
+      }
     }
-    reinterpret_cast<void(__thiscall*)(JsonCppLoaderFileStream*)>(fn_00646)(&file.stream);
-    return true;
+    file.close();
   } catch (const std::exception& exception) {
     this->Fail("error : JsonCppLoader::LoadJson failed (reason : %s)", exception.what());
+    return false;
   }
 
-  return false;
+  return true;
 }
 
 // OFFSET: 0x004F3C70
@@ -204,21 +190,19 @@ __declspec(noinline) bool JsonCppLoader::sub_4F3DF0(std::vector<unsigned char>& 
     return false;
   }
 
-  JsonCppLoaderBsonOptions optionStorage;
-    JsonCppLoaderBsonOptions* options = reinterpret_cast<JsonCppLoaderBsonOptions*(__thiscall*)(JsonCppLoaderBsonOptions*, int)>(fn_00349)(&optionStorage, 1);
-  JsonValue parsed{};
-  JsonValue* result;
   try {
-    result = static_cast<JsonValue*>(fn_00273(&parsed, &buffer, options));
+    JsonCppLoaderBsonOptions optionStorage;
+    JsonCppLoaderBsonOptions* options = reinterpret_cast<JsonCppLoaderBsonOptions*(__thiscall*)(JsonCppLoaderBsonOptions*, int)>(fn_00349)(&optionStorage, 1);
+    JsonCppLoaderParsedValue parsed;
+    JsonValue* result = static_cast<JsonValue*>(fn_00273(&parsed.value, &buffer, options));
     if (&this->document != result) {
       reinterpret_cast<void(__thiscall*)(JsonValue*, JsonValue*)>(fn_00769)(&this->document, result);
     }
   } catch (const std::exception& exception) {
-    reinterpret_cast<void(__thiscall*)(JsonValue*)>(fn_00367)(&parsed);
     this->Fail("error : JsonCppLoader::LoadBson failed (reason : %s)", exception.what());
     return false;
   }
-  reinterpret_cast<void(__thiscall*)(JsonValue*)>(fn_00367)(&parsed);
+
   return true;
 }
 
@@ -235,24 +219,19 @@ __declspec(noinline) bool JsonCppLoader::sub_4F4040(std::vector<unsigned char>& 
     return false;
   }
 
-  JsonCppLoaderJsonOptions optionStorage{};
-  JsonCppLoaderJsonOptions* options = reinterpret_cast<JsonCppLoaderJsonOptions*(__thiscall*)(JsonCppLoaderJsonOptions*, int)>(fn_00321)(&optionStorage, 1);
-
-  JsonValue parsed{};
-  JsonValue* result;
   try {
-    result = static_cast<JsonValue*>(fn_00734(&parsed, buffer.data(), options, JsonCppLoaderJsonHandler{}));
+    JsonCppLoaderJsonOptions optionStorage;
+    JsonCppLoaderJsonOptionsGuard options{reinterpret_cast<JsonCppLoaderJsonOptions*(__thiscall*)(JsonCppLoaderJsonOptions*, int)>(fn_00321)(&optionStorage, 1)};
+    JsonCppLoaderParsedValue parsed;
+    JsonValue* result = static_cast<JsonValue*>(fn_00734(&parsed.value, buffer.data(), options.options, JsonCppLoaderJsonHandler{}));
     if (&this->document != result) {
       reinterpret_cast<void(__thiscall*)(JsonValue*, JsonValue*)>(fn_00769)(&this->document, result);
     }
   } catch (const std::exception& exception) {
-    reinterpret_cast<void(__thiscall*)(JsonValue*)>(fn_00367)(&parsed);
-    reinterpret_cast<void(__thiscall*)(JsonCppLoaderJsonOptions*)>(fn_00368)(reinterpret_cast<JsonCppLoaderJsonOptions*>(reinterpret_cast<unsigned char*>(options) + 8));
     this->Fail("error : JsonCppLoader::LoadJson failed (reason : %s)", exception.what());
     return false;
   }
-  reinterpret_cast<void(__thiscall*)(JsonValue*)>(fn_00367)(&parsed);
-  reinterpret_cast<void(__thiscall*)(JsonCppLoaderJsonOptions*)>(fn_00368)(reinterpret_cast<JsonCppLoaderJsonOptions*>(reinterpret_cast<unsigned char*>(options) + 8));
+
   return true;
 }
 
