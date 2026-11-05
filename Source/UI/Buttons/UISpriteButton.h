@@ -8,7 +8,7 @@
 class UISpriteButton : public UIButton {
 public:
   UISpriteButton();
-  ~UISpriteButton() override;
+  __declspec(noinline) ~UISpriteButton() override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
@@ -46,7 +46,7 @@ public:
 
 class UISpriteButton2 : public UISpriteButton {
 public:
-  UISpriteButton2(UIWindow* target);
+  __declspec(noinline) UISpriteButton2(UIWindow* target);
   ~UISpriteButton2() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;

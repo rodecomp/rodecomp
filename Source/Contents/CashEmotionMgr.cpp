@@ -197,7 +197,7 @@ public:
 
 class UICashEmotionListChildWnd_Basic : public UICashEmotionListChildWnd_Abstract {
 public:
-  UICashEmotionListChildWnd_Basic(int width, int height, unsigned char cached);
+  __declspec(noinline) UICashEmotionListChildWnd_Basic(int width, int height, unsigned char cached);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
@@ -213,7 +213,7 @@ protected:
 
 class UICashEmotionListChildWnd_Purchase : public UICashEmotionListChildWnd_Abstract {
 public:
-  UICashEmotionListChildWnd_Purchase(int width, int height);
+  __declspec(noinline) UICashEmotionListChildWnd_Purchase(int width, int height);
   ~UICashEmotionListChildWnd_Purchase() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -231,7 +231,7 @@ protected:
 
 class UICashEmotionListChildWnd_Search : public UICashEmotionListChildWnd_Abstract {
 public:
-  UICashEmotionListChildWnd_Search(int width, int height);
+  __declspec(noinline) UICashEmotionListChildWnd_Search(int width, int height);
   ~UICashEmotionListChildWnd_Search() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -249,7 +249,7 @@ protected:
 
 class UICashEmotionListChildWnd_UnPurchased : public UICashEmotionListChildWnd_Abstract {
 public:
-  UICashEmotionListChildWnd_UnPurchased(int width, int height);
+  __declspec(noinline) UICashEmotionListChildWnd_UnPurchased(int width, int height);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;

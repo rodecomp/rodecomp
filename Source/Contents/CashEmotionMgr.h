@@ -25,7 +25,7 @@ struct CashEmotionKeyHash {
 
 class CashEmotionCommand {
 public:
-  CashEmotionCommand(const std::string& name, int packId, int emotionId);
+  __declspec(noinline) CashEmotionCommand(const std::string& name, int packId, int emotionId);
 
   void Add(int packId, int emotionId);
   std::pair<int, int> Get(int index) const;
@@ -128,12 +128,12 @@ public:
   void Reset();
   void ClearOwnedPacks();
   void ClearCommands();
-  void HideSuggestions();
+  __declspec(noinline) void HideSuggestions();
   __declspec(noinline) int FindEmotionId(const char* name);
   int ProcessChatCommand(const char* command);
   __declspec(noinline) const char* GetPackName(int packId);
   std::vector<int> FindBaseEmotions(const char* filter);
-  CashEmotionTable* GetBasePackEmotions();
+  __declspec(noinline) CashEmotionTable* GetBasePackEmotions();
   int GetSpecialEmotion(CashEmotionSpecial type);
   CashEmotionData* GetEmotionData(int packId, int emotionId);
   const char* GetEmotionName(int packId, int emotionId);
