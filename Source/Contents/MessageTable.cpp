@@ -4729,23 +4729,30 @@ namespace {
 
   // OFFSET: 0x005B8500
   // FUNCTION: fn_03421
-  void DecodeField(std::string& field, std::vector<std::string>& row) {
-    if (field.empty()) {
+  void DecodeField(std::string& field, std::vector<std::string>& row, bool force) {
+    if (!force && field.empty()) {
       return;
     }
 
-    std::string decoded = DecodeBase64(field);
+    std::string decoded = Base64Decode(field, false);
     if (decoded.size() > 2) {
       if (decoded.front() == '"' && decoded.back() == '"') {
-        decoded = decoded.substr(1, decoded.size() - 2);
+        decoded = decoded.substr(1);
+        decoded = decoded.substr(0, decoded.size() - 1);
       }
 
-      for (std::size_t pos = 0; (pos = decoded.find("\\\"\"", pos)) != std::string::npos; ++pos) {
-        decoded.replace(pos, 3, "\"");
+      const std::string pattern = "\\\"\"";
+      const std::string replacement = "\"";
+      for (std::size_t pos = 0; (pos = decoded.find(pattern, pos)) != std::string::npos; pos += replacement.size()) {
+        decoded.replace(pos, pattern.size(), replacement);
       }
     }
 
-    row.push_back(FromUtf8(decoded, g_textCodePage));
+    {
+      std::string converted = FromUtf8(decoded, g_textCodePage);
+      decoded.assign(converted);
+    }
+    row.push_back(decoded);
   }
 
   // OFFSET: 0x00B009D0
@@ -4780,11 +4787,11 @@ bool CCommonObject::OpenCsv(const char* name, CFile& file) {
   const unsigned char* data = static_cast<const unsigned char*>(file.GetData());
   if (file.GetSize() >= 2) {
     if (data[0] == 0xFF && data[1] == 0xFE) {
-      FormatOwnedString("Not Match Encoding Type : %d", 5);
+      std::string message = FormatOwnedString("Not Match Encoding Type : %d", 5);
       return false;
     }
     if (data[0] == 0xFE && data[1] == 0xFF) {
-      FormatOwnedString("Not Match Encoding Type : %d", 7);
+      std::string message = FormatOwnedString("Not Match Encoding Type : %d", 7);
       return false;
     }
   }
@@ -4805,7 +4812,7 @@ std::vector<std::string> CCommonObject::ReadCsvRow(CFile& file, char) {
     char value;
     file.Read(&value, 1);
     if (value == '\n' || value == '\r' || value == ',') {
-      DecodeField(field, row);
+      DecodeField(field, row, false);
       field.clear();
       if (value == '\r') {
         char next;
@@ -4821,7 +4828,7 @@ std::vector<std::string> CCommonObject::ReadCsvRow(CFile& file, char) {
     }
   }
 
-  DecodeField(field, row);
+  DecodeField(field, row, false);
   return row;
 }
 
@@ -4969,7 +4976,7 @@ bool ImportMessageCsv(std::string_view bytes) {
     while (cursor < bytes.size()) {
       char value = bytes[cursor++];
       if (value == ',' || value == '\r' || value == '\n') {
-        DecodeField(field, row);
+        DecodeField(field, row, false);
         field.clear();
         if (value == '\n') {
           break;
@@ -4984,7 +4991,7 @@ bool ImportMessageCsv(std::string_view bytes) {
       }
     }
 
-    DecodeField(field, row);
+    DecodeField(field, row, false);
     row = TransformFields(row);
     std::vector<const char*> fields;
     fields.reserve(row.size());
