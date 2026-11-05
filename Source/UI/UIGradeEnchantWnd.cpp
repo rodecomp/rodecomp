@@ -135,7 +135,7 @@ int UIGradeEnchantWnd::SelectedMaterialZeny() {
 // OFFSET: 0x007E7740
 // FUNCTION: fn_09752
 int UIGradeEnchantWnd::SuccessRate() {
-  if (this->item.unknown_0000[1] == 0) {
+  if (this->item.unknown_0000[1] <= 0) {
     return 0;
   }
 
@@ -160,34 +160,37 @@ void UIGradeEnchantWnd::Slot15(int, int) {
   title->SetId(0xB9);
   this->AddChild(title);
 
-  this->startButton = new UIGradeEnchant_BtnStart();
-  this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start.bmp", 0, 0);
-  this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_over.bmp", 1, 0);
-  this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_press.bmp", 2, 0);
-  this->startButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_disable.bmp", 3, 0);
-  this->startButton->SetSize(this->startButton->BitmapWidth(), this->startButton->BitmapHeight());
+  UIGradeEnchant_BtnStart* start = new UIGradeEnchant_BtnStart();
+  this->startButton = start;
+  start->SetBitmap("유저인터페이스\\grade_enchant\\btn_start.bmp", 0, 0);
+  start->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_over.bmp", 1, 0);
+  start->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_press.bmp", 2, 0);
+  start->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_disable.bmp", 3, 0);
+  start->Resize(start->BitmapWidth(), start->BitmapHeight());
   this->startButton->Move(0x23, 0x123);
   this->startButton->SetId(0xB8);
   this->startButton->SetDisabled(0);
   this->startButton->Invalidate();
   this->AddChild(this->startButton);
 
-  this->enhancedUpButton = new UIGradeEnchant_BtnEnhancedUp();
-  this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up.bmp", 0, 0);
-  this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_over.bmp", 1, 0);
-  this->enhancedUpButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_pick.bmp", 2, 0);
-  this->enhancedUpButton->SetSize(this->enhancedUpButton->BitmapWidth(), this->enhancedUpButton->BitmapHeight());
+  UIGradeEnchant_BtnEnhancedUp* enhancedUp = new UIGradeEnchant_BtnEnhancedUp();
+  this->enhancedUpButton = enhancedUp;
+  enhancedUp->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up.bmp", 0, 0);
+  enhancedUp->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_over.bmp", 1, 0);
+  enhancedUp->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_pick.bmp", 2, 0);
+  enhancedUp->Resize(enhancedUp->BitmapWidth(), enhancedUp->BitmapHeight());
   this->enhancedUpButton->Move(0x9E, 0xE1);
   this->enhancedUpButton->SetId(0x117);
   this->enhancedUpButton->SetDisabled(0);
   this->enhancedUpButton->Invalidate();
   this->AddChild(this->enhancedUpButton);
 
-  this->enhancedDownButton = new UIGradeEnchant_BtnEnhancedDown();
-  this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down.bmp", 0, 0);
-  this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_over.bmp", 1, 0);
-  this->enhancedDownButton->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_pick.bmp", 2, 0);
-  this->enhancedDownButton->SetSize(this->enhancedDownButton->BitmapWidth(), this->enhancedDownButton->BitmapHeight());
+  UIGradeEnchant_BtnEnhancedDown* enhancedDown = new UIGradeEnchant_BtnEnhancedDown();
+  this->enhancedDownButton = enhancedDown;
+  enhancedDown->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down.bmp", 0, 0);
+  enhancedDown->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_over.bmp", 1, 0);
+  enhancedDown->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_pick.bmp", 2, 0);
+  enhancedDown->Resize(enhancedDown->BitmapWidth(), enhancedDown->BitmapHeight());
   this->enhancedDownButton->Move(0x9E, 0xF0);
   this->enhancedDownButton->SetId(0x118);
   this->enhancedDownButton->SetDisabled(0);
@@ -378,10 +381,7 @@ void UIGradeEnchant_BtnEnhancedUp::Slot28(int x, int y) {
 
   int screenX = 0;
   int screenY = -20;
-  for (const UIWindow* window = this; window; window = window->parent) {
-    screenX += window->geometry.x;
-    screenY += window->geometry.y;
-  }
+  this->ToScreen(screenX, screenY);
 
   mode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
 }
@@ -461,16 +461,14 @@ void UIGradeEnchantWnd::Slot33(int x, int y) {
   }
 
   if (this->state == 1) {
-    if (x >= 158 && x <= 393 && y >= 102 && y <= 219) {
-      const int row = (y - 102) / 40;
-      if (y <= row * 40 + 139 && row < 3 && row >= 0 && static_cast<unsigned>(row) < this->materials.size()) {
-        UIWindow* window = g_windowMgr.EnsureWindow(12);
-        if (window) {
-          ITEM_INFO material = LookupClientItem(g_session.m_inventoryItems, this->materials[row].itemId, 0);
-          window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&material), 0, 0, 0);
-        }
-        return;
+    const int row = MaterialRowAt(x, y);
+    if (row >= 0 && static_cast<unsigned>(row) < this->materials.size()) {
+      UIWindow* window = g_windowMgr.EnsureWindow(12);
+      if (window) {
+        ITEM_INFO material = LookupClientItem(g_session.m_inventoryItems, this->materials[row].itemId, 0);
+        window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&material), 0, 0, 0);
       }
+      return;
     }
 
     if (x >= 195 && x <= 219 && y >= 228 && y <= 252) {
@@ -495,8 +493,10 @@ void UIGradeEnchantWnd::Slot33(int x, int y) {
 int UIGradeEnchantWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message == 6) {
-    if (argument1 == 184) {
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 184:
       if (this->unknown_0220 != 1 && this->item.unknown_0000[1] > 0 && this->selectedMaterial != -1) {
         const int quantity = LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0).quantity;
         if (quantity >= this->materials[this->selectedMaterial].amount && g_session.m_zeny >= this->SelectedMaterialZeny()) {
@@ -515,36 +515,47 @@ int UIGradeEnchantWnd::SendMsg(
           }
         }
       }
-    } else if (argument1 == 185 || argument1 == 201) {
+      break;
+    case 185:
+    case 201: {
       GradeEnchantClosePacket packet;
       packet.id = 0xB5C;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
       g_windowMgr.CloseWindow(343);
-    } else if (argument1 == 279) {
+      break;
+    }
+    case 279:
       if (this->info.unknown_0000 > 0 && this->unknown_0114 < this->info.unknown_0008 * this->info.unknown_0004 &&
           LookupClientItem(g_session.m_inventoryItems, this->info.unknown_0000, 0).quantity >= this->unknown_0114 + this->info.unknown_0004) {
         this->unknown_0114 += this->info.unknown_0004;
       }
-    } else if (argument1 == 280) {
+      break;
+    case 280:
       if (this->info.unknown_0000 > 0 && this->unknown_0114 > 0) {
         this->unknown_0114 -= this->info.unknown_0004;
       }
-    } else if (argument1 == 510) {
+      break;
+    case 510:
       ShellExecuteA(hWnd, "open", LookupMessage(4124), nullptr, nullptr, SW_SHOWNORMAL);
+      break;
     }
-  } else if (message == 23 && (this->state == 0 || this->state == 1)) {
-    const ITEM_INFO dropped = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
-    if (g_session.HasItem61B8(dropped.unknown_0000[1]) == 1) {
-      g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
-      return -1;
-    }
+    break;
+  case 23:
+    if (this->state == 0 || this->state == 1) {
+      const ITEM_INFO dropped = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
+      if (g_session.HasItem61B8(dropped.unknown_0000[1]) == 1) {
+        g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+        return -1;
+      }
 
-    if (dropped.unknown_0000[1] != 0 && dropped.identified == 1) {
-      GradeEnchantSelectPacket packet;
-      packet.id = 0xB59;
-      packet.index = static_cast<std::uint16_t>(argument1);
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+      if (dropped.unknown_0000[1] != 0 && dropped.identified == 1) {
+        GradeEnchantSelectPacket packet;
+        packet.id = 0xB59;
+        packet.index = static_cast<std::uint16_t>(argument1);
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+      }
     }
+    break;
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
