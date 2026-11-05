@@ -77,10 +77,10 @@ __declspec(noinline) void UIChatHisBox::sub_89C080() {
   this->ClearNaviLinks();
 
   for (unsigned int index = 0; index < this->unknown_0100.size(); ++index) {
-    if (this->unknown_0100[index].find(g_itemLinkTagBegin) == std::string::npos) {
-      this->AddTextWrapped(this->unknown_0100[index].c_str(), this->unknown_010C[index], this->unknown_0118[index].c_str());
-    } else {
+    if (this->unknown_0100[index].find(g_itemLinkTagBegin) != std::string::npos) {
       this->AddText(this->unknown_0100[index].c_str(), this->unknown_010C[index], this->unknown_0118[index].c_str());
+    } else {
+      this->AddTextWrapped(this->unknown_0100[index].c_str(), this->unknown_010C[index], this->unknown_0118[index].c_str());
     }
   }
 
