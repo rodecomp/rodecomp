@@ -28,11 +28,24 @@ CAdvenPartyInfo* UIPartyInfoWnd::Info() {
 // OFFSET: 0x007BBF00
 // FUNCTION: fn_09294
 const char* UIPartyInfoWnd::TypeName(int value) {
-  if (value == 0) {
+  switch (value) {
+  case 0:
     return LookupMessage(3377);
+  case 1:
+    return LookupMessage(3360);
+  case 2:
+    return LookupMessage(3361);
+  case 3:
+    return LookupMessage(3362);
+  case 4:
+    return LookupMessage(3363);
+  case 5:
+    return LookupMessage(3364);
+  case 6:
+    return LookupMessage(3365);
+  default:
+    return "";
   }
-
-  return value >= 1 && value <= 6 ? LookupMessage(3359 + value) : "";
 }
 
 // OFFSET: 0x007C1E20
@@ -70,7 +83,7 @@ void UIPartyInfoWnd::Reset() {
 // OFFSET: 0x007BF8C0
 // FUNCTION: fn_09304
 void UIPartyInfoWnd::Paint() {
-  this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
+  this->ClearSurface(0xFFFF00FFu);
 
   if (this->m_drawLabel == 0) {
     return;
@@ -78,12 +91,20 @@ void UIPartyInfoWnd::Paint() {
 
   CBitmapRes* background = nullptr;
 
-  if (this->geometry.unknown_0030 <= 2) {
-    background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_names[this->geometry.unknown_0030].c_str()));
+  switch (this->geometry.unknown_0030) {
+  case 0:
+    background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[0].c_str())));
+    break;
+  case 1:
+    background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[1].c_str())));
+    break;
+  case 2:
+    background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[2].c_str())));
+    break;
   }
 
   if (this->m_disabled != 0 && !this->m_names[3].empty()) {
-    background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_names[3].c_str()));
+    background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[3].c_str())));
   }
 
   if (background) {
@@ -93,15 +114,19 @@ void UIPartyInfoWnd::Paint() {
   const auto text = [&](int x, const char* value, int bytes = 0) { this->DrawTextAt(x, 5, value, bytes, 0, 12, 0, 0, 0); };
   text(11, this->levels.c_str());
   text(64, TypeName(this->type));
-  constexpr char prefix[] = "유저인터페이스\\UIadventurerAgency\\";
-  const char* jobs[] = {"def", "heal", "atk", "buf"};
-  const bool flags[] = {this->info.tanker, this->info.healer, this->info.dealer, this->info.assist};
 
-  for (int index = 0; index < 4; ++index) {
-    const std::string path = std::string(prefix) + "btn_job_" + jobs[index] + (flags[index] ? "_on.bmp" : "_off.bmp");
-    auto* resource = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path.c_str()));
-    this->DrawBitmap(109 + index * 18, 3, resource ? &resource->image : nullptr, false);
-  }
+  CBitmapRes* job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.tanker ? "유저인터페이스\\UIadventurerAgency\\btn_job_def_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_def_off.bmp")));
+  this->DrawBitmap(109, 3, job ? &job->image : nullptr, false);
+  job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.healer ? "유저인터페이스\\UIadventurerAgency\\btn_job_heal_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_heal_off.bmp")));
+  this->DrawBitmap(127, 3, job ? &job->image : nullptr, false);
+  job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.dealer ? "유저인터페이스\\UIadventurerAgency\\btn_job_atk_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_atk_off.bmp")));
+  this->DrawBitmap(145, 3, job ? &job->image : nullptr, false);
+  job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.assist ? "유저인터페이스\\UIadventurerAgency\\btn_job_buf_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_buf_off.bmp")));
+  this->DrawBitmap(163, 3, job ? &job->image : nullptr, false);
 
   const std::string fitted = FitText(*this->geometry.surface, this->name, 119);
   text(192, fitted.c_str(), static_cast<int>(fitted.size()));
@@ -134,6 +159,7 @@ void UIPartyInfoWnd::Slot33(int, int) {
     relationship = "GuildMember";
   }
 
-  const std::string code = ShortcutFilename(this->info.characterId);
+  std::string code;
+  code = ShortcutFilename(this->info.characterId);
   g_windowMgr.SendNotice(14, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(relationship), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
 }
