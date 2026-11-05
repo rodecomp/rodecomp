@@ -13,13 +13,10 @@
 // FUNCTION: fn_03668
 void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, std::string response) {
   --this->pending;
-  const auto notify = [&](int id, unsigned color) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(id)), color, 0, 0, 0);
-  };
 
   if (!diagnostic.success) {
     if (this->unknown_0008 == g_session.m_aid) {
-      notify(3507, 0xFF);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3507)), 0xFF, 0, 0, 0);
     }
 
     return;
@@ -27,9 +24,8 @@ void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, st
 
   Json::Value root;
   Json::Reader reader;
-  const std::string document(response.c_str());
 
-  if (!reader.parse(document, root, true)) {
+  if (!reader.parse(response.c_str(), root, true)) {
     return;
   }
 
@@ -37,14 +33,14 @@ void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, st
 
   if (type == 2 || type == 3) {
     if (this->unknown_0008 == g_session.m_aid) {
-      notify(3507, 0xFF);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3507)), 0xFF, 0, 0, 0);
     }
 
     return;
   }
 
   if (this->unknown_0008 == g_session.m_aid) {
-    notify(3459, 0xFFFF64);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3459)), 0xFFFF64, 0, 0, 0);
   }
 
   this->registered = false;
