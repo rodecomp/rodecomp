@@ -28,7 +28,7 @@ public:
   void UploadSprite(int x, int y, int width, int height, const SpriteRleImage* image, const std::uint32_t* palette) override;
   bool CopyTexture(CTexture* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, int x, int y, int width, int height) override;
   bool Create(int width, int height, int format) override;
-  bool CopySurface(IDirectDrawSurface7* source, const RECT* rectangle);
+  __declspec(noinline) bool CopySurface(IDirectDrawSurface7* source, const RECT* rectangle);
   // INLINED
   IDirectDrawSurface7* NativeSurface() const {
     return this->m_surface;
