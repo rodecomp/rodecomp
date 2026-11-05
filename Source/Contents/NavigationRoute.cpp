@@ -1761,6 +1761,7 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
   std::vector<char> buffer;
   NavigationReplayHeader header;
   unsigned offset = 6;
+
   header.Read(data.data());
   if (header.tag != 8000) {
     offset = static_cast<unsigned>(-1);
@@ -1768,12 +1769,11 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
     while (offset < data.size()) {
       header.Read(data.data() + offset);
       offset += 6;
-      if (header.tag == 8001) {
-        this->ResumeRoute();
-        break;
-      }
 
       switch (header.tag) {
+      case 8001:
+        this->ResumeRoute();
+        return static_cast<int>(offset);
       case 8002:
         std::memcpy(&this->unknown_127D, data.data() + offset, header.size);
         offset += header.size;
@@ -1791,7 +1791,7 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         offset += header.size;
         break;
       case 8006: {
-        buffer.resize(header.size + 1);
+        buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
         NavigationTarget target = this->ReadTarget(buffer.data(), header.size);
@@ -1801,13 +1801,13 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         break;
       }
       case 8007:
-        buffer.resize(header.size + 1);
+        buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
         this->currentTarget = this->ReadTarget(buffer.data(), header.size);
         break;
       case 8008:
-        buffer.resize(header.size + 1);
+        buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
         this->savedTarget = this->ReadTarget(buffer.data(), header.size);
@@ -1837,7 +1837,7 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         offset += header.size;
         break;
       case 8015:
-        buffer.resize(header.size + 1);
+        buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
         this->unknown_1264 = buffer.data();
@@ -1863,7 +1863,7 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         offset += header.size;
         break;
       case 8021: {
-        buffer.resize(header.size + 1);
+        buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
         const int* route = reinterpret_cast<const int*>(buffer.data());
@@ -1906,7 +1906,7 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         break;
       }
       case 8022: {
-        buffer.resize(header.size + 1);
+        buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
         CNavi_Link* node = this->ReadObject(buffer.data());
