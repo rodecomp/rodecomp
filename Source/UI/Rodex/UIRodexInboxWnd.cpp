@@ -415,10 +415,8 @@ void UIRodexInboxWnd::Paint() {
               this->expired = 0;
               mails->erase(it);
             } else {
-              this->SetMailRow(
-                row, this->searchResults[index].second, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190,
-                it->second.unknown_0194
-              );
+              this->SetMailRow(row, this->searchResults[index].second, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead,
+                               it->second.unknown_0190, it->second.unknown_0194);
             }
           }
         }
@@ -435,58 +433,60 @@ void UIRodexInboxWnd::Paint() {
       this->checks[row]->Show(0);
       this->unknown_0144[row]->Enable(0);
       this->unknown_015C[row]->Enable(0);
-      if (g_rodexMailStore->unknown_0010 == 1) {
-        if (index < this->mails1.size()) {
-          std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails1.find(this->mails1[index].second);
-          if (it != g_rodexMailStore->m_mails1.end()) {
-            this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
-            this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
-            if (this->expired == 1) {
-              this->expired = 0;
-              g_rodexMailStore->m_mails1.erase(it);
-            } else {
-              this->checks[row]->Show(1);
-              this->unknown_0144[row]->Enable(1);
-              this->unknown_015C[row]->Enable(1);
-              this->SetMailRow(row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190, -1);
+      switch (g_rodexMailStore->unknown_0010) {
+        case 1:
+          if (index < this->mails1.size()) {
+            std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails1.find(this->mails1[index].second);
+            if (it != g_rodexMailStore->m_mails1.end()) {
+              this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
+              this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
+              if (this->expired == 1) {
+                this->expired = 0;
+                g_rodexMailStore->m_mails1.erase(it);
+              } else {
+                this->checks[row]->Show(1);
+                this->unknown_0144[row]->Enable(1);
+                this->unknown_015C[row]->Enable(1);
+                this->SetMailRow(row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190, -1);
+              }
             }
           }
-        }
-      } else if (g_rodexMailStore->unknown_0010 == 2) {
-        if (index < this->mails2.size()) {
-          std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails2.find(this->mails2[index].second);
-          if (it != g_rodexMailStore->m_mails2.end()) {
-            this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
-            this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
-            if (this->expired == 1) {
-              this->expired = 0;
-              g_rodexMailStore->m_mails2.erase(it);
-            } else {
-              this->checks[row]->Show(1);
-              this->unknown_0144[row]->Enable(1);
-              this->unknown_015C[row]->Enable(1);
-              this->SetMailRow(row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190, -1);
+          break;
+        case 2:
+          if (index < this->mails2.size()) {
+            std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails2.find(this->mails2[index].second);
+            if (it != g_rodexMailStore->m_mails2.end()) {
+              this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
+              this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
+              if (this->expired == 1) {
+                this->expired = 0;
+                g_rodexMailStore->m_mails2.erase(it);
+              } else {
+                this->checks[row]->Show(1);
+                this->unknown_0144[row]->Enable(1);
+                this->unknown_015C[row]->Enable(1);
+                this->SetMailRow(row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190, -1);
+              }
             }
           }
-        }
-      } else {
-        this->unknown_0144[row]->Enable(0);
-        this->unknown_015C[row]->Enable(0);
-        if (index < this->mails0.size()) {
-          std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails0.find(this->mails0[index].second);
-          if (it != g_rodexMailStore->m_mails0.end()) {
-            this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
-            this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
-            if (this->expired == 1) {
-              this->expired = 0;
-              g_rodexMailStore->m_mails0.erase(it);
-            } else {
-              this->SetMailRow(
-                row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190, it->second.unknown_0194
-              );
+          break;
+        default:
+          this->unknown_0144[row]->Enable(0);
+          this->unknown_015C[row]->Enable(0);
+          if (index < this->mails0.size()) {
+            std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails0.find(this->mails0[index].second);
+            if (it != g_rodexMailStore->m_mails0.end()) {
+              this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
+              this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
+              if (this->expired == 1) {
+                this->expired = 0;
+                g_rodexMailStore->m_mails0.erase(it);
+              } else {
+                this->SetMailRow(row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190,
+                                 it->second.unknown_0194);
+              }
             }
           }
-        }
       }
     }
   }
