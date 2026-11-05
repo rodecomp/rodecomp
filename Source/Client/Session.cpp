@@ -1621,8 +1621,8 @@ int CSession::GetItem1720Quantity(std::uint32_t id) const {
 // FUNCTION: fn_23460
 int CSession::GetItem1720Total() const {
   int total = 0;
-  for (const ITEM_INFO& item : this->unknown_1720) {
-    total += item.unknown_0014[1] * item.quantity;
+  for (auto item = this->unknown_1720.begin(); item != this->unknown_1720.end(); ++item) {
+    total += item->unknown_0014[1] * item->quantity;
   }
 
   return total;
@@ -2540,14 +2540,17 @@ std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item);
 // OFFSET: 0x00DDD2C0
 // FUNCTION: fn_23383
 std::uint32_t CSession::GetItemNameColor(const ITEM_INFO& item) const {
-  if (!item.identified) {
-    return 0xFFAAAAAA;
+  if (item.identified) {
+    const std::uint32_t color = ItemCardColor(&item);
+    if (color != 0) {
+      return color;
+    }
+    if (item.unknown_0064 == 2) {
+      return 0xFFFFFF00;
+    }
+    return 0xFFFFFFFF;
   }
-  const std::uint32_t color = ItemCardColor(&item);
-  if (color == 0) {
-    return item.unknown_0064 == 2 ? 0xFFFFFF00 : 0xFFFFFFFF;
-  }
-  return color;
+  return 0xFFAAAAAA;
 }
 
 // OFFSET: 0x00E30720
