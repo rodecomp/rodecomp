@@ -453,11 +453,11 @@ void CSkillAction_IG_RADIANT_SPEAR::Slot11(int level, CGameActor* source, CGameA
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, mode->camera->frame.view.values);
-  std::string side = "left";
+  const char* direction = "left";
   if (angle > 90.0f && angle < 270.0f) {
-    side = "right";
+    direction = "right";
   }
-
+  const std::string side = direction;
   g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down_bottom", side)), target->render.position.x,
                      target->render.position.y, target->render.position.z, 0, -1, 0, 0);
   g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down", side)), target->render.position.x,
