@@ -62,11 +62,11 @@ void UIWindowMgr::RearrangeMiniPartyWindows() {
   for (; cell != cells.end() && entry != this->snapExcluded.end(); ++cell, ++entry) {
     MiniPartyGridPoint position;
     reinterpret_cast<const MiniPartyGrid*>(&area)->GetWindowPosition(&position, *cell);
-    UIMiniPartyWnd* window = static_cast<UIMiniPartyWnd*>(*entry);
-    window->Move(position.x, position.y);
-    window->m_cell = *cell;
+    (*entry)->Move(position.x, position.y);
+    static_cast<UIMiniPartyWnd*>(*entry)->m_cell = *cell;
+
     const int index = *cell;
-    const MessengerMember member = window->m_member;
+    const MessengerMember member = static_cast<UIMiniPartyWnd*>(*entry)->m_member;
     g_session.SetRecord0734Value(member.accountId, index);
   }
 }
