@@ -2675,7 +2675,7 @@ namespace GPakEx {
 
     virtual bool IsForwardTransformation() const = 0;
     virtual void ResizeBuffers();
-    virtual void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) = 0;
+    virtual void ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) = 0;
 
     std::size_t CiphertextLength(std::size_t length, bool padding) const;
     std::size_t Process(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final);
@@ -2715,53 +2715,6 @@ namespace GPakEx {
   }
 
   // OFFSET: 0x00643160
-  __declspec(noinline) std::size_t CipherModeBase::Process(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final) {
-    const bool forward = this->IsForwardTransformation();
-    const std::size_t blockSize = this->m_cipher->BlockSize();
-    const std::size_t reserved = (!forward && final) ? blockSize : 0;
-    const std::uint8_t* in = input.data();
-    std::size_t inLength = input.size();
-    std::uint8_t* out = output.data();
-    std::size_t outLength = output.size();
-
-    std::size_t done = 0;
-    if (inLength >= reserved + blockSize) {
-      done = (inLength - reserved) - (inLength - reserved) % blockSize;
-      if (outLength < done) {
-        return static_cast<std::size_t>(-1);
-      }
-      this->ProcessData(out, in, done);
-      in += done;
-      out += done;
-      inLength -= done;
-      outLength -= done;
-    }
-
-    if (!final) {
-      if (inLength == 0) {
-        return done;
-      }
-    } else if (!forward) {
-      if (inLength == blockSize) {
-        this->ProcessData(this->m_buffer.data(), in, blockSize);
-        const std::uint8_t pad = this->m_buffer[blockSize - 1];
-        const std::size_t size = blockSize - pad;
-        if (pad != 0 && pad <= blockSize && size <= outLength) {
-          std::memcpy(out, this->m_buffer.data(), size);
-          return done + size;
-        }
-      }
-    } else {
-      std::memcpy(this->m_buffer.data(), in, inLength);
-      const std::uint8_t pad = static_cast<std::uint8_t>(blockSize - inLength);
-      std::memset(this->m_buffer.data() + inLength, pad, pad);
-      if (blockSize <= outLength) {
-        this->ProcessData(out, this->m_buffer.data(), blockSize);
-        return done + blockSize;
-      }
-    }
-    return static_cast<std::size_t>(-1);
-  }
 
   // OFFSET: 0x00643480
   // FUNCTION: fn_04837
@@ -2772,11 +2725,12 @@ namespace GPakEx {
 
   class CBC_Encryption : public CipherModeBase {
   public:
-    void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
+    void ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) override;
   };
 
   // OFFSET: 0x00642E20
-  void CBC_Encryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
+  // FUNCTION: fn_04830
+  void CBC_Encryption::ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     if (length == 0) {
       return;
@@ -2791,7 +2745,7 @@ namespace GPakEx {
   class CBC_Decryption : public CipherModeBase {
   public:
     void ResizeBuffers() override;
-    void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
+    void ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) override;
 
     /* 0020 */ std::vector<std::uint8_t> m_temp;
   };
@@ -2804,14 +2758,15 @@ namespace GPakEx {
   }
 
   // OFFSET: 0x00642D60
-  void CBC_Decryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
+  // FUNCTION: fn_04829
+  void CBC_Decryption::ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) {
     const std::size_t blockSize = this->m_cipher->BlockSize();
     if (length == 0) {
       return;
     }
     std::memcpy(this->m_temp.data(), input ? input + length - blockSize : nullptr, blockSize);
     if (length > blockSize) {
-      this->m_cipher->AdvancedProcessBlocks(input ? input + blockSize : nullptr, input, output ? output + blockSize : nullptr, length - blockSize, BlockCipher::Increment);
+      this->m_cipher->AdvancedProcessBlocks(input ? input + blockSize : nullptr, input, output ? output + blockSize : nullptr, length - blockSize, BlockCipher::Reverse);
     }
     this->m_cipher->ProcessAndXorBlock(input, this->m_register.data(), output);
     this->m_register.swap(this->m_temp);
@@ -2820,7 +2775,7 @@ namespace GPakEx {
   class CFB_Decryption : public CipherModeBase {
   public:
     void ResizeBuffers() override;
-    void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
+    void ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) override;
 
     /* 0020 */ std::vector<std::uint8_t> m_temp;
   };
@@ -2833,35 +2788,13 @@ namespace GPakEx {
   }
 
   // OFFSET: 0x00642EB0
-  void CFB_Decryption::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
-    const std::size_t blockSize = this->m_cipher->BlockSize();
-    if (length == 0) {
-      return;
-    }
-    std::memcpy(this->m_temp.data(), input ? input + length - blockSize : nullptr, blockSize);
-    if (length > blockSize) {
-      this->m_cipher->AdvancedProcessBlocks(input, input ? input + blockSize : nullptr, output ? output + blockSize : nullptr, length - blockSize, BlockCipher::Increment);
-    }
-    this->m_cipher->ProcessAndXorBlock(this->m_register.data(), input, output);
-    this->m_register.swap(this->m_temp);
-  }
 
   class OFB_Base : public CipherModeBase {
   public:
-    void ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) override;
+    void ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) override;
   };
 
   // OFFSET: 0x006430F0
-  void OFB_Base::ProcessData(std::uint8_t* output, const std::uint8_t* input, std::size_t length) {
-    const std::size_t blockSize = this->m_cipher->BlockSize();
-    while (length != 0) {
-      this->m_cipher->ProcessAndXorBlock(this->m_register.data(), nullptr, this->m_register.data());
-      XorBuffers(output, input, this->m_register.data(), blockSize);
-      length -= blockSize;
-      input = input ? input + blockSize : nullptr;
-      output = output ? output + blockSize : nullptr;
-    }
-  }
 
   template<bool Forward, class Cipher>
   class BlockCipherFinal : public Cipher {
