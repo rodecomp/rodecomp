@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Window/UIHotKeyWnd.h"
@@ -370,7 +371,7 @@ void UIHotKeyWnd::ShowHotkeyTooltip(int x, int y) {
 
   const HotkeyEntry entry = this->GetHotkey(this->m_tab, index + (this->m_page * 9 - 9) * 4, true);
   if (!entry.info.text.empty()) {
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(entry.info.text.c_str(), screenX, screenY, 0xFFFFFFFF, 0, 1);
+    g_modeMgr.gameMode->ShowTooltip(entry.info.text.c_str(), screenX, screenY, 0xFFFFFFFF, 0, 1);
   }
 }
 
@@ -397,14 +398,14 @@ void UISerachStoreInfoWnd::Slot28(int x, int y) {
           text = text.substr(0, end);
         }
 
-        static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+        g_modeMgr.gameMode->SetCursorAction(2);
       }
     } else {
       text = item.DisplayName(0);
     }
 
     if (text.size() != 0) {
-      static_cast<CMode*>(g_charViewMode)->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
+      g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 
