@@ -719,7 +719,7 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
     if (this->geometry.height % this->rowHeight > 1) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (OngoingQuestInfo::CUIRewardItem*& slot : this->items) {
       OngoingQuestInfo::CUIRewardItem* item = new OngoingQuestInfo::CUIRewardItem();
       item->SetSize(this->itemWidth, this->rowHeight);
