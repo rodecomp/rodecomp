@@ -51,7 +51,7 @@ public:
   std::uint32_t BlendColor(std::uint32_t base, std::uint32_t overlay);
   void DrawBattleFieldIcon(CRenderSystemBase& system);
   void DrawOverlays(CRenderSystemBase& system);
-  void ClearFrame();
+  __declspec(noinline) void ClearFrame();
 
   /* 0004 */ RendererViewport viewport;
   /* 0038 */ unsigned frame;
