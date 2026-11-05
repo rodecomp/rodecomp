@@ -24,11 +24,11 @@
 // FUNCTION: fn_11086
 UITextViewer::UITextViewer() : UIListBox(), splitTipLinks(0), outline(0), bold(0) {
   this->lineHeight = 18;
-  constexpr char path[] = "유저인터페이스\\colorchip.bmp";
-  const auto* chip = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
-  const auto& image = chip->image;
-  const std::uint32_t pixel = image.width > 18 && image.height > 2 ? image.pixels[18 + 2 * image.width] : 0x00FF0000u;
-  this->backgroundColor = 0xFF000000u | ((pixel & 255) << 16) | (pixel & 0xFF00) | ((pixel >> 16) & 255);
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 18, 2, red, green, blue);
+  this->backgroundColor = 0xFF000000u | RGB(red, green, blue);
   this->Invalidate();
 
   this->unknown_00BC = 0;
@@ -282,15 +282,19 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case 9:
   case 10: {
     const int previous = this->topLine;
-    const int visible = this->geometry.height / this->lineHeight;
-    const int delta = message == 9 ? (1 - visible) : message == 10 ? (visible - 1) : static_cast<int>(argument1);
-    this->topLine = previous + delta;
+    if (message == 9) {
+      this->topLine = previous - this->geometry.height / this->lineHeight + 1;
+    } else if (message == 10) {
+      this->topLine = previous + this->geometry.height / this->lineHeight - 1;
+    } else {
+      this->topLine = previous + static_cast<int>(argument1);
+    }
 
     if (this->topLine < 0) {
       this->topLine = 0;
     }
 
-    const int maximum = this->bottomMargin + static_cast<int>(this->lineLinks.size()) - visible;
+    const int maximum = this->bottomMargin + (static_cast<int>(this->lineLinks.size()) - this->geometry.height / this->lineHeight);
     if (static_cast<unsigned>(this->topLine) > static_cast<unsigned>(maximum)) {
       this->topLine = maximum;
     }
@@ -306,9 +310,13 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     return this->topLine - previous;
   }
   case 18:
+    if (this->verticalOverflow != 0) {
+      this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
+    }
+    return 0;
   case 19:
     if (this->verticalOverflow != 0) {
-      this->SendMsg(this->verticalBar, 7, message == 18 ? -1 : 1, 0, 0, 0);
+      this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
     }
     return 0;
   case 29: {
