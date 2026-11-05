@@ -200,7 +200,7 @@ int UIRefiningWnd::SlotAt(int x, int y) {
 
 // OFFSET: 0x007F55A0
 // FUNCTION: fn_09906
-void UIRefiningWnd::ApplyResult() {
+__declspec(safebuffers) void UIRefiningWnd::ApplyResult() {
   this->notice->SetNotice("", 0, 0);
   this->item = this->nextItem;
   this->refiningButton->Enable(0);
@@ -1038,7 +1038,7 @@ void UIRefining_Notice::SetNotice(const char* value, int duration, unsigned char
 
 // OFFSET: 0x007F6280
 // FUNCTION: fn_09908
-void UIRefiningWnd::Paint() {
+__declspec(safebuffers) void UIRefiningWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   DrawRectangleBorder(*this, 0, 17, 264, 302, 0xC2C2C2);
 
