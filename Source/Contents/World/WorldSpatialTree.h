@@ -10,8 +10,8 @@ class GroundGeometry;
 class C3dActor;
 
 struct WorldSpatialTree {
-  WorldSpatialTree();
-  ~WorldSpatialTree();
+  __declspec(noinline) WorldSpatialTree();
+  __declspec(noinline) ~WorldSpatialTree();
   WorldSpatialTree(const WorldSpatialTree&) = delete;
   WorldSpatialTree& operator=(const WorldSpatialTree&) = delete;
   void Subdivide(int depth);
