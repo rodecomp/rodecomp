@@ -38,7 +38,7 @@ class UITipboxWnd : public UIFrameWnd {
 public:
   UITipboxWnd();
   void ShowTip(int id);
-  void TrimAt(std::string& text, const char* marker);
+  __declspec(noinline) void TrimAt(std::string& text, const char* marker);
   void UpdateAnimations();
   void UpdatePageText();
   bool BuildAnimations();
