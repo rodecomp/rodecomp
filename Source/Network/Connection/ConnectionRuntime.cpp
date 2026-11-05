@@ -24,7 +24,9 @@ bool CheckConnectionRuntime() {
   HMODULE library = LoadLibraryA("ws2_32.dll");
   if (library) {
     for (unsigned index = 0; index < 4; ++index) {
-      if (GetProcAddress(library, names[index]) != GetProcAddress(ws2Module, names[index])) {
+      FARPROC loadedFunction = GetProcAddress(library, names[index]);
+      FARPROC originalFunction = GetProcAddress(ws2Module, names[index]);
+      if (loadedFunction != originalFunction) {
         FreeLibrary(library);
         return false;
       }
