@@ -28,13 +28,19 @@ void CMode::DrawCursor() {
   const std::uint32_t ticks = (timeGetTime() - this->cursorTick) / 24;
   action->Speed(this->cursorAction);
 
-  unsigned divisor = 4;
+  unsigned divisor;
   switch (this->cursorAction) {
+  case 2:
+    divisor = 4;
+    break;
   case 5:
     divisor = 20;
     break;
   case 7:
     divisor = 10;
+    break;
+  case 9:
+    divisor = 1;
     break;
   case 10:
     divisor = 6;
@@ -45,18 +51,22 @@ void CMode::DrawCursor() {
   case 13:
     divisor = 2;
     break;
+  default:
+    divisor = 4;
+    break;
+  }
+
+  switch (this->cursorAction) {
   case 1: {
-    const unsigned frame = ticks >> 2;
-    this->cursorActionFrame = frame % action->FrameCount(1);
+    const unsigned frame = ticks / divisor;
+    this->cursorActionFrame = frame % action->FrameCount(this->cursorAction);
     if (frame / action->FrameCount(this->cursorAction) >= 1) {
       this->cursorActionFrame = action->FrameCount(this->cursorAction) - 1;
     }
-    goto notify;
+    break;
   }
-  case 9:
-    divisor = 1;
-    [[fallthrough]];
   case 2:
+  case 9:
     if (g_mouse.buttons[0] == 0) {
       this->cursorTick = timeGetTime();
       this->cursorActionFrame = 0;
@@ -67,14 +77,12 @@ void CMode::DrawCursor() {
         this->cursorActionFrame = action->FrameCount(this->cursorAction) - 1;
       }
     }
-    goto notify;
+    break;
   default:
+    this->cursorActionFrame = ticks / divisor % action->FrameCount(this->cursorAction);
     break;
   }
 
-  this->cursorActionFrame = ticks / divisor % action->FrameCount(this->cursorAction);
-
-notify:
   g_windowMgr.SendNotice(16, this->cursorActionFrame, 0, 0, 0, 0);
 
   const int y = static_cast<int>(static_cast<float>(g_mouse.y) + this->cursorOffsetY);
