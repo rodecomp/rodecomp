@@ -76,12 +76,12 @@ RuneData::RuneData() : m_kind(1), m_active(false), m_id(0), m_name("NoName"), m_
 // OFFSET: 0x007657D0
 // FUNCTION: fn_08104
 CRuneSystemMgr::~CRuneSystemMgr() {
-  for (CTagData*& tag : this->m_tags) {
-    if (tag) {
-      delete tag;
+  for (std::vector<CTagData*>::iterator it = this->m_tags.begin(); it != this->m_tags.end(); ++it) {
+    if (*it) {
+      delete *it;
     }
 
-    tag = nullptr;
+    *it = nullptr;
   }
 
   this->m_tags.clear();
@@ -124,9 +124,9 @@ void CRuneSystemMgr::AddRune(int tagId, int type, std::int64_t id, const std::st
 // FUNCTION: fn_08113
 void CTagData::UpdateActiveCount(int type) {
   this->m_activeCount[type] = 0;
-  for (RuneData* rune : this->m_runes[type]) {
-    if (rune) {
-      this->m_activeCount[type] += rune->IsActive();
+  for (std::vector<RuneData*>::iterator it = this->m_runes[type].begin(); it != this->m_runes[type].end(); ++it) {
+    if (*it) {
+      this->m_activeCount[type] += (*it)->IsActive();
     }
   }
 }
@@ -143,13 +143,13 @@ bool CRuneSystemMgr::Create() {
     return false;
   }
 
-  if (g_runeSystemMgr->m_initialized) {
-    return true;
+  if (!g_runeSystemMgr->m_initialized) {
+    delete g_runeSystemMgr;
+    g_runeSystemMgr = nullptr;
+    return false;
   }
 
-  delete g_runeSystemMgr;
-  g_runeSystemMgr = nullptr;
-  return false;
+  return true;
 }
 
 // OFFSET: 0x00766A10
@@ -568,14 +568,15 @@ bool CRuneSystemMgr::LoadScripts() {
 void CRuneSystemMgr::Reset() {
   this->LoadDefaultTag();
 
-  for (CTagData* tag : this->m_tags) {
+  for (std::vector<CTagData*>::iterator tagIt = this->m_tags.begin(); tagIt != this->m_tags.end(); ++tagIt) {
+    CTagData* tag = *tagIt;
     tag->m_locked = false;
     for (int type = 0; type < 2; ++type) {
-      for (RuneData* rune : tag->m_runes[type]) {
-        if (rune) {
-          rune->m_active = false;
+      for (std::vector<RuneData*>::iterator runeIt = tag->m_runes[type].begin(); runeIt != tag->m_runes[type].end(); ++runeIt) {
+        if (*runeIt) {
+          (*runeIt)->m_active = false;
           if (type == 0) {
-            RuneSetData* runeSet = dynamic_cast<RuneSetData*>(rune);
+            RuneSetData* runeSet = dynamic_cast<RuneSetData*>(*runeIt);
             runeSet->m_grade = 0;
             runeSet->m_gradeLevel = 0;
             runeSet->m_rewardStep = 0;
@@ -756,13 +757,7 @@ void CRuneSystemMgr::SetCurRuneSet(int tagId, int runeSetId, int grade, int slot
   RuneSetData* runeSet = static_cast<RuneSetData*>(this->FindRune(tagId, 0, runeSetId, nullptr));
   this->m_curRuneSet = runeSet;
   if (runeSet != nullptr) {
-    int activeCount = 0;
-    for (RuneData* slot : runeSet->m_slots) {
-      if (slot != nullptr) {
-        activeCount += slot->m_active;
-      }
-    }
-    this->m_curSlotCount = activeCount;
+    this->m_curSlotCount = runeSet->CountActiveSlots();
     if (grade != -1) {
       runeSet->m_grade = grade;
     }
