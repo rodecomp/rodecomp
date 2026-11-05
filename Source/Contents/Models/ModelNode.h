@@ -45,7 +45,7 @@ public:
 
 class C3dNodeV1 : public C3dNode {
 public:
-  C3dNodeV1();
+  __declspec(noinline) C3dNodeV1();
   ~C3dNodeV1() override;
   void Initialize(const ModelNode& resource) override;
   void Animate(double frame) override;
@@ -58,7 +58,7 @@ public:
 
 class C3dNodeV2 : public C3dNode {
 public:
-  C3dNodeV2();
+  __declspec(noinline) C3dNodeV2();
   ~C3dNodeV2() override;
   void Initialize(const ModelNode& resource) override;
   void Animate(double frame) override;
