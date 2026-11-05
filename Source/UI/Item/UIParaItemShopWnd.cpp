@@ -589,7 +589,7 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   switch (message) {
   case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    CMode* mode = static_cast<CMode*>(g_charViewMode);
+    CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
       mode->SendMsg(292, 0, 0, 0, 0);
       mode->SendMsg(40, 0, 0, 0, 0);
