@@ -443,7 +443,8 @@ void __stdcall Nullsub429() {
 // FUNCTION: fn_19710
 int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   EntryQueueInfo* info = g_entryQueueMgr->current;
-  if (message == 6) {
+  switch (message) {
+  case 6: {
     int error;
     switch (a) {
     case 0:
@@ -510,12 +511,10 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     default:
       return 0;
     }
-
     g_windowMgr.Confirm(LookupMessage(error), 0, false, false, 0, "Message", 280, 120, 0);
     return 0;
   }
-
-  if (message == 34) {
+  case 34:
     this->saved = reinterpret_cast<EntryQueueWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -523,14 +522,15 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     this->SendMsg(nullptr, 23, 0, 0, 0, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  }
-
-  if (message == 135 && this->m_list) {
-    const int value = this->m_list->EntryValue(static_cast<int>(b));
-    std::map<int, EntryQueueInfo*>::iterator it = g_entryQueueList.find(value);
-    if (it != g_entryQueueList.end() && it->second) {
-      this->SelectQueue(it->second);
+  case 135:
+    if (this->m_list) {
+      const int value = this->m_list->EntryValue(static_cast<int>(b));
+      std::map<int, EntryQueueInfo*>::iterator it = g_entryQueueList.find(value);
+      if (it != g_entryQueueList.end() && it->second) {
+        this->SelectQueue(it->second);
+      }
     }
+    break;
   }
 
   return 0;
