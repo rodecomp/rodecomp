@@ -2,7 +2,6 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Actors/RenderObjectState.h"
 
-#include "Utility/Math/ScalarConversion.h"
 #include <cstring>
 
 // OFFSET: 0x00BAE670
@@ -21,7 +20,7 @@ void CEffectPrim::InitSegment() {
     record.green = this->state.green;
     record.blue = this->state.blue;
 
-    const int alpha = TruncateToInt(this->state.alpha);
+    const int alpha = static_cast<int>(this->state.alpha);
     record.color = static_cast<unsigned char>(this->state.blue) +
                    ((static_cast<unsigned char>(this->state.green) +
                      ((static_cast<unsigned char>(this->state.red) + (static_cast<std::uint32_t>(alpha) << 8)) << 8))
