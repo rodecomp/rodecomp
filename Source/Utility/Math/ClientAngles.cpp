@@ -22,10 +22,10 @@ float g_sinTable[722];
 // GLOBAL: gl_24574
 float g_cosTable[722];
 
-namespace {
-  // INLINED
-  int Wrapped(int degrees) {
-    return degrees > 360 || degrees < -360 ? degrees % 360 : degrees;
+// INLINED
+static void Wrap(int& degrees) {
+  if (degrees > 360 || degrees < -360) {
+    degrees %= 360;
   }
 }
 
@@ -46,20 +46,29 @@ void CreateTrigonometricTable() {
 // OFFSET: 0x00554420
 // FUNCTION: fn_02024
 float GetRadian(int degrees) {
-  const int index = Wrapped(degrees);
-  return g_radTable[index >= 0 ? index : 361 + index];
+  Wrap(degrees);
+  if (degrees < 0) {
+    return g_radTable[361 + degrees];
+  }
+  return g_radTable[degrees];
 }
 
 // OFFSET: 0x00554470
 // FUNCTION: fn_02025
 float ClientSine(int degrees) {
-  const int index = Wrapped(degrees);
-  return g_sinTable[index >= 0 ? index : 361 + index];
+  Wrap(degrees);
+  if (degrees < 0) {
+    return g_sinTable[361 + degrees];
+  }
+  return g_sinTable[degrees];
 }
 
 // OFFSET: 0x005543D0
 // FUNCTION: fn_02023
 float ClientCosine(int degrees) {
-  const int index = Wrapped(degrees);
-  return g_cosTable[index >= 0 ? index : 361 + index];
+  Wrap(degrees);
+  if (degrees < 0) {
+    return g_cosTable[361 + degrees];
+  }
+  return g_cosTable[degrees];
 }
