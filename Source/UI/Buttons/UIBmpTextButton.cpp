@@ -1,7 +1,7 @@
 #include "Render/Text/FontCache.h"
-#include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBmpTextButton.h"
 
 #include <cstring>
@@ -23,56 +23,103 @@ void UIBmpTextButton::SetText(std::string value) {
 // OFFSET: 0x0085BDE0
 // FUNCTION: fn_10799
 void UIBmpTextButton::Paint() {
-  this->FillRegion(0, 0, this->geometry.width, this->geometry.height, 0xFFFF00FFu);
-  const BitmapButtonTextStyle* style = nullptr;
+  this->ClearSurface(0xFFFF00FF);
 
-  for (const auto& candidate : this->styles) {
-    if ((this->m_disabled == 0 && candidate.state == this->geometry.unknown_0030) || (this->m_disabled == 1 && candidate.state == 3)) {
-      style = &candidate;
+  bool found = false;
+  std::vector<BitmapButtonTextStyle>::iterator style = this->styles.begin();
+
+  for (; style != this->styles.end(); ++style) {
+    if (this->m_disabled == 0) {
+      if (this->geometry.unknown_0030 == style->state) {
+        found = true;
+        break;
+      }
+    } else if (this->m_disabled == 1 && style->state == 3) {
+      found = true;
       break;
     }
   }
 
-  const unsigned state = this->geometry.unknown_0030;
-  const bool disabled = this->m_disabled == 1;
+  if (this->m_disabled == 1) {
+    CBitmapRes* bitmap = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[3].c_str())));
+    this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 
-  if (disabled || state <= 2) {
-    const char* path = this->m_names[disabled ? 3 : state].c_str();
-    auto* resource = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
-    this->DrawBitmap(0, 0, resource ? &resource->image : nullptr, false);
-
-    if (!this->text.empty()) {
-      const auto draw = [&](int x, int y, int height, unsigned color, unsigned char bold) {
-        this->DrawTextAt(x, y, this->text.c_str(), 0, 0, height, color, bold, 0);
-      };
-
-      if (style) {
-        const unsigned shadowColor = disabled ? 0xE2E2E2u : state == 0 ? 0xD7D7D7u : state == 1 ? 0xC7A796u : 0xFFFFFFu;
-        const int offset = !disabled && (state == 0 || state == 1) ? 1 : 0;
-
+    if (this->text.size() > 0) {
+      if (found) {
         if (style->shadow == 1) {
-          draw((style->x + offset), (style->y + offset), style->height, shadowColor, disabled ? 0 : style->bold);
+          this->DrawTextAt(style->x, style->y, this->text.c_str(), 0, 0, style->height, 0xE2E2E2, 0, 0);
         }
 
-        const int pressedOffset = disabled || state == 2 ? 1 : 0;
-        draw((style->x + pressedOffset), (style->y + pressedOffset), style->height, style->color, style->bold);
+        this->DrawTextAt(style->x + 1, style->y + 1, this->text.c_str(), 0, 0, style->height, style->color, style->bold, 0);
       } else {
-        const int width = this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0);
-        int height;
-
-        {
-          TextContext context(*this->geometry.surface);
-          context.SetFont(0, 12, 0, 0);
-          height = context.Measure(this->text.c_str(), static_cast<int>(std::strlen(this->text.c_str()))).cy;
-        }
-
-        const int x = (this->geometry.width - width) / 2;
-        const int y = (this->geometry.height - height) / 2;
-        const bool pressed = disabled || state == 2;
-        const unsigned shadowColor = disabled ? 0xE2E2E2u : state == 0 ? 0xD7D7D7u : state == 1 ? 0xC7A796u : 0xFFFFFFu;
-        draw((x + (pressed ? 0 : 1)), (y + (pressed ? 0 : 1)), 12, shadowColor, 0);
-        draw((x + (pressed ? 1 : 0)), (y + (pressed ? 1 : 0)), 12, disabled ? 0x6F6F6Fu : 0, 0);
+        const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+        const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+        this->DrawTextAt(x, y, this->text.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
+        this->DrawTextAt(x + 1, y + 1, this->text.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
       }
+    }
+  } else {
+    switch (this->geometry.unknown_0030) {
+    case 0: {
+      CBitmapRes* bitmap = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[0].c_str())));
+      this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+
+      if (this->text.size() > 0) {
+        if (found) {
+          if (style->shadow == 1) {
+            this->DrawTextAt(style->x + 1, style->y + 1, this->text.c_str(), 0, 0, style->height, 0xD7D7D7, style->bold, 0);
+          }
+
+          this->DrawTextAt(style->x, style->y, this->text.c_str(), 0, 0, style->height, style->color, style->bold, 0);
+        } else {
+          const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+          const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+          this->DrawTextAt(x + 1, y + 1, this->text.c_str(), 0, 0, 12, 0xD7D7D7, 0, 0);
+          this->DrawTextAt(x, y, this->text.c_str(), 0, 0, 12, 0, 0, 0);
+        }
+      }
+      break;
+    }
+    case 1: {
+      CBitmapRes* bitmap = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[1].c_str())));
+      this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+
+      if (this->text.size() > 0) {
+        if (found) {
+          if (style->shadow == 1) {
+            this->DrawTextAt(style->x + 1, style->y + 1, this->text.c_str(), 0, 0, style->height, 0xC7A796, style->bold, 0);
+          }
+
+          this->DrawTextAt(style->x, style->y, this->text.c_str(), 0, 0, style->height, style->color, style->bold, 0);
+        } else {
+          const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+          const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+          this->DrawTextAt(x + 1, y + 1, this->text.c_str(), 0, 0, 12, 0xC7A796, 0, 0);
+          this->DrawTextAt(x, y, this->text.c_str(), 0, 0, 12, 0, 0, 0);
+        }
+      }
+      break;
+    }
+    case 2: {
+      CBitmapRes* bitmap = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[2].c_str())));
+      this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+
+      if (this->text.size() > 0) {
+        if (found) {
+          if (style->shadow == 1) {
+            this->DrawTextAt(style->x, style->y, this->text.c_str(), 0, 0, style->height, 0xFFFFFF, style->bold, 0);
+          }
+
+          this->DrawTextAt(style->x + 1, style->y + 1, this->text.c_str(), 0, 0, style->height, style->color, style->bold, 0);
+        } else {
+          const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+          const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+          this->DrawTextAt(x, y, this->text.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+          this->DrawTextAt(x + 1, y + 1, this->text.c_str(), 0, 0, 12, 0, 0, 0);
+        }
+      }
+      break;
+    }
     }
   }
 
