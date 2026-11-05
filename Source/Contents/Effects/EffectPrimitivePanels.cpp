@@ -29,18 +29,21 @@ void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
       const float cs = g_cosTable[slot.riseAngle];
       const float sn = g_sinTable[slot.riseAngle];
       const int angle = slot.riseAngle + (slot.riseAngle < 270 ? 90 : -270);
-      vec[0].x = dist * cs - -12.0f * sn + g_cosTable[angle] * 12.0f;
-      vec[0].y = slot.height[0];
-      vec[0].z = -12.0f * cs + dist * sn + g_sinTable[angle] * 12.0f;
-      vec[1].x = dist * cs - edge * sn + g_cosTable[angle] * 12.0f;
-      vec[1].y = slot.height[0];
-      vec[1].z = edge * cs + dist * sn + g_sinTable[angle] * 12.0f;
-      vec[2].x = -dist * cs - edge * sn + g_cosTable[angle] * 12.0f;
-      vec[2].y = slot.height[0];
-      vec[2].z = edge * cs + -dist * sn + g_sinTable[angle] * 12.0f;
-      vec[3].x = -dist * cs - -12.0f * sn + g_cosTable[angle] * 12.0f;
-      vec[3].y = slot.height[0];
-      vec[3].z = -12.0f * cs + -dist * sn + g_sinTable[angle] * 12.0f;
+      vec[0].x = dist;
+      vec[0].z = -12.0f;
+      vec[1].x = dist;
+      vec[1].z = edge;
+      vec[2].x = -dist;
+      vec[2].z = edge;
+      vec[3].x = -dist;
+      vec[3].z = -12.0f;
+      for (int i = 0; i < 4; ++i) {
+        const float x = vec[i].x;
+        const float z = vec[i].z;
+        vec[i].x = x * cs - z * sn + g_cosTable[angle] * 12.0f;
+        vec[i].y = slot.height[0];
+        vec[i].z = z * cs + x * sn + g_sinTable[angle] * 12.0f;
+      }
     }
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec[0], vec[1], vec[2], vec[3], wtm, 0, static_cast<char>(slot.height[1]), 0, shade, shade, 255, 0.0f, 1.0f, slot.height[9], 1.0f, 0);
 
@@ -49,18 +52,21 @@ void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
     const float cs = g_cosTable[slot.riseAngle];
     const float sn = g_sinTable[slot.riseAngle];
     const int angle = slot.riseAngle + (slot.riseAngle < 270 ? 90 : -270);
-    vec[0].x = dist * cs - edge * sn + g_cosTable[angle] * 12.0f;
-    vec[0].y = slot.height[0];
-    vec[0].z = edge * cs + dist * sn + g_sinTable[angle] * 12.0f;
-    vec[1].x = dist * cs - 12.0f * sn + g_cosTable[angle] * 12.0f;
-    vec[1].y = slot.height[0];
-    vec[1].z = 12.0f * cs + dist * sn + g_sinTable[angle] * 12.0f;
-    vec[2].x = -dist * cs - 12.0f * sn + g_cosTable[angle] * 12.0f;
-    vec[2].y = slot.height[0];
-    vec[2].z = 12.0f * cs + -dist * sn + g_sinTable[angle] * 12.0f;
-    vec[3].x = -dist * cs - edge * sn + g_cosTable[angle] * 12.0f;
-    vec[3].y = slot.height[0];
-    vec[3].z = edge * cs + -dist * sn + g_sinTable[angle] * 12.0f;
+    vec[0].x = dist;
+    vec[0].z = edge;
+    vec[1].x = dist;
+    vec[1].z = 12.0f;
+    vec[2].x = -dist;
+    vec[2].z = 12.0f;
+    vec[3].x = -dist;
+    vec[3].z = edge;
+    for (int i = 0; i < 4; ++i) {
+      const float x = vec[i].x;
+      const float z = vec[i].z;
+      vec[i].x = x * cs - z * sn + g_cosTable[angle] * 12.0f;
+      vec[i].y = slot.height[0];
+      vec[i].z = z * cs + x * sn + g_sinTable[angle] * 12.0f;
+    }
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec[0], vec[1], vec[2], vec[3], wtm, 0, static_cast<char>(slot.height[1]), 0, shade, shade, 255, 0.0f, 1.0f, 0.0f, slot.height[9], 0);
 
     int bend = angle - 20;
@@ -126,22 +132,21 @@ void CEffectPrim::RenderStandingPanels(matrix& wtm) {
       continue;
     }
 
-    const char frame = static_cast<char>(slot.process % 30);
-
     float dist = slot.distance;
     float cs = g_cosTable[slot.rotStart];
     float sn = g_sinTable[slot.rotStart];
+    const char frame = static_cast<char>(slot.process % 30);
     vec1.x = cs * (dist * g_depthAverageHalf) - sn * 0.0f;
-    vec1.y = -dist + -dist;
+    vec1.y = -dist * 2.0f;
     vec1.z = sn * (dist * g_depthAverageHalf) + cs * 0.0f;
     vec2.x = cs * (dist * -0.5f) - sn * 0.0f;
-    vec2.y = -dist + -dist;
+    vec2.y = -dist * 2.0f;
     vec2.z = sn * (dist * -0.5f) + cs * 0.0f;
     vec3.x = cs * (dist * -0.5f) - sn * dist;
-    vec3.y = -dist + -dist;
+    vec3.y = -dist * 2.0f;
     vec3.z = sn * (dist * -0.5f) + cs * dist;
     vec4.x = cs * (dist * g_depthAverageHalf) - sn * dist;
-    vec4.y = -dist + -dist;
+    vec4.y = -dist * 2.0f;
     vec4.z = sn * (dist * g_depthAverageHalf) + cs * dist;
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, frame + 87, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
@@ -172,10 +177,10 @@ void CEffectPrim::RenderStandingPanels(matrix& wtm) {
     vec2.y = -dist;
     vec2.z = sn * (dist * -0.5f) + cs * 0.0f;
     vec3.x = cs * (dist * -0.5f) - sn * 0.0f;
-    vec3.y = -dist + -dist;
+    vec3.y = -dist * 2.0f;
     vec3.z = sn * (dist * -0.5f) + cs * 0.0f;
     vec4.x = cs * (dist * g_depthAverageHalf) - sn * 0.0f;
-    vec4.y = -dist + -dist;
+    vec4.y = -dist * 2.0f;
     vec4.z = sn * (dist * g_depthAverageHalf) + cs * 0.0f;
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, frame + 30, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
