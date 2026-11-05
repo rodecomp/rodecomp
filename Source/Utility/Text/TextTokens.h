@@ -7,8 +7,8 @@
 extern const unsigned char g_colorHexDigit[256];
 extern unsigned char g_inlineCharset;
 
-bool IsPipeColorToken(const char* text);
-bool IsHexColorToken(const char* text, const char* end);
+__declspec(noinline) bool IsPipeColorToken(const char* text);
+__declspec(noinline) bool IsHexColorToken(const char* text, const char* end);
 int ParseItemIdTag(const char* text, const char* end, int& length, int& itemId);
 std::string __stdcall StripColorTokens(const char* text, std::uint32_t length);
 
