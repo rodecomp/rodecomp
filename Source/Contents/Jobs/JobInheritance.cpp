@@ -101,7 +101,10 @@ __declspec(noinline) bool CSession::IsTreeGroupThree(int job) const {
 // OFFSET: 0x00DFA600
 // FUNCTION: fn_23576
 bool CSession::IsNpcJob(int job) const {
-  return (job >= JT_WARPNPC && job < JT_MON_BEGIN) || static_cast<unsigned>(job - JT_4_TOWER_14) <= unsigned(JT_NPC_END - 1 - JT_4_TOWER_14);
+  if ((job >= JT_WARPNPC && job < JT_MON_BEGIN) || static_cast<unsigned>(job - JT_4_TOWER_14) <= unsigned(JT_NPC_END - JT_4_TOWER_14)) {
+    return true;
+  }
+  return false;
 }
 
 // OFFSET: 0x00DFA630
@@ -1273,12 +1276,26 @@ bool CSession::IsConsumableItemType(int type) const {
 // OFFSET: 0x00E1D9B0
 // FUNCTION: fn_23857
 bool CSession::IsCostumeLocation(int location) const {
-  if (location == 0x400 || location == 0x800 || location == 0xC00 || location == 0x1000 || location == 0x1400 || location == 0x1800 ||
-      location == 0x1C00 || location == 0x2000 || location == 0x4000 || location == 0x10000 || location == 0x20000 || location == 0x40000 ||
-      location == 0x80000 || location == 0x100000 || location == 0x200000) {
+  switch (location) {
+  case 0x400:
+  case 0x800:
+  case 0xC00:
+  case 0x1000:
+  case 0x1400:
+  case 0x1800:
+  case 0x1C00:
+  case 0x2000:
+  case 0x4000:
+  case 0x10000:
+  case 0x20000:
+  case 0x40000:
+  case 0x80000:
+  case 0x100000:
+  case 0x200000:
     return true;
+  default:
+    return false;
   }
-  return false;
 }
 
 // OFFSET: 0x00E1DA40
