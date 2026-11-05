@@ -178,7 +178,7 @@ protected:
 
 class UICashEmotionScrollWnd : public UIScrollWnd {
 public:
-  UICashEmotionScrollWnd(int width, int height, unsigned char cached);
+  __declspec(noinline) UICashEmotionScrollWnd(int width, int height, unsigned char cached);
   void Slot15(int width, int height) override;
   void Slot53() override;
 
@@ -188,7 +188,7 @@ public:
 
 class UICashEmotionListChildWnd_Abstract : public UICashEmotionScrollWnd {
 public:
-  UICashEmotionListChildWnd_Abstract(int width, int height, unsigned char cached);
+  __declspec(noinline) UICashEmotionListChildWnd_Abstract(int width, int height, unsigned char cached);
   void Slot35(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   virtual void Refresh(const char* filter) = 0;
@@ -804,9 +804,7 @@ std::vector<int> CCashEmotionMgr::GetPackEmotions(int packId) {
 int CCashEmotionMgr::GetEarliestExpiry() {
   int earliest = INT_MAX;
   for (const auto& expiry : this->m_expiry) {
-    if (expiry.second.seconds < earliest) {
-      earliest = expiry.second.seconds;
-    }
+    earliest = std::min<int>(earliest, expiry.second.seconds);
   }
 
   return earliest;
@@ -2297,7 +2295,7 @@ void UICashEmotionListWnd::Slot19() {
 // FUNCTION: fn_09411
 void UICashEmotionListWnd::RefreshCurrentList() {
   if (this->m_currentList) {
-    this->m_currentList->Refresh(this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
+    this->m_currentList->Refresh(!this->m_searchEdit ? nullptr : this->m_searchEdit->Text());
   }
 }
 
