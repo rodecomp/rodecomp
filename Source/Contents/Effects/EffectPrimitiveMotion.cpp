@@ -1,4 +1,4 @@
-﻿#include "Contents/Effects/EffectPrimitiveMotion.h"
+#include "Contents/Effects/EffectPrimitiveMotion.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
@@ -348,10 +348,10 @@ bool CEffectPrim::Prim3DCasting4() {
 
     for (int value = 0; value < 21; ++value) {
       if (slot.flag1[value] == 0) {
-        slot.height[value] = slot.maxHeight;
+        this->state.slots[index].height[value] = slot.maxHeight;
 
-        if (slot.height[value] < 0.0f) {
-          slot.height[value] = 0;
+        if (this->state.slots[index].height[value] < 0.0f) {
+          this->state.slots[index].height[value] = 0;
         }
       }
     }
@@ -408,10 +408,10 @@ bool CEffectPrim::Prim3DCasting5() {
 
     for (int value = 0; value < 21; ++value) {
       if (slot.flag1[value] == 0) {
-        slot.height[value] = slot.maxHeight;
+        this->state.slots[index].height[value] = slot.maxHeight;
 
-        if (slot.height[value] < 0.0f) {
-          slot.height[value] = 0;
+        if (this->state.slots[index].height[value] < 0.0f) {
+          this->state.slots[index].height[value] = 0;
         }
       }
     }
