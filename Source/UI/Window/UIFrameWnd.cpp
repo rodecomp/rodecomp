@@ -690,12 +690,12 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           } else if (talkType == 51) {
             talkType = 52;
           }
-          static_cast<CMode*>(g_charViewMode)->SendMsg(42, talkType, reinterpret_cast<int>(parts), 0, 0);
+          g_modeMgr.gameMode->SendMsg(42, talkType, reinterpret_cast<int>(parts), 0, 0);
         }
       } else {
         g_windowMgr.unknown_04DC = buffer;
         const std::string name = this->memberList->lines[this->memberList->selected];
-        static_cast<CMode*>(g_charViewMode)->SendMsg(11, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(11, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
       }
 
       this->edit->PushHistory();
@@ -704,7 +704,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     case 201:
-      static_cast<CMode*>(g_charViewMode)->SendMsg(48, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(48, 0, 0, 0, 0);
       return 0;
     case 347:
       g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(b));
