@@ -126,8 +126,8 @@ ITEM_INFO* UIChangeMaterialWnd::GetItemAt(int x, int y) {
   }
 
   for (unsigned int i = 0; i < this->m_materials.size(); ++i) {
-    const MaterialSlotPos& pos = this->m_materialPos[i];
-    if (pos.x <= x && x <= pos.x + 24 && pos.y <= y && y <= pos.y + 24) {
+    if (this->m_materialPos[i].x <= x && x <= this->m_materialPos[i].x + 24 &&
+        this->m_materialPos[i].y <= y && y <= this->m_materialPos[i].y + 24) {
       return &this->m_materials[i];
     }
   }
