@@ -8,7 +8,7 @@ extern double s_shutDownNoticeSeconds[6];
 class CShutDownSchedule : public CSchedule {
 public:
   void Process(const std::uint64_t& now) override;
-  void UpdateNotice();
+  __declspec(noinline) void UpdateNotice();
 
   /* 0030 */ void* unknown_0030;
   /* 0034 */ std::uint32_t unknown_0034;
