@@ -572,8 +572,8 @@ bool CGameSettingsMgr::LoadSettings() {
 // OFFSET: 0x006C17A0
 // FUNCTION: fn_06318
 unsigned char ServiceOptions::Get(int id) const {
-  const auto entry = this->values.find(static_cast<std::uint32_t>(id));
-  return entry == this->values.end() ? 0 : entry->second;
+  const auto entry = g_serviceOptions.values.find(static_cast<std::uint32_t>(id));
+  return entry == g_serviceOptions.values.end() ? 0 : entry->second;
 }
 
 // OFFSET: 0x006C1820
@@ -776,19 +776,17 @@ std::pair<int, unsigned char> FindServiceOption(const char* name) {
 // OFFSET: 0x006C2A80
 // FUNCTION: fn_06325
 bool ServiceOptions::Set(int id, unsigned char value) {
-  const auto entry = this->values.find(static_cast<std::uint32_t>(id));
-
-  if (entry == this->values.end()) {
+  if (g_serviceOptions.values.find(static_cast<std::uint32_t>(id)) == g_serviceOptions.values.end()) {
     return false;
   }
 
-  entry->second = value;
+  g_serviceOptions.values[static_cast<std::uint32_t>(id)] = value;
   return true;
 }
 
 // OFFSET: 0x006C1900
 // FUNCTION: fn_06320
-void GameSettings::ApplyScriptOption(int id, const char* key) {
+__declspec(noinline) void GameSettings::ApplyScriptOption(int id, const char* key) {
   for (const GameSettingsOption& option : this->options) {
     if (option.id != id) {
       continue;
