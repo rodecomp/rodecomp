@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_PARTY_UIAPPLYFORPARTYWND_H
 #define RAGNAROK_SOURCE_UI_PARTY_UIAPPLYFORPARTYWND_H
 
+#include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Party/UIAdvenPartyBoardWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 
@@ -16,7 +17,7 @@ public:
   void SetInfo(CAdvenPartyInfo value);
 
   /* 00B4 */ CAdvenPartyInfo info;
-  /* 0100 */ PartyBoardPlacement* saved;
+  /* 0100 */ ApplyForPartyWndInfo* saved;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

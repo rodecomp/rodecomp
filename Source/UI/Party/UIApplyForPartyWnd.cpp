@@ -23,10 +23,6 @@
 
 #include <cstdio>
 
-namespace {
-  constexpr char prefix[] = "유저인터페이스\\";
-}
-
 // OFFSET: 0x007BAD00
 // FUNCTION: fn_09275
 UIApplyForPartyWnd::UIApplyForPartyWnd()
@@ -49,48 +45,38 @@ void UIApplyForPartyWnd::Slot11() {
 // OFFSET: 0x007BD970
 // FUNCTION: fn_09299
 void UIApplyForPartyWnd::Slot15(int, int) {
-  const int messages[] = {3374, 3373, 3045};
-  const int ids[] = {381, 271, 201};
-  const int positions[] = {51, 108, 173};
+  UIBasicButton* button = new UIBasicButton();
+  button->Configure(this->TextWidth(LookupMessage(3374), 0, 0, 12, 0, 0) + 10, LookupMessage(3374));
+  button->Move(51, 165);
+  button->SetId(381);
+  this->AddChild(button);
 
-  for (int index = 0; index < 3; ++index) {
-    auto* button = new UIBasicButton();
-    const char* label = LookupMessage(messages[index]);
-    const int width = this->TextWidth(label, 0, 0, 12, 0, 0);
-    button->Configure(width + 10, label);
-    button->Move(positions[index], 165);
-    button->SetId(ids[index]);
-    this->AddChild(button);
-  }
+  button = new UIBasicButton();
+  button->Configure(this->TextWidth(LookupMessage(3373), 0, 0, 12, 0, 0) + 10, LookupMessage(3373));
+  button->Move(108, 165);
+  button->SetId(271);
+  this->AddChild(button);
+
+  button = new UIBasicButton();
+  button->Configure(this->TextWidth(LookupMessage(3045), 0, 0, 12, 0, 0) + 10, LookupMessage(3045));
+  button->Move(173, 165);
+  button->SetId(201);
+  this->AddChild(button);
 
   std::vector<std::string> lines;
   WrapPlainText(LookupMessage(3370), lines, 40);
-  int y = 136;
 
-  for (const auto& line : lines) {
+  for (unsigned index = 0; index < lines.size(); ++index) {
     auto* label = new UIStaticText();
     label->SetSize(this->geometry.width - 18, 15);
-    label->Move(9, y);
-    label->SetText(line.c_str(), 0);
-    label->fontHeight = 11;
-    label->red = 255;
-    label->green = 0;
-    label->blue = 0;
+    label->Move(9, 136 + index * 12);
+    label->SetText(lines[index].c_str(), 0);
+    label->SetFont(0, 11, 0, 0);
+    label->SetColor(255, 0, 0);
     this->AddChild(label);
-    y += 12;
   }
 
-  auto* close = new UIBitmapButton();
-  const std::string off = std::string(prefix) + "basic_interface\\big_sys_close_off.bmp";
-  const std::string on = std::string(prefix) + "basic_interface\\big_sys_close_on.bmp";
-  close->SetBitmap(off.c_str(), 0, 0);
-  close->SetBitmap(on.c_str(), 1, 0);
-  close->SetBitmap(on.c_str(), 2, 0);
-  close->SetSize(close->BitmapWidth(), close->BitmapHeight());
-  close->Move(this->geometry.width - close->BitmapWidth(), 0);
-  close->SetId(201);
-  close->SetTooltip("");
-  this->AddChild(close);
+  this->AddBigCloseButton("", 0);
 }
 
 // OFFSET: 0x007C1D10
@@ -137,29 +123,37 @@ void UIApplyForPartyWnd::Slot28(int x, int y) {
     return;
   }
 
-  const int positions[] = {60, 78, 96, 114};
-  const int messages[] = {3420, 3491, 3444, 3508};
+  const unsigned mouseX = static_cast<unsigned>(x);
+  std::string label;
+  int left = 0;
 
-  for (int index = 0; index < 4; ++index) {
-    if (x > positions[index] && x < positions[index] + 16) {
-      const char* label = LookupMessage(messages[index]);
+  if (mouseX > 60 && mouseX < 76) {
+    left = 60;
+    label = LookupMessage(3420);
+  } else if (mouseX > 78 && mouseX < 94) {
+    left = 78;
+    label = LookupMessage(3491);
+  } else if (mouseX > 96 && mouseX < 112) {
+    left = 96;
+    label = LookupMessage(3444);
+  } else if (mouseX > 114 && mouseX < 130) {
+    left = 114;
+    label = LookupMessage(3508);
+  }
 
-      if (*label != '\0') {
-        int screenX = positions[index];
-        int screenY = 75;
-        this->ToScreen(screenX, screenY);
-        g_modeMgr.gameMode->ShowTooltip(label, screenX, screenY, -1, false, true);
-      }
-
-      break;
-    }
+  if (!label.empty()) {
+    int screenX = left;
+    int screenY = 75;
+    this->ToScreen(screenX, screenY);
+    g_modeMgr.gameMode->ShowTooltip(label.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
 // OFFSET: 0x007C11E0
 // FUNCTION: fn_09313
 int UIApplyForPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     switch (static_cast<int>(a)) {
     case 201:
       g_windowMgr.CloseWindow(345);
@@ -169,34 +163,31 @@ int UIApplyForPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       break;
     case 381: {
       const std::string name = this->info.characterName;
-      const char* relationship = g_windowMgr.IsFriend(name.c_str()) ? LookupMessage(102) : nullptr;
+      const char* relationship = nullptr;
 
-      if (g_session.IsGuildMemberAccount(this->info.accountId)) {
-        relationship = "GuildMember";
+      if (g_windowMgr.IsFriend(name.c_str())) {
+        relationship = LookupMessage(102);
       }
 
-      const std::string code = ShortcutFilename(this->info.characterId);
-      g_windowMgr.SendNotice(14, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(relationship), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
+      const char* group = g_session.IsGuildMemberAccount(this->info.accountId) ? "GuildMember" : relationship;
+      std::string code;
+      code = ShortcutFilename(this->info.characterId);
+      g_windowMgr.SendNotice(14, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(group), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
       break;
     }
-    default:
-      break;
     }
 
     return 0;
-  }
+  case 34:
+    this->saved = reinterpret_cast<ApplyForPartyWndInfo*>(a);
 
-  if (message == 34) {
-    this->saved = reinterpret_cast<PartyBoardPlacement*>(a);
-
-    if (this->saved->width <= 0 || this->saved->height <= 0 || this->saved->x < 0 || this->saved->x > g_renderer->viewport.width - this->saved->width ||
-        this->saved->y < 0 || this->saved->y > g_renderer->viewport.height - this->saved->height) {
-      *this->saved = {200, 200, 220, 190};
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
     }
 
     this->Move(this->saved->x, this->saved->y);
     return 0;
+  default:
+    return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
-  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
