@@ -43,6 +43,9 @@ bool UnusedTrueA4F5A0() {
   return true;
 }
 
+template <>
+__declspec(noinline) CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::CUIListBoxEx();
+
 // OFFSET: 0x00A4F630
 // FUNCTION: fn_16217
 template <>
