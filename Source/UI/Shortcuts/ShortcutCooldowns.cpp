@@ -224,14 +224,14 @@ void PaintMainCooldowns(
 }
 
 // INLINED
-void PaintAlternateCooldowns(
+__forceinline void PaintAlternateCooldowns(
   std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing
 ) {
   PaintCooldowns(records, icons, &ShortcutCooldownRecord::alternate, 0, x, y, drawing);
 }
 
 // INLINED
-void PaintCooldowns(
+__forceinline void PaintCooldowns(
   std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing
 ) {
   const std::uint32_t now = CooldownNow();
@@ -246,10 +246,10 @@ void PaintCooldowns(
 
     for (const ShortcutCooldownIcon& icon : icons) {
       if (entry->id == icon.id || (entry->id == 577 && !g_session.IsHomunculusSkill(icon.id)) ||
-          (entry->id == 9999 && (g_session.IsHomunculusSkill(icon.id) || g_session.IsMercenarySkill(icon.id)))) {
+          ((g_session.IsHomunculusSkill(icon.id) || g_session.IsMercenarySkill(icon.id)) && entry->id == 9999)) {
         const auto previous = std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == icon.slot; });
         if (previous == states.end()) {
-          states.emplace_back(icon.slot, icon.x, icon.y, entry->duration, entry->end - entry->duration, 0, 0);
+          states.push_back(CooldownState(icon.slot, icon.x, icon.y, entry->duration, entry->end - entry->duration, 0, 0));
         }
       }
     }
@@ -419,7 +419,7 @@ void UIQuickSlotWnd::Paint() {
       }
 
       char text[1024];
-      std::sprintf(text, "유저인터페이스\\item\\%s.bmp", skill.name);
+      g_session.ItemBitmapPath(skill.name, text);
       auto* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
       g_session.m_alternateCooldownIcons.push_back({skill.id, index, x, 5});
       this->DrawBitmap(x, 5, &image->image, true);
