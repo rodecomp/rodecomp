@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 
 // OFFSET: 0x00862FB0
@@ -29,8 +30,8 @@ void UIEditCtrl::Synchronize() {
     return;
   }
 
-  const auto selection =
-    static_cast<std::uint32_t>(std::max(g_serverLanguage->cursor, g_serverLanguage->anchor)) - static_cast<std::uint32_t>(std::min(g_serverLanguage->cursor, g_serverLanguage->anchor));
+  std::string visibleText;
+  const auto selection = static_cast<std::uint32_t>(std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor));
 
   if (selection >= length) {
     this->firstVisible = 0;
