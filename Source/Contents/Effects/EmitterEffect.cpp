@@ -83,8 +83,8 @@ void CEmitterEffect::Slot07() {
   if (this->fixedAlpha == 1 && this->rateMin == 0.0f && this->rateMax == 0.0f) {
     this->pool.ActivateAll();
   }
-
-  for (CParticle* particle : this->particles) {
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
     this->InitParticle(particle);
     if (this->pool.IsActive(particle) == true &&
         (particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->unknown_00E8) || this->fixedAlpha == 1)) {
@@ -118,7 +118,7 @@ void CEmitterEffect::Slot03() {
       this->emitCarry = carry - static_cast<float>(whole);
     }
 
-    for (; spawn > 0; --spawn) {
+    for (int i = 0; i < spawn; ++i) {
       CParticle* particle = this->pool.Acquire();
       if (particle) {
         this->InitParticle(particle);
@@ -129,16 +129,16 @@ void CEmitterEffect::Slot03() {
     }
   }
 
-  for (CParticle* particle : this->particles) {
-    this->UpdateParticle(particle);
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    this->UpdateParticle(*it);
   }
 }
 
 // OFFSET: 0x00B507E0
 // FUNCTION: fn_19017
 void CEmitterEffect::Slot04() {
-  for (CParticle* particle : this->particles) {
-    if (particle) {
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    if (CParticle* particle = *it) {
       ParticleQuad quad;
       quad.billboard = this->billboard;
       quad.top = 0.0f;
@@ -233,8 +233,8 @@ void CEmitterEffect::SetCount(int value) {
 void CEmitterEffect::SetParticleSpeed(float value) {
   if (this->particleSpeed != value) {
     this->particleSpeed = value;
-    for (CParticle* particle : this->particles) {
-      particle->unknown_00C0 = this->particleSpeed;
+    for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+      (*it)->unknown_00C0 = this->particleSpeed;
     }
   }
 }

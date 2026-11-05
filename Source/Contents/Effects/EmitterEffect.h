@@ -52,8 +52,8 @@ public:
   /* 0150 */ int destinationBlend;
   /* 0154 */ int count;
   /* 0158 */ float particleSpeed;
-  /* 015C */ unsigned char depth;
-  /* 015D */ unsigned char billboard;
+  /* 015C */ bool depth;
+  /* 015D */ bool billboard;
   /* 015E */ unsigned char unknown_015E[2];
   /* 0160 */ float rotation[3];
   /* 016C */ unsigned char fixedAlpha;
