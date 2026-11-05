@@ -44,14 +44,14 @@ void CHealSp::AddRing(float inner, float outer, float height, int duration) {
 // OFFSET: 0x00B456A0
 // FUNCTION: fn_18900
 void CHealSp::Close() {
-  for (CParticle* particle : this->particles) {
-    FreeParticle(particle);
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->particles.clear();
 
-  for (CSpriteParticle* sprite : this->sprites) {
-    FreeParticle(sprite);
+  for (std::list<CSpriteParticle*>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
+    FreeParticle(*it);
   }
 
   this->sprites.clear();
