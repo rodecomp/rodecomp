@@ -1909,11 +1909,21 @@ void UISelectReplayDataWnd::Slot15(int width, int height) {
   int ids[4] = {184, 185, 221, 400};
   int positions[4][2] = {{189, height - 25}, {-100, -100}, {234, height - 25}, {100, height - 25}};
 
+  std::string name;
   for (int index = 0; index < 4; ++index) {
     auto* button = new UIBitmapButton();
-    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
-    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
-    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    name.assign(prefix);
+    name += names[index][0];
+    name += ".bmp";
+    button->SetBitmap(name.c_str(), 0, 0);
+    name.assign(prefix);
+    name += names[index][1];
+    name += ".bmp";
+    button->SetBitmap(name.c_str(), 1, 0);
+    name.assign(prefix);
+    name += names[index][2];
+    name += ".bmp";
+    button->SetBitmap(name.c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(positions[index][0], positions[index][1]);
     button->SetId(ids[index]);
