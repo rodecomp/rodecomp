@@ -125,41 +125,38 @@ void UISubChatHisWnd::Slot11() {
 void UISubChatHisWnd::Slot15(int width, int height) {
   {
     const std::string name = "유저인터페이스\\basic_interface\\stickon";
-    auto* button = new UIBitmapButton();
-    this->m_stickButton = button;
-    button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(this->m_inputWidth + 1, 4);
-    button->SetId(357);
-    this->AddChild(button);
+    this->m_stickButton = new UIBitmapButton();
+    this->m_stickButton->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    this->m_stickButton->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    this->m_stickButton->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    this->m_stickButton->SetSize(this->m_stickButton->BitmapWidth(), this->m_stickButton->BitmapHeight());
+    this->m_stickButton->Move(this->m_inputWidth + 1, 4);
+    this->m_stickButton->SetId(357);
+    this->AddChild(this->m_stickButton);
   }
 
   {
     std::string name = "유저인터페이스\\basic_interface\\battle_option";
     name += "2";
-    auto* button = new UIBitmapButton();
-    this->m_optionButton = button;
-    button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(this->m_inputWidth + 15, 5);
-    button->SetId(193);
-    this->AddChild(button);
+    this->m_optionButton = new UIBitmapButton();
+    this->m_optionButton->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    this->m_optionButton->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    this->m_optionButton->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    this->m_optionButton->SetSize(this->m_optionButton->BitmapWidth(), this->m_optionButton->BitmapHeight());
+    this->m_optionButton->Move(this->m_inputWidth + 15, 5);
+    this->m_optionButton->SetId(193);
+    this->AddChild(this->m_optionButton);
   }
 
   {
     const std::string name = "유저인터페이스\\basic_interface\\wnd_mini";
-    auto* button = new UIBitmapButton();
-    this->m_miniButton = button;
-    button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->SetId(202);
-    this->AddChild(button);
+    this->m_miniButton = new UIBitmapButton();
+    this->m_miniButton->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    this->m_miniButton->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    this->m_miniButton->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    this->m_miniButton->SetSize(this->m_miniButton->BitmapWidth(), this->m_miniButton->BitmapHeight());
+    this->m_miniButton->SetId(202);
+    this->AddChild(this->m_miniButton);
   }
 
   this->m_chatBox = new UIChatHisBox();

@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_CHAT_UISUBCHATHISWND_H
 
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <string>
@@ -49,9 +50,9 @@ private:
   /* 00B8 */ SubChatHisWndInfo* m_saved;
   /* 00BC */ UIResizer* m_resizer;
   /* 00C0 */ SubChatHistoryState m_state;
-  /* 00DC */ UIWindow* m_stickButton;
-  /* 00E0 */ UIWindow* m_optionButton;
-  /* 00E4 */ UIWindow* m_miniButton;
+  /* 00DC */ UIBitmapButton* m_stickButton;
+  /* 00E0 */ UIBitmapButton* m_optionButton;
+  /* 00E4 */ UIBitmapButton* m_miniButton;
   /* 00E8 */ int m_inputHeight;
   /* 00EC */ int m_inputWidth;
   /* 00F0 */ int unknown_00F0;
