@@ -26,7 +26,7 @@ struct HotkeyGuideKey {
   /* 000F */ unsigned char height;
 
   HotkeyGuideKey();
-  HotkeyGuideKey(int x, int y, unsigned char align, unsigned char width, unsigned char padding, unsigned char height);
+  __declspec(noinline) HotkeyGuideKey(int x, int y, unsigned char align, unsigned char width, unsigned char padding, unsigned char height);
 };
 
 struct HotkeyGuideLabel {
