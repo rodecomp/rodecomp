@@ -7580,7 +7580,7 @@ void CGameMode::sub_D1A520(int unknown_0004, std::string name, std::string text,
   line.append(message.data());
 
   if (g_windowMgr.ShowWhisperFrom(name.c_str(), line.c_str(), 0x222222, static_cast<std::uint32_t>(unknown_0004)) != 0) {
-    if (g_windowToggleFlag) {
+    if (g_session.unknown_56B8[0] != 0) {
       char notice[24];
       std::sprintf(notice, LookupMessage(941));
       const char length = static_cast<char>(std::strlen(notice));
@@ -7591,7 +7591,7 @@ void CGameMode::sub_D1A520(int unknown_0004, std::string name, std::string text,
         std::string reply(LookupMessage(941));
         reply.append(reinterpret_cast<const std::string&>(g_session.unknown_56B8[4]).c_str());
         g_windowMgr.SetUnknown04DC(reply.c_str());
-        static_cast<CMode*>(g_charViewMode)->SendMsg(11, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(11, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
       }
     }
 
@@ -7646,10 +7646,10 @@ void CGameMode::sub_D1A520(int unknown_0004, std::string name, std::string text,
     prefix = prefix + " ] : " + message.data();
   } else {
     CSession& lists = g_session;
-    if (lists.IsFriendName(name.c_str())) {
+    if (lists.IsFriendNameDifferent(name.c_str())) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(917)), 0xFFFF, 0, 0, 0);
       g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(917)), 0xFFFF, 0, 0, 0);
-    } else if (lists.IsGuildMemberName(name.c_str())) {
+    } else if (lists.IsGuildMemberNameDifferent(name.c_str())) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(919)), 0xFFFF, 0, 0, 0);
       g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(919)), 0xFFFF, 0, 0, 0);
     }
@@ -7684,12 +7684,12 @@ void CGameMode::sub_D1A520(int unknown_0004, std::string name, std::string text,
         balloon->AddMessage(1, balloonMessage);
       }
     }
-    if (g_whisperRecord != 0) {
+    if (g_session.m_whisperRecord != 0) {
       this->WriteChatLog(prefix.c_str());
     }
   }
 
-  if (g_windowToggleFlag) {
+  if (g_session.unknown_56B8[0] != 0) {
     char notice[24];
     std::sprintf(notice, LookupMessage(941));
     const char length = static_cast<char>(std::strlen(notice));
@@ -7700,7 +7700,7 @@ void CGameMode::sub_D1A520(int unknown_0004, std::string name, std::string text,
       std::string reply(LookupMessage(941));
       reply.append(reinterpret_cast<const std::string&>(g_session.unknown_56B8[4]).c_str());
       g_windowMgr.SetUnknown04DC(reply.c_str());
-      static_cast<CMode*>(g_charViewMode)->SendMsg(11, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(11, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     }
   }
 }
