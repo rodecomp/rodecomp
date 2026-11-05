@@ -31,6 +31,13 @@
 // GLOBAL: gl_24975
 bool g_msgEffectShowSpecial = true;
 
+// INLINED
+static void ClearVector(vector3d& vector) {
+  vector.x = 0.0f;
+  vector.y = 0.0f;
+  vector.z = 0.0f;
+}
+
 // OFFSET: 0x00E4A550
 // FUNCTION: fn_24255
 CMsgEffect::CMsgEffect() {
@@ -58,12 +65,8 @@ CMsgEffect::CMsgEffect() {
   this->m_digit = 0;
   this->unknown_01B4 = 0;
   this->unknown_01B0 = 1;
-  this->m_drift.x = 0.0f;
-  this->m_drift.y = 0.0f;
-  this->m_drift.z = 0.0f;
-  this->m_velocity.x = 0.0f;
-  this->m_velocity.y = 0.0f;
-  this->m_velocity.z = 0.0f;
+  ClearVector(this->m_drift);
+  ClearVector(this->m_velocity);
   this->m_visible = true;
 }
 
