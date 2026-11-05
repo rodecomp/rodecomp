@@ -455,7 +455,7 @@ void CEffectPrim::RenderGroundSquareBlend(matrix& wtm) {
 
 // OFFSET: 0x00BED490
 // FUNCTION: fn_19979
-void CEffectPrim::RenderJitterQuads(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderJitterQuads(matrix& wtm) {
   vector3d vec1{};
   vector3d vec2{};
   vector3d vec3{};
