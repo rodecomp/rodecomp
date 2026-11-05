@@ -26,8 +26,8 @@ std::vector<unsigned char> UIMakeTargetListWnd::BuildReplayRecords() {
     const auto record = BuildReplayTaggedRecord(22050, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
-  for (int itemId : this->itemIds) {
-    const auto record = BuildReplayTaggedRecord(22052, &itemId, sizeof(itemId));
+  for (auto it = this->itemIds.begin(); it != this->itemIds.end(); ++it) {
+    const auto record = BuildReplayTaggedRecord(22052, &*it, sizeof(*it));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
