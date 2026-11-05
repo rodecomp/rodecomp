@@ -224,7 +224,11 @@ void CTextureDX7::Unlock() {
 // OFFSET: 0x00544A70
 // FUNCTION: fn_01821
 bool CTextureDX7::GetDC(HDC* output) {
-  return this->m_surface && SUCCEEDED(this->m_surface->GetDC(output));
+  if (!this->m_surface) {
+    return false;
+  }
+
+  return SUCCEEDED(this->m_surface->GetDC(output));
 }
 
 // OFFSET: 0x00544B30
