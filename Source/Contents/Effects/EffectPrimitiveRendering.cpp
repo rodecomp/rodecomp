@@ -2068,7 +2068,7 @@ void CEffectPrim::RenderPeongUp(matrix& wtm) {
 
 // OFFSET: 0x00BDEA00
 // FUNCTION: fn_19906
-void CEffectPrim::RenderGrid(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderGrid(matrix& wtm) {
   vector3d vec1{};
   vector3d vec2{};
   vector3d vec3{};
@@ -6138,7 +6138,7 @@ void CEffectPrim::RenderChemical(matrix& wtm) {
 
 // OFFSET: 0x00BD53E0
 // FUNCTION: fn_19882
-void CEffectPrim::RenderColorPaper(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderColorPaper(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
