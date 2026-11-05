@@ -7,14 +7,14 @@
 #include "Utility/Async/AsyncDiagnostic.h"
 
 #include <algorithm>
-#include <cstring>
 #include <json/reader.h>
 #include <json/value.h>
 #include <json/writer.h>
 
 // OFFSET: 0x00605BF0
 // FUNCTION: fn_04226
-CMCStoreInfoBackup::CMCStoreInfoBackup() : enabled(true), loaded(false), pendingSaves(0), type(0) {
+CMCStoreInfoBackup::CMCStoreInfoBackup() : loaded(false), pendingSaves(0), saveUrl(""), loadUrl(""), title(""), type(0) {
+  this->enabled = true;
 }
 
 // OFFSET: 0x00605D70
@@ -74,7 +74,7 @@ std::string CMCStoreInfoBackup::SaveUrl() const {
 // FUNCTION: fn_04237
 void CMCStoreInfoBackup::Reset(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey) {
   this->loaded = false;
-  this->title.clear();
+  this->title = "";
   this->items.clear();
   const std::string base = ResolveAccountServiceBase(settings, tables, host, port, overrideKey);
 
@@ -95,19 +95,19 @@ void CMCStoreInfoBackup::CompleteLoad(
 
   Json::Value root;
   Json::Reader reader;
-  const std::string document(response.c_str());
 
-  if (!reader.parse(document, root, true)) {
+  if (!reader.parse(std::string(response.c_str()), root, true)) {
     return;
   }
 
-  const int type = root["Type"].asInt();
-
-  if (type == 1) {
+  switch (root["Type"].asInt()) {
+  case 1:
     this->ImportData(root["data"]);
     this->loaded = true;
-  } else if (type == 4) {
+    break;
+  case 4:
     this->loaded = true;
+    break;
   }
 }
 
@@ -122,17 +122,21 @@ void CMCStoreInfoBackup::CompleteSave(AsyncDiagnostic diagnostic, std::string re
 
   Json::Value root;
   Json::Reader reader;
-  const std::string document(response.c_str());
 
-  if (!reader.parse(document, root, true) || root["Type"].asInt() != 1) {
+  if (!reader.parse(std::string(response.c_str()), root, true)) {
+    return;
+  }
+
+  if (root["Type"].asInt() != 1) {
     return;
   }
 
   g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
 
-  if (this->type == 0 || this->type == 1) {
-    const char* message = LookupMessage(this->type == 0 ? 3685 : 3686);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 0, 0, 0);
+  if (this->type == 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3685)), 0xFFFF, 0, 0, 0);
+  } else if (this->type == 1) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3686)), 0xFFFF, 0, 0, 0);
   }
 }
 
@@ -145,9 +149,8 @@ void CMCStoreInfoBackup::Load(
     return;
   }
 
-  const std::string token(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16);
-  const std::string url = this->LoadUrl();
-  g_asyncWorkMgr->LoadStore(accountId, characterId, accountName, url, token, type);
+  g_asyncWorkMgr->LoadStore(accountId, characterId, accountName, this->LoadUrl(),
+                            std::string(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16), type);
 }
 
 // OFFSET: 0x00606EB0
@@ -162,10 +165,8 @@ void CMCStoreInfoBackup::Save(int type) {
     root["data"] = data;
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
-    const std::string token(reinterpret_cast<const char*>(&g_session.unknown_807C[8]), 16);
-    const std::string url = this->SaveUrl();
-    const std::string name(g_session.m_accountName.c_str());
-    g_asyncWorkMgr->SaveStore(g_session.m_aid, g_session.m_gid, name, url, token, response, this->type);
+    g_asyncWorkMgr->SaveStore(g_session.m_aid, g_session.m_gid, std::string(g_session.m_accountName.c_str()), this->SaveUrl(),
+                              std::string(reinterpret_cast<const char*>(&g_session.unknown_807C[8]), 16), response, this->type);
 
     ++this->pendingSaves;
   }
