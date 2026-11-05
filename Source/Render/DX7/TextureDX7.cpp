@@ -66,6 +66,8 @@ namespace {
     return {x, y, x + width, y + height};
   }
 
+  __declspec(noinline) void DecodeSprite(const SpriteRleImage& image, const std::uint32_t* palette, void* pixels, int pitch);
+
   // OFFSET: 0x0056FCE0
   // FUNCTION: fn_02410
   void DecodeSprite(const SpriteRleImage& image, const std::uint32_t* palette, void* pixels, int pitch) {
