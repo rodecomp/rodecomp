@@ -99,6 +99,8 @@ namespace {
     return static_cast<std::uint8_t>((byte << 4) | (byte >> 4));
   }
 
+  __declspec(noinline) std::uint64_t ReadAuxiliaryIdentifier(const void* data, std::size_t size);
+
   // OFFSET: 0x00658FC0
   // FUNCTION: fn_05116
   std::uint64_t ReadAuxiliaryIdentifier(const void* data, std::size_t size) {
