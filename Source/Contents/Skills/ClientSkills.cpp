@@ -655,9 +655,7 @@ int CSession::CountItems5C68() const {
 // OFFSET: 0x00E09080
 // FUNCTION: fn_23775
 void CSession::SplitDate(__time32_t time, std::uint16_t& year, std::uint16_t& month, std::uint16_t& day) const {
-  if (time < 0) {
-    time = 0;
-  }
+  time = time > 0 ? time : 0;
 
   const std::tm local = *_localtime32(&time);
   year = static_cast<std::uint16_t>(local.tm_year + 1900);
