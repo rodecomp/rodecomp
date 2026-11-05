@@ -86,7 +86,8 @@ void CLoadPartyListAsyncWork::Bind(
   this->m_filter = filter;
   this->m_page = page;
   this->m_search = search;
-  AsyncDiagnostic diagnostic = Diagnostic(false, "unknwon", 54);
+  const std::uint8_t unknown[] = {0x80, 0xE9, 0x96, 0x93, 0x58, 0x52, 0x01, 0x93};
+  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x936F3D2FFDFD87F5ULL>(unknown), 54);
   this->m_diagnostic.MoveFrom(diagnostic);
   this->m_windows = &windows;
 }
