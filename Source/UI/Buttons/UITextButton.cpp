@@ -81,7 +81,7 @@ void UITextButton::Configure(const char* text, std::uint32_t color, int family, 
   this->m_underline = underline;
   const auto extent = static_cast<std::uint32_t>(height) * static_cast<std::uint32_t>(std::strlen(text));
   const int width = static_cast<int>(extent / 2 + 4u * outline + 12u);
-  this->Resize(width, height + 2);
+  this->UIWindow::Resize(width, height + 2);
   this->Slot15(width, height + 2);
   this->Slot22(width, height + 2);
 }
@@ -89,38 +89,18 @@ void UITextButton::Configure(const char* text, std::uint32_t color, int family, 
 // OFFSET: 0x0088F820
 // FUNCTION: fn_11392
 void UITextButton::Paint() {
-  if (this->geometry.surface) {
-    this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
-  }
-
+  this->ClearSurface(0xFFFF00FFu);
   if (this->parent) {
     this->parent->Invalidate();
   }
 
-  TextContext context(*this->geometry.surface);
-  context.SetFont(this->m_family, this->m_height, this->m_outline != 0, 0);
-  const int bytes = static_cast<int>(std::strlen(this->m_text.c_str()));
-
-  if (this->m_outline != 0) {
-    if (this->HasTextBackground()) {
-      context.SetBackground(this->TextBackground(), OPAQUE);
-    }
-
-    context.SetColor(this->m_outlineColor);
-    context.Draw(0, 1, this->m_text.c_str(), bytes);
-    context.Draw(2, 1, this->m_text.c_str(), bytes);
-    context.Draw(1, 0, this->m_text.c_str(), bytes);
-    context.Draw(1, 2, this->m_text.c_str(), bytes);
+  if (this->m_outline) {
+    DrawOutlinedText(*this, 1, 1, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
+  } else {
+    this->DrawTextAt(1, 1, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
   }
 
-  context.SetColor(this->m_color);
-  context.Draw(1, 1, this->m_text.c_str(), bytes);
-
-  if (this->m_outline != 0 && this->HasTextBackground()) {
-    context.SetBackground(this->TextBackground(), TRANSPARENT);
-  }
-
-  if (this->m_underline != 0) {
+  if (this->m_underline) {
     this->FillRegion(0, (this->geometry.height - 1), this->geometry.width, 1, this->m_color);
   }
 }
@@ -437,10 +417,10 @@ void UIINT64BarGraph::Slot28(int, int) {
 
   int screenX = 0, screenY = -16;
 
-  for (const UIWindow* window = this; window; window = window->parent) {
-    screenX = (screenX + window->geometry.x);
-    screenY = (screenY + window->geometry.y);
-  }
+  this->ToScreen(screenX, screenY);
+
+
+
 
   char text[260];
   std::memset(text, 0, sizeof(text));
@@ -488,10 +468,10 @@ void UITabControl::Slot28(int x, int y) {
 
   int screenY = -20;
 
-  for (const UIWindow* window = this; window; window = window->parent) {
-    screenX = (screenX + window->geometry.x);
-    screenY = (screenY + window->geometry.y);
-  }
+  this->ToScreen(screenX, screenY);
+
+
+
 
   g_modeMgr.gameMode->ShowTooltip(this->tooltips[index].c_str(), screenX, screenY, -1, false, true);
 }
@@ -533,10 +513,10 @@ void UIBasicItemCtrl::Slot28(int, int) {
 
   int screenX = 0, screenY = 0;
 
-  for (const UIWindow* window = this; window; window = window->parent) {
-    screenX = (screenX + window->geometry.x);
-    screenY = (screenY + window->geometry.y);
-  }
+  this->ToScreen(screenX, screenY);
+
+
+
 
   if (!text.empty()) {
     g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
@@ -552,10 +532,10 @@ void UIBasicSkillCtrl::Slot28(int, int) {
 
   int screenX = 0, screenY = 0;
 
-  for (const UIWindow* window = this; window; window = window->parent) {
-    screenX = (screenX + window->geometry.x);
-    screenY = (screenY + window->geometry.y);
-  }
+  this->ToScreen(screenX, screenY);
+
+
+
 
   LuaScript& script = *g_session.m_hotkeyScript;
   CSkillInfo skill = g_session.LookupSkill(static_cast<std::uint32_t>(this->m_skillId));
@@ -1482,7 +1462,6 @@ void UITreeView::Slot53() {
 
   if (bar->position > bar->maximum) {
     bar->position = bar->maximum;
-    bar->Invalidate();
   }
 
   if (!overflow) {
@@ -1490,7 +1469,8 @@ void UITreeView::Slot53() {
     this->itemCount = 0;
   }
 
-  bar->Invalidate();
+  this->verticalBar->Invalidate();
+
 }
 
 // OFFSET: 0x00892F90
@@ -3416,7 +3396,7 @@ void UITextViewEX::Paint() {
 void UIRPImageWnd::Paint() {
   this->SetSolid(g_renderer->primitives, this->geometry.width, this->geometry.height, 0);
   for (int i = 0; i < this->m_imageCount; ++i) {
-    this->DrawNamed(g_renderer->primitives, 0, 0, this->m_imageName.c_str(), 0xFFFFFFFF, 0, 0);
+    this->DrawNamed(g_renderer->primitives, 0, 0, this->m_imageName, 0xFFFFFFFF, 0, 0);
   }
 }
 
