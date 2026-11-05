@@ -47,7 +47,7 @@ public:
   ITEM_INFO GetItemAtPoint(int x, int y);
   int MeasureText(const std::string& text, const unsigned& bytes);
   void SetRecipient(int id, unsigned short job, unsigned short level, const char* name);
-  std::int64_t GetZeny();
+  __declspec(noinline) std::int64_t GetZeny();
 
   /* 00B4 */ UIEditCtrl_Custom* unknown_00B4;
   /* 00B8 */ UIEditCtrl_Custom* unknown_00B8;
