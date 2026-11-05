@@ -363,7 +363,8 @@ void UIGradeEnchant_BtnEnhancedUp::Slot28(int x, int y) {
     return;
   }
 
-  if (g_modeMgr.GetGameMode() == nullptr) {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (mode == nullptr) {
     return;
   }
 
@@ -376,7 +377,7 @@ void UIGradeEnchant_BtnEnhancedUp::Slot28(int x, int y) {
     screenY += window->geometry.y;
   }
 
-  static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+  mode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x007E8CC0
