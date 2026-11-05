@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-unsigned LanguageCharset(std::uint16_t language);
+__declspec(noinline) unsigned LanguageCharset(std::uint16_t language);
 unsigned LanguageCodePage(std::uint16_t language);
 
 #endif
