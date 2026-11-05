@@ -34,7 +34,7 @@ public:
   ~FileSignatureVerifier();
 
   bool VerifyBuffer(const WCHAR* fileName, const BYTE* data, DWORD dataSize, bool verifyFileName);
-  bool VerifyFile(const WCHAR* fileName, bool verifyFileName);
+  __declspec(noinline) bool VerifyFile(const WCHAR* fileName, bool verifyFileName);
   bool VerifyBuffer(const char* fileName, const BYTE* data, DWORD dataSize, bool verifyFileName);
   bool VerifyFile(const char* fileName, bool verifyFileName);
 };
