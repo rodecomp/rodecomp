@@ -205,14 +205,7 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
     }
   }
 
-  if (g_windowMgr.unknown_04FC == 0) {
-    g_windowMgr.unknown_04FC = 1;
-    for (UIWindow* window : g_windowMgr.rendered) {
-      if (window->Slot03()) {
-        window->InvalidateChildren();
-      }
-    }
-  }
+  this->InvalidateWindowFrames();
 
   return offset;
 }
