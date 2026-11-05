@@ -1019,9 +1019,9 @@ void CPc::ApplyLayerEffects(
     hover = static_cast<short>(this->HoverHeight());
   }
 
-  const std::int64_t hoverOffset = hover;
+  const int hoverOffset = hover;
   this->render.unknown_0128 = static_cast<std::uint32_t>(hoverOffset);
-  this->render.unknown_012C = static_cast<std::uint32_t>(hoverOffset >> 32);
+  this->render.unknown_012C = static_cast<std::uint32_t>(hoverOffset >> 31);
 
   SpriteQuad jitter;
   if ((this->render.flags & 8) != 0 && layer < 5 && (this->render.flags & 0x30000) == 0) {
