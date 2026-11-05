@@ -59,7 +59,7 @@ int CSession::IsMonsterActor(CGameActor* actor) const {
   }
 
   const int job = actor->GetEffectiveJob(-1);
-  if ((job > 1000 && job < 4000) || (job >= 20021 && job <= 31999)) {
+  if ((job > 1000 && job < 3999) || (job >= 20021 && job <= 31999)) {
     return 1;
   }
 
