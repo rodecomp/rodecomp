@@ -1662,8 +1662,8 @@ void UIItemImage::Slot28(int, int) {
   int y = -17;
   this->ToScreen(x, y);
 
-  if (g_charViewMode) {
-    CMode* tooltip = static_cast<CMode*>(g_charViewMode);
+  if (g_modeMgr.gameMode) {
+    CMode* tooltip = g_modeMgr.gameMode;
     const std::uint32_t color = g_session.GetItemNameColor(item);
     tooltip->ShowTooltip(item.DisplayName(0).c_str(), x, y, color, 0, 1);
   }
