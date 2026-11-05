@@ -75,7 +75,11 @@ __forceinline void UINormalMB::AddButton(const char* normal, const char* hover, 
 void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaultAccept, const char* title, int width, int height, const char* icon) {
   this->m_owner = owner;
   this->m_message = text;
-  this->m_title = title ? title : LookupMessage(3700);
+  if (!title) {
+    this->m_title = LookupMessage(3700);
+  } else {
+    this->m_title = title;
+  }
 
   this->SetSize(width, height);
   this->Slot15(width, height);
@@ -103,6 +107,11 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
   this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->m_message.c_str()), static_cast<int>(width / 7.5), 0, 0);
 
   switch (type) {
+  case 4:
+    this->AddButton("유저인터페이스\\btn_cancel.bmp", "유저인터페이스\\btn_cancel_a.bmp", "유저인터페이스\\btn_cancel_b.bmp", width - 46, height - 24, 185);
+    this->m_message0 = 185;
+    break;
+
   case 0:
     this->AddButton("유저인터페이스\\btn_ok.bmp", "유저인터페이스\\btn_ok_a.bmp", "유저인터페이스\\btn_ok_b.bmp", width - 46, height - 24, 184);
     this->m_message0 = 184;
@@ -113,11 +122,6 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
     this->AddButton("유저인터페이스\\btn_cancel.bmp", "유저인터페이스\\btn_cancel_a.bmp", "유저인터페이스\\btn_cancel_b.bmp", width - 46, height - 24, 188);
     this->m_message1 = 188;
     this->m_message0 = defaultAccept ? 187 : 188;
-    break;
-
-  case 4:
-    this->AddButton("유저인터페이스\\btn_cancel.bmp", "유저인터페이스\\btn_cancel_a.bmp", "유저인터페이스\\btn_cancel_b.bmp", width - 46, height - 24, 185);
-    this->m_message0 = 185;
     break;
 
   default:
