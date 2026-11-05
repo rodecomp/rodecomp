@@ -4,11 +4,11 @@
 // OFFSET: 0x00AD85A0
 // FUNCTION: fn_17865
 CPathFinder::~CPathFinder() {
-  this->nodePool.clear();
+  this->nodePool.erase(this->nodePool.begin(), this->nodePool.end());
   this->Reset();
 
-  for (auto& [name, cached] : this->attrCache) {
-    delete cached;
+  for (auto it = this->attrCache.begin(); it != this->attrCache.end(); ++it) {
+    delete it->second;
   }
 
   this->attrCache.clear();
