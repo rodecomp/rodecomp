@@ -34,23 +34,17 @@ void UIButton::Paint() {
     return;
   }
 
-  static const char* const backgrounds[] = {
-    "유저인터페이스\\sml_button_up.bmp",
-    "유저인터페이스\\sml_button_act.bmp",
-    "유저인터페이스\\sml_button_down.bmp"
-  };
-
   CBitmapRes* bitmap;
 
   switch (this->geometry.unknown_0030) {
   case 0:
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(backgrounds[0]));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sml_button_up.bmp")));
     break;
   case 1:
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(backgrounds[1]));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sml_button_act.bmp")));
     break;
   case 2:
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(backgrounds[2]));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sml_button_down.bmp")));
     break;
   }
 
