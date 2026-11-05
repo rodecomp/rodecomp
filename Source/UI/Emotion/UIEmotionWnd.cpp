@@ -172,7 +172,7 @@ void UIEmotionWnd::Slot11() {
     this->m_saved->height = this->geometry.height;
   }
 
-  for (int i = 0; i < 10; ++i) {
+  for (unsigned i = 0; i < 10; ++i) {
     std::string value = this->m_edits[i]->Text();
     if (!value.empty()) {
       g_session.m_emotionHotkeys.current[i] = value;
