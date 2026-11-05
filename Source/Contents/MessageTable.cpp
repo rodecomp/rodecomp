@@ -6,6 +6,7 @@
 #include "Network/TextEncoding.h"
 #include "Utility/Text/Base64.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Text/StringUtil.h"
 #include "Utility/Text/TextTokens.h"
 
 #include <cstdio>
@@ -4750,20 +4751,18 @@ namespace {
   // OFFSET: 0x00B009D0
   // FUNCTION: fn_18373
   std::vector<std::string> TransformFields(const std::vector<std::string>& row) {
-    const char* escapes[] = {"\\r", "\\n", "\\t", "\\'", "\\\"", "\\\\"};
-    const char replacements[] = {'\r', '\n', '\t', '\'', '"', '\\'};
-
     std::vector<std::string> result;
     result.reserve(row.size());
     for (std::string text : row) {
       if (text.empty()) {
         text = "NO MSG";
       } else {
-        for (unsigned i = 0; i < 6; ++i) {
-          for (std::size_t pos = 0; (pos = text.find(escapes[i], pos)) != std::string::npos; ++pos) {
-            text.replace(pos, 2, 1, replacements[i]);
-          }
-        }
+        ReplaceAll(text, "\\r", "\r");
+        ReplaceAll(text, "\\n", "\n");
+        ReplaceAll(text, "\\t", "\t");
+        ReplaceAll(text, "\\'", "'");
+        ReplaceAll(text, "\\\"", "\"");
+        ReplaceAll(text, "\\\\", "\\");
       }
       result.push_back(std::move(text));
     }
