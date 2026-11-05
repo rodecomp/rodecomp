@@ -41,13 +41,18 @@ void CPlayerSkillBundle::Add(const CSkillInfo& value) {
 // OFFSET: 0x00771160
 // FUNCTION: fn_08272
 void CPlayerSkillBundle::Remove(std::uint32_t id) {
-  for (auto entry = this->skills.begin(); entry != this->skills.end(); ++entry) {
-    if (entry->id == id) {
-      this->index.erase(id);
-      this->skills.erase(entry);
-      return;
-    }
+  const auto entry = std::find_if(this->skills.begin(), this->skills.end(),
+                                  [id](const CSkillInfo& value) { return value.id == id; });
+  if (entry == this->skills.end()) {
+    return;
   }
+
+  const auto indexed = this->index.find(entry->id);
+  if (indexed != this->index.end()) {
+    this->index.erase(indexed);
+  }
+
+  this->skills.erase(entry);
 }
 
 // OFFSET: 0x007715B0
@@ -84,13 +89,17 @@ CSkillInfo CPlayerSkillBundle::Lookup(std::uint32_t id) {
     return CSkillInfo(-1);
   }
 
-  const auto entry = this->index.find(ResolveSkillId(id));
+  const std::uint32_t key = id == 6578 || id == 6579 ? ResolveSkillId(id) : id;
+  const auto entry = this->index.find(key);
   if (entry != this->index.end() && entry->second->IsValid()) {
     return *entry->second;
   }
 
-  CSkillInfo* value = this->Find(id);
-  return value ? *value : CSkillInfo(-1);
+  if (CSkillInfo* value = this->Find(id)) {
+    return *value;
+  }
+
+  return CSkillInfo(-1);
 }
 
 // OFFSET: 0x007717F0
@@ -143,13 +152,9 @@ CSkillInfo CPlayerSkillBundle::Pending(std::uint32_t id) {
 // OFFSET: 0x00771560
 // FUNCTION: fn_08277
 CSkillInfo* CPlayerSkillBundle::FindExtra(std::uint32_t id) {
-  for (CSkillInfo& value : this->extra) {
-    if (value.id == id) {
-      return &value;
-    }
-  }
-
-  return nullptr;
+  const auto entry = std::find_if(this->extra.begin(), this->extra.end(),
+                                  [id](const CSkillInfo& value) { return value.id == id; });
+  return entry != this->extra.end() ? &*entry : nullptr;
 }
 
 // OFFSET: 0x00771450
@@ -198,8 +203,8 @@ bool CPlayerSkillBundle::RemoveExtra(std::uint32_t id, WindowManagerWindows& win
 void CPlayerSkillBundle::NumberExtra() {
   unsigned number = 0;
 
-  for (CSkillInfo& value : this->extra) {
-    value.unknown_0024 = number++;
+  for (auto entry = this->extra.begin(); entry != this->extra.end(); ++entry) {
+    entry->unknown_0024 = number++;
   }
 }
 
@@ -270,10 +275,11 @@ void CPlayerSkillBundle::RecordLevelChange(const CSkillInfo& value) {
     return;
   }
 
-  lcEXCInfo& entry = this->levelChanges[static_cast<int>(value.id)];
-  entry.previous = previous->level;
-  entry.target = value.level;
-  this->changed[static_cast<int>(value.id)] = true;
+  lcEXCInfo change;
+  change.previous = previous->level;
+  change.target = value.level;
+  this->levelChanges[static_cast<int>(previous->id)] = change;
+  this->changed[static_cast<int>(previous->id)] = true;
 }
 
 // OFFSET: 0x00771250
@@ -300,8 +306,13 @@ void CPlayerSkillBundle::ApplyLevelChange(CSkillInfo& value) {
   }
 
   for (int removed : this->removals) {
-    if (this->levelChanges.erase(removed)) {
-      this->changed.erase(removed);
+    const auto change = this->levelChanges.find(removed);
+    if (change != this->levelChanges.end()) {
+      this->levelChanges.erase(change);
+      const auto flag = this->changed.find(removed);
+      if (flag != this->changed.end()) {
+        this->changed.erase(flag);
+      }
     }
   }
 
