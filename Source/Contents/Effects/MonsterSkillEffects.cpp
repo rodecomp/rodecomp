@@ -502,9 +502,8 @@ void CSvgSpiritEffect::Slot03() {
     emitter->velocity.y += dy * inverse * emitter->speed;
     emitter->velocity.z += dz * inverse * emitter->speed;
 
-    emitter->position.x = this->position[0] + emitter->velocity.x;
-    emitter->position.y = this->position[1] - 10.0f;
-    emitter->position.z = this->position[2] + emitter->velocity.z;
+    const vector3d position = {this->position[0] + emitter->velocity.x, this->position[1] - 10.0f, this->position[2] + emitter->velocity.z};
+    emitter->position = position;
 
     if (this->frame >= 10) {
       emitter->alpha -= 40;
@@ -593,6 +592,7 @@ CWarningPlaneEffect::CWarningPlaneEffect() : CEffect(1114), fadingIn(0), expireT
 // FUNCTION: fn_07183
 void CWarningPlaneEffect::AddPlane(vector3d position) {
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
   if (particle) {
     particle->SetTexture("warning_plane.tga");
     particle->unknown_0004 = this->id;
@@ -604,7 +604,7 @@ void CWarningPlaneEffect::AddPlane(vector3d position) {
     particle->SetColor(255, 0, 0);
     particle->position = position;
     InitParticleQuad(particle->vertices);
-    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    this->emitters.push_back(emitter);
   }
 }
 
@@ -640,6 +640,7 @@ void CCylinderEffect::Slot01() {
   this->startTime = timeGetTime();
   for (long long i = 0; i < 21; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
     if (!particle) {
       continue;
     }
@@ -659,7 +660,7 @@ void CCylinderEffect::Slot01() {
       particle->sourceBlend = 5;
       particle->destinationBlend = 6;
     }
-    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    this->emitters.push_back(emitter);
   }
 }
 
@@ -4307,25 +4308,29 @@ void CCurseOfCubeEffect::SpawnLoop() {
 void CCurseOfCubeEffect::SpawnStart() {
   if (this->id == 0x901) {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_bottom_start.str");
-      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
+      this->emitters.push_back(bottomEmitter);
     }
     CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    EZ2STREmitter* cubeEmitter = reinterpret_cast<EZ2STREmitter*>(cube);
     if (cube) {
       cube->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_start.str");
-      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(cube));
+      this->emitters.push_back(cubeEmitter);
     }
   } else if (this->id == 0x902) {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_bottom_start.str");
-      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
+      this->emitters.push_back(bottomEmitter);
     }
     CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    EZ2STREmitter* cubeEmitter = reinterpret_cast<EZ2STREmitter*>(cube);
     if (cube) {
       cube->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_start.str");
-      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(cube));
+      this->emitters.push_back(cubeEmitter);
     }
   }
 }
