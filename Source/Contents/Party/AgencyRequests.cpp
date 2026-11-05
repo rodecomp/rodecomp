@@ -8,11 +8,9 @@
 void CAdventurerAgencyMgr::RequestChangeMaster(std::uint32_t targetAccountId, std::uint32_t targetCharacterId, std::string targetName) {
   const std::uint32_t account = g_session.m_aid;
   const std::uint32_t character = g_session.m_gid;
-  const std::string token(reinterpret_cast<const char*>(&g_session.unknown_807C[8]), 16);
-  const std::string url = this->ServiceUrl(6);
-  const std::string world(g_session.m_accountName.c_str());
   g_asyncWorkMgr->ChangePartyMaster(
-    account, character, std::string(g_session.DecodePlayerName()), targetAccountId, targetCharacterId, targetName, world, url, token, g_windowMgr
+    account, character, std::string(g_session.DecodePlayerName()), targetAccountId, targetCharacterId, targetName, std::string(g_session.m_accountName.c_str()),
+    this->ServiceUrl(6), std::string(reinterpret_cast<const char*>(&g_session.unknown_807C[8]), 16), g_windowMgr
   );
   ++this->pending;
 }
