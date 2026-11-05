@@ -126,7 +126,7 @@ void CTagData::UpdateActiveCount(int type) {
   this->m_activeCount[type] = 0;
   for (RuneData* rune : this->m_runes[type]) {
     if (rune) {
-      this->m_activeCount[type] += rune->m_active;
+      this->m_activeCount[type] += rune->IsActive();
     }
   }
 }
@@ -307,7 +307,7 @@ std::int64_t RuneData::GetId() const {
 // OFFSET: 0x00766E50
 // FUNCTION: fn_08131
 bool RuneData::IsActive() const {
-  return this->m_active;
+  return this->m_active != 0;
 }
 
 // OFFSET: 0x00766E60
@@ -720,7 +720,7 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
 // FUNCTION: fn_08153
 int CRuneSystemMgr::UpdateOwnedDecomItems() {
   this->m_ownedDecomItems.clear();
-  for (int i = 0; i < static_cast<int>(g_session.m_inventoryItems.size()); ++i) {
+  for (int i = 0; i < g_session.GetList0Size(); ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
     if (this->m_itemDecoms.find(std::atoi(item.itemId.c_str())) != this->m_itemDecoms.end()) {
       this->m_ownedDecomItems.push_back(std::atoi(item.itemId.c_str()));
@@ -879,7 +879,7 @@ int AddGradeType(lua_State* state) {
   const int index = static_cast<int>(valueIndex) - 1;
   std::map<int, std::vector<int>>& gradeTypes = g_runeSystemMgr->m_gradeTypes;
   if (gradeTypes[gradeId].size() < 15) {
-    gradeTypes[gradeId].resize(15);
+    gradeTypes[gradeId].resize(15, 0);
   }
 
   if (index < 15) {
@@ -919,7 +919,7 @@ int AddGradeTypeFail(lua_State* state) {
   const int index = static_cast<int>(valueIndex) - 1;
   std::map<int, std::vector<int>>& gradeFailTypes = g_runeSystemMgr->m_gradeFailTypes;
   if (gradeFailTypes[gradeId].size() < 15) {
-    gradeFailTypes[gradeId].resize(15);
+    gradeFailTypes[gradeId].resize(15, 0);
   }
 
   if (index < 15) {
