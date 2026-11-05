@@ -287,6 +287,16 @@ void CTipBoxMgr::Sub7ACF50() {
   }
 }
 
+// INLINED
+inline void CTipBoxMgr::AddTip(int id, std::string title, double flag, std::string text) {
+  if (this->unknown_0118 < id) {
+    this->unknown_0118 = id;
+  }
+  this->m_entries[id].title = title;
+  this->m_entries[id].unknown_0018 = static_cast<int>(flag) == 1;
+  this->m_entries[id].unknown_001C = text;
+}
+
 int sub_7AEC00(lua_State* state);
 int sub_7AE900(lua_State* state);
 int sub_7AE600(lua_State* state);
@@ -356,7 +366,7 @@ bool CTipBoxMgr::RegisterLuaFunctions() {
 // OFFSET: 0x007AD890
 // FUNCTION: fn_09130
 bool CTipBoxMgr::IsLastTip() const {
-  return this->unknown_00B4 == static_cast<int>(this->m_randomList.size() / 6) - 1;
+  return this->unknown_00B4 == static_cast<int>(this->m_currentEntry.paragraphs.size()) - 1;
 }
 
 // OFFSET: 0x007AD8C0
@@ -412,21 +422,23 @@ void CTipBoxMgr::SelectTip(int id) {
 // OFFSET: 0x007AEAF0
 // FUNCTION: fn_09145
 int sub_7AEAF0(lua_State* state) {
-  const char* message;
   if (!lua_isnumber(state, -2)) {
     lua_pushboolean(state, 0);
-    message = "2st argment is must number";
-  } else if (!lua_isstring(state, -1)) {
+    lua_pushstring(state, "2st argment is must number");
+    return 2;
+  }
+  if (!lua_isstring(state, -1)) {
     lua_pushboolean(state, 0);
-    message = "1th argment is must string";
-  } else {
-    const int id = static_cast<int>(lua_tonumber(state, -2));
-    g_itemTagOwner->AddParagraph(id, std::string(lua_tostring(state, -1)));
-    lua_pushboolean(state, 1);
-    message = "good";
+    lua_pushstring(state, "1th argment is must string");
+    return 2;
   }
 
-  lua_pushstring(state, message);
+  const int id = static_cast<int>(lua_tonumber(state, -2));
+  const char* text = lua_tostring(state, -1);
+  CTipBoxMgr* owner = g_itemTagOwner;
+  owner->AddParagraph(id, text);
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 

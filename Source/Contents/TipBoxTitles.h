@@ -58,6 +58,7 @@ public:
   __declspec(noinline) void SelectTip(int id);
   static bool Create();
   static void Destroy();
+  void AddTip(int id, std::string title, double flag, std::string text);
 
   int m_width;
   int m_height;
