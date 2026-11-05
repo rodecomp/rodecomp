@@ -72,7 +72,7 @@ std::string CAdventurerAgencyMgr::ServiceUrl(int operation) const {
   std::string url = ResolveAccountServiceBase(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
 
   if (url.empty()) {
-    return url;
+    return "";
   }
 
   switch (operation) {
