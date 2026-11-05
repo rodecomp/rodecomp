@@ -7,7 +7,8 @@
 
 // OFFSET: 0x0056CF60
 // FUNCTION: fn_02353
-CRenderSystemDX9::CRenderSystemDX9() : m_device(new DeviceOwnerDX9), m_defaultTexture(nullptr) {
+CRenderSystemDX9::CRenderSystemDX9() {
+  this->m_device = new DeviceOwnerDX9;
 }
 
 // OFFSET: 0x0056D180
@@ -15,8 +16,6 @@ CRenderSystemDX9::CRenderSystemDX9() : m_device(new DeviceOwnerDX9), m_defaultTe
 CRenderSystemDX9::~CRenderSystemDX9() {
   delete this->m_device;
   this->m_device = nullptr;
-  this->m_backBuffer.reset();
-  delete this->m_defaultTexture;
 }
 
 // OFFSET: 0x0056E250
@@ -35,10 +34,8 @@ HRESULT CRenderSystemDX9::Initialize(HWND window) {
 // OFFSET: 0x0056D670
 // FUNCTION: fn_02363
 HRESULT CRenderSystemDX9::Close() {
-  CTexture* texture = this->m_defaultTexture;
-  this->m_defaultTexture = nullptr;
-  delete texture;
-  this->m_backBuffer.reset();
+  this->m_defaultTexture.reset();
+  this->m_backBuffer = std::shared_ptr<CSurface>();
 
   return this->m_device->Close();
 }
@@ -95,20 +92,20 @@ CTexture* CRenderSystemDX9::CreateTexture(std::uint32_t width, std::uint32_t hei
 // FUNCTION: fn_02362
 CSurface* CRenderSystemDX9::CreateSurfaceOrTexture(std::uint32_t width, std::uint32_t height) {
   if (this->m_device->caps.MaxTextureWidth < width || this->m_device->caps.MaxTextureHeight < height) {
-    return this->CreateSurface(width, height);
+    return this->CRenderSystemDX9::CreateSurface(width, height);
   }
 
-  return this->CreateTexture(width, height, TextureFormat::A1R5G5B5, false, false);
+  return this->CRenderSystemDX9::CreateTexture(width, height, TextureFormat::A1R5G5B5, false, false);
 }
 
 // OFFSET: 0x0056DAC0
 // FUNCTION: fn_02369
 CTexture* CRenderSystemDX9::BackBufferTexture() {
   if (!this->m_defaultTexture) {
-      this->m_defaultTexture = new CTextureDX9(*this->m_device);
+      this->m_defaultTexture = std::unique_ptr<CTexture>(new CTextureDX9(*this->m_device));
   }
 
-  return this->m_defaultTexture;
+  return this->m_defaultTexture.get();
 }
 
 // OFFSET: 0x0056DBA0
