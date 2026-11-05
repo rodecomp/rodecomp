@@ -210,7 +210,7 @@ void SpriteLayerRenderer::QueueQuad(int layer, const SpriteQuad* quad, const std
     memcpy_s(&entry.quad, sizeof(entry.quad), quad, sizeof(SpriteQuad));
     entry.palette = palette;
     entry.blend = blend;
-    this->quads.emplace(static_cast<int>(this->quads.size()) + 1, entry);
+    this->quads.emplace(this->quads.size() + 1, entry);
   }
 }
 
