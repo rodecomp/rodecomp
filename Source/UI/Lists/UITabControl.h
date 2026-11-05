@@ -24,7 +24,7 @@ public:
   void ClearTabs();
   void AddTab(const char* label, const char* tooltip);
   void SetFlag(int index, bool value);
-  void HideEdit();
+  __declspec(noinline) void HideEdit();
   void Configure(
     int layout, int tabHeight, int tabPadding, unsigned char uniformWidths, unsigned char unknownA9, unsigned char unknownA8, std::uint32_t activeFillColor,
     std::uint32_t inactiveFillColor, std::uint32_t activeBorderColor, std::uint32_t inactiveBorderColor, std::uint32_t activeTextColor,

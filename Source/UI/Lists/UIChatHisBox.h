@@ -32,9 +32,9 @@ public:
   std::string RenderItemLinks(const char* lineText, std::string& source);
   std::string RenderNavigationLinks(const char* text, std::string& source);
   void RewrapLinkLines(std::vector<std::string>& wrapped, int& mode);
-  const char* HistoryText(unsigned int index);
+  __declspec(noinline) const char* HistoryText(unsigned int index);
   bool SaveChatLog(const char* path);
-  void PlaceNaviLinks(int line);
+  __declspec(noinline) void PlaceNaviLinks(int line);
   void DropOldestLines();
   void ShiftNaviLinks();
   void ClearNaviLinks();
@@ -42,7 +42,7 @@ public:
   void AddLinkRecord(const char* name, int value, const char* detail);
   virtual void ResetContents();
   void ShiftItemTags();
-  void PlaceItemTags(int line);
+  __declspec(noinline) void PlaceItemTags(int line);
   void CopyHistory(const UIChatHisBox& other);
   void Resize(int width, int height, bool flag);
   void sub_89C080();
