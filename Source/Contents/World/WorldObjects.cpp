@@ -43,6 +43,7 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Text/UINameBalloonText.h"
 
+#include <algorithm>
 #include <atomic>
 #include <cstdio>
 #include <cstdlib>
@@ -346,21 +347,16 @@ CItem* CWorld::GetItemByAID(std::uint32_t aid) const {
 // OFFSET: 0x00AC8380
 // FUNCTION: fn_17670
 CRenderObject* CWorld::GetActorByGID(int gid) const {
-  auto it = this->actors.begin();
+  auto it = std::find_if(this->actors.begin(), this->actors.end(), [gid](CRenderObject* object) {
+    CGameActor* actor = static_cast<CGameActor*>(object);
+    return !actor->unknown_0314 && gid == actor->Slot42();
+  });
 
-  for (; it != this->actors.end(); ++it) {
-    CGameActor* actor = static_cast<CGameActor*>(*it);
-
-    if (!actor->unknown_0314 && gid == actor->Slot42()) {
-      break;
-    }
+  if (it != this->actors.end()) {
+    return *it;
   }
 
-  if (it == this->actors.end()) {
-    return nullptr;
-  }
-
-  return *it;
+  return nullptr;
 }
 
 // OFFSET: 0x00AC8440
@@ -573,7 +569,7 @@ void CGameMode::ShowGuildEmblem(CGameActor* actor, int guildId, int unused) {
   window->SendMsg(nullptr, 34, actor->render.accountId, guildId, 0, 0);
   g_windowMgr.AddRenderedFront(window);
   actor->unknown_0188 = reinterpret_cast<int>(window);
-  this->unknown_0604.push_back(window);
+  this->AddUnknown0604(window);
 }
 
 // OFFSET: 0x00CD8950
@@ -612,16 +608,15 @@ void CGameMode::ApplyMapFog(int enabled) {
   }
 
   const std::vector<std::string>* parameters = g_session.GetFogParameters(this->mapName, &enabled);
-  if (!enabled) {
+  if (enabled) {
+    g_depthStart = static_cast<float>(std::atof((*parameters)[0].c_str()));
+    g_depthEnd = static_cast<float>(std::atof((*parameters)[1].c_str()));
+    g_worldOverlayColor = ParseHexString((*parameters)[2].c_str());
+    g_fogDensity = static_cast<float>(std::atof((*parameters)[3].c_str()));
+    g_renderer->SetFog(1);
+  } else {
     g_renderer->SetFog(0);
-    return;
   }
-
-  g_depthStart = static_cast<float>(std::atof((*parameters)[0].c_str()));
-  g_depthEnd = static_cast<float>(std::atof((*parameters)[1].c_str()));
-  g_worldOverlayColor = ParseHexString((*parameters)[2].c_str());
-  g_fogDensity = static_cast<float>(std::atof((*parameters)[3].c_str()));
-  g_renderer->SetFog(1);
 }
 
 // OFFSET: 0x00CD8F30
