@@ -141,8 +141,8 @@ void WorldSpatialTree::BindTerrain(C3dAttr& resource, int depth) {
   this->terrain->SpatialCell(this->maximum[0], this->maximum[2], this->terrainCells[2], this->terrainCells[3]);
 
   if (depth != 5) {
-    for (WorldSpatialTree* child : this->children) {
-      child->BindTerrain(resource, depth + 1);
+    for (unsigned index = 0; index < 4; ++index) {
+      this->children[index]->BindTerrain(resource, depth + 1);
     }
   }
 }
@@ -156,8 +156,8 @@ void WorldSpatialTree::BindGround(GroundGeometry& resource, int depth) {
   this->ground->SpatialCell(this->maximum[0], this->maximum[2], this->groundCells[2], this->groundCells[3]);
 
   if (depth != 5) {
-    for (WorldSpatialTree* child : this->children) {
-      child->BindGround(resource, depth + 1);
+    for (unsigned index = 0; index < 4; ++index) {
+      this->children[index]->BindGround(resource, depth + 1);
     }
   }
 }
@@ -195,64 +195,62 @@ void WorldSpatialTree::CopyBounds(int depth, const WorldSpatialTree& source) {
 void WorldSpatialTree::RefreshBounds(int depth) {
   this->dirty = 0;
 
-  if (depth != 5) {
+  if (depth == 5) {
+    float groundMinimum;
+    float groundMaximum;
+    float terrainMinimum;
+    float terrainMaximum;
+    this->ground->HeightBounds(this->groundCells, groundMinimum, groundMaximum);
+    this->terrain->HeightBounds(this->terrainCells, terrainMinimum, terrainMaximum);
+    this->maximum[1] = terrainMaximum > groundMaximum ? terrainMaximum : groundMaximum;
+    this->minimum[1] = terrainMinimum < groundMinimum ? terrainMinimum : groundMinimum;
+
+    auto object = this->objects.begin();
+
+    while (object != this->objects.end()) {
+      if (*object) {
+        const float low = (*object)->minimum[1];
+
+        if (this->minimum[1] > low) {
+          this->minimum[1] = low;
+        }
+
+        const float high = (*object)->maximum[1];
+
+        if (high > this->maximum[1]) {
+          this->maximum[1] = high;
+        }
+
+        ++object;
+      }
+    }
+
+    WorldSpatialTree* node = this;
+
+    do {
+      if (node->minimum[1] > this->minimum[1]) {
+        node->minimum[1] = this->minimum[1];
+      }
+
+      if (this->maximum[1] > node->maximum[1]) {
+        node->maximum[1] = this->maximum[1];
+      }
+
+      node->halfSize[0] = node->maximum[0] - node->center[0];
+      const float halfZ = node->maximum[2] - node->center[2];
+      const float middleY = (node->maximum[1] + node->minimum[1]) * g_depthAverageHalf;
+      node->center[1] = middleY;
+      node->halfSize[2] = halfZ;
+      node->halfSize[1] = node->maximum[1] - middleY;
+      node = node->parent;
+    } while (node);
+  } else {
     for (WorldSpatialTree* child : this->children) {
       if (child->dirty) {
         child->RefreshBounds(depth + 1);
       }
     }
-
-    return;
   }
-
-  float groundMinimum;
-  float groundMaximum;
-  float terrainMinimum;
-  float terrainMaximum;
-  this->ground->HeightBounds(this->groundCells, groundMinimum, groundMaximum);
-  this->terrain->HeightBounds(this->terrainCells, terrainMinimum, terrainMaximum);
-  this->maximum[1] = terrainMaximum > groundMaximum ? terrainMaximum : groundMaximum;
-  this->minimum[1] = terrainMinimum < groundMinimum ? terrainMinimum : groundMinimum;
-
-  auto object = this->objects.begin();
-
-  while (object != this->objects.end()) {
-    if (*object) {
-      const float low = (*object)->minimum[1];
-
-      if (this->minimum[1] > low) {
-        this->minimum[1] = low;
-      }
-
-      const float high = (*object)->maximum[1];
-
-      if (high > this->maximum[1]) {
-        this->maximum[1] = high;
-      }
-
-      ++object;
-    }
-  }
-
-  WorldSpatialTree* node = this;
-
-  do {
-    if (node->minimum[1] > this->minimum[1]) {
-      node->minimum[1] = this->minimum[1];
-    }
-
-    if (this->maximum[1] > node->maximum[1]) {
-      node->maximum[1] = this->maximum[1];
-    }
-
-    node->halfSize[0] = node->maximum[0] - node->center[0];
-    const float halfZ = node->maximum[2] - node->center[2];
-    const float middleY = (node->maximum[1] + node->minimum[1]) * 0.5f;
-    node->center[1] = middleY;
-    node->halfSize[2] = halfZ;
-    node->halfSize[1] = node->maximum[1] - middleY;
-    node = node->parent;
-  } while (node);
 }
 
 // OFFSET: 0x00AC84F0
@@ -280,31 +278,29 @@ void WorldSpatialTree::InsertModel(C3dActor& model, int depth) {
 // OFFSET: 0x00ACA5D0
 // FUNCTION: fn_17694
 void WorldSpatialTree::RemoveModel(C3dActor* model, int depth) {
-  if (depth != 5) {
+  if (depth == 5) {
+    bool removed = false;
+    auto current = this->objects.begin();
+
+    while (current != this->objects.end()) {
+      if (*current == model) {
+        current = this->objects.erase(current);
+        removed = true;
+      } else {
+        ++current;
+      }
+    }
+
+    if (removed) {
+      for (WorldSpatialTree* node = this; node; node = node->parent) {
+        node->dirty = 1;
+      }
+    }
+  } else {
     for (WorldSpatialTree* child : this->children) {
       if (child) {
         child->RemoveModel(model, depth + 1);
       }
-    }
-
-    return;
-  }
-
-  bool removed = false;
-  auto current = this->objects.begin();
-
-  while (current != this->objects.end()) {
-    if (*current == model) {
-      current = this->objects.erase(current);
-      removed = true;
-    } else {
-      ++current;
-    }
-  }
-
-  if (removed) {
-    for (WorldSpatialTree* node = this; node; node = node->parent) {
-      node->dirty = 1;
     }
   }
 }
@@ -312,16 +308,25 @@ void WorldSpatialTree::RemoveModel(C3dActor* model, int depth) {
 // OFFSET: 0x00AC8100
 // FUNCTION: fn_17665
 std::vector<C3dActor*>& WorldSpatialTree::ModelsAt(float x, float z, int depth) {
-  WorldSpatialTree* node = this;
-
-  while (depth != 5) {
-    const unsigned sideX = node->center[0] > x ? 0u : 1u;
-    const unsigned sideZ = node->center[2] > z ? 0u : 2u;
-    node = node->children[sideX + sideZ];
-    ++depth;
+  if (depth == 5) {
+    return this->objects;
   }
 
-  return node->objects;
+  WorldSpatialTree* child;
+
+  if (this->center[0] > x) {
+    if (this->center[2] > z) {
+      child = this->children[0];
+    } else {
+      child = this->children[2];
+    }
+  } else if (this->center[2] > z) {
+    child = this->children[1];
+  } else {
+    child = this->children[3];
+  }
+
+  return child->ModelsAt(x, z, depth + 1);
 }
 
 // OFFSET: 0x00ACB560
@@ -329,52 +334,50 @@ std::vector<C3dActor*>& WorldSpatialTree::ModelsAt(float x, float z, int depth) 
 void WorldSpatialTree::RefreshModelBounds(int depth) {
   this->dirty = 0;
 
-  if (depth != 5) {
+  if (depth == 5) {
+    float groundMinimum;
+    float groundMaximum;
+    float terrainMinimum;
+    float terrainMaximum;
+    this->ground->HeightBounds(this->groundCells, groundMinimum, groundMaximum);
+    this->terrain->HeightBounds(this->terrainCells, terrainMinimum, terrainMaximum);
+    this->maximum[1] = terrainMaximum > groundMaximum ? terrainMaximum : groundMaximum;
+    this->minimum[1] = terrainMinimum < groundMinimum ? terrainMinimum : groundMinimum;
+
+    for (C3dActor* model : this->objects) {
+      if (this->minimum[1] > model->minimum[1]) {
+        this->minimum[1] = model->minimum[1];
+      }
+
+      if (model->maximum[1] > this->maximum[1]) {
+        this->maximum[1] = model->maximum[1];
+      }
+    }
+
+    WorldSpatialTree* node = this;
+
+    do {
+      if (node->minimum[1] > this->minimum[1]) {
+        node->minimum[1] = this->minimum[1];
+      }
+
+      if (this->maximum[1] > node->maximum[1]) {
+        node->maximum[1] = this->maximum[1];
+      }
+
+      node->halfSize[0] = node->maximum[0] - node->center[0];
+      const float halfZ = node->maximum[2] - node->center[2];
+      const float middleY = (node->maximum[1] + node->minimum[1]) * g_depthAverageHalf;
+      node->center[1] = middleY;
+      node->halfSize[2] = halfZ;
+      node->halfSize[1] = node->maximum[1] - middleY;
+      node = node->parent;
+    } while (node);
+  } else {
     for (WorldSpatialTree* child : this->children) {
       if (child->dirty) {
         child->RefreshModelBounds(depth + 1);
       }
     }
-
-    return;
   }
-
-  float groundMinimum;
-  float groundMaximum;
-  float terrainMinimum;
-  float terrainMaximum;
-  this->ground->HeightBounds(this->groundCells, groundMinimum, groundMaximum);
-  this->terrain->HeightBounds(this->terrainCells, terrainMinimum, terrainMaximum);
-  this->maximum[1] = terrainMaximum > groundMaximum ? terrainMaximum : groundMaximum;
-  this->minimum[1] = terrainMinimum < groundMinimum ? terrainMinimum : groundMinimum;
-
-  for (C3dActor* model : this->objects) {
-    if (this->minimum[1] > model->minimum[1]) {
-      this->minimum[1] = model->minimum[1];
-    }
-
-    if (model->maximum[1] > this->maximum[1]) {
-      this->maximum[1] = model->maximum[1];
-    }
-  }
-
-  WorldSpatialTree* node = this;
-
-  do {
-    if (node->minimum[1] > this->minimum[1]) {
-      node->minimum[1] = this->minimum[1];
-    }
-
-    if (this->maximum[1] > node->maximum[1]) {
-      node->maximum[1] = this->maximum[1];
-    }
-
-    node->halfSize[0] = node->maximum[0] - node->center[0];
-    const float halfZ = node->maximum[2] - node->center[2];
-    const float middleY = (node->maximum[1] + node->minimum[1]) * 0.5f;
-    node->center[1] = middleY;
-    node->halfSize[2] = halfZ;
-    node->halfSize[1] = node->maximum[1] - middleY;
-    node = node->parent;
-  } while (node);
 }
