@@ -572,18 +572,7 @@ namespace {
 // FUNCTION: fn_18655
 template <>
 CEffect* CEffectAllocator<CThunderingOrb>::Create() {
-  void* memory = ::operator new(0xFC, std::nothrow);
-  if (!memory) {
-    return nullptr;
-  }
-
-  EncryptedName<0x44, 0x2F8B0F37118D157FULL>& name = ThunderingOrbName();
-  if (name.m_encrypted) {
-    utility::XorBytes(name.m_text, 0x44, 0x2F8B0F37118D157FULL);
-    name.m_encrypted = false;
-  }
-
-  return new (memory) CThunderingOrb(reinterpret_cast<const char*>(name.m_text));
+  return new (std::nothrow) CThunderingOrb(ThunderingOrbName().Text());
 }
 
 // INLINED
@@ -601,19 +590,7 @@ EncryptedName<0x3B, 0x39FF7FB50DEB998FULL>& WindBombName() {
 // FUNCTION: fn_18660
 template <>
 CEffect* CEffectAllocator<CWindBomb>::Create() {
-  void* memory = ::operator new(sizeof(CWindBomb), std::nothrow);
-  if (!memory) {
-    return nullptr;
-  }
-
-  const std::uint8_t source[] = {
-      0xCB, 0xCB, 0xBE, 0x44, 0xF1, 0x23, 0xBB, 0x6B, 0xD0, 0xCE, 0xA2, 0x43, 0xF1, 0x20, 0xBD, 0x76,
-      0xC2, 0xDB, 0xB7, 0x7A, 0xDC, 0x11, 0x9B, 0x66, 0xED, 0xF6, 0x86, 0x6F, 0xEA, 0x0B, 0x90, 0x4B,
-      0xE1, 0xF8, 0x8F, 0x62, 0xE9, 0x08, 0x96, 0x57, 0xEB, 0xC6, 0x89, 0x62, 0xD8, 0x1D, 0xA0, 0x4D,
-      0xE0, 0xEB, 0x85, 0x6C, 0xD1, 0x10, 0xD1, 0x4A, 0xFB, 0xEB, 0xEB};
-  thread_local EncryptedName<sizeof(source), 0x39FF7FB50DEB998FULL> name(source);
-  const std::string text = name.Text();
-  return new (memory) CWindBomb(text);
+  return new (std::nothrow) CWindBomb(WindBombName().Text());
 }
 
 // OFFSET: 0x00B1F010
@@ -5275,17 +5252,17 @@ void EffectLists::LoadMapEffectScript(bool reload) {
   std::string directory = "Lua Files\\EffectTool\\";
   std::string name = CurrentMapScriptName();
   std::string path = directory + name;
-  if (HasEffectScript(path.c_str(), name.substr()) || g_session.m_hotkeyScript->Load(path.c_str(), true, false)) {
+  if (HasEffectScript(path.c_str(), name) || g_session.m_hotkeyScript->Load(path.c_str(), true, false)) {
     int version = 0;
-    std::string versionKey = EmitterKey(name.substr(), "effect_version");
+    std::string versionKey = EmitterKey(name, "effect_version");
     g_session.m_hotkeyScript->Call("GetValue", "s>d", versionKey.c_str(), &version);
     switch (version) {
     case 0:
     case 1:
-      ReadEffectScriptV1(name.substr());
+      ReadEffectScriptV1(name);
       break;
     case 2:
-      ReadEffectScriptV2(name.substr());
+      ReadEffectScriptV2(name);
       break;
     }
   }
