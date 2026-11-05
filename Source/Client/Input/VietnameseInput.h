@@ -23,7 +23,7 @@ public:
 // VTABLE: vt_01911
 class TELEXInputMode : public CInputMode {
 public:
-  TELEXInputMode();
+  __declspec(noinline) TELEXInputMode();
   int IsModifierKey(char key, int count, char vowel) override;
   int Convert(char key, char vowel, int index) override;
 };
@@ -31,7 +31,7 @@ public:
 // VTABLE: vt_01622
 class VNIInputMode : public CInputMode {
 public:
-  VNIInputMode();
+  __declspec(noinline) VNIInputMode();
   int IsModifierKey(char key, int count, char vowel) override;
   int Convert(char key, char vowel, int index) override;
 };
