@@ -263,8 +263,7 @@ void UIEditCtrl::Paint() {
 // FUNCTION: fn_10783
 void UIEditCtrl::Slot23() {
   g_serverLanguage->ResetInput();
-  g_serverLanguage->ResetInput();
-  g_serverLanguage->Insert(this->text.c_str());
+  g_serverLanguage->ReplaceInput(this->text.c_str());
   g_serverLanguage->SetPassword(this->mask != 0);
   this->SelectAll();
 }
@@ -419,8 +418,7 @@ void UIEditCtrl::SetText(const char* value) {
 
   if (g_windowMgr.GetHoverWindow() == this) {
     g_serverLanguage->ResetInput();
-    g_serverLanguage->ResetInput();
-    g_serverLanguage->Insert(this->text.c_str());
+    g_serverLanguage->ReplaceInput(this->text.c_str());
   }
 
   this->SelectAll();
@@ -455,7 +453,7 @@ const char* UIEditCtrl::Text() {
 // OFFSET: 0x00858D80
 // FUNCTION: fn_10769
 std::string UIEditCtrl::LinkedText() {
-  return std::string(this->linkedText.c_str(), this->linkedText.size());
+  return this->linkedText;
 }
 
 // OFFSET: 0x00858F30
@@ -4898,21 +4896,19 @@ void UIEditCtrl_Custom::Trim() {
     return;
   }
 
-  const auto codePage = static_cast<WORD>(g_textCodePage);
-  const char* next = CharNextExA(codePage, this->text.c_str(), 0);
+  const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), 0);
   while (length - std::strlen(next) <= static_cast<unsigned>(this->maximum)) {
-    next = CharNextExA(codePage, next, 0);
+    next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
   }
 
-  const char* previous = CharPrevExA(codePage, this->text.c_str(), next, 0);
+  const char* previous = CharPrevExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), next, 0);
   this->text.resize(length - std::strlen(previous));
 
   g_serverLanguage->ResetInput();
-  g_serverLanguage->ResetInput();
-  g_serverLanguage->Insert(this->text.c_str());
+  g_serverLanguage->ReplaceInput(this->text.c_str());
 
   while (this->text.size() < static_cast<unsigned>(this->maximum)) {
-    this->text.append(" ", 1);
+    this->text += " ";
   }
 }
 
