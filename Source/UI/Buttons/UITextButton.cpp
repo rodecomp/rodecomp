@@ -562,36 +562,29 @@ void UIWindowMgr::AddRendered(UIWindow* window) {
 
 // OFFSET: 0x00891CC0
 // FUNCTION: fn_11457
-void UIListBox::Slot28(int x, int y) {
-  UIColorTransBalloonText*& hover = *reinterpret_cast<UIColorTransBalloonText**>(reinterpret_cast<char*>(this) + 0xE0);
+void UIServerListBox::Slot28(int x, int y) {
   const int index = this->LineAt(x, y);
   const int height = g_screenHeight;
-  if (this->lines.begin() != this->lines.end()) {
-    if (index != -1 && this->lines[index].size() != 0) {
-      int screenY = 0;
+  if (this->balloonTexts.begin() != this->balloonTexts.end()) {
+    if (index != -1 && this->balloonTexts[index].size() != 0) {
       int screenX = 0;
-      if (hover != nullptr) {
-        g_windowMgr.Schedule(hover);
-        hover = nullptr;
+      int screenY = 0;
+      if (this->balloon != nullptr) {
+        g_windowMgr.Schedule(this->balloon);
+        this->balloon = nullptr;
       }
 
-      UIColorTransBalloonText* balloon = new UIColorTransBalloonText();
-      hover = balloon;
-      balloon->SetSize(8, 8);
-
-      for (const UIWindow* window = this; window != nullptr; window = window->parent) {
-        screenX += window->geometry.x;
-        screenY += window->geometry.y;
-      }
-
-      balloon->Move(screenX + 0x50, height - 6);
-      g_windowMgr.AddRendered(balloon);
-      balloon->SetText(this->lines[index].c_str(), 50);
+      this->balloon = new UIColorTransBalloonText();
+      this->balloon->SetSize(8, 8);
+      this->ToScreen(screenX, screenY);
+      this->balloon->Move(screenX + 0x50, height - 6);
+      g_windowMgr.AddRendered(this->balloon);
+      this->balloon->SetText(this->balloonTexts[index].c_str(), 50);
       return;
     }
 
-    g_windowMgr.Schedule(hover);
-    hover = nullptr;
+    g_windowMgr.Schedule(this->balloon);
+    this->balloon = nullptr;
   }
 }
 

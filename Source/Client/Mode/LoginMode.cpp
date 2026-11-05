@@ -3676,17 +3676,11 @@ void CLoginMode::Slot7(int value) {
         std::string balloon;
         balloon.assign(displayNames[i], std::strlen(displayNames[i]));
         UIServerListBox* list = static_cast<UIServerListBox*>(window->m_serverList);
-        if (list->unknown_00D8 != list->unknown_00DC) {
-          new (reinterpret_cast<std::string*>(list->unknown_00D8)) std::string(balloon);
-          list->unknown_00D8 += sizeof(std::string);
-        } else if (list->unknown_00D4 == 0) {
-          if (void* storage = std::calloc(8, sizeof(std::string))) {
-            list->unknown_00D4 = reinterpret_cast<int>(storage);
-            list->unknown_00D8 = reinterpret_cast<int>(storage);
-            list->unknown_00DC = reinterpret_cast<int>(storage) + 8 * sizeof(std::string);
-            new (storage) std::string(balloon);
-            list->unknown_00D8 += sizeof(std::string);
-          }
+        if (list->balloonTexts.size() != list->balloonTexts.capacity()) {
+          list->balloonTexts.push_back(balloon);
+        } else if (list->balloonTexts.capacity() == 0) {
+          list->balloonTexts.reserve(8);
+          list->balloonTexts.push_back(balloon);
         }
       }
     }

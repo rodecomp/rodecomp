@@ -38,11 +38,7 @@ UIListBox::UIListBox()
 
 // OFFSET: 0x0086E750
 // FUNCTION: fn_11076
-UIServerListBox::UIServerListBox() : UIListBox() {
-  this->unknown_00D4 = 0;
-  this->unknown_00D8 = 0;
-  this->unknown_00DC = 0;
-  this->unknown_00E0 = 0;
+UIServerListBox::UIServerListBox() : UIListBox(), balloon(nullptr) {
 }
 
 // OFFSET: 0x00871040
