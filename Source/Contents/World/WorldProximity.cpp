@@ -7,6 +7,7 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Resource/World/TerrainResource.h"
 
@@ -16,8 +17,22 @@
 #include <functional>
 #include "Contents/GuildInfo.h"
 
-// OFFSET: 0x00AC93C0
-// FUNCTION: fn_17683
+#pragma pack(push, 1)
+struct PACKET_CZ_APPROXIMATE_ACTOR {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint32_t accountId;
+  /* 0006 */ std::uint16_t unknown_0006;
+  /* 0008 */ std::uint8_t unknown_0008;
+};
+#pragma pack(pop)
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(PACKET_CZ_APPROXIMATE_ACTOR) == 9);
+static_assert(offsetof(PACKET_CZ_APPROXIMATE_ACTOR, accountId) == 2);
+static_assert(offsetof(PACKET_CZ_APPROXIMATE_ACTOR, unknown_0006) == 6);
+#endif
+
+// INLINED
 void UpdateWorldProximityNotification(
   unsigned char& notified, std::function<bool()> nearby, CConnection& connection, const PacketLengths& lengths, const std::uint32_t& accountId
 ) {
@@ -42,41 +57,26 @@ void UpdateWorldProximityNotification(
   }
 }
 
-static void CallWorldProximityUpdate(CWorld* world, std::function<bool()> nearby) {
-  if (world->unknown_00F4) {
-    if (!nearby()) {
-      world->unknown_00F4 = false;
+// OFFSET: 0x00AC93C0
+// FUNCTION: fn_17683
+void CWorld::UpdateGuildMasterApproach(std::function<bool()> isNearby) {
+  if (this->unknown_00F4 == true) {
+    if (!isNearby()) {
+      this->unknown_00F4 = false;
     }
+
     return;
   }
 
-  if (nearby()) {
-    unsigned char packet[9];
-    const std::uint16_t id = 0x0BB0;
-    const std::uint16_t enabled = 1;
-    std::memcpy(packet, &id, sizeof(id));
-    std::memcpy(packet + 2, &g_guildInfo.unknown_00D0, sizeof(g_guildInfo.unknown_00D0));
-    std::memcpy(packet + 6, &enabled, sizeof(enabled));
-    packet[8] = 1;
-    GetRagConnection().Send(g_packetLengths.FixedLength(id), packet);
-    world->unknown_00F4 = true;
+  if (isNearby() == true) {
+    PACKET_CZ_APPROXIMATE_ACTOR packet;
+    packet.packetType = ID_CZ_APPROXIMATE_ACTOR;
+    packet.accountId = g_guildInfo.unknown_00D0;
+    packet.unknown_0006 = 1;
+    packet.unknown_0008 = 1;
+    GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+    this->unknown_00F4 = true;
   }
-}
-
-static bool ProximityCompareAidMatches(CWorld* world, std::uint32_t aid) {
-  for (CRenderObject* actor : world->actors) {
-    if (actor->render.accountId != aid) {
-      continue;
-    }
-
-    if (actor == nullptr) {
-      return false;
-    }
-
-    return static_cast<CGameActor*>(actor)->Slot42() == static_cast<int>(g_guildInfo.unknown_00D0);
-  }
-
-  return false;
 }
 
 // OFFSET: 0x00AC8A40
@@ -172,8 +172,8 @@ void CWorld::RemovePcPos(std::uint32_t aid, bool notify) {
       }
 
       if (notify && this->unknown_00F4) {
-        if (ProximityCompareAidMatches(this, aid)) {
-          CallWorldProximityUpdate(this, std::function<bool()>([]() { return false; }));
+        if (this->IsGuildMaster(aid)) {
+          this->UpdateGuildMasterApproach([this]() { return false; });
         }
       }
 
@@ -192,8 +192,8 @@ void CWorld::RemovePcPosForMove(std::uint32_t aid, bool notify) {
     }
 
     if (notify && this->unknown_00F4) {
-      if (ProximityCompareAidMatches(this, aid)) {
-        CallWorldProximityUpdate(this, std::function<bool()>([]() { return false; }));
+      if (this->IsGuildMaster(aid)) {
+        this->UpdateGuildMasterApproach([this]() { return false; });
       }
     }
 
@@ -258,27 +258,27 @@ bool WorldProximityRangeCallback::Invoke() {
     std::fabs(this->cellZ - this->playerZ) <= static_cast<float>(this->range);
 }
 
-
 // OFFSET: 0x00AC9D50
 // FUNCTION: fn_17686
 __declspec(noinline) void CWorld::PcApproachToPlayer(std::uint32_t aid, const CellFloatPos& pos) {
   if (this->player && this->player->Slot50() > 0 && this->IsGuildMaster(aid)) {
-    const float playerX = this->player->render.position.x;
-    const float playerZ = this->player->render.position.z;
-    const int range = this->nearbyRange;
-    CallWorldProximityUpdate(this, [playerX, playerZ, pos, range]() {
-      return std::fabs(pos.x - playerX) <= static_cast<float>(range) &&
-        std::fabs(pos.z - playerZ) <= static_cast<float>(range);
-    });
+    auto isNearby = [](const CellFloatPos& cell, const CellFloatPos& player, int range) {
+      return std::fabs(cell.x - player.x) <= static_cast<float>(range) && std::fabs(cell.z - player.z) <= static_cast<float>(range);
+    };
+
+    const CellFloatPos player = {this->player->render.position.x, this->player->render.position.z};
+    this->UpdateGuildMasterApproach(std::bind(isNearby, pos, player, this->nearbyRange));
   }
 }
 
 // OFFSET: 0x00AC9E70
 // FUNCTION: fn_17687
 void CWorld::PlayerMove(const float& x, const float& z) {
-  CallWorldProximityUpdate(this, [this, x, z]() {
-    return this->IsExistGuildMasterNearby(x, z);
-  });
+  auto isNearby = [this](const float& cellX, const float& cellZ) {
+    return this->IsExistGuildMasterNearby(cellX, cellZ);
+  };
+
+  this->UpdateGuildMasterApproach(std::bind(isNearby, x, z));
 }
 
 // OFFSET: 0x00ACA9F0
