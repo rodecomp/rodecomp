@@ -27,13 +27,14 @@ int UIWindow::DrawTitleBar(bool closeButton, const char* title, int width) {
 
   auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_mid.bmp")));
   if (middle) {
+    const int middleWidth = middle->image.width;
     titleHeight = middle->image.height;
     const int extent = width - right - left;
-    const int count = extent / middle->image.width + (extent % middle->image.width != 0);
+    const int count = extent / middleWidth + (extent % middleWidth != 0);
 
     for (int index = 0; index < count; ++index) {
       this->DrawBitmap(left, 0, &middle->image, false);
-      left += middle->image.width;
+      left += middleWidth;
     }
   }
 
@@ -72,12 +73,14 @@ int UIWindow::DrawTitleBarAt(int x, int width, bool closeButton, const char* tit
 
   auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_mid.bmp")));
   if (middle) {
+    const int middleWidth = middle->image.width;
     titleHeight = middle->image.height;
     const int extent = width - right - left;
-    const int count = extent / middle->image.width + (extent % middle->image.width != 0);
+    const int count = extent / middleWidth + (extent % middleWidth != 0);
 
     for (int index = 0; index < count; ++index) {
-      this->DrawBitmap(x + left + index * middle->image.width, 0, &middle->image, false);
+      this->DrawBitmap(x + left, 0, &middle->image, false);
+      left += middleWidth;
     }
   }
 
