@@ -6135,18 +6135,15 @@ void CEffectPrim::RenderDoubleGumGang(matrix& wtm) {
       const vector3d vec6 = vec2;
       const vector3d vec7 = vec3;
       const vector3d vec8 = vec4;
-      const vector3d* const centers[4] = {&slot.vecBPre, &slot.vecBNow, &slot.vecTPre, &slot.vecTNow};
 
-      for (int part = 0; part < 4; ++part) {
-        const float* const height = &slot.height[part * 4];
-        const vector3d& center = *centers[part];
+      {
+        const vector3d& center = slot.vecBPre;
+        const float* const height = &slot.height[0];
         const int dif = static_cast<int>(height[3] - this->state.slots[0].alphaT);
-
         bool front = (dif < 70 && dif > -80) || dif < -270 || dif > 270;
         if (height[2] != 0.0f && height[2] != 2.0f) {
           front = !front;
         }
-
         if (front) {
           vec1 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
           vec2 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
@@ -6158,12 +6155,109 @@ void CEffectPrim::RenderDoubleGumGang(matrix& wtm) {
           vec3 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
           vec4 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
         }
-
         vec1.y -= slot.height[20];
         vec2.y -= slot.height[20];
         vec3.y -= slot.height[20];
         vec4.y -= slot.height[20];
+        int count = static_cast<int>(height[1]);
+        if (count > slot.process) {
+          count = slot.process;
+        }
+        this->RenderTeiRect(
+          &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(height[2]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
+          1.0f, 2
+        );
+      }
 
+      {
+        const vector3d& center = slot.vecBNow;
+        const float* const height = &slot.height[4];
+        const int dif = static_cast<int>(height[3] - this->state.slots[0].alphaT);
+        bool front = (dif < 70 && dif > -80) || dif < -270 || dif > 270;
+        if (height[2] != 0.0f && height[2] != 2.0f) {
+          front = !front;
+        }
+        if (front) {
+          vec1 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
+          vec2 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
+          vec3 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
+          vec4 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
+        } else {
+          vec1 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
+          vec2 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
+          vec3 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
+          vec4 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
+        }
+        vec1.y -= slot.height[20];
+        vec2.y -= slot.height[20];
+        vec3.y -= slot.height[20];
+        vec4.y -= slot.height[20];
+        int count = static_cast<int>(height[1]);
+        if (count > slot.process) {
+          count = slot.process;
+        }
+        this->RenderTeiRect(
+          &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(height[2]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
+          1.0f, 2
+        );
+      }
+
+      {
+        const vector3d& center = slot.vecTPre;
+        const float* const height = &slot.height[8];
+        const int dif = static_cast<int>(height[3] - this->state.slots[0].alphaT);
+        bool front = (dif < 70 && dif > -80) || dif < -270 || dif > 270;
+        if (height[2] != 0.0f && height[2] != 2.0f) {
+          front = !front;
+        }
+        if (front) {
+          vec1 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
+          vec2 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
+          vec3 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
+          vec4 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
+        } else {
+          vec1 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
+          vec2 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
+          vec3 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
+          vec4 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
+        }
+        vec1.y -= slot.height[20];
+        vec2.y -= slot.height[20];
+        vec3.y -= slot.height[20];
+        vec4.y -= slot.height[20];
+        int count = static_cast<int>(height[1]);
+        if (count > slot.process) {
+          count = slot.process;
+        }
+        this->RenderTeiRect(
+          &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(height[2]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
+          1.0f, 2
+        );
+      }
+
+      {
+        const vector3d& center = slot.vecTNow;
+        const float* const height = &slot.height[12];
+        const int dif = static_cast<int>(height[3] - this->state.slots[0].alphaT);
+        bool front = (dif < 70 && dif > -80) || dif < -270 || dif > 270;
+        if (height[2] != 0.0f && height[2] != 2.0f) {
+          front = !front;
+        }
+        if (front) {
+          vec1 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
+          vec2 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
+          vec3 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
+          vec4 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
+        } else {
+          vec1 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
+          vec2 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
+          vec3 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
+          vec4 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
+        }
+        vec1.y -= slot.height[20];
+        vec2.y -= slot.height[20];
+        vec3.y -= slot.height[20];
+        vec4.y -= slot.height[20];
         int count = static_cast<int>(height[1]);
         if (count > slot.process) {
           count = slot.process;
