@@ -6,6 +6,11 @@
 #include <emmintrin.h>
 #include <intrin.h>
 
+#define XXH_swap32 _byteswap_ulong
+#define XXH_swap64 _byteswap_uint64
+#define XXH_rotl32 _rotl
+#define XXH_rotl64 _rotl64
+
 namespace {
   constexpr std::uint32_t XXH_PRIME32_1 = 0x9E3779B1U;
   constexpr std::uint32_t XXH_PRIME32_2 = 0x85EBCA77U;
@@ -57,18 +62,6 @@ namespace {
     std::memcpy(&value, data, sizeof(value));
     return value;
   }
-
-  // INLINED
-  __forceinline std::uint32_t Swap32(std::uint32_t value) { return _byteswap_ulong(value); }
-
-  // INLINED
-  __forceinline std::uint64_t Swap64(std::uint64_t value) { return _byteswap_uint64(value); }
-
-  // INLINED
-  __forceinline std::uint32_t Rotl32(std::uint32_t value, int bits) { return _rotl(value, bits); }
-
-  // INLINED
-  __forceinline std::uint64_t Rotl64(std::uint64_t value, int bits) { return _rotl64(value, bits); }
 
   // INLINED
   __forceinline std::uint64_t Xorshift64(std::uint64_t value, int bits) { return value ^ (value >> bits); }
@@ -212,7 +205,7 @@ namespace {
   // INLINED
   __forceinline std::uint64_t Len4to8_64b(const std::uint8_t* input, std::size_t length, const std::uint8_t* secret,
                                           std::uint64_t seed) {
-    seed ^= static_cast<std::uint64_t>(Swap32(static_cast<std::uint32_t>(seed))) << 32;
+    seed ^= static_cast<std::uint64_t>(XXH_swap32(static_cast<std::uint32_t>(seed))) << 32;
     std::uint32_t const input1 = ReadLE32(input);
     std::uint32_t const input2 = ReadLE32(input + length - 4);
     std::uint64_t const bitflip = (ReadLE64(secret + 8) ^ ReadLE64(secret + 16)) - seed;
@@ -229,7 +222,7 @@ namespace {
     std::uint64_t const inputLo = ReadLE64(input) ^ bitflip1;
     std::uint64_t const inputHi = ReadLE64(input + length - 8) ^ bitflip2;
     std::uint64_t const acc =
-        length + Swap64(inputLo) + inputHi + Mul128Fold64(inputLo, inputHi);
+        length + XXH_swap64(inputLo) + inputHi + Mul128Fold64(inputLo, inputHi);
     return Avalanche64b3(acc);
   }
 
@@ -278,7 +271,7 @@ namespace {
     std::uint32_t const combinedl = (static_cast<std::uint32_t>(c1) << 16) |
                                     (static_cast<std::uint32_t>(c2) << 24) | (static_cast<std::uint32_t>(c3) << 0) |
                                     (static_cast<std::uint32_t>(length) << 8);
-    std::uint32_t const combinedh = Rotl32(Swap32(combinedl), 13);
+    std::uint32_t const combinedh = XXH_rotl32(XXH_swap32(combinedl), 13);
     std::uint64_t const bitflipl = (ReadLE32(secret) ^ ReadLE32(secret + 4)) + seed;
     std::uint64_t const bitfliph = (ReadLE32(secret + 8) ^ ReadLE32(secret + 12)) - seed;
     std::uint64_t const keyedLo = static_cast<std::uint64_t>(combinedl) ^ bitflipl;
@@ -289,7 +282,7 @@ namespace {
   // INLINED
   __forceinline XXH128_hash_t Len4to8_128b(const std::uint8_t* input, std::size_t length, const std::uint8_t* secret,
                                            std::uint64_t seed) {
-    seed ^= static_cast<std::uint64_t>(Swap32(static_cast<std::uint32_t>(seed))) << 32;
+    seed ^= static_cast<std::uint64_t>(XXH_swap32(static_cast<std::uint32_t>(seed))) << 32;
     std::uint32_t const inputLo = ReadLE32(input);
     std::uint32_t const inputHi = ReadLE32(input + length - 4);
     std::uint64_t const input64 = inputLo + (static_cast<std::uint64_t>(inputHi) << 32);
@@ -318,7 +311,7 @@ namespace {
     m128.low64 += static_cast<std::uint64_t>(length - 1) << 54;
     inputHi ^= bitfliph;
     m128.high64 += (inputHi & 0xFFFFFFFF00000000ULL) + Mult32To64(static_cast<std::uint32_t>(inputHi), XXH_PRIME32_2);
-    m128.low64 ^= Swap64(m128.high64);
+    m128.low64 ^= XXH_swap64(m128.high64);
 
     XXH128_hash_t h128 = Mult64To128(m128.low64, XXH_PRIME64_2);
     h128.high64 += m128.high64 * XXH_PRIME64_2;
@@ -381,7 +374,7 @@ namespace {
   __forceinline std::uint64_t HashLong64bInternal(const void* input, std::size_t length, const void* secret,
                                                   std::size_t secretSize, XXH3_f_accumulate_512 f_acc512,
                                                   XXH3_f_scrambleAcc f_scramble) {
-    std::uint64_t acc[XXH_ACC_NB] = {XXH_PRIME32_3, XXH_PRIME64_1, XXH_PRIME64_2, XXH_PRIME64_3,
+    __declspec(align(16)) std::uint64_t acc[XXH_ACC_NB] = {XXH_PRIME32_3, XXH_PRIME64_1, XXH_PRIME64_2, XXH_PRIME64_3,
                                      XXH_PRIME64_4, XXH_PRIME32_2, XXH_PRIME64_5, XXH_PRIME32_1};
 
     HashLongInternalLoop(acc, static_cast<const std::uint8_t*>(input), length,
@@ -394,7 +387,7 @@ namespace {
   __forceinline XXH128_hash_t HashLong128bInternal(const void* input, std::size_t length, const void* secret,
                                                    std::size_t secretSize, XXH3_f_accumulate_512 f_acc512,
                                                    XXH3_f_scrambleAcc f_scramble) {
-    std::uint64_t acc[XXH_ACC_NB] = {XXH_PRIME32_3, XXH_PRIME64_1, XXH_PRIME64_2, XXH_PRIME64_3,
+    __declspec(align(16)) std::uint64_t acc[XXH_ACC_NB] = {XXH_PRIME32_3, XXH_PRIME64_1, XXH_PRIME64_2, XXH_PRIME64_3,
                                      XXH_PRIME64_4, XXH_PRIME32_2, XXH_PRIME64_5, XXH_PRIME32_1};
 
     HashLongInternalLoop(acc, static_cast<const std::uint8_t*>(input), length,
@@ -522,7 +515,7 @@ std::uint64_t XXH64_avalanche(std::uint64_t hash) {
 // FUNCTION: fn_00181
 std::uint64_t XXH64_round(std::uint64_t acc, std::uint64_t input) {
   acc += input * XXH_PRIME64_2;
-  acc = Rotl64(acc, 31);
+  acc = XXH_rotl64(acc, 31);
   acc *= XXH_PRIME64_1;
   return acc;
 }
@@ -538,20 +531,20 @@ std::uint64_t XXH64_finalize(std::uint64_t hash, const void* data, std::size_t l
     std::uint64_t const k1 = XXH64_round(0, ReadLE64(current));
     current += 8;
     hash ^= k1;
-    hash = Rotl64(hash, 27) * XXH_PRIME64_1 + XXH_PRIME64_4;
+    hash = XXH_rotl64(hash, 27) * XXH_PRIME64_1 + XXH_PRIME64_4;
     length -= 8;
   }
 
   if (length >= 4) {
     hash ^= static_cast<std::uint64_t>(ReadLE32(current)) * XXH_PRIME64_1;
     current += 4;
-    hash = Rotl64(hash, 23) * XXH_PRIME64_2 + XXH_PRIME64_3;
+    hash = XXH_rotl64(hash, 23) * XXH_PRIME64_2 + XXH_PRIME64_3;
     length -= 4;
   }
 
   while (length > 0) {
     hash ^= (*current++) * XXH_PRIME64_5;
-    hash = Rotl64(hash, 11) * XXH_PRIME64_1;
+    hash = XXH_rotl64(hash, 11) * XXH_PRIME64_1;
     --length;
   }
 
@@ -561,7 +554,7 @@ std::uint64_t XXH64_finalize(std::uint64_t hash, const void* data, std::size_t l
 // OFFSET: 0x004DEC70
 // FUNCTION: fn_00178
 std::uint64_t XXH3_rrmxmx(std::uint64_t hash, std::uint64_t length) {
-  hash ^= Rotl64(hash, 49) ^ Rotl64(hash, 24);
+  hash ^= XXH_rotl64(hash, 49) ^ XXH_rotl64(hash, 24);
   hash *= XXH_PRIME_MX2;
   hash ^= (hash >> 35) + length;
   hash *= XXH_PRIME_MX2;
