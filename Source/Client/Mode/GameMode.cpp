@@ -10478,7 +10478,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
         }
 
         if (line == limitLine) {
-          description = FormatOwnedString(description.c_str(), timeText.c_str());
+          description = static_cast<const std::string&>(FormatOwnedString(description.c_str(), timeText.c_str()));
         }
 
         const std::uint32_t lineColor = RGB(red, green, blue);
@@ -10502,7 +10502,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
         if (timeGetTime() - g_session.unknown_7ED4 > 10000) {
           g_session.unknown_7ED0 = 0;
         } else if (g_session.unknown_7ED0 != 0) {
-          extra = FormatOwnedString(LookupMessage(0xBD2), g_session.unknown_7ED0);
+          extra = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0xBD2), g_session.unknown_7ED0));
         }
 
         if (extra.size() != 0) {
@@ -10513,7 +10513,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
       {
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_16EC);
         if (item.unknown_0000[1] != 0) {
-          extra = FormatOwnedString("%s : %d", item.DisplayName(0).c_str(), item.quantity);
+          extra = static_cast<const std::string&>(FormatOwnedString("%s : %d", item.DisplayName(0).c_str(), item.quantity));
           color = 0xFABEBE;
         }
       }
@@ -10543,7 +10543,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     const char* text = nullptr;
     if (g_session.m_hotkeyScript->Call("GetStateIconDescript", "dd>s", activeId, limitLine, &text)) {
       std::string description(text);
-      description = FormatOwnedString(description.c_str(), timeText.c_str());
+      description = static_cast<const std::string&>(FormatOwnedString(description.c_str(), timeText.c_str()));
       static_cast<UITransBalloonText*>(this->unknown_05D0)->ChangeText(description.c_str(), limitLine - 1);
     }
   }
