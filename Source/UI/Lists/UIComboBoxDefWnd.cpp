@@ -175,13 +175,9 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       this->parent->Invalidate();
       this->Invalidate();
       this->list->Invalidate();
-      UIWindow* root = this;
-
-      while (root->parent) {
-        root = root->parent;
+      if (this->Root()) {
+        this->Root()->Invalidate();
       }
-
-      root->Invalidate();
 
       if (this->parent) {
         this->parent->SendMsg(nullptr, 23, 0, 0, 0, 0);
