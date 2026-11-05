@@ -1169,13 +1169,15 @@ void UIChatHisBox::ShiftNaviLinks() {
 // OFFSET: 0x0087CA70
 // FUNCTION: fn_11255
 __declspec(noinline) void UIChatHisBox::ClearNaviLinks() {
-  for (auto row = this->naviLinks.begin(); row != this->naviLinks.end();) {
-    for (UINaviLinkButton* button : *row) {
-      this->RemoveChild(button, 1);
+  for (auto row = this->itemTags.begin(); row != this->itemTags.end();) {
+    for (unsigned int index = 0; index < row->size(); ++index) {
+      this->RemoveChild((*row)[index], 1);
     }
-    std::vector<UINaviLinkButton*>().swap(*row);
-    row = this->naviLinks.erase(row);
+    std::vector<UIItemTagButton*> buttons;
+    buttons.swap(*row);
+    row = this->itemTags.erase(row);
   }
+  this->itemTags.clear();
 }
 
 // OFFSET: 0x00879E80
