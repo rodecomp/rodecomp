@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
+#include <format>
 #include <imm.h>
 
 // OFFSET: 0x00ACF2A0
@@ -209,14 +210,17 @@ void CLanguageBase::SetPassword(unsigned char value) {
 // OFFSET: 0x00ACE4C0
 // FUNCTION: fn_17787
 void CLanguageBase::MoveForward() {
-  const auto length = static_cast<std::uint32_t>(this->text.size());
-  const auto position = static_cast<std::uint32_t>(this->cursor);
-  if (position > length) {
-    this->cursor = static_cast<int>(length);
-  } else if (position < length) {
+  const unsigned length = static_cast<unsigned>(this->text.size());
+  const unsigned position = static_cast<unsigned>(this->cursor);
+  if (position == length) {
+    return;
+  }
+  if (position < length) {
     const char* begin = this->text.c_str();
     this->cursor = static_cast<int>(CharNextExA(static_cast<WORD>(this->codePage), begin + position, 0) - begin);
+    return;
   }
+  this->cursor = static_cast<int>(length);
 }
 // OFFSET: 0x00ACE5E0
 // FUNCTION: fn_17789
@@ -519,11 +523,7 @@ void CLanguageBase::RefreshComposition() {
   this->candidate.assign(converted, size);
 
   char combined[256];
-  const std::size_t committed = std::min<std::size_t>(this->text.size(), 255);
-  std::memcpy(combined, this->text.data(), committed);
-  const std::size_t pending = std::min<std::size_t>(this->candidate.size(), 255 - committed);
-  std::memcpy(combined + committed, this->candidate.data(), pending);
-  combined[committed + pending] = 0;
+  *std::format_to_n(combined, sizeof(combined) - 1, "{}{}", this->text, this->candidate).out = 0;
 
   SuggestChatCommand(combined);
 }
