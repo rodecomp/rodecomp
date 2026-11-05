@@ -445,7 +445,7 @@ public:
   void sub_AA6B80();
   void SetScreenSize(int width, int height);
   void ArrangeMiniPartyWindows();
-  void AddMiniPartyWindow(UIWindow* window);
+  __declspec(noinline) void AddMiniPartyWindow(UIWindow* window);
   void RearrangeMiniPartyWindows();
   void RebuildMiniPartyWindows();
   void RestoreMiniPartyWindows();
