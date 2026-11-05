@@ -5,64 +5,52 @@
 // OFFSET: 0x00BC5E00
 // FUNCTION: fn_19849
 void EffectPrimitiveState::ProcessAlpha() {
-  const int current = this->stateCnt;
-  const bool valuesAndLimit = this->chRadiSpeed != 0;
+  if (this->unknown_014C.z != 0) {
+    int index = this->unknown_01D8;
 
-  if (valuesAndLimit || this->unknown_014C.y != 0) {
-    auto index = this->unknown_01D8;
-    const auto count = static_cast<std::uint32_t>(this->chPoint.size());
-    const bool outside = valuesAndLimit ? static_cast<unsigned>(index) > count - 1u : static_cast<unsigned>(index) >= count;
-
-    if (index < 0 || outside) {
-      index = 0;
+    if (index < 0 || static_cast<std::uint32_t>(index) > this->chPoint.size() - 1) {
       this->unknown_01D8 = 0;
+      index = 0;
     }
 
-    const float key = this->chPoint[index];
+    if (static_cast<float>(this->stateCnt) == this->chPoint[index]) {
+      this->alpha = this->chVal1[index];
+      this->maxAlpha = this->chVal2[index];
+      this->unknown_01D8 = index + 1;
+    }
+  } else if (this->unknown_014C.y != 0) {
+    int index = this->unknown_01D8;
 
-    if (static_cast<float>(current) == key) {
-      const float value = this->chVal1[index];
+    if (index < 0 || static_cast<std::uint32_t>(index) >= this->chPoint.size()) {
+      this->unknown_01D8 = 0;
+      index = 0;
+    }
 
-      if (valuesAndLimit) {
-        this->alpha = value;
-        this->maxAlpha = this->chVal2[index];
-      } else {
-        this->alphaSpeed = value;
-      }
-
+    if (static_cast<float>(this->stateCnt) == this->chPoint[index]) {
+      this->alphaSpeed = this->chVal1[index];
       this->unknown_01D8 = index + 1;
     }
   }
 
-  const float lower = this->minAlpha;
-
   if ((this->pattern & 0x80u) != 0) {
-    const bool below = this->alphaSpeed >= 0.0f ? this->alpha < this->maxAlpha : lower < this->alpha;
-
-    if (!below) {
+    if (this->alphaSpeed < 0.0f ? this->alpha <= this->minAlpha : this->alpha >= this->maxAlpha) {
       this->alphaSpeed *= -1.0f;
     }
   }
 
-  if (this->isDisappear == 0) {
-    const int parentRemaining = this->master->state.duration - this->master->state.stateCnt;
-    const int remaining = this->duration - current;
-
-    if (remaining > parentRemaining + 1) {
-      this->isDisappear = 1;
-      this->pattern &= ~0x80u;
-      this->alphaSpeed = -(this->alpha / static_cast<float>(parentRemaining));
-    }
+  if (this->isDisappear == 0 && this->duration - this->stateCnt > this->master->state.duration - this->master->state.stateCnt + 1) {
+    this->isDisappear = 1;
+    this->pattern &= ~0x80u;
+    this->alphaSpeed = -(this->alpha / static_cast<float>(this->master->state.duration - this->master->state.stateCnt));
   }
 
-  if (current == this->fadeOutCnt) {
+  if (this->stateCnt == this->fadeOutCnt) {
     this->pattern &= ~0x80u;
-    const int remaining = this->duration - current;
-    this->alphaSpeed = -(this->alpha / static_cast<float>(remaining)) * this->alphaDelta;
+    this->alphaSpeed = -(this->alpha / static_cast<float>(this->duration - this->stateCnt)) * this->alphaDelta;
   }
 
   const float sum = this->alphaSpeed + this->alpha;
-  const float minimum = lower > sum ? lower : sum;
+  const float minimum = this->minAlpha > sum ? this->minAlpha : sum;
   const float bounded = this->maxAlpha < minimum ? this->maxAlpha : minimum;
   this->alpha = bounded;
   const auto alpha = static_cast<std::uint32_t>(TruncateToInt(bounded));
