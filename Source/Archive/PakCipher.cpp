@@ -124,46 +124,66 @@ namespace myGPack {
   // OFFSET: 0x00AE92F0
   // FUNCTION: fn_18105
   void PakCipher::BuildRoundKeys(const std::uint8_t* key) {
+    std::uint8_t keyBytes[8];
+    std::memcpy(keyBytes, key, sizeof(keyBytes));
     std::uint8_t halves[8] = {};
 
     for (unsigned i = 0; i < 28; ++i) {
-      const unsigned topBit = s_keyPermutationTop[i] - 1;
-      if (key[topBit >> 3] & s_bitMasks[topBit & 7]) {
+      const std::uint8_t topBit = s_keyPermutationTop[i] - 1;
+      if (keyBytes[topBit >> 3] & s_bitMasks[topBit & 7]) {
         halves[i >> 3] &= s_bitMasks[i & 7];
       }
 
-      const unsigned bottomBit = s_keyPermutationBottom[i] - 1;
-      if (key[bottomBit >> 3] & s_bitMasks[bottomBit & 7]) {
+      const std::uint8_t bottomBit = s_keyPermutationBottom[i] - 1;
+      if (keyBytes[bottomBit >> 3] & s_bitMasks[bottomBit & 7]) {
         halves[i >> 7] &= s_bitMasks[i & 7];
       }
     }
 
     for (unsigned round = 0; round < 16; ++round) {
-      for (unsigned shift = 0; shift < s_keyRotations[round]; ++shift) {
-        const unsigned carryIn = (halves[0] & 0x80) != 0 ? 0x10 : 0;
+      for (std::uint8_t shift = 0; shift < s_keyRotations[round]; ++shift) {
+        const std::uint8_t topCarry = halves[0] & 0x80;
 
         for (unsigned byte = 0; byte < 3; ++byte) {
-          halves[byte] = static_cast<std::uint8_t>((halves[byte] << 1) | ((halves[byte + 1] & 0x80) != 0));
+          halves[byte] <<= 1;
+          if (halves[byte + 1] & 0x80) {
+            ++halves[byte];
+          }
         }
 
-        halves[3] = static_cast<std::uint8_t>((halves[3] << 1) | carryIn);
+        halves[3] <<= 1;
+        if (topCarry) {
+          halves[3] += 0x10;
+        }
 
-        const unsigned bottomCarryIn = (halves[4] & 0x80) != 0 ? 0x10 : 0;
+        const std::uint8_t bottomCarry = halves[4] & 0x80;
 
         for (unsigned byte = 4; byte < 7; ++byte) {
-          halves[byte] = static_cast<std::uint8_t>((halves[byte] << 1) | ((halves[byte + 1] & 0x80) != 0));
+          halves[byte] <<= 1;
+          if (halves[byte + 1] & 0x80) {
+            ++halves[byte];
+          }
         }
 
-        halves[7] = static_cast<std::uint8_t>((halves[7] << 1) | bottomCarryIn);
+        halves[7] <<= 1;
+        if (bottomCarry) {
+          halves[7] += 0x10;
+        }
       }
 
       std::memset(this->m_roundKeys[round], 0, sizeof(this->m_roundKeys[round]));
 
       for (unsigned i = 0; i < 48; ++i) {
-        const unsigned bit = s_keyCompression[i] - 1;
-        const unsigned byte = bit < 28 ? bit >> 3 : (bit - 28) >> 7;
-        const unsigned mask = bit < 28 ? bit & 7 : (bit - 28) & 7;
-        if (halves[byte] & s_bitMasks[mask]) {
+        std::uint8_t bit = s_keyCompression[i] - 1;
+        unsigned byte;
+        if (bit < 28) {
+          byte = bit >> 3;
+        } else {
+          bit -= 28;
+          byte = bit >> 7;
+        }
+
+        if (halves[byte] & s_bitMasks[bit & 7]) {
           this->m_roundKeys[round][i / 6] |= s_bitMasks[i % 6];
         }
       }
@@ -186,24 +206,30 @@ namespace myGPack {
     std::memcpy(output + 4, &inputHigh, sizeof(inputHigh));
     InitialPermutation(output);
 
-    for (int round = 0; round < rounds; ++round) {
+    std::uint32_t right;
+    std::memcpy(&right, output + 4, sizeof(right));
+
+    for (std::uint8_t round = 0; round < rounds; ++round) {
+      std::uint8_t key[8];
+      std::memcpy(key, this->m_roundKeys[15 - round], sizeof(key));
+
       std::uint8_t expanded[8] = {};
 
       for (unsigned i = 0; i < 48; ++i) {
-        unsigned bit = s_expansion[i] + 31;
-        if (output[bit >> 3] & (0x80u >> (bit & 7))) {
-          expanded[i / 6] |= static_cast<std::uint8_t>(0x80u >> (i % 6));
+        const std::uint8_t bit = s_expansion[i] + 31;
+        if (output[bit >> 3] & s_bitMasks[bit & 7]) {
+          expanded[i / 6] |= s_bitMasks[i % 6];
         }
       }
 
       for (unsigned i = 0; i < 8; ++i) {
-        expanded[i] ^= this->m_roundKeys[15 - round][i];
+        expanded[i] ^= key[i];
       }
 
-      std::uint8_t substituted[4] = {};
+      std::uint8_t substituted[8] = {};
 
       for (unsigned i = 0; i < 8; ++i) {
-        std::uint8_t value = s_substitution[64 * i + (expanded[i] >> 2)];
+        const std::uint8_t value = s_substitution[64 * i + (expanded[i] >> 2)];
         if (i & 1) {
           substituted[i >> 1] += value;
         } else {
@@ -211,27 +237,30 @@ namespace myGPack {
         }
       }
 
-      std::uint8_t transformed[4] = {};
+      std::uint8_t transformed[8] = {};
 
       for (unsigned i = 0; i < 32; ++i) {
-        unsigned bit = s_roundPermutation[i] - 1;
-        if (substituted[bit >> 3] & (0x80u >> (bit & 7))) {
-          transformed[i >> 3] |= static_cast<std::uint8_t>(0x80u >> (i & 7));
+        const std::uint8_t bit = s_roundPermutation[i] - 1;
+        if (substituted[bit >> 3] & s_bitMasks[bit & 7]) {
+          transformed[i >> 3] |= s_bitMasks[i & 7];
         }
       }
 
-      std::uint8_t previous[4];
-      std::memcpy(previous, output, 4);
-      std::memcpy(output, output + 4, 4);
-
-      for (unsigned i = 0; i < 4; ++i) {
-        output[i + 4] = transformed[i] ^ previous[i];
-      }
+      std::uint32_t left;
+      std::uint32_t transformedWord;
+      std::memcpy(&left, output, sizeof(left));
+      std::memcpy(&transformedWord, transformed, sizeof(transformedWord));
+      std::memcpy(output, &right, sizeof(right));
+      right = left ^ transformedWord;
+      std::memcpy(output + 4, &right, sizeof(right));
     }
 
-    for (unsigned i = 0; i < 4; ++i) {
-      std::swap(output[i], output[i + 4]);
-    }
+    std::uint32_t low;
+    std::uint32_t high;
+    std::memcpy(&low, output, sizeof(low));
+    std::memcpy(&high, output + 4, sizeof(high));
+    std::memcpy(output + 4, &low, sizeof(low));
+    std::memcpy(output, &high, sizeof(high));
 
     FinalPermutation(output);
     return 1;
@@ -320,12 +349,13 @@ namespace myGPack {
   // OFFSET: 0x00AE9260
   // FUNCTION: fn_18104
   int InitialPermutation(std::uint8_t* block) {
-    std::uint8_t result[8] = {};
+    std::uint8_t result[8];
+    std::memset(result, 0, sizeof(result));
 
     for (unsigned i = 0; i < 64; ++i) {
-      unsigned bit = s_initialPermutation[i] - 1;
-      if (block[bit >> 3] & (0x80u >> (bit & 7))) {
-        result[i >> 3] |= static_cast<std::uint8_t>(0x80u >> (i & 7));
+      const std::uint8_t bit = s_initialPermutation[i] - 1;
+      if (block[bit >> 3] & s_bitMasks[bit & 7]) {
+        result[i >> 3] |= s_bitMasks[i & 7];
       }
     }
 
@@ -339,12 +369,13 @@ namespace myGPack {
   // OFFSET: 0x00AE91D0
   // FUNCTION: fn_18103
   int FinalPermutation(std::uint8_t* block) {
-    std::uint8_t result[8] = {};
+    std::uint8_t result[8];
+    std::memset(result, 0, sizeof(result));
 
     for (unsigned i = 0; i < 64; ++i) {
-      unsigned bit = s_finalPermutation[i] - 1;
-      if (block[bit >> 3] & (0x80u >> (bit & 7))) {
-        result[i >> 3] |= static_cast<std::uint8_t>(0x80u >> (i & 7));
+      const std::uint8_t bit = s_finalPermutation[i] - 1;
+      if (block[bit >> 3] & s_bitMasks[bit & 7]) {
+        result[i >> 3] |= s_bitMasks[i & 7];
       }
     }
 
@@ -358,69 +389,65 @@ namespace myGPack {
   // OFFSET: 0x00AE9020
   // FUNCTION: fn_18102
   int EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) {
-    std::memcpy(output, &inputLow, 4);
-    std::memcpy(output + 4, &inputHigh, 4);
+    std::memcpy(output, &inputLow, sizeof(inputLow));
+    std::memcpy(output + 4, &inputHigh, sizeof(inputHigh));
     InitialPermutation(output);
 
-    if (rounds > 0) {
-      std::uint32_t left;
-      std::uint32_t right;
-      std::memcpy(&left, output, sizeof(left));
-      std::memcpy(&right, output + 4, sizeof(right));
+    std::uint32_t right;
+    std::memcpy(&right, output + 4, sizeof(right));
 
-      for (int round = 0; round < rounds; ++round) {
-        std::uint8_t expanded[8] = {};
+    for (std::uint8_t round = 0; round < rounds; ++round) {
+      std::uint8_t key[8];
+      std::memcpy(key, roundKeys[round], sizeof(key));
 
-        for (unsigned i = 0; i < 48; ++i) {
-          unsigned bit = s_expansion[i] + 31;
-          if (output[bit >> 3] & (0x80u >> (bit & 7))) {
-            expanded[i / 6] |= static_cast<std::uint8_t>(0x80u >> (i % 6));
-          }
+      std::uint8_t expanded[8] = {};
+
+      for (unsigned i = 0; i < 48; ++i) {
+        const std::uint8_t bit = s_expansion[i] + 31;
+        if (output[bit >> 3] & s_bitMasks[bit & 7]) {
+          expanded[i / 6] |= s_bitMasks[i % 6];
         }
-
-        for (unsigned i = 0; i < 8; ++i) {
-          expanded[i] ^= roundKeys[round][i];
-        }
-
-        std::uint8_t substituted[4] = {};
-
-        for (unsigned i = 0; i < 8; ++i) {
-          std::uint8_t value = s_substitution[64 * i + (expanded[i] >> 2)];
-          if (i & 1) {
-            substituted[i >> 1] += value;
-          } else {
-            substituted[i >> 1] = static_cast<std::uint8_t>(value << 4);
-          }
-        }
-
-        std::uint8_t transformed[4] = {};
-
-        for (unsigned i = 0; i < 32; ++i) {
-          unsigned bit = s_roundPermutation[i] - 1;
-          if (substituted[bit >> 3] & (0x80u >> (bit & 7))) {
-            transformed[i >> 3] |= static_cast<std::uint8_t>(0x80u >> (i & 7));
-          }
-        }
-
-        std::uint32_t transformedWord;
-        std::memcpy(&transformedWord, transformed, sizeof(transformedWord));
-        std::uint32_t newRight = left ^ transformedWord;
-        left = right;
-        right = newRight;
-        std::memcpy(output, &left, sizeof(left));
-        std::memcpy(output + 4, &right, sizeof(right));
       }
 
-      std::memcpy(output, &right, sizeof(right));
-      std::memcpy(output + 4, &left, sizeof(left));
-    } else {
+      for (unsigned i = 0; i < 8; ++i) {
+        expanded[i] ^= key[i];
+      }
+
+      std::uint8_t substituted[8] = {};
+
+      for (unsigned i = 0; i < 8; ++i) {
+        const std::uint8_t value = s_substitution[64 * i + (expanded[i] >> 2)];
+        if (i & 1) {
+          substituted[i >> 1] += value;
+        } else {
+          substituted[i >> 1] = static_cast<std::uint8_t>(value << 4);
+        }
+      }
+
+      std::uint8_t transformed[8] = {};
+
+      for (unsigned i = 0; i < 32; ++i) {
+        const std::uint8_t bit = s_roundPermutation[i] - 1;
+        if (substituted[bit >> 3] & s_bitMasks[bit & 7]) {
+          transformed[i >> 3] |= s_bitMasks[i & 7];
+        }
+      }
+
       std::uint32_t left;
-      std::uint32_t right;
+      std::uint32_t transformedWord;
       std::memcpy(&left, output, sizeof(left));
-      std::memcpy(&right, output + 4, sizeof(right));
+      std::memcpy(&transformedWord, transformed, sizeof(transformedWord));
       std::memcpy(output, &right, sizeof(right));
-      std::memcpy(output + 4, &left, sizeof(left));
+      right = left ^ transformedWord;
+      std::memcpy(output + 4, &right, sizeof(right));
     }
+
+    std::uint32_t low;
+    std::uint32_t high;
+    std::memcpy(&low, output, sizeof(low));
+    std::memcpy(&high, output + 4, sizeof(high));
+    std::memcpy(output + 4, &low, sizeof(low));
+    std::memcpy(output, &high, sizeof(high));
 
     FinalPermutation(output);
     return 1;
@@ -439,16 +466,16 @@ namespace myGPack {
       }
     }
 
-    const std::size_t baseLength = static_cast<std::size_t>(end - base);
+    const int baseLength = static_cast<int>(end - base);
 
     key[0] = 'n';
     key[7] = 'k';
 
-    if (baseLength >= 6) {
-      std::memcpy(&key[1], base, 6);
-    } else {
+    if (baseLength < 6) {
       std::memcpy(&key[1], base, baseLength);
       std::memcpy(&key[1 + baseLength], base, 6 - baseLength);
+    } else {
+      std::memcpy(&key[1], base, 6);
     }
 
     return key;
