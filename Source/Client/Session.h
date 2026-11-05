@@ -895,7 +895,7 @@ public:
   char* ConvertTooltipText(const char* source, char* output) const;
   void StoreEmblem(const void* data, std::size_t size, std::uint32_t guildId, int version);
   int MercSkillLevel(int skillId) const;
-  int HomunSkillLevel(int skillId) const;
+  __declspec(noinline) int HomunSkillLevel(int skillId) const;
   __declspec(noinline) int UseLevel(int id) const;
   int SkillLevel(int id) const;
   CRenderObject* FindGameActor(std::uint32_t aid) const;
