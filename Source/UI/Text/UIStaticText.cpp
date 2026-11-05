@@ -115,42 +115,21 @@ void UIStaticText::SetTextFittedCodePage(const char* value) {
   }
 
   this->tooltipEnabled = 1;
-  const int wideLength = MultiByteToWideChar(3, 0, value, -1, nullptr, 0);
-  std::wstring truncated;
-  if (wideLength > 0) {
-    truncated.resize(wideLength);
-    MultiByteToWideChar(3, 0, value, -1, truncated.data(), wideLength);
-    truncated.resize(wideLength - 1);
-  }
-
+  this->text = value;
+  std::wstring truncated(ATL::CA2WEX<128>(value, CP_THREAD_ACP));
   while (this->geometry.width < width) {
-    if (truncated.size() < 2) {
-      const int byteLength = WideCharToMultiByte(3, 0, truncated.c_str(), -1, nullptr, 0, nullptr, nullptr);
-      std::string fitted;
-      if (byteLength > 0) {
-        fitted.resize(byteLength);
-        WideCharToMultiByte(3, 0, truncated.c_str(), -1, fitted.data(), byteLength, nullptr, nullptr);
-        fitted.resize(byteLength - 1);
-      }
-      this->text = fitted + "...";
+    if (truncated.size() <= 1) {
+      this->text = std::string(ATL::CW2AEX<128>(truncated.c_str(), CP_THREAD_ACP)) + "...";
       break;
     }
 
-    const std::size_t size = truncated.size();
-    const bool removePair = (static_cast<unsigned char>(truncated[size - 2]) & 0x80) != 0 &&
-                            (static_cast<unsigned char>(truncated[size - 1]) & 0x80) != 0;
-    truncated.resize(size - (removePair ? 2 : 1));
-
-    const int byteLength = WideCharToMultiByte(3, 0, truncated.c_str(), -1, nullptr, 0, nullptr, nullptr);
-    std::string fitted;
-    if (byteLength > 0) {
-      fitted.resize(byteLength);
-      WideCharToMultiByte(3, 0, truncated.c_str(), -1, fitted.data(), byteLength, nullptr, nullptr);
-      fitted.resize(byteLength - 1);
+    if (truncated.size() >= 2) {
+      const std::size_t size = truncated.size();
+      truncated.resize((truncated[size - 2] & 0x80) != 0 && (truncated[size - 1] & 0x80) != 0 ? size - 2 : size - 1);
     }
-    this->text = fitted + "...";
-    width = this->TextWidth(this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0, 0
-    );
+
+    this->text = std::string(ATL::CW2AEX<128>(truncated.c_str(), CP_THREAD_ACP)) + "...";
+    width = this->TextWidth(this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0, 0);
   }
 
   this->Invalidate();
@@ -158,7 +137,7 @@ void UIStaticText::SetTextFittedCodePage(const char* value) {
 // OFFSET: 0x0085DE70
 // FUNCTION: fn_10820
 void UIStaticText::Paint() {
-  this->FillRegion(0, 0, this->geometry.width, this->geometry.height, this->background);
+  this->ClearSurface(this->background);
   const auto draw = [&](int x, int y, std::uint32_t color, unsigned char boldValue, unsigned char italicValue) {
     this->DrawTextAt(x, y, this->text.c_str(), 0, this->fontFamily, this->fontHeight, color, boldValue, italicValue
     );
@@ -316,7 +295,7 @@ void UIBmpTextButton::AddTextStyle(int state, int height, std::uint32_t color, u
     y = static_cast<int>((this->geometry.height - textHeight) * 0.5);
   }
 
-  for (const BitmapButtonTextStyle& style : this->styles) {
+  for (const BitmapButtonTextStyle style : this->styles) {
     if (style.state == state) {
       return;
     }
