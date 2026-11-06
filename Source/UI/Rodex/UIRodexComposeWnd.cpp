@@ -239,7 +239,10 @@ void UIRodexComposeWnd::Slot32(int x, int y) {
 UIRodexComposeWnd::UIRodexComposeWnd()
     : UIFrameWnd(0), unknown_00B4(nullptr), unknown_00B8(nullptr), unknown_00BC(nullptr), unknown_00C0(nullptr), unknown_00C4(nullptr),
       unknown_00C8(nullptr), unknown_00CC(0), unknown_00D0(nullptr), m_contents(nullptr), unknown_00D8(nullptr), m_zeny(nullptr), unknown_00E0(0),
-      unknown_00E4(0), m_itemIndex(0), unknown_00F8(0), unknown_0100(nullptr) {
+      unknown_00E4(0) {
+  this->unknown_0100 = nullptr;
+  this->unknown_00F8 = 0;
+  this->m_itemIndex = 0;
   this->m_items.clear();
 }
 
