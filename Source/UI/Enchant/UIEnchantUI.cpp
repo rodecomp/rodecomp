@@ -141,9 +141,9 @@ void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::AddNe
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
     this->items.resize(count);
@@ -239,9 +239,9 @@ void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::AddNewItem() {
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
     this->items.resize(count);
