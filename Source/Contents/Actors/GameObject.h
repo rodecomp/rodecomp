@@ -4,6 +4,8 @@
 #include <cstdint>
 
 class CGameObject {
+  static std::uint64_t s_nextIdentity;
+
 public:
   CGameObject();
   virtual ~CGameObject();

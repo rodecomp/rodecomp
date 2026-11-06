@@ -76,18 +76,18 @@ namespace {
 
   // GLOBAL: gl_25444
   CGameObjectIDGenerator g_gameObjectIdGenerator;
-
-  // STATIC: 0x0135EF80
-  // GLOBAL: gl_21923
-  std::uint64_t nextIdentity = 0;
 }
+
+// STATIC: 0x0135EF80
+// GLOBAL: gl_21923
+std::uint64_t CGameObject::s_nextIdentity = 0;
 
 // GLOBAL: gl_24538
 float g_cotangent = 0.16f;
 
 // OFFSET: 0x00CA8600
 // FUNCTION: fn_20989
-CGameObject::CGameObject() : identity(++nextIdentity) {
+CGameObject::CGameObject() : identity(++s_nextIdentity) {
 }
 
 // OFFSET: 0x00CA8EC0
