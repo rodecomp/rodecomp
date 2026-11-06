@@ -124,7 +124,7 @@ bool __stdcall ValidateCharacterName(const char* name) {
 bool CSession::IsNavigationAllowed() const {
   const std::string name = ScriptMapName(this->m_navigationPlayerMap);
   for (const auto& forbidden : this->m_navigationForbiddenMaps) {
-    if (forbidden == name) {
+    if (std::strcmp(forbidden.c_str(), name.c_str()) == 0) {
       return false;
     }
   }
@@ -1027,10 +1027,10 @@ std::string EquipmentResourceMgr::GetWeaponResourceName(int type, int job, int s
 
   const int spriteJob = g_session.GetSpriteJob(job <= 31 ? job : job + 3950, costume, true);
   jobName = g_session.m_jobSpriteNames[spriteJob];
-  sexName = g_session.GetSexName(sex);
+  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
 
   if (weaponItem == -1) {
-    weaponName = g_session.GetWeaponName(weapon);
+    weaponName = static_cast<const std::string&>(g_session.GetWeaponName(weapon));
     result = this->GetBodyRacePrefix(spriteJob) +
       FormatOwnedString("\\%s_%s%s.%s", jobName.c_str(), sexName.c_str(), weaponName.c_str(), g_equipmentResourceExtensions[type]);
   } else {
@@ -1052,8 +1052,8 @@ std::string EquipmentResourceMgr::GetWeaponEffectResourceName(int type, int job,
 
   const int spriteJob = g_session.GetSpriteJob(job <= 31 ? job : job + 3950, costume, true);
   jobName = g_session.m_jobSpriteNames[spriteJob];
-  sexName = g_session.GetSexName(sex);
-  weaponName = g_session.GetWeaponName(weapon);
+  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  weaponName = static_cast<const std::string&>(g_session.GetWeaponName(weapon));
 
   const char* const suffix = effects[effect];
   if (weaponItem == -1) {

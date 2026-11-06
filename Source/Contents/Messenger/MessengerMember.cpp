@@ -47,6 +47,22 @@
 namespace {
 #pragma pack(push, 1)
   struct MessengerRecordHeader {
+    // INLINED
+    MessengerRecordHeader() : id(0), bytes(0) {
+    }
+
+    // INLINED
+    ~MessengerRecordHeader() {
+      this->id = 0;
+      this->bytes = 0;
+    }
+
+    // INLINED
+    void Clear() {
+      this->bytes = 0;
+      this->id = 0;
+    }
+
     /* 0000 */ std::int16_t id;
     /* 0002 */ std::uint32_t bytes;
   };
@@ -257,36 +273,36 @@ std::uint32_t MessengerMember::Deserialize(const std::vector<unsigned char>& dat
   }
 
   std::uint32_t offset = 6;
-  MessengerRecordHeader header{};
+  MessengerRecordHeader header;
+  header.Clear();
   std::memcpy(&header, data.data(), sizeof(header));
   if (header.id != 251) {
     return 0xFFFFFFFF;
   }
 
   while (offset < data.size()) {
-    header = {};
+    header.Clear();
     std::memcpy(&header, data.data() + offset, sizeof(header));
     offset += 6;
-    const unsigned char* source = data.data() + offset;
     switch (header.id) {
     case 252:
       return offset;
     case 253:
-      std::memcpy(&this->valid, source, header.bytes);
+      std::memcpy(&this->valid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 254:
-      std::memcpy(&this->accountId, source, header.bytes);
+      std::memcpy(&this->accountId, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 255:
-      std::memcpy(&this->characterId, source, header.bytes);
+      std::memcpy(&this->characterId, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 256: {
       char buffer[260];
       std::memset(buffer, 0, sizeof(buffer));
-      std::memcpy(buffer, source, header.bytes);
+      std::memcpy(buffer, data.data() + offset, header.bytes);
       offset += header.bytes;
       this->name = buffer;
       break;
@@ -294,21 +310,21 @@ std::uint32_t MessengerMember::Deserialize(const std::vector<unsigned char>& dat
     case 257: {
       char buffer[260];
       std::memset(buffer, 0, sizeof(buffer));
-      std::memcpy(buffer, source, header.bytes);
+      std::memcpy(buffer, data.data() + offset, header.bytes);
       offset += header.bytes;
       this->map = buffer;
       break;
     }
     case 258:
-      std::memcpy(&this->leader, source, header.bytes);
+      std::memcpy(&this->leader, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 259:
-      std::memcpy(&this->offline, source, header.bytes);
+      std::memcpy(&this->offline, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 260:
-      std::memcpy(&this->color, source, header.bytes);
+      std::memcpy(&this->color, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     default:
@@ -543,10 +559,13 @@ void UIFriendOptionWnd::Paint() {
 // OFFSET: 0x00739220
 // FUNCTION: fn_07683
 int UIFriendOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
-    if (a == 201) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 201:
       g_windowMgr.CloseWindow(68);
-    } else if (a == 213) {
+      break;
+    case 213:
       if (sender == this->option0Box) {
         g_session.m_autoOpenWhisperWindow = static_cast<int>(b);
       } else if (sender == this->option2Box) {
@@ -554,20 +573,19 @@ int UIFriendOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       } else if (sender == this->option1Box) {
         g_session.m_whisperOpenSound = static_cast<int>(b);
       }
+      break;
     }
     return 0;
-  }
-
-  if (message == 34) {
+  case 34:
     this->saved = reinterpret_cast<FriendOptionWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
     }
     this->Move(this->saved->x, this->saved->y);
     return 0;
+  default:
+    return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
-  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x009A54B0
