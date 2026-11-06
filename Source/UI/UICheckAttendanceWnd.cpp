@@ -385,13 +385,16 @@ int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->Invalidate();
     break;
   case 6:
-    if (argument1 == 184) {
+    switch (argument1) {
+    case 184:
       if (this->m_blinking) {
         CheckAttendanceRequestPacket packet = {0xAEF};
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
       }
-    } else if (argument1 == 201) {
+      break;
+    case 201:
       g_windowMgr.CloseWindow(328);
+      break;
     }
   }
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
