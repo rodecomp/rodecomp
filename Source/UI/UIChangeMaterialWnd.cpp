@@ -664,7 +664,8 @@ void UIChangeMaterialWnd_List::Slot28(int x, int y) {
   this->ToScreen(screenX, screenY);
 
   const std::string text = FormatOwnedString(LookupMessage(0xB7), ItemDisplayName(entry->results.front().id).c_str(), entry->results.front().quantity);
-  g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
+  CMode* const mode = g_modeMgr.gameMode;
+  mode->ShowTooltip(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
 }
 
 // INLINED
