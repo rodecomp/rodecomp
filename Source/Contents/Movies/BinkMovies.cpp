@@ -1,5 +1,11 @@
 #include "Contents/Movies/BinkMovies.h"
 #include "Render/Textures/TextureCache.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/World/World.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include "Utility/Math/ScalarConversion.h"
 #include <algorithm>
@@ -57,13 +63,14 @@ void BinkMovies::AddPosition(NamedBinkMovie& movie, float x, float y, float z) {
 
 // OFFSET: 0x007B04F0
 // FUNCTION: fn_09166
-void BinkMovies::Update(const float* playerPosition, int volume) {
-  for (const auto& movie : this->m_movies) {
+void BinkMovies::Update() {
+  for (const auto& entry : this->m_movies) {
+    NamedBinkMovie* movie = entry.get();
     if (!movie || !movie->decoder || movie->name.empty()) {
       continue;
     }
 
-    if (movie->decoder->Update()) {
+    if (movie->decoder->Update() == true) {
       CTexture* texture = g_texMgr.Load(movie->name.c_str(), 0, false, true, false);
 
       if (texture) {
@@ -71,25 +78,26 @@ void BinkMovies::Update(const float* playerPosition, int volume) {
       }
     }
 
-    if (!movie->positions.empty() && playerPosition) {
+    if (movie->positions.empty()) {
+      continue;
+    }
+
+    CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    if (player) {
+      const float* playerPosition = &player->render.position.x;
       float nearest = 250.0f;
 
-      for (const MoviePosition& position : movie->positions) {
-        const float x = position.x - playerPosition[0];
-        const float y = position.y - playerPosition[1];
-        const float z = position.z - playerPosition[2];
-        const float distance = std::sqrt((y * y + x * x) + z * z);
+      for (std::list<MoviePosition>::const_iterator position = movie->positions.begin(); position != movie->positions.end(); ++position) {
+        const float x = position->x - playerPosition[0];
+        const float y = position->y - playerPosition[1];
+        const float z = position->z - playerPosition[2];
+        const float distance = SquareRoot((y * y + x * x) + z * z);
         nearest = distance < nearest ? distance : nearest;
       }
 
-      int attenuation = 0;
-
-      if (movie->radius > nearest) {
-        const float scaled = (static_cast<float>(volume) / movie->radius) * (movie->radius - nearest);
-        const unsigned level = static_cast<unsigned>(TruncateToInt(scaled));
-        attenuation = static_cast<int>(level * 256u);
-      }
-
+      const int attenuation = movie->radius > nearest
+        ? static_cast<int>((static_cast<float>(g_soundMgr->sampleVolume) / movie->radius) * (movie->radius - nearest)) * 256
+        : 0;
       BinkSetVolume(movie->decoder->Handle(), 0, attenuation);
     }
   }

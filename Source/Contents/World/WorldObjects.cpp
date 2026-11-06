@@ -125,10 +125,7 @@ void CWorld::OnExitFrame() {
 // FUNCTION: fn_17688
 void CWorld::OnProcess() {
   if (this->movies != nullptr) {
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    CPlayer* player = gameMode->scene->player;
-    const float* playerPosition = player != nullptr ? &player->render.position.x : nullptr;
-    this->movies->Update(playerPosition, g_soundMgr->sampleVolume);
+    this->movies->Update();
   }
 
   std::atomic_ref<int> pending(this->pending);
@@ -137,9 +134,9 @@ void CWorld::OnProcess() {
     const int end = this->published + ready;
     while (this->published < end) {
       C3dActor& model = *this->models[this->published];
-      for (WorldSpatialTree* child : this->spatial.children) {
-        if (model.oriented.Intersects(child->minimum)) {
-          child->InsertModel(model, 1);
+      for (int index = 0; index < 4; ++index) {
+        if (model.oriented.Intersects(this->spatial.children[index]->minimum)) {
+          this->spatial.children[index]->InsertModel(model, 1);
         }
       }
 
@@ -176,6 +173,10 @@ void CWorld::OnProcess() {
       CSkill* skill = static_cast<CSkill*>(*skillEntry);
       if (skill->skillAid != aid) {
         continue;
+      }
+
+      if (skill == nullptr) {
+        break;
       }
 
       skill->SendMsg(nullptr, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
