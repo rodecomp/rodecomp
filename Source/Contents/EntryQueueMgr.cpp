@@ -19,13 +19,13 @@ struct EntryQueueAdmissionPacket {
 };
 
 struct EntryQueueApplyPacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t type;
   /* 0004 */ char queueName[24];
 };
 
 struct EntryQueueNamePacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
   /* 0002 */ char queueName[24];
 };
 
@@ -68,7 +68,7 @@ void CEntryQueueMgr::SendApply(std::uint16_t type, const char* name) {
   packet.id = 0x8D7;
   packet.type = type;
   strncpy_s(packet.queueName, sizeof(packet.queueName), name, 23);
-  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00BA20A0
@@ -78,7 +78,7 @@ void CEntryQueueMgr::SendCancel() {
     EntryQueueNamePacket packet;
     packet.id = 0x8DA;
     strcpy_s(packet.queueName, sizeof(packet.queueName), this->current->name);
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
 }
 
@@ -89,7 +89,7 @@ void CEntryQueueMgr::SendRankingRequest() {
     EntryQueueNamePacket packet;
     packet.id = 0x90A;
     strcpy_s(packet.queueName, sizeof(packet.queueName), this->current->name);
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
 }
 
