@@ -37,7 +37,7 @@ public:
 
 class CUITime : public CUIControl {
 public:
-  CUITime();
+  __declspec(noinline) CUITime();
   ~CUITime() override;
   void Slot15(int width, int height) override;
   void Slot16() override;
