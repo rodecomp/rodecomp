@@ -732,9 +732,9 @@ void SelectPackageItemBox::CUIItemInfo::Slot15(int width, int height) {
   this->image = new CUIStaticImage();
   this->image->SetSize(200, 34);
   this->image->Move(0, 0);
-  const std::uint8_t imageSource[] = {0xC9, 0x88, 0xEF, 0x41, 0x7D, 0x93, 0xB8, 0x14, 0xCF, 0xC3, 0xEF, 0x77, 0x00, 0xE7, 0x21,
-                                      0xAA, 0x6C, 0x4B, 0x4A, 0xD8, 0xC9, 0x2D, 0x1C, 0xBA, 0x62, 0x46, 0x48, 0xDE, 0xE1, 0x34,
-                                      0x09, 0xBC, 0x64, 0x78, 0x43, 0xD2, 0xCE, 0x29, 0x53, 0xBB, 0x64, 0x57, 0x2F};
+  const char imageSource[] = {'\xC9', '\x88', '\xEF', '\x41', '\x7D', '\x93', '\xB8', '\x14', '\xCF', '\xC3', '\xEF', '\x77', '\x00', '\xE7', '\x21',
+                                      '\xAA', '\x6C', '\x4B', '\x4A', '\xD8', '\xC9', '\x2D', '\x1C', '\xBA', '\x62', '\x46', '\x48', '\xDE', '\xE1', '\x34',
+                                      '\x09', '\xBC', '\x64', '\x78', '\x43', '\xD2', '\xCE', '\x29', '\x53', '\xBB', '\x64', '\x57', '\x2F'};
   // GLOBAL: gl_25124
   thread_local EncryptedName<sizeof(imageSource), 0xD97D5DBDBB2F2709ULL> imageName(imageSource);
   std::string background(imageName.Text());
