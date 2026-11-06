@@ -8,7 +8,7 @@
 
 void ClearUserHotkeys();
 void SaveUserHotkeys();
-void ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description);
+void __stdcall ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description);
 void LoadUserHotkeyTab(Json::Value& values, int tab);
 
 // INLINED

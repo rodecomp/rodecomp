@@ -26,11 +26,11 @@ void SaveUserHotkeys() {
   }
 }
 
-__declspec(noinline) void ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description);
+__declspec(noinline) void __stdcall ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description);
 
 // OFFSET: 0x005F8B20
 // FUNCTION: fn_04064
-void ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description) {
+void __stdcall ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description) {
   g_session.m_hotkeyScript->Call("ChangeUserHotKey", "ddsdd", tab + 1, index, description.c_str(), key1, key2);
 }
 
