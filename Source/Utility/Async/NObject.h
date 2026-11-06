@@ -4,6 +4,8 @@
 #include <cstdint>
 
 class NObject {
+  static std::uint32_t s_nextObjectId;
+
 public:
   NObject();
   virtual ~NObject();
