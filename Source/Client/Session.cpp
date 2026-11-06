@@ -634,8 +634,9 @@ const char* CSession::GetBgmFileName(const char* rswName) {
 // FUNCTION: fn_23565
 bool CSession::HasItem17D4(int itemId) const {
   if (!this->unknown_1784[10].empty()) {
-    for (const ITEM_INFO& item : this->unknown_1784[10]) {
-      if (std::atoi(item.itemId.c_str()) == itemId) {
+    for (std::list<ITEM_INFO>::const_iterator item = this->unknown_1784[10].begin();
+         item != this->unknown_1784[10].end(); ++item) {
+      if (std::atoi(item->itemId.c_str()) == itemId) {
         return true;
       }
     }
