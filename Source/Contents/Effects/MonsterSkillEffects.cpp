@@ -722,8 +722,14 @@ void CCylinderEffect::Slot04() {
     }
 
     const int texPart = particle->unknown_000C;
-    const ParticleQuad quad = {false, 0.0f, 1.0f, static_cast<float>(texPart / 21.0),
-                               static_cast<float>((texPart + 1) / 21.0), false, true};
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = 0.0f;
+    quad.bottom = 1.0f;
+    quad.left = static_cast<float>(texPart / 21.0);
+    quad.right = static_cast<float>((texPart + 1) / 21.0);
     particle->Render(quad);
   }
 }
@@ -908,7 +914,7 @@ void CFallenAngelEffect::Slot01() {
 // OFFSET: 0x00711690
 // FUNCTION: fn_07224
 bool CFallenAngelEffect::Slot06() {
-  if (this->emitter->lifetime == 0.0f) {
+  if (0.0f == this->emitter->lifetime) {
     return true;
   }
 
@@ -2816,7 +2822,7 @@ CSavageImpactEffect::CSavageImpactEffect() : CEffect(1837), offset{} {
 // OFFSET: 0x00722460
 // FUNCTION: fn_07385
 bool CSavageImpactEffect::Slot06() {
-  if (this->emitter->lifetime == 0.0f) {
+  if (0.0f == this->emitter->lifetime) {
     return true;
   }
 
