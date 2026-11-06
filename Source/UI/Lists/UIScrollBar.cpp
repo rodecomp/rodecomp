@@ -846,11 +846,9 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
 void UIChatHisBox::Slot26(int, int) {
   const unsigned int index = static_cast<unsigned int>(this->selected);
 
-  if (index == static_cast<unsigned int>(-1) || index >= this->history.size() || this->history[index].size() == 0 || this->history[index].c_str() == nullptr) {
-    return;
+  if (index != static_cast<unsigned int>(-1) && index < this->history.size() && this->history[index].size() > 0 && this->history[index].c_str() != nullptr) {
+    this->parent->SendMsg(this, 6, 347, reinterpret_cast<std::intptr_t>(this->HistoryText(index)), 0, 0);
   }
-
-  this->parent->SendMsg(this, 6, 347, reinterpret_cast<std::intptr_t>(this->HistoryText(index)), 0, 0);
 }
 
 // OFFSET: 0x00890430
