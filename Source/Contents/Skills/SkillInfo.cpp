@@ -1895,7 +1895,8 @@ void CSkillAction_DK_VIGOR::Slot11(int level, CGameActor* source, CGameActor* ta
 // FUNCTION: fn_08451
 void CEfstAction_VIGOR::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("vigor_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("vigor_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -1924,7 +1925,8 @@ EfstActionMessage CEfstAction_VIGOR::Slot04() {
 // FUNCTION: fn_08456
 void CSkillAction_DK_SERVANTWEAPON_ATK::Slot15(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_down"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_down"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -1932,8 +1934,10 @@ void CSkillAction_DK_SERVANTWEAPON_ATK::Slot15(int level, CGameActor* source, CG
 // FUNCTION: fn_08457
 void CSkillAction_DK_SERVANTWEAPON_ATK::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -1971,8 +1975,10 @@ void CSkillAction_DK_SERVANT_W_PHANTOM::Slot16(int actor, CGameActor* targetActo
 // FUNCTION: fn_08462
 void CEfstAction_SERVANT_SIGN::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2074,7 +2080,8 @@ void CSkillAction_DK_SERVANT_W_DEMOL::Slot15(int caster, CGameActor* target, CGa
 // FUNCTION: fn_08471
 void CSkillAction_DK_SERVANT_W_DEMOL::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2086,7 +2093,8 @@ void CSkillAction_DK_STORMSLASH::Slot11(int level, CGameActor* source, CGameActo
   }
 
   const float scale = source->render.speed * 50.0f + 30.0f;
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("stormslash_{}", level)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("stormslash_{}", level)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (!effect) {
     return;
   }
@@ -2116,8 +2124,10 @@ void CSkillAction_DK_MADNESS_CRUSHER::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08477
 void CSkillAction_DK_MADNESS_CRUSHER::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("madness_crusher_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("madness_crusher"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("madness_crusher_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("madness_crusher"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2125,7 +2135,8 @@ void CSkillAction_DK_MADNESS_CRUSHER::Slot16(int level, CGameActor* source, CGam
 // FUNCTION: fn_08479
 void CSkillAction_DK_DRAGONIC_PIERCE::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
       effect->Slot14(level);
     }
   }
@@ -2180,8 +2191,10 @@ void CSkillAction_DK_DRAGONIC_PIERCE::Slot11(int level, CGameActor* source, CGam
 // FUNCTION: fn_08481
 void CSkillAction_DK_DRAGONIC_PIERCE::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_hit_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_hit_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2197,8 +2210,10 @@ void CSkillAction_DK_DRAGONIC_BREATH::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08484
 void CSkillAction_DK_DRAGONIC_BREATH::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_breath_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_breath"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_breath_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_breath"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2238,8 +2253,10 @@ void CSkillAction_DK_CHARGINGPIERCE::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08488
 void CSkillAction_DK_CHARGINGPIERCE::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2255,7 +2272,8 @@ void CEfstAction_CHARGINGPIERCE_COUNT::Slot00(int efstId, int value, int argumen
   if (argument3) {
     this->Slot01(efstId, value, argument3, 0, actor);
     if (CRenderObject* target = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAidIncludeMe(argument3)) {
-      g_effectMgr->Spawn(argument3, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      EffectLists* effects = g_effectMgr;
+      effects->Spawn(argument3, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
       g_soundMgr->PlayWave(
         "effect\\DK_CHARGINGPIERCE3.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f,
@@ -2281,8 +2299,10 @@ void CEfstAction_CHARGINGPIERCE_COUNT::Slot01(int efstId, int argument2, int arg
 // FUNCTION: fn_08493
 void CSkillAction_DK_HACKANDSLASHER::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2290,7 +2310,8 @@ void CSkillAction_DK_HACKANDSLASHER::Slot11(int level, CGameActor* source, CGame
 // FUNCTION: fn_08494
 void CSkillAction_DK_HACKANDSLASHER::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2304,7 +2325,8 @@ int CSkillAction_DK_HACKANDSLASHER_ATK::Slot02() {
 // FUNCTION: fn_08496
 void CSkillAction_DK_HACKANDSLASHER_ATK::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2563,7 +2585,8 @@ void CSkillAction_NPC_LIGHTNING_JUDGEMENT::Slot08(int level, CGameActor* source)
 // FUNCTION: fn_08506
 void CSkillAction_NPC_LIGHTNING_JUDGEMENT::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spark_blaster_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spark_blaster_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
     g_soundMgr->PlayWave(
       "effect\\NPC_LIGHTNING_JUDGEMENT.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
@@ -2583,7 +2606,8 @@ void CSkillAction_NPC_LIGHTNING_JUDGEMENT::Slot16(int level, CGameActor* source,
 // FUNCTION: fn_08508
 void CEfstAction_GROGGY::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("groggy_on_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("groggy_on_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2618,8 +2642,10 @@ void CSkillAction_NPC_RESET_EFST::Slot11(int level, CGameActor* source, CGameAct
 // FUNCTION: fn_08512
 void CEfstAction_TARGET_MARKER::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("target_marker_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("target_marker_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("target_marker_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("target_marker_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2700,9 +2726,12 @@ void CSkillAction_NPC_BLOCK_SEAL::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08522
 void CEfstAction_BLOCK_SEAL::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     g_effectMgr->Spawn(actor->render.accountId, 2400, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
@@ -2743,7 +2772,8 @@ void CSkillAction_HN_DOUBLEBOWLINGBASH::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08527
 void CSkillAction_HN_DOUBLEBOWLINGBASH::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("double_bowlingbash"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("double_bowlingbash"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2766,7 +2796,8 @@ int CSkillAction_HN_MEGA_SONIC_BLOW::Slot02() {
 void CSkillAction_HN_MEGA_SONIC_BLOW::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(121, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mega_sonic_blow"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mega_sonic_blow"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2788,7 +2819,8 @@ void CSkillAction_HN_SHIELD_CHAIN_RUSH::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08533
 void CSkillAction_HN_SHIELD_CHAIN_RUSH::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shield_chain_rush"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shield_chain_rush"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2814,12 +2846,15 @@ void CSkillAction_HN_SPIRAL_PIERCE_MAX::Slot11(int level, CGameActor* source, CG
   }
 
   if (!g_serviceOptions.Get(229)) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max_aura_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max_aura_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max_aura"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max_aura"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
   const vector3d position = source->render.position;
-  CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max"), position.x, position.y, position.z, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max"), position.x, position.y, position.z, 0, -1, 0, 0);
   if (effect) {
     effect->Slot17(angle);
   }
@@ -2928,10 +2963,14 @@ int CSkillAction_HN_JACK_FROST_NOVA::Slot14() {
 // FUNCTION: fn_08550
 void CSkillObjectAction_HN_JACK_FROST_NOVA::Slot00(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_start_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_start_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -2940,7 +2979,8 @@ void CSkillObjectAction_HN_JACK_FROST_NOVA::Slot00(int argument, CRenderObject* 
 void CSkillObjectAction_HN_JACK_FROST_NOVA::Slot01(CRenderObject* object) {
   if (object) {
     const vector3d position = object->render.position;
-    g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_end"), position.x, position.y, position.z, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_end"), position.x, position.y, position.z, 0, -1, 0, 0);
   }
 }
 
@@ -3038,10 +3078,14 @@ void CSkillAction_HN_GROUND_GRAVITATION::Slot08(int level, CGameActor* source) {
 // OFFSET: 0x00784EA0
 // FUNCTION: fn_08558
 void CSkillObjectAction_HN_GROUND_GRAVITATION::Slot00(int argument, CRenderObject* object, CGameActor* source) {
-  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_bottom_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_bottom_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_bottom_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_bottom_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00785370
@@ -3075,7 +3119,8 @@ void CSkillAction_HN_NAPALM_VULCAN_STRIKE::Slot08(int level, CGameActor* source)
 // FUNCTION: fn_08562
 void CSkillAction_HN_NAPALM_VULCAN_STRIKE::Slot15(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("napalm_vulcan_strike"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("napalm_vulcan_strike"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -3097,7 +3142,8 @@ void CSkillAction_HN_BREAKINGLIMIT::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08565
 void CSkillAction_HN_BREAKINGLIMIT::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("breakinglimit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("breakinglimit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -3105,7 +3151,8 @@ void CSkillAction_HN_BREAKINGLIMIT::Slot11(int level, CGameActor* source, CGameA
 // FUNCTION: fn_08566
 void CEfstAction_BREAKINGLIMIT::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("breakinglimit_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("breakinglimit_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -3142,7 +3189,8 @@ void CSkillAction_HN_RULEBREAK::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08571
 void CSkillAction_HN_RULEBREAK::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rulebreak"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rulebreak"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -3150,7 +3198,8 @@ void CSkillAction_HN_RULEBREAK::Slot11(int level, CGameActor* source, CGameActor
 // FUNCTION: fn_08572
 void CEfstAction_RULEBREAK::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rulebreak_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rulebreak_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -3173,8 +3222,10 @@ void CEfstAction_RULEBREAK::Slot02(int efstId, int value, int argument3, int arg
 // FUNCTION: fn_08575
 void CSkillAction_HN_OVERCOMING_CRISIS::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("overcoming_crisis"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("overcoming_crisis_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("overcoming_crisis"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("overcoming_crisis_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
