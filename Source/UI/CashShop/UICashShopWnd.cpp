@@ -669,21 +669,21 @@ void UICashShopWnd_Banner::Slot31(int, int) {
 // FUNCTION: fn_09548
 void UICashShopWnd_CartItem::Slot28(int x, int y) {
   if (static_cast<unsigned int>(x - 0x30) <= 0x70 && static_cast<unsigned int>(y - 0xC) <= 0xB) {
-    x = 0;
-    y = -10;
-    this->ToScreen(x, y);
-    g_modeMgr.gameMode->ShowTooltip(this->m_item.unknown_0044.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+    int screenX = 0;
+    int screenY = -10;
+    this->ToScreen(screenX, screenY);
+    g_modeMgr.gameMode->ShowTooltip(this->m_item.unknown_0044.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
   }
 }
 
 // OFFSET: 0x007D11D0
 // FUNCTION: fn_09549
 void UICashShopWnd_Item::Slot28(int x, int y) {
-  if (y < 0x18) {
-    x = 0;
-    y = -20;
-    this->ToScreen(x, y);
-    g_modeMgr.gameMode->ShowTooltip(this->m_item.unknown_0044.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+  if (y <= 0x17) {
+    int screenX = 0;
+    int screenY = -20;
+    this->ToScreen(screenX, screenY);
+    g_modeMgr.gameMode->ShowTooltip(this->m_item.unknown_0044.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
   }
 }
 
