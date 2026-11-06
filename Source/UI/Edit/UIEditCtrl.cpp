@@ -3414,7 +3414,15 @@ CSkillInfo UISkillListWnd::GetVisibleSkill(int row) {
 // OFFSET: 0x00974570
 // FUNCTION: fn_13303
 bool UIMerchantShopMakeWnd::HasSelection() const {
-  return this->unknown_018A >= 0 && this->unknown_018C >= 0;
+  if (0 > this->unknown_018A) {
+    return false;
+  }
+
+  if (0 > this->unknown_018C) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00974590
