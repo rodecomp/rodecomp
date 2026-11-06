@@ -51,11 +51,31 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
   ITEM_INFO item;
 
   switch (message) {
+  case 31: {
+    const int itemId = static_cast<int>(a);
+    this->itemIds.push_back(itemId);
+
+    item.SetItemId(itemId);
+    item.unknown_0060 = 0;
+    item.identified = 1;
+    this->m_list->AddLine(item.DisplayName(0).c_str());
+    return 0;
+  }
+
+  case 18:
+    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    return 0;
+
+  case 19:
+    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    return 0;
+
   case 6: {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, this->m_list->selected);
 
-    if (response == 184) {
+    switch (response) {
+    case 184: {
       if (g_replayAnimationScaling) {
         this->m_list->selected = static_cast<int>(d);
         this->m_list->Invalidate();
@@ -89,32 +109,16 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         }
         }
       }
-    } else if (response == 185) {
+      break;
+    }
+    case 185: {
       ITEM_INFO materials[3];
       g_modeMgr.GetGameMode()->SendMsg(130, 0, reinterpret_cast<int>(materials), 0, 0);
       g_windowMgr.CloseWindow(79);
       return 0;
     }
+    }
 
-    return 0;
-  }
-
-  case 18:
-    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
-    return 0;
-
-  case 19:
-    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
-    return 0;
-
-  case 31: {
-    const int itemId = static_cast<int>(a);
-    this->itemIds.push_back(itemId);
-
-    item.SetItemId(itemId);
-    item.unknown_0060 = 0;
-    item.identified = 1;
-    this->m_list->AddLine(item.DisplayName(0).c_str());
     return 0;
   }
 
