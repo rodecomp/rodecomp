@@ -58,11 +58,11 @@ void CCheckAttendanceMgr::Destroy() {
 // FUNCTION: fn_05351
 std::pair<int, int> CCheckAttendanceMgr::GetReward(int day) {
   const auto found = this->m_rewards.find(day);
-  if (found == this->m_rewards.end()) {
-    return std::pair<int, int>(0, 0);
+  if (found != this->m_rewards.end()) {
+    return std::pair<int, int>(found->second.m_item, found->second.m_count);
   }
 
-  return std::pair<int, int>(found->second.m_item, found->second.m_count);
+  return std::pair<int, int>(0, 0);
 }
 
 // OFFSET: 0x00671200
