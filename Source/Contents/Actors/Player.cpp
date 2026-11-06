@@ -1764,7 +1764,7 @@ bool CPc::IsCostumeOutfit() const {
 int CPc::GetDualWieldWeaponType(int first, int second) {
   int result = W_FIST;
   int main = first;
-  int sub = second;
+  int sub = 0;
 
   if (!first) {
     if (!second) {
@@ -1772,7 +1772,8 @@ int CPc::GetDualWieldWeaponType(int first, int second) {
     }
 
     main = second;
-    sub = 0;
+  } else {
+    sub = second;
   }
 
   if (main >= 1100 && main < 1150 || main >= 13400 && main < 13500 || main >= 500000 && main < 510000) {
