@@ -2994,11 +2994,11 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case 0x7A:
       if (g_serviceOptions.Get(0xDD)) {
-        this->camera->shake.Start(1, argument1 == 1 || argument1 >= 650 ? argument1 : 0, 1.0f, 0.24f, 0.2f);
+        this->camera->Start(1, argument1 == 1 || argument1 >= 650 ? argument1 : 0, 1.0f, 0.24f, 0.2f);
       }
       return 0;
     case 0x87:
-      this->camera->shake.SetAmplitudes(*reinterpret_cast<const float*>(argument1), *reinterpret_cast<const float*>(argument2), *reinterpret_cast<const float*>(argument3));
+      this->camera->SetAmplitudes(*reinterpret_cast<const float*>(argument1), *reinterpret_cast<const float*>(argument2), *reinterpret_cast<const float*>(argument3));
       return 0;
     case 0x94: {
       if (argument1 == -1 || (argument1 % 10 < 2 && g_session.m_petFriendly / 10 < 90 && !g_session.IsAdminSubMode(3))) {

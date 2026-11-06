@@ -39,6 +39,6 @@ void CView::Update() {
   this->camera.desiredTarget[1] = position.y;
   this->camera.desiredTarget[2] = position.z;
   this->camera.Smooth();
-  this->shake.Apply(this->camera, g_worldViewDrawn);
+  this->Apply(this->camera, g_worldViewDrawn);
   this->Refresh();
 }

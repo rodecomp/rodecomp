@@ -37,10 +37,6 @@ struct CameraShake {
   /* 0014 */ int enabled;
   /* 0018 */ unsigned start;
   /* 001C */ unsigned duration;
-
-  void Apply(CameraState& camera, int& frameLatch);
-  void Start(int enabled, unsigned duration, float horizontal, float distance, float pitch);
-  void SetAmplitudes(float horizontal, float distance, float pitch);
 };
 
 static_assert(sizeof(CameraState) == 48);

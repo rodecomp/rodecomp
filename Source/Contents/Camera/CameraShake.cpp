@@ -1,3 +1,4 @@
+#include "Contents/Camera/Camera.h"
 #include "Contents/Camera/CameraState.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
@@ -17,47 +18,47 @@ namespace {
 
 // OFFSET: 0x00ADCAC0
 // FUNCTION: fn_17932
-void CameraShake::Start(int enabled, unsigned duration, float horizontal, float distance, float pitch) {
-  this->enabled = enabled;
+void CView::Start(int enabled, unsigned duration, float horizontal, float distance, float pitch) {
+  this->shake.enabled = enabled;
   const unsigned time = timeGetTime();
-  this->distance = distance;
-  this->start = time;
-  this->horizontal = horizontal;
-  this->pitch = pitch;
+  this->shake.distance = distance;
+  this->shake.start = time;
+  this->shake.horizontal = horizontal;
+  this->shake.pitch = pitch;
   switch (duration) {
   case 0:
-    this->duration = 650;
+    this->shake.duration = 650;
     break;
   case 1:
-    this->duration = 200;
+    this->shake.duration = 200;
     break;
   default:
-    this->duration = duration;
+    this->shake.duration = duration;
     break;
   }
 }
 
 // OFFSET: 0x00ADCB30
 // FUNCTION: fn_17933
-void CameraShake::SetAmplitudes(float horizontal, float distance, float pitch) {
-  this->horizontal = horizontal;
-  this->pitch = pitch;
-  this->distance = distance;
+void CView::SetAmplitudes(float horizontal, float distance, float pitch) {
+  this->shake.horizontal = horizontal;
+  this->shake.pitch = pitch;
+  this->shake.distance = distance;
 }
 
 // OFFSET: 0x00ADC7A0
 // FUNCTION: fn_17931
-void CameraShake::Apply(CameraState& camera, int& frameLatch) {
-  if (!this->enabled) {
+void CView::Apply(CameraState& camera, int& frameLatch) {
+  if (!this->shake.enabled) {
     return;
   }
 
-  if (timeGetTime() >= this->start + this->duration) {
+  if (timeGetTime() >= this->shake.start + this->shake.duration) {
     camera.target[0] = camera.desiredTarget[0];
     camera.target[1] = camera.desiredTarget[1];
     camera.target[2] = camera.desiredTarget[2];
     camera.distance = camera.desiredDistance;
-    this->enabled = 0;
+    this->shake.enabled = 0;
     camera.pitch = camera.desiredPitch;
 
     return;
@@ -69,7 +70,8 @@ void CameraShake::Apply(CameraState& camera, int& frameLatch) {
 
   frameLatch = 0;
 
-  static float horizontal = this->horizontal;
+  // GLOBAL: gl_24565
+  static float horizontal = this->shake.horizontal;
   const float horizontalX = Jitter(10.0f) + horizontal;
   const int yawX = TruncateToInt(camera.yaw);
   const float x = static_cast<float>(static_cast<double>(ClientCosine(yawX)) * horizontalX);
@@ -80,11 +82,13 @@ void CameraShake::Apply(CameraState& camera, int& frameLatch) {
 
   horizontal = -horizontal;
   camera.target[2] = horizontalZ * sine + camera.target[2];
-  static float distance = this->distance;
+  // GLOBAL: gl_24566
+  static float distance = this->shake.distance;
   const float distanceDelta = Jitter(10.0f) + distance;
   distance = -distance;
   camera.distance = distanceDelta + camera.distance;
-  static float pitch = this->pitch;
+  // GLOBAL: gl_24567
+  static float pitch = this->shake.pitch;
   const float pitchDelta = Jitter(15.0f) + pitch;
   pitch = -pitch;
   camera.pitch = pitchDelta + camera.pitch;
