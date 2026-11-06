@@ -109,11 +109,11 @@ void ModelTextureChannelMap::Read(CFile& file) {
   file.Read(&count, sizeof(count));
   for (int i = 0; i < count; ++i) {
     int id = 0;
-    int keyCount = 0;
     file.Read(&id, sizeof(id));
+    int keyCount = 0;
     file.Read(&keyCount, sizeof(keyCount));
     for (int k = 0; k < keyCount; ++k) {
-      ModelTextureKey key{};
+      ModelTextureKey key;
       file.Read(&key, sizeof(key));
       (*this)[id].push_back(key);
     }
