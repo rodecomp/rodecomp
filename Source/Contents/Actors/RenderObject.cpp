@@ -2224,14 +2224,14 @@ void CGameActor::Slot38() {
   const float angle = this->render.angle;
   const int motion = this->render.curMotion;
   const int animation = this->render.animation;
-  const char* sprite = this->render.sprite ? this->render.sprite->name.text : nullptr;
-  const char* action = this->render.action ? this->render.action->name.text : nullptr;
+  const char* sprite = !this->render.sprite ? nullptr : this->render.sprite->GetName();
+  const char* action = !this->render.action ? nullptr : this->render.action->GetName();
   CCorpse* corpse = mode->SpawnCorpse(
     this->render.position.x, this->render.position.y, this->render.position.z, action, sprite, animation, motion, angle
   );
 
   if (corpse) {
-    if (this->render.unknown_010C > 0) {
+    if (static_cast<int>(this->render.unknown_010C) > 0) {
       corpse->render.unknown_010C = this->render.unknown_010C;
     }
 
