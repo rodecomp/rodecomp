@@ -44,7 +44,7 @@ namespace {
 
   // OFFSET: 0x00763010
   // FUNCTION: fn_08075
-  std::strong_ordering CompareWorldVersion(const int targetVersion[2], const unsigned char* const fileVersion[2]) {
+  __declspec(noinline) std::strong_ordering CompareWorldVersion(const int targetVersion[2], const unsigned char* const fileVersion[2]) {
     if (const std::strong_ordering order = targetVersion[1] <=> static_cast<int>(*fileVersion[1]); order != 0) {
       return order;
     }
@@ -53,7 +53,7 @@ namespace {
       return order;
     }
 
-    return std::strong_ordering::equal;
+    return {};
   }
 
   // INLINED
