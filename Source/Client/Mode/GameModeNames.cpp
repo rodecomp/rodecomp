@@ -163,10 +163,11 @@ bool CGameMode::AppendGuildEmblem(std::vector<char>& output, std::vector<std::st
     return false;
   }
 
-  output.resize(file.GetSize() + 4 + name.size(), 0);
+  const std::uint32_t size = file.GetSize();
+  output.resize(size + 4 + name.size(), 0);
   *reinterpret_cast<std::uint32_t*>(output.data()) = static_cast<std::uint32_t>(name.size());
   std::memcpy(output.data() + 4, name.c_str(), name.size());
-  file.Read(output.data() + name.size() + 4, file.GetSize());
+  file.Read(output.data() + name.size() + 4, size);
   file.Close();
   names.push_back(name);
   return true;
