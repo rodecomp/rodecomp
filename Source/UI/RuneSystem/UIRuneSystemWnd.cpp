@@ -181,18 +181,18 @@ void UIRuneSetList::DrawScrollBar(bool drawLine) {
     return;
   }
 
-  this->DrawBitmap(x, 1, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollbar_arrow_upper.bmp"))), true);
-  this->DrawBitmap(x, this->geometry.height - this->arrowLength - 1, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollbar_arrow_down.bmp"))), true);
+  this->DrawBitmap(x, 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollbar_arrow_upper.bmp"))), true);
+  this->DrawBitmap(x, this->geometry.height - this->arrowLength - 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollbar_arrow_down.bmp"))), true);
 
   const int top = this->arrowLength + 1 + this->ThumbOffset();
-  this->DrawBitmap(x, top, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_up.bmp"))), true);
+  this->DrawBitmap(x, top, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_up.bmp"))), true);
 
   const int bottom = this->ThumbLength() - 5 + top;
   for (int y = top + 3; y < bottom; y += 3) {
-    this->DrawBitmap(x, y, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_m.bmp"))), true);
+    this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_m.bmp"))), true);
   }
 
-  this->DrawBitmap(x, bottom, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_down.bmp"))), true);
+  this->DrawBitmap(x, bottom, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_down.bmp"))), true);
 }
 
 // OFFSET: 0x0081BE90

@@ -1,3 +1,4 @@
+#include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/UIGradeEnchantWnd.h"

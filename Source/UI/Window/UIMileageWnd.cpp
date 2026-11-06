@@ -1,3 +1,4 @@
+#include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIMileageWnd.h"
 #include "Client/Session.h"

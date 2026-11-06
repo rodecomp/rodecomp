@@ -1,3 +1,4 @@
+#include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UISecondCostumeWnd.h"
 #include "Client/Mode/CGameMode.h"
@@ -212,7 +213,7 @@ void UISecondCostumeWnd::Paint() {
   int titleHeight = this->DrawTitleBar(true, "Dress Room", 0);
   this->DrawPanelBackground(17, 0, "");
   int x = this->geometry.width - 204;
-  const BitmapImage* bitmap = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\dressroomback.bmp")));
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\dressroomback.bmp")));
   if (bitmap != nullptr) {
     this->DrawBitmap(x, titleHeight + 3, bitmap, false);
   }
