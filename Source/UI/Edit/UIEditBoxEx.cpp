@@ -594,6 +594,12 @@ void CUIEditBoxEx::SetText(const std::string& text) {
   this->edit->SetText(text.c_str());
 }
 
+// STRING: st_16839
+static const std::string s_editExItemLinkOpen = "<ITEML>";
+
+// STRING: st_16840
+static const std::string s_editExItemLinkClose = "</ITEML>";
+
 // OFFSET: 0x009E6500
 // FUNCTION: fn_14462
 void CUIEditCtrlEx::SetText(const char* value) {
@@ -605,7 +611,7 @@ void CUIEditCtrlEx::SetText(const char* value) {
     g_serverLanguage->Select(0, static_cast<int>(g_serverLanguage->text.size()));
   }
 
-  if (this->text.find("<ITEML>") != std::string::npos || this->text.find("</ITEML>") != std::string::npos) {
+  if (this->text.find(s_editExItemLinkOpen) != std::string::npos || this->text.find(s_editExItemLinkClose) != std::string::npos) {
     this->sub_869810(this->text.c_str());
   }
 
