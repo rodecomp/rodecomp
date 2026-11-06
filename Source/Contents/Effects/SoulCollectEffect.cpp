@@ -162,11 +162,11 @@ void CSoulCollectEffect::Slot04() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle && particle->alpha > 0) {
-      CTexture* texture = particle->texture;
-      const float left = g_textureOffsetX / texture->TextureWidth();
-      const float right = (texture->Width() + g_textureOffsetX) / texture->TextureWidth();
-      const float top = g_textureOffsetY / texture->TextureHeight();
-      const float bottom = (texture->Height() + g_textureOffsetY) / particle->texture->TextureHeight();
+      const float left = g_textureOffsetX / particle->texture->TextureWidth();
+      const float right = (particle->texture->Width() + g_textureOffsetX) / particle->texture->TextureWidth();
+      const float top = g_textureOffsetY / particle->texture->TextureHeight();
+      const float bottom = (particle->texture->Height() + g_textureOffsetY) / particle->texture->TextureHeight();
+
       particle->Render(false, top, bottom, left, right, false, true);
     }
   }
