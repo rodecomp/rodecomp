@@ -41,6 +41,7 @@ private:
   bool AddNaviLinks(std::string text, unsigned addedLines);
   bool AddQuestLinks(std::string text, unsigned addedLines);
   void AddTipLinks(std::string text, unsigned addedLines);
+  void SplitTextLinkArguments(std::string text, UITextButton* button);
   void AppendText(char* text, int width, int carriageReturns, int pixels);
   void Activate(UITextButton* button, int id);
 };

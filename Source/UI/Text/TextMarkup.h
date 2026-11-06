@@ -27,7 +27,6 @@ void ExtractTextLinks(const std::string& source, const std::string& begin, const
 void ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links);
 void ExtractTipBoxTextLinks(const std::string& text, std::vector<TextLink>& links);
 void ExtractUrlTextLinks(const std::string& text, std::vector<TextLink>& links);
-void SplitTextLinkArguments(std::string text, std::vector<std::string>& arguments);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(TextLink) == 60);

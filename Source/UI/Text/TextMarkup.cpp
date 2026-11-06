@@ -1,5 +1,7 @@
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/TextMarkup.h"
+#include "UI/Buttons/UITextButton.h"
+#include "UI/Text/UITextViewer.h"
 
 #include <windows.h>
 #include <utility>
@@ -271,20 +273,27 @@ void ExtractTextLinks(const std::string& source, const std::string& begin, const
   } while (position != std::string::npos);
 }
 
+// INLINED
+static void AddTextLinkArgument(std::vector<std::string>& lines, std::string argument) {
+  lines.push_back(argument);
+}
+
 // OFFSET: 0x00877650
 // FUNCTION: fn_11210
-void SplitTextLinkArguments(std::string text, std::vector<std::string>& arguments) {
+void UITextViewer::SplitTextLinkArguments(std::string text, UITextButton* button) {
   if (text.empty()) {
     return;
   }
 
-  auto comma = text.find(',');
+  std::string remaining = text;
+  auto comma = remaining.find(",");
 
   while (comma != std::string::npos) {
-    arguments.push_back(text.substr(0, comma));
-    text = text.substr(comma + 1);
-    comma = text.find(',');
+    const std::string argument = remaining.substr(0, comma);
+    AddTextLinkArgument(button->m_lines, argument);
+    remaining = remaining.substr(comma + 1);
+    comma = remaining.find(',');
   }
 
-  arguments.push_back(text);
+  AddTextLinkArgument(button->m_lines, remaining);
 }
