@@ -703,10 +703,10 @@ void ItemStoreFindListInfo::Reset() {
 void ItemStoreFindSlotInfo::Reset(int index) {
   const Position positions[] = {{210, 50}, {60, 50}, {210, 205}, {60, 205}, {210, 360}, {60, 360}, {210, 515}, {60, 515}};
 
-  this->width = 140;
-  this->height = 145;
   this->x = positions[index].x;
   this->y = positions[index].y;
+  this->width = 140;
+  this->height = 145;
 }
 
 // OFFSET: 0x009A6800
@@ -983,8 +983,8 @@ void SubChatHisWndInfo::Reset(int side) {
     break;
   }
 
-  this->width = 300;
   this->y = g_renderer->viewport.height - 119;
+  this->width = 300;
   this->height = 95;
 }
 
