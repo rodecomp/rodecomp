@@ -63,8 +63,8 @@ extern WNDPROC lpPrevWndFunc;
 
 LRESULT CALLBACK BrowserHostProc(HWND window, UINT message, WPARAM value, LPARAM flags);
 LRESULT CALLBACK BrowserAddressEditProc(HWND window, UINT message, WPARAM value, LPARAM flags);
-HRESULT AdviseBrowserEvents(IUnknown* source, IUnknown* sink, REFIID events, DWORD* cookie);
-HRESULT UnadviseBrowserEvents(IUnknown* source, REFIID events, DWORD cookie);
+HRESULT __stdcall AdviseBrowserEvents(IUnknown* source, IUnknown* sink, REFIID events, DWORD* cookie);
+HRESULT __stdcall UnadviseBrowserEvents(IUnknown* source, REFIID events, DWORD cookie);
 
 enum class BrowserCommand : WORD { Navigate = 1000 };
 

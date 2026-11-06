@@ -89,7 +89,7 @@ void CWebEventReceiver::ReleaseDocument() {
 
 // OFFSET: 0x00AB3FA0
 // FUNCTION: fn_45418
-HRESULT CWebEventReceiver::Disconnect() {
+HRESULT __stdcall CWebEventReceiver::Disconnect() {
   this->ReleaseDocument();
   if (this->m_browser) {
     this->m_browser->Stop();

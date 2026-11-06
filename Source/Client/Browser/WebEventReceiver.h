@@ -9,7 +9,7 @@ class CWebEventReceiver final : public IDispatch {
 public:
   CWebEventReceiver();
   bool Register(IWebBrowser2* browser, HWND host);
-  HRESULT Disconnect();
+  HRESULT __stdcall Disconnect();
 
   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** output) override;
   ULONG STDMETHODCALLTYPE AddRef() override;
