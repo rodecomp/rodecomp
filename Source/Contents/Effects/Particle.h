@@ -45,7 +45,7 @@ typedef void (*ParticleSubmit)(RenderCommand* primitive, int flags);
 
 class CParticle {
 public:
-  CParticle(vector3d position, int flags);
+  __declspec(noinline) CParticle(vector3d position, int flags);
   virtual ~CParticle();
   virtual void Slot01() {}
 
