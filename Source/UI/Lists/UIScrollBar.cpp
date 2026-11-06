@@ -501,7 +501,7 @@ void UIScrollBar::Configure(int x, int y, unsigned char vertical, int length) {
 // FUNCTION: fn_11279
 int UIListBoxEx::FindLine(const std::string& text) {
   const auto it = std::find_if(this->lines.begin(), this->lines.end(), [text](const auto& entry) { return text == entry.second.text; });
-  return it == this->lines.end() ? -1 : it->first;
+  return it != this->lines.end() ? it->first : -1;
 }
 
 // OFFSET: 0x00880920
@@ -672,7 +672,7 @@ int UITabControl::TabAt(int x, int y) {
 // OFFSET: 0x00880BB0
 // FUNCTION: fn_11285
 const char* UIChatHisBox::HistoryText(unsigned int index) {
-  if (index < this->history.size() && !this->history[index].empty()) {
+  if (index < this->history.size() && this->history[index].size() > 0) {
     return this->history[index].c_str();
   }
   return nullptr;
