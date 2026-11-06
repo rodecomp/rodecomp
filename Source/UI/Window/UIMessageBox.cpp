@@ -2739,8 +2739,29 @@ bool UIReplayControlWnd::RefreshInfo() {
 // FUNCTION: fn_11815
 int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 40:
+    this->m_list->SendMsg(nullptr, 40, a, 0, 0, 0);
+    this->UpdateInfo();
+    this->Invalidate();
+    return 0;
+  case 18:
+    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    this->UpdateInfo();
+    this->Invalidate();
+    return 0;
+  case 19:
+    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    this->UpdateInfo();
+    this->Invalidate();
+    return 0;
   case 6:
     switch (a) {
+    case 185:
+    case 400:
+      Replay::Instance().SetState(1);
+      g_windowMgr.Schedule(this);
+      g_modeMgr.gameMode->SendMsg(10025, 0, 0, 0, 0);
+      return 0;
     case 184:
       if (this->m_list->selected != -1) {
         this->UpdateInfo();
@@ -2759,12 +2780,6 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         }
       }
       break;
-    case 185:
-    case 400:
-      Replay::Instance().SetState(1);
-      g_windowMgr.Schedule(this);
-      g_modeMgr.gameMode->SendMsg(10025, 0, 0, 0, 0);
-      return 0;
     case 221:
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
@@ -2774,21 +2789,6 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       break;
     }
     break;
-  case 18:
-    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
-    this->UpdateInfo();
-    this->Invalidate();
-    return 0;
-  case 19:
-    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
-    this->UpdateInfo();
-    this->Invalidate();
-    return 0;
-  case 40:
-    this->m_list->SendMsg(nullptr, 40, a, 0, 0, 0);
-    this->UpdateInfo();
-    this->Invalidate();
-    return 0;
   case 80:
     this->UpdateInfo();
     this->Invalidate();
