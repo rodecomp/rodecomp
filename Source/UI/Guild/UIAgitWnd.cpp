@@ -125,12 +125,12 @@ void UIListBoxAgitMenu::Slot28(int x, int y) {
     line = -1;
   } else {
     line = y / this->lineHeight;
+
     if (line < 0) {
       line = 0;
     }
-    if (line > 1) {
-      line = 1;
-    }
+
+    line = std::min(line, 1);
   }
 
   this->selected = line;
