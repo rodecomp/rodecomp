@@ -186,10 +186,9 @@ void UIMiniMapWnd::Slot15(int width, int height) {
     this->originY = 531.0f - margin;
   }
 
-  const int y = bottom - 19;
-  this->unknown_011C = this->AddCheckBox(361, 100, 12, LookupMessage(2742), 20, y, 1, LookupMessage(2743));
-  this->unknown_0120 = this->AddCheckBox(194, 100, 12, LookupMessage(2744), 120, y, 1, LookupMessage(2745));
-  this->unknown_0124 = this->AddCheckBox(373, 100, 12, LookupMessage(2746), 220, y, 1, LookupMessage(2747));
+  this->unknown_011C = this->AddCheckBox(361, 100, 12, LookupMessage(2742), 20, bottom - 19, 1, LookupMessage(2743));
+  this->unknown_0120 = this->AddCheckBox(194, 100, 12, LookupMessage(2744), 120, bottom - 19, 1, LookupMessage(2745));
+  this->unknown_0124 = this->AddCheckBox(373, 100, 12, LookupMessage(2746), 220, bottom - 19, 1, LookupMessage(2747));
   this->AddCloseButton(LookupMessage(2741), 0);
   this->AddNumberedButton(356, this->geometry.width - 120, bottom - 23, "minimap\\memo_ready", LookupMessage(2748), true);
   this->AddTownMarks();

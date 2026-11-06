@@ -12,8 +12,7 @@
 
 // OFFSET: 0x00946C00
 // FUNCTION: fn_12851
-UINormalMB::UINormalMB() : UIFrameWnd(0), m_owner(nullptr), m_viewer(nullptr) {
-  this->m_keepOpen = 0;
+UINormalMB::UINormalMB() : UIFrameWnd(0), m_owner(nullptr), m_viewer(nullptr), m_keepOpen(0) {
 }
 
 // OFFSET: 0x0094D840

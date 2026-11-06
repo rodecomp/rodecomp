@@ -1870,15 +1870,19 @@ void UIItemCollectionWnd::Slot25(int x, int y) {
     if (!comparison) {
       return;
     }
-    comparison->geometry.targetAlpha = this->geometry.targetAlpha;
-    comparison->geometry.alphaStart = this->geometry.alphaStart;
+    const int targetAlpha = this->geometry.targetAlpha;
+    const int alphaStart = this->geometry.alphaStart;
+    comparison->geometry.targetAlpha = targetAlpha;
+    comparison->geometry.alphaStart = alphaStart;
   }
 
   if (this->m_kind == 82) {
     UIWindow* comparison = g_windowMgr.unknown_0224;
     if (comparison) {
-      comparison->geometry.targetAlpha = this->geometry.targetAlpha;
-      comparison->geometry.alphaStart = this->geometry.alphaStart;
+      const int targetAlpha = this->geometry.targetAlpha;
+      const int alphaStart = this->geometry.alphaStart;
+      comparison->geometry.targetAlpha = targetAlpha;
+      comparison->geometry.alphaStart = alphaStart;
     }
   }
 }
@@ -1901,8 +1905,10 @@ void UICombinedCardItemCollection_ComparisonWnd::Slot31(int, int) {
 void UICombinedCardItemCollectionWnd::Slot31(int x, int y) {
   this->UIFrameWnd::Slot31(x, y);
   if (UIWindow* comparison = g_windowMgr.unknown_0224) {
-    comparison->geometry.targetAlpha = this->geometry.targetAlpha;
-    comparison->geometry.alphaStart = this->geometry.alphaStart;
+    const int targetAlpha = this->geometry.targetAlpha;
+    const int alphaStart = this->geometry.alphaStart;
+    comparison->geometry.targetAlpha = targetAlpha;
+    comparison->geometry.alphaStart = alphaStart;
   }
 }
 
@@ -1932,8 +1938,10 @@ void UIEquipWnd::Slot31(int x, int y) {
 void UIItemCollectionWnd::Slot31(int x, int y) {
   this->UIFrameWnd::Slot31(x, y);
   if (UIWindow* comparison = g_windowMgr.unknown_0220) {
-    comparison->geometry.targetAlpha = this->geometry.targetAlpha;
-    comparison->geometry.alphaStart = this->geometry.alphaStart;
+    const int targetAlpha = this->geometry.targetAlpha;
+    const int alphaStart = this->geometry.alphaStart;
+    comparison->geometry.targetAlpha = targetAlpha;
+    comparison->geometry.alphaStart = alphaStart;
   }
 }
 

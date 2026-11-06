@@ -236,7 +236,9 @@ UIMessageBoxAutoreturn::UIMessageBoxAutoreturn() : UIFrameWnd(0) {
 // OFFSET: 0x008A4170
 // FUNCTION: fn_11665
 UIMonsterInfoWnd::UIMonsterInfoWnd()
-    : UIFrameWnd(0), info(), unknown_00D4(0) {
+    : UIFrameWnd(0) {
+  std::memset(&this->info, 0, offsetof(MonsterInfo, resistances) + sizeof(this->info.resistances));
+  this->unknown_00D4 = 0;
 }
 
 // INLINED
@@ -3108,8 +3110,7 @@ void UIMonsterInfoWnd::Slot15(int, int) {
 // OFFSET: 0x008A4300
 // FUNCTION: fn_11667
 UIPetInfoWnd::UIPetInfoWnd()
-    : UIFrameWnd(0), friendlyGauge(nullptr) {
-  this->friendlyText.clear();
+    : UIFrameWnd(0), friendlyGauge(nullptr), friendlyText("") {
   this->unknown_00E4 = 0;
   this->unknown_00E8 = 0;
   this->nameEdit = nullptr;

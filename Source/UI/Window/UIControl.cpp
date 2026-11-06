@@ -3334,9 +3334,9 @@ void CUITextViewer::Slot15(int width, int height) {
 void CUIBasicButton::SetAutoWidth(bool enabled) {
   this->unknown_0190 = enabled;
   if (enabled) {
-    const int width = this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0);
-    if (this->geometry.width < width + 8) {
-      this->Resize(width + 8, this->geometry.height);
+    const int width = this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0) + 8;
+    if (width > this->geometry.width) {
+      this->Resize(width, this->geometry.height);
     }
     this->SetFitText(false);
   } else {

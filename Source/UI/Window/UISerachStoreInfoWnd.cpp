@@ -52,8 +52,7 @@ static_assert(sizeof(SearchStoreResult) == sizeof(SessionEntry5BD4));
 // FUNCTION: fn_12527
 UISerachStoreInfoWnd::UISerachStoreInfoWnd()
     : UIFrameWnd(0), unknown_00DC(1), unknown_00E0(-1),
-      unknown_00E4(0), unknown_00E8(25), unknown_00EC(0), unknown_00ED(1) {
-  this->unknown_00F0.clear();
+      unknown_00E4(0), unknown_00E8(25), unknown_00EC(0), unknown_00ED(1), unknown_00F0("") {
 }
 
 // OFFSET: 0x0091BBC0
