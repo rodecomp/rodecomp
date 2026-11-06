@@ -9,7 +9,7 @@
 // FUNCTION: fn_17167
 CWebBrowser* UIWindowMgr::FindBrowser(HWND window) {
   const auto found = this->browsers.find(window);
-  return found == this->browsers.end() ? nullptr : found->second;
+  return found != this->browsers.end() ? found->second : nullptr;
 }
 
 // OFFSET: 0x00A8F860
