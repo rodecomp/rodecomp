@@ -17,15 +17,15 @@ namespace {
 }
 
 // fn_25538 (0x00E929B0): SDK initialisation.
-void sub_E929B0(const char*) {
+void PreInitNPGameMonA(const char*) {
 }
 
 // fn_25536 (0x00E92820): status of the last initialisation.
-int sub_E92820() {
+int InitNPGameMon() {
   return kGameGuardSuccess;
 }
 
 // fn_25543 (0x00E92E90): registers the client's GameGuard message handler.
-void sub_E92E90(int(__stdcall* callback)(int, const int*)) {
+void SetCallbackToGameMon(int(__stdcall* callback)(int, const int*)) {
   g_callback = callback;
 }

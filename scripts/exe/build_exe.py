@@ -83,8 +83,10 @@ def build_import_libs(tc, out_dir):
 # listed data/compile.json unit plus any extra include directories (relative to
 # the repository). Clank does not know about these files.
 EXE_ONLY_UNITS = {
-    "scripts/exe/nProtect/GameGuard.cpp": ("Source/Security/NProtectGameGuardMgr.cpp", []),
-    "scripts/exe/jsoncons/JsonCppLoaderGlue.cpp": ("Source/Utility/JsonCppLoader.cpp", ["scripts/exe/jsoncons/include"]),
+    "Recovered/nProtect/GameGuard.cpp": ("Source/Security/NProtectGameGuardMgr.cpp", []),
+    "Recovered/jsoncons/JsonCppLoaderGlue.cpp": ("Source/Utility/JsonCppLoader.cpp", ["Recovered/jsoncons/include"]),
+    "Recovered/GPak/PakAuxiliary.cpp": ("Source/Archive/GPak.cpp", []),
+    "Recovered/GGHash/GGHash.cpp": ("Source/Utility/GGHash.cpp", []),
 }
 
 
