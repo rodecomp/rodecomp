@@ -561,7 +561,8 @@ void CSkillAction_TR_ROKI_CAPRICCIO::Slot08(int level, CGameActor* source) {
 void CSkillAction_TR_ROKI_CAPRICCIO::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roki_capriccio"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roki_capriccio"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -569,12 +570,14 @@ void CSkillAction_TR_ROKI_CAPRICCIO::Slot11(int level, CGameActor* source, CGame
 // FUNCTION: fn_09020
 void CSkillAction_TR_ROSEBLOSSOM::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
@@ -586,7 +589,8 @@ void CSkillAction_TR_ROSEBLOSSOM::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_09021
 void CSkillAction_TR_ROSEBLOSSOM::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source && target) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_shot"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       const float angle = ScreenAngle(
