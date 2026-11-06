@@ -877,8 +877,7 @@ void SendConfigServiceOption(int id, unsigned char value, bool notify, int enabl
     packet.id = 0x2D8;
     packet.type = 1;
     packet.value = value;
-    CRagConnection& connection = GetRagConnection();
-    connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
 }
 
