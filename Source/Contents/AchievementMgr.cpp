@@ -191,7 +191,9 @@ int CAchievementMgr::GetCompletedCount(int group, int index) {
 // FUNCTION: fn_05321
 bool CAchievementMgr::FindTab(int id, int& group, int& index) {
   for (auto it = this->groups.begin(); it != this->groups.end(); ++it) {
-    for (std::vector<int>::iterator value = it->second.begin(); value != it->second.end(); ++value) {
+    std::vector<int>& values = it->second;
+    const std::vector<int>::iterator valuesEnd = values.end();
+    for (std::vector<int>::iterator value = values.begin(); value != valuesEnd; ++value) {
       if (*value == id) {
         const int key = it->first;
         group = key / this->groupWidth;
