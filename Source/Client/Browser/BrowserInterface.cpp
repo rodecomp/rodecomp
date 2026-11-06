@@ -51,7 +51,7 @@ bool CWebBrowser::CreateExternalInterface() {
     SetParent(this->browserWindow, this->host);
     this->browser->put_Top(0);
     this->browser->put_Left(0);
-    this->browser->put_StatusBar(VARIANT_FALSE);
+    this->browser->put_ToolBar(0);
   }
 
   return true;
