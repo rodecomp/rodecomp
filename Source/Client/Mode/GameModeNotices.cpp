@@ -2762,10 +2762,10 @@ void CGameMode::ReceiveExpGainNotice(const unsigned char* data) {
     text += buffer;
   }
 
-  if (packet->amount < 0) {
-    text += LookupMessage(1616);
-  } else {
+  if (packet->amount >= 0) {
     text += LookupMessage(1615);
+  } else {
+    text += LookupMessage(1616);
   }
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), color, 18, 0, 0);
 }
