@@ -739,7 +739,7 @@ CashEmotionTable* CCashEmotionMgr::GetBasePackEmotions() {
 // FUNCTION: fn_02946
 int CCashEmotionMgr::GetSpecialEmotion(CashEmotionSpecial type) {
   auto it = this->m_specials.find(type);
-  if (it != this->m_specials.end()) {
+  if (this->m_specials.end() != it) {
     return it->second;
   }
 
@@ -754,12 +754,12 @@ CashEmotionData* CCashEmotionMgr::GetEmotionData(int packId, int emotionId) {
   }
 
   auto packIt = this->m_emotionsByPack.find(packId);
-  if (packIt == this->m_emotionsByPack.end()) {
+  if (this->m_emotionsByPack.end() == packIt) {
     return nullptr;
   }
 
   auto emoIt = packIt->second.find(emotionId);
-  if (emoIt == packIt->second.end()) {
+  if (packIt->second.end() == emoIt) {
     return nullptr;
   }
 
@@ -770,12 +770,12 @@ CashEmotionData* CCashEmotionMgr::GetEmotionData(int packId, int emotionId) {
 // FUNCTION: fn_02948
 const char* CCashEmotionMgr::GetEmotionName(int packId, int emotionId) {
   auto packIt = this->m_emotionsByPack.find(packId);
-  if (packIt == this->m_emotionsByPack.end()) {
+  if (this->m_emotionsByPack.end() == packIt) {
     return nullptr;
   }
 
   auto emoIt = packIt->second.find(emotionId);
-  if (emoIt == packIt->second.end()) {
+  if (packIt->second.end() == emoIt) {
     return nullptr;
   }
 
@@ -826,7 +826,7 @@ CashEmotionTable* CCashEmotionMgr::GetPackEmotionTable(int packId) {
 // FUNCTION: fn_02952
 CashEmotionPack* CCashEmotionMgr::GetPack(int packId) {
   auto it = this->unknown_0010.find(packId);
-  if (it == this->unknown_0010.end()) {
+  if (this->unknown_0010.end() == it) {
     return nullptr;
   }
 
@@ -837,7 +837,7 @@ CashEmotionPack* CCashEmotionMgr::GetPack(int packId) {
 // FUNCTION: fn_02953
 const char* CCashEmotionMgr::GetPackTitle(int packId) {
   auto it = this->unknown_0010.find(packId);
-  if (it == this->unknown_0010.end()) {
+  if (this->unknown_0010.end() == it) {
     return nullptr;
   }
 
@@ -848,7 +848,7 @@ const char* CCashEmotionMgr::GetPackTitle(int packId) {
 // FUNCTION: fn_02954
 int CCashEmotionMgr::GetPackUnknown18(int packId) {
   auto it = this->unknown_0010.find(packId);
-  if (it == this->unknown_0010.end()) {
+  if (this->unknown_0010.end() == it) {
     return -1;
   }
 
@@ -905,7 +905,7 @@ int CCashEmotionMgr::RegisterFileName(
 // FUNCTION: fn_02958
 unsigned int CCashEmotionMgr::GetPackEndTime(int packId) {
   auto it = this->unknown_0010.find(packId);
-  if (it == this->unknown_0010.end()) {
+  if (this->unknown_0010.end() == it) {
     return 0;
   }
 
@@ -916,7 +916,7 @@ unsigned int CCashEmotionMgr::GetPackEndTime(int packId) {
 // FUNCTION: fn_02959
 unsigned int CCashEmotionMgr::GetPackStartTime(int packId) {
   auto it = this->unknown_0010.find(packId);
-  if (it == this->unknown_0010.end()) {
+  if (this->unknown_0010.end() == it) {
     return 0;
   }
 
@@ -1014,7 +1014,7 @@ std::vector<int> CCashEmotionMgr::SortUnownedPacks(const char* filter) {
 // FUNCTION: fn_02965
 int CCashEmotionMgr::GetPackUnknown24(int packId) {
   auto it = this->unknown_0010.find(packId);
-  if (it == this->unknown_0010.end()) {
+  if (this->unknown_0010.end() == it) {
     return 0;
   }
 
@@ -3399,10 +3399,10 @@ void UICashEmotionPack_Unpurchase::Slot25(int, int) {
 // FUNCTION: fn_09477
 void UICashEmotionPack_Unpurchase::SetPressed(bool pressed, bool force) {
   if (force || pressed != this->m_pressed) {
-    if (!pressed) {
-      this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_normal.bmp");
-    } else {
+    if (pressed) {
       this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_press.bmp");
+    } else {
+      this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_normal.bmp");
     }
 
     this->m_pressed = pressed;
