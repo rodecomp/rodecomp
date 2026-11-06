@@ -479,21 +479,21 @@ void UITabControl::Slot28(int x, int y) {
 // OFFSET: 0x00822660
 // FUNCTION: fn_10280
 std::string SkillUseTextPercent(const char* name, int level, int sp, int ap) {
-  if (ap == 0) {
-    return FormatOwnedString("%s Use Lv %d (Sp : %d%%)", name, level, sp);
+  if (ap != 0) {
+    return FormatOwnedString("%s Use Lv %d (Sp : %d%%, Ap : %d)", name, level, sp, ap);
   }
 
-  return FormatOwnedString("%s Use Lv %d (Sp : %d%%, Ap : %d)", name, level, sp, ap);
+  return FormatOwnedString("%s Use Lv %d (Sp : %d%%)", name, level, sp);
 }
 
 // OFFSET: 0x008226F0
 // FUNCTION: fn_10281
 std::string SkillUseTextFlat(const char* name, int level, int sp, int ap) {
-  if (ap == 0) {
-    return FormatOwnedString("%s Use Lv %d (Sp : %d)", name, level, sp);
+  if (ap != 0) {
+    return FormatOwnedString("%s Use Lv %d (Sp : %d, Ap : %d)", name, level, sp, ap);
   }
 
-  return FormatOwnedString("%s Use Lv %d (Sp : %d, Ap : %d)", name, level, sp, ap);
+  return FormatOwnedString("%s Use Lv %d (Sp : %d)", name, level, sp);
 }
 
 // OFFSET: 0x00891350
