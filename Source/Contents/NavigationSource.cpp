@@ -441,7 +441,7 @@ CNavi_Object* CNavigationManager::ReadTargetObject(const char* record) {
   const int cellY = header->cellY;
 
   std::size_t offset = 0x12;
-  int length = header->nameLength;
+  std::int16_t length = header->nameLength;
   std::string name(record + offset, record + offset + length);
   offset += length;
 
@@ -514,23 +514,23 @@ __declspec(noinline) std::vector<char> CNavigationManager::WriteObject(CNavi_Obj
 
     buffer.resize(map.size() + 0x16 + title.size() + name.size(), '\0');
 
-    NaviObjectRecord* record = reinterpret_cast<NaviObjectRecord*>(buffer.data());
-    record->type = type;
-    record->index = index;
-    record->cellX = cell.x;
-    record->cellY = cell.y;
+    reinterpret_cast<NaviObjectRecord*>(buffer.data())->type = type;
+    reinterpret_cast<NaviObjectRecord*>(buffer.data())->index = index;
+    reinterpret_cast<NaviObjectRecord*>(buffer.data())->cellX = cell.x;
+    reinterpret_cast<NaviObjectRecord*>(buffer.data())->cellY = cell.y;
 
-    const std::size_t nameLength = static_cast<std::int16_t>(name.size());
-    reinterpret_cast<NaviObjectRecord*>(buffer.data())->nameLength = static_cast<std::int16_t>(name.size());
-    std::memcpy(buffer.data() + 0x12, name.c_str(), nameLength);
-
-    const std::size_t titleLength = static_cast<std::int16_t>(title.size());
-    *reinterpret_cast<std::int16_t*>(buffer.data() + nameLength + 0x12) = static_cast<std::int16_t>(title.size());
-    std::memcpy(buffer.data() + nameLength + 0x14, title.c_str(), titleLength);
-
-    const std::size_t offset = nameLength + 0x14 + titleLength;
-    *reinterpret_cast<std::int16_t*>(buffer.data() + offset) = static_cast<std::int16_t>(map.size());
-    std::memcpy(buffer.data() + offset + 2, map.c_str(), static_cast<std::int16_t>(map.size()));
+    std::int16_t length = static_cast<std::int16_t>(name.size());
+    reinterpret_cast<NaviObjectRecord*>(buffer.data())->nameLength = length;
+    std::memcpy(buffer.data() + 0x12, name.c_str(), length);
+    std::size_t offset = length + 0x12;
+    length = static_cast<std::int16_t>(title.size());
+    *reinterpret_cast<std::int16_t*>(buffer.data() + offset) = length;
+    offset += 2;
+    std::memcpy(buffer.data() + offset, title.c_str(), length);
+    offset += length;
+    length = static_cast<std::int16_t>(map.size());
+    *reinterpret_cast<std::int16_t*>(buffer.data() + offset) = length;
+    std::memcpy(buffer.data() + offset + 2, map.c_str(), length);
   }
 
   return buffer;
@@ -803,7 +803,7 @@ bool CNavigationManager::GetMobInfo(
   NaviCell cell;
   *cellX = mob->GetCell(&cell)->x;
   const int packed = mob->GetCell(&cell)->y;
-  const unsigned char elementValue = static_cast<unsigned char>(packed >> 16);
+  const unsigned int elementValue = static_cast<unsigned char>(packed >> 16);
   *elementLevel = elementValue / 20;
   *element = elementValue % 10;
   *cellYByte1 = static_cast<unsigned char>(packed >> 8);
@@ -820,7 +820,7 @@ int CNavigationManager::FindNodePath(unsigned int index) {
   }
 
   for (unsigned int i = 0; i < this->nodePaths.size(); ++i) {
-    if (this->nodePaths[i].empty()) {
+    if (this->nodePaths[i].size() == 0) {
       return -1;
     }
 
