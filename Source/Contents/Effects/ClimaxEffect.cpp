@@ -17,10 +17,10 @@ CClimaxEffect::CClimaxEffect() : CEffect(-1) {
 // OFFSET: 0x00706AD0
 // FUNCTION: fn_07049
 void CClimaxEffect::Close() {
-  for (CParticle*& particle : this->particles) {
-    if (particle) {
-      FreeParticle(particle);
-      particle = nullptr;
+  for (int index = 0; index < 2; ++index) {
+    if (this->particles[index]) {
+      FreeParticle(this->particles[index]);
+      this->particles[index] = nullptr;
     }
   }
 }
