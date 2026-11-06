@@ -106,7 +106,8 @@ void CEfstAction_CALAMITYGALE::Slot00(int efstId, int value, int argument3, int 
 // FUNCTION: fn_09029
 void CEfstAction_CALAMITYGALE::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_loop"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_loop"));
   }
 }
 
