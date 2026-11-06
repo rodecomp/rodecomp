@@ -67,35 +67,38 @@ std::size_t CActorNameCardHolder::Load(const std::vector<char>& input) {
   }
 
   this->cards.clear();
-  const int count = *reinterpret_cast<const int*>(input.data());
+  int count;
+  std::memcpy(&count, input.data(), sizeof(count));
   std::string text;
   std::size_t offset = 4;
   for (int index = 0; index < count; ++index) {
-    const std::uint32_t id = *reinterpret_cast<const std::uint32_t*>(&input[offset]);
+    std::uint32_t id;
+    std::memcpy(&id, input.data() + offset, sizeof(id));
     this->cards[id].Reset();
 
-    int length = *reinterpret_cast<const int*>(&input[offset + 4]);
+    int length;
+    std::memcpy(&length, input.data() + offset + 4, sizeof(length));
     offset += 8;
     if (length > 0) {
       this->cards[id].name.assign(&input[offset], length);
       offset += length;
     }
 
-    length = *reinterpret_cast<const int*>(&input[offset]);
+    std::memcpy(&length, input.data() + offset, sizeof(length));
     offset += 4;
     if (length > 0) {
       this->cards[id].unknown_001C.assign(&input[offset], length);
       offset += length;
     }
 
-    length = *reinterpret_cast<const int*>(&input[offset]);
+    std::memcpy(&length, input.data() + offset, sizeof(length));
     offset += 4;
     if (length > 0) {
       this->cards[id].unknown_0034.assign(&input[offset], length);
       offset += length;
     }
 
-    length = *reinterpret_cast<const int*>(&input[offset]);
+    std::memcpy(&length, input.data() + offset, sizeof(length));
     offset += 4;
     if (length > 0) {
       this->cards[id].unknown_004C.assign(&input[offset], length);
