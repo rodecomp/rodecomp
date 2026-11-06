@@ -16,6 +16,10 @@ public:
   void Set(std::uint32_t id, std::string name);
   void Clear();
   bool Contains(std::uint32_t id) const;
+  // INLINED
+  bool IsEnabled() const {
+    return this->m_enabled;
+  }
   void Update();
 
 private:

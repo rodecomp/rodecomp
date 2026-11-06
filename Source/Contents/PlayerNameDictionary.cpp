@@ -8,7 +8,8 @@
 #include <timeapi.h>
 
 // INLINED
-CPlayerNameDictionary::CPlayerNameDictionary() : m_enabled(true) {
+CPlayerNameDictionary::CPlayerNameDictionary() {
+  this->m_enabled = true;
 }
 
 // OFFSET: 0x0060A9D0
@@ -52,7 +53,7 @@ void CPlayerNameDictionary::Clear() {
 // OFFSET: 0x0060B420
 // FUNCTION: fn_04264
 bool CPlayerNameDictionary::Contains(std::uint32_t id) const {
-  return this->m_names.contains(id);
+  return this->m_names.find(id) != this->m_names.end();
 }
 
 // OFFSET: 0x0060B470
@@ -103,6 +104,12 @@ bool CreatePlayerNameDictionary() {
 
   g_playerNameDictionary = new (std::nothrow) CPlayerNameDictionary();
   if (!g_playerNameDictionary) {
+    return false;
+  }
+
+  if (!g_playerNameDictionary->IsEnabled()) {
+    delete g_playerNameDictionary;
+    g_playerNameDictionary = nullptr;
     return false;
   }
 
