@@ -2737,7 +2737,7 @@ void CSession::LoadMiniPartyInfo() {
     }
   }
 
-  std::free(data);
+  delete[] data;
 }
 
 template <std::size_t Length, std::uint64_t Key>
