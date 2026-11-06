@@ -47,8 +47,7 @@ int UIOpenRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   if (a == 192 && g_windowMgr.unknown_0464 == nullptr) {
     RouletteOpenPacket packet;
     packet.id = ID_CZ_REQ_OPEN_ROULETTE;
-    CRagConnection& connection = GetRagConnection();
-    connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
 
   return 0;
