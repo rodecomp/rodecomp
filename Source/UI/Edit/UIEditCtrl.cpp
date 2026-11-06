@@ -507,7 +507,7 @@ bool HasItemLinkTag(const std::string& text) {
 
 // OFFSET: 0x00859170
 // FUNCTION: fn_10773
-bool HasNaviLinkTag(const std::string& text) {
+int __stdcall HasNaviLinkTag(const std::string& text) {
   return text.find(g_editNaviTagBegin) != std::string::npos || text.find(g_editNaviTagEnd) != std::string::npos;
 }
 

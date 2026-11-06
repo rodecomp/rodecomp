@@ -248,7 +248,7 @@ public:
 };
 
 bool HasItemLinkTag(const std::string& text);
-bool HasNaviLinkTag(const std::string& text);
+int __stdcall HasNaviLinkTag(const std::string& text);
 
 class UIShowAndEditTimeCtrl : public UIWindow {
 public:
