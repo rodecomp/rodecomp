@@ -2090,6 +2090,25 @@ int UIWindowMgr::TranslateHotkey(int key, int keyData) {
   return 4;
 }
 
+// INLINED
+static __forceinline std::vector<unsigned char> MakeReplayMarker(std::int16_t tag) {
+  std::vector<unsigned char> chunk(6);
+  *reinterpret_cast<std::int16_t*>(&chunk[0]) = tag;
+  *reinterpret_cast<int*>(&chunk[2]) = 0;
+  return chunk;
+}
+
+// INLINED
+static __forceinline std::vector<unsigned char> MakeReplayChunk(int tag, const std::vector<unsigned char>& state) {
+  std::vector<unsigned char> chunk(state.size() + 6, 0);
+  *reinterpret_cast<std::int16_t*>(&chunk[0]) = static_cast<std::int16_t>(tag);
+  *reinterpret_cast<int*>(&chunk[2]) = static_cast<int>(state.size());
+  if (state.size()) {
+    std::memcpy(&chunk[6], state.data(), state.size());
+  }
+  return chunk;
+}
+
 // OFFSET: 0x00AA8660
 // FUNCTION: fn_17244
 std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
