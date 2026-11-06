@@ -284,7 +284,8 @@ std::string CSession::GetHeadActName(int job, int sex, int* head) {
 // OFFSET: 0x00DDCDC0
 // FUNCTION: fn_23374
 std::string CSession::GetPlayerHeadActName() {
-  return g_equipmentResourceMgr->GetHeadName(0, this->GetDisplayJob(), this->SyncUnknown0E98(), &this->m_head);
+  EquipmentResourceMgr* const mgr = g_equipmentResourceMgr;
+  return mgr->GetHeadName(0, this->GetDisplayJob(), this->SyncUnknown0E98(), &this->m_head);
 }
 
 // OFFSET: 0x00DDCEF0
