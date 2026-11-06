@@ -2711,7 +2711,12 @@ void CEffectPrim::RenderTrailSquares(matrix& wtm) {
 // OFFSET: 0x00BD3D90
 // FUNCTION: fn_19879
 void CEffectPrim::RenderColorPanel(matrix& wtm) {
+  vector3d vec4{};
+  vector3d vec3{};
   int rpCnt = 0;
+  unsigned char red;
+  unsigned char green;
+  unsigned char blue;
 
   for (int ec = 0; ec < 4; ++ec) {
     EffectPrimitiveSlot& slot = this->state.slots[ec];
@@ -2730,68 +2735,157 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
 
     const float mode = slot.height[5];
     const float level = slot.height[3];
-    bool matched = true;
-    unsigned char value = 0;
-    if (level == 0.0f) {
-      value = 105;
-    } else if (level == 1.0f) {
-      value = 5;
-    } else if (level == 2.0f) {
-      value = 55;
-    } else if (level == 3.0f) {
-      value = 155;
-    } else {
-      matched = false;
-    }
-
-    unsigned char red = 255;
-    unsigned char green = 255;
-    unsigned char blue = 255;
     char extra = 1;
     if (mode == 2.0f) {
-      if (matched) {
-        red = value;
-        blue = value;
+      if (level == 0.0f) {
+        red = 105;
+        green = 255;
+        blue = 105;
+      } else if (level == 1.0f) {
+        red = 5;
+        green = 255;
+        blue = 5;
+      } else if (level == 2.0f) {
+        red = 55;
+        green = 255;
+        blue = 55;
+      } else if (level == 3.0f) {
+        red = 155;
+        green = 255;
+        blue = 155;
       }
     } else if (mode == 3.0f) {
-      if (matched) {
-        red = value;
-        green = value;
+      if (level == 0.0f) {
+        red = 105;
+        green = 105;
+        blue = 255;
+      } else if (level == 1.0f) {
+        red = 5;
+        green = 5;
+        blue = 255;
+      } else if (level == 2.0f) {
+        red = 55;
+        green = 55;
+        blue = 255;
+      } else if (level == 3.0f) {
+        red = 155;
+        green = 155;
+        blue = 255;
       }
     } else if (mode == 4.0f) {
-      if (matched) {
-        blue = value;
+      if (level == 0.0f) {
+        red = 255;
+        green = 255;
+        blue = 105;
+      } else if (level == 1.0f) {
+        red = 255;
+        green = 255;
+        blue = 5;
+      } else if (level == 2.0f) {
+        red = 255;
+        green = 255;
+        blue = 55;
+      } else if (level == 3.0f) {
+        red = 255;
+        green = 255;
+        blue = 155;
       }
     } else if (mode == 5.0f) {
-      if (matched) {
-        green = value;
-        blue = value;
+      if (level == 0.0f) {
+        red = 255;
+        green = 105;
+        blue = 105;
+      } else if (level == 1.0f) {
+        red = 255;
+        green = 5;
+        blue = 5;
+      } else if (level == 2.0f) {
+        red = 255;
+        green = 55;
+        blue = 55;
+      } else if (level == 3.0f) {
+        red = 255;
+        green = 155;
+        blue = 155;
       }
     } else if (mode == 6.0f) {
-      if (matched) {
-        green = value;
+      if (level == 0.0f) {
+        red = 255;
+        green = 105;
+        blue = 255;
+      } else if (level == 1.0f) {
+        red = 255;
+        green = 5;
+        blue = 255;
+      } else if (level == 2.0f) {
+        red = 255;
+        green = 55;
+        blue = 255;
+      } else if (level == 3.0f) {
+        red = 255;
+        green = 155;
+        blue = 255;
       }
     } else if (mode == 7.0f) {
-      if (matched) {
-        red = value;
+      if (level == 0.0f) {
+        red = 105;
+        green = 255;
+        blue = 255;
+      } else if (level == 1.0f) {
+        red = 5;
+        green = 255;
+        blue = 255;
+      } else if (level == 2.0f) {
+        red = 55;
+        green = 255;
+        blue = 255;
+      } else if (level == 3.0f) {
+        red = 155;
+        green = 255;
+        blue = 255;
       }
     } else if (mode == 8.0f) {
-      if (matched && level != 3.0f) {
-        red = value;
-        green = value;
-        blue = value;
+      if (level == 0.0f) {
+        red = 105;
+        green = 105;
+        blue = 105;
+      } else if (level == 1.0f) {
+        red = 5;
+        green = 5;
+        blue = 5;
+      } else if (level == 2.0f) {
+        red = 55;
+        green = 55;
+        blue = 55;
+      } else if (level == 3.0f) {
+        red = 255;
+        green = 255;
+        blue = 255;
       }
     } else {
       extra = 0;
-      if (matched) {
-        red = value;
-        green = value;
+      if (level == 0.0f) {
+        red = 105;
+        green = 105;
+        blue = 255;
+      } else if (level == 1.0f) {
+        red = 5;
+        green = 5;
+        blue = 255;
+      } else if (level == 2.0f) {
+        red = 55;
+        green = 55;
+        blue = 255;
+      } else if (level == 3.0f) {
+        red = 155;
+        green = 155;
+        blue = 255;
       }
     }
 
     if (size > 0.0f) {
-      const vector3d vec3{slot.vecBNow.x, top - size, slot.vecBNow.z};
-      const vector3d vec4{slot.vecBPre.x, top - size, slot.vecBPre.z};
+      vec3 = {slot.vecBNow.x, top - size, slot.vecBNow.z};
+      vec4 = {slot.vecBPre.x, top - size, slot.vecBPre.z};
       this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, extra);
     }
   }
