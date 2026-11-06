@@ -168,9 +168,9 @@ void CPlayerSkillBundle::ClearExtra() {
 
 // OFFSET: 0x007713E0
 // FUNCTION: fn_08274
-void CPlayerSkillBundle::AddExtra(const CSkillInfo& value, WindowManagerWindows& windows) {
+void CPlayerSkillBundle::AddExtra(const CSkillInfo& value) {
   this->extraIds.push_back(value.id);
-  if (UIWindow* window = windows.LookupWindow(37)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(37)) {
     window->SendMsg(nullptr, 161, 0, 0, 0, 0);
   }
 

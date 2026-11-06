@@ -36,7 +36,7 @@ public:
   CSkillInfo* FindExtra(std::uint32_t id);
   void ClearExtra();
   bool RemoveExtra(std::uint32_t id);
-  void AddExtra(const CSkillInfo& value, WindowManagerWindows& windows);
+  void AddExtra(const CSkillInfo& value);
   void NumberExtra();
   void AddGrouped(int group, const CSkillInfo& value);
   void ClearGroups();

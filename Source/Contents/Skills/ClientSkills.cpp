@@ -240,7 +240,7 @@ bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsign
       } else {
         snapshot.unknown_0024 = UINT32_MAX;
         snapshot.unknown_002C = 0;
-        this->m_skillBundle.AddExtra(snapshot, g_windowMgr);
+        this->m_skillBundle.AddExtra(snapshot);
       }
     }
 
