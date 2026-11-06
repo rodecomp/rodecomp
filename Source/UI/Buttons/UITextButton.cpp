@@ -2950,14 +2950,13 @@ void UIComboBox::Slot31(int x, int y) {
 // OFFSET: 0x00890C20
 // FUNCTION: fn_11436
 void UIComboBoxID::Slot31(int x, int y) {
-  int line = -1;
+  int line;
 
-  if (x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+  if (x < 0 || y < 0 || x >= this->geometry.width || y >= this->geometry.height) {
+    line = -1;
+  } else {
     const int index = y / this->lineHeight + this->topLine;
-
-    if (index >= 0 && static_cast<unsigned>(index) < this->lines.size()) {
-      line = index;
-    }
+    line = index >= 0 && static_cast<unsigned>(index) < this->lines.size() ? index : -1;
   }
 
   this->selected = line;
