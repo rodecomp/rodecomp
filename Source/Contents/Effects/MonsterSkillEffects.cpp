@@ -59,19 +59,28 @@ void __stdcall fn_07337(CParticle* particle);
 void __stdcall fn_07338(CParticle* particle);
 void __stdcall fn_07339(CParticle* particle);
 
-// OFFSET: 0x0070C070
-// FUNCTION: fn_07123
-bool CCrimsonArrowEffect::Slot06() {
-  EZ2STREmitter* emitter = this->emitter;
-  if (!emitter) {
-    return false;
-  }
-
-  if (emitter->lifetime == 0.0f) {
+// INLINED
+static bool IsEmitterAlive(const EZ2STREmitter* emitter) {
+  if (0.0f == emitter->lifetime) {
     return true;
   }
 
   return emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed);
+}
+
+// OFFSET: 0x0070C070
+// FUNCTION: fn_07123
+bool CCrimsonArrowEffect::Slot06() {
+  EZ2STREmitter* emitter = this->emitter;
+  if (emitter) {
+    if (0.0f == emitter->lifetime) {
+      return true;
+    }
+
+    return emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed);
+  }
+
+  return false;
 }
 
 // OFFSET: 0x0070C150
@@ -795,7 +804,7 @@ void CEternalSlashAttackEffect::Slot01() {
 bool CEternalSlashAttackEffect::Slot06() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
-    if (emitter && (emitter->lifetime == 0.0f || static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f)) {
+    if (emitter && IsEmitterAlive(emitter) == true) {
       return true;
     }
   }
@@ -857,15 +866,15 @@ void CEternalSlashCountEffect::Slot01() {
 // FUNCTION: fn_07217
 bool CEternalSlashCountEffect::Slot06() {
   EZ2STREmitter* emitter = this->emitter;
-  if (!emitter) {
-    return false;
+  if (emitter) {
+    if (0.0f == emitter->lifetime) {
+      return true;
+    }
+
+    return static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f;
   }
 
-  if (emitter->lifetime == 0.0f) {
-    return true;
-  }
-
-  return static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f;
+  return false;
 }
 
 // OFFSET: 0x00711380
@@ -1941,15 +1950,15 @@ void CJupitelThunderHit::Slot01() {
 // OFFSET: 0x0071C540
 // FUNCTION: fn_07324
 bool CJupitelThunderHit::Slot06() {
-  if (this->id == 1200) {
-    return this->ActorExists();
+  if (this->id != 1200) {
+    if (this->actor == 0) {
+      return true;
+    }
+
+    return !this->IsFinished();
   }
 
-  if (this->actor == 0) {
-    return true;
-  }
-
-  return !this->IsFinished();
+  return this->ActorExists();
 }
 
 // OFFSET: 0x0071C570
@@ -2340,7 +2349,7 @@ void CPetitioEffect::Slot01() {
 bool CPetitioEffect::Slot06() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
-    if (emitter->lifetime == 0.0f || static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f) {
+    if (IsEmitterAlive(emitter) == true) {
       return true;
     }
   }
@@ -2816,7 +2825,10 @@ void CRichsCoinEffect::Slot04() {
 
 // OFFSET: 0x00722070
 // FUNCTION: fn_07381
-CSavageImpactEffect::CSavageImpactEffect() : CEffect(1837), offset{} {
+CSavageImpactEffect::CSavageImpactEffect() : CEffect(1837) {
+  this->offset.x = 0.0f;
+  this->offset.y = 0.0f;
+  this->offset.z = 0.0f;
 }
 
 // OFFSET: 0x00722460
@@ -2833,9 +2845,8 @@ bool CSavageImpactEffect::Slot06() {
 // FUNCTION: fn_07386
 void CSavageImpactEffect::Slot03() {
   CEZ2STRParticle* particle = AsParticle(this->emitter);
-  particle->position.x = this->position[0];
-  particle->position.y = this->position[1] - 12.0f;
-  particle->position.z = this->position[2];
+  const vector3d position = {this->position[0] + 0.0f, this->position[1] - 12.0f, this->position[2] + 0.0f};
+  particle->position = position;
   particle->Process(0.0f, 0.0f, 0.0f);
 }
 
@@ -2847,7 +2858,12 @@ void CSavageImpactEffect::Slot04() {
 
 // OFFSET: 0x007226A0
 // FUNCTION: fn_07389
-CServantWeaponEffect::CServantWeaponEffect() : CEffect(-1), offsets{} {
+CServantWeaponEffect::CServantWeaponEffect() : CEffect(-1) {
+  for (vector3d& offset : this->offsets) {
+    offset.x = 0.0f;
+    offset.y = 0.0f;
+    offset.z = 0.0f;
+  }
 }
 
 // OFFSET: 0x00722730
