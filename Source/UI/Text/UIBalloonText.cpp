@@ -412,8 +412,8 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
   }
 
   int width = 32;
-  for (const std::string& line : this->m_lines) {
-    const int lineWidth = this->TextWidth(line.c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8;
+  for (auto line = this->m_lines.begin(); line != this->m_lines.end(); ++line) {
+    const int lineWidth = this->TextWidth(line->c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8;
     width = std::max(lineWidth, width);
   }
 
