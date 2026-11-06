@@ -314,7 +314,7 @@ bool RuneData::IsActive() const {
 // FUNCTION: fn_08132
 const std::pair<int, int>& CRuneSystemMgr::GetItemListEntry(int listId, unsigned int index) {
   const auto found = this->m_itemLists.find(listId);
-  if (found == this->m_itemLists.end() || index >= found->second.size()) {
+  if (this->m_itemLists.end() == found || index >= found->second.size()) {
     return this->m_emptyItem;
   }
 
@@ -325,7 +325,7 @@ const std::pair<int, int>& CRuneSystemMgr::GetItemListEntry(int listId, unsigned
 // FUNCTION: fn_08133
 int CRuneSystemMgr::GetItemListCount(int listId) {
   const auto found = this->m_itemLists.find(listId);
-  if (found != this->m_itemLists.end()) {
+  if (this->m_itemLists.end() != found) {
     return static_cast<int>(found->second.size());
   }
 
