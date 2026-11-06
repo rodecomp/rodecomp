@@ -29,16 +29,14 @@ CSignBoardMgr* s_signBoardMgr = nullptr;
 // FUNCTION: fn_10244
 bool CreateSignBoardMgr() {
   if (s_signBoardMgr == nullptr) {
-    s_signBoardMgr = new (std::nothrow) CSignBoardMgr{};
+    s_signBoardMgr = new (std::nothrow) CSignBoardMgr();
     if (s_signBoardMgr != nullptr) {
-      s_signBoardMgr->unknown_0000 = true;
-    }
-    if (s_signBoardMgr != nullptr && s_signBoardMgr->unknown_0000) {
-      return true;
-    }
-    if (s_signBoardMgr != nullptr) {
-      delete s_signBoardMgr;
-      s_signBoardMgr = nullptr;
+      if (!s_signBoardMgr->unknown_0000) {
+        delete s_signBoardMgr;
+        s_signBoardMgr = nullptr;
+      } else {
+        return true;
+      }
     }
   }
   return false;
@@ -378,9 +376,9 @@ void CIcon::Load(const std::string& name) {
 // OFFSET: 0x00822310
 // FUNCTION: fn_10276
 void C3DCooRendering::SetBoard(const std::string& text, const std::string& color) {
+  static_cast<CSignBoardWnd*>(this->window)->unknown_0080 = text;
+  static_cast<CSignBoardWnd*>(this->window)->unknown_00B0 = color;
   CSignBoardWnd* board = static_cast<CSignBoardWnd*>(this->window);
-  board->unknown_0080 = text;
-  board->unknown_00B0 = color;
   board->ApplyColor();
   board->text->SetTextFitted(board->unknown_0080.c_str());
 }

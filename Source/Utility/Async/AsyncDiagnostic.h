@@ -7,6 +7,10 @@
 
 struct AsyncDiagnostic {
   AsyncDiagnostic(const bool* success, std::string* message, const char* file, const std::uint32_t* line);
+  // INLINED
+  __forceinline AsyncDiagnostic(const bool& success, std::string&& message, const char* file, const std::uint32_t& line)
+      : AsyncDiagnostic(&success, &message, file, &line) {
+  }
   ~AsyncDiagnostic();
   AsyncDiagnostic& MoveFrom(AsyncDiagnostic& other);
 

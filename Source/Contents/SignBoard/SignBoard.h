@@ -75,6 +75,9 @@ struct SignBoardInfo {
 
 class CSignBoardMgr {
 public:
+  CSignBoardMgr() : unknown_0000(true) {}
+  ~CSignBoardMgr() { std::vector<SignBoardInfo>(this->m_entries).swap(this->m_entries); }
+
   void Initialize();
   void LoadList();
 
