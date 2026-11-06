@@ -1219,10 +1219,17 @@ std::pair<int, int>* CSession::InsertPair(int key, int value) {
 // OFFSET: 0x00E0A1F0
 // FUNCTION: fn_23792
 int CSession::GetPairValue() const {
-  const int first = this->m_pairValues[0] != -1 ? this->m_pairValues[0] : -1;
-  const int second = this->m_pairValues[1] == -1 ? first : this->m_pairValues[1];
-  const int third = this->m_pairValues[2];
-  return third == -1 ? second : third;
+  int value = -1;
+  if (this->m_pairValues[0] != -1) {
+    value = this->m_pairValues[0];
+  }
+  if (this->m_pairValues[1] != -1) {
+    value = this->m_pairValues[1];
+  }
+  if (this->m_pairValues[2] != -1) {
+    value = this->m_pairValues[2];
+  }
+  return value;
 }
 
 // OFFSET: 0x00E0A220
