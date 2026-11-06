@@ -36,6 +36,7 @@
 #include "Render/RenderSystemBase.h"
 #include "Render/Renderer.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/XmlNode.h"
 #include "Resource/ResourcePreload.h"
 #include "Resource/TextureNames.h"
 #include "Security/NProtectGameGuardMgr.h"
@@ -3437,6 +3438,207 @@ static_assert(sizeof(ZoneEnterPacket) == 0x17);
 std::string nullsub_481(int length, unsigned int seed);
 void __stdcall sub_3DE9318(CLoginMode* mode);
 
+// GLOBAL: gl_25522
+XmlNode* g_clientInfoRoot;
+
+// GLOBAL: gl_25523
+unsigned char g_customServerListLoaded;
+
+// GLOBAL: gl_25475
+unsigned char g_loginCancelRequested;
+
+// GLOBAL: gl_25524
+const char* g_clientInfoAddress;
+
+// GLOBAL: gl_25525
+const char* g_clientInfoPort;
+
+// GLOBAL: gl_25526
+const char* g_clientInfoDomain;
+
+// GLOBAL: gl_25527
+std::uint32_t g_patchedClientVersion = 0x80000000;
+
+struct CustomServerList {
+  /* 0000 */ char balloons[8][128];
+};
+
+// GLOBAL: gl_25529
+CustomServerList g_customServerList;
+
+// OFFSET: 0x03DE91E0
+// FUNCTION: fn_45403
+__declspec(noinline) static const char* XmlText(const std::string& text, std::size_t& length) {
+  length = text.size();
+  return text.c_str();
+}
+
+// OFFSET: 0x03DE91EC
+// FUNCTION: fn_45404
+__declspec(noinline) static void CopyXmlText(const std::string* text, char* output, std::size_t capacity) {
+  if (text == nullptr) {
+    *output = '\0';
+    return;
+  }
+  std::size_t length;
+  const char* source = XmlText(*text, length);
+  if (source == nullptr || capacity == 0) {
+    *output = '\0';
+    return;
+  }
+  if (length > capacity - 1) {
+    length = capacity - 1;
+  }
+  std::memcpy(output, source, length);
+  output[length] = '\0';
+}
+
+// OFFSET: 0x03DE9224
+// FUNCTION: fn_45405
+__declspec(noinline) static void CopyXmlTextWithoutColors(const std::string* text, char* output, std::size_t capacity) {
+  if (text == nullptr) {
+    *output = '\0';
+    return;
+  }
+  std::size_t length;
+  const char* source = XmlText(*text, length);
+  if (source == nullptr || capacity == 0) {
+    *output = '\0';
+    return;
+  }
+  std::size_t remaining = capacity - 1;
+  while (length != 0 && remaining > 0) {
+    const char c = *source++;
+    --length;
+    if (c == '^' && length >= 6) {
+      source += 6;
+      length -= 6;
+      continue;
+    }
+    *output++ = c;
+    --remaining;
+  }
+  *output = '\0';
+}
+
+// OFFSET: 0x03DE927C
+// FUNCTION: fn_45406
+__declspec(noinline) static unsigned int ParseXmlNumber(const std::string* text) {
+  if (text == nullptr) {
+    return 0;
+  }
+  std::size_t length;
+  const char* source = XmlText(*text, length);
+  unsigned int value = 0;
+  while (length != 0) {
+    const unsigned int digit = static_cast<unsigned char>(*source++) - '0';
+    --length;
+    if (digit > 9) {
+      break;
+    }
+    value = value * 10 + digit;
+  }
+  return value;
+}
+
+// OFFSET: 0x03DE92AD
+// FUNCTION: fn_45407
+__declspec(noinline) static std::uint32_t ParseXmlAddress(const std::string* text) {
+  if (text == nullptr) {
+    return 0;
+  }
+  std::size_t length;
+  const char* source = XmlText(*text, length);
+  if (source == nullptr || length == 0) {
+    return 0;
+  }
+  std::uint32_t address = 0;
+  unsigned int octet = 0;
+  unsigned int dots = 0;
+  while (length != 0) {
+    const unsigned int c = static_cast<unsigned char>(*source++);
+    --length;
+    if (c == '.') {
+      if (dots >= 3) {
+        return 0;
+      }
+      address = (address << 8) | octet;
+      octet = 0;
+      ++dots;
+      continue;
+    }
+    if (c - '0' > 9) {
+      return 0;
+    }
+    octet = octet * 10 + (c - '0');
+    if (octet > 0xFF) {
+      return 0;
+    }
+  }
+  if (dots != 3) {
+    return 0;
+  }
+  return (address << 8) | octet;
+}
+
+// OFFSET: 0x03DE9318
+// FUNCTION: fn_45408
+void __stdcall sub_3DE9318(CLoginMode* mode) {
+  ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(mode->serverList);
+  mode->unknown_01C4 = 0;
+  *reinterpret_cast<int*>(mode->unknown_01C8) = -1;
+
+  XmlNode* connection = g_clientInfoRoot->FindChild("connection");
+  int count = 0;
+  while (connection != nullptr && count < 8) {
+    ServerAddress2& server = servers[count];
+    std::memset(&server, 0, sizeof(server));
+    std::memset(g_customServerList.balloons[count], 0, sizeof(g_customServerList.balloons[count]));
+
+    const std::string* address = nullptr;
+    const std::string* port = nullptr;
+    const std::string* display = nullptr;
+    const std::string* balloon = nullptr;
+
+    if (XmlNode* node = connection->FindChild("address")) {
+      address = &node->Text();
+      if (address != nullptr) {
+        server.address.ip = _byteswap_ulong(ParseXmlAddress(address));
+      }
+    }
+    if (XmlNode* node = connection->FindChild("port")) {
+      port = &node->Text();
+      if (port != nullptr) {
+        server.address.port = static_cast<std::int16_t>(ParseXmlNumber(port));
+      }
+    }
+    if (XmlNode* node = connection->FindChild("display")) {
+      display = &node->Text();
+    }
+
+    server.address.userCount = 4;
+    server.address.state = 0;
+    server.address.property = 0;
+    CopyXmlTextWithoutColors(display != nullptr ? display : address, server.address.name, sizeof(server.address.name));
+    CopyXmlText(display != nullptr ? display : address, server.domain, 0x78);
+
+    if (XmlNode* node = connection->FindChild("balloon")) {
+      balloon = &node->Text();
+      if (balloon != nullptr) {
+        CopyXmlText(balloon, g_customServerList.balloons[count], sizeof(g_customServerList.balloons[count]));
+      }
+    }
+
+    ++count;
+    connection = connection->FindSibling("connection");
+  }
+
+  mode->unknown_01C4 = count;
+  if (count != 0) {
+    *reinterpret_cast<int*>(mode->unknown_01C8) = 0;
+  }
+}
+
 // OFFSET: 0x00D93B20
 // FUNCTION: fn_22297
 void CLoginMode::Slot7(int value) {
@@ -3552,18 +3754,17 @@ void CLoginMode::Slot7(int value) {
     thread_local EncryptedName<sizeof(countNameSource), 0x6FE153231D879777ULL> countName(countNameSource);
     window->SendMsg(nullptr, 80, 10003, reinterpret_cast<std::intptr_t>(countName.Text()), 0, 0);
 
-    std::uint8_t& reloadServers = *reinterpret_cast<std::uint8_t*>(0x03DE9AB0);
-    if (reloadServers == 1) {
-      reloadServers = 0;
+    if (g_loginCancelRequested == 1) {
+      g_loginCancelRequested = 0;
       sub_3DE9318(this);
     } else if (this->unknown_01C4 < 1 || this->unknown_01C4 > 8) {
       sub_3DE9318(this);
     }
     if (this->unknown_01C4 != 0) {
-      *reinterpret_cast<std::uint8_t*>(0x03DE9BD5) = 1;
+      g_customServerListLoaded = 1;
     }
 
-    char(*displayNames)[128] = reinterpret_cast<char(*)[128]>(0x03DE96A0);
+    char(*displayNames)[128] = g_customServerList.balloons;
     for (int i = 0; i < this->unknown_01C4; ++i) {
       const ServerAddress2& server = servers[i];
       char text[64];
@@ -3714,9 +3915,9 @@ void CLoginMode::Slot7(int value) {
     endpoint.ip[0] = '\0';
     endpoint.port = 0;
     endpoint.host[0] = '\0';
-    const char* address = *reinterpret_cast<const char* const*>(0x03DE8D70);
-    const char* port = *reinterpret_cast<const char* const*>(0x03DE8D74);
-    const char* domain = *reinterpret_cast<const char* const*>(0x03DE8D78);
+    const char* address = g_clientInfoAddress;
+    const char* port = g_clientInfoPort;
+    const char* domain = g_clientInfoDomain;
     if (address) {
       std::strcpy(endpoint.ip, address);
     }
@@ -3741,7 +3942,7 @@ void CLoginMode::Slot7(int value) {
     SendExecutableDigest(g_serviceType, g_serviceMode, g_instance, GetRagConnection(), *reinterpret_cast<const PacketLengths*>(&GetRagConnection()));
     AccountLoginPacket packet;
     packet.id = 0x64;
-    packet.version = *reinterpret_cast<const std::uint32_t*>(0x04A12000);
+    packet.version = g_patchedClientVersion;
     std::memcpy(packet.name, &this->unknown_0138[0x40], sizeof(packet.name));
     if (g_serviceType == 7) {
       char password[24];

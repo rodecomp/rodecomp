@@ -3232,7 +3232,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   case 6:
     switch (a) {
     case 185:
-      *reinterpret_cast<std::uint8_t*>(0x03DE9AB0) = 1;
+      g_loginCancelRequested = 1;
       g_modeMgr.gameMode->SendMsg(10018, 0, 0, 0, 0);
       break;
     case 186: {
