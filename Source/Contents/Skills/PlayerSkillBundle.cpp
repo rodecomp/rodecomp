@@ -205,8 +205,8 @@ bool CPlayerSkillBundle::RemoveExtra(std::uint32_t id, WindowManagerWindows& win
 void CPlayerSkillBundle::NumberExtra() {
   unsigned number = 0;
 
-  for (auto entry = this->extra.begin(); entry != this->extra.end(); ++entry) {
-    entry->unknown_0024 = number++;
+  for (auto entry = this->extra.begin(); entry != this->extra.end(); ++entry, ++number) {
+    entry->unknown_0024 = number;
   }
 }
 
@@ -241,14 +241,14 @@ CSkillInfo* CPlayerSkillBundle::FindGrouped(std::uint32_t id) {
 std::list<CSkillInfo>& CPlayerSkillBundle::Group(int group) {
   static std::list<CSkillInfo> missing;
   const auto entry = this->groups.find(group);
-  return entry == this->groups.end() ? missing : entry->second;
+  return entry != this->groups.end() ? entry->second : missing;
 }
 
 // OFFSET: 0x00771F30
 // FUNCTION: fn_08292
 std::size_t CPlayerSkillBundle::GroupSize(int group) const {
   const auto entry = this->groups.find(group);
-  return entry == this->groups.end() ? 0 : entry->second.size();
+  return entry != this->groups.end() ? entry->second.size() : 0;
 }
 
 // OFFSET: 0x00771F80
@@ -262,7 +262,7 @@ int CPlayerSkillBundle::GroupedLevel(std::uint32_t id) {
 // FUNCTION: fn_08284
 bool CPlayerSkillBundle::HasHigherLevel(std::uint32_t id) {
   const CSkillInfo* value = this->FindGrouped(id);
-  return value && value->level > value->unknown_0030;
+  return value ? value->level > value->unknown_0030 : false;
 }
 
 // OFFSET: 0x00770F20
@@ -332,8 +332,8 @@ void CPlayerSkillBundle::ClearLevelChanges() {
 // OFFSET: 0x00771920
 // FUNCTION: fn_08283
 void CPlayerSkillBundle::MarkLevelChanges() {
-  for (auto& [id, value] : this->changed) {
-    value = true;
+  for (auto entry = this->changed.begin(); entry != this->changed.end(); ++entry) {
+    entry->second = true;
   }
 }
 
