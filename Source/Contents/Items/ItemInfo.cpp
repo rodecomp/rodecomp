@@ -122,9 +122,10 @@ __declspec(noinline) ITEM_INFO& ITEM_INFO::operator=(const ITEM_INFO& other) {
   this->unknown_0098 = other.unknown_0098;
   memcpy_s(this->unknown_009C, sizeof(this->unknown_009C), other.unknown_009C, sizeof(other.unknown_009C));
   this->unknown_0074[3] = other.unknown_0074[3];
-  for (int index = 0; index < 4; ++index) {
-    this->unknown_0078[index] = other.unknown_0078[index];
-  }
+  this->unknown_0078[0] = other.unknown_0078[0];
+  this->unknown_0078[3] = other.unknown_0078[3];
+  this->unknown_0078[1] = other.unknown_0078[1];
+  this->unknown_0078[2] = other.unknown_0078[2];
   this->unknown_0088 = other.unknown_0088;
   this->unknown_0090 = other.unknown_0090;
   return *this;
