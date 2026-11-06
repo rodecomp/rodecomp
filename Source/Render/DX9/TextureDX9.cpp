@@ -68,26 +68,28 @@ CTextureDX9::CTextureDX9(DeviceOwnerDX9& owner, IDirect3DTexture9* texture) : CT
     this->m_textureWidth = this->m_description.Width;
     this->m_textureHeight = this->m_description.Height;
 
+    TextureFormat format;
     switch (this->m_description.Format) {
-    case D3DFMT_A8R8G8B8:
-      this->m_format = TextureFormat::A8R8G8B8;
-      break;
-    case D3DFMT_R5G6B5:
-      this->m_format = TextureFormat::R5G6B5;
-      break;
-    case D3DFMT_X1R5G5B5:
-      this->m_format = TextureFormat::X1R5G5B5;
-      break;
     case D3DFMT_A1R5G5B5:
-      this->m_format = TextureFormat::A1R5G5B5;
+      format = TextureFormat::A1R5G5B5;
       break;
     case D3DFMT_A4R4G4B4:
-      this->m_format = TextureFormat::A4R4G4B4;
+      format = TextureFormat::A4R4G4B4;
+      break;
+    case D3DFMT_R5G6B5:
+      format = TextureFormat::R5G6B5;
+      break;
+    case D3DFMT_X1R5G5B5:
+      format = TextureFormat::X1R5G5B5;
+      break;
+    case D3DFMT_A8R8G8B8:
+      format = TextureFormat::A8R8G8B8;
       break;
     default:
-      this->m_format = TextureFormat::UnknownTextureFormat;
+      format = TextureFormat::UnknownTextureFormat;
       break;
     }
+    this->m_format = format;
 
     this->m_width = this->m_height = this->m_description.Width;
   }
@@ -509,5 +511,5 @@ void CTextureDX9::Stretch(int x, int y, int width, int height) {
 // OFFSET: 0x0056CEE0
 // FUNCTION: fn_02352
 std::unique_ptr<CTextureDX9> CreateTextureDX9(DeviceOwnerDX9** owner) {
-  return std::make_unique<CTextureDX9>(**owner);
+  return std::unique_ptr<CTextureDX9>(new CTextureDX9(**owner));
 }
