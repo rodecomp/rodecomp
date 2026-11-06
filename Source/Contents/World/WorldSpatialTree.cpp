@@ -52,7 +52,12 @@ WorldSpatialTree::WorldSpatialTree() : minimum{0.0f, 0.0f, 0.0f}, maximum{0.0f, 
 // OFFSET: 0x00AC71E0
 // FUNCTION: fn_17655
 WorldSpatialTree::~WorldSpatialTree() {
-  this->ClearChildren();
+  for (int index = 0; index < 4; ++index) {
+    if (this->children[index]) {
+      delete this->children[index];
+      this->children[index] = nullptr;
+    }
+  }
 }
 
 // OFFSET: 0x00AC80C0
@@ -226,7 +231,7 @@ void WorldSpatialTree::RefreshBounds(int depth) {
     }
 
     WorldSpatialTree* node = this;
-
+    const float averageHalf = g_depthAverageHalf;
     do {
       if (node->minimum[1] > this->minimum[1]) {
         node->minimum[1] = this->minimum[1];
@@ -238,16 +243,16 @@ void WorldSpatialTree::RefreshBounds(int depth) {
 
       node->halfSize[0] = node->maximum[0] - node->center[0];
       const float halfZ = node->maximum[2] - node->center[2];
-      const float middleY = (node->maximum[1] + node->minimum[1]) * g_depthAverageHalf;
+      const float middleY = (node->maximum[1] + node->minimum[1]) * averageHalf;
       node->center[1] = middleY;
       node->halfSize[2] = halfZ;
       node->halfSize[1] = node->maximum[1] - middleY;
       node = node->parent;
     } while (node);
   } else {
-    for (WorldSpatialTree* child : this->children) {
-      if (child->dirty) {
-        child->RefreshBounds(depth + 1);
+    for (int index = 0; index < 4; ++index) {
+      if (this->children[index]->dirty) {
+        this->children[index]->RefreshBounds(depth + 1);
       }
     }
   }
