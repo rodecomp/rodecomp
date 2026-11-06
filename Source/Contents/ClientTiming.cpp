@@ -82,8 +82,14 @@ struct NaviUnknownBlock {
 // OFFSET: 0x00B8C870
 // FUNCTION: fn_19426
 CNavi_Object::CNavi_Object()
-    : id(-1), type(101), index(0), info(nullptr), cellX(0), cellY(0), unknown_0058(0), unknown_005C(0), unknown_0060(0), unknown_0064(0), unknown_0068(0),
+    : cellX(0), cellY(0), unknown_0058(0), unknown_005C(0), unknown_0060(0), unknown_0064(0), unknown_0068(0),
       unknown_006C(0), unknown_0070(0), unknown_0074(0), unknown_0078(0) {
+  this->id = -1;
+  this->type = 101;
+  this->index = 0;
+  this->cellX = 0;
+  this->cellY = 0;
+  this->info = nullptr;
 }
 
 // OFFSET: 0x00B8C990
@@ -157,20 +163,23 @@ CNaviInfo::CNaviInfo(int index, const char* name, const char* title, int cellX, 
 // OFFSET: 0x00B886A0
 // FUNCTION: fn_19372
 bool CNaviData::AddDestination(CNaviInfo* info) {
-  if (!info) {
+  CNaviInfo* entry = info;
+  if (!entry) {
     return false;
   }
-  this->destinations.push_back(info);
+  this->destinations.push_back(entry);
   return true;
 }
 
 // OFFSET: 0x00B886E0
 // FUNCTION: fn_19373
 bool CNaviData::AddObject(CNavi_Link* link) {
-  if (!link) {
+  std::vector<CNavi_Link*>& objects = this->objects;
+  CNavi_Link* entry = link;
+  if (!entry) {
     return false;
   }
-  this->objects.push_back(link);
+  objects.push_back(entry);
   return true;
 }
 
