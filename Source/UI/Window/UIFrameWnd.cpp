@@ -64,8 +64,6 @@ std::uint32_t g_monsterInfoActorId;
 // FUNCTION: fn_11657
 UIFrameWnd::UIFrameWnd(unsigned char cached)
     : UIWindow(cached), m_dragX(0), m_dragY(0), m_message0(600), m_message1(600) {
-  this->m_textCache.max_load_factor(1.0f);
-  this->m_textCache.rehash(8);
 }
 
 // OFFSET: 0x008A4E90
@@ -108,6 +106,14 @@ void UIWindow::ToScreen(int& x, int& y) const {
   for (const UIWindow* node = this->parent; node; node = node->parent) {
     x += node->geometry.x;
     y += node->geometry.y;
+  }
+}
+
+// INLINED
+static __forceinline void RaiseWindow(UIWindow* window) {
+  if (window && g_windowMgr.lastWindowId != window->geometry.id) {
+    g_windowMgr.BringToFront(window->geometry.id);
+    g_windowMgr.lastWindowId = window->geometry.id;
   }
 }
 
