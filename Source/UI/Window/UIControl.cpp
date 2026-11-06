@@ -2500,7 +2500,7 @@ void CUITextViewer::Resize(int width, int height) {
 void CUIResizer::Paint() {
   this->ClearSurface(0xFFFF00FF);
   if (this->image) {
-    this->DrawBitmap(0, 0, &this->image->image, false);
+    this->DrawBitmap(0, 0, this->image, false);
   }
 }
 
