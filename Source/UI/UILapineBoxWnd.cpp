@@ -89,7 +89,7 @@ void UIIngredientInfoWnd::Slot31(int, int) {
 void UIIngredientInfoWnd::Slot28(int x, int y) {
   this->Slot27(x, y);
 
-  if (this->tooltip.size() != 0) {
+  if (this->tooltip.size() > 0) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
@@ -187,7 +187,7 @@ void UILapineBoxWnd::Slot19() {
 // OFFSET: 0x00600C00
 // FUNCTION: fn_04168
 void UIIngredientInfoWnd::Slot32(int, int) {
-  if (this->item.unknown_0000[1] != 0) {
+  if (this->item.unknown_0000[1] > 0) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
     window->SendMsg(this, 0x18, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
   }
