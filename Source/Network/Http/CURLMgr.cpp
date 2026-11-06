@@ -7,7 +7,8 @@
 CCURLMgr* g_curlMgr;
 
 // INLINED
-CCURLMgr::CCURLMgr() : m_enabled(false), m_module(nullptr) {
+CCURLMgr::CCURLMgr() : m_module(nullptr) {
+  this->m_enabled = false;
   this->m_module = LoadLibraryA("libcurl.dll");
   if (this->m_module) {
     this->globalInit = reinterpret_cast<decltype(globalInit)>(GetProcAddress(m_module, "curl_global_init"));
