@@ -124,26 +124,25 @@ void UIBasicInfoWnd::SetHeight(int height) {
 // OFFSET: 0x00999490
 // FUNCTION: fn_13497
 void UIBasicInfoWnd::RefreshLayout() {
-  const int height = this->geometry.height;
   if (g_session.IsTreeGroupThree(g_session.GetDisplayJob())) {
-    if (height == this->collapsedHeight) {
+    if (this->geometry.height == this->collapsedHeight) {
       this->layoutOffset = this->extendedOffset;
       this->collapsedHeight = this->extendedCollapsedHeight;
       this->expandedHeight = this->extendedExpandedHeight;
       this->SetHeight(this->extendedCollapsedHeight);
-    } else if (height == this->expandedHeight) {
+    } else if (this->geometry.height == this->expandedHeight) {
       this->layoutOffset = this->extendedOffset;
       this->collapsedHeight = this->extendedCollapsedHeight;
       this->expandedHeight = this->extendedExpandedHeight;
       this->SetHeight(this->extendedExpandedHeight);
     }
   } else {
-    if (height == this->collapsedHeight) {
+    if (this->geometry.height == this->collapsedHeight) {
       this->layoutOffset = this->normalOffset;
       this->collapsedHeight = this->normalCollapsedHeight;
       this->expandedHeight = this->normalExpandedHeight;
       this->SetHeight(this->normalCollapsedHeight);
-    } else if (height == this->expandedHeight) {
+    } else if (this->geometry.height == this->expandedHeight) {
       this->layoutOffset = this->normalOffset;
       this->collapsedHeight = this->normalCollapsedHeight;
       this->expandedHeight = this->normalExpandedHeight;
