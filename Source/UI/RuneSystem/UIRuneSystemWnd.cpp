@@ -1765,7 +1765,7 @@ void UIRune_Decom::Slot15(int, int) {
   this->m_decomButton->SetId(0x197);
 
   int index = 0;
-  for (int x = 0xDD; x < 0x1AF; x += 0x69) {
+  for (int x = 0xDD; x < 0x1AF; x += 0x69, ++index) {
     this->m_radioButtons[index] = new UIRuneSystem_Decom_RadioBtn();
     this->m_radioButtons[index]->SetSize(0x68, 0x0E);
     this->m_radioButtons[index]->Move(x, 0x153);
@@ -1777,7 +1777,6 @@ void UIRune_Decom::Slot15(int, int) {
     this->m_radioButtons[index]->value = index;
     this->m_radioButtons[index]->Show(0);
     this->AddChild(this->m_radioButtons[index]);
-    ++index;
   }
 
   this->Reset();
