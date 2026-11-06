@@ -1095,7 +1095,8 @@ void UIPartyInvitationToWnd::Paint() {
 // OFFSET: 0x008EFA00
 // FUNCTION: fn_12240
 void UIPartySettingWnd::Paint() {
-  const int titleHeight = this->DrawTitleBar(true, LookupMessage(this->m_mode == 50 ? 2054 : 291), 0);
+  const char* title = LookupMessage(this->m_mode != 50 ? 291 : 2054);
+  const int titleHeight = this->DrawTitleBar(true, title, 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 
