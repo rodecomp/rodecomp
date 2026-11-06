@@ -1736,18 +1736,18 @@ void CEffectPrim::RenderTaperedQuad(matrix& wtm) {
       angle3 += 360;
     }
 
-    vec1.x = dist * g_cosTable[angle1] * g_depthAverageHalf + g_cosTable[angle] * inner;
+    vec1.x = dist * g_cosTable[angle1] * 0.5f + g_cosTable[angle] * inner;
     vec1.y = 0.0f;
-    vec1.z = dist * g_sinTable[angle1] * g_depthAverageHalf + g_sinTable[angle] * inner;
-    vec2.x = dist * g_cosTable[angle2] * g_depthAverageHalf + g_cosTable[angle] * inner;
+    vec1.z = dist * g_sinTable[angle1] * 0.5f + g_sinTable[angle] * inner;
+    vec2.x = dist * g_cosTable[angle2] * 0.5f + g_cosTable[angle] * inner;
     vec2.y = 0.0f;
-    vec2.z = dist * g_sinTable[angle2] * g_depthAverageHalf + g_sinTable[angle] * inner;
-    vec3.x = dist * g_cosTable[angle3] * g_depthAverageHalf + g_cosTable[angle] * dist;
+    vec2.z = dist * g_sinTable[angle2] * 0.5f + g_sinTable[angle] * inner;
+    vec3.x = dist * g_cosTable[angle3] * 0.5f + g_cosTable[angle] * dist;
     vec3.y = 0.0f;
-    vec3.z = dist * g_sinTable[angle3] * g_depthAverageHalf + g_sinTable[angle] * dist;
-    vec4.x = dist * g_cosTable[angle4] * g_depthAverageHalf + g_cosTable[angle] * dist;
+    vec3.z = dist * g_sinTable[angle3] * 0.5f + g_sinTable[angle] * dist;
+    vec4.x = dist * g_cosTable[angle4] * 0.5f + g_cosTable[angle] * dist;
     vec4.y = 0.0f;
-    vec4.z = dist * g_sinTable[angle4] * g_depthAverageHalf + g_sinTable[angle] * dist;
+    vec4.z = dist * g_sinTable[angle4] * 0.5f + g_sinTable[angle] * dist;
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
     vec1.x = slot.vecBNow.x + vec1.x;
