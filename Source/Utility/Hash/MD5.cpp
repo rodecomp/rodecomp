@@ -250,7 +250,7 @@ std::uint32_t MD5::HashString(const char* text) {
 
 // OFFSET: 0x00402710
 // FUNCTION: fn_00131
-std::uint32_t MD5::HashString(const wchar_t* text) {
+__declspec(noinline) std::uint32_t MD5::HashString(const wchar_t* text) {
   char converted[260];
   WideCharToMultiByte(CP_ACP, 0, text, -1, converted, 260, nullptr, nullptr);
   return HashString(converted);
