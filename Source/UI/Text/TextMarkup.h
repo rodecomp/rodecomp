@@ -23,8 +23,8 @@ const std::string DisplayQuestTextTag(const std::string& text);
 const std::string DisplayTipBoxTextTag(const std::string& text);
 const std::string DisplayUrlTextTag(const std::string& text);
 const std::string RemoveTextLinkInfo(const std::string& source);
-void ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links);
-void ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links);
+void __stdcall ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links);
+void __stdcall ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links);
 void ExtractTipBoxTextLinks(const std::string& text, std::vector<TextLink>& links);
 void ExtractUrlTextLinks(const std::string& text, std::vector<TextLink>& links);
 

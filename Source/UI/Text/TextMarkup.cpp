@@ -44,7 +44,7 @@ static const std::string g_questTagEnd = "</QUEST>";
 
 // OFFSET: 0x00A7CA90
 // FUNCTION: fn_16949
-void ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links) {
+void __stdcall ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links) {
   ExtractTextLinks(text, g_naviTagBegin, g_naviTagEnd, links);
 }
 
@@ -215,7 +215,7 @@ const std::string RemoveTextLinkInfo(const std::string& source) {
 
 // OFFSET: 0x00A7CAB0
 // FUNCTION: fn_16950
-void ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links) {
+void __stdcall ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links) {
   std::string text = source;
   auto position = text.find(begin);
 
