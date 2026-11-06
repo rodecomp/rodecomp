@@ -14,6 +14,43 @@
 #include "UI/Layout/WindowCoordinates.h"
 #include "UI/Window/WindowManagerWindows.h"
 
+#include <algorithm>
+
+// INLINED
+static __forceinline void PromoteWindow(UIWindowMgr* manager, UIWindow* window) {
+  if (!window || (manager->modal != nullptr && manager->window_4F174 != window)) {
+    return;
+  }
+
+  if (manager->LookupWindow(278) || manager->LookupWindow(4) || manager->LookupWindow(199) || manager->LookupWindow(200)) {
+    return;
+  }
+
+  int companion = -1;
+  if (window->geometry.id == 12) {
+    companion = 234;
+  } else if (window->geometry.id == 82) {
+    companion = 250;
+  }
+
+  if (companion != -1) {
+    const auto entry = std::find_if(manager->rendered.begin(), manager->rendered.end(), [companion](const UIWindow* value) {
+      return value->geometry.id == companion;
+    });
+    if (entry != manager->rendered.end()) {
+      UIWindow* value = *entry;
+      manager->rendered.erase(entry);
+      manager->rendered.push_back(value);
+    }
+  }
+
+  const auto entry = std::find(manager->rendered.begin(), manager->rendered.end(), window);
+  if (entry != manager->rendered.end()) {
+    manager->rendered.erase(entry);
+    manager->rendered.push_back(window);
+  }
+}
+
 // OFFSET: 0x00A91B30
 // FUNCTION: fn_17168
 __declspec(noinline) UIWindow* UIWindowMgr::FindRenderedUid(std::uint32_t uid) {
@@ -143,7 +180,7 @@ int UIWindowMgr::ProcessMouse() {
     if (g_mouse.buttons[0] == 1) {
       UIWindow* root = this->inputWindow->Root();
       if (root && root->Slot02()) {
-        this->Promote(root);
+        PromoteWindow(this, root);
       }
 
       this->inputWindow->Slot25(localX, localY);
@@ -201,7 +238,7 @@ int UIWindowMgr::ProcessMouse() {
       if (g_mouse.buttons[0] == 1) {
         UIWindow* root = window->Root();
         if (root && root->Slot02()) {
-          this->Promote(root);
+          PromoteWindow(this, root);
         }
 
         CUIDropDownBox* popup = static_cast<CUIDropDownBox*>(this->window_0A30);
@@ -215,7 +252,7 @@ int UIWindowMgr::ProcessMouse() {
       if (g_mouse.buttons[1] == 1) {
         UIWindow* root = window->Root();
         if (root && root->Slot02()) {
-          this->Promote(root);
+          PromoteWindow(this, root);
         }
 
         window->Slot32(localX, localY);
