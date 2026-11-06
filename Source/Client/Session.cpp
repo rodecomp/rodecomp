@@ -553,7 +553,7 @@ const char* CSession::GatName2RswName(const char* gatName) {
   // GLOBAL: gl_24763
   static std::string rswName;
   rswName = gatName;
-  if (rswName.size() > 4) {
+  if (rswName.size() >= 5) {
     rswName.resize(rswName.size() - 3);
     rswName += "rsw";
   }
@@ -2105,7 +2105,7 @@ void CSession::UpdateFriendName(std::uint32_t characterId, const char* name) {
 // OFFSET: 0x00DFF830
 // FUNCTION: fn_23621
 void CSession::SetEquipItem2B50(unsigned int index, const ITEM_INFO& item) {
-  if (index < 10) {
+  if (index <= 9) {
     this->unknown_2B50[index] = item;
     EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(reinterpret_cast<const int&>(item.unknown_0000[3]));
   }
@@ -2163,7 +2163,7 @@ void CSession::SetUnknown16EC(std::uint32_t value) {
 // OFFSET: 0x00DFF9C0
 // FUNCTION: fn_23625
 void CSession::SetEquipItem17F0(unsigned int index, const ITEM_INFO& item) {
-  if (index < 10) {
+  if (index <= 9) {
     this->unknown_17F0[index] = item;
     EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(reinterpret_cast<const int&>(item.unknown_0000[3]));
   }
@@ -2288,7 +2288,7 @@ void CSession::SetPlayerPosition(int x, int y, int direction) {
 // FUNCTION: fn_23636
 void CSession::SetRecord0734Value(int id, std::uint32_t value) {
   for (SessionRecord0734& record : this->unknown_0734) {
-    if (record.id == id) {
+    if (id == record.id) {
       record.unknown_0008 = value;
       return;
     }
