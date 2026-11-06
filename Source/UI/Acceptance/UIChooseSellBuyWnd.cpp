@@ -527,7 +527,8 @@ void UIDisconnectedServerMsgWnd::Paint() {
 // FUNCTION: fn_12220
 void UIEmailAddressWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
-  this->DrawTextAt(15, 6, LookupMessage(g_serviceType == 0 ? 1815 : 299), 0, 0, 12, 0, 0, 0);
+  const char* text = LookupMessage(g_serviceType == 0 ? 1815 : 299);
+  this->DrawTextAt(15, 6, text, 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008ED240
@@ -2658,7 +2659,7 @@ int UICombinedCardItemCollection_ComparisonWnd::SendMsg(UIWindow* sender, int me
 
   UIWindow* window = g_windowMgr.LookupWindow(82);
   if (window) {
-    this->Move(window->geometry.x - window->geometry.width, window->geometry.y);
+    this->UIFrameWnd::Move(window->geometry.x - window->geometry.width, window->geometry.y);
   }
   return 0;
 }
@@ -9414,10 +9415,9 @@ void UInCashWnd::Paint() {
   std::memset(text, 0, sizeof(text));
   char number[64];
   std::memset(number, 0, sizeof(number));
-  const int height = this->geometry.height;
 
   int length = std::sprintf(text, "%d / %d", this->m_page, this->m_pageCount);
-  this->DrawRightAlignedText(270, height - 55, text, length, 0, 12, 0, 0);
+  this->DrawRightAlignedText(270, this->geometry.height - 55, text, length, 0, 12, 0, 0);
 
   length = std::sprintf(text, LookupMessage(1857), FormatGroupedInteger(this->m_cashBalance, number, sizeof(number)));
   this->DrawShadowedText(74, this->geometry.height - 36, text, length, 0, 0xFFFFFF, 0, 12, 0);
