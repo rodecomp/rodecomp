@@ -24,10 +24,10 @@ bool CGndRes::Load(const char* name) {
     return false;
   }
 
-  std::uint32_t magic;
-  this->m_file.Read(&magic, sizeof(magic));
+  char magic[4];
+  this->m_file.Read(magic, sizeof(magic));
 
-  if (magic != 0x4E475247u) {
+  if (std::memcmp(magic, "GRGN", 4) != 0) {
     return false;
   }
 
