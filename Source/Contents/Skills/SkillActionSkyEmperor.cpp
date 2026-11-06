@@ -213,7 +213,8 @@ void CEfstAction_SKY_ENCHANT::Slot00(int efstId, int value, int argument3, int a
 // FUNCTION: fn_08821
 void CEfstAction_SKY_ENCHANT::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_enchanting_sky_01"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_enchanting_sky_01"));
   }
 }
 
@@ -337,7 +338,8 @@ void CEfstAction_RISING_SUN::Slot00(int efstId, int value, int argument3, int ar
 // FUNCTION: fn_08834
 void CEfstAction_RISING_SUN::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_01"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_01"));
   }
 }
 
@@ -362,7 +364,8 @@ void CEfstAction_NOON_SUN::Slot00(int efstId, int value, int argument3, int argu
 // FUNCTION: fn_08837
 void CEfstAction_NOON_SUN::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_03"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_03"));
   }
 }
 
@@ -387,7 +390,8 @@ void CEfstAction_SUNSET_SUN::Slot00(int efstId, int value, int argument3, int ar
 // FUNCTION: fn_08840
 void CEfstAction_SUNSET_SUN::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_05"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_05"));
   }
 }
 
@@ -463,7 +467,8 @@ void CEfstAction_RISING_MOON::Slot00(int efstId, int value, int argument3, int a
 // FUNCTION: fn_08848
 void CEfstAction_RISING_MOON::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_01"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_01"));
   }
 }
 
@@ -488,7 +493,8 @@ void CEfstAction_MIDNIGHT_MOON::Slot00(int efstId, int value, int argument3, int
 // FUNCTION: fn_08851
 void CEfstAction_MIDNIGHT_MOON::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_03"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_03"));
   }
 }
 
@@ -513,7 +519,8 @@ void CEfstAction_DAWN_MOON::Slot00(int efstId, int value, int argument3, int arg
 // FUNCTION: fn_08854
 void CEfstAction_DAWN_MOON::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_05"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_05"));
   }
 }
 
