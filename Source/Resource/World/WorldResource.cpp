@@ -70,7 +70,8 @@ namespace {
 
 // OFFSET: 0x00763060
 // FUNCTION: fn_08076
-C3dWorldRes::C3dWorldRes() : spatial(nullptr), lightDirection{}, diffuse{}, ambient{}, flag(0) {
+C3dWorldRes::C3dWorldRes() : lightDirection{}, diffuse{}, ambient{}, flag(0) {
+  this->spatial = nullptr;
 }
 
 // OFFSET: 0x00763550

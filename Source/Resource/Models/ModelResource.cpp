@@ -442,7 +442,7 @@ CTexture* C3dGrannyModelRes::CreateTexture(const granny_texture* texture, int) {
   const int height = texture->height;
   unsigned char* source = new unsigned char[height * width * 4];
   unsigned char* pixels = new unsigned char[height * width * 4];
-  GrannyCopyTextureImage(texture, 0, 0, &GrannyRGBA8888PixelFormat, width, height, width * 4, source);
+  GrannyCopyTextureImage(texture, 0, 0, GrannyRGBA8888PixelFormat, width, height, width * 4, source);
 
   int format;
   int offset = 0;
@@ -595,9 +595,7 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
   granny_file_info* info = GrannyGetFileInfo(this->file);
   std::strcpy(this->fileName, name);
 
-  if (!info) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Unable to access file data .gr2", 0);
-  } else {
+  if (info) {
     this->textureCount = info->textureCount;
     this->modelCount = info->modelCount;
 
@@ -680,6 +678,8 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
     }
 
     result = true;
+  } else {
+    ShowErrorDialog(GetRenderSystemHolder()->system, "Unable to access file data .gr2", 0);
   }
 
   GrannyFreeFileSection(this->file, 1);
@@ -725,12 +725,12 @@ granny_control* C3dGrannyModelRes::PlayAnimation(unsigned action, granny_model_i
     }
 
     granny_control* result = GrannyPlayControlledAnimation(0.0f, animation, instance);
-    if (!result) {
-      return nullptr;
+    if (result) {
+      GrannySetControlLoopCount(result, loopCount);
+      return result;
     }
 
-    GrannySetControlLoopCount(result, loopCount);
-    return result;
+    return nullptr;
   }
 
   GrannySetControlActive(control, true);

@@ -106,8 +106,8 @@ struct granny_system_clock {
 };
 
 extern "C" {
-__declspec(dllimport) extern const granny_pixel_layout GrannyRGBA8888PixelFormat;
-__declspec(dllimport) extern granny_data_type_definition GrannyPNT332VertexType[];
+__declspec(dllimport) extern const granny_pixel_layout* GrannyRGBA8888PixelFormat;
+__declspec(dllimport) extern granny_data_type_definition* GrannyPNT332VertexType;
 
 __declspec(dllimport) void WINAPI GrannySetControlActive(granny_control* control, bool active);
 __declspec(dllimport) void WINAPI GrannyFreeControl(granny_control* control);

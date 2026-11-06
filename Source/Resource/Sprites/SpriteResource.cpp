@@ -32,8 +32,7 @@ CSprRes* CSprRes::Create() {
 bool CSprRes::Load(const char* name) {
   CFile file;
   if (!file.Open(name, 0, true, false)) {
-    const std::string message = std::string("Spr :: Cannot find File : ") + std::string(name);
-    ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, (std::string("Spr :: Cannot find File : ") + std::string(name)).c_str(), 0);
     return false;
   }
 
@@ -75,22 +74,25 @@ bool CSprRes::Load(const char* name) {
     std::uint16_t dimensions[2];
     file.Read(dimensions, sizeof(dimensions));
     auto* image = new SpriteRleImage{};
+    image->unknown_0008 = nullptr;
     image->width = static_cast<std::int16_t>(dimensions[0]);
     image->height = static_cast<std::int16_t>(dimensions[1]);
+    image->unknown_0004 = 0;
+    image->unknown_0006 = 0;
     std::uint16_t encodedBytes;
 
     if (g_spriteHalfWidth == 0 && g_spriteHalfHeight == 0) {
-      if (header.version < 0x0201) {
+      if (header.version >= 0x0201) {
+        file.Read(&encodedBytes, sizeof(encodedBytes));
+        auto* runs = new std::uint8_t[encodedBytes];
+        image->runs = runs;
+        file.Read(runs, encodedBytes);
+      } else {
         const int count = image->width * image->height;
         auto* pixels = new std::uint8_t[count];
         file.Read(pixels, count);
         image->runs = this->EncodeSpriteRuns(pixels, image->width, image->height, encodedBytes);
         delete[] pixels;
-      } else {
-        file.Read(&encodedBytes, sizeof(encodedBytes));
-        auto* runs = new std::uint8_t[encodedBytes];
-        image->runs = runs;
-        file.Read(runs, encodedBytes);
       }
     } else {
       std::uint8_t* pixels;
@@ -203,6 +205,6 @@ void CSprRes::Unload() {
       delete *image;
     }
 
-    this->images[type].clear();
+    this->images[type].erase(this->images[type].begin(), this->images[type].end());
   }
 }
