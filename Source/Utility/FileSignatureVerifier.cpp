@@ -84,9 +84,10 @@ FileSignatureVerifier::~FileSignatureVerifier() {
 bool FileSignatureVerifier::VerifyBuffer(const WCHAR* fileName, const BYTE* data, DWORD dataSize, bool verifyFileName) {
   std::memcpy(&footer, data + dataSize - sizeof(footer), sizeof(footer));
   if (footer.startMarker == 0x32812622 && footer.endMarker == 0x32812621) {
-    signatureBlockSize = footer.signatureSize + footer.fileNameSize + sizeof(footer);
-    contentSize = dataSize - signatureBlockSize;
+    const DWORD blockSize = footer.signatureSize + footer.fileNameSize + sizeof(footer);
+    contentSize = dataSize - blockSize;
     hasSignature = true;
+    signatureBlockSize = blockSize;
     fileNameSize = footer.fileNameSize;
   } else {
     footer = {};
@@ -152,19 +153,17 @@ bool FileSignatureVerifier::VerifyBuffer(const WCHAR* fileName, const BYTE* data
     error = 11;
     return false;
   }
-  if (!CryptVerifySignatureW(hash, signature, signatureSize, publicKey, nullptr, 0)) {
-    if (GetLastError() != ERROR_INVALID_PARAMETER) {
-      error = 12;
-      return false;
-    }
+  BOOL verified = CryptVerifySignatureW(hash, signature, signatureSize, publicKey, nullptr, 0);
+  if (!verified && GetLastError() == ERROR_INVALID_PARAMETER) {
     if (!CryptAcquireContextW(&provider, nullptr, aMicrosoftBaseC, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
       error = 128;
       return false;
     }
-    if (!CryptVerifySignatureW(hash, signature, signatureSize, publicKey, nullptr, 0)) {
-      error = 12;
-      return false;
-    }
+    verified = CryptVerifySignatureW(hash, signature, signatureSize, publicKey, nullptr, 0);
+  }
+  if (!verified) {
+    error = 12;
+    return false;
   }
 
   char convertedFileName[MAX_PATH];
