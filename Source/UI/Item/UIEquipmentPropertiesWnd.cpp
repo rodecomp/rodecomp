@@ -23,7 +23,6 @@ namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
 public:
   CEquipmentPropertiesMgr();
-  static CEquipmentPropertiesMgr* GetInstance();
   void SetWindow(UIWindow* window);
   void GetDescriptions(const int& group, std::list<std::string>& lines);
 
@@ -31,7 +30,7 @@ public:
 };
 
 // INLINED
-inline CEquipmentPropertiesMgr* CEquipmentPropertiesMgr::GetInstance() {
+inline CEquipmentPropertiesMgr* EquipmentPropertiesMgr() {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) CEquipmentPropertiesMgr;
   }
@@ -917,7 +916,7 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Paint() {
 // OFFSET: 0x00A0F1F0
 // FUNCTION: fn_15167
 void CUIEquipmentPropertiesWnd::Slot16() {
-  EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->SetWindow(this);
+  EquipmentProperties::EquipmentPropertiesMgr()->SetWindow(this);
 }
 
 // OFFSET: 0x00A0F270
@@ -951,7 +950,7 @@ void CUIEquipmentPropertiesWnd::SetTab(const int& tab) {
   this->currentTab = tab;
   std::list<std::string> lines;
   const int group = this->currentTab;
-  EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->GetDescriptions(group, lines);
+  EquipmentProperties::EquipmentPropertiesMgr()->GetDescriptions(group, lines);
 
   auto* listBox = this->list;
   if (listBox->data != lines) {

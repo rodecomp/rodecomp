@@ -7070,7 +7070,7 @@ void CSession::sub_DF33B0() {
 }
 
 template <>
-EncryptedName<14, 0xB5F3F779237315F3ULL>::EncryptedName(const std::uint8_t (&source)[14]);
+EncryptedName<14, 0xB5F3F779237315F3ULL>::EncryptedName(const char (&source)[14]);
 template <>
 const char* EncryptedName<14, 0x6BC977B3B5993503ULL>::Text();
 EncryptedName<14, 0x6BC977B3B5993503ULL>& PoringSuperNovice2SpriteName();
@@ -8417,7 +8417,7 @@ void CSession::InitJobSpriteNames() {
     jobSpriteNames[240] = name.Text();
   }
   {
-    const std::uint8_t source[] = {0x30, 0xDF, 0xC9, 0x9B, 0xB9, 0x2D, 0xAF, 0x76, 0x39, 0xAF, 0xCB, 0xE3, 0xA3, 0xF7};
+    const char source[] = {'\x30', '\xDF', '\xC9', '\x9B', '\xB9', '\x2D', '\xAF', '\x76', '\x39', '\xAF', '\xCB', '\xE3', '\xA3', '\xF7'};
     thread_local EncryptedName<sizeof(source), 0xB5F3F779237315F3ULL> name(source);
     jobSpriteNames[241] = name.Text();
   }
