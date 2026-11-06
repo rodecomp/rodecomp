@@ -463,6 +463,7 @@ public:
 
 template <class T>
 struct CEffectAllocator : CAllocator {
+  CEffectAllocator() {}
   CEffect* Create() override;
 };
 
@@ -5024,9 +5025,11 @@ bool EffectLists::RegisterAllocators() {
     return false;
   }
 
-  std::vector<int> ez2strEffects = CEZ2STREffectMgr::GetInstance()->EffectIds();
-  for (int id : ez2strEffects) {
-    this->RegisterAllocator(id, new (std::nothrow) CEffectAllocator<CEZ2STREffectEx>);
+  {
+    std::vector<int> ez2strEffects = CEZ2STREffectMgr::GetInstance()->EffectIds();
+    for (auto id = ez2strEffects.begin(); id != ez2strEffects.end(); ++id) {
+      this->RegisterAllocator(*id, new (std::nothrow) CEffectAllocator<CEZ2STREffectEx>);
+    }
   }
 
   if (!this->RegisterAllocator(EF_UNK_2348, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
