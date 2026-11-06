@@ -526,9 +526,9 @@ void UIRoMapWnd::Slot27(int x, int y) {
   this->m_mouseX = x;
   this->m_mouseY = y;
   this->unknown_00BC = nullptr;
-  for (WorldViewRecord& record : this->m_records) {
-    if (g_worldViewMgr.currentWorld == record.worldIndex && record.left < x && x < record.right && record.top < y && y < record.bottom) {
-      this->unknown_00BC = &record;
+  for (auto it = this->m_records.begin(); it != this->m_records.end(); ++it) {
+    if (g_worldViewMgr.currentWorld == it->worldIndex && it->left < x && x < it->right && it->top < y && y < it->bottom) {
+      this->unknown_00BC = &*it;
       break;
     }
   }
