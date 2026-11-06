@@ -256,8 +256,8 @@ void CPokJukEffect::FaceCamera(vector3d* corners) {
   const int pitch = (450 - static_cast<int>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch)) % 360;
 
   for (int corner = 0; corner < 4; ++corner) {
-    const float y = corners[corner].y;
     const float z = corners[corner].z;
+    const float y = corners[corner].y;
     corners[corner].z = z * g_cosTable[pitch] - y * g_sinTable[pitch];
     corners[corner].y = y * g_cosTable[pitch] + z * g_sinTable[pitch];
   }
