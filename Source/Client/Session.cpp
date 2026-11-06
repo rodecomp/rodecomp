@@ -131,9 +131,9 @@ int CSession::IsExchangeItemListFull() {
 // OFFSET: 0x00DFFCF0
 // FUNCTION: fn_23633
 void CSession::ClearItemSelection() {
-  for (ITEM_INFO& item : this->m_inventoryItems) {
-    if (item.unknown_0074[1] == 1) {
-      item.unknown_0074[1] = 0;
+  for (auto it = this->m_inventoryItems.begin(); it != this->m_inventoryItems.end(); ++it) {
+    if (it->unknown_0074[1] == 1) {
+      it->unknown_0074[1] = 0;
     }
   }
 }
@@ -296,12 +296,14 @@ ITEM_INFO CSession::GetItem1768At(int index) const {
     return ITEM_INFO(0);
   }
 
+  std::list<ITEM_INFO>::const_iterator it = this->unknown_1768.begin();
   int position = 0;
-  for (const ITEM_INFO& item : this->unknown_1768) {
+  while (it != this->unknown_1768.end()) {
     if (position == index) {
-      return item;
+      return *it;
     }
     ++position;
+    ++it;
   }
 
   return ITEM_INFO(0);
@@ -338,12 +340,14 @@ ITEM_INFO CSession::GetItem1740At(int index) const {
     return ITEM_INFO(0);
   }
 
+  std::list<ITEM_INFO>::const_iterator it = this->unknown_1740.begin();
   int position = 0;
-  for (const ITEM_INFO& item : this->unknown_1740) {
+  while (it != this->unknown_1740.end()) {
     if (position == index) {
-      return item;
+      return *it;
     }
     ++position;
+    ++it;
   }
 
   return ITEM_INFO(0);
@@ -380,12 +384,14 @@ ITEM_INFO CSession::GetItem1750At(int index) const {
     return ITEM_INFO(0);
   }
 
+  std::list<ITEM_INFO>::const_iterator it = this->unknown_1750.begin();
   int position = 0;
-  for (const ITEM_INFO& item : this->unknown_1750) {
+  while (it != this->unknown_1750.end()) {
     if (position == index) {
-      return item;
+      return *it;
     }
     ++position;
+    ++it;
   }
 
   return ITEM_INFO(0);
@@ -434,12 +440,14 @@ ITEM_INFO CSession::GetItem1758At(int index) const {
     return ITEM_INFO(0);
   }
 
+  std::list<ITEM_INFO>::const_iterator it = this->unknown_1758.begin();
   int position = 0;
-  for (const ITEM_INFO& item : this->unknown_1758) {
+  while (it != this->unknown_1758.end()) {
     if (position == index) {
-      return item;
+      return *it;
     }
     ++position;
+    ++it;
   }
 
   return ITEM_INFO(0);
@@ -460,12 +468,14 @@ ITEM_INFO CSession::FindItem1760(std::uint32_t id) const {
 // OFFSET: 0x00DDF000
 // FUNCTION: fn_23416
 ITEM_INFO CSession::GetItem1760At(int index) const {
+  std::list<ITEM_INFO>::const_iterator it = this->unknown_1760.begin();
   int position = 0;
-  for (const ITEM_INFO& item : this->unknown_1760) {
+  while (it != this->unknown_1760.end()) {
     if (position == index) {
-      return item;
+      return *it;
     }
     ++position;
+    ++it;
   }
 
   return ITEM_INFO(0);
@@ -499,8 +509,8 @@ ITEM_INFO CSession::FindItem1770(std::uint32_t id) const {
 // FUNCTION: fn_23420
 long long CSession::GetItem1760Total() const {
   long long total = 0;
-  for (const ITEM_INFO& item : this->unknown_1760) {
-    total += static_cast<long long>(item.quantity) * static_cast<int>(item.unknown_0014[1]);
+  for (auto it = this->unknown_1760.begin(); it != this->unknown_1760.end(); ++it) {
+    total += static_cast<long long>(static_cast<int>(it->unknown_0014[1])) * it->quantity;
   }
 
   return total;
@@ -513,12 +523,14 @@ ITEM_INFO CSession::GetItem1748At(int index) const {
     return ITEM_INFO(0);
   }
 
+  std::list<ITEM_INFO>::const_iterator it = this->unknown_1748.begin();
   int position = 0;
-  for (const ITEM_INFO& item : this->unknown_1748) {
+  while (it != this->unknown_1748.end()) {
     if (position == index) {
-      return item;
+      return *it;
     }
     ++position;
+    ++it;
   }
 
   return ITEM_INFO(0);
@@ -749,9 +761,9 @@ ITEM_INFO* CSession::GetEquippedItem(const ITEM_INFO* item) {
       return nullptr;
     }
 
-    for (ITEM_INFO& value : this->m_inventoryItems) {
-      if (value.unknown_0000[1] == this->unknown_16EC) {
-        return &value;
+    for (auto it = this->m_inventoryItems.begin(); it != this->m_inventoryItems.end(); ++it) {
+      if (it->unknown_0000[1] == this->unknown_16EC) {
+        return &*it;
       }
     }
 
@@ -901,12 +913,14 @@ ITEM_INFO CSession::GetInventoryItemAt(int index) const {
     return ITEM_INFO(0);
   }
 
+  std::list<ITEM_INFO>::const_iterator it = this->m_inventoryItems.begin();
   int position = 0;
-  for (const ITEM_INFO& item : this->m_inventoryItems) {
+  while (it != this->m_inventoryItems.end()) {
     if (position == index) {
-      return item;
+      return *it;
     }
     ++position;
+    ++it;
   }
 
   return ITEM_INFO(0);
@@ -1513,9 +1527,9 @@ int CSession::GetItem1718QuantityByItemId(const ITEM_INFO& item) const {
 // OFFSET: 0x00DDFDB0
 // FUNCTION: fn_23446
 int CSession::GetItem1718QuantityOf(const ITEM_INFO& item) const {
-  for (const ITEM_INFO& value : this->unknown_1718) {
-    if (value.unknown_0000[1] == item.unknown_0000[1]) {
-      return value.quantity;
+  for (auto it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      return it->quantity;
     }
   }
 
@@ -1537,9 +1551,9 @@ std::uint16_t CSession::GetItem1718Unknown006CByItemId(const ITEM_INFO& item) co
 // OFFSET: 0x00DDFE60
 // FUNCTION: fn_23448
 std::uint16_t CSession::GetItem1718Unknown006COf(const ITEM_INFO& item) const {
-  for (const ITEM_INFO& value : this->unknown_1718) {
-    if (value.unknown_0000[1] == item.unknown_0000[1]) {
-      return value.unknown_006C;
+  for (auto it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      return it->unknown_006C;
     }
   }
 
@@ -1561,8 +1575,8 @@ std::uint16_t CSession::SumItem1720Unknown006CByItemId() const {
 // FUNCTION: fn_23450
 std::uint16_t CSession::SumItem1720Unknown006C() const {
   std::uint16_t total = 0;
-  for (const ITEM_INFO& item : this->unknown_1720) {
-    total += item.quantity * this->GetItem1718Unknown006COf(item);
+  for (auto it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
+    total += it->quantity * this->GetItem1718Unknown006COf(*it);
   }
 
   return total;
@@ -1583,12 +1597,14 @@ ITEM_INFO CSession::FindItem1720ByItemId(const char* itemId) const {
 // OFFSET: 0x00DE06E0
 // FUNCTION: fn_23457
 ITEM_INFO CSession::GetItem1720At(int index) const {
+  std::list<ITEM_INFO>::const_iterator it = this->unknown_1720.begin();
   int position = 0;
-  for (const ITEM_INFO& item : this->unknown_1720) {
+  while (it != this->unknown_1720.end()) {
     if (position == index) {
-      return item;
+      return *it;
     }
     ++position;
+    ++it;
   }
 
   return ITEM_INFO(0);
@@ -1654,12 +1670,14 @@ ITEM_INFO CSession::GetItem1730At(int index) const {
     return ITEM_INFO(0);
   }
 
+  std::list<ITEM_INFO>::const_iterator it = this->unknown_1730.begin();
   int position = 0;
-  for (const ITEM_INFO& item : this->unknown_1730) {
+  while (it != this->unknown_1730.end()) {
     if (position == index) {
-      return item;
+      return *it;
     }
     ++position;
+    ++it;
   }
 
   return ITEM_INFO(0);
@@ -1684,12 +1702,14 @@ ITEM_INFO CSession::GetItem1718At(int index) const {
     return ITEM_INFO(0);
   }
 
+  std::list<ITEM_INFO>::const_iterator it = this->unknown_1718.begin();
   int position = 0;
-  for (const ITEM_INFO& item : this->unknown_1718) {
+  while (it != this->unknown_1718.end()) {
     if (position == index) {
-      return item;
+      return *it;
     }
     ++position;
+    ++it;
   }
 
   return ITEM_INFO(0);
@@ -1732,12 +1752,14 @@ ITEM_INFO CSession::GetItem1738At(int index) const {
     return ITEM_INFO(0);
   }
 
+  std::list<ITEM_INFO>::const_iterator it = this->unknown_1738.begin();
   int position = 0;
-  for (const ITEM_INFO& item : this->unknown_1738) {
+  while (it != this->unknown_1738.end()) {
     if (position == index) {
-      return item;
+      return *it;
     }
     ++position;
+    ++it;
   }
 
   return ITEM_INFO(0);
