@@ -136,12 +136,13 @@ bool CRenewQuestMgr::Create() {
   if (g_renewQuestMgr == nullptr) {
     g_renewQuestMgr = new (std::nothrow) CRenewQuestMgr();
     if (g_renewQuestMgr != nullptr) {
-      if (g_renewQuestMgr->m_initialized) {
-        return true;
+      if (!g_renewQuestMgr->m_initialized) {
+        delete g_renewQuestMgr;
+        g_renewQuestMgr = nullptr;
+        return false;
       }
 
-      delete g_renewQuestMgr;
-      g_renewQuestMgr = nullptr;
+      return true;
     }
   }
 
