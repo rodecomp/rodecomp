@@ -894,23 +894,23 @@ bool ReplaceClientExecutable(char* executable, const char* update) {
 
   const char* format;
   if (g_serviceType == 12) {
-    const std::uint8_t messageSource[] = {0xBA, 0xB0, 0x67, 0xDB, 0x84, 0x2E, 0xC1, 0xFC, 0xF0, 0xA7, 0x2E, 0xDB, 0x82, 0x24, 0x80, 0xF5,
-                                          0xFE, 0xED, 0x67, 0xFE, 0x87, 0x2E, 0x90, 0xE4, 0xFA, 0xE3, 0x22, 0xD0, 0xCB, 0x08, 0x8A, 0xB1,
-                                          0xEF, 0xA2, 0x35, 0xDC, 0xCB, 0x24, 0x8E, 0xFF, 0xEB, 0xAA, 0x29, 0xC8, 0x8A, 0x35, 0xCF, 0x91};
-    thread_local EncryptedName<sizeof(messageSource), 0x91E147EBBD47C39FULL> message(messageSource);
+    const char messageSource[] = {'\xBA', '\xB0', '\x67', '\xDB', '\x84', '\x2E', '\xC1', '\xFC', '\xF0', '\xA7', '\x2E', '\xDB', '\x82', '\x24', '\x80', '\xF5',
+                                  '\xFE', '\xED', '\x67', '\xFE', '\x87', '\x2E', '\x90', '\xE4', '\xFA', '\xE3', '\x22', '\xD0', '\xCB', '\x08', '\x8A', '\xB1',
+                                  '\xEF', '\xA2', '\x35', '\xDC', '\xCB', '\x24', '\x8E', '\xFF', '\xEB', '\xAA', '\x29', '\xC8', '\x8A', '\x35', '\xCF', '\x91'};
+    EncryptedName<sizeof(messageSource), 0x91E147EBBD47C39FULL>& message = ThreadLocalName<0x91E147EBBD47C39FULL>(messageSource);
     format = message.Text();
   } else {
-    const std::uint8_t messageSource[] = {0x24, 0x24, 0xB7, 0xB6, 0x60, 0xA5, 0x30, 0xB9, 0x60, 0x39, 0xF0, 0xBA, 0x77, 0xAB, 0x73, 0x81, 0x73, 0x32,
-                                          0xE4, 0xAC, 0x33, 0xEA, 0x38, 0xF1, 0x75, 0x38, 0xB7, 0xAD, 0x76, 0xF6, 0x27, 0xB0, 0x73, 0x23, 0x97};
-    thread_local EncryptedName<sizeof(messageSource), 0xD1538513DF975701ULL> message(messageSource);
+    const char messageSource[] = {'\x24', '\x24', '\xB7', '\xB6', '\x60', '\xA5', '\x30', '\xB9', '\x60', '\x39', '\xF0', '\xBA', '\x77', '\xAB', '\x73', '\x81', '\x73', '\x32',
+                                  '\xE4', '\xAC', '\x33', '\xEA', '\x38', '\xF1', '\x75', '\x38', '\xB7', '\xAD', '\x76', '\xF6', '\x27', '\xB0', '\x73', '\x23', '\x97'};
+    EncryptedName<sizeof(messageSource), 0xD1538513DF975701ULL>& message = ThreadLocalName<0xD1538513DF975701ULL>(messageSource);
     format = message.Text();
   }
 
   char text[256];
   std::sprintf(text, format, executable);
 
-  const std::uint8_t titleSource[] = {0x0C, 0x49, 0xFC, 0x3B, 0x27, 0x43};
-  thread_local EncryptedName<sizeof(titleSource), 0x078143534999254DULL> title(titleSource);
+  const char titleSource[] = {'\x0C', '\x49', '\xFC', '\x3B', '\x27', '\x43'};
+  EncryptedName<sizeof(titleSource), 0x078143534999254DULL>& title = ThreadLocalName<0x078143534999254DULL>(titleSource);
   if (MessageBoxA(nullptr, text, title.Text(), MB_OKCANCEL | MB_ICONINFORMATION) != IDOK) {
     return false;
   }
@@ -981,12 +981,12 @@ int sub_E58100(HINSTANCE instance, int showCommand) {
     if (g_configuredOldWidth == g_viewportWidth && g_configuredOldHeight == g_viewportHeight) {
       int defaultX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
       const std::uint8_t xSource[] = {0x78, 0xF6, 0xDD, 0xBF, 0x80, 0xBE, 0x48, 0xC3, 0x7F, 0xF0, 0xC0, 0xDB};
-      thread_local EncryptedName<sizeof(xSource), 0x9B17C9EFDBB39F2FULL> xName(xSource);
+      EncryptedName<sizeof(xSource), 0x9B17C9EFDBB39F2FULL>& xName = ThreadLocalName<0x9B17C9EFDBB39F2FULL>(xSource);
       x = g_session.GetOptionInteger(xName.Text(), defaultX);
 
       int defaultY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
       const std::uint8_t ySource[] = {0x3A, 0x5A, 0x61, 0xF1, 0xB4, 0x32, 0x8C, 0x30, 0x3D, 0x5C, 0x7C, 0x95};
-      thread_local EncryptedName<sizeof(ySource), 0x69D345DB950F336DULL> yName(ySource);
+      EncryptedName<sizeof(ySource), 0x69D345DB950F336DULL>& yName = ThreadLocalName<0x69D345DB950F336DULL>(ySource);
       y = g_session.GetOptionInteger(yName.Text(), defaultY);
     } else {
       x = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
@@ -1011,7 +1011,7 @@ int sub_E58100(HINSTANCE instance, int showCommand) {
   int windowHeight = static_cast<int>(height);
   if (!g_configuredFullscreen) {
     const std::uint8_t traySource[] = {0x22, 0x73, 0x96, 0x93, 0xEB, 0x7A, 0xC5, 0xB5, 0x10, 0x62, 0xA4, 0x91, 0xE3, 0x25};
-    thread_local EncryptedName<sizeof(traySource), 0xC7912587FFF31B71ULL> trayName(traySource);
+    EncryptedName<sizeof(traySource), 0xC7912587FFF31B71ULL>& trayName = ThreadLocalName<0xC7912587FFF31B71ULL>(traySource);
     RECT trayRect;
     HWND tray = FindWindowA(trayName.Text(), nullptr);
     if (tray) {
@@ -1034,11 +1034,11 @@ int sub_E58100(HINSTANCE instance, int showCommand) {
   hWnd = CreateApplicationWindow(0, windowClass.lpszClassName, g_windowName, style, x, y, windowWidth, windowHeight, nullptr, nullptr, instance, nullptr);
   if (!hWnd) {
     const std::uint8_t titleSource[] = {0x8C, 0xE5, 0x77, 0xD8, 0xE9, 0x33};
-    thread_local EncryptedName<sizeof(titleSource), 0x078333BB9725B7C9ULL> title(titleSource);
+    EncryptedName<sizeof(titleSource), 0x078333BB9725B7C9ULL>& title = ThreadLocalName<0x078333BB9725B7C9ULL>(titleSource);
     const char* caption = title.Text();
     const std::uint8_t messageSource[] = {0xE2, 0x1C, 0x0F, 0x3B, 0x92, 0x2C, 0x3B, 0xCC, 0xC7, 0x10, 0x00, 0x2B,
                                           0x94, 0x34, 0x75, 0xAF, 0xF3, 0x14, 0x08, 0x33, 0x98, 0x3F, 0x1B};
-    thread_local EncryptedName<sizeof(messageSource), 0x8F1B5BFD5F6175B5ULL> message(messageSource);
+    EncryptedName<sizeof(messageSource), 0x8F1B5BFD5F6175B5ULL>& message = ThreadLocalName<0x8F1B5BFD5F6175B5ULL>(messageSource);
     MessageBoxA(nullptr, message.Text(), caption, MB_OK);
     return 0;
   }
