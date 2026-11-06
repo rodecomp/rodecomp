@@ -242,7 +242,7 @@ void UIVerticalNameBalloonText::Paint() {
   if (this->iconName.size() != 0 && ResourceMgr::Instance().Exists(this->iconName.c_str())) {
     CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(this->iconName.c_str()));
     if (emblem) {
-      this->DrawBitmap((this->geometry.width - 24) / 2, 0, &emblem->gif.image, true);
+      this->DrawBitmap((this->geometry.width - 24) / 2, 0, &emblem->gif, true);
       y = 28;
     }
   }
