@@ -50,7 +50,7 @@ void CMagicFloorEffect::AddFloors() {
 // FUNCTION: fn_18930
 void CMagicFloorEffect::AddClouds(int layer) {
   for (int ring = 0; ring < 4; ++ring) {
-    const int angle = std::max(rand() % 360, 0);
+    const int angle = std::max(0, rand() % 360);
     for (int segment = 0; segment < 21; ++segment) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (!particle) {
@@ -65,7 +65,7 @@ void CMagicFloorEffect::AddClouds(int layer) {
       particle->alpha = 200;
       particle->unknown_0050 = 30;
       *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
-      particle->unknown_004C = std::max(rand() % 21, 0) + 80;
+      particle->unknown_004C = std::max(0, rand() % 21) + 80;
       particle->unknown_0054 = 1.0f;
       particle->SetColor(255, 100, 100);
 
