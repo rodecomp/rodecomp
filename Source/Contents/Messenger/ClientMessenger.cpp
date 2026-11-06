@@ -6058,11 +6058,11 @@ static_assert(offsetof(ShopItemListPacket, entries) == 5);
 // FUNCTION: fn_22148
 void CGameMode::ReceiveShopItemList(const unsigned char* data) {
   const ShopItemListPacket* packet = reinterpret_cast<const ShopItemListPacket*>(data);
-  const std::size_t count = (packet->length - 5) / sizeof(ShopItemPacketEntry);
+  const int count = (packet->length - 5) / sizeof(ShopItemPacketEntry);
   const int shopId = FindShopId(g_session, std::string());
   if (shopId != -1) {
     g_session.SetShopFlag(shopId, packet->flag != 0);
-    for (std::size_t i = 0; i < count; ++i) {
+    for (int i = 0; i < count; ++i) {
       const ShopItemPacketEntry& entry = packet->entries[i];
       g_session.SetShopItem(shopId, entry.index, entry.itemId, entry.first, entry.second);
     }
@@ -6344,19 +6344,15 @@ void CSession::sub_DD9D50() {
 void EquipmentProperties::CEquipmentPropertiesMgr::UnequipWearable(const int& mask) {
   this->m_dirty = true;
   const int key = GetEquipLocationIndex(mask);
-  for (auto found = this->properties1.begin(); found != this->properties1.end(); ++found) {
-    if (found->first != key) {
-      continue;
-    }
-    CEquipmentWearable* wearable = found->second;
-    for (CEquipmentAttachable& attachable : wearable->GetAttachables()) {
+  auto found = this->properties1.find(key);
+  if (found != this->properties1.end()) {
+    for (CEquipmentAttachable& attachable : found->second->GetAttachables()) {
       this->UnequipItem(attachable.GetId(), true);
     }
-    this->UnequipItem(wearable->GetId(), true);
-    wearable->Clear();
-    delete wearable;
+    this->UnequipItem(found->second->GetId(), true);
+    found->second->Clear();
+    delete found->second;
     this->properties1.erase(found);
-    break;
   }
   if (this->unknown_0020 != nullptr) {
     this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
