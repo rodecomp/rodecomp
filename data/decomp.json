@@ -22,6 +22,7 @@
     "approvals": 1,
     "approvalsWithHeaderChanges": 2
   },
+  "exeBuild": ["python", "scripts/exe/build_exe.py"],
   "lintLimits": {
     "maxInitializerNumbers": 65536,
     "maxFiles": 400
