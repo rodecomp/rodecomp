@@ -316,8 +316,8 @@ UIGuildMemberManageWnd::UIGuildMemberManageWnd()
   }
   this->m_sortColumn = -1;
 
-  for (auto& order : this->m_sortOrders) {
-    order.second = 0;
+  for (auto it = this->m_sortOrders.begin(); it != this->m_sortOrders.end(); ++it) {
+    it->second = 0;
   }
 }
 
