@@ -1515,8 +1515,8 @@ void CGameMode::ReceiveWindow17Entries(const unsigned char* packet) {
   this->unknown_024C = 1;
   g_windowMgr.CloseWindow(17);
   if (UIWindow* window = g_windowMgr.EnsureWindow(17)) {
-    std::string text;
-    text.assign(reinterpret_cast<const char*>(packet + 8), *reinterpret_cast<const unsigned short*>(packet + 2) - 9);
+    const int length = *reinterpret_cast<const unsigned short*>(packet + 2) - 9;
+    std::string text(reinterpret_cast<const char*>(packet + 8), length);
     const std::vector<std::string> entries = Split(text, ":");
     for (const std::string& entry : entries) {
       if (!entry.empty()) {
