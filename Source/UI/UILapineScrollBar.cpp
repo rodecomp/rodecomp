@@ -150,13 +150,7 @@ void UILapineBox_IngredientListWnd::Slot10(int, int, std::intptr_t value) {
 // OFFSET: 0x005FF920
 // FUNCTION: fn_04153
 void UILapineBoxWnd::Slot15(int, int) {
-  UIBitmapButton* base = new UIBitmapButton();
-  base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0, 0);
-  base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 1, 0);
-  base->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 2, 0);
-  base->SetSize(base->BitmapWidth(), base->BitmapHeight());
-  base->Move(3, 3);
-  this->AddChild(base);
+  this->AddBaseButton();
   this->AddCloseButton("", 0);
 
   UILapineBox_IngredientListWnd* list = new UILapineBox_IngredientListWnd(150, 204);
