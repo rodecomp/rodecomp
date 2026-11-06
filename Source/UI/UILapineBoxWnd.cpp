@@ -273,10 +273,7 @@ bool UILapineBox_IngredientListWnd::CanUseIngredient(std::uint32_t identity) {
     this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3D)), 0, 0, 0);
   }
 
-  const std::uint32_t itemType = item.unknown_0000[0];
-  const bool equipment = itemType == 4 || itemType == 5 || itemType == 8 || itemType == 9 || itemType == 11 || itemType == 12 ||
-                         itemType == 13 || itemType == 14 || itemType == 15 || itemType == 21;
-  if (equipment && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
+  if (Equipment(item) && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
     const int* cards = reinterpret_cast<const int*>(item.unknown_001C);
     for (int index = 0; index < ItemSlotsCount(item); ++index) {
       if (index < 4 && cards[index] > 0) {
