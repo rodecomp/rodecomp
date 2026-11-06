@@ -160,7 +160,7 @@ int UIScrollBar::ThumbLength() {
     length = 8;
   }
 
-  return std::max(length, 2);
+  return std::max(2, length);
 }
 
 // OFFSET: 0x00880AA0
