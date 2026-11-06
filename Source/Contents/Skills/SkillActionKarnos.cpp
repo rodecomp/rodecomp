@@ -1101,7 +1101,8 @@ void CSkillAction_SKID_KR_CHOP_CHOP::Slot11(int level, CGameActor* source, CGame
 
   const std::uint8_t effectSource[] = {0x92, 0xAB, 0x86, 0xCD, 0xF2, 0x6E, 0x1D, 0x12, 0x81, 0x9C, 0x9A, 0xC8, 0xCF, 0x0D};
   thread_local EncryptedName<sizeof(effectSource), 0x7D750DADBDE9C3F1ULL> effectName(effectSource);
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->Slot17(static_cast<float>(std::max(0, rand() % 360)));
   }
 
