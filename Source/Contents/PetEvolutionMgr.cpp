@@ -123,14 +123,14 @@ bool CPetEvolutionMgr::Load() {
 // OFFSET: 0x006733E0
 // FUNCTION: fn_05372
 std::pair<bool, std::string> CPetEvolutionMgr::InsertPetAutoFeeding(int petEgg) {
-  for (auto it = this->m_autoFeeding.begin(); it != this->m_autoFeeding.end(); ++it) {
-    if (*it == petEgg) {
-      return std::pair<bool, std::string>(true, "PetEggITID already exist in AutoFeedingPetList");
-    }
+  auto it = std::find(this->m_autoFeeding.begin(), this->m_autoFeeding.end(), petEgg);
+
+  if (it != this->m_autoFeeding.end()) {
+    return std::make_pair(true, "PetEggITID already exist in AutoFeedingPetList");
   }
 
   this->m_autoFeeding.push_back(petEgg);
-  return std::pair<bool, std::string>(true, "good");
+  return std::make_pair(true, "good");
 }
 
 // OFFSET: 0x006734C0
