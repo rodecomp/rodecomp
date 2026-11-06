@@ -125,9 +125,10 @@ void UIMacroBlackListCheckWnd::Paint() {
 
   const unsigned remainingMs = this->startTick + static_cast<unsigned>(this->duration) - timeGetTime();
   const unsigned remainingSec = remainingMs / 1000u;
+  const unsigned remainingMin = remainingSec / 60u;
   if (remainingSec < 60u) {
     this->sub_A85850(
-      0x4F, 0xA4, FormatOwnedString(LookupMessage(0xFB3), 0, static_cast<int>(remainingSec / 60u), static_cast<int>(remainingSec)).c_str(), 0xA2, 6, 0xFF, 0, 0,
+      0x4F, 0xA4, FormatOwnedString(LookupMessage(0xFB3), 0, static_cast<int>(remainingMin), static_cast<int>(remainingSec)).c_str(), 0xA2, 6, 0xFF, 0, 0,
       0xD, 1, 0
     );
   } else {
