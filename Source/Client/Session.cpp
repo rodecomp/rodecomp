@@ -1793,7 +1793,8 @@ bool CSession::RemoveFriendByCharacterId(std::uint32_t characterId) {
 // OFFSET: 0x00DF9F10
 // FUNCTION: fn_23568
 bool CSession::IsGuildMemberAccount(std::uint32_t accountId) const {
-  std::list<GuildInfo::Member> members = g_guildInfo.m_members;
+  std::list<GuildInfo::Member> members;
+  members = g_guildInfo.m_members;
   for (const GuildInfo::Member& member : members) {
     if (static_cast<std::uint32_t>(member.accountId) == accountId) {
       return true;
@@ -1806,7 +1807,8 @@ bool CSession::IsGuildMemberAccount(std::uint32_t accountId) const {
 // OFFSET: 0x00DFA030
 // FUNCTION: fn_23569
 bool CSession::IsGuildMemberCharacter(std::uint32_t characterId) const {
-  std::list<GuildInfo::Member> members(g_guildInfo.m_members.begin(), g_guildInfo.m_members.end());
+  std::list<GuildInfo::Member> members;
+  members = g_guildInfo.m_members;
   for (const GuildInfo::Member& member : members) {
     if (static_cast<std::uint32_t>(member.characterId) == characterId) {
       return true;
@@ -1825,7 +1827,8 @@ bool CSession::IsGuildMemberCharacter(int characterId, char* name) const {
 // OFFSET: 0x00DF9D90
 // FUNCTION: fn_23567
 bool CSession::IsGuildMemberName(const char* name) const {
-  std::list<GuildInfo::Member> members(g_guildInfo.m_members.begin(), g_guildInfo.m_members.end());
+  std::list<GuildInfo::Member> members;
+  members = g_guildInfo.m_members;
   for (const GuildInfo::Member& member : members) {
     if (member.name == name) {
       return true;
@@ -2441,7 +2444,13 @@ bool CSession::HasItem1740Number(int value) const {
 // OFFSET: 0x00DFA420
 // FUNCTION: fn_23574
 bool CSession::HasUnknown809C(std::string name) {
-  return std::find(this->unknown_809C.begin(), this->unknown_809C.end(), name) != this->unknown_809C.end();
+  for (std::vector<std::string>::iterator it = this->unknown_809C.begin(); it != this->unknown_809C.end(); ++it) {
+    if (*it == name) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00DFA4C0
@@ -3231,7 +3240,7 @@ void CSession::ClearItemContainers() {
   this->unknown_1738.erase(this->unknown_1738.begin(), this->unknown_1738.end());
 
   g_session.m_skillBundle.skills.clear();
-  this->m_friends.clear();
+  this->m_friends.erase(this->m_friends.begin(), this->m_friends.end());
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode != nullptr) {
