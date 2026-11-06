@@ -820,7 +820,7 @@ __declspec(noinline) void CRenderObject::DrawTintedQuad(SpriteQuad& quad, short 
 // OFFSET: 0x00CC2240
 // FUNCTION: fn_21138
 void CRenderObject::SetInstantValue(int key, std::int64_t value) {
-  this->render.instant.Set(key, value);
+  this->render.instant.Values()[key] = value;
 }
 
 // OFFSET: 0x00CC2060
