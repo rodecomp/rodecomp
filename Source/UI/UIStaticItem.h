@@ -8,7 +8,7 @@
 
 class UIStaticItem : public UIWindow {
 public:
-  UIStaticItem(WindowManagerWindows& windowList);
+  UIStaticItem();
   ~UIStaticItem() override;
   void Paint() override;
   void Slot28(int x, int y) override;
