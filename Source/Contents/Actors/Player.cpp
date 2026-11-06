@@ -330,7 +330,7 @@ void CGrannyPc::Slot25(int value) {
 // OFFSET: 0x00DB0CB0
 // FUNCTION: fn_22632
 void CGrannyPc::Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int) {
-  this->Slot19(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, this->unknown_0454, tenth);
+  this->Slot19(first, second, third, fourth, fifth, sixth, seventh, eighth, this->unknown_0454, ninth, tenth);
 }
 
 // OFFSET: 0x00DB1960
