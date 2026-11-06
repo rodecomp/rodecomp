@@ -18,7 +18,7 @@ CGlassWall::~CGlassWall() {
 // OFFSET: 0x00B44860
 // FUNCTION: fn_18890
 void CGlassWall::AddPanel(float angle, float scale, float x, float y, float z) {
-  const int lastFrame = this->unknown_002C;
+  const int startFrame = this->unknown_002C - 6;
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
   float* params = &particle->unknown_0054;
   particle->scale = scale;
@@ -30,7 +30,7 @@ void CGlassWall::AddPanel(float angle, float scale, float x, float y, float z) {
   particle->unknown_00D8 = z;
   params[0] = 40.0f;
   params[1] = 30.0f;
-  params[2] = static_cast<float>(lastFrame - 6);
+  params[2] = static_cast<float>(startFrame);
   params[3] = 180.0f;
   params[4] = 50.0f;
   particle->SetTexture("effect\\ring_blue.tga");
