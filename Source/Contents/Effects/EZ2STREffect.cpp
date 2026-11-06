@@ -1799,9 +1799,12 @@ void CEZ2STRScreenEffect::Slot34(CEZ2STRParticle* particle, int id) {
   case 0x469:
     particle->Open("su_svg_spirit\\su_svg_spirit.str");
     break;
-  case 0x8D:
-    particle->Open(FormatOwnedString("Pneuma%d.str", std::max(rand() % 3, 0) + 1));
+  case 0x8D: {
+    int index = rand() % 3;
+    index = index < 0 ? 0 : index;
+    particle->Open(FormatOwnedString("Pneuma%d.str", index + 1));
     break;
+  }
   case 0x46D:
     particle->Open("RL_fire_dance\\firedance.str");
     break;
@@ -1834,8 +1837,9 @@ void CEZ2STRScreenEffect::Slot34(CEZ2STRParticle* particle, int id) {
     break;
   case 0x48B:
     {
-      std::string name = FormatOwnedString("MeteorStorm\\meteor%d.str", std::max(rand() % 3, 0) + 1);
-      particle->Open(name.c_str());
+      int index = rand() % 3;
+      index = index < 0 ? 0 : index;
+      particle->Open(FormatOwnedString("MeteorStorm\\meteor%d.str", index + 1).c_str());
       break;
     }
   case 0x4C2:
