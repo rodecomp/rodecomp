@@ -8442,15 +8442,22 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       break;
     }
     case 205:
+      RequestStatusPointUp(this, mode, statCosts, statusPoint, 0);
+      break;
     case 206:
+      RequestStatusPointUp(this, mode, statCosts, statusPoint, 1);
+      break;
     case 207:
+      RequestStatusPointUp(this, mode, statCosts, statusPoint, 2);
+      break;
     case 208:
+      RequestStatusPointUp(this, mode, statCosts, statusPoint, 3);
+      break;
     case 209:
+      RequestStatusPointUp(this, mode, statCosts, statusPoint, 4);
+      break;
     case 210:
-      if (statCosts[a - 205] <= statusPoint) {
-        mode->SendMsg(30, static_cast<int>(a) - 192, 1, 0, 0);
-        this->SendMsg(this, 35, 0, 0, 0, 0);
-      }
+      RequestStatusPointUp(this, mode, statCosts, statusPoint, 5);
       break;
     case 550: {
       const char* normal;
@@ -8473,14 +8480,22 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       break;
     }
     case 551:
+      RequestTraitPointUp(mode, 0);
+      break;
     case 552:
+      RequestTraitPointUp(mode, 1);
+      break;
     case 553:
+      RequestTraitPointUp(mode, 2);
+      break;
     case 554:
+      RequestTraitPointUp(mode, 3);
+      break;
     case 555:
+      RequestTraitPointUp(mode, 4);
+      break;
     case 556:
-      if (g_session.GetTraitStat(231) > 0 && reinterpret_cast<const std::int64_t*>(&g_session.unknown_7FC0[0x20])[a - 551] > 0) {
-        mode->SendMsg(314, static_cast<int>(a) - 332, 1, 0, 0);
-      }
+      RequestTraitPointUp(mode, 5);
       break;
     default:
       return 0;
@@ -8502,9 +8517,11 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     break;
   case 35:
     if (this->geometry.unknown_0030 == 0) {
+      int costs[6];
+      std::memcpy(costs, statCosts, sizeof(costs));
       int y = 24;
       for (int i = 0; i < 6; ++i, y += 16) {
-        if (statCosts[i] != 0 && statusPoint >= statCosts[i]) {
+        if (costs[i] != 0 && statusPoint >= costs[i]) {
           this->m_statButtons[i]->Move(78, y);
         } else {
           this->m_statButtons[i]->Move(-100, -100);
@@ -9135,19 +9152,19 @@ std::vector<unsigned char> UIStarPlaceAcceptWnd::Slot44() {
 std::vector<unsigned char> UIChooseWnd::Slot44() {
   std::vector<unsigned char> records;
   {
-    const auto record = BuildReplayTaggedRecord(21900, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(21900, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
 
   const int count = static_cast<int>(this->m_list->lines.size());
   for (int index = 0; index < count; ++index) {
-    const std::string& line = this->m_list->lines[index];
-    const auto record = BuildReplayTaggedRecord(21903, line.c_str(), line.size());
+    const std::string line = this->m_list->lines[index];
+    const auto record = MakeReplayTaggedRecord(21903, line.c_str(), line.size());
     records.insert(records.end(), record.begin(), record.end());
   }
 
   {
-    const auto record = BuildReplayTaggedRecord(21901, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(21901, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   return records;
@@ -9198,22 +9215,22 @@ std::vector<unsigned char> UIItemCompositionWnd::Slot44() {
 std::vector<unsigned char> UIMakingArrowListWnd::Slot44() {
   std::vector<unsigned char> records;
   {
-    const auto record = BuildReplayTaggedRecord(22100, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(22100, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
 
   for (std::list<ITEM_INFO>::iterator item = this->m_items.begin(); item != this->m_items.end(); ++item) {
     const int itemId = std::atoi(item->itemId.c_str());
-    const auto record = BuildReplayTaggedRecord(22103, &itemId, sizeof(itemId));
+    const auto record = MakeReplayTaggedRecord(22103, &itemId, sizeof(itemId));
     records.insert(records.end(), record.begin(), record.end());
   }
 
   {
-    const auto record = BuildReplayTaggedRecord(22102, &this->unknown_00F0, sizeof(this->unknown_00F0));
+    const auto record = MakeReplayTaggedRecord(22102, &this->unknown_00F0, sizeof(this->unknown_00F0));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(22101, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(22101, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   return records;
@@ -9708,15 +9725,15 @@ UIMakingArrowListWnd::UIMakingArrowListWnd()
 std::vector<unsigned char> UIChooseWarpWnd::Slot44() {
   std::vector<unsigned char> records;
   {
-    const auto record = BuildReplayTaggedRecord(21950, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(21950, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   for (auto choice = this->m_choices.begin(); choice < this->m_choices.end(); ++choice) {
-    const auto record = BuildReplayTaggedRecord(21953, choice->c_str(), choice->size());
+    const auto record = MakeReplayTaggedRecord(21953, choice->c_str(), choice->size());
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(21951, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(21951, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   return records;
@@ -9727,43 +9744,43 @@ std::vector<unsigned char> UIChooseWarpWnd::Slot44() {
 std::vector<unsigned char> UIExchangeWnd::Slot44() {
   std::vector<unsigned char> records;
   {
-    const auto record = BuildReplayTaggedRecord(20600, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(20600, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(20603, &this->unknown_0108, sizeof(this->unknown_0108));
+    const auto record = MakeReplayTaggedRecord(20603, &this->unknown_0108, sizeof(this->unknown_0108));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(20604, &this->unknown_010C, sizeof(this->unknown_010C));
+    const auto record = MakeReplayTaggedRecord(20604, &this->unknown_010C, sizeof(this->unknown_010C));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(20602, this->unknown_00F0.c_str(), this->unknown_00F0.size());
+    const auto record = MakeReplayTaggedRecord(20602, this->unknown_00F0.c_str(), this->unknown_00F0.size());
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(20605, &this->unknown_00CC, sizeof(this->unknown_00CC));
+    const auto record = MakeReplayTaggedRecord(20605, &this->unknown_00CC, sizeof(this->unknown_00CC));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(20606, &this->unknown_00D0, sizeof(this->unknown_00D0));
+    const auto record = MakeReplayTaggedRecord(20606, &this->unknown_00D0, sizeof(this->unknown_00D0));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(20607, &this->unknown_00D4, sizeof(this->unknown_00D4));
+    const auto record = MakeReplayTaggedRecord(20607, &this->unknown_00D4, sizeof(this->unknown_00D4));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(20608, &this->unknown_00D8, sizeof(this->unknown_00D8));
+    const auto record = MakeReplayTaggedRecord(20608, &this->unknown_00D8, sizeof(this->unknown_00D8));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(20609, &this->unknown_00DC, sizeof(this->unknown_00DC));
+    const auto record = MakeReplayTaggedRecord(20609, &this->unknown_00DC, sizeof(this->unknown_00DC));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(20601, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(20601, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   return records;
@@ -9774,20 +9791,20 @@ std::vector<unsigned char> UIExchangeWnd::Slot44() {
 std::vector<unsigned char> UISayDialogWnd::Slot44() {
   std::vector<unsigned char> records;
   {
-    const auto record = BuildReplayTaggedRecord(22500, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(22500, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   const UITagTextViewer* viewer = static_cast<UITagTextViewer*>(this->m_viewer);
   for (auto text = viewer->m_texts.begin(); text != viewer->m_texts.end(); ++text) {
-    const auto record = BuildReplayTaggedRecord(22503, text->c_str(), text->size());
+    const auto record = MakeReplayTaggedRecord(22503, text->c_str(), text->size());
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(22504, &this->unknown_00D4, sizeof(this->unknown_00D4));
+    const auto record = MakeReplayTaggedRecord(22504, &this->unknown_00D4, sizeof(this->unknown_00D4));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(22501, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(22501, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   return records;
@@ -11529,6 +11546,7 @@ char* UIBookWnd::StripColorCodes(const char* text) {
     }
     if (text != start) {
       std::strcpy(segmentBuffer, segment.c_str());
+      segmentBuffer[segment.size()] = '\0';
       std::strcat(result, segmentBuffer);
     }
   }
@@ -11803,20 +11821,20 @@ bool UIItemCollectionWnd::WrapText(std::string text, int width, std::list<std::s
   const char* cursor = start;
   while (cursor != text.c_str() + text.size()) {
     if (*cursor == '\n') {
-      lines.emplace_back(start, cursor);
+      lines.push_back(std::string(start, cursor));
       ++cursor;
       start = cursor;
     } else if (cursor[0] < 0 && cursor[1] < 0) {
       const std::string candidate(start, cursor + 2);
       if (this->TextWidth(candidate.c_str(), 0, 0, 12, 0, 0) > width) {
-        lines.emplace_back(start, cursor);
+        lines.push_back(std::string(start, cursor));
         start = cursor;
       }
       cursor += 2;
     } else {
       const std::string candidate(start, cursor + 1);
       if (this->TextWidth(candidate.c_str(), 0, 0, 12, 0, 0) > width) {
-        lines.emplace_back(start, cursor);
+        lines.push_back(std::string(start, cursor));
         start = cursor;
       }
       ++cursor;
