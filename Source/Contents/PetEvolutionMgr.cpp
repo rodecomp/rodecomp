@@ -160,11 +160,11 @@ std::pair<bool, std::string> CPetEvolutionMgr::InsertRecipe(int petEgg, int targ
 // OFFSET: 0x006737C0
 // FUNCTION: fn_05374
 bool CPetEvolutionMgr::IsAutoFeeding(int petEgg) {
-  for (auto it = this->m_autoFeeding.begin(); it != this->m_autoFeeding.end(); ++it) {
-    if (*it == petEgg) {
-      return true;
-    }
+  auto it = std::find(this->m_autoFeeding.begin(), this->m_autoFeeding.end(), petEgg);
+  if (it != this->m_autoFeeding.end()) {
+    return true;
   }
+
   return false;
 }
 
