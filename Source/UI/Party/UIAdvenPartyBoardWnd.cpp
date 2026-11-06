@@ -574,7 +574,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // FUNCTION: fn_09302
 void UIAdvenPartyBoardWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agencyList.bmp"))), false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agencyList.bmp"))), false);
   this->DrawTitleBar(true, LookupMessage(3504), 0);
   this->DrawButtonBar(2, 0, 1);
   this->DrawTextAt(36, 25, "~", 0, 0, 12, 0, 0, 0);

@@ -626,7 +626,7 @@ void RenewQuestUI::CUIQuestItem::Move(int x, int y) {
 // FUNCTION: fn_16619
 void RenewQuestUI::CUIQuestItem::Paint() {
   if (this->pressed) {
-    this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\renew_questui\\bg_questList_press.bmp"))), false);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\renew_questui\\bg_questList_press.bmp"))), false);
   } else {
     CUIListItem::Paint();
   }
