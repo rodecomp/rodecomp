@@ -30,11 +30,11 @@ matrix CView::AlternateView(float yaw) const {
   matrix orbit;
   orbit.MakeXRotation((this->camera.pitch / 180.0f) * pi);
   orbit.AppendYRotation((yaw / 180.0f) * pi);
-  const float distance = -this->camera.distance;
+  const float point[3] = {0.0f, 0.0f, -this->camera.distance};
   float eye[3];
-  eye[0] = (((orbit.values[3] * 0.0f + orbit.values[0] * 0.0f) + distance * orbit.values[6]) + orbit.values[9]) + this->camera.target[0];
-  eye[1] = (((orbit.values[4] * 0.0f + orbit.values[1] * 0.0f) + distance * orbit.values[7]) + orbit.values[10]) + this->camera.target[1];
-  eye[2] = (((orbit.values[5] * 0.0f + orbit.values[2] * 0.0f) + distance * orbit.values[8]) + orbit.values[11]) + this->camera.target[2];
+  eye[0] = (((orbit.values[3] * point[1] + orbit.values[0] * point[0]) + point[2] * orbit.values[6]) + orbit.values[9]) + this->camera.target[0];
+  eye[1] = (((orbit.values[4] * point[1] + orbit.values[1] * point[0]) + point[2] * orbit.values[7]) + orbit.values[10]) + this->camera.target[1];
+  eye[2] = (((orbit.values[5] * point[1] + orbit.values[2] * point[0]) + point[2] * orbit.values[8]) + orbit.values[11]) + this->camera.target[2];
   const float height = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(eye[0], eye[2]);
 
   if (eye[1] > height) {
