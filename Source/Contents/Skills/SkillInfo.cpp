@@ -337,7 +337,9 @@ public:
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
-__declspec(noinline) CEffect* SpawnDustExplosion(int quadrant, const vector3d& position);
+struct DustExplosionSpawner {
+  __declspec(noinline) CEffect* operator()(int quadrant, const vector3d& position) const;
+};
 
 // INLINED
 template <class Action>
@@ -1765,12 +1767,13 @@ void CSkillAction_BO_DUST_EXPLOSION::Slot11(int level, CGameActor* source, CGame
     return;
   }
 
+  const DustExplosionSpawner spawnDustExplosion{};
   for (int delay = 0; delay < 600; delay += 200) {
     const int quadrant = std::max(std::rand() % 4, 0);
-    if (CEffect* effect = SpawnDustExplosion(quadrant, target->render.position)) {
+    if (CEffect* effect = spawnDustExplosion(quadrant, target->render.position)) {
       effect->Slot16(delay);
     }
-    if (CEffect* effect = SpawnDustExplosion((quadrant + 2) % 4, target->render.position)) {
+    if (CEffect* effect = spawnDustExplosion((quadrant + 2) % 4, target->render.position)) {
       effect->Slot16(delay);
     }
   }
@@ -1787,7 +1790,7 @@ void CSkillAction_BO_DUST_EXPLOSION::Slot16(int level, CGameActor* source, CGame
 
 // OFFSET: 0x0077DC70
 // FUNCTION: fn_08449
-CEffect* SpawnDustExplosion(int quadrant, const vector3d& position) {
+CEffect* DustExplosionSpawner::operator()(int quadrant, const vector3d& position) const {
   int distance = std::rand() % 20;
   if (distance < 10) {
     distance = 10;
