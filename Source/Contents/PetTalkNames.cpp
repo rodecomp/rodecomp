@@ -9,7 +9,8 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -35,6 +36,13 @@ private:
   bool m_encrypted;
 };
 
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptName(const char (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
+}
+
 }
 
 // OFFSET: 0x00E0B320
@@ -42,751 +50,602 @@ private:
 const char* CSession::GetPetTalkName(int job) {
   switch (job) {
   case 1002: {
-    const std::uint8_t source[] = {0x67, 0x74, 0x5F, 0xCA, 0xD3, 0x8C, 0x41};
-    thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x67', '\x74', '\x5F', '\xCA', '\xD3', '\x8C', '\x41'};
+    return DecryptName<0x0F41EBBDA32D1B17ULL>(source);
   }
   case 1052: {
-    const std::uint8_t source[] = {0xB3, 0x28, 0xA6, 0x7C, 0x84, 0xEB, 0xD5};
-    thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xB3', '\x28', '\xA6', '\x7C', '\x84', '\xEB', '\xD5'};
+    return DecryptName<0xFBD599E117C547C1ULL>(source);
   }
   case 1113: {
-    const std::uint8_t source[] = {0x01, 0x81, 0xB8, 0x2D, 0xFE, 0x13};
-    thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x01', '\x81', '\xB8', '\x2D', '\xFE', '\x13'};
+    return DecryptName<0x176F138D5DD7F365ULL>(source);
   }
   case 1031: {
-    const std::uint8_t source[] = {0x15, 0x3A, 0xB9, 0x10, 0x7F, 0x86, 0x41, 0x22, 0x65};
-    thread_local EncryptedName<sizeof(source), 0x452FEF0D7FC95565ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x15', '\x3A', '\xB9', '\x10', '\x7F', '\x86', '\x41', '\x22', '\x65'};
+    return DecryptName<0x452FEF0D7FC95565ULL>(source);
   }
   case 1063: {
-    const std::uint8_t source[] = {0x31, 0x78, 0x27, 0xE8, 0xD5, 0x14, 0x8E, 0x9F};
-    thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x31', '\x78', '\x27', '\xE8', '\xD5', '\x14', '\x8E', '\x9F'};
+    return DecryptName<0x9FED7DA189490D5DULL>(source);
   }
   case 1049: {
-    const std::uint8_t source[] = {0xC3, 0x0E, 0x3A, 0xE4, 0xA6, 0x27};
-    thread_local EncryptedName<sizeof(source), 0x839B27DF8F5967B3ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xC3', '\x0E', '\x3A', '\xE4', '\xA6', '\x27'};
+    return DecryptName<0x839B27DF8F5967B3ULL>(source);
   }
   case 1011: {
-    const std::uint8_t source[] = {0x0E, 0x73, 0xC8, 0x7F, 0x14, 0x07, 0xA4, 0x9D, 0x6D};
-    thread_local EncryptedName<sizeof(source), 0xF3CB6F7711A71B6DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x0E', '\x73', '\xC8', '\x7F', '\x14', '\x07', '\xA4', '\x9D', '\x6D'};
+    return DecryptName<0xF3CB6F7711A71B6DULL>(source);
   }
   case 1042: {
-    const std::uint8_t source[] = {0x3C, 0xD5, 0xAA, 0x50, 0x0F, 0x88, 0x22, 0x11, 0x20, 0xCF, 0xAC, 0x5D, 0x0C, 0xB9, 0x41};
-    thread_local EncryptedName<sizeof(source), 0x7941D76335CFA14FULL> name(source);
-    return name.Text();
+    const char source[] = {'\x3C', '\xD5', '\xAA', '\x50', '\x0F', '\x88', '\x22', '\x11', '\x20', '\xCF', '\xAC', '\x5D', '\x0C', '\xB9', '\x41'};
+    return DecryptName<0x7941D76335CFA14FULL>(source);
   }
   case 1035: {
-    const std::uint8_t source[] = {0x89, 0xEC, 0xE9, 0x3B, 0xE4, 0xB1, 0x7E, 0x15, 0x8D, 0xE0, 0x87};
-    thread_local EncryptedName<sizeof(source), 0x7321C3814F8799E1ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x89', '\xEC', '\xE9', '\x3B', '\xE4', '\xB1', '\x7E', '\x15', '\x8D', '\xE0', '\x87'};
+    return DecryptName<0x7321C3814F8799E1ULL>(source);
   }
   case 1107: {
-    const std::uint8_t source[] = {0x47, 0x94, 0xA4, 0x72, 0xA5, 0x3D, 0xBC, 0x0A, 0x4C, 0x9D, 0xB1, 0x48, 0xB5, 0x28, 0x81, 0x18, 0x23};
-    thread_local EncryptedName<sizeof(source), 0x7DE349D717D7F123ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x47', '\x94', '\xA4', '\x72', '\xA5', '\x3D', '\xBC', '\x0A', '\x4C', '\x9D', '\xB1', '\x48', '\xB5', '\x28', '\x81', '\x18', '\x23'};
+    return DecryptName<0x7DE349D717D7F123ULL>(source);
   }
   case 1014: {
-    const std::uint8_t source[] = {0x0C, 0xA5, 0xC0, 0x29, 0x0E, 0xB1};
-    thread_local EncryptedName<sizeof(source), 0x0F15B16B5BAFD57FULL> name(source);
-    return name.Text();
+    const char source[] = {'\x0C', '\xA5', '\xC0', '\x29', '\x0E', '\xB1'};
+    return DecryptName<0x0F15B16B5BAFD57FULL>(source);
   }
   case 1077: {
-    const std::uint8_t source[] = {0x3F, 0x08, 0x84, 0xF6, 0x66, 0x59, 0x60, 0x0A, 0x3F, 0x08, 0x9F, 0xE0, 0x09};
-    thread_local EncryptedName<sizeof(source), 0x793F370985ED674FULL> name(source);
-    return name.Text();
+    const char source[] = {'\x3F', '\x08', '\x84', '\xF6', '\x66', '\x59', '\x60', '\x0A', '\x3F', '\x08', '\x9F', '\xE0', '\x09'};
+    return DecryptName<0x793F370985ED674FULL>(source);
   }
   case 1019: {
-    const std::uint8_t source[] = {0x6D, 0x60, 0xF0, 0x46, 0x01, 0x46, 0x34, 0x8A, 0x1D};
-    thread_local EncryptedName<sizeof(source), 0xE55723712993051DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x6D', '\x60', '\xF0', '\x46', '\x01', '\x46', '\x34', '\x8A', '\x1D'};
+    return DecryptName<0xE55723712993051DULL>(source);
   }
   case 1056: {
-    const std::uint8_t source[] = {0xBA, 0x7E, 0x96, 0x18, 0x90, 0xBC, 0x15};
-    thread_local EncryptedName<sizeof(source), 0x7115D9F973F913C9ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xBA', '\x7E', '\x96', '\x18', '\x90', '\xBC', '\x15'};
+    return DecryptName<0x7115D9F973F913C9ULL>(source);
   }
   case 1057: {
-    const std::uint8_t source[] = {0x1A, 0x9A, 0x98, 0x10, 0x3B};
-    thread_local EncryptedName<sizeof(source), 0xCB1D253B7FE1F563ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x1A', '\x9A', '\x98', '\x10', '\x3B'};
+    return DecryptName<0xCB1D253B7FE1F563ULL>(source);
   }
   case 1023: {
-    const std::uint8_t source[] = {0x18, 0xE5, 0xEC, 0x42, 0x54, 0x32, 0x93, 0x1D, 0x1E, 0xF8, 0xF5, 0x1D};
-    thread_local EncryptedName<sizeof(source), 0x6FE153231D879777ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x18', '\xE5', '\xEC', '\x42', '\x54', '\x32', '\x93', '\x1D', '\x1E', '\xF8', '\xF5', '\x1D'};
+    return DecryptName<0x6FE153231D879777ULL>(source);
   }
   case 1026: {
-    const std::uint8_t source[] = {0x36, 0x26, 0x31, 0xBC, 0xEC, 0x9F};
-    thread_local EncryptedName<sizeof(source), 0x39A39F87DD5F535BULL> name(source);
-    return name.Text();
+    const char source[] = {'\x36', '\x26', '\x31', '\xBC', '\xEC', '\x9F'};
+    return DecryptName<0x39A39F87DD5F535BULL>(source);
   }
   case 1110: {
-    const std::uint8_t source[] = {0xA1, 0x42, 0x40, 0x5A, 0xEB, 0x74, 0x6D};
-    thread_local EncryptedName<sizeof(source), 0xEF6D1D893F2B2DC5ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xA1', '\x42', '\x40', '\x5A', '\xEB', '\x74', '\x6D'};
+    return DecryptName<0xEF6D1D893F2B2DC5ULL>(source);
   }
   case 1170: {
-    const std::uint8_t source[] = {0x6E, 0xA8, 0x23, 0xD0, 0xB8, 0x77};
-    thread_local EncryptedName<sizeof(source), 0x234977DDB54BC71DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x6E', '\xA8', '\x23', '\xD0', '\xB8', '\x77'};
+    return DecryptName<0x234977DDB54BC71DULL>(source);
   }
   case 1029: {
-    const std::uint8_t source[] = {0x46, 0xA4, 0x2C, 0x56, 0x39};
-    thread_local EncryptedName<sizeof(source), 0xA12DAB392545D72FULL> name(source);
-    return name.Text();
+    const char source[] = {'\x46', '\xA4', '\x2C', '\x56', '\x39'};
+    return DecryptName<0xA12DAB392545D72FULL>(source);
   }
   case 1155: {
-    const std::uint8_t source[] = {0x05, 0x5E, 0x77, 0x46, 0x67, 0xC1};
-    thread_local EncryptedName<sizeof(source), 0x6BA1C1132F033B75ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x05', '\x5E', '\x77', '\x46', '\x67', '\xC1'};
+    return DecryptName<0x6BA1C1132F033B75ULL>(source);
   }
   case 1109: {
-    const std::uint8_t source[] = {0xB5, 0x3E, 0xE1, 0x8C, 0x4B, 0xF2, 0x88, 0x47, 0xB8, 0x5B};
-    thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xB5', '\x3E', '\xE1', '\x8C', '\x4B', '\xF2', '\x88', '\x47', '\xB8', '\x5B'};
+    return DecryptName<0x2FEB8739E5975BD1ULL>(source);
   }
   case 1101: {
-    const std::uint8_t source[] = {0xAF, 0x62, 0xBD, 0x13, 0xF8, 0x56, 0x76, 0x47, 0x92, 0x69, 0xCD};
-    thread_local EncryptedName<sizeof(source), 0x33133B977BCD03CDULL> name(source);
-    return name.Text();
+    const char source[] = {'\xAF', '\x62', '\xBD', '\x13', '\xF8', '\x56', '\x76', '\x47', '\x92', '\x69', '\xCD'};
+    return DecryptName<0x33133B977BCD03CDULL>(source);
   }
   case 1167: {
-    const std::uint8_t source[] = {0x84, 0x72, 0x5D, 0xCE, 0x96, 0x6A, 0x42, 0xEF, 0x96, 0x71, 0x4E, 0xAF};
-    thread_local EncryptedName<sizeof(source), 0x8D1D0FF1AF2B13F7ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x84', '\x72', '\x5D', '\xCE', '\x96', '\x6A', '\x42', '\xEF', '\x96', '\x71', '\x4E', '\xAF'};
+    return DecryptName<0x8D1D0FF1AF2B13F7ULL>(source);
   }
   case 1188: {
-    const std::uint8_t source[] = {0xEF, 0xD4, 0xA1, 0x24, 0xF6, 0xD2, 0xF1, 0xB3};
-    thread_local EncryptedName<sizeof(source), 0xB39FA7917BCFBB8DULL> name(source);
-    return name.Text();
+    const char source[] = {'\xEF', '\xD4', '\xA1', '\x24', '\xF6', '\xD2', '\xF1', '\xB3'};
+    return DecryptName<0xB39FA7917BCFBB8DULL>(source);
   }
   case 1879: {
-    const std::uint8_t source[] = {0xEE, 0x82, 0x01, 0x70, 0x37, 0x26, 0x8E, 0x72, 0xFB, 0xC1};
-    thread_local EncryptedName<sizeof(source), 0x2DCB7567394DC1ABULL> name(source);
-    return name.Text();
+    const char source[] = {'\xEE', '\x82', '\x01', '\x70', '\x37', '\x26', '\x8E', '\x72', '\xFB', '\xC1'};
+    return DecryptName<0x2DCB7567394DC1ABULL>(source);
   }
   case 1200: {
-    const std::uint8_t source[] = {0x23, 0xDF, 0x62, 0x61, 0xA9, 0x09, 0x0B, 0x3C, 0x31, 0xB7};
-    thread_local EncryptedName<sizeof(source), 0x4F637DC51307B759ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x23', '\xDF', '\x62', '\x61', '\xA9', '\x09', '\x0B', '\x3C', '\x31', '\xB7'};
+    return DecryptName<0x4F637DC51307B759ULL>(source);
   }
   case 1275: {
-    const std::uint8_t source[] = {0x44, 0x1D, 0xC6, 0xA8, 0x68, 0xF3};
-    thread_local EncryptedName<sizeof(source), 0xE52DF30DCBAF7125ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x44', '\x1D', '\xC6', '\xA8', '\x68', '\xF3'};
+    return DecryptName<0xE52DF30DCBAF7125ULL>(source);
   }
   case 1815: {
-    const std::uint8_t source[] = {0x3A, 0x43, 0xCA, 0xFB, 0xE9, 0xD6, 0x81, 0xA6, 0x3C, 0x50, 0xCC, 0xF4, 0xF6, 0xEC, 0xF3};
-    thread_local EncryptedName<sizeof(source), 0xCFF3899D95AF355FULL> name(source);
-    return name.Text();
+    const char source[] = {'\x3A', '\x43', '\xCA', '\xFB', '\xE9', '\xD6', '\x81', '\xA6', '\x3C', '\x50', '\xCC', '\xF4', '\xF6', '\xEC', '\xF3'};
+    return DecryptName<0xCFF3899D95AF355FULL>(source);
   }
   case 1245: {
-    const std::uint8_t source[] = {0x90, 0xA6, 0x01, 0x05, 0x14, 0xF7, 0x14, 0xCE, 0x8F, 0xA4, 0x02, 0x1A, 0x7D};
-    thread_local EncryptedName<sizeof(source), 0x9171997D6963C9F7ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x90', '\xA6', '\x01', '\x05', '\x14', '\xF7', '\x14', '\xCE', '\x8F', '\xA4', '\x02', '\x1A', '\x7D'};
+    return DecryptName<0x9171997D6963C9F7ULL>(source);
   }
   case 1519:
   case 1631: {
-    const std::uint8_t source[] = {0xF4, 0x79, 0xBA, 0x8D, 0x44, 0x80, 0xDC, 0x4F};
-    thread_local EncryptedName<sizeof(source), 0x4F99DF03C3EF31B7ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xF4', '\x79', '\xBA', '\x8D', '\x44', '\x80', '\xDC', '\x4F'};
+    return DecryptName<0x4F99DF03C3EF31B7ULL>(source);
   }
   case 1963: {
-    const std::uint8_t source[] = {0x13, 0x76, 0x10, 0x6F, 0x80, 0xF1, 0x0E, 0xC6, 0x06, 0x29};
-    thread_local EncryptedName<sizeof(source), 0x9949BFD527532943ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x13', '\x76', '\x10', '\x6F', '\x80', '\xF1', '\x0E', '\xC6', '\x06', '\x29'};
+    return DecryptName<0x9949BFD527532943ULL>(source);
   }
   case 1122: {
-    const std::uint8_t source[] = {0x08, 0x12, 0x99, 0x4F, 0x18, 0x69, 0xD0, 0xFC, 0x6F};
-    thread_local EncryptedName<sizeof(source), 0xCD8F077123FB7D6FULL> name(source);
-    return name.Text();
+    const char source[] = {'\x08', '\x12', '\x99', '\x4F', '\x18', '\x69', '\xD0', '\xFC', '\x6F'};
+    return DecryptName<0xCD8F077123FB7D6FULL>(source);
   }
   case 1123: {
-    const std::uint8_t source[] = {0x00, 0xC4, 0xF3, 0xC9, 0xC8, 0x51, 0xBC, 0x21, 0x67};
-    thread_local EncryptedName<sizeof(source), 0x13E33FA1A591AB67ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x00', '\xC4', '\xF3', '\xC9', '\xC8', '\x51', '\xBC', '\x21', '\x67'};
+    return DecryptName<0x13E33FA1A591AB67ULL>(source);
   }
   case 1125: {
-    const std::uint8_t source[] = {0x50, 0x28, 0xCF, 0x55, 0xD6, 0x8B, 0xF6, 0x23, 0x37};
-    thread_local EncryptedName<sizeof(source), 0x17A9E5BF39AD4737ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x50', '\x28', '\xCF', '\x55', '\xD6', '\x8B', '\xF6', '\x23', '\x37'};
+    return DecryptName<0x17A9E5BF39AD4737ULL>(source);
   }
   case 1385: {
-    const std::uint8_t source[] = {0xC1, 0xF8, 0x01, 0x9C, 0x17, 0x42, 0x05, 0x5C, 0xA5};
-    thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xC1', '\xF8', '\x01', '\x9C', '\x17', '\x42', '\x05', '\x5C', '\xA5'};
+    return DecryptName<0x03772763F96D9DA5ULL>(source);
   }
   case 1382: {
-    const std::uint8_t source[] = {0xE3, 0x7A, 0x0A, 0x1D, 0x56, 0x65, 0x18, 0x68, 0x87};
-    thread_local EncryptedName<sizeof(source), 0x0B7109397F6B1387ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xE3', '\x7A', '\x0A', '\x1D', '\x56', '\x65', '\x18', '\x68', '\x87'};
+    return DecryptName<0x0B7109397F6B1387ULL>(source);
   }
   case 1208: {
-    const std::uint8_t source[] = {0xBE, 0x94, 0x31, 0xEF, 0xEA, 0xA7, 0xE4, 0x4E, 0xA8, 0x9B, 0x5F};
-    thread_local EncryptedName<sizeof(source), 0x23BBD58F8B5FF5C9ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xBE', '\x94', '\x31', '\xEF', '\xEA', '\xA7', '\xE4', '\x4E', '\xA8', '\x9B', '\x5F'};
+    return DecryptName<0x23BBD58F8B5FF5C9ULL>(source);
   }
   case 1630: {
-    const std::uint8_t source[] = {0x2F, 0xFA, 0xD6, 0x7E, 0xDC, 0xB1, 0x5E, 0x8B, 0x32, 0xBB};
-    thread_local EncryptedName<sizeof(source), 0xC517FB932D95BB6DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x2F', '\xFA', '\xD6', '\x7E', '\xDC', '\xB1', '\x5E', '\x8B', '\x32', '\xBB'};
+    return DecryptName<0xC517FB932D95BB6DULL>(source);
   }
   case 1513: {
-    const std::uint8_t source[] = {0xCC, 0xF4, 0xB9, 0xCE, 0x31, 0x9A, 0xFE, 0x30, 0xDD, 0xEB, 0xAE, 0xC9, 0x29, 0xC5};
-    thread_local EncryptedName<sizeof(source), 0x75ADC57D87EFBD8FULL> name(source);
-    return name.Text();
+    const char source[] = {'\xCC', '\xF4', '\xB9', '\xCE', '\x31', '\x9A', '\xFE', '\x30', '\xDD', '\xEB', '\xAE', '\xC9', '\x29', '\xC5'};
+    return DecryptName<0x75ADC57D87EFBD8FULL>(source);
   }
   case 1586: {
-    const std::uint8_t source[] = {0x95, 0xBC, 0xA0, 0xA5, 0x32, 0x56, 0xEC, 0x7F, 0xD9};
-    thread_local EncryptedName<sizeof(source), 0x2BAD156DE3E1F9D9ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x95', '\xBC', '\xA0', '\xA5', '\x32', '\x56', '\xEC', '\x7F', '\xD9'};
+    return DecryptName<0x2BAD156DE3E1F9D9ULL>(source);
   }
   case 1505: {
-    const std::uint8_t source[] = {0xD9, 0xC0, 0xAD, 0x44, 0x02, 0x5B, 0x34, 0xA3, 0xDC, 0x8F};
-    thread_local EncryptedName<sizeof(source), 0xF161095D0DE18F95ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xD9', '\xC0', '\xAD', '\x44', '\x02', '\x5B', '\x34', '\xA3', '\xDC', '\x8F'};
+    return DecryptName<0xF161095D0DE18F95ULL>(source);
   }
   case 1143: {
-    const std::uint8_t source[] = {0xA2, 0x30, 0x8D, 0x5A, 0x22, 0x01, 0x82, 0xB9, 0xBB, 0x34, 0xDF};
-    thread_local EncryptedName<sizeof(source), 0xEDC74F6D13DF71EFULL> name(source);
-    return name.Text();
+    const char source[] = {'\xA2', '\x30', '\x8D', '\x5A', '\x22', '\x01', '\x82', '\xB9', '\xBB', '\x34', '\xDF'};
+    return DecryptName<0xEDC74F6D13DF71EFULL>(source);
   }
   case 1401: {
-    const std::uint8_t source[] = {0xEA, 0x4D, 0x3E, 0x01, 0x44, 0x5F, 0xC6, 0x75};
-    thread_local EncryptedName<sizeof(source), 0x758F1D0B4F7705B9ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xEA', '\x4D', '\x3E', '\x01', '\x44', '\x5F', '\xC6', '\x75'};
+    return DecryptName<0x758F1D0B4F7705B9ULL>(source);
   }
   case 1179: {
-    const std::uint8_t source[] = {0x32, 0x51, 0x0C, 0x5A, 0x7D, 0x66, 0x49, 0x89};
-    thread_local EncryptedName<sizeof(source), 0x891B232D09451965ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x32', '\x51', '\x0C', '\x5A', '\x7D', '\x66', '\x49', '\x89'};
+    return DecryptName<0x891B232D09451965ULL>(source);
   }
   case 1504: {
-    const std::uint8_t source[] = {0x2D, 0x4A, 0x3B, 0x19, 0xDC, 0xDD, 0x3A, 0x2D, 0x69};
-    thread_local EncryptedName<sizeof(source), 0x637B959D55771F69ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x2D', '\x4A', '\x3B', '\x19', '\xDC', '\xDD', '\x3A', '\x2D', '\x69'};
+    return DecryptName<0x637B959D55771F69ULL>(source);
   }
   case 1299: {
-    const std::uint8_t source[] = {0x16, 0xC4, 0x8F, 0x4D, 0xF2, 0x73, 0x1E, 0x9D, 0x14, 0xCA, 0x89, 0x44, 0xE9, 0x3D};
-    thread_local EncryptedName<sizeof(source), 0xD1413DBB01CD8B51ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x16', '\xC4', '\x8F', '\x4D', '\xF2', '\x73', '\x1E', '\x9D', '\x14', '\xCA', '\x89', '\x44', '\xE9', '\x3D'};
+    return DecryptName<0xD1413DBB01CD8B51ULL>(source);
   }
   case 1040: {
-    const std::uint8_t source[] = {0x2C, 0xF6, 0x8B, 0x4A, 0x2A, 0x8F};
-    thread_local EncryptedName<sizeof(source), 0xB7FD8F670FC7B96BULL> name(source);
-    return name.Text();
+    const char source[] = {'\x2C', '\xF6', '\x8B', '\x4A', '\x2A', '\x8F'};
+    return DecryptName<0xB7FD8F670FC7B96BULL>(source);
   }
   case 1837: {
-    const std::uint8_t source[] = {0xB4, 0x9A, 0x1D, 0xA9};
-    thread_local EncryptedName<sizeof(source), 0xE7978FB5A94DD7FDULL> name(source);
-    return name.Text();
+    const char source[] = {'\xB4', '\x9A', '\x1D', '\xA9'};
+    return DecryptName<0xE7978FB5A94DD7FDULL>(source);
   }
   case 1374: {
-    const std::uint8_t source[] = {0xB4, 0xF7, 0xF8, 0x74, 0xDD, 0xA8, 0x12, 0x49};
-    thread_local EncryptedName<sizeof(source), 0x4941FD9F21BBB9FDULL> name(source);
-    return name.Text();
+    const char source[] = {'\xB4', '\xF7', '\xF8', '\x74', '\xDD', '\xA8', '\x12', '\x49'};
+    return DecryptName<0x4941FD9F21BBB9FDULL>(source);
   }
   case 1148: {
-    const std::uint8_t source[] = {0x38, 0x88, 0xA9, 0x08, 0x38, 0x24, 0xE5};
-    thread_local EncryptedName<sizeof(source), 0x35E5656B5DEDCD75ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x38', '\x88', '\xA9', '\x08', '\x38', '\x24', '\xE5'};
+    return DecryptName<0x35E5656B5DEDCD75ULL>(source);
   }
   case 1404: {
-    const std::uint8_t source[] = {0x32, 0x5C, 0xD4, 0x50, 0x75, 0x46, 0xD4, 0x61, 0x36, 0x5B, 0xCA, 0x48, 0x78, 0x0F};
-    thread_local EncryptedName<sizeof(source), 0x2F8B0F37118D157FULL> name(source);
-    return name.Text();
+    const char source[] = {'\x32', '\x5C', '\xD4', '\x50', '\x75', '\x46', '\xD4', '\x61', '\x36', '\x5B', '\xCA', '\x48', '\x78', '\x0F'};
+    return DecryptName<0x2F8B0F37118D157FULL>(source);
   }
   case 1379: {
-    const std::uint8_t source[] = {0x83, 0xB8, 0xDE, 0xFD, 0xD9, 0x16, 0x46, 0xFF, 0x88, 0xAE, 0xCD, 0xF0, 0xDF, 0x09, 0x48, 0xFF, 0xCD};
-    thread_local EncryptedName<sizeof(source), 0xAD075B8DB599F1CDULL> name(source);
-    return name.Text();
+    const char source[] = {'\x83', '\xB8', '\xDE', '\xFD', '\xD9', '\x16', '\x46', '\xFF', '\x88', '\xAE', '\xCD', '\xF0', '\xDF', '\x09', '\x48', '\xFF', '\xCD'};
+    return DecryptName<0xAD075B8DB599F1CDULL>(source);
   }
   case 1495: {
-    const std::uint8_t source[] = {0xC4, 0xA5, 0xAE, 0x93, 0x94, 0xCC, 0xBA, 0x67, 0xD8, 0xBE, 0xB5, 0x98, 0x83, 0x93};
-    thread_local EncryptedName<sizeof(source), 0x2FE993D1DDE1F197ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xC4', '\xA5', '\xAE', '\x93', '\x94', '\xCC', '\xBA', '\x67', '\xD8', '\xBE', '\xB5', '\x98', '\x83', '\x93'};
+    return DecryptName<0x2FE993D1DDE1F197ULL>(source);
   }
   case 1370: {
-    const std::uint8_t source[] = {0xDC, 0xCC, 0xA8, 0x4E, 0xE0, 0x3D, 0xAA, 0x6A, 0x8F};
-    thread_local EncryptedName<sizeof(source), 0x39FF7FB50DEB998FULL> name(source);
-    return name.Text();
+    const char source[] = {'\xDC', '\xCC', '\xA8', '\x4E', '\xE0', '\x3D', '\xAA', '\x6A', '\x8F'};
+    return DecryptName<0x39FF7FB50DEB998FULL>(source);
   }
   case 1416: {
-    const std::uint8_t source[] = {0xEA, 0xF4, 0xAE, 0x7C, 0xFE, 0xFB, 0xB0, 0xCD, 0xE4, 0xF0, 0xBD, 0x7F, 0xBB};
-    thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> name(source);
-    return name.Text();
+    const char source[] = {'\xEA', '\xF4', '\xAE', '\x7C', '\xFE', '\xFB', '\xB0', '\xCD', '\xE4', '\xF0', '\xBD', '\x7F', '\xBB'};
+    return DecryptName<0x83EFBFBB37EDBDBDULL>(source);
   }
   case 2200: {
-    const std::uint8_t source[] = {0xED, 0xAA, 0x2B, 0x78, 0x78, 0x05, 0x62, 0xBF};
-    thread_local EncryptedName<sizeof(source), 0xBF2B4B31397FF5A7ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xED', '\xAA', '\x2B', '\x78', '\x78', '\x05', '\x62', '\xBF'};
+    return DecryptName<0xBF2B4B31397FF5A7ULL>(source);
   }
   case 2210: {
-    const std::uint8_t source[] = {0xB9, 0x36, 0xB8, 0x84, 0x8A, 0x5F, 0x6C, 0x93, 0xA0, 0x2F, 0xB0, 0x94, 0xD5};
-    thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xB9', '\x36', '\xB8', '\x84', '\x8A', '\x5F', '\x6C', '\x93', '\xA0', '\x2F', '\xB0', '\x94', '\xD5'};
+    return DecryptName<0xDD3913D5D7F97BE1ULL>(source);
   }
   case 2313: {
-    const std::uint8_t source[] = {0xCF, 0x1E, 0x48, 0xDB, 0x26, 0x49, 0x44, 0x4B, 0xDC, 0x57};
-    thread_local EncryptedName<sizeof(source), 0x050505679903579BULL> name(source);
-    return name.Text();
+    const char source[] = {'\xCF', '\x1E', '\x48', '\xDB', '\x26', '\x49', '\x44', '\x4B', '\xDC', '\x57'};
+    return DecryptName<0x050505679903579BULL>(source);
   }
   case 1242: {
-    const std::uint8_t source[] = {0xBC, 0x86, 0x6B, 0x40, 0x59, 0x79};
-    thread_local EncryptedName<sizeof(source), 0xF14F79170939C7F1ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xBC', '\x86', '\x6B', '\x40', '\x59', '\x79'};
+    return DecryptName<0xF14F79170939C7F1ULL>(source);
   }
   case 2336: {
-    const std::uint8_t source[] = {0xDB, 0x8A, 0x20, 0xE4, 0x81, 0x66, 0xB4, 0xA5};
-    thread_local EncryptedName<sizeof(source), 0xA5FD29D7AB6DC59FULL> name(source);
-    return name.Text();
+    const char source[] = {'\xDB', '\x8A', '\x20', '\xE4', '\x81', '\x66', '\xB4', '\xA5'};
+    return DecryptName<0xA5FD29D7AB6DC59FULL>(source);
   }
   case 2398: {
-    const std::uint8_t source[] = {0x45, 0x6E, 0x7B, 0xEF, 0xF1, 0x18, 0x22, 0x89, 0x46, 0x75, 0x66, 0xF5, 0xFA, 0x5D};
-    thread_local EncryptedName<sizeof(source), 0xD97D5DBDBB2F2709ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x45', '\x6E', '\x7B', '\xEF', '\xF1', '\x18', '\x22', '\x89', '\x46', '\x75', '\x66', '\xF5', '\xFA', '\x5D'};
+    return DecryptName<0xD97D5DBDBB2F2709ULL>(source);
   }
   case 3257: {
-    const std::uint8_t source[] = {0x12, 0x72, 0xB3, 0xB4, 0xDA, 0x17, 0x16, 0x9F, 0x16, 0x7D, 0xB8, 0xD1};
-    thread_local EncryptedName<sizeof(source), 0xED796785D1DF137FULL> name(source);
-    return name.Text();
+    const char source[] = {'\x12', '\x72', '\xB3', '\xB4', '\xDA', '\x17', '\x16', '\x9F', '\x16', '\x7D', '\xB8', '\xD1'};
+    return DecryptName<0xED796785D1DF137FULL>(source);
   }
   case 3258: {
-    const std::uint8_t source[] = {0xF5, 0x10, 0xB2, 0x8E, 0x21, 0x46, 0x50, 0xEB, 0xFC, 0x07, 0xB6, 0x81, 0x2A, 0x23};
-    thread_local EncryptedName<sizeof(source), 0x9B0F234DEFDF7593ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xF5', '\x10', '\xB2', '\x8E', '\x21', '\x46', '\x50', '\xEB', '\xFC', '\x07', '\xB6', '\x81', '\x2A', '\x23'};
+    return DecryptName<0x9B0F234DEFDF7593ULL>(source);
   }
   case 3261: {
-    const std::uint8_t source[] = {0x4F, 0x2F, 0xD8, 0x4C, 0x1A, 0x06, 0xC1, 0x90, 0x4E, 0x2C, 0xDF, 0x47, 0x45};
-    thread_local EncryptedName<sizeof(source), 0xD98F5345098D630DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x4F', '\x2F', '\xD8', '\x4C', '\x1A', '\x06', '\xC1', '\x90', '\x4E', '\x2C', '\xDF', '\x47', '\x45'};
+    return DecryptName<0xD98F5345098D630DULL>(source);
   }
   case 1090: {
-    const std::uint8_t source[] = {0x46, 0x7E, 0x9A, 0xDF, 0xA4, 0x8D, 0x44, 0x11, 0x4C, 0x1F};
-    thread_local EncryptedName<sizeof(source), 0x7F2DFFC1ABE91F2BULL> name(source);
-    return name.Text();
+    const char source[] = {'\x46', '\x7E', '\x9A', '\xDF', '\xA4', '\x8D', '\x44', '\x11', '\x4C', '\x1F'};
+    return DecryptName<0x7F2DFFC1ABE91F2BULL>(source);
   }
   case 1166: {
-    const std::uint8_t source[] = {0xFE, 0xE0, 0x67, 0x92, 0xD4, 0xCC, 0x69};
-    thread_local EncryptedName<sizeof(source), 0xFD69A9B3F311818DULL> name(source);
-    return name.Text();
+    const char source[] = {'\xFE', '\xE0', '\x67', '\x92', '\xD4', '\xCC', '\x69'};
+    return DecryptName<0xFD69A9B3F311818DULL>(source);
   }
   case 1369: {
-    const std::uint8_t source[] = {0x76, 0x91, 0x32, 0xF7, 0xD5, 0x02, 0x05, 0x2E, 0x72, 0x8C, 0x53};
-    thread_local EncryptedName<sizeof(source), 0x4B755DB19953E311ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x76', '\x91', '\x32', '\xF7', '\xD5', '\x02', '\x05', '\x2E', '\x72', '\x8C', '\x53'};
+    return DecryptName<0x4B755DB19953E311ULL>(source);
   }
   case 1213: {
-    const std::uint8_t source[] = {0x53, 0x8E, 0x66, 0x73, 0x9E, 0xCE, 0x59, 0xDE, 0x3B};
-    thread_local EncryptedName<sizeof(source), 0xBD2BA1C11B01E73BULL> name(source);
-    return name.Text();
+    const char source[] = {'\x53', '\x8E', '\x66', '\x73', '\x9E', '\xCE', '\x59', '\xDE', '\x3B'};
+    return DecryptName<0xBD2BA1C11B01E73BULL>(source);
   }
   case 3636: {
-    const std::uint8_t source[] = {0xF5, 0x64, 0x69, 0x67, 0xC1, 0xD6, 0x4A, 0xA4, 0xEA, 0x64, 0x6E, 0x33};
-    thread_local EncryptedName<sizeof(source), 0xED15938D333D2DB9ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xF5', '\x64', '\x69', '\x67', '\xC1', '\xD6', '\x4A', '\xA4', '\xEA', '\x64', '\x6E', '\x33'};
+    return DecryptName<0xED15938D333D2DB9ULL>(source);
   }
   case 1096: {
-    const std::uint8_t source[] = {0x22, 0x57, 0x3C, 0x0E, 0x0B, 0x44, 0x1F, 0xAE, 0x43};
-    thread_local EncryptedName<sizeof(source), 0xC9712D676B5B3943ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x22', '\x57', '\x3C', '\x0E', '\x0B', '\x44', '\x1F', '\xAE', '\x43'};
+    return DecryptName<0xC9712D676B5B3943ULL>(source);
   }
   case 3495: {
-    const std::uint8_t source[] = {0xCB, 0x7B, 0x56, 0x82, 0xA0, 0xAE, 0x1B, 0xFC, 0xC1, 0x6E, 0x09};
-    thread_local EncryptedName<sizeof(source), 0x9569C9C7E70909AFULL> name(source);
-    return name.Text();
+    const char source[] = {'\xCB', '\x7B', '\x56', '\x82', '\xA0', '\xAE', '\x1B', '\xFC', '\xC1', '\x6E', '\x09'};
+    return DecryptName<0x9569C9C7E70909AFULL>(source);
   }
   case 1214: {
-    const std::uint8_t source[] = {0xB0, 0x51, 0x00, 0x72, 0xC6, 0x1F};
-    thread_local EncryptedName<sizeof(source), 0xB19D1FA9116F39D3ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xB0', '\x51', '\x00', '\x72', '\xC6', '\x1F'};
+    return DecryptName<0xB19D1FA9116F39D3ULL>(source);
   }
   case 1301: {
-    const std::uint8_t source[] = {0xF8, 0x54, 0xA2, 0x5C, 0x20, 0xCF, 0x91};
-    thread_local EncryptedName<sizeof(source), 0x4191BB5531FD3999ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xF8', '\x54', '\xA2', '\x5C', '\x20', '\xCF', '\x91'};
+    return DecryptName<0x4191BB5531FD3999ULL>(source);
   }
   case 1512: {
-    const std::uint8_t source[] = {0x33, 0xCE, 0x04, 0x3E, 0x3A, 0x3F, 0x15};
-    thread_local EncryptedName<sizeof(source), 0xF715514F5961B75BULL> name(source);
-    return name.Text();
+    const char source[] = {'\x33', '\xCE', '\x04', '\x3E', '\x3A', '\x3F', '\x15'};
+    return DecryptName<0xF715514F5961B75BULL>(source);
   }
   case 3496: {
-    const std::uint8_t source[] = {0xA5, 0xEB, 0x92, 0x89, 0xF4, 0x43, 0x24, 0xAD, 0xA8, 0xFA, 0xCD};
-    thread_local EncryptedName<sizeof(source), 0xD9452D81E5CD99C1ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xA5', '\xEB', '\x92', '\x89', '\xF4', '\x43', '\x24', '\xAD', '\xA8', '\xFA', '\xCD'};
+    return DecryptName<0xD9452D81E5CD99C1ULL>(source);
   }
   case 1180: {
-    const std::uint8_t source[] = {0x3B, 0x52, 0xEF, 0x92, 0x12, 0x9F, 0xCC, 0xC4, 0x39, 0x3B};
-    thread_local EncryptedName<sizeof(source), 0xADADEB4DF7813B55ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x3B', '\x52', '\xEF', '\x92', '\x12', '\x9F', '\xCC', '\xC4', '\x39', '\x3B'};
+    return DecryptName<0xADADEB4DF7813B55ULL>(source);
   }
   case 1307: {
-    const std::uint8_t source[] = {0x3A, 0x6C, 0xBF, 0xF0, 0x12, 0x3C, 0xFB, 0xD8, 0x37, 0x68, 0x94, 0xDB, 0x1C, 0x0A, 0xF9, 0xB1};
-    thread_local EncryptedName<sizeof(source), 0xB195637DAFCB0D59ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x3A', '\x6C', '\xBF', '\xF0', '\x12', '\x3C', '\xFB', '\xD8', '\x37', '\x68', '\x94', '\xDB', '\x1C', '\x0A', '\xF9', '\xB1'};
+    return DecryptName<0xB195637DAFCB0D59ULL>(source);
   }
   case 3669: {
-    const std::uint8_t source[] = {0x09, 0xD6, 0xB4, 0x45, 0x84, 0x25, 0xCE, 0xB4, 0x5F, 0xBF};
-    thread_local EncryptedName<sizeof(source), 0xD7A749EB27D5BF6DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x09', '\xD6', '\xB4', '\x45', '\x84', '\x25', '\xCE', '\xB4', '\x5F', '\xBF'};
+    return DecryptName<0xD7A749EB27D5BF6DULL>(source);
   }
   case 3670: {
-    const std::uint8_t source[] = {0x59, 0x18, 0x39, 0x44, 0xB5, 0x10, 0xEB, 0x3A, 0x0F, 0x7D};
-    thread_local EncryptedName<sizeof(source), 0x659975C121557D3DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x59', '\x18', '\x39', '\x44', '\xB5', '\x10', '\xEB', '\x3A', '\x0F', '\x7D'};
+    return DecryptName<0x659975C121557D3DULL>(source);
   }
   case 1622: {
-    const std::uint8_t source[] = {0x2D, 0x1A, 0xC3, 0xC5, 0x6E, 0x9A, 0x97, 0xDA, 0x38, 0x0D, 0xA7};
-    thread_local EncryptedName<sizeof(source), 0xBFF5C517A1A77F59ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x2D', '\x1A', '\xC3', '\xC5', '\x6E', '\x9A', '\x97', '\xDA', '\x38', '\x0D', '\xA7'};
+    return DecryptName<0xBFF5C517A1A77F59ULL>(source);
   }
   case 1632: {
-    const std::uint8_t source[] = {0x40, 0xD7, 0xF6, 0xF2, 0x6D, 0x3A, 0x0F, 0xAD};
-    thread_local EncryptedName<sizeof(source), 0xAD6153019F93A527ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x40', '\xD7', '\xF6', '\xF2', '\x6D', '\x3A', '\x0F', '\xAD'};
+    return DecryptName<0xAD6153019F93A527ULL>(source);
   }
   case 3731: {
-    const std::uint8_t source[] = {0x0C, 0x38, 0x14, 0xD1, 0xCB, 0x90, 0x95, 0xEA, 0x11, 0x5B};
-    thread_local EncryptedName<sizeof(source), 0x85E1F5A7A5755B7FULL> name(source);
-    return name.Text();
+    const char source[] = {'\x0C', '\x38', '\x14', '\xD1', '\xCB', '\x90', '\x95', '\xEA', '\x11', '\x5B'};
+    return DecryptName<0x85E1F5A7A5755B7FULL>(source);
   }
   case 1041: {
-    const std::uint8_t source[] = {0x30, 0x9E, 0x1E, 0x24, 0xE2, 0x49};
-    thread_local EncryptedName<sizeof(source), 0x0F61499B4973EB5DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x30', '\x9E', '\x1E', '\x24', '\xE2', '\x49'};
+    return DecryptName<0x0F61499B4973EB5DULL>(source);
   }
   case 1010: {
-    const std::uint8_t source[] = {0x26, 0x9E, 0x37, 0x18, 0xEA, 0xA1};
-    thread_local EncryptedName<sizeof(source), 0xB127A19D775BF751ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x26', '\x9E', '\x37', '\x18', '\xEA', '\xA1'};
+    return DecryptName<0xB127A19D775BF751ULL>(source);
   }
   case 1782: {
-    const std::uint8_t source[] = {0xBB, 0x6E, 0x9A, 0x8A, 0x82, 0x07, 0x1F};
-    thread_local EncryptedName<sizeof(source), 0xA31F69E7EFED01C9ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xBB', '\x6E', '\x9A', '\x8A', '\x82', '\x07', '\x1F'};
+    return DecryptName<0xA31F69E7EFED01C9ULL>(source);
   }
   case 1773: {
-    const std::uint8_t source[] = {0x03, 0x24, 0xDF, 0x73, 0xE2, 0x02, 0xC5, 0xDE, 0x05, 0x4B};
-    thread_local EncryptedName<sizeof(source), 0xB7A96F8701BB4B6BULL> name(source);
-    return name.Text();
+    const char source[] = {'\x03', '\x24', '\xDF', '\x73', '\xE2', '\x02', '\xC5', '\xDE', '\x05', '\x4B'};
+    return DecryptName<0xB7A96F8701BB4B6BULL>(source);
   }
   case 1058: {
-    const std::uint8_t source[] = {0x2C, 0xB4, 0x95, 0x82, 0x07, 0x25, 0xEC, 0x45, 0x41};
-    thread_local EncryptedName<sizeof(source), 0x3789496BE3E1D141ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x2C', '\xB4', '\x95', '\x82', '\x07', '\x25', '\xEC', '\x45', '\x41'};
+    return DecryptName<0x3789496BE3E1D141ULL>(source);
   }
   case 1297: {
-    const std::uint8_t source[] = {0x76, 0xB7, 0x50, 0xC0, 0x1C, 0x89, 0xE3, 0x50, 0x7A, 0xAC, 0x5E, 0xC4, 0x00, 0xE7};
-    thread_local EncryptedName<sizeof(source), 0x0F97E779A933D917ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x76', '\xB7', '\x50', '\xC0', '\x1C', '\x89', '\xE3', '\x50', '\x7A', '\xAC', '\x5E', '\xC4', '\x00', '\xE7'};
+    return DecryptName<0x0F97E779A933D917ULL>(source);
   }
   case 2995: {
-    const std::uint8_t source[] = {0x0B, 0x4A, 0x12, 0x39, 0x9C, 0x0B, 0x61, 0xA8, 0x2C, 0x45, 0x28, 0x2C, 0x8B, 0x6F};
-    thread_local EncryptedName<sizeof(source), 0xD1056FF94D4D2773ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x0B', '\x4A', '\x12', '\x39', '\x9C', '\x0B', '\x61', '\xA8', '\x2C', '\x45', '\x28', '\x2C', '\x8B', '\x6F'};
+    return DecryptName<0xD1056FF94D4D2773ULL>(source);
   }
   case 3790: {
-    const std::uint8_t source[] = {0x98, 0x28, 0x6C, 0x56, 0x0B, 0xD2, 0x6E, 0x27, 0x99, 0x30, 0x79, 0x40, 0x7F};
-    thread_local EncryptedName<sizeof(source), 0x4331A17F33095FEBULL> name(source);
-    return name.Text();
+    const char source[] = {'\x98', '\x28', '\x6C', '\x56', '\x0B', '\xD2', '\x6E', '\x27', '\x99', '\x30', '\x79', '\x40', '\x7F'};
+    return DecryptName<0x4331A17F33095FEBULL>(source);
   }
   case 1150: {
-    const std::uint8_t source[] = {0xA6, 0x82, 0xDC, 0x45, 0xEB, 0x58, 0x2A, 0x2D, 0xBF, 0xED};
-    thread_local EncryptedName<sizeof(source), 0x454D31872BB3EDCBULL> name(source);
-    return name.Text();
+    const char source[] = {'\xA6', '\x82', '\xDC', '\x45', '\xEB', '\x58', '\x2A', '\x2D', '\xBF', '\xED'};
+    return DecryptName<0x454D31872BB3EDCBULL>(source);
   }
   case 1159: {
-    const std::uint8_t source[] = {0x71, 0x65, 0x35, 0x38, 0x88, 0xE2, 0x9B, 0xE8, 0x01};
-    thread_local EncryptedName<sizeof(source), 0x81F58DED5D470D01ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x71', '\x65', '\x35', '\x38', '\x88', '\xE2', '\x9B', '\xE8', '\x01'};
+    return DecryptName<0x81F58DED5D470D01ULL>(source);
   }
   case 3971: {
-    const std::uint8_t source[] = {0x06, 0x54, 0x04, 0xC7, 0x46, 0x1E, 0x89, 0x5D};
-    thread_local EncryptedName<sizeof(source), 0x5DE7712FAB613F75ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x06', '\x54', '\x04', '\xC7', '\x46', '\x1E', '\x89', '\x5D'};
+    return DecryptName<0x5DE7712FAB613F75ULL>(source);
   }
   case 1894: {
-    const std::uint8_t source[] = {0xE1, 0x04, 0x1E, 0x6D, 0xEA, 0xA5, 0xA8, 0x41};
-    thread_local EncryptedName<sizeof(source), 0x41CFCB831F6B6B91ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xE1', '\x04', '\x1E', '\x6D', '\xEA', '\xA5', '\xA8', '\x41'};
+    return DecryptName<0x41CFCB831F6B6B91ULL>(source);
   }
   case 20424: {
-    const std::uint8_t source[] = {0x5E, 0x0C, 0x3A, 0x9F, 0x45, 0x5C, 0xB4, 0x21, 0x47, 0x63};
-    thread_local EncryptedName<sizeof(source), 0x49D33529F1556333ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x5E', '\x0C', '\x3A', '\x9F', '\x45', '\x5C', '\xB4', '\x21', '\x47', '\x63'};
+    return DecryptName<0x49D33529F1556333ULL>(source);
   }
   case 20425: {
-    const std::uint8_t source[] = {0xC5, 0xE7, 0x33, 0x40, 0x76, 0x92, 0x41, 0x10, 0xB5};
-    thread_local EncryptedName<sizeof(source), 0x792FFD1325418FB5ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xC5', '\xE7', '\x33', '\x40', '\x76', '\x92', '\x41', '\x10', '\xB5'};
+    return DecryptName<0x792FFD1325418FB5ULL>(source);
   }
   case 20423: {
-    const std::uint8_t source[] = {0xDD, 0x08, 0x80, 0xBE, 0xEA, 0xED, 0x36, 0x9F, 0x8D, 0x69};
-    thread_local EncryptedName<sizeof(source), 0xF15F8785CDE369BFULL> name(source);
-    return name.Text();
+    const char source[] = {'\xDD', '\x08', '\x80', '\xBE', '\xEA', '\xED', '\x36', '\x9F', '\x8D', '\x69'};
+    return DecryptName<0xF15F8785CDE369BFULL>(source);
   }
   case 20571: {
-    const std::uint8_t source[] = {0x16, 0xD7, 0xCC, 0x26, 0xBF, 0x6A, 0x6D, 0xAC, 0x6B, 0x85};
-    thread_local EncryptedName<sizeof(source), 0xE33F2FF779878559ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x16', '\xD7', '\xCC', '\x26', '\xBF', '\x6A', '\x6D', '\xAC', '\x6B', '\x85'};
+    return DecryptName<0xE33F2FF779878559ULL>(source);
   }
   case 1737: {
-    const std::uint8_t source[] = {0xCA, 0xD1, 0x3E, 0xD7, 0xA0, 0xDD};
-    thread_local EncryptedName<sizeof(source), 0x1767DDE18D779D8BULL> name(source);
-    return name.Text();
+    const char source[] = {'\xCA', '\xD1', '\x3E', '\xD7', '\xA0', '\xDD'};
+    return DecryptName<0x1767DDE18D779D8BULL>(source);
   }
   case 1735: {
-    const std::uint8_t source[] = {0xA0, 0xCF, 0x98, 0xAE, 0x54, 0xCD, 0xBB};
-    thread_local EncryptedName<sizeof(source), 0xC1BB8111EDD183E1ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xA0', '\xCF', '\x98', '\xAE', '\x54', '\xCD', '\xBB'};
+    return DecryptName<0xC1BB8111EDD183E1ULL>(source);
   }
   case 1736: {
-    const std::uint8_t source[] = {0xD6, 0x85, 0x80, 0xD4, 0x99, 0xBB};
-    thread_local EncryptedName<sizeof(source), 0xC5B1BBCD9BC9C997ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xD6', '\x85', '\x80', '\xD4', '\x99', '\xBB'};
+    return DecryptName<0xC5B1BBCD9BC9C997ULL>(source);
   }
   case 20338:
   case 20373: {
-    const std::uint8_t source[] = {0x5F, 0x90, 0xB4, 0x91, 0x69, 0x22, 0xAA, 0x73, 0x54, 0xA6, 0xA7, 0x9C, 0x6F, 0x3D, 0xA4, 0x73, 0x6E, 0x94, 0xB9, 0xF9};
-    thread_local EncryptedName<sizeof(source), 0x01CB4F1DF9D3F931ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x5F', '\x90', '\xB4', '\x91', '\x69', '\x22', '\xAA', '\x73', '\x54', '\xA6', '\xA7', '\x9C', '\x6F', '\x3D', '\xA4', '\x73', '\x6E', '\x94', '\xB9', '\xF9'};
+    return DecryptName<0x01CB4F1DF9D3F931ULL>(source);
   }
   case 20420: {
-    const std::uint8_t source[] = {0xA0, 0xF4, 0x71, 0xFF, 0x34, 0x37, 0xD8, 0x66, 0xB6, 0xFB, 0x40, 0xF6, 0x3B, 0x45};
-    thread_local EncryptedName<sizeof(source), 0x0B8745519B1F95D7ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xA0', '\xF4', '\x71', '\xFF', '\x34', '\x37', '\xD8', '\x66', '\xB6', '\xFB', '\x40', '\xF6', '\x3B', '\x45'};
+    return DecryptName<0x0B8745519B1F95D7ULL>(source);
   }
   case 20619: {
-    const std::uint8_t source[] = {0xE8, 0x35, 0x0E, 0x84, 0xD8, 0x6C, 0x6D, 0xA3, 0xEA, 0x2B, 0x0F, 0x82, 0xD2, 0x71, 0x77, 0xF5, 0x8F};
-    thread_local EncryptedName<sizeof(source), 0xC70319B5EB61598FULL> name(source);
-    return name.Text();
+    const char source[] = {'\xE8', '\x35', '\x0E', '\x84', '\xD8', '\x6C', '\x6D', '\xA3', '\xEA', '\x2B', '\x0F', '\x82', '\xD2', '\x71', '\x77', '\xF5', '\x8F'};
+    return DecryptName<0xC70319B5EB61598FULL>(source);
   }
   case 20696: {
-    const std::uint8_t source[] = {0xFC, 0xB5, 0xEA, 0x73, 0x13, 0x1A, 0x7A, 0x43, 0xF2, 0xB4, 0xED, 0x40, 0x15, 0x45};
-    thread_local EncryptedName<sizeof(source), 0x271B45771F83DD9FULL> name(source);
-    return name.Text();
+    const char source[] = {'\xFC', '\xB5', '\xEA', '\x73', '\x13', '\x1A', '\x7A', '\x43', '\xF2', '\xB4', '\xED', '\x40', '\x15', '\x45'};
+    return DecryptName<0x271B45771F83DD9FULL>(source);
   }
   case 20697: {
-    const std::uint8_t source[] = {0x74, 0x39, 0x88, 0x2D, 0x5D, 0x9C, 0xE2, 0xE3, 0x7A, 0x38, 0x8F, 0x1E, 0x58, 0xC3};
-    thread_local EncryptedName<sizeof(source), 0x8783C33941E15117ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x74', '\x39', '\x88', '\x2D', '\x5D', '\x9C', '\xE2', '\xE3', '\x7A', '\x38', '\x8F', '\x1E', '\x58', '\xC3'};
+    return DecryptName<0x8783C33941E15117ULL>(source);
   }
   case 21089: {
-    const std::uint8_t source[] = {0xFC, 0xEE, 0xC3, 0xC9, 0xF6, 0xDF, 0xEE, 0x9B, 0xEC, 0xF0, 0xC9, 0xD8, 0xF0, 0xC6, 0xA7};
-    thread_local EncryptedName<sizeof(source), 0xD5A78DB38D8DAFABULL> name(source);
-    return name.Text();
+    const char source[] = {'\xFC', '\xEE', '\xC3', '\xC9', '\xF6', '\xDF', '\xEE', '\x9B', '\xEC', '\xF0', '\xC9', '\xD8', '\xF0', '\xC6', '\xA7'};
+    return DecryptName<0xD5A78DB38D8DAFABULL>(source);
   }
   case 21290: {
-    const std::uint8_t source[] = {0x7F, 0x2A, 0x31, 0xF0, 0xF6, 0x2C, 0xFC, 0x6F, 0x0F};
-    thread_local EncryptedName<sizeof(source), 0x0399459DAF454F0FULL> name(source);
-    return name.Text();
+    const char source[] = {'\x7F', '\x2A', '\x31', '\xF0', '\xF6', '\x2C', '\xFC', '\x6F', '\x0F'};
+    return DecryptName<0x0399459DAF454F0FULL>(source);
   }
   case 21291: {
-    const std::uint8_t source[] = {0x10, 0x8E, 0xCB, 0xBE, 0xBA, 0xBC, 0xDF, 0x88, 0x73};
-    thread_local EncryptedName<sizeof(source), 0xFFABE3D5D1BBEF73ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x10', '\x8E', '\xCB', '\xBE', '\xBA', '\xBC', '\xDF', '\x88', '\x73'};
+    return DecryptName<0xFFABE3D5D1BBEF73ULL>(source);
   }
   case 1106: {
-    const std::uint8_t source[] = {0x91, 0x7C, 0x78, 0x0C, 0xB5, 0xF3, 0xC8, 0xF2, 0x9A, 0x75, 0x6D, 0x49};
-    thread_local EncryptedName<sizeof(source), 0xA597A7E7492B39D5ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x91', '\x7C', '\x78', '\x0C', '\xB5', '\xF3', '\xC8', '\xF2', '\x9A', '\x75', '\x6D', '\x49'};
+    return DecryptName<0xA597A7E7492B39D5ULL>(source);
   }
   case 1198: {
-    const std::uint8_t source[] = {0xC9, 0xFC, 0xE9, 0x28, 0xE8, 0x69, 0xE9, 0x18, 0xC8, 0xEE, 0xEF, 0x63};
-    thread_local EncryptedName<sizeof(source), 0x51BB39B763BBBD8DULL> name(source);
-    return name.Text();
+    const char source[] = {'\xC9', '\xFC', '\xE9', '\x28', '\xE8', '\x69', '\xE9', '\x18', '\xC8', '\xEE', '\xEF', '\x63'};
+    return DecryptName<0x51BB39B763BBBD8DULL>(source);
   }
   case 3023: {
-    const std::uint8_t source[] = {0xA9, 0x64, 0x05, 0x48, 0x9A, 0x96, 0xAC, 0xCB, 0xAA, 0x60, 0x57};
-    thread_local EncryptedName<sizeof(source), 0x87E3D1C50D572DEFULL> name(source);
-    return name.Text();
+    const char source[] = {'\xA9', '\x64', '\x05', '\x48', '\x9A', '\x96', '\xAC', '\xCB', '\xAA', '\x60', '\x57'};
+    return DecryptName<0x87E3D1C50D572DEFULL>(source);
   }
   case 20525: {
-    const std::uint8_t source[] = {0xB6, 0xAF, 0x11, 0x5C, 0xE5, 0xEE, 0xF3, 0x77, 0xB0, 0xAE, 0x18, 0x57, 0xF8, 0xE5, 0xA3};
-    thread_local EncryptedName<sizeof(source), 0x3FA3AFA7035DE3FFULL> name(source);
-    return name.Text();
+    const char source[] = {'\xB6', '\xAF', '\x11', '\x5C', '\xE5', '\xEE', '\xF3', '\x77', '\xB0', '\xAE', '\x18', '\x57', '\xF8', '\xE5', '\xA3'};
+    return DecryptName<0x3FA3AFA7035DE3FFULL>(source);
   }
   case 21502: {
-    const std::uint8_t source[] = {0x1B, 0xC6, 0x53, 0x35, 0x1A, 0x86, 0x62, 0x8F, 0x6B, 0x87};
-    thread_local EncryptedName<sizeof(source), 0xDB27CB557D038759ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x1B', '\xC6', '\x53', '\x35', '\x1A', '\x86', '\x62', '\x8F', '\x6B', '\x87'};
+    return DecryptName<0xDB27CB557D038759ULL>(source);
   }
   case 23000: {
-    const std::uint8_t source[] = {0x35, 0xC2, 0x39, 0x40, 0x4E, 0x46, 0x11, 0x31, 0x24, 0xD0, 0x22, 0x44, 0x5F, 0x3D, 0x5D};
-    thread_local EncryptedName<sizeof(source), 0x7D5D0F110B6B8371ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x35', '\xC2', '\x39', '\x40', '\x4E', '\x46', '\x11', '\x31', '\x24', '\xD0', '\x22', '\x44', '\x5F', '\x3D', '\x5D'};
+    return DecryptName<0x7D5D0F110B6B8371ULL>(source);
   }
   case 21630: {
-    const std::uint8_t source[] = {0x1E, 0x24, 0x33, 0xA7, 0x98, 0x53, 0x06, 0x42, 0x0C, 0x5E, 0x7F};
-    thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x1E', '\x24', '\x33', '\xA7', '\x98', '\x53', '\x06', '\x42', '\x0C', '\x5E', '\x7F'};
+    return DecryptName<0x114901C7E37F6D49ULL>(source);
   }
   case 21631: {
-    const std::uint8_t source[] = {0x13, 0xB9, 0x9A, 0x0C, 0xB2, 0x58, 0xCE, 0x91, 0x0E, 0xB9, 0x80, 0x05, 0xB6, 0x48, 0xD3, 0x8A, 0x03, 0xBC, 0xFD, 0x49};
-    thread_local EncryptedName<sizeof(source), 0xDF8117FF49CFF551ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x13', '\xB9', '\x9A', '\x0C', '\xB2', '\x58', '\xCE', '\x91', '\x0E', '\xB9', '\x80', '\x05', '\xB6', '\x48', '\xD3', '\x8A', '\x03', '\xBC', '\xFD', '\x49'};
+    return DecryptName<0xDF8117FF49CFF551ULL>(source);
   }
   case 21632: {
-    const std::uint8_t source[] = {0x7B, 0x00, 0xD9, 0x84, 0xB0, 0x57, 0x8C, 0xEC, 0x6F, 0x73, 0x8B};
-    thread_local EncryptedName<sizeof(source), 0xADC51BF9C98B413DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x7B', '\x00', '\xD9', '\x84', '\xB0', '\x57', '\x8C', '\xEC', '\x6F', '\x73', '\x8B'};
+    return DecryptName<0xADC51BF9C98B413DULL>(source);
   }
   case 1005: {
-    const std::uint8_t source[] = {0x07, 0x7C, 0x05, 0x38, 0x70, 0xD3, 0x04, 0x26, 0x13, 0x3D};
-    thread_local EncryptedName<sizeof(source), 0x674D9F3975573D41ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x07', '\x7C', '\x05', '\x38', '\x70', '\xD3', '\x04', '\x26', '\x13', '\x3D'};
+    return DecryptName<0x674D9F3975573D41ULL>(source);
   }
   case 21650: {
-    const std::uint8_t source[] = {0x12, 0xFA, 0xB5, 0x62, 0x1B, 0x76, 0x94, 0x25, 0x18, 0xEA, 0xB5, 0x7F, 0x4F};
-    thread_local EncryptedName<sizeof(source), 0x6BDF334F2BFDAD51ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x12', '\xFA', '\xB5', '\x62', '\x1B', '\x76', '\x94', '\x25', '\x18', '\xEA', '\xB5', '\x7F', '\x4F'};
+    return DecryptName<0x6BDF334F2BFDAD51ULL>(source);
   }
   case 21651: {
-    const std::uint8_t source[] = {0x84, 0x95, 0x98, 0x52, 0xD1, 0x7B, 0x30, 0x5C, 0x89, 0x84, 0x90, 0x57, 0xC0, 0x7C, 0x3C, 0x21, 0xCF};
-    thread_local EncryptedName<sizeof(source), 0x136F2F9915D1DBCFULL> name(source);
-    return name.Text();
+    const char source[] = {'\x84', '\x95', '\x98', '\x52', '\xD1', '\x7B', '\x30', '\x5C', '\x89', '\x84', '\x90', '\x57', '\xC0', '\x7C', '\x3C', '\x21', '\xCF'};
+    return DecryptName<0x136F2F9915D1DBCFULL>(source);
   }
   case 21652: {
-    const std::uint8_t source[] = {0x6C, 0x9F, 0x16, 0x78, 0x47, 0x98, 0x77, 0x4E, 0x60, 0x99, 0x00, 0x68, 0x47, 0x85, 0x23};
-    thread_local EncryptedName<sizeof(source), 0x0B23D10F2F49D72BULL> name(source);
-    return name.Text();
+    const char source[] = {'\x6C', '\x9F', '\x16', '\x78', '\x47', '\x98', '\x77', '\x4E', '\x60', '\x99', '\x00', '\x68', '\x47', '\x85', '\x23'};
+    return DecryptName<0x0B23D10F2F49D72BULL>(source);
   }
   case 21653: {
-    const std::uint8_t source[] = {0xA6, 0x91, 0x17, 0xB0, 0xE4, 0x34, 0xE3};
-    thread_local EncryptedName<sizeof(source), 0xB3E307A5F753D5E3ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xA6', '\x91', '\x17', '\xB0', '\xE4', '\x34', '\xE3'};
+    return DecryptName<0xB3E307A5F753D5E3ULL>(source);
   }
   case 23009: {
-    const std::uint8_t source[] = {0xB5, 0x32, 0x67, 0x68, 0x14, 0x24, 0x72, 0x4B, 0xBA, 0x2B, 0x76, 0x7D, 0x4D};
-    thread_local EncryptedName<sizeof(source), 0x192D654D29337BE5ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xB5', '\x32', '\x67', '\x68', '\x14', '\x24', '\x72', '\x4B', '\xBA', '\x2B', '\x76', '\x7D', '\x4D'};
+    return DecryptName<0x192D654D29337BE5ULL>(source);
   }
   case 21919: {
-    const std::uint8_t source[] = {0x4D, 0x34, 0xAF, 0x8F, 0x6E, 0xE2, 0xF9, 0xFE, 0x4E, 0x39, 0xB8, 0x8D, 0x2F};
-    thread_local EncryptedName<sizeof(source), 0xB7AFBD2FD9FD7501ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x4D', '\x34', '\xAF', '\x8F', '\x6E', '\xE2', '\xF9', '\xFE', '\x4E', '\x39', '\xB8', '\x8D', '\x2F'};
+    return DecryptName<0xB7AFBD2FD9FD7501ULL>(source);
   }
   case 21965: {
-    const std::uint8_t source[] = {0xB8, 0x25, 0x5D, 0x9F, 0xB6, 0x76, 0x86, 0x09, 0xB2, 0x55};
-    thread_local EncryptedName<sizeof(source), 0x79E915E9AF6F55DDULL> name(source);
-    return name.Text();
+    const char source[] = {'\xB8', '\x25', '\x5D', '\x9F', '\xB6', '\x76', '\x86', '\x09', '\xB2', '\x55'};
+    return DecryptName<0x79E915E9AF6F55DDULL>(source);
   }
   case 21966: {
-    const std::uint8_t source[] = {0x40, 0xE1, 0x35, 0x93, 0xBE, 0x68, 0x50, 0x0E, 0x52, 0xF8, 0x69, 0xC7, 0xD0, 0x01};
-    thread_local EncryptedName<sizeof(source), 0x6B3301E1A3079125ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x40', '\xE1', '\x35', '\x93', '\xBE', '\x68', '\x50', '\x0E', '\x52', '\xF8', '\x69', '\xC7', '\xD0', '\x01'};
+    return DecryptName<0x6B3301E1A3079125ULL>(source);
   }
   case 21967: {
-    const std::uint8_t source[] = {0xEC, 0x4D, 0x5F, 0xD5, 0xF8, 0x68, 0x44, 0x4A, 0xFE, 0x54, 0x03, 0x81, 0x95, 0x01};
-    thread_local EncryptedName<sizeof(source), 0x2F2701A7E56D3D89ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xEC', '\x4D', '\x5F', '\xD5', '\xF8', '\x68', '\x44', '\x4A', '\xFE', '\x54', '\x03', '\x81', '\x95', '\x01'};
+    return DecryptName<0x2F2701A7E56D3D89ULL>(source);
   }
   case 22185: {
-    const std::uint8_t source[] = {0x27, 0x78, 0x2F, 0xEA, 0x06, 0xF9, 0xD0, 0x91, 0x27, 0x0B, 0x7D};
-    thread_local EncryptedName<sizeof(source), 0xC39FB559A17D3963ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x27', '\x78', '\x2F', '\xEA', '\x06', '\xF9', '\xD0', '\x91', '\x27', '\x0B', '\x7D'};
+    return DecryptName<0xC39FB559A17D3963ULL>(source);
   }
   case 23215: {
-    const std::uint8_t source[] = {0xFF, 0xE8, 0x91, 0x76, 0x4E, 0x28, 0xE8, 0x33, 0xF0, 0xF1, 0x80, 0x63, 0x17};
-    thread_local EncryptedName<sizeof(source), 0x71B7691737C5A1AFULL> name(source);
-    return name.Text();
+    const char source[] = {'\xFF', '\xE8', '\x91', '\x76', '\x4E', '\x28', '\xE8', '\x33', '\xF0', '\xF1', '\x80', '\x63', '\x17'};
+    return DecryptName<0x71B7691737C5A1AFULL>(source);
   }
   case 23216: {
-    const std::uint8_t source[] = {0xE3, 0x00, 0xCC, 0xE2, 0xCB, 0x68, 0x45, 0x48, 0xF4, 0x1F, 0xDA, 0xF7, 0x85};
-    thread_local EncryptedName<sizeof(source), 0x07112F85A39F4FABULL> name(source);
-    return name.Text();
+    const char source[] = {'\xE3', '\x00', '\xCC', '\xE2', '\xCB', '\x68', '\x45', '\x48', '\xF4', '\x1F', '\xDA', '\xF7', '\x85'};
+    return DecryptName<0x07112F85A39F4FABULL>(source);
   }
   case 23233: {
-    const std::uint8_t source[] = {0x02, 0x82, 0xD4, 0xAC, 0x6A, 0xAE, 0xB3, 0x00, 0x03, 0xF1};
-    thread_local EncryptedName<sizeof(source), 0x45E3F103CBB5F157ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x02', '\x82', '\xD4', '\xAC', '\x6A', '\xAE', '\xB3', '\x00', '\x03', '\xF1'};
+    return DecryptName<0x45E3F103CBB5F157ULL>(source);
   }
   case 23234: {
-    const std::uint8_t source[] = {0xA5, 0xEE, 0x8E, 0x96, 0x4A, 0x62, 0x3F, 0xD6, 0xA1, 0x87};
-    thread_local EncryptedName<sizeof(source), 0x936F3D2FFDFD87F5ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xA5', '\xEE', '\x8E', '\x96', '\x4A', '\x62', '\x3F', '\xD6', '\xA1', '\x87'};
+    return DecryptName<0x936F3D2FFDFD87F5ULL>(source);
   }
   case 22299: {
-    const std::uint8_t source[] = {0x89, 0x15, 0xF2, 0x24, 0x57, 0x38, 0x7C, 0x2D};
-    thread_local EncryptedName<sizeof(source), 0x2D33791F67AD47DFULL> name(source);
-    return name.Text();
+    const char source[] = {'\x89', '\x15', '\xF2', '\x24', '\x57', '\x38', '\x7C', '\x2D'};
+    return DecryptName<0x2D33791F67AD47DFULL>(source);
   }
   case 22318: {
-    const std::uint8_t source[] = {0xBA, 0xEB, 0x0D, 0xC8, 0xDA, 0x70, 0x24, 0xC2, 0xAC, 0xFE, 0x5E, 0x91, 0xEA, 0x6B, 0x34, 0xC2, 0xDF};
-    thread_local EncryptedName<sizeof(source), 0xA7471985F93F9BDFULL> name(source);
-    return name.Text();
+    const char source[] = {'\xBA', '\xEB', '\x0D', '\xC8', '\xDA', '\x70', '\x24', '\xC2', '\xAC', '\xFE', '\x5E', '\x91', '\xEA', '\x6B', '\x34', '\xC2', '\xDF'};
+    return DecryptName<0xA7471985F93F9BDFULL>(source);
   }
   case 22381: {
-    const std::uint8_t source[] = {0x14, 0xA3, 0x93, 0xEA, 0xF8, 0x2C, 0xA2, 0x19, 0x14, 0xEF};
-    thread_local EncryptedName<sizeof(source), 0x5FFD7FABB5D1EF57ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x14', '\xA3', '\x93', '\xEA', '\xF8', '\x2C', '\xA2', '\x19', '\x14', '\xEF'};
+    return DecryptName<0x5FFD7FABB5D1EF57ULL>(source);
   }
   case 22382: {
-    const std::uint8_t source[] = {0x92, 0x2D, 0xB3, 0xD6, 0x3C, 0x02, 0xBA, 0x87, 0x8B, 0x61};
-    thread_local EncryptedName<sizeof(source), 0xD3E5516F89F161D1ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x92', '\x2D', '\xB3', '\xD6', '\x3C', '\x02', '\xBA', '\x87', '\x8B', '\x61'};
+    return DecryptName<0xD3E5516F89F161D1ULL>(source);
   }
   case 1004: {
-    const std::uint8_t source[] = {0xC5, 0x7C, 0x0D, 0x7D, 0x04, 0x91, 0x35};
-    thread_local EncryptedName<sizeof(source), 0xF535E561137F138DULL> name(source);
-    return name.Text();
+    const char source[] = {'\xC5', '\x7C', '\x0D', '\x7D', '\x04', '\x91', '\x35'};
+    return DecryptName<0xF535E561137F138DULL>(source);
   }
   case 22406: {
-    const std::uint8_t source[] = {0x4A, 0x12, 0x28, 0xCD, 0xEF, 0x4E, 0xD5, 0xC6, 0x43, 0x1E, 0x3D, 0x83};
-    thread_local EncryptedName<sizeof(source), 0x899D11BB83695B0DULL> name(source);
-    return name.Text();
+    const char source[] = {'\x4A', '\x12', '\x28', '\xCD', '\xEF', '\x4E', '\xD5', '\xC6', '\x43', '\x1E', '\x3D', '\x83'};
+    return DecryptName<0x899D11BB83695B0DULL>(source);
   }
   case 22405: {
-    const std::uint8_t source[] = {0xB8, 0x6C, 0x00, 0xBD, 0x85, 0x60, 0xD4, 0x78, 0xC7, 0x25};
-    thread_local EncryptedName<sizeof(source), 0x2B8725D7E95325F5ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xB8', '\x6C', '\x00', '\xBD', '\x85', '\x60', '\xD4', '\x78', '\xC7', '\x25'};
+    return DecryptName<0x2B8725D7E95325F5ULL>(source);
   }
   case 1269: {
-    const std::uint8_t source[] = {0xFE, 0xF1, 0x54, 0x84, 0x66, 0x83};
-    thread_local EncryptedName<sizeof(source), 0x7989830DE73B9DBDULL> name(source);
-    return name.Text();
+    const char source[] = {'\xFE', '\xF1', '\x54', '\x84', '\x66', '\x83'};
+    return DecryptName<0x7989830DE73B9DBDULL>(source);
   }
   case 22504: {
-    const std::uint8_t source[] = {0x28, 0x54, 0xF1, 0xAA, 0xF0, 0xB8, 0xDF, 0xE2, 0x26, 0x6A, 0xCB, 0xA4, 0xE0, 0xB8, 0xDF, 0xBD};
-    thread_local EncryptedName<sizeof(source), 0xBDADDD87C5A50B6BULL> name(source);
-    return name.Text();
+    const char source[] = {'\x28', '\x54', '\xF1', '\xAA', '\xF0', '\xB8', '\xDF', '\xE2', '\x26', '\x6A', '\xCB', '\xA4', '\xE0', '\xB8', '\xDF', '\xBD'};
+    return DecryptName<0xBDADDD87C5A50B6BULL>(source);
   }
   case 1754: {
-    const std::uint8_t source[] = {0x18, 0x98, 0x32, 0xC2, 0xB6, 0x24, 0xB4, 0x8B, 0x0F, 0xD3};
-    thread_local EncryptedName<sizeof(source), 0xC7FB6DF18577D34BULL> name(source);
-    return name.Text();
+    const char source[] = {'\x18', '\x98', '\x32', '\xC2', '\xB6', '\x24', '\xB4', '\x8B', '\x0F', '\xD3'};
+    return DecryptName<0xC7FB6DF18577D34BULL>(source);
   }
   case 22505: {
-    const std::uint8_t source[] = {0xBC, 0x1F, 0xF2, 0x1C, 0x4D, 0x04, 0x70, 0xF1, 0xA9, 0x51};
-    thread_local EncryptedName<sizeof(source), 0xBD3F430159B551FDULL> name(source);
-    return name.Text();
+    const char source[] = {'\xBC', '\x1F', '\xF2', '\x1C', '\x4D', '\x04', '\x70', '\xF1', '\xA9', '\x51'};
+    return DecryptName<0xBD3F430159B551FDULL>(source);
   }
   case 23434: {
-    const std::uint8_t source[] = {0x45, 0xFC, 0x6C, 0x1C, 0xD3, 0x34, 0x12, 0x65, 0x01};
-    thread_local EncryptedName<sizeof(source), 0x2B477F9B5B39B301ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x45', '\xFC', '\x6C', '\x1C', '\xD3', '\x34', '\x12', '\x65', '\x01'};
+    return DecryptName<0x2B477F9B5B39B301ULL>(source);
   }
   case 23435: {
-    const std::uint8_t source[] = {0xD1, 0x24, 0xEA, 0xF4, 0x3E, 0x6B, 0xC2, 0x0E, 0xC4, 0x24, 0xA7};
-    thread_local EncryptedName<sizeof(source), 0x5B832361BDA77197ULL> name(source);
-    return name.Text();
+    const char source[] = {'\xD1', '\x24', '\xEA', '\xF4', '\x3E', '\x6B', '\xC2', '\x0E', '\xC4', '\x24', '\xA7'};
+    return DecryptName<0x5B832361BDA77197ULL>(source);
   }
   case 22506: {
-    const std::uint8_t source[] = {0x2D, 0xA2, 0x6C, 0xDA, 0x75, 0xFC, 0xB9, 0x49, 0x3C, 0xB9, 0x13, 0x9F};
-    thread_local EncryptedName<sizeof(source), 0x0DF5B33D9F21EB79ULL> name(source);
-    return name.Text();
+    const char source[] = {'\x2D', '\xA2', '\x6C', '\xDA', '\x75', '\xFC', '\xB9', '\x49', '\x3C', '\xB9', '\x13', '\x9F'};
+    return DecryptName<0x0DF5B33D9F21EB79ULL>(source);
   }
   default: {
-    const std::uint8_t source[] = {0xAF, 0x32, 0x51, 0xF4, 0xE3, 0xEE, 0xE7};
-    thread_local EncryptedName<sizeof(source), 0x01E7898D9D235DDFULL> name(source);
-    return name.Text();
+    const char source[] = {'\xAF', '\x32', '\x51', '\xF4', '\xE3', '\xEE', '\xE7'};
+    return DecryptName<0x01E7898D9D235DDFULL>(source);
   }
   }
 }
