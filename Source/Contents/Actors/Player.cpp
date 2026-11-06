@@ -386,13 +386,16 @@ void CGrannyPc::Slot15(int state, int resetPosition) {
   const SpawnArrow spawnArrow = reinterpret_cast<SpawnArrow>(&CGameMode::SpawnArrowEffect);
 
   switch (state) {
-  case 0:
-    CGameActor::Slot15(0, resetPosition);
+  case 8:
+    this->Slot16();
+    this->SetAction(0x60, 6, 1);
+    this->render.isMotionFinished = true;
+    break;
+  case 6:
+    this->Slot16();
+    this->SetAction(0x10, 4, 1);
+    this->render.isMotionFinished = true;
     this->render.curMotion = this->unknown_0430;
-    if (current == 4 || current == 2 || this->unknown_02C8 != 0 || current == 8) {
-      this->SetAction(0x20, 4, 0);
-    }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
     break;
   case 1:
     this->unknown_0178 = 0;
@@ -402,31 +405,13 @@ void CGrannyPc::Slot15(int state, int resetPosition) {
     this->unknown_0430 = 0;
     CGameActor::Slot15(1, resetPosition);
     break;
-  case 2: {
-    this->unknown_0178 = 0;
-    if (this->bodyState != 1 && this->bodyState != 2) {
-      this->render.isMotionFreezed = false;
-    }
-    const bool weaponAllowed = IsJobWeaponAllowed(
-      this->GetEffectiveJob(-1), this->unknown_0260,
-      (static_cast<std::int64_t>(this->unknown_0444) << 32) | static_cast<std::uint32_t>(this->unknown_0440)
-    );
-    CGameActor::Slot15(weaponAllowed ? 9 : 2, resetPosition);
-    this->unknown_0378 = AttackMotionLength(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, weaponAllowed);
-    bool usesArrow = false;
-    g_session.m_hotkeyScript->Call("IsItemUsingArrow", "d>b", this->unknown_0440, &usesArrow);
-    if (usesArrow == true) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->unknown_0378 * this->render.speed, 0);
-      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
-    }
-    break;
-  }
-  case 6:
-    this->Slot16();
-    this->SetAction(0x10, 4, 1);
-    this->render.isMotionFinished = true;
+  case 0:
+    CGameActor::Slot15(0, resetPosition);
     this->render.curMotion = this->unknown_0430;
+    if (current == 4 || current == 2 || this->unknown_02C8 != 0 || current == 8) {
+      this->SetAction(0x20, 4, 0);
+    }
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
     break;
   case 7:
     if (current == 6) {
@@ -451,11 +436,26 @@ void CGrannyPc::Slot15(int state, int resetPosition) {
     }
     this->unknown_0378 = 6.0f;
     break;
-  case 8:
-    this->Slot16();
-    this->SetAction(0x60, 6, 1);
-    this->render.isMotionFinished = true;
+  case 2: {
+    this->unknown_0178 = 0;
+    if (this->bodyState != 1 && this->bodyState != 2) {
+      this->render.isMotionFreezed = false;
+    }
+    const bool weaponAllowed = IsJobWeaponAllowed(
+      this->GetEffectiveJob(-1), this->unknown_0260,
+      (static_cast<std::int64_t>(this->unknown_0444) << 32) | static_cast<std::uint32_t>(this->unknown_0440)
+    );
+    CGameActor::Slot15(weaponAllowed ? 9 : 2, resetPosition);
+    this->unknown_0378 = AttackMotionLength(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, weaponAllowed);
+    bool usesArrow = false;
+    g_session.m_hotkeyScript->Call("IsItemUsingArrow", "d>b", this->unknown_0440, &usesArrow);
+    if (usesArrow == true) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->unknown_0378 * this->render.speed, 0);
+      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
+    }
     break;
+  }
   case 9: {
     this->unknown_0178 = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
@@ -4375,6 +4375,25 @@ void CPc::ChangeState(int state, int resetPosition) {
   const SpawnArrow spawnArrow = reinterpret_cast<SpawnArrow>(&CGameMode::SpawnArrowEffect);
 
   switch (state) {
+  case 8:
+    this->Slot16();
+    this->SetAction(action, 6, 1);
+    this->render.isMotionFinished = true;
+    break;
+  case 6:
+    this->Slot16();
+    this->SetAction(action, 4, 1);
+    this->render.isMotionFinished = true;
+    this->render.curMotion = this->unknown_043C;
+    break;
+  case 1:
+    this->unknown_0178 = 0;
+    if (this->bodyState != 1 && this->bodyState != 2) {
+      this->render.isMotionFreezed = false;
+    }
+    this->unknown_043C = 0;
+    CGameActor::Slot15(1, resetPosition);
+    break;
   case 0:
     CGameActor::Slot15(0, resetPosition);
     if (g_session.m_aid == this->render.accountId) {
@@ -4428,13 +4447,31 @@ void CPc::ChangeState(int state, int resetPosition) {
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
     break;
-  case 1:
-    this->unknown_0178 = 0;
-    if (this->bodyState != 1 && this->bodyState != 2) {
-      this->render.isMotionFreezed = false;
+  case 7:
+    if (this->render.unknown_0114 == 1 || this->render.unknown_0070 == 6) {
+      return;
     }
-    this->unknown_043C = 0;
-    CGameActor::Slot15(1, resetPosition);
+    this->SetAction(action, 6, 1);
+    if (this->GetEffectiveJob(-1) == 0xFB4 || this->GetEffectiveJob(-1) == 0xFB5 || this->GetEffectiveJob(-1) == 0xFAF ||
+        this->GetEffectiveJob(-1) == 0xFE2 || this->GetEffectiveJob(-1) == 0xFE9 || this->GetEffectiveJob(-1) == 0xF ||
+        this->GetEffectiveJob(-1) == 0xFB0 || this->GetEffectiveJob(-1) == 0xFC6 || this->GetEffectiveJob(-1) == 0xFE6 ||
+        this->GetEffectiveJob(-1) == 0xFED || this->GetEffectiveJob(-1) == 0x100A || this->GetEffectiveJob(-1) == 0x10A6) {
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 400, 0);
+    } else if (this->GetEffectiveJob(-1) == 0x19) {
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 2, 5, 0x60, 5, 1, 1000, 0);
+    } else if (this->GetEffectiveJob(-1) == 0x18) {
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 0, 3, 0x60, 3, 1, 1000, 0);
+    } else if (this->GetEffectiveJob(-1) == 0x107E) {
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 2, 5, 0x60, 5, 1, 1000, 0);
+    } else if (this->GetEffectiveJob(-1) == 0x1084) {
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 0, 3, 0x60, 3, 1, 1000, 0);
+    }
+    this->unknown_0378 = 6.0f;
     break;
   case 2: {
     this->unknown_0178 = 0;
@@ -4506,43 +4543,6 @@ void CPc::ChangeState(int state, int resetPosition) {
     }
     break;
   }
-  case 6:
-    this->Slot16();
-    this->SetAction(action, 4, 1);
-    this->render.isMotionFinished = true;
-    this->render.curMotion = this->unknown_043C;
-    break;
-  case 7:
-    if (this->render.unknown_0114 == 1 || this->render.unknown_0070 == 6) {
-      return;
-    }
-    this->SetAction(action, 6, 1);
-    if (this->GetEffectiveJob(-1) == 0xFB4 || this->GetEffectiveJob(-1) == 0xFB5 || this->GetEffectiveJob(-1) == 0xFAF ||
-        this->GetEffectiveJob(-1) == 0xFE2 || this->GetEffectiveJob(-1) == 0xFE9 || this->GetEffectiveJob(-1) == 0xF ||
-        this->GetEffectiveJob(-1) == 0xFB0 || this->GetEffectiveJob(-1) == 0xFC6 || this->GetEffectiveJob(-1) == 0xFE6 ||
-        this->GetEffectiveJob(-1) == 0xFED || this->GetEffectiveJob(-1) == 0x100A || this->GetEffectiveJob(-1) == 0x10A6) {
-      this->SetSequenceInterval(4);
-      this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 400, 0);
-    } else if (this->GetEffectiveJob(-1) == 0x19) {
-      this->SetSequenceInterval(4);
-      this->SetFrameSequence(0x60, 2, 5, 0x60, 5, 1, 1000, 0);
-    } else if (this->GetEffectiveJob(-1) == 0x18) {
-      this->SetSequenceInterval(4);
-      this->SetFrameSequence(0x60, 0, 3, 0x60, 3, 1, 1000, 0);
-    } else if (this->GetEffectiveJob(-1) == 0x107E) {
-      this->SetSequenceInterval(4);
-      this->SetFrameSequence(0x60, 2, 5, 0x60, 5, 1, 1000, 0);
-    } else if (this->GetEffectiveJob(-1) == 0x1084) {
-      this->SetSequenceInterval(4);
-      this->SetFrameSequence(0x60, 0, 3, 0x60, 3, 1, 1000, 0);
-    }
-    this->unknown_0378 = 6.0f;
-    break;
-  case 8:
-    this->Slot16();
-    this->SetAction(action, 6, 1);
-    this->render.isMotionFinished = true;
-    break;
   case 9: {
     this->unknown_0178 = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
