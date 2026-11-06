@@ -23,9 +23,9 @@ struct CAbleToMakeEffect : EffectActor {
 // FUNCTION: fn_20993
 CAbleToMakeEffect::~CAbleToMakeEffect() {
   if (!this->state.effects.empty()) {
-    for (std::list<RagEffectState*>::iterator it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+    for (std::list<CRagEffect*>::iterator it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
       if (*it) {
-        CRagEffect* effect = reinterpret_cast<CRagEffect*>(*it);
+        CRagEffect* effect = *it;
         effect->SendMsg(this, 0x18, 0, 0, 0, 0, 0, 0);
       }
     }

@@ -1262,9 +1262,9 @@ void CGameActor::Slot23(int, int) {
 }
 
 // INLINED
-static bool HasEffectOfType(const std::list<RagEffectState*>& effects, int type) {
-  for (RagEffectState* effect : effects) {
-    if (effect && effect->type == type) {
+static bool HasEffectOfType(const std::list<CRagEffect*>& effects, int type) {
+  for (CRagEffect* effect : effects) {
+    if (effect && effect->state.type == type) {
       return true;
     }
   }
@@ -1312,19 +1312,38 @@ void CGameActor::Slot15(int state, int resetPosition) {
   }
 
   switch (state) {
-  case 0:
-    this->SetAction(action, 4, 0);
-    if (!IsObfuscatedMessage(this->render.accountId)) {
-      this->render.isMotionFinished = true;
+  case 0xd:
+    if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
+      const std::int64_t weapon = this->Slot35();
+      IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, weapon);
+      this->SetAction(action, 4, 1);
+      this->render.isMotionFreezed = true;
+    } else {
+      this->SetAction(16, 4, 1);
+      this->render.isMotionFreezed = true;
     }
-    this->Slot16();
     break;
-  case 1:
-    if (this->unknown_0184 == 0) {
-      this->SetAction(action, 6, 0);
+  case 4: {
+    if (this->render.unknown_00C8 != 0 || this->render.unknown_00D8 != 0 || this->render.unknown_00DC != 0) {
+      return;
     }
-    this->Slot17();
+
+    CRenderObject* target;
+    if (this->hitTargetAid == g_session.m_aid) {
+      target = mode->scene->player;
+    } else {
+      target = mode->scene->GetGameActorByAID(this->hitTargetAid);
+    }
+    if (target) {
+      target->SendMsg(nullptr, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    this->SetAction(action, 5, 1);
+    const int job = this->GetEffectiveJob(-1);
+    if (job != 0x8d && job != 0xe6) {
+      this->Slot16();
+    }
     break;
+  }
   case 7:
     if (this->render.unknown_0070 == 6) {
       return;
@@ -1365,27 +1384,19 @@ void CGameActor::Slot15(int state, int resetPosition) {
     this->render.isMotionFreezed = false;
     this->SetAction(action, 4, 1);
     break;
-  case 4: {
-    if (this->render.unknown_00C8 != 0 || this->render.unknown_00D8 != 0 || this->render.unknown_00DC != 0) {
-      return;
+  case 0:
+    this->SetAction(action, 4, 0);
+    if (!IsObfuscatedMessage(this->render.accountId)) {
+      this->render.isMotionFinished = true;
     }
-
-    CRenderObject* target;
-    if (this->hitTargetAid == g_session.m_aid) {
-      target = mode->scene->player;
-    } else {
-      target = mode->scene->GetGameActorByAID(this->hitTargetAid);
-    }
-    if (target) {
-      target->SendMsg(nullptr, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    }
-    this->SetAction(action, 5, 1);
-    const int job = this->GetEffectiveJob(-1);
-    if (job != 0x8d && job != 0xe6) {
-      this->Slot16();
-    }
+    this->Slot16();
     break;
-  }
+  case 1:
+    if (this->unknown_0184 == 0) {
+      this->SetAction(action, 6, 0);
+    }
+    this->Slot17();
+    break;
   case 5:
     this->unknown_0178 = 0;
     this->render.isMotionFreezed = false;
@@ -1395,17 +1406,6 @@ void CGameActor::Slot15(int state, int resetPosition) {
   case 0xc:
     this->SetAction(action, 3, 1);
     this->Slot16();
-    break;
-  case 0xd:
-    if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
-      const std::int64_t weapon = this->Slot35();
-      IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, weapon);
-      this->SetAction(action, 4, 1);
-      this->render.isMotionFreezed = true;
-    } else {
-      this->SetAction(16, 4, 1);
-      this->render.isMotionFreezed = true;
-    }
     break;
   case 0x10:
     this->render.unknown_00C2 = 10;
@@ -1418,6 +1418,10 @@ void CGameActor::Slot15(int state, int resetPosition) {
   case 0x12:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 3000, 0);
+    break;
+  case 0x1c:
+    this->render.unknown_00C2 = 10;
+    this->SetAnimationSequence(action, 0, action, 1, action, 2, action, 3, action, 4, 1, 1000, 0);
     break;
   case 0x13:
     if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
@@ -1445,24 +1449,39 @@ void CGameActor::Slot15(int state, int resetPosition) {
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
+  case 0x1e:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 1, 1, action, 1, 1, 2000, 0);
+    break;
   case 0x16:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 2, 2, action, 2, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 0x21:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 2, 2, action, 2, 1, 1000, 0);
+    break;
+  case 0x1f:
+    this->render.unknown_00C2 = 5;
+    this->SetAnimationSequence(0x50, 3, 0x50, 5, 0x50, 7, 0x50, 8, 0x50, 2, 1, 500, 0);
     break;
   case 0x17:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 3, 3, action, 3, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
+  case 0x22:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 3, 3, action, 3, 1, 1000, 0);
+    break;
+  case 0x20:
+    this->render.unknown_00C2 = 5;
+    this->SetAnimationSequence(action, 4, action, 5, action, 6, action, 7, action, 2, 1, 500, 0);
+    break;
   case 0x18:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 4, 4, action, 4, 1, 2000, 0);
-    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    break;
-  case 0x19:
-    this->render.unknown_00C2 = 10;
-    this->SetFrameSequence(action, 1, 1, action, 1, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case 0x1a: {
@@ -1489,33 +1508,22 @@ void CGameActor::Slot15(int state, int resetPosition) {
     this->SetAnimationSequence(action, frame0, action, frame1, action, frame2, action, frame3, action, frame4, 1, 500, 0);
     break;
   }
+  case 0x19:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 1, 1, action, 1, 1, 2000, 0);
+    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
   case 0x1b:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 5, 5, action, 5, 1, 3000, 0);
     break;
-  case 0x1c:
-    this->render.unknown_00C2 = 10;
-    this->SetAnimationSequence(action, 0, action, 1, action, 2, action, 3, action, 4, 1, 1000, 0);
+  case 0x24:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 2, 5, action, 5, 1, 1000, 0);
     break;
-  case 0x1e:
-    this->render.unknown_00C2 = 10;
-    this->SetFrameSequence(action, 1, 1, action, 1, 1, 2000, 0);
-    break;
-  case 0x1f:
-    this->render.unknown_00C2 = 5;
-    this->SetAnimationSequence(0x50, 3, 0x50, 5, 0x50, 7, 0x50, 8, 0x50, 2, 1, 500, 0);
-    break;
-  case 0x20:
-    this->render.unknown_00C2 = 5;
-    this->SetAnimationSequence(action, 4, action, 5, action, 6, action, 7, action, 2, 1, 500, 0);
-    break;
-  case 0x21:
-    this->render.unknown_00C2 = 10;
-    this->SetFrameSequence(action, 2, 2, action, 2, 1, 1000, 0);
-    break;
-  case 0x22:
-    this->render.unknown_00C2 = 10;
-    this->SetFrameSequence(action, 3, 3, action, 3, 1, 1000, 0);
+  case 0x37:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 2, 4, action, 4, 1, 500, 0);
     break;
   case 0x38:
     this->render.isMotionFinished = false;
@@ -1523,9 +1531,10 @@ void CGameActor::Slot15(int state, int resetPosition) {
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 0, 1, action, 1, 1, 500, 0);
     break;
-  case 0x24:
+  case 0x39:
+    this->render.isMotionFinished = false;
     this->render.unknown_00C2 = 6;
-    this->SetFrameSequence(action, 2, 5, action, 5, 1, 1000, 0);
+    this->SetFrameSequence(action, 5, 5, action, 5, 1, 500, 0);
     break;
   case 0x25: {
     this->render.unknown_00C2 = 10;
@@ -1546,11 +1555,6 @@ void CGameActor::Slot15(int state, int resetPosition) {
     }
     break;
   }
-  case 0x27:
-  case 0x30:
-    this->render.unknown_00C2 = 6;
-    this->SetFrameSequence(action, 4, 5, action, 5, 1, 500, 0);
-    break;
   case 0x28:
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 0, 2, action, 2, 1, 500, 0);
@@ -1599,6 +1603,11 @@ void CGameActor::Slot15(int state, int resetPosition) {
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 0, 3, action, 3, 1, 9999999, 1);
     break;
+  case 0x27:
+  case 0x30:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 4, 5, action, 5, 1, 500, 0);
+    break;
   case 0x31:
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 0, 7, action, 7, 1, 1000, 0);
@@ -1612,21 +1621,6 @@ void CGameActor::Slot15(int state, int resetPosition) {
     this->render.unknown_00C2 = 4;
     this->SetAnimationSequence(action, 2, action, 3, action, 4, action, 4, action, 4, 1, 500, 0);
     this->render.isMotionFinished = false;
-    break;
-  case 0x37:
-    this->render.unknown_00C2 = 6;
-    this->SetFrameSequence(action, 2, 4, action, 4, 1, 500, 0);
-    break;
-  case 0x39:
-    this->render.isMotionFinished = false;
-    this->render.unknown_00C2 = 6;
-    this->SetFrameSequence(action, 5, 5, action, 5, 1, 500, 0);
-    break;
-  case 0x3c:
-  case 0x3d:
-  case 0x42:
-    this->render.unknown_00C2 = 6;
-    this->SetFrameSequence(action, 0, 0, action, 0, 1, 500, 0);
     break;
   case 0x3e:
     this->render.unknown_00C2 = 6;
@@ -1650,6 +1644,12 @@ void CGameActor::Slot15(int state, int resetPosition) {
     this->SetFrameSequence(action, 1, 4, action, 4, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
+  case 0x3c:
+  case 0x3d:
+  case 0x42:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 0, action, 0, 1, 500, 0);
+    break;
   case 0x43:
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 1, 5, action, 5, 1, 500, 0);
@@ -1672,6 +1672,11 @@ void CGameActor::Slot15(int state, int resetPosition) {
     this->render.isMotionFinished = false;
     this->unknown_0378 = 6.0f;
     break;
+  case 0x4c:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 7, action, 7, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    break;
   case 0x47:
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 4, 8, action, 8, 1, 500, 0);
@@ -1688,19 +1693,14 @@ void CGameActor::Slot15(int state, int resetPosition) {
     this->render.isMotionFinished = false;
     this->unknown_0378 = 6.0f;
     break;
-  case 0x4b:
-    this->render.unknown_00C2 = 6;
-    this->SetFrameSequence(action, 2, 5, action, 5, 1, 500, 1);
-    this->render.isMotionFinished = false;
-    break;
-  case 0x4c:
-    this->render.unknown_00C2 = 6;
-    this->SetFrameSequence(action, 0, 7, action, 7, 1, 500, 0);
-    this->render.isMotionFinished = false;
-    break;
   case 0x4d:
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 3, 7, action, 7, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x4b:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 2, 5, action, 5, 1, 500, 1);
     this->render.isMotionFinished = false;
     break;
   case 0x4e:
@@ -2251,8 +2251,8 @@ void CGameActor::ShowPartyMemberEffect(std::uint32_t accountId) {
   for (int index = 0; index < g_session.PartyCount(); ++index) {
     MessengerMember member = g_session.PartyAt(index);
     if (member.accountId == accountId) {
-      for (RagEffectState* effect : this->state.effects) {
-        if (effect && effect->type == 160) {
+      for (CRagEffect* effect : this->state.effects) {
+        if (effect && effect->state.type == 160) {
           return;
         }
       }

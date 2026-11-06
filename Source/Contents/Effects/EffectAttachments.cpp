@@ -1,11 +1,11 @@
 #include "Contents/Effects/EffectActor.h"
-#include "Contents/Effects/RagEffectState.h"
+#include "Contents/Effects/RagEffect.h"
 
 // OFFSET: 0x00CADBE0
 // FUNCTION: fn_21062
 bool EffectActor::HasId(int id) const {
-  for (const RagEffectState* effect : this->state.effects) {
-    if (effect && effect->type == id) {
+  for (const CRagEffect* effect : this->state.effects) {
+    if (effect && effect->state.type == id) {
       return true;
     }
   }
@@ -16,8 +16,8 @@ bool EffectActor::HasId(int id) const {
 // OFFSET: 0x00CADC40
 // FUNCTION: fn_21064
 bool EffectActor::Contains(const RagEffectState* effect) const {
-  for (const RagEffectState* current : this->state.effects) {
-    if (current == effect) {
+  for (const CRagEffect* current : this->state.effects) {
+    if (current == reinterpret_cast<const CRagEffect*>(effect)) {
       return true;
     }
   }
