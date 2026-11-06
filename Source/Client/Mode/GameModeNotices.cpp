@@ -4515,7 +4515,7 @@ void CGameMode::ReceiveWindow227Entries(const unsigned char* data) {
   if (count == 0) {
     PacketIdOnly request;
     request.id = 0x974;
-    GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
     return;
   }
 
