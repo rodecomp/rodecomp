@@ -1,31 +1,29 @@
 #include "Client/Session.h"
 #include "Contents/Skills/AutomaticSkills.h"
 #include "UI/Shortcuts/ShortcutActivation.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Window/UIWindow.h"
 
 // OFFSET: 0x00930900
 // FUNCTION: fn_12689
-void ActivateShortcut(
-  UIWindow& window, ShortcutGrid& grid, int x, int y, bool itemSlotActive, unsigned char& currentRow, const NormalItemSlot* const* slots,
-  AutomaticSkills& automatic
-) {
-  const int column = grid.HitTest(x, y, itemSlotActive, currentRow);
+void UIShortCutWnd::Slot26(int x, int y) {
+  const int column = this->m_grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
   if (column == -1) {
     return;
   }
 
-  const unsigned index = 9u * currentRow + static_cast<unsigned>(column);
-  const int limit = 9 * grid.rows;
+  const unsigned index = 9u * g_session.m_hotkeyPage + static_cast<unsigned>(column);
+  const int limit = 9 * this->m_grid.rows;
   if (limit <= static_cast<int>(index)) {
     return;
   }
 
-  const NormalItemSlot& slot = *slots[index];
-  if (slot.unknown_0000 != 0 && automatic.Contains(static_cast<std::uint16_t>(slot.itemId))) {
+  const NormalItemSlot& slot = *this->m_slots[index];
+  if (slot.unknown_0000 != 0 && g_session.m_automaticSkills.Contains(static_cast<std::uint16_t>(slot.itemId))) {
     g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(slot.itemId)), 1, 0);
   } else {
-    automatic.DisableAll();
+    g_session.m_automaticSkills.DisableAll();
   }
 
-  window.SendMsg(nullptr, 41, column, currentRow, 0, 0);
+  this->SendMsg(nullptr, 41, column, g_session.m_hotkeyPage, 0, 0);
 }
