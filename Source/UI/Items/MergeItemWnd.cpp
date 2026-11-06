@@ -324,31 +324,6 @@ void CMergeItemWnd::FitToGrid(int width, int height) {
 // FUNCTION: fn_09675
 int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t) {
   switch (message) {
-  case 2:
-    this->SelectSameItems(argument1);
-    break;
-  case 6:
-    if (argument1 == 184) {
-      this->RequestMerge();
-    } else if (argument1 == 185 || argument1 == 201) {
-      MergeItemCancelPacket packet;
-      packet.id = 0x974;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
-      g_windowMgr.CloseWindow(227);
-    }
-    break;
-  case 7:
-    if (argument1 != 0) {
-      this->m_scrollRow += argument1;
-      this->UpdateScroll();
-      this->Invalidate();
-    }
-    break;
-  case 14:
-    if (argument1 == 7) {
-      this->FitToGrid(argument2, argument3);
-    }
-    break;
   case 34: {
     this->m_itemCount = argument2;
     const std::int16_t* ids = reinterpret_cast<const std::int16_t*>(argument1);
@@ -372,6 +347,36 @@ int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
     g_session.AddItem1710(item, 1);
     break;
   }
+  case 6:
+    switch (argument1) {
+    case 184:
+      this->RequestMerge();
+      break;
+    case 185:
+    case 201: {
+      MergeItemCancelPacket packet;
+      packet.id = 0x974;
+      GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+      g_windowMgr.CloseWindow(227);
+      break;
+    }
+    }
+    break;
+  case 14:
+    if (argument1 == 7) {
+      this->FitToGrid(argument2, argument3);
+    }
+    break;
+  case 7:
+    if (argument1 != 0) {
+      this->m_scrollRow += argument1;
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    break;
+  case 2:
+    this->SelectSameItems(argument1);
+    break;
   }
   return 0;
 }
