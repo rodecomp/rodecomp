@@ -2,7 +2,7 @@
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/RendererBackBuffer.h"
 #include "Render/RendererDX7.h"
-
+#include "Render/Text/TextContext.h"
 #include <cstdio>
 #include <cstring>
 #include <windows.h>
@@ -57,23 +57,11 @@ void CRendererDX7::DrawFPS() {
 
   char text[128];
   std::sprintf(text, "%.01f fps", static_cast<double>(measured));
-  CDCSurface drawing(AcquireBackBufferSurface(GetRenderSystemHolder()->system));
-  HDC dc = nullptr;
-  drawing.GetDC(&dc);
-  HGDIOBJ font = nullptr;
-
-  if (dc) {
-    font = GetCurrentObject(dc, OBJ_FONT);
-    SetBkMode(dc, TRANSPARENT);
-  }
-
-  SetTextColor(dc, 0xFFFF);
   const int x = this->viewport.width - 40;
   const int y = this->viewport.height - 14;
-  TextOutA(dc, x, y, text, static_cast<int>(std::strlen(text)));
-
-  if (dc) {
-    SelectObject(dc, font);
-    drawing.ReleaseDC(dc);
-  }
+  CDCSurface drawing(AcquireBackBufferSurface(GetRenderSystemHolder()->system));
+  TextContext context(drawing);
+  context.SetFont(0, 12, 0, 0);
+  SetTextColor(context.Dc(), 0xFFFF);
+  TextOutA(context.Dc(), x, y, text, static_cast<int>(std::strlen(text)));
 }
