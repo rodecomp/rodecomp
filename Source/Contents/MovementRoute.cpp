@@ -54,7 +54,7 @@ bool MovementRouteInterpolation::Point(int index, std::int32_t* x, std::int32_t*
 // OFFSET: 0x00AD8D70
 // FUNCTION: fn_17870
 std::uint32_t* MovementRouteInterpolation::EndTick(std::uint32_t* tick) const {
-  *tick = this->points.back().tick;
+  *tick = this->points[this->points.size() - 1].tick;
   return tick;
 }
 
