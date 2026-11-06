@@ -182,11 +182,13 @@ void CLanguageBase::Paste() {
 // OFFSET: 0x00ACD6B0
 // FUNCTION: fn_17766
 void CLanguageBase::MoveBack() {
-  if (this->cursor < 0) {
-    this->cursor = 0;
-  } else if (this->cursor != 0) {
-    const char* begin = this->text.c_str();
-    this->cursor = static_cast<int>(CharPrevExA(static_cast<WORD>(this->codePage), begin, begin + this->cursor, 0) - begin);
+  if (this->cursor != 0) {
+    if (this->cursor < 0) {
+      this->cursor = 0;
+    } else {
+      const char* begin = this->text.c_str();
+      this->cursor = static_cast<int>(CharPrevExA(static_cast<WORD>(this->codePage), begin, begin + this->cursor, 0) - begin);
+    }
   }
 }
 // OFFSET: 0x00ACE440
@@ -213,12 +215,12 @@ void CLanguageBase::MoveForward() {
   if (position == length) {
     return;
   }
-  if (position < length) {
-    const char* begin = this->text.c_str();
-    this->cursor = static_cast<int>(CharNextExA(static_cast<WORD>(this->codePage), begin + position, 0) - begin);
+  if (position > length) {
+    this->cursor = static_cast<int>(length);
     return;
   }
-  this->cursor = static_cast<int>(length);
+  const char* begin = this->text.c_str();
+  this->cursor = static_cast<int>(CharNextExA(static_cast<WORD>(this->codePage), begin + position, 0) - begin);
 }
 // OFFSET: 0x00ACE5E0
 // FUNCTION: fn_17789
