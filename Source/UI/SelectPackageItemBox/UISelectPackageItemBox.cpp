@@ -626,7 +626,9 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -651,6 +653,13 @@ private:
   std::uint8_t m_text[Length];
   bool m_encrypted;
 };
+
+// INLINED
+template <std::uint64_t Key, std::size_t Length, typename Byte>
+const char* DecryptName(const Byte (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
+}
 
 }
 
@@ -703,30 +712,30 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
   this->title->Move(0, 0);
   this->title->SetImages(
     std::string([] {
-      const std::uint8_t source[] = {
-        0x31, 0x68, 0xF9, 0xF3, 0xD7, 0xB7, 0x8A, 0x3C, 0x37, 0x23, 0xF9, 0xC5, 0xAA, 0xC3, 0x13, 0x93,
-        0x90, 0xB4, 0x50, 0x6A, 0x48, 0x10, 0x21, 0x85, 0x94, 0xB5, 0x5F, 0x68, 0x74, 0x1C, 0x13, 0x85,
-        0x98, 0xB3, 0x55, 0x6C, 0x75, 0x18, 0x3D, 0xAE, 0x9D, 0xA2, 0x5F, 0x7D, 0x39, 0x1B, 0x22, 0x81,
-        0xF1
+      const char source[] = {
+        '\x31', '\x68', '\xF9', '\xF3', '\xD7', '\xB7', '\x8A', '\x3C', '\x37', '\x23', '\xF9', '\xC5', '\xAA', '\xC3', '\x13', '\x93',
+        '\x90', '\xB4', '\x50', '\x6A', '\x48', '\x10', '\x21', '\x85', '\x94', '\xB5', '\x5F', '\x68', '\x74', '\x1C', '\x13', '\x85',
+        '\x98', '\xB3', '\x55', '\x6C', '\x75', '\x18', '\x3D', '\xAE', '\x9D', '\xA2', '\x5F', '\x7D', '\x39', '\x1B', '\x22', '\x81',
+        '\xF1'
       };
       thread_local EncryptedName<sizeof(source), 0xF14F79170939C7F1ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0x5F, 0x6A, 0xAD, 0x51, 0x17, 0xE7, 0x38, 0x68, 0x59, 0x21, 0xAD, 0x67, 0x6A, 0x93, 0xA1, 0xC7,
-        0xFE, 0xB6, 0x04, 0xC8, 0x88, 0x40, 0x93, 0xD1, 0xFA, 0xB7, 0x0B, 0xCA, 0xB4, 0x4C, 0xA1, 0xD1,
-        0xF6, 0xB1, 0x01, 0xCE, 0xB5, 0x48, 0x8F, 0xFA, 0xF2, 0xAC, 0x09, 0x85, 0xB5, 0x44, 0x8D, 0xA5
+      const char source[] = {
+        '\x5F', '\x6A', '\xAD', '\x51', '\x17', '\xE7', '\x38', '\x68', '\x59', '\x21', '\xAD', '\x67', '\x6A', '\x93', '\xA1', '\xC7',
+        '\xFE', '\xB6', '\x04', '\xC8', '\x88', '\x40', '\x93', '\xD1', '\xFA', '\xB7', '\x0B', '\xCA', '\xB4', '\x4C', '\xA1', '\xD1',
+        '\xF6', '\xB1', '\x01', '\xCE', '\xB5', '\x48', '\x8F', '\xFA', '\xF2', '\xAC', '\x09', '\x85', '\xB5', '\x44', '\x8D', '\xA5'
       };
       thread_local EncryptedName<sizeof(source), 0xA5FD29D7AB6DC59FULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0x21, 0xD4, 0x39, 0x2D, 0x15, 0xDD, 0xFC, 0x10, 0x27, 0x9F, 0x39, 0x1B, 0x68, 0xA9, 0x65, 0xBF,
-        0x80, 0x08, 0x90, 0xB4, 0x8A, 0x7A, 0x57, 0xA9, 0x84, 0x09, 0x9F, 0xB6, 0xB6, 0x76, 0x65, 0xA9,
-        0x88, 0x0F, 0x95, 0xB2, 0xB7, 0x72, 0x4B, 0x82, 0x93, 0x12, 0x9E, 0xBF, 0xA1, 0x3D, 0x5B, 0xB0,
-        0x91, 0x7B
+      const char source[] = {
+        '\x21', '\xD4', '\x39', '\x2D', '\x15', '\xDD', '\xFC', '\x10', '\x27', '\x9F', '\x39', '\x1B', '\x68', '\xA9', '\x65', '\xBF',
+        '\x80', '\x08', '\x90', '\xB4', '\x8A', '\x7A', '\x57', '\xA9', '\x84', '\x09', '\x9F', '\xB6', '\xB6', '\x76', '\x65', '\xA9',
+        '\x88', '\x0F', '\x95', '\xB2', '\xB7', '\x72', '\x4B', '\x82', '\x93', '\x12', '\x9E', '\xBF', '\xA1', '\x3D', '\x5B', '\xB0',
+        '\x91', '\x7B'
       };
       thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> name(source);
       return name.Text();
@@ -763,37 +772,37 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
   systemButton->Invalidate();
   systemButton->SetImages(
     std::string([] {
-      const std::uint8_t source[] = {
-        0x7D, 0x12, 0x2D, 0xCD, 0x7B, 0x71, 0x2A, 0x4E, 0x7B, 0x59, 0x2D, 0xFB, 0x06, 0x05, 0xB3, 0xE1,
-        0xDC, 0xCE, 0x84, 0x54, 0xE4, 0xD6, 0x81, 0xF7, 0xD8, 0xCF, 0x8B, 0x56, 0xD8, 0xDA, 0xB3, 0xF0,
-        0xC4, 0xCE, 0xB2, 0x55, 0xDA, 0xCC, 0x8A, 0xDC, 0xD2, 0xDB, 0x8B, 0x19, 0xD9, 0xD2, 0x9F, 0x83
+      const char source[] = {
+        '\x7D', '\x12', '\x2D', '\xCD', '\x7B', '\x71', '\x2A', '\x4E', '\x7B', '\x59', '\x2D', '\xFB', '\x06', '\x05', '\xB3', '\xE1',
+        '\xDC', '\xCE', '\x84', '\x54', '\xE4', '\xD6', '\x81', '\xF7', '\xD8', '\xCF', '\x8B', '\x56', '\xD8', '\xDA', '\xB3', '\xF0',
+        '\xC4', '\xCE', '\xB2', '\x55', '\xDA', '\xCC', '\x8A', '\xDC', '\xD2', '\xDB', '\x8B', '\x19', '\xD9', '\xD2', '\x9F', '\x83'
       };
       thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0x67, 0x5A, 0xBF, 0xC3, 0xF1, 0x85, 0xEE, 0x72, 0x61, 0x11, 0xBF, 0xF5, 0x8C, 0xF1, 0x77, 0xDD,
-        0xC6, 0x86, 0x16, 0x5A, 0x6E, 0x22, 0x45, 0xCB, 0xC2, 0x87, 0x19, 0x58, 0x52, 0x2E, 0x77, 0xCC,
-        0xDE, 0x86, 0x20, 0x5B, 0x50, 0x38, 0x4E, 0xE0, 0xC8, 0x9B, 0x51, 0x5B, 0x5C, 0x3B, 0x2B
+      const char source[] = {
+        '\x67', '\x5A', '\xBF', '\xC3', '\xF1', '\x85', '\xEE', '\x72', '\x61', '\x11', '\xBF', '\xF5', '\x8C', '\xF1', '\x77', '\xDD',
+        '\xC6', '\x86', '\x16', '\x5A', '\x6E', '\x22', '\x45', '\xCB', '\xC2', '\x87', '\x19', '\x58', '\x52', '\x2E', '\x77', '\xCC',
+        '\xDE', '\x86', '\x20', '\x5B', '\x50', '\x38', '\x4E', '\xE0', '\xC8', '\x9B', '\x51', '\x5B', '\x5C', '\x3B', '\x2B'
       };
       thread_local EncryptedName<sizeof(source), 0xBF2B4B31397FF5A7ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0x09, 0x5A, 0x9F, 0x71, 0x4F, 0x1B, 0x7E, 0xEE, 0x0F, 0x11, 0x9F, 0x47, 0x32, 0x6F, 0xE7, 0x41,
-        0xA8, 0x86, 0x36, 0xE8, 0xD0, 0xBC, 0xD5, 0x57, 0xAC, 0x87, 0x39, 0xEA, 0xEC, 0xB0, 0xE7, 0x50,
-        0xB0, 0x86, 0x00, 0xE9, 0xEE, 0xA6, 0xDE, 0x7C, 0xA6, 0x9B, 0x71, 0xE9, 0xE2, 0xA5, 0xBB
+      const char source[] = {
+        '\x09', '\x5A', '\x9F', '\x71', '\x4F', '\x1B', '\x7E', '\xEE', '\x0F', '\x11', '\x9F', '\x47', '\x32', '\x6F', '\xE7', '\x41',
+        '\xA8', '\x86', '\x36', '\xE8', '\xD0', '\xBC', '\xD5', '\x57', '\xAC', '\x87', '\x39', '\xEA', '\xEC', '\xB0', '\xE7', '\x50',
+        '\xB0', '\x86', '\x00', '\xE9', '\xEE', '\xA6', '\xDE', '\x7C', '\xA6', '\x9B', '\x71', '\xE9', '\xE2', '\xA5', '\xBB'
       };
       thread_local EncryptedName<sizeof(source), 0x23BBD58F8B5FF5C9ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0xAD, 0x14, 0x55, 0xD7, 0x53, 0x35, 0xD2, 0x08, 0xAB, 0x5F, 0x55, 0xE1, 0x2E, 0x41, 0x4B, 0xA7,
-        0x0C, 0xC8, 0xFC, 0x4E, 0xCC, 0x92, 0x79, 0xB1, 0x08, 0xC9, 0xF3, 0x4C, 0xF0, 0x9E, 0x4B, 0xB6,
-        0x14, 0xC8, 0xCA, 0x4F, 0xF2, 0x88, 0x72, 0x9A, 0x02, 0xDD, 0xF3, 0x03, 0xF1, 0x96, 0x67, 0xC5
+      const char source[] = {
+        '\xAD', '\x14', '\x55', '\xD7', '\x53', '\x35', '\xD2', '\x08', '\xAB', '\x5F', '\x55', '\xE1', '\x2E', '\x41', '\x4B', '\xA7',
+        '\x0C', '\xC8', '\xFC', '\x4E', '\xCC', '\x92', '\x79', '\xB1', '\x08', '\xC9', '\xF3', '\x4C', '\xF0', '\x9E', '\x4B', '\xB6',
+        '\x14', '\xC8', '\xCA', '\x4F', '\xF2', '\x88', '\x72', '\x9A', '\x02', '\xDD', '\xF3', '\x03', '\xF1', '\x96', '\x67', '\xC5'
       };
       thread_local EncryptedName<sizeof(source), 0xC517FB932D95BB6DULL> name(source);
       return name.Text();
@@ -809,39 +818,39 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
   closeButton->Invalidate();
   closeButton->SetImages(
     std::string([] {
-      const std::uint8_t source[] = {
-        0x65, 0x32, 0xAD, 0x03, 0xA3, 0xE9, 0xB2, 0xCE, 0x63, 0x79, 0xAD, 0x35, 0xDE, 0x9D, 0x2B, 0x61,
-        0xC4, 0xEE, 0x04, 0x9A, 0x3C, 0x4E, 0x19, 0x77, 0xC0, 0xEF, 0x0B, 0x98, 0x00, 0x42, 0x2B, 0x70,
-        0xDC, 0xEE, 0x32, 0x9A, 0x0F, 0x48, 0x04, 0x66, 0xFA, 0xF2, 0x0B, 0x9F, 0x4D, 0x45, 0x1A, 0x73,
-        0xA5
+      const char source[] = {
+        '\x65', '\x32', '\xAD', '\x03', '\xA3', '\xE9', '\xB2', '\xCE', '\x63', '\x79', '\xAD', '\x35', '\xDE', '\x9D', '\x2B', '\x61',
+        '\xC4', '\xEE', '\x04', '\x9A', '\x3C', '\x4E', '\x19', '\x77', '\xC0', '\xEF', '\x0B', '\x98', '\x00', '\x42', '\x2B', '\x70',
+        '\xDC', '\xEE', '\x32', '\x9A', '\x0F', '\x48', '\x04', '\x66', '\xFA', '\xF2', '\x0B', '\x9F', '\x4D', '\x45', '\x1A', '\x73',
+        '\xA5'
       };
       thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0x47, 0xBC, 0xAB, 0x85, 0xF9, 0xC7, 0xB4, 0xC6, 0x41, 0xF7, 0xAB, 0xB3, 0x84, 0xB3, 0x2D, 0x69,
-        0xE6, 0x60, 0x02, 0x1C, 0x66, 0x60, 0x1F, 0x7F, 0xE2, 0x61, 0x0D, 0x1E, 0x5A, 0x6C, 0x2D, 0x78,
-        0xFE, 0x60, 0x34, 0x1C, 0x55, 0x66, 0x02, 0x6E, 0xD8, 0x7C, 0x05, 0x51, 0x5B, 0x64, 0x01, 0x0B
+      const char source[] = {
+        '\x47', '\xBC', '\xAB', '\x85', '\xF9', '\xC7', '\xB4', '\xC6', '\x41', '\xF7', '\xAB', '\xB3', '\x84', '\xB3', '\x2D', '\x69',
+        '\xE6', '\x60', '\x02', '\x1C', '\x66', '\x60', '\x1F', '\x7F', '\xE2', '\x61', '\x0D', '\x1E', '\x5A', '\x6C', '\x2D', '\x78',
+        '\xFE', '\x60', '\x34', '\x1C', '\x55', '\x66', '\x02', '\x6E', '\xD8', '\x7C', '\x05', '\x51', '\x5B', '\x64', '\x01', '\x0B'
       };
       thread_local EncryptedName<sizeof(source), 0x0B7109397F6B1387ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0xA7, 0x04, 0x51, 0x5F, 0x61, 0xF1, 0x26, 0xDE, 0xA1, 0x4F, 0x51, 0x69, 0x1C, 0x85, 0xBF, 0x71,
-        0x06, 0xD8, 0xF8, 0xC6, 0xFE, 0x56, 0x8D, 0x67, 0x02, 0xD9, 0xF7, 0xC4, 0xC2, 0x5A, 0xBF, 0x60,
-        0x1E, 0xD8, 0xCE, 0xC6, 0xCD, 0x50, 0x90, 0x76, 0x38, 0xC4, 0xFF, 0x8B, 0xC3, 0x52, 0x93, 0x13
+      const char source[] = {
+        '\xA7', '\x04', '\x51', '\x5F', '\x61', '\xF1', '\x26', '\xDE', '\xA1', '\x4F', '\x51', '\x69', '\x1C', '\x85', '\xBF', '\x71',
+        '\x06', '\xD8', '\xF8', '\xC6', '\xFE', '\x56', '\x8D', '\x67', '\x02', '\xD9', '\xF7', '\xC4', '\xC2', '\x5A', '\xBF', '\x60',
+        '\x1E', '\xD8', '\xCE', '\xC6', '\xCD', '\x50', '\x90', '\x76', '\x38', '\xC4', '\xFF', '\x8B', '\xC3', '\x52', '\x93', '\x13'
       };
       thread_local EncryptedName<sizeof(source), 0x13E33FA1A591AB67ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0xF7, 0xE8, 0x6D, 0xC3, 0x7F, 0x2B, 0x6C, 0xDA, 0xF1, 0xA3, 0x6D, 0xF5, 0x02, 0x5F, 0xF5, 0x75,
-        0x56, 0x34, 0xC4, 0x5A, 0xE0, 0x8C, 0xC7, 0x63, 0x52, 0x35, 0xCB, 0x58, 0xDC, 0x80, 0xF5, 0x64,
-        0x4E, 0x34, 0xF2, 0x5A, 0xD3, 0x8A, 0xDA, 0x72, 0x68, 0x28, 0xCB, 0x5F, 0x91, 0x87, 0xC4, 0x67,
-        0x37
+      const char source[] = {
+        '\xF7', '\xE8', '\x6D', '\xC3', '\x7F', '\x2B', '\x6C', '\xDA', '\xF1', '\xA3', '\x6D', '\xF5', '\x02', '\x5F', '\xF5', '\x75',
+        '\x56', '\x34', '\xC4', '\x5A', '\xE0', '\x8C', '\xC7', '\x63', '\x52', '\x35', '\xCB', '\x58', '\xDC', '\x80', '\xF5', '\x64',
+        '\x4E', '\x34', '\xF2', '\x5A', '\xD3', '\x8A', '\xDA', '\x72', '\x68', '\x28', '\xCB', '\x5F', '\x91', '\x87', '\xC4', '\x67',
+        '\x37'
       };
       thread_local EncryptedName<sizeof(source), 0x17A9E5BF39AD4737ULL> name(source);
       return name.Text();
@@ -858,37 +867,37 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
   this->tabList->SetBinder([this](SelectPackageItemBox::CUITabInfo* tab, const SelectPackageItemBox::CTabInfoData& data) { this->BindTab(tab, data); });
   this->tabList->SetImages(
     std::string([] {
-      const std::uint8_t source[] = {
-        0x83, 0x86, 0x93, 0xDD, 0x15, 0x71, 0x8C, 0x54, 0x85, 0xCD, 0x93, 0xEB, 0x68, 0x05, 0x15, 0xEA,
-        0x26, 0x45, 0x36, 0x44, 0xA1, 0xCF, 0x28, 0xFA, 0x28, 0x48, 0x34, 0x42, 0x89, 0xDD, 0x3D, 0xF7,
-        0x1C, 0x5A, 0x36, 0x53, 0x8A, 0xD3, 0x20, 0xEA, 0x37, 0x07, 0x31, 0x4A, 0xA5, 0xBF
+      const char source[] = {
+        '\x83', '\x86', '\x93', '\xDD', '\x15', '\x71', '\x8C', '\x54', '\x85', '\xCD', '\x93', '\xEB', '\x68', '\x05', '\x15', '\xEA',
+        '\x26', '\x45', '\x36', '\x44', '\xA1', '\xCF', '\x28', '\xFA', '\x28', '\x48', '\x34', '\x42', '\x89', '\xDD', '\x3D', '\xF7',
+        '\x1C', '\x5A', '\x36', '\x53', '\x8A', '\xD3', '\x20', '\xEA', '\x37', '\x07', '\x31', '\x4A', '\xA5', '\xBF'
       };
       thread_local EncryptedName<sizeof(source), 0x9949BFD527532943ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0xAF, 0xD2, 0x3B, 0xD9, 0xB1, 0xC9, 0x4A, 0x00, 0xA9, 0x99, 0x3B, 0xEF, 0xCC, 0xBD, 0xD3, 0xBE,
-        0x0A, 0x11, 0x9E, 0x40, 0x05, 0x77, 0xEE, 0xAE, 0x04, 0x1C, 0x9C, 0x46, 0x2D, 0x65, 0xFB, 0xA3,
-        0x30, 0x0E, 0x9E, 0x57, 0x2E, 0x77, 0xFD, 0xA8, 0x1C, 0x0E, 0xD5, 0x41, 0x1C, 0x77, 0x8F
+      const char source[] = {
+        '\xAF', '\xD2', '\x3B', '\xD9', '\xB1', '\xC9', '\x4A', '\x00', '\xA9', '\x99', '\x3B', '\xEF', '\xCC', '\xBD', '\xD3', '\xBE',
+        '\x0A', '\x11', '\x9E', '\x40', '\x05', '\x77', '\xEE', '\xAE', '\x04', '\x1C', '\x9C', '\x46', '\x2D', '\x65', '\xFB', '\xA3',
+        '\x30', '\x0E', '\x9E', '\x57', '\x2E', '\x77', '\xFD', '\xA8', '\x1C', '\x0E', '\xD5', '\x41', '\x1C', '\x77', '\x8F'
       };
       thread_local EncryptedName<sizeof(source), 0xCD8F077123FB7D6FULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0xA9, 0xB0, 0xB7, 0xAF, 0x5D, 0x5B, 0xBE, 0xAE, 0xAF, 0xFB, 0xB7, 0x99, 0x20, 0x2F, 0x27, 0x10,
-        0x0C, 0x73, 0x12, 0x36, 0xE9, 0xE5, 0x1A, 0x00, 0x02, 0x7E, 0x10, 0x30, 0xC1, 0xF7, 0x0F, 0x0D,
-        0x36, 0x6C, 0x12, 0x21, 0xC2, 0xF9, 0x12, 0x10, 0x1D, 0x31, 0x15, 0x38, 0xED, 0x95
+      const char source[] = {
+        '\xA9', '\xB0', '\xB7', '\xAF', '\x5D', '\x5B', '\xBE', '\xAE', '\xAF', '\xFB', '\xB7', '\x99', '\x20', '\x2F', '\x27', '\x10',
+        '\x0C', '\x73', '\x12', '\x36', '\xE9', '\xE5', '\x1A', '\x00', '\x02', '\x7E', '\x10', '\x30', '\xC1', '\xF7', '\x0F', '\x0D',
+        '\x36', '\x6C', '\x12', '\x21', '\xC2', '\xF9', '\x12', '\x10', '\x1D', '\x31', '\x15', '\x38', '\xED', '\x95'
       };
       thread_local EncryptedName<sizeof(source), 0x637B959D55771F69ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0x91, 0x24, 0x0D, 0xFB, 0x7B, 0xF3, 0x84, 0x1C, 0x97, 0x6F, 0x0D, 0xCD, 0x06, 0x87, 0x1D, 0xA2,
-        0x34, 0xE7, 0xA8, 0x62, 0xCF, 0x4D, 0x20, 0xB2, 0x3A, 0xEA, 0xAA, 0x64, 0xE7, 0x5F, 0x35, 0xBF,
-        0x0E, 0xF8, 0xA8, 0x75, 0xE4, 0x51, 0x28, 0xA2, 0x25, 0xA5, 0xAF, 0x6C, 0xCB, 0x3D
+      const char source[] = {
+        '\x91', '\x24', '\x0D', '\xFB', '\x7B', '\xF3', '\x84', '\x1C', '\x97', '\x6F', '\x0D', '\xCD', '\x06', '\x87', '\x1D', '\xA2',
+        '\x34', '\xE7', '\xA8', '\x62', '\xCF', '\x4D', '\x20', '\xB2', '\x3A', '\xEA', '\xAA', '\x64', '\xE7', '\x5F', '\x35', '\xBF',
+        '\x0E', '\xF8', '\xA8', '\x75', '\xE4', '\x51', '\x28', '\xA2', '\x25', '\xA5', '\xAF', '\x6C', '\xCB', '\x3D'
       };
       thread_local EncryptedName<sizeof(source), 0xD1413DBB01CD8B51ULL> name(source);
       return name.Text();
@@ -901,17 +910,17 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
   this->tabList->scrollBar->step = 34;
   this->tabList->scrollBar->SetButtonImages(
     std::string([] {
-      const std::uint8_t source[] = {
-        0x79, 0xAA, 0xB7, 0xB5, 0xCB, 0xD3, 0x4A, 0xB8, 0x7F, 0xE1, 0xB7, 0x83, 0xB6, 0xA7, 0xD3, 0x06,
-        0xDA, 0x77, 0x18, 0x23, 0x67, 0x2D, 0xFA, 0x05, 0x97, 0x67, 0x1A, 0x3F, 0x0B
+      const char source[] = {
+        '\x79', '\xAA', '\xB7', '\xB5', '\xCB', '\xD3', '\x4A', '\xB8', '\x7F', '\xE1', '\xB7', '\x83', '\xB6', '\xA7', '\xD3', '\x06',
+        '\xDA', '\x77', '\x18', '\x23', '\x67', '\x2D', '\xFA', '\x05', '\x97', '\x67', '\x1A', '\x3F', '\x0B'
       };
       thread_local EncryptedName<sizeof(source), 0x758F1D0B4F7705B9ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0xA5, 0xB6, 0x85, 0xF3, 0xED, 0xED, 0xDE, 0x44, 0xA3, 0xFD, 0x85, 0xC5, 0x90, 0x99, 0x47, 0xFA,
-        0x06, 0x6B, 0x2A, 0x65, 0x41, 0x13, 0x7F, 0xE6, 0x12, 0x77, 0x6B, 0x6B, 0x40, 0x53, 0x1B
+      const char source[] = {
+        '\xA5', '\xB6', '\x85', '\xF3', '\xED', '\xED', '\xDE', '\x44', '\xA3', '\xFD', '\x85', '\xC5', '\x90', '\x99', '\x47', '\xFA',
+        '\x06', '\x6B', '\x2A', '\x65', '\x41', '\x13', '\x7F', '\xE6', '\x12', '\x77', '\x6B', '\x6B', '\x40', '\x53', '\x1B'
       };
       thread_local EncryptedName<sizeof(source), 0x891B232D09451965ULL> name(source);
       return name.Text();
@@ -919,9 +928,9 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
   );
   this->tabList->scrollBar->SetBackground(
     std::string([] {
-      const std::uint8_t source[] = {
-        0x55, 0x20, 0x21, 0xF7, 0x9D, 0xC7, 0xA4, 0x3C, 0x53, 0x6B, 0x21, 0xC1, 0xE0, 0xB3, 0x3D, 0x82,
-        0xF6, 0xFD, 0x8E, 0x61, 0x31, 0x39, 0x0C, 0x98, 0xF1, 0xA1, 0x83, 0x60, 0x2D, 0x09
+      const char source[] = {
+        '\x55', '\x20', '\x21', '\xF7', '\x9D', '\xC7', '\xA4', '\x3C', '\x53', '\x6B', '\x21', '\xC1', '\xE0', '\xB3', '\x3D', '\x82',
+        '\xF6', '\xFD', '\x8E', '\x61', '\x31', '\x39', '\x0C', '\x98', '\xF1', '\xA1', '\x83', '\x60', '\x2D', '\x09'
       };
       thread_local EncryptedName<sizeof(source), 0xF161095D0DE18F95ULL> name(source);
       return name.Text();
@@ -929,28 +938,28 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
   );
   this->tabList->scrollBar->SetThumbImages(
     std::string([] {
-      const std::uint8_t source[] = {
-        0x2F, 0xDE, 0x1F, 0xE9, 0xAD, 0x81, 0x02, 0x20, 0x29, 0x95, 0x1F, 0xDF, 0xD0, 0xF5, 0x9B, 0x9E,
-        0x8C, 0x03, 0xB0, 0x7F, 0x01, 0x7F, 0xA5, 0x8C, 0x9D, 0x2E, 0xAA, 0x63, 0x43, 0x2D, 0xAA, 0x9D,
-        0xEF
+      const char source[] = {
+        '\x2F', '\xDE', '\x1F', '\xE9', '\xAD', '\x81', '\x02', '\x20', '\x29', '\x95', '\x1F', '\xDF', '\xD0', '\xF5', '\x9B', '\x9E',
+        '\x8C', '\x03', '\xB0', '\x7F', '\x01', '\x7F', '\xA5', '\x8C', '\x9D', '\x2E', '\xAA', '\x63', '\x43', '\x2D', '\xAA', '\x9D',
+        '\xEF'
       };
       thread_local EncryptedName<sizeof(source), 0xEDC74F6D13DF71EFULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0x4F, 0x12, 0x2F, 0x7D, 0xBD, 0x0B, 0x68, 0xB8, 0x49, 0x59, 0x2F, 0x4B, 0xC0, 0x7F, 0xF1, 0x06,
-        0xEC, 0xCF, 0x80, 0xEB, 0x11, 0xF5, 0xCF, 0x14, 0xFD, 0xE2, 0x82, 0xEE, 0x19, 0xEB, 0xCF, 0x18,
-        0xFF, 0xBD
+      const char source[] = {
+        '\x4F', '\x12', '\x2F', '\x7D', '\xBD', '\x0B', '\x68', '\xB8', '\x49', '\x59', '\x2F', '\x4B', '\xC0', '\x7F', '\xF1', '\x06',
+        '\xEC', '\xCF', '\x80', '\xEB', '\x11', '\xF5', '\xCF', '\x14', '\xFD', '\xE2', '\x82', '\xEE', '\x19', '\xEB', '\xCF', '\x18',
+        '\xFF', '\xBD'
       };
       thread_local EncryptedName<sizeof(source), 0x75ADC57D87EFBD8FULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0x19, 0x56, 0x21, 0x19, 0xAD, 0xDB, 0x68, 0xE6, 0x1F, 0x1D, 0x21, 0x2F, 0xD0, 0xAF, 0xF1, 0x58,
-        0xBA, 0x8B, 0x8E, 0x8F, 0x01, 0x25, 0xCF, 0x4A, 0xAB, 0xA6, 0x85, 0x8C, 0x1A, 0x7B, 0x83, 0x49,
-        0xB4, 0x89, 0xE1
+      const char source[] = {
+        '\x19', '\x56', '\x21', '\x19', '\xAD', '\xDB', '\x68', '\xE6', '\x1F', '\x1D', '\x21', '\x2F', '\xD0', '\xAF', '\xF1', '\x58',
+        '\xBA', '\x8B', '\x8E', '\x8F', '\x01', '\x25', '\xCF', '\x4A', '\xAB', '\xA6', '\x85', '\x8C', '\x1A', '\x7B', '\x83', '\x49',
+        '\xB4', '\x89', '\xE1'
       };
       thread_local EncryptedName<sizeof(source), 0x2BAD156DE3E1F9D9ULL> name(source);
       return name.Text();
@@ -968,37 +977,37 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
   this->itemList->SetBinder([this](SelectPackageItemBox::CUIItemInfo* item, const ITEM_INFO& data) { this->BindItem(item, data); });
   this->itemList->SetImages(
     std::string([] {
-      const std::uint8_t source[] = {
-        0x11, 0xF4, 0x57, 0x1F, 0xF9, 0x49, 0x2E, 0xE2, 0x17, 0xBF, 0x57, 0x29, 0x84, 0x3D, 0xB7, 0x5C,
-        0xB4, 0x37, 0xF2, 0x86, 0x4D, 0xF7, 0x8A, 0x4C, 0xBA, 0x3A, 0xF0, 0x80, 0x65, 0xEE, 0x9F, 0x4A,
-        0xBC, 0x04, 0xFB, 0x8C, 0x4A, 0xF3, 0xC5, 0x4D, 0xBC, 0x2B, 0x97
+      const char source[] = {
+        '\x11', '\xF4', '\x57', '\x1F', '\xF9', '\x49', '\x2E', '\xE2', '\x17', '\xBF', '\x57', '\x29', '\x84', '\x3D', '\xB7', '\x5C',
+        '\xB4', '\x37', '\xF2', '\x86', '\x4D', '\xF7', '\x8A', '\x4C', '\xBA', '\x3A', '\xF0', '\x80', '\x65', '\xEE', '\x9F', '\x4A',
+        '\xBC', '\x04', '\xFB', '\x8C', '\x4A', '\xF3', '\xC5', '\x4D', '\xBC', '\x2B', '\x97'
       };
       thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0x0D, 0xAC, 0x0D, 0x81, 0x57, 0xF5, 0xD6, 0xFE, 0x0B, 0xE7, 0x0D, 0xB7, 0x2A, 0x81, 0x4F, 0x40,
-        0xA8, 0x6F, 0xA8, 0x18, 0xE3, 0x4B, 0x72, 0x50, 0xA6, 0x62, 0xAA, 0x1E, 0xCB, 0x52, 0x67, 0x56,
-        0xA0, 0x5C, 0xA1, 0x12, 0xE4, 0x4F, 0x3D, 0x51, 0xA0, 0x73, 0xCD
+      const char source[] = {
+        '\x0D', '\xAC', '\x0D', '\x81', '\x57', '\xF5', '\xD6', '\xFE', '\x0B', '\xE7', '\x0D', '\xB7', '\x2A', '\x81', '\x4F', '\x40',
+        '\xA8', '\x6F', '\xA8', '\x18', '\xE3', '\x4B', '\x72', '\x50', '\xA6', '\x62', '\xAA', '\x1E', '\xCB', '\x52', '\x67', '\x56',
+        '\xA0', '\x5C', '\xA1', '\x12', '\xE4', '\x4F', '\x3D', '\x51', '\xA0', '\x73', '\xCD'
       };
       thread_local EncryptedName<sizeof(source), 0x33133B977BCD03CDULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0xEF, 0x78, 0x85, 0xDF, 0xF9, 0x65, 0xE8, 0x6C, 0xE9, 0x33, 0x85, 0xE9, 0x84, 0x11, 0x71, 0xD2,
-        0x4A, 0xBB, 0x20, 0x46, 0x4D, 0xDB, 0x4C, 0xC2, 0x44, 0xB6, 0x22, 0x40, 0x65, 0xC2, 0x59, 0xC4,
-        0x42, 0x88, 0x29, 0x4C, 0x4A, 0xDF, 0x03, 0xC3, 0x42, 0xA7, 0x45
+      const char source[] = {
+        '\xEF', '\x78', '\x85', '\xDF', '\xF9', '\x65', '\xE8', '\x6C', '\xE9', '\x33', '\x85', '\xE9', '\x84', '\x11', '\x71', '\xD2',
+        '\x4A', '\xBB', '\x20', '\x46', '\x4D', '\xDB', '\x4C', '\xC2', '\x44', '\xB6', '\x22', '\x40', '\x65', '\xC2', '\x59', '\xC4',
+        '\x42', '\x88', '\x29', '\x4C', '\x4A', '\xDF', '\x03', '\xC3', '\x42', '\xA7', '\x45'
       };
       thread_local EncryptedName<sizeof(source), 0xA12DAB392545D72FULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0xB5, 0x94, 0xC3, 0xD5, 0xD3, 0x0F, 0x64, 0xA6, 0xB3, 0xDF, 0xC3, 0xE3, 0xAE, 0x7B, 0xFD, 0x18,
-        0x10, 0x57, 0x66, 0x4C, 0x67, 0xB1, 0xC0, 0x08, 0x1E, 0x5A, 0x64, 0x4A, 0x4F, 0xA8, 0xD5, 0x0E,
-        0x18, 0x64, 0x6F, 0x46, 0x60, 0xB5, 0x8F, 0x09, 0x18, 0x4B, 0x03
+      const char source[] = {
+        '\xB5', '\x94', '\xC3', '\xD5', '\xD3', '\x0F', '\x64', '\xA6', '\xB3', '\xDF', '\xC3', '\xE3', '\xAE', '\x7B', '\xFD', '\x18',
+        '\x10', '\x57', '\x66', '\x4C', '\x67', '\xB1', '\xC0', '\x08', '\x1E', '\x5A', '\x64', '\x4A', '\x4F', '\xA8', '\xD5', '\x0E',
+        '\x18', '\x64', '\x6F', '\x46', '\x60', '\xB5', '\x8F', '\x09', '\x18', '\x4B', '\x03'
       };
       thread_local EncryptedName<sizeof(source), 0x6BA1C1132F033B75ULL> name(source);
       return name.Text();
@@ -1011,17 +1020,17 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
   this->itemList->scrollBar->step = 34;
   this->itemList->scrollBar->SetButtonImages(
     std::string([] {
-      const std::uint8_t source[] = {
-        0x05, 0x82, 0xEB, 0xC5, 0x49, 0xD3, 0xA8, 0x22, 0x03, 0xC9, 0xEB, 0xF3, 0x34, 0xA7, 0x31, 0x9C,
-        0xA6, 0x5F, 0x44, 0x53, 0xE5, 0x2D, 0x18, 0x9F, 0xEB, 0x4F, 0x46, 0x4F, 0x89
+      const char source[] = {
+        '\x05', '\x82', '\xEB', '\xC5', '\x49', '\xD3', '\xA8', '\x22', '\x03', '\xC9', '\xEB', '\xF3', '\x34', '\xA7', '\x31', '\x9C',
+        '\xA6', '\x5F', '\x44', '\x53', '\xE5', '\x2D', '\x18', '\x9F', '\xEB', '\x4F', '\x46', '\x4F', '\x89'
       };
       thread_local EncryptedName<sizeof(source), 0xEF6D1D893F2B2DC5ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0xDD, 0x68, 0x8B, 0x4F, 0x1D, 0xB9, 0x8C, 0xEE, 0xDB, 0x23, 0x8B, 0x79, 0x60, 0xCD, 0x15, 0x50,
-        0x7E, 0xB5, 0x24, 0xD9, 0xB1, 0x47, 0x2D, 0x4C, 0x6A, 0xA9, 0x65, 0xD7, 0xB0, 0x07, 0x49
+      const char source[] = {
+        '\xDD', '\x68', '\x8B', '\x4F', '\x1D', '\xB9', '\x8C', '\xEE', '\xDB', '\x23', '\x8B', '\x79', '\x60', '\xCD', '\x15', '\x50',
+        '\x7E', '\xB5', '\x24', '\xD9', '\xB1', '\x47', '\x2D', '\x4C', '\x6A', '\xA9', '\x65', '\xD7', '\xB0', '\x07', '\x49'
       };
       thread_local EncryptedName<sizeof(source), 0x234977DDB54BC71DULL> name(source);
       return name.Text();
@@ -1029,9 +1038,9 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
   );
   this->itemList->scrollBar->SetBackground(
     std::string([] {
-      const std::uint8_t source[] = {
-        0xB7, 0x38, 0x47, 0xE7, 0xE3, 0x9D, 0x24, 0xA2, 0xB1, 0x73, 0x47, 0xD1, 0x9E, 0xE9, 0xBD, 0x1C,
-        0x14, 0xE5, 0xE8, 0x71, 0x4F, 0x63, 0x8C, 0x06, 0x13, 0xB9, 0xE5, 0x70, 0x53, 0x53
+      const char source[] = {
+        '\xB7', '\x38', '\x47', '\xE7', '\xE3', '\x9D', '\x24', '\xA2', '\xB1', '\x73', '\x47', '\xD1', '\x9E', '\xE9', '\xBD', '\x1C',
+        '\x14', '\xE5', '\xE8', '\x71', '\x4F', '\x63', '\x8C', '\x06', '\x13', '\xB9', '\xE5', '\x70', '\x53', '\x53'
       };
       thread_local EncryptedName<sizeof(source), 0x6FE153231D879777ULL> name(source);
       return name.Text();
@@ -1039,28 +1048,28 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
   );
   this->itemList->scrollBar->SetThumbImages(
     std::string([] {
-      const std::uint8_t source[] = {
-        0x9B, 0xFC, 0x9F, 0x27, 0x47, 0x51, 0x66, 0xF4, 0x9D, 0xB7, 0x9F, 0x11, 0x3A, 0x25, 0xFF, 0x4A,
-        0x38, 0x21, 0x30, 0xB1, 0xEB, 0xAF, 0xC1, 0x58, 0x29, 0x0C, 0x2A, 0xAD, 0xA9, 0xFD, 0xCE, 0x49,
-        0x5B
+      const char source[] = {
+        '\x9B', '\xFC', '\x9F', '\x27', '\x47', '\x51', '\x66', '\xF4', '\x9D', '\xB7', '\x9F', '\x11', '\x3A', '\x25', '\xFF', '\x4A',
+        '\x38', '\x21', '\x30', '\xB1', '\xEB', '\xAF', '\xC1', '\x58', '\x29', '\x0C', '\x2A', '\xAD', '\xA9', '\xFD', '\xCE', '\x49',
+        '\x5B'
       };
       thread_local EncryptedName<sizeof(source), 0x39A39F87DD5F535BULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0x37, 0x66, 0xA3, 0x93, 0xBD, 0x57, 0xB4, 0x5C, 0x31, 0x2D, 0xA3, 0xA5, 0xC0, 0x23, 0x2D, 0xE2,
-        0x94, 0xBB, 0x0C, 0x05, 0x11, 0xA9, 0x13, 0xF0, 0x85, 0x96, 0x0E, 0x00, 0x19, 0xB7, 0x13, 0xFC,
-        0x87, 0xC9
+      const char source[] = {
+        '\x37', '\x66', '\xA3', '\x93', '\xBD', '\x57', '\xB4', '\x5C', '\x31', '\x2D', '\xA3', '\xA5', '\xC0', '\x23', '\x2D', '\xE2',
+        '\x94', '\xBB', '\x0C', '\x05', '\x11', '\xA9', '\x13', '\xF0', '\x85', '\x96', '\x0E', '\x00', '\x19', '\xB7', '\x13', '\xFC',
+        '\x87', '\xC9'
       };
       thread_local EncryptedName<sizeof(source), 0x9171997D6963C9F7ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      const std::uint8_t source[] = {
-        0x77, 0x9E, 0x2F, 0x39, 0xC3, 0x11, 0x5C, 0x82, 0x71, 0xD5, 0x2F, 0x0F, 0xBE, 0x65, 0xC5, 0x3C,
-        0xD4, 0x43, 0x80, 0xAF, 0x6F, 0xEF, 0xFB, 0x2E, 0xC5, 0x6E, 0x8B, 0xAC, 0x74, 0xB1, 0xB7, 0x2D,
-        0xDA, 0x41, 0xEF
+      const char source[] = {
+        '\x77', '\x9E', '\x2F', '\x39', '\xC3', '\x11', '\x5C', '\x82', '\x71', '\xD5', '\x2F', '\x0F', '\xBE', '\x65', '\xC5', '\x3C',
+        '\xD4', '\x43', '\x80', '\xAF', '\x6F', '\xEF', '\xFB', '\x2E', '\xC5', '\x6E', '\x8B', '\xAC', '\x74', '\xB1', '\xB7', '\x2D',
+        '\xDA', '\x41', '\xEF'
       };
       thread_local EncryptedName<sizeof(source), 0x4F99DF03C3EF31B7ULL> name(source);
       return name.Text();
