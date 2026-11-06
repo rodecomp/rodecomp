@@ -290,7 +290,7 @@ int CRuneSystemMgr::GetCurSlotCount() const {
 int CRuneSystemMgr::GetGradeFailValue(RuneSetData* runeSet) {
   if (runeSet) {
     const auto found = this->m_gradeFailTypes.find(runeSet->m_gradeFailType);
-    if (found != this->m_gradeFailTypes.end() && static_cast<unsigned int>(runeSet->m_grade) < found->second.size()) {
+    if (this->m_gradeFailTypes.end() != found && static_cast<unsigned int>(runeSet->m_grade) < found->second.size()) {
       return found->second[runeSet->m_grade];
     }
   }
