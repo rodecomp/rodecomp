@@ -297,7 +297,7 @@ int ShapeShiftJob(int form, int job);
 int __stdcall MountedJob(int job, std::uint32_t flags);
 void __stdcall CreateHallucinationPc(int job, int sex, int head, const vector3d* position, int alpha, int weapon, int shield, int bodyPalette);
 
-extern const int g_maxMoveSpeed;
+extern int g_maxMoveSpeed;
 extern int g_multiHitInterval;
 
 #if defined(_WIN32) && !defined(_WIN64)

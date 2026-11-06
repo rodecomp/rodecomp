@@ -67,7 +67,7 @@
 #include "Contents/GuildInfo.h"
 
 // GLOBAL: gl_24753
-extern const int g_maxMoveSpeed = 432;
+int g_maxMoveSpeed = 432;
 
 // GLOBAL: gl_25175
 unsigned char g_statusRefreshSuppressed;
@@ -140,11 +140,21 @@ void CGrannyPc::SetAction(unsigned animation, int, int repeat) {
 
   this->render.unknown_0070 = 0;
   switch (animation) {
+    case 0:
+      this->render.unknown_0070 = 0;
+      break;
+    case 48:
+      this->render.unknown_0070 = 4;
+      break;
+    case 80:
+    case 88:
+      this->render.unknown_0070 = 2;
+      break;
+    case 64:
+      this->render.unknown_0070 = 3;
+      break;
     case 8:
       this->render.unknown_0070 = 1;
-      break;
-    case 16:
-      this->render.unknown_0070 = 6;
       break;
     case 24:
       this->render.unknown_0070 = 5;
@@ -155,15 +165,8 @@ void CGrannyPc::SetAction(unsigned animation, int, int repeat) {
     case 40:
       this->render.unknown_0070 = 12;
       break;
-    case 48:
-      this->render.unknown_0070 = 4;
-      break;
-    case 64:
-      this->render.unknown_0070 = 3;
-      break;
-    case 80:
-    case 88:
-      this->render.unknown_0070 = 2;
+    case 16:
+      this->render.unknown_0070 = 6;
       break;
   }
   this->PlayMotion(repeat);
@@ -542,17 +545,17 @@ void CGrannyPc::Slot39(int value) {
 // OFFSET: 0x00DB0710
 // FUNCTION: fn_22620
 void CPc::Slot39(int value) {
-  const int weapon = this->weapon;
+  int weapon = this->weapon;
 
   if (weapon > 105) {
-    GetWeaponViewValue(weapon);
+    weapon = GetWeaponViewValue(weapon);
   }
 
   if (weapon != 11) {
     value = std::min(value, g_maxMoveSpeed);
   }
 
-  this->render.unknown_0054 = static_cast<float>(value) / 432.0f;
+  this->render.unknown_0064 = static_cast<float>(value) / 432.0f;
 }
 
 // OFFSET: 0x00DDD190
@@ -2798,19 +2801,14 @@ void CPlayer::ApplyFollowOffset(CGameActor* target, float x, float z, int* row, 
 // FUNCTION: fn_22669
 float CPlayer::AdjustFollowDistance(CGameActor* target, float distance) {
   if (target->unknown_02E0 == 1) {
-    return std::max(0.0f, distance - 20.0f);
+    return std::max(distance - 20.0f, 0.0f);
   }
 
-  union {
-    void (CGameActor::*asVoid)();
-    int (CGameActor::*asInt)();
-  } slot45;
-  slot45.asInt = &CGameActor::Slot45;
-  if ((target->*slot45.asInt)() <= 0) {
-    return std::max(0.0f, distance);
+  if (target->Slot45() <= 0) {
+    return std::max(distance, 0.0f);
   }
 
-  return std::max(0.0f, distance - static_cast<float>((target->*slot45.asInt)() + 1) * 4.0f);
+  return std::max(distance - static_cast<float>(target->Slot45() + 1) * 4.0f, 0.0f);
 }
 
 // GLOBAL: gl_25248
