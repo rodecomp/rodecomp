@@ -1944,9 +1944,9 @@ __declspec(noinline) void UIWindowMgr::BroadcastMessage21() {
     return;
   }
 
-  for (UIWindow* rendered : this->rendered) {
-    if (rendered->Slot02()) {
-      rendered->SendMsg(nullptr, 21, 0, 0, 0, 0);
+  for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+    if ((*it)->Slot02()) {
+      (*it)->SendMsg(nullptr, 21, 0, 0, 0, 0);
     }
   }
 }
