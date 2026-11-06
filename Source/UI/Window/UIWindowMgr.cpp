@@ -4295,6 +4295,11 @@ bool UIWindowMgr::sub_AA35F0(int action) {
       }
     }
     break;
+  case 0x90:
+    if (this->unknown_01DC && !g_windowMgr.CloseWindow(0xED)) {
+      g_windowMgr.sub_A978D0(0xED);
+    }
+    break;
   case 0x6F:
     if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x57)) {
       g_windowMgr.sub_A978D0(0x57);
@@ -4425,6 +4430,13 @@ bool UIWindowMgr::sub_AA35F0(int action) {
       g_windowMgr.sub_A978D0(0x35);
     }
     break;
+  case 0x87: {
+    int flag;
+    std::memcpy(&flag, g_session.unknown_546C, sizeof(flag));
+    flag = 1 - flag;
+    std::memcpy(g_session.unknown_546C, &flag, sizeof(flag));
+    break;
+  }
   case 0x83:
     if (this->unknown_01DC && this->chatModeChanged && this->window_01C8 && (this->IsHoverOnWindow01C8Button() || this->hoverWindow == nullptr)) {
       static_cast<UINewChatWnd*>(this->window_01C8)->ToggleInput();
@@ -4438,13 +4450,6 @@ bool UIWindowMgr::sub_AA35F0(int action) {
       window->SendMsg(nullptr, 60, 0, 0, 0, 0);
     }
     break;
-  case 0x87: {
-    int flag;
-    std::memcpy(&flag, g_session.unknown_546C, sizeof(flag));
-    flag = 1 - flag;
-    std::memcpy(g_session.unknown_546C, &flag, sizeof(flag));
-    break;
-  }
   case 0x89:
     if (this->unknown_01DC) {
       if (g_windowMgr.LookupWindow(0x13E) == nullptr) {
@@ -4482,11 +4487,6 @@ bool UIWindowMgr::sub_AA35F0(int action) {
       g_windowMgr.modal->SendMsg(nullptr, 6, 0xC8, 0, 0, 0);
     } else {
       g_windowMgr.sub_A978D0(0xCB);
-    }
-    break;
-  case 0x90:
-    if (this->unknown_01DC && !g_windowMgr.CloseWindow(0xED)) {
-      g_windowMgr.sub_A978D0(0xED);
     }
     break;
   case 0x92:
