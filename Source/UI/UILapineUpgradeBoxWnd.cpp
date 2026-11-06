@@ -606,34 +606,38 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
 // FUNCTION: fn_04215
 int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 23:
+    this->SetIngredient(static_cast<int>(a));
+    return 0;
   case 6:
-    if (a == 201) {
+    switch (a) {
+    case 201:
       g_windowMgr.CloseWindow(302);
       return 0;
-    }
-
-    if (a == 505) {
+    case 505: {
       UILapineUpgradeBox_IngredientInfoWnd* selected = this->ingredientList->FindSelected();
       if (selected) {
         this->SendMsg(this, 31, selected->item.unknown_0000[1], 0, 0, 0);
         return 0;
       }
-    } else if (a == 509 && this->item.unknown_0000[1] != 0) {
-      LapineUpgradeStartPacket packet;
-      packet.id = 0xAB6;
-      packet.ingredientId = this->ingredientId;
-      packet.itemId = static_cast<std::int16_t>(this->item.unknown_0000[1]);
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-      this->waiting = 1;
-      this->upgradeButton->SetDisabled(1);
-      this->upgradeButton->Invalidate();
-      this->Invalidate();
-      return 0;
+      break;
+    }
+    case 509:
+      if (this->item.unknown_0000[1] != 0) {
+        LapineUpgradeStartPacket packet;
+        packet.id = 0xAB6;
+        packet.ingredientId = this->ingredientId;
+        packet.itemId = static_cast<std::int16_t>(this->item.unknown_0000[1]);
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+        this->waiting = 1;
+        this->upgradeButton->SetDisabled(1);
+        this->upgradeButton->Invalidate();
+        this->Invalidate();
+        return 0;
+      }
+      break;
     }
     break;
-  case 23:
-    this->SetIngredient(static_cast<int>(a));
-    return 0;
   case 31:
     if (this->item.unknown_0000[1] == 0 && this->ingredientList->CanUseIngredient(static_cast<std::uint32_t>(a)) == 1) {
       ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(a));
