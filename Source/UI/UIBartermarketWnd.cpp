@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <format>
 #include <map>
 #include <new>
 #include <string>
@@ -1735,27 +1736,21 @@ void UIBartermarketWnd::Paint() {
   unsigned green;
   unsigned blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  const std::uint32_t background = RGB(red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->unknown_0104 - 17, RGB(red, green, blue));
   const int contentHeight = this->geometry.height - this->unknown_0104 - 17;
-  int rightRemainder = (this->geometry.width - 60) % 32;
-  if (rightRemainder < 0) {
-    rightRemainder += 32;
-  }
-  int bottomRemainder = contentHeight % 32;
-  if (bottomRemainder < 0) {
-    bottomRemainder += 32;
-  }
-  this->FillRegion(20, 17, rightRemainder, contentHeight, background);
-  this->FillRegion(20, contentHeight / 32 * 32 + 17, this->geometry.width - 24, bottomRemainder, background);
+  this->FillRegion(20, contentHeight / 32 * 32 + 17, this->geometry.width - 24, contentHeight % 32, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
 
-  const int rows = (this->geometry.height - this->unknown_0108 - this->unknown_0104 - 17) / 32;
   const int columns = (this->geometry.width - 40) / 32;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(red, green, blue));
+  const int rows = (this->geometry.height - this->unknown_0108 - this->unknown_0104 - 17) / 32;
   for (int row = 0; row < rows; ++row) {
     DrawItemSlotBackground(*this, 40, row * 32 + 17);
   }
+  unsigned slotRed;
+  unsigned slotGreen;
+  unsigned slotBlue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, slotRed, slotGreen, slotBlue);
+  this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(slotRed, slotGreen, slotBlue));
 
   int visible = 0;
   int index = 0;
@@ -1780,12 +1775,14 @@ void UIBartermarketWnd::Paint() {
     } else {
       DrawItemWithQuantity(*this, ResourceMgr::Instance(), x + 44, y + 21, item, 0, 0);
     }
-    this->DrawItemName(x + 76, y + 29, 120, &item, 0, 0, 12);
-    const std::string iconId = std::to_string(it->field_2c);
-    DrawItemIconById(*this, this->geometry.width - 70, y + 21, iconId.c_str(), 1);
+    this->DrawWrappedItemName(x + 76, y + 29, 120, &item, 0, 0, 12);
+    char iconId[64];
+    StringFormat(iconId, sizeof(iconId), static_cast<std::size_t>(-1), "%d", it->field_2c);
+    DrawItemIconById(*this, this->geometry.width - 70, y + 21, iconId, 1);
     if (it->field_28 > 0) {
-      const std::string amount = std::to_string(it->field_28);
-      this->DrawRightAlignedText(this->geometry.width - 25, y + 29, amount.c_str(), 0, 0, 12, 0, 0);
+      char amount[64];
+      const int bytes = StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d", it->field_28);
+      this->DrawRightAlignedText(this->geometry.width - 25, y + 29, amount, bytes, 0, 12, 0, 0);
     }
 
     if (++visible == this->visibleRows * this->columns) {
@@ -1799,7 +1796,8 @@ void UIBartermarketWnd::Paint() {
 void UIExpandedBartermarketWnd::Paint() {
   this->DrawTitleBar(false, LookupMessage(0xE69), 0);
 
-  const int borderTiles = (this->geometry.height - 46 + 7) / 8;
+  const int borderHeight = this->geometry.height - 46;
+  const int borderTiles = borderHeight / 8 + (borderHeight % 8 != 0);
   for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
     this->DrawBitmap(0, y, &bitmap->image, false);
@@ -1836,11 +1834,12 @@ void UIExpandedBartermarketWnd::Paint() {
 
     const ITEM_INFO item = it->ToItemInfo();
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), 44, y + 21, item, 0, 0);
-    this->DrawItemName(76, y + 29, 100, &item, 0, 0, 12);
+    this->DrawWrappedItemName(76, y + 29, 100, &item, 0, 0, 12);
 
     if (it->field_28 > 0) {
-      const std::string quantity = FormatOwnedString("+%d", it->field_28);
-      DrawOutlinedText(*this, 50, y + 18, quantity.c_str(), 0, 0xFFFFFF, 200, 0, 12, 1, 0);
+      std::uint32_t color = 0xFFFFFF;
+      const std::string quantity = std::format("+{}", it->field_28);
+      DrawOutlinedColoredText(*this, 50, y + 18, quantity.c_str(), quantity.size(), color, 200, 0, 12, 1);
     }
 
     int chunkIndex = 0;
@@ -1852,14 +1851,17 @@ void UIExpandedBartermarketWnd::Paint() {
       const int chunkX = 84 + chunkIndex * 42;
       DrawItemWithQuantity(*this, ResourceMgr::Instance(), chunkX - 8, y + 49, chunkItem, 1, 0);
       if (chunk->field_4 > 0) {
-        const std::string chunkAmount = FormatOwnedString("+%d", chunk->field_4);
-        DrawOutlinedText(*this, chunkX, y + 49, chunkAmount.c_str(), 0, 0xFFFFFF, 200, 0, 12, 1, 0);
+        char chunkAmount[16] = {};
+        StringFormat(chunkAmount, sizeof(chunkAmount), static_cast<std::size_t>(-1), "+%d", chunk->field_4);
+        std::uint32_t color = 0xFFFFFF;
+        DrawOutlinedColoredText(*this, chunkX, y + 49, chunkAmount, std::strlen(chunkAmount), color, 200, 0, 12, 1);
       }
       ++chunkIndex;
     }
 
-    const std::string amount = FormatOwnedString("%d z", it->field_8 * it->value);
-    this->DrawRightAlignedText(this->geometry.width - 20, y + 60, amount.c_str(), 0, 0, 12, 0, 0);
+    char amount[23] = {};
+    StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d z", it->field_8 * it->value);
+    this->DrawRightAlignedText(this->geometry.width - 20, y + 60, amount, 0, 0, 12, 0, 0);
 
     if (++visible == this->rowCount) {
       ++index;
@@ -1923,10 +1925,11 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
     } else {
       DrawItemWithQuantity(*this, ResourceMgr::Instance(), 44, y + 21, item, 1, 0);
     }
-    this->DrawItemName(76, y + 29, 100, &item, 0, 0, 12);
+    this->DrawWrappedItemName(76, y + 29, 100, &item, 0, 0, 12);
     if (it->field_28 > 0) {
-      const std::string quantity = FormatOwnedString("+%d", it->field_28);
-      DrawOutlinedText(*this, 50, y + 18, quantity.c_str(), 0, 0xFFFFFF, 200, 0, 12, 1, 0);
+      std::uint32_t color = 0xFFFFFF;
+      const std::string quantity = std::format("+{}", it->field_28);
+      DrawOutlinedColoredText(*this, 50, y + 18, quantity.c_str(), quantity.size(), color, 200, 0, 12, 1);
     }
 
     int chunkIndex = 0;
@@ -1942,14 +1945,17 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
         DrawItemWithQuantity(*this, ResourceMgr::Instance(), chunkX, y + 49, chunkItem, 1, 0);
       }
       if (chunk->field_4 != 0) {
-        const std::string chunkAmount = FormatOwnedString("+%d", chunk->field_4);
-        DrawOutlinedText(*this, chunkX + 8, y + 49, chunkAmount.c_str(), 0, 0xFFFFFF, 200, 0, 12, 1, 0);
+        char chunkAmount[16] = {};
+        StringFormat(chunkAmount, sizeof(chunkAmount), static_cast<std::size_t>(-1), "+%d", chunk->field_4);
+        std::uint32_t color = 0xFFFFFF;
+        DrawOutlinedColoredText(*this, chunkX + 8, y + 49, chunkAmount, std::strlen(chunkAmount), color, 200, 0, 12, 1);
       }
       ++chunkIndex;
     }
 
-    const std::string amount = FormatOwnedString("%d z", it->field_8);
-    this->DrawRightAlignedText(this->geometry.width - 20, y + 60, amount.c_str(), 0, 0, 12, 0, 0);
+    char amount[23] = {};
+    StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d z", it->field_8);
+    this->DrawRightAlignedText(this->geometry.width - 20, y + 60, amount, 0, 0, 12, 0, 0);
 
     if (++visible == this->rowCount) {
       ++index;
