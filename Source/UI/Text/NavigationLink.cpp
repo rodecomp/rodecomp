@@ -1123,7 +1123,8 @@ UITextButton* CCreateLineInfo::CreateLinkWindow(const std::string& text, const s
   button->SetId(type);
   button->ResizeToTextClipped(width + 1, button->geometry.height);
 
-  for (std::string part : parts) {
+  for (auto it = parts.begin(); it != parts.end(); ++it) {
+    std::string part = *it;
     button->m_lines.push_back(part);
   }
 
