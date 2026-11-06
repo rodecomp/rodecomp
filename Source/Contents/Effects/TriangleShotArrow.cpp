@@ -89,7 +89,11 @@ void CTriangleShotArrow::Slot01() {
 // OFFSET: 0x0072F2B0
 // FUNCTION: fn_07525
 bool CTriangleShotArrow::Slot06() {
-  return static_cast<float>(this->step) <= 8.0f / this->speed;
+  if (static_cast<float>(this->step) > 8.0f / this->speed) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x0072F2E0
