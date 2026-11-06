@@ -614,32 +614,31 @@ void UIChangeMaterialWnd_ScrollBar::Paint() {
     return;
   }
 
-  if (this->vertical == 1) {
+  switch (this->vertical) {
+  case 1: {
     CBitmapRes* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_arrow_up_br.bmp")));
     CBitmapRes* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_arrow_down_br.bmp")));
     CBitmapRes* track = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_bg_br.bmp")));
 
-    this->DrawBitmap(0, 0, up ? &up->image : nullptr, true);
+    this->DrawBitmap(0, 0, up, true);
 
     for (std::int64_t index = 0; index < (this->geometry.height - up->image.height - down->image.height) / track->image.height; ++index) {
       const int y = track->image.height * static_cast<int>(index) + up->image.height;
-      this->DrawBitmap(0, y, track ? &track->image : nullptr, true);
+      this->DrawBitmap(0, y, track, true);
     }
 
-    this->DrawBitmap(0, this->geometry.height - track->image.height - down->image.height, track ? &track->image : nullptr, true);
-    this->DrawBitmap(0, this->geometry.height - down->image.height, down ? &down->image : nullptr, true);
+    this->DrawBitmap(0, this->geometry.height - track->image.height - down->image.height, track, true);
+    this->DrawBitmap(0, this->geometry.height - down->image.height, down, true);
 
     CBitmapRes* thumb = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_btn_br.bmp")));
     const int available = this->geometry.height - thumb->image.height - down->image.height - up->image.height;
-    int diff = this->total - this->visible;
-    int maxVal = 0;
-    if (diff > 0) {
-      maxVal = diff;
-    }
+    const int maxVal = std::max(0, this->total - this->visible);
     const int y = static_cast<int>(
       static_cast<double>(available) / static_cast<double>(maxVal) * static_cast<double>(this->position) + static_cast<double>(up->image.height)
     );
-    this->DrawBitmap(0, y, thumb ? &thumb->image : nullptr, true);
+    this->DrawBitmap(0, y, thumb, true);
+    break;
+  }
   }
 
   this->minimumThumb = 0;
@@ -778,14 +777,12 @@ void UIChangeMaterialWnd_CheckBox::Paint() {
   }
 
   if (this->geometry.unknown_0030 == 0) {
-    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str())));
-    this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str()))), false);
     if (!this->ascendingText.empty()) {
       this->DrawTextAt(0xc, 1, this->ascendingText.c_str(), 0, 0, 0xc, 0, 0, 0);
     }
   } else if (this->geometry.unknown_0030 == 1) {
-    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
-    this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str()))), false);
     if (!this->descendingText.empty()) {
       this->DrawTextAt(0xc, 1, this->descendingText.c_str(), 0, 0, 0xc, 0, 0, 0);
     }
