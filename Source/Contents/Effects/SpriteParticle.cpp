@@ -27,6 +27,14 @@ static __forceinline float ToRadians(float degrees) {
   return (degrees / 180.0f) * 3.141592f;
 }
 
+// INLINED
+static __forceinline bool IsParticleActive(const CSpriteParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->unknown_00E8);
+}
+
 // OFFSET: 0x00B40B60
 // FUNCTION: fn_18861
 CSpriteParticle::CSpriteParticle(vector3d position, int flags)
@@ -64,7 +72,7 @@ void CSpriteParticle::UpdateFrame() {
 
   const long long frameCount = static_cast<int>(this->action->FrameCount(this->animation));
   const long long delay = static_cast<long long>(this->frameDelay);
-  if (delay == 0 || (this->unknown_00E8 >= delay && this->unknown_00E8 % delay == 0)) {
+  if (0 == delay || (this->unknown_00E8 >= delay && 0 == this->unknown_00E8 % delay)) {
     ++this->frame;
   }
 
