@@ -50,7 +50,10 @@ int CSession::AddUnknown6160(int id) {
 // FUNCTION: fn_23737
 bool CSession::ToggleTrackedAchievement(int id) {
   std::vector<SessionRecord6178>& tracked = this->unknown_6178;
-  auto found = std::find_if(tracked.begin(), tracked.end(), [id](SessionRecord6178 record) { return id == record.id; });
+  auto found = tracked.begin();
+  while (found != tracked.end() && found->id != id) {
+    ++found;
+  }
 
   SessionRecord6144* progress;
   auto record = this->unknown_6144.find(id);
