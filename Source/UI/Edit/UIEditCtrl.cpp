@@ -10164,10 +10164,10 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
     value += text[i];
   }
 
-  fields[0] = this->DecodeLinkNumber(std::string(value.c_str(), value.size()));
+  fields[0] = this->DecodeLinkNumber(std::move(value));
   value.clear();
   value += text[5];
-  fields[1] = this->DecodeLinkNumber(std::string(value.c_str(), value.size()));
+  fields[1] = this->DecodeLinkNumber(std::move(value));
   value.clear();
 
   int field = 2;
@@ -10185,7 +10185,7 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
 
       if (kind == 7) {
         if (!value.empty()) {
-          fields[field] = this->DecodeLinkNumber(std::string(value.c_str(), value.size()));
+          fields[field] = this->DecodeLinkNumber(std::move(value));
         }
 
         const int size = static_cast<int>(link.size());
@@ -10193,13 +10193,13 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
       } else if (kind == 9) {
         ++optionCount;
         if (!value.empty()) {
-          fields[field] = this->DecodeLinkNumber(std::string(value.c_str(), value.size()));
+          fields[field] = this->DecodeLinkNumber(std::move(value));
         }
 
         const int size = static_cast<int>(link.size());
         this->DecodeLinkOptions(options, text, position, size, delimiters[10], delimiters[11]);
       } else if (!value.empty()) {
-        fields[field] = this->DecodeLinkNumber(std::string(value.c_str(), value.size()));
+        fields[field] = this->DecodeLinkNumber(std::move(value));
       }
 
       value.clear();
