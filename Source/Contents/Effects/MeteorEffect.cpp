@@ -39,10 +39,10 @@ void CMeteorEffect::Slot01() {
 
       for (long long i = 0; i < count; ++i) {
         vector3d pos;
-        const int r1 = spanPlus1 != 0 ? std::max(rand() % spanPlus1, 0) : 0;
+        const int r1 = spanPlus1 != 0 ? std::ranges::max(rand() % spanPlus1, 0) : 0;
         pos.x = static_cast<float>(r1) - halfSpan + this->position[0];
         pos.y = this->position[1];
-        const int r2 = spanPlus1 != 0 ? std::max(rand() % spanPlus1, 0) : 0;
+        const int r2 = spanPlus1 != 0 ? std::ranges::max(rand() % spanPlus1, 0) : 0;
         pos.z = static_cast<float>(r2) - halfSpan + this->position[2];
 
         CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(&pos, 1));
