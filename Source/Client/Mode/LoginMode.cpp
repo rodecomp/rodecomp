@@ -3441,7 +3441,7 @@ static_assert(sizeof(ZoneEnterPacket) == 0x17);
 std::string nullsub_481(int, unsigned int) {
   return {};
 }
-void __stdcall sub_3DE9318(CLoginMode* mode);
+void __stdcall LoadCustomServerList(CLoginMode* mode);
 
 // GLOBAL: gl_25523
 unsigned char g_customServerListLoaded;
@@ -3575,7 +3575,7 @@ __declspec(noinline) static std::uint32_t ParseXmlAddress(const std::string* tex
 
 // OFFSET: 0x03DE9318
 // FUNCTION: fn_45408
-void __stdcall sub_3DE9318(CLoginMode* mode) {
+void __stdcall LoadCustomServerList(CLoginMode* mode) {
   ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(mode->serverList);
   mode->unknown_01C4 = 0;
   *reinterpret_cast<int*>(mode->unknown_01C8) = -1;
@@ -3748,9 +3748,9 @@ void CLoginMode::Slot7(int value) {
 
     if (g_loginCancelRequested == 1) {
       g_loginCancelRequested = 0;
-      sub_3DE9318(this);
+      LoadCustomServerList(this);
     } else if (this->unknown_01C4 < 1 || this->unknown_01C4 > 8) {
-      sub_3DE9318(this);
+      LoadCustomServerList(this);
     }
     if (this->unknown_01C4 != 0) {
       g_customServerListLoaded = 1;
