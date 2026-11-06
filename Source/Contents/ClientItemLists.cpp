@@ -892,7 +892,7 @@ void CSession::AddItem1748(const ITEM_INFO& item) {
 // OFFSET: 0x00DD7510
 // FUNCTION: fn_23290
 bool CSession::Equip(const ITEM_INFO& item) {
-  const EquipSlots slots = reinterpret_cast<CSession*>(this)->GetEquipSlots(item.unknown_0000[3]);
+  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
