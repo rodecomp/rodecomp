@@ -816,26 +816,26 @@ int UIMonsterInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 // OFFSET: 0x008C1DB0
 // FUNCTION: fn_11817
 int UITalkboxTrapInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
-    if (a == 184) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 184: {
       TalkboxTrapRequest request;
       request.target = this->target;
       request.text = this->edit->Text();
       g_modeMgr.GetGameMode()->SendMsg(131, reinterpret_cast<int>(&request), 0, 0, 0);
-    } else if (a != 185) {
-      return 0;
     }
-
-    g_windowMgr.Schedule(this);
+      [[fallthrough]];
+    case 185:
+      g_windowMgr.Schedule(this);
+    }
     return 0;
-  }
-
-  if (message == 68) {
+  case 68:
     this->target = *reinterpret_cast<const TalkboxTrapTarget*>(a);
     return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
-  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x008C1ED0
@@ -1302,7 +1302,8 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->SendMsg(nullptr, 6, 184, 0, 0, 0);
     return 0;
   case 6:
-    if (a == 184) {
+    switch (a) {
+    case 184: {
       g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       FILE* file = std::fopen("notice_read.txt", "wb");
       const int index = this->m_index;
@@ -1326,7 +1327,9 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       std::fwrite(&position, 1, 1, file);
       std::fclose(file);
       g_windowMgr.CloseWindow(93);
-    } else if (a == 218) {
+      break;
+    }
+    case 218:
       ++this->m_index;
 
       if (this->m_index > this->m_noticeCount) {
@@ -1336,7 +1339,8 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
       this->m_scroll = this->m_scrollPositions[this->m_index];
       this->LoadNotice();
-    } else if (a == 246) {
+      break;
+    case 246:
       if (--this->m_index < 0) {
         this->m_index = 0;
         return 0;
@@ -1344,6 +1348,7 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
       this->m_scroll = this->m_scrollPositions[this->m_index];
       this->LoadNotice();
+      break;
     }
 
     return 0;
