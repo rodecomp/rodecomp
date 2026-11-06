@@ -33,11 +33,12 @@ bool CChampionMonsterMgr::Create() {
   if (g_championMonsterMgr == nullptr) {
     g_championMonsterMgr = new (std::nothrow) CChampionMonsterMgr();
     if (g_championMonsterMgr != nullptr) {
-      if (g_championMonsterMgr->m_isValid) {
-        return true;
+      if (!g_championMonsterMgr->m_isValid) {
+        delete g_championMonsterMgr;
+        g_championMonsterMgr = nullptr;
+        return false;
       }
-      delete g_championMonsterMgr;
-      g_championMonsterMgr = nullptr;
+      return true;
     }
   }
   return false;
