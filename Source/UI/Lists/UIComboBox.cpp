@@ -147,6 +147,9 @@ int UIComboBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     this->AddLine(reinterpret_cast<const char*>(argument1), static_cast<int>(argument2), static_cast<int>(argument3));
     this->Invalidate();
     return 0;
+  case 83:
+    this->targetId = value;
+    return 0;
   case 40:
     this->selected = value;
     if (value < 0) {
@@ -158,9 +161,6 @@ int UIComboBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
 
     break;
-  case 83:
-    this->targetId = value;
-    return 0;
   default:
     return UIListBoxID::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
