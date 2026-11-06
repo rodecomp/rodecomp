@@ -14,7 +14,7 @@ public:
   void SetInfo(const CAdvenPartyInfo& value);
   void Reset();
   CAdvenPartyInfo* Info();
-  static const char* TypeName(int type);
+  static __declspec(noinline) const char* TypeName(int type);
 
   /* 0120 */ std::string memo;
   /* 0138 */ std::string levels;
