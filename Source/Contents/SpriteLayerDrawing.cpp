@@ -577,11 +577,11 @@ std::pair<bool, SpriteLayerResources> SpriteLayerRenderer::FindLayer(int layer) 
 // FUNCTION: fn_04816
 std::pair<bool, std::string> SpriteLayerRenderer::GetLayerSound(int layer, CActRes* action, int sound) {
   if (layer != 6) {
-    return {false, ""};
+    return std::make_pair(false, "");
   }
 
   if (sound == -1) {
-    return {false, ""};
+    return std::make_pair(false, "");
   }
 
   std::string name = action->Sound(sound);
@@ -589,7 +589,7 @@ std::pair<bool, std::string> SpriteLayerRenderer::GetLayerSound(int layer, CActR
     name.clear();
   }
 
-  return {true, name};
+  return std::make_pair(true, name);
 }
 
 // OFFSET: 0x00641850
