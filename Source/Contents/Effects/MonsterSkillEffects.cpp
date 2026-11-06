@@ -1610,19 +1610,14 @@ CGaleStorm::CGaleStorm() : CEffect(1973), unknown_00D8(5), unknown_00DC(0) {
 // OFFSET: 0x00717DE0
 // FUNCTION: fn_07285
 void CGaleStorm::Slot01() {
-  struct LevelData {
-    int count;
-    int unknown;
-  };
-  LevelData table[10] = {{5}, {5}, {5}, {5}, {7}, {7}, {7}, {9}, {9}, {11}};
+  long long table[10] = {5, 5, 5, 5, 7, 7, 7, 9, 9, 11};
 
   unsigned int index = this->unknown_00B0;
   if (index > 10) {
     index = 10;
   }
 
-  this->unknown_00D8 = table[index - 1].count;
-  this->unknown_00DC = table[index - 1].unknown;
+  this->count = table[index - 1];
 }
 
 // OFFSET: 0x00717EB0
@@ -1911,10 +1906,13 @@ void CJupitelThunderHit::SpawnHit() {
 // FUNCTION: fn_07321
 void CJupitelThunderHit::SpawnSpark() {
   std::string texture = "effect\\thunder_pang.bmp";
-  if (this->id == 94) {
+  switch (this->id) {
+  case 94:
     texture = "effect\\thunder_pang.bmp";
-  } else if (this->id == 452) {
+    break;
+  case 452:
     texture = "effect\\pokjuk_d.bmp";
+    break;
   }
 
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x203);
