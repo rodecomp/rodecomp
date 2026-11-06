@@ -330,8 +330,7 @@ int AiMercenaryAttack(lua_State* state) {
     packet.aid = aid;
     packet.target = target;
     packet.action = 0;
-    CRagConnection& connection = GetRagConnection();
-    connection.Send(g_packetLengths.FixedLength(packet.opcode), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.opcode), &packet);
     lastAttackTime = timeGetTime();
   }
 
@@ -1044,8 +1043,7 @@ int AiMove(lua_State* state) {
     packet.dest[1] = static_cast<unsigned char>(((y >> 4) & 0x3F) | (x << 6));
     packet.dest[2] = static_cast<unsigned char>(y << 4);
 
-    CRagConnection& connection = GetRagConnection();
-    connection.Send(g_packetLengths.FixedLength(packet.opcode), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.opcode), &packet);
   }
 
   return 0;
@@ -1063,8 +1061,7 @@ int AiMoveToOwner(lua_State* state) {
     MoveToOwnerPacket packet;
     packet.opcode = ID_CZ_REQUEST_MOVETOOWNER;
     packet.aid = aid;
-    CRagConnection& connection = GetRagConnection();
-    connection.Send(g_packetLengths.FixedLength(packet.opcode), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.opcode), &packet);
   }
 
   return 0;
