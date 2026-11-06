@@ -411,7 +411,7 @@ void UIBarGraph4::Slot28(int, int) {
 // OFFSET: 0x008918D0
 // FUNCTION: fn_11452
 void UIINT64BarGraph::Slot28(int, int) {
-  if (this->m_maximum < this->m_current || this->m_maximum == 0 || this->m_maximum == 99999999) {
+  if (this->m_maximum < this->m_current || 0 == this->m_maximum || this->m_maximum == 99999999) {
     return;
   }
 

@@ -96,12 +96,12 @@ int UIRune_Decom::HitTestItem(int x, int y) {
 // OFFSET: 0x00818300
 // FUNCTION: fn_10174
 void UIRune_Info::Slot15(int, int) {
-  this->m_activeWnd = new (std::nothrow) UIRuneSystem_ActiveWnd();
+  this->m_activeWnd = new UIRuneSystem_ActiveWnd();
   this->AddChild(this->m_activeWnd);
   this->m_activeWnd->SetSize(0xEA, 0x78);
   this->m_activeWnd->Move(0xC5, 0x159);
 
-  this->m_activateButton = new (std::nothrow) UIBitmapButton();
+  this->m_activateButton = new UIBitmapButton();
   this->AddChild(this->m_activateButton);
   this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_nomal.bmp", 0, 0);
   this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_mouseon.bmp", 1, 0);

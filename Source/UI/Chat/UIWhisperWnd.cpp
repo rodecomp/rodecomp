@@ -4,5 +4,5 @@
 // FUNCTION: fn_11984
 UIWhisperWnd::UIWhisperWnd() : UIFrameWnd(0) {
   this->unknown_0100 = 0;
-  this->m_code = std::string();
+  this->m_code = std::string("");
 }

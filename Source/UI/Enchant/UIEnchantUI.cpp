@@ -1412,8 +1412,9 @@ void CUIEnchantUI::Slot53() {
 // FUNCTION: fn_14993
 void EnchantUI::CUIUpgradeRandom::Slot16() {
   EnchantUI::CUIEnchantPage::Slot16();
-  this->enchantList->unknown_00C4 = 1;
-  this->enchantList->Invalidate();
+  auto* const list = this->enchantList;
+  list->unknown_00C4 = 1;
+  list->Invalidate();
 }
 
 namespace EnchantUI {

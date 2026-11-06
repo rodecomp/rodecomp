@@ -299,7 +299,7 @@ int UIBasicStylingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 
     if (!unselected) {
       this->m_defaultPaletteButton->SetState(0);
-    } else if (sender == this->m_defaultPaletteButton) {
+    } else if (unselected == true && sender == this->m_defaultPaletteButton) {
       this->m_display->unknown_0094 = 0;
       this->m_display->Invalidate();
     }

@@ -2398,8 +2398,9 @@ void UINpcTextEditDialogWnd::InsertSkillTag(int tagId) {
 
   std::string tag = this->m_tagCtrl->sub_874A40(tagId, 0xD630A9);
   {
+    auto* const tagCtrl = this->m_tagCtrl;
     std::string text = this->edit->Text();
-    this->m_tagCtrl->taggedText = text;
+    tagCtrl->taggedText = text;
   }
   this->edit->SetText((this->edit->Text() + tag).c_str());
   this->edit->MoveCursorToEnd();

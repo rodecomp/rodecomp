@@ -417,7 +417,7 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Selec
     return;
   }
   for (ProbabilityTable::CUIItem* other : this->items) {
-    if (other != item) {
+    if (item != other) {
       other->SetSelected(0);
     }
   }
@@ -432,7 +432,13 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Selec
   this->selected = selectedItem->index;
   if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
     auto node = this->data.begin();
-    std::advance(node, static_cast<int>(this->selected));
+    int count = static_cast<int>(this->selected);
+    if (count > 0) {
+      do {
+        ++node;
+        --count;
+      } while (count > 0);
+    }
     this->onSelect(selectedItem, *node);
   }
 }

@@ -653,8 +653,9 @@ void CUIItemInfo::Paint() {
 // OFFSET: 0x00A703B0
 // FUNCTION: fn_16785
 void CUIItemInfo::Slot16() {
-  this->gameItem->showOverlay = 1;
-  this->gameItem->Invalidate();
+  auto* const item = this->gameItem;
+  item->showOverlay = 1;
+  item->Invalidate();
 }
 
 // OFFSET: 0x00A705E0
@@ -1235,10 +1236,12 @@ void CUISelectPackageItemBox::BindItem(SelectPackageItemBox::CUIItemInfo* item, 
 // FUNCTION: fn_16786
 void CUISelectPackageItemBox::Slot16() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
-  this->itemList->unknown_00C4 = 1;
-  this->itemList->Invalidate();
-  this->okButton->disabled = 1;
-  this->okButton->Invalidate();
+  auto* const list = this->itemList;
+  list->unknown_00C4 = 1;
+  list->Invalidate();
+  auto* const ok = this->okButton;
+  ok->disabled = 1;
+  ok->Invalidate();
   this->okButton->SetText(LookupMessage(3384));
   this->cancelButton->SetText(LookupMessage(3045));
 }
