@@ -64,11 +64,12 @@ bool CTownInfoMgr::Create() {
   if (g_townInfoMgr == nullptr) {
     g_townInfoMgr = new (std::nothrow) CTownInfoMgr();
     if (g_townInfoMgr != nullptr) {
-      if (g_townInfoMgr->m_isValid) {
-        return true;
+      if (!g_townInfoMgr->m_isValid) {
+        delete g_townInfoMgr;
+        g_townInfoMgr = nullptr;
+        return false;
       }
-      delete g_townInfoMgr;
-      g_townInfoMgr = nullptr;
+      return true;
     }
   }
   return false;
