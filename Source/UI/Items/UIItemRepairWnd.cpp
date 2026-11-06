@@ -377,7 +377,8 @@ std::vector<unsigned char> UIItemRepairWnd::BuildReplayRecords() {
     const auto record = BuildReplayTaggedRecord(22150, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
-  for (const UIItemRepairEntry& entry : this->entries) {
+  for (auto it = this->entries.begin(); it != this->entries.end(); ++it) {
+    const UIItemRepairEntry& entry = *it;
     std::vector<unsigned char> record(sizeof(entry) + 6, 0);
     *reinterpret_cast<std::uint16_t*>(record.data()) = 22152;
     *reinterpret_cast<std::uint32_t*>(record.data() + 2) = sizeof(entry);
