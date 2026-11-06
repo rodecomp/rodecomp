@@ -60,10 +60,10 @@ struct ReplayHeader {
   // INLINED
   void Reset() {
     const ReplayOptions savedOptions = this->options;
-    std::memset(this, 0, sizeof(*this));
-    this->options = savedOptions;
+    std::memset(&this->key0, 0, offsetof(ReplayHeader, options) - offsetof(ReplayHeader, key0));
     this->signature = 0x52414705;
     this->closingSignature = 0x52414705;
+    this->options = savedOptions;
   }
 };
 
