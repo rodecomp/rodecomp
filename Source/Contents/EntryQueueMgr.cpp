@@ -55,7 +55,7 @@ void CEntryQueueMgr::SendAdmissionReply(int result) {
       this->ready = 0;
     }
 
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   } else if (result == 2) {
     this->ready = 0;
   }
