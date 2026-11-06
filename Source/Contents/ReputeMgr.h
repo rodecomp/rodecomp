@@ -23,7 +23,7 @@ struct ReputeInfo {
   /* 0018 */ std::uint64_t unknown_0018;
   /* 0020 */ std::uint64_t unknown_0020;
   /* 0028 */ ReputeVisibility visibility;
-  /* 0030 */ std::int64_t point;
+  /* 0030 */ std::int64_t point = 0;
   /* 0038 */ bool updated;
 };
 

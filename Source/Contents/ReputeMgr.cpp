@@ -337,7 +337,7 @@ void CReputeMgr::InfoInserter::operator()(const std::pair<const int, ReputeInfoR
 // FUNCTION: fn_04286
 void CReputeMgr::GroupInserter::operator()(const std::pair<const int, ReputeGroupRecord>& entry) const {
   ReputeGroup group;
-  group.name = FromUtf8(entry.second.name, g_textCodePage);
+  group.name = static_cast<const std::string&>(FromUtf8(entry.second.name, g_textCodePage));
   group.reputes = std::vector<std::uint64_t>(entry.second.reputes.begin(), entry.second.reputes.end());
   (*this->dest)[static_cast<std::uint64_t>(entry.first)] = group;
 }
