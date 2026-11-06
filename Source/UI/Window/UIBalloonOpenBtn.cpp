@@ -33,7 +33,8 @@ void UIBalloonOpenBtn::Slot19() {
 // OFFSET: 0x009468D0
 // FUNCTION: fn_12847
 UIBalloonOpenBtn::UIBalloonOpenBtn()
-    : UIFrameWnd(0), m_openTime(0), m_openDelay(4000), m_balloonId(0), m_balloon(nullptr), m_button(nullptr) {
+    : UIFrameWnd(0), m_openTime(0), m_balloonId(0), m_balloon(nullptr), m_button(nullptr) {
+  this->m_openDelay = 4000;
 }
 
 // OFFSET: 0x00950200
