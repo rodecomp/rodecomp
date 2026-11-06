@@ -404,7 +404,7 @@ bool CCashEmotionAction_Register::Execute(int packId, int emotionId) {
   UINewChatWnd* suggestions = ChatWindow();
   if (suggestions && suggestions->m_chatEdit) {
     suggestions->m_chatEdit->SetText(name);
-    suggestions->m_chatEdit->Slot39();
+    suggestions->m_chatEdit->Invalidate();
   }
 
   return true;
@@ -567,11 +567,11 @@ int CCashEmotionMgr::FindEmotionId(const char* name) {
 
   std::string key(name);
   auto it = this->m_emotionIds.find(key);
-  if (it == this->m_emotionIds.end()) {
-    return -1;
+  if (it != this->m_emotionIds.end()) {
+    return it->second;
   }
 
-  return it->second;
+  return -1;
 }
 
 // OFFSET: 0x00599650
