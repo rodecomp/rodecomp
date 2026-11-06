@@ -1499,7 +1499,7 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonSubscriptionNotify(co
     return;
   }
 
-  if (*reinterpret_cast<const short*>(packet + 2) >= 0) {
+  if (*reinterpret_cast<const short*>(packet + 2) > -1) {
     g_session.unknown_5948 = 0;
     window->SendMsg(nullptr, 60, 0, 0, 0, 0);
     return;
@@ -11369,7 +11369,7 @@ void ApplyActorSkillState(CGameActor* actor, std::uint16_t skillId, int duration
   case 0x39:
   case 0x3E:
   case 0x154B:
-    reinterpret_cast<unsigned char*>(&actor->render.unknown_008C)[2] = 1;
+    actor->render.isMotionFreezed = true;
     actor->unknown_0278 = timeGetTime() + duration;
     break;
   case 0x105:
