@@ -338,6 +338,7 @@ void UIHotkeyGuideWnd::DrawKeyLabel(std::string text, const HotkeyGuideKey* key)
     int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
     x += key->width - key->padding - textWidth;
   }
+  const char* textPointer = text.c_str();
   int y = static_cast<int>(static_cast<double>(key->height - 12) * 0.5 + static_cast<double>(key->y));
-  this->DrawTextAt(x, y, text.c_str(), 0, 0, 12, 0x2B2625, 0, 0);
+  this->DrawTextAt(x, y, textPointer, 0, 0, 12, 0x2B2625, 0, 0);
 }
