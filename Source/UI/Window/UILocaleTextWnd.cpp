@@ -11,7 +11,9 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -68,9 +70,9 @@ void CUISubTab::Slot15(int width, int height) {
   this->unknown_00EC->Move(58, 0);
   {
     CUIStaticImage* stamp = this->unknown_00EC;
-    const std::uint8_t stampSource[] = {0x9D, 0x44, 0xB3, 0xB3, 0x5B, 0x87, 0xA4, 0xC2, 0x9B, 0x0F, 0xB3, 0x85, 0x26, 0xF3, 0x3D, 0x4E, 0x39, 0x9D,
-                                        0x16, 0x27, 0xEF, 0x3C, 0x13, 0x6A, 0x1A, 0x9E, 0x1A, 0x2D, 0xFE, 0x15, 0x12, 0x7B, 0x3C, 0x86, 0x03, 0x16,
-                                        0xF8, 0x26, 0x0C, 0x7F, 0x31, 0x8E, 0x07, 0x2C, 0xFF, 0x16, 0x12, 0x7A, 0x3F, 0xC5, 0x11, 0x24, 0xEB, 0x49};
+    const char stampSource[] = {'\x9D', '\x44', '\xB3', '\xB3', '\x5B', '\x87', '\xA4', '\xC2', '\x9B', '\x0F', '\xB3', '\x85', '\x26', '\xF3', '\x3D', '\x4E', '\x39', '\x9D',
+                                        '\x16', '\x27', '\xEF', '\x3C', '\x13', '\x6A', '\x1A', '\x9E', '\x1A', '\x2D', '\xFE', '\x15', '\x12', '\x7B', '\x3C', '\x86', '\x03', '\x16',
+                                        '\xF8', '\x26', '\x0C', '\x7F', '\x31', '\x8E', '\x07', '\x2C', '\xFF', '\x16', '\x12', '\x7A', '\x3F', '\xC5', '\x11', '\x24', '\xEB', '\x49'};
     thread_local EncryptedName<sizeof(stampSource), 0x0F61499B4973EB5DULL> stampName(stampSource);
     stamp->SetImage(stampName.Text());
   }
