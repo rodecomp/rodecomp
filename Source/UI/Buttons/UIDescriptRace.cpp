@@ -25,7 +25,7 @@ int UIDescriptRace::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   if (message == 13 && (this->m_race != 1 || g_doramCreationEnabled)) {
     if (argument1) {
       this->m_noRace = 1;
-      this->SetBitmap(this->m_race == 1 ? "유저인터페이스\\make_character_ver2\\img_doram_on.bmp" : "유저인터페이스\\make_character_ver2\\img_human_on.bmp", 0, 0);
+      this->SetBitmap(this->m_race != 1 ? "유저인터페이스\\make_character_ver2\\img_human_on.bmp" : "유저인터페이스\\make_character_ver2\\img_doram_on.bmp", 0, 0);
       return 0;
     }
 
