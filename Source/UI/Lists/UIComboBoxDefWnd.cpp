@@ -346,51 +346,51 @@ void UINewComboBoxCtrl::Slot15(int, int) {
 // OFFSET: 0x008994B0
 // FUNCTION: fn_11555
 int UINewComboBoxCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
-    if (argument1 == 273) {
-      this->dropped = !this->dropped;
-      if (g_windowMgr.unknown_0214) {
-        g_windowMgr.CloseWindow(26);
-      }
+  if (message != 6) {
+    if (message != 39) {
+      return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+    }
 
-      if (this->dropped) {
-        UIWindow* window = g_windowMgr.EnsureWindow(26);
-        const int count = static_cast<int>(this->items.size());
-        for (int index = 0; index < count; ++index) {
-          window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->items[index].c_str()), 0, 0, 0);
-        }
-        window->SendMsg(nullptr, 40, this->selected, 0, 0, 0);
-        window->Resize(this->geometry.width, count * 16);
-        static_cast<UIComboBoxWnd*>(window)->SetOwner(this);
-        int x = 0;
-        int y = this->geometry.height;
-        this->ToScreen(x, y);
-        window->Move(x, y);
-      }
+    this->dropped = false;
+    const int index = static_cast<int>(argument1);
+    if (index < 0) {
+      return 0;
+    }
+
+    if (static_cast<unsigned int>(index) <= this->items.size()) {
+      this->label->SetText(this->items[index].c_str(), 0);
+    }
+
+    this->selected = index;
+    this->parent->SendMsg(this, 39, index, 0, 0, 0);
+    this->Invalidate();
+    this->parent->Invalidate();
+    if (this->Root()) {
+      this->Root()->Invalidate();
     }
     return 0;
   }
 
-  if (message != 39) {
-    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
-  }
+  if (argument1 == 273) {
+    this->dropped = !this->dropped;
+    if (g_windowMgr.unknown_0214) {
+      g_windowMgr.CloseWindow(26);
+    }
 
-  this->dropped = false;
-  const int index = static_cast<int>(argument1);
-  if (index < 0) {
-    return 0;
-  }
-
-  if (static_cast<unsigned int>(index) <= this->items.size()) {
-    this->label->SetText(this->items[index].c_str(), 0);
-  }
-
-  this->selected = index;
-  this->parent->SendMsg(this, 39, index, 0, 0, 0);
-  this->Invalidate();
-  this->parent->Invalidate();
-  if (this->Root()) {
-    this->Root()->Invalidate();
+    if (this->dropped) {
+      UIWindow* window = g_windowMgr.EnsureWindow(26);
+      const int count = static_cast<int>(this->items.size());
+      for (int index = 0; index < count; ++index) {
+        window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->items[index].c_str()), 0, 0, 0);
+      }
+      window->SendMsg(nullptr, 40, this->selected, 0, 0, 0);
+      window->Resize(this->geometry.width, count * 16);
+      static_cast<UIComboBoxWnd*>(window)->SetOwner(this);
+      int x = 0;
+      int y = this->geometry.height;
+      this->ToScreen(x, y);
+      window->Move(x, y);
+    }
   }
   return 0;
 }
