@@ -29,8 +29,8 @@ void UITagListBox::AddLine(const char* text) {
 // FUNCTION: fn_13871
 void UITagListBox::Clear() {
   this->UIListBox::Clear();
-  for (UITagButton* window : this->m_tagWindows) {
-    this->RemoveChild(window, 1);
+  for (auto it = this->m_tagWindows.begin(); it != this->m_tagWindows.end(); ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->m_tagWindows.clear();
   this->Invalidate();
