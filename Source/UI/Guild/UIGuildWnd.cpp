@@ -2573,6 +2573,31 @@ void UIGuildMemberManageWnd::Paint() {
 // FUNCTION: fn_13129
 int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
+  case 39: {
+    int index = 0;
+    for (auto member = this->m_members.begin(); member != this->m_members.end(); ++member, ++index) {
+      if (this->m_hoverRow == index) {
+        const bool valid = a1 != 0 && member->positionId != 0;
+        if (member->positionId != a1 && valid) {
+          member->positionId = a1;
+          member->positionName = g_guildInfo.m_positions[member->positionId];
+          this->unknown_0180[static_cast<int>(member->characterId)].accountId = member->accountId;
+          this->unknown_0180[static_cast<int>(member->characterId)].characterId = member->characterId;
+          this->unknown_0180[static_cast<int>(member->characterId)].positionId = member->positionId;
+        }
+        break;
+      }
+    }
+    int x = this->geometry.width - 61;
+    int y = this->geometry.height - 23;
+    if (!g_guildInfo.unknown_00B4 || this->unknown_0180.empty()) {
+      x = -200;
+      y = -200;
+    }
+    this->m_button->Move(x, y);
+    this->Invalidate();
+    return 0;
+  }
   case 6:
     switch (a1) {
     case 184:
@@ -2651,31 +2676,72 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     }
     return this->m_scrollTop - previous;
   }
-  case 39: {
-    int index = 0;
-    for (auto member = this->m_members.begin(); member != this->m_members.end(); ++member, ++index) {
-      if (this->m_hoverRow == index) {
-        const bool valid = a1 != 0 && member->positionId != 0;
-        if (member->positionId != a1 && valid) {
-          member->positionId = a1;
-          member->positionName = g_guildInfo.m_positions[member->positionId];
-          this->unknown_0180[member->characterId].accountId = member->accountId;
-          this->unknown_0180[member->characterId].characterId = member->characterId;
-          this->unknown_0180[member->characterId].positionId = member->positionId;
+  case 49:
+    this->unknown_0150.clear();
+    if (g_windowMgr.unknown_0210 != 0) {
+      g_windowMgr.CloseWindow(18);
+    }
+    if (this->m_hoverRow != -1) {
+      GuildInfo::Member member;
+      if (this->GetMember(this->m_hoverRow, member) == true) {
+        const int master = g_guildInfo.unknown_00D0;
+        if (member.characterId == static_cast<int>(g_session.m_gid)) {
+          if (master != 0) {
+            if (member.characterId != master) {
+              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(508), 17));
+            }
+          } else if (!(member.name == g_guildInfo.unknown_0018)) {
+            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(508), 17));
+          }
+        } else {
+          if (master != 0) {
+            if (master == static_cast<int>(g_session.m_gid)) {
+              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
+              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2923), 59));
+            } else if (g_guildInfo.unknown_00B0 != 0 && member.characterId != master) {
+              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
+            }
+          } else if (g_guildInfo.unknown_0018 == g_session.DecodePlayerName()) {
+            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
+            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2923), 59));
+          } else if (g_guildInfo.unknown_00B0 != 0 && !(member.name == g_guildInfo.unknown_0018)) {
+            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
+          }
+
+          if (member.online == 1) {
+            const bool invite = g_session.unknown_5464 != 0 &&
+                                g_session.PartyByName(member.name.c_str()).valid == 0;
+            if (invite) {
+              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(1330), 5));
+            }
+            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2043), 20));
+          }
+          this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2808), 58));
         }
-        break;
       }
     }
-    int x = this->geometry.width - 61;
-    int y = this->geometry.height - 23;
-    if (!g_guildInfo.unknown_00B4 || this->unknown_0180.empty()) {
-      x = -200;
-      y = -200;
+    if (!this->unknown_0150.empty()) {
+      UIWindow* menu = g_windowMgr.EnsureWindow(18);
+      for (std::size_t index = 0; index < this->unknown_0150.size(); ++index) {
+        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_0150[index].text.c_str()), 0, 0, 0);
+      }
+      menu->SendMsg(nullptr, 83, 61, 0, 0, 0);
+      menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
+
+      int x = std::max(1, g_mouse.x + 1);
+      int maxX = g_renderer->viewport.width - menu->geometry.width;
+      if (x > maxX) {
+        x = maxX;
+      }
+      int y = std::max(1, g_mouse.y + 1);
+      int maxY = g_renderer->viewport.height - menu->geometry.height;
+      if (y > maxY) {
+        y = maxY;
+      }
+      menu->Move(x, y);
+      return 0;
     }
-    this->m_button->Move(x, y);
-    this->Invalidate();
-    return 0;
-  }
+    break;
   case 48: {
     GuildInfo::Member member;
     if ((this->GetMember(this->m_hoverRow, member) && member.name.find(g_guildNamelessTag, 0) != std::string::npos) ||
@@ -2748,9 +2814,9 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
           target.positionId = 0;
           target.positionName = g_guildInfo.m_positions[target.positionId];
-          this->unknown_0180[target.characterId].accountId = target.accountId;
-          this->unknown_0180[target.characterId].characterId = target.characterId;
-          this->unknown_0180[target.characterId].positionId = target.positionId;
+          this->unknown_0180[static_cast<int>(target.characterId)].accountId = target.accountId;
+          this->unknown_0180[static_cast<int>(target.characterId)].characterId = target.characterId;
+          this->unknown_0180[static_cast<int>(target.characterId)].positionId = target.positionId;
           g_guildInfo.unknown_0104.clear();
           g_guildInfo.unknown_0104 = this->unknown_0180;
           g_modeMgr.GetGameMode()->SendMsg(103, 0, 0, 0, 0);
@@ -2761,72 +2827,6 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     }
     return 0;
   }
-  case 49:
-    this->unknown_0150.clear();
-    if (g_windowMgr.unknown_0210 != 0) {
-      g_windowMgr.CloseWindow(18);
-    }
-    if (this->m_hoverRow != -1) {
-      GuildInfo::Member member;
-      if (this->GetMember(this->m_hoverRow, member) == true) {
-        const int master = g_guildInfo.unknown_00D0;
-        if (member.characterId == static_cast<int>(g_session.m_gid)) {
-          if (master != 0) {
-            if (member.characterId != master) {
-              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(508), 17));
-            }
-          } else if (!(member.name == g_guildInfo.unknown_0018)) {
-            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(508), 17));
-          }
-        } else {
-          if (master != 0) {
-            if (master == static_cast<int>(g_session.m_gid)) {
-              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
-              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2923), 59));
-            } else if (g_guildInfo.unknown_00B0 != 0 && member.characterId != master) {
-              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
-            }
-          } else if (g_guildInfo.unknown_0018 == g_session.DecodePlayerName()) {
-            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
-            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2923), 59));
-          } else if (g_guildInfo.unknown_00B0 != 0 && !(member.name == g_guildInfo.unknown_0018)) {
-            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
-          }
-
-          if (member.online == 1) {
-            const bool invite = g_session.unknown_5464 != 0 &&
-                                g_session.PartyByName(member.name.c_str()).valid == 0;
-            if (invite) {
-              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(1330), 5));
-            }
-            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2043), 20));
-          }
-          this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2808), 58));
-        }
-      }
-    }
-    if (!this->unknown_0150.empty()) {
-      UIWindow* menu = g_windowMgr.EnsureWindow(18);
-      for (std::size_t index = 0; index < this->unknown_0150.size(); ++index) {
-        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_0150[index].text.c_str()), 0, 0, 0);
-      }
-      menu->SendMsg(nullptr, 83, 61, 0, 0, 0);
-      menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
-
-      int x = std::max(1, g_mouse.x + 1);
-      int maxX = g_renderer->viewport.width - menu->geometry.width;
-      if (x > maxX) {
-        x = maxX;
-      }
-      int y = std::max(1, g_mouse.y + 1);
-      int maxY = g_renderer->viewport.height - menu->geometry.height;
-      if (y > maxY) {
-        y = maxY;
-      }
-      menu->Move(x, y);
-      return 0;
-    }
-    break;
   case 60: {
     this->unknown_0180.clear();
     this->m_members = g_guildInfo.m_members;
