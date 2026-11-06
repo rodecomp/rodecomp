@@ -1280,7 +1280,7 @@ void UIWindowMgr::RequestAddFriend(const char* name) {
   AddFriendPacket packet;
   packet.id = ID_CZ_ADD_FRIENDS;
   std::memcpy(packet.name, name, sizeof(packet.name));
-  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00A8AE20
