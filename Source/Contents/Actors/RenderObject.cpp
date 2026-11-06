@@ -582,7 +582,7 @@ void CGameActor::SetUnknown0305(unsigned char value, int extra) {
 // OFFSET: 0x00CC1D20
 // FUNCTION: fn_21127
 void CGameActor::RaiseUnknown03C8(int value) {
-  if (value > 0 && this->unknown_03C8 < value) {
+  if (value <= 0 || this->unknown_03C8 < value) {
     this->unknown_03C8 = value;
   }
 }
