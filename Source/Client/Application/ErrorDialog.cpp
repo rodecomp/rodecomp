@@ -5,8 +5,10 @@
 // OFFSET: 0x00AD6320
 // FUNCTION: fn_17827
 int ShowErrorDialog(const std::string& text, const UINT& type) {
+  const UINT flags = type;
+  const char* message = text.c_str();
   GetRenderSystemHolder()->PrepareErrorDialog();
-  return MessageBoxA(nullptr, text.c_str(), "Error", type);
+  return MessageBoxA(nullptr, message, "Error", flags);
 }
 
 // OFFSET: 0x00AD6360
