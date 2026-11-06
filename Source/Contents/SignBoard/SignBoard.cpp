@@ -256,14 +256,14 @@ void CBmpObjWnd::Slot15(int width, int height) {
 void CSignBoardWnd::Slot15(int width, int height) {
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\signboard\\bg_signboard.bmp")));
   this->Resize(bitmap->image.width, bitmap->image.height);
-  UIStaticText* text = new (std::nothrow) UIStaticText();
-  this->text = text;
-  text->SetSize(0x7e, 0xe);
-  text->Move(0x1e, this->geometry.height / 2 - 7);
-  text->SetTextFitted("");
-  text->SetFont(0, 12, 0, 0);
-  text->SetColor(0x9e, 0xbd, 0xff);
-  this->AddChild(text);
+  this->text = new (std::nothrow) UIStaticText();
+
+  this->text->SetSize(0x7e, 0xe);
+  this->text->Move(0x1e, this->geometry.height / 2 - 7);
+  this->text->SetTextFitted("");
+  this->text->SetFont(0, 12, 0, 0);
+  this->text->SetColor(0x9e, 0xbd, 0xff);
+  this->AddChild(this->text);
 }
 
 // OFFSET: 0x00821C50
