@@ -115,8 +115,9 @@ void EffectResourceSwitcher::SetNames(const std::string& source, const std::stri
     return;
   }
 
+  EffectLists* effects = g_effectMgr;
   this->effect = static_cast<CEZ2STREffect*>(
-      g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+      effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
   this->spawnPosition = actor->render.position;
 }
 
