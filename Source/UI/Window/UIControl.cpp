@@ -59,16 +59,18 @@ private:
 // OFFSET: 0x009E0A80
 // FUNCTION: fn_14371
 void CUIListBoxItemSelector::SetHighlighted(CUIListItem* const& item) {
+  CUIListItem* const target = item;
   for (CUIListItem* entry : this->listBox->items) {
-    entry->SetHighlighted(entry == item);
+    entry->SetHighlighted(target == entry);
   }
 }
 
 // OFFSET: 0x009E0AD0
 // FUNCTION: fn_14372
 void CUIListBoxItemSelector::SetHighlightedEntry(CUIListItem* const& item) {
+  CUIListItem* const target = item;
   for (CUIListItem* entry : this->listBox->items) {
-    entry->SetHighlighted(entry == item);
+    entry->SetHighlighted(target == entry);
   }
 }
 
