@@ -81,9 +81,26 @@ void CRendererDX7::DrawPrimitive(RenderCommand* primitive) {
 
 // OFFSET: 0x0055AD00
 // FUNCTION: fn_02083
+void CRendererDX7::DrawLightmappedPrimitive(LightmappedPrimitive* primitive) {
+  if (primitive->vertexCount <= 0) {
+    return;
+  }
+
+  const auto type = static_cast<D3DPRIMITIVETYPE>(primitive->primitiveType);
+
+  if (primitive->indexCount > 0) {
+    this->device->DrawIndexedPrimitive(
+      type, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, primitive->vertices, primitive->vertexCount, primitive->indices,
+      primitive->indexCount, 0
+    );
+  } else {
+    this->device->DrawPrimitive(type, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, primitive->vertices, primitive->vertexCount, 0);
+  }
+}
+
 // OFFSET: 0x0055AD50
 // FUNCTION: fn_02084
-void CRendererDX7::DrawLightmappedPrimitive(LightmappedPrimitive* primitive) {
+void CRendererDX7::DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) {
   if (primitive->vertexCount <= 0) {
     return;
   }

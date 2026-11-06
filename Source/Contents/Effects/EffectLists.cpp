@@ -1389,6 +1389,12 @@ template struct CEffectAllocator<CWindBomb>;
 CGravityControlEffect::~CGravityControlEffect() {
 }
 
+// OFFSET: 0x00B3A550
+// FUNCTION: fn_18789
+bool CGravityControlEffect::Slot06() {
+  return this->ActorExists();
+}
+
 CMeteorEffect::~CMeteorEffect() {
 }
 

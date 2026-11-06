@@ -6,8 +6,7 @@
 #include <d3d.h>
 #include <ddraw.h>
 
-struct TextureAllocationDX7;
-class CRenderSystemBase;
+class CRenderer;
 class CSurface;
 
 class DeviceOwnerDX7 {
@@ -26,8 +25,6 @@ public:
   void MarkSurfacesLost();
   void AdjustTextureDimensions(std::uint32_t& width, std::uint32_t& height) const;
   bool SupportsTextureDimensions(std::uint32_t width, std::uint32_t height) const;
-  void CaptureBackBuffer();
-  void RestoreBackBuffer();
   __declspec(noinline) void CaptureBackBufferImpl();
   __declspec(noinline) void RestoreBackBufferImpl();
   void UpdateMipmapFiltering();
@@ -42,7 +39,7 @@ public:
   void SetDialogClipper(int enabled);
   bool CalibrateTextureCoordinates();
 
-  int RefreshRendererCapabilities(int mipmaps, TextureAllocationDX7& allocation, bool& multitexture, CRenderSystemBase* renderSystem);
+  CRenderer* CreateRenderer();
   std::uint16_t PackColor(int red, int green, int blue);
   DWORD BlueMask();
   DWORD BlueExpansion();

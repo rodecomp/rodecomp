@@ -74,7 +74,6 @@ struct CRagEffect : CRenderObject {
   void TexturedOrbitDust(const char* name, char rise, char kind);
   void WeddingBurst(const char* name, char silent);
   void ThunderFreeze(int unused);
-  void RenderEZ2STR(const matrix& view);
   bool PartyEffectVisible();
   void RenderAniClip(EZeffectClip* clip, const EZeffectTransform* transform, int count, const matrix& view);
   void LineStreakTextured(std::int16_t kind, const char* name);
@@ -346,8 +345,8 @@ struct CRagEffect : CRenderObject {
   void FreezingCircle(char kind);
   void TorchDust(char kind);
 
-  virtual void Slot08();
-  virtual void Slot13();
+  void Render(int argument) override;
+  virtual int Slot13();
   virtual bool Slot14();
   virtual bool Slot15();
   virtual void SendMsg(CGameObject* sender, int message, int first, std::int64_t second, int third, int fourth, int fifth, int sixth);

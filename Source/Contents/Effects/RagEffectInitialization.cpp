@@ -1,5 +1,6 @@
+#include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectTypes.h"
-#include "Contents/Effects/RagEffectInitialization.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Resource/EZeffectResource.h"
@@ -682,38 +683,35 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
 
 // OFFSET: 0x00C1C2D0
 // FUNCTION: fn_20074
-void InitializeRagEffect(
-  RagEffectState& effect, RenderObjectState& render, EffectActor* parent, const RenderObjectState& parentState, int id, float x, float y, float z,
-  ServiceOptions& options, ResourceMgr& resources
-) {
-  effect.type = id;
-  effect.parent = parent;
-  render.position.x = parentState.position.x;
-  render.position.y = parentState.position.y;
-  render.position.z = parentState.position.z;
-  effect.longitude = parentState.angle;
-  effect.duration = EffectLifetime(effect.type);
-  effect.deltaPos[0] = x;
-  effect.deltaPos[1] = y;
-  effect.deltaPos[2] = z;
+void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
+  this->state.type = id;
+  this->state.parent = parent;
+  this->render.position.x = parent->render.position.x;
+  this->render.position.y = parent->render.position.y;
+  this->render.position.z = parent->render.position.z;
+  this->state.longitude = parent->render.angle;
+  this->SetStateDuration(EffectLifetime(this->state.type));
+  this->state.deltaPos[0] = deltaPos.x;
+  this->state.deltaPos[1] = deltaPos.y;
+  this->state.deltaPos[2] = deltaPos.z;
   char name[64];
-  SelectRagEffectResource(effect, options, name);
+  SelectRagEffectResource(this->state, g_serviceOptions, name);
 
   if (std::strlen(name) != 0) {
-    auto* resource = static_cast<CEZeffectRes*>(resources.Load(name));
-    effect.resource = resource;
+    auto* resource = static_cast<CEZeffectRes*>(ResourceMgr::Instance().Load(name));
+    this->state.resource = resource;
 
     if (resource) {
       ++resource->references;
 
-      effect.resourceData = &resource->maximumFrame;
+      this->state.resourceData = &resource->maximumFrame;
       int count = resource->clipCount;
 
       if (resource->clips[0].frameCount == 0) {
         --count;
       }
 
-      effect.endLayer = count;
+      this->state.endLayer = count;
     }
   }
 }

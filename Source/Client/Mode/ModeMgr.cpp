@@ -68,6 +68,11 @@ void CMode::Initialize(const char*) {
 void CMode::Slot5(int) {
 }
 
+// OFFSET: 0x00AD6720
+// FUNCTION: fn_17840
+void CMode::Update() {
+}
+
 // OFFSET: 0x00AD6710
 // FUNCTION: fn_17839
 int CMode::Run() {

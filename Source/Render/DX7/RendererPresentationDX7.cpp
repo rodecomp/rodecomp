@@ -11,7 +11,7 @@
 
 // OFFSET: 0x0055B000
 // FUNCTION: fn_02087
-void CRendererDX7::Present(bool wait) {
+HRESULT CRendererDX7::Present(int option) {
   ++this->frame;
   const unsigned elapsed = GetTickCount() - this->time;
 
@@ -23,28 +23,34 @@ void CRendererDX7::Present(bool wait) {
     this->samples = 0;
   }
 
-  if (g_deviceOwnerDX7->RestoreLostSurfaces()) {
-    return;
+  DeviceOwnerDX7* owner = g_deviceOwnerDX7;
+  if (owner && owner->RestoreLostSurfaces()) {
+    return S_OK;
   }
 
   if (this->LockBackBuffer()) {
     this->UnlockBackBuffer();
   }
 
-  if (g_deviceOwnerDX7->Present(wait) == DDERR_SURFACELOST) {
-    g_deviceOwnerDX7->MarkSurfacesLost();
+  owner = g_deviceOwnerDX7;
+  if (owner && owner->Present(option != 0) == DDERR_SURFACELOST) {
+    owner = g_deviceOwnerDX7;
+    if (owner) {
+      owner->MarkSurfacesLost();
+    }
   }
+  return S_OK;
 }
 
 // OFFSET: 0x0055D0F0
 // FUNCTION: fn_02096
-float CRendererDX7::FrameRate() const {
+float CRendererDX7::FPS() const {
   return static_cast<float>(this->rate);
 }
 
 // OFFSET: 0x0055F8F0
 // FUNCTION: fn_02120
-void CRendererDX7::DrawFPS() {
+void CRendererDX7::CleanupTextures() {
   const unsigned previous = this->time;
   const unsigned elapsed = timeGetTime() - previous;
   const unsigned count = this->samples;

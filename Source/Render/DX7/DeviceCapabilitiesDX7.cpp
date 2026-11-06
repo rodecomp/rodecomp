@@ -1,7 +1,10 @@
 #include "Client/Application/ErrorDialog.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/DX7/TextureAllocationDX7.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Render/RendererDX7.h"
 #include "Render/Textures/Texture.h"
+#include "UI/GameSettings/GameSettingsUI.h"
 
 // INLINED
 inline void TextureAllocationDX7::Update(int enabled, const D3DDEVICEDESC7& caps) {
@@ -19,7 +22,7 @@ unsigned char g_multitexture = 1;
 
 // OFFSET: 0x0054A380
 // FUNCTION: fn_01896
-int DeviceOwnerDX7::RefreshRendererCapabilities(int mipmaps, TextureAllocationDX7& allocation, bool& multitexture, CRenderSystemBase* renderSystem) {
+CRenderer* DeviceOwnerDX7::CreateRenderer() {
   int format;
 
   switch (this->redMask) {
@@ -30,14 +33,14 @@ int DeviceOwnerDX7::RefreshRendererCapabilities(int mipmaps, TextureAllocationDX
     format = TextureFormat::X1R5G5B5;
     break;
   case 0x1F:
-    ShowErrorDialog(renderSystem, "BGR 565 MODE. NOT SUPPORTED", 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, "BGR 565 MODE. NOT SUPPORTED", 0);
     format = TextureFormat::R5G6B5;
     break;
   default:
     if (this->bitDepth == 32) {
       format = TextureFormat::A8R8G8B8;
     } else {
-      ShowErrorDialog(renderSystem, "NOT SUPPORTED MODE", 0);
+      ShowErrorDialog(GetRenderSystemHolder()->system, "NOT SUPPORTED MODE", 0);
       format = TextureFormat::UnknownTextureFormat;
     }
     break;
@@ -56,10 +59,16 @@ int DeviceOwnerDX7::RefreshRendererCapabilities(int mipmaps, TextureAllocationDX
     this->maxTextureWidth = this->caps.dwMaxTextureWidth;
     this->maxTextureHeight = this->caps.dwMaxTextureHeight;
     this->maxTextureAspectRatio = this->caps.dwMaxTextureAspectRatio;
-    multitexture = this->caps.wMaxSimultaneousTextures >= 2 && (this->caps.dwTextureOpCaps & D3DTEXOPCAPS_MODULATEALPHA_ADDCOLOR) != 0;
-    allocation.Update(mipmaps, this->caps);
+    g_multitexture = this->caps.wMaxSimultaneousTextures >= 2 && (this->caps.dwTextureOpCaps & D3DTEXOPCAPS_MODULATEALPHA_ADDCOLOR) != 0;
+    g_textureAllocationDX7.Update(g_textureFiltering, this->caps);
   }
 
   this->largeTextures = this->maxTextureWidth >= 1024 && this->maxTextureHeight >= 1024;
-  return format;
+
+  CRendererDX7* renderer = new CRendererDX7();
+  renderer->SetTextureFormat(format);
+  renderer->device = this->device;
+  renderer->viewport.SetSize(this->width, this->height);
+  this->CalibrateTextureCoordinates();
+  return renderer;
 }

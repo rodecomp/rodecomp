@@ -14976,7 +14976,8 @@ static __forceinline void SetAniClipCorners(RenderVertex* vertices, const EZeffe
 
 // OFFSET: 0x00C37D10
 // FUNCTION: fn_20097
-void CRagEffect::RenderEZ2STR(const matrix& view) {
+void CRagEffect::Render(int argument) {
+  const matrix& view = *reinterpret_cast<const matrix*>(argument);
   if (!g_session.IsEffectRenderEnabled() || !this->PartyEffectVisible()) {
     return;
   }

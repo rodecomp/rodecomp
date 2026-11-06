@@ -13,11 +13,12 @@ void DeviceOwnerDX7::CaptureBackBufferImpl() {
 
 // OFFSET: 0x0055A080
 // FUNCTION: fn_02075
-void DeviceOwnerDX7::CaptureBackBuffer() {
+bool CRendererDX7::CaptureBackBuffer() {
   DeviceOwnerDX7* owner = g_deviceOwnerDX7;
   if (owner) {
     owner->CaptureBackBufferImpl();
   }
+  return true;
 }
 
 // OFFSET: 0x0054AEB0
@@ -32,11 +33,12 @@ void DeviceOwnerDX7::RestoreBackBufferImpl() {
 
 // OFFSET: 0x0055D850
 // FUNCTION: fn_02108
-void DeviceOwnerDX7::RestoreBackBuffer() {
+bool CRendererDX7::RestoreBackBuffer() {
   DeviceOwnerDX7* owner = g_deviceOwnerDX7;
   if (owner) {
     owner->RestoreBackBufferImpl();
   }
+  return true;
 }
 
 // OFFSET: 0x0055D3E0

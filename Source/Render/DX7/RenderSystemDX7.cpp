@@ -49,8 +49,8 @@ void ClearDirectDrawModes() {
 
 // OFFSET: 0x0056B5E0
 // FUNCTION: fn_02317
-int CRenderSystemDX7::RefreshRendererCapabilities(int mipmaps, TextureAllocationDX7& allocation, bool& multitexture, CRenderSystemBase* renderSystem) {
-  return this->m_device->RefreshRendererCapabilities(mipmaps, allocation, multitexture, renderSystem);
+CRenderer* CRenderSystemDX7::CreateRenderer() {
+  return this->m_device->CreateRenderer();
 }
 
 // OFFSET: 0x0056B5F0
