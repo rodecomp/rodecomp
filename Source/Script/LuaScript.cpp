@@ -121,7 +121,7 @@ int SetSubChatWndList(lua_State* state) {
   info.height = height;
 
   int index;
-  if (type == "No") {
+  if (type == "On") {
     index = static_cast<int>(g_session.m_noSubChatWnds.size());
     g_session.m_noSubChatWnds[index] = info;
   } else {
