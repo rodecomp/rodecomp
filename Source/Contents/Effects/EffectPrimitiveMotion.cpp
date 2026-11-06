@@ -1,4 +1,6 @@
 #include "Contents/Effects/EffectPrimitiveMotion.h"
+#include "Client/Application/ErrorDialog.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
@@ -67,7 +69,7 @@ namespace {
   }
 
   // INLINED
-  void FaceCamera(EffectPrimitiveSlot* slots) {
+  __forceinline void FaceCamera(EffectPrimitiveSlot* slots) {
     const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
     slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
     slots[1].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.pitch) + 90);
@@ -290,22 +292,6 @@ bool CEffectPrim::MoveEffectPrimitive() {
   }
 
   return true;
-}
-
-// OFFSET: 0x00BAE7D0
-// FUNCTION: fn_19769
-bool CEffectPrim::OnProcess() {
-  if (!this->state.master) {
-    return false;
-  }
-
-  if (g_updateTick == 0) {
-    return true;
-  }
-
-  this->MoveEffectPrimitive();
-  ++this->state.stateCnt;
-  return this->state.stateCnt <= this->state.duration;
 }
 
 // OFFSET: 0x00BB6180
@@ -532,7 +518,7 @@ bool CEffectPrim::Prim3DCylinderHalf() {
 
 // OFFSET: 0x00BB8610
 // FUNCTION: fn_19784
-void CEffectPrim::AdvanceEffectPrimitive() {
+__declspec(noinline) void CEffectPrim::AdvanceEffectPrimitive() {
   this->state.orgPos = {
     this->state.master->render.position.x + this->state.deltaPos2.x, this->state.master->render.position.y + this->state.deltaPos2.y,
     this->state.master->render.position.z + this->state.deltaPos2.z
@@ -1327,7 +1313,7 @@ void CEffectPrim::PrimIntimidate() {
 
 // OFFSET: 0x00BC09F0
 // FUNCTION: fn_19824
-void CEffectPrim::PrimPoison() {
+__declspec(noinline) void CEffectPrim::PrimPoison() {
   FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
@@ -1847,7 +1833,7 @@ void CEffectPrim::PrimTeiHit2() {
 
 // OFFSET: 0x00BC3C70
 // FUNCTION: fn_19840
-bool CEffectPrim::PrimSuperAngel() {
+__declspec(noinline) bool CEffectPrim::PrimSuperAngel() {
   this->render.position.x = this->state.master->render.position.x;
   this->render.position.y = this->state.master->render.position.y;
   this->render.position.z = this->state.master->render.position.z;
@@ -2340,7 +2326,7 @@ void CEffectPrim::PrimGI3() {
 
 // OFFSET: 0x00BEBC40
 // FUNCTION: fn_19971
-void CEffectPrim::PrimWaterFall() {
+__declspec(noinline) void CEffectPrim::PrimWaterFall() {
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -2963,21 +2949,21 @@ static void TickLiveSlots(EffectPrimitiveSlot* slots) {
 
 // OFFSET: 0x00BEB020
 // FUNCTION: fn_19966
-unsigned char CEffectPrim::FollowMasterAndAdvance() {
+__declspec(noinline) unsigned char CEffectPrim::FollowMasterAndAdvance() {
   FollowMaster(*this);
   return this->AnimMotion();
 }
 
 // OFFSET: 0x00BE9560
 // FUNCTION: fn_19952
-void CEffectPrim::FollowMasterAndTickSlots() {
+__declspec(noinline) void CEffectPrim::FollowMasterAndTickSlots() {
   FollowMaster(*this);
   TickLiveSlots(this->state.slots);
 }
 
 // OFFSET: 0x00BE8770
 // FUNCTION: fn_19944
-void CEffectPrim::FollowMasterAndTickSlots2() {
+__declspec(noinline) void CEffectPrim::FollowMasterAndTickSlots2() {
   FollowMaster(*this);
   TickLiveSlots(this->state.slots);
 }
@@ -3414,7 +3400,7 @@ void CEffectPrim::PrimElectric2() {
 
 // OFFSET: 0x00BBD560
 // FUNCTION: fn_19806
-bool CEffectPrim::PrimFlowerCast() {
+__declspec(noinline) bool CEffectPrim::PrimFlowerCast() {
   FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
@@ -4080,7 +4066,7 @@ void CEffectPrim::PrimSphereWind2() {
 
 // OFFSET: 0x00BE7820
 // FUNCTION: fn_19938
-void CEffectPrim::PrimGI4() {
+__declspec(noinline) void CEffectPrim::PrimGI4() {
   FollowMaster(*this);
   int steps = 360;
 
@@ -4113,7 +4099,7 @@ void CEffectPrim::PrimGI4() {
 
 // OFFSET: 0x00BE7AD0
 // FUNCTION: fn_19940
-void CEffectPrim::PrimGI1() {
+__declspec(noinline) void CEffectPrim::PrimGI1() {
   FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
@@ -4655,7 +4641,7 @@ RenderVertex TransformVert(const matrix& view, const vector3d& position) {
 
 // OFFSET: 0x00BE8680
 // FUNCTION: fn_19943
-bool CEffectPrim::PrimTextureSpin() {
+__declspec(noinline) bool CEffectPrim::PrimTextureSpin() {
   this->render.position = this->state.master->render.position;
 
   for (int index = 0; index < 4; ++index) {
@@ -4693,7 +4679,7 @@ bool CEffectPrim::PrimTextureSpin() {
 
 // OFFSET: 0x00BE9490
 // FUNCTION: fn_19951
-void CEffectPrim::PrimScrollTexture() {
+__declspec(noinline) void CEffectPrim::PrimScrollTexture() {
   this->render.position = this->state.master->render.position;
 
   for (int index = 0; index < 4; ++index) {
@@ -4726,7 +4712,7 @@ void CEffectPrim::PrimScrollTexture() {
 
 // OFFSET: 0x00BE95C0
 // FUNCTION: fn_19953
-void CEffectPrim::PrimFrameFade() {
+__declspec(noinline) void CEffectPrim::PrimFrameFade() {
   FaceCamera(this->state.slots);
 
   for (int index = 0; index < 4; ++index) {
@@ -4755,7 +4741,7 @@ void CEffectPrim::PrimFrameFade() {
 
 // OFFSET: 0x00BEB3E0
 // FUNCTION: fn_19969
-void CEffectPrim::PrimRiseFollow() {
+__declspec(noinline) void CEffectPrim::PrimRiseFollow() {
   FaceCamera(this->state.slots);
   this->render.position = this->state.master->render.position;
 
@@ -4836,7 +4822,7 @@ void CEffectPrim::PrimAnimatedFlash() {
 
 // OFFSET: 0x00BE99A0
 // FUNCTION: fn_19956
-void CEffectPrim::PrimRandomSpin() {
+__declspec(noinline) void CEffectPrim::PrimRandomSpin() {
   FaceCamera(this->state.slots);
   this->render.position = this->state.master->render.position;
 
@@ -4871,7 +4857,7 @@ void CEffectPrim::PrimRandomSpin() {
 
 // OFFSET: 0x00BEA220
 // FUNCTION: fn_19961
-void CEffectPrim::PrimHeightRamp() {
+__declspec(noinline) void CEffectPrim::PrimHeightRamp() {
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -4926,8 +4912,8 @@ void CEffectPrim::PrimBobbing() {
 
     const int process = ++slot.process;
 
-    if (slot.riseAngle >= 360) {
-      slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle - 360);
+    if (slot.rotStart >= 360) {
+      slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
     }
 
     if (slot.flag1[0] == 11) {
@@ -4942,8 +4928,8 @@ void CEffectPrim::PrimBobbing() {
       }
     }
 
-    slot.height[0] = slot.height[2];
-    slot.height[0] = g_sinTable[process % 360] * 0.1f + slot.height[2];
+    slot.maxHeight = slot.height[0];
+    slot.maxHeight = g_sinTable[process % 360] * 0.1f + slot.height[0];
   }
 }
 
@@ -4959,7 +4945,7 @@ bool CEffectPrim::IsPartyVisible() {
 
 // OFFSET: 0x00BE7620
 // FUNCTION: fn_19936
-bool CEffectPrim::PrimTwinSpin() {
+__declspec(noinline) bool CEffectPrim::PrimTwinSpin() {
   this->render.position = this->state.master->render.position;
 
   EffectPrimitiveSlot& first = this->state.slots[0];
@@ -4996,7 +4982,7 @@ bool CEffectPrim::PrimTwinSpin() {
 
 // OFFSET: 0x00BE90C0
 // FUNCTION: fn_19948
-void CEffectPrim::PrimFlashFade() {
+__declspec(noinline) void CEffectPrim::PrimFlashFade() {
   FaceCamera(this->state.slots);
 
   for (int index = 0; index < 4; ++index) {
@@ -5025,7 +5011,7 @@ void CEffectPrim::PrimFlashFade() {
 
 // OFFSET: 0x00BEB330
 // FUNCTION: fn_19968
-bool CEffectPrim::PrimFadeAlpha() {
+__declspec(noinline) bool CEffectPrim::PrimFadeAlpha() {
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -5055,7 +5041,7 @@ bool CEffectPrim::PrimFadeAlpha() {
 
 // OFFSET: 0x00BE92B0
 // FUNCTION: fn_19950
-void CEffectPrim::PrimFrameScroll() {
+__declspec(noinline) void CEffectPrim::PrimFrameScroll() {
   this->render.position = this->state.master->render.position;
 
   for (int index = 0; index < 4; ++index) {
@@ -5079,7 +5065,7 @@ void CEffectPrim::PrimFrameScroll() {
 
 // OFFSET: 0x00BEA310
 // FUNCTION: fn_19962
-void CEffectPrim::PrimFramePhase() {
+__declspec(noinline) void CEffectPrim::PrimFramePhase() {
   this->render.position = this->state.master->render.position;
 
   for (int index = 0; index < 4; ++index) {
@@ -5327,7 +5313,7 @@ void CEffectPrim::PrimPulseRing() {
 
 // OFFSET: 0x00BE87D0
 // FUNCTION: fn_19945
-void CEffectPrim::PrimHoverFollow() {
+__declspec(noinline) void CEffectPrim::PrimHoverFollow() {
   FaceCamera(this->state.slots);
   this->render.position = this->state.master->render.position;
 
@@ -5356,7 +5342,7 @@ void CEffectPrim::PrimHoverFollow() {
 
 // OFFSET: 0x00BE9690
 // FUNCTION: fn_19954
-void CEffectPrim::PrimGlowFollow() {
+__declspec(noinline) void CEffectPrim::PrimGlowFollow() {
   FaceCamera(this->state.slots);
   this->render.position = this->state.master->render.position;
 
@@ -5394,7 +5380,7 @@ void CEffectPrim::PrimGlowFollow() {
 
 // OFFSET: 0x00BEA100
 // FUNCTION: fn_19960
-bool CEffectPrim::PrimOrbitFade() {
+__declspec(noinline) bool CEffectPrim::PrimOrbitFade() {
   FaceCamera(this->state.slots);
 
   for (int index = 0; index < 4; ++index) {
@@ -5436,7 +5422,7 @@ bool CEffectPrim::PrimOrbitFade() {
 
 // OFFSET: 0x00BE76E0
 // FUNCTION: fn_19937
-void CEffectPrim::PrimWaveHeights() {
+__declspec(noinline) void CEffectPrim::PrimWaveHeights() {
   this->render.position = this->state.master->render.position;
 
   int phase = 0;
@@ -5478,7 +5464,7 @@ void CEffectPrim::PrimWaveHeights() {
 
 // OFFSET: 0x00BE7970
 // FUNCTION: fn_19939
-void CEffectPrim::PrimWaveHeightsSlow() {
+__declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
   const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
@@ -5524,7 +5510,7 @@ void CEffectPrim::PrimWaveHeightsSlow() {
 
 // OFFSET: 0x00BE9170
 // FUNCTION: fn_19949
-void CEffectPrim::PrimTextureFrames() {
+__declspec(noinline) void CEffectPrim::PrimTextureFrames() {
   this->render.position = this->state.master->render.position;
 
   for (int index = 0; index < 4; ++index) {
@@ -7975,4 +7961,20 @@ bool CEffectPrim::PrimFloatingMotes() {
   }
 
   return true;
+}
+
+// OFFSET: 0x00BAE7D0
+// FUNCTION: fn_19769
+bool CEffectPrim::OnProcess() {
+  if (!this->state.master) {
+    return false;
+  }
+
+  if (g_updateTick == 0) {
+    return true;
+  }
+
+  this->MoveEffectPrimitive();
+  ++this->state.stateCnt;
+  return this->state.stateCnt <= this->state.duration;
 }
