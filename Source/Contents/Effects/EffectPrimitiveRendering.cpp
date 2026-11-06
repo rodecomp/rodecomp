@@ -3018,13 +3018,16 @@ void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
       const vector3d p3{x + vec3.x, y + vec3.y, z + vec3.z};
       const vector3d p4{x + vec4.x, y + vec4.y, z + vec4.z};
 
-      const int mode = this->state.slots[0].flag1[2];
-      if (mode == 0 || mode == 3) {
+      switch (this->state.slots[0].flag1[2]) {
+      case 0:
+      case 3:
         this->RenderTeiRect(&rpCnt, slot.alphaB, p1, p2, p3, p4, wtm, 1, static_cast<unsigned char>(slot.flag1[0]), 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (mode == 4) {
+        break;
+      case 4:
         this->RenderTeiRect(
           &rpCnt, slot.alphaB, p2, p1, p4, p3, wtm, 0, static_cast<short>(i + slot.flag1[0]) % this->state.totalTexture, 1, 255, 150, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0
         );
+        break;
       }
     }
   }
