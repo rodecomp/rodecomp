@@ -41,15 +41,17 @@ void UIJobListWnd::Slot15(int width, int height) {
   this->AddChild(this->m_title);
   this->AddCloseButton("", 0);
 
-  const std::string path = "유저인터페이스\\";
-  this->m_okButton = new UIBitmapButton();
-  this->m_okButton->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
-  this->m_okButton->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-  this->m_okButton->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-  this->m_okButton->SetSize(this->m_okButton->BitmapWidth(), this->m_okButton->BitmapHeight());
-  this->m_okButton->Move(this->geometry.width - 92, this->geometry.height - 24);
-  this->m_okButton->SetId(184);
-  this->AddChild(this->m_okButton);
+  {
+    const std::string path = "유저인터페이스\\";
+    this->m_okButton = new UIBitmapButton();
+    this->m_okButton->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
+    this->m_okButton->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    this->m_okButton->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    this->m_okButton->SetSize(this->m_okButton->BitmapWidth(), this->m_okButton->BitmapHeight());
+    this->m_okButton->Move(this->geometry.width - 92, this->geometry.height - 24);
+    this->m_okButton->SetId(184);
+    this->AddChild(this->m_okButton);
+  }
 
   for (int index = 0; index < 6; ++index) {
     this->m_jobChecks[index] = nullptr;
