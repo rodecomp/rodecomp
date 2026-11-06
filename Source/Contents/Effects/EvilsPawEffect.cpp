@@ -57,7 +57,8 @@ void CEvilsPawEffect::Slot01() {
 void CEvilsPawEffect::Slot07() {
   this->textureIndex = 0;
   this->delayCounter = this->frameDelay;
-  for (CParticle* particle : this->particles) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
     particle->SetColor(255, 255, 255);
     particle->alpha = 255;
     particle->scale = static_cast<float>(this->size);
@@ -116,7 +117,8 @@ void CEvilsPawEffect::Slot03() {
 // OFFSET: 0x006FF3E0
 // FUNCTION: fn_06961
 void CEvilsPawEffect::Slot04() {
-  for (CParticle* particle : this->particles) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
     if (particle) {
       particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
