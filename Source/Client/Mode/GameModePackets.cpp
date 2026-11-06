@@ -1442,8 +1442,8 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonInfo(const unsigned c
   g_session.unknown_5950 = reinterpret_cast<const char*>(packet + 2);
   g_session.unknown_596C = *reinterpret_cast<const int*>(packet + 63);
   g_session.unknown_5970 = *reinterpret_cast<const int*>(packet + 67);
-  const int previous = g_session.unknown_5948;
   const int state = *reinterpret_cast<const int*>(packet + 67) != 0 ? 1 : 2;
+  const int previous = g_session.unknown_5948;
   g_session.unknown_5948 = state;
   if (previous != state || state != 2 || g_session.unknown_593C != 0) {
     if (UIWindow* window = g_windowMgr.EnsureWindow(137)) {
