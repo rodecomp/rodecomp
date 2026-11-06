@@ -1017,7 +1017,7 @@ void UIItemWnd::Slot10(int x, int y, std::intptr_t value) {
       packet.packetType = ID_CZ_INVENTORY_TAB;
       packet.index = static_cast<unsigned short>(drag->id);
       packet.favorite = this->tabs->TabAt(x, y) != 3;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
     }
     break;
   case 2:
