@@ -164,12 +164,12 @@ bool CSession::IsEffectRenderEnabled() const {
 // FUNCTION: fn_24181
 bool CSession::CheckInterval(long long interval) {
   const int now = static_cast<int>(timeGetTime());
-  if (now < this->m_lastIntervalTime + interval) {
-    return false;
+  if (now >= this->m_lastIntervalTime + interval) {
+    this->m_lastIntervalTime = now;
+    return true;
   }
 
-  this->m_lastIntervalTime = now;
-  return true;
+  return false;
 }
 
 // OFFSET: 0x00E3D0F0
