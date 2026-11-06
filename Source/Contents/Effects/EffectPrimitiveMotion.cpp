@@ -4596,8 +4596,8 @@ bool CEffectPrim::PrimDriftingSquares() {
 
 // INLINED
 static __forceinline void RotatePairX(vector3d& point, int angle) {
-  const float y = point.y;
   const float z = point.z;
+  const float y = point.y;
   point.z = z * g_cosTable[angle] - y * g_sinTable[angle];
   point.y = y * g_cosTable[angle] + z * g_sinTable[angle];
 }
