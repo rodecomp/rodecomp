@@ -8398,6 +8398,21 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   }
 }
 
+// INLINED
+static __forceinline void RequestStatusPointUp(UIStatusWnd* window, CMode* mode, const int* statCosts, int statusPoint, int index) {
+  if (statCosts[index] <= statusPoint) {
+    mode->SendMsg(30, 13 + index, 1, 0, 0);
+    window->SendMsg(window, 35, 0, 0, 0, 0);
+  }
+}
+
+// INLINED
+static __forceinline void RequestTraitPointUp(CMode* mode, int index) {
+  if (g_session.GetTraitStat(231) > 0 && reinterpret_cast<const std::int64_t*>(&g_session.unknown_7FC0[0x20])[index] > 0) {
+    mode->SendMsg(314, 219 + index, 1, 0, 0);
+  }
+}
+
 // OFFSET: 0x00905830
 // FUNCTION: fn_12383
 int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -8989,16 +9004,37 @@ int UISelectCartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   return 0;
 }
 
+namespace {
+#pragma pack(push, 1)
+struct ReplayTaggedRecordHeader {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t bytes;
+};
+#pragma pack(pop)
+
+// INLINED
+inline std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
+  std::vector<unsigned char> record(bytes + 6u, 0);
+  const ReplayTaggedRecordHeader header{id, bytes};
+  std::memcpy(record.data(), &header, sizeof(header));
+  if (bytes != 0) {
+    std::memcpy(record.data() + sizeof(header), data, bytes);
+  }
+  return record;
+}
+}
+
+
 // OFFSET: 0x008D3AB0
 // FUNCTION: fn_12104
 std::vector<unsigned char> UIBabyAcceptWnd2::Slot44() {
   std::vector<unsigned char> records;
   {
-    const auto record = BuildReplayTaggedRecord(21550, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(21550, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(21551, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(21551, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   return records;
@@ -9009,11 +9045,11 @@ std::vector<unsigned char> UIBabyAcceptWnd2::Slot44() {
 std::vector<unsigned char> UIChooseSellBuyWnd::Slot44() {
   std::vector<unsigned char> records;
   {
-    const auto record = BuildReplayTaggedRecord(20850, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(20850, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(20851, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(20851, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   return records;
@@ -9023,7 +9059,7 @@ std::vector<unsigned char> UIChooseSellBuyWnd::Slot44() {
 static __forceinline std::vector<unsigned char> BuildAcceptanceReplayRecords(UITextViewer* viewer, std::uint16_t id, int message) {
   std::vector<unsigned char> records;
   {
-    const auto record = BuildReplayTaggedRecord(id, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(id, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
 
@@ -9034,12 +9070,12 @@ static __forceinline std::vector<unsigned char> BuildAcceptanceReplayRecords(UIT
   std::string decoration(parentheses);
   decoration.append(LookupMessage(message));
   {
-    const auto record = BuildReplayTaggedRecord(id + 2, text + 1, viewer->TextLength() - decoration.size());
+    const auto record = MakeReplayTaggedRecord(id + 2, text + 1, viewer->TextLength() - decoration.size());
     records.insert(records.end(), record.begin(), record.end());
   }
 
   {
-    const auto record = BuildReplayTaggedRecord(id + 1, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(id + 1, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   return records;
@@ -9080,15 +9116,15 @@ std::vector<unsigned char> UIJoinPartyAcceptWnd::Slot44() {
 std::vector<unsigned char> UIStarPlaceAcceptWnd::Slot44() {
   std::vector<unsigned char> records;
   {
-    const auto record = BuildReplayTaggedRecord(21700, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(21700, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(21702, &this->m_place, sizeof(this->m_place));
+    const auto record = MakeReplayTaggedRecord(21702, &this->m_place, sizeof(this->m_place));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
-    const auto record = BuildReplayTaggedRecord(21701, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(21701, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   return records;
@@ -9121,7 +9157,7 @@ std::vector<unsigned char> UIChooseWnd::Slot44() {
 static __forceinline std::vector<unsigned char> BuildItemListReplayRecords(const std::list<ITEM_INFO>& items, std::uint16_t id, std::int16_t packetId) {
   std::vector<unsigned char> records;
   {
-    const auto record = BuildReplayTaggedRecord(id, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(id, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
 
@@ -9134,12 +9170,12 @@ static __forceinline std::vector<unsigned char> BuildItemListReplayRecords(const
     *index++ = static_cast<std::int16_t>(item->unknown_0000[1]);
   }
   {
-    const auto message = BuildReplayTaggedRecord(id + 3, packet.data(), packet.size());
+    const auto message = MakeReplayTaggedRecord(id + 3, packet.data(), packet.size());
     records.insert(records.end(), message.begin(), message.end());
   }
 
   {
-    const auto record = BuildReplayTaggedRecord(id + 1, nullptr, 0);
+    const auto record = MakeReplayTaggedRecord(id + 1, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
   }
   return records;
