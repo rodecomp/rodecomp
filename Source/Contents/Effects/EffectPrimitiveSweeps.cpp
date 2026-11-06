@@ -89,7 +89,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
 
 // OFFSET: 0x00BF23A0
 // FUNCTION: fn_19989
-void CEffectPrim::RenderSpinSquare(
+__declspec(safebuffers) void CEffectPrim::RenderSpinSquare(
   matrix& wtm, int* rpCnt, float scale, short slotIndex, char pw, unsigned char red, unsigned char green, unsigned char blue
 ) {
   EffectPrimitiveSlot& slot = this->state.slots[slotIndex];
@@ -285,7 +285,7 @@ void CEffectPrim::RenderBladeQuads(matrix& wtm) {
 
 // OFFSET: 0x00BF3BD0
 // FUNCTION: fn_19993
-void CEffectPrim::RenderGlowSquare(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
