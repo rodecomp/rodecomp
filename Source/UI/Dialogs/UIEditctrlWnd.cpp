@@ -246,13 +246,10 @@ void UIMiniMapWnd::ResetCursor(int, int) {
 // OFFSET: 0x0099CA60
 // FUNCTION: fn_13562
 int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 0) {
-    if (this->edit == sender && this->edit->Length() > 0) {
-      this->SendMsg(this->edit, 6, 184, 0, 0, 0);
-      return 0;
-    }
-  } else if (message == 6) {
-    if (argument1 == 184) {
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 184: {
       std::string text = FormatOwnedString(g_miniMapMemoPath, g_applicationDirectory, g_session.m_navigationPlayerMap);
       FILE* file = std::fopen(text.c_str(), "ab");
       if (file) {
@@ -267,11 +264,16 @@ int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       }
       return 0;
     }
-    if (argument1 == 201) {
+    case 201:
       g_windowMgr.CloseWindow(274);
       return 0;
     }
     return 0;
+  case 0:
+    if (this->edit == sender && this->edit->Length() > 0) {
+      this->SendMsg(this->edit, 6, 184, 0, 0, 0);
+      return 0;
+    }
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
