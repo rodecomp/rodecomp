@@ -169,6 +169,8 @@ void DestroyNavigationLinkParser() {
 static const std::string g_parserMessageTag = "<MSG>";
 // GLOBAL: gl_25507
 static const std::string g_parserMessageCloseTag = "</MSG>";
+// STRING: st_13793
+static const std::string g_parserLineBreakTag = "<NR>";
 // GLOBAL: gl_25498
 static const std::string g_parserNaviLinkTag = "<NAVIL>";
 // GLOBAL: gl_25499
@@ -305,7 +307,7 @@ int DecodeNavigationNumber(std::string value) {
 
 // OFFSET: 0x00833270
 // FUNCTION: fn_10410
-std::string EncodeNavigationNumber(int value) {
+std::string NavigationLinkParser::EncodeNavigationNumber(int value) {
   const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   std::vector<char> characters;
 
@@ -323,12 +325,10 @@ std::string EncodeNavigationNumber(int value) {
   return result;
 }
 
-__declspec(noinline) bool ParseNavigationLink(std::string value, std::string& name, int& x, int& y);
-
 // OFFSET: 0x00835890
 // FUNCTION: fn_10420
-bool ParseNavigationLink(std::string value, std::string& name, int& x, int& y) {
-  const auto end = value.find("</NAVIL>");
+bool NavigationLinkParser::ParseNavigationLink(std::string value, std::string& name, int& x, int& y) {
+  const auto end = value.find(g_parserNaviLinkCloseTag);
 
   if (end == std::string::npos) {
     return true;
@@ -339,10 +339,10 @@ bool ParseNavigationLink(std::string value, std::string& name, int& x, int& y) {
   x = DecodeNavigationNumber(tail.substr(0, 2));
   y = DecodeNavigationNumber(tail.substr(2, 2));
   const std::string head = value.substr(0, coordinates);
-  const auto begin = head.find("<NAVIL>");
+  const auto begin = head.find(g_parserNaviLinkTag);
 
   if (begin != std::string::npos) {
-    name = head.substr(begin + 7);
+    name = head.substr(begin + std::strlen(g_parserNaviLinkTag.c_str()));
   }
 
   return !name.empty();
@@ -354,7 +354,7 @@ std::string FormatNavigationLink(std::string value, bool brackets) {
   std::string name;
   int x = 0;
   int y = 0;
-  ParseNavigationLink(std::move(value), name, x, y);
+  g_navigationLinkParser->ParseNavigationLink(std::move(value), name, x, y);
   char text[128] = {};
 
   if (brackets) {
@@ -378,14 +378,14 @@ std::string FormatNavigationLink(std::string value, bool brackets) {
 // FUNCTION: fn_10422
 std::pair<bool, std::string> RemoveLineBreakTag(std::string value) {
   std::string text = value;
-  const std::size_t position = text.find("<NR>");
+  const std::size_t position = text.find(g_parserLineBreakTag);
 
   if (position == std::string::npos) {
     return std::pair<bool, std::string>(false, value);
   }
 
   std::string head = text.substr(0, position);
-  const std::string tail = text.substr(position + std::strlen("<NR>"));
+  const std::string tail = text.substr(position + std::strlen(g_parserLineBreakTag.c_str()));
   head.append(tail.c_str(), tail.size());
   return std::pair<bool, std::string>(true, head);
 }
@@ -461,18 +461,21 @@ bool ExtractInnerItemLink(std::string& text, std::string& link, int& offset, con
 
 // OFFSET: 0x00834980
 // FUNCTION: fn_10417
-void ExtractNavigationLink(std::string& output, std::string value) {
-  output = value;
-  const auto begin = value.find("<NAVIL>");
+const std::string NavigationLinkParser::ExtractNavigationLink(std::string value) {
+  std::string output = value;
+  const auto begin = value.find(g_parserNaviLinkTag);
 
   if (begin != std::string::npos) {
+    output.clear();
     output = value.substr(begin);
-    const auto end = output.find("</NAVIL>");
+    const auto end = output.find(g_parserNaviLinkCloseTag);
 
     if (end != std::string::npos) {
-      output.resize(end + 8);
+      output = output.substr(0, end + std::strlen(g_parserNaviLinkCloseTag.c_str()));
     }
   }
+
+  return output;
 }
 
 // OFFSET: 0x00834160

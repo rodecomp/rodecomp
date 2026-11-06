@@ -3377,8 +3377,8 @@ static const std::string g_windowNaviLinkCloseTag = "</NAVIL>";
 // OFFSET: 0x005C9E00
 // FUNCTION: fn_03636
 void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
-  const std::string xText = EncodeNavigationNumber(x < 0 ? 1000 : x);
-  const std::string yText = EncodeNavigationNumber(y < 0 ? 1000 : y);
+  const std::string xText = g_navigationLinkParser->EncodeNavigationNumber(x < 0 ? 1000 : x);
+  const std::string yText = g_navigationLinkParser->EncodeNavigationNumber(y < 0 ? 1000 : y);
   std::string link = g_windowNaviLinkTag;
   link += name;
   link += xText;
