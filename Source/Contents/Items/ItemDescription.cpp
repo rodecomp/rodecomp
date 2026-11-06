@@ -85,7 +85,12 @@ ITEM_DESC& FindItemDescription(int id) {
 // OFFSET: 0x006D3DC0
 // FUNCTION: fn_06548
 ITEM_DESC& EnsureItemDescription(int id, std::map<int, ITEM_DESC>& values) {
-  return values[id];
+  const auto entry = values.find(id);
+  if (entry != values.end()) {
+    return entry->second;
+  }
+
+  return values.insert({id, ITEM_DESC()}).first->second;
 }
 
 // OFFSET: 0x00DDD280
