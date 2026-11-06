@@ -5,13 +5,14 @@
 // OFFSET: 0x005BFA60
 // FUNCTION: fn_03499
 std::size_t CActorNameCardHolder::Save(std::vector<char>& output) {
-  if (this->cards.empty()) {
+  const std::size_t count = this->cards.size();
+  if (count == 0) {
     return 0;
   }
 
   std::vector<char> buffer(0x400);
   std::size_t offset = 4;
-  *reinterpret_cast<std::size_t*>(&buffer[0]) = this->cards.size();
+  *reinterpret_cast<std::size_t*>(&buffer[0]) = count;
 
   for (auto it = this->cards.begin(); it != this->cards.end(); ++it) {
     const CActorNameCard& card = it->second;
@@ -56,7 +57,7 @@ std::size_t CActorNameCardHolder::Save(std::vector<char>& output) {
   }
 
   output.assign(buffer.begin(), buffer.begin() + offset);
-  return this->cards.size();
+  return count;
 }
 
 // OFFSET: 0x005C05B0
