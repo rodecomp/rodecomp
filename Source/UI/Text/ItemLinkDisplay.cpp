@@ -97,19 +97,19 @@ std::string UIChatHisBox::Convert(const std::string& text) {
   }
 
   std::string remaining = text;
-  std::string result;
-  unsigned previous = 0;
+  std::string result = "";
   unsigned position = 0;
+  unsigned previous = 0;
 
   for (;;) {
-    std::string encoded;
+    std::string encoded = "";
 
     if (!this->Next(remaining, encoded, position, text.c_str())) {
       break;
     }
 
     result += text.substr(previous, position - previous);
-    std::string name;
+    std::string name = "";
 
     if (this->Name(encoded, name)) {
       name = this->BracketName(name);
