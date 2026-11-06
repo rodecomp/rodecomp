@@ -266,7 +266,7 @@ void UIBmpRadioBtn::Slot28(int, int) {
 // OFFSET: 0x0089B640
 // FUNCTION: fn_11570
 bool UIBmpRadioBtn::SetBitmap(const char* name, int state) {
-  const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   if (!bitmap) {
     return false;
   }
@@ -2568,7 +2568,7 @@ void UIComboBoxV2Wnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
   if (!this->text.empty()) {
-    const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->text.c_str())));
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->text.c_str())));
     this->DrawBitmap(0, 0, &bitmap->image, false);
   }
 
@@ -2766,7 +2766,7 @@ void UIImgMenu::Paint() {
   char suffix[12];
   std::sprintf(suffix, "_%d.bmp", this->hovered);
   const std::string path = this->baseName + suffix;
-  const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
 
   int offset = 3;
   if (this->unknown_0090[this->hovered] == 0) {
@@ -3333,8 +3333,8 @@ void UITabControl::Paint() {
         offset += this->widths[previous] - 1;
       }
 
-      const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\icon_new.bmp")));
-      this->DrawBitmap(1, static_cast<unsigned short>(offset) + 2, bitmap ? &bitmap->image : nullptr, false);
+      auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\icon_new.bmp")));
+      this->DrawBitmap(1, static_cast<unsigned short>(offset) + 2, bitmap, false);
     }
   }
 }

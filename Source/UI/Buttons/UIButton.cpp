@@ -48,7 +48,7 @@ void UIButton::Paint() {
     break;
   }
 
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
   this->DrawTextAt(0, 0, this->label.c_str(), 0, 0, 12, 0, 0, 0);
 }
 

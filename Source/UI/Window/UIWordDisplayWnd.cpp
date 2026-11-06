@@ -17,8 +17,7 @@ void UIWordDisplayWnd::Slot15(int, int) {
 // OFFSET: 0x0085E370
 // FUNCTION: fn_10825
 void UIWordDisplayWnd::Paint() {
-  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\전장적표시.bmp")));
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\전장적표시.bmp"))), true);
 }
 
 // OFFSET: 0x0085FD30

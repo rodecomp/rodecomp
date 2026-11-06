@@ -29,7 +29,7 @@ void UIResizer::SetColors(std::uint32_t line, std::uint32_t background) {
 void UIResizer::Paint() {
   if (!this->bitmapName.empty()) {
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())));
-    this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+    this->DrawBitmap(0, 0, bitmap, false);
     return;
   }
 

@@ -33,7 +33,7 @@ void UIBmpTextButton2::Paint() {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[3].c_str())));
   }
 
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
   if (this->m_invalidateParent != 0 && this->parent) {
     this->parent->Invalidate();
   }

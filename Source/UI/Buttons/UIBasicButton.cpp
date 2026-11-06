@@ -43,21 +43,21 @@ bool UIBasicButton::Configure(int width, const char* value) {
 // INLINED
 static __forceinline void DrawButtonSkin(UIBasicButton* button, const char* left, const char* middle, const char* right) {
   auto* bitmap = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(left)));
-  button->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  button->DrawBitmap(0, 0, bitmap, false);
   const int count = (button->geometry.width - 12) / 6 + 1;
 
   for (int index = 1, x = 6; index <= count; ++index, x += 6) {
     if (index == count) {
       bitmap = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(middle)));
-      button->DrawBitmap(button->geometry.width - 12, 0, bitmap ? &bitmap->image : nullptr, false);
+      button->DrawBitmap(button->geometry.width - 12, 0, bitmap, false);
     } else {
       bitmap = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(middle)));
-      button->DrawBitmap(x, 0, bitmap ? &bitmap->image : nullptr, false);
+      button->DrawBitmap(x, 0, bitmap, false);
     }
   }
 
   bitmap = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(right)));
-  button->DrawBitmap(button->geometry.width - 6, 0, bitmap ? &bitmap->image : nullptr, false);
+  button->DrawBitmap(button->geometry.width - 6, 0, bitmap, false);
 }
 
 // OFFSET: 0x0085B230
