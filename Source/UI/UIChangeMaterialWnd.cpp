@@ -329,9 +329,9 @@ void UIChangeMaterialWnd::sub_5E39A0() {
   *reinterpret_cast<std::int32_t*>(packet + 8) = 1;
 
   unsigned char* entry = packet + 0xC;
-  for (const ITEM_INFO& material : this->m_materials) {
-    *reinterpret_cast<std::uint16_t*>(entry) = static_cast<std::uint16_t>(material.unknown_0000[1]);
-    *reinterpret_cast<std::uint16_t*>(entry + 2) = static_cast<std::uint16_t>(material.quantity);
+  for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
+    *reinterpret_cast<std::uint16_t*>(entry) = static_cast<std::uint16_t>(it->unknown_0000[1]);
+    *reinterpret_cast<std::uint16_t*>(entry + 2) = static_cast<std::uint16_t>(it->quantity);
     entry += 4;
   }
 
@@ -395,13 +395,13 @@ int UIChangeMaterialWnd::SendMsg(
       this->m_resultItem.SetItemId(entry->results.front().id);
       this->m_resultItem.quantity = entry->results.front().quantity;
 
-      for (const MaterialReq& req : entry->materials) {
+      for (auto it = entry->materials.begin(); it != entry->materials.end(); ++it) {
         ITEM_INFO info;
-        info.SetItemId(req.id);
-        info.quantity = req.quantity;
-        const ITEM_INFO stock = LookupClientItem(g_session.m_inventoryItems, req.id, 1);
+        info.SetItemId(it->id);
+        info.quantity = it->quantity;
+        const ITEM_INFO stock = LookupClientItem(g_session.m_inventoryItems, it->id, 1);
         info.unknown_0000[1] = stock.unknown_0000[1];
-        info.identified = req.quantity <= stock.quantity;
+        info.identified = it->quantity <= stock.quantity;
         this->m_materials.push_back(info);
       }
 
