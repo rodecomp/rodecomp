@@ -865,8 +865,7 @@ __declspec(noinline) void UIWindow::SetSize(int width, int height) {
   this->Slot16();
 }
 
-// OFFSET: 0x00A7BB60
-// FUNCTION: fn_16935
+// INLINED
 __declspec(noinline) void UIWindow::DrawBitmap(int x, int y, const BitmapImage* image, bool transparent) {
   if (!this->geometry.surface || !image) {
     return;
@@ -874,6 +873,17 @@ __declspec(noinline) void UIWindow::DrawBitmap(int x, int y, const BitmapImage* 
 
   static_cast<CDCBitmap*>(this->geometry.surface)->SetAlpha(image->alpha != 0);
   this->geometry.surface->Copy(x, y, image->width, image->height, image->pixels, transparent);
+}
+
+// OFFSET: 0x00A7BB60
+// FUNCTION: fn_16935
+__declspec(noinline) void UIWindow::DrawBitmap(int x, int y, CBitmapRes* bitmap, bool transparent) {
+  if (!this->geometry.surface || !bitmap) {
+    return;
+  }
+
+  static_cast<CDCBitmap*>(this->geometry.surface)->SetAlpha(bitmap->image.alpha != 0);
+  this->geometry.surface->Copy(x, y, bitmap->image.width, bitmap->image.height, bitmap->image.pixels, transparent);
 }
 
 // OFFSET: 0x00A7BD60
