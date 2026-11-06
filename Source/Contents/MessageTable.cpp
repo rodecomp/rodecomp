@@ -4788,18 +4788,21 @@ bool CCommonObject::OpenCsv(const char* name, CFile& file) {
   }
 
   const unsigned char* data = static_cast<const unsigned char*>(file.GetData());
-  if (file.GetSize() >= 2) {
+  const unsigned int size = file.GetSize();
+  if (size >= 2) {
+    int encoding = 0;
     if (data[0] == 0xFF && data[1] == 0xFE) {
-      std::string message = FormatOwnedString("Not Match Encoding Type : %d", 5);
-      return false;
+      encoding = 5;
+    } else if (data[0] == 0xFE && data[1] == 0xFF) {
+      encoding = 7;
     }
-    if (data[0] == 0xFE && data[1] == 0xFF) {
-      std::string message = FormatOwnedString("Not Match Encoding Type : %d", 7);
+    if (encoding != 0) {
+      std::string message = FormatOwnedString("Not Match Encoding Type : %d", encoding);
       return false;
     }
   }
 
-  if (file.GetSize() >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF) {
+  if (size >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF) {
     file.Seek(3, FILE_CURRENT);
   }
   return true;
