@@ -51,11 +51,12 @@ bool CMapPropertyMgr::Create() {
   if (g_mapPropertyMgr == nullptr) {
     g_mapPropertyMgr = new (std::nothrow) CMapPropertyMgr;
     if (g_mapPropertyMgr != nullptr) {
-      if (g_mapPropertyMgr->m_valid) {
-        return true;
+      if (!g_mapPropertyMgr->m_valid) {
+        delete g_mapPropertyMgr;
+        g_mapPropertyMgr = nullptr;
+        return false;
       }
-      delete g_mapPropertyMgr;
-      g_mapPropertyMgr = nullptr;
+      return true;
     }
   }
   return false;
