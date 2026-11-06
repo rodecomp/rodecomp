@@ -958,7 +958,7 @@ int ITEM_INFO::Apprentice(char* output, int& capacity, unsigned char consume) co
     return 0;
   }
 
-  const int written = output ? static_cast<int>(strnlen(output, capacity)) : 0;
+  const int written = !output ? 0 : static_cast<int>(strnlen(output, capacity));
   if (consume) {
     capacity -= written;
   }
@@ -970,13 +970,12 @@ int ITEM_INFO::Apprentice(char* output, int& capacity, unsigned char consume) co
 int ITEM_INFO::Refine(char* output, int& capacity, unsigned char consume) const {
   const int bytes = StringFormat(output, capacity, static_cast<std::size_t>(-1), "+%d ", this->unknown_0060);
 
-  if (bytes <= 0) {
-    return 0;
-  }
+  if (bytes > 0) {
+    if (consume) {
+      capacity -= bytes;
+    }
 
-  if (consume) {
-    capacity -= bytes;
+    return bytes;
   }
-
-  return bytes;
+  return 0;
 }
