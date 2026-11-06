@@ -4,7 +4,8 @@
 
 // OFFSET: 0x007313C0
 // FUNCTION: fn_07547
-NAsyncWorkMgr::NAsyncWorkMgr(std::uint32_t workers) : m_enabled(false), m_workerCount(workers), m_requests(nullptr), m_responses(nullptr) {
+NAsyncWorkMgr::NAsyncWorkMgr(std::uint32_t workers) : m_workerCount(workers), m_requests(nullptr), m_responses(nullptr) {
+  this->m_enabled = false;
   if (this->Initialize(workers)) {
     this->m_enabled = true;
   }
@@ -71,7 +72,7 @@ bool NAsyncWorkMgr::Initialize(std::uint32_t workers) {
     return false;
   }
 
-  for (std::uint32_t i = 0; i < workers; ++i) {
+  for (std::uint32_t i = 1; i <= workers; ++i) {
     NAsyncWorkThread* worker = new (std::nothrow) NAsyncWorkThread(this->m_requests, this->m_responses);
     if (!worker) {
       return false;
@@ -91,7 +92,7 @@ bool NAsyncWorkMgr::Initialize(std::uint32_t workers) {
 // OFFSET: 0x00731920
 // FUNCTION: fn_07553
 void NAsyncWorkMgr::Update(std::uint32_t maximum) {
-  for (std::uint32_t i = 0; i < maximum; ++i) {
+  for (std::uint32_t i = 1; i <= maximum; ++i) {
     NAsyncWorkResponse response = this->m_responses->Pop();
     if (!response.valid) {
       break;
