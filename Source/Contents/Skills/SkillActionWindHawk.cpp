@@ -70,7 +70,8 @@ void CSkillAction_WH_GALESTORM::Slot11(int level, CGameActor* source, CGameActor
 // FUNCTION: fn_09025
 void CSkillAction_WH_GALESTORM::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("galestorm_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("galestorm_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -78,7 +79,8 @@ void CSkillAction_WH_GALESTORM::Slot16(int level, CGameActor* source, CGameActor
 // FUNCTION: fn_09026
 void CSkillAction_WH_CALAMITYGALE::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
@@ -90,7 +92,8 @@ void CSkillAction_WH_CALAMITYGALE::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_09027
 void CSkillAction_WH_CALAMITYGALE::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -98,7 +101,8 @@ void CSkillAction_WH_CALAMITYGALE::Slot11(int level, CGameActor* source, CGameAc
 // FUNCTION: fn_09028
 void CEfstAction_CALAMITYGALE::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -151,7 +155,8 @@ bool CSkillAction_WH_CRESCIVE_BOLT::Slot07() {
 // FUNCTION: fn_09037
 void CSkillAction_WH_CRESCIVE_BOLT::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
       effect->Slot14(level);
     }
   }
@@ -175,7 +180,8 @@ void CSkillAction_WH_CRESCIVE_BOLT::Slot15(int sourceActor, CGameActor* target, 
 // FUNCTION: fn_09038
 void CSkillAction_WH_CRESCIVE_BOLT::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -183,11 +189,13 @@ void CSkillAction_WH_CRESCIVE_BOLT::Slot16(int level, CGameActor* source, CGameA
 // FUNCTION: fn_09039
 void CSkillAction_WH_WILD_WALK::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
       effect->Slot14(level);
     }
+    effects = g_effectMgr;
     if (CEffect* effect =
-            g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+            effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
       effect->Slot14(level);
     }
   }
@@ -197,7 +205,8 @@ void CSkillAction_WH_WILD_WALK::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_09040
 void CSkillAction_WH_WILD_WALK::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     source->LaunchEffect(2425, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
