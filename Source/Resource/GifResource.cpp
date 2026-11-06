@@ -1,11 +1,14 @@
 #include "Resource/GifResource.h"
 
+#include "Client/Application/ErrorDialog.h"
 #include "File/File.h"
 #include "Resource/GifLzw.h"
+#include "Render/DeviceContext/DCSurface.h"
 
 #include <algorithm>
 #include <cstring>
 #include <string>
+#include <windows.h>
 #include <windows.h>
 #include <timeapi.h>
 
@@ -93,7 +96,29 @@ bool CGifRes::Decode(const char* name, const void* data, int bytes, bool iconOnl
     return this->DecodeGif(data, bytes, iconOnly);
   }
 
-  return CBitmapRes::Decode(name, data, bytes, iconOnly);
+  const char* extension = std::strrchr(name, '.');
+  if (!extension) {
+    return false;
+  }
+
+  if (lstrcmpiA(extension, ".bmp") == 0) {
+    return this->image.DecodeBitmap(data, bytes, iconOnly);
+  }
+
+  if (lstrcmpiA(extension, ".tga") == 0) {
+    return this->image.DecodeTga(data, bytes);
+  }
+
+  if (lstrcmpiA(extension, ".jpg") == 0) {
+    return this->image.DecodeJpeg(data, bytes);
+  }
+
+  if (lstrcmpiA(extension, ".png") == 0) {
+    return this->image.DecodePng(data, bytes, name);
+  }
+
+  ShowErrorDialog(GetRenderSystemHolder()->system, "Unsupport fileformat!", 0);
+  return false;
 }
 
 // OFFSET: 0x00749C60
