@@ -720,29 +720,29 @@ bool CNavigationManager::sub_B99030(std::string name, int type, unsigned char mo
 // OFFSET: 0x00B995D0
 // FUNCTION: fn_19612
 bool CNavigationManager::sub_B995D0(std::string name, int type, bool flag) {
-  if (static_cast<unsigned int>(type) > 4) {
-    return false;
-  }
+  if (static_cast<unsigned int>(type) <= 4) {
+    this->unknown_1264 = name;
+    this->unknown_1248 = flag;
+    this->unknown_1260 = type;
+    g_navigationManager.UpdateSearchResults();
 
-  this->unknown_1264 = name;
-  this->unknown_1248 = flag;
-  this->unknown_1260 = type;
-  g_navigationManager.UpdateSearchResults();
-
-  if (!this->unknown_1248) {
-    if (g_windowMgr.window_4F174 == nullptr) {
-      g_windowMgr.EnsureWindow(203);
-    } else {
-      g_windowMgr.window_4F174->SendMsg(nullptr, 6, 200, 0, 0, 0);
-      if (g_windowMgr.modal != nullptr) {
-        static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
+    if (!this->unknown_1248) {
+      if (g_windowMgr.window_4F174 == nullptr) {
+        g_windowMgr.EnsureWindow(203);
+      } else {
+        g_windowMgr.window_4F174->SendMsg(nullptr, 6, 200, 0, 0, 0);
+        if (g_windowMgr.modal != nullptr) {
+          static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
+        }
       }
+
+      g_windowMgr.Promote(g_windowMgr.window_4F174);
     }
 
-    g_windowMgr.Promote(g_windowMgr.window_4F174);
+    return true;
   }
 
-  return true;
+  return false;
 }
 
 // OFFSET: 0x00B996D0
