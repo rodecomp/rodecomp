@@ -379,7 +379,7 @@ void UIBmpRadioBtn2::Slot48() {
 // OFFSET: 0x00891870
 // FUNCTION: fn_11451
 void UICaptchaImage::Slot28(int, int) {
-  if (!this->m_tooltip.empty()) {
+  if (this->m_tooltip.size() > 0) {
     int screenX = 0, screenY = -20;
     this->ToScreen(screenX, screenY);
 
