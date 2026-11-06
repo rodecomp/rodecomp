@@ -1658,7 +1658,7 @@ void UIEmotion::Paint() {
     }
 
     const std::vector<SpriteRleImage*>& images = this->m_sprite->images[cell.imageType];
-    if (static_cast<unsigned>(cell.image) < images.size()) {
+    if (images.size() > static_cast<unsigned>(cell.image)) {
       SpriteRleImage* image = images[cell.image];
       if (image) {
         this->AddRotatedSpriteCellOverlay(
