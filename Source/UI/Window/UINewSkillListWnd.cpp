@@ -739,7 +739,7 @@ void UINewSkillListWnd::InitTabs() {
 void UINewSkillListWnd::ResetLists() {
   this->m_locked = 0;
   this->m_skillPoints = g_session.m_skillPoint;
-  for (int i = 0; i < 4; ++i) {
+  for (unsigned i = 0; i < 4; ++i) {
     this->m_lists[i] = g_session.m_skillBundle.Group(i);
   }
   this->m_unknown_02A0.clear();
