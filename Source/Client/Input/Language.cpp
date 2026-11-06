@@ -405,8 +405,8 @@ UIHairBitmap::UIHairBitmap() : UIBitmapButton() {
 
 // OFFSET: 0x007ECEC0
 // FUNCTION: fn_09804
-UICaptchaPreviewWnd::UICaptchaPreviewWnd()
-    : UIFrameWnd(0), m_image(nullptr), m_captchaKey(), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0) {
+UICaptchaPreviewWnd::UICaptchaPreviewWnd() : UIFrameWnd(0), m_image(nullptr), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0) {
+  std::memset(this->m_captchaKey, 0, sizeof(this->m_captchaKey));
 }
 
 // OFFSET: 0x0086C7B0
