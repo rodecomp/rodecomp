@@ -64,9 +64,13 @@ namespace {
 
 // OFFSET: 0x0084E970
 // FUNCTION: fn_10648
-__declspec(noinline) UIBalloonText::UIBalloonText()
-    : UIWindow(0), unknown_007C(0), m_fontHeight(12), m_textColor(0xFFFFFF), m_outlineColor(0), m_richText(0) {
+__declspec(noinline) UIBalloonText::UIBalloonText() : UIWindow(0) {
+  this->m_richText = 0;
+  this->unknown_007C = 0;
+  this->m_fontHeight = 12;
   this->geometry.unknown_0034 = 0;
+  this->m_textColor = 0xFFFFFF;
+  this->m_outlineColor = 0;
 }
 
 UIBalloonText::~UIBalloonText() = default;
