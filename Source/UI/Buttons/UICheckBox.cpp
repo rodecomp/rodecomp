@@ -40,13 +40,13 @@ void UICheckBox::Paint() {
   switch (this->geometry.unknown_0030) {
   case 0: {
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str())));
-    this->DrawBitmap(0, (this->geometry.height - bitmap->image.height) / 2, &bitmap->image, false);
+    this->DrawBitmap(0, (this->geometry.height - bitmap->image.height) / 2, bitmap, false);
     width = bitmap->image.width;
     break;
   }
   case 1: {
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
-    this->DrawBitmap(0, (this->geometry.height - bitmap->image.height) / 2, &bitmap->image, false);
+    this->DrawBitmap(0, (this->geometry.height - bitmap->image.height) / 2, bitmap, false);
     width = bitmap->image.width;
     break;
   }
