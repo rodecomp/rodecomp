@@ -33,11 +33,11 @@ void CCloud::Close() {
 // FUNCTION: fn_06917
 void CCloud::Slot01() {
   this->particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
-  if (this->particle) {
-    this->particle->unknown_0004 = this->id;
-    this->particle->unknown_000C = 0;
-    this->particle->unknown_0010 = 0;
-    this->particle->unknown_0008 = 1;
+  if (CParticle* particle = this->particle) {
+    particle->unknown_0004 = this->id;
+    particle->unknown_000C = 0;
+    particle->unknown_0010 = 0;
+    particle->unknown_0008 = 1;
     this->particle->sourceBlend = 5;
     this->particle->destinationBlend = 6;
   }
