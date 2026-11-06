@@ -445,7 +445,8 @@ void CEfstAction_MYSTIC_SYMPHONY::Slot00(int efstId, int value, int argument3, i
 // FUNCTION: fn_09010
 void CEfstAction_MYSTIC_SYMPHONY::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony_note"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony_note"));
   }
 }
 
