@@ -640,7 +640,7 @@ void CSkillAction_Icing::Slot08(int level, CGameActor* source) {
 void CSkillAction_Thundering::Slot08(int level, CGameActor* source) {
   if (source) {
     if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-          const std::uint8_t bytes[] = {0xB1, 0xA5, 0xF2, 0x9B, 0xC5, 0xC6, 0x95, 0xFA, 0xAB, 0xAA, 0xD8, 0x96, 0xC0, 0xD0, 0x93, 0x93};
+          const char bytes[] = {'\xB1', '\xA5', '\xF2', '\x9B', '\xC5', '\xC6', '\x95', '\xFA', '\xAB', '\xAA', '\xD8', '\x96', '\xC0', '\xD0', '\x93', '\x93'};
           thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
           return name.Text();
         }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
@@ -1144,8 +1144,8 @@ void CSkillAction_AT_GLACIER_NOVA::Slot12(vector3d position, int argument2, int 
 void CSkillAction_AT_GLACIER_SHARD::Slot10(int level, CGameActor* source, int argument3, int argument4, int argument5) {
   if (source) {
     if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-          const std::uint8_t bytes[] = {0x20, 0x4D, 0xDA, 0x88, 0x82, 0x12, 0x6D, 0x4A, 0x34, 0x49, 0xDA, 0x99, 0x8F, 0x28, 0x6B, 0x74,
-                                        0x35, 0x46, 0xDE, 0x9F, 0xEB};
+          const char bytes[] = {'\x20', '\x4D', '\xDA', '\x88', '\x82', '\x12', '\x6D', '\x4A', '\x34', '\x49', '\xDA', '\x99', '\x8F', '\x28', '\x6B', '\x74',
+                                        '\x35', '\x46', '\xDE', '\x9F', '\xEB'};
           thread_local EncryptedName<sizeof(bytes), 0x151F77EBEBBB2147ULL> name(bytes);
           return name.Text();
         }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
@@ -1835,8 +1835,8 @@ void CSkillAction_AT_SAVAGE_LUNGE::Slot11(int level, CGameActor* source, CGameAc
 void CSkillAction_AT_TEMPEST_FLAP::Slot08(int level, CGameActor* source) {
   if (this->CanUse(source)) {
     if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const std::uint8_t bytes[] = {0xCB, 0xD8, 0xB2, 0x4F, 0x28, 0x5E, 0xF7, 0x6C, 0xD9, 0xD1, 0xBE, 0x4F, 0x12, 0x4E, 0xE2, 0x40,
-                                    0xCB, 0xBD};
+      const char bytes[] = {'\xCB', '\xD8', '\xB2', '\x4F', '\x28', '\x5E', '\xF7', '\x6C', '\xD9', '\xD1', '\xBE', '\x4F', '\x12', '\x4E', '\xE2', '\x40',
+                                    '\xCB', '\xBD'};
       thread_local EncryptedName<sizeof(bytes), 0x33832D4D3FDFBDBFULL> name(bytes);
       return name.Text();
     }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {

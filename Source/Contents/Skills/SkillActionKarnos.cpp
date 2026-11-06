@@ -462,7 +462,7 @@ void CSkillAction_KR_THUNDERING_FOCUS::Slot11(int level, CGameActor* source, CGa
     return;
   }
 
-  const std::uint8_t effectSource[] = {0x95, 0xF3, 0x86, 0x15, 0x89, 0xE2, 0x8D, 0x08, 0x8F, 0xFC, 0xAC, 0x1D, 0x82, 0xE4, 0x8A, 0x12, 0xBE, 0xFC, 0xF3};
+  const char effectSource[] = {'\x95', '\xF3', '\x86', '\x15', '\x89', '\xE2', '\x8D', '\x08', '\x8F', '\xFC', '\xAC', '\x1D', '\x82', '\xE4', '\x8A', '\x12', '\xBE', '\xFC', '\xF3'};
   thread_local EncryptedName<sizeof(effectSource), 0x61FF87ED7BF39BE1ULL> effectName(effectSource);
   g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
@@ -480,7 +480,7 @@ void CSkillAction_KR_THUNDERING_FOCUS_S::Slot11(int level, CGameActor* source, C
     return;
   }
 
-  const std::uint8_t effectSource[] = {0x8B, 0xED, 0x52, 0x63, 0x01, 0x5A, 0xEB, 0x14, 0x91, 0xE2, 0x78, 0x6B, 0x0A, 0x5C, 0xEC, 0x0E, 0xA0, 0xFC, 0x27};
+  const char effectSource[] = {'\x8B', '\xED', '\x52', '\x63', '\x01', '\x5A', '\xEB', '\x14', '\x91', '\xE2', '\x78', '\x6B', '\x0A', '\x5C', '\xEC', '\x0E', '\xA0', '\xFC', '\x27'};
   thread_local EncryptedName<sizeof(effectSource), 0x7D993F650D2785FFULL> effectName(effectSource);
   g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
