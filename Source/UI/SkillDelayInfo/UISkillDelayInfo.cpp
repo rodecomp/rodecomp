@@ -143,7 +143,7 @@ void CUIDelayItem::Slot15(int width, int height) {
   this->level = new CUIStaticText();
   this->level->SetSize(44, 21);
   this->level->Move(0, 0);
-  this->level->SetText("", 0);
+  this->level->SetText("");
   this->level->SetFitText(0);
   this->level->SetAlign(6, 6);
   const std::uint8_t levelFontSource[] = {0x1E, 0xF0, 0xEB, 0x10, 0x9A, 0x2F};
@@ -176,7 +176,7 @@ void CUITime::Slot15(int width, int height) {
   this->text = new CUIStaticText();
   this->text->SetSize(60, 21);
   this->text->Move(5, 0);
-  this->text->SetText("", 0);
+  this->text->SetText("");
   this->text->SetFitText(0);
   this->text->SetAlign(6, 6);
   const std::uint8_t textFontSource[] = {0xEC, 0xDA, 0xE1, 0xE4, 0xDE, 0x8D};
@@ -648,8 +648,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
     const char titleTextSource[] = {
         '\xF5', '\x4A', '\x6E', '\x43', '\xDB', '\x8C', '\xEB', '\xC0', '\x95', '\x43', '\x6B', '\xF9'};
     thread_local EncryptedName<sizeof(titleTextSource), 0x01CB4F1DF9D3F931ULL> titleTextName(titleTextSource);
-    const char* titleText = titleTextName.Text();
-    title->SetText(titleText, std::strlen(titleText));
+    title->SetText(titleTextName.Text());
   }
   title->SetFitText(0);
   title->SetAlign(0, 6);
@@ -735,7 +734,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
   this->unknown_00DC = new CUIStaticText();
   this->unknown_00DC->SetSize(325, 25);
   this->unknown_00DC->Move(10, 27);
-  this->unknown_00DC->SetText("", 0);
+  this->unknown_00DC->SetText("");
   this->unknown_00DC->SetFitText(1);
   this->unknown_00DC->SetAlign(6, 6);
   {
@@ -759,8 +758,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
     const char castingTextSource[] = {
         '\x27', '\x66', '\xEE', '\x4D', '\x63', '\xC4', '\xE3'};
     thread_local EncryptedName<sizeof(castingTextSource), 0xB3E307A5F753D5E3ULL> castingTextName(castingTextSource);
-    const char* castingText = castingTextName.Text();
-    this->labels[0]->SetText(castingText, std::strlen(castingText));
+    this->labels[0]->SetText(castingTextName.Text());
   }
   this->labels[0]->SetFitText(0);
   this->labels[0]->SetAlign(6, 6);
@@ -785,8 +783,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
     const char cooldownTextSource[] = {
         '\x3B', '\x13', '\x98', '\xBB', '\x67', '\x7C', '\xA3'};
     thread_local EncryptedName<sizeof(cooldownTextSource), 0x3FA3AFA7035DE3FFULL> cooldownTextName(cooldownTextSource);
-    const char* cooldownText = cooldownTextName.Text();
-    this->labels[1]->SetText(cooldownText, std::strlen(cooldownText));
+    this->labels[1]->SetText(cooldownTextName.Text());
   }
   this->labels[1]->SetFitText(0);
   this->labels[1]->SetAlign(6, 6);
@@ -811,8 +808,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
     const char levelTextSource[] = {
         '\x3A', '\x04', '\x01', '\xC4', '\xB7'};
     thread_local EncryptedName<sizeof(levelTextSource), 0x51BB39B763BBBD8DULL> levelTextName(levelTextSource);
-    const char* levelText = levelTextName.Text();
-    this->labels[2]->SetText(levelText, std::strlen(levelText));
+    this->labels[2]->SetText(levelTextName.Text());
   }
   this->labels[2]->SetFitText(1);
   this->labels[2]->SetAlign(6, 6);
@@ -837,8 +833,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
     const char fixedTextSource[] = {
         '\xE1', '\x18', '\x0E', '\xED', '\xFF'};
     thread_local EncryptedName<sizeof(fixedTextSource), 0xDF8117FF49CFF551ULL> fixedTextName(fixedTextSource);
-    const char* fixedText = fixedTextName.Text();
-    this->columns[0]->SetText(fixedText, std::strlen(fixedText));
+    this->columns[0]->SetText(fixedTextName.Text());
   }
   this->columns[0]->SetFitText(1);
   this->columns[0]->SetAlign(6, 6);
@@ -863,8 +858,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
     const char variableTextSource[] = {
         '\xCB', '\x2C', '\xDE', '\xB4', '\x11'};
     thread_local EncryptedName<sizeof(variableTextSource), 0x7D5D0F110B6B8371ULL> variableTextName(variableTextSource);
-    const char* variableText = variableTextName.Text();
-    this->columns[1]->SetText(variableText, std::strlen(variableText));
+    this->columns[1]->SetText(variableTextName.Text());
   }
   this->columns[1]->SetFitText(1);
   this->columns[1]->SetAlign(6, 6);
@@ -889,8 +883,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
     const char globalTextSource[] = {
         '\x28', '\xE2', '\x4A', '\xFF', '\xEC', '\x41', '\x91'};
     thread_local EncryptedName<sizeof(globalTextSource), 0x4191BB5531FD3999ULL> globalTextName(globalTextSource);
-    const char* globalText = globalTextName.Text();
-    this->columns[2]->SetText(globalText, std::strlen(globalText));
+    this->columns[2]->SetText(globalTextName.Text());
   }
   this->columns[2]->SetFitText(1);
   this->columns[2]->SetAlign(6, 6);
@@ -915,8 +908,7 @@ void CUISkillDelayInfo::Slot15(int width, int height) {
     const char skillTextSource[] = {
         '\x12', '\xB3', '\xCC', '\x54', '\xC7'};
     thread_local EncryptedName<sizeof(skillTextSource), 0x9569C9C7E70909AFULL> skillTextName(skillTextSource);
-    const char* skillText = skillTextName.Text();
-    this->columns[3]->SetText(skillText, std::strlen(skillText));
+    this->columns[3]->SetText(skillTextName.Text());
   }
   this->columns[3]->SetFitText(1);
   this->columns[3]->SetAlign(6, 6);

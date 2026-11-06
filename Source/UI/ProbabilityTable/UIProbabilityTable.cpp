@@ -533,10 +533,8 @@ void CUIProbabilityTable::Slot16() {
 
   const char* title = LookupMessage(0x1017);
   this->m_titleBar->SetTitle(title, std::strlen(title));
-  const char* name = LookupMessage(0x1018);
-  this->m_nameHeader->SetText(name, std::strlen(name));
-  const char* probability = LookupMessage(0x1019);
-  this->m_probabilityHeader->SetText(probability, std::strlen(probability));
+  this->m_nameHeader->SetText(LookupMessage(0x1018));
+  this->m_probabilityHeader->SetText(LookupMessage(0x1019));
 }
 
 // OFFSET: 0x00A4E030
@@ -585,8 +583,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   title->SetSize(310, 17);
   title->Move(18, 0);
   const char titleTextSource[] = {'\x8B', '\x87', '\xE4', '\xDB', '\xF5', '\x0F', '\xB1', '\x29', '\xF0', '\x29'};
-  const char* titleText = DecryptName<0x9949BFD527532943ULL>(titleTextSource);
-  title->SetText(titleText, std::strlen(titleText));
+  title->SetText(DecryptName<0x9949BFD527532943ULL>(titleTextSource));
   title->SetFitText(0);
   title->SetAlign(0, 6);
   const char titleFont[] = {'\x28', '\x08', '\x97', '\x4A', '\x1C', '\x07'};
@@ -669,8 +666,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_nameHeader->SetSize(160, 18);
   this->m_nameHeader->Move(10, 30);
   const char nameHeaderSource[] = {'\x50', '\xC3', '\x45', '\x6D', '\x12', '\xA3', '\x19', '\x6D', '\x2A', '\xC0', '\x0F', '\xD7'};
-  const char* nameHeaderText = DecryptName<0xDD3913D5D7F97BE1ULL>(nameHeaderSource);
-  this->m_nameHeader->SetText(nameHeaderText, std::strlen(nameHeaderText));
+  this->m_nameHeader->SetText(DecryptName<0xDD3913D5D7F97BE1ULL>(nameHeaderSource));
   this->m_nameHeader->SetFitText(0);
   this->m_nameHeader->SetAlign(2, 6);
   const char nameHeaderFont[] = {'\xDC', '\x22', '\x6F', '\xF0', '\x0A', '\x05'};
@@ -736,7 +732,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_itemName = new CUIStaticText();
   this->m_itemName->SetSize(220, 24);
   this->m_itemName->Move(16, 61);
-  this->m_itemName->SetText("", 0);
+  this->m_itemName->SetText("");
   this->m_itemName->SetFitText(1);
   this->m_itemName->SetAlign(6, 6);
   const char itemNameFont[] = {'\x2C', '\xCC', '\xAB', '\x66', '\x0A', '\x8F'};
@@ -752,8 +748,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_probabilityHeader->SetSize(68, 24);
   this->m_probabilityHeader->Move(248, 61);
   const char probabilityHeaderSource[] = {'\x35', '\x79', '\xFA', '\x55', '\xB5'};
-  const char* probabilityHeaderText = DecryptName<0xE7978FB5A94DD7FDULL>(probabilityHeaderSource);
-  this->m_probabilityHeader->SetText(probabilityHeaderText, std::strlen(probabilityHeaderText));
+  this->m_probabilityHeader->SetText(DecryptName<0xE7978FB5A94DD7FDULL>(probabilityHeaderSource));
   this->m_probabilityHeader->SetFitText(1);
   this->m_probabilityHeader->SetAlign(6, 6);
   const char probabilityHeaderFont[] = {'\xBA', '\xCC', '\xD7', '\x48', '\xF2', '\xFD'};

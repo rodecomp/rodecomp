@@ -25,10 +25,10 @@ public:
   void SetFont(const std::string& name);
   void SetOutline(bool enabled, std::uint32_t color);
   void SetShadow(bool enabled, std::uint32_t color);
-  __declspec(noinline) void SetText(const char* value, std::size_t length);
+  __declspec(noinline) void SetText(std::string_view value);
   // INLINED
-  void SetText(std::string_view value) {
-    this->SetText(value.data(), value.size());
+  void SetText(const char* value, std::size_t length) {
+    this->SetText(std::string_view(value, length));
   }
   void SetTooltip(const char* value, std::size_t length);
 

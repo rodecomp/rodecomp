@@ -1311,7 +1311,7 @@ void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
   this->unknown_00EC = new CUIStaticText();
   this->unknown_00EC->SetSize(260, 12);
   this->unknown_00EC->Move(42, 6);
-  this->unknown_00EC->SetText("", 0);
+  this->unknown_00EC->SetText("");
   this->unknown_00EC->SetFitText(1);
   this->unknown_00EC->SetAlign(0, 0);
   this->unknown_00EC->SetFont(std::string(DecryptName<0xAD075B8DB599F1CDULL>({'\x8A', '\x84', '\xF5', '\xDC', '\xE0', '\x5B'})));
@@ -1325,7 +1325,7 @@ void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
   this->unknown_00F0 = new CUIStaticText();
   this->unknown_00F0->SetSize(260, 12);
   this->unknown_00F0->Move(42, 24);
-  this->unknown_00F0->SetText("", 0);
+  this->unknown_00F0->SetText("");
   this->unknown_00F0->SetFitText(1);
   this->unknown_00F0->SetAlign(0, 0);
   this->unknown_00F0->SetFont(std::string(DecryptName<0xDD3913D5D7F97BE1ULL>({'\xA6', '\x0E', '\x95', '\xBE', '\xB8', '\x13'})));
@@ -1521,8 +1521,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
-  const char* questText = DecryptName<0xD1413DBB01CD8B51ULL>({'\x00', '\xDE', '\x88', '\x52', '\xEF', '\x3D'});
-  title->SetText(questText, std::strlen(questText));
+  title->SetText(DecryptName<0xD1413DBB01CD8B51ULL>({'\x00', '\xDE', '\x88', '\x52', '\xEF', '\x3D'}));
   title->SetFitText(0);
   title->SetAlign(0, 6);
   title->SetFont(std::string(DecryptName<0x758F1D0B4F7705B9ULL>({'\xFE', '\x70', '\x1B', '\x26', '\x66', '\x1D'})));
@@ -1778,7 +1777,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->filterLabel = new CUIStaticText();
   this->filterLabel->SetSize(100, 12);
   this->filterLabel->Move(52, 447);
-  this->filterLabel->SetText("", 0);
+  this->filterLabel->SetText("");
   this->filterLabel->SetFitText(0);
   this->filterLabel->SetAlign(0, 0);
   this->filterLabel->SetFont(std::string(DecryptName<0x7115D9F973F913C9ULL>({'\x8E', '\x66', '\x95', '\x1A', '\x94', '\xD9'})));
@@ -2215,8 +2214,7 @@ void CUIRenewQuestUI::Slot16() {
 
   const char* title = LookupMessage(0xD48);
   this->titleBar->SetTitle(title, std::strlen(title));
-  const char* label = LookupMessage(0x7E3);
-  this->filterLabel->SetText(label, std::strlen(label));
+  this->filterLabel->SetText(LookupMessage(0x7E3));
 
   bool visible = false;
   if (UIWindow* window = g_windowMgr.LookupWindow(0xCC)) {

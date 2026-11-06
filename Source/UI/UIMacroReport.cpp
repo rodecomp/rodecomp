@@ -194,8 +194,7 @@ void CUIMacroReport::Slot15(int width, int height) {
   {
     const char titleTextSource[] = {
         '\x47', '\xBC', '\xAB', '\x85', '\x19', '\xB4', '\xB4', '\xBB', '\x6A', '\x13'};
-    const char* value = DecryptName<0x0B7109397F6B1387ULL>(titleTextSource);
-    title->SetText(value, std::strlen(value));
+    title->SetText(DecryptName<0x0B7109397F6B1387ULL>(titleTextSource));
   }
   title->SetFitText(0);
   title->SetAlign(0, 6);
@@ -296,8 +295,7 @@ void CUIMacroReport::Slot15(int width, int height) {
     CUIStaticText* text = this->unknown_00E4;
     const char firstTypeSource[] = {
         '\x07', '\x6F', '\x54', '\xCA', '\x9B', '\x78', '\x2E', '\x34', '\x73', '\x0C', '\x3A', '\x80', '\x1E', '\x9F', '\x2F', '\x44', '\x00', '\x74', '\xCD', '\x8A', '\x7E', '\x0F', '\x02', '\x83'};
-    const char* value = DecryptName<0x83EFBFBB37EDBDBDULL>(firstTypeSource);
-    text->SetText(value, std::strlen(value));
+    text->SetText(DecryptName<0x83EFBFBB37EDBDBDULL>(firstTypeSource));
   }
   this->unknown_00E4->SetFitText(0);
   this->unknown_00E4->SetAlign(0, 0);
@@ -321,8 +319,7 @@ void CUIMacroReport::Slot15(int width, int height) {
     CUIStaticText* text = this->unknown_00E8;
     const char secondTypeSource[] = {
         '\x2E', '\x07', '\x50', '\x0A', '\xF1', '\x2A', '\x3E', '\x0F', '\x2A', '\x32', '\x5C', '\x67', '\x14', '\x48', '\xC9', '\x91', '\x50', '\x4E', '\x0A', '\xDD'};
-    const char* value = DecryptName<0x2FE993D1DDE1F197ULL>(secondTypeSource);
-    text->SetText(value, std::strlen(value));
+    text->SetText(DecryptName<0x2FE993D1DDE1F197ULL>(secondTypeSource));
   }
   this->unknown_00E8->SetFitText(0);
   this->unknown_00E8->SetAlign(0, 0);
@@ -463,8 +460,7 @@ void CUIMacroReport::Slot15(int width, int height) {
     const char warningSource[] = {
         '\xD4', '\xB7', '\x7D', '\xB6', '\x2D', '\x51', '\xE8', '\xFA', '\x8E', '\x75', '\x74', '\xBC', '\x2D', '\x2E', '\x89', '\x85', '\x82', '\xED', '\x6F', '\x5F', '\xB4', '\x31', '\xEF', '\xFE',
         '\x45', '\xE9', '\x3F', '\x5F', '\xCD', '\x39', '\x92', '\x85', '\xD1', '\x9A', '\x7D', '\xA6', '\x23', '\xEF'};
-    const char* value = DecryptName<0x452FEF0D7FC95565ULL>(warningSource);
-    text->SetText(value, std::strlen(value));
+    text->SetText(DecryptName<0x452FEF0D7FC95565ULL>(warningSource));
   }
   this->unknown_00FC->SetFitText(0);
   this->unknown_00FC->SetAlign(0, 0);

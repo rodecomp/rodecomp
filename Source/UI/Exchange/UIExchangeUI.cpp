@@ -642,7 +642,7 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->unknown_00F0 = new CUIStaticText();
   this->unknown_00F0->SetSize(100, 13);
   this->unknown_00F0->Move(25, 15);
-  this->unknown_00F0->SetText("", 0);
+  this->unknown_00F0->SetText("");
   this->unknown_00F0->SetFitText(0);
   this->unknown_00F0->SetAlign(0, 6);
   const char nameFontSource[] = {'\x2A', '\xCE', '\xF9', '\x44', '\xFE', '\xFB'};
@@ -658,7 +658,7 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->unknown_00F4 = new CUIStaticText();
   this->unknown_00F4->SetSize(215, 30);
   this->unknown_00F4->Move(45, 0);
-  this->unknown_00F4->SetText("", 0);
+  this->unknown_00F4->SetText("");
   this->unknown_00F4->SetFitText(1);
   this->unknown_00F4->SetAlign(0, 6);
   const char countFontSource[] = {'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'};
@@ -713,7 +713,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(12, 0);
-  title->SetText("", 0);
+  title->SetText("");
   title->SetFitText(0);
   title->SetAlign(0, 6);
   {
@@ -735,7 +735,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_00DC = new CUIStaticText();
   this->unknown_00DC->SetSize(495, 17);
   this->unknown_00DC->Move(62, 0);
-  this->unknown_00DC->SetText("", 0);
+  this->unknown_00DC->SetText("");
   this->unknown_00DC->SetFitText(1);
   this->unknown_00DC->SetAlign(0, 6);
   {
@@ -848,8 +848,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
     };
     // GLOBAL: gl_25406
     thread_local EncryptedName<sizeof(zenySource), 0xBF2B4B31397FF5A7ULL> zenyName(zenySource);
-    const char* zeny = zenyName.Text();
-    this->unknown_00E8->SetText(zeny, std::strlen(zeny));
+    this->unknown_00E8->SetText(zenyName.Text());
   }
   this->unknown_00E8->SetFitText(0);
   this->unknown_00E8->SetAlign(2, 6);
@@ -878,8 +877,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
     };
     // GLOBAL: gl_25408
     thread_local EncryptedName<sizeof(zenySource), 0x39FF7FB50DEB998FULL> zenyName(zenySource);
-    const char* zeny = zenyName.Text();
-    this->unknown_00EC->SetText(zeny, std::strlen(zeny));
+    this->unknown_00EC->SetText(zenyName.Text());
   }
   this->unknown_00EC->SetFitText(0);
   this->unknown_00EC->SetAlign(2, 6);
@@ -908,8 +906,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
     };
     // GLOBAL: gl_25410
     thread_local EncryptedName<sizeof(zenySource), 0xAD075B8DB599F1CDULL> zenyName(zenySource);
-    const char* zeny = zenyName.Text();
-    this->unknown_00F0->SetText(zeny, std::strlen(zeny));
+    this->unknown_00F0->SetText(zenyName.Text());
   }
   this->unknown_00F0->SetFitText(0);
   this->unknown_00F0->SetAlign(2, 6);
@@ -1022,8 +1019,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
     };
     // GLOBAL: gl_25418
     thread_local EncryptedName<sizeof(zenySource), 0xE55723712993051DULL> zenyName(zenySource);
-    const char* zeny = zenyName.Text();
-    this->unknown_00FC->SetText(zeny, std::strlen(zeny));
+    this->unknown_00FC->SetText(zenyName.Text());
   }
   this->unknown_00FC->SetFitText(0);
   this->unknown_00FC->SetAlign(2, 6);
@@ -1052,8 +1048,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
     };
     // GLOBAL: gl_25420
     thread_local EncryptedName<sizeof(zenySource), 0x0F15B16B5BAFD57FULL> zenyName(zenySource);
-    const char* zeny = zenyName.Text();
-    this->unknown_0100->SetText(zeny, std::strlen(zeny));
+    this->unknown_0100->SetText(zenyName.Text());
   }
   this->unknown_0100->SetFitText(0);
   this->unknown_0100->SetAlign(2, 6);
@@ -1082,8 +1077,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
     };
     // GLOBAL: gl_25422
     thread_local EncryptedName<sizeof(zenySource), 0x7321C3814F8799E1ULL> zenyName(zenySource);
-    const char* zeny = zenyName.Text();
-    this->unknown_0104->SetText(zeny, std::strlen(zeny));
+    this->unknown_0104->SetText(zenyName.Text());
   }
   this->unknown_0104->SetFitText(0);
   this->unknown_0104->SetAlign(2, 6);
@@ -1147,7 +1141,7 @@ void CUIExchangeUI::Slot15(int width, int height) {
   this->unknown_010C = new CUIStaticText();
   this->unknown_010C->SetSize(135, 14);
   this->unknown_010C->Move(123, 356);
-  this->unknown_010C->SetText("", 0);
+  this->unknown_010C->SetText("");
   this->unknown_010C->SetFitText(0);
   this->unknown_010C->SetAlign(0, 6);
   {

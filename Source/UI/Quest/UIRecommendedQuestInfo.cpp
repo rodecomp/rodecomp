@@ -70,7 +70,7 @@ void CUIRecommendedQuestInfo::Slot15(int width, int height) {
   this->titleText = new CUIStaticText();
   this->titleText->SetSize(342, 12);
   this->titleText->Move(0, 39);
-  this->titleText->SetText("", 0);
+  this->titleText->SetText("");
   this->titleText->SetFitText(0);
   this->titleText->SetAlign(6, 0);
   this->titleText->SetFont(std::string("Gulim"));

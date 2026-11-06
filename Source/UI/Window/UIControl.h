@@ -58,7 +58,9 @@ class CUIControl : public UIWindow {
 public:
   __declspec(noinline) CBitmapRes* LoadBitmapResource(const std::string& name, bool resolveSkin);
 
-  CUIControl();
+  // INLINED
+  CUIControl() : UIWindow(0), hitEnabled(1) {
+  }
   ~CUIControl() override;
   bool CanHitTest() override;
   void Slot10(int x, int y, std::intptr_t value) override;
@@ -284,7 +286,11 @@ public:
 
   void SetImages(const std::string& left, const std::string& middle, const std::string& right);
   void SetSecondButton(CUIButton* button);
-  void SetTitle(const char* title, std::size_t length);
+  void SetTitle(std::string_view title);
+  // INLINED
+  void SetTitle(const char* title, std::size_t length) {
+    this->SetTitle(std::string_view(title, length));
+  }
 
   /* 0080 */ unsigned char resizable;
   /* 0084 */ CResPtr<CBitmapRes> left;

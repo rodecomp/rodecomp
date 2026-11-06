@@ -318,12 +318,9 @@ void CUIScrollWindow::Slot16() {
   this->firstContents->EnableClip();
   this->secondContents->EnableClip();
   this->rewards->EnableClip();
-  const char* first = LookupMessage(0xD49);
-  this->firstContents->title->SetText(first, std::strlen(first));
-  const char* second = LookupMessage(0xD4A);
-  this->secondContents->title->SetText(second, std::strlen(second));
-  const char* reward = LookupMessage(0xD4B);
-  this->rewards->title->SetText(reward, std::strlen(reward));
+  this->firstContents->title->SetText(LookupMessage(0xD49));
+  this->secondContents->title->SetText(LookupMessage(0xD4A));
+  this->rewards->title->SetText(LookupMessage(0xD4B));
 }
 
 }
@@ -333,12 +330,9 @@ namespace OngoingQuestInfo {
 // OFFSET: 0x00A55950
 // FUNCTION: fn_16310
 void CUIRewards::Slot16() {
-  const char* first = LookupMessage(0xD4C);
-  this->firstLabel->SetText(first, std::strlen(first));
-  const char* second = LookupMessage(0xD4D);
-  this->secondLabel->SetText(second, std::strlen(second));
-  const char* third = LookupMessage(0xD4E);
-  this->thirdLabel->SetText(third, std::strlen(third));
+  this->firstLabel->SetText(LookupMessage(0xD4C));
+  this->secondLabel->SetText(LookupMessage(0xD4D));
+  this->thirdLabel->SetText(LookupMessage(0xD4E));
   this->rewardList->unknown_00C4 = 1;
   this->rewardList->Invalidate();
   this->npcSprite = new UINpcSprWnd();
@@ -485,7 +479,7 @@ void CUIOngoingQuestInfo::Slot15(int width, int height) {
   this->titleText = new CUIStaticText();
   this->titleText->SetSize(342, 12);
   this->titleText->Move(0, 39);
-  this->titleText->SetText("", 0);
+  this->titleText->SetText("");
   this->titleText->SetFitText(1);
   this->titleText->SetAlign(6, 0);
   this->titleText->SetFont("Gulim");
@@ -504,7 +498,7 @@ void CUIOngoingQuestInfo::Slot15(int width, int height) {
   this->dateText = new CUIStaticText();
   this->dateText->SetSize(270, 12);
   this->dateText->Move(13, 393);
-  this->dateText->SetText("", 0);
+  this->dateText->SetText("");
   this->dateText->SetFitText(0);
   this->dateText->SetAlign(0, 0);
   this->dateText->SetFont("Gulim");
@@ -597,7 +591,7 @@ void CUIRewardItem::Slot15(int width, int height) {
   this->nameText = new CUIStaticText();
   this->nameText->SetSize(170, 12);
   this->nameText->Move(46, 5);
-  this->nameText->SetText("", 0);
+  this->nameText->SetText("");
   this->nameText->SetFitText(0);
   this->nameText->SetAlign(0, 0);
   this->nameText->SetFont("Gulim");
@@ -611,7 +605,7 @@ void CUIRewardItem::Slot15(int width, int height) {
   this->countText = new CUIStaticText();
   this->countText->SetSize(170, 12);
   this->countText->Move(46, 20);
-  this->countText->SetText("", 0);
+  this->countText->SetText("");
   this->countText->SetFitText(0);
   this->countText->SetAlign(0, 0);
   this->countText->SetFont("Gulim");
@@ -818,7 +812,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->title = new CUIStaticText();
   this->title->SetSize(50, 12);
   this->title->Move(25, 9);
-  this->title->SetText("", 0);
+  this->title->SetText("");
   this->title->SetFitText(0);
   this->title->SetAlign(0, 0);
   this->title->SetFont("Gulim");
@@ -832,7 +826,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->firstLabel = new CUIStaticText();
   this->firstLabel->SetSize(50, 12);
   this->firstLabel->Move(32, 30);
-  this->firstLabel->SetText("", 0);
+  this->firstLabel->SetText("");
   this->firstLabel->SetFitText(0);
   this->firstLabel->SetAlign(0, 0);
   this->firstLabel->SetFont("Gulim");
@@ -846,7 +840,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->firstText = new CUIStaticText();
   this->firstText->SetSize(150, 12);
   this->firstText->Move(110, 30);
-  this->firstText->SetText("", 0);
+  this->firstText->SetText("");
   this->firstText->SetFitText(0);
   this->firstText->SetAlign(0, 0);
   this->firstText->SetFont("Gulim");
@@ -860,7 +854,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->secondLabel = new CUIStaticText();
   this->secondLabel->SetSize(100, 12);
   this->secondLabel->Move(32, 51);
-  this->secondLabel->SetText("", 0);
+  this->secondLabel->SetText("");
   this->secondLabel->SetFitText(0);
   this->secondLabel->SetAlign(0, 0);
   this->secondLabel->SetFont("Gulim");
@@ -874,7 +868,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->secondText = new CUIStaticText();
   this->secondText->SetSize(150, 12);
   this->secondText->Move(110, 51);
-  this->secondText->SetText("", 0);
+  this->secondText->SetText("");
   this->secondText->SetFitText(0);
   this->secondText->SetAlign(0, 0);
   this->secondText->SetFont("Gulim");
@@ -888,7 +882,7 @@ void CUIRewards::Slot15(int width, int height) {
   this->thirdLabel = new CUIStaticText();
   this->thirdLabel->SetSize(100, 12);
   this->thirdLabel->Move(32, 72);
-  this->thirdLabel->SetText("", 0);
+  this->thirdLabel->SetText("");
   this->thirdLabel->SetFitText(0);
   this->thirdLabel->SetAlign(0, 0);
   this->thirdLabel->SetFont("Gulim");

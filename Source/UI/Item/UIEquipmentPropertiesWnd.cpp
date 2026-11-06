@@ -333,8 +333,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
   CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 18);
   title->Move(18, 0);
-  const char* titleText = LookupMessage(4029);
-  title->SetText(titleText, std::strlen(titleText));
+  title->SetText(LookupMessage(4029));
   title->SetFitText(0);
   title->SetAlign(0, 6);
   {
@@ -783,7 +782,7 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot15(int width, i
   this->unknown_00E8 = new CUIStaticText();
   this->unknown_00E8->SetSize(44, 12);
   this->unknown_00E8->Move(0, 4);
-  this->unknown_00E8->SetText("", 0);
+  this->unknown_00E8->SetText("");
   this->unknown_00E8->SetFitText(0);
   this->unknown_00E8->SetAlign(6, 0);
   const char titleFontSource[] = {'\x9E', '\x8C', '\x8D', '\x8A', '\x00', '\x15'};
@@ -800,7 +799,7 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot15(int width, i
   this->unknown_00EC = new CUIStaticText();
   this->unknown_00EC->SetSize(216, 12);
   this->unknown_00EC->Move(49, 4);
-  this->unknown_00EC->SetText("", 0);
+  this->unknown_00EC->SetText("");
   this->unknown_00EC->SetFitText(1);
   this->unknown_00EC->SetAlign(0, 0);
   const char textFontSource[] = {'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'};
@@ -886,7 +885,7 @@ void CUIEquipmentPropertiesWnd::BindLine(EquipmentPropertiesWnd::CUIItemEquipmen
     }
     line->unknown_00EC->SetText(parts[1].c_str(), parts[1].size());
   } else {
-    line->unknown_00E8->SetText("", 0);
+    line->unknown_00E8->SetText("");
     line->unknown_00EC->SetText(parts[0].c_str(), parts[0].size());
   }
 }

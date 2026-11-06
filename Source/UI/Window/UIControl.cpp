@@ -228,10 +228,6 @@ CBitmapRes* CUIControl::LoadBitmapResource(const std::string& name, bool resolve
 }
 
 // INLINED
-CUIControl::CUIControl() : UIWindow(0), hitEnabled(1) {
-}
-
-// INLINED
 __forceinline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
 }
 
@@ -2935,8 +2931,8 @@ void CUIStaticText::SetFont(const std::string& name) {
 
 // OFFSET: 0x009F0E50
 // FUNCTION: fn_14680
-void CUIStaticText::SetText(const char* value, std::size_t length) {
-  this->text.assign(value, length);
+void CUIStaticText::SetText(std::string_view value) {
+  this->text.assign(value.data(), value.size());
   this->UpdateText();
 }
 
@@ -2948,9 +2944,9 @@ void CUIStaticText::SetTooltip(const char* value, std::size_t length) {
 
 // OFFSET: 0x009F1D20
 // FUNCTION: fn_14702
-void CUITitleBar::SetTitle(const char* title, std::size_t length) {
+void CUITitleBar::SetTitle(std::string_view title) {
   if (this->titleText) {
-    this->titleText->SetText(title, length);
+    this->titleText->SetText(title);
   }
 }
 
