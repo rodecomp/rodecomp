@@ -27,7 +27,7 @@ void CRotateLineEffect::Close() {
 void CRotateLineEffect::Slot01() {
   int ring = 0;
   for (int startAngle = 0; startAngle < 360; startAngle += 90) {
-    const int tilt = std::max(rand() % 21, 0) + 80;
+    const int tilt = std::max(0, rand() % 21) + 80;
     for (int i = 0; i < 21; ++i) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (!particle) {
@@ -157,7 +157,14 @@ void CRotateLineEffect::Slot04() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (CParticle* particle = *it) {
       const int segment = particle->unknown_000C;
-      const ParticleQuad quad = {false, 0.0f, 1.0f, (segment - 1) / 21.0f, segment / 21.0f, false, true};
+      ParticleQuad quad;
+      quad.billboard = false;
+      quad.unused = false;
+      quad.depth = true;
+      quad.top = 0.0f;
+      quad.bottom = 1.0f;
+      quad.left = (segment - 1) / 21.0f;
+      quad.right = segment / 21.0f;
       particle->Render(quad);
     }
   }
