@@ -21,22 +21,22 @@ namespace {
   int Magnitude(int value) {
     return value < 0 ? (0 - value) : value;
   }
+}
 
-  // OFFSET: 0x007E2DB0
-  // FUNCTION: fn_09714
-  bool ContainsUpward(SnapObject* object, SnapObject* target) {
-    if (object == target) {
+// OFFSET: 0x007E2DB0
+// FUNCTION: fn_09714
+bool SnapObject::ContainsUpward(SnapObject* target) {
+  if (this == target) {
+    return true;
+  }
+
+  for (auto next = this->edges[1].begin(); next != this->edges[1].end(); ++next) {
+    if ((*next)->ContainsUpward(target)) {
       return true;
     }
-
-    for (auto next = object->edges[1].begin(); next != object->edges[1].end(); ++next) {
-      if (ContainsUpward(*next, target)) {
-        return true;
-      }
-    }
-
-    return false;
   }
+
+  return false;
 }
 
 // OFFSET: 0x007E21D0
@@ -268,16 +268,16 @@ void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side) {
     if (((y + height) - up) != 0 && (!g_snapMgr.root || g_snapMgr.root != object || candidateBottom == screenHeight)) {
       bool moveSelf = side != 3;
       if (side == 3) {
-        bool boundaryAncestor = g_snapMgr.root == object;
-        if (!boundaryAncestor) {
+        bool boundaryAncestor = false;
+        if (g_snapMgr.root != object) {
           for (SnapObject* next : g_snapMgr.root->edges[1]) {
             if (next == object) {
               boundaryAncestor = true;
               break;
             }
 
-            for (SnapObject* above : next->edges[1]) {
-              if (ContainsUpward(above, object)) {
+            for (auto above = next->edges[1].begin(); above != next->edges[1].end(); ++above) {
+              if ((*above)->ContainsUpward(object)) {
                 boundaryAncestor = true;
                 break;
               }

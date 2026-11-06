@@ -12,6 +12,7 @@ public:
   int AdjacentSide(const SnapObject& other) const;
   void Remove(SnapObject* object);
   bool Contains(SnapObject* target);
+  bool ContainsUpward(SnapObject* target);
   bool Connected(SnapObject* target);
   int GetHeight() const;
   void AccumulateHeight(int& height, int side) const;
