@@ -23,8 +23,7 @@ void CSession::SendClientOption(unsigned char value) {
   packet.id = 0x02D8;
   packet.option = 6;
   packet.value = value;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00E48BA0
@@ -34,8 +33,7 @@ void CSession::SendHomunculusAutoFeedOption(unsigned char enabled) {
   packet.id = 0x02D8;
   packet.option = 3;
   packet.value = enabled;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00E49380
@@ -45,6 +43,5 @@ void CSession::SendPetAutoFeedOption(unsigned char enabled) {
   packet.id = 0x02D8;
   packet.option = 2;
   packet.value = enabled;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
