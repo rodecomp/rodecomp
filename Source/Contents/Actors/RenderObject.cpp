@@ -2089,9 +2089,10 @@ bool CGameActor::Slot58() {
 
 // OFFSET: 0x005A12F0
 // FUNCTION: fn_03048
-void CGameActor::Slot45() {
+int CGameActor::Slot45() {
   int radius = 0;
   g_session.m_hotkeyScript->Call("GetNpcLocationRadius", "d>d", this->GetEffectiveJob(-1), &radius);
+  return radius;
 }
 
 // OFFSET: 0x005A13B0

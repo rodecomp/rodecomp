@@ -2751,12 +2751,7 @@ void CPc::Slot28(int value) {
 // OFFSET: 0x00DB6670
 // FUNCTION: fn_22668
 void CPlayer::ApplyFollowOffset(CGameActor* target, float x, float z, int* row, int* column) {
-  union {
-    void (CGameActor::*asVoid)();
-    int (CGameActor::*asInt)();
-  } slot45;
-  slot45.asVoid = &CGameActor::Slot45;
-  int step = (target->*slot45.asInt)();
+  int step = target->Slot45();
   if (target->unknown_02E0 == 1) {
     step = 5;
   } else if (step == 0) {
@@ -2809,7 +2804,7 @@ float CPlayer::AdjustFollowDistance(CGameActor* target, float distance) {
     void (CGameActor::*asVoid)();
     int (CGameActor::*asInt)();
   } slot45;
-  slot45.asVoid = &CGameActor::Slot45;
+  slot45.asInt = &CGameActor::Slot45;
   if ((target->*slot45.asInt)() <= 0) {
     return std::max(0.0f, distance);
   }

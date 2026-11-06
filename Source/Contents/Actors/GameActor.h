@@ -202,7 +202,7 @@ public:
   virtual int Slot42();
   virtual void Slot43(int first, int second);
   virtual void Slot44(int first, int second);
-  virtual void Slot45();
+  virtual int Slot45();
   virtual int Slot46();
   virtual void Slot47(unsigned char value);
   virtual void Slot48(int value);
