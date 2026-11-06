@@ -50,8 +50,8 @@ const char* CNavi_Object::GetName() const {
 // OFFSET: 0x00B8E7F0
 // FUNCTION: fn_19484
 NaviCell* CNavi_Object::GetCell(NaviCell* out) const {
-  out->x = this->cellX;
-  out->y = this->cellY;
+  const NaviCell cell = {this->cellX, this->cellY};
+  *out = cell;
   return out;
 }
 
