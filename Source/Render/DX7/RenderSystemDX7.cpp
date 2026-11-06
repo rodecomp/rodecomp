@@ -79,7 +79,7 @@ CSurface* CRenderSystemDX7::CreateSurfaceOrTexture(std::uint32_t width, std::uin
 // FUNCTION: fn_02321
 HRESULT CRenderSystemDX7::Close() {
   this->m_defaultTexture.reset();
-  this->m_backBuffer = std::shared_ptr<CSurface>();
+  this->m_backBuffer = nullptr;
 
   return this->m_device->Close();
 }
