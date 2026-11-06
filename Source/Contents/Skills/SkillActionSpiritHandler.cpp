@@ -195,7 +195,8 @@ void CEfstAction_HOGOGONG::Slot00(int efstId, int value, int argument3, int argu
 // FUNCTION: fn_08937
 void CEfstAction_HOGOGONG::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("howling_of_chul_ho_scared"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("howling_of_chul_ho_scared"));
   }
 }
 
@@ -431,8 +432,10 @@ void CEfstAction_TEMPORARY_COMMUNION::Slot00(int efstId, int value, int argument
 // FUNCTION: fn_08963
 void CEfstAction_TEMPORARY_COMMUNION::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("temporary_communion_buff_bottom"));
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("temporary_communion_buff"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("temporary_communion_buff_bottom"));
+    effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("temporary_communion_buff"));
   }
 }
 
