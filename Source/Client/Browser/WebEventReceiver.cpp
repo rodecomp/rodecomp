@@ -38,7 +38,7 @@ HRESULT STDMETHODCALLTYPE CWebEventReceiver::QueryInterface(REFIID iid, void** o
   }
 
   *output = static_cast<IDispatch*>(this);
-  this->AddRef();
+  static_cast<IUnknown*>(*output)->AddRef();
   return S_OK;
 }
 
