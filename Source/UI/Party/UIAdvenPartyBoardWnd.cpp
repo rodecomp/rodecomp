@@ -294,16 +294,37 @@ void UIAdvenPartyBoardWnd::SetOwnParty(CAdvenPartyInfo value) {
 }
 
 // INLINED
-void UIAdvenPartyBoardWnd::RefreshRows() {
-  for (auto* row : this->rows) {
-    row->Reset();
+__forceinline void UIPartyInfoWnd::Reset() {
+  this->m_drawLabel = 0;
+  this->memo = "";
+  this->levels = "";
+  this->tanker = 1;
+  this->dealer = 1;
+  this->assist = 1;
+  this->type = 0;
+  this->name = "";
+  this->m_disabled = 1;
+  this->Invalidate();
+}
+
+// INLINED
+__forceinline void UIAdvenPartyBoardWnd::RefreshRows() {
+  for (int index = 0; index < 10; ++index) {
+    this->rows[index]->Reset();
   }
 
   const auto entries = g_adventurerAgencyMgr->Entries();
 
-  for (std::size_t index = 0; index < entries.size() && index < 10; ++index) {
-    this->rows[index]->SetInfo(entries[index]);
+  int index = 0;
+
+  for (const auto& entry : entries) {
+    if (index > 9) {
+      break;
+    }
+
+    this->rows[index]->SetInfo(entry);
     this->rows[index]->Invalidate();
+    ++index;
   }
 
   char text[1024] = {};
@@ -322,13 +343,11 @@ void UIAdvenPartyBoardWnd::RefreshRows() {
 
 // INLINED
 void UIAdvenPartyBoardWnd::UpdatePagination() {
-  if (this->page <= this->totalPages) {
-    if (this->page != this->totalPages) {
-      DisableButton(this->next, 0);
-      this->next->Invalidate();
-    }
-  } else {
+  if (this->page > this->totalPages) {
     this->page = this->totalPages;
+  } else if (this->page != this->totalPages) {
+    DisableButton(this->next, 0);
+    this->next->Invalidate();
   }
 
   DisableButton(this->previous, this->page == 1);
@@ -346,7 +365,7 @@ void UIAdvenPartyBoardWnd::UpdatePagination() {
 // INLINED
 void UIAdvenPartyBoardWnd::ResetSearch() {
   char minimumText[10] = {};
-  _snprintf_s(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max((g_session.m_level - 5), 1));
+  _snprintf_s(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max(1, (g_session.m_level - 5)));
   this->minimum->SetText(minimumText);
   char maximumText[10] = {};
   _snprintf_s(maximumText, sizeof(maximumText), _TRUNCATE, "%d", (g_session.m_level + 5));
@@ -364,7 +383,7 @@ void UIAdvenPartyBoardWnd::ResetSearch() {
 }
 
 // INLINED
-void UIAdvenPartyBoardWnd::Search(int trigger) {
+__forceinline void UIAdvenPartyBoardWnd::Search(int trigger) {
   this->searching = 1;
   const auto digits = [](const char* text) {
     if (!*text) {
@@ -379,14 +398,15 @@ void UIAdvenPartyBoardWnd::Search(int trigger) {
 
     return true;
   };
-  char number[10] = {};
 
   if (!digits(this->minimum->Text())) {
-    _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max((g_session.m_level - 5), 1));
+    char number[10] = {};
+    _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max(1, (g_session.m_level - 5)));
     this->minimum->SetText(number);
   }
 
   if (!digits(this->maximum->Text())) {
+    char number[10] = {};
     _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", (g_session.m_level + 5));
     this->maximum->SetText(number);
   }
@@ -412,10 +432,12 @@ void UIAdvenPartyBoardWnd::Search(int trigger) {
   filter.memo = this->memo->Text();
   filter.characterName = g_session.DecodePlayerName();
 
-  for (auto* button : {this->previous, this->next, this->refresh}) {
-    DisableButton(button, 1);
-    button->Invalidate();
-  }
+  DisableButton(this->previous, 1);
+  this->previous->Invalidate();
+  DisableButton(this->next, 1);
+  this->next->Invalidate();
+  DisableButton(this->refresh, 1);
+  this->refresh->Invalidate();
 
   if (trigger != 246 && trigger != 218) {
     this->page = 1;
@@ -430,10 +452,35 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   const int value = static_cast<int>(a);
 
   switch (message) {
+  case 34:
+    this->saved = reinterpret_cast<AdvenPartyBoardWndInfo*>(a);
+
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 60:
+    this->RefreshRows();
+    return 0;
+  case 165:
+    this->UpdatePagination();
+    return 0;
   case 6:
     switch (value) {
-    case 201:
-      g_windowMgr.CloseWindow(324);
+    case 363:
+      this->ResetSearch();
+      break;
+    case 246:
+      this->page = (this->page - 1);
+
+      if (this->searching == 1) {
+        this->SendMsg(nullptr, 6, 365, this->page, 246, 0);
+      } else {
+        this->LoadPage(this->page);
+      }
+
       break;
     case 218:
       this->page = (this->page + 1);
@@ -449,21 +496,11 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
 
       break;
-    case 246:
-      this->page = (this->page - 1);
-
-      if (this->searching == 1) {
-        this->SendMsg(nullptr, 6, 365, this->page, 246, 0);
-      } else {
-        this->LoadPage(this->page);
-      }
-
-      break;
-    case 363:
-      this->ResetSearch();
-      break;
     case 365:
       this->Search(static_cast<int>(c));
+      break;
+    case 201:
+      g_windowMgr.CloseWindow(324);
       break;
     case 379: {
       const auto& info = this->rows[static_cast<int>(b)]->info;
@@ -488,14 +525,6 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
       break;
     }
-    case 410:
-      g_adventurerAgencyMgr->RequestStop();
-      break;
-    case 415:
-      this->page = 1;
-      this->searching = 0;
-      this->LoadPage(1);
-      break;
     case 564: {
       g_windowMgr.CloseWindow(345);
       auto* window = static_cast<UIRegisterPartyWnd*>(g_windowMgr.EnsureWindow(323));
@@ -517,31 +546,24 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
       break;
     }
+    case 410:
+      g_adventurerAgencyMgr->RequestStop();
+      break;
+    case 415:
+      this->page = 1;
+      this->searching = 0;
+      this->LoadPage(1);
+      break;
     default:
       break;
     }
 
-    return 0;
-  case 34:
-    this->saved = reinterpret_cast<AdvenPartyBoardWndInfo*>(a);
-
-    if (!this->saved->IsValid()) {
-      this->saved->Reset();
-    }
-
-    this->Move(this->saved->x, this->saved->y);
     return 0;
   case 39:
     if (sender == this->types) {
       this->selectedType = value;
     }
 
-    return 0;
-  case 60:
-    this->RefreshRows();
-    return 0;
-  case 165:
-    this->UpdatePagination();
     return 0;
   default:
     return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);

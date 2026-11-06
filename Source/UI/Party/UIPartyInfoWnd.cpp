@@ -66,20 +66,6 @@ void UIPartyInfoWnd::SetInfo(const CAdvenPartyInfo& value) {
   this->info = value;
 }
 
-// INLINED
-void UIPartyInfoWnd::Reset() {
-  this->m_drawLabel = 0;
-  this->memo.clear();
-  this->levels.clear();
-  this->tanker = 1;
-  this->dealer = 1;
-  this->assist = 1;
-  this->type = 0;
-  this->name.clear();
-  this->m_disabled = 1;
-  this->Invalidate();
-}
-
 // OFFSET: 0x007BF8C0
 // FUNCTION: fn_09304
 void UIPartyInfoWnd::Paint() {
