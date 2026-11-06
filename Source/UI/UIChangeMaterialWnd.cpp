@@ -749,7 +749,8 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
 
   UIBasicButton* cancel = new UIBasicButton();
   cancel->Configure(42, LookupMessage(3045));
-  cancel->Move(width - cancel->geometry.width - 55, height - cancel->geometry.height - 12);
+  const int cancelY = height - cancel->geometry.height - 12;
+  cancel->Move(width - cancel->geometry.width - 55, cancelY);
   cancel->SetId(201);
   this->AddChild(cancel);
 
