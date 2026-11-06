@@ -2943,11 +2943,11 @@ int CGameActor::ActionBase(int state) {
   case 1:
     base = 8;
     break;
-  case 3:
-    base = 32;
-    break;
   case 4:
     base = 24;
+    break;
+  case 3:
+    base = 32;
     break;
   }
 
