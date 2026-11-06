@@ -49,7 +49,7 @@ void ParticlePool::Clear() {
 // OFFSET: 0x00B407F0
 // FUNCTION: fn_18856
 void ParticlePool::Release(CParticle* particle) {
-  if (this->particles.find(particle) != this->particles.end() && this->particles[particle]) {
+  if (this->particles.find(particle) != this->particles.end() && this->particles[particle] == true) {
     --this->active;
     this->particles[particle] = false;
   }
