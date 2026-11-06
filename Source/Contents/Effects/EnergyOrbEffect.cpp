@@ -158,9 +158,9 @@ void CEnergyOrbEffect::Slot03() {
 // OFFSET: 0x00B51750
 // FUNCTION: fn_19028
 void CEnergyOrbEffect::Slot04() {
-  for (CParticle* particle : this->particles) {
-    if (particle) {
-      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    if (*it) {
+      (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
   }
 }
