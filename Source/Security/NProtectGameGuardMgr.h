@@ -6,10 +6,18 @@
 #include <vector>
 #include <windows.h>
 
+// VTABLE: vt_00506
 class CNProtectGameGuardMgr {
 public:
-  struct CSAuthToken {
-    /* 0000 */ void* vtable;
+  // VTABLE: vt_00505
+  class lcCSAuthToken {
+  public:
+    // INLINED
+    lcCSAuthToken(int id, const std::vector<unsigned char>& bytes) : id(id), bytes(bytes) {
+    }
+
+    virtual ~lcCSAuthToken() = default;
+
     /* 0004 */ int id;
     /* 0008 */ std::vector<unsigned char> bytes;
   };
@@ -18,14 +26,15 @@ public:
   static void Destroy();
   static const char* GameName();
 
-  /* 0000 */ void* vtable;
+  virtual ~CNProtectGameGuardMgr();
+
   /* 0004 */ bool m_initialized;
   /* 0008 */ unsigned int unknown_0008;
   /* 000C */ void* m_gameLib;
   /* 0010 */ bool m_hasError;
   /* 0014 */ std::string m_errorMessage;
   /* 002C */ CRITICAL_SECTION m_lock;
-  /* 0044 */ std::vector<CSAuthToken> m_tokens;
+  /* 0044 */ std::vector<lcCSAuthToken> m_tokens;
 
   void ProcessAuth(int first, int second);
   void Stop();
@@ -33,7 +42,6 @@ public:
   int HasError();
   std::string ErrorMessage();
   void SetHwnd(HWND window);
-  void ScalarDeletingDestructor(unsigned char flags);
   int Initialize();
   void IncrementCounter();
   void SetError(const char* file, int line, std::string message);
@@ -44,7 +52,7 @@ public:
 static_assert(offsetof(CNProtectGameGuardMgr, m_errorMessage) == 0x14);
 static_assert(offsetof(CNProtectGameGuardMgr, m_lock) == 0x2C);
 static_assert(offsetof(CNProtectGameGuardMgr, m_tokens) == 0x44);
-static_assert(sizeof(CNProtectGameGuardMgr::CSAuthToken) == 0x14);
+static_assert(sizeof(CNProtectGameGuardMgr::lcCSAuthToken) == 0x14);
 static_assert(sizeof(CNProtectGameGuardMgr) == 0x50);
 #endif
 

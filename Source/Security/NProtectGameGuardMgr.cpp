@@ -29,7 +29,6 @@ int InitNPGameMon();
 int __stdcall GameGuardCallback(int code, const int* packet);
 void SetCallbackToGameMon(int(__stdcall* callback)(int, const int*));
 void WriteMyLog(const char* file, int line, const char* format, ...);
-void __fastcall DestroyAuthTokenVector(void* tokens);
 
 namespace {
   template <std::size_t Length, std::uint64_t Key>
@@ -70,6 +69,18 @@ namespace {
   }
 }
 
+// OFFSET: 0x0076C3E0
+// FUNCTION: fn_45544
+CNProtectGameGuardMgr::~CNProtectGameGuardMgr() {
+  if (this->m_gameLib) {
+    CloseNPGameMon();
+    ::operator delete(this->m_gameLib, 1);
+    this->m_gameLib = nullptr;
+  }
+
+  DeleteCriticalSection(&this->m_lock);
+}
+
 // OFFSET: 0x0076C670
 // FUNCTION: fn_08205
 void CNProtectGameGuardMgr::ProcessAuth(int, int) {
@@ -94,10 +105,8 @@ int CNProtectGameGuardMgr::Create() {
 // OFFSET: 0x0076CEA0
 // FUNCTION: fn_08212
 void CNProtectGameGuardMgr::Destroy() {
-  typedef void(__thiscall * DeletingDestructor)(CNProtectGameGuardMgr*, unsigned char);
-
   if (g_nProtectGameGuardMgr) {
-    (*reinterpret_cast<DeletingDestructor**>(g_nProtectGameGuardMgr))[0](g_nProtectGameGuardMgr, 1);
+    delete g_nProtectGameGuardMgr;
     g_nProtectGameGuardMgr = nullptr;
   }
 }
@@ -209,16 +218,11 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
     return 0;
   }
   case 0x3FB: {
-    const int id = packet[0];
-    const int size = packet[1];
+    CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
     const unsigned char* data = reinterpret_cast<const unsigned char*>(packet + 2);
-    CNProtectGameGuardMgr::CSAuthToken token = {};
-    token.id = id;
-    if (size != 0) {
-      token.bytes.assign(data, data + size);
-    }
-    NSyncObject lock(&g_nProtectGameGuardMgr->m_lock);
-    g_nProtectGameGuardMgr->m_tokens.push_back(token);
+    CNProtectGameGuardMgr::lcCSAuthToken token(packet[0], std::vector<unsigned char>(data, data + packet[1]));
+    NSyncObject lock(&manager->m_lock);
+    manager->m_tokens.push_back(token);
     break;
   }
   default:
