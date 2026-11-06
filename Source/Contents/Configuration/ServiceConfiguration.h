@@ -29,6 +29,9 @@ extern const int s_monsterJobIds[48];
 extern std::vector<std::string> g_loadingScreens;
 
 const char* GetLicenceText();
+struct XmlNode;
+
 void InitializeServiceStrings();
+void ReadClientInfo(XmlNode* clientInfo);
 
 #endif

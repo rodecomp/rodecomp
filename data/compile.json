@@ -272,6 +272,7 @@
   "Source/Client/Application/ApplicationActivation.cpp": 4,
   "Source/Client/Application/ApplicationMessages.cpp": 4,
   "Source/Client/Application/ApplicationWindow.cpp": 0,
+  "Source/Client/Application/ClientInfo.cpp": 0,
   "Source/Client/Application/ErrorDialog.cpp": 0,
   "Source/Client/Application/LaunchInfo.cpp": 0,
   "Source/Client/Application/Launcher.cpp": 0,

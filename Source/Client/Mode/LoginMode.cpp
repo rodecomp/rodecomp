@@ -3,6 +3,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Application/ApplicationMessages.h"
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Application/ClientInfo.h"
 #include "Client/Application/Launcher.h"
 #include "Archive/PakRegistry.h"
 #include "Client/Input/Mouse.h"
@@ -3435,26 +3436,18 @@ static_assert(sizeof(MakeCharacterPacket) == 0x24);
 static_assert(sizeof(DeleteCharacterEmailPacket) == 0x38);
 static_assert(sizeof(ZoneEnterPacket) == 0x17);
 
-std::string nullsub_481(int length, unsigned int seed);
+// OFFSET: 0x00D8C020
+// FUNCTION: fn_22254
+std::string nullsub_481(int, unsigned int) {
+  return {};
+}
 void __stdcall sub_3DE9318(CLoginMode* mode);
-
-// GLOBAL: gl_25522
-XmlNode* g_clientInfoRoot;
 
 // GLOBAL: gl_25523
 unsigned char g_customServerListLoaded;
 
 // GLOBAL: gl_25475
 unsigned char g_loginCancelRequested;
-
-// GLOBAL: gl_25524
-const char* g_clientInfoAddress;
-
-// GLOBAL: gl_25525
-const char* g_clientInfoPort;
-
-// GLOBAL: gl_25526
-const char* g_clientInfoDomain;
 
 // GLOBAL: gl_25527
 std::uint32_t g_patchedClientVersion = 0x80000000;

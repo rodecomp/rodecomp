@@ -55,6 +55,7 @@
 #include "Archive/GPakUpdate.h"
 #include "Archive/PakRegistry.h"
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Application/ClientInfo.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Application/UnhandledExceptionHandler.h"
 #include "Client/Input/InputCharset.h"
@@ -908,7 +909,6 @@ void __fastcall sub_81FE50(CSignBoardMgr* manager);
 LRESULT CALLBACK sub_E5C430(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
 int sub_E59030();
 int RemoveProtectionTools();
-void sub_3DE90E0(char* buffer);
 void IgnoreNull();
 LSTATUS SaveDisplayDeviceSettings();
 
@@ -1596,7 +1596,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
       }
     }
   }
-  sub_3DE90E0(protection);
+  LoadClientInfo(protection);
 
   const std::uint8_t patchSandboxSource[] = {0x5A, 0x16, 0x15, 0xB6, 0x3B, 0x6C, 0x80, 0x0A, 0x14, 0x0B, 0x05, 0xBB, 0x22, 0x71, 0xDF};
   thread_local EncryptedName<sizeof(patchSandboxSource), 0x79DF094DD9616575ULL> patchSandbox(patchSandboxSource);
