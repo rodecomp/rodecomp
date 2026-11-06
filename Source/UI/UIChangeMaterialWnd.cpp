@@ -95,16 +95,18 @@ void UIChangeMaterialWnd_List::SelectNextItem(int delta) {
   const int count = static_cast<int>(this->m_items.size());
   const int maxIndex = count - 1;
 
-  int targetIndex = static_cast<int>(newIndex);
-  if (newIndex >= static_cast<uint32_t>(maxIndex)) {
+  int targetIndex;
+  if (newIndex < static_cast<uint32_t>(maxIndex)) {
+    targetIndex = static_cast<int>(newIndex);
+  } else {
     targetIndex = maxIndex;
   }
 
-  if (targetIndex < this->m_scrollOffset || targetIndex >= this->m_scrollOffset + this->m_pageSize) {
+  if (!(targetIndex >= this->m_scrollOffset && this->m_scrollOffset + this->m_pageSize > targetIndex)) {
     int newOffset = this->m_previousScrollOffset;
-    if (targetIndex < newOffset || targetIndex >= newOffset + this->m_pageSize) {
-      const int candidate = targetIndex - this->m_pageSize + 1;
+    if (!(targetIndex >= newOffset && newOffset + this->m_pageSize > targetIndex)) {
       const int limit = count - this->m_pageSize;
+      const int candidate = targetIndex - this->m_pageSize + 1;
       newOffset = static_cast<unsigned int>(candidate) < static_cast<unsigned int>(limit) ? candidate : limit;
     }
 
