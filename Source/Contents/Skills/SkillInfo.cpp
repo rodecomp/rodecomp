@@ -1351,8 +1351,10 @@ void CEfstAction_UNLIMIT::Slot01(int efstId, int argument2, int argument3, int a
     return;
   }
 
-  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit_loop_bottom"));
-  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit_loop"));
+  EffectLists* effects = g_effectMgr;
+  effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit_loop_bottom"));
+  effects = g_effectMgr;
+  effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit_loop"));
 }
 
 // OFFSET: 0x00777520
@@ -1362,10 +1364,14 @@ void CEfstAction_DANCING_KNIFE::Slot01(int efstId, int argument2, int argument3,
     return;
   }
 
-  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_bottom_begin"));
-  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_bottom_loop"));
-  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_begin"));
-  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_loop"));
+  EffectLists* effects = g_effectMgr;
+  effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_bottom_begin"));
+  effects = g_effectMgr;
+  effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_bottom_loop"));
+  effects = g_effectMgr;
+  effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_begin"));
+  effects = g_effectMgr;
+  effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_loop"));
 }
 
 // OFFSET: 0x00774840
@@ -1749,8 +1755,10 @@ void CEfstAction_MYSTERY_POWDER::Slot00(int efstId, int value, int argument3, in
 // FUNCTION: fn_08445
 void CEfstAction_MYSTERY_POWDER::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mistery_powder_loop_bottom"));
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mistery_powder_loop"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mistery_powder_loop_bottom"));
+    effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mistery_powder_loop"));
   }
 }
 
@@ -1841,7 +1849,8 @@ void CEfstAction_VIGOR::Slot00(int efstId, int value, int argument3, int argumen
 // FUNCTION: fn_08452
 void CEfstAction_VIGOR::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("vigor_buff"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("vigor_buff"));
   }
 }
 
@@ -1917,8 +1926,10 @@ void CEfstAction_SERVANT_SIGN::Slot00(int efstId, int value, int argument3, int 
 // FUNCTION: fn_08463
 void CEfstAction_SERVANT_SIGN::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_bottom"));
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_bottom"));
+    effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign"));
   }
 }
 
@@ -2526,7 +2537,8 @@ void CEfstAction_GROGGY::Slot00(int efstId, int value, int argument3, int argume
 // FUNCTION: fn_08509
 void CEfstAction_GROGGY::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("groggy_on_loop"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("groggy_on_loop"));
   }
 }
 
@@ -2561,7 +2573,8 @@ void CEfstAction_TARGET_MARKER::Slot00(int efstId, int value, int argument3, int
 // FUNCTION: fn_08513
 void CEfstAction_TARGET_MARKER::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("target_marker_loop"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("target_marker_loop"));
   }
 }
 
@@ -2645,8 +2658,10 @@ void CEfstAction_BLOCK_SEAL::Slot00(int efstId, int value, int argument3, int ar
 void CEfstAction_BLOCK_SEAL::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     g_effectMgr->Retire(actor->render.accountId, 2400);
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop_bottom"));
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop_bottom"));
+    effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop"));
   }
 }
 
@@ -2978,10 +2993,12 @@ void CSkillObjectAction_HN_GROUND_GRAVITATION::Slot00(int argument, CRenderObjec
 // OFFSET: 0x00785370
 // FUNCTION: fn_08559
 void CSkillObjectAction_HN_GROUND_GRAVITATION::Slot01(CRenderObject* object) {
-  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_bottom_loop"))) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Find(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_bottom_loop"))) {
     effect->Slot31();
   }
-  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_loop"))) {
+  effects = g_effectMgr;
+  if (CEffect* effect = effects->Find(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_loop"))) {
     effect->Slot31();
   }
 }
@@ -3042,7 +3059,8 @@ void CEfstAction_BREAKINGLIMIT::Slot00(int efstId, int value, int argument3, int
 // FUNCTION: fn_08567
 void CEfstAction_BREAKINGLIMIT::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("breakinglimit_buff"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("breakinglimit_buff"));
   }
 }
 
@@ -3086,7 +3104,8 @@ void CEfstAction_RULEBREAK::Slot00(int efstId, int value, int argument3, int arg
 // FUNCTION: fn_08573
 void CEfstAction_RULEBREAK::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rulebreak_buff"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rulebreak_buff"));
   }
 }
 
