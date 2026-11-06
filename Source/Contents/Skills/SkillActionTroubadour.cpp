@@ -141,7 +141,8 @@ void CSkillAction_TR_ROSEBLOSSOM::Slot15(int level, CGameActor* source, CGameAct
 // FUNCTION: fn_08976
 void CSkillAction_TR_ROSEBLOSSOM::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -149,7 +150,8 @@ void CSkillAction_TR_ROSEBLOSSOM::Slot16(int level, CGameActor* source, CGameAct
 // FUNCTION: fn_08977
 void CSkillAction_TR_ROSEBLOSSOM_ATK::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_rose"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_rose"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -157,12 +159,14 @@ void CSkillAction_TR_ROSEBLOSSOM_ATK::Slot16(int level, CGameActor* source, CGam
 // FUNCTION: fn_08978
 void CSkillAction_TR_KVASIR_SONATA::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kvasirsonata_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kvasirsonata_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
@@ -175,7 +179,8 @@ void CSkillAction_TR_KVASIR_SONATA::Slot08(int level, CGameActor* source) {
 void CSkillAction_TR_KVASIR_SONATA::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kvasirsonata"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kvasirsonata"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -213,7 +218,8 @@ void CSkillAction_TR_PRON_MARCH::Slot08(int level, CGameActor* source) {
 void CSkillAction_TR_PRON_MARCH::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("pronmarch"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("pronmarch"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -241,12 +247,14 @@ EfstActionMessage CEfstAction_PRON_MARCH::Slot04() {
 // FUNCTION: fn_08987
 void CSkillAction_TR_JAWAII_SERENADE::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jawaii_serenade_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jawaii_serenade_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
@@ -259,7 +267,8 @@ void CSkillAction_TR_JAWAII_SERENADE::Slot08(int level, CGameActor* source) {
 void CSkillAction_TR_JAWAII_SERENADE::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jawaii_serenade"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jawaii_serenade"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -287,7 +296,8 @@ EfstActionMessage CEfstAction_JAWAII_SERENADE::Slot04() {
 // FUNCTION: fn_08992
 void CSkillAction_TR_AIN_RHAPSODY::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ain_rhapsody_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
@@ -300,7 +310,8 @@ void CSkillAction_TR_AIN_RHAPSODY::Slot08(int level, CGameActor* source) {
 void CSkillAction_TR_AIN_RHAPSODY::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ain_rhapsody"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ain_rhapsody"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -328,12 +339,14 @@ EfstActionMessage CEfstAction_AIN_RHAPSODY::Slot04() {
 // FUNCTION: fn_08997
 void CSkillAction_TR_GEF_NOCTURN::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gef_nocturn_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gef_nocturn_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
@@ -391,8 +404,10 @@ void CSkillAction_TR_RHYTHMICAL_WAVE::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_09003
 void CSkillAction_TR_RHYTHMICAL_WAVE::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -400,7 +415,8 @@ void CSkillAction_TR_RHYTHMICAL_WAVE::Slot11(int level, CGameActor* source, CGam
 // FUNCTION: fn_09004
 void CSkillAction_TR_RHYTHMICAL_WAVE::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -408,7 +424,8 @@ void CSkillAction_TR_RHYTHMICAL_WAVE::Slot16(int level, CGameActor* source, CGam
 // FUNCTION: fn_09006
 void CSkillAction_TR_METALIC_FURY::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("metalic_fury"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("metalic_fury"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -416,7 +433,8 @@ void CSkillAction_TR_METALIC_FURY::Slot11(int level, CGameActor* source, CGameAc
 // FUNCTION: fn_09007
 void CSkillAction_TR_MYSTIC_SYMPHONY::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
@@ -429,7 +447,8 @@ void CSkillAction_TR_MYSTIC_SYMPHONY::Slot08(int level, CGameActor* source) {
 void CSkillAction_TR_MYSTIC_SYMPHONY::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -437,7 +456,8 @@ void CSkillAction_TR_MYSTIC_SYMPHONY::Slot11(int level, CGameActor* source, CGam
 // FUNCTION: fn_09009
 void CEfstAction_MYSTIC_SYMPHONY::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony_note"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony_note"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -478,12 +498,14 @@ int CSkillAction_TR_RHYTHMSHOOTING::Slot02() {
 // FUNCTION: fn_09015
 void CSkillAction_TR_RHYTHMSHOOTING::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
@@ -498,7 +520,8 @@ void CSkillAction_TR_RHYTHMSHOOTING::Slot15(int level, CGameActor* source, CGame
     return;
   }
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_shot"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_shot"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
     effect->Slot17(angle + 180.0f);
@@ -509,7 +532,8 @@ void CSkillAction_TR_RHYTHMSHOOTING::Slot15(int level, CGameActor* source, CGame
 // FUNCTION: fn_09017
 void CSkillAction_TR_RHYTHMSHOOTING::Slot16(int, CGameActor* source, CGameActor*) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -517,12 +541,14 @@ void CSkillAction_TR_RHYTHMSHOOTING::Slot16(int, CGameActor* source, CGameActor*
 // FUNCTION: fn_09018
 void CSkillAction_TR_ROKI_CAPRICCIO::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roki_capriccio_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roki_capriccio_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
