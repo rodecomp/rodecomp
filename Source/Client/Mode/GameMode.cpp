@@ -4938,7 +4938,8 @@ bool CGameMode::RecordReplayMessage(int message, int value, int first, int secon
 void CGameMode::UpdateReplayActionSpeeds() {
   this->scene->player->SetActionSpeed(Replay::Instance().AnimationScale());
   for (CRenderObject* actor : this->scene->actors) {
-    actor->SetActionSpeed(Replay::Instance().AnimationScale());
+    const float speed = Replay::Instance().AnimationScale();
+    actor->SetActionSpeed(speed);
   }
 }
 

@@ -564,7 +564,7 @@ public:
   void RefreshItemListWindow(unsigned char listType, bool partial);
   void SetFollowTicks(int updateTick, int lostTick);
   bool IsMenuWindowOpen() const;
-  bool ShowRestrictedNotice(int grade);
+  static bool ShowRestrictedNotice(int grade);
   void AddUnknown0604(UIWindow* window);
   void RequestAdminStatus();
   void sub_CEB8E0();
