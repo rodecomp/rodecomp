@@ -68,8 +68,12 @@ bool CFile::Open(const char* path, int mode, bool resourcePath, bool option) {
 // OFFSET: 0x0057C340
 // FUNCTION: fn_02601
 bool CFile::Write(const void* data, std::uint32_t bytes) {
-  DWORD written;
-  return this->m_handle != INVALID_HANDLE_VALUE && WriteFile(this->m_handle, data, bytes, &written, nullptr);
+  if (this->m_handle != INVALID_HANDLE_VALUE) {
+    DWORD written;
+    return WriteFile(this->m_handle, data, bytes, &written, nullptr) != FALSE;
+  }
+
+  return false;
 }
 
 // OFFSET: 0x0057C260
