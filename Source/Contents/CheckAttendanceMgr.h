@@ -25,7 +25,8 @@ public:
   };
 
   // INLINED
-  CCheckAttendanceMgr() : m_isValid(true), m_config0(0), m_config1(0) {
+  CCheckAttendanceMgr() : m_config0(0), m_config1(0) {
+    this->m_isValid = true;
   }
   // INLINED
   virtual ~CCheckAttendanceMgr() {
