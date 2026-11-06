@@ -796,9 +796,9 @@ void CParticle::SetQuad(RenderVertex* vertices, float top, float bottom, float l
   vertices[2].diffuse = color;
   vertices[3].diffuse = color;
 
+  vertices[0].u = left;
   vertices[0].v = top;
   vertices[1].v = top;
-  vertices[0].u = left;
   vertices[1].u = right;
   vertices[2].u = left;
   vertices[2].v = bottom;

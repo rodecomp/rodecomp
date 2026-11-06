@@ -654,7 +654,7 @@ void UIRefiningWnd::Slot19() {
 // OFFSET: 0x007F7D80
 // FUNCTION: fn_09918
 void UIRefining_Notice::Slot19() {
-  if (this->expireTick != 0 && this->expireTick < timeGetTime()) {
+  if (this->expireTick != 0 && timeGetTime() > this->expireTick) {
     this->expireTick = 0;
     if (this->autoShown == 1) {
       this->autoShown = 0;

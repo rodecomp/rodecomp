@@ -342,7 +342,7 @@ void UIReputeWnd::SetPage(unsigned int page) {
 
   this->m_page = std::max(1u, std::min(this->m_pageCount, page));
   this->m_prevButton->Enable(this->m_page > 1);
-  this->m_nextButton->Enable(this->m_page < this->m_pageCount);
+  this->m_nextButton->Enable(this->m_pageCount > this->m_page);
 }
 
 // OFFSET: 0x00610C80

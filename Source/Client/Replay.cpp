@@ -764,7 +764,7 @@ bool ReplayFileList::Select(int index) {
 
   const int count = static_cast<int>(this->files.size());
 
-  if (index >= count) {
+  if (count <= index) {
     index = count - 1;
   }
 

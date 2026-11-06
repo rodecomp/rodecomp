@@ -504,9 +504,9 @@ void UIChangeMaterialWnd_List::SortItems(bool ascending) {
 // FUNCTION: fn_03898
 void UIChangeMaterialWnd_List::ShiftSelectedIndex(int value) {
   const int index = static_cast<int>(std::max<int64_t>(0, this->m_selectedIndex - value));
-  if (index < this->m_scrollOffset || index >= this->m_scrollOffset + this->m_pageSize) {
+  if (index < this->m_scrollOffset || this->m_scrollOffset + this->m_pageSize <= index) {
     int newOffset = this->m_previousScrollOffset;
-    if (index < newOffset || index >= newOffset + this->m_pageSize) {
+    if (index < newOffset || newOffset + this->m_pageSize <= index) {
       newOffset = index > 0 ? index : 0;
     }
 

@@ -35,8 +35,8 @@ void CRendererDX9::SetLighting(const float* direction, const float* diffuse, con
   light.Diffuse.a = 255.0f;
   light.Ambient.r = ambient[0];
   light.Ambient.g = ambient[1];
-  light.Ambient.b = ambient[2];
   light.Ambient.a = 255.0f;
+  light.Ambient.b = ambient[2];
 
   this->nativeDevice->SetLight(0, &light);
   this->nativeDevice->LightEnable(0, TRUE);

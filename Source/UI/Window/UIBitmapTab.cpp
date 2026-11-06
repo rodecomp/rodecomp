@@ -29,7 +29,7 @@ void UIBitmapTab::Slot25(int, int y) {
   int bottom = 0;
   for (unsigned index = 0; index < this->tabs.size(); ++index) {
     bottom += this->tabs[index].height;
-    if (bottom > y) {
+    if (y < bottom) {
       if (this->geometry.unknown_0030 != index) {
         this->geometry.unknown_0030 = index;
         this->Invalidate();

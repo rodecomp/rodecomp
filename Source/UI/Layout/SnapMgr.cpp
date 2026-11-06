@@ -214,7 +214,7 @@ void CSnapMgr::ConstrainGroup(UIWindow* window, int& dx, int& dy) {
 // OFFSET: 0x007E3390
 // FUNCTION: fn_09718
 void CSnapMgr::MoveConnected(UIWindow* window, int dx, int dy) {
-  if (!this->root || this->root->window != window) {
+  if (!this->root || window != this->root->window) {
     return;
   }
 

@@ -182,7 +182,7 @@ void C3dActorV2::Animate(double frame) {
 void C3dActor::SetSpeed(float speed) {
   this->speed = speed;
 
-  if (speed != 0.0f) {
+  if (0.0f != speed) {
     this->speed = speed / 3.0f;
   }
 }

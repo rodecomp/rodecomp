@@ -97,7 +97,7 @@ int CountCharacters(WORD codePage, const char* text, const char* end) {
   int count = 0;
   while (*text != '\0' && (end == nullptr || text < end)) {
     text = CharNextExA(codePage, text, 0);
-    if (end != nullptr && text > end) {
+    if (end != nullptr && end < text) {
       break;
     }
     ++count;
