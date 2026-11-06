@@ -197,22 +197,27 @@ void UIFrameWnd::Slot36() {
 // OFFSET: 0x008BDC90
 // FUNCTION: fn_11802
 int UIFrameWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 0 || message == 1) {
-    const int id = message == 0 ? this->m_message0 : this->m_message1;
-    if (id) {
-      this->SendMsg(this, 6, id, 0, 0, 0);
+  switch (message) {
+  case 0:
+    if (this->m_message0) {
+      this->SendMsg(this, 6, this->m_message0, 0, 0, 0);
     }
-  } else if (message == 98) {
+    break;
+  case 1:
+    if (this->m_message1) {
+      this->SendMsg(this, 6, this->m_message1, 0, 0, 0);
+    }
+    break;
+  case 98:
     if (c > 0) {
-      UIWindow* window = g_windowMgr.EnsureWindow(12);
-      if (window) {
+      if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
         window->SendMsg(nullptr, 24, c, 0, 0, 0);
       }
     }
-  } else {
+    break;
+  default:
     return this->UIWindow::SendMsg(sender, message, a, b, c, d);
   }
-
   return 0;
 }
 
