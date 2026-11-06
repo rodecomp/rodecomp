@@ -46,8 +46,7 @@ int UIDebuffRemoveWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   if (a == 184) {
     DebuffRemovePacket packet;
     packet.id = 0xC2A;
-    CRagConnection& connection = GetRagConnection();
-    connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
 
   return 0;
