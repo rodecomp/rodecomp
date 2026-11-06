@@ -107,12 +107,12 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
     return std::pair<bool, PartyBookingEntry>(false, entry);
   }
 
-  std::vector<PartyBookingMapInfo> maps = found->second;
+  const std::vector<PartyBookingMapInfo>& maps = found->second;
   if (maps.size() < static_cast<unsigned int>(mapIndex)) {
     return std::pair<bool, PartyBookingEntry>(false, entry);
   }
 
-  PartyBookingMapInfo map = maps.at(mapIndex);
+  const PartyBookingMapInfo& map = maps.at(mapIndex);
 
   tm* expire = _localtime32(&info.expireTime);
   sprintf(buffer, " %02d : %02d ", expire->tm_hour, expire->tm_min);
