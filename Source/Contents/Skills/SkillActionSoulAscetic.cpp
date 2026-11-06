@@ -434,7 +434,8 @@ void CEfstAction_T_FIVETH_GOD::Slot00(int efstId, int value, int argument3, int 
 // FUNCTION: fn_08908
 void CEfstAction_T_FIVETH_GOD::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("circle_directions_elements_loop"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("circle_directions_elements_loop"));
   }
 }
 
@@ -478,7 +479,8 @@ void CEfstAction_HEAVEN_AND_EARTH::Slot00(int efstId, int value, int argument3, 
 // FUNCTION: fn_08914
 void CEfstAction_HEAVEN_AND_EARTH::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("soul_of_heaven_and_earth_buff"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("soul_of_heaven_and_earth_buff"));
   }
 }
 
