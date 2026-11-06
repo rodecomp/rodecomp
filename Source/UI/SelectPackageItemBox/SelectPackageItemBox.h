@@ -45,7 +45,7 @@ public:
 
 class CUISelectPackageItemBox : public CUIFrameWnd {
 public:
-  CUISelectPackageItemBox();
+  __declspec(noinline) CUISelectPackageItemBox();
   void Slot15(int width, int height) override;
   void Slot16() override;
   virtual void Slot53();
