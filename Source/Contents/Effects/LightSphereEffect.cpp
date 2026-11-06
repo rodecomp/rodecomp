@@ -131,12 +131,16 @@ void CLightSphereEffect::Slot01() {
       particle->unknown_0054 = -10.0f;
       *reinterpret_cast<float*>(particle->unknown_0058) = 0.0f;
 
-      if (this->id == 0x4AD) {
+      switch (this->id) {
+      case 0x4AD:
         particle->SetColor(0xFF, 0x7C, 0x80);
-      } else if (this->id == 0x4AE) {
+        break;
+      case 0x4AE:
         particle->SetColor(0xFF, 0xFF, 0x37);
-      } else if (this->id == 0x4AF) {
+        break;
+      case 0x4AF:
         particle->SetColor(0x3B, 0xCC, 0xFF);
+        break;
       }
 
       InitParticleQuad(particle->vertices);
