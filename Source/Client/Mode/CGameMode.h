@@ -409,7 +409,7 @@ public:
   std::string GetActiveSkillEffectTimeText(int skillId, int* activeSkillId);
   void ProcessStatusIconTooltip(int x, int y);
   bool IsActiveSkillEffectId(std::uint32_t id);
-  __declspec(noinline) bool IsExcludedSkillEffectId(std::uint32_t id);
+  __declspec(noinline) int IsExcludedSkillEffectId(std::uint32_t id);
   int SubD07740(int id, int defaultResult);
   bool AppendGuildEmblem(std::vector<char>& output, std::vector<std::string>& names, int guildId, int unused);
   void ReceiveResultNotice(int result);

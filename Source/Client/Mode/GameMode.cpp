@@ -641,7 +641,7 @@ bool CGameMode::IsActiveSkillEffectId(std::uint32_t id) {
 
 // OFFSET: 0x00D07720
 // FUNCTION: fn_21582
-bool CGameMode::IsExcludedSkillEffectId(std::uint32_t id) {
+int CGameMode::IsExcludedSkillEffectId(std::uint32_t id) {
   return id == 0x28 || id == 0x2A;
 }
 
