@@ -378,7 +378,7 @@ void UIRuneList::Slot28(int, int) {
 // OFFSET: 0x0081C3E0
 // FUNCTION: fn_10206
 void UIRuneSetList::Slot28(int x, int y) {
-  if (x < 19 || x > 256 || y < 25 || y > this->geometry.height - 10) {
+  if (x < 19 || x > 256 || y < 25 || this->geometry.height - 10 < y) {
     return;
   }
 
@@ -397,7 +397,7 @@ void UIRuneSetList::Slot28(int x, int y) {
   if (!runeSet) {
     return;
   }
-  if (static_cast<unsigned int>(column) >= runeSet->m_slots.size()) {
+  if (runeSet->m_slots.size() <= static_cast<unsigned int>(column)) {
     return;
   }
 
