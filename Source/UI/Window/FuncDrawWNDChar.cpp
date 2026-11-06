@@ -255,19 +255,22 @@ std::list<int> FuncDrawWNDChar::DrawOrder() {
 // FUNCTION: fn_09729
 bool FuncDrawWNDChar::DrawOnTop() {
   int job = this->m_job;
-  bool drawOnTop = true;
 
   if (g_session.m_newRobeDrawOnTop == 1) {
+    bool drawOnTop = true;
     if (this->m_flags == 1) {
       job = g_session.GetRidingJob(job);
     }
 
     int layer = job;
-    if (g_session.m_hotkeyScript->Call("_New_DrawOnTop", "ddddd>bd", this->m_robe, this->m_sex, job, this->m_action, this->m_motion, &drawOnTop, &layer) == 1) {
+    if (g_session.m_hotkeyScript->Call(std::string("_New_DrawOnTop", 14), "ddddd>bd", this->m_robe, this->m_sex, job, this->m_action, this->m_motion, &drawOnTop, &layer) == 1) {
       return drawOnTop;
     }
-  } else if (g_session.m_hotkeyScript->Call("DrawOnTop", "ddddd>b", this->m_robe, this->m_sex, job, this->m_action, this->m_motion, &drawOnTop) == 1) {
-    return drawOnTop;
+  } else {
+    bool drawOnTop = true;
+    if (g_session.m_hotkeyScript->Call(std::string("DrawOnTop", 9), "ddddd>b", this->m_robe, this->m_sex, job, this->m_action, this->m_motion, &drawOnTop) == 1) {
+      return drawOnTop;
+    }
   }
 
   return true;
