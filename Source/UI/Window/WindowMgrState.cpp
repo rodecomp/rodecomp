@@ -1109,7 +1109,7 @@ void UIWindowMgr::FocusWindow01C8Edit() {
 
   UIWindow* edit = *reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(this->window_01C8) + 0xBC);
   if (this->hoverWindow) {
-    this->hoverWindow->Slot24(edit && edit->Slot06() == this->hoverWindow);
+    this->hoverWindow->Slot24(!edit ? false : edit->Slot06() == this->hoverWindow);
   }
 
   if (edit) {
