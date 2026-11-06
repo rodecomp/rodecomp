@@ -1363,7 +1363,7 @@ void UIWindowMgr::SendMsgToNamedWindow(const char* name) {
 // OFFSET: 0x00AAA280
 // FUNCTION: fn_17267
 void UIWindowMgr::SetWindows189Visible(unsigned char show) {
-  for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+  for (auto it = this->rendered.begin(); this->rendered.end() != it; ++it) {
     if ((*it)->geometry.id == 189) {
       (*it)->Show(show);
     }

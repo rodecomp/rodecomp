@@ -4047,18 +4047,18 @@ EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::FindD
 // FUNCTION: fn_06185
 int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown01BC(const int& first, const int& second, const unsigned int& third) {
   auto outer = this->unknown_01BC.find(first);
-  if (outer == this->unknown_01BC.end()) {
+  if (this->unknown_01BC.end() == outer) {
     return 0;
   }
   auto middle = outer->second.find(second);
-  if (middle == outer->second.end()) {
+  if (outer->second.end() == middle) {
     return 0;
   }
   if (third == 0 || third > middle->second.size()) {
     return 0;
   }
   auto inner = middle->second.find(third);
-  if (inner == middle->second.end()) {
+  if (middle->second.end() == inner) {
     return 0;
   }
   return static_cast<int>(inner->second);
@@ -6077,11 +6077,11 @@ void CGameMode::ReceiveShopItemList(const unsigned char* data) {
 // FUNCTION: fn_06173
 int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown01DC(const int& first, const int& second, const int& third) {
   auto outer = this->unknown_01DC.find(first);
-  if (outer != this->unknown_01DC.end()) {
+  if (this->unknown_01DC.end() != outer) {
     auto middle = outer->second.find(second);
-    if (middle != outer->second.end()) {
+    if (outer->second.end() != middle) {
       auto inner = middle->second.find(third);
-      if (inner != middle->second.end()) {
+      if (middle->second.end() != inner) {
         return inner->second.value;
       }
     }

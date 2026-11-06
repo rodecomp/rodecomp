@@ -231,9 +231,9 @@ std::uint32_t CSession::ReadReplayMessenger(const std::vector<unsigned char>& da
     return 0xFFFFFFFF;
   }
 
-  std::uint32_t offset = 6;
   ReplayBlockHeader header;
   header.Read(data.data());
+  std::uint32_t offset = 6;
   if (4000 != header.id) {
     return 0xFFFFFFFF;
   }
@@ -294,9 +294,9 @@ std::uint32_t CSession::ReadReplayItems(const std::vector<unsigned char>& data) 
     return 0xFFFFFFFF;
   }
 
-  std::uint32_t offset = 6;
   ReplayBlockHeader header;
   header.Read(data.data());
+  std::uint32_t offset = 6;
   if (4500 != header.id) {
     return 0xFFFFFFFF;
   }
@@ -440,9 +440,9 @@ std::uint32_t CSession::ReadReplayExtra(const std::vector<unsigned char>& data) 
     return 0xFFFFFFFF;
   }
 
-  std::uint32_t offset = 6;
   ReplayBlockHeader header;
   header.Read(data.data());
+  std::uint32_t offset = 6;
   if (5500 != header.id) {
     return 0xFFFFFFFF;
   }
@@ -866,9 +866,9 @@ std::uint32_t CSession::ReadReplayQuests(const std::vector<unsigned char>& data)
     return 0xFFFFFFFF;
   }
 
-  std::uint32_t offset = 6;
   ReplayBlockHeader header;
   header.Read(data.data());
+  std::uint32_t offset = 6;
   if (3500 != header.id) {
     return 0xFFFFFFFF;
   }
@@ -913,9 +913,9 @@ std::uint32_t CSession::ReadReplayShortcuts(const std::vector<unsigned char>& da
     return 0xFFFFFFFF;
   }
 
-  std::uint32_t offset = 6;
   ReplayBlockHeader header;
   header.Read(data.data());
+  std::uint32_t offset = 6;
   if (7000 != header.id) {
     return 0xFFFFFFFF;
   }
