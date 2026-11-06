@@ -14,8 +14,8 @@ CCommonFloorEffect::CCommonFloorEffect() : CEffect(1056) {
 // OFFSET: 0x006FD8C0
 // FUNCTION: fn_06935
 void CCommonFloorEffect::Slot08(int red, int green, int blue) {
-  for (CParticle* particle : this->particles) {
-    particle->SetColor(red, green, blue);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    (*it)->SetColor(red, green, blue);
   }
 }
 
