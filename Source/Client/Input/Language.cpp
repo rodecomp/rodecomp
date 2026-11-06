@@ -236,7 +236,7 @@ void CLanguageBase::AdvanceCursor(int delta) {
     this->cursor += delta;
   }
 
-  if (!static_cast<unsigned char>(static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8)) {
+  if (!HIBYTE(GetKeyState(VK_SHIFT))) {
     this->anchor = this->cursor;
   }
 }
