@@ -176,11 +176,11 @@ int InsertEpisodeSubMenu(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertEpisodeSubMenu : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -248,11 +248,11 @@ int InsertEpisodeContents(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertEpisodeContents : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -278,11 +278,11 @@ int InsertEpisodeReward(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertEpisodeReward : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -528,11 +528,11 @@ int InsertQuestContents(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertQuestContents : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -639,11 +639,11 @@ int InsertDungeonSubMenu(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertDungeonSubMenu : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -704,11 +704,11 @@ int InsertDungeonContents(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertDungeonContents : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -734,11 +734,11 @@ int InsertDungeonReward(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertDungeonReward : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -998,11 +998,11 @@ int InsertArmorSubMenu(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertArmorSubMenu : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -1070,11 +1070,11 @@ int InsertArmorContents(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertArmorContents : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -1100,11 +1100,11 @@ int InsertArmorObtainGuide(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertArmorObtainGuide : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
