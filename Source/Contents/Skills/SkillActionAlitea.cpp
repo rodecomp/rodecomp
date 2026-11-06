@@ -1004,12 +1004,12 @@ void CSkillAction_AT_GRAVITY_HOLE::Slot16(int level, CGameActor* source, CGameAc
 void CSkillAction_AT_GRAVITY_HOLE::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const std::uint8_t bytes[] = {0x16, 0x8B, 0x38, 0x83, 0xE8, 0x69, 0x1C, 0xCE, 0x19, 0x96, 0x35, 0x90, 0x81};
+      const char bytes[] = {'\x16', '\x8B', '\x38', '\x83', '\xE8', '\x69', '\x1C', '\xCE', '\x19', '\x96', '\x35', '\x90', '\x81'};
       thread_local EncryptedName<sizeof(bytes), 0x91651D81F559F971ULL> name(bytes);
       return name.Text();
     }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const std::uint8_t bytes[] = {0x6C, 0x09, 0xBE, 0x17, 0x22, 0x13, 0xA8, 0x2C, 0x63, 0x14, 0xB3, 0x04, 0x14, 0x05, 0xBE, 0x07, 0x7F, 0x14, 0xB2, 0x61};
+      const char bytes[] = {'\x6C', '\x09', '\xBE', '\x17', '\x22', '\x13', '\xA8', '\x2C', '\x63', '\x14', '\xB3', '\x04', '\x14', '\x05', '\xBE', '\x07', '\x7F', '\x14', '\xB2', '\x61'};
       thread_local EncryptedName<sizeof(bytes), 0x73D1674B61DF7B0BULL> name(bytes);
       return name.Text();
     }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
