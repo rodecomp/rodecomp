@@ -7,6 +7,9 @@ DLL imports (Bink, Granny, Stove, ...) come from scripts/exe/imports/*.def, the
 exact import table of the original executable, so a declaration that does not
 match the real DLL export fails at link time.
 
+Compiles are incremental: a unit is rebuilt only when its flags, its source or
+one of the headers it included (recorded with /showIncludes) changed.
+
     python scripts/exe/build_exe.py                     # compile + link, fail on any error
     python scripts/exe/build_exe.py --force-multiple    # accept duplicate definitions
     python scripts/exe/build_exe.py --link-only         # relink objects from a previous run
@@ -24,6 +27,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 EXE_DIR = Path(__file__).resolve().parent
+INCLUDE_NOTE = "Note: including file:"
 MSVC = "VC/Tools/MSVC/14.29.30133"
 SDK_LIB = "Program Files/Windows Kits/10/Lib/10.0.19041.0"
 SYSTEM_LIBS = [
@@ -108,21 +112,54 @@ def compile_units(tc, config, out_dir, jobs):
     for key, value in config["env"].items():
         env[key] = expand(value)
 
+    def stamp(path):
+        try:
+            info = os.stat(path)
+        except OSError:
+            return None
+        return [info.st_mtime_ns, info.st_size]
+
+    def up_to_date(obj, record, key):
+        if not obj.exists() or record is None or record.get("key") != key:
+            return False
+        return all(stamp(path) == saved for path, saved in record["deps"].items())
+
     def build(item):
         unit, (shape, includes) = item
         obj = out_dir / (unit.replace("/", "_") + ".obj")
+        deps_file = obj.with_suffix(".deps.json")
         extra = [f"/I{tc.path(ROOT / directory)}" for directory in includes]
         args = [*(expand(a) for a in config["shapes"][shape]), *extra, "/Z7", f"/Fo{tc.path(obj)}", tc.path(ROOT / unit)]
-        result = tc.run("cl.exe", args, env=env, cwd=ROOT)
-        return unit, obj, result.returncode, result.stdout + result.stderr
+        key = "\x00".join(args)
+        try:
+            record = json.loads(deps_file.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            record = None
+        if up_to_date(obj, record, key):
+            return unit, obj, 0, "", True
+        deps_file.unlink(missing_ok=True)
+        result = tc.run("cl.exe", [*args, "/showIncludes"], env=env, cwd=ROOT)
+        output = []
+        headers = []
+        for line in (result.stdout + result.stderr).splitlines():
+            if line.startswith(INCLUDE_NOTE):
+                headers.append(line[len(INCLUDE_NOTE):].strip())
+            else:
+                output.append(line)
+        if result.returncode == 0:
+            deps = {path: stamp(path) for path in [str(ROOT / unit), *headers]}
+            if None not in deps.values():
+                deps_file.write_text(json.dumps({"key": key, "deps": deps}), encoding="utf-8")
+        return unit, obj, result.returncode, "\n".join(output), False
 
     with concurrent.futures.ThreadPoolExecutor(jobs) as pool:
         results = list(pool.map(build, exe_units(config).items()))
     failures = [r for r in results if r[2] != 0]
-    for unit, _, _, output in failures:
+    for unit, _, _, output, _ in failures:
         print(f"== {unit}")
         print("\n".join(line for line in output.splitlines() if " error " in line or "fatal error" in line))
-    print(f"compiled {len(results) - len(failures)}/{len(results)} units")
+    cached = sum(1 for r in results if r[4])
+    print(f"compiled {len(results) - len(failures)}/{len(results)} units ({cached} up to date, {len(results) - cached} rebuilt)")
     return [r[1] for r in results if r[2] == 0], len(failures)
 
 
