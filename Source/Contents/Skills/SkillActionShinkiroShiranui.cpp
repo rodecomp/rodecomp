@@ -94,7 +94,8 @@ public:
 // OFFSET: 0x007950C0
 // FUNCTION: fn_08785
 void CSkillAction_SS_REIKETSUHOU::Slot12(vector3d position, int level, int argument3) {
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
 
   const int counts[] = {5, 5, 5, 5, 5, 6, 6, 6, 7, 7};
   const int count = counts[std::min<unsigned int>(level, 10) - 1];
@@ -102,7 +103,8 @@ void CSkillAction_SS_REIKETSUHOU::Slot12(vector3d position, int level, int argum
     vector3d spot = position;
     spot.x += (std::max(0, std::rand() % (count * 50 + 1)) - count * 50 * 0.5f) * 0.1f;
     spot.z += (std::max(0, std::rand() % (count * 50 + 1)) - count * 50 * 0.5f) * 0.1f;
-    if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou"), spot.x, spot.y, spot.z, 0, -1, 0, 0)) {
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou"), spot.x, spot.y, spot.z, 0, -1, 0, 0)) {
       effect->Slot16(index * 80);
     }
   }
@@ -123,8 +125,9 @@ int CSkillAction_SS_RAIDENPOU::Slot02() {
 // OFFSET: 0x00795470
 // FUNCTION: fn_08788
 void CSkillAction_SS_RAIDENPOU::Slot08(int level, CGameActor* source) {
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_raidenpou_cast"),
-                                           0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_raidenpou_cast"),
+                                       0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->Slot14(level);
   }
 }
@@ -133,8 +136,10 @@ void CSkillAction_SS_RAIDENPOU::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08789
 void CSkillAction_SS_RAIDENPOU::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_raidenpou_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_raidenpou"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_raidenpou_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_raidenpou"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -142,7 +147,8 @@ void CSkillAction_SS_RAIDENPOU::Slot11(int level, CGameActor* source, CGameActor
 // FUNCTION: fn_08790
 void CSkillAction_SS_RAIDENPOU::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_raidenpou_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_raidenpou_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -172,7 +178,8 @@ void CSkillAction_SS_KINRYUUHOU::Slot11(int level, CGameActor* source, CGameActo
   if (source && target) {
     const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
     const vector3d position = source->render.position;
-    if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kinryuuhou"), position.x, position.y, position.z, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kinryuuhou"), position.x, position.y, position.z, 0, -1, 0, 0)) {
       effect->Slot17(angle);
     }
   }
@@ -182,7 +189,8 @@ void CSkillAction_SS_KINRYUUHOU::Slot11(int level, CGameActor* source, CGameActo
 // FUNCTION: fn_08795
 void CSkillAction_SS_KINRYUUHOU::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kinryuuhou_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kinryuuhou_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -240,7 +248,8 @@ void CSkillAction_SS_KAGEAKUMU::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08803
 void CSkillAction_SS_KAGEAKUMU::Slot15(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kageakumu"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kageakumu"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -317,7 +326,8 @@ void CSkillAction_SS_ANKOKURYUUAKUMU::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08811
 void CSkillAction_SS_ANKOKURYUUAKUMU::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ankokuryuuakumu_00"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ankokuryuuakumu_00"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -325,7 +335,8 @@ void CSkillAction_SS_ANKOKURYUUAKUMU::Slot11(int level, CGameActor* source, CGam
 // FUNCTION: fn_08812
 void CSkillAction_SS_ANKOKURYUUAKUMU::Slot15(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ankokuryuuakumu_01"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ankokuryuuakumu_01"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -336,22 +347,31 @@ void CSkillAction_SS_FOUR_CHARM::Slot11(int level, CGameActor* source, CGameActo
     return;
   }
 
+  EffectLists* effects;
   switch (source->charmType) {
   case 1:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_ice_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_ice"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_ice_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_ice"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 2:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_earth_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_earth"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_earth_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_earth"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 3:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_fire_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_fire"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_fire_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_fire"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 4:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_wind_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_wind"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_wind_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_wind"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   }
 }
@@ -488,7 +508,8 @@ public:
 // FUNCTION: fn_08738
 void CEfstAction_NIGHTMARE::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("efst_nightmare"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("efst_nightmare"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -511,7 +532,8 @@ void CEfstAction_NIGHTMARE::Slot02(int efstId, int value, int argument3, int arg
 // FUNCTION: fn_08741
 void CEfstAction_SHADOW_CLOCK::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   const vector3d position = actor->render.position;
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kagekakusi"), position.x, position.y, position.z, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kagekakusi"), position.x, position.y, position.z, 0, -1, 0, 0);
   static_cast<EffectActor*>(actor)->LaunchEffect(963, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
 
@@ -537,8 +559,10 @@ void CEfstAction_SHADOW_CLOCK::Slot02(int efstId, int value, int argument3, int 
 // FUNCTION: fn_08744
 void CSkillObjectAction_SS_SBUNSHIN::Slot00(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -546,10 +570,13 @@ void CSkillObjectAction_SS_SBUNSHIN::Slot00(int argument, CRenderObject* object,
 // FUNCTION: fn_08745
 void CSkillObjectAction_SS_SBUNSHIN::Slot01(CRenderObject* object) {
   if (object) {
-    g_effectMgr->Retire(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_start"));
-    g_effectMgr->Retire(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_loop"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_start"));
+    effects = g_effectMgr;
+    effects->Retire(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_loop"));
     const vector3d position = object->render.position;
-    g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_end"), position.x, position.y, position.z, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_end"), position.x, position.y, position.z, 0, -1, 0, 0);
   }
 }
 
@@ -557,8 +584,10 @@ void CSkillObjectAction_SS_SBUNSHIN::Slot01(CRenderObject* object) {
 // FUNCTION: fn_08746
 void CSkillObjectAction_SS_KUNAITRAP::Slot00(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiarea_01_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiarea_01_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiarea_01_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiarea_01_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -566,9 +595,11 @@ void CSkillObjectAction_SS_KUNAITRAP::Slot00(int argument, CRenderObject* object
 // FUNCTION: fn_08747
 void CSkillObjectAction_SS_KUNAITRAP::Slot01(CRenderObject* object) {
   if (object) {
-    g_effectMgr->Retire(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiarea_01_loop"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiarea_01_loop"));
     const vector3d position = object->render.position;
-    g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiarea_01_end"), position.x, position.y, position.z, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiarea_01_end"), position.x, position.y, position.z, 0, -1, 0, 0);
   }
 }
 
@@ -576,9 +607,11 @@ void CSkillObjectAction_SS_KUNAITRAP::Slot01(CRenderObject* object) {
 // FUNCTION: fn_08748
 void CSkillAction_SS_TOKEDASU::Slot12(vector3d position, int argument2, int argument3) {
   CGameActor* shadow = reinterpret_cast<CGameActor*>(argument3);
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("tokedasu"), position.x, position.y, position.z, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("tokedasu"), position.x, position.y, position.z, 0, -1, 0, 0);
   if (shadow) {
-    g_effectMgr->Spawn(shadow->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("tokedasu_shadow"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(shadow->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("tokedasu_shadow"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -607,7 +640,8 @@ void CSkillAction_SS_AKUMUKESU::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08752
 void CSkillAction_SS_AKUMUKESU::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("akumukesu"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("akumukesu"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -637,7 +671,8 @@ void CSkillAction_SS_SHINKIROU::Slot08(int level, CGameActor* source) {
 // OFFSET: 0x00793920
 // FUNCTION: fn_08756
 void CSkillAction_SS_KAGEGARI::Slot12(vector3d position, int argument2, int argument3) {
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kagegari"), position.x, position.y, position.z, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kagegari"), position.x, position.y, position.z, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00793A50
@@ -652,7 +687,8 @@ void CSkillAction_SS_KAGENOMAI::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08759
 void CSkillAction_SS_KAGENOMAI::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kagenomai"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kagenomai"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -668,10 +704,14 @@ void CSkillAction_SS_KAGEGISSEN::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08762
 void CSkillAction_SS_KAGEGISSEN::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source && target) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen_moon_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen_moon_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -717,7 +757,8 @@ void CSkillAction_SS_FUUMAKOUCHIKU::Slot08(int level, CGameActor* source) {
 // OFFSET: 0x00794210
 // FUNCTION: fn_08768
 void CSkillAction_SS_FUUMAKOUCHIKU::Slot12(vector3d position, int argument2, int argument3) {
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_fuumakouchiku"), position.x, position.y, position.z, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_fuumakouchiku"), position.x, position.y, position.z, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00794350
@@ -725,7 +766,8 @@ void CSkillAction_SS_FUUMAKOUCHIKU::Slot12(vector3d position, int argument2, int
 void CSkillAction_SS_FUUMASHOUAKU_HIT::Slot15(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     const vector3d position = target->render.position;
-    g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("fuumakouchiku_blasting"), position.x, position.y, position.z, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("fuumakouchiku_blasting"), position.x, position.y, position.z, 0, -1, 0, 0);
   }
 }
 
@@ -751,7 +793,8 @@ void CSkillAction_SS_KUNAIWAIKYOKU::Slot12(vector3d position, int argument2, int
   if (shadow) {
     const float angle = ScreenAngle(&shadow->render.position.x, &position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
     const vector3d spot = shadow->render.position;
-    if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiwaikyoku"), spot.x, spot.y, spot.z, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiwaikyoku"), spot.x, spot.y, spot.z, 0, -1, 0, 0)) {
       effect->Slot17(angle);
     }
   }
@@ -770,8 +813,9 @@ void CSkillAction_SS_KUNAIKAITEN::Slot11(int level, CGameActor* source, CGameAct
     std::string names[] = {"kunaikaiten_bottom", "kunaikaiten_00", "kunaikaiten_01", "kunaikaiten_02"};
     for (int wave = 0; wave < 4; ++wave) {
       for (const std::string& name : names) {
-        CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(name), source->render.position.x, source->render.position.y,
-                                             source->render.position.z, 0, -1, 0, 0);
+        EffectLists* effects = g_effectMgr;
+        CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(name), source->render.position.x, source->render.position.y,
+                                         source->render.position.z, 0, -1, 0, 0);
         if (effect) {
           effect->Slot16(wave * 480);
         }
@@ -799,11 +843,15 @@ void CSkillAction_SS_KUNAIKUSSETSU::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08777
 void CSkillAction_SS_KUNAIKUSSETSU::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu_end"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu_end"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (!g_serviceOptions.Get(229)) {
-      g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu_bottom_end"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effects = g_effectMgr;
+      effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effects = g_effectMgr;
+      effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu_bottom_end"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
   }
 }
