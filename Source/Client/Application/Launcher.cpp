@@ -1123,9 +1123,9 @@ void ShutdownManagers() {
 // FUNCTION: fn_24370
 std::pair<bool, std::string> InitializeManagers() {
   if (!CConfigMgr::Create()) {
-    const std::uint8_t nameSource[] = {0xC6, 0x22, 0xE4, 0x79, 0x19, 0x08, 0xC2, 0xE2, 0xE2, 0x13, 0xB1, 0x2D, 0x3C, 0x13, 0xC0, 0xCE,
-                                       0xF1, 0x04, 0xC2, 0x79, 0x0C, 0x15, 0xC4, 0xC1, 0xE6, 0x04, 0xA3, 0x3E, 0x7F};
-    thread_local EncryptedName<sizeof(nameSource), 0xAFA5617F178B6185ULL> name(nameSource);
+    const char nameSource[] = {'\xC6', '\x22', '\xE4', '\x79', '\x19', '\x08', '\xC2', '\xE2', '\xE2', '\x13', '\xB1', '\x2D', '\x3C', '\x13', '\xC0', '\xCE',
+                               '\xF1', '\x04', '\xC2', '\x79', '\x0C', '\x15', '\xC4', '\xC1', '\xE6', '\x04', '\xA3', '\x3E', '\x7F'};
+    EncryptedName<sizeof(nameSource), 0xAFA5617F178B6185ULL>& name = ThreadLocalName<0xAFA5617F178B6185ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
@@ -1133,224 +1133,224 @@ std::pair<bool, std::string> InitializeManagers() {
     g_launchPassCommandLine = true;
     g_stoveMgr = new (std::nothrow) CStoveMgr;
     if (!g_stoveMgr->m_initialized) {
-      const std::uint8_t nameSource[] = {0x70, 0xC0, 0x39, 0xFA, 0xED, 0xF0, 0x16, 0xFC, 0x41, 0xA9, 0x77, 0xD6, 0xE9, 0xF0, 0x3A, 0xEF,
-                                         0x56, 0xDA, 0x23, 0xE6, 0xEF, 0xF4, 0x35, 0xF8, 0x56, 0xBB, 0x64, 0x95};
-      thread_local EncryptedName<sizeof(nameSource), 0x9B5B959B954D9333ULL> name(nameSource);
+      const char nameSource[] = {'\x70', '\xC0', '\x39', '\xFA', '\xED', '\xF0', '\x16', '\xFC', '\x41', '\xA9', '\x77', '\xD6', '\xE9', '\xF0', '\x3A', '\xEF',
+                                 '\x56', '\xDA', '\x23', '\xE6', '\xEF', '\xF4', '\x35', '\xF8', '\x56', '\xBB', '\x64', '\x95'};
+      EncryptedName<sizeof(nameSource), 0x9B5B959B954D9333ULL>& name = ThreadLocalName<0x9B5B959B954D9333ULL>(nameSource);
       return std::make_pair(false, std::string(name.Text()));
     }
   }
 
   if (!CThemidaMgr::Create()) {
-    const std::uint8_t nameSource[] = {0x22, 0xFB, 0xE7, 0x5C, 0xE6, 0xA0, 0x9B, 0x76, 0x2C, 0xC8, 0xFD, 0x03, 0xB1, 0x8A, 0x8D, 0x72,
-                                       0x00, 0xDB, 0xEA, 0x70, 0xE5, 0xBA, 0x8B, 0x76, 0x0F, 0xCC, 0xEA, 0x11, 0xA2, 0xC9};
-    thread_local EncryptedName<sizeof(nameSource), 0x17FFC98B398FAF61ULL> name(nameSource);
+    const char nameSource[] = {'\x22', '\xFB', '\xE7', '\x5C', '\xE6', '\xA0', '\x9B', '\x76', '\x2C', '\xC8', '\xFD', '\x03', '\xB1', '\x8A', '\x8D', '\x72',
+                               '\x00', '\xDB', '\xEA', '\x70', '\xE5', '\xBA', '\x8B', '\x76', '\x0F', '\xCC', '\xEA', '\x11', '\xA2', '\xC9'};
+    EncryptedName<sizeof(nameSource), 0x17FFC98B398FAF61ULL>& name = ThreadLocalName<0x17FFC98B398FAF61ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CReassemblyPacketMgr::CreateInstance()) {
-    const std::uint8_t nameSource[] = {0xFC, 0xEF, 0xBA, 0x5E, 0x3E, 0x5E, 0xE6, 0x5E, 0xDD, 0xD1, 0xA6, 0x6F, 0x2C, 0x4E, 0xE8, 0x56,
-                                       0xCB, 0xF0, 0xB8, 0x4D, 0x77, 0x17, 0xC0, 0x41, 0xDA, 0xDC, 0xAB, 0x5A, 0x04, 0x43, 0xF0, 0x47,
-                                       0xDE, 0xD3, 0xBC, 0x5A, 0x65, 0x04, 0x83};
-    thread_local EncryptedName<sizeof(nameSource), 0x33832D4D3FDFBDBFULL> name(nameSource);
+    const char nameSource[] = {'\xFC', '\xEF', '\xBA', '\x5E', '\x3E', '\x5E', '\xE6', '\x5E', '\xDD', '\xD1', '\xA6', '\x6F', '\x2C', '\x4E', '\xE8', '\x56',
+                               '\xCB', '\xF0', '\xB8', '\x4D', '\x77', '\x17', '\xC0', '\x41', '\xDA', '\xDC', '\xAB', '\x5A', '\x04', '\x43', '\xF0', '\x47',
+                               '\xDE', '\xD3', '\xBC', '\x5A', '\x65', '\x04', '\x83'};
+    EncryptedName<sizeof(nameSource), 0x33832D4D3FDFBDBFULL>& name = ThreadLocalName<0x33832D4D3FDFBDBFULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   Singleton<CEZ2STREffectMgr>::GetInstance()->Load();
   if (!CreateEffectMgr()) {
-    const std::uint8_t nameSource[] = {0xB2, 0x86, 0x8F, 0xDB, 0xC8, 0x6E, 0x01, 0x30, 0x96, 0xB1, 0xD3, 0x87, 0xEE, 0x7F, 0x10, 0x1C,
-                                       0x85, 0xA6, 0xA0, 0xD3, 0xDE, 0x79, 0x14, 0x13, 0x92, 0xA6, 0xC1, 0x94, 0xAD};
-    thread_local EncryptedName<sizeof(nameSource), 0x7D750DADBDE9C3F1ULL> name(nameSource);
+    const char nameSource[] = {'\xB2', '\x86', '\x8F', '\xDB', '\xC8', '\x6E', '\x01', '\x30', '\x96', '\xB1', '\xD3', '\x87', '\xEE', '\x7F', '\x10', '\x1C',
+                               '\x85', '\xA6', '\xA0', '\xD3', '\xDE', '\x79', '\x14', '\x13', '\x92', '\xA6', '\xC1', '\x94', '\xAD'};
+    EncryptedName<sizeof(nameSource), 0x7D750DADBDE9C3F1ULL>& name = ThreadLocalName<0x7D750DADBDE9C3F1ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CreateEffectMemoryMgr()) {
-    const std::uint8_t nameSource[] = {0xAA, 0x96, 0x5B, 0x61, 0x50, 0x4A, 0x7F, 0xA8, 0x8C, 0xBE, 0x52, 0x75, 0x4C, 0x64, 0x6C, 0x97,
-                                       0xD3, 0xE9, 0x7E, 0x75, 0x50, 0x48, 0x7F, 0x80, 0xA0, 0xBD, 0x4E, 0x73, 0x54, 0x47, 0x68, 0x80,
-                                       0xC1, 0xFA, 0x3D};
-    thread_local EncryptedName<sizeof(nameSource), 0xE50B2935073DD3E9ULL> name(nameSource);
+    const char nameSource[] = {'\xAA', '\x96', '\x5B', '\x61', '\x50', '\x4A', '\x7F', '\xA8', '\x8C', '\xBE', '\x52', '\x75', '\x4C', '\x64', '\x6C', '\x97',
+                               '\xD3', '\xE9', '\x7E', '\x75', '\x50', '\x48', '\x7F', '\x80', '\xA0', '\xBD', '\x4E', '\x73', '\x54', '\x47', '\x68', '\x80',
+                               '\xC1', '\xFA', '\x3D'};
+    EncryptedName<sizeof(nameSource), 0xE50B2935073DD3E9ULL>& name = ThreadLocalName<0xE50B2935073DD3E9ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CreateEntryQueueMgr()) {
-    const std::uint8_t nameSource[] = {0xEC, 0x0A, 0x45, 0x97, 0xAD, 0x6C, 0x02, 0x4A, 0xCA, 0x3A, 0x4E, 0xAE, 0xB8, 0x67, 0x69, 0x05,
-                                       0xEC, 0x3D, 0x4E, 0x82, 0xAB, 0x70, 0x1A, 0x51, 0xDC, 0x3B, 0x4A, 0x8D, 0xBC, 0x70, 0x7B, 0x16,
-                                       0xAF};
-    thread_local EncryptedName<sizeof(nameSource), 0x3F5315DFE32B4FAFULL> name(nameSource);
+    const char nameSource[] = {'\xEC', '\x0A', '\x45', '\x97', '\xAD', '\x6C', '\x02', '\x4A', '\xCA', '\x3A', '\x4E', '\xAE', '\xB8', '\x67', '\x69', '\x05',
+                               '\xEC', '\x3D', '\x4E', '\x82', '\xAB', '\x70', '\x1A', '\x51', '\xDC', '\x3B', '\x4A', '\x8D', '\xBC', '\x70', '\x7B', '\x16',
+                               '\xAF'};
+    EncryptedName<sizeof(nameSource), 0x3F5315DFE32B4FAFULL>& name = ThreadLocalName<0x3F5315DFE32B4FAFULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CTimeScheduler::Create()) {
-    const std::uint8_t nameSource[] = {0xD6, 0xA9, 0x78, 0xDE, 0x34, 0x36, 0xF6, 0x59, 0xF0, 0x99, 0x64, 0xDF, 0x34, 0x17, 0xAF, 0x0B,
-                                       0xD6, 0x8F, 0x74, 0xD2, 0x25, 0x00, 0xDC, 0x5F, 0xE6, 0x89, 0x70, 0xDD, 0x32, 0x00, 0xBD, 0x18,
-                                       0x95};
-    thread_local EncryptedName<sizeof(nameSource), 0x31956551B311FD95ULL> name(nameSource);
+    const char nameSource[] = {'\xD6', '\xA9', '\x78', '\xDE', '\x34', '\x36', '\xF6', '\x59', '\xF0', '\x99', '\x64', '\xDF', '\x34', '\x17', '\xAF', '\x0B',
+                               '\xD6', '\x8F', '\x74', '\xD2', '\x25', '\x00', '\xDC', '\x5F', '\xE6', '\x89', '\x70', '\xDD', '\x32', '\x00', '\xBD', '\x18',
+                               '\x95'};
+    EncryptedName<sizeof(nameSource), 0x31956551B311FD95ULL>& name = ThreadLocalName<0x31956551B311FD95ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!EquipmentResourceMgr::Create()) {
-    const std::uint8_t nameSource[] = {0xD2, 0x96, 0xF4, 0x33, 0x00, 0xE2, 0x52, 0x4C, 0xE3, 0xA0, 0xD8, 0x2C, 0x02, 0xE3, 0x07, 0x03,
-                                       0xD2, 0xB1, 0xD8, 0x00, 0x11, 0xF4, 0x74, 0x57, 0xE2, 0xB7, 0xDC, 0x0F, 0x06, 0xF4, 0x15, 0x10,
-                                       0x91};
-    thread_local EncryptedName<sizeof(nameSource), 0x393D916561BDC391ULL> name(nameSource);
+    const char nameSource[] = {'\xD2', '\x96', '\xF4', '\x33', '\x00', '\xE2', '\x52', '\x4C', '\xE3', '\xA0', '\xD8', '\x2C', '\x02', '\xE3', '\x07', '\x03',
+                               '\xD2', '\xB1', '\xD8', '\x00', '\x11', '\xF4', '\x74', '\x57', '\xE2', '\xB7', '\xDC', '\x0F', '\x06', '\xF4', '\x15', '\x10',
+                               '\x91'};
+    EncryptedName<sizeof(nameSource), 0x393D916561BDC391ULL>& name = ThreadLocalName<0x393D916561BDC391ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   CTownInfoMgr::Create();
   if (!g_townInfoMgr->LoadScript()) {
-    const std::uint8_t titleSource[] = {0x9C, 0x4B, 0x61, 0x16, 0xB9, 0x83};
-    thread_local EncryptedName<sizeof(titleSource), 0xFF7D83CB791339D9ULL> title(titleSource);
+    const char titleSource[] = {'\x9C', '\x4B', '\x61', '\x16', '\xB9', '\x83'};
+    EncryptedName<sizeof(titleSource), 0xFF7D83CB791339D9ULL>& title = ThreadLocalName<0xFF7D83CB791339D9ULL>(titleSource);
     const char* caption = title.Text();
-    const std::uint8_t textSource[] = {0x41, 0xFC, 0xC4, 0xAF, 0xAE, 0x2D, 0x37, 0x82, 0x35, 0xF5, 0xDA, 0xAD, 0x82, 0x63, 0x18, 0x83,
-                                       0x7C, 0xE7, 0xB3};
-    thread_local EncryptedName<sizeof(textSource), 0xED5143E7C1B39315ULL> text(textSource);
+    const char textSource[] = {'\x41', '\xFC', '\xC4', '\xAF', '\xAE', '\x2D', '\x37', '\x82', '\x35', '\xF5', '\xDA', '\xAD', '\x82', '\x63', '\x18', '\x83',
+                               '\x7C', '\xE7', '\xB3'};
+    EncryptedName<sizeof(textSource), 0xED5143E7C1B39315ULL>& text = ThreadLocalName<0xED5143E7C1B39315ULL>(textSource);
     MessageBoxA(nullptr, text.Text(), caption, MB_OK);
   }
 
   if (!CreateCooldownOwner()) {
-    const std::uint8_t nameSource[] = {0x2C, 0xEE, 0x4E, 0x86, 0x53, 0x73, 0x50, 0xDA, 0x0A, 0xDF, 0x6C, 0x8E, 0x4D, 0x3D, 0x03, 0xF4,
-                                       0x1D, 0xC8, 0x40, 0x9D, 0x5A, 0x4E, 0x57, 0xC4, 0x1B, 0xCC, 0x4F, 0x8A, 0x5A, 0x2F, 0x10, 0xB7};
-    thread_local EncryptedName<sizeof(nameSource), 0xB739073FE921AD6FULL> name(nameSource);
+    const char nameSource[] = {'\x2C', '\xEE', '\x4E', '\x86', '\x53', '\x73', '\x50', '\xDA', '\x0A', '\xDF', '\x6C', '\x8E', '\x4D', '\x3D', '\x03', '\xF4',
+                               '\x1D', '\xC8', '\x40', '\x9D', '\x5A', '\x4E', '\x57', '\xC4', '\x1B', '\xCC', '\x4F', '\x8A', '\x5A', '\x2F', '\x10', '\xB7'};
+    EncryptedName<sizeof(nameSource), 0xB739073FE921AD6FULL>& name = ThreadLocalName<0xB739073FE921AD6FULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CRenewQuestMgr::Create()) {
-    const std::uint8_t nameSource[] = {0x48, 0xE7, 0xEC, 0x7B, 0x6C, 0xC0, 0xC8, 0xB6, 0x6E, 0xC6, 0xFD, 0x58, 0x6E, 0xC5, 0xA3, 0xF9,
-                                       0x48, 0xC7, 0xEC, 0x74, 0x7D, 0xD2, 0xD0, 0xAD, 0x78, 0xC1, 0xE8, 0x7B, 0x6A, 0xD2, 0xB1, 0xEA,
-                                       0x0B};
-    thread_local EncryptedName<sizeof(nameSource), 0xC399B7091589B50BULL> name(nameSource);
+    const char nameSource[] = {'\x48', '\xE7', '\xEC', '\x7B', '\x6C', '\xC0', '\xC8', '\xB6', '\x6E', '\xC6', '\xFD', '\x58', '\x6E', '\xC5', '\xA3', '\xF9',
+                               '\x48', '\xC7', '\xEC', '\x74', '\x7D', '\xD2', '\xD0', '\xAD', '\x78', '\xC1', '\xE8', '\x7B', '\x6A', '\xD2', '\xB1', '\xEA',
+                               '\x0B'};
+    EncryptedName<sizeof(nameSource), 0xC399B7091589B50BULL>& name = ThreadLocalName<0xC399B7091589B50BULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   g_renewQuestMgr->LoadQuestInfo();
   if (!CClanInfo::Create()) {
-    const std::uint8_t nameSource[] = {0x44, 0xF8, 0x85, 0x2C, 0x97, 0x04, 0x33, 0xF3, 0x68, 0xF6, 0x8E, 0x3F, 0xC3, 0x77, 0x1E, 0xE7,
-                                       0x62, 0xDA, 0x9D, 0x28, 0xB0, 0x23, 0x2E, 0xE1, 0x66, 0xD5, 0x8A, 0x28, 0xD1, 0x64, 0x5D};
-    thread_local EncryptedName<sizeof(nameSource), 0x955D4DF94DE9BB07ULL> name(nameSource);
+    const char nameSource[] = {'\x44', '\xF8', '\x85', '\x2C', '\x97', '\x04', '\x33', '\xF3', '\x68', '\xF6', '\x8E', '\x3F', '\xC3', '\x77', '\x1E', '\xE7',
+                               '\x62', '\xDA', '\x9D', '\x28', '\xB0', '\x23', '\x2E', '\xE1', '\x66', '\xD5', '\x8A', '\x28', '\xD1', '\x64', '\x5D'};
+    EncryptedName<sizeof(nameSource), 0x955D4DF94DE9BB07ULL>& name = ThreadLocalName<0x955D4DF94DE9BB07ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   CChampionMonsterMgr::Create();
   if (!g_championMonsterMgr->Load()) {
-    const std::uint8_t titleSource[] = {0xB0, 0xF5, 0x8F, 0x92, 0x5D, 0x3D};
-    thread_local EncryptedName<sizeof(titleSource), 0x936F3D2FFDFD87F5ULL> title(titleSource);
+    const char titleSource[] = {'\xB0', '\xF5', '\x8F', '\x92', '\x5D', '\x3D'};
+    EncryptedName<sizeof(titleSource), 0x936F3D2FFDFD87F5ULL>& title = ThreadLocalName<0x936F3D2FFDFD87F5ULL>(titleSource);
     const char* caption = title.Text();
-    const std::uint8_t textSource[] = {0x0C, 0x23, 0xD2, 0xE2, 0x5D, 0x7C, 0x2E, 0xE9, 0x02, 0x24, 0xDD, 0xFC, 0x59, 0x70, 0x33, 0xA7,
-                                       0x29, 0x22, 0xDF, 0xEA, 0x0D, 0x5C, 0x2F, 0xEE, 0x3B, 0x4B};
-    thread_local EncryptedName<sizeof(textSource), 0x8741152D8FB34B4FULL> text(textSource);
+    const char textSource[] = {'\x0C', '\x23', '\xD2', '\xE2', '\x5D', '\x7C', '\x2E', '\xE9', '\x02', '\x24', '\xDD', '\xFC', '\x59', '\x70', '\x33', '\xA7',
+                               '\x29', '\x22', '\xDF', '\xEA', '\x0D', '\x5C', '\x2F', '\xEE', '\x3B', '\x4B'};
+    EncryptedName<sizeof(textSource), 0x8741152D8FB34B4FULL>& text = ThreadLocalName<0x8741152D8FB34B4FULL>(textSource);
     MessageBoxA(nullptr, text.Text(), caption, MB_OK);
   }
 
   if (!CMapPropertyMgr::Create()) {
-    const std::uint8_t nameSource[] = {0x9C, 0x0A, 0xCC, 0x17, 0x4F, 0x0B, 0x5C, 0x5D, 0xBA, 0x35, 0xD9, 0x1E, 0x52, 0x1E, 0x41, 0x17,
-                                       0xE5, 0x04, 0xDF, 0x02, 0x7E, 0x0D, 0x56, 0x64, 0xB1, 0x34, 0xD9, 0x06, 0x71, 0x1A, 0x56, 0x05,
-                                       0xF6, 0x47};
-    thread_local EncryptedName<sizeof(nameSource), 0x2D33791F67AD47DFULL> name(nameSource);
+    const char nameSource[] = {'\x9C', '\x0A', '\xCC', '\x17', '\x4F', '\x0B', '\x5C', '\x5D', '\xBA', '\x35', '\xD9', '\x1E', '\x52', '\x1E', '\x41', '\x17',
+                               '\xE5', '\x04', '\xDF', '\x02', '\x7E', '\x0D', '\x56', '\x64', '\xB1', '\x34', '\xD9', '\x06', '\x71', '\x1A', '\x56', '\x05',
+                               '\xF6', '\x47'};
+    EncryptedName<sizeof(nameSource), 0x2D33791F67AD47DFULL>& name = ThreadLocalName<0x2D33791F67AD47DFULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   InitMapTypeInfoTable();
   if (!RodexMailStore::Create()) {
-    const std::uint8_t nameSource[] = {0xE8, 0x1D, 0xF0, 0xC7, 0xE0, 0x57, 0x42, 0x7E, 0xD8, 0x3B, 0xFA, 0xCE, 0xC8, 0x48, 0x63, 0x3D,
-                                       0x91, 0x0C, 0xED, 0xC6, 0xE4, 0x5B, 0x74, 0x4E, 0xC5, 0x3C, 0xEB, 0xC2, 0xEB, 0x4C, 0x74, 0x2F,
-                                       0x82, 0x4F};
-    thread_local EncryptedName<sizeof(nameSource), 0x07112F85A39F4FABULL> name(nameSource);
+    const char nameSource[] = {'\xE8', '\x1D', '\xF0', '\xC7', '\xE0', '\x57', '\x42', '\x7E', '\xD8', '\x3B', '\xFA', '\xCE', '\xC8', '\x48', '\x63', '\x3D',
+                               '\x91', '\x0C', '\xED', '\xC6', '\xE4', '\x5B', '\x74', '\x4E', '\xC5', '\x3C', '\xEB', '\xC2', '\xEB', '\x4C', '\x74', '\x2F',
+                               '\x82', '\x4F'};
+    EncryptedName<sizeof(nameSource), 0x07112F85A39F4FABULL>& name = ThreadLocalName<0x07112F85A39F4FABULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!RouletteMgr::Create()) {
-    const std::uint8_t nameSource[] = {0x14, 0xA3, 0xDA, 0xBE, 0x6F, 0x9D, 0x86, 0x31, 0x23, 0x94, 0xF8, 0xAC, 0x71, 0xCB, 0xD9, 0x06,
-                                       0x25, 0x94, 0xD4, 0xBF, 0x66, 0xB8, 0x8D, 0x36, 0x23, 0x90, 0xDB, 0xA8, 0x66, 0xD9, 0xCA, 0x45};
-    thread_local EncryptedName<sizeof(nameSource), 0x45E3F103CBB5F157ULL> name(nameSource);
+    const char nameSource[] = {'\x14', '\xA3', '\xDA', '\xBE', '\x6F', '\x9D', '\x86', '\x31', '\x23', '\x94', '\xF8', '\xAC', '\x71', '\xCB', '\xD9', '\x06',
+                               '\x25', '\x94', '\xD4', '\xBF', '\x66', '\xB8', '\x8D', '\x36', '\x23', '\x90', '\xDB', '\xA8', '\x66', '\xD9', '\xCA', '\x45'};
+    EncryptedName<sizeof(nameSource), 0x45E3F103CBB5F157ULL>& name = ThreadLocalName<0x45E3F103CBB5F157ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CCURLMgr::Initialize()) {
-    const std::uint8_t nameSource[] = {0x20, 0x7A, 0x28, 0xF3, 0x15, 0xF8, 0xF8, 0xB1, 0x59, 0x03, 0x3E, 0xD3, 0x3C, 0xD4, 0xEB, 0xA6,
-                                       0x2A, 0x57, 0x0E, 0xD5, 0x38, 0xDB, 0xFC, 0xA6, 0x4B, 0x10, 0x7D};
-    thread_local EncryptedName<sizeof(nameSource), 0xC39FB559A17D3963ULL> name(nameSource);
+    const char nameSource[] = {'\x20', '\x7A', '\x28', '\xF3', '\x15', '\xF8', '\xF8', '\xB1', '\x59', '\x03', '\x3E', '\xD3', '\x3C', '\xD4', '\xEB', '\xA6',
+                               '\x2A', '\x57', '\x0E', '\xD5', '\x38', '\xDB', '\xFC', '\xA6', '\x4B', '\x10', '\x7D'};
+    EncryptedName<sizeof(nameSource), 0xC39FB559A17D3963ULL>& name = ThreadLocalName<0xC39FB559A17D3963ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CAccountLinkedUserDataMgr::Initialize()) {
-    const std::uint8_t nameSource[] = {0xEC, 0xE0, 0xA6, 0x54, 0x78, 0x1C, 0xD9, 0x05, 0xE3, 0xC8, 0xAB, 0x5C, 0x72, 0x0D, 0xE2, 0x02,
-                                       0xCA, 0xD3, 0x81, 0x56, 0x63, 0x08, 0xFA, 0x16, 0xDD, 0x9B, 0xFF, 0x74, 0x65, 0x0C, 0xD6, 0x05,
-                                       0xCA, 0xE8, 0xAB, 0x44, 0x63, 0x08, 0xD9, 0x12, 0xCA, 0x89, 0xEC, 0x37};
-    thread_local EncryptedName<sizeof(nameSource), 0x71B7691737C5A1AFULL> name(nameSource);
+    const char nameSource[] = {'\xEC', '\xE0', '\xA6', '\x54', '\x78', '\x1C', '\xD9', '\x05', '\xE3', '\xC8', '\xAB', '\x5C', '\x72', '\x0D', '\xE2', '\x02',
+                               '\xCA', '\xD3', '\x81', '\x56', '\x63', '\x08', '\xFA', '\x16', '\xDD', '\x9B', '\xFF', '\x74', '\x65', '\x0C', '\xD6', '\x05',
+                               '\xCA', '\xE8', '\xAB', '\x44', '\x63', '\x08', '\xD9', '\x12', '\xCA', '\x89', '\xEC', '\x37'};
+    EncryptedName<sizeof(nameSource), 0x71B7691737C5A1AFULL>& name = ThreadLocalName<0x71B7691737C5A1AFULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CCharacterLinkedUserDataMgr::Initialize()) {
-    const std::uint8_t nameSource[] = {0x66, 0xD2, 0x6F, 0xC2, 0x93, 0x60, 0x50, 0x1F, 0x40, 0xE3, 0x4B, 0xCA, 0x8F, 0x6A, 0x56, 0x0F,
-                                       0x70, 0xE2, 0x62, 0xD1, 0xA5, 0x60, 0x47, 0x0A, 0x68, 0xF6, 0x75, 0x99, 0xDB, 0x42, 0x41, 0x0E,
-                                       0x44, 0xE5, 0x62, 0xEA, 0x8F, 0x72, 0x47, 0x0A, 0x4B, 0xF2, 0x62, 0x8B, 0xC8, 0x01};
-    thread_local EncryptedName<sizeof(nameSource), 0x6B3301E1A3079125ULL> name(nameSource);
+    const char nameSource[] = {'\x66', '\xD2', '\x6F', '\xC2', '\x93', '\x60', '\x50', '\x1F', '\x40', '\xE3', '\x4B', '\xCA', '\x8F', '\x6A', '\x56', '\x0F',
+                               '\x70', '\xE2', '\x62', '\xD1', '\xA5', '\x60', '\x47', '\x0A', '\x68', '\xF6', '\x75', '\x99', '\xDB', '\x42', '\x41', '\x0E',
+                               '\x44', '\xE5', '\x62', '\xEA', '\x8F', '\x72', '\x47', '\x0A', '\x4B', '\xF2', '\x62', '\x8B', '\xC8', '\x01'};
+    EncryptedName<sizeof(nameSource), 0x6B3301E1A3079125ULL>& name = ThreadLocalName<0x6B3301E1A3079125ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!NMessageMgr::Initialize()) {
-    const std::uint8_t nameSource[] = {0xC7, 0x70, 0x08, 0x96, 0xD4, 0x60, 0x40, 0x4A, 0xC4, 0x5A, 0x1F, 0xDF, 0x9D, 0x42, 0x55, 0x4A,
-                                       0xE8, 0x49, 0x08, 0xAC, 0xC9, 0x72, 0x53, 0x4E, 0xE7, 0x5E, 0x08, 0xCD, 0x8E, 0x01};
-    thread_local EncryptedName<sizeof(nameSource), 0x2F2701A7E56D3D89ULL> name(nameSource);
+    const char nameSource[] = {'\xC7', '\x70', '\x08', '\x96', '\xD4', '\x60', '\x40', '\x4A', '\xC4', '\x5A', '\x1F', '\xDF', '\x9D', '\x42', '\x55', '\x4A',
+                               '\xE8', '\x49', '\x08', '\xAC', '\xC9', '\x72', '\x53', '\x4E', '\xE7', '\x5E', '\x08', '\xCD', '\x8E', '\x01'};
+    EncryptedName<sizeof(nameSource), 0x2F2701A7E56D3D89ULL>& name = ThreadLocalName<0x2F2701A7E56D3D89ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CAsyncWorkMgr::Initialize(2)) {
-    const std::uint8_t nameSource[] = {0xFE, 0xDC, 0x48, 0x9E, 0x63, 0xE0, 0xDE, 0x16, 0xCF, 0xF6, 0x76, 0x80, 0x7F, 0xB9, 0xB3, 0x3A,
-                                       0xCF, 0xF8, 0x5A, 0x93, 0x68, 0xCA, 0xE7, 0x0A, 0xC9, 0xFC, 0x55, 0x84, 0x68, 0xAB, 0xA0, 0x79};
-    thread_local EncryptedName<sizeof(nameSource), 0x7989830DE73B9DBDULL> name(nameSource);
+    const char nameSource[] = {'\xFE', '\xDC', '\x48', '\x9E', '\x63', '\xE0', '\xDE', '\x16', '\xCF', '\xF6', '\x76', '\x80', '\x7F', '\xB9', '\xB3', '\x3A',
+                               '\xCF', '\xF8', '\x5A', '\x93', '\x68', '\xCA', '\xE7', '\x0A', '\xC9', '\xFC', '\x55', '\x84', '\x68', '\xAB', '\xA0', '\x79'};
+    EncryptedName<sizeof(nameSource), 0x7989830DE73B9DBDULL>& name = ThreadLocalName<0x7989830DE73B9DBDULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!g_asyncWorkMgr->Start()) {
-    const std::uint8_t nameSource[] = {0x22, 0x65, 0xD6, 0xB1, 0xE6, 0xB3, 0xCE, 0xD8, 0x28, 0x4A, 0xD6, 0xBC, 0xE9, 0xBE, 0xFA, 0xD2,
-                                       0x19, 0x60, 0xE8, 0xA2, 0xF5, 0xF5, 0x84, 0x90, 0x55, 0x58, 0xD1, 0xA4, 0xF5, 0xA9, 0x85, 0x94,
-                                       0x6B};
-    thread_local EncryptedName<sizeof(nameSource), 0xBDADDD87C5A50B6BULL> name(nameSource);
+    const char nameSource[] = {'\x22', '\x65', '\xD6', '\xB1', '\xE6', '\xB3', '\xCE', '\xD8', '\x28', '\x4A', '\xD6', '\xBC', '\xE9', '\xBE', '\xFA', '\xD2',
+                               '\x19', '\x60', '\xE8', '\xA2', '\xF5', '\xF5', '\x84', '\x90', '\x55', '\x58', '\xD1', '\xA4', '\xF5', '\xA9', '\x85', '\x94',
+                               '\x6B'};
+    EncryptedName<sizeof(nameSource), 0xBDADDD87C5A50B6BULL>& name = ThreadLocalName<0xBDADDD87C5A50B6BULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CWhisperBlockMgr::Initialize()) {
-    const std::uint8_t nameSource[] = {0x4E, 0x0C, 0x01, 0xEA, 0xC8, 0x61, 0xF8, 0xFB, 0x4F, 0x37, 0x06, 0xE0, 0xD0, 0x5C, 0xFA, 0xFB,
-                                       0x37, 0x61, 0x2A, 0xF1, 0xDE, 0x70, 0xE9, 0xEC, 0x44, 0x35, 0x1A, 0xF7, 0xDA, 0x7F, 0xFE, 0xEC,
-                                       0x25, 0x72, 0x69};
-    thread_local EncryptedName<sizeof(nameSource), 0x899D11BB83695B0DULL> name(nameSource);
+    const char nameSource[] = {'\x4E', '\x0C', '\x01', '\xEA', '\xC8', '\x61', '\xF8', '\xFB', '\x4F', '\x37', '\x06', '\xE0', '\xD0', '\x5C', '\xFA', '\xFB',
+                               '\x37', '\x61', '\x2A', '\xF1', '\xDE', '\x70', '\xE9', '\xEC', '\x44', '\x35', '\x1A', '\xF7', '\xDA', '\x7F', '\xFE', '\xEC',
+                               '\x25', '\x72', '\x69'};
+    EncryptedName<sizeof(nameSource), 0x899D11BB83695B0DULL>& name = ThreadLocalName<0x899D11BB83695B0DULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CreatePlayerNameDictionary()) {
-    const std::uint8_t nameSource[] = {0xB6, 0x75, 0x3F, 0x88, 0xAE, 0x40, 0xF5, 0x65, 0x94, 0x48, 0x36, 0xAD, 0xBE, 0x46, 0xF3, 0x42,
-                                       0x9A, 0x4B, 0x32, 0x9B, 0xAE, 0x1F, 0xBD, 0x68, 0x87, 0x40, 0x32, 0x9D, 0xB2, 0x6C, 0xE9, 0x58,
-                                       0x81, 0x44, 0x3D, 0x8A, 0xB2, 0x0D, 0xAE, 0x2B};
-    thread_local EncryptedName<sizeof(nameSource), 0x2B8725D7E95325F5ULL> name(nameSource);
+    const char nameSource[] = {'\xB6', '\x75', '\x3F', '\x88', '\xAE', '\x40', '\xF5', '\x65', '\x94', '\x48', '\x36', '\xAD', '\xBE', '\x46', '\xF3', '\x42',
+                               '\x9A', '\x4B', '\x32', '\x9B', '\xAE', '\x1F', '\xBD', '\x68', '\x87', '\x40', '\x32', '\x9D', '\xB2', '\x6C', '\xE9', '\x58',
+                               '\x81', '\x44', '\x3D', '\x8A', '\xB2', '\x0D', '\xAE', '\x2B'};
+    EncryptedName<sizeof(nameSource), 0x2B8725D7E95325F5ULL>& name = ThreadLocalName<0x2B8725D7E95325F5ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CGuildMgr::Create()) {
-    const std::uint8_t nameSource[] = {0x92, 0x26, 0x84, 0xE0, 0x03, 0x35, 0xA8, 0xB4, 0xA3, 0x5B, 0xCB, 0xCA, 0x1D, 0x34, 0x84, 0xA7,
-                                       0xB4, 0x28, 0x9F, 0xFA, 0x1B, 0x30, 0x8B, 0xB0, 0xB4, 0x49, 0xD8, 0x89};
-    thread_local EncryptedName<sizeof(nameSource), 0xD3E5516F89F161D1ULL> name(nameSource);
+    const char nameSource[] = {'\x92', '\x26', '\x84', '\xE0', '\x03', '\x35', '\xA8', '\xB4', '\xA3', '\x5B', '\xCB', '\xCA', '\x1D', '\x34', '\x84', '\xA7',
+                               '\xB4', '\x28', '\x9F', '\xFA', '\x1B', '\x30', '\x8B', '\xB0', '\xB4', '\x49', '\xD8', '\x89'};
+    EncryptedName<sizeof(nameSource), 0xD3E5516F89F161D1ULL>& name = ThreadLocalName<0xD3E5516F89F161D1ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CEmblemDataMgr::Initialize()) {
-    const std::uint8_t nameSource[] = {0xCE, 0x56, 0x12, 0x71, 0x0D, 0x80, 0x58, 0xB1, 0xEC, 0x67, 0x1E, 0x5E, 0x06, 0x97, 0x0F, 0xCF,
-                                       0xCE, 0x61, 0x1A, 0x72, 0x15, 0x80, 0x7C, 0x9B, 0xFE, 0x67, 0x1E, 0x7D, 0x02, 0x80, 0x1D, 0xDC,
-                                       0x8D};
-    thread_local EncryptedName<sizeof(nameSource), 0xF535E561137F138DULL> name(nameSource);
+    const char nameSource[] = {'\xCE', '\x56', '\x12', '\x71', '\x0D', '\x80', '\x58', '\xB1', '\xEC', '\x67', '\x1E', '\x5E', '\x06', '\x97', '\x0F', '\xCF',
+                               '\xCE', '\x61', '\x1A', '\x72', '\x15', '\x80', '\x7C', '\x9B', '\xFE', '\x67', '\x1E', '\x7D', '\x02', '\x80', '\x1D', '\xDC',
+                               '\x8D'};
+    EncryptedName<sizeof(nameSource), 0xF535E561137F138DULL>& name = ThreadLocalName<0xF535E561137F138DULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CreateNavigationLinkParser()) {
-    const std::uint8_t nameSource[] = {0x9C, 0xCF, 0x5E, 0x9E, 0xC8, 0x7E, 0x35, 0x9D, 0xE5, 0xD8, 0x4D, 0x9C, 0xE4, 0x6D, 0x22, 0xEE,
-                                       0xB1, 0xE8, 0x4B, 0x98, 0xEB, 0x7A, 0x22, 0x8F, 0xF6, 0x9B};
-    thread_local EncryptedName<sizeof(nameSource), 0xA7471985F93F9BDFULL> name(nameSource);
+    const char nameSource[] = {'\x9C', '\xCF', '\x5E', '\x9E', '\xC8', '\x7E', '\x35', '\x9D', '\xE5', '\xD8', '\x4D', '\x9C', '\xE4', '\x6D', '\x22', '\xEE',
+                               '\xB1', '\xE8', '\x4B', '\x98', '\xEB', '\x7A', '\x22', '\x8F', '\xF6', '\x9B'};
+    EncryptedName<sizeof(nameSource), 0xA7471985F93F9BDFULL>& name = ThreadLocalName<0xA7471985F93F9BDFULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
   if (!CreateSignBoardMgr()) {
-    const std::uint8_t nameSource[] = {0x14, 0xBC, 0xB8, 0xD2, 0xC5, 0x3D, 0x92, 0x3E, 0x25, 0x8B, 0x9C, 0xD2, 0xD9, 0x45, 0xC7, 0x1C,
-                                       0x25, 0x8A, 0xB0, 0xC1, 0xCE, 0x36, 0x93, 0x2C, 0x23, 0x8E, 0xBF, 0xD6, 0xCE, 0x57, 0xD4, 0x5F};
-    thread_local EncryptedName<sizeof(nameSource), 0x5FFD7FABB5D1EF57ULL> name(nameSource);
+    const char nameSource[] = {'\x14', '\xBC', '\xB8', '\xD2', '\xC5', '\x3D', '\x92', '\x3E', '\x25', '\x8B', '\x9C', '\xD2', '\xD9', '\x45', '\xC7', '\x1C',
+                               '\x25', '\x8A', '\xB0', '\xC1', '\xCE', '\x36', '\x93', '\x2C', '\x23', '\x8E', '\xBF', '\xD6', '\xCE', '\x57', '\xD4', '\x5F'};
+    EncryptedName<sizeof(nameSource), 0x5FFD7FABB5D1EF57ULL>& name = ThreadLocalName<0x5FFD7FABB5D1EF57ULL>(nameSource);
     return std::make_pair(false, std::string(name.Text()));
   }
 
