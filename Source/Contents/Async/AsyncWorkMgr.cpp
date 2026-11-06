@@ -21,15 +21,15 @@
 CAsyncWorkMgr* g_asyncWorkMgr;
 
 // INLINED
-CAsyncWorkMgr::CAsyncWorkMgr(std::uint32_t workers) : NAsyncWorkMgr(workers), m_ready(false), m_pools(nullptr) {
+CAsyncWorkMgr::CAsyncWorkMgr(std::uint32_t workers) : NAsyncWorkMgr(workers), m_pools(nullptr) {
+  this->m_ready = false;
   this->m_pools = new (std::nothrow) CAsyncWorkRecycleObjectPoolMgr;
-
   if (this->m_pools) {
-    if (this->m_pools->Ready()) {
-      this->m_ready = true;
-    } else {
+    if (!this->m_pools->Ready()) {
       delete this->m_pools;
       this->m_pools = nullptr;
+    } else {
+      this->m_ready = true;
     }
   }
 }
