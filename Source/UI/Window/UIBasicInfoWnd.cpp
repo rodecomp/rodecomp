@@ -106,10 +106,10 @@ void UIBasicInfoWnd::SetHeight(int height) {
       this->baseExpBar->Move(85, this->layoutOffset + 76);
     }
 
-    if (g_session.m_jobLevel < g_session.GetMaxJobLevel(g_session.GetDisplayJob())) {
-      this->jobExpBar->Move(85, this->layoutOffset + 88);
-    } else {
+    if (g_session.m_jobLevel >= g_session.GetMaxJobLevel(g_session.GetDisplayJob())) {
       this->jobExpBar->Move(-200, 88);
+    } else {
+      this->jobExpBar->Move(85, this->layoutOffset + 88);
     }
   }
 
