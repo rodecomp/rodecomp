@@ -713,7 +713,7 @@ __declspec(noinline) void UIMessengerGroupWnd::DropMember(int x, int y, int inde
   SessionRecord0734 record = g_session.FindRecord0734(member.accountId);
   UIWindow* window = g_windowMgr.LookupWindow(307);
   if (record.unknown_0000 != 1) {
-    int top = static_cast<int>(static_cast<float>(g_renderer->viewport.width) * 0.3f);
+    int top = static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.3f);
     if (window) {
       top = window->geometry.y + window->geometry.height;
     }
