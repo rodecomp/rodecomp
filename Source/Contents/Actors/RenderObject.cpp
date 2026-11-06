@@ -541,17 +541,18 @@ void CRenderObject::SetAction(unsigned animation, int, int repeat) {
 // OFFSET: 0x00CBFC00
 // FUNCTION: fn_21119
 void CRenderObject::SetColor(int alpha, int red, int green, int blue) {
+  unsigned char* channels = reinterpret_cast<unsigned char*>(&this->render.color);
   if (alpha != -1) {
-    this->render.color = (this->render.color & 0x00FFFFFFu) | (static_cast<std::uint32_t>(alpha) << 24);
+    channels[3] = static_cast<unsigned char>(alpha);
   }
   if (red != -1) {
-    this->render.color = (this->render.color & 0xFF00FFFFu) | ((static_cast<std::uint32_t>(red) & 0xFFu) << 16);
+    channels[2] = static_cast<unsigned char>(red);
   }
   if (green != -1) {
-    this->render.color = (this->render.color & 0xFFFF00FFu) | ((static_cast<std::uint32_t>(green) & 0xFFu) << 8);
+    channels[1] = static_cast<unsigned char>(green);
   }
   if (blue != -1) {
-    this->render.color = (this->render.color & 0xFFFFFF00u) | static_cast<unsigned char>(blue);
+    channels[0] = static_cast<unsigned char>(blue);
   }
 }
 

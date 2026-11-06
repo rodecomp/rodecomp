@@ -204,21 +204,21 @@ int CGameActor::Get8Dir(float angle) {
 int CGameObject::Get8Dir(float angle) {
   CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
 
-  if (!gameMode) {
-    return 0;
+  if (gameMode) {
+    float relative = -gameMode->camera->camera.yaw - angle;
+
+    while (relative < 0.0f) {
+      relative += 360.0f;
+    }
+
+    while (relative >= 360.0f) {
+      relative -= 360.0f;
+    }
+
+    return static_cast<int>(relative / 45.0f);
   }
 
-  float relative = -gameMode->camera->camera.yaw - angle;
-
-  while (relative < 0.0f) {
-    relative += 360.0f;
-  }
-
-  while (relative >= 360.0f) {
-    relative -= 360.0f;
-  }
-
-  return static_cast<int>(relative / 45.0f);
+  return 0;
 }
 
 // OFFSET: 0x00CB20B0

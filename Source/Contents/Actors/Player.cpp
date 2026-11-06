@@ -1752,7 +1752,7 @@ CRes* CPc::GetEquipSprite(int slot) const {
 // OFFSET: 0x00DAB160
 // FUNCTION: fn_22580
 std::int64_t CGrannyPc::Slot35() {
-  return (static_cast<std::int64_t>(this->unknown_0444) << 32) | static_cast<std::uint32_t>(this->unknown_0440);
+  return *reinterpret_cast<const std::int64_t*>(&this->unknown_0440);
 }
 
 // OFFSET: 0x00DAB250
