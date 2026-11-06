@@ -7971,11 +7971,2175 @@ bool CEffectPrim::OnProcess() {
     return false;
   }
 
-  if (g_updateTick == 0) {
-    return true;
+  switch (this->state.count) {
+    case 0:
+      if (this->state.slots[0].life < 98 && g_updateTick == 0) {
+        return true;
+      }
+      break;
+    case 16:
+      if (this->state.slots[0].life != 99 && g_updateTick == 0) {
+        return true;
+      }
+      break;
+    case 23:
+    case 28:
+    case 29:
+    case 30:
+    case 32:
+    case 35:
+    case 60:
+    case 68:
+    case 99:
+    case 104:
+    case 105:
+    case 106:
+    case 108:
+    case 109:
+    case 111:
+    case 130:
+    case 131:
+    case 132:
+    case 138:
+    case 139:
+    case 144:
+    case 145:
+    case 146:
+    case 147:
+    case 149:
+    case 151:
+    case 158:
+    case 161:
+    case 171:
+    case 173:
+      this->render.position = this->state.master->render.position;
+      [[fallthrough]];
+    default:
+      if (g_updateTick == 0) {
+        return true;
+      }
+      break;
   }
 
-  this->MoveEffectPrimitive();
+  switch (this->state.count) {
+    case 0:
+    case 2:
+      if (!this->Move2DPrimitive()) {
+        return false;
+      }
+      break;
+    case 15:
+    case 16:
+      this->MoveEffectPrimitive();
+      break;
+    case 1: {
+      this->state.orgPos.x = this->state.deltaPos2.x + this->state.master->state.tlvertX;
+      this->state.orgPos.y = this->state.deltaPos2.y + this->state.master->state.tlvertY;
+      this->state.radiusSpeed = this->state.radiusAccel + this->state.radiusSpeed;
+      this->state.longSpeed = this->state.longAccel + this->state.longSpeed;
+      this->state.widthSpeed = this->state.widthAccel + this->state.widthSpeed;
+      this->state.heightSpeed = this->state.heightAccel + this->state.heightSpeed;
+      this->state.rollSpeed = this->state.rollAccel + this->state.rollSpeed;
+      this->state.radius = this->state.radiusSpeed + this->state.radius;
+      this->state.longitude = this->state.longSpeed + this->state.longitude;
+      this->state.roll = this->state.rollSpeed + this->state.roll;
+      this->state.widthSize = this->state.widthSpeed + this->state.widthSize;
+      this->state.heightSize = this->state.heightSpeed + this->state.heightSize;
+      this->render.position.x = ClientSine(static_cast<int>(this->state.longitude)) * this->state.radius + this->state.orgPos.x;
+      this->render.position.y = this->state.orgPos.y - ClientCosine(static_cast<int>(this->state.longitude)) * this->state.radius;
+      this->state.ProcessAlpha();
+
+      if (this->state.stateCnt % this->state.animSpeed == 0) {
+        const auto next = this->render.curMotion + 1u;
+        this->render.curMotion = next;
+
+        if (this->state.repeatAnim != 0) {
+          this->render.curMotion = static_cast<int>(next) % static_cast<int>(this->state.totalTexture);
+        } else if (next == this->state.totalTexture) {
+          return false;
+        }
+      }
+    } break;
+    case 3: {
+      this->render.position.x = this->state.deltaPos2.x + this->state.master->state.tlvertX;
+      this->render.position.y = this->state.deltaPos2.y + this->state.master->state.tlvertY;
+
+      if ((this->state.pattern & 1u) != 0 && this->state.heightSize <= 0.0f) {
+        this->state.heightSpeed = 0;
+        this->state.heightAccel = 0;
+      }
+
+      if (this->state.stateCnt == this->state.changePoint) {
+        this->state.heightSpeed = this->state.changeHeightSpeed;
+        this->state.longSpeed = this->state.changeSpeed;
+        this->state.longAccel = this->state.changeAccel;
+      }
+
+      if (this->state.heightSize < 0.0f) {
+        this->state.heightSpeed *= -1.0f;
+        this->state.heightSize = 0;
+      }
+
+      this->state.longSpeed = this->state.longAccel + this->state.longSpeed;
+      this->state.heightSpeed = this->state.heightSpeed + this->state.heightAccel;
+      this->state.longitude = this->state.longSpeed + this->state.longitude;
+      this->state.heightSize = this->state.heightSpeed + this->state.heightSize;
+      this->state.arcAngle = this->state.widthSpeed + this->state.arcAngle;
+      this->state.ProcessAlpha();
+    } break;
+    case 4: {
+      this->render.position.x = this->state.deltaPos2.x + this->state.master->state.tlvertX;
+      this->render.position.y = this->state.deltaPos2.y + this->state.master->state.tlvertY;
+      this->state.radiusSpeed = this->state.radiusAccel + this->state.radiusSpeed;
+      this->state.radius = this->state.radiusSpeed + this->state.radius;
+
+      if ((this->state.pattern & 1u) != 0 || this->state.radius < this->state.innerSize) {
+        this->state.size = this->state.radius;
+      } else {
+        this->state.size = this->state.innerSize;
+      }
+
+      this->state.ProcessAlpha();
+    } break;
+    case 5:
+      if (!this->Prim3DParticle()) {
+        return false;
+      }
+      break;
+    case 167:
+      if (!this->Prim3DSlotParticle()) {
+        return false;
+      }
+      break;
+    case 6:
+      if (!this->Prim3DParticleGravity()) {
+        return false;
+      }
+      break;
+    case 7:
+      if (!this->Prim3DParticleOrbit()) {
+        return false;
+      }
+      break;
+    case 8:
+      this->Prim3DParticleSpline();
+      break;
+    case 9:
+      this->AdvanceEffectPrimitive();
+      break;
+    case 117: {
+      this->state.orgPos.x = this->state.master->render.position.x + this->state.deltaPos2.x;
+      this->state.orgPos.y = this->state.master->render.position.y + this->state.deltaPos2.y;
+      this->state.orgPos.z = this->state.master->render.position.z + this->state.deltaPos2.z;
+
+      const int frame = this->state.stateCnt;
+
+      if (frame < 550) {
+        if (frame % 6 == 2) {
+          this->state.speed = this->state.changeSpeed;
+          this->state.accel = this->state.changeAccel;
+        } else if (frame % 6 == 5) {
+          this->state.speed = 1.18f;
+          this->state.accel = 0.01f;
+        }
+      } else if (frame == 550) {
+        this->state.speed = this->state.changeSpeed;
+        this->state.accel = this->state.changeAccel;
+      }
+
+      this->state.speed += this->state.accel;
+      Forward(this->state.speed3d, this->state.speed, this->state.transform);
+      this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
+      this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
+      this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
+      this->render.position.x = this->state.orgPos.x + this->state.deltaPos.x;
+      this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y;
+      this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
+      this->state.ProcessAlpha();
+    } break;
+    case 12:
+      this->Prim3DCircle();
+      break;
+    case 13:
+      this->Prim3DCylinder();
+      break;
+    case 14: {
+      this->state.orgPos.x = this->state.master->render.position.x + this->state.deltaPos2.x;
+      this->state.orgPos.y = this->state.master->render.position.y + this->state.deltaPos2.y;
+      this->state.orgPos.z = this->state.master->render.position.z + this->state.deltaPos2.z;
+      this->render.position.x = this->state.orgPos.x;
+      this->render.position.y = this->state.orgPos.y;
+      this->render.position.z = this->state.orgPos.z;
+      this->state.radiusSpeed = this->state.radiusAccel + this->state.radiusSpeed;
+      this->state.radius = this->state.radiusSpeed + this->state.radius;
+      this->state.longitude = this->state.longSpeed + this->state.longitude;
+      this->state.ProcessAlpha();
+    } break;
+    case 18:
+      this->Prim3DCylinderHalf();
+      break;
+    case 19: {
+      this->render.position.y = this->state.deltaPos2.y + this->state.master->state.tlvertY;
+      this->render.position.x = this->state.deltaPos2.x + this->state.master->state.tlvertX;
+
+      if ((this->state.pattern & 1u) != 0 && this->state.heightSize <= 0.0f) {
+        this->state.heightSpeed = 0;
+        this->state.heightAccel = 0;
+      }
+
+      if (this->state.stateCnt == this->state.changePoint) {
+        this->state.heightSpeed = this->state.changeHeightSpeed;
+        this->state.longSpeed = this->state.changeSpeed;
+        this->state.longAccel = this->state.changeAccel;
+      }
+
+      if (this->state.heightSize < 0.0f) {
+        this->state.heightSpeed *= -1.0f;
+        this->state.heightSize = 0;
+      }
+
+      this->state.longSpeed = this->state.longAccel + this->state.longSpeed;
+      this->state.heightSpeed = this->state.heightSpeed + this->state.heightAccel;
+      this->state.arcAngle = this->state.widthSpeed + this->state.arcAngle;
+      this->state.longitude = this->state.longSpeed + this->state.longitude;
+      this->state.heightSize = this->state.heightSpeed + this->state.heightSize;
+      this->state.ProcessAlpha();
+    } break;
+    case 10:
+    case 11: {
+      this->state.orgPos.x = this->state.master->render.position.x + this->state.deltaPos2.x;
+      this->state.orgPos.y = this->state.master->render.position.y + this->state.deltaPos2.y;
+      this->state.orgPos.z = this->state.master->render.position.z + this->state.deltaPos2.z;
+
+      const float x0 = ClientSine(static_cast<int>(this->state.longitude)) * this->state.radius + this->state.orgPos.x;
+      const float y0 = this->state.orgPos.y;
+      const float z0 = this->state.orgPos.z - ClientCosine(static_cast<int>(this->state.longitude)) * this->state.radius;
+      const float x1 =
+        ClientSine(static_cast<int>(this->state.longitude + this->state.longSpeed)) * this->state.radius + this->state.orgPos.x;
+      const float y1 = this->state.orgPos.y;
+      const float z1 =
+        this->state.orgPos.z - ClientCosine(static_cast<int>(this->state.longitude + this->state.longSpeed)) * this->state.radius;
+
+      this->state.segPos[0] = {x0, y0, z0};
+      this->state.segPos[1] = {x1, y1 + this->state.heightSpeed, z1};
+      this->state.segPos[2] = {x0, y0 - this->state.size, z0};
+      this->state.segPos[3] = {x1, (y1 + this->state.heightSpeed) - this->state.size, z1};
+      this->state.ProcessAlpha();
+      this->ShiftSegment();
+      this->state.longitude = this->state.longitude + this->state.longSpeed;
+      this->state.deltaPos2.y = this->state.deltaPos2.y + this->state.heightSpeed;
+    } break;
+    case 20:
+      this->render.position.y = this->render.position.y + 5.0f;
+      break;
+    case 21:
+      if (!this->Prim3DParticleNoMaster()) {
+        return false;
+      }
+      break;
+    case 22:
+      if (!this->Prim3DTextureNoMaster()) {
+        return false;
+      }
+      break;
+    case 23:
+      this->UpdateStoneCurse();
+      break;
+    case 144:
+      this->PrimGI1();
+      break;
+    case 149:
+      this->PrimWaveHeights();
+      break;
+    case 158:
+      this->PrimGI4();
+      break;
+    case 173:
+      this->PrimWaveHeightsSlow();
+      break;
+    case 24: {
+      this->render.position.x = this->state.master->render.position.x;
+      this->render.position.y = this->state.master->render.position.y;
+      this->render.position.z = this->state.master->render.position.z;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+
+        if (index == 0 || index == 2) {
+          ++slot.rotStart;
+        } else {
+          slot.rotStart += 2;
+        }
+
+        if (slot.rotStart >= 360) {
+          slot.rotStart -= 360;
+        }
+
+        if (slot.process < this->state.duration - 20) {
+          if (slot.process < 100) {
+            ++slot.alphaB;
+
+            if (slot.alphaB > 80) {
+              slot.alphaB = 80;
+            }
+          }
+        } else {
+          slot.alphaB -= 5;
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+          }
+        }
+
+        for (int sample = 0; sample < 21; ++sample) {
+          const int angle = index * 45 < 90 ? slot.process + index * 90 : (slot.process + index * 45) * 2;
+          slot.height[sample] = slot.maxHeight * g_sinTable[sample * 9];
+          slot.height[sample] = slot.maxHeight * g_sinTable[sample * 9] * 0.3f * g_sinTable[angle % 360] + slot.height[sample];
+        }
+      }
+    } break;
+    case 25:
+      this->UpdateFireWall();
+      break;
+    case 65:
+      this->Prim3DCasting4();
+      break;
+    case 107:
+      this->Prim3DCasting5();
+      break;
+    case 108:
+      this->PrimFlowerCast();
+      break;
+    case 118:
+      this->PrimAcidDemon();
+      break;
+    case 73: {
+      const vector3d& parent = this->state.master->render.position;
+      this->render.position.x = parent.x;
+      this->render.position.y = parent.y;
+      this->render.position.z = parent.z;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+
+        if (slot.riseAngle < 0) {
+          slot.riseAngle = 0;
+        }
+
+        if (slot.rotStart >= 360) {
+          slot.rotStart -= 360;
+        }
+
+        if (slot.process < 9) {
+          if (slot.alphaT == 0) {
+            slot.alphaB += 10;
+
+            if (slot.alphaB > 80) {
+              slot.alphaB = 80;
+            }
+          } else {
+            slot.alphaB += 5;
+
+            if (slot.alphaB > 40) {
+              slot.alphaB = 40;
+            }
+          }
+        } else {
+          slot.alphaB -= 30;
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+            slot.life = 0;
+          }
+        }
+      }
+    } break;
+    case 68:
+      this->PrimAsuraCasting();
+      break;
+    case 147:
+      this->PrimRisingFan();
+      break;
+    case 131:
+      this->PrimRisingFan2();
+      break;
+    case 70: {
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+
+        if (slot.process <= 0) {
+          continue;
+        }
+
+        if (slot.process > 35) {
+          slot.alphaB -= 5;
+        }
+
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
+        }
+
+        slot.height[0] += 8.0f;
+
+        if (slot.height[0] > 180.0f) {
+          slot.height[0] -= 180.0f;
+          ++slot.flag1[0];
+        }
+
+        for (int value = 20; value > 0; --value) {
+          slot.height[value] = slot.height[value - 1];
+          slot.flag1[value] = slot.flag1[value - 1];
+        }
+      }
+    } break;
+    case 100: {
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+
+        if (slot.process <= 0) {
+          continue;
+        }
+
+        if (slot.process > 35) {
+          slot.alphaB -= 5;
+        }
+
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
+        }
+
+        slot.height[0] += 6.0f;
+
+        if (slot.height[0] > 180.0f) {
+          slot.height[0] = 180.0f;
+        }
+
+        for (int value = static_cast<int>(slot.vecTNow.y); value > 0; --value) {
+          this->state.slots[index].height[value] = this->state.slots[index].height[value - 1];
+          slot.flag1[value] = slot.flag1[value - 1];
+        }
+
+        slot.vecBNow.x = this->state.master->render.position.x;
+        slot.vecBNow.y = this->state.master->render.position.y;
+        slot.vecBNow.z = this->state.master->render.position.z;
+      }
+    } break;
+    case 103:
+      this->PrimSpinFade();
+      break;
+    case 101: {
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        const int process = ++slot.process;
+
+        if (process <= 0) {
+          continue;
+        }
+
+        slot.distance += 0.4f;
+
+        if (slot.distance > 15.0f) {
+          slot.alphaB -= 2;
+        }
+
+        if (process <= 25) {
+          const int roll = rand() % 4;
+          slot.alphaB += static_cast<std::int16_t>((roll < 0 ? 0 : roll) + 5);
+        }
+
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
+        }
+
+        if (slot.process == 1) {
+          for (int step = 0; step < 21; ++step) {
+            slot.height[0] += 9.0f;
+
+            if (slot.height[0] > 180.0f) {
+              this->state.slots[index].height[0] = 180.0f;
+            } else {
+              for (int value = static_cast<int>(this->state.slots[index].vecTNow.y); value > 0; --value) {
+                this->state.slots[index].height[value] = this->state.slots[index].height[value - 1];
+                this->state.slots[index].flag1[value] = this->state.slots[index].flag1[value - 1];
+              }
+            }
+          }
+        }
+      }
+    } break;
+    case 135:
+      this->PrimTrailShift();
+      break;
+    case 102:
+      this->PrimElectric2();
+      break;
+    case 146:
+      this->PrimDriftingRings();
+      break;
+    case 60:
+    case 110:
+      this->PrimPulsingColumns();
+      break;
+    case 61:
+      this->PrimGuard();
+      break;
+    case 104: {
+      FollowMaster(*this);
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        const int process = ++slot.process;
+        slot.rotStart = static_cast<std::int16_t>(static_cast<int>(this->state.master->state.parent->render.angle + 180.0f));
+
+        if (slot.rotStart >= 360) {
+          slot.rotStart -= 360;
+        }
+
+        const int angle = slot.rotStart + (slot.rotStart < 270 ? 90 : -270);
+        slot.vecTNow.x = g_cosTable[angle] * 5.0f;
+        slot.vecTNow.z = g_sinTable[angle] * 5.0f;
+
+        if (process <= 50 && slot.alphaB < 120) {
+          slot.alphaB += 5;
+        }
+      }
+    } break;
+    case 105: {
+      FollowMaster(*this);
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1 || ++slot.process <= 0) {
+          continue;
+        }
+
+        if (index < 2) {
+          ++slot.riseAngle;
+        }
+
+        if (slot.riseAngle >= 360) {
+          slot.riseAngle -= 360;
+        }
+
+        slot.rotStart = static_cast<std::int16_t>(static_cast<int>(this->state.master->state.parent->render.angle + 180.0f));
+
+        if (slot.rotStart >= 360) {
+          slot.rotStart -= 360;
+        }
+
+        const int angle = slot.rotStart + (slot.rotStart < 270 ? 90 : -270);
+        slot.vecTNow.x = g_cosTable[angle] * 5.0f;
+        slot.vecTNow.z = g_sinTable[angle] * 5.0f;
+
+        if (slot.alphaB < 40) {
+          slot.alphaB += 5;
+        }
+      }
+    } break;
+    case 106: {
+      FollowMaster(*this);
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1 || ++slot.process <= 0) {
+          continue;
+        }
+
+        if (slot.height[1] >= 90.0f) {
+          slot.alphaB = 10;
+          slot.height[1] = 0;
+        } else {
+          slot.height[1] += 1.0f;
+          slot.alphaB += 10;
+
+          if (slot.alphaB > 60) {
+            slot.alphaB = 60;
+          }
+        }
+
+        if (slot.process > 30 && (45 - slot.process) * 4 <= slot.alphaB) {
+          slot.alphaB = static_cast<std::int16_t>((45 - slot.process) * 4);
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+          }
+        }
+
+        if (++slot.riseAngle >= 360) {
+          slot.riseAngle -= 360;
+        }
+
+        slot.rotStart = static_cast<std::int16_t>(static_cast<int>(this->state.master->state.parent->render.angle + 180.0f));
+
+        if (slot.rotStart >= 360) {
+          slot.rotStart -= 360;
+        }
+
+        const int angle = slot.rotStart + (slot.rotStart < 270 ? 90 : -270);
+        slot.vecTNow.x = g_cosTable[angle];
+        slot.vecTNow.z = g_sinTable[angle];
+      }
+    } break;
+    case 76:
+      this->PrimSaintWing();
+      break;
+    case 77: {
+      const vector3d& parent = this->state.master->render.position;
+      this->render.position.x = parent.x;
+      this->render.position.y = parent.y;
+      this->render.position.z = parent.z;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+        slot.rotStart = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(slot.rotStart) + slot.height[1]));
+
+        if (slot.rotStart >= 360) {
+          slot.rotStart -= 360;
+        }
+      }
+    } break;
+    case 91:
+      this->PrimSphereWind2();
+      break;
+    case 78: {
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+        slot.riseAngle += 2;
+
+        if (slot.riseAngle >= 360) {
+          slot.riseAngle -= 360;
+        }
+
+        slot.vecBNow.y = slot.distance + slot.vecBNow.y;
+
+        if (slot.vecBNow.y > -10.0f) {
+          slot.alphaB -= 10;
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+            ++slot.fullDisplayAngle;
+
+            if (slot.fullDisplayAngle < 3) {
+              slot.vecBNow.x = static_cast<float>(NonNegativeRandom(101) - 50);
+              slot.vecBNow.z = static_cast<float>(NonNegativeRandom(101) - 50);
+              slot.vecBNow.y = static_cast<float>(-110 - NonNegativeRandom(50));
+              slot.process = 0;
+            }
+          }
+        } else if (slot.vecBNow.y > 0.0f) {
+          slot.life = 0;
+        }
+
+        if (slot.process < 60) {
+          slot.alphaB += 5;
+
+          if (slot.alphaB > 250) {
+            slot.alphaB = 250;
+          }
+        }
+      }
+    } break;
+    case 62:
+      this->PrimWind();
+      break;
+    case 63:
+      this->PrimRippleRings();
+      break;
+    case 28: {
+      this->render.position.x = this->state.master->render.position.x;
+      this->render.position.y = this->state.master->render.position.y;
+      this->render.position.z = this->state.master->render.position.z;
+      this->state.slots[0].riseAngle += 3;
+
+      if (this->state.slots[0].riseAngle >= 360) {
+        this->state.slots[0].riseAngle -= 360;
+      }
+
+      this->state.slots[1].riseAngle += 3;
+
+      if (this->state.slots[1].riseAngle >= 360) {
+        this->state.slots[1].riseAngle -= 360;
+      }
+
+      if (this->state.stateCnt % this->state.animSpeed == 0) {
+        const auto next = this->render.curMotion + 1u;
+        this->render.curMotion = next;
+
+        if (this->state.repeatAnim != 0) {
+          this->render.curMotion = static_cast<int>(next) % static_cast<int>(this->state.totalTexture);
+        }
+      }
+    } break;
+    case 161:
+      this->PrimTwinSpin();
+      break;
+    case 26: {
+      this->render.position.x = this->state.master->render.position.x;
+      this->render.position.y = this->state.master->render.position.y;
+      this->render.position.z = this->state.master->render.position.z;
+
+      if (this->state.slots[0].height[4] == 14.0f) {
+        --this->state.slots[0].rotStart;
+
+        if (this->state.slots[0].rotStart < 0) {
+          this->state.slots[0].rotStart += 360;
+        }
+      } else {
+        ++this->state.slots[0].rotStart;
+
+        if (this->state.slots[0].rotStart >= 360) {
+          this->state.slots[0].rotStart -= 360;
+        }
+      }
+
+      if (this->state.stateCnt % this->state.animSpeed == 0) {
+        const auto next = this->render.curMotion + 1u;
+        this->render.curMotion = next;
+
+        if (this->state.repeatAnim != 0) {
+          this->render.curMotion = static_cast<int>(next) % static_cast<int>(this->state.totalTexture);
+        }
+      }
+    } break;
+    case 88:
+      this->PrimGrowFollow();
+      break;
+    case 29:
+      this->PrimFloatingMotes();
+      break;
+    case 130:
+      this->PrimDriftingSquares();
+      break;
+    case 27:
+      this->PrimMapParticle();
+      break;
+    case 115:
+      this->PrimParticleSpread();
+      break;
+    case 111:
+      this->PrimSoulParticle();
+      break;
+    case 155:
+      this->PrimWanderingFlames();
+      break;
+    case 170:
+      this->PrimWanderingFlames2();
+      break;
+    case 157:
+      this->PrimOrbitFade();
+      break;
+    case 109: {
+      FaceCamera(this->state.slots);
+      FollowMaster(*this);
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        const int process = ++slot.process;
+
+        if (process <= 0) {
+          continue;
+        }
+
+        if (process <= 10) {
+          slot.height[13] += 20.0f;
+        } else if (process > 170) {
+          slot.height[13] -= 5.0f;
+
+          if (slot.height[13] < 0.0f) {
+            slot.height[13] = 0.0f;
+          }
+        }
+
+        float angle = static_cast<float>(process) / 10.0f / 3.0f + slot.vecTNow.x;
+        slot.vecTNow.x = angle;
+
+        if (angle >= 359.0f) {
+          slot.vecTNow.x = 359.0f;
+          angle = 359.0f;
+        }
+
+        slot.vecBPre.x = static_cast<float>(static_cast<int>(angle)) / 6.0f - 30.0f;
+        slot.vecBPre.y = -(g_sinTable[static_cast<int>(angle)] * 20.0f) - 40.0f;
+        slot.vecBPre.z = 0.0f;
+      }
+    } break;
+    case 151:
+      this->PrimSpiralFade();
+      break;
+    case 96:
+      this->PrimPeongUp();
+      break;
+    case 94:
+      this->PrimPeong();
+      break;
+    case 80:
+      this->PrimFallingPetals();
+      break;
+    case 150:
+      this->PrimFallingPetals2();
+      break;
+    case 30: {
+      this->render.position.x = this->state.master->render.position.x;
+      this->render.position.y = this->state.master->render.position.y;
+      this->render.position.z = this->state.master->render.position.z;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+
+        if (slot.process <= 0) {
+          continue;
+        }
+
+        slot.distance += 0.07f;
+        --slot.riseAngle;
+
+        if (slot.riseAngle < 10) {
+          slot.riseAngle = 10;
+          slot.alphaB = 0;
+        }
+
+        if (slot.distance < 4.0f) {
+          if (slot.alphaT == 22) {
+            slot.alphaB += 5;
+          } else {
+            slot.alphaB += 10;
+          }
+        } else {
+          slot.alphaB -= 3;
+
+          if (slot.alphaB < 1) {
+            slot.alphaB = 0;
+
+            if (slot.process < this->state.duration - 30) {
+              slot.distance = 3.37f;
+
+              if (slot.alphaT == 22) {
+                slot.riseAngle = 64;
+              } else {
+                slot.riseAngle = 74;
+              }
+            }
+          }
+        }
+
+        for (int sample = 0; sample < 21; ++sample) {
+          const int angle = index * 45 < 90 ? slot.process + index * 90 : (slot.process + index * 45) * 2;
+          slot.height[sample] = slot.maxHeight;
+          slot.height[sample] = g_sinTable[sample * 9] * slot.maxHeight * 0.3f * g_sinTable[angle % 360] + slot.height[sample];
+        }
+      }
+    } break;
+    case 31:
+      this->PrimWaveSpin();
+      break;
+    case 34:
+      this->PrimGI3();
+      break;
+    case 36: {
+      this->render.position.x = this->state.master->render.position.x;
+      this->render.position.y = this->state.master->render.position.y;
+      this->render.position.z = this->state.master->render.position.z;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+        slot.distance += 0.04f;
+        --slot.riseAngle;
+
+        if (slot.riseAngle < 10) {
+          slot.riseAngle = 10;
+          slot.alphaB = 0;
+        }
+
+        if (slot.distance < 2.5f) {
+          slot.alphaB += 20;
+        } else {
+          slot.alphaB -= 2;
+
+          if (slot.alphaB < 1) {
+            slot.alphaB = 0;
+            slot.distance = 2.14f;
+            slot.riseAngle = 74;
+          }
+        }
+
+        for (int sample = 0; sample < 21; ++sample) {
+          const int angle = index * 45 < 90 ? slot.process + index * 90 : (slot.process + index * 45) * 2;
+          slot.height[sample] = slot.maxHeight;
+          slot.height[sample] = slot.maxHeight * g_sinTable[sample * 9] * 0.3f * g_sinTable[angle % 360] + slot.height[sample];
+        }
+      }
+    } break;
+    case 50: {
+      const vector3d& parent = this->state.master->render.position;
+      this->render.position.x = parent.x;
+      this->render.position.y = parent.y;
+      this->render.position.z = parent.z;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+        ++slot.alphaT;
+
+        if (slot.alphaT >= 360) {
+          slot.alphaT -= 360;
+        }
+
+        slot.distance = g_sinTable[slot.alphaT] + 3.0f;
+        slot.rotStart += 3;
+
+        if (slot.rotStart >= 360) {
+          slot.rotStart -= 360;
+        }
+
+        for (int value = 0; value < 21; ++value) {
+          const int phase = index * 45;
+          const int angle = phase < 90 ? slot.process + index * 90 : (slot.process + phase) * 2;
+          slot.height[value] = g_sinTable[value * 9] * slot.maxHeight;
+          slot.height[value] += g_sinTable[value * 9] * slot.maxHeight * 0.3f * g_sinTable[angle % 360];
+        }
+      }
+    } break;
+    case 169:
+      this->render.position = this->state.master->render.position;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+        slot.distance += 0.04f;
+        --slot.riseAngle;
+
+        if (slot.riseAngle < 10) {
+          slot.riseAngle = 10;
+          slot.alphaB = 0;
+        }
+
+        if (slot.distance < slot.vecTNow.x + 1.0f) {
+          slot.alphaB += 10;
+
+          if (slot.alphaB > 200) {
+            slot.alphaB = 200;
+          }
+        } else {
+          slot.alphaB -= 2;
+
+          if (slot.alphaB < 1) {
+            slot.alphaB = 0;
+            slot.distance = slot.vecTNow.x;
+            slot.riseAngle = 74;
+          }
+        }
+
+        WaveSlotHeightsFixed(slot, index, 0.3f);
+      }
+      break;
+    case 139:
+      this->PrimBreathingWave();
+      break;
+    case 41: {
+      const vector3d& parent = this->state.master->render.position;
+      this->render.position.x = parent.x;
+      this->render.position.y = parent.y;
+      this->render.position.z = parent.z;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+        ++slot.rotStart;
+
+        if (slot.rotStart >= 360) {
+          slot.rotStart -= 360;
+        }
+
+        if (slot.alphaT == 1 && slot.process > 250) {
+          --slot.alphaB;
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+          }
+        }
+
+        if (slot.process >= 800) {
+          slot.maxHeight -= 1.0f;
+
+          if (slot.maxHeight < 0.0f) {
+            slot.maxHeight = 0;
+          }
+        }
+
+        for (int value = 0; value < 21; ++value) {
+          if (slot.process < 200) {
+            this->state.slots[index].height[value] = 0.0f;
+          } else if (slot.process <= 290) {
+            this->state.slots[index].height[value] = g_sinTable[slot.process - 200] * slot.maxHeight;
+          } else {
+            this->state.slots[index].height[value] = slot.maxHeight;
+          }
+
+          if (this->state.slots[index].height[value] < 0.0f) {
+            this->state.slots[index].height[value] = 0;
+          }
+        }
+      }
+    } break;
+    case 137:
+      this->PrimHeightRamp();
+      break;
+    case 66:
+      this->PrimForest();
+      break;
+    case 129:
+      this->PrimBobbing();
+      break;
+    case 79: {
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life > 0) {
+          ++slot.process;
+        }
+      }
+    } break;
+    case 142:
+      this->PrimWaterFall();
+      break;
+    case 93: {
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life <= 0) {
+          continue;
+        }
+
+        ++slot.process;
+
+        if (slot.process <= 180) {
+          ++slot.alphaB;
+          ++slot.rotStart;
+        } else if (slot.process <= 360) {
+          --slot.alphaB;
+          ++slot.rotStart;
+        }
+
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
+        } else if (slot.alphaB >= 250) {
+          slot.alphaB = 250;
+        }
+
+        if (slot.riseAngle >= 360) {
+          slot.riseAngle -= 360;
+        }
+      }
+    } break;
+    case 57: {
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+        slot.rotStart += 5 - index;
+
+        if (slot.rotStart >= 360) {
+          slot.rotStart -= 360;
+        }
+
+        if (slot.process <= 0) {
+          continue;
+        }
+
+        if (slot.flag1[0] == 0) {
+          if (slot.process * 2 < 180) {
+            if (slot.process * 2 > 134) {
+              --slot.alphaB;
+
+              if (slot.alphaB < 0) {
+                slot.alphaB = 0;
+              }
+            }
+          } else {
+            slot.flag1[0] = 1;
+          }
+
+          slot.maxHeight = static_cast<float>(slot.flag1[1]) * g_sinTable[slot.process * 2];
+        } else {
+          slot.alphaB -= 10;
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+          }
+        }
+
+        for (int value = 0; value < 21; ++value) {
+          const int phase = index * 90;
+          const int angle = phase < 180 ? slot.process + phase : (slot.process + index * 30) * 3;
+          slot.height[value] = slot.maxHeight;
+          slot.height[value] += g_sinTable[value * 9] * slot.maxHeight * 0.3f * g_sinTable[angle % 360];
+        }
+      }
+    } break;
+    case 37: {
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+
+        if (slot.process < 10) {
+          slot.alphaB += 9;
+        } else {
+          --slot.alphaB;
+
+          if (slot.alphaB < 1) {
+            slot.alphaB = 0;
+
+            if (slot.process > 30) {
+              slot.life = 0;
+            }
+          }
+        }
+
+        slot.height[1] += 0.005f;
+        slot.height[0] += 0.005f;
+        slot.height[2] = g_sinTable[slot.process] * slot.maxHeight;
+      }
+    } break;
+    case 75: {
+      const vector3d& parent = this->state.master->render.position;
+      this->render.position.x = parent.x;
+      this->render.position.y = parent.y;
+      this->render.position.z = parent.z;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+        slot.height[0] += 1.0f;
+
+        if (slot.height[0] > 10.0f) {
+          slot.alphaB -= 2;
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+            slot.life = 0;
+          }
+        }
+
+        if (slot.flag1[0] == 1) {
+          slot.distance += 1.0f;
+
+          if (slot.maxHeight < 2.0f) {
+            slot.maxHeight += 0.2f;
+          }
+
+          if (slot.process <= 5) {
+            slot.alphaB += 5;
+          }
+        } else {
+          slot.distance += 2.0f;
+
+          if (slot.maxHeight < 4.0f) {
+            slot.maxHeight += 0.4f;
+          }
+
+          if (slot.process <= 7) {
+            slot.alphaB += 5;
+          }
+        }
+      }
+    } break;
+    case 64:
+      this->PrimPulseRing();
+      break;
+    case 132:
+      this->render.position = this->state.master->render.position;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1 || ++slot.process <= 0) {
+          continue;
+        }
+
+        ++slot.fullDisplayAngle;
+
+        if (slot.fullDisplayAngle > 359) {
+          slot.fullDisplayAngle -= 360;
+        }
+
+        slot.maxHeight *= 1.02f;
+
+        if (slot.maxHeight > 20.0f) {
+          slot.alphaB -= 3;
+
+          if (slot.alphaB < 1) {
+            if (slot.height[5] < 2.0f) {
+              slot.maxHeight = 10.0f;
+              slot.rotStart = static_cast<std::int16_t>(NonNegativeRandom(360));
+              slot.alphaB = 200;
+            } else if (slot.process > 300) {
+              slot.alphaB = 0;
+              slot.life = 0;
+            } else {
+              slot.maxHeight = 10.0f;
+              slot.rotStart = static_cast<std::int16_t>(NonNegativeRandom(360));
+              slot.alphaB = 100;
+            }
+          }
+        }
+
+        slot.height[2] = slot.maxHeight * g_sinTable[slot.fullDisplayAngle] * 0.1f + slot.maxHeight * 0.9f;
+
+        if (slot.height[2] < 0.0f) {
+          slot.height[2] = 0;
+        }
+      }
+      break;
+    case 90:
+      this->PrimFadingColumns();
+      break;
+    case 43:
+      this->PrimIntimidate();
+      break;
+    case 44:
+      this->PrimExpandPulse();
+      break;
+    case 86: {
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        const int process = slot.process++;
+
+        if (slot.process <= 0) {
+          continue;
+        }
+
+        if (process == 0) {
+          Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.rotStart);
+          std::int16_t turn;
+
+          if (slot.flag1[1] == 1) {
+            const int roll = rand() % 11;
+            turn = static_cast<std::int16_t>((roll < 0 ? 0 : roll) - 5);
+          } else {
+            const int roll = rand() % 31;
+            turn = static_cast<std::int16_t>((roll < 0 ? 0 : roll) - 15);
+          }
+
+          slot.rotStart += turn;
+
+          if (slot.rotStart >= 360) {
+            slot.rotStart -= 360;
+          }
+
+          if (slot.rotStart < 0) {
+            slot.rotStart += 360;
+          }
+        } else if (process < 10) {
+          slot.alphaB += 10;
+          slot.height[1] *= 1.02f;
+        } else {
+          slot.alphaB -= 5;
+          slot.height[1] *= 1.04f;
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+            slot.life = 0;
+          }
+        }
+
+        slot.vecBNow.x += slot.height[1] * g_cosTable[slot.rotStart];
+        slot.vecBNow.z += slot.height[1] * g_sinTable[slot.rotStart];
+      }
+    } break;
+    case 92: {
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        const int process = slot.process++;
+
+        if (slot.process <= 0) {
+          continue;
+        }
+
+        if (process != 0) {
+          if (process < 10) {
+            slot.alphaB += 10;
+            slot.height[1] *= 1.02f;
+          } else {
+            slot.alphaB -= 5;
+            slot.height[1] *= 1.04f;
+
+            if (slot.alphaB < 0) {
+              slot.alphaB = 0;
+              slot.life = 0;
+            }
+          }
+        }
+
+        slot.vecBNow.x += slot.height[1] * g_cosTable[slot.rotStart];
+        slot.vecBNow.z += slot.height[1] * g_sinTable[slot.rotStart];
+      }
+    } break;
+    case 119: {
+      EffectPrimitiveSlot* slots = this->state.slots;
+      EffectPrimitiveSlot& slot = slots[0];
+
+      if (slot.life != 1) {
+        break;
+      }
+
+      ++slot.process;
+
+      if (slot.process <= 0) {
+        break;
+      }
+
+      slot.riseAngle += 30;
+
+      if (slot.riseAngle > 359) {
+        slot.riseAngle -= 360;
+      }
+
+      if (slot.process == 1) {
+        Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.rotStart);
+      } else if (slot.process < 11) {
+        slot.alphaB += 25;
+
+        if (slot.alphaB > 250) {
+          slot.alphaB = 250;
+        }
+
+        slot.height[1] *= 1.02f;
+      } else {
+        slot.alphaB -= 5;
+        slot.height[1] *= 1.04f;
+
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
+          slot.life = 0;
+        }
+      }
+
+      slot.vecBNow.x = slot.height[1] * g_cosTable[slot.rotStart] + slot.vecBNow.x;
+      slot.vecBNow.z = slot.height[1] * g_sinTable[slot.rotStart] + slot.vecBNow.z;
+
+      if (slot.process % 3 == 0) {
+        for (int index = 3; index > 0; --index) {
+          slots[index].vecBNow = slots[index - 1].vecBNow;
+          slots[index].alphaB = static_cast<std::int16_t>(slots[index - 1].alphaB * 0.8f);
+          slots[index].riseAngle = slots[index - 1].riseAngle;
+        }
+      }
+    } break;
+    case 122:
+      this->PrimSTIN3();
+      break;
+    case 125:
+      this->PrimSTIN4();
+      break;
+    case 126: {
+      EffectPrimitiveSlot* slots = this->state.slots;
+      EffectPrimitiveSlot& slot = slots[0];
+
+      if (slot.life != 1) {
+        break;
+      }
+
+      ++slot.process;
+
+      if (slot.process <= 0) {
+        break;
+      }
+
+      slot.riseAngle += 30;
+
+      if (slot.riseAngle > 359) {
+        slot.riseAngle -= 360;
+      }
+
+      if (slot.process == 1) {
+        Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.rotStart);
+      } else if (slot.process < 11) {
+        slot.alphaB += 6;
+
+        if (slot.alphaB > 60) {
+          slot.alphaB = 60;
+        }
+
+        slot.height[1] *= 1.02f;
+      } else {
+        slot.alphaB -= 3;
+        slot.height[1] *= 1.04f;
+
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
+          slot.life = 0;
+        }
+      }
+
+      slot.vecBNow.x = slot.height[1] * g_cosTable[slot.rotStart] + slot.vecBNow.x;
+      slot.vecBNow.z = slot.height[1] * g_sinTable[slot.rotStart] + slot.vecBNow.z;
+
+      if (slot.process % 3 == 0) {
+        for (int index = 3; index > 0; --index) {
+          slots[index].vecBNow = slots[index - 1].vecBNow;
+          slots[index].alphaB = static_cast<std::int16_t>(slots[index - 1].alphaB * 0.8f);
+          slots[index].riseAngle = slots[index - 1].riseAngle;
+        }
+      }
+    } break;
+    case 120:
+      this->PrimSMA();
+      break;
+    case 121:
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+        slot.rotStart += 3 + index;
+
+        if (slot.rotStart > 359) {
+          slot.rotStart -= 360;
+        }
+
+        if (slot.process < this->state.duration - 40) {
+          if (slot.process < 40) {
+            slot.alphaB += 5;
+
+            if (slot.alphaB > 180) {
+              slot.alphaB = 180;
+            }
+          }
+        } else {
+          slot.alphaB -= 5;
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+          }
+        }
+
+        if (this->state.deltaPos2.x > 50.0f) {
+          const float limit = 200.0f - (this->state.deltaPos2.x - 50.0f) * 5.0f;
+
+          if (limit < slot.alphaB) {
+            slot.alphaB = static_cast<std::int16_t>(limit);
+          }
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+          }
+        }
+
+        for (int value = 0; value < 21; ++value) {
+          if (slot.flag1[value] != 0) {
+            continue;
+          }
+
+          if (slot.process < 91) {
+            slot.height[value] = g_sinTable[value * 9] * slot.maxHeight * g_sinTable[slot.process];
+          }
+
+          if (g_sinTable[value * 9] * slot.maxHeight < slot.height[value]) {
+            slot.height[value] = g_sinTable[value * 9] * slot.maxHeight;
+            slot.flag1[value] = 1;
+          }
+
+          if (slot.height[value] < 0.0f) {
+            slot.height[value] = 0;
+          }
+        }
+      }
+      break;
+    case 32:
+      if (!this->PrimDriftingOrbs()) {
+        return false;
+      }
+      break;
+    case 138:
+      if (!this->PrimCHOOKGI()) {
+        return false;
+      }
+      break;
+    case 145:
+      if (!this->PrimDriftingSparks()) {
+        return false;
+      }
+      break;
+    case 38:
+      this->PrimLineLink();
+      break;
+    case 69: {
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life <= 0) {
+          continue;
+        }
+
+        ++slot.process;
+
+        if (slot.process <= 0) {
+          continue;
+        }
+
+        if (slot.height[4] == 5.0f) {
+          if (slot.process > 20) {
+            slot.alphaB -= 2;
+
+            if (slot.alphaB < 0) {
+              slot.alphaB = 0;
+            }
+          } else {
+            slot.alphaB += 8;
+          }
+        } else if (slot.process < 6) {
+          if (slot.height[4] == 2.0f) {
+            slot.alphaB += 2;
+          } else {
+            slot.alphaB += 8;
+          }
+        } else {
+          if (slot.height[4] == 2.0f) {
+            slot.alphaB -= 1;
+          } else {
+            slot.alphaB -= 4;
+          }
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+          }
+        }
+
+        slot.vecTNow.x = slot.distance * g_cosTable[slot.rotStart] + slot.vecBNow.x;
+        slot.vecTNow.z = slot.distance * g_sinTable[slot.rotStart] + slot.vecBNow.z;
+      }
+    } break;
+    case 33:
+      this->PrimFieldFireflies();
+      break;
+    case 123:
+      this->PrimTwilight();
+      break;
+    case 52:
+      this->PrimPokJuk();
+      break;
+    case 35:
+    case 99:
+      this->PrimFloatingBubbles();
+      break;
+    case 39: {
+      this->render.position.x = this->state.master->render.position.x;
+      this->render.position.y = this->state.master->render.position.y;
+      this->render.position.z = this->state.master->render.position.z;
+
+      for (int index = 0; index < 2; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        if (slot.height[4] == 4.0f) {
+          slot.rotStart += 6;
+
+          if (slot.rotStart >= 360) {
+            slot.rotStart -= 360;
+          }
+        } else if (slot.height[4] == 10.0f || slot.height[4] == 11.0f || slot.height[4] == 12.0f) {
+          slot.rotStart += 3;
+
+          if (slot.rotStart >= 360) {
+            slot.rotStart -= 360;
+          }
+        }
+
+        if (slot.height[4] == 2.0f) {
+          ++slot.riseAngle;
+        } else if (slot.height[4] == 10.0f) {
+          if (slot.rotStart < 181) {
+            slot.distance -= 0.3f;
+          } else {
+            slot.distance += 0.3f;
+          }
+        } else if (slot.height[4] != 11.0f && slot.height[4] != 12.0f) {
+          slot.riseAngle += 3;
+        }
+
+        if (slot.riseAngle >= 360) {
+          slot.riseAngle -= 360;
+        }
+      }
+    } break;
+    case 143:
+      this->PrimTextureSpin();
+      break;
+    case 148:
+      this->FollowMasterAndTickSlots2();
+      break;
+    case 114: {
+      EffectPrimitiveSlot& slot = this->state.slots[0];
+      this->render.position = this->state.master->render.position;
+
+      if (slot.alphaB < 140) {
+        slot.alphaB += 2;
+      }
+
+      ++slot.riseAngle;
+
+      if (slot.riseAngle > 359) {
+        slot.riseAngle -= 360;
+      }
+
+      ++slot.rotStart;
+
+      if (slot.rotStart > 359) {
+        slot.rotStart -= 360;
+      }
+    } break;
+    case 67: {
+      const vector3d& parent = this->state.master->render.position;
+      this->render.position.x = parent.x;
+      this->render.position.y = parent.y;
+      this->render.position.z = parent.z;
+
+      EffectPrimitiveSlot& slot = this->state.slots[0];
+      ++slot.process;
+
+      if (slot.process > 0) {
+        if (slot.process % 2 > 0) {
+          --slot.alphaB;
+        }
+
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
+        }
+      }
+    } break;
+    case 40:
+      this->PrimSakura();
+      break;
+    case 124:
+      this->PrimKouenka();
+      break;
+    case 46: {
+      const vector3d& parent = this->state.master->render.position;
+      this->render.position.x = parent.x;
+      this->render.position.y = parent.y;
+      this->render.position.z = parent.z;
+
+      if (this->state.slots[0].life == 1) {
+        this->state.deltaPos = this->state.slots[0].vecBPre;
+      }
+
+      this->render.position = this->state.deltaPos;
+
+      if ((this->state.pattern & 0x20u) != 0) {
+        this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+      }
+
+      this->state.ProcessAlpha();
+      this->ShiftSegment();
+      this->AnimMotion();
+    } break;
+    case 84:
+      this->PrimGhost();
+      break;
+    case 152:
+      this->PrimWanderingSlots();
+      break;
+    case 153:
+      this->PrimFadeAlpha();
+      break;
+    case 168:
+      this->FollowMasterAndAdvance();
+      break;
+    case 85:
+      this->PrimSuperAngel();
+      break;
+    case 81: {
+      FollowMaster(*this);
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life <= 0) {
+          continue;
+        }
+
+        ++slot.process;
+
+        if (slot.distance < 10.0f) {
+          slot.distance *= 1.02f;
+        }
+
+        if (slot.process > 500 && slot.alphaB > 0) {
+          --slot.alphaB;
+        }
+
+        slot.fullDisplayAngle = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(slot.fullDisplayAngle) + slot.maxHeight));
+
+        if (slot.fullDisplayAngle >= 360) {
+          slot.fullDisplayAngle -= 360;
+        }
+      }
+    } break;
+    case 42:
+      this->PrimShieldBoomerang();
+      break;
+    case 116:
+      this->PrimShieldBoomerang3();
+      break;
+    case 97:
+      this->PrimTanji2();
+      break;
+    case 87:
+      this->PrimBubbleSwirl();
+      break;
+    case 127:
+      this->PrimBubbleDrop();
+      break;
+    case 89: {
+      FollowMaster(*this);
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        const int process = ++slot.process;
+
+        if (process <= 0) {
+          continue;
+        }
+
+        const float kind = slot.height[4];
+
+        if (kind == 2.0f || kind == 6.0f) {
+          if (process <= 10) {
+            slot.alphaB += 10;
+          } else if (process > 11) {
+            slot.alphaB -= 3;
+
+            if (slot.alphaB < 0) {
+              slot.alphaB = 0;
+            }
+          }
+
+          slot.distance = slot.distance + 3.0f;
+        } else if (kind == 3.0f) {
+          if (process <= 10) {
+            slot.alphaB += 6;
+          } else if (process > 11) {
+            --slot.alphaB;
+
+            if (slot.alphaB < 0) {
+              slot.alphaB = 0;
+            }
+          }
+
+          slot.distance = slot.distance + 3.0f;
+        } else {
+          if (process <= 10) {
+            slot.alphaB += 20;
+          } else if (process > 12) {
+            slot.alphaB -= 15;
+
+            if (slot.alphaB < 0) {
+              slot.alphaB = 0;
+            }
+          }
+
+          slot.distance = slot.distance * 1.15f;
+        }
+      }
+    } break;
+    case 159:
+      this->PrimSpiralCollapse();
+      break;
+    case 162:
+      this->FollowMasterAndTickSlots();
+      break;
+    case 163:
+      this->PrimTextureFrames();
+      break;
+    case 164:
+      this->PrimFrameScroll();
+      break;
+    case 165:
+      this->PrimScrollTexture();
+      break;
+    case 166:
+      this->PrimFramePhase();
+      break;
+    case 58:
+      this->PrimFirstAid();
+      break;
+    case 98: {
+      EffectPrimitiveSlot& slot = this->state.slots[0];
+
+      if (slot.life == 1) {
+        const int process = ++slot.process;
+
+        if (process < 50) {
+          slot.distance += 0.1f;
+        }
+
+        if (process <= 5) {
+          slot.alphaB += 50;
+        } else {
+          slot.alphaB -= 3;
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+          }
+        }
+      }
+    } break;
+    case 53:
+      this->PrimThrowItem();
+      break;
+    case 54:
+      this->PrimChemical();
+      break;
+    case 55:
+      this->PrimChemical2();
+      break;
+    case 56:
+      this->PrimChemical3();
+      break;
+    case 154:
+      this->PrimFlashFade();
+      break;
+    case 112:
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.rotStart;
+
+        if (slot.rotStart >= 360) {
+          slot.rotStart -= 360;
+        }
+
+        slot.maxHeight = g_sinTable[slot.rotStart] * 0.5f + 1.5f;
+      }
+      break;
+    case 113:
+      this->render.position = this->state.master->render.position;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        ++slot.process;
+        slot.rotStart += 4;
+
+        if (slot.rotStart > 359) {
+          slot.rotStart -= 360;
+        }
+
+        if (slot.process < 31) {
+          slot.alphaB += 8;
+
+          if (slot.alphaB > 160) {
+            slot.alphaB = 160;
+          }
+        }
+
+        slot.distance -= 0.2f;
+
+        for (int value = 0; value < 21; ++value) {
+          if (slot.flag1[value] != 0) {
+            continue;
+          }
+
+          if (slot.process < 91) {
+            slot.height[value] = g_sinTable[value * 9] * slot.maxHeight * g_sinTable[slot.process];
+          }
+
+          if (g_sinTable[value * 9] * slot.maxHeight < slot.height[value]) {
+            slot.height[value] = g_sinTable[value * 9] * slot.maxHeight;
+            slot.flag1[value] = 1;
+          }
+
+          if (slot.height[value] < 0.0f) {
+            slot.height[value] = 0;
+          }
+        }
+      }
+      break;
+    case 74: {
+      const vector3d& parent = this->state.master->render.position;
+      this->render.position.x = parent.x;
+      this->render.position.y = parent.y;
+      this->render.position.z = parent.z;
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life == 1) {
+          ++slot.process;
+
+          if (slot.process < 11 && slot.alphaB < 100) {
+            ++slot.alphaB;
+          }
+        }
+      }
+    } break;
+    case 71:
+      this->PrimFadeInFollow();
+      break;
+    case 72:
+    case 172:
+      this->PrimPoison();
+      break;
+    case 45:
+      this->PrimTeiHit2();
+      break;
+    case 59:
+      this->PrimParticleUp();
+      break;
+    case 136:
+      this->PrimRandomSpin();
+      break;
+    case 47:
+      this->PrimBottom();
+      break;
+    case 156:
+      this->PrimHoverFollow();
+      break;
+    case 82:
+      this->PrimAuraGlow();
+      break;
+    case 160:
+      this->PrimGlowFollow();
+      break;
+    case 95:
+      this->PrimEffectTexture2();
+      break;
+    case 141:
+      this->PrimRiseFollow();
+      break;
+    case 128:
+      this->PrimEffectTexture_Ani();
+      break;
+    case 140:
+      this->PrimFrameFade();
+      break;
+    case 133:
+      this->PrimAnimatedFlash();
+      break;
+    case 134:
+      FaceCamera(this->state.slots);
+
+      for (int index = 0; index < 4; ++index) {
+        EffectPrimitiveSlot& slot = this->state.slots[index];
+
+        if (slot.life != 1) {
+          continue;
+        }
+
+        const int process = ++slot.process;
+        ++slot.fullDisplayAngle;
+
+        if (slot.fullDisplayAngle > 359) {
+          slot.fullDisplayAngle -= 360;
+        }
+
+        if (process < 10) {
+          slot.alphaB += 25;
+        } else if (process > 40) {
+          slot.alphaB -= 5;
+        }
+
+        if (slot.alphaB >= 255) {
+          slot.alphaB = 255;
+        } else if (slot.alphaB < 0) {
+          slot.alphaB = 0;
+        }
+      }
+      break;
+    case 48:
+      this->PrimBottom2();
+      break;
+    case 49:
+      this->PrimBottomOut();
+      break;
+    case 51: {
+      EffectPrimitiveSlot& slot = this->state.slots[0];
+      this->render.position = this->state.master->render.position;
+
+      if (slot.life == 1) {
+        ++slot.process;
+
+        if (slot.flag1[4] == 1) {
+          this->render.position = this->state.master->render.position;
+        } else {
+          this->render.position = slot.vecBPre;
+        }
+      }
+
+      if ((this->state.pattern & 0x20) != 0) {
+        this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+      }
+
+      this->state.ProcessAlpha();
+      this->ShiftSegment();
+      this->AnimMotion();
+    } break;
+    case 171: {
+      EffectPrimitiveSlot& slot = this->state.slots[0];
+
+      if (slot.life != 1) {
+        break;
+      }
+
+      FaceCamera(this->state.slots);
+      this->render.position = this->state.master->render.position;
+      ++slot.process;
+
+      if (slot.height[9] == 0.0f) {
+        slot.alphaB += 4;
+
+        if (slot.alphaB > 255) {
+          slot.alphaB = 255;
+          slot.height[9] = 1.0f;
+        }
+      } else {
+        slot.alphaB -= 2;
+
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
+          slot.height[9] = 0;
+        }
+      }
+
+      slot.vecBNow.x = g_sinTable[static_cast<int>(slot.height[0])];
+      slot.vecBNow.z = g_sinTable[static_cast<int>(slot.height[2])];
+      slot.vecBNow.y = g_sinTable[static_cast<int>(slot.height[4])];
+      slot.vecBNow.x = g_sinTable[static_cast<int>(slot.height[6])] * 15.0f + slot.vecBNow.x;
+      slot.vecBNow.z = g_cosTable[static_cast<int>(slot.height[6])] * 15.0f + slot.vecBNow.z;
+      slot.vecBNow.y = slot.vecBNow.y + slot.height[7];
+    } break;
+    default: {
+      char text[128];
+      std::sprintf(text, "Illegal Effect PrimitiveId %d", this->state.count);
+      ShowErrorDialog(GetRenderSystemHolder()->system, text, 0);
+    } break;
+    case 17:
+      break;
+  }
+
   ++this->state.stateCnt;
   return this->state.stateCnt <= this->state.duration;
 }
