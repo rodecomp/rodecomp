@@ -86,7 +86,7 @@ float RandomRange(float minimum, float maximum) {
 
   const int low = static_cast<int>(minimum * 10.0f);
   const int value = rand();
-  const int span = std::abs(low + static_cast<int>(maximum * -10.0f)) + 1;
+  const int span = std::abs(-low - static_cast<int>(maximum * -10.0f)) + 1;
   return static_cast<float>(value % span + low) * 0.1f;
 }
 
