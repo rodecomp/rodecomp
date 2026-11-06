@@ -225,8 +225,8 @@ void CPlayerSkillBundle::ClearGroups() {
 // OFFSET: 0x00771D50
 // FUNCTION: fn_08290
 CSkillInfo* CPlayerSkillBundle::FindGrouped(std::uint32_t id) {
-  for (auto& [group, values] : this->groups) {
-    for (CSkillInfo& value : values) {
+  for (auto group = this->groups.begin(); group != this->groups.end(); ++group) {
+    for (CSkillInfo& value : group->second) {
       if (value.id == id) {
         return &value;
       }
@@ -357,8 +357,8 @@ void CPlayerSkillBundle::SetUnknownValue(int id, int value) {
 // OFFSET: 0x00771B40
 // FUNCTION: fn_08287
 void CPlayerSkillBundle::ForEachGrouped(std::function<bool(CSkillInfo*)> callback) {
-  for (auto& [group, values] : this->groups) {
-    for (CSkillInfo& value : values) {
+  for (auto group = this->groups.begin(); group != this->groups.end(); ++group) {
+    for (CSkillInfo& value : group->second) {
       if (!callback(&value)) {
         return;
       }
