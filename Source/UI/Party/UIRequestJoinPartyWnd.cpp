@@ -143,8 +143,8 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     char messageText[1024] = {};
     _snprintf_s(messageText, sizeof(messageText), _TRUNCATE, LookupMessage(3378), request.name);
     this->details->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(messageText), 0, 0, 1);
-    this->details->Move(43, static_cast<unsigned>(this->details->lines.size()) - 3u >= 1u ? 30 : 20);
-    this->Invalidate();
+    this->details->Move(43, this->details->lines.size() == 3 ? 20 : 30);
+    this->InvalidateChildren();
 
     return 0;
   }
