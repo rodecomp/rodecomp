@@ -27,14 +27,14 @@ CWindEffect::CWindEffect() : CEffect(2343) {
 void CWindEffect::Init() {
   const float step = static_cast<float>(this->arcLength) / 20.0f;
   for (int ring = 0; ring < this->ringCount; ++ring) {
-    const int startAngle = std::max(rand() % 360, 0);
-    const int alpha = this->maxAlpha != 0 ? std::max(rand() % this->maxAlpha, 0) : 0;
+    const int startAngle = std::ranges::max(rand() % 360, 0);
+    const int maxAlpha = this->maxAlpha;
+    const int alpha = maxAlpha == 0 ? 0 : std::ranges::max(rand() % maxAlpha, 0);
     for (int segment = 0; segment < 21; ++segment) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (!particle) {
         continue;
       }
-
       particle->alpha = alpha;
       particle->SetColor(this->red, this->green, this->blue);
       particle->scale = this->particleScale;
