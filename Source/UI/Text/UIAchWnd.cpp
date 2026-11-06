@@ -843,7 +843,12 @@ int UIAchSummaryWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, st
 // OFFSET: 0x007B81B0
 // FUNCTION: fn_09246
 int UIAchTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message != 7 && message != 9 && message != 10) {
+  switch (message) {
+  case 7:
+  case 9:
+  case 10:
+    break;
+  default:
     return 0;
   }
 
