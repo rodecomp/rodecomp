@@ -1,12 +1,12 @@
 #include "Contents/TerrainPathSearch.h"
 #include "Resource/World/TerrainResource.h"
-
 #include <algorithm>
 #include <cstdlib>
 
 // OFFSET: 0x00AD7E70
 // FUNCTION: fn_17860
-CPathFinder::CPathFinder() : useNodePool(false) {
+CPathFinder::CPathFinder() {
+  this->useNodePool = false;
 }
 
 // OFFSET: 0x00AD88F0
