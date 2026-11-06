@@ -625,7 +625,8 @@ void CSkillAction_DR_LOW_FLIGHT::Slot11(int level, CGameActor* source, CGameActo
     }())
   );
 
-  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->Slot16(static_cast<int>(scale));
     float angleOffset = 0.0f;
     if ((direction & 1) != 0) {
