@@ -177,7 +177,7 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
 // INLINED
 static __forceinline void DrawTrailSpriteQuad(
   CEffectPrim& prim, const vector3d& base, float top, float left, float bottom, float right, float screenY, float depth, float depthBias,
-  std::uint32_t color, const SpriteFrameCell& cell, const SpriteRleImage* image, const std::uint32_t* palette, int blend
+  float angle, std::uint32_t color, const SpriteRleImage* image, const std::uint32_t* palette, int blend
 ) {
   SpriteQuad quad;
   quad.image = image;
@@ -188,7 +188,7 @@ static __forceinline void DrawTrailSpriteQuad(
   quad.color = color;
   quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + depthBias;
   quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + depthBias;
-  quad.angle = static_cast<float>(cell.unknown_001C) + prim.state.roll;
+  quad.angle = angle;
   prim.DrawQuad(quad, palette, blend, 0.0f, 0.0f, 0);
 }
 
@@ -251,7 +251,8 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
         const unsigned char green = static_cast<unsigned char>(cell.color >> 8);
         const unsigned char blue = static_cast<unsigned char>(cell.color >> 16);
         const std::uint32_t color = (((((alpha << 8) + red) << 8) + green) << 8) + blue;
-        DrawTrailSpriteQuad(*this, slot.vecBPre, top, left, bottom, right, screenY, depth, 0.0001f, color, cell, image, sprite->palette, 0x101);
+        const float angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+        DrawTrailSpriteQuad(*this, slot.vecBPre, top, left, bottom, right, screenY, depth, 0.0001f, angle, color, image, sprite->palette, 0x101);
 
         const float glowTop = top - 2.0f;
         const float glowBottom = bottom + 2.0f;
@@ -260,20 +261,20 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
         const std::uint32_t paleGlow = (alpha << 24) + 0x64FF64;
         const std::uint32_t brightGlow = (alpha << 24) + 0x0AFF0A;
         DrawTrailSpriteQuad(
-          *this, slot.vecBPre, glowTop, glowLeft, glowBottom, glowRight, screenY, depth, 0.0002f, slot.flag1[0] == 2 ? brightGlow : paleGlow, cell, image,
+          *this, slot.vecBPre, glowTop, glowLeft, glowBottom, glowRight, screenY, depth, 0.0002f, angle, slot.flag1[0] == 2 ? brightGlow : paleGlow, image,
           sprite->palette, 5
         );
 
         const std::uint32_t halfColor = (((((alpha / 2 << 8) + red) << 8) + green) << 8) + blue;
-        DrawTrailSpriteQuad(*this, slot.vecBNow, top, left, bottom, right, screenY, depth, 0.0001f, halfColor, cell, image, sprite->palette, 0x101);
+        DrawTrailSpriteQuad(*this, slot.vecBNow, top, left, bottom, right, screenY, depth, 0.0001f, angle, halfColor, image, sprite->palette, 0x101);
         DrawTrailSpriteQuad(
-          *this, slot.vecBNow, glowTop, glowLeft, glowBottom, glowRight, screenY, depth, 0.0002f, slot.flag1[0] == 2 ? brightGlow : paleGlow, cell, image,
+          *this, slot.vecBNow, glowTop, glowLeft, glowBottom, glowRight, screenY, depth, 0.0002f, angle, slot.flag1[0] == 2 ? brightGlow : paleGlow, image,
           sprite->palette, 5
         );
 
-        DrawTrailSpriteQuad(*this, slot.vecTPre, top, left, bottom, right, screenY, depth, 0.0001f, color, cell, image, sprite->palette, 0x101);
+        DrawTrailSpriteQuad(*this, slot.vecTPre, top, left, bottom, right, screenY, depth, 0.0001f, angle, color, image, sprite->palette, 0x101);
         DrawTrailSpriteQuad(
-          *this, slot.vecTPre, glowTop, glowLeft, glowBottom, glowRight, screenY, depth, 0.0002f, slot.flag1[0] == 2 ? brightGlow : paleGlow, cell, image,
+          *this, slot.vecTPre, glowTop, glowLeft, glowBottom, glowRight, screenY, depth, 0.0002f, angle, slot.flag1[0] == 2 ? brightGlow : paleGlow, image,
           sprite->palette, 5
         );
       }
