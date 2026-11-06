@@ -93,7 +93,7 @@ bool CItemReformMgr::Load() {
 // OFFSET: 0x005FA140
 // FUNCTION: fn_04084
 bool CItemReformMgr::HasItem(int itemId) {
-  return this->m_reformItemList.find(itemId) != this->m_reformItemList.end();
+  return this->m_reformItemList.end() != this->m_reformItemList.find(itemId);
 }
 
 static void EnsureItemDbMgr() {
