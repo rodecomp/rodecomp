@@ -1006,7 +1006,7 @@ bool CCorpse::OnProcess() {
   this->render.previousAnimation = this->Get8Dir(this->render.angle) + this->render.animation;
   this->render.curMotion = this->GetActRes()->FrameCount(this->render.previousAnimation) - 1;
   this->SetColor(static_cast<int>(255.0f - elapsed), -1, -1, -1);
-  return elapsed < 255.0f;
+  return !(elapsed >= 255.0f);
 }
 
 // OFFSET: 0x00DA4160
