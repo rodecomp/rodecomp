@@ -174,7 +174,7 @@ void UIEntryQueueRequestWnd::Paint() {
   char text[100];
   std::memset(text, 0, sizeof(text));
   const int remaining = 20 - static_cast<int>(this->m_elapsed / 1000 % 60);
-  if (remaining < 1) {
+  if (remaining <= 0) {
     this->SendMsg(nullptr, 6, 1, 0, 0, 0);
   }
 
