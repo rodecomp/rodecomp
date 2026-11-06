@@ -247,9 +247,9 @@ void UIVerticalNameBalloonText::Paint() {
     }
   }
 
-  for (const std::string& line : this->m_lines) {
+  for (auto line = this->m_lines.begin(); line != this->m_lines.end(); ++line) {
     this->DrawVerticalOutlinedText(
-      x, y, line.c_str(), static_cast<int>(line.size()), this->m_textColor, this->m_outlineColor, 0, g_nameBalloonFontHeight, g_serviceFlag06
+      x, y, line->c_str(), static_cast<int>(line->size()), this->m_textColor, this->m_outlineColor, 0, g_nameBalloonFontHeight, g_serviceFlag06
     );
     x += g_nameBalloonFontHeight + 2;
   }
