@@ -469,8 +469,8 @@ void UINewChatWnd::Show(int visible) {
     g_windowMgr.StoreSnapRectangle(this);
   } else g_windowMgr.RemoveSnapRectangle(this);
 
-  for (UIChatHisBox* tab : this->m_tabs) {
-    tab->Show(this->geometry.visible);
+  for (auto it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
+    (*it)->Show(this->geometry.visible);
   }
 
   for (int i = 0; i < g_windowMgr.retainedWindows.size(); ++i) {
