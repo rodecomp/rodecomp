@@ -710,7 +710,7 @@ void UIWindow::PlaceBeside(UIWindow* anchor) {
 // OFFSET: 0x00A81A30
 // FUNCTION: fn_16979
 UIWindow* UIWindow::FindUid(std::uint32_t uid) {
-  if (this->m_uid == uid) {
+  if (uid == this->m_uid) {
     return this;
   }
 

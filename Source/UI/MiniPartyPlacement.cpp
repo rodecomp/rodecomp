@@ -32,7 +32,7 @@ void __stdcall Nullsub228() {
 // FUNCTION: fn_17165
 UIWindow* UIWindowMgr::FindSnapExcludedWindow(int cell) {
   for (UIWindow* window : this->snapExcluded) {
-    if (*reinterpret_cast<int*>(reinterpret_cast<char*>(window) + 0x104) == cell) {
+    if (cell == *reinterpret_cast<int*>(reinterpret_cast<char*>(window) + 0x104)) {
       return window;
     }
   }

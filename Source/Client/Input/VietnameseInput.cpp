@@ -79,7 +79,7 @@ int TELEXInputMode::Convert(char key, char vowel, int index) {
 int TELEXInputMode::IsModifierKey(char key, int count, char vowel) {
   if (key != vowel && key != 'w' && key != 'W') {
     int tone = 0;
-    while (key != g_telexToneKeys[tone] && tone < 5) {
+    while (g_telexToneKeys[tone] != key && tone < 5) {
       ++tone;
     }
     if (tone >= 5) {

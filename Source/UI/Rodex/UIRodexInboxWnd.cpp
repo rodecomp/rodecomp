@@ -659,7 +659,7 @@ void UIRodexInboxWnd::RefreshMailLists() {
 // FUNCTION: fn_10062
 void UIRodexInboxWnd::RemoveInboxMail(int id) {
   for (std::vector<RodexMailEntry>::iterator it = this->mails0.begin(); it != this->mails0.end(); ++it) {
-    if (it->second == id) {
+    if (id == it->second) {
       this->mails0.erase(it);
       return;
     }

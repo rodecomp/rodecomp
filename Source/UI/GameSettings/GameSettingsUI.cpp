@@ -1763,7 +1763,7 @@ void CUIGroupSkin::Refresh() {
   const int index = g_skinInfo.selected + 1;
   list->scrollBar->SetPosition(list->rowHeight * index);
   for (CUIComboItem* item : list->items) {
-    if (item->index == index) {
+    if (index == item->index) {
       list->SelectItem(item);
       return;
     }

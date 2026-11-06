@@ -752,7 +752,7 @@ void UITabControl::RecalculateWidths() {
 void UIChatHisBox::Resize(int width, int height, bool flag) {
   const int oldWidth = this->geometry.width;
   this->Resize(width, height);
-  if (this->geometry.width != oldWidth && flag) {
+  if (oldWidth != this->geometry.width && flag) {
     this->sub_89C080();
   }
 }

@@ -477,7 +477,7 @@ void ConfirmPurchaseCallback::operator()(Stove::PCSDK::CallbackResult callbackRe
 // OFFSET: 0x0063DB80
 // FUNCTION: fn_04794
 void CSession::AddItem1784(const ITEM_INFO& item, int list) {
-  if (static_cast<unsigned int>(list) < 11) {
+  if (static_cast<unsigned int>(list) <= 10) {
     this->unknown_1784[list].push_back(item);
   }
 }

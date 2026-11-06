@@ -353,7 +353,7 @@ int CBarterMarketItemMgr::GetAllItemValueByName(std::string name)
 int CBarterMarketItemMgr::GetAmountById(int id)
 {
   for (std::list<BarterMarketItem>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
-    if (it->id == id) {
+    if (id == it->id) {
       return it->amount;
     }
   }
@@ -554,7 +554,7 @@ std::pair<bool, BarterMarketEntry> CExpandedBarterMarketItemMgr::FindEntry(int i
 int CExpandedBarterMarketItemMgr::GetItemValueById(int id)
 {
   for (std::vector<BarterMarketEntry>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
-    if (it->id == id) {
+    if (id == it->id) {
       return it->value;
     }
   }
@@ -566,7 +566,7 @@ int CExpandedBarterMarketItemMgr::GetItemValueById(int id)
 float CExpandedBarterMarketItemMgr::GetItemFactorById(int id)
 {
   for (std::vector<BarterMarketEntry>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
-    if (it->id == id) {
+    if (id == it->id) {
       return it->factor;
     }
   }
@@ -592,7 +592,7 @@ int CExpandedBarterMarketItemMgr::GetEntryCount()
 int CExpandedBarterMarketItemMgr::GetValueById(int id)
 {
   for (std::vector<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it) {
-    if (it->id == id) {
+    if (id == it->id) {
       return it->value;
     }
   }

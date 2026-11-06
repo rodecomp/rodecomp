@@ -37,7 +37,7 @@ float __stdcall CRenderObject::Heading(float x, float z, float targetX, float ta
 void CRenderObject::Face(float x, float z) {
   const float deltaX = x - this->render.position.x;
   const float deltaZ = z - this->render.position.z;
-  if (deltaX != 0.0f || deltaZ != 0.0f) {
+  if (0.0f != deltaX || 0.0f != deltaZ) {
     float angle = (static_cast<float>(std::atan2(static_cast<double>(deltaX), static_cast<double>(-deltaZ))) / 3.141592f) * 180.0f;
     this->render.angle = angle;
     if (angle >= 360.0f) {

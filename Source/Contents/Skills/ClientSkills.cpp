@@ -285,7 +285,7 @@ bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsign
 // FUNCTION: fn_23740
 bool CSession::UpdateAdditionalSkill(const CSkillInfo& value, int) {
   for (CSkillInfo& skill : this->m_additionalSkills) {
-    if (skill.id == value.id) {
+    if (value.id == skill.id) {
       skill.level = value.level;
       std::memcpy(&skill.unknown_0014, &value.unknown_0014, sizeof(skill.unknown_0014));
       std::memcpy(&skill.unknown_001C, &value.unknown_001C, sizeof(skill.unknown_001C));
@@ -304,7 +304,7 @@ bool CSession::UpdateAdditionalSkill(const CSkillInfo& value, int) {
 // FUNCTION: fn_23741
 bool CSession::UpdateHomunSkill(const CSkillInfo& value, unsigned char notify) {
   for (CSkillInfo& skill : this->m_homunSkills) {
-    if (skill.id == value.id) {
+    if (value.id == skill.id) {
       skill.level = value.level;
       skill.unknown_0014 = value.unknown_0014;
       skill.unknown_001C = value.unknown_001C;
@@ -331,7 +331,7 @@ bool CSession::UpdateHomunSkill(const CSkillInfo& value, unsigned char notify) {
 // FUNCTION: fn_23742
 bool CSession::UpdateMercSkill(const CSkillInfo& value, unsigned char notify) {
   for (CSkillInfo& skill : this->m_mercSkills) {
-    if (skill.id == value.id) {
+    if (value.id == skill.id) {
       skill.level = value.level;
       skill.unknown_0014 = value.unknown_0014;
       skill.unknown_001C = value.unknown_001C;
@@ -675,7 +675,7 @@ int CSession::GetDefaultOptionValue(const char* name, int fallback) const {
 // FUNCTION: fn_23777
 int CSession::FindUnknown0778(int key) const {
   for (const std::pair<int, int>& entry : this->unknown_0778) {
-    if (entry.first == key) {
+    if (key == entry.first) {
       return entry.second;
     }
   }

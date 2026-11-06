@@ -250,7 +250,7 @@ void GuildInfo::UpdateCharacterName(int characterId, const char* name) {
 // FUNCTION: fn_18045
 void GuildInfo::UpdateMemberStatus(int accountId, int online, int characterId, short unknown_002C, short unknown_0020, short unknown_0024) {
   for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
-    if (it->characterId == characterId) {
+    if (characterId == it->characterId) {
       it->unknown_002C = unknown_002C;
       it->unknown_0020 = unknown_0020;
       it->unknown_0024 = unknown_0024;
@@ -273,7 +273,7 @@ void GuildInfo::UpdateMemberStatus(int accountId, int online, int characterId, s
 // FUNCTION: fn_18046
 void GuildInfo::SetMemberOnline(int accountId, int online) {
   for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
-    if (it->accountId == accountId) {
+    if (accountId == it->accountId) {
       it->online = online;
       break;
     }

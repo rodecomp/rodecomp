@@ -9,7 +9,7 @@ void CWebBrowser::Normalize() {
 
   RECT rectangle;
   GetWindowRect(this->browserWindow, &rectangle);
-  if (rectangle.right - rectangle.left != this->screenWidth || rectangle.bottom - rectangle.top != this->screenHeight) {
+  if (this->screenWidth != rectangle.right - rectangle.left || this->screenHeight != rectangle.bottom - rectangle.top) {
     return;
   }
 

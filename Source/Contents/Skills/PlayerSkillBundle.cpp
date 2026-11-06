@@ -120,7 +120,7 @@ bool CPlayerSkillBundle::FindIndexed(std::uint32_t id, CSkillInfo*& output) {
 // FUNCTION: fn_08269
 bool CPlayerSkillBundle::UpdatePending(const CSkillInfo& value) {
   for (CSkillInfo& entry : this->pending) {
-    if (entry.id == value.id) {
+    if (value.id == entry.id) {
       entry.level = value.level;
       entry.id = value.id;
       entry.unknown_0014 = value.unknown_0014;
@@ -155,7 +155,7 @@ CSkillInfo CPlayerSkillBundle::Pending(std::uint32_t id) {
 // FUNCTION: fn_08277
 CSkillInfo* CPlayerSkillBundle::FindExtra(std::uint32_t id) {
   const auto entry = std::find_if(this->extra.begin(), this->extra.end(),
-                                  [id](const CSkillInfo& value) { return value.id == id; });
+                                  [id](const CSkillInfo& value) { return id == value.id; });
   return entry != this->extra.end() ? &*entry : nullptr;
 }
 

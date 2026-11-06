@@ -124,7 +124,7 @@ void CRuneSystemMgr::AddRune(int tagId, int type, std::int64_t id, const std::st
 // FUNCTION: fn_08113
 void CTagData::UpdateActiveCount(int type) {
   this->m_activeCount[type] = 0;
-  for (std::vector<RuneData*>::iterator it = this->m_runes[type].begin(); it != this->m_runes[type].end(); ++it) {
+  for (std::vector<RuneData*>::iterator it = this->m_runes[type].begin(); this->m_runes[type].end() != it; ++it) {
     if (*it) {
       this->m_activeCount[type] += (*it)->IsActive();
     }

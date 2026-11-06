@@ -48,7 +48,7 @@ void UIWindowMgr::RemoveOrder(int id) {
   }
 
   for (auto entry = this->windowHistory.begin(); entry != this->windowHistory.end(); ++entry) {
-    if (*entry == id) {
+    if (id == *entry) {
       this->windowHistory.erase(entry);
       return;
     }

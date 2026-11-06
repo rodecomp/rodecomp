@@ -65,7 +65,7 @@ HRESULT DeviceStateDX9::SetFVF(DWORD value) {
     return noDevice;
   }
 
-  if (this->fvf == value) {
+  if (value == this->fvf) {
     return D3D_OK;
   }
 

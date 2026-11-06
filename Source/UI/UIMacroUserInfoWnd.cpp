@@ -256,7 +256,7 @@ void UIMacroReporterWnd::Slot25(int x, int y) {
 // OFFSET: 0x007F11F0
 // FUNCTION: fn_09851
 void UIMacroReporterWnd::Slot31(int, int) {
-  if (g_windowMgr.Capture() != this) {
+  if (this != g_windowMgr.Capture()) {
     return;
   }
 
