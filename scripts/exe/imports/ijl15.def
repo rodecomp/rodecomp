@@ -1,0 +1,8 @@
+; Imports of the original Ragexe 2026-02-19 from ijl15.dll, checked against the shipped DLL's exports.
+; IJL is __stdcall but exports undecorated names, so the decorated import maps to the plain export.
+LIBRARY ijl15.dll
+EXPORTS
+  ijlFree@4=ijlFree
+  ijlInit@4=ijlInit
+  ijlRead@8=ijlRead
+  ijlWrite@8=ijlWrite

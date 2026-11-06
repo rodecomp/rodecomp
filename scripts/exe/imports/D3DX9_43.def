@@ -1,0 +1,9 @@
+; Imports of the original Ragexe 2026-02-19 from D3DX9_43.dll, checked against the shipped DLL's exports.
+; D3DX is __stdcall but exports undecorated names, so the decorated import maps to the plain export.
+LIBRARY D3DX9_43.dll
+EXPORTS
+  D3DXFilterTexture@16=D3DXFilterTexture
+  D3DXLoadSurfaceFromMemory@40=D3DXLoadSurfaceFromMemory
+  D3DXLoadSurfaceFromSurface@32=D3DXLoadSurfaceFromSurface
+  D3DXMatrixPerspectiveFovLH@20=D3DXMatrixPerspectiveFovLH
+  D3DXSaveSurfaceToFileA@20=D3DXSaveSurfaceToFileA

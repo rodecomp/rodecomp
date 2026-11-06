@@ -1,0 +1,29 @@
+; Imports of the original Ragexe 2026-02-19 from BaseSDK.dll, checked against the shipped DLL's exports.
+LIBRARY BaseSDK.dll
+EXPORTS
+  ??0CallbackResult@PCSDK@Stove@@QAE@ABU012@@Z
+  ??0StovePCInitializeParam@Base@PCSDK@Stove@@QAE@XZ
+  ??0StovePCShutdown@Base@PCSDK@Stove@@QAE@ABU0123@@Z
+  ??0StovePCUser@Base@PCSDK@Stove@@QAE@XZ
+  ??1CallbackResult@PCSDK@Stove@@QAE@XZ
+  ??1Result@PCSDK@Stove@@QAE@XZ
+  ??1StovePCInitializeParam@Base@PCSDK@Stove@@QAE@XZ
+  ??1StovePCShutdown@Base@PCSDK@Stove@@QAE@XZ
+  ??1StovePCUser@Base@PCSDK@Stove@@QAE@XZ
+  ??4Result@PCSDK@Stove@@QAEAAU012@ABU012@@Z
+  ?GetAccessToken@StovePCToken@Base@PCSDK@Stove@@QBEPB_WXZ
+  ?GetCategory1@StovePCLogEvent@Base@PCSDK@Stove@@QBEPB_WXZ
+  ?GetGameUserId@StovePCUser@Base@PCSDK@Stove@@QBE_KXZ
+  ?GetMemberNumber@StovePCUser@Base@PCSDK@Stove@@QBE_KXZ
+  ?GetResult@CallbackResult@PCSDK@Stove@@QBE?AUResult@23@XZ
+  ?IsSuccessful@Result@PCSDK@Stove@@QBE_NXZ
+  ?SetApplicationKey@StovePCInitializeParam@Base@PCSDK@Stove@@QAEXPB_W@Z
+  ?SetCategory1@StovePCLogEvent@Base@PCSDK@Stove@@QAEXPB_W@Z
+  ?SetEnvironment@StovePCInitializeParam@Base@PCSDK@Stove@@QAEXPB_W@Z
+  Base_GetAccessToken
+  Base_GetShutdown
+  Base_GetUser
+  Base_Initialize
+  Base_RestartAppIfNecessary
+  Base_RunCallback
+  Base_UnInitialize

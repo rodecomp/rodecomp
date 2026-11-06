@@ -1,0 +1,16 @@
+; Imports of the original Ragexe 2026-02-19 from binkw32.dll, checked against the shipped DLL's exports.
+LIBRARY binkw32.dll
+EXPORTS
+  BinkClose@4=_BinkClose@4
+  BinkCopyToBuffer@28=_BinkCopyToBuffer@28
+  BinkDoFrame@4=_BinkDoFrame@4
+  BinkGetError@0=_BinkGetError@0
+  BinkGoto@12=_BinkGoto@12
+  BinkNextFrame@4=_BinkNextFrame@4
+  BinkOpen@8=_BinkOpen@8
+  BinkOpenDirectSound@4=_BinkOpenDirectSound@4
+  BinkPause@8=_BinkPause@8
+  BinkSetSoundSystem@8=_BinkSetSoundSystem@8
+  BinkSetVolume@12=_BinkSetVolume@12
+  BinkShouldSkip@4=_BinkShouldSkip@4
+  BinkWait@4=_BinkWait@4
