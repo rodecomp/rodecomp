@@ -2795,7 +2795,7 @@ __declspec(noinline) void CGameMode::ReceiveUnknownD31A40(const unsigned char* p
   std::strcpy(text, FindItemDescription(*ids).identifiedName);
   ++ids;
   for (unsigned int index = 1; index < count; ++index, ++ids) {
-    std::sprintf(text, "%s %s", text, FindItemDescription(*ids).identifiedName);
+    std::sprintf(text, "%s, %s", text, FindItemDescription(*ids).identifiedName);
   }
 
   std::sprintf(text, LookupMessage(2087), text);

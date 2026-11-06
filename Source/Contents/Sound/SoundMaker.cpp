@@ -603,7 +603,7 @@ void CGndRiser::SendMsg(
     return;
   }
 
-  CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00DA4BF0

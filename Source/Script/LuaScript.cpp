@@ -95,7 +95,7 @@ int AddNeededSkill(lua_State* state);
 // FUNCTION: fn_18354
 int TraceValue(lua_State* state) {
   std::string text = luaL_checkstring(state, 1);
-  MessageBoxA(nullptr, text.c_str(), "Lua Error", 0);
+  MessageBoxA(nullptr, text.c_str(), "Lua error", 0);
   return 1;
 }
 
@@ -752,8 +752,8 @@ int AddCashshopBanner2(lua_State* state) {
 int AddCheckAttendanceBanner(lua_State* state) {
   std::string image = luaL_checkstring(state, 1);
   std::string url = luaL_checkstring(state, 2);
-  const int action = lua_toboolean(state, 3);
-  const int argument = lua_toboolean(state, 4);
+  const int action = luaL_checkinteger(state, 3);
+  const int argument = luaL_checkinteger(state, 4);
   if (UIWindow* window = g_windowMgr.LookupWindow(0x148)) {
     AddAttendanceBanner(static_cast<UICheckAttendanceWnd*>(window), image, url, action, argument);
   }

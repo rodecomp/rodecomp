@@ -78,7 +78,7 @@ void UIBattleMsgOptionWnd::Slot15(int, int height) {
   this->AddCloseButton("ESC", 0);
   this->m_allCheckBox = new UICheckBox();
   this->m_allCheckBox->SetSize(70, 12);
-  this->m_allCheckBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "all on");
+  this->m_allCheckBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", " all on");
   this->m_allCheckBox->Move(20, this->geometry.height - 16);
   this->m_allCheckBox->SetChecked(this->unknown_010C);
   this->AddChild(this->m_allCheckBox);
