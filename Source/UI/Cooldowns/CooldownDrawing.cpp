@@ -1,14 +1,15 @@
 #include "Render/Primitives/RenderCommandPool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
+#include "Render/DX9/RendererDX9.h"
 #include "Render/Textures/TextureCache.h"
 #include "UI/Cooldowns/CooldownDrawing.h"
 
 namespace {
   // INLINED
-  void Submit(std::vector<RenderCommand*>& commands, RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd) {
+  __forceinline void Submit(std::vector<RenderCommand*>& commands) {
     for (RenderCommand* command : commands) {
-      queues.Submit(command, 513, depthAlpha, depthStart, depthEnd);
+      static_cast<CRendererDX9*>(g_renderer)->Submit(command, 0x201);
     }
 
     commands.clear();
@@ -204,11 +205,11 @@ void CooldownDrawing::DrawReverse(CooldownState& value) {
 // OFFSET: 0x00CA6670
 // FUNCTION: fn_20963
 void CooldownDrawing::SubmitNormal(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd) {
-  Submit(this->normal, queues, depthAlpha, depthStart, depthEnd);
+  Submit(this->normal);
 }
 
 // OFFSET: 0x00CA6630
 // FUNCTION: fn_20962
 void CooldownDrawing::SubmitReverse(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd) {
-  Submit(this->reverse, queues, depthAlpha, depthStart, depthEnd);
+  Submit(this->reverse);
 }
