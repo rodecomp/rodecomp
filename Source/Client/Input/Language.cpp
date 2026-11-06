@@ -34,8 +34,8 @@ void CLanguageBase::ResetInput() {
   }
 
   this->text.clear();
-  this->cursor = 0;
-  this->anchor = 0;
+  this->cursor = static_cast<int>(this->text.size());
+  this->anchor = static_cast<int>(this->text.size());
   this->composition.clear();
   this->candidate.clear();
   this->candidateCount = 0;
@@ -189,7 +189,6 @@ void CLanguageBase::MoveBack() {
     this->cursor = static_cast<int>(CharPrevExA(static_cast<WORD>(this->codePage), begin, begin + this->cursor, 0) - begin);
   }
 }
-
 // OFFSET: 0x00ACE440
 // FUNCTION: fn_45441
 void CLanguageBase::SelectionRange(int& begin, int& end) const {
@@ -201,7 +200,6 @@ void CLanguageBase::SelectionRange(int& begin, int& end) const {
     end = this->anchor;
   }
 }
-
 // OFFSET: 0x00ACE4B0
 // FUNCTION: fn_17786
 void CLanguageBase::SetPassword(unsigned char value) {
