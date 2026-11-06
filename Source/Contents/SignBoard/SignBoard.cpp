@@ -149,7 +149,6 @@ void CSignBoardMgr::LoadList() {
       "GetSignBoardListTable", "d>sddddsss", index, &info.map, &info.column, &info.row, &info.offset, &info.type, &info.image, &info.unknown_0014,
       &info.unknown_001C
     );
-
     switch (info.type) {
     case 2:
       info.type = 2;
@@ -163,6 +162,7 @@ void CSignBoardMgr::LoadList() {
         info.unknown_001C = defaults.unknown_001C;
       }
       break;
+    case 1:
     default:
       info.type = 1;
       break;
