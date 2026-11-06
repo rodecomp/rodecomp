@@ -252,7 +252,10 @@ void CReputeMgr::OpenRepute(std::uint64_t groupId, std::uint64_t reputeId) {
     return;
   }
 
-  if (groupId == 0) {
+  const unsigned int groupIdLow = static_cast<unsigned int>(groupId);
+  const unsigned int groupIdHigh = static_cast<unsigned int>(groupId >> 32);
+
+  if (groupIdLow == 0 && groupIdHigh == 0) {
     window->SendMsg(nullptr, 22, reinterpret_cast<std::intptr_t>(LookupMessage(3829)), 0, 0, 0);
   } else {
     auto group = this->m_groups.find(groupId);
