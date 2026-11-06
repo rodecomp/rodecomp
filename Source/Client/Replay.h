@@ -68,7 +68,7 @@ struct ReplayHeader {
 };
 
 struct ReplaySection {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint32_t bytes;
   /* 0006 */ std::uint32_t fileOffset;
 

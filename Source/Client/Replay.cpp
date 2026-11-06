@@ -437,7 +437,7 @@ int Replay::FindSection(int id) const {
     return -1;
   }
 
-  if (this->sections[id].id == id) {
+  if (id == this->sections[id].id) {
     return id;
   }
 
