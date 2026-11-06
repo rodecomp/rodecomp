@@ -161,9 +161,9 @@ void CTipBoxMgr::Destroy() {
 TipBoxEntry& CTipBoxMgr::SelectRandomTip() {
   this->m_randomList.clear();
 
-  for (const auto& entry : this->m_entries) {
-    if (entry.first < 1000 && entry.second.unknown_0018 == 1) {
-      this->m_randomList.push_back(entry.first);
+  for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
+    if (it->first < 1000 && it->second.unknown_0018 == 1) {
+      this->m_randomList.push_back(it->first);
     }
   }
 
@@ -386,8 +386,8 @@ bool CTipBoxMgr::HasSearchResults() const {
 std::vector<int>& CTipBoxMgr::Search(std::string& keyword) {
   this->m_randomList.clear();
 
-  for (const auto& item : this->m_entries) {
-    const TipBoxEntry entry = item.second;
+  for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
+    const TipBoxEntry entry = it->second;
 
     if (!entry.unknown_0018) {
       continue;
@@ -398,7 +398,7 @@ std::vector<int>& CTipBoxMgr::Search(std::string& keyword) {
     std::transform(keyword.begin(), keyword.end(), keyword.begin(), [](unsigned char c) { return static_cast<char>(toupper(c)); });
 
     if (_mbsstr(reinterpret_cast<const unsigned char*>(title.c_str()), reinterpret_cast<const unsigned char*>(keyword.c_str()))) {
-      this->m_randomList.push_back(item.first);
+      this->m_randomList.push_back(it->first);
     }
   }
 
