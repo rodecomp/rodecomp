@@ -53,10 +53,10 @@ ModelNode::ModelNode() : model(nullptr), parent(nullptr), alpha(255) {
 // OFFSET: 0x007568E0
 // FUNCTION: fn_07996
 ModelNode::~ModelNode() {
-  for (CTexture* texture : this->textures) {
-    if (texture) {
-      texture->Release();
-      g_texMgr.Remove(texture);
+  for (std::vector<CTexture*>::iterator it = this->textures.begin(); it != this->textures.end(); ++it) {
+    if (*it) {
+      (*it)->Release();
+      g_texMgr.Remove(*it);
     }
   }
 
