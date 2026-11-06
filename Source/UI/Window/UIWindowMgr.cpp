@@ -547,30 +547,30 @@ UIWindow* UIWindowMgr::LookupWindow(int id) {
   }
 
   switch (id) {
-  case 1:
-    return this->window_01C8;
   case 3:
     return this->window_01CC;
+  case 180:
+    return this->window_01D0;
+  case 1:
+    return this->window_01C8;
   case 27:
     return this->window_0274;
-  case 28:
-    return this->window_027C;
   case 30:
     return this->window_0278;
-  case 33:
-    return this->window_0288;
+  case 28:
+    return this->window_027C;
   case 34:
     return this->window_02C8;
   case 37:
     return this->window_02C4;
-  case 60:
-    return this->window_0320;
   case 61:
     return this->window_0324;
-  case 63:
-    return this->window_032C;
+  case 60:
+    return this->window_0320;
   case 88:
     return this->window_038C;
+  case 63:
+    return this->window_032C;
   case 103:
     return this->window_0388;
   case 113:
@@ -581,26 +581,26 @@ UIWindow* UIWindowMgr::LookupWindow(int id) {
     return this->window_03C8;
   case 126:
     return this->window_03CC;
-  case 180:
-    return this->window_01D0;
+  case 33:
+    return this->window_0288;
   case 196:
     return this->window_4F18C;
-  case 203:
-    return this->window_4F174;
   case 204:
     return this->window_0428;
+  case 203:
+    return this->window_4F174;
   case 237:
     return this->window_0444;
   case 253:
     return this->window_044C;
   case 273:
     return this->window_4F1CC;
-  case 274:
-    return this->window_4F1D0;
-  case 275:
-    return this->window_0448;
   case 277:
     return this->window_03D4;
+  case 275:
+    return this->window_0448;
+  case 274:
+    return this->window_4F1D0;
   case 284:
     return this->window_4F1E8;
   case 285:
@@ -611,6 +611,13 @@ UIWindow* UIWindowMgr::LookupWindow(int id) {
     return this->window_4F1F4;
   case 288:
     return this->window_4F1F8;
+  case 301:
+    if (!this->snapExcluded.empty()) {
+      return this->snapExcluded.front();
+    }
+    [[fallthrough]];
+  case 318:
+    return this->window_4F254;
   case 315:
     return this->window_0468;
   case 325:
@@ -619,13 +626,6 @@ UIWindow* UIWindowMgr::LookupWindow(int id) {
     return this->window_4F288;
   case 10024:
     return this->window_4F2AC;
-  case 301:
-    if (!this->snapExcluded.empty()) {
-      return this->snapExcluded.front();
-    }
-    [[fallthrough]];
-  case 318:
-    return this->window_4F254;
   default: {
     const auto found = this->windows.find(id);
     return found != this->windows.end() ? found->second : nullptr;
