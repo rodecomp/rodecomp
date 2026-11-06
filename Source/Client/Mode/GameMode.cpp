@@ -693,6 +693,15 @@ void CGameMode::sub_CEB8E0() {
   Replay::Instance().Record(static_cast<std::uint16_t>(record.length), &record, 0x2A, 0);
 }
 
+#pragma pack(push, 1)
+struct GameModeChunkHeader {
+  /* 0000 */ std::int16_t type;
+  /* 0002 */ std::uint32_t size;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GameModeChunkHeader) == 6);
+
 // OFFSET: 0x00CEC6A0
 // FUNCTION: fn_21356
 unsigned CGameMode::sub_CEC6A0(const std::vector<unsigned char>& data) {
@@ -701,26 +710,27 @@ unsigned CGameMode::sub_CEC6A0(const std::vector<unsigned char>& data) {
   }
 
   unsigned offset = 6;
-  if (*reinterpret_cast<const std::int16_t*>(data.data()) == 17000) {
+  GameModeChunkHeader header;
+  header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+  if (header.type == 17000) {
     while (offset < data.size()) {
-      const short type = *reinterpret_cast<const short*>(data.data() + offset);
-      const std::uint32_t size = *reinterpret_cast<const std::uint32_t*>(data.data() + offset + 2);
+      header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
       offset += 6;
 
-      if (type == 0xCD) {
+      if (header.type == 0xCD) {
         std::vector<unsigned char> record(0x10);
-        std::memcpy(record.data(), data.data() + offset, size);
-        offset += size;
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
         this->sub_D41250(record.data());
-      } else if (type == 0xCE) {
+      } else if (header.type == 0xCE) {
         std::vector<unsigned char> record(0x61);
-        std::memcpy(record.data(), data.data() + offset, size);
-        offset += size;
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
         this->sub_D40730(record.data());
-      } else if (type == 0x4269) {
+      } else if (header.type == 0x4269) {
         break;
       } else {
-        offset += size;
+        offset += header.size;
       }
     }
   } else {
@@ -4958,15 +4968,6 @@ ReplayTime CGameMode::StopReplayRecording() {
 }
 
 #pragma pack(push, 1)
-struct GameModeChunkHeader {
-  /* 0000 */ std::int16_t type;
-  /* 0002 */ std::uint32_t size;
-};
-#pragma pack(pop)
-
-static_assert(sizeof(GameModeChunkHeader) == 6);
-
-#pragma pack(push, 1)
 struct GameModeStoredRecord00DA {
   /* 0000 */ std::uint16_t type;
   /* 0002 */ int value0002;
@@ -5527,7 +5528,8 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class GameModeEncryptedName {
 public:
-  explicit GameModeEncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  explicit GameModeEncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -5552,6 +5554,13 @@ private:
   /* 0000 */ std::uint8_t m_text[Length];
   bool m_encrypted;
 };
+
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptGameModeName(const char (&source)[Length]) {
+  thread_local GameModeEncryptedName<Length, Key> name(source);
+  return name.Text();
+}
 
 }
 
@@ -5587,8 +5596,8 @@ int CGameMode::Run() {
       g_modeMgr.Quit();
       std::string message = g_nProtectGameGuardMgr->ErrorMessage();
       if (!message.empty()) {
-        const std::uint8_t source[] = {0x53, 0x11, 0xF9, 0xA6, 0x8D, 0x7E, 0xA6, 0xD9, 0x1D, 0x06,
-                                       0xEA, 0xA4, 0x9C, 0x5C, 0xB0, 0xCC, 0x4F, 0x25, 0x8B};
+        const char source[] = {'\x53', '\x11', '\xF9', '\xA6', '\x8D', '\x7E', '\xA6', '\xD9', '\x1D', '\x06',
+                                       '\xEA', '\xA4', '\x9C', '\x5C', '\xB0', '\xCC', '\x4F', '\x25', '\x8B'};
         thread_local GameModeEncryptedName<sizeof(source), 0xADC51BF9C98B413DULL> name(source);
         MessageBoxA(hWnd, message.c_str(), name.Text(), 0);
       }
@@ -5674,25 +5683,27 @@ struct SkillEntryPacket {
 
 static_assert(sizeof(SkillEntryPacket) == 16);
 
+#pragma pack(push, 1)
+struct GameModeStoredSkillEntry {
+  /* 0000 */ GameModeChunkHeader header;
+  /* 0006 */ SkillEntryPacket packet;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GameModeStoredSkillEntry) == 0x16);
+
 // OFFSET: 0x00CEB4C0
 // FUNCTION: fn_21351
 std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
-  std::vector<unsigned char> output;
-  auto appendRecord = [&output](std::uint16_t id, const void* data, std::uint32_t bytes) {
-    std::vector<unsigned char> record(bytes + 6u, 0);
-    record[0] = static_cast<unsigned char>(id);
-    record[1] = static_cast<unsigned char>(id >> 8);
-    record[2] = static_cast<unsigned char>(bytes);
-    record[3] = static_cast<unsigned char>(bytes >> 8);
-    record[4] = static_cast<unsigned char>(bytes >> 16);
-    record[5] = static_cast<unsigned char>(bytes >> 24);
-    if (bytes != 0) {
-      std::memcpy(record.data() + 6, data, bytes);
-    }
-    output.insert(output.end(), record.begin(), record.end());
-  };
+  std::vector<unsigned char> data;
 
-  appendRecord(17000, nullptr, 0);
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 17000;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
 
   for (CRenderObject* object : this->scene->unknown_0020) {
     CSkill* skill = static_cast<CSkill*>(object);
@@ -5709,11 +5720,23 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
     packet.x = static_cast<std::int16_t>(static_cast<int>(column));
     packet.y = static_cast<std::int16_t>(static_cast<int>(row));
 
-    appendRecord(0xCD, &packet, sizeof(packet));
+    std::vector<unsigned char> chunk(sizeof(GameModeStoredSkillEntry));
+    auto* record = reinterpret_cast<GameModeStoredSkillEntry*>(chunk.data());
+    record->header.type = 0xCD;
+    record->header.size = sizeof(SkillEntryPacket);
+    record->packet = packet;
+    data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
-  appendRecord(17001, nullptr, 0);
-  return output;
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 17001;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  return data;
 }
 
 // OFFSET: 0x00CEBBB0
@@ -6661,34 +6684,29 @@ void CGameMode::UpdateBalloons() {
       shownSkill = this->unknown_040C;
       switch (shownSkill) {
       case 10000: {
-        const std::uint8_t source[] = {0xBC, 0x82, 0x2D, 0x77, 0xD2, 0xDD, 0xC6, 0x1F, 0xB2, 0x8C, 0x33, 0x70, 0xD3, 0xCA, 0xD1, 0x3F};
-        thread_local GameModeEncryptedName<sizeof(source), 0x3FA3AFA7035DE3FFULL> name(source);
-        text.assign(name.Text());
+        const char source[] = {'\xBC', '\x82', '\x2D', '\x77', '\xD2', '\xDD', '\xC6', '\x1F', '\xB2', '\x8C', '\x33', '\x70', '\xD3', '\xCA', '\xD1', '\x3F'};
+        text.assign(DecryptGameModeName<0x3FA3AFA7035DE3FFULL>(source));
         break;
       }
       case 20000: {
-        const std::uint8_t source[] = {0x09, 0xEB, 0x66, 0x1C, 0x26, 0xAE, 0x07, 0x96, 0x38, 0xF5, 0x71, 0x04, 0x75, 0x86, 0x42, 0xDB};
-        thread_local GameModeEncryptedName<sizeof(source), 0xDB27CB557D038759ULL> name(source);
-        text = name.Text();
+        const char source[] = {'\x09', '\xEB', '\x66', '\x1C', '\x26', '\xAE', '\x07', '\x96', '\x38', '\xF5', '\x71', '\x04', '\x75', '\x86', '\x42', '\xDB'};
+        text = DecryptGameModeName<0xDB27CB557D038759ULL>(source);
         break;
       }
       case 20001: {
-        const std::uint8_t source[] = {0xCF, 0xD8, 0x9B, 0x0E, 0xCE, 0x19, 0xF9, 0x30, 0xEF, 0xC4, 0xBB};
-        thread_local GameModeEncryptedName<sizeof(source), 0x51BB39B763BBBD8DULL> name(source);
-        text = name.Text();
+        const char source[] = {'\xCF', '\xD8', '\x9B', '\x0E', '\xCE', '\x19', '\xF9', '\x30', '\xEF', '\xC4', '\xBB'};
+        text = DecryptGameModeName<0x51BB39B763BBBD8DULL>(source);
         break;
       }
       case 40000: {
-        const std::uint8_t source[] = {0xAC, 0x4C, 0x27, 0x79, 0xB0, 0xA3, 0x86, 0xA7, 0xA2, 0x42, 0x39, 0x7E, 0xB1, 0xB4, 0x91, 0x87};
-        thread_local GameModeEncryptedName<sizeof(source), 0x87E3D1C50D572DEFULL> name(source);
-        text = name.Text();
+        const char source[] = {'\xAC', '\x4C', '\x27', '\x79', '\xB0', '\xA3', '\x86', '\xA7', '\xA2', '\x42', '\x39', '\x7E', '\xB1', '\xB4', '\x91', '\x87'};
+        text = DecryptGameModeName<0x87E3D1C50D572DEFULL>(source);
         break;
       }
       default:
         if (g_session.IsState291To303(shownSkill)) {
-          const std::uint8_t source[] = {0x3E, 0x4A, 0xC2, 0xE6, 0x2F};
-          thread_local GameModeEncryptedName<sizeof(source), 0xB7AFBD2FD9FD7501ULL> name(source);
-          text = name.Text();
+          const char source[] = {'\x3E', '\x4A', '\xC2', '\xE6', '\x2F'};
+          text = DecryptGameModeName<0xB7AFBD2FD9FD7501ULL>(source);
         } else {
           text = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, shownSkill);
         }
