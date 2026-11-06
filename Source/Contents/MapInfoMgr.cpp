@@ -176,11 +176,11 @@ MapInfo* CMapInfoMgr::FindMapInfo(std::string map) {
 // FUNCTION: fn_06491
 const char* CMapInfoMgr::GetSignSubName(std::string map) {
   const MapInfo* info = this->FindMapInfo(map);
-  if (info == nullptr) {
-    return this->m_emptyName.c_str();
+  if (info != nullptr) {
+    return info->m_sign.m_subName.c_str();
   }
 
-  return info->m_sign.m_subName.c_str();
+  return this->m_emptyName.c_str();
 }
 
 // OFFSET: 0x006CEFF0
