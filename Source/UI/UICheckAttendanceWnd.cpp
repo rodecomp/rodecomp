@@ -389,7 +389,7 @@ int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     case 184:
       if (this->m_blinking) {
         CheckAttendanceRequestPacket packet = {0xAEF};
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+        GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       }
       break;
     case 201:
