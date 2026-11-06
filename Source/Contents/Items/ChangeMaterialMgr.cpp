@@ -53,15 +53,17 @@ bool CChangeMaterialMgr::CreateInstance() {
     if (g_changeMaterialMgr != nullptr) {
       if (!g_changeMaterialMgr->m_isValid) {
         delete g_changeMaterialMgr;
-      } else {
-        if (g_changeMaterialMgr->Load()) {
-          return true;
-        }
+        g_changeMaterialMgr = nullptr;
+        return false;
+      }
+      if (!g_changeMaterialMgr->Load()) {
         if (g_changeMaterialMgr != nullptr) {
           delete g_changeMaterialMgr;
         }
+        g_changeMaterialMgr = nullptr;
+        return false;
       }
-      g_changeMaterialMgr = nullptr;
+      return true;
     }
   }
 
