@@ -63,7 +63,7 @@ struct CLanguageBase {
   void RetreatCursor(int delta);
   void CopySelection();
   void Paste();
-  void MoveBack();
+  __declspec(noinline) void MoveBack();
   void MoveForward();
   void SetPassword(unsigned char value);
   void Character(unsigned value, LPARAM unused);
