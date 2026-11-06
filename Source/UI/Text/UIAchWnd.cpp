@@ -663,8 +663,8 @@ void UIToolTipBitmapWnd::Paint() {
 // OFFSET: 0x007B7B60
 // FUNCTION: fn_09236
 void UIAchTab::Slot27(int x, int y) {
-  int sub = 0;
   int group = 0;
+  int sub = 0;
   this->sub_7B4370(x, y, &group, &sub);
   this->hoverGroup = group;
   this->hoverSub = sub;
@@ -1177,7 +1177,7 @@ void UICustomGageBar::Slot28(int x, int y) {
 // FUNCTION: fn_09235
 void UIToolTipBitmapWnd::Slot28(int x, int y) {
   this->Slot27(x, y);
-  if (this->tooltip.size() != 0) {
+  if (this->tooltip.size() > 0) {
     x = 0;
     y = -20;
     this->ToScreen(x, y);
