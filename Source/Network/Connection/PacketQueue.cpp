@@ -5,7 +5,8 @@
 
 // OFFSET: 0x00C7EF60
 // FUNCTION: fn_20418
-CPacketQueue::CPacketQueue() : m_data(nullptr) {
+CPacketQueue::CPacketQueue() {
+  this->m_data = nullptr;
 }
 
 // OFFSET: 0x00C7EFC0
