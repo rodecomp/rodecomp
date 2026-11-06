@@ -29,9 +29,9 @@ void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, st
     return;
   }
 
-  const int type = root["Type"].asInt();
-
-  if (type == 2 || type == 3) {
+  switch (root["Type"].asInt()) {
+  case 2:
+  case 3:
     if (this->unknown_0008 == g_session.m_aid) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3507)), 0xFF, 0, 0, 0);
     }
