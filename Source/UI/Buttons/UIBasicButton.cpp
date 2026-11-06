@@ -8,8 +8,9 @@
 
 // OFFSET: 0x0084EA20
 // FUNCTION: fn_10649
-UIBasicButton::UIBasicButton() : UIButton(), invalidateParent(0) {
+UIBasicButton::UIBasicButton() : UIButton() {
   this->geometry.height = 20;
+  this->invalidateParent = 0;
 }
 
 UIBasicButton::~UIBasicButton() = default;
