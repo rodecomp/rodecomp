@@ -518,12 +518,12 @@ int GetClientType() {
       return 22;
     case 13:
       return 23;
-    case 14:
-      return 25;
     case 15:
       return 33;
     case 19:
       return 35;
+    case 14:
+      return 25;
     case 20:
       return 36;
     default:
@@ -532,16 +532,16 @@ int GetClientType() {
 
   case 5:
     switch (g_serviceType) {
+    case 7:
+      return 27;
     case 2:
       return 28;
     case 5:
       return 29;
-    case 6:
-      return 34;
-    case 7:
-      return 27;
     case 15:
       return 32;
+    case 6:
+      return 34;
     default:
       return 0;
     }
