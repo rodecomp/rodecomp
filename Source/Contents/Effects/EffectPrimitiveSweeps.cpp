@@ -463,11 +463,11 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
     float jitterZ[21];
     for (int i = 0; i < slot.vecTNow.y; ++i) {
       int ry = std::rand() % 7;
-      jitterY[i] = static_cast<float>(ry >= 0 ? ry : 0) * 0.1f - 0.3f;
+      jitterY[i] = static_cast<float>(ry) * 0.1f - 0.3f;
       int rx = std::rand() % 7;
-      jitterX[i] = static_cast<float>(rx >= 0 ? rx : 0) * 0.1f - 0.3f;
+      jitterX[i] = static_cast<float>(rx) * 0.1f - 0.3f;
       int rz = std::rand() % 7;
-      jitterZ[i] = static_cast<float>(rz >= 0 ? rz : 0) * 0.1f - 0.3f;
+      jitterZ[i] = static_cast<float>(rz) * 0.1f - 0.3f;
     }
 
     if (slot.life != 1 || slot.alphaB <= 0 || slot.process <= 0) {
