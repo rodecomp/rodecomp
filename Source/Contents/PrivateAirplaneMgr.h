@@ -20,7 +20,9 @@ public:
   /* 0010 */ std::set<std::string> m_endableMaps;
   /* 0018 */ std::set<int> m_needItems;
 
-  CPrivateAirplaneMgr() : m_initialized(true) {}
+  CPrivateAirplaneMgr() {
+    this->m_initialized = true;
+  }
   virtual ~CPrivateAirplaneMgr() = default;
 
   int GetNeedItem(int index);

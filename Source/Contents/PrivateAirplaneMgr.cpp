@@ -23,18 +23,22 @@ bool CPrivateAirplaneMgr::Create() {
   }
 
   g_privateAirplaneItems = new (std::nothrow) CPrivateAirplaneMgr();
-  if (g_privateAirplaneItems != nullptr) {
-    if (g_privateAirplaneItems->m_initialized) {
-      if (CPrivateAirplaneMgr::Init()) {
-        return true;
-      }
-    }
-
-    delete g_privateAirplaneItems;
-    g_privateAirplaneItems = nullptr;
+  if (g_privateAirplaneItems == nullptr) {
+    return false;
   }
 
-  return false;
+  if (!g_privateAirplaneItems->m_initialized) {
+    delete g_privateAirplaneItems;
+    g_privateAirplaneItems = nullptr;
+    return false;
+  }
+
+  if (!CPrivateAirplaneMgr::Init()) {
+    delete g_privateAirplaneItems;
+    g_privateAirplaneItems = nullptr;
+    return false;
+  }
+  return true;
 }
 
 // OFFSET: 0x006D0620
