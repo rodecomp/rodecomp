@@ -4433,34 +4433,42 @@ int GetCategoryJob(lua_State* state) {
     break;
   case 2:
     switch (g_session.m_job) {
+    case JT_NOVICE:
     case JT_NOVICE_H:
     case JT_NOVICE_B:
       job = 0;
       break;
+    case JT_SWORDMAN:
     case JT_SWORDMAN_H:
     case JT_SWORDMAN_B:
       job = 1;
       break;
+    case JT_MAGICIAN:
     case JT_MAGICIAN_H:
     case JT_MAGICIAN_B:
       job = 2;
       break;
+    case JT_ARCHER:
     case JT_ARCHER_H:
     case JT_ARCHER_B:
       job = 3;
       break;
+    case JT_ACOLYTE:
     case JT_ACOLYTE_H:
     case JT_ACOLYTE_B:
       job = 4;
       break;
+    case JT_MERCHANT:
     case JT_MERCHANT_H:
     case JT_MERCHANT_B:
       job = 5;
       break;
+    case JT_THIEF:
     case JT_THIEF_H:
     case JT_THIEF_B:
       job = 6;
       break;
+    case JT_KNIGHT:
     case JT_KNIGHT_H:
     case JT_KNIGHT_B:
     case JT_RUNE_KNIGHT:
@@ -4469,6 +4477,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_DRAGON_KNIGHT:
       job = 7;
       break;
+    case JT_PRIEST:
     case JT_PRIEST_H:
     case JT_PRIEST_B:
     case JT_ARCHBISHOP:
@@ -4477,6 +4486,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_CARDINAL:
       job = 8;
       break;
+    case JT_WIZARD:
     case JT_WIZARD_H:
     case JT_WIZARD_B:
     case JT_WARLOCK:
@@ -4485,6 +4495,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_ARCH_MAGE:
       job = 9;
       break;
+    case JT_BLACKSMITH:
     case JT_BLACKSMITH_H:
     case JT_BLACKSMITH_B:
     case JT_MECHANIC:
@@ -4493,6 +4504,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_MEISTER:
       job = 10;
       break;
+    case JT_HUNTER:
     case JT_HUNTER_H:
     case JT_HUNTER_B:
     case JT_RANGER:
@@ -4501,6 +4513,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_WINDHAWK:
       job = 11;
       break;
+    case JT_ASSASSIN:
     case JT_ASSASSIN_H:
     case JT_ASSASSIN_B:
     case JT_GUILLOTINE_CROSS:
@@ -4509,6 +4522,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_SHADOW_CROSS:
       job = 12;
       break;
+    case JT_CRUSADER:
     case JT_CRUSADER_H:
     case JT_CRUSADER_B:
     case JT_ROYAL_GUARD:
@@ -4517,6 +4531,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_IMPERIAL_GUARD:
       job = 14;
       break;
+    case JT_MONK:
     case JT_MONK_H:
     case JT_MONK_B:
     case JT_SURA:
@@ -4525,6 +4540,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_INQUISITOR:
       job = 15;
       break;
+    case JT_SAGE:
     case JT_SAGE_H:
     case JT_SAGE_B:
     case JT_SORCERER:
@@ -4533,6 +4549,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_ELEMENTAL_MASTER:
       job = 16;
       break;
+    case JT_ROGUE:
     case JT_ROGUE_H:
     case JT_ROGUE_B:
     case JT_SHADOW_CHASER:
@@ -4541,6 +4558,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_ABYSS_CHASER:
       job = 17;
       break;
+    case JT_ALCHEMIST:
     case JT_ALCHEMIST_H:
     case JT_ALCHEMIST_B:
     case JT_GENETIC:
@@ -4549,6 +4567,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_BIOLO:
       job = 18;
       break;
+    case JT_BARD:
     case JT_BARD_H:
     case JT_BARD_B:
     case JT_MINSTREL:
@@ -4557,6 +4576,7 @@ int GetCategoryJob(lua_State* state) {
     case JT_TROUBADOUR:
       job = 19;
       break;
+    case JT_DANCER:
     case JT_DANCER_H:
     case JT_DANCER_B:
     case JT_WANDERER:
@@ -4565,12 +4585,14 @@ int GetCategoryJob(lua_State* state) {
     case JT_TROUVERE:
       job = 20;
       break;
+    case JT_SUPERNOVICE:
     case JT_SUPERNOVICE_B:
     case JT_SUPERNOVICE2:
     case JT_SUPERNOVICE2_B:
     case JT_HYPER_NOVICE:
       job = 23;
       break;
+    case JT_NINJA:
     case JT_KAGEROU:
     case JT_OBORO:
     case JT_NINJA_B:
@@ -4580,31 +4602,37 @@ int GetCategoryJob(lua_State* state) {
     case JT_SHIRANUI:
       job = 25;
       break;
+    case JT_GUNSLINGER:
     case JT_REBELLION:
     case JT_GUNSLINGER_B:
     case JT_REBELLION_B:
     case JT_NIGHT_WATCH:
       job = 24;
       break;
-    case JT_DO_SUMMONER_B:
-    case JT_SPIRIT_HANDLER:
-      job = 4218;
-      break;
+    case JT_TAEKWON:
     case JT_TAEKWON_B:
       job = 4046;
       break;
+    case JT_STAR:
     case JT_STAR_B:
     case JT_STAR_EMPEROR:
     case JT_STAR_EMPEROR_B:
     case JT_SKY_EMPEROR:
       job = 4047;
       break;
+    case JT_LINKER:
     case JT_LINKER_B:
     case JT_SOUL_REAPER:
     case JT_SOUL_REAPER_B:
     case JT_SOUL_ASCETIC:
       job = 4049;
       break;
+    case JT_DO_SUMMONER:
+    case JT_DO_SUMMONER_B:
+    case JT_SPIRIT_HANDLER:
+      job = 4218;
+      break;
+    case JT_DRUID:
     case JT_DRUID_B:
     case JT_KARNOS:
     case JT_KARNOS_B:
