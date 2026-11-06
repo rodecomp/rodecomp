@@ -631,6 +631,21 @@ UIChatRoomWnd::UIChatRoomWnd()
     : UIFrameWnd(0), title(), unknown_00CC(), unknown_010C(), unknown_0114(), saved(nullptr) {
 }
 
+#pragma pack(push, 1)
+struct ChatRoomRecordHeader {
+  // INLINED
+  ChatRoomRecordHeader() : tag(0), size(0) {}
+  // INLINED
+  ~ChatRoomRecordHeader() {
+    this->size = 0;
+    this->tag = 0;
+  }
+
+  /* 0000 */ std::int16_t tag;
+  /* 0002 */ std::uint32_t size;
+};
+#pragma pack(pop)
+
 // OFFSET: 0x008BB9E0
 // FUNCTION: fn_11800
 int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -762,10 +777,11 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
     const std::size_t end = this->title.find('\r');
     if (end != std::string::npos) {
-      this->title = std::string(this->title.c_str(), end);
+      this->title = this->title.substr(0, end);
     }
 
-    const std::string prefix = LookupMessage((this->roomStatus.roomType != 0) + 89);
+    std::string prefix;
+    prefix = LookupMessage((this->roomStatus.roomType != 0) + 89);
     char text[256];
     std::sprintf(text, "%s%s (%d/%d)", prefix.c_str(), this->title.c_str(), this->roomStatus.memberCount, this->roomStatus.memberLimit);
     if (g_forbiddenWords.Contains(text)) {
@@ -792,9 +808,8 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       const int enter = static_cast<int>(message.find(")님이 입장 하였습니다.", 0));
       const int leave = static_cast<int>(message.find(")님이 퇴장 하였습니다.", 0));
       const int colon = static_cast<int>(message.find(" :", 0));
-      const bool english = g_serviceType == 19 && g_tipOfTheDayEnglish;
       if (enter > 0 && enter < length) {
-        if (english) {
+        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
           std::memcpy(name, text + enter + 1, length - enter);
           name[length - enter] = '\0';
         } else {
@@ -802,7 +817,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           name[enter - 1] = '\0';
         }
       } else if (leave > 0 && leave < length) {
-        if (english) {
+        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
           std::memcpy(name, text + leave + 1, length - leave);
           name[length - leave] = '\0';
         } else {
@@ -810,7 +825,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           name[leave - 1] = '\0';
         }
       } else if (colon > 0 && colon < length && colon < 24) {
-        if (english) {
+        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
           std::memcpy(name, text + colon, length - colon);
           name[length - colon] = '\0';
         } else {
@@ -837,7 +852,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
   case 43:
     this->memberList->Clear();
-    this->unknown_010C.clear();
+    this->unknown_010C.erase(this->unknown_010C.begin(), this->unknown_010C.end());
     return 0;
   case 44: {
     this->unknown_010C[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
@@ -920,11 +935,6 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_windowMgr.CloseWindow(18);
     }
 
-    const auto add = [this](int id, int value) {
-      const std::string text = LookupMessage(id);
-      this->unknown_0114.emplace_back(text, value);
-    };
-
     {
       const std::string self = g_session.DecodePlayerName();
       if (this->unknown_010C.find(self) == this->unknown_010C.end()) {
@@ -942,25 +952,25 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         }
         if (rank == 0) {
           if (!(target == self)) {
-            add(127, 0);
-            add(128, 1);
+            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(127)), 0));
+            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(128)), 1));
           }
-          add(129, 3);
+          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(129)), 3));
           if (g_serviceMode != 3 && !g_windowMgr.IsFriend(target.c_str()) && !(target == self)) {
-            add(358, 21);
+            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(358)), 21));
           }
-          add(126, 2);
+          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(126)), 2));
         } else if (rank == 1) {
-          add(129, 3);
+          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(129)), 3));
           if (!g_windowMgr.IsFriend(target.c_str()) && !(target == self) && g_serviceMode != 3) {
-            add(358, 21);
+            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(358)), 21));
           }
         }
       } else {
         if (rank == 0) {
-          add(126, 2);
+          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(126)), 2));
         }
-        add(312, 11);
+        this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(312)), 11));
       }
     }
 
@@ -1003,72 +1013,65 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case 123: {
     const unsigned char* data = reinterpret_cast<const unsigned char*>(a);
     const unsigned size = static_cast<unsigned>(b);
-    std::uint16_t tag = 0;
-    std::uint32_t recordSize = 0;
-    std::memcpy(&tag, data, sizeof(tag));
-    std::memcpy(&recordSize, data + 2, sizeof(recordSize));
-    if (tag == 0x5014) {
+    ChatRoomRecordHeader header;
+    std::memcpy(&header, data, sizeof(header));
+    if (header.tag == 0x5014) {
       g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(64)), 0xFFFF00, 0, 0, 0);
       ChatRoomTitleInfo* settings = reinterpret_cast<ChatRoomTitleInfo*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_03C8);
       unsigned offset = 6;
-      bool done = false;
-      while (!done && offset < size) {
-        std::memcpy(&tag, data + offset, sizeof(tag));
-        std::memcpy(&recordSize, data + offset + 2, sizeof(recordSize));
+      while (offset < size) {
+        std::memcpy(&header, data + offset, sizeof(header));
         offset += 6;
-        switch (tag) {
+        switch (header.tag) {
         case 0x5015:
-          done = true;
-          break;
+          return 0;
         case 0x5016:
-          std::memcpy(this->saved, data + offset, recordSize);
-          offset += recordSize;
+          std::memcpy(this->saved, data + offset, header.size);
+          offset += header.size;
           break;
         case 0x5017: {
           char value[260];
           std::memset(value, 0, sizeof(value));
-          std::memcpy(value, data + offset, recordSize);
-          offset += recordSize;
-          this->title = value;
-          settings->title = this->title;
+          std::memcpy(value, data + offset, header.size);
+          offset += header.size;
+          settings->title = this->title = value;
           break;
         }
         case 0x5018: {
           char value[260];
           std::memset(value, 0, sizeof(value));
-          std::memcpy(value, data + offset, recordSize);
-          offset += recordSize;
-          this->unknown_00CC = value;
-          settings->unknown_0018 = this->unknown_00CC;
+          std::memcpy(value, data + offset, header.size);
+          offset += header.size;
+          settings->unknown_0018 = this->unknown_00CC = value;
           break;
         }
         case 0x5019:
-        std::memcpy(&this->roomStatus.roomType, data + offset, recordSize);
-          offset += recordSize;
+        std::memcpy(&this->roomStatus.roomType, data + offset, header.size);
+          offset += header.size;
         settings->type = this->roomStatus.roomType;
           break;
         case 0x501A:
-          std::memcpy(&this->roomStatus.memberCount, data + offset, recordSize);
-          offset += recordSize;
+          std::memcpy(&this->roomStatus.memberCount, data + offset, header.size);
+          offset += header.size;
           settings->memberCount = this->roomStatus.memberCount;
           break;
         case 0x501B:
-          std::memcpy(&this->roomStatus.memberLimit, data + offset, recordSize);
-          offset += recordSize;
+          std::memcpy(&this->roomStatus.memberLimit, data + offset, header.size);
+          offset += header.size;
           settings->memberLimit = this->roomStatus.memberLimit;
           break;
         case 0x501C:
-          std::memcpy(&this->roomStatus.roomId, data + offset, recordSize);
-          offset += recordSize;
+          std::memcpy(&this->roomStatus.roomId, data + offset, header.size);
+          offset += header.size;
           settings->id = this->roomStatus.roomId;
           this->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(settings), 0, 0, 0);
           break;
         case 0x501E: {
           char value[260];
           std::memset(value, 0, sizeof(value));
-          std::memcpy(value, data + offset, recordSize);
-          offset += recordSize;
+          std::memcpy(value, data + offset, header.size);
+          offset += header.size;
           this->SendMsg(nullptr, 43, 0, 0, 0, 0);
           this->SendMsg(nullptr, 44, reinterpret_cast<std::intptr_t>(value), 0, 0, 0);
           break;
@@ -1076,13 +1079,13 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         case 0x501F: {
           char value[260];
           std::memset(value, 0, sizeof(value));
-          std::memcpy(value, data + offset, recordSize);
-          offset += recordSize;
+          std::memcpy(value, data + offset, header.size);
+          offset += header.size;
           this->SendMsg(nullptr, 44, reinterpret_cast<std::intptr_t>(value), 1, 0, 0);
           break;
         }
         default:
-          offset += recordSize;
+          offset += header.size;
           break;
         }
       }
