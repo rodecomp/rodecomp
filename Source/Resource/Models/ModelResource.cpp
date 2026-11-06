@@ -363,8 +363,9 @@ bool C3dModelResV1::Load(const char* name) {
 // OFFSET: 0x007577E0
 // FUNCTION: fn_08006
 void C3dGrannyModelRes::RebindMeshes(const C3dGrannyModelRes& target) {
+  GrannyModelInstance* instance = this->instance;
   for (int index = 0; index < this->instance->meshCount; ++index) {
-    GrannyMeshEntry& entry = this->instance->meshes[index];
+    GrannyMeshEntry& entry = instance->meshes[index];
     GrannyFreeMeshBinding(entry.binding);
     entry.binding = GrannyNewMeshBinding(entry.mesh, this->skeleton, target.skeleton);
   }
