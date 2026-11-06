@@ -38,7 +38,7 @@ struct BitmapPixels {
   void
   DrawRleSprite(int x, int y, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, const std::uint32_t* palette, int cellCount);
   void ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int width, int height, const std::uint32_t* source, int option);
-  void UploadTexture(CRenderSystemBase& system, CTexture*& texture);
+  void UploadTexture(CTexture*& texture);
 
 private:
   void Create(int width, int height);

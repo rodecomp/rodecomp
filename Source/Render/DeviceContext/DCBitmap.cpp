@@ -19,8 +19,8 @@ CDCBitmap* CreateBitmapDC(int width, int height, bool fill) {
 }
 
 // INLINED
-void CDCBitmap::UploadTexture(CRenderSystemBase& system, CTexture*& texture) {
-  this->m_bitmap.UploadTexture(system, texture);
+void CDCBitmap::UploadTexture(CTexture*& texture) {
+  this->m_bitmap.UploadTexture(texture);
 }
 
 void CDCBitmap::Grow(std::uint32_t width, std::uint32_t height) {

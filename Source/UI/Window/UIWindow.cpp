@@ -580,38 +580,29 @@ void UIWindow::Slot48() {
 // FUNCTION: fn_16970
 RenderPrimitive* UIWindow::DrawPrimitive() {
   if (this->m_cached == 0) {
-    static_cast<CDCBitmap*>(this->geometry.surface)->UploadTexture(*GetRenderSystemHolder()->system, this->m_texture);
+    static_cast<CDCBitmap*>(this->geometry.surface)->UploadTexture(this->m_texture);
   }
 
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   primitive->texture = this->m_texture;
   const float width = static_cast<float>(std::bit_cast<std::int32_t>(this->m_texture->TextureWidth()));
   const float height = static_cast<float>(std::bit_cast<std::int32_t>(this->m_texture->TextureHeight()));
-  const float x = static_cast<float>(this->geometry.x);
-  const float y = static_cast<float>(this->geometry.y);
-  const float right = static_cast<float>((this->geometry.x + this->geometry.width));
-  const float bottom = static_cast<float>((this->geometry.y + this->geometry.height));
-  const float u0 = g_textureOffsetX / width;
-  const float v0 = g_textureOffsetY / height;
-  const float u1 = (static_cast<float>(this->geometry.width) + g_textureOffsetX) / width;
-  const float v1 = (static_cast<float>(this->geometry.height) + g_textureOffsetY) / height;
-
-  primitive->quad[0].x = x;
-  primitive->quad[0].y = y;
-  primitive->quad[0].u = u0;
-  primitive->quad[0].v = v0;
-  primitive->quad[1].x = right;
-  primitive->quad[1].y = y;
-  primitive->quad[1].u = u1;
-  primitive->quad[1].v = v0;
-  primitive->quad[2].x = x;
-  primitive->quad[2].y = bottom;
-  primitive->quad[2].u = u0;
-  primitive->quad[2].v = v1;
-  primitive->quad[3].x = right;
-  primitive->quad[3].y = bottom;
-  primitive->quad[3].u = u1;
-  primitive->quad[3].v = v1;
+  primitive->quad[0].x = static_cast<float>(this->geometry.x);
+  primitive->quad[0].y = static_cast<float>(this->geometry.y);
+  primitive->quad[0].u = g_textureOffsetX / width;
+  primitive->quad[0].v = g_textureOffsetY / height;
+  primitive->quad[1].x = static_cast<float>(this->geometry.x + this->geometry.width);
+  primitive->quad[1].y = static_cast<float>(this->geometry.y);
+  primitive->quad[1].u = (static_cast<float>(this->geometry.width) + g_textureOffsetX) / width;
+  primitive->quad[1].v = g_textureOffsetY / height;
+  primitive->quad[2].x = static_cast<float>(this->geometry.x);
+  primitive->quad[2].y = static_cast<float>(this->geometry.y + this->geometry.height);
+  primitive->quad[2].u = g_textureOffsetX / width;
+  primitive->quad[2].v = (static_cast<float>(this->geometry.height) + g_textureOffsetY) / height;
+  primitive->quad[3].x = static_cast<float>(this->geometry.x + this->geometry.width);
+  primitive->quad[3].y = static_cast<float>(this->geometry.y + this->geometry.height);
+  primitive->quad[3].u = (static_cast<float>(this->geometry.width) + g_textureOffsetX) / width;
+  primitive->quad[3].v = (static_cast<float>(this->geometry.height) + g_textureOffsetY) / height;
 
   for (RenderVertex& vertex : primitive->quad) {
     vertex.z = 0.000001f;

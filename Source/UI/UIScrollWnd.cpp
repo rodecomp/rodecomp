@@ -135,7 +135,7 @@ bool UIScrollWnd::UpdateCached(int redraw) {
       if (child != this->horizontalBar && child != this->scrollBar) {
         primitives.push_back(child->DrawPrimitive());
       } else {
-        static_cast<CDCBitmap*>(child->geometry.surface)->UploadTexture(*GetRenderSystemHolder()->system, child->m_texture);
+        static_cast<CDCBitmap*>(child->geometry.surface)->UploadTexture(child->m_texture);
         primitives.push_back(this->BuildPrimitive(
           child->geometry.x + this->unknown_009C, child->geometry.y + this->scrollPosition, 0, 0, child->geometry.width, child->geometry.height,
           child->m_texture, child->Color()

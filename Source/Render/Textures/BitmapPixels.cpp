@@ -24,7 +24,7 @@ BitmapPixels::~BitmapPixels() {
 
 // OFFSET: 0x00547C90
 // FUNCTION: fn_01847
-void BitmapPixels::UploadTexture(CRenderSystemBase&, CTexture*& texture) {
+void BitmapPixels::UploadTexture(CTexture*& texture) {
   unsigned char* bytes = reinterpret_cast<unsigned char*>(this->pixels);
   const std::int32_t size = 4 * static_cast<int>(this->width) * static_cast<int>(this->height);
 
