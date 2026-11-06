@@ -23,8 +23,8 @@ const char* CNavi_Link::GetName() const {
 // OFFSET: 0x00B8E7D0
 // FUNCTION: fn_19483
 NaviCell* CNavi_Link::GetCell(NaviCell* out) const {
-  out->x = this->cellX;
-  out->y = this->cellY;
+  const NaviCell cell = {this->cellX, this->cellY};
+  *out = cell;
   return out;
 }
 
