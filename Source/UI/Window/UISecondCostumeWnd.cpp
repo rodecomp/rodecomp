@@ -273,9 +273,9 @@ void UISecondCostumeWnd::RefreshList(int tab) {
   for (unsigned i = 0; i < this->m_entries[tab].size(); ++i) {
     this->m_list->AddLine(this->m_entries[tab][i].name.c_str());
   }
-
-  this->m_list->selected = this->m_selected[tab];
-  this->m_list->Invalidate();
+  UIListBox* list = this->m_list;
+  list->selected = this->m_selected[tab];
+  list->Invalidate();
   this->Invalidate();
 }
 
