@@ -229,7 +229,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
           GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
           this->Invalidate();
         } else if (command == 49) {
-          g_renewQuestMgr->sub_67B620(it->first);
+          g_renewQuestMgr->ShowOngoingQuestInfo(it->first);
         }
         break;
       }

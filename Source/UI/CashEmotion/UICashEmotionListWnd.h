@@ -29,7 +29,7 @@ public:
   UIBitmapButton* CreateButton(int x, int y, int width, int height, int id, const char* format, bool hasDisabled);
   void RefreshCurrentList();
   __declspec(noinline) void ShowPack(int packId);
-  void sub_7C7E50();
+  void RefreshPackLists();
   __declspec(noinline) void ResetLists();
   int SetPeriod(int packId);
   void SetTab(char tab);

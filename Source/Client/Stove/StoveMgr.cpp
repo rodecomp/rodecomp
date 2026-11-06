@@ -30,7 +30,6 @@ bool g_stoveWaitingCallback;
 void OnStoveTermsAgreementFetched(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url);
 void OnStoveCategoryProductsFetched(Stove::PCSDK::CallbackResult callbackResult, const Stove::PCSDK::IAP::StovePCProduct* products, unsigned int count);
 void OnStoveAllProductsFetched(Stove::PCSDK::CallbackResult callbackResult, const Stove::PCSDK::IAP::StovePCProduct* products, unsigned int count);
-void sub_DD8A20(int value);
 void OnStoveInitialized(Stove::PCSDK::CallbackResult callbackResult);
 void OnStoveShutdown(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::Base::StovePCShutdown shutdown);
 void OnStovePurchaseStarted(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::IAP::StovePCPurchaseResult purchaseResult);
@@ -269,7 +268,7 @@ void FetchProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackResu
       item.SetItemId(std::atoi(itemId.c_str()));
       char name[256];
       int capacity = 256;
-      item.sub_6D5810(name, capacity, 0);
+      item.GetIdDisplayName(name, capacity, 0);
       item.SetName(name);
       item.identified = 1;
       if (product.GetPurchaseLimitCount() != 0 && product.GetSaleBeginDate() != 0 && product.GetSaleEndDate() != 0) {
@@ -393,7 +392,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
       item.SetItemId(std::atoi(itemId.c_str()));
       char name[256];
       int capacity = 256;
-      item.sub_6D5810(name, capacity, 0);
+      item.GetIdDisplayName(name, capacity, 0);
       item.SetName(name);
       item.identified = 1;
       if (list == 8) {

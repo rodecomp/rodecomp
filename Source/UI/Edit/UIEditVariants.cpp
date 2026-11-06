@@ -1148,7 +1148,7 @@ void UIChatEditCtrl::Paint() {
   if (tag != nullptr) {
     tag->SetTaggedText(this->text, this->geometry.width);
     tag = this->unknown_0144;
-    tag->sub_8962C0();
+    tag->UpdateItemTags();
     tag = this->unknown_0144;
     const int span = static_cast<int>(tag->unknown_0140.size() - tag->taggedText.size());
     this->unknown_00F0 = span > 0 ? span : 0;
@@ -1173,7 +1173,7 @@ void UIEditCtrl3::SetText(const char* value) {
   this->SelectAll();
 
   if (this->text.find("<ITEML>") != std::string::npos || this->text.find("</ITEML>") != std::string::npos) {
-    this->sub_869810(this->text.c_str());
+    this->SetLinkedText(this->text.c_str());
   }
 
   if (this->parent != nullptr) {

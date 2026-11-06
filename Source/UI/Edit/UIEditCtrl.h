@@ -115,7 +115,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SetText(const char* value) override;
   void PaintText() override;
-  void sub_869810(const char* value);
+  void SetLinkedText(const char* value);
   void Slot35(int value) override;
   void Trim() override;
   virtual void UpdateScrollBar();
@@ -232,7 +232,7 @@ public:
   void Slot24(int retained) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SetText(const char* value) override;
-  void sub_86A060();
+  void AddHistory();
   /* 011C */ std::vector<std::string> history;
   /* 0128 */ int historyIndex;
 };

@@ -3540,8 +3540,8 @@ void UIHomunInfoWnd::Paint() {
     std::strcpy(text, LookupMessage(676));
   }
   this->DrawTextAt(150, 159, text, 0, 0, 12, 0, 0, 0);
-  this->sub_A84400(225, 136, std::string(LookupMessage(3279)), 0, 0, 0, 0, 12, 0, 0);
-  this->sub_A84400(8, 180, std::string(LookupMessage(3284)), 0, 0, 0, 0, 12, 0xFF, 0);
+  this->DrawWrappedFormattedText(225, 136, std::string(LookupMessage(3279)), 0, 0, 0, 0, 12, 0, 0);
+  this->DrawWrappedFormattedText(8, 180, std::string(LookupMessage(3284)), 0, 0, 0, 0, 12, 0xFF, 0);
 }
 
 // OFFSET: 0x008BDD10

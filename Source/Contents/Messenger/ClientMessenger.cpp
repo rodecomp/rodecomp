@@ -2758,7 +2758,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::SetWindow(UIWindow* window) {
 
 // OFFSET: 0x006A6490
 // FUNCTION: fn_06059
-int __stdcall sub_6A6490(lua_State* state) {
+int __stdcall subspconsumption(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2768,7 +2768,7 @@ int __stdcall sub_6A6490(lua_State* state) {
 
 // OFFSET: 0x006A6550
 // FUNCTION: fn_06060
-int __stdcall sub_6A6550(lua_State* state) {
+int __stdcall SubSPdrain(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2778,7 +2778,7 @@ int __stdcall sub_6A6550(lua_State* state) {
 
 // OFFSET: 0x006A6610
 // FUNCTION: fn_06061
-int __stdcall sub_6A6610(lua_State* state) {
+int __stdcall SubSkillDelay(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2788,7 +2788,7 @@ int __stdcall sub_6A6610(lua_State* state) {
 
 // OFFSET: 0x006A66D0
 // FUNCTION: fn_06062
-int __stdcall sub_6A66D0(lua_State* state) {
+int __stdcall SubSkillMDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2798,7 +2798,7 @@ int __stdcall sub_6A66D0(lua_State* state) {
 
 // OFFSET: 0x006A6790
 // FUNCTION: fn_06063
-int __stdcall sub_6A6790(lua_State* state) {
+int __stdcall SubSkillSP(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2808,7 +2808,7 @@ int __stdcall sub_6A6790(lua_State* state) {
 
 // OFFSET: 0x006A6850
 // FUNCTION: fn_06064
-int __stdcall sub_6A6850(lua_State* state) {
+int __stdcall SubSpecificSpellCastTime(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2818,7 +2818,7 @@ int __stdcall sub_6A6850(lua_State* state) {
 
 // OFFSET: 0x006A6910
 // FUNCTION: fn_06065
-int __stdcall sub_6A6910(lua_State* state) {
+int __stdcall SubSpellCastTime(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2828,7 +2828,7 @@ int __stdcall sub_6A6910(lua_State* state) {
 
 // OFFSET: 0x006A69D0
 // FUNCTION: fn_06066
-int __stdcall sub_6A69D0(lua_State* state) {
+int __stdcall SubSpellDelay(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2838,7 +2838,7 @@ int __stdcall sub_6A69D0(lua_State* state) {
 
 // OFFSET: 0x006A6A90
 // FUNCTION: fn_06067
-int __stdcall sub_6A6A90(lua_State* state) {
+int __stdcall AddEXPPercent_KillRace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2848,7 +2848,7 @@ int __stdcall sub_6A6A90(lua_State* state) {
 
 // OFFSET: 0x006A6B50
 // FUNCTION: fn_06068
-int __stdcall sub_6A6B50(lua_State* state) {
+int __stdcall AddExtParam(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2858,7 +2858,7 @@ int __stdcall sub_6A6B50(lua_State* state) {
 
 // OFFSET: 0x006A6C10
 // FUNCTION: fn_06069
-int __stdcall sub_6A6C10(lua_State* state) {
+int __stdcall AddGuideAttack(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2868,7 +2868,7 @@ int __stdcall sub_6A6C10(lua_State* state) {
 
 // OFFSET: 0x006A6CD0
 // FUNCTION: fn_06070
-int __stdcall sub_6A6CD0(lua_State* state) {
+int __stdcall AddHPdrain(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2878,7 +2878,7 @@ int __stdcall sub_6A6CD0(lua_State* state) {
 
 // OFFSET: 0x006A6D90
 // FUNCTION: fn_06071
-int __stdcall sub_6A6D90(lua_State* state) {
+int __stdcall AddHealModifyPercent(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2888,7 +2888,7 @@ int __stdcall sub_6A6D90(lua_State* state) {
 
 // OFFSET: 0x006A6E50
 // FUNCTION: fn_06072
-int __stdcall sub_6A6E50(lua_State* state) {
+int __stdcall AddHealValue(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2898,7 +2898,7 @@ int __stdcall sub_6A6E50(lua_State* state) {
 
 // OFFSET: 0x006A6F10
 // FUNCTION: fn_06073
-int __stdcall sub_6A6F10(lua_State* state) {
+int __stdcall AddIgnore_MRES_RacePercent(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2908,7 +2908,7 @@ int __stdcall sub_6A6F10(lua_State* state) {
 
 // OFFSET: 0x006A6FD0
 // FUNCTION: fn_06074
-int __stdcall sub_6A6FD0(lua_State* state) {
+int __stdcall AddIgnore_RES_RacePercent(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2918,7 +2918,7 @@ int __stdcall sub_6A6FD0(lua_State* state) {
 
 // OFFSET: 0x006A7090
 // FUNCTION: fn_06075
-int __stdcall sub_6A7090(lua_State* state) {
+int __stdcall AddMDamage_Property(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2928,7 +2928,7 @@ int __stdcall sub_6A7090(lua_State* state) {
 
 // OFFSET: 0x006A7150
 // FUNCTION: fn_06076
-int __stdcall sub_6A7150(lua_State* state) {
+int __stdcall AddMDamage_Size(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2938,7 +2938,7 @@ int __stdcall sub_6A7150(lua_State* state) {
 
 // OFFSET: 0x006A7210
 // FUNCTION: fn_06077
-int __stdcall sub_6A7210(lua_State* state) {
+int __stdcall AddAttrTolerace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2948,7 +2948,7 @@ int __stdcall sub_6A7210(lua_State* state) {
 
 // OFFSET: 0x006A72D0
 // FUNCTION: fn_06078
-int __stdcall sub_6A72D0(lua_State* state) {
+int __stdcall AddMdamage_Class(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2958,7 +2958,7 @@ int __stdcall sub_6A72D0(lua_State* state) {
 
 // OFFSET: 0x006A7390
 // FUNCTION: fn_06079
-int __stdcall sub_6A7390(lua_State* state) {
+int __stdcall AddMdamage_Race(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2968,7 +2968,7 @@ int __stdcall sub_6A7390(lua_State* state) {
 
 // OFFSET: 0x006A7450
 // FUNCTION: fn_06080
-int __stdcall sub_6A7450(lua_State* state) {
+int __stdcall AddMeleeAttackDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2978,7 +2978,7 @@ int __stdcall sub_6A7450(lua_State* state) {
 
 // OFFSET: 0x006A7510
 // FUNCTION: fn_06081
-int __stdcall sub_6A7510(lua_State* state) {
+int __stdcall AddMeleeAttackReflect(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2988,7 +2988,7 @@ int __stdcall sub_6A7510(lua_State* state) {
 
 // OFFSET: 0x006A75D0
 // FUNCTION: fn_06082
-int __stdcall sub_6A75D0(lua_State* state) {
+int __stdcall AddNeverknockback(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -2998,7 +2998,7 @@ int __stdcall sub_6A75D0(lua_State* state) {
 
 // OFFSET: 0x006A7690
 // FUNCTION: fn_06083
-int __stdcall sub_6A7690(lua_State* state) {
+int __stdcall AddRaceTolerace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3008,7 +3008,7 @@ int __stdcall sub_6A7690(lua_State* state) {
 
 // OFFSET: 0x006A7750
 // FUNCTION: fn_06084
-int __stdcall sub_6A7750(lua_State* state) {
+int __stdcall AddRangeAttackDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3018,7 +3018,7 @@ int __stdcall sub_6A7750(lua_State* state) {
 
 // OFFSET: 0x006A7810
 // FUNCTION: fn_06085
-int __stdcall sub_6A7810(lua_State* state) {
+int __stdcall AddReceiveItem_Equip(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3028,7 +3028,7 @@ int __stdcall sub_6A7810(lua_State* state) {
 
 // OFFSET: 0x006A78D0
 // FUNCTION: fn_06086
-int __stdcall sub_6A78D0(lua_State* state) {
+int __stdcall AddReflectMagic(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3038,7 +3038,7 @@ int __stdcall sub_6A78D0(lua_State* state) {
 
 // OFFSET: 0x006A7990
 // FUNCTION: fn_06087
-int __stdcall sub_6A7990(lua_State* state) {
+int __stdcall AddReflectTolerace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3048,7 +3048,7 @@ int __stdcall sub_6A7990(lua_State* state) {
 
 // OFFSET: 0x006A7A50
 // FUNCTION: fn_06088
-int __stdcall sub_6A7A50(lua_State* state) {
+int __stdcall addattrtolerace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3058,7 +3058,7 @@ int __stdcall sub_6A7A50(lua_State* state) {
 
 // OFFSET: 0x006A7B10
 // FUNCTION: fn_06089
-int __stdcall sub_6A7B10(lua_State* state) {
+int __stdcall AddSFCTEquipAmount(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3068,7 +3068,7 @@ int __stdcall sub_6A7B10(lua_State* state) {
 
 // OFFSET: 0x006A7BD0
 // FUNCTION: fn_06090
-int __stdcall sub_6A7BD0(lua_State* state) {
+int __stdcall AddSFCTEquipPermill(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3078,7 +3078,7 @@ int __stdcall sub_6A7BD0(lua_State* state) {
 
 // OFFSET: 0x006A7C90
 // FUNCTION: fn_06091
-int __stdcall sub_6A7C90(lua_State* state) {
+int __stdcall AddSPconsumption(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3088,7 +3088,7 @@ int __stdcall sub_6A7C90(lua_State* state) {
 
 // OFFSET: 0x006A7D50
 // FUNCTION: fn_06092
-int __stdcall sub_6A7D50(lua_State* state) {
+int __stdcall addspconsumption(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3098,7 +3098,7 @@ int __stdcall sub_6A7D50(lua_State* state) {
 
 // OFFSET: 0x006A7E10
 // FUNCTION: fn_06093
-int __stdcall sub_6A7E10(lua_State* state) {
+int __stdcall AddSPdrain(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3108,7 +3108,7 @@ int __stdcall sub_6A7E10(lua_State* state) {
 
 // OFFSET: 0x006A7ED0
 // FUNCTION: fn_06094
-int __stdcall sub_6A7ED0(lua_State* state) {
+int __stdcall AddSkillDelay(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3118,7 +3118,7 @@ int __stdcall sub_6A7ED0(lua_State* state) {
 
 // OFFSET: 0x006A7F90
 // FUNCTION: fn_06095
-int __stdcall sub_6A7F90(lua_State* state) {
+int __stdcall AddSkillMDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3128,7 +3128,7 @@ int __stdcall sub_6A7F90(lua_State* state) {
 
 // OFFSET: 0x006A8050
 // FUNCTION: fn_06096
-int __stdcall sub_6A8050(lua_State* state) {
+int __stdcall AddSkillSP(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3138,7 +3138,7 @@ int __stdcall sub_6A8050(lua_State* state) {
 
 // OFFSET: 0x006A8110
 // FUNCTION: fn_06097
-int __stdcall sub_6A8110(lua_State* state) {
+int __stdcall AddSpecificSpellCastTime(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3148,7 +3148,7 @@ int __stdcall sub_6A8110(lua_State* state) {
 
 // OFFSET: 0x006A81D0
 // FUNCTION: fn_06098
-int __stdcall sub_6A81D0(lua_State* state) {
+int __stdcall AddSpellCastTime(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3158,7 +3158,7 @@ int __stdcall sub_6A81D0(lua_State* state) {
 
 // OFFSET: 0x006A8290
 // FUNCTION: fn_06099
-int __stdcall sub_6A8290(lua_State* state) {
+int __stdcall AddBowAttackDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3168,7 +3168,7 @@ int __stdcall sub_6A8290(lua_State* state) {
 
 // OFFSET: 0x006A8350
 // FUNCTION: fn_06100
-int __stdcall sub_6A8350(lua_State* state) {
+int __stdcall AddSpellDelay(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3178,7 +3178,7 @@ int __stdcall sub_6A8350(lua_State* state) {
 
 // OFFSET: 0x006A84D0
 // FUNCTION: fn_06102
-int __stdcall sub_6A84D0(lua_State* state) {
+int __stdcall Clairvoyance(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3188,7 +3188,7 @@ int __stdcall sub_6A84D0(lua_State* state) {
 
 // OFFSET: 0x006A8590
 // FUNCTION: fn_06103
-int __stdcall sub_6A8590(lua_State* state) {
+int __stdcall ClassAddDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3198,7 +3198,7 @@ int __stdcall sub_6A8590(lua_State* state) {
 
 // OFFSET: 0x006A8650
 // FUNCTION: fn_06104
-int __stdcall sub_6A8650(lua_State* state) {
+int __stdcall ClassSubDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3208,7 +3208,7 @@ int __stdcall sub_6A8650(lua_State* state) {
 
 // OFFSET: 0x006A87D0
 // FUNCTION: fn_06106
-int __stdcall sub_6A87D0(lua_State* state) {
+int __stdcall DisableSkill(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3218,7 +3218,7 @@ int __stdcall sub_6A87D0(lua_State* state) {
 
 // OFFSET: 0x006A8890
 // FUNCTION: fn_06107
-int __stdcall sub_6A8890(lua_State* state) {
+int __stdcall EnableSkill(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3228,7 +3228,7 @@ int __stdcall sub_6A8890(lua_State* state) {
 
 // OFFSET: 0x006A8950
 // FUNCTION: fn_06108
-int __stdcall sub_6A8950(lua_State* state) {
+int __stdcall IndestructibleArmor(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3238,7 +3238,7 @@ int __stdcall sub_6A8950(lua_State* state) {
 
 // OFFSET: 0x006A8A10
 // FUNCTION: fn_06109
-int __stdcall sub_6A8A10(lua_State* state) {
+int __stdcall IndestructibleWeapon(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3248,7 +3248,7 @@ int __stdcall sub_6A8A10(lua_State* state) {
 
 // OFFSET: 0x006A8AD0
 // FUNCTION: fn_06110
-int __stdcall sub_6A8AD0(lua_State* state) {
+int __stdcall AddCRIPercent_Race(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3258,7 +3258,7 @@ int __stdcall sub_6A8AD0(lua_State* state) {
 
 // OFFSET: 0x006A8B90
 // FUNCTION: fn_06111
-int __stdcall sub_6A8B90(lua_State* state) {
+int __stdcall Magicimmune(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3268,7 +3268,7 @@ int __stdcall sub_6A8B90(lua_State* state) {
 
 // OFFSET: 0x006A8C50
 // FUNCTION: fn_06112
-int __stdcall sub_6A8C50(lua_State* state) {
+int __stdcall NoDispell(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3278,7 +3278,7 @@ int __stdcall sub_6A8C50(lua_State* state) {
 
 // OFFSET: 0x006A8D10
 // FUNCTION: fn_06113
-int __stdcall sub_6A8D10(lua_State* state) {
+int __stdcall NoJamstone(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3288,7 +3288,7 @@ int __stdcall sub_6A8D10(lua_State* state) {
 
 // OFFSET: 0x006A8DD0
 // FUNCTION: fn_06114
-int __stdcall sub_6A8DD0(lua_State* state) {
+int __stdcall NoMadogearfuel(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3298,7 +3298,7 @@ int __stdcall sub_6A8DD0(lua_State* state) {
 
 // OFFSET: 0x006A8E90
 // FUNCTION: fn_06115
-int __stdcall sub_6A8E90(lua_State* state) {
+int __stdcall PerfectDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3308,7 +3308,7 @@ int __stdcall sub_6A8E90(lua_State* state) {
 
 // OFFSET: 0x006A8F50
 // FUNCTION: fn_06116
-int __stdcall sub_6A8F50(lua_State* state) {
+int __stdcall RaceAddDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3318,7 +3318,7 @@ int __stdcall sub_6A8F50(lua_State* state) {
 
 // OFFSET: 0x006A9010
 // FUNCTION: fn_06117
-int __stdcall sub_6A9010(lua_State* state) {
+int __stdcall RaceAddDamageSelf(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3328,7 +3328,7 @@ int __stdcall sub_6A9010(lua_State* state) {
 
 // OFFSET: 0x006A90D0
 // FUNCTION: fn_06118
-int __stdcall sub_6A90D0(lua_State* state) {
+int __stdcall RaceSubDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3338,7 +3338,7 @@ int __stdcall sub_6A90D0(lua_State* state) {
 
 // OFFSET: 0x006A9190
 // FUNCTION: fn_06119
-int __stdcall sub_6A9190(lua_State* state) {
+int __stdcall RaceSubDamageSelf(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3348,7 +3348,7 @@ int __stdcall sub_6A9190(lua_State* state) {
 
 // OFFSET: 0x006A9250
 // FUNCTION: fn_06120
-int __stdcall sub_6A9250(lua_State* state) {
+int __stdcall Reincarnation(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3358,7 +3358,7 @@ int __stdcall sub_6A9250(lua_State* state) {
 
 // OFFSET: 0x006A9310
 // FUNCTION: fn_06121
-int __stdcall sub_6A9310(lua_State* state) {
+int __stdcall AddDamage_CRI(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3368,7 +3368,7 @@ int __stdcall sub_6A9310(lua_State* state) {
 
 // OFFSET: 0x006A93D0
 // FUNCTION: fn_06122
-int __stdcall sub_6A93D0(lua_State* state) {
+int __stdcall SetIgnoreDEFClass(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3378,7 +3378,7 @@ int __stdcall sub_6A93D0(lua_State* state) {
 
 // OFFSET: 0x006A9490
 // FUNCTION: fn_06123
-int __stdcall sub_6A9490(lua_State* state) {
+int __stdcall SetIgnoreDEFRace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3388,7 +3388,7 @@ int __stdcall sub_6A9490(lua_State* state) {
 
 // OFFSET: 0x006A9550
 // FUNCTION: fn_06124
-int __stdcall sub_6A9550(lua_State* state) {
+int __stdcall SetIgnoreDefClass_Percent(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3398,7 +3398,7 @@ int __stdcall sub_6A9550(lua_State* state) {
 
 // OFFSET: 0x006A9610
 // FUNCTION: fn_06125
-int __stdcall sub_6A9610(lua_State* state) {
+int __stdcall SetIgnoreDefRace_Percent(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3408,7 +3408,7 @@ int __stdcall sub_6A9610(lua_State* state) {
 
 // OFFSET: 0x006A96D0
 // FUNCTION: fn_06126
-int __stdcall sub_6A96D0(lua_State* state) {
+int __stdcall SetIgnoreMdefClass(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3418,7 +3418,7 @@ int __stdcall sub_6A96D0(lua_State* state) {
 
 // OFFSET: 0x006A9790
 // FUNCTION: fn_06127
-int __stdcall sub_6A9790(lua_State* state) {
+int __stdcall SetIgnoreMdefRace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3428,7 +3428,7 @@ int __stdcall sub_6A9790(lua_State* state) {
 
 // OFFSET: 0x006A9850
 // FUNCTION: fn_06128
-int __stdcall sub_6A9850(lua_State* state) {
+int __stdcall SetInvestigate(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3438,7 +3438,7 @@ int __stdcall sub_6A9850(lua_State* state) {
 
 // OFFSET: 0x006A8410
 // FUNCTION: fn_06101
-int __stdcall sub_6A8410(lua_State* state) {
+int __stdcall BodyAttribute(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3448,7 +3448,7 @@ int __stdcall sub_6A8410(lua_State* state) {
 
 // OFFSET: 0x006A8710
 // FUNCTION: fn_06105
-int __stdcall sub_6A8710(lua_State* state) {
+int __stdcall Condition(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3458,7 +3458,7 @@ int __stdcall sub_6A8710(lua_State* state) {
 
 // OFFSET: 0x006A9910
 // FUNCTION: fn_06129
-int __stdcall sub_6A9910(lua_State* state) {
+int __stdcall SplashAttack(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3476,7 +3476,7 @@ int __stdcall sub_6A9910(lua_State* state) {
 
 // OFFSET: 0x006A99D0
 // FUNCTION: fn_06130
-int __stdcall sub_6A99D0(lua_State* state) {
+int __stdcall SubAttrTolerace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3490,7 +3490,7 @@ int __stdcall sub_6A99D0(lua_State* state) {
 
 // OFFSET: 0x006A9A90
 // FUNCTION: fn_06131
-int __stdcall sub_6A9A90(lua_State* state) {
+int __stdcall subattrtolerace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3504,7 +3504,7 @@ int __stdcall sub_6A9A90(lua_State* state) {
 
 // OFFSET: 0x006A9B50
 // FUNCTION: fn_06132
-int __stdcall sub_6A9B50(lua_State* state) {
+int __stdcall AddDamage_HIT(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3518,7 +3518,7 @@ int __stdcall sub_6A9B50(lua_State* state) {
 
 // OFFSET: 0x006A9C10
 // FUNCTION: fn_06133
-int __stdcall sub_6A9C10(lua_State* state) {
+int __stdcall SubBowAttackDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3532,7 +3532,7 @@ int __stdcall sub_6A9C10(lua_State* state) {
 
 // OFFSET: 0x006A9CD0
 // FUNCTION: fn_06134
-int __stdcall sub_6A9CD0(lua_State* state) {
+int __stdcall SubCRIPercent_Race(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3546,7 +3546,7 @@ int __stdcall sub_6A9CD0(lua_State* state) {
 
 // OFFSET: 0x006A9D90
 // FUNCTION: fn_06135
-int __stdcall sub_6A9D90(lua_State* state) {
+int __stdcall SubDamage_CRI(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3560,7 +3560,7 @@ int __stdcall sub_6A9D90(lua_State* state) {
 
 // OFFSET: 0x006A9E50
 // FUNCTION: fn_06136
-int __stdcall sub_6A9E50(lua_State* state) {
+int __stdcall SubDamage_HIT(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3574,7 +3574,7 @@ int __stdcall sub_6A9E50(lua_State* state) {
 
 // OFFSET: 0x006A9F10
 // FUNCTION: fn_06137
-int __stdcall sub_6A9F10(lua_State* state) {
+int __stdcall SubDamage_Property(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3588,7 +3588,7 @@ int __stdcall sub_6A9F10(lua_State* state) {
 
 // OFFSET: 0x006A9FD0
 // FUNCTION: fn_06138
-int __stdcall sub_6A9FD0(lua_State* state) {
+int __stdcall SubDamage_SKID(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3602,7 +3602,7 @@ int __stdcall sub_6A9FD0(lua_State* state) {
 
 // OFFSET: 0x006AA090
 // FUNCTION: fn_06139
-int __stdcall sub_6AA090(lua_State* state) {
+int __stdcall SubDamage_Size(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3616,7 +3616,7 @@ int __stdcall sub_6AA090(lua_State* state) {
 
 // OFFSET: 0x006AA150
 // FUNCTION: fn_06140
-int __stdcall sub_6AA150(lua_State* state) {
+int __stdcall SubEXPPercent_KillRace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3630,7 +3630,7 @@ int __stdcall sub_6AA150(lua_State* state) {
 
 // OFFSET: 0x006AA210
 // FUNCTION: fn_06141
-int __stdcall sub_6AA210(lua_State* state) {
+int __stdcall SubExtParam(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3644,7 +3644,7 @@ int __stdcall sub_6AA210(lua_State* state) {
 
 // OFFSET: 0x006AA2D0
 // FUNCTION: fn_06142
-int __stdcall sub_6AA2D0(lua_State* state) {
+int __stdcall SubGuideAttack(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3658,7 +3658,7 @@ int __stdcall sub_6AA2D0(lua_State* state) {
 
 // OFFSET: 0x006AA390
 // FUNCTION: fn_06143
-int __stdcall sub_6AA390(lua_State* state) {
+int __stdcall AddDamage_Property(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3672,7 +3672,7 @@ int __stdcall sub_6AA390(lua_State* state) {
 
 // OFFSET: 0x006AA450
 // FUNCTION: fn_06144
-int __stdcall sub_6AA450(lua_State* state) {
+int __stdcall SubHPdrain(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3686,7 +3686,7 @@ int __stdcall sub_6AA450(lua_State* state) {
 
 // OFFSET: 0x006AA510
 // FUNCTION: fn_06145
-int __stdcall sub_6AA510(lua_State* state) {
+int __stdcall SubHealModifyPercent(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3700,7 +3700,7 @@ int __stdcall sub_6AA510(lua_State* state) {
 
 // OFFSET: 0x006AA5D0
 // FUNCTION: fn_06146
-int __stdcall sub_6AA5D0(lua_State* state) {
+int __stdcall SubHealValue(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3714,7 +3714,7 @@ int __stdcall sub_6AA5D0(lua_State* state) {
 
 // OFFSET: 0x006AA690
 // FUNCTION: fn_06147
-int __stdcall sub_6AA690(lua_State* state) {
+int __stdcall SubIgnore_MRES_RacePercent(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3728,7 +3728,7 @@ int __stdcall sub_6AA690(lua_State* state) {
 
 // OFFSET: 0x006AA750
 // FUNCTION: fn_06148
-int __stdcall sub_6AA750(lua_State* state) {
+int __stdcall SubIgnore_RES_RacePercent(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3742,7 +3742,7 @@ int __stdcall sub_6AA750(lua_State* state) {
 
 // OFFSET: 0x006AA810
 // FUNCTION: fn_06149
-int __stdcall sub_6AA810(lua_State* state) {
+int __stdcall SubMDamage_Property(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3752,7 +3752,7 @@ int __stdcall sub_6AA810(lua_State* state) {
 
 // OFFSET: 0x006AA8D0
 // FUNCTION: fn_06150
-int __stdcall sub_6AA8D0(lua_State* state) {
+int __stdcall SubMDamage_Size(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3762,7 +3762,7 @@ int __stdcall sub_6AA8D0(lua_State* state) {
 
 // OFFSET: 0x006AA990
 // FUNCTION: fn_06151
-int __stdcall sub_6AA990(lua_State* state) {
+int __stdcall SubMdamage_Class(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3772,7 +3772,7 @@ int __stdcall sub_6AA990(lua_State* state) {
 
 // OFFSET: 0x006AAA50
 // FUNCTION: fn_06152
-int __stdcall sub_6AAA50(lua_State* state) {
+int __stdcall SubMdamage_Race(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3782,7 +3782,7 @@ int __stdcall sub_6AAA50(lua_State* state) {
 
 // OFFSET: 0x006AAB10
 // FUNCTION: fn_06153
-int __stdcall sub_6AAB10(lua_State* state) {
+int __stdcall SubMeleeAttackDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3792,7 +3792,7 @@ int __stdcall sub_6AAB10(lua_State* state) {
 
 // OFFSET: 0x006AABD0
 // FUNCTION: fn_06154
-int __stdcall sub_6AABD0(lua_State* state) {
+int __stdcall AddDamage_SKID(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3802,7 +3802,7 @@ int __stdcall sub_6AABD0(lua_State* state) {
 
 // OFFSET: 0x006AAC90
 // FUNCTION: fn_06155
-int __stdcall sub_6AAC90(lua_State* state) {
+int __stdcall SubMeleeAttackReflect(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3812,7 +3812,7 @@ int __stdcall sub_6AAC90(lua_State* state) {
 
 // OFFSET: 0x006AAD50
 // FUNCTION: fn_06156
-int __stdcall sub_6AAD50(lua_State* state) {
+int __stdcall SubNeverknockback(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3822,7 +3822,7 @@ int __stdcall sub_6AAD50(lua_State* state) {
 
 // OFFSET: 0x006AAE10
 // FUNCTION: fn_06157
-int __stdcall sub_6AAE10(lua_State* state) {
+int __stdcall SubRaceTolerace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3832,7 +3832,7 @@ int __stdcall sub_6AAE10(lua_State* state) {
 
 // OFFSET: 0x006AAED0
 // FUNCTION: fn_06158
-int __stdcall sub_6AAED0(lua_State* state) {
+int __stdcall SubRangeAttackDamage(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3842,7 +3842,7 @@ int __stdcall sub_6AAED0(lua_State* state) {
 
 // OFFSET: 0x006AAF90
 // FUNCTION: fn_06159
-int __stdcall sub_6AAF90(lua_State* state) {
+int __stdcall SubReceiveItem_Equip(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3852,7 +3852,7 @@ int __stdcall sub_6AAF90(lua_State* state) {
 
 // OFFSET: 0x006AB050
 // FUNCTION: fn_06160
-int __stdcall sub_6AB050(lua_State* state) {
+int __stdcall SubReflectMagic(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3862,7 +3862,7 @@ int __stdcall sub_6AB050(lua_State* state) {
 
 // OFFSET: 0x006AB110
 // FUNCTION: fn_06161
-int __stdcall sub_6AB110(lua_State* state) {
+int __stdcall SubReflectTolerace(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3872,7 +3872,7 @@ int __stdcall sub_6AB110(lua_State* state) {
 
 // OFFSET: 0x006AB1D0
 // FUNCTION: fn_06162
-int __stdcall sub_6AB1D0(lua_State* state) {
+int __stdcall SubSFCTEquipAmount(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3882,7 +3882,7 @@ int __stdcall sub_6AB1D0(lua_State* state) {
 
 // OFFSET: 0x006AB290
 // FUNCTION: fn_06163
-int __stdcall sub_6AB290(lua_State* state) {
+int __stdcall SubSFCTEquipPermill(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3892,7 +3892,7 @@ int __stdcall sub_6AB290(lua_State* state) {
 
 // OFFSET: 0x006AB350
 // FUNCTION: fn_06164
-int __stdcall sub_6AB350(lua_State* state) {
+int __stdcall SubSPconsumption(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -3902,7 +3902,7 @@ int __stdcall sub_6AB350(lua_State* state) {
 
 // OFFSET: 0x006AB410
 // FUNCTION: fn_06165
-int __stdcall sub_6AB410(lua_State* state) {
+int __stdcall AddDamage_Size(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -6258,7 +6258,7 @@ HANDLE g_embedFontFiles;
 
 // OFFSET: 0x00DD9D50
 // FUNCTION: fn_23337
-void CSession::sub_DD9D50() {
+void CSession::InitClientData() {
   if (!g_itemInfoMgr->Load()) {
     const std::uint8_t caption[] = {0x2A, 0x0F, 0x89, 0x4C, 0x03, 0x07};
     const std::uint8_t message[] = {0x80, 0x81, 0x3A, 0xE6, 0xC6, 0xBB, 0xDD, 0x4C, 0xE9, 0x93, 0x36, 0xE7, 0xEA, 0xF5, 0xF2, 0x4D, 0xA0, 0x81, 0x5F};
@@ -6288,7 +6288,7 @@ void CSession::sub_DD9D50() {
   static_cast<void>(CCashEmotionMgr::Initialize());
   srand(static_cast<unsigned int>(_time32(nullptr)));
   this->UpdateRandomStats();
-  this->sub_DF33B0();
+  this->LoadSessionTables();
   static_cast<void>(g_mapInfoMgr->LoadScript());
 
   CGameSettingsMgr* settings = Singleton<CGameSettingsMgr>::GetInstance();
@@ -6804,113 +6804,113 @@ bool EquipmentProperties::CEquipmentPropertiesMgr::InitializeLua() {
   this->script.SetGlobal("IsPremiumPcCafe", ::IsPremiumPcCafe);
   this->script.SetGlobal("CheckJobGroup2", ::CheckJobGroup2);
   this->script.SetGlobal("GetCategoryJob", ::GetCategoryJob);
-  this->script.SetGlobal("AddAttrTolerace", +[](lua_State* state) { return ::sub_6A7210(state); });
-  this->script.SetGlobal("addattrtolerace", +[](lua_State* state) { return ::sub_6A7A50(state); });
-  this->script.SetGlobal("AddBowAttackDamage", +[](lua_State* state) { return ::sub_6A8290(state); });
-  this->script.SetGlobal("AddCRIPercent_Race", +[](lua_State* state) { return ::sub_6A8AD0(state); });
-  this->script.SetGlobal("AddDamage_CRI", +[](lua_State* state) { return ::sub_6A9310(state); });
-  this->script.SetGlobal("AddDamage_HIT", +[](lua_State* state) { return ::sub_6A9B50(state); });
-  this->script.SetGlobal("AddDamage_Property", +[](lua_State* state) { return ::sub_6AA390(state); });
-  this->script.SetGlobal("AddDamage_SKID", +[](lua_State* state) { return ::sub_6AABD0(state); });
-  this->script.SetGlobal("AddDamage_Size", +[](lua_State* state) { return ::sub_6AB410(state); });
-  this->script.SetGlobal("AddEXPPercent_KillRace", +[](lua_State* state) { return ::sub_6A6A90(state); });
-  this->script.SetGlobal("AddExtParam", +[](lua_State* state) { return ::sub_6A6B50(state); });
-  this->script.SetGlobal("AddGuideAttack", +[](lua_State* state) { return ::sub_6A6C10(state); });
-  this->script.SetGlobal("AddHPdrain", +[](lua_State* state) { return ::sub_6A6CD0(state); });
-  this->script.SetGlobal("AddHealModifyPercent", +[](lua_State* state) { return ::sub_6A6D90(state); });
-  this->script.SetGlobal("AddHealValue", +[](lua_State* state) { return ::sub_6A6E50(state); });
-  this->script.SetGlobal("AddIgnore_MRES_RacePercent", +[](lua_State* state) { return ::sub_6A6F10(state); });
-  this->script.SetGlobal("AddIgnore_RES_RacePercent", +[](lua_State* state) { return ::sub_6A6FD0(state); });
-  this->script.SetGlobal("AddMDamage_Property", +[](lua_State* state) { return ::sub_6A7090(state); });
-  this->script.SetGlobal("AddMDamage_Size", +[](lua_State* state) { return ::sub_6A7150(state); });
-  this->script.SetGlobal("AddMdamage_Class", +[](lua_State* state) { return ::sub_6A72D0(state); });
-  this->script.SetGlobal("AddMdamage_Race", +[](lua_State* state) { return ::sub_6A7390(state); });
-  this->script.SetGlobal("AddMeleeAttackDamage", +[](lua_State* state) { return ::sub_6A7450(state); });
-  this->script.SetGlobal("AddMeleeAttackReflect", +[](lua_State* state) { return ::sub_6A7510(state); });
-  this->script.SetGlobal("AddNeverknockback", +[](lua_State* state) { return ::sub_6A75D0(state); });
-  this->script.SetGlobal("AddRaceTolerace", +[](lua_State* state) { return ::sub_6A7690(state); });
-  this->script.SetGlobal("AddRangeAttackDamage", +[](lua_State* state) { return ::sub_6A7750(state); });
-  this->script.SetGlobal("AddReceiveItem_Equip", +[](lua_State* state) { return ::sub_6A7810(state); });
-  this->script.SetGlobal("AddReflectMagic", +[](lua_State* state) { return ::sub_6A78D0(state); });
-  this->script.SetGlobal("AddReflectTolerace", +[](lua_State* state) { return ::sub_6A7990(state); });
-  this->script.SetGlobal("AddSFCTEquipAmount", +[](lua_State* state) { return ::sub_6A7B10(state); });
-  this->script.SetGlobal("AddSFCTEquipPermill", +[](lua_State* state) { return ::sub_6A7BD0(state); });
-  this->script.SetGlobal("AddSPconsumption", +[](lua_State* state) { return ::sub_6A7C90(state); });
-  this->script.SetGlobal("addspconsumption", +[](lua_State* state) { return ::sub_6A7D50(state); });
-  this->script.SetGlobal("AddSPdrain", +[](lua_State* state) { return ::sub_6A7E10(state); });
-  this->script.SetGlobal("AddSkillDelay", +[](lua_State* state) { return ::sub_6A7ED0(state); });
-  this->script.SetGlobal("AddSkillMDamage", +[](lua_State* state) { return ::sub_6A7F90(state); });
-  this->script.SetGlobal("AddSkillSP", +[](lua_State* state) { return ::sub_6A8050(state); });
-  this->script.SetGlobal("AddSpecificSpellCastTime", +[](lua_State* state) { return ::sub_6A8110(state); });
-  this->script.SetGlobal("AddSpellCastTime", +[](lua_State* state) { return ::sub_6A81D0(state); });
-  this->script.SetGlobal("AddSpellDelay", +[](lua_State* state) { return ::sub_6A8350(state); });
-  this->script.SetGlobal("BodyAttribute", +[](lua_State* state) { return ::sub_6A8410(state); });
-  this->script.SetGlobal("Clairvoyance", +[](lua_State* state) { return ::sub_6A84D0(state); });
-  this->script.SetGlobal("ClassAddDamage", +[](lua_State* state) { return ::sub_6A8590(state); });
-  this->script.SetGlobal("ClassSubDamage", +[](lua_State* state) { return ::sub_6A8650(state); });
-  this->script.SetGlobal("Condition", +[](lua_State* state) { return ::sub_6A8710(state); });
-  this->script.SetGlobal("DisableSkill", +[](lua_State* state) { return ::sub_6A87D0(state); });
-  this->script.SetGlobal("EnableSkill", +[](lua_State* state) { return ::sub_6A8890(state); });
-  this->script.SetGlobal("IndestructibleArmor", +[](lua_State* state) { return ::sub_6A8950(state); });
-  this->script.SetGlobal("IndestructibleWeapon", +[](lua_State* state) { return ::sub_6A8A10(state); });
-  this->script.SetGlobal("Magicimmune", +[](lua_State* state) { return ::sub_6A8B90(state); });
-  this->script.SetGlobal("NoDispell", +[](lua_State* state) { return ::sub_6A8C50(state); });
-  this->script.SetGlobal("NoJamstone", +[](lua_State* state) { return ::sub_6A8D10(state); });
-  this->script.SetGlobal("NoMadogearfuel", +[](lua_State* state) { return ::sub_6A8DD0(state); });
-  this->script.SetGlobal("PerfectDamage", +[](lua_State* state) { return ::sub_6A8E90(state); });
-  this->script.SetGlobal("RaceAddDamage", +[](lua_State* state) { return ::sub_6A8F50(state); });
-  this->script.SetGlobal("RaceAddDamageSelf", +[](lua_State* state) { return ::sub_6A9010(state); });
-  this->script.SetGlobal("RaceSubDamage", +[](lua_State* state) { return ::sub_6A90D0(state); });
-  this->script.SetGlobal("RaceSubDamageSelf", +[](lua_State* state) { return ::sub_6A9190(state); });
-  this->script.SetGlobal("Reincarnation", +[](lua_State* state) { return ::sub_6A9250(state); });
-  this->script.SetGlobal("SetIgnoreDEFClass", +[](lua_State* state) { return ::sub_6A93D0(state); });
-  this->script.SetGlobal("SetIgnoreDEFRace", +[](lua_State* state) { return ::sub_6A9490(state); });
-  this->script.SetGlobal("SetIgnoreDefClass_Percent", +[](lua_State* state) { return ::sub_6A9550(state); });
-  this->script.SetGlobal("SetIgnoreDefRace_Percent", +[](lua_State* state) { return ::sub_6A9610(state); });
-  this->script.SetGlobal("SetIgnoreMdefClass", +[](lua_State* state) { return ::sub_6A96D0(state); });
-  this->script.SetGlobal("SetIgnoreMdefRace", +[](lua_State* state) { return ::sub_6A9790(state); });
-  this->script.SetGlobal("SetInvestigate", +[](lua_State* state) { return ::sub_6A9850(state); });
-  this->script.SetGlobal("SplashAttack", +[](lua_State* state) { return ::sub_6A9910(state); });
-  this->script.SetGlobal("SubAttrTolerace", +[](lua_State* state) { return ::sub_6A99D0(state); });
-  this->script.SetGlobal("subattrtolerace", +[](lua_State* state) { return ::sub_6A9A90(state); });
-  this->script.SetGlobal("SubBowAttackDamage", +[](lua_State* state) { return ::sub_6A9C10(state); });
-  this->script.SetGlobal("SubCRIPercent_Race", +[](lua_State* state) { return ::sub_6A9CD0(state); });
-  this->script.SetGlobal("SubDamage_CRI", +[](lua_State* state) { return ::sub_6A9D90(state); });
-  this->script.SetGlobal("SubDamage_HIT", +[](lua_State* state) { return ::sub_6A9E50(state); });
-  this->script.SetGlobal("SubDamage_Property", +[](lua_State* state) { return ::sub_6A9F10(state); });
-  this->script.SetGlobal("SubDamage_SKID", +[](lua_State* state) { return ::sub_6A9FD0(state); });
-  this->script.SetGlobal("SubDamage_Size", +[](lua_State* state) { return ::sub_6AA090(state); });
-  this->script.SetGlobal("SubEXPPercent_KillRace", +[](lua_State* state) { return ::sub_6AA150(state); });
-  this->script.SetGlobal("SubExtParam", +[](lua_State* state) { return ::sub_6AA210(state); });
-  this->script.SetGlobal("SubGuideAttack", +[](lua_State* state) { return ::sub_6AA2D0(state); });
-  this->script.SetGlobal("SubHPdrain", +[](lua_State* state) { return ::sub_6AA450(state); });
-  this->script.SetGlobal("SubHealModifyPercent", +[](lua_State* state) { return ::sub_6AA510(state); });
-  this->script.SetGlobal("SubHealValue", +[](lua_State* state) { return ::sub_6AA5D0(state); });
-  this->script.SetGlobal("SubIgnore_MRES_RacePercent", +[](lua_State* state) { return ::sub_6AA690(state); });
-  this->script.SetGlobal("SubIgnore_RES_RacePercent", +[](lua_State* state) { return ::sub_6AA750(state); });
-  this->script.SetGlobal("SubMDamage_Property", +[](lua_State* state) { return ::sub_6AA810(state); });
-  this->script.SetGlobal("SubMDamage_Size", +[](lua_State* state) { return ::sub_6AA8D0(state); });
-  this->script.SetGlobal("SubMdamage_Class", +[](lua_State* state) { return ::sub_6AA990(state); });
-  this->script.SetGlobal("SubMdamage_Race", +[](lua_State* state) { return ::sub_6AAA50(state); });
-  this->script.SetGlobal("SubMeleeAttackDamage", +[](lua_State* state) { return ::sub_6AAB10(state); });
-  this->script.SetGlobal("SubMeleeAttackReflect", +[](lua_State* state) { return ::sub_6AAC90(state); });
-  this->script.SetGlobal("SubNeverknockback", +[](lua_State* state) { return ::sub_6AAD50(state); });
-  this->script.SetGlobal("SubRaceTolerace", +[](lua_State* state) { return ::sub_6AAE10(state); });
-  this->script.SetGlobal("SubRangeAttackDamage", +[](lua_State* state) { return ::sub_6AAED0(state); });
-  this->script.SetGlobal("SubReceiveItem_Equip", +[](lua_State* state) { return ::sub_6AAF90(state); });
-  this->script.SetGlobal("SubReflectMagic", +[](lua_State* state) { return ::sub_6AB050(state); });
-  this->script.SetGlobal("SubReflectTolerace", +[](lua_State* state) { return ::sub_6AB110(state); });
-  this->script.SetGlobal("SubSFCTEquipAmount", +[](lua_State* state) { return ::sub_6AB1D0(state); });
-  this->script.SetGlobal("SubSFCTEquipPermill", +[](lua_State* state) { return ::sub_6AB290(state); });
-  this->script.SetGlobal("SubSPconsumption", +[](lua_State* state) { return ::sub_6AB350(state); });
-  this->script.SetGlobal("subspconsumption", +[](lua_State* state) { return ::sub_6A6490(state); });
-  this->script.SetGlobal("SubSPdrain", +[](lua_State* state) { return ::sub_6A6550(state); });
-  this->script.SetGlobal("SubSkillDelay", +[](lua_State* state) { return ::sub_6A6610(state); });
-  this->script.SetGlobal("SubSkillMDamage", +[](lua_State* state) { return ::sub_6A66D0(state); });
-  this->script.SetGlobal("SubSkillSP", +[](lua_State* state) { return ::sub_6A6790(state); });
-  this->script.SetGlobal("SubSpecificSpellCastTime", +[](lua_State* state) { return ::sub_6A6850(state); });
-  this->script.SetGlobal("SubSpellCastTime", +[](lua_State* state) { return ::sub_6A6910(state); });
-  this->script.SetGlobal("SubSpellDelay", +[](lua_State* state) { return ::sub_6A69D0(state); });
+  this->script.SetGlobal("AddAttrTolerace", +[](lua_State* state) { return ::AddAttrTolerace(state); });
+  this->script.SetGlobal("addattrtolerace", +[](lua_State* state) { return ::addattrtolerace(state); });
+  this->script.SetGlobal("AddBowAttackDamage", +[](lua_State* state) { return ::AddBowAttackDamage(state); });
+  this->script.SetGlobal("AddCRIPercent_Race", +[](lua_State* state) { return ::AddCRIPercent_Race(state); });
+  this->script.SetGlobal("AddDamage_CRI", +[](lua_State* state) { return ::AddDamage_CRI(state); });
+  this->script.SetGlobal("AddDamage_HIT", +[](lua_State* state) { return ::AddDamage_HIT(state); });
+  this->script.SetGlobal("AddDamage_Property", +[](lua_State* state) { return ::AddDamage_Property(state); });
+  this->script.SetGlobal("AddDamage_SKID", +[](lua_State* state) { return ::AddDamage_SKID(state); });
+  this->script.SetGlobal("AddDamage_Size", +[](lua_State* state) { return ::AddDamage_Size(state); });
+  this->script.SetGlobal("AddEXPPercent_KillRace", +[](lua_State* state) { return ::AddEXPPercent_KillRace(state); });
+  this->script.SetGlobal("AddExtParam", +[](lua_State* state) { return ::AddExtParam(state); });
+  this->script.SetGlobal("AddGuideAttack", +[](lua_State* state) { return ::AddGuideAttack(state); });
+  this->script.SetGlobal("AddHPdrain", +[](lua_State* state) { return ::AddHPdrain(state); });
+  this->script.SetGlobal("AddHealModifyPercent", +[](lua_State* state) { return ::AddHealModifyPercent(state); });
+  this->script.SetGlobal("AddHealValue", +[](lua_State* state) { return ::AddHealValue(state); });
+  this->script.SetGlobal("AddIgnore_MRES_RacePercent", +[](lua_State* state) { return ::AddIgnore_MRES_RacePercent(state); });
+  this->script.SetGlobal("AddIgnore_RES_RacePercent", +[](lua_State* state) { return ::AddIgnore_RES_RacePercent(state); });
+  this->script.SetGlobal("AddMDamage_Property", +[](lua_State* state) { return ::AddMDamage_Property(state); });
+  this->script.SetGlobal("AddMDamage_Size", +[](lua_State* state) { return ::AddMDamage_Size(state); });
+  this->script.SetGlobal("AddMdamage_Class", +[](lua_State* state) { return ::AddMdamage_Class(state); });
+  this->script.SetGlobal("AddMdamage_Race", +[](lua_State* state) { return ::AddMdamage_Race(state); });
+  this->script.SetGlobal("AddMeleeAttackDamage", +[](lua_State* state) { return ::AddMeleeAttackDamage(state); });
+  this->script.SetGlobal("AddMeleeAttackReflect", +[](lua_State* state) { return ::AddMeleeAttackReflect(state); });
+  this->script.SetGlobal("AddNeverknockback", +[](lua_State* state) { return ::AddNeverknockback(state); });
+  this->script.SetGlobal("AddRaceTolerace", +[](lua_State* state) { return ::AddRaceTolerace(state); });
+  this->script.SetGlobal("AddRangeAttackDamage", +[](lua_State* state) { return ::AddRangeAttackDamage(state); });
+  this->script.SetGlobal("AddReceiveItem_Equip", +[](lua_State* state) { return ::AddReceiveItem_Equip(state); });
+  this->script.SetGlobal("AddReflectMagic", +[](lua_State* state) { return ::AddReflectMagic(state); });
+  this->script.SetGlobal("AddReflectTolerace", +[](lua_State* state) { return ::AddReflectTolerace(state); });
+  this->script.SetGlobal("AddSFCTEquipAmount", +[](lua_State* state) { return ::AddSFCTEquipAmount(state); });
+  this->script.SetGlobal("AddSFCTEquipPermill", +[](lua_State* state) { return ::AddSFCTEquipPermill(state); });
+  this->script.SetGlobal("AddSPconsumption", +[](lua_State* state) { return ::AddSPconsumption(state); });
+  this->script.SetGlobal("addspconsumption", +[](lua_State* state) { return ::addspconsumption(state); });
+  this->script.SetGlobal("AddSPdrain", +[](lua_State* state) { return ::AddSPdrain(state); });
+  this->script.SetGlobal("AddSkillDelay", +[](lua_State* state) { return ::AddSkillDelay(state); });
+  this->script.SetGlobal("AddSkillMDamage", +[](lua_State* state) { return ::AddSkillMDamage(state); });
+  this->script.SetGlobal("AddSkillSP", +[](lua_State* state) { return ::AddSkillSP(state); });
+  this->script.SetGlobal("AddSpecificSpellCastTime", +[](lua_State* state) { return ::AddSpecificSpellCastTime(state); });
+  this->script.SetGlobal("AddSpellCastTime", +[](lua_State* state) { return ::AddSpellCastTime(state); });
+  this->script.SetGlobal("AddSpellDelay", +[](lua_State* state) { return ::AddSpellDelay(state); });
+  this->script.SetGlobal("BodyAttribute", +[](lua_State* state) { return ::BodyAttribute(state); });
+  this->script.SetGlobal("Clairvoyance", +[](lua_State* state) { return ::Clairvoyance(state); });
+  this->script.SetGlobal("ClassAddDamage", +[](lua_State* state) { return ::ClassAddDamage(state); });
+  this->script.SetGlobal("ClassSubDamage", +[](lua_State* state) { return ::ClassSubDamage(state); });
+  this->script.SetGlobal("Condition", +[](lua_State* state) { return ::Condition(state); });
+  this->script.SetGlobal("DisableSkill", +[](lua_State* state) { return ::DisableSkill(state); });
+  this->script.SetGlobal("EnableSkill", +[](lua_State* state) { return ::EnableSkill(state); });
+  this->script.SetGlobal("IndestructibleArmor", +[](lua_State* state) { return ::IndestructibleArmor(state); });
+  this->script.SetGlobal("IndestructibleWeapon", +[](lua_State* state) { return ::IndestructibleWeapon(state); });
+  this->script.SetGlobal("Magicimmune", +[](lua_State* state) { return ::Magicimmune(state); });
+  this->script.SetGlobal("NoDispell", +[](lua_State* state) { return ::NoDispell(state); });
+  this->script.SetGlobal("NoJamstone", +[](lua_State* state) { return ::NoJamstone(state); });
+  this->script.SetGlobal("NoMadogearfuel", +[](lua_State* state) { return ::NoMadogearfuel(state); });
+  this->script.SetGlobal("PerfectDamage", +[](lua_State* state) { return ::PerfectDamage(state); });
+  this->script.SetGlobal("RaceAddDamage", +[](lua_State* state) { return ::RaceAddDamage(state); });
+  this->script.SetGlobal("RaceAddDamageSelf", +[](lua_State* state) { return ::RaceAddDamageSelf(state); });
+  this->script.SetGlobal("RaceSubDamage", +[](lua_State* state) { return ::RaceSubDamage(state); });
+  this->script.SetGlobal("RaceSubDamageSelf", +[](lua_State* state) { return ::RaceSubDamageSelf(state); });
+  this->script.SetGlobal("Reincarnation", +[](lua_State* state) { return ::Reincarnation(state); });
+  this->script.SetGlobal("SetIgnoreDEFClass", +[](lua_State* state) { return ::SetIgnoreDEFClass(state); });
+  this->script.SetGlobal("SetIgnoreDEFRace", +[](lua_State* state) { return ::SetIgnoreDEFRace(state); });
+  this->script.SetGlobal("SetIgnoreDefClass_Percent", +[](lua_State* state) { return ::SetIgnoreDefClass_Percent(state); });
+  this->script.SetGlobal("SetIgnoreDefRace_Percent", +[](lua_State* state) { return ::SetIgnoreDefRace_Percent(state); });
+  this->script.SetGlobal("SetIgnoreMdefClass", +[](lua_State* state) { return ::SetIgnoreMdefClass(state); });
+  this->script.SetGlobal("SetIgnoreMdefRace", +[](lua_State* state) { return ::SetIgnoreMdefRace(state); });
+  this->script.SetGlobal("SetInvestigate", +[](lua_State* state) { return ::SetInvestigate(state); });
+  this->script.SetGlobal("SplashAttack", +[](lua_State* state) { return ::SplashAttack(state); });
+  this->script.SetGlobal("SubAttrTolerace", +[](lua_State* state) { return ::SubAttrTolerace(state); });
+  this->script.SetGlobal("subattrtolerace", +[](lua_State* state) { return ::subattrtolerace(state); });
+  this->script.SetGlobal("SubBowAttackDamage", +[](lua_State* state) { return ::SubBowAttackDamage(state); });
+  this->script.SetGlobal("SubCRIPercent_Race", +[](lua_State* state) { return ::SubCRIPercent_Race(state); });
+  this->script.SetGlobal("SubDamage_CRI", +[](lua_State* state) { return ::SubDamage_CRI(state); });
+  this->script.SetGlobal("SubDamage_HIT", +[](lua_State* state) { return ::SubDamage_HIT(state); });
+  this->script.SetGlobal("SubDamage_Property", +[](lua_State* state) { return ::SubDamage_Property(state); });
+  this->script.SetGlobal("SubDamage_SKID", +[](lua_State* state) { return ::SubDamage_SKID(state); });
+  this->script.SetGlobal("SubDamage_Size", +[](lua_State* state) { return ::SubDamage_Size(state); });
+  this->script.SetGlobal("SubEXPPercent_KillRace", +[](lua_State* state) { return ::SubEXPPercent_KillRace(state); });
+  this->script.SetGlobal("SubExtParam", +[](lua_State* state) { return ::SubExtParam(state); });
+  this->script.SetGlobal("SubGuideAttack", +[](lua_State* state) { return ::SubGuideAttack(state); });
+  this->script.SetGlobal("SubHPdrain", +[](lua_State* state) { return ::SubHPdrain(state); });
+  this->script.SetGlobal("SubHealModifyPercent", +[](lua_State* state) { return ::SubHealModifyPercent(state); });
+  this->script.SetGlobal("SubHealValue", +[](lua_State* state) { return ::SubHealValue(state); });
+  this->script.SetGlobal("SubIgnore_MRES_RacePercent", +[](lua_State* state) { return ::SubIgnore_MRES_RacePercent(state); });
+  this->script.SetGlobal("SubIgnore_RES_RacePercent", +[](lua_State* state) { return ::SubIgnore_RES_RacePercent(state); });
+  this->script.SetGlobal("SubMDamage_Property", +[](lua_State* state) { return ::SubMDamage_Property(state); });
+  this->script.SetGlobal("SubMDamage_Size", +[](lua_State* state) { return ::SubMDamage_Size(state); });
+  this->script.SetGlobal("SubMdamage_Class", +[](lua_State* state) { return ::SubMdamage_Class(state); });
+  this->script.SetGlobal("SubMdamage_Race", +[](lua_State* state) { return ::SubMdamage_Race(state); });
+  this->script.SetGlobal("SubMeleeAttackDamage", +[](lua_State* state) { return ::SubMeleeAttackDamage(state); });
+  this->script.SetGlobal("SubMeleeAttackReflect", +[](lua_State* state) { return ::SubMeleeAttackReflect(state); });
+  this->script.SetGlobal("SubNeverknockback", +[](lua_State* state) { return ::SubNeverknockback(state); });
+  this->script.SetGlobal("SubRaceTolerace", +[](lua_State* state) { return ::SubRaceTolerace(state); });
+  this->script.SetGlobal("SubRangeAttackDamage", +[](lua_State* state) { return ::SubRangeAttackDamage(state); });
+  this->script.SetGlobal("SubReceiveItem_Equip", +[](lua_State* state) { return ::SubReceiveItem_Equip(state); });
+  this->script.SetGlobal("SubReflectMagic", +[](lua_State* state) { return ::SubReflectMagic(state); });
+  this->script.SetGlobal("SubReflectTolerace", +[](lua_State* state) { return ::SubReflectTolerace(state); });
+  this->script.SetGlobal("SubSFCTEquipAmount", +[](lua_State* state) { return ::SubSFCTEquipAmount(state); });
+  this->script.SetGlobal("SubSFCTEquipPermill", +[](lua_State* state) { return ::SubSFCTEquipPermill(state); });
+  this->script.SetGlobal("SubSPconsumption", +[](lua_State* state) { return ::SubSPconsumption(state); });
+  this->script.SetGlobal("subspconsumption", +[](lua_State* state) { return ::subspconsumption(state); });
+  this->script.SetGlobal("SubSPdrain", +[](lua_State* state) { return ::SubSPdrain(state); });
+  this->script.SetGlobal("SubSkillDelay", +[](lua_State* state) { return ::SubSkillDelay(state); });
+  this->script.SetGlobal("SubSkillMDamage", +[](lua_State* state) { return ::SubSkillMDamage(state); });
+  this->script.SetGlobal("SubSkillSP", +[](lua_State* state) { return ::SubSkillSP(state); });
+  this->script.SetGlobal("SubSpecificSpellCastTime", +[](lua_State* state) { return ::SubSpecificSpellCastTime(state); });
+  this->script.SetGlobal("SubSpellCastTime", +[](lua_State* state) { return ::SubSpellCastTime(state); });
+  this->script.SetGlobal("SubSpellDelay", +[](lua_State* state) { return ::SubSpellDelay(state); });
   this->script.SetGlobal("SetEquipTempValue", ::SetEquipTempValue);
 
   if (!this->script.LoadFile("LuaFiles514\\Lua Files\\EquipmentProperties\\EquipmentProperties.lub")) {

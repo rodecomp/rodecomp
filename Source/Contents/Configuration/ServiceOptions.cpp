@@ -79,7 +79,7 @@ public:
   bool ReadOptionTable();
   void ResetToDefaults();
   void ToggleOption(int id);
-  void sub_6C0C40(int id, unsigned char value, bool notify);
+  void SetOption(int id, unsigned char value, bool notify);
   void ApplyScriptOption(int id, const char* key);
   bool RunFunction(int id);
   std::optional<GameSettingsOption*> FindOption(int id);
@@ -417,7 +417,7 @@ __declspec(noinline) void ApplyServiceOption(int id, unsigned char value, bool n
 // OFFSET: 0x006C48C0
 // FUNCTION: fn_45461
 void GreetFriends() {
-  g_session.sub_DE3D90(nullptr);
+  g_session.HiFriends(nullptr);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("[ To Friends ] : (Hi) *^_^*"), 0x1EFFFF, 0, 0, 0);
 }
 
@@ -438,7 +438,7 @@ CGameSettingsMgr::~CGameSettingsMgr() {
 
 // OFFSET: 0x006C0C40
 // FUNCTION: fn_06312
-void GameSettings::sub_6C0C40(int id, unsigned char value, bool notify) {
+void GameSettings::SetOption(int id, unsigned char value, bool notify) {
   for (const GameSettingsOption& option : this->options) {
     if (option.id != id) {
       continue;
@@ -683,7 +683,7 @@ bool GameSettings::ReadOptionTable() {
 void GameSettings::ResetToDefaults() {
   for (const GameSettingsOption& option : this->options) {
     if (option.type == 0) {
-      this->sub_6C0C40(option.id, option.defaultValue, true);
+      this->SetOption(option.id, option.defaultValue, true);
     }
   }
 }
@@ -698,8 +698,8 @@ void GameSettings::ToggleOption(int id) {
 
     if (option.type == 0) {
       const unsigned char current = g_serviceOptions.Get(id);
-      this->sub_6C0C40(id, current == 0, true);
-      g_windowMgr.sub_AAB070(id);
+      this->SetOption(id, current == 0, true);
+      g_windowMgr.RefreshGameSettingOption(id);
     } else if (option.type == 1) {
       const auto entry = this->functions.find(id);
       if (entry != this->functions.end() && entry->second) {
@@ -1082,7 +1082,7 @@ void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, in
   if (!value &&
       g_windowMgr.Confirm(LookupMessage(0x1104), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBC) {
     g_serviceOptions.Set(0x128, 1);
-    g_windowMgr.sub_AAB070(0x128);
+    g_windowMgr.RefreshGameSettingOption(0x128);
     return;
   }
 

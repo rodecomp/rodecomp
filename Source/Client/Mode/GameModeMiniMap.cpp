@@ -92,7 +92,7 @@ void MiniMapNoOp() {
 
 // OFFSET: 0x00CCFF10
 // FUNCTION: fn_21249
-void sub_CCFF10() {
+void CloseWhisperRecord() {
   if (g_session.m_whisperRecord != 0) {
     if (g_session.IsAdminSubMode(7) != 0) {
       char path[256];

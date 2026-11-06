@@ -768,7 +768,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     case 321:
       if (this->m_searchEdit->Length()) {
         std::string name(this->m_searchEdit->Text());
-        if (g_navigationManager.sub_B995D0(name, 0, true) == true) {
+        if (g_navigationManager.SearchNavigation(name, 0, true) == true) {
           reinterpret_cast<UINavigationWnd*>(this)->RefreshWorldMapLevels();
         }
       }
@@ -788,7 +788,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         name.resize(name.size() - 4);
       }
       g_navigationMinimized = false;
-      g_navigationManager.sub_B995D0(name, 0, false);
+      g_navigationManager.SearchNavigation(name, 0, false);
       if (g_windowMgr.LookupWindow(203)) {
         static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRoute(0);
         static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRouteNode(0);
@@ -1034,7 +1034,7 @@ void UIRoMapWnd::Slot15(int, int) {
 
   g_worldViewMgr.SelectCurrentWorld();
   this->m_worldCombo->Select(g_worldViewMgr.currentWorld);
-  g_worldViewMgr.sub_6168F0();
+  g_worldViewMgr.LoadTextures();
   this->Invalidate();
   {
     std::string name = g_navigationManager.GetCurrentTargetName();

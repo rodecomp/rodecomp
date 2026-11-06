@@ -63,7 +63,7 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
         }
 
         name += map;
-        g_navigationManager.sub_B995D0(name, type, 0);
+        g_navigationManager.SearchNavigation(name, type, 0);
         break;
       }
 
@@ -85,9 +85,9 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
         flag += 4;
       }
 
-      g_navigationManager.sub_B99030(map.c_str(), type, flag, option == 0, x, y, target);
+      g_navigationManager.StartNavigation(map.c_str(), type, flag, option == 0, x, y, target);
     } else {
-      g_navigationManager.sub_B99030(map.c_str(), 2, 5, false, x, y, 1002);
+      g_navigationManager.StartNavigation(map.c_str(), 2, 5, false, x, y, 1002);
     }
 
     break;
@@ -336,7 +336,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
           if (policy == -222) {
             std::string name = type == 3 ? "$$DB " : "";
             name += map;
-            g_navigationManager.sub_B995D0(name, type, 0);
+            g_navigationManager.SearchNavigation(name, type, 0);
             break;
           }
           const int option = std::atoi(button->GetLine(5).c_str());
@@ -345,9 +345,9 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
           if (policy >= 100) { flag = 1; policy -= 100; }
           if (policy >= 10) { flag += 2; policy -= 10; }
           if (policy >= 1) { flag += 4; }
-          g_navigationManager.sub_B99030(map.c_str(), type, flag, option == 0, x, y, target);
+          g_navigationManager.StartNavigation(map.c_str(), type, flag, option == 0, x, y, target);
         } else {
-          g_navigationManager.sub_B99030(map.c_str(), 2, 5, false, x, y, 1002);
+          g_navigationManager.StartNavigation(map.c_str(), 2, 5, false, x, y, 1002);
         }
       }
       break;

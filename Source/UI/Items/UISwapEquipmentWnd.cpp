@@ -95,7 +95,7 @@ void UISwapEquipmentWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x0082FD90
 // FUNCTION: fn_10391
-void UISwapEquipmentWnd::sub_82FD90() {
+void UISwapEquipmentWnd::DrawEquipmentSlots() {
   this->unknown_00D0 = 0;
   this->unknown_00C4 = 0;
   this->unknown_00C8 = 0;
@@ -339,7 +339,7 @@ void UISwapEquipmentWnd::Paint() {
   const char* title = LookupMessage(3110);
   this->DrawCenteredText(140, 4, title, std::strlen(title), 0, 12, 0x14234B, 0);
 
-  this->sub_82FD90();
+  this->DrawEquipmentSlots();
 
   FuncDrawWNDChar drawer(
     this,
@@ -413,7 +413,7 @@ void UISwapEquipmentWnd::Slot25(int x, int y) {
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
         reinterpret_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
-        reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF710(item);
+        reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->InsertItemTag(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
       }

@@ -225,9 +225,9 @@ void UIGradeEnchantWnd::Paint() {
     this->DrawBitmap(152, 62, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\caution.bmp").c_str()))), true);
     this->DrawBitmap(152, 78, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\caution.bmp").c_str()))), true);
 
-    this->sub_A85850(166, 46, LookupMessage(3870), 228, 0, 0x00A0ADC, 0, 0, 11, 1, 0);
-    this->sub_A85850(166, 62, LookupMessage(3871), 228, 0, 0x5AEB00, 0, 0, 11, 1, 0);
-    this->sub_A85850(166, 78, LookupMessage(3872), 228, 0, 0x5AEB00, 0, 0, 11, 1, 0);
+    this->DrawAlignedText(166, 46, LookupMessage(3870), 228, 0, 0x00A0ADC, 0, 0, 11, 1, 0);
+    this->DrawAlignedText(166, 62, LookupMessage(3871), 228, 0, 0x5AEB00, 0, 0, 11, 1, 0);
+    this->DrawAlignedText(166, 78, LookupMessage(3872), 228, 0, 0x5AEB00, 0, 0, 11, 1, 0);
   }
 
   if (this->state == 1 || this->state == 2) {
@@ -250,23 +250,23 @@ void UIGradeEnchantWnd::Paint() {
     for (const GradeEnchantMaterial& material : this->materials) {
       ITEM_INFO itemInfo;
       itemInfo.SetItemId(material.itemId);
-      itemInfo.sub_6D5810(description, capacity, 0);
+      itemInfo.GetIdDisplayName(description, capacity, 0);
       DrawItemIcon(*this, ResourceMgr::Instance(), 170, y - 9, itemInfo, 0);
       std::string text = FormatOwnedString(LookupMessage(3553), description, material.amount);
-      this->sub_A85850(203, y, text, 180, 0, 0, 0, 0, 11, 0, 0);
+      this->DrawAlignedText(203, y, text, 180, 0, 0, 0, 0, 11, 0, 0);
       y += 40;
     }
 
     if (this->info.unknown_0000 > 0) {
       ITEM_INFO itemInfo;
       itemInfo.SetItemId(this->info.unknown_0000);
-      itemInfo.sub_6D5810(description, capacity, 0);
+      itemInfo.GetIdDisplayName(description, capacity, 0);
       DrawItemIcon(*this, ResourceMgr::Instance(), 195, 228, itemInfo, 0);
       std::string text = FormatOwnedString(LookupMessage(3553), description, this->unknown_0114);
-      this->sub_A85850(228, 237, text, 160, 0, 0xFFFFFF, 0, 0, 11, 1, 1);
+      this->DrawAlignedText(228, 237, text, 160, 0, 0xFFFFFF, 0, 0, 11, 1, 1);
     }
 
-    this->sub_7E7050();
+    this->UpdateEnchantMessages();
 
     const int count = static_cast<int>(this->unknown_011C.size());
     for (int i = 0; i < 3; ++i) {
@@ -275,15 +275,15 @@ void UIGradeEnchantWnd::Paint() {
         this->DrawBitmap(152, itemY, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\caution.bmp").c_str()))), true);
         const int msgId = this->unknown_011C[i];
         if (msgId == 3711 || msgId == 3822) {
-          this->sub_A85850(166, itemY, LookupMessage(msgId), 228, 0, 0x5AEB00, 0, 0, 11, 1, 0);
+          this->DrawAlignedText(166, itemY, LookupMessage(msgId), 228, 0, 0x5AEB00, 0, 0, 11, 1, 0);
         } else {
-          this->sub_A85850(166, itemY, LookupMessage(msgId), 228, 0, 0x00A0ADC, 0, 0, 11, 1, 0);
+          this->DrawAlignedText(166, itemY, LookupMessage(msgId), 228, 0, 0x00A0ADC, 0, 0, 11, 1, 0);
         }
       }
     }
 
     std::string zeny = FormatOwnedString("%d", this->SelectedMaterialZeny());
-    this->sub_A85850(307, 303, zeny, 120, 2, 0, 0, 0, 16, 1, 0);
+    this->DrawAlignedText(307, 303, zeny, 120, 2, 0, 0, 0, 16, 1, 0);
   }
 
   if (this->state == 2) {
@@ -301,7 +301,7 @@ void UIGradeEnchantWnd::Paint() {
 
   if (this->state == 1 || this->state == 2) {
     std::string rate = FormatOwnedString("%d%%", this->SuccessRate());
-    this->sub_A85850(39, 88, rate, 74, 6, 0xFFFFFF, 0, 29, 28, 1, 1);
+    this->DrawAlignedText(39, 88, rate, 74, 6, 0xFFFFFF, 0, 29, 28, 1, 1);
   }
 }
 
@@ -667,7 +667,7 @@ void UIGradeEnchantWnd::SetResult(int state, int result) {
 
 // OFFSET: 0x007E7050
 // FUNCTION: fn_09748
-void UIGradeEnchantWnd::sub_7E7050() {
+void UIGradeEnchantWnd::UpdateEnchantMessages() {
   this->unknown_011C.clear();
   if (this->state != 1) {
     return;

@@ -67,7 +67,7 @@ public:
   /* 00AC */ UIAchListInfo* unknown_00AC;
 
   void Create(int width, int height, int rows);
-  void sub_7B37F0(int index);
+  void SelectAchievement(int index);
   __declspec(noinline) void SetAchievements(std::map<int, AchievementInfo>* achievements, int mode);
   __declspec(noinline) void UpdateScroll();
 
@@ -116,8 +116,8 @@ public:
   void ClearGroups();
   void DrawGroup(int group);
   __declspec(noinline) std::string Label(int group, int sub);
-  __declspec(noinline) bool sub_7B4370(int x, int y, int* a, int* b);
-  __declspec(noinline) void sub_7B7F10();
+  __declspec(noinline) bool HitTestTab(int x, int y, int* a, int* b);
+  __declspec(noinline) void UpdateScrollBar();
   void Refresh();
   void SetLabel(const char* text, int group, int sub);
 

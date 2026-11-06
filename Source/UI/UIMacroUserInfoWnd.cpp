@@ -64,15 +64,15 @@ UIMacroUserInfoWnd::UIMacroUserInfoWnd()
 
 // OFFSET: 0x007EF2C0
 // FUNCTION: fn_09839
-void UIMacroReporterWnd::sub_7EF2C0(MacroReporterEntry* entry) {
+void UIMacroReporterWnd::AddPickedActor(MacroReporterEntry* entry) {
   if (entry) {
-    this->sub_7EF2E0(entry->id);
+    this->AddActorByAID(entry->id);
   }
 }
 
 // OFFSET: 0x007EF2E0
 // FUNCTION: fn_09840
-void UIMacroReporterWnd::sub_7EF2E0(int aid) {
+void UIMacroReporterWnd::AddActorByAID(int aid) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   CGameActor* actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
   if (!actor) {
@@ -95,7 +95,7 @@ void UIMacroReporterWnd::sub_7EF2E0(int aid) {
   this->m_entries.push_back(MacroReporterEntry(name, aid, static_cast<short>(actor->GetEffectiveJob(-1))));
 
 found:
-  this->sub_7EF430(aid, name);
+  this->AddActorRow(aid, name);
   this->UpdateScrollBar();
 }
 
@@ -109,7 +109,7 @@ struct AccessibleTextButton : public UITextButton {
 
 // OFFSET: 0x007EF430
 // FUNCTION: fn_09841
-void UIMacroReporterWnd::sub_7EF430(int aid, std::string name) {
+void UIMacroReporterWnd::AddActorRow(int aid, std::string name) {
   for (std::size_t i = 0; i < this->m_rows.size(); ++i) {
     if (this->m_rows[i].second->geometry.id == aid) {
       return;
@@ -126,7 +126,7 @@ void UIMacroReporterWnd::sub_7EF430(int aid, std::string name) {
   btn1->Enable(0);
   this->AddChild(btn1);
 
-  std::string truncated = this->sub_7EF680(0x8E, name.c_str(), 0, 13, 0);
+  std::string truncated = this->EllipsizeText(0x8E, name.c_str(), 0, 13, 0);
   auto* btn2 = new UITextButton();
   btn2->Configure("", 0, 0, 13, 0, 1);
   static_cast<AccessibleTextButton*>(btn2)->m_hoverColor = 0x2D2D2D;
@@ -142,7 +142,7 @@ void UIMacroReporterWnd::sub_7EF430(int aid, std::string name) {
 
 // OFFSET: 0x007EF680
 // FUNCTION: fn_09842
-std::string UIMacroReporterWnd::sub_7EF680(int maxWidth, const char* text, int font, int height, unsigned char bold) {
+std::string UIMacroReporterWnd::EllipsizeText(int maxWidth, const char* text, int font, int height, unsigned char bold) {
   std::string source(text);
   const int width = this->TextWidth(text, 0, font, height, bold, 0);
   this->TextWidth("...", 0, font, height, bold, 0);
@@ -827,7 +827,7 @@ int UIMacroReporterWnd::SendMsg(
     for (unsigned int index = 0; index < this->m_state->entries.size(); ++index) {
       const MacroReporterEntry& entry = this->m_state->entries[index];
       this->m_entries.push_back(MacroReporterEntry(entry.name, entry.id, entry.unknown_001C));
-      this->sub_7EF430(entry.id, entry.name);
+      this->AddActorRow(entry.id, entry.name);
     }
     this->UpdateScrollBar();
     break;

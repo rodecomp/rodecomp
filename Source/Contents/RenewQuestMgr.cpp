@@ -631,7 +631,7 @@ int CRenewQuestMgr::L_AddQuestIconTooltip(lua_State* state) {
 
 // OFFSET: 0x0067B620
 // FUNCTION: fn_05457
-void CRenewQuestMgr::sub_67B620(unsigned int questId) {
+void CRenewQuestMgr::ShowOngoingQuestInfo(unsigned int questId) {
   if (auto* window = static_cast<CUIOngoingQuestInfo*>(g_windowMgr.EnsureWindow(0x2719))) {
     window->SetQuest(questId);
   }
@@ -639,30 +639,30 @@ void CRenewQuestMgr::sub_67B620(unsigned int questId) {
 
 // OFFSET: 0x0067B650
 // FUNCTION: fn_05458
-void CRenewQuestMgr::sub_67B650(unsigned int questId) {
+void CRenewQuestMgr::ShowQuestInfo(unsigned int questId) {
   if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.EnsureWindow(0x2718))) {
-    window->sub_A67290(0xF);
-    window->sub_A66FF0(questId);
+    window->UpdateQuestLists(0xF);
+    window->SelectQuest(questId);
   }
 }
 
 // OFFSET: 0x0067B690
 // FUNCTION: fn_05459
-void CRenewQuestMgr::sub_67B690() {
+void CRenewQuestMgr::UpdateOngoingQuestInfo() {
   if (auto* window = static_cast<CUIOngoingQuestInfo*>(g_windowMgr.LookupWindow(0x2719))) {
-    window->sub_A55B70();
+    window->UpdateHuntInfo();
   }
 }
 
 // OFFSET: 0x0067B6B0
 // FUNCTION: fn_05460
-void CRenewQuestMgr::sub_67B6B0() {
+void CRenewQuestMgr::UpdateQuestWindows() {
   if (g_windowMgr.window_0428 != nullptr) {
     g_windowMgr.window_0428->Invalidate();
   }
 
   if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(0x2718))) {
-    window->sub_A67290(0xD);
+    window->UpdateQuestLists(0xD);
   }
 }
 
@@ -782,7 +782,7 @@ void CRenewQuestMgr::ReadOngoingQuests(const char* buffer, unsigned int) {
   }
 
   if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(0x2718))) {
-    window->sub_A67290(0xD);
+    window->UpdateQuestLists(0xD);
   }
 }
 

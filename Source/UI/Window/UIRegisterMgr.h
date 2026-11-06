@@ -14,7 +14,7 @@ class CUIFrameWnd;
 class CUIRegisterMgr : public Singleton<CUIRegisterMgr> {
 public:
   __declspec(noinline) CUIRegisterMgr();
-  bool sub_A970A0(int key);
+  bool IsRegistered(int key);
   void Register(int key, std::function<CUIFrameWnd*()> factory);
   CUIFrameWnd* Create(int key);
   void Load();

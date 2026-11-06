@@ -372,7 +372,7 @@ void CGameMode::ReceivePartyRoster(const unsigned char* packet) {
   for (unsigned i = 0; i < count; ++i) {
     members.push_back(*entry++);
   }
-  this->sub_D59FD0(reinterpret_cast<const char*>(packet + 4), &members);
+  this->SetPartyMemberList(reinterpret_cast<const char*>(packet + 4), &members);
 }
 
 // OFFSET: 0x00D40E40
@@ -482,7 +482,7 @@ void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int val
 }
 
 
-int sub_D64A40(const unsigned char* entries);
+int CountItemRandomOptions(const unsigned char* entries);
 
 struct GameOptionEntry {
   /* 0000 */ int id;
@@ -1491,7 +1491,7 @@ void CGameMode::ReceivePackageItemTest(const unsigned char* packet) {
   ITEM_INFO item;
   item.SetItemId(*reinterpret_cast<const int*>(packet + 4));
   int capacity = sizeof(packageName);
-  item.sub_6D5810(packageName, capacity, 0);
+  item.GetIdDisplayName(packageName, capacity, 0);
 
   char path[2048];
   std::memset(path, 0, sizeof(path));
@@ -1523,7 +1523,7 @@ void CGameMode::ReceivePackageItemTest(const unsigned char* packet) {
     const PackageItemTestEntry current = *entry;
     item.SetItemId(current.itemId);
     int nameCapacity = sizeof(itemName);
-    item.sub_6D5810(itemName, nameCapacity, 0);
+    item.GetIdDisplayName(itemName, nameCapacity, 0);
     std::fprintf(file, "%s\t\t\t%d\t%c%d%c\n", itemName, current.count, '(', current.unknown_0004, ')');
     total += current.count;
     ++entry;
@@ -2081,7 +2081,7 @@ void CGameMode::ReceiveGameOptionResult(int command, int result, int enabled) {
   }
 
   g_gameOptionFlag = enabled != 0;
-  g_windowMgr.sub_AAB090();
+  g_windowMgr.RefreshGameSettings();
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_gameOptionFlag ? 0xF17 : 0xF16)), 0x64FFFF, 0, 0, 0);
 }
 
@@ -2102,7 +2102,7 @@ void CGameMode::ReceiveServiceRequest(unsigned char type, int value) {
     }
     break;
   case 6:
-    g_renewQuestMgr->sub_67B650(value);
+    g_renewQuestMgr->ShowQuestInfo(value);
     break;
   case 7:
     if (UIWindow* window = g_windowMgr.EnsureWindow(328)) {
@@ -2296,7 +2296,7 @@ void CGameMode::ReceiveItemReward(const unsigned char* data) {
     item.unknown_005D = packet->damaged;
     item.unknown_0060 = packet->refine;
     std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
-    item.unknown_0098 = sub_D64A40(reinterpret_cast<const unsigned char*>(packet->options));
+    item.unknown_0098 = CountItemRandomOptions(reinterpret_cast<const unsigned char*>(packet->options));
     item.unknown_0000[2] = packet->expireTime;
     for (int index = 0; index < item.unknown_0098; ++index) {
       reinterpret_cast<ItemRewardOption*>(item.unknown_009C)[index] = packet->options[index];
@@ -2434,7 +2434,7 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
   ITEM_INFO box;
   box.SetItemId(*reinterpret_cast<const int*>(packet + 4));
   int capacity = sizeof(name);
-  box.sub_6D5810(name, capacity, 0);
+  box.GetIdDisplayName(name, capacity, 0);
 
   SYSTEMTIME time;
   GetLocalTime(&time);
@@ -2448,7 +2448,7 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
   for (auto item = items.begin(); item != items.end(); ++item) {
     ITEM_INFO info;
     info.SetItemId(item->first);
-    info.sub_6D5810(name, capacity, 0);
+    info.GetIdDisplayName(name, capacity, 0);
     std::string amount = FormatOwnedString("%d", item->second);
     std::string ratio = FormatOwnedString("%.5f%%", static_cast<float>(item->second) / static_cast<float>(total) * 100.0f);
     output << FormatOwnedString("%d\t%s\t%s\t%s\n", item->first, name, amount.c_str(), ratio.c_str());
@@ -2490,7 +2490,7 @@ void CGameMode::ReceiveBroadcastBalloonNotice(const unsigned char* packet) {
 // OFFSET: 0x00D65870
 // FUNCTION: fn_22003
 void CGameMode::ReceiveUnknownD65870(const unsigned char* packet) {
-  this->sub_D5EEF0(
+  this->UpdatePartyMemberInfo(
     reinterpret_cast<const char*>(packet + 0x2F), *reinterpret_cast<const int*>(packet + 2), reinterpret_cast<const char*>(packet + 0x47),
     *reinterpret_cast<const int*>(packet + 10), packet[0x16], *reinterpret_cast<const std::uint16_t*>(packet + 0x0E),
     *reinterpret_cast<const std::uint16_t*>(packet + 0x10), reinterpret_cast<const char*>(packet + 0x17), packet[0x57], packet[0x58],
@@ -2500,7 +2500,7 @@ void CGameMode::ReceiveUnknownD65870(const unsigned char* packet) {
 
 // OFFSET: 0x00D65FC0
 // FUNCTION: fn_22007
-void CGameMode::sub_D65FC0(const unsigned char* record) {
+void CGameMode::ReceiveStatusChangeEntry(const unsigned char* record) {
   this->ApplyStatusChange(
     *reinterpret_cast<const std::uint32_t*>(record + 2), 1, *reinterpret_cast<const std::int16_t*>(record + 6),
     *reinterpret_cast<const std::uint32_t*>(record + 0x0C), *reinterpret_cast<const int*>(record + 0x10),
@@ -2548,7 +2548,7 @@ void CGameMode::ReceiveWindow95Data(const unsigned char* packet) {
 // FUNCTION: fn_22036
 void CGameMode::ReceiveActorSkillResult(const unsigned char* packet) {
   const ActorSkillResultPacket& value = *reinterpret_cast<const ActorSkillResultPacket*>(packet);
-  this->sub_D5B030(
+  this->NotifySkillCasting(
     value.source, value.target, value.skill, value.x, value.y, value.tick, value.level, value.flag, value.result
   );
 }
@@ -2607,7 +2607,7 @@ void CGameMode::UpdateSkillCooldown(std::uint16_t skill, std::uint32_t remaining
 
 // OFFSET: 0x00D41250
 // FUNCTION: fn_21823
-void CGameMode::sub_D41250(const unsigned char* record) {
+void CGameMode::Zc_Skill_Entry(const unsigned char* record) {
   GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(const_cast<unsigned char*>(record));
   GroundSkillSpawnData data;
   data.aid = packet.aid;
@@ -2647,7 +2647,7 @@ void CGameMode::sub_D41250(const unsigned char* record) {
 
 // OFFSET: 0x00D40730
 // FUNCTION: fn_21819
-void CGameMode::sub_D40730(const unsigned char* record) {
+void CGameMode::Zc_Skill_Entry2(const unsigned char* record) {
   GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(const_cast<unsigned char*>(record));
   GroundSkillSpawnData data;
   data.aid = packet.aid;

@@ -598,7 +598,7 @@ static_assert(sizeof(NavigationRouteRecord) == 0x36);
 
 // OFFSET: 0x00B99030
 // FUNCTION: fn_19611
-bool CNavigationManager::sub_B99030(std::string name, int type, unsigned char mode, bool flag, int x, int y, int id) {
+bool CNavigationManager::StartNavigation(std::string name, int type, unsigned char mode, bool flag, int x, int y, int id) {
   if (static_cast<unsigned int>(type) > 4 || name.size() == 0) {
     return false;
   }
@@ -719,7 +719,7 @@ bool CNavigationManager::sub_B99030(std::string name, int type, unsigned char mo
 
 // OFFSET: 0x00B995D0
 // FUNCTION: fn_19612
-bool CNavigationManager::sub_B995D0(std::string name, int type, bool flag) {
+bool CNavigationManager::SearchNavigation(std::string name, int type, bool flag) {
   if (static_cast<unsigned int>(type) <= 4) {
     this->unknown_1264 = name;
     this->unknown_1248 = flag;

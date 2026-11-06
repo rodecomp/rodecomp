@@ -1075,7 +1075,7 @@ void UIDecomlist::Paint() {
 
     std::memset(text, 0, sizeof(text));
     int capacity = sizeof(text);
-    item.sub_6D5810(text, capacity, 0);
+    item.GetIdDisplayName(text, capacity, 0);
     this->DrawTextAt(57, y + 8, text, 0, 0, 13, 0, 0, 0);
     this->DrawTextAt(58, y + 28, FormatOwnedString("%d", item.quantity).c_str(), 0, 0, 13, 0, 0, 0);
   }

@@ -3458,7 +3458,7 @@ void UINavigationV4Wnd::SelectRouteNode(int node) {
 
 // OFFSET: 0x00A85850
 // FUNCTION: fn_17017
-void UIWindow::sub_A85850(
+void UIWindow::DrawAlignedText(
   int x, int y, std::string text, int width, int align, std::uint32_t color, int outlineColor, int family, int height, int bold, unsigned char outlined
 ) {
   int textWidth = 0;
@@ -3597,7 +3597,7 @@ void UIPrivateAirplaneWnd::Slot15(int, int) {
     char name[260];
     std::memset(name, 0, sizeof(name));
     int capacity = 0x104;
-    item.sub_6D5810(name, capacity, 0);
+    item.GetIdDisplayName(name, capacity, 0);
     if (std::strlen(name) == 0) {
       continue;
     }
@@ -3878,7 +3878,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
 
 // OFFSET: 0x00A84400
 // FUNCTION: fn_17010
-int UIWindow::sub_A84400(
+int UIWindow::DrawWrappedFormattedText(
   int x, int y, const std::string& text, int width, int lineSpacing, int align, int family, int height, std::uint32_t color, unsigned char bold
 ) {
   std::list<std::string> lines;

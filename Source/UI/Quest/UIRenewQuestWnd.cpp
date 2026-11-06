@@ -131,7 +131,7 @@ void UINpcSprWnd::Paint() {
 // FUNCTION: fn_09935
 void UINpcSprWnd::Slot31(int, int) {
   if (this->m_mapName.size() != 0) {
-    g_navigationManager.sub_B99030(this->m_mapName, 0, 5, false, this->m_destinationX, this->m_destinationY, 1002);
+    g_navigationManager.StartNavigation(this->m_mapName, 0, 5, false, this->m_destinationX, this->m_destinationY, 1002);
   }
 }
 

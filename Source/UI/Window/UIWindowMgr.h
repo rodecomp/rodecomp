@@ -442,7 +442,7 @@ public:
   void InitializeWindowPolicy();
   void ResetWindows();
   void Shutdown();
-  void sub_AA6B80();
+  void ClearMapWindows();
   void SetScreenSize(int width, int height);
   void ArrangeMiniPartyWindows();
   __declspec(noinline) void AddMiniPartyWindow(UIWindow* window);
@@ -467,9 +467,9 @@ public:
   UIWindow* HitTestWindows(int x, int y);
   void ShowDropDown(UIWindow* owner, UIWindow* child, int x, int y);
   bool CloseDropDown();
-  void sub_AAB070(int option);
-  void sub_AAB090();
-  void sub_AAB0B0();
+  void RefreshGameSettingOption(int option);
+  void RefreshGameSettings();
+  void RefreshGameSettingHotkeys();
   UIWindow* EnsureWindow(int id);
   UIWindow* CreateLayoutWindow(int id);
   RECT GetMiniPartyUsableArea();
@@ -535,9 +535,9 @@ public:
   bool IsOrderFixed(int id);
   __declspec(noinline) void RemoveOrder(int id);
   void BringToFront(int id);
-  void sub_A8C4B0(int id);
-  bool sub_A8CA20();
-  UIWindow* sub_A97580(int id, int x, int y, int width, int height);
+  void CloseMiniPartyWindow(int id);
+  bool ProcessEnterKey();
+  UIWindow* OpenSubChatWindow(int id, int x, int y, int width, int height);
   void SetCapture(UIWindow* window);
   void ReleaseCapture();
   UIWindow* Capture() const;
@@ -597,7 +597,7 @@ public:
   int GetHotkeyBehavior();
   std::vector<unsigned char> SaveReplayWindows();
   bool ProcessHotkeyAction(int action, int pressed);
-  bool sub_AA35F0(int action);
+  bool ProcessShortcutKey(int action);
   bool ProcessKeyDown(int key, int keyData, int pressed);
   void ShowWaitDBSaveWindow();
   void SendEmotionHotkey(int index);

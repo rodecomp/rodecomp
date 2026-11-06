@@ -612,7 +612,7 @@ void CUIEditCtrlEx::SetText(const char* value) {
   }
 
   if (this->text.find(s_editExItemLinkOpen) != std::string::npos || this->text.find(s_editExItemLinkClose) != std::string::npos) {
-    this->sub_869810(this->text.c_str());
+    this->SetLinkedText(this->text.c_str());
   }
 
   this->selectedAll = 1;

@@ -29,7 +29,7 @@ char g_decodedPlayerName[64];
 
 // OFFSET: 0x00E198F0
 // FUNCTION: fn_23844
-void sub_E198F0() {
+void InitMapTypeInfoTable() {
   CFile file;
   if (!file.Open("MapInfoTable.scp", 0, true, false)) {
     if (g_serviceType == 0) {

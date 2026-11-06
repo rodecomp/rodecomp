@@ -56,7 +56,7 @@ BOOL ReleaseApplicationCursor() {
 
 // OFFSET: 0x00E5C430
 // FUNCTION: fn_24372
-LRESULT CALLBACK sub_E5C430(HWND window, UINT message, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam) {
   std::uint8_t handled = 0;
   const LRESULT result = g_serverLanguage->Message(window, message, wParam, lParam, handled);
   if (handled) {

@@ -856,7 +856,7 @@ void RenewQuestUI::CUIQuestItem::OnActiveStateChanged(bool active) {
   if (this->questType == 2) {
     g_renewQuestMgr->SetRecommendedQuestActive(this->questId, active);
     if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(0x2718))) {
-      window->sub_A67290(this->questType);
+      window->UpdateQuestLists(this->questType);
     }
     g_renewQuestMgr->SaveRecommendedActiveList();
     return;
@@ -919,7 +919,7 @@ void CUIRenewQuestUI::Slot53() {
 void CUIRenewQuestUI::OnFilterButton(UIWindow* button) {
   if (button) {
     this->filter = button->geometry.id;
-    this->sub_A67290(0xF);
+    this->UpdateQuestLists(0xF);
   }
 }
 
@@ -993,7 +993,7 @@ void CUIRenewQuestUI::OnCallback56() {
 
 // OFFSET: 0x00A66FF0
 // FUNCTION: fn_16628
-void CUIRenewQuestUI::sub_A66FF0(unsigned int questId) {
+void CUIRenewQuestUI::SelectQuest(unsigned int questId) {
   for (RenewQuestUI::CUIQuestList* list : this->questLists) {
     CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = list->list;
     auto node = listBox->data.begin();
@@ -1194,7 +1194,7 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
 
 // OFFSET: 0x00A67290
 // FUNCTION: fn_16629
-void CUIRenewQuestUI::sub_A67290(unsigned int flags) {
+void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
   if (flags & 1) {
     for (RenewQuestUI::CUIQuestList* list : this->questLists) {
       if (list->type != 1) {
@@ -2010,7 +2010,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->searchEdit->SetAlignment(0);
   this->searchEdit->SetOnSubmit([this]() {
     this->searchText = this->searchEdit->edit->Text();
-    this->sub_A67290(0xF);
+    this->UpdateQuestLists(0xF);
   });
   this->AddChild(this->searchEdit);
 
@@ -2019,7 +2019,7 @@ void CUIRenewQuestUI::Slot15(int width, int height) {
   this->searchButton->Move(342, 416);
   this->searchButton->SetOnClick([this]() {
     this->searchText = this->searchEdit->edit->Text();
-    this->sub_A67290(0xF);
+    this->UpdateQuestLists(0xF);
   });
   this->searchButton->disabled = 0;
   this->searchButton->Invalidate();
@@ -2184,7 +2184,7 @@ void CUIRenewQuestUI::OnWaitTabClick() {
 // FUNCTION: fn_45521
 void CUIRenewQuestUI::OnSearchSubmit() {
   this->searchText = this->searchEdit->edit->Text();
-  this->sub_A67290(0xF);
+  this->UpdateQuestLists(0xF);
 }
 
 // OFFSET: 0x00A66100
@@ -2197,7 +2197,7 @@ void CUIRenewQuestUI::OnClose() {
 // FUNCTION: fn_45520
 void CUIRenewQuestUI::OnSearchButton() {
   this->searchText = this->searchEdit->edit->Text();
-  this->sub_A67290(0xF);
+  this->UpdateQuestLists(0xF);
 }
 
 // OFFSET: 0x00A65AF0
@@ -2228,7 +2228,7 @@ void CUIRenewQuestUI::Slot16() {
   for (unsigned int index = 0; index < this->questLists.size(); ++index) {
     this->questLists[index]->type = 1 << index;
   }
-  this->sub_A67290(0xF);
+  this->UpdateQuestLists(0xF);
 
   for (UIWindow* child : this->filterPanel->m_children) {
     const std::string name = g_renewQuestMgr->GetFilterName(child->geometry.id);

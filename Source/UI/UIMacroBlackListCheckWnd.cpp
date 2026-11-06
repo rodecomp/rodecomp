@@ -99,15 +99,15 @@ void UIMacroBlackListCheckWnd::Paint() {
   this->DrawPanelBackground(titleHeight, 0x21C, "유저인터페이스\\basic_interface\\blacklist_check_bg.bmp");
   this->DrawButtonBar(2, this->geometry.width + 1, 1);
 
-  this->sub_A85850(7, 0x24, FormatOwnedString(LookupMessage(0xFB4)).c_str(), 0x20E, 6, 0, 0, 0, 0xC, 1, 0);
-  this->sub_A85850(7, 0x159, FormatOwnedString(LookupMessage(0xFB5), this->unknown_00E4).c_str(), 0x20E, 6, 0x3939FF, 0, 0, 0xC, 1, 0);
-  this->sub_A85850(0x4F, 0xF6, FormatOwnedString(LookupMessage(0xFB6), this->unknown_00E4).c_str(), 0xA2, 6, 0, 0, 0, 0xC, 0, 0);
+  this->DrawAlignedText(7, 0x24, FormatOwnedString(LookupMessage(0xFB4)).c_str(), 0x20E, 6, 0, 0, 0, 0xC, 1, 0);
+  this->DrawAlignedText(7, 0x159, FormatOwnedString(LookupMessage(0xFB5), this->unknown_00E4).c_str(), 0x20E, 6, 0x3939FF, 0, 0, 0xC, 1, 0);
+  this->DrawAlignedText(0x4F, 0xF6, FormatOwnedString(LookupMessage(0xFB6), this->unknown_00E4).c_str(), 0xA2, 6, 0, 0, 0, 0xC, 0, 0);
 
   std::string stars;
   for (int i = 0; i < this->inputLength; ++i) {
     stars += "*";
   }
-  this->sub_A85850(0x86, 0x109, stars.c_str(), 0x32, 6, 0x4949FF, 0, 0, 0xC, 0, 0);
+  this->DrawAlignedText(0x86, 0x109, stars.c_str(), 0x32, 6, 0x4949FF, 0, 0, 0xC, 0, 0);
 
   int x = 0;
   for (int i = 0; i < this->codeLength; ++i) {
@@ -118,7 +118,7 @@ void UIMacroBlackListCheckWnd::Paint() {
       base = 0x5D;
     }
 
-    this->sub_A85850(x + base, this->charColors[i], this->code + i, 0, 0, 0, 0, 0, this->charSizes[i], this->charFlags[i], 0);
+    this->DrawAlignedText(x + base, this->charColors[i], this->code + i, 0, 0, 0, 0, 0, this->charSizes[i], this->charFlags[i], 0);
     x += 0x17;
   }
 
@@ -127,12 +127,12 @@ void UIMacroBlackListCheckWnd::Paint() {
   const unsigned remainingSec = remainingMs / 1000u;
   const unsigned remainingMin = remainingSec / 60u;
   if (remainingSec < 60u) {
-    this->sub_A85850(
+    this->DrawAlignedText(
       0x4F, 0xA4, FormatOwnedString(LookupMessage(0xFB3), 0, static_cast<int>(remainingMin), static_cast<int>(remainingSec)).c_str(), 0xA2, 6, 0xFF, 0, 0,
       0xD, 1, 0
     );
   } else {
-    this->sub_A85850(0x4F, 0xA4, FormatOwnedString(LookupMessage(0xFB3), 0, 0, 0).c_str(), 0xA2, 6, 0xFF, 0, 0, 0xD, 1, 0);
+    this->DrawAlignedText(0x4F, 0xA4, FormatOwnedString(LookupMessage(0xFB3), 0, 0, 0).c_str(), 0xA2, 6, 0xFF, 0, 0, 0xD, 1, 0);
   }
 }
 

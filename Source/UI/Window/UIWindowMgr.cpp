@@ -974,7 +974,7 @@ void UIWindowMgr::Shutdown() {
 
 // OFFSET: 0x00AA6B80
 // FUNCTION: fn_17234
-void UIWindowMgr::sub_AA6B80() {
+void UIWindowMgr::ClearMapWindows() {
   if (!this->modalWindows.empty() && this->modalWindows.back()) {
     this->activeWindowId = 185;
   }
@@ -1626,10 +1626,10 @@ bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
   }
   lastKey = key;
 
-  if ((key == 0x0D || key == 0x20) && this->sub_A8CA20()) {
+  if ((key == 0x0D || key == 0x20) && this->ProcessEnterKey()) {
     return true;
   }
-  if (!this->sub_AA35F0(action)) {
+  if (!this->ProcessShortcutKey(action)) {
     return this->ProcessHotkeyAction(key, pressed);
   }
   if (this->IsHoverParentVisible() || this->IsHoverOnWindow01C8Button()) {
@@ -2134,19 +2134,19 @@ std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
   return data;
 }
 
-void __fastcall sub_DFF150(CSession* session);
+void __fastcall RefreshPartyWindows(CSession* session);
 
 // OFFSET: 0x00A8C4B0
 // FUNCTION: fn_17132
-void UIWindowMgr::sub_A8C4B0(int id) {
+void UIWindowMgr::CloseMiniPartyWindow(int id) {
   g_session.EraseRecord0734(id);
   this->unknown_4F248.push_back(id);
-  sub_DFF150(&g_session);
+  RefreshPartyWindows(&g_session);
 }
 
 // OFFSET: 0x00A8CA20
 // FUNCTION: fn_17139
-bool UIWindowMgr::sub_A8CA20() {
+bool UIWindowMgr::ProcessEnterKey() {
   if (g_replayAnimationScaling != 0) {
     return false;
   }
@@ -2253,7 +2253,7 @@ bool UIWindowMgr::sub_A8CA20() {
 
 // OFFSET: 0x00A97580
 // FUNCTION: fn_17205
-UIWindow* UIWindowMgr::sub_A97580(int id, int x, int y, int width, int height) {
+UIWindow* UIWindowMgr::OpenSubChatWindow(int id, int x, int y, int width, int height) {
   if (x == -1 && y == -1) {
     x = (id + 10) * 10;
     y = (id + 5) * 20;
@@ -2627,7 +2627,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 
   case 13:
     if (pressed) {
-      this->sub_A8CA20();
+      this->ProcessEnterKey();
     }
     break;
 
@@ -4169,7 +4169,7 @@ void UIWindowMgr::ShowWaitDBSaveWindow() {
 
 // OFFSET: 0x00AA35F0
 // FUNCTION: fn_17221
-bool UIWindowMgr::sub_AA35F0(int action) {
+bool UIWindowMgr::ProcessShortcutKey(int action) {
   if (action != 4) {
     return false;
   }
@@ -6744,7 +6744,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     static_cast<UISecondPasswordInputWnd*>(this->unknown_03B8)->CreateKeypad(g_session.m_loginAccountId);
-    static_cast<UISecondPasswordInputWnd*>(this->unknown_03B8)->sub_90C970(0);
+    static_cast<UISecondPasswordInputWnd*>(this->unknown_03B8)->SetInputMode(0);
     break;
   }
   case 200: {
@@ -6773,7 +6773,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     static_cast<UISecondPasswordInputWnd*>(this->unknown_03BC)->CreateKeypad(g_session.m_loginAccountId);
-    static_cast<UISecondPasswordInputWnd*>(this->unknown_03BC)->sub_90C970(1);
+    static_cast<UISecondPasswordInputWnd*>(this->unknown_03BC)->SetInputMode(1);
     break;
   }
   case 227:
@@ -7536,7 +7536,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     break;
   default:
-    if (Singleton<CUIRegisterMgr>::GetInstance()->sub_A970A0(id)) {
+    if (Singleton<CUIRegisterMgr>::GetInstance()->IsRegistered(id)) {
       window = this->LookupWindow(id);
       if (window == nullptr) {
         window = Singleton<CUIRegisterMgr>::GetInstance()->Create(id);

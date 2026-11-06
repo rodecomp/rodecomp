@@ -22,7 +22,7 @@ public:
   void OnFirstAction();
   void OnClose();
   virtual void Slot53();
-  void sub_A55B70();
+  void UpdateHuntInfo();
   void SetQuest(unsigned int id);
 
   /* 00D8 */ CUITitleBar* titleBar;

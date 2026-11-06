@@ -110,7 +110,7 @@ const std::vector<const char*>& ITEM_INFO::Description() const {
 
 // OFFSET: 0x006D5810
 // FUNCTION: fn_06578
-int ITEM_INFO::sub_6D5810(char* output, int& capacity, unsigned char consume) const {
+int ITEM_INFO::GetIdDisplayName(char* output, int& capacity, unsigned char consume) const {
   const char* name = FindItemDescription(std::atoi(this->itemId.c_str()), g_itemDescriptions).identifiedName;
   const int error = strncpy_s(output, capacity, name ? name : " ", _TRUNCATE);
 

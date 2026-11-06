@@ -3172,7 +3172,7 @@ void CPlayer::ReapplySkillEffects() {
 
   g_weatherEffect.StopDarken();
   this->unknown_0210 = static_cast<std::uint16_t>(g_session.m_level);
-  this->sub_CAA4D0();
+  this->UpdateMaxLevelAura();
 
   CTetraBallEffect* tetraBall;
   for (int id = 0x4EE; id <= 0x4F1; ++id) {

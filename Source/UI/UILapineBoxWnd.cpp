@@ -528,7 +528,7 @@ void UILapineBoxWnd::SetIngredient(int id) {
     char name[0x104];
     std::memset(name, 0, sizeof(name));
     int capacity = 0x104;
-    item.sub_6D5810(name, capacity, 0);
+    item.GetIdDisplayName(name, capacity, 0);
     this->title.assign(name, std::strlen(name));
   }
 
@@ -574,7 +574,7 @@ void UILapineBoxWnd::AddMaterial(int id, int quantity) {
 
 // OFFSET: 0x006028C0
 // FUNCTION: fn_04183
-void UIIngredientInfoWnd::sub_6028C0(std::uint32_t id) {
+void UIIngredientInfoWnd::SetIngredientItem(std::uint32_t id) {
   this->item = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
 
   std::vector<char*> breaks;

@@ -279,7 +279,7 @@ void UIEditCtrl::Slot24(int) {
 // OFFSET: 0x0085E400
 // FUNCTION: fn_10828
 void UIWhisperEditCtrl::Slot24(int retained) {
-  this->sub_86A060();
+  this->AddHistory();
   this->Synchronize();
   this->Invalidate();
 }
@@ -630,7 +630,7 @@ void UIChatEditCtrl::PushHistory() {
 
 // OFFSET: 0x0086A060
 // FUNCTION: fn_10976
-void UIWhisperEditCtrl::sub_86A060() {
+void UIWhisperEditCtrl::AddHistory() {
   if (this->Length() == 0) {
     this->historyIndex = static_cast<int>(this->history.size());
     return;
@@ -3780,7 +3780,7 @@ bool ItemTypeNameLess::operator()(const ITEM_INFO& left, const ITEM_INFO& right)
 // OFFSET: 0x00996870
 // FUNCTION: fn_13470
 bool UIItemStoreSubWnd::Sort1() {
-  if (!this->sub_996950()) {
+  if (!this->UpdateItemNames1()) {
     return false;
   }
   this->items.sort();
@@ -3790,7 +3790,7 @@ bool UIItemStoreSubWnd::Sort1() {
 // OFFSET: 0x009968B0
 // FUNCTION: fn_13471
 bool UIItemStoreSubWnd::Sort2() {
-  if (!this->sub_996AF0()) {
+  if (!this->UpdateItemNames2()) {
     return false;
   }
   this->items.sort();
@@ -3800,7 +3800,7 @@ bool UIItemStoreSubWnd::Sort2() {
 // OFFSET: 0x009968F0
 // FUNCTION: fn_13472
 bool UIItemStoreSubWnd::Sort3() {
-  if (!this->sub_996C90()) {
+  if (!this->UpdateItemNames3()) {
     return false;
   }
   this->items.sort();
@@ -3810,7 +3810,7 @@ bool UIItemStoreSubWnd::Sort3() {
 // OFFSET: 0x00995CF0
 // FUNCTION: fn_13463
 bool UIItemStoreSubWnd::SortReversed1() {
-  if (!this->sub_996950()) {
+  if (!this->UpdateItemNames1()) {
     return false;
   }
   this->items.sort();
@@ -3821,7 +3821,7 @@ bool UIItemStoreSubWnd::SortReversed1() {
 // OFFSET: 0x00995D50
 // FUNCTION: fn_13464
 bool UIItemStoreSubWnd::SortReversed2() {
-  if (!this->sub_996AF0()) {
+  if (!this->UpdateItemNames2()) {
     return false;
   }
   this->items.sort();
@@ -3832,7 +3832,7 @@ bool UIItemStoreSubWnd::SortReversed2() {
 // OFFSET: 0x00995DB0
 // FUNCTION: fn_13465
 bool UIItemStoreSubWnd::SortReversed3() {
-  if (!this->sub_996C90()) {
+  if (!this->UpdateItemNames3()) {
     return false;
   }
   this->items.sort();
@@ -3928,7 +3928,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
     ITEM_INFO item = g_session.GetItem1768At(this->editIndex);
     char name[128];
     int capacity = 128;
-    item.sub_6D5810(name, capacity, 0);
+    item.GetIdDisplayName(name, capacity, 0);
     std::string message = FormatOwnedString(LookupMessage(2473), name);
 
     const int high = static_cast<int>(price / std::atoi(LookupMessage(2474)));
@@ -3983,7 +3983,7 @@ void UIMerchantShopMakeWnd::PrintBuyList() {
 
   for (unsigned index = 0; index < this->items.size(); ++index, ++it) {
     int capacity = 256;
-    it->sub_6D5810(name, capacity, 0);
+    it->GetIdDisplayName(name, capacity, 0);
 
     std::sprintf(text, "%s ", this->priceEdits[index]->Text());
     g_session.IsNumberWithCommas(text);
@@ -4396,7 +4396,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
 
 // OFFSET: 0x00869810
 // FUNCTION: fn_10973
-void UIEditCtrl3::sub_869810(const char* value) {
+void UIEditCtrl3::SetLinkedText(const char* value) {
   std::string resolved = this->ResolveItemLinks(std::string(value, std::strlen(value)));
 
   std::vector<std::string> lines;
@@ -5090,7 +5090,7 @@ void UIMerchantShopMakeWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x00972E60
 // FUNCTION: fn_13281
-std::vector<unsigned char>* sub_972E60(std::vector<unsigned char>* result) {
+std::vector<unsigned char>* BuildItemPurchaseReplayRecords(std::vector<unsigned char>* result) {
   new (result) std::vector<unsigned char>();
   const auto first = BuildReplayTaggedRecord(0x50DC, nullptr, 0);
   result->insert(result->end(), first.begin(), first.end());
@@ -5120,7 +5120,7 @@ std::vector<unsigned char> UIItemSellWnd2::BuildReplayRecords() {
 
 // OFFSET: 0x00973080
 // FUNCTION: fn_13283
-std::vector<unsigned char>* sub_973080(std::vector<unsigned char>* result) {
+std::vector<unsigned char>* BuildItemSellReplayRecords(std::vector<unsigned char>* result) {
   new (result) std::vector<unsigned char>();
   const auto first = BuildReplayTaggedRecord(0x510E, nullptr, 0);
   result->insert(result->end(), first.begin(), first.end());
@@ -5131,7 +5131,7 @@ std::vector<unsigned char>* sub_973080(std::vector<unsigned char>* result) {
 
 // OFFSET: 0x00973170
 // FUNCTION: fn_13284
-std::vector<unsigned char>* sub_973170(std::vector<unsigned char>* result) {
+std::vector<unsigned char>* BuildItemStoreReplayRecords(std::vector<unsigned char>* result) {
   new (result) std::vector<unsigned char>();
   const auto first = BuildReplayTaggedRecord(0x51A4, nullptr, 0);
   result->insert(result->end(), first.begin(), first.end());
@@ -5224,7 +5224,7 @@ std::vector<unsigned char> UIMerchantItemShopWnd::BuildReplayRecords() {
 
 // OFFSET: 0x00973670
 // FUNCTION: fn_13288
-std::vector<unsigned char>* sub_973670(std::vector<unsigned char>* result) {
+std::vector<unsigned char>* BuildMerchantMirrorItemReplayRecords(std::vector<unsigned char>* result) {
   new (result) std::vector<unsigned char>();
   const auto first = BuildReplayTaggedRecord(0x5398, nullptr, 0);
   result->insert(result->end(), first.begin(), first.end());
@@ -8845,7 +8845,7 @@ void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
   const std::string tag = this->unknown_0144->AppendTag(name);
   g_serverLanguage->ResetInput();
   g_serverLanguage->Insert(tag.c_str());
-  this->unknown_0144->sub_89CFE0(item, 0x12B8A4);
+  this->unknown_0144->AddItemTag(item, 0x12B8A4);
 }
 
 // OFFSET: 0x00980340
@@ -10006,7 +10006,7 @@ void UIItemWnd::RefreshItems() {
 // OFFSET: 0x00995E10
 // FUNCTION: fn_13466
 bool UIItemStoreSubWnd::FilterByName1(std::string query) {
-  if (!this->sub_996950()) {
+  if (!this->UpdateItemNames1()) {
     return false;
   }
 
@@ -10025,7 +10025,7 @@ bool UIItemStoreSubWnd::FilterByName1(std::string query) {
 // OFFSET: 0x00996090
 // FUNCTION: fn_13467
 bool UIItemStoreSubWnd::FilterByName2(std::string query) {
-  if (!this->sub_996AF0()) {
+  if (!this->UpdateItemNames2()) {
     return false;
   }
 
@@ -10044,7 +10044,7 @@ bool UIItemStoreSubWnd::FilterByName2(std::string query) {
 // OFFSET: 0x00996440
 // FUNCTION: fn_13468
 bool UIItemStoreSubWnd::FilterByName3(std::string query) {
-  if (!this->sub_996C90()) {
+  if (!this->UpdateItemNames3()) {
     return false;
   }
 
@@ -10062,7 +10062,7 @@ bool UIItemStoreSubWnd::FilterByName3(std::string query) {
 
 // OFFSET: 0x00996950
 // FUNCTION: fn_13474
-bool UIItemStoreSubWnd::sub_996950() {
+bool UIItemStoreSubWnd::UpdateItemNames1() {
   if (this->items.empty()) {
     return false;
   }
@@ -10083,7 +10083,7 @@ bool UIItemStoreSubWnd::sub_996950() {
 
 // OFFSET: 0x00996AF0
 // FUNCTION: fn_13475
-bool UIItemStoreSubWnd::sub_996AF0() {
+bool UIItemStoreSubWnd::UpdateItemNames2() {
   if (this->items.empty()) {
     return false;
   }
@@ -10104,7 +10104,7 @@ bool UIItemStoreSubWnd::sub_996AF0() {
 
 // OFFSET: 0x00996C90
 // FUNCTION: fn_13476
-bool UIItemStoreSubWnd::sub_996C90() {
+bool UIItemStoreSubWnd::UpdateItemNames3() {
   if (this->items.empty()) {
     return false;
   }
@@ -10471,16 +10471,16 @@ void UIMerchantShopMakeWnd::PrintSellList() {
 
     if (item.HasCards()) {
       cursor += item.Prefixes(cursor, capacity, 1);
-      cursor += item.sub_6D5810(cursor, capacity, 1);
+      cursor += item.GetIdDisplayName(cursor, capacity, 1);
       cursor += item.Suffixes(cursor, capacity, 1);
       item.Slots(cursor, capacity, 1);
     } else if (item.HasSpecialCard()) {
       cursor += item.Star(cursor, capacity, 1);
       cursor += item.Creator(cursor, capacity, 1);
       cursor += item.Element(cursor, capacity, 1);
-      item.sub_6D5810(cursor, capacity, 1);
+      item.GetIdDisplayName(cursor, capacity, 1);
     } else {
-      cursor += item.sub_6D5810(cursor, capacity, 1);
+      cursor += item.GetIdDisplayName(cursor, capacity, 1);
       item.Slots(cursor, capacity, 1);
     }
 
@@ -10536,7 +10536,7 @@ void UIItemWnd::Slot25(int x, int y) {
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
             reinterpret_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
-            reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF710(item);
+            reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->InsertItemTag(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
             static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
           }
@@ -10573,7 +10573,7 @@ void UIMerchantItemWnd::Slot25(int x, int y) {
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
           reinterpret_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
-          reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF710(item);
+          reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->InsertItemTag(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
           static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
         }

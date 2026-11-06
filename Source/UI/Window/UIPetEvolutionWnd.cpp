@@ -231,7 +231,7 @@ void UIPetEvolutionWnd::RebuildButtons() {
     char text[260];
     std::memset(text, 0, sizeof(text));
     int capacity = sizeof(text);
-    item.sub_6D5810(text, capacity, 0);
+    item.GetIdDisplayName(text, capacity, 0);
     UITextButton* button = new UITextButton();
     button->Configure(text, 0xFF6464, 0, 12, 1, 1);
     button->m_hoverColor = 0x9B9B9B;

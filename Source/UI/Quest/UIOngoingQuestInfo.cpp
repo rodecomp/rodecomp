@@ -351,7 +351,7 @@ void CUIRewards::Slot16() {
 
 // OFFSET: 0x00A55B70
 // FUNCTION: fn_16313
-void CUIOngoingQuestInfo::sub_A55B70() {
+void CUIOngoingQuestInfo::UpdateHuntInfo() {
   OngoingQuestInfo::CUIScrollWindow* window = this->scrollWindow;
   const unsigned int questId = this->questId;
   window->secondContents->textViewer->Clear();

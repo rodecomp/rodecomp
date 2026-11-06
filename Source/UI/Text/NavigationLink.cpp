@@ -1416,7 +1416,7 @@ int CCreateLineInfo::ParseItemName(int index) {
       char name[260];
       std::memset(name, 0, sizeof(name));
       int capacity = sizeof(name);
-      item.sub_6D5810(name, capacity, 0);
+      item.GetIdDisplayName(name, capacity, 0);
       this->AddSegment(LINE_SEGMENT_TEXT);
       this->AppendText(std::string(name));
       index += static_cast<int>(digits.size()) + 9;
@@ -1770,7 +1770,7 @@ void OpenTextButtonNavigation(UITextButton* button) {
   const int x = std::atoi(button->GetLine(1).c_str());
   const int y = std::atoi(button->GetLine(2).c_str());
   if (button->m_lines.size() <= 3) {
-    g_navigationManager.sub_B99030(name, 2, 5, false, x, y, 1002);
+    g_navigationManager.StartNavigation(name, 2, 5, false, x, y, 1002);
     return;
   }
 
@@ -1783,7 +1783,7 @@ void OpenTextButtonNavigation(UITextButton* button) {
     }
 
     tag += name;
-    g_navigationManager.sub_B995D0(tag, mode, false);
+    g_navigationManager.SearchNavigation(tag, mode, false);
     return;
   }
 
@@ -1798,7 +1798,7 @@ void OpenTextButtonNavigation(UITextButton* button) {
   const unsigned char group = code < 10 ? hundreds : static_cast<unsigned char>(hundreds + 2);
   const int remainder = code < 10 ? code : code - 10;
   const unsigned char kind = remainder < 1 ? group : static_cast<unsigned char>(group + 4);
-  g_navigationManager.sub_B99030(name, mode, kind, flag == 0, x, y, id);
+  g_navigationManager.StartNavigation(name, mode, kind, flag == 0, x, y, id);
 }
 
 // OFFSET: 0x0083BAF0

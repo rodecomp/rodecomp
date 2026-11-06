@@ -197,7 +197,7 @@ void UIHotKeyWnd::SaveHotkeys() {
     for (const auto& entry : this->hotkeys[tab]) {
       g_session.m_hotkeyScript->Call("ChangeUserHotKey", "ddsdd", tab + 1, entry.first, entry.second.description.c_str(), entry.second.key1, entry.second.key2);
       if (tab == 1) {
-        g_windowMgr.sub_AAB0B0();
+        g_windowMgr.RefreshGameSettingHotkeys();
       }
     }
   }

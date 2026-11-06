@@ -47,15 +47,15 @@ public:
   void InitTabs();
   void ResetLists();
   bool IsSkillArea(int x, int y);
-  void sub_9B2CD0();
+  void UpdateRequiredSkills();
   void UpdateScrollBar();
   void LayoutButtons();
   int SkillIndexAt(int x, int y);
-  bool sub_9B3EB0(int skillId);
-  void sub_9AE930();
-  void sub_9AF300();
-  void sub_9AF960();
-  void sub_9AE730();
+  bool IncreaseSkillLevel(int skillId);
+  void DrawCharacter();
+  void DrawSkillList();
+  void DrawSkillTree();
+  void ApplySkillPoints();
 
 public:
   /* 00B4 */ UITabControl* m_tabs;

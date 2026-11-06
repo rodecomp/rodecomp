@@ -66,13 +66,13 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
     }
   }
 
-  this->sub_89C080();
+  this->RebuildHistory();
   return result;
 }
 
 // OFFSET: 0x0089C080
 // FUNCTION: fn_11581
-__declspec(noinline) void UIChatHisBox::sub_89C080() {
+__declspec(noinline) void UIChatHisBox::RebuildHistory() {
   this->Clear();
   this->ClearNaviLinks();
 

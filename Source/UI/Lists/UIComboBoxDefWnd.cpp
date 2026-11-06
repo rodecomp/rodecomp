@@ -499,7 +499,7 @@ void UIString::ParseTags(std::string text) {
 
 // OFFSET: 0x008A0B10
 // FUNCTION: fn_11630
-void UIDescriptRace::sub_8A0B10() {
+void UIDescriptRace::DrawRaceDescription() {
   if (this->m_race == 1) {
     if (!g_doramCreationEnabled) {
       return;

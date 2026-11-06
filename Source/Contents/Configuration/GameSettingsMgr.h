@@ -42,7 +42,7 @@ public:
   bool ReadOptionTable();
   void ResetToDefaults();
   void ToggleOption(int id);
-  void sub_6C0C40(int id, unsigned char value, bool notify);
+  void SetOption(int id, unsigned char value, bool notify);
   void ApplyScriptOption(int id, const char* key);
   bool RunFunction(int id);
   std::optional<GameSettingsOption*> FindOption(int id);

@@ -222,7 +222,7 @@ void UIChatEditCtrl::InsertItemTag(int tagId) {
     return;
   }
 
-  const std::string tag = this->unknown_0144->sub_874A40(tagId, 0x7F00E4);
+  const std::string tag = this->unknown_0144->AddSkillTag(tagId, 0x7F00E4);
   const std::string combined = this->text + tag;
   g_serverLanguage->ResetInput();
   g_serverLanguage->Insert(combined.c_str());

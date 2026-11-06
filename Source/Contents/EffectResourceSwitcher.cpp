@@ -575,14 +575,14 @@ bool CEZ2STREffectMgr::Load() {
   {
     const auto* data = static_cast<const unsigned char*>(file.GetData());
     std::vector<unsigned char> buffer(data, data + file.GetSize());
-    failed = !loader.sub_4F3C70(buffer, true);
+    failed = !loader.Load(buffer, true);
   }
   if (failed) {
     return false;
   }
 
   std::map<std::string, EZ2STREffectRecord> records;
-  if (!loader.sub_50C2A0(&records)) {
+  if (!loader.GetEZ2STREffect(&records)) {
     return false;
   }
 

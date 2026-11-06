@@ -102,10 +102,10 @@ class CGameMode : public CMode {
 public:
   CGameMode();
   int SendMsg(int event, int argument1, int argument2, int argument3, int argument4) override;
-  void sub_D1C050(const AchievementStatePacket* packet);
+  void ReceiveStorageClose(const AchievementStatePacket* packet);
   void ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet);
-  void sub_D6C460(int count, int unknown01738784, short unknown01738788, int completed, int total, const AchievementRecordPacket* packets);
-  void sub_D6AD60(int count, const int* aids);
+  void ReceiveAchievementList(int count, int unknown01738784, short unknown01738788, int completed, int total, const AchievementRecordPacket* packets);
+  void ReceiveMacroReporterList(int count, const int* aids);
   /* 0058 */ unsigned char unknown_0058[0x10];
   /* 0068 */ char mapName[16];
   /* 0078 */ unsigned char unknown_0078[0xC];
@@ -239,7 +239,7 @@ public:
   bool IsEffectId990Group(int id);
   bool IsEffectId994Group(int id);
   bool ConfirmDraggedItemUse();
-  void sub_CFE480(int actorId);
+  void RefreshStatusStateEffect(int actorId);
   void NotifyUnknown0604(int value);
   void UpdatePetFriendlyWindow(int previousFriendly);
   __declspec(noinline) bool SaveEmblemFile(const std::vector<unsigned char>& data);
@@ -492,8 +492,8 @@ public:
   void IgnoreRemovedPacket7(const unsigned char* packet);
   void IgnoreRemovedPacket8();
   void IgnoreRemovedPacket9();
-  void sub_D079A0(unsigned char kind, int argument);
-  void sub_D08390(const unsigned char* packet);
+  void ReceiveWhisperResult(unsigned char kind, int argument);
+  void ReceiveChangeZoneServerWithHost(const unsigned char* packet);
   void IgnoreRemovedPacket10(const unsigned char* packet);
   void IgnoreRemovedPacket11(const unsigned char* packet);
   void IgnoreRemovedPacket12(const unsigned char* packet, int value1, int value2, int value3, int value4);
@@ -567,33 +567,33 @@ public:
   static bool ShowRestrictedNotice(int grade);
   void AddUnknown0604(UIWindow* window);
   void RequestAdminStatus();
-  void sub_CEB8E0();
-  unsigned sub_CEBBB0(const std::vector<unsigned char>& data);
-  __declspec(noinline) unsigned sub_CEBF30(const std::vector<unsigned char>& data);
-  unsigned sub_CEC100(const std::vector<unsigned char>& data);
-  unsigned sub_CEC6A0(const std::vector<unsigned char>& data);
-  void sub_D40730(const unsigned char* record);
+  void RecordChatRoomSettings();
+  unsigned ReadReplayGuildInfo(const std::vector<unsigned char>& data);
+  __declspec(noinline) unsigned ReadReplayGroundItems(const std::vector<unsigned char>& data);
+  unsigned ReadReplayActors(const std::vector<unsigned char>& data);
+  unsigned ReadReplayGroundSkills(const std::vector<unsigned char>& data);
+  void Zc_Skill_Entry2(const unsigned char* record);
   void ReceiveGroundSkill8(const unsigned char* record);
   void ReceiveGroundSkill32(const unsigned char* record);
   void ReceiveGroundSkillExtended(const unsigned char* record);
   void ReceivePartyRoster(const unsigned char* packet);
   void ReceivePartyMemberInfo(const unsigned char* packet);
   void ReceivePartyMemberList(const unsigned char* packet);
-  void sub_D59FD0(const char* partyName, std::vector<PartyRosterEntry>* members);
-  void sub_D48C60(const unsigned char* data);
-  void sub_D4A060(const unsigned char* data);
-  void sub_D6F900(const unsigned char* data);
-  void sub_D48530(const unsigned char* data);
+  void SetPartyMemberList(const char* partyName, std::vector<PartyRosterEntry>* members);
+  void ReceiveGuildExpulsion2(const unsigned char* data);
+  void ReceiveGuildLeave2(const unsigned char* data);
+  void ReceivePartyInfo2(const unsigned char* data);
+  void ReceiveWhisper(const unsigned char* data);
   void RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char unknownValue, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options);
   void RefreshInventoryOrEquipItem2(const unsigned char* data);
   void ReceiveRankingList(const unsigned char* data);
   void ApplyStatusIcons(int level, unsigned int flags);
   void ReceiveGuildStorageLogItems(const unsigned char* data);
-  void sub_D1A330(const unsigned char* data);
-  void sub_D1A520(int unknown_0004, std::string name, std::string text, bool flag);
+  void ReceiveWhisper2(const unsigned char* data);
+  void ProcessWhisper(int unknown_0004, std::string name, std::string text, bool flag);
   void SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int value, std::int16_t x, std::int16_t y, int type, signed char level, unsigned char visible, unsigned char flags);
-  void sub_D41250(const unsigned char* record);      
-  void sub_D65FC0(const unsigned char* record);
+  void Zc_Skill_Entry(const unsigned char* record);      
+  void ReceiveStatusChangeEntry(const unsigned char* record);
   void ReceiveBroadcastBalloonNotice(const unsigned char* packet);
   void ReceiveUnknownD65870(const unsigned char* packet);
   void ReceiveStatusChangeEffect2(const unsigned char* packet);
@@ -603,7 +603,7 @@ public:
   void Initialize(const char* name) override;
   void End() override;
   void Update() override;
-  void sub_D08910();
+  void ProcessIncomingPackets();
   void TargetActorByAid(int aid);
   void Slot7(int value) override;
   void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);
@@ -676,8 +676,8 @@ public:
   void ReceiveShopName(const char* text, int shopId);
   void ReceiveFriendList(const unsigned char* packet);
   void ReceiveGuildMemberMemoList(const unsigned char* packet);
-  void sub_D591A0(std::uint32_t aid, int state, int flag, int options);
-  void sub_D5EEF0(
+  void ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, int options);
+  void UpdatePartyMemberInfo(
     const char* first, int second, const char* third, int fourth, unsigned char fifth, std::uint16_t sixth, std::uint16_t seventh,
     const char* eighth, unsigned char ninth, unsigned char tenth, int eleventh
   );
@@ -732,7 +732,7 @@ public:
   void LoadCooldownSnapshot(const void* packet);
   void ApplyCooldownStart(const void* packet);
   void LoadCooldownRecords(const void* packet);
-  void sub_D5B030(
+  void NotifySkillCasting(
     std::uint32_t source, std::uint32_t target, std::uint16_t skill, std::uint16_t x, std::uint16_t y,
     int tick, int level, unsigned char flag, int result
   );
@@ -971,8 +971,8 @@ bool LaunchLuaSkillEffect(int skillId, int level, CGameActor* source, CGameActor
 void LaunchRollingCutterEffect(CGameActor* actor);
 void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* target, std::uint32_t targetAid, std::uint16_t skillId, short x, short y, int delay);
 void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t skillId, int delay, int effectId);
-void __stdcall sub_CDBC30(const vector3d* position, int actorId, float scale, int job);
-void __stdcall sub_D08670(int field14, int itemId, int quantity, int field8, int fieldC, int field10);
+void __stdcall LaunchBulletSpriteEffect(const vector3d* position, int actorId, float scale, int job);
+void __stdcall ProcessBuyingStorePurchase(int field14, int itemId, int quantity, int field8, int fieldC, int field10);
 void DecodeSrcDst(const unsigned char* packed, int* srcX, int* srcY, int* dstX, int* dstY, int* subX, int* subY);
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -1008,8 +1008,8 @@ static_assert(sizeof(CGameMode) == 0x670);
 
 void SendPacketHeader(std::uint16_t packetType);
 void SendPacketHeader2(std::uint16_t packetType);
-void sub_D73A10(const unsigned char* packet);
-void sub_D6E440();
+void ReceiveNavigation(const unsigned char* packet);
+void CloseAccountLimitedTool();
 
 struct MiniMapEffectMarker {
   /* 0000 */ int count;
@@ -1021,7 +1021,7 @@ extern std::map<int, MiniMapEffectMarker> g_miniMapEffectMarkers;
 extern char g_pendingWhisperCount;
 extern int g_whisperRecord;
 extern int g_timeAttackStart;
-void sub_CCFF10();
+void CloseWhisperRecord();
 extern unsigned char g_gameModePacketBuffer[0x10000];
 extern int g_unknown173A5BC;
 extern int g_unknown_01738268;

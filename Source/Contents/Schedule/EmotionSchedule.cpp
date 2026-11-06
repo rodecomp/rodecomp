@@ -5,7 +5,7 @@
 
 class UICashEmotionListWnd {
 public:
-  void sub_7C7E50();
+  void RefreshPackLists();
   void RefreshSelection();
 };
 
@@ -22,14 +22,14 @@ CEmotionPurchaseExpireSchedule::CEmotionPurchaseExpireSchedule(const std::uint64
 // FUNCTION: fn_04717
 void CEmotionPurchaseExpireSchedule::Process(const std::uint64_t& now) {
   CSchedule::Process(now);
-  if (g_cashEmotionMgr->sub_59C5A0()) {
+  if (g_cashEmotionMgr->RemoveExpiredPacks()) {
     if (g_cashEmotionListWnd) {
-      g_cashEmotionListWnd->sub_7C7E50();
+      g_cashEmotionListWnd->RefreshPackLists();
     }
   }
   int earliest = g_cashEmotionMgr->GetEarliestExpiry();
   if (earliest != 0x7FFFFFFF) {
-    int current = g_cashEmotionMgr->sub_59FC50();
+    int current = g_cashEmotionMgr->GetServerTime();
     if (current < earliest) {
       this->interval = (static_cast<std::int64_t>(earliest) * 10000000i64 - static_cast<std::int64_t>(current) * 10000000i64) / 10000i64;
       return;
@@ -50,7 +50,7 @@ CEmotionPurchaseUseableTimeUISchedule::CEmotionPurchaseUseableTimeUISchedule(
 // FUNCTION: fn_04720
 void CEmotionPurchaseUseableTimeUISchedule::Process(const std::uint64_t& now) {
   CSchedule::Process(now);
-  if (!g_cashEmotionMgr->sub_59D2C0()) {
+  if (!g_cashEmotionMgr->UpdatePurchasedPackExpiry()) {
     this->active = false;
   }
 }
@@ -67,11 +67,11 @@ void CEmotionSaleExpireSchedule::Process(const std::uint64_t& now) {
   CSchedule::Process(now);
   CashEmotionPackRefresh refresh = g_cashEmotionMgr->RefreshUnownedPacks();
   if (refresh.changed && g_cashEmotionListWnd) {
-    g_cashEmotionListWnd->sub_7C7E50();
+    g_cashEmotionListWnd->RefreshPackLists();
     g_cashEmotionListWnd->RefreshSelection();
   }
   if (refresh.nextTime != 0x7FFFFFFF) {
-    int current = g_cashEmotionMgr->sub_59FC50();
+    int current = g_cashEmotionMgr->GetServerTime();
     if (current < refresh.nextTime) {
       this->interval = (static_cast<std::int64_t>(refresh.nextTime) * 10000000i64 - static_cast<std::int64_t>(current) * 10000000i64) / 10000i64;
       return;

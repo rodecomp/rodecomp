@@ -1952,7 +1952,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     case 0x3D: {
       MessengerMember target = this->MemberAtIndex(this->selected);
       if (target.valid) {
-        g_windowMgr.sub_A8C4B0(target.accountId);
+        g_windowMgr.CloseMiniPartyWindow(target.accountId);
       }
       return 0;
     }

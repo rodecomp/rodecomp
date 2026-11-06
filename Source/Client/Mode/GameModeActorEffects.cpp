@@ -6,13 +6,13 @@
 // FUNCTION: fn_21289
 void CGameMode::RefreshActorJobEffects(bool playerOnly) {
   this->scene->player->ResetJobEffects();
-  this->scene->player->sub_CAA4D0();
+  this->scene->player->UpdateMaxLevelAura();
   if (!playerOnly) {
     for (std::list<CRenderObject*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
       CGameActor* actor = static_cast<CGameActor*>(*it);
       if (actor->unknown_02B4 != 0) {
         actor->ResetJobEffects();
-        actor->sub_CAA4D0();
+        actor->UpdateMaxLevelAura();
       }
     }
   }

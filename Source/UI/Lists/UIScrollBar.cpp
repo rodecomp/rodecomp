@@ -1246,7 +1246,7 @@ void UIChatHisBox::DropOldestRecords() {
   }
   this->unknown_0118.resize(half);
 
-  this->sub_89C080();
+  this->RebuildHistory();
 }
 
 // OFFSET: 0x0087CEC0
@@ -2082,7 +2082,7 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
     }
 
     std::vector<std::string> split;
-    this->sub_8932D0(&mode, &split, wrapped[line]);
+    this->WrapLinkText(&mode, &split, wrapped[line]);
     if (split.size() > 1) {
       for (unsigned int part = 0; part < split.size(); ++part) {
         if (part == 0) {
@@ -2143,7 +2143,7 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
 
 // OFFSET: 0x0089DC30
 // FUNCTION: fn_11598
-void UIChatHisBox::sub_89DC30(const char* text, int& color, int& mode) {
+void UIChatHisBox::AddItemLinkLine(const char* text, int& color, int& mode) {
   if (!_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) ||
       !_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
     this->UIListBox::AddLine(text);
@@ -2152,7 +2152,7 @@ void UIChatHisBox::sub_89DC30(const char* text, int& color, int& mode) {
 
   std::vector<std::string> wrapped;
   const std::string converted = this->Convert(text);
-  this->sub_8932D0(&mode, &wrapped, converted);
+  this->WrapLinkText(&mode, &wrapped, converted);
   this->RewrapLinkLines(wrapped, mode);
   std::string source = text;
   for (unsigned int line = 0; line < wrapped.size(); ++line) {
@@ -2167,7 +2167,7 @@ void UIChatHisBox::sub_89DC30(const char* text, int& color, int& mode) {
 
 // OFFSET: 0x0089E0F0
 // FUNCTION: fn_11599
-void UIChatHisBox::sub_89E0F0(const char* text, int& color, int& mode) {
+void UIChatHisBox::AddNavigationLinkLine(const char* text, int& color, int& mode) {
   if (!g_navigationLinkParser->HasLink(text)) {
     this->UIListBox::AddLine(text);
     return;
@@ -2176,7 +2176,7 @@ void UIChatHisBox::sub_89E0F0(const char* text, int& color, int& mode) {
   std::vector<std::string> wrapped;
   std::string display;
   DisplayNavigationLink(display, text);
-  this->sub_8932D0(&mode, &wrapped, display);
+  this->WrapLinkText(&mode, &wrapped, display);
   this->RewrapLinkLines(wrapped, mode);
   std::string source = text;
   for (unsigned int line = 0; line < wrapped.size(); ++line) {

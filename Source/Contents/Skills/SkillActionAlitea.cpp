@@ -73,9 +73,9 @@ public:
 
 class CSkillAction_DamageWereRaptorForm : public CSkillAction_AnimalForm, public CSkillAction_Direction {
 public:
-  void sub_5A4760(int sourceActor, CGameActor* target);
-  __declspec(noinline) void sub_5A4930(int level, CGameActor* source);
-  __declspec(noinline) void sub_5A4B00(int level, CGameActor* source);
+  void SpawnAttack00Effect(int sourceActor, CGameActor* target);
+  __declspec(noinline) void SpawnAttack01Effect(int level, CGameActor* source);
+  __declspec(noinline) void SpawnAttack02Effect(int level, CGameActor* source);
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
   bool Slot17(CGameActor* actor) override;
   void Slot18(CGameActor* actor) override;
@@ -866,7 +866,7 @@ void CSkillAction_AT_PINION_SHOT::Slot11(int level, CGameActor* source, CGameAct
 // OFFSET: 0x005A7180
 // FUNCTION: fn_03201
 void CSkillAction_AT_PINION_SHOT::Slot15(int level, CGameActor* source, CGameActor* target) {
-  this->sub_5A4930(level, source);
+  this->SpawnAttack01Effect(level, source);
 }
 
 // OFFSET: 0x005A71A0
@@ -1849,7 +1849,7 @@ void CEfstAction_INSANE3::Slot00(int efstId, int value, int argument3, int argum
 
 // OFFSET: 0x005AF030
 // FUNCTION: fn_03285
-bool __stdcall sub_5AF030(int) {
+bool __stdcall KeepSkillAttackMotion(int) {
   return false;
 }
 
@@ -1901,130 +1901,130 @@ void CSkillAction_AT_TEMPEST_FLAP::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x005AF000
 // FUNCTION: fn_03282
-bool sub_5AF000() {
+bool SkillActionIsSupport() {
   return false;
 }
 
 // OFFSET: 0x005AF010
 // FUNCTION: fn_03283
-int sub_5AF010() {
+int GetSkillCastMotion() {
   return 8;
 }
 
 // OFFSET: 0x005AF020
 // FUNCTION: fn_03284
-int sub_5AF020() {
+int GetSkillAttackMotion() {
   return 7;
 }
 
 // OFFSET: 0x005AF040
 // FUNCTION: fn_03286
-bool sub_5AF040() {
+bool IsSkillWithoutMotion() {
   return false;
 }
 
 // OFFSET: 0x005AF050
 // FUNCTION: fn_03287
-bool sub_5AF050() {
+bool KeepSkillAttackSpeed() {
   return false;
 }
 
 // OFFSET: 0x005AF060
 // FUNCTION: fn_03288
-bool sub_5AF060() {
+bool SuppressSupportSkillArrow() {
   return false;
 }
 
 // OFFSET: 0x005AF070
 // FUNCTION: fn_03289
-bool sub_5AF070() {
+bool SuppressAttackSkillArrow() {
   return false;
 }
 
 // OFFSET: 0x005AF080
 // FUNCTION: fn_03290
-void __stdcall sub_5AF080(int a, int b) {
+void __stdcall OnSkillCast(int a, int b) {
 }
 
 // OFFSET: 0x005AF090
 // FUNCTION: fn_03291
-void __stdcall sub_5AF090(int a, int b, int c) {
+void __stdcall OnTargetSkillCast(int a, int b, int c) {
 }
 
 // OFFSET: 0x005AF0A0
 // FUNCTION: fn_03292
-void __stdcall sub_5AF0A0(int a, int b, int c, int d, int e) {
+void __stdcall OnGroundSkillCast(int a, int b, int c, int d, int e) {
 }
 
 // OFFSET: 0x005AF0B0
 // FUNCTION: fn_03293
-void __stdcall sub_5AF0B0(int a, int b, int c) {
+void __stdcall OnSkillEffect(int a, int b, int c) {
 }
 
 // OFFSET: 0x005AF0C0
 // FUNCTION: fn_03294
-void __stdcall sub_5AF0C0(vector3d a, int b, int c) {
+void __stdcall OnGroundSkillEffect(vector3d a, int b, int c) {
 }
 
 // OFFSET: 0x005AF0D0
 // FUNCTION: fn_03295
-bool sub_5AF0D0() {
+bool UseGroundSkillLastFrame() {
   return false;
 }
 
 // OFFSET: 0x005AF0E0
 // FUNCTION: fn_03296
-int sub_5AF0E0() {
+int GetSkillScopeType() {
   return 0;
 }
 
 // OFFSET: 0x005AF0F0
 // FUNCTION: fn_03297
-void __stdcall sub_5AF0F0(int a, int b, int c) {
+void __stdcall OnSkillHit(int a, int b, int c) {
 }
 
 // OFFSET: 0x005AF100
 // FUNCTION: fn_03298
-void __stdcall sub_5AF100(int a, int b, int c) {
+void __stdcall OnSkillDamage(int a, int b, int c) {
 }
 
 // OFFSET: 0x005AF110
 // FUNCTION: fn_03299
-void __stdcall sub_5AF110(int a, int b, int c, int d, int e, int f) {
+void __stdcall OnEfstBegin(int a, int b, int c, int d, int e, int f) {
 }
 
 // OFFSET: 0x005AF120
 // FUNCTION: fn_03300
-void __stdcall sub_5AF120(int a, int b, int c, int d, int e) {
+void __stdcall OnEfstEnd(int a, int b, int c, int d, int e) {
 }
 
 // OFFSET: 0x005AF130
 // FUNCTION: fn_03301
-void __stdcall sub_5AF130(int a, int b, int c, int d, int e) {
+void __stdcall OnEfstUpdate(int a, int b, int c, int d, int e) {
 }
 
 // OFFSET: 0x005AF140
 // FUNCTION: fn_03302
-void __stdcall sub_5AF140(std::uint32_t* out) {
+void __stdcall GetEfstBeginMessage(std::uint32_t* out) {
   out[0] = 0;
   out[1] = 0xFFFF00;
 }
 
 // OFFSET: 0x005AF160
 // FUNCTION: fn_03303
-void __stdcall sub_5AF160(std::uint32_t* out) {
+void __stdcall GetEfstEndMessage(std::uint32_t* out) {
   out[0] = 0;
   out[1] = 0xFF;
 }
 
 // OFFSET: 0x005AF180
 // FUNCTION: fn_03304
-void __stdcall sub_5AF180(int a, int b, int c) {
+void __stdcall OnSkillObjectCreate(int a, int b, int c) {
 }
 
 // OFFSET: 0x005AF190
 // FUNCTION: fn_03305
-void __stdcall sub_5AF190(int a) {
+void __stdcall OnSkillObjectRemove(int a) {
 }
 
 
@@ -2073,7 +2073,7 @@ const float g_featherOffsets[3] = {0.0f, 0.1f, -0.1f};
 
 // OFFSET: 0x005A4760
 // FUNCTION: fn_03152
-void CSkillAction_DamageWereRaptorForm::sub_5A4760(int sourceActor, CGameActor* target) {
+void CSkillAction_DamageWereRaptorForm::SpawnAttack00Effect(int sourceActor, CGameActor* target) {
   CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
   if (source && target) {
     const std::uint8_t bytes[] = {0x46, 0x75, 0x73, 0x0C, 0x60, 0xAE, 0xAC, 0x1F, 0x17, 0x01};
@@ -2085,7 +2085,7 @@ void CSkillAction_DamageWereRaptorForm::sub_5A4760(int sourceActor, CGameActor* 
 
 // OFFSET: 0x005A4930
 // FUNCTION: fn_03153
-void CSkillAction_DamageWereRaptorForm::sub_5A4930(int sourceActor, CGameActor* target) {
+void CSkillAction_DamageWereRaptorForm::SpawnAttack01Effect(int sourceActor, CGameActor* target) {
   CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
   if (source && target) {
     const std::uint8_t bytes[] = {0xD2, 0x13, 0xB7, 0x32, 0x9A, 0xF0, 0x6A, 0x27, 0x82, 0x67};
@@ -2097,7 +2097,7 @@ void CSkillAction_DamageWereRaptorForm::sub_5A4930(int sourceActor, CGameActor* 
 
 // OFFSET: 0x005A4B00
 // FUNCTION: fn_03154
-void CSkillAction_DamageWereRaptorForm::sub_5A4B00(int sourceActor, CGameActor* target) {
+void CSkillAction_DamageWereRaptorForm::SpawnAttack02Effect(int sourceActor, CGameActor* target) {
   CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
   if (!target || !source) {
     return;

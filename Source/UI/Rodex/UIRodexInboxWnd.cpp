@@ -396,7 +396,7 @@ void UIRodexInboxWnd::Paint() {
 
   if (!g_rodexMailStore->unknown_001C) {
     this->DrawBitmap(0x1F, 0x9A, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\img_notice.bmp"))), true);
-    this->sub_A84400(0x1F, 0xE5, std::string(LookupMessage(0xC76)), 0xF8, 3, 6, 0, 12, 0, 0);
+    this->DrawWrappedFormattedText(0x1F, 0xE5, std::string(LookupMessage(0xC76)), 0xF8, 3, 6, 0, 12, 0, 0);
     this->DrawCenteredText(0x1F, 0x10E, LookupMessage(0xC77), 0xF8, 0, 0x12, 0xC89482, 1);
     return;
   }

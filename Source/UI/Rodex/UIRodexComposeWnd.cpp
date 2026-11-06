@@ -90,7 +90,7 @@ ITEM_INFO UIRodexComposeWnd::GetItemAtPoint(int x, int y) {
 
 // OFFSET: 0x007FF710
 // FUNCTION: fn_10003
-void UIRodexComposeWnd::sub_7FF710(const ITEM_INFO& item) {
+void UIRodexComposeWnd::InsertItemTag(const ITEM_INFO& item) {
   if (!this->unknown_0100) {
     this->unknown_0100 = new UIItemTagOnMail();
     if (!this->unknown_0100) {
@@ -108,12 +108,12 @@ void UIRodexComposeWnd::sub_7FF710(const ITEM_INFO& item) {
   std::string appendResult = tagCtrl->AppendTag(item.DisplayName(0));
   this->m_contents->SetText(appendResult.c_str());
   this->m_contents->MoveCursorToEnd();
-  tagCtrl->sub_89CFE0(item, 0xd630a9);
+  tagCtrl->AddItemTag(item, 0xd630a9);
 }
 
 // OFFSET: 0x007FF940
 // FUNCTION: fn_10004
-void UIRodexComposeWnd::sub_7FF940(int tagId) {
+void UIRodexComposeWnd::InsertSkillTag(int tagId) {
   if (!this->unknown_0100) {
     this->unknown_0100 = new UIItemTagOnMail();
     if (!this->unknown_0100) {
@@ -130,7 +130,7 @@ void UIRodexComposeWnd::sub_7FF940(int tagId) {
     return;
   }
 
-  std::string tagText = tagCtrl->sub_874A40(tagId, 0xd630a9);
+  std::string tagText = tagCtrl->AddSkillTag(tagId, 0xd630a9);
   tagCtrl->taggedText = std::string(this->m_contents->Text());
 
   std::string fullText = std::string(this->m_contents->Text()) + tagText;
@@ -534,7 +534,7 @@ void UIRodexComposeWnd::Paint() {
     auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
     tagCtrl->SetLines(this->m_contents->unknown_0168);
     tagCtrl->SetTaggedText(this->m_contents->Text(), this->m_contents->geometry.width);
-    tagCtrl->sub_8962C0();
+    tagCtrl->UpdateItemTags();
     auto* editCtrl3 = static_cast<UIEditCtrl3*>(this->unknown_0100);
     int diff = editCtrl3->unknown_0150 - editCtrl3->unknown_0138;
     this->m_contents->unknown_00F0 = std::max(0, diff);

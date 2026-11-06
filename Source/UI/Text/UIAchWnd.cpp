@@ -53,7 +53,7 @@ UIAchievementWnd::~UIAchievementWnd() {
 
 // OFFSET: 0x007B37F0
 // FUNCTION: fn_09205
-void UIAchListWnd::sub_7B37F0(int index) {
+void UIAchListWnd::SelectAchievement(int index) {
   this->selectedIndex = index;
 
   if (this->parent) {
@@ -168,7 +168,7 @@ std::string UIAchTab::Label(int group, int sub) {
 
 // OFFSET: 0x007B4370
 // FUNCTION: fn_09211
-bool UIAchTab::sub_7B4370(int x, int y, int* a, int* b) {
+bool UIAchTab::HitTestTab(int x, int y, int* a, int* b) {
   if (x < 0 || x > this->tabWidth || y < 0) {
     return false;
   }
@@ -665,7 +665,7 @@ void UIToolTipBitmapWnd::Paint() {
 void UIAchTab::Slot27(int x, int y) {
   int group = 0;
   int sub = 0;
-  this->sub_7B4370(x, y, &group, &sub);
+  this->HitTestTab(x, y, &group, &sub);
   this->hoverGroup = group;
   this->hoverSub = sub;
   this->Invalidate();
@@ -787,7 +787,7 @@ void UIAchListWnd::UpdateScroll() {
 
 // OFFSET: 0x007B7F10
 // FUNCTION: fn_09242
-void UIAchTab::sub_7B7F10() {
+void UIAchTab::UpdateScrollBar() {
   if (!this->scrollBar) {
     return;
   }
@@ -863,7 +863,7 @@ int UIAchTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intp
   }
 
   if (previous != this->scrollPos) {
-    this->sub_7B7F10();
+    this->UpdateScrollBar();
     this->Invalidate();
   }
 

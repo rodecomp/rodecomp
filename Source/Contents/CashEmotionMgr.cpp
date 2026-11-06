@@ -284,7 +284,7 @@ public:
   UIBitmapButton* CreateButton(int x, int y, int width, int height, int id, const char* format, bool hasDisabled);
   void RefreshCurrentList();
   __declspec(noinline) void ShowPack(int packId);
-  void sub_7C7E50();
+  void RefreshPackLists();
   __declspec(noinline) void ResetLists();
   int SetPeriod(int packId);
   void SetTab(char tab);
@@ -426,7 +426,7 @@ bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
     listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.EnsureWindow(87));
   }
 
-  const unsigned int now = g_cashEmotionMgr->sub_59FC50();
+  const unsigned int now = g_cashEmotionMgr->GetServerTime();
   if (g_cashEmotionMgr->IsPackAvailable(now, packId)) {
     if (listWnd) {
       listWnd->ShowPack(packId);
@@ -509,9 +509,9 @@ CCashEmotionMgr::~CCashEmotionMgr() {
     this->m_action = nullptr;
   }
 
-  g_timeScheduler->sub_BA95F0(5);
-  g_timeScheduler->sub_BA95F0(6);
-  g_timeScheduler->sub_BA95F0(7);
+  g_timeScheduler->RemoveSchedulesByKey(5);
+  g_timeScheduler->RemoveSchedulesByKey(6);
+  g_timeScheduler->RemoveSchedulesByKey(7);
 }
 
 // OFFSET: 0x00598C70
@@ -1228,7 +1228,7 @@ bool CCashEmotionMgr::IsOwnedPack(int packId) {
 
 // OFFSET: 0x0059C5A0
 // FUNCTION: fn_02977
-bool CCashEmotionMgr::sub_59C5A0() {
+bool CCashEmotionMgr::RemoveExpiredPacks() {
   auto* listWnd = g_cashEmotionListWnd;
   bool expired = false;
   const __time32_t now = _time32(nullptr) - this->unknown_01D0 - this->unknown_01CC;
@@ -1273,7 +1273,7 @@ void CCashEmotionMgr::RemoveOwnedPack(int packId, bool refresh, bool clearExpiry
 
   if (refresh) {
     if (auto* listWnd = g_cashEmotionListWnd) {
-      listWnd->sub_7C7E50();
+      listWnd->RefreshPackLists();
     }
   }
 
@@ -1349,7 +1349,7 @@ CashEmotionPackRefresh CCashEmotionMgr::RefreshUnownedPacks() {
 
 // OFFSET: 0x0059CDE0
 // FUNCTION: fn_02981
-void CCashEmotionMgr::sub_59CDE0(int param) {
+void CCashEmotionMgr::SetServerTime(int param) {
   this->unknown_01D0 = _time32(nullptr) - param;
 }
 
@@ -1413,7 +1413,7 @@ void CCashEmotionMgr::AcquirePack(int packId, unsigned int expiry) {
 
 // OFFSET: 0x0059D2C0
 // FUNCTION: fn_02986
-bool CCashEmotionMgr::sub_59D2C0() {
+bool CCashEmotionMgr::UpdatePurchasedPackExpiry() {
   auto* listWnd = g_cashEmotionListWnd;
   if (!listWnd) {
     return false;
@@ -1439,13 +1439,13 @@ bool CCashEmotionMgr::sub_59D2C0() {
     it = this->m_expiry.erase(it);
   }
 
-  listWnd->sub_7C7E50();
+  listWnd->RefreshPackLists();
   return this->m_expiry.size() != 0;
 }
 
 // OFFSET: 0x0059FC50
 // FUNCTION: fn_03031
-int CCashEmotionMgr::sub_59FC50() {
+int CCashEmotionMgr::GetServerTime() {
   return _time32(nullptr) - this->unknown_01D0 - this->unknown_01CC;
 }
 
@@ -2328,7 +2328,7 @@ void UICashEmotionListWnd::ShowPack(int packId) {
 
 // OFFSET: 0x007C7E50
 // FUNCTION: fn_09413
-void UICashEmotionListWnd::sub_7C7E50() {
+void UICashEmotionListWnd::RefreshPackLists() {
   if (this->m_purchaseList) {
     this->m_purchaseList->Refresh(this->m_tab == 2 && this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
   }
@@ -2385,7 +2385,7 @@ int UICashEmotionListWnd::SetPeriod(int packId) {
 // OFFSET: 0x007C80C0
 // FUNCTION: fn_09416
 void UICashEmotionListWnd::RestartExpirySchedule() {
-  g_timeScheduler->sub_BA95F0(7);
+  g_timeScheduler->RemoveSchedulesByKey(7);
   if (g_cashEmotionMgr->m_expiry.size() != 0) {
     const std::uint64_t now = _Xtime_get_ticks();
     g_timeScheduler->AddSchedule(new CEmotionPurchaseUseableTimeUISchedule(now, 30000, 1));
@@ -3180,7 +3180,7 @@ void UICashEmotionPack_Purchase::ShowExpiry(__time32_t expiry) {
     return;
   }
 
-  const unsigned int remaining = expiry - g_cashEmotionMgr->sub_59FC50();
+  const unsigned int remaining = expiry - g_cashEmotionMgr->GetServerTime();
   if (remaining < 61) {
     this->m_titleText->SetTextFitted(g_simpleStringMgr->GetString("EMSG_PERIOD_OF_LAST_TIME"));
   } else {

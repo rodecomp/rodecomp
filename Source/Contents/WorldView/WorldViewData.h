@@ -99,7 +99,7 @@ public:
 
   void Load(LuaScript& script);
   bool ScaleToScreen();
-  void sub_6168F0();
+  void LoadTextures();
   unsigned int FindWorld(int mapId);
   void ResetSelection();
   bool SelectField(const char* name);

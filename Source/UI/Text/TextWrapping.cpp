@@ -101,7 +101,7 @@ void WrapRichText(
 
         char name[260];
         int capacity = sizeof(name);
-        item.sub_6D5810(name, capacity, 0);
+        item.GetIdDisplayName(name, capacity, 0);
         lines.push_back(name);
       }
     } else {

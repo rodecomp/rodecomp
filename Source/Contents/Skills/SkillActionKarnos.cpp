@@ -68,8 +68,8 @@ class CSkillAction_Direction {
 
 class CSkillAction_DamageWereRaptorForm : public CSkillAction_AnimalForm, public CSkillAction_Direction {
 public:
-  void sub_5A4930(int level, CGameActor* source);
-  void sub_5A4B00(int level, CGameActor* source);
+  void SpawnAttack01Effect(int level, CGameActor* source);
+  void SpawnAttack02Effect(int level, CGameActor* source);
 };
 
 class CSkillAction_DamageWereWolfForm : public CSkillAction_AnimalForm {
@@ -637,7 +637,7 @@ int CSkillAction_KR_FEATHER_SPRINKLE::Slot02() {
 // OFFSET: 0x005B4240
 // FUNCTION: fn_03370
 void CSkillAction_KR_FEATHER_SPRINKLE::Slot15(int level, CGameActor* source, CGameActor* target) {
-  this->sub_5A4930(level, source);
+  this->SpawnAttack01Effect(level, source);
 }
 
 // OFFSET: 0x005B4260
@@ -663,8 +663,8 @@ void CSkillAction_KR_SHARPEN_GUST::Slot08(int level, CGameActor* source) {
 // OFFSET: 0x005B46D0
 // FUNCTION: fn_03375
 void CSkillAction_KR_SHARPEN_GUST::Slot15(int level, CGameActor* source, CGameActor* target) {
-  this->sub_5A4930(level, source);
-  this->sub_5A4B00(level, source);
+  this->SpawnAttack01Effect(level, source);
+  this->SpawnAttack02Effect(level, source);
 }
 
 // OFFSET: 0x005B4700
@@ -776,7 +776,7 @@ void CSkillAction_KR_SHARPEN_HAIL::Slot11(int level, CGameActor* source, CGameAc
 // OFFSET: 0x005B4F70
 // FUNCTION: fn_03380
 void CSkillAction_KR_SHARPEN_HAIL::Slot15(int level, CGameActor* source, CGameActor* target) {
-  this->sub_5A4930(level, source);
+  this->SpawnAttack01Effect(level, source);
 }
 
 // OFFSET: 0x005B4F90

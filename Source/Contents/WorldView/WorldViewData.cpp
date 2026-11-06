@@ -327,7 +327,7 @@ static int gl_25167 = 0;
 
 // OFFSET: 0x006168F0
 // FUNCTION: fn_04375
-void CWorldViewMgr::sub_6168F0() {
+void CWorldViewMgr::LoadTextures() {
   const int width = g_renderer->viewport.width;
   if (width > 640) {
     if (width <= 800) {

@@ -85,8 +85,8 @@ public:
   void OnCallback56();
   void OnCallback74();
   void OnCallback80();
-  void sub_A67290(unsigned int flags);
-  void sub_A66FF0(unsigned int questId);
+  void UpdateQuestLists(unsigned int flags);
+  void SelectQuest(unsigned int questId);
 
 
   /* 00D8 */ CUITitleBar* titleBar;

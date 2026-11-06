@@ -214,7 +214,7 @@ void UIItemTagOnMail::SetLines(const std::vector<std::string>& lines) {
 
 // OFFSET: 0x0089CFE0
 // FUNCTION: fn_11597
-void UIItemTagCtrl::sub_89CFE0(const ITEM_INFO& item, unsigned int color) {
+void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   std::string tag = "<";
   tag += item.DisplayName(0);
   tag += ">";
@@ -325,7 +325,7 @@ bool UIItemTagOnMegaPhone::CanInsertTag(const std::string& name, int width) {
 
 // OFFSET: 0x008962C0
 // FUNCTION: fn_11517
-void UIItemTagCtrl::sub_8962C0() {
+void UIItemTagCtrl::UpdateItemTags() {
   this->unknown_0140.clear();
   if (this->unknown_011C != static_cast<int>(this->tags.size()) && this->SyncTagsWithText()) {
     this->unknown_011C = static_cast<int>(this->tags.size());

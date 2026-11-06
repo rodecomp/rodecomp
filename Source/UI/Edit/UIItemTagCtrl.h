@@ -26,9 +26,9 @@ public:
   bool SyncTagsWithText();
   bool RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry);
   void SetTaggedText(const std::string& text, int width);
-  void sub_8962C0();
-  void sub_89CFE0(const ITEM_INFO& item, unsigned int color);
-  std::string sub_874A40(int tagId, unsigned int color);
+  void UpdateItemTags();
+  void AddItemTag(const ITEM_INFO& item, unsigned int color);
+  std::string AddSkillTag(int tagId, unsigned int color);
 
   /* 011C */ int unknown_011C;
   /* 0120 */ std::list<ItemTagRecord> tags;

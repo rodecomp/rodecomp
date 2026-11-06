@@ -316,7 +316,7 @@ __declspec(safebuffers) void UIRefiningWnd::ApplyResult() {
       std::memset(name, 0, sizeof(name));
       info.SetItemId(itemId);
       int capacity = 260;
-      info.sub_6D5810(name, capacity, 0);
+      info.GetIdDisplayName(name, capacity, 0);
       this->againButton->SetTooltip(name);
 
       const ITEM_INFO owned = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
@@ -535,7 +535,7 @@ void UIRefiningWnd::Slot28(int x, int y) {
     ITEM_INFO info;
     info.SetItemId(this->materials[this->selectedMaterial].itemId);
     int capacity = 260;
-    info.sub_6D5810(name, capacity, 0);
+    info.GetIdDisplayName(name, capacity, 0);
     int tipX = 81;
     int tipY = 150;
     this->ToScreen(tipX, tipY);
@@ -547,7 +547,7 @@ void UIRefiningWnd::Slot28(int x, int y) {
     ITEM_INFO info;
     info.SetItemId(this->catalystItemId);
     int capacity = 260;
-    info.sub_6D5810(name, capacity, 0);
+    info.GetIdDisplayName(name, capacity, 0);
     int tipX = 161;
     int tipY = 150;
     this->ToScreen(tipX, tipY);
@@ -568,12 +568,12 @@ void UIRefiningWnd::Slot28(int x, int y) {
     ITEM_INFO info;
     info.SetItemId(this->materials[slot].itemId);
     int capacity = 260;
-    info.sub_6D5810(name, capacity, 0);
+    info.GetIdDisplayName(name, capacity, 0);
   } else if (slot == 4 && this->catalystCount > 0) {
     ITEM_INFO info;
     info.SetItemId(this->catalystItemId);
     int capacity = 260;
-    info.sub_6D5810(name, capacity, 0);
+    info.GetIdDisplayName(name, capacity, 0);
   }
 
   if (std::strlen(name) != 0) {

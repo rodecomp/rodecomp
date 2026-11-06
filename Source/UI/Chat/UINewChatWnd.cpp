@@ -74,7 +74,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
     this->m_tabControl->RemoveTab(this->m_currentTab);
     this->m_tabWidth = this->m_tabControl->geometry.width / names.size();
-    UISubChatHisWnd* window = static_cast<UISubChatHisWnd*>(g_windowMgr.sub_A97580(static_cast<int>(g_windowMgr.retainedWindows.size()), -1, -1, 0, 0));
+    UISubChatHisWnd* window = static_cast<UISubChatHisWnd*>(g_windowMgr.OpenSubChatWindow(static_cast<int>(g_windowMgr.retainedWindows.size()), -1, -1, 0, 0));
     if (window == nullptr) {
       return 0;
     }
@@ -516,7 +516,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       info.name += _itoa(total + 1, number, 10);
       if ((noSubCount + 1) * this->m_tabWidth > this->geometry.width - 0x5A) {
         g_session.m_subChatWnds[subCount] = info;
-        g_windowMgr.sub_A97580(static_cast<int>(g_windowMgr.retainedWindows.size()), -1, -1, 0, 0);
+        g_windowMgr.OpenSubChatWindow(static_cast<int>(g_windowMgr.retainedWindows.size()), -1, -1, 0, 0);
       } else {
         g_session.m_noSubChatWnds[noSubCount] = info;
         this->m_tabControl->AddTab(info.name.c_str(), "");

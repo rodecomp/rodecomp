@@ -288,7 +288,7 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
   char name[0x104];
   std::memset(name, 0, sizeof(name));
   int capacity = sizeof(name);
-  item.sub_6D5810(name, capacity, 0);
+  item.GetIdDisplayName(name, capacity, 0);
   this->title.assign(name, std::strlen(name));
 
   int minimumRefine = 0;

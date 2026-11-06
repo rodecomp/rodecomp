@@ -957,7 +957,7 @@ void CGameMode::ReceiveEffectRemove(const unsigned char* data) {
 // OFFSET: 0x00D6E930
 // FUNCTION: fn_22107
 void CGameMode::ReceiveToggle128(int enabled) {
-  sub_E489C0(enabled != 0);
+  SetPetInfoAlert(enabled != 0);
 }
 
 // OFFSET: 0x00D6E950
@@ -1432,7 +1432,7 @@ void CGameMode::ReceiveItem1784List(const unsigned char* data) {
     item.unknown_0078[2] = entry.unknown_0014;
     item.unknown_0064 = 8;
     item.identified = 1;
-    item.sub_6D5810(name, capacity, 0);
+    item.GetIdDisplayName(name, capacity, 0);
     item.SetName(name);
     g_session.unknown_1784[9].push_back(item);
   }
@@ -1738,7 +1738,7 @@ void CGameMode::ReceiveWindow99Values(int count, const int* values) {
 
 // OFFSET: 0x00D6E440
 // FUNCTION: fn_22099
-void sub_D6E440() {
+void CloseAccountLimitedTool() {
   g_windowMgr.CloseWindow(0x154);
 }
 
@@ -1811,7 +1811,7 @@ void __stdcall nullsub_468(int) {
 
 // OFFSET: 0x00D6AD60
 // FUNCTION: fn_22063
-void CGameMode::sub_D6AD60(int count, const int* aids) {
+void CGameMode::ReceiveMacroReporterList(int count, const int* aids) {
   if (count <= 0) {
     return;
   }
@@ -1822,7 +1822,7 @@ void CGameMode::sub_D6AD60(int count, const int* aids) {
   }
 
   for (int i = 0; i < count; ++i) {
-    window->sub_7EF2E0(aids[i]);
+    window->AddActorByAID(aids[i]);
   }
 }
 
@@ -1840,7 +1840,7 @@ int g_unknown_01738270;
 
 // OFFSET: 0x00D1C050
 // FUNCTION: fn_21624
-void CGameMode::sub_D1C050(const AchievementStatePacket* packet) {
+void CGameMode::ReceiveStorageClose(const AchievementStatePacket* packet) {
   UIWindow* window = nullptr;
   bool notify = true;
 
@@ -1865,7 +1865,7 @@ void CGameMode::sub_D1C050(const AchievementStatePacket* packet) {
 
 // OFFSET: 0x00D6C460
 // FUNCTION: fn_22081
-void CGameMode::sub_D6C460(int count, int unknown01738784, short unknown01738788, int completed, int total, const AchievementRecordPacket* packets) {
+void CGameMode::ReceiveAchievementList(int count, int unknown01738784, short unknown01738788, int completed, int total, const AchievementRecordPacket* packets) {
   g_session.unknown_614C = unknown01738784;
   g_session.unknown_6150 = unknown01738788;
   g_session.unknown_6154 = completed;
@@ -3549,7 +3549,7 @@ void CGameMode::ReceiveFeedConfig(unsigned char state, unsigned char option) {
   }
   g_serviceOptions.Set(231, option);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
-  g_windowMgr.sub_AAB070(231);
+  g_windowMgr.RefreshGameSettingOption(231);
 }
 
 // OFFSET: 0x00D6E6F0
@@ -3562,7 +3562,7 @@ void CGameMode::ReceiveFeedConfig2(unsigned char state, unsigned char option, bo
   }
   g_serviceOptions.Set(231, option);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
-  g_windowMgr.sub_AAB070(231);
+  g_windowMgr.RefreshGameSettingOption(231);
   g_session.SetPetAutoFeed(petAutoFeed);
 }
 
@@ -3576,7 +3576,7 @@ void CGameMode::ReceiveFeedConfig3(unsigned char state, unsigned char option, bo
   }
   g_serviceOptions.Set(231, option);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
-  g_windowMgr.sub_AAB070(231);
+  g_windowMgr.RefreshGameSettingOption(231);
   g_session.SetPetAutoFeed(petAutoFeed);
   g_session.SetHomunculusAutoFeed(homunculusAutoFeed);
 }
@@ -3591,7 +3591,7 @@ void CGameMode::ReceiveFeedConfig4(unsigned char state, unsigned char option, bo
   }
   g_serviceOptions.Set(231, option);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
-  g_windowMgr.sub_AAB070(231);
+  g_windowMgr.RefreshGameSettingOption(231);
   g_session.SetPetAutoFeed(petAutoFeed);
   g_session.SetHomunculusAutoFeed(homunculusAutoFeed);
   *reinterpret_cast<int*>(g_session.unknown_8128) = value;
@@ -3653,7 +3653,7 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
 
 // OFFSET: 0x00D73A10
 // FUNCTION: fn_22142
-void sub_D73A10(const unsigned char* packet) {
+void ReceiveNavigation(const unsigned char* packet) {
   int group = packet[3] >= 100 ? 1 : 0;
   int code = packet[3] >= 100 ? packet[3] - 100 : packet[3];
   if (code >= 10) {
@@ -3665,7 +3665,7 @@ void sub_D73A10(const unsigned char* packet) {
   const int x = *reinterpret_cast<const std::int16_t*>(packet + 0x15);
   const int y = *reinterpret_cast<const std::int16_t*>(packet + 0x17);
   const int id = *reinterpret_cast<const std::int16_t*>(packet + 0x19);
-  g_navigationManager.sub_B99030(std::string(reinterpret_cast<const char*>(packet + 5)), packet[2], mode, packet[4] != 0, x, y, id);
+  g_navigationManager.StartNavigation(std::string(reinterpret_cast<const char*>(packet + 5)), packet[2], mode, packet[4] != 0, x, y, id);
 }
 
 // OFFSET: 0x00D73AF0
@@ -3736,7 +3736,7 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
   if (g_session.IsMercenaryJob(gameActor->GetEffectiveJob(-1)) && *reinterpret_cast<const int*>(packet + 6) == 0x238) {
     ++gameActor->unknown_0210;
     gameActor->ResetJobEffects();
-    gameActor->sub_CAA4D0();
+    gameActor->UpdateMaxLevelAura();
   }
 }
 
@@ -3788,7 +3788,7 @@ void CGameMode::ReceiveTypedItemList(const unsigned char* data) {
     item.unknown_0064 = type;
     item.SetItemId(itemId);
     int capacity = sizeof(name);
-    item.sub_6D5810(name, capacity, 0);
+    item.GetIdDisplayName(name, capacity, 0);
     item.SetName(name);
     if (static_cast<unsigned int>(packet->type) <= 10) {
       g_session.unknown_1784[packet->type].push_back(item);
@@ -3917,7 +3917,7 @@ static __forceinline void FillVendingItem(ITEM_INFO& item, const VendingItemReco
 // OFFSET: 0x00D47720
 // FUNCTION: fn_21850
 void CGameMode::ReceiveVendingItemSoldNow(const unsigned char* data) {
-  sub_D08670(static_cast<int>(_time32(nullptr)), *reinterpret_cast<const int*>(data + 2),
+  ProcessBuyingStorePurchase(static_cast<int>(_time32(nullptr)), *reinterpret_cast<const int*>(data + 2),
              *reinterpret_cast<const short*>(data + 6), *reinterpret_cast<const int*>(data + 8), 0, 0);
 }
 
@@ -4953,7 +4953,7 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
     int capacity = sizeof(name);
     ITEM_INFO item;
     item.SetItemId(packet->itemId);
-    item.sub_6D5810(name, capacity, 0);
+    item.GetIdDisplayName(name, capacity, 0);
     message = FormatOwnedString("%s아이템 %d개 지급 완료", name, packet->count);
   }
   case 2:
@@ -5083,7 +5083,7 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
     g_renewQuestMgr->AddOngoingQuest(entry->questId, info);
   }
 
-  g_renewQuestMgr->sub_67B6B0();
+  g_renewQuestMgr->UpdateQuestWindows();
 }
 
 // OFFSET: 0x00D6CAD0
@@ -5143,7 +5143,7 @@ void CGameMode::ReceiveOngoingQuestList2(const unsigned char* data) {
     g_renewQuestMgr->AddOngoingQuest(entry->questId, info);
   }
 
-  g_renewQuestMgr->sub_67B6B0();
+  g_renewQuestMgr->UpdateQuestWindows();
 }
 
 #pragma pack(push, 1)
@@ -5525,7 +5525,7 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
     item.SetItemId(packet->value);
     char itemName[256];
     int capacity = sizeof(itemName);
-    item.sub_6D5810(itemName, capacity, 0);
+    item.GetIdDisplayName(itemName, capacity, 0);
     text.assign(FormatOwnedString(LookupMessage(1265), itemName));
     player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
@@ -5622,7 +5622,7 @@ void CGameMode::ReceiveQuestHuntUpdate(const unsigned char* data) {
   if (g_windowMgr.window_0428 != nullptr) {
     g_windowMgr.window_0428->Invalidate();
   }
-  g_renewQuestMgr->sub_67B690();
+  g_renewQuestMgr->UpdateOngoingQuestInfo();
 }
 
 // OFFSET: 0x00D47C20
@@ -5668,7 +5668,7 @@ void CGameMode::ReceiveQuestHuntUpdate2(const unsigned char* data) {
   if (g_windowMgr.window_0428 != nullptr) {
     g_windowMgr.window_0428->Invalidate();
   }
-  g_renewQuestMgr->sub_67B690();
+  g_renewQuestMgr->UpdateOngoingQuestInfo();
 }
 
 // OFFSET: 0x00D6A0D0
@@ -6230,7 +6230,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       std::sprintf(message, LookupMessage(3247));
       break;
     default:
-      this->sub_CFE480(packet->aid);
+      this->RefreshStatusStateEffect(packet->aid);
       return;
     }
   } else {
@@ -7019,7 +7019,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     default:
       if (CSkillActionMgr::GetInstance()->HasEfstAction(packet->type) != true) {
-        this->sub_CFE480(packet->aid);
+        this->RefreshStatusStateEffect(packet->aid);
         return;
       }
       {
@@ -7032,7 +7032,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     }
   }
 
-  this->sub_CFE480(packet->aid);
+  this->RefreshStatusStateEffect(packet->aid);
   if (std::strlen(message) > 1) {
     char text[512];
     std::sprintf(text, "%s%s", name, message);
@@ -7211,7 +7211,7 @@ void ClearGuildShortcutSkills() {
 
 // OFFSET: 0x00D48C60
 // FUNCTION: fn_21856
-void CGameMode::sub_D48C60(const unsigned char* data) {
+void CGameMode::ReceiveGuildExpulsion2(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildMemberKickedPacket*>(data);
   GuildInfo* guildInfo = &g_guildInfo;
   char reason[41];
@@ -7260,7 +7260,7 @@ void CGameMode::sub_D48C60(const unsigned char* data) {
 
 // OFFSET: 0x00D4A060
 // FUNCTION: fn_21861
-void CGameMode::sub_D4A060(const unsigned char* data) {
+void CGameMode::ReceiveGuildLeave2(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildMemberLeftPacket2*>(data);
   GuildInfo* guildInfo = &g_guildInfo;
   char reason[40];
@@ -7326,7 +7326,7 @@ struct PartyRosterListPacket {
 
 // OFFSET: 0x00D6F900
 // FUNCTION: fn_22124
-void CGameMode::sub_D6F900(const unsigned char* data) {
+void CGameMode::ReceivePartyInfo2(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const PartyRosterListPacket*>(data);
   std::vector<PartyRosterEntry> members;
   const int count = (packet->length - 0x1C) / sizeof(PartyRosterRecord50);
@@ -7343,7 +7343,7 @@ void CGameMode::sub_D6F900(const unsigned char* data) {
     members.push_back(entry);
   }
 
-  this->sub_D59FD0(reinterpret_cast<const char*>(packet->partyName), &members);
+  this->SetPartyMemberList(reinterpret_cast<const char*>(packet->partyName), &members);
 }
 
 #pragma pack(push, 1)
@@ -7436,18 +7436,18 @@ void CGameMode::RefreshInventoryOrEquipItem2(const unsigned char* data) {
 
 // OFFSET: 0x00D48530
 // FUNCTION: fn_21853
-void CGameMode::sub_D48530(const unsigned char* data) {
+void CGameMode::ReceiveWhisper(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildPacketText*>(data);
   char nameBuffer[24] = {};
   StringFormat(nameBuffer, sizeof(nameBuffer), static_cast<std::size_t>(-1), "%s", reinterpret_cast<const char*>(data) + 4);
 
   std::string text(reinterpret_cast<const char*>(data) + 0x20, reinterpret_cast<const char*>(data) + packet->length);
-  this->sub_D1A520(0, std::string(nameBuffer), text, *reinterpret_cast<const int*>(data + 0x1C) != 0);
+  this->ProcessWhisper(0, std::string(nameBuffer), text, *reinterpret_cast<const int*>(data + 0x1C) != 0);
 }
 
 // OFFSET: 0x00D1A330
 // FUNCTION: fn_21617
-void CGameMode::sub_D1A330(const unsigned char* data) {
+void CGameMode::ReceiveWhisper2(const unsigned char* data) {
   char nameBuffer[24];
   std::memset(nameBuffer, 0, sizeof(nameBuffer));
   StringFormat(nameBuffer, sizeof(nameBuffer), static_cast<std::size_t>(-1), "%s", reinterpret_cast<const char*>(data) + 8);
@@ -7455,7 +7455,7 @@ void CGameMode::sub_D1A330(const unsigned char* data) {
   const int length = *reinterpret_cast<const std::uint16_t*>(data + 2) - 0x21;
   std::string text(reinterpret_cast<const char*>(data) + 0x21, length > 0 ? static_cast<std::size_t>(length) : 0);
 
-  this->sub_D1A520(static_cast<int>(*reinterpret_cast<const std::uint32_t*>(data + 4)), std::string(nameBuffer), text, data[0x20] != 0);
+  this->ProcessWhisper(static_cast<int>(*reinterpret_cast<const std::uint32_t*>(data + 4)), std::string(nameBuffer), text, data[0x20] != 0);
 }
 
 #include "Contents/ShowRankingScheduler.h"
@@ -7633,7 +7633,7 @@ void CGameMode::ApplyStatusIcons(int level, unsigned int flags) {
 
 // OFFSET: 0x00D1A520
 // FUNCTION: fn_21618
-void CGameMode::sub_D1A520(int unknown_0004, std::string name, std::string text, bool flag) {
+void CGameMode::ProcessWhisper(int unknown_0004, std::string name, std::string text, bool flag) {
   const std::string sender(name);
   std::vector<char> message(text.begin(), text.end());
   message.push_back('\0');

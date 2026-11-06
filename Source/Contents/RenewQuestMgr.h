@@ -121,10 +121,10 @@ public:
   void SetParameter(int key, int value);
   void SaveOngoingSimpleViewList();
   void SaveRecommendedActiveList();
-  void sub_67B620(unsigned int questId);
-  void sub_67B650(unsigned int questId);
-  void sub_67B690();
-  void sub_67B6B0();
+  void ShowOngoingQuestInfo(unsigned int questId);
+  void ShowQuestInfo(unsigned int questId);
+  void UpdateOngoingQuestInfo();
+  void UpdateQuestWindows();
   void SetOngoingQuest(unsigned int id, const RenewQuestOngoingInfo& info);
 };
 

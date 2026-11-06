@@ -984,11 +984,11 @@ void CSession::SetPetAutoFeed(bool enabled) {
 
 // OFFSET: 0x00E489C0
 // FUNCTION: fn_24224
-void __stdcall sub_E489C0(bool enabled) {
+void __stdcall SetPetInfoAlert(bool enabled) {
   std::string notice = LookupMessage(enabled ? 4357 : 4379);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice.c_str()), 0x64FFFF, 0, 0, 0);
   g_serviceOptions.Set(0x128, enabled);
-  g_windowMgr.sub_AAB070(0x128);
+  g_windowMgr.RefreshGameSettingOption(0x128);
 }
 
 // OFFSET: 0x00E48B00

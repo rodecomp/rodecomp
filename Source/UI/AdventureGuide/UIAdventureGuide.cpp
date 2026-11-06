@@ -2062,9 +2062,9 @@ void CUIItem::RequestNavigation() {
   }
 
   if (x != -1 && y != -1) {
-    g_navigationManager.sub_B99030(name, 0, 5, false, x, y, 1002);
+    g_navigationManager.StartNavigation(name, 0, 5, false, x, y, 1002);
   } else {
-    g_navigationManager.sub_B99030(name, 1, 5, false, -1, -1, 1002);
+    g_navigationManager.StartNavigation(name, 1, 5, false, -1, -1, 1002);
   }
 }
 
@@ -2082,9 +2082,9 @@ void CUIQuest::RequestNavigation() {
   }
 
   if (x != -1 && y != -1) {
-    g_navigationManager.sub_B99030(name, 0, 5, false, x, y, 1002);
+    g_navigationManager.StartNavigation(name, 0, 5, false, x, y, 1002);
   } else {
-    g_navigationManager.sub_B99030(name, 1, 5, false, -1, -1, 1002);
+    g_navigationManager.StartNavigation(name, 1, 5, false, -1, -1, 1002);
   }
 }
 

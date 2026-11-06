@@ -56,7 +56,7 @@ std::string CreateUniqueFileName(const std::string& filename) {
 
 // OFFSET: 0x0050C2A0
 // FUNCTION: fn_00896
-bool JsonCppLoader::sub_50C2A0(std::map<std::string, EZ2STREffectRecord>* out) {
+bool JsonCppLoader::GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* out) {
   if (!this->loaded) {
     this->Fail("초기화가 되어야 합니다.");
     return false;

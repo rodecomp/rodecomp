@@ -172,9 +172,9 @@ void UIChatHisBox3::AddText(const char* text, int color) {
   const auto* bytes = reinterpret_cast<const unsigned char*>(text);
 
   if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
-    this->sub_89DC30(text, color, mode);
+    this->AddItemLinkLine(text, color, mode);
   } else if (g_navigationLinkParser->HasLink(std::string(text))) {
-    this->sub_89E0F0(text, color, mode);
+    this->AddNavigationLinkLine(text, color, mode);
   } else {
     this->UIListBox::AddLine(text);
   }
@@ -207,9 +207,9 @@ void UIChatHisBox::AddText(const char* text, int color, const char* style) {
   const auto* bytes = reinterpret_cast<const unsigned char*>(text);
 
   if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
-    this->sub_89DC30(text, color, mode);
+    this->AddItemLinkLine(text, color, mode);
   } else if (g_navigationLinkParser->HasLink(std::string(text))) {
-    this->sub_89E0F0(text, color, mode);
+    this->AddNavigationLinkLine(text, color, mode);
   } else {
     this->UIListBox::AddLine(text);
   }
@@ -508,7 +508,7 @@ void UIChatHisBox::CopyHistory(const UIChatHisBox& other) {
   this->unknown_0100 = other.unknown_0100;
   this->unknown_010C = other.unknown_010C;
   this->unknown_0118 = other.unknown_0118;
-  this->sub_89C080();
+  this->RebuildHistory();
 }
 
 // OFFSET: 0x00875860

@@ -116,7 +116,7 @@ void UIAchListWnd::Slot25(int x, int y) {
     return;
   }
 
-  this->sub_7B37F0(this->unknown_008C + row);
+  this->SelectAchievement(this->unknown_008C + row);
   g_windowMgr.SetCapture(this);
 }
 
@@ -138,7 +138,7 @@ void UIAchTV::Slot25(int, int) {
 void UIAchTab::Slot25(int x, int y) {
   int a = 0;
   int b = 0;
-  if (!this->sub_7B4370(x, y, &a, &b)) {
+  if (!this->HitTestTab(x, y, &a, &b)) {
     return;
   }
 
@@ -149,7 +149,7 @@ void UIAchTab::Slot25(int x, int y) {
     this->parent->Invalidate();
   }
 
-  this->sub_7B7F10();
+  this->UpdateScrollBar();
   this->Invalidate();
   g_windowMgr.SetCapture(this);
 }
@@ -337,7 +337,7 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
 // OFFSET: 0x00874A40
 // FUNCTION: fn_11193
-std::string UIItemTagCtrl::sub_874A40(int tagId, unsigned int color) {
+std::string UIItemTagCtrl::AddSkillTag(int tagId, unsigned int color) {
   std::string label;
   const std::string title = g_itemTagOwner->Title(tagId, &label, 17);
 

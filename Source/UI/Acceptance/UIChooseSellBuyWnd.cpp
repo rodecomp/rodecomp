@@ -851,7 +851,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     if (extension != std::string::npos) {
       mapName = mapName.substr(0, extension);
     }
-    g_navigationManager.sub_B99030(mapName.c_str(), 0, 5, true, town.x, town.y, 1002);
+    g_navigationManager.StartNavigation(mapName.c_str(), 0, 5, true, town.x, town.y, 1002);
   }
   return 0;
 }
@@ -986,7 +986,7 @@ void UINpcTextEditDialogWnd::Paint() {
   }
 
   this->m_tagCtrl->SetTaggedText(std::string(this->edit->Text()), this->edit->geometry.width);
-  this->m_tagCtrl->sub_8962C0();
+  this->m_tagCtrl->UpdateItemTags();
   if (this->m_tagCtrl->unknown_011C == 0) {
     delete this->m_tagCtrl;
     this->m_tagCtrl = nullptr;
@@ -2375,7 +2375,7 @@ void UINpcTextEditDialogWnd::InsertItemTag(const ITEM_INFO& item) {
   }
   this->edit->SetText(this->m_tagCtrl->AppendTag(item.DisplayName(0)).c_str());
   this->edit->MoveCursorToEnd();
-  this->m_tagCtrl->sub_89CFE0(item, 0x12B8A4);
+  this->m_tagCtrl->AddItemTag(item, 0x12B8A4);
 }
 
 // OFFSET: 0x008DACF0
@@ -2396,7 +2396,7 @@ void UINpcTextEditDialogWnd::InsertSkillTag(int tagId) {
     return;
   }
 
-  std::string tag = this->m_tagCtrl->sub_874A40(tagId, 0xD630A9);
+  std::string tag = this->m_tagCtrl->AddSkillTag(tagId, 0xD630A9);
   {
     auto* const tagCtrl = this->m_tagCtrl;
     std::string text = this->edit->Text();
@@ -4759,7 +4759,7 @@ void UIWhisperWnd::SaveChatLog() {
 
 // OFFSET: 0x0090C350
 // FUNCTION: fn_12443
-int UISecondPasswordInputWnd::sub_90C350(unsigned int target) {
+int UISecondPasswordInputWnd::FindKeypadDigit(unsigned int target) {
   for (int i = 0; i < 10; ++i) {
     if (this->m_digits[i] == target) {
       return i;
@@ -4770,7 +4770,7 @@ int UISecondPasswordInputWnd::sub_90C350(unsigned int target) {
 
 // OFFSET: 0x0090C380
 // FUNCTION: fn_12444
-void UISecondPasswordInputWnd::sub_90C380() {
+void UISecondPasswordInputWnd::DisableButtons() {
   for (int i = 0; i < 11; ++i) {
     UIButton* button = this->unknown_0124[i];
     button->SetDisabled(1);
@@ -10034,7 +10034,7 @@ void UIEquipWnd::Slot25(int x, int y) {
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
         reinterpret_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
-        reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF710(item);
+        reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->InsertItemTag(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
       }
@@ -10709,7 +10709,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-        this->sub_90C380();
+        this->DisableButtons();
           break;
         }
         g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
@@ -10781,7 +10781,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
             std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
             std::memcpy(packet.newPassword, this->unknown_00E2, sizeof(packet.newPassword));
             GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-            this->sub_90C380();
+            this->DisableButtons();
           } else {
             g_windowMgr.Confirm(LookupMessage(1016), 0, true, false, 0, "Message", 280, 120, 0);
             this->unknown_00F4 = 2;
@@ -10843,13 +10843,13 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(0), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(0), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(0), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -10863,13 +10863,13 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(1), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(1), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(1), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -10883,13 +10883,13 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(2), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(2), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(2), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -10903,13 +10903,13 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(3), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(3), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(3), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -10923,13 +10923,13 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(4), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(4), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(4), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -10943,13 +10943,13 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(5), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(5), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(5), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -10963,13 +10963,13 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(6), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(6), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(6), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -10983,13 +10983,13 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(7), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(7), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(7), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11003,13 +11003,13 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(8), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(8), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(8), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11023,13 +11023,13 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(9), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(9), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(9), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11083,7 +11083,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-        this->sub_90C380();
+        this->DisableButtons();
         break;
       }
       g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
@@ -11117,7 +11117,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-        this->sub_90C380();
+        this->DisableButtons();
           break;
         }
         g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
@@ -11183,7 +11183,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           packet.accountId = g_session.m_passwordWndAccountId;
           std::memcpy(packet.password, this->unknown_00E2, sizeof(packet.password));
           GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-          this->sub_90C380();
+          this->DisableButtons();
           break;
         }
         g_windowMgr.Confirm(LookupMessage(1016), 0, true, false, 0, "Message", 280, 120, 0);
@@ -11235,13 +11235,13 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(0), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(0), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(0), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11255,13 +11255,13 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(1), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(1), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(1), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11275,13 +11275,13 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(2), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(2), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(2), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11295,13 +11295,13 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(3), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(3), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(3), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11315,13 +11315,13 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(4), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(4), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(4), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11335,13 +11335,13 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(5), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(5), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(5), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11355,13 +11355,13 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(6), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(6), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(6), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11375,13 +11375,13 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(7), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(7), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(7), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11395,13 +11395,13 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(8), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(8), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(8), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11415,13 +11415,13 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       switch (this->unknown_00F4) {
       case 0:
       case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->sub_90C350(9), 0).c_str());
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
       case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->sub_90C350(9), 0).c_str());
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
       case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->sub_90C350(9), 0).c_str());
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11475,7 +11475,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-        this->sub_90C380();
+        this->DisableButtons();
         break;
       }
       g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
@@ -11687,7 +11687,7 @@ int UIFrameWnd::BuildItemName(
     }
 
     if (g_serviceType == 12 || g_serviceType == 14) {
-      *cursor += item->sub_6D5810(*cursor, capacity, 1);
+      *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       *cursor += item->Element(*cursor, capacity, 1);
       breaks->push_back(*cursor);
@@ -11715,7 +11715,7 @@ int UIFrameWnd::BuildItemName(
     }
   } else {
     if (!isEquipment()) {
-      *cursor += item->sub_6D5810(*cursor, capacity, 1);
+      *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       if (withSlots == 1) {
         *cursor += item->Slots(*cursor, capacity, 1);
@@ -11736,7 +11736,7 @@ int UIFrameWnd::BuildItemName(
     if (item->HasCards()) {
       *cursor += item->Prefixes(*cursor, capacity, 1);
       breaks->push_back(*cursor);
-      *cursor += item->sub_6D5810(*cursor, capacity, 1);
+      *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       *cursor += item->Suffixes(*cursor, capacity, 1);
       breaks->push_back(*cursor);
@@ -11748,7 +11748,7 @@ int UIFrameWnd::BuildItemName(
     }
 
     if (!item->HasSpecialCard()) {
-      *cursor += item->sub_6D5810(*cursor, capacity, 1);
+      *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       if (withSlots == 1) {
         *cursor += item->Slots(*cursor, capacity, 1);
@@ -11759,7 +11759,7 @@ int UIFrameWnd::BuildItemName(
 
     if (g_serviceType == 12 || g_serviceType == 14) {
       if (g_serviceType == 12) {
-        *cursor += item->sub_6D5810(*cursor, capacity, 1);
+        *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
         breaks->push_back(*cursor);
         *cursor += item->Element(*cursor, capacity, 1);
         breaks->push_back(*cursor);
@@ -11767,7 +11767,7 @@ int UIFrameWnd::BuildItemName(
       } else {
         *cursor += item->Star(*cursor, capacity, 1);
         breaks->push_back(*cursor);
-        *cursor += item->sub_6D5810(*cursor, capacity, 1);
+        *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
         breaks->push_back(*cursor);
         *cursor += item->Element(*cursor, capacity, 1);
       }
@@ -11804,7 +11804,7 @@ int UIFrameWnd::BuildItemName(
     if (!splitCreator) {
       *cursor += item->Element(*cursor, capacity, 1);
       breaks->push_back(*cursor);
-      *cursor += item->sub_6D5810(*cursor, capacity, 1);
+      *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
       breaks->push_back(*cursor);
       return 1;
     }
@@ -11813,7 +11813,7 @@ int UIFrameWnd::BuildItemName(
   breaks->push_back(*cursor);
   *cursor += item->Element(*cursor, capacity, 1);
   breaks->push_back(*cursor);
-  *cursor += item->sub_6D5810(*cursor, capacity, 1);
+  *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
   breaks->push_back(*cursor);
   return 1;
 }
@@ -12097,7 +12097,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemTag(id);
           break;
         case 0x1EB:
-          static_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->sub_7FF940(id);
+          static_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->InsertSkillTag(id);
           break;
         case 0x1EC:
           static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.unknown_0318)->InsertSkillTag(id);

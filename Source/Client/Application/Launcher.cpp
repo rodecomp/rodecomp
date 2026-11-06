@@ -904,10 +904,10 @@ public:
 
 bool CreateCooldownOwner();
 CMapSkyMgr* GetMapSkyMgr();
-void sub_E198F0();
-void __fastcall sub_81FE50(CSignBoardMgr* manager);
-LRESULT CALLBACK sub_E5C430(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
-int sub_E59030();
+void InitMapTypeInfoTable();
+void __fastcall InitializeSignBoardManager(CSignBoardMgr* manager);
+LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
+int ReadSetup();
 int RemoveProtectionTools();
 void IgnoreNull();
 LSTATUS SaveDisplayDeviceSettings();
@@ -916,12 +916,12 @@ LSTATUS SaveDisplayDeviceSettings();
 
 // OFFSET: 0x00E58100
 // FUNCTION: fn_24362
-int sub_E58100(HINSTANCE instance, int showCommand) {
+int InitApp(HINSTANCE instance, int showCommand) {
   g_instance = instance;
 
   WNDCLASSA windowClass;
   windowClass.style = 0;
-  windowClass.lpfnWndProc = sub_E5C430;
+  windowClass.lpfnWndProc = WindowProc;
   windowClass.cbClsExtra = 0;
   windowClass.cbWndExtra = 0;
   windowClass.hInstance = instance;
@@ -1248,7 +1248,7 @@ std::pair<bool, std::string> InitializeManagers() {
     return std::make_pair(false, std::string(name.Text()));
   }
 
-  sub_E198F0();
+  InitMapTypeInfoTable();
   if (!RodexMailStore::Create()) {
     const std::uint8_t nameSource[] = {0xE8, 0x1D, 0xF0, 0xC7, 0xE0, 0x57, 0x42, 0x7E, 0xD8, 0x3B, 0xFA, 0xCE, 0xC8, 0x48, 0x63, 0x3D,
                                        0x91, 0x0C, 0xED, 0xC6, 0xE4, 0x5B, 0x74, 0x4E, 0xC5, 0x3C, 0xEB, 0xC2, 0xEB, 0x4C, 0x74, 0x2F,
@@ -1354,7 +1354,7 @@ std::pair<bool, std::string> InitializeManagers() {
     return std::make_pair(false, std::string(name.Text()));
   }
 
-  sub_81FE50(s_signBoardMgr);
+  InitializeSignBoardManager(s_signBoardMgr);
   if (!CAdventurerAgencyMgr::Initialize()) {
     return std::make_pair(false, std::string(AdventurerAgencyCreateInstanceName()().Text()));
   }
@@ -1363,7 +1363,7 @@ std::pair<bool, std::string> InitializeManagers() {
     return std::make_pair(false, std::string(RequestJoinPartyCreateInstanceName()().Text()));
   }
 
-  Singleton<CReputeMgr>::GetInstance()->sub_60DBF0();
+  Singleton<CReputeMgr>::GetInstance()->Load();
   CItemDBToIDMgr::GetInstance()->Load();
   CItemReformMgr::Instance()->Load();
   Singleton<CEnchantMgr>::GetInstance()->Init();
@@ -1613,7 +1613,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   const std::uint8_t setupSource[] = {0x64, 0x98, 0x01, 0x20, 0x45, 0xEF, 0x30, 0x3F, 0x52, 0xFD};
   thread_local EncryptedName<sizeof(setupSource), 0x4755C1355575FD37ULL> setup(setupSource);
-  while (sub_E59030() == 0) {
+  while (ReadSetup() == 0) {
     if (_access(setup.Text(), 0) == 0) {
       WaitForSingleObject(StartClientProcess(const_cast<char*>(setup.Text())), INFINITE);
     }
@@ -1659,7 +1659,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     }
   }
 
-  g_session.sub_DD9D50();
+  g_session.InitClientData();
 
   ResourceMgr& resources = ResourceMgr::Instance();
   const std::uint8_t resourceNamesSource[] = {0x8F, 0xA4, 0x00, 0x0D, 0x46, 0x3C, 0x78, 0x4B, 0x9C, 0xA3, 0x1F, 0x26, 0x09, 0x25, 0x65, 0x6B,
@@ -1667,7 +1667,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   thread_local EncryptedName<sizeof(resourceNamesSource), 0x1F1D51274373C1FDULL> resourceNames(resourceNamesSource);
   resources.aliases.Load(reinterpret_cast<int>(resourceNames.Text()));
 
-  if (!sub_E58100(instance, showCommand)) {
+  if (!InitApp(instance, showCommand)) {
     return 1;
   }
 

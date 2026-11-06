@@ -27,7 +27,7 @@ public:
   CSchedule* CreateSchedule(const std::int64_t& interval, int scheduleType);
   CSchedule* AddSchedule(CSchedule* schedule);
   void Process();
-  void sub_BA95F0(int value);
+  void RemoveSchedulesByKey(int value);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

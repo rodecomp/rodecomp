@@ -672,7 +672,7 @@ int CGameMode::SubD07740(int id, int defaultResult) {
 
 // OFFSET: 0x00CEB8E0
 // FUNCTION: fn_21352
-void CGameMode::sub_CEB8E0() {
+void CGameMode::RecordChatRoomSettings() {
   if (Replay::Instance().state != 2) {
     return;
   }
@@ -705,7 +705,7 @@ static_assert(sizeof(GameModeChunkHeader) == 6);
 
 // OFFSET: 0x00CEC6A0
 // FUNCTION: fn_21356
-unsigned CGameMode::sub_CEC6A0(const std::vector<unsigned char>& data) {
+unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& data) {
   if (data.empty()) {
     return 0xFFFFFFFFu;
   }
@@ -722,12 +722,12 @@ unsigned CGameMode::sub_CEC6A0(const std::vector<unsigned char>& data) {
         std::vector<unsigned char> record(0x10);
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D41250(record.data());
+        this->Zc_Skill_Entry(record.data());
       } else if (header.type == 0xCE) {
         std::vector<unsigned char> record(0x61);
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D40730(record.data());
+        this->Zc_Skill_Entry2(record.data());
       } else if (header.type == 0x4269) {
         break;
       } else {
@@ -781,7 +781,7 @@ bool CGameMode::ShowRestrictedNotice(int grade) {
   return true;
 }
 
-void __stdcall sub_CE8F10(const void* info, const unsigned char* data);
+void __stdcall RecordWhisper(const void* info, const unsigned char* data);
 int ConfirmGameModeAction96();
 
 // OFFSET: 0x00CF10B0
@@ -2474,7 +2474,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           item.SetItemId(foodId);
           char name[260]{};
           int capacity = sizeof(name);
-          item.sub_6D5810(name, capacity, 0);
+          item.GetIdDisplayName(name, capacity, 0);
           std::string text = FormatOwnedString(LookupMessage(0x24F), name);
           g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
           g_windowMgr.SendNotice(0x13, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
@@ -3161,7 +3161,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         const std::size_t length = std::strlen(message);
         if (length - 1 <= 0x14F) {
           g_windowMgr.ClearUnknown04DC();
-          sub_CE8F10(target, reinterpret_cast<const unsigned char*>(message));
+          RecordWhisper(target, reinterpret_cast<const unsigned char*>(message));
           unsigned char packet[0x16D];
           const std::uint16_t packetId = 0x96;
           const std::uint16_t packetLength = static_cast<std::uint16_t>(length + 0x1C);
@@ -3226,7 +3226,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::memset(packet + 7, 0, 8);
       std::memcpy(packet + 7, setting.password.c_str(), setting.password.size());
       std::memcpy(packet + 15, setting.title.c_str(), setting.title.size());
-      this->sub_CEB8E0();
+      this->RecordChatRoomSettings();
       GetRagConnection().Send(static_cast<std::int16_t>(packetLength), packet);
       return 0;
     }
@@ -4173,7 +4173,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::memset(packet + 7, 0, 8);
       std::memcpy(packet + 7, settings.password.c_str(), settings.password.size());
       std::memcpy(packet + 15, settings.title.c_str(), settings.title.size());
-      this->sub_CEB8E0();
+      this->RecordChatRoomSettings();
       GetRagConnection().Send(static_cast<std::int16_t>(header[1]), packet);
       return 0;
     }
@@ -4844,7 +4844,7 @@ bool CGameMode::ConfirmDraggedItemUse() {
 
 // OFFSET: 0x00CFE480
 // FUNCTION: fn_21432
-void CGameMode::sub_CFE480(int actorId) {
+void CGameMode::RefreshStatusStateEffect(int actorId) {
   if (g_windowMgr.unknown_0508 != 2 && actorId == static_cast<int>(g_session.m_aid)) {
     this->scene->player->unknown_0544->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
   }
@@ -4852,7 +4852,7 @@ void CGameMode::sub_CFE480(int actorId) {
 
 // OFFSET: 0x00CDBC30
 // FUNCTION: fn_21312
-void __stdcall sub_CDBC30(const vector3d* position, int actorId, float scale, int job) {
+void __stdcall LaunchBulletSpriteEffect(const vector3d* position, int actorId, float scale, int job) {
   if (actorId == 0) {
     return;
   }
@@ -4868,7 +4868,7 @@ void __stdcall sub_CDBC30(const vector3d* position, int actorId, float scale, in
 
 // OFFSET: 0x00CE8F10
 // FUNCTION: fn_21344
-void __stdcall sub_CE8F10(const void* info, const unsigned char* data) {
+void __stdcall RecordWhisper(const void* info, const unsigned char* data) {
   if (Replay::Instance().state != 2) {
     return;
   }
@@ -5007,7 +5007,7 @@ void CGameMode::NotifyUnknown0604(int value) {
 
 // OFFSET: 0x00CEBF30
 // FUNCTION: fn_21354
-unsigned CGameMode::sub_CEBF30(const std::vector<unsigned char>& data) {
+unsigned CGameMode::ReadReplayGroundItems(const std::vector<unsigned char>& data) {
   if (data.empty()) {
     return 0xFFFFFFFFu;
   }
@@ -5041,7 +5041,7 @@ unsigned CGameMode::sub_CEBF30(const std::vector<unsigned char>& data) {
 
 // OFFSET: 0x00CEC100
 // FUNCTION: fn_21355
-unsigned CGameMode::sub_CEC100(const std::vector<unsigned char>& data) {
+unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
   if (data.empty()) {
     return 0xFFFFFFFFu;
   }
@@ -5139,7 +5139,7 @@ unsigned CGameMode::sub_CEC100(const std::vector<unsigned char>& data) {
       case 0x191:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D65FC0(record.data());
+        this->ReceiveStatusChangeEntry(record.data());
         break;
       default:
         offset += header.size;
@@ -5743,7 +5743,7 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
 
 // OFFSET: 0x00CEBBB0
 // FUNCTION: fn_21353
-unsigned CGameMode::sub_CEBBB0(const std::vector<unsigned char>& data) {
+unsigned CGameMode::ReadReplayGuildInfo(const std::vector<unsigned char>& data) {
   if (data.empty()) {
     return 0xFFFFFFFFu;
   }
@@ -6304,7 +6304,7 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     break;
   case 910: {
     const GameModeUiNavigationMessage* navigation = reinterpret_cast<const GameModeUiNavigationMessage*>(message);
-    g_navigationManager.sub_B99030(
+    g_navigationManager.StartNavigation(
       std::string(navigation->name), navigation->kind, navigation->mode, navigation->flag != 0, navigation->x, navigation->y, navigation->id
     );
     break;
@@ -6759,7 +6759,7 @@ void CGameMode::End() {
   if (schedule) {
     schedule->active = false;
   }
-  g_timeScheduler->sub_BA95F0(4);
+  g_timeScheduler->RemoveSchedulesByKey(4);
   this->StopReplayRecording();
   g_soundMgr->EndSamples();
 
@@ -6805,7 +6805,7 @@ void CGameMode::End() {
   }
 
   if (g_session.m_whisperRecord != 0) {
-    sub_CCFF10();
+    CloseWhisperRecord();
   }
   g_effectMgr->Clear();
   g_session.SaveMiniPartyInfo();
@@ -7303,7 +7303,7 @@ void CGameMode::InitializeState() {
   }
 
   g_snapMgr.Clear();
-  g_windowMgr.sub_AA6B80();
+  g_windowMgr.ClearMapWindows();
   this->broadcastBalloon = nullptr;
   this->noticeBalloon = nullptr;
   g_windowMgr.SetSurface0478(nullptr);
@@ -7902,7 +7902,7 @@ void CGameMode::Initialize(const char* name) {
   g_session.RefreshHpSpWindows();
   g_session.InvalidateWindowFrames();
   g_windowMgr.SetSurface0478(nullptr);
-  g_windowMgr.sub_AA6B80();
+  g_windowMgr.ClearMapWindows();
   this->broadcastBalloon = nullptr;
   this->noticeBalloon = nullptr;
   g_windowMgr.HideWindow01C8();
@@ -7990,10 +7990,10 @@ void CGameMode::Initialize(const char* name) {
     g_session.ReadReplayEntryQueue(Replay::Instance().ReadSection(12));
     g_session.ReadReplayShortcuts(Replay::Instance().ReadSection(13));
     g_session.ReadReplayShops(Replay::Instance().ReadSection(14));
-    this->sub_CEBBB0(Replay::Instance().ReadSection(0x16));
-    this->sub_CEC100(Replay::Instance().ReadSection(0xF));
-    this->sub_CEBF30(Replay::Instance().ReadSection(0x10));
-    this->sub_CEC6A0(Replay::Instance().ReadSection(0x11));
+    this->ReadReplayGuildInfo(Replay::Instance().ReadSection(0x16));
+    this->ReadReplayActors(Replay::Instance().ReadSection(0xF));
+    this->ReadReplayGroundItems(Replay::Instance().ReadSection(0x10));
+    this->ReadReplayGroundSkills(Replay::Instance().ReadSection(0x11));
 
     const std::vector<unsigned char> data = Replay::Instance().ReadSection(0x17);
     if (data.begin() != data.end()) {
@@ -8408,7 +8408,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
   if (g_sub_1319eb4 == 1 && pick) {
     UIMacroReporterWnd* reporter = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(286));
     if (reporter && reporter->unknown_010C == true && reporter->m_mode == 0) {
-      reporter->sub_7EF2C0(reinterpret_cast<MacroReporterEntry*>(pick));
+      reporter->AddPickedActor(reinterpret_cast<MacroReporterEntry*>(pick));
       return -1;
     }
   }
@@ -8814,7 +8814,7 @@ std::uint32_t g_spriteAtlasClearTick;
 // FUNCTION: fn_21323
 void CGameMode::Update() {
   PumpApplicationMessages();
-  this->sub_D08910();
+  this->ProcessIncomingPackets();
   if (Replay::Instance().AdvanceFrame() == 0) {
     g_windowMgr.window_4F168->SendMsg(nullptr, 35, 0, 0, 0, 0);
   }
@@ -9291,7 +9291,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     } else {
       std::sprintf(text, "Chatting Auto Save END");
       g_modeMgr.GetGameMode();
-      sub_CCFF10();
+      CloseWhisperRecord();
     }
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
     break;
@@ -9379,12 +9379,12 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case 151: {
     char text[256];
     if (std::strcmp(parts[0].c_str(), "") == 0) {
-      g_session.sub_DE3D90(nullptr);
+      g_session.HiFriends(nullptr);
       std::sprintf(text, "[ To Friends ] : (Hi) *^_^*");
     } else {
       char* message = const_cast<char*>(g_windowMgr.unknown_04DC.c_str());
       std::string copy(message);
-      g_session.sub_DE3D90(message);
+      g_session.HiFriends(message);
       if (g_serviceType == 0) {
         std::sprintf(text, "[ To Friends ] : (Hi) %s", copy.c_str());
       } else {
@@ -9453,13 +9453,13 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_serviceOptions.Set(0xA5, !g_serviceOptions.Get(0xA5));
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xA5) ? 0x414 : 0x415)), 0x64FFFF, 0, 0, 0);
-    g_windowMgr.sub_AAB090();
+    g_windowMgr.RefreshGameSettings();
     break;
   case 243:
     g_serviceOptions.Set(0xF3, !g_serviceOptions.Get(0xF3));
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xF3) ? 0xDC7 : 0xDC8)), 0x64FFFF, 0, 0, 0);
-    g_windowMgr.sub_AAB090();
+    g_windowMgr.RefreshGameSettings();
     break;
   case 135:
     g_windowMgr.chatModeChanged = g_windowMgr.chatModeChanged == 0;
@@ -9514,7 +9514,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     char text[120];
     std::sprintf(text, "%s %d", LookupMessage(0x19), volume);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
-    g_windowMgr.sub_AAB090();
+    g_windowMgr.RefreshGameSettings();
     break;
   }
   case 13: {
@@ -9524,7 +9524,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     char text[120];
     std::sprintf(text, "%s %d", LookupMessage(0x1A), volume);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
-    g_windowMgr.sub_AAB090();
+    g_windowMgr.RefreshGameSettings();
     break;
   }
   case 11:
@@ -9534,7 +9534,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     if (g_serviceOptions.Get(0xB)) {
       g_soundMgr->unknown = 0;
     }
-    g_windowMgr.sub_AAB090();
+    g_windowMgr.RefreshGameSettings();
     break;
   case 195:
     g_soundMgr->unknown = g_soundMgr->unknown == 0;
@@ -9554,7 +9554,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     } else {
       g_soundMgr->StopStreams();
     }
-    g_windowMgr.sub_AAB090();
+    g_windowMgr.RefreshGameSettings();
     break;
   case 49: {
     const int third = std::atoi(parts[2].c_str());
@@ -9960,7 +9960,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       g_navigationManager.ShowRouteResult(-100, 1);
       break;
     }
-    g_navigationManager.sub_B99030(parts[0], 0, 5, true, cell.x, cell.y, 0x3EA);
+    g_navigationManager.StartNavigation(parts[0], 0, 5, true, cell.x, cell.y, 0x3EA);
     break;
   }
   case 210: {
@@ -9979,7 +9979,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     if (third) {
       mode += 4;
     }
-    g_navigationManager.sub_B99030(parts[0], 0, mode, true, cell.x, cell.y, 0x3EA);
+    g_navigationManager.StartNavigation(parts[0], 0, mode, true, cell.x, cell.y, 0x3EA);
     break;
   }
   case 217:

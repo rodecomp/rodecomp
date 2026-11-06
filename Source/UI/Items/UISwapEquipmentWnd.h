@@ -34,7 +34,7 @@ public:
   ITEM_INFO ItemAtPoint(int x, int y);
   __declspec(noinline) ITEM_INFO GetSlotItem(int slot);
   void SetSlotValue(int index, int value);
-  void sub_82FD90();
+  void DrawEquipmentSlots();
 
 protected:
   /* 00B4 */ std::uint32_t unknown_00B4;

@@ -354,10 +354,10 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
     break;
   case 29:
-    this->sub_9B9EA0(argument1, argument2, argument3, argument4);
+    this->AppendText(argument1, argument2, argument3, argument4);
     return 0;
   case 98:
-    this->sub_9BC0A0(argument1, sender);
+    this->OnTagClick(argument1, sender);
     break;
   default:
     return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -368,7 +368,7 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
 // OFFSET: 0x009B9EA0
 // FUNCTION: fn_13881
-void UITagListBox::sub_9B9EA0(std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+void UITagListBox::AppendText(std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   char* text = reinterpret_cast<char*>(argument1);
   const int width = static_cast<int>(argument2);
   std::vector<std::string> lines;
@@ -394,8 +394,8 @@ void UITagListBox::sub_9B9EA0(std::intptr_t argument1, std::intptr_t argument2, 
       }
     } else {
       std::vector<STagInfoV2> tags;
-      const std::string parsed = this->sub_9B8AA0(std::string(text), tags);
-      this->sub_9BB8E0(parsed, tags, width == 0 ? 35 : width);
+      const std::string parsed = this->ParseTaggedText(std::string(text), tags);
+      this->AppendTaggedLines(parsed, tags, width == 0 ? 35 : width);
     }
 
     this->unknown_00BC &= ~255;
@@ -483,7 +483,7 @@ std::pair<std::string, std::string> UITagListBox::ParseTag(std::string text, int
 
 // OFFSET: 0x009BC0A0
 // FUNCTION: fn_13889
-void UITagListBox::sub_9BC0A0(std::intptr_t type, UIWindow* sender) {
+void UITagListBox::OnTagClick(std::intptr_t type, UIWindow* sender) {
   UITagButton* button = static_cast<UITagButton*>(sender);
   if (!button) {
     return;
@@ -509,7 +509,7 @@ void UITagListBox::sub_9BC0A0(std::intptr_t type, UIWindow* sender) {
         }
 
         tag += name;
-        g_navigationManager.sub_B995D0(tag, mode, false);
+        g_navigationManager.SearchNavigation(tag, mode, false);
       } else {
         const int flag = std::atoi(button->GetString(5).c_str());
         const int id = std::atoi(button->GetString(6).c_str());
@@ -522,10 +522,10 @@ void UITagListBox::sub_9BC0A0(std::intptr_t type, UIWindow* sender) {
         const unsigned char group = code < 10 ? hundreds : static_cast<unsigned char>(hundreds + 2);
         const int remainder = code < 10 ? code : code - 10;
         const unsigned char kind = remainder < 1 ? group : static_cast<unsigned char>(group + 4);
-        g_navigationManager.sub_B99030(name.c_str(), mode, kind, flag == 0, x, y, id);
+        g_navigationManager.StartNavigation(name.c_str(), mode, kind, flag == 0, x, y, id);
       }
     } else {
-      g_navigationManager.sub_B99030(name.c_str(), 2, 5, false, x, y, 1002);
+      g_navigationManager.StartNavigation(name.c_str(), 2, 5, false, x, y, 1002);
     }
     break;
   }
@@ -540,7 +540,7 @@ void UITagListBox::sub_9BC0A0(std::intptr_t type, UIWindow* sender) {
 
 // OFFSET: 0x009B8AA0
 // FUNCTION: fn_13874
-std::string UITagListBox::sub_9B8AA0(std::string text, std::vector<STagInfoV2>& tags) {
+std::string UITagListBox::ParseTaggedText(std::string text, std::vector<STagInfoV2>& tags) {
   std::vector<STagString> extracted = ExtractTextTags(text);
   if (extracted.empty()) {
     return text;
@@ -606,7 +606,7 @@ int WrappedLineLength(const char* text, int length, int width) {
 
 // OFFSET: 0x009BB8E0
 // FUNCTION: fn_13888
-void UITagListBox::sub_9BB8E0(std::string text, std::vector<STagInfoV2>& tags, int width) {
+void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& tags, int width) {
   const int firstLine = static_cast<int>(this->lines.size());
   const char* buffer = text.c_str();
   std::size_t position = 0;

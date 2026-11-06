@@ -14,7 +14,7 @@
 
 // OFFSET: 0x0050AE30
 // FUNCTION: fn_00894
-bool JsonCppLoader::sub_50AE30(std::map<int, ReputeGroupRecord>* out) {
+bool JsonCppLoader::GetReputeGroupData(std::map<int, ReputeGroupRecord>* out) {
   if (!this->loaded) {
     this->Fail("초기화가 되어야 합니다.");
     return false;
@@ -74,7 +74,7 @@ bool JsonCppLoader::sub_50AE30(std::map<int, ReputeGroupRecord>* out) {
 
 // OFFSET: 0x0050B830
 // FUNCTION: fn_00895
-bool JsonCppLoader::sub_50B830(std::map<int, ReputeInfoRecord>* out) {
+bool JsonCppLoader::GetReputeInfoData(std::map<int, ReputeInfoRecord>* out) {
   if (!this->loaded) {
     this->Fail("초기화가 되어야 합니다.");
     return false;
@@ -117,7 +117,7 @@ bool JsonCppLoader::sub_50B830(std::map<int, ReputeInfoRecord>* out) {
 
 // OFFSET: 0x0060DC70
 // FUNCTION: fn_04294
-bool CReputeMgr::sub_60DC70(std::map<std::uint64_t, ReputeGroup>& groups) {
+bool CReputeMgr::LoadReputeGroupData(std::map<std::uint64_t, ReputeGroup>& groups) {
   std::string path = "ContentData\\Repute\\ReputeGroupData.bson";
   CFile file;
   if (!file.Open(path.c_str(), 0, true, false)) {
@@ -128,12 +128,12 @@ bool CReputeMgr::sub_60DC70(std::map<std::uint64_t, ReputeGroup>& groups) {
   std::vector<unsigned char> buffer(data, data + file.GetSize());
 
   JsonCppLoader loader;
-  if (!loader.sub_4F3C70(buffer, true)) {
+  if (!loader.Load(buffer, true)) {
     return false;
   }
 
   std::map<int, ReputeGroupRecord> records;
-  if (!loader.sub_50AE30(&records)) {
+  if (!loader.GetReputeGroupData(&records)) {
     return false;
   }
 
@@ -146,7 +146,7 @@ bool CReputeMgr::sub_60DC70(std::map<std::uint64_t, ReputeGroup>& groups) {
 
 // OFFSET: 0x0060E090
 // FUNCTION: fn_04295
-bool CReputeMgr::sub_60E090(std::map<std::uint64_t, ReputeInfo>& infos) {
+bool CReputeMgr::LoadReputeInfoData(std::map<std::uint64_t, ReputeInfo>& infos) {
   std::string path = "ContentData\\Repute\\ReputeInfoData.bson";
   CFile file;
   if (!file.Open(path.c_str(), 0, true, false)) {
@@ -157,12 +157,12 @@ bool CReputeMgr::sub_60E090(std::map<std::uint64_t, ReputeInfo>& infos) {
   std::vector<unsigned char> buffer(data, data + file.GetSize());
 
   JsonCppLoader loader;
-  if (!loader.sub_4F3C70(buffer, true)) {
+  if (!loader.Load(buffer, true)) {
     return false;
   }
 
   std::map<int, ReputeInfoRecord> records;
-  if (!loader.sub_50B830(&records)) {
+  if (!loader.GetReputeInfoData(&records)) {
     return false;
   }
 
@@ -235,8 +235,8 @@ std::vector<const ReputeInfo*> CReputeMgr::GetAllReputes() const {
 
 // OFFSET: 0x0060DBF0
 // FUNCTION: fn_04293
-bool CReputeMgr::sub_60DBF0() {
-  if (this->sub_60E090(this->m_infos) && this->sub_60DC70(this->m_groups)) {
+bool CReputeMgr::Load() {
+  if (this->LoadReputeInfoData(this->m_infos) && this->LoadReputeGroupData(this->m_groups)) {
     return true;
   }
 

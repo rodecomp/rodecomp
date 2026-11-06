@@ -120,7 +120,7 @@ public:
   void ClearSurface(std::uint32_t color);
   void SetSize(int width, int height);
   void DrawBitmap(int x, int y, const BitmapImage* image, bool transparent);
-  void sub_A85850(int x, int y, std::string text, int width, int align, std::uint32_t color, int arg7, int arg8, int arg9, int arg10, unsigned char bold);
+  void DrawAlignedText(int x, int y, std::string text, int width, int align, std::uint32_t color, int arg7, int arg8, int arg9, int arg10, unsigned char bold);
   void FillRegion(int x, int y, int width, int height, std::uint32_t color);
   int TextWidth(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
   void WrapPixelText(const char* text, std::vector<std::string>& lines, int width);
@@ -146,13 +146,13 @@ public:
   );
   void DrawFormattedText(int x, int y, const std::string& text, int width, int align, int family, int height, std::uint32_t color, unsigned char bold);
   void DrawEmboldenedText(int x, int y, const char* text, std::uint32_t color, std::uint32_t secondColor, int bytes, int family, int height);
-  int sub_A84400(
+  int DrawWrappedFormattedText(
     int x, int y, const std::string& text, int width, int lineSpacing, int align, int family, int height,
     std::uint32_t color, unsigned char bold
   );
   void FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
   void FillSurface(std::uint32_t color, const tagRECT* rectangle);
-  void sub_8932D0(int* kind, std::vector<std::string>* lines, const std::string& text);
+  void WrapLinkText(int* kind, std::vector<std::string>* lines, const std::string& text);
   void WrapTextWithBreaks(const char* text, std::vector<std::string>* lines, std::vector<bool>* breaks, int width);
   int DrawItemNameSegments(
     int x, int y, int width, const std::vector<char*>& breaks, const char* text, const char* highlight, std::uint32_t highlightColor,

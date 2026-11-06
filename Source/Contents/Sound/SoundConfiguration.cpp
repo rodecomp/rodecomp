@@ -56,7 +56,7 @@ const char* g_renewSetupSubKey = RenewSetupSubKey();
 
 // OFFSET: 0x00E59030
 // FUNCTION: fn_24366
-int sub_E59030() {
+int ReadSetup() {
   HKEY key;
   LSTATUS status = RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_renewSetupSubKey, 0, KEY_QUERY_VALUE, &key);
   RegCloseKey(key);

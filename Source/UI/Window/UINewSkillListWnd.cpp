@@ -132,7 +132,7 @@ void UINewSkillListWnd::Slot35(int delta) {
 
 // OFFSET: 0x009AE730
 // FUNCTION: fn_13800
-void UINewSkillListWnd::sub_9AE730() {
+void UINewSkillListWnd::ApplySkillPoints() {
   if (g_session.m_simplifiedSkillList == 0) {
     for (const NewSkillListValue& entry : this->m_unknown_02A0) {
       const int id = entry.id;
@@ -172,7 +172,7 @@ int g_skillListHeadOffsetY;
 
 // OFFSET: 0x009AE930
 // FUNCTION: fn_13801
-void UINewSkillListWnd::sub_9AE930() {
+void UINewSkillListWnd::DrawCharacter() {
   std::string bodyImf;
   std::string actions[2];
   std::string sprites[2];
@@ -280,7 +280,7 @@ void UINewSkillListWnd::sub_9AE930() {
 
 // OFFSET: 0x009AF300
 // FUNCTION: fn_13802
-void UINewSkillListWnd::sub_9AF300() {
+void UINewSkillListWnd::DrawSkillList() {
   LuaScript& script = *g_session.m_hotkeyScript;
   int drawn = 0;
   int index = 0;
@@ -934,14 +934,14 @@ void UINewSkillListWnd::Paint() {
     } else {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s%d", LookupMessage(2343), total);
     }
-    this->sub_A84400(80, this->geometry.height - 23, std::string(text), 0, 0, 0, 0, 12, 0, 0);
-    this->sub_9AF960();
-    this->sub_9AE930();
+    this->DrawWrappedFormattedText(80, this->geometry.height - 23, std::string(text), 0, 0, 0, 0, 12, 0, 0);
+    this->DrawSkillTree();
+    this->DrawCharacter();
   } else {
     std::sprintf(text, LookupMessage(284), points);
     this->TextWidth(text, 0, 0, 12, 0, 0);
     this->DrawTextAt(30, this->geometry.height - 23, text, 0, 0, 12, 0, 0, 0);
-    this->sub_9AF300();
+    this->DrawSkillList();
   }
 
   this->m_needsRedraw = 0;
@@ -985,7 +985,7 @@ void UINewSkillListWnd::Slot25(int x, int y) {
 
   if (this->m_showDetail) {
     this->m_showDetail = false;
-    this->sub_9B2CD0();
+    this->UpdateRequiredSkills();
   }
 
   int oldSelected = this->m_selectedSkill;
@@ -1022,7 +1022,7 @@ void UINewSkillListWnd::Slot31(int x, int y) {
   if (gate == 0 && this->IsSkillArea(x, y)) {
     CSkillInfo skill = this->SkillAt(this->m_selectedSkill, false);
     if (skill.unknown_002C != 0 && skill.available != 0) {
-      if (this->sub_9B3EB0(skill.id)) {
+      if (this->IncreaseSkillLevel(skill.id)) {
         this->m_needsRedraw = 1;
         this->m_locked = 1;
         this->LayoutButtons();
@@ -1055,7 +1055,7 @@ void UINewSkillListWnd::Slot28(int x, int y) {
 
   if (previous != this->m_selectedSkill) {
     if (!this->m_showDetail) {
-      this->sub_9B2CD0();
+      this->UpdateRequiredSkills();
     }
     this->m_needsRedraw = 1;
     this->Invalidate();
@@ -1076,7 +1076,7 @@ void UINewSkillListWnd::Slot33(int x, int y) {
     }
   } else if (this->m_detailId != this->m_selectedSkill) {
     this->m_showDetail = true;
-    this->sub_9B2CD0();
+    this->UpdateRequiredSkills();
   } else {
     this->m_showDetail = !this->m_showDetail;
   }
@@ -1127,7 +1127,7 @@ void UINewSkillListWnd::Slot33(int x, int y) {
 
 // OFFSET: 0x009B2CD0
 // FUNCTION: fn_13822
-void UINewSkillListWnd::sub_9B2CD0() {
+void UINewSkillListWnd::UpdateRequiredSkills() {
   this->m_values.clear();
   for (int i = 0; i < static_cast<int>(this->m_tabs->labels.size()); ++i) {
     UITabControl* tabs = this->m_tabs;
@@ -1341,7 +1341,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     case 271:
       if (g_windowMgr.Confirm(LookupMessage(1377), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
-        this->sub_9AE730();
+        this->ApplySkillPoints();
         this->SendMsg(nullptr, 23, 0, 0, 0, 0);
         if (ChatWindow()) {
           g_windowMgr.SetFocus(ChatWindow()->m_suggestions);
@@ -1380,7 +1380,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     case 248:
       if (this->m_skillPoints != 0) {
         CSkillInfo skill = this->SkillAt(this->m_columns * this->m_firstRow + a - 239, false);
-        if (skill.available != 0 && skill.unknown_0018 != 0 && this->sub_9B3EB0(skill.id)) {
+        if (skill.available != 0 && skill.unknown_0018 != 0 && this->IncreaseSkillLevel(skill.id)) {
           this->m_needsRedraw = 1;
           this->m_locked = 1;
           this->LayoutButtons();
@@ -1495,7 +1495,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
 // OFFSET: 0x009B3EB0
 // FUNCTION: fn_13827
-bool UINewSkillListWnd::sub_9B3EB0(int skillId) {
+bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
   if (this->m_skillPoints <= 0 || this->m_showDetail) {
     return false;
   }
@@ -1608,7 +1608,7 @@ static int SkillValueOf(const std::list<NewSkillListValue>& values, int id) {
 
 // OFFSET: 0x009AF960
 // FUNCTION: fn_13803
-void UINewSkillListWnd::sub_9AF960() {
+void UINewSkillListWnd::DrawSkillTree() {
   LuaScript& script = *g_session.m_hotkeyScript;
 
   CBitmapRes* emptySlot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\no_skill.bmp")));

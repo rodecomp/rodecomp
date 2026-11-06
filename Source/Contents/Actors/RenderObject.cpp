@@ -2402,7 +2402,7 @@ void CGameActor::LaunchAttackProjectile(int target, float scale) {
   case 0x57F8:
   case 0x5800:
   case 0x5812:
-    sub_CDBC30(&this->render.position, target, scale, this->GetEffectiveJob(-1));
+    LaunchBulletSpriteEffect(&this->render.position, target, scale, this->GetEffectiveJob(-1));
     return;
   default:
     return;
@@ -4346,7 +4346,7 @@ __declspec(noinline) bool __stdcall IsTreeGroupThreeLocal(int job) {
 
 // OFFSET: 0x00CAA4D0
 // FUNCTION: fn_21017
-void CGameActor::sub_CAA4D0() {
+void CGameActor::UpdateMaxLevelAura() {
   if (g_serviceOptions.Get(0x6b) != 0) {
     return;
   }
@@ -4533,7 +4533,7 @@ void CGameActor::SetActorJob(int job) {
 
   this->Slot21(slotJob);
   this->ResetJobEffects();
-  this->sub_CAA4D0();
+  this->UpdateMaxLevelAura();
 }
 
 // OFFSET: 0x00CAAFD0
@@ -4593,7 +4593,7 @@ void C3dGrannyGameActor::SpawnCorpseActor() {
 
 // OFFSET: 0x00CC40D0
 // FUNCTION: fn_21158
-void CGameActor::sub_CC40D0() {
+void CGameActor::ApplyNatureProtection() {
   if (this->unknown_0404 == 3) {
     return;
   }
@@ -4881,7 +4881,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       }
       this->RefreshGuildEmblemWindow();
       if (this->unknown_02B4 != 0) {
-        this->sub_CAA4D0();
+        this->UpdateMaxLevelAura();
       }
       if (this->GetEffectiveJob(-1) == 45) {
         this->LaunchEffect(321, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -4932,7 +4932,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       }
       this->RefreshGuildEmblemWindow();
       if (this->unknown_02B4 != 0) {
-        this->sub_CAA4D0();
+        this->UpdateMaxLevelAura();
       }
     }
   }
@@ -5025,7 +5025,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       }
       this->RefreshGuildEmblemWindow();
       if (this->unknown_02B4 != 0) {
-        this->sub_CAA4D0();
+        this->UpdateMaxLevelAura();
       }
     }
   }

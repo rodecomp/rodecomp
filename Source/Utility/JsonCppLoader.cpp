@@ -107,7 +107,7 @@ struct JsonCppLoaderJsonOptionsGuard {
 
 // OFFSET: 0x004F3CC0
 // FUNCTION: fn_00487
-bool JsonCppLoader::sub_4F3CC0(const std::string& path) {
+bool JsonCppLoader::LoadBson(const std::string& path) {
   try {
     std::ifstream file(path.c_str(), std::ios::binary);
     if (!file.is_open()) {
@@ -134,7 +134,7 @@ bool JsonCppLoader::sub_4F3CC0(const std::string& path) {
 
 // OFFSET: 0x004F3ED0
 // FUNCTION: fn_00489
-bool JsonCppLoader::sub_4F3ED0(const std::string& path) {
+bool JsonCppLoader::LoadJson(const std::string& path) {
   try {
     std::ifstream file(path.c_str());
     if (!file.is_open()) {
@@ -161,7 +161,7 @@ bool JsonCppLoader::sub_4F3ED0(const std::string& path) {
 
 // OFFSET: 0x004F3C70
 // FUNCTION: fn_00486
-bool JsonCppLoader::sub_4F3C70(std::vector<unsigned char>& buffer, bool bson) {
+bool JsonCppLoader::Load(std::vector<unsigned char>& buffer, bool bson) {
   if (buffer.empty()) {
     this->Fail("error : JsonCppLoader::Load failed (reason : 비어있는 버퍼가 전달되었습니다.)");
     return false;
@@ -169,9 +169,9 @@ bool JsonCppLoader::sub_4F3C70(std::vector<unsigned char>& buffer, bool bson) {
 
   bool parsed;
   if (bson == true) {
-    parsed = this->sub_4F3DF0(buffer);
+    parsed = this->LoadBson(buffer);
   } else {
-    parsed = this->sub_4F4040(buffer);
+    parsed = this->LoadJson(buffer);
   }
 
   if (parsed) {
@@ -184,7 +184,7 @@ bool JsonCppLoader::sub_4F3C70(std::vector<unsigned char>& buffer, bool bson) {
 
 // OFFSET: 0x004F3DF0
 // FUNCTION: fn_00488
-__declspec(noinline) bool JsonCppLoader::sub_4F3DF0(std::vector<unsigned char>& buffer) {
+__declspec(noinline) bool JsonCppLoader::LoadBson(std::vector<unsigned char>& buffer) {
   if (buffer.empty()) {
     this->Fail("비어있는 버퍼가 전달되었습니다.");
     return false;
@@ -208,7 +208,7 @@ __declspec(noinline) bool JsonCppLoader::sub_4F3DF0(std::vector<unsigned char>& 
 
 // OFFSET: 0x004F4040
 // FUNCTION: fn_00490
-__declspec(noinline) bool JsonCppLoader::sub_4F4040(std::vector<unsigned char>& buffer) {
+__declspec(noinline) bool JsonCppLoader::LoadJson(std::vector<unsigned char>& buffer) {
   if (buffer.empty()) {
     this->Fail("비어있는 버퍼가 전달되었습니다.");
     return false;

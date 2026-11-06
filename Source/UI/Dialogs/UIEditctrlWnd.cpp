@@ -434,7 +434,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
           if (extension != std::string::npos) {
             mapName = mapName.substr(0, extension);
           }
-          g_navigationManager.sub_B99030(mapName.c_str(), 0, 5, true, town.x, town.y, 1002);
+          g_navigationManager.StartNavigation(mapName.c_str(), 0, 5, true, town.x, town.y, 1002);
         }
         return 0;
       }
@@ -446,7 +446,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         if (extension != std::string::npos) {
           mapName = mapName.substr(0, extension);
         }
-        g_navigationManager.sub_B99030(mapName.c_str(), 0, 5, true, mark->second.x, mark->second.y, 1002);
+        g_navigationManager.StartNavigation(mapName.c_str(), 0, 5, true, mark->second.x, mark->second.y, 1002);
         return 0;
       }
       return 0;

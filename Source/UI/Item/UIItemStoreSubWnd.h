@@ -32,9 +32,9 @@ public:
   bool SortReversed1();
   bool SortReversed2();
   bool SortReversed3();
-  bool sub_996950();
-  bool sub_996AF0();
-  bool sub_996C90();
+  bool UpdateItemNames1();
+  bool UpdateItemNames2();
+  bool UpdateItemNames3();
   bool FilterByName1(std::string query);
   bool FilterByName2(std::string query);
   bool FilterByName3(std::string query);

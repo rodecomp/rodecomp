@@ -295,7 +295,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case 61:
       if (this->m_owner->GetMember().valid) {
-        g_windowMgr.sub_A8C4B0(this->m_owner->GetMember().accountId);
+        g_windowMgr.CloseMiniPartyWindow(this->m_owner->GetMember().accountId);
         return 0;
       }
       break;

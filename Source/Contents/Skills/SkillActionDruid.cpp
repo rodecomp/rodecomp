@@ -68,7 +68,7 @@ public:
 
 class CSkillAction_DamageWereRaptorForm : public CSkillAction_AnimalForm, public CSkillAction_Direction {
 public:
-  void sub_5A4760(int sourceActor, CGameActor* target);
+  void SpawnAttack00Effect(int sourceActor, CGameActor* target);
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
   bool Slot17(CGameActor* actor) override;
   void Slot18(CGameActor* actor) override;
@@ -745,7 +745,7 @@ int CEfstAction_NATURE_PROTECTION::Slot05(int efstId, int argument4) {
 // FUNCTION: fn_04512
 void CEfstAction_NATURE_PROTECTION::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    static_cast<CGameActor*>(actor)->sub_CC40D0();
+    static_cast<CGameActor*>(actor)->ApplyNatureProtection();
   }
   CEfstAction_BasicAction::Slot00(efstId, value, argument3, argument4, actor, argument6);
 }
@@ -1223,7 +1223,7 @@ void CSkillAction_DR_SHOOTING_FEATHER::Slot11(int level, CGameActor* source, CGa
 // OFFSET: 0x00621830
 // FUNCTION: fn_04496
 void CSkillAction_DR_SHOOTING_FEATHER::Slot15(int level, CGameActor* source, CGameActor* target) {
-  this->sub_5A4760(level, source);
+  this->SpawnAttack00Effect(level, source);
 }
 
 // OFFSET: 0x0061FF40

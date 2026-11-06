@@ -145,7 +145,7 @@ void CTimeScheduler::Process() {
 
 // OFFSET: 0x00BA95F0
 // FUNCTION: fn_19739
-void CTimeScheduler::sub_BA95F0(int value) {
+void CTimeScheduler::RemoveSchedulesByKey(int value) {
   for (CSchedule* schedule : this->m_schedules) {
     if (schedule->unknown_002C == value) {
       schedule->active = false;

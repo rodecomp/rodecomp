@@ -31,11 +31,11 @@ public:
   void Slot31(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  void sub_9B9EA0(std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4);
-  void sub_9BC0A0(std::intptr_t type, UIWindow* sender);
-  std::string sub_9B8AA0(std::string text, std::vector<STagInfoV2>& tags);
+  void AppendText(std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4);
+  void OnTagClick(std::intptr_t type, UIWindow* sender);
+  std::string ParseTaggedText(std::string text, std::vector<STagInfoV2>& tags);
   std::pair<std::string, std::string> ParseTag(std::string text, int tagIndex);
-  void sub_9BB8E0(std::string text, std::vector<STagInfoV2>& tags, int width);
+  void AppendTaggedLines(std::string text, std::vector<STagInfoV2>& tags, int width);
   int DecodeNumber(std::string text);
   void DecodeItemFields(const std::string& text, std::vector<int>& fields);
   bool ItemFromFields(const std::vector<int>& fields, ITEM_INFO& item);

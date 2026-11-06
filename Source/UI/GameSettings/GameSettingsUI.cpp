@@ -1918,7 +1918,7 @@ void CUIGameSettingsUI::Slot25(int x, int y) {
 
 // OFFSET: 0x00A3F0F0
 // FUNCTION: fn_15939
-void CUIGameSettingsUI::sub_A3F0F0() {
+void CUIGameSettingsUI::OnTitleIconClick() {
 }
 
 // OFFSET: 0x00A3F100
@@ -1927,7 +1927,7 @@ void CUIGameSettingsUI::OnApply() {
   const bool modified = this->m_graphicsPage->IsModified();
   if (g_windowMgr.Confirm(LookupMessage(modified ? 3168 : 3167), 2, true, false, 0, "Message", 280, 120, 0) != 188) {
     this->m_graphicsPage->ApplySettings();
-    this->sub_A421E0();
+    this->UpdateApplyButton();
   }
 }
 
@@ -1952,27 +1952,27 @@ __declspec(noinline) bool CUIGameSettingsUI::IsTab4Selected() {
 
 // OFFSET: 0x00A43380
 // FUNCTION: fn_16024
-void CUIGameSettingsUI::sub_A43380() {
+void CUIGameSettingsUI::OnBasicTabClick() {
 }
 
 // OFFSET: 0x00A43390
 // FUNCTION: fn_16025
-void CUIGameSettingsUI::sub_A43390() {
+void CUIGameSettingsUI::OnControlTabClick() {
 }
 
 // OFFSET: 0x00A433A0
 // FUNCTION: fn_16026
-void CUIGameSettingsUI::sub_A433A0() {
+void CUIGameSettingsUI::OnEffectTabClick() {
 }
 
 // OFFSET: 0x00A433B0
 // FUNCTION: fn_16027
-void CUIGameSettingsUI::sub_A433B0() {
+void CUIGameSettingsUI::OnEtcTabClick() {
 }
 
 // OFFSET: 0x00A433C0
 // FUNCTION: fn_16028
-void CUIGameSettingsUI::sub_A433C0() {
+void CUIGameSettingsUI::OnGraphicsTabClick() {
 }
 
 // OFFSET: 0x00A42FC0
@@ -1984,7 +1984,7 @@ void GameSettingsUI::CUIGroupGraphicsAPI::Apply() {
 
 // OFFSET: 0x00A404D0
 // FUNCTION: fn_15973
-void sub_A404D0() {
+void SetNormalProcessPriority() {
   dwPriorityClass = NORMAL_PRIORITY_CLASS;
   HANDLE process = GetCurrentProcess();
   SetPriorityClass(process, NORMAL_PRIORITY_CLASS);
@@ -1992,7 +1992,7 @@ void sub_A404D0() {
 
 // OFFSET: 0x00A421E0
 // FUNCTION: fn_16013
-void CUIGameSettingsUI::sub_A421E0() {
+void CUIGameSettingsUI::UpdateApplyButton() {
   bool visible = false;
   if (this->m_tab->current && this->m_tab->current->geometry.id == 3) {
     GameSettingsUI::CUIGraphicsPage* page = this->m_graphicsPage;
@@ -2013,45 +2013,45 @@ void CUIGameSettingsUI::SelectTab4() {
 
 // OFFSET: 0x00A41E50
 // FUNCTION: fn_16004
-void sub_A41E50(int option) {
+void OnFullscreenOptionChanged(int option) {
   CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
   if (wnd) {
-    wnd->sub_A421E0();
+    wnd->UpdateApplyButton();
   }
 }
 
 // OFFSET: 0x00A41FA0
 // FUNCTION: fn_16008
-void sub_A41FA0(int option) {
+void OnTrilinearOptionChanged(int option) {
   CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
   if (wnd) {
-    wnd->sub_A421E0();
+    wnd->UpdateApplyButton();
   }
 }
 
 // OFFSET: 0x00A43000
 // FUNCTION: fn_16022
-void sub_A43000(int option) {
+void OnSpriteDetailLevelChanged(int option) {
   CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
   if (wnd) {
-    wnd->sub_A421E0();
+    wnd->UpdateApplyButton();
   }
 }
 
 // OFFSET: 0x00A43040
 // FUNCTION: fn_16023
-void sub_A43040(int option) {
+void OnTextureDetailLevelChanged(int option) {
   CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
   if (wnd) {
-    wnd->sub_A421E0();
+    wnd->UpdateApplyButton();
   }
 }
 
 // OFFSET: 0x00A433D0
 // FUNCTION: fn_16029
-void CUIGameSettingsUI::sub_A433D0(UIWindow* window) {
+void CUIGameSettingsUI::OnTabChanged(UIWindow* window) {
   this->m_pageContainer->Show(window != this->m_tab->FindChildById(3));
-  this->sub_A421E0();
+  this->UpdateApplyButton();
 }
 
 // OFFSET: 0x00A3F9B0
@@ -2111,28 +2111,28 @@ void ToggleGameSettingsTab4() {
 
 // OFFSET: 0x00AAB070
 // FUNCTION: fn_17277
-void UIWindowMgr::sub_AAB070(int option) {
+void UIWindowMgr::RefreshGameSettingOption(int option) {
   CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(0x271E));
   if (settings) {
-    settings->sub_A43590(option);
+    settings->RefreshOption(option);
   }
 }
 
 // OFFSET: 0x00AAB090
 // FUNCTION: fn_17278
-void UIWindowMgr::sub_AAB090() {
+void UIWindowMgr::RefreshGameSettings() {
   CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(0x271E));
   if (settings) {
-    settings->sub_A43BA0();
+    settings->RefreshOptions();
   }
 }
 
 // OFFSET: 0x00AAB0B0
 // FUNCTION: fn_17279
-void UIWindowMgr::sub_AAB0B0() {
+void UIWindowMgr::RefreshGameSettingHotkeys() {
   CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(0x271E));
   if (settings) {
-    settings->sub_A43C70();
+    settings->RefreshHotkeyLabels();
   }
 }
 
@@ -2213,7 +2213,7 @@ bool GameSettingsUI::CUIListPage::SetOptionChecked(int id) {
 
 // OFFSET: 0x00A43590
 // FUNCTION: fn_16031
-__declspec(noinline) void CUIGameSettingsUI::sub_A43590(int id) {
+__declspec(noinline) void CUIGameSettingsUI::RefreshOption(int id) {
   for (GameSettingsUI::CUIListPage* page : this->m_pages) {
     for (GameSettingsUI::CUIOptionItem* item : page->m_optionList->items) {
       if (item->m_optionId == id) {
@@ -2418,7 +2418,7 @@ void GameSettingsUI::CUIGroupGraphics::OnModeSelect(CUIComboItem* item, const Di
     this->m_pendingMode = *node;
     CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
     if (wnd) {
-      wnd->sub_A421E0();
+      wnd->UpdateApplyButton();
     }
   }
 }
@@ -2776,7 +2776,7 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
   this->m_onButton = new CUIRadioButton();
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(150, 12);
-  this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { sub_A41E50(reinterpret_cast<int>(button)); });
+  this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { OnFullscreenOptionChanged(reinterpret_cast<int>(button)); });
   this->m_onButton->disabled = 0;
   this->m_onButton->Invalidate();
   const std::uint8_t onButtonNormalSource[] = {0x8F, 0xE4, 0x73, 0x75, 0xED, 0xDB, 0x84, 0x4A, 0x89, 0xAF, 0x73, 0x43, 0x90, 0xAF, 0x1D, 0xF5, 0x2E, 0x2F, 0xDA, 0xE0, 0x4F, 0x61, 0x2F, 0xD8, 0x20, 0x2D, 0xD5, 0xA1, 0x4F, 0x78, 0x31, 0x87};
@@ -2812,7 +2812,7 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
   this->m_offButton = new CUIRadioButton();
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(270, 12);
-  this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { sub_A41E50(reinterpret_cast<int>(button)); });
+  this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { OnFullscreenOptionChanged(reinterpret_cast<int>(button)); });
   this->m_offButton->disabled = 0;
   this->m_offButton->Invalidate();
   const std::uint8_t offButtonNormalSource[] = {0x95, 0x52, 0x75, 0x21, 0x07, 0x7F, 0xB0, 0xFE, 0x93, 0x19, 0x75, 0x17, 0x7A, 0x0B, 0x29, 0x41, 0x34, 0x99, 0xDC, 0xB4, 0xA5, 0xC5, 0x1B, 0x6C, 0x3A, 0x9B, 0xD3, 0xF5, 0xA5, 0xDC, 0x05, 0x33};
@@ -3497,7 +3497,7 @@ void GameSettingsUI::CUIGroupSpriteDetailLevel::Slot15(int width, int height) {
   this->m_slider = new CUIHScrollBar();
   this->m_slider->SetSize(175, 13);
   this->m_slider->Move(153, 11);
-  this->m_slider->SetOnChange([this](int position) { sub_A43000(position); });
+  this->m_slider->SetOnChange([this](int position) { OnSpriteDetailLevelChanged(position); });
   this->m_slider->SetTotal(128);
   this->m_slider->SetVisible(128);
   this->m_slider->step = 1;
@@ -3543,7 +3543,7 @@ void GameSettingsUI::CUIGroupTextureDetailLevel::Slot15(int width, int height) {
   this->m_slider = new CUIHScrollBar();
   this->m_slider->SetSize(175, 13);
   this->m_slider->Move(153, 11);
-  this->m_slider->SetOnChange([this](int position) { sub_A43040(position); });
+  this->m_slider->SetOnChange([this](int position) { OnTextureDetailLevelChanged(position); });
   this->m_slider->SetTotal(128);
   this->m_slider->SetVisible(128);
   this->m_slider->step = 1;
@@ -3589,7 +3589,7 @@ void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
   this->m_onButton = new CUIRadioButton();
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(150, 12);
-  this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { sub_A41FA0(reinterpret_cast<int>(button)); });
+  this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { OnTrilinearOptionChanged(reinterpret_cast<int>(button)); });
   this->m_onButton->disabled = 0;
   this->m_onButton->Invalidate();
   const std::uint8_t onButtonNormalSource[] = {0xB1, 0x56, 0x99, 0x0F, 0x41, 0xD3, 0xA0, 0x5C, 0xB7, 0x1D, 0x99, 0x39, 0x3C, 0xA7, 0x39, 0xE3, 0x10, 0x9D, 0x30, 0x9A, 0xE3, 0x69, 0x0B, 0xCE, 0x1E, 0x9F, 0x3F, 0xDB, 0xE3, 0x70, 0x15, 0x91};
@@ -3625,7 +3625,7 @@ void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
   this->m_offButton = new CUIRadioButton();
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(270, 12);
-  this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { sub_A41FA0(reinterpret_cast<int>(button)); });
+  this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { OnTrilinearOptionChanged(reinterpret_cast<int>(button)); });
   this->m_offButton->disabled = 0;
   this->m_offButton->Invalidate();
   const std::uint8_t offButtonNormalSource[] = {0x21, 0x34, 0x33, 0x81, 0x2D, 0x49, 0x3A, 0xAC, 0x27, 0x7F, 0x33, 0xB7, 0x50, 0x3D, 0xA3, 0x13, 0x80, 0xFF, 0x9A, 0x14, 0x8F, 0xF3, 0x91, 0x3E, 0x8E, 0xFD, 0x95, 0x55, 0x8F, 0xEA, 0x8F, 0x61};
@@ -3689,7 +3689,7 @@ void GameSettingsUI::CUIOptionItem::OnCheck(bool checked) {
   if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
     Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;
   }
-  Singleton<CGameSettingsMgr>::s_instance->sub_6C0C40(this->m_optionId, IsServiceOption(this->m_optionId) ^ checked, false);
+  Singleton<CGameSettingsMgr>::s_instance->SetOption(this->m_optionId, IsServiceOption(this->m_optionId) ^ checked, false);
 }
 
 // OFFSET: 0x00A40280
@@ -3779,7 +3779,7 @@ void GameSettingsUI::CUIListPage::RefreshHotkeyLabels() {
 
 // OFFSET: 0x00A43BA0
 // FUNCTION: fn_16046
-void CUIGameSettingsUI::sub_A43BA0() {
+void CUIGameSettingsUI::RefreshOptions() {
   for (UIWindow* child : this->m_currentPage->m_children) {
     static_cast<GameSettingsUI::CUIGroup*>(child)->Refresh();
   }
@@ -3790,7 +3790,7 @@ void CUIGameSettingsUI::sub_A43BA0() {
 
 // OFFSET: 0x00A43C70
 // FUNCTION: fn_16048
-void CUIGameSettingsUI::sub_A43C70() {
+void CUIGameSettingsUI::RefreshHotkeyLabels() {
   for (GameSettingsUI::CUIListPage* page : this->m_pages) {
     for (GameSettingsUI::CUIOptionItem* item : page->m_optionList->items) {
       if (!item->geometry.visible) {
@@ -4003,7 +4003,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   CUIImageButton* baseButton = new CUIImageButton();
   baseButton->SetSize(11, 11);
   baseButton->Move(3, 3);
-  baseButton->SetOnClick([this]() { this->sub_A3F0F0(); });
+  baseButton->SetOnClick([this]() { this->OnTitleIconClick(); });
   baseButton->disabled = 0;
   baseButton->Invalidate();
   {
@@ -4087,13 +4087,13 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   this->m_tab = new CUITab();
   this->m_tab->SetSize(400, 18);
   this->m_tab->Move(0, 17);
-  this->m_tab->SetOnChange([this](CUITabButton* button) { this->sub_A433D0(button); });
+  this->m_tab->SetOnChange([this](CUITabButton* button) { this->OnTabChanged(button); });
   this->AddChild(this->m_tab);
 
   CUITabButton* basicButton = new CUITabButton();
   basicButton->SetSize(72, 18);
   basicButton->Move(0, 0);
-  basicButton->SetOnClick([this]() { this->sub_A43380(); });
+  basicButton->SetOnClick([this]() { this->OnBasicTabClick(); });
   basicButton->disabled = 0;
   basicButton->Invalidate();
   basicButton->SetId(0);
@@ -4120,7 +4120,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   CUITabButton* effectButton = new CUITabButton();
   effectButton->SetSize(72, 18);
   effectButton->Move(71, 0);
-  effectButton->SetOnClick([this]() { this->sub_A433A0(); });
+  effectButton->SetOnClick([this]() { this->OnEffectTabClick(); });
   effectButton->disabled = 0;
   effectButton->Invalidate();
   effectButton->SetId(1);
@@ -4147,7 +4147,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   CUITabButton* controlButton = new CUITabButton();
   controlButton->SetSize(72, 18);
   controlButton->Move(142, 0);
-  controlButton->SetOnClick([this]() { this->sub_A43390(); });
+  controlButton->SetOnClick([this]() { this->OnControlTabClick(); });
   controlButton->disabled = 0;
   controlButton->Invalidate();
   controlButton->SetId(2);
@@ -4174,7 +4174,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   CUITabButton* graphicsButton = new CUITabButton();
   graphicsButton->SetSize(72, 18);
   graphicsButton->Move(213, 0);
-  graphicsButton->SetOnClick([this]() { this->sub_A433C0(); });
+  graphicsButton->SetOnClick([this]() { this->OnGraphicsTabClick(); });
   graphicsButton->disabled = 0;
   graphicsButton->Invalidate();
   graphicsButton->SetId(3);
@@ -4201,7 +4201,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
   CUITabButton* etcButton = new CUITabButton();
   etcButton->SetSize(72, 18);
   etcButton->Move(284, 0);
-  etcButton->SetOnClick([this]() { this->sub_A433B0(); });
+  etcButton->SetOnClick([this]() { this->OnEtcTabClick(); });
   etcButton->disabled = 0;
   etcButton->Invalidate();
   etcButton->SetId(4);

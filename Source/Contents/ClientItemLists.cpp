@@ -291,7 +291,7 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
 
 // OFFSET: 0x00D1F770
 // FUNCTION: fn_21641
-void sub_D1F770(const unsigned char* data) {
+void ReceiveItemSlot(const unsigned char* data) {
   const ItemAddSlotPacket* packet = reinterpret_cast<const ItemAddSlotPacket*>(data);
   if (packet->slot < 0) {
     g_modeMgr.gameMode->SendMsg(0x35, 0, 0, 0, 0);
@@ -317,7 +317,7 @@ void sub_D1F770(const unsigned char* data) {
 
 // OFFSET: 0x00D1F970
 // FUNCTION: fn_21642
-void sub_D1F970(const unsigned char* data) {
+void ReceiveItemSlotOptions(const unsigned char* data) {
   const ItemAddSlotOptionsPacket* packet = reinterpret_cast<const ItemAddSlotOptionsPacket*>(data);
   if (packet->slot < 0) {
     g_modeMgr.gameMode->SendMsg(0x35, 0, 0, 0, 0);
@@ -369,7 +369,7 @@ void sub_D1F970(const unsigned char* data) {
 
 // OFFSET: 0x00D1FBA0
 // FUNCTION: fn_21643
-void sub_D1FBA0(const unsigned char* data) {
+void ReceiveFriendAddResult(const unsigned char* data) {
   const FriendNoticePacket* packet = reinterpret_cast<const FriendNoticePacket*>(data);
   char name[25];
   std::memcpy(name, packet->name, 24);

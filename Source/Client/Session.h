@@ -899,7 +899,6 @@ public:
   int SkillLevel(int id) const;
   CRenderObject* FindGameActor(std::uint32_t aid) const;
   int GetPetTargetAid() const;
-  int sub_DDD2C0(const ITEM_INFO& item);
   const char* GetJobName(unsigned job, int sex);
   void InitJobNameTable();
   int SyncUnknown0E98();
@@ -966,8 +965,8 @@ public:
   void UpdateRandomStats();
   void ResetEquipment();
   void ResetSlots();
-  void sub_DD9D50();
-  void sub_DF33B0();
+  void InitClientData();
+  void LoadSessionTables();
   int GetList0Size() const;
   int GetList1Size() const;
   int GetList2Size() const;
@@ -1190,7 +1189,7 @@ public:
   bool EquipItem61B8(const ITEM_INFO& item);
   void SetUnknown7EC8(std::uint32_t value);
   void NotifyUnknown7F94Name(std::uint32_t id, const char* name);
-  void sub_DE3D90(char* text);
+  void HiFriends(char* text);
   void sub_DE4FF0();
   std::pair<int, int> GetShopEntry(unsigned int index, int key);
   bool HasUnknown809C(std::string name);

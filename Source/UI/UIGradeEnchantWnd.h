@@ -72,7 +72,7 @@ public:
   void ResetItem();
   int SelectedMaterialZeny();
   int SuccessRate();
-  void sub_7E7050();
+  void UpdateEnchantMessages();
   void SetEnchantInfo(
     short index, int value, int materialCount, GradeEnchantInfo info, int value0108, int value010C, const GradeEnchantMaterial* materials
   );

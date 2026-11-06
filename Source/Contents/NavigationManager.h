@@ -310,8 +310,8 @@ public:
   int NodeCount() const;
   void SetViewIcon(int icon);
   bool SetViewMode(int mode);
-  bool sub_B995D0(std::string name, int type, bool flag);
-  bool sub_B99030(std::string name, int type, unsigned char mode, bool flag, int x, int y, int id);
+  bool SearchNavigation(std::string name, int type, bool flag);
+  bool StartNavigation(std::string name, int type, unsigned char mode, bool flag, int x, int y, int id);
   void BuildGridLabels();
   bool LoadScript(LuaScript* script);
   bool BuildRoute(int startX, int startY, int destX, int destY, bool collectCells);

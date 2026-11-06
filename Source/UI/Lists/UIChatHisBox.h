@@ -27,8 +27,8 @@ public:
   void Clear() override;
   virtual void AddText(const char* text, int color, const char* style);
   void AddTextWrapped(const char* text, int color, const char* style);
-  void sub_89DC30(const char* text, int& color, int& mode);
-  void sub_89E0F0(const char* text, int& color, int& mode);
+  void AddItemLinkLine(const char* text, int& color, int& mode);
+  void AddNavigationLinkLine(const char* text, int& color, int& mode);
   std::string RenderItemLinks(const char* lineText, std::string& source);
   std::string RenderNavigationLinks(const char* text, std::string& source);
   void RewrapLinkLines(std::vector<std::string>& wrapped, int& mode);
@@ -45,7 +45,7 @@ public:
   __declspec(noinline) void PlaceItemTags(int line);
   void CopyHistory(const UIChatHisBox& other);
   void Resize(int width, int height, bool flag);
-  void sub_89C080();
+  void RebuildHistory();
   std::string ResolvePlayerTags(const char* name);
   bool Name(const std::string& encoded, std::string& output);
   bool Next(std::string& remaining, std::string& encoded, unsigned& position, const char* original);

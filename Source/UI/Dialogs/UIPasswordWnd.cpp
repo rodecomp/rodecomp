@@ -17,7 +17,7 @@ UIPasswordWnd::UIPasswordWnd() : UIItemDropCntWnd() {}
 
 // OFFSET: 0x0090C970
 // FUNCTION: fn_12451
-void UISecondPasswordInputWnd::sub_90C970(int value) {
+void UISecondPasswordInputWnd::SetInputMode(int value) {
   this->unknown_011C = value;
   if (value == 0) {
     this->unknown_0164->SetText(LookupMessage(0xa06), 0);
@@ -128,7 +128,7 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
 
 // OFFSET: 0x0090DE10
 // FUNCTION: fn_12454
-void UISecondPasswordInputWnd::sub_90DE10() {
+void UISecondPasswordInputWnd::EnableKeypad() {
   UIBitmapButton** slot = this->unknown_0124;
   for (int remaining = 11; remaining != 0; --remaining) {
     UIButton* button = *slot;

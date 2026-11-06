@@ -2010,7 +2010,7 @@ void CSession::UpdateUnknown1708(int enabled) {
 
 // OFFSET: 0x00DFF150
 // FUNCTION: fn_23611
-void __fastcall sub_DFF150(CSession*) {
+void __fastcall RefreshPartyWindows(CSession*) {
   if (UIWindow* window = g_windowMgr.window_02C8) {
     window->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
@@ -2662,7 +2662,7 @@ bool CSession::HasControlCharacter(std::string text) {
 
 // OFFSET: 0x00DE3D90
 // FUNCTION: fn_23488
-void CSession::sub_DE3D90(char* text) {
+void CSession::HiFriends(char* text) {
   std::string greeting = "(Hi) ";
   greeting += text ? text : "*^_^*";
 
@@ -6998,7 +6998,7 @@ void CSession::ReloadLanguageTables() {
 
 // OFFSET: 0x00DF33B0
 // FUNCTION: fn_23506
-void CSession::sub_DF33B0() {
+void CSession::LoadSessionTables() {
   CSession* session = this;
   ++g_sessionTableLoadCount;
   session->InitJobHitWaveNames();

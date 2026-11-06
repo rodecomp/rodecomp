@@ -26,7 +26,7 @@ public:
   void Slot35(int argument) override;
   void Paint() override;
   void Click(int button, int unused);
-  void sub_6028C0(std::uint32_t id);
+  void SetIngredientItem(std::uint32_t id);
 
   /* 00B8 */ ITEM_INFO item;
   /* 01B0 */ unsigned char selected;

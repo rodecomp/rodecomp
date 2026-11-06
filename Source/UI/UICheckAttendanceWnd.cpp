@@ -287,7 +287,7 @@ void UICheckAttendanceWnd::Slot28(int x, int y) {
   char name[260];
   std::memset(name, 0, sizeof(name));
   int capacity = sizeof(name);
-  item.sub_6D5810(name, capacity, 0);
+  item.GetIdDisplayName(name, capacity, 0);
   if (std::strlen(name) != 0) {
     int tipX = 0;
     int tipY = -20;

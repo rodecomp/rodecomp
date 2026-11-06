@@ -165,13 +165,13 @@ public:
   bool IsOwnedPack(int packId);
   void RemoveOwnedPack(int packId, bool refresh, bool clearExpiry);
   CashEmotionPackRefresh RefreshUnownedPacks();
-  void sub_59CDE0(int param);
+  void SetServerTime(int param);
   void SetServerTimeZone(short serverBias);
-  bool sub_59C5A0();
-  bool sub_59D2C0();
+  bool RemoveExpiredPacks();
+  bool UpdatePurchasedPackExpiry();
   void ShowErrorMessage(const char* key, int value);
   void Unknown59D040(int argument1, int argument2);
-  __declspec(noinline) int sub_59FC50();
+  __declspec(noinline) int GetServerTime();
   // INLINED
   int BasePackId() const {
     return this->unknown_000C;

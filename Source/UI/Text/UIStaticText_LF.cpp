@@ -7,7 +7,7 @@
 // FUNCTION: fn_12915
 void UIStaticText_LF::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  this->sub_A84400(
+  this->DrawWrappedFormattedText(
     0, 0,
     *reinterpret_cast<const std::string*>(reinterpret_cast<const char*>(this) + 0x7C),
     this->geometry.width,

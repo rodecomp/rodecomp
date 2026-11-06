@@ -623,7 +623,7 @@ void UIStaticItem::Slot28(int, int) {
   char text[260];
   std::memset(text, 0, sizeof(text));
   int capacity = sizeof(text);
-  this->m_item.sub_6D5810(text, capacity, 0);
+  this->m_item.GetIdDisplayName(text, capacity, 0);
 
   if (std::strlen(text) == 0) {
     return;
@@ -753,7 +753,7 @@ void UIChatHisBox::Resize(int width, int height, bool flag) {
   const int oldWidth = this->geometry.width;
   this->Resize(width, height);
   if (oldWidth != this->geometry.width && flag) {
-    this->sub_89C080();
+    this->RebuildHistory();
   }
 }
 
@@ -2703,7 +2703,7 @@ void UIDescriptRace::Slot25(int, int) {
 // FUNCTION: fn_11358
 void UIDescriptRace::Paint() {
   UIBitmapButton::Paint();
-  this->sub_8A0B10();
+  this->DrawRaceDescription();
 }
 
 // OFFSET: 0x00890330
@@ -2747,7 +2747,7 @@ void UIShowAndEditTimeCtrl::Paint() {
 
 // OFFSET: 0x008906C0
 // FUNCTION: fn_11423
-void __fastcall sub_8906C0(UINaviLinkButton* button, void*, int x, int y) {
+void __fastcall ActivateNaviLink(UINaviLinkButton* button, void*, int x, int y) {
   button->UINaviLinkButton::Slot25(x, y);
 }
 

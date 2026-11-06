@@ -438,9 +438,9 @@ void UICashShopWnd::Paint() {
 
   this->DrawTitleBar(false, LookupMessage(0xCD8), 0);
   if (this->m_pageCount == 0) {
-    this->sub_A84400(0xF7, 0x1EE, std::string("0 / 0"), 0x2B, 0, 6, 0, 0xC, 0x6B2921, 0);
+    this->DrawWrappedFormattedText(0xF7, 0x1EE, std::string("0 / 0"), 0x2B, 0, 6, 0, 0xC, 0x6B2921, 0);
   } else {
-    this->sub_A84400(0xF7, 0x1EE, FormatOwnedString("^b%d^/b / %d", this->m_page + 1, this->m_pageCount), 0x2B, 0, 6, 0, 0xC, 0x6B2921, 0);
+    this->DrawWrappedFormattedText(0xF7, 0x1EE, FormatOwnedString("^b%d^/b / %d", this->m_page + 1, this->m_pageCount), 0x2B, 0, 6, 0, 0xC, 0x6B2921, 0);
   }
 
   if (!g_session.unknown_5912) {

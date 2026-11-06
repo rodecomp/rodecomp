@@ -642,7 +642,7 @@ void UIRoMapWnd::Slot31(int x, int y) {
       }
 
       g_navigationMinimized = false;
-      g_navigationManager.sub_B995D0(name, 0, false);
+      g_navigationManager.SearchNavigation(name, 0, false);
       if (g_windowMgr.window_4F174) {
         static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRoute(0);
         static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRouteNode(0);
@@ -1407,7 +1407,7 @@ void UINewChatWnd::Slot15(int width, int height) {
 
   int subIndex = 0;
   for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_subChatWnds.begin(); it != g_session.m_subChatWnds.end(); ++it, ++subIndex) {
-    g_windowMgr.sub_A97580(subIndex, it->second.x, it->second.y, it->second.width, it->second.height);
+    g_windowMgr.OpenSubChatWindow(subIndex, it->second.x, it->second.y, it->second.width, it->second.height);
   }
 
   this->m_chatEdit = new UIChatEditCtrl();
