@@ -104,14 +104,14 @@ void CChopChopClawMarks::SpawnParticle() {
 
     const float x = point.x * 5.0f;
     const float y = point.y * 5.0f;
-    const std::uint8_t bytes[] = {
-      0x5B, 0x63, 0x98, 0xAE, 0xA9, 0x29, 0x26, 0x4F, 0x40, 0x72, 0x85, 0xA8, 0xBD, 0x2A, 0x2E, 0x55,
-      0x50, 0x61, 0x91, 0x84, 0x85, 0x1A, 0x1D, 0x42, 0x7C, 0x59, 0xA2, 0x97, 0xB1, 0x16, 0x05, 0x72,
-      0x6F, 0x6E, 0xAE, 0x8F, 0x82, 0x05, 0x43, 0x6E, 0x6B, 0x43, 0xCD
+    const char bytes[] = {
+      '\x5B', '\x63', '\x98', '\xAE', '\xA9', '\x29', '\x26', '\x4F', '\x40', '\x72', '\x85', '\xA8', '\xBD', '\x2A', '\x2E', '\x55',
+      '\x50', '\x61', '\x91', '\x84', '\x85', '\x1A', '\x1D', '\x42', '\x7C', '\x59', '\xA2', '\x97', '\xB1', '\x16', '\x05', '\x72',
+      '\x6F', '\x6E', '\xAE', '\x8F', '\x82', '\x05', '\x43', '\x6E', '\x6B', '\x43', '\xCD'
     };
     // GLOBAL: gl_24875
     thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
-    particle->Open(name.Text());
+    particle->Load(name.Text());
     particle->unknown_00D0 = x;
     particle->unknown_00D4 = y;
     particle->unknown_00D8 = 0.0f;
@@ -124,10 +124,10 @@ void CChopChopClawMarks::SpawnParticle() {
 // FUNCTION: fn_03132
 void CChopChopClawMarks::Slot34() {
   const std::chrono::nanoseconds elapsed = std::chrono::steady_clock::now().time_since_epoch() - std::chrono::nanoseconds(this->startTime);
-  const long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
-  if (milliseconds >= this->lastSpawnTime + 30) {
+  const std::chrono::milliseconds milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+  if (milliseconds >= std::chrono::milliseconds(this->lastSpawnTime + 30)) {
     this->SpawnParticle();
-    this->lastSpawnTime = milliseconds;
+    this->lastSpawnTime = milliseconds.count();
   }
 }
 
@@ -194,12 +194,15 @@ void CharacterParticleBundle::Slot01() {
 // OFFSET: 0x005A3E90
 // FUNCTION: fn_03138
 bool CChopChopClawMarks::Slot06() {
-  if (!this->ActorExists()) {
-    return false;
+  if (this->ActorExists()) {
+    const std::chrono::milliseconds limit = std::chrono::seconds(this->unknown_002C);
+    const std::chrono::nanoseconds elapsed = std::chrono::steady_clock::now().time_since_epoch() - std::chrono::nanoseconds(this->startTime);
+    if (std::chrono::duration_cast<std::chrono::milliseconds>(elapsed) <= limit) {
+      return true;
+    }
   }
 
-  const std::chrono::nanoseconds elapsed = std::chrono::steady_clock::now().time_since_epoch() - std::chrono::nanoseconds(this->startTime);
-  return std::chrono::milliseconds(std::chrono::seconds(this->unknown_002C)).count() >= std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+  return false;
 }
 
 // OFFSET: 0x005A3F10
