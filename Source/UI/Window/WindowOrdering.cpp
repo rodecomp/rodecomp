@@ -9,8 +9,8 @@
 // OFFSET: 0x00A966E0
 // FUNCTION: fn_17184
 void UIWindowMgr::InvalidateAll() {
-  for (UIWindow* window : this->rendered) {
-    window->InvalidateChildren();
+  for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+    (*it)->InvalidateChildren();
   }
 }
 
@@ -144,9 +144,9 @@ void UIWindowMgr::InvalidateFrames() {
 
   this->unknown_04FC = 1;
 
-  for (UIWindow* window : this->rendered) {
-    if (window->Slot03()) {
-      window->InvalidateChildren();
+  for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+    if ((*it)->Slot03()) {
+      (*it)->InvalidateChildren();
     }
   }
 }
