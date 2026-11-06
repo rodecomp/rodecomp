@@ -455,7 +455,7 @@ void UINewChatWnd::Move(int x, int y) {
   this->m_inputY = this->m_inputOffsetY + screenY;
 
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_03F0)) {
-    window->SendMsg(this, 6, 197, this->geometry.x + x, this->geometry.y + y, 0);
+    window->SendMsg(this, 6, 197, this->geometry.width + x, this->geometry.height + y, 0);
   }
 }
 
@@ -1107,16 +1107,16 @@ UINewChatWnd::UINewChatWnd() : UIFrameWnd(0) {
   this->m_tabWidth = 71;
   this->m_inputAreaHeight = 24;
   switch (g_serviceType) {
-  case 1:
-  case 7:
-  case 11:
-    this->m_tabWidth = 110;
-    break;
   case 10:
     this->m_tabWidth = 71;
     break;
   case 18:
     this->m_tabWidth = 90;
+    break;
+  case 1:
+  case 7:
+  case 11:
+    this->m_tabWidth = 110;
     break;
   }
   this->m_suggestions = nullptr;
