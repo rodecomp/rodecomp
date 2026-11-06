@@ -897,7 +897,7 @@ void CDCBitmap::ApplyPixelFilter(int filter, unsigned int* red, unsigned int* gr
   }
 
   unsigned int average = (*red + *green + *blue) / 3;
-  const unsigned int threshold = filter == 1 ? 120u : 100u;
+  const unsigned int threshold = filter != 1 ? 100u : 120u;
 
   if (average < threshold) {
     average = threshold;
