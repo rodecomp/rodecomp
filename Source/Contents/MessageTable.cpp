@@ -4759,8 +4759,11 @@ namespace {
   // FUNCTION: fn_18373
   std::vector<std::string> TransformFields(const std::vector<std::string>& row) {
     std::vector<std::string> result;
-    result.reserve(row.size());
-    for (std::string text : row) {
+    if (!row.empty()) {
+      result.reserve(row.size());
+    }
+    for (auto it = row.begin(); it != row.end(); ++it) {
+      std::string text = *it;
       if (text.empty()) {
         text = "NO MSG";
       } else {
