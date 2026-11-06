@@ -8,9 +8,9 @@
 // FUNCTION: fn_07779
 std::string& CTokenizer::operator[](int index) {
   if (index < 0 || static_cast<unsigned int>(index) >= this->tokens.size()) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Error in CTokenizer :: operator []", 0);
+    ShowErrorDialog("Error in CTokenizer :: operator []", 0);
     for (unsigned int token = 0; token < this->tokens.size(); ++token) {
-      ShowErrorDialog(GetRenderSystemHolder()->system, this->tokens[token].c_str(), 0);
+      ShowErrorDialog(this->tokens[token].c_str(), 0);
     }
   }
 

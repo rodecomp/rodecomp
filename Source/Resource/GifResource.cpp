@@ -117,7 +117,7 @@ bool CGifRes::Decode(const char* name, const void* data, int bytes, bool iconOnl
     return this->image.DecodePng(data, bytes, name);
   }
 
-  ShowErrorDialog(GetRenderSystemHolder()->system, "Unsupport fileformat!", 0);
+  ShowErrorDialog("Unsupport fileformat!", 0);
   return false;
 }
 

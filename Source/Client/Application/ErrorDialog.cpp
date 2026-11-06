@@ -13,6 +13,12 @@ int ShowErrorDialog(const std::string& text, const UINT& type) {
 
 // OFFSET: 0x00AD6360
 // FUNCTION: fn_17828
+int ShowErrorDialog(const char* text, UINT type) {
+  GetRenderSystemHolder()->PrepareErrorDialog();
+  return MessageBoxA(nullptr, text, "Error", type);
+}
+
+// INLINED
 int ShowErrorDialog(CRenderSystemBase* renderSystem, const char* text, UINT type) {
   if (renderSystem) {
     renderSystem->PrepareErrorDialog();

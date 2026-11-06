@@ -7,6 +7,7 @@
 class CRenderSystemBase;
 
 int ShowErrorDialog(const std::string& text, const UINT& type);
+int ShowErrorDialog(const char* text, UINT type);
 int ShowErrorDialog(CRenderSystemBase* renderSystem, const char* text, UINT type);
 int ShowErrorDialog(int code);
 
