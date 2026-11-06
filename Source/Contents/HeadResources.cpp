@@ -216,14 +216,14 @@ void CSession::NormalizeHead(int* head, int job) {
     case 1:
       *head = 2;
       return;
+    case 4:
+      *head = 5;
+      return;
     case 2:
       *head = 3;
       return;
     case 3:
       *head = 4;
-      return;
-    case 4:
-      *head = 5;
       return;
     case 5:
       *head = 6;
