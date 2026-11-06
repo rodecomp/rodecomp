@@ -11,6 +11,7 @@ public:
   // INLINED
   explicit BrowserInPlaceFrame(BrowserClientSite* site) : unknown_0004(0), m_site(site) {
   }
+  ~BrowserInPlaceFrame();
 
   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** output) override;
   ULONG STDMETHODCALLTYPE AddRef() override;

@@ -12,6 +12,7 @@ public:
   // INLINED
   explicit BrowserCommandTarget(BrowserClientSite* site) : unknown_0004(0), m_site(site) {
   }
+  ~BrowserCommandTarget();
 
   HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** output) override;
   ULONG STDMETHODCALLTYPE AddRef() override;
