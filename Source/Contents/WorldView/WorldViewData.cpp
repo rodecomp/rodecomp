@@ -602,7 +602,7 @@ CWorldViewWorld* CWorldViewMgr::CurrentWorld() {
 
 // OFFSET: 0x00617950
 // FUNCTION: fn_04391
-bool IsMapDisplayNameTranslated(const char* mapName) {
+bool __stdcall IsMapDisplayNameTranslated(const char* mapName) {
   const std::string placeholder = LookupMessage(0xBB);
   const std::string displayName = g_session.GetMapDisplayName(mapName);
   return placeholder != displayName;
