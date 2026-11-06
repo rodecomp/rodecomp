@@ -53,6 +53,14 @@ HotkeyGuideKey::HotkeyGuideKey() : valid(false), x(0), y(0) {
 HotkeyGuideLabel::~HotkeyGuideLabel() {
 }
 
+// INLINED
+HotkeyGuideLabel& HotkeyGuideLabel::operator=(const HotkeyGuideLabel& other) {
+  this->text = other.text;
+  this->key = other.key;
+  this->altKey = other.altKey;
+  return *this;
+}
+
 // OFFSET: 0x00966C70
 // FUNCTION: fn_13164
 void UIHotkeyGuideWnd::Slot15(int, int) {

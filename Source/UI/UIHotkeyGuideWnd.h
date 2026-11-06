@@ -26,7 +26,18 @@ struct HotkeyGuideKey {
   /* 000F */ unsigned char height;
 
   HotkeyGuideKey();
-  __declspec(noinline) HotkeyGuideKey(int x, int y, unsigned char align, unsigned char width, unsigned char padding, unsigned char height);
+  // INLINED
+  HotkeyGuideKey& operator=(const HotkeyGuideKey& other) {
+    this->valid = other.valid;
+    this->x = other.x;
+    this->y = other.y;
+    this->align = other.align;
+    this->width = other.width;
+    this->padding = other.padding;
+    this->height = other.height;
+    return *this;
+  }
+  HotkeyGuideKey(int x, int y, unsigned char align, unsigned char width, unsigned char padding, unsigned char height);
 };
 
 struct HotkeyGuideLabel {
@@ -38,7 +49,9 @@ struct HotkeyGuideLabel {
   HotkeyGuideLabel() {
   }
   HotkeyGuideLabel(std::string text, HotkeyGuideKey key, HotkeyGuideKey altKey);
+  HotkeyGuideLabel(const HotkeyGuideLabel&) = default;
   ~HotkeyGuideLabel();
+  HotkeyGuideLabel& operator=(const HotkeyGuideLabel& other);
 };
 
 class UIHotkeyGuideWnd : public UIFrameWnd {
