@@ -39,7 +39,7 @@ void UIRune_Decom::Reset() {
   this->m_decomButton->Invalidate();
 
   this->m_decomType = 0;
-  for (unsigned int index = 0; index < 2; ++index) {
+  for (int index = 0; index < 2; ++index) {
     this->m_radioButtons[index]->Show(0);
     this->m_radioButtons[index]->Invalidate();
     this->m_radioButtons[index]->SendMsg(nullptr, 0x0D, this->m_decomType != index, 0, 0, 0);
