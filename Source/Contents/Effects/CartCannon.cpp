@@ -107,7 +107,11 @@ void CCartCannon::Slot01() {
 // OFFSET: 0x006FAEC0
 // FUNCTION: fn_06898
 bool CCartCannon::Slot06() {
-  return static_cast<float>(this->currentStep) <= 10.0f / this->speed;
+  if (static_cast<float>(this->currentStep) > 10.0f / this->speed) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x006FAEF0
