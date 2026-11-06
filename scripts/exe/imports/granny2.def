@@ -3,47 +3,47 @@ LIBRARY granny2.dll
 EXPORTS
   GrannyPNT332VertexType DATA
   GrannyRGBA8888PixelFormat DATA
-  GrannyBuildWorldPose@24=_GrannyBuildWorldPose@24
-  GrannyControlModelsNext@4=_GrannyControlModelsNext@4
-  GrannyCopyMeshIndices@12=_GrannyCopyMeshIndices@12
-  GrannyCopyMeshVertices@12=_GrannyCopyMeshVertices@12
-  GrannyCopyTextureImage@32=_GrannyCopyTextureImage@32
-  GrannyDeformVertices@24=_GrannyDeformVertices@24
-  GrannyFreeCompletedModelControls@4=_GrannyFreeCompletedModelControls@4
-  GrannyFreeControl@4=_GrannyFreeControl@4
-  GrannyFreeFile@4=_GrannyFreeFile@4
-  GrannyFreeFileSection@8=_GrannyFreeFileSection@8
-  GrannyFreeLocalPose@4=_GrannyFreeLocalPose@4
-  GrannyFreeMeshBinding@4=_GrannyFreeMeshBinding@4
-  GrannyFreeMeshDeformer@4=_GrannyFreeMeshDeformer@4
-  GrannyFreeModelInstance@4=_GrannyFreeModelInstance@4
-  GrannyFreeWorldPose@4=_GrannyFreeWorldPose@4
-  GrannyGetControlDurationLeft@4=_GrannyGetControlDurationLeft@4
-  GrannyGetFileInfo@4=_GrannyGetFileInfo@4
-  GrannyGetMaterialTextureByType@8=_GrannyGetMaterialTextureByType@8
-  GrannyGetMeshBindingToBoneIndices@4=_GrannyGetMeshBindingToBoneIndices@4
-  GrannyGetMeshBytesPerIndex@4=_GrannyGetMeshBytesPerIndex@4
-  GrannyGetMeshIndexCount@4=_GrannyGetMeshIndexCount@4
-  GrannyGetMeshIndices@4=_GrannyGetMeshIndices@4
-  GrannyGetMeshTriangleGroups@4=_GrannyGetMeshTriangleGroups@4
-  GrannyGetMeshVertexCount@4=_GrannyGetMeshVertexCount@4
-  GrannyGetMeshVertexType@4=_GrannyGetMeshVertexType@4
-  GrannyGetMeshVertices@4=_GrannyGetMeshVertices@4
-  GrannyGetSecondsElapsed@8=_GrannyGetSecondsElapsed@8
-  GrannyGetSourceSkeleton@4=_GrannyGetSourceSkeleton@4
-  GrannyGetSystemSeconds@0=_GrannyGetSystemSeconds@0
-  GrannyGetWorldPoseComposite4x4@8=_GrannyGetWorldPoseComposite4x4@8
-  GrannyInstantiateModel@4=_GrannyInstantiateModel@4
-  GrannyMeshIsRigid@4=_GrannyMeshIsRigid@4
-  GrannyNewLocalPose@4=_GrannyNewLocalPose@4
-  GrannyNewMeshBinding@12=_GrannyNewMeshBinding@12
-  GrannyNewMeshDeformer@12=_GrannyNewMeshDeformer@12
-  GrannyNewWorldPose@4=_GrannyNewWorldPose@4
-  GrannyPlayControlledAnimation@12=_GrannyPlayControlledAnimation@12
-  GrannyReadEntireFileFromMemory@8=_GrannyReadEntireFileFromMemory@8
-  GrannySampleModelAnimations@16=_GrannySampleModelAnimations@16
-  GrannySetControlActive@8=_GrannySetControlActive@8
-  GrannySetControlLoopCount@8=_GrannySetControlLoopCount@8
-  GrannySetModelClock@8=_GrannySetModelClock@8
-  GrannyTextureHasAlpha@4=_GrannyTextureHasAlpha@4
-  GrannyVersionsMatch_@16=_GrannyVersionsMatch_@16
+  GrannyBuildWorldPose@24 EXPORTAS _GrannyBuildWorldPose@24
+  GrannyControlModelsNext@4 EXPORTAS _GrannyControlModelsNext@4
+  GrannyCopyMeshIndices@12 EXPORTAS _GrannyCopyMeshIndices@12
+  GrannyCopyMeshVertices@12 EXPORTAS _GrannyCopyMeshVertices@12
+  GrannyCopyTextureImage@32 EXPORTAS _GrannyCopyTextureImage@32
+  GrannyDeformVertices@24 EXPORTAS _GrannyDeformVertices@24
+  GrannyFreeCompletedModelControls@4 EXPORTAS _GrannyFreeCompletedModelControls@4
+  GrannyFreeControl@4 EXPORTAS _GrannyFreeControl@4
+  GrannyFreeFile@4 EXPORTAS _GrannyFreeFile@4
+  GrannyFreeFileSection@8 EXPORTAS _GrannyFreeFileSection@8
+  GrannyFreeLocalPose@4 EXPORTAS _GrannyFreeLocalPose@4
+  GrannyFreeMeshBinding@4 EXPORTAS _GrannyFreeMeshBinding@4
+  GrannyFreeMeshDeformer@4 EXPORTAS _GrannyFreeMeshDeformer@4
+  GrannyFreeModelInstance@4 EXPORTAS _GrannyFreeModelInstance@4
+  GrannyFreeWorldPose@4 EXPORTAS _GrannyFreeWorldPose@4
+  GrannyGetControlDurationLeft@4 EXPORTAS _GrannyGetControlDurationLeft@4
+  GrannyGetFileInfo@4 EXPORTAS _GrannyGetFileInfo@4
+  GrannyGetMaterialTextureByType@8 EXPORTAS _GrannyGetMaterialTextureByType@8
+  GrannyGetMeshBindingToBoneIndices@4 EXPORTAS _GrannyGetMeshBindingToBoneIndices@4
+  GrannyGetMeshBytesPerIndex@4 EXPORTAS _GrannyGetMeshBytesPerIndex@4
+  GrannyGetMeshIndexCount@4 EXPORTAS _GrannyGetMeshIndexCount@4
+  GrannyGetMeshIndices@4 EXPORTAS _GrannyGetMeshIndices@4
+  GrannyGetMeshTriangleGroups@4 EXPORTAS _GrannyGetMeshTriangleGroups@4
+  GrannyGetMeshVertexCount@4 EXPORTAS _GrannyGetMeshVertexCount@4
+  GrannyGetMeshVertexType@4 EXPORTAS _GrannyGetMeshVertexType@4
+  GrannyGetMeshVertices@4 EXPORTAS _GrannyGetMeshVertices@4
+  GrannyGetSecondsElapsed@8 EXPORTAS _GrannyGetSecondsElapsed@8
+  GrannyGetSourceSkeleton@4 EXPORTAS _GrannyGetSourceSkeleton@4
+  GrannyGetSystemSeconds@0 EXPORTAS _GrannyGetSystemSeconds@0
+  GrannyGetWorldPoseComposite4x4@8 EXPORTAS _GrannyGetWorldPoseComposite4x4@8
+  GrannyInstantiateModel@4 EXPORTAS _GrannyInstantiateModel@4
+  GrannyMeshIsRigid@4 EXPORTAS _GrannyMeshIsRigid@4
+  GrannyNewLocalPose@4 EXPORTAS _GrannyNewLocalPose@4
+  GrannyNewMeshBinding@12 EXPORTAS _GrannyNewMeshBinding@12
+  GrannyNewMeshDeformer@12 EXPORTAS _GrannyNewMeshDeformer@12
+  GrannyNewWorldPose@4 EXPORTAS _GrannyNewWorldPose@4
+  GrannyPlayControlledAnimation@12 EXPORTAS _GrannyPlayControlledAnimation@12
+  GrannyReadEntireFileFromMemory@8 EXPORTAS _GrannyReadEntireFileFromMemory@8
+  GrannySampleModelAnimations@16 EXPORTAS _GrannySampleModelAnimations@16
+  GrannySetControlActive@8 EXPORTAS _GrannySetControlActive@8
+  GrannySetControlLoopCount@8 EXPORTAS _GrannySetControlLoopCount@8
+  GrannySetModelClock@8 EXPORTAS _GrannySetModelClock@8
+  GrannyTextureHasAlpha@4 EXPORTAS _GrannyTextureHasAlpha@4
+  GrannyVersionsMatch_@16 EXPORTAS _GrannyVersionsMatch_@16

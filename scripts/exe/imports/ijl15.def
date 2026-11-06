@@ -2,7 +2,7 @@
 ; IJL is __stdcall but exports undecorated names, so the decorated import maps to the plain export.
 LIBRARY ijl15.dll
 EXPORTS
-  ijlFree@4=ijlFree
-  ijlInit@4=ijlInit
-  ijlRead@8=ijlRead
-  ijlWrite@8=ijlWrite
+  ijlFree@4 EXPORTAS ijlFree
+  ijlInit@4 EXPORTAS ijlInit
+  ijlRead@8 EXPORTAS ijlRead
+  ijlWrite@8 EXPORTAS ijlWrite

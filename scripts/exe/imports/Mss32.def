@@ -1,50 +1,50 @@
 ; Imports of the original Ragexe 2026-02-19 from Mss32.dll, checked against the shipped DLL's exports.
 LIBRARY Mss32.dll
 EXPORTS
-  AIL_3D_room_type@4=_AIL_3D_room_type@4
-  AIL_3D_sample_status@4=_AIL_3D_sample_status@4
-  AIL_3D_speaker_type@4=_AIL_3D_speaker_type@4
-  AIL_WAV_info@8=_AIL_WAV_info@8
-  AIL_allocate_3D_sample_handle@4=_AIL_allocate_3D_sample_handle@4
-  AIL_allocate_sample_handle@4=_AIL_allocate_sample_handle@4
-  AIL_close_3D_listener@4=_AIL_close_3D_listener@4
-  AIL_close_3D_provider@4=_AIL_close_3D_provider@4
-  AIL_close_digital_driver@4=_AIL_close_digital_driver@4
-  AIL_close_stream@4=_AIL_close_stream@4
-  AIL_decompress_ADPCM@12=_AIL_decompress_ADPCM@12
-  AIL_decompress_ASI@24=_AIL_decompress_ASI@24
-  AIL_end_3D_sample@4=_AIL_end_3D_sample@4
-  AIL_end_sample@4=_AIL_end_sample@4
-  AIL_enumerate_3D_providers@12=_AIL_enumerate_3D_providers@12
-  AIL_file_type@8=_AIL_file_type@8
-  AIL_init_sample@4=_AIL_init_sample@4
-  AIL_mem_free_lock@4=_AIL_mem_free_lock@4
-  AIL_open_3D_listener@4=_AIL_open_3D_listener@4
-  AIL_open_3D_provider@4=_AIL_open_3D_provider@4
-  AIL_open_digital_driver@16=_AIL_open_digital_driver@16
-  AIL_open_stream@12=_AIL_open_stream@12
-  AIL_pause_stream@8=_AIL_pause_stream@8
-  AIL_release_3D_sample_handle@4=_AIL_release_3D_sample_handle@4
-  AIL_release_sample_handle@4=_AIL_release_sample_handle@4
-  AIL_sample_status@4=_AIL_sample_status@4
-  AIL_set_3D_orientation@28=_AIL_set_3D_orientation@28
-  AIL_set_3D_position@16=_AIL_set_3D_position@16
-  AIL_set_3D_room_type@8=_AIL_set_3D_room_type@8
-  AIL_set_3D_sample_distances@12=_AIL_set_3D_sample_distances@12
-  AIL_set_3D_sample_effects_level@8=_AIL_set_3D_sample_effects_level@8
-  AIL_set_3D_sample_file@8=_AIL_set_3D_sample_file@8
-  AIL_set_3D_sample_volume@8=_AIL_set_3D_sample_volume@8
-  AIL_set_3D_speaker_type@8=_AIL_set_3D_speaker_type@8
-  AIL_set_preference@8=_AIL_set_preference@8
-  AIL_set_redist_directory@4=_AIL_set_redist_directory@4
-  AIL_set_sample_file@12=_AIL_set_sample_file@12
-  AIL_set_sample_volume@8=_AIL_set_sample_volume@8
-  AIL_set_stream_loop_count@8=_AIL_set_stream_loop_count@8
-  AIL_set_stream_volume@8=_AIL_set_stream_volume@8
-  AIL_shutdown@0=_AIL_shutdown@0
-  AIL_start_3D_sample@4=_AIL_start_3D_sample@4
-  AIL_start_sample@4=_AIL_start_sample@4
-  AIL_start_stream@4=_AIL_start_stream@4
-  AIL_startup@0=_AIL_startup@0
-  AIL_stream_status@4=_AIL_stream_status@4
-  AIL_stream_volume@4=_AIL_stream_volume@4
+  AIL_3D_room_type@4 EXPORTAS _AIL_3D_room_type@4
+  AIL_3D_sample_status@4 EXPORTAS _AIL_3D_sample_status@4
+  AIL_3D_speaker_type@4 EXPORTAS _AIL_3D_speaker_type@4
+  AIL_WAV_info@8 EXPORTAS _AIL_WAV_info@8
+  AIL_allocate_3D_sample_handle@4 EXPORTAS _AIL_allocate_3D_sample_handle@4
+  AIL_allocate_sample_handle@4 EXPORTAS _AIL_allocate_sample_handle@4
+  AIL_close_3D_listener@4 EXPORTAS _AIL_close_3D_listener@4
+  AIL_close_3D_provider@4 EXPORTAS _AIL_close_3D_provider@4
+  AIL_close_digital_driver@4 EXPORTAS _AIL_close_digital_driver@4
+  AIL_close_stream@4 EXPORTAS _AIL_close_stream@4
+  AIL_decompress_ADPCM@12 EXPORTAS _AIL_decompress_ADPCM@12
+  AIL_decompress_ASI@24 EXPORTAS _AIL_decompress_ASI@24
+  AIL_end_3D_sample@4 EXPORTAS _AIL_end_3D_sample@4
+  AIL_end_sample@4 EXPORTAS _AIL_end_sample@4
+  AIL_enumerate_3D_providers@12 EXPORTAS _AIL_enumerate_3D_providers@12
+  AIL_file_type@8 EXPORTAS _AIL_file_type@8
+  AIL_init_sample@4 EXPORTAS _AIL_init_sample@4
+  AIL_mem_free_lock@4 EXPORTAS _AIL_mem_free_lock@4
+  AIL_open_3D_listener@4 EXPORTAS _AIL_open_3D_listener@4
+  AIL_open_3D_provider@4 EXPORTAS _AIL_open_3D_provider@4
+  AIL_open_digital_driver@16 EXPORTAS _AIL_open_digital_driver@16
+  AIL_open_stream@12 EXPORTAS _AIL_open_stream@12
+  AIL_pause_stream@8 EXPORTAS _AIL_pause_stream@8
+  AIL_release_3D_sample_handle@4 EXPORTAS _AIL_release_3D_sample_handle@4
+  AIL_release_sample_handle@4 EXPORTAS _AIL_release_sample_handle@4
+  AIL_sample_status@4 EXPORTAS _AIL_sample_status@4
+  AIL_set_3D_orientation@28 EXPORTAS _AIL_set_3D_orientation@28
+  AIL_set_3D_position@16 EXPORTAS _AIL_set_3D_position@16
+  AIL_set_3D_room_type@8 EXPORTAS _AIL_set_3D_room_type@8
+  AIL_set_3D_sample_distances@12 EXPORTAS _AIL_set_3D_sample_distances@12
+  AIL_set_3D_sample_effects_level@8 EXPORTAS _AIL_set_3D_sample_effects_level@8
+  AIL_set_3D_sample_file@8 EXPORTAS _AIL_set_3D_sample_file@8
+  AIL_set_3D_sample_volume@8 EXPORTAS _AIL_set_3D_sample_volume@8
+  AIL_set_3D_speaker_type@8 EXPORTAS _AIL_set_3D_speaker_type@8
+  AIL_set_preference@8 EXPORTAS _AIL_set_preference@8
+  AIL_set_redist_directory@4 EXPORTAS _AIL_set_redist_directory@4
+  AIL_set_sample_file@12 EXPORTAS _AIL_set_sample_file@12
+  AIL_set_sample_volume@8 EXPORTAS _AIL_set_sample_volume@8
+  AIL_set_stream_loop_count@8 EXPORTAS _AIL_set_stream_loop_count@8
+  AIL_set_stream_volume@8 EXPORTAS _AIL_set_stream_volume@8
+  AIL_shutdown@0 EXPORTAS _AIL_shutdown@0
+  AIL_start_3D_sample@4 EXPORTAS _AIL_start_3D_sample@4
+  AIL_start_sample@4 EXPORTAS _AIL_start_sample@4
+  AIL_start_stream@4 EXPORTAS _AIL_start_stream@4
+  AIL_startup@0 EXPORTAS _AIL_startup@0
+  AIL_stream_status@4 EXPORTAS _AIL_stream_status@4
+  AIL_stream_volume@4 EXPORTAS _AIL_stream_volume@4
