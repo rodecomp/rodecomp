@@ -164,7 +164,9 @@ vector3d PlayerPosition() {
   position.y = 0.0f;
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (CPlayer* player = mode->scene->player) {
-    position = player->render.position;
+    position.x = player->render.position.x;
+    position.y = player->render.position.y;
+    position.z = player->render.position.z;
     return position;
   }
 
