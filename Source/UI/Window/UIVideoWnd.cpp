@@ -101,6 +101,11 @@ int UIVideoWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
+  case 6:
+    if (argument1 == 521) {
+      g_windowMgr.CloseWindow(304);
+    }
+    break;
   case 0:
     if (argument1 == 27) {
       this->SendMsg(nullptr, 5, 0, 0, 0, 0);
@@ -108,11 +113,6 @@ int UIVideoWnd::SendMsg(
     break;
   case 5:
     if (g_windowMgr.Confirm(LookupMessage(3142), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-      g_windowMgr.CloseWindow(304);
-    }
-    break;
-  case 6:
-    if (argument1 == 521) {
       g_windowMgr.CloseWindow(304);
     }
     break;
@@ -127,11 +127,6 @@ int UIVideoWnd::SendMsg(
       this->m_texture = CreateTexture(handle->width, handle->height, 4, false, false);
     }
     break;
-  case 151: {
-    BinkHandle* handle = this->m_movie->Handle();
-    BinkPause(handle, handle->paused == 1 ? 0 : 1);
-    break;
-  }
   case 159:
     BinkSetVolume(this->m_movie->Handle(), 0, argument1 << 8);
     if (argument2 == 0) {
@@ -139,6 +134,11 @@ int UIVideoWnd::SendMsg(
       CSoundMgr::SetVolume(g_soundMgr, 0);
     }
     break;
+  case 151: {
+    BinkHandle* handle = this->m_movie->Handle();
+    BinkPause(handle, handle->paused == 1 ? 0 : 1);
+    break;
+  }
   }
 
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
