@@ -82,7 +82,7 @@ void CStarEmperorEffect::Close() {
 // OFFSET: 0x0072C490
 // FUNCTION: fn_07478
 void CStarEmperorEffect::Slot01() {
-  this->unknown_002C = this->id == 1203 ? 60 : 30;
+  this->unknown_002C = this->id != 1203 ? 30 : 60;
   this->BuildSphere();
 
   for (int i = 0; i < 10; ++i) {
