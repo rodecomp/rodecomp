@@ -356,7 +356,7 @@ int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
     case 201: {
       MergeItemCancelPacket packet;
       packet.id = 0x974;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       g_windowMgr.CloseWindow(227);
       break;
     }

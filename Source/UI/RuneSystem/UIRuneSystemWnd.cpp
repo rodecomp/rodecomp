@@ -1503,7 +1503,7 @@ UIRuneSystemWnd::UIRuneSystemWnd() : UIFrameWnd(0), m_nextTick(0) {
   RuneSystemOpenPacket packet;
   packet.id = 0x0BE0;
   packet.open = 1;
-  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00814DE0

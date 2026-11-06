@@ -75,7 +75,7 @@ void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string resp
   switch (root[DecryptName<0xC52FB5FBB94FF917ULL>({0x43, 0x80, 0x3F, 0xDC, 0xFB})].asInt()) {
   case 1: {
     EmblemVersionPacket packet{0x0B46, guildId, root[DecryptName<0x812BE72BCD5707B7ULL>({0xC1, 0x62, 0x25, 0xBE, 0x42, 0x88, 0x45, 0x81})].asInt()};
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
     break;
   }
   case 2:
