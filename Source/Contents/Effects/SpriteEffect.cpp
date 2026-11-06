@@ -16,7 +16,8 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -41,6 +42,13 @@ private:
   std::uint8_t m_text[Length];
   bool m_encrypted;
 };
+
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptName(const char (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
+}
 
 }
 
@@ -316,6 +324,20 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->depthOffset = 0.001f;
     particle->frameDelay = 4.0f;
     break;
+  case 0x97E:
+    particle->SetSprite("이팩트\\C_Guide_Of_Dead_Text\\C_Guide_Of_Dead_Text.spr");
+    particle->SetAction("이팩트\\C_Guide_Of_Dead_Text\\C_Guide_Of_Dead_Text.act");
+    particle->loopMode = 0;
+    particle->depthOffset = 0.001f;
+    particle->frameDelay = 12.0f;
+    break;
+  case 0x97F:
+    particle->SetSprite("이팩트\\C_Medjed_Text\\C_Medjed_Text.spr");
+    particle->SetAction("이팩트\\C_Medjed_Text\\C_Medjed_Text.act");
+    particle->loopMode = 0;
+    particle->depthOffset = 0.001f;
+    particle->frameDelay = 12.0f;
+    break;
   case 0x97C:
     particle->SetSprite("이팩트\\Atque_Poenitentia\\Atque_Poenitentia.spr");
     particle->SetAction("이팩트\\Atque_Poenitentia\\Atque_Poenitentia.act");
@@ -332,36 +354,6 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->flags = 1;
     break;
-  case 0x97E:
-    particle->SetSprite("이팩트\\C_Guide_Of_Dead_Text\\C_Guide_Of_Dead_Text.spr");
-    particle->SetAction("이팩트\\C_Guide_Of_Dead_Text\\C_Guide_Of_Dead_Text.act");
-    particle->loopMode = 0;
-    particle->depthOffset = 0.001f;
-    particle->frameDelay = 12.0f;
-    break;
-  case 0x97F:
-    particle->SetSprite("이팩트\\C_Medjed_Text\\C_Medjed_Text.spr");
-    particle->SetAction("이팩트\\C_Medjed_Text\\C_Medjed_Text.act");
-    particle->loopMode = 0;
-    particle->depthOffset = 0.001f;
-    particle->frameDelay = 12.0f;
-    break;
-  case 0x98B: {
-    const std::uint8_t spriteSource[] = {0x99, 0x4B, 0xC5, 0xAC, 0x93, 0x65, 0x7B, 0x98, 0x06, 0xB5, 0x33, 0x4F, 0x60,
-                                         0x99, 0x48, 0xA8, 0x1F, 0xE2, 0x70, 0x09, 0x34, 0xE5, 0x54, 0xAB, 0x2B, 0x87};
-    thread_local EncryptedName<sizeof(spriteSource), 0xDB27CB557D038759ULL> spriteName(spriteSource);
-    particle->SetSprite(spriteName.Text());
-
-    const std::uint8_t actionSource[] = {0x4D, 0x71, 0x7D, 0xB2, 0x71, 0x97, 0xE7, 0x12, 0xD2, 0x8F, 0x8B, 0x51, 0x82,
-                                         0x6B, 0xD4, 0x22, 0xCB, 0xD8, 0xC8, 0x17, 0xD6, 0x17, 0xDA, 0x32, 0xF9, 0xBD};
-    thread_local EncryptedName<sizeof(actionSource), 0x51BB39B763BBBD8DULL> actionName(actionSource);
-    particle->SetAction(actionName.Text());
-    particle->flags = 1;
-    particle->depthOffset = 0.0015f;
-    particle->loopMode = 0;
-    particle->frameDelay = 8.0f;
-    break;
-  }
   case 0x99A:
     particle->SetSprite("이팩트\\S_Beelzebub_Wing\\S_Beelzebub_Wing.spr");
     particle->SetAction("이팩트\\S_Beelzebub_Wing\\S_Beelzebub_Wing.act");
@@ -370,6 +362,20 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->frameDelay = 8.0f;
     break;
+  case 0x98B: {
+    const char spriteSource[] = {'\x99', '\x4B', '\xC5', '\xAC', '\x93', '\x65', '\x7B', '\x98', '\x06', '\xB5', '\x33', '\x4F', '\x60',
+                                 '\x99', '\x48', '\xA8', '\x1F', '\xE2', '\x70', '\x09', '\x34', '\xE5', '\x54', '\xAB', '\x2B', '\x87'};
+    particle->SetSprite(DecryptName<0xDB27CB557D038759ULL>(spriteSource));
+
+    const char actionSource[] = {'\x4D', '\x71', '\x7D', '\xB2', '\x71', '\x97', '\xE7', '\x12', '\xD2', '\x8F', '\x8B', '\x51', '\x82',
+                                 '\x6B', '\xD4', '\x22', '\xCB', '\xD8', '\xC8', '\x17', '\xD6', '\x17', '\xDA', '\x32', '\xF9', '\xBD'};
+    particle->SetAction(DecryptName<0x51BB39B763BBBD8DULL>(actionSource));
+    particle->flags = 1;
+    particle->depthOffset = 0.0015f;
+    particle->loopMode = 0;
+    particle->frameDelay = 8.0f;
+    break;
+  }
   }
 }
 
