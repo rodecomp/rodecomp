@@ -178,8 +178,10 @@ void CSkillAction_MT_RUSH_STRIKE::Slot11(int level, CGameActor* source, CGameAct
   if (CRagEffect* ragEffect = static_cast<EffectActor*>(source)->LaunchEffect(1568, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     ragEffect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-  CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot26(source->render.previousAnimation % 8 >= 4);
   }
