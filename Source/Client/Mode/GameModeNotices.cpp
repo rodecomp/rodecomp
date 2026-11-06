@@ -1608,7 +1608,7 @@ void CGameMode::ReceiveCharacterRenameResult(const unsigned char* packet) {
   case 0: {
     PacketIdOnly request;
     request.id = 0xA48;
-    GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
     g_windowMgr.Confirm(LookupMessage(2836), 0, true, false, 0, "Message", 280, 120, 0);
     g_windowMgr.CloseWindow(281);
     break;
@@ -1795,7 +1795,7 @@ void CGameMode::ReceiveMacroBlackListCode(unsigned char state, const char* code)
 
     PacketIdOnly request;
     request.id = 0xBC4;
-    GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
   }
 }
 
@@ -4925,7 +4925,7 @@ void CGameMode::ReceiveMapProperty(const unsigned char* data) {
 
   PacketIdOnly request;
   request.id = 0x447;
-  GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
 }
 
 #pragma pack(push, 1)
