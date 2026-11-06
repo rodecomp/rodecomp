@@ -2198,18 +2198,18 @@ void UIExchangeWnd::Slot10(int x, int y, std::intptr_t value) {
   }
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 1) {
-    mode->SendMsg(18, 0, 0, 0, 0);
+  if (drag->source == 1) {
+    if (drag->quantity == 1) {
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      return;
+    }
+
+    g_windowMgr.ShowWindowById(15, 1);
+    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 5, 0, 0, 0);
     return;
   }
 
-  if (drag->quantity == 1) {
-    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
-    return;
-  }
-
-  g_windowMgr.ShowWindowById(15, 1);
-  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 5, 0, 0, 0);
+  mode->SendMsg(18, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008D0010
