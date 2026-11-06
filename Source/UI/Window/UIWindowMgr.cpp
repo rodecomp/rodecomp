@@ -2115,29 +2115,19 @@ static __forceinline std::vector<unsigned char> MakeReplayChunk(int tag, const s
 std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
   std::vector<unsigned char> data;
   {
-    std::vector<unsigned char> chunk(6);
-    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 20000;
-    *reinterpret_cast<int*>(&chunk[2]) = 0;
+    std::vector<unsigned char> chunk = MakeReplayMarker(20000);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
   for (UIWindow* window : this->rendered) {
     const unsigned id = static_cast<unsigned>(window->geometry.id);
     if (id <= 10040 && this->policy[id].actions[7]) {
       std::vector<unsigned char> state = window->Slot44();
-      const int tag = window->geometry.id + 20100;
-      std::vector<unsigned char> chunk(state.size() + 6, 0);
-      *reinterpret_cast<std::int16_t*>(&chunk[0]) = static_cast<std::int16_t>(tag);
-      *reinterpret_cast<int*>(&chunk[2]) = static_cast<int>(state.size());
-      if (state.size()) {
-        std::memcpy(&chunk[6], state.data(), state.size());
-      }
+      std::vector<unsigned char> chunk = MakeReplayChunk(window->geometry.id + 20100, state);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
   }
   {
-    std::vector<unsigned char> chunk(6);
-    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 20001;
-    *reinterpret_cast<int*>(&chunk[2]) = 0;
+    std::vector<unsigned char> chunk = MakeReplayMarker(20001);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
   return data;
