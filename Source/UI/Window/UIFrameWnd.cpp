@@ -587,24 +587,24 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // FUNCTION: fn_11801
 int UICntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
-    if (a == 184) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(this->m_event, std::atoi(this->m_edit->Text()), 0, 0, 0);
-    }
-
-    g_windowMgr.Schedule(this);
-    return 0;
   case 29:
     this->m_text->SetText(reinterpret_cast<const char*>(a), 0);
-    return 0;
-  case 80:
-    this->m_event = static_cast<int>(a);
     return 0;
   case 81: {
     char buffer[16];
     this->m_edit->SetText(_itoa(static_cast<int>(a), buffer, 10));
     return 0;
   }
+  case 80:
+    this->m_event = static_cast<int>(a);
+    return 0;
+  case 6:
+    if (a == 184) {
+      CMode* mode = g_modeMgr.gameMode;
+      mode->SendMsg(this->m_event, std::atoi(this->m_edit->Text()), 0, 0, 0);
+    }
+    g_windowMgr.Schedule(this);
+    return 0;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
