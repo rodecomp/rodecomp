@@ -28,7 +28,8 @@ void TagTextViewer::UIScroll::StorePosition(UIWindow* child) {
 // OFFSET: 0x0083ECF0
 // FUNCTION: fn_10522
 void UITagTextViewer::Clear() {
-  for (std::map<UIWindow*, TagTextViewer::Position>::iterator it = this->m_positions.begin(); it != this->m_positions.end(); ++it) {
+  const auto end = this->m_positions.end();
+  for (auto it = this->m_positions.begin(); it != end; ++it) {
     this->RemoveChild(it->first, 1);
   }
 
@@ -45,7 +46,7 @@ void UITagTextViewer::Clear() {
 int TagTextViewer::UIScroll::ContentHeight() {
   int height = 0;
 
-  for (std::map<UIWindow*, Position>::iterator it = this->m_positions.begin(); it != this->m_positions.end(); ++it) {
+  for (std::map<UIWindow*, Position>::const_iterator it = this->m_positions.cbegin(); it != this->m_positions.cend(); ++it) {
     height = static_cast<int>(std::max(static_cast<float>(height), static_cast<float>(it->first->geometry.height) + it->second.y));
   }
 
@@ -101,7 +102,9 @@ void TagTextViewer::UIScroll::UpdateScroll() {
   if (height > this->geometry.height) {
     this->m_scrollBar->Show(1);
     this->m_scrollBar->SetRange(height - this->geometry.height, this->geometry.height, height);
-    this->m_scrollPos = std::min(std::max(0, this->m_scrollPos), height - this->geometry.height);
+    const int position = this->m_scrollPos > 0 ? this->m_scrollPos : 0;
+    const int range = height - this->geometry.height;
+    this->m_scrollPos = position < range ? position : range;
     this->m_scrollBar->SetPosition(this->m_scrollPos);
     for (std::map<UIWindow*, Position>::iterator it = this->m_positions.begin(); it != this->m_positions.end(); ++it) {
       it->first->Move(static_cast<int>(it->second.x), static_cast<int>(it->second.y - static_cast<float>(this->m_scrollPos)));
