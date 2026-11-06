@@ -1,12 +1,13 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_MAPINFOMGR_H
 #define RAGNAROK_SOURCE_CONTENTS_MAPINFOMGR_H
 
+#include "Render/DeviceContext/DeviceContext.h"
+
 #include <map>
 #include <string>
 
 #include <windows.h>
 
-class CDC;
 class CRenderSystemBase;
 class CTexture;
 struct lua_State;
