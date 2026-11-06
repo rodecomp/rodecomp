@@ -133,7 +133,12 @@ std::uint32_t RenderSystemHolder::Width() const {
 // OFFSET: 0x00E30A50
 // FUNCTION: fn_24169
 int CSession::DefaultRenderBackend() {
-  return std::max(this->m_hotkeyScript->GlobalInteger("RenderSystemDefault"), 0);
+  const int value = this->m_hotkeyScript->GlobalInteger("RenderSystemDefault");
+  int result = 0;
+  if (value > 0) {
+    result = value;
+  }
+  return result;
 }
 
 // OFFSET: 0x0056A6A0
@@ -287,5 +292,10 @@ void CDCSurface::Dim(int, int, int, int, int) {
 // OFFSET: 0x00E30A70
 // FUNCTION: fn_24170
 int CSession::RenderSystemResetPolicy() {
-  return std::max(this->m_hotkeyScript->GlobalInteger("RenderSystemReset"), 0);
+  const int value = this->m_hotkeyScript->GlobalInteger("RenderSystemReset");
+  int result = 0;
+  if (value > 0) {
+    result = value;
+  }
+  return result;
 }
