@@ -27,7 +27,9 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -414,8 +416,8 @@ public:
 void CSkillAction_DamageWereRaptorForm::Slot18(CGameActor* actor) {
   if (actor) {
     g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const std::uint8_t bytes[] = {0x7B, 0x43, 0x92, 0x8F, 0x84, 0x01, 0x32, 0x6A, 0x7A, 0x43, 0xA8, 0x95, 0x8C, 0x05, 0x19, 0x72,
-                                    0x6D, 0x31};
+      const char bytes[] = {'\x7B', '\x43', '\x92', '\x8F', '\x84', '\x01', '\x32', '\x6A', '\x7A', '\x43', '\xA8', '\x95', '\x8C', '\x05', '\x19', '\x72',
+                                    '\x6D', '\x31'};
       thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
       return name.Text();
     }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -427,7 +429,7 @@ void CSkillAction_DamageWereRaptorForm::Slot18(CGameActor* actor) {
 void CSkillAction_DamageWereWolfForm::Slot18(CGameActor* actor) {
   if (actor) {
     g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const std::uint8_t bytes[] = {0x31, 0x8F, 0xEA, 0xB3, 0xAE, 0xC5, 0x2A, 0x44, 0x30, 0x8F, 0xD0, 0xAC, 0xA8, 0xDD, 0x13, 0x33};
+      const char bytes[] = {'\x31', '\x8F', '\xEA', '\xB3', '\xAE', '\xC5', '\x2A', '\x44', '\x30', '\x8F', '\xD0', '\xAC', '\xA8', '\xDD', '\x13', '\x33'};
       thread_local EncryptedName<sizeof(bytes), 0x3375B1C7DBB5FD55ULL> name(bytes);
       return name.Text();
     }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
