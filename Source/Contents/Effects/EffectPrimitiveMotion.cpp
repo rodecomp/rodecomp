@@ -4910,7 +4910,8 @@ void CEffectPrim::PrimBobbing() {
       continue;
     }
 
-    const int process = ++slot.process;
+    const int process = slot.process + 1;
+    slot.process = process;
 
     if (slot.rotStart >= 360) {
       slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
