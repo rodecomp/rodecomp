@@ -135,11 +135,11 @@ bool EffectResourceSwitcher::Slot06() {
     return false;
   }
 
-  if (!this->effect->retained) {
-    return !this->effect->IsFinished();
+  if (this->effect->retained) {
+    return true;
   }
 
-  return true;
+  return !this->effect->IsFinished();
 }
 
 // OFFSET: 0x005A2330
