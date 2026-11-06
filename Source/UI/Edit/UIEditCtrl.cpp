@@ -182,6 +182,37 @@ protected:
   };
 }
 
+// INLINED
+static void SetEditTooltip(UIEditCtrl& edit, const char* value) {
+  if (value) {
+    edit.tooltip = value;
+  }
+}
+
+// INLINED
+static void SetEditDisabled(UIEditCtrl& edit, unsigned char value) {
+  edit.disabled = value;
+  edit.Invalidate();
+}
+
+// INLINED
+static void SetEditBackground(UIEditCtrl& edit, int red, int green, int blue) {
+  edit.red = red;
+  edit.green = green;
+  edit.blue = blue;
+  edit.Invalidate();
+}
+
+// INLINED
+static void SetEditMaximum(UIEditCtrl& edit, int value) {
+  edit.maximum = value;
+  if (edit.maximum > 0x169) {
+    edit.maximum = 0x169;
+  }
+
+  edit.text.reserve(edit.maximum);
+}
+
 // OFFSET: 0x0084F860
 // FUNCTION: fn_10662
 UIEditCtrl::UIEditCtrl(const UIEditCtrl& other)
@@ -241,19 +272,26 @@ bool UIEditCtrl::Slot05() {
 // OFFSET: 0x0085CCA0
 // FUNCTION: fn_10807
 void UIEditCtrl::Paint() {
-  const auto component = [&](int value) { return static_cast<unsigned char>(this->disabled != 0 && value > 30 ? value - 30 : value); };
-  const unsigned color = component(this->red) | (component(this->green) << 8) | (component(this->blue) << 16);
+  int backRed = this->red;
+  int backGreen = this->green;
+  int backBlue = this->blue;
+  if (this->disabled) {
+    backRed = backRed > 30 ? backRed - 30 : backRed;
+    backGreen = backGreen > 30 ? backGreen - 30 : backGreen;
+    if (backBlue > 30) {
+      backBlue -= 30;
+    }
+  }
+
   this->textY = 0;
 
   if (this->flat == 0) {
     RECT rectangle{0, 0, this->geometry.width, this->geometry.height};
-    const unsigned border = static_cast<unsigned char>(this->borderRed) | (static_cast<unsigned char>(this->borderGreen) << 8) |
-                            (static_cast<unsigned char>(this->borderBlue) << 16);
-    this->FillSurface(border, &rectangle);
+    this->FillSurface(RGB(this->borderRed, this->borderGreen, this->borderBlue), &rectangle);
     SetRect(&rectangle, 1, 1, this->geometry.width - 1, this->geometry.height - 1);
-    this->FillSurface(color, &rectangle);
+    this->FillSurface(RGB(backRed, backGreen, backBlue), &rectangle);
   } else {
-    this->ClearSurface(color);
+    this->ClearSurface(RGB(backRed, backGreen, backBlue));
   }
 
   this->textY = this->topPadding + 2;
@@ -505,18 +543,18 @@ void UIEditCtrl3::SetTagColor(std::uint32_t color) {
   }
 }
 
-// OFFSET: 0x00868570
-// FUNCTION: fn_10960
+// INLINED
 void UIEditCtrl::TextColor(std::uint32_t primary, std::uint32_t secondary) {
   this->secondColor = secondary;
   this->textColor = primary;
   this->Invalidate();
 }
 
-// INLINED
+// OFFSET: 0x00868570
+// FUNCTION: fn_10960
 void UIEditCtrl::TextColor(unsigned char red, unsigned char green, unsigned char blue, std::uint32_t secondary) {
-  this->secondColor = secondary;
   this->textColor = static_cast<std::uint32_t>(red) | (static_cast<std::uint32_t>(green) << 8) | (static_cast<std::uint32_t>(blue) << 16);
+  this->secondColor = secondary;
   this->Invalidate();
 }
 
