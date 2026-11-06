@@ -59,7 +59,7 @@ bool CRmaRes::Load(const char* name) {
       }
 
       if (this->actions[action].startFrame != -1) {
-        ShowErrorDialog(GetRenderSystemHolder()->system, "중복되는 액션이 있음", 0);
+        ShowErrorDialog("중복되는 액션이 있음", 0);
       }
 
       this->actions[action].delay = std::atoi(tokenizer[2].c_str());
@@ -85,7 +85,7 @@ bool CRmaRes::Load(const char* name) {
     } else if (tokenizer[0] == "#shadowzoom") {
       this->shadowZoom = static_cast<float>(std::atof(tokenizer[1].c_str()));
     } else {
-      ShowErrorDialog(GetRenderSystemHolder()->system, "Syntax Error in Rma", 0);
+      ShowErrorDialog("Syntax Error in Rma", 0);
     }
   }
 
