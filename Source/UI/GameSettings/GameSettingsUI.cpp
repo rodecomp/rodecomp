@@ -1928,7 +1928,8 @@ void GameSettingsUI::CUIGroupGraphicsAPI::Apply() {
 // FUNCTION: fn_15973
 void sub_A404D0() {
   dwPriorityClass = NORMAL_PRIORITY_CLASS;
-  SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+  HANDLE process = GetCurrentProcess();
+  SetPriorityClass(process, NORMAL_PRIORITY_CLASS);
 }
 
 // OFFSET: 0x00A421E0
