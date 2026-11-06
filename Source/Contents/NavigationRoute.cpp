@@ -408,7 +408,7 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
     std::sprintf(buffer, LookupMessage(2315), message.c_str());
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
 
-    if (result == 5 && this->selectedNode != -1 && static_cast<unsigned>(this->selectedNode) < this->nodes.size()) {
+    if (result == 5 && this->selectedNode != -1 && this->nodes.size() > static_cast<unsigned>(this->selectedNode)) {
       const int type = this->nodes[this->selectedNode]->GetType();
       if (type == 201 || type == 202 || type == 203 || type == 204) {
         std::sprintf(buffer, LookupMessage(2316), this->nodes[this->selectedNode]->GetName());
@@ -435,7 +435,8 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
   if (mode == 0 || mode == 2) {
     g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
     if (mode == 4) {
-      CNavi_Object* node = g_navigationManager.nodes.size() == 0 ? nullptr : g_navigationManager.nodes[0];
+      const int count = static_cast<int>(g_navigationManager.nodes.size());
+      CNavi_Object* node = count == 0 ? nullptr : g_navigationManager.nodes[0];
       std::string text(LookupMessage(2321));
       text += node->GetName();
       text += " ";
