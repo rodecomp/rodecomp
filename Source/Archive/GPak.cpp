@@ -522,8 +522,6 @@ unsigned int Triple32Hash(unsigned int value) {
   return value;
 }
 
-void sub_6468C0(void* first, void* last, const void* val);
-void sub_646930(void* first, void* last, const void* val);
 
 struct VectorUint32_654D10 {
   unsigned int* first;
@@ -538,7 +536,7 @@ struct VectorUint32_654D10 {
 __declspec(noinline) void VectorUint32_654D10::AssignFill(unsigned int count, unsigned int val) {
   unsigned int old_size = static_cast<unsigned int>(this->last - this->first);
   if (count <= old_size) {
-    sub_6468C0(this->first, this->last, &val);
+    std::fill(this->first, this->last, val);
     return;
   }
   if (count > 0x3fffffff) {
@@ -596,7 +594,7 @@ struct VectorInt32_654E00 {
 __declspec(noinline) void VectorInt32_654E00::AssignFill(unsigned int count, int val) {
   unsigned int old_size = static_cast<unsigned int>(this->last - this->first);
   if (count <= old_size) {
-    sub_646930(this->first, this->last, &val);
+    std::fill(this->first, this->last, val);
     return;
   }
   if (count > 0x3fffffff) {
