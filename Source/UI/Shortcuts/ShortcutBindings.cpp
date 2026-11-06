@@ -22,7 +22,7 @@ int CSession::RotateShortcut(int index, int bank) const {
 
   if (rotation != 0) {
     const int value = index + 9 * rotation;
-    return value < 36 ? value : value - 36;
+    return value >= 36 ? value - 36 : value;
   }
   return index;
 }
