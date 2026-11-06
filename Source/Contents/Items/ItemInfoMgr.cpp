@@ -53,10 +53,10 @@ int CItemInfoMgr::IsCostume(int id) {
 // FUNCTION: fn_17979
 int CItemInfoMgr::GetEffectId(int id) {
   std::map<int, lcData>::iterator it = this->m_items.find(id);
-  if (it == this->m_items.end()) {
-    return -1;
+  if (it != this->m_items.end()) {
+    return it->second.effectId;
   }
-  return it->second.effectId;
+  return -1;
 }
 
 // OFFSET: 0x00ADFF30
