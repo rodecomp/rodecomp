@@ -336,8 +336,7 @@ void UISwapEquipmentWnd::Paint() {
     this->DrawBitmap(0, 0, &bitmap->image, false);
   }
 
-  const char* title = LookupMessage(3110);
-  this->DrawCenteredText(140, 4, title, std::strlen(title), 0, 12, 0x14234B, 0);
+  this->DrawCenteredText(140, 4, LookupMessage(3110), std::strlen(LookupMessage(3110)), 0, 12, 0x14234B, 0);
 
   this->DrawEquipmentSlots();
 
