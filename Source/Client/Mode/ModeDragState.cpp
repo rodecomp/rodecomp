@@ -33,10 +33,7 @@ void ModeDragState::Clear() {
 void ModeDragState::BeginItem(
   WindowManagerWindows& windows, int sourceValue, const ITEM_INFO& item, int quantityValue, int slotValue
 ) {
-  UIWindow* window = windows.EnsureWindow(15);
-  if (window->geometry.visible != 0) {
-    window->Show(0);
-  }
+  windows.ShowWindowById(15, 0);
 
   this->Clear();
   if (item.unknown_0000[1] == 0) {
