@@ -405,8 +405,8 @@ void CUIVScrollBar::SetVisible(int value) {
 void CUIVScrollBar::SetPosition(int value) {
   int zero = 0;
   const int* clamped = &this->maximum;
-  if (value <= this->maximum) {
-    clamped = value >= 0 ? &value : &zero;
+  if (this->maximum >= value) {
+    clamped = value < 0 ? &zero : &value;
   }
   if (!this->dragging) {
     this->position = *clamped;
