@@ -96,7 +96,7 @@ void CEffect::SetEventFrame(int kind, int frame) {
 // OFFSET: 0x00B4E290
 // FUNCTION: fn_18989
 void CEffect::UpdateVisibility() {
-  if ((g_serviceOptions.Get(8) || this->forceRender) && this->Slot06() && !this->outsideRange) {
+  if ((g_serviceOptions.Get(8) || this->forceRender) && this->Slot33() && !this->outsideRange) {
     this->Slot04();
   }
 }
