@@ -66,11 +66,12 @@ bool CThemidaMgr::Create() {
   if (g_themidaMgr == nullptr) {
     g_themidaMgr = new (std::nothrow) CThemidaMgr();
     if (g_themidaMgr != nullptr) {
-      if (g_themidaMgr->m_valid) {
-        return true;
+      if (!g_themidaMgr->m_valid) {
+        delete g_themidaMgr;
+        g_themidaMgr = nullptr;
+        return false;
       }
-      delete g_themidaMgr;
-      g_themidaMgr = nullptr;
+      return true;
     }
   }
   return false;
