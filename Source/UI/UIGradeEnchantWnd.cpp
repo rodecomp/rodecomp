@@ -125,7 +125,7 @@ void UIGradeEnchantWnd::ResetItem() {
 // FUNCTION: fn_09751
 int UIGradeEnchantWnd::SelectedMaterialZeny() {
   if (this->item.unknown_0000[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
-      static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
+      this->materials.size() > static_cast<unsigned>(this->selectedMaterial)) {
     return this->materials[this->selectedMaterial].zeny;
   }
 
@@ -654,8 +654,10 @@ void UIGradeEnchantWnd::SetResult(int state, int result) {
   this->unknown_00D8 = 1;
   this->enhancedUpButton->tooltipEnabled = state != 0;
 
-  if (state == 2) {
+  switch (state) {
+  case 2:
     this->unknown_00E0 = this->stateTick;
+    break;
   }
 
   this->Invalidate();
