@@ -76,8 +76,8 @@ void UIRoMapWnd::DrawDashedArrow(
   ScreenPoint quad[4];
 
   if (SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX)) < visibleDistance) {
-    const float halfStepX = stepX * g_depthAverageHalf;
-    const float halfStepY = stepY * g_depthAverageHalf;
+    const float halfStepX = stepX * 0.5f;
+    const float halfStepY = stepY * 0.5f;
     float distanceToNext;
     do {
       quad[0] = {currentX, currentY};
@@ -100,8 +100,8 @@ void UIRoMapWnd::DrawDashedArrow(
   }
 
   if (progress < 1.0f) {
-    const float tipBaseX = (sideX * g_depthAverageHalf + nextX) - static_cast<float>(thickness) * directionX;
-    const float tipBaseY = (sideY * g_depthAverageHalf + nextY) - static_cast<float>(thickness) * directionY;
+    const float tipBaseX = (sideX * 0.5f + nextX) - static_cast<float>(thickness) * directionX;
+    const float tipBaseY = (sideY * 0.5f + nextY) - static_cast<float>(thickness) * directionY;
     const float headX = static_cast<float>(headSize);
     const float tipX = tipBaseX + headX * normalX;
     const float tipY = tipBaseY + headX * normalY;
