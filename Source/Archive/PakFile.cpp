@@ -53,34 +53,27 @@ namespace {
 
   // INLINED
   int CountDigits(std::uint32_t value) {
+    int digits;
     if (value >= 1000000000) {
-      return 10;
+      digits = 9;
+    } else if (value >= 100000000) {
+      digits = 8;
+    } else if (value >= 10000000) {
+      digits = 7;
+    } else if (value >= 1000000) {
+      digits = 6;
+    } else if (value >= 100000) {
+      digits = 5;
+    } else if (value >= 10000) {
+      digits = 4;
+    } else if (value >= 1000) {
+      digits = 3;
+    } else if (value >= 100) {
+      digits = 2;
+    } else {
+      digits = value >= 10;
     }
-    if (value >= 100000000) {
-      return 9;
-    }
-    if (value >= 10000000) {
-      return 8;
-    }
-    if (value >= 1000000) {
-      return 7;
-    }
-    if (value >= 100000) {
-      return 6;
-    }
-    if (value >= 10000) {
-      return 5;
-    }
-    if (value >= 1000) {
-      return 4;
-    }
-    if (value >= 100) {
-      return 3;
-    }
-    if (value >= 10) {
-      return 2;
-    }
-    return 1;
+    return digits + 1;
   }
 }
 

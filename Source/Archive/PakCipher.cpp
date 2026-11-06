@@ -1,5 +1,7 @@
 #include "Archive/PakCipher.h"
 
+#include "Archive/GPakUpdate.h"
+
 #include <algorithm>
 #include <cstring>
 
@@ -459,7 +461,7 @@ namespace myGPack {
 
   // OFFSET: 0x00AEBC90
   // FUNCTION: fn_18131
-  std::uint8_t* DerivePakKey(const char* name, std::uint8_t* key) {
+  std::uint8_t* CGPakRead::DerivePakKey(const char* name, std::uint8_t* key) {
     const char* base = name;
     const std::size_t length = std::strlen(name);
     const char* const end = name + length;

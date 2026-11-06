@@ -30,6 +30,7 @@ namespace myGPack {
   public:
     bool ReadEntry(PakEntry* entry, void* buffer);
     void CollectNames(std::set<std::string>& names) const;
+    std::uint8_t* DerivePakKey(const char* name, std::uint8_t* key);
   };
 
   struct PakFreeBlock {
