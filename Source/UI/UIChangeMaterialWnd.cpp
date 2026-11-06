@@ -95,11 +95,11 @@ void UIChangeMaterialWnd_List::sub_5E1080(int delta) {
   const int count = static_cast<int>(this->m_items.size());
   const int maxIndex = count - 1;
 
+  int targetIndex = static_cast<int>(newIndex);
   if (newIndex >= static_cast<uint32_t>(maxIndex)) {
-    newIndex = maxIndex;
+    targetIndex = maxIndex;
   }
 
-  int targetIndex = static_cast<int>(newIndex);
   if (targetIndex < this->m_scrollOffset || targetIndex >= this->m_scrollOffset + this->m_pageSize) {
     int newOffset = this->m_previousScrollOffset;
     if (targetIndex < newOffset || targetIndex >= newOffset + this->m_pageSize) {
