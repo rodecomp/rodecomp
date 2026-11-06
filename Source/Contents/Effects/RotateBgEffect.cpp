@@ -84,7 +84,8 @@ bool CRotateBgEffect::Slot06() {
 // OFFSET: 0x00B729F0
 // FUNCTION: fn_19144
 void CRotateBgEffect::Slot03() {
-  for (CParticle* particle : this->particles) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
@@ -141,7 +142,8 @@ void CRotateBgEffect::Slot03() {
     ++particle->unknown_00E8;
   }
 
-  for (CParticle* particle : this->segmentParticles) {
+  for (auto it = this->segmentParticles.begin(); it != this->segmentParticles.end(); ++it) {
+    CParticle* particle = *it;
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
