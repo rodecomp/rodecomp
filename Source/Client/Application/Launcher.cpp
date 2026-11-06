@@ -765,23 +765,23 @@ bool RestartFromCommandLine() {
 // FUNCTION: fn_24365
 void ApplyAiPatch() {
   const std::uint8_t patchSource[] = {0xAE, 0x6A, 0x8A, 0x9F, 0x78, 0x25, 0xF2, 0x53, 0xEF};
-  thread_local EncryptedName<sizeof(patchSource), 0x3B915119EFD523EFULL> patchName(patchSource);
+  EncryptedName<sizeof(patchSource), 0x3B915119EFD523EFULL>& patchName = ThreadLocalName<0x3B915119EFD523EFULL>(patchSource);
   if (_access(patchName.Text(), 0) != 0) {
     return;
   }
 
   const std::uint8_t aiSource[] = {0x5A, 0x44, 0x39};
-  thread_local EncryptedName<sizeof(aiSource), 0x5B8F49AF09390D1BULL> aiName(aiSource);
+  EncryptedName<sizeof(aiSource), 0x5B8F49AF09390D1BULL>& aiName = ThreadLocalName<0x5B8F49AF09390D1BULL>(aiSource);
   if (_access(aiName.Text(), 0) != 0) {
     return;
   }
 
   const std::uint8_t backupSource[] = {0x80, 0x9A, 0x84, 0x15, 0xFA, 0x16, 0xA8, 0x3C, 0xB1, 0xD3};
-  thread_local EncryptedName<sizeof(backupSource), 0x49C3759B77DBD3C1ULL> backupName(backupSource);
+  EncryptedName<sizeof(backupSource), 0x49C3759B77DBD3C1ULL>& backupName = ThreadLocalName<0x49C3759B77DBD3C1ULL>(backupSource);
   if (_access(backupName.Text(), 0) == 0) {
     const std::uint8_t deleteSource[] = {0xDA, 0xE4, 0x2A, 0xAD, 0xB0, 0x5E, 0x86, 0x18, 0xEB, 0xAD};
     char path[16] = {};
-    thread_local EncryptedName<sizeof(deleteSource), 0x6DED3DD1CF75AD9BULL> deleteName(deleteSource);
+    EncryptedName<sizeof(deleteSource), 0x6DED3DD1CF75AD9BULL>& deleteName = ThreadLocalName<0x6DED3DD1CF75AD9BULL>(deleteSource);
     std::strcpy(path, deleteName.Text());
 
     SHFILEOPSTRUCTA operation;
@@ -797,17 +797,17 @@ void ApplyAiPatch() {
   }
 
   const std::uint8_t backupTargetSource[] = {0xBC, 0xB4, 0x22, 0x91, 0x80, 0x76, 0x92, 0x6E, 0x8D, 0xFD};
-  thread_local EncryptedName<sizeof(backupTargetSource), 0x1BF915E1F37DFDFDULL> backupTarget(backupTargetSource);
+  EncryptedName<sizeof(backupTargetSource), 0x1BF915E1F37DFDFDULL>& backupTarget = ThreadLocalName<0x1BF915E1F37DFDFDULL>(backupTargetSource);
   const char* backup = backupTarget.Text();
   const std::uint8_t currentSource[] = {0x9E, 0x90, 0x5D};
-  thread_local EncryptedName<sizeof(currentSource), 0x01FF9313695DD9DFULL> current(currentSource);
+  EncryptedName<sizeof(currentSource), 0x01FF9313695DD9DFULL>& current = ThreadLocalName<0x01FF9313695DD9DFULL>(currentSource);
   std::rename(current.Text(), backup);
 
   const std::uint8_t installTargetSource[] = {0x52, 0x8E, 0x03};
-  thread_local EncryptedName<sizeof(installTargetSource), 0x4F1791FB1503C713ULL> installTarget(installTargetSource);
+  EncryptedName<sizeof(installTargetSource), 0x4F1791FB1503C713ULL>& installTarget = ThreadLocalName<0x4F1791FB1503C713ULL>(installTargetSource);
   const char* install = installTarget.Text();
   const std::uint8_t patchedSource[] = {0x92, 0xA4, 0xC8, 0x65, 0x2C, 0x2F, 0xC6, 0xC9, 0xD3};
-  thread_local EncryptedName<sizeof(patchedSource), 0xA1A55B4D1597EDD3ULL> patched(patchedSource);
+  EncryptedName<sizeof(patchedSource), 0xA1A55B4D1597EDD3ULL>& patched = ThreadLocalName<0xA1A55B4D1597EDD3ULL>(patchedSource);
   std::rename(patched.Text(), install);
 }
 
