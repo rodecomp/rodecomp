@@ -71,7 +71,7 @@ int MovementRouteInterpolation::EndMetadata() const {
 // OFFSET: 0x00AD8F20
 // FUNCTION: fn_17874
 int MovementRouteInterpolation::NextPoint(std::uint32_t tick, std::uint32_t* nextTick, float* x, float* y) const {
-  if (this->points.empty() || this->points.front().tick == 0) {
+  if (this->points.size() == 0 || this->points.front().tick == 0) {
     return -1;
   }
 
