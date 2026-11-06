@@ -109,7 +109,7 @@ public:
   WorldViewRecord* MarkAt(unsigned int index, bool currentWorldOnly);
   int* MarkAreaAt(unsigned int index, bool currentWorldOnly);
   int MarkCount();
-  void SelectCurrentWorld();
+  int SelectCurrentWorld();
   bool AddLevel(const char* name, int level);
   void ClearLevels();
   int* LevelAreaAt(int& kind, unsigned int index, bool currentWorldOnly);

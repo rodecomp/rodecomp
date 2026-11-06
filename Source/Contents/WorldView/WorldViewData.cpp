@@ -497,8 +497,8 @@ int CWorldViewMgr::MarkCount() {
 
 // OFFSET: 0x00617290
 // FUNCTION: fn_04385
-void CWorldViewMgr::SelectCurrentWorld() {
-  this->currentWorld = this->FindWorld(-1);
+int CWorldViewMgr::SelectCurrentWorld() {
+  return this->currentWorld = this->FindWorld(-1);
 }
 
 // OFFSET: 0x006172E0
