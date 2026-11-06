@@ -15,7 +15,7 @@
 class UIDisplayCharacter : public UIWindow {
 public:
   UIDisplayCharacter();
-  void LoadSessionStyle();
+  __declspec(noinline) void LoadSessionStyle();
   void CopyStyle(const UIDisplayCharacter* other);
   void LoadCostumes();
   void SelectNextStyle(const char* table, int* goods);
