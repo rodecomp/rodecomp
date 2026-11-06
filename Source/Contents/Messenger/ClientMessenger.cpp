@@ -1300,7 +1300,7 @@ void EquipmentPropertyStore::RemoveDuplicateNames() {
 // FUNCTION: fn_06172
 const int& EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown0134(const int& key) {
   auto found = this->unknown_0134.find(key);
-  if (found == this->unknown_0134.end()) {
+  if (this->unknown_0134.end() == found) {
     return key;
   }
   return found->second.value;
@@ -1316,7 +1316,7 @@ int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown001C() {
 // FUNCTION: fn_06175
 EquipmentProperties::CEquipmentWearable* EquipmentProperties::CEquipmentPropertiesMgr::FindProperty1(const int& key) {
   auto found = this->properties1.find(key);
-  if (found == this->properties1.end()) {
+  if (this->properties1.end() == found) {
     return nullptr;
   }
   return found->second;
@@ -1326,7 +1326,7 @@ EquipmentProperties::CEquipmentWearable* EquipmentProperties::CEquipmentProperti
 // FUNCTION: fn_06176
 EquipmentProperties::CEquipmentInfo* EquipmentProperties::CEquipmentPropertiesMgr::FindUnknown0094(const int& key) {
   auto found = this->unknown_0094.find(key);
-  if (found == this->unknown_0094.end()) {
+  if (this->unknown_0094.end() == found) {
     return nullptr;
   }
   return &found->second;
@@ -1969,7 +1969,7 @@ int GetNormalThirdJob(int job) {
 // FUNCTION: fn_06184
 EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown0174(const int& key) {
   auto found = this->unknown_0174.find(key);
-  if (found == this->unknown_0174.end()) {
+  if (this->unknown_0174.end() == found) {
     return nullptr;
   }
   return found->second;
@@ -4037,7 +4037,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::GetDescriptions(const int& gr
 // FUNCTION: fn_06183
 EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::FindDefinition(const std::uint64_t& key) {
   auto found = this->m_definitionsByName.find(key);
-  if (found == this->m_definitionsByName.end()) {
+  if (this->m_definitionsByName.end() == found) {
     return nullptr;
   }
   return found->second;
@@ -6208,12 +6208,12 @@ void CGameMode::Zc_Mer_Par_Change(const unsigned char* data) {
     g_session.m_mercenaryHp = packet->value;
     g_session.RefreshMercenaryInfo();
     break;
-  case 6:
-    g_session.m_mercenaryMaxHp = packet->value;
-    g_session.RefreshMercenaryInfo();
-    break;
   case 7:
     g_session.m_mercenarySp = packet->value;
+    g_session.RefreshMercenaryInfo();
+    break;
+  case 6:
+    g_session.m_mercenaryMaxHp = packet->value;
     g_session.RefreshMercenaryInfo();
     break;
   case 8:
@@ -6226,11 +6226,11 @@ void CGameMode::Zc_Mer_Par_Change(const unsigned char* data) {
   case 49:
     g_session.m_mercenaryStats[2] = packet->value;
     break;
-  case 53:
-    g_session.m_mercenaryStats[7] = packet->value;
-    break;
   case 165:
     g_session.m_mercenaryStats[6] = packet->value;
+    break;
+  case 53:
+    g_session.m_mercenaryStats[7] = packet->value;
     break;
   case 189:
     g_session.m_mercenaryKills = packet->value;

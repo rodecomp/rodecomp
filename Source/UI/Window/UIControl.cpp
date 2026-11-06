@@ -2327,17 +2327,17 @@ int CUITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     case 437:
       OpenTextButtonLink(static_cast<UITextButton*>(sender));
       break;
-    case 438:
-      OpenTextButtonNavigation(static_cast<UITextButton*>(sender));
-      break;
     case 464:
       ShowTextButtonItem(static_cast<UITextButton*>(sender));
       break;
-    case 517:
-      ShowTextButtonTip(static_cast<UITextButton*>(sender));
+    case 438:
+      OpenTextButtonNavigation(static_cast<UITextButton*>(sender));
       break;
     case 539:
       RequestTextButtonService(static_cast<UITextButton*>(sender));
+      break;
+    case 517:
+      ShowTextButtonTip(static_cast<UITextButton*>(sender));
       break;
     }
   }

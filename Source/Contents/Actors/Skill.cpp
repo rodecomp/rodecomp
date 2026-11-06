@@ -113,9 +113,8 @@ const char* CSkill::GetTrapModelName() {
       return "외부소품\\트랩03_3.rsm";
     case 0x90:
       return "외부소품\\트랩02.rsm";
-    case 0x91:
-    case 0xCB:
-      return "외부소품\\트랩01.rsm";
+    case 0xE5:
+      return "event\\3차트랩_가시01.rsm";
     case 0x93:
       return "외부소품\\트랩03.rsm";
     case 0x94:
@@ -130,6 +129,9 @@ const char* CSkill::GetTrapModelName() {
       return "외부소품\\트랩04.rsm";
     case 0x99:
       return "외부소품\\트랩05.rsm";
+    case 0x91:
+    case 0xCB:
+      return "외부소품\\트랩01.rsm";
     case 0xD2:
       return "event\\3차트랩_변화01.rsm";
     case 0xD3:
@@ -146,8 +148,6 @@ const char* CSkill::GetTrapModelName() {
       return "event\\3차트랩_풍01.rsm";
     case 0xD9:
       return "event\\3차트랩_지01.rsm";
-    case 0xE5:
-      return "event\\3차트랩_가시01.rsm";
     case 0x5174:
       return "effect\\deepblindtrap\\deep_trap.rsm2";
     case 0x5175:

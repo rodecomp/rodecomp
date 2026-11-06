@@ -139,7 +139,7 @@
 // OFFSET: 0x00D7AF70
 // FUNCTION: fn_22198
 __declspec(noinline) void CGameMode::ReceiveItemDisappear(std::uint32_t itemAid) {
-  if (this->scene->RemoveItem(itemAid)) {
+  if (this->scene->RemoveItem(itemAid) == true) {
     this->SendMsg(13, static_cast<int>(itemAid), 0, 0, 0);
   }
 }
@@ -1634,11 +1634,11 @@ __declspec(noinline) void CGameMode::ReceiveActorStatusUpdate(const unsigned cha
     case 0:
       g_session.unknown_5BC4 = *reinterpret_cast<const int*>(packet + 4);
       break;
-    case 1:
-      g_session.unknown_5BCC = *reinterpret_cast<const int*>(packet + 4);
-      break;
     case 2:
       g_session.unknown_5BC8 = *reinterpret_cast<const int*>(packet + 4);
+      break;
+    case 1:
+      g_session.unknown_5BCC = *reinterpret_cast<const int*>(packet + 4);
       break;
     case 3:
       g_session.unknown_5BD0 = *reinterpret_cast<const int*>(packet + 4);
