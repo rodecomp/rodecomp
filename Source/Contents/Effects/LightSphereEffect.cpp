@@ -43,7 +43,8 @@ void CLightSphereEffect::sub_B6CB90(int param) {
         particle->unknown_0054 = 10.0f;
         *reinterpret_cast<float*>(particle->unknown_0058) = static_cast<float>(param);
 
-        if (this->id == 0x4AD) {
+        switch (this->id) {
+        case 0x4AD: {
           int randVal = std::rand() % 2;
           if (randVal < 0) {
             randVal = 0;
@@ -53,7 +54,9 @@ void CLightSphereEffect::sub_B6CB90(int param) {
           } else {
             particle->SetColor(0xFF, 0x4A, 0x4E);
           }
-        } else if (this->id == 0x4AE) {
+          break;
+        }
+        case 0x4AE: {
           int randVal = std::rand() % 2;
           if (randVal < 0) {
             randVal = 0;
@@ -63,7 +66,9 @@ void CLightSphereEffect::sub_B6CB90(int param) {
           } else {
             particle->SetColor(0xFF, 0xFF, 0x37);
           }
-        } else if (this->id == 0x4AF) {
+          break;
+        }
+        case 0x4AF: {
           int randVal = std::rand() % 2;
           if (randVal < 0) {
             randVal = 0;
@@ -73,7 +78,9 @@ void CLightSphereEffect::sub_B6CB90(int param) {
           } else {
             particle->SetColor(0x6D, 0x9A, 0xFF);
           }
-        } else {
+          break;
+        }
+        default: {
           int randVal = std::rand() % 2;
           if (randVal < 0) {
             randVal = 0;
@@ -83,6 +90,8 @@ void CLightSphereEffect::sub_B6CB90(int param) {
           } else {
             particle->SetColor(0x37, 0x37, 0xFF);
           }
+          break;
+        }
         }
 
         InitParticleQuad(particle->vertices);
