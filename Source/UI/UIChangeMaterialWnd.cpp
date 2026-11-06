@@ -331,14 +331,15 @@ void UIChangeMaterialWnd::sub_5E39A0() {
 
   unsigned char* entry = packet + 0xC;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
-    *reinterpret_cast<std::uint16_t*>(entry) = static_cast<std::uint16_t>(it->unknown_0000[1]);
     *reinterpret_cast<std::uint16_t*>(entry + 2) = static_cast<std::uint16_t>(it->quantity);
+    *reinterpret_cast<std::uint16_t*>(entry) = static_cast<std::uint16_t>(it->unknown_0000[1]);
     entry += 4;
   }
 
   GetRagConnection().Send(static_cast<int>(*reinterpret_cast<const std::int16_t*>(packet + 2)), packet);
-  this->m_button->SetDisabled(1);
-  this->m_button->Invalidate();
+  UIBitmapButton* const button = this->m_button;
+  button->SetDisabled(1);
+  button->Invalidate();
   _freea(packet);
 }
 
