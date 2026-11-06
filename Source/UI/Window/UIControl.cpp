@@ -1212,7 +1212,12 @@ void CUIEditCtrl::Paint() {
 // OFFSET: 0x009ED5A0
 // FUNCTION: fn_14579
 void CUIEditCtrl::Invalidate() {
-  this->Root()->InvalidateChildren();
+  UIWindow* window = this;
+  while (window->parent != nullptr) {
+    window = window->parent;
+  }
+
+  window->InvalidateChildren();
 }
 
 // OFFSET: 0x009F0780
@@ -2355,8 +2360,10 @@ void CUITextViewer::SetTextOffset(int x, int y) {
 // FUNCTION: fn_14522
 void CUITextViewer::SetBackgroundColor(std::uint32_t value) {
   this->backgroundColor = value;
-  this->padding->color = value;
-  this->padding->Invalidate();
+
+  CUIPadding* padding = this->padding;
+  padding->color = value;
+  padding->Invalidate();
 }
 
 // OFFSET: 0x009EA810
