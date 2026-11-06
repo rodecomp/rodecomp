@@ -455,8 +455,8 @@ void CSkillAction_Icing::SpawnIcing(CGameActor* target) {
 void CSkillAction_ThunderingBasic::Slot17(CGameActor* source) {
   if (source) {
     g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const std::uint8_t bytes[] = {0xA3, 0x27, 0x76, 0xFB, 0xBD, 0xE0, 0xDD, 0x56, 0xB9, 0x28, 0x5C, 0xF4, 0xAD, 0xF1, 0xCE, 0x5C,
-                                    0xBC, 0x10, 0x64, 0x95};
+      const char bytes[] = {'\xA3', '\x27', '\x76', '\xFB', '\xBD', '\xE0', '\xDD', '\x56', '\xB9', '\x28', '\x5C', '\xF4', '\xAD', '\xF1', '\xCE', '\x5C',
+                                    '\xBC', '\x10', '\x64', '\x95'};
       thread_local EncryptedName<sizeof(bytes), 0x3FAF85D995034FD7ULL> name(bytes);
       return name.Text();
     }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
