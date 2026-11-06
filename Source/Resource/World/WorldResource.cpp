@@ -232,9 +232,10 @@ bool C3dWorldRes::Load(const char* name) {
   }
 
   if (IsWorldVersionAtLeast(major, minor, 1, 6)) {
-    for (int& bound : this->bounds) {
-      input.Read(&bound, sizeof(bound));
-    }
+    input.Read(&this->bounds[0], sizeof(this->bounds[0]));
+    input.Read(&this->bounds[1], sizeof(this->bounds[1]));
+    input.Read(&this->bounds[2], sizeof(this->bounds[2]));
+    input.Read(&this->bounds[3], sizeof(this->bounds[3]));
   } else {
     this->bounds[0] = -500;
     this->bounds[1] = 500;
@@ -322,6 +323,13 @@ bool C3dWorldRes::Load(const char* name) {
       break;
     }
 
+    case 4: {
+      auto* record = new WorldEffectRecord;
+      input.Read(record, sizeof(*record));
+      this->effects.push_back(record);
+      break;
+    }
+
     case 3: {
       WorldSoundRecord* record;
 
@@ -344,13 +352,6 @@ bool C3dWorldRes::Load(const char* name) {
         this->sounds.push_back(record);
       }
 
-      break;
-    }
-
-    case 4: {
-      auto* record = new WorldEffectRecord;
-      input.Read(record, sizeof(*record));
-      this->effects.push_back(record);
       break;
     }
 
