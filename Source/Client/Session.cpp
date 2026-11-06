@@ -897,9 +897,9 @@ std::uint16_t CSession::FindInventoryIndexByItemId(int itemId) {
 // FUNCTION: fn_23385
 std::vector<int> CSession::FindInventoryIndicesByItemId(int itemId, unsigned char identifiedOnly) {
   std::vector<int> indices;
-  for (const ITEM_INFO& item : this->m_inventoryItems) {
-    if (std::atoi(item.itemId.c_str()) == itemId && (identifiedOnly != 1 || item.identified == 1)) {
-      indices.push_back(static_cast<int>(item.unknown_0000[1]));
+  for (auto it = this->m_inventoryItems.begin(); it != this->m_inventoryItems.end(); ++it) {
+    if (std::atoi(it->itemId.c_str()) == itemId && (identifiedOnly != 1 || it->identified == 1)) {
+      indices.push_back(static_cast<int>(it->unknown_0000[1]));
     }
   }
 
