@@ -90,7 +90,7 @@ void CRendererDX7::DrawLightmappedPrimitive(LightmappedPrimitive* primitive) {
 
   const auto type = static_cast<D3DPRIMITIVETYPE>(primitive->primitiveType);
 
-  if (primitive->indexCount) {
+  if (primitive->indexCount > 0) {
     this->device->DrawIndexedPrimitive(
       type, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, primitive->vertices, primitive->vertexCount, primitive->indices,
       primitive->indexCount, 0
