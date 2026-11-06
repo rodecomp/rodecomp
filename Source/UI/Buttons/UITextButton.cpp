@@ -938,14 +938,13 @@ void UIComboBox::Slot27(int x, int y) {
 // FUNCTION: fn_11465
 void UIComboBoxID::Slot27(int x, int y) {
   const int previous = this->selected;
-  int line = -1;
+  int line;
 
-  if (x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+  if (x < 0 || y < 0 || x >= this->geometry.width || y >= this->geometry.height) {
+    line = -1;
+  } else {
     const int index = y / this->lineHeight + this->topLine;
-
-    if (index >= 0 && static_cast<unsigned>(index) < this->lines.size()) {
-      line = index;
-    }
+    line = index >= 0 && static_cast<unsigned>(index) < this->lines.size() ? index : -1;
   }
 
   this->selected = line;
@@ -965,14 +964,13 @@ void UIImgMenu::Slot27(int x, int y) {
 // FUNCTION: fn_11467
 void UIItemStoreComboBox::Slot27(int x, int y) {
   const int previous = this->selected;
-  int line = -1;
+  int line;
 
-  if (x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+  if (x < 0 || y < 0 || x >= this->geometry.width || y >= this->geometry.height) {
+    line = -1;
+  } else {
     const int index = y / this->lineHeight + this->topLine;
-
-    if (index >= 0 && static_cast<unsigned>(index) < this->lines.size()) {
-      line = index;
-    }
+    line = index >= 0 && static_cast<unsigned>(index) < this->lines.size() ? index : -1;
   }
 
   this->selected = line;
@@ -1632,14 +1630,13 @@ void UIComboBoxID::Slot25(int, int) {
 // OFFSET: 0x008905F0
 // FUNCTION: fn_11420
 void UIListBoxID::Slot25(int x, int y) {
-  int line = -1;
+  int line;
 
-  if (x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+  if (x < 0 || y < 0 || x >= this->geometry.width || y >= this->geometry.height) {
+    line = -1;
+  } else {
     const int index = y / this->lineHeight + this->topLine;
-
-    if (index >= 0 && static_cast<unsigned>(index) < this->lines.size()) {
-      line = index;
-    }
+    line = index >= 0 && static_cast<unsigned>(index) < this->lines.size() ? index : -1;
   }
 
   this->selected = line;
@@ -1759,14 +1756,13 @@ void UIComboBoxV2Wnd::Slot31(int, int) {
 // OFFSET: 0x00890E30
 // FUNCTION: fn_11439
 void UIItemStoreComboBox::Slot31(int x, int y) {
-  int line = -1;
+  int line;
 
-  if (x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+  if (x < 0 || y < 0 || x >= this->geometry.width || y >= this->geometry.height) {
+    line = -1;
+  } else {
     const int index = y / this->lineHeight + this->topLine;
-
-    if (index >= 0 && static_cast<unsigned>(index) < this->lines.size()) {
-      line = index;
-    }
+    line = index >= 0 && static_cast<unsigned>(index) < this->lines.size() ? index : -1;
   }
 
   this->selected = line;
@@ -3222,12 +3218,11 @@ void UIMonsterGage::Paint() {
   this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, this->colors[1]);
   if (this->maximum > 0) {
     const float percent = static_cast<float>(this->current) * 100.0f / static_cast<float>(this->maximum);
-    if (0.0f < percent) {
-      const std::uint32_t color = static_cast<float>(this->m_threshold) > percent ? this->colors[4] : this->colors[2];
-      this->FillRegion(
-        1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * percent / 100.0f), this->geometry.height - 2, color
-      );
+    if (percent <= 0.0f) {
+      return;
     }
+    const std::uint32_t color = static_cast<float>(this->m_threshold) > percent ? this->colors[4] : this->colors[2];
+    this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * percent / 100.0f), this->geometry.height - 2, color);
   }
 }
 
