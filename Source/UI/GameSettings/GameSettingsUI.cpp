@@ -1770,10 +1770,12 @@ void CUIGroupEmblem::Refresh() {
 // OFFSET: 0x00A436A0
 // FUNCTION: fn_16033
 void CUIGroupFullscreen::Refresh() {
-  this->m_onButton->checked = g_configuredFullscreen != 0;
-  this->m_onButton->Invalidate();
-  this->m_offButton->checked = g_configuredFullscreen == 0;
-  this->m_offButton->Invalidate();
+  auto* const onButton = this->m_onButton;
+  onButton->checked = g_configuredFullscreen != 0;
+  onButton->Invalidate();
+  auto* const offButton = this->m_offButton;
+  offButton->checked = g_configuredFullscreen == 0;
+  offButton->Invalidate();
 }
 
 // OFFSET: 0x00A43700
@@ -1788,21 +1790,26 @@ void CUIGroupLogInOut::Refresh() {
 // OFFSET: 0x00A43760
 // FUNCTION: fn_16037
 void CUIGroupProcessPriority::Refresh() {
-  this->m_highButton->checked = dwPriorityClass == HIGH_PRIORITY_CLASS;
-  this->m_highButton->Invalidate();
-  this->m_normalButton->checked = dwPriorityClass == NORMAL_PRIORITY_CLASS;
-  this->m_normalButton->Invalidate();
-  this->m_idleButton->checked = dwPriorityClass == IDLE_PRIORITY_CLASS;
-  this->m_idleButton->Invalidate();
+  auto* const highButton = this->m_highButton;
+  highButton->checked = dwPriorityClass == HIGH_PRIORITY_CLASS;
+  highButton->Invalidate();
+  auto* const normalButton = this->m_normalButton;
+  normalButton->checked = dwPriorityClass == NORMAL_PRIORITY_CLASS;
+  normalButton->Invalidate();
+  auto* const idleButton = this->m_idleButton;
+  idleButton->checked = dwPriorityClass == IDLE_PRIORITY_CLASS;
+  idleButton->Invalidate();
 }
 
 // OFFSET: 0x00A437D0
 // FUNCTION: fn_16038
 void CUIGroupRodexSpam::Refresh() {
-  this->m_onButton->checked = g_gameOptionFlag;
-  this->m_onButton->Invalidate();
-  this->m_offButton->checked = !g_gameOptionFlag;
-  this->m_offButton->Invalidate();
+  auto* const onButton = this->m_onButton;
+  onButton->checked = g_gameOptionFlag;
+  onButton->Invalidate();
+  auto* const offButton = this->m_offButton;
+  offButton->checked = !g_gameOptionFlag;
+  offButton->Invalidate();
 }
 
 // OFFSET: 0x00A43810
@@ -1864,10 +1871,12 @@ void CUIGroupTextureDetailLevel::Refresh() {
 // OFFSET: 0x00A43AC0
 // FUNCTION: fn_16043
 void CUIGroupTrilinear::Refresh() {
-  this->m_onButton->checked = g_textureFiltering != 0;
-  this->m_onButton->Invalidate();
-  this->m_offButton->checked = g_textureFiltering == 0;
-  this->m_offButton->Invalidate();
+  auto* const onButton = this->m_onButton;
+  onButton->checked = g_textureFiltering != 0;
+  onButton->Invalidate();
+  auto* const offButton = this->m_offButton;
+  offButton->checked = g_textureFiltering == 0;
+  offButton->Invalidate();
 }
 
 // OFFSET: 0x00A43B70

@@ -1352,8 +1352,9 @@ namespace EnchantUI {
 // OFFSET: 0x00A06BE0
 // FUNCTION: fn_15007
 void CUIEnchantItem::SetFrozen(bool frozen) {
-  this->itemIcon->transparent = frozen;
-  this->itemIcon->Invalidate();
+  auto* const icon = this->itemIcon;
+  icon->transparent = frozen;
+  icon->Invalidate();
   this->name->SetColor(frozen ? 0xAAAAAA : 0xC89682);
 }
 
@@ -1435,8 +1436,9 @@ void CUIEnchantPage::Slot16() {
 void CUINormalPerfect::Slot16() {
   CUIEnchantPage::Slot16();
   for (const auto& slot : this->unknown_0088) {
-    slot.second->radioButton->disabled = 1;
-    slot.second->radioButton->Invalidate();
+    auto* const radioButton = slot.second->radioButton;
+    radioButton->disabled = 1;
+    radioButton->Invalidate();
   }
 }
 
@@ -1445,12 +1447,14 @@ void CUINormalPerfect::Slot16() {
 void CUINormalRandom::Slot16() {
   CUIEnchantPage::Slot16();
   for (const auto& slot : this->unknown_0088) {
-    slot.second->radioButton->disabled = 1;
-    slot.second->radioButton->Invalidate();
+    auto* const radioButton = slot.second->radioButton;
+    radioButton->disabled = 1;
+    radioButton->Invalidate();
   }
 
-  this->enchantList->unknown_00C4 = 1;
-  this->enchantList->Invalidate();
+  auto* const list = this->enchantList;
+  list->unknown_00C4 = 1;
+  list->Invalidate();
 }
 
 // OFFSET: 0x00A05FB0
@@ -1458,12 +1462,14 @@ void CUINormalRandom::Slot16() {
 void CUIReset::Slot16() {
   CUIEnchantPage::Slot16();
   for (const auto& slot : this->unknown_0088) {
-    slot.second->radioButton->disabled = 1;
-    slot.second->radioButton->Invalidate();
+    auto* const radioButton = slot.second->radioButton;
+    radioButton->disabled = 1;
+    radioButton->Invalidate();
   }
 
-  this->enchantList->unknown_00C4 = 1;
-  this->enchantList->Invalidate();
+  auto* const list = this->enchantList;
+  list->unknown_00C4 = 1;
+  list->Invalidate();
 }
 
 // OFFSET: 0x00A06350

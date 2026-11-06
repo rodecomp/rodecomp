@@ -19,10 +19,11 @@ void UIMerchantShopTitle::Slot15(int, int) {
   this->label->SetSize(this->geometry.width - 34, 15);
   this->label->Move(31, 8);
   this->label->SetTextFitted("");
-  this->label->fontFamily = 0;
-  this->label->fontHeight = 12;
-  this->label->bold = 0;
-  this->label->italic = 0;
+  auto* const label = this->label;
+  label->fontFamily = 0;
+  label->fontHeight = 12;
+  label->bold = 0;
+  label->italic = 0;
   this->AddChild(this->label);
 }
 
