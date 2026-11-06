@@ -148,7 +148,14 @@ void CSphereWind2Effect::Slot04() {
     CParticle* particle = *it;
     if (particle && particle->unknown_00E8 > 0 && particle->unknown_000C > 0) {
       const int texPart = particle->unknown_000C;
-      const ParticleQuad quad = {false, 0.0f, 1.0f, static_cast<float>(texPart - 1) / 21.0f, static_cast<float>(texPart) / 21.0f, false, true};
+      ParticleQuad quad;
+      quad.billboard = false;
+      quad.unused = false;
+      quad.depth = true;
+      quad.top = 0.0f;
+      quad.bottom = 1.0f;
+      quad.left = static_cast<float>(texPart - 1) / 21.0f;
+      quad.right = static_cast<float>(texPart) / 21.0f;
       particle->Render(quad);
     }
   }
