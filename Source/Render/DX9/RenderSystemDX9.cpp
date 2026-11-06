@@ -91,11 +91,11 @@ CTexture* CRenderSystemDX9::CreateTexture(std::uint32_t width, std::uint32_t hei
 // OFFSET: 0x0056D5B0
 // FUNCTION: fn_02362
 CSurface* CRenderSystemDX9::CreateSurfaceOrTexture(std::uint32_t width, std::uint32_t height) {
-  if (this->m_device->caps.MaxTextureWidth < width || this->m_device->caps.MaxTextureHeight < height) {
-    return this->CRenderSystemDX9::CreateSurface(width, height);
+  if (this->m_device->caps.MaxTextureWidth >= width && this->m_device->caps.MaxTextureHeight >= height) {
+    return this->CRenderSystemDX9::CreateTexture(width, height, TextureFormat::A1R5G5B5, false, false);
   }
 
-  return this->CRenderSystemDX9::CreateTexture(width, height, TextureFormat::A1R5G5B5, false, false);
+  return this->CRenderSystemDX9::CreateSurface(width, height);
 }
 
 // OFFSET: 0x0056DAC0
