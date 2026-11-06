@@ -14,18 +14,16 @@ namespace {
     return static_cast<HRESULT>(0x82000000u | code);
   }
 
-  __declspec(noinline) DDSURFACEDESC2 SurfaceDescription(DWORD flags, DWORD caps);
+  __declspec(noinline) void SurfaceDescription(DDSURFACEDESC2* result, DWORD flags, DWORD caps);
 
   // OFFSET: 0x00548C00
   // FUNCTION: fn_01862
-  DDSURFACEDESC2 SurfaceDescription(DWORD flags, DWORD caps) {
-    DDSURFACEDESC2 result{};
-    result.dwSize = sizeof(result);
-    result.dwFlags = flags;
-    result.ddsCaps.dwCaps = caps;
-    result.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
-
-    return result;
+  void SurfaceDescription(DDSURFACEDESC2* result, DWORD flags, DWORD caps) {
+    std::memset(result, 0, sizeof(*result));
+    result->dwSize = sizeof(*result);
+    result->dwFlags = flags;
+    result->ddsCaps.dwCaps = caps;
+    result->ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
   }
 
   // OFFSET: 0x0054AA50
@@ -33,14 +31,14 @@ namespace {
   RECT ClientRectangle(HWND window) {
     RECT result;
     GetClientRect(window, &result);
-    POINT point{result.left, result.top};
-    ClientToScreen(window, &point);
-    result.left = point.x - g_monitorRectangleDX7.left;
-    result.top = point.y - g_monitorRectangleDX7.top;
-    point = {result.right, result.bottom};
-    ClientToScreen(window, &point);
-    result.right = point.x - g_monitorRectangleDX7.left;
-    result.bottom = point.y - g_monitorRectangleDX7.top;
+    POINT topLeft{result.left, result.top};
+    ClientToScreen(window, &topLeft);
+    result.left = topLeft.x - g_monitorRectangleDX7.left;
+    result.top = topLeft.y - g_monitorRectangleDX7.top;
+    POINT bottomRight{result.right, result.bottom};
+    ClientToScreen(window, &bottomRight);
+    result.right = bottomRight.x - g_monitorRectangleDX7.left;
+    result.bottom = bottomRight.y - g_monitorRectangleDX7.top;
 
     return result;
   }
@@ -125,7 +123,7 @@ DeviceOwnerDX7::~DeviceOwnerDX7() {
 // FUNCTION: fn_01894
 HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) {
   const bool buffered = (flags & 2) != 0;
-  DDSURFACEDESC2 description = SurfaceDescription(DDSD_CAPS, 0);
+  DDSURFACEDESC2 description;
   HRESULT status;
 
   if (flags & 1) {
@@ -139,6 +137,7 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
       return DeviceError(9);
     }
 
+    SurfaceDescription(&description, DDSD_CAPS, 0);
     description.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE;
 
     if (buffered) {
@@ -166,6 +165,7 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
     this->width = this->source.right;
     this->height = this->source.bottom;
     this->destination = ClientRectangle(this->window);
+    SurfaceDescription(&description, DDSD_CAPS, 0);
     description.ddsCaps.dwCaps = buffered ? DDSCAPS_PRIMARYSURFACE : DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE;
     status = this->draw->CreateSurface(&description, &this->primary, nullptr);
 
@@ -185,6 +185,7 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
 
   if (clipper) {
     clipper->Release();
+    clipper = nullptr;
   }
 
   if (!(flags & 1)) {
@@ -199,18 +200,12 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
         return SurfaceError(status, 10);
       }
     } else {
-      POINT topLeft{this->source.left, this->source.top};
-      ClientToScreen(this->window, &topLeft);
-      this->source.left = topLeft.x;
-      this->source.top = topLeft.y;
-      POINT bottomRight{this->source.right, this->source.bottom};
-      ClientToScreen(this->window, &bottomRight);
-      this->source.right = bottomRight.x;
-      this->source.bottom = bottomRight.y;
+      ClientToScreen(this->window, reinterpret_cast<POINT*>(&this->source.left));
+      ClientToScreen(this->window, reinterpret_cast<POINT*>(&this->source.right));
     }
   }
 
-  this->primaryDescription = SurfaceDescription(DDSD_CAPS, 0);
+  SurfaceDescription(&this->primaryDescription, DDSD_CAPS, 0);
   this->primary->GetSurfaceDesc(&this->primaryDescription);
   const auto& format = this->primaryDescription.ddpfPixelFormat;
   this->bitDepth = format.dwRGBBitCount;
@@ -224,8 +219,9 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
   ChannelMask(this->alpha, this->alphaMask);
   this->renderTarget = buffered ? this->backBuffer : this->primary;
   this->renderTarget->AddRef();
-  description = SurfaceDescription(DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT, DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY);
+  SurfaceDescription(&description, DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT, 0);
   description.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
+  description.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
   description.dwWidth = this->width;
   description.dwHeight = this->height;
   status = this->draw->CreateSurface(&description, &this->captureSurface, nullptr);
@@ -290,7 +286,8 @@ HRESULT DeviceOwnerDX7::CreateDevice(GUID* drawIdentity, const GUID* renderIdent
     this->device->GetCaps(&this->caps);
 
     if (!(this->caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ZBUFFERLESSHSR)) {
-      description = SurfaceDescription(DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT, this->depthMemory | DDSCAPS_ZBUFFER);
+      SurfaceDescription(&description, DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT, 0);
+      description.ddsCaps.dwCaps = this->depthMemory | DDSCAPS_ZBUFFER;
       description.dwWidth = this->width;
       description.dwHeight = this->height;
       description.ddpfPixelFormat = this->depthFormat;
