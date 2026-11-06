@@ -67,7 +67,9 @@ public:
   void DrawStatusOverlays(SpriteQuad quad, const std::uint32_t* palette);
   void DrawTintedQuad(SpriteQuad& quad, short red, short green, short blue, const std::uint32_t* palette);
   void SendValueMessage(int value, CGameObject* target);
+  void SetActionName(const char* name);
   void SetActionName(ResourceMgr& resources, const char* name);
+  void SetSpriteName(const char* name);
   void SetSpriteName(ResourceMgr& resources, const char* name);
   void SetColor(int alpha, int red, int green, int blue);
   void ModifyArgb(int alpha, int red, int green, int blue);

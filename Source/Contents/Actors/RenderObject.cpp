@@ -454,16 +454,21 @@ void CRenderObject::SendMsg(CGameObject*, int, int, int, int, int, int, int, int
 
 // OFFSET: 0x00CBF930
 // FUNCTION: fn_21116
-void CRenderObject::SetActionName(ResourceMgr& resources, const char* name) {
+void CRenderObject::SetActionName(const char* name) {
   if (this->render.action) {
     this->render.action->Unlock();
   }
 
-  this->render.action = static_cast<CActRes*>(resources.Load(name));
+  this->render.action = static_cast<CActRes*>(ResourceMgr::Instance().Load(name));
 
   if (this->render.action) {
     this->render.action->Lock();
   }
+}
+
+// INLINED
+void CRenderObject::SetActionName(ResourceMgr&, const char* name) {
+  this->SetActionName(name);
 }
 
 // OFFSET: 0x00CC2D40
@@ -479,16 +484,21 @@ __declspec(noinline) void CGameActor::SetUnknown0260(int value) {
 
 // OFFSET: 0x00CC2E00
 // FUNCTION: fn_21151
-void CRenderObject::SetSpriteName(ResourceMgr& resources, const char* name) {
+void CRenderObject::SetSpriteName(const char* name) {
   if (this->render.sprite) {
     this->render.sprite->Unlock();
   }
 
-  this->render.sprite = static_cast<CSprRes*>(resources.Load(name));
+  this->render.sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(name));
 
   if (this->render.sprite) {
     this->render.sprite->Lock();
   }
+}
+
+// INLINED
+void CRenderObject::SetSpriteName(ResourceMgr&, const char* name) {
+  this->SetSpriteName(name);
 }
 
 // OFFSET: 0x00CC3DC0
