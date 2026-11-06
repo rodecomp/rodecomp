@@ -4741,17 +4741,15 @@ namespace {
         decoded = decoded.substr(0, decoded.size() - 1);
       }
 
+      std::size_t pos = 0;
       const std::string pattern = "\\\"\"";
       const std::string replacement = "\"";
-      for (std::size_t pos = 0; (pos = decoded.find(pattern, pos)) != std::string::npos; pos += replacement.size()) {
+      for (; (pos = decoded.find(pattern, pos)) != std::string::npos; pos += replacement.size()) {
         decoded.replace(pos, pattern.size(), replacement);
       }
     }
 
-    {
-      std::string converted = FromUtf8(decoded, g_textCodePage);
-      decoded.assign(converted);
-    }
+    decoded = static_cast<const std::string&>(FromUtf8(decoded, g_textCodePage));
     row.push_back(decoded);
   }
 
