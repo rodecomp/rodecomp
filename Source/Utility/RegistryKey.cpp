@@ -17,7 +17,10 @@ bool RegistryKey::Open(HKEY parent, const char* subKey) {
 // FUNCTION: fn_18152
 bool RegistryKey::Query(const char* name, DWORD expectedType, BYTE* data, DWORD size) {
   DWORD type;
-  return this->handle != nullptr && RegQueryValueExA(this->handle, name, nullptr, &type, data, &size) == ERROR_SUCCESS && type == expectedType;
+  if (this->handle == nullptr || RegQueryValueExA(this->handle, name, nullptr, &type, data, &size) != ERROR_SUCCESS) {
+    return false;
+  }
+  return type == expectedType;
 }
 
 // OFFSET: 0x00AED0C0
