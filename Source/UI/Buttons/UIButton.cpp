@@ -142,8 +142,13 @@ void UIButton::Slot29(int x, int y) {
 
 // OFFSET: 0x0085F950
 // FUNCTION: fn_10875
-void UIButton::ResetCursor(int, int) {
-  g_modeMgr.gameMode->SetCursorAction(this->m_disabled != 0 ? 0 : 2);
+void UIButton::ResetCursor(int x, int y) {
+  if (this->m_disabled != 0) {
+    UIWindow::ResetCursor(x, y);
+    return;
+  }
+
+  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
 }
 
 // OFFSET: 0x0085EED0
