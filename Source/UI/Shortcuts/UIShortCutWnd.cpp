@@ -1133,49 +1133,6 @@ void UISubChatHisWnd::Resize(int width, int height) {
 
 #include <mbstring.h>
 
-namespace Concurrency {
-namespace details {
-class _ReentrantPPLLock {
-public:
-  _ReentrantPPLLock();
-};
-}
-}
-
-struct MsvcString {
-  /* 0000 */ unsigned char storage[0x18];
-
-  void sub_4EE2E0(const char* value);
-  void sub_696770(const MsvcString* source);
-  void sub_914AD0(const void* source);
-};
-
-struct TreeCursor {
-  void* node;
-  void sub_915170();
-  void sub_915110();
-};
-
-struct ChatIndexMap {
-  void* head;
-  int count;
-  void sub_9435A0(void** out, int* key);
-  void sub_90FDD0(void** out, void* node);
-  void sub_9101F0(ChatIndexMap* source);
-  void sub_9432C0();
-  MsvcString* sub_914D30(int* key);
-  void sub_913720();
-};
-
-struct RetainedMap {
-  void* head;
-  int count;
-  void sub_910090(RetainedMap* source);
-  void sub_943240();
-  UIWindow** sub_914B30(int* key);
-  void sub_90F180(RetainedMap* self);
-};
-
 // OFFSET: 0x0093C210
 // FUNCTION: fn_12761
 int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
@@ -1183,14 +1140,13 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   case 0:
     if (sender == this->m_edit && this->m_edit->geometry.x != -100) {
       const char* text = this->m_edit->Text();
-      MsvcString local;
-      local.sub_4EE2E0(text);
+      std::string local(text);
       const int previousWidth = this->m_inputWidth;
       if (text != nullptr && text[0] != '\0') {
         const int measured = this->TextWidth(text, 0, 0, 12, 0, 0);
         if (measured + 10 < this->geometry.width - 0x32) {
-          reinterpret_cast<MsvcString*>(&this->m_name)->sub_696770(&local);
-          reinterpret_cast<ChatIndexMap*>(&g_session.m_subChatWnds)->sub_914D30(&this->m_index)->sub_696770(reinterpret_cast<MsvcString*>(&this->m_name));
+          this->m_name = local;
+          g_session.m_subChatWnds[this->m_index].name = this->m_name;
           const int renamed = this->TextWidth(text, 0, 0, 12, 0, 0);
           this->m_inputWidth = renamed + 10;
           if (this->m_inputWidth < 0x19) {
@@ -1220,7 +1176,6 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       if (UIWindow* window = g_windowMgr.LookupWindow(0x84)) {
         window->SendMsg(this, 6, 0xC1, this->m_index, 0, 2);
       }
-      new (static_cast<void*>(&local)) Concurrency::details::_ReentrantPPLLock();
       return 0;
     }
     if (ChatWindow() != nullptr) {
@@ -1249,50 +1204,36 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       return 0;
     case 0xCA: {
-      ChatIndexMap* names = reinterpret_cast<ChatIndexMap*>(&g_session.m_subChatWnds);
-      void* node = nullptr;
-      names->sub_9435A0(&node, &this->m_index);
-      if (node == names->head) {
+      std::map<int, SubChatWndInfo>& names = g_session.m_subChatWnds;
+      const auto found = names.find(this->m_index);
+      if (found == names.end()) {
         return 0;
       }
-      const int key = *reinterpret_cast<int*>(reinterpret_cast<char*>(node) + 0x10);
-      void* erased = nullptr;
-      names->sub_90FDD0(&erased, node);
-      if (key != names->count) {
-        ChatIndexMap saved;
-        saved.sub_9101F0(names);
-        names->sub_9432C0();
-        TreeCursor cursor;
-        cursor.node = *reinterpret_cast<void**>(saved.head);
+      const int key = found->first;
+      names.erase(found);
+      if (key != static_cast<int>(names.size())) {
+        const std::map<int, SubChatWndInfo> saved(names);
+        names.clear();
         int index = 0;
-        while (cursor.node != saved.head) {
-          void* value = reinterpret_cast<char*>(cursor.node) + 0x14;
-          names->sub_914D30(&index)->sub_914AD0(value);
-          cursor.sub_915170();
+        for (const auto& entry : saved) {
+          names[index] = entry.second;
           ++index;
         }
-        saved.sub_913720();
       }
       g_windowMgr.ReleaseRetainedWindow(this->m_index);
       if (UIWindow* window = g_windowMgr.LookupWindow(0x84)) {
         window->SendMsg(this, 6, 0xC1, this->m_index, 0, 1);
       }
-      RetainedMap* retained = reinterpret_cast<RetainedMap*>(&g_windowMgr.retainedWindows);
-      if (this->m_index != retained->count) {
-        RetainedMap saved;
-        saved.sub_910090(retained);
-        retained->sub_943240();
-        TreeCursor cursor;
-        cursor.node = *reinterpret_cast<void**>(saved.head);
+      std::map<int, UIWindow*>& retained = g_windowMgr.retainedWindows;
+      if (this->m_index != static_cast<int>(retained.size())) {
+        const std::map<int, UIWindow*> saved(retained);
+        retained.clear();
         int index = 0;
-        while (cursor.node != saved.head) {
-          UIWindow* window = *reinterpret_cast<UIWindow**>(reinterpret_cast<char*>(cursor.node) + 0x14);
-          static_cast<UISubChatHisWnd*>(window)->m_index = index;
-          *retained->sub_914B30(&index) = window;
-          cursor.sub_915110();
+        for (const auto& entry : saved) {
+          static_cast<UISubChatHisWnd*>(entry.second)->m_index = index;
+          retained[index] = entry.second;
           ++index;
         }
-        saved.sub_90F180(&saved);
       }
       return 0;
     }
