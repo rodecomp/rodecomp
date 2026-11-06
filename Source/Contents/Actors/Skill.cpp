@@ -199,13 +199,14 @@ void CSkill::Render(int argument) {
   float y;
   float reciprocalDepth;
   g_renderer->ProjectViewport(&this->render.position.x, reinterpret_cast<const float*>(argument), &x, &y, &reciprocalDepth);
-  const float scale = g_renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
+  CRenderer* renderer = g_renderer;
+  const float scale = renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
   this->render.unknown_005C = scale;
 
   float bounds[5];
-  bounds[0] = x - (g_renderer->viewport.uiScaleX + g_renderer->viewport.uiScaleX) * scale;
-  bounds[1] = y - (g_renderer->viewport.uiScaleY + g_renderer->viewport.uiScaleY) * scale;
-  bounds[2] = (g_renderer->viewport.uiScaleX + g_renderer->viewport.uiScaleX) * scale + x;
+  bounds[0] = x - (renderer->viewport.uiScaleX + renderer->viewport.uiScaleX) * scale;
+  bounds[1] = y - (renderer->viewport.uiScaleY + renderer->viewport.uiScaleY) * scale;
+  bounds[2] = (renderer->viewport.uiScaleX + renderer->viewport.uiScaleX) * scale + x;
   bounds[3] = y;
   bounds[4] = reciprocalDepth;
   this->SetRenderInfo(bounds, x, y);
