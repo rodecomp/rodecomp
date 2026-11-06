@@ -2568,8 +2568,8 @@ int CGameActor::GetEffectiveJob(int job) {
 // FUNCTION: fn_21199
 void CGameActor::Slot39(int value) {
   const float speed = static_cast<float>(std::min(value, g_maxMoveSpeed)) / 432.0f;
-  this->render.unknown_0054 = speed;
-  this->render.speed = speed;
+  this->render.unknown_0064 = speed;
+  this->render.motionSpeed = speed;
 }
 
 // OFFSET: 0x005A1A30
