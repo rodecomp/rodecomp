@@ -8,7 +8,8 @@
 class NInter {
 public:
   virtual void Receive(std::uint32_t argumentLow, std::uint32_t argumentHigh, std::uint32_t id) = 0;
-  virtual ~NInter();
+  // INLINED
+  virtual ~NInter() {}
 };
 
 class NMessageMgr {

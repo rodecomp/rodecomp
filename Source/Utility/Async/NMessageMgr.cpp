@@ -7,8 +7,6 @@
 // GLOBAL: gl_24361
 NMessageMgr* g_messageMgr;
 
-NInter::~NInter() = default;
-
 // INLINED
 NMessageMgr::NMessageMgr() {
   this->m_enabled = false;
