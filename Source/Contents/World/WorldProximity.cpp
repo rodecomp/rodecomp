@@ -74,7 +74,7 @@ void CWorld::UpdateGuildMasterApproach(std::function<bool()> isNearby) {
     packet.accountId = g_guildInfo.unknown_00D0;
     packet.unknown_0006 = 1;
     packet.unknown_0008 = 1;
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
     this->unknown_00F4 = true;
   }
 }
