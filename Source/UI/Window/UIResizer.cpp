@@ -111,7 +111,9 @@ void UIResizer::Slot27(int x, int y) {
 // OFFSET: 0x0085FA20
 // FUNCTION: fn_10879
 void UIResizer::ResetCursor(int x, int y) {
-  if (g_windowMgr.Capture() == this || (x >= 0 && x < this->geometry.width && y >= 0 && y <= this->geometry.height)) {
+  if (g_windowMgr.Capture() == this) {
+    g_modeMgr.gameMode->SetCursorAction(2);
+  } else if (x >= 0 && x < this->geometry.width && y >= 0 && y <= this->geometry.height) {
     g_modeMgr.gameMode->SetCursorAction(2);
   } else if (g_windowMgr.Capture() != this) {
     g_modeMgr.gameMode->SetCursorAction(0);
