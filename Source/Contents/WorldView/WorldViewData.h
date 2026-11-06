@@ -37,9 +37,7 @@ public:
   // INLINED
   ~CWorldViewMap() {
     for (std::vector<CWorldViewField*>::iterator it = this->fields.begin(); it != this->fields.end(); ++it) {
-      if (*it) {
-        delete *it;
-      }
+      delete *it;
     }
     this->fields.clear();
   }

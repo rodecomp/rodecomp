@@ -60,9 +60,7 @@ __declspec(noinline) CWorldViewField::CWorldViewField(WorldViewArea area, const 
 // FUNCTION: fn_04349
 CWorldViewWorld::~CWorldViewWorld() {
   for (std::vector<CWorldViewMap*>::iterator it = this->maps.begin(); it != this->maps.end(); ++it) {
-    if (*it) {
-      delete *it;
-    }
+    delete *it;
   }
   this->maps.clear();
 }
