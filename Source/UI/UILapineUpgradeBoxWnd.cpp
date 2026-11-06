@@ -253,7 +253,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot35(int argument) {
 // OFFSET: 0x006040E0
 // FUNCTION: fn_04211
 void UILapineUpgradeBoxWnd::Slot32(int x, int y) {
-  if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] != 0) {
+  if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] > 0) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
     window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
   }
@@ -262,7 +262,7 @@ void UILapineUpgradeBoxWnd::Slot32(int x, int y) {
 // OFFSET: 0x00604140
 // FUNCTION: fn_04212
 void UILapineUpgradeBox_IngredientInfoWnd::Slot32(int x, int y) {
-  if (this->item.unknown_0000[1] != 0) {
+  if (this->item.unknown_0000[1] > 0) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
     window->SendMsg(this, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
   }
@@ -456,7 +456,7 @@ void UILapineUpgradeBoxWnd::Slot19() {
 void UILapineUpgradeBox_IngredientInfoWnd::Slot28(int x, int y) {
   this->Slot27(x, y);
 
-  if (!this->tooltip.empty()) {
+  if (this->tooltip.size() > 0) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
@@ -469,11 +469,11 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot28(int x, int y) {
 void UILapineUpgradeBoxWnd::Slot28(int x, int y) {
   this->Slot27(x, y);
 
-  if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && !this->item.unknown_0044.empty()) {
+  if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] > 0) {
     int tipX = 101;
     int tipY = 145;
     this->ToScreen(tipX, tipY);
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(this->item.unknown_0044.c_str(), tipX, tipY, -1, false, true);
+    g_modeMgr.gameMode->ShowTooltip(this->item.unknown_0044.c_str(), tipX, tipY, -1, false, true);
   }
 }
 
