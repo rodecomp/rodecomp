@@ -238,8 +238,7 @@ void UIRegisterPartyWnd::NormalizeLevels() {
 // FUNCTION: fn_09305
 void UIRegisterPartyWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp")));
-  this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp"))), false);
   this->DrawTextAt(86, 50, "~", 0, 0, 12, 0, 0, 0);
   this->DrawTitleBar(true, LookupMessage(3356), 0);
 }
