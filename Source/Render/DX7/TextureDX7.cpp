@@ -106,7 +106,8 @@ namespace {
 // OFFSET: 0x00543B00
 // FUNCTION: fn_01807
 CTextureDX7::CTextureDX7(DeviceOwnerDX7& owner) : m_owner(&owner), m_surface(nullptr) {
-  this->m_width = this->m_height = this->m_textureWidth = this->m_textureHeight = 1;
+  this->m_textureWidth = this->m_width = 1;
+  this->m_textureHeight = this->m_height = 1;
   this->m_format = TextureFormat::A1R5G5B5;
 }
 
