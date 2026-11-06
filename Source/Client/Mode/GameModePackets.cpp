@@ -4115,7 +4115,7 @@ void CGameMode::ReceiveShopName(const char* text, int shopId) {
     ValuePacket packet;
     packet.id = 0x0BBD;
     packet.value = shopId;
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
 }
 
