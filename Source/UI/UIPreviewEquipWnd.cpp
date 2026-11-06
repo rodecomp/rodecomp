@@ -151,7 +151,7 @@ void UIPreviewEquipWnd::SyncFromPlayer() {
   this->m_render->unknown_0014 = player->unknown_04D4;
   this->m_render->unknown_0018[0] = player->unknown_0260;
   this->m_render->unknown_0018[1] = player->unknown_0440;
-  this->m_render->unknown_0018[2] = static_cast<int>(player->render.previousAnimation);
+  this->m_render->unknown_0018[2] = static_cast<int>(player->render.unknown_0048);
   this->m_render->unknown_0018[3] = player->unknown_0444;
   this->m_render->unknown_0028 = player->unknown_0450;
   this->m_render->unknown_002C = player->unknown_0454;
