@@ -96,7 +96,7 @@ void CEmitterEffect::Slot07() {
 // OFFSET: 0x00B50370
 // FUNCTION: fn_19015
 bool CEmitterEffect::Slot06() {
-  if (this->duration > 0 && this->duration < this->frame) {
+  if (this->duration > 0 && this->frame > this->duration) {
     return false;
   }
 
@@ -141,11 +141,11 @@ void CEmitterEffect::Slot04() {
     if (CParticle* particle = *it) {
       ParticleQuad quad;
       quad.billboard = this->billboard;
+      quad.unused = false;
       quad.top = 0.0f;
       quad.bottom = 1.0f;
       quad.left = 0.0f;
       quad.right = 1.0f;
-      quad.unused = false;
       quad.depth = this->depth;
       particle->Render(quad);
     }
