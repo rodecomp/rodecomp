@@ -191,7 +191,7 @@ void CRenewQuestMgr::AddIconTooltip(std::string_view icon, std::string_view tool
 // FUNCTION: fn_05439
 std::string CRenewQuestMgr::GetFilterName(int filter) {
   const std::map<int, RenewQuestFilter>::const_iterator found = this->m_filters.find(filter);
-  return found != this->m_filters.end() ? found->second.m_name : std::string("");
+  return this->m_filters.end() != found ? found->second.m_name : std::string("");
 }
 
 // OFFSET: 0x006780B0
@@ -380,7 +380,7 @@ std::string RenewQuestOngoingInfo::GetHuntText(int index) const {
 // FUNCTION: fn_05443
 const RenewQuestOngoingInfo& CRenewQuestMgr::GetOngoingQuest(unsigned int id) {
   const auto found = this->m_ongoingQuests.find(id);
-  if (found != this->m_ongoingQuests.end()) {
+  if (this->m_ongoingQuests.end() != found) {
     return found->second;
   }
 
@@ -404,7 +404,7 @@ RenewQuestOngoingInfo* CRenewQuestMgr::FindOngoingQuest(unsigned int id) {
 // FUNCTION: fn_05445
 const RenewQuestRecommendedInfo& CRenewQuestMgr::GetRecommendedQuest(unsigned int id) {
   const auto found = this->m_recommendedQuests.find(id);
-  if (found != this->m_recommendedQuests.end()) {
+  if (this->m_recommendedQuests.end() != found) {
     return found->second;
   }
 
@@ -898,7 +898,7 @@ int CRenewQuestMgr::L_SetRecommendedQuestActive(lua_State* state) {
   const unsigned int id = static_cast<unsigned int>(luaL_checknumber(state, 1));
   CRenewQuestMgr* manager = g_renewQuestMgr;
   const auto found = manager->m_recommendedQuests.find(id);
-  if (found != manager->m_recommendedQuests.end()) {
+  if (manager->m_recommendedQuests.end() != found) {
     found->second.m_active = false;
   }
 
