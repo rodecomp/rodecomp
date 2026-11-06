@@ -59,7 +59,7 @@ void CPlayerSkillBundle::Remove(std::uint32_t id) {
 // FUNCTION: fn_08279
 CSkillInfo* CPlayerSkillBundle::Find(std::uint32_t id) {
   const auto entry = std::find_if(this->skills.begin(), this->skills.end(),
-                                  [id](const CSkillInfo& value) { return value.id == id; });
+                                  [id](const CSkillInfo& value) { return id == value.id; });
   return entry != this->skills.end() ? &*entry : nullptr;
 }
 
@@ -97,8 +97,10 @@ CSkillInfo CPlayerSkillBundle::Lookup(std::uint32_t id) {
     return *entry->second;
   }
 
-  if (CSkillInfo* value = this->Find(id)) {
-    return *value;
+  const auto found = std::find_if(this->skills.begin(), this->skills.end(),
+                                  [id](const CSkillInfo& value) { return value.id == id; });
+  if (found != this->skills.end()) {
+    return *found;
   }
 
   return CSkillInfo(-1);
