@@ -1271,7 +1271,8 @@ void UIWindowMgr::ShowTransient(UIWindow* window) {
   this->window_4F250 = window;
   window->geometry.targetAlpha = 128;
   window->geometry.alphaStart = timeGetTime();
-  this->rendered.push_back(this->window_4F250);
+  window = this->window_4F250;
+  this->rendered.push_back(window);
 }
 
 // OFFSET: 0x00A8ADB0
