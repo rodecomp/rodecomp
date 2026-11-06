@@ -447,7 +447,7 @@ void UIEntryQueueWnd::Paint() {
     const std::string path = "유저인터페이스\\battle_field\\";
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + info->unknown_0634).c_str())));
     if (bitmap) {
-      this->DrawBitmap(157, 25, &bitmap->image, false);
+      this->DrawBitmap(157, 25, bitmap, false);
     }
   }
 
