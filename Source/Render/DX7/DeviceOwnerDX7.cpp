@@ -89,10 +89,31 @@ namespace {
 
 // OFFSET: 0x005493B0
 // FUNCTION: fn_01888
-DeviceOwnerDX7::DeviceOwnerDX7()
-    : window(nullptr), width(0), height(0), primary(nullptr), backBuffer(nullptr), renderTarget(nullptr), depthBuffer(nullptr), draw(nullptr),
-      direct3D(nullptr), device(nullptr), depthMemory(0), fullscreen(0), presentationOption(0), captureSurface(nullptr), red{0, 8}, green{0, 8}, blue{0, 8},
-      alpha{0, 8}, bitDepth(0), redMask(0), greenMask(0), blueMask(0), alphaMask(0), surfacesLost(false) {
+DeviceOwnerDX7::DeviceOwnerDX7() {
+  this->window = nullptr;
+  this->width = 0;
+  this->height = 0;
+  this->device = nullptr;
+  this->direct3D = nullptr;
+  this->renderTarget = nullptr;
+  this->depthMemory = 0;
+  this->fullscreen = 0;
+  this->presentationOption = 0;
+  this->red = {0, 8};
+  this->green = {0, 8};
+  this->blue = {0, 8};
+  this->alpha = {0, 8};
+  this->bitDepth = 0;
+  this->redMask = 0;
+  this->greenMask = 0;
+  this->blueMask = 0;
+  this->alphaMask = 0;
+  this->primary = nullptr;
+  this->backBuffer = nullptr;
+  this->depthBuffer = nullptr;
+  this->draw = nullptr;
+  this->captureSurface = nullptr;
+  this->surfacesLost = false;
 }
 
 // OFFSET: 0x005494B0
