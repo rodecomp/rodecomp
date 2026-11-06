@@ -916,12 +916,14 @@ void CEfstAction_WIND_VEIL::Slot01(int efstId, int argument2, int argument3, int
     return;
   }
 
-  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  EffectLists* effects = g_effectMgr;
+  effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     const char source[] = {'\xD8', '\x26', '\x47', '\x87', '\x80', '\x63', '\x36', '\x56', '\xC3', '\x4F'};
     thread_local EncryptedName<sizeof(source), 0x3F5315DFE32B4FAFULL> name(source);
     return name.Text();
   }()));
-  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  effects = g_effectMgr;
+  effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     const char source[] = {'\x9E', '\xBA', '\x51', '\x63', '\x6A', '\x5F', '\x6E', '\x8C', '\x85', '\x8C', '\x5F', '\x68', '\x41', '\x5D', '\x64', '\x88', '\xE9'};
     thread_local EncryptedName<sizeof(source), 0xE50B2935073DD3E9ULL> name(source);
     return name.Text();
