@@ -45,6 +45,7 @@ public:
   int MeasureText(const std::string& text, const int& bytes);
   void Border(int red, int green, int blue);
   void TextColor(std::uint32_t primary, std::uint32_t secondary);
+  void TextColor(unsigned char red, unsigned char green, unsigned char blue, std::uint32_t secondary);
   void UpdateLinks();
   void SetCursor(std::size_t position);
   void MoveCursorToEnd();

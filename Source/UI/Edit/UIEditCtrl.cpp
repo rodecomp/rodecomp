@@ -513,6 +513,13 @@ void UIEditCtrl::TextColor(std::uint32_t primary, std::uint32_t secondary) {
   this->Invalidate();
 }
 
+// INLINED
+void UIEditCtrl::TextColor(unsigned char red, unsigned char green, unsigned char blue, std::uint32_t secondary) {
+  this->secondColor = secondary;
+  this->textColor = static_cast<std::uint32_t>(red) | (static_cast<std::uint32_t>(green) << 8) | (static_cast<std::uint32_t>(blue) << 16);
+  this->Invalidate();
+}
+
 // OFFSET: 0x00856EB0
 // FUNCTION: fn_10756
 void UIEditCtrl3::DrawBlinkingCaret(const std::uint32_t& color) {

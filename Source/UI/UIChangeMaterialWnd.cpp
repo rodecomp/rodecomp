@@ -183,9 +183,9 @@ void UIChangeMaterialWnd::UpdateSearchPlaceholder() {
   if (text.compare(LookupMessage(0xec0)) != 0) {
     if (text.empty()) {
       this->unknown_00B8->SetText(LookupMessage(0xec0));
-      this->unknown_00B8->TextColor(0xb1b1b1u, 0xffffffffu);
+      this->unknown_00B8->TextColor(0xb1u, 0xb1u, 0xb1u, 0xffffffffu);
     } else {
-      this->unknown_00B8->TextColor(0, 0xffffffffu);
+      this->unknown_00B8->TextColor(0, 0, 0, 0xffffffffu);
     }
   }
 }
@@ -703,7 +703,7 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   this->unknown_00B8->maximum = 20;
   this->unknown_00B8->preserveInput = 1;
   this->unknown_00B8->SetText(LookupMessage(3776));
-  this->unknown_00B8->TextColor(0xB1B1B1, 0xFFFFFFFFu);
+  this->unknown_00B8->TextColor(0xB1u, 0xB1u, 0xB1u, 0xFFFFFFFFu);
   this->unknown_00B8->Background(255, 236, 207);
   this->unknown_00B8->topPadding = -1;
   this->AddChild(this->unknown_00B8);
