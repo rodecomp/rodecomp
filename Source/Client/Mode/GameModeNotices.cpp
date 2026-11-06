@@ -380,22 +380,22 @@ void CGameMode::ReceiveStatusChange(const unsigned char* data) {
     reinterpret_cast<int*>(g_session.unknown_169C)[5] = packet->value;
     break;
   case 0xF7:
-    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[0] = packet->value;
+    g_session.m_traits.points[0] = packet->value;
     break;
   case 0xF8:
-    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[1] = packet->value;
+    g_session.m_traits.points[1] = packet->value;
     break;
   case 0xF9:
-    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[2] = packet->value;
+    g_session.m_traits.points[2] = packet->value;
     break;
   case 0xFA:
-    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[3] = packet->value;
+    g_session.m_traits.points[3] = packet->value;
     break;
   case 0xFB:
-    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[4] = packet->value;
+    g_session.m_traits.points[4] = packet->value;
     break;
   case 0xFC:
-    reinterpret_cast<std::int64_t*>(&g_session.unknown_7FC0[0x20])[5] = packet->value;
+    g_session.m_traits.points[5] = packet->value;
     break;
   default:
     if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C4)) {
@@ -3926,7 +3926,7 @@ void CGameMode::ReceiveVendingItemSoldNow(const unsigned char* data) {
 void CGameMode::ReceiveTraitStatusChangeAck(unsigned char result, unsigned short statusId, unsigned char value) {
   this->unknown_02D4 = 0;
   if (result == 1) {
-    std::map<int, int>& traitStats = reinterpret_cast<std::map<int, int>&>(g_session.unknown_7FC0);
+    std::map<int, int>& traitStats = g_session.m_traits.stats;
     traitStats[statusId] = value;
     if (UIStatusWnd* window = reinterpret_cast<UIStatusWnd*>(g_windowMgr.unknown_01C4)) {
       window->ValidatePlacement();

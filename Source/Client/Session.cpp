@@ -3160,7 +3160,7 @@ void CSession::ResetCharacterState() {
   std::memset(&this->unknown_07F4[0x40], 0, 0x660);
   this->unknown_5C1C = 0;
 
-  std::map<int, int>& traitStats = reinterpret_cast<std::map<int, int>&>(this->unknown_7FC0);
+  std::map<int, int>& traitStats = this->m_traits.stats;
   traitStats[0xE7] = 0;
   traitStats[0xDB] = 0;
   traitStats[0xDC] = 0;
@@ -4661,6 +4661,11 @@ EncryptedName<11, 0x61F59D5D41E76519ULL>& WereRaptorJobName1();
 EncryptedName<13, 0x4B670715D543C1C3ULL>& DruidRidingName();
 EncryptedName<14, 0x7155E5EF0DFB0D03ULL>& KarnosRidingName();
 EncryptedName<14, 0x4B1D078937DB892BULL>& AliteaRidingName();
+
+// OFFSET: 0x00DC2710
+// FUNCTION: fn_22757
+SessionTraits::SessionTraits() {
+}
 
 // OFFSET: 0x00DC2B20
 // FUNCTION: fn_22763

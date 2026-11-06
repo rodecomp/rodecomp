@@ -4794,7 +4794,7 @@ int GetPlayerValue(lua_State* state) {
     ++number;
   }
 
-  std::map<int, int>& traitStats = reinterpret_cast<std::map<int, int>&>(g_session.unknown_7FC0);
+  std::map<int, int>& traitStats = g_session.m_traits.stats;
   int value = 0;
   switch (args[0]) {
   case 7:

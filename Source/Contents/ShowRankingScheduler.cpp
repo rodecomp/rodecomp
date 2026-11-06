@@ -167,6 +167,6 @@ void CSession::SetShowRankingSchedule(bool show, const void* data) {
 // OFFSET: 0x00D18AB0
 // FUNCTION: fn_21599
 void CSession::SetTraitStat(int type, int value) {
-  std::map<int, int>& traitStats = reinterpret_cast<std::map<int, int>&>(this->unknown_7FC0);
+  std::map<int, int>& traitStats = this->m_traits.stats;
   traitStats[type] = value;
 }

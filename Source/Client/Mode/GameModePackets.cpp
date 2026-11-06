@@ -4211,7 +4211,7 @@ public:
 // FUNCTION: fn_21869
 void CGameMode::ReceiveStatusBonus(const unsigned char* data) {
   const StatusBonusPacket* packet = reinterpret_cast<const StatusBonusPacket*>(data);
-  int* traitBonus = reinterpret_cast<int*>(g_session.unknown_7FC0 + 8);
+  int* traitBonus = g_session.m_traits.bonus;
   switch (packet->type) {
   case 13:
     g_session.m_standardStats[0] = packet->value;

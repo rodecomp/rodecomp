@@ -1612,8 +1612,8 @@ void UIStatusWnd::Paint() {
     return;
   }
 
-  const int* traitBonus = reinterpret_cast<const int*>(g_session.unknown_7FC0 + 8);
-  const std::int64_t* traitPoints = reinterpret_cast<const std::int64_t*>(&g_session.unknown_7FC0[0x20]);
+  const int* traitBonus = g_session.m_traits.bonus;
+  const std::int64_t* traitPoints = g_session.m_traits.points;
   const int bonuses[6] = {traitBonus[0], traitBonus[1], traitBonus[2], traitBonus[3], traitBonus[4], traitBonus[5]};
   const std::int64_t points[6] = {traitPoints[0], traitPoints[1], traitPoints[2], traitPoints[3], traitPoints[4], traitPoints[5]};
   const int types[6] = {219, 220, 221, 222, 223, 224};
@@ -8418,7 +8418,7 @@ static __forceinline void RequestStatusPointUp(UIStatusWnd* window, CMode* mode,
 
 // INLINED
 static __forceinline void RequestTraitPointUp(CMode* mode, int index) {
-  if (g_session.GetTraitStat(231) > 0 && reinterpret_cast<const std::int64_t*>(&g_session.unknown_7FC0[0x20])[index] > 0) {
+  if (g_session.GetTraitStat(231) > 0 && g_session.m_traits.points[index] > 0) {
     mode->SendMsg(314, 219 + index, 1, 0, 0);
   }
 }
@@ -8543,7 +8543,7 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
         }
       } else {
         std::int64_t traitCosts[6];
-        std::memcpy(traitCosts, &g_session.unknown_7FC0[0x20], sizeof(traitCosts));
+        std::memcpy(traitCosts, g_session.m_traits.points, sizeof(traitCosts));
         y = 145;
         for (int i = 0; i < 6; ++i, y += 16) {
           if (traitCosts[i] != 0) {
@@ -9651,7 +9651,7 @@ std::string CartTypeName(int type) {
 // OFFSET: 0x008D7460
 // FUNCTION: fn_12119
 int CSession::GetTraitStat(int type) {
-  std::map<int, int>& traitStats = reinterpret_cast<std::map<int, int>&>(this->unknown_7FC0);
+  std::map<int, int>& traitStats = this->m_traits.stats;
   return traitStats[type];
 }
 

@@ -165,6 +165,15 @@ struct SessionEntry00A4 {
   /* 0024 */ std::vector<int> values;
 };
 
+struct SessionTraits {
+  SessionTraits();
+
+  /* 0000 */ std::map<int, int> stats;
+  /* 0008 */ int bonus[6];
+  /* 0020 */ std::int64_t points[6];
+};
+static_assert(sizeof(SessionTraits) == 0x50);
+
 class CSession {
 public:
   void IconPath(char* output, const char* id, int identified);
@@ -601,7 +610,7 @@ public:
   /* 7FA8 */ CInstantVar m_options;
   /* 7FB4 */ AutomaticSkills m_automaticSkills;
   /* 7FBC */ int unknown_7FBC;
-  /* 7FC0 */ unsigned char unknown_7FC0[0x50];
+  /* 7FC0 */ SessionTraits m_traits;
   /* 8010 */ CMCStoreInfoBackup m_storeInfoBackup;
   /* 8074 */ int unknown_8074;
   /* 8078 */ const char* const* m_jobSpriteNames;
