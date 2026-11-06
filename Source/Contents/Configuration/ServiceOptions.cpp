@@ -791,8 +791,7 @@ struct ConfigPacket {
 void SendServiceOptionPacket() {
   ServiceOptionPacket packet;
   packet.id = 0xAE8;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x006C5E70
@@ -1200,8 +1199,7 @@ void EnableWhisperBlock() {
   WhisperBlockPacket packet;
   packet.id = 0xD0;
   packet.enabled = 1;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x006C63D0
@@ -1210,8 +1208,7 @@ void DisableWhisperBlock() {
   WhisperBlockPacket packet;
   packet.id = 0xD0;
   packet.enabled = 0;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x006C6410
@@ -1219,8 +1216,7 @@ void DisableWhisperBlock() {
 void SendWhisperBlockPacket() {
   ServiceOptionPacket packet;
   packet.id = 0xD3;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x006C6450
