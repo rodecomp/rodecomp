@@ -154,10 +154,7 @@ void CItemReformMgr::LoadReformInfo() {
 
           EnsureItemDbMgr();
           const int materialId = g_itemDbToIdMgr->GetItemID(lua_tostring(state, -2));
-          ItemReformMaterial material;
-          material.count = static_cast<int>(lua_tointeger(state, -1));
-          material.unknown_0004 = 0;
-          info.materials[materialId] = material;
+          info.materials[materialId] = static_cast<unsigned int>(lua_tointeger(state, -1));
           lua_pop(state, 1);
         }
       }

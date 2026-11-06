@@ -9,17 +9,12 @@
 #include <utility>
 #include <vector>
 
-struct ItemReformMaterial {
-  /* 0000 */ int count;
-  /* 0004 */ int unknown_0004;
-};
-
 struct ItemReformInfo {
   ItemReformInfo();
 
   /* 0000 */ int baseItem;
   /* 0004 */ int resultItem;
-  /* 0008 */ std::map<int, ItemReformMaterial> materials;
+  /* 0008 */ std::map<int, std::uint64_t> materials;
   /* 0010 */ std::uint64_t needRefineMin;
   /* 0018 */ std::uint64_t needRefineMax;
   /* 0020 */ std::uint64_t needOptionNumMin;
@@ -53,7 +48,6 @@ public:
 extern CItemReformMgr* g_itemReformMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(ItemReformMaterial) == 0x8);
 static_assert(sizeof(ItemReformInfo) == 0x70);
 static_assert(sizeof(CItemReformMgr) == 0x20);
 #endif

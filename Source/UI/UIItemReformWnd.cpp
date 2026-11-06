@@ -389,9 +389,9 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
     this->resultItem.unknown_0088 = this->selectedItem->unknown_0088;
   }
 
-  for (std::map<int, ItemReformMaterial>::iterator it = info->materials.begin(); it != info->materials.end(); ++it) {
+  for (std::map<int, std::uint64_t>::iterator it = info->materials.begin(); it != info->materials.end(); ++it) {
     const int id = it->first;
-    const int quantity = it->second.unknown_0004;
+    const int quantity = static_cast<int>(it->second);
     ITEM_INFO material;
     material.SetItemId(id);
     material.quantity = quantity;
