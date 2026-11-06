@@ -36,7 +36,7 @@ template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
   // INLINED
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -65,8 +65,7 @@ private:
 
 // INLINED
 __forceinline const char* TimeFontActionName() {
-  const std::uint8_t source[] = {0xB1, 0x4F, 0xAD, 0xDA, 0xD7, 0xA1, 0x01, 0x29, 0x18, 0xEE,
-                                 0x0E, 0x4D, 0x7E, 0x61, 0x29, 0x53, 0x10, 0xE0, 0x1F, 0x0B};
+  const char source[] = {'\xB1', '\x4F', '\xAD', '\xDA', '\xD7', '\xA1', '\x01', '\x29', '\x18', '\xEE', '\x0E', '\x4D', '\x7E', '\x61', '\x29', '\x53', '\x10', '\xE0', '\x1F', '\x0B'};
   // GLOBAL: gl_25508
   thread_local EncryptedName<sizeof(source), 0x7D5D0F110B6B8371ULL> name(source);
   return name.Text();
@@ -74,8 +73,7 @@ __forceinline const char* TimeFontActionName() {
 
 // INLINED
 __forceinline const char* TimeFontSpriteName() {
-  const std::uint8_t source[] = {0x89, 0xA1, 0xB9, 0x32, 0x01, 0xAF, 0x15, 0x45, 0x20, 0x00,
-                                 0x1A, 0xA5, 0xA8, 0x6F, 0x3D, 0x3F, 0x3A, 0x1D, 0x0D, 0xE3};
+  const char source[] = {'\x89', '\xA1', '\xB9', '\x32', '\x01', '\xAF', '\x15', '\x45', '\x20', '\x00', '\x1A', '\xA5', '\xA8', '\x6F', '\x3D', '\x3F', '\x3A', '\x1D', '\x0D', '\xE3'};
   // GLOBAL: gl_25509
   thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
   return name.Text();
@@ -901,7 +899,7 @@ void CGameMode::RefreshMiniMapTooltips() {
   for (int windowId = 216; windowId < 225; ++windowId) {
     if (tooltipWindows.find(windowId) == tooltipWindows.end()) {
       window = g_windowMgr.EnsureWindow(windowId);
-      tooltipWindows.insert(std::make_pair(windowId, tooltipText));
+      tooltipWindows.insert(std::make_pair(windowId, std::string(tooltipText)));
       break;
     }
   }
