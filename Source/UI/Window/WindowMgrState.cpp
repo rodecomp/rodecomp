@@ -165,13 +165,13 @@ void UIWindowMgr::LoadShortcutItems() {
         std::sprintf(name, "SITEM%d%d%d", index, g_serviceType, g_session.unknown_0F50);
         char description[33] = {};
         LSTATUS result = RegQueryValueExA(key, name, nullptr, &type, reinterpret_cast<BYTE*>(description), &size);
-        bool hasSkillLevel = false;
+        int hasSkillLevel = 0;
         g_session.m_hotkeyPage = static_cast<unsigned char>(index / 9);
         if (result == ERROR_SUCCESS) {
-          if (description[0] == '#') {
-            hasSkillLevel = true;
-          } else {
+          if (description[0] != '#') {
             g_session.SetHotkeyDescription(description, index);
+          } else {
+            hasSkillLevel = 1;
           }
         } else {
           g_session.SetHotkeyDescription("nothing", index);
