@@ -34,9 +34,8 @@ void UIEscOptionWnd::Slot15(int, int) {
 // OFFSET: 0x0092BDE0
 // FUNCTION: fn_12662
 void UIEscOptionWnd::Paint() {
-  const std::string name = ShortcutFilename(g_session.m_gid);
-  const std::string title = FormatOwnedString("%s (%s)", LookupMessage(1483), name.c_str());
-  this->m_titleHeight = this->DrawTitleBar(true, title.c_str(), 0);
+  this->m_titleHeight = this->DrawTitleBar(true, FormatOwnedString("%s (%s)", LookupMessage(1483), ShortcutFilename(g_session.m_gid).c_str()).c_str(), 0);
+
   this->DrawPanelBackground(this->m_titleHeight, 0, "");
 }
 
