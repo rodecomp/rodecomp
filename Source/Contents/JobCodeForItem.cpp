@@ -69,13 +69,14 @@ template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int);
 template <typename... Jobs>
 void CJobCodeForItem::AddJobCode(unsigned long code, Jobs... jobs) {
   std::set<int> jobSet = {jobs...};
-  if (!jobSet.empty()) {
-    auto it = this->m_jobCodes.find(code);
-    if (it == this->m_jobCodes.end()) {
-      this->m_jobCodes[code] = jobSet;
-    } else {
-      it->second.merge(jobSet);
-    }
+  if (jobSet.empty()) {
+    return;
+  }
+  auto it = this->m_jobCodes.find(code);
+  if (this->m_jobCodes.end() == it) {
+    this->m_jobCodes[code] = jobSet;
+  } else {
+    it->second.merge(jobSet);
   }
 }
 
