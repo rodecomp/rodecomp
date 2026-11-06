@@ -9,6 +9,25 @@
 #include <cstdlib>
 #include <string>
 
+namespace {
+// INLINED
+__forceinline int RandomIndex(int range) {
+  int result = 0;
+  const int value = rand() % range;
+  if (value >= 0) {
+    result = value;
+  }
+  return result;
+}
+// INLINED
+__forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->unknown_00E8);
+}
+}
+
 // OFFSET: 0x006F4830
 // FUNCTION: fn_06828
 CAstralStrikeEffect::CAstralStrikeEffect() : CEffect(1768) {
@@ -105,34 +124,32 @@ bool CAstralStrikeEffect::Slot06() {
 // FUNCTION: fn_06835
 void CAstralStrikeEffect::Slot03() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
-    CEZ2STRParticle* emitter = *it;
-    if (emitter->life == 0.0f || emitter->life * 60.0f > static_cast<float>(emitter->unknown_00E8)) {
-      if (emitter) {
-        emitter->Process(0.0f, 0.0f, 0.0f);
+    if (IsParticleActive(*it) == true) {
+      if (*it) {
+        (*it)->Process(0.0f, 0.0f, 0.0f);
       }
       ++it;
     } else {
-      FreeParticle(emitter);
+      FreeParticle(*it);
       it = this->emitters.erase(it);
     }
   }
 
   if (this->ActorExists() == true && this->emitters.empty()) {
     const __int64 intervals[10] = {11, 11, 11, 9, 9, 9, 7, 7, 7, 5};
-    if (this->frame % intervals[std::min<unsigned int>(this->unknown_00B0, 10) - 1] == 0) {
+    if (0 == this->frame % intervals[std::min<unsigned int>(this->unknown_00B0, 10) - 1]) {
       this->SpawnStrike();
     }
   }
 
   for (auto it = this->strikes.begin(); it != this->strikes.end();) {
-    CEZ2STRParticle* strike = *it;
-    if (strike->life == 0.0f || strike->life * 60.0f > static_cast<float>(strike->unknown_00E8)) {
-      if (strike) {
-        strike->Process(0.0f, 0.0f, 0.0f);
+    if (IsParticleActive(*it) == true) {
+      if (*it) {
+        (*it)->Process(0.0f, 0.0f, 0.0f);
       }
       ++it;
     } else {
-      FreeParticle(strike);
+      FreeParticle(*it);
       it = this->strikes.erase(it);
     }
   }
