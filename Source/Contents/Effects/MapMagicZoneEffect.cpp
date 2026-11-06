@@ -278,7 +278,14 @@ void CMapMagicZoneEffect::Slot04() {
     if (particle && particle->unknown_000C > 0) {
       const int segment = particle->unknown_000C;
       particle->destinationBlend = 6;
-      const ParticleQuad quad = {false, 0.0f, 1.0f, static_cast<float>(segment - 1) / 21.0f, static_cast<float>(segment) / 21.0f, false, true};
+      ParticleQuad quad;
+      quad.billboard = false;
+      quad.unused = false;
+      quad.depth = true;
+      quad.top = 0.0f;
+      quad.bottom = 1.0f;
+      quad.left = static_cast<float>(segment - 1) / 21.0f;
+      quad.right = static_cast<float>(segment) / 21.0f;
       particle->Render(quad);
     }
   }
