@@ -243,14 +243,19 @@ void CEffectPrim::RenderBladeQuads(matrix& wtm) {
     vec4.y = slot.distance * g_cosTable[angle4] * g_sinTable[slot.rotStart] + slot.height[0] + slot.vecBNow.y;
     vec4.z = slot.distance * g_sinTable[angle4] + slot.vecBNow.z;
 
-    if (slot.flag1[2] == 0) {
+    switch (slot.flag1[2]) {
+    case 0:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (slot.flag1[2] == 1) {
+      break;
+    case 1:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (slot.flag1[2] == 2) {
+      break;
+    case 2:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (slot.flag1[2] == 3) {
+      break;
+    case 3:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 200, 200, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
     }
 
     angle = slot.riseAngle;
@@ -271,14 +276,19 @@ void CEffectPrim::RenderBladeQuads(matrix& wtm) {
     vec4.y = slot.distance * g_cosTable[angle4] * g_sinTable[slot.rotStart] + slot.height[0] + slot.vecBNow.y;
     vec4.z = slot.distance * g_sinTable[angle4] + slot.vecBNow.z;
 
-    if (slot.flag1[2] == 0) {
+    switch (slot.flag1[2]) {
+    case 0:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (slot.flag1[2] == 1) {
+      break;
+    case 1:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (slot.flag1[2] == 2) {
+      break;
+    case 2:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 166, 210, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (slot.flag1[2] == 3) {
+      break;
+    case 3:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
     }
   }
 }
