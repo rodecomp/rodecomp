@@ -3393,7 +3393,7 @@ void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
 // OFFSET: 0x005C4830
 // FUNCTION: fn_03576
 void UINavigationV4Wnd::RefreshLayout() {
-  if (g_navigationManager.unknown_1254) {
+  if (g_navigationManager.unknown_1254 == true) {
     this->Resize(134, 61);
     this->unknown_00B8->Move((this->geometry.width - 15), 2);
     this->unknown_00C4->Move((this->geometry.width - 32), 2);

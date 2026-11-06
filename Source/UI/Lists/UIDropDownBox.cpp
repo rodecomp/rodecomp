@@ -28,7 +28,7 @@ void CUIDropDownBox::Detach() {
 // OFFSET: 0x009E3460
 // FUNCTION: fn_14417
 bool CUIDropDownBox::HasChild(const UIWindow* window) const {
-  return std::find(this->m_children.begin(), this->m_children.end(), window) != this->m_children.end();
+  return this->m_children.end() != std::find(this->m_children.begin(), this->m_children.end(), window);
 }
 
 // OFFSET: 0x009E3490

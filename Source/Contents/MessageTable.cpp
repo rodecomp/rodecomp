@@ -5061,7 +5061,7 @@ bool IsObfuscatedMessage(int id) {
 // FUNCTION: fn_18377
 const char* GetMessageString(int id) {
   auto found = g_messageStrings.find(id);
-  if (found == g_messageStrings.end()) {
+  if (g_messageStrings.end() == found) {
     return "";
   }
 

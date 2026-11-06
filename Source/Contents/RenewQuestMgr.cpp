@@ -333,7 +333,7 @@ std::string CRenewQuestMgr::GetMonsterConditionText(unsigned int flags, int minL
 // FUNCTION: fn_05441
 std::string CRenewQuestMgr::GetIconTooltip(std::string_view icon) {
   const std::map<std::string, std::string>::const_iterator found = this->m_iconTooltips.find(std::string(icon));
-  return found != this->m_iconTooltips.end() ? found->second : std::string("QUEST");
+  return this->m_iconTooltips.end() != found ? found->second : std::string("QUEST");
 }
 
 // OFFSET: 0x006794D0

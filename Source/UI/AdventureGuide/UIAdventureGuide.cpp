@@ -866,7 +866,7 @@ void CUIListBox<AdventureGuide::CUISubTab>::SelectItem(CUIListItem* item) {
     return;
   }
   for (AdventureGuide::CUISubTab* entry : this->items) {
-    if (entry != item) {
+    if (item != entry) {
       entry->SetSelected(false);
     }
   }
@@ -890,7 +890,7 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
     return;
   }
   for (AdventureGuide::CUITab* entry : this->items) {
-    if (entry != item) {
+    if (item != entry) {
       entry->SetSelected(false);
     }
   }

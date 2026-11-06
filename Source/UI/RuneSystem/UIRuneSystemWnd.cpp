@@ -306,7 +306,7 @@ void UIRuneSetReWard::Slot31(int x, int y) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4201)), 0xFF, 0, 0, 0);
   }
 
-  if (g_windowMgr.Capture() == this) {
+  if (this == g_windowMgr.Capture()) {
     g_windowMgr.ReleaseCapture();
   }
 }

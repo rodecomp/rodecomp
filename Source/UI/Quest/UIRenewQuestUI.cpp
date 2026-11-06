@@ -813,7 +813,7 @@ private:
 void CQuestItemSelector::SetHighlighted(CUIListItem* const& item) {
   CUIListItem* highlighted = item;
   for (RenewQuestUI::CUIQuestItem* entry : this->listBox->items) {
-    entry->SetHighlighted(static_cast<CUIListItem*>(entry) == highlighted);
+    entry->SetHighlighted(highlighted == static_cast<CUIListItem*>(entry));
   }
 }
 

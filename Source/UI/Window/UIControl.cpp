@@ -1044,7 +1044,7 @@ void CUITab::Select(CUITabButton* button) {
 
     this->current = button;
     for (UIWindow* child : this->m_children) {
-      if (child != this->current) {
+      if (this->current != child) {
         static_cast<CUITabButton*>(child)->SetSelected(false);
       }
     }

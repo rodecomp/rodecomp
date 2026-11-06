@@ -27,7 +27,7 @@ void UITagButton::Slot31(int x, int y) {
     return;
   }
 
-  if (g_windowMgr.Capture() != this) {
+  if (this != g_windowMgr.Capture()) {
     return;
   }
 

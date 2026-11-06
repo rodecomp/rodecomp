@@ -159,7 +159,7 @@ void CLanguageBase::CopySelection() {
 // OFFSET: 0x00ACD540
 // FUNCTION: fn_17764
 void CLanguageBase::Paste() {
-  if (g_windowMgr.GetHoverWindow() == g_windowMgr.window_4F1FC || g_windowMgr.LookupWindow(278) || g_windowMgr.LookupWindow(128)) {
+  if (g_windowMgr.window_4F1FC == g_windowMgr.GetHoverWindow() || g_windowMgr.LookupWindow(278) || g_windowMgr.LookupWindow(128)) {
     return;
   }
 

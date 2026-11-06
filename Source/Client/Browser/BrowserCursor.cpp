@@ -29,7 +29,7 @@ void CWebBrowser::SetCursorState(int value) {
 void CWebBrowser::PollCursor() {
   POINT point;
   GetCursorPos(&point);
-  if (WindowFromPoint(point) != hWnd) {
+  if (hWnd != WindowFromPoint(point)) {
     if (this->cursorState != 1) {
       this->SetCursorState(1);
     }

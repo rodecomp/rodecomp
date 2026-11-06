@@ -392,9 +392,9 @@ bool Replay::Cipher(std::uint32_t bytes, void* data) {
 
   auto* words = static_cast<std::uint32_t*>(data);
   this->cipherBase = this->header.key0 >> 5;
+  const int count = bytes / 4;
   this->cipherIndex = 0;
   this->cipherKey = this->header.key1 >> 3;
-  const int count = bytes / 4;
 
   for (int index = 0; index < count; ++index) {
     ++this->cipherIndex;
