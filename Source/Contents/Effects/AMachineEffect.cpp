@@ -51,7 +51,8 @@ void CAMachineEffect::Close() {
 // OFFSET: 0x006F6DB0
 // FUNCTION: fn_06853
 void CAMachineEffect::Slot03() {
-  std::map<int, CEZ2STRParticle*>::iterator it = this->unknown_00CC.find(this->unknown_00D4);
+  const int key = this->unknown_00D4;
+  std::map<int, CEZ2STRParticle*>::iterator it = this->unknown_00CC.find(key);
   if (it == this->unknown_00CC.end()) {
     return;
   }
