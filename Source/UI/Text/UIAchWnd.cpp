@@ -545,8 +545,8 @@ void UIAchUpperWnd::Paint() {
     this->DrawRightAlignedText(130, 13, FormatOwnedString("%d/%d", this->unknown_0094, this->unknown_0098).c_str(), 0, 0, 11, 0, 0);
     this->DrawCenteredText(353, 6, FormatOwnedString("%d", g_session.unknown_614C).c_str(), 46, 0, 12, 0x582708, 1);
     this->DrawCenteredText(16, 19, FormatOwnedString("%d", g_session.unknown_6150).c_str(), 15, 0, 12, 0x44C58, 1);
-    for (UIWindow* button : this->buttons) {
-      button->Show(0);
+    for (int index = 0; index < 2; ++index) {
+      this->buttons[index]->Show(0);
     }
 
     visible = 0;
@@ -560,8 +560,8 @@ void UIAchUpperWnd::Paint() {
     this->DrawRightAlignedText(737, 15, FormatOwnedString("(%d/%d)", this->unknown_009C, this->unknown_00A0).c_str(), 0, 0, 11, 0x582708, 0);
     this->DrawCenteredText(353, 6, FormatOwnedString("%d", g_session.unknown_614C).c_str(), 46, 0, 12, 0x582708, 1);
     this->DrawCenteredText(16, 19, FormatOwnedString("%d", g_session.unknown_6150).c_str(), 15, 0, 12, 0x44C58, 1);
-    for (UIWindow* button : this->buttons) {
-      button->Show(1);
+    for (int index = 0; index < 2; ++index) {
+      this->buttons[index]->Show(1);
     }
 
     visible = 1;
