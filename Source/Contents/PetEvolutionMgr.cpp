@@ -141,12 +141,12 @@ std::pair<bool, std::string> CPetEvolutionMgr::InsertRecipe(int petEgg, int targ
     if (it->target == target) {
       for (auto entry = it->materials.begin(); entry != it->materials.end(); ++entry) {
         if (entry->first == material) {
-          return std::pair<bool, std::string>(false, "duplicate material ITID");
+          return std::make_pair(false, "duplicate material ITID");
         }
       }
 
       it->materials.push_back(std::make_pair(material, count));
-      return std::pair<bool, std::string>(true, "good");
+      return std::make_pair(true, "good");
     }
   }
 
@@ -154,7 +154,7 @@ std::pair<bool, std::string> CPetEvolutionMgr::InsertRecipe(int petEgg, int targ
   recipe.target = target;
   recipe.materials.push_back(std::make_pair(material, count));
   recipes.push_back(std::move(recipe));
-  return std::pair<bool, std::string>(true, "good");
+  return std::make_pair(true, "good");
 }
 
 // OFFSET: 0x006737C0
