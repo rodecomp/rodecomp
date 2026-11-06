@@ -30,7 +30,6 @@
 #include "Contents/Schedule/PartialShutDownSchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
 #include "Contents/Sound/SoundMgr.h"
-#include "Network/ClientKeepalive.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -397,7 +396,6 @@ void CLoginMode::SubD8D4F0(int) {
 // FUNCTION: fn_22266
 void CLoginMode::SubD8D500(const char* packet) {
   UIWindow* window = g_windowMgr.window_03D4;
-  int message;
   switch (*reinterpret_cast<const int*>(packet + 2)) {
   case 0:
     g_windowMgr.Confirm(LookupMessage(0x4BE), 0, true, false, 0, "Message", 280, 120, 0);
@@ -406,8 +404,10 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 1:
-    message = 0x4C2;
-    break;
+    if (g_windowMgr.Confirm(LookupMessage(0x4C2), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+      g_windowMgr.CloseWindow(0x80);
+    }
+    return;
   case 2:
     if (g_windowMgr.Confirm(LookupMessage(0x4C3), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
       return;
@@ -417,27 +417,46 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 3:
-    message = 0x4BF;
-    break;
+    if (g_windowMgr.Confirm(LookupMessage(0x4BF), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+      g_windowMgr.CloseWindow(0x80);
+    }
+    return;
   case 4:
-    message = 0x4C4;
-    goto retry;
+    if (g_windowMgr.Confirm(LookupMessage(0x4C4), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+      return;
+    }
+    if (window) {
+      window->SendMsg(nullptr, 6, 0x15F, 0, 0, 0);
+    }
+    return;
   case 5:
-    message = 0x7E6;
-    break;
+    if (g_windowMgr.Confirm(LookupMessage(0x7E6), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+      g_windowMgr.CloseWindow(0x80);
+    }
+    return;
   case 6:
-    message = 0x7E7;
-    break;
+    if (g_windowMgr.Confirm(LookupMessage(0x7E7), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+      g_windowMgr.CloseWindow(0x80);
+    }
+    return;
   case 7:
-    message = 0x7EB;
-    goto retry;
+    if (g_windowMgr.Confirm(LookupMessage(0x7EB), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+      return;
+    }
+    if (window) {
+      window->SendMsg(nullptr, 6, 0x15F, 0, 0, 0);
+    }
+    return;
   case 8:
-    message = 0x7EC;
-    goto retry;
+    if (g_windowMgr.Confirm(LookupMessage(0x7EC), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+      return;
+    }
+    if (window) {
+      window->SendMsg(nullptr, 6, 0x15F, 0, 0, 0);
+    }
+    return;
   case 9:
-    message = 0x7ED;
-  retry:
-    if (g_windowMgr.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(0x7ED), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
       return;
     }
     if (window) {
@@ -445,14 +464,12 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 10:
-    message = 0x7E8;
-    break;
+    if (g_windowMgr.Confirm(LookupMessage(0x7E8), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+      g_windowMgr.CloseWindow(0x80);
+    }
+    return;
   default:
     return;
-  }
-
-  if (g_windowMgr.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
-    g_windowMgr.CloseWindow(0x80);
   }
 }
 
@@ -965,20 +982,15 @@ void CLoginMode::End() {
 // OFFSET: 0x00D975C0
 // FUNCTION: fn_22301
 void CLoginMode::Slot5(int value) {
-  if (value == 0) {
-    if (this->running == 0) {
-      return;
-    }
-    if (g_modalImmediate != 0) {
-      return;
-    }
-  } else {
+  if (value != 0) {
     GetRagConnection().UpdateStatus();
+  } else if (this->running == 0 || g_modalImmediate != 0) {
+    return;
   }
 
   PumpApplicationMessages();
   this->PollNetworkStatus();
-  SendClientKeepalive(this->cursorType, this->unknown_6F10, GetRagConnection(), *reinterpret_cast<const PacketLengths*>(&GetRagConnection()), g_session.m_aid);
+  this->SendKeepalive();
   g_mouse.Update();
   g_windowMgr.ProcessMouse();
   if (this->running != 0) {
@@ -1121,7 +1133,7 @@ void CLoginMode::SubD97B20(int) {
 void CLoginMode::Update() {
   PumpApplicationMessages();
   this->PollNetworkStatus();
-  SendClientKeepalive(this->cursorType, this->unknown_6F10, GetRagConnection(), *reinterpret_cast<const PacketLengths*>(&GetRagConnection()), g_session.m_aid);
+  this->SendKeepalive();
   g_mouse.Update();
   g_windowMgr.ProcessMouse();
   if (this->running != 0) {
@@ -1928,7 +1940,7 @@ char g_loginFailCount;
 // OFFSET: 0x00D91790
 // FUNCTION: fn_22289
 void CLoginMode::ShowLoginError(int code, int argument) {
-  std::string message;
+  std::string message("");
   if (code != 0x12) {
     GetRagConnection().Close();
   }

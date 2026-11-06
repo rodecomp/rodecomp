@@ -98,6 +98,7 @@ class CLoginMode : public CMode {
 public:
   CLoginMode();
   void SubD97780(int value);
+  void SendKeepalive();
   /* 0058 */ int charParams[6];
   /* 0070 */ int unknown_0070;
   /* 0074 */ int unknown_0074;
