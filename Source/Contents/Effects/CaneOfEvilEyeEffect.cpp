@@ -165,7 +165,7 @@ void CCaneOfEvilEyeEffect::Slot01() {
   offsets[6] = {0.0f, -12.0f, 20.0f};
   offsets[7] = {20.0f, -12.0f, 20.0f};
 
-  for (int index = 0; index < 8; ++index) {
+  for (unsigned int index = 0; index < 8; ++index) {
     this->unknown_00D0.push_back(this->CreateEye(1, &offsets[index].x));
   }
 

@@ -86,7 +86,7 @@ bool CEffect::Slot06() {
 // FUNCTION: fn_18988
 void CEffect::SetEventFrame(int kind, int frame) {
   for (EffectEvent& event : this->events) {
-    if (event.kind == kind) {
+    if (kind == event.kind) {
       event.frame = frame;
       return;
     }

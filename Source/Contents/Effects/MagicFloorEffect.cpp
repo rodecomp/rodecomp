@@ -268,12 +268,12 @@ void CMagicFloorEffect::Slot04() {
     if (particle && particle->unknown_000C > 0) {
       ParticleQuad quad;
       quad.billboard = false;
+      quad.unused = false;
+      quad.depth = true;
       quad.top = 0.0f;
       quad.bottom = 1.0f;
       quad.left = static_cast<float>(particle->unknown_000C - 1) / 21.0f;
       quad.right = static_cast<float>(particle->unknown_000C) / 21.0f;
-      quad.unused = false;
-      quad.depth = true;
       particle->Render(quad);
     }
   }

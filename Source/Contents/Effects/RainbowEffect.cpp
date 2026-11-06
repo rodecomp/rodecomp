@@ -163,7 +163,14 @@ void CRainbowEffect::Slot04() {
 
     if (particle && particle->unknown_000C > 0) {
       const int segment = particle->unknown_000C;
-      const ParticleQuad quad = {false, static_cast<float>(segment - 1) / 21.0f, static_cast<float>(segment) / 21.0f, 0.0f, 1.0f, false, true};
+      ParticleQuad quad;
+      quad.billboard = false;
+      quad.unused = false;
+      quad.depth = true;
+      quad.top = static_cast<float>(segment - 1) / 21.0f;
+      quad.bottom = static_cast<float>(segment) / 21.0f;
+      quad.left = 0.0f;
+      quad.right = 1.0f;
       particle->Render(quad);
     }
   }

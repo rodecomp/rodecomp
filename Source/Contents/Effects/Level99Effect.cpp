@@ -224,12 +224,12 @@ void CLevel99Effect::Slot04() {
       const int frame = sprite->unknown_000C;
       ParticleQuad quad;
       quad.billboard = false;
+      quad.unused = false;
+      quad.depth = true;
       quad.top = 0.0f;
       quad.bottom = 1.0f;
       quad.left = static_cast<float>(frame - 1) / 21.0f;
       quad.right = static_cast<float>(frame) / 21.0f;
-      quad.unused = false;
-      quad.depth = true;
       sprite->Render(quad);
     }
   }

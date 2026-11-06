@@ -143,7 +143,7 @@ void CEZ2STRParticle::Slot01() {
 std::string CEZ2STRParticle::ResolvePath(const std::string& name) {
   std::smatch match;
   const bool matched = std::regex_match(name, match, std::regex("^(.+\\\\)(\\w+\\.str)$"));
-  if (matched && match.size() > 2) {
+  if (matched && match.size() >= 3) {
     std::string path = match[1].str() + "min_" + match[2].str();
     if (ResourceMgr::Instance().Exists(path) == true) {
       return path;
