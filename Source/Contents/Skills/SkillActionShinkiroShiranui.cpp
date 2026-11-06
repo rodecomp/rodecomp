@@ -219,7 +219,8 @@ void CSkillAction_SS_ANTENPOU::Slot08(int level, CGameActor* source) {
 void CSkillAction_SS_ANTENPOU::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     const vector3d position = source->render.position;
-    g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("antenpou"), position.x, position.y, position.z, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("antenpou"), position.x, position.y, position.z, 0, -1, 0, 0);
   }
 }
 
