@@ -204,6 +204,9 @@ inline const JsonObject* JsonValue::ObjectRange() const {
 
 class JsonCppLoader {
 public:
+  JsonCppLoader();
+  virtual ~JsonCppLoader();
+
   JsonValue& GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType);
   void Fail(const char* format, ...);
   bool LoadBson(const std::string& path);
@@ -224,7 +227,10 @@ public:
   bool GetReputeGroupData(std::map<int, ReputeGroupRecord>* out);
   bool GetReputeInfoData(std::map<int, ReputeInfoRecord>* out);
 
-  /* 0000 */ unsigned char unknown_0000[0x08];
+private:
+  JsonCppLoader(const JsonCppLoader&) = delete;
+
+public:
   /* 0008 */ JsonValue document;
   /* 0018 */ std::string error;
   /* 0030 */ bool loaded;
@@ -265,6 +271,7 @@ static_assert(offsetof(JsonCppLoader, document) == 0x08);
 static_assert(offsetof(JsonCppLoader, error) == 0x18);
 static_assert(offsetof(JsonCppLoader, loaded) == 0x30);
 static_assert(offsetof(JsonCppLoader, succeeded) == 0x31);
+static_assert(sizeof(JsonCppLoader) == 0x38);
 #endif
 
 #endif
