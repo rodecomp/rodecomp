@@ -35,7 +35,9 @@ HRESULT STDMETHODCALLTYPE BrowserCommandTarget::Exec(const GUID* group, DWORD co
     return OLECMDERR_E_UNKNOWNGROUP;
   }
 
-  if (command == OLECMDID_SHOWSCRIPTERROR || command == OLECMDID_SHOWMESSAGE) {
+  switch (command) {
+  case OLECMDID_SHOWSCRIPTERROR:
+  case OLECMDID_SHOWMESSAGE:
     return S_OK;
   }
 
