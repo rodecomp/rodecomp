@@ -54,7 +54,7 @@ class CUICharacterInfo : public CUIControl {
 public:
   // OFFSET: 0x009D8F50
   // FUNCTION: fn_14273
-  explicit CUICharacterInfo() : CUIControl(), jobIcon(nullptr), level(nullptr), jobLevel(nullptr), name(nullptr) {
+  __declspec(noinline) explicit CUICharacterInfo() : CUIControl(), jobIcon(nullptr), level(nullptr), jobLevel(nullptr), name(nullptr) {
   }
 
   void Slot15(int width, int height) override;
@@ -70,7 +70,7 @@ class CUIIntro : public CUIPage {
 public:
   // OFFSET: 0x009D8FE0
   // FUNCTION: fn_14274
-  explicit CUIIntro() : CUIPage(), banner(nullptr), image(nullptr), contents(nullptr) {
+  __declspec(noinline) explicit CUIIntro() : CUIPage(), banner(nullptr), image(nullptr), contents(nullptr) {
   }
 
   void Slot15(int width, int height) override;
@@ -90,7 +90,7 @@ class CUIItem : public CUIPage {
 public:
   // OFFSET: 0x009D9080
   // FUNCTION: fn_14275
-  explicit CUIItem()
+  __declspec(noinline) explicit CUIItem()
       : CUIPage(), itemList(nullptr), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), location(-1) {
   }
 
@@ -114,7 +114,7 @@ class CUIMonster : public CUIPage {
 public:
   // OFFSET: 0x009D9220
   // FUNCTION: fn_14277
-  explicit CUIMonster() : CUIPage(), monsterList(nullptr), unknown_0084(nullptr), unknown_0088() {
+  __declspec(noinline) explicit CUIMonster() : CUIPage(), monsterList(nullptr), unknown_0084(nullptr), unknown_0088() {
   }
 
   void Slot15(int width, int height) override;
@@ -135,7 +135,7 @@ class CUIQuest : public CUIPage {
 public:
   // OFFSET: 0x009D9360
   // FUNCTION: fn_14279
-  explicit CUIQuest() : CUIPage(), questList(nullptr), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C() {
+  __declspec(noinline) explicit CUIQuest() : CUIPage(), questList(nullptr), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C() {
   }
 
   void Slot15(int width, int height) override;
