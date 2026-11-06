@@ -2231,14 +2231,14 @@ bool UIWindowMgr::ProcessEnterKey() {
             this->window_01C8->RecordEditTexts();
             window = this->window_01C8;
           } else {
-            for (UIWindow* item : this->rendered) {
-              if (!item->Slot02()) {
+            for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+              if (!(*it)->Slot02()) {
                 continue;
               }
               if (g_replayAnimationScaling == 0) {
-                item->Root()->RecordEditTexts();
+                (*it)->Root()->RecordEditTexts();
               }
-              item->SendMsg(nullptr, 0, 0, 0, 0, 0);
+              (*it)->SendMsg(nullptr, 0, 0, 0, 0, 0);
             }
             return false;
           }
