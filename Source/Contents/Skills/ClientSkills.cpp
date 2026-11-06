@@ -903,7 +903,8 @@ int CSession::ProcessEmotionShortcut(const char* text) {
   }
 
   LowercaseText(tokenizer[0]);
-  return g_cashEmotionMgr->PlaySearchedEmotion(tokenizer[0]);
+  CCashEmotionMgr* emotions = g_cashEmotionMgr;
+  return emotions->PlaySearchedEmotion(tokenizer[0]);
 }
 
 // OFFSET: 0x00E08190
