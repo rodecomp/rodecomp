@@ -16,6 +16,18 @@ __declspec(noinline) bool IsAdminAccount(int aid) {
   return std::find(g_adminAccountIds.begin(), g_adminAccountIds.end(), aid) != g_adminAccountIds.end();
 }
 
+// OFFSET: 0x00AD1C10
+// FUNCTION: fn_17813
+int MonsterJobColor(int) {
+  return 0;
+}
+
+// OFFSET: 0x00AD1C20
+// FUNCTION: fn_17814
+bool IsMonsterJob(int job) {
+  return std::find(g_monsterJobs.begin(), g_monsterJobs.end(), job) != g_monsterJobs.end();
+}
+
 // OFFSET: 0x00DFA390
 // FUNCTION: fn_23572
 __declspec(noinline) int CSession::IsAdminSubMode(int subMode) {

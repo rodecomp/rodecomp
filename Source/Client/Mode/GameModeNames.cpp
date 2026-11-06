@@ -6,23 +6,10 @@
 #include "File/File.h"
 
 #include <cstdio>
-#include <algorithm>
 #include <cstring>
 
 // GLOBAL: gl_24759
 std::vector<int> g_monsterJobs;
-
-// OFFSET: 0x00AD1C10
-// FUNCTION: fn_17813
-__declspec(noinline) int MonsterJobColor(int) {
-  return 0;
-}
-
-// OFFSET: 0x00AD1C20
-// FUNCTION: fn_17814
-__declspec(noinline) bool IsMonsterJob(int job) {
-  return std::find(g_monsterJobs.begin(), g_monsterJobs.end(), job) != g_monsterJobs.end();
-}
 
 // OFFSET: 0x00AD1C50
 // FUNCTION: fn_17815
