@@ -99,6 +99,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <format>
 #include <list>
 #include <mbstring.h>
 #include <map>
@@ -871,9 +872,6 @@ void UIEditCtrl_Custom::Synchronize() {
     this->firstVisible = 0;
   }
 
-  FontCache& fonts = g_fontCache;
-  const int available = this->geometry.width - 12;
-
   if (this->cursor > previousCursor || clamped) {
     int before = 0;
 
@@ -883,11 +881,11 @@ void UIEditCtrl_Custom::Synchronize() {
 
     const int position = this->TextWidth(this->text.c_str(), this->cursor, 0, 12, this->unknown_011C, 0);
 
-    if (position + 3 - before > available) {
+    if (position + 3 - before > this->geometry.width - 12) {
       const char* end = this->text.c_str() + this->text.size();
       const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), 0);
 
-      while (this->TextWidth(next, 0, 0, 12, this->unknown_011C, 0) + 3 > available && next < end) {
+      while (this->TextWidth(next, 0, 0, 12, this->unknown_011C, 0) + 3 > this->geometry.width - 12 && next < end) {
         next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
       }
 
@@ -896,7 +894,7 @@ void UIEditCtrl_Custom::Synchronize() {
       this->firstVisible = std::min<unsigned>(this->cursor - tail, scrolled);
     }
   } else if (this->cursor < previousCursor) {
-    if (this->TextWidth(this->text.c_str(), this->cursor, 0, 12, this->unknown_011C, 0) + 3 < available && this->firstVisible > this->cursor) {
+    if (this->TextWidth(this->text.c_str(), this->cursor, 0, 12, this->unknown_011C, 0) + 3 < this->geometry.width - 12 && this->firstVisible > this->cursor) {
       this->firstVisible += this->cursor - previousCursor;
     }
 
@@ -9986,11 +9984,10 @@ void UIItemWnd::RefreshSortButton() {
   }
 
   UIBitmapButton* button = static_cast<UIBitmapButton*>(this->unknown_012C);
-  button->SetBitmap((name + ".bmp").c_str(), 0, 0);
-  button->SetBitmap((name + "_over.bmp").c_str(), 1, 0);
-  button->SetBitmap((name + "_press.bmp").c_str(), 2, 0);
-  const std::string tooltip = std::string(LookupMessage(3007)) + " " + (g_sortPrivateTab ? "ON" : "OFF");
-  button->SetTooltip(tooltip.c_str());
+  button->SetBitmap(std::format("{}.bmp", name).c_str(), 0, 0);
+  button->SetBitmap(std::format("{}_over.bmp", name).c_str(), 1, 0);
+  button->SetBitmap(std::format("{}_press.bmp", name).c_str(), 2, 0);
+  button->SetTooltip(std::format("{} {}", LookupMessage(3007), g_sortPrivateTab ? "ON" : "OFF").c_str());
   this->Invalidate();
 }
 
