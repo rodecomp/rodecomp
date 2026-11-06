@@ -10,7 +10,8 @@ NMessageMgr* g_messageMgr;
 NInter::~NInter() = default;
 
 // INLINED
-NMessageMgr::NMessageMgr() : m_enabled(false) {
+NMessageMgr::NMessageMgr() {
+  this->m_enabled = false;
   InitializeCriticalSection(&this->m_criticalSection);
   this->m_enabled = true;
 }
