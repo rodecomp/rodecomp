@@ -136,10 +136,13 @@ void UICheckBox::SetImages(const char* checked, const char* unchecked, const cha
   if (!this->m_text.empty()) {
     const int width = this->TextWidth(this->m_text.c_str(), 0, 0, 12, 0, 0);
     CBitmapRes* bitmap = nullptr;
-    if (this->geometry.unknown_0030 == 0) {
+    switch (this->geometry.unknown_0030) {
+    case 0:
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str())));
-    } else if (this->geometry.unknown_0030 == 1) {
+      break;
+    case 1:
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
+      break;
     }
 
     const int desired = ((bitmap->image.width + width) + 3);
