@@ -2678,7 +2678,7 @@ __declspec(noinline) void CGameMode::ReceivePacket0A29(int value) {
   ValuePacket packet;
   packet.id = 0x0A2A;
   packet.value = value;
-  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00D79E10
