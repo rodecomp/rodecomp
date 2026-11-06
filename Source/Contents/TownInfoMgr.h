@@ -22,7 +22,8 @@ struct TownInfo {
 class CTownInfoMgr {
 public:
   // INLINED
-  CTownInfoMgr() : m_isValid(true) {
+  CTownInfoMgr() {
+    this->m_isValid = true;
   }
   // INLINED
   virtual ~CTownInfoMgr() {
