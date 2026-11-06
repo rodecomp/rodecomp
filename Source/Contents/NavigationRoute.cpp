@@ -276,7 +276,7 @@ void CNavigationManager::RequestPrivateAirship(std::string mapName, int itemId) 
   packet.id = 0xA49;
   strcpy_s(packet.mapName, sizeof(packet.mapName), mapName.c_str());
   packet.itemId = itemId;
-  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00B97E90
