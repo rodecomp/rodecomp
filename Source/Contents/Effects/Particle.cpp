@@ -704,7 +704,8 @@ void CEZ2STRParticle::Advance(float amount) {
     return;
   }
 
-  for (int count = static_cast<int>(static_cast<float>(this->m_data->maximumFrame) * amount); count > 0; --count) {
+  const int count = static_cast<int>(static_cast<float>(this->m_data->maximumFrame) * amount);
+  for (int i = 0; i < count; ++i) {
     this->Process(0.0f, -80.0f, 0.0f);
   }
 }
