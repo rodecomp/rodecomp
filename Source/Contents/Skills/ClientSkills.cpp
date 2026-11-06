@@ -767,7 +767,7 @@ float GetSkillFactor(int job) {
     return 1.0f;
   }
 
-  if (g_session.IsDoramJob(job)) {
+  if (g_session.IsDoramJob(job) == true) {
     return 0.8f;
   }
 
