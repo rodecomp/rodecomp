@@ -1608,7 +1608,7 @@ bool CUIReset::Slot56() {
   }
 
   const std::vector<int>& slots = this->enchantInfo->slots;
-  const bool enchanted = std::any_of(slots.begin(), slots.end(), [item = *this->gameItem->GetItemInfo()](int slot) {
+  const bool empty = std::none_of(slots.begin(), slots.end(), [item = *this->gameItem->GetItemInfo()](int slot) {
     if (slot >= 4) {
       return false;
     }
@@ -1616,9 +1616,11 @@ bool CUIReset::Slot56() {
     std::memcpy(&card, item.unknown_001C + slot * 4, sizeof(card));
     return card != 0;
   });
-  this->unknown_00A0->disabled = !enchanted;
-  this->unknown_00A0->Invalidate();
-  return enchanted;
+  if (empty) {
+    this->unknown_00A0->disabled = empty;
+    this->unknown_00A0->Invalidate();
+  }
+  return !empty;
 }
 
 // OFFSET: 0x00A079E0
