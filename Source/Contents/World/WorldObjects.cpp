@@ -896,9 +896,9 @@ bool CWorld::RemoveGroundItem(std::uint32_t aid) {
 // FUNCTION: fn_17697
 bool CWorld::RemoveSkill(std::uint32_t aid) {
   for (auto entry = this->unknown_0020.begin(); entry != this->unknown_0020.end(); ++entry) {
-    CSkill* skill = static_cast<CSkill*>(*entry);
+    if (static_cast<CSkill*>(*entry)->skillAid == aid) {
+      CSkill* skill = static_cast<CSkill*>(*entry);
 
-    if (skill->skillAid == aid) {
       if (!skill) {
         return false;
       }
