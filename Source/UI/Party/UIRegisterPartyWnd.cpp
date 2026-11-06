@@ -248,13 +248,11 @@ void UIRegisterPartyWnd::Paint() {
 // FUNCTION: fn_09314
 int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
-    const int value = static_cast<int>(a);
-
-    if (value != 201) {
-      if (value != 564 && value != 565) {
-        return 0;
-      }
-
+    switch (a) {
+    case 201:
+      break;
+    case 564:
+    case 565:
       if (g_session.unknown_5464 != 0) {
         if (g_forbiddenWords.Contains(this->memo->Text()) == true) {
           char text[256] = {};
@@ -286,6 +284,9 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(3506));
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       }
+      break;
+    default:
+      return 0;
     }
 
     g_windowMgr.CloseWindow(323);
