@@ -48,6 +48,7 @@ unsigned LanguageCharset(std::uint16_t language) {
     return EASTEUROPE_CHARSET;
   case LANG_VIETNAMESE:
     return VIETNAMESE_CHARSET;
+  case LANG_PORTUGUESE:
   default:
     return ANSI_CHARSET;
   }
