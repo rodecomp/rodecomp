@@ -147,7 +147,8 @@ void CSkillAction_SH_CHUL_HO_SONIC_CLAW::Slot11(int level, CGameActor* source, C
     return;
   }
 
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chul_ho_sonic_claw"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chul_ho_sonic_claw"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (!target) {
     return;
   }
@@ -156,8 +157,9 @@ void CSkillAction_SH_CHUL_HO_SONIC_CLAW::Slot11(int level, CGameActor* source, C
   const int waves[12] = {12, 1, 1, 3, 5, 5, 6, 7, 7, 9, 11, 11};
   const int index = static_cast<int>(angle + 105.0f) % 360 / 30;
   if (index >= 0 && static_cast<std::size_t>(index) < sizeof(waves) / sizeof(waves[0])) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("chul_ho_sonic_claw_wave_%d", waves[index])), 0.0f, 0.0f,
-                       0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("chul_ho_sonic_claw_wave_%d", waves[index])), 0.0f, 0.0f,
+                   0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -179,7 +181,8 @@ void CSkillAction_SH_HOWLING_OF_CHUL_HO::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08935
 void CSkillAction_SH_HOWLING_OF_CHUL_HO::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("howling_of_chul_ho"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("howling_of_chul_ho"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -187,7 +190,8 @@ void CSkillAction_SH_HOWLING_OF_CHUL_HO::Slot11(int level, CGameActor* source, C
 // FUNCTION: fn_08936
 void CEfstAction_HOGOGONG::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("howling_of_chul_ho_scared"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("howling_of_chul_ho_scared"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -224,7 +228,8 @@ void CSkillAction_SH_HOGOGONG_STRIKE::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08941
 void CSkillAction_SH_HOGOGONG_STRIKE::Slot15(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hogogong_strike"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hogogong_strike"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -240,7 +245,8 @@ void CSkillAction_SH_KI_SUL_WATER_SPRAYING::Slot08(int level, CGameActor* source
 // FUNCTION: fn_08943
 void CSkillAction_SH_KI_SUL_WATER_SPRAYING::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ki_sul_water_spraying"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ki_sul_water_spraying"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -256,7 +262,8 @@ void CSkillAction_SH_MARINE_FESTIVAL_OF_KI_SUL::Slot08(int level, CGameActor* so
 // FUNCTION: fn_08945
 void CSkillAction_SH_MARINE_FESTIVAL_OF_KI_SUL::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("marine_festival_of_ki_sul_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("marine_festival_of_ki_sul_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -264,7 +271,8 @@ void CSkillAction_SH_MARINE_FESTIVAL_OF_KI_SUL::Slot11(int level, CGameActor* so
 // FUNCTION: fn_08946
 void CEfstAction_MARINE_FESTIVAL::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("marine_festival_of_ki_sul"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("marine_festival_of_ki_sul"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -280,7 +288,8 @@ void CSkillAction_SH_SANDY_FESTIVAL_OF_KI_SUL::Slot08(int level, CGameActor* sou
 // FUNCTION: fn_08948
 void CSkillAction_SH_SANDY_FESTIVAL_OF_KI_SUL::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sandy_festival_of_ki_sul_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sandy_festival_of_ki_sul_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -288,7 +297,8 @@ void CSkillAction_SH_SANDY_FESTIVAL_OF_KI_SUL::Slot11(int level, CGameActor* sou
 // FUNCTION: fn_08949
 void CEfstAction_SANDY_FESTIVAL::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sandy_festival_of_ki_sul"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sandy_festival_of_ki_sul"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -304,8 +314,10 @@ void CSkillAction_SH_KI_SUL_RAMPAGE::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08951
 void CSkillAction_SH_KI_SUL_RAMPAGE::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ki_sul_rampage_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ki_sul_rampage"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ki_sul_rampage_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ki_sul_rampage"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -324,27 +336,35 @@ void CSkillAction_SH_COLORS_OF_HYUN_ROK::Slot11(int level, CGameActor* source, C
     return;
   }
 
+  EffectLists* effects;
   switch (level) {
   case 1:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_water"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_water"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 2:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_wind"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_wind"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 3:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_earth"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_earth"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 4:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_fire"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_fire"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 5:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_darkness"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_darkness"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 6:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_saint"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_saint"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 7:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_reset"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_reset"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   }
 }
@@ -373,8 +393,10 @@ int CSkillAction_SH_HYUN_ROKS_BREEZE::Slot14() {
 // FUNCTION: fn_08957
 void CSkillObjectAction_SH_HYUN_ROKS_BREEZE::Slot00(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_roks_breeze_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_roks_breeze"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_roks_breeze_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_roks_breeze"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -397,8 +419,9 @@ void CSkillAction_SH_HYUN_ROK_CANNON::Slot11(int level, CGameActor* source, CGam
     &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
   );
   const vector3d position = source->render.position;
+  EffectLists* effects = g_effectMgr;
   if (CEffect* effect =
-        g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_cannon"), position.x, position.y, position.z, 0, -1, 0, 0)) {
+        effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_cannon"), position.x, position.y, position.z, 0, -1, 0, 0)) {
     effect->Slot17(angle);
   }
 }
@@ -415,7 +438,8 @@ void CSkillAction_SH_TEMPORARY_COMMUNION::Slot08(int level, CGameActor* source) 
 // FUNCTION: fn_08961
 void CSkillAction_SH_TEMPORARY_COMMUNION::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("temporary_communion"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("temporary_communion"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -463,7 +487,8 @@ void CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES::Slot08(int level, CGameActo
 // FUNCTION: fn_08967
 void CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("blessing_of_mystical_creatures"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("blessing_of_mystical_creatures"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -477,7 +502,8 @@ int CSkillAction_SH_CHUL_HO_BATTERING::Slot02() {
 // FUNCTION: fn_08969
 void CSkillAction_SH_CHUL_HO_BATTERING::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chul_ho_battering_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
@@ -493,12 +519,14 @@ void CSkillAction_SH_CHUL_HO_BATTERING::Slot11(int level, CGameActor* source, CG
   }
 
   const float scale = source->unknown_0378 * source->render.speed * 16.0f;
-  if (CEffect* effect = g_effectMgr->Spawn(
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(
         target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chul_ho_battering"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
       )) {
     effect->Slot16(static_cast<int>(scale));
   }
-  if (CEffect* effect = g_effectMgr->Spawn(
+  effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(
         target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chul_ho_battering_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
       )) {
     effect->Slot16(static_cast<int>(scale));
@@ -521,12 +549,14 @@ void CSkillAction_SH_CHUL_HO_BATTERING::Slot16(int level, CGameActor* source, CG
 // FUNCTION: fn_08972
 void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::Slot08(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
         )) {
       effect->Slot14(level);
@@ -538,8 +568,10 @@ void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::Slot08(int level, CGameActor* source
 // FUNCTION: fn_08973
 void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -547,6 +579,7 @@ void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::Slot11(int level, CGameActor* source
 // FUNCTION: fn_08974
 void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
