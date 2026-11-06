@@ -199,9 +199,9 @@ ITEM_INFO LookupClientItem(const std::list<ITEM_INFO>& values, int id, unsigned 
     return ITEM_INFO(0);
   }
 
-  for (const ITEM_INFO& value : values) {
-    if (std::atoi(value.itemId.c_str()) == id && (!requireIdentified || value.identified != 0)) {
-      return value;
+  for (auto it = values.begin(); it != values.end(); ++it) {
+    if (std::atoi(it->itemId.c_str()) == id && (!requireIdentified || it->identified != 0)) {
+      return *it;
     }
   }
 
@@ -423,7 +423,8 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
 // OFFSET: 0x00DFB9D0
 // FUNCTION: fn_23584
 bool CSession::HasRequiredItems() const {
-  for (const ITEM_INFO& required : this->unknown_1730) {
+  for (auto it = this->unknown_1730.begin(); it != this->unknown_1730.end(); ++it) {
+    const ITEM_INFO& required = *it;
     const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, required.unknown_0000[1]);
     if (owned.unknown_0000[1] <= 0 || owned.quantity < required.quantity) {
       return false;
