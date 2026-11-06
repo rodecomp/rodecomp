@@ -1149,6 +1149,8 @@ public:
 }
 
 struct MsvcString {
+  /* 0000 */ unsigned char storage[0x18];
+
   void sub_4EE2E0(const char* value);
   void sub_696770(const MsvcString* source);
   void sub_914AD0(const void* source);
