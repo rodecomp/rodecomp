@@ -895,11 +895,11 @@ void CUIEquipmentPropertiesWnd::BindLine(EquipmentPropertiesWnd::CUIItemEquipmen
 // FUNCTION: fn_15165
 void CUIEquipmentPropertiesWnd::Paint() {
   CUIFrameWnd::Paint();
-  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
   if (left) {
     const int bottom = this->list->geometry.height + 1;
     for (int y = 0; y < bottom; y += left->image.height) {
-      this->DrawBitmap(0, this->list->geometry.y + y, &left->image, false);
+      this->DrawBitmap(0, this->list->geometry.y + y, left, false);
     }
   }
   this->FillRegion(this->list->geometry.x - 1, this->list->geometry.y + this->list->geometry.height, this->list->geometry.width + 2, 1, this->m_borderColor);
