@@ -2061,10 +2061,10 @@ void CUIItem::RequestNavigation() {
     y = std::atoi(parts[2].c_str());
   }
 
-  if (x != -1 && y != -1) {
-    g_navigationManager.StartNavigation(name, 0, 5, false, x, y, 1002);
-  } else {
+  if (x == -1 || y == -1) {
     g_navigationManager.StartNavigation(name, 1, 5, false, -1, -1, 1002);
+  } else {
+    g_navigationManager.StartNavigation(name, 0, 5, false, x, y, 1002);
   }
 }
 
@@ -2081,10 +2081,10 @@ void CUIQuest::RequestNavigation() {
     y = std::atoi(parts[2].c_str());
   }
 
-  if (x != -1 && y != -1) {
-    g_navigationManager.StartNavigation(name, 0, 5, false, x, y, 1002);
-  } else {
+  if (x == -1 || y == -1) {
     g_navigationManager.StartNavigation(name, 1, 5, false, -1, -1, 1002);
+  } else {
+    g_navigationManager.StartNavigation(name, 0, 5, false, x, y, 1002);
   }
 }
 
