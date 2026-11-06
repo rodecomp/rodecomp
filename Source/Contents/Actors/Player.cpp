@@ -570,7 +570,7 @@ void CGrannyPc::Slot30() {
 void CPc::Slot30() {
   int job = this->GetEffectiveJob(-1);
 
-  if (static_cast<unsigned>(job - 0x10CE) < 0x1C && this->unknown_02CC != 0) {
+  if (job >= 0x10CE && job <= 0x10E9 && this->unknown_02CC != 0) {
     job = g_session.GetRidingJob(job);
   }
 
