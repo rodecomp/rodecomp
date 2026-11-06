@@ -1198,89 +1198,7 @@ bool CSkill::OnProcess() {
 // OFFSET: 0x00E4F370
 // FUNCTION: fn_24289
 void CMsgEffect::FollowOwner() {
-  CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
   switch (this->m_type) {
-    case 1:
-    case 2:
-    case 8:
-    case 9:
-    case 10:
-    case 0x25:
-    case 0x26:
-      if (owner != nullptr) {
-        this->render.position = owner->render.position;
-        if (this->render.unknown_0070 == 10000) {
-          this->render.position.y -= 10.0f;
-        } else {
-          this->render.position.y -= 20.0f;
-        }
-      }
-      return;
-
-    case 3:
-      if (owner != nullptr) {
-        CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-        const float dist = owner->CalcDist(this->render.position.x, this->render.position.z);
-        const int dir = this->Get8Dir2(this->render.angle, 1);
-        this->render.previousAnimation = this->render.animation + dir;
-        if (dist > 5.0f) {
-          const float oldX = this->render.position.x;
-          const float oldZ = this->render.position.z;
-          float dx = this->render.position.x - owner->render.position.x;
-          float dz = this->render.position.z - owner->render.position.z;
-          const float inv = 1.0f / SquareRoot(dx * dx + dz * dz);
-          dx *= inv;
-          dz *= inv;
-          this->render.position.x = owner->render.position.x + dx * 5.0f;
-          this->render.position.z = owner->render.position.z + dz * 5.0f;
-          const float movedX = this->render.position.x - oldX;
-          const float movedZ = this->render.position.z - oldZ;
-          this->unknown_018C += SquareRoot(movedX * movedX + movedZ * movedZ);
-          CActRes* action = this->GetActRes();
-          const unsigned frames = action->FrameCount(this->render.previousAnimation);
-          this->render.curMotion = static_cast<int>(this->unknown_018C * 0.23f * 4.0f / this->render.speed) % static_cast<int>(frames);
-        }
-        this->Face(owner->render.position.x, owner->render.position.z);
-        this->render.position.y = scene->terrain->Height(this->render.position.x, this->render.position.z);
-      }
-      return;
-
-    case 4:
-    case 0xB:
-      if (owner != nullptr) {
-        this->render.position = owner->render.position;
-        this->render.position.y -= 15.0f;
-      }
-      return;
-
-    case 5:
-      if (owner != nullptr) {
-        this->render.position = owner->render.position;
-      }
-      return;
-
-    case 7:
-      if (owner != nullptr) {
-        this->render.position = owner->render.position;
-        this->render.position.y -= 15.0f;
-        this->render.angle = owner->render.angle;
-        const int dir = this->Get8Dir(this->render.angle);
-        this->render.previousAnimation = this->render.animation + dir;
-        if (static_cast<unsigned>(dir - 2) <= 3u) {
-          this->render.unknown_0080 = 3;
-        } else {
-          this->render.unknown_0080 = static_cast<std::uint32_t>(-3);
-        }
-      }
-      return;
-
-    case 0xC:
-      if (owner != nullptr) {
-        this->render.position = owner->render.position;
-        this->render.position.y -= 20.0f;
-      }
-      return;
-
     case 0xD:
     case 0xE:
     case 0xF:
@@ -1290,118 +1208,133 @@ void CMsgEffect::FollowOwner() {
     case 0x16:
     case 0x18:
     case 0x19:
-      if (owner != nullptr) {
+      if (this->m_owner != nullptr) {
+        CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
         this->render.position.x = owner->render.position.x;
         this->m_velocity.x = owner->render.position.x;
         this->render.position.z = owner->render.position.z;
         this->m_velocity.z = owner->render.position.z;
       }
       this->render.unknown_0124 = 0x200;
-      return;
+      break;
 
-    case 0x12:
-      if (owner == nullptr) {
-        return;
+    case 4:
+    case 0xB:
+      if (this->m_owner != nullptr) {
+        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        this->render.position.y -= 15.0f;
       }
-      if (this->unknown_01B4 != 0) {
-        return;
+      break;
+
+    case 0xC:
+      if (this->m_owner != nullptr) {
+        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        this->render.position.y -= 20.0f;
       }
-      {
-        CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-        const float dist = owner->CalcDist(this->render.position.x, this->render.position.z);
-        const int dir = this->Get8Dir2(this->render.angle, 1);
-        this->render.previousAnimation = this->render.animation + dir;
-        if (this->unknown_01B0 == 0) {
-          if (dist <= 25.0f) {
-            this->unknown_01B0 = 1;
-          }
-          const float oldX = this->render.position.x;
-          const float oldZ = this->render.position.z;
-          float dx = this->render.position.x - owner->render.position.x;
-          float dz = this->render.position.z - owner->render.position.z;
-          const float inv = 1.0f / SquareRoot(dx * dx + dz * dz);
-          dx *= inv;
-          dz *= inv;
-          this->render.position.x += (owner->render.position.x - this->render.position.x) / 25.0f;
-          this->render.curMotion = 8;
-          this->render.position.z += (owner->render.position.z - this->render.position.z) / 25.0f;
-          const float movedX = this->render.position.x - oldX;
-          const float movedZ = this->render.position.z - oldZ;
-          this->unknown_018C += SquareRoot(movedX * movedX + movedZ * movedZ);
-        } else if (dist > 12.0f && this->unknown_01B4 == 0) {
-          const float oldX = this->render.position.x;
-          const float oldZ = this->render.position.z;
-          float dx = this->render.position.x - owner->render.position.x;
-          float dz = this->render.position.z - owner->render.position.z;
-          const float inv = 1.0f / SquareRoot(dx * dx + dz * dz);
-          dx *= inv;
-          dz *= inv;
-          this->render.position.x += (owner->render.position.x - this->render.position.x) / dist;
-          this->render.position.z += (owner->render.position.z - this->render.position.z) / dist;
-          const float movedX = this->render.position.x - oldX;
-          const float movedZ = this->render.position.z - oldZ;
-          this->unknown_018C += SquareRoot(movedX * movedX + movedZ * movedZ);
-        } else if (dist > 3.0f) {
-          const float oldX = this->render.position.x;
-          const float oldZ = this->render.position.z;
-          float dx = this->render.position.x - owner->render.position.x;
-          float dz = this->render.position.z - owner->render.position.z;
-          const float inv = 1.0f / SquareRoot(dx * dx + dz * dz);
-          dx *= inv;
-          dz *= inv;
-          this->render.position.x += (owner->render.position.x - this->render.position.x) / 20.0f;
-          this->render.position.z += (owner->render.position.z - this->render.position.z) / 20.0f;
-          const float movedX = this->render.position.x - oldX;
-          const float movedZ = this->render.position.z - oldZ;
-          this->unknown_018C += SquareRoot(movedX * movedX + movedZ * movedZ);
+      break;
+
+    case 5:
+      if (this->m_owner != nullptr) {
+        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+      }
+      break;
+
+    case 0x1C:
+    case 0x1D:
+    case 0x1E:
+    case 0x22:
+    case 0x23:
+    case 0x24:
+      if (this->m_owner != nullptr) {
+        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        if (this->render.unknown_0070 == 10000) {
+          this->render.position.y -= 10.0f;
+        } else {
+          this->render.position.y -= 20.0f;
         }
-        this->Face(owner->render.position.x, owner->render.position.z);
-        this->render.position.y = scene->terrain->Height(this->render.position.x, this->render.position.z) - 25.0f;
+        this->render.position.x -= 3.0f;
       }
-      return;
+      break;
 
-    case 0x1A:
-      if (owner == nullptr) {
-        return;
+    case 0x21:
+      if (this->m_owner != nullptr) {
+        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        this->render.position.y -= static_cast<float>(static_cast<CGameActor*>(this->m_owner)->unknown_03C8) + 10.0f;
       }
-      this->render.position = owner->render.position;
-      this->render.position.y -= 20.0f;
-      if (this->m_type == 0x72) {
-        this->render.position.x = static_cast<CRenderObject*>(this->m_owner)->render.position.x;
-        this->render.position.z = static_cast<CRenderObject*>(this->m_owner)->render.position.z;
+      break;
+
+    case 0x20:
+      if (this->m_owner != nullptr) {
+        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        this->render.position.y -= 25.0f;
       }
-      return;
+      break;
+
+    case 1:
+    case 2:
+    case 8:
+    case 9:
+    case 10:
+    case 0x25:
+    case 0x26:
+      if (this->m_owner != nullptr) {
+        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        if (this->render.unknown_0070 == 10000) {
+          this->render.position.y -= 10.0f;
+        } else {
+          this->render.position.y -= 20.0f;
+        }
+      }
+      break;
+
+    case 7:
+      if (this->m_owner != nullptr) {
+        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        this->render.position.y -= 15.0f;
+        this->render.angle = static_cast<CRenderObject*>(this->m_owner)->render.angle;
+        const int dir = this->Get8Dir(this->render.angle);
+        this->render.previousAnimation = this->render.animation + dir;
+        switch (dir) {
+          case 2:
+          case 3:
+          case 4:
+          case 5:
+            this->render.unknown_0080 = 3;
+            break;
+          default:
+            this->render.unknown_0080 = static_cast<std::uint32_t>(-3);
+            break;
+        }
+      }
+      break;
 
     case 0x1B:
     case 0x1F:
-      if (owner == nullptr) {
-        return;
-      }
-      {
+      if (this->m_owner != nullptr) {
         CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-        const float dist = owner->CalcDist(this->render.position.x, this->render.position.z);
+        const float dist = static_cast<CRenderObject*>(this->m_owner)->CalcDist(this->render.position.x, this->render.position.z);
         const int dir = this->Get8Dir2(this->render.angle, 1);
+        CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
         if (this->unknown_01B4 == 1) {
           this->render.previousAnimation = this->render.animation + dir + 12 + ((dir + 4 < 8) ? 8 : 0);
         } else if (dist > 15.0f) {
-          const float oldX = this->render.position.x;
-          const float oldZ = this->render.position.z;
+          const vector3d oldPosition = this->render.position;
           this->render.previousAnimation = this->render.animation + 8 + dir;
-          float dx = this->render.position.x - owner->render.position.x;
-          float dz = this->render.position.z - owner->render.position.z;
-          const float inv = 1.0f / SquareRoot(dx * dx + dz * dz);
-          dx *= inv;
-          dz *= inv;
-          float scale = dist - 0.7f;
-          if (scale <= 15.0f) {
-            scale = 14.9f;
+          vector2d direction;
+          direction.x = this->render.position.x - owner->render.position.x;
+          direction.y = this->render.position.z - owner->render.position.z;
+          direction.Normalize();
+          if (dist - 0.7f <= 15.0f) {
+            this->render.position.x = direction.x * 14.9f + owner->render.position.x;
+            this->render.position.z = direction.y * 14.9f + owner->render.position.z;
+          } else {
+            this->render.position.x = (dist - 0.7f) * direction.x + owner->render.position.x;
+            this->render.position.z = (dist - 0.7f) * direction.y + owner->render.position.z;
           }
-          this->render.position.x = owner->render.position.x + dx * scale;
-          this->render.position.z = owner->render.position.z + dz * scale;
-          const float movedX = this->render.position.x - oldX;
-          const float movedZ = this->render.position.z - oldZ;
-          this->unknown_018C += SquareRoot(movedX * movedX + movedZ * movedZ);
-          if (owner->render.unknown_0070 == 0 && dist < 16.0f) {
+          const float movedX = this->render.position.x - oldPosition.x;
+          const float movedZ = this->render.position.z - oldPosition.z;
+          this->unknown_018C += SquareRoot(movedZ * movedZ + movedX * movedX);
+          if (static_cast<CRenderObject*>(this->m_owner)->render.unknown_0070 == 0 && dist < 16.0f) {
             this->render.previousAnimation = this->render.animation + dir;
           }
         } else if (owner->render.unknown_0070 == 4) {
@@ -1414,45 +1347,100 @@ void CMsgEffect::FollowOwner() {
         this->Face(owner->render.position.x, owner->render.position.z);
         this->render.position.y = scene->terrain->Height(this->render.position.x, this->render.position.z);
       }
-      return;
+      break;
 
-    case 0x1C:
-    case 0x1D:
-    case 0x1E:
-    case 0x22:
-    case 0x23:
-    case 0x24:
-      if (owner != nullptr) {
-        this->render.position = owner->render.position;
-        float yOff = 20.0f;
-        if (this->render.unknown_0070 == 10000) {
-          yOff = 10.0f;
+    case 3:
+      if (this->m_owner != nullptr) {
+        CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+        const float dist = static_cast<CRenderObject*>(this->m_owner)->CalcDist(this->render.position.x, this->render.position.z);
+        const int dir = this->Get8Dir2(this->render.angle, 1);
+        CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->render.previousAnimation = this->render.animation + dir;
+        if (dist > 5.0f) {
+          const vector3d oldPosition = this->render.position;
+          vector2d direction;
+          direction.x = this->render.position.x - owner->render.position.x;
+          direction.y = this->render.position.z - owner->render.position.z;
+          direction.Normalize();
+          this->render.position.x = direction.x * 5.0f + owner->render.position.x;
+          this->render.position.z = direction.y * 5.0f + owner->render.position.z;
+          const float movedX = this->render.position.x - oldPosition.x;
+          const float movedZ = this->render.position.z - oldPosition.z;
+          this->unknown_018C += SquareRoot(movedZ * movedZ + movedX * movedX);
+          CActRes* action = this->GetActRes();
+          const unsigned frames = action->FrameCount(this->render.previousAnimation);
+          this->render.curMotion = static_cast<int>(this->unknown_018C * 0.23f * 4.0f / this->render.speed) % static_cast<int>(frames);
         }
-        this->render.position.y -= yOff;
-        this->render.position.x -= 3.0f;
+        this->Face(owner->render.position.x, owner->render.position.z);
+        this->render.position.y = scene->terrain->Height(this->render.position.x, this->render.position.z);
       }
-      return;
+      break;
 
-    case 0x20:
-      if (owner != nullptr) {
-        this->render.position = owner->render.position;
-        this->render.position.y -= 25.0f;
+    case 0x12:
+      if (this->m_owner != nullptr && this->unknown_01B4 == 0) {
+        CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+        const float dist = static_cast<CRenderObject*>(this->m_owner)->CalcDist(this->render.position.x, this->render.position.z);
+        const int dir = this->Get8Dir2(this->render.angle, 1);
+        CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->render.previousAnimation = this->render.animation + dir;
+        if (this->unknown_01B0 == 0) {
+          if (dist <= 25.0f) {
+            this->unknown_01B0 = 1;
+          }
+          const vector3d oldPosition = this->render.position;
+          vector2d direction;
+          direction.x = this->render.position.x - owner->render.position.x;
+          direction.y = this->render.position.z - owner->render.position.z;
+          direction.Normalize();
+          this->render.position.x += (owner->render.position.x - this->render.position.x) / 25.0f;
+          this->render.curMotion = 8;
+          this->render.position.z += (owner->render.position.z - this->render.position.z) / 25.0f;
+          const float movedX = this->render.position.x - oldPosition.x;
+          const float movedZ = this->render.position.z - oldPosition.z;
+          this->unknown_018C += SquareRoot(movedZ * movedZ + movedX * movedX);
+        } else if (dist > 12.0f && this->unknown_01B4 == 0) {
+          const vector3d oldPosition = this->render.position;
+          vector2d direction;
+          direction.x = this->render.position.x - owner->render.position.x;
+          direction.y = this->render.position.z - owner->render.position.z;
+          direction.Normalize();
+          this->render.position.x += (owner->render.position.x - this->render.position.x) / dist;
+          this->render.position.z += (owner->render.position.z - this->render.position.z) / dist;
+          const float movedX = this->render.position.x - oldPosition.x;
+          const float movedZ = this->render.position.z - oldPosition.z;
+          this->unknown_018C += SquareRoot(movedZ * movedZ + movedX * movedX);
+        } else if (dist > 3.0f) {
+          const vector3d oldPosition = this->render.position;
+          vector2d direction;
+          direction.x = this->render.position.x - owner->render.position.x;
+          direction.y = this->render.position.z - owner->render.position.z;
+          direction.Normalize();
+          this->render.position.x += (owner->render.position.x - this->render.position.x) / 20.0f;
+          this->render.position.z += (owner->render.position.z - this->render.position.z) / 20.0f;
+          const float movedX = this->render.position.x - oldPosition.x;
+          const float movedZ = this->render.position.z - oldPosition.z;
+          this->unknown_018C += SquareRoot(movedZ * movedZ + movedX * movedX);
+        }
+        this->Face(owner->render.position.x, owner->render.position.z);
+        this->render.position.y = scene->terrain->Height(this->render.position.x, this->render.position.z) - 25.0f;
       }
-      return;
+      break;
 
-    case 0x21:
-      if (owner != nullptr) {
-        this->render.position = owner->render.position;
-        this->render.position.y -= static_cast<float>(static_cast<CGameActor*>(this->m_owner)->unknown_03C8) + 10.0f;
+    case 0x1A:
+      if (this->m_owner == nullptr) {
+        break;
       }
-      return;
-
+      this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+      this->render.position.y -= 20.0f;
     default:
       if (this->m_type == 0x72) {
         this->render.position.x = static_cast<CRenderObject*>(this->m_owner)->render.position.x;
         this->render.position.z = static_cast<CRenderObject*>(this->m_owner)->render.position.z;
       }
-      return;
+      break;
+
+    case 6:
+      break;
   }
 }
 
