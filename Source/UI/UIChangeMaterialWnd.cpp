@@ -162,10 +162,13 @@ void UIChangeMaterialWnd::Slot28(int x, int y) {
     return;
   }
 
-  this->ToScreen(x, y);
+  int screenX = x;
+  int screenY = y;
+  this->ToScreen(screenX, screenY);
   const int itemId = std::atoi(item->itemId.c_str());
   const std::string name = ItemDisplayName(itemId);
-  g_modeMgr.gameMode->ShowTooltip(name.c_str(), x + 5, y - 5, -1, 0, 1);
+  CMode* const mode = g_modeMgr.gameMode;
+  mode->ShowTooltip(name.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
 }
 
 // OFFSET: 0x005E2840
