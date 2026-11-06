@@ -2038,7 +2038,7 @@ void UINavigationV4Wnd::Slot11() {
 
   info->width = this->geometry.width;
   this->info->height = this->geometry.height;
-  const int margin = this->info->expanded ? 272 : 228;
+  const int margin = !this->info->expanded ? 228 : 272;
   const int maximumX = g_renderer->viewport.width - margin;
   if (maximumX < this->geometry.x) {
     this->geometry.x = maximumX;
@@ -2949,8 +2949,7 @@ void UINavigationRuideWnd::Slot15(int width, int) {
 // FUNCTION: fn_03587
 void UINavigationRuideWnd::Paint() {
   this->FillRegion(0, 0, 272, 338, 0xCCCCCC);
-  const int titleHeight = this->DrawTitleBar(true, LookupMessage(3204), 0);
-  this->DrawPanelBackground(titleHeight, 0, "");
+  this->DrawPanelBackground(this->DrawTitleBar(true, LookupMessage(3204), 0), 0, "");
   this->DrawButtonBar(0, 0, 1);
 }
 
