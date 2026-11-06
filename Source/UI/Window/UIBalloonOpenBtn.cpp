@@ -64,8 +64,8 @@ int UIBalloonOpenBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     this->m_balloon->m_fontMode = static_cast<std::int8_t>(g_session.unknown_0F30[0]);
     this->m_balloon->m_richText = 1;
     this->m_balloon->SetLine("", popup->m_color);
-    for (const std::string& description : popup->m_descriptions) {
-      this->m_balloon->AddLine(description.c_str(), popup->m_color);
+    for (auto it = popup->m_descriptions.begin(); it != popup->m_descriptions.end(); ++it) {
+      this->m_balloon->AddLine(it->c_str(), popup->m_color);
     }
 
     this->m_balloon->Move(g_renderer->viewport.centerX + 40, g_renderer->viewport.centerY);
