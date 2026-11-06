@@ -433,7 +433,7 @@ void UIMacroReporterWnd::Slot11() {
 // FUNCTION: fn_09855
 void __stdcall SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second, std::uint8_t third) {
   struct Packet {
-    std::uint16_t id;
+    std::int16_t id;
     std::uint16_t first;
     std::uint16_t second;
     std::uint8_t third;
@@ -441,7 +441,8 @@ void __stdcall SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second
 
   CRagConnection* connection = &GetRagConnection();
   const PacketLengths& lengths = reinterpret_cast<const PacketLengths&>(GetRagConnection());
-  connection->Send(lengths.FixedLength(packet.id), &packet);
+  const int length = lengths.FixedLength(packet.id);
+  connection->Send(length, &packet);
 }
 
 // OFFSET: 0x007F0490
