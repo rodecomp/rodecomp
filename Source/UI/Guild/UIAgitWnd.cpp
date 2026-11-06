@@ -146,7 +146,8 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return this->UIListBox::SendMsg(sender, message, a, b, c, d);
   }
 
-  if (a == 0) {
+  switch (a) {
+  case 0: {
     if (g_session.GetSceneUnknown004C() == 1) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3633)), 0xFF, 0, 0, 0);
       return 0;
@@ -155,18 +156,17 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     GuildInfo* guildInfo = &g_guildInfo;
     uint16_t agitId = static_cast<uint16_t>(guildInfo->GetUnknown0114(this->m_agitIndex));
 
-    LuaScript* luaScript = g_session.m_hotkeyScript;
     char* agitName = nullptr;
-    luaScript->Call("get_agit_name", "d>s", agitId, &agitName);
-    if (agitName != nullptr && strnlen(agitName, 256) != 0) {
+    g_session.m_hotkeyScript->Call("get_agit_name", "d>s", agitId, &agitName);
+    if (strnlen(agitName, 256) != 0) {
       int costZeny = 0;
-      luaScript->Call("get_agit_costzeny", "db>d", agitId, 0, &costZeny);
+      g_session.m_hotkeyScript->Call("get_agit_costzeny", "db>d", agitId, 0, &costZeny);
       int costGuildPoint = 0;
-      luaScript->Call("get_agit_costzeny", "db>d", agitId, 1, &costGuildPoint);
+      g_session.m_hotkeyScript->Call("get_agit_costzeny", "db>d", agitId, 1, &costGuildPoint);
 
       UIAgitMessageBox* box = new UIAgitMessageBox();
-      const char* text = FormatString(LookupMessage(3631), agitName, costZeny, costGuildPoint, 310, 130);
-      box->sub_956130(text);
+      const char* text = FormatString(LookupMessage(3631), agitName, costZeny, costGuildPoint);
+      box->sub_956130(text, 310, 130);
 
       int x = g_renderer->viewport.centerX - box->geometry.width / 2;
       int y = g_renderer->viewport.centerY - box->geometry.height / 2;
@@ -174,11 +174,15 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       box->m_agitId = agitId;
       g_windowMgr.AddRendered(box);
     }
-  } else if (a == 1) {
+    break;
+  }
+  case 1: {
     CMode* mode = g_modeMgr.GetGameMode();
     GuildInfo* guildInfo = &g_guildInfo;
     uint16_t agitId = static_cast<uint16_t>(guildInfo->GetUnknown0114(this->m_agitIndex));
     mode->SendMsg(316, agitId, 0, 0, 0);
+    break;
+  }
   }
 
   return 0;
