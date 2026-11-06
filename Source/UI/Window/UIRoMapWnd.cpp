@@ -232,7 +232,7 @@ void UIRoMapWnd::DrawFieldLabels() {
         continue;
       }
 
-      const int textWidth = this->TextWidth(std::string(name).c_str(), 0, 0, townHeight, 0, 0);
+      const int textWidth = this->TextWidth(name.c_str(), 0, 0, townHeight, 0, 0);
       const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - area[2] - area[0]) * g_depthAverageHalf));
       const int y = townHeight + 2 + area[1];
       this->DrawTextAt(x + 1, y + 1, name.c_str(), 0, 0, townHeight, townOutline, 0, 0);
@@ -260,7 +260,7 @@ void UIRoMapWnd::DrawFieldLabels() {
         levelY = y - levelHeight - 3;
       }
 
-      const int textWidth = this->TextWidth(std::string(name).c_str(), 0, 0, fieldHeight, 0, 0);
+      const int textWidth = this->TextWidth(name.c_str(), 0, 0, fieldHeight, 0, 0);
       const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - field->right - field->left) * g_depthAverageHalf));
       this->DrawTextAt(x + 1, y + 1, name.c_str(), 0, 0, fieldHeight, fieldShadow, 0, 0);
       this->DrawTextAt(x - 1, y - 1, name.c_str(), 0, 0, fieldHeight, fieldShadow, 0, 0);
@@ -270,7 +270,7 @@ void UIRoMapWnd::DrawFieldLabels() {
         continue;
       }
 
-      const int levelWidth = this->TextWidth(std::string(name).c_str(), 0, 0, levelHeight, 1, 0);
+      const int levelWidth = this->TextWidth(name.c_str(), 0, 0, levelHeight, 1, 0);
       const int levelX = std::abs(static_cast<int>(static_cast<float>(levelWidth - field->right - field->left) * g_depthAverageHalf));
       DrawOutlinedText(*this, levelX, levelY, name.c_str(), 0, levelColor, levelOutline, 0, levelHeight, 1, 0);
     }
