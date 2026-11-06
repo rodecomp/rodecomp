@@ -2013,7 +2013,7 @@ void CUIGameSettingsUI::SelectTab4() {
 
 // OFFSET: 0x00A41E50
 // FUNCTION: fn_16004
-void OnFullscreenOptionChanged(int option) {
+void __stdcall OnFullscreenOptionChanged(int option) {
   CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
   if (wnd) {
     wnd->UpdateApplyButton();
@@ -2022,7 +2022,7 @@ void OnFullscreenOptionChanged(int option) {
 
 // OFFSET: 0x00A41FA0
 // FUNCTION: fn_16008
-void OnTrilinearOptionChanged(int option) {
+void __stdcall OnTrilinearOptionChanged(int option) {
   CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
   if (wnd) {
     wnd->UpdateApplyButton();
@@ -2031,7 +2031,7 @@ void OnTrilinearOptionChanged(int option) {
 
 // OFFSET: 0x00A43000
 // FUNCTION: fn_16022
-void OnSpriteDetailLevelChanged(int option) {
+void __stdcall OnSpriteDetailLevelChanged(int option) {
   CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
   if (wnd) {
     wnd->UpdateApplyButton();
@@ -2040,7 +2040,7 @@ void OnSpriteDetailLevelChanged(int option) {
 
 // OFFSET: 0x00A43040
 // FUNCTION: fn_16023
-void OnTextureDetailLevelChanged(int option) {
+void __stdcall OnTextureDetailLevelChanged(int option) {
   CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
   if (wnd) {
     wnd->UpdateApplyButton();
