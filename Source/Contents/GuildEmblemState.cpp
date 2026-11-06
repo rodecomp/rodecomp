@@ -13,7 +13,7 @@ CGuild::~CGuild() = default;
 // FUNCTION: fn_05175
 int CGuildMgr::GetEmblemVersion(std::uint32_t guildId) const {
   const auto it = this->m_guilds.find(guildId);
-  if (it != this->m_guilds.end()) {
+  if (this->m_guilds.end() != it) {
     return it->second.m_emblemVersion;
   }
   return 0;
