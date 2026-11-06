@@ -20,6 +20,13 @@ typedef std::pair<std::string, JsonValue> JsonMember;
 typedef std::vector<JsonMember> JsonObject;
 typedef std::vector<JsonValue> JsonArray;
 
+template <class Elements>
+struct JsonStorage {
+  /* 0000 */ std::allocator<char> allocator;
+  /* 0004 */ Elements elements;
+};
+static_assert(offsetof(JsonStorage<JsonObject>, elements) == 0x04);
+
 class JsonValue {
 public:
   enum ValueType {
@@ -169,11 +176,11 @@ inline double JsonValue::AsDouble() const {
 }
 
 inline const JsonObject& JsonValue::GetObject() const {
-  return *static_cast<const JsonObject*>(this->Dereference()->pointer);
+  return static_cast<const JsonStorage<JsonObject>*>(this->Dereference()->pointer)->elements;
 }
 
 inline const JsonArray& JsonValue::GetArray() const {
-  return *static_cast<const JsonArray*>(this->Dereference()->pointer);
+  return static_cast<const JsonStorage<JsonArray>*>(this->Dereference()->pointer)->elements;
 }
 
 inline const JsonArray& JsonValue::ArrayRange() const {
@@ -181,7 +188,7 @@ inline const JsonArray& JsonValue::ArrayRange() const {
     throw std::domain_error("Not an array");
   }
 
-  return *static_cast<const JsonArray*>(this->pointer);
+  return static_cast<const JsonStorage<JsonArray>*>(this->pointer)->elements;
 }
 
 inline const JsonObject* JsonValue::ObjectRange() const {
@@ -189,7 +196,7 @@ inline const JsonObject* JsonValue::ObjectRange() const {
     case 10:
       return nullptr;
     case 11:
-      return static_cast<const JsonObject*>(this->pointer);
+      return &static_cast<const JsonStorage<JsonObject>*>(this->pointer)->elements;
     default:
       throw std::domain_error("Not an object");
   }
