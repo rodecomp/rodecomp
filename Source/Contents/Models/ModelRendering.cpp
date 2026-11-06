@@ -186,8 +186,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
 void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode) {
   // GLOBAL: gl_24587
   static ProjectedVertex projected[30000];
-  struct matrix camera;
-  std::memcpy(camera.values, matrix, sizeof(camera.values));
+  const struct matrix& camera = *reinterpret_cast<const struct matrix*>(matrix);
   struct matrix combined;
   combined.Compose(this->transform, camera);
   float ambient[3];
