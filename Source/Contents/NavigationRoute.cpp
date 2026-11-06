@@ -571,8 +571,8 @@ std::string CNavigationManager::DestinationTitle() {
     CNaviInfo* info = this->data.GetInfo();
     if (info != nullptr) {
       this->destinationTitle.assign(info->GetTitle());
-      return this->destinationTitle;
     }
+    return this->destinationTitle;
   }
 
   this->destinationTitle.assign(buffer, std::strlen(buffer));
