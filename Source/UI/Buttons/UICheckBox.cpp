@@ -23,6 +23,7 @@ UICheckBox::~UICheckBox() = default;
 // OFFSET: 0x0085C8C0
 // FUNCTION: fn_10803
 void UICheckBox::Paint() {
+  int width = 0;
   if (this->m_checked.empty() || this->m_unchecked.empty()) {
     return;
   }
@@ -36,12 +37,19 @@ void UICheckBox::Paint() {
     return;
   }
 
-  int width = 0;
-  if (this->geometry.unknown_0030 == 0 || this->geometry.unknown_0030 == 1) {
-    const std::string& name = this->geometry.unknown_0030 == 0 ? this->m_unchecked : this->m_checked;
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
+  switch (this->geometry.unknown_0030) {
+  case 0: {
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str())));
     this->DrawBitmap(0, (this->geometry.height - bitmap->image.height) / 2, &bitmap->image, false);
     width = bitmap->image.width;
+    break;
+  }
+  case 1: {
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
+    this->DrawBitmap(0, (this->geometry.height - bitmap->image.height) / 2, &bitmap->image, false);
+    width = bitmap->image.width;
+    break;
+  }
   }
 
   if (!this->m_text.empty()) {
