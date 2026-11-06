@@ -584,22 +584,6 @@ __forceinline void UIMessageBox::FormatCountdown() {
   this->messageText = text;
 }
 
-// INLINED
-__forceinline void UIMessageBox::AddButton(const char* name, int id, int x, int y) {
-  auto* button = new UIBitmapButton();
-  const char* suffixes[] = {"", "_a", "_b"};
-
-  for (int state = 0; state < 3; ++state) {
-    const std::string path = std::string(prefix) + name + suffixes[state] + ".bmp";
-    button->SetBitmap(path.c_str(), state, 0);
-  }
-
-  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->Move(x, y);
-  button->SetId(id);
-  this->AddChild(button);
-}
-
 // OFFSET: 0x008A7350
 // FUNCTION: fn_11713
 void UIMessageBox::Configure(
@@ -642,33 +626,75 @@ void UIMessageBox::Configure(
   this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->messageText.data()), static_cast<int>(static_cast<double>(width) / 7.5), 0, 0);
   this->m_message0 = type == 2 ? 188 : 185;
 
+  const std::string prefix("유저인터페이스\\");
+  int positions[3][2] = {{189, height - 24}, {189, height - 24}, {234, height - 24}};
+  const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int ids[3] = {184, 187, 188};
+
   switch (type) {
-  case 0:
-    this->AddButton("btn_ok", 184, width - 46, height - 24);
+  case 0: {
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + names[0][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[0][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[0][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(width - 46, height - 24);
+    button->SetId(184);
+    this->AddChild(button);
     this->m_message0 = 184;
     break;
-  case 2:
-    this->AddButton("btn_ok", 187, width - 91, height - 24);
-    this->AddButton("btn_cancel", 188, width - 46, height - 24);
+  }
+  case 2: {
+    int x = width - 91;
+
+    for (int index = 1; index < 3; ++index) {
+      positions[index][0] = x;
+      auto* button = new UIBitmapButton();
+      button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(positions[index][0], positions[index][1]);
+      button->SetId(ids[index]);
+      this->AddChild(button);
+      x += 45;
+    }
+
     this->m_message0 = defaultAccept ? 187 : 188;
     this->m_message1 = 188;
     break;
-  case 4:
-    this->AddButton("btn_cancel", 185, width - 46, height - 24);
+  }
+  case 4: {
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + names[2][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[2][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[2][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(width - 46, height - 24);
+    button->SetId(185);
+    this->AddChild(button);
     this->m_message0 = 185;
     break;
+  }
   case 5: {
-    this->AddButton("btn_ok", 184, width - 46, height - 24);
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + names[0][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[0][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[0][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(width - 46, height - 24);
+    button->SetId(184);
+    this->AddChild(button);
     this->m_message0 = 184;
 
-    auto* button = new UITextButton();
-    button->Configure(LookupMessage(3445), 0x00F4934A, 0, 12, 0, 0);
-    button->m_hoverColor = 0x00FF7864;
-    button->Move(14, 70);
-    button->SetId(426);
-    button->SetDisabled(0);
-    button->Invalidate();
-    this->AddChild(button);
+    auto* link = new UITextButton();
+    link->Configure(LookupMessage(3445), 0x00F4934A, 0, 12, 0, 0);
+    link->m_hoverColor = 0x00FF7864;
+    link->Move(14, 70);
+    link->SetId(426);
+    link->SetDisabled(0);
+    link->Invalidate();
+    this->AddChild(link);
     break;
   }
   default:
