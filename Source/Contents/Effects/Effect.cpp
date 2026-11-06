@@ -20,8 +20,12 @@
 // OFFSET: 0x00B4DAE0
 // FUNCTION: fn_18979
 CEffect::CEffect(int value)
-    : id(value), position{}, sourcePosition{}, actor(0), sourceActor(0), frame(0), unknown_002C(60), unknown_0030(1), outsideRange(0), range(130),
-      unknown_00B0(-1), retained(0), forceRender(0), unknown_00C4(0), unknown_00C8(0) {
+    : id(value), position{0.0f, 0.0f, 0.0f}, sourcePosition{0.0f, 0.0f, 0.0f}, actor(0), sourceActor(0), frame(0), unknown_002C(60), unknown_0030(1), outsideRange(0), range(130),
+      unknown_00B0(-1) {
+  this->retained = 0;
+  this->forceRender = 0;
+  this->unknown_00C8 = 0;
+  this->unknown_00C4 = 0;
 }
 
 // OFFSET: 0x00B4DD10
