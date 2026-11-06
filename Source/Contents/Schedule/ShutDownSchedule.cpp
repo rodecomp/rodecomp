@@ -33,7 +33,8 @@ void CShutDownSchedule::UpdateNotice() {
 void CShutDownSchedule::Process(const std::uint64_t& now) {
   if (this->noticeIndex < 6) {
     if (g_modeMgr.GetGameMode()) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2020)), 0xFFFF, 0, 0, 0);
+      const char* message = LookupMessage(2020);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 0, 0, 0);
       ++this->noticeIndex;
       this->UpdateNotice();
     }
