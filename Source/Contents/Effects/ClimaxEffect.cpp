@@ -104,9 +104,9 @@ void CClimaxEffect::Slot03() {
 // OFFSET: 0x00707270
 // FUNCTION: fn_07053
 void CClimaxEffect::Slot04() {
-  for (CParticle* particle : this->particles) {
-    if (particle) {
-      static_cast<CEZ2STRParticle*>(particle)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  for (int index = 0; index < 2; ++index) {
+    if (this->particles[index]) {
+      static_cast<CEZ2STRParticle*>(this->particles[index])->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
   }
 }
