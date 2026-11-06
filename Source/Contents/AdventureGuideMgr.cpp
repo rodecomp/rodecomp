@@ -463,13 +463,14 @@ int InsertQuestSubMenu(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertQuestSubMenu : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
+
 
 // OFFSET: 0x0066AF10
 // FUNCTION: fn_05284
@@ -558,13 +559,14 @@ int InsertQuestReward(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertQuestReward : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
+
 
 // OFFSET: 0x00668EA0
 // FUNCTION: fn_05270
@@ -815,13 +817,14 @@ int InsertWeaponSubMenu(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertWeaponSubMenu : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
+
 
 // OFFSET: 0x0066B810
 // FUNCTION: fn_05288
@@ -887,13 +890,14 @@ int InsertWeaponContents(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertWeaponContents : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
+
 
 // OFFSET: 0x0066BB10
 // FUNCTION: fn_05289
@@ -917,13 +921,14 @@ int InsertWeaponObtainGuide(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertWeaponObtainGuide : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
+
 
 // OFFSET: 0x00668550
 // FUNCTION: fn_05266

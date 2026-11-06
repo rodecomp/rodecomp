@@ -57,7 +57,7 @@ void UIBitmapButton::Paint() {
     break;
   }
 
-  if (this->m_disabled != 0 && !this->m_names[3].empty()) {
+  if (this->m_disabled != 0 && this->m_names[3].size() > 0) {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[3].c_str())));
   }
 
@@ -66,3 +66,4 @@ void UIBitmapButton::Paint() {
     this->parent->Invalidate();
   }
 }
+

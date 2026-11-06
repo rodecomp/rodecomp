@@ -20,13 +20,17 @@ void DecodeSrcDst(const unsigned char* packed, int* srcX, int* srcY, int* dstX, 
 // OFFSET: 0x00D08600
 // FUNCTION: fn_21589
 void SendPacketHeader(std::uint16_t packetType) {
-  std::uint16_t packet = packetType;
-  GetRagConnection().Send(sizeof(packet), &packet);
+  std::uint16_t packet[1];
+  packet[0] = packetType;
+  GetRagConnection().Send(sizeof(packet), packet);
 }
+
 
 // OFFSET: 0x00D08620
 // FUNCTION: fn_21590
 void SendPacketHeader2(std::uint16_t packetType) {
-  std::uint16_t packet = packetType;
-  GetRagConnection().Send(sizeof(packet), &packet);
+  std::uint16_t packet[1];
+  packet[0] = packetType;
+  GetRagConnection().Send(sizeof(packet), packet);
 }
+

@@ -536,11 +536,12 @@ bool CPlayer::IsSpecialState(int state) const {
 // FUNCTION: fn_22619
 void CGrannyPc::Slot39(int value) {
   if (this->unknown_0440 != 11 || this->unknown_0444 != 0) {
-    value = std::min(value, g_maxMoveSpeed);
+    value = value > g_maxMoveSpeed ? g_maxMoveSpeed : value;
   }
 
   this->render.unknown_0064 = static_cast<float>(value) / 432.0f;
 }
+
 
 // OFFSET: 0x00DB0710
 // FUNCTION: fn_22620

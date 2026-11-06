@@ -127,8 +127,9 @@ void CAxeBoomerang::Slot03() {
 // OFFSET: 0x006F63F0
 // FUNCTION: fn_06843
 void CAxeBoomerang::Slot04() {
-  if (this->unknown_00CC) {
+  CEZ2STRParticle* particle = reinterpret_cast<CEZ2STRParticle*>(this->unknown_00CC);
+  if (particle) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    reinterpret_cast<CEZ2STRParticle*>(this->unknown_00CC)->DrawScreen(mode->camera->frame.view);
+    particle->DrawScreen(mode->camera->frame.view);
   }
 }
