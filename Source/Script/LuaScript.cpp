@@ -141,7 +141,7 @@ int SetSubChatWndOption(lua_State* state) {
   const int option = static_cast<int>(luaL_checknumber(state, 3));
   const int value = static_cast<int>(luaL_checknumber(state, 4));
 
-  if (type == "No") {
+  if (type == "On") {
     const auto window = g_session.m_noSubChatWnds.find(index);
     if (window != g_session.m_noSubChatWnds.end()) {
       window->second.options[option - 1] = value != 0;
