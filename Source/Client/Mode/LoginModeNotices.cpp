@@ -72,51 +72,69 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
 
   if (remainingTime == 0xFFFFFFFE && packet->remainingFreeTime == 0xFFFFFFFE) {
     const char* message = LookupMessage(680);
-    const std::uint8_t source[] = {0x34, 0x90, 0x59, 0x99};
-    // GLOBAL: gl_25061
-    thread_local EncryptedName<sizeof(source), 0x4B755DB19953E311ULL> format(source);
-    sprintf(text, format.Text(), message);
+    const char* format = [] {
+      const std::uint8_t source[] = {0x34, 0x90, 0x59, 0x99};
+      // GLOBAL: gl_25061
+      thread_local EncryptedName<sizeof(source), 0x4B755DB19953E311ULL> name(source);
+      return name.Text();
+    }();
+    sprintf(text, format, message);
   } else if (remainingTime == 0xFFFFFFFD && packet->remainingFreeTime == 0xFFFFFFFD) {
     const char* message = LookupMessage(1052);
-    const std::uint8_t source[] = {0x7E, 0xC4, 0x6B, 0x59};
-    // GLOBAL: gl_25062
-    thread_local EncryptedName<sizeof(source), 0xF715514F5961B75BULL> format(source);
-    sprintf(text, format.Text(), message);
+    const char* format = [] {
+      const std::uint8_t source[] = {0x7E, 0xC4, 0x6B, 0x59};
+      // GLOBAL: gl_25062
+      thread_local EncryptedName<sizeof(source), 0xF715514F5961B75BULL> name(source);
+      return name.Text();
+    }();
+    sprintf(text, format, message);
   } else if (remainingTime == 0xFFFFFFFF && packet->remainingFreeTime == 0xFFFFFFFF) {
     const char* message = LookupMessage(725);
-    const std::uint8_t source[] = {0xBC, 0x4A, 0xF7, 0x31};
-    // GLOBAL: gl_25063
-    thread_local EncryptedName<sizeof(source), 0x4191BB5531FD3999ULL> format(source);
-    sprintf(text, format.Text(), message);
-  } else if (remainingTime == 0) {
-    if (packet->remainingFreeTime > 0) {
-      const char* message = LookupMessage(541);
-      const std::uint8_t source[] = {0x8A, 0x7A, 0x03, 0xE7};
-      // GLOBAL: gl_25065
-      thread_local EncryptedName<sizeof(source), 0x9569C9C7E70909AFULL> format(source);
-      sprintf(text, format.Text(), message);
-      const std::uint32_t freeTime = packet->remainingFreeTime;
-      sprintf(text + strlen(text), LookupMessage(679), freeTime / 60, freeTime % 60);
-    } else {
-      const std::uint8_t source[] = {0x67, 0xBF};
-      // GLOBAL: gl_25066
-      thread_local EncryptedName<sizeof(source), 0xD7A749EB27D5BF6DULL> format(source);
-      sprintf(text, format.Text());
-    }
-  } else {
+    const char* format = [] {
+      const std::uint8_t source[] = {0xBC, 0x4A, 0xF7, 0x31};
+      // GLOBAL: gl_25063
+      thread_local EncryptedName<sizeof(source), 0x4191BB5531FD3999ULL> name(source);
+      return name.Text();
+    }();
+    sprintf(text, format, message);
+  } else if (remainingTime != 0) {
     const std::uint32_t freeTime = packet->remainingFreeTime;
     if (freeTime != 0) {
       sprintf(
-        text, LookupMessage(726), remainingTime / 1440, remainingTime / 60 % 24, remainingTime % 60, freeTime / 60, freeTime % 60
+        text, LookupMessage(726), remainingTime / 60 / 24, remainingTime / 60 % 24, remainingTime % 60, freeTime / 60, freeTime % 60
       );
     } else {
       const char* message = LookupMessage(533);
-      const std::uint8_t source[] = {0xF6, 0x4A, 0x65, 0x11};
-      // GLOBAL: gl_25064
-      thread_local EncryptedName<sizeof(source), 0xB19D1FA9116F39D3ULL> format(source);
-      sprintf(text, format.Text(), message);
+      const char* format = [] {
+        const std::uint8_t source[] = {0xF6, 0x4A, 0x65, 0x11};
+        // GLOBAL: gl_25064
+        thread_local EncryptedName<sizeof(source), 0xB19D1FA9116F39D3ULL> name(source);
+        return name.Text();
+      }();
+      sprintf(text, format, message);
       const std::uint32_t time = packet->remainingTime;
-      sprintf(text + strlen(text), LookupMessage(677), time / 1440, time / 60 % 24, time % 60);
+      sprintf(text + strlen(text), LookupMessage(677), time / 60 / 24, time / 60 % 24, time % 60);
+    }
+  } else {
+    if (packet->remainingFreeTime > 0) {
+      const char* message = LookupMessage(541);
+      const char* format = [] {
+        const std::uint8_t source[] = {0x8A, 0x7A, 0x03, 0xE7};
+        // GLOBAL: gl_25065
+        thread_local EncryptedName<sizeof(source), 0x9569C9C7E70909AFULL> name(source);
+        return name.Text();
+      }();
+      sprintf(text, format, message);
+      const std::uint32_t freeTime = packet->remainingFreeTime;
+      sprintf(text + strlen(text), LookupMessage(679), freeTime / 60, freeTime % 60);
+    } else {
+      const char* format = [] {
+        const std::uint8_t source[] = {0x67, 0xBF};
+        // GLOBAL: gl_25066
+        thread_local EncryptedName<sizeof(source), 0xD7A749EB27D5BF6DULL> name(source);
+        return name.Text();
+      }();
+      sprintf(text, format);
     }
   }
 
