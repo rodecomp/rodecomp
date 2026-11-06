@@ -70,7 +70,7 @@ void CSmokeEffect::Slot03() {
         particle->SetAction("이팩트\\굴뚝연기.act");
         particle->scale = 1.5f;
         spin = 0.75f;
-        particle->frameDelay = static_cast<float>(std::max(rand() % 3, 0) + 3) / 10.0f;
+        particle->frameDelay = static_cast<float>(std::max(0, rand() % 3) + 3) / 10.0f;
         particle->unknown_00E8 = 0;
         particle->velocity.x = 0.0f;
         particle->velocity.y = 0.0f;
@@ -78,8 +78,8 @@ void CSmokeEffect::Slot03() {
         particle->flags = 1;
         particle->alpha = 255;
         rotation.IsIdentity();
-        rotation.MakeXRotation(static_cast<float>(std::max(rand() % 30, 0) + 75) / 180.0f * 3.141592f);
-        rotation.AppendYRotation(static_cast<float>(std::max(rand() % 360, 0)) / 180.0f * 3.141592f);
+        rotation.MakeXRotation(static_cast<float>(std::max(0, rand() % 30) + 75) / 180.0f * 3.141592f);
+        rotation.AppendYRotation(static_cast<float>(std::max(0, rand() % 360)) / 180.0f * 3.141592f);
         this->visibleCount = static_cast<int>(RandomRange(1.0f, static_cast<float>(this->particles.size())));
       }
 
