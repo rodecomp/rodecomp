@@ -5,7 +5,11 @@
 // OFFSET: 0x0084EAB0
 // FUNCTION: fn_10650
 UIBitmapButton::UIBitmapButton()
-    : UIButton(), m_bitmapWidth(0), m_bitmapHeight(0), m_invalidateParent(0) {
+    : UIButton(), m_names{std::string(), std::string(), std::string(), std::string()} {
+  this->m_bitmapWidth = 0;
+  this->m_bitmapHeight = 0;
+  this->m_names[3].clear();
+  this->m_invalidateParent = 0;
 }
 
 // OFFSET: 0x008511B0
