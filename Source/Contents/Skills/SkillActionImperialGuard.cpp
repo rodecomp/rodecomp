@@ -231,8 +231,10 @@ void CEfstAction_IG_HOLY_SHIELD::Slot00(int efstId, int value, int argument3, in
 // FUNCTION: fn_08599
 void CEfstAction_IG_HOLY_SHIELD::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop"));
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop_bottom"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop"));
+    effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop_bottom"));
   }
 }
 
