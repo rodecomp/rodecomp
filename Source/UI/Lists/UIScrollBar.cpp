@@ -896,7 +896,7 @@ void UIChatHisBox::Show(int visible) {
 
 // OFFSET: 0x0089EAD0
 // FUNCTION: fn_11604
-bool UIChatHisBox::SaveChatLog(const char* path) {
+int UIChatHisBox::SaveChatLog(const char* path) {
   std::FILE* file = std::fopen(path, "w");
   if (!file) {
     return false;

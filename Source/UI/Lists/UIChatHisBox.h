@@ -33,7 +33,7 @@ public:
   std::string RenderNavigationLinks(const char* text, std::string& source);
   void RewrapLinkLines(std::vector<std::string>& wrapped, int& mode);
   __declspec(noinline) const char* HistoryText(unsigned int index);
-  bool SaveChatLog(const char* path);
+  int SaveChatLog(const char* path);
   __declspec(noinline) void PlaceNaviLinks(int line);
   void DropOldestLines();
   void ShiftNaviLinks();
