@@ -8036,6 +8036,7 @@ UIMerchantItemPurchaseMSGWnd::UIMerchantItemPurchaseMSGWnd()
   this->secondLine = nullptr;
   this->buyButton = nullptr;
   this->cancelButton = nullptr;
+  this->purchaseIndex = 0;
   this->unknown_00D0 = 0;
 }
 
