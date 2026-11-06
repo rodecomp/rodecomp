@@ -677,7 +677,8 @@ void CGameMode::sub_CEB8E0() {
     return;
   }
 
-  GameModeTextRecord record = {};
+  GameModeTextRecord record;
+  std::memset(record.buffer, 0, sizeof(record.buffer));
   record.header = 0x038808AE;
   record.firstLength = static_cast<int>(this->unknown_03C8.size());
   record.secondLength = static_cast<int>(this->unknown_03E0.size());
