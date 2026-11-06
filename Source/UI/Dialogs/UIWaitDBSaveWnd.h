@@ -11,6 +11,7 @@ class CSprRes;
 class UIWaitDBSaveWnd : public UIWindow {
 public:
   UIWaitDBSaveWnd();
+  UIWaitDBSaveWnd(const char* sprite, const char* action);
   void Slot15(int width, int height) override;
   void Slot18() override;
   void Slot19() override;

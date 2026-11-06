@@ -21,7 +21,9 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -47,27 +49,37 @@ private:
   bool m_encrypted;
 };
 
+// INLINED
+__forceinline const char* WaitSpriteName() {
+  const char spriteSource[] = {'\x1A', '\x44', '\xF0', '\x3D', '\x17', '\x01', '\xD2', '\x66', '\x3B', '\x40', '\xC5', '\x07', '\x3C',
+                               '\x34', '\xCD', '\x68', '\x2C', '\x41', '\xF0', '\x27', '\x34', '\x6D', '\xF2', '\x77', '\x3F', '\x25'};
+  thread_local EncryptedName<sizeof(spriteSource), 0x078143534999254DULL> spriteName(spriteSource);
+  return spriteName.Text();
 }
 
-// OFFSET: 0x00AB49D0
-// FUNCTION: fn_17446
-UIWaitDBSaveWnd::UIWaitDBSaveWnd()
+// INLINED
+__forceinline const char* WaitActionName() {
+  const char actionSource[] = {'\x36', '\xCE', '\xE6', '\x4D', '\xCF', '\x8B', '\xAC', '\x76', '\x17', '\xCA', '\xD3', '\x77', '\xE4',
+                               '\xBE', '\xB3', '\x78', '\x00', '\xCB', '\xE6', '\x57', '\xEC', '\xE7', '\x9E', '\x74', '\x15', '\xAF'};
+  thread_local EncryptedName<sizeof(actionSource), 0x17FFC98B398FAF61ULL> actionName(actionSource);
+  return actionName.Text();
+}
+
+}
+
+// INLINED
+UIWaitDBSaveWnd::UIWaitDBSaveWnd(const char* sprite, const char* action)
     : UIWindow(0), m_animation(0), m_frame(0), m_loopLimit(0), m_sprite(nullptr), m_action(nullptr), m_startTime(0), m_loop(1),
       m_closeTime(0) {
-  const std::uint8_t actionSource[] = {0x36, 0xCE, 0xE6, 0x4D, 0xCF, 0x8B, 0xAC, 0x76, 0x17, 0xCA, 0xD3, 0x77, 0xE4,
-                                       0xBE, 0xB3, 0x78, 0x00, 0xCB, 0xE6, 0x57, 0xEC, 0xE7, 0x9E, 0x74, 0x15, 0xAF};
-  thread_local EncryptedName<sizeof(actionSource), 0x17FFC98B398FAF61ULL> actionName(actionSource);
-  const char* action = actionName.Text();
-
-  const std::uint8_t spriteSource[] = {0x1A, 0x44, 0xF0, 0x3D, 0x17, 0x01, 0xD2, 0x66, 0x3B, 0x40, 0xC5, 0x07, 0x3C,
-                                       0x34, 0xCD, 0x68, 0x2C, 0x41, 0xF0, 0x27, 0x34, 0x6D, 0xF2, 0x77, 0x3F, 0x25};
-  thread_local EncryptedName<sizeof(spriteSource), 0x078143534999254DULL> spriteName(spriteSource);
-  const char* sprite = spriteName.Text();
-
   this->m_closeTime = timeGetTime() + 60000;
   this->m_sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprite));
   this->m_action = static_cast<CActRes*>(ResourceMgr::Instance().Load(action));
   this->m_startTime = timeGetTime();
+}
+
+// OFFSET: 0x00AB49D0
+// FUNCTION: fn_17446
+UIWaitDBSaveWnd::UIWaitDBSaveWnd() : UIWaitDBSaveWnd(WaitSpriteName(), WaitActionName()) {
 }
 
 // OFFSET: 0x00AB4CE0
