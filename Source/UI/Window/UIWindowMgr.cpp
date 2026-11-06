@@ -2455,47 +2455,6 @@ void UIWindowMgr::DrawLoginOverlay() {
 // FUNCTION: fn_17220
 bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
   switch (action) {
-  case 9:
-    if (HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
-      break;
-    }
-
-    if (this->modifierKey == 0) {
-      if (UIWindow* window = this->LookupWindow(140)) {
-        window->SendMsg(nullptr, 6, 192, 0, 0, 0);
-        return false;
-      }
-
-      if (UIWindow* window = this->LookupWindow(37)) {
-        window->SendMsg(nullptr, 6, 216, 0, 0, 0);
-        return false;
-      }
-    }
-
-    if (!this->hoverWindow) {
-      this->RestoreInput();
-      return false;
-    }
-
-    if (GetAsyncKeyState(VK_SHIFT)) {
-      if (this->hoverWindow && this->hoverWindow->parent->PreviousFocusable(this->hoverWindow) == nullptr) {
-        this->FocusLast();
-      } else {
-        this->FocusPrevious();
-      }
-    } else if (this->hoverWindow && this->hoverWindow->parent->NextFocusable(this->hoverWindow) == nullptr) {
-      this->FocusFirst();
-    } else {
-      this->FocusNext();
-    }
-    return false;
-
-  case 13:
-    if (pressed) {
-      this->sub_A8CA20();
-    }
-    break;
-
   case 18:
     if (this->modifierKey == 0) {
       if (UIWindow* window = this->LookupWindow(140)) {
@@ -2639,6 +2598,47 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     return false;
   }
 
+  case 9:
+    if (HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
+      break;
+    }
+
+    if (this->modifierKey == 0) {
+      if (UIWindow* window = this->LookupWindow(140)) {
+        window->SendMsg(nullptr, 6, 192, 0, 0, 0);
+        return false;
+      }
+
+      if (UIWindow* window = this->LookupWindow(37)) {
+        window->SendMsg(nullptr, 6, 216, 0, 0, 0);
+        return false;
+      }
+    }
+
+    if (!this->hoverWindow) {
+      this->RestoreInput();
+      return false;
+    }
+
+    if (GetAsyncKeyState(VK_SHIFT)) {
+      if (this->hoverWindow && this->hoverWindow->parent->PreviousFocusable(this->hoverWindow) == nullptr) {
+        this->FocusLast();
+      } else {
+        this->FocusPrevious();
+      }
+    } else if (this->hoverWindow && this->hoverWindow->parent->NextFocusable(this->hoverWindow) == nullptr) {
+      this->FocusFirst();
+    } else {
+      this->FocusNext();
+    }
+    return false;
+
+  case 13:
+    if (pressed) {
+      this->sub_A8CA20();
+    }
+    break;
+
   case 33:
     if (this->window_4F1D4) {
       this->window_4F1D4->BroadcastMsg3();
@@ -2653,33 +2653,20 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     }
     break;
 
-  case 35:
-    if (this->window_4F1D4) {
-      this->window_4F1D4->SendMsg(nullptr, 114, 0, 0, 0, 0);
-    }
-    break;
+  case 38:
+    this->ConfirmActiveDialog();
+    return false;
 
-  case 36:
-    if (this->window_4F1D4) {
-      this->window_4F1D4->SendMsg(nullptr, 179, 0, 0, 0, 0);
-      return false;
-    }
-    break;
+  case 40:
+    this->SubmitActiveDialog();
+    return false;
 
   case 37:
     this->CancelActiveDialog();
     return false;
 
-  case 38:
-    this->ConfirmActiveDialog();
-    return false;
-
   case 39:
     this->BroadcastMessage21();
-    return false;
-
-  case 40:
-    this->SubmitActiveDialog();
     return false;
 
   case 44:
@@ -2694,6 +2681,19 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     if (HIBYTE(GetAsyncKeyState(VK_CONTROL)) && this->window_4F1D4) {
       this->window_4F1D4->SendMsg(nullptr, 177, 0, 0, 0, 0);
       return false;
+    }
+    break;
+
+  case 36:
+    if (this->window_4F1D4) {
+      this->window_4F1D4->SendMsg(nullptr, 179, 0, 0, 0, 0);
+      return false;
+    }
+    break;
+
+  case 35:
+    if (this->window_4F1D4) {
+      this->window_4F1D4->SendMsg(nullptr, 114, 0, 0, 0, 0);
     }
     break;
   }
