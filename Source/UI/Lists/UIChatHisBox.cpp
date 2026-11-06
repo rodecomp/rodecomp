@@ -17,6 +17,7 @@
 #include <string>
 
 extern template std::string::basic_string(const std::string&);
+extern template std::string& std::string::replace(std::string::size_type, std::string::size_type, const char*, std::string::size_type);
 
 // OFFSET: 0x00881BB0
 // FUNCTION: fn_11300
@@ -29,21 +30,13 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
     int position = 0;
 
     for (int index = 0; index < count; ++index) {
-      UIItemTagButton* tag = row[index];
-      const int line = tag->line;
+      const int line = row[index]->line;
       result = this->lines[line];
-      const std::string label = tag->label;
+      const std::string label = row[index]->label;
 
-      if (label.find(LookupMessage(581)) == std::string::npos) {
-        const std::string bracket = this->BracketName(reinterpret_cast<const ITEM_INFO&>(tag->unknown_00F8).DisplayName(0));
-        const std::string tail = result.substr(position);
-        const std::size_t found = tail.find(bracket);
-        const std::string head = result.substr(0, position + found);
-        position += found + std::strlen(bracket.c_str());
-        tag->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
-      } else {
+      if (label.find(LookupMessage(581)) != std::string::npos) {
         const std::size_t found = result.find(LookupMessage(581));
-        const std::string player = LookupPlayerName(tag->unknown_01F8);
+        const std::string player = LookupPlayerName(row[index]->unknown_01F8);
 
         if (std::strcmp(player.c_str(), name) == 0) {
           result.replace(found, std::strlen(LookupMessage(581)), name, std::strlen(name));
@@ -53,15 +46,22 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
           const std::size_t start = tail.find(opening);
           const std::string head = result.substr(0, position + start);
           position += start + std::strlen(opening.c_str()) + 1;
-          tag->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+          row[index]->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
 
-          const std::string bracket = this->BracketName(reinterpret_cast<const ITEM_INFO&>(tag->unknown_00F8).DisplayName(0));
-          tag->SetTooltip(bracket.c_str());
+          const std::string bracket = this->BracketName(reinterpret_cast<const ITEM_INFO&>(row[index]->unknown_00F8).DisplayName(0));
+          row[index]->SetTooltip(bracket.c_str());
           const std::string text = bracket.c_str();
-          tag->label = text;
-          tag->ResizeToTextClipped(this->TextWidth(bracket.c_str(), 0, 0, 12, 0, 0) + 1, tag->geometry.height);
+          row[index]->label = text;
+          row[index]->ResizeToTextClipped(this->TextWidth(bracket.c_str(), 0, 0, 12, 0, 0) + 1, row[index]->geometry.height);
           this->lines[line] = result;
         }
+      } else {
+        const std::string bracket = this->BracketName(reinterpret_cast<const ITEM_INFO&>(row[index]->unknown_00F8).DisplayName(0));
+        const std::string tail = result.substr(position);
+        const std::size_t found = tail.find(bracket);
+        const std::string head = result.substr(0, position + found);
+        position += found + std::strlen(bracket.c_str());
+        row[index]->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
       }
     }
   }
