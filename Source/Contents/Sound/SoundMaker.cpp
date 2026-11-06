@@ -856,10 +856,10 @@ void CNpc::SendMsg(
     }
     static_cast<UIPcGage*>(this->unknown_0430)->SetValues(b, d);
     static_cast<UIPcGage*>(this->unknown_0430)->SetLimits(0, 0);
-    this->unknown_0430->Move(this->render.screenX - 30, this->render.screenY + ScaleByScreenHeight(12));
+    const int y = this->render.screenY + ScaleByScreenHeight(12);
+    this->unknown_0430->Move(this->render.screenX - 30, y);
     return;
   }
-
   CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
