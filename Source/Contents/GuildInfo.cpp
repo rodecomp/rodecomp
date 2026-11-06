@@ -310,11 +310,10 @@ void GuildInfo::UpdateUnknown00D4(Unknown00D4Entry entry) {
 // OFFSET: 0x00AE3F40
 // FUNCTION: fn_18027
 void GuildInfo::AddUnknown0114(int value) {
-  for (auto it = this->unknown_0114.begin(); it != this->unknown_0114.end(); ++it) {
-    if (value == *it) {
-      return;
-    }
+  if (std::find(this->unknown_0114.begin(), this->unknown_0114.end(), value) != this->unknown_0114.end()) {
+    return;
   }
+
   this->unknown_0114.push_back(value);
 }
 
