@@ -157,7 +157,8 @@ public:
 // FUNCTION: fn_08676
 void CSkillAction_NW_INTENSIVE_AIM::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_helix"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_helix"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -166,12 +167,16 @@ void CSkillAction_NW_INTENSIVE_AIM::Slot11(int level, CGameActor* source, CGameA
 void CEfstAction_INTENSIVE_AIM_COUNT::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     for (int index = 0; index <= 10; ++index) {
-      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", index)));
+      EffectLists* effects = g_effectMgr;
+      effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", index)));
     }
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"));
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", value)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"));
+    effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", value)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (value == 10) {
-      g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effects = g_effectMgr;
+      effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
   }
 }
@@ -187,9 +192,11 @@ void CEfstAction_INTENSIVE_AIM_COUNT::Slot02(int efstId, int value, int argument
 void CEfstAction_INTENSIVE_AIM::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     for (int index = 0; index <= 10; ++index) {
-      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", index)));
+      EffectLists* effects = g_effectMgr;
+      effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", index)));
     }
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"));
   }
 }
 
@@ -200,27 +207,35 @@ void CSkillAction_NW_GRENADE_FRAGMENT::Slot11(int level, CGameActor* source, CGa
     return;
   }
 
+  EffectLists* effects;
   switch (level) {
   case 1:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_water"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_water"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 2:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_wind"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_wind"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 3:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_earth"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_earth"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 4:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_fire"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_fire"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 5:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_darkness"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_darkness"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 6:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_saint"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_saint"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case 7:
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_reset"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_reset"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   }
 }
@@ -301,7 +316,8 @@ void CSkillAction_NW_ONLY_ONE_BULLET::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08688
 void CSkillAction_NW_ONLY_ONE_BULLET::Slot09(int argument1, int argument2, int argument3) {
   if (CGameActor* source = reinterpret_cast<CGameActor*>(argument2)) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("only_one_bullet"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("only_one_bullet"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -314,7 +330,8 @@ void CSkillAction_NW_ONLY_ONE_BULLET::Slot16(int level, CGameActor* source, CGam
   }
 
   const float angle = ScreenAngle(&origin->render.position.x, &source->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("only_one_bullet_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("only_one_bullet_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot17(angle);
   }
@@ -332,7 +349,8 @@ void CSkillAction_NW_SPIRAL_SHOOTING::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08692
 void CSkillAction_NW_SPIRAL_SHOOTING::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_shooting"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_shooting"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -348,7 +366,8 @@ void CSkillAction_NW_MAGAZINE_FOR_ONE::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08695
 void CSkillAction_NW_MAGAZINE_FOR_ONE::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("magazine_for_one"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("magazine_for_one"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -363,8 +382,10 @@ void CSkillAction_NW_WILD_FIRE::Slot08(int level, CGameActor* source) {
 // OFFSET: 0x00790070
 // FUNCTION: fn_08698
 void CSkillAction_NW_WILD_FIRE::Slot12(vector3d position, int argument2, int argument3) {
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_fire"), position.x, position.y, position.z, 0, -1, 0, 0);
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_fire_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_fire"), position.x, position.y, position.z, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_fire_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x007902A0
@@ -378,8 +399,10 @@ void CSkillAction_NW_BASIC_GRENADE::Slot08(int level, CGameActor* source) {
 // OFFSET: 0x007902D0
 // FUNCTION: fn_08702
 void CSkillAction_NW_BASIC_GRENADE::Slot12(vector3d position, int argument2, int argument3) {
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("basic_grenade"), position.x, position.y, position.z, 0, -1, 0, 0);
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("basic_grenade_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("basic_grenade"), position.x, position.y, position.z, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("basic_grenade_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x007904F0
@@ -462,8 +485,10 @@ void CSkillAction_NW_AUTO_FIRING_LAUNCHER::Slot08(int level, CGameActor* source)
 // FUNCTION: fn_08716
 void CSkillAction_NW_AUTO_FIRING_LAUNCHER::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("auto_firing_launcher"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("auto_firing_launcher_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("auto_firing_launcher"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("auto_firing_launcher_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -479,7 +504,8 @@ void CSkillAction_NW_HIDDEN_CARD::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08719
 void CSkillAction_NW_HIDDEN_CARD::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hiddencard"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hiddencard"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -487,7 +513,8 @@ void CSkillAction_NW_HIDDEN_CARD::Slot11(int level, CGameActor* source, CGameAct
 // FUNCTION: fn_08720
 void CEfstAction_HIDDEN_CARD::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hiddencard_thunder"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hiddencard_thunder"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -530,9 +557,12 @@ int CSkillAction_NW_MISSION_BOMBARD::Slot14() {
 // FUNCTION: fn_08727
 void CSkillObjectAction_NW_MISSION_BOMBARD::Slot00(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard_fire"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard_fire_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard_fire"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard_fire_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     g_effectMgr->Spawn(object->render.accountId, 2354, object->render.position.x, object->render.position.y, object->render.position.z, 0, -1, 0, 0);
   }
 }
@@ -544,7 +574,8 @@ void CSkillAction_NW_WILD_SHOT::Slot08(int level, CGameActor* source) {
     return;
   }
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
@@ -590,8 +621,10 @@ void CSkillAction_NW_WILD_SHOT::Slot16(int level, CGameActor* source, CGameActor
     return;
   }
 
-  g_effectMgr->Retire(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_hit"));
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Retire(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_hit"));
+  effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot22(0.8f);
   }
@@ -610,7 +643,8 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::Slot08(int level, CGameActor* source) {
     return;
   }
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
@@ -639,8 +673,10 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::Slot12(vector3d position, int argument2, i
 // FUNCTION: fn_08736
 void CSkillAction_NW_MIDNIGHT_FALLEN::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Retire(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_hit"));
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_hit"));
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
