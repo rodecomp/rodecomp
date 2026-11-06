@@ -273,9 +273,9 @@ void WorldSpatialTree::InsertModel(C3dActor& model, int depth) {
     return;
   }
 
-  for (WorldSpatialTree* child : this->children) {
-    if (model.oriented.Intersects(child->minimum)) {
-      child->InsertModel(model, depth + 1);
+  for (int index = 0; index < 4; ++index) {
+    if (model.oriented.Intersects(this->children[index]->minimum)) {
+      this->children[index]->InsertModel(model, depth + 1);
     }
   }
 }
