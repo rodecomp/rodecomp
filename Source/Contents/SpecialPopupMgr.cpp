@@ -51,11 +51,11 @@ void CSpecialPopupMgr::Destroy() {
 // FUNCTION: fn_09054
 PopupData* CSpecialPopupMgr::GetPopup(int id) {
   std::map<int, PopupData>::iterator it = this->m_popups.find(id);
-  if (it == this->m_popups.end()) {
-    return nullptr;
+  if (it != this->m_popups.end()) {
+    return &it->second;
   }
 
-  return &it->second;
+  return nullptr;
 }
 
 // OFFSET: 0x007A7A90
