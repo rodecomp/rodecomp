@@ -79,7 +79,7 @@ void CViolentQuakeEffect::Slot01() {
 bool CViolentQuakeEffect::Slot06() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CEZ2STRParticle* emitter = *it;
-    if (emitter->life == 0.0f || emitter->life * 60.0f > static_cast<float>(emitter->unknown_00E8)) {
+    if (emitter->life == 0.0f || (emitter->life * 60.0f > static_cast<float>(emitter->unknown_00E8)) == true) {
       return true;
     }
   }
