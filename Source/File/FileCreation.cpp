@@ -17,14 +17,14 @@ bool CreateDirectoryPath(std::string path) {
     return false;
   }
 
-  std::string::size_type separator = path.find('\\');
-  std::string::size_type end = separator;
+  std::string::size_type end = path.find("\\");
+  std::string::size_type separator = end;
   std::string prefix;
   std::string remaining(path);
-  while (prefix.size() != path.size()) {
+  while (path.size() != prefix.size()) {
     prefix = path.substr(0, end);
     remaining = remaining.substr(separator + 1);
-    separator = remaining.find('\\');
+    separator = remaining.find("\\");
     end = separator == std::string::npos ? path.size() : end + separator + 1;
     if (_access(prefix.c_str(), 0) != 0 && _mkdir(prefix.c_str()) != 0) {
       return false;
