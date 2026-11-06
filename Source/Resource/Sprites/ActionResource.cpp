@@ -220,8 +220,9 @@ const std::vector<ActionFrame>& CActRes::Animation(unsigned index) const {
   }
 
   // STATIC: 0x0138D700
-  static const std::vector<ActionFrame> missing;
-  return missing;
+  // GLOBAL: gl_25519
+  static const std::vector<ActionFrame> missingAnimation;
+  return missingAnimation;
 }
 
 // OFFSET: 0x00747050

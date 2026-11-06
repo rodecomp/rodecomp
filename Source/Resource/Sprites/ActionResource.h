@@ -18,13 +18,15 @@ struct ActionAnchor {
 };
 
 struct ActionFrame {
-  /* 0000 */ std::int32_t unknown_0000[8]{};
+  /* 0000 */ std::int32_t unknown_0000[8];
   /* 0020 */ std::vector<SpriteFrameCell> cells;
-  /* 002C */ int cellCount = 0;
-  /* 0030 */ int sound = 0;
+  /* 002C */ int cellCount;
+  /* 0030 */ int sound;
   /* 0034 */ std::vector<ActionAnchor> anchors;
-  /* 0040 */ int anchorCount = 0;
+  /* 0040 */ int anchorCount;
 
+  // INLINED
+  ActionFrame() {}
   const SpriteFrameCell& Cell(unsigned index) const;
 };
 
