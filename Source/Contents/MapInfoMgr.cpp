@@ -93,12 +93,13 @@ bool CMapInfoMgr::Create() {
   if (g_mapInfoMgr == nullptr) {
     g_mapInfoMgr = new (std::nothrow) CMapInfoMgr();
     if (g_mapInfoMgr != nullptr) {
-      if (g_mapInfoMgr->m_initialized) {
-        return true;
+      if (!g_mapInfoMgr->m_initialized) {
+        delete g_mapInfoMgr;
+        g_mapInfoMgr = nullptr;
+        return false;
       }
 
-      delete g_mapInfoMgr;
-      g_mapInfoMgr = nullptr;
+      return true;
     }
   }
 
