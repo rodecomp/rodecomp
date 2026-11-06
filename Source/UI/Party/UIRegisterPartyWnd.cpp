@@ -221,7 +221,7 @@ void UIRegisterPartyWnd::NormalizeLevels() {
 
   if (!Digits(text)) {
     char number[10] = {};
-    StringFormat(number, sizeof(number), _TRUNCATE, "%d", std::max(level - 5, 1));
+    StringFormat(number, sizeof(number), _TRUNCATE, "%d", level - 5 > 1 ? level - 5 : 1);
     this->minimum->SetText(number);
   }
 

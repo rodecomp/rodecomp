@@ -550,8 +550,7 @@ void UIWindow::Slot43() {
 // OFFSET: 0x005C4480
 // FUNCTION: fn_03560
 std::vector<unsigned char> UIWindow::Slot44() {
-  std::vector<unsigned char> result;
-  return result;
+  return std::vector<unsigned char>();
 }
 
 // OFFSET: 0x005C8F60
@@ -3448,8 +3447,9 @@ void UINavigationV4Wnd::SelectRouteNode(int node) {
     g_navigationManager.SelectNodeState();
   }
 
-  this->unknown_00F0->selected = g_navigationManager.unknown_12C8;
-  this->unknown_00F0->Invalidate();
+  UIListBox_NaviSearch* list = this->unknown_00F0;
+  list->selected = g_navigationManager.unknown_12C8;
+  list->Invalidate();
   if (g_windowMgr.modal) {
     reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
   }

@@ -2916,7 +2916,7 @@ void UIItemTagButton::Slot25(int x, int y) {
     return;
   }
 
-  if (x < 0 || this->geometry.width <= x || y < 0 || this->geometry.height <= y) {
+  if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
     this->geometry.unknown_0030 = 0;
   } else {
     this->geometry.unknown_0030 = 1;

@@ -109,11 +109,12 @@ void ProbabilityTableSelectCallback::operator()(CUIListItem* const& item) {
     if (selectedItem->index != static_cast<int>(list->selected) || !list->unknown_00E0) {
       ProbabilityTable::CUIItem* probabilityItem = dynamic_cast<ProbabilityTable::CUIItem*>(selectedItem);
       if (probabilityItem) {
-        list->selected = probabilityItem->index;
-        if (list->onSelect && probabilityItem->index >= 0 &&
-            static_cast<unsigned int>(probabilityItem->index) < list->data.size()) {
+        const int selectedIndex = probabilityItem->index;
+        list->selected = selectedIndex;
+        if (list->onSelect && selectedIndex >= 0 &&
+            static_cast<unsigned int>(selectedIndex) < list->data.size()) {
           auto node = list->data.begin();
-          for (int index = probabilityItem->index; index > 0; --index) {
+          for (int index = selectedIndex; index > 0; --index) {
             ++node;
           }
           list->onSelect(probabilityItem, *node);

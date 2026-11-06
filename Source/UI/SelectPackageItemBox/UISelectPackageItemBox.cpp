@@ -477,10 +477,11 @@ void ListSelectCallback<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::operator(
     return;
   }
 
-  list->selected = selectedItem->index;
-  if (list->onSelect && selectedItem->index >= 0 && static_cast<unsigned int>(selectedItem->index) < list->data.size()) {
+  const int selectedIndex = selectedItem->index;
+  list->selected = selectedIndex;
+  if (list->onSelect && selectedIndex >= 0 && static_cast<unsigned int>(selectedIndex) < list->data.size()) {
     auto node = list->data.begin();
-    for (int index = selectedItem->index; index > 0; --index) {
+    for (int index = selectedIndex; index > 0; --index) {
       ++node;
     }
     list->onSelect(selectedItem, *node);
@@ -513,10 +514,11 @@ void ListSelectCallback<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::
     return;
   }
 
-  list->selected = selectedTab->index;
-  if (list->onSelect && selectedTab->index >= 0 && static_cast<unsigned int>(selectedTab->index) < list->data.size()) {
+  const int selectedIndex = selectedTab->index;
+  list->selected = selectedIndex;
+  if (list->onSelect && selectedIndex >= 0 && static_cast<unsigned int>(selectedIndex) < list->data.size()) {
     auto node = list->data.begin();
-    for (int index = selectedTab->index; index > 0; --index) {
+    for (int index = selectedIndex; index > 0; --index) {
       ++node;
     }
     list->onSelect(selectedTab, *node);

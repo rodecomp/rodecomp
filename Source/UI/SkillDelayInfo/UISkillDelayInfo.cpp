@@ -393,10 +393,11 @@ void SkillDelayInfoSelectCallback::operator()(CUIListItem* const& item) {
   if (!delayItem) {
     return;
   }
-  list->selected = delayItem->index;
-  if (list->onSelect && delayItem->index >= 0 && static_cast<unsigned int>(delayItem->index) < list->data.size()) {
+  const int selectedIndex = delayItem->index;
+  list->selected = selectedIndex;
+  if (list->onSelect && selectedIndex >= 0 && static_cast<unsigned int>(selectedIndex) < list->data.size()) {
     auto node = list->data.begin();
-    for (int index = delayItem->index; index > 0; --index) {
+    for (int index = selectedIndex; index > 0; --index) {
       ++node;
     }
     list->onSelect(delayItem, *node);

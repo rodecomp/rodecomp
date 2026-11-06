@@ -442,12 +442,12 @@ void UIRuneSet_Info::Slot28(int x, int y) {
 // OFFSET: 0x0081C960
 // FUNCTION: fn_10210
 void UIRuneSystem_tagListWnd::Slot28(int x, int) {
-  if (x < 20 || x > this->geometry.width - 23) {
+  if (x < 20 || this->geometry.width - 23 < x) {
     return;
   }
 
   const int index = (x - 20) / 27;
-  if (index > -1 && index < g_runeSystemMgr->GetTagCount()) {
+  if (index > -1 && g_runeSystemMgr->GetTagCount() > index) {
     std::string name = g_runeSystemMgr->GetTagByIndex(index)->m_name;
     if (!name.empty()) {
       int screenX = index * 24 + 19;
