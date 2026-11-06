@@ -361,8 +361,12 @@ void CGrannyPc::Slot24(int, int) {
 // OFFSET: 0x00DB3720
 // FUNCTION: fn_22648
 void CGrannyPc::Slot23(int first, int second) {
-  this->unknown_0440 = first;
-  this->unknown_0444 = second;
+  struct Slot23Pair {
+    int first;
+    int second;
+  };
+  const Slot23Pair values = {first, second};
+  *reinterpret_cast<Slot23Pair*>(&this->unknown_0440) = values;
 }
 
 // OFFSET: 0x00DB3C30
