@@ -1094,7 +1094,9 @@ UICntWnd::UICntWnd()
 
 // OFFSET: 0x008A37F0
 // FUNCTION: fn_11658
-UIHomunInfoWnd::UIHomunInfoWnd() : UIFrameWnd(0), unknown_00D0(0), unknown_00D4(0) {
+UIHomunInfoWnd::UIHomunInfoWnd() : UIFrameWnd(0) {
+  this->unknown_00D4 = nullptr;
+  this->unknown_00D0 = nullptr;
 }
 
 // OFFSET: 0x008A3860
@@ -1105,7 +1107,13 @@ UILoginOTPWnd::UILoginOTPWnd()
 
 // OFFSET: 0x008A38E0
 // FUNCTION: fn_11660
-UILoginWnd::UILoginWnd()
-    : UIFrameWnd(0), idEdit(nullptr), passwordEdit(nullptr), unknown_00BC(0), unknown_00C4(0), saveId(0), unknown_00CC(1), unknown_00D0(0),
-      unknown_00D4(0), unknown_00D8(), unknown_00E8(0), unknown_00EC("G000") {
+UILoginWnd::UILoginWnd() : UIFrameWnd(0), unknown_00D8(), unknown_00E8(0), unknown_00EC("G000") {
+  this->idEdit = nullptr;
+  this->passwordEdit = nullptr;
+  this->unknown_00C4 = 0;
+  this->saveId = 0;
+  this->unknown_00CC = 1;
+  this->unknown_00D0 = 0;
+  this->unknown_00D4 = 0;
+  this->unknown_00BC = nullptr;
 }
