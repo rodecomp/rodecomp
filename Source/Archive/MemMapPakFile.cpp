@@ -36,12 +36,12 @@ bool CMemMapPakFile::Open(const char* filename) {
   this->m_viewSize = 0;
   this->m_mapping = CreateFileMappingA(this->m_handle, nullptr, PAGE_READONLY, 0, 0, nullptr);
 
-  if (this->m_mapping) {
-    return true;
+  if (!this->m_mapping) {
+    this->m_windowSize = 0;
+    return false;
   }
 
-  this->m_windowSize = 0;
-  return false;
+  return true;
 }
 
 // OFFSET: 0x00AECA50
