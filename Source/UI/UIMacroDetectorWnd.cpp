@@ -111,8 +111,7 @@ int UIMacroDetectorWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       CaptchaAnswerPacket packet;
       packet.id = 0xA5C;
       memcpy_s(packet.text, sizeof(packet.text), this->m_editCtrl->Text(), sizeof(packet.text));
-      CRagConnection& connection = GetRagConnection();
-      connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       this->m_lastAnswer = this->m_editCtrl->Text();
       g_serverLanguage->ResetInput();
     }
