@@ -835,19 +835,19 @@ int __stdcall MountedJob(int job, std::uint32_t flags) {
       return 0x108e;
     }
   } else if (job == 0x10a1) {
-    if (StateFlag21(flags)) {
+    if (StateFlag21(flags) == true) {
       return 0x10b6;
     }
   } else if (job == 0x109d) {
-    if (StateFlag22(flags)) {
+    if (StateFlag22(flags) == true) {
       return 0x10b7;
     }
   } else if (job == 0x109c) {
-    if (StateFlag19(flags)) {
+    if (StateFlag19(flags) == true) {
       return 0x10b8;
     }
   } else if (job == 0x10a2) {
-    if (StateFlag05(flags)) {
+    if (StateFlag05(flags) == true) {
       return 0x10b9;
     }
   } else if (job == 0x10ce) {
@@ -1083,7 +1083,10 @@ void CGameActor::ResetUnknown03B8() {
 // OFFSET: 0x00CADC90
 // FUNCTION: fn_21065
 bool CSession::IsMonsterClass(int job) {
-  return (job > 1000 && job < 3999) || static_cast<unsigned int>(job - 20021) <= 11978;
+  if ((job > 1000 && job < 3999) || static_cast<unsigned int>(job - 20021) <= 11978) {
+    return true;
+  }
+  return false;
 }
 
 // OFFSET: 0x00CADCC0
