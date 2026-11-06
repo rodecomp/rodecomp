@@ -15,6 +15,7 @@ class UITab;
 
 class UIItemStoreWnd : public UIItemBaseWnd {
 public:
+  std::vector<unsigned char> BuildReplayRecords();
   UIItemStoreWnd();
   __declspec(noinline) ~UIItemStoreWnd() override;
   void Slot10(int x, int y, std::intptr_t value) override;

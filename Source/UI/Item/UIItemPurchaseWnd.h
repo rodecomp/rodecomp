@@ -11,6 +11,7 @@ class UIStaticText;
 
 class UIItemPurchaseWnd : public UIItemBaseWnd {
 public:
+  std::vector<unsigned char> BuildReplayRecords();
   UIItemPurchaseWnd();
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;

@@ -495,7 +495,7 @@ std::string UIEditCtrl3::TakePendingText() {
   for (std::size_t i = 0; i < this->pendingText.size(); ++i) {
     result.append(this->pendingText[i]);
   }
-  this->pendingText.erase(this->pendingText.begin(), this->pendingText.end());
+  this->pendingText.clear();
   return result;
 }
 
@@ -3349,14 +3349,15 @@ ITEM_INFO UIItemWnd::GetItemAt(int x, int y) {
     return ITEM_INFO(0);
   }
 
-  const int offset = x - 40;
+  const int column = (x - 40) / 32;
+  const int row = (y - 17) / 32;
   int visible = 0;
   int index = 0;
 
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
-    if (index >= this->columns * this->scroll) {
+    if (index >= this->scroll * this->columns) {
       if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
-        if (visible == this->columns * ((y - 17) / 32) + offset / 32) {
+        if (visible == this->columns * row + column) {
           return *it;
         }
 
@@ -3375,14 +3376,14 @@ ITEM_INFO UIMerchantShopMakeWnd::GetItemAt(int x, int y) {
     return ITEM_INFO(0);
   }
 
-  const int offset = y - 44;
+  const int row = (y - 44) / 42;
   int visible = 0;
   int index = 0;
 
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
     if (index >= this->scroll * this->columns) {
       if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
-        if (visible == this->columns * (offset / 42)) {
+        if (visible == this->columns * row) {
           if (x < 35) {
             return *it;
           }
@@ -5123,56 +5124,46 @@ void UIMerchantShopMakeWnd::Slot10(int x, int y, std::intptr_t value) {
   }
 }
 
+// INLINED
+static void AppendReplayRecord(std::vector<unsigned char>& records, const std::vector<unsigned char>& record) {
+  records.insert(records.end(), record.begin(), record.end());
+}
+
 // OFFSET: 0x00972E60
 // FUNCTION: fn_13281
-std::vector<unsigned char>* BuildItemPurchaseReplayRecords(std::vector<unsigned char>* result) {
-  new (result) std::vector<unsigned char>();
-  const auto first = BuildReplayTaggedRecord(0x50DC, nullptr, 0);
-  result->insert(result->end(), first.begin(), first.end());
-  const auto second = BuildReplayTaggedRecord(0x50DD, nullptr, 0);
-  result->insert(result->end(), second.begin(), second.end());
-  return result;
+std::vector<unsigned char> UIItemPurchaseWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  AppendReplayRecord(records, BuildReplayTaggedRecord(0x50DC, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(0x50DD, nullptr, 0));
+  return records;
 }
 
 // OFFSET: 0x00972F50
 // FUNCTION: fn_13282
 std::vector<unsigned char> UIItemSellWnd2::BuildReplayRecords() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(20800, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(20802, &this->unknown_00FC, 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(20801, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, BuildReplayTaggedRecord(20800, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(20802, &this->unknown_00FC, 4));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(20801, nullptr, 0));
   return records;
 }
 
 // OFFSET: 0x00973080
 // FUNCTION: fn_13283
-std::vector<unsigned char>* BuildItemSellReplayRecords(std::vector<unsigned char>* result) {
-  new (result) std::vector<unsigned char>();
-  const auto first = BuildReplayTaggedRecord(0x510E, nullptr, 0);
-  result->insert(result->end(), first.begin(), first.end());
-  const auto second = BuildReplayTaggedRecord(0x510F, nullptr, 0);
-  result->insert(result->end(), second.begin(), second.end());
-  return result;
+std::vector<unsigned char> UIItemSellWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  AppendReplayRecord(records, BuildReplayTaggedRecord(0x510E, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(0x510F, nullptr, 0));
+  return records;
 }
 
 // OFFSET: 0x00973170
 // FUNCTION: fn_13284
-std::vector<unsigned char>* BuildItemStoreReplayRecords(std::vector<unsigned char>* result) {
-  new (result) std::vector<unsigned char>();
-  const auto first = BuildReplayTaggedRecord(0x51A4, nullptr, 0);
-  result->insert(result->end(), first.begin(), first.end());
-  const auto second = BuildReplayTaggedRecord(0x51A5, nullptr, 0);
-  result->insert(result->end(), second.begin(), second.end());
-  return result;
+std::vector<unsigned char> UIItemStoreWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  AppendReplayRecord(records, BuildReplayTaggedRecord(0x51A4, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(0x51A5, nullptr, 0));
+  return records;
 }
 
 // OFFSET: 0x00973260
@@ -5180,23 +5171,11 @@ std::vector<unsigned char>* BuildItemStoreReplayRecords(std::vector<unsigned cha
 std::vector<unsigned char> UIItemShopWnd::BuildReplayRecords() {
   std::vector<unsigned char> records;
   if (this->hovered != 0) {
-    {
-      const auto record = BuildReplayTaggedRecord(21050, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
-    {
-      const auto record = BuildReplayTaggedRecord(21051, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21050, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21051, nullptr, 0));
   } else {
-    {
-      const auto record = BuildReplayTaggedRecord(21000, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
-    {
-      const auto record = BuildReplayTaggedRecord(21001, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21000, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21001, nullptr, 0));
   }
   return records;
 }
@@ -5206,23 +5185,11 @@ std::vector<unsigned char> UIItemShopWnd::BuildReplayRecords() {
 std::vector<unsigned char> UIParaItemShopWnd::BuildReplayRecords() {
   std::vector<unsigned char> records;
   if (this->unknown_0108 != 0) {
-    {
-      const auto record = BuildReplayTaggedRecord(21100, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
-    {
-      const auto record = BuildReplayTaggedRecord(21101, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21100, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21101, nullptr, 0));
   } else {
-    {
-      const auto record = BuildReplayTaggedRecord(21150, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
-    {
-      const auto record = BuildReplayTaggedRecord(21151, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21150, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21151, nullptr, 0));
   }
   return records;
 }
@@ -5232,40 +5199,23 @@ std::vector<unsigned char> UIParaItemShopWnd::BuildReplayRecords() {
 std::vector<unsigned char> UIMerchantItemShopWnd::BuildReplayRecords() {
   std::vector<unsigned char> records;
   if (this->unknown_010C != 0) {
-    {
-      const auto record = BuildReplayTaggedRecord(21250, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
-    {
-      const auto record = BuildReplayTaggedRecord(21253, &this->unknown_0108, 4);
-      records.insert(records.end(), record.begin(), record.end());
-    }
-    {
-      const auto record = BuildReplayTaggedRecord(21251, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21250, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21253, &this->unknown_0108, 4));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21251, nullptr, 0));
   } else {
-    {
-      const auto record = BuildReplayTaggedRecord(21200, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
-    {
-      const auto record = BuildReplayTaggedRecord(21201, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21200, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21201, nullptr, 0));
   }
   return records;
 }
 
 // OFFSET: 0x00973670
 // FUNCTION: fn_13288
-std::vector<unsigned char>* BuildMerchantMirrorItemReplayRecords(std::vector<unsigned char>* result) {
-  new (result) std::vector<unsigned char>();
-  const auto first = BuildReplayTaggedRecord(0x5398, nullptr, 0);
-  result->insert(result->end(), first.begin(), first.end());
-  const auto second = BuildReplayTaggedRecord(0x5399, nullptr, 0);
-  result->insert(result->end(), second.begin(), second.end());
-  return result;
+std::vector<unsigned char> UIMerchantMirrorItemWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  AppendReplayRecord(records, BuildReplayTaggedRecord(0x5398, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(0x5399, nullptr, 0));
+  return records;
 }
 
 // OFFSET: 0x00973760
@@ -5273,23 +5223,11 @@ std::vector<unsigned char>* BuildMerchantMirrorItemReplayRecords(std::vector<uns
 std::vector<unsigned char> UIMerchantShopMakeWnd::BuildReplayRecords() {
   std::vector<unsigned char> records;
   if (this->mode != 0) {
-    {
-      const auto record = BuildReplayTaggedRecord(21350, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
-    {
-      const auto record = BuildReplayTaggedRecord(21351, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21350, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21351, nullptr, 0));
   } else {
-    {
-      const auto record = BuildReplayTaggedRecord(21300, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
-    {
-      const auto record = BuildReplayTaggedRecord(21301, nullptr, 0);
-      records.insert(records.end(), record.begin(), record.end());
-    }
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21300, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(21301, nullptr, 0));
   }
   return records;
 }
@@ -6056,39 +5994,6 @@ void UIItemBaseWnd::UpdateScrollBar() {
 // FUNCTION: fn_13418
 int UIItemBaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 3:
-    if (this->unknown_00E4 == 1) {
-      this->SendMsg(this->scrollBar, 7, -this->visibleRows, 0, 0, 0);
-    }
-    break;
-  case 4:
-    if (this->unknown_00E4 == 1) {
-      this->SendMsg(this->scrollBar, 7, this->visibleRows, 0, 0, 0);
-      return 0;
-    }
-    break;
-  case 6:
-  case 23:
-    break;
-  case 7:
-  case 9:
-  case 10: {
-    const int previous = this->scroll;
-    if (message == 9) {
-      this->scroll = previous - this->visibleRows + 1;
-    } else if (message == 10) {
-      this->scroll = this->visibleRows - 1 + previous;
-    } else {
-      this->scroll = a + previous;
-    }
-
-    if (previous != this->scroll) {
-      this->UpdateScrollBar();
-      this->Invalidate();
-    }
-
-    return this->scroll - previous;
-  }
   case 14:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
@@ -6117,6 +6022,39 @@ int UIItemBaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_windowMgr.StoreSnapRectangle(this);
       return 0;
     }
+    break;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->scroll;
+    if (message == 9) {
+      this->scroll = previous - this->visibleRows + 1;
+    } else if (message == 10) {
+      this->scroll = this->visibleRows - 1 + previous;
+    } else {
+      this->scroll = a + previous;
+    }
+
+    if (previous != this->scroll) {
+      this->UpdateScrollBar();
+      this->Invalidate();
+    }
+
+    return this->scroll - previous;
+  }
+  case 4:
+    if (this->unknown_00E4 == 1) {
+      this->SendMsg(this->scrollBar, 7, this->visibleRows, 0, 0, 0);
+      return 0;
+    }
+    break;
+  case 3:
+    if (this->unknown_00E4 == 1) {
+      this->SendMsg(this->scrollBar, 7, -this->visibleRows, 0, 0, 0);
+    }
+    break;
+  case 6:
+  case 23:
     break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
@@ -7722,7 +7660,11 @@ bool UIEditCtrl::DecodeItemLink(const std::vector<int>& values, ITEM_INFO& item)
 // OFFSET: 0x0096E650
 // FUNCTION: fn_13214
 UIItemBaseWnd::UIItemBaseWnd()
-    : UIFrameWnd(0), resizer(nullptr), scrollBar(nullptr), scroll(0), unknown_00E4(0) {
+    : UIFrameWnd(0) {
+  this->resizer = nullptr;
+  this->scrollBar = nullptr;
+  this->scroll = 0;
+  this->unknown_00E4 = 0;
   this->showQuantity = 1;
   this->unknown_00B8 = 0;
   this->buttons[0] = nullptr;
