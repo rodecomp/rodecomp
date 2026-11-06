@@ -6452,26 +6452,28 @@ void CRagEffect::TexturedScatterSphere(const char* name, char flag, int) {
     return;
   }
 
-  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 159, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.unknown_11C84->renderFlag = 5;
-  this->state.unknown_11C84->duration = this->state.duration;
-  AllocateTextures(*this->state.unknown_11C84);
-  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  CEffectPrim* particle = CreateEffectParticle(*this, this->render, 159, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.unknown_11C84 = reinterpret_cast<EffectPrimitiveState*>(particle);
+  auto stored = [&]() -> CEffectPrim* { return reinterpret_cast<CEffectPrim*>(this->state.unknown_11C84); };
+  stored()->state.renderFlag = 5;
+  stored()->state.duration = this->state.duration;
+  AllocateTextures(particle->state);
+  stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
   for (int index = 0; index < 4; ++index) {
-    this->state.unknown_11C84->slots[index].life = 1;
-    this->state.unknown_11C84->slots[index].height[4] = 0.0f;
-    this->state.unknown_11C84->slots[index].process = -rand() % 101;
-    this->state.unknown_11C84->slots[index].distance = 4.0f;
-    this->state.unknown_11C84->slots[index].alphaB = 0;
-    this->state.unknown_11C84->slots[index].riseAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-    this->state.unknown_11C84->slots[index].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-    this->state.unknown_11C84->slots[index].height[0] = -5.0f;
-    this->state.unknown_11C84->slots[index].height[1] = 0.5f;
-    this->state.unknown_11C84->slots[index].flag1[0] = 0;
-    this->state.unknown_11C84->slots[index].flag1[1] = 0;
-    this->state.unknown_11C84->slots[index].flag1[2] = flag;
-    EffectPrimitiveSlot& slot = this->state.unknown_11C84->slots[index];
+    stored()->state.slots[index].life = 1;
+    stored()->state.slots[index].height[4] = 0.0f;
+    stored()->state.slots[index].process = -rand() % 101;
+    stored()->state.slots[index].distance = 4.0f;
+    stored()->state.slots[index].alphaB = 0;
+    stored()->state.slots[index].riseAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    stored()->state.slots[index].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    stored()->state.slots[index].height[0] = -5.0f;
+    stored()->state.slots[index].height[1] = 0.5f;
+    stored()->state.slots[index].flag1[0] = 0;
+    stored()->state.slots[index].flag1[1] = 0;
+    stored()->state.slots[index].flag1[2] = flag;
+    EffectPrimitiveSlot& slot = stored()->state.slots[index];
     const float radius = g_cosTable[slot.riseAngle] * 70.0f;
     slot.vecBNow.z = g_sinTable[slot.riseAngle] * 70.0f;
     slot.vecBNow.x = radius * g_cosTable[slot.rotStart];
