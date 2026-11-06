@@ -324,7 +324,7 @@ bool CTableMng::ReadEntryQueueBinary() {
 // OFFSET: 0x00CA4330
 // FUNCTION: fn_20935
 void CTableMng::Clear() {
-  for (auto it = this->m_entryQueue.begin(); it != this->m_entryQueue.end(); ++it) {
+  for (auto it = this->m_entryQueue.begin(), end = this->m_entryQueue.end(); it != end; ++it) {
     if (it->second != nullptr) {
       delete it->second;
       it->second = nullptr;
