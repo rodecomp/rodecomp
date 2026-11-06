@@ -24,11 +24,12 @@ bool CItemInfoMgr::Create() {
   if (g_itemInfoMgr == nullptr) {
     g_itemInfoMgr = new (std::nothrow) CItemInfoMgr();
     if (g_itemInfoMgr != nullptr) {
-      if (g_itemInfoMgr->m_isValid) {
-        return true;
+      if (!g_itemInfoMgr->m_isValid) {
+        delete g_itemInfoMgr;
+        g_itemInfoMgr = nullptr;
+        return false;
       }
-      delete g_itemInfoMgr;
-      g_itemInfoMgr = nullptr;
+      return true;
     }
   }
   return false;
