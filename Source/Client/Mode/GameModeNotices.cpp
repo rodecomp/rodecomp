@@ -1359,8 +1359,8 @@ void CGameMode::ReceiveJobTitle(unsigned char result, int job) {
 // OFFSET: 0x00D694C0
 // FUNCTION: fn_22049
 void CGameMode::ReceiveQuestStates(int count, const unsigned char* data) {
-  const auto* entry = reinterpret_cast<const QuestStateEntry*>(data);
-  for (int i = 0; i < count; ++i, ++entry) {
+  for (int i = 0; i < count; ++i) {
+    const auto* entry = reinterpret_cast<const QuestStateEntry*>(data) + i;
     const unsigned int questId = entry->questId;
     if (entry->state == 1) {
       g_renewQuestMgr->AddNewQuest(questId);
@@ -2381,12 +2381,6 @@ int GetBaseJob(int job) {
   case JT_SUPERNOVICE2_B:
   case JT_HYPER_NOVICE:
     return JT_SUPERNOVICE;
-  case JT_GUNSLINGER:
-  case JT_REBELLION:
-  case JT_GUNSLINGER_B:
-  case JT_REBELLION_B:
-  case JT_NIGHT_WATCH:
-    return JT_GUNSLINGER;
   case JT_NINJA:
   case JT_KAGEROU:
   case JT_OBORO:
@@ -2396,6 +2390,12 @@ int GetBaseJob(int job) {
   case JT_SHINKIRO:
   case JT_SHIRANUI:
     return JT_NINJA;
+  case JT_GUNSLINGER:
+  case JT_REBELLION:
+  case JT_GUNSLINGER_B:
+  case JT_REBELLION_B:
+  case JT_NIGHT_WATCH:
+    return JT_GUNSLINGER;
   case JT_TAEKWON:
   case JT_TAEKWON_B:
     return JT_TAEKWON;
