@@ -261,10 +261,7 @@ void CSignBoardWnd::Slot15(int width, int height) {
   text->SetSize(0x7e, 0xe);
   text->Move(0x1e, this->geometry.height / 2 - 7);
   text->SetTextFitted("");
-  text->fontFamily = 0;
-  text->fontHeight = 12;
-  text->bold = 0;
-  text->italic = 0;
+  text->SetFont(0, 12, 0, 0);
   text->SetColor(0x9e, 0xbd, 0xff);
   this->AddChild(text);
 }
