@@ -268,14 +268,14 @@ void C3dActorV1::Draw(const float* matrix, bool clip) {
     this->UpdateMatrix();
   }
 
+  const bool reversed = this->Reversed();
   struct matrix camera;
   std::memcpy(camera.values, matrix, sizeof(camera.values));
   struct matrix combined;
   combined.Compose(this->transform, camera);
-  this->root->Draw(combined.values, this->Reversed(), clip, this->commandMode);
-
+  this->root->Draw(combined.values, reversed, clip, this->commandMode);
   if (this->occlusionEnabled == 1) {
-    this->Fade();
+    this->root->model->Fade();
   }
 }
 
@@ -286,17 +286,17 @@ void C3dActorV2::Draw(const float* matrix, bool clip) {
     this->UpdateMatrix();
   }
 
+  const bool reversed = this->Reversed();
   struct matrix camera;
   std::memcpy(camera.values, matrix, sizeof(camera.values));
   struct matrix combined;
   combined.Compose(this->transform, camera);
-  const bool reversed = this->Reversed();
 
-  for (C3dNodeV2* root : this->roots) {
-    root->Draw(combined.values, reversed, clip, this->commandMode);
+  for (auto it = this->roots.begin(); it != this->roots.end(); ++it) {
+    (*it)->Draw(combined.values, reversed, clip, this->commandMode);
 
     if (this->occlusionEnabled == 1) {
-      this->Fade();
+      (*it)->model->Fade();
     }
   }
 }
