@@ -141,8 +141,13 @@ __declspec(noinline) bool FontEntry::CreatePrivateFont() {
 // FUNCTION: fn_01950
 void FontEntry::RemovePrivateFont() const {
   if (this->privateResources > 0 && this->family == 29) {
-    const std::string path = this->bold == 1 ? std::string("system\\font\\SCDream6.otf") : std::string("system\\font\\SCDream4.otf");
-    RemoveFontResourceExA(path.c_str(), FR_PRIVATE, nullptr);
+    if (this->bold == 1) {
+      const std::string path("system\\font\\SCDream6.otf");
+      RemoveFontResourceExA(path.c_str(), FR_PRIVATE, nullptr);
+    } else {
+      const std::string path("system\\font\\SCDream4.otf");
+      RemoveFontResourceExA(path.c_str(), FR_PRIVATE, nullptr);
+    }
   }
 }
 
