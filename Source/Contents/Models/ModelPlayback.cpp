@@ -54,21 +54,25 @@ void C3dActorV1::Update() {
 // OFFSET: 0x00AB7A10
 // FUNCTION: fn_17494
 void C3dActorV2::Update() {
-  if (this->playback != 1 && this->playback != 2) {
-    return;
-  }
-
-  const unsigned tick = GetTickCount();
-  unsigned frame = static_cast<unsigned>(static_cast<float>(tick - this->startTick) * this->speed);
-
-  if (static_cast<double>(frame) >= this->duration) {
-    if (this->playback == 1) {
-      frame = static_cast<unsigned>(this->duration - 1.0);
-    } else {
-      this->startTick = tick;
-      frame = 0;
+  switch (this->playback) {
+    case 1: {
+      const unsigned tick = GetTickCount();
+      unsigned frame = static_cast<unsigned>(static_cast<float>(tick - this->startTick) * this->speed);
+      if (static_cast<double>(frame) >= this->duration) {
+        frame = static_cast<unsigned>(this->duration - 1.0);
+      }
+      this->Animate(static_cast<double>(frame));
+      break;
+    }
+    case 2: {
+      const unsigned tick = GetTickCount();
+      unsigned frame = static_cast<unsigned>(static_cast<float>(tick - this->startTick) * this->speed);
+      if (static_cast<double>(frame) >= this->duration) {
+        this->startTick = tick;
+        frame = 0;
+      }
+      this->Animate(static_cast<double>(frame));
+      break;
     }
   }
-
-  this->Animate(static_cast<double>(frame));
 }
