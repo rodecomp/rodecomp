@@ -781,7 +781,7 @@ void MerchantItemPurchaseWndInfo::Reset() {
 void MerchantItemShopWndInfo::Reset(bool wide) {
   this->x = 0;
   this->y = 120;
-  this->width = wide ? 350 : 280;
+  this->width = !wide ? 280 : 350;
   this->height = 312;
 }
 
