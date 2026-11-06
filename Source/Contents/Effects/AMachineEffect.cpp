@@ -80,7 +80,8 @@ void CAMachineEffect::Slot03() {
 // OFFSET: 0x006F7000
 // FUNCTION: fn_06854
 void CAMachineEffect::Slot04() {
-  std::map<int, CEZ2STRParticle*>::iterator it = this->unknown_00CC.find(this->unknown_00D4);
+  const int key = this->unknown_00D4;
+  std::map<int, CEZ2STRParticle*>::iterator it = this->unknown_00CC.find(key);
   if (it == this->unknown_00CC.end()) {
     return;
   }
@@ -119,7 +120,8 @@ void CAMachineEffect::PlayAttack() {
 // OFFSET: 0x006F70E0
 // FUNCTION: fn_06856
 void CAMachineEffect::SetState(int state) {
-  std::map<int, CEZ2STRParticle*>::iterator it = this->unknown_00CC.find(state);
+  const int key = state;
+  std::map<int, CEZ2STRParticle*>::iterator it = this->unknown_00CC.find(key);
   if (it == this->unknown_00CC.end()) {
     return;
   }
