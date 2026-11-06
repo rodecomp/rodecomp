@@ -320,10 +320,10 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
   this->listBox->rowHeight = this->itemHeight;
   this->listBox->SetSize(this->width + 13, this->itemHeight);
   this->listBox->Move(1, 1);
-  this->listBox->SetOnSelect([this, display](T* item, const D& value) {
+  this->listBox->SetOnSelect([this](T* item, const D& value) {
     g_windowMgr.CloseDropDown();
     if (this->onChange) {
-      this->onChange(display, value);
+      this->onChange(this->display, value);
     }
     if (this->onSelect) {
       this->onSelect(item, value);
@@ -642,7 +642,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::AddNewItem() {
     if (this->geometry.height % this->rowHeight > 1) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -685,7 +685,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::AddNewItem() {
     if (this->geometry.height % this->rowHeight > 1) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -728,7 +728,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::AddNewItem() {
     if (this->geometry.height % this->rowHeight > 1) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -771,7 +771,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem() {
     if (this->geometry.height % this->rowHeight > 1) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -814,7 +814,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::AddNewItem() {
     if (this->geometry.height % this->rowHeight > 1) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (GameSettingsUI::CUIOptionItem*& slot : this->items) {
       GameSettingsUI::CUIOptionItem* item = new GameSettingsUI::CUIOptionItem();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -840,12 +840,12 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::AddNewItem() {
 
 // OFFSET: 0x00A3C440
 // FUNCTION: fn_15887
-GameSettingsUI::CUIComboItem::CUIComboItem() : CUIListItem(), m_text(nullptr) {
+__declspec(noinline) GameSettingsUI::CUIComboItem::CUIComboItem() : CUIListItem(), m_text(nullptr) {
 }
 
 // OFFSET: 0x00A3CF80
 // FUNCTION: fn_15903
-GameSettingsUI::CUIOptionItem::CUIOptionItem()
+__declspec(noinline) GameSettingsUI::CUIOptionItem::CUIOptionItem()
     : CUIListItem(), m_check(nullptr), unknown_00EC(nullptr), m_label(nullptr), m_description(nullptr), m_optionId(300) {
 }
 
