@@ -801,14 +801,13 @@ bool EquipmentProperties::CEquipmentWearable::UpdateActive() {
 // FUNCTION: fn_05622
 void EquipmentProperties::CEquipment::CallOnStartEquip(lua_State* state) {
   lua_getfield(state, -1, "OnStartEquip");
-  if (lua_type(state, -1) != LUA_TFUNCTION) {
-    lua_settop(state, -2);
-    return;
-  }
-
-  if (lua_pcall(state, 0, 0, 0) != 0) {
-    std::string message = lua_tolstring(state, -1, nullptr);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0, 0, 0);
+  if (lua_type(state, -1) == LUA_TFUNCTION) {
+    if (lua_pcall(state, 0, 0, 0) != 0) {
+      std::string message = lua_tolstring(state, -1, nullptr);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0, 0, 0);
+      lua_settop(state, -2);
+    }
+  } else {
     lua_settop(state, -2);
   }
 }
@@ -2059,7 +2058,7 @@ std::unordered_map<int, EquipmentValueC>& EquipmentProperties::CEquipmentPropert
 // OFFSET: 0x006B0120
 // FUNCTION: fn_06190
 bool EquipmentProperties::CEquipmentPropertiesMgr::HasUnknown0194(const std::uint64_t& key) {
-  return this->unknown_0194.find(key) != this->unknown_0194.end();
+  return this->unknown_0194.contains(key);
 }
 
 // OFFSET: 0x006B0170
@@ -4755,8 +4754,8 @@ int GetPureJob(lua_State* state) {
 
 // OFFSET: 0x00E16510
 // FUNCTION: fn_23832
-CSkillInfo* FindGroupedSkill(CSession& session, std::uint32_t id) {
-  return session.m_skillBundle.FindGrouped(id);
+CSkillInfo* CSession::FindGroupedSkill(std::uint32_t id) {
+  return this->m_skillBundle.FindGrouped(id);
 }
 
 // OFFSET: 0x006BEA40
@@ -4774,7 +4773,7 @@ int GetSkillLevel(lua_State* state) {
     ++number;
   }
 
-  CSkillInfo* skill = FindGroupedSkill(g_session, args[0]);
+  CSkillInfo* skill = g_session.FindGroupedSkill(args[0]);
   lua_pushnumber(state, skill != nullptr ? skill->level : 0);
   return 1;
 }
@@ -5042,11 +5041,12 @@ int CSession::OnlinePartyCount() const {
 // OFFSET: 0x00DDCC30
 // FUNCTION: fn_23372
 MessengerMember CSession::FriendAt(int index) const {
+  auto member = this->m_friends.begin();
   int position = 0;
 
-  for (const MessengerMember& member : this->m_friends) {
+  for (; member != this->m_friends.end(); ++member) {
     if (position == index) {
-      return member;
+      return *member;
     }
 
     ++position;
@@ -5058,11 +5058,12 @@ MessengerMember CSession::FriendAt(int index) const {
 // OFFSET: 0x00DE0500
 // FUNCTION: fn_23455
 MessengerMember CSession::PartyAt(int index) const {
+  auto member = this->m_partyMembers.begin();
   int position = 0;
 
-  for (const MessengerMember& member : this->m_partyMembers) {
+  for (; member != this->m_partyMembers.end(); ++member) {
     if (position == index) {
-      return member;
+      return *member;
     }
 
     ++position;
@@ -5074,9 +5075,9 @@ MessengerMember CSession::PartyAt(int index) const {
 // OFFSET: 0x00DE00D0
 // FUNCTION: fn_23452
 MessengerMember CSession::PartyByAccount(std::uint32_t accountId) const {
-  for (const MessengerMember& member : this->m_partyMembers) {
-    if (member.accountId == accountId) {
-      return member;
+  for (auto member = this->m_partyMembers.begin(); member != this->m_partyMembers.end(); ++member) {
+    if (member->accountId == accountId) {
+      return *member;
     }
   }
 
@@ -5094,9 +5095,9 @@ MessengerMember CSession::PartyByCharacter(std::uint32_t characterId) const {
 // OFFSET: 0x00DE03E0
 // FUNCTION: fn_23454
 MessengerMember CSession::PartyByName(const char* name) const {
-  for (const MessengerMember& member : this->m_partyMembers) {
-    if (member.name == name) {
-      return member;
+  for (auto member = this->m_partyMembers.begin(); member != this->m_partyMembers.end(); ++member) {
+    if (member->name == name) {
+      return *member;
     }
   }
 
@@ -5241,7 +5242,7 @@ int CLuaInstance::GetFieldInt(int& value, const char* name) {
   if (type == LUA_TNUMBER) {
     value = static_cast<int>(lua_tonumber(this->m_state, -1));
   } else {
-    result = (type != LUA_TNIL) + 1;
+    result = type == LUA_TNIL ? 1 : 2;
   }
   lua_settop(this->m_state, -2);
   return result;
@@ -5256,19 +5257,21 @@ int CLuaInstance::GetFieldUIntArray(std::vector<unsigned int>& values, const cha
 
   lua_getfield(this->m_state, -1, name);
   int type = lua_type(this->m_state, -1);
-  int result = 0;
+  int result;
   if (type == LUA_TTABLE) {
     lua_pushnil(this->m_state);
+    result = 0;
     while (lua_next(this->m_state, -2) != 0) {
-      if (lua_type(this->m_state, -1) != LUA_TNUMBER) {
-        result = 2;
+      const int valueType = lua_type(this->m_state, -1);
+      result = valueType == LUA_TNUMBER ? 0 : 2;
+      if (valueType != LUA_TNUMBER) {
         break;
       }
       values.push_back(static_cast<unsigned int>(lua_tonumber(this->m_state, -1)));
       lua_settop(this->m_state, -2);
     }
   } else {
-    result = (type != LUA_TNIL) + 1;
+    result = type == LUA_TNIL ? 1 : 2;
   }
   lua_settop(this->m_state, -2);
   return result;
@@ -5287,7 +5290,7 @@ int CLuaInstance::GetFieldString(std::string& value, const char* name) {
   if (type == LUA_TSTRING) {
     value = lua_tostring(this->m_state, -1);
   } else {
-    result = (type != LUA_TNIL) + 1;
+    result = type == LUA_TNIL ? 1 : 2;
   }
   lua_settop(this->m_state, -2);
   return result;

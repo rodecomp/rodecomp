@@ -9,8 +9,6 @@ extern "C" {
 #include <cstdint>
 #include <cstring>
 
-CSkillInfo* FindGroupedSkill(CSession& session, std::uint32_t id);
-
 // OFFSET: 0x00AFEE00
 // FUNCTION: fn_18349
 int AddSkill(lua_State* state) {
@@ -48,7 +46,7 @@ int AddNeededSkill(lua_State* state) {
   const int level = static_cast<int>(luaL_checknumber(state, 3));
 
   if (id != -1 && needed != -1 && level != -1) {
-    CSkillInfo* skill = FindGroupedSkill(g_session, static_cast<std::uint32_t>(id));
+    CSkillInfo* skill = g_session.FindGroupedSkill(static_cast<std::uint32_t>(id));
     if (skill && skill->available) {
       skill->entries.push_back({static_cast<std::uint32_t>(needed), static_cast<std::uint32_t>(level)});
     }

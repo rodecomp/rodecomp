@@ -664,9 +664,9 @@ __declspec(noinline) bool __stdcall IsPlayerJob(int job) {
 // OFFSET: 0x00E19110
 // FUNCTION: fn_23835
 int CSession::InheritedJob(int job) {
-  const int inherited = this->m_hotkeyScript->TableInteger("JobInheritTable", 0, job);
-  const int replacement = this->m_hotkeyScript->TableInteger("JOB_INHERIT_LIST2", 0, inherited);
-  return replacement == -1 ? inherited : replacement;
+  job = this->m_hotkeyScript->TableInteger("JobInheritTable", 0, job);
+  const int replacement = this->m_hotkeyScript->TableInteger("JOB_INHERIT_LIST2", 0, job);
+  return replacement != -1 ? replacement : job;
 }
 
 // OFFSET: 0x00E25B70
@@ -999,11 +999,11 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
 // FUNCTION: fn_23803
 std::string CSession::GetWeaponName(int weapon) {
   const unsigned index = GetRealWeaponId(weapon);
-  if (index < static_cast<unsigned>(this->m_weaponNamesEnd - this->m_weaponNamesBegin)) {
-    return this->m_weaponNamesBegin[index];
+  if (index >= static_cast<unsigned>(this->m_weaponNamesEnd - this->m_weaponNamesBegin)) {
+    return this->m_weaponNamesBegin[0];
   }
 
-  return this->m_weaponNamesBegin[0];
+  return this->m_weaponNamesBegin[index];
 }
 
 // OFFSET: 0x00DE3800
@@ -1082,15 +1082,13 @@ std::string CSession::GetWeaponEffectActName(int job, int sex, int weapon, int w
 // OFFSET: 0x00E19450
 // FUNCTION: fn_23839
 std::string CSession::GetWeaponEffectSprName(int job, int sex, int weapon, int weaponItem, int effect, int costume) {
-  std::string name = g_equipmentResourceMgr->GetWeaponEffectResourceName(1, job, sex, weapon, weaponItem, effect, costume);
-  return name;
+  return g_equipmentResourceMgr->GetWeaponEffectResourceName(1, job, sex, weapon, weaponItem, effect, costume);
 }
 
 // OFFSET: 0x00E194C0
 // FUNCTION: fn_23840
 std::string CSession::GetWeaponSprName(int job, int sex, int weapon, int weaponItem, int costume) {
-  std::string name = g_equipmentResourceMgr->GetWeaponResourceName(1, job, sex, weapon, weaponItem, costume);
-  return name;
+  return g_equipmentResourceMgr->GetWeaponResourceName(1, job, sex, weapon, weaponItem, costume);
 }
 
 // OFFSET: 0x00DFBE10

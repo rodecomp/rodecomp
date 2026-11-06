@@ -8,8 +8,16 @@
 
 struct MessengerMember {
   MessengerMember();
-  explicit MessengerMember(int unused);
-  MessengerMember(const MessengerMember& other);
+  // OFFSET: 0x00739B60
+  // FUNCTION: fn_07696
+  explicit MessengerMember(int) : valid(0), dead(0) {
+  }
+
+
+  // OFFSET: 0x00739AB0
+  // FUNCTION: fn_07695
+  MessengerMember(const MessengerMember& other) = default;
+
   MessengerMember& operator=(const MessengerMember& other);
   ~MessengerMember();
   std::uint32_t Deserialize(const std::vector<unsigned char>& data);

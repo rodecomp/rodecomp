@@ -197,18 +197,6 @@ static_assert(sizeof(MessengerRecordHeader) == 6);
 MessengerMember::MessengerMember() : valid(1), dead(0) {
 }
 
-// OFFSET: 0x00739B60
-// FUNCTION: fn_07696
-MessengerMember::MessengerMember(int) : valid(0), dead(0) {
-}
-
-// OFFSET: 0x00739AB0
-// FUNCTION: fn_07695
-MessengerMember::MessengerMember(const MessengerMember& other)
-    : valid(other.valid), accountId(other.accountId), characterId(other.characterId), name(other.name), map(other.map), leader(other.leader),
-      offline(other.offline), color(other.color), job(other.job), level(other.level), dead(other.dead) {
-}
-
 // OFFSET: 0x00DC6FA0
 // FUNCTION: fn_22785
 MessengerMember& MessengerMember::operator=(const MessengerMember& other) {
@@ -2070,7 +2058,7 @@ __declspec(noinline) void UIWindowMgr::RetireTransientWindow() {
   UIDragMiniPartyWnd* transient = static_cast<UIDragMiniPartyWnd*>(this->window_4F250);
   if (transient && transient->member.valid) {
     transient->geometry.unknown_0030 = 1;
-    this->Schedule(transient);
+    this->Schedule(this->window_4F250);
     this->window_4F250 = nullptr;
   }
 }

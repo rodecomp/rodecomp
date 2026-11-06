@@ -1248,7 +1248,10 @@ EquipSlots CSession::GetEquipSlots(int location) {
     break;
   }
 
-  result = EquipSlotDecoder().Decode(mask);
+  const EquipSlots decoded = EquipSlotDecoder().Decode(mask);
+  result.values[0] = decoded.values[0];
+  result.values[1] = decoded.values[1];
+  result.values[2] = decoded.values[2];
   return result;
 }
 
@@ -1512,10 +1515,10 @@ void CSession::RemoveItem1758ByItemId(ITEM_INFO& item) {
 void CSession::RemoveItem1710(std::uint32_t id, int quantity) {
   for (auto it = this->m_inventoryItems.begin(); it != this->m_inventoryItems.end(); ++it) {
     if (it->unknown_0000[1] == id) {
-      if (quantity < it->quantity) {
-        it->quantity -= quantity;
-      } else {
+      if (it->quantity <= quantity) {
         this->m_inventoryItems.erase(it);
+      } else {
+        it->quantity -= quantity;
       }
       for (auto it2 = this->m_inventoryItems.begin(); it2 != this->m_inventoryItems.end(); ++it2) {
         if (it2->unknown_0000[1] == id) {
