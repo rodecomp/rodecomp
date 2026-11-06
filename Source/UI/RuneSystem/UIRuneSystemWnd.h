@@ -277,7 +277,7 @@ public:
 
 #pragma pack(push, 1)
 struct RuneSystemOpenPacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
   /* 0002 */ unsigned char open;
 };
 
