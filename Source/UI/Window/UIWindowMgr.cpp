@@ -1654,7 +1654,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
     }
   }
 
-  CMode* mode = static_cast<CMode*>(g_charViewMode);
+  CMode* mode = g_modeMgr.gameMode;
   if (text[0] == '/') {
     if (g_session.ProcessEmotionShortcut(text) == 0) {
       std::string parts[3];
@@ -1663,7 +1663,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
       if (offset != -1) {
         g_windowMgr.unknown_04DC = text + offset;
       }
-      static_cast<CMode*>(g_charViewMode)->SendMsg(0x2A, talkType, reinterpret_cast<int>(parts), 0, 0);
+      g_modeMgr.gameMode->SendMsg(0x2A, talkType, reinterpret_cast<int>(parts), 0, 0);
     }
     return;
   }
@@ -2894,7 +2894,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 25:
     if (this->unknown_0264) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(291, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(291, 0, 0, 0, 0);
       this->Schedule(this->unknown_0264);
       this->unknown_0264 = nullptr;
       closed = true;
@@ -2902,7 +2902,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 24:
     if (this->unknown_025C) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(291, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(291, 0, 0, 0, 0);
       this->Schedule(this->unknown_025C);
       this->unknown_025C = nullptr;
       closed = true;
@@ -2924,7 +2924,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 23:
     if (this->unknown_0258) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(291, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(291, 0, 0, 0, 0);
       this->Schedule(this->unknown_0258);
       this->unknown_0258 = nullptr;
       closed = true;
@@ -2990,8 +2990,8 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 335:
     if (this->window_4F264) {
-      if (g_charViewMode) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(309, 0, 0, 0, 0);
+      if (g_modeMgr.gameMode) {
+        g_modeMgr.gameMode->SendMsg(309, 0, 0, 0, 0);
       }
       this->Schedule(this->window_4F264);
       this->window_4F264 = nullptr;
@@ -3010,8 +3010,8 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 342:
     if (this->window_4F26C) {
-      if (g_charViewMode) {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(322, 0, 0, 0, 0);
+      if (g_modeMgr.gameMode) {
+        g_modeMgr.gameMode->SendMsg(322, 0, 0, 0, 0);
       }
       this->Schedule(this->window_4F26C);
       closed = true;
@@ -3534,7 +3534,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->Schedule(this->unknown_0390);
       this->unknown_0390 = nullptr;
       closed = true;
-      static_cast<CMode*>(g_charViewMode)->SendMsg(146, -1, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(146, -1, 0, 0, 0);
     }
     break;
   case 91:

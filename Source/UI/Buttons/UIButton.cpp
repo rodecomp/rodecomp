@@ -148,7 +148,7 @@ void UIButton::ResetCursor(int x, int y) {
     return;
   }
 
-  static_cast<CMode*>(g_charViewMode)->SetCursorAction(2);
+  g_modeMgr.gameMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x0085EED0

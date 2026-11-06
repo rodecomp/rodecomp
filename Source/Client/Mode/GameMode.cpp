@@ -3036,8 +3036,8 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_windowMgr.CloseWindow(0xC);
       } else {
         g_windowMgr.CloseWindow(0xFF);
-        if (g_charViewMode != nullptr) {
-          static_cast<CMode*>(g_charViewMode)->SendMsg(0x28, 0, 0, 0, 0);
+        if (g_modeMgr.gameMode != nullptr) {
+          g_modeMgr.gameMode->SendMsg(0x28, 0, 0, 0, 0);
         }
       }
       g_session.ClearTradeItems();

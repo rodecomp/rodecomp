@@ -4352,8 +4352,8 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
     g_configuredFullscreen = this->m_fullscreen->m_onButton->checked;
     g_restartClient = true;
     GetRagConnection().Close();
-    if (g_charViewMode) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+    if (g_modeMgr.gameMode) {
+      g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
     }
     return;
   }

@@ -83,11 +83,11 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     switch (a) {
     case 184:
       g_windowMgr.CloseWindow(32);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(50, 3, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(50, 3, 0, 0, 0);
       return 0;
     case 185:
       g_windowMgr.CloseWindow(32);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(50, 4, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(50, 4, 0, 0, 0);
       return 0;
     }
     return 0;

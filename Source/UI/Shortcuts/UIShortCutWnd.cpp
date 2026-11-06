@@ -292,7 +292,7 @@ inline void UseShortcutSlot(const NormalItemSlot& slot) {
         level = skill.level;
       }
 
-      static_cast<CMode*>(g_charViewMode)->SendMsg(113, reinterpret_cast<int>(&skill), level, 0, 0);
+      g_modeMgr.gameMode->SendMsg(113, reinterpret_cast<int>(&skill), level, 0, 0);
     }
 
     return;

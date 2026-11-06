@@ -424,7 +424,7 @@ void UIReplayButton::Slot31(int x, int y) {
       this->parent->SendMsg(this, 6, this->geometry.id, this->m_argument, 0, 0);
       this->parent->SendMsg(nullptr, 35, 0, 0, 0, 0);
     } else {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(0, this->geometry.id, this->m_argument, 0, 0);
+      g_modeMgr.gameMode->SendMsg(0, this->geometry.id, this->m_argument, 0, 0);
     }
   }
 
@@ -449,7 +449,7 @@ void UIMonsterInfoWnd::Slot28(int x, int y) {
   }
 
   if (this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) > 100) {
-    static_cast<CMode*>(g_charViewMode)->ShowTooltip(name.c_str(), screenX + x, screenY + y, -1, false, true);
+    g_modeMgr.gameMode->ShowTooltip(name.c_str(), screenX + x, screenY + y, -1, false, true);
   }
 }
 

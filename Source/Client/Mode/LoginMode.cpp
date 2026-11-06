@@ -2401,7 +2401,7 @@ void CLoginMode::PollNetworkStatus() {
 
   memset(g_gameModePacketBuffer, 0, sizeof(g_gameModePacketBuffer));
   if (!GetRagConnection().Update()) {
-    static_cast<CMode*>(g_charViewMode)->SendMsg(1, 0, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(1, 0, 0, 0, 0);
   }
 
   if (g_charServerAccountIdPending == 1) {
@@ -2928,7 +2928,7 @@ void CLoginMode::PollNetworkStatus() {
     }
     case 0xB71: {
       const CharacterInfoPacket* packet = reinterpret_cast<const CharacterInfoPacket*>(g_gameModePacketBuffer);
-      CharacterInfo* character = reinterpret_cast<CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, packet->info.slot, 0, 0, 0));
+      CharacterInfo* character = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, packet->info.slot, 0, 0, 0));
       if (character && character->gid == *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5913[1])) {
         *character = packet->info;
         StringFormat(character->mapName, sizeof(character->mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(character->mapName));

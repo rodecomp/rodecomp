@@ -1178,7 +1178,7 @@ int UIWindowMgr::RunEmailAddress() {
   int response = 184;
 
   if (g_modalImmediate == 0) {
-    CMode* pump = static_cast<CMode*>(g_charViewMode);
+    CMode* pump = g_modeMgr.gameMode;
 
     for (;;) {
       if (this->activeWindowId != 0) {
@@ -1211,7 +1211,7 @@ int UIWindowMgr::RunEmailAddress() {
 
       if (pump) {
         pump->Update();
-        pump = static_cast<CMode*>(g_charViewMode);
+        pump = g_modeMgr.gameMode;
       }
 
       if (g_session.GetOption(20) > 0) {

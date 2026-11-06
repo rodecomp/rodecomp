@@ -4618,7 +4618,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       } else if (talkType == 51) {
         this->SaveChatLog();
       } else {
-        static_cast<CMode*>(g_charViewMode)->SendMsg(42, talkType, reinterpret_cast<std::intptr_t>(parts), 0, 0);
+        g_modeMgr.gameMode->SendMsg(42, talkType, reinterpret_cast<std::intptr_t>(parts), 0, 0);
       }
       return 0;
     }
@@ -4631,7 +4631,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       g_windowMgr.unknown_04DC.assign(text, std::strlen(text));
     }
 
-    static_cast<CMode*>(g_charViewMode)->SendMsg(11, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(11, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
     return 0;
   }
   case 14:
@@ -4701,7 +4701,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->m_log.push_back(WhisperLogLine{std::string(LookupMessage(358)), 21});
     }
 
-    static_cast<CMode*>(g_charViewMode)->SendMsg(101, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(101, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
     if (this->m_log.empty()) {
       return 0;
     }

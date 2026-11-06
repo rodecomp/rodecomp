@@ -6500,7 +6500,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
   }
   case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    CMode* mode = static_cast<CMode*>(g_charViewMode);
+    CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
       if (this->unknown_0108) {
         int sum = 0;
@@ -9954,7 +9954,7 @@ int UIMerchantItemPurchaseMSGWnd::SendMsg(UIWindow* sender, int message, std::in
 
   switch (a) {
   case 184:
-    static_cast<CMode*>(g_charViewMode)->SendMsg(83, this->purchaseIndex, this->unknown_00D0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(83, this->purchaseIndex, this->unknown_00D0, 0, 0);
   case 185:
     g_windowMgr.CloseWindow(230);
     g_session.ClearItems1760And1748();
