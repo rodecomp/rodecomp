@@ -7,7 +7,7 @@
 
 // OFFSET: 0x00BF1F00
 // FUNCTION: fn_19988
-void CEffectPrim::RenderSpinSquares(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
