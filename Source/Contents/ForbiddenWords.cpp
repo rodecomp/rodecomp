@@ -23,10 +23,21 @@ ForbiddenWords::~ForbiddenWords() {
 }
 
 namespace {
+  // INLINED
+  char* LowercaseWithCodePage(char* text, unsigned short codePage) {
+    for (char* current = text; current < text + std::strlen(text); current = CharNextExA(codePage, current, 0)) {
+      if (*current > 0 && std::isupper(*current)) {
+        *current += 32;
+      }
+    }
+
+    return text;
+  }
+
   // OFFSET: 0x00AE7060
   // FUNCTION: fn_18065
-  char* Lowercase(char* text, unsigned short codePage) {
-    for (char* current = text; current < text + std::strlen(text); current = CharNextExA(codePage, current, 0)) {
+  char* Lowercase(char* text) {
+    for (char* current = text; current < text + std::strlen(text); current = CharNextExA(static_cast<unsigned short>(g_textCodePage), current, 0)) {
       if (*current > 0 && std::isupper(*current)) {
         *current += 32;
       }
@@ -60,7 +71,7 @@ bool ForbiddenWords::Load(const char* name) {
     *last = '\0';
 
     if (*first != '\0') {
-      this->words.push_back(Lowercase(token, static_cast<unsigned short>(g_textCodePage)));
+      this->words.push_back(Lowercase(token));
     }
   }
 
@@ -78,7 +89,7 @@ bool ForbiddenWords::Allows(const char* text) const {
   }
 
   std::strncpy(storage, text, size);
-  const char* current = Lowercase(storage, static_cast<unsigned short>(g_textCodePage));
+  const char* current = Lowercase(storage);
   const char* end = current + std::strlen(current);
 
   while (current < end) {
@@ -139,7 +150,7 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
   }
 
   strcpy_s(scanBuffer, sizeof(scanBuffer), text);
-  char* current = Lowercase(scanBuffer, static_cast<unsigned short>(g_textCodePage));
+  char* current = LowercaseWithCodePage(scanBuffer, static_cast<unsigned short>(g_textCodePage));
 
   while (std::strlen(current) != 0) {
     const auto* open = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("<iteml>"));
@@ -161,7 +172,7 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
       }
 
       std::strcpy(matchedWord, word);
-      Lowercase(matchedWord, static_cast<unsigned short>(g_textCodePage));
+      LowercaseWithCodePage(matchedWord, static_cast<unsigned short>(g_textCodePage));
       advance = 0;
       const char* end = matchedWord + std::strlen(matchedWord);
 
