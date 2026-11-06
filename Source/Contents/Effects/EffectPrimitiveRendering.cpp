@@ -32,72 +32,103 @@
 // GLOBAL: gl_24499
 int g_overrideColor = 0;
 
+// INLINED
+static __forceinline void TransformPrimitiveVertex(const float* matrix, const vector3d& in, vector3d& out) {
+  out.x = in.z * matrix[6] + (in.y * matrix[3] + in.x * matrix[0]) + matrix[9];
+  out.y = in.z * matrix[7] + (in.y * matrix[4] + in.x * matrix[1]) + matrix[10];
+  out.z = in.z * matrix[8] + (in.y * matrix[5] + in.x * matrix[2]) + matrix[11];
+}
+
 // OFFSET: 0x00BCD960
 // FUNCTION: fn_19865
 void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
-  const float width = this->state.widthSize;
-  const float left = -width;
-  float top = -this->state.heightSize;
-  float bottom = this->state.heightSize;
+  vector3d vert[4]{};
+  vector3d tvert[4]{};
+
+  vert[0].z = this->state.widthSize;
+  vert[2].y = this->state.heightSize;
+  vert[1].z = -vert[0].z;
+  vert[0].y = -vert[2].y;
 
   if ((this->state.pattern & 0x80u) != 0) {
-    top = top + top;
-    bottom = 0.0f;
+    vert[0].y = vert[0].y + vert[0].y;
+    vert[2].y = 0.0f;
   }
 
   if ((this->state.pattern & 8u) != 0) {
-    bottom = 0.0f;
+    vert[2].y = 0.0f;
   }
 
+  vert[1].y = vert[0].y;
+  vert[2].z = vert[0].z;
+  vert[3].y = vert[2].y;
+  vert[3].z = vert[1].z;
+
   const float* matrix = this->state.rotTransform;
-  const float zeroX = matrix[0] * 0.0f;
-  const float zeroY = matrix[1] * 0.0f;
-  const float zeroZ = matrix[2] * 0.0f;
-  const float topX = matrix[3] * top + zeroX;
-  const float topY = matrix[4] * top + zeroY;
-  const float topZ = matrix[5] * top + zeroZ;
-  const float rightX = matrix[6] * width;
-  const float rightY = matrix[7] * width;
-  const float rightZ = matrix[8] * width;
-  const float leftX = matrix[6] * left;
-  const float leftY = matrix[7] * left;
-  const float leftZ = matrix[8] * left;
-  const float bottomX = bottom * matrix[3] + zeroX;
-  const float bottomY = bottom * matrix[4] + zeroY;
-  const float bottomZ = bottom * matrix[5] + zeroZ;
+  TransformPrimitiveVertex(matrix, vert[0], tvert[0]);
+  TransformPrimitiveVertex(matrix, vert[1], tvert[1]);
+  TransformPrimitiveVertex(matrix, vert[2], tvert[2]);
+  TransformPrimitiveVertex(matrix, vert[3], tvert[3]);
 
-  const vector3d corners[4] = {
-    {(rightX + topX) + matrix[9], (rightY + topY) + matrix[10], (rightZ + topZ) + matrix[11]},
-    {(leftX + topX) + matrix[9], (leftY + topY) + matrix[10], (leftZ + topZ) + matrix[11]},
-    {(bottomX + rightX) + matrix[9], (bottomY + rightY) + matrix[10], (bottomZ + rightZ) + matrix[11]},
-    {(bottomX + leftX) + matrix[9], (bottomY + leftY) + matrix[10], (bottomZ + leftZ) + matrix[11]}
-  };
-
-  constexpr unsigned indices[2][3] = {{0, 1, 2}, {3, 2, 1}};
-  constexpr float u[2][3] = {{0, 1, 0}, {1, 0, 1}};
-  const float vTop = this->state.v1;
-  const float vBottom = this->state.v2;
-  const float v[2][3] = {{vTop, vTop, vBottom}, {vBottom, vBottom, vTop}};
-
-  for (unsigned triangleIndex = 0; triangleIndex < 2; ++triangleIndex) {
-    RenderTriangle& triangle = this->state.triangles[triangleIndex];
-
-    for (unsigned vertexIndex = 0; vertexIndex < 3; ++vertexIndex) {
-      const vector3d& corner = corners[indices[triangleIndex][vertexIndex]];
-      const float position[3] = {corner.x + this->render.position.x, corner.y + this->render.position.y, corner.z + this->render.position.z};
-      RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      g_renderer->viewport.Project(position, wtm.values, projected);
-      RenderVertex& vertex = triangle.vertices[vertexIndex];
-      vertex = projected;
-      vertex.diffuse = this->state.argb;
-      vertex.u = u[triangleIndex][vertexIndex];
-      vertex.v = v[triangleIndex][vertexIndex];
-    }
-
+  {
+    RenderTriangle& triangle = this->state.triangles[0];
+    const float firstPosition[3] = {tvert[0].x + this->render.position.x, tvert[0].y + this->render.position.y, tvert[0].z + this->render.position.z};
+    RenderVertex first{};
+    first.specular = 0xFF000000;
+    g_renderer->viewport.Project(firstPosition, wtm.values, first);
+    triangle.vertices[0] = first;
+    triangle.vertices[0].diffuse = this->state.argb;
+    triangle.vertices[0].u = 0.0f;
+    triangle.vertices[0].v = this->state.v1;
+    const float secondPosition[3] = {tvert[1].x + this->render.position.x, tvert[1].y + this->render.position.y, tvert[1].z + this->render.position.z};
+    RenderVertex second{};
+    second.specular = 0xFF000000;
+    g_renderer->viewport.Project(secondPosition, wtm.values, second);
+    triangle.vertices[1] = second;
+    triangle.vertices[1].diffuse = this->state.argb;
+    triangle.vertices[1].u = 1.0f;
+    triangle.vertices[1].v = this->state.v1;
+    const float thirdPosition[3] = {tvert[2].x + this->render.position.x, tvert[2].y + this->render.position.y, tvert[2].z + this->render.position.z};
+    RenderVertex third{};
+    third.specular = 0xFF000000;
+    g_renderer->viewport.Project(thirdPosition, wtm.values, third);
+    triangle.vertices[2] = third;
+    triangle.vertices[2].diffuse = this->state.argb;
+    triangle.vertices[2].u = 0.0f;
+    triangle.vertices[2].v = this->state.v2;
     triangle.texture = this->state.textures[this->render.curMotion];
   }
 
-  for (unsigned index = 0; index < 2; ++index) {
+  {
+    RenderTriangle& triangle = this->state.triangles[1];
+    const float firstPosition[3] = {tvert[3].x + this->render.position.x, tvert[3].y + this->render.position.y, tvert[3].z + this->render.position.z};
+    RenderVertex first{};
+    first.specular = 0xFF000000;
+    g_renderer->viewport.Project(firstPosition, wtm.values, first);
+    triangle.vertices[0] = first;
+    triangle.vertices[0].diffuse = this->state.argb;
+    triangle.vertices[0].u = 1.0f;
+    triangle.vertices[0].v = this->state.v2;
+    const float secondPosition[3] = {tvert[2].x + this->render.position.x, tvert[2].y + this->render.position.y, tvert[2].z + this->render.position.z};
+    RenderVertex second{};
+    second.specular = 0xFF000000;
+    g_renderer->viewport.Project(secondPosition, wtm.values, second);
+    triangle.vertices[1] = second;
+    triangle.vertices[1].diffuse = this->state.argb;
+    triangle.vertices[1].u = 0.0f;
+    triangle.vertices[1].v = this->state.v2;
+    const float thirdPosition[3] = {tvert[1].x + this->render.position.x, tvert[1].y + this->render.position.y, tvert[1].z + this->render.position.z};
+    RenderVertex third{};
+    third.specular = 0xFF000000;
+    g_renderer->viewport.Project(thirdPosition, wtm.values, third);
+    triangle.vertices[2] = third;
+    triangle.vertices[2].diffuse = this->state.argb;
+    triangle.vertices[2].u = 1.0f;
+    triangle.vertices[2].v = this->state.v1;
+    triangle.texture = this->state.textures[this->render.curMotion];
+  }
+
+  for (int index = 0; index < 2; ++index) {
     RenderTriangle& triangle = this->state.triangles[index];
 
     if (triangle.Visible()) {
@@ -1254,31 +1285,68 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   vec4.y += position.y;
   vec4.z += position.z;
 
-  const vector3d* const corners[2][3] = {{&vec1, &vec2, &vec3}, {&vec4, &vec3, &vec1}};
-  const float us[2][3] = {{1.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}};
-  const float vs[2][3] = {{top, bottom, bottom}, {top, bottom, top}};
-
-  for (int half = 0; half < 2; ++half) {
+  {
     RenderTriangle& triangle = this->state.triangles[*rpCnt];
     triangle.unknown_0064 = 5;
     triangle.unknown_0068 = destBlend;
 
-    for (int index = 0; index < 3; ++index) {
-      RenderVertex& vertex = triangle.vertices[index];
-      vertex.x = 0.0f;
-      vertex.y = 0.0f;
-      vertex.z = 0.0f;
-      vertex.rhw = 0.0f;
-      vertex.diffuse = 0;
-      vertex.specular = 0xFF000000;
-      vertex.u = 0.0f;
-      vertex.v = 0.0f;
-      g_renderer->viewport.Project(&corners[half][index]->x, wtm.values, vertex);
-      vertex.diffuse = color;
-      vertex.u = us[half][index];
-      vertex.v = vs[half][index];
-    }
+    RenderVertex first{};
+    first.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec1.x, wtm.values, first);
+    triangle.vertices[0] = first;
+    triangle.vertices[0].diffuse = color;
+    triangle.vertices[0].u = 1.0f;
+    triangle.vertices[0].v = top;
+    RenderVertex second{};
+    second.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec2.x, wtm.values, second);
+    triangle.vertices[1] = second;
+    triangle.vertices[1].diffuse = color;
+    triangle.vertices[1].u = 1.0f;
+    triangle.vertices[1].v = bottom;
+    RenderVertex third{};
+    third.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec3.x, wtm.values, third);
+    triangle.vertices[2] = third;
+    triangle.vertices[2].diffuse = color;
+    triangle.vertices[2].u = 0.0f;
+    triangle.vertices[2].v = bottom;
+    triangle.texture = this->state.textures[0];
 
+    if (triangle.Visible()) {
+      g_renderer->queues.SubmitTriangle(
+        triangle, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+      );
+      ++*rpCnt;
+    }
+  }
+
+  {
+    RenderTriangle& triangle = this->state.triangles[*rpCnt];
+    triangle.unknown_0064 = 5;
+    triangle.unknown_0068 = destBlend;
+
+    RenderVertex first{};
+    first.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec4.x, wtm.values, first);
+    triangle.vertices[0] = first;
+    triangle.vertices[0].diffuse = color;
+    triangle.vertices[0].u = 0.0f;
+    triangle.vertices[0].v = top;
+    RenderVertex second{};
+    second.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec3.x, wtm.values, second);
+    triangle.vertices[1] = second;
+    triangle.vertices[1].diffuse = color;
+    triangle.vertices[1].u = 0.0f;
+    triangle.vertices[1].v = bottom;
+    RenderVertex third{};
+    third.specular = 0xFF000000;
+    g_renderer->viewport.Project(&vec1.x, wtm.values, third);
+    triangle.vertices[2] = third;
+    triangle.vertices[2].diffuse = color;
+    triangle.vertices[2].u = 1.0f;
+    triangle.vertices[2].v = top;
     triangle.texture = this->state.textures[0];
 
     if (triangle.Visible()) {
@@ -1535,6 +1603,28 @@ void CEffectPrim::RenderRiseArc(matrix& wtm) {
   }
 }
 
+// INLINED
+static __forceinline void RenderFacingQuad(
+  CEffectPrim& prim, int* rpCnt, const EffectPrimitiveSlot& slot, const vector3d& vec1, const vector3d& vec2, const vector3d& vec3, const vector3d& vec4,
+  const vector3d& position, char alphaValue, matrix& wtm
+) {
+  const vector3d corner1{position.x + vec1.x, position.y + vec1.y, position.z + vec1.z};
+  const vector3d corner2{position.x + vec2.x, position.y + vec2.y, position.z + vec2.z};
+  const vector3d corner3{position.x + vec3.x, position.y + vec3.y, position.z + vec3.z};
+  const vector3d corner4{position.x + vec4.x, position.y + vec4.y, position.z + vec4.z};
+  const int alpha = std::max(alphaValue * 2, 0);
+
+  if (slot.flag1[5] == 7) {
+    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+  } else if (slot.flag1[5] == 8) {
+    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+  } else if (slot.flag1[5] == 10) {
+    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+  } else {
+    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+  }
+}
+
 // OFFSET: 0x00BE67E0
 // FUNCTION: fn_19929
 void CEffectPrim::RenderFacingQuads(matrix& wtm) {
@@ -1558,26 +1648,10 @@ void CEffectPrim::RenderFacingQuads(matrix& wtm) {
     vec4 = {size * g_cosTable[315], 0.0f, size * g_sinTable[315]};
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-    const vector3d* positions[4] = {&slot.vecBPre, &slot.vecBNow, &slot.vecTPre, &slot.vecTNow};
-    const char alphas[4] = {slot.flag1[11], slot.flag1[12], slot.flag1[13], slot.flag1[14]};
-    for (int corner = 0; corner < 4; ++corner) {
-      const vector3d& position = *positions[corner];
-      const vector3d corner1{position.x + vec1.x, position.y + vec1.y, position.z + vec1.z};
-      const vector3d corner2{position.x + vec2.x, position.y + vec2.y, position.z + vec2.z};
-      const vector3d corner3{position.x + vec3.x, position.y + vec3.y, position.z + vec3.z};
-      const vector3d corner4{position.x + vec4.x, position.y + vec4.y, position.z + vec4.z};
-      const int alpha = std::max(alphas[corner] * 2, 0);
-
-      if (slot.flag1[5] == 7) {
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[5] == 8) {
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[5] == 10) {
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else {
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      }
-    }
+    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, slot.vecBPre, slot.flag1[11], wtm);
+    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, slot.vecBNow, slot.flag1[12], wtm);
+    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, slot.vecTPre, slot.flag1[13], wtm);
+    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, slot.vecTNow, slot.flag1[14], wtm);
   }
 }
 
