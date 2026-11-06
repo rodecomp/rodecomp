@@ -178,10 +178,10 @@ void CWeatherEffect::StartLightning() {
 // FUNCTION: fn_20372
 void CWeatherEffect::Process() {
   if (this->darken == 1) {
-    if (this->color[0] > g_depthAverageHalf) {
+    if (this->color[0] > 0.5f) {
       this->color[0] -= 0.005f;
     }
-    if (this->color[1] > g_depthAverageHalf) {
+    if (this->color[1] > 0.5f) {
       this->color[1] -= 0.005f;
     }
   } else if (this->lightning == 1) {
