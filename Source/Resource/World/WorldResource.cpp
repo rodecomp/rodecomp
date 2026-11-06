@@ -4,6 +4,7 @@
 #include "Resource/World/WorldResource.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <compare>
 #include <cstdio>
 #include <cstring>
 
@@ -43,22 +44,16 @@ namespace {
 
   // OFFSET: 0x00763010
   // FUNCTION: fn_08075
-  signed char CompareWorldVersion(const int targetVersion[2], const unsigned char* const fileVersion[2]) {
-    const int targetMajor = targetVersion[1];
-    const int fileMajor = static_cast<int>(*fileVersion[1]);
-
-    if (targetMajor != fileMajor) {
-      return targetMajor < fileMajor ? -1 : 1;
+  std::strong_ordering CompareWorldVersion(const int targetVersion[2], const unsigned char* const fileVersion[2]) {
+    if (const std::strong_ordering order = targetVersion[1] <=> static_cast<int>(*fileVersion[1]); order != 0) {
+      return order;
     }
 
-    const int targetMinor = targetVersion[0];
-    const int fileMinor = static_cast<int>(*fileVersion[0]);
-
-    if (targetMinor != fileMinor) {
-      return targetMinor < fileMinor ? -1 : 1;
+    if (const std::strong_ordering order = targetVersion[0] <=> static_cast<int>(*fileVersion[0]); order != 0) {
+      return order;
     }
 
-    return 0;
+    return std::strong_ordering::equal;
   }
 
   // INLINED
