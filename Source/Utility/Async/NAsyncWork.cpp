@@ -3,15 +3,7 @@
 #include <utility>
 
 // INLINED
-inline NRecycleObject::NRecycleObject(std::string poolName) : m_poolName(std::move(poolName)) {
-}
-
-// INLINED
 inline NRecycleObject::~NRecycleObject() = default;
-
-// INLINED
-NAsyncWork::NAsyncWork(std::string poolName) : NRecycleObject(std::move(poolName)), m_group(0), m_key(0) {
-}
 
 // INLINED
 NAsyncWork::~NAsyncWork() = default;

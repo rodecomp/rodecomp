@@ -5,7 +5,10 @@
 
 class NAsyncWork : public NRecycleObject {
 public:
-  explicit NAsyncWork(std::string poolName);
+  // INLINED
+  __forceinline explicit NAsyncWork(std::string poolName) : NRecycleObject(poolName), m_group(0), m_key(0) {
+  }
+
   ~NAsyncWork() override;
   virtual bool Execute();
   virtual void Complete();

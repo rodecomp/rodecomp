@@ -14,7 +14,10 @@
 
 class NRecycleObject {
 public:
-  explicit NRecycleObject(std::string poolName);
+  // INLINED
+  explicit NRecycleObject(std::string poolName) : m_poolName(poolName) {
+  }
+
   virtual void Reset() = 0;
   virtual ~NRecycleObject();
 
