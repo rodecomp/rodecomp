@@ -1643,7 +1643,7 @@ bool CAdventureGuideMgr::IsAvailable(int type, int id) {
 // OFFSET: 0x00667510
 // FUNCTION: fn_05257
 bool AdventureGuideEntry::IsAvailable(int itemId) const {
-  if (g_session.m_level < this->unknown_0004 || this->unknown_0008 < g_session.m_level) {
+  if (this->unknown_0004 > g_session.m_level || g_session.m_level > this->unknown_0008) {
     return false;
   }
 
