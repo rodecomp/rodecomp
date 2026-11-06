@@ -26,8 +26,7 @@ struct UITreeNode {
   /* 0178 */ UITVBitmapButton* collapseButton;
   /* 017C */ UITVTextButton* labelButton;
   /* 0180 */ std::list<UITreeNode*> children;
-  /* 0188 */ std::string* icons;
-  /* 018C */ unsigned char unknown_018C[0x8];
+  /* 0188 */ std::vector<std::string> icons;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
