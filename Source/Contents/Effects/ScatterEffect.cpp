@@ -40,10 +40,10 @@ void CScatterEffect::Slot01() {
       this->unknown_002C = 300;
       particle->SetSprite("이팩트\\sakura01.spr");
       particle->SetAction("이팩트\\sakura01.act");
-      particle->scale = static_cast<float>(std::max(rand() % 6, 0) + 22) / 70.0f;
-      particle->frameDelay = static_cast<float>(std::max(rand() % 3, 0) + 2) * 0.15f;
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(std::max(rand() % 360, 0));
-      const int angle = std::max(rand() % 360, 0);
+      particle->scale = static_cast<float>(std::max(0, rand() % 6) + 22) / 70.0f;
+      particle->frameDelay = static_cast<float>(std::max(0, rand() % 3) + 2) * 0.15f;
+      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(std::max(0, rand() % 360));
+      const int angle = std::max(0, rand() % 360);
       particle->velocity.x = 0.0f;
       particle->velocity.y = 0.0f;
       particle->velocity.z = 0.0f;
