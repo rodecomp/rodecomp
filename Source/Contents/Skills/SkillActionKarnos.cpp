@@ -267,7 +267,8 @@ void CSkillAction_KR_DOUBLE_SLASH::Slot11(int level, CGameActor* source, CGameAc
 
   const std::uint8_t effectSource[] = {0x7B, 0x5E, 0xB8, 0x85, 0x81, 0x10, 0x32, 0x6E, 0x73, 0x50, 0xBE, 0x8F, 0xED};
   thread_local EncryptedName<sizeof(effectSource), 0x1D6D75EDE7CD311FULL> effectName(effectSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B0A10
@@ -371,12 +372,14 @@ void CSkillAction_KR_GROUND_BLOOM::Slot11(int level, CGameActor* source, CGameAc
 
   const char effectSource[] = {'\x16', '\x8B', '\x36', '\x80', '\xEF', '\x79', '\x3A', '\xF3', '\x1D', '\x96', '\x36', '\x98', '\x81'};
   thread_local EncryptedName<sizeof(effectSource), 0x91651D81F559F971ULL> effectName(effectSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
   const char bottomSource[] = {'\x6C', '\x09', '\xB0', '\x14', '\x25', '\x03', '\x8E', '\x11', '\x67', '\x14', '\xB0', '\x0C', '\x14', '\x05', '\xBE', '\x07',
                                        '\x7F', '\x14', '\xB2', '\x61'};
   thread_local EncryptedName<sizeof(bottomSource), 0x73D1674B61DF7B0BULL> bottomName(bottomSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B19B0
@@ -568,12 +571,14 @@ void CSkillObjectAction_KR_ICE_PILLAR::Slot00(int argument, CRenderObject* objec
     return;
   }
 
-  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     const char bytes[] = {'\x8C', '\xEC', '\x28', '\x4A', '\x47', '\x68', '\x3F', '\x9B', '\x84', '\xFD', '\x12', '\x66', '\x43', '\x60', '\x21', '\x83', '\xE5'};
     thread_local EncryptedName<sizeof(bytes), 0xF7530137154D8FE5ULL> name(bytes);
     return name.Text();
   }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  effects = g_effectMgr;
+  effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     const char bytes[] = {'\xAA', '\xA0', '\xB0', '\xD4', '\x2B', '\x82', '\x53', '\xE7', '\xA2', '\xB1', '\x8A', '\xF8', '\x2F', '\x8A', '\x4D', '\xFF',
                                   '\x9C', '\xA1', '\xBA', '\xFF', '\x2F', '\x84', '\x52', '\x8B'};
     thread_local EncryptedName<sizeof(bytes), 0x8B3FEB5B8BD5C3C3ULL> name(bytes);
@@ -683,14 +688,16 @@ void CSkillAction_KR_SHARPEN_HAIL::Slot08(int level, CGameActor* source) {
 
   static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
 
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
         const char bytes[] = {'\x6A', '\x05', '\xAE', '\x8D', '\x2D', '\x64', '\xAF', '\x20', '\x71', '\x0C', '\xA6', '\x93', '\x5D'};
         thread_local EncryptedName<sizeof(bytes), 0x7FC1015DFFCF6D19ULL> name(bytes);
         return name.Text();
       }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->Slot14(level);
   }
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
         const char bytes[] = {'\x50', '\xEB', '\xBA', '\xF1', '\x31', '\xD8', '\x51', '\x94', '\x4B', '\xE2', '\xB2', '\xEF', '\x1E', '\xDF', '\x50', '\xBF',
                                       '\x57', '\xEC', '\xB6', '\x83'};
         thread_local EncryptedName<sizeof(bytes), 0xCB3FBD4183DB8323ULL> name(bytes);
@@ -897,12 +904,14 @@ void CEfstAction_WIND_VEIL::Slot00(int efstId, int value, int argument3, int arg
     return;
   }
 
-  g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     const char source[] = {'\xEC', '\xC4', '\x19', '\xAB', '\x8E', '\x4B', '\x88', '\x04', '\xF7', '\xAD'};
     thread_local EncryptedName<sizeof(source), 0x6DED3DD1CF75AD9BULL> name(source);
     return name.Text();
   }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-  g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  effects = g_effectMgr;
+  effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     const char source[] = {'\xB6', '\xBA', '\xB7', '\x13', '\xC4', '\x03', '\xA6', '\x20', '\xAD', '\x8C', '\xB9', '\x18', '\xEF', '\x01', '\xAC', '\x24', '\xC1'};
     thread_local EncryptedName<sizeof(source), 0x49C3759B77DBD3C1ULL> name(source);
     return name.Text();
