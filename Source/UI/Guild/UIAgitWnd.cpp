@@ -40,10 +40,11 @@ int UIAgitMessageBox::SendMsg(UIWindow*, int message, std::intptr_t a, std::intp
   if (message == 6) {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, d);
-    if (response == 187) {
+    switch (response) {
+    case 187:
       g_modeMgr.GetGameMode()->SendMsg(315, this->m_agitId, 0, 0, 0);
-      g_windowMgr.Schedule(this);
-    } else if (response == 188) {
+      [[fallthrough]];
+    case 188:
       g_windowMgr.Schedule(this);
     }
   }
