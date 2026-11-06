@@ -164,9 +164,9 @@ void CRuneSystemMgr::Destroy() {
 // OFFSET: 0x00766A30
 // FUNCTION: fn_08116
 int RuneSetData::FindLastReward(int count) const {
-  if (count < 8) {
+  if (count <= 7) {
     for (int step = count - 1; step > 0; --step) {
-      if (this->m_reward.values[step] != 0) {
+      if (0 != this->m_reward.values[step]) {
         return step;
       }
     }
@@ -256,7 +256,7 @@ const char* RuneData::GetName() const {
 // OFFSET: 0x00766CB0
 // FUNCTION: fn_08125
 int CRuneSystemMgr::GetDecomItem(unsigned int index) const {
-  if (index >= this->m_decomItems.size()) {
+  if (this->m_decomItems.size() <= index) {
     return 0;
   }
 
@@ -266,7 +266,7 @@ int CRuneSystemMgr::GetDecomItem(unsigned int index) const {
 // OFFSET: 0x00766CE0
 // FUNCTION: fn_08126
 int CRuneSystemMgr::GetOwnedDecomItem(unsigned int index) const {
-  if (index >= this->m_ownedDecomItems.size()) {
+  if (this->m_ownedDecomItems.size() <= index) {
     return 0;
   }
 

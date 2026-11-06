@@ -238,7 +238,7 @@ void UIRuneSetList::Slot25(int x, int y) {
     return;
   }
 
-  if (x < this->geometry.width - 7 && y < this->visible * this->m_itemHeight) {
+  if (this->geometry.width - 7 > x && this->visible * this->m_itemHeight > y) {
     this->m_selected = y / this->m_itemHeight + this->position;
     this->parent->SendMsg(this, 0xAB, 0xC2, this->m_selected, 0, 0);
     this->Invalidate();
@@ -275,12 +275,12 @@ void UIRuneSystemWnd::Slot25(int, int) {
 // OFFSET: 0x0081C0F0
 // FUNCTION: fn_10201
 void UIRuneSystem_tagListWnd::Slot25(int x, int) {
-  if (x < 20 || x > this->geometry.width - 23) {
+  if (x < 20 || this->geometry.width - 23 < x) {
     return;
   }
 
   const int index = (x - 20) / 27;
-  if (index > -1 && index < g_runeSystemMgr->GetTagCount()) {
+  if (index > -1 && g_runeSystemMgr->GetTagCount() > index) {
     CTagData* tag = g_runeSystemMgr->GetTagByIndex(index);
     if (tag) {
       g_runeSystemMgr->SetSelectTag(tag->m_id);

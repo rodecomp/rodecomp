@@ -1661,13 +1661,13 @@ void CUIListPage::Slot54(CUIOptionItem* item, const TALKTYPE& type) {
 // OFFSET: 0x00A41E30
 // FUNCTION: fn_16003
 void CUIGroupEmblem::OnSelect(CUIRadioButton* button) {
-  this->SetEnabled(button == this->m_onButton);
+  this->SetEnabled(this->m_onButton == button);
 }
 
 // OFFSET: 0x00A41E90
 // FUNCTION: fn_16005
 void CUIGroupLogInOut::OnSelect(CUIRadioButton* button) {
-  this->SetEnabled(button == this->m_onButton);
+  this->SetEnabled(this->m_onButton == button);
 }
 
 // OFFSET: 0x00A41EB0

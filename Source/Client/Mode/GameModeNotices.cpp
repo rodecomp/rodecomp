@@ -1031,7 +1031,7 @@ void CGameMode::ResizeWindow16(int width, int height) {
 void CGameMode::ReceiveUnknown7FBC(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ShortValuePacket*>(data);
 
-  if (packet->value <= 100) {
+  if (100 >= packet->value) {
     g_session.unknown_7FBC = packet->value;
     if (g_windowMgr.unknown_01D4) {
       reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, 23, 0, 0, 0, 0);
@@ -1623,7 +1623,7 @@ void CGameMode::ReceiveCharacterRenameResult(const unsigned char* packet) {
 // OFFSET: 0x00D6B010
 // FUNCTION: fn_22066
 void CGameMode::ReceiveLapineUpgradeResult(std::int16_t result) {
-  if (result != 0) {
+  if (0 != result) {
     UIWindow* window = g_windowMgr.LookupWindow(290);
     if (window) {
       static_cast<UILapineUpgradeBoxWnd*>(window)->SetWaiting(0);

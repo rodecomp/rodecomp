@@ -29,8 +29,8 @@ void CRendererDX7::SetLighting(const float* direction, const float* diffuse, con
   light.dcvDiffuse.a = 255.0f;
   light.dcvAmbient.r = ambient[0];
   light.dcvAmbient.g = ambient[1];
-  light.dcvAmbient.b = ambient[2];
   light.dcvAmbient.a = 255.0f;
+  light.dcvAmbient.b = ambient[2];
   this->device->SetLight(0, &light);
   this->device->LightEnable(0, TRUE);
 }
