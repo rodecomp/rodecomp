@@ -1211,8 +1211,9 @@ void UIAchSummaryWnd::Slot15(int, int) {
     this->gauges.push_back(gauge);
   }
 
+  int x = 62;
   UIWindow** slot = this->buttons;
-  for (int x = 62; x < 694; x += 316) {
+  for (; x < 694; x += 316) {
     UITextButton* button = new UITextButton();
     *slot = button;
     button->Configure("", 0x997836, 0, 12, 1, 0);

@@ -6122,7 +6122,10 @@ int UIChangeNameWnd::IsNameWithinLimit(std::string name, int limit) {
       break;
     }
   }
-  return width < limit;
+  if (width < limit) {
+    return 1;
+  }
+  return 0;
 }
 
 // OFFSET: 0x008F6840

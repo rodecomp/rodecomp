@@ -555,7 +555,13 @@ void CUISelectPackageItemBox::OnOk() {
   }
 
   auto it = this->tabList->data.begin();
-  std::advance(it, index);
+  if (index > 0) {
+    int count = index;
+    do {
+      ++it;
+      --count;
+    } while (count > 0);
+  }
   const int result = g_windowMgr
                        .Confirm(FormatOwnedString(LookupMessage(3975), it->name.c_str()).c_str(), 2, true, false, 0, "Message", 280, 120, 0);
   if (result == 187) {

@@ -1207,7 +1207,13 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::SelectItem(CUILi
   this->selected = selectedItem->index;
   if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
     auto node = this->data.begin();
-    std::advance(node, static_cast<int>(this->selected));
+    int count = static_cast<int>(this->selected);
+    if (count > 0) {
+      do {
+        ++node;
+        --count;
+      } while (count > 0);
+    }
     this->onSelect(selectedItem, *node);
   }
 }
@@ -1235,7 +1241,13 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::SelectItem(CUIList
   this->selected = selectedItem->index;
   if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
     auto node = this->data.begin();
-    std::advance(node, static_cast<int>(this->selected));
+    int count = static_cast<int>(this->selected);
+    if (count > 0) {
+      do {
+        ++node;
+        --count;
+      } while (count > 0);
+    }
     this->onSelect(selectedItem, *node);
   }
 }
@@ -1263,7 +1275,13 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::SelectItem(CUILi
   this->selected = selectedItem->index;
   if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
     auto node = this->data.begin();
-    std::advance(node, static_cast<int>(this->selected));
+    int count = static_cast<int>(this->selected);
+    if (count > 0) {
+      do {
+        ++node;
+        --count;
+      } while (count > 0);
+    }
     this->onSelect(selectedItem, *node);
   }
 }
@@ -1291,7 +1309,13 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::SelectItem(CUIList
   this->selected = selectedItem->index;
   if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
     auto node = this->data.begin();
-    std::advance(node, static_cast<int>(this->selected));
+    int count = static_cast<int>(this->selected);
+    if (count > 0) {
+      do {
+        ++node;
+        --count;
+      } while (count > 0);
+    }
     this->onSelect(selectedItem, *node);
   }
 }
@@ -1675,13 +1699,13 @@ void CUIGroupLogInOut::OnSelect(CUIRadioButton* button) {
 void CUIGroupProcessPriority::OnSelect(CUIRadioButton* button) {
   if (this->m_highButton == button) {
     dwPriorityClass = HIGH_PRIORITY_CLASS;
-    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+    SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
   } else if (this->m_normalButton == button) {
     dwPriorityClass = NORMAL_PRIORITY_CLASS;
-    SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+    SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
   } else if (this->m_idleButton == button) {
     dwPriorityClass = IDLE_PRIORITY_CLASS;
-    SetPriorityClass(GetCurrentProcess(), IDLE_PRIORITY_CLASS);
+    SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
   }
 }
 

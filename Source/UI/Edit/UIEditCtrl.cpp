@@ -3763,11 +3763,11 @@ struct ItemTypeNameLess {
 bool ItemTypeNameLess::operator()(const ITEM_INFO& left, const ITEM_INFO& right) const {
   const int leftRank = ItemTypeSortRank(left.unknown_0000[0]);
   const int rightRank = ItemTypeSortRank(right.unknown_0000[0]);
-  if (leftRank != rightRank) {
-    return leftRank < rightRank;
+  if (leftRank == rightRank) {
+    return left.DisplayName(0) < right.DisplayName(0);
   }
 
-  return left.DisplayName(0) < right.DisplayName(0);
+  return leftRank < rightRank;
 }
 
 extern "C" void sub_96E320(void* head, size_t size, ...);
@@ -4820,7 +4820,8 @@ void UIMerchantMirrorItemWnd::Slot15(int width, int height) {
   } else {
     messageId = 232;
   }
-  title->SetText(LookupMessage(messageId), 0);
+  const char* text = LookupMessage(messageId);
+  title->SetText(text, 0);
   title->Move(16, 2);
   title->shadow = 1;
   this->AddChild(title);
