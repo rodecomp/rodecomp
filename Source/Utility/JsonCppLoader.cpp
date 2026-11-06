@@ -168,7 +168,7 @@ bool JsonCppLoader::sub_4F3C70(std::vector<unsigned char>& buffer, bool bson) {
   }
 
   bool parsed;
-  if (bson) {
+  if (bson == true) {
     parsed = this->sub_4F3DF0(buffer);
   } else {
     parsed = this->sub_4F4040(buffer);
