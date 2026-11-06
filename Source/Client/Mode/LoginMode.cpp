@@ -1955,9 +1955,8 @@ void CLoginMode::ShowLoginError(int code, int argument) {
         url = "https://member.onstove.com/auth/login/by_game?redirect_url=https://ro.game.onstove.com/account/ingamepopup/&access_token=";
       }
       url += g_stoveMgr->GetAccessToken();
-      const std::uint8_t source[] = {0x42, 0x33, 0xC8, 0x47, 0x45};
-      thread_local EncryptedName<sizeof(source), 0xD98F5345098D630DULL> operation(source);
-      ShellExecuteA(nullptr, operation.Text(), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
+      const char source[] = {'\x42', '\x33', '\xC8', '\x47', '\x45'};
+      ShellExecuteA(nullptr, DecryptName<0xD98F5345098D630DULL>(source), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
       message = "";
       g_modeMgr.Quit();
       return;
@@ -2011,21 +2010,17 @@ void CLoginMode::ShowLoginError(int code, int argument) {
       message = std::string(PasswordRetryExceededMessage{}().Text());
       if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
         if (g_session.m_channelCopId == 1) {
-          const std::uint8_t urlSource[] = {0x17, 0x67, 0xAB, 0xA1, 0xBF, 0x48, 0x56, 0x9A, 0x08, 0x64, 0xF1, 0xB9,
-                                            0xE4, 0x09, 0x1E, 0x8C, 0x12, 0x76, 0xF1, 0xB2, 0xEA, 0x0A, 0x79};
-          thread_local EncryptedName<sizeof(urlSource), 0xED796785D1DF137FULL> url(urlSource);
-          const char* file = url.Text();
-          const std::uint8_t source[] = {0xD2, 0xCD, 0x88, 0x59, 0xBB};
-          thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> operation(source);
-          ShellExecuteA(hWnd, operation.Text(), file, nullptr, nullptr, SW_SHOWNORMAL);
+          const char urlSource[] = {'\x17', '\x67', '\xAB', '\xA1', '\xBF', '\x48', '\x56', '\x9A', '\x08', '\x64', '\xF1', '\xB9',
+                                    '\xE4', '\x09', '\x1E', '\x8C', '\x12', '\x76', '\xF1', '\xB2', '\xEA', '\x0A', '\x79'};
+          const char* file = DecryptName<0xED796785D1DF137FULL>(urlSource);
+          const char source[] = {'\xD2', '\xCD', '\x88', '\x59', '\xBB'};
+          ShellExecuteA(hWnd, DecryptName<0x83EFBFBB37EDBDBDULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
         } else {
-          const std::uint8_t urlSource[] = {0xF7, 0xB1, 0x19, 0xDB, 0xED, 0x06, 0xD2, 0xD7, 0xFE, 0xA2, 0x03,
-                                            0xCA, 0xA5, 0x46, 0x96, 0x8B, 0xFC, 0xAA, 0x43, 0xC0, 0xA5, 0x29};
-          thread_local EncryptedName<sizeof(urlSource), 0xA5FD29D7AB6DC59FULL> url(urlSource);
-          const char* file = url.Text();
-          const std::uint8_t source[] = {0x66, 0x57, 0x4A, 0xD5, 0xBD};
-          thread_local EncryptedName<sizeof(source), 0xD97D5DBDBB2F2709ULL> operation(source);
-          ShellExecuteA(hWnd, operation.Text(), file, nullptr, nullptr, SW_SHOWNORMAL);
+          const char urlSource[] = {'\xF7', '\xB1', '\x19', '\xDB', '\xED', '\x06', '\xD2', '\xD7', '\xFE', '\xA2', '\x03',
+                                    '\xCA', '\xA5', '\x46', '\x96', '\x8B', '\xFC', '\xAA', '\x43', '\xC0', '\xA5', '\x29'};
+          const char* file = DecryptName<0xA5FD29D7AB6DC59FULL>(urlSource);
+          const char source[] = {'\x66', '\x57', '\x4A', '\xD5', '\xBD'};
+          ShellExecuteA(hWnd, DecryptName<0xD97D5DBDBB2F2709ULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
         }
         g_modeMgr.Quit();
       }
@@ -2100,22 +2095,19 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   }
   case 16:
     if (g_serviceType == 0) {
-      const std::uint8_t textSource[] = {0x4B, 0x36, 0x80, 0xD9, 0x37, 0xC0, 0xB7, 0x39, 0x52, 0xE7, 0x83, 0xA6, 0xA7, 0x9F, 0x6F, 0x39,
-                                         0x35, 0xEB, 0x19, 0xBD, 0xCE, 0xC4, 0x8C, 0xD1, 0x30, 0x65, 0x85, 0xDA, 0x37, 0xBE, 0x97, 0x30,
-                                         0x27, 0x7A, 0xFA, 0xB8, 0xF5, 0x59, 0xF6, 0x28, 0x47, 0x3F, 0x8D, 0xC6, 0xA3, 0xA0, 0x61, 0xF1};
-      thread_local EncryptedName<sizeof(textSource), 0xF14F79170939C7F1ULL> text(textSource);
-      message = std::string(text.Text());
+      const char textSource[] = {'\x4B', '\x36', '\x80', '\xD9', '\x37', '\xC0', '\xB7', '\x39', '\x52', '\xE7', '\x83', '\xA6', '\xA7', '\x9F', '\x6F', '\x39',
+                                 '\x35', '\xEB', '\x19', '\xBD', '\xCE', '\xC4', '\x8C', '\xD1', '\x30', '\x65', '\x85', '\xDA', '\x37', '\xBE', '\x97', '\x30',
+                                 '\x27', '\x7A', '\xFA', '\xB8', '\xF5', '\x59', '\xF6', '\x28', '\x47', '\x3F', '\x8D', '\xC6', '\xA3', '\xA0', '\x61', '\xF1'};
+      message = std::string(DecryptName<0xF14F79170939C7F1ULL>(textSource));
       if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
-        const std::uint8_t urlSource[] = {0x43, 0x6B, 0x9D, 0xDB, 0xFB, 0xD0, 0x02, 0x08, 0x5C, 0x68, 0xC7, 0xD9, 0xA0, 0x98, 0x43, 0x1E,
-                                          0x59, 0x70, 0x82, 0x85, 0xA2, 0x90, 0x03, 0x14, 0x59, 0x30, 0x9A, 0xCE, 0xB5, 0xB1, 0x48, 0x08,
-                                          0x7B, 0x48, 0xC6, 0xDB, 0xA0, 0x8C, 0x5E, 0x08, 0x44, 0x6D, 0x8D, 0xF4, 0xA2, 0x97, 0x4C, 0x11,
-                                          0x4C, 0x7A, 0xB6, 0xCA, 0xA6, 0x8D, 0x48, 0x1A, 0x46, 0x7A, 0x87, 0xDF, 0xEF, 0x9E, 0x5E, 0x0F,
-                                          0x2B};
-        thread_local EncryptedName<sizeof(urlSource), 0x7F2DFFC1ABE91F2BULL> url(urlSource);
-        const char* file = url.Text();
-        const std::uint8_t source[] = {0xE2, 0xF1, 0x74, 0x9D, 0xB3};
-        thread_local EncryptedName<sizeof(source), 0xFD69A9B3F311818DULL> operation(source);
-        ShellExecuteA(hWnd, operation.Text(), file, nullptr, nullptr, SW_SHOWNORMAL);
+        const char urlSource[] = {'\x43', '\x6B', '\x9D', '\xDB', '\xFB', '\xD0', '\x02', '\x08', '\x5C', '\x68', '\xC7', '\xD9', '\xA0', '\x98', '\x43', '\x1E',
+                                  '\x59', '\x70', '\x82', '\x85', '\xA2', '\x90', '\x03', '\x14', '\x59', '\x30', '\x9A', '\xCE', '\xB5', '\xB1', '\x48', '\x08',
+                                  '\x7B', '\x48', '\xC6', '\xDB', '\xA0', '\x8C', '\x5E', '\x08', '\x44', '\x6D', '\x8D', '\xF4', '\xA2', '\x97', '\x4C', '\x11',
+                                  '\x4C', '\x7A', '\xB6', '\xCA', '\xA6', '\x8D', '\x48', '\x1A', '\x46', '\x7A', '\x87', '\xDF', '\xEF', '\x9E', '\x5E', '\x0F',
+                                  '\x2B'};
+        const char* file = DecryptName<0x7F2DFFC1ABE91F2BULL>(urlSource);
+        const char source[] = {'\xE2', '\xF1', '\x74', '\x9D', '\xB3'};
+        ShellExecuteA(hWnd, DecryptName<0xFD69A9B3F311818DULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
         g_modeMgr.Quit();
       }
       message.clear();
@@ -2173,9 +2165,8 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case 110:
     if (g_windowMgr.Confirm(LookupMessage(0x929), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
       const char* file = LookupMessage(0x92A);
-      const std::uint8_t source[] = {0xFC, 0x05, 0xBA, 0x81, 0x4D};
-      thread_local EncryptedName<sizeof(source), 0x9B0F234DEFDF7593ULL> operation(source);
-      ShellExecuteA(hWnd, operation.Text(), file, nullptr, nullptr, SW_SHOWNORMAL);
+      const char source[] = {'\xFC', '\x05', '\xBA', '\x81', '\x4D'};
+      ShellExecuteA(hWnd, DecryptName<0x9B0F234DEFDF7593ULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
       g_modeMgr.Quit();
     }
     message = "";
@@ -2200,9 +2191,8 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     break;
   default: {
     message = LookupMessage(9);
-    const std::uint8_t source[] = {0x6B, 0x1C, 0x3F, 0x42, 0x67};
-    thread_local EncryptedName<sizeof(source), 0xC9712D676B5B3943ULL> format(source);
-    message += FormatOwnedString(format.Text(), code);
+    const char source[] = {'\x6B', '\x1C', '\x3F', '\x42', '\x67'};
+    message += FormatOwnedString(DecryptName<0xC9712D676B5B3943ULL>(source), code);
     break;
   }
 
