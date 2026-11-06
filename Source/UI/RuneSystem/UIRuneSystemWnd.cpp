@@ -357,7 +357,8 @@ void UIEquipRuneSetWnd::Slot28(int x, int y) {
   int screenX = column * 40 + 21;
   int screenY = 12;
   this->ToScreen(screenX, screenY);
-  if (!g_modeMgr.gameMode) {
+  CMode* const mode = g_modeMgr.gameMode;
+  if (!mode) {
     return;
   }
 
@@ -365,7 +366,7 @@ void UIEquipRuneSetWnd::Slot28(int x, int y) {
   if (!rune) {
     return;
   }
-  g_modeMgr.gameMode->ShowTooltip(rune->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
+  mode->ShowTooltip(rune->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
 }
 
 // OFFSET: 0x0081C3D0
@@ -402,7 +403,8 @@ void UIRuneSetList::Slot28(int x, int y) {
   int screenX = column * 40 + 17;
   int screenY = row * this->m_itemHeight + 4;
   this->ToScreen(screenX, screenY);
-  if (!g_modeMgr.gameMode) {
+  CMode* const mode = g_modeMgr.gameMode;
+  if (!mode) {
     return;
   }
 
@@ -410,7 +412,7 @@ void UIRuneSetList::Slot28(int x, int y) {
   if (!rune) {
     return;
   }
-  g_modeMgr.gameMode->ShowTooltip(rune->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
+  mode->ShowTooltip(rune->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
 }
 
 // OFFSET: 0x0081C6F0
