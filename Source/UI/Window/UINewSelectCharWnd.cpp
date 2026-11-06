@@ -1,5 +1,6 @@
 #include "Contents/MessageTable.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Input/Mouse.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIBmpTextButton.h"
@@ -579,12 +580,12 @@ void __stdcall Nullsub244(int, int) {
 // OFFSET: 0x007D7750
 // FUNCTION: fn_09593
 void UINewSelectCharWnd::Slot19() {
-  if (g_sub_1319eb4 == 3) {
+  if (g_mouse.buttons[0] == 3) {
     if (g_windowMgr.unknown_0210 != 0) {
       g_windowMgr.CloseWindow(0x12);
     }
   }
-  if (g_sub_1319eb4 != 0) {
+  if (g_mouse.buttons[0] != 0) {
     this->Invalidate();
   }
 
@@ -593,12 +594,9 @@ void UINewSelectCharWnd::Slot19() {
     g_windowMgr.Promote(wnd);
   }
 
-  if (this->m_pageSlot >= 0 && this->m_pageSlot < static_cast<int>(this->m_slotButtons2.size())) {
-    UIWindow* btn = this->m_slotButtons2[this->m_pageSlot];
-    if (btn) {
-      btn->Slot19();
-      btn->InvalidateChildren();
-    }
+  if (this->m_slotButtons2[this->m_pageSlot]) {
+    this->m_slotButtons2[this->m_pageSlot]->Slot19();
+    this->m_slotButtons2[this->m_pageSlot]->InvalidateChildren();
   }
 }
 
