@@ -49,7 +49,7 @@ bool CEZeffectRes::Load(const char* name) {
   auto& file = this->m_file;
 
   if (!file.Open(name, 0, true, false)) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, (std::string("Str::Cannot find File : ") + std::string(name)).c_str(), 0);
+    ShowErrorDialog((std::string("Str::Cannot find File : ") + std::string(name)).c_str(), 0);
     this->Unload();
 
     return false;
@@ -65,7 +65,7 @@ bool CEZeffectRes::Load(const char* name) {
   file.Seek(16, FILE_CURRENT);
 
   if (version != 148) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "LoadAniClip: Version is incorrect", 0);
+    ShowErrorDialog("LoadAniClip: Version is incorrect", 0);
     this->Unload();
     return false;
   }
