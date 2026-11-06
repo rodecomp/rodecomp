@@ -1122,7 +1122,7 @@ struct ActorEffect228Packet {
 void CGameMode::ReceiveGradeEnchantInfo(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GradeEnchantInfoPacket*>(data);
   const int count = static_cast<unsigned int>(packet->length - sizeof(GradeEnchantInfoPacket)) / sizeof(GradeEnchantMaterial);
-  if (packet->index == -1) {
+  if (-1 == packet->index) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3720)), 0x62B0FF, 0, 0, 0);
     return;
   }
@@ -1636,7 +1636,7 @@ void CGameMode::ReceiveLapineUpgradeResult(std::int16_t result) {
 // OFFSET: 0x00D6B070
 // FUNCTION: fn_22067
 void CGameMode::ReceiveLapineBoxResult(std::uint16_t result) {
-  if (result != 0) {
+  if (0 != result) {
     UIWindow* window = g_windowMgr.LookupWindow(290);
     if (window) {
       static_cast<UILapineBoxWnd*>(window)->SetWaiting(0);

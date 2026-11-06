@@ -1458,7 +1458,7 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonNotify(const unsigned
   const int previous = g_session.unknown_5948;
   g_session.unknown_5970 = *reinterpret_cast<const int*>(packet + 6);
   const int time = *reinterpret_cast<const int*>(packet + 6);
-  g_session.unknown_5948 = time != 0 ? 1 : 2;
+  g_session.unknown_5948 = 0 != time ? 1 : 2;
   if (*reinterpret_cast<const int*>(packet + 2) == 0) {
     if (previous != (time != 0 ? 1 : 2) || time != 0 || g_session.unknown_593C != 0) {
       if (UIWindow* window = g_windowMgr.EnsureWindow(137)) {

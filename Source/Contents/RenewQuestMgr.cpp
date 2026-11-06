@@ -321,7 +321,7 @@ std::string CRenewQuestMgr::GetMonsterConditionText(unsigned int flags, int minL
   } else if (minLevel > 0) {
     if (maxLevel == 0) {
       result = result + " Lv." + IntToString(minLevel, 0) + "▲";
-    } else if (maxLevel > minLevel) {
+    } else if (minLevel < maxLevel) {
       result = result + " Lv." + IntToString(minLevel, 0) + "~Lv." + IntToString(maxLevel, 0);
     }
   }

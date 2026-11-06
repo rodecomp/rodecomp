@@ -3,25 +3,25 @@
 // OFFSET: 0x00B844C0
 // FUNCTION: fn_19316
 float Replay::AnimationScale() const {
-  if (this->speed == 0.25f) {
+  if (0.25f == this->speed) {
     return 1.4f;
   }
-  if (this->speed == 0.5f) {
+  if (0.5f == this->speed) {
     return 1.2f;
   }
-  if (this->speed == 1.0f) {
+  if (1.0f == this->speed) {
     return 1.0f;
   }
-  if (this->speed == 2.0f) {
+  if (2.0f == this->speed) {
     return 0.8f;
   }
-  if (this->speed == 4.0f) {
+  if (4.0f == this->speed) {
     return 0.6f;
   }
-  if (this->speed == 8.0f) {
+  if (8.0f == this->speed) {
     return 0.4f;
   }
-  if (this->speed == 16.0f) {
+  if (16.0f == this->speed) {
     return 0.2f;
   }
   return 1.0f;

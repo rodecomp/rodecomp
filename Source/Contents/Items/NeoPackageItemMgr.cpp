@@ -241,7 +241,7 @@ bool CPaidPackageItemMgr::LoadScript() {
 // OFFSET: 0x006D3370
 // FUNCTION: fn_06538
 bool CPaidPackageItemMgr::IsPaidItem(int itemId) {
-  if (this->m_items.find(itemId) != this->m_items.end() && CNeoPackageItemMgr::GetInstance()->HasPackage(itemId)) {
+  if (this->m_items.end() != this->m_items.find(itemId) && CNeoPackageItemMgr::GetInstance()->HasPackage(itemId)) {
     return true;
   }
 

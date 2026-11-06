@@ -9,25 +9,25 @@ CPathFinder g_pathFinder;
 // OFFSET: 0x00B84570
 // FUNCTION: fn_19317
 float Replay::DelayScale() const {
-  if (this->speed == 0.25f) {
+  if (0.25f == this->speed) {
     return 4.0f;
   }
-  if (this->speed == 0.5f) {
+  if (0.5f == this->speed) {
     return 2.0f;
   }
-  if (this->speed == 1.0f) {
+  if (1.0f == this->speed) {
     return 1.0f;
   }
-  if (this->speed == 2.0f) {
+  if (2.0f == this->speed) {
     return 0.5f;
   }
-  if (this->speed == 4.0f) {
+  if (4.0f == this->speed) {
     return 0.25f;
   }
-  if (this->speed == 8.0f) {
+  if (8.0f == this->speed) {
     return 0.125f;
   }
-  if (this->speed == 16.0f) {
+  if (16.0f == this->speed) {
     return 0.0625f;
   }
   return 1.0f;

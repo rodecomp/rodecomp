@@ -566,7 +566,7 @@ void CRuneSystemMgr::Reset() {
     CTagData* tag = *tagIt;
     tag->m_locked = false;
     for (int type = 0; type < 2; ++type) {
-      for (std::vector<RuneData*>::iterator runeIt = tag->m_runes[type].begin(); runeIt != tag->m_runes[type].end(); ++runeIt) {
+      for (std::vector<RuneData*>::iterator runeIt = tag->m_runes[type].begin(); tag->m_runes[type].end() != runeIt; ++runeIt) {
         if (*runeIt) {
           (*runeIt)->m_active = false;
           if (type == 0) {

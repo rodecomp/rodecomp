@@ -194,7 +194,7 @@ int CPetEvolutionMgr::L_InsertEvolutionRecipeLGU(lua_State* state) {
     } else if (!g_session.IsPetEgg(target)) {
       lua_pushboolean(state, 0);
       lua_pushstring(state, FormatString("Revolutuion PetEgg Item %d not found or not petegg", target));
-    } else if (count < 1) {
+    } else if (count <= 0) {
       lua_pushboolean(state, 0);
       lua_pushstring(state, FormatString("Material Item Cnt %d Error", count));
     } else {

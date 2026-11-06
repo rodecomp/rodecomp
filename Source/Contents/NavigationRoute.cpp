@@ -889,8 +889,8 @@ float CNavigationManager::FitToSquare(int* offsetX, int* offsetY, int width, int
     *offsetX = static_cast<int>((height - width) * 0.5f * scale);
     *offsetY = 0;
   } else {
-    *offsetY = 0;
     scale = size / width;
+    *offsetY = 0;
     *offsetX = 0;
   }
   return scale;
