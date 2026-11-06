@@ -120,12 +120,7 @@ void UIButton::Slot28(int x, int y) {
 
   if (!this->m_tooltip.empty()) {
     int screenX = 0, screenY = -20;
-
-    for (const UIWindow* window = this; window; window = window->parent) {
-      screenX = (screenX + window->geometry.x);
-      screenY = (screenY + window->geometry.y);
-    }
-
+    this->ToScreen(screenX, screenY);
     g_modeMgr.gameMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 
