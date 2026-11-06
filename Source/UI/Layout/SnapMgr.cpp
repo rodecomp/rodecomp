@@ -97,7 +97,11 @@ void CSnapMgr::Add(UIWindow* window) {
 // OFFSET: 0x007E2D20
 // FUNCTION: fn_09712
 bool CSnapMgr::IsRoot(const UIWindow* window) const {
-  return this->root && this->root->window == window;
+  if (!this->root) {
+    return false;
+  }
+
+  return this->root->window == window;
 }
 
 // OFFSET: 0x007E2D80
@@ -165,13 +169,14 @@ void CSnapMgr::Refresh(UIWindow* window) {
 // OFFSET: 0x007E2720
 // FUNCTION: fn_09702
 void CSnapMgr::CaptureOrigins(UIWindow* window) {
-  if (!this->root || !window || this->root->window != window) {
+  if (!this->root || !window || window != this->root->window) {
     return;
   }
 
   for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
-    if ((*entry)->window && this->ConnectedToRoot((*entry)->window)) {
-      (*entry)->window->Slot12();
+    UIWindow* member = (*entry)->window;
+    if (member && this->ConnectedToRoot(member)) {
+      member->Slot12();
     }
   }
 }
