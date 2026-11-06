@@ -2463,7 +2463,7 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
       actor->LaunchEffect(744, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->HasId(744)) {
+    while (actor->HasId(744) == 1) {
       actor->SendMsg(nullptr, 109, 0, 744, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
