@@ -3634,7 +3634,8 @@ void CEffectPrim::PrimParticleUp() {
       continue;
     }
 
-    const int process = ++slot.process;
+    const int process = slot.process + 1;
+    slot.process = process;
 
     if (process <= 0) {
       continue;
@@ -3725,7 +3726,8 @@ void CEffectPrim::PrimPokJuk() {
       continue;
     }
 
-    const int process = ++slot.process;
+    const int process = slot.process + 1;
+    slot.process = process;
 
     if (process <= 0) {
       continue;
@@ -4027,7 +4029,8 @@ void CEffectPrim::PrimSphereWind2() {
       continue;
     }
 
-    const int process = ++slot.process;
+    const int process = slot.process + 1;
+    slot.process = process;
 
     if (process <= 0) {
       continue;
@@ -4651,7 +4654,8 @@ __declspec(noinline) bool CEffectPrim::PrimTextureSpin() {
       continue;
     }
 
-    const int process = ++slot.process;
+    const int process = slot.process + 1;
+    slot.process = process;
 
     if (slot.height[2] == 0.0f) {
       slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 6);
@@ -4798,7 +4802,8 @@ void CEffectPrim::PrimAnimatedFlash() {
     return;
   }
 
-  const int process = ++slot.process;
+  const int process = slot.process + 1;
+  slot.process = process;
   if (process % 4 == 0) {
     char frame = static_cast<char>(slot.flag1[0] + 1);
     if (frame >= static_cast<int>(this->state.totalTexture)) {
@@ -4833,7 +4838,8 @@ __declspec(noinline) void CEffectPrim::PrimRandomSpin() {
       continue;
     }
 
-    const int process = ++slot.process;
+    const int process = slot.process + 1;
+    slot.process = process;
     if (process <= 0) {
       continue;
     }
@@ -4865,7 +4871,8 @@ __declspec(noinline) void CEffectPrim::PrimHeightRamp() {
       continue;
     }
 
-    const int process = ++slot.process;
+    const int process = slot.process + 1;
+    slot.process = process;
     slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 1);
     if (slot.rotStart >= 360) {
       slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
@@ -4951,7 +4958,8 @@ __declspec(noinline) bool CEffectPrim::PrimTwinSpin() {
 
   EffectPrimitiveSlot& first = this->state.slots[0];
   first.riseAngle = static_cast<std::int16_t>(first.riseAngle + 3);
-  const int firstProcess = ++first.process;
+  const int firstProcess = first.process + 1;
+  first.process = firstProcess;
   if (first.riseAngle >= 360) {
     first.riseAngle = static_cast<std::int16_t>(first.riseAngle - 360);
   }
@@ -4966,7 +4974,8 @@ __declspec(noinline) bool CEffectPrim::PrimTwinSpin() {
 
   EffectPrimitiveSlot& second = this->state.slots[1];
   second.riseAngle = static_cast<std::int16_t>(second.riseAngle + 3);
-  const int secondProcess = ++second.process;
+  const int secondProcess = second.process + 1;
+  second.process = secondProcess;
   if (second.riseAngle >= 360) {
     second.riseAngle = static_cast<std::int16_t>(second.riseAngle - 360);
   }
@@ -5729,7 +5738,8 @@ bool CEffectPrim::PrimSpiralFade() {
       continue;
     }
 
-    const int process = ++slot.process;
+    const int process = slot.process + 1;
+    slot.process = process;
     if (process <= 0) {
       continue;
     }
