@@ -442,8 +442,16 @@ int UIItemReformWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
+  case 23:
+    this->reformItem.SetItemId(argument1);
+    if (this->list->SendMsg(this, 23, argument1, 0, 0, 0) == -1) {
+      this->warning = LookupMessage(3856);
+    }
+    this->Invalidate();
+    break;
   case 6:
-    if (argument1 == 184) {
+    switch (argument1) {
+    case 184:
       if (this->selectedItem && this->reformItem.GetItemId() != 0) {
         PACKET_CZ_ITEM_REFORM packet;
         packet.packetType = ID_CZ_ITEM_REFORM;
@@ -451,18 +459,14 @@ int UIItemReformWnd::SendMsg(
         packet.index = static_cast<std::int16_t>(this->selectedItem->unknown_0000[1]);
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
       }
-    } else if (argument1 == 201) {
+      break;
+    case 201:
       g_windowMgr.CloseWindow(348);
-    } else if (argument1 == 336) {
+      break;
+    case 336:
       this->SelectItem(reinterpret_cast<ITEM_INFO*>(argument2));
+      break;
     }
-    break;
-  case 23:
-    this->reformItem.SetItemId(argument1);
-    if (this->list->SendMsg(this, 23, argument1, 0, 0, 0) == -1) {
-      this->warning = LookupMessage(3856);
-    }
-    this->Invalidate();
     break;
   case 167:
     if (sender == this->detailButton && !this->detailMsg) {
