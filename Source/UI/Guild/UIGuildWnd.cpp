@@ -387,7 +387,7 @@ int UIGuildSkillWnd::SkillIndexAt(int x, int y) {
 // OFFSET: 0x00957850
 // FUNCTION: fn_13038
 int UIGuildPositionManageWnd::PositionIndexAt(int x, int y) {
-  if (x <= this->geometry.width - 14 && x > 3 && y >= g_guildPositionRowHeight + 46 && y < (this->m_visibleRows + 1) * g_guildPositionRowHeight + 46) {
+  if (x <= this->geometry.width - 14 && x >= 4 && y >= g_guildPositionRowHeight + 46 && y < (this->m_visibleRows + 1) * g_guildPositionRowHeight + 46) {
     const int row = (y - g_guildPositionRowHeight - 46) / g_guildPositionRowHeight;
     int visible = 0;
     int index = 0;
