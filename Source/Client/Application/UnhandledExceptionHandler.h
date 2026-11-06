@@ -19,7 +19,7 @@ static_assert(sizeof(CUnhandledExceptionHandler) == 4);
 
 bool InitUnhandledExceptionHandler(int (*callback)());
 
-int CleanupUnhandledExceptionHandler();
+void CleanupUnhandledExceptionHandler();
 
 INT_PTR CALLBACK DialogFunc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

@@ -78,13 +78,11 @@ bool InitUnhandledExceptionHandler(int (*callback)()) {
 
 // OFFSET: 0x00635C10
 // FUNCTION: fn_04704
-int CleanupUnhandledExceptionHandler() {
+void CleanupUnhandledExceptionHandler() {
   if (g_unhandledExceptionHandler != nullptr) {
     delete g_unhandledExceptionHandler;
     g_unhandledExceptionHandler = nullptr;
   }
-
-  return 0;
 }
 
 // OFFSET: 0x00635C30
