@@ -170,7 +170,8 @@ void CEfstAction_IG_GUARDIAN_SHIELD::Slot00(int efstId, int value, int argument3
 // FUNCTION: fn_08592
 void CEfstAction_IG_GUARDIAN_SHIELD::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_buff_loop"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_buff_loop"));
   }
 }
 
@@ -404,7 +405,8 @@ void CEfstAction_IG_ULTIMATE_SACRIFICE::Slot00(int efstId, int value, int argume
 // FUNCTION: fn_08619
 void CEfstAction_IG_ULTIMATE_SACRIFICE::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimate_sacrifice_buff"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimate_sacrifice_buff"));
   }
 }
 
@@ -584,7 +586,8 @@ void CEfstAction_IG_ATTACK_STANCE::Slot00(int efstId, int value, int argument3, 
 // FUNCTION: fn_08639
 void CEfstAction_IG_ATTACK_STANCE::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_loop_bottom"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_loop_bottom"));
   }
 }
 
@@ -772,7 +775,8 @@ void CEfstAction_IG_GRAND_JUDGEMENT::Slot00(int efstId, int value, int argument3
 // FUNCTION: fn_08586
 void CEfstAction_IG_GRAND_JUDGEMENT::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_buff"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_buff"));
   }
 }
 
@@ -795,7 +799,8 @@ void CSkillAction_IG_GUARDIAN_SHIELD::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08647
 void CEfstAction_IG_GUARD_STANCE::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_loop_bottom"));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_loop_bottom"));
   }
 }
 
