@@ -450,30 +450,33 @@ void UIMonsterInfoWnd::Slot28(int x, int y) {
 // OFFSET: 0x008BB410
 // FUNCTION: fn_11798
 int UIAllyGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
-    if (a == 184) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 184:
       g_windowMgr.CloseWindow(72);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(120, this->identity, 1, 0, 0);
-    } else if (a == 185) {
+      g_modeMgr.gameMode->SendMsg(120, this->identity, 1, 0, 0);
+      break;
+    case 185:
       g_windowMgr.CloseWindow(72);
-      static_cast<CMode*>(g_charViewMode)->SendMsg(120, this->identity, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(120, this->identity, 0, 0, 0);
+      break;
     }
 
     return 0;
+  case 74: {
+    this->identity = static_cast<std::uint32_t>(a);
+    std::string text = "(";
+    text += reinterpret_cast<const char*>(b);
+    text += ")";
+    text += LookupMessage(393);
+    this->viewer->Clear();
+    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    return 0;
   }
-
-  if (message != 74) {
+  default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
-  this->identity = static_cast<std::uint32_t>(a);
-  std::string text = "(";
-  text += reinterpret_cast<const char*>(b);
-  text += ")";
-  text += LookupMessage(393);
-  this->viewer->Clear();
-  this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
-  return 0;
 }
 
 #pragma pack(push, 1)
