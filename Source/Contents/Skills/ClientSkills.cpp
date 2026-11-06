@@ -1024,17 +1024,17 @@ ITEM_INFO CSession::GetItem3500(int index) const {
 void CSession::FindTopRecords6144(int* second, int* first) {
   int bestValue = -1;
   int secondValue;
-  for (const auto& entry : this->unknown_6144) {
-    if (reinterpret_cast<const unsigned char*>(&entry.second.unknown_0000)[1]) {
-      const int value = entry.second.unknown_002C;
+  for (auto it = this->unknown_6144.begin(); it != this->unknown_6144.end(); ++it) {
+    if (reinterpret_cast<const unsigned char*>(&it->second.unknown_0000)[1]) {
+      const int value = it->second.unknown_002C;
       if (bestValue < value) {
         secondValue = bestValue;
         bestValue = value;
         *second = *first;
-        *first = entry.first;
+        *first = it->first;
       } else if (secondValue < value) {
         secondValue = value;
-        *second = entry.first;
+        *second = it->first;
       }
     }
   }
