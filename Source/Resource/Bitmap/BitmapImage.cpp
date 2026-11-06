@@ -37,10 +37,6 @@ namespace {
   }
 }
 
-// INLINED
-BitmapImage::BitmapImage() : alpha(0), pixels(nullptr), auxiliary(nullptr) {
-}
-
 // OFFSET: 0x0074A680
 // FUNCTION: fn_07866
 bool BitmapImage::CreateAuxiliary(int mode) {

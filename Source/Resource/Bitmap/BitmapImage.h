@@ -12,7 +12,9 @@ struct BitmapImage {
   /* 011C */ std::uint32_t* pixels;
   /* 0120 */ void* auxiliary;
 
-  BitmapImage();
+  // INLINED
+  BitmapImage() : alpha(0), pixels(nullptr), auxiliary(nullptr) {
+  }
   void Clear();
   bool CreateAuxiliary(int mode);
   std::uint32_t Pixel(int x, int y) const;
