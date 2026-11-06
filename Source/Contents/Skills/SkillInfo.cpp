@@ -1467,7 +1467,8 @@ void CSkillAction_AG_ENERGY_CONVERSION::Slot11(int level, CGameActor* source, CG
   }
 
   source->LaunchEffect(2427, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_conversion"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_conversion"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00777940
@@ -1522,7 +1523,8 @@ void CSkillAction_IQ_BLAZING_FLAME_BLAST::Slot11(int level, CGameActor* source, 
   }
 
   const float scale = source->unknown_0378 * source->render.speed * 16.0f;
-  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("blazing_flame_blast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("blazing_flame_blast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->Slot16(static_cast<int>(scale));
   }
 }
@@ -1879,7 +1881,8 @@ CEffect* DustExplosionSpawner::operator()(int quadrant, const vector3d& position
   const float x = offsetX + position.x;
   const float y = position.y + 0.0f;
   const float z = offsetZ + position.z;
-  return g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("dust_explosion"), x, y, z, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  return effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("dust_explosion"), x, y, z, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x0077DF70
@@ -2169,7 +2172,8 @@ void CSkillAction_DK_DRAGONIC_PIERCE::Slot11(int level, CGameActor* source, CGam
   const bool flip = direction != 1 && direction != 2;
   const bool horizontal = (direction & 1) != 0;
   std::string name = horizontal ? "dragonic_pierce_horizon" : "dragonic_pierce_vertical";
-  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(name), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(name), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->Slot16(static_cast<int>(scale));
     float offset;
     if (horizontal) {
@@ -2182,7 +2186,8 @@ void CSkillAction_DK_DRAGONIC_PIERCE::Slot11(int level, CGameActor* source, CGam
     effect->Slot17(static_cast<float>((static_cast<int>(angle + offset) + 360) % 360));
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->Slot16(static_cast<int>(scale));
   }
 }
