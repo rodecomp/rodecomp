@@ -49,23 +49,18 @@ std::map<std::string, MiniMapPosition> g_exceptionMiniMapPosList;
 // GLOBAL: gl_24914
 std::map<std::string, std::vector<std::string>> g_kafraServiceMapList;
 
-struct LuaScriptPair {
-  std::string left;
-  std::string right;
-};
-
 class LuaScriptBag {
 public:
   void Add(std::string left, std::string right);
 
   /* 0000 */ unsigned char unknown_0000[0x7C];
-  /* 007C */ std::vector<LuaScriptPair> pairs;
+  /* 007C */ std::vector<std::pair<std::string, std::string>> pairs;
 };
 
 // OFFSET: 0x00AFC8B0
 // FUNCTION: fn_18325
 void LuaScriptBag::Add(std::string left, std::string right) {
-  this->pairs.push_back(LuaScriptPair{left, right});
+  this->pairs.push_back(std::make_pair(left, right));
 }
 
 struct CashShopBannerWindow {
@@ -1211,13 +1206,14 @@ std::string LuaScript::GlobalString(const char* name) {
 // OFFSET: 0x00AFD490
 // FUNCTION: fn_18331
 bool LuaScript::HasTable(const char* name) {
-  if (!this->m_state) {
-    return false;
+  if (this->m_state) {
+    lua_getglobal(this->m_state, name);
+    if (lua_type(this->m_state, -1) == LUA_TTABLE) {
+      return true;
+    }
   }
 
-  lua_getglobal(this->m_state, name);
-
-  return lua_type(this->m_state, -1) == LUA_TTABLE;
+  return false;
 }
 
 // OFFSET: 0x00AFD4D0
