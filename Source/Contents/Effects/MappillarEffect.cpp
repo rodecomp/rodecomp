@@ -143,12 +143,12 @@ void CMappillarEffect::Slot04() {
       const int texPart = particle->unknown_000C;
       ParticleQuad quad;
       quad.billboard = false;
+      quad.unused = false;
+      quad.depth = true;
       quad.top = 0.0f;
       quad.bottom = 1.0f;
       quad.left = static_cast<float>(texPart - 1) / 21.0f;
       quad.right = static_cast<float>(texPart) / 21.0f;
-      quad.unused = false;
-      quad.depth = true;
       particle->Render(quad);
     }
   }
