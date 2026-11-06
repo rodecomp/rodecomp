@@ -2165,12 +2165,9 @@ void CSession::SetUnknown16EC(std::uint32_t value) {
     return;
   }
 
-  auto it = g_activeSkillEffects.begin();
-  for (; it != g_activeSkillEffects.end(); ++it) {
-    if (it->id == 0x2B7) {
-      break;
-    }
-  }
+  std::vector<ActiveSkillEffect>::iterator it = std::find_if(
+      g_activeSkillEffects.begin(), g_activeSkillEffects.end(),
+      [](const ActiveSkillEffect& effect) { return effect.id == 0x2B7; });
 
   if (it == g_activeSkillEffects.end()) {
     if (value) {
