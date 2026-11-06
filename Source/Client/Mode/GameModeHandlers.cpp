@@ -950,9 +950,14 @@ void CGameMode::ReceiveHomunculusInfo3(const unsigned char* data) {
 
   int& notified = *reinterpret_cast<int*>(&g_session.unknown_5620[0]);
   const int state = packet->unknown_001D;
-  if ((state == 1 || state == 5 || state == 10) && notified != state) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1018)), 0xFF, 0, 0, 0);
-    notified = packet->unknown_001D;
+  switch (state) {
+  case 1:
+  case 5:
+  case 10:
+    if (notified != state) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1018)), 0xFF, 0, 0, 0);
+      notified = packet->unknown_001D;
+    }
   }
 
   g_session.unknown_55D4 = packet->unknown_001F;
