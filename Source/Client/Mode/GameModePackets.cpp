@@ -6622,7 +6622,7 @@ __declspec(noinline) void CGameMode::ReceiveParaItemResult(unsigned char success
   }
 
   const ParaResultEntry* entry = reinterpret_cast<const ParaResultEntry*>(data);
-  for (int i = 0; i < count; ++i, ++entry) {
+  for (int i = count; i > 0; --i, ++entry) {
     ITEM_INFO item;
     item.SetItemId(entry->itemId);
     item.quantity = entry->quantity;
