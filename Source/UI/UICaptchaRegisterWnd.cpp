@@ -191,7 +191,8 @@ int UICaptchaRegisterWnd::SendMsg(
 // OFFSET: 0x007EAD90
 // FUNCTION: fn_09791
 void UICaptchaRegisterWnd::SetRegisterDisabled(unsigned char disabled) {
-  this->registerButton->SetDisabled(disabled);
-  this->registerButton->Invalidate();
+  UIBitmapButton* button = this->registerButton;
+  button->SetDisabled(disabled);
+  button->Invalidate();
   this->Invalidate();
 }
