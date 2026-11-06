@@ -22,17 +22,8 @@ std::string g_namelessName;
 
 // OFFSET: 0x00637550
 // FUNCTION: fn_04735
-CShowRankingScheduler::CShowRankingScheduler(const std::uint64_t& start, const std::uint64_t& end, int extra) {
-  ++g_schedulerSerial;
-  *reinterpret_cast<int*>(this->schedule + 4) = g_schedulerSerial;
-  *reinterpret_cast<std::uint64_t*>(this->schedule + 12) = start;
-  *reinterpret_cast<std::uint64_t*>(this->schedule + 20) = end;
-  *reinterpret_cast<int*>(this->schedule + 28) = extra;
-  *reinterpret_cast<std::uint16_t*>(this->schedule + 32) = 1;
-  *reinterpret_cast<int*>(this->schedule + 36) = 0;
-  *reinterpret_cast<int*>(this->schedule + 40) = 0;
-  this->unknown_0088 = 0;
-  this->unknown_008C = 0;
+CShowRankingScheduler::CShowRankingScheduler(const std::uint64_t& timestamp, const std::int64_t& interval, int scheduleType)
+    : CSchedule(timestamp, interval, scheduleType, ++g_schedulerSerial, 0) {
   std::memset(this->rankingData, 0, sizeof(this->rankingData));
   if (this->rankingList.capacity() < 16) {
     this->rankingList.reserve(16);
@@ -43,11 +34,9 @@ CShowRankingScheduler::CShowRankingScheduler(const std::uint64_t& start, const s
 // FUNCTION: fn_04739
 void CShowRankingScheduler::Process(const std::uint64_t& now) {
   if (*reinterpret_cast<const std::int16_t*>(this->rankingData) != 0) {
-    const std::int64_t count =
-        static_cast<std::int64_t>((static_cast<std::uint64_t>(this->unknown_008C) << 32) | this->unknown_0088);
+    const std::int64_t count = this->delay;
     if (count > 0) {
-      const std::uint64_t due =
-          static_cast<std::uint64_t>(count) * 10000ull + *reinterpret_cast<const std::uint64_t*>(this->schedule + 12);
+      const std::uint64_t due = static_cast<std::uint64_t>(count) * 10000ull + this->timestamp;
       if (static_cast<std::int64_t>(due) <= static_cast<std::int64_t>(now)) {
         this->Show();
       } else {
@@ -80,7 +69,7 @@ void CShowRankingScheduler::Process(const std::uint64_t& now) {
       }
     }
   }
-  this->schedule[32] = 0;
+  this->active = false;
 }
 
 __declspec(noinline) std::map<int, RankingBoardStyle> RankingBoardStyles();
@@ -161,19 +150,13 @@ void CSession::SetShowRankingSchedule(bool show, const void* data) {
   if (show == true) {
     if (existing == nullptr) {
       std::uint64_t now = _Xtime_get_ticks();
-      CShowRankingScheduler* ranking;
-      {
-        const std::uint64_t duration = 1000;
-        ranking = new CShowRankingScheduler(now, duration, 1);
-      }
+      CShowRankingScheduler* ranking = new CShowRankingScheduler(now, 1000, 1);
       if (ranking != nullptr) {
-        ranking->unknown_0088 = 3000;
-        ranking->unknown_008C = 0;
+        ranking->delay = 3000;
         ranking->SetData(data);
-        CSchedule* schedule = reinterpret_cast<CSchedule*>(ranking);
-        schedule->Process(now);
-        this->m_showRankingSchedule = schedule->serial;
-        g_timeScheduler->AddSchedule(schedule);
+        ranking->Process(now);
+        this->m_showRankingSchedule = ranking->serial;
+        g_timeScheduler->AddSchedule(ranking);
       }
     }
   } else if (existing != nullptr) {
