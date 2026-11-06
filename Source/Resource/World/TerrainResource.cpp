@@ -7,7 +7,10 @@
 
 // OFFSET: 0x00748A70
 // FUNCTION: fn_07833
-C3dAttr::C3dAttr() : width(0), height(0), cellSize(5) {
+C3dAttr::C3dAttr() {
+  this->width = 0;
+  this->height = 0;
+  this->cellSize = 5;
 }
 
 // INLINED
