@@ -97,8 +97,7 @@ void CRendererDX9::CleanupTextures() {
 // OFFSET: 0x005682D0
 // FUNCTION: fn_02237
 bool CRendererDX9::SaveLogo(std::string filename) {
-  const char* name = Resolve("scr_logo.bmp");
-  CTexture* overlay = g_texMgr.Load(name, 0, false, true, false);
+  CTexture* overlay = g_texMgr.Load(Resolve("scr_logo.bmp"), 0, false, true, false);
 
   return this->SaveScreenshot(filename.c_str(), 1, overlay, nullptr);
 }
