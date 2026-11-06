@@ -3234,7 +3234,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   }
   case 10018:
     if (argument2 == 201) {
-      static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
       return 0;
     }
     this->pendingCursorType = 2;
