@@ -1784,13 +1784,13 @@ void CGameMode::ReceiveRuneActivation(const unsigned char* data) {
     return;
   }
 
-  unsigned int count = packet->count;
-  const unsigned int size = packet->length - 9;
+  int count = packet->count;
+  const int size = packet->length - 9;
   if (size != count * sizeof(std::uint32_t)) {
     count = size / sizeof(std::uint32_t);
   }
 
-  for (unsigned int i = 0; i < count; ++i) {
+  for (int i = 0; i < count; ++i) {
     g_runeSystemMgr->SetRuneGrade(packet->tagId, 1, packet->ids[i], 0, 0);
   }
 
