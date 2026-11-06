@@ -430,20 +430,22 @@ void CJobCodeForItem::Init() {
 // OFFSET: 0x006CCBE0
 // FUNCTION: fn_06467
 bool CJobCodeForItem::IsJobAllowed(int job, unsigned long code) {
-  if (code == 0xFFFFE) {
+  switch (code) {
+  case 0xFFFFE: {
     auto group = this->m_jobGroups.find(0);
     if (group == this->m_jobGroups.end()) {
       return false;
     }
-    return group->second.find(job) == group->second.end();
+    return group->second.end() == group->second.find(job);
   }
-  if (code == 0xFFFFF) {
+  case 0xFFFFF:
     return true;
+  default: {
+    auto it = this->m_jobCodes.find(code);
+    if (it == this->m_jobCodes.end()) {
+      return false;
+    }
+    return it->second.end() != it->second.find(job);
   }
-
-  auto it = this->m_jobCodes.find(code);
-  if (it == this->m_jobCodes.end()) {
-    return false;
   }
-  return it->second.find(job) != it->second.end();
 }
