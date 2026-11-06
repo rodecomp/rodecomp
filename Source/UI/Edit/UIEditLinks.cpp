@@ -98,7 +98,7 @@ bool UIEditCtrl::RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& ent
 // OFFSET: 0x008550B0
 // FUNCTION: fn_10749
 void UIEditCtrl::SetCursor(std::size_t position) {
-  position = std::min(position, this->text.size());
+  position = position > this->text.size() ? this->text.size() : position;
   this->anchor = this->cursor = static_cast<int>(position);
   g_serverLanguage->Select(this->cursor, this->cursor);
 }

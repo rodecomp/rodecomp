@@ -61,10 +61,9 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     if (lineMove[1] == 0 || HIBYTE(GetKeyState(VK_SHIFT)) != 0 || lineMove[1] == 0) {
       char newline[3] = {'\r', '\n', '\0'};
       g_serverLanguage->Insert(newline);
-      return 0;
+    } else {
+      this->UIWindow::SendMsg(sender, 0, a, b, c, d);
     }
-
-    this->UIWindow::SendMsg(sender, 0, a, b, c, d);
     return 0;
   case 7:
   case 9:
@@ -756,7 +755,7 @@ int UIEditCtrl::MeasureText(const std::string& text, const int& bytes) {
 
 // OFFSET: 0x0084F710
 // FUNCTION: fn_10660
-UIEditCtrl4::UIEditCtrl4() : UIEditCtrl(), placeholderColor(0xFFFFFFFFu), placeholderEnabled(0) {
+UIEditCtrl4::UIEditCtrl4() : UIEditCtrl(), placeholderColor(0xFFFFFFFFu), placeholder(""), placeholderEnabled(0) {
 }
 
 UIEditCtrl4::~UIEditCtrl4() = default;
@@ -965,8 +964,7 @@ int UIChatEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 void UIEditCtrl_OldList::Paint() {
   this->ClearSurface(0xFFFF00FF);
   if (!this->bitmapName.empty()) {
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())));
-    this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str()))), false);
   }
 
   this->PaintText();
@@ -1126,19 +1124,26 @@ UIShowAndEditTimeCtrl::UIShowAndEditTimeCtrl() : UIWindow(0) {
 // OFFSET: 0x0085C4F0
 // FUNCTION: fn_10801
 void UIChatEditCtrl::Paint() {
-  const auto component = [&](int value) { return static_cast<unsigned char>(this->disabled != 0 && value > 30 ? value - 30 : value); };
-  const unsigned color = component(this->red) | (component(this->green) << 8) | (component(this->blue) << 16);
+  int backRed = this->red;
+  int backGreen = this->green;
+  int backBlue = this->blue;
+  if (this->disabled) {
+    backRed = backRed > 30 ? backRed - 30 : backRed;
+    backGreen = backGreen > 30 ? backGreen - 30 : backGreen;
+    if (backBlue > 30) {
+      backBlue -= 30;
+    }
+  }
+
   this->textY = 0;
 
   if (this->flat == 0) {
     RECT rectangle{0, 0, this->geometry.width, this->geometry.height};
-    const unsigned border = static_cast<unsigned char>(this->borderRed) | (static_cast<unsigned char>(this->borderGreen) << 8) |
-                            (static_cast<unsigned char>(this->borderBlue) << 16);
-    this->FillSurface(border, &rectangle);
+    this->FillSurface(RGB(this->borderRed, this->borderGreen, this->borderBlue), &rectangle);
     SetRect(&rectangle, 1, 1, this->geometry.width - 1, this->geometry.height - 1);
-    this->FillSurface(color, &rectangle);
+    this->FillSurface(RGB(backRed, backGreen, backBlue), &rectangle);
   } else {
-    this->ClearSurface(color);
+    this->ClearSurface(RGB(backRed, backGreen, backBlue));
   }
 
   this->textY = this->topPadding + 2;
@@ -1147,13 +1152,14 @@ void UIChatEditCtrl::Paint() {
   UIItemTagOnChat* tag = this->unknown_0144;
   if (tag != nullptr) {
     tag->SetTaggedText(this->text, this->geometry.width);
-    tag = this->unknown_0144;
-    tag->UpdateItemTags();
-    tag = this->unknown_0144;
-    const int span = static_cast<int>(tag->unknown_0140.size() - tag->taggedText.size());
+    this->unknown_0144->UpdateItemTags();
+    UIItemTagOnChat* current = this->unknown_0144;
+    const int span = static_cast<int>(current->unknown_0140.size() - current->taggedText.size());
     this->unknown_00F0 = span > 0 ? span : 0;
-    if (tag->unknown_011C == 0) {
-      delete tag;
+    if (current->unknown_011C == 0) {
+      if (current) {
+        delete current;
+      }
       this->unknown_0144 = nullptr;
     }
   }
