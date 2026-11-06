@@ -3459,12 +3459,11 @@ const char* g_clientInfoDomain;
 // GLOBAL: gl_25527
 std::uint32_t g_patchedClientVersion = 0x80000000;
 
-struct CustomServerList {
-  /* 0000 */ char balloons[8][128];
-};
-
-// GLOBAL: gl_25529
-CustomServerList g_customServerList;
+// INLINED
+static char (&CustomServerBalloons())[8][128] {
+  static char balloons[8][128];
+  return balloons;
+}
 
 // OFFSET: 0x03DE91E0
 // FUNCTION: fn_45403
@@ -3593,7 +3592,7 @@ void __stdcall sub_3DE9318(CLoginMode* mode) {
   while (connection != nullptr && count < 8) {
     ServerAddress2& server = servers[count];
     std::memset(&server, 0, sizeof(server));
-    std::memset(g_customServerList.balloons[count], 0, sizeof(g_customServerList.balloons[count]));
+    std::memset(CustomServerBalloons()[count], 0, sizeof(CustomServerBalloons()[count]));
 
     const std::string* address = nullptr;
     const std::string* port = nullptr;
@@ -3625,7 +3624,7 @@ void __stdcall sub_3DE9318(CLoginMode* mode) {
     if (XmlNode* node = connection->FindChild("balloon")) {
       balloon = &node->Text();
       if (balloon != nullptr) {
-        CopyXmlText(balloon, g_customServerList.balloons[count], sizeof(g_customServerList.balloons[count]));
+        CopyXmlText(balloon, CustomServerBalloons()[count], sizeof(CustomServerBalloons()[count]));
       }
     }
 
@@ -3764,7 +3763,7 @@ void CLoginMode::Slot7(int value) {
       g_customServerListLoaded = 1;
     }
 
-    char(*displayNames)[128] = g_customServerList.balloons;
+    char(*displayNames)[128] = CustomServerBalloons();
     for (int i = 0; i < this->unknown_01C4; ++i) {
       const ServerAddress2& server = servers[i];
       char text[64];
