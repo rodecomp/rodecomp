@@ -903,24 +903,23 @@ void CSkillAction_AT_QUILL_SPEAR::Slot11(int level, CGameActor* source, CGameAct
 // OFFSET: 0x005A74A0
 // FUNCTION: fn_03206
 void CSkillAction_AT_QUILL_SPEAR_S::Slot11(int level, CGameActor* source, CGameActor* target) {
-  if (!target) {
+  if (!target || !this->CanUse(source)) {
     return;
   }
 
-  if (!source || !source->GetUnknown0404() || !this->Slot17(source)) {
-    return;
-  }
-
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        const std::uint8_t bytes[] = {0xA6, 0x3A, 0x6A, 0xF9, 0xB5, 0xDA, 0xDC, 0x4F, 0xB2, 0x2E, 0x71, 0xCA, 0xEC, 0xFD, 0x98, 0x3F};
-        thread_local EncryptedName<sizeof(bytes), 0x3FAF85D995034FD7ULL> name(bytes);
-        return name.Text();
-      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0xA6, 0x3A, 0x6A, 0xF9, 0xB5, 0xDA, 0xDC, 0x4F, 0xB2, 0x2E, 0x71, 0xCA, 0xEC, 0xFD, 0x98, 0x3F};
+    thread_local EncryptedName<sizeof(bytes), 0x3FAF85D995034FD7ULL> name(bytes);
+    return name.Text();
+  }());
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
       &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
     );
     effect->Slot17(angle);
-    source->LaunchEffect(2442, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (CRagEffect* ragEffect = source->LaunchEffect(2442, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      ragEffect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
+    }
   }
 }
 
