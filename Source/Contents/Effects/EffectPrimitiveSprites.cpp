@@ -111,7 +111,7 @@ void CEffectPrim::RenderLaunchEffects(matrix&) {
 
 // OFFSET: 0x00BF5D80
 // FUNCTION: fn_19998
-void CEffectPrim::RenderGroundSprite(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
   if (this->state.master) {
     this->render.position = this->state.master->render.position;
   }
