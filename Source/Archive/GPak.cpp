@@ -524,7 +524,6 @@ unsigned int Triple32Hash(unsigned int value) {
 
 void sub_6468C0(void* first, void* last, const void* val);
 void sub_646930(void* first, void* last, const void* val);
-[[noreturn]] void sub_4F9440();
 
 struct VectorUint32_654D10 {
   unsigned int* first;
@@ -543,7 +542,7 @@ __declspec(noinline) void VectorUint32_654D10::AssignFill(unsigned int count, un
     return;
   }
   if (count > 0x3fffffff) {
-    sub_4F9440();
+    std::_Throw_bad_array_new_length();
   }
   unsigned int bytes = count * sizeof(unsigned int);
   unsigned int* new_ptr;
@@ -555,7 +554,7 @@ __declspec(noinline) void VectorUint32_654D10::AssignFill(unsigned int count, un
     }
   } else {
     if (bytes + 0x23 <= bytes) {
-      sub_4F9440();
+      std::_Throw_bad_array_new_length();
     }
     void* raw = ::operator new(bytes + 0x23);
     if (!raw) {
@@ -601,7 +600,7 @@ __declspec(noinline) void VectorInt32_654E00::AssignFill(unsigned int count, int
     return;
   }
   if (count > 0x3fffffff) {
-    sub_4F9440();
+    std::_Throw_bad_array_new_length();
   }
   unsigned int bytes = count * sizeof(int);
   int* new_ptr;
@@ -613,7 +612,7 @@ __declspec(noinline) void VectorInt32_654E00::AssignFill(unsigned int count, int
     }
   } else {
     if (bytes + 0x23 <= bytes) {
-      sub_4F9440();
+      std::_Throw_bad_array_new_length();
     }
     void* raw = ::operator new(bytes + 0x23);
     if (!raw) {
@@ -997,18 +996,18 @@ HashNode_655340* HashTable_655340::EraseRange(HashNode_655340* first, HashNode_6
   return last;
 }
 
-void sub_6563E0(void*, void*, void*);
-
-struct PakUniformRandom {
-  /* 0000 */ std::mt19937 m_engine;
-  /* 1388 */ std::uniform_int_distribution<int> m_distribution;
-
-  PakUniformRandom(int minimum, int maximum, unsigned int seed);
-};
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(PakUniformRandom, m_distribution) == 0x1388);
 #endif
+
+// OFFSET: 0x006563E0
+// FUNCTION: fn_05073
+__declspec(noinline) void FillRandomBytes(char* first, char* last, PakUniformRandom& random) {
+  for (; first != last; ++first) {
+    *first = static_cast<char>(random.m_distribution(random.m_engine));
+  }
+}
 
 struct PakKeyBlock48 {
   /* 0000 */ std::uint8_t bytes[48];
@@ -1039,7 +1038,7 @@ short* PakCipherBlock_655900::Encode(const short* in, const int* src) {
   unsigned int seed = std::_Random_device();
   PakUniformRandom rng(1, 0xfe, seed);
 
-  sub_6563E0(key_ptr, payload, &rng);
+  FillRandomBytes(reinterpret_cast<char*>(key_ptr), payload, rng);
 
   const unsigned char* in_bytes = reinterpret_cast<const unsigned char*>(src);
   unsigned char* out_bytes = reinterpret_cast<unsigned char*>(out);
@@ -1139,8 +1138,15 @@ HashSearchResult_655D70 HashTable_655340::FindLast(const short* key, unsigned in
 
 struct SeedGen_657C30 {
   unsigned int seed;
-  unsigned int sub_657C30();
+  __declspec(noinline) unsigned int sub_657C30();
 };
+
+// OFFSET: 0x00657C30
+// FUNCTION: fn_05095
+__declspec(noinline) unsigned int SeedGen_657C30::sub_657C30() {
+  this->seed = static_cast<unsigned int>(static_cast<unsigned __int64>(this->seed) * 40014u % 0x7fffffabu);
+  return this->seed;
+}
 
 struct RanluxEngine_655F00 {
   void Seed(const unsigned int* seed_ptr, char flag, int unused);
@@ -1843,33 +1849,6 @@ namespace GPakEx {
     }
     return this;
   }
-
-  class BlockCipherStub {
-  public:
-    /* 0000 */ void* m_vftable;
-
-    void sub_642A60();
-  };
-
-  class CipherModeStub {
-  public:
-    /* 0000 */ void* m_vftable;
-    /* 0004 */ BlockCipherStub* m_cipher;
-    /* 0008 */ std::uint8_t* m_register[3];
-    /* 0014 */ std::uint8_t* m_buffer[3];
-
-    void sub_642A70();
-    std::size_t CiphertextLength(std::size_t length, bool padding) const;
-    std::size_t Process(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final);
-    void SetKeyWithIV(std::span<const std::uint8_t> key, std::span<const std::uint8_t> iv);
-  };
-
-  template<std::size_t StateSize>
-  class FixedStateBlockCipher : public BlockCipherStub {
-  public:
-    /* 0004 */ std::uint8_t m_state[StateSize];
-
-  };
 
   // OFFSET: 0x006434B0
   // FUNCTION: fn_04838
@@ -3314,25 +3293,6 @@ namespace GPakEx {
 
   static_assert(offsetof(GostCfbDecryption, m_blockCipher) == 0x2C);
 
-  class CipherModeFinal_6470D0 : public CipherModeStub {
-  public:
-    /* 0020 */ FixedStateBlockCipher<0xD0> m_blockCipher;
-
-    // INLINED
-    CipherModeFinal_6470D0() {
-      this->sub_6470D0();
-    }
-
-    // INLINED
-    ~CipherModeFinal_6470D0() {
-      SecureWipe(this->m_blockCipher.m_state, sizeof(this->m_blockCipher.m_state));
-      this->m_blockCipher.sub_642A60();
-      this->sub_642A70();
-    }
-
-    void sub_6470D0();
-  };
-
 }
 
 using PakBlockTransform = void (*)(std::span<const std::uint8_t>, std::span<const std::uint8_t, 60>, std::span<const std::uint8_t, 16>, std::span<std::uint8_t, 16>);
@@ -3342,7 +3302,7 @@ __forceinline void EncryptBlockWithDataHash(std::span<const std::uint8_t> data, 
                                             std::span<const std::uint8_t, 16> input, std::span<std::uint8_t, 16> output) {
   const auto iv = keyData.subspan(Deobfuscate<0x53F9360C, 0x4CC36824>(ivOffset), Deobfuscate<0x53F9360C, 0x4CC36824>(8));
   XXH128_hash_t key = XXH3_128bits(data.data(), data.size());
-  GPakEx::CipherModeFinal_6470D0 cipher;
+  GPakEx::IdeaCbcEncryption cipher;
   cipher.SetKeyWithIV(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(&key), sizeof(key)), iv);
   cipher.Process(input, output, false);
   SecureWipe(&key, sizeof(key));
@@ -3353,7 +3313,7 @@ __forceinline void EncryptDataHash(std::span<const std::uint8_t> data, std::span
                                    std::span<const std::uint8_t, 16> key, std::span<std::uint8_t, 16> output) {
   const auto iv = keyData.subspan(Deobfuscate<0x53F9360C, 0x4CC36824>(ivOffset), Deobfuscate<0x53F9360C, 0x4CC36824>(8));
   XXH128_hash_t hash = XXH3_128bits(data.data(), data.size());
-  GPakEx::CipherModeFinal_6470D0 cipher;
+  GPakEx::IdeaCbcEncryption cipher;
   cipher.SetKeyWithIV(key, iv);
   cipher.Process(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(&hash), sizeof(hash)), output, false);
   SecureWipe(&hash, sizeof(hash));

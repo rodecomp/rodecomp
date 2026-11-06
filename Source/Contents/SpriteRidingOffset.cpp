@@ -6,7 +6,7 @@
 
 // OFFSET: 0x00DDE340
 // FUNCTION: fn_23394
-static std::string GetBodyActionResourceName(int job, int sex, int costumeJob, int costume) {
+std::string GetBodyActionResourceName(int job, int sex, int costumeJob, int costume) {
   return g_equipmentResourceMgr->GetBodyResourceName(0, job, sex, costumeJob, costume);
 }
 

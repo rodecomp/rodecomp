@@ -395,7 +395,7 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
     return;
   }
   case 0x126:
-    this->sub_D60D70(packet.aid, packet.owner, packet.x, packet.y);
+    this->SpawnMirrorActor(packet.aid, packet.owner, packet.x, packet.y);
     return;
   }
 
@@ -441,7 +441,7 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
 // FUNCTION: fn_21824
 void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int value, std::int16_t x, std::int16_t y, int type, signed char level, unsigned char visible, unsigned char flags) {
   if (type == 0x126) {
-    this->sub_D60D70(aid, owner, x, y);
+    this->SpawnMirrorActor(aid, owner, x, y);
     return;
   }
   GroundSkillArgumentData data;
@@ -2560,7 +2560,7 @@ void CGameMode::ReceiveSimulationResult(const unsigned char* packet) {
     this->ReceivePackageSimulation(packet);
     break;
   case 2:
-    this->sub_D606B0(packet);
+    this->ReceiveRandomOptionSimulation(packet);
     break;
   case 3:
     this->ReceiveEnchantSimulation(packet);

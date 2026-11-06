@@ -1,6 +1,7 @@
 #include "Contents/ClientState.h"
 
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
@@ -981,14 +982,12 @@ void CSession::SetPetAutoFeed(bool enabled) {
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
 }
 
-extern "C" void __cdecl sub_6C2A80(int id, bool value);
-
 // OFFSET: 0x00E489C0
 // FUNCTION: fn_24224
 void __stdcall sub_E489C0(bool enabled) {
   std::string notice = LookupMessage(enabled ? 4357 : 4379);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice.c_str()), 0x64FFFF, 0, 0, 0);
-  sub_6C2A80(0x128, enabled);
+  g_serviceOptions.Set(0x128, enabled);
   g_windowMgr.sub_AAB070(0x128);
 }
 

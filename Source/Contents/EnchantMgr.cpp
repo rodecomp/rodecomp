@@ -58,6 +58,11 @@ CEnchantMgr::CEnchantMgr() {
   m_unknown_0030 = true;
 }
 
+// INLINED
+CEnchantMgr::~CEnchantMgr() {
+}
+
+
 // OFFSET: 0x00682960
 // FUNCTION: fn_05540
 void CEnchantMgr::SendCloseEnchant() {

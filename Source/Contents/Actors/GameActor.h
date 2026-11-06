@@ -264,7 +264,6 @@ public:
   __declspec(noinline) int WeaponActionBase(int weaponType);
   int GetUnknown0404();
   int MountHeightOffset();
-  float sub_CAD4B0();
   void ResetState();
   void UpdateGaugePositions();
   void UpdateHpGauge();

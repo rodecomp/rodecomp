@@ -122,7 +122,7 @@ void UISwapEquipmentWnd::sub_82FD90() {
         const int row = slot & 3;
         if (slot < 8) {
           const int iconY = row * 26 + 48;
-          this->sub_8A8EE0(xCoords[slot / 4 + 2], iconY, &item, 0);
+          DrawItemIcon(*this, ResourceMgr::Instance(), xCoords[slot / 4 + 2], iconY, item, 0);
           this->DrawItemName(xCoords[slot / 4], yCoords[row], 70, &item, 0, 0, 12);
           if (item.unknown_0088 > 0) {
             CBitmapRes* gradeBitmap = static_cast<CBitmapRes*>(
@@ -131,7 +131,7 @@ void UISwapEquipmentWnd::sub_82FD90() {
             this->DrawBitmap(xCoords[slot / 4 + 2], iconY + 12, gradeBitmap ? &gradeBitmap->image : nullptr, true);
           }
         } else {
-          this->sub_8A8EE0(xCoords[row + 2], 22, &item, 0);
+          DrawItemIcon(*this, ResourceMgr::Instance(), xCoords[row + 2], 22, item, 0);
           this->DrawItemName(xCoords[slot - 8], 30, 70, &item, 0, 0, 12);
         }
       } else {
@@ -367,7 +367,7 @@ void UISwapEquipmentWnd::Paint() {
   if (g_session.unknown_7EC8 != 0) {
     ITEM_INFO dragItem = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_7EC8);
     if (dragItem.unknown_0000[1] > 0) {
-      this->sub_8A8EE0(this->geometry.width / 2 - 24, 27, &dragItem, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), this->geometry.width / 2 - 24, 27, dragItem, 0);
       this->DrawFittedItemName(this->geometry.width / 2 - 24, 51, &dragItem, 0, 0, 12, 0);
     }
   }

@@ -470,7 +470,7 @@ void CSpriteEffect::Slot03() {
     case 0x46A: {
       int height = 8;
       if (CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
-        height = static_cast<int>(actor->sub_CAD4B0() + 8.0f);
+        height = static_cast<int>(actor->GetNameOffset() + 8.0f);
       }
 
       particle->position.x = this->position[0];
@@ -496,7 +496,7 @@ void CSpriteEffect::Slot03() {
     case 0x488: {
       int height = 25;
       if (CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
-        height = static_cast<int>(actor->sub_CAD4B0() + 25.0f);
+        height = static_cast<int>(actor->GetNameOffset() + 25.0f);
       }
 
       particle->position.x = this->position[0];
@@ -512,7 +512,7 @@ void CSpriteEffect::Slot03() {
         break;
       }
 
-      const int height = static_cast<int>(actor->sub_CAD4B0() + 8.0f);
+      const int height = static_cast<int>(actor->GetNameOffset() + 8.0f);
       particle->position.x = this->position[0];
       particle->position.y = this->position[1] - static_cast<float>(height);
       particle->position.z = this->position[2];
@@ -524,7 +524,7 @@ void CSpriteEffect::Slot03() {
         break;
       }
 
-      const int height = static_cast<int>(actor->sub_CAD4B0() + 3.0f);
+      const int height = static_cast<int>(actor->GetNameOffset() + 3.0f);
       particle->position.x = this->position[0];
       particle->position.y = this->position[1] - static_cast<float>(height);
       particle->position.z = this->position[2];
@@ -537,7 +537,7 @@ void CSpriteEffect::Slot03() {
         break;
       }
 
-      const int height = static_cast<int>(actor->sub_CAD4B0());
+      const int height = static_cast<int>(actor->GetNameOffset());
       particle->position.x = this->position[0];
       particle->position.y = this->position[1] - static_cast<float>(height);
       particle->position.z = this->position[2];
@@ -549,7 +549,7 @@ void CSpriteEffect::Slot03() {
         break;
       }
 
-      const float height = actor->sub_CAD4B0();
+      const float height = actor->GetNameOffset();
       const float offset = g_session.IsDoramJob(actor->GetEffectiveJob(-1)) ? height + 13.7f : height + 17.0f;
       particle->position.x = this->position[0];
       particle->position.y = this->position[1] - offset;
@@ -575,7 +575,7 @@ void CSpriteEffect::Slot03() {
         break;
       }
 
-      const float height = actor->sub_CAD4B0();
+      const float height = actor->GetNameOffset();
       particle->position.x = this->position[0];
       particle->position.y = this->position[1] - height;
       particle->position.z = this->position[2];

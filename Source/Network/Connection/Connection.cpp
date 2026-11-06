@@ -30,6 +30,11 @@ CConnection::~CConnection() = default;
 CRagConnection::CRagConnection() : unknown_006C(0) {
 }
 
+// INLINED
+CRagConnection::~CRagConnection() {
+}
+
+
 // OFFSET: 0x00C7C4D0
 // FUNCTION: fn_20389
 bool CConnection::Connect(const ConnectionEndpoint& endpoint) {

@@ -20,7 +20,6 @@ public:
   void Slot27(int x, int y) override;
   void Paint() override;
   void UpdateCharInfoBalloon(int x, int y, std::uint32_t color);
-  void sub_93F1F0(int x, int y, int slot);
 
 protected:
   /* 00B4 */ CharSlotInfo m_slots[18];

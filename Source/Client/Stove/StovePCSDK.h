@@ -156,8 +156,10 @@ Stove::PCSDK::Result IAP_UnInitialize();
 Stove::PCSDK::Result Base_UnInitialize();
 void IAP_StartPurchase(const Stove::PCSDK::IAP::StovePCStartPurchaseParam* param,
                        void (*callback)(Stove::PCSDK::CallbackResult, Stove::PCSDK::IAP::StovePCPurchaseResult));
-void IAP_FetchTermsAgreement(Stove::PCSDK::IAP::StovePCTermsOption* option, void (*callback)(Stove::PCSDK::CallbackResult));
-void IAP_FetchProducts(Stove::PCSDK::IAP::StovePCFetchProductParam* param, void (*callback)(Stove::PCSDK::CallbackResult));
+void IAP_FetchTermsAgreement(Stove::PCSDK::IAP::StovePCTermsOption* option,
+                             void (*callback)(Stove::PCSDK::CallbackResult, int, const wchar_t*));
+void IAP_FetchProducts(Stove::PCSDK::IAP::StovePCFetchProductParam* param,
+                       void (*callback)(Stove::PCSDK::CallbackResult, const Stove::PCSDK::IAP::StovePCProduct*, unsigned int));
 void IAP_ConfirmPurchase(std::int64_t transactionNumber, void (*callback)(Stove::PCSDK::CallbackResult, bool, int, unsigned int, int, int));
 }
 

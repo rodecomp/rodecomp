@@ -1,20 +1,12 @@
 #include "Security/ThemidaMgr.h"
 
+#include "Archive/GPak.h"
+
 #include <new>
 #include <random>
 
 // GLOBAL: gl_24891
 CThemidaMgr* g_themidaMgr;
-
-void sub_6563E0(char* first, char* last, void* distribution);
-
-struct ThemidaKeyRandom {
-  std::mt19937 engine;
-  std::uniform_int_distribution<int> distribution;
-
-  ThemidaKeyRandom(unsigned int seed) : engine(seed), distribution(1, 0xfe) {
-  }
-};
 
 struct ThemidaKeyEncoderA {
   unsigned char* Generate(const unsigned char* input);
@@ -38,8 +30,8 @@ CThemidaMgr::~CThemidaMgr() {
 // FUNCTION: fn_08237
 unsigned char* ThemidaKeyEncoderA::Generate(const unsigned char* input) {
   auto* output = reinterpret_cast<unsigned char*>(this);
-  ThemidaKeyRandom random(std::random_device{}());
-  sub_6563E0(reinterpret_cast<char*>(output), reinterpret_cast<char*>(output) + 5, &random);
+  PakUniformRandom random(1, 0xfe, std::random_device{}());
+  FillRandomBytes(reinterpret_cast<char*>(output), reinterpret_cast<char*>(output) + 5, random);
   output[5] = input[0] ^ output[1] ^ output[0];
   output[6] = input[1] ^ output[2] ^ output[1];
   output[7] = input[2] ^ output[3] ^ output[2];
@@ -51,8 +43,8 @@ unsigned char* ThemidaKeyEncoderA::Generate(const unsigned char* input) {
 // FUNCTION: fn_08238
 unsigned char* ThemidaKeyEncoderB::Generate(const unsigned char* input) {
   auto* output = reinterpret_cast<unsigned char*>(this);
-  ThemidaKeyRandom random(std::random_device{}());
-  sub_6563E0(reinterpret_cast<char*>(output), reinterpret_cast<char*>(output) + 5, &random);
+  PakUniformRandom random(1, 0xfe, std::random_device{}());
+  FillRandomBytes(reinterpret_cast<char*>(output), reinterpret_cast<char*>(output) + 5, random);
   output[5] = input[0] ^ output[1] ^ output[0];
   output[6] = input[1] ^ output[2] ^ output[1];
   output[7] = input[2] ^ output[3] ^ output[2];

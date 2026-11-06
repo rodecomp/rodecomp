@@ -241,6 +241,7 @@
 #include "UI/Window/UITransMenuWnd.h"
 #include "UI/Window/UIVideoWnd.h"
 #include "UI/Window/UIViewCameraInfoWnd.h"
+#include "Utility/JsonCppLoader.h"
 #include <cstdlib>
 
 namespace {
@@ -1925,7 +1926,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
     break;
   case 8:
   case 9:
-    this->sub_A978D0(51)->SendMsg(nullptr, 65, a, b, 0, 0);
+    this->EnsureWindow(51)->SendMsg(nullptr, 65, a, b, 0, 0);
     break;
   case 10:
     this->CloseWindow(51);
@@ -4260,7 +4261,7 @@ bool UIWindowMgr::sub_AA35F0(int action) {
       const bool closed = g_windowMgr.CloseWindow(0x45);
       std::memcpy(&partyTab, this->unknown_0740, sizeof(partyTab));
       if (!closed || previous != partyTab) {
-        g_windowMgr.sub_A978D0(0x45);
+        g_windowMgr.EnsureWindow(0x45);
       }
     }
     break;
@@ -4276,7 +4277,7 @@ bool UIWindowMgr::sub_AA35F0(int action) {
     break;
   case 0x6C:
     if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x8C)) {
-      g_windowMgr.sub_A978D0(0x8C);
+      g_windowMgr.EnsureWindow(0x8C);
     }
     break;
   case 0x6D:
@@ -4288,21 +4289,21 @@ bool UIWindowMgr::sub_AA35F0(int action) {
     if (this->unknown_01DC) {
       if (g_guildInfo.m_guildId != 0) {
         if (!g_windowMgr.CloseWindow(0x3B)) {
-          g_windowMgr.sub_A978D0(0x3B);
+          g_windowMgr.EnsureWindow(0x3B);
         }
       } else if (!g_windowMgr.CloseWindow(0xD4)) {
-        g_windowMgr.sub_A978D0(0xD4);
+        g_windowMgr.EnsureWindow(0xD4);
       }
     }
     break;
   case 0x90:
     if (this->unknown_01DC && !g_windowMgr.CloseWindow(0xED)) {
-      g_windowMgr.sub_A978D0(0xED);
+      g_windowMgr.EnsureWindow(0xED);
     }
     break;
   case 0x6F:
     if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x57)) {
-      g_windowMgr.sub_A978D0(0x57);
+      g_windowMgr.EnsureWindow(0x57);
     }
     break;
   case 0x70:
@@ -4317,14 +4318,14 @@ bool UIWindowMgr::sub_AA35F0(int action) {
         return true;
       }
       if (!this->CloseWindow(14)) {
-        this->sub_A978D0(14);
+        this->EnsureWindow(14);
         this->unknown_005C = 0xFFFFFFFF;
       }
     }
     break;
   case 0x72:
     if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x56)) {
-      g_windowMgr.sub_A978D0(0x56);
+      g_windowMgr.EnsureWindow(0x56);
     }
     break;
   case 0x73:
@@ -4370,22 +4371,22 @@ bool UIWindowMgr::sub_AA35F0(int action) {
     if (UIWindow* window = this->unknown_03F8) {
       window->Show(window->geometry.visible == 0);
     } else {
-      g_windowMgr.sub_A978D0(0x89);
+      g_windowMgr.EnsureWindow(0x89);
     }
     break;
   case 0x7B:
     if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x58)) {
-      g_windowMgr.sub_A978D0(0x58);
+      g_windowMgr.EnsureWindow(0x58);
     }
     break;
   case 0x7C:
     if (this->unknown_01DC && g_session.unknown_5614 != 0 && !g_windowMgr.CloseWindow(0x71)) {
-      g_windowMgr.sub_A978D0(0x71);
+      g_windowMgr.EnsureWindow(0x71);
     }
     break;
   case 0x7D:
     if (this->unknown_01DC && g_session.unknown_56B0 != 0 && !g_windowMgr.CloseWindow(0x7D)) {
-      g_windowMgr.sub_A978D0(0x7D);
+      g_windowMgr.EnsureWindow(0x7D);
     }
     break;
   case 0x7E:
@@ -4422,12 +4423,12 @@ bool UIWindowMgr::sub_AA35F0(int action) {
     break;
   case 0x80:
     if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x44)) {
-      g_windowMgr.sub_A978D0(0x44);
+      g_windowMgr.EnsureWindow(0x44);
     }
     break;
   case 0x81:
     if (this->unknown_01DC && !g_windowMgr.CloseWindow(0x35) && g_session.PartyCount()) {
-      g_windowMgr.sub_A978D0(0x35);
+      g_windowMgr.EnsureWindow(0x35);
     }
     break;
   case 0x87: {
@@ -4486,9 +4487,10 @@ bool UIWindowMgr::sub_AA35F0(int action) {
     } else if (g_windowMgr.modal) {
       g_windowMgr.modal->SendMsg(nullptr, 6, 0xC8, 0, 0, 0);
     } else {
-      g_windowMgr.sub_A978D0(0xCB);
+      g_windowMgr.EnsureWindow(0xCB);
     }
     break;
+
   case 0x92:
     if (g_windowMgr.window_0448) {
       g_windowMgr.CloseWindow(0x113);
@@ -4525,7 +4527,7 @@ bool UIWindowMgr::sub_AA35F0(int action) {
   }
   case 0x95:
     if (!g_windowMgr.CloseWindow(0x10E)) {
-      g_windowMgr.sub_A978D0(0x10E);
+      g_windowMgr.EnsureWindow(0x10E);
     }
     break;
   case 0x96:
@@ -4533,7 +4535,7 @@ bool UIWindowMgr::sub_AA35F0(int action) {
       if (!g_session.IsNavigationAllowed()) {
         g_windowMgr.Confirm(LookupMessage(0xACF), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!g_windowMgr.CloseWindow(0x111)) {
-        g_windowMgr.sub_A978D0(0x111);
+        g_windowMgr.EnsureWindow(0x111);
       }
     }
     break;
@@ -4547,7 +4549,7 @@ bool UIWindowMgr::sub_AA35F0(int action) {
     break;
   case 0x9A:
     if (!g_windowMgr.CloseWindow(0x13B)) {
-      g_windowMgr.sub_A978D0(0x13B);
+      g_windowMgr.EnsureWindow(0x13B);
     }
     break;
   case 0x9B:
@@ -4562,7 +4564,7 @@ bool UIWindowMgr::sub_AA35F0(int action) {
     break;
   case 0x9D:
     if (!g_windowMgr.CloseWindow(0x144)) {
-      g_windowMgr.sub_A978D0(0x144);
+      g_windowMgr.EnsureWindow(0x144);
     }
     break;
   case 0x9F:
@@ -4570,12 +4572,12 @@ bool UIWindowMgr::sub_AA35F0(int action) {
     break;
   case 0xA0:
     if (!g_windowMgr.CloseWindow(0x15A)) {
-      g_windowMgr.sub_A978D0(0x15A);
+      g_windowMgr.EnsureWindow(0x15A);
     }
     break;
   case 0xA1:
     if (!g_windowMgr.CloseWindow(0x2711)) {
-      g_windowMgr.sub_A978D0(0x2711);
+      g_windowMgr.EnsureWindow(0x2711);
     }
     break;
   case 0xA3:
@@ -4615,7 +4617,7 @@ bool UIWindowMgr::sub_AA35F0(int action) {
 }
 // OFFSET: 0x00A978D0
 // FUNCTION: fn_17207
-UIWindow* UIWindowMgr::sub_A978D0(int id) {
+UIWindow* UIWindowMgr::EnsureWindow(int id) {
   UIWindow* transient = this->window_4F250;
   if (transient && static_cast<UIDragMiniPartyWnd*>(transient)->member.valid && transient->geometry.unknown_0030 == 0) {
     bool behavior = false;
@@ -4667,7 +4669,7 @@ UIWindow* UIWindowMgr::sub_A978D0(int id) {
       this->AddRendered(window);
       this->unknown_01DC->SendMsg(this->unknown_01DC, 0x22, reinterpret_cast<std::intptr_t>(this->unknown_0514), 0, 0, 0);
       g_snapMgr.SetRoot(window);
-      if (UIWindow* navigation = g_windowMgr.sub_A978D0(307)) {
+      if (UIWindow* navigation = g_windowMgr.EnsureWindow(307)) {
         int x = 0;
         int y = 0;
         window->ToScreen(x, y);
@@ -4680,44 +4682,44 @@ UIWindow* UIWindowMgr::sub_A978D0(int id) {
         if (savedId == 301) {
           this->RebuildMiniPartyWindows();
         } else {
-          this->sub_A978D0(savedId);
+          this->EnsureWindow(savedId);
         }
       }
     } else {
       if (this->unknown_054C) {
-        this->sub_A978D0(8);
+        this->EnsureWindow(8);
       }
       if (this->unknown_05A4) {
-        this->sub_A978D0(10);
+        this->EnsureWindow(10);
       }
       if (this->unknown_0588) {
-        this->sub_A978D0(11);
+        this->EnsureWindow(11);
       }
       if (this->unknown_05BC) {
-        this->sub_A978D0(13);
+        this->EnsureWindow(13);
       }
       if (this->unknown_077C) {
-        this->sub_A978D0(37);
+        this->EnsureWindow(37);
       }
       if (this->unknown_0568) {
-        this->sub_A978D0(321);
+        this->EnsureWindow(321);
       }
       if (this->unknown_073C) {
-        this->sub_A978D0(69);
+        this->EnsureWindow(69);
       }
       if (g_session.unknown_5470 == 1 && g_session.unknown_5474 == 1 && g_effectDetailLevel == 2 && g_textureDetailLevel == 2) {
-        this->sub_A978D0(10014);
+        this->EnsureWindow(10014);
       }
       if (g_session.HasUnknown6178Records() == true) {
-        this->sub_A978D0(271);
+        this->EnsureWindow(271);
       }
       if (this->unknown_4F210 == true) {
-        this->sub_A978D0(286);
+        this->EnsureWindow(286);
       }
       this->RebuildMiniPartyWindows();
     }
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0254) {
-      this->sub_A978D0(14);
+      this->EnsureWindow(14);
     }
     this->ShowWindowById(1, this->unknown_003C);
     this->ShowWindowById(36, this->m_normalItemSlotWindow.show);
@@ -5077,9 +5079,9 @@ UIWindow* UIWindowMgr::sub_A978D0(int id) {
     break;
   case 69:
     if (*reinterpret_cast<const int*>(this->unknown_0740)) {
-      this->sub_A978D0(34)->SendMsg(nullptr, 6, 0xD7, 2, 0, 0);
+      this->EnsureWindow(34)->SendMsg(nullptr, 6, 0xD7, 2, 0, 0);
     } else {
-      this->sub_A978D0(34)->SendMsg(nullptr, 6, 0xD7, 1, 0, 0);
+      this->EnsureWindow(34)->SendMsg(nullptr, 6, 0xD7, 1, 0, 0);
     }
     break;
   case 34:
@@ -5110,7 +5112,7 @@ UIWindow* UIWindowMgr::sub_A978D0(int id) {
       window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x7A4), 0, 0, 0);
     }
     window->Show(1);
-    this->sub_A978D0(42);
+    this->EnsureWindow(42);
     break;
   case 42:
     window = reinterpret_cast<UIWindow*>(this->unknown_02F8);
@@ -5237,25 +5239,25 @@ UIWindow* UIWindowMgr::sub_A978D0(int id) {
     }
     switch (guildInfo->unknown_0010) {
     case 0:
-      window = g_windowMgr.sub_A978D0(60);
+      window = g_windowMgr.EnsureWindow(60);
       break;
     case 1:
-      window = g_windowMgr.sub_A978D0(61);
+      window = g_windowMgr.EnsureWindow(61);
       break;
     case 2:
-      window = g_windowMgr.sub_A978D0(62);
+      window = g_windowMgr.EnsureWindow(62);
       break;
     case 3:
-      window = g_windowMgr.sub_A978D0(63);
+      window = g_windowMgr.EnsureWindow(63);
       break;
     case 4:
-      window = g_windowMgr.sub_A978D0(64);
+      window = g_windowMgr.EnsureWindow(64);
       break;
     case 5:
-      window = g_windowMgr.sub_A978D0(65);
+      window = g_windowMgr.EnsureWindow(65);
       break;
     case 6:
-      window = g_windowMgr.sub_A978D0(66);
+      window = g_windowMgr.EnsureWindow(66);
       break;
     }
     break;
@@ -5823,7 +5825,7 @@ UIWindow* UIWindowMgr::sub_A978D0(int id) {
       window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x71C), 0, 0, 0);
     }
     window->Show(1);
-    this->sub_A978D0(50);
+    this->EnsureWindow(50);
     break;
   case 45:
     window = this->unknown_0304;
@@ -6643,7 +6645,7 @@ UIWindow* UIWindowMgr::sub_A978D0(int id) {
       window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x954), 0, 0, 0);
     }
     window->Show(1);
-    this->sub_A978D0(175);
+    this->EnsureWindow(175);
     break;
   case 175:
     window = reinterpret_cast<UIWindow*>(this->unknown_0410);
@@ -7153,7 +7155,7 @@ UIWindow* UIWindowMgr::sub_A978D0(int id) {
   case 295: {
     const int x = static_cast<int>((g_renderer->viewport.width - 264) * g_depthAverageHalf);
     const int y = static_cast<int>((g_renderer->viewport.height - 346) * g_depthAverageHalf);
-    this->sub_A978D0(8);
+    this->EnsureWindow(8);
     if (this->unknown_01D4) {
       this->unknown_01D4->Move(x + 264, y - this->unknown_01D4->geometry.height + 346);
     }
@@ -7375,7 +7377,7 @@ UIWindow* UIWindowMgr::sub_A978D0(int id) {
   case 343: {
     const int x = static_cast<int>((g_renderer->viewport.width - 400) * g_depthAverageHalf - 100.0f);
     const int y = static_cast<int>((g_renderer->viewport.height - 330) * g_depthAverageHalf);
-    this->sub_A978D0(8);
+    this->EnsureWindow(8);
     if (this->unknown_01D4) {
       this->unknown_01D4->Move(x + 400, y - this->unknown_01D4->geometry.height + 330);
     }

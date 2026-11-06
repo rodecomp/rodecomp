@@ -283,7 +283,7 @@ int UIHotkeyGuideWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   if (message == 6) {
     switch (a) {
     case 342: {
-      UIWindow* window = g_windowMgr.sub_A978D0(156);
+      UIWindow* window = g_windowMgr.EnsureWindow(156);
       if (window) {
         window->SendMsg(this, 22, 1, 0, 0, 0);
       }

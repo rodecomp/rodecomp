@@ -195,9 +195,6 @@ static const char bookmarkKeySuffixText[] = "\\BookMark";
 // GLOBAL: gl_24751
 const char* g_bookmarkKeySuffix = bookmarkKeySuffixText;
 
-// GLOBAL: gl_25332
-int g_window315Enabled = 1;
-
 // GLOBAL: gl_25391
 bool g_randomLoadingScreen;
 
@@ -611,7 +608,7 @@ void UIEquipWnd::Paint() {
       if (this->m_page == 0) {
         ITEM_INFO dragItem = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_16EC);
         if (dragItem.unknown_0000[1] != 0) {
-          this->sub_8A8EE0(this->geometry.width / 2 - 25, this->m_contentTop + 44, &dragItem, 0);
+          DrawItemIcon(*this, ResourceMgr::Instance(), this->geometry.width / 2 - 25, this->m_contentTop + 44, dragItem, 0);
           this->DrawItemName(this->geometry.width / 2 - 25, this->m_contentTop + 68, 40, &dragItem, 0, 0, 12);
         }
         this->m_otherButton->Enable(1);
@@ -792,7 +789,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     if (!g_session.IsNavigationAllowed()) {
       g_windowMgr.Confirm(LookupMessage(2767), 0, true, false, 0, "Message", 280, 120, 0);
     } else if (!g_windowMgr.CloseWindow(273)) {
-      g_windowMgr.sub_A978D0(273);
+      g_windowMgr.EnsureWindow(273);
     }
     return 0;
   case 216:
@@ -825,7 +822,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   }
   case 454:
     if (!g_windowMgr.CloseWindow(140)) {
-      g_windowMgr.sub_A978D0(140);
+      g_windowMgr.EnsureWindow(140);
     }
     return 0;
   case 455: {
@@ -3122,7 +3119,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         if (g_windowMgr.unknown_0210 != nullptr) {
           g_windowMgr.CloseWindow(18);
         }
-        UIWindow* menu = g_windowMgr.sub_A978D0(18);
+        UIWindow* menu = g_windowMgr.EnsureWindow(18);
         if (!menu) {
           return 0;
         }
@@ -3163,7 +3160,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     case 249:
       if ((g_replayAnimationScaling == 0 || Replay::Instance().header.options.Get(ReplayRecordOption::Item) != 0) && !g_windowMgr.LookupWindow(227) &&
           !g_windowMgr.CloseWindow(40) && g_session.unknown_5C1C > 0) {
-        g_windowMgr.sub_A978D0(40);
+        g_windowMgr.EnsureWindow(40);
       }
       return 0;
     case 271: {
@@ -3235,7 +3232,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
     case 582:
       if (!g_windowMgr.CloseWindow(10001)) {
-        g_windowMgr.sub_A978D0(10001);
+        g_windowMgr.EnsureWindow(10001);
       }
       return 0;
     }
@@ -4287,7 +4284,7 @@ void UIItemIdentifyWnd::Paint() {
       this->FillRegion(5, top + 31, this->geometry.width - 24, 30, RGB(red, green, blue));
     }
 
-    this->sub_8A8EE0(8, y, &*it, 0);
+    DrawItemIcon(*this, ResourceMgr::Instance(), 8, y, *it, 0);
     this->DrawFittedItemName(40, y, &*it, 0, 0, 12, 0);
     if (it->unknown_0088 > 0) {
       this->DrawBitmap(
@@ -5840,7 +5837,7 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (g_windowMgr.unknown_0214) {
         g_windowMgr.CloseWindow(26);
       }
-      UIWindow* list = g_windowMgr.sub_A978D0(26);
+      UIWindow* list = g_windowMgr.EnsureWindow(26);
       int count = 1;
       if (a == 228) {
         this->m_listKind = 0;
@@ -5923,7 +5920,7 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (g_windowMgr.unknown_0214) {
         g_windowMgr.CloseWindow(26);
       }
-      UIWindow* list = g_windowMgr.sub_A978D0(26);
+      UIWindow* list = g_windowMgr.EnsureWindow(26);
       int count = 1;
       if (a == 228) {
         this->m_listKind = 0;
@@ -9963,7 +9960,7 @@ void UIItemCollectionWnd::Slot32(int x, int y) {
   card.unknown_0000[0] = 6;
   card.unknown_0060 = 0;
   card.SetItemId(cardId);
-  UIWindow* window = g_windowMgr.sub_A978D0(82);
+  UIWindow* window = g_windowMgr.EnsureWindow(82);
   window->SendMsg(nullptr, 76, card.identified, 0, 0, 0);
   window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&card), index >= ItemSlotsCount(this->m_item), 0, 0);
 
@@ -9976,7 +9973,7 @@ void UIItemCollectionWnd::Slot32(int x, int y) {
       compareCard.unknown_0000[0] = 6;
       compareCard.unknown_0060 = 0;
       compareCard.SetItemId(compareId);
-      UIWindow* compareWindow = g_windowMgr.sub_A978D0(250);
+      UIWindow* compareWindow = g_windowMgr.EnsureWindow(250);
       compareWindow->SendMsg(nullptr, 76, compareCard.identified, 0, 0, 0);
       compareWindow->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&compareCard), 1, 0, 0);
     }
@@ -10000,7 +9997,7 @@ void UIItemCollection_ComparisonWnd::Slot32(int x, int y) {
   card.unknown_0000[0] = 6;
   card.unknown_0060 = 0;
   card.SetItemId(cardId);
-  UIWindow* window = g_windowMgr.sub_A978D0(82);
+  UIWindow* window = g_windowMgr.EnsureWindow(82);
   window->SendMsg(nullptr, 76, card.identified, 0, 0, 0);
   window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&card), index >= ItemSlotsCount(this->m_item), 0, 0);
 }
@@ -12427,7 +12424,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       g_windowMgr.CloseWindow(this->m_kind);
       return 0;
     case 250: {
-      UIWindow* window = g_windowMgr.sub_A978D0(47);
+      UIWindow* window = g_windowMgr.EnsureWindow(47);
       window->SendMsg(nullptr, 62, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), this->m_item.identified, 0, 0);
       return 0;
     }
@@ -12445,13 +12442,13 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("책이 없습니다"), 0xFF, 0, 0, 0);
         return 0;
       }
-      UIWindow* window = g_windowMgr.sub_A978D0(106);
+      UIWindow* window = g_windowMgr.EnsureWindow(106);
       window->SendMsg(nullptr, 94, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), argument1, 0, 0);
       file.Close();
       return 0;
     }
     case 343: {
-      UIWindow* window = g_windowMgr.sub_A978D0(10012);
+      UIWindow* window = g_windowMgr.EnsureWindow(10012);
       if (window) {
         static_cast<CUIProbabilityTable*>(window)->SetItem(this->m_item.GetItemId());
         window->PlaceBeside(this);
@@ -12460,7 +12457,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       break;
     }
     case 354: {
-      UIWindow* window = g_windowMgr.sub_A978D0(294);
+      UIWindow* window = g_windowMgr.EnsureWindow(294);
       if (window) {
         window->SendMsg(this, 23, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
         return 0;
@@ -12613,7 +12610,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     if (this->m_kind == 12) {
       ITEM_INFO* equipped = g_session.GetEquippedItem(&this->m_item);
       if (g_serviceOptions.Get(264) && equipped && argument4 == 0) {
-        UIWindow* window = g_windowMgr.sub_A978D0(234);
+        UIWindow* window = g_windowMgr.EnsureWindow(234);
         if (window) {
           window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(equipped), 1, 0, 0);
         }

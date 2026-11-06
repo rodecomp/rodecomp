@@ -19,8 +19,6 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) override;
   void SetRegisterDisabled(unsigned char disabled);
 
-  void sub_8CEF10();
-  void sub_8CF0C0(const char* tooltip, int width);
 
   /* 00B4 */ UIStaticText* m_pathText;
   /* 00B8 */ UIComboBoxDefWnd* m_fileComboBox;

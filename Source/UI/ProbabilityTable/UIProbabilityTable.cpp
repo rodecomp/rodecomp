@@ -543,10 +543,10 @@ void CUIProbabilityTable::OnPrepareItem(ProbabilityTable::CUIItem*, const Probab
 void BindItem(ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data) {
   item->nameText->Clear();
   item->probabilityText->Clear();
-  item->nameText->SetText(data.name);
+  item->nameText->AddLine(data.name);
   item->nameText->SetBackgroundColor(data.color);
   item->probabilityText->SetBackgroundColor(data.color);
-  item->probabilityText->SetText(FormatOwnedString("%.4lf%%", data.probability));
+  item->probabilityText->AddLine(FormatOwnedString("%.4lf%%", data.probability));
 }
 
 // OFFSET: 0x00A493D0
@@ -851,14 +851,4 @@ void CUIItem::Slot16() {
 void CUIItem::Slot25(int, int) {
 }
 
-}
-
-// OFFSET: 0x00A4E360
-// FUNCTION: fn_16205
-template <>
-void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::UpdateScrollBar() {
-  this->scrollBar->SetTotal(this->data.size() * this->rowHeight + this->itemY);
-  this->scrollBar->SetVisible(this->geometry.height);
-  this->scrollBar->SetPosition(this->scrollBar->position);
-  this->rebind = 1;
 }

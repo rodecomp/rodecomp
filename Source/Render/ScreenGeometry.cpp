@@ -79,32 +79,32 @@ void DrawScreenQuad(
 
 // OFFSET: 0x00915F60
 // FUNCTION: fn_12581
-void DrawScreenQuad(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, CTexture* texture, std::uint32_t color) {
+void DrawScreenQuad(ScreenPoint p0, ScreenPoint p1, ScreenPoint p2, ScreenPoint p3, CTexture* texture, std::uint32_t color) {
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   RenderVertex* vertices = primitive->vertices;
-  vertices[0].x = x0;
-  vertices[0].y = y0;
+  vertices[0].x = p0.x;
+  vertices[0].y = p0.y;
   vertices[0].z = 0.8f;
   vertices[0].rhw = 1.0f;
   vertices[0].diffuse = color;
   vertices[0].u = 0.0f;
   vertices[0].v = 0.0f;
-  vertices[1].x = x1;
-  vertices[1].y = y1;
+  vertices[1].x = p1.x;
+  vertices[1].y = p1.y;
   vertices[1].z = 0.8f;
   vertices[1].rhw = 1.0f;
   vertices[1].diffuse = color;
   vertices[1].u = 1.0f;
   vertices[1].v = 0.0f;
-  vertices[2].x = x2;
-  vertices[2].y = y2;
+  vertices[2].x = p2.x;
+  vertices[2].y = p2.y;
   vertices[2].z = 0.8f;
   vertices[2].rhw = 1.0f;
   vertices[2].diffuse = color;
   vertices[2].u = 0.0f;
   vertices[2].v = 1.0f;
-  vertices[3].x = x3;
-  vertices[3].y = y3;
+  vertices[3].x = p3.x;
+  vertices[3].y = p3.y;
   vertices[3].z = 0.8f;
   vertices[3].rhw = 1.0f;
   vertices[3].diffuse = color;

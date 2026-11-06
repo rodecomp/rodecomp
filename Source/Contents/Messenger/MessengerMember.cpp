@@ -87,8 +87,6 @@ public:
   void RemoveGauge();
   void SetUnknown010C(int first, int second);
   void SetGaugeValues(int current, int maximum);
-  std::string sub_A80880(int width, const char* text, int font, int height, int bold);
-  void sub_A84360(int x, int y, const char* text, int length, int font, int height, unsigned int color, int bold, int shadow);
 
   /* 00B4 */ MessengerMember member;
   /* 0104 */ UIPcGage* gauge;
@@ -396,8 +394,8 @@ void UIDragMiniPartyWnd::Paint() {
     const char* mapName = g_session.GetMapDisplayName(this->member.map.c_str());
     char text[256];
     sprintf(text, "%d %s(%s)", this->member.level, this->member.name.c_str(), mapName);
-    std::string clipped = this->sub_A80880(this->geometry.width - 0x43, text, 0, 12, 1);
-    this->sub_A84360(
+    std::string clipped = this->FitDisplayText(this->geometry.width - 0x43, text, 0, 12, 1);
+    this->DrawTextAt(
       this->iconPositions[this->iconIndex].x + 0x1C,
       this->iconPositions[this->iconIndex].y + 3,
       clipped.c_str(),
@@ -413,7 +411,7 @@ void UIDragMiniPartyWnd::Paint() {
       char hpText[128];
       sprintf(hpText, "%d/%d", this->gauge->current, this->gauge->maximum);
       int len = static_cast<int>(strlen(hpText));
-      this->sub_A84360(
+      this->DrawTextAt(
         this->gauge->geometry.x + 0x42,
         this->gauge->geometry.y - 4,
         hpText,

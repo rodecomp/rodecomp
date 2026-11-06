@@ -183,7 +183,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 // OFFSET: 0x00932B40
 // FUNCTION: fn_12714
 void UISelCharForUServerWnd::Slot27(int x, int y) {
-  this->sub_93F1F0(x, y, -1);
+  this->UpdateCharInfoBalloon(x, y, static_cast<std::uint32_t>(-1));
   UIFrameWnd::Slot27(x, y);
 }
 

@@ -72,6 +72,19 @@ struct CharacterSlotExtension {
 };
 #pragma pack(pop)
 
+struct LoginStringRecord {
+  /* 0000 */ std::string unknown_0000;
+  /* 0018 */ std::string unknown_0018;
+  /* 0030 */ std::string unknown_0030;
+  /* 0048 */ std::string unknown_0048;
+  /* 0060 */ std::string unknown_0060;
+  /* 0078 */ unsigned char unknown_0078[8];
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(LoginStringRecord) == 0x80);
+#endif
+
 struct MapStateData {
   /* 0000 */ std::uint32_t values[4];
 };
@@ -111,7 +124,7 @@ public:
   /* 6F1C */ std::vector<int> unknown_6F1C;
   /* 6F28 */ int unknown_6F28;
   /* 6F2C */ std::vector<int> unknown_6F2C;
-  /* 6F38 */ std::vector<int> unknown_6F38;
+  /* 6F38 */ std::vector<LoginStringRecord> unknown_6F38;
   /* 6F44 */ unsigned char savedInlineCharset;
   /* 6F45 */ unsigned char unknown_6F45[0x3];
   /* 6F48 */ int unknown_6F48;

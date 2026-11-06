@@ -1230,7 +1230,7 @@ void UIAchSummaryWnd::Slot15(int, int) {
 int UIAchListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
   case 6:
-    if (g_session.sub_E06580(this->ids[this->unknown_008C + argument1])) {
+    if (g_session.ToggleTrackedAchievement(this->ids[this->unknown_008C + argument1])) {
       UIWindow* window = g_windowMgr.EnsureWindow(271);
       if (window) {
         window->Invalidate();
@@ -1485,6 +1485,14 @@ UIAchListWnd::UIAchListWnd()
     : UIWindow(0), buttons(nullptr), unknown_0084(0), rowCount(0), unknown_008C(0), selectedIndex(0), unknown_0094(11), scrollable(0),
       unknown_009C(0), unknown_00AC(nullptr), scrollBar(nullptr) {
 }
+
+// INLINED
+UIAchListWnd::~UIAchListWnd() {
+  if (this->buttons) {
+    delete[] this->buttons;
+  }
+}
+
 
 // OFFSET: 0x007B1F40
 // FUNCTION: fn_09182

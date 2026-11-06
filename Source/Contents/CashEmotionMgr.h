@@ -130,7 +130,7 @@ public:
   void ClearCommands();
   __declspec(noinline) void HideSuggestions();
   __declspec(noinline) int FindEmotionId(const char* name);
-  int ProcessChatCommand(const char* command);
+  void ProcessChatCommand(const char* command);
   __declspec(noinline) const char* GetPackName(int packId);
   std::vector<int> FindBaseEmotions(const char* filter);
   __declspec(noinline) CashEmotionTable* GetBasePackEmotions();

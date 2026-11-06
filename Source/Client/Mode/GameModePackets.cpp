@@ -2511,7 +2511,7 @@ __declspec(noinline) void CGameMode::ReceiveLapineBoxIngredient(const unsigned c
     return;
   }
 
-  if (UIWindow* window = g_windowMgr.sub_A978D0(0x122)) {
+  if (UIWindow* window = g_windowMgr.EnsureWindow(0x122)) {
     static_cast<UILapineBoxWnd*>(window)->SetIngredient(static_cast<int>(reinterpret_cast<std::intptr_t>(packet)));
   }
 }
@@ -7502,12 +7502,6 @@ struct MiniMapEffectMarkerPacket {
 };
 #pragma pack(pop)
 
-struct MiniMapEffectMarker {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int x;
-  /* 0008 */ int y;
-};
-
 // GLOBAL: gl_25132
 std::map<int, MiniMapEffectMarker> g_miniMapEffectMarkers;
 
@@ -7519,7 +7513,7 @@ __declspec(noinline) void CGameMode::AddMiniMapEffectMarker(const unsigned char*
   if (found != g_miniMapEffectMarkers.end()) {
     found->second.x = marker->x;
     found->second.y = marker->y;
-    found->second.unknown_0000 = 0x78;
+    found->second.count = 0x78;
     return;
   }
 
@@ -20100,7 +20094,7 @@ void CGameMode::HandleCameraInfo(const unsigned char* data) {
   if (packet->action == 1) {
     UIWindow* window = g_windowMgr.LookupWindow(289);
     if (window == nullptr) {
-      window = g_windowMgr.sub_A978D0(289);
+      window = g_windowMgr.EnsureWindow(289);
     }
     g_session.unknown_61B1 = g_session.unknown_61B1 == 0;
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
@@ -21739,7 +21733,7 @@ void CGameMode::sub_D08910() {
       break;
     }
     case 0xA5: {
-      g_windowMgr.sub_A978D0(33);
+      g_windowMgr.EnsureWindow(33);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(NormalItemRecord);
       const NormalItemRecord *record = reinterpret_cast<const NormalItemRecord *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++record) {
@@ -21760,7 +21754,7 @@ void CGameMode::sub_D08910() {
       break;
     }
     case 0xA6: {
-      g_windowMgr.sub_A978D0(33);
+      g_windowMgr.EnsureWindow(33);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(EquipItemRecord);
       const EquipItemRecord *record = reinterpret_cast<const EquipItemRecord *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++record) {
@@ -21864,7 +21858,7 @@ void CGameMode::sub_D08910() {
       this->unknown_024C = 1;
       this->unknown_02DC = *reinterpret_cast<const int *>(packet + 4);
       unsigned int length = *reinterpret_cast<const std::uint16_t *>(packet + 2) - 8;
-      UIWindow *window = g_windowMgr.sub_A978D0(16);
+      UIWindow *window = g_windowMgr.EnsureWindow(16);
       char text[0x803];
       if (g_serviceType == 10) {
         sprintf(text, "|%02x", LanguageCharset(31));
@@ -21880,7 +21874,7 @@ void CGameMode::sub_D08910() {
     case 0xB5:
       this->unknown_024C = 1;
       this->unknown_02DC = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
-      g_windowMgr.sub_A978D0(16)->SendMsg(nullptr, 25, 0, 0, 0, 0);
+      g_windowMgr.EnsureWindow(16)->SendMsg(nullptr, 25, 0, 0, 0, 0);
       break;
     case 0xC0: {
       const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
@@ -21910,7 +21904,7 @@ void CGameMode::sub_D08910() {
     }
     case 0xC4:
       this->unknown_024C = 1;
-      g_windowMgr.sub_A978D0(25)->SendMsg(nullptr, 28, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
+      g_windowMgr.EnsureWindow(25)->SendMsg(nullptr, 28, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
       g_windowMgr.CloseWindow(22);
       g_windowMgr.CloseWindow(23);
       g_windowMgr.CloseWindow(24);
@@ -21931,10 +21925,10 @@ void CGameMode::sub_D08910() {
         g_session.AddItem1718(item, 0);
       }
 
-      UIWindow *buyWindow = g_windowMgr.sub_A978D0(22);
+      UIWindow *buyWindow = g_windowMgr.EnsureWindow(22);
       buyWindow->SendMsg(nullptr, 36, 0, 0, 0, 0);
       buyWindow->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      UIWindow *sellWindow = g_windowMgr.sub_A978D0(23);
+      UIWindow *sellWindow = g_windowMgr.EnsureWindow(23);
       sellWindow->SendMsg(nullptr, 36, 0, 0, 0, 0);
       sellWindow->SendMsg(nullptr, 23, 0, 0, 0, 0);
       break;
@@ -22008,7 +22002,7 @@ void CGameMode::sub_D08910() {
       case 0: {
         g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(64)), 0xFFFF00, 0, 0, 0);
-        UIWindow *window = g_windowMgr.sub_A978D0(28);
+        UIWindow *window = g_windowMgr.EnsureWindow(28);
         this->unknown_03FC = 1;
         window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&this->unknown_03C8), 0, 0, 0);
         window->SendMsg(nullptr, 43, 0, 0, 0, 0);
@@ -22041,7 +22035,7 @@ void CGameMode::sub_D08910() {
       std::memcpy(name, g_gameModePacketBuffer + 4, 24);
       name[24] = '\0';
       g_session.DecodePlayerName();
-      UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.sub_A978D0(28));
+      UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.EnsureWindow(28));
       ChatRoomMemberUpdateInfo info{window->title, window->unknown_00CC, window->roomStatus.roomType, window->roomStatus.memberCount,
                              window->roomStatus.memberLimit, window->roomStatus.roomId};
       info.memberCount = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
@@ -22062,7 +22056,7 @@ void CGameMode::sub_D08910() {
         break;
       }
 
-      UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.sub_A978D0(28));
+      UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.EnsureWindow(28));
       ChatRoomMemberUpdateInfo info{window->title, window->unknown_00CC, window->roomStatus.roomType, window->roomStatus.memberCount,
                              window->roomStatus.memberLimit, window->roomStatus.roomId};
       info.memberCount = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
@@ -22082,7 +22076,7 @@ void CGameMode::sub_D08910() {
       break;
     }
     case 0xE1: {
-      UIWindow *window = g_windowMgr.sub_A978D0(28);
+      UIWindow *window = g_windowMgr.EnsureWindow(28);
       char name[25];
       std::memcpy(name, g_gameModePacketBuffer + 6, 24);
       name[24] = '\0';
@@ -22098,7 +22092,7 @@ void CGameMode::sub_D08910() {
       char name[25];
       std::memcpy(name, g_gameModePacketBuffer + 2, 24);
       name[24] = '\0';
-      g_windowMgr.sub_A978D0(32)->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
+      g_windowMgr.EnsureWindow(32)->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
       this->exchangeName.assign(name, strlen(name));
       break;
     }
@@ -22144,7 +22138,7 @@ void CGameMode::sub_D08910() {
       g_session.ResetSlots();
       break;
     case 0xF2:
-      g_windowMgr.sub_A978D0(33)->SendMsg(nullptr, 55, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2),
+      g_windowMgr.EnsureWindow(33)->SendMsg(nullptr, 55, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2),
                                           *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4), 0, 0);
       break;
     case 0xF6: {
@@ -22164,7 +22158,7 @@ void CGameMode::sub_D08910() {
       switch (g_gameModePacketBuffer[2]) {
       case 0:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(77)), 0xFFFF00, 0, 0, 0);
-        g_windowMgr.sub_A978D0(34);
+        g_windowMgr.EnsureWindow(34);
         break;
       case 1:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(78)), 0xFF, 0, 0, 0);
@@ -22187,7 +22181,7 @@ void CGameMode::sub_D08910() {
         g_forbiddenWords.Mask(name, &masked);
       }
       g_session.unknown_54C4.assign(name, strlen(name));
-      g_windowMgr.sub_A978D0(35)->SendMsg(nullptr, 56, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
+      g_windowMgr.EnsureWindow(35)->SendMsg(nullptr, 56, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
       break;
     }
     case 0x101: {
@@ -22332,7 +22326,7 @@ void CGameMode::sub_D08910() {
     }
     case 0x11C: {
       g_windowMgr.CloseWindow(39);
-      UIWindow *window = g_windowMgr.sub_A978D0(39);
+      UIWindow *window = g_windowMgr.EnsureWindow(39);
       window->SendMsg(nullptr, 59, *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), 0, 0, 0);
       const char *name = reinterpret_cast<const char *>(g_gameModePacketBuffer + 4);
       for (unsigned int i = 0; i < 4; ++i, name += 16) {
@@ -22482,7 +22476,7 @@ void CGameMode::sub_D08910() {
       if (g_windowMgr.window_027C || g_windowMgr.window_0274) {
         g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
         this->SendMsg(81, 0, 0, 0, 0);
-      } else if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.sub_A978D0(41))) {
+      } else if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.EnsureWindow(41))) {
         window->AddActionButton();
       }
       break;
@@ -22546,7 +22540,7 @@ void CGameMode::sub_D08910() {
     case 0x142: {
       const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
       if (this->scene->GetGameActorByAID(aid)) {
-        g_windowMgr.sub_A978D0(56)->SendMsg(nullptr, 28, aid, 0, 0, 0);
+        g_windowMgr.EnsureWindow(56)->SendMsg(nullptr, 28, aid, 0, 0, 0);
       }
       break;
     }
@@ -22741,7 +22735,7 @@ void CGameMode::sub_D08910() {
         std::string masked("");
         g_forbiddenWords.Mask(name, &masked);
       }
-      g_windowMgr.sub_A978D0(70)->SendMsg(nullptr, 73, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
+      g_windowMgr.EnsureWindow(70)->SendMsg(nullptr, 73, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
       break;
     }
     case 0x16C: {
@@ -22784,7 +22778,7 @@ void CGameMode::sub_D08910() {
         std::string masked("");
         g_forbiddenWords.Mask(name, &masked);
       }
-      g_windowMgr.sub_A978D0(72)->SendMsg(nullptr, 74, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
+      g_windowMgr.EnsureWindow(72)->SendMsg(nullptr, 74, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
       break;
     }
     case 0x173:
@@ -22811,7 +22805,7 @@ void CGameMode::sub_D08910() {
       break;
     case 0x177: {
       unsigned int count = (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4u) >> 1;
-      UIWindow *window = g_windowMgr.sub_A978D0(73);
+      UIWindow *window = g_windowMgr.EnsureWindow(73);
       window->SendMsg(nullptr, 75, 0, 0, 0, 0);
       const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
       for (; count != 0; --count, ++index) {
@@ -22839,7 +22833,7 @@ void CGameMode::sub_D08910() {
       break;
     case 0x17B: {
       unsigned int count = (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4u) >> 1;
-      UIWindow *window = g_windowMgr.sub_A978D0(74);
+      UIWindow *window = g_windowMgr.EnsureWindow(74);
       window->SendMsg(nullptr, 75, 0, 0, 0, 0);
       window->SendMsg(nullptr, 77, *reinterpret_cast<const int *>(this->unknown_045C), 0, 0, 0);
       const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
@@ -22908,7 +22902,7 @@ void CGameMode::sub_D08910() {
     case 0x18C: {
       const std::uint16_t id = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2);
       if (id != 1285 && id != 1286 && id != 1287 && id != 1829 && id != 1830) {
-        g_windowMgr.sub_A978D0(77)->SendMsg(nullptr, 79, reinterpret_cast<std::intptr_t>(g_gameModePacketBuffer), 0, 0, 0);
+        g_windowMgr.EnsureWindow(77)->SendMsg(nullptr, 79, reinterpret_cast<std::intptr_t>(g_gameModePacketBuffer), 0, 0, 0);
       }
       break;
     }
@@ -22919,7 +22913,7 @@ void CGameMode::sub_D08910() {
         break;
       }
       g_windowMgr.CloseWindow(79);
-      UIWindow *window = g_windowMgr.sub_A978D0(79);
+      UIWindow *window = g_windowMgr.EnsureWindow(79);
       const int *record = reinterpret_cast<const int *>(g_gameModePacketBuffer + 4);
       for (; count != 0; --count, record += 4) {
         window->SendMsg(nullptr, 31, *record, 0, 0, 0);
@@ -22975,7 +22969,7 @@ void CGameMode::sub_D08910() {
       std::int16_t &value = *reinterpret_cast<std::int16_t *>(packet + 0x1B);
       if (value >= 10000) {
         value -= 10000;
-        if (UIItemCollectionWnd *window = static_cast<UIItemCollectionWnd *>(g_windowMgr.sub_A978D0(12))) {
+        if (UIItemCollectionWnd *window = static_cast<UIItemCollectionWnd *>(g_windowMgr.EnsureWindow(12))) {
           window->unknown_0218 = value;
           window->unknown_021A = *reinterpret_cast<const std::int16_t *>(packet + 0x1D);
           window->unknown_021C = *reinterpret_cast<const std::int16_t *>(packet + 0x1F);
@@ -23003,7 +22997,7 @@ void CGameMode::sub_D08910() {
     }
     case 0x1A6: {
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) >> 1;
-      UIWindow *window = g_windowMgr.sub_A978D0(90);
+      UIWindow *window = g_windowMgr.EnsureWindow(90);
       window->SendMsg(nullptr, 75, 0, 0, 0, 0);
       const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++index) {
@@ -23039,7 +23033,7 @@ void CGameMode::sub_D08910() {
       break;
     case 0x1AD: {
       const unsigned int count = static_cast<unsigned int>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4) >> 2;
-      UIWindow *window = g_windowMgr.sub_A978D0(94);
+      UIWindow *window = g_windowMgr.EnsureWindow(94);
       window->SendMsg(nullptr, 75, 0, 0, 0, 0);
       const unsigned char *entry = g_gameModePacketBuffer + 4;
       for (unsigned int i = count; i != 0; --i, entry += 4) {
@@ -23165,7 +23159,7 @@ void CGameMode::sub_D08910() {
       if (count <= 0) {
         break;
       }
-      if (UIWindow *window = g_windowMgr.sub_A978D0(99)) {
+      if (UIWindow *window = g_windowMgr.EnsureWindow(99)) {
         for (const int *skill = reinterpret_cast<const int *>(g_gameModePacketBuffer + 2); skill < reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1E);
              ++skill) {
           if (*skill) {
@@ -23182,7 +23176,7 @@ void CGameMode::sub_D08910() {
     case 0x1D4:
       if (this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)) ||
           *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == 0) {
-        g_windowMgr.sub_A978D0(100)->SendMsg(nullptr, 28, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
+        g_windowMgr.EnsureWindow(100)->SendMsg(nullptr, 28, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
       }
       break;
     case 0x1D6: {
@@ -23233,7 +23227,7 @@ void CGameMode::sub_D08910() {
       name[24] = 0;
       *reinterpret_cast<int *>(this->unknown_028C) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
       *reinterpret_cast<int *>(this->unknown_028C + 4) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
-      g_windowMgr.sub_A978D0(104)->SendMsg(nullptr, 90, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
+      g_windowMgr.EnsureWindow(104)->SendMsg(nullptr, 90, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
                                            0);
       break;
     }
@@ -23301,7 +23295,7 @@ void CGameMode::sub_D08910() {
       break;
     }
     case 0x1F0: {
-      g_windowMgr.sub_A978D0(33);
+      g_windowMgr.EnsureWindow(33);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemRecord);
       const CardItemRecord *record = reinterpret_cast<const CardItemRecord *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++record) {
@@ -23346,7 +23340,7 @@ void CGameMode::sub_D08910() {
       char name[25];
       std::memcpy(name, g_gameModePacketBuffer + 2, 24);
       name[24] = '\0';
-      g_windowMgr.sub_A978D0(32)->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(name), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1A),
+      g_windowMgr.EnsureWindow(32)->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(name), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1A),
                                           *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1E), 0);
       this->exchangeName.assign(name, strlen(name));
       break;
@@ -23357,7 +23351,7 @@ void CGameMode::sub_D08910() {
       name[24] = 0;
       *reinterpret_cast<int *>(this->unknown_028C) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
       *reinterpret_cast<int *>(this->unknown_028C + 4) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
-      g_windowMgr.sub_A978D0(105)->SendMsg(nullptr, 91, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
+      g_windowMgr.EnsureWindow(105)->SendMsg(nullptr, 91, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
                                            0);
       break;
     }
@@ -23368,7 +23362,7 @@ void CGameMode::sub_D08910() {
         break;
       }
       g_windowMgr.CloseWindow(107);
-      UIWindow *window = g_windowMgr.sub_A978D0(107);
+      UIWindow *window = g_windowMgr.EnsureWindow(107);
       const unsigned char *record = g_gameModePacketBuffer + 4;
       for (int i = 0; i < count; ++i, record += 23) {
         window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(record), 0, 0, 0);
@@ -23427,7 +23421,7 @@ void CGameMode::sub_D08910() {
         g_modeMgr.gameMode->SendMsg(175, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
                                     0, 0);
       } else {
-        g_windowMgr.sub_A978D0(109)->SendMsg(nullptr, 95, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2),
+        g_windowMgr.EnsureWindow(109)->SendMsg(nullptr, 95, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2),
                                              *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0);
       }
       break;
@@ -23462,7 +23456,7 @@ void CGameMode::sub_D08910() {
       if (g_windowMgr.LookupWindow(111)) {
         g_windowMgr.CloseWindow(111);
       }
-      UIWindow *window = g_windowMgr.sub_A978D0(111);
+      UIWindow *window = g_windowMgr.EnsureWindow(111);
       const unsigned char *record = g_gameModePacketBuffer + 4;
       for (int i = 0; i < count; ++i, record += 23) {
         window->SendMsg(nullptr, 31, *reinterpret_cast<const int *>(record + 2), *reinterpret_cast<const std::int16_t *>(record), 0, 0);
@@ -23499,11 +23493,11 @@ void CGameMode::sub_D08910() {
       break;
     }
     case 0x253:
-      g_windowMgr.sub_A978D0(119)->SendMsg(nullptr, 91, static_cast<signed char>(g_gameModePacketBuffer[2]), 0, 0, 0);
+      g_windowMgr.EnsureWindow(119)->SendMsg(nullptr, 91, static_cast<signed char>(g_gameModePacketBuffer[2]), 0, 0, 0);
       break;
     case 0x25A: {
       const unsigned int count = static_cast<unsigned int>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 6) >> 2;
-      UIWindow *window = g_windowMgr.sub_A978D0(94);
+      UIWindow *window = g_windowMgr.EnsureWindow(94);
       if (!window) {
         break;
       }
@@ -23632,7 +23626,7 @@ void CGameMode::sub_D08910() {
       break;
     }
     case 0x2EA: {
-      g_windowMgr.sub_A978D0(33);
+      g_windowMgr.EnsureWindow(33);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemExpiryRecord);
       const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++entry) {
@@ -23703,7 +23697,7 @@ void CGameMode::sub_D08910() {
       if (count == 0) {
         break;
       }
-      if (UIWindow *window = g_windowMgr.sub_A978D0(99)) {
+      if (UIWindow *window = g_windowMgr.EnsureWindow(99)) {
         window->SendMsg(nullptr, 27, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), 0, 0, 0);
         const std::uint16_t *skills = reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8);
         for (int i = 0; i < count; ++i) {
@@ -24159,7 +24153,7 @@ void CGameMode::sub_D08910() {
     case 0x845:
     case 0xA2B:
       if (!g_windowMgr.CloseWindow(318)) {
-        if (UIWindow *window = g_windowMgr.sub_A978D0(318)) {
+        if (UIWindow *window = g_windowMgr.EnsureWindow(318)) {
           window->SendMsg(nullptr, 120, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
                           0, 0);
         } else {
@@ -24389,7 +24383,7 @@ void CGameMode::sub_D08910() {
       this->ReceiveFeedConfig(g_gameModePacketBuffer[0x2], g_gameModePacketBuffer[0x3]);
       break;
     case 0xAA0:
-      g_windowMgr.sub_A978D0(295);
+      g_windowMgr.EnsureWindow(295);
       break;
     case 0xAB4:
       this->ReceiveLapineUpgradeBoxValue(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
@@ -24698,7 +24692,7 @@ void CGameMode::sub_D08910() {
     case 0x973:
       this->unknown_024C = 1;
       this->unknown_02DC = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
-      g_windowMgr.sub_A978D0(226)->SendMsg(nullptr, 25, 0, 0, 0, 0);
+      g_windowMgr.EnsureWindow(226)->SendMsg(nullptr, 25, 0, 0, 0, 0);
       break;
     case 0xBEE:
       switch (g_gameModePacketBuffer[4]) {
@@ -24881,7 +24875,7 @@ void CGameMode::sub_D08910() {
         memcpy(text, packet + 9, length);
       }
       text[length] = 0;
-      g_windowMgr.sub_A978D0(226)->SendMsg(nullptr, 26, reinterpret_cast<std::intptr_t>(text), *reinterpret_cast<const int *>(packet + 4), 0, 0);
+      g_windowMgr.EnsureWindow(226)->SendMsg(nullptr, 26, reinterpret_cast<std::intptr_t>(text), *reinterpret_cast<const int *>(packet + 4), 0, 0);
       break;
     }
     case 0xBF6: {
@@ -24936,7 +24930,7 @@ void CGameMode::sub_D08910() {
       if (g_gameModePacketBuffer[2] == 1) {
         UIWindow *window = g_windowMgr.LookupWindow(289);
         if (!window) {
-          window = g_windowMgr.sub_A978D0(289);
+          window = g_windowMgr.EnsureWindow(289);
         }
         g_session.unknown_61B1 = !g_session.unknown_61B1;
         g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
@@ -24977,10 +24971,10 @@ void CGameMode::sub_D08910() {
     case 0xA28:
       switch (g_gameModePacketBuffer[2]) {
       case 0:
-        if (UIWindow *window = g_windowMgr.sub_A978D0(45)) {
+        if (UIWindow *window = g_windowMgr.EnsureWindow(45)) {
           window->SendMsg(nullptr, 23, 0, 0, 0, 0);
         }
-        if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.sub_A978D0(41))) {
+        if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.EnsureWindow(41))) {
           window->PrintSellList();
         }
         g_windowMgr.CloseWindow(41);
@@ -25088,7 +25082,7 @@ void CGameMode::sub_D08910() {
       break;
     }
     case 0x904: {
-      g_windowMgr.sub_A978D0(33);
+      g_windowMgr.EnsureWindow(33);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(FlaggedItemRecord);
       for (int i = 0; i < count; ++i) {
         const FlaggedItemRecord *record = reinterpret_cast<const FlaggedItemRecord *>(g_gameModePacketBuffer + 4) + i;
@@ -25139,7 +25133,7 @@ void CGameMode::sub_D08910() {
       break;
     }
     case 0x905: {
-      g_windowMgr.sub_A978D0(33);
+      g_windowMgr.EnsureWindow(33);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(FlaggedEquipRecord);
       for (int i = 0; i < count; ++i) {
         const FlaggedEquipRecord *record = reinterpret_cast<const FlaggedEquipRecord *>(g_gameModePacketBuffer + 4) + i;
@@ -25229,8 +25223,8 @@ void CGameMode::sub_D08910() {
         item.id = *reinterpret_cast<const int *>(record + 0x15);
         g_barterMarketItemMgr->items.push_back(item);
       }
-      g_windowMgr.sub_A978D0(334)->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      g_windowMgr.sub_A978D0(335)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      g_windowMgr.EnsureWindow(334)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      g_windowMgr.EnsureWindow(335)->SendMsg(nullptr, 23, 0, 0, 0, 0);
       break;
     }
     case 0x9D5: {
@@ -25250,10 +25244,10 @@ void CGameMode::sub_D08910() {
         g_session.AddItem1718(item, *reinterpret_cast<const int *>(entry + 9),
                               static_cast<std::uint16_t>(*reinterpret_cast<const std::uint16_t *>(entry + 0xD) / 10));
       }
-      UIWindow *window = g_windowMgr.sub_A978D0(254);
+      UIWindow *window = g_windowMgr.EnsureWindow(254);
       window->SendMsg(nullptr, 36, 0, 0, 0, 0);
       window->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      window = g_windowMgr.sub_A978D0(255);
+      window = g_windowMgr.EnsureWindow(255);
       window->SendMsg(nullptr, 36, 0, 0, 0, 0);
       window->SendMsg(nullptr, 23, 0, 0, 0, 0);
       break;

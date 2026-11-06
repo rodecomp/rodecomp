@@ -11,10 +11,6 @@
 template <>
 CUIRegisterMgr* Singleton<CUIRegisterMgr>::s_instance = nullptr;
 
-__declspec(noinline) CUIRegisterMgr::CUIRegisterMgr() {
-  InitializeCriticalSection(&this->lock);
-}
-
 // OFFSET: 0x009E69D0
 // FUNCTION: fn_14469
 CUIFrameWnd::~CUIFrameWnd() {

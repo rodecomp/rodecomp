@@ -1,7 +1,7 @@
 #include "Utility/GGHash.h"
 
 #include "Utility/FileSignatureVerifier.h"
-#include "Utility/MD5.h"
+#include "Utility/Hash/MD5.h"
 
 #include <cstdint>
 #include <cstdlib>

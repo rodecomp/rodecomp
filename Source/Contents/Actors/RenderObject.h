@@ -98,7 +98,6 @@ public:
     unsigned char animation, unsigned char firstFrame, unsigned char lastFrame, unsigned char finishAnimation,
     unsigned char finishFrame, int timed, std::uint32_t duration, int loop
   );
-  void ClearLevelEffects();
   void PlayFrameSounds();
 
   /* 0010 */ RenderObjectState render;

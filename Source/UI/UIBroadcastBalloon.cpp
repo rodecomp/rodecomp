@@ -95,7 +95,7 @@ void UIBroadcastBalloon::Paint() {
         DrawRoundedBorder(*this, x, y, message.width, message.height, 0xFF5C5C5C);
         y += 4;
         for (const BroadcastBalloonLine& line : message.lines) {
-          this->sub_A86510(x + 6, y, line.text.c_str(), 0, line.color, line.outlineColor, 0, message.fontHeight, 0);
+          this->DrawShadowedText(x + 6, y, line.text.c_str(), 0, line.color, line.outlineColor, 0, message.fontHeight, 0);
           int lineHeight = this->TextHeight(line.text.c_str(), 0, 0, message.fontHeight, 0, 0);
           y += 4 + lineHeight;
         }

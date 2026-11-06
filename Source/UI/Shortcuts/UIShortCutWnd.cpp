@@ -1247,7 +1247,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   case 6:
     switch (argument1) {
     case 0xC1:
-      if (UIWindow* window = g_windowMgr.sub_A978D0(0x84)) {
+      if (UIWindow* window = g_windowMgr.EnsureWindow(0x84)) {
         window->SendMsg(this, 6, 0xC1, this->m_index, 0, 0);
         return 0;
       }

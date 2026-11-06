@@ -107,7 +107,7 @@ void UIRodexComposeWnd::sub_7FF710(const ITEM_INFO& item) {
   tagCtrl->taggedText = this->m_contents->Text();
   std::string appendResult = tagCtrl->AppendTag(item.DisplayName(0));
   this->m_contents->SetText(appendResult.c_str());
-  this->m_contents->sub_855150();
+  this->m_contents->MoveCursorToEnd();
   tagCtrl->sub_89CFE0(item, 0xd630a9);
 }
 
@@ -135,7 +135,7 @@ void UIRodexComposeWnd::sub_7FF940(int tagId) {
 
   std::string fullText = std::string(this->m_contents->Text()) + tagText;
   this->m_contents->SetText(fullText.c_str());
-  this->m_contents->sub_855150();
+  this->m_contents->MoveCursorToEnd();
 }
 
 // OFFSET: 0x00800480

@@ -5225,7 +5225,7 @@ void CGameMode::RequestLocalMapMove(const char* mapName, std::uint16_t x, std::u
   strcpy_s(packet.mapName, sizeof(packet.mapName), mapName);
   packet.x = x;
   packet.y = y;
-  this->ReceiveNpcAckMapmove(reinterpret_cast<const unsigned char*>(&packet));
+  this->ReceiveMapMove(reinterpret_cast<const unsigned char*>(&packet));
 }
 
 #pragma pack(push, 1)

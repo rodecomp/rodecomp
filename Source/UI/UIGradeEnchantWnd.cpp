@@ -1,4 +1,5 @@
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Shop/ItemDrawing.h"
 #include "UI/UIGradeEnchantWnd.h"
 #include "Client/Mode/CMode.h"
 
@@ -250,7 +251,7 @@ void UIGradeEnchantWnd::Paint() {
       ITEM_INFO itemInfo;
       itemInfo.SetItemId(material.itemId);
       itemInfo.sub_6D5810(description, capacity, 0);
-      this->sub_8A8EE0(170, y - 9, &itemInfo, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), 170, y - 9, itemInfo, 0);
       std::string text = FormatOwnedString(LookupMessage(3553), description, material.amount);
       this->sub_A85850(203, y, text, 180, 0, 0, 0, 0, 11, 0, 0);
       y += 40;
@@ -260,7 +261,7 @@ void UIGradeEnchantWnd::Paint() {
       ITEM_INFO itemInfo;
       itemInfo.SetItemId(this->info.unknown_0000);
       itemInfo.sub_6D5810(description, capacity, 0);
-      this->sub_8A8EE0(195, 228, &itemInfo, 0);
+      DrawItemIcon(*this, ResourceMgr::Instance(), 195, 228, itemInfo, 0);
       std::string text = FormatOwnedString(LookupMessage(3553), description, this->unknown_0114);
       this->sub_A85850(228, 237, text, 160, 0, 0xFFFFFF, 0, 0, 11, 1, 1);
     }
@@ -292,7 +293,7 @@ void UIGradeEnchantWnd::Paint() {
   }
 
   if (this->item.unknown_0000[1] > 0) {
-    this->sub_8A8EE0(64, 125, &this->item, 0);
+    DrawItemIcon(*this, ResourceMgr::Instance(), 64, 125, this->item, 0);
     if (this->item.unknown_0088 > 0) {
       this->DrawBitmap(64, 137, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.unknown_0088).c_str()))), true);
     }

@@ -209,7 +209,7 @@ void UISecondCostumeWnd::Slot15(int width, int height) {
 // OFFSET: 0x0094EC60
 // FUNCTION: fn_12913
 void UISecondCostumeWnd::Paint() {
-  int titleHeight = this->sub_8D2CE0(true, "Dress Room", 0);
+  int titleHeight = this->DrawTitleBar(true, "Dress Room", 0);
   this->DrawPanelBackground(17, 0, "");
   int x = this->geometry.width - 204;
   const BitmapImage* bitmap = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\dressroomback.bmp")));

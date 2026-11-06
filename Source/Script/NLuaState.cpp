@@ -22,8 +22,17 @@ struct TreeSubMap {
   unsigned int size;
 
   void Clear() noexcept;
-  void EraseSubtree(TreeSubMap& al, TreeSubNode* node);
+  __declspec(noinline) void EraseSubtree(TreeSubMap& al, TreeSubNode* node);
 };
+
+// OFFSET: 0x00BA1A20
+// FUNCTION: fn_19656
+void TreeSubMap::EraseSubtree(TreeSubMap& al, TreeSubNode* node) {
+  while (node->isnil == 0) {
+    this->EraseSubtree(al, node->right);
+    ::operator delete(std::exchange(node, node->left), 0x18);
+  }
+}
 
 // OFFSET: 0x00CA4AE0
 // FUNCTION: fn_20939

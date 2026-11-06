@@ -1364,10 +1364,10 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case 0x105:
-      g_windowMgr.sub_A978D0(0xA8);
+      g_windowMgr.EnsureWindow(0xA8);
       return 0;
     case 0x10D:
-      g_windowMgr.sub_A978D0(0xA9);
+      g_windowMgr.EnsureWindow(0xA9);
       return 0;
     case 0x103: {
       const GameModePacketDwordByteByte packet{
@@ -2423,7 +2423,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (argument2 == 0) {
         g_session.unknown_54C4.clear();
       } else {
-        g_windowMgr.sub_A978D0(0x22);
+        g_windowMgr.EnsureWindow(0x22);
       }
       const GameModePacketDwordByte packet{0x2C7, static_cast<std::uint32_t>(argument1), static_cast<std::uint8_t>(argument2 != 0)};
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
@@ -2589,7 +2589,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         if (actor != nullptr && actor->unknown_0314 == 0) {
           return 0;
         }
-        g_windowMgr.sub_A978D0(0x5B)->SendMsg(nullptr, 0x50, 0, argument2, 0, 0);
+        g_windowMgr.EnsureWindow(0x5B)->SendMsg(nullptr, 0x50, 0, argument2, 0, 0);
         return 0;
       }
       if (argument1 == 20000) {
@@ -2607,7 +2607,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       if (argument1 == 40000) {
         if (static_cast<std::uint32_t>(argument2) != g_session.unknown_1010) {
-          g_windowMgr.sub_A978D0(0xC4)->SendMsg(nullptr, 0x50, 0, argument2, 0, 0);
+          g_windowMgr.EnsureWindow(0xC4)->SendMsg(nullptr, 0x50, 0, argument2, 0, 0);
         }
         return 0;
       }
@@ -2650,7 +2650,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           return 0;
         }
         if (argument1 == 154) {
-          g_windowMgr.sub_A978D0(0x5F);
+          g_windowMgr.EnsureWindow(0x5F);
         }
       }
       const std::uint16_t id = static_cast<std::uint16_t>(argument1);
@@ -2962,7 +2962,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(argument1));
       if (item.unknown_0064 == 1) {
-        UIWindow* window = g_windowMgr.sub_A978D0(0x8A);
+        UIWindow* window = g_windowMgr.EnsureWindow(0x8A);
         *reinterpret_cast<std::uint32_t*>(&this->unknown_0100[4]) = timeGetTime();
         window->SendMsg(nullptr, 0x5B, argument1, argument2, 0, 0);
       } else {
@@ -3257,7 +3257,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case 0xAF: {
       if (argument3 != 0) {
-        g_windowMgr.sub_A978D0(0x22)->SendMsg(nullptr, 6, 0xD7, 1, 0, 0);
+        g_windowMgr.EnsureWindow(0x22)->SendMsg(nullptr, 6, 0xD7, 1, 0, 0);
       }
       const GameModePacketDwordDwordDword packet{
         0x208, static_cast<std::uint32_t>(argument1), static_cast<std::uint32_t>(argument2),
@@ -3410,7 +3410,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       g_windowMgr.CloseWindow(0x35);
-      g_windowMgr.sub_A978D0(0x35);
+      g_windowMgr.EnsureWindow(0x35);
       g_session.unknown_54AC = name;
       return 0;
     }
@@ -5023,7 +5023,7 @@ unsigned CGameMode::sub_CEBF30(const std::vector<unsigned char>& data) {
         std::vector<unsigned char> record(0x13);
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D2DB80(record.data());
+        this->ReceiveItemFallEntry(record.data());
       } else if (header.type == 15001) {
         break;
       } else {
@@ -5066,68 +5066,68 @@ unsigned CGameMode::sub_CEC100(const std::vector<unsigned char>& data) {
       case 0xC9:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D3F130(record.data());
+        this->ReceiveActorMessage32(record.data());
         break;
       case 0xCA:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D51A90(record.data());
+        this->ReceiveActorTitle(record.data());
         break;
       case 0xCB:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D3D2F0(record.data());
+        this->ReceivePlayerMessage82(record.data());
         break;
       case 0xCC:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D24430(record.data());
+        this->ReceiveActorText(record.data());
         break;
       case 0xD0:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D350A0(record.data());
+        this->ReceiveActorMoveEntryNamed(record.data());
         break;
       case 0xD2:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D37A10(record.data());
+        this->ReceiveActorStateEntryNamedOld(record.data());
         break;
       case 0xD4:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D619E0(record.data());
+        this->ReceiveActorMoveEntryLegacy(record.data());
         break;
       case 0xD5:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D61390(record.data());
+        this->ReceiveActorMoveEntry(record.data());
         break;
       case 0xD6:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D616B0(record.data());
+        this->ReceiveActorMoveEntryBody(record.data());
         break;
       case 0xD7:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D63D70(record.data());
+        this->ReceiveActorStateEntryLegacy(record.data());
         break;
       case 0xD8:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D63720(record.data());
+        this->ReceiveActorStateEntryNamed(record.data());
         break;
       case 0xD9:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->sub_D63A40(record.data());
+        this->ReceiveActorStateEntryNamedBody(record.data());
         break;
       case 0xDA: {
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         const auto* stored = reinterpret_cast<const GameModeStoredRecord00DA*>(record.data());
-        this->sub_D7B170(
+        this->SpawnStandingPc2(
           stored->value0002, stored->value0006, stored->value000A, stored->value000C, stored->value000E, stored->value000F,
           stored->value0011, stored->value0015, stored->value0019, stored->value001B, stored->value001D, stored->value001F,
           stored->value0021, stored->value0023, stored->text, stored->value003D
@@ -7905,7 +7905,7 @@ void CGameMode::Initialize(const char* name) {
   this->noticeBalloon = nullptr;
   g_windowMgr.HideWindow01C8();
   g_windowMgr.ShowWindowsWithId(0x43, 0);
-  g_windowMgr.sub_A978D0(7);
+  g_windowMgr.EnsureWindow(7);
   g_windowMgr.SendNotice(4, 0, 0, 0, 0, 0);
   g_windowMgr.CenterSurface0478();
   g_windowMgr.DrawWindows();
@@ -8805,8 +8805,6 @@ struct StatusPointRequestPacket {
 
 static_assert(sizeof(StatusPointRequestPacket) == 5);
 
-int sub_C7F5A0();
-
 // GLOBAL: gl_25463
 std::uint32_t g_spriteAtlasClearTick;
 
@@ -8932,7 +8930,7 @@ void CGameMode::Update() {
     return;
   }
 
-  if (sub_C7F5A0()) {
+  if (ShouldRenderFrame()) {
     g_renderer->ClearWorld();
     g_actorPickNode.Clear();
     this->camera->Render();
@@ -9482,7 +9480,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowToggleFlag = !g_windowToggleFlag;
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     if (g_windowToggleFlag) {
-      g_windowMgr.sub_A978D0(0x74);
+      g_windowMgr.EnsureWindow(0x74);
     } else {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x3AF)), 0x64FFFF, 0, 0, 0);
     }
@@ -9579,7 +9577,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   }
   case 42:
     if (!g_windowMgr.CloseWindow(0x13B)) {
-      g_windowMgr.sub_A978D0(0x13B);
+      g_windowMgr.EnsureWindow(0x13B);
     }
     break;
   case 29:
@@ -9983,7 +9981,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     break;
   }
   case 217:
-    g_windowMgr.sub_A978D0(0xCB);
+    g_windowMgr.EnsureWindow(0xCB);
     break;
   case 207: {
     char text[1024];
@@ -10084,7 +10082,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   }
   case 237:
     if (!g_windowMgr.CloseWindow(0x144)) {
-      g_windowMgr.sub_A978D0(0x144);
+      g_windowMgr.EnsureWindow(0x144);
     }
     break;
   case 254:

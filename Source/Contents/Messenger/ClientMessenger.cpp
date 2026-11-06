@@ -1,4 +1,5 @@
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Utility/EncryptedName.h"
 #include "Contents/Effects/PartyMemberEffects.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
@@ -6242,35 +6243,6 @@ void CGameMode::Zc_Mer_Par_Change(const unsigned char* data) {
 
   g_session.RefreshMercenaryInfo();
 }
-
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedName {
-public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~EncryptedName() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  /* 0000 */ std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
 
 template <std::size_t CaptionLength, std::uint64_t CaptionKey, std::size_t MessageLength, std::uint64_t MessageKey>
 void ShowEncryptedFailure(const std::uint8_t (&captionBytes)[CaptionLength], const std::uint8_t (&messageBytes)[MessageLength]) {

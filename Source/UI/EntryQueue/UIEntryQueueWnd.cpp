@@ -65,6 +65,11 @@ int UIEntryQueueHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 __declspec(noinline) UIEntryQueueListBox::UIEntryQueueListBox() : UIListBox() {
 }
 
+// INLINED
+UIEntryQueueListBox::~UIEntryQueueListBox() {
+}
+
+
 // OFFSET: 0x00BA4490
 // FUNCTION: fn_19686
 void UIEntryQueueListBox::AddEntry(const char* name, int value) {
@@ -98,6 +103,11 @@ void UIEntryQueueListBox::Slot31(int x, int y) {
 UIEntryQueueRequestWnd::UIEntryQueueRequestWnd()
     : UIFrameWnd(0), m_interval(1000), m_elapsed(0), m_delta(0), m_lastTick(0) {
 }
+
+// INLINED
+UIEntryQueueRequestWnd::~UIEntryQueueRequestWnd() {
+}
+
 
 // OFFSET: 0x00BA48E0
 // FUNCTION: fn_19691
@@ -225,6 +235,11 @@ UIEntryQueueStandByWnd::UIEntryQueueStandByWnd()
       m_rankingText() {
 }
 
+// INLINED
+UIEntryQueueStandByWnd::~UIEntryQueueStandByWnd() {
+}
+
+
 // OFFSET: 0x00BA5700
 // FUNCTION: fn_19698
 bool UIEntryQueueStandByWnd::Create() {
@@ -328,6 +343,11 @@ UIEntryQueueWnd::UIEntryQueueWnd() : UIFrameWnd(0) {
   std::memset(this->m_labels, 0, sizeof(this->m_labels));
   std::memset(this->m_values, 0, sizeof(this->m_values));
 }
+
+// INLINED
+UIEntryQueueWnd::~UIEntryQueueWnd() {
+}
+
 
 // OFFSET: 0x00BA6410
 // FUNCTION: fn_19706

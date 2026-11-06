@@ -98,8 +98,6 @@ std::map<int, int> g_optionHotkeys;
 // GLOBAL: gl_25229
 bool g_restartClient;
 
-RenderAdapter sub_56A0F0();
-
 // OFFSET: 0x00A3D0A0
 // FUNCTION: fn_15905
 RenderAdapter::RenderAdapter() : backend(0), ordinal(0), drawGuid{}, renderGuid{}, deviceGuid{} {
@@ -793,6 +791,33 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem() {
 
   this->scrollBar->SetTotal(this->geometry.height);
   this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// INLINED
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::SelectItem(CUIListItem* item) {
+  if (this->unknown_00C4) {
+    return;
+  }
+  for (GameSettingsUI::CUIOptionItem* other : this->items) {
+    if (item != other) {
+      other->SetSelected(0);
+    }
+  }
+  item->SetSelected(1);
+  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+    return;
+  }
+  GameSettingsUI::CUIOptionItem* selectedItem = dynamic_cast<GameSettingsUI::CUIOptionItem*>(item);
+  if (!selectedItem) {
+    return;
+  }
+  this->selected = selectedItem->index;
+  if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+    auto node = this->data.begin();
+    std::advance(node, static_cast<int>(this->selected));
+    this->onSelect(selectedItem, *node);
+  }
 }
 
 // OFFSET: 0x00A35170
@@ -2063,7 +2088,7 @@ void GameSettingsUI::CUIGroupTextureDetailLevel::Slot16() {
 void ToggleGameSettingsTab4() {
   UIWindow* window = g_windowMgr.LookupWindow(0x271E);
   if (!window) {
-    window = g_windowMgr.sub_A978D0(0x271E);
+    window = g_windowMgr.EnsureWindow(0x271E);
   }
 
   CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(window);
@@ -2223,7 +2248,7 @@ void GameSettingsUI::CUIGroupGraphics::Slot16() {
   const char* modeText = LookupMessage(0xc6e);
   this->m_modeText->SetText(modeText, std::strlen(modeText));
   GetRenderSystemHolder();
-  this->m_pendingAdapter = sub_56A0F0();
+  this->m_pendingAdapter = SelectedRenderAdapter();
   this->m_adapter = this->m_pendingAdapter;
   DisplayMode mode{};
   mode.width = g_configuredScreenWidth;
@@ -2425,7 +2450,7 @@ void GameSettingsUI::CUIGroupSound::Apply() {
 
 // OFFSET: 0x00A19C60
 // FUNCTION: fn_15346
-CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
+inline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
 }
 
 // OFFSET: 0x00A19D30

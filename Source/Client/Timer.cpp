@@ -37,3 +37,9 @@ void InitTimer(unsigned long freq) {
 void ResetTimer() {
   frameTime = timeGetTime();
 }
+
+// OFFSET: 0x00C7F5A0
+// FUNCTION: fn_20434
+int ShouldRenderFrame() {
+  return 1;
+}

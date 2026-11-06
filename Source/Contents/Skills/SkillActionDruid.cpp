@@ -68,6 +68,7 @@ public:
 
 class CSkillAction_DamageWereRaptorForm : public CSkillAction_AnimalForm, public CSkillAction_Direction {
 public:
+  void sub_5A4760(int sourceActor, CGameActor* target);
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
   bool Slot17(CGameActor* actor) override;
   void Slot18(CGameActor* actor) override;
@@ -189,7 +190,6 @@ public:
   int Slot02() override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot15(int level, CGameActor* source, CGameActor* target) override;
-  void sub_5A4760(int level, CGameActor* source);
 };
 
 class CSkillAction_DR_FLICKING_TONADO : public CSkillAction_DamageWereRaptorForm {

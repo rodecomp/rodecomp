@@ -1117,25 +1117,6 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
   return true;
 }
 
-void EquipmentProperties::CEquipmentPropertiesMgr::UnequipWearable(const int& location) {
-  this->m_dirty = true;
-  auto found = this->properties1.find(GetEquipLocationIndex(location));
-  if (found != this->properties1.end()) {
-    CEquipmentWearable*& wearable = found->second;
-    for (CEquipmentAttachable& attachable : wearable->GetAttachables()) {
-      this->UnequipItem(attachable.GetId(), true);
-    }
-    this->UnequipItem(wearable->GetId(), true);
-    wearable->Clear();
-    delete wearable;
-    this->properties1.erase(found);
-  }
-
-  if (this->unknown_0020 != nullptr) {
-    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
-  }
-}
-
 // OFFSET: 0x00DFC620
 // FUNCTION: fn_23598
 bool CSession::UnequipItem(int location, std::uint32_t identity) {

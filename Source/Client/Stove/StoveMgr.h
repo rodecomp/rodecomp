@@ -7,9 +7,6 @@
 
 struct ITEM_INFO;
 
-namespace Stove::PCSDK {
-  struct CallbackResult;
-}
 
 // VTABLE: vt_00291
 template <class T> class Singleton2 {
@@ -40,8 +37,6 @@ public:
   __declspec(noinline) void WaitForCallback();
   void FetchCategoryProducts();
   void FetchAllProducts();
-  void OnInitializeCallback(Stove::PCSDK::CallbackResult callbackResult);
-  void OnOpenUrlCallback(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url);
   bool Initialize();
   void StartPurchase(const std::vector<ITEM_INFO>& items);
 };

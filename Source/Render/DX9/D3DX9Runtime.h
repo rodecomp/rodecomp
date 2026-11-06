@@ -3,6 +3,7 @@
 
 #include <d3d9.h>
 
+extern "C" {
 HRESULT WINAPI D3DXFilterTexture(IDirect3DBaseTexture9* texture, const PALETTEENTRY* palette, UINT level, DWORD filter);
 HRESULT WINAPI D3DXLoadSurfaceFromMemory(
   IDirect3DSurface9* destination, const PALETTEENTRY* destinationPalette, const RECT* destinationRect, const void* source, D3DFORMAT format,
@@ -14,5 +15,6 @@ HRESULT WINAPI D3DXLoadSurfaceFromSurface(
 );
 D3DMATRIX* WINAPI D3DXMatrixPerspectiveFovLH(D3DMATRIX* output, float fovy, float aspect, float nearPlane, float farPlane);
 HRESULT WINAPI D3DXSaveSurfaceToFileA(const char* filename, int format, IDirect3DSurface9* surface, const PALETTEENTRY* palette, const RECT* rectangle);
+}
 
 #endif

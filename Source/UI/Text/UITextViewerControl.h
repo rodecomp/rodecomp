@@ -37,7 +37,6 @@ public:
   void SetScrollBarThumbImages(const std::string& top, const std::string& middle, const std::string& bottom);
   void SetScrollBarThumbImage(const std::string& name);
   void SetScrollBarBackground(const std::string& name);
-  void SetText(const std::string& text);
   void Clear();
   void AddLine(const std::string& text);
   void Relayout();

@@ -19,7 +19,7 @@ struct ServiceOptions {
   /* 0000 */ std::unordered_map<std::uint32_t, unsigned char, SkillIdHash> values;
 
   unsigned char Get(int id) const;
-  bool Set(int id, unsigned char value);
+  static bool Set(int id, unsigned char value);
 };
 
 extern ServiceOptions g_serviceOptions;

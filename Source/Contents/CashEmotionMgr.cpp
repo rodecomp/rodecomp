@@ -318,8 +318,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  unsigned int Select(int actionId);
-  void Select(CashEmotionCommand* command);
+  __declspec(noinline) void Select(CashEmotionCommand* command);
   void Previous();
   void Refresh(int first);
   void Next();
@@ -640,14 +639,14 @@ void CCashEmotionMgr::RefreshCommands() {
 
 // OFFSET: 0x00599730
 // FUNCTION: fn_02942
-int CCashEmotionMgr::ProcessChatCommand(const char* command) {
+void CCashEmotionMgr::ProcessChatCommand(const char* command) {
   if (!ChatWindow() || !ChatWindow()->m_suggestions) {
-    return 0;
+    return;
   }
 
   if (!command || std::strlen(command) < 1 || command[0] != '/') {
     ChatWindow()->ShowSuggestions(0);
-    return 0;
+    return;
   }
 
   const char* key = command + 1;
@@ -661,10 +660,9 @@ int CCashEmotionMgr::ProcessChatCommand(const char* command) {
   if (actionId != 0) {
     ChatWindow()->ShowSuggestions(1);
     auto* miniWnd = reinterpret_cast<UICashEmotionMiniWnd*>(ChatWindow()->m_suggestions);
-    return static_cast<int>(miniWnd->Select(actionId));
+    miniWnd->Select(reinterpret_cast<CashEmotionCommand*>(actionId));
   } else {
     this->HideSuggestions();
-    return 0;
   }
 }
 

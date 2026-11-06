@@ -237,12 +237,12 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
       break;
     case 343:
       if (!g_windowMgr.CloseWindow(214)) {
-        g_windowMgr.sub_A978D0(214);
+        g_windowMgr.EnsureWindow(214);
       }
       break;
     case 448:
       if (!g_windowMgr.CloseWindow(213)) {
-        g_windowMgr.sub_A978D0(213);
+        g_windowMgr.EnsureWindow(213);
         if (g_windowMgr.unknown_0438) {
           int x = 0;
           int y = 0;

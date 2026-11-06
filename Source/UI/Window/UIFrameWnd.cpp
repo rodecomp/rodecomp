@@ -891,7 +891,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     case 2:
-      g_windowMgr.sub_A978D0(30)->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&mode->unknown_03C8), 0, 0, 0);
+      g_windowMgr.EnsureWindow(30)->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&mode->unknown_03C8), 0, 0, 0);
       return 0;
     case 3:
       g_windowMgr.Confirm(LookupMessage(191), 0, true, false, 0, "Message", 280, 120, 0);
@@ -962,7 +962,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
 
     if (!this->unknown_0114.empty()) {
-      UIWindow* menu = g_windowMgr.sub_A978D0(18);
+      UIWindow* menu = g_windowMgr.EnsureWindow(18);
       for (unsigned index = 0; index < this->unknown_0114.size(); ++index) {
         menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_0114[index].first.c_str()), 0, 0, 0);
       }

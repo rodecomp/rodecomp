@@ -8,7 +8,17 @@
 #include <cstdint>
 #include <span>
 #include <string_view>
+#include <random>
 #include <vector>
+
+struct PakUniformRandom {
+  /* 0000 */ std::mt19937 m_engine;
+  /* 1388 */ std::uniform_int_distribution<int> m_distribution;
+
+  PakUniformRandom(int minimum, int maximum, unsigned int seed);
+};
+
+void FillRandomBytes(char* first, char* last, PakUniformRandom& random);
 
 namespace myGPack {
 

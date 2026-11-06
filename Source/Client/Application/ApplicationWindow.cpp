@@ -78,11 +78,11 @@ LRESULT CALLBACK sub_E5C430(HWND window, UINT message, WPARAM wParam, LPARAM lPa
       for (int i = 0; i < count; ++i) {
         candidates[i] = g_serverLanguage->Candidate(first + i);
       }
-      g_windowMgr.sub_A978D0(0x33)->SendMsg(nullptr, 0x41, reinterpret_cast<std::intptr_t>(candidates), reinterpret_cast<std::intptr_t>(info), 0, 0);
+      g_windowMgr.EnsureWindow(0x33)->SendMsg(nullptr, 0x41, reinterpret_cast<std::intptr_t>(candidates), reinterpret_cast<std::intptr_t>(info), 0, 0);
     }
 
     if (g_serverLanguage->DisplayLength()) {
-      g_windowMgr.sub_A978D0(0x55)->Invalidate();
+      g_windowMgr.EnsureWindow(0x55)->Invalidate();
     } else {
       g_windowMgr.CloseWindow(0x55);
     }

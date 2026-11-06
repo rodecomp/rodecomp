@@ -161,6 +161,60 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
   }
 }
 
+// INLINED
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::SelectItem(CUIListItem* item) {
+  if (this->unknown_00C4) {
+    return;
+  }
+  for (SelectPackageItemBox::CUIItemInfo* other : this->items) {
+    if (item != other) {
+      other->SetSelected(0);
+    }
+  }
+  item->SetSelected(1);
+  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+    return;
+  }
+  SelectPackageItemBox::CUIItemInfo* selectedItem = dynamic_cast<SelectPackageItemBox::CUIItemInfo*>(item);
+  if (!selectedItem) {
+    return;
+  }
+  this->selected = selectedItem->index;
+  if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+    auto node = this->data.begin();
+    std::advance(node, static_cast<int>(this->selected));
+    this->onSelect(selectedItem, *node);
+  }
+}
+
+// INLINED
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::SelectItem(CUIListItem* item) {
+  if (this->unknown_00C4) {
+    return;
+  }
+  for (SelectPackageItemBox::CUITabInfo* other : this->items) {
+    if (item != other) {
+      other->SetSelected(0);
+    }
+  }
+  item->SetSelected(1);
+  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+    return;
+  }
+  SelectPackageItemBox::CUITabInfo* selectedTab = dynamic_cast<SelectPackageItemBox::CUITabInfo*>(item);
+  if (!selectedTab) {
+    return;
+  }
+  this->selected = selectedTab->index;
+  if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+    auto node = this->data.begin();
+    std::advance(node, static_cast<int>(this->selected));
+    this->onSelect(selectedTab, *node);
+  }
+}
+
 // OFFSET: 0x00A6D1A0
 // FUNCTION: fn_16670
 template <>

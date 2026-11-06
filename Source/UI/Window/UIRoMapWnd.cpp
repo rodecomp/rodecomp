@@ -756,7 +756,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       this->Invalidate();
       return 0;
     case 200:
-      g_windowMgr.sub_A978D0(203);
+      g_windowMgr.EnsureWindow(203);
       if (g_windowMgr.window_4F174) {
         g_windowMgr.window_4F174->SendMsg(nullptr, 6, 200, 0, 0, 0);
       }

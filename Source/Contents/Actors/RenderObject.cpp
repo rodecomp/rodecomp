@@ -86,7 +86,6 @@ struct CharacterRenderDrawItem {
   RenderCommand* command;
 };
 
-std::list<CharacterRenderDrawItem> sub_8105A0(unsigned char kind, char* useBounds);
 
 // GLOBAL: gl_24798
 int g_multiHitInterval = 200;
@@ -2640,7 +2639,7 @@ void CCharacterNpc::Render(int) {
   characterRender->unknown_0044 = this->render.curMotion;
 
   char useBounds = 0;
-  std::list<CharacterRenderDrawItem> drawList = sub_8105A0(this->render.unknown_00A4Bytes[1], &useBounds);
+  std::list<CharacterRenderDrawItem> drawList = characterRender->BuildDrawList(this->render.unknown_00A4Bytes[1], &useBounds);
 
   float bounds[5];
   std::memcpy(bounds, characterRender->unknown_0094, sizeof(bounds));
@@ -4536,75 +4535,6 @@ void CGameActor::SetActorJob(int job) {
   this->sub_CAA4D0();
 }
 
-__declspec(noinline) void CWorld::PlayerMove(const float& x, const float& z) {
-  const float position[2] = { x, z };
-  UpdateWorldProximityNotification(
-    reinterpret_cast<unsigned char&>(this->unknown_00F4),
-    [this, position]() {
-      return this->FindActorInCell(position, [](std::uint32_t id) {
-        return id == g_guildInfo.unknown_00D0;
-      });
-    },
-    GetRagConnection(),
-    g_packetLengths,
-    g_guildInfo.unknown_00D0
-  );
-}
-
-__declspec(noinline) void CWorld::PcApproachToPlayer(std::uint32_t accountId, const CellFloatPos& pos) {
-  if (this->player == nullptr) {
-    return;
-  }
-
-  if (this->player->Slot50() < 1) {
-    return;
-  }
-
-  bool found = false;
-  for (std::list<CRenderObject*>::iterator it = this->actors.begin(); it != this->actors.end(); ++it) {
-    CGameActor* actor = static_cast<CGameActor*>(*it);
-    if (actor == nullptr) {
-      continue;
-    }
-    if (actor->render.accountId != accountId) {
-      continue;
-    }
-    if (actor->Slot42() == static_cast<int>(g_guildInfo.unknown_00D0)) {
-      found = true;
-      break;
-    }
-  }
-  if (!found) {
-    return;
-  }
-
-  const float playerX = this->player->render.position.x;
-  const float playerZ = this->player->render.position.z;
-  const float cellX = pos.x;
-  const float cellZ = pos.z;
-  const int range = this->nearbyRange;
-  UpdateWorldProximityNotification(
-    reinterpret_cast<unsigned char&>(this->unknown_00F4),
-    [playerX, playerZ, cellX, cellZ, range]() {
-      const float dx = playerX - cellX;
-      const float dz = playerZ - cellZ;
-      return dx * dx + dz * dz <= static_cast<float>(range) * static_cast<float>(range);
-    },
-    GetRagConnection(),
-    g_packetLengths,
-    g_guildInfo.unknown_00D0
-  );
-}
-
-__declspec(noinline) void CGameMode::RemoveUnknown0604(int window) {
-  for (std::list<UIWindow*>::iterator it = this->unknown_0604.begin(); it != this->unknown_0604.end(); ++it) {
-    if (*it == reinterpret_cast<UIWindow*>(window)) {
-      this->unknown_0604.erase(it);
-      return;
-    }
-  }
-}
-
 // OFFSET: 0x00CAAFD0
 // FUNCTION: fn_21023
 void CGameActor::ClearUnknown0188() {
@@ -4858,6 +4788,15 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
 CCharacterNpc::CCharacterNpc() : CNpc() {
   this->unknown_0440 = 0;
 }
+
+// INLINED
+CCharacterNpc::~CCharacterNpc() {
+  if (this->unknown_0440) {
+    delete this->unknown_0440;
+    this->unknown_0440 = nullptr;
+  }
+}
+
 
 // OFFSET: 0x00CBFC40
 // FUNCTION: fn_21120

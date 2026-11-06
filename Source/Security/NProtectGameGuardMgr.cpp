@@ -28,7 +28,7 @@ void sub_E929B0(const char* name);
 int sub_E92820();
 int __stdcall sub_76D910(int code, const int* packet);
 void sub_E92E90(int(__stdcall* callback)(int, const int*));
-void sub_CF0BA0(const char* file, int line, const char* message);
+void WriteMyLog(const char* file, int line, const char* format, ...);
 void __fastcall sub_76C320(void* tokens);
 
 namespace {
@@ -257,7 +257,7 @@ int CNProtectGameGuardMgr::sub_76C9D0() {
       MessageBoxA(hWnd, message, title, 0);
       return 0;
     }
-    sub_CF0BA0(g_nprotectSource, 0x284, title);
+    WriteMyLog(g_nprotectSource, 0x284, title);
   }
 
   sub_E92E90(sub_76D910);

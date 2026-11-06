@@ -1,4 +1,5 @@
 #include "Contents/SpecialPopupMgr.h"
+#include "Script/LuaFileOperations.h"
 #include "Script/NLuaState.h"
 
 extern "C" {
@@ -11,8 +12,6 @@ extern "C" {
 #include <cstring>
 #include <new>
 #include <windows.h>
-
-bool sub_AF6580(lua_State* state, const std::string& path, bool flag);
 
 // GLOBAL: gl_24839
 CSpecialPopupMgr* g_specialPopupMgr = nullptr;
@@ -72,7 +71,7 @@ bool CSpecialPopupMgr::Init() {
   lua_pushcclosure(luaState.GetState(), CSpecialPopupMgr::LuaAddDesc, 0);
   lua_setfield(luaState.GetState(), LUA_GLOBALSINDEX, "AddDesc");
 
-  if (!sub_AF6580(luaState.GetState(), "System\\spopup.lub", false)) {
+  if (!LoadLuaResource(luaState.GetState(), "System\\spopup.lub", false)) {
     MessageBoxA(NULL, lua_tostring(luaState.GetState(), -1), "CSpecialPopupMgr LuaLoadFile X", 0);
     return false;
   }

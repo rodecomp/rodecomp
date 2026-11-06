@@ -75,6 +75,11 @@ void CMergeItemWnd::SelectSameItems(int id) {
   }
 }
 
+// INLINED
+CMergeItemWnd::~CMergeItemWnd() {
+}
+
+
 // OFFSET: 0x007DF3D0
 // FUNCTION: fn_09663
 int CMergeItemWnd::ItemIdOf(int id) {

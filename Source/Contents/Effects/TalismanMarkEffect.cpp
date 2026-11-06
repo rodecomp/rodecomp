@@ -11,8 +11,8 @@
 #include <array>
 #include <string>
 
-CParticle* sub_B82ED0(const vector3d* position, int flags);
-void sub_B82FD0(CParticle* particle);
+CParticle* CreateEZ2STRParticle(const vector3d* position, int flags);
+void FreeParticle(CParticle* particle);
 
 // GLOBAL: gl_24871
 static const std::array<std::string, 4> s_talismanStartEffects = {
@@ -48,7 +48,7 @@ CTalismanMarkEffect::CTalismanMarkEffect() : CEffect(-1) {
 void CTalismanMarkEffect::Close() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
-      sub_B82FD0(*it);
+      FreeParticle(*it);
     }
   }
   this->particles.clear();
@@ -65,9 +65,9 @@ void CTalismanMarkEffect::PlayEnd() {
 
     const int index = particle->unknown_000C;
     const int angle = particle->unknown_004C;
-    sub_B82FD0(particle);
+    FreeParticle(particle);
 
-    particle = static_cast<CEZ2STRParticle*>(sub_B82ED0(reinterpret_cast<const vector3d*>(this->position), 13));
+    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     if (!particle) {
       *it = nullptr;
       continue;
@@ -92,7 +92,7 @@ void CTalismanMarkEffect::Slot01() {
   this->retained = 1;
 
   for (int i = 0; i < std::min<unsigned int>(this->unknown_00B0, 4); ++i) {
-    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(sub_B82ED0(reinterpret_cast<const vector3d*>(this->position), 13));
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     if (!particle) {
       continue;
     }
@@ -128,9 +128,9 @@ void CTalismanMarkEffect::Slot03() {
       {
         const int index = particle->unknown_000C;
         const int angle = particle->unknown_004C;
-        sub_B82FD0(particle);
+        FreeParticle(particle);
 
-        particle = static_cast<CEZ2STRParticle*>(sub_B82ED0(reinterpret_cast<const vector3d*>(this->position), 13));
+        particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
         if (!particle) {
           *it = nullptr;
           continue;
@@ -156,7 +156,7 @@ void CTalismanMarkEffect::Slot03() {
         break;
       }
 
-      sub_B82FD0(particle);
+      FreeParticle(particle);
       it = this->particles.erase(it);
       continue;
     default:

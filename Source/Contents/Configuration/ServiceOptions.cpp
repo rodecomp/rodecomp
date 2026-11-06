@@ -1,4 +1,5 @@
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Utility/EncryptedName.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -410,35 +411,6 @@ const char* const g_serviceOptionNames[300] = {
     "TT_3D_SOUND_ON_OFF"
 };
 
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedName {
-public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~EncryptedName() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
-
 __declspec(noinline) void NotifyServiceOption(unsigned char enabled, int enabledMessage, int disabledMessage, int color);
 __declspec(noinline) void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage);
 
@@ -706,8 +678,6 @@ bool GameSettings::ReadOptionTable() {
   return lua_gettop(state) == 0;
 }
 
-void sub_AAB070(int id);
-
 // OFFSET: 0x006C2610
 // FUNCTION: fn_06322
 void GameSettings::ResetToDefaults() {
@@ -729,7 +699,7 @@ void GameSettings::ToggleOption(int id) {
     if (option.type == 0) {
       const unsigned char current = g_serviceOptions.Get(id);
       this->sub_6C0C40(id, current == 0, true);
-      sub_AAB070(id);
+      g_windowMgr.sub_AAB070(id);
     } else if (option.type == 1) {
       const auto entry = this->functions.find(id);
       if (entry != this->functions.end() && entry->second) {
@@ -1112,7 +1082,7 @@ void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, in
   if (!value &&
       g_windowMgr.Confirm(LookupMessage(0x1104), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBC) {
     g_serviceOptions.Set(0x128, 1);
-    sub_AAB070(0x128);
+    g_windowMgr.sub_AAB070(0x128);
     return;
   }
 

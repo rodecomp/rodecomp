@@ -6,5 +6,6 @@ extern int g_frameskip;
 void ResetTimer();
 void InitTimer(unsigned long freq);
 int GetSkipFrameCount();
+int ShouldRenderFrame();
 
 #endif

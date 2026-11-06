@@ -6640,7 +6640,7 @@ void CEffectPrim::Render2DPrimitive() {
           if (cdState) {
             cdState->x = static_cast<int>(this->render.position.x);
             cdState->y = static_cast<int>(this->render.position.y);
-            g_cooldownOwner->Draw(0, 0, 16, 16, *cdState, 0, 0, 0);
+            g_cooldownOwner->Drawing().Draw(0, 0, 16, 16, *cdState, 0, 0, 0);
           }
         }
       }
@@ -6648,7 +6648,7 @@ void CEffectPrim::Render2DPrimitive() {
     if (g_overrideColor == 1) {
       g_cooldownOwner->ClearReverseCommands();
     } else {
-      g_cooldownOwner->SubmitReverse();
+      g_cooldownOwner->Drawing().SubmitReverse(g_renderer->queues, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
     }
   }
 }

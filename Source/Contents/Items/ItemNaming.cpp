@@ -420,17 +420,10 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
 #include "File/File.h"
 #include "File/ResourcePath.h"
 #include "Resource/Bitmap/BitmapResource.h"
-
-class CItemInfoMgr {
-public:
-  void Apply(std::map<int, ITEM_DESC>& values);
-};
+#include "Contents/Items/ItemInfoMgr.h"
 
 // GLOBAL: gl_24730
 CCommonObject g_tableStorage;
-
-// GLOBAL: gl_24729
-CItemInfoMgr* g_itemInfoMgr;
 
 // OFFSET: 0x005E11E0
 // FUNCTION: fn_03873
@@ -751,7 +744,7 @@ __declspec(noinline) void LoadItemNameTables() {
       }
     }
 
-    g_itemInfoMgr->Apply(g_itemDescriptions);
+    g_itemInfoMgr->SetItemInfo(g_itemDescriptions);
   }
 
   if (ResourceExists("EventNum2ItemResNameTable.txt", 0)) {

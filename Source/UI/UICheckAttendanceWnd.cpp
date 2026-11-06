@@ -48,6 +48,11 @@ UICheckAttendanceWnd::UICheckAttendanceWnd()
   this->m_rewardCount = static_cast<int>(g_checkAttendanceMgr->m_rewards.size());
 }
 
+// INLINED
+UICheckAttendanceWnd::~UICheckAttendanceWnd() {
+}
+
+
 // OFFSET: 0x007DCBD0
 // FUNCTION: fn_09636
 void UICheckAttendanceWnd_Banner::AddBanner(std::string image, std::string url, int action, int argument) {
@@ -94,6 +99,11 @@ int UICheckAttendanceWnd::SlotAt(int x, int y) {
 UICheckAttendanceWnd_Banner::UICheckAttendanceWnd_Banner()
     : UIWindow(0), m_current(0), m_lastSwitch(timeGetTime()) {
 }
+
+// INLINED
+UICheckAttendanceWnd_Banner::~UICheckAttendanceWnd_Banner() {
+}
+
 
 // OFFSET: 0x007DCF50
 // FUNCTION: fn_09639

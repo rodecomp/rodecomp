@@ -43,8 +43,8 @@ UICaptchaRegisterWnd::UICaptchaRegisterWnd()
 // OFFSET: 0x007EA3B0
 // FUNCTION: fn_09788
 void UICaptchaRegisterWnd::Slot15(int width, int height) {
-  this->sub_8CEF10();
-  this->sub_8CF0C0("", 0);
+  this->AddBaseButton();
+  this->AddCloseButton("", 0);
 
   std::string directory = FormatOwnedString("%s\\captcha\\", g_applicationDirectory);
 

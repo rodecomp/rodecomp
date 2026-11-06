@@ -713,7 +713,6 @@ public:
   int GetMapProperty13() const;
   bool HasUnknown6178Records() const;
   bool HasUnknown6178Record(int id) const;
-  bool sub_E06580(int id);
   int IsBerserkActive() const;
   int IsTrickDeadActive() const;
   int HasActiveSkillEffect(int id) const;
@@ -900,7 +899,6 @@ public:
   int SkillLevel(int id) const;
   CRenderObject* FindGameActor(std::uint32_t aid) const;
   int GetPetTargetAid() const;
-  bool sub_E1DE30(std::uint32_t aid);
   int sub_DDD2C0(const ITEM_INFO& item);
   const char* GetJobName(unsigned job, int sex);
   void InitJobNameTable();

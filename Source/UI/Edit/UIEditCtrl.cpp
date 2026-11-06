@@ -1369,7 +1369,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       }
 
       {
-        UIWindow* window = g_windowMgr.sub_A978D0(windowId);
+        UIWindow* window = g_windowMgr.EnsureWindow(windowId);
         if (window) {
           window->Show(1);
           window->Move(this->geometry.x, this->geometry.y);
@@ -3770,20 +3770,13 @@ bool ItemTypeNameLess::operator()(const ITEM_INFO& left, const ITEM_INFO& right)
   return leftRank < rightRank;
 }
 
-extern "C" void sub_96E320(void* head, size_t size, ...);
-
 // OFFSET: 0x00996870
 // FUNCTION: fn_13470
 bool UIItemStoreSubWnd::Sort1() {
   if (!this->sub_996950()) {
     return false;
   }
-  struct Flag {
-    char val;
-  } flag{0};
-  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
-  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
-  sub_96E320(head, size, flag);
+  this->items.sort();
   return true;
 }
 
@@ -3793,12 +3786,7 @@ bool UIItemStoreSubWnd::Sort2() {
   if (!this->sub_996AF0()) {
     return false;
   }
-  struct Flag {
-    char val;
-  } flag{0};
-  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
-  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
-  sub_96E320(head, size, flag);
+  this->items.sort();
   return true;
 }
 
@@ -3808,12 +3796,7 @@ bool UIItemStoreSubWnd::Sort3() {
   if (!this->sub_996C90()) {
     return false;
   }
-  struct Flag {
-    char val;
-  } flag{0};
-  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
-  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
-  sub_96E320(head, size, flag);
+  this->items.sort();
   return true;
 }
 
@@ -3823,12 +3806,7 @@ bool UIItemStoreSubWnd::SortReversed1() {
   if (!this->sub_996950()) {
     return false;
   }
-  struct Flag {
-    char val;
-  } flag{0};
-  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
-  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
-  sub_96E320(head, size, flag);
+  this->items.sort();
   this->items.reverse();
   return true;
 }
@@ -3839,12 +3817,7 @@ bool UIItemStoreSubWnd::SortReversed2() {
   if (!this->sub_996AF0()) {
     return false;
   }
-  struct Flag {
-    char val;
-  } flag{0};
-  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
-  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
-  sub_96E320(head, size, flag);
+  this->items.sort();
   this->items.reverse();
   return true;
 }
@@ -3855,12 +3828,7 @@ bool UIItemStoreSubWnd::SortReversed3() {
   if (!this->sub_996C90()) {
     return false;
   }
-  struct Flag {
-    char val;
-  } flag{0};
-  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
-  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
-  sub_96E320(head, size, flag);
+  this->items.sort();
   this->items.reverse();
   return true;
 }
@@ -6567,7 +6535,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
         }
         mode->SendMsg(273, this->unknown_00F8, this->unknown_0104, 0, 0);
       } else {
-        static_cast<UIMerchantItemPurchaseMSGWnd*>(g_windowMgr.sub_A978D0(230))->SetPurchase(this->unknown_00F8, this->unknown_0104);
+        static_cast<UIMerchantItemPurchaseMSGWnd*>(g_windowMgr.EnsureWindow(230))->SetPurchase(this->unknown_00F8, this->unknown_0104);
       }
 
       mode->SendMsg(40, 0, 0, 0, 0);
@@ -8582,7 +8550,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case 365: {
       std::string text(this->searchEdit->Text());
       if (!text.empty()) {
-        UIItemStoreFindWnd* window = static_cast<UIItemStoreFindWnd*>(g_windowMgr.sub_A978D0(153));
+        UIItemStoreFindWnd* window = static_cast<UIItemStoreFindWnd*>(g_windowMgr.EnsureWindow(153));
         this->unknown_0140 = window;
         window->SetSearchText(std::string(text.c_str(), text.size()));
         this->unknown_0140->SendMsg(nullptr, 23, 365, 0, 0, 0);
@@ -8606,7 +8574,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 
       if (tab->geometry.unknown_0030 != 0) {
         this->unknown_0120[index] = nullptr;
-        this->unknown_0120[index] = g_windowMgr.sub_A978D0(a);
+        this->unknown_0120[index] = g_windowMgr.EnsureWindow(a);
         if (this->unknown_0120[index]) {
           this->unknown_0120[index]->SendMsg(nullptr, 23, 0, 0, 0, 0);
         }
@@ -8628,7 +8596,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 
       if (this->tabs[7]->geometry.unknown_0030 != 0) {
         this->unknown_0120[7] = nullptr;
-        this->unknown_0120[7] = g_windowMgr.sub_A978D0(309);
+        this->unknown_0120[7] = g_windowMgr.EnsureWindow(309);
         if (this->unknown_0120[7]) {
           this->unknown_0120[7]->SendMsg(nullptr, 23, 0, 0, 0, 0);
         }
@@ -8644,7 +8612,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       break;
     case 133:
       if (!this->unknown_0140) {
-        this->unknown_0140 = g_windowMgr.sub_A978D0(153);
+        this->unknown_0140 = g_windowMgr.EnsureWindow(153);
         std::string text(this->searchEdit->Text());
         if (!text.empty() && reinterpret_cast<UIItemStoreSubWnd*>(this)->FilterByName3(std::string(text.c_str(), text.size()))) {
           static_cast<UIItemStoreFindWnd*>(this->unknown_0140)->SetSearchText(std::string(text.c_str(), text.size()));
@@ -11516,7 +11484,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         std::memcpy(&header, data + offset, sizeof(header));
         offset += 6;
         if (header.type == 21301 || header.type == 21351) {
-          UIWindow* window = g_windowMgr.sub_A978D0(header.type == 21301 ? 42 : 175);
+          UIWindow* window = g_windowMgr.EnsureWindow(header.type == 21301 ? 42 : 175);
           if (window) {
             window->SendMsg(nullptr, 23, 0, 0, 0, 0);
           }
@@ -11532,7 +11500,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       g_session.m_skipPriceWarning = !g_session.m_skipPriceWarning;
     } else if (a == 343) {
       if (!g_windowMgr.LookupWindow(333)) {
-        g_windowMgr.sub_A978D0(333);
+        g_windowMgr.EnsureWindow(333);
       }
     } else if (a == 560) {
       this->unknown_0168->SetDisabled(1);

@@ -9,6 +9,7 @@
 #include "Contents/Effects/EvilsPawEffect.h"
 #include "Contents/Effects/WindEffect.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
+#include "Contents/Skills/SkillTreeScript.h"
 #include "File/File.h"
 #include "File/ResourcePath.h"
 #include "Script/LuaFileOperations.h"
@@ -88,8 +89,6 @@ static void AddAttendanceBanner(UICheckAttendanceWnd* window, std::string image,
   window->m_banner->AddBanner(image, url, action, argument);
 }
 
-int AddSkill(lua_State* state);
-int AddNeededSkill(lua_State* state);
 
 // OFFSET: 0x00AFF7E0
 // FUNCTION: fn_18354

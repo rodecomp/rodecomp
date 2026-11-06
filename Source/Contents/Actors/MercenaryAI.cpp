@@ -408,7 +408,7 @@ int AiHomunGetV(lua_State* state) {
       }
 
       std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
-      if (actor->render.accountId != g_session.m_aid && !g_session.sub_E1DE30(actor->render.accountId)) {
+      if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
         CGameActor* targetActor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(homunAid));
         if (targetActor) {
           int targetX, targetY;
@@ -592,7 +592,7 @@ int AiMercenaryGetV(lua_State* state) {
       }
 
       std::uint32_t mercAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
-      if (actor->render.accountId != g_session.m_aid && !g_session.sub_E1DE30(actor->render.accountId)) {
+      if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
         CGameActor* targetActor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(mercAid));
         if (targetActor) {
           int targetX, targetY;

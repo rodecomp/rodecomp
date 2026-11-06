@@ -19,6 +19,10 @@
 #include <cstring>
 #include <windows.h>
 
+// INLINED
+UITagListBox::STagInfoV2::~STagInfoV2() {
+}
+
 // OFFSET: 0x009B7A10
 // FUNCTION: fn_13869
 void UITagListBox::AddLine(const char* text) {

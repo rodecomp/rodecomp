@@ -9,8 +9,8 @@
 
 #include <cmath>
 
-CParticle* sub_B82ED0(const vector3d* position, int flags);
-void sub_B82FD0(CParticle* particle);
+CParticle* CreateEZ2STRParticle(const vector3d* position, int flags);
+void FreeParticle(CParticle* particle);
 
 // OFFSET: 0x0072ED00
 // FUNCTION: fn_07521
@@ -21,7 +21,7 @@ CTriangleShotArrow::CTriangleShotArrow() : CEffect(-1), current{}, direction{}, 
 // OFFSET: 0x0072EE80
 // FUNCTION: fn_07523
 void CTriangleShotArrow::Close() {
-  sub_B82FD0(this->arrow);
+  FreeParticle(this->arrow);
 }
 
 // OFFSET: 0x0072EE90
@@ -31,7 +31,7 @@ void CTriangleShotArrow::Slot01() {
   this->current.y = this->position[1];
   this->current.z = this->position[2];
 
-  CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(sub_B82ED0(&this->current, 5));
+  CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->current, 5));
   if (g_serviceOptions.Get(229)) {
     arrow->Open("mineffect\\new_triangleshot\\new_triangleshot_arrow\\new_triangleshot_arrow.str");
   } else {

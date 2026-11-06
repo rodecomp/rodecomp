@@ -553,7 +553,7 @@ void CPc::Slot39(int value) {
 
 // OFFSET: 0x00DDD190
 // FUNCTION: fn_23381
-static __declspec(noinline) std::string GetBodyImfName(int job, int sex, int head, int costumeJob) {
+__declspec(noinline) std::string GetBodyImfName(int job, int sex, int head, int costumeJob) {
   return g_equipmentResourceMgr->GetBodyImfName(job, sex, head, costumeJob);
 }
 

@@ -109,7 +109,7 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
     item.unknown_0060 = 0;
     item.itemId = button->GetLine(0);
 
-    if (UIWindow* window = g_windowMgr.sub_A978D0(12)) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
       window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
 
@@ -119,7 +119,7 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
     if (button && button->GetLinesCount() != 0) {
       const std::string& tip = button->GetLine(0);
 
-      if (UIWindow* window = g_windowMgr.sub_A978D0(315)) {
+      if (UIWindow* window = g_windowMgr.EnsureWindow(315)) {
         static_cast<UITipboxWnd*>(window)->ShowTip(std::atoi(tip.c_str()));
       }
     }
@@ -362,7 +362,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         item.unknown_0000[0] = static_cast<unsigned>(idValue);
         item.unknown_0060 = 0;
         item.itemId = button->GetLine(0);
-        if (UIWindow* window = g_windowMgr.sub_A978D0(12)) {
+        if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
           window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
         }
       }
@@ -370,7 +370,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     case 517:
       if (button && button->GetLinesCount() != 0) {
         const std::string& tip = button->GetLine(0);
-        if (UIWindow* window = g_windowMgr.sub_A978D0(315)) {
+        if (UIWindow* window = g_windowMgr.EnsureWindow(315)) {
           static_cast<UITipboxWnd*>(window)->ShowTip(std::atoi(tip.c_str()));
         }
       }

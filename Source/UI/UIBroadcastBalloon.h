@@ -36,10 +36,6 @@ public:
   void Slot43() override;
 
   void AddMessage(int category, const BroadcastBalloonMessage& message);
-  void sub_A86510(
-    int x, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t outline, int family, int height,
-    unsigned char bold
-  );
 
 protected:
   /* 007C */ std::map<int, std::list<BroadcastBalloonMessage>> m_messages;

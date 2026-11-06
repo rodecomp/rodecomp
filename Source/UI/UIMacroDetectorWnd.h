@@ -21,9 +21,6 @@ public:
   void Slot31(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
-  void sub_8D2CE0(bool closeButton, const char* title, int width);
-  void sub_A84360(int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold, unsigned char italic);
-  void sub_A86440(int right, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold);
   void AddImageData(const void* data, int size);
   void ClearImageData();
   void SetCountdown(unsigned char count, std::uint32_t duration);

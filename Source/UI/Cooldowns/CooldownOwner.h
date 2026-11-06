@@ -8,11 +8,9 @@
 class CooldownOwner {
 public:
   CooldownOwner();
-  ~CooldownOwner();
+  __declspec(noinline) ~CooldownOwner();
   void Register(unsigned id, std::uint32_t duration, std::uint32_t start, std::uint32_t elapsed);
   void ClearReverseCommands();
-  void SubmitReverse();
-  void Draw(int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY);
 
   CooldownState* Find(unsigned id);
   void Erase(unsigned id);

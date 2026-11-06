@@ -1,4 +1,5 @@
 #include "Client/Mode/CLoginMode.h"
+#include "Utility/EncryptedName.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Application/ApplicationMessages.h"
 #include "Client/Application/ApplicationWindow.h"
@@ -11,6 +12,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Client/Replay.h"
+#include "Client/Timer.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Stove/StovePCSDK.h"
 #include "Contents/Async/AsyncWorkMgr.h"
@@ -90,7 +92,6 @@
 #include <random>
 #include <timeapi.h>
 
-void sub_D8C390(const int* first, const int* last);
 void TraceSelection(int selection);
 void TraceSelectionRange(int first, int last);
 
@@ -335,8 +336,6 @@ int g_restoreSurfaces;
 // GLOBAL: gl_25384
 int g_isAppActive;
 
-int sub_C7F5A0();
-
 static_assert(sizeof(CharacterSlotsPacket) == 0x1D);
 static_assert(offsetof(AcceptLoginPacket, body) == 0x2F);
 static_assert(sizeof(ServerAddress) == 0x20);
@@ -345,37 +344,6 @@ static_assert(sizeof(AcceptEnterNeoUnionPacket) == 0x18 + sizeof(CharacterInfo))
 static_assert(offsetof(CharacterSlotCountsPacket, extension) == 0xA);
 static_assert(sizeof(BlockedCharacter) == 0x18);
 static_assert(offsetof(AcceptEnterPacket, characters) == 0x1B);
-
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedName {
-public:
-  // INLINED
-  template <typename Byte>
-  explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~EncryptedName() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  /* 0000 */ std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
 
 // INLINED
 template <std::uint64_t Key, std::size_t Length>
@@ -1028,7 +996,7 @@ void CLoginMode::Slot5(int value) {
     return;
   }
 
-  if (sub_C7F5A0()) {
+  if (ShouldRenderFrame()) {
     g_renderer->ClearDepth(1);
     g_windowMgr.UpdateFrameWindows();
     if (g_serviceType == 0 || g_serviceType == 4 || g_serviceType == 8 || g_serviceType == 9 || g_serviceType == 3 || g_serviceType == 10 ||
@@ -1178,7 +1146,7 @@ void CLoginMode::Update() {
     return;
   }
 
-  if (sub_C7F5A0()) {
+  if (ShouldRenderFrame()) {
     g_renderer->ClearDepth(1);
     g_windowMgr.UpdateFrameWindows();
     if (g_serviceType == 0 || g_serviceType == 4 || g_serviceType == 8 || g_serviceType == 9 || g_serviceType == 3 || g_serviceType == 10 ||
@@ -1213,7 +1181,7 @@ void CLoginMode::SubD97F00(int) {
 
 // OFFSET: 0x00D97F10
 // FUNCTION: fn_22308
-void OpenAccountRegistration() {
+void CLoginMode::OpenAccountRegistration() {
   switch (g_serviceType) {
   case 0:
     if (*reinterpret_cast<const int*>(&g_session.unknown_59DC[0x198]) == 1) {
@@ -3348,7 +3316,6 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return 0;
   case 10022:
     this->unknown_6F4C = argument1;
-    sub_D8C390(this->unknown_6F38.data(), this->unknown_6F38.data() + this->unknown_6F38.size());
     this->unknown_6F38.clear();
     TraceSelectionRange(this->unknown_6F48, this->unknown_6F4C);
     this->pendingCursorType = 3;

@@ -155,6 +155,15 @@ public:
 
 }
 
+template <>
+void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::AddNewItem();
+template <>
+void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::AddNewItem();
+template <>
+void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::AddNewItem();
+template <>
+void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem();
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(AdventureGuide::CUIIntro) == 0x8C);
 static_assert(sizeof(AdventureGuide::CUIMonster) == 0xA0);

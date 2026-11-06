@@ -701,6 +701,33 @@ CUIScrollWindow::CUIScrollWindow()
 }
 }
 
+// INLINED
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::SelectItem(CUIListItem* item) {
+  if (this->unknown_00C4) {
+    return;
+  }
+  for (OngoingQuestInfo::CUIRewardItem* other : this->items) {
+    if (item != other) {
+      other->SetSelected(0);
+    }
+  }
+  item->SetSelected(1);
+  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+    return;
+  }
+  OngoingQuestInfo::CUIRewardItem* selectedItem = dynamic_cast<OngoingQuestInfo::CUIRewardItem*>(item);
+  if (!selectedItem) {
+    return;
+  }
+  this->selected = selectedItem->index;
+  if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+    auto node = this->data.begin();
+    std::advance(node, static_cast<int>(this->selected));
+    this->onSelect(selectedItem, *node);
+  }
+}
+
 // OFFSET: 0x00A53A90
 // FUNCTION: fn_16233
 template <>

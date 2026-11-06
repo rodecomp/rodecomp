@@ -84,14 +84,6 @@ __forceinline const char* TimeFontSpriteName() {
 // GLOBAL: gl_25107
 CFile g_whisperFile;
 
-struct MiniMapEffectMarker {
-  /* 0000 */ int count;
-  /* 0004 */ int x;
-  /* 0008 */ int y;
-};
-
-// GLOBAL: gl_25132
-std::map<std::uint32_t, MiniMapEffectMarker> g_miniMapEffectMarkers;
 
 // OFFSET: 0x00CCFCE0
 // FUNCTION: fn_21246

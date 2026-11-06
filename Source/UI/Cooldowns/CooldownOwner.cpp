@@ -8,6 +8,13 @@ CooldownOwner::CooldownOwner() : m_initialized(false) {
   this->m_initialized = true;
 }
 
+// INLINED
+CooldownOwner::~CooldownOwner() {
+  this->m_drawing.normal.clear();
+  this->m_drawing.reverse.clear();
+  this->m_values.clear();
+}
+
 // OFFSET: 0x00CA61A0
 // FUNCTION: fn_20957
 void CooldownOwner::Register(unsigned id, std::uint32_t duration, std::uint32_t start, std::uint32_t elapsed) {

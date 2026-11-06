@@ -36,7 +36,5 @@ public:
   std::vector<const ReputeInfo*> m_reputes;
 };
 
-#include "Contents/ReputeMgrLoad.inl"
-
 #endif
 

@@ -12,6 +12,7 @@
 #include "UI/Lists/UIComboBoxEx.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Utility/JsonCppLoader.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>

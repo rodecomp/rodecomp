@@ -1,4 +1,5 @@
 #include "Client/Application/Launcher.h"
+#include "Utility/EncryptedName.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -108,41 +109,6 @@ HINSTANCE g_instance;
 
 // GLOBAL: gl_24584
 char g_applicationDirectory[0x80];
-
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedName {
-public:
-  // INLINED
-  template <typename Source>
-  explicit EncryptedName(const Source (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~EncryptedName() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  bool Encrypted() const {
-    return this->m_encrypted;
-  }
-
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  /* 0000 */ std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
 
 // INLINED
 template <std::uint64_t Key, typename Source, std::size_t Length>
@@ -931,7 +897,7 @@ public:
   virtual ~CEquipmentPropertiesMgr();
 
   static CEquipmentPropertiesMgr* GetInstance();
-  void sub_6AD910();
+  bool InitializeLua();
 };
 }
 
@@ -941,7 +907,7 @@ void sub_E198F0();
 void __fastcall sub_81FE50(CSignBoardMgr* manager);
 LRESULT CALLBACK sub_E5C430(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
 int sub_E59030();
-void sub_AEA780();
+int RemoveProtectionTools();
 void sub_3DE90E0(char* buffer);
 void IgnoreNull();
 LSTATUS SaveDisplayDeviceSettings();
@@ -1403,9 +1369,9 @@ std::pair<bool, std::string> InitializeManagers() {
   Singleton<CEnchantMgr>::GetInstance()->Init();
   GetMapSkyMgr()->LoadData();
   Singleton<CSelectPackageItemMgr>::GetInstance()->LoadScript();
-  Singleton<CUIRegisterMgr>::GetInstance()->sub_9EB920();
+  Singleton<CUIRegisterMgr>::GetInstance()->Load();
   Singleton<CJobCodeForItem>::GetInstance()->Init();
-  EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->sub_6AD910();
+  EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->InitializeLua();
   if (!CAdventureGuideMgr::Create()) {
     return std::make_pair(false, std::string(AdventureGuideCreateInstanceName()().Text()));
   }
@@ -1838,7 +1804,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   CoUninitialize();
   DestroyWindow(hWnd);
-  sub_AEA780();
+  RemoveProtectionTools();
   ShutdownManagers();
   CSoundMgr::Destroy();
   CoUninitialize();

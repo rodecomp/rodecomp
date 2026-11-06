@@ -1,4 +1,5 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "Utility/EncryptedName.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
@@ -26,14 +27,14 @@
 // GLOBAL: gl_24904
 bool g_stoveWaitingCallback;
 
-void sub_63A7F0(Stove::PCSDK::CallbackResult callbackResult);
-void sub_63A8D0(Stove::PCSDK::CallbackResult callbackResult);
-void sub_63A860(Stove::PCSDK::CallbackResult callbackResult);
+void OnStoveTermsAgreementFetched(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url);
+void OnStoveCategoryProductsFetched(Stove::PCSDK::CallbackResult callbackResult, const Stove::PCSDK::IAP::StovePCProduct* products, unsigned int count);
+void OnStoveAllProductsFetched(Stove::PCSDK::CallbackResult callbackResult, const Stove::PCSDK::IAP::StovePCProduct* products, unsigned int count);
 void sub_DD8A20(int value);
-void sub_63A780(Stove::PCSDK::CallbackResult callbackResult);
-void sub_63AA50(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::Base::StovePCShutdown shutdown);
-void sub_63A940(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::IAP::StovePCPurchaseResult purchaseResult);
-void sub_63A9D0(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int unknown1, unsigned int count, int unknown2, int unknown3);
+void OnStoveInitialized(Stove::PCSDK::CallbackResult callbackResult);
+void OnStoveShutdown(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::Base::StovePCShutdown shutdown);
+void OnStovePurchaseStarted(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::IAP::StovePCPurchaseResult purchaseResult);
+void OnStovePurchaseConfirmed(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int unknown1, unsigned int count, int unknown2, int unknown3);
 
 // STRING: st_01259
 const wchar_t g_stoveCategoryIdA[] = L"44C71118750747D";
@@ -49,7 +50,7 @@ void CStoveMgr::FetchAllProducts() {
   allParam.SetCategoryId(L"");
   allParam.SetPageNumber(1);
   allParam.SetPageSize(0x7FFFFFFF);
-  IAP_FetchProducts(&allParam, sub_63A860);
+  IAP_FetchProducts(&allParam, OnStoveAllProductsFetched);
   g_stoveWaitingCallback = true;
   do {
     Base_RunCallback();
@@ -61,7 +62,7 @@ void CStoveMgr::FetchAllProducts() {
   categoryParam.SetCategoryId(this->m_environment == 2 ? g_stoveCategoryIdA : g_stoveCategoryIdB);
   categoryParam.SetPageNumber(1);
   categoryParam.SetPageSize(0x7FFFFFFF);
-  IAP_FetchProducts(&categoryParam, sub_63A8D0);
+  IAP_FetchProducts(&categoryParam, OnStoveCategoryProductsFetched);
   g_stoveWaitingCallback = true;
   do {
     Base_RunCallback();
@@ -74,7 +75,7 @@ void CStoveMgr::FetchAllProducts() {
 void FetchStoveTermsAgreement() {
   Stove::PCSDK::IAP::StovePCTermsOption option;
   option.SetOperation(Stove::PCSDK::IAP::StovePCPaymentOperation::DEFAULT);
-  IAP_FetchTermsAgreement(&option, sub_63A7F0);
+  IAP_FetchTermsAgreement(&option, OnStoveTermsAgreementFetched);
   g_stoveWaitingCallback = true;
   do {
     Base_RunCallback();
@@ -90,43 +91,13 @@ void CStoveMgr::FetchCategoryProducts() {
   param.SetCategoryId(this->m_environment == 2 ? g_stoveCategoryIdA : g_stoveCategoryIdB);
   param.SetPageNumber(1);
   param.SetPageSize(0x7FFFFFFF);
-  IAP_FetchProducts(&param, sub_63A8D0);
+  IAP_FetchProducts(&param, OnStoveCategoryProductsFetched);
   g_stoveWaitingCallback = true;
   do {
     Base_RunCallback();
     Sleep(200);
   } while (g_stoveWaitingCallback);
 }
-
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedName {
-public:
-  // INLINED
-  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~EncryptedName() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  /* 0000 */ std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
 
 // INLINED
 template <std::uint64_t Key, std::size_t Length>
@@ -151,6 +122,14 @@ struct PurchaseCheckingMessage {
   EncryptedName<129, 0x2D3B15774149D5DDULL>& operator()() const;
 };
 
+struct InitializeCallback {
+  void operator()(Stove::PCSDK::CallbackResult callbackResult) const;
+};
+
+struct TermsAgreementCallback {
+  void operator()(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url) const;
+};
+
 struct FetchProductsCallback {
   void operator()(Stove::PCSDK::CallbackResult callbackResult, const Stove::PCSDK::IAP::StovePCProduct* products, unsigned int count) const;
 };
@@ -170,6 +149,48 @@ struct CategoryProductsCallback {
 struct ConfirmPurchaseCallback {
   void operator()(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int unknown1, unsigned int count, int unknown2, int unknown3) const;
 };
+
+// OFFSET: 0x0063A780
+// FUNCTION: fn_04771
+void OnStoveInitialized(Stove::PCSDK::CallbackResult callbackResult) {
+  InitializeCallback()(callbackResult);
+}
+
+// OFFSET: 0x0063A7F0
+// FUNCTION: fn_04772
+void OnStoveTermsAgreementFetched(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url) {
+  TermsAgreementCallback()(callbackResult, unused, url);
+}
+
+// OFFSET: 0x0063A860
+// FUNCTION: fn_04773
+void OnStoveAllProductsFetched(Stove::PCSDK::CallbackResult callbackResult, const Stove::PCSDK::IAP::StovePCProduct* products, unsigned int count) {
+  CategoryProductsCallback()(callbackResult, products, count);
+}
+
+// OFFSET: 0x0063A8D0
+// FUNCTION: fn_04774
+void OnStoveCategoryProductsFetched(Stove::PCSDK::CallbackResult callbackResult, const Stove::PCSDK::IAP::StovePCProduct* products, unsigned int count) {
+  FetchProductsCallback()(callbackResult, products, count);
+}
+
+// OFFSET: 0x0063A940
+// FUNCTION: fn_04775
+void OnStovePurchaseStarted(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::IAP::StovePCPurchaseResult purchaseResult) {
+  PurchaseResultCallback()(callbackResult, purchaseResult);
+}
+
+// OFFSET: 0x0063A9D0
+// FUNCTION: fn_04776
+void OnStovePurchaseConfirmed(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int unknown1, unsigned int count, int unknown2, int unknown3) {
+  ConfirmPurchaseCallback()(callbackResult, purchased, unknown1, count, unknown2, unknown3);
+}
+
+// OFFSET: 0x0063AA50
+// FUNCTION: fn_04777
+void OnStoveShutdown(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::Base::StovePCShutdown shutdown) {
+  ShutdownCallback()(callbackResult, shutdown);
+}
 
 
 // OFFSET: 0x0063AAE0
@@ -425,7 +446,7 @@ EncryptedName<100, 0x4F1791FB1503C713ULL>& TokenCallbackFailureMessage::operator
 
 // OFFSET: 0x0063D260
 // FUNCTION: fn_04789
-void CStoveMgr::OnInitializeCallback(Stove::PCSDK::CallbackResult callbackResult) {
+void InitializeCallback::operator()(Stove::PCSDK::CallbackResult callbackResult) const {
   g_stoveWaitingCallback = false;
   if (!callbackResult.GetResult().IsSuccessful()) {
     const char captionSource[] = {'\xD5', '\x3D', '\xF8', '\x60', '\x2C', '\x37', '\xD7'};
@@ -521,12 +542,12 @@ bool CStoveMgr::Initialize() {
     return false;
   }
 
-  Base_Initialize(&param, sub_63A780);
+  Base_Initialize(&param, OnStoveInitialized);
   this->WaitForCallback();
   Stove::PCSDK::Result result = IAP_Initialize(this->unknown_02B8.c_str());
   if (result.IsSuccessful()) {
     this->FetchUser();
-    Base_GetShutdown(sub_63AA50);
+    Base_GetShutdown(OnStoveShutdown);
     this->m_initialized = true;
     return true;
   }
@@ -592,7 +613,7 @@ void CStoveMgr::StartPurchase(const std::vector<ITEM_INFO>& items) {
   Stove::PCSDK::IAP::StovePCPaymentOption option;
   option.SetOperation(Stove::PCSDK::IAP::StovePCPaymentOperation::DEFAULT);
   param.SetPurchaseOption(option);
-  IAP_StartPurchase(&param, sub_63A940);
+  IAP_StartPurchase(&param, OnStovePurchaseStarted);
   g_stoveWaitingCallback = true;
   do {
     Base_RunCallback();
@@ -613,7 +634,7 @@ void CStoveMgr::StartPurchase(const std::vector<ITEM_INFO>& items) {
     const char* verb = DecryptName<0x9B17C9EFDBB39F2FULL>(verbSource);
     ShellExecuteA(nullptr, verb, url, url, nullptr, SW_SHOWNORMAL);
     if (g_windowMgr.Confirm(PurchaseCheckingMessage()().Text(), 2, true, false, 0, "Message", 250, 170, 0) == 187) {
-      IAP_ConfirmPurchase((static_cast<std::int64_t>(this->unknown_0014) << 32) | static_cast<std::uint32_t>(this->unknown_0010), sub_63A9D0);
+      IAP_ConfirmPurchase((static_cast<std::int64_t>(this->unknown_0014) << 32) | static_cast<std::uint32_t>(this->unknown_0010), OnStovePurchaseConfirmed);
       g_stoveWaitingCallback = true;
       do {
         Base_RunCallback();
@@ -635,7 +656,7 @@ void CStoveMgr::WaitForCallback() {
 
 // OFFSET: 0x0063CD20
 // FUNCTION: fn_04785
-void CStoveMgr::OnOpenUrlCallback(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url) {
+void TermsAgreementCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url) const {
   g_stoveWaitingCallback = false;
   if (callbackResult.GetResult().IsSuccessful()) {
     g_modeMgr.GetGameMode()->SendMsg(323, 0, 0, 0, 0);

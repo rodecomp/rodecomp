@@ -1,6 +1,7 @@
 #include "Resource/GifResource.h"
 
 #include "File/File.h"
+#include "Resource/GifLzw.h"
 
 #include <algorithm>
 #include <cstring>
@@ -294,7 +295,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
       ++cursor;
 
       unsigned char* indices = new unsigned char[descriptor.width * descriptor.height];
-      if (this->DecodeGifLzw(minimumCodeSize, compressed, compressedBytes, indices) > 0) {
+      if (DecodeGifLzw(minimumCodeSize, compressed, compressedBytes, indices) > 0) {
         const unsigned int pixelCount = screenHeight * screenWidth;
         std::uint32_t* pixels = new std::uint32_t[pixelCount];
 

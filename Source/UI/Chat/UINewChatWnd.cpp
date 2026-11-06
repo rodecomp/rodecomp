@@ -351,7 +351,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case 6:
     switch (a) {
     case 0xC1:
-      if (UIWindow* window = g_windowMgr.sub_A978D0(0x84)) {
+      if (UIWindow* window = g_windowMgr.EnsureWindow(0x84)) {
         window->SendMsg(this, 6, 0xC1, this->m_currentTab, 1, 0);
       }
       return 0;
@@ -375,7 +375,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       if (g_windowMgr.unknown_0214 != nullptr) {
         g_windowMgr.CloseWindow(0x1A);
       }
-      UIWindow* menu = g_windowMgr.sub_A978D0(0x1A);
+      UIWindow* menu = g_windowMgr.EnsureWindow(0x1A);
       menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x55)), 0, 0, 0);
       menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x56)), 0, 0, 0);
       menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x1B5)), 0, 0, 0);
@@ -402,7 +402,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         return 0;
       }
 
-      UIWindow* menu = g_windowMgr.sub_A978D0(0x1A);
+      UIWindow* menu = g_windowMgr.EnsureWindow(0x1A);
       for (int i = 0; i < count; ++i) {
         menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history[i].c_str()), 0, 0, 0);
       }

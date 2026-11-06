@@ -43,16 +43,6 @@ template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLin
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot35(int);
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::ClearItems();
 
-void CUIListItem::SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitmapRes* pressed, CBitmapRes* disabled) {
-  auto& images = *reinterpret_cast<std::map<int, CBitmapRes*>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  images.clear();
-  images[0] = normal;
-  images[1] = hover;
-  images[2] = pressed;
-  this->disabledImage = disabled;
-  this->Invalidate();
-}
-
 // OFFSET: 0x00A0EBF0
 // FUNCTION: fn_15152
 EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::CUIItemEquipmentPropertiesLine()

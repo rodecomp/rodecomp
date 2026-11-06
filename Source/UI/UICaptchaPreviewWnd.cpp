@@ -115,16 +115,16 @@ void UICaptchaPreviewWnd::Paint() {
 // OFFSET: 0x007ED960
 // FUNCTION: fn_09813
 void UIMacroDetectorWnd::Paint() {
-  this->sub_8D2CE0(false, "", 0);
+  this->DrawTitleBar(false, "", 0);
   this->DrawButtonBar(0, 0, 1);
   this->FillRegion(0, 16, this->geometry.width, this->geometry.height - 36, 0xFFFFFFFF);
   DrawRectangleBorder(*this, 0, 16, this->geometry.width, this->geometry.height - 36, 0xC6C6C6);
 
-  this->sub_A84360(25, 28, LookupMessage(2883), 0, 0, 12, 0, 1, 0);
-  this->sub_A84360(25, 45, LookupMessage(2884), 0, 0, 12, 0, 1, 0);
-  this->sub_A84360(25, 62, LookupMessage(2885), 0, 0, 12, 0, 1, 0);
+  this->DrawTextAt(25, 28, LookupMessage(2883), 0, 0, 12, 0, 1, 0);
+  this->DrawTextAt(25, 45, LookupMessage(2884), 0, 0, 12, 0, 1, 0);
+  this->DrawTextAt(25, 62, LookupMessage(2885), 0, 0, 12, 0, 1, 0);
 
-  this->sub_A84360(25, 82, this->message.c_str(), 0, 0, 12, 0x2323FF, 1, 0);
+  this->DrawTextAt(25, 82, this->message.c_str(), 0, 0, 12, 0x2323FF, 1, 0);
 
   this->FillRegion(59, 158, 222, 92, 0xC6C6C6);
   this->FillRegion(60, 97, 220, 30, 0xC6C6C6);
@@ -138,11 +138,11 @@ void UIMacroDetectorWnd::Paint() {
     unsigned int seconds = remaining / 1000;
     {
       std::string str = FormatOwnedString("%2d : %2d", seconds / 60, seconds);
-      this->sub_A86440(280, 138, str.c_str(), 0, 0, 13, 0xFF2323, 1);
+      this->DrawRightAlignedText(280, 138, str.c_str(), 0, 0, 13, 0xFF2323, 1);
     }
     {
       std::string str = FormatOwnedString(LookupMessage(2886), this->unknown_00D0);
-      this->sub_A84360(60, 138, str.c_str(), 0, 0, 13, 0x2323FF, 1, 0);
+      this->DrawTextAt(60, 138, str.c_str(), 0, 0, 13, 0x2323FF, 1, 0);
     }
   }
 }

@@ -471,7 +471,6 @@ public:
   void sub_AAB090();
   void sub_AAB0B0();
   UIWindow* EnsureWindow(int id);
-  UIWindow* sub_A978D0(int id);
   UIWindow* CreateLayoutWindow(int id);
   RECT GetMiniPartyUsableArea();
   __declspec(noinline) UIWindow* FindSnapExcludedWindow(int cell);

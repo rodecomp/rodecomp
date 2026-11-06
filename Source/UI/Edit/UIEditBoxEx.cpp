@@ -195,7 +195,7 @@ void CUIEditCtrlEx::Synchronize() {
   if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0) {
     int wrapWidth = this->geometry.width - this->unknown_0130->geometry.width - this->unknown_01B4;
     this->WrapTextWithBreaks(fullText.c_str(), &lines, &breaks, wrapWidth);
-    this->sub_860C60(&lines);
+    this->WrapLines(lines);
   } else {
     lines.push_back(fullText);
     breaks.push_back(false);

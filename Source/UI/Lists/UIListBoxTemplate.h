@@ -392,6 +392,8 @@ public:
   // FUNCTION: fn_14344
   // OFFSET: 0x00A06300
   // FUNCTION: fn_15001
+  // OFFSET: 0x00A4E360
+  // FUNCTION: fn_16205
   void UpdateScrollBar() {
     this->scrollBar->SetTotal(this->data.size() * this->rowHeight + this->itemY);
     this->scrollBar->SetVisible(this->geometry.height);

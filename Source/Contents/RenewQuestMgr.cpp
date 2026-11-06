@@ -632,8 +632,8 @@ int CRenewQuestMgr::L_AddQuestIconTooltip(lua_State* state) {
 // OFFSET: 0x0067B620
 // FUNCTION: fn_05457
 void CRenewQuestMgr::sub_67B620(unsigned int questId) {
-  if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.EnsureWindow(0x2719))) {
-    window->sub_A56050(questId);
+  if (auto* window = static_cast<CUIOngoingQuestInfo*>(g_windowMgr.EnsureWindow(0x2719))) {
+    window->SetQuest(questId);
   }
 }
 

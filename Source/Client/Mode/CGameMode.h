@@ -264,7 +264,6 @@ public:
   bool HasResurrectionItem();
   void SendMousePointerState(int value);
   void ShowSpecialPopup(int popupId);
-  void ReceiveNpcAckMapmove(const unsigned char* packet);
   void ReceiveZoneServerChange(const unsigned char* packet);
   void ReceiveZoneServerChange(const char* mapName, std::int16_t x, std::int16_t y, int ip, std::int16_t port);
   void RequestLocalMapMove(const char* mapName, std::uint16_t x, std::uint16_t y);
@@ -465,7 +464,6 @@ public:
   void ReceiveEnchantSimulation(const unsigned char* packet);
   void ReceivePackageSimulation(const unsigned char* packet);
   void ReceiveSimulationResult(const unsigned char* packet);
-  void sub_D606B0(const unsigned char* packet);
   void ReceiveWindow154Result(std::int16_t value);
   void ReceivePlayerDuration(const unsigned char* packet);
   void ReceiveFailureNotice(const unsigned char* packet);
@@ -574,12 +572,6 @@ public:
   __declspec(noinline) unsigned sub_CEBF30(const std::vector<unsigned char>& data);
   unsigned sub_CEC100(const std::vector<unsigned char>& data);
   unsigned sub_CEC6A0(const std::vector<unsigned char>& data);
-  void sub_D2DB80(const unsigned char* record);
-  void sub_D3D2F0(const unsigned char* record);
-  void sub_D3F130(const unsigned char* record);
-  void sub_D24430(const unsigned char* record);
-  void sub_D350A0(const unsigned char* record);
-  void sub_D37A10(const unsigned char* record);
   void sub_D40730(const unsigned char* record);
   void ReceiveGroundSkill8(const unsigned char* record);
   void ReceiveGroundSkill32(const unsigned char* record);
@@ -600,25 +592,13 @@ public:
   void sub_D1A330(const unsigned char* data);
   void sub_D1A520(int unknown_0004, std::string name, std::string text, bool flag);
   void SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int value, std::int16_t x, std::int16_t y, int type, signed char level, unsigned char visible, unsigned char flags);
-  void sub_D60D70(std::uint32_t aid, std::uint32_t owner, std::int16_t x, std::int16_t y);
-  void sub_D41250(const unsigned char* record);
-  void sub_D51A90(const unsigned char* record);
-  void sub_D61390(const unsigned char* record);
-  void sub_D616B0(const unsigned char* record);
-  void sub_D619E0(const unsigned char* record);
-  void sub_D63720(const unsigned char* record);
-  void sub_D63A40(const unsigned char* record);
-  void sub_D63D70(const unsigned char* record);
+  void sub_D41250(const unsigned char* record);      
   void sub_D65FC0(const unsigned char* record);
   void ReceiveBroadcastBalloonNotice(const unsigned char* packet);
   void ReceiveUnknownD65870(const unsigned char* packet);
   void ReceiveStatusChangeEffect2(const unsigned char* packet);
   void ReceiveActorStatusValuePacket2(const unsigned char* packet);
   void ReceiveWindow95Data(const unsigned char* packet);
-  void sub_D7B170(
-    int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth,
-    int eleventh, int twelfth, int thirteenth, int fourteenth, std::string text, int fifteenth
-  );
   int Run() override;
   void Initialize(const char* name) override;
   void End() override;
@@ -1031,6 +1011,13 @@ void SendPacketHeader2(std::uint16_t packetType);
 void sub_D73A10(const unsigned char* packet);
 void sub_D6E440();
 
+struct MiniMapEffectMarker {
+  /* 0000 */ int count;
+  /* 0004 */ int x;
+  /* 0008 */ int y;
+};
+
+extern std::map<int, MiniMapEffectMarker> g_miniMapEffectMarkers;
 extern char g_pendingWhisperCount;
 extern int g_whisperRecord;
 extern int g_timeAttackStart;
