@@ -36,26 +36,25 @@ int RemoveProtectionTools() {
 // OFFSET: 0x00AEACD0
 // FUNCTION: fn_18124
 int LoadLibraryFunctions(HMODULE* module, const char* name, int count, ...) {
+  std::va_list arguments;
+  va_start(arguments, count);
   *module = LoadLibraryA(name);
   if (*module != nullptr) {
-    std::va_list arguments;
-    va_start(arguments, count);
-    int index = 0;
-    for (; index < count; ++index) {
+    for (int index = 0; index < count; ++index) {
       FARPROC* output = va_arg(arguments, FARPROC*);
       const char* symbol = va_arg(arguments, const char*);
       *output = GetProcAddress(*module, symbol);
       if (*output == nullptr) {
-        break;
+        goto failure;
       }
     }
 
     va_end(arguments);
-    if (index >= count) {
-      return 1;
-    }
+    return 1;
   }
 
+failure:
+  va_end(arguments);
   if (*module != nullptr) {
     FreeLibrary(*module);
   }
