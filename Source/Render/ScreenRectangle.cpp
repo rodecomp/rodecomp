@@ -1,6 +1,8 @@
 #include "Render/ScreenRectangle.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 
@@ -42,15 +44,12 @@ void DrawBlendedRectangle(
 
 // OFFSET: 0x0054ED40
 // FUNCTION: fn_01954
-void DrawTexturedRectangle(
-  RenderPrimitivePool& primitives, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, CTexture* texture,
-  bool depthAlpha, float depthStart, float depthEnd
-) {
+void DrawTexturedRectangle(int x, int y, int width, int height, std::uint32_t color, CTexture* texture) {
   if ((color & 0xFF000000u) == 0) {
     return;
   }
 
-  RenderPrimitive* primitive = primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   primitive->texture = texture ? texture : g_texMgr.Default();
   const float left = static_cast<float>(x);
   const float top = static_cast<float>(y);
@@ -77,7 +76,7 @@ void DrawTexturedRectangle(
     vertex.rhw = 0.999999f;
     vertex.diffuse = color;
   }
-  queues.Submit(primitive, 513, depthAlpha, depthStart, depthEnd);
+  g_renderer->queues.Submit(primitive, 513, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }
 
 // OFFSET: 0x0054EFD0

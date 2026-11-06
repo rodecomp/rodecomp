@@ -68,10 +68,7 @@ void UIBroadcastBalloon::Slot43() {
   for (const auto& entry : this->m_messages) {
     for (const BroadcastBalloonMessage& message : entry.second) {
       if (message.lines.size() != 0) {
-        DrawAlphaRectangle(
-          g_renderer->primitives, g_renderer->queues, this->geometry.x + 1 + (this->geometry.width - message.width) / 2, this->geometry.y + 1 + y,
-          message.width - 2, message.height - 2, message.backgroundColor, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-        );
+        DrawAlphaRectangle(this->geometry.x + 1 + (this->geometry.width - message.width) / 2, this->geometry.y + 1 + y, message.width - 2, message.height - 2, message.backgroundColor);
         y += message.height + 10;
       }
     }

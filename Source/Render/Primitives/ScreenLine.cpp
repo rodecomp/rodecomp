@@ -133,10 +133,7 @@ void UIRoMapWnd::DrawRecordAreas() {
     if (color == 12) {
       color = 0;
     }
-    DrawAlphaRectangle(
-      g_renderer->primitives, g_renderer->queues, it->left, it->top, it->right - it->left, it->bottom - it->top, g_roMapRecordColors[color],
-      g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-    );
+    DrawAlphaRectangle(it->left, it->top, it->right - it->left, it->bottom - it->top, g_roMapRecordColors[color]);
     ++color;
   }
 }
@@ -153,15 +150,9 @@ void UINewChatWnd::Slot43() {
 
   for (int i = 0; i < static_cast<int>(this->m_tabControl->labels.size()); ++i) {
     const int inactive = i != this->m_currentTab;
-    DrawAlphaRectangle(
-      g_renderer->primitives, g_renderer->queues, x + 1 + this->m_tabWidth * i, y + 1 + inactive, this->m_tabWidth - 1, this->m_inputOffsetY - inactive,
-      inactive ? 0x99000000 : 0x66000000, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-    );
+    DrawAlphaRectangle(x + 1 + this->m_tabWidth * i, y + 1 + inactive, this->m_tabWidth - 1, this->m_inputOffsetY - inactive, inactive ? 0x99000000 : 0x66000000);
   }
-  DrawAlphaRectangle(
-    g_renderer->primitives, g_renderer->queues, this->m_inputX + 1, this->m_inputY + 1, this->m_listWidth - 2, this->m_listHeight - 1, this->m_listColor,
-    g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-  );
+  DrawAlphaRectangle(this->m_inputX + 1, this->m_inputY + 1, this->m_listWidth - 2, this->m_listHeight - 1, this->m_listColor);
 }
 
 // OFFSET: 0x00918300
@@ -170,14 +161,8 @@ void UISubChatHisWnd::Slot43() {
   int x = 0;
   int y = 0;
   this->ToScreen(x, y);
-  DrawAlphaRectangle(
-    g_renderer->primitives, g_renderer->queues, x + 1, y + 1, this->m_inputWidth - 2, this->m_inputHeight, 0x66000000, g_renderer->fog.supported != 0,
-    g_depthStart, g_depthEnd
-  );
-  DrawAlphaRectangle(
-    g_renderer->primitives, g_renderer->queues, this->m_state.unknown_0000 + 1, this->m_state.unknown_0004 + 1, this->m_state.unknown_0008 - 2,
-    this->m_state.unknown_000C - 2, this->m_state.unknown_0014, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-  );
+  DrawAlphaRectangle(x + 1, y + 1, this->m_inputWidth - 2, this->m_inputHeight, 0x66000000);
+  DrawAlphaRectangle(this->m_state.unknown_0000 + 1, this->m_state.unknown_0004 + 1, this->m_state.unknown_0008 - 2, this->m_state.unknown_000C - 2, this->m_state.unknown_0014);
 }
 
 // OFFSET: 0x009189C0

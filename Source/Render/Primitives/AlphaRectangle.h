@@ -7,9 +7,6 @@ class RenderPrimitivePool;
 class TextureCache;
 struct RenderQueues;
 
-void DrawAlphaRectangle(
-  RenderPrimitivePool& primitives, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha,
-  float depthStart, float depthEnd
-);
+void DrawAlphaRectangle(int x, int y, int width, int height, std::uint32_t color);
 
 #endif

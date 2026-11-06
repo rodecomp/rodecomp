@@ -346,18 +346,12 @@ void UIRoMapWnd::DrawDungeonLinks() {
         );
       }
 
-      DrawTexturedRectangle(
-        g_renderer->primitives, g_renderer->queues, map->left, map->top, mapWidth, mapHeight, isSelected ? 0xFFFFFFFF : rectColor, positionTexture,
-        g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-      );
+      DrawTexturedRectangle(map->left, map->top, mapWidth, mapHeight, isSelected ? 0xFFFFFFFF : rectColor, positionTexture);
       x = field->left;
       y = field->top;
     }
 
-    DrawTexturedRectangle(
-      g_renderer->primitives, g_renderer->queues, x, y, width, height, isSelected ? 0xFFFFFFFF : rectColor, selectTexture,
-      g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-    );
+    DrawTexturedRectangle(x, y, width, height, isSelected ? 0xFFFFFFFF : rectColor, selectTexture);
   }
 }
 
@@ -375,10 +369,7 @@ void UIRoMapWnd::DrawMarks() {
     const int y = area[1] + 1;
     const int width = area[2] - area[0] - 2;
     const int height = area[3] - area[1] - 2;
-    DrawAlphaRectangle(
-      g_renderer->primitives, g_renderer->queues, x, y, width, height, g_worldViewMgr.runColor, g_renderer->fog.supported != 0, g_depthStart,
-      g_depthEnd
-    );
+    DrawAlphaRectangle(x, y, width, height, g_worldViewMgr.runColor);
     if (index != 0) {
       const int* previous = g_worldViewMgr.MarkAreaAt(index - 1, true);
       if (previous != nullptr) {
@@ -416,10 +407,7 @@ void UIRoMapWnd::DrawMarks() {
         const int drawX = static_cast<int>(
           static_cast<float>(width) * g_depthAverageHalf + static_cast<float>(x) - static_cast<float>(texture->Width())
         );
-        DrawTexturedRectangle(
-          g_renderer->primitives, g_renderer->queues, drawX, drawY, textureWidth, textureHeight, 0xCCFFFFFF, texture,
-          g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-        );
+        DrawTexturedRectangle(drawX, drawY, textureWidth, textureHeight, 0xCCFFFFFF, texture);
       }
     }
   }
@@ -436,18 +424,17 @@ void UIRoMapWnd::DrawRecordFaces(int) {
       continue;
     }
 
-    const int x = static_cast<int>(static_cast<float>(it->left - faceSize) + static_cast<float>(it->right - it->left) * g_depthAverageHalf);
-    const int y = static_cast<int>(static_cast<float>(it->top - faceSize) + static_cast<float>(it->bottom - it->top) * g_depthAverageHalf);
+    const int width = it->right - it->left;
+    const int height = it->bottom - it->top;
+    const int x = static_cast<int>(static_cast<float>(it->left - faceSize) + static_cast<float>(width) * 0.5f);
+    const int y = static_cast<int>(static_cast<float>(it->top - faceSize) + static_cast<float>(height) * 0.5f);
     if (mapName == it->name) {
       image = "유저인터페이스\\worldview_interface\\wv_face1.bmp";
     } else {
       image = "유저인터페이스\\worldview_interface\\wv_face.bmp";
     }
 
-    DrawTexturedRectangle(
-      g_renderer->primitives, g_renderer->queues, x, y, faceSize * 2, faceSize * 2, 0xEEFFFFFF,
-      g_texMgr.Load(image.c_str(), 0, false, true, false), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-    );
+    DrawTexturedRectangle(x, y, faceSize * 2, faceSize * 2, 0xEEFFFFFF, g_texMgr.Load(image.c_str(), 0, false, true, false));
   }
 }
 
@@ -658,10 +645,7 @@ void UIRoMapWnd::DrawMapMarker(const RoMapMarker& marker, unsigned char skipSele
   }
 
   DrawRoundedBorder(*this, marker.area.left, marker.area.top, static_cast<int>(marker.width), static_cast<int>(marker.height), 0xFFFFFF);
-  DrawAlphaRectangle(
-    g_renderer->primitives, g_renderer->queues, marker.area.left, marker.area.top, static_cast<int>(marker.width), static_cast<int>(marker.height), 0x66000000,
-    g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-  );
+  DrawAlphaRectangle(marker.area.left, marker.area.top, static_cast<int>(marker.width), static_cast<int>(marker.height), 0x66000000);
   std::string name = g_session.GetMapDisplayName(marker.name.c_str());
   DrawOutlinedText(*this, marker.area.left + 2, marker.area.top + 5, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
 }
@@ -954,49 +938,30 @@ void UIRoMapWnd::DrawWorld() {
     const int y = area[1] + 1;
     const int width = area[2] - area[0] - 2;
     const int height = area[3] - area[1] - 2;
-    DrawAlphaRectangle(
-      g_renderer->primitives, g_renderer->queues, x, y, width, height, g_worldViewMgr.searchColors[kind], g_renderer->fog.supported != 0, g_depthStart,
-      g_depthEnd
-    );
-    DrawTexturedRectangle(
-      g_renderer->primitives, g_renderer->queues, x, y, width, height, 0xFFFFFFFF,
-      g_texMgr.Load(g_worldViewMgr.searchImages[kind].c_str(), 0, false, true, false), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-    );
+    DrawAlphaRectangle(x, y, width, height, g_worldViewMgr.searchColors[kind]);
+    DrawTexturedRectangle(x, y, width, height, 0xFFFFFFFF, g_texMgr.Load(g_worldViewMgr.searchImages[kind].c_str(), 0, false, true, false));
   }
 
   this->DrawMarks();
   if (!g_worldViewMgr.selection.name.empty() && g_worldViewMgr.currentWorld == g_worldViewMgr.selection.worldIndex) {
     const WorldViewRecord& selection = g_worldViewMgr.selection;
-    DrawTexturedRectangle(
-      g_renderer->primitives, g_renderer->queues, selection.left, selection.top, selection.right - selection.left, selection.bottom - selection.top,
-      0xEEFFFFFF, g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Select.bmp", 0, false, true, false), g_renderer->fog.supported != 0,
-      g_depthStart, g_depthEnd
-    );
+    DrawTexturedRectangle(selection.left, selection.top, selection.right - selection.left, selection.bottom - selection.top, 0xEEFFFFFF, g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Select.bmp", 0, false, true, false));
   }
 
   this->DrawRecordFaces(1);
   this->DrawDungeonLinks();
   const WorldViewRecord* selected = this->unknown_00C0;
   if (selected != nullptr && this->unknown_00C8 != nullptr) {
-    DrawAlphaRectangle(
-      g_renderer->primitives, g_renderer->queues, selected->left, selected->top, selected->right - selected->left, selected->bottom - selected->top,
-      g_worldViewMgr.selectBoxColor, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-    );
+    DrawAlphaRectangle(selected->left, selected->top, selected->right - selected->left, selected->bottom - selected->top, g_worldViewMgr.selectBoxColor);
     if (this->unknown_00D0 != 0) {
-      DrawAlphaRectangle(
-        g_renderer->primitives, g_renderer->queues, this->unknown_00C8[0], this->unknown_00C8[1], 130, 130, 0x88000000, g_renderer->fog.supported != 0,
-        g_depthStart, g_depthEnd
-      );
+      DrawAlphaRectangle(this->unknown_00C8[0], this->unknown_00C8[1], 130, 130, 0x88000000);
       reinterpret_cast<CTexture*>(this->unknown_00D0)->Stretch(this->unknown_00C8[0], this->unknown_00C8[1], 130, 130);
     }
   }
 
   const RoMapTooltipBox* tooltip = this->unknown_00C4;
   if (tooltip != nullptr) {
-    DrawAlphaRectangle(
-      g_renderer->primitives, g_renderer->queues, tooltip->x, tooltip->y, tooltip->width, tooltip->height, 0x66000000, g_renderer->fog.supported != 0,
-      g_depthStart, g_depthEnd
-    );
+    DrawAlphaRectangle(tooltip->x, tooltip->y, tooltip->width, tooltip->height, 0x66000000);
   }
 
   if (this->m_resetTime == 1) {

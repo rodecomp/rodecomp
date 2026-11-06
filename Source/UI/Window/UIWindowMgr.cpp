@@ -334,10 +334,7 @@ void UIWindowMgr::DrawWindows() {
       g_renderDiagnosticLine = 3815;
       g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
       if (window->Slot07(&rectangle) == true) {
-        DrawAlphaRectangle(
-          g_renderer->primitives, g_renderer->queues, rectangle.x, rectangle.y, rectangle.width, rectangle.height, rectangle.color,
-          g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-        );
+        DrawAlphaRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, rectangle.color);
         g_renderDiagnosticLine = 3823;
         g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
       } else if (window->Slot42(&rectangle) == true) {
