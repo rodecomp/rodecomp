@@ -649,61 +649,60 @@ __declspec(noinline) void UIGuildWnd::CreateTabs() {
 // OFFSET: 0x00964D50
 // FUNCTION: fn_13135
 int UIGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
-  if (message == 34) {
+  switch (message) {
+  case 34:
     this->m_saved = reinterpret_cast<GuildWndInfo*>(a1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();
     }
     this->Move(this->m_saved->x, this->m_saved->y);
-    return 0;
-  }
-
-  if (message == 60) {
+    break;
+  case 60:
     this->InvalidateChildren();
     return 0;
-  }
+  case 69: {
+    int permissions[7] = {0, 1, 2, 4, 16, 128, 64};
+    switch (a1) {
+    case 1:
+    case 2:
+    case 4:
+    case 5:
+      if ((permissions[a1] & g_guildInfo.unknown_00A4) == 0) {
+        return 0;
+      }
+      break;
+    case 6:
+      return 0;
+    }
 
-  if (message != 69) {
-    return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
-  }
-
-  int permissions[7] = {0, 1, 2, 4, 16, 128, 64};
-  switch (a1) {
-  case 1:
-  case 2:
-  case 4:
-  case 5:
-    if ((permissions[a1] & g_guildInfo.unknown_00A4) == 0) {
+    g_windowMgr.CloseWindow(59);
+    switch (a1) {
+    case 0:
+      g_windowMgr.EnsureWindow(60);
+      return 0;
+    case 1:
+      g_windowMgr.EnsureWindow(61);
+      return 0;
+    case 2:
+      g_windowMgr.EnsureWindow(62);
+      return 0;
+    case 3:
+      g_windowMgr.EnsureWindow(63);
+      return 0;
+    case 4:
+      g_windowMgr.EnsureWindow(64);
+      return 0;
+    case 5:
+      g_windowMgr.EnsureWindow(65);
+      return 0;
+    case 6:
+      g_windowMgr.EnsureWindow(66);
       return 0;
     }
     break;
-  case 6:
-    return 0;
   }
-
-  g_windowMgr.CloseWindow(59);
-  switch (a1) {
-  case 0:
-    g_windowMgr.EnsureWindow(60);
-    return 0;
-  case 1:
-    g_windowMgr.EnsureWindow(61);
-    return 0;
-  case 2:
-    g_windowMgr.EnsureWindow(62);
-    return 0;
-  case 3:
-    g_windowMgr.EnsureWindow(63);
-    return 0;
-  case 4:
-    g_windowMgr.EnsureWindow(64);
-    return 0;
-  case 5:
-    g_windowMgr.EnsureWindow(65);
-    return 0;
-  case 6:
-    g_windowMgr.EnsureWindow(66);
-    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
   }
 
   return 0;
