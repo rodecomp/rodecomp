@@ -14,6 +14,7 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Lists/UIScrollBarVariants.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/StringUtil.h"
@@ -372,10 +373,9 @@ UIEditCtrl3::~UIEditCtrl3() {
 // OFFSET: 0x0085AC40
 // FUNCTION: fn_10786
 void UIEditCtrl3::Slot15(int width, int height) {
-  auto* scrollBar = new UIScrollBar();
-  this->unknown_0130 = scrollBar;
-  scrollBar->Configure(width - 10, 0, 1, height);
-  this->AddChild(scrollBar);
+  this->unknown_0130 = new UIScrollBar3();
+  static_cast<UIScrollBar3*>(this->unknown_0130)->Configure(width - 10, 0, 1, height);
+  this->AddChild(this->unknown_0130);
 }
 
 // OFFSET: 0x00863280
@@ -384,8 +384,7 @@ void UIEditCtrl3::Resize(int width, int height) {
   this->UIWindow::Resize(width, height);
   this->unknown_0130->Move(this->geometry.width - 10, 0);
   this->unknown_0130->Resize(this->unknown_0130->geometry.width, height);
-  using ResizeHandler = void(__thiscall*)(UIEditCtrl3*);
-  reinterpret_cast<ResizeHandler>((*reinterpret_cast<void***>(this))[58])(this);
+  this->UpdateScrollBar();
 }
 
 // OFFSET: 0x00865220
