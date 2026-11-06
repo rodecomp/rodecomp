@@ -55,7 +55,7 @@ const char* CSimpleStringMgr::GetString(const char* key) {
     return nullptr;
   }
 
-  auto entry = table->second.find(std::string(key, std::strlen(key)));
+  auto entry = table->second.find(std::string(key));
   if (entry == table->second.end()) {
     return nullptr;
   }
