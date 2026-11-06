@@ -78,24 +78,26 @@ bool ForbiddenWords::Load(const char* name) {
   return loaded;
 }
 
+// GLOBAL: gl_24644
+static const std::string g_forbiddenWordOpenTag = "<iteml>";
+// GLOBAL: gl_24645
+static const std::string g_forbiddenWordCloseTag = "</iteml>";
+
 // OFFSET: 0x00AE6D40
 // FUNCTION: fn_18063
 bool ForbiddenWords::Allows(const char* text) const {
   const std::size_t size = std::strlen(text) + 1;
   char* storage = static_cast<char*>(STACK_ALLOC(size));
-
   if (!storage) {
     return false;
   }
-
   std::strncpy(storage, text, size);
   const char* current = Lowercase(storage);
   const char* end = current + std::strlen(current);
 
   while (current < end) {
-    const auto* open = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("<iteml>"));
-    const auto* close = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("</iteml>"));
-
+    const auto* open = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>(g_forbiddenWordOpenTag.c_str()));
+    const auto* close = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>(g_forbiddenWordCloseTag.c_str()));
     if (open && close && std::strlen(current) != 0 && std::strlen(current) <= std::strlen(reinterpret_cast<const char*>(open))) {
       const auto skip = reinterpret_cast<const char*>(close) + 8 - reinterpret_cast<const char*>(open);
 
@@ -103,9 +105,8 @@ bool ForbiddenWords::Allows(const char* text) const {
         current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
       }
     }
-
-    for (const char* word : this->words) {
-      if (std::strncmp(word, current, std::strlen(word)) == 0) {
+    for (auto it = this->words.begin(); it != this->words.end(); ++it) {
+      if (std::strncmp(*it, current, std::strlen(*it)) == 0) {
         _freea(storage);
         return false;
       }
@@ -113,7 +114,6 @@ bool ForbiddenWords::Allows(const char* text) const {
 
     current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
   }
-
   _freea(storage);
   return true;
 }
