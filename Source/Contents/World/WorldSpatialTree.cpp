@@ -103,8 +103,8 @@ void WorldSpatialTree::Subdivide(int depth) {
     this->children[3]->minimum[2] = this->center[2];
     this->children[3]->maximum[2] = this->maximum[2];
 
-    for (WorldSpatialTree* child : this->children) {
-      child->Subdivide(depth + 1);
+    for (int index = 0; index < 4; ++index) {
+      this->children[index]->Subdivide(depth + 1);
     }
   }
 }
@@ -297,9 +297,9 @@ void WorldSpatialTree::RemoveModel(C3dActor* model, int depth) {
       }
     }
   } else {
-    for (WorldSpatialTree* child : this->children) {
-      if (child) {
-        child->RemoveModel(model, depth + 1);
+    for (int index = 0; index < 4; ++index) {
+      if (this->children[index]) {
+        this->children[index]->RemoveModel(model, depth + 1);
       }
     }
   }
