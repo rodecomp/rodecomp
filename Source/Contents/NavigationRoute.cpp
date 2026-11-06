@@ -358,9 +358,6 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
   case -92:
     message = LookupMessage(2302);
     break;
-  case -90:
-    message = LookupMessage(4692);
-    break;
   case 0:
     message = LookupMessage(2303);
     break;
@@ -388,14 +385,17 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
   case 8:
     message = LookupMessage(2311);
     break;
-  case 9:
-    message = LookupMessage(2313);
-    break;
   case 10:
     message = LookupMessage(2312);
     break;
+  case 9:
+    message = LookupMessage(2313);
+    break;
   case 11:
     message = LookupMessage(2314);
+    break;
+  case -90:
+    message = LookupMessage(4692);
     break;
   default:
     message = "NoMsg.";
