@@ -873,9 +873,9 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
 // FUNCTION: fn_17693
 bool CWorld::RemoveGroundItem(std::uint32_t aid) {
   for (auto item = this->unknown_0018.begin(); item != this->unknown_0018.end(); ++item) {
-    CRenderObject* object = *item;
+    if (static_cast<CItem*>(*item)->itemAid == aid) {
+      CRenderObject* object = *item;
 
-    if (static_cast<CItem*>(object)->itemAid == aid) {
       for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
         if (*entry == object) {
           delete object;
