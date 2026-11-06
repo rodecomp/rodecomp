@@ -6,8 +6,7 @@
 
 // OFFSET: 0x00AD52D0
 // FUNCTION: fn_17820
-CMode::CMode() {
-  this->screenshotName = "";
+CMode::CMode() : screenshotName("") {
   this->running = 1;
   this->pendingCursorType = -1;
   this->unknown_0018 = 1;
