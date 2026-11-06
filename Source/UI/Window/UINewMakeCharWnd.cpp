@@ -307,7 +307,7 @@ void UIHairStyleButton::Slot15(int width, int height) {
 
 // OFFSET: 0x007DBFD0
 // FUNCTION: fn_09626
-void UINewMakeCharWnd::sub_7DBFD0() {
+void UINewMakeCharWnd::UpdatePreviewResources() {
   const std::string bodyAct = GetBodyActionResourceName(this->m_job, this->m_sex, this->m_job, 0);
   this->m_raceActions[0].assign(bodyAct);
 
@@ -641,7 +641,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         } else if (this->m_race == 1) {
           this->m_job = 0x107A;
         }
-        this->sub_7DBFD0();
+        this->UpdatePreviewResources();
       }
     }
     return 0;
@@ -655,7 +655,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
           if (this->m_headPalette < 0) {
             this->m_headPalette = 8;
           }
-          this->sub_7DBFD0();
+          this->UpdatePreviewResources();
         } else {
           this->m_hairColorButtons[index]->SendMsg(this, 13, 0, 0, 0, 0);
         }
@@ -694,7 +694,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         if (this->m_head < 0) {
           this->m_head = 0;
         }
-        this->sub_7DBFD0();
+        this->UpdatePreviewResources();
       } else {
         this->m_hairStyleButtons[index]->SendMsg(this, 13, 0, 0, 0, 0);
       }
@@ -725,7 +725,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       this->m_hairStyleButtons[index]->m_sex = this->m_sex;
       this->m_hairStyleButtons[index]->SendMsg(nullptr, 0x28, 0, 0, 0, 0);
     }
-    this->sub_7DBFD0();
+    this->UpdatePreviewResources();
     return 0;
   }
 

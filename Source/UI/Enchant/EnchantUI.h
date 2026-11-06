@@ -50,7 +50,7 @@ public:
   void Slot16() override;
   void Slot25(int x, int y) override;
   virtual void Slot53();
-  void sub_A06C40(uint64_t group);
+  void SetEnchantGroup(uint64_t group);
   void OnSelectTarget(EnchantUI::CUITargetItem* item, const ITEM_INFO& info);
   void OnClickClose();
 };

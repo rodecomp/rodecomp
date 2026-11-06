@@ -306,11 +306,11 @@ inline void CTipBoxMgr::AddTip(int id, std::string title, double flag, std::stri
   this->m_entries[id].unknown_001C = text;
 }
 
-int sub_7AEC00(lua_State* state);
-int sub_7AE900(lua_State* state);
-int sub_7AE600(lua_State* state);
-int sub_7AEAF0(lua_State* state);
-int sub_7AEA20(lua_State* state);
+int AddTip(lua_State* state);
+int AddImgcoord(lua_State* state);
+int AddPageEx(lua_State* state);
+int AddPage(lua_State* state);
+int AddIsTag(lua_State* state);
 
 // OFFSET: 0x007AD480
 // FUNCTION: fn_09129
@@ -321,11 +321,11 @@ bool CTipBoxMgr::RegisterLuaFunctions() {
   }
 
   luaL_openlibs(state.GetState());
-  lua_register(state.GetState(), "AddTip", sub_7AEC00);
-  lua_register(state.GetState(), "AddImgcoord", sub_7AE900);
-  lua_register(state.GetState(), "AddPageEx", sub_7AE600);
-  lua_register(state.GetState(), "AddPage", sub_7AEAF0);
-  lua_register(state.GetState(), "AddIsTag", sub_7AEA20);
+  lua_register(state.GetState(), "AddTip", ::AddTip);
+  lua_register(state.GetState(), "AddImgcoord", AddImgcoord);
+  lua_register(state.GetState(), "AddPageEx", AddPageEx);
+  lua_register(state.GetState(), "AddPage", AddPage);
+  lua_register(state.GetState(), "AddIsTag", AddIsTag);
 
   const char source[] = {'\xF4', '\xCA', '\x76', '\xBD', '\xC0', '\x0E', '\xB7', '\x7F', '\xCE', '\xC3', '\x67', '\xA6', '\xDD', '\x4D', '\x87', '\x7E', '\xC6', '\xB3'};
 
@@ -421,7 +421,7 @@ void CTipBoxMgr::SelectTip(int id) {
 
 // OFFSET: 0x007AEAF0
 // FUNCTION: fn_09145
-int sub_7AEAF0(lua_State* state) {
+int AddPage(lua_State* state) {
   if (!lua_isnumber(state, -2)) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, "2st argment is must number");
@@ -444,7 +444,7 @@ int sub_7AEAF0(lua_State* state) {
 
 // OFFSET: 0x007AE900
 // FUNCTION: fn_09143
-int sub_7AE900(lua_State* state) {
+int AddImgcoord(lua_State* state) {
   if (!lua_isnumber(state, -1)) { lua_pushboolean(state, 0); lua_pushstring(state, "3nd argment is must number"); return 2; }
   if (!lua_isnumber(state, -2)) { lua_pushboolean(state, 0); lua_pushstring(state, "2nd argment is must number"); return 2; }
   if (!lua_isnumber(state, -3)) { lua_pushboolean(state, 0); lua_pushstring(state, "1st argment is must number"); return 2; }
@@ -460,7 +460,7 @@ int sub_7AE900(lua_State* state) {
 
 // OFFSET: 0x007AEA20
 // FUNCTION: fn_09144
-int sub_7AEA20(lua_State* state) {
+int AddIsTag(lua_State* state) {
   if (!lua_isnumber(state, -2)) { lua_pushboolean(state, 0); lua_pushstring(state, "2 argment is must number"); return 2; }
   if (!lua_isnumber(state, -1)) { lua_pushboolean(state, 0); lua_pushstring(state, "1 argment is must number"); return 2; }
 
@@ -473,7 +473,7 @@ int sub_7AEA20(lua_State* state) {
 
 // OFFSET: 0x007AEC00
 // FUNCTION: fn_09146
-int sub_7AEC00(lua_State* state) {
+int AddTip(lua_State* state) {
   if (!lua_isstring(state, -1)) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, "4th argment is must string");
@@ -507,7 +507,7 @@ int sub_7AEC00(lua_State* state) {
 
 // OFFSET: 0x007AE600
 // FUNCTION: fn_09142
-int sub_7AE600(lua_State* state) {
+int AddPageEx(lua_State* state) {
   if (!lua_isnumber(state, -1)) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, "8nd argment is must number");

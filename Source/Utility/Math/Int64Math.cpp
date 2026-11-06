@@ -10,6 +10,6 @@ std::int64_t MaxInt64(const std::int64_t& first, const int& second) {
 
 // OFFSET: 0x0086BF00
 // FUNCTION: fn_11017
-std::int64_t sub_86BF00(const int& value, const std::int64_t& other) {
+std::int64_t MaxIntAndInt64(const int& value, const std::int64_t& other) {
   return std::max(static_cast<std::int64_t>(value), other);
 }

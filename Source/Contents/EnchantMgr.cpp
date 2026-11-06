@@ -83,7 +83,7 @@ void CEnchantMgr::OpenEnchant(uint64_t group) {
   } else {
     CUIEnchantUI* window = static_cast<CUIEnchantUI*>(g_windowMgr.EnsureWindow(10006));
     if (window) {
-      window->sub_A06C40(group);
+      window->SetEnchantGroup(group);
       this->m_unknown_0030 = false;
     }
   }

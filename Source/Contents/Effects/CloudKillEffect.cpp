@@ -182,13 +182,13 @@ void CCloudKillEffect::Slot03() {
 void CCloudKillEffect::Slot04() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
-      static_cast<CSpriteParticle*>(*it)->sub_B40F30(1);
+      static_cast<CSpriteParticle*>(*it)->Draw(1);
     }
   }
 
   for (auto it = this->sprites.begin(); it != this->sprites.end(); ++it) {
     if (*it) {
-      static_cast<CSpriteParticle*>(*it)->sub_B40F30(1);
+      static_cast<CSpriteParticle*>(*it)->Draw(1);
     }
   }
 }

@@ -6,7 +6,7 @@
 
 // OFFSET: 0x00AEA5B0
 // FUNCTION: fn_18120
-int __fastcall sub_AEA5B0(const void* self) {
+int __fastcall Bad(const void* self) {
   return *reinterpret_cast<const int*>(static_cast<const char*>(self) + 0x20);
 }
 

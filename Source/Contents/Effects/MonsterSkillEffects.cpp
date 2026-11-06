@@ -129,7 +129,7 @@ void CRootTwistEffect::Slot03() {
 // FUNCTION: fn_07133
 void CRootTwistEffect::Slot04() {
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
-    AsSprite(*emitter)->sub_B40F30(1);
+    AsSprite(*emitter)->Draw(1);
   }
 }
 
@@ -209,7 +209,7 @@ void CSprArrowEffect::Slot03() {
 // FUNCTION: fn_07139
 void CSprArrowEffect::Slot04() {
   if (this->unknown_00CC != 0 && this->unknown_00FC) {
-    AsSprite(reinterpret_cast<EZ2STREmitter*>(this->unknown_00CC))->sub_B40F30(1);
+    AsSprite(reinterpret_cast<EZ2STREmitter*>(this->unknown_00CC))->Draw(1);
   }
 }
 
@@ -366,7 +366,7 @@ void CSpriteMableEffect::Slot04() {
   }
 
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
-    AsSprite(*emitter)->sub_B40F30(1);
+    AsSprite(*emitter)->Draw(1);
   }
 }
 
@@ -474,7 +474,7 @@ void CStemSpearEffect::Slot03() {
 void CStemSpearEffect::Slot04() {
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
     if ((*emitter)->elapsed > 0 && (*emitter)->elapsed < this->unknown_002C) {
-      AsSprite(*emitter)->sub_B40F30(1);
+      AsSprite(*emitter)->Draw(1);
     }
   }
 }
@@ -518,7 +518,7 @@ void CSvgSpiritEffect::Slot03() {
 void CSvgSpiritEffect::Slot04() {
   EZ2STREmitter* emitter = this->emitter;
   if (emitter->elapsed > 0 && emitter->elapsed < this->unknown_002C) {
-    AsSprite(emitter)->sub_B40F30(1);
+    AsSprite(emitter)->Draw(1);
   }
 }
 
@@ -537,7 +537,7 @@ bool CTunaPartyEffect::Slot06() {
 // FUNCTION: fn_07169
 void CTunaPartyEffect::Slot04() {
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
-    AsSprite(*emitter)->sub_B40F30(1);
+    AsSprite(*emitter)->Draw(1);
   }
 }
 

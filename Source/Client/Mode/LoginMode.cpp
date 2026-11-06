@@ -1337,7 +1337,7 @@ bool sub_D92B60(int) {
 
 // OFFSET: 0x00D9A230
 // FUNCTION: fn_22310
-void sub_D9A230() {
+void PreloadLoginSprites() {
   PreloadCommonSprites();
 }
 

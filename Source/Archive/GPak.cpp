@@ -1136,12 +1136,12 @@ HashSearchResult_655D70 HashTable_655340::FindLast(const short* key, unsigned in
 
 struct SeedGen_657C30 {
   unsigned int seed;
-  __declspec(noinline) unsigned int sub_657C30();
+  __declspec(noinline) unsigned int NextSeed();
 };
 
 // OFFSET: 0x00657C30
 // FUNCTION: fn_05095
-__declspec(noinline) unsigned int SeedGen_657C30::sub_657C30() {
+__declspec(noinline) unsigned int SeedGen_657C30::NextSeed() {
   this->seed = static_cast<unsigned int>(static_cast<unsigned __int64>(this->seed) * 40014u % 0x7fffffabu);
   return this->seed;
 }
@@ -1185,7 +1185,7 @@ void RanluxEngine_655F00::Seed(const unsigned int* seed_ptr, char flag, int unus
     carry = (state[24] == 0) ? 1 : 0;
   } else {
     SeedGen_657C30 gen{seed};
-    carry = gen.sub_657C30();
+    carry = gen.NextSeed();
   }
 
   state[0] = 24;

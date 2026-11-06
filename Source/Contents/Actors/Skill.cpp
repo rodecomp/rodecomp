@@ -267,7 +267,7 @@ static_assert(sizeof(SkillPickInfo) == 0x28);
 
 // OFFSET: 0x00E55100
 // FUNCTION: fn_24303
-void CSkill::sub_E55100(const float* box, float x, float y) {
+void CSkill::SetRenderInfo(const float* box, float x, float y) {
   if (this->render.unknown_00A4Bytes[1] != 0) {
     // GLOBAL: gl_25171
     static int minimum = static_cast<int>(g_renderer->UiScaleX() * 34.0f);
@@ -309,7 +309,7 @@ void CSkill::sub_E55100(const float* box, float x, float y) {
 
 // OFFSET: 0x00E55320
 // FUNCTION: fn_24304
-void CSkill::sub_E55320(const char* modelName) {
+void CSkill::ShowModel(const char* modelName) {
   if (modelName == nullptr || this->render.enabled == 0) {
     return;
   }
@@ -530,7 +530,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     case 0x99:
     case 0xE5:
       this->render.unknown_00A4Bytes[1] = 1;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       return;
     case 0x8D:
       this->render.unknown_00A4Bytes[1] = 1;
@@ -538,11 +538,11 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     case 0x8F:
       this->render.unknown_00A4Bytes[1] = 1;
       this->m_effectId = 0x6A;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       return;
     case 0x94:
       this->render.unknown_00A4Bytes[1] = 1;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled && !this->HasId(0x91)) {
         this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
@@ -550,22 +550,22 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     case 0x95:
       this->render.unknown_00A4Bytes[1] = 1;
       this->m_effectId = 0x8B;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       return;
     case 0x96:
       this->render.unknown_00A4Bytes[1] = 1;
       this->m_effectId = 0x63;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       return;
     case 0x97:
       this->render.unknown_00A4Bytes[1] = 1;
       this->m_effectId = 0x6C;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       return;
     case 0x98:
       this->render.unknown_00A4Bytes[1] = 1;
       this->m_effectId = 0x6B;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       return;
     case 0xBC:
     case 0xDC:
@@ -619,23 +619,23 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     case 0xD5:
       this->m_effectId = 0x8B;
       this->render.unknown_00A4Bytes[1] = 0;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       return;
     case 0xD6:
     case 0xD9:
       this->m_effectId = 0x6B;
       this->render.unknown_00A4Bytes[1] = 0;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       return;
     case 0xD7:
       this->m_effectId = 0x6C;
       this->render.unknown_00A4Bytes[1] = 0;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       return;
     case 0xD8:
       this->m_effectId = 0x6B;
       this->render.unknown_00A4Bytes[1] = 0;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       if (!this->HasId(0x91)) {
         this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
@@ -858,28 +858,28 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       return;
     case 0x5174:
       this->render.unknown_00A4Bytes[1] = 1;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, 0x752, position.x, position.y, position.z, 0, -1, 0, 0);
       }
       return;
     case 0x5175:
       this->render.unknown_00A4Bytes[1] = 1;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, 0x75A, position.x, position.y, position.z, 0, -1, 0, 0);
       }
       return;
     case 0x5176:
       this->render.unknown_00A4Bytes[1] = 1;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, 0x756, position.x, position.y, position.z, 0, -1, 0, 0);
       }
       return;
     case 0x5177:
       this->render.unknown_00A4Bytes[1] = 1;
-      this->sub_E55320(this->GetTrapModelName());
+      this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, 0x77F, position.x, position.y, position.z, 0, -1, 0, 0);
       }
@@ -917,7 +917,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     }
 
     this->m_effectTimer = 36000;
-    this->sub_E55320(this->GetTrapModelName());
+    this->ShowModel(this->GetTrapModelName());
     if (this->m_model != nullptr) {
       this->m_model->playback = 1;
     }
@@ -939,7 +939,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     }
 
     this->render.enabled = 1;
-    this->sub_E55320(this->GetTrapModelName());
+    this->ShowModel(this->GetTrapModelName());
     if (this->GetEffectiveJob(-1) == 0x94 && !this->HasId(0x91)) {
       this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }

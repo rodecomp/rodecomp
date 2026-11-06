@@ -17,7 +17,7 @@ public:
   void Close() override;
   bool Slot06() override;
 
-  void sub_B6CB90(int param);
+  void CreateRayParticles(int param);
 
   /* 00CC */ std::vector<CParticle*> spheres;
   /* 00D8 */ std::vector<CParticle*> rays;

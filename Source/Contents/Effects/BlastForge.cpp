@@ -20,7 +20,7 @@ CBlastForge::CBlastForge() : CEffect(-1), unknown_00DC(0), startTime(timeGetTime
 
 // OFFSET: 0x006F7660
 // FUNCTION: fn_06860
-void CBlastForge::sub_6F7660() {
+void CBlastForge::RestartBlastParticles() {
   if (this->unknown_00D4) {
     FreeParticle(this->unknown_00D4);
     this->unknown_00D4 = nullptr;
@@ -67,7 +67,7 @@ void CBlastForge::Slot01() {
     this->unknown_00D0->m_loop = true;
   }
 
-  this->sub_6F7660();
+  this->RestartBlastParticles();
 }
 
 // OFFSET: 0x006F7A20
@@ -125,7 +125,7 @@ void CBlastForge::Slot03() {
     this->unknown_00D0->Process(0.0f, 0.0f, 0.0f);
   }
 
-  this->sub_6F7F80();
+  this->ProcessBlastParticles();
 }
 
 // OFFSET: 0x006F7EA0
@@ -150,7 +150,7 @@ void CBlastForge::Slot04() {
 
 // OFFSET: 0x006F7F80
 // FUNCTION: fn_06866
-void CBlastForge::sub_6F7F80() {
+void CBlastForge::ProcessBlastParticles() {
   if (this->unknown_00D4 && this->unknown_00D8) {
     if (this->unknown_00D4->life == 0.0f || static_cast<float>(this->unknown_00D4->unknown_00E8) < this->unknown_00D4->life * 60.0f) {
       this->unknown_00D4->position.x = this->position[0];
@@ -207,6 +207,6 @@ void CBlastForge::sub_6F7F80() {
   const DWORD now = timeGetTime();
   if (static_cast<std::int64_t>(now) - this->startTime >= 1000) {
     this->startTime = timeGetTime();
-    this->sub_6F7660();
+    this->RestartBlastParticles();
   }
 }

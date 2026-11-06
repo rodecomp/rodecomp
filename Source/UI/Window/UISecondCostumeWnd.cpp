@@ -17,7 +17,7 @@
 #include "Script/LuaScript.h"
 // OFFSET: 0x00948D20
 // FUNCTION: fn_12882
-void UISecondCostumeWnd::sub_948D20(int x, int y) {
+void UISecondCostumeWnd::DrawCharacterPreview(int x, int y) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const unsigned char flags = mode->scene->player->unknown_02CC;
   const std::uint32_t time = this->unknown_0100;
@@ -216,7 +216,7 @@ void UISecondCostumeWnd::Paint() {
   if (bitmap != nullptr) {
     this->DrawBitmap(x, titleHeight + 3, bitmap, false);
   }
-  this->sub_948D20(x + 100, this->geometry.height - 35);
+  this->DrawCharacterPreview(x + 100, this->geometry.height - 35);
 }
 
 // OFFSET: 0x00951060

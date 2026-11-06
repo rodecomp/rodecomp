@@ -174,13 +174,13 @@ const char* GetLicenceText() {
   return text.c_str();
 }
 
-void sub_AD1270();
+void LoadEtcInfo();
 void InitializeLanguage();
 
 // OFFSET: 0x00ACFF90
 // FUNCTION: fn_17808
 void InitializeServiceStrings() {
-  sub_AD1270();
+  LoadEtcInfo();
 
   switch (g_serviceType) {
   case 0:
@@ -329,7 +329,7 @@ void LoadLoadingScreens(int count) {
 
 // OFFSET: 0x00AD1270
 // FUNCTION: fn_17810
-void sub_AD1270() {
+void LoadEtcInfo() {
   if (ResourceExists("etcinfo.txt", 0)) {
     CCommonObject storage;
     g_loadingScreens.clear();
@@ -489,7 +489,7 @@ void InitializeLanguage() {
 // - Cases 2 and 3 and the code before the switch are fully intact and ported as they are.
 // OFFSET: 0x00AD1C90
 // FUNCTION: fn_17817
-void sub_AD1C90() {
+void InitializeServiceConfiguration() {
   const std::uint8_t portSource[] = {0xED, 0xBA, 0xF1, 0x3F, 0xAB};
   g_servicePort = DecryptText<0xEB3D4FAB0FC183DBULL>(portSource);
 

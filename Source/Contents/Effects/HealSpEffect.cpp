@@ -202,6 +202,6 @@ void CHealSp::Slot04() {
   }
 
   for (std::list<CSpriteParticle*>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-    (*it)->sub_B40F30(1);
+    (*it)->Draw(1);
   }
 }

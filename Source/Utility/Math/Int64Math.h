@@ -4,6 +4,6 @@
 #include <cstdint>
 
 std::int64_t MaxInt64(const std::int64_t& first, const int& second);
-std::int64_t sub_86BF00(const int& value, const std::int64_t& other);
+std::int64_t MaxIntAndInt64(const int& value, const std::int64_t& other);
 
 #endif

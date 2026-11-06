@@ -23,13 +23,13 @@ static const char g_devClientTag[] = "Dev";
 static const char g_nprotectSource[] =
     "C:\\repositories\\RagnarokClient\\RagnarokClient\\Security Solution\\nProtectGameGuard\\CNProtectGameGuardMgr.cpp";
 
-void sub_E92420();
-void sub_E929B0(const char* name);
-int sub_E92820();
-int __stdcall sub_76D910(int code, const int* packet);
-void sub_E92E90(int(__stdcall* callback)(int, const int*));
+void CloseNPGameMon();
+void PreInitNPGameMonA(const char* name);
+int InitNPGameMon();
+int __stdcall GameGuardCallback(int code, const int* packet);
+void SetCallbackToGameMon(int(__stdcall* callback)(int, const int*));
 void WriteMyLog(const char* file, int line, const char* format, ...);
-void __fastcall sub_76C320(void* tokens);
+void __fastcall DestroyAuthTokenVector(void* tokens);
 
 namespace {
   template <std::size_t Length, std::uint64_t Key>
@@ -181,7 +181,7 @@ void CNProtectGameGuardMgr::Send(const char*) {
 
 // OFFSET: 0x0076D910
 // FUNCTION: fn_08219
-int __stdcall sub_76D910(int code, const int* packet) {
+int __stdcall GameGuardCallback(int code, const int* packet) {
   switch (code) {
   case 0x3E9:
   case 0x3EA: {
@@ -229,17 +229,17 @@ int __stdcall sub_76D910(int code, const int* packet) {
 
 // OFFSET: 0x0076C9D0
 // FUNCTION: fn_08209
-int CNProtectGameGuardMgr::sub_76C9D0() {
+int CNProtectGameGuardMgr::Initialize() {
   void* created = ::operator new(1, std::nothrow);
   if (created != nullptr) {
-    sub_E929B0(GameName());
+    PreInitNPGameMonA(GameName());
   }
   this->m_gameLib = created;
   if (created == nullptr) {
     return 0;
   }
 
-  const int status = sub_E92820();
+  const int status = InitNPGameMon();
   if (status != 0x755) {
     char message[0x400];
     char title[0x100];
@@ -260,6 +260,6 @@ int CNProtectGameGuardMgr::sub_76C9D0() {
     WriteMyLog(g_nprotectSource, 0x284, title);
   }
 
-  sub_E92E90(sub_76D910);
+  SetCallbackToGameMon(GameGuardCallback);
   return 1;
 }

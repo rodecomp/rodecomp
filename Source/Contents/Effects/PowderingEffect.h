@@ -20,8 +20,8 @@ public:
   bool Slot06() override;
   void Slot12() override;
 
-  void sub_709570(CParticle* particle);
-  void sub_7096B0(CParticle* particle);
+  void InitSpriteParticle(CParticle* particle);
+  void InitSmokeParticle(CParticle* particle);
 
   /* 00CC */ std::vector<CParticle*> smokeParticles;
   /* 00D8 */ std::vector<CSpriteParticle*> spriteParticles;

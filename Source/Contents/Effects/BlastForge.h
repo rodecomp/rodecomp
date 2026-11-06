@@ -17,8 +17,8 @@ public:
   void Close() override;
   bool Slot06() override;
 
-  void sub_6F7660();
-  void sub_6F7F80();
+  void RestartBlastParticles();
+  void ProcessBlastParticles();
 
   /* 00CC */ CEZ2STRParticle* unknown_00CC;
   /* 00D0 */ CEZ2STRParticle* unknown_00D0;

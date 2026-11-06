@@ -85,12 +85,12 @@ void UIChangeMaterialWnd_List::CreateScrollBar(int width, int height) {
   this->m_scrollBar->Show(0);
   this->AddChild(this->m_scrollBar);
   this->m_pageSize = height / this->unknown_00B4;
-  this->sub_5E2A70();
+  this->UpdateScrollBar();
 }
 
 // OFFSET: 0x005E1080
 // FUNCTION: fn_03871
-void UIChangeMaterialWnd_List::sub_5E1080(int delta) {
+void UIChangeMaterialWnd_List::SelectNextItem(int delta) {
   int64_t newIndex = this->m_selectedIndex + delta;
   const int count = static_cast<int>(this->m_items.size());
   const int maxIndex = count - 1;
@@ -109,11 +109,11 @@ void UIChangeMaterialWnd_List::sub_5E1080(int delta) {
     }
 
     this->m_scrollOffset = newOffset;
-    this->sub_5E2A70();
+    this->UpdateScrollBar();
     this->m_previousScrollOffset = this->m_scrollOffset;
   }
 
-  this->sub_5E3B80(targetIndex);
+  this->SetSelectedIndex(targetIndex);
 }
 
 // OFFSET: 0x005E1120
@@ -146,12 +146,12 @@ void UIChangeMaterialWnd_List::Move(int x, int y) {
 
 // OFFSET: 0x005E2590
 // FUNCTION: fn_03883
-void UIChangeMaterialWnd_List::sub_5E2590(int, int position) {
+void UIChangeMaterialWnd_List::SelectItemAtPosition(int, int position) {
   const int rowHeight = this->unknown_00B4;
   const unsigned int last = static_cast<unsigned int>(this->m_items.size() - 1);
   unsigned int index = static_cast<unsigned int>(position / rowHeight + this->m_scrollOffset);
   index = std::min(index, last);
-  this->sub_5E3B80(static_cast<int>(index));
+  this->SetSelectedIndex(static_cast<int>(index));
 }
 
 // OFFSET: 0x005E25D0
@@ -216,7 +216,7 @@ void UIChangeMaterialWnd_List::Slot35(int argument) {
 
 // OFFSET: 0x005E2A70
 // FUNCTION: fn_03890
-void UIChangeMaterialWnd_List::sub_5E2A70() {
+void UIChangeMaterialWnd_List::UpdateScrollBar() {
   const int count = static_cast<int>(this->m_items.size());
   if (count > this->m_pageSize) {
     this->m_scrollBar->Show(1);
@@ -260,7 +260,7 @@ void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
     }
   }
 
-  this->sub_5E2A70();
+  this->UpdateScrollBar();
   this->SortItems(true);
 }
 
@@ -310,12 +310,12 @@ void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
   }
 
   this->ApplyFilter(std::string());
-  this->sub_5E3B80(0);
+  this->SetSelectedIndex(0);
 }
 
 // OFFSET: 0x005E39A0
 // FUNCTION: fn_03893
-void UIChangeMaterialWnd::sub_5E39A0() {
+void UIChangeMaterialWnd::SendChangeMaterial() {
   const std::int16_t count = static_cast<std::int16_t>(this->m_materials.size());
   const int length = count * 4 + 0xC;
   auto* packet = static_cast<unsigned char*>(STACK_ALLOC(static_cast<std::size_t>(length)));
@@ -345,7 +345,7 @@ void UIChangeMaterialWnd::sub_5E39A0() {
 
 // OFFSET: 0x005E3B80
 // FUNCTION: fn_03894
-void UIChangeMaterialWnd_List::sub_5E3B80(int index) {
+void UIChangeMaterialWnd_List::SetSelectedIndex(int index) {
   this->m_selectedIndex = index;
   this->m_previousScrollOffset = this->m_scrollOffset;
   this->Invalidate();
@@ -366,7 +366,7 @@ int UIChangeMaterialWnd::SendMsg(
   case 6:
     switch (argument1) {
     case 0xb8:
-      this->sub_5E39A0();
+      this->SendChangeMaterial();
       break;
     case 0xc9:
       g_windowMgr.CloseWindow(0x158);
@@ -448,13 +448,13 @@ int UIChangeMaterialWnd_List::SendMsg(
     this->ShiftSelectedIndex(1);
     break;
   case 0x13:
-    this->sub_5E1080(1);
+    this->SelectNextItem(1);
     break;
   case 3:
     this->ShiftSelectedIndex(this->m_pageSize);
     break;
   case 4:
-    this->sub_5E1080(this->m_pageSize);
+    this->SelectNextItem(this->m_pageSize);
     break;
   case 7:
   case 9:
@@ -468,7 +468,7 @@ int UIChangeMaterialWnd_List::SendMsg(
     }
     this->m_scrollOffset = previous + delta;
     if (previous != this->m_scrollOffset) {
-      this->sub_5E2A70();
+      this->UpdateScrollBar();
     }
     return this->m_scrollOffset - previous;
   }
@@ -511,10 +511,10 @@ void UIChangeMaterialWnd_List::ShiftSelectedIndex(int value) {
     }
 
     this->m_scrollOffset = newOffset;
-    this->sub_5E2A70();
+    this->UpdateScrollBar();
   }
 
-  this->sub_5E3B80(index);
+  this->SetSelectedIndex(index);
 }
 
 // OFFSET: 0x005E1C00

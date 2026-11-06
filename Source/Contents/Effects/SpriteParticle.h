@@ -15,7 +15,7 @@ public:
   void UpdateFrame();
   void SetAction(const char* name);
   void SetSprite(const char* name);
-  void sub_B40F30(char mode);
+  void Draw(char mode);
 
   /* 02BC */ unsigned char unknown_02BC;
   /* 02BD */ unsigned char unknown_02BD;

@@ -1316,7 +1316,7 @@ void CUIEnchantUI::OnSelectTarget(EnchantUI::CUITargetItem* item, const ITEM_INF
 
 // OFFSET: 0x00A06C40
 // FUNCTION: fn_15008
-void CUIEnchantUI::sub_A06C40(uint64_t group) {
+void CUIEnchantUI::SetEnchantGroup(uint64_t group) {
   this->enchantInfo = CEnchantMgr::GetInstance()->GetEnchantInfo(group);
   if (!this->enchantInfo) {
     g_windowMgr.CloseWindow(0x2716);

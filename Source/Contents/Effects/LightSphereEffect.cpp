@@ -18,7 +18,7 @@ CLightSphereEffect::CLightSphereEffect() : CEffect(-1), spheres(), rays() {
 
 // OFFSET: 0x00B6CB90
 // FUNCTION: fn_19105
-void CLightSphereEffect::sub_B6CB90(int param) {
+void CLightSphereEffect::CreateRayParticles(int param) {
   for (int c = 0; c < 4; ++c) {
     for (int i = 0; i < 80; ++i) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(&this->position), 5);
@@ -144,8 +144,8 @@ void CLightSphereEffect::Slot01() {
     }
   }
 
-  this->sub_B6CB90(0);
-  this->sub_B6CB90(1);
+  this->CreateRayParticles(0);
+  this->CreateRayParticles(1);
 }
 
 // OFFSET: 0x00B6D160

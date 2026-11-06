@@ -10274,7 +10274,7 @@ bool CRagEffect::Slot14() {
     }
     break;
   case 307:
-    this->sub_C51740("effect\\cloud11.tga", 0);
+    this->ForestLight("effect\\cloud11.tga", 0);
     break;
   case 308:
     this->ThrowItem("유저인터페이스\\item\\돌.bmp", 2);
@@ -10329,13 +10329,13 @@ bool CRagEffect::Slot14() {
     this->AlphaDownRipples("effect\\ring_blue.tga", 0);
     break;
   case 322:
-    this->sub_C51740("effect\\cloud11.tga", 1);
+    this->ForestLight("effect\\cloud11.tga", 1);
     break;
   case 323:
-    this->sub_C51740("effect\\cloud11.tga", 2);
+    this->ForestLight("effect\\cloud11.tga", 2);
     break;
   case 324:
-    this->sub_C51740("effect\\cloud11.tga", 10);
+    this->ForestLight("effect\\cloud11.tga", 10);
     break;
   case 325:
     this->HealRingSparkle("effect\\ring_white.tga", 1);
@@ -10362,7 +10362,7 @@ bool CRagEffect::Slot14() {
     this->TexturedRisingOrbs("effect\\white02.bmp", 1);
     break;
   case 333:
-    this->sub_C5CC00();
+    this->Maple();
     break;
   case 334:
     this->BLIND(0);
@@ -14641,7 +14641,7 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
 
 // OFFSET: 0x00C649E0
 // FUNCTION: fn_20263
-void CRagEffect::sub_C649E0() {
+void CRagEffect::Sakura() {
   this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt == 99999998) {
@@ -14676,7 +14676,7 @@ void CRagEffect::sub_C649E0() {
 
 // OFFSET: 0x00C47F70
 // FUNCTION: fn_20161
-void CRagEffect::sub_C47F70(char flag) {
+void CRagEffect::CHIMTO(char flag) {
   this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt != 0) {
@@ -14761,7 +14761,7 @@ void CRagEffect::sub_C47F70(char flag) {
 
 // OFFSET: 0x00C66F60
 // FUNCTION: fn_20277
-void CRagEffect::sub_C66F60() {
+void CRagEffect::TANJI() {
   this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt != 0) {
@@ -14806,7 +14806,7 @@ void CRagEffect::sub_C66F60() {
 
 // OFFSET: 0x00C54420
 // FUNCTION: fn_20197
-void CRagEffect::sub_C54420() {
+void CRagEffect::Gravitation() {
   if (this->state.stateCnt != 0) {
     return;
   }
@@ -14853,7 +14853,7 @@ void CRagEffect::sub_C54420() {
 
 // OFFSET: 0x00C51740
 // FUNCTION: fn_20189
-void CRagEffect::sub_C51740(const char* name, char flag) {
+void CRagEffect::ForestLight(const char* name, char flag) {
   if (this->state.stateCnt != 0) {
     return;
   }
@@ -17550,7 +17550,7 @@ void CRagEffect::TexturedGroundRing(const char* name, char flag, int unused1, in
 
 // OFFSET: 0x00C5CC00
 // FUNCTION: fn_20230
-void CRagEffect::sub_C5CC00() {
+void CRagEffect::Maple() {
   this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt == 99999998) {
@@ -20121,7 +20121,7 @@ bool CRagEffect::Slot15() {
     if (this->state.stateCnt == 1) {
       g_soundMgr->PlayWave("effect\\dimension.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
-    this->sub_C51740("effect\\cloud11.tga", 13);
+    this->ForestLight("effect\\cloud11.tga", 13);
     this->TexturedHalo("effect\\구체15.bmp", 4);
     this->WhiteRingRipple(0);
     break;
@@ -20857,7 +20857,7 @@ bool CRagEffect::Slot15() {
         );
       }
     }
-    this->sub_C47F70(12);
+    this->CHIMTO(12);
     break;
   case 726:
     if (this->state.stateCnt == 10) {
@@ -20916,7 +20916,7 @@ bool CRagEffect::Slot15() {
     this->SonicWave(1);
     break;
   case 719:
-    this->sub_C51740("effect\\cloud11.tga", 12);
+    this->ForestLight("effect\\cloud11.tga", 12);
     break;
   case 718:
     this->RingStack(1);
@@ -21423,10 +21423,10 @@ bool CRagEffect::Slot15() {
     this->TexturedAura("effect\\failed.bmp", 3);
     break;
   case 606:
-    this->sub_C47F70(2);
+    this->CHIMTO(2);
     break;
   case 607:
-    this->sub_C47F70(1);
+    this->CHIMTO(1);
     break;
   case 604:
     this->NpcStop(2);
@@ -21637,7 +21637,7 @@ bool CRagEffect::Slot15() {
     this->TexturedAura("effect\\Tarot14.tga", 1);
     break;
   case 522:
-    this->sub_C54420();
+    this->Gravitation();
     break;
   case 521:
     if (this->state.stateCnt >= 10 && this->state.stateCnt <= 50) {
@@ -22083,7 +22083,7 @@ bool CRagEffect::Slot15() {
     this->TexturedClassChange(6);
     break;
   case 581:
-    this->sub_C51740("effect\\cloud11.tga", 11);
+    this->ForestLight("effect\\cloud11.tga", 11);
     break;
   case 583:
     this->TexturedClassChange(7);
@@ -24328,7 +24328,7 @@ bool CRagEffect::OnProcess() {
       this->Snow();
       break;
     case 163:
-      this->sub_C649E0();
+      this->Sakura();
       break;
     case 164:
       this->StatusIconColumn();
@@ -24725,7 +24725,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case 265:
-      this->sub_C66F60();
+      this->TANJI();
       break;
     case 266:
       for (int index = 0; index < 24; ++index) {
@@ -24733,7 +24733,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case 267:
-      this->sub_C47F70(0);
+      this->CHIMTO(0);
       break;
     case 269:
     case 270:

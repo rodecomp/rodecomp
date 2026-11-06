@@ -315,12 +315,12 @@ struct CRagEffect : CRenderObject {
   void Detoxication();
   void PoisonAttack(char flag);
   __declspec(noinline) void StoneSpike();
-  void sub_C5CC00();
-  void sub_C649E0();
-  void sub_C47F70(char flag);
-  void sub_C66F60();
-  void sub_C54420();
-  __declspec(noinline) void sub_C51740(const char* name, char flag);
+  void Maple();
+  void Sakura();
+  void CHIMTO(char flag);
+  void TANJI();
+  void Gravitation();
+  __declspec(noinline) void ForestLight(const char* name, char flag);
   void SandScatter();
   void Sight();
   void AlphaCenterRise();

@@ -11,7 +11,7 @@ public:
   UIAgitMessageBox();
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
-  void sub_956130(const char* text, int width, int height);
+  void InitializeMessageBox(const char* text, int width, int height);
 
   /* 00B4 */ std::uint16_t m_agitId;
 };

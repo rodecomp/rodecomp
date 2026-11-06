@@ -89,7 +89,7 @@ void CSpriteParticle::UpdateFrame() {
 
 // OFFSET: 0x00B40F30
 // FUNCTION: fn_18865
-void CSpriteParticle::sub_B40F30(char mode) {
+void CSpriteParticle::Draw(char mode) {
   if (mode == 1) {
     this->UpdateFrame();
   }

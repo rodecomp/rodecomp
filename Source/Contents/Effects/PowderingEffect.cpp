@@ -72,7 +72,7 @@ void CPowderingEffect::Slot01() {
     particle->unknown_00D0 = static_cast<float>(r1Final);
     particle->unknown_00D8 = static_cast<float>(r2Final);
 
-    this->sub_7096B0(particle);
+    this->InitSmokeParticle(particle);
     InitParticleQuad(particle->vertices);
     this->smokeParticles.push_back(particle);
   }
@@ -93,7 +93,7 @@ void CPowderingEffect::Slot01() {
     particle->SetSprite("이팩트\\particle2.spr");
     particle->SetAction("이팩트\\particle2.act");
 
-    this->sub_709570(particle);
+    this->InitSpriteParticle(particle);
     InitParticleQuad(particle->vertices);
     this->spriteParticles.push_back(particle);
   }
@@ -101,7 +101,7 @@ void CPowderingEffect::Slot01() {
 
 // OFFSET: 0x00709570
 // FUNCTION: fn_07090
-void CPowderingEffect::sub_709570(CParticle* particle) {
+void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
   CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
 
   const int span1 = this->unknown_00E4 * 5;
@@ -141,7 +141,7 @@ void CPowderingEffect::Slot12() {
 
 // OFFSET: 0x007096B0
 // FUNCTION: fn_07092
-void CPowderingEffect::sub_7096B0(CParticle* particle) {
+void CPowderingEffect::InitSmokeParticle(CParticle* particle) {
   const int r1 = rand() % 50;
   particle->scale = 0.0f;
   const int r2 = rand() % 21;
@@ -210,7 +210,7 @@ void CPowderingEffect::Slot03() {
       if (alpha < 0) {
         if (this->ActorExists()) {
           particle->unknown_00A8 = 0;
-          this->sub_7096B0(particle);
+          this->InitSmokeParticle(particle);
           continue;
         } else {
           alpha = 0;
@@ -257,7 +257,7 @@ void CPowderingEffect::Slot03() {
       if (alpha < 0) {
         if (this->ActorExists()) {
           particle->unknown_00A8 = 0;
-          this->sub_709570(particle);
+          this->InitSpriteParticle(particle);
           continue;
         } else {
           alpha = 0;
@@ -290,7 +290,7 @@ void CPowderingEffect::Slot04() {
   for (auto it = this->spriteParticles.begin(); it != this->spriteParticles.end(); ++it) {
     CSpriteParticle* particle = *it;
     if (particle && particle->unknown_00A8 != 2) {
-      particle->sub_B40F30(1);
+      particle->Draw(1);
     }
   }
 }

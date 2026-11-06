@@ -57,7 +57,7 @@ int CRollingCutterRagEffect::GetDuration() {
 
 // OFFSET: 0x00612010
 // FUNCTION: fn_04339
-int sub_612010() {
+int GetDefaultStateFlags() {
   return 0;
 }
 

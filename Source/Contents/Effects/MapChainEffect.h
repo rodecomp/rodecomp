@@ -27,7 +27,7 @@ public:
   bool Slot06() override;
   void Slot07() override;
 
-  void sub_B4AB90(int param);
+  void CreateChainParticles(int param);
 
   /* 00CC */ MapChainPoint corners[2];
   /* 00E4 */ std::vector<CParticle*> particles;

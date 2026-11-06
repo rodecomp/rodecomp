@@ -1793,7 +1793,7 @@ void UIGuildMemberManageWnd::Slot15(int, int) {
 
 // OFFSET: 0x00956130
 // FUNCTION: fn_13036
-void UIAgitMessageBox::sub_956130(const char* text, int width, int height) {
+void UIAgitMessageBox::InitializeMessageBox(const char* text, int width, int height) {
   this->SetSize(width, height);
   this->Slot15(width, height);
   this->Slot22(width, height);

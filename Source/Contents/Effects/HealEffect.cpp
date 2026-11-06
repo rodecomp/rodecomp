@@ -247,7 +247,7 @@ void CHealEffect::AddCone(int kind) {
 
 // OFFSET: 0x00B67F90
 // FUNCTION: fn_19070
-void CHealEffect::sub_B67F90(CParticle* particle) {
+void CHealEffect::UpdateParticleVertices(CParticle* particle) {
   if (!particle) {
     return;
   }
@@ -279,7 +279,7 @@ void CHealEffect::sub_B67F90(CParticle* particle) {
   points[3].y = 0.0f;
   points[3].z = scale * g_sinTable[(angle + 270) % 360];
 
-  this->sub_B69E30(points);
+  this->RotateToCamera(points);
 
   const float baseX = particle->unknown_00D0;
   const float baseY = particle->unknown_00D4;
@@ -585,7 +585,7 @@ void CHealEffect::Slot03() {
       particle->unknown_00D4 -= particle->unknown_0054;
       particle->unknown_00D8 -= 0.0f;
     }
-    this->sub_B67F90(particle);
+    this->UpdateParticleVertices(particle);
     ++particle->unknown_00E8;
   }
 }
@@ -634,7 +634,7 @@ void CHealEffect::Slot04() {
 
 // OFFSET: 0x00B69E30
 // FUNCTION: fn_19078
-void CHealEffect::sub_B69E30(vector3d* points) {
+void CHealEffect::RotateToCamera(vector3d* points) {
   const int yaw = 360 - static_cast<int>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw);
   const int pitch = (450 - static_cast<int>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch)) % 360;
 

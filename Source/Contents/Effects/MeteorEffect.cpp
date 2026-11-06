@@ -135,7 +135,7 @@ void CMeteorEffect::Slot04() {
   for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
     CParticle* particle = *it;
     if ((particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->unknown_00E8)) && particle) {
-      static_cast<CSpriteParticle*>(particle)->sub_B40F30(0);
+      static_cast<CSpriteParticle*>(particle)->Draw(0);
     }
   }
 }

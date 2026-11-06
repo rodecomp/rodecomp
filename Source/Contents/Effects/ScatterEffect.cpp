@@ -94,7 +94,7 @@ void CScatterEffect::Slot03() {
 void CScatterEffect::Slot04() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
-      (*it)->sub_B40F30(1);
+      (*it)->Draw(1);
     }
   }
 }

@@ -33,8 +33,8 @@ public:
   int HasError();
   std::string ErrorMessage();
   void SetHwnd(HWND window);
-  void sub_76C4C0(unsigned char flags);
-  int sub_76C9D0();
+  void ScalarDeletingDestructor(unsigned char flags);
+  int Initialize();
   void IncrementCounter();
   void SetError(const char* file, int line, std::string message);
   void Send(const char* text);

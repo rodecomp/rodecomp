@@ -488,7 +488,7 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
     }
   }
 
-  this->sub_7D9310();
+  this->UpdateCharacterInfo();
   this->m_message0 = 0xB8;
 }
 
@@ -718,7 +718,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
       }
 
-      this->sub_7D9310();
+      this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
       this->Invalidate();
       break;
@@ -822,7 +822,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       this->InvalidateChildren();
-      this->sub_7D9310();
+      this->UpdateCharacterInfo();
       break;
     }
     case 0x13D: {
@@ -888,7 +888,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       this->InvalidateChildren();
-      this->sub_7D9310();
+      this->UpdateCharacterInfo();
       break;
     }
     case 0x15F: {
@@ -1014,7 +1014,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_slotButtons2[index]->SendMsg(this, 13, index == this->m_pageSlot, 0, 0, 0);
       }
       g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
-      this->sub_7D9310();
+      this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
     }
     break;
@@ -1042,7 +1042,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_slotButtons2[index]->SendMsg(this, 13, index == this->m_pageSlot, 0, 0, 0);
       }
       g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
-      this->sub_7D9310();
+      this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
     }
     break;
@@ -1066,7 +1066,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_slotButtons2[index]->SendMsg(this, 13, index == this->m_pageSlot, 0, 0, 0);
       }
       g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
-      this->sub_7D9310();
+      this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
     }
     break;
@@ -1094,7 +1094,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_slotButtons2[index]->SendMsg(this, 13, index == this->m_pageSlot, 0, 0, 0);
       }
       g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
-      this->sub_7D9310();
+      this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
     }
     break;
@@ -1123,7 +1123,7 @@ void UINewSelectCharWnd::EnableButtonById(int id) {
 
 // OFFSET: 0x007D90E0
 // FUNCTION: fn_09596
-__declspec(noinline) void UINewSelectCharWnd::sub_7D90E0() {
+__declspec(noinline) void UINewSelectCharWnd::UpdateDeleteButtons() {
   const int slot = this->m_slotsPerPage * this->m_page + this->m_pageSlot;
   if (slot >= this->m_totalSlots) {
     return;
@@ -1159,7 +1159,7 @@ __declspec(noinline) void UINewSelectCharWnd::sub_7D90E0() {
 
 // OFFSET: 0x007D9260
 // FUNCTION: fn_09597
-void UINewSelectCharWnd::sub_7D9260() {
+void UINewSelectCharWnd::UpdateSlotButtons() {
   for (int index = 0; index < this->m_slotsPerPage; ++index) {
     const int slot = this->m_page * this->m_slotsPerPage + index;
     if (slot >= this->m_totalSlots) {
@@ -1179,7 +1179,7 @@ void UINewSelectCharWnd::sub_7D9260() {
 
 // OFFSET: 0x007D9310
 // FUNCTION: fn_09598
-void UINewSelectCharWnd::sub_7D9310() {
+void UINewSelectCharWnd::UpdateCharacterInfo() {
   const int current = this->m_page * this->m_slotsPerPage + this->m_pageSlot;
   if (current >= this->m_totalSlots) {
     return;
@@ -1213,8 +1213,8 @@ void UINewSelectCharWnd::sub_7D9310() {
   }
   button->Invalidate();
 
-  this->sub_7D9260();
-  this->sub_7D90E0();
+  this->UpdateSlotButtons();
+  this->UpdateDeleteButtons();
 }
 
 // OFFSET: 0x007D97B0

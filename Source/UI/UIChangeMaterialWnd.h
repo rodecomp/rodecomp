@@ -75,7 +75,7 @@ public:
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   ITEM_INFO* GetItemAt(int x, int y);
-  void sub_5E39A0();
+  void SendChangeMaterial();
   void UpdateSearchPlaceholder();
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4)
     override;
@@ -108,10 +108,10 @@ public:
   void ApplyFilter(std::string text);
   void SortItems(bool ascending);
   void RefreshVisibleEntries();
-  void sub_5E2A70();
-  void sub_5E3B80(int index);
-  void sub_5E2590(int unknown, int position);
-  void sub_5E1080(int delta);
+  void UpdateScrollBar();
+  void SetSelectedIndex(int index);
+  void SelectItemAtPosition(int unknown, int position);
+  void SelectNextItem(int delta);
   void ShiftSelectedIndex(int value);
   void CreateScrollBar(int width, int height);
   const MaterialListEntry* GetEntry(unsigned int index) const;

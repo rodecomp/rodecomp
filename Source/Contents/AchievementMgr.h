@@ -57,7 +57,7 @@ public:
 
   static bool CreateInstance();
   static void DestroyInstance();
-  bool sub_66EAA0();
+  bool LoadAchievementInfo();
 
   /* 0004 */ bool unknown_0004;
   /* 0008 */ int groupWidth;

@@ -97,7 +97,7 @@ void CSmokeEffect::Slot03() {
 void CSmokeEffect::Slot04() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it && (*it)->unknown_000C < this->visibleCount) {
-      (*it)->sub_B40F30(1);
+      (*it)->Draw(1);
     }
   }
 }

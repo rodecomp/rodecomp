@@ -167,7 +167,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
       UIAgitMessageBox* box = new UIAgitMessageBox();
       const char* text = FormatString(LookupMessage(3631), agitName, costZeny, costGuildPoint);
-      box->sub_956130(text, 310, 130);
+      box->InitializeMessageBox(text, 310, 130);
 
       int x = g_renderer->viewport.centerX - box->geometry.width / 2;
       int y = g_renderer->viewport.centerY - box->geometry.height / 2;

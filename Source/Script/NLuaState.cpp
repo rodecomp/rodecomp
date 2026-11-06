@@ -51,7 +51,7 @@ void TreeSubMap::Clear() noexcept {
 
 // OFFSET: 0x00CA4B60
 // FUNCTION: fn_20940
-void* sub_CA4B60() {
+void* GetEntryQueueMgr() {
   return g_entryQueueMgr;
 }
 

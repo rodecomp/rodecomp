@@ -17,7 +17,7 @@ CMapChainEffect::CMapChainEffect()
 
 // OFFSET: 0x00B4AB90
 // FUNCTION: fn_18947
-void CMapChainEffect::sub_B4AB90(int param) {
+void CMapChainEffect::CreateChainParticles(int param) {
   int local8 = 0;
   for (int localC = 0; localC < 360; localC += 60, ++local8) {
     for (int i = 0; i < 21; ++i) {
@@ -82,11 +82,11 @@ void CMapChainEffect::Close() {
 // OFFSET: 0x00B4AFE0
 // FUNCTION: fn_18949
 void CMapChainEffect::Slot01() {
-  this->sub_B4AB90(25);
-  this->sub_B4AB90(50);
-  this->sub_B4AB90(95);
-  this->sub_B4AB90(120);
-  this->sub_B4AB90(165);
+  this->CreateChainParticles(25);
+  this->CreateChainParticles(50);
+  this->CreateChainParticles(95);
+  this->CreateChainParticles(120);
+  this->CreateChainParticles(165);
 }
 
 // OFFSET: 0x00B4B0A0

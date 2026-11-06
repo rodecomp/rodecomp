@@ -38,7 +38,7 @@ bool CAchievementMgr::CreateInstance() {
     return false;
   }
 
-  if (!g_achievementMgr->sub_66EAA0()) {
+  if (!g_achievementMgr->LoadAchievementInfo()) {
     if (g_achievementMgr != nullptr) {
       delete g_achievementMgr;
     }
@@ -241,7 +241,7 @@ private:
 
 // OFFSET: 0x0066EAA0
 // FUNCTION: fn_05322
-bool CAchievementMgr::sub_66EAA0() {
+bool CAchievementMgr::LoadAchievementInfo() {
   NLuaState lua;
   if (lua.IsValid()) {
     luaL_openlibs(lua.GetState());
