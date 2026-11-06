@@ -179,7 +179,7 @@ void CPlayerSkillBundle::AddExtra(const CSkillInfo& value, WindowManagerWindows&
 
 // OFFSET: 0x007714A0
 // FUNCTION: fn_08276
-bool CPlayerSkillBundle::RemoveExtra(std::uint32_t id, WindowManagerWindows& windows) {
+bool CPlayerSkillBundle::RemoveExtra(std::uint32_t id) {
   for (auto entry = this->extra.begin(); entry != this->extra.end(); ++entry) {
     if (entry->id != id) {
       continue;
@@ -189,7 +189,7 @@ bool CPlayerSkillBundle::RemoveExtra(std::uint32_t id, WindowManagerWindows& win
     const auto item = std::find(this->extraIds.begin(), this->extraIds.end(), id);
     if (item != this->extraIds.end()) {
       this->extraIds.erase(item);
-      if (UIWindow* window = windows.LookupWindow(37)) {
+      if (UIWindow* window = g_windowMgr.LookupWindow(37)) {
         window->SendMsg(nullptr, 161, 0, 0, 0, 0);
       }
     }
@@ -286,10 +286,10 @@ void CPlayerSkillBundle::RecordLevelChange(const CSkillInfo& value) {
 
 // OFFSET: 0x00771250
 // FUNCTION: fn_08273
-bool CPlayerSkillBundle::PreviousLevel(int id, int& output) const {
+std::pair<bool, int> CPlayerSkillBundle::PreviousLevel(int id) const {
   const auto entry = this->levelChanges.find(id);
-  output = entry == this->levelChanges.end() ? 0 : entry->second.previous;
-  return entry != this->levelChanges.end();
+  const bool found = entry != this->levelChanges.end();
+  return found ? std::make_pair(true, entry->second.previous) : std::make_pair(false, 0);
 }
 
 // OFFSET: 0x00771FC0

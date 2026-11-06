@@ -194,9 +194,9 @@ void CSession::NotifySkillWindows() {
 // FUNCTION: fn_23762
 void CSession::RemoveSkill(std::uint32_t id) {
   if (CSkillInfo* skill = this->m_skillBundle.FindGrouped(id)) {
-    int previous;
-    if (this->m_skillBundle.PreviousLevel(static_cast<int>(id), previous)) {
-      skill->level = previous;
+    const std::pair<bool, int> previous = this->m_skillBundle.PreviousLevel(static_cast<int>(id));
+    if (previous.first == true) {
+      skill->level = previous.second;
     }
 
     this->NotifySkillWindows();
@@ -204,7 +204,7 @@ void CSession::RemoveSkill(std::uint32_t id) {
   }
 
   this->m_skillBundle.Remove(id);
-  if (this->m_skillBundle.RemoveExtra(id, g_windowMgr)) {
+  if (this->m_skillBundle.RemoveExtra(id) == true) {
     this->NotifySkillWindows();
   }
 }

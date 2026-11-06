@@ -35,7 +35,7 @@ public:
   CSkillInfo Pending(std::uint32_t id);
   CSkillInfo* FindExtra(std::uint32_t id);
   void ClearExtra();
-  bool RemoveExtra(std::uint32_t id, WindowManagerWindows& windows);
+  bool RemoveExtra(std::uint32_t id);
   void AddExtra(const CSkillInfo& value, WindowManagerWindows& windows);
   void NumberExtra();
   void AddGrouped(int group, const CSkillInfo& value);
@@ -47,7 +47,7 @@ public:
   int GroupedLevel(std::uint32_t id);
   bool HasHigherLevel(std::uint32_t id);
   void RecordLevelChange(const CSkillInfo& value);
-  bool PreviousLevel(int id, int& output) const;
+  std::pair<bool, int> PreviousLevel(int id) const;
   void ApplyLevelChange(CSkillInfo& value);
   void ClearLevelChanges();
   void MarkLevelChanges();
