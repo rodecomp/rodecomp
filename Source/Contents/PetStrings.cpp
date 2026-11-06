@@ -19,11 +19,11 @@ const char* CSession::GetPetAccActName(int id) {
 // FUNCTION: fn_23807
 int CSession::GetPetFood(int job) {
   int food = 0;
-  if (!this->m_hotkeyScript->Call("GetPetFood", "d>d", job, &food)) {
-    return -1;
+  if (this->m_hotkeyScript->Call("GetPetFood", "d>d", job, &food)) {
+    return food;
   }
 
-  return food;
+  return -1;
 }
 
 // OFFSET: 0x00E0B170
@@ -41,20 +41,20 @@ void CSession::GetPetIllustName(int job, int, char* buffer) {
 // FUNCTION: fn_23813
 int CSession::GetPetJobByEggItem(int eggItemId) {
   int job = 0;
-  if (!this->m_hotkeyScript->Call("GetPetJTID_by_PetEggITID", "d>d", eggItemId, &job)) {
-    return -1;
+  if (this->m_hotkeyScript->Call("GetPetJTID_by_PetEggITID", "d>d", eggItemId, &job)) {
+    return job;
   }
 
-  return job;
+  return -1;
 }
 
 // OFFSET: 0x00E12780
 // FUNCTION: fn_23816
 const char* CSession::GetPetString(int id) {
   const char* text = nullptr;
-  if (!this->m_hotkeyScript->Call("GetPetString", "d>s", id, &text)) {
-    return nullptr;
+  if (this->m_hotkeyScript->Call("GetPetString", "d>s", id, &text)) {
+    return text;
   }
 
-  return text;
+  return nullptr;
 }

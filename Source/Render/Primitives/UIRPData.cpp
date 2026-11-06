@@ -13,8 +13,10 @@ UIRPData::UIRPData() : m_texture(nullptr) {
 // OFFSET: 0x00812800
 // FUNCTION: fn_10118
 UIRPData::~UIRPData() {
-  delete this->m_texture;
-  this->m_texture = nullptr;
+  if (this->m_texture) {
+    delete this->m_texture;
+    this->m_texture = nullptr;
+  }
   this->m_primitives.clear();
 }
 

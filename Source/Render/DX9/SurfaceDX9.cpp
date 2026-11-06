@@ -96,8 +96,9 @@ bool CSurfaceDX9::Resize(int width, int height) {
 
   this->m_width = AlignDimension(width);
   this->m_height = AlignDimension(height);
+  const D3DFORMAT format = this->m_owner->backBufferDescription.Format;
   return SUCCEEDED(this->m_owner->device->CreateOffscreenPlainSurface(
-           this->m_width, this->m_height, this->m_owner->backBufferDescription.Format, D3DPOOL_DEFAULT, &this->m_surface, nullptr
+           this->m_width, this->m_height, format, D3DPOOL_DEFAULT, &this->m_surface, nullptr
          )) &&
          this->m_surface;
 }

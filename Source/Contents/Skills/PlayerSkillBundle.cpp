@@ -181,7 +181,7 @@ void CPlayerSkillBundle::AddExtra(const CSkillInfo& value, WindowManagerWindows&
 // FUNCTION: fn_08276
 bool CPlayerSkillBundle::RemoveExtra(std::uint32_t id) {
   for (auto entry = this->extra.begin(); entry != this->extra.end(); ++entry) {
-    if (entry->id != id) {
+    if (id != entry->id) {
       continue;
     }
 

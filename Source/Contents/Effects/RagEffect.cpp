@@ -1999,7 +1999,7 @@ bool CRagEffect::LexDivina() {
     PlayEffectWave(*this, "effect\\priest_lexdivina.wav");
   }
 
-  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
 
 // OFFSET: 0x00C37A60

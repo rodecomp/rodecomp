@@ -721,10 +721,9 @@ __declspec(noinline) void UIMessengerGroupWnd::DropMember(int x, int y, int inde
     int cell;
     if (x < g_windowMgr.unknown_4F238 + 23 && y > top) {
       int row = (y - top) / (g_windowMgr.unknown_4F23C + 3);
+      cell = row;
       if (g_windowMgr.FindSnapExcludedWindow(row)) {
         cell = g_windowMgr.FindMiniPartyCell();
-      } else {
-        cell = row;
       }
     } else {
       cell = g_windowMgr.FindMiniPartyCell();

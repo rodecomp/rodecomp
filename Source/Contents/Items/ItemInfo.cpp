@@ -149,12 +149,7 @@ std::uint32_t ITEM_INFO::Assign(const RawItemData& item) {
   this->identified = item.identified;
   this->unknown_0060 = item.unknown_001C;
 
-  int count = 0;
-  if (item.optionCount <= 5) {
-    count = item.optionCount;
-  }
-
-  this->unknown_0098 = count;
+  this->unknown_0098 = item.optionCount > 5 ? 0 : item.optionCount;
 
   for (int index = 0; index < this->unknown_0098; ++index) {
     std::memcpy(this->unknown_009C + index * 5, item.options + index * 5, 5);
@@ -165,7 +160,7 @@ std::uint32_t ITEM_INFO::Assign(const RawItemData& item) {
   this->unknown_0000[2] = item.unknown_00B0;
   this->unknown_0070 = item.unknown_00B8;
 
-  return item.unknown_00B8;
+  return this->unknown_0070;
 }
 
 // OFFSET: 0x006D8A90
