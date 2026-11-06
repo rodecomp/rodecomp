@@ -33,7 +33,7 @@ void CWebBrowser::RefreshSize() {
   this->browser->get_Width(&width);
   this->browser->get_Height(&height);
 
-  if (width != this->width || height != this->height) {
+  if (this->width != width || this->height != height) {
     this->Resize(this->width, this->height);
   }
 }
