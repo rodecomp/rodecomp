@@ -755,7 +755,6 @@ void UIDisplayCharacter::LoadCostumes() {
 void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
   switch (layout) {
   case 496:
-  case 497:
     this->m_checkTop = 1;
     this->unknown_00A8 = 11;
     this->unknown_00C8 = 24;
@@ -774,6 +773,39 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
     }
     break;
   case 200:
+    this->m_checkTop = 6;
+    this->unknown_00A8 = 12;
+    this->unknown_00A1 = 1;
+    this->unknown_00A2 = 1;
+    this->unknown_00A0 = 1;
+    this->unknown_00C0 = 41;
+    this->unknown_00C4 = -2;
+    this->unknown_00C8 = 68;
+    this->unknown_00CC = 6;
+    this->m_offBitmap = "유저인터페이스\\styleshop\\checkbox_off.bmp";
+    for (int i = static_cast<int>(this->m_list.size()); i < 8; ++i) {
+      this->m_checks[i]->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
+      this->m_checks[i]->Move(20, this->geometry.height / 8 * i + this->m_checkTop);
+    }
+    break;
+  case 497:
+    this->m_checkTop = 1;
+    this->unknown_00A8 = 11;
+    this->unknown_00C8 = 24;
+    this->unknown_00CC = 0;
+    this->m_offBitmap = "유저인터페이스\\styleshop\\checkbox_mini_off.bmp";
+    for (int row = static_cast<int>(this->m_list.size()); row < 4; ++row) {
+      for (int column = static_cast<int>(this->m_list.size()); column < 2; ++column) {
+        UICheckBox* check = this->m_checks[row * 2 + column];
+        check->SetBitmaps("유저인터페이스\\styleshop\\checkbox_mini_on.bmp", "유저인터페이스\\styleshop\\checkbox_mini_non.bmp");
+        int y = this->m_checkTop;
+        if (row > 0) {
+          y += this->geometry.height / 8 * row;
+        }
+        check->Move(column * 105 + 7, y);
+      }
+    }
+    break;
   case 498:
   case 583:
     this->m_checkTop = 6;
@@ -1312,7 +1344,8 @@ UIStylingShopWnd::UIStylingShopWnd()
 int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   char table[64];
   UIWindow* shop = g_windowMgr.LookupWindow(281);
-  if (message == 6) {
+  switch (message) {
+  case 6:
     if (argument1 == 189 && sender) {
       UIAccBitmapButton* button = static_cast<UIAccBitmapButton*>(sender);
       for (unsigned int i = 0; i < this->m_itemFrames.size(); ++i) {
@@ -1341,7 +1374,9 @@ int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t ar
         ToggleStylingAccessory(button->m_itemId, button->m_slot);
       }
     }
-  } else if (message == 101) {
+    break;
+
+  case 101:
     if (sender) {
       UIAccBitmapButton* button = static_cast<UIAccBitmapButton*>(sender);
       memset(table, 0, sizeof(table));
@@ -1367,7 +1402,9 @@ int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t ar
         window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
       }
     }
-  } else {
+    break;
+
+  default:
     shop->Invalidate();
     shop->InvalidateChildren();
     return UIScrollWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
