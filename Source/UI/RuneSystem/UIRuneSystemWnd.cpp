@@ -218,7 +218,7 @@ void UIRuneSet_Info::Slot26(int x, int y) {
   }
 
   if (slot != -1 && static_cast<unsigned int>(slot) < runeSet->m_slots.size() && runeSet->m_slots[slot]) {
-    if (runeSet->GetTagId() != g_runeSystemMgr->GetSelectTag()) {
+    if (g_runeSystemMgr->GetSelectTag() != runeSet->GetTagId()) {
       g_runeSystemMgr->SetSelectTag(this->m_runeSet->GetTagId());
       g_runeSystemMgr->SendRequest(0xBCB, nullptr, -1);
     }
