@@ -140,10 +140,10 @@ void CLanguageBase::CopySelection() {
         end = this->anchor;
       }
 
-      if (this->password) {
-        std::memset(data, '*', static_cast<std::uint32_t>(this->text.size()) - static_cast<std::uint32_t>(begin));
-      } else {
+      if (!this->password) {
         std::memcpy(data, this->text.c_str() + begin, end - begin);
+      } else {
+        std::memset(data, '*', static_cast<std::uint32_t>(this->text.size()) - static_cast<std::uint32_t>(begin));
       }
 
       data[std::abs(this->cursor - this->anchor)] = 0;
