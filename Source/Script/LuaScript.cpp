@@ -347,10 +347,28 @@ int SetMagicFloorInfo(lua_State* state) {
   case 20:
     *reinterpret_cast<int*>(&effect->unknown_0054[4]) = luaL_checknumber(state, 3);
     break;
-  default:
-    if (key >= 21 && key <= 41) {
-      reinterpret_cast<float*>(&effect->unknown_0054[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
-    }
+  case 21:
+  case 22:
+  case 23:
+  case 24:
+  case 25:
+  case 26:
+  case 27:
+  case 28:
+  case 29:
+  case 30:
+  case 31:
+  case 32:
+  case 33:
+  case 34:
+  case 35:
+  case 36:
+  case 37:
+  case 38:
+  case 39:
+  case 40:
+  case 41:
+    reinterpret_cast<float*>(&effect->unknown_0054[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
     break;
   }
 
@@ -426,10 +444,28 @@ int SetOtherEffectInfo(lua_State* state) {
   case 20:
     *reinterpret_cast<int*>(&effect->unknown_0054[4]) = luaL_checknumber(state, 4);
     break;
-  default:
-    if (key >= 21 && key <= 41) {
-      reinterpret_cast<float*>(&effect->unknown_0054[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
-    }
+  case 21:
+  case 22:
+  case 23:
+  case 24:
+  case 25:
+  case 26:
+  case 27:
+  case 28:
+  case 29:
+  case 30:
+  case 31:
+  case 32:
+  case 33:
+  case 34:
+  case 35:
+  case 36:
+  case 37:
+  case 38:
+  case 39:
+  case 40:
+  case 41:
+    reinterpret_cast<float*>(&effect->unknown_0054[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
     break;
   }
 
