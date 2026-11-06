@@ -80,12 +80,10 @@ UIChangeMaterialWnd_ScrollBar::UIChangeMaterialWnd_ScrollBar() : UIScrollBar() {
 // OFFSET: 0x005E1B30
 // FUNCTION: fn_03877
 void UIChangeMaterialWnd_List::CreateScrollBar(int width, int height) {
-  auto* bar = new UIChangeMaterialWnd_ScrollBar();
-  *reinterpret_cast<int*>(reinterpret_cast<char*>(bar) + 0xA4) = 0x10;
-  this->m_scrollBar = bar;
-  bar->Configure(width - this->unknown_00B8, 0, 1, height);
-  bar->Show(0);
-  this->AddChild(bar);
+  this->m_scrollBar = new UIChangeMaterialWnd_ScrollBar();
+  this->m_scrollBar->Configure(width - this->unknown_00B8, 0, 1, height);
+  this->m_scrollBar->Show(0);
+  this->AddChild(this->m_scrollBar);
   this->m_pageSize = height / this->unknown_00B4;
   this->sub_5E2A70();
 }
