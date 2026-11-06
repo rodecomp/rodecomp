@@ -16,8 +16,8 @@ bool CDummyEffectLauncher::OnProcess() {
 
 // OFFSET: 0x00E50A60
 // FUNCTION: fn_24296
-void CDummyEffectLauncher::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
-  if ((static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) != 14) {
+__declspec(safebuffers) void CDummyEffectLauncher::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
+  if (message != 14 || a != 0) {
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
@@ -33,17 +33,18 @@ void CDummyEffectLauncher::SendMsg(CGameObject* sender, int message, int a, int 
   }
 
   CRagEffect* effect = this->LaunchEffect(d, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-  const std::int64_t life = static_cast<std::int64_t>(g) << 32 | static_cast<std::uint32_t>(f);
-  if (life == 0) {
-    this->lifeFrames = 300;
-    return;
-  }
-
-  this->lifeFrames = f;
-  if (life == 333) {
-    vector3d value{static_cast<float>(static_cast<std::int64_t>(i) << 32 | static_cast<std::uint32_t>(h)), 0.0f, 0.0f};
-    if (effect != nullptr) {
-      effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0, 0);
+  if ((f | g) != 0) {
+    this->lifeFrames = f;
+    if (f == 333 && g == 0) {
+      vector3d value;
+      value.y = 0.0f;
+      value.z = 0.0f;
+      value.x = static_cast<float>(static_cast<std::int64_t>(i) << 32 | static_cast<std::uint32_t>(h));
+      if (effect != nullptr) {
+        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0, 0);
+      }
     }
+  } else {
+    this->lifeFrames = 300;
   }
 }
