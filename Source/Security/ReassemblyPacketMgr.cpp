@@ -39,11 +39,12 @@ bool CReassemblyPacketImpl::Create() {
   if (g_packetReassembler == nullptr) {
     g_packetReassembler = new (std::nothrow) CReassemblyPacketImpl();
     if (g_packetReassembler != nullptr) {
-      if (g_packetReassembler->m_valid) {
-        return true;
+      if (!g_packetReassembler->m_valid) {
+        delete g_packetReassembler;
+        g_packetReassembler = nullptr;
+        return false;
       }
-      delete g_packetReassembler;
-      g_packetReassembler = nullptr;
+      return true;
     }
   }
   return false;
@@ -70,11 +71,12 @@ bool CReassemblyPacketMgr::CreateInstance() {
   if (g_reassemblyPacketMgr == nullptr) {
     g_reassemblyPacketMgr = new (std::nothrow) CReassemblyPacketMgr();
     if (g_reassemblyPacketMgr != nullptr) {
-      if (g_reassemblyPacketMgr->m_valid) {
-        return true;
+      if (!g_reassemblyPacketMgr->m_valid) {
+        delete g_reassemblyPacketMgr;
+        g_reassemblyPacketMgr = nullptr;
+        return false;
       }
-      delete g_reassemblyPacketMgr;
-      g_reassemblyPacketMgr = nullptr;
+      return true;
     }
   }
   return false;
