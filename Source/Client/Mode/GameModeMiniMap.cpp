@@ -906,6 +906,14 @@ void CGameMode::RefreshMiniMapTooltips() {
       x = g_renderer->viewport.centerX - window->geometry.width / 2;
       y = g_renderer->viewport.centerY - window->geometry.height / 2;
       break;
+    case -1:
+    case 11:
+      g_windowMgr.RestoreHiddenWindows();
+      tooltipWindows.clear();
+      tooltipId = -1;
+    default:
+      x = 160;
+      break;
     case 12:
       window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
       x = 0;
@@ -920,14 +928,6 @@ void CGameMode::RefreshMiniMapTooltips() {
       window->SendMsg(nullptr, 0x4E, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
       x = g_renderer->viewport.width - window->geometry.width;
       y = g_renderer->viewport.height - window->geometry.height;
-      break;
-    case -1:
-    case 11:
-      g_windowMgr.RestoreHiddenWindows();
-      tooltipWindows.clear();
-      tooltipId = -1;
-    default:
-      x = 160;
       break;
   }
 
