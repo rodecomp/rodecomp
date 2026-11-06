@@ -38,6 +38,10 @@ struct MaterialListEntry {
 };
 
 struct MaterialNameLess {
+  // INLINED
+  explicit MaterialNameLess(const std::vector<MaterialListEntry>& entries) : entries(entries) {
+  }
+
   bool operator()(unsigned int first, unsigned int second) const;
 
   /* 0000 */ std::vector<MaterialListEntry> entries;
