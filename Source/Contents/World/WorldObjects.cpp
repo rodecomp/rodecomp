@@ -929,8 +929,8 @@ bool CWorld::RemoveSkill(std::uint32_t aid) {
 CMsgEffect* CGameMode::SpawnDamageMsgEffect(const vector3d* position, std::uint32_t color, std::uint32_t accountId) {
   std::string sprite;
   std::string action;
-  sprite = FormatOwnedString("%s.spr", g_session.unknown_80EC.c_str());
-  action = FormatOwnedString("%s.act", g_session.unknown_80EC.c_str());
+  sprite = static_cast<const std::string&>(FormatOwnedString("%s.spr", g_session.unknown_80EC.c_str()));
+  action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.unknown_80EC.c_str()));
 
   CMsgEffect* effect = new CMsgEffect;
   if (effect) {
