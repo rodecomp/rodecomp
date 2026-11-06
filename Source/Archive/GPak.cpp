@@ -2828,7 +2828,7 @@ namespace GPakEx {
       return;
     }
     std::memcpy(this->m_temp.data(), input ? input + length - blockSize : nullptr, blockSize);
-    if (length > blockSize) {
+    if (blockSize < length) {
       this->m_cipher->AdvancedProcessBlocks(input, input ? input + blockSize : nullptr, output ? output + blockSize : nullptr, length - blockSize, BlockCipher::Reverse);
     }
     this->m_cipher->ProcessAndXorBlock(this->m_register.data(), input, output);
@@ -2851,7 +2851,7 @@ namespace GPakEx {
   // FUNCTION: fn_04832
   void OFB_Base::ProcessData(const std::uint8_t* input, std::uint8_t* output, std::size_t length) {
     const std::size_t blockSize = this->m_cipher->BlockSize();
-    while (length != 0) {
+    while (length > 0) {
       this->m_cipher->ProcessAndXorBlock(this->m_register.data(), nullptr, this->m_register.data());
       XorBuffers(output, input, this->m_register.data(), blockSize);
       length -= blockSize;
