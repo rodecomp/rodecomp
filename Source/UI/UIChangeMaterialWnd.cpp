@@ -150,9 +150,7 @@ void UIChangeMaterialWnd_List::sub_5E2590(int, int position) {
   const int rowHeight = this->unknown_00B4;
   const unsigned int last = static_cast<unsigned int>(this->m_items.size() - 1);
   unsigned int index = static_cast<unsigned int>(position / rowHeight + this->m_scrollOffset);
-  if (last < index) {
-    index = last;
-  }
+  index = std::min(index, last);
   this->sub_5E3B80(static_cast<int>(index));
 }
 
