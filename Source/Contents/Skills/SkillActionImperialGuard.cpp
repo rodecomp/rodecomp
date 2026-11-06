@@ -152,8 +152,10 @@ public:
 // FUNCTION: fn_08590
 void CSkillAction_IG_GUARDIAN_SHIELD::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -161,8 +163,10 @@ void CSkillAction_IG_GUARDIAN_SHIELD::Slot11(int level, CGameActor* source, CGam
 // FUNCTION: fn_08591
 void CEfstAction_IG_GUARDIAN_SHIELD::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_buff_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_buff_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_buff_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_buff_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -196,14 +200,16 @@ EfstActionMessage CEfstAction_IG_GUARDIAN_SHIELD::Slot04() {
 // OFFSET: 0x00788120
 // FUNCTION: fn_08596
 void CSkillAction_IG_HOLY_SHIELD::Slot08(int level, CGameActor* source) {
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_cast"),
-                                       0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_cast"),
+                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
 
-  effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_cast_bottom"),
-                              0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_cast_bottom"),
+                          0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
@@ -213,8 +219,10 @@ void CSkillAction_IG_HOLY_SHIELD::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08597
 void CSkillAction_IG_HOLY_SHIELD::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -222,8 +230,10 @@ void CSkillAction_IG_HOLY_SHIELD::Slot11(int level, CGameActor* source, CGameAct
 // FUNCTION: fn_08598
 void CEfstAction_IG_HOLY_SHIELD::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -263,14 +273,16 @@ void CSkillAction_IG_JUDGEMENT_CROSS::Slot08(int level, CGameActor* source) {
     return;
   }
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_cast"),
-                                       0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_cast"),
+                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
 
-  effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_cast_bottom"),
-                              0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_cast_bottom"),
+                          0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
@@ -281,8 +293,9 @@ void CSkillAction_IG_JUDGEMENT_CROSS::Slot08(int level, CGameActor* source) {
 void CSkillAction_IG_JUDGEMENT_CROSS::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source && target) {
     const vector3d position = source->render.position;
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_shot"), position.x, position.y, position.z,
-                       target->render.accountId, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_shot"), position.x, position.y, position.z,
+                   target->render.accountId, -1, 0, 0);
   }
 }
 
@@ -290,10 +303,12 @@ void CSkillAction_IG_JUDGEMENT_CROSS::Slot11(int level, CGameActor* source, CGam
 // FUNCTION: fn_08606
 void CSkillAction_IG_JUDGEMENT_CROSS::Slot15(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_bottom"), source->render.position.x,
-                       source->render.position.y, source->render.position.z, 0, -1, 0, 0);
-    g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross"), source->render.position.x,
-                       source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_bottom"), source->render.position.x,
+                   source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross"), source->render.position.x,
+                   source->render.position.y, source->render.position.z, 0, -1, 0, 0);
   }
 }
 
@@ -312,8 +327,9 @@ void CSkillAction_IG_OVERSLASH::Slot08(int level, CGameActor* source) {
     return;
   }
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_cast"),
-                                       0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_cast"),
+                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
@@ -323,8 +339,10 @@ void CSkillAction_IG_OVERSLASH::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08610
 void CSkillAction_IG_OVERSLASH::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -332,7 +350,8 @@ void CSkillAction_IG_OVERSLASH::Slot11(int level, CGameActor* source, CGameActor
 // FUNCTION: fn_08611
 void CSkillAction_IG_OVERSLASH::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -343,14 +362,16 @@ void CSkillAction_IG_REBOUND_SHIELD::Slot08(int level, CGameActor* source) {
     return;
   }
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield_cast"),
-                                       0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield_cast"),
+                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
 
-  effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield_cast_bottom"),
-                              0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield_cast_bottom"),
+                          0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
@@ -360,8 +381,10 @@ void CSkillAction_IG_REBOUND_SHIELD::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08613
 void CSkillAction_IG_REBOUND_SHIELD::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -390,8 +413,10 @@ void CSkillAction_IG_ULTIMATE_SACRIFICE::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08617
 void CSkillAction_IG_ULTIMATE_SACRIFICE::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimatesacrifice_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimatesacrifice"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimatesacrifice_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimatesacrifice"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -422,7 +447,8 @@ void CEfstAction_IG_ULTIMATE_SACRIFICE::Slot02(int efstId, int value, int argume
 // FUNCTION: fn_08622
 void CSkillAction_IG_IMPERIAL_CROSS::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_cross"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_cross"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -430,7 +456,8 @@ void CSkillAction_IG_IMPERIAL_CROSS::Slot11(int level, CGameActor* source, CGame
 // FUNCTION: fn_08623
 void CSkillAction_IG_IMPERIAL_CROSS::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_cross_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_cross_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -441,8 +468,9 @@ void CSkillAction_IG_RADIANT_SPEAR::Slot08(int level, CGameActor* source) {
     return;
   }
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("radiant_spear_cast"),
-                                       0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("radiant_spear_cast"),
+                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
@@ -462,17 +490,20 @@ void CSkillAction_IG_RADIANT_SPEAR::Slot11(int level, CGameActor* source, CGameA
     direction = "right";
   }
   const std::string side = direction;
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down_bottom", side)), target->render.position.x,
-                     target->render.position.y, target->render.position.z, 0, -1, 0, 0);
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down", side)), target->render.position.x,
-                     target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down_bottom", side)), target->render.position.x,
+                 target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down", side)), target->render.position.x,
+                 target->render.position.y, target->render.position.z, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x0078AC80
 // FUNCTION: fn_08627
 void CSkillAction_IG_RADIANT_SPEAR::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("radiant_spear_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("radiant_spear_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -483,8 +514,9 @@ void CSkillAction_IG_IMPERIAL_PRESSURE::Slot08(int level, CGameActor* source) {
     return;
   }
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperal_pressure_cast"),
-                                       0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperal_pressure_cast"),
+                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
@@ -494,8 +526,10 @@ void CSkillAction_IG_IMPERIAL_PRESSURE::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08629
 void CSkillAction_IG_IMPERIAL_PRESSURE::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -503,15 +537,17 @@ void CSkillAction_IG_IMPERIAL_PRESSURE::Slot11(int level, CGameActor* source, CG
 // FUNCTION: fn_08630
 void CSkillAction_IG_IMPERIAL_PRESSURE::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
 // OFFSET: 0x0078B3A0
 // FUNCTION: fn_08632
 void CSkillAction_IG_SHIELD_SHOOTING::Slot08(int level, CGameActor* source) {
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shield_shooting_cast"),
-                                       0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shield_shooting_cast"),
+                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
@@ -536,7 +572,8 @@ void CSkillAction_IG_SHIELD_SHOOTING::Slot11(int level, CGameActor* source, CGam
 // FUNCTION: fn_08634
 void CSkillAction_IG_SHIELD_SHOOTING::Slot16(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shield_shooting_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shield_shooting_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -553,16 +590,19 @@ void CSkillAction_IG_ATTACK_STANCE::Slot08(int level, CGameActor* source) {
     return;
   }
 
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_cast_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_cast_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_cast"),
-                                       0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_cast"),
+                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level - 100);
   }
 
-  effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_cast_bottom"),
-                              0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_cast_bottom"),
+                          0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level - 100);
   }
@@ -572,7 +612,8 @@ void CSkillAction_IG_ATTACK_STANCE::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08637
 void CSkillAction_IG_ATTACK_STANCE::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -580,7 +621,8 @@ void CSkillAction_IG_ATTACK_STANCE::Slot11(int level, CGameActor* source, CGameA
 // FUNCTION: fn_08638
 void CEfstAction_IG_ATTACK_STANCE::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -624,16 +666,19 @@ void CSkillAction_IG_GUARD_STANCE::Slot08(int level, CGameActor* source) {
     return;
   }
 
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_cast_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_cast_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_cast"),
-                                       0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_cast"),
+                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level - 100);
   }
 
-  effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_cast_bottom"),
-                              0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_cast_bottom"),
+                          0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level - 100);
   }
@@ -643,7 +688,8 @@ void CSkillAction_IG_GUARD_STANCE::Slot08(int level, CGameActor* source) {
 // FUNCTION: fn_08645
 void CSkillAction_IG_GUARD_STANCE::Slot11(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -651,7 +697,8 @@ void CSkillAction_IG_GUARD_STANCE::Slot11(int level, CGameActor* source, CGameAc
 // FUNCTION: fn_08646
 void CEfstAction_IG_GUARD_STANCE::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -686,11 +733,13 @@ void CSkillAction_IG_CROSS_RAIN::Slot08(int level, CGameActor* source) {
     return;
   }
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
-  effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
@@ -718,11 +767,13 @@ void CSkillAction_IG_GRAND_JUDGEMENT::Slot08(int level, CGameActor* source) {
     return;
   }
 
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
-  effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
   }
@@ -735,8 +786,10 @@ void CSkillAction_IG_GRAND_JUDGEMENT::Slot11(int level, CGameActor* source, CGam
     return;
   }
 
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   const int subEffectId = CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_sub");
   for (int index = 0; index < 8; ++index) {
     const float originX = target->render.position.x;
@@ -769,7 +822,8 @@ void CSkillAction_IG_GRAND_JUDGEMENT::Slot11(int level, CGameActor* source, CGam
 // FUNCTION: fn_08585
 void CEfstAction_IG_GRAND_JUDGEMENT::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
