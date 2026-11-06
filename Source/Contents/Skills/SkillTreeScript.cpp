@@ -24,15 +24,15 @@ namespace {
     const double last = luaL_checknumber(state, 6);
 
     if (std::strcmp(name, "") != 0 && position != -1 && value != -1) {
+      skill.level = 0;
+      skill.unknown_0014 = 0;
+      skill.unknown_001C = 0;
+      skill.unknown_0018 = 0;
       skill.available = 1;
       skill.name = name;
       skill.unknown_0024 = position;
       skill.unknown_0028 = value;
       skill.id = static_cast<std::uint32_t>(static_cast<int>(id));
-      skill.level = 0;
-      skill.unknown_0014 = 0;
-      skill.unknown_0018 = 0;
-      skill.unknown_001C = 0;
       skill.unknown_0034 = 0;
       skill.unknown_002C = static_cast<int>(last);
       g_session.m_skillBundle.AddGrouped(static_cast<int>(group), skill);
