@@ -1077,14 +1077,14 @@ void UIShowAndEditTimeCtrl::Slot15(int, int) {
 // FUNCTION: fn_11556
 int UIShowAndEditTimeCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   if (message == 6 && argument1 == 184) {
-    for (UIEditCtrlVarId* field : this->fields) {
-      if (sender == field) {
-        int value = std::atoi(field->Text());
+    for (int index = 0; index < 2; ++index) {
+      if (sender == this->fields[index]) {
+        int value = std::atoi(this->fields[index]->Text());
         if (value > 60) {
           value = 60;
         }
         const std::string text = FormatOwnedString("%d", value);
-        field->SetText(text.c_str());
+        this->fields[index]->SetText(text.c_str());
       }
     }
   }
