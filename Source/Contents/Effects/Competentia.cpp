@@ -13,7 +13,8 @@
 // OFFSET: 0x007088B0
 // FUNCTION: fn_07076
 void CNyanggrassEffect::Slot04() {
-  for (CParticle* particle : this->particles) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
     if (particle != nullptr) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       static_cast<CEZ2STRParticle*>(particle)->DrawScreen(mode->camera->frame.view);
@@ -96,7 +97,8 @@ void CCompetentia::Slot04() {
 // OFFSET: 0x00708E30
 // FUNCTION: fn_07084
 void CCompetentia::Slot14(int argument) {
-  for (CParticle* particle : this->particles) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
     if (particle) {
       static_cast<CEZ2STRParticle*>(particle)->m_lifeTime = argument;
     }
