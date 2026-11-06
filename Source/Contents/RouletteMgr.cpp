@@ -70,12 +70,13 @@ bool RouletteMgr::Create() {
   if (g_rouletteMgr == nullptr) {
     g_rouletteMgr = new (std::nothrow) RouletteMgr;
     if (g_rouletteMgr != nullptr) {
-      if (g_rouletteMgr->m_valid != 0) {
-        return true;
+      if (g_rouletteMgr->m_valid == 0) {
+        delete g_rouletteMgr;
+        g_rouletteMgr = nullptr;
+        return false;
       }
 
-      delete g_rouletteMgr;
-      g_rouletteMgr = nullptr;
+      return true;
     }
   }
 
