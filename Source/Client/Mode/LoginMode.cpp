@@ -1613,7 +1613,7 @@ void CLoginMode::ConnectZoneServer(std::uint32_t gid, std::string mapName, std::
   address.s_addr = ip;
   strcpy(g_zoneServerIp, inet_ntoa(address));
   g_zoneServerPort = port;
-  memcpy_s(g_zoneServerHost, sizeof(g_zoneServerHost), host.c_str(), std::min<std::size_t>(host.size() + 1, sizeof(g_zoneServerHost)));
+  memcpy_s(g_zoneServerHost, sizeof(g_zoneServerHost), host.c_str(), std::min<std::size_t>(sizeof(g_zoneServerHost), host.size() + 1));
 
   GetRagConnection().Close();
   this->pendingCursorType = 12;
@@ -2262,7 +2262,7 @@ CLoginMode::CLoginMode() : wallpaperName(), unknown_6F1C(), unknown_6F2C(), unkn
   this->unknown_6F48 = -1;
   this->window_6F14 = nullptr;
   this->passwordRetryCount = 0;
-  std::memset(this->characters, 0, sizeof(this->characters));
+  SecureZeroMemory(this->characters, sizeof(this->characters));
   this->unknown_01D8 = 0;
   this->unknown_01DC = 0;
   this->characterDeleted = false;
