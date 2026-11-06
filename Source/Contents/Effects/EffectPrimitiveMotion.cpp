@@ -4056,7 +4056,7 @@ void CEffectPrim::PrimSphereWind2() {
       slot.riseAngle -= 360;
     }
 
-    slot.rotStart = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(slot.rotStart) + slot.height[2]));
+    slot.rotStart = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(slot.rotStart) + slot.height[1]));
 
     if (slot.rotStart >= 360) {
       slot.rotStart -= 360;
