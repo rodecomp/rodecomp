@@ -147,6 +147,7 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
 
     return 0;
+
   case 18:
     if (this->lines.size() == 0) {
       return 0;
@@ -163,6 +164,7 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
 
     break;
+
   case 19: {
     const unsigned count = static_cast<unsigned>(this->lines.size());
 
@@ -186,10 +188,16 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
     break;
   }
+
   case 31:
     this->AddLine(reinterpret_cast<const char*>(a), static_cast<unsigned>(b));
     this->Invalidate();
     return 0;
+
+  case 83:
+    this->targetId = static_cast<int>(a);
+    return 0;
+
   case 40:
     this->selected = static_cast<int>(a);
 
@@ -202,9 +210,7 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
 
     break;
-  case 83:
-    this->targetId = static_cast<int>(a);
-    return 0;
+
   default:
     return this->UIListBoxEx::SendMsg(sender, message, a, b, c, d);
   }
