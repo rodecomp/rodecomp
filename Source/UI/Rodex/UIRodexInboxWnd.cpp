@@ -606,11 +606,14 @@ void UIRodexInboxWnd::DrawExpireTime(int row, __time32_t sendTime, __time32_t ex
 
   std::string text;
   if (remaining / 86400 > 0) {
-    text.assign(FormatOwnedString(LookupMessage(0xB24), remaining / 86400));
+    const std::string formatted = FormatOwnedString(LookupMessage(0xB24), remaining / 86400);
+    text = formatted;
   } else if (remaining / 3600 > 0) {
-    text.assign(FormatOwnedString(LookupMessage(0xB23), remaining / 3600));
+    const std::string formatted = FormatOwnedString(LookupMessage(0xB23), remaining / 3600);
+    text = formatted;
   } else {
-    text.assign(FormatOwnedString(LookupMessage(0xB22), remaining / 60));
+    const std::string formatted = FormatOwnedString(LookupMessage(0xB22), remaining / 60);
+    text = formatted;
   }
 
   if (returned == 1) {
