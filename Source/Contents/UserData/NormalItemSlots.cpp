@@ -26,7 +26,10 @@ void NormalItemSlotWindow::Reset() {
 // OFFSET: 0x009A6000
 // FUNCTION: fn_13667
 int NormalItemSlotWindow::IsValid() const {
-  if (this->width != 290 || this->height > 175 || this->height < 43 || (this->height - 10) % 33 != 0 || (this->height == 175 && !g_session.ItemSlotActive())) {
+  if (this->width != 290 || this->height > 175) {
+    return 0;
+  }
+  if (this->height < 43 || (this->height - 10) % 33 != 0 || (this->height == 175 && !g_session.ItemSlotActive())) {
     return 0;
   }
 
