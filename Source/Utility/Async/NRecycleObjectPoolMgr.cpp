@@ -32,11 +32,11 @@ NRecycleObjectPoolMgr::~NRecycleObjectPoolMgr() = default;
 // FUNCTION: fn_07637
 NRecycleObject* NRecycleObjectPoolMgr::Acquire(std::string poolName) {
   auto pool = this->m_pools.find(poolName);
-  if (pool == this->m_pools.end()) {
-    return nullptr;
+  if (pool != this->m_pools.end()) {
+    return pool->second->Acquire();
   }
 
-  return pool->second->Acquire();
+  return nullptr;
 }
 
 // OFFSET: 0x00736F60
