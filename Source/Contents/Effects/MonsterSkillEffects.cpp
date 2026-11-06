@@ -1003,7 +1003,7 @@ void CFloralFlareRoad::Slot03() {
 
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
-    if (emitter->lifetime == 0.0f || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
+    if (0.0f == emitter->lifetime || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
       if (emitter) {
         AsParticle(emitter)->Process(0.0f, -80.0f, 0.0f);
       }
@@ -4267,7 +4267,7 @@ void CDancingKnifeEffect::Slot01() {
 void CDancingKnifeEffect::Slot03() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
-    if (emitter->lifetime == 0.0f || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
+    if (0.0f == emitter->lifetime || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
       if (emitter) {
         emitter->position.x = this->position[0] + 0.0f;
         emitter->position.y = this->position[1] - 12.0f;
@@ -4640,7 +4640,7 @@ void CGaleStorm::Slot03() {
 
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
-    if (emitter->lifetime == 0.0f || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
+    if (0.0f == emitter->lifetime || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
       if (emitter) {
         AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
       }
