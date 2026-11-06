@@ -19,8 +19,10 @@ void UIBroadcastBalloon::AddMessage(int category, const BroadcastBalloonMessage&
   messages.push_back(message);
 
   unsigned int limit = 3;
-  if (category == 2) {
+  switch (category) {
+  case 2:
     limit = 1;
+    break;
   }
   if (messages.size() > limit) {
     messages.pop_front();
