@@ -525,10 +525,10 @@ std::optional<GameSettingsOption*> GameSettings::FindOption(int id) {
   while (option != this->options.end() && id != option->id) {
     ++option;
   }
-  if (option == this->options.end()) {
-    return std::nullopt;
+  if (option != this->options.end()) {
+    return &*option;
   }
-  return &*option;
+  return std::nullopt;
 }
 
 // OFFSET: 0x006C1070
