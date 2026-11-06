@@ -1329,9 +1329,11 @@ __declspec(noinline) void ReceiveShortcutPage(int position, const ShortcutPagePa
 void CGameMode::ResendMinimapMarkers() {
   if (g_windowMgr.window_4F1CC) {
     for (auto it = this->minimapMarkers.begin(); it != this->minimapMarkers.end(); ++it) {
-      if (it->second.unknown_0006 != 0) {
-        g_windowMgr.window_4F1CC->SendMsg(nullptr, 485, it->second.unknown_0004, it->second.unknown_0006, it->second.unknown_0000, it->second.unknown_0002);
+      if (0 == it->second.unknown_0006) {
+        continue;
       }
+
+      g_windowMgr.window_4F1CC->SendMsg(nullptr, 485, it->second.unknown_0004, it->second.unknown_0006, it->second.unknown_0000, it->second.unknown_0002);
     }
   }
 }
