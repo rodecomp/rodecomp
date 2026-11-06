@@ -933,8 +933,10 @@ std::vector<unsigned char> CNavigationManager::WriteStates() {
 // OFFSET: 0x00B888F0
 // FUNCTION: fn_19378
 NaviCell* CNaviData::GetCell(NaviCell* out) {
-  out->x = this->cellX;
-  out->y = this->cellY;
+  const int x = this->cellX;
+  const int y = this->cellY;
+  out->x = x;
+  out->y = y;
   return out;
 }
 
