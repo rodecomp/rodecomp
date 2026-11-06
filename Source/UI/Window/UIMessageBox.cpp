@@ -492,12 +492,12 @@ bool UIBank_NewWnd::IsNumeric(std::string text) {
 // FUNCTION: fn_11760
 void UIBank_NewWnd::Paint() {
   const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\bank\\bg_bank.bmp")));
-  const int titleHeight = this->DrawTitleBar(true, LookupMessage(2771), 0);
-  this->DrawBitmap(0, titleHeight, &background->image, false);
+  this->DrawBitmap(0, this->DrawTitleBar(true, LookupMessage(2771), 0), &background->image, false);
+
   char number[260] = {};
   char text[260] = {};
   this->DrawTextAt(30, 29, LookupMessage(2772), 0, 0, 12, 0, 0, 0);
-  const int x = this->TextWidth(LookupMessage(2772), 0, 0, 12, 0, 0) + 43;
+  const int x = this->VerticalTextHeight(LookupMessage(2772), 0, 0, 12, 0) + 43;
   FormatGroupedInteger(g_session.m_bankBalance, number, 260);
   std::sprintf(text, "%s z", number);
   this->DrawTextAt(x, 29, text, 0, 0, 11, 0, 0, 0);
@@ -506,7 +506,7 @@ void UIBank_NewWnd::Paint() {
   std::sprintf(text, "%s z", number);
   this->DrawTextAt(x, 46, text, 0, 0, 11, 0, 0, 0);
   if (!this->m_status.empty()) {
-    const int textWidth = this->TextWidth(this->m_status.c_str(), 0, 0, 12, 0, 0);
+    const int textWidth = this->VerticalTextHeight(this->m_status.c_str(), 0, 0, 12, 0);
     const int statusX = static_cast<int>(this->geometry.width * 0.5f - textWidth * 0.5f);
     this->DrawTextAt(statusX, 112, this->m_status.c_str(), 0, 0, 11, 255, 0, 0);
   }
