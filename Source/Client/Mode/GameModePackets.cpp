@@ -1874,12 +1874,15 @@ void CGameMode::sub_D079A0(unsigned char kind, int argument) {
     }
 
     const std::string copied = target;
-    const std::string identity = ShortcutFilename(static_cast<std::uint32_t>(argument));
     std::string message;
     if (g_windowMgr.IsFriend(target.c_str()) || g_session.IsGuildMemberName(target.c_str())) {
-      message = std::string("[ To ") + copied + " (" + identity + ") ] : " + speaker;
+      message = "[ To " + copied + " (";
+      message += ShortcutFilename(static_cast<std::uint32_t>(argument));
+      message += ") ] : " + speaker;
     } else {
-      message = std::string("( To ") + copied + " (" + identity + ") : " + speaker;
+      message = "( To " + copied + " (";
+      message += ShortcutFilename(static_cast<std::uint32_t>(argument));
+      message += ") : " + speaker;
     }
 
     if (g_pendingWhisperCount <= 0) {
@@ -1893,20 +1896,27 @@ void CGameMode::sub_D079A0(unsigned char kind, int argument) {
     }
     return;
   }
-  case 1:
-  case 2:
-  case 3: {
-    const int messageId = kind == 1 ? 0x94 : kind == 2 ? 0x95 : 0x96;
-    const std::string text = std::string("(") + target + ")" + LookupMessage(messageId);
-    if (kind == 1 && g_pendingWhisperCount > 0) {
+  case 1: {
+    const std::string text = "(" + target + ")" + LookupMessage(0x94);
+    if (g_pendingWhisperCount > 0) {
       --g_pendingWhisperCount;
       return;
     }
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
     return;
   }
+  case 2: {
+    const std::string text = "(" + target + ")" + LookupMessage(0x95);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
+    return;
+  }
+  case 3: {
+    const std::string text = "(" + target + ")" + LookupMessage(0x96);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
+    return;
+  }
   default: {
-    const std::string text = std::string("(") + target + ")" + LookupMessage(0x94);
+    const std::string text = "(" + target + ")" + LookupMessage(0x94);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
     if (g_whisperRecord != 0) {
       this->WriteChatLog(text.c_str());
