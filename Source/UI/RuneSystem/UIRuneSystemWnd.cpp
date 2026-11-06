@@ -35,8 +35,9 @@ void UIRune_Decom::Reset() {
   this->m_ownedCount = 0;
   this->m_itemId = 0;
   this->m_decomList = nullptr;
-  this->m_decomButton->SetDisabled(1);
-  this->m_decomButton->Invalidate();
+  auto* const decomButton = this->m_decomButton;
+  decomButton->SetDisabled(1);
+  decomButton->Invalidate();
 
   this->m_decomType = 0;
   for (int index = 0; index < 2; ++index) {
@@ -635,11 +636,15 @@ void UIRune_Decom::SelectDecomType(unsigned int type) {
     this->Invalidate();
   }
 
-  this->m_decomButton->SetDisabled(0);
-  this->m_decomButton->Invalidate();
-  if (this->m_decomType == 1 && this->m_ownedCount < static_cast<unsigned int>(g_runeSystemMgr->GetDecomItem(1))) {
-    this->m_decomButton->SetDisabled(1);
-    this->m_decomButton->Invalidate();
+  {
+    auto* const button = this->m_decomButton;
+    button->SetDisabled(0);
+    button->Invalidate();
+  }
+  if (this->m_decomType == 1 && static_cast<unsigned int>(g_runeSystemMgr->GetDecomItem(1)) > this->m_ownedCount) {
+    auto* const button = this->m_decomButton;
+    button->SetDisabled(1);
+    button->Invalidate();
   }
 }
 
@@ -1552,10 +1557,12 @@ UIRuneSystem_tagListWnd::UIRuneSystem_tagListWnd()
   this->m_leftButton->SetId(0x13C);
 
   if (g_runeSystemMgr->GetTagCount() < this->m_visibleCount) {
-    this->m_rightButton->SetDisabled(1);
-    this->m_rightButton->Invalidate();
-    this->m_leftButton->SetDisabled(1);
-    this->m_leftButton->Invalidate();
+    UIBitmapButton* const rightButton = this->m_rightButton;
+    rightButton->SetDisabled(1);
+    rightButton->Invalidate();
+    UIBitmapButton* const leftButton = this->m_leftButton;
+    leftButton->SetDisabled(1);
+    leftButton->Invalidate();
   }
 }
 
@@ -2425,7 +2432,7 @@ UIRuneSetReWard::UIRuneSetReWard() : UIBitmapButton(), m_itemId(0), m_state(0) {
 
 // OFFSET: 0x00814A50
 // FUNCTION: fn_10134
-UIRuneSet_Info::UIRuneSet_Info() : UIWindow(0), m_runeSet(nullptr), m_rewards{} {
+UIRuneSet_Info::UIRuneSet_Info() : UIWindow(0), m_runeSet(nullptr), m_rewards{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr} {
 }
 
 // OFFSET: 0x00814B00

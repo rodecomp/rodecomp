@@ -394,12 +394,11 @@ int UICheckAttendanceWnd_Banner::SendMsg(
 ) {
   if (message == 6 && argument1 == 215) {
     for (unsigned int index = 0; index < this->m_buttons.size(); ++index) {
-      UIWindow* button = this->m_buttons[index];
-      if (sender == button) {
-        button->SendMsg(this, 13, 1, 0, 0, 0);
+      if (sender == this->m_buttons[index]) {
+        this->m_buttons[index]->SendMsg(this, 13, 1, 0, 0, 0);
         this->m_current = index;
       } else {
-        button->SendMsg(this, 13, 0, 0, 0, 0);
+        this->m_buttons[index]->SendMsg(this, 13, 0, 0, 0, 0);
       }
     }
     this->m_lastSwitch = timeGetTime();

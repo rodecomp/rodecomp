@@ -1500,7 +1500,7 @@ UIAchSummaryWnd::UIAchSummaryWnd() : UIWindow(0), unknown_007C(7) {
 // OFFSET: 0x007B21D0
 // FUNCTION: fn_09184
 UIAchUpperWnd::UIAchUpperWnd()
-    : UIWindow(0), unknown_0094(0), unknown_0098(0), unknown_009C(0), unknown_00A0(0), unknown_00A4(nullptr), unknown_00A8(nullptr), buttons{},
+    : UIWindow(0), unknown_0094(0), unknown_0098(0), unknown_009C(0), unknown_00A0(0), unknown_00A4(nullptr), unknown_00A8(nullptr), buttons{nullptr, nullptr},
       selected(0) {
 }
 

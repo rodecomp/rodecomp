@@ -413,7 +413,7 @@ std::string UINewSkillListWnd::ValueText(int id) {
     }
   }
 
-  return std::string();
+  return std::string("");
 }
 
 // OFFSET: 0x009B0460

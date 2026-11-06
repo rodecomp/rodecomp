@@ -168,13 +168,15 @@ void UILapineBoxWnd::Slot19() {
     const int count = static_cast<int>(this->items.size());
     if (this->maxItems == count) {
       if (this->makeButton->Disabled() == 1) {
-        this->makeButton->SetDisabled(0);
-        this->makeButton->Invalidate();
+        auto* const button = this->makeButton;
+        button->SetDisabled(0);
+        button->Invalidate();
         this->Invalidate();
       }
     } else if (this->makeButton->Disabled() == 0) {
-      this->makeButton->SetDisabled(1);
-      this->makeButton->Invalidate();
+      auto* const button = this->makeButton;
+      button->SetDisabled(1);
+      button->Invalidate();
       this->Invalidate();
     }
   }

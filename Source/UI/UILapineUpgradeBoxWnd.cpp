@@ -272,8 +272,9 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot32(int x, int y) {
 // FUNCTION: fn_04225
 void UILapineUpgradeBoxWnd::SetWaiting(unsigned char value) {
   this->waiting = value;
-  this->upgradeButton->SetDisabled(value);
-  this->upgradeButton->Invalidate();
+  auto* const button = this->upgradeButton;
+  button->SetDisabled(value);
+  button->Invalidate();
   this->Invalidate();
 }
 

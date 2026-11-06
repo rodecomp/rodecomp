@@ -1113,12 +1113,11 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 int UICashShopWnd_Banner::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   if (message == 6 && argument1 == 0xD7) {
     for (unsigned int index = 0; index < this->m_buttons.size(); ++index) {
-      UIWindow* button = this->m_buttons[index];
-      if (sender == button) {
-        button->SendMsg(this, 13, 1, 0, 0, 0);
+      if (sender == this->m_buttons[index]) {
+        this->m_buttons[index]->SendMsg(this, 13, 1, 0, 0, 0);
         this->m_index = index;
       } else {
-        button->SendMsg(this, 13, 0, 0, 0, 0);
+        this->m_buttons[index]->SendMsg(this, 13, 0, 0, 0, 0);
       }
     }
 
