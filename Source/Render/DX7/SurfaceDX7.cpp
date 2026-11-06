@@ -48,8 +48,7 @@ CSurfaceDX7::CSurfaceDX7(DeviceOwnerDX7& owner, int width, int height)
 // FUNCTION: fn_01777
 CSurfaceDX7::CSurfaceDX7(DeviceOwnerDX7& owner, IDirectDrawSurface7* surface) : m_owner(&owner), m_surface(nullptr), m_width(0), m_height(0) {
   if (surface) {
-    DDSURFACEDESC2 description{};
-    description.dwSize = sizeof(description);
+    DDSURFACEDESC2 description = {sizeof(description)};
 
     if (SUCCEEDED(surface->GetSurfaceDesc(&description))) {
       this->m_width = description.dwWidth;
