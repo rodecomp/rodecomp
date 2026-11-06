@@ -22,8 +22,8 @@ void CCommonFloorEffect::Slot08(int red, int green, int blue) {
 // OFFSET: 0x006FD900
 // FUNCTION: fn_06936
 void CCommonFloorEffect::Slot11(std::string name) {
-  for (CParticle* particle : this->particles) {
-    particle->SetTexture(name);
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    (*it)->SetTexture(name);
   }
 }
 
@@ -63,7 +63,8 @@ void CCommonFloorEffect::Slot01() {
 // OFFSET: 0x006FDCE0
 // FUNCTION: fn_06939
 void CCommonFloorEffect::Slot07() {
-  for (CParticle* particle : this->particles) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
     particle->flags = 5;
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
@@ -78,7 +79,6 @@ void CCommonFloorEffect::Slot07() {
     particle->unknown_00E8 = 0;
   }
 }
-
 // OFFSET: 0x006FDD90
 // FUNCTION: fn_06940
 bool CCommonFloorEffect::Slot06() {
@@ -123,8 +123,8 @@ void CCommonFloorEffect::Slot03() {
 // OFFSET: 0x006FE060
 // FUNCTION: fn_06942
 void CCommonFloorEffect::Slot04() {
-  for (CParticle* particle : this->particles) {
-    if (particle) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    if (CParticle* particle = *it) {
       particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
   }
