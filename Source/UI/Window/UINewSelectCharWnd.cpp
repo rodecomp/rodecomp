@@ -146,8 +146,8 @@ void Nullsub243() {
 
 // OFFSET: 0x007D50D0
 // FUNCTION: fn_09587
-std::string UIStaticText::GetText() const {
-  return std::string(this->text.c_str(), this->text.size());
+__declspec(noinline) std::string UIStaticText::GetText() const {
+  return this->text;
 }
 
 // OFFSET: 0x007D5130
