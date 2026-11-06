@@ -1049,7 +1049,7 @@ void CGameMode::ReceiveMinimapMarker(const unsigned char* data) {
   this->minimapMarkers[packet->key].unknown_0006 = packet->color;
   if (g_windowMgr.window_4F1CC) {
     for (auto it = this->minimapMarkers.begin(); it != this->minimapMarkers.end(); ++it) {
-      if (it->second.unknown_0006 != 0) {
+      if (0 != it->second.unknown_0006) {
         g_windowMgr.window_4F1CC->SendMsg(nullptr, 485, it->second.unknown_0004, it->second.unknown_0006, it->second.unknown_0000, it->second.unknown_0002);
       }
     }
