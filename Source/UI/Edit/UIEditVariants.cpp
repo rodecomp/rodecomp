@@ -431,7 +431,7 @@ void UIEditCtrl_OldList::RecallHistory(int step) {
     this->historyIndex = static_cast<int>(this->history.size()) - 1;
   }
 
-  if (static_cast<std::size_t>(this->historyIndex) >= this->history.size()) {
+  if (this->history.size() <= static_cast<std::size_t>(this->historyIndex)) {
     this->historyIndex = 0;
   }
 
