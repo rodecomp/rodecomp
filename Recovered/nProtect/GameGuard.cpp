@@ -2,8 +2,8 @@
 // built by scripts/exe/build_exe.py. Clank never compiles this file.
 //
 // The original statically links the SDK (0x00E8A000-0x00E96000). The client
-// reaches it through three entry points, called by CNProtectGameGuardMgr in
-// Source/Security/NProtectGameGuardMgr.cpp. This file provides those three with
+// reaches it through four entry points, called by CNProtectGameGuardMgr in
+// Source/Security/NProtectGameGuardMgr.cpp. This file provides those four with
 // the behaviour of a successful start-up, so the client follows the same path it
 // takes when GameGuard initialises normally. No anti-cheat checks are performed
 // and server GameGuard authentication requests are not answered.
@@ -28,4 +28,8 @@ int InitNPGameMon() {
 // fn_25543 (0x00E92E90): registers the client's GameGuard message handler.
 void SetCallbackToGameMon(int(__stdcall* callback)(int, const int*)) {
   g_callback = callback;
+}
+
+// fn_25533 (0x00E92420): SDK shutdown; nothing was started.
+void CloseNPGameMon() {
 }

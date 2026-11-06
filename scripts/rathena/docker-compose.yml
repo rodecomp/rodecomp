@@ -1,0 +1,65 @@
+# Local rAthena for the decompiled client (Ragexe 2026-02-19).
+#   docker compose -f scripts/rathena/docker-compose.yml up -d --build
+# Login 127.0.0.1:6900, account test / test (created on first start).
+
+x-rathena: &rathena
+  image: rodecomp/rathena:20260219
+  build:
+    context: .
+    args:
+      PACKETVER: "20260219"
+  init: true
+  volumes:
+    - ./conf/inter_conf.txt:/rathena/conf/import/inter_conf.txt:ro
+    - ./conf/char_conf.txt:/rathena/conf/import/char_conf.txt:ro
+    - ./conf/map_conf.txt:/rathena/conf/import/map_conf.txt:ro
+    - ./conf/login_conf.txt:/rathena/conf/import/login_conf.txt:ro
+
+services:
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: ragnarok
+      MARIADB_DATABASE: ragnarok
+      MARIADB_USER: ragnarok
+      MARIADB_PASSWORD: ragnarok
+    volumes:
+      - rathena-db:/var/lib/mysql
+      - rathena-sql:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "127.0.0.1:3306:3306"
+    depends_on:
+      sql:
+        condition: service_completed_successfully
+
+  sql:
+    <<: *rathena
+    command: sh -c "cp /rathena/sql-files/main.sql /rathena/sql-files/logs.sql /sql/ && cp /seed/zz-test-account.sql /sql/"
+    volumes:
+      - rathena-sql:/sql
+      - ./conf/zz-test-account.sql:/seed/zz-test-account.sql:ro
+
+  login:
+    <<: *rathena
+    command: sh -c "/bin/wait-for db:3306 -t 120 -- ./login-server"
+    ports:
+      - "6900:6900"
+    depends_on: [db]
+
+  char:
+    <<: *rathena
+    command: sh -c "/bin/wait-for db:3306 -t 120 -- ./char-server"
+    ports:
+      - "6121:6121"
+    depends_on: [login]
+
+  map:
+    <<: *rathena
+    command: sh -c "/bin/wait-for db:3306 -t 120 -- ./map-server"
+    ports:
+      - "5121:5121"
+    depends_on: [char]
+
+volumes:
+  rathena-db:
+  rathena-sql:
