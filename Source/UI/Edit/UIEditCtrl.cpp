@@ -925,7 +925,11 @@ void UIItemStoreSubWnd::Slot10(int x, int y, std::intptr_t value) {
 
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 1 && drag->source != 9) {
+  switch (drag->source) {
+  case 1:
+  case 9:
+    break;
+  default:
     mode->SendMsg(18, 0, 0, 0, 0);
     return;
   }
@@ -946,7 +950,7 @@ void UIItemStoreSubWnd::Slot10(int x, int y, std::intptr_t value) {
 // OFFSET: 0x00972630
 // FUNCTION: fn_13274
 void UIItemStoreWnd::Slot10(int x, int y, std::intptr_t value) {
-  char text[256];
+  char text[250];
   if (g_unknown_01738268) {
     if (g_unknown_01738270 == 1) {
       std::memset(text, 0, 250);
@@ -970,7 +974,11 @@ void UIItemStoreWnd::Slot10(int x, int y, std::intptr_t value) {
 
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 1 && drag->source != 9) {
+  switch (drag->source) {
+  case 1:
+  case 9:
+    break;
+  default:
     mode->SendMsg(18, 0, 0, 0, 0);
     return;
   }
@@ -4146,7 +4154,11 @@ void UIMerchantItemWnd::Slot10(int x, int y, std::intptr_t value) {
 
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 1 && drag->source != 6) {
+  switch (drag->source) {
+  case 1:
+  case 6:
+    break;
+  default:
     mode->SendMsg(18, 0, 0, 0, 0);
     return;
   }
