@@ -704,31 +704,36 @@ void UIMessageBox::Slot19() {
 // FUNCTION: fn_11808
 int UIMessageBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
-    this->RecordResponse(static_cast<int>(a), b, c, d);
-
-    if (this->modal != 0) {
-      g_windowMgr.unknown_0474 = static_cast<int>(a);
-    } else if (a == 184 || a == 187 || a == 188) {
-      g_windowMgr.Schedule(this);
-    }
-
+  case 156:
+    this->modal = static_cast<int>(a);
+    return 0;
+  case 67:
+    this->format = reinterpret_cast<const char*>(a);
     return 0;
   case 57:
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, 29, a, 38, 0, 0);
     return 0;
-  case 67:
-    this->format = reinterpret_cast<const char*>(a);
+  case 6:
+    this->RecordResponse(static_cast<int>(a), b, c, d);
+
+    if (this->modal != 0) {
+      g_windowMgr.unknown_0474 = static_cast<int>(a);
+    } else {
+      switch (a) {
+      case 184:
+      case 187:
+      case 188:
+        g_windowMgr.Schedule(this);
+      }
+    }
+
     return 0;
   case 98:
     if (a == 426) {
       ShellExecuteA(hWnd, "open", LookupMessage(3445), nullptr, nullptr, SW_SHOWNORMAL);
     }
 
-    return 0;
-  case 156:
-    this->modal = static_cast<int>(a);
     return 0;
   case 157:
     this->protectedMessage = a > 0;
