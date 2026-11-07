@@ -3597,12 +3597,15 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   switch (message) {
   case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    if (a == 184) {
+    switch (a) {
+    case 184:
       g_windowMgr.CloseWindow(105);
       g_windowMgr.EnsureWindow(110)->SendMsg(nullptr, 91, 184, b, 0, 0);
-    } else if (a == 185) {
+      break;
+    case 185:
       g_windowMgr.CloseWindow(105);
       g_modeMgr.gameMode->SendMsg(173, this->identity, 0, 0, 0);
+      break;
     }
     return 0;
   }
@@ -3616,38 +3619,37 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     return 0;
   }
-  }
-
-  if (message != 123) {
-    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
-  }
-
-  const auto* packet = reinterpret_cast<const unsigned char*>(a);
-  const unsigned length = static_cast<unsigned>(b);
-  std::int16_t tag;
-  std::memcpy(&tag, packet, sizeof(tag));
-  if (tag == 0x53FC) {
+  case 123: {
+    const auto* packet = reinterpret_cast<const unsigned char*>(a);
+    FramedMessageHeader header;
+    std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    while (offset < length) {
-      std::uint32_t size;
-      std::memcpy(&tag, packet + offset, sizeof(tag));
-      std::memcpy(&size, packet + offset + 2, sizeof(size));
-      offset += 6;
-      if (tag == 0x53FD) {
-        break;
-      }
-      if (tag == 0x53FE) {
-        char name[260];
-        std::memset(name, 0, sizeof(name));
-        std::memcpy(name, packet + offset, size);
-        offset += size;
-        this->SendMsg(nullptr, 91, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
-      } else {
-        offset += size;
+    if (header.type == 0x53FC) {
+      while (offset < static_cast<unsigned>(b)) {
+        std::memcpy(&header, packet + offset, sizeof(header));
+        offset += 6;
+        switch (header.type) {
+        case 0x53FD:
+          return 0;
+        case 0x53FE: {
+          char name[260];
+          std::memset(name, 0, sizeof(name));
+          std::memcpy(name, packet + offset, header.length);
+          offset += header.length;
+          this->SendMsg(nullptr, 91, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
+          break;
+        }
+        default:
+          offset += header.length;
+          break;
+        }
       }
     }
+    return 0;
   }
-  return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
 }
 
 // OFFSET: 0x008F7050
@@ -7580,22 +7582,24 @@ UIJoinGuildAcceptWnd::UIJoinGuildAcceptWnd()
 // OFFSET: 0x008FE310
 // FUNCTION: fn_12352
 int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    if (a == 184) {
+    switch (a) {
+    case 184:
       g_windowMgr.CloseWindow(70);
       g_windowMgr.CloseWindow(214);
       g_windowMgr.CloseWindow(213);
       g_windowMgr.CloseWindow(212);
       g_modeMgr.gameMode->SendMsg(114, this->identity, 1, 0, 0);
-    } else if (a == 185) {
+      break;
+    case 185:
       g_windowMgr.CloseWindow(70);
       g_modeMgr.gameMode->SendMsg(114, this->identity, 0, 0, 0);
+      break;
     }
-    return 0;
-  }
-
-  if (message == 73) {
+    break;
+  case 73: {
     char name[260] = {};
     strcpy_s(name, sizeof(name), reinterpret_cast<const char*>(b));
     if (g_forbiddenWords.Contains(name) == true) {
@@ -7610,42 +7614,39 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     text += LookupMessage(377);
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
-    return 0;
+    break;
   }
-
-  if (message == 123) {
+  case 123: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    std::int16_t marker;
-    std::memcpy(&marker, bytes, sizeof(marker));
+    FramedMessageHeader header;
+    std::memcpy(&header, bytes, sizeof(header));
     unsigned offset = 6;
-
-    if (marker == 0x5528) {
+    if (header.type == 0x5528) {
       while (static_cast<unsigned>(b) > offset) {
-        std::int16_t kind;
-        std::uint32_t size;
-        std::memcpy(&kind, bytes + offset, sizeof(kind));
-        std::memcpy(&size, bytes + offset + 2, sizeof(size));
+        std::memcpy(&header, bytes + offset, sizeof(header));
         offset += 6;
-
-        if (kind == 0x5529) {
+        switch (header.type) {
+        case 0x5529:
+          return 0;
+        case 0x552A: {
+          char name[260] = {};
+          std::memcpy(name, bytes + offset, header.length);
+          offset += header.length;
+          this->SendMsg(nullptr, 73, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
           break;
         }
-
-        if (kind == 0x552A) {
-          char name[260] = {};
-          std::memcpy(name, bytes + offset, size);
-          offset += size;
-          this->SendMsg(nullptr, 73, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
-        } else {
-          offset += size;
+        default:
+          offset += header.length;
+          break;
         }
       }
     }
-
-    return 0;
+    break;
   }
-
-  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  default:
+    return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+  return 0;
 }
 
 // OFFSET: 0x008C8510
