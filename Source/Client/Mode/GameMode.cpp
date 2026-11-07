@@ -9196,8 +9196,8 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       break;
     }
     char text[128];
-    g_whisperRecord = 1 - g_whisperRecord;
-    if (g_whisperRecord != 0) {
+    g_session.m_whisperRecord = 1 - g_session.m_whisperRecord;
+    if (g_session.m_whisperRecord != 0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       if (g_session.IsAdminSubMode(7) != 0) {
         char directory[3000];

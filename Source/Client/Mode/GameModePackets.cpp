@@ -166,8 +166,6 @@ void __fastcall RefreshPartyWindows(CSession* session);
 // GLOBAL: gl_24992
 char g_pendingWhisperCount;
 
-// GLOBAL: gl_25102
-int g_whisperRecord;
 
 namespace {
 #pragma pack(push, 1)
@@ -1885,7 +1883,7 @@ void CGameMode::ReceiveWhisperResult(unsigned char kind, int argument) {
     } else {
       --g_pendingWhisperCount;
     }
-    if (g_whisperRecord != 0) {
+    if (g_session.m_whisperRecord != 0) {
       this->WriteChatLog(message.c_str());
     }
     return;
@@ -1912,7 +1910,7 @@ void CGameMode::ReceiveWhisperResult(unsigned char kind, int argument) {
   default: {
     const std::string text = "(" + this->unknown_022C + ")" + LookupMessage(0x94);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
-    if (g_whisperRecord != 0) {
+    if (g_session.m_whisperRecord != 0) {
       this->WriteChatLog(text.c_str());
     }
     return;
@@ -6538,7 +6536,7 @@ __declspec(noinline) void CGameMode::ReceiveActorColorChat(const unsigned char* 
     actor->SendMsg(nullptr, 7, 0, reinterpret_cast<int>(text), reinterpret_cast<int>(text) >> 31, color, color >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
-  if (g_whisperRecord != 0) {
+  if (g_session.m_whisperRecord != 0) {
     this->WriteChatLog(text);
   }
 }
@@ -7825,7 +7823,7 @@ void CGameMode::ReceiveBroadcastText(const unsigned char* data) {
   }
   if (!g_serviceOptions.Get(0x94)) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xFF9DFF, 5, 0, 0);
-    if (g_whisperRecord != 0) {
+    if (g_session.m_whisperRecord != 0) {
       this->WriteChatLog(text.data());
     }
   }
@@ -7855,7 +7853,7 @@ void CGameMode::ReceiveActorBroadcastText(const unsigned char* data) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(text.data());
     actor->SendMsg(nullptr, 7, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
-  if (g_whisperRecord != 0) {
+  if (g_session.m_whisperRecord != 0) {
     this->WriteChatLog(text.data());
   }
 }
@@ -10045,7 +10043,7 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
       actor->SendMsg(nullptr, 7, 0, reinterpret_cast<int>(text.data()), reinterpret_cast<int>(text.data()) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
-  if (g_whisperRecord != 0) {
+  if (g_session.m_whisperRecord != 0) {
     this->WriteChatLog(text.data());
   }
 }
@@ -10076,7 +10074,7 @@ void CGameMode::ReceivePartyChat(const unsigned char* data) {
       actor->SendMsg(nullptr, 7, 0, reinterpret_cast<int>(text.data()), reinterpret_cast<int>(text.data()) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
-  if (g_whisperRecord != 0) {
+  if (g_session.m_whisperRecord != 0) {
     this->WriteChatLog(text.data());
   }
 }
@@ -10276,7 +10274,7 @@ void CGameMode::ReceiveGuildChat(const unsigned char* data) {
   }
   if (!g_serviceOptions.Get(0x94)) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xB4FFB4, 4, 0, 0);
-    if (g_whisperRecord != 0) {
+    if (g_session.m_whisperRecord != 0) {
       this->WriteChatLog(text.data());
     }
   }
@@ -12204,7 +12202,7 @@ void CGameMode::ReceiveBroadcast(const unsigned char* packet) {
     g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text.data()), 0x7800, 0, 0, 0);
   }
 
-  if (g_whisperRecord != 0) {
+  if (g_session.m_whisperRecord != 0) {
     this->WriteChatLog(text.data());
   }
 }

@@ -11,7 +11,7 @@
 void SetApplicationActive(int value) {
   g_isAppActive = value;
   if (value != 0) {
-    SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
+    SetPriorityClass(GetCurrentProcess(), g_session.m_priorityClass);
     if (g_serviceOptions.Get(ServiceOption::ConfineCursor) != 0) {
       ClipApplicationCursor(hWnd);
     }

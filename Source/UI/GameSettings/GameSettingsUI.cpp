@@ -98,8 +98,6 @@ namespace {
 // GLOBAL: gl_24768
 int g_configuredRenderBackend;
 
-// GLOBAL: gl_24396
-int dwPriorityClass;
 
 // GLOBAL: gl_24509
 int g_textureFiltering;
@@ -1749,14 +1747,14 @@ void CUIGroupLogInOut::OnSelect(CUIRadioButton* button) {
 // FUNCTION: fn_16006
 void CUIGroupProcessPriority::OnSelect(CUIRadioButton* button) {
   if (this->m_highButton == button) {
-    dwPriorityClass = HIGH_PRIORITY_CLASS;
-    SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
+    g_session.m_priorityClass = HIGH_PRIORITY_CLASS;
+    SetPriorityClass(GetCurrentProcess(), g_session.m_priorityClass);
   } else if (this->m_normalButton == button) {
-    dwPriorityClass = NORMAL_PRIORITY_CLASS;
-    SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
+    g_session.m_priorityClass = NORMAL_PRIORITY_CLASS;
+    SetPriorityClass(GetCurrentProcess(), g_session.m_priorityClass);
   } else if (this->m_idleButton == button) {
-    dwPriorityClass = IDLE_PRIORITY_CLASS;
-    SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
+    g_session.m_priorityClass = IDLE_PRIORITY_CLASS;
+    SetPriorityClass(GetCurrentProcess(), g_session.m_priorityClass);
   }
 }
 
@@ -1813,13 +1811,13 @@ void CUIGroupLogInOut::Refresh() {
 // FUNCTION: fn_16037
 void CUIGroupProcessPriority::Refresh() {
   auto* const highButton = this->m_highButton;
-  highButton->checked = dwPriorityClass == HIGH_PRIORITY_CLASS;
+  highButton->checked = g_session.m_priorityClass == HIGH_PRIORITY_CLASS;
   highButton->Invalidate();
   auto* const normalButton = this->m_normalButton;
-  normalButton->checked = dwPriorityClass == NORMAL_PRIORITY_CLASS;
+  normalButton->checked = g_session.m_priorityClass == NORMAL_PRIORITY_CLASS;
   normalButton->Invalidate();
   auto* const idleButton = this->m_idleButton;
-  idleButton->checked = dwPriorityClass == IDLE_PRIORITY_CLASS;
+  idleButton->checked = g_session.m_priorityClass == IDLE_PRIORITY_CLASS;
   idleButton->Invalidate();
 }
 
@@ -2007,7 +2005,7 @@ void GameSettingsUI::CUIGroupGraphicsAPI::Apply() {
 // OFFSET: 0x00A404D0
 // FUNCTION: fn_15973
 void SetNormalProcessPriority() {
-  dwPriorityClass = NORMAL_PRIORITY_CLASS;
+  g_session.m_priorityClass = NORMAL_PRIORITY_CLASS;
   HANDLE process = GetCurrentProcess();
   SetPriorityClass(process, NORMAL_PRIORITY_CLASS);
 }

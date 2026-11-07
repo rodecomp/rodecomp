@@ -625,8 +625,6 @@ void CGameMode::DrawMiniMapNumber() {
   }
 }
 
-// GLOBAL: gl_25047
-std::uint32_t g_timeAttackCountdown;
 // GLOBAL: gl_25050
 int g_timeAttackFrame;
 

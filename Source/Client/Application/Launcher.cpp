@@ -1751,7 +1751,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   ReleaseMutex(mutex);
   CloseHandle(mutex);
-  SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
+  SetPriorityClass(GetCurrentProcess(), g_session.m_priorityClass);
 
   g_modeMgr.Run(0, "login.rsw");
 
