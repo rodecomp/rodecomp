@@ -2724,7 +2724,7 @@ void CPc::Slot32() {
 
   if (this->Slot55() < 0 && this->IsShapeShifted()) {
     std::string paletteName;
-    this->render.name.assign(FormatOwnedString("몸\\%s_%d.pal", this->GetShapeShiftName().c_str(), this->render.unknown_0048));
+    this->render.name.assign(static_cast<const std::string&>(FormatOwnedString("몸\\%s_%d.pal", this->GetShapeShiftName().c_str(), this->render.unknown_0048)));
     return;
   }
 
@@ -2734,7 +2734,7 @@ void CPc::Slot32() {
     job = g_session.GetRidingJob(job);
   }
 
-  this->render.name.assign(g_session.GetBodyPalName(job, this->unknown_0260, this->render.unknown_0048, costumeJob, this->Slot56(), 0));
+  this->render.name.assign(static_cast<const std::string&>(g_session.GetBodyPalName(job, this->unknown_0260, this->render.unknown_0048, costumeJob, this->Slot56(), 0)));
 }
 
 // OFFSET: 0x00DB2670
