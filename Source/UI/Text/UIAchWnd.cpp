@@ -366,7 +366,7 @@ void UIAchListWnd::Paint() {
     const std::string iconName = "유저인터페이스\\achievement_re\\icon_" + info.unknown_0068 + ".bmp";
     CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(iconName.c_str())));
     if (icon) {
-      this->DrawBitmap(8, top + 3, &icon->image, true);
+      this->DrawBitmap(8, top + 3, icon, true);
     }
 
     if (g_session.HasUnknown6178Record(this->ids[this->unknown_008C + row])) {
