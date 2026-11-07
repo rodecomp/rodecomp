@@ -647,12 +647,12 @@ void CSkillAction_DR_LOW_FLIGHT::Slot11(int level, CGameActor* source, CGameActo
     effect->Slot17(static_cast<float>((static_cast<int>(angle + angleOffset) + 360) % 360));
   }
 
-  const int bottomId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t bottomSource[] = {0xAD, 0xA0, 0xA4, 0x6C, 0xF1, 0x71, 0x94, 0x0E, 0xA9, 0xBB, 0x8C, 0x51, 0xF8, 0x69, 0x89, 0x06, 0xAC, 0xCF};
-    thread_local EncryptedName<sizeof(bottomSource), 0x69FD1D9733D3CFC1ULL> bottomName(bottomSource);
-    return bottomName.Text();
-  }());
-  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, bottomId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+        const std::uint8_t bottomSource[] = {0xAD, 0xA0, 0xA4, 0x6C, 0xF1, 0x71, 0x94, 0x0E, 0xA9, 0xBB, 0x8C, 0x51, 0xF8, 0x69, 0x89, 0x06, 0xAC, 0xCF};
+        thread_local EncryptedName<sizeof(bottomSource), 0x69FD1D9733D3CFC1ULL> bottomName(bottomSource);
+        return bottomName.Text();
+      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->Slot16(static_cast<int>(scale));
   }
 }
