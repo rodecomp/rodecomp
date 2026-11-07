@@ -25,16 +25,15 @@ CPaletteRes* CPaletteRes::Create() {
 // FUNCTION: fn_08040
 bool CPaletteRes::Load(const char* name) {
   CFile file;
-  if (file.Open(name, 0, true, false)) {
-    file.Read(this->sourcePalette, sizeof(this->sourcePalette));
-    ConvertSpritePalette(this->palette, this->sourcePalette, 256);
-    file.Close();
-    return true;
+  if (!file.Open(name, 0, true, false)) {
+    ShowErrorDialog((std::string("CPaletteRes :: Cannot find File : ") + std::string(name)).c_str(), 0);
+    return false;
   }
 
-  const std::string message = std::string("CPaletteRes :: Cannot find File : ") + std::string(name);
-  ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
-  return false;
+  file.Read(this->sourcePalette, sizeof(this->sourcePalette));
+  ConvertSpritePalette(this->palette, this->sourcePalette, 256);
+  file.Close();
+  return true;
 }
 
 // OFFSET: 0x0075DAF0
