@@ -379,7 +379,6 @@ bool C3dGrannyModelRes::Load(const char* name) {
   this->position[2] = 0.0f;
   this->unknown_03A0 = 10.0f;
   this->unknown_03A4 = 10.0f;
-  file.Close();
   return result;
 }
 
