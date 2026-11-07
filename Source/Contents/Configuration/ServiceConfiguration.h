@@ -10,7 +10,6 @@ extern bool g_serviceFlag06;
 extern int g_serviceType;
 extern char g_homepageUrl[256];
 
-int SetServiceFlags(int first, int second);
 extern int g_serviceMode;
 extern unsigned char g_startupSecondPhase;
 extern const char* g_licenceFileName;

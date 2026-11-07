@@ -1220,6 +1220,7 @@ public:
   void SetPlayerPosition(int x, int y, int direction);
   void SetRecord0734Value(int id, std::uint32_t value);
   void LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& delays, int& skillFlag);
+  int SetServiceFlags(int first, int second);
 };
 
 extern CSession g_session;

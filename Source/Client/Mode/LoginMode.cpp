@@ -2337,7 +2337,7 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
     g_serviceOptions.Set(0x6C, 0);
   }
   const unsigned char flags = g_serviceOptions.Get(0x6C);
-  SetServiceFlags(flags, flags);
+  g_session.SetServiceFlags(flags, flags);
 
   account.lastLoginIp = packet->lastLoginIp;
   memcpy_s(account.lastLoginTime, sizeof(packet->lastLoginTime), packet->lastLoginTime, sizeof(packet->lastLoginTime));
@@ -4099,7 +4099,7 @@ void CLoginMode::Slot7(int value) {
       g_serviceOptions.Set(0x6C, 0);
     }
     const unsigned char flags = g_serviceOptions.Get(0x6C);
-    SetServiceFlags(flags, flags);
+    g_session.SetServiceFlags(flags, flags);
     reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
     const std::uint8_t wallpaperSource[] = {0x77, 0x9E, 0x2F, 0x39, 0xC3, 0x11, 0x5C, 0x82, 0x71, 0xD5, 0x2F, 0x0F, 0xBE, 0x65, 0xC5,
                                             0x23, 0xD8, 0x56, 0x86, 0xAD, 0x5C, 0xB6, 0xF7, 0x3B, 0xD2, 0x43, 0x89, 0xA2, 0x60, 0xBA,

@@ -876,7 +876,7 @@ void ApplyServiceOptionFlags(int id, unsigned char value, bool notify, int enabl
     }
   }
 
-  SetServiceFlags(value, value);
+  g_session.SetServiceFlags(value, value);
 }
 
 #pragma inline_depth(0)

@@ -1,12 +1,15 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 
 // OFFSET: 0x00AD5290
 // FUNCTION: fn_17819
-int SetServiceFlags(int first, int second) {
+int CSession::SetServiceFlags(int first, int second) {
   const int serviceType = g_serviceType;
-  g_serviceFlag05 = first != 0;
-  g_serviceFlag06 = second != 0;
+  if (serviceType == 0 || serviceType == 6 || serviceType == 0xA || serviceType == 0xC || serviceType == 2) {
+    g_serviceFlag05 = first != 0;
+    g_serviceFlag06 = second != 0;
+  }
   return serviceType;
 }
 
