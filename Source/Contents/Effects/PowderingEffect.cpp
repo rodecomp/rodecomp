@@ -128,7 +128,7 @@ void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
 
   spriteParticle->alpha = 0;
   spriteParticle->unknown_00A8 = 0;
-  spriteParticle->scale = g_depthAverageHalf - static_cast<float>(r3) * 0.1f;
+  spriteParticle->scale = 0.5f - static_cast<float>(r3) * 0.1f;
 }
 
 // OFFSET: 0x00709690
