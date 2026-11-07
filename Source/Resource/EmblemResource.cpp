@@ -32,7 +32,7 @@ bool CEmblemRes::Load(const char* name) {
   }
 
   uLongf size = static_cast<uLongf>(static_cast<std::uint32_t>(g_guildMgr->m_timeout) * 1.2);
-  Bytef* buffer = static_cast<Bytef*>(std::malloc(size));
+  Bytef* buffer = new Bytef[size];
   if (uncompress(buffer, &size, static_cast<const Bytef*>(file.GetData()), file.GetSize()) != Z_OK
       || this->gif.Decode("_emblem.bmp", buffer, size, true) != true) {
     g_guildMgr->MarkInvalidEmblem(name);
@@ -40,7 +40,7 @@ bool CEmblemRes::Load(const char* name) {
   }
 
   file.Close();
-  std::free(buffer);
+  delete[] buffer;
   return true;
 }
 
