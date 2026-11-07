@@ -270,70 +270,22 @@ int Replay::WriteHeader(int event) {
 // FUNCTION: fn_19328
 std::vector<unsigned char> Replay::BuildMetadata() {
   std::vector<unsigned char> metadata;
-  {
-    const auto record = BuildReplayTaggedRecord(950, nullptr, 0);
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(961, &this->header.service, sizeof(this->header.service));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(962, &this->header.serviceType, sizeof(this->header.serviceType));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(963, &this->header.unknown_0014, sizeof(this->header.unknown_0014));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(964, this->header.characterName, sizeof(this->header.characterName));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(965, this->header.mapName, sizeof(this->header.mapName));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(966, &this->header.accountId, sizeof(this->header.accountId));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(967, &this->header.cellX, sizeof(this->header.cellX));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(968, &this->header.cellY, sizeof(this->header.cellY));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(969, &this->header.unknown_0078, sizeof(this->header.unknown_0078));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(970, &this->header.duration, sizeof(this->header.duration));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(971, &this->header.records, sizeof(this->header.records));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(972, &this->header.fileOffset, sizeof(this->header.fileOffset));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(973, &this->header.options, sizeof(this->header.options));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(960, &this->header.closingSignature, sizeof(this->header.closingSignature));
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(951, nullptr, 0);
-    metadata.insert(metadata.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(metadata, 950, nullptr, 0);
+  AppendReplayRecord(metadata, 961, &this->header.service, sizeof(this->header.service));
+  AppendReplayRecord(metadata, 962, &this->header.serviceType, sizeof(this->header.serviceType));
+  AppendReplayRecord(metadata, 963, &this->header.unknown_0014, sizeof(this->header.unknown_0014));
+  AppendReplayRecord(metadata, 964, this->header.characterName, sizeof(this->header.characterName));
+  AppendReplayRecord(metadata, 965, this->header.mapName, sizeof(this->header.mapName));
+  AppendReplayRecord(metadata, 966, &this->header.accountId, sizeof(this->header.accountId));
+  AppendReplayRecord(metadata, 967, &this->header.cellX, sizeof(this->header.cellX));
+  AppendReplayRecord(metadata, 968, &this->header.cellY, sizeof(this->header.cellY));
+  AppendReplayRecord(metadata, 969, &this->header.unknown_0078, sizeof(this->header.unknown_0078));
+  AppendReplayRecord(metadata, 970, &this->header.duration, sizeof(this->header.duration));
+  AppendReplayRecord(metadata, 971, &this->header.records, sizeof(this->header.records));
+  AppendReplayRecord(metadata, 972, &this->header.fileOffset, sizeof(this->header.fileOffset));
+  AppendReplayRecord(metadata, 973, &this->header.options, sizeof(this->header.options));
+  AppendReplayRecord(metadata, 960, &this->header.closingSignature, sizeof(this->header.closingSignature));
+  AppendReplayRecord(metadata, 951, nullptr, 0);
   return metadata;
 }
 
@@ -1084,12 +1036,11 @@ void Replay::CachePacket(std::uint16_t id, std::uint16_t size, const unsigned ch
   if (size == 0 || id > 3142 || data == nullptr) {
     return;
   }
-  ReplayCachedPacket& packet = this->cachedPackets[static_cast<short>(id)];
-  if (!packet.enabled) {
+  if (!this->cachedPackets[static_cast<short>(id)].enabled) {
     return;
   }
-  packet.bytes.resize(size, 0);
-  packet.bytes.assign(data, data + size);
+  this->cachedPackets[static_cast<short>(id)].bytes.resize(size, 0);
+  this->cachedPackets[static_cast<short>(id)].bytes.assign(data, data + size);
 }
 
 // OFFSET: 0x00E42EB0
@@ -1448,46 +1399,16 @@ struct ReplayShopFlagRecord {
 // FUNCTION: fn_24171
 std::vector<unsigned char> MessengerMember::Serialize() const {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(251, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(253, &this->valid, sizeof(this->valid));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(254, &this->accountId, sizeof(this->accountId));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(255, &this->characterId, sizeof(this->characterId));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(258, &this->leader, sizeof(this->leader));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(259, &this->offline, sizeof(this->offline));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(260, &this->color, sizeof(this->color));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(256, this->name.c_str(), this->name.size());
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(257, this->map.c_str(), this->map.size());
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(252, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, 251, nullptr, 0);
+  AppendReplayRecord(records, 253, &this->valid, sizeof(this->valid));
+  AppendReplayRecord(records, 254, &this->accountId, sizeof(this->accountId));
+  AppendReplayRecord(records, 255, &this->characterId, sizeof(this->characterId));
+  AppendReplayRecord(records, 258, &this->leader, sizeof(this->leader));
+  AppendReplayRecord(records, 259, &this->offline, sizeof(this->offline));
+  AppendReplayRecord(records, 260, &this->color, sizeof(this->color));
+  AppendReplayRecord(records, 256, this->name.c_str(), this->name.size());
+  AppendReplayRecord(records, 257, this->map.c_str(), this->map.size());
+  AppendReplayRecord(records, 252, nullptr, 0);
   return records;
 }
 
@@ -1749,50 +1670,17 @@ std::vector<unsigned char> CSession::BuildShopReplayRecords() {
 // FUNCTION: fn_24202
 std::vector<unsigned char> CSession::BuildExtraReplayRecords() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(5500, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5510, &this->unknown_593C, sizeof(this->unknown_593C));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5511, &this->unknown_5940, sizeof(this->unknown_5940));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5512, &this->unknown_5944, sizeof(this->unknown_5944));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5513, &this->unknown_5948, sizeof(this->unknown_5948));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5514, &this->unknown_594C, sizeof(this->unknown_594C));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5515, this->unknown_5950.c_str(), this->unknown_5950.size());
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5516, &this->unknown_5968, sizeof(this->unknown_5968));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5517, &this->unknown_596C, sizeof(this->unknown_596C));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5518, &this->unknown_5970, sizeof(this->unknown_5970));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5501, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, 5500, nullptr, 0);
+  AppendReplayRecord(records, 5510, &this->unknown_593C, sizeof(this->unknown_593C));
+  AppendReplayRecord(records, 5511, &this->unknown_5940, sizeof(this->unknown_5940));
+  AppendReplayRecord(records, 5512, &this->unknown_5944, sizeof(this->unknown_5944));
+  AppendReplayRecord(records, 5513, &this->unknown_5948, sizeof(this->unknown_5948));
+  AppendReplayRecord(records, 5514, &this->unknown_594C, sizeof(this->unknown_594C));
+  AppendReplayRecord(records, 5515, this->unknown_5950.c_str(), this->unknown_5950.size());
+  AppendReplayRecord(records, 5516, &this->unknown_5968, sizeof(this->unknown_5968));
+  AppendReplayRecord(records, 5517, &this->unknown_596C, sizeof(this->unknown_596C));
+  AppendReplayRecord(records, 5518, &this->unknown_5970, sizeof(this->unknown_5970));
+  AppendReplayRecord(records, 5501, nullptr, 0);
   return records;
 }
 
