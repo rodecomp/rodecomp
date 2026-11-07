@@ -333,14 +333,14 @@ void UIMiniMapWnd::Paint() {
   const std::string mapName = FormatOwnedString("유저인터페이스\\map\\%s.bmp", g_session.m_navigationPlayerMap);
   auto* map = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(mapName.c_str())));
   if (map) {
-    this->DrawBitmap(2, 19, &map->image, true);
+    this->DrawBitmap(2, 19, map, true);
     this->geometry.surface->Brighten(2, 19, 512, 512, -50);
   }
 
   auto* warp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\minimap\\warp.bmp")));
   for (unsigned index = 0; index < this->warpMarks.size(); ++index) {
     if (warp) {
-      this->DrawBitmap(this->warpMarks[index].x, this->warpMarks[index].y, &warp->image, true);
+      this->DrawBitmap(this->warpMarks[index].x, this->warpMarks[index].y, warp, true);
     }
   }
 
@@ -351,7 +351,7 @@ void UIMiniMapWnd::Paint() {
       if (x > 0) {
         const int y = this->guildMarks[index].y;
         if (y > 0 && guild) {
-          this->DrawBitmap(x, y, &guild->image, true);
+          this->DrawBitmap(x, y, guild, true);
         }
       }
     }
@@ -362,7 +362,7 @@ void UIMiniMapWnd::Paint() {
       if (x > 0) {
         const int y = this->partyMarks[index].y;
         if (y > 0 && party) {
-          this->DrawBitmap(x, y, &party->image, true);
+          this->DrawBitmap(x, y, party, true);
         }
       }
     }
