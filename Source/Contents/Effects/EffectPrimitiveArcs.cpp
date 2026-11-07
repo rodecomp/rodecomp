@@ -475,10 +475,14 @@ void CEffectPrim::RenderGroundSquareBlend(matrix& wtm) {
 // OFFSET: 0x00BED490
 // FUNCTION: fn_19979
 __declspec(safebuffers) void CEffectPrim::RenderJitterQuads(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec2{};
-  vector3d vec3{};
-  vector3d vec4{};
+  vector3d vec1;
+  ZeroVector(vec1);
+  vector3d vec2;
+  ZeroVector(vec2);
+  vector3d vec3;
+  ZeroVector(vec3);
+  vector3d vec4;
+  ZeroVector(vec4);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -498,7 +502,11 @@ __declspec(safebuffers) void CEffectPrim::RenderJitterQuads(matrix& wtm) {
     vec1.y = 0.0f;
     vec1.z = radius * g_sinTable[angle];
     angle += rand() % 16;
-    angle += angle + 85 < 360 ? 85 : -275;
+    if (angle + 85 >= 360) {
+      angle -= 275;
+    } else {
+      angle += 85;
+    }
     if (angle < 0) {
       angle += 360;
     }
@@ -506,7 +514,11 @@ __declspec(safebuffers) void CEffectPrim::RenderJitterQuads(matrix& wtm) {
     vec2.y = 0.0f;
     vec2.z = radius * g_sinTable[angle];
     angle += rand() % 16;
-    angle += angle + 85 < 360 ? 85 : -275;
+    if (angle + 85 >= 360) {
+      angle -= 275;
+    } else {
+      angle += 85;
+    }
     if (angle < 0) {
       angle += 360;
     }
@@ -514,7 +526,11 @@ __declspec(safebuffers) void CEffectPrim::RenderJitterQuads(matrix& wtm) {
     vec3.y = 0.0f;
     vec3.z = radius * g_sinTable[angle];
     angle += rand() % 16;
-    angle += angle + 85 < 360 ? 85 : -275;
+    if (angle + 85 >= 360) {
+      angle -= 275;
+    } else {
+      angle += 85;
+    }
     if (angle < 0) {
       angle += 360;
     }
@@ -1728,7 +1744,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
 
 // OFFSET: 0x00BF6FD0
 // FUNCTION: fn_20001
-void CEffectPrim::RenderTaperedQuad(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderTaperedQuad(matrix& wtm) {
   vector3d vec1;
   ZeroVector(vec1);
   vector3d vec2;
