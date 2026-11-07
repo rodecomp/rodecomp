@@ -74,37 +74,3 @@ void C3dAttr::SpatialCell(float x, float z, int& column, int& row) const {
   const float second = std::floor(z / static_cast<float>(this->cellSize));
   row = static_cast<int>(second) + halfRows;
 }
-
-// OFFSET: 0x00748E90
-// FUNCTION: fn_07839
-void C3dAttr::HeightBounds(const int* rectangle, float& minimum, float& maximum) const {
-  minimum = 999999.0f;
-  maximum = -999999.0f;
-  int column = rectangle[0];
-
-  while (column <= rectangle[2]) {
-    int row = rectangle[1];
-
-    while (row <= rectangle[3]) {
-      const TerrainHeightCell* cell = this->CellAt(column, row);
-
-      if (cell) {
-        for (float value : cell->heights) {
-          if (value > maximum) {
-            maximum = value;
-          }
-        }
-
-        for (float value : cell->heights) {
-          if (minimum > value) {
-            minimum = value;
-          }
-        }
-      }
-
-      ++row;
-    }
-
-    ++column;
-  }
-}

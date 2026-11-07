@@ -53,6 +53,40 @@ const TerrainHeightCell* C3dAttr::CellAt(int column, int row) const {
   return this->m_cells.data() + column + row * this->width;
 }
 
+// OFFSET: 0x00748E90
+// FUNCTION: fn_07839
+void C3dAttr::HeightBounds(const int* rectangle, float& minimum, float& maximum) const {
+  minimum = 999999.0f;
+  maximum = -999999.0f;
+  int column = rectangle[0];
+
+  while (column <= rectangle[2]) {
+    int row = rectangle[1];
+
+    while (row <= rectangle[3]) {
+      const TerrainHeightCell* cell = this->CellAt(column, row);
+
+      if (cell) {
+        for (int index = 0; index < 4; ++index) {
+          if (cell->heights[index] > maximum) {
+            maximum = cell->heights[index];
+          }
+        }
+
+        for (int index = 0; index < 4; ++index) {
+          if (minimum > cell->heights[index]) {
+            minimum = cell->heights[index];
+          }
+        }
+      }
+
+      ++row;
+    }
+
+    ++column;
+  }
+}
+
 // OFFSET: 0x007492A0
 // FUNCTION: fn_07841
 bool C3dAttr::Walkable(int column, int row) const {
