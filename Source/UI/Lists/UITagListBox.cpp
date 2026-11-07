@@ -319,6 +319,21 @@ int UITagListBox::DecodeCards(std::vector<int>& fields, const char* text, int& p
 // FUNCTION: fn_13887
 int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
+  case 18:
+    if (this->verticalOverflow) {
+      this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
+      return 0;
+    }
+    break;
+  case 19:
+    if (this->verticalOverflow) {
+      this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
+      return 0;
+    }
+    break;
+  case 29:
+    this->AppendText(argument1, argument2, argument3, argument4);
+    return 0;
   case 7:
   case 8:
   case 9:
@@ -341,21 +356,6 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
     break;
   }
-  case 18:
-    if (this->verticalOverflow) {
-      this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
-      return 0;
-    }
-    break;
-  case 19:
-    if (this->verticalOverflow) {
-      this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
-      return 0;
-    }
-    break;
-  case 29:
-    this->AppendText(argument1, argument2, argument3, argument4);
-    return 0;
   case 98:
     this->OnTagClick(argument1, sender);
     break;
