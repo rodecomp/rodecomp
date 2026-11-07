@@ -2113,6 +2113,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     }
     }
     break;
+
   case 7:
   case 9:
   case 10: {
@@ -2133,6 +2134,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     }
     return this->m_scrollTop - previous;
   }
+
   case 23: {
     this->m_skills.clear();
     const int count = static_cast<int>(g_session.m_additionalSkills.size());
@@ -2147,20 +2149,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     this->UpdateSkillButtons();
     return 0;
   }
-  case 48:
-    if (this->m_hoverIndex != -1) {
-      CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
-      if (skill.available != 0) {
-        const int command = this->m_menuItems[a1].value;
-        if (command == 3) {
-          g_windowMgr.EnsureWindow(46)->SendMsg(nullptr, 61, skill.id, 0, 0, 0);
-        } else if (command == 14) {
-          g_windowMgr.EnsureWindow(55)->SendMsg(nullptr, 68, skill.id, 0, 0, 0);
-        }
-      }
-      return 0;
-    }
-    break;
+
   case 49:
     this->m_menuItems.clear();
     if (g_windowMgr.unknown_0210 != 0) {
@@ -2195,6 +2184,22 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
       return 0;
     }
     break;
+
+  case 48:
+    if (this->m_hoverIndex != -1) {
+      CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
+      if (skill.available != 0) {
+        const int command = this->m_menuItems[a1].value;
+        if (command == 3) {
+          g_windowMgr.EnsureWindow(46)->SendMsg(nullptr, 61, skill.id, 0, 0, 0);
+        } else if (command == 14) {
+          g_windowMgr.EnsureWindow(55)->SendMsg(nullptr, 68, skill.id, 0, 0, 0);
+        }
+      }
+      return 0;
+    }
+    break;
+
   case 58: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a1);
     if (skill->level != 0) {
@@ -2202,6 +2207,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     }
     break;
   }
+
   default:
     return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
   }
@@ -2326,6 +2332,25 @@ void UIGuildSkillWnd::Slot15(int, int height) {
 // FUNCTION: fn_13131
 int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scrollTop;
+    int top;
+    if (message == 9) {
+      top = previous - this->m_visibleRows + 1;
+    } else {
+      top = message == 10 ? this->m_visibleRows - 1 : a1;
+      top += previous;
+    }
+    this->m_scrollTop = top;
+    if (previous != top) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->m_scrollTop - previous;
+  }
+
   case 6:
     switch (a1) {
     case 184:
@@ -2432,24 +2457,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
     }
     this->InvalidateChildren();
     return 0;
-  case 7:
-  case 9:
-  case 10: {
-    const int previous = this->m_scrollTop;
-    int top;
-    if (message == 9) {
-      top = previous - this->m_visibleRows + 1;
-    } else {
-      top = message == 10 ? this->m_visibleRows - 1 : a1;
-      top += previous;
-    }
-    this->m_scrollTop = top;
-    if (previous != top) {
-      this->UpdateScroll();
-      this->Invalidate();
-    }
-    return this->m_scrollTop - previous;
-  }
+
   case 60:
     this->m_positions = reinterpret_cast<const std::list<GuildPositionEntry>&>(g_guildInfo.unknown_00D4);
     this->InvalidateChildren();
@@ -2460,6 +2468,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
     }
     this->UpdateScroll();
     return 0;
+
   default:
     return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
   }
