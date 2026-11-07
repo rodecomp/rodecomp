@@ -46,6 +46,12 @@ const char* g_uiInfoPath = "savedata\\UIInfo.lua";
 // GLOBAL: gl_25443
 const char* g_uiInfoScriptPath = "Lua Files\\OptionInfo\\UIInfo_F";
 
+// INLINED
+template <class Signature>
+static __forceinline void AssignHandler(std::function<Signature>& target, const std::function<Signature>& source) {
+  std::function<Signature>(source).swap(target);
+}
+
 class CUIListBoxItemSelector {
 public:
   void SetHighlighted(CUIListItem* const& item);
@@ -378,7 +384,7 @@ void CUIVScrollBar::SetTotal(int value) {
 // OFFSET: 0x009D3120
 // FUNCTION: fn_14028
 void CUIVScrollBar::SetOnChange(std::function<void(int)> handler) {
-  this->onChange = handler;
+  AssignHandler(this->onChange, handler);
 }
 
 // OFFSET: 0x009F2E80
@@ -3232,40 +3238,38 @@ void CUITabButton::Paint() {
     return;
   }
 
-  const int width = this->geometry.width;
-  const int height = this->geometry.height;
   if (this->orientation == 1) {
     if (this->state != 1) {
-      this->FillRegion(2, 1, width - 3, height - 2, this->normalColor);
-      this->FillRegion(1, 2, 1, height - 4, this->borderColor);
+      this->FillRegion(2, 1, this->geometry.width - 3, this->geometry.height - 2, this->normalColor);
+      this->FillRegion(1, 2, 1, this->geometry.height - 4, this->borderColor);
       this->FillRegion(2, 1, 1, 1, this->borderColor);
-      this->FillRegion(2, height - 2, 1, 1, this->borderColor);
-      this->FillRegion(3, 0, width - 3, 1, this->borderColor);
-      this->FillRegion(3, height - 1, width - 3, 1, this->borderColor);
-      this->FillRegion(width - 1, 0, 1, height, this->borderColor);
+      this->FillRegion(2, this->geometry.height - 2, 1, 1, this->borderColor);
+      this->FillRegion(3, 0, this->geometry.width - 3, 1, this->borderColor);
+      this->FillRegion(3, this->geometry.height - 1, this->geometry.width - 3, 1, this->borderColor);
+      this->FillRegion(this->geometry.width - 1, 0, 1, this->geometry.height, this->borderColor);
     } else {
-      this->FillRegion(1, 1, width - 1, height - 2, this->selectedColor);
-      this->FillRegion(0, 2, 1, height - 4, this->borderColor);
+      this->FillRegion(1, 1, this->geometry.width - 1, this->geometry.height - 2, this->selectedColor);
+      this->FillRegion(0, 2, 1, this->geometry.height - 4, this->borderColor);
       this->FillRegion(1, 1, 1, 1, this->borderColor);
-      this->FillRegion(1, height - 2, 1, 1, this->borderColor);
-      this->FillRegion(2, 0, width - 2, 1, this->borderColor);
-      this->FillRegion(2, height - 1, width - 2, 1, this->borderColor);
+      this->FillRegion(1, this->geometry.height - 2, 1, 1, this->borderColor);
+      this->FillRegion(2, 0, this->geometry.width - 2, 1, this->borderColor);
+      this->FillRegion(2, this->geometry.height - 1, this->geometry.width - 2, 1, this->borderColor);
     }
   } else if (this->state == 1) {
-    this->FillRegion(1, 1, width - 2, height - 1, this->selectedColor);
-    this->FillRegion(2, 0, width - 4, 1, this->borderColor);
+    this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 1, this->selectedColor);
+    this->FillRegion(2, 0, this->geometry.width - 4, 1, this->borderColor);
     this->FillRegion(1, 1, 1, 1, this->borderColor);
-    this->FillRegion(width - 2, 1, 1, 1, this->borderColor);
-    this->FillRegion(0, 2, 1, height - 2, this->borderColor);
-    this->FillRegion(width - 1, 2, 1, height - 2, this->borderColor);
+    this->FillRegion(this->geometry.width - 2, 1, 1, 1, this->borderColor);
+    this->FillRegion(0, 2, 1, this->geometry.height - 2, this->borderColor);
+    this->FillRegion(this->geometry.width - 1, 2, 1, this->geometry.height - 2, this->borderColor);
   } else {
-    this->FillRegion(1, 2, width - 2, height - 3, this->normalColor);
-    this->FillRegion(2, 1, width - 4, 1, this->borderColor);
+    this->FillRegion(1, 2, this->geometry.width - 2, this->geometry.height - 3, this->normalColor);
+    this->FillRegion(2, 1, this->geometry.width - 4, 1, this->borderColor);
     this->FillRegion(1, 2, 1, 1, this->borderColor);
-    this->FillRegion(width - 2, 2, 1, 1, this->borderColor);
-    this->FillRegion(0, 3, 1, height - 3, this->borderColor);
-    this->FillRegion(width - 1, 3, 1, height - 3, this->borderColor);
-    this->FillRegion(0, height - 1, width, 1, this->borderColor);
+    this->FillRegion(this->geometry.width - 2, 2, 1, 1, this->borderColor);
+    this->FillRegion(0, 3, 1, this->geometry.height - 3, this->borderColor);
+    this->FillRegion(this->geometry.width - 1, 3, 1, this->geometry.height - 3, this->borderColor);
+    this->FillRegion(0, this->geometry.height - 1, this->geometry.width, 1, this->borderColor);
   }
   this->CUITextButton::Slot55();
 }
@@ -3318,7 +3322,7 @@ void CUITextViewer::Slot15(int width, int height) {
       window->Show(window->geometry.y + window->geometry.height >= 0 && window->geometry.y < this->geometry.height);
     }
   };
-  this->scrollBar->onChange = onChange;
+  AssignHandler(this->scrollBar->onChange, onChange);
   this->AddChild(this->scrollBar);
 }
 
@@ -3560,7 +3564,7 @@ void CUIHScrollBar::Slot15(int, int) {
     this->thumb = new CUIHThumb();
     this->thumb->Show(0);
     const std::function<void(int)> onDrag = [this](int value) { this->Slot55(value); };
-    this->thumb->onDrag = onDrag;
+    AssignHandler(this->thumb->onDrag, onDrag);
     this->AddChild(this->thumb);
   }
 }
@@ -3584,7 +3588,7 @@ void CUIVScrollBar::Slot15(int, int) {
     this->thumb = new CUIVThumb();
     this->thumb->Show(0);
     const std::function<void(int)> onDrag = [this](int value) { this->Slot55(value); };
-    this->thumb->onDrag = onDrag;
+    AssignHandler(this->thumb->onDrag, onDrag);
     this->AddChild(this->thumb);
   }
 }
