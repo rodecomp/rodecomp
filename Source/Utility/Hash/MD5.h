@@ -21,7 +21,7 @@ public:
   std::uint32_t HashFile(const char* filename);
 
 private:
-  const unsigned char* Decode(std::uint32_t* output, const unsigned char* input, std::uint32_t count);
+  __declspec(noinline) const unsigned char* Decode(std::uint32_t* output, const unsigned char* input, std::uint32_t count);
   std::uint32_t* Transform(std::uint32_t* state, const std::uint32_t* input);
 
   union {

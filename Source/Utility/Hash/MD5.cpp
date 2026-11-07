@@ -16,10 +16,11 @@ namespace {
   // INLINED
   __forceinline void Encode(unsigned char* output, const std::uint32_t* input, std::uint32_t length) {
     for (std::uint32_t i = 0; i < length / 4; ++i) {
-      output[i * 4] = static_cast<unsigned char>(input[i] & 0xFF);
-      output[i * 4 + 1] = static_cast<unsigned char>((input[i] >> 8) & 0xFF);
-      output[i * 4 + 2] = static_cast<unsigned char>((input[i] >> 16) & 0xFF);
-      output[i * 4 + 3] = static_cast<unsigned char>((input[i] >> 24) & 0xFF);
+      const std::uint32_t value = input[i];
+      output[i * 4] = static_cast<unsigned char>(value & 0xFF);
+      output[i * 4 + 1] = static_cast<unsigned char>((value >> 8) & 0xFF);
+      output[i * 4 + 2] = static_cast<unsigned char>((value >> 16) & 0xFF);
+      output[i * 4 + 3] = static_cast<unsigned char>((value >> 24) & 0xFF);
     }
   }
 }
