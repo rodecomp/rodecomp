@@ -518,16 +518,8 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->m_amountEdit->SetText(LookupMessage(0xADA));
     g_windowMgr.SetFocus(this->m_amountEdit);
     return 0;
-  case 0x186:
-    step = 10000000;
-    break;
-  case 0x187:
-    step = 1000000;
-    break;
-  case 0x188:
-    step = 100000;
-    break;
   case 0x1CE: {
+    PACKET_CZ_BANK_TRANSACTION packet;
     if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x9B9)), 255, 0, 0, 0);
       return 0;
@@ -536,14 +528,13 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     if (amount == 0) {
       return 0;
     }
-    if (amount > g_session.m_zeny) {
+    if (g_session.m_zeny < amount) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x998)), 255, 0, 0, 0);
       this->m_status = LookupMessage(0xAE1);
     } else if (g_session.m_bankBalance + amount > 0x7FFFFFFFLL) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xAE3)), 255, 0, 0, 0);
       this->m_status = LookupMessage(0xADF);
     } else {
-      PACKET_CZ_BANK_TRANSACTION packet;
       packet.amount = static_cast<int>(amount);
       packet.id = 0x9A7;
       packet.aid = g_session.m_aid;
@@ -553,6 +544,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return 0;
   }
   case 0x1CF: {
+    PACKET_CZ_BANK_TRANSACTION packet;
     if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x9B9)), 255, 0, 0, 0);
       return 0;
@@ -561,14 +553,13 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     if (amount == 0) {
       return 0;
     }
-    if (amount > g_session.m_bankBalance) {
+    if (g_session.m_bankBalance < amount) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x997)), 255, 0, 0, 0);
       this->m_status = LookupMessage(0xAE2);
     } else if (static_cast<unsigned int>(g_session.m_zeny + static_cast<int>(amount)) > 0x7FFFFFFFu) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x99B)), 255, 0, 0, 0);
       this->m_status = LookupMessage(0xAE3);
     } else {
-      PACKET_CZ_BANK_TRANSACTION packet;
       packet.amount = static_cast<int>(amount);
       packet.id = 0x9A9;
       packet.aid = g_session.m_aid;
@@ -577,6 +568,15 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     return 0;
   }
+  case 0x186:
+    step = 10000000;
+    break;
+  case 0x187:
+    step = 1000000;
+    break;
+  case 0x188:
+    step = 100000;
+    break;
   default:
     return 0;
   }
