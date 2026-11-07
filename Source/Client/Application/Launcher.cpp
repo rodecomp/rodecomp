@@ -1411,7 +1411,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     const std::uint8_t failureSource[] = {0xB6, 0xEA, 0xAF, 0x66, 0xCF, 0x3A, 0x50, 0x9B, 0xFB, 0xEA, 0xAF, 0x7C, 0xDF, 0x2E, 0x51, 0x87,
                                           0xFB, 0xE5, 0xA0, 0x66, 0xC7, 0x4F};
     thread_local EncryptedName<sizeof(failureSource), 0xEB3D4FAB0FC183DBULL> failure(failureSource);
-    ShowErrorDialog(GetRenderSystemHolder()->system, failure.Text(), MB_OK);
+    ShowErrorDialog(failure.Text(), MB_OK);
     return 0;
   }
 
@@ -1654,7 +1654,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     if (audioFailure.Encrypted()) {
       audioFailure.Text();
     } else {
-      ShowErrorDialog(GetRenderSystemHolder()->system, audioFailure.Text(), MB_OK);
+      ShowErrorDialog(audioFailure.Text(), MB_OK);
       return 0;
     }
   }
@@ -1684,7 +1684,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
                                                 0x18, 0xD1, 0xC9, 0xB2, 0xF3, 0xA3, 0x6D, 0x21, 0x3E, 0xEF, 0x8C, 0xF5, 0xE9, 0xA4, 0x3E, 0x67,
                                                 0x27, 0xF1, 0x86, 0xB7, 0xED, 0xA0, 0x20, 0x69, 0x57};
     thread_local EncryptedName<sizeof(deviceFailureSource), 0x474DC581D5E98357ULL> deviceFailure(deviceFailureSource);
-    ShowErrorDialog(GetRenderSystemHolder()->system, deviceFailure.Text(), MB_OK);
+    ShowErrorDialog(deviceFailure.Text(), MB_OK);
     return 1;
   }
 

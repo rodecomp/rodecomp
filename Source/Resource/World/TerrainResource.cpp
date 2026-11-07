@@ -31,7 +31,7 @@ bool C3dAttr::Load(const char* name) {
   file.Read(magic, 4);
 
   if (std::strcmp(magic, "GRAT") != 0) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Block Attr ", 0);
+    ShowErrorDialog("Block Attr ", 0);
     file.Close();
     return false;
   }
@@ -63,7 +63,7 @@ bool C3dAttr::Load(const char* name) {
 
     file.Close();
   } else {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "C3dAttr::Unsupported Version", 0);
+    ShowErrorDialog("C3dAttr::Unsupported Version", 0);
   }
 
   file.Close();
