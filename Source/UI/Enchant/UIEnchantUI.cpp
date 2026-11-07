@@ -1818,15 +1818,17 @@ void CUIEnchantPage::SetCost(const EnchantPerfectInfo& info) {
     }
   }
 
-  const std::string cost = std::to_string(info.cost);
-  this->unknown_009C->SetText(cost);
+  this->unknown_009C->SetText(std::to_string(info.cost));
 
   const bool lackZeny = g_session.m_zeny < info.cost;
   const bool lackMaterial = std::any_of(this->unknown_0090.begin(), this->unknown_0090.end(), [](CUIIngredient* ingredient) {
     return ingredient->geometry.visible && !ingredient->unknown_0084->geometry.visible;
   });
-  this->unknown_00A0->disabled = lackZeny || lackMaterial;
-  this->unknown_00A0->Invalidate();
+  {
+    CUIImageButton* button = this->unknown_00A0;
+    button->disabled = lackZeny || lackMaterial;
+    button->Invalidate();
+  }
 }
 
 // OFFSET: 0x00A07100
