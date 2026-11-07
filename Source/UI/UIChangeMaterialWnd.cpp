@@ -523,12 +523,10 @@ void UIChangeMaterialWnd_List::ShiftSelectedIndex(int value) {
 // FUNCTION: fn_03878
 void UIChangeMaterialWnd::Paint() {
 
-  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\bg_ChangeMaterial.bmp")));
-  this->DrawBitmap(0, 0, background ? &background->image : nullptr, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\bg_ChangeMaterial.bmp"))), true);
 
   const std::string mixName = FormatOwnedString("유저인터페이스\\ChangeMaterial\\bg_mix_%d.bmp", static_cast<int>(this->m_materials.size()));
-  CBitmapRes* mix = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(mixName.c_str())));
-  this->DrawBitmap(0x50, 0x1E, mix ? &mix->image : nullptr, true);
+  this->DrawBitmap(0x50, 0x1E, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(mixName.c_str()))), true);
 
   int slot = 0;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++slot) {
