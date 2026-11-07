@@ -57,7 +57,11 @@ void UIAchListWnd::SelectAchievement(int index) {
   this->selectedIndex = index;
 
   if (this->parent) {
-    this->parent->SendMsg(this, 135, static_cast<unsigned>(index) < this->ids.size() ? this->ids[index] : -1, 0, 0, 0);
+    int id = -1;
+    if (static_cast<unsigned>(index) < this->ids.size()) {
+      id = this->ids[index];
+    }
+    this->parent->SendMsg(this, 135, id, 0, 0, 0);
   }
 
   this->Invalidate();
@@ -756,10 +760,7 @@ void UIAchListWnd::UpdateScroll() {
   const int overflow = std::max(info->count - rows, 0);
   this->scrollable = overflow > 0;
 
-  if (overflow < 1) {
-    this->unknown_008C = 0;
-    this->scrollBar->SetRange(0, rows, info->count);
-  } else {
+  if (overflow > 0) {
     this->scrollBar->SetRange(overflow, rows, info->count);
     if (this->unknown_008C < 0) {
       this->unknown_008C = 0;
@@ -770,6 +771,9 @@ void UIAchListWnd::UpdateScroll() {
       }
       this->scrollBar->SetPosition(this->unknown_008C);
     }
+  } else {
+    this->unknown_008C = 0;
+    this->scrollBar->SetRange(0, rows, info->count);
   }
 
   this->scrollBar->Invalidate();
