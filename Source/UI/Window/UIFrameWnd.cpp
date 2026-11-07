@@ -120,15 +120,13 @@ static __forceinline void RaiseWindow(UIWindow* window) {
 // OFFSET: 0x008BA1E0
 // FUNCTION: fn_11779
 void UIFrameWnd::Slot25(int x, int y) {
-  if (g_windowMgr.lastWindowId != this->geometry.id) {
-    g_windowMgr.BringToFront(this->geometry.id);
-    g_windowMgr.lastWindowId = this->geometry.id;
-  }
-
+  RaiseWindow(this);
   g_windowMgr.SetCapture(this);
-  this->ToScreen(x, y);
-  this->m_dragX = x;
-  this->m_dragY = y;
+  int screenX = x;
+  int screenY = y;
+  this->ToScreen(screenX, screenY);
+  this->m_dragX = screenX;
+  this->m_dragY = screenY;
   this->m_originX = this->geometry.x;
   this->m_originY = this->geometry.y;
   this->geometry.targetAlpha = 128;
