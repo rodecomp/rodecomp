@@ -1297,11 +1297,10 @@ void UIGuildSkillWnd::Paint() {
 
     char text[80];
     g_session.ItemBitmapPath(skill->name, text);
-    this->DrawBitmap(x + 44, y + 45, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)))->image, true);
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+    this->DrawBitmap(x + 44, y + 45, bitmap, true);
     unsigned gray;
-    if (skill->level == 0) {
-      gray = 120;
-    } else {
+    if (skill->level != 0) {
       std::sprintf(text, g_serviceType == 12 ? "Nv : %d" : "Lv : %d", skill->level);
       this->DrawTextAt(x + 113, y + 58, text, 0, 0, 12, 0, 0, 0);
       if (skill->unknown_000C == 0) {
@@ -1311,6 +1310,8 @@ void UIGuildSkillWnd::Paint() {
       }
       this->DrawTextAt(x + 212, y + 58, text, 0, 0, 12, 0, 0, 0);
       gray = 0;
+    } else {
+      gray = 120;
     }
 
     this->DrawTextAt(x + 112, y + 46, skill->DisplayName(*g_session.m_hotkeyScript), 0, 0, 12, RGB(gray, gray, gray), 0, 0);
