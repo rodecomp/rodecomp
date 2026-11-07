@@ -292,8 +292,7 @@ int AiHomunAttack(lua_State* state) {
     packet.aid = aid;
     packet.target = target;
     packet.action = 0;
-    CRagConnection& connection = GetRagConnection();
-    connection.Send(g_packetLengths.FixedLength(packet.opcode), &packet);
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.opcode), &packet);
     lastAttackTime = timeGetTime();
   }
 
