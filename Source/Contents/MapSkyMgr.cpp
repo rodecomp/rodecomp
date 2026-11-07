@@ -340,8 +340,8 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
       continue;
     }
 
-    const int halfWidth = static_cast<int>(static_cast<float>(mapWidth) * g_depthAverageHalf);
-    const int halfHeight = static_cast<int>(static_cast<float>(mapHeight) * g_depthAverageHalf);
+    const int halfWidth = static_cast<int>(static_cast<float>(mapWidth) * 0.5f);
+    const int halfHeight = static_cast<int>(static_cast<float>(mapHeight) * 0.5f);
 
     for (int index = 0; index < count; ++index) {
       const int signX = rand() % 2;
