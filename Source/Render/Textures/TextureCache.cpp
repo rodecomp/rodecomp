@@ -76,6 +76,8 @@ CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t 
 // OFFSET: 0x00571930
 // FUNCTION: fn_02455
 CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool dynamic, bool renderTarget) {
+  CTexture* texture;
+
   if (std::strstr(name, ".bik")) {
     if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
       BinkMovies* movies = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->movies;
@@ -85,7 +87,7 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
 
         if (movie) {
           const auto* handle = movie->decoder->Handle();
-          CTexture* texture = GetRenderSystemHolder()->CreateTexture(handle->width, handle->height, TextureFormat::A8R8G8B8, false, false);
+          texture = GetRenderSystemHolder()->CreateTexture(handle->width, handle->height, TextureFormat::A8R8G8B8, false, false);
 
           if (texture) {
             return texture;
@@ -93,26 +95,37 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
         }
       }
     }
+
+    const int extent = 1 / g_textureReduction;
+    texture = GetRenderSystemHolder()->CreateTexture(extent, extent, TextureFormat::A1R5G5B5, false, false);
+
+    if (texture) {
+      const std::uint32_t transparent = 0;
+      texture->Upload(0, 0, 1, 1, &transparent, option, 0);
+    }
   } else {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
 
     if (bitmap) {
       const auto& image = bitmap->image;
-      CTexture* texture = this->Upload(
+      texture = this->Upload(
         image.width, image.height, image.pixels, image.alpha != 0 ? TextureFormat::A4R4G4B4 : TextureFormat::A1R5G5B5, option, fullSize, dynamic, renderTarget
       );
       ResourceMgr::Instance().Remove(bitmap);
 
       return texture;
     }
+
+    const int extent = 1 / g_textureReduction;
+    texture = GetRenderSystemHolder()->CreateTexture(extent, extent, TextureFormat::A1R5G5B5, false, false);
+
+    if (texture) {
+      const std::uint32_t transparent = 0;
+      texture->Upload(0, 0, 1, 1, &transparent, option, 0);
+    }
   }
 
-  const int extent = 1 / g_textureReduction;
-  CTexture* texture = GetRenderSystemHolder()->CreateTexture(extent, extent, TextureFormat::A1R5G5B5, false, false);
-
   if (texture) {
-    const std::uint32_t transparent = 0;
-    texture->Upload(0, 0, 1, 1, &transparent, option, 0);
     texture->unknown_0008 &= 0xFF00u;
   }
 
