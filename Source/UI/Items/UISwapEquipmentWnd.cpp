@@ -445,7 +445,7 @@ void UISwapEquipmentWnd::Slot28(int x, int y) {
       } else if (item.unknown_0098 != 0) {
         text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0xA28), item.DisplayName(0).c_str(), item.unknown_0098));
       } else {
-        text = item.DisplayName(0);
+        text = static_cast<const std::string&>(item.DisplayName(0));
       }
 
       g_modeMgr.GetGameMode()->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
