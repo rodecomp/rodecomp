@@ -1153,7 +1153,7 @@ void UIMyStyleWnd::SaveLikeList() {
   char formatted[512];
   char slotText[512];
   char text[512];
-  std::string likeList;
+  std::string likeList = "";
   CFile file;
   if (file.Open("savedata\\LikeListInfoFile.lua", 0, false, false)) {
     int size = static_cast<int>(file.GetSize());
