@@ -9723,22 +9723,14 @@ UISpellListWnd::UISpellListWnd() : UIItemIdentifyWnd() {
 // FUNCTION: fn_12370
 int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6: {
-    this->RecordResponse(static_cast<int>(argument1), argument2, this->m_selected, argument4);
-    if (g_replayAnimationScaling != 0) {
-      this->m_selected = static_cast<int>(argument3);
-    }
-    if (argument1 == 184) {
-      int found = 0;
-      ITEM_INFO item = this->GetItem(this->m_selected, &found);
-      if (found) {
-        g_modeMgr.gameMode->SendMsg(146, item.unknown_0000[1], 0, 0, 0);
-      }
-    } else if (argument1 == 185) {
-      g_windowMgr.CloseWindow(90);
-    }
+  case 31:
+    this->m_items.push_back(LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(argument2)));
+    this->SendMsg(nullptr, 60, 0, 0, 0, 0);
     return 0;
-  }
+  case 60:
+    this->UpdateScroll();
+    this->Invalidate();
+    return 0;
   case 7:
   case 9:
   case 10: {
@@ -9756,14 +9748,26 @@ int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     return this->m_scroll - previous;
   }
-  case 31:
-    this->m_items.push_back(LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(argument2)));
-    this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  case 6: {
+    this->RecordResponse(static_cast<int>(argument1), argument2, this->m_selected, argument4);
+    if (g_replayAnimationScaling != 0) {
+      this->m_selected = static_cast<int>(argument3);
+    }
+    switch (argument1) {
+    case 184: {
+      int found = 0;
+      ITEM_INFO item = this->GetItem(this->m_selected, &found);
+      if (found) {
+        g_modeMgr.gameMode->SendMsg(146, item.unknown_0000[1], 0, 0, 0);
+      }
+      break;
+    }
+    case 185:
+      g_windowMgr.CloseWindow(90);
+      break;
+    }
     return 0;
-  case 60:
-    this->UpdateScroll();
-    this->Invalidate();
-    return 0;
+  }
   default:
     return 0;
   }
