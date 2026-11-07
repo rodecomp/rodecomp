@@ -8,6 +8,7 @@
 #include "Contents/Configuration/ServiceOptions.h"
 
 #include <new>
+#include <ocidl.h>
 #include <utility>
 
 // OFFSET: 0x00AB1DE0
@@ -55,7 +56,15 @@ CWebBrowser::~CWebBrowser() {
   if (this->site) {
     IOleObject* object;
     if (SUCCEEDED(this->browser->QueryInterface(IID_IOleObject, reinterpret_cast<void**>(&object)))) {
-      UnadviseBrowserEvents(object, DIID_DWebBrowserEvents2, this->cookie);
+      IConnectionPointContainer* container;
+      if (SUCCEEDED(object->QueryInterface(IID_IConnectionPointContainer, reinterpret_cast<void**>(&container)))) {
+        IConnectionPoint* point;
+        if (SUCCEEDED(container->FindConnectionPoint(DIID_DWebBrowserEvents2, &point))) {
+          point->Unadvise(this->cookie);
+          point->Release();
+        }
+        container->Release();
+      }
       object->Release();
     }
 
