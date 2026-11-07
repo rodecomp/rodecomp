@@ -1014,7 +1014,7 @@ void CFloralFlareRoad::Slot03() {
 
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
-    if (0.0f == emitter->lifetime || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
+    if (IsEmitterAlive(emitter) == true) {
       if (emitter) {
         AsParticle(emitter)->Process(0.0f, -80.0f, 0.0f);
       }
@@ -1165,9 +1165,10 @@ void CFootprintEffect::Slot03() {
   }
 
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
-    CParticle* particle = AsParticle(*it);
-    if (particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->unknown_00E8)) {
-      particle->alpha = static_cast<int>(std::max(0.0f, static_cast<float>(particle->alpha) - particle->unknown_00C0));
+    EZ2STREmitter* emitter = *it;
+    CParticle* particle = AsParticle(emitter);
+    if (IsEmitterAlive(emitter)) {
+      particle->alpha = static_cast<int>(std::max(static_cast<float>(particle->alpha) - particle->unknown_00C0, 0.0f));
       ++particle->unknown_00E8;
       ++it;
     } else {
@@ -1427,8 +1428,21 @@ void CFromTheAbyssEffect::UpdateParticle(long long key, AbyssParticle particle) 
   }
 
   switch (particle.kind) {
+  case 3:
+    if (IsEmitterAlive(emitter) != true) {
+      FreeParticle(AsParticle(emitter));
+      AbyssParticle& entry = this->unknown_00E8[key];
+      entry.kind = 0;
+      entry.emitter = nullptr;
+      return;
+    }
+    FollowAbyssOwner(this, emitter);
+    break;
+  case 2:
+    FollowAbyssOwner(this, emitter);
+    break;
   case 1:
-    if (emitter->lifetime != 0.0f && !(emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed))) {
+    if (IsEmitterAlive(emitter) != true) {
       const double scale = AsParticle(emitter)->m_scale;
       const vector3d offset = emitter->offset;
       FreeParticle(AsParticle(emitter));
@@ -1444,19 +1458,6 @@ void CFromTheAbyssEffect::UpdateParticle(long long key, AbyssParticle particle) 
       AbyssParticle& entry = this->unknown_00E8[key];
       entry.kind = 2;
       entry.emitter = dying;
-      return;
-    }
-    FollowAbyssOwner(this, emitter);
-    break;
-  case 2:
-    FollowAbyssOwner(this, emitter);
-    break;
-  case 3:
-    if (emitter->lifetime != 0.0f && !(emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed))) {
-      FreeParticle(AsParticle(emitter));
-      AbyssParticle& entry = this->unknown_00E8[key];
-      entry.kind = 0;
-      entry.emitter = nullptr;
       return;
     }
     FollowAbyssOwner(this, emitter);
@@ -2483,7 +2484,7 @@ void CPneumaticusProcellaEffect::Slot03() {
       continue;
     }
 
-    if (emitter->lifetime != 0.0f && emitter->lifetime * 60.0f <= static_cast<float>(emitter->elapsed)) {
+    if (IsEmitterAlive(emitter) != true) {
       FreeParticle(AsParticle(emitter));
       *it = nullptr;
       continue;
@@ -3216,18 +3217,18 @@ CSevereRainStorm::~CSevereRainStorm() {
 // FUNCTION: fn_07334
 void __stdcall fn_07334(CParticle* particle) {
   particle->alpha = 0;
-  *reinterpret_cast<int*>(particle->unknown_0048) = rand() % 50 + 150;
+  *reinterpret_cast<int*>(particle->unknown_0048) = std::max(rand() % 50, 0) + 150;
   particle->unknown_00A8 = 0;
   particle->unknown_00E8 = 0;
   InitParticleQuad(particle->vertices);
 
-  const int spread = rand() % 15 + 2;
-  const int angle = rand() % 360;
+  const int spread = std::max(rand() % 15, 0) + 2;
+  const int angle = std::max(rand() % 360, 0);
   particle->unknown_00D4 = 0.0f;
   particle->unknown_00D8 = static_cast<float>(spread) * g_sinTable[angle];
   particle->unknown_00D0 = static_cast<float>(spread) * g_cosTable[angle];
-  particle->scale = static_cast<float>(rand() % 10) * 0.1f + 0.5f;
-  particle->unknown_00C0 = static_cast<float>(rand() % 30) * 0.01f + 0.05f;
+  particle->scale = static_cast<float>(std::max(rand() % 10, 0)) * 0.1f + 0.5f;
+  particle->unknown_00C0 = static_cast<float>(std::max(rand() % 30, 0)) * 0.01f + 0.05f;
 }
 
 // OFFSET: 0x0071D760
@@ -3316,29 +3317,29 @@ void CNewCloudKillEffect::Slot01() {
 // OFFSET: 0x0071DB70
 // FUNCTION: fn_07337
 void __stdcall fn_07337(CParticle* particle) {
-  particle->unknown_00A9[0] = rand() % 2;
+  particle->unknown_00A9[0] = std::max(rand() % 2, 0);
 
-  const int angle = rand() % 360;
+  const int angle = std::max(rand() % 360, 0);
   particle->unknown_00D4 = 0.0f;
   particle->alpha = 0xFF;
   particle->unknown_00D0 = g_cosTable[angle] * 18.0f;
   particle->unknown_00D8 = g_sinTable[angle] * 18.0f;
-  particle->scale = static_cast<float>(rand() % 31) * 0.1f + 2.0f;
+  particle->scale = static_cast<float>(std::max(rand() % 31, 0)) * 0.1f + 2.0f;
   particle->unknown_00A8 = 0;
-  particle->unknown_00C0 = static_cast<float>(rand() % 31) * 0.01f + 0.05f;
+  particle->unknown_00C0 = static_cast<float>(std::max(rand() % 31, 0)) * 0.01f + 0.05f;
   InitParticleQuad(particle->vertices);
 }
 
 // OFFSET: 0x0071DC70
 // FUNCTION: fn_07338
 void __stdcall fn_07338(CParticle* particle) {
-  particle->scale = static_cast<float>(rand() % 5) + 10.0f;
+  particle->scale = static_cast<float>(std::max(rand() % 5, 0)) + 10.0f;
   particle->unknown_00A8 = 10;
-  particle->unknown_00A9[0] = rand() % 4;
-  particle->unknown_004C = rand() % 50 + 10;
-  *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(rand() % 360);
-  particle->unknown_00D8 = static_cast<float>(rand() % 10) - 5.0f;
-  particle->unknown_00D0 = static_cast<float>(rand() % 10) - 5.0f;
+  particle->unknown_00A9[0] = std::max(rand() % 4, 0);
+  particle->unknown_004C = std::max(rand() % 50, 0) + 10;
+  *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(std::max(rand() % 360, 0));
+  particle->unknown_00D8 = static_cast<float>(std::max(rand() % 10, 0)) - 5.0f;
+  particle->unknown_00D0 = static_cast<float>(std::max(rand() % 10, 0)) - 5.0f;
   particle->unknown_00D4 = -10.0f;
   particle->unknown_00E8 = 0;
   InitParticleQuad(particle->vertices);
@@ -3352,17 +3353,17 @@ void __stdcall fn_07339(CParticle* particle) {
   particle->unknown_00E8 = 0;
   InitParticleQuad(particle->vertices);
 
-  particle->scale = static_cast<float>(rand() % 51) * 0.1f + 7.0f;
+  particle->scale = static_cast<float>(std::max(rand() % 51, 0)) * 0.1f + 7.0f;
   particle->unknown_00D4 = particle->scale * -0.5f;
 
-  const int spread = rand() % 13 + 2;
-  const int angle = rand() % 360;
+  const int spread = std::max(rand() % 13, 0) + 2;
+  const int angle = std::max(rand() % 360, 0);
   particle->unknown_00D8 = static_cast<float>(spread) * g_sinTable[angle];
   particle->unknown_00D0 = static_cast<float>(spread) * g_cosTable[angle];
 
-  particle->unknown_00A9[0] = rand() % 4;
-  *reinterpret_cast<int*>(particle->unknown_0048) = rand() % 151 + 50;
-  particle->unknown_00C0 = static_cast<float>(rand() % 10) * 0.01f + 0.05f;
+  particle->unknown_00A9[0] = std::max(rand() % 4, 0);
+  *reinterpret_cast<int*>(particle->unknown_0048) = std::max(rand() % 151, 0) + 50;
+  particle->unknown_00C0 = static_cast<float>(std::max(rand() % 10, 0)) * 0.01f + 0.05f;
 }
 
 // OFFSET: 0x0070C2B0
@@ -3906,17 +3907,27 @@ void CSevereRainStorm::Slot01() {
 // FUNCTION: fn_07424
 bool CSevereRainStorm::Slot06() {
   switch (this->id) {
-  case 1276:
-    return this->unknown_00D4 <= 240;
-  case 2026:
-    return EffectLifetime(2026) >= this->unknown_00D4;
   case 1752:
   case 2165:
   case 2462:
     return this->ActorExists();
+  case 1276:
+    if (this->unknown_00D4 > 240) {
+      return false;
+    }
+    break;
+  case 2026:
+    if (EffectLifetime(2026) < this->unknown_00D4) {
+      return false;
+    }
+    break;
   case 2348:
   case 2349:
   case 2350:
+    if (this->ActorExists() != true && this->emitters.size() == 0) {
+      return false;
+    }
+    break;
   case 2351:
   case 2354:
     if (this->ActorExists() != true && this->emitters.size() == 0) {
@@ -4292,7 +4303,7 @@ void CDancingKnifeEffect::Slot01() {
 void CDancingKnifeEffect::Slot03() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
-    if (0.0f == emitter->lifetime || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
+    if (IsEmitterAlive(emitter) == true) {
       if (emitter) {
         emitter->position.x = this->position[0] + 0.0f;
         emitter->position.y = this->position[1] - 12.0f;
@@ -4390,11 +4401,11 @@ void CCurseOfCubeEffect::SpawnStart() {
 void CCurseOfCubeEffect::Slot03() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
-    if (emitter->lifetime == 0.0f || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
+    if (IsEmitterAlive(emitter)) {
       if (emitter) {
-        const vector3d position = {this->position[0], this->position[1], this->position[2]};
+        const vector3d position = *reinterpret_cast<const vector3d*>(this->position);
         const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-        const matrix inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+        const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
 
         const float vx = position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9] +
                          this->unknown_00DC;
@@ -4665,7 +4676,7 @@ void CGaleStorm::Slot03() {
 
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
-    if (0.0f == emitter->lifetime || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
+    if (IsEmitterAlive(emitter) == true) {
       if (emitter) {
         AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
       }
