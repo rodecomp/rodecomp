@@ -8060,28 +8060,32 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 // OFFSET: 0x008FF640
 // FUNCTION: fn_12358
 int UIMixAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
-    if (a == 184) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 184:
       g_windowMgr.CloseWindow(160);
       g_windowMgr.CloseWindow(161);
       g_modeMgr.gameMode->SendMsg(266, 0, 0, 0, 0);
       g_windowMgr.CloseWindow(163);
       g_session.ClearTradeItems();
-    } else if (a == 185) {
+      break;
+    case 185:
       g_windowMgr.CloseWindow(163);
+      break;
     }
-    return 0;
+    break;
+  case 91: {
+    this->m_kind = static_cast<unsigned char>(a);
+    std::string text;
+    text = LookupMessage(1584);
+    this->viewer->Clear();
+    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    break;
   }
-
-  if (message != 91) {
+  default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
-  this->m_kind = static_cast<unsigned char>(a);
-  std::string text;
-  text = LookupMessage(1584);
-  this->viewer->Clear();
-  this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
   return 0;
 }
 
@@ -8320,31 +8324,36 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // OFFSET: 0x00908080
 // FUNCTION: fn_12390
 int UIYourItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
-    if (a == 184) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 184: {
       g_modeMgr.GetGameMode();
       WearEquipPacket packet;
       packet.packetType = ID_CZ_REQ_WEAR_EQUIP_V5;
       packet.index = static_cast<std::uint16_t>(this->m_index);
       packet.location = this->m_location;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-    } else if (a != 185) {
-      return 0;
+      g_windowMgr.CloseWindow(138);
+      break;
     }
-    g_windowMgr.CloseWindow(138);
-    return 0;
+    case 185:
+      g_windowMgr.CloseWindow(138);
+      break;
+    }
+    break;
+  case 91: {
+    std::string text;
+    text = LookupMessage(1327);
+    this->viewer->Clear();
+    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    this->m_index = static_cast<int>(a);
+    this->m_location = static_cast<int>(b);
+    break;
   }
-
-  if (message != 91) {
+  default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
-  std::string text;
-  text = LookupMessage(1327);
-  this->viewer->Clear();
-  this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
-  this->m_index = static_cast<int>(a);
-  this->m_location = static_cast<int>(b);
   return 0;
 }
 
@@ -9012,11 +9021,11 @@ void UISelectCartWnd::Slot15(int, int) {
   std::vector<int>& carts = *reinterpret_cast<std::vector<int>*>(&this->unknown_00B8);
   const int level = g_session.m_level;
   carts.clear();
-  for (int type = 1; level > levels[type - 1]; ++type) {
-    carts.push_back(type);
-    if (type >= 9) {
+  for (int i = 0; i < 9; ++i) {
+    if (level <= levels[i]) {
       break;
     }
+    carts.push_back(i + 1);
   }
   if (level > 100) {
     carts.push_back(13);
