@@ -30,6 +30,14 @@
 #include <windows.h>
 #include <timeapi.h>
 
+// INLINED
+static vector3d& operator+=(vector3d& target, const vector3d& offset) {
+  target.x += offset.x;
+  target.y += offset.y;
+  target.z += offset.z;
+  return target;
+}
+
 // OFFSET: 0x00CB1930
 // FUNCTION: fn_21099
 void CGameActor::ProcessDamageMessages() {
@@ -115,20 +123,17 @@ void CGameActor::Slot16() {
 // FUNCTION: fn_21097
 #pragma auto_inline(off)
 bool CGameActor::Slot14() {
-  if (this->unknown_0278 != 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
+  if (static_cast<std::uint32_t>(this->unknown_0278) > 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
     this->render.isMotionFreezed = false;
     this->unknown_0278 = 0;
   }
 
-  if (this->unknown_02DC != 0) {
+  if (static_cast<std::uint32_t>(this->unknown_02DC) > 0) {
     if (timeGetTime() > static_cast<std::uint32_t>(this->unknown_02DC)) {
       return false;
     }
-    unsigned int alpha = (static_cast<std::uint32_t>(this->unknown_02DC) - timeGetTime()) >> 1;
-    if (alpha > 255) {
-      alpha = 255;
-    }
-    reinterpret_cast<unsigned char*>(&this->render.color)[3] = static_cast<unsigned char>(alpha);
+    const unsigned int alpha = (static_cast<std::uint32_t>(this->unknown_02DC) - timeGetTime()) >> 1;
+    reinterpret_cast<unsigned char*>(&this->render.color)[3] = alpha > 255 ? 255 : static_cast<unsigned char>(alpha);
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -137,10 +142,35 @@ bool CGameActor::Slot14() {
   int moved = 0;
 
   switch (this->render.unknown_0070) {
+  case 0xD:
+    if (this->unknown_0178 == 0) {
+      this->unknown_0178 = 1;
+      if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1)) != 0) {
+        if (IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, this->Slot35())) {
+          this->SetAction(0x58, 4, 1);
+        } else {
+          this->SetAction(0x50, 4, 1);
+        }
+      } else {
+        this->SetAction(0x10, 4, 1);
+      }
+      this->render.isMotionFreezed = true;
+    }
+    if (timeGetTime() >= this->unknown_0280) {
+      this->unknown_0178 = 0;
+      this->render.isMotionFreezed = false;
+      this->Slot15(0, 1);
+      this->SendMsg(nullptr, 0x53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    this->Slot08();
+    this->unknown_0244 = timeGetTime();
+    this->unknown_0258 = serverTime;
+    return true;
+
   case 0:
     if (this->render.unknown_006C == 1 && this->render.isMotionFinished) {
       this->Slot15(0, 1);
-    } else if (this->unknown_0314 == 7 && this->render.accountId == g_session.unknown_1010 && this->unknown_027C != 0 &&
+    } else if (this->unknown_0314 == 7 && this->render.accountId == g_session.unknown_1010 && static_cast<std::uint32_t>(this->unknown_027C) > 0 &&
                timeGetTime() > static_cast<std::uint32_t>(this->unknown_027C) + 3000) {
       if (rand() % 100 < 25) {
         const int hungry = g_session.GetPetHungryState(g_session.unknown_1044);
@@ -161,15 +191,14 @@ bool CGameActor::Slot14() {
     if (this->route.Empty()) {
       break;
     } else {
-      const float oldX = this->render.position.x;
-      const float oldZ = this->render.position.z;
+      const vector3d old = this->render.position;
       const int previousIndex = this->unknown_023C;
-      std::uint32_t nextTick = 0;
-      float cellX = 0.0f;
-      float cellY = 0.0f;
+      std::uint32_t nextTick;
+      float cellX;
+      float cellY;
       this->unknown_023C = this->route.NextPoint(serverTime, &nextTick, &cellX, &cellY);
-      float destX = 0.0f;
-      float destZ = 0.0f;
+      float destX;
+      float destZ;
       mode->CellCenter(static_cast<int>(cellX), static_cast<int>(cellY), destX, destZ);
       int dtNext = static_cast<int>(nextTick) - static_cast<int>(this->unknown_0258);
       int dtNow = static_cast<int>(serverTime) - static_cast<int>(this->unknown_0258);
@@ -182,14 +211,16 @@ bool CGameActor::Slot14() {
       if (dtNext > 0 && dtNow > 0) {
         moved = 1;
         const float ratio = static_cast<float>(dtNow) / static_cast<float>(dtNext);
-        this->render.position.x = (destX - oldX) * ratio + oldX;
-        this->render.position.z = (destZ - oldZ) * ratio + oldZ;
+        this->render.position.x = (destX - old.x) * ratio + old.x;
+        this->render.position.z = (destZ - old.z) * ratio + old.z;
       }
       if (this->unknown_0238 == 0) {
-        float angle = this->render.angle;
-        if (oldX != this->render.position.x || oldZ != this->render.position.z) {
-          angle = (static_cast<float>(std::atan2(static_cast<double>(this->render.position.x - oldX),
-                                                 static_cast<double>(-(this->render.position.z - oldZ)))) /
+        float angle;
+        if (old.x == this->render.position.x && old.z == this->render.position.z) {
+          angle = this->render.angle;
+        } else {
+          angle = (static_cast<float>(std::atan2(static_cast<double>(this->render.position.x - old.x),
+                                                 static_cast<double>(-(this->render.position.z - old.z)))) /
                    3.141592f) *
                   180.0f;
           if (angle >= 360.0f) {
@@ -202,8 +233,8 @@ bool CGameActor::Slot14() {
         }
         this->render.previousAnimation = this->Get8Dir(angle) + this->render.animation;
       }
-      this->unknown_0240 += SquareRoot((this->render.position.x - oldX) * (this->render.position.x - oldX) +
-                                       (this->render.position.z - oldZ) * (this->render.position.z - oldZ));
+      const float movedX = this->render.position.x - old.x;
+      this->unknown_0240 += SquareRoot(movedX * movedX + (this->render.position.z - old.z) * (this->render.position.z - old.z));
       if (this->unknown_0238 == 0) {
         this->Slot36();
       }
@@ -233,61 +264,9 @@ bool CGameActor::Slot14() {
       mode->SetFollowTicks(0, 0);
       this->unknown_0244 = timeGetTime();
       this->unknown_0258 = serverTime;
-      this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z);
-      this->render.position.x += this->unknown_03F0.x;
-      this->render.position.y += this->unknown_03F0.y;
-      this->render.position.z += this->unknown_03F0.z;
-      return true;
+      goto applyHeight;
     }
 
-  case 3:
-    this->render.unknown_00C8 = 0;
-    this->render.unknown_00D8 = 0;
-    this->render.unknown_00DC = 0;
-    this->render.isMotionFreezed = false;
-    this->unknown_0178 = 0;
-    this->Slot08();
-    if (this->render.isMotionFinished && this->unknown_02A8.size() == 0) {
-      mode->SendMsg(0xD, static_cast<int>(this->render.accountId), 0, 0, 0);
-      const int job = this->GetEffectiveJob(-1);
-      if ((job > 31 && job < 1000) || g_session.IsMonsterClass(job) || this->unknown_0314 == 9 ||
-          g_session.IsSkillIdInRange6001(job)) {
-        this->Slot38();
-        return false;
-      }
-    }
-    this->unknown_0244 = timeGetTime();
-    this->unknown_0258 = serverTime;
-    return true;
-
-  case 4:
-    this->unknown_0178 = 0;
-    this->Slot08();
-    {
-      const float oldX = this->render.position.x;
-      const float oldZ = this->render.position.z;
-      const float deltaX = this->unknown_02D0 - this->render.position.x;
-      const float deltaZ = this->unknown_02D4 - this->render.position.z;
-      const unsigned int remaining = this->render.unknown_008C - timeGetTime() + 200;
-      const unsigned int elapsed = timeGetTime() - this->unknown_0244;
-      if (remaining != 0) {
-        moved = 1;
-        this->render.position.x = deltaX * static_cast<float>(elapsed) / static_cast<float>(remaining) + oldX;
-        this->render.position.z = deltaZ * static_cast<float>(elapsed) / static_cast<float>(remaining) + oldZ;
-      }
-      if (this->render.isMotionFinished) {
-        this->render.position.x = this->unknown_02D0;
-        this->render.position.z = this->unknown_02D4;
-        moved = 1;
-        this->Slot15(0, 1);
-      }
-    }
-    break;
-
-  case 5:
-  case 7:
-  case 0x2D:
-    this->unknown_0178 = 0;
   case 2:
   case 9:
   case 0xC:
@@ -312,12 +291,69 @@ bool CGameActor::Slot14() {
     {
       const int frames = static_cast<int>(this->GetElapsedFrames());
       if (this->hitTargetAid != 0) {
-        if (frames == (frames / 34) * 34) {
+        if (frames % 34 == 0) {
           CRenderObject* target = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(this->hitTargetAid);
           if (target != nullptr) {
             this->Face(target->render.position.x, target->render.position.z);
           }
         }
+      }
+    }
+    this->unknown_0244 = timeGetTime();
+    this->unknown_0258 = serverTime;
+    return true;
+
+  case 5:
+  case 7:
+  case 0x2D:
+    this->unknown_0178 = 0;
+    this->Slot08();
+    if (this->render.isMotionFinished) {
+      this->Slot15(0, 1);
+    }
+    this->unknown_0244 = timeGetTime();
+    this->unknown_0258 = serverTime;
+    return true;
+
+  case 4:
+    this->unknown_0178 = 0;
+    this->Slot08();
+    {
+      const vector3d old = this->render.position;
+      const float deltaX = this->unknown_02D0 - this->render.position.x;
+      const float deltaZ = this->unknown_02D4 - this->render.position.z;
+      const unsigned int remaining = this->render.unknown_008C - timeGetTime() + 200;
+      const unsigned int elapsed = timeGetTime() - this->unknown_0244;
+      if (remaining != 0) {
+        moved = 1;
+        const float elapsedTime = static_cast<float>(elapsed);
+        const float totalTime = static_cast<float>(remaining);
+        this->render.position.x = elapsedTime * deltaX / totalTime + old.x;
+        this->render.position.z = deltaZ * elapsedTime / totalTime + old.z;
+      }
+      if (this->render.isMotionFinished) {
+        this->render.position.x = this->unknown_02D0;
+        this->render.position.z = this->unknown_02D4;
+        moved = 1;
+        this->Slot15(0, 1);
+      }
+    }
+    break;
+
+  case 3:
+    this->render.unknown_00C8 = 0;
+    this->render.unknown_00D8 = 0;
+    this->render.unknown_00DC = 0;
+    this->render.isMotionFreezed = false;
+    this->unknown_0178 = 0;
+    this->Slot08();
+    if (this->render.isMotionFinished && this->unknown_02A8.size() == 0) {
+      mode->SendMsg(0xD, static_cast<int>(this->render.accountId), 0, 0, 0);
+      const int job = this->GetEffectiveJob(-1);
+      if ((job > 31 && job < 1000) || g_session.IsMonsterClass(job) || this->unknown_0314 == 9 ||
+          g_session.IsSkillIdInRange6001(job)) {
+        this->Slot38();
+        return false;
       }
     }
     this->unknown_0244 = timeGetTime();
@@ -365,29 +401,6 @@ bool CGameActor::Slot14() {
     this->unknown_0258 = serverTime;
     return true;
 
-  case 0xD:
-    if (this->unknown_0178 == 0) {
-      this->unknown_0178 = 1;
-      if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1)) == 0) {
-        this->SetAction(0x10, 4, 1);
-      } else if (IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, this->Slot35()) == false) {
-        this->SetAction(0x50, 4, 1);
-      } else {
-        this->SetAction(0x58, 4, 1);
-      }
-      this->render.isMotionFreezed = true;
-    }
-    if (timeGetTime() >= this->unknown_0280) {
-      this->unknown_0178 = 0;
-      this->render.isMotionFreezed = false;
-      this->Slot15(0, 1);
-      this->SendMsg(nullptr, 0x53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    }
-    this->Slot08();
-    this->unknown_0244 = timeGetTime();
-    this->unknown_0258 = serverTime;
-    return true;
-
   default:
     break;
   }
@@ -395,10 +408,9 @@ bool CGameActor::Slot14() {
   this->unknown_0244 = timeGetTime();
   this->unknown_0258 = serverTime;
   if (moved != 0) {
+  applyHeight:
     this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z);
-    this->render.position.x += this->unknown_03F0.x;
-    this->render.position.y += this->unknown_03F0.y;
-    this->render.position.z += this->unknown_03F0.z;
+    this->render.position += this->unknown_03F0;
   }
   return true;
 }
@@ -1049,7 +1061,7 @@ CSprRes* CGameActor::GetSprite() {
 
 // OFFSET: 0x00CAD9A0
 // FUNCTION: fn_21056
-float CGameActor::GetElapsedFrames() {
+__declspec(noinline) float CGameActor::GetElapsedFrames() {
   return static_cast<float>(static_cast<double>(timeGetTime() - this->render.unknown_008C) / 24.0);
 }
 
@@ -1083,7 +1095,7 @@ void CGameActor::ResetUnknown03B8() {
 
 // OFFSET: 0x00CADC90
 // FUNCTION: fn_21065
-bool CSession::IsMonsterClass(int job) {
+__declspec(noinline) bool CSession::IsMonsterClass(int job) {
   if ((job > 1000 && job < 3999) || static_cast<unsigned int>(job - 20021) <= 11978) {
     return true;
   }
