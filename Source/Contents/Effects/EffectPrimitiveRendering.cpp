@@ -2434,12 +2434,10 @@ void CEffectPrim::RenderPeong(matrix& wtm) {
 // OFFSET: 0x00BD2CF0
 // FUNCTION: fn_19876
 void CEffectPrim::RenderFloorRect(matrix& wtm) {
-  vector3d vec1;
-  ZeroVector(vec1);
-  vector3d vec2;
-  ZeroVector(vec2);
-  vector3d vec3;
-  ZeroVector(vec3);
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2458,10 +2456,10 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
     const float sideX = back * g_cosTable[rot < 270 ? rot + 90 : rot - 270] + width * g_cosTable[rot >= 90 ? rot - 90 : rot + 270];
     const float sideZ = back * g_sinTable[rot < 270 ? rot + 90 : rot - 270] + width * g_sinTable[rot >= 90 ? rot - 90 : rot + 270];
 
-    vec3 = {length * g_cosTable[rot < 0 ? rot + 360 : rot] + baseX, 0.0f, length * g_sinTable[rot < 0 ? rot + 360 : rot] + baseZ};
-    vec2 = {length * g_cosTable[rot >= 180 ? rot - 180 : rot + 180] + baseX, 0.0f, length * g_sinTable[rot >= 180 ? rot - 180 : rot + 180] + baseZ};
-    vec1 = {length * g_cosTable[rot < 0 ? rot + 360 : rot] + sideX, 0.0f, length * g_sinTable[rot < 0 ? rot + 360 : rot] + sideZ};
-    const vector3d vec4{length * g_cosTable[rot >= 180 ? rot - 180 : rot + 180] + sideX, 0.0f, length * g_sinTable[rot >= 180 ? rot - 180 : rot + 180] + sideZ};
+    vec3.Set(length * g_cosTable[rot < 0 ? rot + 360 : rot] + baseX, 0.0f, length * g_sinTable[rot < 0 ? rot + 360 : rot] + baseZ);
+    vec2.Set(length * g_cosTable[rot >= 180 ? rot - 180 : rot + 180] + baseX, 0.0f, length * g_sinTable[rot >= 180 ? rot - 180 : rot + 180] + baseZ);
+    vec1.Set(length * g_cosTable[rot < 0 ? rot + 360 : rot] + sideX, 0.0f, length * g_sinTable[rot < 0 ? rot + 360 : rot] + sideZ);
+    vec4.Set(length * g_cosTable[rot >= 180 ? rot - 180 : rot + 180] + sideX, 0.0f, length * g_sinTable[rot >= 180 ? rot - 180 : rot + 180] + sideZ);
 
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec4, vec2, vec3, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
