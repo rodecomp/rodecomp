@@ -13,6 +13,12 @@
 #include <mbstring.h>
 #include <windows.h>
 
+// INLINED
+static void AppendLine(std::vector<std::string>& lines, const char* first, const char* last) {
+  const std::string line(first, last);
+  lines.push_back(line);
+}
+
 // OFFSET: 0x009B4220
 // FUNCTION: fn_13829
 void WrapPlainText(const char* text, std::vector<std::string>& lines, int width) {
@@ -161,4 +167,28 @@ void WrapRichText(
       lines[index].insert(position, marker, 3);
     }
   }
+}
+
+// OFFSET: 0x009B5140
+// FUNCTION: fn_13837
+int ParseItemIdTag(const char* text, const char* end, int& length, int& itemId) {
+  if (std::strncmp(text, "^nItemID^", 9) != 0) {
+    return 0;
+  }
+
+  unsigned int digits = 0;
+  while (text + digits < end && g_colorHexDigit[static_cast<signed char>(text[9 + digits])] != 0) {
+    ++digits;
+  }
+
+  if (digits == 0) {
+    return 0;
+  }
+
+  char number[10];
+  std::strncpy(number, text + 9, digits);
+  number[digits] = '\0';
+  length = digits + 9;
+  itemId = std::atoi(number);
+  return 1;
 }
