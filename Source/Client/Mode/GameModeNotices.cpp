@@ -2593,27 +2593,21 @@ void CGameMode::ShowFormattedNotice(unsigned short messageId, std::uint32_t colo
 // OFFSET: 0x00D6BC40
 // FUNCTION: fn_22074
 void CGameMode::ReceiveCaptchaUploadRequest(const std::uint32_t* sessionId, int result) {
-  int message;
   switch (result) {
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2882)), 0xFF, 0, 0, 0);
+    break;
   case 0: {
     auto* window = static_cast<UICaptchaRegisterWnd*>(g_windowMgr.LookupWindow(284));
-    if (window) {
-      std::uint64_t now = _Xtime_get_ticks();
-      CCaptchaUploadSchedule* schedule = new CCaptchaUploadSchedule(now, sessionId, window->m_decompressedSize, window->m_decompressedData);
-      g_timeScheduler->AddSchedule(schedule);
-      return;
+    if (!window) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2881)), 0xFF, 0, 0, 0);
+      break;
     }
-    message = 2881;
-    break;
-  }
-  case 1:
-    message = 2882;
-    break;
-  default:
-    return;
-  }
 
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0xFF, 0, 0, 0);
+    g_timeScheduler->AddSchedule(new CCaptchaUploadSchedule(_Xtime_get_ticks(), sessionId, window->m_decompressedSize, window->m_decompressedData));
+    break;
+  }
+  }
 }
 
 // OFFSET: 0x00D6A9F0
