@@ -147,7 +147,7 @@ void UIRodexEditCtrl3::Slot15(int width, int height) {
 // OFFSET: 0x00800DD0
 // FUNCTION: fn_10008
 void UIRodexScrollBar::Paint() {
-  this->ClearSurface(0xFF00FF);
+  this->ClearSurface(0xFFFF00FF);
 
   if (this->maximum == 0) {
     return;
