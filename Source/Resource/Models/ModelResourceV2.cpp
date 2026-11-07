@@ -106,7 +106,7 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
     input.Read(&bytes, 4);
     char name[40]{};
     input.Read(name, bytes);
-    textureNames.emplace_back(name);
+    textureNames.push_back(name);
   }
 
   int rootCount = 0;
@@ -117,7 +117,7 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
     input.Read(&bytes, 4);
     char name[40]{};
     input.Read(name, bytes);
-    this->rootNames.emplace_back(name);
+    this->rootNames.push_back(name);
   }
 
   int nodeCount = 0;
@@ -235,7 +235,7 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
     input.Read(&bytes, 4);
     char name[40]{};
     input.Read(name, bytes);
-    textureNames.emplace_back(name);
+    textureNames.push_back(name);
   }
 
   int rootCount = 0;
@@ -246,7 +246,7 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
     input.Read(&bytes, 4);
     char name[40]{};
     input.Read(name, bytes);
-    this->rootNames.emplace_back(name);
+    this->rootNames.push_back(name);
   }
 
   int nodeCount = 0;
