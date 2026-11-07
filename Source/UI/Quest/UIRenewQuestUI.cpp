@@ -38,7 +38,7 @@ const char* DecryptName(const char (&source)[Length]) {
 // OFFSET: 0x00A59FE0
 // FUNCTION: fn_16371
 template <>
-const char* EncryptedName<6, 0xE33F2FF779878559ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<6, 0xE33F2FF779878559ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 6, 0xE33F2FF779878559ULL);
     this->m_encrypted = false;
@@ -62,7 +62,7 @@ inline const char* EncryptedName<6, 0xC70319B5EB61598FULL>::Text() {
 // OFFSET: 0x00A5A040
 // FUNCTION: fn_16373
 template <>
-const char* EncryptedName<6, 0xB7AFBD2FD9FD7501ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<6, 0xB7AFBD2FD9FD7501ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 6, 0xB7AFBD2FD9FD7501ULL);
     this->m_encrypted = false;
@@ -74,7 +74,7 @@ const char* EncryptedName<6, 0xB7AFBD2FD9FD7501ULL>::Text() {
 // OFFSET: 0x00A5A070
 // FUNCTION: fn_16374
 template <>
-const char* EncryptedName<6, 0x114901C7E37F6D49ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<6, 0x114901C7E37F6D49ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 6, 0x114901C7E37F6D49ULL);
     this->m_encrypted = false;
@@ -86,7 +86,7 @@ const char* EncryptedName<6, 0x114901C7E37F6D49ULL>::Text() {
 // OFFSET: 0x00A5A0A0
 // FUNCTION: fn_16375
 template <>
-const char* EncryptedName<6, 0x1767DDE18D779D8BULL>::Text() {
+__declspec(noinline) const char* EncryptedName<6, 0x1767DDE18D779D8BULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 6, 0x1767DDE18D779D8BULL);
     this->m_encrypted = false;
@@ -98,7 +98,7 @@ const char* EncryptedName<6, 0x1767DDE18D779D8BULL>::Text() {
 // OFFSET: 0x00A5A0D0
 // FUNCTION: fn_16376
 template <>
-const char* EncryptedName<44, 0xB3E307A5F753D5E3ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<44, 0xB3E307A5F753D5E3ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 44, 0xB3E307A5F753D5E3ULL);
     this->m_encrypted = false;
@@ -110,7 +110,7 @@ const char* EncryptedName<44, 0xB3E307A5F753D5E3ULL>::Text() {
 // OFFSET: 0x00A5A100
 // FUNCTION: fn_16377
 template <>
-const char* EncryptedName<44, 0xA597A7E7492B39D5ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<44, 0xA597A7E7492B39D5ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 44, 0xA597A7E7492B39D5ULL);
     this->m_encrypted = false;
@@ -122,7 +122,7 @@ const char* EncryptedName<44, 0xA597A7E7492B39D5ULL>::Text() {
 // OFFSET: 0x00A5A130
 // FUNCTION: fn_16378
 template <>
-const char* EncryptedName<45, 0xD5A78DB38D8DAFABULL>::Text() {
+__declspec(noinline) const char* EncryptedName<45, 0xD5A78DB38D8DAFABULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 45, 0xD5A78DB38D8DAFABULL);
     this->m_encrypted = false;
@@ -134,7 +134,7 @@ const char* EncryptedName<45, 0xD5A78DB38D8DAFABULL>::Text() {
 // OFFSET: 0x00A5A160
 // FUNCTION: fn_16379
 template <>
-const char* EncryptedName<45, 0xFFABE3D5D1BBEF73ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<45, 0xFFABE3D5D1BBEF73ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 45, 0xFFABE3D5D1BBEF73ULL);
     this->m_encrypted = false;
@@ -146,7 +146,7 @@ const char* EncryptedName<45, 0xFFABE3D5D1BBEF73ULL>::Text() {
 // OFFSET: 0x00A5A190
 // FUNCTION: fn_16380
 template <>
-const char* EncryptedName<45, 0xF15F8785CDE369BFULL>::Text() {
+__declspec(noinline) const char* EncryptedName<45, 0xF15F8785CDE369BFULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 45, 0xF15F8785CDE369BFULL);
     this->m_encrypted = false;
@@ -158,7 +158,7 @@ const char* EncryptedName<45, 0xF15F8785CDE369BFULL>::Text() {
 // OFFSET: 0x00A5A1C0
 // FUNCTION: fn_16381
 template <>
-const char* EncryptedName<45, 0x192D654D29337BE5ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<45, 0x192D654D29337BE5ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 45, 0x192D654D29337BE5ULL);
     this->m_encrypted = false;
@@ -170,7 +170,7 @@ const char* EncryptedName<45, 0x192D654D29337BE5ULL>::Text() {
 // OFFSET: 0x00A5A1F0
 // FUNCTION: fn_16382
 template <>
-const char* EncryptedName<45, 0x0399459DAF454F0FULL>::Text() {
+__declspec(noinline) const char* EncryptedName<45, 0x0399459DAF454F0FULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 45, 0x0399459DAF454F0FULL);
     this->m_encrypted = false;
@@ -182,7 +182,7 @@ const char* EncryptedName<45, 0x0399459DAF454F0FULL>::Text() {
 // OFFSET: 0x00A5A220
 // FUNCTION: fn_16383
 template <>
-const char* EncryptedName<45, 0x79E915E9AF6F55DDULL>::Text() {
+__declspec(noinline) const char* EncryptedName<45, 0x79E915E9AF6F55DDULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 45, 0x79E915E9AF6F55DDULL);
     this->m_encrypted = false;
@@ -194,7 +194,7 @@ const char* EncryptedName<45, 0x79E915E9AF6F55DDULL>::Text() {
 // OFFSET: 0x00A5A250
 // FUNCTION: fn_16384
 template <>
-const char* EncryptedName<46, 0x271B45771F83DD9FULL>::Text() {
+__declspec(noinline) const char* EncryptedName<46, 0x271B45771F83DD9FULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 46, 0x271B45771F83DD9FULL);
     this->m_encrypted = false;
@@ -206,7 +206,7 @@ const char* EncryptedName<46, 0x271B45771F83DD9FULL>::Text() {
 // OFFSET: 0x00A5A280
 // FUNCTION: fn_16385
 template <>
-const char* EncryptedName<46, 0x792FFD1325418FB5ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<46, 0x792FFD1325418FB5ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 46, 0x792FFD1325418FB5ULL);
     this->m_encrypted = false;
@@ -218,7 +218,7 @@ const char* EncryptedName<46, 0x792FFD1325418FB5ULL>::Text() {
 // OFFSET: 0x00A5A2B0
 // FUNCTION: fn_16386
 template <>
-const char* EncryptedName<47, 0xC5B1BBCD9BC9C997ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<47, 0xC5B1BBCD9BC9C997ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 47, 0xC5B1BBCD9BC9C997ULL);
     this->m_encrypted = false;
@@ -230,7 +230,7 @@ const char* EncryptedName<47, 0xC5B1BBCD9BC9C997ULL>::Text() {
 // OFFSET: 0x00A5A2E0
 // FUNCTION: fn_16387
 template <>
-const char* EncryptedName<47, 0xC1BB8111EDD183E1ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<47, 0xC1BB8111EDD183E1ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 47, 0xC1BB8111EDD183E1ULL);
     this->m_encrypted = false;
@@ -242,7 +242,7 @@ const char* EncryptedName<47, 0xC1BB8111EDD183E1ULL>::Text() {
 // OFFSET: 0x00A5A310
 // FUNCTION: fn_16388
 template <>
-const char* EncryptedName<47, 0x8783C33941E15117ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<47, 0x8783C33941E15117ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 47, 0x8783C33941E15117ULL);
     this->m_encrypted = false;
@@ -254,7 +254,7 @@ const char* EncryptedName<47, 0x8783C33941E15117ULL>::Text() {
 // OFFSET: 0x00A5A340
 // FUNCTION: fn_16389
 template <>
-const char* EncryptedName<47, 0x01CB4F1DF9D3F931ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<47, 0x01CB4F1DF9D3F931ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 47, 0x01CB4F1DF9D3F931ULL);
     this->m_encrypted = false;
@@ -266,7 +266,7 @@ const char* EncryptedName<47, 0x01CB4F1DF9D3F931ULL>::Text() {
 // OFFSET: 0x00A5A370
 // FUNCTION: fn_16390
 template <>
-const char* EncryptedName<47, 0x49D33529F1556333ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<47, 0x49D33529F1556333ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 47, 0x49D33529F1556333ULL);
     this->m_encrypted = false;
@@ -278,7 +278,7 @@ const char* EncryptedName<47, 0x49D33529F1556333ULL>::Text() {
 // OFFSET: 0x00A5A3A0
 // FUNCTION: fn_16391
 template <>
-const char* EncryptedName<47, 0x0B23D10F2F49D72BULL>::Text() {
+__declspec(noinline) const char* EncryptedName<47, 0x0B23D10F2F49D72BULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 47, 0x0B23D10F2F49D72BULL);
     this->m_encrypted = false;
@@ -290,7 +290,7 @@ const char* EncryptedName<47, 0x0B23D10F2F49D72BULL>::Text() {
 // OFFSET: 0x00A5A3D0
 // FUNCTION: fn_16392
 template <>
-const char* EncryptedName<47, 0x0B8745519B1F95D7ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<47, 0x0B8745519B1F95D7ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 47, 0x0B8745519B1F95D7ULL);
     this->m_encrypted = false;
@@ -302,7 +302,7 @@ const char* EncryptedName<47, 0x0B8745519B1F95D7ULL>::Text() {
 // OFFSET: 0x00A5A400
 // FUNCTION: fn_16393
 template <>
-const char* EncryptedName<48, 0x136F2F9915D1DBCFULL>::Text() {
+__declspec(noinline) const char* EncryptedName<48, 0x136F2F9915D1DBCFULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 48, 0x136F2F9915D1DBCFULL);
     this->m_encrypted = false;
@@ -314,7 +314,7 @@ const char* EncryptedName<48, 0x136F2F9915D1DBCFULL>::Text() {
 // OFFSET: 0x00A5A430
 // FUNCTION: fn_16394
 template <>
-const char* EncryptedName<48, 0x674D9F3975573D41ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<48, 0x674D9F3975573D41ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 48, 0x674D9F3975573D41ULL);
     this->m_encrypted = false;
@@ -326,7 +326,7 @@ const char* EncryptedName<48, 0x674D9F3975573D41ULL>::Text() {
 // OFFSET: 0x00A5A460
 // FUNCTION: fn_16395
 template <>
-const char* EncryptedName<48, 0x6BDF334F2BFDAD51ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<48, 0x6BDF334F2BFDAD51ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 48, 0x6BDF334F2BFDAD51ULL);
     this->m_encrypted = false;
@@ -338,7 +338,7 @@ const char* EncryptedName<48, 0x6BDF334F2BFDAD51ULL>::Text() {
 // OFFSET: 0x00A5A490
 // FUNCTION: fn_16396
 template <>
-const char* EncryptedName<49, 0x659975C121557D3DULL>::Text() {
+__declspec(noinline) const char* EncryptedName<49, 0x659975C121557D3DULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 49, 0x659975C121557D3DULL);
     this->m_encrypted = false;
@@ -350,7 +350,7 @@ const char* EncryptedName<49, 0x659975C121557D3DULL>::Text() {
 // OFFSET: 0x00A5A4C0
 // FUNCTION: fn_16397
 template <>
-const char* EncryptedName<50, 0x85E1F5A7A5755B7FULL>::Text() {
+__declspec(noinline) const char* EncryptedName<50, 0x85E1F5A7A5755B7FULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 50, 0x85E1F5A7A5755B7FULL);
     this->m_encrypted = false;
@@ -362,7 +362,7 @@ const char* EncryptedName<50, 0x85E1F5A7A5755B7FULL>::Text() {
 // OFFSET: 0x00A5A4F0
 // FUNCTION: fn_16398
 template <>
-const char* EncryptedName<51, 0xAD6153019F93A527ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<51, 0xAD6153019F93A527ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 51, 0xAD6153019F93A527ULL);
     this->m_encrypted = false;
@@ -374,7 +374,7 @@ const char* EncryptedName<51, 0xAD6153019F93A527ULL>::Text() {
 // OFFSET: 0x00A5A520
 // FUNCTION: fn_16399
 template <>
-const char* EncryptedName<52, 0xBFF5C517A1A77F59ULL>::Text() {
+__declspec(noinline) const char* EncryptedName<52, 0xBFF5C517A1A77F59ULL>::Text() {
   if (this->m_encrypted) {
     utility::XorBytes(this->m_text, 52, 0xBFF5C517A1A77F59ULL);
     this->m_encrypted = false;
@@ -385,7 +385,7 @@ const char* EncryptedName<52, 0xBFF5C517A1A77F59ULL>::Text() {
 
 // OFFSET: 0x00A5A550
 // FUNCTION: fn_16400
-EncryptedName<6, 0x114901C7E37F6D49ULL>& GulimFontName1() {
+__declspec(noinline) EncryptedName<6, 0x114901C7E37F6D49ULL>& GulimFontName1() {
   const std::uint8_t source[] = {0x0E, 0x18, 0x13, 0x8A, 0xAA, 0x01};
   thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
   return name;
@@ -393,7 +393,7 @@ EncryptedName<6, 0x114901C7E37F6D49ULL>& GulimFontName1() {
 
 // OFFSET: 0x00A5A620
 // FUNCTION: fn_16401
-EncryptedName<48, 0x136F2F9915D1DBCFULL>& NormalOffButtonName1() {
+__declspec(noinline) EncryptedName<48, 0x136F2F9915D1DBCFULL>& NormalOffButtonName1() {
   const char source[] = {'\x0F', '\x74', '\x11', '\xEF', '\x59', '\xE1', '\xAA', '\xDE', '\x09', '\x3F', '\x11', '\xD9', '\x24', '\x95', '\x33', '\x41', '\xAA', '\xB5', '\xB4', '\x62', '\xC6', '\x7E', '\x1A', '\x76', '\xBC', '\xAF', '\x84', '\x5C', '\xC5', '\x4D', '\x1B', '\x7D', '\x90', '\xB5', '\xBE', '\x67', '\xF4', '\x4E', '\x03', '\x4C', '\xA0', '\xBD', '\xB7', '\x3B', '\xFB', '\x42', '\x1F', '\x13'};
   thread_local EncryptedName<sizeof(source), 0x136F2F9915D1DBCFULL> name(source);
   return name;
@@ -401,7 +401,7 @@ EncryptedName<48, 0x136F2F9915D1DBCFULL>& NormalOffButtonName1() {
 
 // OFFSET: 0x00A5A700
 // FUNCTION: fn_16402
-EncryptedName<47, 0x0B23D10F2F49D72BULL>& NormalOnButtonName() {
+__declspec(noinline) EncryptedName<47, 0x0B23D10F2F49D72BULL>& NormalOnButtonName() {
   const char source[] = {'\xEB', '\x78', '\x89', '\xD5', '\xCF', '\x1F', '\xE6', '\xC6', '\xED', '\x33', '\x89', '\xE3', '\xB2', '\x6B', '\x7F', '\x59', '\x4E', '\xB9', '\x2C', '\x58', '\x50', '\x80', '\x56', '\x6E', '\x58', '\xA3', '\x1C', '\x66', '\x53', '\xB3', '\x57', '\x65', '\x74', '\xB9', '\x26', '\x5D', '\x62', '\xB0', '\x4F', '\x54', '\x44', '\xB9', '\x67', '\x4D', '\x62', '\xA1', '\x23'};
   thread_local EncryptedName<sizeof(source), 0x0B23D10F2F49D72BULL> name(source);
   return name;
@@ -409,7 +409,7 @@ EncryptedName<47, 0x0B23D10F2F49D72BULL>& NormalOnButtonName() {
 
 // OFFSET: 0x00A5A7F0
 // FUNCTION: fn_16403
-EncryptedName<48, 0x674D9F3975573D41ULL>& NormalOffButtonName2() {
+__declspec(noinline) EncryptedName<48, 0x674D9F3975573D41ULL>& NormalOffButtonName2() {
   const char source[] = {'\x81', '\x92', '\x97', '\x8F', '\xF9', '\x51', '\x88', '\xAA', '\x87', '\xD9', '\x97', '\xB9', '\x84', '\x25', '\x11', '\x35', '\x24', '\x53', '\x32', '\x02', '\x66', '\xCE', '\x38', '\x02', '\x32', '\x49', '\x02', '\x3C', '\x65', '\xFD', '\x39', '\x09', '\x1E', '\x53', '\x38', '\x07', '\x54', '\xFE', '\x21', '\x38', '\x2E', '\x5B', '\x31', '\x5B', '\x5B', '\xF2', '\x3D', '\x67'};
   thread_local EncryptedName<sizeof(source), 0x674D9F3975573D41ULL> name(source);
   return name;
@@ -417,7 +417,7 @@ EncryptedName<48, 0x674D9F3975573D41ULL>& NormalOffButtonName2() {
 
 // OFFSET: 0x00A5A8D0
 // FUNCTION: fn_16404
-EncryptedName<48, 0x6BDF334F2BFDAD51ULL>& NormalOffButtonName3() {
+__declspec(noinline) EncryptedName<48, 0x6BDF334F2BFDAD51ULL>& NormalOffButtonName3() {
   const char source[] = {'\x91', '\x02', '\x3D', '\xD1', '\x8F', '\xFD', '\x1A', '\xA6', '\x97', '\x49', '\x3D', '\xE7', '\xF2', '\x89', '\x83', '\x39', '\x34', '\xC3', '\x98', '\x5C', '\x10', '\x62', '\xAA', '\x0E', '\x22', '\xD9', '\xA8', '\x62', '\x13', '\x51', '\xAB', '\x05', '\x0E', '\xC3', '\x92', '\x59', '\x22', '\x52', '\xB3', '\x34', '\x3E', '\xCB', '\x9B', '\x05', '\x2D', '\x5E', '\xAF', '\x6B'};
   thread_local EncryptedName<sizeof(source), 0x6BDF334F2BFDAD51ULL> name(source);
   return name;
@@ -425,7 +425,7 @@ EncryptedName<48, 0x6BDF334F2BFDAD51ULL>& NormalOffButtonName3() {
 
 // OFFSET: 0x00A5A9B0
 // FUNCTION: fn_16405
-EncryptedName<6, 0xB7AFBD2FD9FD7501ULL>& GulimFontName2() {
+__declspec(noinline) EncryptedName<6, 0xB7AFBD2FD9FD7501ULL>& GulimFontName2() {
   const std::uint8_t source[] = {0x46, 0x00, 0x91, 0xB0, 0x42, 0xBD};
   thread_local EncryptedName<sizeof(source), 0xB7AFBD2FD9FD7501ULL> name(source);
   return name;
@@ -433,7 +433,7 @@ EncryptedName<6, 0xB7AFBD2FD9FD7501ULL>& GulimFontName2() {
 
 // OFFSET: 0x00A5AA80
 // FUNCTION: fn_16406
-EncryptedName<45, 0x79E915E9AF6F55DDULL>& SubOffButtonName1() {
+__declspec(noinline) EncryptedName<45, 0x79E915E9AF6F55DDULL>& SubOffButtonName1() {
   const char source[] = {'\x1D', '\xFA', '\xAF', '\x55', '\x29', '\xDB', '\x2C', '\xB4', '\x1B', '\xB1', '\xAF', '\x63', '\x54', '\xAF', '\xB5', '\x2B', '\xB8', '\x3B', '\x0A', '\xD8', '\xB6', '\x44', '\x9C', '\x1C', '\xAE', '\x21', '\x3A', '\xE6', '\xB5', '\x77', '\x9D', '\x17', '\x82', '\x26', '\x1A', '\xCD', '\xB6', '\x7A', '\x8F', '\x1F', '\xF3', '\x37', '\x02', '\xDF', '\xE9'};
   thread_local EncryptedName<sizeof(source), 0x79E915E9AF6F55DDULL> name(source);
   return name;
@@ -441,7 +441,7 @@ EncryptedName<45, 0x79E915E9AF6F55DDULL>& SubOffButtonName1() {
 
 // OFFSET: 0x00A5AB70
 // FUNCTION: fn_16407
-EncryptedName<44, 0xB3E307A5F753D5E3ULL>& SubOnButtonName() {
+__declspec(noinline) EncryptedName<44, 0xB3E307A5F753D5E3ULL>& SubOnButtonName() {
   const char source[] = {'\x23', '\x7A', '\x93', '\x0D', '\x65', '\xC9', '\x26', '\x7E', '\x25', '\x31', '\x93', '\x3B', '\x18', '\xBD', '\xBF', '\xE1', '\x86', '\xBB', '\x36', '\x80', '\xFA', '\x56', '\x96', '\xD6', '\x90', '\xA1', '\x06', '\xBE', '\xF9', '\x65', '\x97', '\xDD', '\xBC', '\xA6', '\x26', '\x95', '\xFA', '\x68', '\x8D', '\x9D', '\x81', '\xB8', '\x23', '\xF7'};
   thread_local EncryptedName<sizeof(source), 0xB3E307A5F753D5E3ULL> name(source);
   return name;
@@ -449,7 +449,7 @@ EncryptedName<44, 0xB3E307A5F753D5E3ULL>& SubOnButtonName() {
 
 // OFFSET: 0x00A5AC50
 // FUNCTION: fn_16408
-EncryptedName<45, 0x192D654D29337BE5ULL>& SubOffButtonName2() {
+__declspec(noinline) EncryptedName<45, 0x192D654D29337BE5ULL>& SubOffButtonName2() {
   const char source[] = {'\x25', '\xD4', '\xF3', '\xD3', '\x8D', '\xAB', '\xE8', '\xD4', '\x23', '\x9F', '\xF3', '\xE5', '\xF0', '\xDF', '\x71', '\x4B', '\x80', '\x15', '\x56', '\x5E', '\x12', '\x34', '\x58', '\x7C', '\x96', '\x0F', '\x66', '\x60', '\x11', '\x07', '\x59', '\x77', '\xBA', '\x08', '\x46', '\x4B', '\x12', '\x0A', '\x4B', '\x7F', '\xCB', '\x19', '\x5E', '\x59', '\x4D'};
   thread_local EncryptedName<sizeof(source), 0x192D654D29337BE5ULL> name(source);
   return name;
@@ -457,7 +457,7 @@ EncryptedName<45, 0x192D654D29337BE5ULL>& SubOffButtonName2() {
 
 // OFFSET: 0x00A5AD40
 // FUNCTION: fn_16409
-EncryptedName<45, 0xF15F8785CDE369BFULL>& SubOffButtonName3() {
+__declspec(noinline) EncryptedName<45, 0xF15F8785CDE369BFULL>& SubOffButtonName3() {
   const char source[] = {'\x7F', '\xC6', '\x23', '\x37', '\x45', '\x49', '\x9A', '\x3C', '\x79', '\x8D', '\x23', '\x01', '\x38', '\x3D', '\x03', '\xA3', '\xDA', '\x07', '\x86', '\xBA', '\xDA', '\xD6', '\x2A', '\x94', '\xCC', '\x1D', '\xB6', '\x84', '\xD9', '\xE5', '\x2B', '\x9F', '\xE0', '\x1A', '\x96', '\xAF', '\xDA', '\xE8', '\x39', '\x97', '\x91', '\x0B', '\x8E', '\xBD', '\x85'};
   thread_local EncryptedName<sizeof(source), 0xF15F8785CDE369BFULL> name(source);
   return name;
@@ -465,7 +465,7 @@ EncryptedName<45, 0xF15F8785CDE369BFULL>& SubOffButtonName3() {
 
 // OFFSET: 0x00A5AE30
 // FUNCTION: fn_16410
-EncryptedName<6, 0xE33F2FF779878559ULL>& GulimFontName3() {
+__declspec(noinline) EncryptedName<6, 0xE33F2FF779878559ULL>& GulimFontName3() {
   const std::uint8_t source[] = {0x1E, 0xF0, 0xEB, 0x10, 0x9A, 0x2F};
   thread_local EncryptedName<sizeof(source), 0xE33F2FF779878559ULL> name(source);
   return name;
@@ -473,7 +473,7 @@ EncryptedName<6, 0xE33F2FF779878559ULL>& GulimFontName3() {
 
 // OFFSET: 0x00A5AF00
 // FUNCTION: fn_16411
-EncryptedName<47, 0x49D33529F1556333ULL>& DailyOffButtonName1() {
+__declspec(noinline) EncryptedName<47, 0x49D33529F1556333ULL>& DailyOffButtonName1() {
   const char source[] = {'\xF3', '\xCC', '\x95', '\x0B', '\xE9', '\xFB', '\x16', '\x84', '\xF5', '\x87', '\x95', '\x3D', '\x94', '\x8F', '\x8F', '\x1B', '\x56', '\x0D', '\x30', '\x86', '\x76', '\x64', '\xA6', '\x2C', '\x40', '\x17', '\x00', '\xB8', '\x75', '\x57', '\xA7', '\x27', '\x6C', '\x07', '\x34', '\x98', '\x45', '\x4C', '\x8C', '\x26', '\x55', '\x05', '\x7B', '\x93', '\x44', '\x45', '\xD3'};
   thread_local EncryptedName<sizeof(source), 0x49D33529F1556333ULL> name(source);
   return name;
@@ -481,7 +481,7 @@ EncryptedName<47, 0x49D33529F1556333ULL>& DailyOffButtonName1() {
 
 // OFFSET: 0x00A5AFF0
 // FUNCTION: fn_16412
-EncryptedName<46, 0x792FFD1325418FB5ULL>& DailyOnButtonName() {
+__declspec(noinline) EncryptedName<46, 0x792FFD1325418FB5ULL>& DailyOnButtonName() {
   const char source[] = {'\x75', '\x20', '\x81', '\xDF', '\xD3', '\x33', '\xEA', '\xB4', '\x73', '\x6B', '\x81', '\xE9', '\xAE', '\x47', '\x73', '\x2B', '\xD0', '\xE1', '\x24', '\x52', '\x4C', '\xAC', '\x5A', '\x1C', '\xC6', '\xFB', '\x14', '\x6C', '\x4F', '\x9F', '\x5B', '\x17', '\xEA', '\xEB', '\x20', '\x4C', '\x7F', '\x84', '\x70', '\x16', '\xDB', '\xA1', '\x23', '\x48', '\x63', '\xFD'};
   thread_local EncryptedName<sizeof(source), 0x792FFD1325418FB5ULL> name(source);
   return name;
@@ -489,7 +489,7 @@ EncryptedName<46, 0x792FFD1325418FB5ULL>& DailyOnButtonName() {
 
 // OFFSET: 0x00A5B0E0
 // FUNCTION: fn_16413
-EncryptedName<47, 0xC5B1BBCD9BC9C997ULL>& DailyOffButtonName2() {
+__declspec(noinline) EncryptedName<47, 0xC5B1BBCD9BC9C997ULL>& DailyOffButtonName2() {
   const char source[] = {'\x57', '\x66', '\x09', '\x61', '\x0D', '\x75', '\x74', '\x08', '\x51', '\x2D', '\x09', '\x57', '\x70', '\x01', '\xED', '\x97', '\xF2', '\xA7', '\xAC', '\xEC', '\x92', '\xEA', '\xC4', '\xA0', '\xE4', '\xBD', '\x9C', '\xD2', '\x91', '\xD9', '\xC5', '\xAB', '\xC8', '\xAD', '\xA8', '\xF2', '\xA1', '\xC2', '\xEE', '\xAA', '\xF1', '\xAF', '\xE7', '\xF9', '\xA0', '\xCB', '\xB1'};
   thread_local EncryptedName<sizeof(source), 0xC5B1BBCD9BC9C997ULL> name(source);
   return name;
@@ -497,7 +497,7 @@ EncryptedName<47, 0xC5B1BBCD9BC9C997ULL>& DailyOffButtonName2() {
 
 // OFFSET: 0x00A5B1D0
 // FUNCTION: fn_16414
-EncryptedName<47, 0x01CB4F1DF9D3F931ULL>& DailyOffButtonName3() {
+__declspec(noinline) EncryptedName<47, 0x01CB4F1DF9D3F931ULL>& DailyOffButtonName3() {
   const char source[] = {'\xF1', '\x56', '\x13', '\x03', '\xDD', '\x81', '\x0E', '\xCC', '\xF7', '\x1D', '\x13', '\x35', '\xA0', '\xF5', '\x97', '\x53', '\x54', '\x97', '\xB6', '\x8E', '\x42', '\x1E', '\xBE', '\x64', '\x42', '\x8D', '\x86', '\xB0', '\x41', '\x2D', '\xBF', '\x6F', '\x6E', '\x9D', '\xB2', '\x90', '\x71', '\x36', '\x94', '\x6E', '\x57', '\x9F', '\xFD', '\x9B', '\x70', '\x3F', '\xCB'};
   thread_local EncryptedName<sizeof(source), 0x01CB4F1DF9D3F931ULL> name(source);
   return name;
@@ -505,7 +505,7 @@ EncryptedName<47, 0x01CB4F1DF9D3F931ULL>& DailyOffButtonName3() {
 
 // OFFSET: 0x00A5B2C0
 // FUNCTION: fn_16415
-EncryptedName<6, 0x1767DDE18D779D8BULL>& GulimFontName4() {
+__declspec(noinline) EncryptedName<6, 0x1767DDE18D779D8BULL>& GulimFontName4() {
   const std::uint8_t source[] = {0xCC, 0xE8, 0x1B, 0xE4, 0x8C, 0xDD};
   thread_local EncryptedName<sizeof(source), 0x1767DDE18D779D8BULL> name(source);
   return name;
@@ -513,7 +513,7 @@ EncryptedName<6, 0x1767DDE18D779D8BULL>& GulimFontName4() {
 
 // OFFSET: 0x00A5B390
 // FUNCTION: fn_16416
-EncryptedName<47, 0xC1BB8111EDD183E1ULL>& EventOffButtonName1() {
+__declspec(noinline) EncryptedName<47, 0xC1BB8111EDD183E1ULL>& EventOffButtonName1() {
   const char source[] = {'\x21', '\x2C', '\x11', '\x17', '\xD1', '\x4F', '\x7E', '\x0C', '\x27', '\x67', '\x11', '\x21', '\xAC', '\x3B', '\xE7', '\x93', '\x84', '\xED', '\xB4', '\x9A', '\x4E', '\xD0', '\xCE', '\xA4', '\x92', '\xF7', '\x84', '\xA4', '\x4D', '\xE3', '\xCF', '\xAF', '\xBE', '\xE6', '\xA7', '\x88', '\x7F', '\xF5', '\xE4', '\xAE', '\x87', '\xE5', '\xFF', '\x8F', '\x7C', '\xF1', '\xBB'};
   thread_local EncryptedName<sizeof(source), 0xC1BB8111EDD183E1ULL> name(source);
   return name;
@@ -521,7 +521,7 @@ EncryptedName<47, 0xC1BB8111EDD183E1ULL>& EventOffButtonName1() {
 
 // OFFSET: 0x00A5B480
 // FUNCTION: fn_16417
-EncryptedName<46, 0x271B45771F83DD9FULL>& EventOnButtonName() {
+__declspec(noinline) EncryptedName<46, 0x271B45771F83DD9FULL>& EventOnButtonName() {
   const char source[] = {'\x5F', '\x72', '\x43', '\xE5', '\xB7', '\x8B', '\xDE', '\xEA', '\x59', '\x39', '\x43', '\xD3', '\xCA', '\xFF', '\x47', '\x75', '\xFA', '\xB3', '\xE6', '\x68', '\x28', '\x14', '\x6E', '\x42', '\xEC', '\xA9', '\xD6', '\x56', '\x2B', '\x27', '\x6F', '\x49', '\xC0', '\xB8', '\xF5', '\x7A', '\x19', '\x31', '\x44', '\x48', '\xF1', '\xF3', '\xE1', '\x72', '\x07', '\x45'};
   thread_local EncryptedName<sizeof(source), 0x271B45771F83DD9FULL> name(source);
   return name;
@@ -529,7 +529,7 @@ EncryptedName<46, 0x271B45771F83DD9FULL>& EventOnButtonName() {
 
 // OFFSET: 0x00A5B570
 // FUNCTION: fn_16418
-EncryptedName<47, 0x8783C33941E15117ULL>& EventOffButtonName2() {
+__declspec(noinline) EncryptedName<47, 0x8783C33941E15117ULL>& EventOffButtonName2() {
   const char source[] = {'\xD7', '\xFE', '\x21', '\xBB', '\xF9', '\x0D', '\x46', '\x4A', '\xD1', '\xB5', '\x21', '\x8D', '\x84', '\x79', '\xDF', '\xD5', '\x72', '\x3F', '\x84', '\x36', '\x66', '\x92', '\xF6', '\xE2', '\x64', '\x25', '\xB4', '\x08', '\x65', '\xA1', '\xF7', '\xE9', '\x48', '\x34', '\x97', '\x24', '\x57', '\xB7', '\xDC', '\xE8', '\x71', '\x37', '\xCF', '\x23', '\x54', '\xB3', '\x83'};
   thread_local EncryptedName<sizeof(source), 0x8783C33941E15117ULL> name(source);
   return name;
@@ -537,7 +537,7 @@ EncryptedName<47, 0x8783C33941E15117ULL>& EventOffButtonName2() {
 
 // OFFSET: 0x00A5B660
 // FUNCTION: fn_16419
-EncryptedName<47, 0x0B8745519B1F95D7ULL>& EventOffButtonName3() {
+__declspec(noinline) EncryptedName<47, 0x0B8745519B1F95D7ULL>& EventOffButtonName3() {
   const char source[] = {'\x17', '\x3A', '\xDF', '\x61', '\x91', '\x8B', '\x42', '\xC6', '\x11', '\x71', '\xDF', '\x57', '\xEC', '\xFF', '\xDB', '\x59', '\xB2', '\xFB', '\x7A', '\xEC', '\x0E', '\x14', '\xF2', '\x6E', '\xA4', '\xE1', '\x4A', '\xD2', '\x0D', '\x27', '\xF3', '\x65', '\x88', '\xF0', '\x69', '\xFE', '\x3F', '\x31', '\xD8', '\x64', '\xB1', '\xF3', '\x31', '\xF9', '\x3C', '\x35', '\x87'};
   thread_local EncryptedName<sizeof(source), 0x0B8745519B1F95D7ULL> name(source);
   return name;
@@ -545,7 +545,7 @@ EncryptedName<47, 0x0B8745519B1F95D7ULL>& EventOffButtonName3() {
 
 // OFFSET: 0x00A5B750
 // FUNCTION: fn_16420
-EncryptedName<6, 0xC70319B5EB61598FULL>& GulimFontName5() {
+__declspec(noinline) EncryptedName<6, 0xC70319B5EB61598FULL>& GulimFontName5() {
   const std::uint8_t source[] = {0xC8, 0x2C, 0x0D, 0x82, 0xD8, 0x19};
   thread_local EncryptedName<sizeof(source), 0xC70319B5EB61598FULL> name(source);
   return name;
@@ -553,7 +553,7 @@ EncryptedName<6, 0xC70319B5EB61598FULL>& GulimFontName5() {
 
 // OFFSET: 0x00A5B820
 // FUNCTION: fn_16421
-EncryptedName<45, 0xFFABE3D5D1BBEF73ULL>& EtcOffButtonName1() {
+__declspec(noinline) EncryptedName<45, 0xFFABE3D5D1BBEF73ULL>& EtcOffButtonName1() {
   const char source[] = {'\xB3', '\x40', '\x7B', '\x2B', '\x15', '\x2D', '\x6E', '\x32', '\xB5', '\x0B', '\x7B', '\x1D', '\x68', '\x59', '\xF7', '\xAD', '\x16', '\x81', '\xDE', '\xA6', '\x8A', '\xB2', '\xDE', '\x9A', '\x00', '\x9B', '\xEE', '\x98', '\x89', '\x81', '\xDF', '\x91', '\x2C', '\x8A', '\xCF', '\xB2', '\x8A', '\x8C', '\xCD', '\x99', '\x5D', '\x8D', '\xD6', '\xA1', '\xD5'};
   thread_local EncryptedName<sizeof(source), 0xFFABE3D5D1BBEF73ULL> name(source);
   return name;
@@ -561,7 +561,7 @@ EncryptedName<45, 0xFFABE3D5D1BBEF73ULL>& EtcOffButtonName1() {
 
 // OFFSET: 0x00A5B910
 // FUNCTION: fn_16422
-EncryptedName<44, 0xA597A7E7492B39D5ULL>& EtcOnButtonName() {
+__declspec(noinline) EncryptedName<44, 0xA597A7E7492B39D5ULL>& EtcOnButtonName() {
   const char source[] = {'\x15', '\x96', '\xEB', '\xB3', '\x27', '\x69', '\x52', '\x68', '\x13', '\xDD', '\xEB', '\x85', '\x5A', '\x1D', '\xCB', '\xF7', '\xB0', '\x57', '\x4E', '\x3E', '\xB8', '\xF6', '\xE2', '\xC0', '\xA6', '\x4D', '\x7E', '\x00', '\xBB', '\xC5', '\xE3', '\xCB', '\x8A', '\x5C', '\x5F', '\x2A', '\xB8', '\xC8', '\xF9', '\x8B', '\xB7', '\x54', '\x5B', '\x49'};
   thread_local EncryptedName<sizeof(source), 0xA597A7E7492B39D5ULL> name(source);
   return name;
@@ -569,7 +569,7 @@ EncryptedName<44, 0xA597A7E7492B39D5ULL>& EtcOnButtonName() {
 
 // OFFSET: 0x00A5B9F0
 // FUNCTION: fn_16423
-EncryptedName<45, 0xD5A78DB38D8DAFABULL>& EtcOffButtonName2() {
+__declspec(noinline) EncryptedName<45, 0xD5A78DB38D8DAFABULL>& EtcOffButtonName2() {
   const char source[] = {'\x6B', '\x00', '\x4D', '\x77', '\x73', '\x43', '\x62', '\x18', '\x6D', '\x4B', '\x4D', '\x41', '\x0E', '\x37', '\xFB', '\x87', '\xCE', '\xC1', '\xE8', '\xFA', '\xEC', '\xDC', '\xD2', '\xB0', '\xD8', '\xDB', '\xD8', '\xC4', '\xEF', '\xEF', '\xD3', '\xBB', '\xF4', '\xCA', '\xF9', '\xEE', '\xEC', '\xE2', '\xC1', '\xB3', '\x85', '\xCD', '\xE0', '\xFD', '\xB3'};
   thread_local EncryptedName<sizeof(source), 0xD5A78DB38D8DAFABULL> name(source);
   return name;
@@ -577,7 +577,7 @@ EncryptedName<45, 0xD5A78DB38D8DAFABULL>& EtcOffButtonName2() {
 
 // OFFSET: 0x00A5BAE0
 // FUNCTION: fn_16424
-EncryptedName<45, 0x0399459DAF454F0FULL>& EtcOffButtonName3() {
+__declspec(noinline) EncryptedName<45, 0x0399459DAF454F0FULL>& EtcOffButtonName3() {
   const char source[] = {'\xCF', '\xE0', '\x85', '\x55', '\x5D', '\x8B', '\x5C', '\xCE', '\xC9', '\xAB', '\x85', '\x63', '\x20', '\xFF', '\xC5', '\x51', '\x6A', '\x21', '\x20', '\xD8', '\xC2', '\x14', '\xEC', '\x66', '\x7C', '\x3B', '\x10', '\xE6', '\xC1', '\x27', '\xED', '\x6D', '\x50', '\x2A', '\x31', '\xCC', '\xC2', '\x2A', '\xFF', '\x65', '\x21', '\x2D', '\x28', '\xDF', '\x9D'};
   thread_local EncryptedName<sizeof(source), 0x0399459DAF454F0FULL> name(source);
   return name;
@@ -585,7 +585,7 @@ EncryptedName<45, 0x0399459DAF454F0FULL>& EtcOffButtonName3() {
 
 // OFFSET: 0x00A5BBD0
 // FUNCTION: fn_16425
-EncryptedName<51, 0xAD6153019F93A527ULL>& SearchNormalButtonName() {
+__declspec(noinline) EncryptedName<51, 0xAD6153019F93A527ULL>& SearchNormalButtonName() {
   const char source[] = {'\xE7', '\x0A', '\x53', '\x65', '\xC1', '\x9D', '\xA4', '\x60', '\xE1', '\x41', '\x53', '\x53', '\xBC', '\xE9', '\x3D', '\xFF', '\x42', '\xCB', '\xF6', '\xE8', '\x5E', '\x02', '\x14', '\xC8', '\x54', '\xD1', '\xC6', '\xD6', '\x5D', '\x31', '\x15', '\xC3', '\x78', '\xD6', '\xF6', '\xFE', '\x73', '\x30', '\x09', '\xF2', '\x49', '\xCA', '\xE1', '\xF2', '\x60', '\x3F', '\x4F', '\xCF', '\x4A', '\xD5', '\x93'};
   thread_local EncryptedName<sizeof(source), 0xAD6153019F93A527ULL> name(source);
   return name;
@@ -593,7 +593,7 @@ EncryptedName<51, 0xAD6153019F93A527ULL>& SearchNormalButtonName() {
 
 // OFFSET: 0x00A5BCB0
 // FUNCTION: fn_16426
-EncryptedName<50, 0x85E1F5A7A5755B7FULL>& SearchPressButtonName() {
+__declspec(noinline) EncryptedName<50, 0x85E1F5A7A5755B7FULL>& SearchPressButtonName() {
   const char source[] = {'\xBF', '\xF4', '\xB5', '\x5F', '\x67', '\x3B', '\x24', '\x48', '\xB9', '\xBF', '\xB5', '\x69', '\x1A', '\x4F', '\xBD', '\xD7', '\x1A', '\x35', '\x10', '\xD2', '\xF8', '\xA4', '\x94', '\xE0', '\x0C', '\x2F', '\x20', '\xEC', '\xFB', '\x97', '\x95', '\xEB', '\x20', '\x28', '\x10', '\xC4', '\xD5', '\x96', '\x89', '\xDA', '\x0F', '\x29', '\x10', '\xD6', '\xD4', '\xDB', '\x83', '\xE8', '\x0F', '\x5B'};
   thread_local EncryptedName<sizeof(source), 0x85E1F5A7A5755B7FULL> name(source);
   return name;
@@ -601,7 +601,7 @@ EncryptedName<50, 0x85E1F5A7A5755B7FULL>& SearchPressButtonName() {
 
 // OFFSET: 0x00A5BD90
 // FUNCTION: fn_16427
-EncryptedName<49, 0x659975C121557D3DULL>& SearchOverButtonName() {
+__declspec(noinline) EncryptedName<49, 0x659975C121557D3DULL>& SearchOverButtonName() {
   const char source[] = {'\xFD', '\xD2', '\x95', '\xDB', '\x01', '\xBB', '\x5C', '\xA8', '\xFB', '\x99', '\x95', '\xED', '\x7C', '\xCF', '\xC5', '\x37', '\x58', '\x13', '\x30', '\x56', '\x9E', '\x24', '\xEC', '\x00', '\x4E', '\x09', '\x00', '\x68', '\x9D', '\x17', '\xED', '\x0B', '\x62', '\x0E', '\x30', '\x40', '\xB3', '\x16', '\xF1', '\x3A', '\x52', '\x0B', '\x30', '\x53', '\xEF', '\x17', '\xF4', '\x15', '\x3D'};
   thread_local EncryptedName<sizeof(source), 0x659975C121557D3DULL> name(source);
   return name;
@@ -609,7 +609,7 @@ EncryptedName<49, 0x659975C121557D3DULL>& SearchOverButtonName() {
 
 // OFFSET: 0x00A5BE70
 // FUNCTION: fn_16428
-EncryptedName<52, 0xBFF5C517A1A77F59ULL>& SearchDisableButtonName() {
+__declspec(noinline) EncryptedName<52, 0xBFF5C517A1A77F59ULL>& SearchDisableButtonName() {
   const char source[] = {'\x99', '\xD0', '\x67', '\x5B', '\xD7', '\x0B', '\x30', '\x72', '\x9F', '\x9B', '\x67', '\x6D', '\xAA', '\x7F', '\xA9', '\xED', '\x3C', '\x11', '\xC2', '\xD6', '\x48', '\x94', '\x80', '\xDA', '\x2A', '\x0B', '\xF2', '\xE8', '\x4B', '\xA7', '\x81', '\xD1', '\x06', '\x0C', '\xC2', '\xC0', '\x65', '\xA6', '\x9D', '\xE0', '\x3D', '\x16', '\xD4', '\xC0', '\x75', '\xA9', '\x90', '\x91', '\x3B', '\x12', '\xD7', '\xA1'};
   thread_local EncryptedName<sizeof(source), 0xBFF5C517A1A77F59ULL> name(source);
   return name;
@@ -843,7 +843,7 @@ __declspec(noinline) bool CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long
 // OFFSET: 0x00A65FD0
 // FUNCTION: fn_16604
 template <>
-int CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddData(const unsigned long& value, bool refresh) {
+__declspec(noinline) int CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddData(const unsigned long& value, bool refresh) {
   this->data.push_back(value);
   if (refresh) {
     this->UpdateScrollBar();
@@ -1222,12 +1222,18 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
         const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
         listBox->ClearData();
         for (std::pair<const unsigned long, RenewQuestRecommendedInfo> entry : g_renewQuestMgr->m_recommendedQuests) {
-          if (this->MatchesFilter(entry.second) && entry.second.m_active) {
+          if (!this->MatchesFilter(entry.second)) {
+            continue;
+          }
+          if (entry.second.m_active) {
             listBox->AddData(entry.first, false);
           }
         }
         for (std::pair<const unsigned long, RenewQuestRecommendedInfo> entry : g_renewQuestMgr->m_recommendedQuests) {
-          if (this->MatchesFilter(entry.second) && !entry.second.m_active) {
+          if (!this->MatchesFilter(entry.second)) {
+            continue;
+          }
+          if (!entry.second.m_active) {
             listBox->AddData(entry.first, false);
           }
         }
@@ -1250,7 +1256,10 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
         const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
         listBox->ClearData();
         for (std::pair<const unsigned long, RenewQuestOngoingInfo> entry : g_renewQuestMgr->m_ongoingQuests) {
-          if (this->MatchesFilter(entry.second) && entry.second.unknown_01F8 != 1 && entry.second.m_state == 0) {
+          if (!this->MatchesFilter(entry.second)) {
+            continue;
+          }
+          if (entry.second.unknown_01F8 != 1 && entry.second.m_state == 0) {
             listBox->AddData(entry.first, false);
           }
         }
@@ -1273,7 +1282,10 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
         const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
         listBox->ClearData();
         for (std::pair<const unsigned long, RenewQuestOngoingInfo> entry : g_renewQuestMgr->m_ongoingQuests) {
-          if (this->MatchesFilter(entry.second) && entry.second.unknown_01F8 == 1) {
+          if (!this->MatchesFilter(entry.second)) {
+            continue;
+          }
+          if (entry.second.unknown_01F8 == 1) {
             listBox->AddData(entry.first, false);
           }
         }
