@@ -5986,10 +5986,10 @@ void CEffectPrim::Render3DCasting_LowPolygon(matrix& wtm) {
 // OFFSET: 0x00BD0680
 // FUNCTION: fn_19869
 void CEffectPrim::RenderAttackEnergy2(matrix& wtm) {
-  vector3d vec1;
-  ZeroVector(vec1);
-  vector3d vec3;
-  ZeroVector(vec3);
+  ZeroVector3d vec1;
+  ZeroVector3d vec3;
+  ZeroVector3d vec2;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -6019,7 +6019,6 @@ void CEffectPrim::RenderAttackEnergy2(matrix& wtm) {
       float sn3 = g_sinTable[angle2];
 
       float dist = slot.distance * sn3;
-      vector3d vec2;
       vec2.y = cs1 * dist;
       dist = sn1 * dist;
       vec2.x = cs2 * dist;
@@ -6038,7 +6037,6 @@ void CEffectPrim::RenderAttackEnergy2(matrix& wtm) {
       sn3 = g_sinTable[angle3];
 
       dist = slot.distance * sn3;
-      vector3d vec4;
       vec4.y = cs1 * dist;
       dist = sn1 * dist;
       vec4.z = sn2 * dist;
