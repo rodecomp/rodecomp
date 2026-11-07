@@ -121,8 +121,8 @@ __declspec(noinline) static void AssignIds(std::vector<int>& output, const int* 
 // INLINED
 static void ReadIdList(XmlNode* list, int (&ids)[0x40], std::vector<int>& output) {
   int count = 0;
-  for (XmlNode* aid = list->FindChild("aid"); aid != nullptr; aid = aid->FindSibling("aid")) {
-    if (const char* text = NodeText(aid)) {
+  for (XmlNode* admin = list->FindChild("admin"); admin != nullptr; admin = admin->FindSibling("admin")) {
+    if (const char* text = NodeText(admin)) {
       ids[count++] = ParseNodeInt(text);
     }
   }
@@ -191,8 +191,8 @@ __declspec(noinline) static void ReadConnectionInfo(int connectionIndex) {
       g_serviceFlag07 = ParseNodeInt(text);
     }
   }
-  if (XmlNode* admin = g_clientInfoConnection->FindChild("admin")) {
-    ReadIdList(admin, g_clientInfoAdminIds, g_adminAccountIds);
+  if (XmlNode* aid = g_clientInfoConnection->FindChild("aid")) {
+    ReadIdList(aid, g_clientInfoAdminIds, g_adminAccountIds);
   }
   if (XmlNode* yellow = g_clientInfoConnection->FindChild("yellow")) {
     ReadIdList(yellow, g_clientInfoYellowIds, g_monsterJobs);
