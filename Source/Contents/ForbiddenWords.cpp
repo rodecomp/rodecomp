@@ -36,7 +36,7 @@ namespace {
 
   // OFFSET: 0x00AE7060
   // FUNCTION: fn_18065
-  char* Lowercase(char* text) {
+  __declspec(noinline) char* Lowercase(char* text) {
     for (char* current = text; current < text + std::strlen(text); current = CharNextExA(static_cast<unsigned short>(g_textCodePage), current, 0)) {
       if (*current > 0 && std::isupper(*current)) {
         *current += 32;
@@ -78,6 +78,8 @@ bool ForbiddenWords::Load(const char* name) {
   return loaded;
 }
 
+// GLOBAL: gl_24643
+static int g_forbiddenWordCloseTagLength = 8;
 // GLOBAL: gl_24644
 static const std::string g_forbiddenWordOpenTag = "<iteml>";
 // GLOBAL: gl_24645
@@ -99,7 +101,7 @@ bool ForbiddenWords::Allows(const char* text) const {
     const auto* open = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>(g_forbiddenWordOpenTag.c_str()));
     const auto* close = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>(g_forbiddenWordCloseTag.c_str()));
     if (open && close && std::strlen(current) != 0 && std::strlen(current) <= std::strlen(reinterpret_cast<const char*>(open))) {
-      const auto skip = reinterpret_cast<const char*>(close) + 8 - reinterpret_cast<const char*>(open);
+      const auto skip = reinterpret_cast<const char*>(close) + g_forbiddenWordCloseTagLength - reinterpret_cast<const char*>(open);
 
       for (std::ptrdiff_t index = 0; index < skip; ++index) {
         current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
