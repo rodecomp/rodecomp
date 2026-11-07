@@ -67,9 +67,7 @@ void CLanguageBase::Insert(const char* value) {
   this->anchor = this->cursor + static_cast<int>(std::strlen(value));
   this->cursor = this->anchor;
 
-  if (g_windowMgr.inputSuggestionsEnabled && ChatWindow() && ChatWindow()->m_chatEdit && g_windowMgr.GetHoverWindow() == ChatWindow()->m_chatEdit) {
-    g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
-  }
+  SuggestChatCommand(this->text.c_str());
 }
 
 
@@ -186,8 +184,9 @@ void CLanguageBase::MoveBack() {
     if (this->cursor < 0) {
       this->cursor = 0;
     } else {
-      const char* begin = this->text.c_str();
-      this->cursor = static_cast<int>(CharPrevExA(static_cast<WORD>(this->codePage), begin, begin + this->cursor, 0) - begin);
+      this->cursor = static_cast<int>(
+        CharPrevExA(static_cast<WORD>(this->codePage), this->text.c_str(), this->text.c_str() + this->cursor, 0) - this->text.c_str()
+      );
     }
   }
 }
@@ -219,8 +218,7 @@ void CLanguageBase::MoveForward() {
     this->cursor = static_cast<int>(length);
     return;
   }
-  const char* begin = this->text.c_str();
-  this->cursor = static_cast<int>(CharNextExA(static_cast<WORD>(this->codePage), begin + position, 0) - begin);
+  this->cursor = static_cast<int>(CharNextExA(static_cast<WORD>(this->codePage), this->text.c_str() + position, 0) - this->text.c_str());
 }
 // OFFSET: 0x00ACE5E0
 // FUNCTION: fn_17789
@@ -287,10 +285,7 @@ void CLanguageBase::Character(unsigned value, LPARAM) {
   this->anchor = this->cursor + static_cast<int>(std::strlen(bytes));
   this->cursor = this->anchor;
 
-  if (this->text.c_str() && g_windowMgr.inputSuggestionsEnabled && ChatWindow() && ChatWindow()->m_chatEdit &&
-      g_windowMgr.GetHoverWindow() == ChatWindow()->m_chatEdit) {
-    g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
-  }
+  SuggestChatCommand(this->text.c_str());
 }
 
 // OFFSET: 0x00ACE880
