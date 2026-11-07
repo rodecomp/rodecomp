@@ -92,18 +92,18 @@ bool CSession::ToggleTrackedAchievement(int id) {
 
       if (info.unknown_0064 == 0) {
         if (reward.text.size() > 40) {
-          text = FormatOwnedString("- %s...", reward.text.substr(0, 40).c_str());
+          text = static_cast<const std::string&>(FormatOwnedString("- %s...", reward.text.substr(0, 40).c_str()));
         } else {
-          text = FormatOwnedString("- %s", reward.text.c_str());
+          text = static_cast<const std::string&>(FormatOwnedString("- %s", reward.text.c_str()));
         }
 
         completed = static_cast<int>(progress->unknown_0004[i]) > 0;
       } else if (info.unknown_0064 == 1) {
         std::string count = FormatOwnedString("(%d/%d)", progress->unknown_0004[i], reward.unknown_0018);
         if (reward.text.size() + count.size() > 40) {
-          text = FormatOwnedString("- %s...%s", reward.text.substr(0, 40 - count.size()).c_str(), count.c_str());
+          text = static_cast<const std::string&>(FormatOwnedString("- %s...%s", reward.text.substr(0, 40 - count.size()).c_str(), count.c_str()));
         } else {
-          text = FormatOwnedString("- %s %s", reward.text.c_str(), count.c_str());
+          text = static_cast<const std::string&>(FormatOwnedString("- %s %s", reward.text.c_str(), count.c_str()));
         }
 
         completed = static_cast<int>(progress->unknown_0004[i]) == reward.unknown_0018;
