@@ -897,27 +897,27 @@ void UINewSkillListWnd::Paint() {
 
   CBitmapRes* bitmap =
     static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_upbar_left.bmp")));
-  this->DrawBitmap(left, 0, &bitmap->image, false);
+  this->DrawBitmap(left, 0, bitmap, false);
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_upbar_right.bmp")));
-  this->DrawBitmap(this->geometry.width - bitmap->image.width, 0, &bitmap->image, false);
+  this->DrawBitmap(this->geometry.width - bitmap->image.width, 0, bitmap, false);
 
   int span = this->geometry.width - left - 24;
   int count = span / 5 + (span % 5 != 0);
   for (int i = 0, x = left + 12; i < count; ++i, x += 5) {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_upbar_mid.bmp")));
-    this->DrawBitmap(x, 0, &bitmap->image, false);
+    this->DrawBitmap(x, 0, bitmap, false);
   }
 
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_botbar_left.bmp")));
-  this->DrawBitmap(left, this->geometry.height - bitmap->image.height, &bitmap->image, false);
+  this->DrawBitmap(left, this->geometry.height - bitmap->image.height, bitmap, false);
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_botbar_right.bmp")));
-  this->DrawBitmap(this->geometry.width - bitmap->image.width, this->geometry.height - bitmap->image.height, &bitmap->image, false);
+  this->DrawBitmap(this->geometry.width - bitmap->image.width, this->geometry.height - bitmap->image.height, bitmap, false);
 
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_botbar_mid.bmp")));
   span = this->geometry.width - left - 24;
   count = span / bitmap->image.width + (span % bitmap->image.width != 0);
   for (int i = 0, x = left + 12; i < count; ++i, x += 5) {
-    this->DrawBitmap(x, this->geometry.height - bitmap->image.height, &bitmap->image, false);
+    this->DrawBitmap(x, this->geometry.height - bitmap->image.height, bitmap, false);
   }
 
   this->DrawTextAt(41, 6, LookupMessage(283), 0, 0, 12, 0xFFFFFF, 0, 0);
