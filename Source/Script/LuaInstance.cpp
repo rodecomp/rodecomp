@@ -76,20 +76,20 @@ bool CLuaInstance::LoadFile(const std::string& path) {
     return false;
   }
 
-  char* buffer = static_cast<char*>(std::malloc(file.GetSize() + 1));
+  char* buffer = new char[file.GetSize() + 1];
   SecureZeroMemory(buffer, file.GetSize() + 1);
   file.Read(buffer, file.GetSize());
   file.Close();
 
   if (luaL_loadbuffer(this->m_state, buffer, file.GetSize(), "buf") == 0 && lua_pcall(this->m_state, 0, 0, 0) == 0) {
-    std::free(buffer);
+    delete[] buffer;
     return true;
   }
 
   const char* error = lua_tostring(this->m_state, -1);
   MessageBoxA(nullptr, error, path.c_str(), MB_OK);
   lua_pop(this->m_state, 1);
-  std::free(buffer);
+  delete[] buffer;
 
   return false;
 }
