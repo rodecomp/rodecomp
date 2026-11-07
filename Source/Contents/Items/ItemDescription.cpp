@@ -30,19 +30,15 @@ ITEM_DESC::~ITEM_DESC() = default;
 // OFFSET: 0x006D5160
 // FUNCTION: fn_06568
 ITEM_DESC& ITEM_DESC::operator=(const ITEM_DESC& other) {
-  if (this == &other) {
-    return *this;
-  }
-
   this->identifiedName = other.identifiedName;
   this->identifiedResource = other.identifiedResource;
-  this->identifiedDescription = other.identifiedDescription;
+  this->identifiedDescription.assign(other.identifiedDescription.begin(), other.identifiedDescription.end());
   this->unidentifiedName = other.unidentifiedName;
   this->unidentifiedResource = other.unidentifiedResource;
-  this->unidentifiedDescription = other.unidentifiedDescription;
+  this->unidentifiedDescription.assign(other.unidentifiedDescription.begin(), other.unidentifiedDescription.end());
   this->unknown_002C = other.unknown_002C;
   this->slots = other.slots;
-  this->unknown_0034 = other.unknown_0034;
+  this->unknown_0034.assign(other.unknown_0034.begin(), other.unknown_0034.end());
   this->unknown_0040 = other.unknown_0040;
 
   return *this;
