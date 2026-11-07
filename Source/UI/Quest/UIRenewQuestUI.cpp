@@ -1305,7 +1305,7 @@ void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
   this->icon = new CUIStaticImage();
   this->icon->SetSize(26, 29);
   this->icon->Move(8, 7);
-  this->icon->SetImage(std::string());
+  this->icon->SetImage(std::string(""));
   this->AddChild(this->icon);
 
   this->unknown_00EC = new CUIStaticText();
@@ -1463,7 +1463,7 @@ void RenewQuestUI::CUIQuestList::Slot15(int width, int height) {
     const std::string up(DecryptName<0xC517FB932D95BB6DULL>(upSource));
     list->scrollBar->SetButtonImages(up, down);
   }
-  this->list->scrollBar->SetBackground(std::string());
+  this->list->scrollBar->SetBackground(std::string(""));
   {
     CUIListBoxEx<CUIQuestItem, unsigned long>* list = this->list;
     const char bottomSource[] = {
