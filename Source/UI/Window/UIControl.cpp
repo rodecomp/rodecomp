@@ -759,6 +759,24 @@ void CUIVThumb::Paint() {
   }
 }
 
+#pragma inline_depth(0)
+// OFFSET: 0x009F1650
+// FUNCTION: fn_14692
+void CUITabButton::Slot47() {
+  if (this->state != 1) {
+    this->SetState(2);
+  }
+}
+
+// OFFSET: 0x009F1670
+// FUNCTION: fn_14693
+void CUITabButton::Slot48() {
+  if (this->state != 1) {
+    this->SetState(0);
+  }
+}
+#pragma inline_depth()
+
 // OFFSET: 0x009EE8F0
 // FUNCTION: fn_14626
 void CUIButton::SetState(int value) {
@@ -1165,22 +1183,6 @@ void CUITabButton::Slot25(int, int) {
 void CUITabButton::Slot31(int, int) {
   if (this == g_windowMgr.Capture()) {
     g_windowMgr.ReleaseCapture();
-  }
-}
-
-// OFFSET: 0x009F1650
-// FUNCTION: fn_14692
-void CUITabButton::Slot47() {
-  if (this->state != 1) {
-    this->SetState(2);
-  }
-}
-
-// OFFSET: 0x009F1670
-// FUNCTION: fn_14693
-void CUITabButton::Slot48() {
-  if (this->state != 1) {
-    this->SetState(0);
   }
 }
 
