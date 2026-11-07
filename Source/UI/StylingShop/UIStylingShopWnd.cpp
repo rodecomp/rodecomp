@@ -1624,7 +1624,7 @@ void UIDisplayCharacter::Paint() {
   this->ClearSurface(0xFFFFFFFF);
   CBitmapRes* shadow = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->unknown_007C)));
   if (shadow) {
-    this->DrawBitmap(this->unknown_00B4, this->unknown_00B8, &shadow->image, false);
+    this->DrawBitmap(this->unknown_00B4, this->unknown_00B8, shadow, false);
   }
 
   CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
@@ -1683,7 +1683,7 @@ void UIShowInfoWnd::DrawPayments() {
     const int y = positions[row][1];
     CBitmapRes* off = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_offBitmap)));
     if (off) {
-      this->DrawBitmap(this->m_checks[row]->geometry.x, this->m_checks[row]->geometry.y, &off->image, false);
+      this->DrawBitmap(this->m_checks[row]->geometry.x, this->m_checks[row]->geometry.y, off, false);
     }
 
     std::uint32_t color = 0xBFBFBF;
