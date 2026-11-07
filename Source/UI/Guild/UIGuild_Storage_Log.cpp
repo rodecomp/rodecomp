@@ -48,25 +48,24 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
     case 218: {
       const unsigned page = this->m_page;
-      bool hasNext;
-
       if (this->m_category == 0) {
-        hasNext = page < this->m_pageCounts[0];
+        if (page >= this->m_pageCounts[0]) {
+          break;
+        }
       } else if (this->m_category == 1) {
-        hasNext = page < this->m_pageCounts[1];
-      } else {
-        hasNext = page < this->m_pageCounts[2];
+        if (page >= this->m_pageCounts[1]) {
+          break;
+        }
+      } else if (page >= this->m_pageCounts[2]) {
+        break;
       }
 
-      if (hasNext) {
-        this->m_state = 1;
-        this->m_page = page + 1;
-        this->unknown_0174 = 0;
-        this->unknown_0188 = this->unknown_0184;
-        this->SendMsg(this, 60, 0, 0, 0, 0);
-        return 0;
-      }
-      break;
+      this->m_state = 1;
+      this->m_page = page + 1;
+      this->unknown_0174 = 0;
+      this->unknown_0188 = this->unknown_0184;
+      this->SendMsg(this, 60, 0, 0, 0, 0);
+      return 0;
     }
 
     case 246: {
