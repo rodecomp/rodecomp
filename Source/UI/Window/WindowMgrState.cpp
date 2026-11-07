@@ -1166,7 +1166,7 @@ int UIWindowMgr::RunEmailAddress() {
   auto* window = new UIEmailAddressWnd();
   window->SetSize(280, 48);
   window->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
-  this->rendered.push_front(window);
+  this->rendered.push_back(window);
 
   if (this->inputWindow) {
     this->persistentWindows.insert(this->inputWindow->Root());
