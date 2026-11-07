@@ -11,6 +11,15 @@ namespace {
   };
 
   static_assert(sizeof(GifLzwEntry) == 12);
+
+  // INLINED
+  int GifLzwRoot(const GifLzwEntry* dictionary, int code) {
+    while (dictionary[code].prefix != -1) {
+      code = dictionary[code].prefix;
+    }
+
+    return code;
+  }
 }
 
 // OFFSET: 0x0074A840
@@ -79,10 +88,7 @@ int __stdcall DecodeGifLzw(int minimumCodeSize, const unsigned char* input, int 
         return -1;
       }
 
-      int first = code == nextCode ? previousCode : code;
-      while (dictionary[first].prefix != -1) {
-        first = dictionary[first].prefix;
-      }
+      const int first = code == nextCode ? GifLzwRoot(dictionary, previousCode) : GifLzwRoot(dictionary, code);
 
       dictionary[nextCode].value = dictionary[first].value;
       dictionary[nextCode].prefix = previousCode;
