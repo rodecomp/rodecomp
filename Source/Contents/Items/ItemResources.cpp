@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <string>
 
+template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // OFFSET: 0x00DDDA20
 // FUNCTION: fn_23391
 const char* CSession::ItemDragResource(const char* id, int identified) {
