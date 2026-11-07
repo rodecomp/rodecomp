@@ -25,29 +25,21 @@ unsigned char g_multitexture = 1;
 CRenderer* DeviceOwnerDX7::CreateRenderer() {
   int format;
 
-  switch (this->redMask) {
-  case 0xF800:
+  if (this->redMask == 0xF800) {
     format = TextureFormat::R5G6B5;
-    break;
-  case 0x7C00:
+  } else if (this->redMask == 0x7C00) {
     format = TextureFormat::X1R5G5B5;
-    break;
-  case 0x1F:
-    ShowErrorDialog(GetRenderSystemHolder()->system, "BGR 565 MODE. NOT SUPPORTED", 0);
+  } else if (this->redMask == 0x1F) {
+    ShowErrorDialog("BGR 565 MODE. NOT SUPPORTED", 0);
     format = TextureFormat::R5G6B5;
-    break;
-  default:
-    if (this->bitDepth == 32) {
-      format = TextureFormat::A8R8G8B8;
-    } else {
-      ShowErrorDialog(GetRenderSystemHolder()->system, "NOT SUPPORTED MODE", 0);
-      format = TextureFormat::UnknownTextureFormat;
-    }
-    break;
+  } else if (this->bitDepth == 32) {
+    format = TextureFormat::A8R8G8B8;
+  } else {
+    ShowErrorDialog("NOT SUPPORTED MODE", 0);
+    format = TextureFormat::UnknownTextureFormat;
   }
 
-  DDCAPS drawCaps{};
-  drawCaps.dwSize = sizeof(drawCaps);
+  DDCAPS drawCaps = {sizeof(drawCaps)};
 
   if (this->draw->GetCaps(&drawCaps, nullptr) == S_OK) {
     this->colorKeySupported = (drawCaps.dwCaps & DDCAPS_BLTSTRETCH) != 0;
