@@ -7944,7 +7944,8 @@ int UICoupleAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // OFFSET: 0x008FDE10
 // FUNCTION: fn_12350
 int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 34) {
+  switch (message) {
+  case 34: {
     this->m_placement = reinterpret_cast<WindowPlacement*>(a);
     auto* info = static_cast<ItemParamChangeDisplayWndInfo*>(this->m_placement);
     if (!info->IsValid()) {
@@ -7953,8 +7954,7 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
     this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
   }
-
-  if (message == 60) {
+  case 60: {
     this->SumEquippedStats();
     this->unknown_00CC = 0;
     this->unknown_00D0 = 0;
@@ -7967,7 +7967,9 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
         this->unknown_00D0 = equippedDescription.unknown_0034[1];
       }
     }
-  } else if (message == 64) {
+    break;
+  }
+  case 64: {
     this->SumEquippedStats();
     this->m_label = reinterpret_cast<const char*>(a);
     this->unknown_00EC = static_cast<int>(b);
@@ -7987,7 +7989,9 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
         this->unknown_00D0 = equippedDescription.unknown_0034[1];
       }
     }
-  } else {
+    break;
+  }
+  default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
@@ -10131,7 +10135,7 @@ void UInCashWnd::Slot26(int x, int y) {
   this->m_selected = ~this->m_selected;
   g_session.RemoveItem1720ByName(item);
   this->m_totalPrice -= item.quantity * item.unknown_0014[1];
-  this->m_otherItems.clear();
+  this->m_otherItems.erase(this->m_otherItems.begin(), this->m_otherItems.end());
 
   const CSession& lists = g_session;
   const int count = lists.GetList2Size();
