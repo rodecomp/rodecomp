@@ -817,6 +817,7 @@ void UIAchTab::UpdateScrollBar() {
   this->scrollBar->Invalidate();
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x007B7FE0
 // FUNCTION: fn_09243
 void UIAchTab::Refresh() {
@@ -828,6 +829,7 @@ void UIAchTab::Refresh() {
   this->Resize(this->tabWidth, height + 1);
   this->Invalidate();
 }
+#pragma inline_depth()
 
 // OFFSET: 0x007B8170
 // FUNCTION: fn_09245
@@ -985,8 +987,8 @@ void UIToolTipBitmapWnd::Set(const char* name, const char* text, int item) {
 // FUNCTION: fn_09252
 void UIAchSummaryWnd::Show(int visible) {
   this->geometry.visible = visible;
-  for (UIWindow* button : this->buttons) {
-    button->Slot27(-1, -1);
+  for (int index = 0; index < 2; ++index) {
+    this->buttons[index]->Slot27(-1, -1);
   }
 }
 
