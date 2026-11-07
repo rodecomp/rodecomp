@@ -26,7 +26,7 @@ int UIWindow::DrawButtonBarAt(int style, int x, int width, int rows) {
     barHeight = left->image.height;
 
     for (int row = 1; row <= rows; ++row) {
-      this->DrawBitmap(x, height - row * barHeight, &left->image, false);
+      this->DrawBitmap(x, height - row * barHeight, left, false);
     }
   }
 
@@ -36,30 +36,30 @@ int UIWindow::DrawButtonBarAt(int style, int x, int width, int rows) {
     rightWidth = right->image.width;
 
     for (int row = 1; row <= rows; ++row) {
-      this->DrawBitmap(x - rightWidth + width, height - row * barHeight, &right->image, false);
+      this->DrawBitmap(x - rightWidth + width, height - row * barHeight, right, false);
     }
   }
 
   CBitmapRes* middle =
     this->LoadStyledBitmap(style, "유저인터페이스\\basic_interface\\btnbar_mid%d.bmp", "유저인터페이스\\basic_interface\\btnbar_mid.bmp");
-  if (!middle) {
-    return 0;
-  }
+  if (middle) {
+    const int middleWidth = middle->image.width;
+    width = width - rightWidth - leftWidth;
+    const int count = (width % middleWidth != 0) + width / middleWidth;
+    const int startX = leftWidth + x;
 
-  const int middleWidth = middle->image.width;
-  const int extent = width - rightWidth - leftWidth;
-  const int count = extent / middleWidth + (extent % middleWidth != 0);
-  const int startX = leftWidth + x;
-
-  for (int row = 1; row <= rows; ++row) {
-    int columnX = startX;
-    for (int column = 0; column < count; ++column) {
-      this->DrawBitmap(columnX, height - row * barHeight, &middle->image, false);
-      columnX += middleWidth;
+    for (int row = 1; row <= rows; ++row) {
+      int columnX = startX;
+      for (int column = 0; column < count; ++column) {
+        this->DrawBitmap(columnX, height - row * barHeight, middle, false);
+        columnX += middleWidth;
+      }
     }
+
+    return middle->image.height;
   }
 
-  return middle->image.height;
+  return 0;
 }
 
 // OFFSET: 0x008D7570
