@@ -190,8 +190,7 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
   int actorRow = 0;
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   world->terrain->SpatialCell(actor->render.position.x, actor->render.position.z, actorColumn, actorRow);
-  for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-    UIWindow* window = *it;
+  for (UIWindow*& window : this->rendered) {
     CRenderObject* owner;
     if (typeid(*window) == typeid(UIMerchantShopTitle)) {
       owner = g_session.FindGameActor(static_cast<UIMerchantShopTitle*>(window)->ownerAid);
