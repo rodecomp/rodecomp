@@ -2017,7 +2017,8 @@ UIMiniPartyInfoWnd::UIMiniPartyInfoWnd()
 // OFFSET: 0x00740170
 // FUNCTION: fn_07728
 MessengerMember UIMiniPartyWnd::GetMember() {
-  return this->m_member;
+  MessengerMember member = this->m_member;
+  return member;
 }
 
 // OFFSET: 0x00740250
