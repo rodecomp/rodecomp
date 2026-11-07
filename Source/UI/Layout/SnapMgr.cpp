@@ -107,7 +107,11 @@ bool CSnapMgr::IsRoot(const UIWindow* window) const {
 // OFFSET: 0x007E2D80
 // FUNCTION: fn_09713
 bool CSnapMgr::Contains(const UIWindow* window) const {
-  return this->Find(window) != nullptr;
+  if (this->Find(window)) {
+    return true;
+  }
+
+  return false;
 }
 
 // OFFSET: 0x007E2BA0
@@ -120,7 +124,11 @@ bool CSnapMgr::Connected(UIWindow* from, UIWindow* to) {
   }
 
   SnapObject* second = this->Find(to);
-  return second && first->Connected(second);
+  if (!second) {
+    return false;
+  }
+
+  return first->Connected(second);
 }
 
 // OFFSET: 0x007E2F60
@@ -189,7 +197,7 @@ void CSnapMgr::ConstrainGroup(UIWindow* window, int& dx, int& dy) {
   }
 
   int resultX = 0, resultY = 0;
-  if (this->root->window == window) {
+  if (window == this->root->window) {
     for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
       UIWindow* member = (*entry)->window;
       if (!this->ConnectedToRoot(member)) {
