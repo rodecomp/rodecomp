@@ -744,14 +744,6 @@ void UIEditCtrl_Custom::PaintText() {
   const int y = this->unknown_0124 + this->textY;
   std::string display;
   FontCache& fonts = g_fontCache;
-  const auto align = [&]() {
-    if (this->unknown_0128 == 1) {
-      x = this->geometry.width - x - this->TextWidth(display.c_str(), 0, 0, 12, this->unknown_011C, 0);
-    } else if (this->unknown_0128 == 2) {
-      const float center = this->geometry.width * g_depthAverageHalf;
-      x = static_cast<int>(center - this->TextWidth(display.c_str(), 0, 0, 12, this->unknown_011C, 0) * g_depthAverageHalf);
-    }
-  };
 
   if (g_windowMgr.GetHoverWindow() == this) {
     this->Synchronize();
@@ -765,17 +757,22 @@ void UIEditCtrl_Custom::PaintText() {
       const char* prefix = g_serverLanguage->Prefix(false);
       display = prefix + this->text;
       begin = std::min(this->anchor, this->cursor) + static_cast<int>(std::strlen(prefix));
-      end = std::max(this->anchor, this->cursor) + g_serverLanguage->compositionCursor + static_cast<int>(std::strlen(prefix));
+      end = std::max(this->anchor, this->cursor) + static_cast<int>(g_serverLanguage->candidate.size()) + static_cast<int>(std::strlen(prefix));
     }
 
-    align();
+    if (this->unknown_0128 == 1) {
+      x = this->geometry.width - x - this->TextWidth(display.c_str(), 0, 0, 12, this->unknown_011C, 0);
+    } else if (this->unknown_0128 == 2) {
+      const float center = this->geometry.width * g_depthAverageHalf;
+      x = static_cast<int>(center - this->TextWidth(display.c_str(), 0, 0, 12, this->unknown_011C, 0) * g_depthAverageHalf);
+    }
     const int left = begin ? this->TextWidth(display.c_str(), begin, 0, 12, 0, 0) : 0;
     const int right = end ? this->TextWidth(display.c_str(), end, 0, 12, 0, 0) : 0;
 
     if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) != 0) {
       this->DrawSelection(x + left, right - left);
       this->DrawLabel(x, y, display.c_str());
-    } else if (g_serverLanguage->compositionCursor != 0) {
+    } else if (g_serverLanguage->candidate.size() != 0) {
       this->MoveCandidateWindow(left);
       this->MoveReadingWindow(right);
       if ((timeGetTime() / 500 & 1) == 0) {
@@ -795,7 +792,12 @@ void UIEditCtrl_Custom::PaintText() {
       display = this->text;
     }
 
-    align();
+    if (this->unknown_0128 == 1) {
+      x = this->geometry.width - x - this->TextWidth(display.c_str(), 0, 0, 12, this->unknown_011C, 0);
+    } else if (this->unknown_0128 == 2) {
+      const float center = this->geometry.width * g_depthAverageHalf;
+      x = static_cast<int>(center - this->TextWidth(display.c_str(), 0, 0, 12, this->unknown_011C, 0) * g_depthAverageHalf);
+    }
     this->DrawLabel(x, y, display.c_str());
   }
 
@@ -2076,7 +2078,7 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
 void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode) {
   const std::string open = "<";
   const std::string close = ">";
-  std::string remaining;
+  std::string remaining = "";
   for (unsigned int line = 0; line < wrapped.size(); ++line) {
     if (wrapped.size() > 23) {
       break;
@@ -2115,8 +2117,9 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
     unsigned int offset = 0;
     std::size_t position = remaining.find(close);
     while (position != std::string::npos) {
-      offset += static_cast<unsigned int>(position + 1);
-      remaining = remaining.substr(position + 1);
+      ++position;
+      offset += static_cast<unsigned int>(position);
+      remaining = remaining.substr(position);
       position = remaining.find(close);
     }
 
