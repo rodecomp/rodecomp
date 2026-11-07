@@ -779,6 +779,7 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   }
 
   const std::int64_t view = GetRealWeaponId(static_cast<int>(weapon));
+  bool result = false;
 
   switch (job) {
   case JT_SWORDMAN:
@@ -820,18 +821,27 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_IMPERIAL_GUARD:
   case JT_DRAGON_KNIGHT_CHICKEN:
   case JT_IMPERIAL_GUARD_CHICKEN:
-    return view == 4 || view == 5;
+    if (view == 4 || view == 5) {
+      result = true;
+    }
+    break;
   case JT_MAGICIAN:
   case JT_MERCHANT:
   case JT_MAGICIAN_H:
   case JT_MERCHANT_H:
   case JT_MAGICIAN_B:
   case JT_MERCHANT_B:
-    return view == 1;
+    if (view == 1) {
+      result = true;
+    }
+    break;
   case JT_ARCHER:
   case JT_ARCHER_H:
   case JT_ARCHER_B:
-    return view != 11;
+    if (view != 11) {
+      result = true;
+    }
+    break;
   case JT_THIEF:
   case JT_HUNTER:
   case JT_ROGUE:
@@ -867,7 +877,10 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_TROUBADOUR:
   case JT_TROUVERE:
   case JT_WOLF_WINDHAWK:
-    return view == 11;
+    if (view == 11) {
+      result = true;
+    }
+    break;
   case JT_PRIEST:
   case JT_PRIEST_H:
   case JT_PRIEST_B:
@@ -875,7 +888,10 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_ARCHBISHOP_H:
   case JT_ARCHBISHOP_B:
   case JT_CARDINAL:
-    return view == 15;
+    if (view == 15) {
+      result = true;
+    }
+    break;
   case JT_WIZARD:
   case JT_WIZARD_H:
   case JT_WIZARD_B:
@@ -889,14 +905,20 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_ARCH_MAGE:
   case JT_SOUL_ASCETIC:
     if (view == 1) {
-      return slot == 1;
+      if (slot == 1) {
+        result = true;
+      }
+      break;
     }
 
     if (view == 10 || view == 23) {
-      return slot == 0;
+      if (slot == 0) {
+        result = true;
+      }
+      break;
     }
 
-    return false;
+    break;
   case JT_BLACKSMITH:
   case JT_BLACKSMITH_H:
   case JT_BLACKSMITH_B:
@@ -918,10 +940,12 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
     case 6:
     case 7:
     case 8:
-      return true;
+      result = true;
+      break;
     default:
-      return false;
+      break;
     }
+    break;
   case JT_ASSASSIN:
   case JT_ASSASSIN_H:
   case JT_ASSASSIN_B:
@@ -937,10 +961,12 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
     case 28:
     case 29:
     case 30:
-      return true;
+      result = true;
+      break;
     default:
-      return false;
+      break;
     }
+    break;
   case JT_MONK:
   case JT_MONK_H:
   case JT_MONK_B:
@@ -948,7 +974,10 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_SURA_H:
   case JT_SURA_B:
   case JT_INQUISITOR:
-    return view == 0 || view == 12;
+    if (view == 0 || view == 12) {
+      result = true;
+    }
+    break;
   case JT_SAGE:
   case JT_SAGE_H:
   case JT_SAGE_B:
@@ -961,10 +990,12 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
     case 10:
     case 15:
     case 23:
-      return true;
+      result = true;
+      break;
     default:
-      return false;
+      break;
     }
+    break;
   case JT_ALCHEMIST:
   case JT_ALCHEMIST_H:
   case JT_ALCHEMIST_B:
@@ -977,10 +1008,12 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
     case 6:
     case 7:
     case 8:
-      return true;
+      result = true;
+      break;
     default:
-      return false;
+      break;
     }
+    break;
   case JT_NOVICE:
   case JT_SUPERNOVICE:
   case JT_NOVICE_H:
@@ -990,11 +1023,14 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_SUPERNOVICE2_B:
   case JT_HYPER_NOVICE:
     if (slot == 0) {
-      return view == 1;
+      if (view == 1) {
+        result = true;
+      }
+      break;
     }
 
     if (slot != 1) {
-      return false;
+      break;
     }
 
     switch (view) {
@@ -1006,16 +1042,21 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
     case 9:
     case 10:
     case 23:
-      return true;
+      result = true;
+      break;
     default:
-      return false;
+      break;
     }
+    break;
   case JT_GUNSLINGER:
   case JT_REBELLION:
   case JT_GUNSLINGER_B:
   case JT_REBELLION_B:
   case JT_NIGHT_WATCH:
-    return view >= 18 && view <= 21;
+    if (view >= 18 && view <= 21) {
+      result = true;
+    }
+    break;
   case JT_NINJA:
   case JT_KAGEROU:
   case JT_OBORO:
@@ -1024,10 +1065,15 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_OBORO_B:
   case JT_SHINKIRO:
   case JT_SHIRANUI:
-    return view == 22;
+    if (view == 22) {
+      result = true;
+    }
+    break;
   default:
-    return false;
+    break;
   }
+
+  return result;
 }
 
 
