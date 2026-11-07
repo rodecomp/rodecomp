@@ -107,26 +107,14 @@ void UIRodexContentsWnd::Slot15(int, int) {
   this->AddCloseButton("", 0);
 
   RodexMailStore* store = g_rodexMailStore;
-  std::map<std::int64_t, RodexMail>* mails = nullptr;
   switch (store->unknown_0010) {
-  case 0:
-    mails = &store->m_mails0;
-    break;
-  case 1:
-    mails = &store->m_mails1;
-    break;
-  case 2:
-    mails = &store->m_mails2;
-    break;
-  }
-
-  if (mails != nullptr) {
-    std::map<std::int64_t, RodexMail>::iterator mail = mails->find(store->currentMailId);
-    if (mail != mails->end()) {
+  case 0: {
+    std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails0.find(store->currentMailId);
+    if (mail != store->m_mails0.end()) {
       this->SetMailContents(mail->second.unknown_0004, mail->second.unknown_0024, mail->second.unknown_003C, mail->second.hasItem, mail->second.zeny,
                             mail->second.unknown_0001);
 
-      if (store->unknown_0010 == 0 && (mail->second.unknown_0001 & 8) == 0 && mail->second.unknown_0194 == 0) {
+      if ((mail->second.unknown_0001 & 8) == 0 && mail->second.unknown_0194 == 0) {
         UIBasicButton* report = new UIBasicButton();
         report->Configure(70, LookupMessage(3548));
         report->Move(224, 29);
@@ -136,6 +124,24 @@ void UIRodexContentsWnd::Slot15(int, int) {
         this->AddChild(report);
       }
     }
+    break;
+  }
+  case 1: {
+    std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails1.find(store->currentMailId);
+    if (mail != store->m_mails1.end()) {
+      this->SetMailContents(mail->second.unknown_0004, mail->second.unknown_0024, mail->second.unknown_003C, mail->second.hasItem, mail->second.zeny,
+                            mail->second.unknown_0001);
+    }
+    break;
+  }
+  case 2: {
+    std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails2.find(store->currentMailId);
+    if (mail != store->m_mails2.end()) {
+      this->SetMailContents(mail->second.unknown_0004, mail->second.unknown_0024, mail->second.unknown_003C, mail->second.hasItem, mail->second.zeny,
+                            mail->second.unknown_0001);
+    }
+    break;
+  }
   }
 
   this->unknown_0104 = new UIBasicButton();
