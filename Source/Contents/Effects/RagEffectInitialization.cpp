@@ -14,41 +14,25 @@
 // INLINED
 __forceinline static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& options, char* name) {
   name[0] = '\0';
-
+  std::sprintf(name, "");
   switch (effect.type) {
+  case EF_WINDHIT:
+    std::sprintf(name, "WindHit%d.str", std::rand() % 3 + 1);
+    break;
   case EF_COIN:
     std::sprintf(name, options.Get(229) != 0 ? "memor_min.str" : "Maemor.str");
-    break;
-  case EF_GLASSWALL:
-  case EF_GLASSWALL2:
-    std::sprintf(name, "SafetyWall.str");
-    break;
-  case EF_STONECURSE:
-  case EF_PETRIFYATTACK:
-    std::sprintf(name, "StoneCurse.str");
     break;
   case EF_FIREWALL:
     std::sprintf(name, "Firewall%d.str", std::rand() % 2 + 1);
     break;
-  case EF_LIGHTBOLT:
-    std::sprintf(name, "Lightning.str");
-    break;
   case EF_THUNDERSTORM:
     std::sprintf(name, "ThunderStorm.str");
     break;
+  case EF_LIGHTBOLT:
+    std::sprintf(name, "Lightning.str");
+    break;
   case EF_SIGNUM:
     std::sprintf(name, "Cross.str");
-    break;
-  case EF_ANGELUS:
-  case EF_WEWISH:
-    std::sprintf(name, options.Get(229) != 0 ? "jong_mini.str" : "Angelus.str");
-    break;
-  case EF_FIREHIT:
-  case EF_FIREHIT2:
-    std::sprintf(name, "FireHit%d.str", std::rand() % 3 + 1);
-    break;
-  case EF_WINDHIT:
-    std::sprintf(name, "WindHit%d.str", std::rand() % 3 + 1);
     break;
   case EF_ARROWSHOT:
     std::sprintf(name, "ArrowShot.str");
@@ -67,9 +51,6 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     break;
   case EF_SKIDTRAP:
     std::sprintf(name, "SkidTrap.str");
-    break;
-  case EF_BRANDISHSPEAR:
-    std::sprintf(name, "Brandish.str");
     break;
   case EF_GLORIA:
     std::sprintf(name, options.Get(229) != 0 ? "gloria_min.str" : "Gloria.str");
@@ -143,14 +124,14 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_FREEZING:
     std::sprintf(name, "Freezing.str");
     break;
+  case EF_SPRINGTRAP:
+    std::sprintf(name, "Spring.str");
+    break;
   case EF_BUBBLE:
     std::sprintf(name, "Bubble%d.str", std::rand() % 4 + 1);
     break;
   case EF_GASPUSH:
     std::sprintf(name, "GasPush.str");
-    break;
-  case EF_SPRINGTRAP:
-    std::sprintf(name, "Spring.str");
     break;
   case EF_KYRIE:
     std::sprintf(name, options.Get(229) != 0 ? "kyrie_min.str" : "Kyrie.str");
@@ -167,16 +148,11 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_POISONREACT2:
     std::sprintf(name, "PoisonReact.str");
     break;
-  case EF_SPLASHER:
-    std::sprintf(name, "VenomSplasher.str");
-    break;
-  case EF_TWOHANDQUICKEN:
-  case EF_SPEARQUICKEN:
-  case EF_LKCONCENTRATION:
-    std::sprintf(name, "TwoHand.str");
-    break;
   case EF_AUTOCOUNTER:
     std::sprintf(name, "AutoCounter.str");
+    break;
+  case EF_SPLASHER:
+    std::sprintf(name, "VenomSplasher.str");
     break;
   case EF_FREEZE:
     std::sprintf(name, "Freeze.str");
@@ -187,9 +163,6 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_ICECRASH:
     std::sprintf(name, "IceCrash.str");
     break;
-  case EF_SLOWPOISON:
-    std::sprintf(name, "slowp.str");
-    break;
   case EF_SANDMAN:
     std::sprintf(name, "SandMan.str");
     break;
@@ -198,6 +171,9 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     break;
   case EF_SONICBLOW2:
     std::sprintf(name, "SonicBlow.str");
+    break;
+  case EF_BRANDISHSPEAR:
+    std::sprintf(name, "Brandish.str");
     break;
   case EF_BRANDISH2:
     std::sprintf(name, "Brandish2.str");
@@ -226,15 +202,17 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_HOLYHIT:
     std::sprintf(name, "HolyHit.str");
     break;
-  case EF_CONCENTRATION:
-  case EF_CONCENTRATION2:
-    std::sprintf(name, "Concentration.str");
-    break;
   case EF_REFINEOK:
     std::sprintf(name, "bs_RefineSuccess.str");
     break;
   case EF_REFINEFAIL:
     std::sprintf(name, "bs_RefineFailed.str");
+    break;
+  case EF_PHARMACY_OK:
+    std::sprintf(name, "p_success.str");
+    break;
+  case EF_PHARMACY_FAIL:
+    std::sprintf(name, "p_failed.str");
     break;
   case EF_JOBCHANGE:
     std::sprintf(name, "JobChange.str");
@@ -242,9 +220,9 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_LVUP:
     std::sprintf(name, "LevelUP.str");
     break;
-  case EF_JOBLVUP:
-  case EF_JOBLVUP50:
-    std::sprintf(name, "JobLvUP.str");
+  case EF_GLASSWALL:
+  case EF_GLASSWALL2:
+    std::sprintf(name, "SafetyWall.str");
     break;
   case EF_TAMINGSUCCESS:
     std::sprintf(name, "TamingSuccess.str");
@@ -258,14 +236,14 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_CARTREVOLUTION:
     std::sprintf(name, "CartRevolution.str");
     break;
+  case EF_SUI_EXPLOSION:
+    std::sprintf(name, "sui_explosion.str");
+    break;
   case EF_MENTALBREAK:
     std::sprintf(name, "MentalBreak.str");
     break;
   case EF_MAGICALATTHIT:
     std::sprintf(name, "magical.str");
-    break;
-  case EF_SUI_EXPLOSION:
-    std::sprintf(name, "sui_explosion.str");
     break;
   case EF_SUICIDE:
     std::sprintf(name, "suicide.str");
@@ -299,6 +277,10 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     break;
   case EF_SLEEPATTACK:
     std::sprintf(name, "sleep.str");
+    break;
+  case EF_STONECURSE:
+  case EF_PETRIFYATTACK:
+    std::sprintf(name, "StoneCurse.str");
     break;
   case EF_PONG:
     std::sprintf(name, "Pong%d.str", std::rand() % 3 + 1);
@@ -339,10 +321,6 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_POTION_:
     std::sprintf(name, "각성.str");
     break;
-  case EF_POTION_BERSERK:
-  case EF_POTION_BERSERK2:
-    std::sprintf(name, "버서크.str");
-    break;
   case EF_SPELLBREAKER:
     std::sprintf(name, "spell.str");
     break;
@@ -355,26 +333,8 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_HOLYCROSS:
     std::sprintf(name, "holy_cross.str");
     break;
-  case EF_SHIELDCHARGE:
-    std::sprintf(name, "shield_charge.str");
-    break;
-  case EF_PROVIDENCE:
-    std::sprintf(name, "providence.str");
-    break;
-  case EF_DEVOTION:
-    std::sprintf(name, "devotion.str");
-    break;
-  case EF_FLAMELAUNCHER:
-    std::sprintf(name, "enc_fire.str");
-    break;
-  case EF_FROSTWEAPON:
-    std::sprintf(name, "enc_ice.str");
-    break;
-  case EF_LIGHTNINGLOADER:
-    std::sprintf(name, "enc_wind.str");
-    break;
-  case EF_SEISMICWEAPON:
-    std::sprintf(name, "enc_earth.str");
+  case EF_CHAINCOMBO:
+    std::sprintf(name, "연환.str");
     break;
   case EF_STEALCOIN:
     std::sprintf(name, "steal_coin.str");
@@ -391,27 +351,67 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_STRIPHELM:
     std::sprintf(name, "strip_helm.str");
     break;
-  case EF_CHAINCOMBO:
-    std::sprintf(name, "연환.str");
+  case EF_SHIELDCHARGE:
+    std::sprintf(name, "shield_charge.str");
     break;
-  case EF_PHARMACY_OK:
-    std::sprintf(name, "p_success.str");
+  case EF_DEVOTION:
+    std::sprintf(name, "devotion.str");
     break;
-  case EF_PHARMACY_FAIL:
-    std::sprintf(name, "p_failed.str");
+  case EF_PROVIDENCE:
+    std::sprintf(name, "providence.str");
+    break;
+  case EF_FLAMELAUNCHER:
+    std::sprintf(name, "enc_fire.str");
+    break;
+  case EF_FROSTWEAPON:
+    std::sprintf(name, "enc_ice.str");
+    break;
+  case EF_LIGHTNINGLOADER:
+    std::sprintf(name, "enc_wind.str");
+    break;
+  case EF_SEISMICWEAPON:
+    std::sprintf(name, "enc_earth.str");
     break;
   case EF_LOUD:
     std::sprintf(name, "loud.str");
     break;
+  case EF_SLOWPOISON:
+    std::sprintf(name, "slowp.str");
+    break;
+  case EF_JOBLVUP:
+  case EF_JOBLVUP50:
+    std::sprintf(name, "JobLvUP.str");
+    break;
   case EF_ANGEL:
     std::sprintf(name, "angel.str");
     break;
-  case EF_DEVIL:
-  case EF_DEATHSUMMON:
-    std::sprintf(name, "devil.str");
+  case EF_MAPAE:
+    std::sprintf(name, "mapae.str");
+    break;
+  case EF_FIREHIT:
+  case EF_FIREHIT2:
+    std::sprintf(name, "FireHit%d.str", std::rand() % 3 + 1);
+    break;
+  case EF_HFLIMOON1:
+    std::sprintf(name, "moonlight_1.str");
+    break;
+  case EF_HFLIMOON2:
+    std::sprintf(name, "moonlight_2.str");
+    break;
+  case EF_HFLIMOON3:
+    std::sprintf(name, "moonlight_3.str");
+    break;
+  case EF_HO_UP:
+    std::sprintf(name, "h_levelup.str");
+    break;
+  case EF_ASSUMPTIO2:
+    std::sprintf(name, "asum.str");
     break;
   case EF_MELTDOWN:
     std::sprintf(name, "melt.str");
+    break;
+  case EF_MOCHI:
+    std::sprintf(name, "찹쌀떡.str");
     break;
   case EF_CARTBOOST:
     std::sprintf(name, "cart.str");
@@ -425,33 +425,13 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_SOULCHANGE:
     std::sprintf(name, "사람효과.str");
     break;
-  case EF_ASSUMPTIO2:
-    std::sprintf(name, "asum.str");
-    break;
-  case EF_MOCHI:
-    std::sprintf(name, "찹쌀떡.str");
+  case EF_TWOHANDQUICKEN:
+  case EF_SPEARQUICKEN:
+  case EF_LKCONCENTRATION:
+    std::sprintf(name, "TwoHand.str");
     break;
   case EF_LAMADAN:
     std::sprintf(name, "ramadan.str");
-    break;
-  case EF_MAPAE:
-    std::sprintf(name, "mapae.str");
-    break;
-  case EF_ITEMPOKJUK:
-  case EF_HAPGYEOK:
-    std::sprintf(name, "itempokjuk.str");
-    break;
-  case EF_HFLIMOON1:
-    std::sprintf(name, "moonlight_1.str");
-    break;
-  case EF_HFLIMOON2:
-    std::sprintf(name, "moonlight_2.str");
-    break;
-  case EF_HFLIMOON3:
-    std::sprintf(name, "moonlight_3.str");
-    break;
-  case EF_HO_UP:
-    std::sprintf(name, "h_levelup.str");
     break;
   case EF_HAMIDEFENCE:
     std::sprintf(name, "defense.str");
@@ -480,11 +460,27 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_COOKING_FAIL:
     std::sprintf(name, "cook_fail.str");
     break;
+  case EF_ITEMPOKJUK:
+  case EF_HAPGYEOK:
+    std::sprintf(name, "itempokjuk.str");
+    break;
   case EF_BAKU:
     std::sprintf(name, "fire dragon.str");
     break;
-  case EF_HYOUSYOURAKU:
-    std::sprintf(name, "icy.str");
+  case EF_ANGELUS:
+  case EF_WEWISH:
+    std::sprintf(name, options.Get(229) != 0 ? "jong_mini.str" : "Angelus.str");
+    break;
+  case EF_CRASHAXE:
+    std::sprintf(name, "powerswing.str");
+    break;
+  case EF_CONCENTRATION:
+  case EF_CONCENTRATION2:
+    std::sprintf(name, "Concentration.str");
+    break;
+  case EF_POTION_BERSERK:
+  case EF_POTION_BERSERK2:
+    std::sprintf(name, "버서크.str");
     break;
   case EF_TRACKCASTING:
     std::sprintf(name, "트랙킹.str");
@@ -492,12 +488,15 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_BULLSEYE:
     std::sprintf(name, "불스아이.str");
     break;
-  case EF_DRAGONFEAR:
-  case EF_WIDECONFUSE:
-    std::sprintf(name, "dfear.str");
+  case EF_HYOUSYOURAKU:
+    std::sprintf(name, "icy.str");
     break;
   case EF_BLEEDING:
     std::sprintf(name, "wideb.str");
+    break;
+  case EF_DRAGONFEAR:
+  case EF_WIDECONFUSE:
+    std::sprintf(name, "dfear.str");
     break;
   case EF_CRITICALWOUND:
     std::sprintf(name, "cwound.str");
@@ -553,9 +552,6 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_MILSHIELD_STR:
     std::sprintf(name, "mil_shield.str");
     break;
-  case EF_CRASHAXE:
-    std::sprintf(name, "powerswing.str");
-    break;
   case EF_ENERVATION:
     std::sprintf(name, "enervation.str");
     break;
@@ -577,18 +573,6 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_FIREWALL2:
     std::sprintf(name, "Firewall_per.str");
     break;
-  case EF_SHOCKWAVE2:
-    std::sprintf(name, "hunter_shockwave_blue.str");
-    break;
-  case EF_POISON_MIST:
-    std::sprintf(name, "poison_mist.str");
-    break;
-  case EF_ERASER_CUTTER:
-    std::sprintf(name, "eraser_cutter.str");
-    break;
-  case EF_LAVA_SLIDE:
-    std::sprintf(name, "lava_slide.str");
-    break;
   case EF_SONIC_CLAW:
     std::sprintf(name, "sonic_claw.str");
     break;
@@ -597,6 +581,18 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     break;
   case EF_MIDNIGHT_FRENZY:
     std::sprintf(name, "mid_frenzy.str");
+    break;
+  case EF_ERASER_CUTTER:
+    std::sprintf(name, "eraser_cutter.str");
+    break;
+  case EF_LAVA_SLIDE:
+    std::sprintf(name, "lava_slide.str");
+    break;
+  case EF_POISON_MIST:
+    std::sprintf(name, "poison_mist.str");
+    break;
+  case EF_SHOCKWAVE2:
+    std::sprintf(name, "hunter_shockwave_blue.str");
     break;
   case EF_VOLCANIC_ASH:
     std::sprintf(name, "vash00.str");
@@ -638,6 +634,10 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_INVINCIBLEOFF2:
     std::sprintf(name, "INVINCIBLEOFF2.str");
     break;
+  case EF_DEVIL:
+  case EF_DEATHSUMMON:
+    std::sprintf(name, "devil.str");
+    break;
   case EF_GC_DARKCROW:
     std::sprintf(name, "gc_darkcrow.str");
     effect.loopLimit = 9999;
@@ -657,6 +657,10 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
   case EF_AB_OFFERTORIUM:
     std::sprintf(name, "AB_OFFERTORIUM.str");
     break;
+  case EF_AB_OFFERTORIUM_RING:
+    std::sprintf(name, "AB_OFFERTORIUM_ring.str");
+    effect.loopLimit = 9999;
+    break;
   case EF_WL_TELEKINESIS_INTENSE:
     std::sprintf(name, "WL_TELEKINESIS_INTENSE.str");
     effect.loopLimit = 9999;
@@ -670,10 +674,6 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     break;
   case EF_NPC_CHILL:
     std::sprintf(name, "chill.str");
-    effect.loopLimit = 9999;
-    break;
-  case EF_AB_OFFERTORIUM_RING:
-    std::sprintf(name, "AB_OFFERTORIUM_ring.str");
     effect.loopLimit = 9999;
     break;
   default:
@@ -698,20 +698,18 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
   SelectRagEffectResource(this->state, g_serviceOptions, name);
 
   if (std::strlen(name) != 0) {
-    auto* resource = static_cast<CEZeffectRes*>(ResourceMgr::Instance().Load(name));
-    this->state.resource = resource;
+    this->state.resource = ResourceMgr::Instance().Load(name);
 
-    if (resource) {
-      ++resource->references;
+    if (this->state.resource) {
+      this->state.resource->Lock();
 
+      auto* resource = static_cast<CEZeffectRes*>(this->state.resource);
       this->state.resourceData = &resource->maximumFrame;
-      int count = resource->clipCount;
+      this->state.endLayer = resource->clipCount;
 
       if (resource->clips[0].frameCount == 0) {
-        --count;
+        --this->state.endLayer;
       }
-
-      this->state.endLayer = count;
     }
   }
 }
