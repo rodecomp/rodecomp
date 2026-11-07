@@ -489,9 +489,9 @@ void UIQuickSlotWnd::Slot19() {
 // OFFSET: 0x0091C4D0
 // FUNCTION: fn_12614
 int UIQuickSlotWnd::SlotX(int slot) {
-  for (int index = 0; index < 2; ++index) {
+  for (int index = 0, value = 5; value < 63; ++index, value += 29) {
     if (index == slot) {
-      return index * 29 + 5;
+      return value;
     }
   }
 
