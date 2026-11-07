@@ -161,7 +161,7 @@ void UINpcSprWnd::SetDestination(std::string mapName, int x, int y) {
 UIOngoingQuestScrollWnd::UIOngoingQuestScrollWnd(int width, int height)
     : UIScrollWnd(width, height, 0), m_questId(0), m_lineHeight(18) {
   this->m_huntTexts.clear();
-  this->Slot15(width, height);
+  static_cast<UIWindow*>(this)->Slot15(width, height);
 }
 
 // OFFSET: 0x007F9C30
