@@ -1801,9 +1801,8 @@ int UIWindow::RestoreEditTexts(const unsigned char* data) {
   return offset;
 }
 
-// OFFSET: 0x00A83FD0
-// FUNCTION: fn_17008
-bool UIWindow::FitSprite(const ActionFrame* frame, const CSprRes* sprite, int width, int height, int* x, int* y, float* scale) {
+// INLINED
+static __forceinline bool FitSpriteFrame(const ActionFrame* frame, const CSprRes* sprite, int width, int height, int* x, int* y, float* scale) {
   if (!width || !height || !frame || !sprite || !x || !y || !scale) {
     return false;
   }
@@ -1879,6 +1878,16 @@ bool UIWindow::FitSprite(const ActionFrame* frame, const CSprRes* sprite, int wi
     *y -= static_cast<int>((static_cast<float>(height) - static_cast<float>(spanY) * *scale) * -0.5f);
   } else {
     *x += static_cast<int>((static_cast<float>(width) - static_cast<float>(spanX) * *scale) * 0.5f);
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00A83FD0
+// FUNCTION: fn_17008
+bool UIWindow::FitSprite(const ActionFrame* frame, const CSprRes* sprite, int width, int height, int* x, int* y, float* scale) {
+  if (!FitSpriteFrame(frame, sprite, width, height, x, y, scale)) {
+    return false;
   }
 
   return true;
@@ -3281,7 +3290,7 @@ void UIWindow::DrawActionSprite(
   int offsetX;
   int offsetY;
   float scale;
-  if (!this->FitSprite(&frames[0], sprite, width, height, &offsetX, &offsetY, &scale)) {
+  if (!FitSpriteFrame(&frames[0], sprite, width, height, &offsetX, &offsetY, &scale)) {
     return;
   }
 
