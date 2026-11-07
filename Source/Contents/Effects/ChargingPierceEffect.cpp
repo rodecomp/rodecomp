@@ -20,7 +20,12 @@ static vector3d s_chargingPierceNewOffsets[10] = {
 
 // OFFSET: 0x00703060
 // FUNCTION: fn_07017
-CChargingPierceEffect::CChargingPierceEffect() : CEffect(-1), offsets{} {
+CChargingPierceEffect::CChargingPierceEffect() : CEffect(-1) {
+  for (vector3d& offset : this->offsets) {
+    offset.x = 0.0f;
+    offset.y = 0.0f;
+    offset.z = 0.0f;
+  }
 }
 
 // OFFSET: 0x007030F0
