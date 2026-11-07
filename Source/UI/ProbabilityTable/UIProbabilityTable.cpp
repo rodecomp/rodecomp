@@ -544,7 +544,7 @@ void CUIProbabilityTable::OnPrepareItem(ProbabilityTable::CUIItem*, const Probab
 
 // OFFSET: 0x00A4E040
 // FUNCTION: fn_16199
-void BindItem(ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data) {
+void CUIProbabilityTable::BindItem(ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data) {
   item->nameText->Clear();
   item->probabilityText->Clear();
   item->nameText->AddLine(data.name);
@@ -766,7 +766,7 @@ void CUIProbabilityTable::Slot15(int width, int height) {
   this->m_list->SetSize(325, 360);
   this->m_list->Move(10, 85);
   this->m_list->SetOnSelect([this](ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data) { this->OnPrepareItem(item, data); });
-  this->m_list->SetBinder([this](ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data) { BindItem(item, data); });
+  this->m_list->SetBinder([this](ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data) { this->BindItem(item, data); });
   this->m_list->SetImages("", "", "", "");
   this->m_list->itemX = 0;
   this->m_list->itemY = 0;

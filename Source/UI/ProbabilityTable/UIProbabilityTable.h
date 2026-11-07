@@ -50,6 +50,7 @@ public:
   void OnButtonClick();
   void OnClose();
   void OnPrepareItem(ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data);
+  void BindItem(ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data);
   void Search();
   void SetItem(int itemId);
 
