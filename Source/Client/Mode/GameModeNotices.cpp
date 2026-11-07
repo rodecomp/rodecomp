@@ -5730,7 +5730,9 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const StatusChangeNoticePacket*>(data);
   if (packet->aid != g_session.m_aid) {
     if (CRenderObject* actor = this->scene->GetGameActorByAID(packet->aid)) {
-      actor->SendMsg(nullptr, 110, 0, packet->type, packet->type >> 31, packet->state, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t state = packet->state;
+      const std::int64_t type = packet->type;
+      actor->SendMsg(nullptr, 110, 0, static_cast<int>(type), static_cast<int>(type >> 32), static_cast<int>(state), static_cast<int>(state >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
