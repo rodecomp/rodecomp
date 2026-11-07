@@ -1867,48 +1867,67 @@ bool UIShowInfoWnd::SendStyleChange() {
     item.value = 0;
     UIDisplayCharacter* display = this->m_display;
     const int type = *it;
-    if (type == 1) {
+    switch (type) {
+    case 1: {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 1;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_0094, &item.value);
       }
-    } else if (type == 2) {
+
+      break;
+    }
+    case 2: {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 2;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_008C, &item.value);
         item.kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 6 : 1;
       }
-    } else if (type == 3) {
+
+      break;
+    }
+    case 3: {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 3;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_0098, &item.value);
         item.kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 8 : 2;
       }
-    } else if (type == 4) {
+
+      break;
+    }
+    case 4: {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 4;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00BC, &item.value);
         item.kind = 3;
       }
-    } else if (type == 5) {
+
+      break;
+    }
+    case 5: {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 5;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00C0, &item.value);
         item.kind = 4;
       }
-    } else if (type == 6) {
+
+      break;
+    }
+    case 6: {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         int table = 6;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->unknown_00C4, &item.value);
         item.kind = 5;
       }
-    } else if (type == 7) {
+
+      break;
+    }
+    case 7: {
       if (this->m_checks[index]->geometry.unknown_0030 != 0) {
         changed = true;
         std::map<int, int>::iterator job = display->m_jobs.find(display->job);
@@ -1917,6 +1936,9 @@ bool UIShowInfoWnd::SendStyleChange() {
           item.kind = 9;
         }
       }
+
+      break;
+    }
     }
 
     const int offset = index * 8 + 6;
