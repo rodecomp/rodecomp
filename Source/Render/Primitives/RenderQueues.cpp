@@ -8,7 +8,7 @@
 // FUNCTION: fn_02073
 void RenderQueues::Submit(RenderCommand* primitive, std::uint16_t flags, bool depthAlpha, float depthStart, float depthEnd) {
   if (depthAlpha) {
-    ApplyDepthAlpha(*primitive, depthStart, depthEnd);
+    primitive->ApplyDepthAlpha();
   }
 
   if (flags & 1) {

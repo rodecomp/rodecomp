@@ -42,6 +42,7 @@ struct RenderCommand {
   /* 0024 */ std::uint32_t primitiveType;
 
   RenderCommand();
+  void ApplyDepthAlpha();
   void FreeVertices();
   void AllocateTriangles(std::uint32_t triangleCount);
   void SetPosition(std::uint32_t index, const float* position);

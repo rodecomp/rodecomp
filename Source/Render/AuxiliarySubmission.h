@@ -4,6 +4,6 @@
 class CRenderer;
 struct LightmappedPrimitive;
 
-void SubmitAuxiliaryPrimitive(CRenderer& renderer, LightmappedPrimitive* primitive, const float& depthStart, const float& depthEnd);
+void SubmitAuxiliaryPrimitive(CRenderer& renderer, LightmappedPrimitive* primitive, const float& depthStart, const float& depthEnd, int reserved = 0);
 
 #endif

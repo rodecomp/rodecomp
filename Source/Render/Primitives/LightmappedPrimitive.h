@@ -57,6 +57,8 @@ struct LightmappedPrimitive {
   LightmappedPrimitive(const LightmappedPrimitive& other);
   void DrawAuxiliary(int unused);
   void DrawLightmapped(int unused);
+  void ApplyDepthAlpha();
+  void ApplyAuxiliaryDepthAlpha();
 
   /* 0000 */ LightmappedVertex* vertices;
   /* 0004 */ std::int32_t vertexCount;

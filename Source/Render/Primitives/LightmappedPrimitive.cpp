@@ -69,7 +69,7 @@ void LightmappedPrimitive::DrawAuxiliary(int unused) {
 // FUNCTION: fn_02071
 void LightmappedQueues::Submit(LightmappedPrimitive* primitive, int queue, bool depthAlpha, float depthStart, float depthEnd) {
   if (depthAlpha) {
-    ApplyDepthAlpha(*primitive, depthStart, depthEnd);
+    primitive->ApplyDepthAlpha();
   }
 
   if (queue == 0) {

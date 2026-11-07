@@ -6,8 +6,6 @@
 struct RenderCommand;
 struct LightmappedPrimitive;
 
-std::uint32_t DepthAlpha(float reciprocalDepth, float start, float end);
-void ApplyDepthAlpha(RenderCommand& command, float start, float end);
-void ApplyDepthAlpha(LightmappedPrimitive& command, float start, float end);
+std::uint32_t DepthAlpha(float reciprocalDepth);
 
 #endif
