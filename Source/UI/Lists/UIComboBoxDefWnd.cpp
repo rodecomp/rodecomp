@@ -292,11 +292,7 @@ void UIComboBoxDef2Wnd::Slot15(int width, int) {
   if (this->alignment == 0) {
     this->label->Move(2, (this->textOffset + 3));
   } else if (this->alignment == 1) {
-    const std::string text = this->label->text;
-    const int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
-    const int x = static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(textWidth) * 0.5f);
-
-    this->label->Move(x, (this->textOffset + 3));
+    this->label->Move(static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(this->TextWidth(std::string(this->label->text).c_str(), 0, 0, 12, 0, 0)) * 0.5f), (this->textOffset + 3));
   }
 
   this->label->shadow = 1;
@@ -312,12 +308,11 @@ void UIComboBoxDef2Wnd::Paint() {
     return;
   }
 
-  const int width = this->TextWidth(std::string(this->label->text).c_str(), 0, 0, 12, 0, 0);
-  const int x = static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(width) * 0.5f);
+  const int x = static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(this->TextWidth(std::string(this->label->text).c_str(), 0, 0, 12, 0, 0)) * 0.5f);
 
   if (x != this->previousTextX) {
     this->previousTextX = x;
-    this->label->Move(x, (this->textOffset + 3));
+    this->label->Move(static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(this->TextWidth(std::string(this->label->text).c_str(), 0, 0, 12, 0, 0)) * 0.5f), (this->textOffset + 3));
     this->label->Invalidate();
   }
 }
