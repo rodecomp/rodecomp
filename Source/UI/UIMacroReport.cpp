@@ -101,7 +101,7 @@ void CUIMacroReport::SendReport() {
     const std::string message = this->m_messageEdit->edit->Text();
     strncpy_s(packet.message, sizeof(packet.message), message.c_str(), _TRUNCATE);
   }
-  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   g_windowMgr.CloseWindow(10005);
 }
 
