@@ -1861,28 +1861,25 @@ __declspec(noinline) void CGameMode::ReceiveDynamicNpcNotice(const unsigned char
 // OFFSET: 0x00D079A0
 // FUNCTION: fn_21584
 void CGameMode::ReceiveWhisperResult(unsigned char kind, int argument) {
-  std::string& speaker = this->unknown_0214;
-  std::string& target = this->unknown_022C;
-
   switch (kind) {
   case 0: {
     std::string line(g_session.DecodePlayerName());
     line.append(" : ", 3);
-    line.append(speaker.data(), speaker.size());
-    if (g_windowMgr.ShowWhisperFrom(target.c_str(), line.c_str(), 0x7800, static_cast<std::uint32_t>(argument)) != 0) {
+    line.append(this->unknown_0214.data(), this->unknown_0214.size());
+    if (g_windowMgr.ShowWhisperFrom(this->unknown_022C.c_str(), line.c_str(), 0x7800, static_cast<std::uint32_t>(argument)) != 0) {
       return;
     }
 
-    const std::string copied = target;
+    const std::string copied = this->unknown_022C;
     std::string message;
-    if (g_windowMgr.IsFriend(target.c_str()) || g_session.IsGuildMemberName(target.c_str())) {
+    if (g_windowMgr.IsFriend(this->unknown_022C.c_str()) || g_session.IsGuildMemberName(this->unknown_022C.c_str())) {
       message = "[ To " + copied + " (";
       message += ShortcutFilename(static_cast<std::uint32_t>(argument));
-      message += ") ] : " + speaker;
+      message += ") ] : " + this->unknown_0214;
     } else {
       message = "( To " + copied + " (";
       message += ShortcutFilename(static_cast<std::uint32_t>(argument));
-      message += ") : " + speaker;
+      message += ") : " + this->unknown_0214;
     }
 
     if (g_pendingWhisperCount <= 0) {
@@ -1897,7 +1894,7 @@ void CGameMode::ReceiveWhisperResult(unsigned char kind, int argument) {
     return;
   }
   case 1: {
-    const std::string text = "(" + target + ")" + LookupMessage(0x94);
+    const std::string text = "(" + this->unknown_022C + ")" + LookupMessage(0x94);
     if (g_pendingWhisperCount > 0) {
       --g_pendingWhisperCount;
       return;
@@ -1906,17 +1903,17 @@ void CGameMode::ReceiveWhisperResult(unsigned char kind, int argument) {
     return;
   }
   case 2: {
-    const std::string text = "(" + target + ")" + LookupMessage(0x95);
+    const std::string text = "(" + this->unknown_022C + ")" + LookupMessage(0x95);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
     return;
   }
   case 3: {
-    const std::string text = "(" + target + ")" + LookupMessage(0x96);
+    const std::string text = "(" + this->unknown_022C + ")" + LookupMessage(0x96);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
     return;
   }
   default: {
-    const std::string text = "(" + target + ")" + LookupMessage(0x94);
+    const std::string text = "(" + this->unknown_022C + ")" + LookupMessage(0x94);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
     if (g_whisperRecord != 0) {
       this->WriteChatLog(text.c_str());
@@ -10354,7 +10351,8 @@ void CGameMode::ReceiveActorAction(
       }
     }
   }
-  actor->SendMsg(nullptr, 11, 0, reinterpret_cast<int>(&act), reinterpret_cast<int>(&act) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  const std::int64_t value = reinterpret_cast<std::intptr_t>(&act);
+  actor->SendMsg(nullptr, 11, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 #pragma pack(push, 1)
@@ -12019,7 +12017,8 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
     entry.unknown_0078 = g_session.m_bodyCostume;
 
     CPc* pc = new CPc;
-    pc->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    pc->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     pc->unknown_0314 = 7;
     pc->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     this->scene->objects.push_back(pc);
@@ -12040,7 +12039,8 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
   data.y = y;
   data.visible = 1;
   CSkill* skill = new CSkill(0);
-  skill->SendMsg(nullptr, 0x2D, 0, reinterpret_cast<int>(&data), reinterpret_cast<int>(&data) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  const std::int64_t value = reinterpret_cast<std::intptr_t>(&data);
+  skill->SendMsg(nullptr, 0x2D, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->scene->objects.push_back(skill);
   this->scene->unknown_0020.push_back(skill);
 }
@@ -12398,7 +12398,8 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
       }
     }
-    actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12432,7 +12433,8 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
     if (actor) {
-      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12490,7 +12492,8 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
       }
     }
-    actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12524,7 +12527,8 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
     if (actor) {
-      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12591,7 +12595,8 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
       }
     }
-    actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 3, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && packet->objectType != 7 && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12626,7 +12631,8 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
     if (actor) {
-      actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 4, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (g_session.GetSceneUnknown004C() && packet->objectType != 7 && actor->unknown_0188 == 0 &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -13186,7 +13192,8 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
 
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
   if (actor) {
-    actor->SendMsg(nullptr, 0x7B, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 0x7B, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (entry.head == 0x2E) {
       if (g_session.unknown_1010 == packet->aid) {
         g_session.unknown_1038 = entry.accessory;
@@ -13236,7 +13243,8 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
     }
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
-    actor->SendMsg(nullptr, 0x7A, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 0x7A, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && entry.head != 0x2E && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -13318,7 +13326,8 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
   if (actor) {
     actor->unknown_0210 = packet->level;
-    actor->SendMsg(nullptr, 0x7B, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 0x7B, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (packet->objectType == 7) {
       if (g_session.unknown_1010 == packet->aid) {
         g_session.unknown_1038 = entry.accessory;
@@ -13371,7 +13380,8 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
     actor->unknown_0314 = packet->objectType;
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
-    actor->SendMsg(nullptr, 0x7A, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 0x7A, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && packet->objectType == 7 && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -13898,9 +13908,11 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
   if (actor) {
     if (packet->objectType == 0) {
-      actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
-      actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 3, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   } else {
     CGameActor* created;
@@ -13921,10 +13933,12 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
       if (this->unknown_01B4.find(packet->aid) != this->unknown_01B4.end() || this->unknown_01BC.find(packet->aid) != this->unknown_01BC.end()) {
         actor->SetUnknown02E4(1);
       }
-      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
       entry.unknown_0008 = 0;
-      actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 4, 0, static_cast<int>(value), static_cast<int>(value >> 32), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
   }
@@ -14079,14 +14093,16 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
   if (packet->objectType == 0) {
     *reinterpret_cast<short*>(actor->render.unknown_00FCBytes) = packet->font;
     if (created) {
-      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (this->unknown_01B4.find(packet->aid) != this->unknown_01B4.end() || this->unknown_01BC.find(packet->aid) != this->unknown_01BC.end()) {
         actor->SetUnknown02E4(1);
       }
       this->scene->objects.push_back(actor);
       this->scene->actors.push_back(actor);
     } else {
-      actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -14108,9 +14124,11 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
     if (created) {
       this->scene->objects.push_back(actor);
       this->scene->actors.push_back(actor);
-      actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 4, 0, static_cast<int>(value), static_cast<int>(value >> 32), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
-      actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 3, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_session.IsGuardianJob(packet->job) && g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -14740,12 +14758,14 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
     *reinterpret_cast<short*>(actor->render.unknown_00FCBytes) = packet->font;
     actor->unknown_0210 = packet->level;
     if (created) {
-      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (this->unknown_01B4.find(packet->aid) != this->unknown_01B4.end() || this->unknown_01BC.find(packet->aid) != this->unknown_01BC.end()) {
         actor->SetUnknown02E4(1);
       }
     } else {
-      actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -14765,9 +14785,11 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
     }
 
     if (created) {
-      actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 4, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
-      actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      actor->SendMsg(nullptr, 3, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_session.IsGuardianJob(packet->job) && g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
