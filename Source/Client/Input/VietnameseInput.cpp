@@ -262,7 +262,10 @@ int VNIInputMode::Convert(char key, char vowel, int index) {
       }
       this->m_lastKey = key;
       this->m_toneIndex = key - '0';
-      return index - '6' + key;
+      index = index - '6' + key;
+    } else {
+      this->Reset();
+      index = -1;
     }
     break;
   case '6':
@@ -272,7 +275,10 @@ int VNIInputMode::Convert(char key, char vowel, int index) {
         index -= this->m_markKey;
       }
       this->m_markKey = 6;
-      return index + 6;
+      index += 6;
+    } else {
+      this->Reset();
+      index = -1;
     }
     break;
   case '7':
@@ -282,12 +288,14 @@ int VNIInputMode::Convert(char key, char vowel, int index) {
         index -= this->m_markKey;
       }
       this->m_markKey = 12;
-      return index + 12;
-    }
-    if (vowel == 'U' || vowel == 'u') {
+      index += 12;
+    } else if (vowel == 'U' || vowel == 'u') {
       this->m_lastKey = key;
       this->m_markKey = 6;
-      return index + 6;
+      index += 6;
+    } else {
+      this->Reset();
+      index = -1;
     }
     break;
   case '8':
@@ -297,7 +305,10 @@ int VNIInputMode::Convert(char key, char vowel, int index) {
         index -= this->m_markKey;
       }
       this->m_markKey = 12;
-      return index + 12;
+      index += 12;
+    } else {
+      this->Reset();
+      index = -1;
     }
     break;
   case '9':
@@ -305,12 +316,9 @@ int VNIInputMode::Convert(char key, char vowel, int index) {
       index = 73;
       this->m_lastKey = key;
     }
-    return index;
-  default:
-    return index;
+    break;
   }
-  this->Reset();
-  return -1;
+  return index;
 }
 
 // OFFSET: 0x00AFC380
