@@ -568,7 +568,7 @@ int AddPageEx(lua_State* state) {
     image.unknown_0010 = static_cast<int>(height);
     image.unknown_0014 = static_cast<int>(clipX);
     image.unknown_0018 = scale;
-    g_itemTagOwner->m_entries[id].images.push_back(image);
+    g_itemTagOwner->AddImage(id, image);
   }
 
   lua_pushboolean(state, 1);
