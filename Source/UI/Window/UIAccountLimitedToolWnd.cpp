@@ -60,16 +60,19 @@ void UIAccountLimitedToolWnd::Slot15(int, int) {
   for (int i = 0; i < 15; ++i) {
     this->m_edits[i] = new UIEditCtrl();
     this->m_edits[i]->flat = 1;
-    this->m_edits[i]->disabled = 1;
-    this->m_edits[i]->Invalidate();
+    UIEditCtrl* edit = this->m_edits[i];
+    edit->disabled = 1;
+    edit->Invalidate();
 
     switch (i) {
-    case 0:
+    case 0: {
       this->m_edits[i]->SetSize(200, 17);
       this->m_edits[i]->flat = 0;
-      this->m_edits[i]->disabled = 0;
-      this->m_edits[i]->Invalidate();
+      UIEditCtrl* nameEdit = this->m_edits[i];
+      nameEdit->disabled = 0;
+      nameEdit->Invalidate();
       break;
+    }
     case 1:
       this->m_edits[i]->SetSize(60, 17);
       break;
@@ -103,39 +106,44 @@ void UIAccountLimitedToolWnd::Slot15(int, int) {
   this->m_accountIdText = new UIStaticText();
   this->m_accountIdText->SetSize(200, 17);
   this->m_accountIdText->Move(90, 47);
-  this->m_accountIdText->background = 0xFF969696;
-  this->m_accountIdText->Invalidate();
+  UIStaticText* accountIdText = this->m_accountIdText;
+  accountIdText->background = 0xFF969696;
+  accountIdText->Invalidate();
   this->AddChild(this->m_accountIdText);
 
   const int buttonPositions[3][2] = {{this->geometry.width - 70, 22}, {15, 184}, {260, 184}};
   this->m_message0 = 561;
-  const std::string prefix = "유저인터페이스\\";
-  const int buttonIds[3] = {321, 561, 211};
-  const char* buttonNames[3][4] = {
-    {"btn_search", "btn_search_a", "btn_search_b", "btn_search_c"},
-    {"btn_AddItem", "btn_AddItem_a", "btn_AddItem_b", "btn_AddItem_c"},
-    {"btn_deleteItem", "btn_deleteItem_a", "btn_deleteItem_b", "btn_deleteItem_c"},
-  };
-  for (int i = 0; i < 3; ++i) {
-    this->m_buttons[i] = new UIBitmapButton();
-    this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][0] + ".bmp").c_str(), 0, 0);
-    this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][1] + ".bmp").c_str(), 1, 0);
-    this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][2] + ".bmp").c_str(), 2, 0);
-    this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][3] + ".bmp").c_str(), 3, 0);
-    this->m_buttons[i]->SetSize(this->m_buttons[i]->BitmapWidth(), this->m_buttons[i]->BitmapHeight());
-    this->m_buttons[i]->Move(buttonPositions[i][0], buttonPositions[i][1]);
-    this->m_buttons[i]->SetId(buttonIds[i]);
-    this->m_buttons[i]->Enable(1);
-    this->AddChild(this->m_buttons[i]);
-    this->m_buttons[i]->SetDisabled(i == 0 ? 0 : 1);
-    this->m_buttons[i]->Invalidate();
+  {
+    const char* buttonNames[3][4] = {
+      {"btn_search", "btn_search_a", "btn_search_b", "btn_search_c"},
+      {"btn_AddItem", "btn_AddItem_a", "btn_AddItem_b", "btn_AddItem_c"},
+      {"btn_deleteItem", "btn_deleteItem_a", "btn_deleteItem_b", "btn_deleteItem_c"},
+    };
+    const int buttonIds[3] = {321, 561, 211};
+    const std::string prefix = "유저인터페이스\\";
+    for (int i = 0; i < 3; ++i) {
+      this->m_buttons[i] = new UIBitmapButton();
+      this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][0] + ".bmp").c_str(), 0, 0);
+      this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][1] + ".bmp").c_str(), 1, 0);
+      this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][2] + ".bmp").c_str(), 2, 0);
+      this->m_buttons[i]->SetBitmap((prefix + buttonNames[i][3] + ".bmp").c_str(), 3, 0);
+      this->m_buttons[i]->SetSize(this->m_buttons[i]->BitmapWidth(), this->m_buttons[i]->BitmapHeight());
+      this->m_buttons[i]->Move(buttonPositions[i][0], buttonPositions[i][1]);
+      this->m_buttons[i]->SetId(buttonIds[i]);
+      this->m_buttons[i]->Enable(1);
+      this->AddChild(this->m_buttons[i]);
+      UIBitmapButton* button = this->m_buttons[i];
+      button->SetDisabled(i == 0 ? 0 : 1);
+      button->Invalidate();
+    }
   }
 
   this->m_viewer = new UITextViewer();
   const int buttonHeight = this->m_buttons[1]->geometry.height;
   this->m_viewer->Configure(10, buttonHeight + 189, this->geometry.width - 20, this->geometry.height - buttonHeight - 199, 0);
-  this->m_viewer->backgroundColor = 0xFF969696;
-  this->m_viewer->Invalidate();
+  UITextViewer* viewer = this->m_viewer;
+  viewer->backgroundColor = 0xFF969696;
+  viewer->Invalidate();
   this->AddChild(this->m_viewer);
 }
 
