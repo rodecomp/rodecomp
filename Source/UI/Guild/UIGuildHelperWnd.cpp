@@ -98,16 +98,8 @@ void UIGuildHelperWnd::Slot27(int x, int y) {
 void UICreateGuildWnd::Paint() {
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
-  int text;
-  int title;
-  if (this->m_mode == 0) {
-    text = 2077;
-    title = 2076;
-  } else {
-    text = 2089;
-    title = 2088;
-  }
-  this->DrawTitleBar(true, LookupMessage(title), 0);
+  const int text = this->m_mode == 0 ? 2077 : 2089;
+  this->DrawTitleBar(true, LookupMessage(text - 1), 0);
   this->DrawTextAt(16, 23, LookupMessage(text), 0, 0, 12, 0, 0, 0);
 }
 
