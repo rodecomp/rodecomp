@@ -13,8 +13,11 @@ namespace {
 // OFFSET: 0x00AB59A0
 // FUNCTION: fn_17461
 C3dActor::C3dActor()
-    : position{}, rotation{}, scale{1, 1, 1}, offset{}, dirty(1), oriented{}, corners{}, minimum{}, maximum{}, enabled(1), renderFrame(0), occlusionEnabled(0),
+    : position{}, rotation{}, scale{}, offset{}, dirty(1), oriented{}, corners{}, minimum{}, maximum{}, enabled(1), renderFrame(0), occlusionEnabled(0),
       occluded(0), alpha(255), commandMode(0), color(0xFFFFFFFFu), playback(2), speed(0), shade(0) {
+  this->scale[0] = 1.0f;
+  this->scale[1] = 1.0f;
+  this->scale[2] = 1.0f;
 }
 
 // OFFSET: 0x00AB6420
