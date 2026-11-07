@@ -158,28 +158,8 @@ void UIShortCutWnd::Slot31(int x, int y) {
 }
 
 // INLINED
-inline void UIShortCutWnd::ClickControl(int id) {
+__forceinline void UIShortCutWnd::ClickControl(int id) {
   switch (id) {
-  case 201:
-    g_windowMgr.ShowShortcutWindow(0);
-    return;
-
-  case 216:
-    if (this->geometry.visible == 0) {
-      g_windowMgr.ShowShortcutWindow(1);
-      return;
-    }
-
-    this->m_grid.rows = this->m_grid.rows + 1;
-
-    if (this->m_grid.rows > 4) {
-      this->m_grid.rows = 1;
-      g_windowMgr.ShowShortcutWindow(0);
-    }
-
-    this->SendMsg(nullptr, 14, 0, 0, 0, 0);
-    return;
-
   case 217:
     if (this->m_grid.rows > 1) {
       --this->m_grid.rows;
@@ -188,10 +168,29 @@ inline void UIShortCutWnd::ClickControl(int id) {
     this->SendMsg(nullptr, 14, 0, 0, 0, 0);
     return;
 
+  case 216:
+    if (this->geometry.visible == 0) {
+      g_windowMgr.ShowWindowById(36, 1);
+      return;
+    }
+
+    ++this->m_grid.rows;
+    if (this->m_grid.rows > 4) {
+      this->m_grid.rows = 1;
+      g_windowMgr.ShowWindowById(36, 0);
+    }
+
+    this->SendMsg(nullptr, 14, 0, 0, 0, 0);
+    return;
+
+  case 201:
+    g_windowMgr.ShowWindowById(36, 0);
+    return;
+
   case 549: {
-    const bool checked = g_session.GetOption(10) == 0;
-    g_session.SetOption(10, checked ? 1 : 0, 0);
-    this->m_bank->geometry.unknown_0030 = checked ? 1 : 0;
+    const int bank = g_session.GetOption(10);
+    g_session.SetOption(10, bank == 0 ? 1 : 0, 0);
+    this->m_bank->geometry.unknown_0030 = bank == 0;
     this->m_bank->Invalidate();
 
     for (ShortcutCooldownRecord& record : g_session.m_requestTimers) {
@@ -202,22 +201,27 @@ inline void UIShortCutWnd::ClickControl(int id) {
     return;
   }
 
-  case 588:
-  case 589: {
-    g_session.ItemSlotActive() = id == 588;
-    const bool active = g_session.ItemSlotActive();
-
-    this->m_showItems->Enable(active ? 0 : 1);
-    this->m_showItems->SetDisabled(active ? 1 : 0);
+  case 589:
+    g_session.ItemSlotActive() = false;
+    this->m_showItems->Enable(1);
+    this->m_showItems->SetDisabled(0);
     this->m_showItems->Invalidate();
-
-    this->m_hideItems->Enable(active ? 1 : 0);
-    this->m_hideItems->SetDisabled(active ? 0 : 1);
+    this->m_hideItems->Enable(0);
+    this->m_hideItems->SetDisabled(1);
     this->m_hideItems->Invalidate();
-
     this->SendMsg(nullptr, 14, 0, 0, 0, 0);
     return;
-  }
+
+  case 588:
+    g_session.ItemSlotActive() = true;
+    this->m_showItems->Enable(0);
+    this->m_showItems->SetDisabled(1);
+    this->m_showItems->Invalidate();
+    this->m_hideItems->Enable(1);
+    this->m_hideItems->SetDisabled(0);
+    this->m_hideItems->Invalidate();
+    this->SendMsg(nullptr, 14, 0, 0, 0, 0);
+    return;
 
   default:
     return;
@@ -225,18 +229,34 @@ inline void UIShortCutWnd::ClickControl(int id) {
 }
 
 // INLINED
-inline void UIShortCutWnd::PlaceRowButtons() {
+__forceinline void UIShortCutWnd::PlaceRowButtons() {
   this->m_decrease->Move(this->geometry.width - this->m_decrease->geometry.width - 2, this->m_grid.rows * 33 - 28);
   this->m_increase->Move(this->geometry.width - this->m_increase->geometry.width - 2, this->m_grid.rows * 33 - 13);
-  this->m_decrease->Enable(this->m_grid.rows == 1 ? 0 : 1);
-  this->m_increase->Enable(1);
-  this->m_increase->SetDisabled(this->m_grid.rows == 4 ? 1 : 0);
+  switch (this->m_grid.rows) {
+  case 1:
+    this->m_decrease->Enable(0);
+    this->m_increase->Enable(1);
+    this->m_increase->SetDisabled(0);
+    break;
+
+  case 4:
+    this->m_decrease->Enable(1);
+    this->m_increase->Enable(1);
+    this->m_increase->SetDisabled(1);
+    break;
+
+  default:
+    this->m_decrease->Enable(1);
+    this->m_increase->Enable(1);
+    this->m_increase->SetDisabled(0);
+    break;
+  }
   this->m_increase->Invalidate();
 }
 
 // INLINED
-inline void UIShortCutWnd::ResizeRows() {
-  const int height = (g_session.ItemSlotActive() ? 43 : 10) + this->m_grid.rows * 33;
+__forceinline void UIShortCutWnd::ResizeRows() {
+  const int height = this->m_grid.rows * 33 + (g_session.ItemSlotActive() ? 43 : 10);
   if (height == this->geometry.height) {
     return;
   }
@@ -247,39 +267,68 @@ inline void UIShortCutWnd::ResizeRows() {
   this->m_increase->Move(this->geometry.width - this->m_increase->geometry.width - 2, this->m_grid.rows * 33 - 13);
   this->m_showItems->Move(247, height - 10);
   this->m_hideItems->Move(247, height - 10);
-  this->m_decrease->Enable(this->m_grid.rows == 1 ? 0 : 1);
-  this->m_increase->Enable(1);
-  this->m_increase->SetDisabled(this->m_grid.rows == 4 ? 1 : 0);
+  switch (this->m_grid.rows) {
+  case 1:
+    this->m_decrease->Enable(0);
+    this->m_increase->Enable(1);
+    this->m_increase->SetDisabled(0);
+    break;
+
+  case 4:
+    this->m_decrease->Enable(1);
+    this->m_increase->Enable(1);
+    this->m_increase->SetDisabled(1);
+    break;
+
+  default:
+    this->m_decrease->Enable(1);
+    this->m_increase->Enable(1);
+    this->m_increase->SetDisabled(0);
+    break;
+  }
   this->m_increase->Invalidate();
   this->Slot11();
 }
 
 // INLINED
-inline void UIShortCutWnd::RestoreLayout(NormalItemSlotWindow* value) {
+__forceinline void UIShortCutWnd::RestoreLayout(NormalItemSlotWindow* value) {
   this->m_saved = value;
-  if (!value->IsValid()) {
-    value->Reset();
+  if (!this->m_saved->IsValid()) {
+    this->m_saved->Reset();
   }
 
-  const int height = value->height;
-  this->Resize(this->geometry.width, height);
-  const int extent = g_session.ItemSlotActive() ? height - 43 : height;
-  this->m_showItems->Move(247, height - 10);
-  this->m_hideItems->Move(247, height - 10);
-  this->m_showItems->Enable(g_session.ItemSlotActive() ? 0 : 1);
-  this->m_showItems->SetDisabled(g_session.ItemSlotActive() ? 1 : 0);
-  this->m_showItems->Invalidate();
-  this->m_hideItems->Enable(g_session.ItemSlotActive() ? 1 : 0);
-  this->m_hideItems->SetDisabled(g_session.ItemSlotActive() ? 0 : 1);
-  this->m_hideItems->Invalidate();
-  this->m_grid.rows = extent / 33;
+  int height = this->m_saved->height;
+  if (g_session.ItemSlotActive()) {
+    this->Resize(this->geometry.width, height);
+    height -= 43;
+    this->m_showItems->Move(247, this->m_saved->height - 10);
+    this->m_hideItems->Move(247, this->m_saved->height - 10);
+    this->m_showItems->Enable(0);
+    this->m_showItems->SetDisabled(1);
+    this->m_showItems->Invalidate();
+    this->m_hideItems->Enable(1);
+    this->m_hideItems->SetDisabled(0);
+    this->m_hideItems->Invalidate();
+  } else {
+    this->Resize(this->geometry.width, height);
+    this->m_showItems->Move(247, height - 10);
+    this->m_hideItems->Move(247, height - 10);
+    this->m_showItems->Enable(1);
+    this->m_showItems->SetDisabled(0);
+    this->m_showItems->Invalidate();
+    this->m_hideItems->Enable(0);
+    this->m_hideItems->SetDisabled(1);
+    this->m_hideItems->Invalidate();
+  }
+
+  this->m_grid.rows = height / 33;
   this->PlaceRowButtons();
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-  this->Move(value->x, value->y);
+  this->Move(this->m_saved->x, this->m_saved->y);
 }
 
 // INLINED
-inline void UseShortcutSlot(const NormalItemSlot& slot) {
+__forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
   if (g_session.GetOption(5) > 0 || slot.itemId == 0) {
     return;
   }
@@ -287,12 +336,13 @@ inline void UseShortcutSlot(const NormalItemSlot& slot) {
   if (slot.unknown_0000 != 0) {
     CSkillInfo skill = g_session.LookupSkill(slot.itemId);
     if (skill.MatchesShortcut(&slot)) {
+      CMode* mode = g_modeMgr.gameMode;
       int level = slot.unknown_0005;
-      if ((skill.id == 6579 || skill.id == 6580) && skill.level < level) {
-        level = skill.level;
+      if (IsIndexedSkill(static_cast<int>(skill.id))) {
+        level = (std::min)(static_cast<int>(slot.unknown_0005), skill.level);
       }
 
-      g_modeMgr.gameMode->SendMsg(113, reinterpret_cast<int>(&skill), level, 0, 0);
+      mode->SendMsg(113, reinterpret_cast<int>(&skill), level, 0, 0);
     }
 
     return;
@@ -304,15 +354,23 @@ inline void UseShortcutSlot(const NormalItemSlot& slot) {
   }
 
   CMode* mode = g_modeMgr.GetGameMode();
-
-  const auto use = [&]() { mode->SendMsg(27, item.unknown_0000[1], 0, 0, 0); };
-
   switch (item.unknown_0000[0]) {
   case 0:
   case 1:
   case 2:
     if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(2373), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
-      use();
+      mode->SendMsg(27, item.unknown_0000[1], 0, 0, 0);
+    }
+
+    break;
+
+  case 18:
+    if (*reinterpret_cast<const int*>(&g_session.unknown_16F4[4]) >= 0) {
+      const int result =
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(1226), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
+      if (result == 187) {
+        mode->SendMsg(27, item.unknown_0000[1], 0, 0, 0);
+      }
     }
 
     break;
@@ -323,20 +381,6 @@ inline void UseShortcutSlot(const NormalItemSlot& slot) {
   case 19:
     if (item.unknown_0000[3] == 0x8000) {
       mode->SendMsg(87, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
-    }
-
-    break;
-
-  case 18:
-    if (*reinterpret_cast<const int*>(&g_session.unknown_16F4[4]) >= 0) {
-      const std::string name = item.DisplayName(0);
-      char text[4096];
-
-      _snprintf_s(text, sizeof(text), _TRUNCATE, LookupMessage(1226), name.c_str());
-
-      if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187) {
-        use();
-      }
     }
 
     break;
@@ -1136,23 +1180,22 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   switch (message) {
   case 0:
     if (sender == this->m_edit && this->m_edit->geometry.x != -100) {
-      const char* text = this->m_edit->Text();
-      std::string local(text);
+      std::string local(this->m_edit->Text());
       const int previousWidth = this->m_inputWidth;
-      if (text != nullptr && text[0] != '\0') {
-        const int measured = this->TextWidth(text, 0, 0, 12, 0, 0);
+      if (local.size() > 0) {
+        const int measured = this->TextWidth(local.c_str(), 0, 0, 12, 0, 0);
         if (measured + 10 < this->geometry.width - 0x32) {
           this->m_name = local;
           g_session.m_subChatWnds[this->m_index].name = this->m_name;
-          const int renamed = this->TextWidth(text, 0, 0, 12, 0, 0);
+          const int renamed = this->TextWidth(local.c_str(), 0, 0, 12, 0, 0);
           this->m_inputWidth = renamed + 10;
           if (this->m_inputWidth < 0x19) {
             this->m_inputWidth = 0x19;
           }
         }
       }
-      const int measured = this->TextWidth(text, 0, 0, 12, 0, 0);
-      if (this->geometry.width - 0x32 <= measured + 10) {
+      const int measured = this->TextWidth(local.c_str(), 0, 0, 12, 0, 0);
+      if (measured + 10 >= this->geometry.width - 0x32) {
         g_windowMgr.Confirm(LookupMessage(0x629), 0, true, false, 0, "Message", 0x118, 0x78, 0);
       }
       this->m_edit->Move(-100, -100);
@@ -1262,8 +1305,8 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       if (height < 0x4A) {
         height = 0x4A;
       }
-      width = ((width - 0x118) & ~0x1F) + 0x118;
-      height = ((height - 0x4A) & ~0x1F) + 0x4A;
+      width = (width - 0x118) / 32 * 32 + 0x118;
+      height = (height - 0x4A) / 32 * 32 + 0x4A;
       if (width != this->geometry.width || height != this->geometry.height) {
         this->Resize(width, height);
         this->m_resizer->Move(this->geometry.width - 0xF, this->geometry.height - 0xF);
@@ -1297,7 +1340,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     return 0;
   }
   case 0x74:
-    if (sender == this->m_chatBox && this->m_inputHeight < this->geometry.height) {
+    if (sender == this->m_chatBox && this->geometry.height > this->m_inputHeight) {
       RECT rectangle;
       rectangle.left = this->m_chatBox->geometry.x;
       rectangle.top = this->m_chatBox->geometry.y;
@@ -1312,7 +1355,6 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   }
   return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
-
 
 // OFFSET: 0x009230A0
 // FUNCTION: fn_12644

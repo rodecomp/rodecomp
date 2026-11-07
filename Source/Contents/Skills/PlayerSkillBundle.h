@@ -70,6 +70,8 @@ private:
   CPlayerSkillBundle& operator=(const CPlayerSkillBundle&) = delete;
 };
 
+bool IsIndexedSkill(int id);
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CPlayerSkillBundle::lcEXCInfo) == 12);
 static_assert(offsetof(CPlayerSkillBundle::lcEXCInfo, previous) == 0x4);
