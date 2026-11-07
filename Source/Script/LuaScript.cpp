@@ -945,7 +945,7 @@ bool LuaScript::Load(const char* name, bool resourcePath, bool looseOnly) {
   }
 
   const std::uint32_t size = file.GetSize();
-  char* buffer = static_cast<char*>(std::malloc(size + 1));
+  char* buffer = new char[size + 1];
   file.Read(buffer, size);
   buffer[size] = '\0';
   file.Close();
@@ -954,11 +954,11 @@ bool LuaScript::Load(const char* name, bool resourcePath, bool looseOnly) {
     std::string error = lua_tostring(this->m_state, -1);
     this->Error(name, "%s\n", error.c_str());
     lua_settop(this->m_state, -2);
-    std::free(buffer);
+    delete[] buffer;
     return false;
   }
 
-  std::free(buffer);
+  delete[] buffer;
   return true;
 }
 
