@@ -1403,6 +1403,19 @@ void CFromTheAbyssEffect::Slot03() {
   }
 }
 
+// INLINED
+static __forceinline void FollowAbyssOwner(const CFromTheAbyssEffect* effect, EZ2STREmitter* emitter) {
+  const vector3d origin = *reinterpret_cast<const vector3d*>(effect->position);
+  const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+  const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+  const float viewX = origin.x * view.values[0] + origin.y * view.values[3] + origin.z * view.values[6] + view.values[9] + emitter->offset.x;
+  const float viewY = origin.x * view.values[1] + origin.y * view.values[4] + origin.z * view.values[7] + view.values[10] + emitter->offset.y;
+  const float viewZ = origin.x * view.values[2] + origin.y * view.values[5] + origin.z * view.values[8] + view.values[11] + emitter->offset.z;
+  emitter->position.x = viewX * inverse.values[0] + viewY * inverse.values[3] + viewZ * inverse.values[6] + inverse.values[9];
+  emitter->position.y = viewX * inverse.values[1] + viewY * inverse.values[4] + viewZ * inverse.values[7] + inverse.values[10];
+  emitter->position.z = viewX * inverse.values[2] + viewY * inverse.values[5] + viewZ * inverse.values[8] + inverse.values[11];
+}
+
 // OFFSET: 0x007154A0
 // FUNCTION: fn_07269
 void CFromTheAbyssEffect::UpdateParticle(long long key, AbyssParticle particle) {
@@ -1431,8 +1444,10 @@ void CFromTheAbyssEffect::UpdateParticle(long long key, AbyssParticle particle) 
       entry.emitter = dying;
       return;
     }
+    FollowAbyssOwner(this, emitter);
     break;
   case 2:
+    FollowAbyssOwner(this, emitter);
     break;
   case 3:
     if (emitter->lifetime != 0.0f && !(emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed))) {
@@ -1442,20 +1457,12 @@ void CFromTheAbyssEffect::UpdateParticle(long long key, AbyssParticle particle) 
       entry.emitter = nullptr;
       return;
     }
+    FollowAbyssOwner(this, emitter);
     break;
   default:
     return;
   }
 
-  const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
-  const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-  const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
-  const float viewX = origin.x * view.values[0] + origin.y * view.values[3] + origin.z * view.values[6] + view.values[9] + emitter->offset.x;
-  const float viewY = origin.x * view.values[1] + origin.y * view.values[4] + origin.z * view.values[7] + view.values[10] + emitter->offset.y;
-  const float viewZ = origin.x * view.values[2] + origin.y * view.values[5] + origin.z * view.values[8] + view.values[11] + emitter->offset.z;
-  emitter->position.x = viewX * inverse.values[0] + viewY * inverse.values[3] + viewZ * inverse.values[6] + inverse.values[9];
-  emitter->position.y = viewX * inverse.values[1] + viewY * inverse.values[4] + viewZ * inverse.values[7] + inverse.values[10];
-  emitter->position.z = viewX * inverse.values[2] + viewY * inverse.values[5] + viewZ * inverse.values[8] + inverse.values[11];
   AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
 }
 
