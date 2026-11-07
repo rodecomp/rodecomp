@@ -204,7 +204,7 @@ void UIHotkeyGuideWnd::Slot15(int, int) {
 // FUNCTION: fn_13165
 void UIHotkeyGuideWnd::Paint() {
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bg_shortcuts.bmp")));
-  this->DrawBitmap(0, 0, &background->image, false);
+  this->DrawBitmap(0, 0, background, false);
   this->DrawTitleBar(false, LookupMessage(3128), 0);
 
   for (auto key = this->m_keys.begin(); key != this->m_keys.end(); ++key) {
@@ -311,26 +311,26 @@ void UIHotkeyGuideWnd::DrawKey(const HotkeyGuideKey* key) {
   CBitmapRes* bitmap;
   int x;
   if (key->width == 36) {
-    const char* name = key->height != 75 ? "유저인터페이스\\hotkey_guide\\bt_keyboard.bmp" : "유저인터페이스\\hotkey_guide\\bt_enter2.bmp";
+    const char* name = key->height == 75 ? "유저인터페이스\\hotkey_guide\\bt_enter2.bmp" : "유저인터페이스\\hotkey_guide\\bt_keyboard.bmp";
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
     x = key->x;
   } else {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_left.bmp")));
-    this->DrawBitmap(key->x, key->y, &bitmap->image, true);
+    this->DrawBitmap(key->x, key->y, bitmap, true);
     int offset = 6;
     for (int i = 1; i <= (key->width - 12) / 6; ++i) {
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_mid.bmp")));
-      this->DrawBitmap(key->x + offset, key->y, &bitmap->image, true);
+      this->DrawBitmap(key->x + offset, key->y, bitmap, true);
       offset += 6;
     }
     if ((key->width - 12) % 6 != 0) {
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_mid.bmp")));
-      this->DrawBitmap(key->x + (key->width - 12), key->y, &bitmap->image, true);
+      this->DrawBitmap(key->x + (key->width - 12), key->y, bitmap, true);
     }
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_right.bmp")));
     x = key->x + (key->width - 6);
   }
-  this->DrawBitmap(x, key->y, &bitmap->image, true);
+  this->DrawBitmap(x, key->y, bitmap, true);
 }
 
 // OFFSET: 0x0096C730
