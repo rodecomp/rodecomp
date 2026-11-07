@@ -186,15 +186,15 @@ void UINewSkillListWnd::DrawCharacter() {
   const int bodyPalette = g_session.m_bodyStyle;
   const int headPalette = g_session.m_headPalette;
 
-  actions[0].assign(GetBodyActionResourceName(job, sex, g_session.m_bodyCostume, 0));
-  sprites[0].assign(g_session.GetBodySprName(job, sex, g_session.m_bodyCostume, 0));
-  actions[1].assign(g_session.GetHeadActName(job, sex, &head));
-  sprites[1].assign(g_session.GetHeadSprName(job, sex, &head));
+  actions[0].assign(static_cast<const std::string&>(GetBodyActionResourceName(job, sex, g_session.m_bodyCostume, 0)));
+  sprites[0].assign(static_cast<const std::string&>(g_session.GetBodySprName(job, sex, g_session.m_bodyCostume, 0)));
+  actions[1].assign(static_cast<const std::string&>(g_session.GetHeadActName(job, sex, &head)));
+  sprites[1].assign(static_cast<const std::string&>(g_session.GetHeadSprName(job, sex, &head)));
   if (bodyPalette != 0) {
-    bodyPal.assign(g_session.GetBodyPalName(job, sex, bodyPalette, g_session.m_bodyCostume, 0, 0));
+    bodyPal.assign(static_cast<const std::string&>(g_session.GetBodyPalName(job, sex, bodyPalette, g_session.m_bodyCostume, 0, 0)));
   }
   if (headPalette != 0) {
-    headPal.assign(g_session.GetHeadPalName(head, job, sex, headPalette));
+    headPal.assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, job, sex, headPalette)));
   }
   bodyImf = GetBodyImfName(job, sex, head, g_session.m_bodyCostume);
 
