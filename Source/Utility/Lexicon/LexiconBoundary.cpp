@@ -40,6 +40,11 @@ std::uint32_t g_lexiconByteClasses[256] = {
   0x10001, 0x400, 0x400, 0x101, 0x101, 0x101, 0, 0,
 };
 
+// INLINED
+static bool HasClass(std::uint32_t classes, int bit) {
+  return ((classes >> bit) & 1) != 0;
+}
+
 // OFFSET: 0x00AC4EA0
 // FUNCTION: fn_17634
 bool LexiconBoundary::Matches(unsigned char previous, unsigned char current, unsigned char options) const {
@@ -47,7 +52,7 @@ bool LexiconBoundary::Matches(unsigned char previous, unsigned char current, uns
     return true;
   }
 
-  if ((this->flags[previous] & 1) != 0 && (this->flags[current] & 0x2100) != 0) {
+  if (HasClass(this->flags[previous], 0) && (this->flags[current] & 0x2100) != 0) {
     return true;
   }
 
@@ -59,23 +64,23 @@ bool LexiconBoundary::Matches(unsigned char previous, unsigned char current, uns
     return false;
   }
 
-  const std::uint32_t before = this->flags[previous];
-  const std::uint32_t after = this->flags[current];
+  const std::uint32_t& before = this->flags[previous];
+  const std::uint32_t& after = this->flags[current];
   if ((options & 2) != 0) {
-    return ((before & 0x470) != 0) == ((after & 0x470) != 0) &&
-           (((before & 0x1000) != 0 && (after & 1) != 0) || ((before & 0x470) != 0 && (after & 0x470) != 0) ||
-            ((before & 2) != 0 && (after & 2) != 0));
+    return ((after & 0x470) != 0) == ((before & 0x470) != 0) &&
+           ((HasClass(before, 12) && HasClass(after, 0)) || ((before & 0x470) != 0 && (after & 0x470) != 0) ||
+            (HasClass(before, 1) && HasClass(after, 1)));
   }
 
-  if ((after & 0x10) != 0 && (before & 0x10) == 0) {
+  if (HasClass(after, 4) && !HasClass(before, 4)) {
     return false;
   }
 
-  if ((after & 0x60) != 0 || (before & 0x10) != 0 || ((before & 0x1000) != 0 && (after & 1) != 0)) {
+  if ((after & 0x60) != 0 || HasClass(before, 4) || (HasClass(before, 12) && HasClass(after, 0))) {
     return true;
   }
 
-  return ((before & 0x400) != 0 && (after & 0x10002) != 0) || (after & 0x400) != 0;
+  return (HasClass(before, 10) && (after & 0x10002) != 0) || HasClass(after, 10);
 }
 
 // OFFSET: 0x00AC4A40
