@@ -50,7 +50,7 @@ void UIMacroDetectorWnd::Slot19() {
 // FUNCTION: fn_09819
 void UIMacroDetectorWnd::ClearImageData() {
   if (this->m_imageData) {
-    std::free(this->m_imageData);
+    delete[] this->m_imageData;
     this->m_imageData = nullptr;
   }
   this->m_imageSize = 0;
@@ -81,12 +81,12 @@ void UIMacroDetectorWnd::SetCountdown(unsigned char count, std::uint32_t duratio
 // FUNCTION: fn_09824
 void UIMacroDetectorWnd::InitImageData(unsigned short size) {
   if (this->m_imageData) {
-    std::free(this->m_imageData);
+    delete[] this->m_imageData;
     this->m_imageData = nullptr;
   }
   this->m_imageSize = size;
   this->m_imageReceived = 0;
-  this->m_imageData = static_cast<unsigned char*>(std::malloc(size));
+  this->m_imageData = new unsigned char[size];
   std::memset(this->m_imageData, 0, size);
 }
 
