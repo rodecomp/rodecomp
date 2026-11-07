@@ -1528,21 +1528,15 @@ void CPc::Slot22(int value) {
 // OFFSET: 0x00DB4C70
 // FUNCTION: fn_22652
 int CPc::MapMotion(int motion) {
+  int mapped = motion;
   switch (this->GetEffectiveJob(-1)) {
-    case 2:
-    case 9:
-    case 0x10:
-    case 0xFA3:
-    case 0xFAA:
-    case 0xFB1:
-    case 0xFB9:
-    case 0xFC0:
-    case 0xFC7:
-      return motion == 5 ? 10 : motion;
     case 6:
     case 0xFA7:
     case 0xFBD:
-      return (motion == 8 || motion == 6 || motion == 7) ? 2 : motion;
+      if (motion == 8 || motion == 6 || motion == 7) {
+        mapped = 2;
+      }
+      break;
     case 0xC:
     case 0x11:
     case 0xFAD:
@@ -1557,19 +1551,29 @@ int CPc::MapMotion(int motion) {
     case 0x100C:
     case 0x109E:
       if (motion == 8 || motion == 7) {
-        return 2;
-      }
-
-      if (motion == 6 && (
+        mapped = 2;
+      } else if (motion == 6 && (
         this->GetEffectiveJob(-1) == 0x11 || this->GetEffectiveJob(-1) == 0xFB2 || this->GetEffectiveJob(-1) == 0xFC8
       )) {
-        return 1;
+        mapped = 1;
       }
-
-      return motion;
-    default:
-      return motion;
+      break;
+    case 2:
+    case 9:
+    case 0x10:
+    case 0xFA3:
+    case 0xFAA:
+    case 0xFB1:
+    case 0xFB9:
+    case 0xFC0:
+    case 0xFC7:
+      if (motion == 5) {
+        mapped = 10;
+      }
+      break;
   }
+
+  return mapped;
 }
 
 // OFFSET: 0x00DAA2E0
@@ -1655,11 +1659,21 @@ int CPc::Slot55() {
 __declspec(noinline) int CPc::JobActionBase(int state) {
   int base = 0;
   switch (state) {
-    case 0:
-      base = 32;
+    case 8:
+      base = 96;
+      switch (this->GetEffectiveJob(-1)) {
+        case JT_DO_SUMMONER:
+        case JT_DO_SUMMONER_B:
+        case JT_SPIRIT_HANDLER:
+          base = 40;
+          break;
+      }
       break;
     case 6:
       base = 16;
+      break;
+    case 0:
+      base = 32;
       break;
     case 7:
       switch (this->GetEffectiveJob(-1)) {
@@ -1714,16 +1728,6 @@ __declspec(noinline) int CPc::JobActionBase(int state) {
         default:
           return 96;
       }
-    case 8:
-      base = 96;
-      switch (this->GetEffectiveJob(-1)) {
-        case JT_DO_SUMMONER:
-        case JT_DO_SUMMONER_B:
-        case JT_SPIRIT_HANDLER:
-          base = 40;
-          break;
-      }
-      break;
   }
 
   return base;
