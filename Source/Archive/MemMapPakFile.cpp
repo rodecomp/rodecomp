@@ -1,11 +1,23 @@
 #include "Archive/MemMapPakFile.h"
 
+// INLINED
+CMemMapPakFile::CMemMapPakFile() {
+  this->Initialize();
+}
+
 // OFFSET: 0x00AECAA0
 // FUNCTION: fn_18140
-CMemMapPakFile::CMemMapPakFile() : m_handle(nullptr), m_mapping(nullptr), m_viewSize(0), m_windowSize(0x20000000), m_size(0), m_viewOffset(0), m_view(nullptr) {
+void CMemMapPakFile::Initialize() {
   SYSTEM_INFO information;
   GetSystemInfo(&information);
-  this->m_offsetMask = 0xFFFFFFFF00000000ULL | static_cast<std::uint32_t>(~(information.dwAllocationGranularity - 1));
+  this->m_windowSize = 0x20000000;
+  this->m_handle = nullptr;
+  this->m_mapping = nullptr;
+  this->m_offsetMask = ~static_cast<std::uint64_t>(information.dwAllocationGranularity - 1);
+  this->m_view = nullptr;
+  this->m_size = 0;
+  this->m_viewOffset = 0;
+  this->m_viewSize = 0;
 }
 
 // OFFSET: 0x00AE9850

@@ -8,6 +8,7 @@ public:
   CMemMapPakFile();
   ~CMemMapPakFile() override;
 
+  void Initialize();
   bool Open(const char* filename);
   __declspec(noinline) void Close();
   std::uint64_t GetSize() const override;
