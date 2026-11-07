@@ -713,16 +713,18 @@ void GameSettings::ToggleOption(int id) {
 // OFFSET: 0x006C29A0
 // FUNCTION: fn_06324
 __declspec(noinline) int SetOption(const char* name, unsigned char value) {
-  if (!name || name[0] == '\0') {
+  if (IsNullOrEmpty(name)) {
     return 3;
   }
 
   int optionId = 3;
   std::string strings[3];
   g_session.GetTalkType(name, &optionId, strings);
-  if (optionId != 3) {
-    g_serviceOptions.values[static_cast<std::uint32_t>(optionId)] = value;
+  if (optionId == 3) {
+    return 3;
   }
+
+  g_serviceOptions.values[static_cast<std::uint32_t>(optionId)] = value;
   return optionId;
 }
 
