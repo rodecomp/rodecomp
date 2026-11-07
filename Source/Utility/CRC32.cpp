@@ -32,9 +32,11 @@ __declspec(noinline) bool CRC32::Update(const BYTE* data, int length, DWORD* che
     return false;
   }
 
+  const DWORD* table = this->m_table;
   const BYTE* end = data + length;
   while (data < end) {
-    *checksum = (*checksum >> 8) ^ m_table[static_cast<BYTE>(*checksum) ^ *data++];
+    const DWORD value = *checksum;
+    *checksum = (value >> 8) ^ table[static_cast<BYTE>(value) ^ *data++];
   }
   return true;
 }
