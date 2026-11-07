@@ -661,7 +661,8 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::Slot12(vector3d position, int argument2, i
     const float z = offsetZ + position.z;
     const float y = position.y + 0.0f;
     const float x = offsetX + position.x;
-    CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_bottom"), x, y, z, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_bottom"), x, y, z, 0, -1, 0, 0);
     if (effect) {
       effect->Slot16(delay);
     }
