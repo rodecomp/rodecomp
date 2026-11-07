@@ -1948,8 +1948,8 @@ void UIListBoxNavi::Paint() {
 // OFFSET: 0x0088B4A0
 // FUNCTION: fn_11363
 void UIItemStoreComboBoxWnd::Paint() {
-  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\bg_setting.bmp")));
-  this->DrawBitmap(0, this->geometry.height - background->image.height, &background->image, false);
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\bg_setting.bmp")));
+  this->DrawBitmap(0, this->geometry.height - background->image.height, background, false);
 }
 
 // OFFSET: 0x00884700
