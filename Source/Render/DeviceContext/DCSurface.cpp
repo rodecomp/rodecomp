@@ -13,19 +13,11 @@
 
 // OFFSET: 0x0056A500
 // FUNCTION: fn_02290
-std::shared_ptr<CSurface> AcquireBackBufferSurface(CRenderSystemBase* system) {
-  return system ? system->BackBufferSurface() : std::shared_ptr<CSurface>{};
-}
-
-// OFFSET: 0x0055FAD0
-// FUNCTION: fn_02121
-int DrawBackBufferText(int x, int y, const char* text, COLORREF color) {
-  CDCSurface surface(AcquireBackBufferSurface(GetRenderSystemHolder()->system));
-  TextContext context(surface);
-  context.SetFont(0, 12, 0, 0);
-  SetTextColor(context.Dc(), color);
-  TextOutA(context.Dc(), x, y, text, static_cast<int>(std::strlen(text)));
-  return 0;
+std::shared_ptr<CSurface> RenderSystemHolder::BackBufferSurface() const {
+  if (this->system) {
+    return this->system->BackBufferSurface();
+  }
+  return {};
 }
 
 // OFFSET: 0x00569C90
@@ -185,7 +177,7 @@ HRESULT RenderSystemHolder::Present(bool option) const {
 
 // OFFSET: 0x00548FE0
 // FUNCTION: fn_01864
-CDCSurface::CDCSurface(std::shared_ptr<CSurface> surface) : m_surface(std::move(surface)) {
+CDCSurface::CDCSurface(std::shared_ptr<CSurface> surface) : m_surface(surface) {
 }
 
 // OFFSET: 0x005490D0

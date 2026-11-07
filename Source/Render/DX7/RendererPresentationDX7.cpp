@@ -65,9 +65,20 @@ void CRendererDX7::CleanupTextures() {
   std::sprintf(text, "%.01f fps", static_cast<double>(measured));
   const int x = this->viewport.width - 40;
   const int y = this->viewport.height - 14;
-  CDCSurface drawing(AcquireBackBufferSurface(GetRenderSystemHolder()->system));
+  CDCSurface drawing(GetRenderSystemHolder()->BackBufferSurface());
   TextContext context(drawing);
   context.SetFont(0, 12, 0, 0);
   SetTextColor(context.Dc(), 0xFFFF);
   TextOutA(context.Dc(), x, y, text, static_cast<int>(std::strlen(text)));
+}
+
+// OFFSET: 0x0055FAD0
+// FUNCTION: fn_02121
+int DrawBackBufferText(int x, int y, const char* text, COLORREF color) {
+  CDCSurface surface(GetRenderSystemHolder()->BackBufferSurface());
+  TextContext context(surface);
+  context.SetFont(0, 12, 0, 0);
+  SetTextColor(context.Dc(), color);
+  TextOutA(context.Dc(), x, y, text, static_cast<int>(std::strlen(text)));
+  return 0;
 }

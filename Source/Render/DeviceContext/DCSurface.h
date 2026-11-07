@@ -8,8 +8,6 @@
 
 class CTexture;
 
-std::shared_ptr<CSurface> AcquireBackBufferSurface(CRenderSystemBase* system);
-
 struct ScreenDimensions {
   int height;
   int width;
@@ -38,6 +36,7 @@ struct RenderSystemHolder {
   HRESULT TestDevice() const;
   HRESULT Present(bool option) const;
   HRESULT Initialize(int backend, HWND window);
+  std::shared_ptr<CSurface> BackBufferSurface() const;
 };
 
 int DrawBackBufferText(int x, int y, const char* text, COLORREF color);
