@@ -558,7 +558,8 @@ void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& inf
     info.unknown_004C = window->FitDisplayText(250, info.unknown_004C.c_str(), 0, 12, 0);
   }
 
-  this->m_ongoingQuests[id] = info;
+  this->m_ongoingQuests.erase(id);
+  this->m_ongoingQuests.insert(std::pair<const unsigned int, RenewQuestOngoingInfo>(id, info));
   g_session.m_hotkeyScript->Call("GetOngoingDescription", "d", id);
   g_session.m_hotkeyScript->Call("GetOngoingRewardInfo", "d", id);
 }
@@ -567,7 +568,7 @@ void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& inf
 // FUNCTION: fn_05452
 void CRenewQuestMgr::AddRecommendedQuest(unsigned int id, const RenewQuestRecommendedInfo& info) {
   this->m_recommendedQuests.erase(id);
-  this->m_recommendedQuests.insert(std::make_pair(id, info));
+  this->m_recommendedQuests.insert(std::pair<const unsigned int, RenewQuestRecommendedInfo>(id, info));
 }
 
 // OFFSET: 0x0067AEB0
