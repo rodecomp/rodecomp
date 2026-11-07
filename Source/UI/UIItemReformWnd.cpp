@@ -148,7 +148,7 @@ void UIItemReformWnd_List::Slot15(int width, int height) {
 // OFFSET: 0x005FD270
 // FUNCTION: fn_04110
 void UIItemReformWnd::Paint() {
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ItemReform\\bg_reform.bmp")))->image, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ItemReform\\bg_reform.bmp"))), true);
   if (std::atoi(this->reformItem.itemId.c_str()) > 0) {
     this->DrawTitleBar(false, this->reformItem.DisplayName(0).c_str(), 0);
   }
