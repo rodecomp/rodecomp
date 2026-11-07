@@ -6,10 +6,8 @@
 // FUNCTION: fn_17819
 int CSession::SetServiceFlags(int first, int second) {
   const int serviceType = g_serviceType;
-  if (serviceType == 0 || serviceType == 6 || serviceType == 0xA || serviceType == 0xC || serviceType == 2) {
-    g_serviceFlag05 = first != 0;
-    g_serviceFlag06 = second != 0;
-  }
+  g_serviceFlag05 = first != 0;
+  g_serviceFlag06 = second != 0;
   return serviceType;
 }
 
