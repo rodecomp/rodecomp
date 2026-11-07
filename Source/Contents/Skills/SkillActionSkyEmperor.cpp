@@ -237,11 +237,13 @@ void CSkillAction_SKE_SKY_SUN::Slot11(int level, CGameActor* source, CGameActor*
     return;
   }
 
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
   for (int index = 0; index < 6; ++index) {
-    CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun_small"), target->render.position.x, target->render.position.y,
-                                         target->render.position.z, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun_small"), target->render.position.x, target->render.position.y,
+                                     target->render.position.z, 0, -1, 0, 0);
     if (!effect) {
       return;
     }
@@ -315,8 +317,10 @@ void CSkillAction_SKE_STAR_LIGHT_KICK::Slot11(int level, CGameActor* source, CGa
   }
 
   source->LaunchEffect(2426, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00798B90
@@ -443,11 +447,13 @@ void CSkillAction_SKE_SUNSET_BLAST::Slot11(int level, CGameActor* source, CGameA
     return;
   }
 
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sunset_blast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sunset_blast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
   for (int index = 0; index < 6; ++index) {
-    CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("sunset_blast_small"), target->render.position.x,
-                                         target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("sunset_blast_small"), target->render.position.x,
+                                     target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     if (!effect) {
       return;
     }
