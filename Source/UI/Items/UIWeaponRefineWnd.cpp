@@ -69,6 +69,26 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   ITEM_INFO item;
 
   switch (message) {
+  case 31: {
+    const int itemId = static_cast<int>(a);
+    this->itemIds.push_back(itemId);
+    this->indices.push_back(b);
+
+    item.SetItemId(itemId);
+    item.unknown_0060 = 0;
+    item.identified = 1;
+    this->m_list->AddLine(item.DisplayName(0).c_str());
+    return 0;
+  }
+
+  case 18:
+    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    return 0;
+
+  case 19:
+    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    return 0;
+
   case 6: {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, this->m_list->selected);
@@ -102,26 +122,6 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
 
-    return 0;
-  }
-
-  case 18:
-    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
-    return 0;
-
-  case 19:
-    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
-    return 0;
-
-  case 31: {
-    const int itemId = static_cast<int>(a);
-    this->itemIds.push_back(itemId);
-    this->indices.push_back(b);
-
-    item.SetItemId(itemId);
-    item.unknown_0060 = 0;
-    item.identified = 1;
-    this->m_list->AddLine(item.DisplayName(0).c_str());
     return 0;
   }
 
