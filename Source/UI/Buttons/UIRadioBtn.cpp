@@ -21,7 +21,7 @@ void UIRadioBtn::Paint() {
     }
 
     if (bitmap) {
-      this->DrawBitmap(0, static_cast<int>((this->geometry.height - bitmap->image.height) * 0.5f), &bitmap->image, true);
+      this->DrawBitmap(0, static_cast<int>((this->geometry.height - bitmap->image.height) * 0.5f), bitmap, true);
     }
 
     const int textHeight = this->TextHeight(this->text.c_str(), 0, 0, this->fontHeight, 0, 0);
@@ -41,7 +41,7 @@ void UIRadioBtn::Paint() {
   }
 
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
   const std::uint32_t color = this->enabled != 0 ? this->textColor : 0xB5B5B5;
   this->DrawTextAt(13, 0, this->text.c_str(), 0, 0, this->fontHeight, color, 0, 0);
 }
