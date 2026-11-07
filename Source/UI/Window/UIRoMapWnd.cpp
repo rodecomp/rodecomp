@@ -988,20 +988,15 @@ void UIRoMapWnd::Slot15(int, int) {
   this->m_worldCombo->dropdownHeight = 67;
   this->m_worldCombo->SetSize(110, this->m_comboHeight);
   this->m_worldCombo->Move(17, 0);
-  this->m_worldCombo->borderRed = 100;
-  this->m_worldCombo->borderGreen = 100;
-  this->m_worldCombo->borderBlue = 100;
-  this->m_worldCombo->red = 232;
-  this->m_worldCombo->green = 232;
-  this->m_worldCombo->blue = 232;
+  this->m_worldCombo->SetBorderColor(100, 100, 100);
+  this->m_worldCombo->SetColor(232, 232, 232);
   this->AddChild(this->m_worldCombo);
   const int worldCount = static_cast<int>(g_worldViewMgr.worlds.size());
   for (int index = 0; index < worldCount; ++index) {
     this->m_worldCombo->AddOption(g_worldViewMgr.worlds[index]->name, 0);
   }
 
-  g_worldViewMgr.SelectCurrentWorld();
-  this->m_worldCombo->Select(g_worldViewMgr.currentWorld);
+  this->m_worldCombo->Select(g_worldViewMgr.SelectCurrentWorld());
   g_worldViewMgr.LoadTextures();
   this->Invalidate();
   {
