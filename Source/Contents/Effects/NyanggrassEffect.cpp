@@ -90,14 +90,14 @@ void CMultiTexParticle::Render(int column, int row) {
     return;
   }
 
-  float corners[4][3];
-  for (int i = 0; i < 4; ++i) {
-    corners[i][0] = 0.0f;
-    corners[i][1] = 0.0f;
-    corners[i][2] = 0.0f;
+  vector3d corners[4];
+  for (vector3d& corner : corners) {
+    corner.x = 0.0f;
+    corner.y = 0.0f;
+    corner.z = 0.0f;
   }
 
-  if (!gameMode->scene->ground->TerrainCellCorners(*gameMode->scene->terrain, column, row, &corners[0][0])) {
+  if (!gameMode->scene->ground->TerrainCellCorners(*gameMode->scene->terrain, column, row, &corners[0].x)) {
     return;
   }
 
@@ -109,7 +109,7 @@ void CMultiTexParticle::Render(int column, int row) {
 
   for (int i = 0; i < 4; ++i) {
     LightmappedVertex& vertex = this->command.vertices[i];
-    g_renderer->viewport.Project(corners[i], cameraMatrix, vertex);
+    g_renderer->viewport.Project(&corners[i].x, cameraMatrix, vertex);
     vertex.z -= 0.000030517578125f;
     vertex.diffuse = 0xFFFFFFFF;
     vertex.u = this->uv1[i][0] + this->offsetU;
