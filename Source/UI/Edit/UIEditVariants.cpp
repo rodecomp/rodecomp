@@ -101,12 +101,12 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     lineMove[0] = 0;
 
     const unsigned count = this->unknown_0168.size();
-    if (count < 2 && (count != 1 || !this->unknown_0174[0])) {
+    if (count <= 1 && (count != 1 || !this->unknown_0174[0])) {
       return 0;
     }
 
     g_serverLanguage->Selection(this->anchor, this->cursor);
-    if (this->unknown_0150 < 1 || this->unknown_0154 != this->cursor || scrolling[1] != 0) {
+    if (this->unknown_0150 <= 0 || this->unknown_0154 != this->cursor || scrolling[1] != 0) {
       const char* current = this->unknown_0160;
       this->unknown_015E = 0;
       int bytes = 0;
@@ -139,7 +139,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
         }
       }
 
-      this->unknown_0150 = static_cast<int>(std::strlen(this->unknown_0160)) + this->unknown_0144 - column;
+      this->unknown_0150 = this->unknown_0144 - column + static_cast<int>(std::strlen(this->unknown_0160));
     }
 
     g_serverLanguage->RetreatCursor(this->unknown_0150);
@@ -151,19 +151,19 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     lineMove[0] = 0;
 
     const unsigned count = this->unknown_0168.size();
-    if ((count < 2 || count - 1 <= static_cast<unsigned>(this->textY)) && (count != 1 || !this->unknown_0174[0] || this->unknown_0148 < 1)) {
+    if ((count <= 1 || static_cast<unsigned>(this->textY) >= count - 1) && (count != 1 || !this->unknown_0174[0] || this->unknown_0148 <= 0)) {
       return 0;
     }
 
     g_serverLanguage->Selection(this->anchor, this->cursor);
-    if (this->unknown_0150 < 1 || this->unknown_0154 != this->cursor || this->unknown_015E != 0) {
+    if (this->unknown_0150 <= 0 || this->unknown_0154 != this->cursor || this->unknown_015E != 0) {
       scrolling[1] = 0;
       int bytes = 0;
       int width = 0;
       int column = 0;
       const unsigned lines = this->unknown_0168.size();
 
-      if (lines >= 2 && lines - 1 > static_cast<unsigned>(this->textY)) {
+      if (lines > 1 && static_cast<unsigned>(this->textY) < lines - 1) {
         const char* current = this->unknown_0164;
         const char* const end = current + std::strlen(current);
 
@@ -463,75 +463,70 @@ void UIEditCtrl3::PaintText() {
     width += 3 - this->unknown_0130->geometry.width;
   }
 
-  std::vector<std::string>& lines = this->unknown_0168;
-  std::vector<bool>& breaks = this->unknown_0174;
-  lines.clear();
-  breaks.clear();
-  this->WrapTextWithBreaks(display.c_str(), &lines, &breaks, width);
-  this->WrapLines(lines);
+  this->unknown_0168.clear();
+  this->unknown_0174.clear();
+  this->WrapTextWithBreaks(display.c_str(), &this->unknown_0168, &this->unknown_0174, width);
+  this->WrapLines(this->unknown_0168);
 
-  for (std::size_t index = 0; index < lines.size() - breaks.size(); ++index) {
-    breaks.push_back(false);
+  for (std::size_t index = 0; index < this->unknown_0168.size() - this->unknown_0174.size(); ++index) {
+    this->unknown_0174.push_back(false);
   }
 
-  this->unknown_013C = static_cast<int>(lines.size());
+  this->unknown_013C = static_cast<int>(this->unknown_0168.size());
   if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0) {
-    this->unknown_013C = static_cast<int>(lines.size()) + 1;
+    ++this->unknown_013C;
   }
 
-  if (lines.size() == 0) {
+  if (this->unknown_0168.size() == 0) {
     this->DrawBlinkingCaret(color);
     return;
   }
 
   const int rows = this->geometry.height / this->unknown_0138;
   const int first = this->unknown_0158;
-  int last = rows + first;
-  if (lines.size() < static_cast<unsigned>(last)) {
-    last = static_cast<int>(lines.size());
-  }
+  const int last = std::min<std::size_t>(rows + first, this->unknown_0168.size());
 
   int offset = 0;
   for (int line = 0; line < first; ++line) {
-    offset += static_cast<int>(std::strlen(lines[line].c_str()));
+    offset += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
   }
 
   for (int line = first; line < last; ++line) {
     const int y = (line - first) * this->unknown_0138;
-    offset += static_cast<int>(std::strlen(lines[line].c_str()));
+    offset += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
 
-    if (g_windowMgr.GetHoverWindow() == this && g_serverLanguage->cursor - g_serverLanguage->anchor != 0) {
-      const int selectionBegin = this->cursor < this->anchor ? this->cursor : this->anchor;
-      const int selectionEnd = this->anchor < this->cursor ? this->cursor : this->anchor;
+    if (g_windowMgr.GetHoverWindow() == this && std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) != 0) {
+      const int selectionBegin = std::min(this->anchor, this->cursor);
+      const int selectionEnd = std::max(this->anchor, this->cursor);
       int startX = 0;
       int endX = 0;
 
       if (selectionBegin < offset) {
-        int begin = selectionBegin + static_cast<int>(std::strlen(lines[line].c_str())) - offset;
+        int begin = selectionBegin + static_cast<int>(std::strlen(this->unknown_0168[line].c_str())) - offset;
         if (begin < 0) {
           begin = 0;
         }
 
-        startX = begin != 0 ? this->TextWidth(lines[line].c_str(), begin, 0, 12, 0, 0) : 0;
+        startX = begin != 0 ? this->TextWidth(this->unknown_0168[line].c_str(), begin, 0, 12, 0, 0) : 0;
 
-        int length = static_cast<int>(std::strlen(lines[line].c_str()));
-        if (breaks[line]) {
+        int length = static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+        if (this->unknown_0174[line]) {
           length -= 2;
         }
-        endX = this->TextWidth(lines[line].c_str(), length, 0, 12, 0, 0);
+        endX = this->TextWidth(this->unknown_0168[line].c_str(), length, 0, 12, 0, 0);
       }
 
       if (selectionEnd <= offset) {
-        int end = selectionEnd + static_cast<int>(std::strlen(lines[line].c_str())) - offset;
+        int end = selectionEnd + static_cast<int>(std::strlen(this->unknown_0168[line].c_str())) - offset;
         if (end < 0) {
           end = 0;
         }
 
         int length = end;
-        if (static_cast<int>(std::strlen(lines[line].c_str())) == end && breaks[line]) {
+        if (static_cast<int>(std::strlen(this->unknown_0168[line].c_str())) == end && this->unknown_0174[line]) {
           length = end - 2;
         }
-        endX = length != 0 ? this->TextWidth(lines[line].c_str(), length, 0, 12, 0, 0) : 0;
+        endX = length != 0 ? this->TextWidth(this->unknown_0168[line].c_str(), length, 0, 12, 0, 0) : 0;
       }
 
       int left = x + startX;
@@ -555,16 +550,16 @@ void UIEditCtrl3::PaintText() {
     }
 
     if (this->pendingText.size() < static_cast<unsigned>(line + 1)) {
-      this->pendingText.push_back(lines[line]);
-    } else if (&this->pendingText[line] != &lines[line]) {
-      this->pendingText[line] = lines[line];
+      this->pendingText.push_back(this->unknown_0168[line]);
+    } else if (&this->pendingText[line] != &this->unknown_0168[line]) {
+      this->pendingText[line] = this->unknown_0168[line];
     }
 
-    this->PlaceLinks(lines[line], y, line, first, last);
+    this->PlaceLinks(this->unknown_0168[line], y, line, first, last);
 
-    const std::size_t length = std::strlen(lines[line].c_str());
+    const std::size_t length = std::strlen(this->unknown_0168[line].c_str());
     char* buffer = new char[length + 1];
-    std::strcpy(buffer, lines[line].c_str());
+    std::strcpy(buffer, this->unknown_0168[line].c_str());
     buffer[length] = '\0';
     if (buffer[length - 2] == '\r') {
       buffer[length - 2] = '\0';
@@ -572,9 +567,9 @@ void UIEditCtrl3::PaintText() {
 
     this->DrawTextAt(x, tagOffset + y, buffer, 0, 0, 12, color, 0, 0);
 
-    for (std::vector<UIItemTagButton*>& entry : this->entries) {
-      for (std::size_t index = 0; index < entry.size(); ++index) {
-        UIItemTagButton* button = entry[index];
+    for (auto entry = this->entries.begin(); entry != this->entries.end(); ++entry) {
+      for (std::size_t index = 0; index < entry->size(); ++index) {
+        UIItemTagButton* button = (*entry)[index];
         const int buttonLine = button->line;
         if (buttonLine < first || last - 1 < buttonLine) {
           button->Move(-100, -100);
@@ -589,13 +584,12 @@ void UIEditCtrl3::PaintText() {
     }
   }
 
-  const int prefixLength = static_cast<int>(std::strlen(prefix));
-  int column = prefixLength + this->cursor;
-  int reading = prefixLength + (this->anchor < this->cursor ? this->cursor : this->anchor) + g_serverLanguage->compositionCursor;
+  int column = static_cast<int>(std::strlen(prefix)) + this->cursor;
+  int reading = std::max(this->anchor, this->cursor) + static_cast<int>(g_serverLanguage->candidate.size() + std::strlen(prefix));
 
   int remaining = column;
-  for (std::size_t index = 0; index < lines.size(); ++index) {
-    remaining -= static_cast<int>(std::strlen(lines[index].c_str()));
+  for (std::size_t index = 0; index < this->unknown_0168.size(); ++index) {
+    remaining -= static_cast<int>(std::strlen(this->unknown_0168[index].c_str()));
     this->textY = static_cast<int>(index);
     if (remaining < 0 || (static_cast<unsigned char>(this->unknown_0184) != 0 && remaining == 0)) {
       break;
@@ -604,14 +598,14 @@ void UIEditCtrl3::PaintText() {
 
   if (g_windowMgr.GetHoverWindow() == this) {
     int caretLine = this->textY;
-    if (this->unknown_0140 != static_cast<int>(std::strlen(lines[caretLine].c_str()))) {
+    if (this->unknown_0140 != static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str()))) {
       reinterpret_cast<unsigned char*>(&this->unknown_015C)[0] = 0;
-      this->unknown_0140 = static_cast<int>(std::strlen(lines[caretLine].c_str()));
+      this->unknown_0140 = static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str()));
     }
 
     int before = 0;
     for (int index = 0; index < caretLine; ++index) {
-      before += static_cast<int>(std::strlen(lines[index].c_str()));
+      before += static_cast<int>(std::strlen(this->unknown_0168[index].c_str()));
     }
 
     int wrapped = 0;
@@ -619,13 +613,13 @@ void UIEditCtrl3::PaintText() {
       column -= before;
     }
 
-    if (static_cast<int>(std::strlen(lines[caretLine].c_str())) == column && breaks[caretLine]) {
+    if (static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str())) == column && this->unknown_0174[caretLine]) {
       wrapped = 1;
       column = 0;
     }
 
-    if (this->unknown_0148 != static_cast<int>(std::strlen(lines[caretLine].c_str())) - column) {
-      this->unknown_0148 = static_cast<int>(std::strlen(lines[caretLine].c_str())) - column;
+    if (this->unknown_0148 != static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str())) - column) {
+      this->unknown_0148 = static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str())) - column;
     }
 
     if (this->unknown_0144 != column) {
@@ -634,7 +628,7 @@ void UIEditCtrl3::PaintText() {
 
     int caretX = 0;
     if (column != 0) {
-      caretX = this->TextWidth(lines[caretLine].c_str(), column, 0, 12, 0, 0);
+      caretX = this->TextWidth(this->unknown_0168[caretLine].c_str(), column, 0, 12, 0, 0);
       caretLine = this->textY;
     }
 
@@ -643,13 +637,13 @@ void UIEditCtrl3::PaintText() {
     }
 
     int readingLength = reading;
-    if (static_cast<int>(std::strlen(lines[caretLine].c_str())) == reading && breaks[caretLine]) {
+    if (static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str())) == reading && this->unknown_0174[caretLine]) {
       readingLength = reading - 2;
     }
 
-    const int readingX = readingLength != 0 ? this->TextWidth(lines[caretLine].c_str(), readingLength, 0, 12, 0, 0) : 0;
+    const int readingX = readingLength != 0 ? this->TextWidth(this->unknown_0168[caretLine].c_str(), readingLength, 0, 12, 0, 0) : 0;
 
-    if (g_serverLanguage->compositionCursor != 0) {
+    if (g_serverLanguage->candidate.size() != 0) {
       int gap = readingX - caretX;
       if (gap < 2) {
         gap = 2;
@@ -665,35 +659,33 @@ void UIEditCtrl3::PaintText() {
     }
 
     if ((timeGetTime() / 500 & 1) == 0 && (!g_windowMgr.IsHoverOnWindow01C8Button() || g_windowMgr.inputSuggestionsEnabled)) {
-      this->DrawTextAt(x - 2 + caretX, (wrapped + this->textY - first) * this->unknown_0138, "|", 0, 0, 12, color, 0, 0);
+      this->DrawTextAt(x - 2 + caretX, (wrapped - first + this->textY) * this->unknown_0138, "|", 0, 0, 12, color, 0, 0);
 
       const unsigned char* scroll = reinterpret_cast<const unsigned char*>(&this->unknown_015C);
       if (scroll[0] == 0) {
-        if (scroll[1] == 0) {
-          if (this->unknown_015E == 0) {
-            const int top = rows < this->unknown_013C ? wrapped + (this->unknown_013C - rows) : this->textY;
-            this->unknown_0158 = top;
-            if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && top > 0) {
-              this->unknown_0158 = top - 1;
+        if (scroll[1] != 0) {
+          const int current = this->textY;
+          if (current - wrapped < this->unknown_0158) {
+            if (current >= this->unknown_013C - rows) {
+              this->unknown_0158 = this->unknown_013C - rows;
+            } else {
+              this->unknown_0158 = current + wrapped;
             }
-          } else {
-            const int current = this->textY;
-            if (this->unknown_0158 - 1 + rows < current) {
-              if (current < rows) {
-                this->unknown_0158 = 0;
-              } else {
-                this->unknown_0158 = current - rows + 1;
-              }
+          }
+        } else if (this->unknown_015E != 0) {
+          const int current = this->textY;
+          if (this->unknown_0158 - 1 + rows < current) {
+            if (current < rows) {
+              this->unknown_0158 = 0;
+            } else {
+              this->unknown_0158 = current - rows + 1;
             }
           }
         } else {
-          const int current = this->textY;
-          if (current - wrapped < this->unknown_0158) {
-            if (current < this->unknown_013C - rows) {
-              this->unknown_0158 = wrapped + current;
-            } else {
-              this->unknown_0158 = this->unknown_013C - rows;
-            }
+          const int top = this->unknown_013C <= rows ? this->textY : this->unknown_013C - rows + wrapped;
+          this->unknown_0158 = top;
+          if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && top > 0) {
+            this->unknown_0158 = top - 1;
           }
         }
       }
@@ -704,44 +696,42 @@ void UIEditCtrl3::PaintText() {
     }
   }
 
-  std::size_t count = lines.size();
-  if (count < 2 || this->textY < 1) {
-    if ((count == 1 || (count > 1 && this->textY == 0)) && breaks[0]) {
-      if (this->unknown_0160) {
-        delete[] this->unknown_0160;
-        this->unknown_0160 = nullptr;
-      }
-      this->unknown_0160 = new char[std::strlen(lines[0].c_str()) + 1];
-      std::strcpy(this->unknown_0160, lines[0].c_str());
-    }
-  } else {
-    const std::string& previous = lines[this->textY - 1];
+  std::size_t count = this->unknown_0168.size();
+  if (count > 1 && this->textY > 0) {
+    const std::size_t length = std::strlen(this->unknown_0168[this->textY - 1].c_str());
     if (this->unknown_0160) {
       delete[] this->unknown_0160;
       this->unknown_0160 = nullptr;
     }
-    this->unknown_0160 = new char[std::strlen(previous.c_str()) + 1];
-    std::strcpy(this->unknown_0160, lines[this->textY - 1].c_str());
+    this->unknown_0160 = new char[length + 1];
+    std::strcpy(this->unknown_0160, this->unknown_0168[this->textY - 1].c_str());
+  } else if ((count == 1 || (count > 1 && this->textY == 0)) && this->unknown_0174[0]) {
+    const std::size_t length = std::strlen(this->unknown_0168[0].c_str());
+    if (this->unknown_0160) {
+      delete[] this->unknown_0160;
+      this->unknown_0160 = nullptr;
+    }
+    this->unknown_0160 = new char[length + 1];
+    std::strcpy(this->unknown_0160, this->unknown_0168[0].c_str());
   }
 
-  count = lines.size();
-  if (count < 2 || count - 1 <= static_cast<unsigned>(this->textY)) {
-    if (count == 1 && breaks[0]) {
-      if (this->unknown_0164) {
-        delete[] this->unknown_0164;
-        this->unknown_0164 = nullptr;
-      }
-      this->unknown_0164 = new char[std::strlen(lines[0].c_str()) + 1];
-      std::strcpy(this->unknown_0164, lines[0].c_str());
-    }
-  } else {
-    const std::string& next = lines[this->textY + 1];
+  count = this->unknown_0168.size();
+  if (count > 1 && static_cast<unsigned>(this->textY) < count - 1) {
+    const std::size_t length = std::strlen(this->unknown_0168[this->textY + 1].c_str());
     if (this->unknown_0164) {
       delete[] this->unknown_0164;
       this->unknown_0164 = nullptr;
     }
-    this->unknown_0164 = new char[std::strlen(next.c_str()) + 1];
-    std::strcpy(this->unknown_0164, lines[this->textY + 1].c_str());
+    this->unknown_0164 = new char[length + 1];
+    std::strcpy(this->unknown_0164, this->unknown_0168[this->textY + 1].c_str());
+  } else if (count == 1 && this->unknown_0174[0]) {
+    const std::size_t length = std::strlen(this->unknown_0168[0].c_str());
+    if (this->unknown_0164) {
+      delete[] this->unknown_0164;
+      this->unknown_0164 = nullptr;
+    }
+    this->unknown_0164 = new char[length + 1];
+    std::strcpy(this->unknown_0164, this->unknown_0168[0].c_str());
   }
 
   this->UpdateScrollBar();
@@ -837,12 +827,12 @@ void UIEditCtrl3::Paint() {
   const bool selected = g_skinInfo.Selected();
   const SkinPaletteCell cell = {1, 2};
   const std::uint32_t color = SkinPaletteColor(cell, selected);
-  this->red = color & 0xFF;
-  this->blue = (color >> 16) & 0xFF;
-  this->green = (color & 0xFFFF) >> 8;
+  this->red = GetRValue(color);
+  this->green = GetGValue(color);
+  this->blue = GetBValue(color);
 
   this->Invalidate();
-  this->ClearSurface(static_cast<unsigned char>(this->red) | (static_cast<unsigned char>(this->green) << 8) | (static_cast<unsigned char>(this->blue) << 16));
+  this->ClearSurface(RGB(this->red, this->green, this->blue));
   this->PaintText();
   if (this->parent) {
     this->parent->Invalidate();
