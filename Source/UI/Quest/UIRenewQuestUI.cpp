@@ -1113,7 +1113,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Slot15(int width, 
 // OFFSET: 0x00A63B90
 // FUNCTION: fn_16440
 void CUIEditBoxEx::SetOnSubmit(std::function<void()> handler) {
-  this->onSubmit = handler;
+  this->onSubmit.swap(handler);
 }
 
 // OFFSET: 0x00A63C00
