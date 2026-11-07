@@ -13,6 +13,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include <cstring>
 #include <windows.h>
 
 #include <cstdio>
@@ -97,11 +98,10 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     return 0;
   }
 
-  if (argument1 == 184) {
+  switch (argument1) {
+  case 184: {
     PartyBookingUpdatePacket packet = {ID_CZ_PARTY_BOOKING_REQ_UPDATE};
-    for (int i = 0; i < 6; ++i) {
-      packet.jobs[i] = -1;
-    }
+    std::memset(packet.jobs, 0xFF, sizeof(packet.jobs));
 
     int selected = 0;
     int index = 0;
@@ -128,12 +128,13 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
 
     GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
-  } else if (argument1 != 201) {
+  }
+  case 201:
+    g_windowMgr.CloseWindow(170);
+    return 0;
+  default:
     return 0;
   }
-
-  g_windowMgr.CloseWindow(170);
-  return 0;
 }
 
 // OFFSET: 0x00944C90
