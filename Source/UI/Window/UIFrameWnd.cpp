@@ -502,20 +502,10 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
-  const auto notice = [](int id) { g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(id)), 255, 0, 0, 0); };
-  const auto send = [this](std::int16_t id, long long amount) {
-    PACKET_CZ_BANK_TRANSACTION packet;
-    packet.id = id;
-    packet.aid = g_session.m_aid;
-    packet.amount = static_cast<int>(amount);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-    this->m_status.clear();
-  };
-
   int step;
   switch (a) {
   case 0xC9:
-    g_windowMgr.EnsureWindow(0x113);
+    g_windowMgr.CloseWindow(0x113);
     return 0;
   case 0x117:
     step = 1;
@@ -541,7 +531,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     break;
   case 0x1CE: {
     if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
-      notice(0x9B9);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x9B9)), 255, 0, 0, 0);
       return 0;
     }
     const long long amount = this->TransactionAmount(1);
@@ -549,19 +539,24 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     if (amount > g_session.m_zeny) {
-      notice(0x998);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x998)), 255, 0, 0, 0);
       this->m_status = LookupMessage(0xAE1);
-    } else if (g_session.m_bankBalance + amount < 0x80000000LL) {
-      send(0x9A7, amount);
-    } else {
-      notice(0xAE3);
+    } else if (g_session.m_bankBalance + amount > 0x7FFFFFFFLL) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xAE3)), 255, 0, 0, 0);
       this->m_status = LookupMessage(0xADF);
+    } else {
+      PACKET_CZ_BANK_TRANSACTION packet;
+      packet.amount = static_cast<int>(amount);
+      packet.id = 0x9A7;
+      packet.aid = g_session.m_aid;
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      this->m_status.clear();
     }
     return 0;
   }
   case 0x1CF: {
     if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
-      notice(0x9B9);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x9B9)), 255, 0, 0, 0);
       return 0;
     }
     const long long amount = this->TransactionAmount(0);
@@ -569,13 +564,18 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     if (amount > g_session.m_bankBalance) {
-      notice(0x997);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x997)), 255, 0, 0, 0);
       this->m_status = LookupMessage(0xAE2);
-    } else if (g_session.m_zeny + amount < 0x80000000LL) {
-      send(0x9A9, amount);
-    } else {
-      notice(0x99B);
+    } else if (static_cast<unsigned int>(g_session.m_zeny + static_cast<int>(amount)) > 0x7FFFFFFFu) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x99B)), 255, 0, 0, 0);
       this->m_status = LookupMessage(0xAE3);
+    } else {
+      PACKET_CZ_BANK_TRANSACTION packet;
+      packet.amount = static_cast<int>(amount);
+      packet.id = 0x9A9;
+      packet.aid = g_session.m_aid;
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      this->m_status.clear();
     }
     return 0;
   }
