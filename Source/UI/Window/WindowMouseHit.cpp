@@ -17,6 +17,11 @@
 #include <algorithm>
 
 // INLINED
+static MessengerMember PartyMember(UIMiniPartyWnd* window) {
+  return window->m_member;
+}
+
+// INLINED
 static __forceinline void PromoteWindow(UIWindowMgr* manager, UIWindow* window) {
   if (!window || (manager->modal != nullptr && manager->window_4F174 != window)) {
     return;
@@ -63,9 +68,48 @@ __declspec(noinline) UIWindow* UIWindowMgr::FindRenderedUid(std::uint32_t uid) {
   return nullptr;
 }
 
+// OFFSET: 0x00A91B70
+// FUNCTION: fn_45428
+void WindowScreenPosition(const UIWindow* window, int& x, int& y) {
+  int horizontal = 0;
+  int vertical = 0;
+
+  for (const UIWindow* node = window; node; node = node->parent) {
+    horizontal = (horizontal + node->geometry.x);
+    vertical = (vertical + node->geometry.y);
+  }
+
+  x = horizontal;
+  y = vertical;
+}
+
+// OFFSET: 0x00A91BA0
+// FUNCTION: fn_45429
+void WindowScreenBounds(const UIWindow* window, int& left, int& top, int& right, int& bottom) {
+  bottom = 0;
+  right = 0;
+  top = 0;
+  left = 0;
+
+  int horizontal = 0;
+  int vertical = 0;
+
+  for (const UIWindow* node = window; node; node = node->parent) {
+    horizontal = (horizontal + node->geometry.x);
+    vertical = (vertical + node->geometry.y);
+  }
+
+  left = horizontal;
+  top = vertical;
+  if (window) {
+    right = (window->geometry.width + left);
+    bottom = (window->geometry.height + top);
+  }
+}
+
 // OFFSET: 0x00A91C70
 // FUNCTION: fn_17171
-UIWindow* UIWindowMgr::HitTestWindows(int x, int y) {
+__declspec(noinline) UIWindow* UIWindowMgr::HitTestWindows(int x, int y) {
   for (auto entry = this->rendered.rbegin(); entry != this->rendered.rend(); ++entry) {
     UIWindow* hit = (*entry)->HitTest(x, y);
 
@@ -110,7 +154,8 @@ int UIWindowMgr::ProcessMouse() {
   const int y = g_mouse.y;
 
   if (this->modalWindows.empty() || !this->modalWindows.back()) {
-    for (UIWindow* window : this->retired) {
+    for (auto entry = this->retired.begin(); entry != this->retired.end(); ++entry) {
+      UIWindow* window = *entry;
       if (this->window_4F16C == window) {
         this->window_4F16C = nullptr;
       }
@@ -125,7 +170,7 @@ int UIWindowMgr::ProcessMouse() {
       }
       this->Destroy(window);
     }
-    this->retired.clear();
+    this->retired.erase(this->retired.begin(), this->retired.end());
   }
 
   for (UIWindow* window : this->deferredDeletion) {
@@ -135,10 +180,11 @@ int UIWindowMgr::ProcessMouse() {
   }
   this->deferredDeletion.clear();
 
-  for (int accountId : this->unknown_4F248) {
+  for (auto account = this->unknown_4F248.begin(); account != this->unknown_4F248.end(); ++account) {
+    const int accountId = *account;
     for (auto entry = this->snapExcluded.begin(); entry != this->snapExcluded.end();) {
       UIWindow* window = *entry;
-      if (static_cast<int>(static_cast<UIMiniPartyWnd*>(window)->GetMember().accountId) == accountId) {
+      if (static_cast<int>(PartyMember(static_cast<UIMiniPartyWnd*>(window)).accountId) == accountId) {
         this->Destroy(window);
         entry = this->snapExcluded.erase(entry);
       } else {
