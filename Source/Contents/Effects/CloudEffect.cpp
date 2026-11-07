@@ -12,6 +12,27 @@
 #include <cstdlib>
 #include <string>
 
+namespace {
+  // INLINED
+  __forceinline void StepDrift(int& angle, int& target) {
+    int goal = target;
+    if (goal > angle) {
+      const int next = std::min(360, angle + 1);
+      angle = next;
+      if (goal < next) {
+        goal = next ? std::max(rand() % next, 0) : 0;
+      }
+    } else {
+      const int next = std::max(0, angle - 1);
+      angle = next;
+      if (goal >= next) {
+        goal = 360 - (next ? std::max(rand() % next, 0) : 0);
+      }
+    }
+    target = goal;
+  }
+}
+
 // OFFSET: 0x006FB9A0
 // FUNCTION: fn_06914
 CCloud::CCloud()
@@ -137,43 +158,20 @@ void CCloud::Slot04() {
 // OFFSET: 0x006FC160
 // FUNCTION: fn_06922
 void CCloud::Drift() {
-  int targetX = this->driftTargetX;
-  if (targetX > this->driftX) {
-    this->driftX = std::min(this->driftX + 1, 360);
-    if (targetX < this->driftX) {
-      targetX = this->driftX ? std::max(rand() % this->driftX, 0) : 0;
-    }
-  } else {
-    this->driftX = std::max(this->driftX - 1, 0);
-    if (targetX >= this->driftX) {
-      targetX = 360 - (this->driftX ? std::max(rand() % this->driftX, 0) : 0);
-    }
-  }
-  this->driftTargetX = targetX;
-
-  int targetZ = this->driftTargetZ;
-  if (targetZ > this->driftZ) {
-    this->driftZ = std::min(this->driftZ + 1, 360);
-    if (targetZ < this->driftZ) {
-      targetZ = this->driftZ ? std::max(rand() % this->driftZ, 0) : 0;
-    }
-  } else {
-    this->driftZ = std::max(this->driftZ - 1, 0);
-    if (targetZ >= this->driftZ) {
-      targetZ = 360 - (this->driftZ ? std::max(rand() % this->driftZ, 0) : 0);
-    }
-  }
-  this->driftTargetZ = targetZ;
+  StepDrift(this->driftX, this->driftTargetX);
+  StepDrift(this->driftZ, this->driftTargetZ);
 
   CParticle* particle = this->particle;
-  const float offsetX = particle->unknown_00D0;
+  float offsetX = particle->unknown_00D0;
   const float offsetY = particle->unknown_00D4;
-  const float offsetZ = particle->unknown_00D8;
+  float offsetZ = particle->unknown_00D8;
+  offsetX = g_sinTable[this->driftX] * 0.05f + offsetX;
+  offsetZ = g_sinTable[this->driftZ] * 0.05f + offsetZ;
+  particle->unknown_00D0 = offsetX;
   particle->unknown_00D4 = offsetY;
-  particle->unknown_00D0 = g_sinTable[this->driftX] * 0.05f + offsetX;
-  particle->unknown_00D8 = g_sinTable[this->driftZ] * 0.05f + offsetZ;
+  particle->unknown_00D8 = offsetZ;
 
-  this->particle->position.x = particle->unknown_00D0 + this->position[0];
+  this->particle->position.x = offsetX + this->position[0];
   this->particle->position.y = offsetY + this->position[1];
-  this->particle->position.z = particle->unknown_00D8 + this->position[2];
+  this->particle->position.z = offsetZ + this->position[2];
 }
