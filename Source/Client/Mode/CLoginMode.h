@@ -186,7 +186,6 @@ public:
   void PollNetworkStatus();
 };
 
-extern bool g_loginModeFlag;
 extern int g_charServerAccountIdPending;
 extern std::uint32_t g_loginAcceptTime;
 extern int g_loginStartMode;

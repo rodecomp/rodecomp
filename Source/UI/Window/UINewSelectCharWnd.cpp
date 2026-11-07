@@ -628,7 +628,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     case 0xB9:
       g_accountLinkedUserDataMgr->Save();
-      if (g_loginModeFlag == 1) {
+      if (g_session.m_loginModeFlag == 1) {
         if (g_windowMgr.Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
           g_modeMgr.gameMode->SendMsg(0x271B, 0, 0, 0, 0);
         }

@@ -120,8 +120,6 @@ int g_skillTooltipActive;
 // GLOBAL: gl_24654
 DWORD g_skillTooltipTick;
 
-// GLOBAL: gl_25385
-bool g_itemStoreSortMode[3];
 
 // GLOBAL: gl_25457
 char g_skillListCount;
@@ -11214,10 +11212,10 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       }
     }
 
-    if (g_itemStoreSortMode[1]) {
+    if (g_session.m_itemAscendingOrder) {
       reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort1();
     }
-    if (g_itemStoreSortMode[2]) {
+    if (g_session.m_itemDescendingOrder) {
       reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed1();
     }
     if (!this->searchText.empty()) {
@@ -11284,15 +11282,15 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     return 0;
   }
   case 364:
-    if (g_itemStoreSortMode[0] == true) {
+    if (g_session.m_itemDefaultSort == true) {
       this->SendMsg(nullptr, 246, 0, 0, 0, 0);
       return 0;
     }
 
     this->sorted = true;
-    if (g_itemStoreSortMode[1] == true) {
+    if (g_session.m_itemAscendingOrder == true) {
       reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort1();
-    } else if (g_itemStoreSortMode[2] == true) {
+    } else if (g_session.m_itemDescendingOrder == true) {
       reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed1();
     }
     break;

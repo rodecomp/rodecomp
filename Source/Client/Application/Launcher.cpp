@@ -796,11 +796,7 @@ bool AcquireInstanceMutex(HANDLE* mutex) {
 // GLOBAL: gl_24515
 char* g_commandLine;
 
-// GLOBAL: gl_25074
-bool g_launchAccountEnabled;
 
-// GLOBAL: gl_25075
-char g_launchAccountName[0x1F4];
 
 // GLOBAL: gl_25076
 char g_launchAccountPassword[24];
@@ -834,8 +830,8 @@ HANDLE StartClientProcess(char* program) {
 
   if (g_launchPassCommandLine) {
     StringFormat(commandLine, sizeof(commandLine), static_cast<std::size_t>(-1), "%s %s", program, g_commandLine);
-  } else if (g_launchAccountEnabled) {
-    StringFormat(commandLine, sizeof(commandLine), static_cast<std::size_t>(-1), "%s %s %s %c %s", program, g_launchAccountName,
+  } else if (g_session.m_launchAccountEnabled) {
+    StringFormat(commandLine, sizeof(commandLine), static_cast<std::size_t>(-1), "%s %s %s %c %s", program, g_session.m_loginErrorText,
                  g_launchAccountPassword, g_launchAccountSex, g_launchServerName);
   } else {
     StringFormat(commandLine, sizeof(commandLine), static_cast<std::size_t>(-1), program);
@@ -1478,7 +1474,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     const char accountMarkerSource[] = {'\xA4', '\xAF', '\x59', '\x79'};
     thread_local EncryptedName<sizeof(accountMarkerSource), 0xB3CF9BEB7963DB89ULL> accountMarker(accountMarkerSource);
     if (std::strstr(commandLine, accountMarker.Text()) && !g_replayMode) {
-      g_launchAccountEnabled = true;
+      g_session.m_launchAccountEnabled = true;
       char* marker = std::strstr(commandLine, "-t:");
       char* account = marker + 3;
       char* accountEnd = std::strstr(account, " ");
@@ -1487,8 +1483,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
       }
 
       int length = accountEnd - account;
-      std::strncpy(g_launchAccountName, account, length > 500 ? 500 : length);
-      g_launchAccountName[length > 499 ? 499 : length] = 0;
+      std::strncpy(g_session.m_loginErrorText, account, length > 500 ? 500 : length);
+      g_session.m_loginErrorText[length > 499 ? 499 : length] = 0;
 
       char* password = accountEnd + 1;
       char* passwordEnd = std::strstr(password, " ");
@@ -1532,9 +1528,9 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
         return 0;
       }
 
-      g_launchAccountEnabled = false;
+      g_session.m_launchAccountEnabled = false;
       for (int index = 0; index < 500; ++index) {
-        g_launchAccountName[index] = 0;
+        g_session.m_loginErrorText[index] = 0;
       }
 
       for (int index = 0; index < 24; ++index) {

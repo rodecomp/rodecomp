@@ -1,5 +1,6 @@
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
@@ -60,8 +61,6 @@ namespace {
   static_assert(sizeof(NotifyBanPacket) == 3);
 }
 
-// GLOBAL: gl_25059
-bool g_loginModeFlag;
 
 // OFFSET: 0x00D9A350
 // FUNCTION: fn_22311
@@ -268,7 +267,7 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
     g_windowMgr.Confirm(message, 0, true, true, 0, "Message", 280, 120, 0);
   }
 
-  if (g_loginModeFlag == true) {
+  if (g_session.m_loginModeFlag == true) {
     this->pendingCursorType = 3;
   } else {
     g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);

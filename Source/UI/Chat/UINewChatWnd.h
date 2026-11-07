@@ -11,8 +11,6 @@ class UIChatHisBox;
 class UITabControl;
 class UIEditCtrl;
 
-extern std::uint8_t g_chatInputFlag;
-
 class UINewChatWnd : public UIFrameWnd {
 public:
   UINewChatWnd();

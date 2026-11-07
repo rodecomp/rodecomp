@@ -2211,7 +2211,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     }
   }
 
-  if (g_loginModeFlag == true) {
+  if (g_session.m_loginModeFlag == true) {
     this->pendingCursorType = 3;
   } else {
     g_modeMgr.Quit();

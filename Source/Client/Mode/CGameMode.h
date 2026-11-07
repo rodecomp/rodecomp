@@ -1021,7 +1021,6 @@ struct MiniMapEffectMarker {
 extern std::map<int, MiniMapEffectMarker> g_miniMapEffectMarkers;
 extern char g_pendingWhisperCount;
 extern int g_whisperRecord;
-extern int g_timeAttackStart;
 void CloseWhisperRecord();
 extern unsigned char g_gameModePacketBuffer[0x10000];
 extern int g_unknown173A5BC;

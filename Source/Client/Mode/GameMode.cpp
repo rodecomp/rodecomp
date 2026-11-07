@@ -7252,7 +7252,7 @@ void CGameMode::InitializeState() {
     g_windowMgr.EnsureWindow(159);
   }
 
-  if (g_closeWindow164State) {
+  if (g_session.m_partyBooking.unknown_0000) {
     g_windowMgr.EnsureWindow(164);
   }
 

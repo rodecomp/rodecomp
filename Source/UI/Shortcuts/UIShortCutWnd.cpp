@@ -73,9 +73,6 @@ struct MemorialDungeonCommandPacket {
 #pragma pack(pop)
 }
 
-// GLOBAL: gl_24660
-std::uint8_t g_chatInputFlag;
-
 
 
 // GLOBAL: gl_24888
@@ -535,7 +532,7 @@ void UINewChatWnd::SaveChatWndInfo() {
   file.Open("SaveData\\ChatWndInfo_U.lua", 0x1001, true, false);
 
   char text[500];
-  sprintf(text, "CanDragWnd = %d\r\n\r\n", g_chatInputFlag == 1);
+  sprintf(text, "CanDragWnd = %d\r\n\r\n", g_session.m_canDragWnd == 1);
   file.Write(text, std::strlen(text));
 
   int index = 1;
@@ -580,7 +577,7 @@ void UINewChatWnd::SaveChatWndInfo() {
 // OFFSET: 0x009328F0
 // FUNCTION: fn_12712
 void UINewChatWnd::OnMouseMove(int x, int y) {
-  if (g_windowMgr.Capture() == this && g_chatInputFlag == 1) {
+  if (g_windowMgr.Capture() == this && g_session.m_canDragWnd == 1) {
     this->UIFrameWnd::OnMouseMove(x, y);
   }
 }
@@ -655,7 +652,7 @@ void UINewChatWnd::Paint() {
     }
 
     auto* lock = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-      Resolve(g_chatInputFlag ? "유저인터페이스\\basic_interface\\unlock_dragwnd.bmp" : "유저인터페이스\\basic_interface\\lock_dragwnd.bmp")
+      Resolve(g_session.m_canDragWnd ? "유저인터페이스\\basic_interface\\unlock_dragwnd.bmp" : "유저인터페이스\\basic_interface\\lock_dragwnd.bmp")
     ));
     if (lock) {
       this->DrawBitmap(this->m_lockButtonX, 4, &lock->image, true);
@@ -1294,7 +1291,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       return 0;
     }
   case 0xE:
-    if (g_chatInputFlag != 0 && argument1 == 7) {
+    if (g_session.m_canDragWnd != 0 && argument1 == 7) {
       int width = static_cast<int>(argument2);
       int height = static_cast<int>(argument3);
       if (width > 0x200) {

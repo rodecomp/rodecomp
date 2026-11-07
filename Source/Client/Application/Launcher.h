@@ -15,8 +15,6 @@ bool AcquireInstanceMutex(HANDLE* mutex);
 void ShutdownManagers();
 
 extern char* g_commandLine;
-extern bool g_launchAccountEnabled;
-extern char g_launchAccountName[0x1F4];
 extern char g_launchAccountPassword[24];
 extern char g_launchAccountSex;
 extern bool g_launchPassCommandLine;

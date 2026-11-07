@@ -294,8 +294,6 @@ UIWindowMgr g_windowMgr;
 bool g_windowToggleFlag;
 
 
-// GLOBAL: gl_24687
-int g_closeWindow164State;
 
 // GLOBAL: gl_24683
 int g_windowCloseValue;
@@ -2597,7 +2595,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       return false;
     }
 
-    if (this->LookupWindow(277) && g_loginModeFlag == 1) {
+    if (this->LookupWindow(277) && g_session.m_loginModeFlag == 1) {
       if (g_windowMgr.Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.gameMode->SendMsg(10011, 0, 0, 0, 0);
       }
@@ -3799,7 +3797,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->Schedule(this->unknown_02B0);
       this->unknown_02B0 = nullptr;
       closed = true;
-      g_closeWindow164State = 0;
+      g_session.m_partyBooking.unknown_0000 = 0;
     }
     break;
   case 168:

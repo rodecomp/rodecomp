@@ -12,9 +12,6 @@
 #include <utility>
 
 
-// GLOBAL: gl_24978
-int g_partyBookingLevelMax;
-
 // OFFSET: 0x00912010
 // FUNCTION: fn_12525
 UISeekPartyWnd::UISeekPartyWnd() : UIFrameWnd(0) {
@@ -36,7 +33,7 @@ UISeekPartyWnd::UISeekPartyWnd() : UIFrameWnd(0) {
 void UISeekPartyWnd::OnCreate(int, int) {
   char text[0x80] = {};
   const int minimum = g_session.m_partyBookingLevelLimit;
-  int maximum = g_partyBookingLevelMax;
+  int maximum = g_session.m_maxLevel;
   if (minimum + 0xF <= maximum) {
     maximum = minimum + 0xF;
   }

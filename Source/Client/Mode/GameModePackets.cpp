@@ -10105,10 +10105,10 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
   if (packet->aid == g_session.m_aid && (actor = this->scene->player) != nullptr) {
     if (packet->count == 1) {
       if (static_cast<CPlayer*>(actor)->unknown_0494 != 1) {
-        g_timeAttackStart = timeGetTime();
+        g_session.m_timeAttackStart = timeGetTime();
       }
     } else {
-      g_timeAttackStart = 0;
+      g_session.m_timeAttackStart = 0;
     }
 
     const int previous = this->scene->player->unknown_0494;
