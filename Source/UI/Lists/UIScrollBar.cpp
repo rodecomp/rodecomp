@@ -600,7 +600,7 @@ void UITabControl::SetFlag(int index, bool value) {
 // FUNCTION: fn_11588
 void UITabControl::AddTab(const char* label, const char* tooltip) {
   this->labels.push_back(std::string(label));
-  this->tooltips.emplace_back();
+  this->tooltips.push_back(std::string());
 
   if (this->parent) {
     const int tabWidth = this->parent->geometry.width / this->labels.size() - this->tabPadding;
@@ -1009,6 +1009,7 @@ void UITabControl::DrawVerticalTab(int index) {
 
   const int textX = (this->geometry.width - 12) / 2;
   int x = textX + 1;
+  const int textY = (width - textHeight) / 2 + (width - textHeight) % 2 + y;
   std::uint32_t color;
   if (this->unknown_007C == index) {
     this->FillTab(index, 0, y, this->geometry.width, width, this->activeFillColor);
@@ -1028,7 +1029,7 @@ void UITabControl::DrawVerticalTab(int index) {
     color = this->inactiveTextColor;
   }
 
-  this->DrawVerticalText(x, (width - textHeight) / 2 + (width - textHeight) % 2 + y, this->labels[index].c_str(), 0, 0, this->unknown_00E8, color, 0);
+  this->DrawVerticalText(x, textY, this->labels[index].c_str(), 0, 0, this->unknown_00E8, color, 0);
 }
 
 // OFFSET: 0x0087F1D0
@@ -1072,6 +1073,7 @@ void UITabControl::DrawHorizontalTab(int index) {
     x += this->widths[previous] - 1;
   }
 
+  const int textX = (width - textWidth) / 2 + (width - textWidth) % 2 + x;
   const int textY = (this->geometry.height - 12) / 2;
   int y = textY + 1;
   std::uint32_t color;
@@ -1093,7 +1095,7 @@ void UITabControl::DrawHorizontalTab(int index) {
     color = this->inactiveTextColor;
   }
 
-  this->DrawTextAt((width - textWidth) / 2 + (width - textWidth) % 2 + x, y, this->labels[index].c_str(), 0, 0,
+  this->DrawTextAt(textX, y, this->labels[index].c_str(), 0, 0,
     this->unknown_00E8, color, 0, 0
   );
 }
@@ -1438,11 +1440,10 @@ void UIChatHisBox::Paint() {
     this->parent->SendMsg(this, 116, 0, 0, 0, 0);
   }
 
+  const unsigned int lineCount = static_cast<unsigned int>(this->lines.size());
   const int top = this->topLine;
-  unsigned int end = static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top);
-  if (this->lines.size() < end) {
-    end = static_cast<unsigned int>(this->lines.size());
-  }
+  const unsigned int visible = static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top);
+  const unsigned int end = lineCount < visible ? lineCount : visible;
 
   FontCache& fonts = g_fontCache;
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
