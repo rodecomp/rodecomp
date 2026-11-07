@@ -115,3 +115,5 @@ bool CStopRecruitingAsyncWork::Execute() {
 void CStopRecruitingAsyncWork::Complete() {
   g_adventurerAgencyMgr->CompleteStopRecruiting(this->m_diagnostic, this->m_response);
 }
+
+template void std::deque<CStopRecruitingAsyncWork*>::push_back(CStopRecruitingAsyncWork*&&);

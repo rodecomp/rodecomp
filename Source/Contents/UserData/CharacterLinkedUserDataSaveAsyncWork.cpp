@@ -121,3 +121,5 @@ bool CCharacterLinkedUserDataSaveAsyncWork::Execute() {
 void CCharacterLinkedUserDataSaveAsyncWork::Complete() {
   g_characterLinkedUserDataMgr->CompleteSave();
 }
+
+template void std::deque<CCharacterLinkedUserDataSaveAsyncWork*>::push_back(CCharacterLinkedUserDataSaveAsyncWork*&&);

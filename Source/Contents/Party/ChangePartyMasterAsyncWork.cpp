@@ -133,3 +133,5 @@ bool CChangePartyMasterAsyncWork::Execute() {
 void CChangePartyMasterAsyncWork::Complete() {
   g_adventurerAgencyMgr->CompleteChangeMaster(this->m_diagnostic, this->m_response, *this->m_windows);
 }
+
+template void std::deque<CChangePartyMasterAsyncWork*>::push_back(CChangePartyMasterAsyncWork*&&);

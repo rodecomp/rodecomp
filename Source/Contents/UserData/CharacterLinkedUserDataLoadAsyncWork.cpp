@@ -121,3 +121,5 @@ void CCharacterLinkedUserDataLoadAsyncWork::Complete() {
     this->m_diagnostic, this->m_accountId, this->m_characterId, this->m_accountName, this->m_response
   );
 }
+
+template void std::deque<CCharacterLinkedUserDataLoadAsyncWork*>::push_back(CCharacterLinkedUserDataLoadAsyncWork*&&);

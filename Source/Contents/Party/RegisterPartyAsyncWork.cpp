@@ -175,3 +175,5 @@ bool CRegisterPartyAsyncWork::Execute() {
 void CRegisterPartyAsyncWork::Complete() {
   g_adventurerAgencyMgr->CompleteRegistration(this->m_diagnostic, this->m_response);
 }
+
+template void std::deque<CRegisterPartyAsyncWork*>::push_back(CRegisterPartyAsyncWork*&&);

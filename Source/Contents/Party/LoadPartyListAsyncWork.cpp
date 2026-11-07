@@ -186,3 +186,5 @@ bool CLoadPartyListAsyncWork::Execute() {
 void CLoadPartyListAsyncWork::Complete() {
   g_adventurerAgencyMgr->CompleteList(this->m_diagnostic, this->m_response, *this->m_windows);
 }
+
+template void std::deque<CLoadPartyListAsyncWork*>::push_back(CLoadPartyListAsyncWork*&&);

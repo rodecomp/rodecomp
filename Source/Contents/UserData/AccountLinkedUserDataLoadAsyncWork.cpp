@@ -117,3 +117,5 @@ void CAccountLinkedUserDataLoadAsyncWork::Complete() {
     this->m_diagnostic, this->m_accountId, this->m_accountName, this->m_response
   );
 }
+
+template void std::deque<CAccountLinkedUserDataLoadAsyncWork*>::push_back(CAccountLinkedUserDataLoadAsyncWork*&&);

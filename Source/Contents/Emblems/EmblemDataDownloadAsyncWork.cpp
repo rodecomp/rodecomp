@@ -125,3 +125,5 @@ void CEmblemDataDownloadAsyncWork::Complete() {
   CEmblemDataMgr* emblems = g_emblemDataMgr;
   emblems->CompleteDownload(this->m_diagnostic, this->m_responseCode, this->m_response, this->m_guildId, this->m_version);
 }
+
+template void std::deque<CEmblemDataDownloadAsyncWork*>::push_back(CEmblemDataDownloadAsyncWork*&&);

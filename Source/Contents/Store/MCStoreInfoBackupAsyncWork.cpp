@@ -211,3 +211,6 @@ bool CMCStoreInfoBackupSaveAsyncWork::Execute() {
 void CMCStoreInfoBackupSaveAsyncWork::Complete() {
   g_session.m_storeInfoBackup.CompleteSave(this->m_diagnostic, this->m_response);
 }
+
+template void std::deque<CMCStoreInfoBackupSaveAsyncWork*>::push_back(CMCStoreInfoBackupSaveAsyncWork*&&);
+template void std::deque<CMCStoreInfoBackupLoadAsyncWork*>::push_back(CMCStoreInfoBackupLoadAsyncWork*&&);

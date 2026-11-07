@@ -121,3 +121,5 @@ bool CAccountLinkedUserDataSaveAsyncWork::Execute() {
 void CAccountLinkedUserDataSaveAsyncWork::Complete() {
   g_accountLinkedUserDataMgr->CompleteSave();
 }
+
+template void std::deque<CAccountLinkedUserDataSaveAsyncWork*>::push_back(CAccountLinkedUserDataSaveAsyncWork*&&);

@@ -118,3 +118,5 @@ void CLoadPartyInfoAsyncWork::Complete() {
   CAdventurerAgencyMgr* manager = g_adventurerAgencyMgr;
   manager->CompletePartyInfo(this->m_diagnostic, this->m_response);
 }
+
+template void std::deque<CLoadPartyInfoAsyncWork*>::push_back(CLoadPartyInfoAsyncWork*&&);

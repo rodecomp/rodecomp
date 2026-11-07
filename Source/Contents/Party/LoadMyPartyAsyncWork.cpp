@@ -120,3 +120,5 @@ bool CLoadMyPartyAsyncWork::Execute() {
 void CLoadMyPartyAsyncWork::Complete() {
   g_adventurerAgencyMgr->CompleteMyParty(this->m_diagnostic, this->m_response, *this->m_windows);
 }
+
+template void std::deque<CLoadMyPartyAsyncWork*>::push_back(CLoadMyPartyAsyncWork*&&);

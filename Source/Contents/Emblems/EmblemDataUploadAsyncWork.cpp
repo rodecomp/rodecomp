@@ -134,3 +134,5 @@ bool CEmblemDataUploadAsyncWork::Execute() {
 void CEmblemDataUploadAsyncWork::Complete() {
   g_emblemDataMgr->CompleteUpload(this->m_diagnostic, this->m_response, this->m_guildId);
 }
+
+template void std::deque<CEmblemDataUploadAsyncWork*>::push_back(CEmblemDataUploadAsyncWork*&&);
