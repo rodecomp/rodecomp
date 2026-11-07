@@ -961,7 +961,7 @@ void UIBarterItemPurchaseWnd::Slot28(int x, int y) {
     std::string text;
     BarterMarketItem item = found.second;
     ITEM_DESC description = FindItemDescription(item.field_2c);
-    text = FormatOwnedString(LookupMessage(3553), description.identifiedName, item.field_28 * item.value);
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(3553), description.identifiedName, item.field_28 * item.value));
     CMode* tooltip = g_modeMgr.gameMode;
     ITEM_INFO info = item.ToItemInfo();
     if (tooltip) {
@@ -980,7 +980,7 @@ void UIBartermarketWnd::Slot28(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
     std::string text;
     ITEM_DESC description = FindItemDescription(found.second.field_2c);
-    text = FormatOwnedString(LookupMessage(3553), description.identifiedName, found.second.field_28);
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(3553), description.identifiedName, found.second.field_28));
     CMode* tooltip = g_modeMgr.gameMode;
     ITEM_INFO info = found.second.ToItemInfo();
     if (tooltip) {
