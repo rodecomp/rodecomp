@@ -5442,7 +5442,7 @@ void CGrannyPc::SendMsg(
 // OFFSET: 0x00DAC080
 // FUNCTION: fn_22592
 bool CGrannyPc::Slot14() {
-  if (this->unknown_0278 != 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
+  if (static_cast<std::uint32_t>(this->unknown_0278) > 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
     this->render.isMotionFreezed = false;
     this->unknown_0278 = 0;
   }
@@ -5453,27 +5453,6 @@ bool CGrannyPc::Slot14() {
 
   g_modeMgr.GetGameMode();
   switch (this->render.unknown_0070) {
-  case 2:
-    this->Slot08();
-    this->GetElapsedFrames();
-    if (this->render.isMotionFinished) {
-      this->Slot15(0, 1);
-    }
-    return true;
-  case 3:
-    this->render.unknown_00C8 = 0;
-    this->render.unknown_00D8 = 0;
-    this->render.unknown_00DC = 0;
-    this->render.isMotionFreezed = false;
-  case 6:
-    this->Slot08();
-    return true;
-  case 7:
-    this->Slot08();
-    if (this->render.isMotionFinished) {
-      this->Slot15(0, 1);
-    }
-    return true;
   case 8: {
     this->Slot08();
     const int frames = static_cast<int>(this->GetElapsedFrames());
@@ -5485,25 +5464,12 @@ bool CGrannyPc::Slot14() {
     }
     return true;
   }
-  default:
-    return CGameActor::Slot14();
-  }
-}
-
-// OFFSET: 0x00DAC200
-// FUNCTION: fn_22593
-bool CPc::Slot14() {
-  if (this->unknown_0278 != 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
-    this->render.isMotionFreezed = false;
-    this->unknown_0278 = 0;
-  }
-
-  if (!this->UpdateFadeOut()) {
-    return false;
-  }
-
-  g_modeMgr.GetGameMode();
-  switch (this->render.unknown_0070) {
+  case 7:
+    this->Slot08();
+    if (this->render.isMotionFinished) {
+      this->Slot15(0, 1);
+    }
+    return true;
   case 2:
     this->Slot08();
     this->GetElapsedFrames();
@@ -5517,12 +5483,38 @@ bool CPc::Slot14() {
     this->render.unknown_00DC = 0;
     this->render.isMotionFreezed = false;
   case 6:
-  case 60:
-  case 61:
-  case 66:
-  case 81:
     this->Slot08();
     return true;
+  default:
+    return CGameActor::Slot14();
+  }
+}
+
+// OFFSET: 0x00DAC200
+// FUNCTION: fn_22593
+bool CPc::Slot14() {
+  if (static_cast<std::uint32_t>(this->unknown_0278) > 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
+    this->render.isMotionFreezed = false;
+    this->unknown_0278 = 0;
+  }
+
+  if (!this->UpdateFadeOut()) {
+    return false;
+  }
+
+  g_modeMgr.GetGameMode();
+  switch (this->render.unknown_0070) {
+  case 8: {
+    this->Slot08();
+    const int frames = static_cast<int>(this->GetElapsedFrames());
+    if (this->hitTargetAid != 0 && frames % 34 == 0) {
+      CRenderObject* target = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(this->hitTargetAid);
+      if (target) {
+        this->Face(target->render.position.x, target->render.position.z);
+      }
+    }
+    return true;
+  }
   case 7:
   case 45:
   case 62:
@@ -5548,17 +5540,25 @@ bool CPc::Slot14() {
       this->Slot15(0, 1);
     }
     return true;
-  case 8: {
+  case 2:
     this->Slot08();
-    const int frames = static_cast<int>(this->GetElapsedFrames());
-    if (this->hitTargetAid != 0 && frames % 34 == 0) {
-      CRenderObject* target = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(this->hitTargetAid);
-      if (target) {
-        this->Face(target->render.position.x, target->render.position.z);
-      }
+    this->GetElapsedFrames();
+    if (this->render.isMotionFinished) {
+      this->Slot15(0, 1);
     }
     return true;
-  }
+  case 3:
+    this->render.unknown_00C8 = 0;
+    this->render.unknown_00D8 = 0;
+    this->render.unknown_00DC = 0;
+    this->render.isMotionFreezed = false;
+  case 6:
+  case 60:
+  case 61:
+  case 66:
+  case 81:
+    this->Slot08();
+    return true;
   case 51:
     this->Slot08();
     if (this->render.isMotionFinished == true) {
