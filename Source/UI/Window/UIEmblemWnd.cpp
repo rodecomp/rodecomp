@@ -25,14 +25,14 @@ void UIEmblemWnd::Paint() {
   if (framed && g_session.GetSceneUnknown004C() && !g_session.WorldUnknown0050()) {
     CBitmapRes* frame = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\emblem_frame.bmp")));
     if (frame) {
-      this->DrawBitmap(0, 0, &frame->image, true);
+      this->DrawBitmap(0, 0, frame, true);
     }
   }
 
   const std::string name = g_guildMgr->GetEmblemFilename(this->guildId);
   CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
   if (emblem && g_session.GetSceneUnknown004C() && !g_session.WorldUnknown0050()) {
-    this->DrawBitmap(framed ? 2 : 0, framed ? 2 : 0, &emblem->gif.image, true);
+    this->DrawBitmap(framed ? 2 : 0, framed ? 2 : 0, &emblem->gif, true);
   }
 }
 
