@@ -4236,32 +4236,32 @@ void CRagEffect::SlashFan(std::int16_t reverse) {
     return;
   }
 
-  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 55, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.unknown_11C84->renderFlag |= 0x200;
-  this->state.unknown_11C84->duration = this->state.duration;
-  AllocateTextures(*this->state.unknown_11C84);
-  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\slash01.tga", 0, false, true, false);
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 55, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.renderFlag |= 0x200;
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\slash01.tga", 0, false, true, false);
   this->render.position.y -= 9.0f;
-  this->state.unknown_11C84->slots[0].life = 0;
-  this->state.unknown_11C84->slots[1].life = 0;
-  this->state.unknown_11C84->slots[2].life = 0;
-  this->state.unknown_11C84->slots[3].life = 0;
+  this->state.lastPrim->state.slots[0].life = 0;
+  this->state.lastPrim->state.slots[1].life = 0;
+  this->state.lastPrim->state.slots[2].life = 0;
+  this->state.lastPrim->state.slots[3].life = 0;
 
   for (int index = 0; index < 4; ++index) {
-    this->state.unknown_11C84->slots[index].life = 1;
-    this->state.unknown_11C84->slots[index].process = 0;
-    this->state.unknown_11C84->slots[index].distance = 100.0f;
-    this->state.unknown_11C84->slots[index].maxHeight = 1.0f;
-    this->state.unknown_11C84->slots[index].height[0] = reverse == 0 ? -15.0f - static_cast<float>(index) * 2.5f : static_cast<float>(index) * 2.5f + 15.0f;
+    this->state.lastPrim->state.slots[index].life = 1;
+    this->state.lastPrim->state.slots[index].process = 0;
+    this->state.lastPrim->state.slots[index].distance = 100.0f;
+    this->state.lastPrim->state.slots[index].maxHeight = 1.0f;
+    this->state.lastPrim->state.slots[index].height[0] = reverse == 0 ? -15.0f - static_cast<float>(index) * 2.5f : static_cast<float>(index) * 2.5f + 15.0f;
     Get_Angle(
-      this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle
+      this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.lastPrim->state.slots[index].riseAngle
     );
 
-    if (this->state.unknown_11C84->slots[index].riseAngle > 359) {
-      this->state.unknown_11C84->slots[index].riseAngle -= 360;
+    if (this->state.lastPrim->state.slots[index].riseAngle > 359) {
+      this->state.lastPrim->state.slots[index].riseAngle -= 360;
     }
 
-    this->state.unknown_11C84->slots[index].alphaB = 0;
+    this->state.lastPrim->state.slots[index].alphaB = 0;
   }
 }
 
