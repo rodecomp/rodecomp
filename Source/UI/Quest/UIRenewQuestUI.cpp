@@ -1162,8 +1162,8 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     const RenewQuestRecommendedInfo& info = found->second;
     item->icon->SetImage(std::format("유저인터페이스\\renew_questui\\{}", info.m_icon.empty() ? std::string("ico_nq.bmp") : info.m_icon));
     item->icon->tooltip = info.m_iconTooltip;
-    item->unknown_00EC->SetText(info.m_title.c_str(), info.m_title.size());
-    item->unknown_00F0->SetText(info.unknown_004C.c_str(), info.unknown_004C.size());
+    item->unknown_00EC->SetText(info.m_title);
+    item->unknown_00F0->SetText(info.unknown_004C);
     item->unknown_00F4->Show(0);
     item->unknown_00F8->Show(1);
     item->unknown_00F8->checked = info.m_active;
@@ -1179,8 +1179,8 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     const RenewQuestOngoingInfo& info = found->second;
     item->icon->SetImage(std::format("유저인터페이스\\renew_questui\\{}", info.m_icon.empty() ? std::string("ico_nq.bmp") : info.m_icon));
     item->icon->tooltip = info.m_iconTooltip;
-    item->unknown_00EC->SetText(info.m_title.c_str(), info.m_title.size());
-    item->unknown_00F0->SetText(info.unknown_004C.c_str(), info.unknown_004C.size());
+    item->unknown_00EC->SetText(info.m_title);
+    item->unknown_00F0->SetText(info.unknown_004C);
     item->unknown_00F4->Show(this->type != 8);
     item->unknown_00F4->checked = info.m_simpleView;
     item->unknown_00F4->Invalidate();

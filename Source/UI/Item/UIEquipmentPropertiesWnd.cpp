@@ -879,11 +879,11 @@ void CUIEquipmentPropertiesWnd::BindLine(EquipmentPropertiesWnd::CUIItemEquipmen
     std::vector<std::string> title = Split(parts[0], "{~}");
     if (title.size() > 1) {
       line->unknown_00E8->SetColor(0x3C00FF);
-      line->unknown_00E8->SetText(title[1].c_str(), title[1].size());
+      line->unknown_00E8->SetText(title[1]);
     } else {
-      line->unknown_00E8->SetText(parts[0].c_str(), parts[0].size());
+      line->unknown_00E8->SetText(parts[0]);
     }
-    line->unknown_00EC->SetText(parts[1].c_str(), parts[1].size());
+    line->unknown_00EC->SetText(parts[1]);
   } else {
     line->unknown_00E8->SetText("");
     line->unknown_00EC->SetText(parts[0].c_str(), parts[0].size());

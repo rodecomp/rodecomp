@@ -450,7 +450,7 @@ void CUISkillDelayInfo::OnSelectItem(SkillDelayInfo::CUIDelayItem*, const SkillD
 // FUNCTION: fn_16881
 void CUISkillDelayInfo::OnUpdateItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data) {
   const std::string text = std::to_string(data.unknown_0000 + 1);
-  item->level->SetText(text.c_str(), text.size());
+  item->level->SetText(text);
 
   for (int index = 0; index < 4; ++index) {
     const auto found = data.unknown_0004.find(index);
@@ -589,21 +589,21 @@ void CUISkillDelayInfo::Slot16() {
   this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{6, 2}, true);
 
   const char* text = LookupMessage(4254);
-  this->titleBar->SetTitle(text, std::strlen(text));
+  this->titleBar->SetTitle(text);
   text = LookupMessage(4255);
-  this->columns[0]->SetText(text, std::strlen(text));
+  this->columns[0]->SetText(text);
   text = LookupMessage(4256);
-  this->columns[1]->SetText(text, std::strlen(text));
+  this->columns[1]->SetText(text);
   text = LookupMessage(4257);
-  this->columns[2]->SetText(text, std::strlen(text));
+  this->columns[2]->SetText(text);
   text = LookupMessage(4258);
-  this->columns[3]->SetText(text, std::strlen(text));
+  this->columns[3]->SetText(text);
   text = LookupMessage(4303);
-  this->labels[0]->SetText(text, std::strlen(text));
+  this->labels[0]->SetText(text);
   text = LookupMessage(4304);
-  this->labels[1]->SetText(text, std::strlen(text));
+  this->labels[1]->SetText(text);
   text = LookupMessage(4305);
-  this->labels[2]->SetText(text, std::strlen(text));
+  this->labels[2]->SetText(text);
 
   this->delayList->unknown_00C4 = 1;
   this->delayList->Invalidate();

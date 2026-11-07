@@ -993,7 +993,7 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
 // FUNCTION: fn_14329
 void CUIAdventureGuide::Slot16() {
   const char* title = LookupMessage(0xFD5);
-  this->titleBar->SetTitle(title, std::strlen(title));
+  this->titleBar->SetTitle(title);
 
   if (g_adventureGuideMgr->m_intros.empty()) {
     return;

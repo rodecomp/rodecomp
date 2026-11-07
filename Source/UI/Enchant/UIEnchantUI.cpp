@@ -1470,7 +1470,7 @@ void UpdateTargetItem(CUITargetItem* item, ITEM_INFO* info) {
   }
   item->unknown_00EC->Show(info->unknown_0088 > 0);
   const std::string name = info->DisplayName(0);
-  item->unknown_00F0->SetText(name.c_str(), name.size());
+  item->unknown_00F0->SetText(name);
 }
 // OFFSET: 0x00A05E20
 // FUNCTION: fn_14984
@@ -1572,7 +1572,7 @@ void CUIEnchantPage::Slot57() {
   }
 
   const std::string count = std::to_string(0);
-  this->unknown_009C->SetText(count.c_str(), count.size());
+  this->unknown_009C->SetText(count);
   this->unknown_00A0->disabled = 1;
   this->unknown_00A0->Invalidate();
 
@@ -1613,7 +1613,7 @@ void CUIEnchantPage::ResetSlots() {
 
   this->enchantList->ClearData();
   const std::string count = std::to_string(0);
-  this->unknown_009C->SetText(count.c_str(), count.size());
+  this->unknown_009C->SetText(count);
   this->unknown_00A0->disabled = 1;
   this->unknown_00A0->Invalidate();
   this->Slot59(-1);
@@ -1659,7 +1659,7 @@ void CUINormalPerfect::Slot54(CUIEnchantItem* item, const CEnchantItemData& data
   }
 
   const std::string count = std::to_string(0);
-  this->unknown_009C->SetText(count.c_str(), count.size());
+  this->unknown_009C->SetText(count);
 
   std::optional<EnchantOptionInfo*> option = this->FindOption(this->unknown_00B0);
   if (option && (*option)->perfectEnchants.size() != 0) {
@@ -1789,7 +1789,7 @@ void CUIEnchantPage::SetCost(const EnchantPerfectInfo& info) {
   }
 
   const std::string cost = std::to_string(info.cost);
-  this->unknown_009C->SetText(cost.c_str(), cost.size());
+  this->unknown_009C->SetText(cost);
 
   const bool lackZeny = g_session.m_zeny < info.cost;
   const bool lackMaterial = std::any_of(this->unknown_0090.begin(), this->unknown_0090.end(), [](CUIIngredient* ingredient) {

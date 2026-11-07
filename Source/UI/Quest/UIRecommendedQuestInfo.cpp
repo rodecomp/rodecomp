@@ -114,7 +114,7 @@ void CUIRecommendedQuestInfo::OnClose() {
 // FUNCTION: fn_16349
 void CUIRecommendedQuestInfo::Slot16() {
   const char* title = LookupMessage(0xD48);
-  this->titleBar->SetTitle(title, std::strlen(title));
+  this->titleBar->SetTitle(title);
   UIWindow* window = g_windowMgr.LookupWindow(0x2718);
   if (window) {
     this->Move(window->geometry.x + window->geometry.width, window->geometry.y);

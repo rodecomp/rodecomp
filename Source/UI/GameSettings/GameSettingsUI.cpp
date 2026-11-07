@@ -2079,19 +2079,19 @@ void CUIGameSettingsUI::OnTabChanged(UIWindow* window) {
 // OFFSET: 0x00A3F9B0
 // FUNCTION: fn_15952
 void SetComboItemAdapterText(GameSettingsUI::CUIComboItem* item, const RenderAdapter& adapter) {
-  item->m_text->SetText(adapter.description.c_str(), adapter.description.size());
+  item->m_text->SetText(adapter.description);
 }
 
 // OFFSET: 0x00A3FA90
 // FUNCTION: fn_15954
 void SetComboItemModeText(GameSettingsUI::CUIComboItem* item, const DisplayMode& mode) {
-  item->m_text->SetText(mode.description.c_str(), mode.description.size());
+  item->m_text->SetText(mode.description);
 }
 
 // OFFSET: 0x00A3FB20
 // FUNCTION: fn_15956
 void SetComboItemBackendText(GameSettingsUI::CUIComboItem* item, const RenderBackend& backend) {
-  item->m_text->SetText(backend.name.c_str(), backend.name.size());
+  item->m_text->SetText(backend.name);
 }
 
 // OFFSET: 0x00A3FBA0
@@ -4173,7 +4173,7 @@ void GameSettingsUI::CUIListPage::BindOption(CUIOptionItem* item, const TALKTYPE
   item->m_label->disabled = option->tipBoxId <= 0;
   item->m_label->Invalidate();
   item->m_label->SetId(option->tipBoxId);
-  item->m_description->SetText(option->description.c_str(), option->description.size());
+  item->m_description->SetText(option->description);
 }
 
 // OFFSET: 0x00A42290

@@ -301,7 +301,7 @@ void CUIRewards::OnBindItem(CUIRewardItem* item, const CRewardItemData& data) {
 // FUNCTION: fn_16308
 void CUIOngoingQuestInfo::Slot16() {
   const char* title = LookupMessage(0xD48);
-  this->titleBar->SetTitle(title, std::strlen(title));
+  this->titleBar->SetTitle(title);
   UIWindow* window = g_windowMgr.LookupWindow(0x2718);
   if (window) {
     this->Move(window->geometry.x + window->geometry.width, window->geometry.y);
@@ -398,8 +398,8 @@ void CUIScrollWindow::SetQuest(unsigned int id) {
     for (int index = 0; index < quest.m_huntCount; ++index) {
       this->secondContents->textViewer->AddLine(quest.GetHuntText(index));
     }
-    this->rewards->firstText->SetText(quest.unknown_01B8.c_str(), quest.unknown_01B8.size());
-    this->rewards->secondText->SetText(quest.unknown_01D0.c_str(), quest.unknown_01D0.size());
+    this->rewards->firstText->SetText(quest.unknown_01B8);
+    this->rewards->secondText->SetText(quest.unknown_01D0);
     for (const auto& reward : quest.m_rewards) {
       this->rewards->rewardList->AddData(CRewardItemData{static_cast<int>(reward.first), static_cast<int>(reward.second)}, false);
     }

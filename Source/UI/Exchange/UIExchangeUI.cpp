@@ -336,7 +336,7 @@ void CUIExchangeUI::Slot16() {
 
   {
     const std::string title = std::format("{} : ", LookupMessage(0xCE));
-    this->titleBar->SetTitle(title.c_str(), title.size());
+    this->titleBar->SetTitle(title);
   }
 
   this->unknown_010C->SetText(LookupMessage(0x727));
@@ -562,9 +562,9 @@ void CUIExchangeUI::UpdateZeny(bool mine) {
 
   char text[24];
   FormatGroupedInteger(zeny, text, sizeof(text));
-  first->SetText(text, std::strlen(text));
-  second->SetText(text, std::strlen(text));
-  third->SetText(text, std::strlen(text));
+  first->SetText(text);
+  second->SetText(text);
+  third->SetText(text);
 
   const std::uint32_t color = PriceColor(zeny).primary;
   first->SetColor(color);
