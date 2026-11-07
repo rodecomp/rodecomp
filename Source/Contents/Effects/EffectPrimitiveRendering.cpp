@@ -2073,10 +2073,10 @@ void CEffectPrim::RenderMagnum2(matrix& wtm) {
 // OFFSET: 0x00BD8870
 // FUNCTION: fn_19889
 void CEffectPrim::RenderRipple(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec2{};
-  vector3d vec3{};
-  vector3d vec4{};
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2094,16 +2094,16 @@ void CEffectPrim::RenderRipple(matrix& wtm) {
       }
 
       const float rx = static_cast<float>(spread) + slot.distance;
-      slot.vecBNow = {rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]};
-      slot.vecTNow = {rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]};
-      slot.vecBPre = {rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]};
+      slot.vecBPre = {rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]};
+      slot.vecBNow = {rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]};
+      slot.vecTNow = {rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]};
       slot.vecTPre = {rx * g_cosTable[315], 0.0f, rx * g_sinTable[315]};
 
       const float base = slot.height[0];
-      vec1 = {slot.vecBNow.x + base, slot.vecBNow.y, slot.vecBNow.z};
-      vec2 = {slot.vecTNow.x + base, slot.vecTNow.y, slot.vecTNow.z};
-      vec3 = {slot.vecTPre.x + base, slot.vecTPre.y, slot.vecTPre.z};
-      vec4 = {slot.vecBPre.x + base, slot.vecBPre.y, slot.vecBPre.z};
+      vec1.Set(slot.vecBPre.x + base, slot.vecBPre.y, slot.vecBPre.z);
+      vec2.Set(slot.vecBNow.x + base, slot.vecBNow.y, slot.vecBNow.z);
+      vec3.Set(slot.vecTNow.x + base, slot.vecTNow.y, slot.vecTNow.z);
+      vec4.Set(slot.vecTPre.x + base, slot.vecTPre.y, slot.vecTPre.z);
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
       const float drop = kind == 2 ? 40.0f : 30.0f;
@@ -2112,7 +2112,7 @@ void CEffectPrim::RenderRipple(matrix& wtm) {
       vec3.y -= drop;
       vec4.y -= drop;
 
-      const int alpha = static_cast<int>(slot.height[ring - 1]);
+      const int alpha = static_cast<int>(slot.height[ring]);
       if (alpha > 0) {
         const unsigned char shade = ring == 10 ? 55 : 5;
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, slot.flag1[0], 0, shade, shade, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -5921,10 +5921,10 @@ void CEffectPrim::Render3DCasting(matrix& wtm) {
 // OFFSET: 0x00BC94C0
 // FUNCTION: fn_19857
 void CEffectPrim::Render3DCasting_LowPolygon(matrix& wtm) {
-  vector3d vec1;
-  ZeroVector(vec1);
-  vector3d vec3;
-  ZeroVector(vec3);
+  ZeroVector3d vec1;
+  ZeroVector3d vec3;
+  ZeroVector3d vec2;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -5945,7 +5945,6 @@ void CEffectPrim::Render3DCasting_LowPolygon(matrix& wtm) {
       const float cs1 = g_cosTable[angle];
       const float sn1 = g_sinTable[angle];
 
-      vector3d vec2;
       vec2.x = cs1 * slot.distance;
       vec2.z = sn1 * slot.distance;
       vec2.y = 0.0f;
@@ -5955,7 +5954,6 @@ void CEffectPrim::Render3DCasting_LowPolygon(matrix& wtm) {
       const float rz = sn1 * rx;
       rx = cs1 * rx;
 
-      vector3d vec4;
       vec4.x = vec2.x + rx;
       vec4.z = vec2.z + rz;
       vec4.y = -ry;
