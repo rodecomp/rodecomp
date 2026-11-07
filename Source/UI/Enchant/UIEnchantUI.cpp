@@ -418,7 +418,7 @@ void CUITargetItem::Slot15(int width, int height) {
   this->unknown_00F0 = new CUIStaticText();
   this->unknown_00F0->SetSize(152, 12);
   this->unknown_00F0->Move(38, 23);
-  this->unknown_00F0->SetText("", 0);
+  this->unknown_00F0->SetText("");
   this->unknown_00F0->SetFitText(1);
   this->unknown_00F0->SetAlign(0, 0);
   {
@@ -503,7 +503,7 @@ void CUIIngredient::Slot15(int width, int height) {
   this->ownedText = new CUIStaticText();
   this->ownedText->SetSize(40, 14);
   this->ownedText->Move(30, 17);
-  this->ownedText->SetText("", 0);
+  this->ownedText->SetText("");
   this->ownedText->SetFitText(0);
   this->ownedText->SetAlign(6, 6);
   {
@@ -525,7 +525,7 @@ void CUIIngredient::Slot15(int width, int height) {
   this->requiredText = new CUIStaticText();
   this->requiredText->SetSize(40, 14);
   this->requiredText->Move(30, 31);
-  this->requiredText->SetText("", 0);
+  this->requiredText->SetText("");
   this->requiredText->SetFitText(0);
   this->requiredText->SetAlign(6, 6);
   {
