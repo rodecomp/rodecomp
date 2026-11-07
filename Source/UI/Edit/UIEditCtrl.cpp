@@ -8333,10 +8333,25 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           matches = type == 18;
           break;
         case 2:
-          matches = type == 4 || type == 11 || type == 12 || type == 13 || type == 14;
+          switch (type) {
+          case 4:
+          case 11:
+          case 12:
+          case 13:
+          case 14:
+            matches = true;
+            break;
+          }
           break;
         case 3:
-          matches = type == 5 || type == 8 || type == 9 || type == 15;
+          switch (type) {
+          case 5:
+          case 8:
+          case 9:
+          case 15:
+            matches = true;
+            break;
+          }
           break;
         case 5:
           matches = type == 10 || type == 16 || type == 17 || type == 19;
@@ -8653,10 +8668,25 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           matches = type == 18;
           break;
         case 2:
-          matches = type == 4 || type == 11 || type == 12 || type == 13 || type == 14;
+          switch (type) {
+          case 4:
+          case 11:
+          case 12:
+          case 13:
+          case 14:
+            matches = true;
+            break;
+          }
           break;
         case 3:
-          matches = type == 5 || type == 8 || type == 9 || type == 15;
+          switch (type) {
+          case 5:
+          case 8:
+          case 9:
+          case 15:
+            matches = true;
+            break;
+          }
           break;
         case 5:
           matches = type == 10 || type == 16 || type == 17 || type == 19;
