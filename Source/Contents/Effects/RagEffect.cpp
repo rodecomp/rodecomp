@@ -2014,27 +2014,26 @@ void CRagEffect::RemoveTrap() {
   }
 
   for (int count = 12; count != 0; --count) {
-    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    EffectPrimitiveState& particle = *this->state.unknown_11C84;
-    particle.duration = 50;
-    particle.radiusSpeed = 0.2f;
+    this->state.lastPrim = CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim->state.duration = 50;
+    this->state.lastPrim->state.radiusSpeed = 0.2f;
     rand();
-    particle.gravSpeed = -2.0f;
-    particle.gravAccel = static_cast<float>(std::max(rand() % 10, 0)) / 1000.0f + 0.08f;
-    particle.longitude = static_cast<float>(std::max(rand() % 360, 0));
-    particle.size = 0.8f;
-    reinterpret_cast<matrix*>(particle.transform)->MakeYRotation(GetRadian(static_cast<int>(particle.longitude)));
-    const float* m = particle.transform;
-    const float distance = particle.radius;
-    particle.deltaPos2 = {
+    this->state.lastPrim->state.gravSpeed = -2.0f;
+    this->state.lastPrim->state.gravAccel = static_cast<float>(std::max(rand() % 10, 0)) / 1000.0f + 0.08f;
+    this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.size = 0.8f;
+    reinterpret_cast<matrix*>(this->state.lastPrim->state.transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
+    const float* m = this->state.lastPrim->state.transform;
+    const float distance = this->state.lastPrim->state.radius;
+    this->state.lastPrim->state.deltaPos2 = {
       m[3] * 0.0f + m[0] * 0.0f + distance * m[6] + m[9],
       m[4] * 0.0f + m[1] * 0.0f + distance * m[7] + m[10],
       m[5] * 0.0f + m[2] * 0.0f + distance * m[8] + m[11]
     };
-    particle.fadeOutCnt = 35;
-    Owner(&particle).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-    Owner(&particle).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
-    Owner(&particle).InitSegment();
+    this->state.lastPrim->state.fadeOutCnt = 35;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.lastPrim->InitSegment();
   }
 }
 
@@ -14687,48 +14686,48 @@ void CRagEffect::CHIMTO(char flag) {
     PlayEffectWave(*this, "effect\\mon_\uce68\ud22c\uacbd.wav");
   }
 
-  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 46, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.unknown_11C84->duration = this->state.duration;
-  this->state.unknown_11C84->slots[0].life = 1;
-  this->state.unknown_11C84->slots[0].maxHeight = 0.0f;
-  this->state.unknown_11C84->slots[0].vecBPre.x = this->state.deltaPos[0];
-  this->state.unknown_11C84->slots[0].vecBPre.y = this->state.deltaPos[1] - 0.0f;
-  this->state.unknown_11C84->slots[0].vecBPre.z = this->state.deltaPos[2];
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 46, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.slots[0].life = 1;
+  this->state.lastPrim->state.slots[0].maxHeight = 0.0f;
+  this->state.lastPrim->state.slots[0].vecBPre.x = this->state.deltaPos[0];
+  this->state.lastPrim->state.slots[0].vecBPre.y = this->state.deltaPos[1] - 0.0f;
+  this->state.lastPrim->state.slots[0].vecBPre.z = this->state.deltaPos[2];
 
   if (flag == 0) {
-    this->state.unknown_11C84->alpha = 200.0f;
-    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uce68\ud22c\uacbd_.spr");
-    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uce68\ud22c\uacbd_.act");
-    this->state.unknown_11C84->animSpeed = 2;
-    this->state.unknown_11C84->size = 2.5f;
+    this->state.lastPrim->state.alpha = 200.0f;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uce68\ud22c\uacbd_.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uce68\ud22c\uacbd_.act");
+    this->state.lastPrim->state.animSpeed = 2;
+    this->state.lastPrim->state.size = 2.5f;
   } else if (flag == 1) {
-    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\wink.spr");
-    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\wink.act");
-    this->state.unknown_11C84->animSpeed = 6;
-    this->state.unknown_11C84->size = 1.0f;
-    this->state.unknown_11C84->repeatAnim = 0;
-    this->state.unknown_11C84->pattern |= 0x200u;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\wink.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\wink.act");
+    this->state.lastPrim->state.animSpeed = 6;
+    this->state.lastPrim->state.size = 1.0f;
+    this->state.lastPrim->state.repeatAnim = 0;
+    this->state.lastPrim->state.pattern |= 0x200u;
   } else if (flag == 2) {
-    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\fvoice.spr");
-    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\fvoice.act");
-    this->state.unknown_11C84->animSpeed = 6;
-    this->state.unknown_11C84->size = 1.0f;
-    this->state.unknown_11C84->repeatAnim = 0;
-    this->state.unknown_11C84->pattern |= 0x200u;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\fvoice.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\fvoice.act");
+    this->state.lastPrim->state.animSpeed = 6;
+    this->state.lastPrim->state.size = 1.0f;
+    this->state.lastPrim->state.repeatAnim = 0;
+    this->state.lastPrim->state.pattern |= 0x200u;
   } else if (flag == 12) {
-    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ud5cc\ub4dc\ub808\ub4dc\uc2a4\ud53c\uc5b4.spr");
-    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ud5cc\ub4dc\ub808\ub4dc\uc2a4\ud53c\uc5b4.act");
-    this->state.unknown_11C84->animSpeed = 6;
-    this->state.unknown_11C84->size = 1.0f;
-    this->state.unknown_11C84->repeatAnim = 0;
-    this->state.unknown_11C84->pattern |= 0x200u;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ud5cc\ub4dc\ub808\ub4dc\uc2a4\ud53c\uc5b4.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ud5cc\ub4dc\ub808\ub4dc\uc2a4\ud53c\uc5b4.act");
+    this->state.lastPrim->state.animSpeed = 6;
+    this->state.lastPrim->state.size = 1.0f;
+    this->state.lastPrim->state.repeatAnim = 0;
+    this->state.lastPrim->state.pattern |= 0x200u;
   } else if (flag == 13) {
-    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uc708\ub4dc\ucee4\ud130.spr");
-    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uc708\ub4dc\ucee4\ud130.act");
-    this->state.unknown_11C84->animSpeed = 6;
-    this->state.unknown_11C84->size = 1.0f;
-    this->state.unknown_11C84->repeatAnim = 0;
-    this->state.unknown_11C84->pattern |= 0x200u;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uc708\ub4dc\ucee4\ud130.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uc708\ub4dc\ucee4\ud130.act");
+    this->state.lastPrim->state.animSpeed = 6;
+    this->state.lastPrim->state.size = 1.0f;
+    this->state.lastPrim->state.repeatAnim = 0;
+    this->state.lastPrim->state.pattern |= 0x200u;
   }
 
   std::int16_t angle;
@@ -14739,7 +14738,7 @@ void CRagEffect::CHIMTO(char flag) {
     direction += 360;
   }
 
-  this->state.unknown_11C84->renderFlag |= 0x200u;
+  this->state.lastPrim->state.renderFlag |= 0x200u;
 
   int animation;
   if (direction >= 180 && direction < 270) {
@@ -14752,11 +14751,11 @@ void CRagEffect::CHIMTO(char flag) {
     animation = 3;
   }
 
-  Owner(this->state.unknown_11C84).SetAction(animation, 16, 1);
-  Owner(this->state.unknown_11C84).InitSegment();
-  this->state.unknown_11C84->slots[1].life = 0;
-  this->state.unknown_11C84->slots[2].life = 0;
-  this->state.unknown_11C84->slots[3].life = 0;
+  this->state.lastPrim->SetAction(animation, 16, 1);
+  this->state.lastPrim->InitSegment();
+  this->state.lastPrim->state.slots[1].life = 0;
+  this->state.lastPrim->state.slots[2].life = 0;
+  this->state.lastPrim->state.slots[3].life = 0;
 }
 
 // OFFSET: 0x00C66F60
