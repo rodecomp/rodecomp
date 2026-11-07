@@ -897,7 +897,7 @@ void CSkillAction_AT_QUILL_SPEAR::Slot11(int level, CGameActor* source, CGameAct
   }
 
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t bytes[] = {0xB4, 0xB8, 0xEE, 0x99, 0xCD, 0xFC, 0x94, 0xE3, 0xA0, 0xAC, 0xF5, 0xAA, 0x92, 0xDB, 0xD0, 0x93};
+    const char bytes[] = {'\xB4', '\xB8', '\xEE', '\x99', '\xCD', '\xFC', '\x94', '\xE3', '\xA0', '\xAC', '\xF5', '\xAA', '\x92', '\xDB', '\xD0', '\x93'};
     thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
     return name.Text();
   }());
@@ -920,7 +920,7 @@ void CSkillAction_AT_QUILL_SPEAR_S::Slot11(int level, CGameActor* source, CGameA
   }
 
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t bytes[] = {0xA6, 0x3A, 0x6A, 0xF9, 0xB5, 0xDA, 0xDC, 0x4F, 0xB2, 0x2E, 0x71, 0xCA, 0xEC, 0xFD, 0x98, 0x3F};
+    const char bytes[] = {'\xA6', '\x3A', '\x6A', '\xF9', '\xB5', '\xDA', '\xDC', '\x4F', '\xB2', '\x2E', '\x71', '\xCA', '\xEC', '\xFD', '\x98', '\x3F'};
     thread_local EncryptedName<sizeof(bytes), 0x3FAF85D995034FD7ULL> name(bytes);
     return name.Text();
   }());
