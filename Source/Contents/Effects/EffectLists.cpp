@@ -441,7 +441,8 @@ namespace {
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+  // INLINED
+  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -477,12 +478,12 @@ struct CEffectAllocator : CAllocator {
 // OFFSET: 0x00B1D9E0
 // FUNCTION: fn_18561
 __declspec(noinline) EncryptedName<0x44, 0x2F8B0F37118D157FULL>& ThunderingOrbName() {
-  const std::uint8_t source[] = {
-      0x3B, 0x47, 0xD8, 0x58, 0x73, 0x53, 0xC0, 0x7D, 0x20, 0x41, 0xC5, 0x44, 0x79, 0x4B, 0xCE, 0x7D,
-      0x36, 0x5B, 0xCA, 0x4E, 0x78, 0x5D, 0xC9, 0x73, 0x0B, 0x7D, 0xF8, 0x7F, 0x53, 0x6A, 0xF9, 0x46,
-      0x11, 0x72, 0xD2, 0x7E, 0x45, 0x6D, 0xD4, 0x40, 0x0D, 0x77, 0xD1, 0x65, 0x5F, 0x7A, 0xE5, 0x4B,
-      0x1A, 0x67, 0xE4, 0x7F, 0x50, 0x50, 0xE4, 0x5D, 0x1D, 0x4A, 0xFE, 0x7C, 0x56, 0x63, 0xE7, 0x01,
-      0x0C, 0x61, 0xFF, 0x11};
+  const char source[] = {
+      '\x3B', '\x47', '\xD8', '\x58', '\x73', '\x53', '\xC0', '\x7D', '\x20', '\x41', '\xC5', '\x44', '\x79', '\x4B', '\xCE', '\x7D',
+      '\x36', '\x5B', '\xCA', '\x4E', '\x78', '\x5D', '\xC9', '\x73', '\x0B', '\x7D', '\xF8', '\x7F', '\x53', '\x6A', '\xF9', '\x46',
+      '\x11', '\x72', '\xD2', '\x7E', '\x45', '\x6D', '\xD4', '\x40', '\x0D', '\x77', '\xD1', '\x65', '\x5F', '\x7A', '\xE5', '\x4B',
+      '\x1A', '\x67', '\xE4', '\x7F', '\x50', '\x50', '\xE4', '\x5D', '\x1D', '\x4A', '\xFE', '\x7C', '\x56', '\x63', '\xE7', '\x01',
+      '\x0C', '\x61', '\xFF', '\x11'};
   thread_local EncryptedName<sizeof(source), 0x2F8B0F37118D157FULL> name(source);
   return name;
 }
@@ -578,11 +579,11 @@ CEffect* CEffectAllocator<CThunderingOrb>::Create() {
 
 // INLINED
 EncryptedName<0x3B, 0x39FF7FB50DEB998FULL>& WindBombName() {
-  const std::uint8_t source[] = {
-      0xCB, 0xCB, 0xBE, 0x44, 0xF1, 0x23, 0xBB, 0x6B, 0xD0, 0xCE, 0xA2, 0x43, 0xF1, 0x20, 0xBD, 0x76,
-      0xC2, 0xDB, 0xB7, 0x7A, 0xDC, 0x11, 0x9B, 0x66, 0xED, 0xF6, 0x86, 0x6F, 0xEA, 0x0B, 0x90, 0x4B,
-      0xE1, 0xF8, 0x8F, 0x62, 0xE9, 0x08, 0x96, 0x57, 0xEB, 0xC6, 0x89, 0x62, 0xD8, 0x1D, 0xA0, 0x4D,
-      0xE0, 0xEB, 0x85, 0x6C, 0xD1, 0x10, 0xD1, 0x4A, 0xFB, 0xEB, 0xEB};
+  const char source[] = {
+      '\xCB', '\xCB', '\xBE', '\x44', '\xF1', '\x23', '\xBB', '\x6B', '\xD0', '\xCE', '\xA2', '\x43', '\xF1', '\x20', '\xBD', '\x76',
+      '\xC2', '\xDB', '\xB7', '\x7A', '\xDC', '\x11', '\x9B', '\x66', '\xED', '\xF6', '\x86', '\x6F', '\xEA', '\x0B', '\x90', '\x4B',
+      '\xE1', '\xF8', '\x8F', '\x62', '\xE9', '\x08', '\x96', '\x57', '\xEB', '\xC6', '\x89', '\x62', '\xD8', '\x1D', '\xA0', '\x4D',
+      '\xE0', '\xEB', '\x85', '\x6C', '\xD1', '\x10', '\xD1', '\x4A', '\xFB', '\xEB', '\xEB'};
   thread_local EncryptedName<sizeof(source), 0x39FF7FB50DEB998FULL> name(source);
   return name;
 }
