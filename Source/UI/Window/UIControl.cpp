@@ -465,7 +465,7 @@ void CUIHThumb::Paint() {
       if (this->transparent) {
         this->DrawAuxiliary(1, 0, 0, &this->top->image, true, false);
       } else {
-        this->DrawBitmap(0, 0, &this->top->image, false);
+        this->DrawBitmap(0, 0, this->top, false);
       }
       x = this->top->image.width;
     }
@@ -475,7 +475,7 @@ void CUIHThumb::Paint() {
         if (this->transparent) {
           this->DrawAuxiliary(1, x, 0, &this->middle->image, true, false);
         } else {
-          this->DrawBitmap(x, 0, &this->middle->image, false);
+          this->DrawBitmap(x, 0, this->middle, false);
         }
         x += this->middle->image.width;
       }
@@ -486,14 +486,14 @@ void CUIHThumb::Paint() {
       if (this->transparent) {
         this->DrawAuxiliary(1, bottomX, 0, &this->bottom->image, true, false);
       } else {
-        this->DrawBitmap(bottomX, 0, &this->bottom->image, false);
+        this->DrawBitmap(bottomX, 0, this->bottom, false);
       }
     }
   } else if (this->middle) {
     if (this->transparent) {
       this->DrawAuxiliary(1, 0, 0, &this->middle->image, true, false);
     } else {
-      this->DrawBitmap(0, 0, &this->middle->image, false);
+      this->DrawBitmap(0, 0, this->middle, false);
     }
   }
 }
@@ -610,9 +610,9 @@ void CUIVScrollBar::Paint() {
   }
 
   for (int y = 0; y < this->trackLength - this->background->image.height; y += this->background->image.height) {
-    this->DrawBitmap(0, this->upButton->geometry.height + y, &this->background->image, false);
+    this->DrawBitmap(0, this->upButton->geometry.height + y, this->background, false);
   }
-  this->DrawBitmap(0, this->geometry.height - this->downButton->geometry.height - this->background->image.height, &this->background->image, false);
+  this->DrawBitmap(0, this->geometry.height - this->downButton->geometry.height - this->background->image.height, this->background, false);
 }
 
 // OFFSET: 0x009F2800
@@ -956,18 +956,18 @@ void CUIBasicButton::Paint() {
   int x = 0;
 
   if (left) {
-    this->DrawBitmap(0, 0, &left->image, false);
+    this->DrawBitmap(0, 0, left, false);
     x = left->image.width;
   }
 
   if (middle) {
     for (; x < end; x += middle->image.width) {
-      this->DrawBitmap(x, 0, &middle->image, false);
+      this->DrawBitmap(x, 0, middle, false);
     }
   }
 
   if (right) {
-    this->DrawBitmap(this->geometry.width - right->image.width, 0, &right->image, false);
+    this->DrawBitmap(this->geometry.width - right->image.width, 0, right, false);
   }
 
   this->Slot55();
@@ -1455,7 +1455,7 @@ void CUIImageButton::Paint() {
       this->DrawAuxiliary(1, 0, 0, &image->image, true, false);
       return;
     }
-    this->DrawBitmap(0, 0, &image->image, false);
+    this->DrawBitmap(0, 0, image, false);
   }
 }
 
@@ -1487,7 +1487,7 @@ void CUICheckBox::Paint() {
     found = this->images.find(1);
   } else if (this->disabled) {
     if (this->disabledImage) {
-      this->DrawBitmap(0, 0, &this->disabledImage->image, false);
+      this->DrawBitmap(0, 0, this->disabledImage, false);
     }
     return;
   } else {
@@ -1495,7 +1495,7 @@ void CUICheckBox::Paint() {
   }
 
   if (found != this->images.end() && found->second) {
-    this->DrawBitmap(0, 0, &found->second->image, false);
+    this->DrawBitmap(0, 0, found->second, false);
   }
 }
 
@@ -2160,9 +2160,9 @@ void CUIHScrollBar::Paint() {
   }
 
   for (int x = 0; x < this->trackLength - this->background->image.width; x += this->background->image.width) {
-    this->DrawBitmap(this->upButton->geometry.width + x, 0, &this->background->image, false);
+    this->DrawBitmap(this->upButton->geometry.width + x, 0, this->background, false);
   }
-  this->DrawBitmap(this->geometry.width - this->downButton->geometry.width - this->background->image.width, 0, &this->background->image, false);
+  this->DrawBitmap(this->geometry.width - this->downButton->geometry.width - this->background->image.width, 0, this->background, false);
 }
 
 // OFFSET: 0x009EE1B0
