@@ -853,28 +853,28 @@ int CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddData(const unsig
 // OFFSET: 0x00A66140
 // FUNCTION: fn_16610
 void RenewQuestUI::CUIQuestItem::OnActiveStateChanged(bool active) {
+  const int questId = this->questId;
   if (this->questType == 2) {
-    g_renewQuestMgr->SetRecommendedQuestActive(this->questId, active);
+    g_renewQuestMgr->SetRecommendedQuestActive(questId, active);
     if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(0x2718))) {
       window->UpdateQuestLists(this->questType);
     }
     g_renewQuestMgr->SaveRecommendedActiveList();
-    return;
-  }
-
+  } else {
 #pragma pack(push, 1)
-  struct QuestActivePacket {
-    /* 0000 */ std::uint16_t id;
-    /* 0002 */ int questId;
-    /* 0006 */ bool active;
-  };
+    struct QuestActivePacket {
+      /* 0000 */ std::int16_t id;
+      /* 0002 */ int questId;
+      /* 0006 */ bool active;
+    };
 #pragma pack(pop)
 
-  QuestActivePacket packet;
-  packet.questId = this->questId;
-  packet.id = 0x02B6;
-  packet.active = active;
-  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    QuestActivePacket packet;
+    packet.id = 0x02B6;
+    packet.questId = questId;
+    packet.active = active;
+    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  }
 }
 
 // OFFSET: 0x00A66280
