@@ -86,11 +86,10 @@ CWebBrowser::~CWebBrowser() {
 // OFFSET: 0x00AB2950
 // FUNCTION: fn_45434
 bool CWebBrowser::AttachExternalEvents() {
-  auto* receiver = new (std::nothrow) CWebEventReceiver();
-  this->externalEvents = receiver;
-  receiver->AddRef();
+  this->externalEvents = new CWebEventReceiver();
+  this->externalEvents->AddRef();
 
-  return receiver->Register(this->browser, this->host);
+  return static_cast<CWebEventReceiver*>(this->externalEvents)->Register(this->browser, this->host);
 }
 
 // OFFSET: 0x00AB3030
