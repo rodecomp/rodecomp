@@ -23,6 +23,7 @@ public:
 
   void CreateBlank(int width, int height);
   bool DecodeGif(const void* data, int bytes, bool iconOnly);
+  bool AdvanceFrame();
 
   /* 0124 */ std::vector<Frame> frames;
   /* 0130 */ std::uint16_t loopCount;

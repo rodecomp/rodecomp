@@ -153,30 +153,32 @@ void CGifRes::Unload() {
   this->image.auxiliary = nullptr;
 }
 
-// OFFSET: 0x00749D20
-// FUNCTION: fn_07856
-void CGifRes::Slot02() {
+// INLINED
+bool CGifRes::AdvanceFrame() {
   const std::size_t count = this->frames.size();
   if (count <= 1) {
-    this->frameChanged = false;
-    return;
+    return false;
   }
 
   if (this->currentFrame >= count) {
-    this->frameChanged = false;
-    return;
+    return false;
   }
 
   const DWORD now = timeGetTime();
-  if (now < this->lastFrameTime + 10 * this->frames[this->currentFrame].first) {
-    this->frameChanged = false;
-    return;
+  if (now >= this->lastFrameTime + 10 * this->frames[this->currentFrame].first) {
+    this->lastFrameTime = now;
+    this->currentFrame = this->currentFrame + 1 < this->frames.size() ? this->currentFrame + 1 : 0;
+    this->image.pixels = this->frames[this->currentFrame].second;
+    return true;
   }
 
-  this->lastFrameTime = now;
-  this->currentFrame = this->currentFrame + 1 < this->frames.size() ? this->currentFrame + 1 : 0;
-  this->image.pixels = this->frames[this->currentFrame].second;
-  this->frameChanged = true;
+  return false;
+}
+
+// OFFSET: 0x00749D20
+// FUNCTION: fn_07856
+void CGifRes::Slot02() {
+  this->frameChanged = this->AdvanceFrame();
 }
 
 // OFFSET: 0x00749DD0
