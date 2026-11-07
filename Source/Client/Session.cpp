@@ -7351,1106 +7351,1106 @@ EncryptedName<14, 0x85FB93CF2F494179ULL>& AliteaBodyPath2();
 // FUNCTION: fn_24178
 void CSession::InitJobSpriteNames() {
   std::vector<const char*>& jobSpriteNames = reinterpret_cast<std::vector<const char*>&>(this->m_jobSpriteNames);
-  {
+  jobSpriteNames.resize(28053, []() -> EncryptedName<14, 0x114901C7E37F6D49ULL>& {
     const std::uint8_t source[] = {0x8A, 0xA7, 0xC5, 0x5B, 0x07, 0xDB, 0x15, 0xD2, 0x83, 0xD7, 0xC7, 0x23, 0x1D, 0x01};
     thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
-    jobSpriteNames.resize(28053, name.Text());
-  }
-  {
+    return name;
+  }().Text());
+  jobSpriteNames[0] = []() -> EncryptedName<14, 0xDF8117FF49CFF551ULL>& {
     const std::uint8_t source[] = {0x92, 0x3F, 0x75, 0xF1, 0x3F, 0xCD, 0xDD, 0x1C, 0x9B, 0x4F, 0x77, 0x89, 0x25, 0x17};
     thread_local EncryptedName<sizeof(source), 0xDF8117FF49CFF551ULL> name(source);
-    jobSpriteNames[0] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[1] = []() -> EncryptedName<10, 0xADC51BF9C98B413DULL>& {
     const std::uint8_t source[] = {0x8D, 0x8A, 0x30, 0x2E, 0xA5, 0xAB, 0x0E, 0x16, 0xDA, 0x41};
     thread_local EncryptedName<sizeof(source), 0xADC51BF9C98B413DULL> name(source);
-    jobSpriteNames[1] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[2] = []() -> EncryptedName<14, 0x51BB39B763BBBD8DULL>& {
     const std::uint8_t source[] = {0x35, 0x0B, 0x02, 0x9E, 0x0C, 0xDE, 0xE7, 0xE9, 0x3B, 0x04, 0x46, 0xD8, 0x50, 0x39};
     thread_local EncryptedName<sizeof(source), 0x51BB39B763BBBD8DULL> name(source);
-    jobSpriteNames[2] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[3] = []() -> EncryptedName<10, 0x87E3D1C50D572DEFULL>& {
     const std::uint8_t source[] = {0x5E, 0xEE, 0xEB, 0xFB, 0x99, 0x60, 0x20, 0x3B, 0x19, 0x2D};
     thread_local EncryptedName<sizeof(source), 0x87E3D1C50D572DEFULL> name(source);
-    jobSpriteNames[3] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[4] = []() -> EncryptedName<14, 0x3FA3AFA7035DE3FFULL>& {
     const std::uint8_t source[] = {0x43, 0x59, 0x9C, 0xF4, 0x67, 0x75, 0xFF, 0x83, 0x45, 0x22, 0xAA, 0xC3, 0x7D, 0xAF};
     thread_local EncryptedName<sizeof(source), 0x3FA3AFA7035DE3FFULL> name(source);
-    jobSpriteNames[4] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[5] = []() -> EncryptedName<10, 0xDB27CB557D038759ULL>& {
     const std::uint8_t source[] = {0xE2, 0x74, 0xC3, 0xB3, 0x09, 0x70, 0xD4, 0x1B, 0x97, 0x87};
     thread_local EncryptedName<sizeof(source), 0xDB27CB557D038759ULL> name(source);
-    jobSpriteNames[5] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[6] = []() -> EncryptedName<10, 0xB3E307A5F753D5E3ULL>& {
     const std::uint8_t source[] = {0x56, 0x60, 0xE6, 0x38, 0xF9, 0xB2, 0x56, 0x06, 0x2C, 0xD5};
     thread_local EncryptedName<sizeof(source), 0xB3E307A5F753D5E3ULL> name(source);
-    jobSpriteNames[6] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[7] = []() -> EncryptedName<10, 0x192D654D29337BE5ULL>& {
     const std::uint8_t source[] = {0x54, 0x99, 0x88, 0xCE, 0x11, 0xD4, 0xCF, 0xA2, 0x02, 0x7B};
     thread_local EncryptedName<sizeof(source), 0x192D654D29337BE5ULL> name(source);
-    jobSpriteNames[7] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[8] = []() -> EncryptedName<18, 0xB7AFBD2FD9FD7501ULL>& {
     const std::uint8_t source[] = {0xC6, 0xB4, 0x45, 0x77, 0x92, 0x07, 0x69, 0x19, 0x5D, 0xB2, 0x3C, 0x61, 0x81, 0x00, 0x15, 0x71, 0xAF, 0x75};
     thread_local EncryptedName<sizeof(source), 0xB7AFBD2FD9FD7501ULL> name(source);
-    jobSpriteNames[8] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[9] = []() -> EncryptedName<14, 0x79E915E9AF6F55DDULL>& {
     const std::uint8_t source[] = {0x1D, 0xF2, 0xAF, 0x55, 0x5C, 0xF0, 0xB5, 0xB9, 0x7A, 0x95, 0x95, 0x1A, 0x0C, 0x15};
     thread_local EncryptedName<sizeof(source), 0x79E915E9AF6F55DDULL> name(source);
-    jobSpriteNames[9] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[10] = []() -> EncryptedName<14, 0x674D9F3975573D41ULL>& {
     const std::uint8_t source[] = {0x80, 0x9B, 0x94, 0xC3, 0x89, 0x67, 0x11, 0xA6, 0xE7, 0xFE, 0xE1, 0xC5, 0xC1, 0x9F};
     thread_local EncryptedName<sizeof(source), 0x674D9F3975573D41ULL> name(source);
-    jobSpriteNames[10] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[11] = []() -> EncryptedName<10, 0x6BDF334F2BFDAD51ULL>& {
     const std::uint8_t source[] = {0x96, 0x48, 0x38, 0xE6, 0x13, 0xF4, 0x3A, 0xAE, 0x9C, 0xAD};
     thread_local EncryptedName<sizeof(source), 0x6BDF334F2BFDAD51ULL> name(source);
-    jobSpriteNames[11] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[12] = []() -> EncryptedName<14, 0x136F2F9915D1DBCFULL>& {
     const std::uint8_t source[] = {0x71, 0x35, 0x6D, 0xA9, 0x24, 0xEA, 0x33, 0xAD, 0x21, 0x67, 0x6D, 0xA8, 0x5C, 0x2F};
     thread_local EncryptedName<sizeof(source), 0x136F2F9915D1DBCFULL> name(source);
-    jobSpriteNames[12] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[13] = []() -> EncryptedName<28, 0x0B23D10F2F49D72BULL>& {
     const std::uint8_t source[] = {0xED, 0x33, 0x8D, 0xF5, 0xC9, 0x35, 0xE7, 0xD1, 0x74, 0x66, 0xAB, 0x94, 0xE8, 0x8D, 0xE5, 0xEF, 0xEF, 0x0D, 0x8F, 0xCB, 0xCB, 0x0B, 0x7C, 0xBA, 0xC9, 0x6C, 0xAE, 0x2F};
     thread_local EncryptedName<sizeof(source), 0x0B23D10F2F49D72BULL> name(source);
-    jobSpriteNames[13] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[14] = []() -> EncryptedName<22, 0x1767DDE18D779D8BULL>& {
     const std::uint8_t source[] = {0x4E, 0x34, 0xC0, 0x6A, 0x5D, 0x61, 0xA7, 0xDB, 0x3F, 0x68, 0x2B, 0x48, 0x48, 0x6A, 0x80, 0xAB, 0x37, 0x5D, 0xBB, 0x39, 0x14, 0xDD};
     thread_local EncryptedName<sizeof(source), 0x1767DDE18D779D8BULL> name(source);
-    jobSpriteNames[14] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[15] = []() -> EncryptedName<10, 0xC1BB8111EDD183E1ULL>& {
     const std::uint8_t source[] = {0x59, 0x7A, 0x14, 0x44, 0x4D, 0x39, 0x42, 0x04, 0x48, 0x83};
     thread_local EncryptedName<sizeof(source), 0xC1BB8111EDD183E1ULL> name(source);
-    jobSpriteNames[15] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[16] = []() -> EncryptedName<14, 0xC5B1BBCD9BC9C997ULL>& {
     const std::uint8_t source[] = {0x2B, 0x75, 0x09, 0x57, 0x0C, 0x4D, 0xED, 0x79, 0x2B, 0x09, 0x05, 0x5A, 0x3B, 0xBB};
     thread_local EncryptedName<sizeof(source), 0xC5B1BBCD9BC9C997ULL> name(source);
-    jobSpriteNames[16] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[17] = []() -> EncryptedName<10, 0x01CB4F1DF9D3F931ULL>& {
     const std::uint8_t source[] = {0x86, 0x37, 0x62, 0x2E, 0x41, 0xF8, 0x05, 0xB0, 0xE6, 0xF9};
     thread_local EncryptedName<sizeof(source), 0x01CB4F1DF9D3F931ULL> name(source);
-    jobSpriteNames[17] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[18] = []() -> EncryptedName<18, 0x49D33529F1556333ULL>& {
     const std::uint8_t source[] = {0x8C, 0xCF, 0xE4, 0x2C, 0x95, 0xCF, 0x68, 0xAE, 0x6F, 0xDC, 0xF9, 0x40, 0xF4, 0x89, 0x29, 0xF2, 0xD4, 0x63};
     thread_local EncryptedName<sizeof(source), 0x49D33529F1556333ULL> name(source);
-    jobSpriteNames[18] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[19] = []() -> EncryptedName<10, 0x792FFD1325418FB5ULL>& {
     const std::uint8_t source[] = {0x0C, 0x56, 0xF4, 0xC0, 0x4F, 0x44, 0xF6, 0xCC, 0x50, 0x8F};
     thread_local EncryptedName<sizeof(source), 0x792FFD1325418FB5ULL> name(source);
-    jobSpriteNames[19] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[20] = []() -> EncryptedName<10, 0xF15F8785CDE369BFULL>& {
     const std::uint8_t source[] = {0x06, 0xC2, 0x2B, 0x3C, 0xD9, 0x3E, 0xF4, 0x39, 0x4E, 0x69};
     thread_local EncryptedName<sizeof(source), 0xF15F8785CDE369BFULL> name(source);
-    jobSpriteNames[20] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[21] = []() -> EncryptedName<34, 0xE33F2FF779878559ULL>& {
     const std::uint8_t source[] = {0xE4, 0x40, 0x41, 0x9D, 0x33, 0xF5, 0xFA, 0x4A, 0xEE, 0x62, 0x3B, 0xC5, 0x37, 0xE3, 0x8B, 0x16, 0x05, 0x38, 0x42, 0xBF, 0x13, 0xEB, 0xE5, 0x26, 0xF0, 0x32, 0x60, 0xC5, 0x4B, 0xEF, 0xF3, 0x57, 0xAC, 0x85};
     thread_local EncryptedName<sizeof(source), 0xE33F2FF779878559ULL> name(source);
-    jobSpriteNames[21] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[23] = []() -> EncryptedName<14, 0xD5A78DB38D8DAFABULL>& {
     const std::uint8_t source[] = {0x68, 0x65, 0x37, 0x35, 0x73, 0x57, 0xFB, 0x16, 0x61, 0x15, 0x35, 0x4D, 0x69, 0x8D};
     thread_local EncryptedName<sizeof(source), 0xD5A78DB38D8DAFABULL> name(source);
-    jobSpriteNames[23] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[22] = []() -> EncryptedName<10, 0x0399459DAF454F0FULL>& {
     const std::uint8_t source[] = {0xBF, 0xAE, 0x8D, 0x0A, 0xC1, 0xF5, 0x78, 0xCB, 0xAA, 0x4F};
     thread_local EncryptedName<sizeof(source), 0x0399459DAF454F0FULL> name(source);
-    jobSpriteNames[22] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[26] = []() -> EncryptedName<10, 0xFFABE3D5D1BBEF73ULL>& {
     const std::uint8_t source[] = {0xC3, 0x0E, 0x73, 0x74, 0x89, 0x53, 0x4A, 0x37, 0xD6, 0xEF};
     thread_local EncryptedName<sizeof(source), 0xFFABE3D5D1BBEF73ULL> name(source);
-    jobSpriteNames[26] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[27] = []() -> EncryptedName<10, 0xA597A7E7492B39D5ULL>& {
     const std::uint8_t source[] = {0x65, 0xD8, 0xE3, 0xEC, 0xBB, 0x17, 0x76, 0x6D, 0x70, 0x39};
     thread_local EncryptedName<sizeof(source), 0xA597A7E7492B39D5ULL> name(source);
-    jobSpriteNames[27] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[28] = []() -> EncryptedName<10, 0x0B8745519B1F95D7ULL>& {
     const std::uint8_t source[] = {0x67, 0x74, 0xD7, 0x3E, 0x0D, 0xF5, 0x66, 0xC3, 0x72, 0x95};
     thread_local EncryptedName<sizeof(source), 0x0B8745519B1F95D7ULL> name(source);
-    jobSpriteNames[28] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[29] = []() -> EncryptedName<10, 0xC70319B5EB61598FULL>& {
     const std::uint8_t source[] = {0x3F, 0xB8, 0xA9, 0x4E, 0xE9, 0xA9, 0xE2, 0x0F, 0x2A, 0x59};
     thread_local EncryptedName<sizeof(source), 0xC70319B5EB61598FULL> name(source);
-    jobSpriteNames[29] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[30] = []() -> EncryptedName<10, 0x271B45771F83DD9FULL>& {
     const std::uint8_t source[] = {0x2F, 0x3C, 0x4B, 0xBA, 0x2B, 0xF5, 0xFA, 0xEF, 0x3A, 0xDD};
     thread_local EncryptedName<sizeof(source), 0x271B45771F83DD9FULL> name(source);
-    jobSpriteNames[30] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[24] = []() -> EncryptedName<10, 0x8783C33941E15117ULL>& {
     const std::uint8_t source[] = {0xA7, 0x96, 0x52, 0x8B, 0x65, 0x73, 0x44, 0x34, 0xDD, 0x51};
     thread_local EncryptedName<sizeof(source), 0x8783C33941E15117ULL> name(source);
-    jobSpriteNames[24] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[25] = []() -> EncryptedName<10, 0x0F61499B4973EB5DULL>& {
     const std::uint8_t source[] = {0xE9, 0x3A, 0xB3, 0x93, 0xC7, 0xFD, 0xB0, 0xCF, 0x87, 0xEB};
     thread_local EncryptedName<sizeof(source), 0x0F61499B4973EB5DULL> name(source);
-    jobSpriteNames[25] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[164] = []() -> EncryptedName<10, 0xB127A19D775BF751ULL>& {
     const std::uint8_t source[] = {0xE5, 0x26, 0x9B, 0xAD, 0xC1, 0x15, 0xF6, 0x71, 0x8B, 0xF7};
     thread_local EncryptedName<sizeof(source), 0xB127A19D775BF751ULL> name(source);
-    jobSpriteNames[164] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[167] = []() -> EncryptedName<18, 0xA31F69E7EFED01C9ULL>& {
     const std::uint8_t source[] = {0x75, 0xD3, 0x52, 0x00, 0x5F, 0xDC, 0xDB, 0x1C, 0x95, 0xBD, 0x3F, 0x50, 0x08, 0xD1, 0xAA, 0x67, 0x76, 0x01};
     thread_local EncryptedName<sizeof(source), 0xA31F69E7EFED01C9ULL> name(source);
-    jobSpriteNames[167] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[165] = []() -> EncryptedName<10, 0xB7A96F8701BB4B6BULL>& {
     const std::uint8_t source[] = {0xDB, 0x8C, 0x08, 0xCB, 0xDB, 0xDF, 0x6E, 0x04, 0xA1, 0x4B};
     thread_local EncryptedName<sizeof(source), 0xB7A96F8701BB4B6BULL> name(source);
-    jobSpriteNames[165] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[166] = []() -> EncryptedName<10, 0x659975C121557D3DULL>& {
     const std::uint8_t source[] = {0x8D, 0xB6, 0xEE, 0xC6, 0x9D, 0xC5, 0x52, 0xDE, 0xDA, 0x7D};
     thread_local EncryptedName<sizeof(source), 0x659975C121557D3DULL> name(source);
-    jobSpriteNames[166] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[168] = []() -> EncryptedName<14, 0xBFF5C517A1A77F59ULL>& {
     const std::uint8_t source[] = {0x98, 0xD9, 0x64, 0x17, 0xA7, 0x3D, 0xA9, 0x7E, 0xFF, 0xBC, 0x11, 0x11, 0xEF, 0xC5};
     thread_local EncryptedName<sizeof(source), 0xBFF5C517A1A77F59ULL> name(source);
-    jobSpriteNames[168] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[169] = []() -> EncryptedName<10, 0xAD6153019F93A527ULL>& {
     const std::uint8_t source[] = {0x9C, 0x56, 0x53, 0x51, 0x5D, 0xE8, 0x92, 0x6D, 0xE9, 0xA5};
     thread_local EncryptedName<sizeof(source), 0xAD6153019F93A527ULL> name(source);
-    jobSpriteNames[169] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[170] = []() -> EncryptedName<14, 0x85E1F5A7A5755B7FULL>& {
     const std::uint8_t source[] = {0xBE, 0xFD, 0xC6, 0x72, 0x1F, 0x5A, 0xBD, 0x44, 0xD9, 0xE8, 0xA2, 0x1D, 0x08, 0xF5};
     thread_local EncryptedName<sizeof(source), 0x85E1F5A7A5755B7FULL> name(source);
-    jobSpriteNames[170] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[171] = []() -> EncryptedName<18, 0x454D31872BB3EDCBULL>& {
     const std::uint8_t source[] = {0x74, 0x41, 0x02, 0xF6, 0x3B, 0xCB, 0xF6, 0xA2, 0x97, 0x52, 0x1F, 0x9A, 0x5A, 0x8D, 0xB7, 0xFE, 0x2C, 0xED};
     thread_local EncryptedName<sizeof(source), 0x454D31872BB3EDCBULL> name(source);
-    jobSpriteNames[171] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[172] = []() -> EncryptedName<10, 0x81F58DED5D470D01ULL>& {
     const std::uint8_t source[] = {0xB0, 0xCE, 0xFB, 0xAB, 0xB1, 0x3C, 0x36, 0x3D, 0xF7, 0x0D};
     thread_local EncryptedName<sizeof(source), 0x81F58DED5D470D01ULL> name(source);
-    jobSpriteNames[172] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[173] = []() -> EncryptedName<10, 0x5DE7712FAB613F75ULL>& {
     const std::uint8_t source[] = {0xC4, 0xF8, 0xDD, 0x11, 0x73, 0xC0, 0x20, 0xE1, 0xCF, 0x3F};
     thread_local EncryptedName<sizeof(source), 0x5DE7712FAB613F75ULL> name(source);
-    jobSpriteNames[173] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[174] = []() -> EncryptedName<14, 0x41CFCB831F6B6B91ULL>& {
     const std::uint8_t source[] = {0x52, 0xA1, 0xD1, 0xA7, 0x43, 0x11, 0x93, 0x82, 0x5B, 0xD1, 0xD3, 0xDF, 0x59, 0xCB};
     thread_local EncryptedName<sizeof(source), 0x41CFCB831F6B6B91ULL> name(source);
-    jobSpriteNames[174] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[175] = []() -> EncryptedName<10, 0x3789496BE3E1D141ULL>& {
     const std::uint8_t source[] = {0xF9, 0x28, 0x24, 0x4A, 0x37, 0xF1, 0x70, 0xF2, 0xE8, 0xD1};
     thread_local EncryptedName<sizeof(source), 0x3789496BE3E1D141ULL> name(source);
-    jobSpriteNames[175] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[176] = []() -> EncryptedName<14, 0x0F97E779A933D917ULL>& {
     const std::uint8_t source[] = {0xAB, 0x63, 0xF2, 0x5E, 0xB9, 0x3D, 0xCB, 0xB3, 0xAD, 0x18, 0xC4, 0x69, 0xA3, 0xE7};
     thread_local EncryptedName<sizeof(source), 0x0F97E779A933D917ULL> name(source);
-    jobSpriteNames[176] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[177] = []() -> EncryptedName<10, 0xD1056FF94D4D2773ULL>& {
     const std::uint8_t source[] = {0xCE, 0x93, 0xFB, 0xBE, 0xA5, 0xD2, 0xB1, 0x67, 0x80, 0x27};
     thread_local EncryptedName<sizeof(source), 0xD1056FF94D4D2773ULL> name(source);
-    jobSpriteNames[177] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[178] = []() -> EncryptedName<14, 0x4331A17F33095FEBULL>& {
     const std::uint8_t source[] = {0x28, 0x95, 0xB3, 0x8B, 0xBF, 0x7B, 0x6D, 0x80, 0x21, 0xE5, 0xB1, 0xF3, 0xA5, 0xA1};
     thread_local EncryptedName<sizeof(source), 0x4331A17F33095FEBULL> name(source);
-    jobSpriteNames[178] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[179] = []() -> EncryptedName<18, 0x4B755DB19953E311ULL>& {
     const std::uint8_t source[] = {0xAF, 0x25, 0x96, 0x30, 0x0B, 0xAC, 0xC9, 0xB8, 0x4D, 0x5D, 0x95, 0x5C, 0x18, 0xE7, 0x84, 0xF7, 0xE2, 0xE3};
     thread_local EncryptedName<sizeof(source), 0x4B755DB19953E311ULL> name(source);
-    jobSpriteNames[179] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[180] = []() -> EncryptedName<14, 0xBD2BA1C11B01E73BULL>& {
     const std::uint8_t source[] = {0x83, 0x51, 0xB8, 0xE6, 0x7A, 0x46, 0x77, 0x05, 0x8D, 0x5E, 0xFC, 0xA0, 0x26, 0xA1};
     thread_local EncryptedName<sizeof(source), 0xBD2BA1C11B01E73BULL> name(source);
-    jobSpriteNames[180] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[181] = []() -> EncryptedName<14, 0xED15938D333D2DB9ULL>& {
     const std::uint8_t source[] = {0x05, 0x91, 0xFD, 0xFF, 0x4C, 0x65, 0x49, 0x51, 0x05, 0xED, 0xF1, 0xF2, 0x7B, 0x93};
     thread_local EncryptedName<sizeof(source), 0xED15938D333D2DB9ULL> name(source);
-    jobSpriteNames[181] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[182] = []() -> EncryptedName<14, 0xC9712D676B5B3943ULL>& {
     const std::uint8_t source[] = {0xFF, 0xEB, 0xE7, 0xC6, 0xD0, 0x82, 0x2D, 0x75, 0x91, 0x85, 0xF6, 0xDC, 0xC8, 0x2D};
     thread_local EncryptedName<sizeof(source), 0xC9712D676B5B3943ULL> name(source);
-    jobSpriteNames[182] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[183] = []() -> EncryptedName<10, 0x9B0F234DEFDF7593ULL>& {
     const std::uint8_t source[] = {0x2C, 0x83, 0x68, 0x20, 0x11, 0x9C, 0xF9, 0x2C, 0x5C, 0x75};
     thread_local EncryptedName<sizeof(source), 0x9B0F234DEFDF7593ULL> name(source);
-    jobSpriteNames[183] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[184] = []() -> EncryptedName<14, 0xD98F5345098D630DULL>& {
     const std::uint8_t source[] = {0xCD, 0xC4, 0x4D, 0xF3, 0xF0, 0xB6, 0xD3, 0x19, 0xAA, 0xA3, 0x77, 0xBC, 0xA0, 0x53};
     thread_local EncryptedName<sizeof(source), 0xD98F5345098D630DULL> name(source);
-    jobSpriteNames[184] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[185] = []() -> EncryptedName<14, 0x7F2DFFC1ABE91F2BULL>& {
     const std::uint8_t source[] = {0x97, 0xA3, 0x29, 0x67, 0x00, 0x09, 0x71, 0xC3, 0x97, 0xDF, 0x25, 0x6A, 0x37, 0xFF};
     thread_local EncryptedName<sizeof(source), 0x7F2DFFC1ABE91F2BULL> name(source);
-    jobSpriteNames[185] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[186] = []() -> EncryptedName<14, 0xFD69A9B3F311818DULL>& {
     const std::uint8_t source[] = {0x4D, 0x26, 0xD1, 0x09, 0x06, 0x4C, 0x35, 0x3D, 0x2A, 0x41, 0xEB, 0x46, 0x56, 0xA9};
     thread_local EncryptedName<sizeof(source), 0xFD69A9B3F311818DULL> name(source);
-    jobSpriteNames[186] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[187] = []() -> EncryptedName<18, 0xD9452D81E5CD99C1ULL>& {
     const std::uint8_t source[] = {0x7E, 0x35, 0x7C, 0x38, 0x3D, 0xD7, 0xFE, 0x3E, 0x9D, 0x26, 0x61, 0x54, 0x5C, 0x91, 0xBF, 0x62, 0x26, 0x99};
     thread_local EncryptedName<sizeof(source), 0xD9452D81E5CD99C1ULL> name(source);
-    jobSpriteNames[187] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[188] = []() -> EncryptedName<14, 0xADADEB4DF7813B55ULL>& {
     const std::uint8_t source[] = {0x94, 0x9D, 0x42, 0x41, 0xFD, 0x13, 0xF1, 0x6C, 0xF3, 0xF8, 0x37, 0x47, 0xB5, 0xEB};
     thread_local EncryptedName<sizeof(source), 0xADADEB4DF7813B55ULL> name(source);
-    jobSpriteNames[188] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[189] = []() -> EncryptedName<10, 0xB195637DAFCB0D59ULL>& {
     const std::uint8_t source[] = {0xE1, 0xF4, 0x0E, 0x06, 0x21, 0xDB, 0x6C, 0x74, 0xF0, 0x0D};
     thread_local EncryptedName<sizeof(source), 0xB195637DAFCB0D59ULL> name(source);
-    jobSpriteNames[189] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[190] = []() -> EncryptedName<14, 0xD7A749EB27D5BF6DULL>& {
     const std::uint8_t source[] = {0xD3, 0x51, 0x69, 0x9B, 0x56, 0x8C, 0xFB, 0x69, 0x83, 0x03, 0x69, 0x9A, 0x2E, 0x49};
     thread_local EncryptedName<sizeof(source), 0xD7A749EB27D5BF6DULL> name(source);
-    jobSpriteNames[190] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[191] = []() -> EncryptedName<10, 0x9569C9C7E70909AFULL>& {
     const std::uint8_t source[] = {0x1A, 0xBC, 0xBC, 0x28, 0x9B, 0x7C, 0xDC, 0x20, 0x60, 0x09};
     thread_local EncryptedName<sizeof(source), 0x9569C9C7E70909AFULL> name(source);
-    jobSpriteNames[191] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[192] = []() -> EncryptedName<10, 0xB19D1FA9116F39D3ULL>& {
     const std::uint8_t source[] = {0x64, 0xF7, 0xDE, 0xC6, 0xF5, 0xA8, 0x53, 0x00, 0x04, 0x39};
     thread_local EncryptedName<sizeof(source), 0xB19D1FA9116F39D3ULL> name(source);
-    jobSpriteNames[192] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[193] = []() -> EncryptedName<10, 0x4191BB5531FD3999ULL>& {
     const std::uint8_t source[] = {0x2E, 0xF7, 0x4C, 0xE6, 0x09, 0x0C, 0x5F, 0xF0, 0x4E, 0x39};
     thread_local EncryptedName<sizeof(source), 0x4191BB5531FD3999ULL> name(source);
-    jobSpriteNames[193] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[194] = []() -> EncryptedName<10, 0xF715514F5961B75BULL>& {
     const std::uint8_t source[] = {0xEC, 0x79, 0xD0, 0x8E, 0x13, 0xE6, 0xDB, 0x46, 0x8C, 0xB7};
     thread_local EncryptedName<sizeof(source), 0xF715514F5961B75BULL> name(source);
-    jobSpriteNames[194] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[195] = []() -> EncryptedName<14, 0x2F8B0F37118D157FULL>& {
     const std::uint8_t source[] = {0xC1, 0xFB, 0x31, 0xAD, 0x8A, 0xCA, 0xD7, 0x91, 0x91, 0xA9, 0x31, 0xAC, 0xF2, 0x0F};
     thread_local EncryptedName<sizeof(source), 0x2F8B0F37118D157FULL> name(source);
-    jobSpriteNames[195] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[196] = []() -> EncryptedName<14, 0xAD075B8DB599F1CDULL>& {
     const std::uint8_t source[] = {0x73, 0x1F, 0x25, 0x09, 0x30, 0x9E, 0x5B, 0x13, 0x23, 0x4D, 0x25, 0x08, 0x48, 0x5B};
     thread_local EncryptedName<sizeof(source), 0xAD075B8DB599F1CDULL> name(source);
-    jobSpriteNames[196] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[197] = []() -> EncryptedName<10, 0x2FE993D1DDE1F197ULL>& {
     const std::uint8_t source[] = {0x2E, 0x5A, 0x29, 0x2C, 0x8D, 0x2A, 0x42, 0xE7, 0x66, 0xF1};
     thread_local EncryptedName<sizeof(source), 0x2FE993D1DDE1F197ULL> name(source);
-    jobSpriteNames[197] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[198] = []() -> EncryptedName<18, 0x39FF7FB50DEB998FULL>& {
     const std::uint8_t source[] = {0x36, 0x57, 0x56, 0xB7, 0x73, 0xD1, 0x48, 0x8B, 0xD3, 0x20, 0x25, 0xB0, 0x0F, 0xB9, 0x51, 0x8E, 0x3D, 0x99};
     thread_local EncryptedName<sizeof(source), 0x39FF7FB50DEB998FULL> name(source);
-    jobSpriteNames[198] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[199] = []() -> EncryptedName<10, 0xB7FD8F670FC7B96BULL>& {
     const std::uint8_t source[] = {0xD2, 0x60, 0x72, 0xEA, 0x3B, 0x36, 0x24, 0x02, 0x8E, 0xB9};
     thread_local EncryptedName<sizeof(source), 0xB7FD8F670FC7B96BULL> name(source);
-    jobSpriteNames[199] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[200] = []() -> EncryptedName<10, 0xE7978FB5A94DD7FDULL>& {
     const std::uint8_t source[] = {0x3A, 0x32, 0x88, 0x64, 0xE9, 0x48, 0x72, 0x22, 0x30, 0xD7};
     thread_local EncryptedName<sizeof(source), 0xE7978FB5A94DD7FDULL> name(source);
-    jobSpriteNames[200] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[201] = []() -> EncryptedName<10, 0x4941FD9F21BBB9FDULL>& {
     const std::uint8_t source[] = {0x44, 0x12, 0x73, 0xD0, 0xC3, 0x44, 0xEA, 0x81, 0x0C, 0xB9};
     thread_local EncryptedName<sizeof(source), 0x4941FD9F21BBB9FDULL> name(source);
-    jobSpriteNames[201] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[202] = []() -> EncryptedName<10, 0x35E5656B5DEDCD75ULL>& {
     const std::uint8_t source[] = {0xCC, 0x66, 0x25, 0xAC, 0x37, 0xDC, 0x4E, 0xFD, 0x84, 0xCD};
     thread_local EncryptedName<sizeof(source), 0x35E5656B5DEDCD75ULL> name(source);
-    jobSpriteNames[202] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[203] = []() -> EncryptedName<10, 0xF14F79170939C7F1ULL>& {
     const std::uint8_t source[] = {0x48, 0x1E, 0x8C, 0xEC, 0x4B, 0xC0, 0x96, 0x44, 0x14, 0xC7};
     thread_local EncryptedName<sizeof(source), 0xF14F79170939C7F1ULL> name(source);
-    jobSpriteNames[203] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[204] = []() -> EncryptedName<10, 0xA5FD29D7AB6DC59FULL>& {
     const std::uint8_t source[] = {0x58, 0x20, 0xA8, 0x66, 0x8B, 0xEE, 0x18, 0x60, 0x52, 0xC5};
     thread_local EncryptedName<sizeof(source), 0xA5FD29D7AB6DC59FULL> name(source);
-    jobSpriteNames[204] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[205] = []() -> EncryptedName<18, 0xD97D5DBDBB2F2709ULL>& {
     const std::uint8_t source[] = {0xCC, 0xE5, 0x9E, 0x7C, 0x01, 0x8F, 0xCE, 0x3B, 0x55, 0xE2, 0xED, 0x0A, 0x7A, 0xE1, 0xAF, 0x6A, 0xEB, 0x27};
     thread_local EncryptedName<sizeof(source), 0xD97D5DBDBB2F2709ULL> name(source);
-    jobSpriteNames[205] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[206] = []() -> EncryptedName<18, 0xED796785D1DF137FULL>& {
     const std::uint8_t source[] = {0xB8, 0xD2, 0x67, 0x7F, 0x38, 0xDD, 0xBF, 0x43, 0x23, 0xD4, 0x1E, 0x69, 0x2B, 0xDA, 0xC3, 0x2B, 0xD1, 0x13};
     thread_local EncryptedName<sizeof(source), 0xED796785D1DF137FULL> name(source);
-    jobSpriteNames[206] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[207] = []() -> EncryptedName<18, 0x83EFBFBB37EDBDBDULL>& {
     const std::uint8_t source[] = {0x7A, 0x7C, 0x55, 0x99, 0x06, 0x05, 0x29, 0x2D, 0xE1, 0x7A, 0x2C, 0x8F, 0x15, 0x02, 0x55, 0x45, 0x13, 0xBD};
     thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> name(source);
-    jobSpriteNames[207] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[208] = []() -> EncryptedName<14, 0xBF2B4B31397FF5A7ULL>& {
     const std::uint8_t source[] = {0x64, 0x3F, 0xC5, 0x81, 0xF1, 0x91, 0x77, 0x7C, 0x6D, 0x4F, 0xC7, 0xF9, 0xEB, 0x4B};
     thread_local EncryptedName<sizeof(source), 0xBF2B4B31397FF5A7ULL> name(source);
-    jobSpriteNames[208] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[209] = []() -> EncryptedName<10, 0xDD3913D5D7F97BE1ULL>& {
     const std::uint8_t source[] = {0x51, 0xB0, 0x42, 0x30, 0x89, 0xA3, 0xF2, 0x66, 0x06, 0x7B};
     thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> name(source);
-    jobSpriteNames[209] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[210] = []() -> EncryptedName<14, 0x050505679903579BULL>& {
     const std::uint8_t source[] = {0x23, 0xE1, 0xBA, 0x64, 0xDC, 0xE2, 0x59, 0xBD, 0x2D, 0xEE, 0xFE, 0x22, 0x80, 0x05};
     thread_local EncryptedName<sizeof(source), 0x050505679903579BULL> name(source);
-    jobSpriteNames[210] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[211] = []() -> EncryptedName<10, 0x03772763F96D9DA5ULL>& {
     const std::uint8_t source[] = {0x14, 0x5E, 0xD1, 0x0F, 0x3F, 0x96, 0xB4, 0xBF, 0x53, 0x9D};
     thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> name(source);
-    jobSpriteNames[211] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[212] = []() -> EncryptedName<14, 0x0B7109397F6B1387ULL>& {
     const std::uint8_t source[] = {0x3B, 0xA9, 0xAA, 0x88, 0xF9, 0xD3, 0x2D, 0xB7, 0x3D, 0xD2, 0x9C, 0xBF, 0xE3, 0x09};
     thread_local EncryptedName<sizeof(source), 0x0B7109397F6B1387ULL> name(source);
-    jobSpriteNames[212] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[213] = []() -> EncryptedName<10, 0x23BBD58F8B5FF5C9ULL>& {
     const std::uint8_t source[] = {0x72, 0x06, 0x9F, 0x45, 0xD3, 0x6E, 0x48, 0xE3, 0x07, 0xF5};
     thread_local EncryptedName<sizeof(source), 0x23BBD58F8B5FF5C9ULL> name(source);
-    jobSpriteNames[213] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[214] = []() -> EncryptedName<10, 0xC517FB932D95BB6DULL>& {
     const std::uint8_t source[] = {0xAA, 0x5E, 0x50, 0xE0, 0xCF, 0x3C, 0xF2, 0x00, 0xA0, 0xBB};
     thread_local EncryptedName<sizeof(source), 0xC517FB932D95BB6DULL> name(source);
-    jobSpriteNames[214] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[215] = []() -> EncryptedName<14, 0x9949BFD527532943ULL>& {
     const std::uint8_t source[] = {0xFD, 0xC7, 0xEF, 0x9B, 0x68, 0x7A, 0x15, 0x27, 0xAD, 0x95, 0xEF, 0x9A, 0x10, 0xBF};
     thread_local EncryptedName<sizeof(source), 0x9949BFD527532943ULL> name(source);
-    jobSpriteNames[215] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[216] = []() -> EncryptedName<10, 0xCD8F077123FB7D6FULL>& {
     const std::uint8_t source[] = {0xD7, 0x84, 0x3E, 0x8A, 0x2D, 0xBF, 0x76, 0x08, 0xC6, 0x7D};
     thread_local EncryptedName<sizeof(source), 0xCD8F077123FB7D6FULL> name(source);
-    jobSpriteNames[216] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[217] = []() -> EncryptedName<14, 0x13E33FA1A591AB67ULL>& {
     const std::uint8_t source[] = {0xDB, 0x17, 0x51, 0x69, 0x60, 0xC9, 0xBF, 0xAF, 0xDB, 0x6B, 0x5D, 0x64, 0x57, 0x3F};
     thread_local EncryptedName<sizeof(source), 0x13E33FA1A591AB67ULL> name(source);
-    jobSpriteNames[217] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[218] = []() -> EncryptedName<10, 0x17A9E5BF39AD4737ULL>& {
     const std::uint8_t source[] = {0x80, 0x89, 0x1C, 0xEE, 0xE3, 0x52, 0x67, 0xA6, 0xE0, 0x47};
     thread_local EncryptedName<sizeof(source), 0x17A9E5BF39AD4737ULL> name(source);
-    jobSpriteNames[218] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[219] = []() -> EncryptedName<18, 0x758F1D0B4F7705B9ULL>& {
     const std::uint8_t source[] = {0x06, 0xA9, 0xC6, 0x92, 0xB7, 0xE7, 0x34, 0x92, 0xE5, 0xBA, 0xDB, 0xFE, 0xD6, 0xA1, 0x75, 0xCE, 0x5E, 0x05};
     thread_local EncryptedName<sizeof(source), 0x758F1D0B4F7705B9ULL> name(source);
-    jobSpriteNames[219] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[220] = []() -> EncryptedName<10, 0x891B232D09451965ULL>& {
     const std::uint8_t source[] = {0xDC, 0xC0, 0xF0, 0xEC, 0x71, 0x9A, 0xC2, 0x3C, 0x80, 0x19};
     thread_local EncryptedName<sizeof(source), 0x891B232D09451965ULL> name(source);
-    jobSpriteNames[220] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[221] = []() -> EncryptedName<10, 0x637B959D55771F69ULL>& {
     const std::uint8_t source[] = {0xD0, 0xB4, 0xBF, 0xA4, 0xC1, 0x2C, 0xD0, 0xAB, 0x98, 0x1F};
     thread_local EncryptedName<sizeof(source), 0x637B959D55771F69ULL> name(source);
-    jobSpriteNames[221] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[222] = []() -> EncryptedName<14, 0xD1413DBB01CD8B51ULL>& {
     const std::uint8_t source[] = {0x92, 0x41, 0x77, 0xB9, 0x7B, 0xE7, 0x1D, 0x12, 0x9B, 0x31, 0x75, 0xC1, 0x61, 0x3D};
     thread_local EncryptedName<sizeof(source), 0xD1413DBB01CD8B51ULL> name(source);
-    jobSpriteNames[222] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[223] = []() -> EncryptedName<10, 0x75ADC57D87EFBD8FULL>& {
     const std::uint8_t source[] = {0x30, 0x4B, 0x58, 0x48, 0x21, 0x7A, 0x5B, 0xC2, 0x40, 0xBD};
     thread_local EncryptedName<sizeof(source), 0x75ADC57D87EFBD8FULL> name(source);
-    jobSpriteNames[223] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[224] = []() -> EncryptedName<18, 0x2BAD156DE3E1F9D9ULL>& {
     const std::uint8_t source[] = {0x67, 0x3F, 0x24, 0x4A, 0xD7, 0xE4, 0x11, 0xD8, 0x85, 0x47, 0x27, 0x26, 0xC4, 0xAF, 0x5C, 0x97, 0x2A, 0xF9};
     thread_local EncryptedName<sizeof(source), 0x2BAD156DE3E1F9D9ULL> name(source);
-    jobSpriteNames[224] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[225] = []() -> EncryptedName<14, 0xF161095D0DE18F95ULL>& {
     const std::uint8_t source[] = {0x2B, 0x61, 0x5D, 0xB1, 0xE0, 0xCC, 0x3D, 0x4F, 0x7B, 0x33, 0x5D, 0xB0, 0x98, 0x09};
     thread_local EncryptedName<sizeof(source), 0xF161095D0DE18F95ULL> name(source);
-    jobSpriteNames[225] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[226] = []() -> EncryptedName<14, 0xEDC74F6D13DF71EFULL>& {
     const std::uint8_t source[] = {0x53, 0xA3, 0x63, 0xBE, 0xDA, 0xE0, 0x9B, 0x51, 0x3D, 0xCD, 0x72, 0xA4, 0xC2, 0x4F};
     thread_local EncryptedName<sizeof(source), 0xEDC74F6D13DF71EFULL> name(source);
-    jobSpriteNames[226] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[227] = []() -> EncryptedName<18, 0xA12DAB392545D72FULL>& {
     const std::uint8_t source[] = {0x96, 0x19, 0xF8, 0x9F, 0xFF, 0x05, 0x9A, 0x13, 0x73, 0x6E, 0x8B, 0x98, 0x83, 0x6D, 0x83, 0x16, 0x9D, 0xD7};
     thread_local EncryptedName<sizeof(source), 0xA12DAB392545D72FULL> name(source);
-    jobSpriteNames[227] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[228] = []() -> EncryptedName<10, 0x6BA1C1132F033B75ULL>& {
     const std::uint8_t source[] = {0xCC, 0x90, 0xCB, 0xDE, 0x4F, 0x78, 0x0A, 0xA3, 0x84, 0x3B};
     thread_local EncryptedName<sizeof(source), 0x6BA1C1132F033B75ULL> name(source);
-    jobSpriteNames[228] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[229] = []() -> EncryptedName<10, 0x2FEB8739E5975BD1ULL>& {
     const std::uint8_t source[] = {0x6C, 0xEF, 0x21, 0x16, 0x65, 0x3A, 0x5F, 0x99, 0x22, 0x5B};
     thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
-    jobSpriteNames[229] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[230] = []() -> EncryptedName<14, 0x33133B977BCD03CDULL>& {
     const std::uint8_t source[] = {0x0C, 0xA5, 0x7E, 0xAC, 0x2F, 0x94, 0x4F, 0xF2, 0x6B, 0xB0, 0x1A, 0xC3, 0x38, 0x3B};
     thread_local EncryptedName<sizeof(source), 0x33133B977BCD03CDULL> name(source);
-    jobSpriteNames[230] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[232] = []() -> EncryptedName<10, 0x6FE153231D879777ULL>& {
     const std::uint8_t source[] = {0xC0, 0x59, 0x36, 0xCA, 0x7F, 0xE4, 0x2F, 0xDE, 0xA0, 0x97};
     thread_local EncryptedName<sizeof(source), 0x6FE153231D879777ULL> name(source);
-    jobSpriteNames[232] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[233] = []() -> EncryptedName<14, 0x39A39F87DD5F535BULL>& {
     const std::uint8_t source[] = {0x98, 0x99, 0xE5, 0x65, 0x47, 0x45, 0xFF, 0xFA, 0x91, 0xE9, 0xE7, 0x1D, 0x5D, 0x9F};
     thread_local EncryptedName<sizeof(source), 0x39A39F87DD5F535BULL> name(source);
-    jobSpriteNames[233] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[234] = []() -> EncryptedName<10, 0xEF6D1D893F2B2DC5ULL>& {
     const std::uint8_t source[] = {0x75, 0xE6, 0x90, 0xD8, 0xD5, 0xAD, 0xA6, 0x54, 0x22, 0x2D};
     thread_local EncryptedName<sizeof(source), 0xEF6D1D893F2B2DC5ULL> name(source);
-    jobSpriteNames[234] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[235] = []() -> EncryptedName<14, 0x234977DDB54BC71DULL>& {
     const std::uint8_t source[] = {0xA5, 0x71, 0xF2, 0x48, 0x66, 0x90, 0x15, 0x9B, 0xAB, 0x7E, 0xB6, 0x0E, 0x3A, 0x77};
     thread_local EncryptedName<sizeof(source), 0x234977DDB54BC71DULL> name(source);
-    jobSpriteNames[235] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[236] = []() -> EncryptedName<10, 0xE52DF30DCBAF7125ULL>& {
     const std::uint8_t source[] = {0x94, 0xB2, 0x13, 0x3D, 0x51, 0x42, 0xEE, 0x59, 0xD3, 0x71};
     thread_local EncryptedName<sizeof(source), 0xE52DF30DCBAF7125ULL> name(source);
-    jobSpriteNames[236] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[237] = []() -> EncryptedName<14, 0xCFF3899D95AF355FULL>& {
     const std::uint8_t source[] = {0xE3, 0x8F, 0x6E, 0x62, 0x5D, 0x53, 0xAF, 0x73, 0xE5, 0xF4, 0x58, 0x55, 0x47, 0x89};
     thread_local EncryptedName<sizeof(source), 0xCFF3899D95AF355FULL> name(source);
-    jobSpriteNames[237] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[238] = []() -> EncryptedName<10, 0x9171997D6963C9F7ULL>& {
     const std::uint8_t source[] = {0x4C, 0x3A, 0xA3, 0xA7, 0x21, 0x22, 0x82, 0x51, 0x39, 0xC9};
     thread_local EncryptedName<sizeof(source), 0x9171997D6963C9F7ULL> name(source);
-    jobSpriteNames[238] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[239] = []() -> EncryptedName<10, 0x4F99DF03C3EF31B7ULL>& {
     const std::uint8_t source[] = {0x02, 0x84, 0x5A, 0x0C, 0x5F, 0x6A, 0x2C, 0xFA, 0x78, 0x31};
     thread_local EncryptedName<sizeof(source), 0x4F99DF03C3EF31B7ULL> name(source);
-    jobSpriteNames[239] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[231] = []() -> EncryptedName<10, 0x8D1D0FF1AF2B13F7ULL>& {
     const std::uint8_t source[] = {0x42, 0xA6, 0x9E, 0x60, 0xAD, 0xBA, 0xA8, 0x38, 0x38, 0x13};
     thread_local EncryptedName<sizeof(source), 0x8D1D0FF1AF2B13F7ULL> name(source);
-    jobSpriteNames[231] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[51] = []() -> EncryptedName<14, 0xB39FA7917BCFBB8DULL>& {
     const std::uint8_t source[] = {0x4E, 0x71, 0x75, 0xC3, 0x51, 0x7D, 0xC3, 0x70, 0x47, 0x01, 0x77, 0xBB, 0x4B, 0xA7};
     thread_local EncryptedName<sizeof(source), 0xB39FA7917BCFBB8DULL> name(source);
-    jobSpriteNames[51] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[52] = []() -> EncryptedName<10, 0x2DCB7567394DC1ABULL>& {
     const std::uint8_t source[] = {0x1B, 0x0A, 0xF6, 0xDE, 0x3B, 0xC5, 0x00, 0x96, 0x4C, 0xC1};
     thread_local EncryptedName<sizeof(source), 0x2DCB7567394DC1ABULL> name(source);
-    jobSpriteNames[52] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[53] = []() -> EncryptedName<14, 0x4F637DC51307B759ULL>& {
     const std::uint8_t source[] = {0xE1, 0x01, 0xBE, 0xEE, 0x7E, 0x9A, 0x3F, 0xF7, 0xEF, 0x0E, 0xFA, 0xA8, 0x22, 0x7D};
     thread_local EncryptedName<sizeof(source), 0x4F637DC51307B759ULL> name(source);
-    jobSpriteNames[53] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[54] = []() -> EncryptedName<10, 0x452FEF0D7FC95565ULL>& {
     const std::uint8_t source[] = {0xD4, 0x96, 0x75, 0x89, 0x51, 0x5E, 0xEC, 0xF9, 0x93, 0x55};
     thread_local EncryptedName<sizeof(source), 0x452FEF0D7FC95565ULL> name(source);
-    jobSpriteNames[54] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[55] = []() -> EncryptedName<14, 0x9FED7DA189490D5DULL>& {
     const std::uint8_t source[] = {0xE1, 0xB7, 0x88, 0x7E, 0x61, 0xA7, 0xB1, 0x23, 0xE7, 0xCC, 0xBE, 0x49, 0x7B, 0x7D};
     thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
-    jobSpriteNames[55] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[56] = []() -> EncryptedName<10, 0x839B27DF8F5967B3ULL>& {
     const std::uint8_t source[] = {0x08, 0x94, 0x99, 0x41, 0x83, 0x9C, 0x68, 0x43, 0x7D, 0x67};
     thread_local EncryptedName<sizeof(source), 0x839B27DF8F5967B3ULL> name(source);
-    jobSpriteNames[56] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[57] = []() -> EncryptedName<10, 0xF3CB6F7711A71B6DULL>& {
     const std::uint8_t source[] = {0xD8, 0xAE, 0x12, 0xDE, 0x2B, 0xDA, 0x7E, 0x46, 0xA2, 0x1B};
     thread_local EncryptedName<sizeof(source), 0xF3CB6F7711A71B6DULL> name(source);
-    jobSpriteNames[57] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[58] = []() -> EncryptedName<10, 0x2D51E3B7236175EDULL>& {
     const std::uint8_t source[] = {0x5C, 0x97, 0xDA, 0xC4, 0xEB, 0x52, 0xB3, 0x96, 0x0A, 0x75};
     thread_local EncryptedName<sizeof(source), 0x2D51E3B7236175EDULL> name(source);
-    jobSpriteNames[58] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[59] = []() -> EncryptedName<18, 0x0F41EBBDA32D1B17ULL>& {
     const std::uint8_t source[] = {0xD0, 0xDA, 0x95, 0x0D, 0x00, 0x51, 0x87, 0xA1, 0x4B, 0xDC, 0xEC, 0x1B, 0x13, 0x56, 0xFB, 0xC9, 0xB9, 0x1B};
     thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
-    jobSpriteNames[59] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[60] = []() -> EncryptedName<14, 0xFBD599E117C547C1ULL>& {
     const std::uint8_t source[] = {0x01, 0xE0, 0x05, 0xED, 0x54, 0x7C, 0x89, 0x3B, 0x66, 0x87, 0x3F, 0xA2, 0x04, 0x99};
     thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> name(source);
-    jobSpriteNames[60] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[61] = []() -> EncryptedName<14, 0x176F138D5DD7F365ULL>& {
     const std::uint8_t source[] = {0xA4, 0x55, 0x14, 0xEB, 0x3D, 0xEB, 0x33, 0xD6, 0xC3, 0x30, 0x61, 0xED, 0x75, 0x13};
     thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
-    jobSpriteNames[61] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[62] = []() -> EncryptedName<10, 0x793F370985ED674FULL>& {
     const std::uint8_t source[] = {0x88, 0x82, 0x28, 0x48, 0x55, 0xF0, 0xDA, 0xBC, 0x82, 0x67};
     thread_local EncryptedName<sizeof(source), 0x793F370985ED674FULL> name(source);
-    jobSpriteNames[62] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[63] = []() -> EncryptedName<14, 0xE55723712993051DULL>& {
     const std::uint8_t source[] = {0xA3, 0xEB, 0x2F, 0x95, 0xCC, 0xE6, 0x0B, 0x5B, 0xF3, 0xB9, 0x2F, 0x94, 0xB4, 0x23};
     thread_local EncryptedName<sizeof(source), 0xE55723712993051DULL> name(source);
-    jobSpriteNames[63] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[64] = []() -> EncryptedName<28, 0x7115D9F973F913C9ULL>& {
     const std::uint8_t source[] = {0x0F, 0xF7, 0x3D, 0xA9, 0x3F, 0x3D, 0xD1, 0xAB, 0x96, 0xA2, 0x1B, 0xC8, 0x1E, 0x85, 0xD3, 0x95, 0x0D, 0xC9, 0x3F, 0x97, 0x3D, 0x03, 0x4A, 0xC0, 0x2B, 0xA8, 0x1E, 0x73};
     thread_local EncryptedName<sizeof(source), 0x7115D9F973F913C9ULL> name(source);
-    jobSpriteNames[64] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[65] = []() -> EncryptedName<22, 0xCB1D253B7FE1F563ULL>& {
     const std::uint8_t source[] = {0xA6, 0x5C, 0x56, 0x98, 0x87, 0x99, 0xDD, 0x07, 0xD7, 0x00, 0xBD, 0xBA, 0x92, 0x92, 0xFA, 0x77, 0xDF, 0x35, 0x2D, 0xCB, 0xCE, 0x25};
     thread_local EncryptedName<sizeof(source), 0xCB1D253B7FE1F563ULL> name(source);
-    jobSpriteNames[65] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[66] = []() -> EncryptedName<10, 0x7941D76335CFA14FULL>& {
     const std::uint8_t source[] = {0xF7, 0x58, 0x0A, 0x9C, 0x3F, 0x6F, 0xB8, 0xBC, 0xE6, 0xA1};
     thread_local EncryptedName<sizeof(source), 0x7941D76335CFA14FULL> name(source);
-    jobSpriteNames[66] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[67] = []() -> EncryptedName<14, 0x7321C3814F8799E1ULL>& {
     const std::uint8_t source[] = {0x5D, 0x25, 0x47, 0x83, 0x40, 0x35, 0x7D, 0xCF, 0x5D, 0x59, 0x4B, 0x8E, 0x77, 0xC3};
     thread_local EncryptedName<sizeof(source), 0x7321C3814F8799E1ULL> name(source);
-    jobSpriteNames[67] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[68] = []() -> EncryptedName<10, 0x7DE349D717D7F123ULL>& {
     const std::uint8_t source[] = {0x94, 0x3F, 0x66, 0xC0, 0x8B, 0xFE, 0x2D, 0xCC, 0xF4, 0xF1};
     thread_local EncryptedName<sizeof(source), 0x7DE349D717D7F123ULL> name(source);
-    jobSpriteNames[68] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[69] = []() -> EncryptedName<18, 0x0F15B16B5BAFD57FULL>& {
     const std::uint8_t source[] = {0xC0, 0x79, 0x1E, 0x86, 0xD7, 0x4B, 0xAE, 0xE8, 0x23, 0x6A, 0x03, 0xEA, 0xB6, 0x0D, 0xEF, 0xB4, 0x98, 0xD5};
     thread_local EncryptedName<sizeof(source), 0x0F15B16B5BAFD57FULL> name(source);
-    jobSpriteNames[69] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[70] = []() -> EncryptedName<10, 0x9B5B959B954D9333ULL>& {
     const std::uint8_t source[] = {0x8A, 0x4A, 0xF8, 0x70, 0xC7, 0x2C, 0x82, 0x2E, 0xD6, 0x93};
     thread_local EncryptedName<sizeof(source), 0x9B5B959B954D9333ULL> name(source);
-    jobSpriteNames[70] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[71] = []() -> EncryptedName<10, 0x17FFC98B398FAF61ULL>& {
     const std::uint8_t source[] = {0xD8, 0x04, 0x47, 0xC8, 0xD7, 0x70, 0x54, 0xDF, 0x90, 0xAF};
     thread_local EncryptedName<sizeof(source), 0x17FFC98B398FAF61ULL> name(source);
-    jobSpriteNames[71] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[72] = []() -> EncryptedName<34, 0x078143534999254DULL>& {
     const std::uint8_t source[] = {0xF0, 0xE0, 0x5F, 0xAD, 0x97, 0x99, 0x44, 0xAE, 0xFA, 0xC2, 0x25, 0xF5, 0x93, 0x8F, 0x35, 0xF2, 0x11, 0x98, 0x5C, 0x8F, 0xB7, 0x87, 0x5B, 0xC2, 0xE4, 0x92, 0x7E, 0xF5, 0xEF, 0x83, 0x4D, 0xB3, 0xB8, 0x25};
     thread_local EncryptedName<sizeof(source), 0x078143534999254DULL> name(source);
-    jobSpriteNames[72] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[73] = []() -> EncryptedName<14, 0xAFA5617F178B6185ULL>& {
     const std::uint8_t source[] = {0x46, 0xAB, 0x31, 0xAF, 0xBF, 0xBB, 0xF9, 0x6C, 0x4F, 0xDB, 0x33, 0xD7, 0xA5, 0x61};
     thread_local EncryptedName<sizeof(source), 0xAFA5617F178B6185ULL> name(source);
-    jobSpriteNames[73] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[74] = []() -> EncryptedName<10, 0xE50B2935073DD3E9ULL>& {
     const std::uint8_t source[] = {0x59, 0x18, 0x86, 0xE0, 0x69, 0x99, 0xC0, 0x5E, 0x0E, 0xD3};
     thread_local EncryptedName<sizeof(source), 0xE50B2935073DD3E9ULL> name(source);
-    jobSpriteNames[74] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[75] = []() -> EncryptedName<14, 0x3F5315DFE32B4FAFULL>& {
     const std::uint8_t source[] = {0x17, 0xF9, 0x92, 0x1E, 0x64, 0xF2, 0x0F, 0x87, 0x19, 0xF6, 0xD6, 0x58, 0x38, 0x15};
     thread_local EncryptedName<sizeof(source), 0x3F5315DFE32B4FAFULL> name(source);
-    jobSpriteNames[75] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[76] = []() -> EncryptedName<10, 0x33832D4D3FDFBDBFULL>& {
     const std::uint8_t source[] = {0x0E, 0x7E, 0x63, 0xC9, 0x11, 0x9C, 0x40, 0x8F, 0x49, 0xBD};
     thread_local EncryptedName<sizeof(source), 0x33832D4D3FDFBDBFULL> name(source);
-    jobSpriteNames[76] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[77] = []() -> EncryptedName<14, 0x7D750DADBDE9C3F1ULL>& {
     const std::uint8_t source[] = {0x4D, 0x79, 0x28, 0x4A, 0x6D, 0xD7, 0x29, 0xC1, 0x4B, 0x02, 0x1E, 0x7D, 0x77, 0x0D};
     thread_local EncryptedName<sizeof(source), 0x7D750DADBDE9C3F1ULL> name(source);
-    jobSpriteNames[77] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[78] = []() -> EncryptedName<10, 0xED5143E7C1B39315ULL>& {
     const std::uint8_t source[] = {0xAE, 0x60, 0x73, 0x0F, 0xBB, 0xF8, 0xA2, 0x2D, 0xDB, 0x93};
     thread_local EncryptedName<sizeof(source), 0xED5143E7C1B39315ULL> name(source);
-    jobSpriteNames[78] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[79] = []() -> EncryptedName<10, 0xFF7D83CB791339D9ULL>& {
     const std::uint8_t source[] = {0x6C, 0x8C, 0xA6, 0xB6, 0x97, 0x36, 0xC8, 0x4A, 0x16, 0x39};
     thread_local EncryptedName<sizeof(source), 0xFF7D83CB791339D9ULL> name(source);
-    jobSpriteNames[79] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[80] = []() -> EncryptedName<10, 0x31956551B311FD95ULL>& {
     const std::uint8_t source[] = {0x24, 0x1F, 0xAA, 0x54, 0x0D, 0xD4, 0x77, 0x8A, 0x72, 0xFD};
     thread_local EncryptedName<sizeof(source), 0x31956551B311FD95ULL> name(source);
-    jobSpriteNames[80] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[81] = []() -> EncryptedName<18, 0x393D916561BDC391ULL>& {
     const std::uint8_t source[] = {0x56, 0x02, 0x05, 0xCF, 0xD8, 0x2B, 0xFB, 0x97, 0xCD, 0x04, 0x7C, 0xD9, 0xCB, 0x2C, 0x87, 0xFF, 0x3F, 0xC3};
     thread_local EncryptedName<sizeof(source), 0x393D916561BDC391ULL> name(source);
-    jobSpriteNames[81] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[82] = []() -> EncryptedName<14, 0x955D4DF94DE9BB07ULL>& {
     const std::uint8_t source[] = {0xC7, 0x1C, 0x29, 0xB7, 0x4C, 0xA8, 0x01, 0x55, 0xA0, 0x7B, 0x13, 0xF8, 0x1C, 0x4D};
     thread_local EncryptedName<sizeof(source), 0x955D4DF94DE9BB07ULL> name(source);
-    jobSpriteNames[82] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[83] = []() -> EncryptedName<14, 0x8741152D8FB34B4FULL>& {
     const std::uint8_t source[] = {0x8E, 0xED, 0x70, 0x39, 0x9D, 0xED, 0x1D, 0x46, 0xE9, 0x88, 0x05, 0x3F, 0xD5, 0x15};
     thread_local EncryptedName<sizeof(source), 0x8741152D8FB34B4FULL> name(source);
-    jobSpriteNames[83] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[84] = []() -> EncryptedName<10, 0xB739073FE921AD6FULL>& {
     const std::uint8_t source[] = {0xA8, 0x48, 0xE4, 0x24, 0x63, 0xC0, 0xDC, 0x72, 0xA2, 0xAD};
     thread_local EncryptedName<sizeof(source), 0xB739073FE921AD6FULL> name(source);
-    jobSpriteNames[84] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[85] = []() -> EncryptedName<14, 0xC399B7091589B50BULL>& {
     const std::uint8_t source[] = {0xB5, 0x5B, 0x35, 0xA9, 0xB4, 0x72, 0xC5, 0x7D, 0xE5, 0x09, 0x35, 0xA8, 0xCC, 0xB7};
     thread_local EncryptedName<sizeof(source), 0xC399B7091589B50BULL> name(source);
-    jobSpriteNames[85] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[86] = []() -> EncryptedName<28, 0x7FC1015DFFCF6D19ULL>& {
     const std::uint8_t source[] = {0xDF, 0x89, 0x0B, 0x25, 0x9B, 0xE5, 0x05, 0xA5, 0x46, 0xDC, 0x2D, 0x44, 0xBA, 0x5D, 0x07, 0x9B, 0xDD, 0xB7, 0x09, 0x1B, 0x99, 0xDB, 0x9E, 0xCE, 0xFB, 0xD6, 0x28, 0xFF};
     thread_local EncryptedName<sizeof(source), 0x7FC1015DFFCF6D19ULL> name(source);
-    jobSpriteNames[86] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[87] = []() -> EncryptedName<22, 0x0753A7E1EFA9E139ULL>& {
     const std::uint8_t source[] = {0xFC, 0x48, 0x1E, 0x08, 0x5D, 0x1B, 0x93, 0xCB, 0x8D, 0x14, 0xF5, 0x2A, 0x48, 0x10, 0xB4, 0xBB, 0x85, 0x21, 0x65, 0x5B, 0x14, 0xA7};
     thread_local EncryptedName<sizeof(source), 0x0753A7E1EFA9E139ULL> name(source);
-    jobSpriteNames[87] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[88] = []() -> EncryptedName<10, 0x7FCD77F9C7CBD14DULL>& {
     const std::uint8_t source[] = {0xF5, 0x28, 0x0E, 0x6E, 0xA5, 0xCF, 0x34, 0xBA, 0xE4, 0xD1};
     thread_local EncryptedName<sizeof(source), 0x7FCD77F9C7CBD14DULL> name(source);
-    jobSpriteNames[88] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[89] = []() -> EncryptedName<14, 0xCB3FBD4183DB8323ULL>& {
     const std::uint8_t source[] = {0x9F, 0x3F, 0x1B, 0x4F, 0x80, 0x4B, 0x63, 0x77, 0x9F, 0x43, 0x17, 0x42, 0xB7, 0xBD};
     thread_local EncryptedName<sizeof(source), 0xCB3FBD4183DB8323ULL> name(source);
-    jobSpriteNames[89] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[90] = []() -> EncryptedName<10, 0x3B915119EFD523EFULL>& {
     const std::uint8_t source[] = {0x58, 0xED, 0x64, 0x38, 0x45, 0xE6, 0x5F, 0x8A, 0x38, 0x23};
     thread_local EncryptedName<sizeof(source), 0x3B915119EFD523EFULL> name(source);
-    jobSpriteNames[90] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[91] = []() -> EncryptedName<18, 0x5B8F49AF09390D1BULL>& {
     const std::uint8_t source[] = {0xA4, 0xA1, 0x88, 0xD4, 0x13, 0xB3, 0x34, 0xBC, 0x47, 0xB2, 0x95, 0xB8, 0x72, 0xF5, 0x75, 0xE0, 0xFC, 0x0D};
     thread_local EncryptedName<sizeof(source), 0x5B8F49AF09390D1BULL> name(source);
-    jobSpriteNames[91] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[92] = []() -> EncryptedName<10, 0x3F557BE333F95F6DULL>& {
     const std::uint8_t source[] = {0xD4, 0x86, 0x4C, 0xD6, 0xBF, 0xC2, 0x8C, 0x8A, 0x88, 0x5F};
     thread_local EncryptedName<sizeof(source), 0x3F557BE333F95F6DULL> name(source);
-    jobSpriteNames[92] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[93] = []() -> EncryptedName<10, 0x474DC581D5E98357ULL>& {
     const std::uint8_t source[] = {0xEE, 0x28, 0x21, 0x24, 0xDD, 0x7C, 0xE6, 0x8F, 0xA6, 0x83};
     thread_local EncryptedName<sizeof(source), 0x474DC581D5E98357ULL> name(source);
-    jobSpriteNames[93] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[94] = []() -> EncryptedName<34, 0x01FF9313695DD9DFULL>& {
     const std::uint8_t source[] = {0x6E, 0x61, 0x9B, 0x8D, 0xD7, 0x49, 0x3A, 0xA8, 0x68, 0x3E, 0xE1, 0xD5, 0xD3, 0x5F, 0x4B, 0xF4, 0x83, 0x68, 0xE5, 0xAF, 0xF7, 0x57, 0x25, 0xC4, 0x76, 0x6E, 0xBA, 0xD5, 0xAF, 0x53, 0x33, 0xB5, 0x2A, 0xD9};
     thread_local EncryptedName<sizeof(source), 0x01FF9313695DD9DFULL> name(source);
-    jobSpriteNames[94] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[95] = []() -> EncryptedName<14, 0x1BF915E1F37DFDFDULL>& {
     const std::uint8_t source[] = {0x3E, 0x37, 0xC7, 0x4B, 0x21, 0xCF, 0xA5, 0xD8, 0x37, 0x47, 0xC5, 0x33, 0x3B, 0x15};
     thread_local EncryptedName<sizeof(source), 0x1BF915E1F37DFDFDULL> name(source);
-    jobSpriteNames[95] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[96] = []() -> EncryptedName<18, 0x49C3759B77DBD3C1ULL>& {
     const std::uint8_t source[] = {0x04, 0x11, 0x6A, 0xB0, 0x27, 0xA7, 0x70, 0xAB, 0x9D, 0x16, 0x19, 0xC6, 0x5C, 0xC9, 0x11, 0xFA, 0x23, 0xD3};
     thread_local EncryptedName<sizeof(source), 0x49C3759B77DBD3C1ULL> name(source);
-    jobSpriteNames[96] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[97] = []() -> EncryptedName<10, 0x6DED3DD1CF75AD9BULL>& {
     const std::uint8_t source[] = {0x2A, 0x6A, 0xC9, 0x75, 0x8D, 0x8C, 0x2A, 0xD1, 0x21, 0xAD};
     thread_local EncryptedName<sizeof(source), 0x6DED3DD1CF75AD9BULL> name(source);
-    jobSpriteNames[97] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[98] = []() -> EncryptedName<10, 0x91E147EBBD47C39FULL>& {
     const std::uint8_t source[] = {0x2E, 0x04, 0xFB, 0x07, 0xB7, 0xF6, 0x26, 0x2D, 0x25, 0xC3};
     thread_local EncryptedName<sizeof(source), 0x91E147EBBD47C39FULL> name(source);
-    jobSpriteNames[98] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[99] = []() -> EncryptedName<18, 0xD1538513DF975701ULL>& {
     const std::uint8_t source[] = {0xBD, 0x85, 0x28, 0x30, 0xAB, 0x30, 0x97, 0x6E, 0x5D, 0xEB, 0x45, 0x60, 0xFC, 0x3D, 0xE6, 0x15, 0xBE, 0x57};
     thread_local EncryptedName<sizeof(source), 0xD1538513DF975701ULL> name(source);
-    jobSpriteNames[99] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[100] = []() -> EncryptedName<14, 0xA1A55B4D1597EDD3ULL>& {
     const std::uint8_t source[] = {0x6F, 0x57, 0x56, 0xE2, 0x8D, 0x81, 0xF9, 0x1D, 0x69, 0x2C, 0x60, 0xD5, 0x97, 0x5B};
     thread_local EncryptedName<sizeof(source), 0xA1A55B4D1597EDD3ULL> name(source);
-    jobSpriteNames[100] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[101] = []() -> EncryptedName<10, 0x4F1791FB1503C713ULL>& {
     const std::uint8_t source[] = {0xA2, 0x25, 0xB8, 0xF2, 0xA7, 0x20, 0xF5, 0xF4, 0xF4, 0xC7};
     thread_local EncryptedName<sizeof(source), 0x4F1791FB1503C713ULL> name(source);
-    jobSpriteNames[101] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[102] = []() -> EncryptedName<14, 0x7D993F650D2785FFULL>& {
     const std::uint8_t source[] = {0x43, 0x39, 0xE7, 0xC1, 0xA4, 0xC9, 0xC5, 0xC1, 0x43, 0x45, 0xEB, 0xCC, 0x93, 0x3F};
     thread_local EncryptedName<sizeof(source), 0x7D993F650D2785FFULL> name(source);
-    jobSpriteNames[102] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[104] = []() -> EncryptedName<18, 0x61FF87ED7BF39BE1ULL>& {
     const std::uint8_t source[] = {0x56, 0x72, 0x40, 0xD1, 0x2D, 0x4B, 0x39, 0xCF, 0xBD, 0x2C, 0x1A, 0xC8, 0x47, 0x47, 0x33, 0xA7, 0x4F, 0x9B};
     thread_local EncryptedName<sizeof(source), 0x61FF87ED7BF39BE1ULL> name(source);
-    jobSpriteNames[104] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[110] = []() -> EncryptedName<18, 0x151F77EBEBBB2147ULL>& {
     const std::uint8_t source[] = {0xF0, 0xC8, 0x08, 0x41, 0x2B, 0xBB, 0xD9, 0xBB, 0x1B, 0x96, 0x52, 0x58, 0x41, 0xB7, 0xD3, 0xD3, 0xE9, 0x21};
     thread_local EncryptedName<sizeof(source), 0x151F77EBEBBB2147ULL> name(source);
-    jobSpriteNames[110] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[130] = []() -> EncryptedName<36, 0x2D394DBD0F332733ULL>& {
     const std::uint8_t source[] = {0xF5, 0xC3, 0xF7, 0xD5, 0x7B, 0xA9, 0xFD, 0xF7, 0x6C, 0x90, 0xDA, 0xBC, 0x17, 0x8D, 0xF5, 0xEB, 0x9D, 0x7B, 0xF5, 0xEB, 0x79, 0x97, 0xFF, 0xC9, 0xF7, 0xFD, 0x6C, 0xB8, 0x54, 0xFE, 0x93, 0xED, 0xFF, 0xE1, 0x9D, 0x0F};
     thread_local EncryptedName<sizeof(source), 0x2D394DBD0F332733ULL> name(source);
-    jobSpriteNames[130] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[131] = []() -> EncryptedName<36, 0x69D345DB950F336DULL>& {
     const std::uint8_t source[] = {0xAB, 0xD7, 0xCB, 0x4F, 0x1D, 0xA1, 0x17, 0xB3, 0x32, 0x84, 0xE6, 0x26, 0x71, 0x85, 0x1F, 0xAF, 0xC3, 0x6F, 0xC9, 0x71, 0x1F, 0x9F, 0x15, 0x8D, 0xA9, 0xE9, 0x50, 0x22, 0x32, 0xF6, 0x79, 0xA9, 0xA1, 0xF5, 0xA1, 0x95};
     thread_local EncryptedName<sizeof(source), 0x69D345DB950F336DULL> name(source);
-    jobSpriteNames[131] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[159] = []() -> EncryptedName<36, 0xC7912587FFF31B71ULL>& {
     const std::uint8_t source[] = {0xB7, 0xFF, 0x37, 0x25, 0x41, 0xC1, 0x55, 0x1D, 0x2E, 0xAC, 0x1A, 0x4C, 0x2D, 0xE5, 0x5D, 0x01, 0xDF, 0x47, 0x35, 0x1B, 0x43, 0xFF, 0x57, 0x23, 0xB5, 0xC1, 0xAC, 0x48, 0x6E, 0x96, 0x3B, 0x07, 0xBD, 0xDD, 0x5D, 0xFF};
     thread_local EncryptedName<sizeof(source), 0xC7912587FFF31B71ULL> name(source);
-    jobSpriteNames[159] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[138] = []() -> EncryptedName<36, 0x2D3B15774149D5DDULL>& {
     const std::uint8_t source[] = {0x1B, 0x31, 0x8D, 0x9B, 0xB1, 0xF1, 0xFF, 0xF7, 0x82, 0x62, 0xA0, 0xF2, 0xDD, 0xD5, 0xF7, 0xEB, 0x73, 0x89, 0x8F, 0xA5, 0xB3, 0xCF, 0xFD, 0xC9, 0x19, 0x0F, 0x16, 0xF6, 0x9E, 0xA6, 0x91, 0xED, 0x11, 0x13, 0xE7, 0x41};
     thread_local EncryptedName<sizeof(source), 0x2D3B15774149D5DDULL> name(source);
-    jobSpriteNames[138] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[139] = []() -> EncryptedName<36, 0x9B17C9EFDBB39F2FULL>& {
     const std::uint8_t source[] = {0xE9, 0x7B, 0x77, 0x01, 0x29, 0x2D, 0xD3, 0x41, 0x70, 0x28, 0x5A, 0x68, 0x45, 0x09, 0xDB, 0x5D, 0x81, 0xC3, 0x75, 0x3F, 0x2B, 0x13, 0xD1, 0x7F, 0xEB, 0x45, 0xEC, 0x6C, 0x06, 0x7A, 0xBD, 0x5B, 0xE3, 0x59, 0x1D, 0xDB};
     thread_local EncryptedName<sizeof(source), 0x9B17C9EFDBB39F2FULL> name(source);
-    jobSpriteNames[139] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[140] = []() -> EncryptedName<36, 0x0BEB63A5C905B3A7ULL>& {
     const std::uint8_t source[] = {0x61, 0x57, 0xC1, 0x13, 0x63, 0x87, 0x2F, 0xD1, 0xF8, 0x04, 0xEC, 0x7A, 0x0F, 0xA3, 0x27, 0xCD, 0x09, 0xEF, 0xC3, 0x2D, 0x61, 0xB9, 0x2D, 0xEF, 0x63, 0x69, 0x5A, 0x7E, 0x4C, 0xD0, 0x41, 0xCB, 0x6B, 0x75, 0xAB, 0xC9};
     thread_local EncryptedName<sizeof(source), 0x0BEB63A5C905B3A7ULL> name(source);
-    jobSpriteNames[140] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[141] = []() -> EncryptedName<36, 0x8B3FEB5B8BD5C3C3ULL>& {
     const std::uint8_t source[] = {0x05, 0x27, 0x11, 0x51, 0x9D, 0x0F, 0xFB, 0x51, 0x9C, 0x74, 0x3C, 0x38, 0xF1, 0x2B, 0xF3, 0x4D, 0x6D, 0x9F, 0x13, 0x6F, 0x9F, 0x31, 0xF9, 0x6F, 0x07, 0x19, 0x8A, 0x3C, 0xB2, 0x58, 0x95, 0x4B, 0x0F, 0x05, 0x7B, 0x8B};
     thread_local EncryptedName<sizeof(source), 0x8B3FEB5B8BD5C3C3ULL> name(source);
-    jobSpriteNames[141] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[142] = []() -> EncryptedName<36, 0x8F1B5BFD5F6175B5ULL>& {
     const std::uint8_t source[] = {0x73, 0x91, 0xA5, 0x85, 0x3B, 0xBF, 0xDF, 0x55, 0xEA, 0xC2, 0x88, 0xEC, 0x57, 0x9B, 0xD7, 0x49, 0x1B, 0x29, 0xA7, 0xBB, 0x39, 0x81, 0xDD, 0x6B, 0x71, 0xAF, 0x3E, 0xE8, 0x14, 0xE8, 0xB1, 0x4F, 0x79, 0xB3, 0xCF, 0x5F};
     thread_local EncryptedName<sizeof(source), 0x8F1B5BFD5F6175B5ULL> name(source);
-    jobSpriteNames[142] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[143] = []() -> EncryptedName<36, 0x078333BB9725B7C9ULL>& {
     const std::uint8_t source[] = {0x0F, 0x53, 0xE1, 0x4D, 0x7D, 0xD7, 0x47, 0xDD, 0x96, 0x00, 0xCC, 0x24, 0x11, 0xF3, 0x4F, 0xC1, 0x67, 0xEB, 0xE3, 0x73, 0x7F, 0xE9, 0x45, 0xE3, 0x0D, 0x6D, 0x7A, 0x20, 0x52, 0x80, 0x29, 0xC7, 0x05, 0x71, 0x8B, 0x97};
     thread_local EncryptedName<sizeof(source), 0x078333BB9725B7C9ULL> name(source);
-    jobSpriteNames[143] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[144] = []() -> EncryptedName<36, 0xF5657D1F3DE5CDC7ULL>& {
     const std::uint8_t source[] = {0x01, 0x29, 0x21, 0xE7, 0xD9, 0x99, 0xA1, 0x2F, 0x98, 0x7A, 0x0C, 0x8E, 0xB5, 0xBD, 0xA9, 0x33, 0x69, 0x91, 0x23, 0xD9, 0xDB, 0xA7, 0xA3, 0x11, 0x03, 0x17, 0xBA, 0x8A, 0xF6, 0xCE, 0xCF, 0x35, 0x0B, 0x0B, 0x4B, 0x3D};
     thread_local EncryptedName<sizeof(source), 0xF5657D1F3DE5CDC7ULL> name(source);
-    jobSpriteNames[144] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[145] = []() -> EncryptedName<36, 0x69FD1D9733D3CFC1ULL>& {
     const std::uint8_t source[] = {0x07, 0x2B, 0x17, 0xE9, 0x51, 0xF9, 0x39, 0xB3, 0x9E, 0x78, 0x3A, 0x80, 0x3D, 0xDD, 0x31, 0xAF, 0x6F, 0x93, 0x15, 0xD7, 0x53, 0xC7, 0x3B, 0x8D, 0x05, 0x15, 0x8C, 0x84, 0x7E, 0xAE, 0x57, 0xA9, 0x0D, 0x09, 0x7D, 0x33};
     thread_local EncryptedName<sizeof(source), 0x69FD1D9733D3CFC1ULL> name(source);
-    jobSpriteNames[145] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[107] = []() -> EncryptedName<18, 0xF7530137154D8FE5ULL>& {
     const std::uint8_t source[] = {0x5B, 0x49, 0x88, 0xBC, 0x8D, 0xF0, 0xEF, 0x04, 0xB9, 0x31, 0x8B, 0xD0, 0x9E, 0xBB, 0xA2, 0x4B, 0x16, 0x8F};
     thread_local EncryptedName<sizeof(source), 0xF7530137154D8FE5ULL> name(source);
-    jobSpriteNames[107] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[113] = []() -> EncryptedName<18, 0x8B65CD61012B5931ULL>& {
     const std::uint8_t source[] = {0x8F, 0x9F, 0xEE, 0xA8, 0xDB, 0x3C, 0xD9, 0x78, 0x6D, 0xE7, 0xED, 0xC4, 0xC8, 0x77, 0x94, 0x37, 0xC2, 0x59};
     thread_local EncryptedName<sizeof(source), 0x8B65CD61012B5931ULL> name(source);
-    jobSpriteNames[113] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[105] = []() -> EncryptedName<10, 0x17359BF953C367B3ULL>& {
     const std::uint8_t source[] = {0x0C, 0x91, 0x74, 0x9C, 0xA5, 0x24, 0xC3, 0xA0, 0x7C, 0x67};
     thread_local EncryptedName<sizeof(source), 0x17359BF953C367B3ULL> name(source);
-    jobSpriteNames[105] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[111] = []() -> EncryptedName<10, 0x2FF3C5036D070127ULL>& {
     const std::uint8_t source[] = {0x98, 0xF7, 0xB0, 0xA2, 0x5F, 0x7A, 0x05, 0x98, 0xE8, 0x01};
     thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> name(source);
-    jobSpriteNames[111] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[108] = []() -> EncryptedName<14, 0x93E7A3A1F587CDC5ULL>& {
     const std::uint8_t source[] = {0x7C, 0x01, 0x43, 0x3C, 0x15, 0x73, 0xBB, 0x2A, 0x09, 0x09, 0x4E, 0x41, 0x71, 0xA3};
     thread_local EncryptedName<sizeof(source), 0x93E7A3A1F587CDC5ULL> name(source);
-    jobSpriteNames[108] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[114] = []() -> EncryptedName<14, 0xC52FB5FBB94FF917ULL>& {
     const std::uint8_t source[] = {0xAE, 0x35, 0x8B, 0x70, 0x4F, 0x65, 0x73, 0x7C, 0xDB, 0x3D, 0x86, 0x0D, 0x2B, 0xB5};
     thread_local EncryptedName<sizeof(source), 0xC52FB5FBB94FF917ULL> name(source);
-    jobSpriteNames[114] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[136] = []() -> EncryptedName<18, 0x812BE72BCD5707B7ULL>& {
     const std::uint8_t source[] = {0x0F, 0xB1, 0xE2, 0x78, 0x9A, 0x05, 0x95, 0x6F, 0xEB, 0xBF, 0xE1, 0x78, 0x9E, 0x56, 0xC9, 0x3F, 0x59, 0x07};
     thread_local EncryptedName<sizeof(source), 0x812BE72BCD5707B7ULL> name(source);
-    jobSpriteNames[136] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[137] = []() -> EncryptedName<18, 0x59278F63D79F3DA1ULL>& {
     const std::uint8_t source[] = {0x19, 0x8B, 0x2A, 0x62, 0xD2, 0x6D, 0x99, 0xB7, 0xFD, 0x85, 0x29, 0x62, 0xD6, 0x3E, 0xC5, 0xE7, 0x4F, 0x3D};
     thread_local EncryptedName<sizeof(source), 0x59278F63D79F3DA1ULL> name(source);
-    jobSpriteNames[137] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[162] = []() -> EncryptedName<18, 0x1D6D75EDE7CD311FULL>& {
     const std::uint8_t source[] = {0xA7, 0x87, 0x78, 0x52, 0x5C, 0x97, 0xD3, 0xF3, 0x43, 0x89, 0x7B, 0x52, 0x58, 0xC4, 0x8F, 0xA3, 0xF1, 0x31};
     thread_local EncryptedName<sizeof(source), 0x1D6D75EDE7CD311FULL> name(source);
-    jobSpriteNames[162] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[106] = []() -> EncryptedName<14, 0x3375B1C7DBB5FD55ULL>& {
     const std::uint8_t source[] = {0xE2, 0x44, 0x75, 0x15, 0x06, 0x1F, 0x29, 0x84, 0xEC, 0x3D, 0x7B, 0x1A, 0x69, 0xB1};
     thread_local EncryptedName<sizeof(source), 0x3375B1C7DBB5FD55ULL> name(source);
-    jobSpriteNames[106] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[112] = []() -> EncryptedName<14, 0x0F0F8B6B8F9D19D1ULL>& {
     const std::uint8_t source[] = {0x66, 0xA0, 0x5D, 0x41, 0xAA, 0x25, 0x53, 0xB8, 0x68, 0xD9, 0x53, 0x4E, 0xC5, 0x8B};
     thread_local EncryptedName<sizeof(source), 0x0F0F8B6B8F9D19D1ULL> name(source);
-    jobSpriteNames[112] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[134] = []() -> EncryptedName<22, 0xD98F03A52D35636DULL>& {
     const std::uint8_t source[] = {0xDA, 0xDA, 0xF5, 0xE3, 0x64, 0xAD, 0x3B, 0x18, 0xD9, 0x88, 0x69, 0x9A, 0x1C, 0xC3, 0x41, 0x18, 0xC3, 0xD7, 0xF4, 0x99, 0x4E, 0x03};
     thread_local EncryptedName<sizeof(source), 0xD98F03A52D35636DULL> name(source);
-    jobSpriteNames[134] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[135] = []() -> EncryptedName<22, 0x31D7C1EDA345E36DULL>& {
     const std::uint8_t source[] = {0xDA, 0x5A, 0x85, 0x6D, 0x2C, 0x6F, 0x63, 0xF0, 0xD9, 0x08, 0x19, 0x14, 0x54, 0x01, 0x19, 0xF0, 0xC3, 0x57, 0x84, 0x17, 0x06, 0xC1};
     thread_local EncryptedName<sizeof(source), 0x31D7C1EDA345E36DULL> name(source);
-    jobSpriteNames[135] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[161] = []() -> EncryptedName<22, 0xD3755DD95F47A909ULL>& {
     const std::uint8_t source[] = {0xBE, 0x10, 0x87, 0x91, 0x18, 0xF3, 0xC1, 0x12, 0xBD, 0x42, 0x1B, 0xE8, 0x60, 0x9D, 0xBB, 0x12, 0xA7, 0x1D, 0x86, 0xEB, 0x32, 0x5D};
     thread_local EncryptedName<sizeof(source), 0xD3755DD95F47A909ULL> name(source);
-    jobSpriteNames[161] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[109] = []() -> EncryptedName<26, 0x490FFB43A12F0DB9ULL>& {
     const std::uint8_t source[] = {0x08, 0xEB, 0x98, 0x6F, 0x85, 0x45, 0xCA, 0xE0, 0x0E, 0xC3, 0x92, 0x1B, 0x1F, 0x4A, 0xE9, 0xFE, 0x77, 0xCB, 0x91, 0x64, 0xEA, 0x4C, 0xC1, 0xF4, 0x03, 0x0D};
     thread_local EncryptedName<sizeof(source), 0x490FFB43A12F0DB9ULL> name(source);
-    jobSpriteNames[109] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[115] = []() -> EncryptedName<26, 0x3FAF85D995034FD7ULL>& {
     const std::uint8_t source[] = {0x66, 0xA9, 0xB4, 0x5B, 0x1F, 0x3B, 0x6A, 0x96, 0x60, 0x81, 0xBE, 0x2F, 0x85, 0x34, 0x49, 0x88, 0x19, 0x89, 0xBD, 0x50, 0x70, 0x32, 0x61, 0x82, 0x6D, 0x4F};
     thread_local EncryptedName<sizeof(source), 0x3FAF85D995034FD7ULL> name(source);
-    jobSpriteNames[115] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[116] = []() -> EncryptedName<18, 0x73D1674B61DF7B0BULL>& {
     const std::uint8_t source[] = {0xBC, 0xB5, 0x61, 0x83, 0xFB, 0xC6, 0x64, 0x96, 0x57, 0xCC, 0x11, 0xDF, 0xA9, 0xD7, 0x70, 0xC6, 0xEE, 0x7B};
     thread_local EncryptedName<sizeof(source), 0x73D1674B61DF7B0BULL> name(source);
-    jobSpriteNames[116] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[123] = []() -> EncryptedName<18, 0x91651D81F559F971ULL>& {
     const std::uint8_t source[] = {0xC6, 0x37, 0xE7, 0x17, 0x31, 0xBC, 0xD0, 0x74, 0x2D, 0x4E, 0x97, 0x4B, 0x63, 0xAD, 0xC4, 0x24, 0x94, 0xF9};
     thread_local EncryptedName<sizeof(source), 0x91651D81F559F971ULL> name(source);
-    jobSpriteNames[123] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[132] = []() -> EncryptedName<30, 0x072D2D872D259D5BULL>& {
     const std::uint8_t source[] = {0xE6, 0x58, 0xE3, 0xC9, 0x43, 0xF7, 0x9A, 0xC9, 0xE5, 0x7F, 0x95, 0x8C, 0x32, 0xC8, 0x71, 0xBA, 0x9E, 0x5B, 0xC1, 0xE9, 0x5D, 0x9A, 0xE3, 0xB9, 0xB9, 0x2D, 0x84, 0x98, 0x62, 0x2D};
     thread_local EncryptedName<sizeof(source), 0x072D2D872D259D5BULL> name(source);
-    jobSpriteNames[132] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[133] = []() -> EncryptedName<30, 0x875FCDF1E7A1795FULL>& {
     const std::uint8_t source[] = {0xE2, 0xBC, 0x67, 0x03, 0x35, 0x17, 0xE8, 0x49, 0xE1, 0x9B, 0x11, 0x46, 0x44, 0x28, 0x03, 0x3A, 0x9A, 0xBF, 0x45, 0x23, 0x2B, 0x7A, 0x91, 0x39, 0xBD, 0xC9, 0x00, 0x52, 0x14, 0xCD};
     thread_local EncryptedName<sizeof(source), 0x875FCDF1E7A1795FULL> name(source);
-    jobSpriteNames[133] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[160] = []() -> EncryptedName<30, 0xB96B77B7255F8569ULL>& {
     const std::uint8_t source[] = {0xD4, 0x40, 0x99, 0xC1, 0x73, 0xAD, 0xDC, 0x77, 0xD7, 0x67, 0xEF, 0x84, 0x02, 0x92, 0x37, 0x04, 0xAC, 0x43, 0xBB, 0xE1, 0x6D, 0xC0, 0xA5, 0x07, 0x8B, 0x35, 0xFE, 0x90, 0x52, 0x77};
     thread_local EncryptedName<sizeof(source), 0xB96B77B7255F8569ULL> name(source);
-    jobSpriteNames[160] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[120] = []() -> EncryptedName<10, 0x9BE3EF737387AD79ULL>& {
     const std::uint8_t source[] = {0xC4, 0x19, 0x31, 0x80, 0x2F, 0x52, 0x57, 0x2D, 0x8A, 0xAD};
     thread_local EncryptedName<sizeof(source), 0x9BE3EF737387AD79ULL> name(source);
-    jobSpriteNames[120] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[127] = []() -> EncryptedName<10, 0x4755C1355575FD37ULL>& {
     const std::uint8_t source[] = {0x8A, 0x49, 0xC3, 0xA6, 0x69, 0x7C, 0xE1, 0xF1, 0xC4, 0xFD};
     thread_local EncryptedName<sizeof(source), 0x4755C1355575FD37ULL> name(source);
-    jobSpriteNames[127] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[117] = []() -> EncryptedName<14, 0x11CB35636377DD07ULL>& {
     const std::uint8_t source[] = {0xBB, 0x0F, 0xCB, 0xCE, 0xD4, 0x9A, 0x97, 0xAD, 0xD5, 0x61, 0xDA, 0xD4, 0xCC, 0x35};
     thread_local EncryptedName<sizeof(source), 0x11CB35636377DD07ULL> name(source);
-    jobSpriteNames[117] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[124] = []() -> EncryptedName<14, 0x79DF094DD9616575ULL>& {
     const std::uint8_t source[] = {0xC9, 0xB7, 0xDD, 0x74, 0xFA, 0xA6, 0x83, 0xC5, 0xA7, 0xD9, 0xCC, 0x6E, 0xE2, 0x09};
     thread_local EncryptedName<sizeof(source), 0x79DF094DD9616575ULL> name(source);
-    jobSpriteNames[124] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[122] = []() -> EncryptedName<10, 0x9D8F2D37BFFD61B7ULL>& {
     const std::uint8_t source[] = {0x00, 0xAF, 0x4C, 0x68, 0x6B, 0x9A, 0x41, 0x2C, 0x60, 0x61};
     thread_local EncryptedName<sizeof(source), 0x9D8F2D37BFFD61B7ULL> name(source);
-    jobSpriteNames[122] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[129] = []() -> EncryptedName<10, 0x5DAD2D25D9259B93ULL>& {
     const std::uint8_t source[] = {0x24, 0x55, 0x94, 0x0E, 0x79, 0x9A, 0x63, 0xEC, 0x44, 0x9B};
     thread_local EncryptedName<sizeof(source), 0x5DAD2D25D9259B93ULL> name(source);
-    jobSpriteNames[129] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[121] = []() -> EncryptedName<14, 0x1F1D51274373C1FDULL>& {
     const std::uint8_t source[] = {0x3C, 0x67, 0xC0, 0x94, 0x9F, 0xFE, 0x41, 0xDE, 0x5B, 0x72, 0xA4, 0xFB, 0x88, 0x51};
     thread_local EncryptedName<sizeof(source), 0x1F1D51274373C1FDULL> name(source);
-    jobSpriteNames[121] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[128] = []() -> EncryptedName<14, 0x3D371F5B0F7F9327ULL>& {
     const std::uint8_t source[] = {0xE6, 0x35, 0xCC, 0xD8, 0xE3, 0xB0, 0x6B, 0xFC, 0x81, 0x20, 0xA8, 0xB7, 0xF4, 0x1F};
     thread_local EncryptedName<sizeof(source), 0x3D371F5B0F7F9327ULL> name(source);
-    jobSpriteNames[128] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[119] = []() -> EncryptedName<14, 0x6BF729E30729CF29ULL>& {
     const std::uint8_t source[] = {0x96, 0x37, 0x9D, 0xF2, 0x54, 0x86, 0xAB, 0xD4, 0xD1, 0x7B, 0xDC, 0xB0, 0x4C, 0x29};
     thread_local EncryptedName<sizeof(source), 0x6BF729E30729CF29ULL> name(source);
-    jobSpriteNames[119] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[126] = []() -> EncryptedName<14, 0xC5995F4B9FE96B89ULL>& {
     const std::uint8_t source[] = {0x36, 0x93, 0x5D, 0x6A, 0xFC, 0xF0, 0xC5, 0x7A, 0x71, 0xDF, 0x1C, 0x28, 0xE4, 0x5F};
     thread_local EncryptedName<sizeof(source), 0xC5995F4B9FE96B89ULL> name(source);
-    jobSpriteNames[126] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[118] = []() -> EncryptedName<18, 0x610F7DD1EFC1C91BULL>& {
     const std::uint8_t source[] = {0xA2, 0x07, 0x7C, 0x55, 0x17, 0xD3, 0xB8, 0xD3, 0x47, 0x70, 0x0F, 0x52, 0x6B, 0xBB, 0xA1, 0xD6, 0xA9, 0xC9};
     thread_local EncryptedName<sizeof(source), 0x610F7DD1EFC1C91BULL> name(source);
-    jobSpriteNames[118] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[125] = []() -> EncryptedName<18, 0x5F93A1C3A7AD7537ULL>& {
     const std::uint8_t source[] = {0x8E, 0xBB, 0x10, 0x1D, 0x05, 0x0F, 0x24, 0xED, 0x6B, 0xCC, 0x63, 0x1A, 0x79, 0x67, 0x3D, 0xE8, 0x85, 0x75};
     thread_local EncryptedName<sizeof(source), 0x5F93A1C3A7AD7537ULL> name(source);
-    jobSpriteNames[125] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[146] = []() -> EncryptedName<18, 0x097389157345A787ULL>& {
     const std::uint8_t source[] = {0x30, 0x4E, 0xF6, 0xD9, 0xD5, 0x45, 0xB5, 0xA7, 0xDB, 0x10, 0xAC, 0xC0, 0xBF, 0x49, 0xBF, 0xCF, 0x29, 0xA7};
     thread_local EncryptedName<sizeof(source), 0x097389157345A787ULL> name(source);
-    jobSpriteNames[146] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[147] = []() -> EncryptedName<10, 0x732B390D63FD47D7ULL>& {
     const std::uint8_t source[] = {0x68, 0xB1, 0x4A, 0xAC, 0x51, 0x86, 0xDD, 0xC4, 0x18, 0x47};
     thread_local EncryptedName<sizeof(source), 0x732B390D63FD47D7ULL> name(source);
-    jobSpriteNames[147] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[148] = []() -> EncryptedName<14, 0xB7A76BF9CD41F99FULL>& {
     const std::uint8_t source[] = {0x28, 0x40, 0x81, 0x03, 0x38, 0xC5, 0xFB, 0x00, 0x26, 0x39, 0x8F, 0x0C, 0x57, 0x6B};
     thread_local EncryptedName<sizeof(source), 0xB7A76BF9CD41F99FULL> name(source);
-    jobSpriteNames[148] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[149] = []() -> EncryptedName<18, 0xE3FB23537D2785BFULL>& {
     const std::uint8_t source[] = {0x01, 0x43, 0xE2, 0xD4, 0xE9, 0xD2, 0x47, 0x10, 0xE3, 0x3B, 0xE1, 0xB8, 0xFA, 0x99, 0x0A, 0x5F, 0x4C, 0x85};
     thread_local EncryptedName<sizeof(source), 0xE3FB23537D2785BFULL> name(source);
-    jobSpriteNames[149] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[150] = []() -> EncryptedName<14, 0x1FDB81175D1557E3ULL>& {
     const std::uint8_t source[] = {0x5A, 0x9B, 0xD1, 0x94, 0xA3, 0x51, 0x87, 0xA6, 0x2F, 0x93, 0xDC, 0xE9, 0xC7, 0x81};
     thread_local EncryptedName<sizeof(source), 0x1FDB81175D1557E3ULL> name(source);
-    jobSpriteNames[150] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[151] = []() -> EncryptedName<26, 0xB3CF9BEB7963DB89ULL>& {
     const std::uint8_t source[] = {0x38, 0x3D, 0xD4, 0xB7, 0x2D, 0x25, 0x0A, 0x1A, 0x3E, 0x15, 0xDE, 0xC3, 0xB7, 0x2A, 0x29, 0x04, 0x47, 0x1D, 0xDD, 0xBC, 0x42, 0x2C, 0x01, 0x0E, 0x33, 0xDB};
     thread_local EncryptedName<sizeof(source), 0xB3CF9BEB7963DB89ULL> name(source);
-    jobSpriteNames[151] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[152] = []() -> EncryptedName<18, 0x8BBF792B47E72173ULL>& {
     const std::uint8_t source[] = {0xC4, 0xEF, 0x59, 0xA5, 0x9B, 0xD8, 0x0A, 0x6E, 0x2F, 0x96, 0x29, 0xF9, 0xC9, 0xC9, 0x1E, 0x3E, 0x96, 0x21};
     thread_local EncryptedName<sizeof(source), 0x8BBF792B47E72173ULL> name(source);
-    jobSpriteNames[152] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[153] = []() -> EncryptedName<14, 0xDD69EDFFA18F537DULL>& {
     const std::uint8_t source[] = {0xC1, 0x81, 0x33, 0x0C, 0x48, 0x42, 0x35, 0x61, 0xAF, 0xEF, 0x22, 0x16, 0x50, 0xED};
     thread_local EncryptedName<sizeof(source), 0xDD69EDFFA18F537DULL> name(source);
-    jobSpriteNames[153] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[154] = []() -> EncryptedName<18, 0x71A509DB43792991ULL>& {
     const std::uint8_t source[] = {0x28, 0xE7, 0xC4, 0xF9, 0x1D, 0xA7, 0x12, 0xC3, 0xCD, 0x90, 0xB7, 0xFE, 0x61, 0xCF, 0x0B, 0xC6, 0x23, 0x29};
     thread_local EncryptedName<sizeof(source), 0x71A509DB43792991ULL> name(source);
-    jobSpriteNames[154] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[155] = []() -> EncryptedName<14, 0xFB2BC75769E777D3ULL>& {
     const std::uint8_t source[] = {0x6C, 0x8F, 0x53, 0x9C, 0xE0, 0x68, 0x77, 0x44, 0x2B, 0xC3, 0x12, 0xDE, 0xF8, 0xC7};
     thread_local EncryptedName<sizeof(source), 0xFB2BC75769E777D3ULL> name(source);
-    jobSpriteNames[155] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[156] = []() -> EncryptedName<10, 0x038535BB092533B7ULL>& {
     const std::uint8_t source[] = {0x0A, 0x87, 0x93, 0xFA, 0xE7, 0x88, 0x31, 0xB5, 0x44, 0x33};
     thread_local EncryptedName<sizeof(source), 0x038535BB092533B7ULL> name(source);
-    jobSpriteNames[156] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[157] = []() -> EncryptedName<14, 0x9B9D51AD3515F779ULL>& {
     const std::uint8_t source[] = {0xB8, 0x51, 0xA6, 0xE2, 0x15, 0xFE, 0xC1, 0x5A, 0xDF, 0x44, 0xC2, 0x8D, 0x02, 0x51};
     thread_local EncryptedName<sizeof(source), 0x9B9D51AD3515F779ULL> name(source);
-    jobSpriteNames[157] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[158] = []() -> EncryptedName<10, 0xB5D7B5AF4FEDFF57ULL>& {
     const std::uint8_t source[] = {0xE0, 0x31, 0x5C, 0x98, 0xF3, 0x02, 0x19, 0x04, 0x80, 0xFF};
     thread_local EncryptedName<sizeof(source), 0xB5D7B5AF4FEDFF57ULL> name(source);
-    jobSpriteNames[158] = name.Text();
-  }
-  {
+    return name;
+  }().Text();
+  jobSpriteNames[240] = []() -> EncryptedName<14, 0x67DD5BAB1919D9D1ULL>& {
     const std::uint8_t source[] = {0x12, 0x13, 0xA3, 0xA1, 0x6B, 0x81, 0x81, 0xA4, 0x1B, 0x63, 0xA1, 0xD9, 0x71, 0x5B};
     thread_local EncryptedName<sizeof(source), 0x67DD5BAB1919D9D1ULL> name(source);
-    jobSpriteNames[240] = name.Text();
-  }
+    return name;
+  }().Text();
   {
     const char source[] = {'\x30', '\xDF', '\xC9', '\x9B', '\xB9', '\x2D', '\xAF', '\x76', '\x39', '\xAF', '\xCB', '\xE3', '\xA3', '\xF7'};
     thread_local EncryptedName<sizeof(source), 0xB5F3F779237315F3ULL> name(source);
