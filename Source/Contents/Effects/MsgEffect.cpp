@@ -1210,10 +1210,12 @@ void CMsgEffect::FollowOwner() {
     case 0x19:
       if (this->m_owner != nullptr) {
         CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
-        this->render.position.x = owner->render.position.x;
-        this->m_velocity.x = owner->render.position.x;
-        this->render.position.z = owner->render.position.z;
-        this->m_velocity.z = owner->render.position.z;
+        const float x = owner->render.position.x;
+        this->render.position.x = x;
+        this->m_velocity.x = x;
+        const float z = owner->render.position.z;
+        this->render.position.z = z;
+        this->m_velocity.z = z;
       }
       this->render.unknown_0124 = 0x200;
       break;
@@ -1221,21 +1223,30 @@ void CMsgEffect::FollowOwner() {
     case 4:
     case 0xB:
       if (this->m_owner != nullptr) {
-        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->render.position.x = owner->render.position.x;
+        this->render.position.y = owner->render.position.y;
+        this->render.position.z = owner->render.position.z;
         this->render.position.y -= 15.0f;
       }
       break;
 
     case 0xC:
       if (this->m_owner != nullptr) {
-        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->render.position.x = owner->render.position.x;
+        this->render.position.y = owner->render.position.y;
+        this->render.position.z = owner->render.position.z;
         this->render.position.y -= 20.0f;
       }
       break;
 
     case 5:
       if (this->m_owner != nullptr) {
-        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->render.position.x = owner->render.position.x;
+        this->render.position.y = owner->render.position.y;
+        this->render.position.z = owner->render.position.z;
       }
       break;
 
@@ -1246,7 +1257,10 @@ void CMsgEffect::FollowOwner() {
     case 0x23:
     case 0x24:
       if (this->m_owner != nullptr) {
-        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->render.position.x = owner->render.position.x;
+        this->render.position.y = owner->render.position.y;
+        this->render.position.z = owner->render.position.z;
         if (this->render.unknown_0070 == 10000) {
           this->render.position.y -= 10.0f;
         } else {
@@ -1258,14 +1272,20 @@ void CMsgEffect::FollowOwner() {
 
     case 0x21:
       if (this->m_owner != nullptr) {
-        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
-        this->render.position.y -= static_cast<float>(static_cast<CGameActor*>(this->m_owner)->unknown_03C8) + 10.0f;
+        const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->render.position.x = owner->render.position.x;
+        this->render.position.y = owner->render.position.y;
+        this->render.position.z = owner->render.position.z;
+        this->render.position.y = this->render.position.y - static_cast<float>(static_cast<CGameActor*>(this->m_owner)->unknown_03C8) - 10.0f;
       }
       break;
 
     case 0x20:
       if (this->m_owner != nullptr) {
-        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->render.position.x = owner->render.position.x;
+        this->render.position.y = owner->render.position.y;
+        this->render.position.z = owner->render.position.z;
         this->render.position.y -= 25.0f;
       }
       break;
@@ -1278,7 +1298,10 @@ void CMsgEffect::FollowOwner() {
     case 0x25:
     case 0x26:
       if (this->m_owner != nullptr) {
-        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->render.position.x = owner->render.position.x;
+        this->render.position.y = owner->render.position.y;
+        this->render.position.z = owner->render.position.z;
         if (this->render.unknown_0070 == 10000) {
           this->render.position.y -= 10.0f;
         } else {
@@ -1289,9 +1312,12 @@ void CMsgEffect::FollowOwner() {
 
     case 7:
       if (this->m_owner != nullptr) {
-        this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
+        const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->render.position.x = owner->render.position.x;
+        this->render.position.y = owner->render.position.y;
+        this->render.position.z = owner->render.position.z;
         this->render.position.y -= 15.0f;
-        this->render.angle = static_cast<CRenderObject*>(this->m_owner)->render.angle;
+        this->render.angle = owner->render.angle;
         const int dir = this->Get8Dir(this->render.angle);
         this->render.previousAnimation = this->render.animation + dir;
         switch (dir) {
@@ -1430,8 +1456,13 @@ void CMsgEffect::FollowOwner() {
       if (this->m_owner == nullptr) {
         break;
       }
-      this->render.position = static_cast<CRenderObject*>(this->m_owner)->render.position;
-      this->render.position.y -= 20.0f;
+      {
+        const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
+        this->render.position.x = owner->render.position.x;
+        this->render.position.y = owner->render.position.y;
+        this->render.position.z = owner->render.position.z;
+        this->render.position.y -= 20.0f;
+      }
     default:
       if (this->m_type == 0x72) {
         this->render.position.x = static_cast<CRenderObject*>(this->m_owner)->render.position.x;
@@ -1542,7 +1573,10 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
 
         case 6:
           if (sender != nullptr) {
-            this->render.position = static_cast<const CRenderObject*>(sender)->render.position;
+            const CRenderObject* owner = static_cast<const CRenderObject*>(sender);
+            this->render.position.x = owner->render.position.x;
+            this->render.position.y = owner->render.position.y;
+            this->render.position.z = owner->render.position.z;
           }
           break;
       }
@@ -1606,7 +1640,9 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           this->SetActionName(ResourceMgr::Instance(), FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
           this->render.animation = 0;
           this->render.previousAnimation = 0;
-          this->render.position = *position;
+          this->render.position.x = position->x;
+          this->render.position.y = position->y;
+          this->render.position.z = position->z;
           this->render.position.y -= static_cast<float>(offset + 12);
           this->m_baseY = this->render.position.y;
           break;
@@ -1627,7 +1663,9 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           this->SetActionName(ResourceMgr::Instance(), FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
           this->render.animation = 0;
           this->render.previousAnimation = 0;
-          this->render.position = *position;
+          this->render.position.x = position->x;
+          this->render.position.y = position->y;
+          this->render.position.z = position->z;
           this->m_baseX = this->render.position.x;
           this->render.position.y -= 12.0f;
           this->m_baseY = this->render.position.y;
@@ -1673,7 +1711,9 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           break;
 
         case 6:
-          this->render.position = *position;
+          this->render.position.x = position->x;
+          this->render.position.y = position->y;
+          this->render.position.z = position->z;
           break;
 
         case 11:
@@ -1683,7 +1723,9 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           break;
 
         case 13:
-          this->render.position = *position;
+          this->render.position.x = position->x;
+          this->render.position.y = position->y;
+          this->render.position.z = position->z;
           this->m_baseX = this->render.position.x;
           this->render.position.y -= 12.0f;
           this->render.curMotion = 0;
@@ -1695,7 +1737,9 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
 
         case 15:
         case 25:
-          this->render.position = *position;
+          this->render.position.x = position->x;
+          this->render.position.y = position->y;
+          this->render.position.z = position->z;
           this->render.position.y -= 12.0f;
           this->render.curMotion = 1;
           this->render.scale = 3.0f;
@@ -1706,7 +1750,9 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           break;
 
         case 19:
-          this->render.position = *position;
+          this->render.position.x = position->x;
+          this->render.position.y = position->y;
+          this->render.position.z = position->z;
           this->render.position.y -= 12.0f;
           this->render.curMotion = 0;
           this->render.unknown_0080 = static_cast<std::uint32_t>(-5);
@@ -1714,7 +1760,9 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           break;
 
         case 24:
-          this->render.position = *position;
+          this->render.position.x = position->x;
+          this->render.position.y = position->y;
+          this->render.position.z = position->z;
           this->render.position.y -= 2.0f;
           this->render.curMotion = 0;
           this->render.scale = 1.0f;
@@ -1724,7 +1772,9 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           break;
 
         default:
-          this->render.position = *position;
+          this->render.position.x = position->x;
+          this->render.position.y = position->y;
+          this->render.position.z = position->z;
           this->render.position.y -= 20.0f;
           break;
       }
