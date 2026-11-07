@@ -128,7 +128,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
             CBitmapRes* gradeBitmap = static_cast<CBitmapRes*>(
               ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088).c_str()))
             );
-            this->DrawBitmap(xCoords[slot / 4 + 2], iconY + 12, gradeBitmap ? &gradeBitmap->image : nullptr, true);
+            this->DrawBitmap(xCoords[slot / 4 + 2], iconY + 12, gradeBitmap, true);
           }
         } else {
           DrawItemIcon(*this, ResourceMgr::Instance(), xCoords[row + 2], 22, item, 0);
@@ -158,7 +158,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
               CBitmapRes* gradeBitmap = static_cast<CBitmapRes*>(
                 ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088).c_str()))
               );
-              this->DrawBitmap(iconX, row * 26 + 60, gradeBitmap ? &gradeBitmap->image : nullptr, true);
+              this->DrawBitmap(iconX, row * 26 + 60, gradeBitmap, true);
             }
           } else {
             const int iconX = xCoords[(slot & 3) + 2];
