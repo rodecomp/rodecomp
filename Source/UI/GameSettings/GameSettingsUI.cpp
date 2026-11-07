@@ -186,8 +186,7 @@ void GameSettingsUI::CUIGroupSkin::Slot15(int width, int height) {
 
   this->m_combo = new CUIComboBox<CUIComboItem, std::string>();
   this->m_combo->Create(162, 16, 5);
-  CUIComboBox<CUIComboItem, std::string>* combo = this->m_combo;
-  combo->SetButton(std::string([]() {
+  this->m_combo->SetButton(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x25, 0xD4, 0xF3, 0xD3, 0x8D, 0xAB, 0xE8, 0xD4, 0x23, 0x9F, 0xF3, 0xE5, 0xF0, 0xDF, 0x71, 0x7B, 0x84, 0x08, 0x5A, 0x4A, 0x12, 0x0C, 0x43, 0x6D, 0x80, 0x09, 0x55, 0x48, 0x2E, 0x00, 0x71, 0x6D, 0x9D, 0x0F, 0x51, 0x46, 0x35, 0x3A, 0x4F, 0x6D, 0x8B, 0x24, 0x52, 0x07, 0x2F, 0x08, 0x5D, 0x19};
     constexpr EncryptedSource<48> source(bytes);
     thread_local EncryptedName<48, 0x192D654D29337BE5ULL> name(source);
@@ -209,9 +208,9 @@ void GameSettingsUI::CUIGroupSkin::Slot15(int width, int height) {
     thread_local EncryptedName<48, 0x136F2F9915D1DBCFULL> name(source);
     return name.Text();
   }()));
-  combo->Move(110, 9);
-  combo->onSelect = [this](CUIComboItem* item, const std::string& name) { this->OnSelect(item, name); };
-  combo->SetItemBinder([this](CUIComboItem* item, const std::string& name) {
+  this->m_combo->Move(110, 9);
+  this->m_combo->SetOnSelect([this](CUIComboItem* item, const std::string& name) { this->OnSelect(item, name); });
+  this->m_combo->SetItemBinder([this](CUIComboItem* item, const std::string& name) {
     SetComboItemSkinText(item, name);
   });
   this->AddChild(this->m_combo);
@@ -389,7 +388,7 @@ template void CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::Create(int
 
 // INLINED
 template <class T, class D>
-void CUIComboBox<T, D>::SetItemBinder(const std::function<void(T*, const D&)>& binder) {
+void CUIComboBox<T, D>::SetItemBinder(std::function<void(T*, const D&)> binder) {
   this->onChange = binder;
   this->listBox->SetBinder(binder);
 }
@@ -3030,7 +3029,7 @@ void GameSettingsUI::CUIGroupGraphics::Slot15(int width, int height) {
     return name.Text();
   }()));
   this->m_adapterCombo->Move(150, 9);
-  this->m_adapterCombo->onSelect = [this](CUIComboItem* item, const RenderAdapter& adapter) { this->OnAdapterSelect(item, adapter); };
+  this->m_adapterCombo->SetOnSelect([this](CUIComboItem* item, const RenderAdapter& adapter) { this->OnAdapterSelect(item, adapter); });
   this->m_adapterCombo->SetItemBinder([this](CUIComboItem* item, const RenderAdapter& adapter) {
     SetComboItemAdapterText(item, adapter);
   });
@@ -3085,7 +3084,7 @@ void GameSettingsUI::CUIGroupGraphics::Slot15(int width, int height) {
     return name.Text();
   }()));
   this->m_modeCombo->Move(150, 41);
-  this->m_modeCombo->onSelect = [this](CUIComboItem* item, const DisplayMode& mode) { this->OnModeSelect(item, mode); };
+  this->m_modeCombo->SetOnSelect([this](CUIComboItem* item, const DisplayMode& mode) { this->OnModeSelect(item, mode); });
   this->m_modeCombo->SetItemBinder([this](CUIComboItem* item, const DisplayMode& mode) {
     SetComboItemModeText(item, mode);
   });
@@ -3144,7 +3143,7 @@ void GameSettingsUI::CUIGroupGraphicsAPI::Slot15(int width, int height) {
     return name.Text();
   }()));
   this->m_combo->Move(150, 9);
-  this->m_combo->onSelect = [this](CUIComboItem* item, const RenderBackend& backend) { this->OnSelect(item, backend); };
+  this->m_combo->SetOnSelect([this](CUIComboItem* item, const RenderBackend& backend) { this->OnSelect(item, backend); });
   this->m_combo->SetItemBinder([this](CUIComboItem* item, const RenderBackend& backend) {
     SetComboItemBackendText(item, backend);
   });

@@ -44,7 +44,11 @@ public:
   unsigned int Selected() const;
   __declspec(noinline) void UpdateListHeight();
   void Create(int width, int itemHeight, int visibleItems);
-  void SetItemBinder(const std::function<void(T*, const D&)>& binder);
+  void SetItemBinder(std::function<void(T*, const D&)> binder);
+  // INLINED
+  void SetOnSelect(std::function<void(T*, const D&)> handler) {
+    this->onSelect = handler;
+  }
   void SetButton(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& disabled);
 
   /* 0080 */ T* display;
