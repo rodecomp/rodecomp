@@ -2034,8 +2034,6 @@ int CGameMode::HandleRuneResult(int result) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFFE)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(0xFFE), 0, true, false, 0, "Message", 280, 120, 0);
     break;
-  default:
-    return result;
   }
 
   return result;
@@ -2441,7 +2439,7 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
   std::string folder = "DdukddakBoxTest";
   std::string fileName = FormatOwnedString("%d%02d%02d_(%s).txt", time.wYear, time.wMonth, time.wDay, name);
   std::string path = FormatOwnedString("%s\\%s\\%s", g_applicationDirectory, folder.c_str(), fileName.c_str());
-  path = CreateUniqueFileName(path);
+  path = static_cast<const std::string&>(CreateUniqueFileName(path));
 
   std::ofstream output(path.c_str());
   output << FormatOwnedString("%s\t%s\t%s\t%s\n\n", "ID", "name", "count", "property");
