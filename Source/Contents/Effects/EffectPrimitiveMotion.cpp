@@ -4364,8 +4364,8 @@ bool CEffectPrim::PrimWind() {
 // FUNCTION: fn_19848
 bool CEffectPrim::PrimDriftingSquares() {
   const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
-  this->state.slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
-  const short anglePitch = static_cast<short>(450 - static_cast<int>(view->camera.pitch));
+  this->state.slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<short>(view->camera.yaw));
+  const short anglePitch = static_cast<short>(450 - static_cast<short>(view->camera.pitch));
   this->state.slots[1].alphaT = anglePitch;
   if (anglePitch >= 360) {
     this->state.slots[1].alphaT = anglePitch - 360;
@@ -4404,7 +4404,21 @@ bool CEffectPrim::PrimDriftingSquares() {
       float& current = slot.height[2 * pair];
       float& target = slot.height[2 * pair + 1];
       int next;
-      if (target <= current) {
+      if (target > current) {
+        current += 3.0f;
+        if (current > 359.0f) {
+          current = 359.0f;
+        }
+        if (current <= target) {
+          continue;
+        }
+        const int range = static_cast<int>(current);
+        next = 0;
+        if (range != 0) {
+          const int value = std::rand() % range;
+          next = value >= 0 ? value : 0;
+        }
+      } else {
         current -= 2.0f;
         if (current < 0.0f) {
           current = 0.0f;
@@ -4419,20 +4433,6 @@ bool CEffectPrim::PrimDriftingSquares() {
           pick = value >= 0 ? value : 0;
         }
         next = 359 - pick;
-      } else {
-        current += 3.0f;
-        if (current > 359.0f) {
-          current = 359.0f;
-        }
-        if (current <= target) {
-          continue;
-        }
-        const int range = static_cast<int>(current);
-        next = 0;
-        if (range != 0) {
-          const int value = std::rand() % range;
-          next = value >= 0 ? value : 0;
-        }
       }
       target = static_cast<float>(next);
     }
