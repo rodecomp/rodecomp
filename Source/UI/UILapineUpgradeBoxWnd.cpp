@@ -134,8 +134,7 @@ void UILapineUpgradeBox_IngredientListWnd::Slot15(int width, int height) {
 void UILapineUpgradeBox_IngredientInfoWnd::Paint() {
   this->ClearSurface(0xFFF7F7);
   if (this->selected == 1) {
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\list_selected_item.bmp")));
-    this->DrawBitmap(32, 0, bitmap ? &bitmap->image : nullptr, false);
+    this->DrawBitmap(32, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\list_selected_item.bmp"))), false);
   }
 
   DrawItemIcon(*this, ResourceMgr::Instance(), 4, 3, this->item, 0);

@@ -396,8 +396,7 @@ void UIRefining_BtnReturn::Paint() {
 void UIRefining_Notice::Paint() {
   this->ClearSurface(0xFFFF00FF);
   if (this->text.size() > 0) {
-    auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\refining_renewal\\ico_notice.bmp")));
-    this->DrawBitmap(0, 3, icon ? &icon->image : nullptr, false);
+    this->DrawBitmap(0, 3, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\refining_renewal\\ico_notice.bmp"))), false);
 
     std::uint32_t color = this->highlight != 1 ? 0xC4281C : 0x2E15CA;
     std::list<std::string> lines;
@@ -1066,7 +1065,7 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
   }
 
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())));
-  this->DrawBitmap(1, 17, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(1, 17, bitmap, false);
 
 
   if (this->state == 1) {
@@ -1074,12 +1073,12 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
       bitmap = static_cast<CBitmapRes*>(
         ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\refining_renewal\\slot_select_blue%d.bmp", this->selectedMaterial).c_str()))
       );
-      this->DrawBitmap(this->selectedMaterial * 49 + 11, 55, bitmap ? &bitmap->image : nullptr, false);
+      this->DrawBitmap(this->selectedMaterial * 49 + 11, 55, bitmap, false);
     }
 
     if (this->catalystEnabled == 1) {
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\refining_renewal\\slot_select_red.bmp")));
-      this->DrawBitmap(207, 55, bitmap ? &bitmap->image : nullptr, false);
+      this->DrawBitmap(207, 55, bitmap, false);
     }
 
     const char* color = "^CA152E";
@@ -1118,7 +1117,7 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
       bitmap = static_cast<CBitmapRes*>(
         ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.unknown_0088).c_str()))
       );
-      this->DrawBitmap(120, 224, bitmap ? &bitmap->image : nullptr, true);
+      this->DrawBitmap(120, 224, bitmap, true);
     }
   }
 
