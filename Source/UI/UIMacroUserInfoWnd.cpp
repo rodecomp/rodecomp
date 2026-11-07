@@ -461,96 +461,90 @@ void UIMacroReporterWnd::Slot15(int, int) {
   this->m_scrollBar->Configure(186, 56, 1, 216);
   this->AddChild(this->m_scrollBar);
 
-  UICheckBox* check = new UICheckBox();
-  this->unknown_00D4 = check;
-  check->SetSize(42, 20);
-  check->SetBitmaps("유저인터페이스\\btn_q_active_a.bmp", "유저인터페이스\\btn_q_active.bmp");
-  check->Move(202, 27);
-  check->SetChecked(0);
-  this->AddChild(check);
+  this->unknown_00D4 = new UICheckBox();
+  static_cast<UICheckBox*>(this->unknown_00D4)->SetSize(42, 20);
+  static_cast<UICheckBox*>(this->unknown_00D4)->SetBitmaps("유저인터페이스\\btn_q_active_a.bmp", "유저인터페이스\\btn_q_active.bmp");
+  static_cast<UICheckBox*>(this->unknown_00D4)->Move(202, 27);
+  static_cast<UICheckBox*>(this->unknown_00D4)->SetChecked(0);
+  this->AddChild(this->unknown_00D4);
 
-  UIBitmapButton* report = new UIBitmapButton();
-  this->m_reportButton = report;
-  report->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
-  report->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
-  report->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
-  report->SetBitmap("유저인터페이스\\btn_ok_c.bmp", 3, 0);
-  report->SetSize(report->BitmapWidth(), report->BitmapHeight());
-  report->Move(202, 285);
-  report->SetId(345);
-  this->AddChild(report);
+  this->m_reportButton = new UIBitmapButton();
+  static_cast<UIBitmapButton*>(this->m_reportButton)->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
+  static_cast<UIBitmapButton*>(this->m_reportButton)->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
+  static_cast<UIBitmapButton*>(this->m_reportButton)->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
+  static_cast<UIBitmapButton*>(this->m_reportButton)->SetBitmap("유저인터페이스\\btn_ok_c.bmp", 3, 0);
+  static_cast<UIBitmapButton*>(this->m_reportButton)->SetSize(static_cast<UIBitmapButton*>(this->m_reportButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->m_reportButton)->BitmapHeight());
+  static_cast<UIBitmapButton*>(this->m_reportButton)->Move(202, 285);
+  static_cast<UIBitmapButton*>(this->m_reportButton)->SetId(345);
+  this->AddChild(this->m_reportButton);
 
   std::string labels[4] = {LookupMessage(2887), LookupMessage(2888), LookupMessage(4006), LookupMessage(4007)};
   std::string tooltips[4] = {LookupMessage(2889), LookupMessage(2890), LookupMessage(4008), LookupMessage(4009)};
 
   int index = 0;
   for (; index < 2; ++index) {
-    UIRadioBtn* tab = new UIRadioBtn();
-    this->m_tabs[index] = tab;
-    tab->SetSize(50, 12);
-    tab->Move(14 + index * 55, 31);
-    tab->SetText(labels[index].c_str());
-    tab->SetId(215);
-    tab->value = index;
-    tab->SendMsg(this, 13, index == this->m_mode, 0, 0, 0);
+    this->m_tabs[index] = new UIRadioBtn();
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetSize(50, 12);
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->Move(14 + index * 55, 31);
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetText(labels[index].c_str());
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetId(215);
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->value = index;
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SendMsg(this, 13, index == this->m_mode, 0, 0, 0);
     if (const char* tooltip = tooltips[index].c_str()) {
-      tab->tooltip = tooltip;
+      static_cast<UIRadioBtn*>(this->m_tabs[index])->tooltip = tooltip;
     }
-    this->AddChild(tab);
+    this->AddChild(this->m_tabs[index]);
   }
   for (; index < 4; ++index) {
-    UIRadioBtn* tab = new UIRadioBtn();
-    this->m_tabs[index] = tab;
-    tab->SetSize(50, 12);
-    tab->Move(70 + index * 30, 31);
-    tab->SetText(labels[index].c_str());
-    tab->SetId(215);
-    tab->value = index;
-    tab->SendMsg(this, 13, index == this->m_mode, 0, 0, 0);
+    this->m_tabs[index] = new UIRadioBtn();
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetSize(50, 12);
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->Move(70 + index * 30, 31);
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetText(labels[index].c_str());
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetId(215);
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->value = index;
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SendMsg(this, 13, index == this->m_mode, 0, 0, 0);
     if (const char* tooltip = tooltips[index].c_str()) {
-      tab->tooltip = tooltip;
+      static_cast<UIRadioBtn*>(this->m_tabs[index])->tooltip = tooltip;
     }
-    this->AddChild(tab);
+    this->AddChild(this->m_tabs[index]);
   }
 
   int y = 56;
   for (int row = 0; row < this->m_visibleRows; ++row) {
-    UIEditCtrl* field = new UIEditCtrl();
-    this->m_fields[row] = field;
-    field->SetSize(214, 18);
-    field->Move(14, y);
-    field->flat = 0;
-    field->Border(125, 125, 125);
-    field->preserveInput = 1;
-    field->invalidatesParent = 1;
-    field->disabled = 1;
-    field->Invalidate();
+    this->m_fields[row] = new UIEditCtrl();
+    static_cast<UIEditCtrl*>(this->m_fields[row])->SetSize(214, 18);
+    static_cast<UIEditCtrl*>(this->m_fields[row])->Move(14, y);
+    static_cast<UIEditCtrl*>(this->m_fields[row])->flat = 0;
+    static_cast<UIEditCtrl*>(this->m_fields[row])->Border(125, 125, 125);
+    static_cast<UIEditCtrl*>(this->m_fields[row])->preserveInput = 1;
+    static_cast<UIEditCtrl*>(this->m_fields[row])->invalidatesParent = 1;
+    static_cast<UIEditCtrl*>(this->m_fields[row])->disabled = 1;
+    static_cast<UIEditCtrl*>(this->m_fields[row])->Invalidate();
     if (const char* tooltip = LookupMessage(4012)) {
-      field->tooltip = tooltip;
+      static_cast<UIEditCtrl*>(this->m_fields[row])->tooltip = tooltip;
     }
-    this->AddChild(field);
+    this->AddChild(this->m_fields[row]);
     this->m_names[row] = "";
     y += 22;
   }
   this->m_target = "";
 
-  UIEditCtrl* target = new UIEditCtrl();
-  this->m_edit = target;
-  target->SetSize(15, 14);
-  target->Move(this->TextWidth(labels[1].c_str(), 0, 0, 12, 0, 0) + 83, 30);
-  target->flat = 0;
-  target->Border(125, 125, 125);
-  target->maximum = 1;
-  target->preserveInput = 1;
-  target->invalidatesParent = 1;
-  target->SetText(IntToString(this->unknown_00F4, 0).c_str());
+  this->m_edit = new UIEditCtrl();
+  static_cast<UIEditCtrl*>(this->m_edit)->SetSize(15, 14);
+  static_cast<UIEditCtrl*>(this->m_edit)->Move(this->TextWidth(labels[1].c_str(), 0, 0, 12, 0, 0) + 83, 30);
+  static_cast<UIEditCtrl*>(this->m_edit)->flat = 0;
+  static_cast<UIEditCtrl*>(this->m_edit)->Border(125, 125, 125);
+  static_cast<UIEditCtrl*>(this->m_edit)->maximum = 1;
+  static_cast<UIEditCtrl*>(this->m_edit)->preserveInput = 1;
+  static_cast<UIEditCtrl*>(this->m_edit)->invalidatesParent = 1;
+  static_cast<UIEditCtrl*>(this->m_edit)->SetText(IntToString(this->unknown_00F4, 0).c_str());
   if (const char* tooltip = LookupMessage(2891)) {
-    target->tooltip = tooltip;
+    static_cast<UIEditCtrl*>(this->m_edit)->tooltip = tooltip;
   }
-  this->AddChild(target);
+  this->AddChild(this->m_edit);
   if (this->m_mode != 1) {
-    target->disabled = 1;
-    target->Invalidate();
+    static_cast<UIEditCtrl*>(this->m_edit)->disabled = 1;
+    static_cast<UIEditCtrl*>(this->m_edit)->Invalidate();
   }
 
   this->m_entries.clear();
@@ -579,32 +573,24 @@ int UIMacroReporterWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 0:
-    if (this->m_mode == 2) {
-      if (sender) {
-        const int index = (sender->geometry.y - 56) / 22;
-        this->m_names[index] = static_cast<UIEditCtrl*>(sender)->Text();
-      }
-    } else if (this->m_mode == 3) {
-      if (sender && sender == this->m_fields[0]) {
-        this->m_target = static_cast<UIEditCtrl*>(this->m_fields[0])->Text();
-      }
-    } else if (sender == this->m_edit) {
-      UIEditCtrl* edit = static_cast<UIEditCtrl*>(this->m_edit);
-      std::string text = edit->Text();
-      if (text.size() > 1) {
-        edit->SetText(IntToString(this->unknown_00F4, 0).c_str());
-      } else if (text.c_str()[0] >= '0' && text.c_str()[0] <= '9') {
-        this->unknown_00F4 = std::atoi(text.c_str());
-        if (this->unknown_00F4 > this->unknown_00F8) {
-          this->unknown_00F4 = this->unknown_00F8;
-          edit->SetText(IntToString(this->unknown_00F8, 0).c_str());
-        }
-      } else {
-        edit->SetText(IntToString(this->unknown_00F4, 0).c_str());
-      }
+  case 34: {
+    this->m_state = reinterpret_cast<MacroReporterState*>(argument1);
+    if (!reinterpret_cast<MacroReporterWndInfo*>(this->m_state)->IsValid()) {
+      reinterpret_cast<MacroReporterWndInfo*>(this->m_state)->Reset();
     }
+    this->Resize(this->m_state->width, this->m_state->height);
+    this->Move(this->m_state->x, this->m_state->y);
+    this->unknown_010C = this->m_state->unknown_0011;
+    static_cast<UICheckBox*>(this->unknown_00D4)->SetChecked(this->unknown_010C);
+    this->m_entries.clear();
+    for (unsigned int index = 0; index < this->m_state->entries.size(); ++index) {
+      const MacroReporterEntry& entry = this->m_state->entries[index];
+      this->m_entries.push_back(MacroReporterEntry(entry.name, entry.id, entry.unknown_001C));
+      this->AddActorRow(entry.id, entry.name);
+    }
+    this->UpdateScrollBar();
     break;
+  }
 
   case 6:
     switch (argument1) {
@@ -660,6 +646,63 @@ int UIMacroReporterWnd::SendMsg(
         this->m_namesValid = this->ValidateNames(1);
         this->m_targetValid = this->ValidateTarget(1);
         break;
+      }
+      break;
+
+    case 345:
+      if (this->m_mode == 2 || this->m_mode == 3) {
+        this->m_namesValid = this->ValidateNames(1);
+        this->m_targetValid = this->ValidateTarget(1);
+        if (this->m_namesValid == true && this->m_targetValid == true) {
+          PACKET_CZ_MACRO_REPORT_HEADER header;
+          header.packetType = 0xBDA;
+          strncpy_s(header.target, sizeof(header.target), this->m_target.c_str(), _TRUNCATE);
+          header.count = static_cast<std::uint8_t>(this->m_nameCount);
+          const int length = this->m_nameCount * 16 + sizeof(header);
+          header.type = 6;
+          char buffer[2048];
+          std::memset(buffer + sizeof(header), 0, sizeof(buffer) - sizeof(header));
+          if (length > sizeof(buffer)) {
+            break;
+          }
+          header.packetLength = static_cast<std::uint16_t>(length);
+          std::memcpy(buffer, &header, sizeof(header));
+          for (int index = 0; index < this->m_nameCount; ++index) {
+            if (!this->m_names[index].empty()) {
+              char name[16];
+              strncpy_s(name, sizeof(name), (this->m_names[index] + ".gat").c_str(), _TRUNCATE);
+              memcpy_s(buffer + sizeof(header) + index * 16, 16, name, sizeof(name));
+            }
+          }
+          GetRagConnection().Send(length, buffer);
+        }
+      } else {
+        std::vector<int> accounts;
+        for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
+          if (std::find(accounts.begin(), accounts.end(), it->id) == accounts.end()) {
+            accounts.push_back(it->id);
+          }
+        }
+        const int result = g_windowMgr
+                             .Confirm(FormatOwnedString(LookupMessage(2876), accounts.size()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
+        if (result != 188) {
+          for (auto it = accounts.begin(); it != accounts.end(); ++it) {
+            PACKET_CZ_MACRO_REPORT_ACCOUNT packet;
+            packet.packetType = 0xA56;
+            packet.accountId = *it;
+            GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+          }
+          this->m_entries.clear();
+          for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
+            it->first->SetDisabled(1);
+            it->first->Invalidate();
+            this->m_removedRows.push_back(it->first);
+            it->second->SetDisabled(1);
+            it->second->Invalidate();
+            this->m_removedRows.push_back(it->second);
+          }
+          this->m_rows.clear();
+        }
       }
       break;
 
@@ -743,101 +786,35 @@ int UIMacroReporterWnd::SendMsg(
       }
       break;
     }
+    }
+    break;
 
-    case 345:
-      if (this->m_mode == 2 || this->m_mode == 3) {
-        this->m_namesValid = this->ValidateNames(1);
-        this->m_targetValid = this->ValidateTarget(1);
-        if (this->m_namesValid == true && this->m_targetValid == true) {
-          PACKET_CZ_MACRO_REPORT_HEADER header;
-          header.packetType = 0xBDA;
-          strncpy_s(header.target, sizeof(header.target), this->m_target.c_str(), _TRUNCATE);
-          header.count = static_cast<std::uint8_t>(this->m_nameCount);
-          const int length = this->m_nameCount * 16 + sizeof(header);
-          header.type = 6;
-          char buffer[2048];
-          std::memset(buffer + sizeof(header), 0, sizeof(buffer) - sizeof(header));
-          if (length > sizeof(buffer)) {
-            break;
-          }
-          header.packetLength = static_cast<std::uint16_t>(length);
-          std::memcpy(buffer, &header, sizeof(header));
-          for (int index = 0; index < this->m_nameCount; ++index) {
-            if (!this->m_names[index].empty()) {
-              char name[16];
-              strncpy_s(name, sizeof(name), (this->m_names[index] + ".gat").c_str(), _TRUNCATE);
-              memcpy_s(buffer + sizeof(header) + index * 16, 16, name, sizeof(name));
-            }
-          }
-          GetRagConnection().Send(length, buffer);
+  case 0:
+    if (this->m_mode == 2) {
+      if (sender) {
+        const int index = (sender->geometry.y - 56) / 22;
+        this->m_names[index] = static_cast<UIEditCtrl*>(sender)->Text();
+      }
+    } else if (this->m_mode == 3) {
+      if (sender && sender == this->m_fields[0]) {
+        this->m_target = static_cast<UIEditCtrl*>(this->m_fields[0])->Text();
+      }
+    } else if (sender == this->m_edit) {
+      UIEditCtrl* edit = static_cast<UIEditCtrl*>(this->m_edit);
+      std::string text = edit->Text();
+      if (text.size() > 1) {
+        edit->SetText(IntToString(this->unknown_00F4, 0).c_str());
+      } else if (text.c_str()[0] >= '0' && text.c_str()[0] <= '9') {
+        this->unknown_00F4 = std::atoi(text.c_str());
+        if (this->unknown_00F4 > this->unknown_00F8) {
+          this->unknown_00F4 = this->unknown_00F8;
+          edit->SetText(IntToString(this->unknown_00F8, 0).c_str());
         }
       } else {
-        std::vector<int> accounts;
-        for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
-          if (std::find(accounts.begin(), accounts.end(), it->id) == accounts.end()) {
-            accounts.push_back(it->id);
-          }
-        }
-        const int result = g_windowMgr
-                             .Confirm(FormatOwnedString(LookupMessage(2876), accounts.size()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
-        if (result != 188) {
-          for (auto it = accounts.begin(); it != accounts.end(); ++it) {
-            PACKET_CZ_MACRO_REPORT_ACCOUNT packet;
-            packet.packetType = 0xA56;
-            packet.accountId = *it;
-            GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
-          }
-          this->m_entries.clear();
-          for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
-            it->first->SetDisabled(1);
-            it->first->Invalidate();
-            this->m_removedRows.push_back(it->first);
-            it->second->SetDisabled(1);
-            it->second->Invalidate();
-            this->m_removedRows.push_back(it->second);
-          }
-          this->m_rows.clear();
-        }
+        edit->SetText(IntToString(this->unknown_00F4, 0).c_str());
       }
-      break;
     }
     break;
-
-  case 7:
-  case 9:
-  case 10: {
-    const int previous = this->m_firstRow;
-    if (message == 9) {
-      this->m_firstRow = previous - this->m_visibleRows + 1;
-    } else if (message == 10) {
-      this->m_firstRow = previous + (this->m_visibleRows - 1);
-    } else {
-      this->m_firstRow = previous + argument1;
-    }
-    if (previous != this->m_firstRow) {
-      this->UpdateScrollBar();
-    }
-    return this->m_firstRow - previous;
-  }
-
-  case 34: {
-    this->m_state = reinterpret_cast<MacroReporterState*>(argument1);
-    if (!reinterpret_cast<MacroReporterWndInfo*>(this->m_state)->IsValid()) {
-      reinterpret_cast<MacroReporterWndInfo*>(this->m_state)->Reset();
-    }
-    this->Resize(this->m_state->width, this->m_state->height);
-    this->Move(this->m_state->x, this->m_state->y);
-    this->unknown_010C = this->m_state->unknown_0011;
-    static_cast<UICheckBox*>(this->unknown_00D4)->SetChecked(this->unknown_010C);
-    this->m_entries.clear();
-    for (unsigned int index = 0; index < this->m_state->entries.size(); ++index) {
-      const MacroReporterEntry& entry = this->m_state->entries[index];
-      this->m_entries.push_back(MacroReporterEntry(entry.name, entry.id, entry.unknown_001C));
-      this->AddActorRow(entry.id, entry.name);
-    }
-    this->UpdateScrollBar();
-    break;
-  }
 
   case 98: {
     auto entry = this->m_entries.begin();
@@ -867,6 +844,23 @@ int UIMacroReporterWnd::SendMsg(
       info->Invalidate();
     }
     break;
+  }
+
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_firstRow;
+    if (message == 9) {
+      this->m_firstRow = previous - this->m_visibleRows + 1;
+    } else if (message == 10) {
+      this->m_firstRow = previous + (this->m_visibleRows - 1);
+    } else {
+      this->m_firstRow = previous + argument1;
+    }
+    if (previous != this->m_firstRow) {
+      this->UpdateScrollBar();
+    }
+    return this->m_firstRow - previous;
   }
   }
 
