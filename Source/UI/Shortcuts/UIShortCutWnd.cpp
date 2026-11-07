@@ -398,20 +398,19 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
 // FUNCTION: fn_12760
 int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
-    this->ClickControl(static_cast<int>(a));
-    return 0;
-
-  case 14:
-    this->ResizeRows();
+  case 41:
+    UseShortcutSlot(*this->m_slots[a + 9 * b]);
     return 0;
 
   case 23: {
+    const int bank = g_session.GetOption(10);
     std::list<ShortcutCooldownRecord>& cooldowns = g_session.m_requestTimers;
     for (int index = 0; index < 36; ++index) {
-      const int source = g_session.RotateShortcut(index, g_session.unknown_06FC);
-      if (g_session.unknown_06FC == 0 || g_session.unknown_06FC == 1) {
-        this->m_slots[index] = &(g_session.unknown_06FC == 0 ? g_session.m_shortcutSlots : g_session.m_secondaryShortcutSlots)[source];
+      const int source = g_session.RotateShortcut(index, bank);
+      if (bank == 0) {
+        this->m_slots[index] = &g_session.m_shortcutSlots[source];
+      } else if (bank == 1) {
+        this->m_slots[index] = &g_session.m_secondaryShortcutSlots[source];
       }
 
       NormalItemSlot& slot = *this->m_slots[index];
@@ -430,15 +429,18 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
             record->main.erase(value);
           }
         }
+      }
 
+      if (skill.available == 0) {
         skill = g_session.LookupHomunSkill(slot.itemId);
-        if (skill.available == 0) {
-          skill = g_session.LookupMercSkill(slot.itemId);
-        }
+      }
 
-        if (skill.available == 0) {
-          skill = g_session.LookupAdditionalSkill(slot.itemId);
-        }
+      if (skill.available == 0) {
+        skill = g_session.LookupMercSkill(slot.itemId);
+      }
+
+      if (skill.available == 0) {
+        skill = g_session.LookupAdditionalSkill(slot.itemId);
       }
 
       if (skill.available != 0 && skill.level != 0 && g_session.UseLevel(static_cast<int>(skill.id)) == 0) {
@@ -457,11 +459,13 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->RestoreLayout(reinterpret_cast<NormalItemSlotWindow*>(a));
     return 0;
 
-  case 41: {
-    const int index = 9 * static_cast<int>(b) + static_cast<int>(a);
-    UseShortcutSlot(*this->m_slots[index]);
+  case 6:
+    this->ClickControl(static_cast<int>(a));
     return 0;
-  }
+
+  case 14:
+    this->ResizeRows();
+    return 0;
 
   case 143:
     if (RotateCooldownRows(g_session.m_requestTimers, static_cast<int>(a), static_cast<int>(b), g_session.unknown_06FC, g_session.unknown_06A8)) {
