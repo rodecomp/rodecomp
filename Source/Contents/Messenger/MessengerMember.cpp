@@ -612,7 +612,7 @@ void UIJobIconButton::Paint() {
       if (this->unknown_0120 == 1) {
         this->DrawAuxiliary(1, 0, 0, &bitmap->image, true, false);
       } else {
-        this->DrawBitmap(0, 0, &bitmap->image, true);
+        this->DrawBitmap(0, 0, bitmap, true);
       }
     }
   }
