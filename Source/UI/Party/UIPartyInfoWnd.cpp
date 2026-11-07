@@ -94,7 +94,7 @@ void UIPartyInfoWnd::Paint() {
   }
 
   if (background) {
-    this->DrawBitmap(0, 0, &background->image, false);
+    this->DrawBitmap(0, 0, background, false);
   }
 
   const auto text = [&](int x, const char* value, int bytes = 0) { this->DrawTextAt(x, 5, value, bytes, 0, 12, 0, 0, 0); };
