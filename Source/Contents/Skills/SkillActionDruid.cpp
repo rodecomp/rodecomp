@@ -1216,7 +1216,8 @@ void CSkillAction_DR_CRUEL_BITE::Slot11(int level, CGameActor* source, CGameActo
 
   const std::uint8_t effectSource[] = {0xC2, 0x4F, 0xEA, 0xB2, 0x0F, 0xD0, 0x45, 0x30, 0xD5, 0x58, 0x9F};
   thread_local EncryptedName<sizeof(effectSource), 0x59278F63D79F3DA1ULL> effectName(effectSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006215E0
