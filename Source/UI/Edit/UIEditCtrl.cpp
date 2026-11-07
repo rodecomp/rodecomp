@@ -757,28 +757,26 @@ void UIEditCtrl::MoveReadingWindow(int x) {
 // FUNCTION: fn_10760
 void UIBmpTextButton2::DrawLabels() {
   for (unsigned index = 0; index < this->labels.size(); ++index) {
-    const BmpTextButtonLabel& label = this->labels[index];
-
-    if (label.text.size() == 0) {
+    if (this->labels[index].text.size() == 0) {
       continue;
     }
 
-    int x = label.x;
-    int y = label.y;
+    int x = this->labels[index].x;
+    int y = this->labels[index].y;
     int shadowX = 0;
     int shadowY = 0;
 
     if (x == -1000) {
-      const int width = this->TextWidth(label.text.c_str(), label.text.size(), 0, label.height, label.bold, 0);
+      const int width = this->TextWidth(this->labels[index].text.c_str(), this->labels[index].text.size(), 0, this->labels[index].height, this->labels[index].bold, 0);
       x = static_cast<int>((this->geometry.width - width) * 0.5);
     }
 
     if (y == -1000) {
-      const int height = this->TextHeight(label.text.c_str(), label.text.size(), 0, label.height, label.bold, 0);
+      const int height = this->TextHeight(this->labels[index].text.c_str(), this->labels[index].text.size(), 0, this->labels[index].height, this->labels[index].bold, 0);
       y = static_cast<int>((this->geometry.height - height) * 0.5);
     }
 
-    std::uint32_t color = label.color;
+    std::uint32_t color = this->labels[index].color;
     std::uint32_t shadowColor = 0xE6E6E6;
 
     switch (this->geometry.unknown_0030) {
@@ -807,11 +805,11 @@ void UIBmpTextButton2::DrawLabels() {
       break;
     }
 
-    if (label.shadow == 1) {
-      this->DrawTextAt(shadowX, shadowY, label.text.c_str(), 0, 0, label.height, shadowColor, label.bold, 0);
+    if (this->labels[index].shadow == 1) {
+      this->DrawTextAt(shadowX, shadowY, this->labels[index].text.c_str(), 0, 0, this->labels[index].height, shadowColor, this->labels[index].bold, 0);
     }
 
-    this->DrawTextAt(x, y, label.text.c_str(), 0, 0, label.height, color, label.bold, 0);
+    this->DrawTextAt(x, y, this->labels[index].text.c_str(), 0, 0, this->labels[index].height, color, this->labels[index].bold, 0);
   }
 }
 
@@ -2677,8 +2675,8 @@ void UIMerchantItemPurchaseMSGWnd::Paint() {
 void UIMerchantItemWnd::Paint() {
   UIItemBaseWnd::Paint();
 
-  const auto* count = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")));
-  this->DrawBitmap(10, this->geometry.height - 22, &count->image, true);
+  auto* count = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")));
+  this->DrawBitmap(10, this->geometry.height - 22, count, true);
 
   const std::uint32_t countColor = g_session.cartCount >= g_session.cartMaxCount ? 0xFF : 0x232323;
   this->DrawTextAt(23, this->geometry.height - 19, FormatOwnedString("%d", g_session.cartCount).c_str(), 0, 0, 11, countColor, 0, 0
@@ -2687,8 +2685,8 @@ void UIMerchantItemWnd::Paint() {
   this->DrawTextAt(countWidth + 24, this->geometry.height - 19, FormatOwnedString("/%d", g_session.cartMaxCount).c_str(), 0, 0, 11, 0, 0, 0
   );
 
-  const auto* weight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_weight.bmp")));
-  this->DrawBitmap(75, this->geometry.height - 20, &weight->image, true);
+  auto* weight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_weight.bmp")));
+  this->DrawBitmap(75, this->geometry.height - 20, weight, true);
 
   const std::uint32_t weightColor = g_session.cartWeight >= g_session.cartMaxWeight ? 0xFF : 0x232323;
   this->DrawTextAt(90, this->geometry.height - 19, FormatOwnedString("%d", g_session.cartWeight).c_str(), 0, 0, 11, weightColor, 0, 0
