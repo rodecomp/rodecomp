@@ -56,14 +56,14 @@ void UILapineScrollBar::Paint() {
     CBitmapRes* top = load("유저인터페이스\\lapine\\scrollbar_bg_top.bmp");
     CBitmapRes* bottom = load("유저인터페이스\\lapine\\scrollbar_bg_btm.bmp");
     CBitmapRes* middle = load("유저인터페이스\\lapine\\scrollbar_bg_mid.bmp");
-    this->DrawBitmap(0, 0, &top->image, true);
+    this->DrawBitmap(0, 0, top, true);
 
     const int interior = this->geometry.height - bottom->image.height - top->image.height;
     const int count = interior / middle->image.height + (interior % middle->image.height != 0);
     for (int index = 0; index < count; ++index) {
-      this->DrawBitmap(0, middle->image.height * index + top->image.height, &middle->image, true);
+      this->DrawBitmap(0, middle->image.height * index + top->image.height, middle, true);
     }
-    this->DrawBitmap(0, this->geometry.height - bottom->image.height, &bottom->image, true);
+    this->DrawBitmap(0, this->geometry.height - bottom->image.height, bottom, true);
 
     const int travel = this->geometry.height - bottom->image.height - top->image.height;
     const int thumbLength = this->visible * travel / this->total;
@@ -76,10 +76,10 @@ void UILapineScrollBar::Paint() {
       const int span = thumbLength - capBottom->image.height - capTop->image.height;
       const int pieces = span / fill->image.height + (span % fill->image.height != 0);
       for (int index = 0; index < pieces; ++index) {
-        this->DrawBitmap(0, fill->image.height * index + thumbOffset + capTop->image.height + top->image.height, &fill->image, true);
+        this->DrawBitmap(0, fill->image.height * index + thumbOffset + capTop->image.height + top->image.height, fill, true);
       }
-      this->DrawBitmap(0, top->image.height + thumbOffset, &capTop->image, true);
-      this->DrawBitmap(0, thumbOffset - capBottom->image.height + thumbLength + top->image.height, &capBottom->image, true);
+      this->DrawBitmap(0, top->image.height + thumbOffset, capTop, true);
+      this->DrawBitmap(0, thumbOffset - capBottom->image.height + thumbLength + top->image.height, capBottom, true);
     } else if (this->state == 3) {
       CBitmapRes* capTop = load("유저인터페이스\\lapine\\scrollbar_thumb_over_top.bmp");
       CBitmapRes* capBottom = load("유저인터페이스\\lapine\\scrollbar_thumb_over_btm.bmp");
@@ -87,10 +87,10 @@ void UILapineScrollBar::Paint() {
       const int span = thumbLength - capBottom->image.height - capTop->image.height;
       const int pieces = span / fill->image.height + (span % fill->image.height != 0);
       for (int index = 0; index < pieces; ++index) {
-        this->DrawBitmap(0, fill->image.height * index + thumbOffset + capTop->image.height + top->image.height, &fill->image, true);
+        this->DrawBitmap(0, fill->image.height * index + thumbOffset + capTop->image.height + top->image.height, fill, true);
       }
-      this->DrawBitmap(0, top->image.height + thumbOffset, &capTop->image, true);
-      this->DrawBitmap(0, thumbOffset - capBottom->image.height + thumbLength + top->image.height, &capBottom->image, true);
+      this->DrawBitmap(0, top->image.height + thumbOffset, capTop, true);
+      this->DrawBitmap(0, thumbOffset - capBottom->image.height + thumbLength + top->image.height, capBottom, true);
     } else if (this->state == 6) {
       CBitmapRes* capTop = load("유저인터페이스\\lapine\\scrollbar_thumb_press_top.bmp");
       CBitmapRes* capBottom = load("유저인터페이스\\lapine\\scrollbar_thumb_press_btm.bmp");
@@ -98,10 +98,10 @@ void UILapineScrollBar::Paint() {
       const int span = thumbLength - capBottom->image.height - capTop->image.height;
       const int pieces = span / fill->image.height + (span % fill->image.height != 0);
       for (int index = 0; index < pieces; ++index) {
-        this->DrawBitmap(0, fill->image.height * index + thumbOffset + capTop->image.height + top->image.height, &fill->image, true);
+        this->DrawBitmap(0, fill->image.height * index + thumbOffset + capTop->image.height + top->image.height, fill, true);
       }
-      this->DrawBitmap(0, top->image.height + thumbOffset, &capTop->image, true);
-      this->DrawBitmap(0, thumbOffset - capBottom->image.height + thumbLength + top->image.height, &capBottom->image, true);
+      this->DrawBitmap(0, top->image.height + thumbOffset, capTop, true);
+      this->DrawBitmap(0, thumbOffset - capBottom->image.height + thumbLength + top->image.height, capBottom, true);
     }
   }
 
@@ -219,7 +219,7 @@ void UIIngredientInfoWnd::Paint() {
   this->ClearSurface(0xFFF7F7);
   if (this->selected == 1) {
     CBitmapRes* selected = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\list_selected_item.bmp")));
-    this->DrawBitmap(32, 0, &selected->image, false);
+    this->DrawBitmap(32, 0, selected, false);
   }
 
   std::string name;
@@ -240,7 +240,7 @@ void UIIngredientInfoWnd::Paint() {
 // FUNCTION: fn_04156
 void UILapineBoxWnd::Paint() {
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\bg_lapine.bmp")));
-  this->DrawBitmap(0, 0, &background->image, true);
+  this->DrawBitmap(0, 0, background, true);
 
   if (this->title.size() != 0) {
     this->DrawTitleBar(false, this->title.c_str(), 0);
@@ -260,13 +260,13 @@ void UILapineBoxWnd::Paint() {
     const int x = position[0];
     const int y = position[1];
     CBitmapRes* slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\shadow_item_off.bmp")));
-    this->DrawBitmap(x - 4, y + 11, &slot->image, true);
+    this->DrawBitmap(x - 4, y + 11, slot, true);
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, y, this->items[index], 0, 0);
   }
 
   if (timeGetTime() < this->noticeTick + this->noticeDuration) {
     CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\icon_notify.bmp")));
-    this->DrawBitmap(6, 229, &icon->image, true);
+    this->DrawBitmap(6, 229, icon, true);
     this->DrawTextAt(25, 230, this->notice.c_str(), 0, 0, 12, 0xFF0000, 0, 0);
   }
 }
