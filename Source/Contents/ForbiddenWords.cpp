@@ -152,14 +152,14 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
   }
 
   strcpy_s(scanBuffer, sizeof(scanBuffer), text);
-  char* current = LowercaseWithCodePage(scanBuffer, static_cast<unsigned short>(g_textCodePage));
+  char* current = Lowercase(scanBuffer);
 
   while (std::strlen(current) != 0) {
-    const auto* open = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("<iteml>"));
-    const auto* close = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("</iteml>"));
+    const auto* open = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>(g_forbiddenWordOpenTag.c_str()));
+    const auto* close = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>(g_forbiddenWordCloseTag.c_str()));
 
     if (open && close && std::strlen(current) != 0 && std::strlen(current) <= std::strlen(reinterpret_cast<const char*>(open))) {
-      const auto skip = reinterpret_cast<const char*>(close) + 8 - reinterpret_cast<const char*>(open);
+      const auto skip = reinterpret_cast<const char*>(close) + g_forbiddenWordCloseTagLength - reinterpret_cast<const char*>(open);
 
       for (std::ptrdiff_t index = 0; index < skip; ++index) {
         current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
@@ -182,22 +182,24 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
         ++advance;
       }
 
-      const std::wstring lowerWide(ATL::CA2WEX<128>(lowercase.c_str(), CP_THREAD_ACP));
+      std::wstring wide(ATL::CA2WEX<128>(lowercase.c_str(), CP_THREAD_ACP));
       const std::wstring wordWide(ATL::CA2WEX<128>(word, CP_THREAD_ACP));
-      const std::wstring suffixWide(ATL::CA2WEX<128>(current, CP_THREAD_ACP));
-      const std::size_t position = lowerWide.find(wordWide, lowerWide.size() - suffixWide.size());
+      const std::size_t position = wide.find(wordWide, wide.size() - std::wstring(ATL::CA2WEX<128>(current, CP_THREAD_ACP)).size());
 
       if (position == std::wstring::npos) {
         advance = 1;
         break;
       }
 
-      const std::wstring original(ATL::CA2WEX<128>(text, CP_THREAD_ACP));
-      std::wstring masked = original.substr(0, position);
-      const std::wstring suffix = original.substr(position + wordWide.size());
-      masked.append(static_cast<std::size_t>(advance), L'*');
-      masked.append(suffix);
-      const std::string converted(ATL::CW2AEX<128>(masked.c_str(), CP_THREAD_ACP));
+      wide = std::wstring(ATL::CA2WEX<128>(text, CP_THREAD_ACP));
+      const std::wstring prefix = wide.substr(0, position);
+      const std::wstring suffix = wide.substr(position + std::wcslen(wordWide.c_str()));
+      wide = prefix;
+      for (int index = 0; index < advance; ++index) {
+        wide += L"*";
+      }
+      wide += suffix;
+      const std::string converted(ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP));
       strcpy_s(text, std::strlen(text) + 1, converted.c_str());
       break;
     }
