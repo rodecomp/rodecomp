@@ -21,12 +21,9 @@ bool CWebBrowser::Create(HWND parent, HINSTANCE instance, int width, int height)
     this->browser->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&this->browserWindow));
   }
 
-  WNDCLASSEXA windowClass{};
-  windowClass.cbSize = sizeof(windowClass);
-  windowClass.lpfnWndProc = BrowserHostProc;
-  windowClass.hInstance = instance;
-  windowClass.hIcon = LoadIconA(instance, MAKEINTRESOURCEA(123));
-  windowClass.lpszClassName = "ROWebBrowser";
+  WNDCLASSEXA windowClass = {
+    sizeof(WNDCLASSEXA), 0, BrowserHostProc, 0, 0, instance, LoadIconA(instance, MAKEINTRESOURCEA(123)), nullptr, nullptr, nullptr, "ROWebBrowser", nullptr
+  };
   RegisterClassExA(&windowClass);
   this->host = CreateWindowExA(0, "ROWebBrowser", g_windowName, WS_POPUP | WS_OVERLAPPEDWINDOW, 0, 0, width, height, parent, nullptr, instance, nullptr);
   if (!this->host) {
