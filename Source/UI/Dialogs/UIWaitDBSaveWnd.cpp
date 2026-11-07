@@ -107,14 +107,16 @@ void UIWaitDBSaveWnd::Paint() {
 
   this->ClearSurface(0xFFFF00FF);
   ResourceMgr& resources = ResourceMgr::Instance();
-  const std::uint8_t backgroundSource[] = {0xF3, 0x3C, 0x8D, 0x6F, 0x5B, 0x5B, 0x9E, 0x56, 0xF5, 0x77, 0x8D, 0x59, 0x26, 0x2F, 0x07, 0xCC, 0x52, 0xFA, 0x39,
-                                           0xD1, 0xD9, 0xC6, 0x3A, 0xED, 0x56, 0xCF, 0x21, 0xFA, 0xFA, 0xF1, 0x32, 0xF5, 0x54, 0xBD, 0x2F, 0xF8, 0xEB, 0x95};
+  const char backgroundSource[] = {
+      '\xF3', '\x3C', '\x8D', '\x6F', '\x5B', '\x5B', '\x9E', '\x56', '\xF5', '\x77', '\x8D', '\x59', '\x26', '\x2F', '\x07', '\xCC',
+      '\x52', '\xFA', '\x39', '\xD1', '\xD9', '\xC6', '\x3A', '\xED', '\x56', '\xCF', '\x21', '\xFA', '\xFA', '\xF1', '\x32', '\xF5',
+      '\x54', '\xBD', '\x2F', '\xF8', '\xEB', '\x95'};
   thread_local EncryptedName<sizeof(backgroundSource), 0x9B5B959B954D9333ULL> backgroundName(backgroundSource);
   CBitmapRes* background = static_cast<CBitmapRes*>(resources.Load(Resolve(backgroundName.Text())));
   if (background) {
     this->DrawBitmap(
       static_cast<int>((this->geometry.width - background->image.width) * 0.5), static_cast<int>((this->geometry.height - background->image.height) * 0.5),
-      &background->image, false
+      background, false
     );
   }
 
