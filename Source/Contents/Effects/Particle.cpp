@@ -935,7 +935,7 @@ void CParticle::SetTexture(std::string name) {
 // OFFSET: 0x00B40200
 // FUNCTION: fn_18845
 void CParticle::SetRenderFlag(unsigned char value) {
-  this->primitive.unknown_0014 = (this->primitive.unknown_0014 & 0xFF00u) | value;
+  *reinterpret_cast<unsigned char*>(&this->primitive.unknown_0014) = value;
 }
 
 // OFFSET: 0x00B40210
