@@ -23,7 +23,7 @@ void UITab::Paint() {
   }
 
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
 }
 
 // OFFSET: 0x0085EE70
