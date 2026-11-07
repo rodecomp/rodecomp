@@ -15665,16 +15665,16 @@ void CGameMode::ReceiveItemObtainBroadcast(const unsigned char* data, bool packa
   item.identified = 1;
   std::string text;
   if (data[4] == 2) {
-    text = FormatOwnedString(LookupMessage(0x74C), name.c_str(), item.DisplayName(0).c_str());
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0x74C), name.c_str(), item.DisplayName(0).c_str()));
   } else if (package && data[4] == 0) {
     const int count = *reinterpret_cast<const int*>(tail + 16);
     if (count > 0) {
-      text = FormatOwnedString(LookupMessage(0xF91), name.c_str(), source.c_str(), count, item.DisplayName(0).c_str());
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0xF91), name.c_str(), source.c_str(), count, item.DisplayName(0).c_str()));
     } else {
-      text = FormatOwnedString(LookupMessage(0x65C), name.c_str(), source.c_str(), item.DisplayName(0).c_str());
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0x65C), name.c_str(), source.c_str(), item.DisplayName(0).c_str()));
     }
   } else {
-    text = FormatOwnedString(LookupMessage(0x65C), name.c_str(), source.c_str(), item.DisplayName(0).c_str());
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0x65C), name.c_str(), source.c_str(), item.DisplayName(0).c_str()));
   }
 
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
