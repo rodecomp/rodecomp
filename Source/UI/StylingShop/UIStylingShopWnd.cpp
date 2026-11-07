@@ -1187,10 +1187,7 @@ void UIMyStyleWnd::SaveLikeList() {
           memset(text, 0, sizeof(text));
           sprintf_s(text, "characterName:%s\nslotNum:%d\nheadPaletteNum:%d\nheadStyle:%d\nbodyStyle:%d\nbodyPaletteNum:%d\ntopAccNum:%d\nmidAccNum:%d\nbottomAccNum:%d\nRobe:%d\n*\n", characterName, style.slotNum, style.headPaletteNum, style.headStyle, style.bodyStyle, style.bodyPaletteNum, style.topAccNum, style.midAccNum, style.bottomAccNum, style.robe);
           likeList += text;
-          char* bytes = reinterpret_cast<char*>(&style);
-          for (int j = 0; j < sizeof(style); ++j) {
-            bytes[j] = 0;
-          }
+          SecureZeroMemory(&style, sizeof(style));
           style.slotNum = 3;
         }
       case '\n':
@@ -2115,10 +2112,7 @@ void UIMyStyleWnd::LoadLikeList() {
         this->m_slots[style.slotNum] = slot;
         delete display;
 
-        char* bytes = reinterpret_cast<char*>(&style);
-        for (int j = 0; j < sizeof(style); ++j) {
-          bytes[j] = 0;
-        }
+        SecureZeroMemory(&style, sizeof(style));
         style.slotNum = 3;
       }
       case '\n':
