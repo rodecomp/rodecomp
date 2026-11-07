@@ -2201,7 +2201,7 @@ int CSession::SetFriendOffline(std::uint32_t accountId, std::uint32_t characterI
       member.offline = offline;
       if (g_serviceOptions.Get(165)) {
         if (member.name.empty() && g_modeMgr.GetGameMode()) {
-          member.name = LookupPlayerName(member.characterId);
+          member.name = static_cast<const std::string&>(LookupPlayerName(member.characterId));
         }
 
         char message[256];
