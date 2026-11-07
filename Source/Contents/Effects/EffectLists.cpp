@@ -204,8 +204,11 @@ void EffectLists::Retire(CEffect* effect, unsigned char removeActive) {
   if (effect) {
     this->retired.push_back(effect);
 
-    if (removeActive == 1 && this->active.find(static_cast<int>(effect->actor)) != this->active.end()) {
-      this->active[static_cast<int>(effect->actor)].remove(effect);
+    if (removeActive == 1) {
+      const int owner = effect->actor;
+      if (this->active.find(owner) != this->active.end()) {
+        this->active[owner].remove_if([effect](CEffect* other) { return other == effect; });
+      }
     }
   }
 }
@@ -216,8 +219,9 @@ void EffectLists::Retire(int actor, int id) {
   if (CEffect* effect = this->Find(actor, id)) {
     this->retired.push_back(effect);
 
-    if (this->active.find(static_cast<int>(effect->actor)) != this->active.end()) {
-      this->active[static_cast<int>(effect->actor)].remove(effect);
+    const int owner = effect->actor;
+    if (this->active.find(owner) != this->active.end()) {
+      this->active[owner].remove_if([effect](CEffect* other) { return other == effect; });
     }
   }
 }
@@ -229,8 +233,9 @@ void EffectLists::Retire(int actor, int instance, int id) {
     if (CEffect* effect = this->Find(actor, instance, id)) {
       this->retired.push_back(effect);
 
-      if (this->active.find(static_cast<int>(effect->actor)) != this->active.end()) {
-        this->active[static_cast<int>(effect->actor)].remove(effect);
+      const int owner = effect->actor;
+      if (this->active.find(owner) != this->active.end()) {
+        this->active[owner].remove_if([effect](CEffect* other) { return other == effect; });
       }
     }
   }
