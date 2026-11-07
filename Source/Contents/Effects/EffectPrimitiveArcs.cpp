@@ -174,10 +174,14 @@ void CEffectPrim::RenderGroundArc(matrix& wtm) {
 // OFFSET: 0x00BEC3D0
 // FUNCTION: fn_19974
 void CEffectPrim::RenderGroundArc2(matrix& wtm) {
-  vector3d prevB{};
-  vector3d curB{};
-  vector3d curT{};
-  vector3d prevT{};
+  vector3d prevB;
+  ZeroVector(prevB);
+  vector3d curB;
+  ZeroVector(curB);
+  vector3d curT;
+  ZeroVector(curT);
+  vector3d prevT;
+  ZeroVector(prevT);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -224,10 +228,14 @@ void CEffectPrim::RenderGroundArc2(matrix& wtm) {
 // OFFSET: 0x00BEC650
 // FUNCTION: fn_19975
 void CEffectPrim::RenderGroundArcStep(matrix& wtm) {
-  vector3d prevB{};
-  vector3d curB{};
-  vector3d curT{};
-  vector3d prevT{};
+  vector3d prevB;
+  ZeroVector(prevB);
+  vector3d curB;
+  ZeroVector(curB);
+  vector3d curT;
+  ZeroVector(curT);
+  vector3d prevT;
+  ZeroVector(prevT);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -1405,10 +1413,14 @@ void CEffectPrim::RenderBladeFins(matrix& wtm) {
 // OFFSET: 0x00BF1400
 // FUNCTION: fn_19987
 void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
-  vector3d p0{};
-  vector3d p1{};
-  vector3d p2{};
-  vector3d p3{};
+  vector3d p0;
+  ZeroVector(p0);
+  vector3d p1;
+  ZeroVector(p1);
+  vector3d p2;
+  ZeroVector(p2);
+  vector3d p3;
+  ZeroVector(p3);
   int rpCnt = 0;
   float radius;
   float top;
@@ -1717,10 +1729,14 @@ void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
 // OFFSET: 0x00BF6FD0
 // FUNCTION: fn_20001
 void CEffectPrim::RenderTaperedQuad(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec2{};
-  vector3d vec3{};
-  vector3d vec4{};
+  vector3d vec1;
+  ZeroVector(vec1);
+  vector3d vec2;
+  ZeroVector(vec2);
+  vector3d vec3;
+  ZeroVector(vec3);
+  vector3d vec4;
+  ZeroVector(vec4);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
