@@ -130,7 +130,7 @@ namespace {
     AES aes;
     std::uint8_t secret[16];
     std::memcpy(secret, key, sizeof(secret));
-    if (!aes.Initialize(secret, sizeof(secret), iv, 16, AES::CBC)) {
+    if (!aes.Initialize(secret, sizeof(secret), std::span<const UCHAR>(iv, 16), AES::CBC)) {
       return false;
     }
     return aes.Decrypt(data, static_cast<ULONG>(size), data, static_cast<ULONG>(size), 0) == size;

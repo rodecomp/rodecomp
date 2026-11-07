@@ -2,7 +2,7 @@
 // linked only into the standalone exe built by scripts/exe/build_exe.py. Clank
 // never compiles this file.
 //
-// The original statically links jsoncons; these ten functions are the
+// The original statically links jsoncons; these twelve functions are the
 // instantiations JsonCppLoader calls by address (fn_00198 ... fn_00769).
 // v0.170.2 is the last release whose basic_json storage tags (short string 6,
 // long string 7, byte string 8, array 9, empty object 10, object 11, const
@@ -62,6 +62,9 @@ namespace jsoncons_glue {
 
     // fn_00769: swap, used to move the parsed document into place.
     void Swap(Json* other);
+
+    // fn_00485: copy constructor, used by JsonCppLoader's constructor.
+    void CopyConstruct(const Json* other);
   };
 
   void HandlerThunk::Construct(void*) {
@@ -87,6 +90,10 @@ namespace jsoncons_glue {
   void JsonThunk::Swap(Json* other) {
     static_cast<Json*>(this)->swap(*other);
   }
+
+  void JsonThunk::CopyConstruct(const Json* other) {
+    new (static_cast<Json*>(this)) Json(*other);
+  }
 }
 
 using namespace jsoncons_glue;
@@ -94,31 +101,37 @@ using namespace jsoncons_glue;
 extern "C" {
 
 // fn_00272: bson::decode_bson<json>(std::istream&, const bson_decode_options&).
-Json* __cdecl fn_00272(Json* out, std::ifstream* file, BsonOptions* options) {
+Json* __cdecl JsonDecodeBsonStream(Json* out, std::ifstream* file, BsonOptions* options) {
   return new (out) Json(jsoncons::bson::decode_bson<Json>(*file, *options));
 }
 
 // fn_00273: bson::decode_bson<json>(const std::vector<uint8_t>&, const bson_decode_options&).
-Json* __cdecl fn_00273(Json* out, const std::vector<unsigned char>* buffer, BsonOptions* options) {
+Json* __cdecl JsonDecodeBsonBuffer(Json* out, const std::vector<unsigned char>* buffer, BsonOptions* options) {
   return new (out) Json(jsoncons::bson::decode_bson<Json>(*buffer, *options));
 }
 
 // fn_00733: json::parse(std::istream&, const json_decode_options&, handler).
 // The handler is passed by value: the callee owns and destroys it.
-Json* __cdecl fn_00733(Json* out, std::ifstream* file, JsonOptions* options, JsonHandler handler) {
+Json* __cdecl JsonParseStream(Json* out, std::ifstream* file, JsonOptions* options, JsonHandler handler) {
   return new (out) Json(Json::parse(*file, *options, handler));
 }
 
 // fn_00734: json::parse(const char*, const json_decode_options&, handler).
-Json* __cdecl fn_00734(Json* out, const unsigned char* data, JsonOptions* options, JsonHandler handler) {
+Json* __cdecl JsonParseString(Json* out, const unsigned char* data, JsonOptions* options, JsonHandler handler) {
   return new (out) Json(Json::parse(jsoncons::basic_string_view<char>(reinterpret_cast<const char*>(data)), *options, handler));
 }
 
+
+// fn_00724: basic_json::null(), the function-local static null value.
+const Json* __cdecl JsonNull() {
+  return &Json::null();
+}
 }
 
-#pragma comment(linker, "/ALTERNATENAME:_fn_00198=?Construct@HandlerThunk@jsoncons_glue@@QAEXPAX@Z")
-#pragma comment(linker, "/ALTERNATENAME:_fn_00321=?Construct@JsonOptionsThunk@jsoncons_glue@@QAEPAV?$basic_json_decode_options@D@jsoncons@@H@Z")
-#pragma comment(linker, "/ALTERNATENAME:_fn_00368=?Destroy@JsonOptionsCommonThunk@jsoncons_glue@@QAEXXZ")
-#pragma comment(linker, "/ALTERNATENAME:_fn_00349=?Construct@BsonOptionsThunk@jsoncons_glue@@QAEPAVbson_decode_options@bson@jsoncons@@H@Z")
-#pragma comment(linker, "/ALTERNATENAME:_fn_00367=?Destroy@JsonThunk@jsoncons_glue@@QAEXXZ")
-#pragma comment(linker, "/ALTERNATENAME:_fn_00769=?Swap@JsonThunk@jsoncons_glue@@QAEXPAV?$basic_json@DUsorted_policy@jsoncons@@V?$allocator@D@std@@@jsoncons@@@Z")
+#pragma comment(linker, "/ALTERNATENAME:_JsonDefaultParsingHandler=?Construct@HandlerThunk@jsoncons_glue@@QAEXPAX@Z")
+#pragma comment(linker, "/ALTERNATENAME:_JsonDecodeOptionsConstruct=?Construct@JsonOptionsThunk@jsoncons_glue@@QAEPAV?$basic_json_decode_options@D@jsoncons@@H@Z")
+#pragma comment(linker, "/ALTERNATENAME:_JsonOptionsCommonDestroy=?Destroy@JsonOptionsCommonThunk@jsoncons_glue@@QAEXXZ")
+#pragma comment(linker, "/ALTERNATENAME:_BsonDecodeOptionsConstruct=?Construct@BsonOptionsThunk@jsoncons_glue@@QAEPAVbson_decode_options@bson@jsoncons@@H@Z")
+#pragma comment(linker, "/ALTERNATENAME:_JsonDestroy=?Destroy@JsonThunk@jsoncons_glue@@QAEXXZ")
+#pragma comment(linker, "/ALTERNATENAME:_JsonSwap=?Swap@JsonThunk@jsoncons_glue@@QAEXPAV?$basic_json@DUsorted_policy@jsoncons@@V?$allocator@D@std@@@jsoncons@@@Z")
+#pragma comment(linker, "/ALTERNATENAME:_JsonCopyConstruct=?CopyConstruct@JsonThunk@jsoncons_glue@@QAEXPBV?$basic_json@DUsorted_policy@jsoncons@@V?$allocator@D@std@@@jsoncons@@@Z")
