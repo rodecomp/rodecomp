@@ -705,7 +705,7 @@ void UIBasicInfoWnd::Paint() {
   } else if (this->geometry.height == this->expandedHeight) {
     CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\basewin_bg2.bmp")));
     this->DrawTitleBar(false, "", 0);
-    this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
+    this->DrawBitmap(0, 0, background, false);
 
     int family;
     int fontHeight;
