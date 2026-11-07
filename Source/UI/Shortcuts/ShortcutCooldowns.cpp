@@ -297,11 +297,11 @@ void UISeekPartyListWnd::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
 
-  if (g_friendRows.size() != 0) {
+  if (g_session.m_partyBooking.m_entries.size() != 0) {
     int drawn = 0;
     int index = 0;
     int y = 124;
-    for (auto it = g_friendRows.begin(); it != g_friendRows.end(); ++it, ++index) {
+    for (auto it = g_session.m_partyBooking.m_entries.begin(); it != g_session.m_partyBooking.m_entries.end(); ++it, ++index) {
       if (index < this->m_firstRow * this->m_columnCount) {
         continue;
       }
@@ -313,11 +313,11 @@ void UISeekPartyListWnd::Paint() {
       const int row = index + 1;
       this->FillRegion(20, y, 510, 40, 0xCECECE);
       if (it->second.isEnd) {
-        this->FillRegion(21, y + 1, 508, (row + 1 != static_cast<int>(g_friendRows.size())) + 38, 0xFFFFFF);
+        this->FillRegion(21, y + 1, 508, (row + 1 != static_cast<int>(g_session.m_partyBooking.m_entries.size())) + 38, 0xFFFFFF);
         auto* more = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\more_info.bmp")));
         this->DrawBitmap(22, y + 2, &more->image, false);
       } else {
-        this->FillRegion(21, y + 1, 508, (row != static_cast<int>(g_friendRows.size())) + 38, 0xFFFFFF);
+        this->FillRegion(21, y + 1, 508, (row != static_cast<int>(g_session.m_partyBooking.m_entries.size())) + 38, 0xFFFFFF);
         if (this->m_hoverIndex == index) {
           this->FillRegion(20, y, 510, 40, 0xEF9C73);
         }

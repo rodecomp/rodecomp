@@ -18,7 +18,6 @@ class UIStaticText;
 class UITextButton;
 struct SeekPartyListWndInfo;
 
-extern std::map<int, PartyBookingEntry> g_friendRows;
 
 struct SeekPartyMapEntry {
   /* 0000 */ std::string name;

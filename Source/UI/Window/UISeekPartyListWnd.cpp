@@ -35,8 +35,6 @@ struct PACKET_CZ_PARTY_BOOKING_REQ_SEARCH {
 #pragma pack(pop)
 }
 
-// GLOBAL: gl_24771
-std::map<int, PartyBookingEntry> g_friendRows;
 
 // OFFSET: 0x00925D70
 // FUNCTION: fn_12649
@@ -277,10 +275,10 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
       }
 
-      if (packet.level < 0 || packet.level > g_partyBookingLevelMax) {
+      if (packet.level < 0 || packet.level > g_session.m_maxLevel) {
         char buffer[260];
         std::memset(buffer, 0, sizeof(buffer));
-        StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(2601), g_partyBookingLevelMax);
+        StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(2601), g_session.m_maxLevel);
         g_windowMgr.Confirm(buffer, 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
@@ -349,7 +347,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       int index = 0;
-      for (auto it = g_friendRows.begin(); it != g_friendRows.end(); ++it, ++index) {
+      for (auto it = g_session.m_partyBooking.m_entries.begin(); it != g_session.m_partyBooking.m_entries.end(); ++it, ++index) {
         if (index < this->m_firstRow * this->m_columnCount || index != this->m_hoverIndex) {
           continue;
         }
@@ -481,7 +479,7 @@ int UISeekPartyListWnd::HitTestRow(int x, int y) {
   const int row = (y - 0x78) / 0x28;
   int found = 0;
   int index = 0;
-  for (auto it = g_friendRows.begin(); it != g_friendRows.end(); ++it, ++index) {
+  for (auto it = g_session.m_partyBooking.m_entries.begin(); it != g_session.m_partyBooking.m_entries.end(); ++it, ++index) {
     if (index < this->m_firstRow * this->m_columnCount) {
       continue;
     }
@@ -536,7 +534,7 @@ void UISeekPartyListWnd::UpdateScrollBar() {
     return;
   }
 
-  const int count = g_friendRows.size();
+  const int count = g_session.m_partyBooking.m_entries.size();
   const int rows = count / this->m_columnCount + (count % this->m_columnCount != 0 ? 1 : 0);
 
   const int visible = this->m_visibleRows;
