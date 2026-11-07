@@ -14,15 +14,6 @@ BitmapTextureCache::~BitmapTextureCache() {
   this->Clear();
 }
 
-// INLINED
-void BitmapTextureCache::Clear() {
-  for (CTexture* texture : this->m_textures) {
-    delete texture;
-  }
-
-  this->m_textures.clear();
-}
-
 // OFFSET: 0x00548380
 // FUNCTION: fn_01854
 void BitmapTextureCache::Update(BitmapPixels& bitmap, CRenderSystemBase& system) {
