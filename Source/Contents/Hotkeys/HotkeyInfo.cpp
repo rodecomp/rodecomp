@@ -10,10 +10,6 @@ HotkeyInfo::HotkeyInfo() : key1(0), key2(0) {
 // FUNCTION: fn_12505
 HotkeyInfo::HotkeyInfo(const HotkeyInfo& other) = default;
 
-// OFFSET: 0x005F7C30
-// FUNCTION: fn_04053
-HotkeyInfo::~HotkeyInfo() = default;
-
 // OFFSET: 0x00E09790
 // FUNCTION: fn_23783
 HotkeyInfo GetHotkeyInfo(LuaScript& script, int tab, int index) {

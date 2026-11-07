@@ -15,7 +15,10 @@ struct HotkeyInfo {
   /* 0020 */ std::string description;
   HotkeyInfo();
   HotkeyInfo(const HotkeyInfo& other);
-  ~HotkeyInfo();
+
+  // OFFSET: 0x005F7C30
+  // FUNCTION: fn_04053
+  ~HotkeyInfo() = default;
 };
 
 HotkeyInfo GetHotkeyInfo(LuaScript& script, int tab, int index);

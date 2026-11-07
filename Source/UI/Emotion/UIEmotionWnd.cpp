@@ -45,6 +45,7 @@ UIBitmapButton* UIEmotionWnd::AddCloseButton(const char* tooltip, int width) {
 void UIEmotionWnd::Slot15(int, int) {
   int y = 23;
   auto* emotions = &g_session.m_emotionHotkeys;
+  char buffer[16];
 
   for (int i = 0; i < 10; ++i) {
     UIEditCtrl2* edit = new UIEditCtrl2();
@@ -56,7 +57,6 @@ void UIEmotionWnd::Slot15(int, int) {
     edit->SetText(emotions->current[i].c_str());
     this->AddChild(edit);
 
-    char buffer[16];
     std::sprintf(buffer, "Alt + %d", i + 1);
 
     UIStaticText* label = new UIStaticText();
