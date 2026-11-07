@@ -63,7 +63,7 @@ void UIClanInfoManageWnd::Paint() {
   this->DrawTextAt(8, 97, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s", "유저인터페이스\\basic_interface\\grp_online.bmp");
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
-  this->DrawBitmap(128, 95, bitmap ? &bitmap->image : nullptr, true);
+  this->DrawBitmap(128, 95, bitmap, true);
   std::sprintf(text, "   %d", g_clanInfo->m_connectedMembers);
   this->DrawTextAt(138, 97, text, 0, 0, 12, 0, 0, 0);
 
@@ -85,10 +85,10 @@ void UIClanInfoManageWnd::Paint() {
     if (!bitmap) {
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\illust\\펫_포포링.bmp")));
     }
-    this->DrawBitmap(8, 145, bitmap ? &bitmap->image : nullptr, true);
+    this->DrawBitmap(8, 145, bitmap, true);
   } else {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\illust\\펫_포포링.bmp")));
-    this->DrawBitmap(50, 145, bitmap ? &bitmap->image : nullptr, true);
+    this->DrawBitmap(50, 145, bitmap, true);
   }
 
   std::sprintf(text, "%s", LookupMessage(2358));
