@@ -79,7 +79,7 @@ void CHealEffect::AddSparks(int kind) {
 
 // OFFSET: 0x00B678F0
 // FUNCTION: fn_19068
-__declspec(noinline) void CHealEffect::AddColumn(int kind) {
+void CHealEffect::AddColumn(int kind) {
   const float randomHeight = static_cast<float>((std::max)(rand() % 20, 0)) + 40.0f;
   for (int row = 0, angle = 0; angle < 360; ++row, angle += 180) {
     const int randomAngle = (std::max)(rand() % 360, 0);
@@ -353,12 +353,6 @@ void CHealEffect::Slot12() {
 // FUNCTION: fn_19074
 void CHealEffect::SpawnParticles() {
   switch (this->id) {
-  case 253:
-    if (this->spawnTick == 0) {
-      this->AddColumn(5);
-      this->AddCone(5);
-    }
-    break;
   case 312:
     if (this->spawnTick == 0) {
       this->AddColumn(4);
@@ -382,6 +376,12 @@ void CHealEffect::SpawnParticles() {
     }
     if (this->spawnTick <= 25 && this->spawnTick % 6 == 0) {
       this->AddSparks(3);
+    }
+    break;
+  case 253:
+    if (this->spawnTick == 0) {
+      this->AddColumn(5);
+      this->AddCone(5);
     }
     break;
   case 325:
