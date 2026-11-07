@@ -26,10 +26,9 @@ void WrapPlainText(const char* text, std::vector<std::string>& lines, int width)
   const char* chunk = text;
   const char* current = text;
   const char* breakAt = text;
-  const unsigned bytes = static_cast<unsigned>(std::strlen(text));
-  const char* end = text + bytes;
+  const char* end = text + std::strlen(text);
   const char* limit = text + width;
-  const char* marker = text + TextContext::Marker(text, bytes);
+  const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
 
   while (current < end) {
     current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
@@ -45,19 +44,19 @@ void WrapPlainText(const char* text, std::vector<std::string>& lines, int width)
       }
 
       chunk = breakAt <= begin ? current : breakAt;
-      lines.emplace_back(begin, chunk);
+      AppendLine(lines, begin, chunk);
       begin = chunk;
       limit = chunk + width;
     }
   }
 
   if (chunk < current) {
-    lines.emplace_back(chunk, current);
+    AppendLine(lines, chunk, current);
   }
 
-  if (g_inlineCharset && *marker != '\0' && marker < end) {
+  if (g_inlineCharset && marker && *marker != '\0' && marker < end) {
     for (std::size_t index = 1; index < lines.size(); ++index) {
-      lines[index].insert(0, marker, 3);
+      lines[index].insert(lines[index].begin(), marker, marker + 3);
     }
   }
 }
@@ -77,7 +76,7 @@ void WrapRichText(
 
   while (current < end) {
     if (carriageReturns && *current == '\r') {
-      lines.emplace_back(begin, current++);
+      AppendLine(lines, begin, current++);
 
       while (current < end && *current == '\n') {
         ++current;
@@ -96,7 +95,7 @@ void WrapRichText(
       limit += 7;
       breakAt = current;
     } else if (ParseItemIdTag(current, end, length, id)) {
-      lines.emplace_back(begin, current);
+      AppendLine(lines, begin, current);
       current += length;
       limit += length;
       begin = current;
@@ -108,7 +107,8 @@ void WrapRichText(
         char name[260];
         int capacity = sizeof(name);
         item.GetIdDisplayName(name, capacity, 0);
-        lines.push_back(name);
+        const std::string line(name);
+        lines.push_back(line);
       }
     } else {
       current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
@@ -146,11 +146,11 @@ void WrapRichText(
       breakAt = split;
 
       if (split <= begin) {
-        lines.emplace_back(begin, current);
+        AppendLine(lines, begin, current);
         begin = current;
         limit = current + width;
       } else {
-        lines.emplace_back(begin, split);
+        AppendLine(lines, begin, split);
         begin = split;
         limit = split + width;
       }
@@ -158,7 +158,7 @@ void WrapRichText(
   }
 
   if (begin < current) {
-    lines.emplace_back(begin, current);
+    AppendLine(lines, begin, current);
   }
 
   if (g_inlineCharset && marker && *marker != '\0' && marker < end) {
