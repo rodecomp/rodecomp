@@ -2554,14 +2554,20 @@ void CGameMode::ReceivePartyMemberEffect(const unsigned char* data) {
   case 1:
     actor->LaunchEffect(158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
+  case 7:
+    actor->LaunchEffect(338, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 9:
+    actor->LaunchEffect(582, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 8:
+    actor->LaunchEffect(337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
   case 2:
     actor->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case 3:
     actor->LaunchEffect(154, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    break;
-  case 4:
-    g_partyEffectNoticePending = 1;
     break;
   case 5:
     actor->LaunchEffect(305, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -2569,14 +2575,8 @@ void CGameMode::ReceivePartyMemberEffect(const unsigned char* data) {
   case 6:
     actor->LaunchEffect(306, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 7:
-    actor->LaunchEffect(338, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    break;
-  case 8:
-    actor->LaunchEffect(337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    break;
-  case 9:
-    actor->LaunchEffect(582, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  case 4:
+    g_partyEffectNoticePending = 1;
     break;
   }
 }
@@ -2651,21 +2651,27 @@ void CGameMode::ReceiveExtraInventoryResult(const unsigned char* data) {
 // OFFSET: 0x00D6FEA0
 // FUNCTION: fn_22128
 void CGameMode::ReceiveWindow348Result(unsigned char result, std::int16_t index) {
-  if (result == 0) {
+  switch (result) {
+  case 0: {
     g_windowMgr.CloseWindow(348);
     g_effectMgr->Spawn(g_session.m_aid, 1608, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
-    if (item.unknown_0000[1] != 0) {
-      UIWindow* window = g_windowMgr.EnsureWindow(12);
-      if (window) {
-        window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
-      }
+    if (item.unknown_0000[1] <= 0) {
+      return;
     }
-  } else if (result == 3) {
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    if (window) {
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
+    }
+    break;
+  }
+  case 3: {
     UIWindow* window = g_windowMgr.LookupWindow(348);
     if (window) {
       window->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(3848)), 0, 0, 0);
     }
+    break;
+  }
   }
 }
 
@@ -4008,7 +4014,272 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     }
   }
 
-  if (g_session.IsMonsterActor(actor) != 0) {
+  if (!g_session.IsMonsterActor(actor)) {
+    this->SendMsg(0x56, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 8), 0);
+
+    switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
+    case 0x171:
+      g_soundMgr->PlayWave("effect\\가스펠.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x16A:
+      g_soundMgr->PlayWave("effect\\바실리카.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x2F: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      if (actor == nullptr) {
+        return;
+      }
+      vector3d* source = &actor->render.position;
+      mode->SpawnArrowEffect64(source, source, 18.0f);
+      const int offsets[8][2] = {{1, 0}, {1, 1}, {1, -1}, {-1, 0}, {-1, 1}, {-1, -1}, {0, 1}, {0, -1}};
+      const int cellX = *reinterpret_cast<const std::int16_t*>(packet + 0xA);
+      const int cellY = *reinterpret_cast<const std::int16_t*>(packet + 0xC);
+      for (int index = 0; index < 8; ++index) {
+        float x;
+        float z;
+        mode->CellCenter(offsets[index][0] + cellX, offsets[index][1] + cellY, x, z);
+        vector3d target;
+        target.x = x;
+        target.y = mode->scene->terrain->Height(x, z);
+        target.z = z;
+        mode->SpawnArrowEffect64(source, &target, 18.0f);
+      }
+      break;
+    }
+    case 0x21D: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      float x;
+      float z;
+      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      vector3d position;
+      position.x = x;
+      position.y = mode->scene->terrain->Height(x, z);
+      position.z = z;
+      this->LaunchDummyEffect(&position, 0x26E, 200, 0);
+      break;
+    }
+    case 0x2E3:
+    case 0x992:
+      actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\S클라우드킬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x89B: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      float x;
+      float z;
+      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      vector3d position;
+      position.x = x;
+      position.y = mode->scene->terrain->Height(x, z);
+      position.z = z;
+      this->LaunchDummyEffect(&position, 0x2D6, EffectLifetime(0x2D6) + 10, 0);
+      break;
+    }
+    case 0x2E0:
+    case 0x991: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      g_soundMgr->PlayWave("effect\\S사이킥웨이브.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      float x;
+      float z;
+      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      vector3d position;
+      position.x = x;
+      position.y = mode->scene->terrain->Height(x, z);
+      position.z = z;
+      int count = message.level + 2;
+      if (count > 7) {
+        count = 7;
+      } else if (count <= 0) {
+        return;
+      }
+      for (int delay = 0; count != 0; --count, delay += 500) {
+        CEffect* effect;
+        if (g_serviceOptions.Get(0xE5)) {
+          effect = g_effectMgr->Spawn(0, 0x5AE, position.x, position.y, position.z, 0, -1, 0, 0);
+          if (effect) {
+            effect->Slot16(delay);
+          }
+          effect = g_effectMgr->Spawn(0, 0x5AF, position.x, position.y, position.z, 0, -1, 0, 0);
+        } else {
+          effect = g_effectMgr->Spawn(0, 0x508, position.x, position.y, position.z, 0, -1, 0, 0);
+          if (effect) {
+            effect->Slot16(delay);
+          }
+          effect = g_effectMgr->Spawn(0, 0x509, position.x, position.y, position.z, 0, -1, 0, 0);
+        }
+        if (effect) {
+          effect->Slot16(delay);
+        }
+      }
+      break;
+    }
+    case 0x98E: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      float x;
+      float z;
+      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      const float y = mode->scene->terrain->Height(x, z);
+      int delay = 0;
+      for (int degrees = 0; degrees < 1080; degrees += 72) {
+        const float radius = static_cast<float>(std::max(std::rand() % 20, 0)) + 5.0f;
+        matrix rotation;
+        rotation.MakeYRotation(static_cast<float>(degrees) / 180.0f * 3.141592f);
+        vector3d position;
+        position.x = rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + x;
+        position.y = rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + y;
+        position.z = rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + z;
+        CEffect* effect = g_effectMgr->Spawn(0, 0x5B9, position.x, position.y, position.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot22(0.5f);
+          effect->Slot16(delay);
+        }
+        effect = g_effectMgr->Spawn(0, 0x656, position.x, position.y, position.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot22(0.5f);
+          effect->Slot16(delay);
+        }
+        delay += 70;
+      }
+      break;
+    }
+    case 0x9B3: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      float x;
+      float z;
+      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      vector3d position;
+      position.x = x;
+      position.y = mode->scene->terrain->Height(x, z);
+      position.z = z;
+      this->LaunchDummyEffect(&position, 0x393, 150, 0);
+      break;
+    }
+    case 0x90D: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      if (actor == nullptr) {
+        return;
+      }
+      float angle = mode->CameraDesiredYaw() + actor->render.angle;
+      if (angle >= 360.0f) {
+        angle -= 360.0f;
+      }
+      int effectId = 0;
+      if (angle >= 0.0f && angle < 23.0f) {
+        effectId = 0x692;
+      } else if (angle >= 23.0f && angle < 67.0f) {
+        effectId = 0x691;
+      } else if (angle >= 67.0f && angle < 112.0f) {
+        effectId = 0x690;
+      } else if (angle >= 112.0f && angle < 157.0f) {
+        effectId = 0x68F;
+      } else if (angle >= 157.0f && angle < 202.0f) {
+        effectId = 0x696;
+      } else if (angle >= 202.0f && angle < 247.0f) {
+        effectId = 0x695;
+      } else if (angle >= 247.0f && angle < 292.0f) {
+        effectId = 0x694;
+      } else if (angle >= 292.0f && angle < 337.0f) {
+        effectId = 0x693;
+      } else if (angle >= 337.0f && angle <= 360.0f) {
+        effectId = 0x692;
+      }
+      g_effectMgr->Spawn(actor->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_soundMgr->PlayWave("effect\\LG_OVERBRAND.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    }
+    case 0x9D6: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      float x;
+      float z;
+      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      vector3d position;
+      position.x = x;
+      position.y = mode->scene->terrain->Height(x, z);
+      position.z = z;
+      this->LaunchDummyEffect(&position, 0x376, 300, 0);
+      this->LaunchDummyEffect(&position, 0x375, 200, 0);
+      this->LaunchDummyEffect(&position, 0x383, 999, 0);
+      g_soundMgr->PlayWave("effect\\SR_RIDEINLIGHTNING.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    }
+    case 0x976: {
+      g_soundMgr->PlayWave("effect\\안식의자장가.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      CRagEffect* effect = actor->LaunchEffect(0x35A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect == nullptr) {
+        return;
+      }
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      float x;
+      float z;
+      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      vector3d position;
+      position.x = x;
+      position.y = mode->scene->terrain->Height(x, z);
+      position.z = z;
+      effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+      break;
+    }
+    case 0x971: {
+      CRagEffect* effect = actor->LaunchEffect(0x35F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect == nullptr) {
+        return;
+      }
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      float x;
+      float z;
+      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      vector3d position;
+      position.x = x;
+      position.y = mode->scene->terrain->Height(x, z);
+      position.z = z;
+      effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+      g_soundMgr->PlayWave("effect\\invisibility.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    }
+    case 0x8FD:
+      g_soundMgr->PlayWave("effect\\chaospanic.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x8FE:
+      g_soundMgr->PlayWave("effect\\maelstrom.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0x8FF:
+      g_soundMgr->PlayWave("effect\\bloodylust.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 0xA1B:
+      if (actor == nullptr) {
+        return;
+      }
+      g_effectMgr->Spawn(actor->render.accountId, 0x4D0, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
+      break;
+    default:
+      CSkillActionMgr::GetInstance()->ActionSlot12(*reinterpret_cast<const std::uint16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 0xA),
+                                                   *reinterpret_cast<const std::int16_t*>(packet + 0xC), *reinterpret_cast<const std::int16_t*>(packet + 8),
+                                                   reinterpret_cast<int>(actor));
+      break;
+    case 0x14FD: {
+      vector3d position = {0.0f, 0.0f, 0.0f};
+      this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
+      position.y = this->scene->terrain->Height(position.x, position.z);
+      g_effectMgr->Spawn(0, 0x856, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, 0x855, position.x, position.y, position.z, 0, -1, 0, 0);
+      break;
+    }
+    case 0x14F9: {
+      vector3d position = {0.0f, 0.0f, 0.0f};
+      this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
+      position.y = this->scene->terrain->Height(position.x, position.z);
+      g_effectMgr->Spawn(0, 0x7EB, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, 0x7EA, position.x, position.y, position.z, 0, -1, 0, 0);
+      break;
+    }
+    }
+  } else {
     int action;
     int loopType;
     g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), *reinterpret_cast<const std::uint16_t*>(packet + 2), &action, &loopType);
@@ -4052,272 +4323,6 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
         }
       }
     }
-    return;
-  }
-
-  this->SendMsg(0x56, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 8), 0);
-
-  switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
-  case 0x2F: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    if (actor == nullptr) {
-      return;
-    }
-    vector3d* source = &actor->render.position;
-    mode->SpawnArrowEffect64(source, source, 18.0f);
-    const int offsets[8][2] = {{1, 0}, {1, 1}, {1, -1}, {-1, 0}, {-1, 1}, {-1, -1}, {0, 1}, {0, -1}};
-    const int cellX = *reinterpret_cast<const std::int16_t*>(packet + 0xA);
-    const int cellY = *reinterpret_cast<const std::int16_t*>(packet + 0xC);
-    for (int index = 0; index < 8; ++index) {
-      float x;
-      float z;
-      mode->CellCenter(offsets[index][0] + cellX, offsets[index][1] + cellY, x, z);
-      vector3d target;
-      target.x = x;
-      target.y = mode->scene->terrain->Height(x, z);
-      target.z = z;
-      mode->SpawnArrowEffect64(source, &target, 18.0f);
-    }
-    break;
-  }
-  case 0x16A:
-    g_soundMgr->PlayWave("effect\\바실리카.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
-  case 0x171:
-    g_soundMgr->PlayWave("effect\\가스펠.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
-  case 0x21D: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    float x;
-    float z;
-    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-    vector3d position;
-    position.x = x;
-    position.y = mode->scene->terrain->Height(x, z);
-    position.z = z;
-    this->LaunchDummyEffect(&position, 0x26E, 200, 0);
-    break;
-  }
-  case 0x2E3:
-  case 0x992:
-    actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    g_soundMgr->PlayWave("effect\\S클라우드킬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
-  case 0x89B: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    float x;
-    float z;
-    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-    vector3d position;
-    position.x = x;
-    position.y = mode->scene->terrain->Height(x, z);
-    position.z = z;
-    this->LaunchDummyEffect(&position, 0x2D6, EffectLifetime(0x2D6) + 10, 0);
-    break;
-  }
-  case 0x2E0:
-  case 0x991: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    g_soundMgr->PlayWave("effect\\S사이킥웨이브.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    float x;
-    float z;
-    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-    vector3d position;
-    position.x = x;
-    position.y = mode->scene->terrain->Height(x, z);
-    position.z = z;
-    int count = message.level + 2;
-    if (count > 7) {
-      count = 7;
-    } else if (count <= 0) {
-      return;
-    }
-    for (int delay = 0; count != 0; --count, delay += 500) {
-      CEffect* effect;
-      if (g_serviceOptions.Get(0xE5)) {
-        effect = g_effectMgr->Spawn(0, 0x5AE, position.x, position.y, position.z, 0, -1, 0, 0);
-        if (effect) {
-          effect->Slot16(delay);
-        }
-        effect = g_effectMgr->Spawn(0, 0x5AF, position.x, position.y, position.z, 0, -1, 0, 0);
-      } else {
-        effect = g_effectMgr->Spawn(0, 0x508, position.x, position.y, position.z, 0, -1, 0, 0);
-        if (effect) {
-          effect->Slot16(delay);
-        }
-        effect = g_effectMgr->Spawn(0, 0x509, position.x, position.y, position.z, 0, -1, 0, 0);
-      }
-      if (effect) {
-        effect->Slot16(delay);
-      }
-    }
-    break;
-  }
-  case 0x8FD:
-    g_soundMgr->PlayWave("effect\\chaospanic.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
-  case 0x8FE:
-    g_soundMgr->PlayWave("effect\\maelstrom.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
-  case 0x8FF:
-    g_soundMgr->PlayWave("effect\\bloodylust.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
-  case 0x90D: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    if (actor == nullptr) {
-      return;
-    }
-    float angle = mode->CameraDesiredYaw() + actor->render.angle;
-    if (angle >= 360.0f) {
-      angle -= 360.0f;
-    }
-    int effectId = 0;
-    if (angle >= 0.0f && angle < 23.0f) {
-      effectId = 0x692;
-    } else if (angle >= 23.0f && angle < 67.0f) {
-      effectId = 0x691;
-    } else if (angle >= 67.0f && angle < 112.0f) {
-      effectId = 0x690;
-    } else if (angle >= 112.0f && angle < 157.0f) {
-      effectId = 0x68F;
-    } else if (angle >= 157.0f && angle < 202.0f) {
-      effectId = 0x696;
-    } else if (angle >= 202.0f && angle < 247.0f) {
-      effectId = 0x695;
-    } else if (angle >= 247.0f && angle < 292.0f) {
-      effectId = 0x694;
-    } else if (angle >= 292.0f && angle < 337.0f) {
-      effectId = 0x693;
-    } else if (angle >= 337.0f && angle <= 360.0f) {
-      effectId = 0x692;
-    }
-    g_effectMgr->Spawn(actor->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_soundMgr->PlayWave("effect\\LG_OVERBRAND.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
-  }
-  case 0x971: {
-    CRagEffect* effect = actor->LaunchEffect(0x35F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    if (effect == nullptr) {
-      return;
-    }
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    float x;
-    float z;
-    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-    vector3d position;
-    position.x = x;
-    position.y = mode->scene->terrain->Height(x, z);
-    position.z = z;
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
-    g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
-    g_soundMgr->PlayWave("effect\\invisibility.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
-  }
-  case 0x976: {
-    g_soundMgr->PlayWave("effect\\안식의자장가.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    CRagEffect* effect = actor->LaunchEffect(0x35A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    if (effect == nullptr) {
-      return;
-    }
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    float x;
-    float z;
-    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-    vector3d position;
-    position.x = x;
-    position.y = mode->scene->terrain->Height(x, z);
-    position.z = z;
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
-    break;
-  }
-  case 0x98E: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    float x;
-    float z;
-    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-    const float y = mode->scene->terrain->Height(x, z);
-    int delay = 0;
-    for (int degrees = 0; degrees < 1080; degrees += 72) {
-      const float radius = static_cast<float>(std::max(std::rand() % 20, 0)) + 5.0f;
-      matrix rotation;
-      rotation.MakeYRotation(static_cast<float>(degrees) / 180.0f * 3.141592f);
-      vector3d position;
-      position.x = rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + x;
-      position.y = rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + y;
-      position.z = rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + z;
-      CEffect* effect = g_effectMgr->Spawn(0, 0x5B9, position.x, position.y, position.z, 0, -1, 0, 0);
-      if (effect) {
-        effect->Slot22(0.5f);
-        effect->Slot16(delay);
-      }
-      effect = g_effectMgr->Spawn(0, 0x656, position.x, position.y, position.z, 0, -1, 0, 0);
-      if (effect) {
-        effect->Slot22(0.5f);
-        effect->Slot16(delay);
-      }
-      delay += 70;
-    }
-    break;
-  }
-  case 0x9B3: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    float x;
-    float z;
-    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-    vector3d position;
-    position.x = x;
-    position.y = mode->scene->terrain->Height(x, z);
-    position.z = z;
-    this->LaunchDummyEffect(&position, 0x393, 150, 0);
-    break;
-  }
-  case 0x9D6: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    float x;
-    float z;
-    mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-    vector3d position;
-    position.x = x;
-    position.y = mode->scene->terrain->Height(x, z);
-    position.z = z;
-    this->LaunchDummyEffect(&position, 0x376, 300, 0);
-    this->LaunchDummyEffect(&position, 0x375, 200, 0);
-    this->LaunchDummyEffect(&position, 0x383, 999, 0);
-    g_soundMgr->PlayWave("effect\\SR_RIDEINLIGHTNING.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
-  }
-  case 0xA1B:
-    if (actor == nullptr) {
-      return;
-    }
-    g_effectMgr->Spawn(actor->render.accountId, 0x4D0, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
-    break;
-  case 0x14F9: {
-    vector3d position = {0.0f, 0.0f, 0.0f};
-    this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
-    position.y = this->scene->terrain->Height(position.x, position.z);
-    g_effectMgr->Spawn(0, 0x7EB, position.x, position.y, position.z, 0, -1, 0, 0);
-    g_effectMgr->Spawn(0, 0x7EA, position.x, position.y, position.z, 0, -1, 0, 0);
-    break;
-  }
-  case 0x14FD: {
-    vector3d position = {0.0f, 0.0f, 0.0f};
-    this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
-    position.y = this->scene->terrain->Height(position.x, position.z);
-    g_effectMgr->Spawn(0, 0x856, position.x, position.y, position.z, 0, -1, 0, 0);
-    g_effectMgr->Spawn(0, 0x855, position.x, position.y, position.z, 0, -1, 0, 0);
-    break;
-  }
-  default:
-    CSkillActionMgr::GetInstance()->ActionSlot12(*reinterpret_cast<const std::uint16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 0xA),
-                                                 *reinterpret_cast<const std::int16_t*>(packet + 0xC), *reinterpret_cast<const std::int16_t*>(packet + 8),
-                                                 reinterpret_cast<int>(actor));
-    break;
   }
 }
 
@@ -5420,7 +5425,7 @@ struct RodexMailPagePacket {
   /* 0002 */ std::int16_t length;
   /* 0004 */ unsigned char type;
   /* 0005 */ unsigned char count;
-  /* 0006 */ unsigned char isEnd;
+  /* 0006 */ bool isEnd;
   /* 0007 */ RodexMailPageEntry entries[1];
 };
 #pragma pack(pop)
@@ -5673,37 +5678,39 @@ void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
   g_rodexMailStore->unknown_0010 = packet->type;
   g_rodexMailStore->unknown_001C = packet->isEnd;
 
-  for (int i = 1; i < packet->count + 1; ++i) {
-    RodexMail mail;
-    mail.isRead = entry->isRead;
-    mail.unknown_0001 = entry->type;
-    mail.unknown_0020 = _time32(nullptr) + entry->expireTime;
-    mail.unknown_0004.assign(entry->sender, (std::min)(std::strlen(entry->sender), static_cast<std::size_t>(24)));
-    if (packet->type == 0 && (mail.unknown_0001 & 8) == 0 && !g_session.HasUnknown809C(mail.unknown_0004)) {
-      mail.unknown_0194 = g_session.IsKnownName(mail.unknown_0004);
-    } else {
-      mail.unknown_0194 = 1;
-    }
-    mail.unknown_0024.append(entry->title, entry->titleLength);
+  if (packet->count != 0) {
+    for (int i = 1; i < packet->count + 1; ++i) {
+      RodexMail mail;
+      mail.isRead = entry->isRead;
+      mail.unknown_0001 = entry->type;
+      mail.unknown_0020 = _time32(nullptr) + entry->expireTime;
+      mail.unknown_0004.assign(entry->sender, (std::min)(std::strlen(entry->sender), static_cast<std::size_t>(24)));
+      if (packet->type == 0 && (mail.unknown_0001 & 8) == 0 && !g_session.HasUnknown809C(mail.unknown_0004)) {
+        mail.unknown_0194 = g_session.IsKnownName(mail.unknown_0004);
+      } else {
+        mail.unknown_0194 = 1;
+      }
+      mail.unknown_0024.append(entry->title, entry->titleLength);
 
-    switch (packet->type) {
-    case 0:
-      if (g_rodexMailStore->m_mails0.find(entry->mailId) == g_rodexMailStore->m_mails0.end()) {
-        g_rodexMailStore->m_mails0.insert(std::make_pair(entry->mailId, mail));
+      switch (packet->type) {
+      case 0:
+        if (g_rodexMailStore->m_mails0.find(entry->mailId) == g_rodexMailStore->m_mails0.end()) {
+          g_rodexMailStore->m_mails0.insert(std::make_pair(entry->mailId, mail));
+        }
+        break;
+      case 1:
+        if (g_rodexMailStore->m_mails1.find(entry->mailId) == g_rodexMailStore->m_mails1.end()) {
+          g_rodexMailStore->m_mails1.insert(std::make_pair(entry->mailId, mail));
+        }
+        break;
+      case 2:
+        if (g_rodexMailStore->m_mails2.find(entry->mailId) == g_rodexMailStore->m_mails2.end()) {
+          g_rodexMailStore->m_mails2.insert(std::make_pair(entry->mailId, mail));
+        }
+        break;
       }
-      break;
-    case 1:
-      if (g_rodexMailStore->m_mails1.find(entry->mailId) == g_rodexMailStore->m_mails1.end()) {
-        g_rodexMailStore->m_mails1.insert(std::make_pair(entry->mailId, mail));
-      }
-      break;
-    case 2:
-      if (g_rodexMailStore->m_mails2.find(entry->mailId) == g_rodexMailStore->m_mails2.end()) {
-        g_rodexMailStore->m_mails2.insert(std::make_pair(entry->mailId, mail));
-      }
-      break;
+      entry = reinterpret_cast<const RodexMailPageEntry*>(reinterpret_cast<const char*>(entry) + 0x2C + entry->titleLength);
     }
-    entry = reinterpret_cast<const RodexMailPageEntry*>(reinterpret_cast<const char*>(entry) + 0x2C + entry->titleLength);
   }
 
   if (g_windowMgr.unknown_0454) {
@@ -7014,17 +7021,16 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3814));
       break;
     default:
-      if (CSkillActionMgr::GetInstance()->HasEfstAction(packet->type) != true) {
-        this->RefreshStatusStateEffect(packet->aid);
-        return;
-      }
-      {
+      if (CSkillActionMgr::GetInstance()->HasEfstAction(packet->type) == true) {
         const EfstActionMessage action = CSkillActionMgr::GetInstance()->EfstSlot04(packet->type);
         if (action.text) {
           color = action.color;
           StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", action.text);
         }
+        break;
       }
+      this->RefreshStatusStateEffect(packet->aid);
+      return;
     }
   }
 
@@ -7037,7 +7043,9 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
   }
 
   if (packet->aid == g_session.m_aid) {
-    this->scene->player->SendMsg(nullptr, 110, 0, packet->type, packet->type >> 31, packet->state, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t state = packet->state;
+    const std::int64_t type = packet->type;
+    this->scene->player->SendMsg(nullptr, 110, 0, static_cast<int>(type), static_cast<int>(type >> 32), static_cast<int>(state), static_cast<int>(state >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
