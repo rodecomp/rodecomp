@@ -1408,30 +1408,30 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   BinkSetSoundSystem(BinkOpenDirectSound, 0);
   if (!InitUnhandledExceptionHandler(reinterpret_cast<int (*)()>(&IgnoreNull))) {
-    const std::uint8_t failureSource[] = {0xB6, 0xEA, 0xAF, 0x66, 0xCF, 0x3A, 0x50, 0x9B, 0xFB, 0xEA, 0xAF, 0x7C, 0xDF, 0x2E, 0x51, 0x87,
-                                          0xFB, 0xE5, 0xA0, 0x66, 0xC7, 0x4F};
+    const char failureSource[] = {'\xB6', '\xEA', '\xAF', '\x66', '\xCF', '\x3A', '\x50', '\x9B', '\xFB', '\xEA', '\xAF', '\x7C', '\xDF', '\x2E', '\x51', '\x87',
+                                          '\xFB', '\xE5', '\xA0', '\x66', '\xC7', '\x4F'};
     thread_local EncryptedName<sizeof(failureSource), 0xEB3D4FAB0FC183DBULL> failure(failureSource);
     ShowErrorDialog(failure.Text(), MB_OK);
     return 0;
   }
 
-  const std::uint8_t replaySource[] = {0x1B, 0x9A, 0xA5, 0x93, 0xB0, 0x3A, 0xBF};
+  const char replaySource[] = {'\x1B', '\x9A', '\xA5', '\x93', '\xB0', '\x3A', '\xBF'};
   thread_local EncryptedName<sizeof(replaySource), 0xFFBF43D1FFD5FF49ULL> replay(replaySource);
   g_replayMode = std::strstr(commandLine, replay.Text()) != nullptr;
   Replay::Instance().SetState(1);
 
-  const std::uint8_t qmSource[] = {0xD6, 0x3C, 0x6E, 0x48, 0x07};
+  const char qmSource[] = {'\xD6', '\x3C', '\x6E', '\x48', '\x07'};
   thread_local EncryptedName<sizeof(qmSource), 0x7DB1050779034DE7ULL> qm(qmSource);
   if (std::strstr(commandLine, qm.Text())) {
     const char* server;
-    const std::uint8_t sakSource[] = {0x80, 0xE4, 0x42, 0x80, 0x2C, 0x3B};
+    const char sakSource[] = {'\x80', '\xE4', '\x42', '\x80', '\x2C', '\x3B'};
     thread_local EncryptedName<sizeof(sakSource), 0x5D6B3B1DEB2397B1ULL> sak(sakSource);
     if (std::strstr(commandLine, sak.Text())) {
-      const std::uint8_t sakraySource[] = {0x74, 0x94, 0xE4, 0x5E, 0xD6, 0x11, 0x84, 0x06, 0x25};
+      const char sakraySource[] = {'\x74', '\x94', '\xE4', '\x5E', '\xD6', '\x11', '\x84', '\x06', '\x25'};
       thread_local EncryptedName<sizeof(sakraySource), 0x7FE563BD3FB7F925ULL> sakray(sakraySource);
       server = sakray.Text();
     } else {
-      const std::uint8_t devSource[] = {0xCD, 0xBA, 0xAB, 0x5B};
+      const char devSource[] = {'\xCD', '\xBA', '\xAB', '\x5B'};
       thread_local EncryptedName<sizeof(devSource), 0x8B3FA35B5BDDDF89ULL> dev(devSource);
       server = dev.Text();
     }
@@ -1439,35 +1439,35 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     StringFormat(g_launchServerName, sizeof(g_launchServerName), static_cast<std::size_t>(-1), server);
   }
 
-  const std::uint8_t rocSource[] = {0x8E, 0xF7, 0x48, 0x1E, 0x62, 0x23};
+  const char rocSource[] = {'\x8E', '\xF7', '\x48', '\x1E', '\x62', '\x23'};
   thread_local EncryptedName<sizeof(rocSource), 0xE3FB23537D2785BFULL> roc(rocSource);
   g_session.SetOption(18, std::strstr(commandLine, roc.Text()) != nullptr, 0);
 
-  const std::uint8_t stoveSandboxSource[] = {0xCC, 0x24, 0x61, 0x32, 0x61, 0xE4, 0x84, 0x6C, 0x82, 0x39, 0x71, 0x3F, 0x78, 0xF9, 0xDB};
+  const char stoveSandboxSource[] = {'\xCC', '\x24', '\x61', '\x32', '\x61', '\xE4', '\x84', '\x6C', '\x82', '\x39', '\x71', '\x3F', '\x78', '\xF9', '\xDB'};
   thread_local EncryptedName<sizeof(stoveSandboxSource), 0x1FDB81175D1557E3ULL> stoveSandbox(stoveSandboxSource);
   if (std::strstr(commandLine, stoveSandbox.Text())) {
     g_launchPassCommandLine = true;
   } else {
-    const std::uint8_t stoveLiveSource[] = {0xF8, 0x34, 0x89, 0x0C, 0x7B, 0x5C, 0x74, 0x1F, 0xBE, 0x31, 0x98, 0x63};
+    const char stoveLiveSource[] = {'\xF8', '\x34', '\x89', '\x0C', '\x7B', '\x5C', '\x74', '\x1F', '\xBE', '\x31', '\x98', '\x63'};
     thread_local EncryptedName<sizeof(stoveLiveSource), 0x732B390D63FD47D7ULL> stoveLive(stoveLiveSource);
     if (std::strstr(commandLine, stoveLive.Text())) {
       g_launchPassCommandLine = true;
     }
   }
 
-  const std::uint8_t manifestSource[] = {0xFC, 0x96, 0x2C, 0xAF, 0x90, 0x05, 0xC2, 0xD3, 0xFE, 0x8D, 0x20, 0x92, 0x94, 0x0A, 0xC9, 0xDE,
-                                         0xF9, 0x9C, 0x32, 0xB9, 0xF9};
+  const char manifestSource[] = {'\xFC', '\x96', '\x2C', '\xAF', '\x90', '\x05', '\xC2', '\xD3', '\xFE', '\x8D', '\x20', '\x92', '\x94', '\x0A', '\xC9', '\xDE',
+                                         '\xF9', '\x9C', '\x32', '\xB9', '\xF9'};
   thread_local EncryptedName<sizeof(manifestSource), 0xB7A76BF9CD41F99FULL> manifest(manifestSource);
   WIN32_FIND_DATAA manifestData;
   HANDLE manifestFind = FindFirstFileA(manifest.Text(), &manifestData);
   if (g_launchPassCommandLine ? manifestFind == INVALID_HANDLE_VALUE : manifestFind != INVALID_HANDLE_VALUE) {
     FindClose(manifestFind);
-    const std::uint8_t captionSource[] = {0xE2, 0x5D, 0x16, 0x35, 0xBE, 0x29, 0xC0, 0x03, 0xE3, 0x46, 0x0B, 0x43};
+    const char captionSource[] = {'\xE2', '\x5D', '\x16', '\x35', '\xBE', '\x29', '\xC0', '\x03', '\xE3', '\x46', '\x0B', '\x43'};
     thread_local EncryptedName<sizeof(captionSource), 0x71A509DB43792991ULL> caption(captionSource);
     const char* title = caption.Text();
-    const std::uint8_t messageSource[] = {0x2E, 0x27, 0xE0, 0xD7, 0x9A, 0xCD, 0xAC, 0x71, 0xCB, 0xA0, 0x4F, 0x6D, 0x41, 0x1D, 0xAF, 0x73,
-                                          0xC5, 0xF5, 0xAF, 0x64, 0x14, 0x2A, 0xB1, 0xFD, 0xC0, 0x94, 0x48, 0x41, 0x38, 0x35, 0x49, 0x1C,
-                                          0xAB, 0xEF, 0x33, 0x1E, 0x1B, 0xED};
+    const char messageSource[] = {'\x2E', '\x27', '\xE0', '\xD7', '\x9A', '\xCD', '\xAC', '\x71', '\xCB', '\xA0', '\x4F', '\x6D', '\x41', '\x1D', '\xAF', '\x73',
+                                          '\xC5', '\xF5', '\xAF', '\x64', '\x14', '\x2A', '\xB1', '\xFD', '\xC0', '\x94', '\x48', '\x41', '\x38', '\x35', '\x49', '\x1C',
+                                          '\xAB', '\xEF', '\x33', '\x1E', '\x1B', '\xED'};
     thread_local EncryptedName<sizeof(messageSource), 0xDD69EDFFA18F537DULL> message(messageSource);
     MessageBoxA(hWnd, FormatOwnedString(message.Text()).c_str(), title, MB_OK);
     return 0;
@@ -1475,7 +1475,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   FindClose(manifestFind);
   if (!g_launchPassCommandLine) {
-    const std::uint8_t accountMarkerSource[] = {0xA4, 0xAF, 0x59, 0x79};
+    const char accountMarkerSource[] = {'\xA4', '\xAF', '\x59', '\x79'};
     thread_local EncryptedName<sizeof(accountMarkerSource), 0xB3CF9BEB7963DB89ULL> accountMarker(accountMarkerSource);
     if (std::strstr(commandLine, accountMarker.Text()) && !g_replayMode) {
       g_launchAccountEnabled = true;
@@ -1502,31 +1502,31 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
       std::strncpy(g_launchServerName, server, length > 24 ? 24 : length);
       g_launchServerName[length > 23 ? 23 : length] = 0;
 
-      const std::uint8_t nonPaySource[] = {0x3D, 0x4E, 0x89, 0x17, 0x4A, 0x00, 0xED, 0xEA, 0x14, 0x21};
+      const char nonPaySource[] = {'\x3D', '\x4E', '\x89', '\x17', '\x4A', '\x00', '\xED', '\xEA', '\x14', '\x21'};
       thread_local EncryptedName<sizeof(nonPaySource), 0x8BBF792B47E72173ULL> nonPay(nonPaySource);
       if (std::strstr(g_launchServerName, nonPay.Text())) {
         g_launchServerKind = 2;
       } else {
-        const std::uint8_t eventSource[] = {0x3C, 0x81, 0x70, 0x5B, 0xD9, 0x51};
+        const char eventSource[] = {'\x3C', '\x81', '\x70', '\x5B', '\xD9', '\x51'};
         thread_local EncryptedName<sizeof(eventSource), 0x9B9D51AD3515F779ULL> event(eventSource);
         if (std::strstr(g_launchServerName, event.Text())) {
           g_launchServerKind = 2;
         }
       }
     } else {
-      const std::uint8_t secondManifestSource[] = {0x34, 0x90, 0x80, 0x2D, 0xC6, 0xDB, 0xB2, 0xD1, 0x36, 0x8B, 0x8C, 0x10, 0xC2, 0xD4, 0xB9, 0xDC,
-                                                   0x31, 0x9A, 0x9E, 0x3B, 0xAF};
+      const char secondManifestSource[] = {'\x34', '\x90', '\x80', '\x2D', '\xC6', '\xDB', '\xB2', '\xD1', '\x36', '\x8B', '\x8C', '\x10', '\xC2', '\xD4', '\xB9', '\xDC',
+                                                   '\x31', '\x9A', '\x9E', '\x3B', '\xAF'};
       thread_local EncryptedName<sizeof(secondManifestSource), 0xB5D7B5AF4FEDFF57ULL> secondManifest(secondManifestSource);
       WIN32_FIND_DATAA secondManifestData;
       HANDLE secondManifestFind = FindFirstFileA(secondManifest.Text(), &secondManifestData);
       if (secondManifestFind != INVALID_HANDLE_VALUE) {
         FindClose(secondManifestFind);
-        const std::uint8_t secondCaptionSource[] = {0xC4, 0x47, 0x4A, 0x7F, 0xDE, 0x15, 0xE0, 0x71, 0xC5, 0x5C, 0x57, 0x09};
+        const char secondCaptionSource[] = {'\xC4', '\x47', '\x4A', '\x7F', '\xDE', '\x15', '\xE0', '\x71', '\xC5', '\x5C', '\x57', '\x09'};
         thread_local EncryptedName<sizeof(secondCaptionSource), 0x038535BB092533B7ULL> secondCaption(secondCaptionSource);
         const char* title = secondCaption.Text();
-        const std::uint8_t secondMessageSource[] = {0x80, 0x03, 0x88, 0x1F, 0x32, 0xE7, 0xEE, 0x57, 0x65, 0x84, 0x27, 0xA5, 0xE9, 0x37, 0xED, 0x55,
-                                                    0x6B, 0xD1, 0xC7, 0xAC, 0xBC, 0x00, 0xF3, 0xDB, 0x6E, 0xB0, 0x20, 0x89, 0x90, 0x1F, 0x0B, 0x3A,
-                                                    0x05, 0xCB, 0x5B, 0xD6, 0xB3, 0xC7};
+        const char secondMessageSource[] = {'\x80', '\x03', '\x88', '\x1F', '\x32', '\xE7', '\xEE', '\x57', '\x65', '\x84', '\x27', '\xA5', '\xE9', '\x37', '\xED', '\x55',
+                                                    '\x6B', '\xD1', '\xC7', '\xAC', '\xBC', '\x00', '\xF3', '\xDB', '\x6E', '\xB0', '\x20', '\x89', '\x90', '\x1F', '\x0B', '\x3A',
+                                                    '\x05', '\xCB', '\x5B', '\xD6', '\xB3', '\xC7'};
         thread_local EncryptedName<sizeof(secondMessageSource), 0xFB2BC75769E777D3ULL> secondMessage(secondMessageSource);
         MessageBoxA(hWnd, FormatOwnedString(secondMessage.Text()).c_str(), title, MB_OK);
         return 0;
@@ -1543,7 +1543,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     }
   }
 
-  const std::uint8_t ragSource[] = {0x32, 0x47, 0xF8, 0xD2, 0x82, 0x77};
+  const char ragSource[] = {'\x32', '\x47', '\xF8', '\xD2', '\x82', '\x77'};
   thread_local EncryptedName<sizeof(ragSource), 0x6BC977B3B5993503ULL> rag(ragSource);
   std::strstr(commandLine, rag.Text());
 
@@ -1556,14 +1556,14 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     }
   }
 
-  const std::uint8_t accountSource[] = {0x74, 0xFC, 0x46, 0x4E, 0xE8, 0x58, 0x43, 0x73, 0x61, 0x9D};
+  const char accountSource[] = {'\x74', '\xFC', '\x46', '\x4E', '\xE8', '\x58', '\x43', '\x73', '\x61', '\x9D'};
   thread_local EncryptedName<sizeof(accountSource), 0x072D2D872D259D5BULL> account(accountSource);
   account.Text();
   g_launchFromPc = std::strstr(commandLine, "pc") != nullptr;
 
   char protection[64];
   std::memset(protection, 0, sizeof(protection));
-  const std::uint8_t dataGrfSource[] = {0x3B, 0x18, 0xD5, 0x86, 0xDF, 0xAA, 0x2D, 0xE1, 0x5F};
+  const char dataGrfSource[] = {'\x3B', '\x18', '\xD5', '\x86', '\xDF', '\xAA', '\x2D', '\xE1', '\x5F'};
   thread_local EncryptedName<sizeof(dataGrfSource), 0x875FCDF1E7A1795FULL> dataGrf(dataGrfSource);
   dataGrf.Text();
   HMODULE kernel = GetModuleHandleA("kernel32.dll");
@@ -1598,10 +1598,10 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   }
   LoadClientInfo(protection);
 
-  const std::uint8_t patchSandboxSource[] = {0x5A, 0x16, 0x15, 0xB6, 0x3B, 0x6C, 0x80, 0x0A, 0x14, 0x0B, 0x05, 0xBB, 0x22, 0x71, 0xDF};
+  const char patchSandboxSource[] = {'\x5A', '\x16', '\x15', '\xB6', '\x3B', '\x6C', '\x80', '\x0A', '\x14', '\x0B', '\x05', '\xBB', '\x22', '\x71', '\xDF'};
   thread_local EncryptedName<sizeof(patchSandboxSource), 0x79DF094DD9616575ULL> patchSandbox(patchSandboxSource);
   if (!std::strstr(g_commandLine, patchSandbox.Text())) {
-    const std::uint8_t patchLiveSource[] = {0x98, 0x12, 0x89, 0xD0, 0x41, 0x48, 0xD0, 0xF1, 0xDE, 0x17, 0x98, 0xBF};
+    const char patchLiveSource[] = {'\x98', '\x12', '\x89', '\xD0', '\x41', '\x48', '\xD0', '\xF1', '\xDE', '\x17', '\x98', '\xBF'};
     thread_local EncryptedName<sizeof(patchLiveSource), 0x9D8F2D37BFFD61B7ULL> patchLive(patchLiveSource);
     if (!std::strstr(g_commandLine, patchLive.Text()) &&
         ReplaceClientExecutable(const_cast<char*>(g_clientExeName), g_patcherExeName)) {
@@ -1611,7 +1611,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   g_session.Init();
 
-  const std::uint8_t setupSource[] = {0x64, 0x98, 0x01, 0x20, 0x45, 0xEF, 0x30, 0x3F, 0x52, 0xFD};
+  const char setupSource[] = {'\x64', '\x98', '\x01', '\x20', '\x45', '\xEF', '\x30', '\x3F', '\x52', '\xFD'};
   thread_local EncryptedName<sizeof(setupSource), 0x4755C1355575FD37ULL> setup(setupSource);
   while (ReadSetup() == 0) {
     if (_access(setup.Text(), 0) == 0) {
@@ -1619,12 +1619,12 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     }
   }
 
-  const std::uint8_t saveDataSource[] = {0x74, 0xBC, 0x01, 0x06, 0x07, 0x54, 0xBF, 0x70, 0x07};
+  const char saveDataSource[] = {'\x74', '\xBC', '\x01', '\x06', '\x07', '\x54', '\xBF', '\x70', '\x07'};
   thread_local EncryptedName<sizeof(saveDataSource), 0x11CB35636377DD07ULL> saveData(saveDataSource);
   WIN32_FIND_DATAA saveDataData;
   HANDLE saveDataFind = FindFirstFileA(saveData.Text(), &saveDataData);
   if (saveDataFind == INVALID_HANDLE_VALUE) {
-    const std::uint8_t saveDataDirectorySource[] = {0x54, 0xF2, 0x09, 0x6A, 0x3F, 0x7E, 0x43, 0x5C, 0x27};
+    const char saveDataDirectorySource[] = {'\x54', '\xF2', '\x09', '\x6A', '\x3F', '\x7E', '\x43', '\x5C', '\x27'};
     thread_local EncryptedName<sizeof(saveDataDirectorySource), 0x3D371F5B0F7F9327ULL> saveDataDirectory(saveDataDirectorySource);
     CreateDirectoryA(saveDataDirectory.Text(), nullptr);
   } else {
@@ -1648,8 +1648,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   CoInitialize(nullptr);
 
   if (!CSoundMgr::Create()) {
-    const std::uint8_t audioFailureSource[] = {0x68, 0xBA, 0x4D, 0x6E, 0x8C, 0x09, 0xA4, 0x12, 0x5A, 0xBB, 0x4C, 0x6A, 0xC3, 0x60, 0x99, 0x02,
-                                               0x5D, 0xEF, 0x6F, 0x66, 0x8A, 0x45, 0x92, 0x0F, 0x29};
+    const char audioFailureSource[] = {'\x68', '\xBA', '\x4D', '\x6E', '\x8C', '\x09', '\xA4', '\x12', '\x5A', '\xBB', '\x4C', '\x6A', '\xC3', '\x60', '\x99', '\x02',
+                                               '\x5D', '\xEF', '\x6F', '\x66', '\x8A', '\x45', '\x92', '\x0F', '\x29'};
     thread_local EncryptedName<sizeof(audioFailureSource), 0x6BF729E30729CF29ULL> audioFailure(audioFailureSource);
     if (audioFailure.Encrypted()) {
       audioFailure.Text();
@@ -1662,8 +1662,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   g_session.InitClientData();
 
   ResourceMgr& resources = ResourceMgr::Instance();
-  const std::uint8_t resourceNamesSource[] = {0x8F, 0xA4, 0x00, 0x0D, 0x46, 0x3C, 0x78, 0x4B, 0x9C, 0xA3, 0x1F, 0x26, 0x09, 0x25, 0x65, 0x6B,
-                                              0xFD};
+  const char resourceNamesSource[] = {'\x8F', '\xA4', '\x00', '\x0D', '\x46', '\x3C', '\x78', '\x4B', '\x9C', '\xA3', '\x1F', '\x26', '\x09', '\x25', '\x65', '\x6B',
+                                              '\xFD'};
   thread_local EncryptedName<sizeof(resourceNamesSource), 0x1F1D51274373C1FDULL> resourceNames(resourceNamesSource);
   resources.aliases.Load(reinterpret_cast<int>(resourceNames.Text()));
 
@@ -1673,16 +1673,16 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   std::pair<bool, std::string> managers = InitializeManagers();
   if (!managers.first) {
-    const std::uint8_t errorSource[] = {0x72, 0x27, 0xFF, 0xE8, 0x91, 0xA1};
+    const char errorSource[] = {'\x72', '\x27', '\xFF', '\xE8', '\x91', '\xA1'};
     thread_local EncryptedName<sizeof(errorSource), 0x5F93A1C3A7AD7537ULL> error(errorSource);
     MessageBoxA(nullptr, managers.second.c_str(), error.Text(), MB_OK);
     return 1;
   }
 
   if (GetRenderSystemHolder()->Initialize(g_configuredRenderBackend, hWnd) < 0) {
-    const std::uint8_t deviceFailureSource[] = {0x14, 0xE2, 0x87, 0xBB, 0xEE, 0xB1, 0x6D, 0x2E, 0x39, 0xEA, 0x9D, 0xF5, 0xE5, 0xF6, 0x29, 0x67,
-                                                0x18, 0xD1, 0xC9, 0xB2, 0xF3, 0xA3, 0x6D, 0x21, 0x3E, 0xEF, 0x8C, 0xF5, 0xE9, 0xA4, 0x3E, 0x67,
-                                                0x27, 0xF1, 0x86, 0xB7, 0xED, 0xA0, 0x20, 0x69, 0x57};
+    const char deviceFailureSource[] = {'\x14', '\xE2', '\x87', '\xBB', '\xEE', '\xB1', '\x6D', '\x2E', '\x39', '\xEA', '\x9D', '\xF5', '\xE5', '\xF6', '\x29', '\x67',
+                                                '\x18', '\xD1', '\xC9', '\xB2', '\xF3', '\xA3', '\x6D', '\x21', '\x3E', '\xEF', '\x8C', '\xF5', '\xE9', '\xA4', '\x3E', '\x67',
+                                                '\x27', '\xF1', '\x86', '\xB7', '\xED', '\xA0', '\x20', '\x69', '\x57'};
     thread_local EncryptedName<sizeof(deviceFailureSource), 0x474DC581D5E98357ULL> deviceFailure(deviceFailureSource);
     ShowErrorDialog(deviceFailure.Text(), MB_OK);
     return 1;
@@ -1703,8 +1703,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   g_windowMgr.SetScreenSize(g_renderer->viewport.width, g_renderer->viewport.height);
   g_windowMgr.LoadUIRectInfo();
   g_grannyAnimationLibrary.Initialize();
-  const std::uint8_t guildFlagSource[] = {0xEA, 0xC8, 0x21, 0x16, 0x79, 0xD5, 0x40, 0x6D, 0xEA, 0xC8, 0x27, 0x2F, 0x72, 0xFC, 0x1A, 0x65,
-                                          0xE3, 0xC1, 0x29, 0x12, 0x72, 0xB0, 0x43, 0x56, 0xB6, 0x89, 0x22, 0x01, 0x27, 0x89};
+  const char guildFlagSource[] = {'\xEA', '\xC8', '\x21', '\x16', '\x79', '\xD5', '\x40', '\x6D', '\xEA', '\xC8', '\x27', '\x2F', '\x72', '\xFC', '\x1A', '\x65',
+                                          '\xE3', '\xC1', '\x29', '\x12', '\x72', '\xB0', '\x43', '\x56', '\xB6', '\x89', '\x22', '\x01', '\x27', '\x89'};
   thread_local EncryptedName<sizeof(guildFlagSource), 0x097389157345A787ULL> guildFlag(guildFlagSource);
   g_grannyAnimationLibrary.Load(guildFlag.Text(), 1, 0);
   g_skinInfo.Refresh();
@@ -1719,7 +1719,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     g_loginStartMode = 0;
   }
 
-  const std::uint8_t memoSource[] = {0xE4, 0x0E, 0x84, 0xF0, 0x4B};
+  const char memoSource[] = {'\xE4', '\x0E', '\x84', '\xF0', '\x4B'};
   thread_local EncryptedName<sizeof(memoSource), 0xC5995F4B9FE96B89ULL> memo(memoSource);
   WIN32_FIND_DATAA memoData;
   HANDLE memoFind = FindFirstFileA(memo.Text(), &memoData);
@@ -1731,12 +1731,12 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   g_navigationManager.LoadSettings();
 
-  const std::uint8_t replayFolderSource[] = {0x49, 0xAC, 0xB1, 0x83, 0xB0, 0x04, 0x0F};
+  const char replayFolderSource[] = {'\x49', '\xAC', '\xB1', '\x83', '\xB0', '\x04', '\x0F'};
   thread_local EncryptedName<sizeof(replayFolderSource), 0x610F7DD1EFC1C91BULL> replayFolder(replayFolderSource);
   WIN32_FIND_DATAA replayData;
   HANDLE replayFind = FindFirstFileA(replayFolder.Text(), &replayData);
   if (replayFind == INVALID_HANDLE_VALUE) {
-    const std::uint8_t replayDirectorySource[] = {0xEB, 0x48, 0x4D, 0x5F, 0xEC, 0xEA, 0x15};
+    const char replayDirectorySource[] = {'\xEB', '\x48', '\x4D', '\x5F', '\xEC', '\xEA', '\x15'};
     thread_local EncryptedName<sizeof(replayDirectorySource), 0xED15938D333D2DB9ULL> replayDirectory(replayDirectorySource);
     CreateDirectoryA(replayDirectory.Text(), nullptr);
   } else {
@@ -1746,7 +1746,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   WIN32_FIND_DATAA navigationData;
   HANDLE navigationFind = FindFirstFileA("", &navigationData);
   if (replayFind == INVALID_HANDLE_VALUE) {
-    const std::uint8_t navigationDirectorySource[] = {0x0D, 0x58, 0x2D, 0x02, 0x00, 0x4C, 0x05, 0xA0, 0x2C, 0x57, 0x3F, 0x0A, 0x13, 0x4C, 0x71};
+    const char navigationDirectorySource[] = {'\x0D', '\x58', '\x2D', '\x02', '\x00', '\x4C', '\x05', '\xA0', '\x2C', '\x57', '\x3F', '\x0A', '\x13', '\x4C', '\x71'};
     thread_local EncryptedName<sizeof(navigationDirectorySource), 0xC9712D676B5B3943ULL> navigationDirectory(navigationDirectorySource);
     CreateDirectoryA(navigationDirectory.Text(), nullptr);
   } else {
@@ -1815,44 +1815,44 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   CleanupUnhandledExceptionHandler();
 
   if (g_restartClient) {
-    const std::uint8_t devServerSource[] = {0x55, 0x86, 0x25, 0x99};
+    const char devServerSource[] = {'\x55', '\x86', '\x25', '\x99'};
     thread_local EncryptedName<sizeof(devServerSource), 0x4B755DB19953E311ULL> devServer(devServerSource);
     if (!std::strstr(g_launchServerName, devServer.Text())) {
       const char* parameters = LookupMessage(3445);
       const char* file = LookupMessage(3445);
-      const std::uint8_t openSource[] = {0x22, 0xEF, 0x90, 0x69, 0xEB};
+      const char openSource[] = {'\x22', '\xEF', '\x90', '\x69', '\xEB'};
       thread_local EncryptedName<sizeof(openSource), 0xD7A749EB27D5BF6DULL> open(openSource);
       ShellExecuteA(nullptr, open.Text(), file, parameters, nullptr, SW_SHOWNORMAL);
     } else if (g_serviceMode == 0) {
-      const std::uint8_t parametersSource[] = {0xE5, 0xF5, 0x65, 0x83, 0x89, 0x86, 0x46, 0x9C, 0xE9, 0xEC, 0x65, 0x9C, 0xDC, 0xC5, 0x1A, 0xD3,
-                                               0xEA, 0xEF, 0x7B, 0x9C, 0xCA, 0x87, 0x0A, 0x92, 0xE0, 0xAE, 0x76, 0x92, 0xDE, 0xCC, 0x1A, 0x89,
-                                               0xEC, 0xF3, 0x65, 0x96, 0xC1, 0x86, 0x0D, 0x98, 0xFB, 0xF3, 0x7E, 0xDD, 0xD2, 0xDA, 0x19, 0xC2,
-                                               0xCA, 0xE0, 0x7C, 0x96, 0xF0, 0xC6, 0x0D, 0x98, 0xB0, 0xB5, 0x21, 0xC2, 0x82, 0xA9};
+      const char parametersSource[] = {'\xE5', '\xF5', '\x65', '\x83', '\x89', '\x86', '\x46', '\x9C', '\xE9', '\xEC', '\x65', '\x9C', '\xDC', '\xC5', '\x1A', '\xD3',
+                                               '\xEA', '\xEF', '\x7B', '\x9C', '\xCA', '\x87', '\x0A', '\x92', '\xE0', '\xAE', '\x76', '\x92', '\xDE', '\xCC', '\x1A', '\x89',
+                                               '\xEC', '\xF3', '\x65', '\x96', '\xC1', '\x86', '\x0D', '\x98', '\xFB', '\xF3', '\x7E', '\xDD', '\xD2', '\xDA', '\x19', '\xC2',
+                                               '\xCA', '\xE0', '\x7C', '\x96', '\xF0', '\xC6', '\x0D', '\x98', '\xB0', '\xB5', '\x21', '\xC2', '\x82', '\xA9'};
       thread_local EncryptedName<sizeof(parametersSource), 0xFD69A9B3F311818DULL> parameters(parametersSource);
       const char* arguments = parameters.Text();
-      const std::uint8_t fileSource[] = {0x43, 0x6B, 0x9D, 0xDB, 0xFB, 0xD0, 0x02, 0x1E, 0x4F, 0x72, 0x9D, 0xC4, 0xAE, 0x93, 0x5E, 0x51,
-                                         0x4C, 0x71, 0x83, 0xC4, 0xB8, 0xD1, 0x4E, 0x10, 0x46, 0x30, 0x8E, 0xCA, 0xAC, 0x9A, 0x5E, 0x0B,
-                                         0x4A, 0x6D, 0x9D, 0xCE, 0xB3, 0xD0, 0x49, 0x1A, 0x5D, 0x6D, 0x86, 0x85, 0xA0, 0x8C, 0x5D, 0x40,
-                                         0x6C, 0x7E, 0x84, 0xCE, 0x82, 0x90, 0x49, 0x1A, 0x16, 0x2B, 0xD9, 0x9A, 0xF0, 0xFF};
+      const char fileSource[] = {'\x43', '\x6B', '\x9D', '\xDB', '\xFB', '\xD0', '\x02', '\x1E', '\x4F', '\x72', '\x9D', '\xC4', '\xAE', '\x93', '\x5E', '\x51',
+                                         '\x4C', '\x71', '\x83', '\xC4', '\xB8', '\xD1', '\x4E', '\x10', '\x46', '\x30', '\x8E', '\xCA', '\xAC', '\x9A', '\x5E', '\x0B',
+                                         '\x4A', '\x6D', '\x9D', '\xCE', '\xB3', '\xD0', '\x49', '\x1A', '\x5D', '\x6D', '\x86', '\x85', '\xA0', '\x8C', '\x5D', '\x40',
+                                         '\x6C', '\x7E', '\x84', '\xCE', '\x82', '\x90', '\x49', '\x1A', '\x16', '\x2B', '\xD9', '\x9A', '\xF0', '\xFF'};
       thread_local EncryptedName<sizeof(fileSource), 0x7F2DFFC1ABE91F2BULL> file(fileSource);
       const char* target = file.Text();
-      const std::uint8_t openSource[] = {0x74, 0xB7, 0x44, 0x55, 0xC1};
+      const char openSource[] = {'\x74', '\xB7', '\x44', '\x55', '\xC1'};
       thread_local EncryptedName<sizeof(openSource), 0xBD2BA1C11B01E73BULL> open(openSource);
       ShellExecuteA(nullptr, open.Text(), target, arguments, nullptr, SW_SHOWNORMAL);
     } else {
-      const std::uint8_t parametersSource[] = {0x31, 0x79, 0xBF, 0xDF, 0x47, 0x4C, 0xBA, 0xD0, 0x3D, 0x60, 0xBF, 0xC0, 0x12, 0x0F, 0xE6, 0x9F,
-                                               0x3E, 0x63, 0xA1, 0xC0, 0x04, 0x4D, 0xF6, 0xDE, 0x34, 0x22, 0xAC, 0xCE, 0x10, 0x06, 0xE6, 0xC5,
-                                               0x38, 0x7F, 0xBF, 0xCA, 0x0F, 0x4C, 0xF1, 0xD4, 0x2F, 0x7F, 0xA4, 0x81, 0x1C, 0x10, 0xE5, 0x8E,
-                                               0x1E, 0x6C, 0xA6, 0xCA, 0x3E, 0x0C, 0xF1, 0xD4, 0x64, 0x3B, 0xFB, 0x9E, 0x4C, 0x63};
+      const char parametersSource[] = {'\x31', '\x79', '\xBF', '\xDF', '\x47', '\x4C', '\xBA', '\xD0', '\x3D', '\x60', '\xBF', '\xC0', '\x12', '\x0F', '\xE6', '\x9F',
+                                               '\x3E', '\x63', '\xA1', '\xC0', '\x04', '\x4D', '\xF6', '\xDE', '\x34', '\x22', '\xAC', '\xCE', '\x10', '\x06', '\xE6', '\xC5',
+                                               '\x38', '\x7F', '\xBF', '\xCA', '\x0F', '\x4C', '\xF1', '\xD4', '\x2F', '\x7F', '\xA4', '\x81', '\x1C', '\x10', '\xE5', '\x8E',
+                                               '\x1E', '\x6C', '\xA6', '\xCA', '\x3E', '\x0C', '\xF1', '\xD4', '\x64', '\x3B', '\xFB', '\x9E', '\x4C', '\x63'};
       thread_local EncryptedName<sizeof(parametersSource), 0xB195637DAFCB0D59ULL> parameters(parametersSource);
       const char* arguments = parameters.Text();
-      const std::uint8_t fileSource[] = {0x65, 0x17, 0xF9, 0x79, 0x7F, 0x7C, 0xA0, 0xB8, 0x69, 0x0E, 0xF9, 0x66, 0x2A, 0x3F, 0xFC, 0xF7,
-                                         0x6A, 0x0D, 0xE7, 0x66, 0x3C, 0x7D, 0xEC, 0xB6, 0x60, 0x4C, 0xEA, 0x68, 0x28, 0x36, 0xFC, 0xAD,
-                                         0x6C, 0x11, 0xF9, 0x6C, 0x37, 0x7C, 0xEB, 0xBC, 0x7B, 0x11, 0xE2, 0x27, 0x24, 0x20, 0xFF, 0xE6,
-                                         0x4A, 0x02, 0xE0, 0x6C, 0x06, 0x3C, 0xEB, 0xBC, 0x30, 0x55, 0xBD, 0x38, 0x74, 0x53};
+      const char fileSource[] = {'\x65', '\x17', '\xF9', '\x79', '\x7F', '\x7C', '\xA0', '\xB8', '\x69', '\x0E', '\xF9', '\x66', '\x2A', '\x3F', '\xFC', '\xF7',
+                                         '\x6A', '\x0D', '\xE7', '\x66', '\x3C', '\x7D', '\xEC', '\xB6', '\x60', '\x4C', '\xEA', '\x68', '\x28', '\x36', '\xFC', '\xAD',
+                                         '\x6C', '\x11', '\xF9', '\x6C', '\x37', '\x7C', '\xEB', '\xBC', '\x7B', '\x11', '\xE2', '\x27', '\x24', '\x20', '\xFF', '\xE6',
+                                         '\x4A', '\x02', '\xE0', '\x6C', '\x06', '\x3C', '\xEB', '\xBC', '\x30', '\x55', '\xBD', '\x38', '\x74', '\x53'};
       thread_local EncryptedName<sizeof(fileSource), 0xD98F5345098D630DULL> file(fileSource);
       const char* target = file.Text();
-      const std::uint8_t openSource[] = {0xDC, 0x25, 0x9A, 0xA1, 0x4D};
+      const char openSource[] = {'\xDC', '\x25', '\x9A', '\xA1', '\x4D'};
       thread_local EncryptedName<sizeof(openSource), 0x9B0F234DEFDF7593ULL> open(openSource);
       ShellExecuteA(nullptr, open.Text(), target, arguments, nullptr, SW_SHOWNORMAL);
     }
