@@ -34,6 +34,13 @@ struct PACKET_CZ_OPEN_RODEXBOX {
   std::int64_t lastMailId1;
 };
 
+struct PACKET_CZ_REQ_REFRESH_RODEX {
+  std::uint16_t packetType;
+  std::int64_t lastMailId0;
+  std::int64_t lastMailId2;
+  std::int64_t lastMailId1;
+};
+
 struct RodexMailRequestPacket {
   std::uint16_t id;
   std::int64_t mailId;
@@ -878,7 +885,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       if (argument2 == 0x141) {
         for (int i = 0; i < 2; ++i) {
           UIRadioBtn* radio = this->unknown_01C0[i];
-          radio->SendMsg(this, 13, radio == sender, 0, 0, 0);
+          if (radio == sender) {
+            radio->SendMsg(this, 13, 1, 0, 0, 0);
+          } else {
+            radio->SendMsg(this, 13, 0, 0, 0, 0);
+          }
         }
         this->Invalidate();
       } else {
@@ -918,13 +929,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
 
     case 0x13D: {
-      std::size_t count;
       if (this->unknown_01D4 == 1) {
-        count = this->searchResults.size();
-      } else {
-        count = RodexMailsOfType(g_rodexMailStore->unknown_0010)->size();
-      }
-      if (count > static_cast<std::size_t>((this->unknown_019C + 1) * 6)) {
+        if (this->searchResults.size() > static_cast<std::size_t>((this->unknown_019C + 1) * 6)) {
+          this->ClearChecks();
+        }
+      } else if (RodexMailsOfType(g_rodexMailStore->unknown_0010)->size() > static_cast<std::size_t>((this->unknown_019C + 1) * 6)) {
         this->ClearChecks();
       }
       break;
@@ -937,8 +946,8 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         this->checks[i]->m_message = 0;
       }
 
-      PACKET_CZ_OPEN_RODEXBOX packet;
-      packet.packetType = ID_CZ_OPEN_RODEXBOX;
+      PACKET_CZ_REQ_REFRESH_RODEX packet;
+      packet.packetType = ID_CZ_REQ_REFRESH_RODEX;
       packet.lastMailId0 = 0;
       if (g_rodexMailStore->m_mails0.size() > 0) {
         packet.lastMailId0 = g_rodexMailStore->m_mails0.rbegin()->first;
