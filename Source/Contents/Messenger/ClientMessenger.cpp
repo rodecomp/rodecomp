@@ -6264,7 +6264,7 @@ void CGameMode::Zc_Mer_Par_Change(const unsigned char* data) {
 
 // INLINED
 template <std::uint64_t Key, std::size_t Length>
-const char* DecryptName(const std::uint8_t (&source)[Length]) {
+const char* DecryptName(const char (&source)[Length]) {
   thread_local EncryptedName<Length, Key> name(source);
   return name.Text();
 }
@@ -6276,34 +6276,34 @@ HANDLE g_embedFontFiles;
 // FUNCTION: fn_23337
 void CSession::InitClientData() {
   if (!g_itemInfoMgr->Load()) {
-    const std::uint8_t captionSource[] = {0x2A, 0x0F, 0x89, 0x4C, 0x03, 0x07};
+    const char captionSource[] = {'\x2A', '\x0F', '\x89', '\x4C', '\x03', '\x07'};
     const char* caption = DecryptName<0xCD8F077123FB7D6FULL>(captionSource);
-    const std::uint8_t messageSource[] = {0x80, 0x81, 0x3A, 0xE6, 0xC6, 0xBB, 0xDD, 0x4C, 0xE9, 0x93, 0x36, 0xE7, 0xEA, 0xF5, 0xF2, 0x4D, 0xA0, 0x81, 0x5F};
+    const char messageSource[] = {'\x80', '\x81', '\x3A', '\xE6', '\xC6', '\xBB', '\xDD', '\x4C', '\xE9', '\x93', '\x36', '\xE7', '\xEA', '\xF5', '\xF2', '\x4D', '\xA0', '\x81', '\x5F'};
     const char* message = DecryptName<0x23BBD58F8B5FF5C9ULL>(messageSource);
     MessageBoxA(nullptr, message, caption, 0);
   }
 
-  if (!CSpecialPopupMgr::Init()) {
-    const std::uint8_t captionSource[] = {0x72, 0x35, 0xDF, 0x56, 0xCD, 0xE5};
+  if (!g_specialPopupMgr->Init()) {
+    const char captionSource[] = {'\x72', '\x35', '\xDF', '\x56', '\xCD', '\xE5'};
     const char* caption = DecryptName<0x17A9E5BF39AD4737ULL>(captionSource);
-    const std::uint8_t messageSource[] = {0x10, 0x79, 0x16, 0x64, 0x9C, 0xFE, 0x05, 0xC9, 0x0C, 0x79, 0x06, 0x77, 0xF5, 0xD9, 0x20, 0xF5, 0x26, 0x09, 0x1A, 0x49, 0xBC, 0xCB, 0x49};
+    const char messageSource[] = {'\x10', '\x79', '\x16', '\x64', '\x9C', '\xFE', '\x05', '\xC9', '\x0C', '\x79', '\x06', '\x77', '\xF5', '\xD9', '\x20', '\xF5', '\x26', '\x09', '\x1A', '\x49', '\xBC', '\xCB', '\x49'};
     const char* message = DecryptName<0x9949BFD527532943ULL>(messageSource);
     MessageBoxA(nullptr, message, caption, 0);
   }
 
   if (!g_runeSystemMgr->LoadScripts()) {
-    const std::uint8_t captionSource[] = {0x1A, 0x47, 0xDD, 0xFA, 0xEF, 0x89};
+    const char captionSource[] = {'\x1A', '\x47', '\xDD', '\xFA', '\xEF', '\x89'};
     const char* caption = DecryptName<0xCFF3899D95AF355FULL>(captionSource);
-    const std::uint8_t messageSource[] = {0x24, 0xF9, 0xE4, 0xCB, 0xC4, 0x6C, 0x9A, 0x60, 0x13, 0xCE, 0xFC, 0xE8, 0xC6, 0x4D, 0xC3, 0x75, 0x0E, 0xC7, 0xF4, 0x85, 0xE8, 0x51, 0x8A, 0x67, 0x67};
+    const char messageSource[] = {'\x24', '\xF9', '\xE4', '\xCB', '\xC4', '\x6C', '\x9A', '\x60', '\x13', '\xCE', '\xFC', '\xE8', '\xC6', '\x4D', '\xC3', '\x75', '\x0E', '\xC7', '\xF4', '\x85', '\xE8', '\x51', '\x8A', '\x67', '\x67'};
     const char* message = DecryptName<0x13E33FA1A591AB67ULL>(messageSource);
     MessageBoxA(nullptr, message, caption, 0);
   }
 
   static_cast<void>(CTipBoxMgr::Create());
   if (!g_itemTagOwner->RegisterLuaFunctions()) {
-    const std::uint8_t captionSource[] = {0xF2, 0x43, 0x9D, 0xAC, 0x71, 0xDF};
+    const char captionSource[] = {'\xF2', '\x43', '\x9D', '\xAC', '\x71', '\xDF'};
     const char* caption = DecryptName<0x4F99DF03C3EF31B7ULL>(captionSource);
-    const std::uint8_t messageSource[] = {0x71, 0x18, 0xDF, 0x89, 0x62, 0x8B, 0x0D, 0x83, 0x4C, 0x1D, 0xCA, 0xEB, 0x44, 0x9D, 0x44, 0x91, 0x25};
+    const char messageSource[] = {'\x71', '\x18', '\xDF', '\x89', '\x62', '\x8B', '\x0D', '\x83', '\x4C', '\x1D', '\xCA', '\xEB', '\x44', '\x9D', '\x44', '\x91', '\x25'};
     const char* message = DecryptName<0xE52DF30DCBAF7125ULL>(messageSource);
     MessageBoxA(nullptr, message, caption, 0);
   }
