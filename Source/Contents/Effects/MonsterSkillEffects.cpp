@@ -821,8 +821,10 @@ void CEternalSlashAttackEffect::Slot03() {
       continue;
     }
 
-    const vector3d position = {this->position[0] + emitter->offset.x, this->position[1] + emitter->offset.y, this->position[2] + emitter->offset.z};
-    emitter->position = position;
+    const vector3d base = {this->position[0], this->position[1], this->position[2]};
+    emitter->position.x = base.x + emitter->offset.x;
+    emitter->position.y = base.y + emitter->offset.y;
+    emitter->position.z = base.z + emitter->offset.z;
     AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
   }
 }
