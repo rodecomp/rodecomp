@@ -214,7 +214,7 @@ public:
 };
 
 std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes);
-std::vector<char> MakeFramedMessage(std::uint16_t type, const std::vector<char>& body);
+std::vector<unsigned char> MakeFramedMessage(std::uint16_t type, const std::vector<unsigned char>& body);
 std::vector<unsigned char> SerializeItems(const std::list<ITEM_INFO>& items);
 
 extern int g_replayAnimationScaling;

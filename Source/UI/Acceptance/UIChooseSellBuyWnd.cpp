@@ -4809,8 +4809,8 @@ void UISecondPasswordInputWnd::DisableButtons() {
 
 // OFFSET: 0x0090C8C0
 // FUNCTION: fn_12450
-std::vector<char> MakeFramedMessage(std::uint16_t type, const std::vector<char>& body) {
-  std::vector<char> message(body.size() + sizeof(FramedMessageHeader), 0);
+std::vector<unsigned char> MakeFramedMessage(std::uint16_t type, const std::vector<unsigned char>& body) {
+  std::vector<unsigned char> message(body.size() + sizeof(FramedMessageHeader), 0);
   FramedMessageHeader* header = reinterpret_cast<FramedMessageHeader*>(message.data());
   header->type = type;
   header->length = static_cast<std::uint32_t>(body.size());
