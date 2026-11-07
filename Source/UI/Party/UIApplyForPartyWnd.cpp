@@ -90,8 +90,7 @@ void UIApplyForPartyWnd::SetInfo(CAdvenPartyInfo value) {
 // FUNCTION: fn_09303
 void UIApplyForPartyWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp")));
-  this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp"))), false);
   this->DrawTitleBar(true, LookupMessage(3368), 0);
   const auto text = [&](int x, int y, const char* value) { this->DrawTextAt(x, y, value, 0, 0, 12, 0, 0, 0); };
   text(10, 25, LookupMessage(3415));
@@ -105,8 +104,7 @@ void UIApplyForPartyWnd::Paint() {
   text(60, 73, UIPartyInfoWnd::TypeName(this->info.type));
   text(10, 97, LookupMessage(504));
   const auto job = [&](int x, bool selected, const char* selectedImage, const char* unselectedImage) {
-    const auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(selected == 1 ? selectedImage : unselectedImage)));
-    this->DrawBitmap(x, 95, icon ? &icon->image : nullptr, false);
+    this->DrawBitmap(x, 95, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(selected == 1 ? selectedImage : unselectedImage))), false);
   };
   job(60, this->info.tanker, "유저인터페이스\\UIadventurerAgency\\btn_job_def_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_def_off.bmp");
   job(78, this->info.healer, "유저인터페이스\\UIadventurerAgency\\btn_job_heal_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_heal_off.bmp");
