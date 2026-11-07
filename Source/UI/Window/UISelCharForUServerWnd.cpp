@@ -69,10 +69,9 @@ void UISelCharForUServerWnd::Slot15(int, int) {
   this->m_message0 = 184;
 
   for (int index = 0; index < g_session.unknown_0E94; ++index) {
-    UICheckBox* checkBox = new UICheckBox();
-    this->m_checkBoxes[index] = checkBox;
-    checkBox->SetSize(10, 10);
-    checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
+    this->m_checkBoxes[index] = new UICheckBox();
+    this->m_checkBoxes[index]->SetSize(10, 10);
+    static_cast<UICheckBox*>(this->m_checkBoxes[index])->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
     this->m_checkBoxes[index]->Move(-100, -100);
     this->AddChild(this->m_checkBoxes[index]);
   }
