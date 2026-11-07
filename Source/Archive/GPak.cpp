@@ -99,6 +99,7 @@ namespace {
     /* 0000 */ std::uint8_t version;
     /* 0001 */ std::uint8_t unknown_0001[3];
     /* 0004 */ std::uint64_t identifier;
+    /* 000C */ std::uint32_t unknown_000C;
   };
 
 #pragma pack(pop)
@@ -123,7 +124,7 @@ namespace {
   static_assert(sizeof(PakEntryFileV3) == 21);
   static_assert(offsetof(PakEntryFileV3, flags) == 12);
   static_assert(offsetof(PakEntryFileV3, dataOffset) == 13);
-  static_assert(sizeof(PakAuxiliaryFile) == 12);
+  static_assert(sizeof(PakAuxiliaryFile) == 16);
   static_assert(offsetof(PakAuxiliaryFile, identifier) == 4);
 
   // INLINED
@@ -137,10 +138,9 @@ namespace {
   // FUNCTION: fn_05116
   std::uint64_t ReadAuxiliaryIdentifier(const void* data, std::size_t size) {
     if (size != 0) {
-      const auto* bytes = static_cast<const std::uint8_t*>(data);
-      if (bytes[0] <= 1) {
-        PakAuxiliaryFile header;
-        std::memcpy(&header, data, sizeof(header));
+      PakAuxiliaryFile header;
+      std::memcpy(&header, data, sizeof(header));
+      if (header.version <= 1) {
         return header.identifier;
       }
     }
