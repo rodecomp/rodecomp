@@ -126,6 +126,13 @@ public:
     }
   }
 
+  // INLINED
+  explicit EncryptedText(const char (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
   ~EncryptedText() {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = 0;
@@ -153,6 +160,13 @@ const char* DecryptText(const std::uint8_t (&source)[Length]) {
   return text.Text();
 }
 
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptString(const char (&source)[Length]) {
+  thread_local EncryptedText<Length, Key> text(source);
+  return text.Text();
+}
+
 // OFFSET: 0x00ACFCF0
 // FUNCTION: fn_17807
 const char* GetLicenceText() {
@@ -165,9 +179,9 @@ const char* GetLicenceText() {
       text.assign(static_cast<const char*>(file.GetData()), file.GetSize());
       file.Close();
     } else {
-      const std::uint8_t source[] = {0x25, 0x64, 0x85, 0x80, 0xD2, 0x91, 0xEC, 0x9D, 0x1F, 0x6E, 0xDD, 0xB1, 0xA7, 0xBB, 0xC4, 0xD1, 0x0E,
-                                     0x25, 0x85, 0xED, 0xEB, 0xB4, 0xCE, 0xD8, 0x05, 0x68, 0xC0, 0xEB, 0xF3, 0xA5, 0xD9, 0x94, 0x6B};
-      text = DecryptText<0xBDADDD87C5A50B6BULL>(source);
+      const char source[] = {'\x25', '\x64', '\x85', '\x80', '\xD2', '\x91', '\xEC', '\x9D', '\x1F', '\x6E', '\xDD', '\xB1', '\xA7', '\xBB', '\xC4', '\xD1', '\x0E',
+                                     '\x25', '\x85', '\xED', '\xEB', '\xB4', '\xCE', '\xD8', '\x05', '\x68', '\xC0', '\xEB', '\xF3', '\xA5', '\xD9', '\x94', '\x6B'};
+      text = DecryptString<0xBDADDD87C5A50B6BULL>(source);
     }
   }
 
@@ -205,9 +219,9 @@ void InitializeServiceStrings() {
   case 20:
     break;
   default: {
-    const std::uint8_t source[] = {0x5C, 0xC7, 0x2C, 0x31, 0xB6, 0x2A, 0x1B, 0xF3, 0x5A, 0xCC, 0x35, 0x29,
-                                   0xB0, 0x3E, 0x10, 0x87, 0x70, 0xD9, 0x22, 0x7F, 0xF8, 0x7C, 0x54, 0xD3};
-    ShowErrorDialog(DecryptText<0xD3755DD95F47A909ULL>(source), 0);
+    const char source[] = {'\x5C', '\xC7', '\x2C', '\x31', '\xB6', '\x2A', '\x1B', '\xF3', '\x5A', '\xCC', '\x35', '\x29',
+                                   '\xB0', '\x3E', '\x10', '\x87', '\x70', '\xD9', '\x22', '\x7F', '\xF8', '\x7C', '\x54', '\xD3'};
+    ShowErrorDialog(DecryptString<0xD3755DD95F47A909ULL>(source), 0);
     break;
   }
   }
@@ -233,9 +247,9 @@ void InitializeServiceStrings() {
   g_startupSecondPhase = static_cast<unsigned char>(time.wSecond) & 3;
 
   {
-    const std::uint8_t source[] = {0xD6, 0x0E, 0xED, 0x63, 0x08, 0x00, 0xD7, 0xCA, 0xD9, 0x26, 0xF9, 0x76, 0x09, 0x08, 0xD1, 0xD6,
-                                   0xA5, 0x32, 0xE4, 0x71, 0x0B, 0x3D, 0xF7, 0xCE, 0xE2, 0x0F, 0xEA, 0x65, 0x10, 0x0A, 0xA5};
-    g_subKey = DecryptText<0xAFA5617F178B6185ULL>(source);
+    const char source[] = {'\xD6', '\x0E', '\xED', '\x63', '\x08', '\x00', '\xD7', '\xCA', '\xD9', '\x26', '\xF9', '\x76', '\x09', '\x08', '\xD1', '\xD6',
+                                   '\xA5', '\x32', '\xE4', '\x71', '\x0B', '\x3D', '\xF7', '\xCE', '\xE2', '\x0F', '\xEA', '\x65', '\x10', '\x0A', '\xA5'};
+    g_subKey = DecryptString<0xAFA5617F178B6185ULL>(source);
   }
 
   {
@@ -249,9 +263,9 @@ void InitializeServiceStrings() {
     g_clientExeName = DecryptText<0xC399B7091589B50BULL>(client);
     const std::uint8_t patcher[] = {0x50, 0x03, 0xAB, 0x90, 0x32, 0x73, 0xB4, 0x0F, 0x37, 0x08, 0xB7, 0x9A, 0x5D};
     g_patcherExeName = DecryptText<0x7FC1015DFFCF6D19ULL>(patcher);
-    const std::uint8_t message[] = {0x69, 0x8D, 0xCC, 0x8E, 0x92, 0xC2, 0x73, 0x75, 0x4C, 0x8F, 0x89, 0xBD, 0x80,
-                                    0xC0, 0x1A, 0x69, 0x5D, 0x8E, 0xC6, 0x9D, 0xCF, 0xC2, 0x2B, 0x62, 0x39};
-    g_runPatcherMessage = DecryptText<0x0753A7E1EFA9E139ULL>(message);
+    const char message[] = {'\x69', '\x8D', '\xCC', '\x8E', '\x92', '\xC2', '\x73', '\x75', '\x4C', '\x8F', '\x89', '\xBD', '\x80',
+                                    '\xC0', '\x1A', '\x69', '\x5D', '\x8E', '\xC6', '\x9D', '\xCF', '\xC2', '\x2B', '\x62', '\x39'};
+    g_runPatcherMessage = DecryptString<0x0753A7E1EFA9E139ULL>(message);
     break;
   }
   case 3: {
@@ -259,9 +273,9 @@ void InitializeServiceStrings() {
     g_clientExeName = DecryptText<0x7FCD77F9C7CBD14DULL>(client);
     const std::uint8_t patcher[] = {0x64, 0xF6, 0xB2, 0xEF, 0x25, 0xC8, 0x4F, 0xE5, 0x46, 0xFB, 0xBE, 0x83};
     g_patcherExeName = DecryptText<0xCB3FBD4183DB8323ULL>(patcher);
-    const std::uint8_t message[] = {0xBF, 0x4F, 0xB0, 0x8E, 0x6A, 0x34, 0xB1, 0x49, 0x9A, 0x4D, 0xF5, 0xBD,
-                                    0x78, 0x36, 0xD6, 0x4E, 0x86, 0x4F, 0xB1, 0xC1, 0x7C, 0x29, 0xF4, 0x3B};
-    g_runPatcherMessage = DecryptText<0x3B915119EFD523EFULL>(message);
+    const char message[] = {'\xBF', '\x4F', '\xB0', '\x8E', '\x6A', '\x34', '\xB1', '\x49', '\x9A', '\x4D', '\xF5', '\xBD',
+                                    '\x78', '\x36', '\xD6', '\x4E', '\x86', '\x4F', '\xB1', '\xC1', '\x7C', '\x29', '\xF4', '\x3B'};
+    g_runPatcherMessage = DecryptString<0x3B915119EFD523EFULL>(message);
     break;
   }
   default: {
@@ -271,17 +285,17 @@ void InitializeServiceStrings() {
       g_clientExeName = DecryptText<0x33832D4D3FDFBDBFULL>(client);
       const std::uint8_t patcher[] = {0xA1, 0xA2, 0x9D, 0xDE, 0xC5, 0x78, 0x05, 0x2C, 0xBC, 0xED, 0x8C, 0xC5, 0xC8, 0x0D};
       g_patcherExeName = DecryptText<0x7D750DADBDE9C3F1ULL>(patcher);
-      const std::uint8_t message[] = {0x45, 0xFF, 0xD6, 0xA0, 0x94, 0x26, 0x71, 0x9F, 0x60, 0xFD, 0x93, 0x93, 0x86,
-                                      0x24, 0x3F, 0x8C, 0x67, 0xFC, 0xD8, 0x90, 0xAA, 0x6D, 0x34, 0x95, 0x70, 0x93};
-      g_runPatcherMessage = DecryptText<0xED5143E7C1B39315ULL>(message);
+      const char message[] = {'\x45', '\xFF', '\xD6', '\xA0', '\x94', '\x26', '\x71', '\x9F', '\x60', '\xFD', '\x93', '\x93', '\x86',
+                                      '\x24', '\x3F', '\x8C', '\x67', '\xFC', '\xD8', '\x90', '\xAA', '\x6D', '\x34', '\x95', '\x70', '\x93'};
+      g_runPatcherMessage = DecryptString<0xED5143E7C1B39315ULL>(message);
     } else {
       const std::uint8_t client[] = {0x8B, 0x58, 0x74, 0x17, 0xAA, 0xF1, 0x12, 0x94, 0xF7, 0x5C, 0x6B, 0x1C, 0xCB};
       g_clientExeName = DecryptText<0xFF7D83CB791339D9ULL>(client);
       const std::uint8_t patcher[] = {0xC5, 0x9C, 0x65, 0xD0, 0x39, 0x10, 0xE5, 0x1F, 0xF0, 0x85, 0x74, 0xB3};
       g_patcherExeName = DecryptText<0x31956551B311FD95ULL>(patcher);
-      const std::uint8_t message[] = {0xC1, 0xAF, 0xD8, 0x00, 0x16, 0xF4, 0x1D, 0x4B, 0xE4, 0xAD, 0x9D, 0x33,
-                                      0x04, 0xF6, 0x53, 0x58, 0xE3, 0xAC, 0xD6, 0x4F, 0x00, 0xE9, 0x58, 0x39};
-      g_runPatcherMessage = DecryptText<0x393D916561BDC391ULL>(message);
+      const char message[] = {'\xC1', '\xAF', '\xD8', '\x00', '\x16', '\xF4', '\x1D', '\x4B', '\xE4', '\xAD', '\x9D', '\x33',
+                                      '\x04', '\xF6', '\x53', '\x58', '\xE3', '\xAC', '\xD6', '\x4F', '\x00', '\xE9', '\x58', '\x39'};
+      g_runPatcherMessage = DecryptString<0x393D916561BDC391ULL>(message);
     }
     break;
   }
@@ -620,8 +634,8 @@ void ReadClientInfo(XmlNode* clientInfo) {
       g_serviceType = 20;
     } else {
       ShowErrorDialog(
-                      DecryptText<0x8F1B5BFD5F6175B5ULL>({0xE6, 0x10, 0x13, 0x29, 0x94, 0x38, 0x7E, 0xDB, 0xCC, 0x05, 0x04,
-                                                          0x7F, 0xB8, 0x29, 0x69, 0xE0, 0xC7, 0x55, 0x40, 0x7E, 0xFD}),
+                      DecryptString<0x8F1B5BFD5F6175B5ULL>({'\xE6', '\x10', '\x13', '\x29', '\x94', '\x38', '\x7E', '\xDB', '\xCC', '\x05', '\x04',
+                                                          '\x7F', '\xB8', '\x29', '\x69', '\xE0', '\xC7', '\x55', '\x40', '\x7E', '\xFD'}),
                       0);
     }
   } else if (!g_clientInfoLoaded) {
@@ -644,13 +658,13 @@ void ReadClientInfo(XmlNode* clientInfo) {
       g_serviceMode = 5;
     } else {
       ShowErrorDialog(
-                      DecryptText<0x2FF3C5036D070127ULL>({0x74, 0x64, 0x75, 0x1B, 0x66, 0xB7, 0xA7, 0x56, 0x57, 0x64,
-                                                          0x27, 0x28, 0x71, 0xB7, 0x9C, 0x5D, 0x07, 0x20, 0x26, 0x6D}),
+                      DecryptString<0x2FF3C5036D070127ULL>({'\x74', '\x64', '\x75', '\x1B', '\x66', '\xB7', '\xA7', '\x56', '\x57', '\x64',
+                                                          '\x27', '\x28', '\x71', '\xB7', '\x9C', '\x5D', '\x07', '\x20', '\x26', '\x6D'}),
                       0);
     }
   } else if (!g_clientInfoLoaded) {
     ShowErrorDialog(
-        DecryptText<0x93E7A3A1F587CDC5ULL>({0x8B, 0xA2, 0xA7, 0xA6, 0xC4, 0xD1, 0x91, 0xF6, 0xB7, 0x99, 0xFE, 0x85, 0xC4, 0x83, 0xC6, 0xB2, 0xC5}),
+        DecryptString<0x93E7A3A1F587CDC5ULL>({'\x8B', '\xA2', '\xA7', '\xA6', '\xC4', '\xD1', '\x91', '\xF6', '\xB7', '\x99', '\xFE', '\x85', '\xC4', '\x83', '\xC6', '\xB2', '\xC5'}),
         0);
   }
 
