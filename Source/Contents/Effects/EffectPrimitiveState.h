@@ -56,7 +56,6 @@ struct EffectPrimitiveSlot {
 struct EffectPrimitiveState {
   explicit EffectPrimitiveState(RenderObjectState& render);
   ~EffectPrimitiveState();
-  void Initialize(RenderObjectState& render, CRagEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z);
   void ProcessAlpha();
   void GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue);
 

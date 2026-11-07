@@ -250,6 +250,8 @@ struct CEffectPrim : CRenderObject {
   void RenderGroundSprite(matrix& wtm);
   void RenderSegmentSpriteTrail(matrix& wtm);
 
+  void Initialize(CRagEffect& master, int type, float x, float y, float z);
+
   /* 0138 */ EffectPrimitiveState state;
 };
 

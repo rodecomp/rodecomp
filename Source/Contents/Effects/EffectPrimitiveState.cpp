@@ -1,4 +1,5 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
+#include "Contents/Effects/EffectPrim.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Actors/RenderObjectState.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -65,18 +66,15 @@ void __stdcall Get_Angle(float x, float y, std::int16_t* angle) {
 
 // OFFSET: 0x00BAE5D0
 // FUNCTION: fn_19767
-void EffectPrimitiveState::Initialize(
-  RenderObjectState& render, CRagEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z
-) {
-  const float first = x + this->deltaPos.x;
-  this->master = &master;
-  this->count = type;
-  this->deltaPos.x = first;
-  this->deltaPos.y = y + this->deltaPos.y;
-  this->deltaPos.z = z + this->deltaPos.z;
-  this->orgPos = {masterRender.position.x, masterRender.position.y, masterRender.position.z};
-  render.position.x = this->orgPos.x;
-  render.position.y = this->orgPos.y;
-  render.position.z = this->orgPos.z;
-  this->isChangeProcessed = 0;
+void CEffectPrim::Initialize(CRagEffect& master, int type, float x, float y, float z) {
+  this->state.master = &master;
+  this->state.count = type;
+  this->state.deltaPos.x = x + this->state.deltaPos.x;
+  this->state.deltaPos.y = y + this->state.deltaPos.y;
+  this->state.deltaPos.z = z + this->state.deltaPos.z;
+  this->state.orgPos = {master.render.position.x, master.render.position.y, master.render.position.z};
+  this->render.position.x = this->state.orgPos.x;
+  this->render.position.y = this->state.orgPos.y;
+  this->render.position.z = this->state.orgPos.z;
+  this->state.isChangeProcessed = 0;
 }

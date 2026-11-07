@@ -153,8 +153,11 @@ CEffectPrim* CreateEffectParticle(
   std::list<CRenderObject*>& worldObjects
 ) {
   auto* particle = new CEffectPrim();
+  if (!particle) {
+    return nullptr;
+  }
 
-  particle->state.Initialize(particle->render, master, masterRender, type, x, y, z);
+  particle->Initialize(master, type, x, y, z);
   master.state.primList.push_back(&particle->state);
   worldObjects.push_back(particle);
 
