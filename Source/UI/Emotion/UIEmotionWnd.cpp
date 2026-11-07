@@ -2,6 +2,7 @@
 
 #include "Client/Session.h"
 #include "Contents/CashEmotionMgr.h"
+#include "UI/CashEmotion/UICashEmotionListWnd.h"
 #include "Contents/Hotkeys/EmotionHotkeys.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/MessageTable.h"
@@ -121,7 +122,7 @@ int UIEmotionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       g_windowMgr.CloseWindow(0x56);
       break;
     case 283:
-      if (g_cashEmotionListWnd == nullptr) {
+      if (static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384) == nullptr) {
         g_windowMgr.EnsureWindow(0x57);
       } else {
         g_windowMgr.CloseWindow(0x57);

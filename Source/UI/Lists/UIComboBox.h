@@ -22,6 +22,5 @@ public:
   /* 00D4 */ int targetId;
 };
 
-extern int g_closeChatAfterGroups;
 
 #endif

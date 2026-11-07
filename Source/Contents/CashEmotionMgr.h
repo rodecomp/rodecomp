@@ -222,7 +222,6 @@ protected:
 
 extern CCashEmotionMgr* g_cashEmotionMgr;
 class UICashEmotionListWnd;
-extern UICashEmotionListWnd* g_cashEmotionListWnd;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CashEmotionData, name) == 0x08);

@@ -421,7 +421,7 @@ bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
     suggestions->ToggleInput();
   }
 
-  UICashEmotionListWnd* listWnd = g_cashEmotionListWnd;
+  UICashEmotionListWnd* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384);
   if (!listWnd) {
     listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.EnsureWindow(87));
   }
@@ -1229,7 +1229,7 @@ bool CCashEmotionMgr::IsOwnedPack(int packId) {
 // OFFSET: 0x0059C5A0
 // FUNCTION: fn_02977
 bool CCashEmotionMgr::RemoveExpiredPacks() {
-  auto* listWnd = g_cashEmotionListWnd;
+  auto* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384);
   bool expired = false;
   const __time32_t now = _time32(nullptr) - this->unknown_01D0 - this->unknown_01CC;
 
@@ -1272,7 +1272,7 @@ void CCashEmotionMgr::RemoveOwnedPack(int packId, bool refresh, bool clearExpiry
   }
 
   if (refresh) {
-    if (auto* listWnd = g_cashEmotionListWnd) {
+    if (auto* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384)) {
       listWnd->RefreshPackLists();
     }
   }
@@ -1403,7 +1403,7 @@ void CCashEmotionMgr::AcquirePack(int packId, unsigned int expiry) {
   this->SetOwnedPack(packId, expiry);
   this->unknown_01C4 = -1;
 
-  UICashEmotionListWnd* listWnd = g_cashEmotionListWnd;
+  UICashEmotionListWnd* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384);
   if (listWnd) {
     listWnd->ResetLists();
     listWnd->RefreshSelection();
@@ -1414,7 +1414,7 @@ void CCashEmotionMgr::AcquirePack(int packId, unsigned int expiry) {
 // OFFSET: 0x0059D2C0
 // FUNCTION: fn_02986
 bool CCashEmotionMgr::UpdatePurchasedPackExpiry() {
-  auto* listWnd = g_cashEmotionListWnd;
+  auto* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384);
   if (!listWnd) {
     return false;
   }

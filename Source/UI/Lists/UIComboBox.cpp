@@ -5,9 +5,6 @@
 
 #include <algorithm>
 
-// GLOBAL: gl_24685
-int g_closeChatAfterGroups = 0x039E2580;
-
 // OFFSET: 0x00897C20
 // FUNCTION: fn_11543
 int UIComboBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {

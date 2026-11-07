@@ -3292,7 +3292,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     const bool closed65 = g_windowMgr.CloseWindow(65);
     const bool closed66 = g_windowMgr.CloseWindow(66);
     closed = closed60 || closed61 || closed62 || closed63 || closed64 || closed65 || closed66;
-    if (g_closeChatAfterGroups) {
+    if (g_windowMgr.unknown_0214) {
       g_windowMgr.CloseWindow(26);
     }
     break;

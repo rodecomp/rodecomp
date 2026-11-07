@@ -2729,7 +2729,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
       break;
     case 0xBF: {
-      if (g_closeChatAfterGroups != 0) {
+      if (g_windowMgr.unknown_0214 != 0) {
         g_windowMgr.CloseWindow(0x1A);
       }
       this->ClearRouteTexts();
