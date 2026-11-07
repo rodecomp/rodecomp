@@ -8,15 +8,12 @@
 
 // OFFSET: 0x0054E590
 // FUNCTION: fn_01953
-void DrawBlendedRectangle(
-  RenderPrimitivePool& primitives, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha,
-  float depthStart, float depthEnd
-) {
+void DrawBlendedRectangle(int x, int y, int width, int height, std::uint32_t color) {
   if ((color & 0xFF000000u) == 0) {
     return;
   }
 
-  RenderPrimitive* primitive = primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   primitive->texture = g_texMgr.Default();
   const float left = static_cast<float>(x);
   const float top = static_cast<float>(y);
@@ -39,7 +36,7 @@ void DrawBlendedRectangle(
   }
   primitive->unknown_0018 = 5;
   primitive->unknown_001C = 6;
-  queues.Submit(primitive, 517, depthAlpha, depthStart, depthEnd);
+  g_renderer->queues.Submit(primitive, 517, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }
 
 // OFFSET: 0x0054ED40
