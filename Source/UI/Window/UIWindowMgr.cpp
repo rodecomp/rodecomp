@@ -1314,7 +1314,11 @@ __declspec(noinline) void UIWindowMgr::ShowWindows189(unsigned char show) {
     }
 
     if (show == 1) {
-      (*it)->Show(g_serviceOptions.Get(250) ? 1 : 0);
+      if (g_serviceOptions.Get(250)) {
+        (*it)->Show(1);
+      } else {
+        (*it)->Show(0);
+      }
     } else {
       (*it)->Show(0);
     }
@@ -2054,13 +2058,13 @@ int UIWindowMgr::TranslateHotkey(int key, int keyData) {
   this->modifierKey = 0;
 
   int& primary = this->keyCode;
-  if (static_cast<char>(GetAsyncKeyState(VK_MENU) >> 8) && primary != VK_MENU) {
+  if (HIBYTE(GetAsyncKeyState(VK_MENU)) && primary != VK_MENU) {
     this->modifierKey = VK_MENU;
-  } else if (static_cast<char>(GetAsyncKeyState(VK_SHIFT) >> 8) && primary != VK_SHIFT) {
+  } else if (HIBYTE(GetAsyncKeyState(VK_SHIFT)) && primary != VK_SHIFT) {
     this->modifierKey = VK_SHIFT;
-  } else if (static_cast<char>(GetAsyncKeyState(VK_CONTROL) >> 8) && primary != VK_CONTROL) {
+  } else if (HIBYTE(GetAsyncKeyState(VK_CONTROL)) && primary != VK_CONTROL) {
     this->modifierKey = VK_CONTROL;
-  } else if (static_cast<char>(GetAsyncKeyState(VK_TAB) >> 8) && primary != VK_TAB) {
+  } else if (HIBYTE(GetAsyncKeyState(VK_TAB)) && primary != VK_TAB) {
     this->modifierKey = VK_TAB;
   }
 
@@ -2369,7 +2373,9 @@ void UIWindowMgr::DrawLoginOverlay() {
         this->unknown_04B0 = 4;
       }
     }
-  } else if (g_mouse.buttons[0] == 2 && !this->inputWindow) {
+  }
+
+  if (g_mouse.buttons[0] == 2 && !this->inputWindow) {
     if (this->unknown_04B0 == 1) {
       this->unknown_049C += static_cast<short>(g_mouse.deltaX);
       this->unknown_049E += static_cast<short>(g_mouse.deltaY);
@@ -2387,7 +2393,11 @@ void UIWindowMgr::DrawLoginOverlay() {
         this->unknown_04A4.x += static_cast<short>(g_mouse.deltaY);
       }
     } else if (this->unknown_04B0 == 5) {
-      if (g_serviceType != 0 || this->unknown_04A0.x + g_mouse.deltaX >= 0) {
+      if (g_serviceType == 0) {
+        if (this->unknown_04A0.x + g_mouse.deltaX >= 0) {
+          this->unknown_04A0.x += static_cast<short>(g_mouse.deltaX);
+        }
+      } else {
         this->unknown_04A0.x += static_cast<short>(g_mouse.deltaX);
       }
     }
@@ -2400,15 +2410,14 @@ void UIWindowMgr::DrawLoginOverlay() {
   }
 
   const int step = quarter;
-  const float rows = static_cast<float>(third);
   char tape = 0;
   for (int x = 0; x < step * 4;) {
     ++tape;
     rect.left = x;
     x += step;
     rect.right = x;
-    rect.bottom = static_cast<int>(this->unknown_04A4.x + rows * 3.0f);
-    rect.top = static_cast<int>(this->unknown_04A4.x + rows * 2.5f);
+    rect.bottom = static_cast<int>(this->unknown_04A4.x + static_cast<float>(third) * 3.0f);
+    rect.top = static_cast<int>(this->unknown_04A4.x + static_cast<float>(third) * 2.5f);
     this->unknown_04A4.y = static_cast<short>(rect.top);
     std::sprintf(name, "유저인터페이스\\\0_테입%d.tga", tape);
     g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load(name, 0, false, true, false), region);
@@ -2422,16 +2431,16 @@ void UIWindowMgr::DrawLoginOverlay() {
 
   rect.left = static_cast<int>(this->unknown_04A8.x + static_cast<float>(step) * 3.1f);
   rect.right = step + rect.left;
-  rect.top = static_cast<int>(this->unknown_04A8.y + rows * 2.4f);
-  const float half = rows * 0.5f;
+  rect.top = static_cast<int>(this->unknown_04A8.y + static_cast<float>(third) * 2.4f);
+  const float half = static_cast<float>(third) * 0.5f;
   rect.bottom = static_cast<int>(static_cast<float>(rect.top) + half);
   g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load("유저인터페이스\\\0_중력성인.tga", 0, false, true, false), region);
 
   char row = -2;
   for (int column = this->unknown_049C; column < this->unknown_049C + step * 2; column += step) {
     ++row;
-    int y = static_cast<int>(this->unknown_049E + rows * 0.1f);
-    if (this->unknown_049E + (rows + rows) > static_cast<float>(y)) {
+    int y = static_cast<int>(this->unknown_049E + static_cast<float>(third) * 0.1f);
+    if (this->unknown_049E + (static_cast<float>(third) + static_cast<float>(third)) > static_cast<float>(y)) {
       const int left = static_cast<int>(static_cast<float>(step) * 0.05f + column);
       char index = row;
       do {
@@ -2448,7 +2457,7 @@ void UIWindowMgr::DrawLoginOverlay() {
         }
         std::sprintf(name, "유저인터페이스\\\0_R%d.tga", index);
         g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load(name, 0, false, true, false), region);
-      } while (this->unknown_049E + (rows + rows) > static_cast<float>(y));
+      } while (this->unknown_049E + (static_cast<float>(third) + static_cast<float>(third)) > static_cast<float>(y));
     }
   }
 }
@@ -2512,7 +2521,8 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     }
 
     const int id = this->windowHistory.begin() != this->windowHistory.end() ? *this->windowHistory.begin() : -1;
-    if (g_replayAnimationScaling != 0 && (static_cast<unsigned int>(id) > 10040 || this->policy[id].actions[3] == 0)) {
+    const int replaying = g_replayAnimationScaling;
+    if (replaying != 0 && (static_cast<unsigned int>(id) > 10040 || this->policy[id].actions[3] == 0)) {
       return false;
     }
 
@@ -2529,7 +2539,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       case 161:
       case 174:
       case 178:
-        if (g_replayAnimationScaling != 0) {
+        if (replaying != 0) {
           return false;
         }
         window->SendMsg(nullptr, 6, 185, 0, 0, 0);
@@ -2618,22 +2628,22 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       }
     }
 
-    if (!this->hoverWindow) {
-      this->RestoreInput();
+    if (this->hoverWindow) {
+      if (GetAsyncKeyState(VK_SHIFT)) {
+        if (this->hoverWindow && this->hoverWindow->parent->PreviousFocusable(this->hoverWindow) == nullptr) {
+          this->FocusLast();
+        } else {
+          this->FocusPrevious();
+        }
+      } else if (this->hoverWindow && this->hoverWindow->parent->NextFocusable(this->hoverWindow) == nullptr) {
+        this->FocusFirst();
+      } else {
+        this->FocusNext();
+      }
       return false;
     }
 
-    if (GetAsyncKeyState(VK_SHIFT)) {
-      if (this->hoverWindow && this->hoverWindow->parent->PreviousFocusable(this->hoverWindow) == nullptr) {
-        this->FocusLast();
-      } else {
-        this->FocusPrevious();
-      }
-    } else if (this->hoverWindow && this->hoverWindow->parent->NextFocusable(this->hoverWindow) == nullptr) {
-      this->FocusFirst();
-    } else {
-      this->FocusNext();
-    }
+    this->RestoreInput();
     return false;
 
   case 13:
