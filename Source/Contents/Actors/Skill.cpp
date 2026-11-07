@@ -513,6 +513,9 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
 
     const vector3d& position = this->render.position;
     switch (this->GetEffectiveJob(-1)) {
+    case 0x8D:
+      this->render.unknown_00A4Bytes[1] = 1;
+      return;
     case 0x7F:
     case 0xED: {
       const vector3d& player = mode->scene->player->render.position;
@@ -520,10 +523,86 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       this->render.unknown_00A4Bytes[1] = 0;
       return;
     }
-    case 0x85:
-      g_effectMgr->Spawn(this->render.accountId, 0x8D, position.x, position.y, position.z, 0, -1, 0, 0);
+    case 0xBC:
+    case 0xDC:
+    case 0xDD:
+    case 0xEB:
+      this->render.unknown_00A4Bytes[1] = 0;
+      return;
+    case 0xBE:
+      this->m_effectId = 0x6B;
+      this->render.unknown_00A4Bytes[1] = 0;
+      return;
+    case 0xE6:
+      this->m_effectId = 0x6A;
+      this->render.unknown_00A4Bytes[1] = 1;
+      return;
+    case 0xE4:
+      this->m_effectId = 0x6A;
+      this->render.unknown_00A4Bytes[1] = 0;
+      return;
+    case 0xBF:
+    case 0xC2:
+    case 0x108:
+      this->m_effectId = 0x63;
+      this->render.unknown_00A4Bytes[1] = 0;
+      return;
+    case 0xC0:
+      this->m_effectId = 0x8B;
+      this->render.unknown_00A4Bytes[1] = 0;
+      return;
+    case 0xD2:
+    case 0xD3:
+    case 0xD4:
+    case 0xD5:
+      this->m_effectId = 0x8B;
+      this->render.unknown_00A4Bytes[1] = 0;
+      this->ShowModel(this->GetTrapModelName());
+      return;
+    case 0xD8:
+      this->m_effectId = 0x6B;
+      this->render.unknown_00A4Bytes[1] = 0;
+      this->ShowModel(this->GetTrapModelName());
+      if (!this->HasId(0x91)) {
+        this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+      return;
+    case 0xD6:
+    case 0xD9:
+      this->m_effectId = 0x6B;
+      this->render.unknown_00A4Bytes[1] = 0;
+      this->ShowModel(this->GetTrapModelName());
+      return;
+    case 0xD7:
+      this->m_effectId = 0x6C;
+      this->render.unknown_00A4Bytes[1] = 0;
+      this->ShowModel(this->GetTrapModelName());
+      return;
+    case 0xC1:
+      this->m_effectId = 0x6C;
+      this->render.unknown_00A4Bytes[1] = 0;
+      return;
+    case 0xBD:
+      if (rand() % 8 == 0) {
+        const vector3d& player = mode->scene->player->render.position;
+        g_soundMgr->PlayWave("effect\\화염진.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
+      }
+      this->render.unknown_00A4Bytes[1] = 0;
       return;
     case 0x8A:
+      this->render.unknown_00A4Bytes[1] = 1;
+      this->ShowModel(this->GetTrapModelName());
+      return;
+    case 0x8F:
+      this->render.unknown_00A4Bytes[1] = 1;
+      this->m_effectId = 0x6A;
+      this->ShowModel(this->GetTrapModelName());
+      return;
+    case 0xDA:
+    case 0xDE:
+      this->render.unknown_00A4Bytes[1] = 1;
+      this->m_effectId = 0x1D0;
+      return;
     case 0x90:
     case 0x91:
     case 0x93:
@@ -531,21 +610,6 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     case 0xE5:
       this->render.unknown_00A4Bytes[1] = 1;
       this->ShowModel(this->GetTrapModelName());
-      return;
-    case 0x8D:
-      this->render.unknown_00A4Bytes[1] = 1;
-      return;
-    case 0x8F:
-      this->render.unknown_00A4Bytes[1] = 1;
-      this->m_effectId = 0x6A;
-      this->ShowModel(this->GetTrapModelName());
-      return;
-    case 0x94:
-      this->render.unknown_00A4Bytes[1] = 1;
-      this->ShowModel(this->GetTrapModelName());
-      if (this->render.enabled && !this->HasId(0x91)) {
-        this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      }
       return;
     case 0x95:
       this->render.unknown_00A4Bytes[1] = 1;
@@ -567,36 +631,12 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       this->m_effectId = 0x6B;
       this->ShowModel(this->GetTrapModelName());
       return;
-    case 0xBC:
-    case 0xDC:
-    case 0xDD:
-    case 0xEB:
-      this->render.unknown_00A4Bytes[1] = 0;
-      return;
-    case 0xBD:
-      if (rand() % 8 == 0) {
-        const vector3d& player = mode->scene->player->render.position;
-        g_soundMgr->PlayWave("effect\\화염진.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
+    case 0x94:
+      this->render.unknown_00A4Bytes[1] = 1;
+      this->ShowModel(this->GetTrapModelName());
+      if (this->render.enabled && !this->HasId(0x91)) {
+        this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
-      this->render.unknown_00A4Bytes[1] = 0;
-      return;
-    case 0xBE:
-      this->m_effectId = 0x6B;
-      this->render.unknown_00A4Bytes[1] = 0;
-      return;
-    case 0xBF:
-    case 0xC2:
-    case 0x108:
-      this->m_effectId = 0x63;
-      this->render.unknown_00A4Bytes[1] = 0;
-      return;
-    case 0xC0:
-      this->m_effectId = 0x8B;
-      this->render.unknown_00A4Bytes[1] = 0;
-      return;
-    case 0xC1:
-      this->m_effectId = 0x6C;
-      this->render.unknown_00A4Bytes[1] = 0;
       return;
     case 0xD1: {
       CPc* source;
@@ -613,58 +653,21 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       }
       return;
     }
-    case 0xD2:
-    case 0xD3:
-    case 0xD4:
-    case 0xD5:
-      this->m_effectId = 0x8B;
-      this->render.unknown_00A4Bytes[1] = 0;
-      this->ShowModel(this->GetTrapModelName());
-      return;
-    case 0xD6:
-    case 0xD9:
-      this->m_effectId = 0x6B;
-      this->render.unknown_00A4Bytes[1] = 0;
-      this->ShowModel(this->GetTrapModelName());
-      return;
-    case 0xD7:
-      this->m_effectId = 0x6C;
-      this->render.unknown_00A4Bytes[1] = 0;
-      this->ShowModel(this->GetTrapModelName());
-      return;
-    case 0xD8:
-      this->m_effectId = 0x6B;
-      this->render.unknown_00A4Bytes[1] = 0;
-      this->ShowModel(this->GetTrapModelName());
-      if (!this->HasId(0x91)) {
-        this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      }
-      return;
-    case 0xDA:
-    case 0xDE:
-      this->render.unknown_00A4Bytes[1] = 1;
-      this->m_effectId = 0x1D0;
-      return;
-    case 0xE4:
-      this->m_effectId = 0x6A;
-      this->render.unknown_00A4Bytes[1] = 0;
-      return;
-    case 0xE6:
-      this->m_effectId = 0x6A;
-      this->render.unknown_00A4Bytes[1] = 1;
-      return;
-    case 0x101: {
-      const vector3d& player = mode->scene->player->render.position;
-      g_soundMgr->PlayWave("effect\\NC_MAGMA_ERUPTION.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
-      this->render.unknown_00A4Bytes[1] = 0;
-      return;
-    }
     case 0x102: {
       const vector3d& player = mode->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\lg_kings_grace.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       this->render.unknown_00A4Bytes[1] = 0;
       return;
     }
+    case 0x101: {
+      const vector3d& player = mode->scene->player->render.position;
+      g_soundMgr->PlayWave("effect\\NC_MAGMA_ERUPTION.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
+      this->render.unknown_00A4Bytes[1] = 0;
+      return;
+    }
+    case 0x85:
+      g_effectMgr->Spawn(this->render.accountId, 0x8D, position.x, position.y, position.z, 0, -1, 0, 0);
+      return;
     case 0x104:
       switch (unit->level) {
       case 1:
@@ -695,18 +698,6 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       g_soundMgr->PlayWave("effect\\g카트토네이도.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       return;
     }
-    case 0x10A:
-      if (!g_effectMgr->Has(this->render.accountId, 0x6D8)) {
-        g_effectMgr->Retire(this->render.accountId, 0x6D8);
-      }
-      g_effectMgr->Spawn(this->render.accountId, 0x6D8, position.x, position.y, position.z, 0, unit->level, 0, 0);
-      return;
-    case 0x10B:
-      if (!g_effectMgr->Has(this->render.accountId, 0x6EC)) {
-        g_effectMgr->Retire(this->render.accountId, 0x6EC);
-      }
-      g_effectMgr->Spawn(this->render.accountId, 0x6EC, position.x, position.y, position.z, 0, unit->level, 0, 0);
-      return;
     case 0x10C:
       switch (unit->level) {
       case 1:
@@ -726,6 +717,51 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
         break;
       }
       return;
+    case 0x114:
+      g_effectMgr->Spawn(this->render.accountId, 0x7A5, position.x, position.y, position.z, 0, unit->level, 0, 0);
+      return;
+    case 0x10A:
+      if (!g_effectMgr->Has(this->render.accountId, 0x6D8)) {
+        g_effectMgr->Retire(this->render.accountId, 0x6D8);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x6D8, position.x, position.y, position.z, 0, unit->level, 0, 0);
+      return;
+    case 0x10E:
+      g_effectMgr->Retire(this->render.accountId, 0x701);
+      g_effectMgr->Spawn(this->render.accountId, 0x701, position.x, position.y, position.z, 0, unit->level, 0, 0);
+      return;
+    case 0x112:
+      if (!g_effectMgr->Has(this->render.accountId, 0x6E8)) {
+        g_effectMgr->Retire(this->render.accountId, 0x6E8);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x6E8, position.x, position.y, position.z, 0, unit->level, 0, 0);
+      return;
+    case 0x10B:
+      if (!g_effectMgr->Has(this->render.accountId, 0x6EC)) {
+        g_effectMgr->Retire(this->render.accountId, 0x6EC);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x6EC, position.x, position.y, position.z, 0, unit->level, 0, 0);
+      return;
+    case 0x110:
+      if (!g_effectMgr->Has(this->render.accountId, 0x6F0)) {
+        g_effectMgr->Retire(this->render.accountId, 0x6F0);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x6F0, position.x, position.y, position.z, 0, unit->level, 0, 0);
+      if (!g_effectMgr->Has(this->render.accountId, 0x6F1)) {
+        g_effectMgr->Retire(this->render.accountId, 0x6F1);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x6F1, position.x, position.y, position.z, 0, unit->level, 0, 0);
+      return;
+    case 0x10F:
+      g_effectMgr->Retire(this->render.accountId, 0x702);
+      g_effectMgr->Spawn(this->render.accountId, 0x702, position.x, position.y, position.z, 0, unit->level, 0, 0);
+      g_effectMgr->Retire(this->render.accountId, 0x703);
+      g_effectMgr->Spawn(this->render.accountId, 0x703, position.x, position.y, position.z, 0, unit->level, 0, 0);
+      return;
+    case 0x111:
+      g_effectMgr->Retire(this->render.accountId, 0x70C);
+      g_effectMgr->Spawn(this->render.accountId, 0x70C, position.x, position.y, position.z, 0, unit->level, 0, 0);
+      return;
     case 0x10D:
       for (std::int64_t effectId = 0x765; effectId <= 0x766; ++effectId) {
         if (!g_effectMgr->Has(this->render.accountId, static_cast<int>(effectId))) {
@@ -738,43 +774,49 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
         }
       }
       return;
-    case 0x10E:
-      g_effectMgr->Retire(this->render.accountId, 0x701);
-      g_effectMgr->Spawn(this->render.accountId, 0x701, position.x, position.y, position.z, 0, unit->level, 0, 0);
-      return;
-    case 0x10F:
-      g_effectMgr->Retire(this->render.accountId, 0x702);
-      g_effectMgr->Spawn(this->render.accountId, 0x702, position.x, position.y, position.z, 0, unit->level, 0, 0);
-      g_effectMgr->Retire(this->render.accountId, 0x703);
-      g_effectMgr->Spawn(this->render.accountId, 0x703, position.x, position.y, position.z, 0, unit->level, 0, 0);
-      return;
-    case 0x110:
-      if (!g_effectMgr->Has(this->render.accountId, 0x6F0)) {
-        g_effectMgr->Retire(this->render.accountId, 0x6F0);
+    case 0x11B:
+      if (!g_effectMgr->Has(this->render.accountId, 0x7EF)) {
+        g_effectMgr->Retire(this->render.accountId, 0x7EF);
       }
-      g_effectMgr->Spawn(this->render.accountId, 0x6F0, position.x, position.y, position.z, 0, unit->level, 0, 0);
-      if (!g_effectMgr->Has(this->render.accountId, 0x6F1)) {
-        g_effectMgr->Retire(this->render.accountId, 0x6F1);
+      g_effectMgr->Spawn(this->render.accountId, 0x7EF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      return;
+    case 0x11A:
+      if (!g_effectMgr->Has(this->render.accountId, 0x7FA)) {
+        g_effectMgr->Retire(this->render.accountId, 0x7FA);
       }
-      g_effectMgr->Spawn(this->render.accountId, 0x6F1, position.x, position.y, position.z, 0, unit->level, 0, 0);
-      return;
-    case 0x111:
-      g_effectMgr->Retire(this->render.accountId, 0x70C);
-      g_effectMgr->Spawn(this->render.accountId, 0x70C, position.x, position.y, position.z, 0, unit->level, 0, 0);
-      return;
-    case 0x112:
-      if (!g_effectMgr->Has(this->render.accountId, 0x6E8)) {
-        g_effectMgr->Retire(this->render.accountId, 0x6E8);
+      g_effectMgr->Spawn(this->render.accountId, 0x7FA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      if (!g_effectMgr->Has(this->render.accountId, 0x7F9)) {
+        g_effectMgr->Retire(this->render.accountId, 0x7F9);
       }
-      g_effectMgr->Spawn(this->render.accountId, 0x6E8, position.x, position.y, position.z, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, 0x7F9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
-    case 0x114:
-      g_effectMgr->Spawn(this->render.accountId, 0x7A5, position.x, position.y, position.z, 0, unit->level, 0, 0);
+    case 0x11C:
+      if (!g_effectMgr->Has(this->render.accountId, 0x808)) {
+        g_effectMgr->Retire(this->render.accountId, 0x808);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x808, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      if (!g_effectMgr->Has(this->render.accountId, 0x807)) {
+        g_effectMgr->Retire(this->render.accountId, 0x807);
+      }
+      g_effectMgr->Spawn(this->render.accountId, 0x807, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
     case 0x115:
       g_effectMgr->Spawn(this->render.accountId, 0x852, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x851, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
+    case 0x119: {
+      g_effectMgr->Spawn(this->render.accountId, 0x8A0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, 0x8A1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8A2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      if (effect != nullptr) {
+        effect->Slot16(10);
+      }
+      effect = g_effectMgr->Spawn(this->render.accountId, 0x8A3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      if (effect != nullptr) {
+        effect->Slot16(10);
+      }
+      return;
+    }
     case 0x116: {
       g_effectMgr->Spawn(this->render.accountId, 0x8A8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x8A9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -783,19 +825,6 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
         effect->Slot16(10);
       }
       effect = g_effectMgr->Spawn(this->render.accountId, 0x8AB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      if (effect != nullptr) {
-        effect->Slot16(10);
-      }
-      return;
-    }
-    case 0x117: {
-      g_effectMgr->Spawn(this->render.accountId, 0x8B8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(this->render.accountId, 0x8B9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      if (effect != nullptr) {
-        effect->Slot16(10);
-      }
-      effect = g_effectMgr->Spawn(this->render.accountId, 0x8BB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect != nullptr) {
         effect->Slot16(10);
       }
@@ -814,45 +843,19 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       }
       return;
     }
-    case 0x119: {
-      g_effectMgr->Spawn(this->render.accountId, 0x8A0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(this->render.accountId, 0x8A1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8A2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    case 0x117: {
+      g_effectMgr->Spawn(this->render.accountId, 0x8B8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, 0x8B9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect != nullptr) {
         effect->Slot16(10);
       }
-      effect = g_effectMgr->Spawn(this->render.accountId, 0x8A3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(this->render.accountId, 0x8BB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect != nullptr) {
         effect->Slot16(10);
       }
       return;
     }
-    case 0x11A:
-      if (!g_effectMgr->Has(this->render.accountId, 0x7FA)) {
-        g_effectMgr->Retire(this->render.accountId, 0x7FA);
-      }
-      g_effectMgr->Spawn(this->render.accountId, 0x7FA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      if (!g_effectMgr->Has(this->render.accountId, 0x7F9)) {
-        g_effectMgr->Retire(this->render.accountId, 0x7F9);
-      }
-      g_effectMgr->Spawn(this->render.accountId, 0x7F9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      return;
-    case 0x11B:
-      if (!g_effectMgr->Has(this->render.accountId, 0x7EF)) {
-        g_effectMgr->Retire(this->render.accountId, 0x7EF);
-      }
-      g_effectMgr->Spawn(this->render.accountId, 0x7EF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      return;
-    case 0x11C:
-      if (!g_effectMgr->Has(this->render.accountId, 0x808)) {
-        g_effectMgr->Retire(this->render.accountId, 0x808);
-      }
-      g_effectMgr->Spawn(this->render.accountId, 0x808, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      if (!g_effectMgr->Has(this->render.accountId, 0x807)) {
-        g_effectMgr->Retire(this->render.accountId, 0x807);
-      }
-      g_effectMgr->Spawn(this->render.accountId, 0x807, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      return;
     case 0x11D:
       g_effectMgr->Spawn(this->render.accountId, 0x903, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
@@ -863,18 +866,18 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
         g_effectMgr->Spawn(this->render.accountId, 0x752, position.x, position.y, position.z, 0, -1, 0, 0);
       }
       return;
-    case 0x5175:
-      this->render.unknown_00A4Bytes[1] = 1;
-      this->ShowModel(this->GetTrapModelName());
-      if (this->render.enabled) {
-        g_effectMgr->Spawn(this->render.accountId, 0x75A, position.x, position.y, position.z, 0, -1, 0, 0);
-      }
-      return;
     case 0x5176:
       this->render.unknown_00A4Bytes[1] = 1;
       this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, 0x756, position.x, position.y, position.z, 0, -1, 0, 0);
+      }
+      return;
+    case 0x5175:
+      this->render.unknown_00A4Bytes[1] = 1;
+      this->ShowModel(this->GetTrapModelName());
+      if (this->render.enabled) {
+        g_effectMgr->Spawn(this->render.accountId, 0x75A, position.x, position.y, position.z, 0, -1, 0, 0);
       }
       return;
     case 0x5177:
@@ -884,15 +887,15 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
         g_effectMgr->Spawn(this->render.accountId, 0x77F, position.x, position.y, position.z, 0, -1, 0, 0);
       }
       return;
-    case 0x532C:
-      g_effectMgr->Spawn(this->render.accountId, 0x925, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      return;
     default: {
       CRenderObject* source = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAidIncludeMe(this->unknown_0410);
       CSkillActionMgr* actions = CSkillActionMgr::GetInstance();
       actions->ObjectSlot00(this->GetEffectiveJob(-1), unit->level, this, static_cast<CGameActor*>(source));
       return;
     }
+    case 0x532C:
+      g_effectMgr->Spawn(this->render.accountId, 0x925, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      return;
     }
   }
   case 0x2F:
