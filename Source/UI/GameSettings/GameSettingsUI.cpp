@@ -2586,16 +2586,20 @@ void GameSettingsUI::CUIBasicPage::Slot15(int width, int height) {
 // OFFSET: 0x00A32550
 // FUNCTION: fn_15405
 void GameSettingsUI::CUIListPage::Slot15(int width, int height) {
-  this->m_optionList = new CUIListBoxEx<CUIOptionItem, TALKTYPE>();
-  this->m_optionList->itemWidth = 387;
-  this->m_optionList->rowHeight = 26;
-  this->m_optionList->SetSize(400, 286);
+  auto* const optionList = new CUIListBoxEx<CUIOptionItem, TALKTYPE>;
+  this->m_optionList = optionList;
+  optionList->itemWidth = 387;
+  optionList->rowHeight = 26;
+  optionList->SetSize(400, 286);
   this->m_optionList->Move(0, 1);
-  this->m_optionList->onSelect = [this](CUIOptionItem* item, const TALKTYPE& type) { this->CUIListPage::Slot54(item, type); };
-  this->m_optionList->binder = [this](CUIOptionItem* item, const TALKTYPE& type) { this->BindOption(item, type); };
-  this->m_optionList->SetImages(std::string(), std::string(), std::string(), std::string());
-  this->m_optionList->itemX = 0;
-  this->m_optionList->itemY = 0;
+  this->m_optionList->SetOnSelect([this](CUIOptionItem* item, const TALKTYPE& type) { this->CUIListPage::Slot54(item, type); });
+  this->m_optionList->SetBinder([this](CUIOptionItem* item, const TALKTYPE& type) { this->BindOption(item, type); });
+  this->m_optionList->SetImages("", "", "", "");
+  {
+    auto* const list = this->m_optionList;
+    list->itemX = 0;
+    list->itemY = 0;
+  }
 
   this->m_optionList->scrollBar->SetSize(13, 286);
   this->m_optionList->scrollBar->Move(387, 0);
@@ -2712,8 +2716,11 @@ void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(110, 12);
   this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
-  this->m_onButton->disabled = 0;
-  this->m_onButton->Invalidate();
+  {
+    auto* const onButton = this->m_onButton;
+    onButton->disabled = 0;
+    onButton->Invalidate();
+  }
   this->m_onButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0xD7, 0x76, 0xF3, 0x53, 0xB9, 0x29, 0x52, 0xC2, 0xD1, 0x3D, 0xF3, 0x65, 0xC4, 0x5D, 0xCB, 0x7D, 0x76, 0xBD, 0x5A, 0xC6, 0x1B, 0x93, 0xF9, 0x50, 0x78, 0xBF, 0x55, 0x87, 0x1B, 0x8A, 0xE7, 0x0F};
     constexpr EncryptedSource<32> source(bytes);
@@ -2735,8 +2742,11 @@ void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x23BBD58F8B5FF5C9ULL> name(source);
     return name.Text();
   }()));
-  this->m_onButton->checked = false;
-  this->m_onButton->Invalidate();
+  {
+    auto* const onButton = this->m_onButton;
+    onButton->checked = false;
+    onButton->Invalidate();
+  }
   this->AddChild(this->m_onButton);
   this->m_onText = new CUIStaticText();
   this->m_onText->SetSize(50, 13);
@@ -2765,8 +2775,11 @@ void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(205, 12);
   this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
-  this->m_offButton->disabled = 0;
-  this->m_offButton->Invalidate();
+  {
+    auto* const offButton = this->m_offButton;
+    offButton->disabled = 0;
+    offButton->Invalidate();
+  }
   this->m_offButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0xF7, 0xE8, 0x6D, 0xC3, 0x7F, 0x2B, 0x6C, 0xDA, 0xF1, 0xA3, 0x6D, 0xF5, 0x02, 0x5F, 0xF5, 0x65, 0x56, 0x23, 0xC4, 0x56, 0xDD, 0x91, 0xC7, 0x48, 0x58, 0x21, 0xCB, 0x17, 0xDD, 0x88, 0xD9, 0x17};
     constexpr EncryptedSource<32> source(bytes);
@@ -2788,8 +2801,11 @@ void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x9949BFD527532943ULL> name(source);
     return name.Text();
   }()));
-  this->m_offButton->checked = false;
-  this->m_offButton->Invalidate();
+  {
+    auto* const offButton = this->m_offButton;
+    offButton->checked = false;
+    offButton->Invalidate();
+  }
   this->AddChild(this->m_offButton);
   this->m_offText = new CUIStaticText();
   this->m_offText->SetSize(100, 13);
@@ -2846,8 +2862,11 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(150, 12);
   this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { OnFullscreenOptionChanged(reinterpret_cast<int>(button)); });
-  this->m_onButton->disabled = 0;
-  this->m_onButton->Invalidate();
+  {
+    auto* const onButton = this->m_onButton;
+    onButton->disabled = 0;
+    onButton->Invalidate();
+  }
   this->m_onButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x8F, 0xE4, 0x73, 0x75, 0xED, 0xDB, 0x84, 0x4A, 0x89, 0xAF, 0x73, 0x43, 0x90, 0xAF, 0x1D, 0xF5, 0x2E, 0x2F, 0xDA, 0xE0, 0x4F, 0x61, 0x2F, 0xD8, 0x20, 0x2D, 0xD5, 0xA1, 0x4F, 0x78, 0x31, 0x87};
     constexpr EncryptedSource<32> source(bytes);
@@ -2869,8 +2888,11 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x93E7A3A1F587CDC5ULL> name(source);
     return name.Text();
   }()));
-  this->m_onButton->checked = false;
-  this->m_onButton->Invalidate();
+  {
+    auto* const onButton = this->m_onButton;
+    onButton->checked = false;
+    onButton->Invalidate();
+  }
   this->AddChild(this->m_onButton);
   this->m_onText = new CUIStaticText();
   this->m_onText->SetSize(150, 13);
@@ -2899,8 +2921,11 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(270, 12);
   this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { OnFullscreenOptionChanged(reinterpret_cast<int>(button)); });
-  this->m_offButton->disabled = 0;
-  this->m_offButton->Invalidate();
+  {
+    auto* const offButton = this->m_offButton;
+    offButton->disabled = 0;
+    offButton->Invalidate();
+  }
   this->m_offButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x95, 0x52, 0x75, 0x21, 0x07, 0x7F, 0xB0, 0xFE, 0x93, 0x19, 0x75, 0x17, 0x7A, 0x0B, 0x29, 0x41, 0x34, 0x99, 0xDC, 0xB4, 0xA5, 0xC5, 0x1B, 0x6C, 0x3A, 0x9B, 0xD3, 0xF5, 0xA5, 0xDC, 0x05, 0x33};
     constexpr EncryptedSource<32> source(bytes);
@@ -2922,8 +2947,11 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x812BE72BCD5707B7ULL> name(source);
     return name.Text();
   }()));
-  this->m_offButton->checked = false;
-  this->m_offButton->Invalidate();
+  {
+    auto* const offButton = this->m_offButton;
+    offButton->checked = false;
+    offButton->Invalidate();
+  }
   this->AddChild(this->m_offButton);
   this->m_offText = new CUIStaticText();
   this->m_offText->SetSize(100, 13);
@@ -3003,11 +3031,9 @@ void GameSettingsUI::CUIGroupGraphics::Slot15(int width, int height) {
   }()));
   this->m_adapterCombo->Move(150, 9);
   this->m_adapterCombo->onSelect = [this](CUIComboItem* item, const RenderAdapter& adapter) { this->OnAdapterSelect(item, adapter); };
-  const std::function<void(CUIComboItem*, const RenderAdapter&)> adapterBinder = [this](CUIComboItem* item, const RenderAdapter& adapter) {
+  this->m_adapterCombo->SetItemBinder([this](CUIComboItem* item, const RenderAdapter& adapter) {
     SetComboItemAdapterText(item, adapter);
-  };
-  this->m_adapterCombo->onChange = adapterBinder;
-  this->m_adapterCombo->listBox->SetBinder(adapterBinder);
+  });
   this->AddChild(this->m_adapterCombo);
 
   this->m_modeText = new CUIStaticText();
@@ -3060,11 +3086,9 @@ void GameSettingsUI::CUIGroupGraphics::Slot15(int width, int height) {
   }()));
   this->m_modeCombo->Move(150, 41);
   this->m_modeCombo->onSelect = [this](CUIComboItem* item, const DisplayMode& mode) { this->OnModeSelect(item, mode); };
-  const std::function<void(CUIComboItem*, const DisplayMode&)> modeBinder = [this](CUIComboItem* item, const DisplayMode& mode) {
+  this->m_modeCombo->SetItemBinder([this](CUIComboItem* item, const DisplayMode& mode) {
     SetComboItemModeText(item, mode);
-  };
-  this->m_modeCombo->onChange = modeBinder;
-  this->m_modeCombo->listBox->SetBinder(modeBinder);
+  });
   this->AddChild(this->m_modeCombo);
 }
 
@@ -3157,8 +3181,11 @@ void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(110, 12);
   this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
-  this->m_onButton->disabled = 0;
-  this->m_onButton->Invalidate();
+  {
+    auto* const onButton = this->m_onButton;
+    onButton->disabled = 0;
+    onButton->Invalidate();
+  }
   this->m_onButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x21, 0x36, 0x47, 0xB5, 0x41, 0x0D, 0xE4, 0xBE, 0x27, 0x7D, 0x47, 0x83, 0x3C, 0x79, 0x7D, 0x01, 0x80, 0xFD, 0xEE, 0x20, 0xE3, 0xB7, 0x4F, 0x2C, 0x8E, 0xFF, 0xE1, 0x61, 0xE3, 0xAE, 0x51, 0x73};
     constexpr EncryptedSource<32> source(bytes);
@@ -3180,8 +3207,11 @@ void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x2FEB8739E5975BD1ULL> name(source);
     return name.Text();
   }()));
-  this->m_onButton->checked = false;
-  this->m_onButton->Invalidate();
+  {
+    auto* const onButton = this->m_onButton;
+    onButton->checked = false;
+    onButton->Invalidate();
+  }
   this->AddChild(this->m_onButton);
   this->m_onText = new CUIStaticText();
   this->m_onText->SetSize(100, 12);
@@ -3210,8 +3240,11 @@ void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(205, 12);
   this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
-  this->m_offButton->disabled = 0;
-  this->m_offButton->Invalidate();
+  {
+    auto* const offButton = this->m_offButton;
+    offButton->disabled = 0;
+    offButton->Invalidate();
+  }
   this->m_offButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0xDD, 0x68, 0x8B, 0x4F, 0x1D, 0xB9, 0x8C, 0xEE, 0xDB, 0x23, 0x8B, 0x79, 0x60, 0xCD, 0x15, 0x51, 0x7C, 0xA3, 0x22, 0xDA, 0xBF, 0x03, 0x27, 0x7C, 0x72, 0xA1, 0x2D, 0x9B, 0xBF, 0x1A, 0x39, 0x23};
     constexpr EncryptedSource<32> source(bytes);
@@ -3233,8 +3266,11 @@ void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x6FE153231D879777ULL> name(source);
     return name.Text();
   }()));
-  this->m_offButton->checked = false;
-  this->m_offButton->Invalidate();
+  {
+    auto* const offButton = this->m_offButton;
+    offButton->checked = false;
+    offButton->Invalidate();
+  }
   this->AddChild(this->m_offButton);
   this->m_offText = new CUIStaticText();
   this->m_offText->SetSize(100, 12);
@@ -3291,8 +3327,11 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
   this->m_highButton->SetSize(12, 12);
   this->m_highButton->Move(110, 12);
   this->m_highButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
-  this->m_highButton->disabled = 0;
-  this->m_highButton->Invalidate();
+  {
+    auto* const highButton = this->m_highButton;
+    highButton->disabled = 0;
+    highButton->Invalidate();
+  }
   this->m_highButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x5F, 0x6A, 0xAD, 0x51, 0x17, 0xE7, 0x38, 0x68, 0x59, 0x21, 0xAD, 0x67, 0x6A, 0x93, 0xA1, 0xD7, 0xFE, 0xA1, 0x04, 0xC4, 0xB5, 0x5D, 0x93, 0xFA, 0xF0, 0xA3, 0x0B, 0x85, 0xB5, 0x44, 0x8D, 0xA5};
     constexpr EncryptedSource<32> source(bytes);
@@ -3314,8 +3353,11 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0xDD3913D5D7F97BE1ULL> name(source);
     return name.Text();
   }()));
-  this->m_highButton->checked = true;
-  this->m_highButton->Invalidate();
+  {
+    auto* const highButton = this->m_highButton;
+    highButton->checked = true;
+    highButton->Invalidate();
+  }
   this->AddChild(this->m_highButton);
   this->m_highText = new CUIStaticText();
   this->m_highText->SetSize(100, 13);
@@ -3344,8 +3386,11 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
   this->m_normalButton->SetSize(12, 12);
   this->m_normalButton->Move(205, 12);
   this->m_normalButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
-  this->m_normalButton->disabled = 0;
-  this->m_normalButton->Invalidate();
+  {
+    auto* const normalButton = this->m_normalButton;
+    normalButton->disabled = 0;
+    normalButton->Invalidate();
+  }
   this->m_normalButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0xAD, 0xB4, 0x67, 0xEB, 0xB7, 0xA1, 0x0E, 0x3E, 0xAB, 0xFF, 0x67, 0xDD, 0xCA, 0xD5, 0x97, 0x81, 0x0C, 0x7F, 0xCE, 0x7E, 0x15, 0x1B, 0xA5, 0xAC, 0x02, 0x7D, 0xC1, 0x3F, 0x15, 0x02, 0xBB, 0xF3};
     constexpr EncryptedSource<32> source(bytes);
@@ -3367,8 +3412,11 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x452FEF0D7FC95565ULL> name(source);
     return name.Text();
   }()));
-  this->m_normalButton->checked = false;
-  this->m_normalButton->Invalidate();
+  {
+    auto* const normalButton = this->m_normalButton;
+    normalButton->checked = false;
+    normalButton->Invalidate();
+  }
   this->AddChild(this->m_normalButton);
   this->m_normalText = new CUIStaticText();
   this->m_normalText->SetSize(100, 13);
@@ -3397,8 +3445,11 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
   this->m_idleButton->SetSize(12, 12);
   this->m_idleButton->Move(300, 12);
   this->m_idleButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
-  this->m_idleButton->disabled = 0;
-  this->m_idleButton->Invalidate();
+  {
+    auto* const idleButton = this->m_idleButton;
+    idleButton->disabled = 0;
+    idleButton->Invalidate();
+  }
   this->m_idleButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0xD7, 0xB4, 0xED, 0x59, 0x7D, 0x25, 0x84, 0xC2, 0xD1, 0xFF, 0xED, 0x6F, 0x00, 0x51, 0x1D, 0x7D, 0x76, 0x7F, 0x44, 0xCC, 0xDF, 0x9F, 0x2F, 0x50, 0x78, 0x7D, 0x4B, 0x8D, 0xDF, 0x86, 0x31, 0x0F};
     constexpr EncryptedSource<32> source(bytes);
@@ -3420,8 +3471,11 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x7115D9F973F913C9ULL> name(source);
     return name.Text();
   }()));
-  this->m_idleButton->checked = false;
-  this->m_idleButton->Invalidate();
+  {
+    auto* const idleButton = this->m_idleButton;
+    idleButton->checked = false;
+    idleButton->Invalidate();
+  }
   this->AddChild(this->m_idleButton);
   this->m_idleText = new CUIStaticText();
   this->m_idleText->SetSize(100, 13);
@@ -3478,8 +3532,11 @@ void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(110, 12);
   this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
-  this->m_onButton->disabled = 0;
-  this->m_onButton->Invalidate();
+  {
+    auto* const onButton = this->m_onButton;
+    onButton->disabled = 0;
+    onButton->Invalidate();
+  }
   this->m_onButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x2F, 0xDE, 0x1F, 0xE9, 0xAD, 0x81, 0x02, 0x20, 0x29, 0x95, 0x1F, 0xDF, 0xD0, 0xF5, 0x9B, 0x9F, 0x8E, 0x15, 0xB6, 0x7C, 0x0F, 0x3B, 0xA9, 0xB2, 0x80, 0x17, 0xB9, 0x3D, 0x0F, 0x22, 0xB7, 0xED};
     constexpr EncryptedSource<32> source(bytes);
@@ -3501,8 +3558,11 @@ void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x75ADC57D87EFBD8FULL> name(source);
     return name.Text();
   }()));
-  this->m_onButton->checked = false;
-  this->m_onButton->Invalidate();
+  {
+    auto* const onButton = this->m_onButton;
+    onButton->checked = false;
+    onButton->Invalidate();
+  }
   this->AddChild(this->m_onButton);
   this->m_onText = new CUIStaticText();
   this->m_onText->SetSize(100, 13);
@@ -3531,8 +3591,11 @@ void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(110, 36);
   this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
-  this->m_offButton->disabled = 0;
-  this->m_offButton->Invalidate();
+  {
+    auto* const offButton = this->m_offButton;
+    offButton->disabled = 0;
+    offButton->Invalidate();
+  }
   this->m_offButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x0D, 0x5E, 0x59, 0x4F, 0x4D, 0x95, 0xC2, 0x60, 0x0B, 0x15, 0x59, 0x79, 0x30, 0xE1, 0x5B, 0xDF, 0xAC, 0x95, 0xF0, 0xDA, 0xEF, 0x2F, 0x69, 0xF2, 0xA2, 0x97, 0xFF, 0x9B, 0xEF, 0x36, 0x77, 0xAD};
     constexpr EncryptedSource<32> source(bytes);
@@ -3554,8 +3617,11 @@ void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x4941FD9F21BBB9FDULL> name(source);
     return name.Text();
   }()));
-  this->m_offButton->checked = false;
-  this->m_offButton->Invalidate();
+  {
+    auto* const offButton = this->m_offButton;
+    offButton->checked = false;
+    offButton->Invalidate();
+  }
   this->AddChild(this->m_offButton);
   this->m_offText = new CUIStaticText();
   this->m_offText->SetSize(130, 13);
@@ -4012,8 +4078,11 @@ void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
   this->m_onButton->SetSize(12, 12);
   this->m_onButton->Move(150, 12);
   this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { OnTrilinearOptionChanged(reinterpret_cast<int>(button)); });
-  this->m_onButton->disabled = 0;
-  this->m_onButton->Invalidate();
+  {
+    auto* const onButton = this->m_onButton;
+    onButton->disabled = 0;
+    onButton->Invalidate();
+  }
   this->m_onButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0xB1, 0x56, 0x99, 0x0F, 0x41, 0xD3, 0xA0, 0x5C, 0xB7, 0x1D, 0x99, 0x39, 0x3C, 0xA7, 0x39, 0xE3, 0x10, 0x9D, 0x30, 0x9A, 0xE3, 0x69, 0x0B, 0xCE, 0x1E, 0x9F, 0x3F, 0xDB, 0xE3, 0x70, 0x15, 0x91};
     constexpr EncryptedSource<32> source(bytes);
@@ -4035,8 +4104,11 @@ void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x490FFB43A12F0DB9ULL> name(source);
     return name.Text();
   }()));
-  this->m_onButton->checked = false;
-  this->m_onButton->Invalidate();
+  {
+    auto* const onButton = this->m_onButton;
+    onButton->checked = false;
+    onButton->Invalidate();
+  }
   this->AddChild(this->m_onButton);
   this->m_onText = new CUIStaticText();
   this->m_onText->SetSize(150, 13);
@@ -4065,8 +4137,11 @@ void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
   this->m_offButton->SetSize(12, 12);
   this->m_offButton->Move(270, 12);
   this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { OnTrilinearOptionChanged(reinterpret_cast<int>(button)); });
-  this->m_offButton->disabled = 0;
-  this->m_offButton->Invalidate();
+  {
+    auto* const offButton = this->m_offButton;
+    offButton->disabled = 0;
+    offButton->Invalidate();
+  }
   this->m_offButton->SetImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x21, 0x34, 0x33, 0x81, 0x2D, 0x49, 0x3A, 0xAC, 0x27, 0x7F, 0x33, 0xB7, 0x50, 0x3D, 0xA3, 0x13, 0x80, 0xFF, 0x9A, 0x14, 0x8F, 0xF3, 0x91, 0x3E, 0x8E, 0xFD, 0x95, 0x55, 0x8F, 0xEA, 0x8F, 0x61};
     constexpr EncryptedSource<32> source(bytes);
@@ -4088,8 +4163,11 @@ void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
     thread_local EncryptedName<32, 0x2D3B15774149D5DDULL> name(source);
     return name.Text();
   }()));
-  this->m_offButton->checked = false;
-  this->m_offButton->Invalidate();
+  {
+    auto* const offButton = this->m_offButton;
+    offButton->checked = false;
+    offButton->Invalidate();
+  }
   this->AddChild(this->m_offButton);
   this->m_offText = new CUIStaticText();
   this->m_offText->SetSize(100, 13);
