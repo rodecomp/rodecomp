@@ -10090,13 +10090,13 @@ bool UIItemStoreSubWnd::UpdateItemNames1() {
   }
 
   for (std::list<ITEM_INFO>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
-    ITEM_INFO item = *it;
-    int highlightColor;
-    std::vector<char*> breaks;
     char text[256];
-    char* cursor = text;
-    std::size_t remaining = 0x100;
     char* highlight = nullptr;
+    char* cursor = text;
+    std::vector<char*> breaks;
+    ITEM_INFO item = *it;
+    std::size_t remaining = 0x100;
+    int highlightColor;
     this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
     it->SetName(text);
   }
