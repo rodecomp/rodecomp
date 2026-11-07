@@ -1239,74 +1239,6 @@ void UIBarterItemPurchaseWnd::Slot15(int width, int height) {
 // FUNCTION: fn_10563
 int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    if (!mode) {
-      return 0;
-    }
-
-    if (a == 184) {
-      if (!this->Purchase()) {
-        return 0;
-      }
-      mode->SendMsg(308, 0, 0, 0, 0);
-    } else if (a != 185) {
-      return 0;
-    }
-
-    mode->SendMsg(40, 0, 0, 0, 0);
-    g_barterMarketItemMgr->Clear();
-    return 0;
-  }
-
-  case 14: {
-    if (a != 3) {
-      return 0;
-    }
-
-    int width = b <= 320 ? static_cast<int>(b) : 320;
-    int height = c <= 336 ? static_cast<int>(c) : 336;
-    if (width < 232) {
-      width = 232;
-    }
-    if (height < 120) {
-      height = 120;
-    }
-    width = (width - 280) / 32 * 32 + 280;
-    height = (height - 120) / 32 * 32 + 120;
-
-    if (width != this->geometry.width || height != this->geometry.height) {
-      this->Resize(width, height);
-      this->columns = 1;
-      const int rowsHeight = this->geometry.height - 38;
-      this->visibleRows = rowsHeight / 32;
-      this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-      this->scrollBar->Move(this->geometry.width - 15, 14);
-      this->scrollBar->Resize(this->scrollBar->geometry.width, rowsHeight);
-      this->UpdateScrollBar();
-    }
-
-    const int xs[2] = {this->geometry.width - 106, this->geometry.width - 61};
-    const int y = this->geometry.height - 24;
-    for (int index = 0; index < 2; ++index) {
-      this->buttons[index]->Move(xs[index], y);
-    }
-
-    g_windowMgr.StoreSnapRectangle(this);
-    return 0;
-  }
-
-  case 23: {
-    this->items.clear();
-    std::list<BarterMarketItem>* items = g_barterMarketItemMgr->GetAllItems();
-    for (std::list<BarterMarketItem>::iterator it = items->begin(); it != items->end(); ++it) {
-      this->items.push_back(it->ToItemInfo());
-    }
-    this->Invalidate();
-    this->UpdateScrollBar();
-    return 0;
-  }
-
   case 34: {
     this->saved = reinterpret_cast<ItemPurchaseWndInfo*>(a);
     if (!this->saved) {
@@ -1392,6 +1324,74 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     return 0;
   }
 
+  case 6: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (!mode) {
+      return 0;
+    }
+
+    if (a == 184) {
+      if (!this->Purchase()) {
+        return 0;
+      }
+      mode->SendMsg(308, 0, 0, 0, 0);
+    } else if (a != 185) {
+      return 0;
+    }
+
+    mode->SendMsg(40, 0, 0, 0, 0);
+    g_barterMarketItemMgr->Clear();
+    return 0;
+  }
+
+  case 14: {
+    if (a != 3) {
+      return 0;
+    }
+
+    int width = b <= 320 ? static_cast<int>(b) : 320;
+    int height = c <= 336 ? static_cast<int>(c) : 336;
+    if (width < 232) {
+      width = 232;
+    }
+    if (height < 120) {
+      height = 120;
+    }
+    width = (width - 280) / 32 * 32 + 280;
+    height = (height - 120) / 32 * 32 + 120;
+
+    if (width != this->geometry.width || height != this->geometry.height) {
+      this->Resize(width, height);
+      this->columns = 1;
+      const int rowsHeight = this->geometry.height - 38;
+      this->visibleRows = rowsHeight / 32;
+      this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+      this->scrollBar->Move(this->geometry.width - 15, 14);
+      this->scrollBar->Resize(this->scrollBar->geometry.width, rowsHeight);
+      this->UpdateScrollBar();
+    }
+
+    const int xs[2] = {this->geometry.width - 106, this->geometry.width - 61};
+    const int y = this->geometry.height - 24;
+    for (int index = 0; index < 2; ++index) {
+      this->buttons[index]->Move(xs[index], y);
+    }
+
+    g_windowMgr.StoreSnapRectangle(this);
+    return 0;
+  }
+
+  case 23: {
+    this->items.clear();
+    std::list<BarterMarketItem>* items = g_barterMarketItemMgr->GetAllItems();
+    for (std::list<BarterMarketItem>::iterator it = items->begin(); it != items->end(); ++it) {
+      this->items.push_back(it->ToItemInfo());
+    }
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
+
   default:
     break;
   }
@@ -1445,6 +1445,42 @@ void UIExpandedBarterItemPurchaseWnd::Slot15(int width, int height) {
 // FUNCTION: fn_10564
 int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 34: {
+    this->saved = reinterpret_cast<ItemShopWndInfo*>(a);
+    if (a == 0) {
+      return 0;
+    }
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  }
+
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (!mode) {
+      return 0;
+    }
+
+    std::pair<bool, BarterMarketItem> found = g_barterMarketItemMgr->FindAllItem(mode->drag.unknown_03B0);
+    if (found.first == false) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3554)), 255, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+
+    found.second.value = mode->drag.quantity;
+    g_barterMarketItemMgr->RemoveItem(found.second);
+    if (UIWindow* window = g_windowMgr.LookupWindow(335)) {
+      window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    }
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+
   case 14: {
     if (a == 7) {
       int width = b <= 320 ? static_cast<int>(b) : 320;
@@ -1482,42 +1518,6 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     this->Invalidate();
     this->UpdateScrollBar();
-    return 0;
-  }
-
-  case 34: {
-    this->saved = reinterpret_cast<ItemShopWndInfo*>(a);
-    if (a == 0) {
-      return 0;
-    }
-    if (!this->saved->IsValid()) {
-      this->saved->Reset();
-    }
-    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
-    this->Move(this->saved->x, this->saved->y);
-    return 0;
-  }
-
-  case 38: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    if (!mode) {
-      return 0;
-    }
-
-    std::pair<bool, BarterMarketItem> found = g_barterMarketItemMgr->FindAllItem(mode->drag.unknown_03B0);
-    if (found.first == false) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3554)), 255, 0, 0, 0);
-      mode->SendMsg(18, 0, 0, 0, 0);
-      return 0;
-    }
-
-    found.second.value = mode->drag.quantity;
-    g_barterMarketItemMgr->RemoveItem(found.second);
-    if (UIWindow* window = g_windowMgr.LookupWindow(335)) {
-      window->SendMsg(nullptr, 23, 0, 0, 0, 0);
-    }
-    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-    mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
 
