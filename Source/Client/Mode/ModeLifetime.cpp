@@ -6,6 +6,7 @@
 // FUNCTION: fn_17819
 int CSession::SetServiceFlags(int first, int second) {
   const int serviceType = g_serviceType;
+  /* NOTE: Don't try to improve the score by changing the behavior or restoring the dead branches here */
   g_serviceFlag05 = first != 0;
   g_serviceFlag06 = second != 0;
   return serviceType;
