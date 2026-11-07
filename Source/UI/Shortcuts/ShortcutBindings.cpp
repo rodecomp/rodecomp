@@ -45,8 +45,10 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
       }
     }
 
-    if (bank == 0 || bank == 1) {
-      (bank == 0 ? this->m_shortcutSlots : this->m_secondaryShortcutSlots)[destination] = {};
+    if (bank == 0) {
+      this->m_shortcutSlots[destination] = {};
+    } else if (bank == 1) {
+      this->m_secondaryShortcutSlots[destination] = {};
     }
 
     modeEvents->SendMsg(313, destination, bank, 0, 0);
@@ -54,11 +56,15 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
   }
 
   for (int index = rowStart; index < rowStart + 9; ++index) {
-    if (bank != 0 && bank != 1) {
+    NormalItemSlot previous;
+    if (bank == 0) {
+      previous = this->m_shortcutSlots[index];
+    } else if (bank == 1) {
+      previous = this->m_secondaryShortcutSlots[index];
+    } else {
       continue;
     }
 
-    const NormalItemSlot previous = (bank == 0 ? this->m_shortcutSlots : this->m_secondaryShortcutSlots)[index];
     bool duplicate = previous.itemId == id && previous.unknown_0005 == level && previous.unknown_0000 == type;
 
     if (!duplicate) {
@@ -80,15 +86,22 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
       }
     }
 
-    (bank == 0 ? this->m_shortcutSlots : this->m_secondaryShortcutSlots)[index] = {};
+    if (bank == 0) {
+      this->m_shortcutSlots[index] = {};
+    } else if (bank == 1) {
+      this->m_secondaryShortcutSlots[index] = {};
+    }
     modeEvents->SendMsg(313, index, bank, 0, 0);
   }
 
-  if (bank == 0 || bank == 1) {
-    NormalItemSlot& value = (bank == 0 ? this->m_shortcutSlots : this->m_secondaryShortcutSlots)[destination];
-    value.unknown_0005 = static_cast<std::int16_t>(level);
-    value.unknown_0000 = type;
-    value.itemId = id;
+  if (bank == 0) {
+    this->m_shortcutSlots[destination].unknown_0005 = static_cast<std::int16_t>(level);
+    this->m_shortcutSlots[destination].unknown_0000 = type;
+    this->m_shortcutSlots[destination].itemId = id;
+  } else if (bank == 1) {
+    this->m_secondaryShortcutSlots[destination].unknown_0005 = static_cast<std::int16_t>(level);
+    this->m_secondaryShortcutSlots[destination].unknown_0000 = type;
+    this->m_secondaryShortcutSlots[destination].itemId = id;
   }
 
   modeEvents->SendMsg(313, destination, bank, 0, 0);
