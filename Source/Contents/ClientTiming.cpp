@@ -650,16 +650,24 @@ void CSession::SetShopItem(int shopId, unsigned int index, int itemId, int first
   }
 }
 
+// INLINED
+static __forceinline int LookupShopId(CSession& session, std::string name) {
+  std::string key = name;
+  if (key.empty()) {
+    key = session.m_navigationPlayerMap;
+  }
+
+  const auto found = session.m_nameToId.find(key);
+  if (found == session.m_nameToId.end()) {
+    return -1;
+  }
+  return found->second;
+}
+
 // OFFSET: 0x00E006E0
 // FUNCTION: fn_23643
 bool CSession::AddShopName(std::string name, int shopId) {
-  std::string key = name;
-  if (key.empty()) {
-    key = this->m_navigationPlayerMap;
-  }
-
-  const auto found = this->m_nameToId.find(key);
-  if (found != this->m_nameToId.end() && found->second != -1) {
+  if (LookupShopId(*this, name) != -1) {
     return true;
   }
 
@@ -888,7 +896,7 @@ bool CSession::LoadFogParameters() {
       values.push_back(std::string(start, cursor));
     } else {
       std::string last(start, cursor);
-      values.push_back(last);
+      values.push_back(std::move(last));
       this->m_fogParameters.push_back(std::make_pair(name, values));
       name.clear();
       values.clear();
