@@ -617,11 +617,11 @@ void CSkillAction_DR_LOW_FLIGHT::Slot11(int level, CGameActor* source, CGameActo
 
   const std::string effectName(
     (direction & 1) != 0 ? std::string([] {
-      const std::uint8_t horizonSource[] = {0x5D, 0x36, 0x5C, 0x5E, 0x07, 0xA1, 0x0C, 0xEC, 0x59, 0x2D, 0x74, 0x69, 0x0E, 0xBF, 0x0C, 0xF1, 0x5E, 0x37, 0x2B};
+      const char horizonSource[] = {'\x5D', '\x36', '\x5C', '\x5E', '\x07', '\xA1', '\x0C', '\xEC', '\x59', '\x2D', '\x74', '\x69', '\x0E', '\xBF', '\x0C', '\xF1', '\x5E', '\x37', '\x2B'};
       thread_local EncryptedName<sizeof(horizonSource), 0x8B65CD61012B5931ULL> horizonName(horizonSource);
       return horizonName.Text();
     }()) : std::string([] {
-      const std::uint8_t verticalSource[] = {0x89, 0xE0, 0x3A, 0x4A, 0x51, 0x6D, 0x3A, 0x90, 0x8D, 0xFB, 0x12, 0x63, 0x52, 0x73, 0x27, 0x9E, 0x86, 0xEE, 0x21, 0x15};
+      const char verticalSource[] = {'\x89', '\xE0', '\x3A', '\x4A', '\x51', '\x6D', '\x3A', '\x90', '\x8D', '\xFB', '\x12', '\x63', '\x52', '\x73', '\x27', '\x9E', '\x86', '\xEE', '\x21', '\x15'};
       thread_local EncryptedName<sizeof(verticalSource), 0xF7530137154D8FE5ULL> verticalName(verticalSource);
       return verticalName.Text();
     }())
@@ -649,7 +649,7 @@ void CSkillAction_DR_LOW_FLIGHT::Slot11(int level, CGameActor* source, CGameActo
 
   effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        const std::uint8_t bottomSource[] = {0xAD, 0xA0, 0xA4, 0x6C, 0xF1, 0x71, 0x94, 0x0E, 0xA9, 0xBB, 0x8C, 0x51, 0xF8, 0x69, 0x89, 0x06, 0xAC, 0xCF};
+        const char bottomSource[] = {'\xAD', '\xA0', '\xA4', '\x6C', '\xF1', '\x71', '\x94', '\x0E', '\xA9', '\xBB', '\x8C', '\x51', '\xF8', '\x69', '\x89', '\x06', '\xAC', '\xCF'};
         thread_local EncryptedName<sizeof(bottomSource), 0x69FD1D9733D3CFC1ULL> bottomName(bottomSource);
         return bottomName.Text();
       }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
