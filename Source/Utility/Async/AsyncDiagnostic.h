@@ -12,7 +12,7 @@ struct AsyncDiagnostic {
       : AsyncDiagnostic(&success, &message, file, &line) {
   }
   ~AsyncDiagnostic();
-  AsyncDiagnostic& MoveFrom(AsyncDiagnostic& other);
+  AsyncDiagnostic& MoveFrom(AsyncDiagnostic& other) noexcept;
 
   /* 0000 */ std::uint32_t line;
   /* 0004 */ std::string file;
