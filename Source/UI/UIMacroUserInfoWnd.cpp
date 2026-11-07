@@ -110,8 +110,8 @@ struct AccessibleTextButton : public UITextButton {
 // OFFSET: 0x007EF430
 // FUNCTION: fn_09841
 void UIMacroReporterWnd::AddActorRow(int aid, std::string name) {
-  for (std::size_t i = 0; i < this->m_rows.size(); ++i) {
-    if (this->m_rows[i].second->geometry.id == aid) {
+  for (const auto& row : this->m_rows) {
+    if (row.second->geometry.id == aid) {
       return;
     }
   }
@@ -310,9 +310,9 @@ void UIMacroReporterWnd::UpdateScrollBar() {
   this->m_scrollable = maximum > 0;
   if (maximum < 1) {
     this->m_firstRow = 0;
-    this->m_scrollBar->SetRange(0, this->m_visibleRows, count);
+    this->m_scrollBar->SetRange(0, this->m_visibleRows, static_cast<int>(this->m_rows.size()));
   } else {
-    this->m_scrollBar->SetRange(maximum, this->m_visibleRows, count);
+    this->m_scrollBar->SetRange(maximum, this->m_visibleRows, static_cast<int>(this->m_rows.size()));
     if (this->m_firstRow < 0) {
       this->m_firstRow = 0;
       this->m_scrollBar->SetPosition(0);
@@ -340,8 +340,10 @@ bool UIMacroReporterWnd::ValidateNames(unsigned char notify) {
       continue;
     }
 
-    std::string displayName = g_mapInfoMgr->GetDisplayName(name + ".rsw");
-    if (displayName == LookupMessage(187)) {
+    name += ".rsw";
+    const char* displayName = g_session.GetMapDisplayName(name.c_str());
+    const std::string unknownMap = LookupMessage(187);
+    if (unknownMap == displayName) {
       if (notify == 1) {
         g_windowMgr.SendNotice(
           1,
