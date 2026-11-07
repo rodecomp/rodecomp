@@ -58,12 +58,11 @@ inline void TransformModelUV(float& u, float& v, const ModelTextureTransform& tr
 // OFFSET: 0x00AB7D40
 // FUNCTION: fn_17499
 void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode) {
-  // GLOBAL: gl_24586
-  static ProjectedVertex projected[30000];
-  struct matrix camera;
-  std::memcpy(camera.values, matrix, sizeof(camera.values));
+  const struct matrix& camera = *reinterpret_cast<const struct matrix*>(matrix);
   struct matrix combined;
   combined.Compose(this->transform, camera);
+  // GLOBAL: gl_24586
+  static ProjectedVertex projected[30000];
   float ambient[3];
   std::memcpy(ambient, g_worldLighting.ambient, sizeof(ambient));
   float lightColor[3];
@@ -184,11 +183,11 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
 // OFFSET: 0x00AB84B0
 // FUNCTION: fn_17500
 void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode) {
-  // GLOBAL: gl_24587
-  static ProjectedVertex projected[30000];
   const struct matrix& camera = *reinterpret_cast<const struct matrix*>(matrix);
   struct matrix combined;
   combined.Compose(this->transform, camera);
+  // GLOBAL: gl_24587
+  static ProjectedVertex projected[30000];
   float ambient[3];
   std::memcpy(ambient, g_worldLighting.ambient, sizeof(ambient));
   float lightColor[3];
