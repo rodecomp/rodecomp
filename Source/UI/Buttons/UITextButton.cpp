@@ -2282,7 +2282,7 @@ void UIBasicItemCtrl::Paint() {
     name = "유저인터페이스\\ExMacro\\no_item.bmp";
   }
 
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)))->image, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name))), false);
   this->DrawItemIcon(4, 0, 0, false);
 }
 
@@ -2301,7 +2301,7 @@ void UIBasicSkillCtrl::Paint() {
 
       char text[1024];
       g_session.ItemBitmapPath(skill.name, text);
-      this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)))->image, true);
+      this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text))), true);
       if (skill.level != 0) {
         std::sprintf(text, "%d", skill.level);
         FontCache& fonts = g_fontCache;
@@ -2316,7 +2316,7 @@ void UIBasicSkillCtrl::Paint() {
   }
 
   if (!drawn) {
-    this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\no_skill.bmp")))->image, false);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\no_skill.bmp"))), false);
   }
 }
 
@@ -2324,18 +2324,18 @@ void UIBasicSkillCtrl::Paint() {
 // FUNCTION: fn_11345
 void UIBmpRadioBtn::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  const std::string* name;
+  CBitmapRes* bitmap;
   if (this->m_disabled == true) {
-    name = &this->m_names[3];
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[3].c_str())));
   } else if (this->geometry.unknown_0030 == 1) {
-    name = &this->m_names[2];
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[2].c_str())));
   } else if (this->m_hovered == true) {
-    name = &this->m_names[1];
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[1].c_str())));
   } else {
-    name = &this->m_names[0];
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[0].c_str())));
   }
 
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name->c_str())))->image, false);
+  this->DrawBitmap(0, 0, bitmap, false);
   if (this->m_label.size() == 0) {
     return;
   }
@@ -2426,13 +2426,13 @@ void UIComboBox::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(red, green, blue));
 
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")))->image, false);
-  const auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
-  this->DrawBitmap(0, this->geometry.height - leftDown->image.height, &leftDown->image, false);
-  const auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
-  this->DrawBitmap(this->geometry.width - rightUp->image.width, 0, &rightUp->image, false);
-  const auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
-  this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, &rightDown->image, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp"))), false);
+  auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, this->geometry.height - leftDown->image.height, leftDown, false);
+  auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
+  this->DrawBitmap(this->geometry.width - rightUp->image.width, 0, rightUp, false);
+  auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
+  this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, rightDown, false);
 
   const int first = this->topLine;
   unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
@@ -2768,7 +2768,7 @@ void __fastcall ActivateNaviLink(UINaviLinkButton* button, void*, int x, int y) 
 void UIImgMenu::Paint() {
   this->FillRegion(0, 0, this->geometry.width, this->geometry.height, 0x99A8AC);
   this->DrawBitmap(
-    1, 1, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())))->image, false
+    1, 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str()))), false
   );
 
   if (this->hovered < 0) {
@@ -2796,9 +2796,7 @@ void UIImgMenu::Paint() {
       y = 1;
     }
 
-    if (bitmap) {
-      this->DrawBitmap(x, y, &bitmap->image, false);
-    }
+    this->DrawBitmap(x, y, bitmap, false);
   }
 }
 
@@ -3113,13 +3111,13 @@ void UIComboBoxID::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(red, green, blue));
 
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")))->image, false);
-  const auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
-  this->DrawBitmap(0, this->geometry.height - leftDown->image.height, &leftDown->image, false);
-  const auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
-  this->DrawBitmap(this->geometry.width - rightUp->image.width, 0, &rightUp->image, false);
-  const auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
-  this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, &rightDown->image, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp"))), false);
+  auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, this->geometry.height - leftDown->image.height, leftDown, false);
+  auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
+  this->DrawBitmap(this->geometry.width - rightUp->image.width, 0, rightUp, false);
+  auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
+  this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, rightDown, false);
 
   const int first = this->topLine;
   unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
@@ -3165,7 +3163,7 @@ void UIItemStoreComboBox::Paint() {
           std::sprintf(path, "유저인터페이스\\basic_interface\\combobox_pink%d.bmp", this->selected);
         }
 
-        this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)))->image, false);
+        this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))), false);
       }
     }
 
