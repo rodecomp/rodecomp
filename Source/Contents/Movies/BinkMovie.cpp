@@ -66,31 +66,36 @@ bool BinkMovie::Open(const char* name, int loop, bool memory) {
 // OFFSET: 0x007AF990
 // FUNCTION: fn_09159
 bool BinkMovie::Update() {
-  if (this->m_state != 1 || BinkWait(this->m_handle) != 0) {
+  bool result = false;
+  if (this->m_state != 1) {
     return false;
   }
 
-  BinkDoFrame(this->m_handle);
-
-  while (BinkShouldSkip(this->m_handle) != 0) {
-    BinkNextFrame(this->m_handle);
+  if (BinkWait(this->m_handle) == 0) {
     BinkDoFrame(this->m_handle);
-  }
 
-  if (this->m_handle->frame == this->m_handle->frames) {
-    if (this->m_loop == 0) {
-      this->Close();
-      this->m_state = 2;
-      return false;
+    while (BinkShouldSkip(this->m_handle) != 0) {
+      BinkNextFrame(this->m_handle);
+      BinkDoFrame(this->m_handle);
     }
 
-    if (this->m_loop == 1) {
-      this->m_handle->frame = 0;
+    if (this->m_handle->frame == this->m_handle->frames) {
+      if (this->m_loop == 0) {
+        this->Close();
+        this->m_state = 2;
+        return false;
+      }
+
+      if (this->m_loop == 1) {
+        this->m_handle->frame = 0;
+      }
     }
+
+    BinkNextFrame(this->m_handle);
+    result = true;
   }
 
-  BinkNextFrame(this->m_handle);
-  return true;
+  return result;
 }
 
 // OFFSET: 0x007AF7A0
@@ -108,7 +113,8 @@ bool BinkMovie::CopyTo(CTexture* texture) {
 
   BinkCopyToBuffer(this->m_handle, locked.pixels, locked.pitch, locked.height, 0, 0, 5);
   texture->Unlock();
-  const RECT rectangle{0, 0, static_cast<LONG>(locked.width), static_cast<LONG>(locked.height)};
+  RECT rectangle;
+  SetRect(&rectangle, 0, 0, locked.width, locked.height);
   texture->Update(&rectangle);
 
   return true;
