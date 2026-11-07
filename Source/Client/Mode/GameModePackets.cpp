@@ -1118,7 +1118,7 @@ std::FILE* CGameMode::OpenPackageSimulatorFile(const std::string& folder, int it
   int index = 0;
   while (_access(path.c_str(), 0) == 0) {
     ++index;
-    path = FormatOwnedString("%s\\%s_%d.txt", directory.c_str(), name.c_str(), index);
+    path = static_cast<const std::string&>(FormatOwnedString("%s\\%s_%d.txt", directory.c_str(), name.c_str(), index));
   }
 
   std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
@@ -1139,7 +1139,7 @@ std::FILE* CGameMode::OpenSimulatorFile(const std::string& folder, const std::st
   int index = 0;
   while (_access(path.c_str(), 0) == 0) {
     ++index;
-    path = FormatOwnedString("%s\\%s_%d.txt", directory.c_str(), name.c_str(), index);
+    path = static_cast<const std::string&>(FormatOwnedString("%s\\%s_%d.txt", directory.c_str(), name.c_str(), index));
   }
 
   std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
@@ -6971,7 +6971,7 @@ std::FILE* CGameMode::OpenRandomOptionSimulatorFile(const std::string& folder, c
   int index = 0;
   while (_access(path.c_str(), 0) == 0) {
     ++index;
-    path = FormatOwnedString("%s\\%s_%d.txt", directory.c_str(), name.c_str(), index);
+    path = static_cast<const std::string&>(FormatOwnedString("%s\\%s_%d.txt", directory.c_str(), name.c_str(), index));
   }
 
   std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
