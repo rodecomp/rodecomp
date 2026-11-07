@@ -2785,7 +2785,7 @@ void UICashEmotionMiniWnd::Paint() {
 
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\bg_preview.bmp")));
   if (background) {
-    this->DrawBitmap(0, 0, &background->image, false);
+    this->DrawBitmap(0, 0, background, false);
   }
 
   if (this->m_selectedIndex == -1) {
@@ -2804,7 +2804,7 @@ void UICashEmotionMiniWnd::Paint() {
 
   auto* highlight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\bg_preview_select.bmp")));
   if (highlight) {
-    this->DrawBitmap(piece->geometry.x - 3, 0, &highlight->image, false);
+    this->DrawBitmap(piece->geometry.x - 3, 0, highlight, false);
   }
 }
 
@@ -3293,7 +3293,7 @@ void UICashEmotionPack_Search::Paint() {
 
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\bg_list_search.bmp")));
   if (bitmap) {
-    this->DrawBitmap(0, 0, &bitmap->image, false);
+    this->DrawBitmap(0, 0, bitmap, false);
   }
 }
 
