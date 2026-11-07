@@ -67,7 +67,7 @@ RenderVertex* RenderVertexPool::Acquire(unsigned count) {
   }
 
   for (auto& block : this->m_active) {
-    if (block->capacity() - block->size() >= count) {
+    if (block->size() + count <= block->capacity()) {
       const unsigned first = static_cast<unsigned>(block->size());
       Append(*block, count);
       this->m_used += count;
