@@ -723,16 +723,11 @@ void CFlyingShipRouteInfo::BuildRoute(const std::vector<std::string>& mapNames) 
 // FUNCTION: fn_12754
 int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 0:
-    if (sender == this->m_searchEdit) {
-      if (this->m_searchEdit->Length() > 0) {
-        this->SendMsg(this->m_searchEdit, 6, 321, 0, 0, 0);
-        return 0;
-      }
-    }
-    break;
   case 6:
     switch (argument1) {
+    case 201:
+      g_windowMgr.CloseWindow(140);
+      return 0;
     case 192:
       this->m_showLabels = !this->m_showLabels;
       this->m_labelCheck->geometry.unknown_0030 = this->m_showLabels;
@@ -746,9 +741,6 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       }
       this->UpdateNavigationButtons();
       return 0;
-    case 201:
-      g_windowMgr.CloseWindow(140);
-      return 0;
     case 321:
       if (this->m_searchEdit->Length()) {
         std::string name(this->m_searchEdit->Text());
@@ -759,6 +751,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       return 0;
     }
     return 0;
+
   case 39:
     if (this->m_worldCombo == sender) {
       g_worldViewMgr.currentWorld = argument1;
@@ -783,11 +776,21 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       return 0;
     }
     return 0;
+
   case 60:
     this->ClearRecords();
     this->RefreshPartyRecords();
     this->Invalidate();
     return 0;
+
+  case 0:
+    if (sender == this->m_searchEdit) {
+      if (this->m_searchEdit->Length() > 0) {
+        this->SendMsg(this->m_searchEdit, 6, 321, 0, 0, 0);
+        return 0;
+      }
+    }
+    break;
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
