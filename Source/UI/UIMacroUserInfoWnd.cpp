@@ -235,11 +235,11 @@ void UIMacroUserInfoWnd::Paint() {
 // OFFSET: 0x007F1160
 // FUNCTION: fn_09850
 void UIMacroReporterWnd::Slot25(int x, int y) {
-  if (this->unknown_010C == 1 && y >= 18) {
+  if (this->unknown_010C == 1 && y > 17) {
     return;
   }
 
-  if (g_windowMgr.lastWindowId != this->geometry.id) {
+  if (this->geometry.id != g_windowMgr.lastWindowId) {
     g_windowMgr.BringToFront(this->geometry.id);
     g_windowMgr.lastWindowId = this->geometry.id;
   }

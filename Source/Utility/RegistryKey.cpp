@@ -26,5 +26,8 @@ bool RegistryKey::Query(const char* name, DWORD expectedType, BYTE* data, DWORD 
 // OFFSET: 0x00AED0C0
 // FUNCTION: fn_18153
 bool RegistryKey::Set(const char* name, DWORD type, const BYTE* data, DWORD size) {
-  return this->handle != nullptr && RegSetValueExA(this->handle, name, 0, type, data, size) == ERROR_SUCCESS;
+  if (this->handle != nullptr) {
+    return RegSetValueExA(this->handle, name, 0, type, data, size) == ERROR_SUCCESS;
+  }
+  return false;
 }

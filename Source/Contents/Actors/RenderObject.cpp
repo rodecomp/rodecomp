@@ -3498,8 +3498,11 @@ bool CGrannyCorpse3d::OnProcess() {
     this->alpha = static_cast<unsigned char>(600 - tick);
   }
 
-  this->tick = tick + 1;
-  return tick <= 600;
+  if (this->tick++ > 600) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00CC7D50

@@ -147,16 +147,19 @@ void CUserHotkeyMgr::Shutdown() {
 // OFFSET: 0x005F80A0
 // FUNCTION: fn_04058
 int CUserHotkeyMgr::TabAt(int position) const {
+  int tab = 0;
   switch (position) {
   case 1:
-    return 3;
+    tab = 3;
+    break;
   case 2:
-    return 1;
+    tab = 1;
+    break;
   case 3:
-    return 2;
-  default:
-    return 0;
+    tab = 2;
+    break;
   }
+  return tab;
 }
 
 // OFFSET: 0x005F88D0
