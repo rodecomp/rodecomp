@@ -5921,7 +5921,8 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // OFFSET: 0x008F7B10
 // FUNCTION: fn_12329
 int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     switch (a) {
     case 184: {
       int error;
@@ -5984,29 +5985,27 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     }
     }
-    return UIChatRoomMakeWnd::SendMsg(sender, 6, a, b, c, d);
+    break;
+  case 34: {
+    const ChatRoomSetting* setting = reinterpret_cast<const ChatRoomSetting*>(a);
+    this->m_limit = setting->limit;
+    this->m_limitText->SetText(this->m_limitLabels[this->m_limitLabels.size() - 1].c_str(), 0);
+    this->m_limitText->Invalidate();
+    this->m_passwordEdit->SetText(setting->password.c_str());
+    this->m_titleEdit->SetText(setting->title.c_str());
+    g_windowMgr.SetFocus(this->m_titleEdit);
+    this->m_titleEdit->SelectAll();
+    this->m_public = setting->isPublic == 0;
+    for (int i = 0; i < 2; ++i) {
+      this->m_publicButtons[i]->Invalidate();
+      this->m_publicButtons[i]->SendMsg(this, 13, i == this->m_public ? 1 : 0, 0, 0, 0);
+    }
+    this->m_closeButton->SetTooltip("");
+    this->Invalidate();
+    return 0;
   }
-
-  if (message != 34) {
-    return UIChatRoomMakeWnd::SendMsg(sender, message, a, b, c, d);
   }
-
-  const ChatRoomSetting* setting = reinterpret_cast<const ChatRoomSetting*>(a);
-  this->m_limit = setting->limit;
-  this->m_limitText->SetText(this->m_limitLabels[this->m_limitLabels.size() - 1].c_str(), 0);
-  this->m_limitText->Invalidate();
-  this->m_passwordEdit->SetText(setting->password.c_str());
-  this->m_titleEdit->SetText(setting->title.c_str());
-  g_windowMgr.SetFocus(this->m_titleEdit);
-  this->m_titleEdit->SelectAll();
-  this->m_public = setting->isPublic == 0;
-  for (int i = 0; i < 2; ++i) {
-    this->m_publicButtons[i]->Invalidate();
-    this->m_publicButtons[i]->SendMsg(this, 13, i == this->m_public ? 1 : 0, 0, 0, 0);
-  }
-  this->m_closeButton->SetTooltip("");
-  this->Invalidate();
-  return 0;
+  return UIChatRoomMakeWnd::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x008F64B0
