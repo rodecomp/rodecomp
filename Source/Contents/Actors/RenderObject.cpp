@@ -795,16 +795,16 @@ void CRenderObject::ApplySwing(int mode, int& x, int& y, int& outX, int& outY) c
     return;
   }
 
-  const int swing = static_cast<int>(180.0f - ClientSine(this->render.unknown_00F4 * 5 + 90) * 180.0f);
+  const int swing = static_cast<int>(180.0f - g_sinTable[this->render.unknown_00F4 * 5 + 90] * 180.0f);
   const int angle = swing >= 360 ? swing - 360 : swing;
   if (mode == 1) {
-    x = static_cast<int>(ClientSine(angle) * 40.0f + x);
-    y = static_cast<int>(y - (ClientCosine(angle) * 40.0f - 40.0f));
+    x = static_cast<int>(g_sinTable[angle] * 40.0f + x);
+    y = static_cast<int>(y - (g_cosTable[angle] * 40.0f - 40.0f));
     outX = x;
     outY = y;
   } else if (mode >= 2) {
-    x = static_cast<int>(ClientSine(angle) * 10.0f + x);
-    y = static_cast<int>(y - (ClientCosine(angle) * 10.0f - 10.0f));
+    x = static_cast<int>(g_sinTable[angle] * 10.0f + x);
+    y = static_cast<int>(y - (g_cosTable[angle] * 10.0f - 10.0f));
   }
 }
 
@@ -2693,40 +2693,43 @@ struct CharacterNpcViewInfo {
   /* 007C */ int unknown_007C;
 };
 
-__declspec(noinline) static void FillCharacterNpcRenderPrimary(
-  CCharacterNpc* self, CCharacterRender* characterRender, CharacterNpcViewInfo* info
-) {
-  characterRender->unknown_0004 = *reinterpret_cast<int*>(&self->render.position.x);
-  characterRender->unknown_0008 = *reinterpret_cast<int*>(&self->render.position.y);
-  characterRender->unknown_000C = *reinterpret_cast<int*>(&self->render.position.z);
-  characterRender->unknown_0010 = self->unknown_025C;
-  characterRender->unknown_0018[0] = self->unknown_0260;
-  characterRender->unknown_0018[1] = *reinterpret_cast<int*>(&self->unknown_029C);
-  characterRender->unknown_0018[2] = info->unknown_0058;
-  characterRender->unknown_0018[3] = info->unknown_0054;
-  characterRender->unknown_0028 = info->unknown_0030;
-  characterRender->unknown_002C = info->unknown_004C;
-  characterRender->unknown_0030 = info->unknown_0050;
-  characterRender->SetRobe(info->robe);
-  characterRender->unknown_0050 = info->unknown_0078;
+// INLINED
+static CCharacterRender* NpcCharacterRender(CCharacterNpc* self) {
+  return reinterpret_cast<CCharacterRender*>(self->unknown_0440);
 }
 
-__declspec(noinline) static void FillCharacterNpcRenderSecondary(
-  CCharacterNpc* self, CCharacterRender* characterRender, CharacterNpcViewInfo* info
-) {
-  characterRender->unknown_0004 = *reinterpret_cast<int*>(&self->render.position.x);
-  characterRender->unknown_0008 = *reinterpret_cast<int*>(&self->render.position.y);
-  characterRender->unknown_000C = *reinterpret_cast<int*>(&self->render.position.z);
-  characterRender->unknown_0010 = self->unknown_025C;
-  characterRender->unknown_0018[0] = self->unknown_0260;
-  characterRender->unknown_0018[1] = *reinterpret_cast<int*>(&self->unknown_029C);
-  characterRender->unknown_0018[2] = info->unknown_005C;
-  characterRender->unknown_0018[3] = info->unknown_0058;
-  characterRender->unknown_0028 = info->unknown_0038;
-  characterRender->unknown_002C = info->unknown_0050;
-  characterRender->unknown_0030 = info->unknown_0054;
-  characterRender->SetRobe(info->robeAlt);
-  characterRender->unknown_0050 = info->unknown_007C;
+// INLINED
+static __forceinline void FillCharacterNpcRenderPrimary(CCharacterNpc* self, CharacterNpcViewInfo* info) {
+  NpcCharacterRender(self)->unknown_0004 = *reinterpret_cast<int*>(&self->render.position.x);
+  NpcCharacterRender(self)->unknown_0008 = *reinterpret_cast<int*>(&self->render.position.y);
+  NpcCharacterRender(self)->unknown_000C = *reinterpret_cast<int*>(&self->render.position.z);
+  NpcCharacterRender(self)->unknown_0010 = self->unknown_025C;
+  NpcCharacterRender(self)->unknown_0018[0] = self->unknown_0260;
+  NpcCharacterRender(self)->unknown_0018[1] = *reinterpret_cast<int*>(&self->unknown_029C);
+  NpcCharacterRender(self)->unknown_0018[2] = info->unknown_0058;
+  NpcCharacterRender(self)->unknown_0018[3] = info->unknown_0054;
+  NpcCharacterRender(self)->unknown_0028 = info->unknown_0030;
+  NpcCharacterRender(self)->unknown_002C = info->unknown_004C;
+  NpcCharacterRender(self)->unknown_0030 = info->unknown_0050;
+  NpcCharacterRender(self)->SetRobe(info->robe);
+  NpcCharacterRender(self)->unknown_0050 = info->unknown_0078;
+}
+
+// INLINED
+static __forceinline void FillCharacterNpcRenderSecondary(CCharacterNpc* self, CharacterNpcViewInfo* info) {
+  NpcCharacterRender(self)->unknown_0004 = *reinterpret_cast<int*>(&self->render.position.x);
+  NpcCharacterRender(self)->unknown_0008 = *reinterpret_cast<int*>(&self->render.position.y);
+  NpcCharacterRender(self)->unknown_000C = *reinterpret_cast<int*>(&self->render.position.z);
+  NpcCharacterRender(self)->unknown_0010 = self->unknown_025C;
+  NpcCharacterRender(self)->unknown_0018[0] = self->unknown_0260;
+  NpcCharacterRender(self)->unknown_0018[1] = *reinterpret_cast<int*>(&self->unknown_029C);
+  NpcCharacterRender(self)->unknown_0018[2] = info->unknown_005C;
+  NpcCharacterRender(self)->unknown_0018[3] = info->unknown_0058;
+  NpcCharacterRender(self)->unknown_0028 = info->unknown_0038;
+  NpcCharacterRender(self)->unknown_002C = info->unknown_0050;
+  NpcCharacterRender(self)->unknown_0030 = info->unknown_0054;
+  NpcCharacterRender(self)->SetRobe(info->robeAlt);
+  NpcCharacterRender(self)->unknown_0050 = info->unknown_007C;
 }
 
 // OFFSET: 0x005A1530
@@ -2734,13 +2737,8 @@ __declspec(noinline) static void FillCharacterNpcRenderSecondary(
 void CCharacterNpc::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
 ) {
-  if (a != 0 || message < 3 || message > 0x7b) {
-    CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-    return;
-  }
-
   CharacterNpcViewInfo* info = reinterpret_cast<CharacterNpcViewInfo*>(b);
-  switch (message) {
+  switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
   case 4:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     this->render.visible = IsVisibleJob(info->job) ? 1 : 0;
@@ -2748,19 +2746,15 @@ void CCharacterNpc::SendMsg(
     if (this->unknown_0440 != nullptr) {
       return;
     }
-    {
-      CCharacterRender* characterRender = new CCharacterRender(0, 0);
-      this->unknown_0440 = reinterpret_cast<CGameObject*>(characterRender);
-      FillCharacterNpcRenderPrimary(this, characterRender, info);
-    }
+    this->unknown_0440 = reinterpret_cast<CGameObject*>(new CCharacterRender(0, 0));
+    FillCharacterNpcRenderPrimary(this, info);
     return;
-  case 2:
   case 3:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     if (this->unknown_0440 == nullptr) {
       return;
     }
-    FillCharacterNpcRenderPrimary(this, reinterpret_cast<CCharacterRender*>(this->unknown_0440), info);
+    FillCharacterNpcRenderPrimary(this, info);
     return;
   case 6:
   case 0x7a:
@@ -2768,11 +2762,8 @@ void CCharacterNpc::SendMsg(
     if (this->unknown_0440 != nullptr) {
       return;
     }
-    {
-      CCharacterRender* characterRender = new CCharacterRender(0, 0);
-      this->unknown_0440 = reinterpret_cast<CGameObject*>(characterRender);
-      FillCharacterNpcRenderSecondary(this, characterRender, info);
-    }
+    this->unknown_0440 = reinterpret_cast<CGameObject*>(new CCharacterRender(0, 0));
+    FillCharacterNpcRenderSecondary(this, info);
     return;
   case 5:
   case 0x7b:
@@ -2780,7 +2771,7 @@ void CCharacterNpc::SendMsg(
     if (this->unknown_0440 == nullptr) {
       return;
     }
-    FillCharacterNpcRenderSecondary(this, reinterpret_cast<CCharacterRender*>(this->unknown_0440), info);
+    FillCharacterNpcRenderSecondary(this, info);
     return;
   default:
     CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
@@ -2850,28 +2841,41 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
     }
 
     const int type = value & 3;
-    int effectId;
     if (type == 0) {
-      effectId = 0x4EE;
+      if (ball == nullptr) {
+        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4EE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+        if (spawned != nullptr) {
+          spawned->MoveFirstTo(index);
+        }
+      } else {
+        ball->AddBall(0x4EE, index);
+      }
     } else if (type == 1) {
-      effectId = 0x4F0;
+      if (ball == nullptr) {
+        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4F0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+        if (spawned != nullptr) {
+          spawned->MoveFirstTo(index);
+        }
+      } else {
+        ball->AddBall(0x4F0, index);
+      }
     } else if (type == 2) {
-      effectId = 0x4EF;
+      if (ball == nullptr) {
+        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4EF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+        if (spawned != nullptr) {
+          spawned->MoveFirstTo(index);
+        }
+      } else {
+        ball->AddBall(0x4EF, index);
+      }
     } else if (type == 3) {
-      effectId = 0x4F1;
-    } else {
-      this->unknown_0158[index] = value;
-      return;
-    }
-
-    if (ball != nullptr) {
-      ball->AddBall(effectId, index);
-    } else {
-      CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(
-        g_effectMgr->Spawn(this->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)
-      );
-      if (spawned != nullptr) {
-        spawned->MoveFirstTo(index);
+      if (ball == nullptr) {
+        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4F1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+        if (spawned != nullptr) {
+          spawned->MoveFirstTo(index);
+        }
+      } else {
+        ball->AddBall(0x4F1, index);
       }
     }
 
