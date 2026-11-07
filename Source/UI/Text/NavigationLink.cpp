@@ -681,7 +681,7 @@ void UIItemImage::Paint() {
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
 
   if (bitmap) {
-    this->DrawBitmap(0, 0, &bitmap->image, true);
+    this->DrawBitmap(0, 0, bitmap, true);
   }
 }
 
