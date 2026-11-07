@@ -208,8 +208,9 @@ void CUIMacroReport::Slot15(int width, int height) {
   title->SetColor(0);
   title->SetShadow(1, 0xFFFFFF);
   title->SetOutline(1, 0xFFFFFF);
-  this->m_titleBar->titleText = title;
-  this->m_titleBar->AddChild(title);
+  CUITitleBar* titleBar = this->m_titleBar;
+  titleBar->titleText = title;
+  titleBar->AddChild(title);
 
   CUIImageButton* menuButton = new CUIImageButton();
   menuButton->SetSize(11, 11);
@@ -468,7 +469,8 @@ void CUIMacroReport::Slot15(int width, int height) {
     CUIStaticText* text = this->unknown_00FC;
     const char warningFontSource[] = {
         '\x1A', '\x78', '\x25', '\xE0', '\xCC', '\x7D'};
-    text->SetFont(std::string(DecryptName<0x9FED7DA189490D5DULL>(warningFontSource)));
+    const std::string warningFont(DecryptName<0x9FED7DA189490D5DULL>(warningFontSource));
+    text->SetFont(warningFont);
   }
   this->unknown_00FC->SetFontHeight(12);
   this->unknown_00FC->SetBold(0);
