@@ -2325,44 +2325,44 @@ void CRagEffect::BowlingBash() {
   }
 
   const int facing = static_cast<int>(180.0f - this->state.parent->render.angle);
-  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.unknown_11C84->duration = 20 - this->state.stateCnt;
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.duration = 20 - this->state.stateCnt;
   const int angle = facing < 0 ? facing + 360 : facing;
-  this->state.unknown_11C84->longitude = static_cast<float>(angle + this->state.stateCnt * 20);
-  EffectPrimitiveState& tilt = *this->state.unknown_11C84;
+  this->state.lastPrim->state.longitude = static_cast<float>(angle + this->state.stateCnt * 20);
+  EffectPrimitiveState& tilt = this->state.lastPrim->state;
   reinterpret_cast<matrix*>(tilt.transform)->MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
-  EffectPrimitiveState& turn = *this->state.unknown_11C84;
+  EffectPrimitiveState& turn = this->state.lastPrim->state;
   reinterpret_cast<matrix*>(turn.transform)->AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
-  this->state.unknown_11C84->outerSize = 8.0f;
-  this->state.unknown_11C84->outerSpeed = 0.5f;
-  this->state.unknown_11C84->outerAccel = -0.03f;
-  this->state.unknown_11C84->innerSize = 3.0f;
-  this->state.unknown_11C84->innerSpeed = 0.5f;
-  this->state.unknown_11C84->innerAccel = -0.03f;
-  this->state.unknown_11C84->heightSize = 3.5f;
-  this->state.unknown_11C84->alpha = static_cast<float>(this->state.stateCnt * -7 + 240);
-  const int duration = this->state.unknown_11C84->duration;
-  this->state.unknown_11C84->fadeOutCnt = duration - duration / 2;
-  AllocateTextures(*this->state.unknown_11C84);
-  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
+  this->state.lastPrim->state.outerSize = 8.0f;
+  this->state.lastPrim->state.outerSpeed = 0.5f;
+  this->state.lastPrim->state.outerAccel = -0.03f;
+  this->state.lastPrim->state.innerSize = 3.0f;
+  this->state.lastPrim->state.innerSpeed = 0.5f;
+  this->state.lastPrim->state.innerAccel = -0.03f;
+  this->state.lastPrim->state.heightSize = 3.5f;
+  this->state.lastPrim->state.alpha = static_cast<float>(this->state.stateCnt * -7 + 240);
+  const int duration = this->state.lastPrim->state.duration;
+  this->state.lastPrim->state.fadeOutCnt = duration - duration / 2;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
 
   if (this->state.stateCnt == 0) {
-    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.unknown_11C84->duration = 50;
-    this->state.unknown_11C84->renderFlag |= 0x200u;
-    this->state.unknown_11C84->latitude = 90.0f;
-    this->state.unknown_11C84->radius = 8.0f;
-    this->state.unknown_11C84->radiusSpeed = 0.7f;
-    this->state.unknown_11C84->radiusAccel = -(this->state.unknown_11C84->radiusSpeed / 30.0f);
-    this->state.unknown_11C84->innerSize = 5.0f;
-    this->state.unknown_11C84->changePoint = 20;
-    this->state.unknown_11C84->changeAccel = 0.0f;
-    this->state.unknown_11C84->changeSpeed = 0.08f;
-    this->state.unknown_11C84->alpha = 45.0f;
-    this->state.unknown_11C84->fadeOutCnt = 35;
-    Owner(this->state.unknown_11C84).InitSegment();
-    AllocateTextures(*this->state.unknown_11C84);
-    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
+    this->state.lastPrim = CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim->state.duration = 50;
+    this->state.lastPrim->state.renderFlag |= 0x200u;
+    this->state.lastPrim->state.latitude = 90.0f;
+    this->state.lastPrim->state.radius = 8.0f;
+    this->state.lastPrim->state.radiusSpeed = 0.7f;
+    this->state.lastPrim->state.radiusAccel = -(this->state.lastPrim->state.radiusSpeed / 30.0f);
+    this->state.lastPrim->state.innerSize = 5.0f;
+    this->state.lastPrim->state.changePoint = 20;
+    this->state.lastPrim->state.changeAccel = 0.0f;
+    this->state.lastPrim->state.changeSpeed = 0.08f;
+    this->state.lastPrim->state.alpha = 45.0f;
+    this->state.lastPrim->state.fadeOutCnt = 35;
+    this->state.lastPrim->InitSegment();
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
   }
 }
 
