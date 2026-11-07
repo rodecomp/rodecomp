@@ -33,7 +33,7 @@ void InitMapTypeInfoTable() {
   CFile file;
   if (!file.Open("MapInfoTable.scp", 0, true, false)) {
     if (g_serviceType == 0) {
-      ShowErrorDialog(nullptr, "Load MapInfoTable Failed!", 0);
+      ShowErrorDialog("Load MapInfoTable Failed!", 0);
     } else {
       g_mapPropertyMgr->Clear();
     }
@@ -46,7 +46,7 @@ void InitMapTypeInfoTable() {
     int mapId = 0;
     int propertyId = 0;
 
-    while (index < size && mapId <= 39) {
+    do {
       char character = buffer[index++];
 
       while (index < size) {
@@ -90,7 +90,7 @@ void InitMapTypeInfoTable() {
 
         character = buffer[index++];
       }
-    }
+    } while (mapId < 40 && index < size);
 
     delete[] buffer;
     file.Close();
