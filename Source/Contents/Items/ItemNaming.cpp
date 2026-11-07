@@ -49,6 +49,13 @@ namespace {
   }
 
   // INLINED
+  int CardId(const ITEM_INFO& item, int index) {
+    int id;
+    std::memcpy(&id, &item.unknown_001C[index * sizeof(id)], sizeof(id));
+    return id;
+  }
+
+  // INLINED
   int Copy(char* output, int capacity, const char* text) {
     const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
     return error == 0 || error == 80 ? (output ? static_cast<int>(strnlen(output, capacity)) : 0) : 0;
@@ -82,7 +89,7 @@ bool ITEM_INFO::HasCards() const {
 
 // OFFSET: 0x006D5780
 // FUNCTION: fn_06577
-int ITEM_INFO::Grade(char* output, int& capacity, unsigned char consume) const {
+__declspec(noinline) int ITEM_INFO::Grade(char* output, int& capacity, unsigned char consume) const {
   char grade[2] = {};
   if (this->unknown_0088 == 1) {
     grade[0] = 'D';
@@ -127,7 +134,7 @@ int ITEM_INFO::Creator(char* output, int& capacity, unsigned char consume) const
 
 // OFFSET: 0x006D6F50
 // FUNCTION: fn_06588
-int ITEM_INFO::Prefixes(char* output, int& capacity, unsigned char consume) const {
+__declspec(noinline) int ITEM_INFO::Prefixes(char* output, int& capacity, unsigned char consume) const {
   int ids[4];
   CardIds(*this, ids);
   int remaining = capacity;
@@ -274,47 +281,34 @@ int ITEM_INFO::Slots(char* output, int& capacity, unsigned char consume) const {
   return bytes;
 }
 
-// OFFSET: 0x006D59A0
-// FUNCTION: fn_06581
-std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
-  char text[128] = {};
-  int capacity = 128;
-  std::string result;
-  result.reserve(150);
-  const auto append = [&](int bytes) {
+namespace {
+  // INLINED
+  __forceinline void AppendText(std::string& result, const char* text, int bytes) {
     result += bytes > 0 ? text : "";
-  };
-
-  if (this->identified != 1) {
-    append(Copy(text, capacity, FindItemDescription(std::atoi(this->itemId.c_str())).unidentifiedName));
-    return result;
   }
 
-  const int id = std::atoi(this->itemId.c_str());
-  int cards[4];
-  CardIds(*this, cards);
-  if ((static_cast<unsigned>(id) - 9001u <= 498 || static_cast<unsigned>(id) - 10000u <= 999) && cards[3] == 1) {
-    append(Copy(text, capacity, LookupMessage(756)));
-    append(Copy(text, capacity, FindItemDescription(std::atoi(this->itemId.c_str())).identifiedName));
-    return result;
+  // INLINED
+  __forceinline void AppendRefine(const ITEM_INFO& item, std::string& result, char (&text)[128], int& capacity) {
+    if (item.unknown_0060 > 0) {
+      const int bytes = StringFormat(text, sizeof(text), _TRUNCATE, "+%d ", item.unknown_0060);
+      AppendText(result, text, bytes > 0 ? bytes : 0);
+    }
+
+    if (item.unknown_0088 > 0) {
+      AppendText(result, text, item.Grade(text, capacity, 0));
+    }
   }
 
-  const auto refine = [&]() {
-    if (this->unknown_0060 > 0) {
-      const int bytes = StringFormat(text, sizeof(text), _TRUNCATE, "+%d ", this->unknown_0060);
-      append(bytes > 0 ? bytes : 0);
-    }
+  // INLINED
+  __forceinline void AppendName(const ITEM_INFO& item, std::string& result, char (&text)[128], int& capacity) {
+    AppendText(result, text, Copy(text, capacity, FindItemDescription(std::atoi(item.itemId.c_str())).identifiedName));
+  }
 
-    if (this->unknown_0088 > 0) {
-      append(this->Grade(text, capacity, 0));
-    }
-  };
-  const auto name = [&]() { append(Copy(text, capacity, FindItemDescription(std::atoi(this->itemId.c_str())).identifiedName)); };
-  const auto element = [&]() {
-    const unsigned value = this->unknown_001C[4];
+  // INLINED
+  __forceinline void AppendElement(const ITEM_INFO& item, int id, std::string& result, char (&text)[128], int& capacity) {
     int message = 0;
 
-    switch (value) {
+    switch (static_cast<unsigned>(item.unknown_001C[4])) {
     case 0:
       message = id == 2634 || id == 2635 ? 2976 : 450;
       break;
@@ -333,13 +327,15 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
     }
 
     if (message) {
-      append(Copy(text, capacity, LookupMessage(message)));
+      AppendText(result, text, Copy(text, capacity, LookupMessage(message)));
     }
-  };
-  const auto star = [&]() {
+  }
+
+  // INLINED
+  __forceinline void AppendStar(const ITEM_INFO& item, std::string& result, char (&text)[128], int& capacity) {
     int message = 0;
 
-    switch (this->unknown_001C[5]) {
+    switch (item.unknown_001C[5]) {
     case 5:
       message = 459;
       break;
@@ -352,61 +348,84 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
     }
 
     if (message) {
-      append(Copy(text, capacity, LookupMessage(message)));
+      AppendText(result, text, Copy(text, capacity, LookupMessage(message)));
     }
-  };
+  }
+}
+
+// OFFSET: 0x006D59A0
+// FUNCTION: fn_06581
+std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
+  char text[128] = {};
+  int capacity = 128;
+  std::string result;
+  result.reserve(150);
+
+  if (this->identified != 1) {
+    AppendText(result, text, Copy(text, capacity, FindItemDescription(std::atoi(this->itemId.c_str())).unidentifiedName));
+    return result;
+  }
+
+  const int id = std::atoi(this->itemId.c_str());
+  int cards[4];
+  CardIds(*this, cards);
+  if ((static_cast<unsigned>(id) - 9001u <= 498 || static_cast<unsigned>(id) - 10000u <= 999) && cards[3] == 1) {
+    AppendText(result, text, Copy(text, capacity, LookupMessage(756)));
+    AppendName(*this, result, text, capacity);
+    return result;
+  }
 
   if (cards[0] == 254 && cards[1] == 0) {
-    refine();
+    AppendRefine(*this, result, text, capacity);
     if (g_serviceType != 12 && g_serviceType != 14) {
-      append(this->Creator(text, capacity, 0));
-      element();
-      name();
+      AppendText(result, text, this->Creator(text, capacity, 0));
+      AppendElement(*this, id, result, text, capacity);
+      AppendName(*this, result, text, capacity);
     } else {
-      name();
-      element();
-      append(this->Creator(text, capacity, 0));
+      AppendName(*this, result, text, capacity);
+      AppendElement(*this, id, result, text, capacity);
+      AppendText(result, text, this->Creator(text, capacity, 0));
     }
 
     return result;
   }
 
   if (!Equipment(*this) && detailed == 0) {
-    name();
+    AppendName(*this, result, text, capacity);
     return result;
   }
 
-  refine();
+  AppendRefine(*this, result, text, capacity);
   if (this->HasCards()) {
-    append(this->Prefixes(text, capacity, 0));
-    name();
-    append(this->Suffixes(text, capacity, 0));
-    append(this->Slots(text, capacity, 0));
+    AppendText(result, text, this->Prefixes(text, capacity, 0));
+    AppendName(*this, result, text, capacity);
+    AppendText(result, text, this->Suffixes(text, capacity, 0));
+    AppendText(result, text, this->Slots(text, capacity, 0));
 
     return result;
   }
 
   if (cards[0] != 254 && cards[0] != 255) {
-    name();
-    append(this->Slots(text, capacity, 0));
+    AppendName(*this, result, text, capacity);
+    AppendText(result, text, this->Slots(text, capacity, 0));
     return result;
   }
 
   if (g_serviceType == 12) {
-    name();
-    element();
-    star();
-    append(this->Creator(text, capacity, 0));
+    AppendName(*this, result, text, capacity);
+    AppendElement(*this, id, result, text, capacity);
+    AppendStar(*this, result, text, capacity);
+    AppendText(result, text, this->Creator(text, capacity, 0));
   } else if (g_serviceType == 14) {
-    star();
-    name();
-    element();
-    append(this->Creator(text, capacity, 0));
+    AppendStar(*this, result, text, capacity);
+    AppendName(*this, result, text, capacity);
+    AppendElement(*this, id, result, text, capacity);
+    AppendText(result, text, this->Creator(text, capacity, 0));
   } else {
-    star();
-    append(this->Creator(text, capacity, 0));
-    element();
-    name();
+    AppendStar(*this, result, text, capacity);
+    AppendText(result, text, this->Creator(text, capacity, 0));
+    AppendElement(*this, id, result, text, capacity);
+    AppendName(*this, result, text, capacity);
   }
 
   return result;
@@ -851,22 +870,15 @@ __declspec(noinline) void LoadItemNameTables() {
 // OFFSET: 0x006D5650
 // FUNCTION: fn_06575
 std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item) {
-  int ids[4];
-  CardIds(*item, ids);
-  const bool first = IsItemCard(ids[0]);
-  const unsigned id = static_cast<unsigned>(std::atoi(item->itemId.c_str()));
-  const bool hasCards = id - 9001u <= 498 || id - 10000u <= 999 || ids[0] == 254 || ids[0] == 255 || !Equipment(*item)
-                            ? first
-                            : first || IsItemCard(ids[1]) || IsItemCard(ids[2]) || IsItemCard(ids[3]);
-  if (!hasCards) {
+  const std::uint32_t colors[5] = {0, 0x00ADFF2F, 0x0000BFFF, 0x00FFA500, 0x009400D3};
+  if (!item->HasCards()) {
     return 0;
   }
 
-  const std::uint32_t colors[5] = {0, 0x00ADFF2F, 0x0000BFFF, 0x00FFA500, 0x009400D3};
-  const int slots = FindItemDescription(std::atoi(item->itemId.c_str())).slots;
+  const int slots = FindItemDescription(std::atoi(item->itemId.c_str()), g_itemDescriptions).slots;
   int count = 0;
   for (int index = 0; index < 4; ++index) {
-    if (index >= slots && IsItemCard(ids[index])) {
+    if (index >= slots && IsItemCard(CardId(*item, index))) {
       ++count;
     }
   }
