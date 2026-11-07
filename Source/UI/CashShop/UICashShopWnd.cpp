@@ -763,11 +763,145 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
   CSession& itemLists = g_session;
   const CSession& lists = g_session;
   switch (message) {
+  case 0x22:
+    if (g_session.unknown_5912) {
+      if (g_session.m_hotkeyScript->Call("set_stoveshop_banner", "") == true) {
+        this->m_banner->CreateButtons();
+        this->m_secondBanner->CreateButtons();
+        this->Invalidate();
+        return 0;
+      }
+    } else if (g_session.m_hotkeyScript->Call("set_cashshop_banner", "") == true) {
+      this->m_banner->CreateButtons();
+      this->Invalidate();
+      return 0;
+    }
+    return 0;
+
+  case 0x78:
+  case 0x7A: {
+    HKEY key;
+    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
+      DWORD type = REG_DWORD;
+      DWORD size = 4;
+      RegQueryValueExA(key, "CASH_CATEGORY", nullptr, &type, reinterpret_cast<LPBYTE>(&this->m_selectedTab), &size);
+    }
+    RegCloseKey(key);
+
+    this->unknown_00E8 = argument1;
+    this->unknown_00EC = argument2;
+    this->unknown_00F4->SetText(IntToString(0, 0).c_str());
+    this->SendMsg(this, 6, 0x182, 0, 0, 0);
+    return 0;
+  }
+
+  case 0x9B:
+    this->unknown_00F0 = argument1;
+    this->Invalidate();
+    return 0;
+
+  case 0x17:
+    this->m_items.clear();
+    for (int index = 0; index < lists.GetList1788(this->m_selectedTab); ++index) {
+      ITEM_INFO item = g_session.GetItem1784At(this->m_selectedTab, index);
+      if (item.unknown_0000[1] != 0) {
+        this->m_items.push_back(item);
+      }
+    }
+
+    this->m_itemsPerPage = this->m_selectedTab == 9 ? 6 : 9;
+    if (argument1 == 0) {
+      this->m_page = 0;
+    }
+    this->m_pageCount = this->m_items.size() / this->m_itemsPerPage + (this->m_items.size() % this->m_itemsPerPage != 0);
+    this->LayoutPage();
+    return 0;
+
   case 0:
     if (sender == this->unknown_00E0) {
       this->SendMsg(nullptr, 6, 0x141, 0, 0, 0);
     }
     return 0;
+
+  case 0x1F:
+    this->m_cart->SendMsg(sender, 0x1F, argument1, 1, 0, 0);
+    return 0;
+
+  case 0x26: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode == nullptr) {
+      return 0;
+    }
+
+    ModeDragState* drag = &mode->drag;
+    if (drag == nullptr) {
+      return 0;
+    }
+
+    if (drag->source == 4) {
+      std::vector<ITEM_INFO>& cartItems = this->m_cart->m_cartItems;
+      std::vector<ITEM_INFO>::iterator entry = cartItems.begin();
+      for (; entry != cartItems.end(); ++entry) {
+        if (atoi(entry->itemId.c_str()) == atoi(drag->name.c_str())) {
+          break;
+        }
+      }
+
+      if (entry != cartItems.end()) {
+        if (entry->quantity > drag->quantity) {
+          this->m_cart->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&*entry), -drag->quantity, 0, 0);
+        } else {
+          this->m_cart->SendMsg(this, 0x68, entry->GetItemId(), 0, 0, 0);
+        }
+      }
+    } else if (drag->source == 6) {
+      if (this->m_selectedTab == 9) {
+        std::list<ITEM_INFO>::iterator product = this->m_items.begin();
+        for (; product != this->m_items.end(); ++product) {
+          if (atoi(product->itemId.c_str()) == atoi(drag->name.c_str())) {
+            break;
+          }
+        }
+
+        if (product != this->m_items.end()) {
+          const int stock = product->unknown_0078[3];
+          if (stock <= 0) {
+            g_windowMgr.Confirm(LookupMessage(0xE50), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+            mode->SendMsg(0x12, 0, 0, 0, 0);
+            mode->SendMsg(0x12, 0, 0, 0, 0);
+            return 0;
+          }
+
+          std::vector<ITEM_INFO>& cartItems = this->m_cart->m_cartItems;
+          std::vector<ITEM_INFO>::iterator entry = cartItems.begin();
+          for (; entry != cartItems.end(); ++entry) {
+            if (atoi(entry->itemId.c_str()) == atoi(drag->name.c_str())) {
+              break;
+            }
+          }
+
+          if (entry != cartItems.end() && stock < drag->quantity + entry->quantity) {
+            drag->quantity = stock - entry->quantity;
+          }
+        }
+      }
+
+      std::list<ITEM_INFO>::iterator product = this->m_items.begin();
+      for (; product != this->m_items.end(); ++product) {
+        if (atoi(product->itemId.c_str()) == atoi(drag->name.c_str())) {
+          break;
+        }
+      }
+
+      if (product != this->m_items.end()) {
+        this->m_cart->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&*product), drag->quantity, 0, 0);
+      }
+    }
+
+    mode->SendMsg(0x12, 0, 0, 0, 0);
+    return 0;
+  }
+
   case 6:
     switch (argument1) {
     case 0xC9:
@@ -937,133 +1071,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       return 0;
     }
     return 0;
-  case 0x17:
-    this->m_items.clear();
-    for (int index = 0; index < lists.GetList1788(this->m_selectedTab); ++index) {
-      ITEM_INFO item = g_session.GetItem1784At(this->m_selectedTab, index);
-      if (item.unknown_0000[1] != 0) {
-        this->m_items.push_back(item);
-      }
-    }
 
-    this->m_itemsPerPage = this->m_selectedTab == 9 ? 6 : 9;
-    if (argument1 == 0) {
-      this->m_page = 0;
-    }
-    this->m_pageCount = this->m_items.size() / this->m_itemsPerPage + (this->m_items.size() % this->m_itemsPerPage != 0);
-    this->LayoutPage();
-    return 0;
-  case 0x1F:
-    this->m_cart->SendMsg(sender, 0x1F, argument1, 1, 0, 0);
-    return 0;
-  case 0x22:
-    if (g_session.unknown_5912) {
-      if (g_session.m_hotkeyScript->Call("set_stoveshop_banner", "") == true) {
-        this->m_banner->CreateButtons();
-        this->m_secondBanner->CreateButtons();
-        this->Invalidate();
-        return 0;
-      }
-    } else if (g_session.m_hotkeyScript->Call("set_cashshop_banner", "") == true) {
-      this->m_banner->CreateButtons();
-      this->Invalidate();
-      return 0;
-    }
-    return 0;
-  case 0x26: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    if (mode == nullptr) {
-      return 0;
-    }
-
-    ModeDragState* drag = &mode->drag;
-    if (drag == nullptr) {
-      return 0;
-    }
-
-    if (drag->source == 4) {
-      std::vector<ITEM_INFO>& cartItems = this->m_cart->m_cartItems;
-      std::vector<ITEM_INFO>::iterator entry = cartItems.begin();
-      for (; entry != cartItems.end(); ++entry) {
-        if (atoi(entry->itemId.c_str()) == atoi(drag->name.c_str())) {
-          break;
-        }
-      }
-
-      if (entry != cartItems.end()) {
-        if (entry->quantity > drag->quantity) {
-          this->m_cart->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&*entry), -drag->quantity, 0, 0);
-        } else {
-          this->m_cart->SendMsg(this, 0x68, entry->GetItemId(), 0, 0, 0);
-        }
-      }
-    } else if (drag->source == 6) {
-      if (this->m_selectedTab == 9) {
-        std::list<ITEM_INFO>::iterator product = this->m_items.begin();
-        for (; product != this->m_items.end(); ++product) {
-          if (atoi(product->itemId.c_str()) == atoi(drag->name.c_str())) {
-            break;
-          }
-        }
-
-        if (product != this->m_items.end()) {
-          const int stock = product->unknown_0078[3];
-          if (stock <= 0) {
-            g_windowMgr.Confirm(LookupMessage(0xE50), 0, true, false, 0, "Message", 0x118, 0x78, 0);
-            mode->SendMsg(0x12, 0, 0, 0, 0);
-            mode->SendMsg(0x12, 0, 0, 0, 0);
-            return 0;
-          }
-
-          std::vector<ITEM_INFO>& cartItems = this->m_cart->m_cartItems;
-          std::vector<ITEM_INFO>::iterator entry = cartItems.begin();
-          for (; entry != cartItems.end(); ++entry) {
-            if (atoi(entry->itemId.c_str()) == atoi(drag->name.c_str())) {
-              break;
-            }
-          }
-
-          if (entry != cartItems.end() && stock < drag->quantity + entry->quantity) {
-            drag->quantity = stock - entry->quantity;
-          }
-        }
-      }
-
-      std::list<ITEM_INFO>::iterator product = this->m_items.begin();
-      for (; product != this->m_items.end(); ++product) {
-        if (atoi(product->itemId.c_str()) == atoi(drag->name.c_str())) {
-          break;
-        }
-      }
-
-      if (product != this->m_items.end()) {
-        this->m_cart->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&*product), drag->quantity, 0, 0);
-      }
-    }
-
-    mode->SendMsg(0x12, 0, 0, 0, 0);
-    return 0;
-  }
-  case 0x78:
-  case 0x7A: {
-    HKEY key;
-    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
-      DWORD type = REG_DWORD;
-      DWORD size = 4;
-      RegQueryValueExA(key, "CASH_CATEGORY", nullptr, &type, reinterpret_cast<LPBYTE>(&this->m_selectedTab), &size);
-    }
-    RegCloseKey(key);
-
-    this->unknown_00E8 = argument1;
-    this->unknown_00EC = argument2;
-    this->unknown_00F4->SetText(IntToString(0, 0).c_str());
-    this->SendMsg(this, 6, 0x182, 0, 0, 0);
-    return 0;
-  }
-  case 0x9B:
-    this->unknown_00F0 = argument1;
-    this->Invalidate();
-    return 0;
   case 0xA4:
     if (argument1 != 0 && argument1 != this->m_selectedTab) {
       for (std::map<int, UIWindow*>::iterator tab = this->m_tabButtons.begin(); tab != this->m_tabButtons.end(); ++tab) {
