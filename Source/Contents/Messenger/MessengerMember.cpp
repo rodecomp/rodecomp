@@ -552,11 +552,11 @@ int UIFriendOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.CloseWindow(68);
       break;
     case 213:
-      if (sender == this->option0Box) {
+      if (this->option0Box == sender) {
         g_session.m_autoOpenWhisperWindow = static_cast<int>(b);
-      } else if (sender == this->option2Box) {
+      } else if (this->option2Box == sender) {
         g_session.m_autoOpenFriendWhisperWindow = static_cast<int>(b);
-      } else if (sender == this->option1Box) {
+      } else if (this->option1Box == sender) {
         g_session.m_whisperOpenSound = static_cast<int>(b);
       }
       break;
