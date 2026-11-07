@@ -65,7 +65,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->minimum->maximum = 3;
   this->minimum->TextColor(0, 0xFFFFFFFFu);
   char minimumText[10] = {};
-  _snprintf_s(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max(level - 5, 1));
+  _snprintf_s(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max(1, level - 5));
   this->minimum->SetText(minimumText);
   this->minimum->Move(10, 24);
   this->minimum->Background(242, 242, 242);
@@ -207,9 +207,13 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->types->SetSize(76, 18);
   this->types->Move(76, 22);
   this->AddChild(this->types);
-  for (int type = 0; type <= 6; ++type) {
-    this->types->AddOption(UIPartyInfoWnd::TypeName(type), 0);
-  }
+  this->types->AddOption(LookupMessage(3377), 0);
+  this->types->AddOption(LookupMessage(3360), 0);
+  this->types->AddOption(LookupMessage(3361), 0);
+  this->types->AddOption(LookupMessage(3362), 0);
+  this->types->AddOption(LookupMessage(3363), 0);
+  this->types->AddOption(LookupMessage(3364), 0);
+  this->types->AddOption(LookupMessage(3365), 0);
 
   this->types->Select(0);
   this->pageText = new UIStaticText();
@@ -217,7 +221,8 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   const int textWidth = this->TextWidth("1/1", 0, 0, 12, 0, 0);
   this->pageText->Resize((textWidth + 1), 16);
   this->pageText->SetText("1/1", 0);
-  this->pageText->Move(this->geometry.width / 2 - textWidth / 2, 319);
+  const int halfWidth = textWidth / 2;
+  this->pageText->Move(this->geometry.width / 2 - halfWidth, 319);
   this->AddChild(this->pageText);
   this->LoadPage(1);
   this->m_message0 = 365;
@@ -317,12 +322,12 @@ __forceinline void UIAdvenPartyBoardWnd::RefreshRows() {
 
   int index = 0;
 
-  for (const auto& entry : entries) {
+  for (auto entry = entries.begin(); entry != entries.end(); ++entry) {
     if (index > 9) {
       break;
     }
 
-    this->rows[index]->SetInfo(entry);
+    this->rows[index]->SetInfo(*entry);
     this->rows[index]->Invalidate();
     ++index;
   }
@@ -332,9 +337,10 @@ __forceinline void UIAdvenPartyBoardWnd::RefreshRows() {
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->pageText->Resize((width + 1), 16);
   this->pageText->SetText(text, 0);
-  this->pageText->Move(this->geometry.width / 2 - width / 2, 319);
-  this->previous->Move(this->geometry.width / 2 - this->previous->geometry.width - width / 2 - 3, 319);
-  this->next->Move(width / 2 + this->geometry.width / 2 + 3, 319);
+  const int halfWidth = width / 2;
+  this->pageText->Move(this->geometry.width / 2 - halfWidth, 319);
+  this->previous->Move(this->geometry.width / 2 - this->previous->geometry.width - halfWidth - 3, 319);
+  this->next->Move(halfWidth + this->geometry.width / 2 + 3, 319);
   this->Registration(g_adventurerAgencyMgr->registered);
   this->SendMsg(nullptr, 165, 0, 0, 0, 0);
   this->Invalidate();
@@ -350,7 +356,12 @@ void UIAdvenPartyBoardWnd::UpdatePagination() {
     this->next->Invalidate();
   }
 
-  DisableButton(this->previous, this->page == 1);
+  if (this->page == 1) {
+    DisableButton(this->previous, 1);
+  } else {
+    DisableButton(this->previous, 0);
+  }
+
   this->previous->Invalidate();
   this->Invalidate();
 
@@ -364,17 +375,18 @@ void UIAdvenPartyBoardWnd::UpdatePagination() {
 
 // INLINED
 void UIAdvenPartyBoardWnd::ResetSearch() {
+  const int level = g_session.m_level;
   char minimumText[10] = {};
-  _snprintf_s(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max(1, (g_session.m_level - 5)));
+  _snprintf_s(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max(1, level - 5));
   this->minimum->SetText(minimumText);
   char maximumText[10] = {};
-  _snprintf_s(maximumText, sizeof(maximumText), _TRUNCATE, "%d", (g_session.m_level + 5));
+  _snprintf_s(maximumText, sizeof(maximumText), _TRUNCATE, "%d", level + 5);
   this->maximum->SetText(maximumText);
   this->types->Select(0);
 
-  for (auto* job : this->jobs) {
-    job->SetState(0);
-    job->SetSelected(0);
+  for (int index = 0; index < 4; ++index) {
+    this->jobs[index]->SetState(0);
+    this->jobs[index]->SetSelected(0);
   }
 
   this->searching = 0;
