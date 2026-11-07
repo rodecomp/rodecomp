@@ -7,6 +7,7 @@
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/World/World.h"
+#include "Render/DX9/RendererDX9.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
@@ -946,5 +947,5 @@ void CParticle::SetRenderFlag(unsigned char value) {
 // OFFSET: 0x00B40210
 // FUNCTION: fn_18846
 void SubmitParticlePrimitive(RenderCommand* primitive, int flags) {
-  g_renderer->queues.Submit(primitive, static_cast<std::uint16_t>(flags), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, static_cast<std::uint16_t>(flags));
 }
