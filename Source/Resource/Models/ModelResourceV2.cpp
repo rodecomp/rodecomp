@@ -44,12 +44,16 @@ C3dModelResV2* C3dModelResV2::Create() {
 
 // INLINED
 inline void C3dModelResV2::ReadVersion(CFile& input, unsigned minor) {
-  if (minor == 1) {
+  switch (minor) {
+  case 1:
     this->ReadVersion1(input);
-  } else if (minor == 2) {
+    break;
+  case 2:
     this->ReadVersion2(input);
-  } else {
+    break;
+  case 3:
     this->ReadVersion3(input);
+    break;
   }
 }
 
@@ -59,7 +63,6 @@ bool C3dModelResV2::Load(const char* name) {
   CFile file;
 
   if (!file.Open(name, 0, true, false)) {
-    file.Close();
     return false;
   }
 
@@ -67,9 +70,7 @@ bool C3dModelResV2::Load(const char* name) {
   file.Read(magic, 4);
 
   if (std::strcmp(magic, "GRSM") != 0) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "모델파일이 아닙니다. 형식을 다시한번 확인해주세요.", 0);
-    file.Close();
-
+    ShowErrorDialog("모델파일이 아닙니다. 형식을 다시한번 확인해주세요.", 0);
     return false;
   }
 
@@ -79,13 +80,9 @@ bool C3dModelResV2::Load(const char* name) {
   this->major = major;
   file.Read(&minor, 1);
 
-  if (minor >= 1 && minor <= 3) {
-    this->ReadVersion(file, minor);
-  }
-
+  this->ReadVersion(file, minor);
   file.Close();
   this->sourceName = name;
-  file.Close();
 
   return true;
 }
