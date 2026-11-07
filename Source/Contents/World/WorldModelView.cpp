@@ -53,30 +53,6 @@ namespace {
   }
 }
 
-// OFFSET: 0x00ADB730
-// FUNCTION: fn_17921
-int WorldViewSpatial::ClassifyAxisAligned(const WorldSpatialTree& bounds) const {
-  bool clipped = false;
-
-  for (int plane = 0; plane < 6; ++plane) {
-    const float* normal = this->planes.normals[plane];
-    const float radius = (Absolute(normal[0] * bounds.halfSize[0]) + Absolute(normal[1] * bounds.halfSize[1])) + Absolute(normal[2] * bounds.halfSize[2]);
-    const float distance = ((normal[0] * bounds.center[0] + normal[1] * bounds.center[1]) + normal[2] * bounds.center[2]) + this->planes.planes[plane][3];
-
-    if (!(distance > radius)) {
-      const float negative = -radius;
-
-      if (!(distance > negative)) {
-        return 0;
-      }
-
-      clipped = true;
-    }
-  }
-
-  return clipped ? 2 : 1;
-}
-
 // OFFSET: 0x00ADB7F0
 // FUNCTION: fn_17922
 int WorldViewSpatial::ClassifyOriented(const OrientedBounds& bounds) const {
