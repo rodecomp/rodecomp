@@ -79,6 +79,7 @@ CGifRes* CGifRes::Create() {
 // FUNCTION: fn_07853
 bool CGifRes::Load(const char* name) {
   CFile file;
+  std::string unused;
   bool result;
   if (name && file.Open(name, 0, true, false)) {
     result = this->Decode(name, file.GetData(), file.GetSize(), false);
