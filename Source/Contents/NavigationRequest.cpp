@@ -110,11 +110,19 @@ __declspec(noinline) bool CNaviData::SetDestination(CNaviInfo* info, int cellX, 
 // FUNCTION: fn_19638
 bool CNavigationManager::UpdateGround() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (mode == nullptr || mode->scene == nullptr || mode->scene->terrain == nullptr) {
+  if (mode == nullptr) {
     return false;
   }
-  this->ground = mode->scene->ground;
-  this->pathFinder.attr = mode->scene->terrain;
+  auto* scene = mode->scene;
+  if (scene == nullptr) {
+    return false;
+  }
+  auto* terrain = scene->terrain;
+  if (terrain == nullptr) {
+    return false;
+  }
+  this->ground = scene->ground;
+  this->pathFinder.attr = terrain;
   return true;
 }
 
