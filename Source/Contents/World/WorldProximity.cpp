@@ -234,7 +234,11 @@ bool WorldProximityGuildMasterCallback::Invoke(const std::uint32_t& aidRef) {
       return false;
     }
 
-    return static_cast<CGameActor*>(actor)->Slot42() == static_cast<int>(g_guildInfo.unknown_00D0);
+    if (static_cast<int>(g_guildInfo.unknown_00D0) != static_cast<CGameActor*>(actor)->Slot42()) {
+      return false;
+    }
+
+    return true;
   }
 
   return false;
