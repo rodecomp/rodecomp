@@ -1279,6 +1279,7 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       return 0;
     }
     break;
+
   case 22:
     if (argument1 == -1 && argument2 == -1) {
       this->SelectTab(this->group, this->sub);
@@ -1288,6 +1289,24 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     this->SelectTab(argument1, argument2);
     this->Invalidate();
     return 0;
+
+  case 135: {
+    UIAchViewWnd* view = this->view;
+    if (this->achievements.find(argument1) == this->achievements.end()) {
+      view->achievementId = -1;
+      view->info = nullptr;
+      view->UpdateInfo();
+      this->Invalidate();
+      return 0;
+    }
+
+    view->achievementId = argument1;
+    view->info = &this->achievements[argument1];
+    view->UpdateInfo();
+    this->Invalidate();
+    return 0;
+  }
+
   case 60: {
     this->view->UpdateInfo();
     this->summary->UpdateInfo();
@@ -1312,22 +1331,7 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     this->Invalidate();
     break;
   }
-  case 135: {
-    UIAchViewWnd* view = this->view;
-    if (this->achievements.find(argument1) == this->achievements.end()) {
-      view->achievementId = -1;
-      view->info = nullptr;
-      view->UpdateInfo();
-      this->Invalidate();
-      return 0;
-    }
 
-    view->achievementId = argument1;
-    view->info = &this->achievements[argument1];
-    view->UpdateInfo();
-    this->Invalidate();
-    return 0;
-  }
   default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
