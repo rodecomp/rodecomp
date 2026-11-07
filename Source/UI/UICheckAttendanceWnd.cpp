@@ -150,8 +150,7 @@ void UICheckAttendanceWnd::Paint() {
 
   const char* backgroundName = this->m_banner->m_entries.size() != 0 ? "유저인터페이스\\check_attendance\\attendance_bg_ad.bmp"
                                                                      : "유저인터페이스\\check_attendance\\attendance_bg.bmp";
-  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(backgroundName)));
-  this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(backgroundName))), false);
 
   this->DrawCenteredText(0, 41, FormatOwnedString(LookupMessage(3465), g_session.m_serverName.c_str()).c_str(), this->geometry.width, 0, 13, 0x203F66, 1);
 
@@ -201,7 +200,7 @@ void UICheckAttendanceWnd::Paint() {
       slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\check_attendance\\bt_slot_press.bmp")));
       break;
     }
-    this->DrawBitmap(this->m_checkedDays % 5 * 62 + 26, this->m_checkedDays / 5 * 64 + 95 + bannerHeight, slot ? &slot->image : nullptr, true);
+    this->DrawBitmap(this->m_checkedDays % 5 * 62 + 26, this->m_checkedDays / 5 * 64 + 95 + bannerHeight, slot, true);
   }
 
   for (int day = 1; day <= this->m_rewardCount; ++day) {
