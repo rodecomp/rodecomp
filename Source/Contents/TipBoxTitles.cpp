@@ -112,15 +112,17 @@ CTipBoxMgr::~CTipBoxMgr() = default;
 // OFFSET: 0x007AC710
 // FUNCTION: fn_09122
 void CTipBoxMgr::AddParagraph(int id, std::string text) {
-  const std::string newline("\n");
-  const std::string escaped("\\n");
+  {
+    const std::string newline("\n");
+    const std::string escaped("\\n");
 
-  for (;;) {
-    const auto pos = text.find(escaped);
-    if (pos == std::string::npos) {
-      break;
+    for (;;) {
+      const auto pos = text.find(escaped);
+      if (pos == std::string::npos) {
+        break;
+      }
+      text.replace(pos, escaped.size(), newline);
     }
-    text.replace(pos, escaped.size(), newline);
   }
 
   this->m_entries[id].paragraphs.push_back(text);
@@ -450,9 +452,9 @@ int AddImgcoord(lua_State* state) {
   if (!lua_isnumber(state, -3)) { lua_pushboolean(state, 0); lua_pushstring(state, "1st argment is must number"); return 2; }
 
   const int id = static_cast<int>(lua_tonumber(state, -3));
-  TipBoxEntry& entry = g_itemTagOwner->m_entries[id];
-  entry.unknown_0044 = static_cast<int>(lua_tonumber(state, -2));
-  entry.unknown_0048 = static_cast<int>(lua_tonumber(state, -1));
+  const int x = static_cast<int>(lua_tonumber(state, -2));
+  const int y = static_cast<int>(lua_tonumber(state, -1));
+  g_itemTagOwner->SetImageCoord(id, x, y);
   lua_pushboolean(state, 1);
   lua_pushstring(state, "good");
   return 2;

@@ -59,6 +59,19 @@ public:
   static bool Create();
   static void Destroy();
   void AddTip(int id, std::string title, double flag, std::string text);
+  // INLINED
+  void SetImageCoord(int id, int x, int y) {
+    this->m_entries[id].unknown_0044 = x;
+    this->m_entries[id].unknown_0048 = y;
+  }
+  // INLINED
+  void SetSearchable(int id, bool searchable) {
+    this->m_entries[id].searchable = searchable;
+  }
+  // INLINED
+  void AddImage(int id, const TipBoxImage& image) {
+    this->m_entries[id].images.push_back(image);
+  }
 
   int m_width;
   int m_height;
