@@ -458,27 +458,21 @@ void GameSettings::SetOption(int id, unsigned char value, bool notify) {
 // OFFSET: 0x006C0DD0
 // FUNCTION: fn_06313
 bool GameSettings::RunFunction(int id) {
-  for (const GameSettingsOption& option : this->options) {
-    if (option.id != id) {
-      continue;
-    }
-
-    if (option.type != 1) {
-      return false;
-    }
-
-    const auto& functions = this->functions;
-    const auto entry = functions.find(static_cast<std::uint32_t>(id));
-    if (entry == functions.end()) {
-      return false;
-    }
-
-    const std::function<void()> function = entry->second;
-    if (function) {
-      function();
-      return true;
-    }
+  const std::optional<GameSettingsOption*> option = this->FindOption(id);
+  if (!option || (*option)->type != 1) {
     return false;
+  }
+
+  const auto& functions = this->functions;
+  const auto entry = functions.find(id);
+  if (entry == functions.end()) {
+    return false;
+  }
+
+  const std::function<void()> function = entry->second;
+  if (function) {
+    function();
+    return true;
   }
   return false;
 }
