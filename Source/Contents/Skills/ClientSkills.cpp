@@ -549,23 +549,23 @@ void CSession::DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes) {
 // OFFSET: 0x00E08690
 // FUNCTION: fn_23764
 std::int64_t CSession::FindUnknown0784(std::int64_t key) const {
-  auto found = this->unknown_0784.find(key);
-  if (found != this->unknown_0784.end()) {
-    return found->second;
+  auto found = this->unknown_0784.lower_bound(key);
+  if (found == this->unknown_0784.end() || key < found->first) {
+    return -1;
   }
 
-  return -1;
+  return found->second;
 }
 
 // OFFSET: 0x00E086F0
 // FUNCTION: fn_23765
 std::int64_t CSession::FindUnknown078C(std::int64_t key) const {
-  auto found = this->unknown_078C.find(key);
-  if (found != this->unknown_078C.end()) {
-    return found->second;
+  auto found = this->unknown_078C.lower_bound(key);
+  if (found == this->unknown_078C.end() || key < found->first) {
+    return -1;
   }
 
-  return -1;
+  return found->second;
 }
 
 // OFFSET: 0x00E08750
