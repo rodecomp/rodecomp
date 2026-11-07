@@ -102,51 +102,31 @@ template <class Record> static void AppendRecord(std::vector<unsigned char>& rec
 // FUNCTION: fn_24195
 std::vector<unsigned char> BuildEntryQueueReplayRecords() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(6500, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, MakeReplayRecord(6500, nullptr, 0));
   if (g_entryQueueMgr->current != nullptr) {
     const int id = g_entryQueueMgr->current->id;
-    const auto record = BuildReplayTaggedRecord(6511, &id, sizeof(id));
-    records.insert(records.end(), record.begin(), record.end());
+    AppendRecord(records, MakeReplayRecord(6511, &id, sizeof(id)));
   }
-  {
-    const unsigned char ready = g_entryQueueMgr->ready;
-    const auto record = BuildReplayTaggedRecord(6512, &ready, sizeof(ready));
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  const unsigned char ready = g_entryQueueMgr->ready;
+  AppendRecord(records, MakeReplayRecord(6512, &ready, sizeof(ready)));
   std::string text = g_entryQueueMgr->queueName.text;
   if (text.size() != 0) {
-    const auto record = BuildReplayTaggedRecord(6513, text.c_str(), text.size());
-    records.insert(records.end(), record.begin(), record.end());
+    AppendRecord(records, BuildReplayTaggedRecord(6513, text.c_str(), text.size()));
   }
   text = g_entryQueueMgr->characterName.text;
   if (text.size() != 0) {
-    const auto record = BuildReplayTaggedRecord(6514, text.c_str(), text.size());
-    records.insert(records.end(), record.begin(), record.end());
+    AppendRecord(records, BuildReplayTaggedRecord(6514, text.c_str(), text.size()));
   }
   if (UIEntryQueueWnd* window = dynamic_cast<UIEntryQueueWnd*>(g_windowMgr.LookupWindow(157))) {
     const int selected = window->SelectedIndex();
-    const auto record = BuildReplayTaggedRecord(6515, &selected, sizeof(selected));
-    records.insert(records.end(), record.begin(), record.end());
+    AppendRecord(records, MakeReplayRecord(6515, &selected, sizeof(selected)));
   }
   if (UIEntryQueueStandByWnd* window = dynamic_cast<UIEntryQueueStandByWnd*>(g_windowMgr.LookupWindow(209))) {
-    {
-      const auto record = BuildReplayTaggedRecord(6517, &window->m_waiting, sizeof(window->m_waiting));
-      records.insert(records.end(), record.begin(), record.end());
-    }
-    {
-      const auto record = BuildReplayTaggedRecord(6518, &window->m_ranking, sizeof(window->m_ranking));
-      records.insert(records.end(), record.begin(), record.end());
-    }
-    const auto record = BuildReplayTaggedRecord(6516, window->m_queueName.c_str(), window->m_queueName.size());
-    records.insert(records.end(), record.begin(), record.end());
+    AppendRecord(records, MakeReplayRecord(6517, &window->m_waiting, sizeof(window->m_waiting)));
+    AppendRecord(records, MakeReplayRecord(6518, &window->m_ranking, sizeof(window->m_ranking)));
+    AppendRecord(records, BuildReplayTaggedRecord(6516, window->m_queueName.c_str(), window->m_queueName.size()));
   }
-  {
-    const auto record = BuildReplayTaggedRecord(6501, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, MakeReplayRecord(6501, nullptr, 0));
   return records;
 }
 
@@ -992,27 +972,19 @@ std::vector<unsigned char> BuildSkillInfoListPacket(std::uint16_t id, const std:
 // FUNCTION: fn_24205
 std::vector<unsigned char> BuildRenewQuestReplayRecords() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(3500, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, MakeReplayRecord(3500, nullptr, 0));
   {
     const int version = 51;
-    const auto record = BuildReplayTaggedRecord(3502, &version, sizeof(version));
-    records.insert(records.end(), record.begin(), record.end());
+    AppendRecord(records, MakeReplayRecord(3502, &version, sizeof(version)));
   }
   const int size = g_renewQuestMgr->GetOngoingQuestsSize();
   char* buffer = new char[size];
   g_renewQuestMgr->WriteOngoingQuests(buffer);
-  {
-    const auto record = BuildReplayTaggedRecord(3510, buffer, size);
-    records.insert(records.end(), record.begin(), record.end());
+  AppendRecord(records, BuildReplayTaggedRecord(3510, buffer, size));
+  if (buffer != nullptr) {
+    delete buffer;
   }
-  delete buffer;
-  {
-    const auto record = BuildReplayTaggedRecord(3501, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, MakeReplayRecord(3501, nullptr, 0));
   return records;
 }
 
@@ -1066,123 +1038,29 @@ std::vector<unsigned char> CSession::BuildReservedReplayRecords() {
 // FUNCTION: fn_24200
 std::vector<unsigned char> CSession::BuildItemReplayRecords() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(4500, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(4701, &this->unknown_5210, sizeof(this->unknown_5210));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(4702, &this->unknown_5214, sizeof(this->unknown_5214));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->m_inventoryItems);
-    const auto record = MakeFramedMessage(4510, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1718);
-    const auto record = MakeFramedMessage(4511, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1720);
-    const auto record = MakeFramedMessage(4512, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1728);
-    const auto record = MakeFramedMessage(4513, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1730);
-    const auto record = MakeFramedMessage(4514, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1738);
-    const auto record = MakeFramedMessage(4515, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1740);
-    const auto record = MakeFramedMessage(4516, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1748);
-    const auto record = MakeFramedMessage(4517, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1750);
-    const auto record = MakeFramedMessage(4518, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1758);
-    const auto record = MakeFramedMessage(4519, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1760);
-    const auto record = MakeFramedMessage(4520, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1768);
-    const auto record = MakeFramedMessage(4521, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeItems(this->unknown_1770);
-    const auto record = MakeFramedMessage(4522, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const std::list<ITEM_INFO> items(std::begin(this->unknown_17F0), std::end(this->unknown_17F0));
-    const auto bytes = SerializeItems(items);
-    const auto record = MakeFramedMessage(4601, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const std::list<ITEM_INFO> items(std::begin(this->unknown_21A0), std::end(this->unknown_21A0));
-    const auto bytes = SerializeItems(items);
-    const auto record = MakeFramedMessage(4602, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const std::list<ITEM_INFO> items(std::begin(this->unknown_2B50), std::end(this->unknown_2B50));
-    const auto bytes = SerializeItems(items);
-    const auto record = MakeFramedMessage(4603, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const std::list<ITEM_INFO> items(std::begin(this->unknown_3500), std::end(this->unknown_3500));
-    const auto bytes = SerializeItems(items);
-    const auto record = MakeFramedMessage(4604, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const std::list<ITEM_INFO> items(std::begin(this->m_exchangeItems), std::end(this->m_exchangeItems));
-    const auto bytes = SerializeItems(items);
-    const auto record = MakeFramedMessage(4605, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const std::list<ITEM_INFO> items(std::begin(this->m_itemSlots), std::end(this->m_itemSlots));
-    const auto bytes = SerializeItems(items);
-    const auto record = MakeFramedMessage(4606, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(4501, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, MakeReplayRecord(4500, nullptr, 0));
+  AppendRecord(records, MakeReplayRecord(4701, &this->unknown_5210, sizeof(this->unknown_5210)));
+  AppendRecord(records, MakeReplayRecord(4702, &this->unknown_5214, sizeof(this->unknown_5214)));
+  AppendRecord(records, MakeFramedMessage(4510, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->m_inventoryItems))));
+  AppendRecord(records, MakeFramedMessage(4511, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1718))));
+  AppendRecord(records, MakeFramedMessage(4512, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1720))));
+  AppendRecord(records, MakeFramedMessage(4513, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1728))));
+  AppendRecord(records, MakeFramedMessage(4514, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1730))));
+  AppendRecord(records, MakeFramedMessage(4515, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1738))));
+  AppendRecord(records, MakeFramedMessage(4516, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1740))));
+  AppendRecord(records, MakeFramedMessage(4517, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1748))));
+  AppendRecord(records, MakeFramedMessage(4518, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1750))));
+  AppendRecord(records, MakeFramedMessage(4519, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1758))));
+  AppendRecord(records, MakeFramedMessage(4520, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1760))));
+  AppendRecord(records, MakeFramedMessage(4521, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1768))));
+  AppendRecord(records, MakeFramedMessage(4522, reinterpret_cast<const std::vector<char>&>(SerializeItems(this->unknown_1770))));
+  AppendRecord(records, MakeFramedMessage(4601, reinterpret_cast<const std::vector<char>&>(SerializeItems(std::list<ITEM_INFO>(std::begin(this->unknown_17F0), std::end(this->unknown_17F0))))));
+  AppendRecord(records, MakeFramedMessage(4602, reinterpret_cast<const std::vector<char>&>(SerializeItems(std::list<ITEM_INFO>(std::begin(this->unknown_21A0), std::end(this->unknown_21A0))))));
+  AppendRecord(records, MakeFramedMessage(4603, reinterpret_cast<const std::vector<char>&>(SerializeItems(std::list<ITEM_INFO>(std::begin(this->unknown_2B50), std::end(this->unknown_2B50))))));
+  AppendRecord(records, MakeFramedMessage(4604, reinterpret_cast<const std::vector<char>&>(SerializeItems(std::list<ITEM_INFO>(std::begin(this->unknown_3500), std::end(this->unknown_3500))))));
+  AppendRecord(records, MakeFramedMessage(4605, reinterpret_cast<const std::vector<char>&>(SerializeItems(std::list<ITEM_INFO>(std::begin(this->m_exchangeItems), std::end(this->m_exchangeItems))))));
+  AppendRecord(records, MakeFramedMessage(4606, reinterpret_cast<const std::vector<char>&>(SerializeItems(std::list<ITEM_INFO>(std::begin(this->m_itemSlots), std::end(this->m_itemSlots))))));
+  AppendRecord(records, MakeReplayRecord(4501, nullptr, 0));
   return records;
 }
 
@@ -1317,209 +1195,101 @@ std::vector<unsigned char> MessengerMember::Serialize() const {
 // FUNCTION: fn_24197
 std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(1000, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1010, &this->m_aid, sizeof(this->m_aid));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1011, &this->m_gid, sizeof(this->m_gid));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1012, &this->m_navigationPlayerMap[0x14], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1013, &this->m_navigationPlayerMap[0x18], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1014, &this->m_job, sizeof(this->m_job));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1015, &this->unknown_162C[0x4], 8);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1016, &this->m_level, sizeof(this->m_level));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1017, this->unknown_1654, 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1018, &this->unknown_162C[0xC], 8);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1019, &this->m_jobLevel, sizeof(this->m_jobLevel));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1020, &this->m_skillPoint, 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1021, &this->m_guildSkillPoint, sizeof(this->m_guildSkillPoint));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1022, this->unknown_1664, 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1023, &this->unknown_1664[0x4], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1024, &this->m_standardStats[0], sizeof(this->m_standardStats[0]));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1025, &this->m_standardStats[1], sizeof(this->m_standardStats[1]));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1026, &this->m_standardStats[2], sizeof(this->m_standardStats[2]));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1027, &this->m_standardStats[3], sizeof(this->m_standardStats[3]));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1028, &this->m_standardStats[4], sizeof(this->m_standardStats[4]));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1029, &this->m_standardStats[5], sizeof(this->m_standardStats[5]));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1030, this->unknown_169C, 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1031, &this->unknown_169C[0x4], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1032, &this->unknown_169C[0x8], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1033, &this->unknown_169C[0xC], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1034, &this->unknown_169C[0x10], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1035, &this->unknown_169C[0x14], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1036, &this->unknown_169C[0x18], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1037, &this->unknown_169C[0x1C], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1038, &this->unknown_169C[0x20], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1039, &this->unknown_169C[0x24], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1040, &this->unknown_169C[0x28], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1041, &this->unknown_169C[0x2C], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1042, &this->unknown_169C[0x30], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1043, &this->unknown_169C[0x34], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(1044, &this->unknown_169C[0x38], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  AppendBytes(records, BuildReplayTaggedRecord(1045, &this->unknown_169C[0x3C], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1046, &this->unknown_169C[0x40], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1047, &this->unknown_169C[0x44], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1048, &this->unknown_169C[0x48], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1049, &this->unknown_169C[0x4C], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1050, &this->unknown_16EC, sizeof(this->unknown_16EC)));
-  AppendBytes(records, BuildReplayTaggedRecord(1051, &this->m_zeny, sizeof(this->m_zeny)));
-  AppendBytes(records, BuildReplayTaggedRecord(1052, this->unknown_16F4, 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1053, &this->unknown_16F4[0x4], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1054, &this->unknown_162C[0x14], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1055, &this->unknown_162C[0x1C], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1056, this->unknown_1704, 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1057, &this->unknown_1708, sizeof(this->unknown_1708)));
-  AppendBytes(records, BuildReplayTaggedRecord(1058, this->unknown_170C, 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1059, &this->unknown_0E9C[0x34], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1060, &this->m_head, sizeof(this->m_head)));
-  AppendBytes(records, BuildReplayTaggedRecord(1061, &this->unknown_0EDC[0x4], 8));
-  AppendBytes(records, BuildReplayTaggedRecord(1062, &this->unknown_0EDC[0xC], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1063, &this->m_bodyStyle, sizeof(this->m_bodyStyle)));
-  AppendBytes(records, BuildReplayTaggedRecord(1064, &this->m_headPalette, sizeof(this->m_headPalette)));
-  AppendBytes(records, BuildReplayTaggedRecord(1065, this->unknown_0EF4, 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1066, &this->unknown_0EF4[0x4], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1067, &this->unknown_0EF4[0x8], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1068, this->unknown_0F0C, 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1069, &this->unknown_0F0C[0x4], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1070, &this->m_jobFlags, sizeof(this->m_jobFlags)));
-  AppendBytes(records, BuildReplayTaggedRecord(1071, &this->m_robe, sizeof(this->m_robe)));
-  AppendBytes(records, BuildReplayTaggedRecord(1072, &this->unknown_5974[0x4], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1073, &this->unknown_5974[0x8], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1074, &this->unknown_5974[0xC], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1075, &this->unknown_5974[0x10], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1076, &this->unknown_5974[0x14], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1077, &this->unknown_5974[0x18], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1078, &this->unknown_5974[0x1C], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1079, &this->unknown_5974[0x20], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1080, &this->unknown_5974[0x24], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1081, &this->unknown_5974[0x2C], 0x18));
-  AppendBytes(records, BuildReplayTaggedRecord(1082, this->unknown_0F24, 1));
-  AppendBytes(records, BuildReplayTaggedRecord(1083, &this->m_score1, sizeof(this->m_score1)));
-  AppendBytes(records, BuildReplayTaggedRecord(1084, &this->m_score2, sizeof(this->m_score2)));
-  AppendBytes(records, BuildReplayTaggedRecord(1085, this->unknown_0F30, 1));
-  AppendBytes(records, BuildReplayTaggedRecord(1086, &this->cartCount, sizeof(this->cartCount)));
-  AppendBytes(records, BuildReplayTaggedRecord(1087, &this->cartMaxCount, sizeof(this->cartMaxCount)));
-  AppendBytes(records, BuildReplayTaggedRecord(1088, &this->cartWeight, sizeof(this->cartWeight)));
-  AppendBytes(records, BuildReplayTaggedRecord(1089, &this->cartMaxWeight, sizeof(this->cartMaxWeight)));
-  AppendBytes(records, BuildReplayTaggedRecord(1090, this->unknown_0F44, 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1091, &this->unknown_0F44[0x4], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1092, &this->unknown_5490[0x8], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1093, &this->unknown_5490[0xC], 4));
-  AppendBytes(records, BuildReplayTaggedRecord(1094, &this->unknown_54A0, sizeof(this->unknown_54A0)));
-  AppendBytes(records, BuildReplayTaggedRecord(1095, &this->unknown_54A4, sizeof(this->unknown_54A4)));
-  AppendBytes(records, BuildReplayTaggedRecord(1096, &this->unknown_54A8, sizeof(this->unknown_54A8)));
-  AppendBytes(records, BuildReplayTaggedRecord(1097, this->unknown_550C.c_str(), this->unknown_550C.size()));
+  AppendRecord(records, MakeReplayRecord(1000, nullptr, 0));
+  AppendRecord(records, MakeReplayRecord(1010, &this->m_aid, sizeof(this->m_aid)));
+  AppendRecord(records, MakeReplayRecord(1011, &this->m_gid, sizeof(this->m_gid)));
+  AppendRecord(records, MakeReplayRecord(1012, &this->m_navigationPlayerMap[0x14], 4));
+  AppendRecord(records, MakeReplayRecord(1013, &this->m_navigationPlayerMap[0x18], 4));
+  AppendRecord(records, MakeReplayRecord(1014, &this->m_job, sizeof(this->m_job)));
+  AppendRecord(records, MakeReplayRecord(1015, &this->unknown_162C[0x4], 8));
+  AppendRecord(records, MakeReplayRecord(1016, &this->m_level, sizeof(this->m_level)));
+  AppendRecord(records, MakeReplayRecord(1017, this->unknown_1654, 4));
+  AppendRecord(records, MakeReplayRecord(1018, &this->unknown_162C[0xC], 8));
+  AppendRecord(records, MakeReplayRecord(1019, &this->m_jobLevel, sizeof(this->m_jobLevel)));
+  AppendRecord(records, MakeReplayRecord(1020, &this->m_skillPoint, 4));
+  AppendRecord(records, MakeReplayRecord(1021, &this->m_guildSkillPoint, sizeof(this->m_guildSkillPoint)));
+  AppendRecord(records, MakeReplayRecord(1022, this->unknown_1664, 4));
+  AppendRecord(records, MakeReplayRecord(1023, &this->unknown_1664[0x4], 4));
+  AppendRecord(records, MakeReplayRecord(1024, &this->m_standardStats[0], sizeof(this->m_standardStats[0])));
+  AppendRecord(records, MakeReplayRecord(1025, &this->m_standardStats[1], sizeof(this->m_standardStats[1])));
+  AppendRecord(records, MakeReplayRecord(1026, &this->m_standardStats[2], sizeof(this->m_standardStats[2])));
+  AppendRecord(records, MakeReplayRecord(1027, &this->m_standardStats[3], sizeof(this->m_standardStats[3])));
+  AppendRecord(records, MakeReplayRecord(1028, &this->m_standardStats[4], sizeof(this->m_standardStats[4])));
+  AppendRecord(records, MakeReplayRecord(1029, &this->m_standardStats[5], sizeof(this->m_standardStats[5])));
+  AppendRecord(records, MakeReplayRecord(1030, this->unknown_169C, 4));
+  AppendRecord(records, MakeReplayRecord(1031, &this->unknown_169C[0x4], 4));
+  AppendRecord(records, MakeReplayRecord(1032, &this->unknown_169C[0x8], 4));
+  AppendRecord(records, MakeReplayRecord(1033, &this->unknown_169C[0xC], 4));
+  AppendRecord(records, MakeReplayRecord(1034, &this->unknown_169C[0x10], 4));
+  AppendRecord(records, MakeReplayRecord(1035, &this->unknown_169C[0x14], 4));
+  AppendRecord(records, MakeReplayRecord(1036, &this->unknown_169C[0x18], 4));
+  AppendRecord(records, MakeReplayRecord(1037, &this->unknown_169C[0x1C], 4));
+  AppendRecord(records, MakeReplayRecord(1038, &this->unknown_169C[0x20], 4));
+  AppendRecord(records, MakeReplayRecord(1039, &this->unknown_169C[0x24], 4));
+  AppendRecord(records, MakeReplayRecord(1040, &this->unknown_169C[0x28], 4));
+  AppendRecord(records, MakeReplayRecord(1041, &this->unknown_169C[0x2C], 4));
+  AppendRecord(records, MakeReplayRecord(1042, &this->unknown_169C[0x30], 4));
+  AppendRecord(records, MakeReplayRecord(1043, &this->unknown_169C[0x34], 4));
+  AppendRecord(records, MakeReplayRecord(1044, &this->unknown_169C[0x38], 4));
+  AppendRecord(records, MakeReplayRecord(1045, &this->unknown_169C[0x3C], 4));
+  AppendRecord(records, MakeReplayRecord(1046, &this->unknown_169C[0x40], 4));
+  AppendRecord(records, MakeReplayRecord(1047, &this->unknown_169C[0x44], 4));
+  AppendRecord(records, MakeReplayRecord(1048, &this->unknown_169C[0x48], 4));
+  AppendRecord(records, MakeReplayRecord(1049, &this->unknown_169C[0x4C], 4));
+  AppendRecord(records, MakeReplayRecord(1050, &this->unknown_16EC, sizeof(this->unknown_16EC)));
+  AppendRecord(records, MakeReplayRecord(1051, &this->m_zeny, sizeof(this->m_zeny)));
+  AppendRecord(records, MakeReplayRecord(1052, this->unknown_16F4, 4));
+  AppendRecord(records, MakeReplayRecord(1053, &this->unknown_16F4[0x4], 4));
+  AppendRecord(records, MakeReplayRecord(1054, &this->unknown_162C[0x14], 4));
+  AppendRecord(records, MakeReplayRecord(1055, &this->unknown_162C[0x1C], 4));
+  AppendRecord(records, MakeReplayRecord(1056, this->unknown_1704, 4));
+  AppendRecord(records, MakeReplayRecord(1057, &this->unknown_1708, sizeof(this->unknown_1708)));
+  AppendRecord(records, MakeReplayRecord(1058, this->unknown_170C, 4));
+  AppendRecord(records, MakeReplayRecord(1059, &this->unknown_0E9C[0x34], 4));
+  AppendRecord(records, MakeReplayRecord(1060, &this->m_head, sizeof(this->m_head)));
+  AppendRecord(records, MakeReplayRecord(1061, &this->unknown_0EDC[0x4], 8));
+  AppendRecord(records, MakeReplayRecord(1062, &this->unknown_0EDC[0xC], 4));
+  AppendRecord(records, MakeReplayRecord(1063, &this->m_bodyStyle, sizeof(this->m_bodyStyle)));
+  AppendRecord(records, MakeReplayRecord(1064, &this->m_headPalette, sizeof(this->m_headPalette)));
+  AppendRecord(records, MakeReplayRecord(1065, this->unknown_0EF4, 4));
+  AppendRecord(records, MakeReplayRecord(1066, &this->unknown_0EF4[0x4], 4));
+  AppendRecord(records, MakeReplayRecord(1067, &this->unknown_0EF4[0x8], 4));
+  AppendRecord(records, MakeReplayRecord(1068, this->unknown_0F0C, 4));
+  AppendRecord(records, MakeReplayRecord(1069, &this->unknown_0F0C[0x4], 4));
+  AppendRecord(records, MakeReplayRecord(1070, &this->m_jobFlags, sizeof(this->m_jobFlags)));
+  AppendRecord(records, MakeReplayRecord(1071, &this->m_robe, sizeof(this->m_robe)));
+  AppendRecord(records, MakeReplayRecord(1072, &this->unknown_5974[0x4], 4));
+  AppendRecord(records, MakeReplayRecord(1073, &this->unknown_5974[0x8], 4));
+  AppendRecord(records, MakeReplayRecord(1074, &this->unknown_5974[0xC], 4));
+  AppendRecord(records, MakeReplayRecord(1075, &this->unknown_5974[0x10], 4));
+  AppendRecord(records, MakeReplayRecord(1076, &this->unknown_5974[0x14], 4));
+  AppendRecord(records, MakeReplayRecord(1077, &this->unknown_5974[0x18], 4));
+  AppendRecord(records, MakeReplayRecord(1078, &this->unknown_5974[0x1C], 4));
+  AppendRecord(records, MakeReplayRecord(1079, &this->unknown_5974[0x20], 4));
+  AppendRecord(records, MakeReplayRecord(1080, &this->unknown_5974[0x24], 4));
+  AppendRecord(records, MakeReplayRecord(1081, &this->unknown_5974[0x2C], 0x18));
+  AppendRecord(records, MakeReplayRecord(1082, this->unknown_0F24, 1));
+  AppendRecord(records, MakeReplayRecord(1083, &this->m_score1, sizeof(this->m_score1)));
+  AppendRecord(records, MakeReplayRecord(1084, &this->m_score2, sizeof(this->m_score2)));
+  AppendRecord(records, MakeReplayRecord(1085, this->unknown_0F30, 1));
+  AppendRecord(records, MakeReplayRecord(1086, &this->cartCount, sizeof(this->cartCount)));
+  AppendRecord(records, MakeReplayRecord(1087, &this->cartMaxCount, sizeof(this->cartMaxCount)));
+  AppendRecord(records, MakeReplayRecord(1088, &this->cartWeight, sizeof(this->cartWeight)));
+  AppendRecord(records, MakeReplayRecord(1089, &this->cartMaxWeight, sizeof(this->cartMaxWeight)));
+  AppendRecord(records, MakeReplayRecord(1090, this->unknown_0F44, 4));
+  AppendRecord(records, MakeReplayRecord(1091, &this->unknown_0F44[0x4], 4));
+  AppendRecord(records, MakeReplayRecord(1092, &this->unknown_5490[0x8], 4));
+  AppendRecord(records, MakeReplayRecord(1093, &this->unknown_5490[0xC], 4));
+  AppendRecord(records, MakeReplayRecord(1094, &this->unknown_54A0, sizeof(this->unknown_54A0)));
+  AppendRecord(records, MakeReplayRecord(1095, &this->unknown_54A4, sizeof(this->unknown_54A4)));
+  AppendRecord(records, MakeReplayRecord(1096, &this->unknown_54A8, sizeof(this->unknown_54A8)));
+  AppendRecord(records, BuildReplayTaggedRecord(1097, this->unknown_550C.c_str(), this->unknown_550C.size()));
   const unsigned char option = g_serviceOptions.Get(0x40);
-  AppendBytes(records, BuildReplayTaggedRecord(1098, &option, sizeof(option)));
-  AppendBytes(records, BuildReplayTaggedRecord(1099, &this->unknown_5468, sizeof(this->unknown_5468)));
-  AppendBytes(records, BuildReplayTaggedRecord(1100, &this->m_bodyCostume, sizeof(this->m_bodyCostume)));
-  AppendBytes(records, BuildReplayTaggedRecord(1101, &this->unknown_7FBC, sizeof(this->unknown_7FBC)));
-  AppendBytes(records, BuildReplayTaggedRecord(1001, nullptr, 0));
+  AppendRecord(records, MakeReplayRecord(1098, &option, sizeof(option)));
+  AppendRecord(records, MakeReplayRecord(1099, &this->unknown_5468, sizeof(this->unknown_5468)));
+  AppendRecord(records, MakeReplayRecord(1100, &this->m_bodyCostume, sizeof(this->m_bodyCostume)));
+  AppendRecord(records, MakeReplayRecord(1101, &this->unknown_7FBC, sizeof(this->unknown_7FBC)));
+  AppendRecord(records, MakeReplayRecord(1001, nullptr, 0));
   return records;
 }
 
@@ -1527,18 +1297,14 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
 // FUNCTION: fn_24201
 std::vector<unsigned char> CSession::BuildShopReplayRecords() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(7500, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, MakeReplayRecord(7500, nullptr, 0));
   for (auto it = this->m_nameToId.begin(); it != this->m_nameToId.end(); ++it) {
     ReplayShopNameRecord value;
     value.unknown = 0;
     value.shopId = it->second;
     std::memset(value.name, 0, sizeof(value.name));
     std::memcpy(value.name, it->first.c_str(), (std::min)(it->first.size(), sizeof(value.name)));
-    const auto record = BuildReplayTaggedRecord(7502, &value, sizeof(value));
-    records.insert(records.end(), record.begin(), record.end());
+    AppendRecord(records, MakeReplayRecord(7502, &value, sizeof(value)));
   }
   for (auto shop = this->m_shops.begin(); shop != this->m_shops.end(); ++shop) {
     for (unsigned int index = 0; index < shop->second.unknown_0004.size(); ++index) {
@@ -1550,20 +1316,15 @@ std::vector<unsigned char> CSession::BuildShopReplayRecords() {
         value.itemId = item->first;
         value.first = item->second.first;
         value.second = item->second.second;
-        const auto record = BuildReplayTaggedRecord(7504, &value, sizeof(value));
-        records.insert(records.end(), record.begin(), record.end());
+        AppendRecord(records, MakeReplayRecord(7504, &value, sizeof(value)));
       }
     }
     ReplayShopFlagRecord value;
     value.shopId = shop->first;
     value.flag = shop->second.unknown_0000;
-    const auto record = BuildReplayTaggedRecord(7505, &value, sizeof(value));
-    records.insert(records.end(), record.begin(), record.end());
+    AppendRecord(records, MakeReplayRecord(7505, &value, sizeof(value)));
   }
-  {
-    const auto record = BuildReplayTaggedRecord(7501, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, MakeReplayRecord(7501, nullptr, 0));
   return records;
 }
 
@@ -1724,43 +1485,14 @@ std::vector<unsigned char> CSession::BuildStatsReplayRecords() {
 // FUNCTION: fn_24199
 std::vector<unsigned char> CSession::BuildMessengerReplayRecords() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(4000, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(4010, &this->unknown_5938, 1);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(4011, &this->unknown_5460, sizeof(this->unknown_5460));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(4012, &this->unknown_5464, sizeof(this->unknown_5464));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(4013, this->unknown_54AC.c_str(), this->unknown_54AC.size());
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(4014, this->unknown_54C4.c_str(), this->unknown_54C4.size());
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeMessengerMembers(this->m_partyMembers);
-    const auto record = MakeFramedMessage(4015, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto bytes = SerializeMessengerMembers(this->m_friends);
-    const auto record = MakeFramedMessage(4016, reinterpret_cast<const std::vector<char>&>(bytes));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(4001, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, MakeReplayRecord(4000, nullptr, 0));
+  AppendRecord(records, MakeReplayRecord(4010, &this->unknown_5938, 1));
+  AppendRecord(records, MakeReplayRecord(4011, &this->unknown_5460, sizeof(this->unknown_5460)));
+  AppendRecord(records, MakeReplayRecord(4012, &this->unknown_5464, sizeof(this->unknown_5464)));
+  AppendRecord(records, BuildReplayTaggedRecord(4013, this->unknown_54AC.c_str(), this->unknown_54AC.size()));
+  AppendRecord(records, BuildReplayTaggedRecord(4014, this->unknown_54C4.c_str(), this->unknown_54C4.size()));
+  AppendRecord(records, MakeFramedMessage(4015, reinterpret_cast<const std::vector<char>&>(SerializeMessengerMembers(this->m_partyMembers))));
+  AppendRecord(records, MakeFramedMessage(4016, reinterpret_cast<const std::vector<char>&>(SerializeMessengerMembers(this->m_friends))));
+  AppendRecord(records, MakeReplayRecord(4001, nullptr, 0));
   return records;
 }
