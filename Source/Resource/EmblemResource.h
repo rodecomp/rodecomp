@@ -14,7 +14,7 @@ public:
   CEmblemRes* Create() override;
   bool Load(const char* name) override;
   void Unload() override;
-  void MissingFile(CRenderSystemBase* system, const char* name) override;
+  void MissingFile(const char* name) override;
 
   /* 0110 */ CGifRes gif;
 };

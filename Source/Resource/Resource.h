@@ -26,7 +26,7 @@ public:
   virtual CRes* Create() = 0;
   virtual bool Load(const char* name) = 0;
   virtual void Unload();
-  virtual void MissingFile(CRenderSystemBase* system, const char* name);
+  virtual void MissingFile(const char* name);
   std::uint32_t Lock();
   void Unlock();
   const char* GetName();

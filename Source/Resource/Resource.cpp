@@ -50,10 +50,10 @@ void CRes::Unload() {
 
 // OFFSET: 0x00AEFCF0
 // FUNCTION: fn_18185
-void CRes::MissingFile(CRenderSystemBase* system, const char* name) {
+void CRes::MissingFile(const char* name) {
   char text[256];
   std::sprintf(text, "ResourceError : Can't find file %s\n", name);
-  ShowErrorDialog(system, text, 0);
+  ShowErrorDialog(text, 0);
 }
 
 // OFFSET: 0x00AEFAD0
