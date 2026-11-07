@@ -412,7 +412,10 @@ void UIExpandedBarterItemPurchaseWnd::UpdateScrollBar() {
 
   const int rows = this->rowCount;
   const int count = this->itemCount;
-  const int overflow = std::max(count - rows, 0);
+  int overflow = count - rows;
+  if (overflow < 0) {
+    overflow = 0;
+  }
 
   if (overflow != 0) {
     this->scrollEnabled = 1;
@@ -425,7 +428,7 @@ void UIExpandedBarterItemPurchaseWnd::UpdateScrollBar() {
     }
 
     const int limit = count - this->rowCount;
-    if (limit < position) {
+    if (position > limit) {
       this->unknown_00C4 = limit;
       position = limit;
     }
@@ -449,7 +452,10 @@ void UIExpandedBartermarketWnd::UpdateScrollBar() {
 
   const int rows = this->rowCount;
   const int count = this->itemCount;
-  const int overflow = std::max(count - rows, 0);
+  int overflow = count - rows;
+  if (overflow < 0) {
+    overflow = 0;
+  }
 
   if (overflow != 0) {
     this->scrollEnabled = 1;
@@ -462,7 +468,7 @@ void UIExpandedBartermarketWnd::UpdateScrollBar() {
     }
 
     const int limit = count - this->rowCount;
-    if (limit < position) {
+    if (position > limit) {
       this->unknown_00C4 = limit;
       position = limit;
     }
