@@ -59,19 +59,20 @@ HRESULT STDMETHODCALLTYPE BrowserPopupDispatch::Invoke(DISPID id, REFIID, LCID, 
   // STATIC: 0x01115448
   // GLOBAL: gl_13426
   const float scale = 0.7f;
-  const int height = static_cast<int>(static_cast<float>(g_renderer->viewport.height) * scale);
-  const int width = static_cast<int>(static_cast<float>(g_renderer->viewport.width) * scale);
-  CWebBrowser* browser = g_windowMgr.CreateBrowser(width, height);
+  CWebBrowser* browser = g_windowMgr.CreateBrowser(
+    static_cast<int>(static_cast<float>(g_renderer->viewport.width) * scale), static_cast<int>(static_cast<float>(g_renderer->viewport.height) * scale)
+  );
 
   if (!browser) {
     return S_OK;
   }
 
   const auto length = std::wcslen(url);
-  auto converted = std::make_unique_for_overwrite<char[]>(length + 1);
-  WideCharToMultiByte(CP_ACP, 0, url, -1, converted.get(), static_cast<int>(length), nullptr, nullptr);
+  char* converted = new char[length + 1];
+  WideCharToMultiByte(CP_ACP, 0, url, -1, converted, static_cast<int>(length), nullptr, nullptr);
   converted[length] = '\0';
-  browser->Navigate(converted.get());
+  browser->Navigate(converted);
+  delete[] converted;
 
   return S_OK;
 }
