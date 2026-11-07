@@ -15,15 +15,15 @@ public:
   CGuildEmblemReqBundle();
   virtual ~CGuildEmblemReqBundle();
   void Add(std::uint32_t guildId, std::uint32_t version);
-  void Update(
-    CEmblemDataMgr& emblems, std::uint32_t accountId, const std::string& accountName, const char* token16, CConnection& connection, CAsyncWorkMgr& manager
-  );
+  void Update();
 
 protected:
   struct Recent {
     /* 0000 */ std::uint32_t guildId;
     /* 0004 */ std::uint32_t version;
     /* 0008 */ std::uint32_t tick;
+
+    Recent(std::uint32_t guildId, std::uint32_t version, std::uint32_t tick) : guildId(guildId), version(version), tick(tick) {}
   };
 #if defined(_WIN32) && !defined(_WIN64)
   static_assert(sizeof(Recent) == 0xC);

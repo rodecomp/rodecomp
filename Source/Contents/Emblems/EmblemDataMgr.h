@@ -16,10 +16,7 @@ public:
   static bool Initialize();
   static void Shutdown();
   void RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey);
-  void Download(
-    std::uint32_t guildId, std::uint32_t version, std::uint32_t accountId, const std::string& accountName, const char* token16, CConnection& connection,
-    CAsyncWorkMgr& manager
-  );
+  void Download(std::uint32_t guildId, std::uint32_t version);
   bool Upload(std::uint32_t guildId, std::string path);
   void CompleteUpload(AsyncDiagnostic diagnostic, std::string response, std::uint32_t guildId);
   void CompleteDownload(AsyncDiagnostic diagnostic, int responseCode, std::string response, std::uint32_t guildId, std::uint32_t version);

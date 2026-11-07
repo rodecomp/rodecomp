@@ -123,7 +123,7 @@ void __stdcall CGuildMgr::ReceiveEmblem(std::uint16_t state, std::uint32_t guild
 void CGuildMgr::UpdateEmblemRequests(
   CEmblemDataMgr& emblems, std::uint32_t accountId, const std::string& accountName, const char* token16, CConnection& connection, CAsyncWorkMgr& manager
 ) {
-  this->m_reqBundle->Update(emblems, accountId, accountName, token16, connection, manager);
+  this->m_reqBundle->Update();
 }
 
 // OFFSET: 0x0065EE50

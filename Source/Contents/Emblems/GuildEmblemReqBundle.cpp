@@ -24,11 +24,11 @@ void CGuildEmblemReqBundle::Add(std::uint32_t guildId, std::uint32_t version) {
 
 // OFFSET: 0x0065CB90
 // FUNCTION: fn_05155
-void CGuildEmblemReqBundle::Update(
-  CEmblemDataMgr& emblems, std::uint32_t accountId, const std::string& accountName, const char* token16, CConnection& connection, CAsyncWorkMgr& manager
-) {
+void CGuildEmblemReqBundle::Update() {
   while (!this->m_recent.empty()) {
-    if (timeGetTime() < this->m_recent.front().tick + 60000u) {
+    const Recent oldest = this->m_recent.front();
+
+    if (timeGetTime() < oldest.tick + 60000u) {
       break;
     }
 
@@ -47,7 +47,7 @@ void CGuildEmblemReqBundle::Update(
     }
 
     if (request.first != 0) {
-      emblems.Download(request.first, request.second, accountId, accountName, token16, connection, manager);
+      g_emblemDataMgr->Download(request.first, request.second);
       this->m_recent.push_back({request.first, request.second, timeGetTime()});
     }
 

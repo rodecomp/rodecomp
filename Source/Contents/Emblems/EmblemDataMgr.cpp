@@ -2,6 +2,7 @@
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Emblems/EmblemDataMgr.h"
 #include "Client/Session.h"
+#include "Network/Connection/Connection.h"
 
 #include "Utility/Cipher/XorBytes.h"
 
@@ -110,12 +111,11 @@ void CEmblemDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const c
 
 // OFFSET: 0x005EB260
 // FUNCTION: fn_03972
-void CEmblemDataMgr::Download(
-  std::uint32_t guildId, std::uint32_t version, std::uint32_t accountId, const std::string& accountName, const char* token16, CConnection& connection,
-  CAsyncWorkMgr& manager
-) {
-  const std::string token(token16, 16);
-  manager.DownloadEmblem(this->m_downloadUrl, accountId, token, accountName, guildId, version, connection);
+void CEmblemDataMgr::Download(std::uint32_t guildId, std::uint32_t version) {
+  const std::string token(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16);
+  g_asyncWorkMgr->DownloadEmblem(
+    this->m_downloadUrl, g_session.m_aid, token, g_session.m_accountName, guildId, version, GetRagConnection()
+  );
 }
 
 // OFFSET: 0x005EB410
