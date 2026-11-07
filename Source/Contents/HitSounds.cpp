@@ -1,6 +1,7 @@
 #include "Client/Session.h"
 #include "Contents/Jobs/JobInheritance.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <string>
 #include <vector>
@@ -18,7 +19,7 @@ const char* CSession::GetHitWaveName(int job) {
 
   const int weapon = GetRealWeaponId(-1);
   if (weapon == -1) {
-    switch (std::rand() % 4) {
+    switch (std::max(std::rand() % 4, 0)) {
     case 0:
       return "_enemy_hit_normal1.wav";
     case 1:
@@ -40,7 +41,7 @@ const char* CSession::GetHitWaveName(int job) {
   }
 
   if (weapon == 0) {
-    switch (std::rand() % 4) {
+    switch (std::max(std::rand() % 4, 0)) {
     case 0:
       return "_hit_fist1.wav";
     case 1:
@@ -60,7 +61,7 @@ const char* CSession::GetHitWaveName(int job) {
 const char* CSession::GetWeaponHitWaveName(int weapon) {
   const int realWeapon = GetRealWeaponId(weapon);
   if (realWeapon == -1) {
-    switch (std::rand() % 4) {
+    switch (std::max(std::rand() % 4, 0)) {
     case 0:
       return "_enemy_hit_normal1.wav";
     case 1:
@@ -82,7 +83,7 @@ const char* CSession::GetWeaponHitWaveName(int weapon) {
   }
 
   if (realWeapon == 0) {
-    switch (std::rand() % 4) {
+    switch (std::max(std::rand() % 4, 0)) {
     case 0:
       return "_hit_fist1.wav";
     case 1:
