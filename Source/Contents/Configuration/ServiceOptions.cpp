@@ -72,8 +72,8 @@ public:
   ~CGameSettingsMgr() override;
 
   /* 000C */ std::vector<GameSettingsOption> options;
-  /* 0018 */ std::unordered_map<std::uint32_t, std::function<void(int, unsigned char, bool, int, int)>> actions;
-  /* 0038 */ std::unordered_map<std::uint32_t, std::function<void()>> functions;
+  /* 0018 */ std::unordered_map<int, std::function<void(int, unsigned char, bool, int, int)>> actions;
+  /* 0038 */ std::unordered_map<int, std::function<void()>> functions;
 
   bool LoadSettings();
   bool ReadOptionTable();
@@ -439,26 +439,19 @@ CGameSettingsMgr::~CGameSettingsMgr() {
 // OFFSET: 0x006C0C40
 // FUNCTION: fn_06312
 void GameSettings::SetOption(int id, unsigned char value, bool notify) {
-  for (const GameSettingsOption& option : this->options) {
-    if (option.id != id) {
-      continue;
-    }
+  const std::optional<GameSettingsOption*> option = this->FindOption(id);
+  if (!option || (*option)->type != 0) {
+    return;
+  }
 
-    if (option.type != 0) {
-      return;
-    }
-
-    const auto entry = this->actions.find(static_cast<std::uint32_t>(id));
-    if (entry == this->actions.end()) {
-      ApplyServiceOption(id, value, notify, option.unknown_005c, option.unknown_0060);
-      return;
-    }
-
+  const auto entry = this->actions.find(id);
+  if (entry != this->actions.end()) {
     const std::function<void(int, unsigned char, bool, int, int)> action = entry->second;
     if (action) {
-      action(id, value, notify, option.unknown_005c, option.unknown_0060);
+      action(id, value, notify, (*option)->unknown_005c, (*option)->unknown_0060);
     }
-    return;
+  } else {
+    ApplyServiceOption(id, value, notify, (*option)->unknown_005c, (*option)->unknown_0060);
   }
 }
 
