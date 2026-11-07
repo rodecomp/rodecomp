@@ -1,6 +1,6 @@
 # Local rAthena for the decompiled client (Ragexe 2026-02-19).
 #   docker compose -f scripts/rathena/docker-compose.yml up -d --build
-# Login 127.0.0.1:6900, account test / test (created on first start).
+# Login 127.0.0.1:6900, account tester / tester (created on first start).
 
 x-rathena: &rathena
   image: rodecomp/rathena:20260219
