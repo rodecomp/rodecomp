@@ -1449,7 +1449,8 @@ void CMsgEffect::FollowOwner() {
 bool CSummonActorEffect::OnProcess() {
   const bool result = this->CMsgEffect::OnProcess();
   const unsigned char* color = reinterpret_cast<const unsigned char*>(&this->render.color);
-  this->SetColor(g_serviceOptions.Get(0x10A) != 0 ? 0x32 : 0xFF, color[2], color[1], color[0]);
+  const int alpha = g_serviceOptions.Get(0x10A) != 0 ? 0x32 : 0xFF;
+  this->SetColor(alpha, color[2], color[1], color[0]);
   return result;
 }
 
