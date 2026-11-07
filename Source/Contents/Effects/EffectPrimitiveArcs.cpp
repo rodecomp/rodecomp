@@ -399,24 +399,24 @@ void CEffectPrim::RenderGroundSquare(matrix& wtm) {
       continue;
     }
 
-    const int angle0 = slot.rotStart;
+    int angle = slot.rotStart;
     const double radius = (g_sinTable[slot.riseAngle] + 1.0f) * (slot.distance * 0.1f) + slot.distance * 0.8;
-    const int angle1 = angle0 + (angle0 < 270 ? 90 : -270);
-    const int angle2 = angle1 + (angle1 + 90 < 360 ? 90 : -270);
-    const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
 
-    slot.vecBPre.x = static_cast<float>(g_cosTable[angle0] * radius);
-    slot.vecBPre.z = static_cast<float>(g_sinTable[angle0] * radius);
+    slot.vecBPre.x = static_cast<float>(g_cosTable[angle] * radius);
+    slot.vecBPre.z = static_cast<float>(g_sinTable[angle] * radius);
     slot.vecBPre.y = slot.height[0];
+    angle += angle < 270 ? 90 : -270;
     slot.vecBNow.y = slot.height[0];
-    slot.vecBNow.x = static_cast<float>(g_cosTable[angle1] * radius);
-    slot.vecBNow.z = static_cast<float>(g_sinTable[angle1] * radius);
+    slot.vecBNow.x = static_cast<float>(g_cosTable[angle] * radius);
+    slot.vecBNow.z = static_cast<float>(g_sinTable[angle] * radius);
+    angle += angle + 90 < 360 ? 90 : -270;
     slot.vecTNow.y = slot.height[0];
-    slot.vecTNow.x = static_cast<float>(g_cosTable[angle2] * radius);
-    slot.vecTNow.z = static_cast<float>(g_sinTable[angle2] * radius);
+    slot.vecTNow.x = static_cast<float>(g_cosTable[angle] * radius);
+    slot.vecTNow.z = static_cast<float>(g_sinTable[angle] * radius);
+    angle += angle + 90 < 360 ? 90 : -270;
     slot.vecTPre.y = slot.height[0];
-    slot.vecTPre.x = static_cast<float>(g_cosTable[angle3] * radius);
-    slot.vecTPre.z = static_cast<float>(g_sinTable[angle3] * radius);
+    slot.vecTPre.x = static_cast<float>(g_cosTable[angle] * radius);
+    slot.vecTPre.z = static_cast<float>(g_sinTable[angle] * radius);
 
     this->RenderTeiRect(
       &rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, slot.height[2] == 1.0f,
@@ -437,24 +437,24 @@ void CEffectPrim::RenderGroundSquareBlend(matrix& wtm) {
       continue;
     }
 
-    const int angle0 = slot.rotStart;
+    int angle = slot.rotStart;
     const double radius = (g_sinTable[slot.riseAngle] + 1.0f) * (slot.distance * 0.1f) + slot.distance * 0.8;
-    const int angle1 = angle0 + (angle0 < 270 ? 90 : -270);
-    const int angle2 = angle1 + (angle1 + 90 < 360 ? 90 : -270);
-    const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
 
-    slot.vecBPre.x = static_cast<float>(g_cosTable[angle0] * radius);
-    slot.vecBPre.z = static_cast<float>(g_sinTable[angle0] * radius);
+    slot.vecBPre.x = static_cast<float>(g_cosTable[angle] * radius);
+    slot.vecBPre.z = static_cast<float>(g_sinTable[angle] * radius);
     slot.vecBPre.y = slot.height[0];
+    angle += angle < 270 ? 90 : -270;
     slot.vecBNow.y = slot.height[0];
-    slot.vecBNow.x = static_cast<float>(g_cosTable[angle1] * radius);
-    slot.vecBNow.z = static_cast<float>(g_sinTable[angle1] * radius);
+    slot.vecBNow.x = static_cast<float>(g_cosTable[angle] * radius);
+    slot.vecBNow.z = static_cast<float>(g_sinTable[angle] * radius);
+    angle += angle + 90 < 360 ? 90 : -270;
     slot.vecTNow.y = slot.height[0];
-    slot.vecTNow.x = static_cast<float>(g_cosTable[angle2] * radius);
-    slot.vecTNow.z = static_cast<float>(g_sinTable[angle2] * radius);
+    slot.vecTNow.x = static_cast<float>(g_cosTable[angle] * radius);
+    slot.vecTNow.z = static_cast<float>(g_sinTable[angle] * radius);
+    angle += angle + 90 < 360 ? 90 : -270;
     slot.vecTPre.y = slot.height[0];
-    slot.vecTPre.x = static_cast<float>(g_cosTable[angle3] * radius);
-    slot.vecTPre.z = static_cast<float>(g_sinTable[angle3] * radius);
+    slot.vecTPre.x = static_cast<float>(g_cosTable[angle] * radius);
+    slot.vecTPre.z = static_cast<float>(g_sinTable[angle] * radius);
 
     short alpha = static_cast<short>(slot.process % 256 * 2);
     if (alpha > 255) {
