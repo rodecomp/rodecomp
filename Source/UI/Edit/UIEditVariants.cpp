@@ -333,9 +333,11 @@ UIEditCtrl3::UIEditCtrl3(const UIEditCtrl3& other) : UIEditCtrl2(other) {
   this->unknown_0150 = other.unknown_0150;
   this->unknown_0154 = other.unknown_0154;
   this->unknown_0158 = other.unknown_0158;
-  this->unknown_015C = other.unknown_015C;
+  reinterpret_cast<unsigned char*>(&this->unknown_015C)[0] = reinterpret_cast<const unsigned char*>(&other.unknown_015C)[0];
+  reinterpret_cast<unsigned char*>(&this->unknown_015C)[1] = reinterpret_cast<const unsigned char*>(&other.unknown_015C)[1];
   this->unknown_015E = other.unknown_015E;
-  this->unknown_0184 = other.unknown_0184;
+  reinterpret_cast<unsigned char*>(&this->unknown_0184)[0] = reinterpret_cast<const unsigned char*>(&other.unknown_0184)[0];
+  reinterpret_cast<unsigned char*>(&this->unknown_0184)[1] = reinterpret_cast<const unsigned char*>(&other.unknown_0184)[1];
 
   char* first = other.unknown_0160;
   if (first != this->unknown_0160) {
