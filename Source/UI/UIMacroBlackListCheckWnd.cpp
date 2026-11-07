@@ -29,8 +29,17 @@ namespace {
 // OFFSET: 0x007EB0A0
 // FUNCTION: fn_09792
 UIMacroBlackListCheckWnd::UIMacroBlackListCheckWnd()
-    : UIFrameWnd(0), digitButtons(), resetButton(nullptr),
-      unknown_00E4(0), inputLength(0), input(), code(), charSizes(), charFlags(), charColors(), duration(0), startTick(0) {}
+    : UIFrameWnd(0) {
+  this->unknown_00E4 = 0;
+  this->inputLength = 0;
+  this->duration = 0;
+  this->startTick = 0;
+  std::memset(this->input, 0, sizeof(this->input));
+  std::memset(this->code, 0, sizeof(this->code));
+  std::memset(this->digitButtons, 0, sizeof(this->digitButtons));
+  this->resetButton = nullptr;
+  std::memset(this->charSizes, 0, sizeof(this->charSizes) + sizeof(this->charFlags) + sizeof(this->charColors));
+}
 
 // OFFSET: 0x007EB230
 // FUNCTION: fn_09794
