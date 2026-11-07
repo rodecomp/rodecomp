@@ -218,7 +218,8 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   }
   case 48: {
     int index = 0;
-    for (auto it = g_renewQuestMgr->m_ongoingQuests.begin(); it != g_renewQuestMgr->m_ongoingQuests.end(); ++it, ++index) {
+    const auto end = g_renewQuestMgr->m_ongoingQuests.end();
+    for (auto it = g_renewQuestMgr->m_ongoingQuests.begin(); it != end; ++it, ++index) {
       if (index == this->m_selectedIndex) {
         switch (this->m_menuItems[argument1].value) {
         case 48: {
@@ -245,12 +246,10 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       this->Show(0);
     }
     if (this->m_selectedIndex != -1) {
-      std::string text1 = LookupMessage(1622);
-      this->m_menuItems.push_back(MiniPartyInfoEntry(text1.c_str(), 49));
-      std::string text2 = LookupMessage(351);
-      this->m_menuItems.push_back(MiniPartyInfoEntry(text2.c_str(), 48));
+      this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(1622)).c_str(), 49));
+      this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(351)).c_str(), 48));
     }
-    if (!this->m_menuItems.empty()) {
+    if (this->m_menuItems.size() != 0) {
       UIWindow* menu = g_windowMgr.EnsureWindow(18);
       for (size_t i = 0; i < this->m_menuItems.size(); ++i) {
         menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_menuItems[i].text.c_str()), 0, 0, 0);
@@ -258,12 +257,12 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       menu->SendMsg(nullptr, 83, 204, 0, 0, 0);
       menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
 
-      int x = std::max(1, g_mouse.x + 1);
+      int x = std::max(g_mouse.x + 1, 1);
       int maxX = g_renderer->viewport.width - menu->geometry.width;
       if (x > maxX) {
         x = maxX;
       }
-      int y = std::max(1, g_mouse.y + 1);
+      int y = std::max(g_mouse.y + 1, 1);
       int maxY = g_renderer->viewport.height - menu->geometry.height;
       if (y > maxY) {
         y = maxY;
