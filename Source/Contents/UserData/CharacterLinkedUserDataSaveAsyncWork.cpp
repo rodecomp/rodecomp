@@ -85,8 +85,7 @@ void CCharacterLinkedUserDataSaveAsyncWork::Bind(
   this->m_url = url;
   this->m_token = token;
   this->m_data = data;
-  const std::uint8_t unknown[] = {0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93};
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x93E7A3A1F587CDC5ULL>(unknown), 54);
+  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x93E7A3A1F587CDC5ULL>({0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93}), 54);
   this->m_diagnostic.MoveFrom(diagnostic);
 }
 
@@ -100,24 +99,17 @@ bool CCharacterLinkedUserDataSaveAsyncWork::Execute() {
   std::string name = ToUtf8(this->m_accountName);
   std::string data = ToUtf8(this->m_data);
   CCURLPostHander handler(this->m_url);
-  const std::uint8_t aid[] = {0xE0, 0x74, 0xDB, 0xD7};
-  handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>(aid), accountId, 4);
-  const std::uint8_t gid[] = {0xF0, 0x4E, 0x13, 0xCD};
-  handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>(gid), characterId, 4);
-  const std::uint8_t authToken[] = {0x14, 0x88, 0xC1, 0xB3, 0x93, 0xDE, 0x1E, 0x56, 0x3B, 0xFD};
-  handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>(authToken), this->m_token, 4);
-  const std::uint8_t worldName[] = {0x48, 0x5E, 0xBF, 0x8B, 0x89, 0x3B, 0x0C, 0x70, 0x7A, 0x31};
-  handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>(worldName), name, 4);
-  const std::uint8_t dataName[] = {0x09, 0x02, 0x41, 0x4C, 0xA5};
-  handler.AddField(DecryptName<0xD98F03A52D35636DULL>(dataName), data, 4);
+  handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>({0xE0, 0x74, 0xDB, 0xD7}), accountId, 4);
+  handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>({0xF0, 0x4E, 0x13, 0xCD}), characterId, 4);
+  handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>({0x14, 0x88, 0xC1, 0xB3, 0x93, 0xDE, 0x1E, 0x56, 0x3B, 0xFD}), this->m_token, 4);
+  handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>({0x48, 0x5E, 0xBF, 0x8B, 0x89, 0x3B, 0x0C, 0x70, 0x7A, 0x31}), name, 4);
+  handler.AddField(DecryptName<0xD98F03A52D35636DULL>({0x09, 0x02, 0x41, 0x4C, 0xA5}), data, 4);
 
   if (handler.Perform() != 0) {
-    const std::uint8_t fail[] = {0xB7, 0x78, 0xF4, 0xE3, 0x6B};
-    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x0F0F8B6B8F9D19D1ULL>(fail), 98);
+    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x0F0F8B6B8F9D19D1ULL>({0xB7, 0x78, 0xF4, 0xE3, 0x6B}), 98);
     this->m_diagnostic.MoveFrom(diagnostic);
   } else {
-    const std::uint8_t good[] = {0x6E, 0xC6, 0x28, 0x3B, 0xD9};
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0xD3755DD95F47A909ULL>(good), 102);
+    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0xD3755DD95F47A909ULL>({0x6E, 0xC6, 0x28, 0x3B, 0xD9}), 102);
     this->m_diagnostic.MoveFrom(diagnostic);
   }
 
