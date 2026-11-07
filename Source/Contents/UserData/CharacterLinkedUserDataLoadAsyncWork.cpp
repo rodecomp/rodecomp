@@ -86,8 +86,7 @@ void CCharacterLinkedUserDataLoadAsyncWork::Bind(
   this->m_token = token;
   this->m_response = "";
 
-  const std::uint8_t unknown[] = {0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F};
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x2FF3C5036D070127ULL>(unknown), 55);
+  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F}), 55);
   this->m_diagnostic.MoveFrom(diagnostic);
 }
 
@@ -101,19 +100,14 @@ bool CCharacterLinkedUserDataLoadAsyncWork::Execute() {
 
   std::string name = ToUtf8(this->m_accountName);
   CCURLPostHander handler(this->m_url);
-  const std::uint8_t aid[] = {0x5E, 0x78, 0x89, 0xE7};
-  handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>(aid), accountId, 4);
-  const std::uint8_t gid[] = {0x12, 0xB4, 0xF1, 0xDB};
-  handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>(gid), characterId, 4);
-  const std::uint8_t authToken[] = {0xF6, 0x72, 0x23, 0xA5, 0x7F, 0x88, 0x40, 0xE4, 0xD9, 0x07};
-  handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>(authToken), this->m_token, 4);
-  const std::uint8_t worldName[] = {0xF6, 0x52, 0xED, 0xBB, 0x07, 0xC1, 0x46, 0x34, 0xC4, 0x3D};
-  handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>(worldName), name, 4);
+  handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>({0x5E, 0x78, 0x89, 0xE7}), accountId, 4);
+  handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>({0x12, 0xB4, 0xF1, 0xDB}), characterId, 4);
+  handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>({0xF6, 0x72, 0x23, 0xA5, 0x7F, 0x88, 0x40, 0xE4, 0xD9, 0x07}), this->m_token, 4);
+  handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>({0xF6, 0x52, 0xED, 0xBB, 0x07, 0xC1, 0x46, 0x34, 0xC4, 0x3D}), name, 4);
 
   if (handler.Perform() == 0) {
     this->m_response = FromUtf8(handler.Response());
-    const std::uint8_t good[] = {0x0A, 0x8C, 0x2A, 0xC7, 0xED};
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x31D7C1EDA345E36DULL>(good), 103);
+    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x31D7C1EDA345E36DULL>({0x0A, 0x8C, 0x2A, 0xC7, 0xED}), 103);
     this->m_diagnostic.MoveFrom(diagnostic);
   }
 
