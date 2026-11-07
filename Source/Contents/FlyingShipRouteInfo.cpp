@@ -27,18 +27,11 @@ void CFlyingShipRouteInfo::Draw(UIRoMapWnd* wnd) {
     return;
   }
 
-  std::map<std::string, RoMapMarker> targets;
-  for (std::size_t i = 0; i + 1 < this->entries.size(); ++i) {
+  std::map<std::string, FlyingShipRouteEntry> targets;
+  for (std::size_t i = 0; i < this->entries.size() - 1; ++i) {
     const FlyingShipRouteEntry& from = this->entries[i];
     const FlyingShipRouteEntry& entry = this->entries[i + 1];
-    RoMapMarker marker;
-    marker.name = entry.name;
-    marker.area = {entry.unknown_0018[0], entry.unknown_0018[1], entry.unknown_0018[2], entry.unknown_0018[3], entry.unknown_0028};
-    marker.centerX = entry.unknown_002C[0];
-    marker.centerY = entry.unknown_002C[1];
-    marker.width = entry.unknown_0034;
-    marker.height = entry.unknown_0038;
-    targets.insert(std::pair<std::string, RoMapMarker>(entry.name, marker));
+    targets.insert(std::pair<std::string, FlyingShipRouteEntry>(entry.name, entry));
 
     CTexture* texture = g_texMgr.Load(this->unknown_0038.c_str(), 0, true, true, false);
     DrawScreenLine(
@@ -55,7 +48,7 @@ void CFlyingShipRouteInfo::Draw(UIRoMapWnd* wnd) {
     from.unknown_002C[0], from.unknown_002C[1], to.unknown_002C[0], to.unknown_002C[1], 0x10, 0x10, body, 0x14, head, this->unknown_001C, 0xFFFFFFFF, 6
   );
 
-  for (std::map<std::string, RoMapMarker>::iterator it = targets.begin(); it != targets.end(); ++it) {
-    wnd->DrawMapMarker(it->second, 1);
+  for (std::map<std::string, FlyingShipRouteEntry>::iterator it = targets.begin(); it != targets.end(); ++it) {
+    wnd->DrawMapMarker(reinterpret_cast<const RoMapMarker&>(it->second), 1);
   }
 }
