@@ -25,7 +25,7 @@ public:
   bool AttachSite();
   void DetachSite();
   bool CreateAddressBar(int width, int height);
-  void Resize(int width, int height);
+  __declspec(noinline) void Resize(int width, int height);
   void RefreshSize();
   int AuxiliaryHeight();
   void Normalize();

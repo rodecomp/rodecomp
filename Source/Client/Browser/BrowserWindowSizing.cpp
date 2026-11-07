@@ -26,19 +26,6 @@ void CWebBrowser::Resize(int requestedWidth, int requestedHeight) {
   }
 }
 
-// OFFSET: 0x00AB2260
-// FUNCTION: fn_45430
-void CWebBrowser::RefreshSize() {
-  long width = 0;
-  long height = 0;
-  this->browser->get_Width(&width);
-  this->browser->get_Height(&height);
-
-  if (this->width != width || this->height != height) {
-    this->Resize(this->width, this->height);
-  }
-}
-
 // INLINED
 int CWebBrowser::AuxiliaryHeight() {
   if (this->rebar && this->auxiliaryVisible != 0) {
