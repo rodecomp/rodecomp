@@ -16,10 +16,10 @@ void UIMiniBtnWnd::Paint() {
   UIWindow* window = g_windowMgr.LookupWindow(this->m_windowId);
   if (window && window->geometry.visible != 0) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_activeImage.c_str())));
-    this->DrawBitmap(0, 0, &bitmap->image, false);
+    this->DrawBitmap(0, 0, bitmap, false);
   } else {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_inactiveImage.c_str())));
-    this->DrawBitmap(0, 0, &bitmap->image, false);
+    this->DrawBitmap(0, 0, bitmap, false);
   }
 }
 
