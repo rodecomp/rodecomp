@@ -272,7 +272,7 @@ bool C3dGrannyModelRes::Load(const char* name) {
   bool result = false;
 
   if (!GrannyVersionsMatch_(2, 1, 0, 5)) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "doesn't match the .h file used during compilation", 0);
+    ShowErrorDialog("doesn't match the .h file used during compilation", 0);
     return false;
   }
 
@@ -306,7 +306,7 @@ bool C3dGrannyModelRes::Load(const char* name) {
   if (!file.Open(name, 0, true, false)) {
     const std::string path(name);
     const std::string message = std::string("Cannot find File : ") + path;
-    ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
+    ShowErrorDialog(message.c_str(), 0);
     return false;
   }
 
@@ -314,13 +314,13 @@ bool C3dGrannyModelRes::Load(const char* name) {
   file.Close();
 
   if (!this->file) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Unable to load file .gr2 (C3dGrannyModelRes :: Load)", 0);
+    ShowErrorDialog("Unable to load file .gr2 (C3dGrannyModelRes :: Load)", 0);
   } else {
     granny_file_info* info = GrannyGetFileInfo(this->file);
     std::strcpy(this->fileName, name);
 
     if (!info) {
-      ShowErrorDialog(GetRenderSystemHolder()->system, "Unable to access file data .gr2", 0);
+      ShowErrorDialog("Unable to access file data .gr2", 0);
     } else {
       this->textureCount = info->textureCount;
       this->textures = new GrannyTextureEntry[this->textureCount];
@@ -334,7 +334,7 @@ bool C3dGrannyModelRes::Load(const char* name) {
         if (texture->textureType == 0 && texture->imageCount == 1) {
           entry.texture = this->CreateTexture(texture, 0);
         } else {
-          ShowErrorDialog(GetRenderSystemHolder()->system, "This sample only works with single-image : ColorMapTextureType textures", 0);
+          ShowErrorDialog("This sample only works with single-image : ColorMapTextureType textures", 0);
         }
       }
 
@@ -363,7 +363,7 @@ bool C3dGrannyModelRes::Load(const char* name) {
 
   for (int index = 0; index < this->instance->meshCount; ++index) {
     if (GrannyGetMeshIndexCount(this->instance->meshes[index].mesh) / 3 > 10000) {
-      ShowErrorDialog(GetRenderSystemHolder()->system, "too many vertex granny model!", 0);
+      ShowErrorDialog("too many vertex granny model!", 0);
     }
   }
 
