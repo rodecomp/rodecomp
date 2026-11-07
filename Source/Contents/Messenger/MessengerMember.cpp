@@ -197,24 +197,6 @@ static_assert(sizeof(MessengerRecordHeader) == 6);
 MessengerMember::MessengerMember() : valid(1), dead(0) {
 }
 
-// OFFSET: 0x00DC6FA0
-// FUNCTION: fn_22785
-MessengerMember& MessengerMember::operator=(const MessengerMember& other) {
-  this->valid = other.valid;
-  this->accountId = other.accountId;
-  this->characterId = other.characterId;
-  this->name = other.name;
-  this->map = other.map;
-  this->leader = other.leader;
-  this->offline = other.offline;
-  this->color = other.color;
-  this->job = other.job;
-  this->level = other.level;
-  this->dead = other.dead;
-
-  return *this;
-}
-
 // OFFSET: 0x007382E0
 // FUNCTION: fn_07664
 UIDragMiniPartyWnd::UIDragMiniPartyWnd(MessengerMember member)

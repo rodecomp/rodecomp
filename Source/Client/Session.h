@@ -643,7 +643,8 @@ public:
   void SetHotkeyDescription(const char* description, int index);
   void SetHotkeyDescription(const char* description, std::uint32_t skillLevel, int index);
   void SetHotkeySkillLevel(std::uint32_t skillLevel, int index);
-  static std::int32_t MemberColor(int index);
+  std::int32_t MemberColor(int index);
+  SessionShop* FindShop(const int& shopId);
   CSkillInfo* FindGroupedSkill(std::uint32_t id);
   void AddFriend(MessengerMember& member);
   void AddPartyMember(MessengerMember& member);

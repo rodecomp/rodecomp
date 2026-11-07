@@ -705,18 +705,18 @@ void CGameMode::RefreshItemListWindow(unsigned char listType, bool partial) {
   }
 
   switch (listType) {
-  case 0:
-    RefreshItemWindows(&g_windowMgr);
-    break;
-  case 1:
-    g_session.RefreshItem1740Window();
-    break;
   case 2:
   case 3:
     if (UIWindow* window = g_windowMgr.window_0288) {
       window->SendMsg(nullptr, 23, 0, 0, 0, 0);
       reinterpret_cast<unsigned char*>(window)[0x190] = 1;
     }
+    break;
+  case 0:
+    RefreshItemWindows(&g_windowMgr);
+    break;
+  case 1:
+    g_session.RefreshItem1740Window();
     break;
   }
 }

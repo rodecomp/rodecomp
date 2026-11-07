@@ -426,6 +426,16 @@ void UIMiniPartyWnd::Slot31(int x, int y) {
 // FUNCTION: fn_07744
 int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
+  case 23: {
+    const MessengerMember* member = reinterpret_cast<const MessengerMember*>(argument1);
+    if (member && member->valid) {
+      this->m_member = *member;
+      if (this->m_infoWnd) {
+        this->m_infoWnd->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+    }
+    return 0;
+  }
   case 6:
     if (argument1 == 34 && this->m_member.accountId == static_cast<std::uint32_t>(argument2) && this->m_member.offline == 0 && this->m_infoWnd) {
       this->m_infoWnd->SendMsg(sender, message, 34, argument2, argument3, argument4);
@@ -490,16 +500,6 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       }
       window->Invalidate();
       window->Invalidate();
-    }
-    return 0;
-  }
-  case 23: {
-    const MessengerMember* member = reinterpret_cast<const MessengerMember*>(argument1);
-    if (member && member->valid) {
-      this->m_member = *member;
-      if (this->m_infoWnd) {
-        this->m_infoWnd->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      }
     }
     return 0;
   }

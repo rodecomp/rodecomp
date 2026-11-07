@@ -443,7 +443,7 @@ namespace EquipmentProperties {
     int GetType() override;
 
     std::vector<CEquipmentAttachable>& GetAttachables();
-    bool IsActive();
+    __declspec(noinline) bool IsActive();
     __declspec(noinline) bool UpdateActive();
   };
 
@@ -758,13 +758,11 @@ void EquipmentProperties::CEquipment::AddProperty(const std::string& name, const
   this->m_properties += &property;
 }
 
-__declspec(noinline) SessionShop* FindShop(CSession& session, const int& shopId);
-
 // OFFSET: 0x00DDE720
 // FUNCTION: fn_23398
-SessionShop* FindShop(CSession& session, const int& shopId) {
-  const auto found = session.m_shops.lower_bound(shopId);
-  if (found == session.m_shops.end() || shopId < found->first) {
+__declspec(noinline) SessionShop* CSession::FindShop(const int& shopId) {
+  const auto found = this->m_shops.lower_bound(shopId);
+  if (found == this->m_shops.end() || shopId < found->first) {
     return nullptr;
   }
   return &found->second;
@@ -788,7 +786,7 @@ int FindShopId(CSession& session, std::string name) {
 // FUNCTION: fn_05621
 bool EquipmentProperties::CEquipmentWearable::UpdateActive() {
   const bool previous = this->m_active;
-  SessionShop* shop = FindShop(g_session, FindShopId(g_session, std::string()));
+  SessionShop* shop = g_session.FindShop(FindShopId(g_session, std::string()));
   if (shop != nullptr && !shop->unknown_0004.empty()) {
     this->m_active = shop->unknown_0004[0].find(this->m_id) != shop->unknown_0004[0].end();
   } else {
@@ -4150,20 +4148,19 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshShop() {
   const int shopId = FindShopId(g_session, std::string());
   if (this->unknown_0014 != shopId) {
     for (auto& entry : this->properties1) {
-      CEquipmentWearable* equipment = entry.second;
-      const bool previous = equipment->IsActive();
-      this->m_dirty |= equipment->UpdateActive();
-      if (previous != equipment->IsActive()) {
-        if (equipment->IsActive()) {
-          this->EquipItem(equipment->GetId(), false);
-          for (CEquipmentAttachable& attachable : equipment->GetAttachables()) {
-            this->EquipItem(attachable.GetId(), false);
-          }
-        } else {
-          for (CEquipmentAttachable& attachable : equipment->GetAttachables()) {
+      const bool previous = entry.second->IsActive();
+      this->m_dirty |= entry.second->UpdateActive();
+      if (previous != entry.second->IsActive()) {
+        if (!entry.second->IsActive()) {
+          for (CEquipmentAttachable& attachable : entry.second->GetAttachables()) {
             this->UnequipItem(attachable.GetId(), false);
           }
-          this->UnequipItem(equipment->GetId(), false);
+          this->UnequipItem(entry.second->GetId(), false);
+        } else {
+          this->EquipItem(entry.second->GetId(), false);
+          for (CEquipmentAttachable& attachable : entry.second->GetAttachables()) {
+            this->EquipItem(attachable.GetId(), false);
+          }
         }
       }
     }
@@ -5558,8 +5555,8 @@ void ClearMemberFlags(std::uint32_t* flags) {
 // OFFSET: 0x00DD85B0
 // FUNCTION: fn_23309
 void CSession::ResetEquipment() {
-  for (ITEM_INFO& item : this->unknown_17F0) {
-    item.Reset();
+  for (int index = 0; index < 10; ++index) {
+    this->unknown_17F0[index].Reset();
   }
   RequestBasicInfoRefresh();
   EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->Clear();
@@ -5663,8 +5660,9 @@ int CSession::GetList5Size() const {
 // OFFSET: 0x00DD8380
 // FUNCTION: fn_23305
 void CSession::ClearAllItems1784() {
-  for (std::list<ITEM_INFO>& items : this->unknown_1784) {
-    items.clear();
+  for (int index = 0; index < 11; ++index) {
+    std::list<ITEM_INFO>& items = this->unknown_1784[index];
+    items.erase(items.begin(), items.end());
   }
 }
 
