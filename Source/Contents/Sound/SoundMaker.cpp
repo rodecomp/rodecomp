@@ -52,8 +52,8 @@ CCorpse::CCorpse() {
 // OFFSET: 0x00DA0DE0
 // FUNCTION: fn_22352
 CBlowEffect::CBlowEffect() {
-  this->SetSpriteName(ResourceMgr::Instance(), "이팩트\\이팩트.spr");
-  this->SetActionName(ResourceMgr::Instance(), "이팩트\\이팩트.act");
+  this->SetSpriteName("이팩트\\이팩트.spr");
+  this->SetActionName("이팩트\\이팩트.act");
   this->render.animation = 0;
 }
 
@@ -151,8 +151,8 @@ CNpc::CNpc() {
 // OFFSET: 0x00DA1DB0
 // FUNCTION: fn_22362
 CNumEffect::CNumEffect() {
-  this->SetSpriteName(ResourceMgr::Instance(), "이팩트\\숫자.spr");
-  this->SetActionName(ResourceMgr::Instance(), "이팩트\\숫자.act");
+  this->SetSpriteName("이팩트\\숫자.spr");
+  this->SetActionName("이팩트\\숫자.act");
   this->render.animation = 0;
   this->render.unknown_00A2 = 1;
 }
@@ -374,7 +374,7 @@ int CPc::Slot42() {
 // OFFSET: 0x00DA2B70
 // FUNCTION: fn_22383
 std::int64_t CPc::Slot35() {
-  return (static_cast<std::int64_t>(this->unknown_044C) << 32) | static_cast<std::uint32_t>(this->weapon);
+  return *reinterpret_cast<const std::uint64_t*>(&this->weapon);
 }
 
 // OFFSET: 0x00DA2BC0
