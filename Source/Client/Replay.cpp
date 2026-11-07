@@ -60,6 +60,12 @@ std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, const void*
   return record;
 }
 
+// INLINED
+static void AppendReplayRecord(std::vector<unsigned char>& records, std::uint16_t id, const void* data, std::uint32_t bytes) {
+  const auto record = BuildReplayTaggedRecord(id, data, bytes);
+  records.insert(records.end(), record.begin(), record.end());
+}
+
 // OFFSET: 0x00E3DBA0
 // FUNCTION: fn_24195
 std::vector<unsigned char> BuildEntryQueueReplayRecords() {
@@ -165,29 +171,36 @@ bool Replay::WriteSection(int id, std::vector<unsigned char>& bytes, int event) 
   if (bytes.empty()) {
     return false;
   }
-  if (id <= 0 || id >= 26 || bytes.size() == 0 || bytes.data() == nullptr) {
+
+  const std::uint32_t size = static_cast<std::uint32_t>(bytes.size());
+  unsigned char* data = bytes.data();
+  if (id <= 0 || id >= 26 || size == 0 || data == nullptr) {
     return false;
   }
-  ReplaySection& section = this->sections[id];
+
   if (event == 14) {
-    section.id = static_cast<std::uint16_t>(id);
-    section.bytes = bytes.size();
-    section.fileOffset = this->fileOffset;
-    this->fileOffset += bytes.size();
+    this->sections[id].id = static_cast<std::uint16_t>(id);
+    this->sections[id].bytes = size;
+    this->sections[id].fileOffset = this->fileOffset;
+    this->fileOffset += size;
   }
+
+  const ReplaySection& section = this->sections[id];
   if (section.bytes != 0) {
+    auto* words = reinterpret_cast<std::uint32_t*>(data);
     this->cipherBase = this->header.key0 >> 5;
+    const int count = section.bytes / 4;
     this->cipherIndex = 0;
     this->cipherKey = this->header.key1 >> 3;
-    for (std::uint32_t index = 0; index < section.bytes / 4; ++index) {
-      std::uint32_t word;
-      std::memcpy(&word, bytes.data() + index * 4, sizeof(word));
-      word ^= this->cipherKey * (++this->cipherIndex + this->cipherBase);
-      std::memcpy(bytes.data() + index * 4, &word, sizeof(word));
+
+    for (int index = 0; index < count; ++index) {
+      ++this->cipherIndex;
+      words[index] ^= (this->cipherBase + this->cipherIndex) * this->cipherKey;
     }
   }
+
   std::fseek(this->file, static_cast<long>(section.fileOffset), SEEK_SET);
-  return std::fwrite(bytes.data(), section.bytes, 1, this->file) != 0;
+  return std::fwrite(data, section.bytes, 1, this->file) != 0;
 }
 
 // OFFSET: 0x00B857E0
