@@ -996,11 +996,12 @@ void UIAchievementWnd::SelectTab(int group, int sub) {
   if (group == 0) {
     this->view->Show(0);
     this->list->Show(0);
+    this->summary->Show(1);
   } else {
     this->view->Show(1);
     this->list->Show(1);
+    this->summary->Show(0);
   }
-  this->summary->Show(group == 0);
 
   this->group = group;
   this->sub = sub;
