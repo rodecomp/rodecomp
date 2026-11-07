@@ -11920,13 +11920,15 @@ void CGameMode::SpawnStandingPc(
 
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
   if (actor) {
-    actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
     CPc* pc = new CPc;
     this->scene->objects.push_back(pc);
     this->scene->actors.push_back(pc);
     actor = pc;
-    actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   actor->unknown_03E0Low = 1;
 }
@@ -11960,13 +11962,15 @@ void CGameMode::SpawnStandingPc2(
 
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
   if (actor) {
-    actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
     CPc* pc = new CPc;
     this->scene->objects.push_back(pc);
     this->scene->actors.push_back(pc);
     actor = pc;
-    actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   actor->unknown_03E0Low = 1;
 }
