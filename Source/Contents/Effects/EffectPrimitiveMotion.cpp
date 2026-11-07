@@ -36,6 +36,12 @@
 
 namespace {
   // INLINED
+  __forceinline int ClampedRandom(int range) {
+    const int value = rand() % range;
+    return value >= 0 ? value : 0;
+  }
+
+  // INLINED
   __forceinline int Random(int range) {
     if (range == 0) {
       return 0;
@@ -1610,14 +1616,14 @@ void CEffectPrim::PrimShieldBoomerang() {
         slot.flag1[1] = 2;
         slot.height[1] *= 3;
 
-        if (Random(2) == 0) {
-          slot.rotStart += Random(45);
+        if (ClampedRandom(2) == 0) {
+          slot.rotStart += ClampedRandom(45);
 
           if (slot.rotStart >= 360) {
             slot.rotStart -= 360;
           }
         } else {
-          slot.rotStart -= Random(45);
+          slot.rotStart -= ClampedRandom(45);
 
           if (slot.rotStart < 0) {
             slot.rotStart += 360;
@@ -2141,11 +2147,11 @@ bool CEffectPrim::PrimGhost() {
         this->render.previousAnimation = 6;
       }
     } else {
-      if (Random(999) == 1) {
+      if (ClampedRandom(999) == 1) {
         this->render.previousAnimation = 1;
       }
 
-      if (Random(1001) == 0) {
+      if (ClampedRandom(1001) == 0) {
         this->render.previousAnimation = 0;
       }
     }
@@ -6437,17 +6443,17 @@ bool CEffectPrim::PrimFloatingBubbles() {
         if (slot.height[bubble + 1] < 12.0f) {
           slot.height[bubble] = 0.0f;
           slot.height[bubble + 1] = 0.0f;
-          slot.height[bubble + 3] = static_cast<float>(NonNegativeRandom(360));
-          slot.height[bubble + 2] = static_cast<float>(NonNegativeRandom(5));
+          slot.height[bubble + 3] = static_cast<float>(ClampedRandom(360));
+          slot.height[bubble + 2] = static_cast<float>(ClampedRandom(5));
 
           if (bubble == 0) {
-            slot.vecBPre.y = static_cast<float>(-3 - NonNegativeRandom(8));
+            slot.vecBPre.y = static_cast<float>(-3 - ClampedRandom(8));
           } else if (bubble == 4) {
-            slot.vecBNow.y = static_cast<float>(-3 - NonNegativeRandom(8));
+            slot.vecBNow.y = static_cast<float>(-3 - ClampedRandom(8));
           } else if (bubble == 8) {
-            slot.vecTPre.y = static_cast<float>(-3 - NonNegativeRandom(8));
+            slot.vecTPre.y = static_cast<float>(-3 - ClampedRandom(8));
           } else {
-            slot.vecTNow.y = static_cast<float>(-3 - NonNegativeRandom(8));
+            slot.vecTNow.y = static_cast<float>(-3 - ClampedRandom(8));
           }
         }
       } else {
@@ -7234,7 +7240,7 @@ bool CEffectPrim::PrimDriftingSparks() {
   slot.vecBNow.x = g_sinTable[static_cast<int>(slot.height[6])] * 7.0f + slot.vecBNow.x;
   slot.vecBNow.z = g_cosTable[static_cast<int>(slot.height[6])] * 7.0f + slot.vecBNow.z;
   slot.vecBNow.y = slot.height[7] + slot.vecBNow.y;
-  slot.height[8] += static_cast<float>(NonNegativeRandom(5) + 5);
+  slot.height[8] += static_cast<float>(ClampedRandom(5) + 5);
 
   if (slot.height[8] >= 360.0f) {
     slot.height[8] -= 360.0f;
@@ -7264,7 +7270,7 @@ bool CEffectPrim::PrimDriftingSparks() {
 
       if (spark.riseAngle <= 0) {
         spark.maxHeight = 3.0f;
-        spark.rotStart = static_cast<std::int16_t>(NonNegativeRandom(360));
+        spark.rotStart = static_cast<std::int16_t>(ClampedRandom(360));
         spark.riseAngle = 200;
       }
     }
@@ -7519,7 +7525,7 @@ bool CEffectPrim::PrimDriftingOrbs() {
   }
 
   slot.vecBNow.y = slot.height[7] + slot.vecBNow.y;
-  slot.height[8] += static_cast<float>(NonNegativeRandom(5) + 5);
+  slot.height[8] += static_cast<float>(ClampedRandom(5) + 5);
 
   if (slot.height[8] >= 360.0f) {
     slot.height[8] -= 360.0f;
@@ -7532,13 +7538,13 @@ namespace {
   // INLINED
   __forceinline void RespawnFallingPoint(const EffectPrimitiveSlot& slot, vector3d& point) {
     if (slot.flag1[12] == 0) {
-      point.x = static_cast<float>(NonNegativeRandom(45) - 22);
+      point.x = static_cast<float>(ClampedRandom(45) - 22);
     } else {
-      point.x = static_cast<float>(NonNegativeRandom(25) - 12);
+      point.x = static_cast<float>(ClampedRandom(25) - 12);
     }
 
-    point.y = static_cast<float>(NonNegativeRandom(30));
-    point.z = static_cast<float>(NonNegativeRandom(11) - 5);
+    point.y = static_cast<float>(ClampedRandom(30));
+    point.z = static_cast<float>(ClampedRandom(11) - 5);
 
     if (slot.flag1[11] == 1) {
       const float x = point.x;
@@ -7613,13 +7619,13 @@ namespace {
   // INLINED
   __forceinline void RespawnRotatedPoint(const EffectPrimitiveSlot& slot, vector3d& point, float scale, bool narrow) {
     if (narrow) {
-      point.x = static_cast<float>(NonNegativeRandom(25) - 12);
+      point.x = static_cast<float>(ClampedRandom(25) - 12);
     } else {
-      point.x = static_cast<float>(NonNegativeRandom(45) - 22);
+      point.x = static_cast<float>(ClampedRandom(45) - 22);
     }
 
-    point.y = static_cast<float>(NonNegativeRandom(30));
-    const int z = NonNegativeRandom(11) - 5;
+    point.y = static_cast<float>(ClampedRandom(30));
+    const int z = ClampedRandom(11) - 5;
     point.x = scale * point.x;
     point.y = scale * point.y;
     point.z = static_cast<float>(z) * scale;
@@ -7815,8 +7821,8 @@ bool CEffectPrim::Move2DPrimitive() {
   }
 
   if ((particle.pattern & 8u) != 0 && particle.stateCnt % static_cast<int>(particle.chCnt) == 0) {
-    particle.longitude = static_cast<float>(NonNegativeRandom(16)) + (particle.longitude - 8.0f);
-    particle.chCnt = NonNegativeRandom(10) + 10;
+    particle.longitude = static_cast<float>(ClampedRandom(16)) + (particle.longitude - 8.0f);
+    particle.chCnt = ClampedRandom(10) + 10;
   }
 
   particle.ProcessAlpha();
@@ -7877,7 +7883,7 @@ namespace {
 
       if (height > 0.0f) {
         point.z = 0.0f;
-        point.x = static_cast<float>(NonNegativeRandom(35) - 17);
+        point.x = static_cast<float>(ClampedRandom(35) - 17);
         height = -40.0f;
       }
 
@@ -7910,25 +7916,25 @@ namespace {
         if (leading) {
           if (kind == 11) {
             if (height < -50.0f) {
-              point.x = static_cast<float>(NonNegativeRandom(15) - 8);
-              point.z = static_cast<float>(NonNegativeRandom(15) - 8);
-              height = static_cast<float>(NonNegativeRandom(100));
+              point.x = static_cast<float>(ClampedRandom(15) - 8);
+              point.z = static_cast<float>(ClampedRandom(15) - 8);
+              height = static_cast<float>(ClampedRandom(100));
             }
           } else if (height < -30.0f) {
             point.x = 0.0f;
             point.z = 0.0f;
-            height = static_cast<float>(NonNegativeRandom(100));
+            height = static_cast<float>(ClampedRandom(100));
           }
         } else if (height < -30.0f) {
           if (kind == 11) {
-            point.x = static_cast<float>(NonNegativeRandom(15) - 8);
-            point.z = static_cast<float>(NonNegativeRandom(15) - 8);
+            point.x = static_cast<float>(ClampedRandom(15) - 8);
+            point.z = static_cast<float>(ClampedRandom(15) - 8);
           } else {
             point.x = 0.0f;
             point.z = 0.0f;
           }
 
-          height = static_cast<float>(NonNegativeRandom(100));
+          height = static_cast<float>(ClampedRandom(100));
         }
       }
 
