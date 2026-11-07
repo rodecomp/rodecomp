@@ -33,6 +33,13 @@
 int g_overrideColor = 0;
 
 // INLINED
+static __forceinline void ZeroVector(vector3d& v) {
+  v.x = 0.0f;
+  v.y = 0.0f;
+  v.z = 0.0f;
+}
+
+// INLINED
 static __forceinline void TransformPrimitiveVertex(const float* matrix, const vector3d& in, vector3d& out) {
   out.x = in.z * matrix[6] + (in.y * matrix[3] + in.x * matrix[0]) + matrix[9];
   out.y = in.z * matrix[7] + (in.y * matrix[4] + in.x * matrix[1]) + matrix[10];
@@ -42,8 +49,14 @@ static __forceinline void TransformPrimitiveVertex(const float* matrix, const ve
 // OFFSET: 0x00BCD960
 // FUNCTION: fn_19865
 void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
-  vector3d vert[4]{};
-  vector3d tvert[4]{};
+  vector3d vert[4];
+  for (vector3d& element : vert) {
+    ZeroVector(element);
+  }
+  vector3d tvert[4];
+  for (vector3d& element : tvert) {
+    ZeroVector(element);
+  }
 
   vert[0].z = this->state.widthSize;
   vert[2].y = this->state.heightSize;
@@ -1361,10 +1374,14 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
 // OFFSET: 0x00BE5BB0
 // FUNCTION: fn_19926
 void CEffectPrim::RenderPentaRing(matrix& wtm) {
-  vector3d prevB{};
-  vector3d prevT{};
-  vector3d curB{};
-  vector3d curT{};
+  vector3d prevB;
+  ZeroVector(prevB);
+  vector3d prevT;
+  ZeroVector(prevT);
+  vector3d curB;
+  ZeroVector(curB);
+  vector3d curT;
+  ZeroVector(curT);
   int rpCnt = 0;
   float radius;
 
@@ -1701,8 +1718,10 @@ void CEffectPrim::RenderHalfSphere2(matrix& wtm) {
 // OFFSET: 0x00BDAC40
 // FUNCTION: fn_19894
 void CEffectPrim::RenderHalfSphere(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec3{};
+  vector3d vec1;
+  ZeroVector(vec1);
+  vector3d vec3;
+  ZeroVector(vec3);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -1794,8 +1813,10 @@ void CEffectPrim::RenderHermode(matrix& wtm) {
 // OFFSET: 0x00BDB530
 // FUNCTION: fn_19896
 void CEffectPrim::RenderHitLine3(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec3{};
+  vector3d vec1;
+  ZeroVector(vec1);
+  vector3d vec3;
+  ZeroVector(vec3);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2194,7 +2215,10 @@ __declspec(safebuffers) void CEffectPrim::RenderGrid(matrix& wtm) {
 // OFFSET: 0x00BCFC00
 // FUNCTION: fn_19867
 void CEffectPrim::RenderRing(matrix& wtm) {
-  vector3d corners[4]{};
+  vector3d corners[4];
+  for (vector3d& element : corners) {
+    ZeroVector(element);
+  }
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2222,8 +2246,10 @@ void CEffectPrim::RenderRing(matrix& wtm) {
 // OFFSET: 0x00BD85F0
 // FUNCTION: fn_19888
 void CEffectPrim::RenderPentagon(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec4{};
+  vector3d vec1;
+  ZeroVector(vec1);
+  vector3d vec4;
+  ZeroVector(vec4);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2328,8 +2354,10 @@ void CEffectPrim::RenderBeam(matrix& wtm) {
 // OFFSET: 0x00BD0A20
 // FUNCTION: fn_19870
 void CEffectPrim::RenderCone(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec4{};
+  vector3d vec1;
+  ZeroVector(vec1);
+  vector3d vec4;
+  ZeroVector(vec4);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2411,9 +2439,12 @@ void CEffectPrim::RenderPeong(matrix& wtm) {
 // OFFSET: 0x00BD2CF0
 // FUNCTION: fn_19876
 void CEffectPrim::RenderFloorRect(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec2{};
-  vector3d vec3{};
+  vector3d vec1;
+  ZeroVector(vec1);
+  vector3d vec2;
+  ZeroVector(vec2);
+  vector3d vec3;
+  ZeroVector(vec3);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2444,7 +2475,10 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
 // OFFSET: 0x00BE0B40
 // FUNCTION: fn_19913
 void CEffectPrim::RenderRotatedRing(matrix& wtm) {
-  vector3d corners[4]{};
+  vector3d corners[4];
+  for (vector3d& element : corners) {
+    ZeroVector(element);
+  }
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -4771,8 +4805,10 @@ void CEffectPrim::RenderRectUp(matrix& wtm) {
 // OFFSET: 0x00BE0680
 // FUNCTION: fn_19911
 void CEffectPrim::RenderSMA2(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec3{};
+  vector3d vec1;
+  ZeroVector(vec1);
+  vector3d vec3;
+  ZeroVector(vec3);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -5880,8 +5916,10 @@ void CEffectPrim::Render3DCasting2(matrix& wtm) {
 // OFFSET: 0x00BC91D0
 // FUNCTION: fn_19856
 void CEffectPrim::Render3DCasting(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec3{};
+  vector3d vec1;
+  ZeroVector(vec1);
+  vector3d vec3;
+  ZeroVector(vec3);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -5946,8 +5984,10 @@ void CEffectPrim::Render3DCasting(matrix& wtm) {
 // OFFSET: 0x00BC94C0
 // FUNCTION: fn_19857
 void CEffectPrim::Render3DCasting_LowPolygon(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec3{};
+  vector3d vec1;
+  ZeroVector(vec1);
+  vector3d vec3;
+  ZeroVector(vec3);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -6013,8 +6053,10 @@ void CEffectPrim::Render3DCasting_LowPolygon(matrix& wtm) {
 // OFFSET: 0x00BD0680
 // FUNCTION: fn_19869
 void CEffectPrim::RenderAttackEnergy2(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec3{};
+  vector3d vec1;
+  ZeroVector(vec1);
+  vector3d vec3;
+  ZeroVector(vec3);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
