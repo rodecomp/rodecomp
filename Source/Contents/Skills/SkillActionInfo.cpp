@@ -74,61 +74,18 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   }
 
   switch (skillId) {
-  case 1:
-  case 2:
-  case 3:
-  case 4:
-  case 6:
-  case 8:
-  case 36:
-  case 37:
-  case 38:
-  case 39:
-  case 40:
-  case 41:
-  case 43:
-  case 44:
-  case 48:
-  case 49:
-  case 50:
-  case 52:
-  case 53:
-  case 94:
-  case 95:
-  case 96:
-  case 97:
-  case 98:
-  case 99:
-  case 100:
-  case 101:
-  case 102:
-  case 103:
-  case 104:
-  case 105:
-  case 106:
-  case 107:
-  case 109:
-  case 111:
-  case 112:
-  case 113:
-  case 114:
-  case 126:
-  case 127:
-  case 128:
-  case 129:
-  case 130:
-  case 131:
-  case 132:
-  case 133:
-  case 134:
-  case 135:
-  case 137:
-  case 138:
-  case 139:
-  case 140:
-  case 459:
-  case 486:
-  case 2033:
+  case 61:
+  case 152:
+  case 1004:
+    effectId = -1;
+    motion = 11;
+    break;
+  case 149:
+    motion = 11;
+    break;
+  case 57:
+    effectId = 144;
+    motion = 2;
     break;
   case 5:
   case 7:
@@ -140,6 +97,99 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case 8202:
     motion = 2;
     break;
+  case 59:
+    effectId = -1;
+    motion = 12;
+    break;
+  case 45:
+    effectId = 43;
+    return;
+  case 47:
+    effectId = -1;
+    motion = 18;
+    break;
+  case 151:
+    effectId = -1;
+    motion = 5;
+    break;
+  case 271:
+    effectId = level < 4016 ? 328 : 510;
+    break;
+  case 243:
+  case 244:
+  case 247:
+    motion = 0;
+    effectId = 342;
+    return;
+  case 325:
+  case 327:
+  case 328:
+  case 329:
+  case 330:
+  case 334:
+  case 336:
+  case 408:
+  case 409:
+  case 410:
+  case 5063:
+  case 5064:
+  case 5065:
+    effectId = 342;
+    return;
+  case 389:
+    motion = 0;
+    effectId = 1195;
+    return;
+  case 335:
+    effectId = 343;
+    return;
+  case 382:
+  case 394:
+    motion = 18;
+    effectId = 58;
+    return;
+  case 306:
+  case 308:
+  case 311:
+  case 361:
+  case 362:
+  case 367:
+  case 383:
+  case 480:
+  case 483:
+  case 489:
+  case 691:
+  case 2013:
+  case 2050:
+  case 2515:
+  case 2582:
+  case 2585:
+  case 2587:
+  case 5073:
+  case 5381:
+    effectId = 58;
+    return;
+  case 397:
+    effectId = 502;
+    motion = 11;
+    break;
+  case 34:
+  case 689:
+    effectId = 12;
+    motion = 0;
+    break;
+  case 230:
+  case 231:
+  case 232:
+  case 234:
+  case 235:
+  case 236:
+  case 237:
+  case 268:
+  case 479:
+    motion = 0;
+    effectId = 12;
+    goto variant;
   case 9:
   case 10:
   case 11:
@@ -288,39 +338,225 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case 8457:
     effectId = 12;
     goto variant;
-  case 29:
-  case 690:
-  case 708:
-  case 720:
-  case 728:
-  case 2201:
-  case 2203:
-  case 2205:
-  case 2207:
-  case 2210:
-  case 2211:
-  case 2216:
-  case 2230:
-  case 2233:
-  case 2237:
-  case 2243:
-  case 2244:
-  case 2246:
+  case 478:
+  case 490:
+    motion = 28;
     effectId = 12;
-    motion = 7;
-    break;
-  case 34:
-  case 689:
-    effectId = 12;
+    goto variant;
+  case 475:
     motion = 0;
-    break;
-  case 45:
-    effectId = 43;
+    effectId = 59;
     return;
-  case 47:
+  case 141:
+  case 344:
+  case 345:
+  case 346:
+  case 350:
+  case 379:
+  case 406:
+  case 661:
+  case 712:
+    effectId = 59;
+    return;
+  case 425:
+  case 493:
+    motion = 0;
+    effectId = 441;
+    return;
+  case 317:
+  case 319:
+  case 320:
+  case 321:
+  case 322:
+  case 411:
+  case 427:
+  case 434:
+  case 444:
+  case 445:
+  case 447:
+  case 448:
+  case 449:
+  case 450:
+  case 451:
+  case 452:
+  case 453:
+  case 454:
+  case 455:
+  case 456:
+  case 457:
+  case 458:
+  case 460:
+  case 461:
+  case 462:
+  case 463:
+  case 464:
+  case 465:
+  case 467:
+  case 468:
+  case 469:
+  case 470:
+  case 471:
+  case 472:
+  case 494:
+  case 572:
+  case 573:
+  case 574:
+  case 575:
+  case 2039:
+  case 2299:
+  case 2300:
+  case 2303:
+  case 2596:
+  case 2597:
+  case 2598:
+  case 2599:
+  case 2605:
+  case 2607:
+  case 2608:
+    effectId = 441;
+    return;
+  case 446:
+    motion = 12;
+    effectId = 12;
+    goto variant;
+  case 496:
+    motion = 7;
+    effectId = 573;
+    return;
+  case 497:
+    motion = 7;
+    effectId = 574;
+    return;
+  case 498:
+    motion = 7;
+    effectId = 575;
+    return;
+  case 525:
+  case 532:
+  case 543:
+    motion = 37;
+    effectId = 441;
+    return;
+  case 534:
+  case 535:
+  case 536:
+    motion = 37;
+    effectId = 55;
+    return;
+  case 1018:
+    effectId = 55;
+    return;
+  case 537:
+  case 538:
+  case 539:
+    motion = 37;
+    effectId = 54;
+    return;
+  case 540:
+  case 541:
+  case 542:
+    motion = 37;
+    effectId = 57;
+    return;
+  case 1019:
+    effectId = 57;
+    return;
+  case 503:
+  case 504:
+  case 505:
+  case 512:
+  case 513:
+  case 514:
+  case 515:
+  case 517:
+    motion = 41;
+    effectId = 441;
+    return;
+  case 518:
+  case 519:
+  case 520:
+  case 521:
+    motion = 42;
+    effectId = 441;
+    return;
+  case 1001:
+  case 1010:
+  case 1014:
+    motion = 0;
+    effectId = 58;
+    return;
+  case 2052:
+    effectId = 1560;
+    return;
+  case 56:
+  case 58:
+  case 62:
+  case 2055:
     effectId = -1;
-    motion = 18;
+    motion = 2;
     break;
+  case 2002:
+    effectId = 12;
+    motion = 2;
+    break;
+  case 115:
+  case 116:
+  case 117:
+  case 118:
+  case 119:
+  case 120:
+  case 121:
+  case 122:
+  case 123:
+  case 124:
+  case 125:
+  case 688:
+  case 2239:
+  case 2253:
+  case 2254:
+    motion = 5;
+    break;
+  case 2326:
+  case 2327:
+  case 2328:
+  case 2329:
+  case 2330:
+  case 2332:
+  case 2338:
+  case 2340:
+  case 2341:
+  case 2344:
+  case 2345:
+  case 2346:
+  case 2347:
+  case 2348:
+  case 2518:
+    motion = -1;
+    effectId = 831;
+    return;
+  case 555:
+  case 2290:
+  case 2304:
+    motion = 0;
+    effectId = 501;
+    return;
+  case 2292:
+  case 2293:
+  case 2294:
+  case 2295:
+  case 2296:
+  case 2297:
+  case 2298:
+    motion = 7;
+    effectId = 441;
+    return;
+  case 2302:
+    effectId = 1556;
+    return;
+  case 2564:
+    motion = 46;
+    effectId = -1;
+    return;
   case 51:
   case 55:
   case 60:
@@ -475,43 +711,109 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case 8605:
     effectId = -1;
     return;
-  case 56:
-  case 58:
-  case 62:
-  case 2055:
+  case 744:
+  case 2444:
+    motion = -1;
+    effectId = 57;
+    return;
+  case 2446:
+    motion = -1;
+    effectId = 1664;
+    return;
+  case 2454:
+    motion = 7;
+    effectId = 1565;
+    return;
+  case 735:
+  case 2476:
+  case 2480:
+  case 2494:
+  case 2495:
+  case 2496:
+  case 2497:
+    motion = -1;
+    effectId = 911;
+    return;
+  case 2478:
+    motion = -1;
+    effectId = 1677;
+    return;
+  case 2343:
+  case 2492:
+  case 2517:
+    motion = -1;
     effectId = -1;
-    motion = 2;
-    break;
-  case 57:
-    effectId = 144;
-    motion = 2;
-    break;
-  case 59:
-    effectId = -1;
+    return;
+  case 2481:
+  case 2485:
     motion = 12;
-    break;
-  case 61:
-  case 152:
-  case 1004:
+    effectId = 911;
+    return;
+  case 2479:
+  case 2483:
+  case 2486:
+  case 2490:
+    motion = 7;
+    effectId = 911;
+    return;
+  case 2482:
+    motion = 7;
     effectId = -1;
-    motion = 11;
+    return;
+  case 2204:
+    effectId = 1449;
+    motion = 7;
     break;
-  case 115:
-  case 116:
-  case 117:
-  case 118:
-  case 119:
-  case 120:
-  case 121:
-  case 122:
-  case 123:
-  case 124:
-  case 125:
-  case 688:
-  case 2239:
-  case 2253:
-  case 2254:
-    motion = 5;
+  case 2213:
+    effectId = 1418;
+    motion = 7;
+    break;
+  case 2217:
+    effectId = 805;
+    motion = 7;
+    break;
+  case 2222:
+  case 2223:
+  case 2224:
+  case 2229:
+    effectId = g_serviceOptions.Get(229) ? 1430 : 1260;
+    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    motion = 7;
+    break;
+  case 2288:
+    effectId = 441;
+    motion = 18;
+    break;
+  case 2287:
+    effectId = 826;
+    motion = 7;
+    break;
+  case 29:
+  case 690:
+  case 708:
+  case 720:
+  case 728:
+  case 2201:
+  case 2203:
+  case 2205:
+  case 2207:
+  case 2210:
+  case 2211:
+  case 2216:
+  case 2230:
+  case 2233:
+  case 2237:
+  case 2243:
+  case 2244:
+  case 2246:
+    effectId = 12;
+    motion = 7;
+    break;
+  case 2209:
+  case 2240:
+  case 2286:
+    effectId = 441;
+    motion = 7;
     break;
   case 136:
   case 737:
@@ -526,250 +828,36 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     effectId = -1;
     motion = 7;
     break;
-  case 141:
-  case 344:
-  case 345:
-  case 346:
-  case 350:
-  case 379:
-  case 406:
-  case 661:
-  case 712:
-    effectId = 59;
-    return;
-  case 149:
-    motion = 11;
-    break;
-  case 151:
-    effectId = -1;
-    motion = 5;
-    break;
-  case 196:
-  case 209:
-  case 249:
-  case 270:
-  case 349:
-  case 8220:
-    motion = 0;
-    effectId = -1;
-    return;
-  case 230:
-  case 231:
-  case 232:
-  case 234:
-  case 235:
-  case 236:
-  case 237:
-  case 268:
-  case 479:
-    motion = 0;
-    effectId = 12;
-    goto variant;
-  case 243:
-  case 244:
-  case 247:
-    motion = 0;
-    effectId = 342;
-    return;
-  case 271:
-    effectId = level < 4016 ? 328 : 510;
-    break;
-  case 306:
-  case 308:
-  case 311:
-  case 361:
-  case 362:
-  case 367:
-  case 383:
-  case 480:
-  case 483:
-  case 489:
-  case 691:
-  case 2013:
-  case 2050:
-  case 2515:
-  case 2582:
-  case 2585:
-  case 2587:
-  case 5073:
-  case 5381:
-    effectId = 58;
-    return;
-  case 317:
-  case 319:
-  case 320:
-  case 321:
-  case 322:
-  case 411:
-  case 427:
-  case 434:
-  case 444:
-  case 445:
-  case 447:
-  case 448:
-  case 449:
-  case 450:
-  case 451:
-  case 452:
-  case 453:
-  case 454:
-  case 455:
-  case 456:
-  case 457:
-  case 458:
-  case 460:
-  case 461:
-  case 462:
-  case 463:
-  case 464:
-  case 465:
-  case 467:
-  case 468:
-  case 469:
-  case 470:
-  case 471:
-  case 472:
-  case 494:
-  case 572:
-  case 573:
-  case 574:
-  case 575:
-  case 2039:
-  case 2299:
-  case 2300:
-  case 2303:
-  case 2596:
-  case 2597:
-  case 2598:
-  case 2599:
-  case 2605:
-  case 2607:
-  case 2608:
-    effectId = 441;
-    return;
-  case 325:
-  case 327:
-  case 328:
-  case 329:
-  case 330:
-  case 334:
-  case 336:
-  case 408:
-  case 409:
-  case 410:
-  case 5063:
-  case 5064:
-  case 5065:
-    effectId = 342;
-    return;
-  case 335:
-    effectId = 343;
-    return;
-  case 382:
-  case 394:
-    motion = 18;
-    effectId = 58;
-    return;
-  case 389:
-    motion = 0;
-    effectId = 1195;
-    return;
-  case 397:
-    effectId = 502;
-    motion = 11;
-    break;
-  case 425:
-  case 493:
-    motion = 0;
-    effectId = 441;
-    return;
-  case 426:
-  case 5023:
-    motion = 19;
-    effectId = -1;
-    return;
-  case 446:
-    motion = 12;
-    effectId = 12;
-    goto variant;
-  case 475:
-    motion = 0;
-    effectId = 59;
-    return;
-  case 478:
-  case 490:
-    motion = 28;
-    effectId = 12;
-    goto variant;
-  case 496:
+  case 2323:
+    effectId = 1709;
     motion = 7;
-    effectId = 573;
-    return;
-  case 497:
+    break;
+  case 2322:
+    effectId = 830;
     motion = 7;
-    effectId = 574;
-    return;
-  case 498:
-    motion = 7;
-    effectId = 575;
-    return;
-  case 503:
-  case 504:
-  case 505:
-  case 512:
-  case 513:
-  case 514:
-  case 515:
-  case 517:
-    motion = 41;
-    effectId = 441;
-    return;
-  case 518:
-  case 519:
-  case 520:
-  case 521:
-    motion = 42;
-    effectId = 441;
-    return;
-  case 525:
-  case 532:
-  case 543:
-    motion = 37;
-    effectId = 441;
-    return;
-  case 534:
-  case 535:
-  case 536:
-    motion = 37;
-    effectId = 55;
-    return;
-  case 537:
-  case 538:
-  case 539:
-    motion = 37;
-    effectId = 54;
-    return;
-  case 540:
-  case 541:
-  case 542:
-    motion = 37;
-    effectId = 57;
-    return;
-  case 555:
-  case 2290:
-  case 2304:
-    motion = 0;
-    effectId = 501;
-    return;
-  case 735:
-  case 2476:
-  case 2480:
-  case 2494:
-  case 2495:
-  case 2496:
-  case 2497:
+    break;
+  case 2241:
+  case 2242:
+  case 2477:
+  case 2520:
+    effectId = -1;
     motion = -1;
-    effectId = 911;
+    break;
+  case 2316:
+    effectId = 882;
+    motion = 7;
+    break;
+  case 2280:
+    motion = 2;
+    effectId = 775;
+    return;
+  case 2259:
+    motion = 2;
+    effectId = 12;
+    goto variant;
+  case 2261:
+    motion = 2;
+    effectId = -1;
     return;
   case 736:
   case 739:
@@ -795,10 +883,9 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     motion = -1;
     effectId = 12;
     goto variant;
-  case 744:
-  case 2444:
+  case 2267:
     motion = -1;
-    effectId = 57;
+    effectId = 775;
     return;
   case 745:
   case 2270:
@@ -806,107 +893,9 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     motion = -1;
     effectId = 55;
     return;
-  case 1001:
-  case 1010:
-  case 1014:
-    motion = 0;
-    effectId = 58;
-    return;
-  case 1008:
+  case 2272:
+    motion = -1;
     effectId = 54;
-    return;
-  case 1011:
-  case 2413:
-    motion = 16;
-    effectId = -1;
-    return;
-  case 1017:
-    effectId = 56;
-    return;
-  case 1018:
-    effectId = 55;
-    return;
-  case 1019:
-    effectId = 57;
-    return;
-  case 2002:
-    effectId = 12;
-    motion = 2;
-    break;
-  case 2032:
-  case 2234:
-  case 5002:
-    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
-  case 2041:
-  case 2042:
-  case 2045:
-  case 2047:
-  case 2048:
-  case 5072:
-    effectId = 830;
-    return;
-  case 2052:
-    effectId = 1560;
-    return;
-  case 2204:
-    effectId = 1449;
-    motion = 7;
-    break;
-  case 2206:
-  case 2231:
-  case 2313:
-  case 2314:
-  case 2315:
-  case 2318:
-  case 2319:
-  case 2320:
-  case 2324:
-  case 2325:
-  case 5078:
-    effectId = 58;
-    motion = 7;
-    break;
-  case 2209:
-  case 2240:
-  case 2286:
-    effectId = 441;
-    motion = 7;
-    break;
-  case 2213:
-    effectId = 1418;
-    motion = 7;
-    break;
-  case 2217:
-    effectId = 805;
-    motion = 7;
-    break;
-  case 2222:
-  case 2223:
-  case 2224:
-  case 2229:
-    effectId = g_serviceOptions.Get(229) ? 1430 : 1260;
-    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    motion = 7;
-    break;
-  case 2241:
-  case 2242:
-  case 2477:
-  case 2520:
-    effectId = -1;
-    motion = -1;
-    break;
-  case 2259:
-    motion = 2;
-    effectId = 12;
-    goto variant;
-  case 2261:
-    motion = 2;
-    effectId = -1;
-    return;
-  case 2267:
-    motion = -1;
-    effectId = 775;
     return;
   case 2271:
   case 2273:
@@ -914,74 +903,9 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     motion = -1;
     effectId = 58;
     return;
-  case 2272:
-    motion = -1;
-    effectId = 54;
-    return;
   case 2274:
     motion = -1;
     effectId = 441;
-    return;
-  case 2280:
-    motion = 2;
-    effectId = 775;
-    return;
-  case 2287:
-    effectId = 826;
-    motion = 7;
-    break;
-  case 2288:
-    effectId = 441;
-    motion = 18;
-    break;
-  case 2292:
-  case 2293:
-  case 2294:
-  case 2295:
-  case 2296:
-  case 2297:
-  case 2298:
-    motion = 7;
-    effectId = 441;
-    return;
-  case 2302:
-    effectId = 1556;
-    return;
-  case 2316:
-    effectId = 882;
-    motion = 7;
-    break;
-  case 2322:
-    effectId = 830;
-    motion = 7;
-    break;
-  case 2323:
-    effectId = 1709;
-    motion = 7;
-    break;
-  case 2326:
-  case 2327:
-  case 2328:
-  case 2329:
-  case 2330:
-  case 2332:
-  case 2338:
-  case 2340:
-  case 2341:
-  case 2344:
-  case 2345:
-  case 2346:
-  case 2347:
-  case 2348:
-  case 2518:
-    motion = -1;
-    effectId = 831;
-    return;
-  case 2343:
-  case 2492:
-  case 2517:
-    motion = -1;
-    effectId = -1;
     return;
   case 2350:
   case 2351:
@@ -998,32 +922,33 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     effectId = 840;
     g_soundMgr->PlayWave("effect\\달빛세레나데.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 2381:
-  case 2382:
-    motion = 16;
-    effectId = 844;
-    return;
-  case 2383:
-    motion = 16;
-    effectId = 441;
-    return;
-  case 2414:
-    motion = 16;
-    effectId = 1656;
-    return;
-  case 2418:
-    motion = 16;
-    effectId = 1286;
-    return;
   case 2419:
     motion = 16;
     effectId = 840;
     g_soundMgr->PlayWave("effect\\나락의노래.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
+  case 2414:
+    motion = 16;
+    effectId = 1656;
+    return;
+  case 1011:
+  case 2413:
+    motion = 16;
+    effectId = -1;
+    return;
+  case 2418:
+    motion = 16;
+    effectId = 1286;
+    return;
   case 2421:
   case 2423:
     motion = 16;
     effectId = 841;
+    return;
+  case 2381:
+  case 2382:
+    motion = 16;
+    effectId = 844;
     return;
   case 2426:
   case 2427:
@@ -1035,46 +960,18 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     motion = 16;
     effectId = 843;
     return;
-  case 2429:
-    effectId = -1;
-    motion = 16;
-    break;
   case 2431:
     motion = 16;
     effectId = 843;
     g_soundMgr->PlayWave("effect\\레라드의이슬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 2446:
-    motion = -1;
-    effectId = 1664;
-    return;
-  case 2454:
-    motion = 7;
-    effectId = 1565;
-    return;
-  case 2478:
-    motion = -1;
-    effectId = 1677;
-    return;
-  case 2479:
-  case 2483:
-  case 2486:
-  case 2490:
-    motion = 7;
-    effectId = 911;
-    return;
-  case 2481:
-  case 2485:
-    motion = 12;
-    effectId = 911;
-    return;
-  case 2482:
-    motion = 7;
+  case 2429:
     effectId = -1;
-    return;
-  case 2564:
-    motion = 46;
-    effectId = -1;
+    motion = 16;
+    break;
+  case 2383:
+    motion = 16;
+    effectId = 441;
     return;
   case 2581:
     motion = 19;
@@ -1089,6 +986,11 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case 2610:
     effectId = 454;
     return;
+  case 426:
+  case 5023:
+    motion = 19;
+    effectId = -1;
+    return;
   case 5026:
   case 5027:
   case 5032:
@@ -1101,14 +1003,36 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     motion = 50;
     effectId = -1;
     return;
+  case 2041:
+  case 2042:
+  case 2045:
+  case 2047:
+  case 2048:
+  case 5072:
+    effectId = 830;
+    return;
+  case 2206:
+  case 2231:
+  case 2313:
+  case 2314:
+  case 2315:
+  case 2318:
+  case 2319:
+  case 2320:
+  case 2324:
+  case 2325:
+  case 5078:
+    effectId = 58;
+    motion = 7;
+    break;
+  case 5242:
+    effectId = 1963;
+    return;
   case 5238:
     effectId = 1986;
     return;
   case 5239:
     effectId = 1998;
-    return;
-  case 5242:
-    effectId = 1963;
     return;
   case 5279:
     effectId = 1959;
@@ -1116,9 +1040,11 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case 5284:
     effectId = 1932;
     return;
-  case 5294:
-    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = -1;
+  case 5335:
+    effectId = 1923;
+    return;
+  case 5305:
+    effectId = 1910;
     return;
   case 5302:
     effectId = 1938;
@@ -1129,32 +1055,44 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case 5304:
     effectId = 1902;
     return;
-  case 5305:
-    effectId = 1910;
-    return;
-  case 5321:
-    effectId = -1;
-    motion = -1;
-    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
   case 5331:
     effectId = 1872;
     return;
   case 5333:
     effectId = 1876;
     return;
-  case 5335:
-    effectId = 1923;
+  case 5321:
+    effectId = -1;
+    motion = -1;
+    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 2032:
+  case 2234:
+  case 5002:
+    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 5294:
+    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    effectId = -1;
+    return;
+  case 5387:
+    effectId = 2240;
     return;
   case 5384:
   case 5385:
     effectId = 2249;
     return;
-  case 5387:
-    effectId = 2240;
-    return;
   case 5388:
     effectId = 2255;
+    return;
+  case 196:
+  case 209:
+  case 249:
+  case 270:
+  case 349:
+  case 8220:
+    motion = 0;
+    effectId = -1;
     return;
   case 8401:
   case 8425:
@@ -1178,6 +1116,9 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     motion = 7;
     effectId = 56;
     return;
+  case 1017:
+    effectId = 56;
+    return;
   default:
     if (static_cast<unsigned int>(skillId - 5401) <= 106 || static_cast<unsigned int>(skillId - 6001) <= 5 || static_cast<unsigned int>(skillId - 6525) <= 81) {
       effectId = -1;
@@ -1189,6 +1130,65 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
       }
     }
     break;
+  case 1:
+  case 2:
+  case 3:
+  case 4:
+  case 6:
+  case 8:
+  case 36:
+  case 37:
+  case 38:
+  case 39:
+  case 40:
+  case 41:
+  case 43:
+  case 44:
+  case 48:
+  case 49:
+  case 50:
+  case 52:
+  case 53:
+  case 94:
+  case 95:
+  case 96:
+  case 97:
+  case 98:
+  case 99:
+  case 100:
+  case 101:
+  case 102:
+  case 103:
+  case 104:
+  case 105:
+  case 106:
+  case 107:
+  case 109:
+  case 111:
+  case 112:
+  case 113:
+  case 114:
+  case 126:
+  case 127:
+  case 128:
+  case 129:
+  case 130:
+  case 131:
+  case 132:
+  case 133:
+  case 134:
+  case 135:
+  case 137:
+  case 138:
+  case 139:
+  case 140:
+  case 459:
+  case 486:
+  case 2033:
+    break;
+  case 1008:
+    effectId = 54;
+    return;
   }
 
   if (effectId != 12) {
