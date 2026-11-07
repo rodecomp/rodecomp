@@ -319,8 +319,8 @@ void UIHotKeyWnd::Slot28(int x, int y) {
   this->ToScreen(screenX, screenY);
 
   const HotkeyEntry entry = this->GetHotkey(this->m_tab, index + (this->m_page * 9 - 9) * 4, true);
-  if (!entry.info.text.empty()) {
-    g_modeMgr.gameMode->ShowTooltip(entry.info.text.c_str(), x0 + screenX, y0 + screenY, 0xFFFFFFFF, 0, 1);
+  if (!entry.info.description.empty()) {
+    g_modeMgr.gameMode->ShowTooltip(entry.info.description.c_str(), x0 + screenX, y0 + screenY, 0xFFFFFFFF, 0, 1);
   }
 }
 
