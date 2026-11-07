@@ -265,7 +265,15 @@ struct ShortcutRotatePacket {
 
 struct AiCommand {
   /* 0000 */ int type;
-  /* 0004 */ int args[5];
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ int unknown_000C;
+  /* 0010 */ int unknown_0010;
+  /* 0014 */ int unknown_0014;
+
+  AiCommand() {
+    std::memset(this, 0, sizeof(*this));
+  }
 };
 
 static_assert(sizeof(BankingCheckPacket) == 6);
@@ -4251,11 +4259,23 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     }
     break;
   case 0x68:
+    if (this->unknown_01DC) {
+      int previous;
+      std::memcpy(&previous, this->unknown_0740, sizeof(previous));
+      int partyTab = 0;
+      std::memcpy(this->unknown_0740, &partyTab, sizeof(partyTab));
+      const bool closed = g_windowMgr.CloseWindow(0x45);
+      std::memcpy(&partyTab, this->unknown_0740, sizeof(partyTab));
+      if (!closed || previous != partyTab) {
+        g_windowMgr.EnsureWindow(0x45);
+      }
+    }
+    break;
   case 0x69:
     if (this->unknown_01DC) {
       int previous;
       std::memcpy(&previous, this->unknown_0740, sizeof(previous));
-      int partyTab = hotkey == 0x69 ? 1 : 0;
+      int partyTab = 1;
       std::memcpy(this->unknown_0740, &partyTab, sizeof(partyTab));
       const bool closed = g_windowMgr.CloseWindow(0x45);
       std::memcpy(&partyTab, this->unknown_0740, sizeof(partyTab));
@@ -4347,14 +4367,14 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     break;
   case 0x77:
     if (UIWindow* window = this->window_01C8) {
-      if (window->geometry.visible == 0) {
+      if (window->geometry.visible != 0) {
+        window->SendMsg(nullptr, 2, 0, 0, 0, 0);
+        if (this->window_01C8->geometry.unknown_0030 == 0) {
+          this->ShowWindowById(1, 0);
+        }
+      } else {
         this->ShowWindowById(1, 1);
         static_cast<UINewChatWnd*>(this->window_01C8)->ApplyInputLayout();
-        return true;
-      }
-      window->SendMsg(nullptr, 2, 0, 0, 0, 0);
-      if (this->window_01C8->geometry.unknown_0030 == 0) {
-        this->ShowWindowById(1, 0);
       }
     }
     break;
@@ -4397,7 +4417,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
         CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(aid));
         if (actor) {
           if (actor->HasUnknown030CEntry()) {
-            AiCommand command = {};
+            AiCommand command;
             command.type = 9;
             actor->SetUnknown0318(reinterpret_cast<const float*>(&command), 0);
           }
@@ -4413,7 +4433,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
         std::memcpy(&aid, &g_session.unknown_5620[8], sizeof(aid));
         CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(aid));
         if (actor && actor->HasUnknown0310Entry()) {
-          AiCommand command = {};
+          AiCommand command;
           command.type = 9;
           actor->SetUnknown0318(reinterpret_cast<const float*>(&command), 1);
         }
@@ -4466,7 +4486,8 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     break;
   case 0x8B:
     if (g_replayAnimationScaling != 0 && this->window_4F168) {
-      this->window_4F168->SendMsg(nullptr, 6, Replay::Instance().state == 6 ? 0x191 : 0x192, 0, 0, 0);
+      const int state = Replay::Instance().state;
+      this->window_4F168->SendMsg(nullptr, 6, state == 6 ? 0x191 : 0x192, 0, 0, 0);
       this->window_4F168->SendMsg(nullptr, 35, 0, 0, 0, 0);
     }
     break;
