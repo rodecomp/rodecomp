@@ -16,6 +16,7 @@
 #include "Contents/World/World.h"
 #include "UI/Window/FuncDrawWNDChar.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Utility/Math/Vector3d.h"
 
 // OFFSET: 0x007F2F90
 // FUNCTION: fn_09879
@@ -32,38 +33,40 @@ UIPreviewEquipWnd::~UIPreviewEquipWnd() {
 // OFFSET: 0x007F3590
 // FUNCTION: fn_09881
 void UIPreviewEquipWnd::DrawCharacter() {
-  CCharacterRender* render = this->m_render;
   matrix view;
-  view.MakeXRotation(render->unknown_0074 / 180.0f * 3.141592f);
-  view.AppendYRotation(render->unknown_0078 / 180.0f * 3.141592f);
+  view.MakeXRotation(this->m_render->unknown_0074 / 180.0f * 3.141592f);
+  view.AppendYRotation(this->m_render->unknown_0078 / 180.0f * 3.141592f);
 
-  const float distance = -render->unknown_0070;
+  vector3d offset;
+  offset.x = 0.0f;
+  offset.y = 0.0f;
+  offset.z = -this->m_render->unknown_0070;
   float eye[3];
-  eye[0] = distance * view.values[6] + view.values[9];
-  eye[1] = distance * view.values[7] + view.values[10];
-  eye[2] = distance * view.values[8] + view.values[11];
+  eye[0] = offset.x * view.values[0] + offset.y * view.values[3] + offset.z * view.values[6] + view.values[9];
+  eye[1] = offset.x * view.values[1] + offset.y * view.values[4] + offset.z * view.values[7] + view.values[10];
+  eye[2] = offset.x * view.values[2] + offset.y * view.values[5] + offset.z * view.values[8] + view.values[11];
 
   float up[3];
-  up[0] = render->unknown_0088;
-  up[1] = render->unknown_008C;
-  up[2] = *reinterpret_cast<float*>(&render->unknown_0090);
-  view.LookAt(eye, reinterpret_cast<float*>(&render->unknown_0004), up);
+  up[0] = this->m_render->unknown_0088;
+  up[1] = this->m_render->unknown_008C;
+  up[2] = *reinterpret_cast<float*>(&this->m_render->unknown_0090);
+  view.LookAt(eye, reinterpret_cast<float*>(&this->m_render->unknown_0004), up);
 
   float screenX = 0.0f;
   float screenY = 0.0f;
   float depth = 0.0f;
   g_renderer->ProjectViewportCentered(
-    reinterpret_cast<float*>(&render->unknown_0004), view.values, &screenX, &screenY, &depth,
-    static_cast<float>(this->geometry.width) + *reinterpret_cast<float*>(&render->unknown_0054),
-    static_cast<float>(this->geometry.height) + render->unknown_0058
+    reinterpret_cast<float*>(&this->m_render->unknown_0004), view.values, &screenX, &screenY, &depth,
+    static_cast<float>(this->geometry.width) + *reinterpret_cast<float*>(&this->m_render->unknown_0054),
+    static_cast<float>(this->geometry.height) + this->m_render->unknown_0058
   );
 
   FuncDrawWNDChar drawer(
-    this, static_cast<int>(screenX), static_cast<int>(screenY), static_cast<unsigned char>(render->unknown_0018[0]),
-    static_cast<short>(render->unknown_0010), render->unknown_0014, static_cast<short>(render->unknown_0050),
-    static_cast<short>(render->unknown_0018[1]), static_cast<short>(render->unknown_0028), static_cast<short>(render->unknown_002C),
-    static_cast<short>(render->unknown_0030), render->unknown_00BC, render->unknown_004C, render->unknown_0048, render->unknown_0018[2],
-    render->unknown_0018[3], render->unknown_0040, render->unknown_0044, 0
+    this, static_cast<int>(screenX), static_cast<int>(screenY), static_cast<unsigned char>(this->m_render->unknown_0018[0]),
+    static_cast<short>(this->m_render->unknown_0010), this->m_render->unknown_0014, static_cast<short>(this->m_render->unknown_0050),
+    static_cast<short>(this->m_render->unknown_0018[1]), static_cast<short>(this->m_render->unknown_0028), static_cast<short>(this->m_render->unknown_002C),
+    static_cast<short>(this->m_render->unknown_0030), this->m_render->unknown_00BC, this->m_render->unknown_004C, this->m_render->unknown_0048, this->m_render->unknown_0018[2],
+    this->m_render->unknown_0018[3], this->m_render->unknown_0040, this->m_render->unknown_0044, 0
   );
   drawer.Draw(1);
 }
