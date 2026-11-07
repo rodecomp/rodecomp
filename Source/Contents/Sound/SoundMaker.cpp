@@ -309,12 +309,12 @@ bool CBlurPC::OnProcess() {
     }
   }
 
-  if (this->render.color < static_cast<std::uint32_t>(this->unknown_04FC)) {
-    return false;
+  if (this->render.color >= static_cast<std::uint32_t>(this->unknown_04FC)) {
+    this->render.color -= this->unknown_04FC;
+    return true;
   }
 
-  this->render.color -= this->unknown_04FC;
-  return true;
+  return false;
 }
 
 // OFFSET: 0x00DA3240
@@ -330,12 +330,12 @@ bool CHalluPC2::OnProcess() {
   }
 
   ++this->unknown_050C;
-  if (this->render.color < static_cast<std::uint32_t>(this->unknown_04FC)) {
-    return false;
+  if (this->render.color >= static_cast<std::uint32_t>(this->unknown_04FC)) {
+    this->render.color -= this->unknown_04FC;
+    return true;
   }
 
-  this->render.color -= this->unknown_04FC;
-  return true;
+  return false;
 }
 
 // OFFSET: 0x00DA4100
