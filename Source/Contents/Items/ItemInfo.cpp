@@ -59,13 +59,13 @@ template std::list<ITEM_INFO>::iterator std::list<ITEM_INFO>::erase(std::list<IT
 
 // OFFSET: 0x006D47E0
 // FUNCTION: fn_06562
-ITEM_INFO::ITEM_INFO() {
+__declspec(noinline) ITEM_INFO::ITEM_INFO() {
   this->Reset();
 }
 
 // OFFSET: 0x006D4750
 // FUNCTION: fn_06561
-ITEM_INFO::ITEM_INFO(int) {
+__declspec(noinline) ITEM_INFO::ITEM_INFO(int) {
   this->Reset();
 }
 
@@ -166,12 +166,16 @@ std::uint32_t ITEM_INFO::Assign(const RawItemData& item) {
 // OFFSET: 0x006D8A90
 // FUNCTION: fn_06606
 void ITEM_INFO::Reset() {
-  std::memset(this->unknown_0000, 0, sizeof(this->unknown_0000));
+  for (int index = 0; index < 4; ++index) {
+    this->unknown_0000[index] = 0;
+  }
   this->quantity = 0;
-  std::memset(this->unknown_0014, 0, sizeof(this->unknown_0014));
+  for (int index = 0; index < 2; ++index) {
+    this->unknown_0014[index] = 0;
+  }
   std::memset(this->unknown_001C, 0, sizeof(this->unknown_001C));
-  this->itemId.clear();
-  this->unknown_0044.clear();
+  this->itemId = "";
+  this->unknown_0044 = "";
   this->identified = this->unknown_005D = 0;
   this->unknown_0060 = 0;
   this->unknown_0064 = 0;
@@ -179,12 +183,18 @@ void ITEM_INFO::Reset() {
   this->unknown_0068 = 0;
   this->unknown_006C = 0;
   this->unknown_0070 = 0;
-  std::memset(this->unknown_0074, 0, sizeof(this->unknown_0074));
-  std::memset(this->unknown_0078, 0, sizeof(this->unknown_0078));
+  this->unknown_0098 = 0;
+  for (int index = 0; index < 25; ++index) {
+    this->unknown_009C[index] = 0;
+  }
+  for (int index = 0; index < 4; ++index) {
+    this->unknown_0074[index] = 0;
+  }
+  for (int index = 0; index < 4; ++index) {
+    this->unknown_0078[index] = 0;
+  }
   this->unknown_0088 = 0;
   this->unknown_0090 = 0;
-  this->unknown_0098 = 0;
-  std::memset(this->unknown_009C, 0, sizeof(this->unknown_009C));
 }
 
 // OFFSET: 0x00DDD4E0
