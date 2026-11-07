@@ -5,8 +5,7 @@
 // OFFSET: 0x007349C0
 // FUNCTION: fn_07599
 NIPAddr::NIPAddr(std::string text) {
-  std::string copy(text);
-  this->address = inet_addr(copy.c_str());
+  this->address = inet_addr(text.c_str());
 }
 
 // OFFSET: 0x00734BD0
