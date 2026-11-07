@@ -352,73 +352,6 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   const int value = static_cast<int>(argument1);
 
   switch (message) {
-  case 7:
-  case 9:
-  case 10: {
-    const int previous = this->topLine;
-    const int visible = this->geometry.height / this->lineHeight;
-    const int delta = message == 9 ? (1 - visible) : message == 10 ? (visible - 1) : value;
-    this->topLine = (previous + delta);
-
-    if (this->topLine < 0) {
-      this->topLine = 0;
-    }
-
-    const int maximum = ((static_cast<int>(this->lines.size()) - visible) + this->bottomMargin);
-
-    if (static_cast<unsigned>(this->topLine) > static_cast<unsigned>(maximum)) {
-      this->topLine = maximum;
-    }
-
-    this->verticalBar->position = this->topLine;
-    this->verticalBar->Invalidate();
-    this->Invalidate();
-
-    if (this->transparent != 0 && this->parent) {
-      this->parent->Invalidate();
-    }
-
-    return (this->topLine - previous);
-  }
-  case 8:
-  case 11:
-  case 12: {
-    const int previous = this->horizontalOffset;
-    const int delta = message == 11 ? -15 : message == 12 ? 15 : value;
-    this->horizontalOffset = (previous + delta);
-
-    if (this->horizontalOffset < 0) {
-      this->horizontalOffset = 0;
-    }
-
-    const int maximum = (((this->verticalOverflow * 16) - this->geometry.width) + this->contentWidth);
-
-    if (this->horizontalOffset > maximum) {
-      this->horizontalOffset = maximum;
-    }
-
-    this->horizontalBar->position = this->horizontalOffset;
-    this->horizontalBar->Invalidate();
-    this->Invalidate();
-
-    if (this->transparent != 0 && this->parent) {
-      this->parent->Invalidate();
-    }
-
-    return (this->horizontalOffset - previous);
-  }
-  case 18:
-    this->selected = (this->selected - 1);
-
-    if (this->selected < 0) {
-      this->selected = 0;
-    }
-
-    if (this->selected < this->topLine) {
-      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
-    }
-
-    break;
   case 19:
   case 40: {
     this->selected = message == 19 ? (this->selected + 1) : value;
@@ -450,6 +383,77 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
     break;
   }
+
+  case 18:
+    this->selected = (this->selected - 1);
+
+    if (this->selected < 0) {
+      this->selected = 0;
+    }
+
+    if (this->selected < this->topLine) {
+      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
+    }
+
+    break;
+
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->topLine;
+    const int visible = this->geometry.height / this->lineHeight;
+    const int delta = message == 9 ? (1 - visible) : message == 10 ? (visible - 1) : value;
+    this->topLine = (previous + delta);
+
+    if (this->topLine < 0) {
+      this->topLine = 0;
+    }
+
+    const int maximum = ((static_cast<int>(this->lines.size()) - visible) + this->bottomMargin);
+
+    if (static_cast<unsigned>(this->topLine) > static_cast<unsigned>(maximum)) {
+      this->topLine = maximum;
+    }
+
+    this->verticalBar->position = this->topLine;
+    this->verticalBar->Invalidate();
+    this->Invalidate();
+
+    if (this->transparent != 0 && this->parent) {
+      this->parent->Invalidate();
+    }
+
+    return (this->topLine - previous);
+  }
+
+  case 8:
+  case 11:
+  case 12: {
+    const int previous = this->horizontalOffset;
+    const int delta = message == 11 ? -15 : message == 12 ? 15 : value;
+    this->horizontalOffset = (previous + delta);
+
+    if (this->horizontalOffset < 0) {
+      this->horizontalOffset = 0;
+    }
+
+    const int maximum = (((this->verticalOverflow * 16) - this->geometry.width) + this->contentWidth);
+
+    if (this->horizontalOffset > maximum) {
+      this->horizontalOffset = maximum;
+    }
+
+    this->horizontalBar->position = this->horizontalOffset;
+    this->horizontalBar->Invalidate();
+    this->Invalidate();
+
+    if (this->transparent != 0 && this->parent) {
+      this->parent->Invalidate();
+    }
+
+    return (this->horizontalOffset - previous);
+  }
+
   case 98:
     if (argument3 > 0) {
       if (UIWindow* window = g_windowMgr.LookupWindow(12)) {
@@ -458,6 +462,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     }
 
     return 0;
+
   default:
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
