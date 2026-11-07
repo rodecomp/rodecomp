@@ -256,6 +256,7 @@ HFONT FontCache::Get(int family, int height, unsigned charset, unsigned char bol
   return entry.font;
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x0054F830
 // FUNCTION: fn_01959
 int FallbackFontIndex(const std::string& name) {
@@ -269,6 +270,7 @@ int FallbackFontIndex(const std::string& name) {
 
   return entry == std::end(fallback) ? 0 : static_cast<int>(entry - std::begin(fallback));
 }
+#pragma inline_depth()
 
 // OFFSET: 0x0054F8A0
 // FUNCTION: fn_01960
