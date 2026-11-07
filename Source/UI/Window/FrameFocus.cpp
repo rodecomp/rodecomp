@@ -229,8 +229,8 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
 // OFFSET: 0x00A97490
 // FUNCTION: fn_17204
 void UIWindowMgr::CancelActiveDialog() {
-  UIWindow* window = this->window_03DC;
-  if (window || (window = this->unknown_03B0) != nullptr) {
+  UIWindow* window = this->window_03DC ? this->window_03DC : this->unknown_03B0;
+  if (window) {
     window->SendMsg(nullptr, 20, 0, 0, 0, 0);
     return;
   }
