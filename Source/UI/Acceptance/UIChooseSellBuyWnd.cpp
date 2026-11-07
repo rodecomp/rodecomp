@@ -4589,16 +4589,19 @@ int ScaleByScreenHeight(int value) {
 // FUNCTION: fn_12389
 int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 3:
-    if (this->m_chatHistory->verticalOverflow != 0) {
-      this->m_chatHistory->SendMsg(nullptr, 9, 0, 0, 0, 0);
-    }
+  case 154:
+    this->m_chatHistory->ResolvePlayerTags(reinterpret_cast<const char*>(a));
     return 0;
-  case 4:
-    if (this->m_chatHistory->verticalOverflow != 0) {
-      this->m_chatHistory->SendMsg(nullptr, 10, 0, 0, 0, 0);
+  case 34: {
+    WhisperWndInfo* info = reinterpret_cast<WhisperWndInfo*>(a);
+    this->unknown_0100 = info;
+    if (info->IsValid() == 0) {
+      static_cast<WhisperWndInfo*>(this->unknown_0100)->Reset();
     }
+    this->SendMsg(nullptr, 14, 7, this->unknown_0100->width, this->unknown_0100->height, 0);
+    this->Move(this->unknown_0100->x, this->unknown_0100->y);
     return 0;
+  }
   case 6: {
     if (a != 184) {
       if (a == 201) {
@@ -4626,7 +4629,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       return 0;
     }
 
-    if (this->m_name.size() == 0 || text[0] == '/') {
+    if (this->m_target.size() == 0 || text[0] == '/') {
       if (g_session.ProcessEmotionShortcut(text) != 0) {
         return 0;
       }
@@ -4657,57 +4660,6 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
 
     g_modeMgr.gameMode->SendMsg(11, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
-    return 0;
-  }
-  case 14:
-    if (a == 7) {
-      int width = b <= 512 ? static_cast<int>(b) : 512;
-      int height = c <= 384 ? static_cast<int>(c) : 384;
-      if (width < 280) {
-        width = 280;
-      }
-      if (height < 120) {
-        height = 120;
-      }
-
-      width = (width - 280) / 32 * 32 + 280;
-      height = (height - 120) / 32 * 32 + 120;
-      if (width != this->geometry.width || height != this->geometry.height) {
-        this->Resize(width, height);
-        this->m_resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-        this->m_edit->Resize(this->geometry.width - 30, 16);
-        this->m_edit->Move(3, this->geometry.height - 18);
-        this->m_chatHistory->Resize(this->geometry.width - 2, this->geometry.height - 38, true);
-        this->m_chatHistory->Move(1, 17);
-        this->m_closeButton->Move(this->geometry.width - 14, 3);
-      }
-      g_windowMgr.StoreSnapRectangle(this);
-    }
-    return 0;
-  case 34: {
-    WhisperWndInfo* info = reinterpret_cast<WhisperWndInfo*>(a);
-    this->unknown_0100 = info;
-    if (info->IsValid() == 0) {
-      static_cast<WhisperWndInfo*>(this->unknown_0100)->Reset();
-    }
-    this->SendMsg(nullptr, 14, 7, this->unknown_0100->width, this->unknown_0100->height, 0);
-    this->Move(this->unknown_0100->x, this->unknown_0100->y);
-    return 0;
-  }
-  case 37: {
-    char* line = reinterpret_cast<char*>(a);
-    if (g_forbiddenWords.Contains(line)) {
-      std::string masked;
-      g_forbiddenWords.Mask(line, &masked);
-    }
-
-    const int color = b != 0x7800 ? 0xE8DDB6 : 0xFFFF;
-    if (_mbsstr(reinterpret_cast<const unsigned char*>(line), reinterpret_cast<const unsigned char*>(s_partyItemLinkOpen.c_str()))) {
-      this->m_chatHistory->AddText(line, color, nullptr);
-    } else {
-      this->m_chatHistory->AddTextWrapped(line, color, nullptr);
-    }
-    this->m_chatHistory->AddLinkRecord(line, color, "");
     return 0;
   }
   case 48:
@@ -4742,8 +4694,56 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     );
     return 0;
   }
-  case 154:
-    this->m_chatHistory->ResolvePlayerTags(reinterpret_cast<const char*>(a));
+  case 37: {
+    char* line = reinterpret_cast<char*>(a);
+    if (g_forbiddenWords.Contains(line)) {
+      std::string masked;
+      g_forbiddenWords.Mask(line, &masked);
+    }
+
+    const int color = b != 0x7800 ? 0xE8DDB6 : 0xFFFF;
+    if (_mbsstr(reinterpret_cast<const unsigned char*>(line), reinterpret_cast<const unsigned char*>(s_partyItemLinkOpen.c_str()))) {
+      this->m_chatHistory->AddText(line, color, nullptr);
+    } else {
+      this->m_chatHistory->AddTextWrapped(line, color, nullptr);
+    }
+    this->m_chatHistory->AddLinkRecord(line, color, "");
+    return 0;
+  }
+  case 3:
+    if (this->m_chatHistory->verticalOverflow != 0) {
+      this->m_chatHistory->SendMsg(nullptr, 9, 0, 0, 0, 0);
+    }
+    return 0;
+  case 4:
+    if (this->m_chatHistory->verticalOverflow != 0) {
+      this->m_chatHistory->SendMsg(nullptr, 10, 0, 0, 0, 0);
+    }
+    return 0;
+  case 14:
+    if (a == 7) {
+      int width = b <= 512 ? static_cast<int>(b) : 512;
+      int height = c <= 384 ? static_cast<int>(c) : 384;
+      if (width < 280) {
+        width = 280;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+
+      width = (width - 280) / 32 * 32 + 280;
+      height = (height - 120) / 32 * 32 + 120;
+      if (width != this->geometry.width || height != this->geometry.height) {
+        this->Resize(width, height);
+        this->m_resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->m_edit->Resize(this->geometry.width - 30, 16);
+        this->m_edit->Move(3, this->geometry.height - 18);
+        this->m_chatHistory->Resize(this->geometry.width - 2, this->geometry.height - 38, true);
+        this->m_chatHistory->Move(1, 17);
+        this->m_closeButton->Move(this->geometry.width - 14, 3);
+      }
+      g_windowMgr.StoreSnapRectangle(this);
+    }
     return 0;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
