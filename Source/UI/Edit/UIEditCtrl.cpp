@@ -7231,11 +7231,11 @@ void UIItemPurchaseWnd::Slot28(int x, int y) {
 
     char price[64];
     if (item.unknown_0014[0] != item.unknown_0014[1]) {
-      text = FormatOwnedString("%s %d %s %d -> %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
-                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency));
     } else {
-      text = FormatOwnedString("%s %d %s %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
-                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency));
     }
 
     g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
@@ -7254,11 +7254,11 @@ void UIItemSellWnd2::Slot28(int x, int y) {
     std::string text;
     char price[64];
     if (item.unknown_0014[0] != item.unknown_0014[1]) {
-      text = FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
-                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64)));
     } else {
-      text = FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
-                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64)));
     }
 
     g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
@@ -7281,19 +7281,19 @@ void UIItemSellWnd::Slot28(int x, int y) {
   char price[64];
   if (item.unknown_0014[0] != item.unknown_0014[1]) {
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      text = FormatOwnedString(LookupMessage(2758), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
-                               item.unknown_0014[0], FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), "Zeny");
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(2758), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+                               item.unknown_0014[0], FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), "Zeny"));
     } else {
-      text = FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
-                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64)));
     }
   } else {
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      text = FormatOwnedString(LookupMessage(2759), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
-                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), "Zeny");
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(2759), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), "Zeny"));
     } else {
-      text = FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
-                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64)));
     }
   }
 
@@ -7316,18 +7316,18 @@ void UIItemShopWnd2::Slot28(int x, int y) {
   char price[64];
   if (this->unknown_00F8 == 0) {
     if (item.unknown_0014[0] == item.unknown_0014[1]) {
-      text = FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+      text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64)));
     } else {
-      text = FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.unknown_0014[0],
-                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.unknown_0014[0],
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64)));
     }
   } else {
     if (item.unknown_0014[0] == item.unknown_0014[1]) {
-      text = FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
-                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64)));
     } else {
-      text = FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
-                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64)));
     }
   }
 
@@ -7364,37 +7364,37 @@ void UIItemShopWnd::Slot28(int x, int y) {
     if (this->unknown_00F8) {
       if (item.unknown_0014[0] != item.unknown_0014[1]) {
         if (item.identified == 1 && item.unknown_0098 != 0) {
-          text = FormatOwnedString(LookupMessage(2758), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
-                                   item.unknown_0014[0], FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(2758), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+                                   item.unknown_0014[0], FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency));
         } else {
-          text = FormatOwnedString("%s %d %s %d -> %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
-                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+          text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency));
         }
       } else {
         if (item.identified == 1 && item.unknown_0098 != 0) {
-          text = FormatOwnedString(LookupMessage(2759), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
-                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(2759), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency));
         } else {
-          text = FormatOwnedString("%s %d %s %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
-                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+          text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(588),
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency));
         }
       }
     } else {
       if (item.unknown_0014[0] != item.unknown_0014[1]) {
         if (item.identified == 1 && item.unknown_0098 != 0) {
-          text = FormatOwnedString(LookupMessage(2760), item.DisplayName(0).c_str(), item.unknown_0098, item.unknown_0014[0],
-                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(2760), item.DisplayName(0).c_str(), item.unknown_0098, item.unknown_0014[0],
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency));
         } else {
-          text = FormatOwnedString("%s %d -> %s %s", item.DisplayName(0).c_str(), item.unknown_0014[0],
-                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+          text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s %s", item.DisplayName(0).c_str(), item.unknown_0014[0],
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency));
         }
       } else {
         if (item.identified == 1 && item.unknown_0098 != 0) {
-          text = FormatOwnedString(LookupMessage(2761), item.DisplayName(0).c_str(), item.unknown_0098,
-                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(2761), item.DisplayName(0).c_str(), item.unknown_0098,
+                                   FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency));
         } else {
-          text = FormatOwnedString("%s %s %s", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64),
-                                   currency);
+          text = static_cast<const std::string&>(FormatOwnedString("%s %s %s", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64),
+                                   currency));
         }
       }
     }
@@ -7494,14 +7494,14 @@ void UIMerchantItemMyShopWnd::Slot28(int x, int y) {
     char price[64];
     if (this->unknown_0100 == 0) {
       if (item.identified == 1 && item.unknown_0098 != 0) {
-        text = FormatOwnedString(LookupMessage(2757), item.DisplayName(0).c_str(), item.unknown_0098,
-                                 FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(2757), item.DisplayName(0).c_str(), item.unknown_0098,
+                                 FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64)));
       } else {
-        text = FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+        text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64)));
       }
     } else {
-      text = FormatOwnedString(LookupMessage(1736), item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64),
-                               item.quantity);
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(1736), item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64),
+                               item.quantity));
     }
 
     g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
