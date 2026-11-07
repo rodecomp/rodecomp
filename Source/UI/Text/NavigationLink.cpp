@@ -1537,7 +1537,10 @@ void CCreateLineInfo::ArrangeLines() {
     std::vector<UIWindow*>& line = *lineIt;
     unsigned lineHeight = 0;
     for (UIWindow* window : line) {
-      lineHeight = std::max(lineHeight, static_cast<unsigned>(window->geometry.height));
+      const unsigned height = static_cast<unsigned>(window->geometry.height);
+      if (lineHeight < height) {
+        lineHeight = height;
+      }
     }
 
     switch (this->m_align) {
