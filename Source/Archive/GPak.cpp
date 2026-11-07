@@ -1233,12 +1233,6 @@ PakState_656DF0::PakState_656DF0()
 PakAuxiliary::~PakAuxiliary() {
 }
 
-// INLINED
-CGPak::CGPak() : m_file(nullptr), m_version(0), m_entryCount(0), m_tableOffset(0), m_tableSize(0) {
-  this->Reset();
-  InitializeCriticalSection(&this->m_criticalSection);
-}
-
 // OFFSET: 0x00AE97D0
 // FUNCTION: fn_18107
 CGPak::~CGPak() {

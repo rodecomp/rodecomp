@@ -85,4 +85,10 @@ protected:
 static_assert(sizeof(CGPak) == 328);
 #endif
 
+// INLINED
+inline CGPak::CGPak() : m_file(nullptr), m_version(0), m_entryCount(0), m_tableOffset(0), m_tableSize(0) {
+  this->Reset();
+  InitializeCriticalSection(&this->m_criticalSection);
+}
+
 #endif
