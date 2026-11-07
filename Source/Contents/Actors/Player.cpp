@@ -1891,8 +1891,8 @@ void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* m
   rotation.AppendYRotation((this->angle + 180.0f) / 180.0f * 3.141592f);
   rotation.AppendScale(0.3f, 0.3f, 0.3f);
   vector3d position;
-  position.x = this->render.position.x - 2.0f;
   position.y = this->render.position.y;
+  position.x = this->render.position.x - 2.0f;
   position.z = this->render.position.z - 2.0f;
   rotation.AppendTranslate(&position.x);
 
@@ -4230,9 +4230,11 @@ void CGrannyPc::RenderModel(
         output.u = vertex.uv[0];
         output.v = vertex.uv[1];
         const float shade = lightY * vertex.normal[1] + lightX * vertex.normal[0] + lightZ * vertex.normal[2];
-        const unsigned brightness = static_cast<unsigned>(
-          std::max(0.0f, std::min(1.0f, 1.0f - shade)) * static_cast<float>(light.intensity) + static_cast<float>(255 - light.intensity)
-        );
+        const float inverseShade = 1.0f - shade;
+        const float upperShade = 1.0f < inverseShade ? 1.0f : inverseShade;
+        const float shadeFactor = 0.0f > upperShade ? 0.0f : upperShade;
+        const unsigned brightness =
+          static_cast<unsigned>(shadeFactor * static_cast<float>(light.intensity) + static_cast<float>(255 - light.intensity));
         this->brightness = brightness;
         output.diffuse = ((light.red + 0x38 + brightness) << 16 & 0xFF0000) + ((light.green + 0x38 + brightness) << 8 & 0xFF00) +
                          static_cast<unsigned char>(light.blue + 0x38 + brightness) + (this->alpha << 24);
