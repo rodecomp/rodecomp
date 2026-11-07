@@ -22,7 +22,7 @@ namespace {
   class EncryptedName {
   public:
     // INLINED
-    explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
       for (std::uint64_t index = 0; index < Length; ++index) {
         this->m_text[index] = source[index];
       }
@@ -1261,7 +1261,7 @@ bool CGPak::Open(CPakFile* file) {
   this->m_file = file;
   const std::uint8_t* bytes = file->Read(0, sizeof(PakHeaderFile));
   EncryptedName<14, 0x050505679903579BULL>& eventHorizon = []() -> EncryptedName<14, 0x050505679903579BULL>& {
-    const std::uint8_t source[] = {0xDE, 0x21, 0x66, 0xF7, 0x13, 0x25, 0x4D, 0x6A, 0xE9, 0x3E, 0x79, 0xF6, 0x09, 0x05};
+    const char source[] = {'\xDE', '\x21', '\x66', '\xF7', '\x13', '\x25', '\x4D', '\x6A', '\xE9', '\x3E', '\x79', '\xF6', '\x09', '\x05'};
     // GLOBAL: gl_25504
     thread_local EncryptedName<sizeof(source), 0x050505679903579BULL> name(source);
     return name;
@@ -1274,7 +1274,7 @@ bool CGPak::Open(CPakFile* file) {
     this->m_tableOffset = header->tableOffset + sizeof(PakHeaderFile64);
   } else {
     EncryptedName<16, 0x83EFBFBB37EDBDBDULL>& masterOfMagic = []() -> EncryptedName<16, 0x83EFBFBB37EDBDBDULL>& {
-      const std::uint8_t source[] = {0xF0, 0xDC, 0x9E, 0x43, 0xDE, 0xCD, 0xCF, 0xEC, 0xDB, 0x9D, 0xA0, 0x56, 0xDC, 0xD6, 0x8C, 0x83};
+      const char source[] = {'\xF0', '\xDC', '\x9E', '\x43', '\xDE', '\xCD', '\xCF', '\xEC', '\xDB', '\x9D', '\xA0', '\x56', '\xDC', '\xD6', '\x8C', '\x83'};
       // GLOBAL: gl_25505
       thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> name(source);
       return name;
