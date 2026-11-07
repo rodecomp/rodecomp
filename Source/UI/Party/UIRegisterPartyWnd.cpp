@@ -27,22 +27,10 @@
 #include <cstdlib>
 
 namespace {
-  constexpr char prefix[] = "유저인터페이스\\";
-
   // OFFSET: 0x007BBFC0
   // FUNCTION: fn_09295
   bool Digits(std::string text) {
-    if (text.empty()) {
-      return false;
-    }
-
-    for (char value : text) {
-      if (!std::isdigit(value)) {
-        return false;
-      }
-    }
-
-    return true;
+    return !text.empty() && std::find_if(text.begin(), text.end(), [](char value) { return !std::isdigit(value); }) == text.end();
   }
 }
 
@@ -68,102 +56,129 @@ void UIRegisterPartyWnd::Slot11() {
 // OFFSET: 0x007BDD10
 // FUNCTION: fn_09300
 void UIRegisterPartyWnd::Slot15(int, int) {
-  const auto label = [&](const char* text, int x, int y, int width) {
-    auto* value = new UIStaticText();
-    value->SetSize(width, 15);
-    value->Move(x, y);
-    value->SetText(text, 0);
-    value->red = 0;
-    value->green = 0;
-    value->blue = 0;
-    this->AddChild(value);
+  auto* title = new UIStaticText();
+  title->SetSize(40, 15);
+  title->Move(10, 23);
+  title->SetText(LookupMessage(3415), 0);
+  title->SetColor(0, 0, 0);
+  this->AddChild(title);
 
-    return value;
-  };
-  label(LookupMessage(3415), 10, 23, 40);
-  this->character = label(g_session.DecodePlayerName(), 60, 23, 119);
-  this->character->text = FitText(*this->character->geometry.surface, std::string(g_session.DecodePlayerName()), 119);
-  this->character->tooltipEnabled = this->character->text != g_session.DecodePlayerName();
-  label(LookupMessage(408), 10, 49, 40);
+  this->character = new UIStaticText();
+  this->character->SetSize(119, 15);
+  this->character->Move(60, 23);
+  this->character->SetTextFitted(g_session.DecodePlayerName());
+  this->character->SetColor(0, 0, 0);
+  this->AddChild(this->character);
+
+  auto* levelLabel = new UIStaticText();
+  levelLabel->SetSize(40, 15);
+  levelLabel->Move(10, 49);
+  levelLabel->SetText(LookupMessage(408), 0);
+  levelLabel->SetColor(0, 0, 0);
+  this->AddChild(levelLabel);
   const int level = g_session.m_level;
 
-  const auto edit = [&](int x, int value) {
-    auto* control = new UIEditCtrl();
-    control->SetSize(25, 16);
-    control->Move(x, 47);
-    control->invalidatesParent = 1;
-    control->maximum = 3;
-    control->Background(232, 232, 232);
-    char number[10] = {};
-    _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", value);
-    control->SetText(number);
-    this->AddChild(control);
+  this->minimum = new UIEditCtrl();
+  this->minimum->SetSize(25, 16);
+  this->minimum->Move(60, 47);
+  this->minimum->invalidatesParent = 1;
+  this->minimum->maximum = 3;
+  this->minimum->Background(232, 232, 232);
+  char number[10] = {};
+  StringFormat(number, sizeof(number), _TRUNCATE, "%d", std::max((level - 5), 1));
+  this->minimum->SetText(number);
+  this->AddChild(this->minimum);
 
-    return control;
-  };
-  this->minimum = edit(60, std::max((level - 5), 1));
-  this->maximum = edit(96, (level + 5));
-  label(LookupMessage(3369), 10, 73, this->geometry.width);
-  auto* roleLabel = label(LookupMessage(504), 10, 97, this->geometry.width);
-  roleLabel->outline = 1;
-  const char* roles[] = {"def", "heal", "atk", "buf"};
-  const int tooltips[] = {3420, 3491, 3444, 3508};
+  this->maximum = new UIEditCtrl();
+  this->maximum->SetSize(25, 16);
+  this->maximum->Move(96, 47);
+  this->maximum->invalidatesParent = 1;
+  this->maximum->maximum = 3;
+  this->maximum->Background(232, 232, 232);
+  StringFormat(number, sizeof(number), _TRUNCATE, "%d", level + 5);
+  this->maximum->SetText(number);
+  this->AddChild(this->maximum);
+
+  auto* typeLabel = new UIStaticText();
+  typeLabel->SetSize(this->geometry.width, 15);
+  typeLabel->Move(10, 73);
+  typeLabel->SetText(LookupMessage(3369), 0);
+  typeLabel->SetColor(0, 0, 0);
+  this->AddChild(typeLabel);
+  auto* roleLabel = new UIStaticText();
+  roleLabel->SetSize(this->geometry.width, 15);
+  roleLabel->Move(10, 97);
+  roleLabel->SetText(LookupMessage(504), 0);
+  roleLabel->SetColor(0, 0, 0);
+  roleLabel->shadow = 1;
+  this->AddChild(roleLabel);
+
+  const int positions[4][2] = {{60, 95}, {78, 95}, {96, 95}, {114, 95}};
+  const char* images[] = {"btn_job_def_on", "btn_job_def_off", "btn_job_heal_on", "btn_job_heal_off",
+                          "btn_job_atk_on", "btn_job_atk_off", "btn_job_buf_on", "btn_job_buf_off"};
+  const std::string path = "유저인터페이스\\UIadventurerAgency\\";
+  const char* tooltips[] = {LookupMessage(3420), LookupMessage(3491), LookupMessage(3444), LookupMessage(3508)};
 
   for (int index = 0; index < 4; ++index) {
-    auto* job = new UIJobSlotButton();
-    this->jobs[index] = job;
-    job->SetSize(16, 16);
-    job->Move(60 + index * 18, 95);
-    job->selectedImage = std::string(prefix) + "UIadventurerAgency\\btn_job_" + roles[index] + "_on.bmp";
-    job->unselectedImage = std::string(prefix) + "UIadventurerAgency\\btn_job_" + roles[index] + "_off.bmp";
-    job->SetSelected(1);
-    job->SetTooltip(LookupMessage(tooltips[index]));
-    this->AddChild(job);
+    this->jobs[index] = new UIJobSlotButton();
+    this->jobs[index]->SetSize(16, 16);
+    this->jobs[index]->Move(positions[index][0], positions[index][1]);
+    this->jobs[index]->selectedImage = static_cast<const std::string&>(path + images[index * 2] + ".bmp");
+    this->jobs[index]->unselectedImage = static_cast<const std::string&>(path + images[index * 2 + 1] + ".bmp");
+    this->jobs[index]->SetSelected(1);
+    this->jobs[index]->SetTooltip(tooltips[index]);
+    this->AddChild(this->jobs[index]);
   }
 
-  label(LookupMessage(3359), 10, 121, this->geometry.width - 32);
+  auto* memoLabel = new UIStaticText();
+  memoLabel->SetSize(this->geometry.width - 32, 15);
+  memoLabel->Move(10, 121);
+  memoLabel->SetText(LookupMessage(3359), 0);
+  memoLabel->SetColor(0, 0, 0);
+  this->AddChild(memoLabel);
   this->memo = new UIEditCtrl();
   this->memo->SetSize(139, 14);
   this->memo->maximum = 24;
-  this->memo->TextColor(0, 0xFFFFFFFFu);
+  this->memo->TextColor(0, 0, 0, 0xFFFFFFFFu);
   this->memo->Move(60, 119);
   this->memo->Background(232, 232, 232);
   this->AddChild(this->memo);
 
-  auto* submit = new UIBasicButton();
-  const bool registered = g_adventurerAgencyMgr->registered;
-  const char* title = LookupMessage(registered ? 3376 : 3371);
-  submit->Configure(this->TextWidth(title, 0, 0, 12, 0, 0) + 10, title);
-  submit->Move(108, 165);
-  submit->SetId(registered ? 564 : 565);
-
-  if (registered) {
-    this->change = submit;
+  if (g_adventurerAgencyMgr->registered == true) {
+    this->change = new UIBasicButton();
+    this->change->Configure(this->TextWidth(LookupMessage(3376), 0, 0, 12, 0, 0) + 10, LookupMessage(3376));
+    this->change->Move(108, 165);
+    this->change->SetId(564);
+    this->m_message0 = 564;
+    this->AddChild(this->change);
   } else {
-    this->recruit = submit;
+    this->recruit = new UIBasicButton();
+    this->recruit->Configure(this->TextWidth(LookupMessage(3371), 0, 0, 12, 0, 0) + 10, LookupMessage(3371));
+    this->recruit->Move(108, 165);
+    this->recruit->SetId(565);
+    this->m_message0 = 565;
+    this->AddChild(this->recruit);
   }
 
-  this->m_message0 = registered ? 564 : 565;
-  this->AddChild(submit);
   std::vector<std::string> lines;
   WrapPlainText(LookupMessage(3370), lines, 40);
   int y = 136;
 
   for (const auto& line : lines) {
-    auto* value = label(line.c_str(), 9, y, this->geometry.width - 18);
-    value->fontHeight = 11;
-    value->red = 255;
+    auto* value = new UIStaticText();
+    value->SetSize(this->geometry.width - 18, 15);
+    value->Move(9, y);
+    value->SetText(line.c_str(), 0);
+    value->SetFont(0, 11, 0, 0);
+    value->SetColor(255, 0, 0);
+    this->AddChild(value);
     y += 12;
   }
 
   auto* close = new UIBitmapButton();
-  const char* suffixes[] = {"", "_a", "_b"};
-
-  for (int state = 0; state < 3; ++state) {
-    const std::string path = std::string(prefix) + "basic_interface\\btn_close" + suffixes[state] + ".bmp";
-    close->SetBitmap(path.c_str(), state, 0);
-  }
-
+  close->SetBitmap("유저인터페이스\\basic_interface\\btn_close.bmp", 0, 0);
+  close->SetBitmap("유저인터페이스\\basic_interface\\btn_close_a.bmp", 1, 0);
+  close->SetBitmap("유저인터페이스\\basic_interface\\btn_close_b.bmp", 2, 0);
   close->SetSize(close->BitmapWidth(), close->BitmapHeight());
   close->Move(173, 165);
   close->SetId(201);
@@ -176,22 +191,15 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   this->AddChild(this->types);
   this->types->AddOption(LookupMessage(3377), 0);
 
-  for (int id = 3360; id <= 3365; ++id) {
-    this->types->AddOption(LookupMessage(id), 0);
-  }
+  this->types->AddOption(LookupMessage(3360), 0);
+  this->types->AddOption(LookupMessage(3361), 0);
+  this->types->AddOption(LookupMessage(3362), 0);
+  this->types->AddOption(LookupMessage(3363), 0);
+  this->types->AddOption(LookupMessage(3364), 0);
+  this->types->AddOption(LookupMessage(3365), 0);
 
   this->types->Select(0);
-  auto* titleClose = new UIBitmapButton();
-  const std::string off = std::string(prefix) + "basic_interface\\big_sys_close_off.bmp";
-  const std::string on = std::string(prefix) + "basic_interface\\big_sys_close_on.bmp";
-  titleClose->SetBitmap(off.c_str(), 0, 0);
-  titleClose->SetBitmap(on.c_str(), 1, 0);
-  titleClose->SetBitmap(on.c_str(), 2, 0);
-  titleClose->SetSize(titleClose->BitmapWidth(), titleClose->BitmapHeight());
-  titleClose->Move(this->geometry.width - titleClose->BitmapWidth(), 0);
-  titleClose->SetId(201);
-  titleClose->SetTooltip("");
-  this->AddChild(titleClose);
+  this->AddBigCloseButton("", 0);
 }
 
 // OFFSET: 0x007C1FB0
