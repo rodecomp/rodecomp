@@ -4920,28 +4920,28 @@ const char* LookupMessage(int id) {
   }
 
   auto found = g_messageStrings.find(id);
-  if (found == g_messageStrings.end()) {
-    return "NO MSG";
+  if (found != g_messageStrings.end()) {
+    const std::string& text = found->second;
+    if (!g_inlineCharset || text[0] == '/' || text == "NO MSG") {
+      return text.c_str();
+    }
+
+    // STATIC: 0x016D57B4
+    // GLOBAL: gl_24383
+    static std::vector<std::string> cached(4698);
+    std::string& result = cached[id];
+    if (result.empty() || g_serviceType == 19) {
+      // STATIC: 0x016D57C8
+      // GLOBAL: gl_24384
+      static char buffer[260];
+      _snprintf_s(buffer, sizeof(buffer), _TRUNCATE, "%s%s", g_serverLanguage->Prefix(true), text.c_str());
+      result = buffer;
+    }
+
+    return result.c_str();
   }
 
-  const std::string& text = found->second;
-  if (!g_inlineCharset || text[0] == '/' || text == "NO MSG") {
-    return text.c_str();
-  }
-
-  // STATIC: 0x016D57B4
-  // GLOBAL: gl_24383
-  static std::vector<std::string> cached(4698);
-  std::string& result = cached[id];
-  if (result.empty() || g_serviceType == 19) {
-    // STATIC: 0x016D57C8
-    // GLOBAL: gl_24384
-    static char buffer[260];
-    _snprintf_s(buffer, sizeof(buffer), _TRUNCATE, "%s%s", g_serverLanguage->Prefix(true), text.c_str());
-    result = buffer;
-  }
-
-  return result.c_str();
+  return "NO MSG";
 }
 
 void InsertMessageRow(std::vector<const char*>& row);
