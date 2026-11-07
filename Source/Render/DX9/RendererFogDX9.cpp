@@ -26,8 +26,17 @@ void CRendererDX9::ApplyFog() {
   if (this->fog.dirty == 1) {
     const float inverseAspect = 1.0f / this->viewport.aspect;
     const bool supported = (this->device->caps.RasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
-    D3DMATRIX identity{};
-    identity._11 = identity._22 = identity._33 = identity._44 = 1.0f;
+    D3DMATRIX identity;
+    identity._11 = 1.0f;
+    identity._12 = identity._13 = identity._14 = 0;
+    identity._21 = 0;
+    identity._22 = 1.0f;
+    identity._23 = identity._24 = 0;
+    identity._31 = identity._32 = 0;
+    identity._33 = 1.0f;
+    identity._34 = 0;
+    identity._41 = identity._42 = identity._43 = 0;
+    identity._44 = 1.0f;
     const float start = g_depthStart * 1490.0f + 10.0f;
     const float end = g_depthEnd * 1490.0f + 10.0f;
     D3DMATRIX projection;
