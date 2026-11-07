@@ -5,7 +5,7 @@
 
 extern HWND hWnd;
 
-HWND CreateApplicationWindow(
+HWND __stdcall CreateApplicationWindow(
   DWORD extendedStyle, const char* className, const char* ignoredTitle, DWORD style, int x, int y, int width, int height, HWND parent, HMENU menu,
   HINSTANCE instance, void* parameter
 );
