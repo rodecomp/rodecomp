@@ -1340,7 +1340,9 @@ void CUINormalPerfect::Slot55() {
   CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* list = this->enchantList;
   if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
     auto it = list->data.begin();
-    std::advance(it, static_cast<int>(list->selected));
+    for (int i = list->selected; i > 0; --i) {
+      ++it;
+    }
     CEnchantMgr::GetInstance()->RequestPerfectEnchant(
       this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]), static_cast<int16_t>(this->unknown_00B0), it->itemId
     );
@@ -1473,14 +1475,16 @@ void CUIEnchantItem::SetFrozen(bool frozen) {
 
 // OFFSET: 0x00A05860
 // FUNCTION: fn_14977
-void UpdateEnchantItem(CUIEnchantItem* item, const CEnchantItemData* data) {
-  ITEM_INFO info;
-  info.SetItemId(data->itemId);
-  info.identified = 1;
-  item->itemIcon->SetItem(info);
-  const std::string name = info.DisplayName(0);
-  item->name->SetText(name.c_str(), static_cast<unsigned>(name.size()));
-  item->SetFrozen(data->frozen);
+void CUIEnchantPage::UpdateEnchantItem(CUIEnchantItem* item, const CEnchantItemData& data) {
+  {
+    ITEM_INFO info;
+    info.SetItemId(data.itemId);
+    info.identified = 1;
+    item->itemIcon->SetItem(info);
+    item->name->SetText(info.DisplayName(0));
+  }
+
+  item->SetFrozen(data.frozen);
 }
 
 // OFFSET: 0x00A05B90
@@ -1993,7 +1997,7 @@ void CUIEnchantPage::Slot15(int width, int height) {
   enchantList->SetSize(169, 377);
   this->enchantList->Move(300, 0);
   this->enchantList->SetOnSelect([this](CUIEnchantItem* item, const CEnchantItemData& data) { this->Slot54(item, data); });
-  this->enchantList->SetBinder([this](CUIEnchantItem* item, const CEnchantItemData& data) { UpdateEnchantItem(item, &data); });
+  this->enchantList->SetBinder([this](CUIEnchantItem* item, const CEnchantItemData& data) { this->UpdateEnchantItem(item, data); });
   {
     this->enchantList->SetImages(std::string([]() {
       constexpr std::uint8_t bytes[] = {

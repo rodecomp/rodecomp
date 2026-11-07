@@ -152,6 +152,7 @@ public:
   __declspec(noinline) int FindEmptySlot();
   __declspec(noinline) std::optional<EnchantOptionInfo*> FindOption(uint32_t key);
   __declspec(noinline) void SetCost(const EnchantPerfectInfo& info);
+  void UpdateEnchantItem(CUIEnchantItem* item, const CEnchantItemData& data);
 };
 
 class CUINormalRandom : public CUIEnchantPage {
