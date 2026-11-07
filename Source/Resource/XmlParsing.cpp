@@ -151,7 +151,7 @@ bool XmlDocument::Parse(const char* begin, const char* end) {
   if (this->child != nullptr) {
     this->Reset();
     if (this->buffer != nullptr) {
-      std::free(this->buffer);
+      delete[] static_cast<char*>(this->buffer);
       this->buffer = nullptr;
     }
   }
