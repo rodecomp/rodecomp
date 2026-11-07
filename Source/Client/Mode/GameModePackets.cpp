@@ -2694,16 +2694,13 @@ __declspec(noinline) void CGameMode::ReceiveCashShopBanner(int value1, int value
 // OFFSET: 0x00D7A180
 // FUNCTION: fn_22188
 __declspec(noinline) void CGameMode::ReceiveWindow308TextEntries(unsigned char* packet) {
+  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 16;
   g_windowMgr.CloseWindow(0x134);
   UIWindow* window = g_windowMgr.EnsureWindow(0x134);
-  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 16;
-  char* text = reinterpret_cast<char*>(packet + 4);
-  for (int i = 0; i < count; ++i, text += 16) {
+  for (int i = 0; i < count; ++i) {
+    char* text = reinterpret_cast<char*>(packet + 4 + i * 16);
     text[15] = '\0';
-    char* end = text;
-    do {
-    } while (*end++ != '\0');
-    if (*text != '\0') {
+    if (std::strlen(text) != 0) {
       window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     }
   }
