@@ -1806,10 +1806,10 @@ void CEffectPrim::RenderHermode(matrix& wtm) {
 // OFFSET: 0x00BDB530
 // FUNCTION: fn_19896
 void CEffectPrim::RenderHitLine3(matrix& wtm) {
-  vector3d vec1;
-  ZeroVector(vec1);
-  vector3d vec3;
-  ZeroVector(vec3);
+  ZeroVector3d vec1;
+  ZeroVector3d vec3;
+  ZeroVector3d vec2;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -1862,8 +1862,8 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
         const float ry = radius * g_sinTable[i * 120] - 5.0f;
         const float rx = tx * g_cosTable[angle];
         const float rz = tx * g_sinTable[angle];
-        const vector3d vec2{vecA.x + rx, vecA.y + ry, vecA.z + rz};
-        const vector3d vec4{vecB.x + rx, vecB.y + ry, vecB.z + rz};
+        vec2.Set(vecA.x + rx, vecA.y + ry, vecA.z + rz);
+        vec4.Set(vecB.x + rx, vecB.y + ry, vecB.z + rz);
 
         if (i > 0) {
           const int alpha = slot.alphaB - j * 10;
@@ -1893,8 +1893,8 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
           const float ry = radius * g_sinTable[i * 120] - 5.0f;
           const float rx = tx * g_cosTable[angle];
           const float rz = tx * g_sinTable[angle];
-          const vector3d vec2{vecA.x + rx, vecA.y + ry, vecA.z + rz};
-          const vector3d vec4{vecB.x + rx, vecB.y + ry, vecB.z + rz};
+          vec2.Set(vecA.x + rx, vecA.y + ry, vecA.z + rz);
+          vec4.Set(vecB.x + rx, vecB.y + ry, vecB.z + rz);
 
           if (i > 0) {
             const int alpha = static_cast<int>(static_cast<float>(slot.alphaB - j * 10) * 0.5f);
