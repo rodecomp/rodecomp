@@ -15,8 +15,10 @@ bool CWebBrowser::CreateAddressBar(int width, int requestedHeight) {
     return false;
   }
 
-  REBARINFO bar{};
+  REBARINFO bar;
   bar.cbSize = sizeof(bar);
+  bar.fMask = 0;
+  bar.himl = nullptr;
   if (!SendMessageA(this->rebar, RB_SETBARINFO, 0, reinterpret_cast<LPARAM>(&bar))) {
     return false;
   }
@@ -26,7 +28,7 @@ bool CWebBrowser::CreateAddressBar(int width, int requestedHeight) {
     nullptr
   );
 
-  REBARBANDINFOA band{};
+  REBARBANDINFOA band;
   band.cbSize = sizeof(band);
   band.fMask = RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE | RBBIM_BACKGROUND;
   band.fStyle = RBBS_CHILDEDGE | RBBS_FIXEDBMP;
