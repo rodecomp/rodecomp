@@ -494,27 +494,23 @@ HRESULT DeviceOwnerDX7::Present(bool wait) {
     return this->primary->IsLost();
   }
 
-  if (wait && (!this->fullscreen || this->presentationOption)) {
+  if (wait) {
+    if (this->fullscreen && !this->presentationOption) {
+      GetClientRect(this->window, &this->destination);
+      ClientToScreen(this->window, reinterpret_cast<POINT*>(&this->destination.left));
+      ClientToScreen(this->window, reinterpret_cast<POINT*>(&this->destination.right));
+      this->draw->WaitForVerticalBlank(DDWAITVB_BLOCKBEGIN, nullptr);
+      return this->primary->Blt(nullptr, this->backBuffer, nullptr, DDBLT_WAIT, nullptr);
+    }
+
     this->destination = ClientRectangle(this->window);
     this->draw->WaitForVerticalBlank(DDWAITVB_BLOCKBEGIN, nullptr);
     return this->primary->Blt(&this->destination, this->backBuffer, &this->source, DDBLT_WAIT, nullptr);
   }
 
   GetClientRect(this->window, &this->destination);
-  POINT topLeft{this->destination.left, this->destination.top};
-  ClientToScreen(this->window, &topLeft);
-  this->destination.left = topLeft.x;
-  this->destination.top = topLeft.y;
-  POINT bottomRight{this->destination.right, this->destination.bottom};
-  ClientToScreen(this->window, &bottomRight);
-  this->destination.right = bottomRight.x;
-  this->destination.bottom = bottomRight.y;
-
-  if (wait) {
-    this->draw->WaitForVerticalBlank(DDWAITVB_BLOCKBEGIN, nullptr);
-    return this->primary->Blt(nullptr, this->backBuffer, nullptr, DDBLT_WAIT, nullptr);
-  }
-
+  ClientToScreen(this->window, reinterpret_cast<POINT*>(&this->destination.left));
+  ClientToScreen(this->window, reinterpret_cast<POINT*>(&this->destination.right));
   return this->primary->Blt(&this->destination, this->backBuffer, &this->source, DDBLT_WAIT, nullptr);
 }
 
