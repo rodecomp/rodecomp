@@ -415,17 +415,6 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c,
                                            std::intptr_t d) {
   switch (message) {
-  case 6:
-    for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
-      UIIngredientInfoWnd* entry = *it;
-      if (sender != entry) {
-        entry->selected = 0;
-        entry->Invalidate();
-      }
-    }
-    this->Invalidate();
-    break;
-
   case 0x17:
     for (std::vector<ITEM_INFO>::iterator material = this->materials.begin(); material != this->materials.end(); ++material) {
       std::vector<int> ids = g_session.FindInventoryIndicesByItemId(std::atoi(material->itemId.c_str()), 1);
@@ -443,24 +432,16 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
     this->SendMsg(this, 0x57, 0, 0, 0, 0);
     break;
 
-  case 0x57: {
-    int y = 7;
-    for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end();) {
+  case 6:
+    for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
       UIIngredientInfoWnd* entry = *it;
-      if (entry->geometry.visible == 0) {
+      if (sender != entry) {
+        entry->selected = 0;
         entry->Invalidate();
-        it = this->items.erase(it);
-      } else {
-        this->MoveScrollChild(entry, 0, y);
-        (*it)->Invalidate();
-        ++it;
-        y += 0x1E;
       }
     }
-    this->Slot53();
     this->Invalidate();
     break;
-  }
 
   case 0x68: {
     std::vector<UIIngredientInfoWnd*>::iterator it;
@@ -506,6 +487,25 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
       (*it)->Invalidate();
     }
     this->SendMsg(this, 0x57, 0, 0, 0, 0);
+    break;
+  }
+
+  case 0x57: {
+    int y = 7;
+    for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end();) {
+      UIIngredientInfoWnd* entry = *it;
+      if (entry->geometry.visible == 0) {
+        entry->Invalidate();
+        it = this->items.erase(it);
+      } else {
+        this->MoveScrollChild(entry, 0, y);
+        (*it)->Invalidate();
+        ++it;
+        y += 0x1E;
+      }
+    }
+    this->Slot53();
+    this->Invalidate();
     break;
   }
 
