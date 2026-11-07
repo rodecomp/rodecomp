@@ -206,46 +206,20 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
 // FUNCTION: fn_11562
 int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 7:
-  case 8:
-  case 9:
-  case 10:
-  case 11:
-  case 12: {
-    const int previousX = this->horizontalOffset;
-    UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
-
-    for (unsigned index = 0; index < this->links.size(); ++index) {
-      UITextButton* button = this->links[index];
-
-      if (!button) {
-        continue;
-      }
-
-      const int row = button->m_value;
-
-      if (row >= this->topLine && row < this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine) {
-        button->Enable(1);
-        button->Move(button->geometry.x - this->horizontalOffset + previousX, (row - this->topLine) * this->lineHeight + 3);
-      } else {
-        button->Enable(0);
-      }
-    }
-
-    return 0;
-  }
   case 18:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
     }
 
     return 0;
+
   case 19:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
     }
 
     return 0;
+
   case 29:
   {
     char* text = reinterpret_cast<char*>(argument1);
@@ -314,6 +288,36 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     this->Invalidate();
     return 0;
   }
+
+  case 7:
+  case 8:
+  case 9:
+  case 10:
+  case 11:
+  case 12: {
+    const int previousX = this->horizontalOffset;
+    UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+
+    for (unsigned index = 0; index < this->links.size(); ++index) {
+      UITextButton* button = this->links[index];
+
+      if (!button) {
+        continue;
+      }
+
+      const int row = button->m_value;
+
+      if (row >= this->topLine && row < this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine) {
+        button->Enable(1);
+        button->Move(button->geometry.x - this->horizontalOffset + previousX, (row - this->topLine) * this->lineHeight + 3);
+      } else {
+        button->Enable(0);
+      }
+    }
+
+    return 0;
+  }
+
   case 98:
   {
     auto* button = static_cast<UITextButton*>(sender);
@@ -385,6 +389,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
     return 0;
   }
+
   default:
     return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
