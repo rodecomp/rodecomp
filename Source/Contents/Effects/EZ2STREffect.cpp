@@ -5279,10 +5279,7 @@ void CEZ2STRScreenEffect::Slot04() {
     this->overlayColor = 0xAA000000u;
   }
 
-  DrawBlendedRectangle(
-    g_renderer->primitives, g_renderer->queues, 0, 0, g_renderer->viewport.width, g_renderer->viewport.height, this->overlayColor,
-    g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-  );
+  DrawBlendedRectangle(0, 0, g_renderer->viewport.width, g_renderer->viewport.height, this->overlayColor);
 
 draw:
   particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);

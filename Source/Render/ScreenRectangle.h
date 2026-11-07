@@ -8,10 +8,7 @@ class RenderPrimitivePool;
 class TextureCache;
 struct RenderQueues;
 
-void DrawBlendedRectangle(
-  RenderPrimitivePool& primitives, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha,
-  float depthStart, float depthEnd
-);
+void DrawBlendedRectangle(int x, int y, int width, int height, std::uint32_t color);
 void DrawTexturedRectangle(int x, int y, int width, int height, std::uint32_t color, CTexture* texture);
 void DrawTextureRegion(
   RenderPrimitivePool& primitives, RenderQueues& queues, float x, float y, float width, float height, std::uint32_t color,
