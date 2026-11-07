@@ -35,9 +35,9 @@ static_assert(offsetof(LightmappedBuffer, indices) == 0x8);
 // OFFSET: 0x00569310
 // FUNCTION: fn_02254
 void LightmappedBuffer::Clear() {
-  std::free(this->vertices);
+  delete[] static_cast<char*>(this->vertices);
   this->vertices = nullptr;
-  std::free(this->indices);
+  delete[] static_cast<char*>(this->indices);
   this->indices = nullptr;
 }
 
