@@ -69,10 +69,17 @@ UITextButton::UITextButton() : UIButton(), m_outlineColor(0xFFFFFF), m_value(0) 
 // FUNCTION: fn_11110
 UITextButton::~UITextButton() = default;
 
+namespace {
+  // INLINED
+  void SetButtonLabel(UIButton& button, std::string text) {
+    button.label = text;
+  }
+}
+
 // OFFSET: 0x0087C590
 // FUNCTION: fn_11254
 void UITextButton::Configure(const char* text, std::uint32_t color, int family, int height, unsigned char outline, unsigned char underline) {
-  this->label = text;
+  SetButtonLabel(*this, text);
   this->m_text = this->label;
   this->m_normalColor = this->m_hoverColor = this->m_color = color;
   this->m_family = family;
@@ -3549,11 +3556,11 @@ int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   this->unknown_0128 = static_cast<int>(argument1);
   const char* slot = argument1 != 0 ? "slot" : "slot2";
   const char* img = this->m_inRange ? "img_buy" : "img_";
-  const std::string base = std::string("유저인터페이스\\select_character_ver3\\") + img + slot + "_";
+  const std::string base = std::format("유저인터페이스\\select_character_ver3\\{}{}_", img, slot).c_str();
 
-  this->SetBitmap((base + "normal.bmp").c_str(), 0, 0);
-  this->SetBitmap((base + "over.bmp").c_str(), 1, 0);
-  this->SetBitmap((base + "press.bmp").c_str(), 2, 0);
+  this->SetBitmap(std::format("{}normal.bmp", base).c_str(), 0, 0);
+  this->SetBitmap(std::format("{}over.bmp", base).c_str(), 1, 0);
+  this->SetBitmap(std::format("{}press.bmp", base).c_str(), 2, 0);
   return 0;
 }
 
