@@ -285,17 +285,17 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         return 0;
       }
 
-      if (this->m_region != 0) {
-        packet.mapId = static_cast<short>((this->m_region << 8) | this->m_mapIndex);
-      } else {
+      if (this->m_region == 0) {
         packet.mapId = 0;
+      } else {
+        packet.mapId = static_cast<short>((this->m_region << 8) | this->m_mapIndex);
       }
 
       const int jobOffsets[9] = {0, 1, 5, 11, 24, 30, 37, 43, 56};
-      if (this->m_jobCategory != 0) {
-        packet.job = static_cast<short>(jobOffsets[this->m_jobCategory] - 1 + this->m_jobCategoryChanged);
-      } else {
+      if (this->m_jobCategory == 0) {
         packet.job = -1;
+      } else {
+        packet.job = static_cast<short>(jobOffsets[this->m_jobCategory] - 1 + this->m_jobCategoryChanged);
       }
 
       if (argument1 == 365) {
