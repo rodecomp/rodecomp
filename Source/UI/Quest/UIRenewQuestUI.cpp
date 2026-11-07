@@ -840,6 +840,13 @@ __declspec(noinline) bool CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long
   return false;
 }
 
+// OFFSET: 0x00A65F20
+// FUNCTION: fn_16603
+CUIRenewQuestUI::~CUIRenewQuestUI() {
+  g_windowMgr.CloseWindow(10010);
+  g_windowMgr.CloseWindow(10009);
+}
+
 // OFFSET: 0x00A65FD0
 // FUNCTION: fn_16604
 template <>

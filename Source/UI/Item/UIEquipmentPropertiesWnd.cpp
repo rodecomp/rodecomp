@@ -1089,6 +1089,12 @@ __declspec(noinline) CUIEquipmentPropertiesWnd::CUIEquipmentPropertiesWnd()
     : titleBar(nullptr), list(nullptr), tabs(nullptr), resizer(nullptr), currentTab(-1) {
 }
 
+// OFFSET: 0x00A0ED60
+// FUNCTION: fn_15153
+CUIEquipmentPropertiesWnd::~CUIEquipmentPropertiesWnd() {
+  EquipmentProperties::EquipmentPropertiesMgr()->SetWindow(nullptr);
+}
+
 // OFFSET: 0x00A08D60
 // FUNCTION: fn_15031
 CUIEquipmentPropertiesWnd* CreateEquipmentPropertiesWnd() {

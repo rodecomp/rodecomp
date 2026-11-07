@@ -61,6 +61,7 @@ public:
 class CUIRenewQuestUI : public CUIFrameWnd {
 public:
   __declspec(noinline) CUIRenewQuestUI();
+  ~CUIRenewQuestUI() override;
 
   void OnCreate(int width, int height) override;
   void OnInit() override;
