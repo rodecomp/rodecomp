@@ -896,18 +896,23 @@ int UIImgMenu::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     this->Invalidate();
     return 0;
   }
-  case 83:
-    this->unknown_00C8 = argument1;
-    return 0;
+
   case 102:
     this->geometry.id = argument1;
     return 0;
+
+  case 83:
+    this->unknown_00C8 = argument1;
+    return 0;
+
   case 105:
     this->unknown_0090[argument1 - 1] = argument2 != 0;
     return 0;
+
   case 106:
     this->unknown_0094[argument1 - 1] = argument2 != 0;
     return 0;
+
   default:
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
