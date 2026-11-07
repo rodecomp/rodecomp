@@ -21,6 +21,31 @@ NamedBinkMovie::~NamedBinkMovie() {
   this->decoder.reset();
 }
 
+// INLINED
+std::string NamedBinkMovie::Name() const {
+  return this->name;
+}
+
+// INLINED
+__forceinline bool NamedBinkMovie::Open(std::string fileName, int loop) {
+  if (fileName.empty()) {
+    return false;
+  }
+
+  this->decoder.reset();
+  this->decoder.reset(new (std::nothrow) BinkMovie);
+  if (!this->decoder) {
+    return false;
+  }
+
+  if (this->decoder->Open(("video\\" + fileName).c_str(), loop, true) != true) {
+    return false;
+  }
+
+  this->name = fileName;
+  return true;
+}
+
 // OFFSET: 0x007AFB50
 // FUNCTION: fn_09161
 BinkMovies::BinkMovies() = default;
@@ -32,26 +57,20 @@ BinkMovies::~BinkMovies() = default;
 // OFFSET: 0x007B00F0
 // FUNCTION: fn_09165
 NamedBinkMovie* BinkMovies::Get(std::string name, int loop) {
-  for (const auto& movie : this->m_movies) {
-    if (movie->name == name) {
-      return movie.get();
-    }
+  auto found = std::find_if(this->m_movies.begin(), this->m_movies.end(), [name](const std::unique_ptr<NamedBinkMovie>& movie) {
+    return name.compare(movie->Name()) == 0;
+  });
+  if (found != this->m_movies.end()) {
+    return found->get();
   }
 
   std::unique_ptr<NamedBinkMovie> movie(new (std::nothrow) NamedBinkMovie);
-  if (!movie || name.empty()) {
+  if (!movie || !movie->Open(name, loop)) {
     return nullptr;
   }
 
-  movie->decoder.reset(new (std::nothrow) BinkMovie);
-  if (!movie->decoder || !movie->decoder->Open((std::string("video\\") + name).c_str(), loop, true)) {
-    return nullptr;
-  }
-
-  movie->name = name;
   NamedBinkMovie* result = movie.get();
   this->m_movies.push_back(std::move(movie));
-
   return result;
 }
 

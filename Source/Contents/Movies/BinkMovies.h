@@ -19,6 +19,8 @@ struct MoviePosition {
 struct NamedBinkMovie {
   NamedBinkMovie();
   ~NamedBinkMovie();
+  std::string Name() const;
+  bool Open(std::string fileName, int loop);
   /* 0000 */ std::string name;
   /* 0018 */ std::unique_ptr<BinkMovie> decoder;
   /* 001C */ float radius;
