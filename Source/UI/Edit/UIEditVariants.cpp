@@ -1091,8 +1091,9 @@ int UIShowAndEditTimeCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t 
 // OFFSET: 0x00853F20
 // FUNCTION: fn_10745
 void UIEditCtrl3::ClearLineState() {
-  while (!this->unknown_0168.empty()) {
-    this->unknown_0168.erase(this->unknown_0168.begin());
+  auto line = this->unknown_0168.begin();
+  while (line != this->unknown_0168.end()) {
+    line = this->unknown_0168.erase(line);
   }
   this->unknown_0168.clear();
 
