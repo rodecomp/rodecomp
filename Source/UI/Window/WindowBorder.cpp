@@ -112,7 +112,7 @@ int UIWindow::DrawButtonBar(int style, int width, int rows) {
     barHeight = left->image.height;
 
     for (int row = 1; row <= rows; ++row) {
-      this->DrawBitmap(0, this->geometry.height - row * barHeight, &left->image, false);
+      this->DrawBitmap(0, this->geometry.height - row * barHeight, left, false);
     }
   }
 
@@ -128,7 +128,7 @@ int UIWindow::DrawButtonBar(int style, int width, int rows) {
     rightWidth = right->image.width;
 
     for (int row = 1; row <= rows; ++row) {
-      this->DrawBitmap(width - rightWidth, this->geometry.height - row * barHeight, &right->image, false);
+      this->DrawBitmap(width - rightWidth, this->geometry.height - row * barHeight, right, false);
     }
   }
 
@@ -150,7 +150,7 @@ int UIWindow::DrawButtonBar(int style, int width, int rows) {
 
   for (int row = 1; row <= rows; ++row) {
     for (int column = 0; column < count; ++column) {
-      this->DrawBitmap(leftWidth + column * middleWidth, this->geometry.height - row * barHeight, &middle->image, false);
+      this->DrawBitmap(leftWidth + column * middleWidth, this->geometry.height - row * barHeight, middle, false);
     }
   }
 
