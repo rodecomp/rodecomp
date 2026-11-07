@@ -35,8 +35,12 @@ UISeekPartyWnd::UISeekPartyWnd() : UIFrameWnd(0) {
 // FUNCTION: fn_12651
 void UISeekPartyWnd::Slot15(int, int) {
   char text[0x80] = {};
-  const int maximum = g_session.m_partyBookingLevelLimit + 0xF <= g_partyBookingLevelMax ? g_session.m_partyBookingLevelLimit + 0xF : g_partyBookingLevelMax;
-  std::sprintf(text, "%s - %d~%d", LookupMessage(0x6DA), g_session.m_partyBookingLevelLimit, maximum);
+  const int minimum = g_session.m_partyBookingLevelLimit;
+  int maximum = g_partyBookingLevelMax;
+  if (minimum + 0xF <= maximum) {
+    maximum = minimum + 0xF;
+  }
+  std::sprintf(text, "%s - %d~%d", LookupMessage(0x6DA), minimum, maximum);
 
   this->m_label = new UIStaticText();
   this->m_label->SetSize(this->geometry.width - 0x20, 0xF);
