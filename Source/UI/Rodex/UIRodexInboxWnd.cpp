@@ -104,23 +104,18 @@ void UIRodexInboxWnd::DrawMailIcons(int row, unsigned char attachments, unsigned
     : read == 0
       ? "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_status_mail_received.bmp"
       : "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_status_mail_read.bmp";
-  this->DrawBitmap(0x24, y + 0x7C, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(status))), true);
+  this->DrawBitmap(0x24, y + 0x7C, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(status))), true);
 
-  const char* attachmentIcon;
   if ((attachments & 6) == 6) {
-    this->DrawBitmap(0xD8, y + 0x8B, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
-    attachmentIcon = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny_n_item.bmp";
+    this->DrawBitmap(0xD8, y + 0x8B, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
+    this->DrawBitmap(0xDB, y + 0x7F, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny_n_item.bmp"))), true);
   } else if ((attachments & 2) != 0) {
-    this->DrawBitmap(0xD8, y + 0x8B, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
-    attachmentIcon = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp";
+    this->DrawBitmap(0xD8, y + 0x8B, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
+    this->DrawBitmap(0xDB, y + 0x7F, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp"))), true);
   } else if ((attachments & 4) != 0) {
-    this->DrawBitmap(0xD8, y + 0x8B, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
-    attachmentIcon = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_item.bmp";
-  } else {
-    return;
+    this->DrawBitmap(0xD8, y + 0x8B, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
+    this->DrawBitmap(0xDB, y + 0x7F, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_item.bmp"))), true);
   }
-
-  this->DrawBitmap(0xDB, y + 0x7F, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(attachmentIcon))), true);
 }
 
 // OFFSET: 0x008058B0
