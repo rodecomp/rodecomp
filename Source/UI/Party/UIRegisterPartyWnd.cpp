@@ -246,7 +246,23 @@ void UIRegisterPartyWnd::Paint() {
 // OFFSET: 0x007C1410
 // FUNCTION: fn_09314
 int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 39:
+    if (sender == this->types) {
+      this->selectedType = static_cast<int>(a);
+    }
+
+    return 0;
+  case 34:
+    this->saved = reinterpret_cast<RegisterPartyWndInfo*>(a);
+
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 6:
     switch (a) {
     case 201:
       break;
@@ -289,25 +305,6 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     }
 
     g_windowMgr.CloseWindow(323);
-    return 0;
-  }
-
-  if (message == 34) {
-    this->saved = reinterpret_cast<RegisterPartyWndInfo*>(a);
-
-    if (!this->saved->IsValid()) {
-      this->saved->Reset();
-    }
-
-    this->Move(this->saved->x, this->saved->y);
-    return 0;
-  }
-
-  if (message == 39) {
-    if (sender == this->types) {
-      this->selectedType = static_cast<int>(a);
-    }
-
     return 0;
   }
 
