@@ -1378,6 +1378,56 @@ UIMerchantShopMakeWnd::UIMerchantShopMakeWnd(int mode) : UIFrameWnd(0), mode(mod
 // FUNCTION: fn_13427
 int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 36: {
+    char text[40];
+    std::sprintf(text, "%s : %s", LookupMessage(this->unknown_0100 != 0 ? 1734 : 226), g_session.unknown_550C.c_str());
+    this->title->SetTextFitted(text);
+    return 0;
+  }
+  case 34:
+    this->saved = reinterpret_cast<MerchantItemMyShopWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 14:
+    if (a == 7) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 240 ? c : 240;
+      if (width < 232) {
+        width = 232;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+
+      const int newWidth = (width - 280) / 32 * 32 + 280;
+      const int newHeight = (height - 120) / 32 * 32 + 120;
+      if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
+        this->Resize(newWidth, newHeight);
+        this->visibleRows = static_cast<unsigned int>(newHeight - this->unknown_011C - 17) / 32;
+        this->columns = (newWidth - 40) / 32;
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - this->unknown_011C - 17);
+        this->saleAlarm->Move(12, this->unknown_0100 != 0 ? this->geometry.height - 12 : this->geometry.height - 18);
+        this->buttons[0]->Move(this->geometry.width - 61, this->geometry.height - 24);
+        if (this->actionButton) {
+          this->actionButton->Move(this->geometry.width - this->actionButton->geometry.width - 66, this->geometry.height - 24);
+        }
+        if (this->unknown_0100 != 0) {
+          this->notice->Move(12, this->geometry.height - 26);
+        }
+        this->UpdateScrollBar();
+      }
+
+      g_windowMgr.StoreSnapRectangle(this);
+      return 0;
+    }
+    break;
   case 6: {
     CMode* mode = g_modeMgr.gameMode;
     this->RecordResponse(static_cast<int>(a), b, c, d);
@@ -1442,41 +1492,6 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
     break;
   }
-  case 14:
-    if (a == 7) {
-      int width = b <= 320 ? b : 320;
-      int height = c <= 240 ? c : 240;
-      if (width < 232) {
-        width = 232;
-      }
-      if (height < 120) {
-        height = 120;
-      }
-
-      const int newWidth = (width - 280) / 32 * 32 + 280;
-      const int newHeight = (height - 120) / 32 * 32 + 120;
-      if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
-        this->Resize(newWidth, newHeight);
-        this->visibleRows = static_cast<unsigned int>(newHeight - this->unknown_011C - 17) / 32;
-        this->columns = (newWidth - 40) / 32;
-        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-        this->scrollBar->Move(this->geometry.width - 15, 14);
-        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - this->unknown_011C - 17);
-        this->saleAlarm->Move(12, this->unknown_0100 != 0 ? this->geometry.height - 12 : this->geometry.height - 18);
-        this->buttons[0]->Move(this->geometry.width - 61, this->geometry.height - 24);
-        if (this->actionButton) {
-          this->actionButton->Move(this->geometry.width - this->actionButton->geometry.width - 66, this->geometry.height - 24);
-        }
-        if (this->unknown_0100 != 0) {
-          this->notice->Move(12, this->geometry.height - 26);
-        }
-        this->UpdateScrollBar();
-      }
-
-      g_windowMgr.StoreSnapRectangle(this);
-      return 0;
-    }
-    break;
   case 23: {
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetList9Size();
@@ -1491,24 +1506,6 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     this->UpdateScrollBar();
     return 0;
   }
-  case 28:
-    this->unknown_010C = static_cast<int>(a);
-    return 0;
-  case 34:
-    this->saved = reinterpret_cast<MerchantItemMyShopWndInfo*>(a);
-    if (!this->saved->IsValid()) {
-      this->saved->Reset();
-    }
-
-    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
-    this->Move(this->saved->x, this->saved->y);
-    return 0;
-  case 36: {
-    char text[40];
-    std::sprintf(text, "%s : %s", LookupMessage(this->unknown_0100 != 0 ? 1734 : 226), g_session.unknown_550C.c_str());
-    this->title->SetTextFitted(text);
-    return 0;
-  }
   case 119: {
     char grouped[80];
     char text[80];
@@ -1518,6 +1515,9 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     this->unknown_00F0 = static_cast<int>(a);
     return 0;
   }
+  case 28:
+    this->unknown_010C = static_cast<int>(a);
+    return 0;
   case 123: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
@@ -1846,6 +1846,25 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   case 0:
     if (this->m_message0 != 0 && this->geometry.visible != 0) {
       this->SendMsg(this, 6, this->m_message0, 0, 0, 0);
+      return 0;
+    }
+    return 0;
+  case 13:
+    this->geometry.unknown_0030 = static_cast<std::uint32_t>(a);
+    if (a == 20) {
+      char text[24];
+      std::sprintf(text, "%d", b);
+      this->m_edit->SetText(text);
+      if (this->geometry.unknown_0030 == 20) {
+        this->m_edit->SetText(IntToString(static_cast<int>(b), 0).c_str());
+        return 0;
+      }
+    }
+    return 0;
+  case 29:
+    if (b != 0) {
+      reinterpret_cast<UIStaticText*>(this->unknown_00B8)->SetText(reinterpret_cast<const char*>(b), 0);
+      this->Invalidate();
       return 0;
     }
     return 0;
@@ -2324,25 +2343,6 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     g_windowMgr.ShowWindowById(15, 0);
     return 0;
   }
-  case 13:
-    this->geometry.unknown_0030 = static_cast<std::uint32_t>(a);
-    if (a == 20) {
-      char text[24];
-      std::sprintf(text, "%d", b);
-      this->m_edit->SetText(text);
-      if (this->geometry.unknown_0030 == 20) {
-        this->m_edit->SetText(IntToString(static_cast<int>(b), 0).c_str());
-        return 0;
-      }
-    }
-    return 0;
-  case 29:
-    if (b != 0) {
-      reinterpret_cast<UIStaticText*>(this->unknown_00B8)->SetText(reinterpret_cast<const char*>(b), 0);
-      this->Invalidate();
-      return 0;
-    }
-    return 0;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
@@ -6066,12 +6066,32 @@ int UIItemBaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // FUNCTION: fn_13431
 int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 34:
+    this->saved = reinterpret_cast<MerchantItemWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
   case 6:
     if (a == 201) {
       g_windowMgr.CloseWindow(40);
       return 0;
     }
     break;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode->drag.source == 1) {
+      mode->SendMsg(76, mode->drag.id, mode->drag.quantity, 0, 0);
+    } else if (mode->drag.source == 6) {
+      mode->SendMsg(78, mode->drag.id, mode->drag.quantity, 0, 0);
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
   case 14:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
@@ -6115,26 +6135,6 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->UpdateScrollBar();
     return 0;
   }
-  case 34:
-    this->saved = reinterpret_cast<MerchantItemWndInfo*>(a);
-    if (!this->saved->IsValid()) {
-      this->saved->Reset();
-    }
-
-    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
-    this->Move(this->saved->x, this->saved->y);
-    return 0;
-  case 38: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    if (mode->drag.source == 1) {
-      mode->SendMsg(76, mode->drag.id, mode->drag.quantity, 0, 0);
-    } else if (mode->drag.source == 6) {
-      mode->SendMsg(78, mode->drag.id, mode->drag.quantity, 0, 0);
-    }
-
-    mode->SendMsg(18, 0, 0, 0, 0);
-    return 0;
-  }
   case 55: {
     char text[128];
     std::sprintf(text, "Num: %d/%d Weight: %d/%d", g_session.cartCount, g_session.cartMaxCount, g_session.cartWeight, g_session.cartMaxWeight);
@@ -6153,8 +6153,46 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // FUNCTION: fn_13432
 int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
-    break;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    ModeDragState& drag = mode->drag;
+    ITEM_INFO item;
+    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    CSession* lists = &g_session;
+
+    switch (drag.source) {
+    case 10:
+      if (g_session.GetItem1768Quantity(drag.id)) {
+        lists->AddItem1750(item, 0, 1);
+        lists->RemoveItem1768(item, 0);
+      }
+      break;
+    case 19:
+      if (lists->AddItem1750(item, this->unknown_00F4, 1)) {
+        lists->RemoveItem1768(item, this->unknown_00F4 != 0);
+      }
+      break;
+    case 21:
+      lists->AddItem1750(item, this->unknown_00F4, 1);
+      lists->RemoveItem1760(item);
+      if (g_windowMgr.unknown_041C) {
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_041C)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+      break;
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+  case 34:
+    this->saved = reinterpret_cast<MerchantMirrorItemWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
   case 14:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
@@ -6196,46 +6234,6 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     this->UpdateScrollBar();
     return 0;
   }
-  case 34:
-    this->saved = reinterpret_cast<MerchantMirrorItemWndInfo*>(a);
-    if (!this->saved->IsValid()) {
-      this->saved->Reset();
-    }
-
-    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
-    this->Move(this->saved->x, this->saved->y);
-    return 0;
-  case 38: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    ModeDragState& drag = mode->drag;
-    ITEM_INFO item;
-    item.Assign(reinterpret_cast<const RawItemData&>(drag));
-    CSession* lists = &g_session;
-
-    switch (drag.source) {
-    case 10:
-      if (g_session.GetItem1768Quantity(drag.id)) {
-        lists->AddItem1750(item, 0, 1);
-        lists->RemoveItem1768(item, 0);
-      }
-      break;
-    case 19:
-      if (lists->AddItem1750(item, this->unknown_00F4, 1)) {
-        lists->RemoveItem1768(item, this->unknown_00F4 != 0);
-      }
-      break;
-    case 21:
-      lists->AddItem1750(item, this->unknown_00F4, 1);
-      lists->RemoveItem1760(item);
-      if (g_windowMgr.unknown_041C) {
-        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_041C)->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      }
-      break;
-    }
-
-    mode->SendMsg(18, 0, 0, 0, 0);
-    return 0;
-  }
   case 123: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
@@ -6254,6 +6252,8 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
     break;
   }
+  case 6:
+    break;
   default:
     return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
   }
@@ -6265,6 +6265,34 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 // FUNCTION: fn_13421
 int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 34:
+    this->saved = reinterpret_cast<ItemSellWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    ModeDragState& drag = mode->drag;
+    ITEM_INFO item;
+    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    if (g_session.HasItem1718(drag.id)) {
+      CSession* lists = &g_session;
+      lists->AddItem1730(item);
+      lists->ReduceItem1718(item);
+      if (g_windowMgr.unknown_0254) {
+        g_windowMgr.unknown_0254->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+
+      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
   case 6: {
     const int count = g_session.GetList4Size();
     CMode* mode = g_modeMgr.gameMode;
@@ -6337,34 +6365,6 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 
     this->Invalidate();
     this->UpdateScrollBar();
-    return 0;
-  }
-  case 34:
-    this->saved = reinterpret_cast<ItemSellWndInfo*>(a);
-    if (!this->saved->IsValid()) {
-      this->saved->Reset();
-    }
-
-    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
-    this->Move(this->saved->x, this->saved->y);
-    return 0;
-  case 38: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    ModeDragState& drag = mode->drag;
-    ITEM_INFO item;
-    item.Assign(reinterpret_cast<const RawItemData&>(drag));
-    if (g_session.HasItem1718(drag.id)) {
-      CSession* lists = &g_session;
-      lists->AddItem1730(item);
-      lists->ReduceItem1718(item);
-      if (g_windowMgr.unknown_0254) {
-        g_windowMgr.unknown_0254->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      }
-
-      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-    }
-
-    mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
   case 123: {
@@ -10774,6 +10774,34 @@ void UIItemShopWnd2::Paint() {
 // FUNCTION: fn_13422
 int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 34:
+    this->saved = reinterpret_cast<ItemSellWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    ModeDragState& drag = mode->drag;
+    ITEM_INFO item;
+    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    if (g_session.HasItem1718(drag.id)) {
+      CSession* lists = &g_session;
+      lists->AddItem1730(item);
+      lists->ReduceItem1718(item);
+      if (g_windowMgr.unknown_0250) {
+        g_windowMgr.unknown_0250->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+
+      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
   case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
@@ -10845,34 +10873,6 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->total->SetTextAutoWidth(text);
     this->Invalidate();
     this->UpdateScrollBar();
-    return 0;
-  }
-  case 34:
-    this->saved = reinterpret_cast<ItemSellWndInfo*>(a);
-    if (!this->saved->IsValid()) {
-      this->saved->Reset();
-    }
-
-    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
-    this->Move(this->saved->x, this->saved->y);
-    return 0;
-  case 38: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    ModeDragState& drag = mode->drag;
-    ITEM_INFO item;
-    item.Assign(reinterpret_cast<const RawItemData&>(drag));
-    if (g_session.HasItem1718(drag.id)) {
-      CSession* lists = &g_session;
-      lists->AddItem1730(item);
-      lists->ReduceItem1718(item);
-      if (g_windowMgr.unknown_0250) {
-        g_windowMgr.unknown_0250->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      }
-
-      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-    }
-
-    mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
   case 123: {
