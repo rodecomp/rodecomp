@@ -29,13 +29,13 @@ void UI2ndCostumeWnd::Paint() {
   for (int y = 230; y < 280; y += 25) {
     CBitmapRes* checkbox = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\checkbox.bmp")));
     if (checkbox) {
-      this->DrawBitmap(13, y, &checkbox->image, false);
+      this->DrawBitmap(13, y, checkbox, false);
     }
   }
 
   CBitmapRes* line = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\line_dotted_2px.bmp")));
   if (line) {
-    this->DrawBitmap(249, 0, &line->image, false);
+    this->DrawBitmap(249, 0, line, false);
   }
 }
 
@@ -45,7 +45,7 @@ void UIAccessoryCusWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
   CBitmapRes* line = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\line_dotted_2px.bmp")));
   if (line) {
-    this->DrawBitmap(249, 5, &line->image, false);
+    this->DrawBitmap(249, 5, line, false);
   }
 }
 
@@ -61,12 +61,12 @@ void UIBasicStylingWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
   CBitmapRes* line = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\line_dotted_2px.bmp")));
   if (line) {
-    this->DrawBitmap(249, 5, &line->image, false);
+    this->DrawBitmap(249, 5, line, false);
   }
 
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\bg_styling_color.bmp")));
   if (background) {
-    this->DrawBitmap(71, 233, &background->image, false);
+    this->DrawBitmap(71, 233, background, false);
   }
 }
 
@@ -76,7 +76,7 @@ void UICostumeChangeWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
   CBitmapRes* line = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\line_dotted_2px.bmp")));
   if (line) {
-    this->DrawBitmap(249, 0, &line->image, false);
+    this->DrawBitmap(249, 0, line, false);
   }
 
   this->DrawCenteredText(43, 248, g_session.GetJobName(this->m_display->job, -1), 161, 0, 11, 0, 0);
@@ -103,7 +103,7 @@ void UIMyStyleWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
   CBitmapRes* line = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\line_dotted_2px.bmp")));
   if (line) {
-    this->DrawBitmap(-line->image.width - static_cast<int>(static_cast<float>(this->geometry.width) * -0.5f), 0, &line->image, false);
+    this->DrawBitmap(-line->image.width - static_cast<int>(static_cast<float>(this->geometry.width) * -0.5f), 0, line, false);
   }
 }
 
@@ -692,7 +692,7 @@ void UIStylingShopWnd::Paint() {
   this->DrawTitleBar(true, LookupMessage(2813), 0);
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\bg_styling.bmp")));
   if (background) {
-    this->DrawBitmap(0, 0, &background->image, false);
+    this->DrawBitmap(0, 0, background, false);
   }
 }
 
@@ -1834,7 +1834,7 @@ void UIShowInfoWnd::Paint() {
       CBitmapRes* line = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\line_dotted_1px_light.bmp")));
       if (line) {
         UICheckBox* check = this->m_checks[i];
-        this->DrawBitmap(check->geometry.x, check->geometry.y + check->geometry.width, &line->image, false);
+        this->DrawBitmap(check->geometry.x, check->geometry.y + check->geometry.width, line, false);
       }
     }
   }
