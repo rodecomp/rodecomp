@@ -20,12 +20,12 @@ AES::~AES() {
 ULONG AES::Decrypt(PUCHAR input, ULONG inputSize, PUCHAR output, ULONG outputSize, UCHAR flags) {
   PUCHAR iv;
   ULONG ivSize;
-  if (m_mode != ECB) {
-    iv = m_iv.data();
-    ivSize = m_iv.size();
-  } else {
+  if (m_mode == ECB) {
     iv = nullptr;
     ivSize = 0;
+  } else {
+    iv = m_iv.data();
+    ivSize = m_iv.size();
   }
 
   ULONG result = 0;
