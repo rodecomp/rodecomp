@@ -63,6 +63,6 @@ bool CBitmapRes::Decode(const char* name, const void* data, int bytes, bool icon
     return this->image.DecodePng(data, bytes, name);
   }
 
-  ShowErrorDialog(GetRenderSystemHolder()->system, "Unsupport fileformat!", 0);
+  ShowErrorDialog("Unsupport fileformat!", 0);
   return false;
 }
