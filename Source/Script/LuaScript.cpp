@@ -1,6 +1,7 @@
 #include "Script/LuaScript.h"
 #include "Archive/PakRegistry.h"
 #include "Client/Session.h"
+#include "Contents/Configuration/GameSettingsMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/EntryQueueMgr.h"
 #include "Contents/Effects/EffectLists.h"
@@ -28,6 +29,7 @@ extern "C" {
 
 #include <algorithm>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <map>
 #include <string>
@@ -151,12 +153,20 @@ int SetSubChatWndOption(lua_State* state) {
   return 1;
 }
 
+// INLINED
+static CGameSettingsMgr* GameSettingsInstance() {
+  if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
+    Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;
+  }
+  return Singleton<CGameSettingsMgr>::s_instance;
+}
+
 // OFFSET: 0x00AFF020
 // FUNCTION: fn_18351
 int SetCmdOnOffList(lua_State* state) {
   const char* name = luaL_checkstring(state, 1);
   const bool enabled = luaL_checknumber(state, 2) != 0.0;
-  Singleton<CGameSettingsMgr>::GetInstance();
+  GameSettingsInstance();
   const int optionId = SetOption(name, enabled);
   if (optionId != 3) {
     if (optionId == 229) {
@@ -172,9 +182,9 @@ int SetCmdOnOffList(lua_State* state) {
 // FUNCTION: fn_18350
 int GetCmdOnOffValue(lua_State* state) {
   const char* name = luaL_checkstring(state, 1);
-  Singleton<CGameSettingsMgr>::GetInstance();
+  GameSettingsInstance();
   const auto option = FindServiceOption(name);
-  lua_pushnumber(state, option.first == 3 ? -1.0 : static_cast<double>(option.second != 0));
+  lua_pushnumber(state, option.first != 3 ? static_cast<double>(option.second != 0) : -1.0);
   return 1;
 }
 
