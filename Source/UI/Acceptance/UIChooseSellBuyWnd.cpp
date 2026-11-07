@@ -492,7 +492,7 @@ void __stdcall Nullsub301(int, int) {
 void UIChooseSellBuyWnd::Paint() {
   auto* bitmap = static_cast<CBitmapRes*>(
     ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
 }
 
 // OFFSET: 0x008ED170
@@ -523,7 +523,7 @@ void UIComboBoxWnd::Paint() {
 // FUNCTION: fn_12219
 void UIDisconnectedServerMsgWnd::Paint() {
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
 }
 
 // OFFSET: 0x008ED1F0
@@ -963,7 +963,7 @@ void UIMonsterDisplayWnd::Paint() {
 // FUNCTION: fn_12233
 void UINoticeConfirmWnd::Paint() {
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
 }
 
 // OFFSET: 0x008EF7F0
@@ -1313,14 +1313,14 @@ void UIProhibitListWnd::Paint() {
 // FUNCTION: fn_12245
 void UIQuitWnd::Paint() {
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
 }
 
 // OFFSET: 0x008EFFA0
 // FUNCTION: fn_12246
 void UIRestartWnd::Paint() {
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
 }
 
 // OFFSET: 0x008EFFE0
@@ -1523,7 +1523,7 @@ void UIToolTipWnd::Paint() {
 // FUNCTION: fn_12258
 void UIWaitWnd::Paint() {
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
 }
 
 // OFFSET: 0x008F2AD0
@@ -5680,9 +5680,9 @@ bool IsEquipViewHidden() {
 // FUNCTION: fn_12213
 void UIChatRoomMakeWnd::Paint() {
   auto* titleBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_fix.bmp")));
-  this->DrawBitmap(0, 0, titleBar ? &titleBar->image : nullptr, false);
+  this->DrawBitmap(0, 0, titleBar, false);
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\chatwin0_bg.bmp")));
-  this->DrawBitmap(0, 17, background ? &background->image : nullptr, false);
+  this->DrawBitmap(0, 17, background, false);
   this->DrawTextAt(9, 4, this->m_title.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
   this->DrawTextAt(8, 3, this->m_title.c_str(), 0, 0, 12, 0, 0, 0);
 }
@@ -11673,17 +11673,17 @@ void UITipboxWnd::PaintAnimations() {
   for (unsigned int i = 0; i < this->m_animations.size(); ++i) {
     path = "유저인터페이스\\tipbox\\ico_effect" + IntToString(this->m_animations[i].kind, 0) + ".bmp";
     if (this->m_animations[i].visible) {
-      const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+      auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
       this->DrawBitmap(
-        static_cast<int>(this->m_animations[i].x), static_cast<int>(this->m_animations[i].y), bitmap ? &bitmap->image : nullptr, true
+        static_cast<int>(this->m_animations[i].x), static_cast<int>(this->m_animations[i].y), bitmap, true
       );
     }
   }
 
   for (unsigned int i = 0; i < this->m_dots.size(); ++i) {
     if (this->m_dots[i].visible) {
-      const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\ico_effect6.bmp")));
-      this->DrawBitmap(static_cast<int>(this->m_dots[i].x), static_cast<int>(this->m_dots[i].y), bitmap ? &bitmap->image : nullptr, true);
+      auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\ico_effect6.bmp")));
+      this->DrawBitmap(static_cast<int>(this->m_dots[i].x), static_cast<int>(this->m_dots[i].y), bitmap, true);
     }
   }
 }
