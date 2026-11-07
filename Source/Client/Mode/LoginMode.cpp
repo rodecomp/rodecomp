@@ -3776,16 +3776,16 @@ void CLoginMode::Slot7(int value) {
       std::string purple = "^BA00FF";
       switch (server.address.userCount) {
       case 0:
-        status = FormatOwnedString("%s%s  ^000000%s", green.c_str(), LookupMessage(0xCBD), text);
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", green.c_str(), LookupMessage(0xCBD), text));
         break;
       case 1:
-        status = FormatOwnedString("%s%s  ^000000%s", orange.c_str(), LookupMessage(0xCBE), text);
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", orange.c_str(), LookupMessage(0xCBE), text));
         break;
       case 2:
-        status = FormatOwnedString("%s%s  ^000000%s", red.c_str(), LookupMessage(0xCBF), text);
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", red.c_str(), LookupMessage(0xCBF), text));
         break;
       case 3:
-        status = FormatOwnedString("%s%s  ^000000%s", purple.c_str(), LookupMessage(0xCC0), text);
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", purple.c_str(), LookupMessage(0xCC0), text));
         break;
       }
 
