@@ -6781,8 +6781,8 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     }
   }
 
-  int effectId = -1;
   int secondEffectId = -1;
+  int effectId = -1;
   switch (itemId) {
   case 0x1F5:
   case 0x1FB:
@@ -6917,11 +6917,34 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case 0x2D3E:
     effectId = 7;
     break;
-  case 0x20A:
-    g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+  case 0x22E:
+  case 0x231:
+  case 0x2D40:
+  case 0x2D43:
+  case 0x2FCD:
+    effectId = 0x16C;
     break;
-  case 0x20B:
-    g_soundMgr->PlayWave("effect\\EF_Blessing.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+  case 0x22F:
+  case 0x230:
+  case 0x2D41:
+  case 0x2D42:
+  case 0x2DB5:
+    effectId = 0x16B;
+    break;
+  case 0x285:
+  case 0x38AD:
+  case 0x580E:
+    effectId = 0xDA;
+    break;
+  case 0x290:
+  case 0x38AE:
+  case 0x5810:
+    effectId = 0xDB;
+    break;
+  case 0x291:
+  case 0x38AF:
+  case 0x580F:
+    effectId = 0xDC;
     break;
   case 0x22A:
   case 0x2F5A:
@@ -6939,47 +6962,6 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = 0x1EB;
     break;
-  case 0x22E:
-  case 0x231:
-  case 0x2D40:
-  case 0x2D43:
-  case 0x2FCD:
-    effectId = 0x16C;
-    break;
-  case 0x22F:
-  case 0x230:
-  case 0x2D41:
-  case 0x2D42:
-  case 0x2DB5:
-    effectId = 0x16B;
-    break;
-  case 0x23D:
-  case 0x254:
-  case 0x255:
-  case 0x2D3F:
-  case 0x2FCA:
-    effectId = 0x1FD;
-    break;
-  case 0x23E:
-  case 0x3036:
-  case 0x3038:
-    effectId = 0xD2;
-    break;
-  case 0x285:
-  case 0x38AD:
-  case 0x580E:
-    effectId = 0xDA;
-    break;
-  case 0x290:
-  case 0x38AE:
-  case 0x5810:
-    effectId = 0xDB;
-    break;
-  case 0x291:
-  case 0x38AF:
-  case 0x580F:
-    effectId = 0xDC;
-    break;
   case 0x296:
   case 0x2FE6:
     g_soundMgr->PlayWave("effect\\mapae.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -6991,6 +6973,12 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     break;
   case 0x2AD:
     effectId = 0x1EC;
+    break;
+  case 0x20A:
+    g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x20B:
+    g_soundMgr->PlayWave("effect\\EF_Blessing.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 0x2EF0:
   case 0x5811:
@@ -7004,6 +6992,13 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case 0x2EF2:
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = 0x1FC;
+    break;
+  case 0x23D:
+  case 0x254:
+  case 0x255:
+  case 0x2D3F:
+  case 0x2FCA:
+    effectId = 0x1FD;
     break;
   case 0x2EF7:
     g_soundMgr->PlayWave("effect\\ro2effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -7028,11 +7023,11 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case 0x2F00:
     effectId = 0x244;
     break;
-  case 0x2F01:
-    effectId = 0x245;
-    break;
   case 0x2F02:
     g_soundMgr->PlayWave("ork_warrior_breath.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 0x2F01:
+    effectId = 0x245;
     break;
   case 0x2F56:
     g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -7053,10 +7048,6 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case 0x2F63:
     effectId = 0x264;
     break;
-  case 0x2FBA:
-    static_cast<EffectActor*>(actor)->LaunchEffect(0x177, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    static_cast<EffectActor*>(actor)->LaunchEffect(0x1B8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    break;
   case 0x2FDA:
     effectId = 0x251;
     break;
@@ -7074,6 +7065,10 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     break;
   case 0x2FDF:
     effectId = 0x253;
+    break;
+  case 0x2FBA:
+    static_cast<EffectActor*>(actor)->LaunchEffect(0x177, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(actor)->LaunchEffect(0x1B8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case 0x3016:
   case 0x3017:
@@ -7096,6 +7091,14 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     g_soundMgr->PlayWave("effect\\pokjuk_jap.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = 0x2C5;
     break;
+  case 0x23E:
+  case 0x3036:
+  case 0x3038:
+    effectId = 0xD2;
+    break;
+  case 0x3280:
+    effectId = 0x56;
+    break;
   case 0x3198:
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = 0x3DB;
@@ -7107,9 +7110,6 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case 0x31F4:
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = 0x3EE;
-    break;
-  case 0x3280:
-    effectId = 0x56;
     break;
   case 0x38D2:
     effectId = 0x2AA;
