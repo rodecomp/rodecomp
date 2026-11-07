@@ -732,39 +732,27 @@ namespace EnchantUI {
 // OFFSET: 0x009FC080
 // FUNCTION: fn_14819
 void CUINormal::Slot15(int width, int height) {
-  this->firstPage = new CUINormalRandom();
+  this->firstPage = new CUINormalRandom;
   this->firstPage->SetSize(470, 377);
   this->firstPage->Move(0, 0);
   this->AddChild(this->firstPage);
 
-  this->secondPage = new CUINormalPerfect();
+  this->secondPage = new CUINormalPerfect;
   this->secondPage->SetSize(470, 377);
   this->secondPage->Move(0, 0);
   this->AddChild(this->secondPage);
 
-  this->tab = new CUITab();
+  this->tab = new CUITab;
   this->tab->SetSize(76, 20);
   this->tab->Move(7, 1);
   this->AddChild(this->tab);
 
-  CUITabButton* firstButton = new CUITabButton();
+  CUITabButton* firstButton = new CUITabButton;
   firstButton->SetSize(38, 20);
   firstButton->Move(0, 0);
   firstButton->disabled = 0;
   firstButton->Invalidate();
   {
-    const std::string disabled([]() {
-      constexpr std::uint8_t bytes[] = {
-      0xA5, 0xFA, 0x09, 0x85, 0xCD, 0x21, 0xEA, 0x88, 0xA3, 0xB1, 0x09, 0xB3, 0xB0, 0x55, 0x73, 0x00,
-      0x0B, 0x36, 0xA1, 0x1E, 0x63, 0x9B, 0x7A, 0x0C, 0x39, 0x21, 0xA8, 0x1D, 0x52, 0x8A, 0x41, 0x26,
-      0x3A, 0x27, 0xA8, 0x11, 0x69, 0x80, 0x42, 0x1A, 0x01, 0x3C, 0xBA, 0x1E, 0x6F, 0x83, 0x4A, 0x6B,
-      0x07, 0x38, 0xB9, 0x7F
-    };
-      constexpr EncryptedSource<52> source(bytes);
-      // GLOBAL: gl_25230
-      thread_local EncryptedName<52, 0x452FEF0D7FC95565ULL> name(source);
-      return name.Text();
-    }());
     firstButton->SetImages(std::string([]() {
       constexpr std::uint8_t bytes[] = {
       0xAD, 0xB4, 0x67, 0xEB, 0xB7, 0xA1, 0x0E, 0x3E, 0xAB, 0xFF, 0x67, 0xDD, 0xCA, 0xD5, 0x97, 0xB6,
@@ -796,11 +784,22 @@ void CUINormal::Slot15(int width, int height) {
       // GLOBAL: gl_25231
       thread_local EncryptedName<48, 0x9FED7DA189490D5DULL> name(source);
       return name.Text();
-    }()), disabled);
+    }()), std::string([]() {
+      constexpr std::uint8_t bytes[] = {
+      0xA5, 0xFA, 0x09, 0x85, 0xCD, 0x21, 0xEA, 0x88, 0xA3, 0xB1, 0x09, 0xB3, 0xB0, 0x55, 0x73, 0x00,
+      0x0B, 0x36, 0xA1, 0x1E, 0x63, 0x9B, 0x7A, 0x0C, 0x39, 0x21, 0xA8, 0x1D, 0x52, 0x8A, 0x41, 0x26,
+      0x3A, 0x27, 0xA8, 0x11, 0x69, 0x80, 0x42, 0x1A, 0x01, 0x3C, 0xBA, 0x1E, 0x6F, 0x83, 0x4A, 0x6B,
+      0x07, 0x38, 0xB9, 0x7F
+    };
+      constexpr EncryptedSource<52> source(bytes);
+      // GLOBAL: gl_25230
+      thread_local EncryptedName<52, 0x452FEF0D7FC95565ULL> name(source);
+      return name.Text();
+    }()));
   }
   this->tab->AddChild(firstButton);
 
-  CUITabButton* secondButton = new CUITabButton();
+  CUITabButton* secondButton = new CUITabButton;
   secondButton->SetSize(38, 20);
   secondButton->Move(38, 0);
   secondButton->disabled = 0;
@@ -1017,39 +1016,27 @@ void CUISlot::Slot15(int width, int height) {
 // OFFSET: 0x00A00D50
 // FUNCTION: fn_14829
 void CUIUpgrade::Slot15(int width, int height) {
-  this->firstPage = new CUIUpgradeRandom();
+  this->firstPage = new CUIUpgradeRandom;
   this->firstPage->SetSize(470, 377);
   this->firstPage->Move(0, 0);
   this->AddChild(this->firstPage);
 
-  this->secondPage = new CUIUpgradePerfect();
+  this->secondPage = new CUIUpgradePerfect;
   this->secondPage->SetSize(470, 377);
   this->secondPage->Move(0, 0);
   this->AddChild(this->secondPage);
 
-  this->tab = new CUITab();
+  this->tab = new CUITab;
   this->tab->SetSize(76, 20);
   this->tab->Move(7, 1);
   this->AddChild(this->tab);
 
-  CUITabButton* firstButton = new CUITabButton();
+  CUITabButton* firstButton = new CUITabButton;
   firstButton->SetSize(38, 20);
   firstButton->Move(0, 0);
   firstButton->disabled = 0;
   firstButton->Invalidate();
   {
-    const std::string disabled([]() {
-      constexpr std::uint8_t bytes[] = {
-      0xE5, 0xDE, 0x6F, 0x31, 0xCD, 0x3D, 0xE8, 0x28, 0xE3, 0x95, 0x6F, 0x07, 0xB0, 0x49, 0x71, 0xA0,
-      0x4B, 0x12, 0xC7, 0xAA, 0x63, 0x87, 0x78, 0xAC, 0x79, 0x05, 0xCE, 0xA9, 0x52, 0x96, 0x43, 0x86,
-      0x7A, 0x03, 0xCE, 0xA5, 0x69, 0x9C, 0x40, 0xBA, 0x41, 0x18, 0xDC, 0xAA, 0x6F, 0x9F, 0x48, 0xCB,
-      0x47, 0x1C, 0xDF, 0xCB
-    };
-      constexpr EncryptedSource<52> source(bytes);
-      // GLOBAL: gl_25240
-      thread_local EncryptedName<52, 0xE52DF30DCBAF7125ULL> name(source);
-      return name.Text();
-    }());
     firstButton->SetImages(std::string([]() {
       constexpr std::uint8_t bytes[] = {
       0x77, 0x9E, 0x2F, 0x39, 0xC3, 0x11, 0x5C, 0x82, 0x71, 0xD5, 0x2F, 0x0F, 0xBE, 0x65, 0xC5, 0x0A,
@@ -1081,11 +1068,22 @@ void CUIUpgrade::Slot15(int width, int height) {
       // GLOBAL: gl_25241
       thread_local EncryptedName<48, 0xCFF3899D95AF355FULL> name(source);
       return name.Text();
-    }()), disabled);
+    }()), std::string([]() {
+      constexpr std::uint8_t bytes[] = {
+      0xE5, 0xDE, 0x6F, 0x31, 0xCD, 0x3D, 0xE8, 0x28, 0xE3, 0x95, 0x6F, 0x07, 0xB0, 0x49, 0x71, 0xA0,
+      0x4B, 0x12, 0xC7, 0xAA, 0x63, 0x87, 0x78, 0xAC, 0x79, 0x05, 0xCE, 0xA9, 0x52, 0x96, 0x43, 0x86,
+      0x7A, 0x03, 0xCE, 0xA5, 0x69, 0x9C, 0x40, 0xBA, 0x41, 0x18, 0xDC, 0xAA, 0x6F, 0x9F, 0x48, 0xCB,
+      0x47, 0x1C, 0xDF, 0xCB
+    };
+      constexpr EncryptedSource<52> source(bytes);
+      // GLOBAL: gl_25240
+      thread_local EncryptedName<52, 0xE52DF30DCBAF7125ULL> name(source);
+      return name.Text();
+    }()));
   }
   this->tab->AddChild(firstButton);
 
-  CUITabButton* secondButton = new CUITabButton();
+  CUITabButton* secondButton = new CUITabButton;
   secondButton->SetSize(38, 20);
   secondButton->Move(38, 0);
   secondButton->disabled = 0;
@@ -1595,10 +1593,12 @@ void CUIEnchantPage::Slot57() {
     ingredient->Show(0);
   }
 
-  const std::string count = std::to_string(0);
-  this->unknown_009C->SetText(count);
-  this->unknown_00A0->disabled = 1;
-  this->unknown_00A0->Invalidate();
+  this->unknown_009C->SetText(std::to_string(0));
+  {
+    CUIImageButton* button = this->unknown_00A0;
+    button->disabled = 1;
+    button->Invalidate();
+  }
 
   const bool ready = this->Slot56();
   if (CUIMainPage* mainPage = dynamic_cast<CUIMainPage*>(this->parent)) {
@@ -1616,10 +1616,12 @@ void CUIReset::Slot57() {
     ingredient->Show(0);
   }
 
-  const std::string count = std::to_string(0);
-  this->unknown_009C->SetText(count.c_str(), count.size());
-  this->unknown_00A0->disabled = 1;
-  this->unknown_00A0->Invalidate();
+  this->unknown_009C->SetText(std::to_string(0));
+  {
+    CUIImageButton* button = this->unknown_00A0;
+    button->disabled = 1;
+    button->Invalidate();
+  }
   this->enchantList->ClearData();
   this->Slot56();
 }
@@ -1636,10 +1638,12 @@ void CUIEnchantPage::ResetSlots() {
   }
 
   this->enchantList->ClearData();
-  const std::string count = std::to_string(0);
-  this->unknown_009C->SetText(count);
-  this->unknown_00A0->disabled = 1;
-  this->unknown_00A0->Invalidate();
+  this->unknown_009C->SetText(std::to_string(0));
+  {
+    CUIImageButton* button = this->unknown_00A0;
+    button->disabled = 1;
+    button->Invalidate();
+  }
   this->Slot59(-1);
 }
 
@@ -1682,8 +1686,7 @@ void CUINormalPerfect::Slot54(CUIEnchantItem* item, const CEnchantItemData& data
     ingredient->Show(0);
   }
 
-  const std::string count = std::to_string(0);
-  this->unknown_009C->SetText(count);
+  this->unknown_009C->SetText(std::to_string(0));
 
   std::optional<EnchantOptionInfo*> option = this->FindOption(this->unknown_00B0);
   if (option && (*option)->perfectEnchants.size() != 0) {
@@ -1702,8 +1705,7 @@ void CUIUpgradePerfect::Slot54(CUIEnchantItem* item, const CEnchantItemData& dat
     ingredient->Show(0);
   }
 
-  const std::string count = std::to_string(0);
-  this->unknown_009C->SetText(count.c_str(), count.size());
+  this->unknown_009C->SetText(std::to_string(0));
 
   std::optional<EnchantOptionInfo*> option = this->FindOption(this->unknown_00B0);
   if (option && (*option)->perfectUpgrades.size() != 0) {
@@ -1724,8 +1726,11 @@ void CUIUpgradePerfect::Slot54(CUIEnchantItem* item, const CEnchantItemData& dat
 bool CUIReset::Slot56() {
   this->SetCost(*reinterpret_cast<const EnchantPerfectInfo*>(&this->enchantInfo->resetCost));
   if (!this->enchantInfo->resetEnabled) {
-    this->unknown_00A0->disabled = 1;
-    this->unknown_00A0->Invalidate();
+    {
+      CUIImageButton* button = this->unknown_00A0;
+      button->disabled = 1;
+      button->Invalidate();
+    }
     return false;
   }
 
@@ -1739,8 +1744,11 @@ bool CUIReset::Slot56() {
     return card != 0;
   });
   if (empty) {
-    this->unknown_00A0->disabled = empty;
-    this->unknown_00A0->Invalidate();
+    {
+      CUIImageButton* button = this->unknown_00A0;
+      button->disabled = empty;
+      button->Invalidate();
+    }
   }
   return !empty;
 }
@@ -1784,10 +1792,8 @@ void CUIIngredient::SetMaterial(int itemId, int required) {
   this->itemIcon->SetItem(info);
 
   const int owned = g_session.GetInventoryItemCount(itemId);
-  const std::string ownedCount = std::to_string(owned);
-  this->ownedText->SetText(ownedCount.c_str(), ownedCount.size());
-  const std::string requiredCount = std::format("/{}", required);
-  this->requiredText->SetText(requiredCount.c_str(), requiredCount.size());
+  this->ownedText->SetText(std::to_string(owned));
+  this->requiredText->SetText(std::format("/{}", required));
 
   const bool enough = owned >= required;
   this->unknown_0084->Show(enough);
@@ -1928,7 +1934,7 @@ bool CUIUpgradePerfect::Slot56() {
 // OFFSET: 0x009F9FE0
 // FUNCTION: fn_14817
 void CUIEnchantPage::Slot15(int width, int height) {
-  this->background = new CUIStaticImage();
+  this->background = new CUIStaticImage;
   this->background->SetSize(470, 377);
   this->background->Move(0, 0);
   {
@@ -1946,7 +1952,7 @@ void CUIEnchantPage::Slot15(int width, int height) {
   }
   this->AddChild(this->background);
 
-  this->gameItem = new CUIGameItem();
+  this->gameItem = new CUIGameItem;
   this->gameItem->SetMode(1);
   this->gameItem->SetScale(100);
   this->gameItem->Move(112, 5);
@@ -1954,49 +1960,39 @@ void CUIEnchantPage::Slot15(int width, int height) {
   this->gameItem->unknown_0085 = 1;
   this->AddChild(this->gameItem);
 
-  CUISlot* slot = new CUISlot0();
+  CUISlot* slot = new CUISlot0;
   slot->SetSize(106, 84);
   slot->Move(6, 20);
   this->AddChild(slot);
   this->unknown_0088[0] = slot;
 
-  slot = new CUISlot1();
+  slot = new CUISlot1;
   slot->SetSize(106, 84);
   slot->Move(29, 105);
   this->AddChild(slot);
   this->unknown_0088[1] = slot;
 
-  slot = new CUISlot2();
+  slot = new CUISlot2;
   slot->SetSize(106, 84);
   slot->Move(164, 105);
   this->AddChild(slot);
   this->unknown_0088[2] = slot;
 
-  slot = new CUISlot3();
+  slot = new CUISlot3;
   slot->SetSize(106, 84);
   slot->Move(187, 20);
   this->AddChild(slot);
   this->unknown_0088[3] = slot;
 
-  this->enchantList = new CUIListBoxEx<CUIEnchantItem, CEnchantItemData>();
-  this->enchantList->itemWidth = 150;
-  this->enchantList->rowHeight = 30;
-  this->enchantList->SetSize(169, 377);
+  CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* enchantList = new CUIListBoxEx<CUIEnchantItem, CEnchantItemData>;
+  this->enchantList = enchantList;
+  enchantList->itemWidth = 150;
+  enchantList->rowHeight = 30;
+  enchantList->SetSize(169, 377);
   this->enchantList->Move(300, 0);
-  this->enchantList->onSelect = [this](CUIEnchantItem* item, const CEnchantItemData& data) { this->Slot54(item, data); };
-  this->enchantList->binder = [this](CUIEnchantItem* item, const CEnchantItemData& data) { UpdateEnchantItem(item, &data); };
+  this->enchantList->SetOnSelect([this](CUIEnchantItem* item, const CEnchantItemData& data) { this->Slot54(item, data); });
+  this->enchantList->SetBinder([this](CUIEnchantItem* item, const CEnchantItemData& data) { UpdateEnchantItem(item, &data); });
   {
-    const std::string disabled([]() {
-      constexpr std::uint8_t bytes[] = {
-      0x3D, 0x16, 0x7B, 0xDB, 0x5F, 0x33, 0x84, 0x84, 0x3B, 0x5D, 0x7B, 0xED, 0x22, 0x47, 0x1D, 0x0C,
-      0x93, 0xDA, 0xD3, 0x40, 0xF1, 0x89, 0x14, 0x00, 0xA1, 0xDB, 0xCF, 0x4F, 0xC0, 0x98, 0x2F, 0x2A,
-      0xA2, 0xD0, 0xCF, 0x44, 0xF2, 0xD3, 0x23, 0x24, 0x8D, 0xB9
-    };
-      constexpr EncryptedSource<42> source(bytes);
-      // GLOBAL: gl_25260
-      thread_local EncryptedName<42, 0x4941FD9F21BBB9FDULL> name(source);
-      return name.Text();
-    }());
     this->enchantList->SetImages(std::string([]() {
       constexpr std::uint8_t bytes[] = {
       0x0D, 0x5E, 0x59, 0x4F, 0x4D, 0x95, 0xC2, 0x60, 0x0B, 0x15, 0x59, 0x79, 0x30, 0xE1, 0x5B, 0xE8,
@@ -2027,7 +2023,17 @@ void CUIEnchantPage::Slot15(int width, int height) {
       // GLOBAL: gl_25261
       thread_local EncryptedName<47, 0x35E5656B5DEDCD75ULL> name(source);
       return name.Text();
-    }()), disabled);
+    }()), std::string([]() {
+      constexpr std::uint8_t bytes[] = {
+      0x3D, 0x16, 0x7B, 0xDB, 0x5F, 0x33, 0x84, 0x84, 0x3B, 0x5D, 0x7B, 0xED, 0x22, 0x47, 0x1D, 0x0C,
+      0x93, 0xDA, 0xD3, 0x40, 0xF1, 0x89, 0x14, 0x00, 0xA1, 0xDB, 0xCF, 0x4F, 0xC0, 0x98, 0x2F, 0x2A,
+      0xA2, 0xD0, 0xCF, 0x44, 0xF2, 0xD3, 0x23, 0x24, 0x8D, 0xB9
+    };
+      constexpr EncryptedSource<42> source(bytes);
+      // GLOBAL: gl_25260
+      thread_local EncryptedName<42, 0x4941FD9F21BBB9FDULL> name(source);
+      return name.Text();
+    }()));
   }
   this->enchantList->itemX = 3;
   this->enchantList->itemY = 0;
@@ -2086,7 +2092,7 @@ void CUIEnchantPage::Slot15(int width, int height) {
   this->enchantList->AddNewItem();
   this->AddChild(this->enchantList);
 
-  this->unknown_009C = new CUIStaticText();
+  this->unknown_009C = new CUIStaticText;
   this->unknown_009C->SetSize(100, 15);
   this->unknown_009C->Move(150, 309);
   this->unknown_009C->SetText("");
@@ -2108,12 +2114,15 @@ void CUIEnchantPage::Slot15(int width, int height) {
   this->unknown_009C->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->unknown_009C);
 
-  this->unknown_00A0 = new CUIImageButton();
+  this->unknown_00A0 = new CUIImageButton;
   this->unknown_00A0->SetSize(140, 40);
   this->unknown_00A0->Move(80, 330);
   this->unknown_00A0->SetOnClick([this]() { this->Slot55(); });
-  this->unknown_00A0->disabled = 0;
-  this->unknown_00A0->Invalidate();
+  {
+    CUIImageButton* button = this->unknown_00A0;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   this->unknown_00A0->SetImages(
     std::string("유저인터페이스\\EnchantUI\\btn_enc.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_enc_press.bmp"),
     std::string("유저인터페이스\\EnchantUI\\btn_enc_over.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_enc_dis.bmp")
@@ -2220,7 +2229,7 @@ void CUIUpgradeRandom::Slot15(int width, int height) {
 // OFFSET: 0x009F31B0
 // FUNCTION: fn_14753
 void CUIEnchantUI::Slot15(int width, int height) {
-  this->background = new CUIStaticImage();
+  this->background = new CUIStaticImage;
   this->background->SetSize(690, 470);
   this->background->Move(0, 0);
   {
@@ -2238,7 +2247,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->AddChild(this->background);
 
-  this->titleBar = new CUITitleBar();
+  this->titleBar = new CUITitleBar;
   this->titleBar->SetSize(690, 17);
   this->titleBar->Move(0, 0);
   {
@@ -2278,7 +2287,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->AddChild(this->titleBar);
 
-  CUIStaticText* title = new CUIStaticText();
+  CUIStaticText* title = new CUIStaticText;
   title->SetSize(100, 17);
   title->Move(18, 0);
   title->SetText("");
@@ -2301,7 +2310,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   this->titleBar->titleText = title;
   this->titleBar->AddChild(title);
 
-  CUIImageButton* closeButton = new CUIImageButton();
+  CUIImageButton* closeButton = new CUIImageButton;
   closeButton->SetSize(11, 11);
   closeButton->Move(676, 3);
   closeButton->SetOnClick([this]() { this->OnClickClose(); });
@@ -2355,7 +2364,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->titleBar->SetSecondButton(closeButton);
 
-  this->targetList = new CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>();
+  this->targetList = new CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>;
   this->targetList->itemWidth = 200;
   this->targetList->rowHeight = 50;
   this->targetList->SetSize(220, 400);
@@ -2463,12 +2472,12 @@ void CUIEnchantUI::Slot15(int width, int height) {
   this->targetList->AddNewItem();
   this->AddChild(this->targetList);
 
-  this->tab = new CUITab();
+  this->tab = new CUITab;
   this->tab->SetSize(290, 22);
   this->tab->Move(225, 18);
   this->AddChild(this->tab);
 
-  CUITabButton* normalButton = new CUITabButton();
+  CUITabButton* normalButton = new CUITabButton;
   normalButton->SetSize(65, 22);
   normalButton->Move(48, 0);
   normalButton->disabled = 0;
@@ -2520,7 +2529,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->tab->AddChild(normalButton);
 
-  CUITabButton* upgradeButton = new CUITabButton();
+  CUITabButton* upgradeButton = new CUITabButton;
   upgradeButton->SetSize(65, 22);
   upgradeButton->Move(113, 0);
   upgradeButton->disabled = 0;
@@ -2572,7 +2581,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->tab->AddChild(upgradeButton);
 
-  CUITabButton* resetButton = new CUITabButton();
+  CUITabButton* resetButton = new CUITabButton;
   resetButton->SetSize(65, 22);
   resetButton->Move(178, 0);
   resetButton->disabled = 0;
@@ -2623,7 +2632,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
   }
   this->tab->AddChild(resetButton);
 
-  this->normalPage = new EnchantUI::CUINormal();
+  this->normalPage = new EnchantUI::CUINormal;
   this->normalPage->SetSize(470, 377);
   this->normalPage->Move(220, 40);
   this->AddChild(this->normalPage);
@@ -2654,7 +2663,7 @@ void CUIEnchantUI::Slot15(int width, int height) {
     }()));
   }
 
-  this->upgradePage = new EnchantUI::CUIUpgrade();
+  this->upgradePage = new EnchantUI::CUIUpgrade;
   this->upgradePage->SetSize(470, 377);
   this->upgradePage->Move(220, 40);
   this->AddChild(this->upgradePage);
@@ -2685,12 +2694,12 @@ void CUIEnchantUI::Slot15(int width, int height) {
     }()));
   }
 
-  this->resetPage = new EnchantUI::CUIReset();
+  this->resetPage = new EnchantUI::CUIReset;
   this->resetPage->SetSize(470, 377);
   this->resetPage->Move(220, 40);
   this->AddChild(this->resetPage);
 
-  this->textViewer = new CUITextViewer();
+  this->textViewer = new CUITextViewer;
   this->textViewer->SetSize(675, 47);
   this->textViewer->Move(10, 421);
   this->textViewer->SetTextOffset(0, 0);
