@@ -895,7 +895,7 @@ void UIEditCtrl3::Trim() {
 void UIBitmapEditCtrl::Paint() {
   this->ClearSurface(0xFFFFFFFF);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())));
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
   this->textY = 3;
   this->PaintText();
 }
