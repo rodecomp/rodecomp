@@ -1765,7 +1765,7 @@ void UIShowInfoWnd::DrawPayments() {
       }
 
       if (this->unknown_00A1 == 1) {
-        this->DrawBitmap(this->unknown_00C0, this->geometry.height / 8 * row + this->unknown_00C4, icon ? &icon->image : nullptr, false);
+        this->DrawBitmap(this->unknown_00C0, this->geometry.height / 8 * row + this->unknown_00C4, icon, false);
       }
       this->DrawTextAt(x, y, text, 0, 0, this->unknown_00A8, 0x5A5A84, 0, 0);
     }
