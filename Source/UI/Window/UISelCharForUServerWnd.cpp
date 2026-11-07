@@ -138,7 +138,8 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  if (argument1 == 0xB8) {
+  switch (argument1) {
+  case 0xB8: {
     if (g_windowMgr.Confirm(LookupMessage(0x4BB), 2, false, false, 0, "Message", 280, 120, 0) != 0xBB) {
       return 0;
     }
@@ -169,12 +170,15 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     }
 
     g_windowMgr.Confirm(LookupMessage(0x4C1), 0, true, true, 0, "Message", 280, 120, 0);
-  } else if (argument1 == 0xD5) {
+    break;
+  }
+  case 0xD5:
     this->m_checkedCount += sender->geometry.unknown_0030 != 0 ? 1 : -1;
     if (this->m_checkedCount > 9) {
       g_windowMgr.Confirm(LookupMessage(0x4BC), 0, true, true, 0, "Message", 280, 120, 0);
       static_cast<UICheckBox*>(sender)->SetChecked(0);
     }
+    break;
   }
 
   return 0;
