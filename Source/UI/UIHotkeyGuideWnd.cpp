@@ -317,11 +317,9 @@ void UIHotkeyGuideWnd::DrawKey(const HotkeyGuideKey* key) {
   } else {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_left.bmp")));
     this->DrawBitmap(key->x, key->y, bitmap, true);
-    int offset = 6;
-    for (int i = 1; i <= (key->width - 12) / 6; ++i) {
+    for (int i = 1, offset = 6; i <= (key->width - 12) / 6; ++i, offset += 6) {
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_mid.bmp")));
       this->DrawBitmap(key->x + offset, key->y, bitmap, true);
-      offset += 6;
     }
     if ((key->width - 12) % 6 != 0) {
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_mid.bmp")));
