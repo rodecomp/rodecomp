@@ -1711,10 +1711,10 @@ void CEffectPrim::RenderHalfSphere2(matrix& wtm) {
 // OFFSET: 0x00BDAC40
 // FUNCTION: fn_19894
 void CEffectPrim::RenderHalfSphere(matrix& wtm) {
-  vector3d vec1;
-  ZeroVector(vec1);
-  vector3d vec3;
-  ZeroVector(vec3);
+  ZeroVector3d vec1;
+  ZeroVector3d vec3;
+  ZeroVector3d vec2;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -1743,9 +1743,9 @@ void CEffectPrim::RenderHalfSphere(matrix& wtm) {
         const float dist = slot.distance;
 
         float ring = g_sinTable[angle2] * dist;
-        const vector3d vec2{cs1 * ring + slot.vecTNow.x, g_cosTable[angle2] * dist - slot.maxHeight, sn1 * ring + slot.vecTNow.z};
+        vec2.Set(cs1 * ring + slot.vecTNow.x, g_cosTable[angle2] * dist - slot.maxHeight, sn1 * ring + slot.vecTNow.z);
         ring = g_sinTable[angle2 + 18] * dist;
-        const vector3d vec4{cs1 * ring + slot.vecTNow.x, g_cosTable[angle2 + 18] * dist - slot.maxHeight, sn1 * ring + slot.vecTNow.z};
+        vec4.Set(cs1 * ring + slot.vecTNow.x, g_cosTable[angle2 + 18] * dist - slot.maxHeight, sn1 * ring + slot.vecTNow.z);
 
         if (count > 0) {
           this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec4, vec3, wtm, 1, 0, 0, 250, 250, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -2241,10 +2241,10 @@ void CEffectPrim::RenderRing(matrix& wtm) {
 // OFFSET: 0x00BD85F0
 // FUNCTION: fn_19888
 void CEffectPrim::RenderPentagon(matrix& wtm) {
-  vector3d vec1;
-  ZeroVector(vec1);
-  vector3d vec4;
-  ZeroVector(vec4);
+  ZeroVector3d vec1;
+  ZeroVector3d vec4;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2254,19 +2254,19 @@ void CEffectPrim::RenderPentagon(matrix& wtm) {
       continue;
     }
 
-    const vector3d& top = slot.vecTPre;
+    const vector3d top = slot.vecTPre;
     const float radius = slot.maxHeight;
 
     for (int point = 0; point <= 5; ++point) {
-      int angle = slot.rotStart + point * 72;
+      short angle = static_cast<short>(slot.rotStart + point * 72);
       if (angle >= 360) {
         angle -= 360;
       }
 
       const float dx = radius * g_cosTable[angle];
       const float dz = radius * g_sinTable[angle];
-      const vector3d vec2{dx + slot.vecTNow.x, slot.vecTNow.y, dz + slot.vecTNow.z};
-      const vector3d vec3{top.x + dx, top.y, top.z + dz};
+      vec2.Set(dx + slot.vecTNow.x, slot.vecTNow.y, dz + slot.vecTNow.z);
+      vec3.Set(top.x + dx, top.y, top.z + dz);
 
       if (point != 0) {
         if (slot.flag1[0] == 13) {
@@ -2349,10 +2349,10 @@ void CEffectPrim::RenderBeam(matrix& wtm) {
 // OFFSET: 0x00BD0A20
 // FUNCTION: fn_19870
 void CEffectPrim::RenderCone(matrix& wtm) {
-  vector3d vec1;
-  ZeroVector(vec1);
-  vector3d vec4;
-  ZeroVector(vec4);
+  ZeroVector3d vec1;
+  ZeroVector3d vec4;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2380,10 +2380,10 @@ void CEffectPrim::RenderCone(matrix& wtm) {
       const float inner = slot.distance * g_sinTable[angle];
       const float outerRadius = scale * slot.distance * 0.1f + slot.distance;
       const float outer = outerRadius * g_sinTable[angle];
-      const vector3d vec2{slot.vecTNow.x + inner * g_cosTable[slot.rotStart], slot.distance * cs - slot.maxHeight, slot.vecTNow.z + inner * g_sinTable[slot.rotStart]};
-      const vector3d vec3{
+      vec2.Set(slot.vecTNow.x + inner * g_cosTable[slot.rotStart], slot.distance * cs - slot.maxHeight, slot.vecTNow.z + inner * g_sinTable[slot.rotStart]);
+      vec3.Set(
         outer * g_cosTable[slot.rotStart] - slot.vecTNow.x * scale, outerRadius * cs - slot.maxHeight, outer * g_sinTable[slot.rotStart] - slot.vecTNow.z * scale
-      };
+      );
 
       if (count > 0) {
         this->RenderTeiRect(&rpCnt, texPart - 1, slot.alphaB, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0);
@@ -5855,10 +5855,10 @@ void CEffectPrim::Render3DCasting2(matrix& wtm) {
 // OFFSET: 0x00BC91D0
 // FUNCTION: fn_19856
 void CEffectPrim::Render3DCasting(matrix& wtm) {
-  vector3d vec1;
-  ZeroVector(vec1);
-  vector3d vec3;
-  ZeroVector(vec3);
+  ZeroVector3d vec1;
+  ZeroVector3d vec3;
+  ZeroVector3d vec2;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -5879,7 +5879,6 @@ void CEffectPrim::Render3DCasting(matrix& wtm) {
       const float cs1 = g_cosTable[angle];
       const float sn1 = g_sinTable[angle];
 
-      vector3d vec2;
       vec2.x = cs1 * slot.distance;
       vec2.z = sn1 * slot.distance;
       if (slot.maxHeight == 6.001f) {
@@ -5895,7 +5894,6 @@ void CEffectPrim::Render3DCasting(matrix& wtm) {
       const float rz = sn1 * rx;
       rx = cs1 * rx;
 
-      vector3d vec4;
       vec4.x = vec2.x + rx;
       vec4.z = vec2.z + rz;
       if (slot.maxHeight == 6.001f) {
