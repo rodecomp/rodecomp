@@ -98,15 +98,13 @@ void UIRodexComposeWnd::InsertItemTag(const ITEM_INFO& item) {
     }
   }
 
-  std::string name = item.DisplayName(0);
   auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
-  if (!tagCtrl->CanInsertTag(name, this->m_contents->geometry.width)) {
+  if (!tagCtrl->CanInsertTag(item.DisplayName(0), this->m_contents->geometry.width)) {
     return;
   }
 
   tagCtrl->taggedText = this->m_contents->Text();
-  std::string appendResult = tagCtrl->AppendTag(item.DisplayName(0));
-  this->m_contents->SetText(appendResult.c_str());
+  this->m_contents->SetText(tagCtrl->AppendTag(item.DisplayName(0)).c_str());
   this->m_contents->MoveCursorToEnd();
   tagCtrl->AddItemTag(item, 0xd630a9);
 }
@@ -133,8 +131,7 @@ void UIRodexComposeWnd::InsertSkillTag(int tagId) {
   std::string tagText = tagCtrl->AddSkillTag(tagId, 0xd630a9);
   tagCtrl->taggedText = std::string(this->m_contents->Text());
 
-  std::string fullText = std::string(this->m_contents->Text()) + tagText;
-  this->m_contents->SetText(fullText.c_str());
+  this->m_contents->SetText((this->m_contents->Text() + tagText).c_str());
   this->m_contents->MoveCursorToEnd();
 }
 
