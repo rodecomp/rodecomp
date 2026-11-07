@@ -2478,7 +2478,7 @@ void CGameMode::ReceiveBroadcastBalloonNotice(const unsigned char* packet) {
     if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
       BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
       message.start = std::chrono::system_clock::now();
-      message.lines.push_back(BroadcastBalloonLine{text, color, 0});
+      message.lines.emplace_back(text, color);
       balloon->AddMessage(0, message);
     }
     if (g_serviceType == 0) {
