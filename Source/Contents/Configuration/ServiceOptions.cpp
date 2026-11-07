@@ -867,10 +867,11 @@ void RotatePlayerDirection(bool clockwise) {
   mode->SendMsg(0x8B, (static_cast<int>(angle) + 180) / 45 % 8, 0, 0, 0);
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C41B0
 // FUNCTION: fn_06351
 void SendConfigServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     ConfigPacket packet;
     packet.id = 0x2D8;
     packet.type = 1;
@@ -878,6 +879,7 @@ void SendConfigServiceOption(int id, unsigned char value, bool notify, int enabl
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
 }
+#pragma inline_depth()
 
 // OFFSET: 0x006C4220
 // FUNCTION: fn_06352
@@ -892,21 +894,24 @@ void ApplyServiceOptionFlags(int id, unsigned char value, bool notify, int enabl
   SetServiceFlags(value, value);
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C4270
 // FUNCTION: fn_06353
 void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
     }
   }
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C5A10
 // FUNCTION: fn_06362
 void ApplyServiceOptionItemWnd(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -917,6 +922,7 @@ void ApplyServiceOptionItemWnd(int id, unsigned char value, bool notify, int ena
     static_cast<UIItemWnd*>(g_windowMgr.unknown_01D4)->RefreshOptionBox();
   }
 }
+#pragma inline_depth()
 
 // OFFSET: 0x006C42B0
 // FUNCTION: fn_06354
@@ -956,10 +962,11 @@ void ToggleSitStand() {
   }
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C44A0
 // FUNCTION: fn_06355
 void ApplyServiceOptionXmasWeather(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -980,11 +987,13 @@ void ApplyServiceOptionXmasWeather(int id, unsigned char value, bool notify, int
     }
   }
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C4660
 // FUNCTION: fn_06357
 void ApplyServiceOptionMapFog(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -993,11 +1002,13 @@ void ApplyServiceOptionMapFog(int id, unsigned char value, bool notify, int enab
 
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ApplyMapFog(value);
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C46C0
 // FUNCTION: fn_06358
 void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (g_serviceOptions.Get(107)) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB4)), 0x64FFFF, 0, 0, 0);
@@ -1010,11 +1021,13 @@ void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int 
     }
   }
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C48F0
 // FUNCTION: fn_06360
 void ApplyServiceOptionActorRefresh(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1023,6 +1036,7 @@ void ApplyServiceOptionActorRefresh(int id, unsigned char value, bool notify, in
 
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RefreshActorJobEffects(false);
 }
+#pragma inline_depth()
 
 // OFFSET: 0x006C4750
 // FUNCTION: fn_06359
@@ -1038,10 +1052,11 @@ void ShowHelpMessages() {
   }
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C5D10
 // FUNCTION: fn_06366
 void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1050,11 +1065,13 @@ void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int
 
   *reinterpret_cast<int*>(g_session.unknown_5454) = value;
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C5D60
 // FUNCTION: fn_06367
 void ApplyServiceOptionCursorClip(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1067,7 +1084,9 @@ void ApplyServiceOptionCursorClip(int id, unsigned char value, bool notify, int 
     ReleaseApplicationCursor();
   }
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C5DF0
 // FUNCTION: fn_06369
 void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1084,11 +1103,13 @@ void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, in
 
   g_session.SendClientOption(value);
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C5FC0
 // FUNCTION: fn_06371
 void ApplyServiceOptionWindow159(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1099,11 +1120,13 @@ void ApplyServiceOptionWindow159(int id, unsigned char value, bool notify, int e
     window->Show(value);
   }
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C60F0
 // FUNCTION: fn_06375
 void ApplyServiceOptionWindow190(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1114,11 +1137,13 @@ void ApplyServiceOptionWindow190(int id, unsigned char value, bool notify, int e
     window->Show(value);
   }
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C6150
 // FUNCTION: fn_06376
 void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1129,11 +1154,13 @@ void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int e
     window->Show(value);
   }
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C61B0
 // FUNCTION: fn_06377
 void ApplyServiceOptionWindows189(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1142,11 +1169,13 @@ void ApplyServiceOptionWindows189(int id, unsigned char value, bool notify, int 
 
   g_windowMgr.SetWindows189Visible(value);
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C6200
 // FUNCTION: fn_06378
 void ApplyServiceOptionNotifyWindow(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1157,11 +1186,13 @@ void ApplyServiceOptionNotifyWindow(int id, unsigned char value, bool notify, in
     window->SendMsg(nullptr, 6, 0x1F6, 0, 0, 0);
   }
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C6260
 // FUNCTION: fn_06379
 void ApplyServiceOptionWindow268(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1172,11 +1203,13 @@ void ApplyServiceOptionWindow268(int id, unsigned char value, bool notify, int e
     window->Show(value);
   }
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C6300
 // FUNCTION: fn_06380
 void ApplyServiceOptionHideWindow(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1188,6 +1221,7 @@ void ApplyServiceOptionHideWindow(int id, unsigned char value, bool notify, int 
     mode->unknown_05D0->Show(0);
   }
 }
+#pragma inline_depth()
 
 // OFFSET: 0x006C6380
 // FUNCTION: fn_06381
@@ -1216,10 +1250,11 @@ void SendWhisperBlockPacket() {
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C6450
 // FUNCTION: fn_06384
 void ApplyServiceOptionAndSnap(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1228,11 +1263,13 @@ void ApplyServiceOptionAndSnap(int id, unsigned char value, bool notify, int ena
 
   g_windowMgr.UpdateSnapRectangles();
 }
+#pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C5A80
 // FUNCTION: fn_06363
 void ApplyServiceOptionWeatherFlag(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1241,6 +1278,7 @@ void ApplyServiceOptionWeatherFlag(int id, unsigned char value, bool notify, int
 
   g_weatherEffect.unknown_0001 = value ^ 1;
 }
+#pragma inline_depth()
 
 // OFFSET: 0x006C5AD0
 // FUNCTION: fn_06364
@@ -1276,10 +1314,11 @@ CGameSettingsMgr* Singleton<CGameSettingsMgr>::GetInstance() {
   return s_instance;
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C45F0
 // FUNCTION: fn_06356
 void ApplyServiceOptionJitterScale(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -1292,6 +1331,7 @@ void ApplyServiceOptionJitterScale(int id, unsigned char value, bool notify, int
     g_serviceOptionJitterScale = g_jitterDistanceScale;
   }
 }
+#pragma inline_depth()
 
 // OFFSET: 0x006C45D0
 // FUNCTION: fn_45463
@@ -1304,7 +1344,7 @@ void RequestModeAction48() {
 // OFFSET: 0x006C5A10
 // FUNCTION: fn_06362
 void ApplyItemWndServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
