@@ -1522,7 +1522,7 @@ void UIStaticItem::Paint() {
     }
   }
 
-  this->DrawBitmap(0, 0, &bitmap->image, true);
+  this->DrawBitmap(0, 0, bitmap, true);
 }
 
 // OFFSET: 0x0088F5C0
@@ -2068,11 +2068,11 @@ void UIScrollBar4::Paint() {
   std::string path = "유저인터페이스\\basic_interface\\";
   if (this->vertical == 0) {
     auto* track = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "scrollbar.bmp").c_str())));
-    this->DrawBitmap(0, 0, track ? &track->image : nullptr, true);
+    this->DrawBitmap(0, 0, track, true);
 
     const int offset = this->ThumbOffset();
     auto* thumb = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "scroll_bar.bmp").c_str())));
-    this->DrawBitmap(offset, 0, thumb ? &thumb->image : nullptr, true);
+    this->DrawBitmap(offset, 0, thumb, true);
   }
 
   this->minimumThumb = 0;
@@ -2089,7 +2089,7 @@ void UIScrollBar_Custom::Paint() {
   int top = 0;
   if (this->m_trackTop) {
     top = this->m_trackTop->image.height;
-    this->DrawBitmap(0, 0, &this->m_trackTop->image, false);
+    this->DrawBitmap(0, 0, this->m_trackTop, false);
   }
 
   int middle;
@@ -2099,21 +2099,21 @@ void UIScrollBar_Custom::Paint() {
     middle = this->m_trackMiddle->image.height;
     int y = top;
     for (int index = 0; index < (this->geometry.height - top) / middle; ++index) {
-      this->DrawBitmap(0, y, &this->m_trackMiddle->image, false);
+      this->DrawBitmap(0, y, this->m_trackMiddle, false);
       y += middle;
     }
   }
 
   if (this->m_trackBottom && (this->geometry.height - top) % middle > 0) {
-    this->DrawBitmap(0, this->geometry.height - this->m_trackBottom->image.height, &this->m_trackBottom->image, false);
+    this->DrawBitmap(0, this->geometry.height - this->m_trackBottom->image.height, this->m_trackBottom, false);
   }
 
   if (this->m_arrowUp) {
-    this->DrawBitmap(0, 0, &this->m_arrowUp->image, true);
+    this->DrawBitmap(0, 0, this->m_arrowUp, true);
   }
 
   if (this->m_arrowDown) {
-    this->DrawBitmap(0, this->geometry.height - this->m_arrowDown->image.height, &this->m_arrowDown->image, true);
+    this->DrawBitmap(0, this->geometry.height - this->m_arrowDown->image.height, this->m_arrowDown, true);
   }
 
   const int length = this->vertical == 0 ? this->geometry.width : this->geometry.height;
@@ -2123,7 +2123,7 @@ void UIScrollBar_Custom::Paint() {
   int thumbTop = 0;
   if (this->m_thumbTop) {
     thumbTop = this->m_thumbTop->image.height;
-    this->DrawBitmap(0, thumb, &this->m_thumbTop->image, true);
+    this->DrawBitmap(0, thumb, this->m_thumbTop, true);
   }
 
   if (this->m_thumbMiddle) {
@@ -2132,14 +2132,14 @@ void UIScrollBar_Custom::Paint() {
     if (count > 0) {
       int y = thumb + thumbTop;
       do {
-        this->DrawBitmap(0, y, &this->m_thumbMiddle->image, true);
+        this->DrawBitmap(0, y, this->m_thumbMiddle, true);
         y += step;
       } while (--count);
     }
   }
 
   if (this->m_thumbBottom) {
-    this->DrawBitmap(0, thumbLength - this->m_thumbBottom->image.height + thumb, &this->m_thumbBottom->image, true);
+    this->DrawBitmap(0, thumbLength - this->m_thumbBottom->image.height + thumb, this->m_thumbBottom, true);
   }
 }
 
@@ -3582,7 +3582,7 @@ void UISlotBmpButton::Paint() {
           bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\img_buyslot2_select.bmp")));
         }
         if (bitmap) {
-          this->DrawBitmap(0, 0, &bitmap->image, false);
+          this->DrawBitmap(0, 0, bitmap, false);
         }
       }
     } else if (this->unknown_0128 == 1 && this->unknown_0124 == 1) {
@@ -3591,14 +3591,14 @@ void UISlotBmpButton::Paint() {
       const std::string path = std::format("유저인터페이스\\select_character_ver3\\img_{}_select{}.bmp", base, count);
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
       if (bitmap) {
-        this->DrawBitmap(0, 0, &bitmap->image, false);
+        this->DrawBitmap(0, 0, bitmap, false);
       }
     }
   }
 
   if (this->m_index == 0 && g_session.unknown_59BC == 0) {
     CBitmapRes* balloon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\balloon.bmp")));
-    this->DrawBitmap(this->geometry.width / 2 - 0x2e, 0x1a, balloon ? &balloon->image : nullptr, false);
+    this->DrawBitmap(this->geometry.width / 2 - 0x2e, 0x1a, balloon, false);
 
     std::vector<std::string> lines;
     WrapPlainText(LookupMessage(0xaed), lines, 0x14);
@@ -3615,10 +3615,10 @@ void UISlotBmpButton::Paint() {
       if (info->unknown_00AA > 0 || info->unknown_00A6 > 0) {
         if (this->m_inRange) {
           CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\buyslot_add_ons.bmp")));
-          this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, true);
+          this->DrawBitmap(0, 0, bitmap, true);
         } else {
           CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Add_Ons.bmp")));
-          this->DrawBitmap(0x13, 0x19, bitmap ? &bitmap->image : nullptr, false);
+          this->DrawBitmap(0x13, 0x19, bitmap, false);
         }
       }
 
