@@ -390,9 +390,9 @@ void UIWindowMgr::DrawWindows() {
 // OFFSET: 0x00A94FD0
 // FUNCTION: fn_17179
 void UIWindowMgr::InitializeWindowPolicy() {
-  for (WindowPolicyEntry& entry : this->policy) {
-    entry = {};
-    entry.actions[3] = 1;
+  for (int i = 0; i < 10041; ++i) {
+    this->policy[i] = {};
+    this->policy[i].actions[3] = 1;
   }
 
   this->policy[15].actions[3] = 0;
