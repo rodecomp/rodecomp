@@ -887,7 +887,11 @@ UIWindowMgr::UIWindowMgr()
   this->unknown_0068 = g_language == 2;
   this->unknown_0048 = 0;
   this->unknown_049C = 0;
-  this->unknown_049E = g_serviceType != 0 ? 0 : -25;
+  if (g_serviceType == 0) {
+    this->unknown_049E = -25;
+  } else {
+    this->unknown_049E = 0;
+  }
   this->unknown_04A0 = {};
   this->unknown_04A4 = {};
   this->unknown_04A8 = {};
