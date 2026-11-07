@@ -193,11 +193,25 @@ SurfaceLock CTextureDX9::Lock() {
   SurfaceLock output{};
   D3DLOCKED_RECT locked;
   if (this->m_surface && SUCCEEDED(this->m_surface->LockRect(&locked, nullptr, 0))) {
-    output = {true, locked.pBits, locked.Pitch, this->m_description.Width, this->m_description.Height, 0};
-    if (this->m_description.Format == D3DFMT_A8R8G8B8 || this->m_description.Format == D3DFMT_X8R8G8B8) {
-      output.bitsPerPixel = 32;
-    } else if (this->m_description.Format >= D3DFMT_R5G6B5 && this->m_description.Format <= D3DFMT_A4R4G4B4) {
+    output.pixels = locked.pBits;
+    output.pitch = locked.Pitch;
+    output.width = this->m_description.Width;
+    output.height = this->m_description.Height;
+    output.success = true;
+    switch (this->m_description.Format) {
+    case D3DFMT_R5G6B5:
+    case D3DFMT_X1R5G5B5:
+    case D3DFMT_A1R5G5B5:
+    case D3DFMT_A4R4G4B4:
       output.bitsPerPixel = 16;
+      break;
+    case D3DFMT_A8R8G8B8:
+    case D3DFMT_X8R8G8B8:
+      output.bitsPerPixel = 32;
+      break;
+    default:
+      output.bitsPerPixel = 0;
+      break;
     }
   }
 
