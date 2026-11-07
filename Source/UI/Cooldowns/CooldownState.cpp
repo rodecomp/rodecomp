@@ -18,6 +18,17 @@ CooldownState::CooldownState(int slotValue, int xValue, int yValue, std::uint32_
     : segment(0), vertexCount(24), angle(0), duration(durationValue), start(startValue), elapsed(elapsedValue), finalMinute(0), reverse(reverseValue),
       x(xValue), y(yValue), slot(slotValue) {
   this->ClearEdges();
+  for (int index = 0; index < 24; ++index) {
+    RenderVertex& vertex = this->vertices[index];
+    vertex.x = 0.0f;
+    vertex.y = 0.0f;
+    vertex.z = 0.0f;
+    vertex.rhw = 0.0f;
+    vertex.diffuse = 0;
+    vertex.specular = 0xFF000000;
+    vertex.u = 0.0f;
+    vertex.v = 0.0f;
+  }
   std::memset(this->vertices, 0, sizeof(this->vertices));
   this->color = this->reverse != 0 ? 0xAAFFFFFFu : 0xAA000000u;
 }
