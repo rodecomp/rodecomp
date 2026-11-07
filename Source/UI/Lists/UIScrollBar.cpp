@@ -816,7 +816,7 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
   g_session.IconPath(path, FormatOwnedString("%d", id).c_str(), this->m_item.identified);
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
   if (bitmap) {
-    this->DrawBitmap(x, y, &bitmap->image, true);
+    this->DrawBitmap(x, y, bitmap, true);
   }
 
   if (this->m_item.unknown_0000[1] == 0 || this->m_item.quantity == 0) {
@@ -1303,7 +1303,7 @@ int UITreeView::LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y) {
         if (bottom >= this->geometry.height) {
           continue;
         }
-        this->DrawBitmap(labelX, y, &bitmap->image, true);
+        this->DrawBitmap(labelX, y, bitmap, true);
         labelX += bitmap->image.width + gap;
       }
 
