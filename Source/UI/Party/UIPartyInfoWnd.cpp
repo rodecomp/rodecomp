@@ -103,16 +103,16 @@ void UIPartyInfoWnd::Paint() {
 
   CBitmapRes* job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
       Resolve(this->info.tanker ? "유저인터페이스\\UIadventurerAgency\\btn_job_def_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_def_off.bmp")));
-  this->DrawBitmap(109, 3, job ? &job->image : nullptr, false);
+  this->DrawBitmap(109, 3, job, false);
   job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
       Resolve(this->info.healer ? "유저인터페이스\\UIadventurerAgency\\btn_job_heal_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_heal_off.bmp")));
-  this->DrawBitmap(127, 3, job ? &job->image : nullptr, false);
+  this->DrawBitmap(127, 3, job, false);
   job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
       Resolve(this->info.dealer ? "유저인터페이스\\UIadventurerAgency\\btn_job_atk_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_atk_off.bmp")));
-  this->DrawBitmap(145, 3, job ? &job->image : nullptr, false);
+  this->DrawBitmap(145, 3, job, false);
   job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
       Resolve(this->info.assist ? "유저인터페이스\\UIadventurerAgency\\btn_job_buf_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_buf_off.bmp")));
-  this->DrawBitmap(163, 3, job ? &job->image : nullptr, false);
+  this->DrawBitmap(163, 3, job, false);
 
   const std::string fitted = FitText(*this->geometry.surface, this->name, 119);
   text(192, fitted.c_str(), static_cast<int>(fitted.size()));
