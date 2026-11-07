@@ -25,7 +25,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SaveChatLog();
-  std::vector<unsigned char>& SerializeReplayData(std::vector<unsigned char>& records);
+  std::vector<unsigned char> SerializeReplayData();
 
   /* 00B4 */ std::string title;
   /* 00CC */ std::string unknown_00CC;

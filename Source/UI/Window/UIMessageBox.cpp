@@ -106,7 +106,8 @@ namespace {
   template <std::size_t Length, std::uint64_t Key>
   class EncryptedName {
   public:
-    explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    // INLINED
+    explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
       for (std::uint64_t index = 0; index < Length; ++index) {
         this->m_text[index] = source[index];
       }
@@ -131,6 +132,12 @@ namespace {
     std::uint8_t m_text[Length];
     bool m_encrypted;
   };
+
+  // INLINED
+  int TileCount(int length, int tile) {
+    const std::div_t tiles = std::div(length, tile);
+    return tiles.quot + (tiles.rem != 0);
+  }
 
   struct HangameJoinUrl {
     EncryptedName<80, 0xF3CB6F7711A71B6DULL>& operator()() const;
@@ -306,7 +313,7 @@ void UILoginWnd::Paint() {
 // FUNCTION: fn_11766
 void UIMakeCharWnd::Paint() {
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\login_interface\\win_make2.bmp")));
-  this->DrawBitmap(0, 17, &background->image, false);
+  this->DrawBitmap(0, 17, background, false);
   this->DrawTitleBar(true, LookupMessage(0x940), 0);
   this->DrawButtonBar(2, 0, 1);
 
@@ -367,8 +374,8 @@ void UIMakeCharWnd::Paint() {
 // OFFSET: 0x008B88F0
 // FUNCTION: fn_11767
 void UIMerInfoWnd::Paint() {
-  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
-  this->DrawBitmap(0, 0, &background->image, false);
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
+  this->DrawBitmap(0, 0, background, false);
   char title[50] = {};
   const unsigned kind = g_session.m_mercenaryClass;
   const int titleId = kind - 6017 <= 9 ? 1181 : kind - 6037 <= 9 ? 1182 : kind - 6027 <= 9 ? 1183 : 1367;
@@ -381,19 +388,30 @@ void UIMerInfoWnd::Paint() {
   this->DrawTextAt(100, 159, LookupMessage(1186), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(230, 133, LookupMessage(1187), 0, 0, 12, 0, 0, 0);
   char number[24] = {};
-  for (int i = 0; i < 8; ++i) {
-    const int value = i == 7 ? (2000 - g_session.m_mercenaryStats[i]) / 10 : g_session.m_mercenaryStats[i];
-    const int bytes = std::sprintf(number, "%d", value);
-    this->DrawRightAlignedText(79, 24 + 18 * i, number, bytes, 1, 14, 0, 0);
-  }
+  int bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[0]);
+  this->DrawRightAlignedText(79, 24, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[1]);
+  this->DrawRightAlignedText(79, 42, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[2]);
+  this->DrawRightAlignedText(79, 60, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[3]);
+  this->DrawRightAlignedText(79, 78, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[4]);
+  this->DrawRightAlignedText(79, 96, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[5]);
+  this->DrawRightAlignedText(79, 114, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[6]);
+  this->DrawRightAlignedText(79, 132, number, bytes, 1, 14, 0, 0);
+  bytes = std::sprintf(number, "%d", (2000 - g_session.m_mercenaryStats[7]) / 10);
+  this->DrawRightAlignedText(79, 150, number, bytes, 1, 14, 0, 0);
   this->DrawTextAt(136, 24, g_session.m_mercenaryName, 0, 0, 12, 0x646464, 0, 0);
   this->DrawTextAt(135, 24, g_session.m_mercenaryName, 0, 0, 12, 0, 0, 0);
   char level[12] = {};
   _itoa(g_session.m_mercenaryLevel, level, 10);
   this->DrawTextAt(135, 47, level, 0, 0, 12, 0, 0, 0);
   if (g_session.m_mercenaryClass != -1) {
-    char text[128] = {};
-    int bytes = std::sprintf(text, "%d / %d", g_session.m_mercenaryHp, g_session.m_mercenaryMaxHp);
+    char text[32] = {};
+    bytes = std::sprintf(text, "%d / %d", g_session.m_mercenaryHp, g_session.m_mercenaryMaxHp);
     this->DrawTextAt(218, 70, text, bytes, 1, 14, 0, 0, 0);
     bytes = std::sprintf(text, "%d / %d", g_session.m_mercenarySp, g_session.m_mercenaryMaxSp);
     this->DrawTextAt(218, 85, text, bytes, 1, 14, 0, 0, 0);
@@ -413,46 +431,57 @@ void UIMerInfoWnd::Paint() {
 long long UIBank_NewWnd::TransactionAmount(unsigned char deposit) {
   std::string text = this->m_amountEdit->Text();
   this->m_amountEdit->SetText("");
-  const auto fail = [&](int notice, int status) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(notice)), 255, 0, 0, 0);
-    this->m_status = LookupMessage(status);
-    return 0LL;
-  };
   if (text == std::string(LookupMessage(2778))) {
     const long long cash = g_session.m_zeny;
     const long long balance = g_session.m_bankBalance;
     const long long excess = cash + balance > 0x7FFFFFFF ? cash + balance - 0x7FFFFFFF : 0;
     if (deposit) {
       if (balance >= 0x7FFFFFFF) {
-        return fail(2787, 2783);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2787)), 255, 0, 0, 0);
+        this->m_status = LookupMessage(2783);
+        return 0;
       }
       if (g_session.m_zeny == 0) {
-        return fail(2770, 2780);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2770)), 255, 0, 0, 0);
+        this->m_status = LookupMessage(2780);
+        return 0;
       }
       const long long amount = cash - excess;
       if (amount < 0) {
-        return fail(2465, 2780);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2465)), 255, 0, 0, 0);
+        this->m_status = LookupMessage(2780);
+        return 0;
       }
       return amount;
     }
     if (balance == 0) {
-      return fail(2770, 2780);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2770)), 255, 0, 0, 0);
+      this->m_status = LookupMessage(2780);
+      return 0;
     }
     const long long amount = balance - excess;
     return cash + amount > 0x7FFFFFFF ? static_cast<long long>(0x7FFFFFFF - g_session.m_zeny) : amount;
   }
   if (text.empty()) {
-    return fail(2779, 2781);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2779)), 255, 0, 0, 0);
+    this->m_status = LookupMessage(2781);
+    return 0;
   }
   if (!this->IsNumeric(text)) {
-    return fail(2488, 2782);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2488)), 255, 0, 0, 0);
+    this->m_status = LookupMessage(2782);
+    return 0;
   }
   const long long amount = _atoi64(text.c_str());
   if (amount > 0x7FFFFFFF) {
-    return fail(2768, 2783);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2768)), 255, 0, 0, 0);
+    this->m_status = LookupMessage(2783);
+    return 0;
   }
   if (amount < 1) {
-    return fail(2769, 2784);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2769)), 255, 0, 0, 0);
+    this->m_status = LookupMessage(2784);
+    return 0;
   }
   return amount;
 }
@@ -493,8 +522,8 @@ bool UIBank_NewWnd::IsNumeric(std::string text) {
 // OFFSET: 0x008B7AD0
 // FUNCTION: fn_11760
 void UIBank_NewWnd::Paint() {
-  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\bank\\bg_bank.bmp")));
-  this->DrawBitmap(0, this->DrawTitleBar(true, LookupMessage(2771), 0), &background->image, false);
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\bank\\bg_bank.bmp")));
+  this->DrawBitmap(0, this->DrawTitleBar(true, LookupMessage(2771), 0), background, false);
 
   char number[260] = {};
   char text[260] = {};
@@ -545,33 +574,33 @@ void UIFrameWnd::DrawBorder(int x, int y, int width, int height) {
     return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   };
   const int innerWidth = width - 28;
-  const int columns = innerWidth / 14 + (innerWidth % 14 != 0);
+  const int columns = TileCount(innerWidth, 14);
   for (int i = 0; i < columns; ++i) {
-    const auto* bitmap = load("유저인터페이스\\sysbox_mu.bmp");
-    this->DrawBitmap(x + 14 + i * 14, y, &bitmap->image, false);
+    auto* bitmap = load("유저인터페이스\\sysbox_mu.bmp");
+    this->DrawBitmap(x + 14 + i * 14, y, bitmap, false);
   }
-  const auto* bitmap = load("유저인터페이스\\sysbox_lu.bmp");
-  this->DrawBitmap(x, y, &bitmap->image, false);
+  auto* bitmap = load("유저인터페이스\\sysbox_lu.bmp");
+  this->DrawBitmap(x, y, bitmap, false);
   bitmap = load("유저인터페이스\\sysbox_ru.bmp");
-  this->DrawBitmap(x + width - bitmap->image.width, y, &bitmap->image, false);
+  this->DrawBitmap(x + width - bitmap->image.width, y, bitmap, false);
   const int innerHeight = height - 28;
-  const int rows = innerHeight / 14 + (innerHeight % 14 != 0);
+  const int rows = TileCount(innerHeight, 14);
   for (int i = 0; i < rows; ++i) {
     bitmap = load("유저인터페이스\\sysbox_lm.bmp");
-    this->DrawBitmap(x, y + 14 + i * 14, &bitmap->image, false);
+    this->DrawBitmap(x, y + 14 + i * 14, bitmap, false);
   }
   for (int i = 0; i < rows; ++i) {
     bitmap = load("유저인터페이스\\sysbox_rm.bmp");
-    this->DrawBitmap(x + width - bitmap->image.width, y + 14 + i * 14, &bitmap->image, false);
+    this->DrawBitmap(x + width - bitmap->image.width, y + 14 + i * 14, bitmap, false);
   }
   for (int i = 0; i < columns; ++i) {
     bitmap = load("유저인터페이스\\sysbox_md.bmp");
-    this->DrawBitmap(x + 14 + i * 14, y + height - bitmap->image.height, &bitmap->image, false);
+    this->DrawBitmap(x + 14 + i * 14, y + height - bitmap->image.height, bitmap, false);
   }
   bitmap = load("유저인터페이스\\sysbox_ld.bmp");
-  this->DrawBitmap(x, y + height - bitmap->image.height, &bitmap->image, false);
+  this->DrawBitmap(x, y + height - bitmap->image.height, bitmap, false);
   bitmap = load("유저인터페이스\\sysbox_rd.bmp");
-  this->DrawBitmap(x + width - bitmap->image.width, y + height - bitmap->image.height, &bitmap->image, false);
+  this->DrawBitmap(x + width - bitmap->image.width, y + height - bitmap->image.height, bitmap, false);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(x + 14, y + 14, innerWidth, innerHeight, RGB(red, green, blue));
@@ -1008,7 +1037,7 @@ void UIReplayRECControlWnd::AnimateLoading() {
 // OFFSET: 0x008AE8A0
 // FUNCTION: fn_11741
 void UILoginOTPWnd::Slot15(int, int) {
-  const std::uint8_t prefixSource[] = {0x8F, 0xC8, 0x2D, 0x7F, 0xC9, 0xF9, 0xFA, 0xB4, 0x89, 0x83, 0x2D, 0x49, 0xB4, 0x8D, 0x63, 0x79};
+  const char prefixSource[] = {'\x8F', '\xC8', '\x2D', '\x7F', '\xC9', '\xF9', '\xFA', '\xB4', '\x89', '\x83', '\x2D', '\x49', '\xB4', '\x8D', '\x63', '\x79'};
   thread_local EncryptedName<sizeof(prefixSource), 0x793F370985ED674FULL> prefixName(prefixSource);
   const std::string prefix(prefixName.Text());
 
@@ -1057,19 +1086,19 @@ void UILoginOTPWnd::Slot15(int, int) {
   this->AddChild(label);
 
   UIBmpTextButton* button = new UIBmpTextButton();
-  const std::uint8_t normalSource[] = {0xDD, 0xAA, 0x53, 0xD3, 0xB1, 0xED, 0x92, 0x28, 0xDB, 0xE1, 0x53, 0xE5, 0xCC, 0x99, 0x0B, 0x89, 0x72,
-                                       0x62, 0xFA, 0x47, 0x2E, 0x4A, 0x39, 0x91, 0x78, 0x77, 0xF5, 0x48, 0x12, 0x46, 0x0B, 0x87, 0x69, 0x5A,
-                                       0xFC, 0x5D, 0x01, 0x7C, 0x39, 0x8A, 0x6F, 0x68, 0xF2, 0x45, 0x5F, 0x41, 0x3A, 0x95, 0x1D};
+  const char normalSource[] = {'\xDD', '\xAA', '\x53', '\xD3', '\xB1', '\xED', '\x92', '\x28', '\xDB', '\xE1', '\x53', '\xE5', '\xCC', '\x99', '\x0B', '\x89', '\x72',
+                                       '\x62', '\xFA', '\x47', '\x2E', '\x4A', '\x39', '\x91', '\x78', '\x77', '\xF5', '\x48', '\x12', '\x46', '\x0B', '\x87', '\x69', '\x5A',
+                                       '\xFC', '\x5D', '\x01', '\x7C', '\x39', '\x8A', '\x6F', '\x68', '\xF2', '\x45', '\x5F', '\x41', '\x3A', '\x95', '\x1D'};
   thread_local EncryptedName<sizeof(normalSource), 0xE55723712993051DULL> normalName(normalSource);
   button->SetBitmap(normalName.Text(), 0, 0);
-  const std::uint8_t hoverSource[] = {0xE3, 0x5E, 0x17, 0xED, 0x17, 0x87, 0x26, 0xB0, 0xE5, 0x15, 0x17, 0xDB, 0x6A, 0xF3, 0xBF, 0x11,
-                                      0x4C, 0x96, 0xBE, 0x79, 0x88, 0x20, 0x8D, 0x09, 0x46, 0x83, 0xB1, 0x76, 0xB4, 0x2C, 0xBF, 0x1F,
-                                      0x57, 0xAE, 0xB8, 0x63, 0xA7, 0x16, 0x8C, 0x0B, 0x46, 0x83, 0xF9, 0x75, 0xBA, 0x39, 0xE3};
+  const char hoverSource[] = {'\xE3', '\x5E', '\x17', '\xED', '\x17', '\x87', '\x26', '\xB0', '\xE5', '\x15', '\x17', '\xDB', '\x6A', '\xF3', '\xBF', '\x11',
+                                      '\x4C', '\x96', '\xBE', '\x79', '\x88', '\x20', '\x8D', '\x09', '\x46', '\x83', '\xB1', '\x76', '\xB4', '\x2C', '\xBF', '\x1F',
+                                      '\x57', '\xAE', '\xB8', '\x63', '\xA7', '\x16', '\x8C', '\x0B', '\x46', '\x83', '\xF9', '\x75', '\xBA', '\x39', '\xE3'};
   thread_local EncryptedName<sizeof(hoverSource), 0x7DE349D717D7F123ULL> hoverName(hoverSource);
   button->SetBitmap(hoverName.Text(), 1, 0);
-  const std::uint8_t pressedSource[] = {0xBF, 0x7A, 0x6F, 0xA1, 0xAB, 0x7F, 0xD0, 0xC2, 0xB9, 0x31, 0x6F, 0x97, 0xD6, 0x0B, 0x49, 0x63,
-                                        0x10, 0xB2, 0xC6, 0x35, 0x34, 0xD8, 0x7B, 0x7B, 0x1A, 0xA7, 0xC9, 0x3A, 0x08, 0xD4, 0x49, 0x6D,
-                                        0x0B, 0x8A, 0xC0, 0x2F, 0x1B, 0xEE, 0x65, 0x7D, 0x1A, 0xA6, 0xDC, 0x75, 0x09, 0xDC, 0x65, 0x0F};
+  const char pressedSource[] = {'\xBF', '\x7A', '\x6F', '\xA1', '\xAB', '\x7F', '\xD0', '\xC2', '\xB9', '\x31', '\x6F', '\x97', '\xD6', '\x0B', '\x49', '\x63',
+                                        '\x10', '\xB2', '\xC6', '\x35', '\x34', '\xD8', '\x7B', '\x7B', '\x1A', '\xA7', '\xC9', '\x3A', '\x08', '\xD4', '\x49', '\x6D',
+                                        '\x0B', '\x8A', '\xC0', '\x2F', '\x1B', '\xEE', '\x65', '\x7D', '\x1A', '\xA6', '\xDC', '\x75', '\x09', '\xDC', '\x65', '\x0F'};
   thread_local EncryptedName<sizeof(pressedSource), 0x0F15B16B5BAFD57FULL> pressedName(pressedSource);
   button->SetBitmap(pressedName.Text(), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
@@ -1091,12 +1120,12 @@ void UILoginOTPWnd::Slot15(int, int) {
 // FUNCTION: fn_11764
 void UILoginOTPWnd::Paint() {
   auto& resources = ResourceMgr::Instance();
-  const std::uint8_t source[] = {0x11, 0xF4, 0x57, 0x1F, 0xF9, 0x49, 0x2E, 0xE2, 0x17, 0xBF, 0x57, 0x29, 0x84, 0x3D, 0xB7, 0x43,
-                                 0xBE, 0x3C, 0xFE, 0x8B, 0x66, 0xEE, 0x85, 0x5B, 0xB4, 0x29, 0xF1, 0x84, 0x5A, 0xE2, 0xB7, 0x4D,
-                                 0xB6, 0x04, 0xF9, 0x80, 0x4E, 0xE8, 0x9F, 0x5F, 0xE0, 0x75, 0xF5, 0x88, 0x49, 0x87};
+  const char source[] = {'\x11', '\xF4', '\x57', '\x1F', '\xF9', '\x49', '\x2E', '\xE2', '\x17', '\xBF', '\x57', '\x29', '\x84', '\x3D', '\xB7', '\x43',
+                                 '\xBE', '\x3C', '\xFE', '\x8B', '\x66', '\xEE', '\x85', '\x5B', '\xB4', '\x29', '\xF1', '\x84', '\x5A', '\xE2', '\xB7', '\x4D',
+                                 '\xB6', '\x04', '\xF9', '\x80', '\x4E', '\xE8', '\x9F', '\x5F', '\xE0', '\x75', '\xF5', '\x88', '\x49', '\x87'};
   thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
-  const auto* background = static_cast<CBitmapRes*>(resources.Load(Resolve(name.Text())));
-  this->DrawBitmap(0, 0, &background->image, false);
+  auto* background = static_cast<CBitmapRes*>(resources.Load(Resolve(name.Text())));
+  this->DrawBitmap(0, 0, background, false);
   this->DrawTitleBar(true, LookupMessage(3254), 280);
 }
 
@@ -1128,16 +1157,16 @@ void UILoginWnd::SaveLogin() {
     saveId = 0;
   }
 
-  const std::uint8_t idSource[] = {0x24, 0xFF, 0x95};
+  const char idSource[] = {'\x24', '\xFF', '\x95'};
   thread_local EncryptedName<sizeof(idSource), 0xC517FB932D95BB6DULL> idName(idSource);
   RegSetValueExA(key, idName.Text(), 0, REG_SZ, reinterpret_cast<const BYTE*>(id), 51);
 
-  const std::uint8_t checkSource[] = {0xE6, 0xD5, 0x28, 0xBA, 0x28, 0x74, 0x36, 0x55, 0xE0, 0x9D};
+  const char checkSource[] = {'\xE6', '\xD5', '\x28', '\xBA', '\x28', '\x74', '\x36', '\x55', '\xE0', '\x9D'};
   thread_local EncryptedName<sizeof(checkSource), 0x03772763F96D9DA5ULL> checkName(checkSource);
   RegSetValueExA(key, checkName.Text(), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&saveId), 4);
 
   int bitwise = 1;
-  const std::uint8_t bitwiseSource[] = {0xC5, 0x5A, 0x3F, 0x28, 0x70, 0x5A, 0x34, 0x0B};
+  const char bitwiseSource[] = {'\xC5', '\x5A', '\x3F', '\x28', '\x70', '\x5A', '\x34', '\x0B'};
   thread_local EncryptedName<sizeof(bitwiseSource), 0x0B7109397F6B1387ULL> bitwiseName(bitwiseSource);
   RegSetValueExA(key, bitwiseName.Text(), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&bitwise), 4);
   RegCloseKey(key);
@@ -1273,14 +1302,14 @@ void UINoticeWnd::Paint() {
 
   const int leftTiles = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
   for (int index = 0, y = 17; index < leftTiles; ++index, y += 8) {
-    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, left, false);
   }
 
   const int rightTiles = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
   for (int index = 0, y = 17; index < rightTiles; ++index, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red;
@@ -1442,8 +1471,8 @@ void UIPayConfirmWnd::Paint() {
 // OFFSET: 0x008B9E90
 // FUNCTION: fn_11774
 void UIReplayControlWnd::Paint() {
-  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\replay_interface\\replay_base.bmp")));
-  this->DrawBitmap(0, 0, &background->image, false);
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\replay_interface\\replay_base.bmp")));
+  this->DrawBitmap(0, 0, background, false);
 }
 
 // OFFSET: 0x008B9ED0
@@ -2021,8 +2050,8 @@ void UIMakeCharWnd::Slot18() {
 // OFFSET: 0x008B8E90
 // FUNCTION: fn_11769
 void UIMessageBoxAutoreturn::Paint() {
-  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
-  this->DrawBitmap(0, 0, &background->image, false);
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
+  this->DrawBitmap(0, 0, background, false);
 }
 
 // OFFSET: 0x008BA670
@@ -2034,7 +2063,7 @@ void UILoginOTPWnd::Slot19() {
   }
 
   const unsigned remaining = static_cast<unsigned>(60.0 - (timeGetTime() - login->otpStarted) * 0.001);
-  const std::uint8_t source[] = {0x6A, 0x91, 0xFD, 0x51, 0x43, 0xED, 0x61, 0x5C, 0x7F, 0x93, 0xAB, 0x35};
+  const char source[] = {'\x6A', '\x91', '\xFD', '\x51', '\x43', '\xED', '\x61', '\x5C', '\x7F', '\x93', '\xAB', '\x35'};
   thread_local EncryptedName<sizeof(source), 0x7941D76335CFA14FULL> format(source);
   this->timerText->SetText(FormatOwnedString(format.Text(), remaining / 60, remaining % 60).c_str(), 0);
   this->Invalidate();
@@ -2073,8 +2102,8 @@ void UIMessageBoxAutoreturn::Slot19() {
 // OFFSET: 0x008AA9D0
 // FUNCTION: fn_11723
 void UIItemWnd::DrawNewItemMark(int x, int y) {
-  const auto* mark = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\new_item.bmp")));
-  this->DrawBitmap(x, y, &mark->image, false);
+  auto* mark = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\new_item.bmp")));
+  this->DrawBitmap(x, y, mark, false);
 }
 
 // OFFSET: 0x008AAA10
@@ -2123,29 +2152,51 @@ void UIMonsterInfoWnd::Paint() {
   this->DrawTextAt(160, 90, text, 0, 0, 12, 0, 0, 0);
 
   this->DrawTextAt(260, 30, LookupMessage(410), 0, 0, 12, 0, 0, 0);
-  int message;
   switch (this->info.size) {
   case 0:
-    message = 3907;
+    this->DrawTextAt(300, 30, LookupMessage(3907), 0, 0, 12, 0, 0, 0);
     break;
   case 1:
-    message = 3908;
+    this->DrawTextAt(300, 30, LookupMessage(3908), 0, 0, 12, 0, 0, 0);
     break;
   case 2:
-    message = 3909;
+    this->DrawTextAt(300, 30, LookupMessage(3909), 0, 0, 12, 0, 0, 0);
     break;
-  default:
-    message = 0;
-    break;
-  }
-  if (message != 0) {
-    this->DrawTextAt(300, 30, LookupMessage(message), 0, 0, 12, 0, 0, 0);
   }
 
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.race);
   this->DrawTextAt(260, 50, LookupMessage(411), 0, 0, 12, 0, 0, 0);
-  if (static_cast<unsigned short>(this->info.race) <= 9) {
-    this->DrawTextAt(300, 50, LookupMessage(3887 + static_cast<unsigned short>(this->info.race)), 0, 0, 12, 0, 0, 0);
+  switch (this->info.race) {
+  case 0:
+    this->DrawTextAt(300, 50, LookupMessage(3887), 0, 0, 12, 0, 0, 0);
+    break;
+  case 1:
+    this->DrawTextAt(300, 50, LookupMessage(3888), 0, 0, 12, 0, 0, 0);
+    break;
+  case 2:
+    this->DrawTextAt(300, 50, LookupMessage(3889), 0, 0, 12, 0, 0, 0);
+    break;
+  case 3:
+    this->DrawTextAt(300, 50, LookupMessage(3890), 0, 0, 12, 0, 0, 0);
+    break;
+  case 4:
+    this->DrawTextAt(300, 50, LookupMessage(3891), 0, 0, 12, 0, 0, 0);
+    break;
+  case 5:
+    this->DrawTextAt(300, 50, LookupMessage(3892), 0, 0, 12, 0, 0, 0);
+    break;
+  case 6:
+    this->DrawTextAt(300, 50, LookupMessage(3893), 0, 0, 12, 0, 0, 0);
+    break;
+  case 7:
+    this->DrawTextAt(300, 50, LookupMessage(3894), 0, 0, 12, 0, 0, 0);
+    break;
+  case 8:
+    this->DrawTextAt(300, 50, LookupMessage(3895), 0, 0, 12, 0, 0, 0);
+    break;
+  case 9:
+    this->DrawTextAt(300, 50, LookupMessage(3896), 0, 0, 12, 0, 0, 0);
+    break;
   }
 
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.magicDefense);
@@ -2153,9 +2204,37 @@ void UIMonsterInfoWnd::Paint() {
   this->DrawTextAt(300, 90, text, 0, 0, 12, 0, 0, 0);
 
   this->DrawTextAt(260, 70, LookupMessage(413), 0, 0, 12, 0, 0, 0);
-  const int element = this->info.element % 20;
-  if (element >= 0 && element <= 9) {
-    this->DrawTextAt(300, 70, LookupMessage(3897 + element), 0, 0, 12, 0, 0, 0);
+  switch (this->info.element % 20) {
+  case 0:
+    this->DrawTextAt(300, 70, LookupMessage(3897), 0, 0, 12, 0, 0, 0);
+    break;
+  case 1:
+    this->DrawTextAt(300, 70, LookupMessage(3898), 0, 0, 12, 0, 0, 0);
+    break;
+  case 2:
+    this->DrawTextAt(300, 70, LookupMessage(3899), 0, 0, 12, 0, 0, 0);
+    break;
+  case 3:
+    this->DrawTextAt(300, 70, LookupMessage(3900), 0, 0, 12, 0, 0, 0);
+    break;
+  case 4:
+    this->DrawTextAt(300, 70, LookupMessage(3901), 0, 0, 12, 0, 0, 0);
+    break;
+  case 5:
+    this->DrawTextAt(300, 70, LookupMessage(3902), 0, 0, 12, 0, 0, 0);
+    break;
+  case 6:
+    this->DrawTextAt(300, 70, LookupMessage(3903), 0, 0, 12, 0, 0, 0);
+    break;
+  case 7:
+    this->DrawTextAt(300, 70, LookupMessage(3904), 0, 0, 12, 0, 0, 0);
+    break;
+  case 8:
+    this->DrawTextAt(300, 70, LookupMessage(3905), 0, 0, 12, 0, 0, 0);
+    break;
+  case 9:
+    this->DrawTextAt(300, 70, LookupMessage(3906), 0, 0, 12, 0, 0, 0);
+    break;
   }
 
   this->DrawResistance(120, 110, LookupMessage(3898), this->info.resistances[0], border, fill);
@@ -2212,61 +2291,17 @@ void UIReplayRECControlWnd::UpdateRecordTime() {
 // FUNCTION: fn_11814
 int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 34:
+    this->saved = reinterpret_cast<ReplayRECControlWndInfo*>(a);
+
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
   case 6:
     switch (a) {
-    case 213:
-      if (sender == this->window_0128) {
-        ReplayFileList::Instance().pathEnabled = b != 0;
-        this->replayPathEnabled = ReplayFileList::Instance().pathEnabled;
-        return 0;
-      }
-
-      if (sender == this->window_012C) {
-        ReplayFileList::Instance().unknown_0119 = b != 0;
-        this->replayOption119 = ReplayFileList::Instance().unknown_0119;
-        return 0;
-      }
-
-      if (sender == this->options[9]) {
-        if (b == 1) {
-          for (int index = 0; index < 10; ++index) {
-            if (index != 9) {
-              this->recordOptions[index] = 1;
-              static_cast<UICheckBox*>(this->options[index])->SetChecked(1);
-            }
-          }
-        }
-
-        this->recordOptions[9] = b != 0;
-      } else if (sender == this->options[0]) {
-        if (b == 0) {
-          for (int index = 1; index < 10; ++index) {
-            this->recordOptions[index] = 0;
-            static_cast<UICheckBox*>(this->options[index])->SetChecked(0);
-          }
-        }
-
-        this->recordOptions[0] = b != 0;
-      } else {
-        if (b == 1) {
-          if (this->options[0]->geometry.unknown_0030 == 0) {
-            static_cast<UICheckBox*>(this->options[0])->SetChecked(1);
-            this->recordOptions[0] = 1;
-          }
-        } else if (this->options[9]->geometry.unknown_0030 == 1) {
-          static_cast<UICheckBox*>(this->options[9])->SetChecked(0);
-          this->recordOptions[9] = 0;
-        }
-
-        for (int index = 1; index < 9; ++index) {
-          if (sender == this->options[index]) {
-            this->recordOptions[index] = b != 0;
-          }
-        }
-      }
-
-      Replay::Instance().SetOptions(this->recordOptions, 10);
-      return 0;
     case 420:
       if (!this->replayPathEnabled) {
         this->mode = 1;
@@ -2322,28 +2357,72 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       this->mode = 0;
       g_windowMgr.CloseWindow(198);
       return 0;
+    case 213:
+      if (sender == this->window_0128) {
+        ReplayFileList::Instance().pathEnabled = b != 0;
+        this->replayPathEnabled = ReplayFileList::Instance().pathEnabled;
+        return 0;
+      }
+
+      if (sender == this->window_012C) {
+        ReplayFileList::Instance().unknown_0119 = b != 0;
+        this->replayOption119 = ReplayFileList::Instance().unknown_0119;
+        return 0;
+      }
+
+      if (sender == this->options[9]) {
+        if (b == 1) {
+          for (int index = 0; index < 10; ++index) {
+            if (index != 9) {
+              this->recordOptions[index] = 1;
+              static_cast<UICheckBox*>(this->options[index])->SetChecked(1);
+            }
+          }
+        }
+
+        this->recordOptions[9] = b != 0;
+      } else if (sender == this->options[0]) {
+        if (b == 0) {
+          for (int index = 1; index < 10; ++index) {
+            this->recordOptions[index] = 0;
+            static_cast<UICheckBox*>(this->options[index])->SetChecked(0);
+          }
+        }
+
+        this->recordOptions[0] = b != 0;
+      } else {
+        if (b == 1) {
+          if (this->options[0]->geometry.unknown_0030 == 0) {
+            static_cast<UICheckBox*>(this->options[0])->SetChecked(1);
+            this->recordOptions[0] = 1;
+          }
+        } else if (this->options[9]->geometry.unknown_0030 == 1) {
+          static_cast<UICheckBox*>(this->options[9])->SetChecked(0);
+          this->recordOptions[9] = 0;
+        }
+
+        for (int index = 1; index < 9; ++index) {
+          if (sender == this->options[index]) {
+            this->recordOptions[index] = b != 0;
+          }
+        }
+      }
+
+      Replay::Instance().SetOptions(this->recordOptions, 10);
+      return 0;
     default:
       return 0;
     }
-  case 34:
-    this->saved = reinterpret_cast<ReplayRECControlWndInfo*>(a);
-
-    if (!this->saved->IsValid()) {
-      this->saved->Reset();
-    }
-
-    this->Move(this->saved->x, this->saved->y);
-    return 0;
-  case 60:
-    this->Invalidate();
-    this->InvalidateChildren();
+  case 116:
+    this->UpdateRecordTime();
     return 0;
   case 87:
     Replay::Instance().unknown_01F4 = this->geometry.x;
     Replay::Instance().unknown_01F8 = this->geometry.y;
     return 0;
-  case 116:
-    this->UpdateRecordTime();
+  case 60:
+    this->Invalidate();
+    this->InvalidateChildren();
     return 0;
   case 123:
   case 251:
@@ -2359,7 +2438,7 @@ void UILoginWnd::Slot19() {
   if (g_windowMgr.GetHoverWindow() == this->idEdit) {
     this->idEdit->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
     if (this->idPlaceholder == true) {
-      const std::uint8_t source[] = {0xA4, 0x31, 0x61};
+      const char source[] = {'\xA4', '\x31', '\x61'};
       thread_local EncryptedName<sizeof(source), 0x2D51E3B7236175EDULL> placeholder(source);
       if (std::strcmp(placeholder.Text(), this->idEdit->Text()) == 0) {
         this->idEdit->SetText("");
@@ -2371,7 +2450,7 @@ void UILoginWnd::Slot19() {
     if (std::strcmp("", this->idEdit->Text()) == 0) {
       this->idEdit->TextColor(RGB(156, 156, 156), 0xFFFFFFFF);
       this->idPlaceholder = true;
-      const std::uint8_t source[] = {0x5E, 0x5F, 0x2D};
+      const char source[] = {'\x5E', '\x5F', '\x2D'};
       thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> placeholder(source);
       this->idEdit->SetText(placeholder.Text());
     }
@@ -2391,7 +2470,7 @@ password:
     ImmReleaseContext(hWnd, context);
     this->passwordEdit->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
     if (this->passwordPlaceholder == true) {
-      const std::uint8_t source[] = {0x99, 0x52, 0xAA, 0x20, 0xAE, 0x96, 0x47, 0x35, 0xC9};
+      const char source[] = {'\x99', '\x52', '\xAA', '\x20', '\xAE', '\x96', '\x47', '\x35', '\xC9'};
       thread_local EncryptedName<sizeof(source), 0x7115D9F973F913C9ULL> placeholder(source);
       if (std::strcmp(placeholder.Text(), this->passwordEdit->Text()) == 0) {
         this->passwordEdit->SetText("");
@@ -2404,7 +2483,7 @@ password:
     if (std::strcmp("", this->passwordEdit->Text()) == 0) {
       this->passwordPlaceholder = true;
       this->passwordEdit->TextColor(RGB(156, 156, 156), 0xFFFFFFFF);
-      const std::uint8_t source[] = {0x33, 0xB4, 0xB2, 0x2C, 0x6C, 0x6A, 0x4F, 0x8F, 0x63};
+      const char source[] = {'\x33', '\xB4', '\xB2', '\x2C', '\x6C', '\x6A', '\x4F', '\x8F', '\x63'};
       thread_local EncryptedName<sizeof(source), 0xCB1D253B7FE1F563ULL> placeholder(source);
       this->passwordEdit->SetText(placeholder.Text());
       this->passwordEdit->mask = 0;
@@ -2453,8 +2532,8 @@ void UIChatRoomWnd::SaveChatLog() {
 
 // OFFSET: 0x008AAAF0
 // FUNCTION: fn_11725
-std::vector<unsigned char>& UIChatRoomWnd::SerializeReplayData(std::vector<unsigned char>& records) {
-  records.clear();
+std::vector<unsigned char> UIChatRoomWnd::SerializeReplayData() {
+  std::vector<unsigned char> records;
   {
     const auto record = BuildReplayTaggedRecord(0x5014, nullptr, 0);
     records.insert(records.end(), record.begin(), record.end());
@@ -2528,13 +2607,13 @@ void UILoginWnd::LoadLogin() {
   DWORD type = REG_DWORD;
   DWORD size = 4;
   int saveId;
-  const std::uint8_t checkSource[] = {0xB2, 0x8F, 0x7C, 0x4A, 0x5C, 0x2A, 0x0E, 0xA7, 0xB4, 0xC7};
+  const char checkSource[] = {'\xB2', '\x8F', '\x7C', '\x4A', '\x5C', '\x2A', '\x0E', '\xA7', '\xB4', '\xC7'};
   thread_local EncryptedName<sizeof(checkSource), 0xF14F79170939C7F1ULL> checkName(checkSource);
   RegQueryValueExA(key, checkName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(&saveId), &size);
   saveId = saveId == 1;
 
   int bitwise;
-  const std::uint8_t bitwiseSource[] = {0xDD, 0x8C, 0x39, 0xFC, 0x9E, 0x7A, 0xB8, 0xA5};
+  const char bitwiseSource[] = {'\xDD', '\x8C', '\x39', '\xFC', '\x9E', '\x7A', '\xB8', '\xA5'};
   thread_local EncryptedName<sizeof(bitwiseSource), 0xA5FD29D7AB6DC59FULL> bitwiseName(bitwiseSource);
   RegQueryValueExA(key, bitwiseName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(&bitwise), &size);
 
@@ -2543,14 +2622,14 @@ void UILoginWnd::LoadLogin() {
   char password[26] = {};
   type = REG_SZ;
   size = 25;
-  const std::uint8_t passwordSource[] = {0xB1, 0x3A, 0xAA, 0x84, 0x82, 0x5C, 0x6B, 0x99, 0xE1};
+  const char passwordSource[] = {'\xB1', '\x3A', '\xAA', '\x84', '\x82', '\x5C', '\x6B', '\x99', '\xE1'};
   thread_local EncryptedName<sizeof(passwordSource), 0xDD3913D5D7F97BE1ULL> passwordName(passwordSource);
   RegQueryValueExA(key, passwordName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(password), &size);
   password[24] = 0;
 
   type = REG_SZ;
   size = 51;
-  const std::uint8_t idSource[] = {0xD2, 0x13, 0x03};
+  const char idSource[] = {'\xD2', '\x13', '\x03'};
   thread_local EncryptedName<sizeof(idSource), 0x050505679903579BULL> idName(idSource);
   RegQueryValueExA(key, idName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(id), &size);
   id[50] = 0;
@@ -2561,14 +2640,14 @@ void UILoginWnd::LoadLogin() {
     unsigned char shade;
     bool placeholder = std::strcmp("", id) == 0;
     if (!placeholder) {
-      const std::uint8_t compareSource[] = {0xF4, 0xF9, 0xED};
+      const char compareSource[] = {'\xF4', '\xF9', '\xED'};
       thread_local EncryptedName<sizeof(compareSource), 0x83EFBFBB37EDBDBDULL> compareName(compareSource);
       placeholder = std::strcmp(compareName.Text(), id) == 0;
     }
 
     if (placeholder) {
       this->idPlaceholder = true;
-      const std::uint8_t textSource[] = {0xEE, 0xB1, 0x7F};
+      const char textSource[] = {'\xEE', '\xB1', '\x7F'};
       thread_local EncryptedName<sizeof(textSource), 0xBF2B4B31397FF5A7ULL> textName(textSource);
       this->idEdit->SetText(textName.Text());
       shade = 156;
@@ -2917,8 +2996,43 @@ bool UISelectReplayDataWnd::UpdateInfo() {
 // FUNCTION: fn_11816
 int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 40:
+    this->m_serverList->SendMsg(nullptr, 40, this->m_selectedServer, 0, 0, 0);
+    return 0;
+  case 18:
+    this->m_serverList->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    return 0;
+  case 19:
+    this->m_serverList->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    return 0;
+  case 80: {
+    this->m_event = a;
+    this->m_valueName = reinterpret_cast<const char*>(b);
+    const char* name = this->m_valueName.c_str();
+    this->m_selectedServer = g_serviceType;
+    HKEY probe;
+    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &probe) == ERROR_SUCCESS) {
+      RegCloseKey(probe);
+      HKEY key;
+      if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
+        DWORD type = REG_DWORD;
+        DWORD size = 4;
+        RegQueryValueExA(key, name, nullptr, &type, reinterpret_cast<BYTE*>(&this->m_selectedServer), &size);
+        RegCloseKey(key);
+        return 0;
+      }
+    }
+    break;
+  }
   case 6:
     switch (a) {
+    case 400:
+      reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
+      ReplayFileList::Instance().unknown_011C = g_session.m_aid;
+      ReplayFileList::Instance().unknown_0120 = g_session.SyncUnknown0E98();
+      g_modeMgr.gameMode->SendMsg(10026, 0, 0, 0, 0);
+      g_windowMgr.Schedule(this);
+      return 0;
     case 184:
       if (this->m_serverList->selected != -1) {
         g_windowMgr.Schedule(this);
@@ -2946,43 +3060,8 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         return 0;
       }
       break;
-    case 400:
-      reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
-      ReplayFileList::Instance().unknown_011C = g_session.m_aid;
-      ReplayFileList::Instance().unknown_0120 = g_session.SyncUnknown0E98();
-      g_modeMgr.gameMode->SendMsg(10026, 0, 0, 0, 0);
-      g_windowMgr.Schedule(this);
-      return 0;
     }
     break;
-  case 18:
-    this->m_serverList->SendMsg(nullptr, 18, 0, 0, 0, 0);
-    return 0;
-  case 19:
-    this->m_serverList->SendMsg(nullptr, 19, 0, 0, 0, 0);
-    return 0;
-  case 40:
-    this->m_serverList->SendMsg(nullptr, 40, this->m_selectedServer, 0, 0, 0);
-    return 0;
-  case 80: {
-    this->m_event = a;
-    this->m_valueName = reinterpret_cast<const char*>(b);
-    const char* name = this->m_valueName.c_str();
-    this->m_selectedServer = g_serviceType;
-    HKEY probe;
-    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &probe) == ERROR_SUCCESS) {
-      RegCloseKey(probe);
-      HKEY key;
-      if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
-        DWORD type = REG_DWORD;
-        DWORD size = 4;
-        RegQueryValueExA(key, name, nullptr, &type, reinterpret_cast<BYTE*>(&this->m_selectedServer), &size);
-        RegCloseKey(key);
-        return 0;
-      }
-    }
-    break;
-  }
   case 89:
     this->m_okButton->Move(234, this->m_okButton->geometry.y);
     break;
@@ -3002,12 +3081,10 @@ void UIPetInfoWnd::Paint() {
   this->ClearSurface(RGB(red, green, blue));
   this->DrawPanelBackground(this->DrawTitleBar(false, "", 0), 0, "");
 
-  const auto* leftCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
-  this->DrawBitmap(0, this->geometry.height - leftCorner->image.height, &leftCorner->image, false);
-  const auto* rightCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_rd.bmp")));
-  this->DrawBitmap(
-    this->geometry.width - rightCorner->image.width, this->geometry.height - rightCorner->image.height, &rightCorner->image, false
-  );
+  auto* leftCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, this->geometry.height - leftCorner->image.height, leftCorner, false);
+  auto* rightCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_rd.bmp")));
+  this->DrawBitmap(this->geometry.width - rightCorner->image.width, this->geometry.height - rightCorner->image.height, rightCorner, false);
 
   char title[32];
   StringFormat(title, 32, static_cast<std::size_t>(-1), "%s", LookupMessage(584));
@@ -3019,17 +3096,15 @@ void UIPetInfoWnd::Paint() {
 
   char level[8];
   char hunger[24];
-  const int fullness = g_session.unknown_1044;
-
-  if (fullness >= 0 && fullness <= 10) {
+  if (g_session.unknown_1044 >= 0 && g_session.unknown_1044 <= 10) {
     std::strcpy(hunger, LookupMessage(667));
-  } else if (fullness > 10 && fullness <= 25) {
+  } else if (g_session.unknown_1044 > 10 && g_session.unknown_1044 <= 25) {
     std::strcpy(hunger, LookupMessage(668));
-  } else if (fullness > 25 && fullness <= 75) {
+  } else if (g_session.unknown_1044 > 25 && g_session.unknown_1044 <= 75) {
     std::strcpy(hunger, LookupMessage(669));
-  } else if (fullness > 75 && fullness <= 90) {
+  } else if (g_session.unknown_1044 > 75 && g_session.unknown_1044 <= 90) {
     std::strcpy(hunger, LookupMessage(670));
-  } else if (fullness > 90 && fullness <= 100) {
+  } else if (g_session.unknown_1044 > 90 && g_session.unknown_1044 <= 100) {
     std::strcpy(hunger, LookupMessage(671));
   } else {
     std::strcpy(hunger, LookupMessage(676));
@@ -3048,7 +3123,7 @@ void UIPetInfoWnd::Paint() {
     g_session.GetPetIllustName(job, g_session.unknown_1038, illust);
 
     if (auto* image = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(illust)))) {
-      this->DrawBitmap(5, 21, &image->image, false);
+      this->DrawBitmap(5, 21, image, false);
     }
 
     char command[] = "< Command >";
@@ -3221,11 +3296,11 @@ UIPetInfoWnd::~UIPetInfoWnd() {
 // OFFSET: 0x008A5CC0
 // FUNCTION: fn_11686
 EncryptedName<80, 0xF3CB6F7711A71B6DULL>& HangameJoinUrl::operator()() const {
-  const std::uint8_t source[] = {0x05, 0x6F, 0xD3, 0x61, 0x4D, 0x40, 0xE4, 0x81, 0x02, 0x35, 0xCF, 0x70, 0x19, 0x08, 0xAA, 0x9E,
-                                 0x08, 0x35, 0xC4, 0x7E, 0x1A, 0x40, 0xA7, 0x9C, 0x0A, 0x72, 0xC9, 0x3E, 0x1B, 0x00, 0xAC, 0x9A,
-                                 0x03, 0x68, 0xD3, 0x74, 0x07, 0x41, 0xAA, 0x80, 0x1D, 0x24, 0xD7, 0x63, 0x12, 0x19, 0x9E, 0xA1,
-                                 0x21, 0x26, 0x88, 0x5F, 0x3F, 0x21, 0x88, 0x9C, 0x00, 0x76, 0xC8, 0x7F, 0x58, 0x21, 0x83, 0xBD,
-                                 0x42, 0x56, 0xC2, 0x7C, 0x15, 0x0A, 0xB9, 0x99, 0x02, 0x72, 0xC9, 0x3F, 0x16, 0x1C, 0xBB, 0xF3};
+  const char source[] = {'\x05', '\x6F', '\xD3', '\x61', '\x4D', '\x40', '\xE4', '\x81', '\x02', '\x35', '\xCF', '\x70', '\x19', '\x08', '\xAA', '\x9E',
+                                 '\x08', '\x35', '\xC4', '\x7E', '\x1A', '\x40', '\xA7', '\x9C', '\x0A', '\x72', '\xC9', '\x3E', '\x1B', '\x00', '\xAC', '\x9A',
+                                 '\x03', '\x68', '\xD3', '\x74', '\x07', '\x41', '\xAA', '\x80', '\x1D', '\x24', '\xD7', '\x63', '\x12', '\x19', '\x9E', '\xA1',
+                                 '\x21', '\x26', '\x88', '\x5F', '\x3F', '\x21', '\x88', '\x9C', '\x00', '\x76', '\xC8', '\x7F', '\x58', '\x21', '\x83', '\xBD',
+                                 '\x42', '\x56', '\xC2', '\x7C', '\x15', '\x0A', '\xB9', '\x99', '\x02', '\x72', '\xC9', '\x3F', '\x16', '\x1C', '\xBB', '\xF3'};
   thread_local EncryptedName<sizeof(source), 0xF3CB6F7711A71B6DULL> name(source);
   return name;
 }
@@ -3234,14 +3309,46 @@ EncryptedName<80, 0xF3CB6F7711A71B6DULL>& HangameJoinUrl::operator()() const {
 // FUNCTION: fn_11805
 int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 39:
+    if (sender == this->unknown_00E8) {
+      if (a == 0) {
+        const char source[] = {'\x1A', '\x3D', '\x79', '\xB9', '\xA1'};
+        thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
+        this->unknown_00EC = name.Text();
+      } else if (a == 1) {
+        const char source[] = {'\x86', '\x77', '\xF5', '\x20', '\xE1'};
+        thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> name(source);
+        this->unknown_00EC = name.Text();
+      } else {
+        const char source[] = {'\x10', '\x9D', '\xBC', '\x33', '\xE2', '\x64', '\x01', '\x37', '\x04', '\x90', '\xB4', '\x32', '\xF8', '\x7D', '\x1B',
+                                       '\x37', '\x06', '\x9F', '\xB6', '\x2E', '\xFE', '\x33', '\x09', '\x78', '\x10', '\x9D', '\xB3', '\x7C', '\x8D'};
+        thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
+        g_windowMgr.Confirm(name.Text(), 0, false, false, 0, "Message", 280, 120, 0);
+        goto quit;
+      }
+    }
+    return 0;
   case 6:
     switch (a) {
-    case 185:
-      g_loginCancelRequested = 1;
-      g_modeMgr.gameMode->SendMsg(10018, 0, 0, 0, 0);
+    case 267:
+      if (g_serviceType == 0) {
+        if (g_session.m_channelCopId == 1) {
+          g_modeMgr.Quit();
+          const char* url = HangameJoinUrl()().Text();
+          const char verbSource[] = {'\xDC', '\x17', '\x3C', '\xE1', '\xDF'};
+          thread_local EncryptedName<sizeof(verbSource), 0x839B27DF8F5967B3ULL> verbName(verbSource);
+          ShellExecuteA(hWnd, verbName.Text(), url, nullptr, nullptr, SW_SHOWNORMAL);
+          break;
+        }
+        if (g_windowMgr.Confirm(LookupMessage(3336), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+          break;
+        }
+      }
+      g_modeMgr.Quit();
+      this->OpenWebPage();
       break;
     case 186: {
-      const std::uint8_t soundSource[] = {0xDC, 0xA3, 0x0F, 0xCF, 0xB1, 0x3D, 0x97, 0xEB, 0x4B, 0x22, 0xA8, 0x09, 0x0D};
+      const char soundSource[] = {'\xDC', '\xA3', '\x0F', '\xCF', '\xB1', '\x3D', '\x97', '\xEB', '\x4B', '\x22', '\xA8', '\x09', '\x0D'};
       thread_local EncryptedName<sizeof(soundSource), 0x452FEF0D7FC95565ULL> soundName(soundSource);
       g_soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->passwordEdit->Length() >= 6 && this->idEdit->Length() >= 4) {
@@ -3259,15 +3366,19 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
       break;
     }
-    case 213:
-      this->saveId = b;
-      this->SaveLogin();
+    case 185:
+      g_loginCancelRequested = 1;
+      g_modeMgr.gameMode->SendMsg(10018, 0, 0, 0, 0);
       break;
     case 221:
       this->SaveLogin();
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         goto quit;
       }
+      break;
+    case 213:
+      this->saveId = b;
+      this->SaveLogin();
       break;
     case 229: {
       if (g_windowMgr.unknown_0214 != nullptr) {
@@ -3292,23 +3403,6 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       list->Move(x + 1, y);
       break;
     }
-    case 267:
-      if (g_serviceType == 0) {
-        if (g_session.m_channelCopId == 1) {
-          g_modeMgr.Quit();
-          const char* url = HangameJoinUrl()().Text();
-          const std::uint8_t verbSource[] = {0xDC, 0x17, 0x3C, 0xE1, 0xDF};
-          thread_local EncryptedName<sizeof(verbSource), 0x839B27DF8F5967B3ULL> verbName(verbSource);
-          ShellExecuteA(hWnd, verbName.Text(), url, nullptr, nullptr, SW_SHOWNORMAL);
-          break;
-        }
-        if (g_windowMgr.Confirm(LookupMessage(3336), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
-          break;
-        }
-      }
-      g_modeMgr.Quit();
-      this->OpenWebPage();
-      break;
     case 359:
       g_session.m_channelCopId = 0;
       this->Invalidate();
@@ -3317,25 +3411,6 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       g_session.m_channelCopId = 2;
       this->Invalidate();
       break;
-    }
-    return 0;
-  case 39:
-    if (sender == this->unknown_00E8) {
-      if (a == 0) {
-        const std::uint8_t source[] = {0x1A, 0x3D, 0x79, 0xB9, 0xA1};
-        thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
-        this->unknown_00EC = name.Text();
-      } else if (a == 1) {
-        const std::uint8_t source[] = {0x86, 0x77, 0xF5, 0x20, 0xE1};
-        thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> name(source);
-        this->unknown_00EC = name.Text();
-      } else {
-        const std::uint8_t source[] = {0x10, 0x9D, 0xBC, 0x33, 0xE2, 0x64, 0x01, 0x37, 0x04, 0x90, 0xB4, 0x32, 0xF8, 0x7D, 0x1B,
-                                       0x37, 0x06, 0x9F, 0xB6, 0x2E, 0xFE, 0x33, 0x09, 0x78, 0x10, 0x9D, 0xB3, 0x7C, 0x8D};
-        thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
-        g_windowMgr.Confirm(name.Text(), 0, false, false, 0, "Message", 280, 120, 0);
-        goto quit;
-      }
     }
     return 0;
   case 88:
@@ -3361,7 +3436,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         g_windowMgr.Schedule(this);
       }
     } else if (a == 382) {
-      const std::uint8_t soundSource[] = {0x58, 0x6F, 0x41, 0xFF, 0x3D, 0x11, 0x99, 0xDD, 0xCF, 0xEE, 0xE6, 0x39, 0x81};
+      const char soundSource[] = {'\x58', '\x6F', '\x41', '\xFF', '\x3D', '\x11', '\x99', '\xDD', '\xCF', '\xEE', '\xE6', '\x39', '\x81'};
       thread_local EncryptedName<sizeof(soundSource), 0x7321C3814F8799E1ULL> soundName(soundSource);
       g_soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->unknown_00B4->Length() == 8) {
@@ -3484,8 +3559,8 @@ void UIHomunInfoWnd::Slot15(int, int) {
 // OFFSET: 0x008B7DB0
 // FUNCTION: fn_11763
 void UIHomunInfoWnd::Paint() {
-  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
-  this->DrawBitmap(0, 0, &background->image, false);
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
+  this->DrawBitmap(0, 0, background, false);
   DrawFilledRoundedBorder(*this, 0, this->geometry.height - 40, this->geometry.width, 40, 0xFFFFFF);
   char title[32];
   std::sprintf(title, LookupMessage(936));
@@ -4007,12 +4082,12 @@ void UIFrameWnd::DrawSkinBox(const char* name, int x, int y, int width, int heig
   const int left = x + 14;
   const int top = y + 14;
   if (tiled == true) {
-    const int columns = innerWidth / 14 + (innerWidth % 14 != 0);
-    const int rows = (height - 28) / 14 + ((height - 28) % 14 != 0);
+    const int columns = TileCount(innerWidth, 14);
+    const int rows = TileCount(height - 28, 14);
     for (int row = 0; row < rows; ++row) {
       for (int column = 0; column < columns; ++column) {
-        const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "bg.bmp").c_str())));
-        this->DrawBitmap(left + column * 14, top + row * 14, &bitmap->image, false);
+        auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "bg.bmp").c_str())));
+        this->DrawBitmap(left + column * 14, top + row * 14, bitmap, false);
       }
     }
   } else {
@@ -4021,44 +4096,44 @@ void UIFrameWnd::DrawSkinBox(const char* name, int x, int y, int width, int heig
     this->FillRegion(left, top, innerWidth, height - 28, RGB(red, green, blue));
   }
 
-  const int columns = innerWidth / 14 + (innerWidth % 14 != 0);
+  const int columns = TileCount(innerWidth, 14);
   for (int i = 0; i < columns; ++i) {
-    const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "mu.bmp").c_str())));
-    this->DrawBitmap(left + i * 14, y, &bitmap->image, false);
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "mu.bmp").c_str())));
+    this->DrawBitmap(left + i * 14, y, bitmap, false);
   }
 
-  const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "lu.bmp").c_str())));
-  this->DrawBitmap(x, y, &bitmap->image, false);
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "lu.bmp").c_str())));
+  this->DrawBitmap(x, y, bitmap, false);
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "ru.bmp").c_str())));
   if (bitmap) {
-    this->DrawBitmap(x - bitmap->image.width + width, y, &bitmap->image, false);
+    this->DrawBitmap(x - bitmap->image.width + width, y, bitmap, false);
   }
 
-  const int rows = (height - 28) / 14 + ((height - 28) % 14 != 0);
+  const int rows = TileCount(height - 28, 14);
   for (int i = 0; i < rows; ++i) {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "lm.bmp").c_str())));
-    this->DrawBitmap(x, top + i * 14, &bitmap->image, false);
+    this->DrawBitmap(x, top + i * 14, bitmap, false);
   }
   for (int i = 0; i < rows; ++i) {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "rm.bmp").c_str())));
     if (bitmap) {
-      this->DrawBitmap(x - bitmap->image.width + width, top + i * 14, &bitmap->image, false);
+      this->DrawBitmap(x - bitmap->image.width + width, top + i * 14, bitmap, false);
     }
   }
   for (int i = 0; i < columns; ++i) {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "md.bmp").c_str())));
     if (bitmap) {
-      this->DrawBitmap(left + i * 14, y - bitmap->image.height + height, &bitmap->image, false);
+      this->DrawBitmap(left + i * 14, y - bitmap->image.height + height, bitmap, false);
     }
   }
 
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "ld.bmp").c_str())));
   if (bitmap) {
-    this->DrawBitmap(x, y - bitmap->image.height + height, &bitmap->image, false);
+    this->DrawBitmap(x, y - bitmap->image.height + height, bitmap, false);
   }
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "rd.bmp").c_str())));
   if (bitmap) {
-    this->DrawBitmap(x - bitmap->image.width + width, y - bitmap->image.height + height, &bitmap->image, false);
+    this->DrawBitmap(x - bitmap->image.width + width, y - bitmap->image.height + height, bitmap, false);
   }
 }
 
@@ -4127,13 +4202,6 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
 // FUNCTION: fn_11806
 int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 0: {
-    char name[25] = {};
-    std::strcpy(name, this->m_nameEdit->Text());
-    std::memcpy(this->m_info.name, name, sizeof(this->m_info.name));
-    this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
-    return 0;
-  }
   case 6:
     switch (a) {
     case 184: {
@@ -4216,12 +4284,6 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_windowMgr.Schedule(this);
       g_modeMgr.gameMode->SendMsg(0, 10004, 0, 0, 0);
       return 0;
-    case 226:
-      if (--this->m_view.action < this->m_view.unknown_0148) {
-        this->m_view.action = this->m_view.unknown_0148 + 7;
-      }
-      this->Invalidate();
-      return 0;
     case 227: {
       int action = this->m_view.action + 1;
       if (action >= this->m_view.unknown_0148 + 8) {
@@ -4231,9 +4293,22 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->Invalidate();
       return 0;
     }
+    case 226:
+      if (--this->m_view.action < this->m_view.unknown_0148) {
+        this->m_view.action = this->m_view.unknown_0148 + 7;
+      }
+      this->Invalidate();
+      return 0;
     default:
       return 0;
     }
+  case 0: {
+    char name[25] = {};
+    std::strcpy(name, this->m_nameEdit->Text());
+    std::memcpy(this->m_info.name, name, sizeof(this->m_info.name));
+    this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
+    return 0;
+  }
   case 8:
   case 11:
   case 12: {
@@ -4305,17 +4380,17 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 void UILoginWnd::Slot15(int, int) {
   this->unknown_00BC = g_windowMgr.EnsureWindow(325);
   UIRPImageWnd2* backgroundWindow = static_cast<UIRPImageWnd2*>(this->unknown_00BC);
-  const std::uint8_t backgroundSource[] = {0xA7, 0x04, 0x51, 0x5F, 0x61, 0xF1, 0x26, 0xDE, 0xA1, 0x4F, 0x51, 0x69, 0x1C, 0x85, 0xBF, 0x7F, 0x08, 0xCC, 0xF8,
-                                           0xCB, 0xFE, 0x56, 0x8D, 0x67, 0x02, 0xD9, 0xF7, 0xC4, 0xC2, 0x5A, 0xBF, 0x71, 0x00, 0xF4, 0xFD, 0xCA, 0xC6, 0x56,
-                                           0x8D, 0x3D, 0x13, 0xCC, 0xF0, 0xA5};
+  const char backgroundSource[] = {'\xA7', '\x04', '\x51', '\x5F', '\x61', '\xF1', '\x26', '\xDE', '\xA1', '\x4F', '\x51', '\x69', '\x1C', '\x85', '\xBF', '\x7F', '\x08', '\xCC', '\xF8',
+                                           '\xCB', '\xFE', '\x56', '\x8D', '\x67', '\x02', '\xD9', '\xF7', '\xC4', '\xC2', '\x5A', '\xBF', '\x71', '\x00', '\xF4', '\xFD', '\xCA', '\xC6', '\x56',
+                                           '\x8D', '\x3D', '\x13', '\xCC', '\xF0', '\xA5'};
   thread_local EncryptedName<sizeof(backgroundSource), 0x13E33FA1A591AB67ULL> backgroundName(backgroundSource);
   backgroundWindow->SetImage(backgroundName.Text(), 5);
 
-  const std::uint8_t uiPathSource[] = {0xF7, 0xE8, 0x6D, 0xC3, 0x7F, 0x2B, 0x6C, 0xDA, 0xF1, 0xA3, 0x6D, 0xF5, 0x02, 0x5F, 0xF5, 0x17};
+  const char uiPathSource[] = {'\xF7', '\xE8', '\x6D', '\xC3', '\x7F', '\x2B', '\x6C', '\xDA', '\xF1', '\xA3', '\x6D', '\xF5', '\x02', '\x5F', '\xF5', '\x17'};
   thread_local EncryptedName<sizeof(uiPathSource), 0x17A9E5BF39AD4737ULL> uiPathName(uiPathSource);
   const std::string uiPath(uiPathName.Text());
-  const std::uint8_t loginPathSource[] = {0x83, 0x86, 0x93, 0xDD, 0x15, 0x71, 0x8C, 0x54, 0x85, 0xCD, 0x93, 0xEB, 0x68, 0x05, 0x15, 0xF5, 0x2C, 0x4E, 0x3A,
-                                          0x49, 0x8A, 0xD6, 0x27, 0xED, 0x26, 0x5B, 0x35, 0x46, 0xB6, 0xDA, 0x15, 0x99};
+  const char loginPathSource[] = {'\x83', '\x86', '\x93', '\xDD', '\x15', '\x71', '\x8C', '\x54', '\x85', '\xCD', '\x93', '\xEB', '\x68', '\x05', '\x15', '\xF5', '\x2C', '\x4E', '\x3A',
+                                          '\x49', '\x8A', '\xD6', '\x27', '\xED', '\x26', '\x5B', '\x35', '\x46', '\xB6', '\xDA', '\x15', '\x99'};
   thread_local EncryptedName<sizeof(loginPathSource), 0x9949BFD527532943ULL> loginPathName(loginPathSource);
   const std::string loginPath(loginPathName.Text());
   this->passwordPlaceholder = true;
@@ -4330,19 +4405,19 @@ void UILoginWnd::Slot15(int, int) {
 
   UIBmpTextButton* button;
   button = new UIBmpTextButton();
-  const std::uint8_t closeNormalSource[] = {0xAF, 0xD2, 0x3B, 0xD9, 0xB1, 0xC9, 0x4A, 0x00, 0xA9, 0x99, 0x3B, 0xEF, 0xCC, 0xBD, 0xD3, 0xA1, 0x00, 0x1A, 0x92,
-                                            0x4D, 0x2E, 0x6E, 0xE1, 0xB9, 0x0A, 0x0F, 0x9D, 0x42, 0x12, 0x62, 0xD3, 0xAF, 0x1B, 0x22, 0x98, 0x4F, 0x1E, 0x74,
-                                            0xEA, 0x92, 0x01, 0x12, 0x89, 0x4E, 0x10, 0x6B, 0xA1, 0xAF, 0x02, 0x0D, 0xFB};
+  const char closeNormalSource[] = {'\xAF', '\xD2', '\x3B', '\xD9', '\xB1', '\xC9', '\x4A', '\x00', '\xA9', '\x99', '\x3B', '\xEF', '\xCC', '\xBD', '\xD3', '\xA1', '\x00', '\x1A', '\x92',
+                                            '\x4D', '\x2E', '\x6E', '\xE1', '\xB9', '\x0A', '\x0F', '\x9D', '\x42', '\x12', '\x62', '\xD3', '\xAF', '\x1B', '\x22', '\x98', '\x4F', '\x1E', '\x74',
+                                            '\xEA', '\x92', '\x01', '\x12', '\x89', '\x4E', '\x10', '\x6B', '\xA1', '\xAF', '\x02', '\x0D', '\xFB'};
   thread_local EncryptedName<sizeof(closeNormalSource), 0xCD8F077123FB7D6FULL> closeNormalName(closeNormalSource);
   button->SetBitmap(closeNormalName.Text(), 0, 0);
-  const std::uint8_t closeOverSource[] = {0xA9, 0xB0, 0xB7, 0xAF, 0x5D, 0x5B, 0xBE, 0xAE, 0xAF, 0xFB, 0xB7, 0x99, 0x20, 0x2F, 0x27, 0x0F, 0x06, 0x78, 0x1E,
-                                          0x3B, 0xC2, 0xFC, 0x15, 0x17, 0x0C, 0x6D, 0x11, 0x34, 0xFE, 0xF0, 0x27, 0x01, 0x1D, 0x40, 0x14, 0x39, 0xF2, 0xE6,
-                                          0x1E, 0x3C, 0x06, 0x69, 0x12, 0x27, 0xB3, 0xF7, 0x16, 0x13, 0x69};
+  const char closeOverSource[] = {'\xA9', '\xB0', '\xB7', '\xAF', '\x5D', '\x5B', '\xBE', '\xAE', '\xAF', '\xFB', '\xB7', '\x99', '\x20', '\x2F', '\x27', '\x0F', '\x06', '\x78', '\x1E',
+                                          '\x3B', '\xC2', '\xFC', '\x15', '\x17', '\x0C', '\x6D', '\x11', '\x34', '\xFE', '\xF0', '\x27', '\x01', '\x1D', '\x40', '\x14', '\x39', '\xF2', '\xE6',
+                                          '\x1E', '\x3C', '\x06', '\x69', '\x12', '\x27', '\xB3', '\xF7', '\x16', '\x13', '\x69'};
   thread_local EncryptedName<sizeof(closeOverSource), 0x637B959D55771F69ULL> closeOverName(closeOverSource);
   button->SetBitmap(closeOverName.Text(), 1, 0);
-  const std::uint8_t closePressSource[] = {0x91, 0x24, 0x0D, 0xFB, 0x7B, 0xF3, 0x84, 0x1C, 0x97, 0x6F, 0x0D, 0xCD, 0x06, 0x87, 0x1D, 0xBD, 0x3E, 0xEC, 0xA4,
-                                           0x6F, 0xE4, 0x54, 0x2F, 0xA5, 0x34, 0xF9, 0xAB, 0x60, 0xD8, 0x58, 0x1D, 0xB3, 0x25, 0xD4, 0xAE, 0x6D, 0xD4, 0x4E,
-                                           0x24, 0x8E, 0x21, 0xF9, 0xA8, 0x72, 0xC8, 0x13, 0x23, 0xBC, 0x21, 0x8B};
+  const char closePressSource[] = {'\x91', '\x24', '\x0D', '\xFB', '\x7B', '\xF3', '\x84', '\x1C', '\x97', '\x6F', '\x0D', '\xCD', '\x06', '\x87', '\x1D', '\xBD', '\x3E', '\xEC', '\xA4',
+                                           '\x6F', '\xE4', '\x54', '\x2F', '\xA5', '\x34', '\xF9', '\xAB', '\x60', '\xD8', '\x58', '\x1D', '\xB3', '\x25', '\xD4', '\xAE', '\x6D', '\xD4', '\x4E',
+                                           '\x24', '\x8E', '\x21', '\xF9', '\xA8', '\x72', '\xC8', '\x13', '\x23', '\xBC', '\x21', '\x8B'};
   thread_local EncryptedName<sizeof(closePressSource), 0xD1413DBB01CD8B51ULL> closePressName(closePressSource);
   button->SetBitmap(closePressName.Text(), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight() + 2);
@@ -4359,19 +4434,19 @@ void UILoginWnd::Slot15(int, int) {
   this->AddChild(button);
 
   button = new UIBmpTextButton();
-  const std::uint8_t joinNormalSource[] = {0x79, 0xAA, 0xB7, 0xB5, 0xCB, 0xD3, 0x4A, 0xB8, 0x7F, 0xE1, 0xB7, 0x83, 0xB6, 0xA7, 0xD3, 0x19, 0xD6, 0x62, 0x1E,
-                                           0x21, 0x54, 0x74, 0xE1, 0x01, 0xDC, 0x77, 0x11, 0x2E, 0x68, 0x78, 0xD3, 0x17, 0xCD, 0x5A, 0x1D, 0x20, 0x62, 0x73,
-                                           0xD0, 0x1B, 0xD6, 0x77, 0x1A, 0x2E, 0x67, 0x33, 0xED, 0x18, 0xC9, 0x05};
+  const char joinNormalSource[] = {'\x79', '\xAA', '\xB7', '\xB5', '\xCB', '\xD3', '\x4A', '\xB8', '\x7F', '\xE1', '\xB7', '\x83', '\xB6', '\xA7', '\xD3', '\x19', '\xD6', '\x62', '\x1E',
+                                           '\x21', '\x54', '\x74', '\xE1', '\x01', '\xDC', '\x77', '\x11', '\x2E', '\x68', '\x78', '\xD3', '\x17', '\xCD', '\x5A', '\x1D', '\x20', '\x62', '\x73',
+                                           '\xD0', '\x1B', '\xD6', '\x77', '\x1A', '\x2E', '\x67', '\x33', '\xED', '\x18', '\xC9', '\x05'};
   thread_local EncryptedName<sizeof(joinNormalSource), 0x758F1D0B4F7705B9ULL> joinNormalName(joinNormalSource);
   button->SetBitmap(joinNormalName.Text(), 0, 0);
-  const std::uint8_t joinOverSource[] = {0xA5, 0xB6, 0x85, 0xF3, 0xED, 0xED, 0xDE, 0x44, 0xA3, 0xFD, 0x85, 0xC5, 0x90, 0x99, 0x47, 0xE5, 0x0A, 0x7E, 0x2C,
-                                         0x67, 0x72, 0x4A, 0x75, 0xFD, 0x00, 0x6B, 0x23, 0x68, 0x4E, 0x46, 0x47, 0xEB, 0x11, 0x46, 0x2F, 0x66, 0x44, 0x4D,
-                                         0x44, 0xE6, 0x13, 0x7C, 0x37, 0x27, 0x4F, 0x4E, 0x6B, 0x89};
+  const char joinOverSource[] = {'\xA5', '\xB6', '\x85', '\xF3', '\xED', '\xED', '\xDE', '\x44', '\xA3', '\xFD', '\x85', '\xC5', '\x90', '\x99', '\x47', '\xE5', '\x0A', '\x7E', '\x2C',
+                                         '\x67', '\x72', '\x4A', '\x75', '\xFD', '\x00', '\x6B', '\x23', '\x68', '\x4E', '\x46', '\x47', '\xEB', '\x11', '\x46', '\x2F', '\x66', '\x44', '\x4D',
+                                         '\x44', '\xE6', '\x13', '\x7C', '\x37', '\x27', '\x4F', '\x4E', '\x6B', '\x89'};
   thread_local EncryptedName<sizeof(joinOverSource), 0x891B232D09451965ULL> joinOverName(joinOverSource);
   button->SetBitmap(joinOverName.Text(), 1, 0);
-  const std::uint8_t joinPressSource[] = {0x55, 0x20, 0x21, 0xF7, 0x9D, 0xC7, 0xA4, 0x3C, 0x53, 0x6B, 0x21, 0xC1, 0xE0, 0xB3, 0x3D, 0x9D, 0xFA, 0xE8, 0x88,
-                                          0x63, 0x02, 0x60, 0x0F, 0x85, 0xF0, 0xFD, 0x87, 0x6C, 0x3E, 0x6C, 0x3D, 0x93, 0xE1, 0xD0, 0x8B, 0x62, 0x34, 0x67,
-                                          0x3E, 0x81, 0xE7, 0xEA, 0x92, 0x7E, 0x73, 0x6B, 0x0C, 0x81, 0x95};
+  const char joinPressSource[] = {'\x55', '\x20', '\x21', '\xF7', '\x9D', '\xC7', '\xA4', '\x3C', '\x53', '\x6B', '\x21', '\xC1', '\xE0', '\xB3', '\x3D', '\x9D', '\xFA', '\xE8', '\x88',
+                                          '\x63', '\x02', '\x60', '\x0F', '\x85', '\xF0', '\xFD', '\x87', '\x6C', '\x3E', '\x6C', '\x3D', '\x93', '\xE1', '\xD0', '\x8B', '\x62', '\x34', '\x67',
+                                          '\x3E', '\x81', '\xE7', '\xEA', '\x92', '\x7E', '\x73', '\x6B', '\x0C', '\x81', '\x95'};
   thread_local EncryptedName<sizeof(joinPressSource), 0xF161095D0DE18F95ULL> joinPressName(joinPressSource);
   button->SetBitmap(joinPressName.Text(), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight() + 2);
@@ -4389,19 +4464,19 @@ void UILoginWnd::Slot15(int, int) {
 
   UIBitmapButton* bitmapButton;
   bitmapButton = new UIBitmapButton();
-  const std::uint8_t startNormalSource[] = {0x2F, 0xDE, 0x1F, 0xE9, 0xAD, 0x81, 0x02, 0x20, 0x29, 0x95, 0x1F, 0xDF, 0xD0, 0xF5, 0x9B, 0x81, 0x80, 0x16, 0xB6,
-                                            0x7D, 0x32, 0x26, 0xA9, 0x99, 0x8A, 0x03, 0xB9, 0x72, 0x0E, 0x2A, 0x9B, 0x8F, 0x9B, 0x2E, 0xAC, 0x67, 0x0C, 0x3D,
-                                            0xB3, 0xB2, 0x81, 0x1E, 0xAD, 0x7E, 0x0C, 0x23, 0xE9, 0x8F, 0x82, 0x01, 0xDF};
+  const char startNormalSource[] = {'\x2F', '\xDE', '\x1F', '\xE9', '\xAD', '\x81', '\x02', '\x20', '\x29', '\x95', '\x1F', '\xDF', '\xD0', '\xF5', '\x9B', '\x81', '\x80', '\x16', '\xB6',
+                                            '\x7D', '\x32', '\x26', '\xA9', '\x99', '\x8A', '\x03', '\xB9', '\x72', '\x0E', '\x2A', '\x9B', '\x8F', '\x9B', '\x2E', '\xAC', '\x67', '\x0C', '\x3D',
+                                            '\xB3', '\xB2', '\x81', '\x1E', '\xAD', '\x7E', '\x0C', '\x23', '\xE9', '\x8F', '\x82', '\x01', '\xDF'};
   thread_local EncryptedName<sizeof(startNormalSource), 0xEDC74F6D13DF71EFULL> startNormalName(startNormalSource);
   bitmapButton->SetBitmap(startNormalName.Text(), 0, 0);
-  const std::uint8_t startOverSource[] = {0x4F, 0x12, 0x2F, 0x7D, 0xBD, 0x0B, 0x68, 0xB8, 0x49, 0x59, 0x2F, 0x4B, 0xC0, 0x7F, 0xF1, 0x19, 0xE0, 0xDA, 0x86,
-                                          0xE9, 0x22, 0xAC, 0xC3, 0x01, 0xEA, 0xCF, 0x89, 0xE6, 0x1E, 0xA0, 0xF1, 0x17, 0xFB, 0xE2, 0x9C, 0xF3, 0x1C, 0xB7,
-                                          0xD9, 0x2A, 0xE0, 0xCB, 0x8A, 0xF5, 0x53, 0xA7, 0xC0, 0x05, 0x8F};
+  const char startOverSource[] = {'\x4F', '\x12', '\x2F', '\x7D', '\xBD', '\x0B', '\x68', '\xB8', '\x49', '\x59', '\x2F', '\x4B', '\xC0', '\x7F', '\xF1', '\x19', '\xE0', '\xDA', '\x86',
+                                          '\xE9', '\x22', '\xAC', '\xC3', '\x01', '\xEA', '\xCF', '\x89', '\xE6', '\x1E', '\xA0', '\xF1', '\x17', '\xFB', '\xE2', '\x9C', '\xF3', '\x1C', '\xB7',
+                                          '\xD9', '\x2A', '\xE0', '\xCB', '\x8A', '\xF5', '\x53', '\xA7', '\xC0', '\x05', '\x8F'};
   thread_local EncryptedName<sizeof(startOverSource), 0x75ADC57D87EFBD8FULL> startOverName(startOverSource);
   bitmapButton->SetBitmap(startOverName.Text(), 1, 0);
-  const std::uint8_t startPressSource[] = {0x19, 0x56, 0x21, 0x19, 0xAD, 0xDB, 0x68, 0xE6, 0x1F, 0x1D, 0x21, 0x2F, 0xD0, 0xAF, 0xF1, 0x47, 0xB6, 0x9E, 0x88,
-                                           0x8D, 0x32, 0x7C, 0xC3, 0x5F, 0xBC, 0x8B, 0x87, 0x82, 0x0E, 0x70, 0xF1, 0x49, 0xAD, 0xA6, 0x92, 0x97, 0x0C, 0x67,
-                                           0xD9, 0x74, 0xA9, 0x8B, 0x84, 0x90, 0x1E, 0x3B, 0xCF, 0x46, 0xA9, 0xF9};
+  const char startPressSource[] = {'\x19', '\x56', '\x21', '\x19', '\xAD', '\xDB', '\x68', '\xE6', '\x1F', '\x1D', '\x21', '\x2F', '\xD0', '\xAF', '\xF1', '\x47', '\xB6', '\x9E', '\x88',
+                                           '\x8D', '\x32', '\x7C', '\xC3', '\x5F', '\xBC', '\x8B', '\x87', '\x82', '\x0E', '\x70', '\xF1', '\x49', '\xAD', '\xA6', '\x92', '\x97', '\x0C', '\x67',
+                                           '\xD9', '\x74', '\xA9', '\x8B', '\x84', '\x90', '\x1E', '\x3B', '\xCF', '\x46', '\xA9', '\xF9'};
   thread_local EncryptedName<sizeof(startPressSource), 0x2BAD156DE3E1F9D9ULL> startPressName(startPressSource);
   bitmapButton->SetBitmap(startPressName.Text(), 2, 0);
   bitmapButton->SetSize(bitmapButton->BitmapWidth(), bitmapButton->BitmapHeight());
@@ -4410,19 +4485,19 @@ void UILoginWnd::Slot15(int, int) {
   this->AddChild(bitmapButton);
 
   bitmapButton = new UIBitmapButton();
-  const std::uint8_t exitNormalSource[] = {0x57, 0x5E, 0x21, 0x27, 0x11, 0x5D, 0x2C, 0xE2, 0x51, 0x15, 0x21, 0x11, 0x6C, 0x29, 0xB5, 0x43, 0xF8, 0x96, 0x88,
-                                           0xB3, 0x8E, 0xFA, 0x87, 0x5B, 0xF2, 0x83, 0x87, 0xBC, 0xB2, 0xF6, 0xB5, 0x4D, 0xE3, 0xAE, 0x82, 0xB1, 0xBE, 0xE0,
-                                           0x8C, 0x1D, 0xC8, 0x9F, 0x8E, 0xAF, 0xBC, 0xF2, 0x85, 0x01, 0xF5, 0x9C, 0x91, 0xDD};
+  const char exitNormalSource[] = {'\x57', '\x5E', '\x21', '\x27', '\x11', '\x5D', '\x2C', '\xE2', '\x51', '\x15', '\x21', '\x11', '\x6C', '\x29', '\xB5', '\x43', '\xF8', '\x96', '\x88',
+                                           '\xB3', '\x8E', '\xFA', '\x87', '\x5B', '\xF2', '\x83', '\x87', '\xBC', '\xB2', '\xF6', '\xB5', '\x4D', '\xE3', '\xAE', '\x82', '\xB1', '\xBE', '\xE0',
+                                           '\x8C', '\x1D', '\xC8', '\x9F', '\x8E', '\xAF', '\xBC', '\xF2', '\x85', '\x01', '\xF5', '\x9C', '\x91', '\xDD'};
   thread_local EncryptedName<sizeof(exitNormalSource), 0x2FE993D1DDE1F197ULL> exitNormalName(exitNormalSource);
   bitmapButton->SetBitmap(exitNormalName.Text(), 0, 0);
-  const std::uint8_t exitOverSource[] = {0x4F, 0x36, 0x2B, 0xF7, 0x75, 0xB1, 0x3A, 0xF4, 0x49, 0x7D, 0x2B, 0xC1, 0x08, 0xC5, 0xA3, 0x55, 0xE0, 0xFE, 0x82,
-                                         0x63, 0xEA, 0x16, 0x91, 0x4D, 0xEA, 0xEB, 0x8D, 0x6C, 0xD6, 0x1A, 0xA3, 0x5B, 0xFB, 0xC6, 0x88, 0x61, 0xDA, 0x0C,
-                                         0x9A, 0x0B, 0xD0, 0xF6, 0x9D, 0x68, 0xC7, 0x51, 0x9D, 0x54, 0xFF, 0x99};
+  const char exitOverSource[] = {'\x4F', '\x36', '\x2B', '\xF7', '\x75', '\xB1', '\x3A', '\xF4', '\x49', '\x7D', '\x2B', '\xC1', '\x08', '\xC5', '\xA3', '\x55', '\xE0', '\xFE', '\x82',
+                                         '\x63', '\xEA', '\x16', '\x91', '\x4D', '\xEA', '\xEB', '\x8D', '\x6C', '\xD6', '\x1A', '\xA3', '\x5B', '\xFB', '\xC6', '\x88', '\x61', '\xDA', '\x0C',
+                                         '\x9A', '\x0B', '\xD0', '\xF6', '\x9D', '\x68', '\xC7', '\x51', '\x9D', '\x54', '\xFF', '\x99'};
   thread_local EncryptedName<sizeof(exitOverSource), 0x39FF7FB50DEB998FULL> exitOverName(exitOverSource);
   bitmapButton->SetBitmap(exitOverName.Text(), 1, 0);
-  const std::uint8_t exitPressSource[] = {0xBF, 0xBA, 0x4D, 0xEB, 0xF7, 0xC1, 0x4E, 0xE2, 0xB9, 0xF1, 0x4D, 0xDD, 0x8A, 0xB5, 0xD7, 0x43, 0x10, 0x72, 0xE4,
-                                          0x7F, 0x68, 0x66, 0xE5, 0x5B, 0x1A, 0x67, 0xEB, 0x70, 0x54, 0x6A, 0xD7, 0x4D, 0x0B, 0x4A, 0xEE, 0x7D, 0x58, 0x7C,
-                                          0xEE, 0x1D, 0x20, 0x65, 0xFF, 0x74, 0x44, 0x7C, 0xA5, 0x4D, 0x12, 0x65, 0x8D};
+  const char exitPressSource[] = {'\xBF', '\xBA', '\x4D', '\xEB', '\xF7', '\xC1', '\x4E', '\xE2', '\xB9', '\xF1', '\x4D', '\xDD', '\x8A', '\xB5', '\xD7', '\x43', '\x10', '\x72', '\xE4',
+                                          '\x7F', '\x68', '\x66', '\xE5', '\x5B', '\x1A', '\x67', '\xEB', '\x70', '\x54', '\x6A', '\xD7', '\x4D', '\x0B', '\x4A', '\xEE', '\x7D', '\x58', '\x7C',
+                                          '\xEE', '\x1D', '\x20', '\x65', '\xFF', '\x74', '\x44', '\x7C', '\xA5', '\x4D', '\x12', '\x65', '\x8D'};
   thread_local EncryptedName<sizeof(exitPressSource), 0x2F8B0F37118D157FULL> exitPressName(exitPressSource);
   bitmapButton->SetBitmap(exitPressName.Text(), 2, 0);
   bitmapButton->SetSize(bitmapButton->BitmapWidth(), bitmapButton->BitmapHeight());
@@ -4436,7 +4511,7 @@ void UILoginWnd::Slot15(int, int) {
   this->passwordEdit->Move(15, 64);
   this->passwordEdit->unknown_0128 = 2;
   this->passwordEdit->Background(255, 255, 255);
-  const std::uint8_t placeholderSource[] = {0x9D, 0xB0, 0xCA, 0xE6, 0xDA, 0x14, 0x55, 0xE9, 0xCD};
+  const char placeholderSource[] = {'\x9D', '\xB0', '\xCA', '\xE6', '\xDA', '\x14', '\x55', '\xE9', '\xCD'};
   thread_local EncryptedName<sizeof(placeholderSource), 0xAD075B8DB599F1CDULL> placeholderName(placeholderSource);
   this->passwordEdit->SetText(placeholderName.Text());
   this->passwordEdit->TextColor(RGB(156, 156, 156), 0xFFFFFFFF);
@@ -4453,10 +4528,10 @@ void UILoginWnd::Slot15(int, int) {
   this->LoadLogin();
 
   UICheckBox* saveIdCheck = new UICheckBox();
-  const std::uint8_t checkedImageSource[] = {0x9E, 0xD1, 0xDE, 0x42, 0xF4, 0x9F, 0x2E, 0x31, 0xA2, 0xD6, 0xD5, 0x0F, 0xFD, 0x90, 0x31, 0x49};
+  const char checkedImageSource[] = {'\x9E', '\xD1', '\xDE', '\x42', '\xF4', '\x9F', '\x2E', '\x31', '\xA2', '\xD6', '\xD5', '\x0F', '\xFD', '\x90', '\x31', '\x49'};
   thread_local EncryptedName<sizeof(checkedImageSource), 0x4941FD9F21BBB9FDULL> checkedImageName(checkedImageSource);
   const std::string checkedImage = loginPath + std::string(checkedImageName.Text());
-  const std::uint8_t uncheckedImageSource[] = {0x16, 0xA5, 0x88, 0x3E, 0x00, 0x07, 0x8A, 0x4D, 0x2A, 0xA2, 0x8B, 0x3B, 0x45, 0x07, 0x88, 0x45, 0x75};
+  const char uncheckedImageSource[] = {'\x16', '\xA5', '\x88', '\x3E', '\x00', '\x07', '\x8A', '\x4D', '\x2A', '\xA2', '\x8B', '\x3B', '\x45', '\x07', '\x88', '\x45', '\x75'};
   thread_local EncryptedName<sizeof(uncheckedImageSource), 0x35E5656B5DEDCD75ULL> uncheckedImageName(uncheckedImageSource);
   const std::string uncheckedImage = loginPath + std::string(uncheckedImageName.Text());
   saveIdCheck->SetBitmaps(checkedImage.c_str(), uncheckedImage.c_str());
