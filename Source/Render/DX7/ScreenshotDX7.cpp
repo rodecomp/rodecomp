@@ -153,7 +153,7 @@ bool CRendererDX7::SaveJpeg(const char* filename, CBitmapRes* overlay) {
     return false;
   }
 
-  auto* pixels = static_cast<unsigned char*>(std::malloc(3 * this->viewport.width * this->viewport.height));
+  auto* pixels = new unsigned char[3 * this->viewport.width * this->viewport.height];
   const DWORD redMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->redMask : 0;
   const DWORD greenMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->greenMask : 0;
   const DWORD blueMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->blueMask : 0;
@@ -241,11 +241,11 @@ bool CRendererDX7::SaveJpeg(const char* filename, CBitmapRes* overlay) {
   properties.jpegHeight = this->viewport.height;
 
   if (ijlWrite(&properties, 8) != 0) {
-    std::free(pixels);
+    delete[] pixels;
     return false;
   }
 
-  std::free(pixels);
+  delete[] pixels;
   return true;
 }
 
