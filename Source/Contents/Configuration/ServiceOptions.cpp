@@ -697,14 +697,10 @@ void GameSettings::ToggleOption(int id) {
     }
 
     if (option.type == 0) {
-      const unsigned char current = g_serviceOptions.Get(id);
-      this->SetOption(id, current == 0, true);
+      this->SetOption(id, g_serviceOptions.Get(id) == 0, true);
       g_windowMgr.RefreshGameSettingOption(id);
     } else if (option.type == 1) {
-      const auto entry = this->functions.find(id);
-      if (entry != this->functions.end() && entry->second) {
-        entry->second();
-      }
+      this->RunFunction(id);
     }
     break;
   }
