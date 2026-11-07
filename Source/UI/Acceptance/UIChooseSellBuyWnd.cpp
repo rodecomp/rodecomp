@@ -1001,7 +1001,8 @@ int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     return 0;
   }
 
-  if (message == 6) {
+  switch (message) {
+  case 6: {
     this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     if (argument1 == 184 && this->edit->Length()) {
       g_modeMgr.gameMode->SendMsg(99, this->unknown_00B8, std::atoi(this->edit->Text()), 0, 0);
@@ -1009,10 +1010,10 @@ int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     return 0;
   }
-
-  if (message == 28) {
+  case 28: {
     this->unknown_00B8 = static_cast<int>(argument1);
     return 0;
+  }
   }
 
   return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -3525,7 +3526,8 @@ void UISayDialogWnd::Resize(int width, int height) {
 // OFFSET: 0x008F6AC0
 // FUNCTION: fn_12325
 int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 184) {
       g_windowMgr.CloseWindow(110);
@@ -3536,13 +3538,13 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
     return 0;
   }
-
-  if (message == 91) {
+  case 91: {
     this->identity = static_cast<std::uint32_t>(a);
     const std::string text = LookupMessage(2965);
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     return 0;
+  }
   }
 
   if (message != 123) {
@@ -3575,7 +3577,8 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 // OFFSET: 0x008F6D00
 // FUNCTION: fn_12326
 int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 184) {
       g_windowMgr.CloseWindow(105);
@@ -3586,8 +3589,7 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     }
     return 0;
   }
-
-  if (message == 91) {
+  case 91: {
     this->identity = static_cast<std::uint32_t>(a);
     std::string text = "(";
     text += reinterpret_cast<const char*>(b);
@@ -3596,6 +3598,7 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     return 0;
+  }
   }
 
   if (message != 123) {
@@ -3809,7 +3812,8 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
 // OFFSET: 0x008F8860
 // FUNCTION: fn_12332
 int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6: {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, d);
 
@@ -3829,13 +3833,11 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
     return 0;
   }
-
-  if (message == 28) {
+  case 28: {
     this->identity = static_cast<std::uint32_t>(a);
     return 0;
   }
-
-  if (message == 123) {
+  case 123: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     std::uint16_t marker;
     std::memcpy(&marker, bytes, sizeof(marker));
@@ -3864,6 +3866,7 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     }
 
     return 0;
+  }
   }
 
   return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
@@ -5362,7 +5365,8 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // OFFSET: 0x008FB850
 // FUNCTION: fn_12345
 int UIGraffiStrboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6: {
     if (a == 184) {
       struct {
         int area[4];
@@ -5381,14 +5385,14 @@ int UIGraffiStrboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     g_windowMgr.Schedule(this);
     return 0;
   }
-
-  if (message == 68) {
+  case 68: {
     const int* area = reinterpret_cast<const int*>(a);
     this->area[0] = area[0];
     this->area[1] = area[1];
     this->area[2] = area[2];
     this->area[3] = area[3];
     return 0;
+  }
   }
 
   return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
@@ -6088,7 +6092,8 @@ int UIWaitWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::int
 int UINoticeConfirmWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message == 6) {
+  switch (message) {
+  case 6: {
     if (argument1 == 184) {
       g_modeMgr.gameMode->SendMsg(this->m_event, 0, 0, 0, 0);
     } else if (argument1 == 185) {
@@ -6097,10 +6102,10 @@ int UINoticeConfirmWnd::SendMsg(
 
     return 0;
   }
-
-  if (message == 80) {
+  case 80: {
     this->m_event = static_cast<int>(argument1);
     return 0;
+  }
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -7966,7 +7971,8 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
 // OFFSET: 0x008FE0E0
 // FUNCTION: fn_12351
 int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     int accepted;
     if (a == 184) {
@@ -7981,8 +7987,7 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     g_modeMgr.gameMode->SendMsg(175, this->m_accountId, this->m_characterId, accepted, 0);
     return 0;
   }
-
-  if (message == 95) {
+  case 95: {
     this->m_accountId = static_cast<int>(a);
     this->m_characterId = static_cast<int>(b);
     char text[128];
@@ -7990,6 +7995,7 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
     return 0;
+  }
   }
 
   if (message != 123) {
@@ -8222,7 +8228,8 @@ int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // OFFSET: 0x00905590
 // FUNCTION: fn_12382
 int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 184) {
       CMode* mode = g_modeMgr.GetGameMode();
@@ -8233,8 +8240,7 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     return 0;
   }
-
-  if (message == 91) {
+  case 91: {
     this->m_place = static_cast<char>(a);
     std::string text;
     if (this->m_place == 10) {
@@ -8245,6 +8251,7 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     return 0;
+  }
   }
 
   if (message != 123) {
@@ -12263,7 +12270,8 @@ void UIFrameWnd::DrawItemNameText(
 // OFFSET: 0x00900D90
 // FUNCTION: fn_12372
 int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6: {
     if (a == 0xC9) {
       g_windowMgr.CloseWindow(0x67);
     } else if (a == 0x10C) {
@@ -12280,9 +12288,14 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->ToScreen(x, y);
       menu->Move(x, y);
     }
-  } else if (message == 0x22) {
+  
+    break;
+  }
+  case 0x22:
     this->m_aid = static_cast<std::uint32_t>(a);
-  } else if (message == 0x27) {
+  
+    break;
+  case 0x27: {
     CMode* mode = g_modeMgr.GetGameMode();
     int text;
     UICntWnd* counter;
@@ -12314,6 +12327,9 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     counter->SendMsg(nullptr, 0x1D, reinterpret_cast<std::intptr_t>(LookupMessage(text)), 0, 0, 0);
     counter->SendMsg(nullptr, 0x51, 1, 0, 0, 0);
+  
+    break;
+  }
   }
   return 0;
 }
