@@ -92,7 +92,8 @@ bool CGifRes::Load(const char* name) {
 // OFFSET: 0x00749B60
 // FUNCTION: fn_07854
 bool CGifRes::Decode(const char* name, const void* data, int bytes, bool iconOnly) {
-  if (IsGifSignature(data)) {
+  const unsigned char* signature = static_cast<const unsigned char*>(data);
+  if (signature[0] == 'G' && signature[1] == 'I' && signature[2] == 'F') {
     return this->DecodeGif(data, bytes, iconOnly);
   }
 
