@@ -8133,11 +8133,13 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
     attack = HIBYTE(GetAsyncKeyState(VK_SHIFT)) == 0;
     if (actor->unknown_0314 == 7) {
       this->SetCursorAction(0);
-    } else if (g_session.GetMapProperty08() == 0 && this->scene->unknown_004C == 0) {
+    } else if (g_session.GetMapProperty08() != 0 || this->scene->unknown_004C != 0) {
+      if (g_session.IsLocalPlayerAid(actor->Slot50())) {
+        attack = 0;
+        this->SetCursorAction(0);
+      }
+    } else {
       this->SetCursorAction(5);
-    } else if (g_session.IsLocalPlayerAid(actor->Slot50())) {
-      attack = 0;
-      this->SetCursorAction(0);
     }
   }
 
@@ -8146,8 +8148,8 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
     attack = 1;
   }
 
-  const std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
-  const std::uint32_t mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
+  const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
+  const std::uint32_t& mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
   if (g_session.unknown_5614 != 0) {
     if (g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
