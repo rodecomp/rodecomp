@@ -43,7 +43,7 @@ AutomaticSkills::~AutomaticSkills() {
 // OFFSET: 0x007AF490
 // FUNCTION: fn_09152
 bool AutomaticSkills::Contains(int id) const {
-  return this->m_ids.contains(static_cast<std::uint16_t>(id));
+  return this->m_ids.find(static_cast<std::uint16_t>(id)) != this->m_ids.end();
 }
 
 // OFFSET: 0x007AF400
