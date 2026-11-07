@@ -3,7 +3,57 @@
 #include "Contents/Emblems/EmblemDataMgr.h"
 #include "Client/Session.h"
 
+#include "Utility/Cipher/XorBytes.h"
+
+#include <cstddef>
+#include <cstdint>
 #include <new>
+
+namespace {
+template <std::size_t Length>
+class EncryptedSource {
+public:
+  // INLINED
+  constexpr explicit EncryptedSource(const std::uint8_t (&source)[Length]) : data{} {
+    for (std::size_t index = 0; index < Length; ++index) {
+      this->data[index] = static_cast<char>(source[index]);
+    }
+  }
+
+  char data[Length];
+};
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  // INLINED
+  explicit EncryptedName(const EncryptedSource<Length>& source) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = static_cast<std::uint8_t>(source.data[index]);
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  // INLINED
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+}
 
 // STATIC: 0x013898D4
 // GLOBAL: gl_24355
@@ -71,11 +121,12 @@ void CEmblemDataMgr::Download(
 // OFFSET: 0x005EB410
 // FUNCTION: fn_03973
 bool CEmblemDataMgr::Upload(std::uint32_t guildId, std::string path) {
-  if (this->m_uploading) {
+  if (this->m_uploading == true) {
     return false;
   }
 
-  const std::string token(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16);
+  std::string token;
+  token.assign(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16);
   g_asyncWorkMgr->UploadEmblem(this->m_uploadUrl, g_session.m_aid, token, g_session.m_accountName, guildId, path);
 
   return true;
