@@ -13,6 +13,16 @@
 
 #include <cmath>
 
+namespace {
+// INLINED
+__forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->unknown_00E8);
+}
+}
+
 // OFFSET: 0x006F86B0
 // FUNCTION: fn_06869
 CCaneOfEvilEyeEffect::CCaneOfEvilEyeEffect() : CEffect(-1) {
@@ -187,7 +197,7 @@ bool CCaneOfEvilEyeEffect::Slot06() {
 void CCaneOfEvilEyeEffect::UpdateEyes() {
   for (auto it = this->unknown_00D0.begin(); it != this->unknown_00D0.end(); ++it) {
     CEZ2STRParticle* eye = *it;
-    if (eye->life != 0.0f && eye->life * 60.0f <= eye->unknown_00E8) {
+    if (IsParticleActive(eye) != true) {
       *it = eye->unknown_00A8 == 1 ? this->CreateEye(2, &eye->unknown_00D0) : nullptr;
       FreeParticle(eye);
     }
@@ -233,12 +243,14 @@ void CCaneOfEvilEyeEffect::Slot03() {
 void CCaneOfEvilEyeEffect::UpdateLights() {
   for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end(); ++it) {
     CEZ2STRParticle* light = *it;
-    if (light->life != 0.0f && light->life * 60.0f <= light->unknown_00E8) {
-      CEZ2STRParticle* next = nullptr;
+    if (IsParticleActive(light) != true) {
+      CEZ2STRParticle* next;
       if (light->unknown_00A8 == 1) {
         next = this->CreateLight(3, &light->unknown_00DC);
       } else if (light->unknown_00A8 == 2) {
         next = this->CreateLight(3, &light->unknown_00DC);
+      } else {
+        next = nullptr;
       }
 
       *it = next;
