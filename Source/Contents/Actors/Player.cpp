@@ -1431,7 +1431,7 @@ void CPc::Slot23(int first, int second) {
   this->weapon = first;
   this->unknown_044C = second;
 
-  if (!g_session.IsJobWeaponTypeAllowed(this->GetEffectiveJob(-1), static_cast<std::int64_t>(second) << 32 | static_cast<std::uint32_t>(first))) {
+  if (!g_session.IsJobWeaponTypeAllowed(this->GetEffectiveJob(-1), *reinterpret_cast<const std::int64_t*>(&first))) {
     this->LoadEquipAction(5, "");
     this->LoadEquipSprite(5, "");
     this->LoadEquipAction(6, "");
@@ -1444,7 +1444,7 @@ void CPc::Slot23(int first, int second) {
   this->LoadEquipAction(5, actName.c_str());
   this->LoadEquipSprite(5, sprName.c_str());
 
-  switch (static_cast<std::int64_t>(this->unknown_044C) << 32 | static_cast<std::uint32_t>(this->weapon)) {
+  switch (*reinterpret_cast<const std::int64_t*>(&this->weapon)) {
     case W_DAGGER:
     case W_1HSWORD:
     case W_2HSWORD:
@@ -2969,43 +2969,6 @@ void CPlayer::UpdatePendingAction() {
     }
     return;
   }
-  case 2: {
-    CItem* item = mode->scene->GetItemByAID(this->unknown_051C);
-    if (item == nullptr) {
-      break;
-    }
-
-    int column;
-    int row;
-    mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
-    int itemX;
-    int itemY;
-    mode->WorldCell(item->render.position.x, item->render.position.z, itemX, itemY);
-    const int targetX = itemX;
-    const int targetY = itemY;
-    mode->StepTowardWalkableCell(column, row, itemX, itemY);
-    const int state = static_cast<int>(this->render.unknown_0070);
-    if (state != 0 && state < 16) {
-      return;
-    }
-
-    if (mode->IsWithinRange(column, row, targetX, targetY, 1)) {
-      this->SendMsg(nullptr, 16, 0, targetX, targetX >> 31, targetY, targetY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
-      if (!mode->HasUnknown01A4(this->unknown_051C)) {
-        mode->PushUnknown01A4(this->unknown_051C);
-        mode->SendMsg(136, this->unknown_051C, 0, 0, 0);
-      }
-      break;
-    }
-
-    if (reinterpret_cast<const int&>(this->unknown_04F8) == itemX && this->unknown_04FC == itemY) {
-      return;
-    }
-    this->unknown_04FC = itemY;
-    reinterpret_cast<int&>(this->unknown_04F8) = itemX;
-    this->SendMsg(nullptr, 91, 0, itemX, itemX >> 31, itemY, itemY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
-    return;
-  }
   case 3: {
     CGameActor* target;
     if (this->unknown_051C == g_session.m_aid) {
@@ -3084,6 +3047,43 @@ void CPlayer::UpdatePendingAction() {
     this->unknown_04FC = groundY;
     reinterpret_cast<int&>(this->unknown_04F8) = groundX;
     this->SendMsg(nullptr, 91, 0, groundX, groundX >> 31, groundY, groundY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+  case 2: {
+    CItem* item = mode->scene->GetItemByAID(this->unknown_051C);
+    if (item == nullptr) {
+      break;
+    }
+
+    int column;
+    int row;
+    mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
+    int itemX;
+    int itemY;
+    mode->WorldCell(item->render.position.x, item->render.position.z, itemX, itemY);
+    const int targetX = itemX;
+    const int targetY = itemY;
+    mode->StepTowardWalkableCell(column, row, itemX, itemY);
+    const int state = static_cast<int>(this->render.unknown_0070);
+    if (state != 0 && state < 16) {
+      return;
+    }
+
+    if (mode->IsWithinRange(column, row, targetX, targetY, 1)) {
+      this->SendMsg(nullptr, 16, 0, targetX, targetX >> 31, targetY, targetY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      if (!mode->HasUnknown01A4(this->unknown_051C)) {
+        mode->PushUnknown01A4(this->unknown_051C);
+        mode->SendMsg(136, this->unknown_051C, 0, 0, 0);
+      }
+      break;
+    }
+
+    if (reinterpret_cast<const int&>(this->unknown_04F8) == itemX && this->unknown_04FC == itemY) {
+      return;
+    }
+    this->unknown_04FC = itemY;
+    reinterpret_cast<int&>(this->unknown_04F8) = itemX;
+    this->SendMsg(nullptr, 91, 0, itemX, itemX >> 31, itemY, itemY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
   case 6: {
