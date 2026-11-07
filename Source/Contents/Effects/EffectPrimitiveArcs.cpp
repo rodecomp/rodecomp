@@ -11,6 +11,13 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Contents/Actors/GameActor.h"
 
+// INLINED
+static __forceinline void ZeroVector(vector3d& v) {
+  v.x = 0.0f;
+  v.y = 0.0f;
+  v.z = 0.0f;
+}
+
 // OFFSET: 0x00BEBC80
 // FUNCTION: fn_19972
 void CEffectPrim::RenderGroundArcGlow(matrix& wtm) {
@@ -113,10 +120,14 @@ void CEffectPrim::RenderGroundArcGlow(matrix& wtm) {
 // OFFSET: 0x00BEC150
 // FUNCTION: fn_19973
 void CEffectPrim::RenderGroundArc(matrix& wtm) {
-  vector3d prevB{};
-  vector3d curB{};
-  vector3d curT{};
-  vector3d prevT{};
+  vector3d prevB;
+  ZeroVector(prevB);
+  vector3d curB;
+  ZeroVector(curB);
+  vector3d curT;
+  ZeroVector(curT);
+  vector3d prevT;
+  ZeroVector(prevT);
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
