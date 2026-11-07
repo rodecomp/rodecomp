@@ -1,6 +1,6 @@
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Utility/EncryptedName.h"
-#include "Contents/Effects/PartyMemberEffects.h"
+#include "Contents/Effects/EffectActor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
@@ -12,6 +12,7 @@
 #include "Script/LuaInstance.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Buttons/UITextButton.h"
 #include "Resource/World/TerrainResource.h"
 #include "Contents/Actors/Pc.h"
 #include "Client/Application/ErrorDialog.h"
@@ -771,12 +772,13 @@ __declspec(noinline) SessionShop* CSession::FindShop(const int& shopId) {
 // OFFSET: 0x00DE3B10
 // FUNCTION: fn_23485
 int FindShopId(CSession& session, std::string name) {
-  if (name.empty()) {
-    name = session.m_navigationPlayerMap;
+  std::string mapName = name;
+  if (mapName.empty()) {
+    mapName = session.m_navigationPlayerMap;
   }
 
-  const auto found = session.m_nameToId.lower_bound(name);
-  if (found == session.m_nameToId.end() || name < found->first) {
+  const auto found = session.m_nameToId.find(mapName);
+  if (found == session.m_nameToId.end()) {
     return -1;
   }
   return found->second;
@@ -1248,7 +1250,7 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
   }
 
   if (failed == true) {
-    return "";
+    return g_emptyString;
   }
   return text;
 }
@@ -1976,65 +1978,90 @@ EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::GetUn
 // OFFSET: 0x006AD690
 // FUNCTION: fn_06186
 int GetEquipLocationIndex(const int& mask) {
+  int index = 0;
   switch (mask) {
   case 0x1:
-    return 1;
+    index = 1;
+    break;
+  case 0x10:
+    index = 2;
+    break;
+  case 0x20:
+    index = 3;
+    break;
   case 0x2:
   case 0x22:
-    return 4;
+    index = 4;
+    break;
   case 0x4:
-    return 5;
+    index = 5;
+    break;
   case 0x8:
-    return 7;
-  case 0x10:
-    return 2;
-  case 0x20:
-    return 3;
+    index = 7;
+    break;
   case 0x40:
-    return 6;
-  case 0x80:
-    return 8;
-  case 0x100:
-    return 10;
+    index = 6;
+    break;
   case 0x101:
-    return 1;
+    index = 1;
+    break;
+  case 0x100:
+    index = 10;
+    break;
+  case 0x80:
+    index = 8;
+    break;
   case 0x200:
-    return 11;
+    index = 11;
+    break;
   case 0x201:
-    return 1;
+    index = 1;
+    break;
   case 0x300:
-    return 10;
+    index = 10;
+    break;
   case 0x301:
-    return 1;
+    index = 1;
+    break;
   case 0x400:
   case 0xC00:
   case 0x1400:
   case 0x1C00:
-    return 20;
+    index = 20;
+    break;
+  case 0x1000:
+    index = 22;
+    break;
   case 0x800:
   case 0x1800:
-    return 21;
-  case 0x1000:
-    return 22;
+    index = 21;
+    break;
   case 0x2000:
-    return 23;
+    index = 23;
+    break;
   case 0x8000:
-    return 0;
-  case 0x10000:
-    return 30;
-  case 0x20000:
-    return 31;
+    index = 0;
+    break;
   case 0x40000:
-    return 32;
+    index = 32;
+    break;
+  case 0x20000:
+    index = 31;
+    break;
+  case 0x10000:
+    index = 30;
+    break;
   case 0x80000:
-    return 33;
-  case 0x100000:
-    return 34;
+    index = 33;
+    break;
   case 0x200000:
-    return 35;
-  default:
-    return 0;
+    index = 35;
+    break;
+  case 0x100000:
+    index = 34;
+    break;
   }
+  return index;
 }
 
 // OFFSET: 0x006AD880
@@ -4997,9 +5024,11 @@ void CSession::AddPartyMember(MessengerMember& member) {
   this->m_partyMembers.push_back(member);
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  PartyMemberEffects effects{mode};
-  if (effects.Enabled()) {
-    effects.EnsurePartyEffect(member.accountId);
+  if (mode && (mode->scene->unknown_0048 != 0 || mode->scene->unknown_0054 != 0)) {
+    EffectActor* actor = static_cast<EffectActor*>(mode->scene->GetGameActorByAID(member.accountId));
+    if (actor && !actor->HasId(160)) {
+      actor->LaunchEffect(160, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
   }
 }
 
@@ -5493,7 +5522,7 @@ bool CGameMode::IsValidCell(int x, int y) {
 
 // OFFSET: 0x00DD80A0
 // FUNCTION: fn_23304
-void CSession::UpdateRandomStats() {
+__declspec(noinline) void CSession::UpdateRandomStats() {
   if (g_resetMessengerRandomStats != 0) {
     g_resetMessengerRandomStats = 0;
     this->unknown_5334 = std::max(std::rand() % 12, 0);
@@ -5516,33 +5545,21 @@ void CSession::UpdateRandomStats() {
     value = std::max(std::abs(std::rand()) % 1, 0);
   }
 
-  const auto notify = [this]() {
-    if (g_modeMgr.GetGameMode()) {
-      if (g_windowMgr.unknown_01DC) {
-        if (this->unknown_556C < this->unknown_5568 || reinterpret_cast<int&>(this->unknown_5570[4]) < reinterpret_cast<int&>(this->unknown_5570[0])) {
-          return;
-        }
-        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC)->Invalidate();
-        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC)->InvalidateChildren();
-      }
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->NotifyItemBounds();
-    }
-  };
   if (this->unknown_5568 != bound68) {
     this->unknown_5568 = bound68;
-    notify();
+    this->RefreshHpSpWindows();
   }
   if (this->unknown_556C != bound6C) {
     this->unknown_556C = bound6C;
-    notify();
+    this->RefreshHpSpWindows();
   }
   if (reinterpret_cast<int&>(this->unknown_5570[0]) != bound70) {
     reinterpret_cast<int&>(this->unknown_5570[0]) = bound70;
-    notify();
+    this->RefreshHpSpWindows();
   }
   if (reinterpret_cast<int&>(this->unknown_5570[4]) != bound74) {
     reinterpret_cast<int&>(this->unknown_5570[4]) = bound74;
-    notify();
+    this->RefreshHpSpWindows();
   }
 }
 
@@ -6245,13 +6262,11 @@ void CGameMode::Zc_Mer_Par_Change(const unsigned char* data) {
   g_session.RefreshMercenaryInfo();
 }
 
-template <std::size_t CaptionLength, std::uint64_t CaptionKey, std::size_t MessageLength, std::uint64_t MessageKey>
-void ShowEncryptedFailure(const std::uint8_t (&captionBytes)[CaptionLength], const std::uint8_t (&messageBytes)[MessageLength]) {
-  thread_local EncryptedName<CaptionLength, CaptionKey> caption(captionBytes);
-  thread_local EncryptedName<MessageLength, MessageKey> message(messageBytes);
-  const char* captionText = caption.Text();
-  const char* messageText = message.Text();
-  MessageBoxA(nullptr, messageText, captionText, 0);
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptName(const std::uint8_t (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
 }
 
 // GLOBAL: gl_25251
@@ -6261,28 +6276,36 @@ HANDLE g_embedFontFiles;
 // FUNCTION: fn_23337
 void CSession::InitClientData() {
   if (!g_itemInfoMgr->Load()) {
-    const std::uint8_t caption[] = {0x2A, 0x0F, 0x89, 0x4C, 0x03, 0x07};
-    const std::uint8_t message[] = {0x80, 0x81, 0x3A, 0xE6, 0xC6, 0xBB, 0xDD, 0x4C, 0xE9, 0x93, 0x36, 0xE7, 0xEA, 0xF5, 0xF2, 0x4D, 0xA0, 0x81, 0x5F};
-    ShowEncryptedFailure<6, 0xCD8F077123FB7D6FULL, 0x13, 0x23BBD58F8B5FF5C9ULL>(caption, message);
+    const std::uint8_t captionSource[] = {0x2A, 0x0F, 0x89, 0x4C, 0x03, 0x07};
+    const char* caption = DecryptName<0xCD8F077123FB7D6FULL>(captionSource);
+    const std::uint8_t messageSource[] = {0x80, 0x81, 0x3A, 0xE6, 0xC6, 0xBB, 0xDD, 0x4C, 0xE9, 0x93, 0x36, 0xE7, 0xEA, 0xF5, 0xF2, 0x4D, 0xA0, 0x81, 0x5F};
+    const char* message = DecryptName<0x23BBD58F8B5FF5C9ULL>(messageSource);
+    MessageBoxA(nullptr, message, caption, 0);
   }
 
   if (!CSpecialPopupMgr::Init()) {
-    const std::uint8_t caption[] = {0x72, 0x35, 0xDF, 0x56, 0xCD, 0xE5};
-    const std::uint8_t message[] = {0x10, 0x79, 0x16, 0x64, 0x9C, 0xFE, 0x05, 0xC9, 0x0C, 0x79, 0x06, 0x77, 0xF5, 0xD9, 0x20, 0xF5, 0x26, 0x09, 0x1A, 0x49, 0xBC, 0xCB, 0x49};
-    ShowEncryptedFailure<6, 0x17A9E5BF39AD4737ULL, 0x17, 0x9949BFD527532943ULL>(caption, message);
+    const std::uint8_t captionSource[] = {0x72, 0x35, 0xDF, 0x56, 0xCD, 0xE5};
+    const char* caption = DecryptName<0x17A9E5BF39AD4737ULL>(captionSource);
+    const std::uint8_t messageSource[] = {0x10, 0x79, 0x16, 0x64, 0x9C, 0xFE, 0x05, 0xC9, 0x0C, 0x79, 0x06, 0x77, 0xF5, 0xD9, 0x20, 0xF5, 0x26, 0x09, 0x1A, 0x49, 0xBC, 0xCB, 0x49};
+    const char* message = DecryptName<0x9949BFD527532943ULL>(messageSource);
+    MessageBoxA(nullptr, message, caption, 0);
   }
 
   if (!g_runeSystemMgr->LoadScripts()) {
-    const std::uint8_t caption[] = {0x1A, 0x47, 0xDD, 0xFA, 0xEF, 0x89};
-    const std::uint8_t message[] = {0x24, 0xF9, 0xE4, 0xCB, 0xC4, 0x6C, 0x9A, 0x60, 0x13, 0xCE, 0xFC, 0xE8, 0xC6, 0x4D, 0xC3, 0x75, 0x0E, 0xC7, 0xF4, 0x85, 0xE8, 0x51, 0x8A, 0x67, 0x67};
-    ShowEncryptedFailure<6, 0xCFF3899D95AF355FULL, 0x19, 0x13E33FA1A591AB67ULL>(caption, message);
+    const std::uint8_t captionSource[] = {0x1A, 0x47, 0xDD, 0xFA, 0xEF, 0x89};
+    const char* caption = DecryptName<0xCFF3899D95AF355FULL>(captionSource);
+    const std::uint8_t messageSource[] = {0x24, 0xF9, 0xE4, 0xCB, 0xC4, 0x6C, 0x9A, 0x60, 0x13, 0xCE, 0xFC, 0xE8, 0xC6, 0x4D, 0xC3, 0x75, 0x0E, 0xC7, 0xF4, 0x85, 0xE8, 0x51, 0x8A, 0x67, 0x67};
+    const char* message = DecryptName<0x13E33FA1A591AB67ULL>(messageSource);
+    MessageBoxA(nullptr, message, caption, 0);
   }
 
   static_cast<void>(CTipBoxMgr::Create());
   if (!g_itemTagOwner->RegisterLuaFunctions()) {
-    const std::uint8_t caption[] = {0xF2, 0x43, 0x9D, 0xAC, 0x71, 0xDF};
-    const std::uint8_t message[] = {0x71, 0x18, 0xDF, 0x89, 0x62, 0x8B, 0x0D, 0x83, 0x4C, 0x1D, 0xCA, 0xEB, 0x44, 0x9D, 0x44, 0x91, 0x25};
-    ShowEncryptedFailure<6, 0x4F99DF03C3EF31B7ULL, 0x11, 0xE52DF30DCBAF7125ULL>(caption, message);
+    const std::uint8_t captionSource[] = {0xF2, 0x43, 0x9D, 0xAC, 0x71, 0xDF};
+    const char* caption = DecryptName<0x4F99DF03C3EF31B7ULL>(captionSource);
+    const std::uint8_t messageSource[] = {0x71, 0x18, 0xDF, 0x89, 0x62, 0x8B, 0x0D, 0x83, 0x4C, 0x1D, 0xCA, 0xEB, 0x44, 0x9D, 0x44, 0x91, 0x25};
+    const char* message = DecryptName<0xE52DF30DCBAF7125ULL>(messageSource);
+    MessageBoxA(nullptr, message, caption, 0);
   }
 
   static_cast<void>(CSimpleStringMgr::Create());
@@ -6335,26 +6358,21 @@ void EquipmentProperties::CEquipmentPropertiesMgr::UnequipWearable(const int& ma
 // OFFSET: 0x006B71F0
 // FUNCTION: fn_06205
 void EquipmentProperties::CEquipmentPropertiesMgr::RefreshWearable(const int& key) {
-  CEquipmentWearable* wearable = nullptr;
-  for (auto& entry : this->properties1) {
-    if (entry.first == key) {
-      wearable = entry.second;
-      break;
-    }
-  }
-  if (wearable == nullptr) {
+  auto found = this->properties1.find(key);
+  if (found == this->properties1.end()) {
     return;
   }
-  wearable->IsPretend();
-  auto combinations = this->m_itemCombinations.find(static_cast<unsigned int>(wearable->GetId()));
+
+  found->second->IsPretend();
+  auto combinations = this->m_itemCombinations.find(found->second->GetId());
   if (combinations != this->m_itemCombinations.end()) {
     for (const unsigned int& combinationId : combinations->second) {
-      auto combination = this->properties3.find(combinationId);
-      if (combination != this->properties3.end()) {
-        combination->second->IsPretend();
+      if (this->properties3.find(combinationId) != this->properties3.end()) {
+        this->properties3[combinationId]->IsPretend();
       }
     }
   }
+
   if (this->unknown_0020 != nullptr) {
     this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
   }
