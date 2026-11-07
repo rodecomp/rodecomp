@@ -576,7 +576,7 @@ SessionRecord6144 CSession::FindRecord6144(int key) const {
     return found->second;
   }
 
-  return SessionRecord6144();
+  return {};
 }
 
 // OFFSET: 0x00E06FD0
