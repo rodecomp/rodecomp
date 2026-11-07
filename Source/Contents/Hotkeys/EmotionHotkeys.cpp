@@ -1,4 +1,5 @@
 #include "Contents/Hotkeys/EmotionHotkeys.h"
+#include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "File/File.h"
 #include "File/ShortcutFilename.h"
@@ -13,12 +14,13 @@
 // FUNCTION: fn_03463
 void EmotionHotkeys::Load(Json::Value& data) {
   Json::Value values = data["EmotionHotkey"];
-  this->saved.clear();
-  this->saved.resize(10);
+  EmotionHotkeys& hotkeys = g_session.m_emotionHotkeys;
+  hotkeys.saved.clear();
+  hotkeys.saved.resize(10);
 
   for (Json::UInt i = 0; i < values.size(); ++i) {
-    this->current[i] = FromUtf8(values[i].asString(), g_textCodePage);
-    this->saved[i] = FromUtf8(values[i].asString(), g_textCodePage);
+    hotkeys.current[i] = static_cast<const std::string&>(FromUtf8(values[i].asString(), g_textCodePage));
+    hotkeys.saved[i] = static_cast<const std::string&>(FromUtf8(values[i].asString(), g_textCodePage));
   }
 }
 
