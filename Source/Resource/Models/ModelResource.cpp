@@ -905,7 +905,7 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
       colors[index][2] = color;
     }
 
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Invalid Shade Type", 0);
+    ShowErrorDialog("Invalid Shade Type", 0);
     break;
   }
   }
