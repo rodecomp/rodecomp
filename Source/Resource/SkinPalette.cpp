@@ -18,6 +18,11 @@ std::uint32_t SkinPaletteColor(ResourceMgr& resources, const SkinPaletteCell& ce
   return 0;
 }
 
+// INLINED
+std::uint32_t __stdcall SkinPaletteColor(const SkinPaletteCell& cell, bool resolveSkin) {
+  return SkinPaletteColor(ResourceMgr::Instance(), cell, resolveSkin);
+}
+
 // OFFSET: 0x007E0FC0
 // FUNCTION: fn_09685
 void SkinPaletteChannels(ResourceMgr& resources, int x, int y, unsigned& red, unsigned& green, unsigned& blue) {
