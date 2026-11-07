@@ -43,9 +43,30 @@ struct ReplayRecordHeader {
   ReplayRecordHeader() : frame(0), tick(0), bytes(0) {}
   ~ReplayRecordHeader();
 };
+
+struct ReplayMetadataTag {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t bytes;
+
+  // INLINED
+  ReplayMetadataTag() : id(0), bytes(0) {}
+  // INLINED
+  ~ReplayMetadataTag() {
+    this->id = 0;
+    this->bytes = 0;
+  }
+
+  // INLINED
+  void Read(const unsigned char* source) {
+    this->bytes = 0;
+    this->id = 0;
+    std::memcpy(this, source, sizeof(*this));
+  }
+};
 #pragma pack(pop)
 
 static_assert(sizeof(ReplayTaggedRecordHeader) == 6);
+static_assert(sizeof(ReplayMetadataTag) == 6);
 static_assert(sizeof(ReplayRecordHeader) == 10);
 
 // OFFSET: 0x006DA340
@@ -480,31 +501,75 @@ std::uint32_t Replay::ParseMetadata(const std::vector<unsigned char>& data) {
     return 0xFFFFFFFF;
   }
 
-  const unsigned char* buffer = data.data();
-  const std::uint32_t size = static_cast<std::uint32_t>(data.size());
+  ReplayMetadataTag tag;
   std::uint32_t offset = 6;
+  tag.Read(&data[0]);
 
-  std::uint16_t signature = 0;
-  std::memcpy(&signature, buffer, sizeof(signature));
-
-  if (signature != 0x3B6) {
-    return 0xFFFFFFFF;
-  }
-
-  if (size > 6) {
-    do {
-      std::uint16_t id = 0;
-      std::uint32_t bytes = 0;
-      std::memcpy(&id, buffer + offset, sizeof(id));
-      std::memcpy(&bytes, buffer + offset + 2, sizeof(bytes));
+  if (tag.id != 0x3B6) {
+    offset = 0xFFFFFFFF;
+  } else {
+    while (offset < data.size()) {
+      tag.Read(&data[offset]);
       offset += 6;
 
-      switch (id) {
+      switch (tag.id) {
       case 0x3B7:
         return offset;
+      case 0x3C1:
+        std::memcpy(&this->header.service, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3C2:
+        std::memcpy(&this->header.serviceType, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3C3:
+        std::memcpy(&this->header.unknown_0014, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3C6:
+        std::memcpy(&this->header.accountId, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3C4:
+        std::memcpy(this->header.characterName, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3C5:
+        std::memcpy(this->header.mapName, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3C7:
+        std::memcpy(&this->header.cellX, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3C8:
+        std::memcpy(&this->header.cellY, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3C9:
+        std::memcpy(&this->header.unknown_0078, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3CA:
+        std::memcpy(&this->header.duration, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3CB:
+        std::memcpy(&this->header.records, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3CC:
+        std::memcpy(&this->header.fileOffset, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
+      case 0x3CD:
+        std::memcpy(&this->header.options, &data[offset], tag.bytes);
+        offset += tag.bytes;
+        break;
       case 0x3C0:
-        std::memcpy(&this->header.closingSignature, buffer + offset, bytes);
-        offset += bytes;
+        std::memcpy(&this->header.closingSignature, &data[offset], tag.bytes);
+        offset += tag.bytes;
 
         if (this->header.signature != this->header.closingSignature) {
           std::uint32_t fileOffset = this->fileOffset;
@@ -523,63 +588,11 @@ std::uint32_t Replay::ParseMetadata(const std::vector<unsigned char>& data) {
           this->header.duration = record.tick;
         }
         break;
-      case 0x3C1:
-        std::memcpy(&this->header.service, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3C2:
-        std::memcpy(&this->header.serviceType, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3C3:
-        std::memcpy(&this->header.unknown_0014, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3C4:
-        std::memcpy(this->header.characterName, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3C5:
-        std::memcpy(this->header.mapName, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3C6:
-        std::memcpy(&this->header.accountId, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3C7:
-        std::memcpy(&this->header.cellX, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3C8:
-        std::memcpy(&this->header.cellY, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3C9:
-        std::memcpy(&this->header.unknown_0078, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3CA:
-        std::memcpy(&this->header.duration, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3CB:
-        std::memcpy(&this->header.records, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3CC:
-        std::memcpy(&this->header.fileOffset, buffer + offset, bytes);
-        offset += bytes;
-        break;
-      case 0x3CD:
-        std::memcpy(&this->header.options, buffer + offset, bytes);
-        offset += bytes;
-        break;
       default:
-        offset += bytes;
+        offset += tag.bytes;
         break;
       }
-    } while (offset < size);
+    }
   }
 
   return offset;
