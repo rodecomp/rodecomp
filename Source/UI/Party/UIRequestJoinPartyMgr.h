@@ -35,6 +35,11 @@ private:
 
 extern UIRequestJoinPartyMgr* g_requestJoinPartyMgr;
 
+// INLINED
+inline void UIRequestJoinPartyMgr::Block(std::uint32_t accountId) {
+  this->m_blocked.push_back(accountId);
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(PartyJoinRequest, characterId) == 0x18);
 static_assert(offsetof(PartyJoinRequest, accountId) == 0x1C);

@@ -72,11 +72,6 @@ void UIRequestJoinPartyMgr::Add(std::uint32_t accountId, std::uint32_t character
   }
 }
 
-// INLINED
-void UIRequestJoinPartyMgr::Block(std::uint32_t accountId) {
-  this->m_blocked.push_back(accountId);
-}
-
 // OFFSET: 0x007BC110
 // FUNCTION: fn_09297
 void UIRequestJoinPartyMgr::Advance() {
