@@ -56,12 +56,8 @@ void UIReputeWnd::Slot15(int width, int height) {
   this->m_groupCombo->dropdownHeight = 160;
   this->m_groupCombo->SetSize(122, 18);
   this->m_groupCombo->Move(8, 25);
-  this->m_groupCombo->red = 239;
-  this->m_groupCombo->green = 239;
-  this->m_groupCombo->blue = 239;
-  this->m_groupCombo->borderRed = 99;
-  this->m_groupCombo->borderGreen = 99;
-  this->m_groupCombo->borderBlue = 99;
+  this->m_groupCombo->SetColor(239, 239, 239);
+  this->m_groupCombo->SetBorderColor(99, 99, 99);
   this->AddChild(this->m_groupCombo);
 
   this->m_searchEdit = new UIEditCtrl();
@@ -79,8 +75,7 @@ void UIReputeWnd::Slot15(int width, int height) {
   search->SetBitmap("유저인터페이스\\Reputation\\btn_search_over.bmp", 1, 0);
   search->SetBitmap("유저인터페이스\\Reputation\\btn_search_press.bmp", 2, 0);
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
-  const std::string searchLabel = LookupMessage(3777);
-  search->label = searchLabel;
+  search->SetLabel(LookupMessage(3777));
   search->Move(336, 25);
   search->SetId(321);
   this->AddChild(search);
@@ -227,12 +222,20 @@ void UIReputeWnd::Paint() {
 // FUNCTION: fn_04315
 int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 39:
+    if (sender == this->m_groupCombo) {
+      std::string group = this->m_groupCombo->GetSelectedText();
+      if (group.size() != 0) {
+        this->m_searchEdit->SetText("");
+        this->ClearUpdated();
+        this->FilterByGroup(group);
+        this->SetPage(1);
+        this->Invalidate();
+      }
+    }
+    break;
   case 6:
     switch (a) {
-    case 201:
-      this->ClearUpdated();
-      g_windowMgr.CloseWindow(346);
-      break;
     case 316:
       this->ClearUpdated();
       this->SetPage(this->m_page - 1);
@@ -242,6 +245,10 @@ int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->ClearUpdated();
       this->SetPage(this->m_page + 1);
       this->Invalidate();
+      break;
+    case 201:
+      this->ClearUpdated();
+      g_windowMgr.CloseWindow(346);
       break;
     case 321: {
       std::string keyword(this->m_searchEdit->Text() ? this->m_searchEdit->Text() : "");
@@ -272,18 +279,6 @@ int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
       this->m_groupCombo->Select(index);
       this->SendMsg(this->m_groupCombo, 39, 0, 0, 0, 0);
-    }
-    break;
-  case 39:
-    if (sender == this->m_groupCombo) {
-      std::string group = this->m_groupCombo->GetSelectedText();
-      if (group.size() != 0) {
-        this->m_searchEdit->SetText("");
-        this->ClearUpdated();
-        this->FilterByGroup(group);
-        this->SetPage(1);
-        this->Invalidate();
-      }
     }
     break;
   case 136: {

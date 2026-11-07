@@ -43,6 +43,10 @@ public:
   virtual void Enable(unsigned char value);
 
   void SetTooltip(const char* text);
+  // INLINED
+  void SetLabel(std::string text) {
+    this->label = text;
+  }
   void SetState(int state);
 
   // INLINED
