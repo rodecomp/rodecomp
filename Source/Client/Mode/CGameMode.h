@@ -700,7 +700,7 @@ public:
   void RemoveUnknown01A4(int value);
   bool RecordReplayMessage(int message, int value, int first, int second);
   void UpdateReplayActionSpeeds();
-  __declspec(noinline) struct ReplayTime StopReplayRecording();
+  __declspec(noinline) static struct ReplayTime StopReplayRecording();
   std::vector<unsigned char> WriteReplaySkillState();
   bool PickScreenTerrain(int& column, int& row);
   void ReceivePacket0AB8(const unsigned char* packet);

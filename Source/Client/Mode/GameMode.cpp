@@ -6688,7 +6688,7 @@ void CGameMode::End() {
     schedule->active = false;
   }
   g_timeScheduler->RemoveSchedulesByKey(4);
-  this->StopReplayRecording();
+  CGameMode::StopReplayRecording();
   g_soundMgr->EndSamples();
 
   if (this->scene) {
