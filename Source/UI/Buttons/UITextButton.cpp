@@ -2904,7 +2904,7 @@ void UIItemTagOnMegaPhone::PlaceTagButton(UIWindow* button, const std::string& n
 // FUNCTION: fn_11357
 void UIComboBox_BmpWnd::Paint() {
   this->ClearSurface(RGB(this->red, this->green, this->blue));
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->name.c_str())))->image, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->name.c_str()))), false);
 }
 
 // OFFSET: 0x008904C0
