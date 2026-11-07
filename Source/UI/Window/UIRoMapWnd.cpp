@@ -232,8 +232,10 @@ void UIRoMapWnd::DrawFieldLabels() {
         continue;
       }
 
-      const int textWidth = this->TextWidth(name.c_str(), 0, 0, townHeight, 0, 0);
-      const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - area[2] - area[0]) * g_depthAverageHalf));
+      const int left = area[0];
+      const int right = area[2];
+      const int textWidth = this->TextWidth(std::string(name).c_str(), 0, 0, townHeight, 0, 0);
+      const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - right - left) * g_depthAverageHalf));
       const int y = townHeight + 2 + area[1];
       this->DrawTextAt(x + 1, y + 1, name.c_str(), 0, 0, townHeight, townOutline, 0, 0);
       this->DrawTextAt(x, y, name.c_str(), 0, 0, townHeight, townColor, 0, 0);
