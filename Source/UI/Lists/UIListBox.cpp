@@ -146,11 +146,11 @@ void UIChatHisBox::AddTextWrapped(const char* text, int color, const char* style
 
   for (unsigned index = 0; index < lines.size(); ++index) {
     const std::size_t length = std::strlen(lines[index].c_str());
-    char* copy = static_cast<char*>(std::malloc(length + 1));
+    char* copy = new char[length + 1];
     std::strcpy(copy, lines[index].c_str());
     copy[length] = 0;
     this->AddText(copy, color, style);
-    std::free(copy);
+    delete[] copy;
   }
 }
 
