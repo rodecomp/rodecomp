@@ -2430,13 +2430,14 @@ bool CSession::HasNoUnknown1784Items() const {
 // OFFSET: 0x00DFA3C0
 // FUNCTION: fn_23573
 bool CSession::HasItem1740Number(int value) const {
-  for (const ITEM_INFO& item : this->unknown_1740) {
-    if (std::atoi(item.itemId.c_str()) == value) {
-      return true;
+  std::list<ITEM_INFO>::const_iterator it = this->unknown_1740.begin();
+  for (; it != this->unknown_1740.end(); ++it) {
+    if (value == std::atoi(it->itemId.c_str())) {
+      break;
     }
   }
 
-  return false;
+  return it != this->unknown_1740.end();
 }
 
 // OFFSET: 0x00DFA420
@@ -2740,9 +2741,12 @@ void CSession::LoadMiniPartyInfo() {
       }
       break;
     }
+    case '}':
+      this->unknown_0734.push_back(record);
+      break;
     case '{': {
       ++i;
-      std::memset(name, 0, sizeof(name));
+      std::memset(name, 0, sizeof(name) - 1);
       std::memset(token, 0, sizeof(token));
       int position = 0;
       while (data[i] != ',') {
@@ -2758,12 +2762,9 @@ void CSession::LoadMiniPartyInfo() {
       }
       break;
     }
-    case '}':
-      this->unknown_0734.push_back(record);
-      break;
     case '\n':
     case '\r':
-      break;
+      continue;
     }
   }
 
@@ -3346,8 +3347,8 @@ bool CSession::LoadMapViewParameters() {
 
   const char* cursor = static_cast<const char*>(file.GetData());
   const char* end = cursor + file.GetSize();
-  std::string name;
   std::vector<std::string> values;
+  std::string name;
 
   for (const char* start = cursor; cursor < end; ++cursor) {
     const char value = *cursor;
