@@ -193,14 +193,14 @@ void UIBattleMsgOptionWnd::Paint() {
   const int leftCount = leftHeight / 8 + (leftHeight % 8 != 0);
   for (int i = 0, y = 19; i < leftCount; ++i, y += 8) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+    this->DrawBitmap(0, y, left, false);
   }
 
   const int rightHeight = this->geometry.height - 38;
   const int rightCount = rightHeight / 8 + (rightHeight % 8 != 0);
   for (int i = 0, y = 17; i < rightCount; ++i, y += 8) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red, green, blue;
@@ -228,7 +228,7 @@ void UIBattleMsgOptionWnd::Paint() {
     auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
       Resolve(online ? "유저인터페이스\\basic_interface\\grp_online.bmp" : "유저인터페이스\\basic_interface\\grp_offline.bmp")
     ));
-    this->DrawBitmap(27, y, &icon->image, true);
+    this->DrawBitmap(27, y, icon, true);
 
     if (row == this->m_visibleRows) {
       return;
