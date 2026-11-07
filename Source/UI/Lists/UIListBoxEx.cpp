@@ -186,6 +186,51 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   const int value = static_cast<int>(a);
 
   switch (message) {
+  case 40:
+    this->selected = value;
+
+    if (this->selected < 0) {
+      this->selected = 0;
+    }
+
+    if (static_cast<unsigned>(this->selected) > this->lines.size() - 1) {
+      this->selected = static_cast<int>(this->lines.size()) - 1;
+    }
+
+    if (this->selected < this->topLine) {
+      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
+    }
+
+    if (this->selected > this->topLine + this->geometry.height / this->lineHeight - 1) {
+      this->SendMsg(nullptr, 7, 1, 0, 0, 0);
+    }
+
+    break;
+
+  case 18:
+    if (--this->selected < 0) {
+      this->selected = 0;
+    }
+
+    if (this->selected < this->topLine) {
+      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
+    }
+
+    break;
+
+  case 19:
+    ++this->selected;
+
+    if (static_cast<unsigned>(this->selected) > this->lines.size() - 1) {
+      this->selected = static_cast<int>(this->lines.size()) - 1;
+    }
+
+    if (this->selected > this->topLine + this->geometry.height / this->lineHeight - 1) {
+      this->SendMsg(nullptr, 7, 1, 0, 0, 0);
+    }
+
+    break;
+
   case 7:
   case 9:
   case 10: {
@@ -217,6 +262,7 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     }
     return (this->topLine - previous);
   }
+
   case 8:
   case 11:
   case 12: {
@@ -244,48 +290,7 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
     return (this->horizontalOffset - previous);
   }
-  case 18:
-    if (--this->selected < 0) {
-      this->selected = 0;
-    }
 
-    if (this->selected < this->topLine) {
-      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
-    }
-
-    break;
-  case 19:
-    ++this->selected;
-
-    if (static_cast<unsigned>(this->selected) > this->lines.size() - 1) {
-      this->selected = static_cast<int>(this->lines.size()) - 1;
-    }
-
-    if (this->selected > this->topLine + this->geometry.height / this->lineHeight - 1) {
-      this->SendMsg(nullptr, 7, 1, 0, 0, 0);
-    }
-
-    break;
-  case 40:
-    this->selected = value;
-
-    if (this->selected < 0) {
-      this->selected = 0;
-    }
-
-    if (static_cast<unsigned>(this->selected) > this->lines.size() - 1) {
-      this->selected = static_cast<int>(this->lines.size()) - 1;
-    }
-
-    if (this->selected < this->topLine) {
-      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
-    }
-
-    if (this->selected > this->topLine + this->geometry.height / this->lineHeight - 1) {
-      this->SendMsg(nullptr, 7, 1, 0, 0, 0);
-    }
-
-    break;
   default:
     return UIWindow::SendMsg(sender, message, a, b, c, d);
   }
