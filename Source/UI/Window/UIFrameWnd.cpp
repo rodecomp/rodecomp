@@ -143,9 +143,11 @@ void UIFrameWnd::Slot27(int x, int y) {
     return;
   }
 
-  this->ToScreen(x, y);
-  const int dx = x - this->m_dragX;
-  const int dy = y - this->m_dragY;
+  int screenX = x;
+  int screenY = y;
+  this->ToScreen(screenX, screenY);
+  const int dx = screenX - this->m_dragX;
+  const int dy = screenY - this->m_dragY;
 
   if (!g_snapMgr.Contains(this)) {
     this->Move(this->m_originX + dx, this->m_originY + dy);
