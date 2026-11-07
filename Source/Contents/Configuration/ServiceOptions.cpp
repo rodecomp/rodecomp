@@ -678,18 +678,16 @@ void GameSettings::ResetToDefaults() {
 // OFFSET: 0x006C27D0
 // FUNCTION: fn_06323
 void GameSettings::ToggleOption(int id) {
-  for (const GameSettingsOption& option : this->options) {
-    if (option.id != id) {
-      continue;
-    }
+  const std::optional<GameSettingsOption*> option = this->FindOption(id);
+  if (!option) {
+    return;
+  }
 
-    if (option.type == 0) {
-      this->SetOption(id, g_serviceOptions.Get(id) == 0, true);
-      g_windowMgr.RefreshGameSettingOption(id);
-    } else if (option.type == 1) {
-      this->RunFunction(id);
-    }
-    break;
+  if ((*option)->type == 0) {
+    this->SetOption(id, g_serviceOptions.Get(id) == 0, true);
+    g_windowMgr.RefreshGameSettingOption(id);
+  } else if ((*option)->type == 1) {
+    this->RunFunction(id);
   }
 }
 
