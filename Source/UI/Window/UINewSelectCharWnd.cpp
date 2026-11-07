@@ -1128,8 +1128,9 @@ __declspec(noinline) void UINewSelectCharWnd::UpdateDeleteButtons() {
   }
 
   if (this->m_slotStatus[slot] == 1) {
-    static_cast<UIButton*>(this->m_windowC0)->SetDisabled(1);
-    this->m_windowC0->Invalidate();
+    UIButton* button = static_cast<UIButton*>(this->m_windowC0);
+    button->SetDisabled(1);
+    button->Invalidate();
     static_cast<UIButton*>(this->m_windowC4)->Enable(0);
     static_cast<UIButton*>(this->m_window100)->Enable(0);
     return;
@@ -1141,15 +1142,21 @@ __declspec(noinline) void UINewSelectCharWnd::UpdateDeleteButtons() {
   }
 
   if (info->deleteDate > 0) {
-    static_cast<UIButton*>(this->m_windowC0)->SetDisabled(1);
-    this->m_windowC0->Invalidate();
+    UIButton* button = static_cast<UIButton*>(this->m_windowC0);
+    button->SetDisabled(1);
+    button->Invalidate();
     static_cast<UIButton*>(this->m_window100)->Enable(1);
     static_cast<UIButton*>(this->m_windowC4)->Enable(1);
     Timestamp deleteDate(info->deleteDate);
-    static_cast<UIButton*>(this->m_window100)->Enable(deleteDate.IsBeforeNow() == 1 ? 1 : 0);
+    if (deleteDate.IsBeforeNow() == 1) {
+      static_cast<UIButton*>(this->m_window100)->Enable(1);
+    } else {
+      static_cast<UIButton*>(this->m_window100)->Enable(0);
+    }
   } else {
-    static_cast<UIButton*>(this->m_windowC0)->SetDisabled(0);
-    this->m_windowC0->Invalidate();
+    UIButton* button = static_cast<UIButton*>(this->m_windowC0);
+    button->SetDisabled(0);
+    button->Invalidate();
     static_cast<UIButton*>(this->m_window100)->Enable(0);
     static_cast<UIButton*>(this->m_windowC4)->Enable(0);
   }
