@@ -72,13 +72,12 @@ void UIWindowMgr::FocusNext() {
   }
 
   UIWindow* next = this->hoverWindow->parent->NextFocusable(this->hoverWindow);
-  if (!next) {
+  if (next) {
+    if (next->Slot05()) {
+      this->SetFocus(next);
+    }
+  } else {
     this->SetFocus(nullptr);
-    return;
-  }
-
-  if (next->Slot05()) {
-    this->SetFocus(next);
   }
 }
 
@@ -96,13 +95,12 @@ void UIWindowMgr::FocusPrevious() {
   }
 
   UIWindow* previous = this->hoverWindow->parent->PreviousFocusable(this->hoverWindow);
-  if (!previous) {
+  if (previous) {
+    if (previous->Slot05()) {
+      this->SetFocus(previous);
+    }
+  } else {
     this->SetFocus(nullptr);
-    return;
-  }
-
-  if (previous->Slot05()) {
-    this->SetFocus(previous);
   }
 }
 
