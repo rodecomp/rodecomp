@@ -342,30 +342,6 @@ void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
   UIWindow* const chatWindow = ChatWindow() ? ChatWindow()->m_suggestions : nullptr;
 
   switch (key) {
-  case VK_BACK:
-    if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) == 0 && g_serverLanguage->cursor >= 2 && g_serverLanguage->cursor - 1 < this->text.size()) {
-      const bool lineBreak = this->text.substr(g_serverLanguage->cursor - 2, 2) == "\r\n";
-      if (lineBreak) {
-        g_serverLanguage->Character(VK_BACK, lparam);
-      }
-    }
-    this->caretStart = std::chrono::system_clock::now();
-    break;
-  case VK_END:
-    if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
-      g_serverLanguage->AdvanceCursor(static_cast<int>(this->text.size()) - g_serverLanguage->cursor);
-    } else {
-      g_serverLanguage->AdvanceCursor(static_cast<int>(this->lines[this->line].text.size()) - this->column);
-      this->unknown_01DC = 1;
-    }
-    return;
-  case VK_HOME:
-    if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
-      g_serverLanguage->RetreatCursor(g_serverLanguage->cursor);
-    } else {
-      g_serverLanguage->RetreatCursor(this->column);
-    }
-    break;
   case VK_LEFT:
     if (g_serverLanguage->cursor >= 2 && g_serverLanguage->cursor - 1 < this->text.size()) {
       const bool lineBreak = this->text.substr(g_serverLanguage->cursor - 2, 2) == "\r\n";
@@ -376,11 +352,27 @@ void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
     g_serverLanguage->KeyDown(key, lparam);
     this->caretStart = std::chrono::system_clock::now();
     break;
-  case VK_UP:
-  case VK_DOWN:
-    return;
   case VK_RIGHT:
     if (g_serverLanguage->cursor >= 0 && g_serverLanguage->cursor + 1 < this->text.size()) {
+      const bool lineBreak = this->text.substr(g_serverLanguage->cursor, 2) == "\r\n";
+      if (lineBreak) {
+        g_serverLanguage->KeyDown(key, lparam);
+      }
+    }
+    g_serverLanguage->KeyDown(key, lparam);
+    this->caretStart = std::chrono::system_clock::now();
+    break;
+  case VK_BACK:
+    if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) == 0 && g_serverLanguage->cursor >= 2 && g_serverLanguage->cursor - 1 < this->text.size()) {
+      const bool lineBreak = this->text.substr(g_serverLanguage->cursor - 2, 2) == "\r\n";
+      if (lineBreak) {
+        g_serverLanguage->Character(VK_BACK, lparam);
+      }
+    }
+    this->caretStart = std::chrono::system_clock::now();
+    break;
+  case VK_DELETE:
+    if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) == 0 && g_serverLanguage->cursor >= 0 && g_serverLanguage->cursor + 1 < this->text.size()) {
       const bool lineBreak = this->text.substr(g_serverLanguage->cursor, 2) == "\r\n";
       if (lineBreak) {
         g_serverLanguage->KeyDown(key, lparam);
@@ -395,21 +387,29 @@ void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
   case 'X':
     g_serverLanguage->KeyDown(key, lparam);
     break;
-  case VK_DELETE:
-    if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) == 0 && g_serverLanguage->cursor >= 0 && g_serverLanguage->cursor + 1 < this->text.size()) {
-      const bool lineBreak = this->text.substr(g_serverLanguage->cursor, 2) == "\r\n";
-      if (lineBreak) {
-        g_serverLanguage->KeyDown(key, lparam);
-      }
-    }
-    g_serverLanguage->KeyDown(key, lparam);
-    this->caretStart = std::chrono::system_clock::now();
-    break;
   case 'A':
     if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
       g_serverLanguage->Select(0, static_cast<int>(this->text.size()));
     }
     break;
+  case VK_HOME:
+    if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
+      g_serverLanguage->RetreatCursor(g_serverLanguage->cursor);
+    } else {
+      g_serverLanguage->RetreatCursor(this->column);
+    }
+    break;
+  case VK_UP:
+  case VK_DOWN:
+    return;
+  case VK_END:
+    if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
+      g_serverLanguage->AdvanceCursor(static_cast<int>(this->text.size()) - g_serverLanguage->cursor);
+    } else {
+      g_serverLanguage->AdvanceCursor(static_cast<int>(this->lines[this->line].text.size()) - this->column);
+      this->unknown_01DC = 1;
+    }
+    return;
   }
 
   this->ResetDragState();
