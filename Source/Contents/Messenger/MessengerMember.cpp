@@ -339,7 +339,7 @@ void UIDragMiniPartyWnd::Paint() {
     if (this->member.dead == 1) {
       dead = true;
     } else if (this->member.accountId == g_session.m_aid) {
-      dead = (*reinterpret_cast<const int*>(reinterpret_cast<const char*>(g_modeMgr.GetGameMode()) + 0x250) == 1);
+      dead = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0250 == 1;
     }
 
     int yOffset = this->member.leader ? 0 : 2;
@@ -349,7 +349,7 @@ void UIDragMiniPartyWnd::Paint() {
     this->DrawBitmap(
       this->iconPositions[this->iconIndex].x,
       this->iconPositions[this->iconIndex].y + yOffset,
-      reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(path))),
+      static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))),
       true
     );
 
@@ -358,14 +358,14 @@ void UIDragMiniPartyWnd::Paint() {
       this->DrawBitmap(
         this->iconPositions[this->iconIndex].x + 2,
         0,
-        reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(path))),
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))),
         true
       );
     }
 
-    const char* mapName = g_session.GetMapDisplayName(this->member.map.c_str());
+    const std::string mapName = g_session.GetMapDisplayName(this->member.map.c_str());
     char text[256];
-    sprintf(text, "%d %s(%s)", this->member.level, this->member.name.c_str(), mapName);
+    sprintf(text, "%d %s(%s)", this->member.level, this->member.name.c_str(), mapName.c_str());
     std::string clipped = this->FitDisplayText(this->geometry.width - 0x43, text, 0, 12, 1);
     this->DrawTextAt(
       this->iconPositions[this->iconIndex].x + 0x1C,
@@ -409,7 +409,7 @@ void UIDragMiniPartyWnd::Paint() {
     }
 
     sprintf(path, statusIcon, prefix.c_str());
-    const BitmapImage* statusBmp = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(path)));
+    CBitmapRes* statusBmp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
     if (this->gauge) {
       this->DrawBitmap(
         static_cast<int>(this->geometry.width * 0.8f),
