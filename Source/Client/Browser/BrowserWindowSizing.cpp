@@ -10,13 +10,14 @@ void CWebBrowser::Resize(int requestedWidth, int requestedHeight) {
   this->width = requestedWidth == this->screenWidth ? requestedWidth - 1 : requestedWidth;
   int height = requestedHeight == this->screenHeight ? requestedHeight - 1 : requestedHeight;
 
+  int toolbarHeight = 0;
   if (this->rebar && this->auxiliaryVisible != 0) {
     RECT rectangle;
     GetClientRect(this->rebar, &rectangle);
-    height -= (rectangle.bottom - rectangle.top + 4);
+    toolbarHeight = rectangle.bottom - rectangle.top + 4;
   }
 
-  this->height = height;
+  this->height = height - toolbarHeight;
   this->browser->put_Width(this->width);
   this->browser->put_Height(this->height);
 
