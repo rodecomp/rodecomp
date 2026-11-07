@@ -49,6 +49,13 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot53(int resolv
 
 
 
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+static const char* DecryptName(const char (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
+}
+
 // OFFSET: 0x00A0F790
 // FUNCTION: fn_15176
 bool UnusedTrueA0F790() {
@@ -623,12 +630,9 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->unknown_00E8 = new CUIStaticImage();
   this->unknown_00E8->SetSize(32, 32);
   this->unknown_00E8->Move(9, 0);
-  const char backgroundSource[] = {'\x4F', '\x12', '\x2F', '\x7D', '\xBD', '\x0B', '\x68', '\xB8', '\x49', '\x59', '\x2F', '\x4B', '\xC0', '\x7F', '\xF1', '\x17',
+  this->unknown_00E8->SetImage(std::string(DecryptName<0x75ADC57D87EFBD8FULL>({'\x4F', '\x12', '\x2F', '\x7D', '\xBD', '\x0B', '\x68', '\xB8', '\x49', '\x59', '\x2F', '\x4B', '\xC0', '\x7F', '\xF1', '\x17',
                                    '\xEE', '\xCE', '\x86', '\xE4', '\x22', '\xAC', '\xC3', '\x01', '\xEA', '\xCF', '\x89', '\xE6', '\x1E', '\xA0', '\xF1', '\x1C',
-                                   '\xFB', '\xD8', '\x82', '\xF0', '\x14', '\xAB', '\xF2', '\x18', '\xE6', '\xD9', '\xC1', '\xE5', '\x10', '\xB5', '\xAD'};
-  thread_local EncryptedName<sizeof(backgroundSource), 0x75ADC57D87EFBD8FULL> backgroundName(backgroundSource);
-  std::string background(backgroundName.Text());
-  this->unknown_00E8->SetImage(background);
+                                   '\xFB', '\xD8', '\x82', '\xF0', '\x14', '\xAB', '\xF2', '\x18', '\xE6', '\xD9', '\xC1', '\xE5', '\x10', '\xB5', '\xAD'})));
   this->AddChild(this->unknown_00E8);
 
   this->itemIcon = new CUIGameItem();
@@ -645,9 +649,7 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->unknown_00F0->SetText("");
   this->unknown_00F0->SetFitText(0);
   this->unknown_00F0->SetAlign(0, 6);
-  const char nameFontSource[] = {'\x2A', '\xCE', '\xF9', '\x44', '\xFE', '\xFB'};
-  thread_local EncryptedName<sizeof(nameFontSource), 0xC517FB932D95BB6DULL> nameFont(nameFontSource);
-  this->unknown_00F0->SetFont(std::string(nameFont.Text()));
+  this->unknown_00F0->SetFont(std::string(DecryptName<0xC517FB932D95BB6DULL>({'\x2A', '\xCE', '\xF9', '\x44', '\xFE', '\xFB'})));
   this->unknown_00F0->SetFontHeight(11);
   this->unknown_00F0->SetBold(0);
   this->unknown_00F0->SetColor(0);
@@ -661,9 +663,7 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
   this->unknown_00F4->SetText("");
   this->unknown_00F4->SetFitText(1);
   this->unknown_00F4->SetAlign(0, 6);
-  const char countFontSource[] = {'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'};
-  thread_local EncryptedName<sizeof(countFontSource), 0x23BBD58F8B5FF5C9ULL> countFont(countFontSource);
-  this->unknown_00F4->SetFont(std::string(countFont.Text()));
+  this->unknown_00F4->SetFont(std::string(DecryptName<0x23BBD58F8B5FF5C9ULL>({'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'})));
   this->unknown_00F4->SetFontHeight(12);
   this->unknown_00F4->SetBold(0);
   this->unknown_00F4->SetColor(0);
