@@ -25,32 +25,6 @@ int g_nameBalloonFontHeight = 12;
 
 namespace {
   // INLINED
-  int Family(unsigned mode) {
-    int family = 0;
-    if (mode == 3) {
-      family = 22;
-    } else if (mode == 2) {
-      family = 20;
-    } else if (mode == 1) {
-      family = 21;
-    } else if (mode == 4) {
-      family = 23;
-    } else if (mode == 5) {
-      family = 24;
-    } else if (mode == 6) {
-      family = 25;
-    } else if (mode == 7) {
-      family = 26;
-    } else if (mode == 8) {
-      family = 27;
-    } else if (mode == 9) {
-      family = 28;
-    }
-
-    return family;
-  }
-
-  // INLINED
   SIZE Measure(UIBalloonText& window, const std::string& text, int family, int height) {
     if (text.empty()) {
       return {0, 0};
@@ -129,12 +103,29 @@ void UIBalloonText::FitText() {
   int height = 4;
 
   for (unsigned int index = 0; index < this->m_lines.size(); ++index) {
-    const int family = Family(this->m_fontMode);
-    width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, family, this->m_fontHeight, 0, 0));
-
-    if (family == 22) {
-      height = (height + (this->TextHeight(this->m_lines[index].c_str(), 0, family, this->m_fontHeight, 0, 0) + 4));
+    if (this->m_fontMode == 3) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 22, this->m_fontHeight, 0, 0));
+      height = (height + (this->TextHeight(this->m_lines[index].c_str(), 0, 22, this->m_fontHeight, 0, 0) + 4));
+    } else if (this->m_fontMode == 2) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 20, this->m_fontHeight, 0, 0));
+    } else if (this->m_fontMode == 1) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 21, this->m_fontHeight, 0, 0));
+    } else if (this->m_fontMode == 4) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 23, this->m_fontHeight, 0, 0));
+    } else if (this->m_fontMode == 5) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 24, this->m_fontHeight, 0, 0));
+    } else if (this->m_fontMode == 6) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 25, this->m_fontHeight, 0, 0));
+    } else if (this->m_fontMode == 7) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 26, this->m_fontHeight, 0, 0));
+    } else if (this->m_fontMode == 8) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 27, this->m_fontHeight, 0, 0));
+    } else if (this->m_fontMode == 9) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 28, this->m_fontHeight, 0, 0));
+    } else {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, 0, 0));
     }
+
     if (this->m_fontMode != 3) {
       height = (height + (this->TextHeight(this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, 0, 0) + 4));
     }
