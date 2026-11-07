@@ -469,6 +469,7 @@ const char* CSession::GetMapDisplayName(const char* mapName) {
   return g_mapInfoMgr->GetDisplayName(mapName);
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x00DDE800
 // FUNCTION: fn_23400
 std::uint32_t CSession::GetPartyMemberAid(const char* name) {
@@ -480,6 +481,7 @@ std::uint32_t CSession::GetPartyMemberAid(const char* name) {
 
   return 0;
 }
+#pragma inline_depth()
 
 // OFFSET: 0x00DE0A50
 // FUNCTION: fn_23466
