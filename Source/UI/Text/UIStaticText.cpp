@@ -58,39 +58,35 @@ void UIStaticText::SetTextFitted(const char* value) {
   this->tooltip = value;
   this->tooltipEnabled = 0;
 
-  if (this->geometry.surface == nullptr) {
-    this->text = value;
-    this->Invalidate();
-    return;
+  if (this->geometry.surface != nullptr) {
+    int width = this->TextWidth(value, 0, this->fontFamily, this->fontHeight, this->bold, 0);
+    this->TextWidth("...", 0, this->fontFamily, this->fontHeight, this->bold, 0);
+
+    if (this->geometry.width < width) {
+      this->tooltipEnabled = 1;
+      this->text = value;
+      std::string truncated = value;
+      while (this->geometry.width < width) {
+        if (truncated.size() <= 1) {
+          this->text = truncated + "...";
+          break;
+        }
+
+        if (truncated.size() >= 2) {
+          const std::size_t size = truncated.size();
+          truncated.resize(truncated[size - 2] < 0 && truncated[size - 1] < 0 ? size - 2 : size - 1);
+        }
+
+        this->text = truncated + "...";
+        width = this->TextWidth(this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->bold, 0);
+      }
+
+      this->Invalidate();
+      return;
+    }
   }
 
-  int width = this->TextWidth(value, 0, this->fontFamily, this->fontHeight, this->bold, 0);
-  this->TextWidth("...", 0, this->fontFamily, this->fontHeight, this->bold, 0);
-
-  if (this->geometry.width >= width) {
-    this->text = value;
-    this->Invalidate();
-    return;
-  }
-
-  this->tooltipEnabled = 1;
   this->text = value;
-  std::string truncated = value;
-  while (this->geometry.width < width) {
-    if (truncated.size() <= 1) {
-      this->text = truncated + "...";
-      break;
-    }
-
-    if (truncated.size() >= 2) {
-      const std::size_t size = truncated.size();
-      truncated.resize(truncated[size - 2] < 0 && truncated[size - 1] < 0 ? size - 2 : size - 1);
-    }
-
-    this->text = truncated + "...";
-    width = this->TextWidth(this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->bold, 0);
-  }
-
   this->Invalidate();
 }
 
