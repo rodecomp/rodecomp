@@ -35,13 +35,13 @@ void UIDebuffRemoveWnd::Slot15(int width, int height) {
 // OFFSET: 0x0094B5C0
 // FUNCTION: fn_12893
 void UIGuild_Storage_Log::Slot15(int width, int height) {
-  const int positions[3][3] = {{160, 229, 0}, {215, 229, 0}, {350, 225, 0}};
   const int ids[3] = {246, 218, 184};
   const char* const bitmaps[3][3] = {
     {"stickon", "stickon_a", "stickon_b"},
     {"stickoff", "stickoff_a", "stickoff_b"},
     {"btn_close", "btn_close_a", "btn_close_b"},
   };
+  const int positions[3][3] = {{160, 229}, {215, 229}, {350, 225}};
 
   int y = 60;
   for (int row = 0; row < 10; ++row) {
