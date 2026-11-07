@@ -3192,7 +3192,7 @@ CSevereRainStorm::~CSevereRainStorm() {
 
 // OFFSET: 0x0071D650
 // FUNCTION: fn_07334
-void __stdcall fn_07334(CParticle* particle) {
+void CNewCloudKillEffect::ResetMistParticle(CParticle* particle) {
   particle->alpha = 0;
   *reinterpret_cast<int*>(particle->unknown_0048) = std::max(rand() % 50, 0) + 150;
   particle->unknown_00A8 = 0;
@@ -3293,7 +3293,7 @@ void CNewCloudKillEffect::Open() {
 
 // OFFSET: 0x0071DB70
 // FUNCTION: fn_07337
-void __stdcall fn_07337(CParticle* particle) {
+void CNewCloudKillEffect::ResetCloudParticle(CParticle* particle) {
   particle->unknown_00A9[0] = std::max(rand() % 2, 0);
 
   const int angle = std::max(rand() % 360, 0);
@@ -3309,7 +3309,7 @@ void __stdcall fn_07337(CParticle* particle) {
 
 // OFFSET: 0x0071DC70
 // FUNCTION: fn_07338
-void __stdcall fn_07338(CParticle* particle) {
+void CNewCloudKillEffect::ResetLightning(CParticle* particle) {
   particle->scale = static_cast<float>(std::max(rand() % 5, 0)) + 10.0f;
   particle->unknown_00A8 = 10;
   particle->unknown_00A9[0] = std::max(rand() % 4, 0);
@@ -3324,7 +3324,7 @@ void __stdcall fn_07338(CParticle* particle) {
 
 // OFFSET: 0x0071DD80
 // FUNCTION: fn_07339
-void __stdcall fn_07339(CParticle* particle) {
+void CNewCloudKillEffect::ResetSmokeParticle(CParticle* particle) {
   particle->alpha = 0;
   particle->unknown_00A8 = 0;
   particle->unknown_00E8 = 0;
