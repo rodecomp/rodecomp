@@ -2390,7 +2390,7 @@ void GameSettingsUI::CUIComboItem::Slot15(int width, int height) {
   this->m_text = new CUIStaticText();
   this->m_text->SetSize(155, 16);
   this->m_text->Move(3, 0);
-  this->m_text->SetText("", 0);
+  this->m_text->SetText("");
   this->m_text->SetFitText(1);
   this->m_text->SetAlign(0, 6);
   this->m_text->SetFont(std::string([]() {
