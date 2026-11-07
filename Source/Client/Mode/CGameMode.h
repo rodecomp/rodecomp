@@ -702,6 +702,7 @@ public:
   void UpdateReplayActionSpeeds();
   __declspec(noinline) struct ReplayTime StopReplayRecording();
   std::vector<unsigned char> WriteReplaySkillState();
+  bool PickScreenTerrain(int& column, int& row);
   void ReceivePacket0AB8(const unsigned char* packet);
   void ReceivePacket0A29(int value);
   void ReceiveCashShopBanner(int value1, int value2, int value3);

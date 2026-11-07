@@ -703,6 +703,39 @@ struct GameModeChunkHeader {
 
 static_assert(sizeof(GameModeChunkHeader) == 6);
 
+// INLINED
+__forceinline std::vector<unsigned char> MakeEmptyChunk(std::int16_t type) {
+  std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+  auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+  header->type = type;
+  header->size = 0;
+  return chunk;
+}
+
+// INLINED
+template <class Record>
+__forceinline std::vector<unsigned char> MakeRecordChunk(std::int16_t type, Record value) {
+  std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader) + sizeof(Record));
+  auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+  header->type = type;
+  header->size = sizeof(Record);
+  *reinterpret_cast<Record*>(chunk.data() + sizeof(GameModeChunkHeader)) = value;
+  return chunk;
+}
+
+// INLINED
+template <class Element>
+__forceinline std::vector<unsigned char> MakeDataChunk(std::int16_t type, const std::vector<Element>& payload) {
+  std::vector<unsigned char> chunk(payload.size() + sizeof(GameModeChunkHeader));
+  auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+  header->type = type;
+  header->size = payload.size();
+  if (payload.size() != 0) {
+    std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), payload.data(), payload.size());
+  }
+  return chunk;
+}
+
 // OFFSET: 0x00CEC6A0
 // FUNCTION: fn_21356
 unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& data) {
@@ -5280,10 +5313,7 @@ std::vector<unsigned char> CGameMode::SaveActiveSkillEffects() {
   std::vector<unsigned char> data;
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 19000;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(19000);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -5292,19 +5322,12 @@ std::vector<unsigned char> CGameMode::SaveActiveSkillEffects() {
       effect.unknown_0004 -= timeGetTime();
     }
 
-    std::vector<unsigned char> chunk(sizeof(GameModeStoredSkillEffect));
-    auto* record = reinterpret_cast<GameModeStoredSkillEffect*>(chunk.data());
-    record->header.type = 0x4A43;
-    record->header.size = sizeof(ActiveSkillEffect);
-    record->effect = effect;
+    const std::vector<unsigned char> chunk = MakeRecordChunk(0x4A43, effect);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 19001;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(19001);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -5317,27 +5340,17 @@ std::vector<unsigned char> CGameMode::SaveUnknown024C() {
   std::vector<unsigned char> data;
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 14000;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(14000);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeStoredValue));
-    auto* record = reinterpret_cast<GameModeStoredValue*>(chunk.data());
-    record->header.type = 14011;
-    record->header.size = sizeof(int);
-    record->value = this->unknown_024C;
+    const std::vector<unsigned char> chunk = MakeRecordChunk(14011, this->unknown_024C);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 14001;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(14001);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -5700,10 +5713,7 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
   std::vector<unsigned char> data;
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 17000;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(17000);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -5722,19 +5732,12 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
     packet.x = static_cast<std::int16_t>(static_cast<int>(column));
     packet.y = static_cast<std::int16_t>(static_cast<int>(row));
 
-    std::vector<unsigned char> chunk(sizeof(GameModeStoredSkillEntry));
-    auto* record = reinterpret_cast<GameModeStoredSkillEntry*>(chunk.data());
-    record->header.type = 0xCD;
-    record->header.size = sizeof(SkillEntryPacket);
-    record->packet = packet;
+    const std::vector<unsigned char> chunk = MakeRecordChunk(0xCD, packet);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 17001;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(17001);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -5809,57 +5812,32 @@ std::vector<unsigned char> CGameMode::SaveNameCardState() {
   std::vector<unsigned char> data;
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 13000;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(13000);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   std::vector<char> buffer;
   std::vector<std::string> names;
   if (static_cast<int>(this->nameCard.Save(buffer)) > 0) {
-    std::vector<unsigned char> chunk(buffer.size() + sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 13003;
-    header->size = buffer.size();
-    if (buffer.size() != 0) {
-      std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), buffer.data(), buffer.size());
-    }
+    const std::vector<unsigned char> chunk = MakeDataChunk(13003, buffer);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
     const int emblemVersion = g_guildMgr->GetEmblemVersion(this->scene->player->Slot50());
     if (this->AppendGuildEmblem(buffer, names, this->scene->player->Slot50(), emblemVersion)) {
-      std::vector<unsigned char> chunk(buffer.size() + sizeof(GameModeChunkHeader));
-      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-      header->type = 13002;
-      header->size = buffer.size();
-      if (buffer.size() != 0) {
-        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), buffer.data(), buffer.size());
-      }
+      const std::vector<unsigned char> chunk = MakeDataChunk(13002, buffer);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
   }
 
   {
-    const int guildId = this->scene->player->Slot50();
-    std::vector<unsigned char> chunk(sizeof(GameModeStoredValue));
-    auto* record = reinterpret_cast<GameModeStoredValue*>(chunk.data());
-    record->header.type = 13004;
-    record->header.size = sizeof(int);
-    record->value = guildId;
+    const std::vector<unsigned char> chunk = MakeRecordChunk(13004, this->scene->player->Slot50());
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    const int emblemVersion = g_guildMgr->GetEmblemVersion(this->scene->player->Slot50());
-    std::vector<unsigned char> chunk(sizeof(GameModeStoredValue));
-    auto* record = reinterpret_cast<GameModeStoredValue*>(chunk.data());
-    record->header.type = 13005;
-    record->header.size = sizeof(int);
-    record->value = emblemVersion;
+    const std::vector<unsigned char> chunk = MakeRecordChunk(13005, g_guildMgr->GetEmblemVersion(this->scene->player->Slot50()));
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -5867,22 +5845,13 @@ std::vector<unsigned char> CGameMode::SaveNameCardState() {
     CGameActor* actor = static_cast<CGameActor*>(object);
     const int emblemVersion = g_guildMgr->GetEmblemVersion(actor->Slot50());
     if (this->AppendGuildEmblem(buffer, names, actor->Slot50(), emblemVersion)) {
-      std::vector<unsigned char> chunk(buffer.size() + sizeof(GameModeChunkHeader));
-      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-      header->type = 13002;
-      header->size = buffer.size();
-      if (buffer.size() != 0) {
-        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), buffer.data(), buffer.size());
-      }
+      const std::vector<unsigned char> chunk = MakeDataChunk(13002, buffer);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
   }
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 13001;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(13001);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -5940,10 +5909,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
   std::vector<unsigned char> data;
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 10000;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(10000);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -5955,23 +5921,11 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
     if (actor->unknown_03E0Low == 0) {
       if (actor->render.unknown_0070 == 1) {
         std::vector<char> entry = this->BuildActorEntryPacket(actor, 0x9FD);
-        std::vector<unsigned char> chunk(entry.size() + sizeof(GameModeChunkHeader), 0);
-        auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-        header->type = 0xD6;
-        header->size = entry.size();
-        if (entry.size() != 0) {
-          std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), entry.data(), entry.size());
-        }
+        const std::vector<unsigned char> chunk = MakeDataChunk(0xD6, entry);
         data.insert(data.end(), chunk.begin(), chunk.end());
       } else {
         std::vector<char> entry = this->BuildActorEntryPacket(actor, 0x9FF);
-        std::vector<unsigned char> chunk(entry.size() + sizeof(GameModeChunkHeader), 0);
-        auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-        header->type = 0xD9;
-        header->size = entry.size();
-        if (entry.size() != 0) {
-          std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), entry.data(), entry.size());
-        }
+        const std::vector<unsigned char> chunk = MakeDataChunk(0xD9, entry);
         data.insert(data.end(), chunk.begin(), chunk.end());
       }
     }
@@ -5989,13 +5943,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       packet->type = static_cast<unsigned char>(room->roomType);
       scratch.insert(scratch.end(), room->title.begin(), room->title.end());
 
-      std::vector<unsigned char> chunk(scratch.size() + sizeof(GameModeChunkHeader));
-      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-      header->type = 0xC9;
-      header->size = scratch.size();
-      if (scratch.size() != 0) {
-        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), scratch.data(), scratch.size());
-      }
+      const std::vector<unsigned char> chunk = MakeDataChunk(0xC9, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
@@ -6024,13 +5972,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
         std::memcpy(stored->text, name.c_str(), sizeof(stored->text));
       }
 
-      std::vector<unsigned char> chunk(record.size() + sizeof(GameModeChunkHeader));
-      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-      header->type = 0xDA;
-      header->size = record.size();
-      if (record.size() != 0) {
-        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), record.data(), record.size());
-      }
+      const std::vector<unsigned char> chunk = MakeDataChunk(0xDA, record);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
@@ -6042,13 +5984,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       packet->aid = actor->render.accountId;
       std::memcpy(packet->name, shop->label->tooltip.c_str(), sizeof(packet->name));
 
-      std::vector<unsigned char> chunk(scratch.size() + sizeof(GameModeChunkHeader));
-      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-      header->type = 0xCA;
-      header->size = scratch.size();
-      if (scratch.size() != 0) {
-        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), scratch.data(), scratch.size());
-      }
+      const std::vector<unsigned char> chunk = MakeDataChunk(0xCA, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
@@ -6059,13 +5995,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       packet->packetType = 0x2F0;
       packet->seconds = (actor->unknown_0280 - actor->unknown_0284) / 1000;
 
-      std::vector<unsigned char> chunk(scratch.size() + sizeof(GameModeChunkHeader));
-      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-      header->type = 0xCB;
-      header->size = scratch.size();
-      if (scratch.size() != 0) {
-        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), scratch.data(), scratch.size());
-      }
+      const std::vector<unsigned char> chunk = MakeDataChunk(0xCB, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
@@ -6077,13 +6007,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       packet->aid = actor->render.accountId;
       std::memcpy(packet->name, buyingShop->label->tooltip.c_str(), sizeof(packet->name));
 
-      std::vector<unsigned char> chunk(scratch.size() + sizeof(GameModeChunkHeader), 0);
-      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-      header->type = 0xCC;
-      header->size = scratch.size();
-      if (scratch.size() != 0) {
-        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), scratch.data(), scratch.size());
-      }
+      const std::vector<unsigned char> chunk = MakeDataChunk(0xCC, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
@@ -6417,10 +6341,7 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
   std::vector<unsigned char> data;
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 15000;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(15000);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -6453,20 +6374,13 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
     std::memcpy(text, item->name.c_str() + (length - 3) - digits, digits);
     packet.count = static_cast<std::int16_t>(std::atoi(text));
 
-    std::vector<unsigned char> chunk(sizeof(GameModeStoredItemEntry));
-    auto* record = reinterpret_cast<GameModeStoredItemEntry*>(chunk.data());
-    record->header.type = 0xCF;
-    record->header.size = sizeof(ItemEntryPacket);
     packet.subY = static_cast<unsigned char>(subRow);
-    record->packet = packet;
+    const std::vector<unsigned char> chunk = MakeRecordChunk(0xCF, packet);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 15001;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(15001);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -6492,8 +6406,21 @@ void CGameMode::EnsureNameBalloon(UINameBalloonText*& balloon) {
     return;
   }
 
-  g_serviceOptions.Get(0x5C);
-  balloon = new UINameBalloonText();
+  switch (g_serviceOptions.Get(0x5C) != 0) {
+  case 0:
+    balloon = new UINameBalloonText();
+    break;
+  case 1:
+    balloon = new UINameBalloonText();
+    break;
+  case 2:
+    balloon = new UIVerticalNameBalloonText();
+    break;
+  case 3:
+    balloon = new UIVerticalNameBalloonText();
+    break;
+  }
+
   balloon->SetSize(8, 8);
   g_windowMgr.AddRenderedFront(balloon);
 }
@@ -6629,34 +6556,46 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
 // FUNCTION: fn_21333
 void CGameMode::UpdateBalloons() {
   if (this->nameBalloon) {
-    if (*reinterpret_cast<int*>(&this->unknown_02B8[0x0C])) {
-      g_windowMgr.Schedule(this->nameBalloon);
-      this->nameBalloon = nullptr;
-    } else {
+    if (*reinterpret_cast<int*>(&this->unknown_02B8[0x0C]) == 0) {
       *reinterpret_cast<int*>(&this->unknown_02B8[0x0C]) = 1;
       if (this->balloonActorId == g_session.m_aid) {
         this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(this->scene->player));
-      } else if (CRenderObject* actor = this->scene->GetGameActorByAID(this->balloonActorId)) {
-        this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(actor));
-      } else if (CItem* item = this->scene->GetItemByAID(this->balloonActorId)) {
-        this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(item));
+      } else {
+        CRenderObject* actor = this->scene->GetGameActorByAID(this->balloonActorId);
+        if (actor) {
+          this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(actor));
+        } else {
+          CItem* item = this->scene->GetItemByAID(this->balloonActorId);
+          if (item) {
+            this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(item));
+          }
+        }
       }
+    } else {
+      g_windowMgr.Schedule(this->nameBalloon);
+      this->nameBalloon = nullptr;
     }
   }
 
   if (this->itemNameBalloon) {
-    if (*reinterpret_cast<int*>(&this->unknown_02B8[0x10])) {
-      g_windowMgr.Schedule(this->itemNameBalloon);
-      this->itemNameBalloon = nullptr;
-    } else {
+    if (*reinterpret_cast<int*>(&this->unknown_02B8[0x10]) == 0) {
       *reinterpret_cast<int*>(&this->unknown_02B8[0x10]) = 1;
       if (this->balloonActorId == g_session.m_aid) {
         this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(this->scene->player));
-      } else if (CRenderObject* actor = this->scene->GetGameActorByAID(this->balloonActorId)) {
-        this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(actor));
-      } else if (CItem* item = this->scene->GetItemByAID(this->balloonActorId)) {
-        this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(item));
+      } else {
+        CRenderObject* actor = this->scene->GetGameActorByAID(this->balloonActorId);
+        if (actor) {
+          this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(actor));
+        } else {
+          CItem* item = this->scene->GetItemByAID(this->balloonActorId);
+          if (item) {
+            this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(item));
+          }
+        }
       }
+    } else {
+      g_windowMgr.Schedule(this->itemNameBalloon);
+      this->itemNameBalloon = nullptr;
     }
   }
 
@@ -6681,38 +6620,26 @@ void CGameMode::UpdateBalloons() {
       created = true;
     }
 
-    if (shownSkill != this->unknown_040C || created == true) {
-      std::string text;
+    if (this->unknown_040C != shownSkill || created == true) {
       shownSkill = this->unknown_040C;
-      switch (shownSkill) {
-      case 10000: {
+      std::string text;
+      if (shownSkill == 10000) {
         const char source[] = {'\xBC', '\x82', '\x2D', '\x77', '\xD2', '\xDD', '\xC6', '\x1F', '\xB2', '\x8C', '\x33', '\x70', '\xD3', '\xCA', '\xD1', '\x3F'};
         text.assign(DecryptGameModeName<0x3FA3AFA7035DE3FFULL>(source));
-        break;
-      }
-      case 20000: {
+      } else if (shownSkill == 20000) {
         const char source[] = {'\x09', '\xEB', '\x66', '\x1C', '\x26', '\xAE', '\x07', '\x96', '\x38', '\xF5', '\x71', '\x04', '\x75', '\x86', '\x42', '\xDB'};
         text = DecryptGameModeName<0xDB27CB557D038759ULL>(source);
-        break;
-      }
-      case 20001: {
+      } else if (shownSkill == 20001) {
         const char source[] = {'\xCF', '\xD8', '\x9B', '\x0E', '\xCE', '\x19', '\xF9', '\x30', '\xEF', '\xC4', '\xBB'};
         text = DecryptGameModeName<0x51BB39B763BBBD8DULL>(source);
-        break;
-      }
-      case 40000: {
+      } else if (shownSkill == 40000) {
         const char source[] = {'\xAC', '\x4C', '\x27', '\x79', '\xB0', '\xA3', '\x86', '\xA7', '\xA2', '\x42', '\x39', '\x7E', '\xB1', '\xB4', '\x91', '\x87'};
         text = DecryptGameModeName<0x87E3D1C50D572DEFULL>(source);
-        break;
-      }
-      default:
-        if (g_session.IsState291To303(shownSkill)) {
-          const char source[] = {'\x3E', '\x4A', '\xC2', '\xE6', '\x2F'};
-          text = DecryptGameModeName<0xB7AFBD2FD9FD7501ULL>(source);
-        } else {
-          text = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, shownSkill);
-        }
-        break;
+      } else if (g_session.IsState291To303(shownSkill)) {
+        const char source[] = {'\x3E', '\x4A', '\xC2', '\xE6', '\x2F'};
+        text = DecryptGameModeName<0xB7AFBD2FD9FD7501ULL>(source);
+      } else {
+        text = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, shownSkill);
       }
 
       UITransBalloonText* balloon = static_cast<UITransBalloonText*>(skillBalloon);
@@ -8518,7 +8445,7 @@ int CGameMode::ProcessGroundClick(int result) {
     if (macroFields[0x10C] == 1 && *reinterpret_cast<const int*>(macroFields + 0xEC) == 1) {
       int column = -1;
       int row = -1;
-      PickScreenTerrain(g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row);
+      this->PickScreenTerrain(column, row);
       const int radius = *reinterpret_cast<const int*>(macroFields + 0xF4);
       for (int dx = -radius; dx <= radius; ++dx) {
         for (int dy = -radius; dy <= radius; ++dy) {
@@ -8544,7 +8471,7 @@ int CGameMode::ProcessGroundClick(int result) {
       shopSuspended = true;
       int column = -1;
       int row = -1;
-      PickScreenTerrain(g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row);
+      this->PickScreenTerrain(column, row);
       drawCell(this->scene->ground, this->camera->frame.view.values, column, row, 0x66FF0000);
       if (g_mouse.buttons[0] == 1) {
         shop->SetSuspended(0);
@@ -8567,7 +8494,7 @@ int CGameMode::ProcessGroundClick(int result) {
 
   int column = -1;
   int row = -1;
-  if (!PickScreenTerrain(g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial, column, row)) {
+  if (!this->PickScreenTerrain(column, row)) {
     return result;
   }
 
@@ -9123,10 +9050,7 @@ void CGameMode::ProcessInput() {
     } else if (g_mouse.buttons[1] != 2) {
       int column = -1;
       int row = -1;
-      PickScreenTerrain(
-        g_mouse.x, g_mouse.y, this->camera->frame.eye, this->camera->frame.inverse.values, this->scene->spatial,
-        column, row
-      );
+      this->PickScreenTerrain(column, row);
       const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
       if (cell && cell->type != 1 && cell->type != 5) {
         this->SetCursorAction(0);
