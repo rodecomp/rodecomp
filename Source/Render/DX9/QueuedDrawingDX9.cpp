@@ -11,8 +11,8 @@
 
 // OFFSET: 0x00567180
 // FUNCTION: fn_02228
-void CRendererDX9::DrawAuxiliaryQueue(RenderQueues& queues) {
-  auto& queue = queues.queue_0240;
+void CRendererDX9::DrawAuxiliaryQueue() {
+  auto& queue = this->queues.queue_0240;
 
   if (queue.empty()) {
     return;
@@ -70,7 +70,7 @@ void CRendererDX9::DrawQueues(
 
   this->device->state.SetRenderState(D3DRS_ALPHAREF, 1);
   this->device->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
-  this->DrawAuxiliaryQueue(queues);
+  this->DrawAuxiliaryQueue();
 
   const auto drawCommand = [&](RenderCommand& command) {
     this->device->state.SetTexture(0, command.texture ? static_cast<CTextureDX9*>(command.texture)->NativeTexture() : nullptr);

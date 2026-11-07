@@ -39,7 +39,7 @@ public:
   void DrawOpaqueQueues(RenderQueues& queues);
   void DrawGroundQueues(RenderQueues& queues);
   void DrawAlphaQueues(RenderQueues& queues, unsigned char twoPass);
-  void DrawAuxiliaryQueue(RenderQueues& queues);
+  void DrawAuxiliaryQueue();
   void DrawBaseQueue();
   void DrawQueues(RenderQueues& queues, unsigned char twoPass);
   void ApplyFog();
