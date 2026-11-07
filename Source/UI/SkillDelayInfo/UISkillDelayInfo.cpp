@@ -63,6 +63,13 @@ private:
   bool m_encrypted;
 };
 
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptName(const char (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
+}
+
 }
 
 struct SkillDelayInfoFreezeCallback {
@@ -449,8 +456,7 @@ void CUISkillDelayInfo::OnSelectItem(SkillDelayInfo::CUIDelayItem*, const SkillD
 // OFFSET: 0x00A77B20
 // FUNCTION: fn_16881
 void CUISkillDelayInfo::OnUpdateItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data) {
-  const std::string text = std::to_string(data.unknown_0000 + 1);
-  item->level->SetText(text);
+  item->level->SetText(std::to_string(data.unknown_0000 + 1));
 
   for (int index = 0; index < 4; ++index) {
     const auto found = data.unknown_0004.find(index);
@@ -588,22 +594,14 @@ void CUISkillDelayInfo::Slot16() {
   this->backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{0, 2}, true);
   this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{6, 2}, true);
 
-  const char* text = LookupMessage(4254);
-  this->titleBar->SetTitle(text);
-  text = LookupMessage(4255);
-  this->columns[0]->SetText(text);
-  text = LookupMessage(4256);
-  this->columns[1]->SetText(text);
-  text = LookupMessage(4257);
-  this->columns[2]->SetText(text);
-  text = LookupMessage(4258);
-  this->columns[3]->SetText(text);
-  text = LookupMessage(4303);
-  this->labels[0]->SetText(text);
-  text = LookupMessage(4304);
-  this->labels[1]->SetText(text);
-  text = LookupMessage(4305);
-  this->labels[2]->SetText(text);
+  this->titleBar->SetTitle(LookupMessage(4254));
+  this->columns[0]->SetText(LookupMessage(4255));
+  this->columns[1]->SetText(LookupMessage(4256));
+  this->columns[2]->SetText(LookupMessage(4257));
+  this->columns[3]->SetText(LookupMessage(4258));
+  this->labels[0]->SetText(LookupMessage(4303));
+  this->labels[1]->SetText(LookupMessage(4304));
+  this->labels[2]->SetText(LookupMessage(4305));
 
   this->delayList->unknown_00C4 = 1;
   this->delayList->Invalidate();
