@@ -2937,6 +2937,14 @@ void UIItemWnd::Slot26(int x, int y) {
     }
     mode->SendMsg(27, static_cast<int>(item.unknown_0000[1]), 0, 0, 0);
     break;
+  case 18:
+    if (*reinterpret_cast<const int*>(&g_session.unknown_16F4[4]) >= 0) {
+      if (g_windowMgr
+              .Confirm(FormatOwnedString(LookupMessage(1226), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+        mode->SendMsg(27, static_cast<int>(item.unknown_0000[1]), 0, 0, 0);
+      }
+    }
+    break;
   case 4:
   case 5:
   case 8:
@@ -2964,9 +2972,6 @@ void UIItemWnd::Slot26(int x, int y) {
       mode->SendMsg(19, static_cast<int>(item.unknown_0000[1]), static_cast<int>(item.unknown_0000[2]), 0, 0);
     }
     break;
-  case 6:
-    mode->SendMsg(123, static_cast<int>(item.unknown_0000[1]), 0, 0, 0);
-    break;
   case 10:
   case 16:
   case 17:
@@ -2980,13 +2985,8 @@ void UIItemWnd::Slot26(int x, int y) {
       mode->SendMsg(87, static_cast<int>(item.unknown_0000[1]), static_cast<int>(item.unknown_0000[2]), 0, 0);
     }
     break;
-  case 18:
-    if (*reinterpret_cast<const int*>(&g_session.unknown_16F4[4]) >= 0) {
-      if (g_windowMgr
-              .Confirm(FormatOwnedString(LookupMessage(1226), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
-        mode->SendMsg(27, static_cast<int>(item.unknown_0000[1]), 0, 0, 0);
-      }
-    }
+  case 6:
+    mode->SendMsg(123, static_cast<int>(item.unknown_0000[1]), 0, 0, 0);
     break;
   }
 }
