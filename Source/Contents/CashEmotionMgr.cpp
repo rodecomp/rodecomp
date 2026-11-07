@@ -3066,7 +3066,7 @@ void UICashEmotionPack::Paint() {
   if (!this->m_saleBadge.empty()) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_saleBadge.c_str()));
     if (bitmap) {
-      this->DrawBitmap(171, 12, &bitmap->image, true);
+      this->DrawBitmap(171, 12, bitmap, true);
     }
   }
 
@@ -3074,7 +3074,7 @@ void UICashEmotionPack::Paint() {
     auto* bitmap =
       static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\icon_limitemotion.bmp")));
     if (bitmap) {
-      this->DrawBitmap(0, 0, &bitmap->image, true);
+      this->DrawBitmap(0, 0, bitmap, true);
     }
   }
 }
@@ -3589,7 +3589,7 @@ void UICashEmotionScrollBar::Paint() {
 
   auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   if (up) {
-    this->DrawBitmap(0, -1, &up->image, false);
+    this->DrawBitmap(0, -1, up, false);
   }
 
   if (disabled) {
@@ -3602,7 +3602,7 @@ void UICashEmotionScrollBar::Paint() {
 
   auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   if (down) {
-    this->DrawBitmap(0, height - this->arrowLength + 1, &down->image, false);
+    this->DrawBitmap(0, height - this->arrowLength + 1, down, false);
   }
 
   if (disabled) {
@@ -3615,7 +3615,7 @@ void UICashEmotionScrollBar::Paint() {
   auto* topBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\scrollbar_top.bmp")));
   if (topBar) {
     topHeight = topBar->image.height;
-    this->DrawBitmap(0, top, &topBar->image, true);
+    this->DrawBitmap(0, top, topBar, true);
   }
 
   auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\scrollbar_mid.bmp")));
@@ -3627,12 +3627,12 @@ void UICashEmotionScrollBar::Paint() {
     const int step = middle->image.height;
     end = (length + 4) + (top - bottomHeight);
     for (int y = top + topHeight; y < end; y += step) {
-      this->DrawBitmap(0, y, &middle->image, true);
+      this->DrawBitmap(0, y, middle, true);
     }
   }
 
   if (bottom) {
-    this->DrawBitmap(0, end, &bottom->image, true);
+    this->DrawBitmap(0, end, bottom, true);
   }
 }
 
