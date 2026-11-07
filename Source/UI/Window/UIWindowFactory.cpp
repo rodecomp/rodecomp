@@ -9,6 +9,7 @@
 #include "UI/Window/UISerachStoreInfoWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowId.h"
 
 #include <string>
 
@@ -36,17 +37,17 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
   std::string xKey;
   if (window == nullptr) {
     switch (id) {
-    case 0x9C:
+    case WID_HOTKEYWND:
       window = new UIHotKeyWnd();
       this->unknown_0404 = window;
       break;
-    case 0x9D:
+    case WID_JOINTO_BATTLEFIELDWND:
       window = new UIEntryQueueWnd();
       break;
-    case 0x9F:
+    case WID_QUIKSLOTWND:
       window = new UIQuickSlotWnd();
       break;
-    case 0xB5:
+    case WID_SEARCH_STORE_INFO:
       window = new UISerachStoreInfoWnd();
       g_searchStoreInfoCreated = true;
       break;

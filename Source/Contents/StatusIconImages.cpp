@@ -1,3 +1,4 @@
+#include "Contents/Effects/EffectTypes.h"
 #include "Client/Session.h"
 #include "Script/LuaScript.h"
 
@@ -23,691 +24,691 @@ const char* CSession::GetEFSTImgFileName(int efstId, int type) {
   switch (type) {
     case 0:
       switch (efstId) {
-        case 762:
+        case EFST_SWORDCLAN:
           return "effect\\SWORDCLAN.TGA";
-        case 763:
+        case EFST_ARCWANDCLAN:
           return "effect\\ARCWANDCLAN.TGA";
-        case 764:
+        case EFST_GOLDENMACECLAN:
           return "effect\\GOLDENMACECLAN.TGA";
-        case 765:
+        case EFST_CROSSBOWCLAN:
           return "effect\\CROSSBOWCLAN.TGA";
       }
       break;
     case 1:
       switch (efstId) {
-        case 32:
+        case EFST_BROKENARMOR:
           return "effect\\갑옷파괴.tga";
-        case 34:
+        case EFST_ILLUSION:
           return "effect\\환각.tga";
-        case 8:
+        case EFST_QUAGMIRE:
           return "effect\\콰그마이어.tga";
-        case 33:
+        case EFST_BROKENWEAPON:
           return "effect\\무기파괴.tga";
-        case 35:
+        case EFST_WEIGHTOVER50:
           return "effect\\무게50이상.tga";
-        case 36:
+        case EFST_WEIGHTOVER90:
           return "effect\\무게90이상.tga";
-        case 50:
+        case EFST_NOEQUIPWEAPON:
           return "effect\\스트립웨폰.tga";
-        case 51:
+        case EFST_NOEQUIPSHIELD:
           return "effect\\스트립쉴드.tga";
-        case 52:
+        case EFST_NOEQUIPARMOR:
           return "effect\\스트립아머.tga";
-        case 53:
+        case EFST_NOEQUIPHELM:
           return "effect\\스트립헬름.tga";
-        case 90:
+        case EFST_PROPERTYFIRE:
           if (IsTaekwonDisplayJob()) {
             return "effect\\i_p_FIRE.tga";
           }
           return "effect\\프레임런쳐.tga";
-        case 13:
+        case EFST_DEC_AGI:
           return "effect\\민첩성감소.tga";
-        case 401:
+        case EFST_ADORAMUS:
           return "effect\\민첩성감소.tga";
-        case 298:
+        case EFST_TARGET_ASPD:
           return "effect\\멘탈포션.tga";
-        case 245:
+        case EFST_FOOD_INT:
           return "effect\\Int_gogi.tga";
-        case 275:
+        case EFST_FOOD_INT_CASH:
           return "effect\\Int_gogi.tga";
-        case 492:
+        case EFST_COCKTAIL_WARG_BLOOD:
           return "effect\\Int_gogi.tga";
-        case 241:
+        case EFST_FOOD_STR:
           return "effect\\Str_gogi.tga";
-        case 271:
+        case EFST_FOOD_STR_CASH:
           return "effect\\Str_gogi.tga";
-        case 491:
+        case EFST_SAVAGE_STEAK:
           return "effect\\Str_gogi.tga";
-        case 242:
+        case EFST_FOOD_AGI:
           return "effect\\Agi_gogi.tga";
-        case 272:
+        case EFST_FOOD_AGI_CASH:
           return "effect\\Agi_gogi.tga";
-        case 495:
+        case EFST_DROCERA_HERB_STEAMED:
           return "effect\\Agi_gogi.tga";
-        case 243:
+        case EFST_FOOD_VIT:
           return "effect\\Vit_gogi.tga";
-        case 273:
+        case EFST_FOOD_VIT_CASH:
           return "effect\\Vit_gogi.tga";
-        case 493:
+        case EFST_MINOR_BBQ:
           return "effect\\Vit_gogi.tga";
-        case 244:
+        case EFST_FOOD_DEX:
           return "effect\\Dex_gogi.tga";
-        case 274:
+        case EFST_FOOD_DEX_CASH:
           return "effect\\Dex_gogi.tga";
-        case 494:
+        case EFST_SIROMA_ICE_TEA:
           return "effect\\Dex_gogi.tga";
-        case 246:
+        case EFST_FOOD_LUK:
           return "effect\\Luk_gogi.tga";
-        case 276:
+        case EFST_FOOD_LUK_CASH:
           return "effect\\Luk_gogi.tga";
-        case 496:
+        case EFST_PUTTI_TAILS_NOODLES:
           return "effect\\Luk_gogi.tga";
-        case 247:
-        case 248:
-        case 249:
+        case EFST_FOOD_BASICAVOIDANCE:
+        case EFST_FOOD_BASICHIT:
+        case EFST_FOOD_CRITICALSUCCESSVALUE:
           return "effect\\gogi.tga";
-        case 313:
+        case EFST_PARTYFLEE:
           return "effect\\gogi.tga";
-        case 250:
+        case EFST_CASH_PLUSEXP:
           return "effect\\exp.tga";
-        case 251:
+        case EFST_CASH_DEATHPENALTY:
           return "effect\\death.tga";
-        case 252:
+        case EFST_CASH_RECEIVEITEM:
           return "effect\\item.tga";
-        case 621:
+        case EFST_MONSTER_TRANSFORM:
           return "effect\\변신.tga";
-        case 312:
+        case EFST_CASH_PLUSONLYJOBEXP:
           return "effect\\job.tga";
-        case 636:
+        case EFST_REWARD_PLUSONLYJOBEXP:
           return "effect\\job.tga";
-        case 637:
+        case EFST_HANDICAPSTATE_NORECOVER:
           return "effect\\NORECOVER.TGA";
-        case 662:
-        case 663:
+        case EFST_GM_BATTLE:
+        case EFST_GM_BATTLE2:
           return "effect\\icon02.tga";
-        case 664:
+        case EFST_2011RWC_SCROLL:
           return "effect\\rwcscroll.tga";
-        case 730:
+        case EFST_DARKCROW:
           return "effect\\darkcrow.tga";
-        case 721:
+        case EFST_REBOUND:
           return "effect\\REBOUND.tga";
-        case 476:
+        case EFST_STOMACHACHE:
           return "effect\\npc_hellpower.tga";
       }
       break;
     case 2:
       switch (efstId) {
-        case 1:
+        case EFST_ENDURE:
           return "effect\\인듀어.tga";
-        case 6:
+        case EFST_ENCHANTPOISON:
           return "effect\\인찬트포이즌.tga";
-        case 5:
+        case EFST_CLOAKING:
           return "effect\\클로킹.tga";
-        case 2:
+        case EFST_TWOHANDQUICKEN:
           return "effect\\투핸드퀴큰.tga";
-        case 26:
+        case EFST_MAXIMIZE:
           return "effect\\맥시마이즈파워.tga";
-        case 7:
+        case EFST_POISONREACT:
           return "effect\\포이즌리액트.tga";
-        case 58:
+        case EFST_AUTOGUARD:
           return "effect\\오토가드.tga";
-        case 65:
+        case EFST_AUTOSPELL:
           return "effect\\오토스펠.tga";
-        case 0:
+        case EFST_PROVOKE:
           return "effect\\프로보크.tga";
-        case 25:
+        case EFST_OVERTHRUST:
           return "effect\\오버트러스트.tga";
-        case 24:
+        case EFST_WEAPONPERFECT:
           return "effect\\웨폰퍼펙션.tga";
-        case 4:
+        case EFST_HIDING:
           return "effect\\하이딩.tga";
-        case 68:
+        case EFST_SPEARQUICKEN:
           return "effect\\스피어퀴큰.tga";
-        case 62:
+        case EFST_DEFENDER:
           return "effect\\디펜더.tga";
-        case 59:
+        case EFST_REFLECTSHIELD:
           return "effect\\리플렉트쉴드.tga";
-        case 91:
+        case EFST_PROPERTYWATER:
           if (IsTaekwonDisplayJob()) {
             return "effect\\i_p_WATER.tga";
           }
           return "effect\\프로스트웨폰.tga";
-        case 92:
+        case EFST_PROPERTYWIND:
           if (IsTaekwonDisplayJob()) {
             return "effect\\i_p_WIND.tga";
           }
           return "effect\\라이트닝로더.tga";
-        case 104:
+        case EFST_PARRYING:
           return "effect\\ICON10.tga";
-        case 23:
+        case EFST_ADRENALINE:
           return "effect\\아드레날린러쉬.tga";
-        case 147:
+        case EFST_ADRENALINE2:
           return "effect\\아드레날린러쉬.tga";
-        case 124:
+        case EFST_BLOODING:
           return "effect\\출혈상태.tga";
-        case 125:
+        case EFST_JOINTBEAT:
           return "effect\\관절공격.tga";
-        case 115:
+        case EFST_TRUESIGHT:
           return "effect\\ICON09.tga";
-        case 116:
+        case EFST_WINDWALK:
           return "effect\\ICON06.tga";
-        case 118:
+        case EFST_CARTBOOST:
           return "effect\\ICON07.tga";
-        case 117:
+        case EFST_MELTDOWN:
           return "effect\\ICON03.tga";
-        case 120:
+        case EFST_SWORDREJECT:
           return "effect\\ICON04.tga";
-        case 121:
-        case 122:
+        case EFST_MARIONETTE_MASTER:
+        case EFST_MARIONETTE:
           return "effect\\ICON01.tga";
-        case 132:
+        case EFST_AUTOBERSERK:
           return "effect\\금강불괴.tga";
-        case 135:
+        case EFST_STORMKICK_ON:
           return "effect\\i_STORMKICK.tga";
-        case 137:
+        case EFST_DOWNKICK_ON:
           return "effect\\i_DOWNKICK.tga";
-        case 139:
+        case EFST_TURNKICK_ON:
           return "effect\\i_TURNKICK.tga";
-        case 141:
+        case EFST_COUNTER_ON:
           return "effect\\i_COUNTER.tga";
-        case 143:
+        case EFST_DODGE_ON:
           return "effect\\i_DODGE.tga";
-        case 145:
+        case EFST_STRUP:
           return "effect\\i_RUN.tga";
-        case 146:
+        case EFST_PROPERTYDARK:
           return "effect\\i_p_DARK.tga";
-        case 148:
+        case EFST_PROPERTYTELEKINESIS:
           return "effect\\i_p_TELE.tga";
-        case 114:
+        case EFST_EDP:
           return "effect\\I_치독.tga";
-        case 181:
+        case EFST_PRESERVE:
           return "effect\\I_프리저브.tga";
-        case 182:
+        case EFST_CHASEWALK2:
           return "effect\\I_체이스힘.tga";
-        case 112:
+        case EFST_GROUNDMAGIC:
           return "effect\\I_장판.tga";
-        case 186:
+        case EFST_DOUBLECASTING:
           return "effect\\I_더블캐스팅.tga";
-        case 188:
+        case EFST_OVERTHRUSTMAX:
           return "effect\\I_오버맥스.tga";
-        case 169:
+        case EFST_SUN_COMFORT:
           return "effect\\i_SUNCOMFORT.tga";
-        case 170:
+        case EFST_MOON_COMFORT:
           return "effect\\i_MOONCOMFORT.tga";
-        case 171:
+        case EFST_STAR_COMFORT:
           return "effect\\i_STARCOMFORT.tga";
-        case 156:
+        case EFST_KAIZEL:
           return "effect\\i_KAIZEL.tga";
-        case 157:
+        case EFST_KAAHI:
           return "effect\\i_KAAHI.tga";
-        case 158:
+        case EFST_KAUPE:
           return "effect\\i_KAUPE.tga";
-        case 197:
+        case EFST_CR_SHRINK:
           return "effect\\i_shrink.tga";
-        case 198:
+        case EFST_WZ_SIGHTBLASTER:
           return "effect\\i_sightblaster.tga";
-        case 200:
-        case 201:
+        case EFST_RG_CCONFINE_M:
+        case EFST_RG_CCONFINE_S:
           return "effect\\i_closeconfine.tga";
-        case 207:
+        case EFST_NJ_BUNSINJYUTSU:
           return "effect\\i_BUNSIN.tga";
-        case 206:
+        case EFST_NJ_UTSUSEMI:
           return "effect\\i_MAEMI.tga";
-        case 208:
+        case EFST_NJ_NEN:
           return "effect\\i_NEN.tga";
-        case 209:
+        case EFST_GS_ADJUSTMENT:
           return "effect\\i_ADJUSTMENT.tga";
-        case 210:
+        case EFST_GS_ACCURACY:
           return "effect\\i_ACCURACY.tga";
-        case 203:
+        case EFST_GS_MADNESSCANCEL:
           return "effect\\i_MADNESS.tga";
-        case 204:
+        case EFST_GS_GATLINGFEVER:
           return "effect\\i_FEVER.tga";
-        case 282:
+        case EFST_SLOWCAST:
           return "effect\\slowcast.tga";
-        case 286:
+        case EFST_CRITICALWOUND:
           return "effect\\criticalwound.tga";
-        case 150:
+        case EFST_PLUSATTACKPOWER:
           return "effect\\PLUSATTACKPOWER.tga";
-        case 290:
+        case EFST_PROTECT_DEF:
           return "effect\\물리방어포션.tga";
-        case 130:
+        case EFST_PROTECTEXP:
           return "effect\\엄마아빠사랑해요.tga";
-        case 314:
+        case EFST_ANGEL_PROTECT:
           return "effect\\엄마아빠사랑해요.tga";
-        case 423:
+        case EFST_POPECOOKIE:
           return "effect\\ICON02.tga";
-        case 579:
+        case EFST_VITALIZE_POTION:
           return "effect\\ICON02.tga";
-        case 191:
+        case EFST_TAROTCARD:
           return "effect\\I_타로카드.tga";
-        case 573:
+        case EFST_MORA_BUFF:
           return "effect\\I_타로카드.tga";
-        case 300:
+        case EFST_ATKER_BLOOD:
           return "effect\\SP소모량감소포션.tga";
-        case 301:
+        case EFST_TARGET_BLOOD:
           return "effect\\올상태저항포션.tga";
-        case 377:
+        case EFST_NEUTRALBARRIER:
           return "effect\\뉴트럴배리어.tga";
-        case 374:
+        case EFST_SHAPESHIFT:
           return "effect\\셰이프쉬프트.tga";
-        case 379:
+        case EFST_STEALTHFIELD:
           return "effect\\스텔스필드.tga";
-        case 450:
+        case EFST_ANALYZE:
           return "effect\\애널라이즈.tga";
-        case 361:
+        case EFST_ACCELERATION:
           return "effect\\엑셀레이션.tga";
-        case 336:
+        case EFST_RENOVATIO:
           return "effect\\레노바티오.tga";
-        case 472:
+        case EFST_AB_SECRAMENT:
           return "effect\\세크라멘트.tga";
-        case 404:
+        case EFST_DEADLYINFECT:
           return "effect\\데들리인펙트.tga";
-        case 385:
+        case EFST_REPRODUCE:
           return "effect\\리프로듀스.tga";
-        case 408:
+        case EFST_ENERVATION:
           return "effect\\Masquerade_ENERVATION.tga";
-        case 409:
+        case EFST_GROOMY:
           return "effect\\Masquerade_GROOMY.tga";
-        case 411:
+        case EFST_IGNORANCE:
           return "effect\\Masquerade_IGNORANCE.tga";
-        case 412:
+        case EFST_LAZINESS:
           return "effect\\Masquerade_LAZINESS.tga";
-        case 415:
+        case EFST_UNLUCKY:
           return "effect\\Masquerade_UNLUCKY.tga";
-        case 418:
+        case EFST_WEAKNESS:
           return "effect\\Masquerade_WEAKNESS.tga";
-        case 399:
+        case EFST_BODYPAINT:
           return "effect\\바디페인팅.tga";
-        case 394:
+        case EFST_SHADOWFORM:
           return "effect\\쉐도우폼.tga";
-        case 421:
+        case EFST_STRIPACCESSARY:
           return "effect\\스트립액세서리.tga";
-        case 393:
+        case EFST_AUTOSHADOWSPELL:
           return "effect\\오토쉐도우스펠.tga";
-        case 403:
+        case EFST_INVISIBILITY:
           return "effect\\인비지빌리티.tga";
-        case 373:
+        case EFST_OVERHEAT:
           return "effect\\오버히트.tga";
-        case 375:
+        case EFST_INFRAREDSCAN:
           return "effect\\인프라레드스캔.tga";
-        case 437:
+        case EFST_COLD:
           return "effect\\다이아몬드더스트.tga";
-        case 362:
+        case EFST_HOVERING:
           return "effect\\호버링.tga";
-        case 304:
+        case EFST_HELLPOWER:
           return "effect\\npc_hellpower.tga";
-        case 295:
+        case EFST_CRITICALPERCENT:
           return "effect\\연마제.tga";
-        case 292:
+        case EFST_HEALPLUS:
           return "effect\\회복력향상포션.tga";
-        case 294:
+        case EFST_L_LIFEPOTION:
           return "effect\\중형생명수.tga";
-        case 578:
+        case EFST_G_LIFEPOTION:
           return "effect\\중형생명수.tga";
-        case 296:
+        case EFST_PLUSAVOIDVALUE:
           return "effect\\환영의술잔.tga";
-        case 291:
+        case EFST_PROTECT_MDEF:
           return "effect\\마법방어포션.tga";
-        case 302:
+        case EFST_ARMOR_PROPERTY:
           return "effect\\캐시갑옷속성부여.tga";
-        case 316:
+        case EFST_ENCHANTBLADE:
           return "effect\\RK_ENCHANT.tga";
-        case 318:
+        case EFST_REFRESH:
           return "effect\\RK_NAUTHIZ.tga";
-        case 321:
+        case EFST_VITALITYACTIVATION:
           return "effect\\RK_ISHA.tga";
-        case 322:
+        case EFST_FIGHTINGSPIRIT:
           return "effect\\RK_EISIR.tga";
-        case 323:
+        case EFST_ABUNDANCE:
           return "effect\\RK_URUZ.tga";
-        case 319:
+        case EFST_GIANTGROWTH:
           return "effect\\RK_TURISUSS.tga";
-        case 320:
+        case EFST_STONEHARDSKIN:
           return "effect\\RK_HAGALAZ.tga";
-        case 388:
+        case EFST_STR_SCROLL:
           return "effect\\str_gogi.tga";
-        case 389:
+        case EFST_INT_SCROLL:
           return "effect\\int_gogi.tga";
-        case 161:
+        case EFST_ONEHANDQUICKEN:
           return "effect\\i_ONEHAND.tga";
-        case 414:
+        case EFST_ACARAJE:
           return "effect\\i_ONEHAND.tga";
-        case 354:
+        case EFST_MARSHOFABYSS:
           return "effect\\MARSHOFABYSS.tga";
-        case 351:
+        case EFST_FROSTMISTY:
           return "effect\\FROSTMISTY.tga";
-        case 355:
+        case EFST_RECOGNIZEDSPELL:
           return "effect\\RECOGNIZEDSPELL.tga";
-        case 352:
+        case EFST_FEARBREEZE:
           return "effect\\RA_FEARBREEZE.tga";
-        case 349:
+        case EFST_LEECHESEND:
           return "effect\\거머리.tga";
-        case 348:
+        case EFST_OBLIVIONCURSE:
           return "effect\\망각의재.tga";
-        case 346:
+        case EFST_DEATHHURT:
           return "effect\\상처오염독.tga";
-        case 344:
+        case EFST_VENOMBLEED:
           return "effect\\쇠약독.tga";
-        case 342:
+        case EFST_TOXIN:
           return "effect\\신경마비독.tga";
-        case 347:
+        case EFST_PYREXIA:
           return "effect\\열병독.tga";
-        case 345:
+        case EFST_MAGICMUSHROOM:
           return "effect\\웃음버섯.tga";
-        case 337:
+        case EFST_WEAPONBLOCKING:
           return "effect\\웨폰블로킹.tga";
-        case 333:
+        case EFST_CLOAKINGEXCEED:
           return "effect\\포이즈닝웨폰.tga";
-        case 341:
+        case EFST_POISONINGWEAPON:
           return "effect\\감각마비독.tga";
-        case 343:
+        case EFST_PARALYSE:
           return "effect\\감각마비독.tga";
-        case 447:
+        case EFST_MOONLIT_SERENADE:
           return "effect\\달빛의세레나데.tga";
-        case 451:
+        case EFST_LERADS_DEW:
           return "effect\\레라드의이슬.tga";
-        case 439:
+        case EFST_SONG_OF_MANA:
           return "effect\\마나의노래.tga";
-        case 443:
+        case EFST_ECHOSONG:
           return "effect\\메아리의노래.tga";
-        case 452:
+        case EFST_MELODYOFSINK:
           return "effect\\멜로디오브싱크.tga";
-        case 453:
+        case EFST_BEYOND_OF_WARCRY:
           return "effect\\비욘드오브워크라이.tga";
-        case 448:
+        case EFST_SATURDAY_NIGHT_FEVER:
           return "effect\\새터데이나이트피버.tga";
-        case 438:
+        case EFST_GLOOMYDAY:
           return "effect\\수줍은하루의우울.tga";
-        case 436:
+        case EFST_SIRCLEOFNATURE:
           return "effect\\순환하는자연의소리.tga";
-        case 429:
+        case EFST_SWING:
           return "effect\\스윙댄스.tga";
-        case 435:
+        case EFST_DEEP_SLEEP:
           return "effect\\안식의자장가.tga";
-        case 454:
+        case EFST_UNLIMITED_HUMMING_VOICE:
           return "effect\\언리미티드허밍보이스.tga";
-        case 430:
+        case EFST_SYMPHONY_LOVE:
           return "effect\\연인들을위한심포니.tga";
-        case 441:
+        case EFST_DANCE_WITH_WUG:
           return "effect\\워그와함께춤을.tga";
-        case 442:
+        case EFST_RUSH_WINDMILL:
           return "effect\\풍차를향해돌격.tga";
-        case 444:
+        case EFST_HARMONIZE:
           return "effect\\하모나이즈.tga";
-        case 440:
+        case EFST_CLOUD_KILL:
           return "effect\\클라우드킬.tga";
-        case 446:
+        case EFST_WARMER:
           return "effect\\워머.tga";
-        case 445:
+        case EFST_STRIKING:
           return "effect\\스트라이킹.tga";
-        case 413:
+        case EFST_LIGHTNINGWALK:
           return "effect\\섬전보.tga";
-        case 410:
+        case EFST_RAISINGDRAGON:
           return "effect\\잠룡승천.tga";
-        case 425:
+        case EFST_GENTLETOUCH_ENERGYGAIN:
           return "effect\\점혈구.tga";
-        case 426:
+        case EFST_GENTLETOUCH_CHANGE:
           return "effect\\점혈반.tga";
-        case 427:
+        case EFST_GENTLETOUCH_REVITALIZE:
           return "effect\\점혈활.tga";
-        case 390:
+        case EFST_LG_REFLECTDAMAGE:
           return "effect\\LG_REFLECTDAMAGE.tga";
-        case 396:
+        case EFST_SHIELDSPELL_DEF:
           return "effect\\LG_SHIELDSPELL_방.tga";
-        case 397:
+        case EFST_SHIELDSPELL_MDEF:
           return "effect\\LG_SHIELDSPELL_마.tga";
-        case 398:
+        case EFST_SHIELDSPELL_REF:
           return "effect\\LG_SHIELDSPELL_연.tga";
-        case 402:
+        case EFST_PRESTIGE:
           return "effect\\LG_PRESTIGE.tga";
-        case 405:
+        case EFST_BANDING:
           return "effect\\LG_BANDING.tga";
-        case 407:
+        case EFST_INSPIRATION:
           return "effect\\LG_INSPIRATION.tga";
-        case 463:
+        case EFST_THORNS_TRAP:
           return "effect\\가시나무덫.tga";
-        case 461:
+        case EFST_GN_CARTBOOST:
           return "effect\\카트부스트.tga";
-        case 391:
+        case EFST_FORCEOFVANGUARD:
           return "effect\\포스오브뱅가드.tga";
-        case 297:
+        case EFST_ATKER_ASPD:
           return "effect\\대환단.tga";
-        case 299:
+        case EFST_ATKER_MOVESPEED:
           return "effect\\태청단.tga";
-        case 370:
+        case EFST_MVPCARD_ORCHERO:
           return "effect\\MVPCARD_ORCHERO.tga";
-        case 371:
+        case EFST_MVPCARD_ORCLORD:
           return "effect\\MVPCARD_ORCLORD.tga";
-        case 368:
+        case EFST_MVPCARD_TAOGUNKA:
           return "effect\\MVPCARD_TAOGUNKA.tga";
-        case 369:
+        case EFST_MVPCARD_MISTRESS:
           return "effect\\MVPCARD_MISTRESS.tga";
-        case 583:
+        case EFST_ODINS_POWER:
           return "effect\\all_odins_power.tga";
-        case 106:
+        case EFST_TENSIONRELAX:
           return "effect\\ICON08.tga";
-        case 632:
-        case 633:
-        case 634:
-        case 635:
+        case EFST_SKF_CAST:
+        case EFST_SKF_ASPD:
+        case EFST_SKF_ATK:
+        case EFST_SKF_MATK:
           return "effect\\ICON08.tga";
-        case 293:
+        case EFST_S_LIFEPOTION:
           return "effect\\소형생명수.tga";
-        case 670:
+        case EFST_M_LIFEPOTION:
           return "effect\\소형생명수.tga";
-        case 622:
+        case EFST_SIT:
           return "effect\\앉기.tga";
-        case 638:
-        case 640:
+        case EFST_SET_NUM_DEF:
+        case EFST_SET_PER_DEF:
           return "effect\\SETDEF.TGA";
-        case 695:
+        case EFST_CLIENT_ONLY_EQUIP_ARROW:
           return "effect\\ArrowN.tga";
-        case 381:
+        case EFST_MANU_ATK:
           return "effect\\EFST_ATK.tga";
-        case 383:
+        case EFST_SPL_ATK:
           return "effect\\EFST_ATK.tga";
-        case 697:
+        case EFST_JP_EVENT01:
           return "effect\\EFST_ATK.tga";
-        case 386:
-        case 387:
+        case EFST_MANU_MATK:
+        case EFST_SPL_MATK:
           return "effect\\EFST_MATK.tga";
-        case 611:
+        case EFST_MAGIC_CANDY:
           return "effect\\EFST_MATK.tga";
-        case 698:
+        case EFST_JP_EVENT02:
           return "effect\\EFST_MATK.tga";
-        case 382:
+        case EFST_MANU_DEF:
           return "effect\\EFST_DEF.tga";
-        case 384:
+        case EFST_SPL_DEF:
           return "effect\\EFST_DEF.tga";
-        case 699:
+        case EFST_JP_EVENT03:
           return "effect\\EFST_DEF.tga";
-        case 700:
+        case EFST_JP_EVENT04:
           return "effect\\EXP.tga";
-        case 334:
+        case EFST_HALLUCINATIONWALK:
           return "effect\\할루시네이션워크.tga";
-        case 869:
+        case EFST_NPC_HALLUCINATIONWALK:
           return "effect\\할루시네이션워크.tga";
-        case 110:
+        case EFST_ASSUMPTIO:
           return "effect\\ICON05.tga";
-        case 473:
+        case EFST_ASSUMPTIO2:
           return "effect\\ICON05.tga";
-        case 1121:
+        case EFST_ASSUMPTIO_BUFF:
           return "effect\\ICON05.tga";
-        case 97:
+        case EFST_PROPERTYUNDEAD:
           return "effect\\글로리아.tga";
-        case 205:
+        case EFST_EARTHSCROLL:
           return "effect\\글로리아.tga";
-        case 212:
-        case 213:
-        case 214:
-        case 215:
-        case 216:
-        case 217:
-        case 218:
-        case 219:
-        case 220:
-        case 221:
-        case 222:
-        case 223:
-        case 224:
-        case 225:
-        case 226:
-        case 227:
-        case 228:
-        case 229:
-        case 230:
-        case 231:
-        case 232:
-        case 233:
-        case 234:
-        case 235:
-        case 236:
-        case 239:
-        case 240:
-        case 254:
-        case 255:
-        case 256:
-        case 257:
-        case 258:
-        case 259:
-        case 260:
-        case 261:
-        case 262:
+        case EFST_PET:
+        case EFST_MENTAL:
+        case EFST_EXPMEMORY:
+        case EFST_PERFORMANCE:
+        case EFST_GAIN:
+        case EFST_GRIFFON:
+        case EFST_DRIFT:
+        case EFST_WALLSHIFT:
+        case EFST_REINCARNATION:
+        case EFST_PATTACK:
+        case EFST_PSPEED:
+        case EFST_PDEFENSE:
+        case EFST_PCRITICAL:
+        case EFST_RANKING:
+        case EFST_PTRIPLE:
+        case EFST_DENERGY:
+        case EFST_WAVE1:
+        case EFST_WAVE2:
+        case EFST_WAVE3:
+        case EFST_WAVE4:
+        case EFST_DAURA:
+        case EFST_DFREEZER:
+        case EFST_DPUNISH:
+        case EFST_DBARRIER:
+        case EFST_DWARNING:
+        case EFST_DACCEL:
+        case EFST_DBLOCK:
+        case EFST_DA_ENERGY:
+        case EFST_DA_FIRSTSLOT:
+        case EFST_DA_HEADDEF:
+        case EFST_DA_SPACE:
+        case EFST_DA_TRANSFORM:
+        case EFST_DA_ITEMREBUILD:
+        case EFST_DA_ILLUSION:
+        case EFST_DA_DARKPOWER:
+        case EFST_DA_EARPLUG:
           return "effect\\글로리아.tga";
-        case 263:
+        case EFST_DA_CONTRACT:
           return "effect\\죽은척하기.tga";
-        case 264:
-        case 265:
-        case 266:
-        case 267:
-        case 268:
-        case 269:
-        case 270:
+        case EFST_DA_BLACK:
+        case EFST_DA_MAGICCART:
+        case EFST_CRYSTAL:
+        case EFST_DA_REBUILD:
+        case EFST_DA_EDARKNESS:
+        case EFST_DA_EGUARDIAN:
+        case EFST_DA_TIMEOUT:
           return "effect\\글로리아.tga";
       }
       break;
     case 3:
       switch (efstId) {
-        case 3:
+        case EFST_CONCENTRATION:
           return "effect\\집중력향상.tga";
-        case 29:
+        case EFST_TRICKDEAD:
           return "effect\\죽은척하기.tga";
-        case 28:
+        case EFST_FALCON:
           return "effect\\팔콘.tga";
-        case 30:
+        case EFST_SHOUT:
           return "effect\\고성지르기.tga";
-        case 31:
+        case EFST_ENERGYCOAT:
           return "effect\\에너지코트.tga";
-        case 37:
-        case 38:
-        case 39:
-        case 40:
+        case EFST_ATTHASTE_POTION1:
+        case EFST_ATTHASTE_POTION2:
+        case EFST_ATTHASTE_POTION3:
+        case EFST_ATTHASTE_INFINITY:
           return "effect\\공속물약.tga";
-        case 54:
+        case EFST_PROTECTWEAPON:
           return "effect\\케미컬프로텍션[웨폰].tga";
-        case 55:
+        case EFST_PROTECTSHIELD:
           return "effect\\케미컬프로텍션[쉴드].tga";
-        case 56:
+        case EFST_PROTECTARMOR:
           return "effect\\케미컬프로텍션[아머].tga";
-        case 57:
+        case EFST_PROTECTHELM:
           return "effect\\케미컬프로텍션[헬름].tga";
-        case 93:
+        case EFST_PROPERTYGROUND:
           if (IsTaekwonDisplayJob()) {
             return "effect\\i_p_EARTH.tga";
           }
           return "effect\\사이즈믹웨폰.tga";
-        case 151:
+        case EFST_PLUSMAGICPOWER:
           return "effect\\PLUSMAGICPOWER.tga";
-        case 357:
+        case EFST_WUGRIDER:
           return "effect\\wolfmount.tga";
-        case 27:
+        case EFST_RIDING:
           return "effect\\라이딩.tga";
-        case 613:
+        case EFST_ALL_RIDING:
           return "effect\\라이딩.tga";
-        case 639:
-        case 641:
+        case EFST_SET_NUM_MDEF:
+        case EFST_SET_PER_MDEF:
           return "effect\\SETMDEF.TGA";
-        case 647:
+        case EFST_ATTHASTE_CASH:
           return "effect\\ASPDCASH.TGA";
-        case 650:
+        case EFST_2011RWC:
           return "effect\\ELDICASTES.TGA";
       }
       break;
     case 4:
       switch (efstId) {
-        case 21:
+        case EFST_GLORIA:
           return "effect\\글로리아.tga";
-        case 19:
+        case EFST_KYRIE:
           return "effect\\기리에엘레이손.tga";
-        case 22:
+        case EFST_LEXAETERNA:
           return "effect\\렉스에테르나.tga";
-        case 11:
+        case EFST_CRUCIS:
           return "effect\\시그넘크루시스.tga";
-        case 20:
+        case EFST_MAGNIFICAT:
           return "effect\\마니피캇.tga";
-        case 10:
+        case EFST_BLESSING:
           return "effect\\블레싱.tga";
-        case 18:
+        case EFST_BENEDICTIO:
           return "effect\\성체강복.tga";
-        case 16:
+        case EFST_SUFFRAGIUM:
           return "effect\\수프라기움.tga";
-        case 14:
+        case EFST_SLOWPOISON:
           return "effect\\슬로우포이즌.tga";
-        case 17:
+        case EFST_ASPERSIO:
           if (IsTaekwonDisplayJob()) {
             return "effect\\i_p_SAINT.tga";
           }
           return "effect\\아스페르시오.tga";
-        case 64:
+        case EFST_WEAPONPROPERTY:
           if (IsTaekwonDisplayJob()) {
             return "effect\\i_p_SAINT.tga";
           }
           return "effect\\아스페르시오.tga";
-        case 9:
+        case EFST_ANGELUS:
           return "effect\\안젤루스.tga";
-        case 15:
+        case EFST_IMPOSITIO:
           return "effect\\임포시티오마누스.tga";
-        case 61:
+        case EFST_PROVIDENCE:
           return "effect\\신의뜻.tga";
-        case 87:
+        case EFST_STEELBODY:
           return "effect\\STEELBODY.tga";
-        case 12:
+        case EFST_INC_AGI:
           return "effect\\민첩성증가.tga";
-        case 41:
-        case 42:
+        case EFST_MOVHASTE_POTION:
+        case EFST_MOVHASTE_INFINITY:
           return "effect\\민첩성증가.tga";
-        case 289:
+        case EFST_MOVHASTE_HORSE:
           return "effect\\민첩성증가.tga";
-        case 577:
+        case EFST_PAIN_KILLER:
           return "effect\\세라4.tga";
-        case 580:
+        case EFST_LIGHT_OF_REGENE:
           return "effect\\에이라1.tga";
-        case 581:
+        case EFST_OVERED_BOOST:
           return "effect\\에이라2.tga";
-        case 584:
+        case EFST_STYLE_CHANGE:
           return "effect\\에레노아1_1.tga";
-        case 605:
+        case EFST_MAGMA_FLOW:
           return "effect\\디이터1.tga";
-        case 606:
+        case EFST_GRANITIC_ARMOR:
           return "effect\\디이터2.tga";
-        case 607:
+        case EFST_PYROCLASTIC:
           return "effect\\디이터4.tga";
-        case 608:
+        case EFST_VOLCANIC_ASH:
           return "effect\\디이터5.tga";
-        case 618:
+        case EFST_OVERLAPEXPUP:
           return "effect\\exp_말랑도_고양이캔.tga";
-        case 658:
+        case EFST_PHI_DEMON:
           return "effect\\PHIDEMON.tga";
-        case 723:
+        case EFST_KINGS_GRACE:
           return "effect\\KINGS_GRACE.tga";
-        case 715:
+        case EFST_FRIGG_SONG:
           return "effect\\FRIGG_SONG.tga";
-        case 716:
+        case EFST_OFFERTORIUM:
           return "effect\\OFFERTORIUM.tga";
-        case 717:
+        case EFST_TELEKINESIS_INTENSE:
           return "effect\\TELEKINESIS_INTENSE.tga";
-        case 720:
+        case EFST_FULL_THROTTLE:
           return "effect\\FULL_THROTTLE.tga";
       }
       break;

@@ -1,4 +1,6 @@
 #include "Contents/Actors/Skill.h"
+#include "Contents/Skills/SkillId.h"
+#include "Contents/Skills/SkillUnitId.h"
 
 #include "ActorPickNode.h"
 #include "Contents/Actors/GraffiSkill.h"
@@ -106,55 +108,55 @@ CSkill::~CSkill() {
 // FUNCTION: fn_24268
 const char* CSkill::GetTrapModelName() {
   switch (this->GetEffectiveJob(-1)) {
-    case 0x8F:
-    case 0xDA:
-    case 0xDE:
-    case 0xE6:
+    case UNT_BLASTMINE:
+    case UNT_REVERBERATION:
+    case UNT_NETHERWORLD:
+    case UNT_WALLOFTHORN:
       return "외부소품\\트랩03_3.rsm";
-    case 0x90:
+    case UNT_SKIDTRAP:
       return "외부소품\\트랩02.rsm";
-    case 0xE5:
+    case UNT_THORNS_TRAP:
       return "event\\3차트랩_가시01.rsm";
-    case 0x93:
+    case UNT_LANDMINE:
       return "외부소품\\트랩03.rsm";
-    case 0x94:
+    case UNT_SHOCKWAVE:
       return "외부소품\\트랩03_6.rsm";
-    case 0x95:
+    case UNT_SANDMAN:
       return "외부소품\\트랩03_4.rsm";
-    case 0x96:
+    case UNT_FLASHER:
       return "외부소품\\트랩03_5.rsm";
-    case 0x97:
+    case UNT_FREEZINGTRAP:
       return "외부소품\\트랩03_2.rsm";
-    case 0x98:
+    case UNT_CLAYMORETRAP:
       return "외부소품\\트랩04.rsm";
-    case 0x99:
+    case UNT_TALKIEBOX:
       return "외부소품\\트랩05.rsm";
-    case 0x91:
-    case 0xCB:
+    case UNT_ANKLESNARE:
+    case UNT_EARTHSTRAIN:
       return "외부소품\\트랩01.rsm";
-    case 0xD2:
+    case UNT_MAGENTATRAP:
       return "event\\3차트랩_변화01.rsm";
-    case 0xD3:
+    case UNT_COBALTTRAP:
       return "event\\3차트랩_변수01.rsm";
-    case 0xD4:
+    case UNT_MAIZETRAP:
       return "event\\3차트랩_변지01.rsm";
-    case 0xD5:
+    case UNT_VERDURETRAP:
       return "event\\3차트랩_변풍01.rsm";
-    case 0xD6:
+    case UNT_FIRINGTRAP:
       return "event\\3차트랩_화01.rsm";
-    case 0xD7:
+    case UNT_ICEBOUNDTRAP:
       return "event\\3차트랩_수01.rsm";
-    case 0xD8:
+    case UNT_ELECTRICSHOCKER:
       return "event\\3차트랩_풍01.rsm";
-    case 0xD9:
+    case UNT_CLUSTERBOMB:
       return "event\\3차트랩_지01.rsm";
-    case 0x5174:
+    case UNT_DEEPBLINDTRAP:
       return "effect\\deepblindtrap\\deep_trap.rsm2";
-    case 0x5175:
+    case UNT_SOLIDTRAP:
       return "effect\\solidtrap\\sol_trap.rsm2";
-    case 0x5176:
+    case UNT_SWIFTTRAP:
       return "effect\\swifttrap\\swi_trap.rsm2";
-    case 0x5177:
+    case UNT_FLAMETRAP:
       return "effect\\flametrap\\fla_trap.rsm2";
     default:
       return nullptr;
@@ -400,59 +402,59 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
 
     int effectId = skillId < 493 ? 0 : -1;
     switch (skillId) {
-    case 18:
+    case MG_FIREWALL:
       effectId = 0x31;
       break;
-    case 79:
+    case PR_MAGNUS:
       effectId = 0x98;
       break;
-    case 85:
-    case 2587:
+    case WZ_VERMILION:
+    case SJ_BOOKOFCREATINGSTAR:
       effectId = 0x34;
       break;
-    case 89:
-    case 723:
+    case WZ_STORMGUST:
+    case NPC_STORMGUST2:
       effectId = 0x33;
       break;
-    case 428:
-    case 429:
-    case 430:
+    case SG_SUN_WARM:
+    case SG_MOON_WARM:
+    case SG_STAR_WARM:
       effectId = 0x247;
       break;
-    case 5217:
+    case AG_MYSTERY_ILLUSION:
       effectId = 0x6EF;
       break;
-    case 5219:
-    case 5221:
+    case AG_VIOLENT_QUAKE_ATK:
+    case AG_STRANTUM_TREMOR:
       effectId = 0x764;
       break;
-    case 5223:
-    case 5224:
+    case AG_ALL_BLOOM_ATK:
+    case AG_ALL_BLOOM_ATK2:
       effectId = 0x707;
       break;
-    case 5227:
+    case AG_TORNADO_STORM:
       effectId = 0x6F4;
       break;
-    case 5229:
+    case AG_FLORAL_FLARE_ROAD:
       effectId = 0x70F;
       break;
-    case 5321:
-    case 5370:
-    case 5371:
-    case 5372:
-    case 8044:
+    case ABC_ABYSS_SQUARE:
+    case EM_LIGHTNING_LAND:
+    case EM_VENOM_SWAMP:
+    case EM_CONFLAGRATION:
+    case MH_BLAST_FORGE:
       effectId = g_session.FindUnknown0700(skillId);
       break;
-    case 5331:
+    case WH_DEEPBLINDTRAP:
       effectId = 0x753;
       break;
-    case 5332:
+    case WH_SOLIDTRAP:
       effectId = 0x75B;
       break;
-    case 5333:
+    case WH_SWIFTTRAP:
       effectId = 0x757;
       break;
-    case 5335:
+    case WH_FLAMETRAP:
       effectId = 0x782;
       break;
     }
@@ -513,53 +515,53 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
 
     const vector3d& position = this->render.position;
     switch (this->GetEffectiveJob(-1)) {
-    case 0x8D:
+    case UNT_ICEWALL:
       this->render.unknown_00A4Bytes[1] = 1;
       return;
-    case 0x7F:
-    case 0xED: {
+    case UNT_FIREWALL:
+    case UNT_FIRE_MANTLE: {
       const vector3d& player = mode->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       this->render.unknown_00A4Bytes[1] = 0;
       return;
     }
-    case 0xBC:
-    case 0xDC:
-    case 0xDD:
-    case 0xEB:
+    case UNT_TATAMIGAESHI:
+    case UNT_FIREWALK:
+    case UNT_ELECTRICWALK:
+    case UNT_VACUUM_EXTREME:
       this->render.unknown_00A4Bytes[1] = 0;
       return;
-    case 0xBE:
+    case UNT_GROUNDDRIFT_WIND:
       this->m_effectId = 0x6B;
       this->render.unknown_00A4Bytes[1] = 0;
       return;
-    case 0xE6:
+    case UNT_WALLOFTHORN:
       this->m_effectId = 0x6A;
       this->render.unknown_00A4Bytes[1] = 1;
       return;
-    case 0xE4:
+    case UNT_WARMER:
       this->m_effectId = 0x6A;
       this->render.unknown_00A4Bytes[1] = 0;
       return;
-    case 0xBF:
-    case 0xC2:
-    case 0x108:
+    case UNT_GROUNDDRIFT_DARK:
+    case UNT_GROUNDDRIFT_FIRE:
+    case UNT_GROUNDDRIFT_NEUTRAL:
       this->m_effectId = 0x63;
       this->render.unknown_00A4Bytes[1] = 0;
       return;
-    case 0xC0:
+    case UNT_GROUNDDRIFT_POISON:
       this->m_effectId = 0x8B;
       this->render.unknown_00A4Bytes[1] = 0;
       return;
-    case 0xD2:
-    case 0xD3:
-    case 0xD4:
-    case 0xD5:
+    case UNT_MAGENTATRAP:
+    case UNT_COBALTTRAP:
+    case UNT_MAIZETRAP:
+    case UNT_VERDURETRAP:
       this->m_effectId = 0x8B;
       this->render.unknown_00A4Bytes[1] = 0;
       this->ShowModel(this->GetTrapModelName());
       return;
-    case 0xD8:
+    case UNT_ELECTRICSHOCKER:
       this->m_effectId = 0x6B;
       this->render.unknown_00A4Bytes[1] = 0;
       this->ShowModel(this->GetTrapModelName());
@@ -567,78 +569,78 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
         this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       return;
-    case 0xD6:
-    case 0xD9:
+    case UNT_FIRINGTRAP:
+    case UNT_CLUSTERBOMB:
       this->m_effectId = 0x6B;
       this->render.unknown_00A4Bytes[1] = 0;
       this->ShowModel(this->GetTrapModelName());
       return;
-    case 0xD7:
+    case UNT_ICEBOUNDTRAP:
       this->m_effectId = 0x6C;
       this->render.unknown_00A4Bytes[1] = 0;
       this->ShowModel(this->GetTrapModelName());
       return;
-    case 0xC1:
+    case UNT_GROUNDDRIFT_WATER:
       this->m_effectId = 0x6C;
       this->render.unknown_00A4Bytes[1] = 0;
       return;
-    case 0xBD:
+    case UNT_KAEN:
       if (rand() % 8 == 0) {
         const vector3d& player = mode->scene->player->render.position;
         g_soundMgr->PlayWave("effect\\화염진.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       }
       this->render.unknown_00A4Bytes[1] = 0;
       return;
-    case 0x8A:
+    case UNT_TRAP:
       this->render.unknown_00A4Bytes[1] = 1;
       this->ShowModel(this->GetTrapModelName());
       return;
-    case 0x8F:
+    case UNT_BLASTMINE:
       this->render.unknown_00A4Bytes[1] = 1;
       this->m_effectId = 0x6A;
       this->ShowModel(this->GetTrapModelName());
       return;
-    case 0xDA:
-    case 0xDE:
+    case UNT_REVERBERATION:
+    case UNT_NETHERWORLD:
       this->render.unknown_00A4Bytes[1] = 1;
       this->m_effectId = 0x1D0;
       return;
-    case 0x90:
-    case 0x91:
-    case 0x93:
-    case 0x99:
-    case 0xE5:
+    case UNT_SKIDTRAP:
+    case UNT_ANKLESNARE:
+    case UNT_LANDMINE:
+    case UNT_TALKIEBOX:
+    case UNT_THORNS_TRAP:
       this->render.unknown_00A4Bytes[1] = 1;
       this->ShowModel(this->GetTrapModelName());
       return;
-    case 0x95:
+    case UNT_SANDMAN:
       this->render.unknown_00A4Bytes[1] = 1;
       this->m_effectId = 0x8B;
       this->ShowModel(this->GetTrapModelName());
       return;
-    case 0x96:
+    case UNT_FLASHER:
       this->render.unknown_00A4Bytes[1] = 1;
       this->m_effectId = 0x63;
       this->ShowModel(this->GetTrapModelName());
       return;
-    case 0x97:
+    case UNT_FREEZINGTRAP:
       this->render.unknown_00A4Bytes[1] = 1;
       this->m_effectId = 0x6C;
       this->ShowModel(this->GetTrapModelName());
       return;
-    case 0x98:
+    case UNT_CLAYMORETRAP:
       this->render.unknown_00A4Bytes[1] = 1;
       this->m_effectId = 0x6B;
       this->ShowModel(this->GetTrapModelName());
       return;
-    case 0x94:
+    case UNT_SHOCKWAVE:
       this->render.unknown_00A4Bytes[1] = 1;
       this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled && !this->HasId(0x91)) {
         this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       return;
-    case 0xD1: {
+    case UNT_FEINTBOMB: {
       CPc* source;
       if (unit->owner == g_session.m_aid) {
         source = reinterpret_cast<CPc*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
@@ -653,22 +655,22 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       }
       return;
     }
-    case 0x102: {
+    case UNT_KINGS_GRACE: {
       const vector3d& player = mode->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\lg_kings_grace.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       this->render.unknown_00A4Bytes[1] = 0;
       return;
     }
-    case 0x101: {
+    case UNT_MAGMA_ERUPTION: {
       const vector3d& player = mode->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\NC_MAGMA_ERUPTION.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       this->render.unknown_00A4Bytes[1] = 0;
       return;
     }
-    case 0x85:
+    case UNT_PNEUMA:
       g_effectMgr->Spawn(this->render.accountId, 0x8D, position.x, position.y, position.z, 0, -1, 0, 0);
       return;
-    case 0x104:
+    case UNT_B_TRAP:
       switch (unit->level) {
       case 1:
         g_effectMgr->Spawn(this->render.accountId, 0x42D, position.x, position.y, position.z, 0, -1, 0, 0);
@@ -683,22 +685,22 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
         return;
       }
       return;
-    case 0x106:
+    case UNT_CATNIPPOWDER:
       g_effectMgr->Spawn(this->render.accountId, 0x450, position.x, position.y, position.z, 0, unit->level, 0, 0);
       return;
-    case 0x107: {
+    case UNT_NYANGGRASS: {
       const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\su_nyanggrass.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x465, position.x, position.y, position.z, 0, unit->level, 0, 0);
       return;
     }
-    case 0x109: {
+    case UNT_CREATINGSTAR: {
       g_effectMgr->Spawn(this->render.accountId, 0x4B0, position.x, position.y, position.z, 0, -1, 0, 0);
       const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\g카트토네이도.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       return;
     }
-    case 0x10C:
+    case UNT_SEEDTRAP:
       switch (unit->level) {
       case 1:
         this->m_effectId = 0x642;
@@ -717,32 +719,32 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
         break;
       }
       return;
-    case 0x114:
+    case UNT_PNEUMATICUS_PROCELLA:
       g_effectMgr->Spawn(this->render.accountId, 0x7A5, position.x, position.y, position.z, 0, unit->level, 0, 0);
       return;
-    case 0x10A:
+    case UNT_RAIN_OF_CRYSTAL:
       if (!g_effectMgr->Has(this->render.accountId, 0x6D8)) {
         g_effectMgr->Retire(this->render.accountId, 0x6D8);
       }
       g_effectMgr->Spawn(this->render.accountId, 0x6D8, position.x, position.y, position.z, 0, unit->level, 0, 0);
       return;
-    case 0x10E:
+    case UNT_VIOLENT_QUAKE:
       g_effectMgr->Retire(this->render.accountId, 0x701);
       g_effectMgr->Spawn(this->render.accountId, 0x701, position.x, position.y, position.z, 0, unit->level, 0, 0);
       return;
-    case 0x112:
+    case UNT_ASTRAL_STRIKE:
       if (!g_effectMgr->Has(this->render.accountId, 0x6E8)) {
         g_effectMgr->Retire(this->render.accountId, 0x6E8);
       }
       g_effectMgr->Spawn(this->render.accountId, 0x6E8, position.x, position.y, position.z, 0, unit->level, 0, 0);
       return;
-    case 0x10B:
+    case UNT_MYSTERY_ILLUSION:
       if (!g_effectMgr->Has(this->render.accountId, 0x6EC)) {
         g_effectMgr->Retire(this->render.accountId, 0x6EC);
       }
       g_effectMgr->Spawn(this->render.accountId, 0x6EC, position.x, position.y, position.z, 0, unit->level, 0, 0);
       return;
-    case 0x110:
+    case UNT_TORNADO_STORM:
       if (!g_effectMgr->Has(this->render.accountId, 0x6F0)) {
         g_effectMgr->Retire(this->render.accountId, 0x6F0);
       }
@@ -752,17 +754,17 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       }
       g_effectMgr->Spawn(this->render.accountId, 0x6F1, position.x, position.y, position.z, 0, unit->level, 0, 0);
       return;
-    case 0x10F:
+    case UNT_ALL_BLOOM:
       g_effectMgr->Retire(this->render.accountId, 0x702);
       g_effectMgr->Spawn(this->render.accountId, 0x702, position.x, position.y, position.z, 0, unit->level, 0, 0);
       g_effectMgr->Retire(this->render.accountId, 0x703);
       g_effectMgr->Spawn(this->render.accountId, 0x703, position.x, position.y, position.z, 0, unit->level, 0, 0);
       return;
-    case 0x111:
+    case UNT_FLORAL_FLARE_ROAD:
       g_effectMgr->Retire(this->render.accountId, 0x70C);
       g_effectMgr->Spawn(this->render.accountId, 0x70C, position.x, position.y, position.z, 0, unit->level, 0, 0);
       return;
-    case 0x10D:
+    case UNT_STRANTUM_TREMOR:
       for (std::int64_t effectId = 0x765; effectId <= 0x766; ++effectId) {
         if (!g_effectMgr->Has(this->render.accountId, static_cast<int>(effectId))) {
           g_effectMgr->Retire(this->render.accountId, static_cast<int>(effectId));
@@ -774,13 +776,13 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
         }
       }
       return;
-    case 0x11B:
+    case UNT_VENOM_SWAMP:
       if (!g_effectMgr->Has(this->render.accountId, 0x7EF)) {
         g_effectMgr->Retire(this->render.accountId, 0x7EF);
       }
       g_effectMgr->Spawn(this->render.accountId, 0x7EF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
-    case 0x11A:
+    case UNT_LIGHTNING_LAND:
       if (!g_effectMgr->Has(this->render.accountId, 0x7FA)) {
         g_effectMgr->Retire(this->render.accountId, 0x7FA);
       }
@@ -790,7 +792,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       }
       g_effectMgr->Spawn(this->render.accountId, 0x7F9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
-    case 0x11C:
+    case UNT_CONFLAGRATION:
       if (!g_effectMgr->Has(this->render.accountId, 0x808)) {
         g_effectMgr->Retire(this->render.accountId, 0x808);
       }
@@ -800,11 +802,11 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       }
       g_effectMgr->Spawn(this->render.accountId, 0x807, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
-    case 0x115:
+    case UNT_ABYSS_SQUARE:
       g_effectMgr->Spawn(this->render.accountId, 0x852, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x851, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
-    case 0x119: {
+    case UNT_ACIDIFIED_ZONE_FIRE: {
       g_effectMgr->Spawn(this->render.accountId, 0x8A0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x8A1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8A2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -817,7 +819,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       }
       return;
     }
-    case 0x116: {
+    case UNT_ACIDIFIED_ZONE_WATER: {
       g_effectMgr->Spawn(this->render.accountId, 0x8A8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x8A9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8AA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -830,7 +832,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       }
       return;
     }
-    case 0x118: {
+    case UNT_ACIDIFIED_ZONE_WIND: {
       g_effectMgr->Spawn(this->render.accountId, 0x8B0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x8B1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8B2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -843,7 +845,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       }
       return;
     }
-    case 0x117: {
+    case UNT_ACIDIFIED_ZONE_GROUND: {
       g_effectMgr->Spawn(this->render.accountId, 0x8B8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x8B9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -856,31 +858,31 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       }
       return;
     }
-    case 0x11D:
+    case UNT_CANE_OF_EVIL_EYE:
       g_effectMgr->Spawn(this->render.accountId, 0x903, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
-    case 0x5174:
+    case UNT_DEEPBLINDTRAP:
       this->render.unknown_00A4Bytes[1] = 1;
       this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, 0x752, position.x, position.y, position.z, 0, -1, 0, 0);
       }
       return;
-    case 0x5176:
+    case UNT_SWIFTTRAP:
       this->render.unknown_00A4Bytes[1] = 1;
       this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, 0x756, position.x, position.y, position.z, 0, -1, 0, 0);
       }
       return;
-    case 0x5175:
+    case UNT_SOLIDTRAP:
       this->render.unknown_00A4Bytes[1] = 1;
       this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, 0x75A, position.x, position.y, position.z, 0, -1, 0, 0);
       }
       return;
-    case 0x5177:
+    case UNT_FLAMETRAP:
       this->render.unknown_00A4Bytes[1] = 1;
       this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
@@ -901,14 +903,14 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
   case 0x2F:
     this->SetActorJob(b);
     switch (this->GetEffectiveJob(-1)) {
-    case 0x80: {
+    case UNT_WARP_WAITING: {
       const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
       g_soundMgr->PlayWave(
         "effect\\EF_Portal.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
       );
       break;
     }
-    case 0x8C:
+    case UNT_USED_TRAPS:
       if (this->m_effectId != -1 &&
           !g_effectMgr->Spawn(0, this->m_effectId, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0)) {
         CRagEffect* effect = this->LaunchEffect(this->m_effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -926,7 +928,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     }
     return;
   case 0x35:
-    if (this->GetEffectiveJob(-1) == 0x11D) {
+    if (this->GetEffectiveJob(-1) == UNT_CANE_OF_EVIL_EYE) {
       CEffect* effect = g_effectMgr->Find(this->render.accountId, 0x903);
       if (effect != nullptr) {
         static_cast<CCaneOfEvilEyeEffect*>(effect)->Finish();
@@ -943,21 +945,21 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
 
     this->render.enabled = 1;
     this->ShowModel(this->GetTrapModelName());
-    if (this->GetEffectiveJob(-1) == 0x94 && !this->HasId(0x91)) {
+    if (this->GetEffectiveJob(-1) == UNT_SHOCKWAVE && !this->HasId(0x91)) {
       this->LaunchEffect(0x91, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
 
     switch (this->GetEffectiveJob(-1)) {
-    case 0x5174:
+    case UNT_DEEPBLINDTRAP:
       g_effectMgr->Spawn(this->render.accountId, 0x752, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
-    case 0x5175:
+    case UNT_SOLIDTRAP:
       g_effectMgr->Spawn(this->render.accountId, 0x75A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
-    case 0x5176:
+    case UNT_SWIFTTRAP:
       g_effectMgr->Spawn(this->render.accountId, 0x756, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
-    case 0x5177:
+    case UNT_FLAMETRAP:
       g_effectMgr->Spawn(this->render.accountId, 0x77F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       return;
     }

@@ -6,6 +6,7 @@
 #include "Contents/Actors/CharacterRender.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Combat/CombatTypes.h"
 #include "Contents/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Render/Renderer.h"
@@ -199,8 +200,8 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     if (a != 0) {
       const ITEM_INFO* item = reinterpret_cast<const ITEM_INFO*>(a);
       switch (item->unknown_0000[2]) {
-      case 0x100:
-      case 0x400:
+      case EQP_HEAD_TOP:
+      case EQP_COSTUME_HEAD_TOP:
         this->m_render->unknown_002C = item->unknown_0070;
         this->m_render->unknown_0038 = 0x100;
         if ((this->m_render->unknown_0034 & 0x100) != 0) {
@@ -212,8 +213,8 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           this->m_render->unknown_0030 = 0;
         }
         break;
-      case 0x200:
-      case 0x800:
+      case EQP_HEAD_MID:
+      case EQP_COSTUME_HEAD_MID:
         this->m_render->unknown_0030 = item->unknown_0070;
         this->m_render->unknown_003C = 0x200;
         if ((this->m_render->unknown_0034 & 0x200) != 0) {
@@ -231,7 +232,7 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         this->m_render->unknown_0030 = 0;
         this->m_render->unknown_0038 = 0x300;
         this->m_render->unknown_003C = 0x300;
-        if (this->m_render->unknown_0034 != 1) {
+        if (this->m_render->unknown_0034 != EQP_HEAD_LOW) {
           this->m_render->unknown_0034 = 0;
           this->m_render->unknown_0028 = 0;
         }
@@ -251,7 +252,7 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         this->m_render->unknown_0028 = 0;
         this->m_render->unknown_003C = 0x201;
         this->m_render->unknown_0034 = 0x201;
-        if (this->m_render->unknown_0038 != 0x100) {
+        if (this->m_render->unknown_0038 != EQP_HEAD_TOP) {
           this->m_render->unknown_0038 = 0;
           this->m_render->unknown_002C = 0;
         }
@@ -262,13 +263,13 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         this->m_render->unknown_0028 = 0;
         this->m_render->unknown_0038 = 0x101;
         this->m_render->unknown_0034 = 0x101;
-        if (this->m_render->unknown_003C != 0x200) {
+        if (this->m_render->unknown_003C != EQP_HEAD_MID) {
           this->m_render->unknown_003C = 0;
           this->m_render->unknown_0030 = 0;
         }
         break;
-      case 1:
-      case 0x1000:
+      case EQP_HEAD_LOW:
+      case EQP_COSTUME_HEAD_LOW:
         this->m_render->unknown_0028 = item->unknown_0070;
         this->m_render->unknown_0034 = 1;
         if ((this->m_render->unknown_0038 & 1) != 0) {
@@ -280,8 +281,8 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           this->m_render->unknown_0030 = 0;
         }
         break;
-      case 4:
-      case 0x2000:
+      case EQP_GARMENT:
+      case EQP_COSTUME_GARMENT:
         this->m_render->SetRobe(item->unknown_0070);
         break;
       }

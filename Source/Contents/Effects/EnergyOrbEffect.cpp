@@ -1,4 +1,5 @@
 #include "Contents/Effects/EnergyOrbEffect.h"
+#include "Contents/Effects/EffectTypes.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
@@ -61,26 +62,26 @@ void CEnergyOrbEffect::Open() {
       }
 
       switch (this->id) {
-      case 228:
+      case EF_CHOOKGI:
         particle->SetColor(particle->unknown_000C != 0 ? -1 : 0, particle->unknown_000C != 0 ? -1 : 0, particle->unknown_000C != 0 ? 0 : 255);
         break;
-      case 735:
+      case EF_CHOOKGI_FIRE:
         particle->SetTexture("effect\\FireOrb.bmp");
         particle->scale = 2.3f;
         break;
-      case 736:
+      case EF_CHOOKGI_WIND:
         particle->SetTexture("effect\\LightningOrb.bmp");
         particle->scale = 2.3f;
         break;
-      case 737:
+      case EF_CHOOKGI_WATER:
         particle->SetTexture("effect\\WaterOrb.bmp");
         particle->scale = 1.3f;
         break;
-      case 738:
+      case EF_CHOOKGI_GROUND:
         particle->SetTexture("effect\\StoneOrb.bmp");
         particle->scale = 2.3f;
         break;
-      case 1005:
+      case EF_OB_GENSOU:
         particle->SetTexture("effect\\fog1.tga");
         particle->scale = 6.0f;
         particle->unknown_00C0 = 0.05f;

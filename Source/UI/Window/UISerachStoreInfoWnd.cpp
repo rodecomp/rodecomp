@@ -6,6 +6,7 @@
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Buttons/UIRadioBtn.h"
@@ -328,23 +329,23 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         this->unknown_00DC = 1;
       } else if (argument2 < 387) {
         switch (argument2) {
-        case 0:
+        case SSI_FAILED_NOTHING_SEARCH_ITEM:
           this->unknown_00DC = 1;
           g_session.unknown_5BD4.clear();
           reinterpret_cast<unsigned char*>(&g_session.unknown_5BE4)[1] = 0;
           this->unknown_00F0 = LookupMessage(1803);
           --g_session.unknown_5BE0;
           break;
-        case 1:
+        case SSI_FAILED_OVER_MAXCOUNT:
           this->unknown_00F0 = LookupMessage(1784);
           break;
-        case 2:
+        case SSI_FAILED_SEARCH_CNT:
           this->unknown_00F0 = LookupMessage(1798);
           break;
-        case 3:
+        case SSI_FAILED_LIMIT_SEARCH_TIME:
           g_windowMgr.Confirm(LookupMessage(1800), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
-        case 4:
+        case SSI_FAILED_SSILIST_CLICK_TO_OPEN_STORE:
           g_session.unknown_5BE8 = -1;
           g_session.unknown_5BEC = -1;
           g_session.unknown_5BF0 = 0xFFFFFFFF;

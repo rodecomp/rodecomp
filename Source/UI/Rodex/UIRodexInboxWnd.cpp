@@ -6,6 +6,7 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -205,13 +206,13 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
   this->unknown_0130->SendMsg(this, 13, 0, 0, 0, 0);
 
   switch (g_rodexMailStore->unknown_0010) {
-  case 0:
+  case MAIL_INBOX_NORMAL:
     this->unknown_0130->SendMsg(this, 13, 1, 0, 0, 0);
     break;
-  case 1:
+  case MAIL_INBOX_ACCOUNT:
     this->unknown_0134->SendMsg(this, 13, 1, 0, 0, 0);
     break;
-  case 2:
+  case MAIL_INBOX_RETURNED:
     this->unknown_0138->SendMsg(this, 13, 1, 0, 0, 0);
     break;
   }
@@ -436,7 +437,7 @@ void UIRodexInboxWnd::Paint() {
       this->unknown_0144[row]->Enable(0);
       this->unknown_015C[row]->Enable(0);
       switch (g_rodexMailStore->unknown_0010) {
-        case 1:
+        case MAIL_INBOX_ACCOUNT:
           if (index < this->mails1.size()) {
             std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails1.find(this->mails1[index].second);
             if (it != g_rodexMailStore->m_mails1.end()) {
@@ -454,7 +455,7 @@ void UIRodexInboxWnd::Paint() {
             }
           }
           break;
-        case 2:
+        case MAIL_INBOX_RETURNED:
           if (index < this->mails2.size()) {
             std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails2.find(this->mails2[index].second);
             if (it != g_rodexMailStore->m_mails2.end()) {
@@ -1066,7 +1067,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
 
     case 0x136:
-      if (g_rodexMailStore->unknown_0010 == 0) {
+      if (g_rodexMailStore->unknown_0010 == MAIL_INBOX_NORMAL) {
         std::map<std::int64_t, RodexMail>::iterator mail = g_rodexMailStore->m_mails0.find(argument2);
         if (mail != g_rodexMailStore->m_mails0.end()) {
           PACKET_CZ_RODEX_RETURN packet;
@@ -1083,13 +1084,13 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         type = LookupMessage(0xDDD);
       } else {
         switch (g_rodexMailStore->unknown_0010) {
-        case 0:
+        case MAIL_INBOX_NORMAL:
           type = LookupMessage(0xDDB);
           break;
-        case 1:
+        case MAIL_INBOX_ACCOUNT:
           type = LookupMessage(0xDDA);
           break;
-        case 2:
+        case MAIL_INBOX_RETURNED:
           type = LookupMessage(0xDDC);
           break;
         }
@@ -1108,13 +1109,13 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         type = LookupMessage(0xDDD);
       } else {
         switch (g_rodexMailStore->unknown_0010) {
-        case 0:
+        case MAIL_INBOX_NORMAL:
           type = LookupMessage(0xDDB);
           break;
-        case 1:
+        case MAIL_INBOX_ACCOUNT:
           type = LookupMessage(0xDDA);
           break;
-        case 2:
+        case MAIL_INBOX_RETURNED:
           type = LookupMessage(0xDDC);
           break;
         }
@@ -1202,7 +1203,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
   case 0x62:
     if (argument1 == 0x142) {
-      if (g_rodexMailStore->unknown_0010 == 0) {
+      if (g_rodexMailStore->unknown_0010 == MAIL_INBOX_NORMAL) {
         std::map<std::int64_t, RodexMail>::iterator mail = g_rodexMailStore->m_mails0.find(argument2);
         if (mail != g_rodexMailStore->m_mails0.end() && (mail->second.unknown_0001 & 8) == 0 && mail->second.unknown_0004.size() != 0) {
           const std::pair<bool, std::string> title = RemoveLineBreakTag(mail->second.unknown_0024);

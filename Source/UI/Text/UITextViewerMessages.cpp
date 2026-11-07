@@ -17,6 +17,7 @@
 #include "UI/Text/TextMarkup.h"
 #include "UI/Text/TextWrapping.h"
 #include "Render/Text/TextContext.h"
+#include "UI/Text/CreateLineInfo.h"
 
 #include <cstring>
 #include <bit>
@@ -26,7 +27,7 @@
 // INLINED
 __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
   switch (id) {
-  case 437:
+  case LINE_SEGMENT_URL:
     if (button) {
       const std::string& url = button->GetLine(0);
 
@@ -36,7 +37,7 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
     }
 
     break;
-  case 438: {
+  case LINE_SEGMENT_NAVI: {
     if (!button) {
       break;
     }
@@ -92,7 +93,7 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
 
     break;
   }
-  case 464: {
+  case LINE_SEGMENT_ITEM: {
     if (!button || button->GetLinesCount() == 0) {
       break;
     }
@@ -115,7 +116,7 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
 
     break;
   }
-  case 517:
+  case LINE_SEGMENT_TIPBOX:
     if (button && button->GetLinesCount() != 0) {
       const std::string& tip = button->GetLine(0);
 
@@ -125,7 +126,7 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
     }
 
     break;
-  case 539:
+  case LINE_SEGMENT_QUEST:
     if (button) {
       const int value = std::atoi(button->GetLine(0).c_str());
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveServiceRequest(6, value);
@@ -323,12 +324,12 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     auto* button = static_cast<UITextButton*>(sender);
     const int id = static_cast<int>(argument1);
     switch (id) {
-    case 437:
+    case LINE_SEGMENT_URL:
       if (button && !button->GetLine(0).empty()) {
         ShellExecuteA(hWnd, "open", button->GetLine(0).c_str(), nullptr, nullptr, SW_SHOWNORMAL);
       }
       break;
-    case 438:
+    case LINE_SEGMENT_NAVI:
       if (button && button->GetLinesCount() != 0) {
         const int count = button->GetLinesCount();
         const std::string& map = button->GetLine(0);
@@ -355,7 +356,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         }
       }
       break;
-    case 464:
+    case LINE_SEGMENT_ITEM:
       if (button && button->GetLinesCount() != 0) {
         int idValue = 0;
         if (!button->GetLine(1).empty()) {
@@ -371,7 +372,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         }
       }
       break;
-    case 517:
+    case LINE_SEGMENT_TIPBOX:
       if (button && button->GetLinesCount() != 0) {
         const std::string& tip = button->GetLine(0);
         if (UIWindow* window = g_windowMgr.EnsureWindow(315)) {
@@ -379,7 +380,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         }
       }
       break;
-    case 539:
+    case LINE_SEGMENT_QUEST:
       if (button) {
         static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveServiceRequest(6, std::atoi(button->GetLine(0).c_str()));
       }

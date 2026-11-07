@@ -1,3 +1,4 @@
+#include "Contents/Jobs/JobId.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "UI/Window/UINewSkillListWnd.h"
 #include "Client/Mode/CGameMode.h"
@@ -505,210 +506,210 @@ void UINewSkillListWnd::InitTabs() {
   const unsigned baseJob = JobNames::BaseJob(g_session.GetDisplayJob());
   int jobKey = baseJob;
   switch (baseJob) {
-  case 0:
-  case 4001:
-  case 4023:
+  case JT_NOVICE:
+  case JT_NOVICE_H:
+  case JT_NOVICE_B:
     jobKey = 0;
     break;
-  case 1:
-  case 4002:
-  case 4024:
+  case JT_SWORDMAN:
+  case JT_SWORDMAN_H:
+  case JT_SWORDMAN_B:
     jobKey = 1;
     break;
-  case 2:
-  case 4003:
-  case 4025:
+  case JT_MAGICIAN:
+  case JT_MAGICIAN_H:
+  case JT_MAGICIAN_B:
     jobKey = 2;
     break;
-  case 3:
-  case 4004:
-  case 4026:
+  case JT_ARCHER:
+  case JT_ARCHER_H:
+  case JT_ARCHER_B:
     jobKey = 3;
     break;
-  case 4:
-  case 4005:
-  case 4027:
+  case JT_ACOLYTE:
+  case JT_ACOLYTE_H:
+  case JT_ACOLYTE_B:
     jobKey = 4;
     break;
-  case 5:
-  case 4006:
-  case 4028:
+  case JT_MERCHANT:
+  case JT_MERCHANT_H:
+  case JT_MERCHANT_B:
     jobKey = 5;
     break;
-  case 6:
-  case 4007:
-  case 4029:
+  case JT_THIEF:
+  case JT_THIEF_H:
+  case JT_THIEF_B:
     jobKey = 6;
     break;
-  case 7:
-  case 4008:
-  case 4030:
-  case 4054:
-  case 4060:
-  case 4096:
-  case 4252:
+  case JT_KNIGHT:
+  case JT_KNIGHT_H:
+  case JT_KNIGHT_B:
+  case JT_RUNE_KNIGHT:
+  case JT_RUNE_KNIGHT_H:
+  case JT_RUNE_KNIGHT_B:
+  case JT_DRAGON_KNIGHT:
     jobKey = 7;
     break;
-  case 8:
-  case 4009:
-  case 4031:
-  case 4057:
-  case 4063:
-  case 4099:
-  case 4256:
+  case JT_PRIEST:
+  case JT_PRIEST_H:
+  case JT_PRIEST_B:
+  case JT_ARCHBISHOP:
+  case JT_ARCHBISHOP_H:
+  case JT_ARCHBISHOP_B:
+  case JT_CARDINAL:
     jobKey = 8;
     break;
-  case 9:
-  case 4010:
-  case 4032:
-  case 4055:
-  case 4061:
-  case 4097:
-  case 4255:
+  case JT_WIZARD:
+  case JT_WIZARD_H:
+  case JT_WIZARD_B:
+  case JT_WARLOCK:
+  case JT_WARLOCK_H:
+  case JT_WARLOCK_B:
+  case JT_ARCH_MAGE:
     jobKey = 9;
     break;
-  case 10:
-  case 4011:
-  case 4033:
-  case 4058:
-  case 4064:
-  case 4100:
-  case 4253:
+  case JT_BLACKSMITH:
+  case JT_BLACKSMITH_H:
+  case JT_BLACKSMITH_B:
+  case JT_MECHANIC:
+  case JT_MECHANIC_H:
+  case JT_MECHANIC_B:
+  case JT_MEISTER:
     jobKey = 10;
     break;
-  case 11:
-  case 4012:
-  case 4034:
-  case 4056:
-  case 4062:
-  case 4098:
-  case 4257:
+  case JT_HUNTER:
+  case JT_HUNTER_H:
+  case JT_HUNTER_B:
+  case JT_RANGER:
+  case JT_RANGER_H:
+  case JT_RANGER_B:
+  case JT_WINDHAWK:
     jobKey = 11;
     break;
-  case 12:
-  case 4013:
-  case 4035:
-  case 4059:
-  case 4065:
-  case 4101:
-  case 4254:
+  case JT_ASSASSIN:
+  case JT_ASSASSIN_H:
+  case JT_ASSASSIN_B:
+  case JT_GUILLOTINE_CROSS:
+  case JT_GUILLOTINE_CROSS_H:
+  case JT_GUILLOTINE_CROSS_B:
+  case JT_SHADOW_CROSS:
     jobKey = 12;
     break;
-  case 14:
-  case 4015:
-  case 4037:
-  case 4066:
-  case 4073:
-  case 4102:
-  case 4258:
+  case JT_CRUSADER:
+  case JT_CRUSADER_H:
+  case JT_CRUSADER_B:
+  case JT_ROYAL_GUARD:
+  case JT_ROYAL_GUARD_H:
+  case JT_ROYAL_GUARD_B:
+  case JT_IMPERIAL_GUARD:
     jobKey = 14;
     break;
-  case 15:
-  case 4016:
-  case 4038:
-  case 4070:
-  case 4077:
-  case 4106:
-  case 4262:
+  case JT_MONK:
+  case JT_MONK_H:
+  case JT_MONK_B:
+  case JT_SURA:
+  case JT_SURA_H:
+  case JT_SURA_B:
+  case JT_INQUISITOR:
     jobKey = 15;
     break;
-  case 16:
-  case 4017:
-  case 4039:
-  case 4067:
-  case 4074:
-  case 4103:
-  case 4261:
+  case JT_SAGE:
+  case JT_SAGE_H:
+  case JT_SAGE_B:
+  case JT_SORCERER:
+  case JT_SORCERER_H:
+  case JT_SORCERER_B:
+  case JT_ELEMENTAL_MASTER:
     jobKey = 16;
     break;
-  case 17:
-  case 4018:
-  case 4040:
-  case 4072:
-  case 4079:
-  case 4108:
-  case 4260:
+  case JT_ROGUE:
+  case JT_ROGUE_H:
+  case JT_ROGUE_B:
+  case JT_SHADOW_CHASER:
+  case JT_SHADOW_CHASER_H:
+  case JT_SHADOW_CHASER_B:
+  case JT_ABYSS_CHASER:
     jobKey = 17;
     break;
-  case 18:
-  case 4019:
-  case 4041:
-  case 4071:
-  case 4078:
-  case 4107:
-  case 4259:
+  case JT_ALCHEMIST:
+  case JT_ALCHEMIST_H:
+  case JT_ALCHEMIST_B:
+  case JT_GENETIC:
+  case JT_GENETIC_H:
+  case JT_GENETIC_B:
+  case JT_BIOLO:
     jobKey = 18;
     break;
-  case 19:
-  case 4020:
-  case 4042:
-  case 4068:
-  case 4075:
-  case 4104:
-  case 4263:
+  case JT_BARD:
+  case JT_BARD_H:
+  case JT_BARD_B:
+  case JT_MINSTREL:
+  case JT_MINSTREL_H:
+  case JT_MINSTREL_B:
+  case JT_TROUBADOUR:
     jobKey = 19;
     break;
-  case 20:
-  case 4021:
-  case 4043:
-  case 4069:
-  case 4076:
-  case 4105:
-  case 4264:
+  case JT_DANCER:
+  case JT_DANCER_H:
+  case JT_DANCER_B:
+  case JT_WANDERER:
+  case JT_WANDERER_H:
+  case JT_WANDERER_B:
+  case JT_TROUVERE:
     jobKey = 20;
     break;
-  case 23:
-  case 4045:
-  case 4190:
-  case 4191:
-  case 4307:
+  case JT_SUPERNOVICE:
+  case JT_SUPERNOVICE_B:
+  case JT_SUPERNOVICE2:
+  case JT_SUPERNOVICE2_B:
+  case JT_HYPER_NOVICE:
     jobKey = 23;
     break;
-  case 24:
-  case 4215:
-  case 4228:
-  case 4229:
-  case 4306:
+  case JT_GUNSLINGER:
+  case JT_REBELLION:
+  case JT_GUNSLINGER_B:
+  case JT_REBELLION_B:
+  case JT_NIGHT_WATCH:
     jobKey = 24;
     break;
-  case 25:
-  case 4211:
-  case 4212:
-  case 4222:
-  case 4223:
-  case 4224:
-  case 4304:
-  case 4305:
+  case JT_NINJA:
+  case JT_KAGEROU:
+  case JT_OBORO:
+  case JT_NINJA_B:
+  case JT_KAGEROU_B:
+  case JT_OBORO_B:
+  case JT_SHINKIRO:
+  case JT_SHIRANUI:
     jobKey = 25;
     break;
-  case 4046:
-  case 4225:
+  case JT_TAEKWON:
+  case JT_TAEKWON_B:
     jobKey = 4046;
     break;
-  case 4047:
-  case 4226:
-  case 4239:
-  case 4241:
-  case 4302:
+  case JT_STAR:
+  case JT_STAR_B:
+  case JT_STAR_EMPEROR:
+  case JT_STAR_EMPEROR_B:
+  case JT_SKY_EMPEROR:
     jobKey = 4047;
     break;
-  case 4049:
-  case 4227:
-  case 4240:
-  case 4242:
-  case 4303:
+  case JT_LINKER:
+  case JT_LINKER_B:
+  case JT_SOUL_REAPER:
+  case JT_SOUL_REAPER_B:
+  case JT_SOUL_ASCETIC:
     jobKey = 4049;
     break;
-  case 4218:
-  case 4220:
-  case 4308:
+  case JT_DO_SUMMONER:
+  case JT_DO_SUMMONER_B:
+  case JT_SPIRIT_HANDLER:
     jobKey = 4218;
     break;
-  case 4351:
-  case 4352:
-  case 4353:
-  case 4354:
-  case 4355:
+  case JT_DRUID:
+  case JT_DRUID_B:
+  case JT_KARNOS:
+  case JT_KARNOS_B:
+  case JT_ALITEA:
     jobKey = 4351;
     break;
   default:

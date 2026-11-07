@@ -1,4 +1,5 @@
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/PacketId.h"
 
 #include <algorithm>
 
@@ -31,7 +32,7 @@ int PacketLengths::FixedLength(int id) const {
   case 703:
     return 12;
 
-  case 704:
+  case ID_CZ_SRPACKETR2_START:
     return 4;
   }
 

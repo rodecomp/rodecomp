@@ -6,6 +6,8 @@
 #include "Client/Input/InputCharset.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "Contents/Jobs/JobId.h"
+#include "Contents/Combat/CombatTypes.h"
 #include "File/File.h"
 #include "File/ShortcutFilename.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -3349,10 +3351,10 @@ void UIEquipWnd::OnCreate(int width, int height) {
         tooltip = LookupMessage(0x1B9);
       } else if (StateFlag05(flags)) {
         switch (g_session.GetDisplayJob()) {
-        case 0xFF2:
-        case 0xFF3:
-        case 0x100E:
-        case 0x10B9:
+        case JT_ROYAL_CHICKEN:
+        case JT_ROYAL_CHICKEN_H:
+        case JT_ROYAL_CHICKEN_B:
+        case JT_IMPERIAL_GUARD_CHICKEN:
           tooltip = LookupMessage(0x830);
           break;
         default:
@@ -12747,22 +12749,22 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       this->unknown_023C = nullptr;
     }
     switch (item->unknown_0000[2]) {
-    case 1:
-    case 4:
-    case 0x100:
+    case EQP_HEAD_LOW:
+    case EQP_GARMENT:
+    case EQP_HEAD_TOP:
     case 0x101:
-    case 0x200:
+    case EQP_HEAD_MID:
     case 0x201:
     case 0x300:
     case 0x301:
-    case 0x400:
-    case 0x800:
+    case EQP_COSTUME_HEAD_TOP:
+    case EQP_COSTUME_HEAD_MID:
     case 0xC00:
-    case 0x1000:
+    case EQP_COSTUME_HEAD_LOW:
     case 0x1400:
     case 0x1800:
     case 0x1C00:
-    case 0x2000:
+    case EQP_COSTUME_GARMENT:
       break;
     default:
       return 0;

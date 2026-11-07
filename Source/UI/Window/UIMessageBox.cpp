@@ -1,6 +1,7 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Text/FontCache.h"
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/Combat/CombatTypes.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -2154,13 +2155,13 @@ void UIMonsterInfoWnd::Paint() {
 
   this->DrawTextAt(260, 30, LookupMessage(410), 0, 0, 12, 0, 0, 0);
   switch (this->info.size) {
-  case 0:
+  case SZ_SMALL:
     this->DrawTextAt(300, 30, LookupMessage(3907), 0, 0, 12, 0, 0, 0);
     break;
-  case 1:
+  case SZ_MEDIUM:
     this->DrawTextAt(300, 30, LookupMessage(3908), 0, 0, 12, 0, 0, 0);
     break;
-  case 2:
+  case SZ_BIG:
     this->DrawTextAt(300, 30, LookupMessage(3909), 0, 0, 12, 0, 0, 0);
     break;
   }
@@ -2168,34 +2169,34 @@ void UIMonsterInfoWnd::Paint() {
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.race);
   this->DrawTextAt(260, 50, LookupMessage(411), 0, 0, 12, 0, 0, 0);
   switch (this->info.race) {
-  case 0:
+  case RC_FORMLESS:
     this->DrawTextAt(300, 50, LookupMessage(3887), 0, 0, 12, 0, 0, 0);
     break;
-  case 1:
+  case RC_UNDEAD:
     this->DrawTextAt(300, 50, LookupMessage(3888), 0, 0, 12, 0, 0, 0);
     break;
-  case 2:
+  case RC_BRUTE:
     this->DrawTextAt(300, 50, LookupMessage(3889), 0, 0, 12, 0, 0, 0);
     break;
-  case 3:
+  case RC_PLANT:
     this->DrawTextAt(300, 50, LookupMessage(3890), 0, 0, 12, 0, 0, 0);
     break;
-  case 4:
+  case RC_INSECT:
     this->DrawTextAt(300, 50, LookupMessage(3891), 0, 0, 12, 0, 0, 0);
     break;
-  case 5:
+  case RC_FISH:
     this->DrawTextAt(300, 50, LookupMessage(3892), 0, 0, 12, 0, 0, 0);
     break;
-  case 6:
+  case RC_DEMON:
     this->DrawTextAt(300, 50, LookupMessage(3893), 0, 0, 12, 0, 0, 0);
     break;
-  case 7:
+  case RC_DEMIHUMAN:
     this->DrawTextAt(300, 50, LookupMessage(3894), 0, 0, 12, 0, 0, 0);
     break;
-  case 8:
+  case RC_ANGEL:
     this->DrawTextAt(300, 50, LookupMessage(3895), 0, 0, 12, 0, 0, 0);
     break;
-  case 9:
+  case RC_DRAGON:
     this->DrawTextAt(300, 50, LookupMessage(3896), 0, 0, 12, 0, 0, 0);
     break;
   }
@@ -2206,34 +2207,34 @@ void UIMonsterInfoWnd::Paint() {
 
   this->DrawTextAt(260, 70, LookupMessage(413), 0, 0, 12, 0, 0, 0);
   switch (this->info.element % 20) {
-  case 0:
+  case ELE_NEUTRAL:
     this->DrawTextAt(300, 70, LookupMessage(3897), 0, 0, 12, 0, 0, 0);
     break;
-  case 1:
+  case ELE_WATER:
     this->DrawTextAt(300, 70, LookupMessage(3898), 0, 0, 12, 0, 0, 0);
     break;
-  case 2:
+  case ELE_EARTH:
     this->DrawTextAt(300, 70, LookupMessage(3899), 0, 0, 12, 0, 0, 0);
     break;
-  case 3:
+  case ELE_FIRE:
     this->DrawTextAt(300, 70, LookupMessage(3900), 0, 0, 12, 0, 0, 0);
     break;
-  case 4:
+  case ELE_WIND:
     this->DrawTextAt(300, 70, LookupMessage(3901), 0, 0, 12, 0, 0, 0);
     break;
-  case 5:
+  case ELE_POISON:
     this->DrawTextAt(300, 70, LookupMessage(3902), 0, 0, 12, 0, 0, 0);
     break;
-  case 6:
+  case ELE_HOLY:
     this->DrawTextAt(300, 70, LookupMessage(3903), 0, 0, 12, 0, 0, 0);
     break;
-  case 7:
+  case ELE_DARK:
     this->DrawTextAt(300, 70, LookupMessage(3904), 0, 0, 12, 0, 0, 0);
     break;
-  case 8:
+  case ELE_GHOST:
     this->DrawTextAt(300, 70, LookupMessage(3905), 0, 0, 12, 0, 0, 0);
     break;
-  case 9:
+  case ELE_UNDEAD:
     this->DrawTextAt(300, 70, LookupMessage(3906), 0, 0, 12, 0, 0, 0);
     break;
   }

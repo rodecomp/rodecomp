@@ -8,6 +8,7 @@
 #include "UI/Buttons/UITagButton.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Text/ColoredText.h"
+#include "UI/Text/CreateLineInfo.h"
 #include "UI/Text/PixelTextWrapping.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -475,7 +476,7 @@ std::pair<std::string, std::string> UITagListBox::ParseTag(std::string text, int
   }
 
   switch (g_textTagRegistry[tagIndex].type) {
-  case 438: {
+  case LINE_SEGMENT_NAVI: {
     const std::size_t opening = text.find(infoTagOpening, 0);
     if (opening == std::string::npos) {
       return result;
@@ -490,7 +491,7 @@ std::pair<std::string, std::string> UITagListBox::ParseTag(std::string text, int
     result.second += text.substr(opening + marker.size(), closing - marker.size() - opening);
     break;
   }
-  case 464: {
+  case LINE_SEGMENT_ITEM: {
     const std::size_t opening = text.find(infoTagOpening, 0);
     if (opening == std::string::npos) {
       return result;
@@ -505,7 +506,7 @@ std::pair<std::string, std::string> UITagListBox::ParseTag(std::string text, int
     result.second += text.substr(opening + marker.size(), closing - marker.size() - opening);
     break;
   }
-  case 501: {
+  case LINE_SEGMENT_ITEM_LINK: {
     result.first = text.substr(0, 1);
     const std::size_t start = g_textTagRegistry[tagIndex].opening.size();
     result.second = text.substr(start, closing - start);
@@ -529,7 +530,7 @@ void UITagListBox::OnTagClick(std::intptr_t type, UIWindow* sender) {
   }
 
   switch (type) {
-  case 438: {
+  case LINE_SEGMENT_NAVI: {
     const int count = button->GetStringCount();
     if (count == 0) {
       return;
@@ -568,8 +569,8 @@ void UITagListBox::OnTagClick(std::intptr_t type, UIWindow* sender) {
     }
     break;
   }
-  case 464:
-  case 501:
+  case LINE_SEGMENT_ITEM:
+  case LINE_SEGMENT_ITEM_LINK:
     if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
       window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&button->item), 0, 0, 0);
     }
@@ -689,7 +690,7 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
   std::string data = tag.unknown_0028;
   if (!data.empty()) {
     switch (tag.unknown_0004) {
-    case 438: {
+    case LINE_SEGMENT_NAVI: {
       std::string remaining = data;
       std::size_t separator = remaining.find(",");
       while (separator != std::string::npos) {
@@ -701,7 +702,7 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
       button->AddString(remaining);
       break;
     }
-    case 464: {
+    case LINE_SEGMENT_ITEM: {
       std::string remaining = data;
       std::size_t separator = remaining.find(",");
       while (separator != std::string::npos) {
@@ -721,7 +722,7 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
       button->item.itemId = button->GetString(0);
       break;
     }
-    case 501: {
+    case LINE_SEGMENT_ITEM_LINK: {
       std::vector<int> fields;
       this->DecodeItemFields(data, fields);
       this->ItemFromFields(fields, button->item);

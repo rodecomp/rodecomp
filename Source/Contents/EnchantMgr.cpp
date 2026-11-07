@@ -1,4 +1,5 @@
 #include "Contents/EnchantMgr.h"
+#include "Network/Packets/PacketId.h"
 #include "Client/Session.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/ItemDBToIDMgr.h"
@@ -119,16 +120,16 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
     g_session.UpdateInventoryItem(item, 1);
     int effect = 0;
     switch (this->m_request.packetType) {
-    case 0xB9B:
-    case 0xB9C:
+    case ID_CZ_REQUEST_RANDOM_ENCHANT:
+    case ID_CZ_REQUEST_PERFECT_ENCHANT:
       effect = 0x908;
       break;
-    case 0xB9D:
+    case ID_CZ_REQUEST_UPGRADE_ENCHANT:
     case 0xBF0:
     case 0xBF1:
       effect = 0x90B;
       break;
-    case 0xB9E:
+    case ID_CZ_REQUEST_RESET_ENCHANT:
       effect = 0x90E;
       break;
     }
@@ -136,14 +137,14 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
   } else if (messageId == 0xF12) {
     int effect = 0;
     switch (this->m_request.packetType) {
-    case 0xB9B:
-    case 0xB9C:
-    case 0xB9D:
+    case ID_CZ_REQUEST_RANDOM_ENCHANT:
+    case ID_CZ_REQUEST_PERFECT_ENCHANT:
+    case ID_CZ_REQUEST_UPGRADE_ENCHANT:
     case 0xBF0:
     case 0xBF1:
       effect = 0x909;
       break;
-    case 0xB9E:
+    case ID_CZ_REQUEST_RESET_ENCHANT:
       effect = 0x90F;
       break;
     }

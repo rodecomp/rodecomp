@@ -1,4 +1,5 @@
 #include "Contents/Effects/RotateLineEffect.h"
+#include "Contents/Effects/EffectTypes.h"
 
 #include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
@@ -47,11 +48,11 @@ void CRotateLineEffect::Open() {
       particle->unknown_0054 = 28.0f - static_cast<float>(ring) * 5.0f;
       *reinterpret_cast<float*>(particle->unknown_0058) = 3.0f;
       switch (this->id) {
-      case 986:
+      case EF_ROTATE_LINE_GRAY:
         particle->SetColor(50, 50, 50);
         particle->destinationBlend = 6;
         break;
-      case 1000:
+      case EF_ROTATE_LINE_BLUE:
         particle->SetColor(100, 100, 255);
         particle->scale += 3.0f;
         break;

@@ -2,6 +2,7 @@
 #include "Client/Application/Launcher.h"
 #include "Client/Browser/WebBrowser.h"
 #include "Contents/MessageTable.h"
+#include "Resource/MSGSTRINGID.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <new>
@@ -15,7 +16,7 @@ namespace {
 CWebBrowser* UIWindowMgr::CreateBrowser(int width, int height) {
   if (this->browsers.size() >= maximumBrowserCount) {
     this->SendNotice(3, 0, 0, 0, 0, 0);
-    this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(MessageId::MSI_FAILED_ADD_TAB)), RGB(255, 0, 0), 0, 0, 0);
+    this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_ADD_TAB)), RGB(255, 0, 0), 0, 0, 0);
     return nullptr;
   }
 

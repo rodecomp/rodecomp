@@ -1,4 +1,5 @@
 #include "Client/Session.h"
+#include "Contents/Combat/CombatTypes.h"
 #include "Utility/EncryptedName.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Actors/RenderObject.h"
@@ -708,7 +709,7 @@ int CSession::FindUnknown0700(int key) const {
 // FUNCTION: fn_23363
 const char* CSession::GetEnemyHitWaveName(int element) {
   switch (element) {
-  case 3:
+  case ELE_FIRE:
     switch (std::rand() % 2) {
     case 0:
       return "_enemy_hit_fire1.wav";
@@ -716,7 +717,7 @@ const char* CSession::GetEnemyHitWaveName(int element) {
       return "_enemy_hit_fire2.wav";
     }
     break;
-  case 4:
+  case ELE_WIND:
     switch (std::rand() % 2) {
     case 0:
       return "_enemy_hit_wind1.wav";
@@ -773,69 +774,69 @@ ITEM_INFO* CSession::GetEquippedItem(const ITEM_INFO* item) {
 
   ITEM_INFO* equipped = nullptr;
   switch (item->unknown_0000[2]) {
-  case 0x1:
+  case EQP_HEAD_LOW:
     equipped = &this->unknown_17F0[0];
     break;
-  case 0x2:
+  case EQP_HAND_R:
   case 0x22:
     equipped = &this->unknown_17F0[1];
     break;
-  case 0x4:
+  case EQP_GARMENT:
     equipped = &this->unknown_17F0[2];
     break;
   case 0x88:
     equipped = &this->unknown_17F0[3];
     break;
-  case 0x10:
+  case EQP_ARMOR:
     equipped = &this->unknown_17F0[4];
     break;
-  case 0x20:
+  case EQP_HAND_L:
     equipped = &this->unknown_17F0[5];
     break;
-  case 0x40:
+  case EQP_SHOES:
     equipped = &this->unknown_17F0[6];
     break;
-  case 0x100:
+  case EQP_HEAD_TOP:
   case 0x101:
   case 0x300:
   case 0x301:
     equipped = &this->unknown_17F0[8];
     break;
-  case 0x200:
+  case EQP_HEAD_MID:
   case 0x201:
     equipped = &this->unknown_17F0[9];
     break;
-  case 0x1000:
+  case EQP_COSTUME_HEAD_LOW:
     equipped = &this->unknown_2B50[0];
     break;
-  case 0x20000:
+  case EQP_SHADOW_WEAPON:
     equipped = &this->unknown_2B50[1];
     break;
-  case 0x2000:
+  case EQP_COSTUME_GARMENT:
     equipped = &this->unknown_2B50[2];
     break;
-  case 0x100000:
+  case EQP_SHADOW_ACC_R:
     equipped = &this->unknown_2B50[3];
     break;
-  case 0x10000:
+  case EQP_SHADOW_ARMOR:
     equipped = &this->unknown_2B50[4];
     break;
-  case 0x40000:
+  case EQP_SHADOW_SHIELD:
     equipped = &this->unknown_2B50[5];
     break;
-  case 0x80000:
+  case EQP_SHADOW_SHOES:
     equipped = &this->unknown_2B50[6];
     break;
-  case 0x200000:
+  case EQP_SHADOW_ACC_L:
     equipped = &this->unknown_2B50[7];
     break;
-  case 0x400:
+  case EQP_COSTUME_HEAD_TOP:
   case 0xC00:
   case 0x1400:
   case 0x1C00:
     equipped = &this->unknown_2B50[8];
     break;
-  case 0x800:
+  case EQP_COSTUME_HEAD_MID:
   case 0x1800:
     equipped = &this->unknown_2B50[9];
     break;

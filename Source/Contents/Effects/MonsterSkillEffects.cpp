@@ -1,3 +1,5 @@
+#include "Contents/Jobs/JobId.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Effects/MonsterSkillEffects.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -227,73 +229,73 @@ void CSprArrowEffect::SetBulletSprite(int job) {
 
   const char* name;
   switch (job) {
-  case 20936:
-  case 21052:
-  case 22216:
-  case 22218:
-  case 22219:
-  case 22232:
-  case 22234:
-  case 22235:
+  case JT_DISGUISER:
+  case JT_G_DISGUISER:
+  case JT_SPIRIT_H_WATER_S:
+  case JT_SPIRIT_H_WATER_L:
+  case JT_SPIRIT_H_WATER_SL:
+  case JT_SPIRIT_C_WATER_S:
+  case JT_SPIRIT_C_WATER_L:
+  case JT_SPIRIT_C_WATER_SL:
     name = "canon_bullet";
     break;
-  case 22175:
-  case 22176:
+  case JT_MD_PRI_RIGEL_AC:
+  case JT_MD_PRI_RIGEL_ACS:
     name = "RIGEL_BULLET";
     break;
-  case 22204:
+  case JT_SPIRIT_I_WATER_S:
     name = "phylla_bullet";
     break;
-  case 22197:
-  case 22198:
-  case 22199:
+  case JT_SPIRIT_B_FLAME_M:
+  case JT_SPIRIT_B_FLAME_L:
+  case JT_SPIRIT_B_FLAME_SL:
     name = "mg_corruption_root_h_bullet";
     break;
-  case 22214:
-  case 22215:
-  case 22226:
-  case 22227:
+  case JT_SPIRIT_C_FLAME_L:
+  case JT_SPIRIT_C_FLAME_SL:
+  case JT_SPIRIT_R_FLAME_L:
+  case JT_SPIRIT_R_FLAME_SL:
     name = "mg_corruption_root_bullet";
     break;
-  case 22245:
+  case JT_VR_MD_DREGG1:
     name = "VR_MD_DREGG1_bullet";
     break;
-  case 22246:
+  case JT_VR_MD_DREGG2:
     name = "VR_MD_DREGG2_bullet";
     break;
-  case 22322:
+  case JT_EP21_YORKER_B:
     name = "EP21_YORKER_Bullet";
     break;
-  case 22326:
+  case JT_EP21_YOSTER_D:
     name = "EP21_YOSTER_D_bullet";
     break;
-  case 22327:
+  case JT_EP21_YOSTER_E:
     name = "EP21_YOSTER_E_bullet";
     break;
-  case 22354:
-  case 22418:
+  case JT_EP21_YORMI_B:
+  case JT_EP21_YORMI_B_H:
     name = "EP21_YORMI_bullet";
     break;
-  case 22355:
-  case 22366:
-  case 22416:
+  case JT_EP21_YORDOS_A:
+  case JT_G_EP21_YORDOS_A:
+  case JT_EP21_YORDOS_A_H:
     name = "EP21_YORDOS_Bullet";
     break;
-  case 22359:
-  case 22420:
+  case JT_EP21_YOSCOPUS_B:
+  case JT_EP21_YOSCOPUS_B_H:
     name = "EP21_YOSCOPUS_Bullet";
     break;
-  case 22383:
-  case 22384:
+  case JT_VIOLEN:
+  case JT_CP_VIOLEN:
     name = "violen_bullet";
     break;
-  case 22464:
+  case JT_CH1_SHADOW_JAILER:
     name = "CH1_SHADOW_JAILER_bullet";
     break;
-  case 22467:
+  case JT_CH1_SCABIOSA:
     name = "CH1_SCABIOSA_bullet";
     break;
-  case 22468:
+  case JT_CH1_LOBELIA:
     name = "CH1_LOBELIA_bullet";
     break;
   default:
@@ -1832,27 +1834,27 @@ bool CDropItemEffect::IsAlive() {
 // FUNCTION: fn_07310
 void CDropItemEffect::OpenEmitters() {
   switch (this->id) {
-  case 1190:
+  case EF_UNK_1190:
     AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_purple\\dropitem_purple\\dropitem_purple.str");
     AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_purple\\dropitem_purple_bottom\\dropitem_purple_bottom.str");
     this->soundName = "drop_purple.wav";
     break;
-  case 1189:
+  case EF_UNK_1189:
     AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_yellow\\dropitem_yellow\\dropitem_yellow.str");
     AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_yellow\\dropitem_yellow_bottom\\dropitem_yellow_bottom.str");
     this->soundName = "drop_yellow.wav";
     break;
-  case 1869:
+  case EF_UNK_1869:
     AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_blue\\dropitem_blue\\dropitem_blue.str");
     AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_blue\\dropitem_blue_bottom\\dropitem_blue_bottom.str");
     this->soundName = "drop_blue.wav";
     break;
-  case 1870:
+  case EF_UNK_1870:
     AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_green\\dropitem_green\\dropitem_green.str");
     AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_green\\dropitem_green_bottom\\dropitem_green_bottom.str");
     this->soundName = "drop_green.wav";
     break;
-  case 1871:
+  case EF_UNK_1871:
     AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_red\\dropitem_red\\dropitem_red.str");
     AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_red\\dropitem_red_bottom\\dropitem_red_bottom.str");
     this->soundName = "drop_red.wav";
@@ -1896,15 +1898,15 @@ CJupitelThunderHit::CJupitelThunderHit() : CEffect(-1) {
 // FUNCTION: fn_07320
 void CJupitelThunderHit::SpawnHit() {
   switch (this->id) {
-  case 94:
-  case 1200:
+  case EF_YUFITELHIT:
+  case EF_UNK_1200:
     this->textures.push_back("effect\\thunder_plazma_blast_a.bmp");
     this->textures.push_back("effect\\thunder_plazma_blast_b.bmp");
     this->textures.push_back("effect\\thunder_ball_d.bmp");
     this->textures.push_back("effect\\thunder_ball_e.bmp");
     this->textures.push_back("effect\\thunder_ball_f.bmp");
     break;
-  case 452:
+  case EF_YUFITEL2:
     this->textures.push_back("effect\\twirl_soft.bmp");
     this->textures.push_back("effect\\thunder_ball_b.bmp");
     this->textures.push_back("effect\\twirl_soft.bmp");
@@ -1927,10 +1929,10 @@ void CJupitelThunderHit::SpawnHit() {
 void CJupitelThunderHit::SpawnSpark() {
   std::string texture = "effect\\thunder_pang.bmp";
   switch (this->id) {
-  case 94:
+  case EF_YUFITELHIT:
     texture = "effect\\thunder_pang.bmp";
     break;
-  case 452:
+  case EF_YUFITEL2:
     texture = "effect\\pokjuk_d.bmp";
     break;
   }
@@ -2593,24 +2595,24 @@ void CRandomOptEffect::Init() {
       particle->unknown_0054 = 0.0f;
 
       switch (this->id) {
-      case 1186:
+      case EF_UNK_1186:
         particle->SetColor(255, 200, 255);
         particle->unknown_00C0 = 120.0f - level * 12.0f;
         particle->scale = level * 0.24f + 0.6f;
         break;
-      case 1187:
+      case EF_UNK_1187:
         particle->SetColor(192, 192, 192);
         break;
-      case 1188:
+      case EF_UNK_1188:
         particle->SetColor(0, 100, 150);
         break;
-      case 1189:
+      case EF_UNK_1189:
         particle->SetColor(255, 255, 128);
         break;
-      case 1190:
+      case EF_UNK_1190:
         particle->SetColor(128, 0, 255);
         break;
-      case 1191:
+      case EF_UNK_1191:
         particle->SetColor(255, 128, 0);
         break;
       }
@@ -2997,16 +2999,16 @@ EZ2STREmitter* CServantWeaponNewEffect::CreateShot(float angle, int skill) {
   }
 
   switch (skill) {
-  case 5202:
+  case DK_SERVANTWEAPON_ATK:
     particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANTWEAPON\\servantweapon_shoot\\servantweapon_shoot.str"));
     break;
-  case 5203:
+  case DK_SERVANT_W_SIGN:
     particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANT_W_SIGN\\servant_sign_shot\\servant_sign_shot.str"));
     break;
-  case 5204:
+  case DK_SERVANT_W_PHANTOM:
     particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANT_W_PHANTOM\\servant_phantom_shot\\servant_phantom_shot.str"));
     break;
-  case 5205:
+  case DK_SERVANT_W_DEMOL:
     particle->Load(
         std::string("DRAGON_KNIGHT\\DK_SERVANT_W_DEMOL\\servant_demolition_shot\\servant_demolition_shot.str"));
     break;
@@ -3597,17 +3599,17 @@ void CRichsCoinEffect::Close() {
 // FUNCTION: fn_07413
 void CSevereRainStorm::SpawnParticles() {
   switch (this->id) {
-  case 1752:
+  case EF_UNK_1752:
     if (this->unknown_00D4 % (4 - (this->unknown_00B0 + 1) / 2) == 0) {
       this->SpawnCrystalRain();
     }
     break;
-  case 1276:
+  case EF_UNK_1276:
     if (this->unknown_00D4 % 3 == 0) {
       this->SpawnSevereRain();
     }
     break;
-  case 2026:
+  case EF_UNK_2026:
     if (this->unknown_00D4 % 5 == 0) {
       vector3d position = {this->position[0], this->position[1], this->position[2]};
       position.x = (static_cast<float>(std::max(0, rand() % 451)) - 225.0f) * 0.1f + position.x;
@@ -3619,7 +3621,7 @@ void CSevereRainStorm::SpawnParticles() {
       this->emitters.push_back(emitter);
     }
     break;
-  case 2165:
+  case EF_UNK_2165:
     if (this->unknown_00D4 % (9 - this->unknown_00B0 / 3) == 0) {
       const long long ranges[10] = {3, 3, 3, 5, 5, 5, 7, 7, 7, 9};
       const long long spread = ranges[std::min(static_cast<unsigned int>(this->unknown_00B0), 10u) - 1] * 50;
@@ -3634,32 +3636,32 @@ void CSevereRainStorm::SpawnParticles() {
       this->emitters.push_back(emitter);
     }
     break;
-  case 2348:
+  case EF_UNK_2348:
     if (this->ActorExists() && this->unknown_00D4 % 15 == 0) {
       this->SpawnTwinklingGalaxy(this->unknown_00D4 / 15 % 4);
     }
     break;
-  case 2349:
+  case EF_UNK_2349:
     if (this->ActorExists() && this->unknown_00D4 % 18 == 0) {
       this->SpawnGalaxyStar();
     }
     break;
-  case 2350:
+  case EF_UNK_2350:
     if (this->ActorExists() && this->unknown_00D4 % 18 == 0) {
       this->SpawnStarCannon();
     }
     break;
-  case 2351:
+  case EF_UNK_2351:
     if (this->ActorExists() && this->unknown_00D4 % 15 == 0) {
       this->SpawnGrenades();
     }
     break;
-  case 2354:
+  case EF_UNK_2354:
     if (this->ActorExists() && this->unknown_00D4 % 15 == 0) {
       this->SpawnBombardHits();
     }
     break;
-  case 2462:
+  case EF_UNK_2462:
     if (this->unknown_00D4 % (9 - this->unknown_00B0 / 3) == 0) {
       this->SpawnCrossRain();
     }
@@ -3884,29 +3886,29 @@ void CSevereRainStorm::Open() {
 // FUNCTION: fn_07424
 bool CSevereRainStorm::IsAlive() {
   switch (this->id) {
-  case 1752:
-  case 2165:
-  case 2462:
+  case EF_UNK_1752:
+  case EF_UNK_2165:
+  case EF_UNK_2462:
     return this->ActorExists();
-  case 1276:
+  case EF_UNK_1276:
     if (this->unknown_00D4 > 240) {
       return false;
     }
     break;
-  case 2026:
+  case EF_UNK_2026:
     if (EffectLifetime(2026) < this->unknown_00D4) {
       return false;
     }
     break;
-  case 2348:
-  case 2349:
-  case 2350:
+  case EF_UNK_2348:
+  case EF_UNK_2349:
+  case EF_UNK_2350:
     if (this->ActorExists() != true && this->emitters.size() == 0) {
       return false;
     }
     break;
-  case 2351:
-  case 2354:
+  case EF_UNK_2351:
+  case EF_UNK_2354:
     if (this->ActorExists() != true && this->emitters.size() == 0) {
       return false;
     }
@@ -4008,7 +4010,7 @@ void CCrimsonArrowEffect::Open() {
 
   EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(arrow);
   switch (this->id) {
-  case 1756:
+  case EF_UNK_1756:
     arrow->Load("crimsonarrow\\crimsonarrow\\crimsonarrow.str");
     emitter->offset.x = 0.0f;
     emitter->offset.y = -13.0f;
@@ -4016,7 +4018,7 @@ void CCrimsonArrowEffect::Open() {
     arrow->m_angle = static_cast<float>(angle);
     this->AddEvent(0, "effect\\AG_CRIMSON_ARROW1.wav", 0, 0);
     break;
-  case 2074:
+  case EF_UNK_2074:
     arrow->Load("rhythmshooting\\rhythmshooting_shot\\rhythmshooting_shot.str");
     emitter->offset.x = 0.0f;
     emitter->offset.y = -8.0f;
@@ -4024,7 +4026,7 @@ void CCrimsonArrowEffect::Open() {
     arrow->m_angle = static_cast<float>(angle + 180.0);
     this->AddEvent(0, "effect\\TR_RHYTHMSHOOTING.wav", 0, 0);
     break;
-  case 2114:
+  case EF_UNK_2114:
     arrow->Load("frenzy_shot\\frenzy_shot\\frenzy_shot.str");
     emitter->offset.x = 0.0f;
     emitter->offset.y = -4.0f;
@@ -4032,11 +4034,11 @@ void CCrimsonArrowEffect::Open() {
     arrow->m_angle = static_cast<float>(angle);
     this->AddEvent(0, "effect\\ABC_FRENZY_SHOT.wav", 0, 0);
     break;
-  case 2154:
+  case EF_UNK_2154:
     arrow->Load("unlucky_rush\\unlucky_rush\\unlucky_rush.str");
     arrow->m_angle = static_cast<float>(angle);
     break;
-  case 2195:
+  case EF_UNK_2195:
     arrow->Load("judgement_cross\\judgement_cross_shot\\judgement_cross_shot.str");
     arrow->m_angle = static_cast<float>(angle + 180.0);
     break;

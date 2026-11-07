@@ -14,6 +14,7 @@
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/ModeResultEnums.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBasicButton.h"
@@ -425,19 +426,19 @@ void UIGradeEnchantWnd::OnProcess() {
 
   if (this->state == 2 && now >= this->unknown_00E0 + 3000) {
     switch (this->result) {
-    case 0:
+    case ENCHANTGRADE_UPGRADE_SUCCESS:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3702)), 0xFFFF00, 0, 0, 0);
       break;
-    case 1:
+    case ENCHANTGRADE_UPGRADE_FAILED:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3703)), 0xFFFF00, 0, 0, 0);
       break;
-    case 2:
+    case ENCHANTGRADE_UPGRADE_DOWNGRADE:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3704)), 0xFFFF00, 0, 0, 0);
       break;
-    case 3:
+    case ENCHANTGRADE_UPGRADE_BREAK:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3705)), 0xFFFF00, 0, 0, 0);
       break;
-    case 4:
+    case ENCHANTGRADE_UPGRADE_PROTECTED:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3706)), 0xFFFF00, 0, 0, 0);
       break;
     }

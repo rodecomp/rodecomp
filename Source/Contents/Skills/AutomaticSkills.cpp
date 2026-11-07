@@ -1,4 +1,5 @@
 #include "Contents/Skills/AutomaticSkills.h"
+#include "Contents/Skills/SkillId.h"
 #include "Client/Session.h"
 #include "Network/Connection/Connection.h"
 
@@ -8,11 +9,11 @@ namespace {
   // INLINED
   int ActiveOption(std::int16_t id) {
     switch (id) {
-    case 2036:
+    case GC_ROLLINGCUTTER:
       return 2;
-    case 6552:
+    case KR_CHOP_CHOP:
       return 23;
-    case 6601:
+    case AT_FURIOS_STORM:
       return 21;
     default:
       return -1;
@@ -50,11 +51,11 @@ bool AutomaticSkills::Contains(int id) const {
 // FUNCTION: fn_09151
 int AutomaticSkills::CancelOption(std::int16_t id) {
   switch (id) {
-  case 2036:
+  case GC_ROLLINGCUTTER:
     return 4;
-  case 6552:
+  case KR_CHOP_CHOP:
     return 24;
-  case 6601:
+  case AT_FURIOS_STORM:
     return 22;
   default:
     return -1;

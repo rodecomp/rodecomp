@@ -1,4 +1,6 @@
 #include "Contents/Actors/GameObject.h"
+#include "Contents/Jobs/JobId.h"
+#include "Contents/Effects/EffectTypes.h"
 #include "Contents/Actors/GameActor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
@@ -420,7 +422,7 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
     int offsetX = 0;
     int offsetY = 0;
 
-    if (layer >= 5 && job != 0x178A && job != 0x1794 && job != 0x179E) {
+    if (layer >= 5 && job != JT_MER_ARCHER10 && job != JT_MER_LANCER10 && job != JT_MER_SWORDMAN10) {
       continue;
     }
 
@@ -498,125 +500,125 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
       frame = &action->Frame(this->render.previousAnimation, this->render.curMotion);
     } else if (layer == 4) {
       switch (job) {
-      case 0x1781:
+      case JT_MER_ARCHER01:
         std::sprintf(accessory, "여\\여_털모자");
         break;
-      case 0x1782:
+      case JT_MER_ARCHER02:
         std::sprintf(accessory, "여\\여_골든헤드기어");
         break;
-      case 0x1783:
+      case JT_MER_ARCHER03:
         std::sprintf(accessory, "여\\여_대형금방울");
         break;
-      case 0x1784:
+      case JT_MER_ARCHER04:
         std::sprintf(accessory, "여\\여_엘리스모자");
         break;
-      case 0x1785:
+      case JT_MER_ARCHER05:
         std::sprintf(accessory, "여\\여_가부키가면");
         break;
-      case 0x1786:
+      case JT_MER_ARCHER06:
         std::sprintf(accessory, "여\\여_여왕의투구");
         break;
-      case 0x1787:
+      case JT_MER_ARCHER07:
         std::sprintf(accessory, "여\\여_지르타스가면");
         break;
-      case 0x1788:
+      case JT_MER_ARCHER08:
         std::sprintf(accessory, "여\\여_실버티아라");
         break;
-      case 0x1789:
+      case JT_MER_ARCHER09:
         std::sprintf(accessory, "여\\여_고양이모자");
         break;
-      case 0x178A:
+      case JT_MER_ARCHER10:
         std::sprintf(accessory, "여\\여_예쁜리본");
         break;
-      case 0x178B:
+      case JT_MER_LANCER01:
         std::sprintf(accessory, "남\\남_간호모");
         break;
-      case 0x178C:
+      case JT_MER_LANCER02:
         std::sprintf(accessory, "남\\남_검은눈가리개");
         break;
-      case 0x178D:
+      case JT_MER_LANCER03:
         std::sprintf(accessory, "남\\남_고블린가면4호");
         break;
-      case 0x178E:
+      case JT_MER_LANCER04:
         std::sprintf(accessory, "남\\남_양모자");
         break;
-      case 0x178F:
+      case JT_MER_LANCER05:
         std::sprintf(accessory, "남\\남_귀찮은너구리");
         break;
-      case 0x1790:
+      case JT_MER_LANCER06:
         std::sprintf(accessory, "남\\남_돈잃은자의마음");
         break;
-      case 0x1791:
+      case JT_MER_LANCER07:
         std::sprintf(accessory, "남\\남_마리오넷모자");
         break;
-      case 0x1792:
+      case JT_MER_LANCER08:
         std::sprintf(accessory, "남\\남_라이온마스크");
         break;
-      case 0x1793:
+      case JT_MER_LANCER09:
         std::sprintf(accessory, "남\\남_클로스헬멧");
         break;
-      case 0x1794:
+      case JT_MER_LANCER10:
         std::sprintf(accessory, "남\\남_로드카호의뿔");
         break;
-      case 0x1795:
+      case JT_MER_SWORDMAN01:
         std::sprintf(accessory, "남\\남_반창고");
         break;
-      case 0x1796:
+      case JT_MER_SWORDMAN02:
         std::sprintf(accessory, "남\\남_분노입");
         break;
-      case 0x1797:
+      case JT_MER_SWORDMAN03:
         std::sprintf(accessory, "남\\남_코끼리모자");
         break;
-      case 0x1798:
+      case JT_MER_SWORDMAN04:
         std::sprintf(accessory, "남\\남_야구모자");
         break;
-      case 0x1799:
+      case JT_MER_SWORDMAN05:
         std::sprintf(accessory, "남\\남_장례건");
         break;
-      case 0x179A:
+      case JT_MER_SWORDMAN06:
         std::sprintf(accessory, "남\\남_부용");
         break;
-      case 0x179B:
+      case JT_MER_SWORDMAN07:
         std::sprintf(accessory, "남\\남_타이거마스크");
         break;
-      case 0x179C:
+      case JT_MER_SWORDMAN08:
         std::sprintf(accessory, "남\\남_초승달투구");
         break;
-      case 0x179D:
+      case JT_MER_SWORDMAN09:
         std::sprintf(accessory, "남\\남_엔젤링모자");
         break;
-      case 0x179E:
+      case JT_MER_SWORDMAN10:
         std::sprintf(accessory, "남\\남_태양신의모자");
         break;
       }
     } else if (layer == 5) {
       switch (job) {
-      case 0x178A:
+      case JT_MER_ARCHER10:
         std::sprintf(accessory, "여\\여_꽃잎");
         break;
-      case 0x1794:
+      case JT_MER_LANCER10:
         std::sprintf(accessory, "남\\남_토스트");
         break;
       }
     } else if (layer == 6) {
       switch (job) {
-      case 0x178A:
+      case JT_MER_ARCHER10:
         std::sprintf(accessory, "여\\여_요정의귀");
         break;
-      case 0x1794:
-      case 0x179E:
+      case JT_MER_LANCER10:
+      case JT_MER_SWORDMAN10:
         std::sprintf(accessory, "남\\남_요정의귀");
         break;
       }
     } else if (layer == 7) {
       switch (job) {
-      case 0x178A:
+      case JT_MER_ARCHER10:
         std::sprintf(accessory, "여\\여_미스틱로즈");
         break;
-      case 0x1794:
+      case JT_MER_LANCER10:
         std::sprintf(accessory, "남\\남_타키우스눈가리개");
         break;
-      case 0x179E:
+      case JT_MER_SWORDMAN10:
         std::sprintf(accessory, "남\\남_사이클롭스아이");
         break;
       }
@@ -1323,28 +1325,28 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     int effectId;
     switch (this->GetEffectiveJob(-1)) {
-    case 0xFAC:
+    case JT_HUNTER_H:
       effectId = 0x17;
       break;
-    case 0xFC2:
+    case JT_HUNTER_B:
       effectId = 0x18;
       break;
-    case 0xFD2:
+    case JT_GANGSI:
       effectId = 0x20;
       break;
-    case 0xFD3:
+    case JT_DEATHKNIGHT:
       effectId = 0x21;
       break;
-    case 0xFD4:
+    case JT_COLLECTOR:
       effectId = 0x22;
       break;
-    case 0xFD8:
-    case 0xFDE:
-    case 0x1002:
+    case JT_RANGER:
+    case JT_RANGER_H:
+    case JT_RANGER_B:
       effectId = 0x35;
       break;
-    case 0x10A1:
-    case 0x10B6:
+    case JT_WINDHAWK:
+    case JT_WOLF_WINDHAWK:
       effectId = 0x45;
       break;
     default:
@@ -1371,18 +1373,18 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     int effectId;
     switch (this->GetEffectiveJob(-1)) {
-    case 0xFD8:
-    case 0xFDE:
-    case 0xFF4:
-    case 0xFF5:
+    case JT_RANGER:
+    case JT_RANGER_H:
+    case JT_WOLF_RANGER:
+    case JT_WOLF_RANGER_H:
       effectId = 0x23;
       break;
-    case 0x1002:
-    case 0x100F:
+    case JT_RANGER_B:
+    case JT_WOLF_RANGER_B:
       effectId = 0x2A;
       break;
-    case 0x10A1:
-    case 0x10B6:
+    case JT_WINDHAWK:
+    case JT_WOLF_WINDHAWK:
       effectId = 0x46;
       break;
     default:
@@ -1716,25 +1718,25 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
             int view = 0;
             if (attacker != nullptr) {
               switch (attacker->GetEffectiveJob(-1)) {
-              case 12:
-              case 4013:
-              case 4035:
-              case 4059:
-              case 4065:
-              case 4101:
-              case 4254:
-              case 4260:
+              case JT_ASSASSIN:
+              case JT_ASSASSIN_H:
+              case JT_ASSASSIN_B:
+              case JT_GUILLOTINE_CROSS:
+              case JT_GUILLOTINE_CROSS_H:
+              case JT_GUILLOTINE_CROSS_B:
+              case JT_SHADOW_CROSS:
+              case JT_ABYSS_CHASER:
                 view = static_cast<int>(weapon);
                 if (view > 1000) {
                   view = GetWeaponViewValue(view);
                 }
                 genericWeapon = false;
                 break;
-              case 4351:
-              case 4352:
-              case 4353:
-              case 4354:
-              case 4355:
+              case JT_DRUID:
+              case JT_DRUID_B:
+              case JT_KARNOS:
+              case JT_KARNOS_B:
+              case JT_ALITEA:
                 if (attacker->unknown_0404 != 0) {
                   view = -1;
                   genericWeapon = false;
@@ -2300,7 +2302,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     if (this->GetEffectiveJob(-1) >= 0x792 && this->GetEffectiveJob(-1) <= 0x7A3) {
       break;
     }
-    if (this->GetEffectiveJob(-1) == 0x6C4) {
+    if (this->GetEffectiveJob(-1) == JT_G_TREASURE_BOX) {
       break;
     }
     this->unknown_02B8 = static_cast<unsigned char>(*reinterpret_cast<int*>(g_session.unknown_7EE8));
@@ -2455,52 +2457,52 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
   case 110: {
     const bool on = (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0;
     switch (static_cast<std::int64_t>(c) << 32 | static_cast<std::uint32_t>(b)) {
-    case 0x0:
-    case 0x1:
-    case 0x3:
-    case 0x4:
-    case 0x5:
-    case 0x6:
-    case 0x7:
-    case 0x8:
-    case 0x9:
-    case 0xA:
-    case 0xB:
-    case 0xC:
-    case 0xD:
-    case 0xE:
-    case 0xF:
-    case 0x10:
-    case 0x11:
-    case 0x12:
-    case 0x13:
-    case 0x14:
-    case 0x15:
-    case 0x16:
-    case 0x17:
-    case 0x18:
-    case 0x1A:
-    case 0x1B:
-    case 0x1C:
-    case 0x1E:
-    case 0x20:
-    case 0x21:
-    case 0x40:
-    case 0x93:
-    case 0x96:
-    case 0x97:
-    case 0x10A:
-    case 0x129:
-    case 0x12B:
-    case 0x13A:
-    case 0x161:
-    case 0x165:
-    case 0x191:
-    case 0x19E:
-    case 0x207:
+    case EFST_PROVOKE:
+    case EFST_ENDURE:
+    case EFST_CONCENTRATION:
+    case EFST_HIDING:
+    case EFST_CLOAKING:
+    case EFST_ENCHANTPOISON:
+    case EFST_POISONREACT:
+    case EFST_QUAGMIRE:
+    case EFST_ANGELUS:
+    case EFST_BLESSING:
+    case EFST_CRUCIS:
+    case EFST_INC_AGI:
+    case EFST_DEC_AGI:
+    case EFST_SLOWPOISON:
+    case EFST_IMPOSITIO:
+    case EFST_SUFFRAGIUM:
+    case EFST_ASPERSIO:
+    case EFST_BENEDICTIO:
+    case EFST_KYRIE:
+    case EFST_MAGNIFICAT:
+    case EFST_GLORIA:
+    case EFST_LEXAETERNA:
+    case EFST_ADRENALINE:
+    case EFST_WEAPONPERFECT:
+    case EFST_MAXIMIZE:
+    case EFST_RIDING:
+    case EFST_FALCON:
+    case EFST_SHOUT:
+    case EFST_BROKENARMOR:
+    case EFST_BROKENWEAPON:
+    case EFST_WEAPONPROPERTY:
+    case EFST_ADRENALINE2:
+    case EFST_PLUSATTACKPOWER:
+    case EFST_PLUSMAGICPOWER:
+    case EFST_CRYSTAL:
+    case EFST_ATKER_ASPD:
+    case EFST_ATKER_MOVESPEED:
+    case EFST_ANGEL_PROTECT:
+    case EFST_ELECTRICSHOCKER:
+    case EFST_WUGRIDER:
+    case EFST_ADORAMUS:
+    case EFST_ACARAJE:
+    case EFST_WATER_SCREEN:
       break;
-    case 0x2:
-    case 0xA1: {
+    case EFST_TWOHANDQUICKEN:
+    case EFST_ONEHANDQUICKEN: {
       while (this->HasId(0xA6)) {
         this->SendMsg(nullptr, 109, 0, 0xA6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2512,7 +2514,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x44: {
+    case EFST_SPEARQUICKEN: {
       while (this->HasId(0xA6)) {
         this->SendMsg(nullptr, 109, 0, 0xA6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2524,7 +2526,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0xCF:
+    case EFST_NJ_BUNSINJYUTSU:
       while (this->HasId(0x269)) {
         this->SendMsg(nullptr, 109, 0, 0x269, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2532,7 +2534,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x269, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x98: {
+    case EFST_DEVIL1: {
       if (this->render.accountId != g_session.m_aid) {
         break;
       }
@@ -2556,7 +2558,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x61:
+    case EFST_PROPERTYUNDEAD:
       if (!on) {
         if (this->HasId(0x28F)) {
           vector3d position{0.0f, 0.0f, 0.0f};
@@ -2569,7 +2571,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x28F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0xA0:
+    case EFST_SKE:
       if (this->render.accountId == g_session.m_aid) {
         if (on) {
           g_weatherEffect.StartDarken();
@@ -2578,12 +2580,12 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         }
       }
       break;
-    case 0x9F:
+    case EFST_SMA_READY:
       if (on) {
         this->LaunchEffect(0x222, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x56: {
+    case EFST_EXPLOSIONSPIRITS: {
       while (this->HasId(0xCB)) {
         this->SendMsg(nullptr, 109, 0, 0xCB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2601,8 +2603,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x57:
-    case 0xEB: {
+    case EFST_STEELBODY:
+    case EFST_DBARRIER: {
       while (this->HasId(0xFE)) {
         this->SendMsg(nullptr, 109, 0, 0xFE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->SendMsg(nullptr, 109, 0, 0x46C, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -2620,9 +2622,9 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       this->LaunchEffect(0x46C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     }
-    case 0xA5:
-    case 0xA6:
-    case 0xA7:
+    case EFST_SG_SUN_WARM:
+    case EFST_SG_MOON_WARM:
+    case EFST_SG_STAR_WARM:
       while (this->HasId(0x1A2)) {
         this->SendMsg(nullptr, 109, 0, 0x1A2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2634,7 +2636,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x220, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0xE8:
+    case EFST_DAURA:
       while (this->HasId(0x1A2)) {
         this->SendMsg(nullptr, 109, 0, 0x1A2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2646,7 +2648,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x220, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x99:
+    case EFST_KAITE:
       while (this->HasId(0x1A3)) {
         this->SendMsg(nullptr, 109, 0, 0x1A3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2654,7 +2656,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x1A3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x67:
+    case EFST_AURABLADE:
       while (this->HasId(0x16F)) {
         this->SendMsg(nullptr, 109, 0, 0x16F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2666,12 +2668,12 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x1DA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x5F:
+    case EFST_STOP:
       while (this->HasId(0x1C5)) {
         this->SendMsg(nullptr, 109, 0, 0x1C5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x7B: {
+    case EFST_MOON: {
       while (this->HasId(0x18A)) {
         this->SendMsg(nullptr, 109, 0, 0x18A, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2680,7 +2682,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x79: {
+    case EFST_MARIONETTE_MASTER: {
       this->SendMsg(nullptr, 109, 0, 0x18B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       while (this->HasId(0x18C)) {
         this->SendMsg(nullptr, 109, 0, 0x18C, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -2690,7 +2692,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x7A: {
+    case EFST_MARIONETTE: {
       while (this->HasId(0x18C)) {
         this->SendMsg(nullptr, 109, 0, 0x18C, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2699,14 +2701,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x69: {
+    case EFST_LKCONCENTRATION: {
       this->SendMsg(nullptr, 109, 0, 0x171, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (on) {
         this->LaunchEffect(0x171, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     }
-    case 0x6B: {
+    case EFST_BERSERK: {
       while (this->HasId(0x170)) {
         this->SendMsg(nullptr, 109, 0, 0x170, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2715,8 +2717,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0xC8:
-    case 0xC9: {
+    case EFST_RG_CCONFINE_M:
+    case EFST_RG_CCONFINE_S: {
       while (this->HasId(0x25C)) {
         this->SendMsg(nullptr, 109, 0, 0x25C, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2725,7 +2727,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0xC6: {
+    case EFST_WZ_SIGHTBLASTER: {
       while (this->HasId(0x259)) {
         this->SendMsg(nullptr, 109, 0, 0x259, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2734,7 +2736,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x62: {
+    case EFST_POWERUP: {
       while (this->HasId(0x1C7)) {
         this->SendMsg(nullptr, 109, 0, 0x1C7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2743,14 +2745,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x85: {
+    case EFST_RUN: {
       if (this->HasId(0x1BA)) {
         this->LaunchEffect(0x1BB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       this->SendMsg(nullptr, 109, 0, 0x1BA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
-    case 0x86: {
+    case EFST_TING: {
       const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
       g_soundMgr->PlayWave("effect\\T_벽튕김.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
       this->LaunchEffect(0x1AA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -2759,7 +2761,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x71: {
+    case EFST_MAGICPOWER: {
       while (this->HasId(0x17E)) {
         this->SendMsg(nullptr, 109, 0, 0x17E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2768,8 +2770,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x19:
-    case 0xBC: {
+    case EFST_OVERTHRUST:
+    case EFST_OVERTHRUSTMAX: {
       while (this->HasId(0xA6)) {
         this->SendMsg(nullptr, 109, 0, 0xA6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2781,7 +2783,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x1F: {
+    case EFST_ENERGYCOAT: {
       while (this->HasId(0xA6)) {
         this->SendMsg(nullptr, 109, 0, 0xA6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2793,7 +2795,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x1D:
+    case EFST_TRICKDEAD:
       if (on) {
         this->unknown_017C = 1;
         if (this->GetMonsterTransformJob() > 0) {
@@ -2811,7 +2813,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->render.isMotionFreezed = false;
       }
       break;
-    case 0x22:
+    case EFST_ILLUSION:
       if (this->render.accountId == g_session.m_aid) {
         if (on) {
           g_screenShakeDuration = 10000;
@@ -2833,7 +2835,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         }
       }
       break;
-    case 0x4E: {
+    case EFST_RICHMANKIM: {
       if (this->HasId(0x363) == true) {
         this->SendMsg(nullptr, 109, 0, 0x363, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2842,9 +2844,9 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x46:
-    case 0x4A:
-    case 0x53: {
+    case EFST_WHISTLE:
+    case EFST_HUMMING:
+    case EFST_INTOABYSS: {
       if (this->HasId(0x361) == true) {
         this->SendMsg(nullptr, 109, 0, 0x361, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2853,8 +2855,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x51:
-    case 0x54: {
+    case EFST_RINGNIBELUNGEN:
+    case EFST_SIEGFRIED: {
       if (this->HasId(0x36B) == true) {
         this->SendMsg(nullptr, 109, 0, 0x36B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2863,7 +2865,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x49: {
+    case EFST_APPLEIDUN: {
       if (this->HasId(0x35D) == true) {
         this->SendMsg(nullptr, 109, 0, 0x35D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2872,8 +2874,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x4F:
-    case 0x52: {
+    case EFST_ETERNALCHAOS:
+    case EFST_ROKISWEIL: {
       if (this->HasId(0x360) == true) {
         this->SendMsg(nullptr, 109, 0, 0x360, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2882,8 +2884,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x47:
-    case 0x4D: {
+    case EFST_ASSASSINCROSS:
+    case EFST_SERVICEFORYOU: {
       if (this->HasId(0x369) == true) {
         this->SendMsg(nullptr, 109, 0, 0x369, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2892,8 +2894,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x4C:
-    case 0x50: {
+    case EFST_FORTUNEKISS:
+    case EFST_DRUMBATTLEFIELD: {
       if (this->HasId(0x367) == true) {
         this->SendMsg(nullptr, 109, 0, 0x367, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2902,7 +2904,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x4B: {
+    case EFST_DONTFORGETME: {
       if (this->HasId(0x26) == true) {
         this->SendMsg(nullptr, 109, 0, 0x26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2911,7 +2913,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x48: {
+    case EFST_POEMBRAGI: {
       if (this->HasId(0x36D) == true) {
         this->SendMsg(nullptr, 109, 0, 0x36D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2920,7 +2922,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x107: {
+    case EFST_DA_CONTRACT: {
       while (this->HasId(0x24A)) {
         this->SendMsg(nullptr, 109, 0, 0x24A, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2929,7 +2931,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x15E: {
+    case EFST_DUPLELIGHT: {
       while (this->HasId(0x341)) {
         this->SendMsg(nullptr, 109, 0, 0x341, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2942,7 +2944,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x14A:
+    case EFST_ORATIO:
       while (this->HasId(0x2F3)) {
         this->SendMsg(nullptr, 109, 0, 0x2F3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2950,7 +2952,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x2F3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x1D0:
+    case EFST_BLOOD_SUCKER:
       while (this->HasId(0x170)) {
         this->SendMsg(nullptr, 109, 0, 0x170, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -2958,15 +2960,15 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x170, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x195:
+    case EFST_BANDING:
       if (on) {
         if (!this->HasId(0x38D)) {
           this->LaunchEffect(0x38D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         }
       }
       break;
-    case 0x1A0:
-    case 0x1A1: {
+    case EFST_CURSEDCIRCLE_ATKER:
+    case EFST_CURSEDCIRCLE_TARGET: {
       unsigned char shade;
       bool frozen;
       if (on) {
@@ -2984,7 +2986,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       argb[0] = shade;
       break;
     }
-    case 0x1BD:
+    case EFST_STRIKING:
       if (IsPlayerJob(this->GetEffectiveJob(-1))) {
         while (this->HasId(0x39D)) {
           this->SendMsg(nullptr, 109, 0, 0x39D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -2997,7 +2999,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         }
       }
       break;
-    case 0x148:
+    case EFST_VENOMIMPRESS:
       while (this->HasId(0x314)) {
         this->SendMsg(nullptr, 109, 0, 0x314, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3005,7 +3007,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x314, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x15F:
+    case EFST_FROSTMISTY:
       while (this->HasId(0x315)) {
         this->SendMsg(nullptr, 109, 0, 0x315, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3013,7 +3015,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x315, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x1B5:
+    case EFST_COLD:
       while (this->HasId(0x3AC)) {
         this->SendMsg(nullptr, 109, 0, 0x3AC, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3021,22 +3023,22 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x3AC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x16B:
+    case EFST_SUMMON1:
       this->SetTetraBall(0, d, f);
       break;
-    case 0x16C:
+    case EFST_SUMMON2:
       this->SetTetraBall(1, d, f);
       break;
-    case 0x16D:
+    case EFST_SUMMON3:
       this->SetTetraBall(2, d, f);
       break;
-    case 0x16E:
+    case EFST_SUMMON4:
       this->SetTetraBall(3, d, f);
       break;
-    case 0x16F:
+    case EFST_SUMMON5:
       this->SetTetraBall(4, d, f);
       break;
-    case 0x153:
+    case EFST_ROLLINGCUTTER:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         const std::int64_t level = static_cast<std::int64_t>(g) << 32 | static_cast<std::uint32_t>(f);
         if (level <= 10 && level > 0) {
@@ -3057,7 +3059,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         }
       }
       break;
-    case 0x1B2:
+    case EFST_SIREN:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         this->SendMsg(nullptr, 109, 0, 0x36F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->LaunchEffect(0x36F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3065,32 +3067,32 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->SendMsg(nullptr, 109, 0, 0x36F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x1B7:
+    case EFST_SONG_OF_MANA:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         this->SendMsg(nullptr, 109, 0, 0x361, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->LaunchEffect(0x361, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x1B9:
+    case EFST_DANCE_WITH_WUG:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         this->SendMsg(nullptr, 109, 0, 0x363, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->LaunchEffect(0x363, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x1C3:
+    case EFST_LERADS_DEW:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         this->SendMsg(nullptr, 109, 0, 0x367, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->LaunchEffect(0x367, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x1B3:
+    case EFST_DEEP_SLEEP:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         this->SendMsg(nullptr, 69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       } else {
         this->SendMsg(nullptr, 70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x1B1:
+    case EFST_NETHERWORLD:
       while (this->HasId(0x1C5)) {
         this->SendMsg(nullptr, 109, 0, 0x1C5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3098,7 +3100,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x1C5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x168:
+    case EFST_CAMOUFLAGE:
       while (this->HasId(0x2E8)) {
         this->SendMsg(nullptr, 109, 0, 0x2E8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3113,7 +3115,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         }
       }
       break;
-    case 0x1A6:
+    case EFST_MANHOLE:
       while (this->HasId(0x337)) {
         this->SendMsg(nullptr, 109, 0, 0x337, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3124,7 +3126,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         }
       }
       break;
-    case 0x18A:
+    case EFST_SHADOWFORM:
       while (this->HasId(0x329)) {
         this->SendMsg(nullptr, 109, 0, 0x329, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->SendMsg(nullptr, 109, 0, 0x333, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -3133,7 +3135,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x329, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x17B:
+    case EFST_STEALTHFIELD:
       while (this->HasId(0x2E8)) {
         this->SendMsg(nullptr, 109, 0, 0x2E8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3141,7 +3143,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x2E8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x166:
+    case EFST_WUGDASH:
       while (this->HasId(0x2F0)) {
         this->SendMsg(nullptr, 109, 0, 0x2F0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3149,43 +3151,43 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x2F0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x108:
+    case EFST_DA_BLACK:
       if (this->render.accountId == g_session.m_aid) {
         g_screenShakeDuration = 1;
         g_screenShakeMode = 1;
       }
       break;
-    case 0x115: {
+    case EFST_MER_FLEE: {
       const int text = reinterpret_cast<int>("FLEE UP!");
       this->SendMsg(nullptr, 7, 0, text, text >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->LaunchEffect(0x1C8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     }
-    case 0x116: {
+    case EFST_MER_ATK: {
       const int text = reinterpret_cast<int>("ATK UP!");
       this->SendMsg(nullptr, 7, 0, text, text >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->LaunchEffect(0x1C8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     }
-    case 0x119: {
+    case EFST_MER_HIT: {
       const int text = reinterpret_cast<int>("DEX UP!");
       this->SendMsg(nullptr, 7, 0, text, text >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->LaunchEffect(0x1C8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     }
-    case 0x117: {
+    case EFST_MER_HP: {
       const int text = reinterpret_cast<int>("HP UP!");
       this->SendMsg(nullptr, 7, 0, text, text >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->LaunchEffect(0x1C8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     }
-    case 0x118: {
+    case EFST_MER_SP: {
       const int text = reinterpret_cast<int>("SP UP!");
       this->SendMsg(nullptr, 7, 0, text, text >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->LaunchEffect(0x1C8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     }
-    case 0x1C6:
+    case EFST_UNLIMITED_HUMMING_VOICE:
       if (this->HasId(0x361) == true) {
         this->SendMsg(nullptr, 109, 0, 0x361, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3193,7 +3195,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x361, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x1C4:
+    case EFST_MELODYOFSINK:
       if (this->HasId(0x57) == true) {
         this->SendMsg(nullptr, 109, 0, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3201,7 +3203,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x57, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x1C5:
+    case EFST_BEYOND_OF_WARCRY:
       if (this->HasId(0x31F) == true) {
         this->SendMsg(nullptr, 109, 0, 0x31F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3209,7 +3211,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x31F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x1C0:
+    case EFST_SATURDAY_NIGHT_FEVER:
       if (this->HasId(0x360) == true) {
         this->SendMsg(nullptr, 109, 0, 0x360, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3217,21 +3219,21 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x360, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x241:
-    case 0x244:
-    case 0x245:
-    case 0x248:
-    case 0x25D:
-    case 0x25F:
-    case 0x260:
-    case 0x26A:
-    case 0x288:
-    case 0x289:
+    case EFST_PAIN_KILLER:
+    case EFST_LIGHT_OF_REGENE:
+    case EFST_OVERED_BOOST:
+    case EFST_STYLE_CHANGE:
+    case EFST_MAGMA_FLOW:
+    case EFST_PYROCLASTIC:
+    case EFST_VOLCANIC_ASH:
+    case EFST_OVERLAPEXPUP:
+    case EFST_EQUIPPED_DIVINE_ARMOR:
+    case EFST_EQUIPPED_HOLY_ARMOR:
       break;
-    case 0x23B:
+    case EFST_EQUIPED_FLOOR:
       g_effectMgr->SpawnLevel99(this, on, f);
       break;
-    case 0x25E:
+    case EFST_GRANITIC_ARMOR:
       while (this->HasId(0x3C3)) {
         this->SendMsg(nullptr, 109, 0, 0x3C3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3239,7 +3241,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x265: {
+    case EFST_ALL_RIDING: {
       if (this->render.unknown_0070 == 25) {
         this->SetState(0, 1);
       }
@@ -3256,18 +3258,18 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       this->SetSprRobe(0, 1);
       break;
     }
-    case 0x26D:
-    case 0x28B:
-    case 0x299: {
+    case EFST_MONSTER_TRANSFORM:
+    case EFST_KYOUGAKU:
+    case EFST_ACTIVE_MONSTER_TRANSFORM: {
       int slot;
       switch (b) {
-      case 0x26D:
+      case EFST_MONSTER_TRANSFORM:
         slot = 0;
         break;
-      case 0x28B:
+      case EFST_KYOUGAKU:
         slot = 1;
         break;
-      case 0x299:
+      case EFST_ACTIVE_MONSTER_TRANSFORM:
         slot = 2;
         break;
       default:
@@ -3284,13 +3286,13 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x285:
+    case EFST_KO_JYUMONJIKIRI:
       g_effectMgr->Retire(this->render.accountId, 0x3E6);
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0 && g_effectMgr->HasAllocator(0x3E6)) {
         g_effectMgr->Spawn(this->render.accountId, 0x3E6, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       }
       break;
-    case 0x28F:
+    case EFST_KYOMU:
       while (this->HasId(0x3C3)) {
         this->SendMsg(nullptr, 109, 0, 0x3C3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3298,7 +3300,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x290:
+    case EFST_KAGEMUSYA:
       while (this->HasId(0x3EC)) {
         this->SendMsg(nullptr, 109, 0, 0x3EC, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3306,7 +3308,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x3EC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x286:
+    case EFST_MEIKYOUSISUI:
       while (this->HasId(0x18A)) {
         this->SendMsg(nullptr, 109, 0, 0x18A, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3319,7 +3321,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         }
       }
       break;
-    case 0x291:
+    case EFST_ZANGETSU:
       while (this->HasId(0x3EB)) {
         this->SendMsg(nullptr, 109, 0, 0x3EB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3327,7 +3329,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x3EB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x293:
+    case EFST_GENSOU:
       g_effectMgr->Retire(this->render.accountId, 0x3ED);
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0 && g_effectMgr->HasAllocator(0x3ED)) {
         CEffect* orb = g_effectMgr->Spawn(this->render.accountId, 0x3ED, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -3342,7 +3344,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x294:
+    case EFST_AKAITSUKI:
       while (this->HasId(0x220)) {
         this->SendMsg(nullptr, 109, 0, 0x220, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3350,25 +3352,25 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x220, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x2A0:
+    case EFST_UNKNOWN_NAME:
       this->unknown_02F8 = (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0;
       break;
-    case 0x2A2:
+    case EFST_HAT_EFFECT:
       this->SetStackedEffect(0x3F4, (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0);
       break;
-    case 0x2CE:
+    case EFST_MOONSTAR:
       this->SetStackedEffect(0x40A, (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0);
       break;
-    case 0x30B:
+    case EFST_DECORATION_OF_MUSIC:
       this->SetStackedEffect(0x437, (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0);
       break;
-    case 0x2CF:
+    case EFST_STRANGELIGHTS:
       this->SetStackedEffect(0x40B, (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0);
       break;
-    case 0x2D8:
+    case EFST_SUPER_STAR:
       this->SetStackedEffect(0x40C, (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0);
       break;
-    case 0x2A1:
+    case EFST_ON_PUSH_CART:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
         if (static_cast<std::int64_t>(this->unknown_02FC) == (static_cast<std::int64_t>(g) << 32 | static_cast<std::uint32_t>(f))) {
           break;
@@ -3384,14 +3386,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->SendMsg(nullptr, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x2A3:
+    case EFST_FLOWER_LEAF:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
         g_effectMgr->Spawn(this->render.accountId, 0x3F5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x3F5);
       }
       break;
-    case 0x2A4:
+    case EFST_RAY_OF_PROTECTION:
       while (this->HasId(0x3FB)) {
         this->SendMsg(nullptr, 109, 0, 0x3FB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3399,16 +3401,16 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x3FB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x2B8:
+    case EFST_CLAN_INFO:
       this->unknown_0305 = (static_cast<std::int64_t>(i) << 32 | static_cast<std::uint32_t>(h)) != 0;
       this->unknown_0308 = h;
       break;
-    case 0x2C6:
+    case EFST_HANDICAPSTATE_ICEEXPLO:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
         this->SendMsg(nullptr, 127, 0, 50, 0, 150, 0, 255, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x2C9:
+    case EFST_MAXPAIN:
       while (this->HasId(0x40D)) {
         this->SendMsg(nullptr, 109, 0, 0x40D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3416,7 +3418,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x40D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x2DA:
+    case EFST_DARKCROW:
       while (this->HasId(0x410)) {
         this->SendMsg(nullptr, 109, 0, 0x410, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3426,7 +3428,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x410, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x2CD:
+    case EFST_TELEKINESIS_INTENSE:
       while (this->HasId(0x418)) {
         this->SendMsg(nullptr, 109, 0, 0x418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3434,7 +3436,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x418, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x2DE:
+    case EFST_ILLUSIONDOPING:
       while (this->HasId(0x419)) {
         this->SendMsg(nullptr, 109, 0, 0x419, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3442,7 +3444,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x419, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x2DF:
+    case EFST_WIDEWEB:
       while (this->HasId(0x194)) {
         this->SendMsg(nullptr, 109, 0, 0x194, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3450,7 +3452,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x194, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x2E1:
+    case EFST_BURNT:
       while (this->HasId(0x41E)) {
         this->SendMsg(nullptr, 109, 0, 0x41E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3458,7 +3460,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x41E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x2E0:
+    case EFST_CHILL:
       while (this->HasId(0x41F)) {
         this->SendMsg(nullptr, 109, 0, 0x41F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3466,7 +3468,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x41F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x2CC:
+    case EFST_OFFERTORIUM:
       while (this->HasId(0x421)) {
         this->SendMsg(nullptr, 109, 0, 0x421, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3474,7 +3476,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x421, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x2F3:
+    case EFST_C_MARKER:
       this->SendMsg(this, 109, 0, 0x433, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (on) {
         if (g_session.unknown_5C28.find(static_cast<int>(this->render.accountId)) == g_session.unknown_5C28.end() && g_effectMgr->HasAllocator(0x425)) {
@@ -3485,34 +3487,34 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         }
       }
       break;
-    case 0x2F8:
+    case EFST_ANTI_M_BLAST:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x470, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x470);
       }
       break;
-    case 0x2F2:
+    case EFST_E_QD_SHOT_READY:
       g_effectMgr->Spawn(0, 0x434, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       break;
-    case 0x2F4:
+    case EFST_H_MINE:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x473, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x473);
       }
       break;
-    case 0x2F5:
+    case EFST_H_MINE_SPLASH:
       if (on) {
         this->SendMsg(nullptr, 109, 0, 0x425, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_effectMgr->Spawn(0, 0x432, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       }
       break;
-    case 0x336:
+    case EFST_FLOWERSMOKE:
       this->SetStackedEffect(0x43B, (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0);
       break;
-    case 0x14E:
-    case 0x365: {
+    case EFST_HALLUCINATIONWALK:
+    case EFST_NPC_HALLUCINATIONWALK: {
       while (this->HasId(0x318)) {
         this->SendMsg(nullptr, 109, 0, 0x318, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3526,11 +3528,11 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x318, 0, 0, 0);
       break;
     }
-    case 0x95:
-    case 0x420:
-    case 0x421:
-    case 0x422:
-    case 0x423:
+    case EFST_SOULLINK:
+    case EFST_SOULSHADOW:
+    case EFST_SOULFAIRY:
+    case EFST_SOULFALCON:
+    case EFST_SOULGOLEM:
       if (this->render.accountId == g_session.m_aid) {
         if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
           g_weatherEffect.StartDarken();
@@ -3544,42 +3546,42 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->SendMsg(nullptr, 109, 0, 0x1A8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x351:
+    case EFST_HAPPINESS_STAR:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0) {
         this->SetStackedEffect(0x43F, true);
       } else {
         this->SetStackedEffect(0x43F, false);
       }
       break;
-    case 0x337:
+    case EFST_FSTONE:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0) {
         this->SetStackedEffect(0x43C, true);
       } else {
         this->SetStackedEffect(0x43C, false);
       }
       break;
-    case 0x339:
+    case EFST_QSCARABA:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0) {
         this->SetStackedEffect(0x43D, true);
       } else {
         this->SetStackedEffect(0x43D, false);
       }
       break;
-    case 0x33A:
+    case EFST_LJOSALFAR:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0) {
         this->SetStackedEffect(0x43E, true);
       } else {
         this->SetStackedEffect(0x43E, false);
       }
       break;
-    case 0x359:
+    case EFST_MAPLE_FALLS:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0) {
         this->SetStackedEffect(0x441, true);
       } else {
         this->SetStackedEffect(0x441, false);
       }
       break;
-    case 0x358:
+    case EFST_DRESS_UP:
       g_session.unknown_6184 = g_session.m_aid == this->render.accountId ? f : g_session.unknown_6184;
       this->unknown_03DC = f;
       this->SetSprJob(this->GetEffectiveJob(-1));
@@ -3587,44 +3589,44 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       this->SetHeadPaletteName();
       this->SetBodyPaletteName();
       break;
-    case 0x35B:
+    case EFST_MARKING_USE_CHANGEMONSTER:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
         g_effectMgr->Spawn(this->render.accountId, 0x442, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x442);
       }
       break;
-    case 0x360:
+    case EFST_MAGICAL_FEATHER:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0) {
         this->SetStackedEffect(0x443, true);
       } else {
         this->SetStackedEffect(0x443, false);
       }
       break;
-    case 0x35F:
+    case EFST_MERMAID_LONGING:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0) {
         this->SetStackedEffect(0x444, true);
       } else {
         this->SetStackedEffect(0x444, false);
       }
       break;
-    case 0x368:
+    case EFST_TIME_ACCESSORY:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0) {
         this->SetStackedEffect(0x447, true);
       } else {
         this->SetStackedEffect(0x447, false);
       }
       break;
-    case 0x37F:
+    case EFST_HEAD_EQUIPMENT_EFFECT:
       this->SetStackedEffect(f + 0x9B5, (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0);
       break;
-    case 0x3A9:
+    case EFST_SPRITEMABLE:
       g_effectMgr->Retire(this->render.accountId, 0x448);
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x448, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       }
       break;
-    case 0x3A5:
+    case EFST_SUHIDE:
       if (on == true) {
         this->SetState(0x30, 1);
         this->render.isMotionFreezed = true;
@@ -3638,14 +3640,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->render.unknown_0114 = 0;
       }
       break;
-    case 0x37D:
+    case EFST_SU_STOOP:
       if (on == true) {
         this->SetState(0x2F, 1);
       } else if (this->render.unknown_0114 == 0) {
         this->SetState(0, 1);
       }
       break;
-    case 0x397:
+    case EFST_TUNAPARTY:
       if (on == true) {
         if (!g_effectMgr->Has(this->render.accountId, 0x449)) {
           g_effectMgr->Spawn(this->render.accountId, 0x449, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
@@ -3654,35 +3656,35 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x449);
       }
       break;
-    case 0x380:
+    case EFST_SV_ROOTTWIST:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x456, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x456);
       }
       break;
-    case 0x395:
+    case EFST_BITESCAR:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x45F, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x45F);
       }
       break;
-    case 0x3D6:
+    case EFST_SOULATTACK:
       if (g_session.IsDoramJob(this->GetEffectiveJob(-1))) {
         static_cast<CPc*>(this)->unknown_04D8[0] = on;
       }
       break;
-    case 0x3F8:
-    case 0x3F9:
-    case 0x3FA:
-    case 0x3FB:
-    case 0x3FC:
-    case 0x3FD:
-    case 0x3FE:
-    case 0x3FF:
-    case 0x400:
-    case 0x401: {
+    case EFST_IMMUNE_PROPERTY_NOTHING:
+    case EFST_IMMUNE_PROPERTY_WATER:
+    case EFST_IMMUNE_PROPERTY_GROUND:
+    case EFST_IMMUNE_PROPERTY_FIRE:
+    case EFST_IMMUNE_PROPERTY_WIND:
+    case EFST_IMMUNE_PROPERTY_POISON:
+    case EFST_IMMUNE_PROPERTY_SAINT:
+    case EFST_IMMUNE_PROPERTY_DARKNESS:
+    case EFST_IMMUNE_PROPERTY_TELEKINESIS:
+    case EFST_IMMUNE_PROPERTY_UNDEAD: {
       const int effectId = b + 0x87;
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -3691,7 +3693,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x41A: {
+    case EFST_GRAVITYCONTROL: {
       if (g_effectMgr->Has(this->render.accountId, 0x4B1) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4B1);
       }
@@ -3706,7 +3708,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x410:
+    case EFST_SUNSTANCE:
       if (g_effectMgr->Has(this->render.accountId, 0x4BE) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4BE);
       }
@@ -3714,7 +3716,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Spawn(this->render.accountId, 0x4BE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x40E:
+    case EFST_LUNARSTANCE:
       if (g_effectMgr->Has(this->render.accountId, 0x4BF) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4BF);
       }
@@ -3722,7 +3724,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Spawn(this->render.accountId, 0x4BF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x413:
+    case EFST_STARSTANCE:
       if (g_effectMgr->Has(this->render.accountId, 0x4C0) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C0);
       }
@@ -3730,7 +3732,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Spawn(this->render.accountId, 0x4C0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x40F:
+    case EFST_UNIVERSESTANCE:
       if (g_effectMgr->Has(this->render.accountId, 0x4C1) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C1);
       }
@@ -3738,7 +3740,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Spawn(this->render.accountId, 0x4C1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x411:
+    case EFST_FLASHKICK:
       if (g_effectMgr->Has(this->render.accountId, 0x4C5) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C5);
       }
@@ -3746,7 +3748,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Spawn(this->render.accountId, 0x4C5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x41F: {
+    case EFST_SOULUNITY: {
       if (g_effectMgr->Has(this->render.accountId, 0x4C6) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C6);
       }
@@ -3761,9 +3763,9 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x6E:
-    case 0x1D9:
-    case 0x461:
+    case EFST_ASSUMPTIO:
+    case EFST_ASSUMPTIO2:
+    case EFST_ASSUMPTIO_BUFF:
       while (this->HasId(0x177)) {
         this->SendMsg(nullptr, 109, 0, 0x177, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3771,7 +3773,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x177, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x465:
+    case EFST_SOULCURSE:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         if (g_effectMgr->Find(this->render.accountId, 0x552)) {
           break;
@@ -3785,7 +3787,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         }
       }
       break;
-    case 0x466: {
+    case EFST_SOUND_OF_DESTRUCTION: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
         actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
@@ -3799,7 +3801,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x473: {
+    case EFST_EARTHSHAKER: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
         actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
@@ -3812,7 +3814,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x476: {
+    case EFST_MAGIC_POISON: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
         actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
@@ -3825,7 +3827,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x475: {
+    case EFST_MISTY_FROST: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
         actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
@@ -3838,7 +3840,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x47C: {
+    case EFST_PRISON: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
         actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
@@ -3851,7 +3853,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x47D: {
+    case EFST_MADOGEAR_TYPE: {
       CGameActor* target = this;
       if (this->render.accountId != g_session.m_aid) {
         target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(this->render.accountId));
@@ -3881,7 +3883,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x48E: {
+    case EFST_RELIEVE_DAMAGE: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
         actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
@@ -3895,7 +3897,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x48F: {
+    case EFST_LOCKON_LASER: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
         actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
@@ -3911,7 +3913,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x48D: {
+    case EFST_HELLS_PLANT_ARMOR: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
         actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
@@ -3927,7 +3929,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x4B5:
+    case EFST_HANDICAPSTATE_DEEPBLIND:
       if (this->render.accountId != g_session.m_aid) {
         break;
       }
@@ -3949,14 +3951,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       this->SetInstantValue(0x10, on);
       break;
-    case 0x4B6:
+    case EFST_HANDICAPSTATE_DEEPSILENCE:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         this->SendMsg(nullptr, 0x9C, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       } else {
         this->SendMsg(nullptr, 0x9D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x4B9:
+    case EFST_HANDICAPSTATE_SWOONING:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         this->SendMsg(nullptr, 0x9C, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_effectMgr->Retire(this->render.accountId, 0x8C5);
@@ -3966,7 +3968,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x8C5);
       }
       break;
-    case 0x4B7:
+    case EFST_HANDICAPSTATE_LASSITUDE:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         this->SendMsg(nullptr, 0x98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_effectMgr->Spawn(this->render.accountId, 0x8C4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -3974,7 +3976,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->SendMsg(nullptr, 0x99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x4B8:
+    case EFST_HANDICAPSTATE_FROSTBITE:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x8DE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else if (g_effectMgr->Has(this->render.accountId, 0x8DE)) {
@@ -3989,20 +3991,20 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         }
       }
       break;
-    case 0x4BA:
+    case EFST_HANDICAPSTATE_LIGHTNINGSTRIKE:
       g_effectMgr->Retire(this->render.accountId, 0x8DC);
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x8DC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x4BB:
+    case EFST_HANDICAPSTATE_CRYSTALLIZATION:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x8E1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x8E1);
       }
       break;
-    case 0x4C0:
+    case EFST_HANDICAPSTATE_HOLYFLAME:
       if (on == true) {
         this->SendMsg(nullptr, 0x7F, 0, 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_effectMgr->Spawn(this->render.accountId, 0x8C6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -4011,7 +4013,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       this->SetInstantValue(0xC, on);
       break;
-    case 0x4BC:
+    case EFST_HANDICAPSTATE_CONFLAGRATION:
       if (on == true) {
         this->SendMsg(nullptr, 0x7F, 0, 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_effectMgr->Retire(this->render.accountId, 0x8DD);
@@ -4022,14 +4024,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       this->SetInstantValue(0xD, on);
       break;
-    case 0x4BD:
+    case EFST_HANDICAPSTATE_MISFORTUNE:
       if (on == true) {
         this->SendMsg(nullptr, 0x9A, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       } else {
         this->SendMsg(nullptr, 0x9B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x4BE:
+    case EFST_HANDICAPSTATE_DEADLYPOISON:
       if (on == true) {
         this->SendMsg(nullptr, 0x7F, 0, 0xAA, 0, 0, 0, 0xAA, 0, 0, 0, 0, 0, 0, 0);
         g_effectMgr->Spawn(this->render.accountId, 0x8E2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -4039,7 +4041,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       this->SetInstantValue(0xE, on);
       break;
-    case 0x4BF:
+    case EFST_HANDICAPSTATE_DEPRESSION:
       if (on == true) {
         this->SendMsg(nullptr, 0x7F, 0, 0, 0, 0, 0, 0xFF, 0, 0, 0, 0, 0, 0, 0);
       } else {
@@ -4047,7 +4049,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       this->SetInstantValue(0xF, on);
       break;
-    case 0x498: {
+    case EFST_DRAGONIC_AURA: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
         actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
@@ -4063,7 +4065,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x4ce: {
+    case EFST_FIRST_BRAND: {
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x806, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         CEffect* const second = g_effectMgr->Spawn(this->render.accountId, 0x803, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -4080,7 +4082,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x4cf: {
+    case EFST_SECOND_BRAND: {
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x821, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         CEffect* const second = g_effectMgr->Spawn(this->render.accountId, 0x81e, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -4098,14 +4100,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
     }
-    case 0x4a6:
+    case EFST_HOLY_OIL:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x7c7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x7c7);
       }
       break;
-    case 0x4ad:
+    case EFST_MEDIALE:
       if (on == true) {
         if (!g_serviceOptions.Get(0xe5) && !g_effectMgr->Find(this->render.accountId, 0x712)) {
           g_effectMgr->Spawn(this->render.accountId, 0x712, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -4114,27 +4116,27 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x712);
       }
       break;
-    case 0x47e:
+    case EFST_DEADLY_DEFEASANCE:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x6cd, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else if (CEffect* const effect = g_effectMgr->Find(this->render.accountId, 0x6cd)) {
         g_effectMgr->Retire(effect, 1);
       }
       break;
-    case 0x480:
+    case EFST_CLIMAX:
       g_effectMgr->Retire(this->render.accountId, 0x708);
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x708, this->render.position.x, this->render.position.y, this->render.position.z, 0, f, 0, 0);
       }
       break;
-    case 0x4d2:
+    case EFST_FIRST_FAITH_POWER:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x7b7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x7b7);
       }
       break;
-    case 0x4d0:
+    case EFST_SECOND_JUDGE:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x7ba, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         g_effectMgr->Spawn(this->render.accountId, 0x7bd, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -4143,7 +4145,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x7bd);
       }
       break;
-    case 0x4d1:
+    case EFST_THIRD_EXOR_FLAME:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x7be, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         g_effectMgr->Spawn(this->render.accountId, 0x7c1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -4152,14 +4154,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x7c1);
       }
       break;
-    case 0x4dd:
+    case EFST_ABYSS_SLAYER:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x84e, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x84e);
       }
       break;
-    case 0x4d5:
+    case EFST_D_MACHINE:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x719, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         this->LaunchEffect(0x8f8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -4167,14 +4169,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(effect, 1);
       }
       break;
-    case 0x4d4:
+    case EFST_A_MACHINE:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x72f, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x72f);
       }
       break;
-    case 0x4b1:
+    case EFST_COMPETENTIA:
       if (on == true) {
         if (!g_effectMgr->Find(this->render.accountId, 0x73d)) {
           g_effectMgr->Spawn(this->render.accountId, 0x73d, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -4194,7 +4196,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         }
       }
       break;
-    case 0x4a0:
+    case EFST_CLIMAX_CRYIMP:
       if (on == true) {
         if (!g_effectMgr->Find(this->render.accountId, 0x743)) {
           g_effectMgr->Spawn(this->render.accountId, 0x743, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -4203,75 +4205,75 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x743);
       }
       break;
-    case 0x4ea:
+    case EFST_SOUNDBLEND:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x80c, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else if (CEffect* const effect = g_effectMgr->Find(this->render.accountId, 0x80c)) {
         g_effectMgr->Retire(effect, 1);
       }
       break;
-    case 0x4e2:
+    case EFST_WINDSIGN:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x76c, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x76c);
       }
       break;
-    case 0x4ac:
+    case EFST_E_SLASH_COUNT:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x779, this->render.position.x, this->render.position.y, this->render.position.z, 0, f, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x779);
       }
       break;
-    case 0x515:
+    case EFST_ELEMENTAL_VEIL:
       if (on == true) {
         this->LaunchEffect(0x2e8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       } else if (this->HasId(0x2e8) == true) {
         this->SendMsg(nullptr, 109, 0, 0x2e8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x4e1:
+    case EFST_BO_HELL_DUSTY:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x8be, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x526:
+    case EFST_CLOUD_POISON:
       if (on == true) {
         this->LaunchEffect(0x8e5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       } else if (this->HasId(0x8e5) == true) {
         this->SendMsg(nullptr, 109, 0, 0x8e5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x527:
+    case EFST_SPORE_EXPLOSION_DEBUFF:
       if (on == true) {
         this->LaunchEffect(0x8e6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       } else if (this->HasId(0x8e6) == true) {
         this->SendMsg(nullptr, 109, 0, 0x8e6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x48a:
-    case 0x4ed:
+    case EFST_FIRM_FAITH:
+    case EFST_MUSICAL_INTERLUDE:
       if (on == true) {
         this->LaunchEffect(0x8f8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x488:
+    case EFST_POWERFUL_FAITH:
       if (on == true) {
         this->LaunchEffect(0x8f6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x4f7:
+    case EFST_SPELL_ENCHANTING:
       if (on == true) {
         this->LaunchEffect(0x8fa, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x4b0:
+    case EFST_PRE_ACIES:
       if (on == true) {
         this->LaunchEffect(0x8f0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x53b:
+    case EFST_KILLING_AURA:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x8fe, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
@@ -4279,21 +4281,21 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Spawn(this->render.accountId, 0x8ff, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x539:
+    case EFST_CURSE_R_CUBE:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x901, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else if (CEffect* const effect = g_effectMgr->Find(this->render.accountId, 0x901)) {
         static_cast<CCurseOfCubeEffect*>(effect)->Restart();
       }
       break;
-    case 0x53a:
+    case EFST_CURSE_B_CUBE:
       if (on == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x902, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else if (CEffect* const effect = g_effectMgr->Find(this->render.accountId, 0x902)) {
         static_cast<CCurseOfCubeEffect*>(effect)->Restart();
       }
       break;
-    case 0x698:
+    case EFST_BLOCK:
       if (on == true) {
         g_windowMgr.EnsureWindow(0x2730);
       } else {

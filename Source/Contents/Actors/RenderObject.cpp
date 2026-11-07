@@ -1,4 +1,6 @@
 #include "Contents/Actors/Npc.h"
+#include "Contents/Combat/CombatTypes.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Actors/GrannyGameActor.h"
 #include "Contents/Actors/RenderObject.h"
 #include "ActorPickNode.h"
@@ -997,16 +999,16 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   this->hitTargetAid = 0;
 
   switch (skillId) {
-  case 0x53:
-  case 0x301:
-  case 0x306:
-  case 0x13A4:
-  case 0x13B2:
-  case 0x1463:
-  case 0x1467:
-  case 0x1468:
-  case 0x146F:
-  case 0x1474: {
+  case WZ_METEOR:
+  case NPC_RAINOFMETEOR:
+  case NPC_LOCKON_LASER_ATK:
+  case SU_CN_METEOR:
+  case SU_CN_METEOR2:
+  case AG_VIOLENT_QUAKE_ATK:
+  case AG_ALL_BLOOM_ATK:
+  case AG_ALL_BLOOM_ATK2:
+  case AG_ASTRAL_STRIKE_ATK:
+  case AG_CRIMSON_ARROW_ATK: {
     CActRes* action = this->GetActRes();
     this->render.previousAnimation = 0x58;
     this->render.curMotion = action->FrameCount(0x58) - 1;
@@ -1032,85 +1034,85 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
 
   vector3d position{x, height, z};
   switch (skillId) {
-  case 0x15:
+  case MG_THUNDERSTORM:
     mode->LaunchDummyEffect(&position, 0x1E, EffectLifetime(0x1E) + 10, 0);
     break;
-  case 0x45:
-  case 0x2B6:
+  case PR_BENEDICTIO:
+  case ALL_ANGEL_PROTECT:
     mode->LaunchDummyEffect(&position, 0x5B, EffectLifetime(0x5B) + 10, 0);
     break;
-  case 0x46:
+  case PR_SANCTUARY:
     mode->LaunchDummyEffect(&position, 0x53, EffectLifetime(0x53) + 10, 0);
     break;
-  case 0x4F:
+  case PR_MAGNUS:
     mode->LaunchDummyEffect(&position, 0x71, EffectLifetime(0x71) + 10, 0);
     break;
-  case 0x53:
+  case WZ_METEOR:
     if (g_serviceOptions.Get(0xE5)) {
       g_effectMgr->Spawn(0, 0x48B, position.x, position.y, position.z, 0, -1, 0, 0);
     } else {
       mode->LaunchDummyEffect(&position, 0x5C, EffectLifetime(0x5C) + 10, 0);
     }
     break;
-  case 0x55:
+  case WZ_VERMILION:
     if (g_serviceOptions.Get(0xE5)) {
       g_effectMgr->Spawn(0, 0x48A, position.x, position.y, position.z, 0, -1, 0, 0);
     } else {
       mode->LaunchDummyEffect(&position, 0x5A, EffectLifetime(0x5A) + 10, 0);
     }
     break;
-  case 0x57:
+  case WZ_ICEWALL:
     mode->LaunchDummyEffect(&position, 0x4A, EffectLifetime(0x4A) + 10, 0);
     break;
-  case 0x59:
-  case 0x2D3: {
+  case WZ_STORMGUST:
+  case NPC_STORMGUST2: {
     const int effect = g_serviceOptions.Get(0xE5) ? 0x2C4 : 0x59;
     mode->LaunchDummyEffect(&position, effect, EffectLifetime(0x59) + 10, 0);
     break;
   }
-  case 0x5B:
+  case WZ_HEAVENDRIVE:
     mode->LaunchDummyEffect(&position, 0x8E, EffectLifetime(0x8E) + 10, 0);
     break;
-  case 0x5C:
+  case WZ_QUAGMIRE:
     if (g_serviceOptions.Get(0xE5)) {
       g_effectMgr->Spawn(0, 0x489, position.x, position.y, position.z, 0, -1, 0, 0);
     } else {
       mode->LaunchDummyEffect(&position, 0x5F, EffectLifetime(0x5F) + 10, 0);
     }
     break;
-  case 0x6E:
+  case BS_HAMMERFALL:
     mode->LaunchDummyEffect(&position, 0x66, EffectLifetime(0x66) + 10, 0);
     break;
-  case 0x6F:
-  case 0x1CB:
+  case BS_ADRENALINE:
+  case BS_ADRENALINE2:
     mode->LaunchDummyEffect(&position, 0x62, EffectLifetime(0x62) + 10, 0);
     break;
-  case 0x73:
+  case HT_SKIDTRAP:
     mode->LaunchDummyEffect(&position, 0x45, EffectLifetime(0x45) + 10, 0);
     break;
-  case 0x82:
+  case HT_DETECTING:
     mode->LaunchDummyEffect(&position, 0x77, EffectLifetime(0x77) + 10, 0);
     if (this->unknown_037C[0] != 0) {
       const int address = reinterpret_cast<int>(&position);
       reinterpret_cast<CGameObject*>(this->unknown_037C[0])->SendMsg(nullptr, 0x1D, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
-  case 0x8C:
+  case AS_VENOMDUST:
     mode->LaunchDummyEffect(&position, 0x7C, EffectLifetime(0x7C) + 10, 0);
     break;
-  case 0x11D:
+  case SA_VOLCANO:
     mode->LaunchDummyEffect(&position, 0xE1, EffectLifetime(0xE1) + 10, 0);
     break;
-  case 0x11E:
+  case SA_DELUGE:
     mode->LaunchDummyEffect(&position, 0xEC, EffectLifetime(0xEC) + 10, 0);
     break;
-  case 0x11F:
+  case SA_VIOLENTGALE:
     mode->LaunchDummyEffect(&position, 0xED, EffectLifetime(0xED) + 10, 0);
     break;
-  case 0x120:
+  case SA_LANDPROTECTOR:
     mode->LaunchDummyEffect(&position, 0xEE, EffectLifetime(0xEE) + 10, 0);
     break;
-  case 0x1DE: {
+  case CR_SLIMPITCHER: {
     g_soundMgr->PlayWave("assulter_attack.wav", 0.0f, -150.0f, 0.0f, 250, 40, 1.0f, 0);
     int effect;
     if (level < 6) {
@@ -1123,50 +1125,50 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     mode->LaunchDummyEffect(&position, effect, EffectLifetime(effect) + 10, 0);
     break;
   }
-  case 0x1E3:
+  case HW_GANBANTEIN:
     g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     mode->LaunchDummyEffect(&position, 0xDF, EffectLifetime(0xDF) + 10, 0);
     break;
-  case 0x1E4:
+  case HW_GRAVITATION:
     mode->LaunchDummyEffect(&position, 0x20A, 0x104, 0);
     g_soundMgr->PlayWave("effect\\wizard_earthspike.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x1EB:
+  case CR_CULTIVATION:
     this->LaunchEffect(0x3A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x209:
+  case GS_GROUNDDRIFT:
     g_soundMgr->PlayWave("effect\\그라운드.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x21A:
+  case NJ_SUITON:
     g_soundMgr->PlayWave("effect\\수둔.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x2C6:
+  case NPC_ICEEXPLO:
     this->LaunchEffect(0x87, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\ef_frostdiver.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x2CD:
+  case NPC_MAXPAIN_ATK:
     this->LaunchEffect(0x408, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x2DD:
-  case 0x138E:
+  case NPC_MAGMA_ERUPTION:
+  case NC_MAGMA_ERUPTION:
     mode->LaunchDummyEffect(&position, 0x66, EffectLifetime(0x66) + 10, 0);
     break;
-  case 0x2E1:
-  case 0x911:
+  case NPC_RAYOFGENESIS:
+  case LG_RAYOFGENESIS:
     g_effectMgr->Spawn(0, 0x590, position.x, position.y, position.z, 0, -1, 0, 0);
     g_soundMgr->PlayWave("effect\\LG_RAYOFGENESIS.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x301: {
+  case NPC_RAINOFMETEOR: {
     const float raised = height + 25.0f;
     g_effectMgr->Spawn(0, 0x4E7, x, raised, z, 0, -1, 0, 0);
     g_effectMgr->Spawn(0, 0x4E6, x, raised, z, 0, -1, 0, 0);
     g_soundMgr->PlayWave("effect\\wizard_meteor.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   }
-  case 0x302:
+  case NPC_GROUNDDRIVE:
     mode->LaunchDummyEffect(&position, 0x577, EffectLifetime(0x577) + 10, 0);
     break;
-  case 0x306: {
+  case NPC_LOCKON_LASER_ATK: {
     CEffect* effect = g_effectMgr->Spawn(0, 0x426, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect != nullptr) {
       using SetFloat = void (CEffect::*)(float);
@@ -1175,14 +1177,14 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     }
     break;
   }
-  case 0x8D4: {
+  case NC_COLDSLOWER: {
     CRagEffect* effect = this->LaunchEffect(0x317, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect != nullptr) {
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
   }
-  case 0x98F:
+  case SO_DIAMONDDUST:
     g_soundMgr->PlayWave("effect\\wl_jackfrost.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (g_serviceOptions.Get(0xE5)) {
       g_effectMgr->Spawn(0, 0x5AA, position.x, position.y, position.z, 0, level, 0, 0);
@@ -1192,27 +1194,27 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
       g_effectMgr->Spawn(0, 0x503, position.x, position.y, position.z, 0, level, 0, 0);
     }
     break;
-  case 0xA0B:
+  case RL_HAMMER_OF_GOD:
     g_effectMgr->Spawn(0, 0x426, position.x, position.y, position.z, 0, -1, 0, 0);
     break;
-  case 0x13A4:
+  case SU_CN_METEOR:
     g_effectMgr->Spawn(0, 0x452, position.x, position.y, position.z, 0, -1, 0, 0);
     break;
-  case 0x13B2:
+  case SU_CN_METEOR2:
     g_effectMgr->Spawn(0, 0x458, position.x, position.y, position.z, 0, -1, 0, 0);
     break;
-  case 0x1463:
+  case AG_VIOLENT_QUAKE_ATK:
     g_effectMgr->Spawn(0, 0x6E0, position.x, position.y, position.z, 0, -1, 0, 0);
     break;
-  case 0x1465:
-  case 0x146B:
-  case 0x146D:
+  case AG_STRANTUM_TREMOR:
+  case AG_TORNADO_STORM:
+  case AG_FLORAL_FLARE_ROAD:
     this->SetFrameSequence(0x60, 1, 3, 0x60, 3, 1, 500, 0);
     break;
-  case 0x1467:
+  case AG_ALL_BLOOM_ATK:
     g_effectMgr->Spawn(0, 0x706, position.x, position.y, position.z, 0, -1, 0, 0);
     break;
-  case 0x14C7: {
+  case ABC_ABYSS_STRIKE: {
     g_effectMgr->Spawn(0, 0x827, position.x, position.y, position.z, 0, -1, 0, 0);
     g_effectMgr->Spawn(0, 0x828, position.x, position.y, position.z, 0, -1, 0, 0);
     CEffect* effect = g_effectMgr->Spawn(0, 0x82B, position.x, position.y, position.z, 0, -1, 0, 0);
@@ -1225,13 +1227,13 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     }
     break;
   }
-  case 0x14C9:
+  case ABC_ABYSS_SQUARE:
     this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 500, 0);
     break;
-  case 0x14D3:
-  case 0x14D4:
-  case 0x14D5:
-  case 0x14D7:
+  case WH_DEEPBLINDTRAP:
+  case WH_SOLIDTRAP:
+  case WH_SWIFTTRAP:
+  case WH_FLAMETRAP:
     this->SetFrameSequence(0x18, 0, 2, 0x60, 2, 1, 500, 0);
     break;
   }
@@ -2280,139 +2282,139 @@ void CGameActor::ShowPartyMemberEffect(std::uint32_t accountId) {
 void CGameActor::LaunchAttackProjectile(int target, float scale) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   switch (this->GetEffectiveJob(-1)) {
-  case 0x3F8:
-  case 0x4A5:
-  case 0x4E5:
-  case 0x4EA:
-  case 0x4FC:
-  case 0x502:
-  case 0x505:
-  case 0x582:
-  case 0x584:
-  case 0x58C:
-  case 0x5AD:
-  case 0x5AF:
-  case 0x5C1:
-  case 0x5D7:
-  case 0x5DA:
-  case 0x5DC:
-  case 0x5FB:
-  case 0x60E:
-  case 0x613:
-  case 0x680:
-  case 0x681:
-  case 0x682:
-  case 0x683:
-  case 0x698:
-  case 0x749:
-  case 0x7E5:
-  case 0x93C:
-  case 0x9AB:
-  case 0xF2A:
-  case 0x1781:
-  case 0x1782:
-  case 0x1783:
-  case 0x1784:
-  case 0x1785:
-  case 0x1786:
-  case 0x1787:
-  case 0x1788:
-  case 0x1789:
-  case 0x178A:
-  case 0x4F32:
-  case 0x4F33:
-  case 0x4F37:
-  case 0x4F90:
-  case 0x505F:
-  case 0x5062:
-  case 0x5069:
-  case 0x5173:
-  case 0x5410:
-  case 0x5455:
-  case 0x55D2:
-  case 0x55E1:
-  case 0x55F1: {
+  case JT_ARCHER_SKELETON:
+  case JT_ORC_ARCHER:
+  case JT_GARGOYLE:
+  case JT_GOBLIN_ARCHER:
+  case JT_RAYDRIC_ARCHER:
+  case JT_KOBOLD_ARCHER:
+  case JT_ARCHER_GUARDIAN:
+  case JT_LIVE_PEACH_TREE:
+  case JT_EVIL_CLOUD_HERMIT:
+  case JT_G_ARCHER_SKELETON:
+  case JT_G_RAYDRIC_ARCHER:
+  case JT_G_KOBOLD_ARCHER:
+  case JT_G_ORC_ARCHER:
+  case JT_STONE_SHOOTER:
+  case JT_WOOTAN_SHOOTER:
+  case JT_PARASITE:
+  case JT_G_EVIL_CLOUD_HERMIT:
+  case JT_G_LIVE_PEACH_TREE:
+  case JT_G_PARASITE:
+  case JT_POTON_CANON:
+  case JT_POTON_CANON_1:
+  case JT_POTON_CANON_2:
+  case JT_POTON_CANON_3:
+  case JT_LADY_TANEE:
+  case JT_RAGGED_ZOMBIE:
+  case JT_PHYLLA:
+  case JT_PETAL:
+  case JT_MG_CORRUPTION_ROOT:
+  case JT_E_MD_NYAILO:
+  case JT_MER_ARCHER01:
+  case JT_MER_ARCHER02:
+  case JT_MER_ARCHER03:
+  case JT_MER_ARCHER04:
+  case JT_MER_ARCHER05:
+  case JT_MER_ARCHER06:
+  case JT_MER_ARCHER07:
+  case JT_MER_ARCHER08:
+  case JT_MER_ARCHER09:
+  case JT_MER_ARCHER10:
+  case JT_ILL_STONE_SHOOTER:
+  case JT_ILL_WOOTAN_SHOOTER:
+  case JT_G_ILL_WOOTAN_SHOOTER:
+  case JT_RAYDRIC_ARCHER_H:
+  case JT_MD_C_CORRUPTION_ROOT:
+  case JT_MD_C_RAYDRIC_ARCHER:
+  case JT_MD_C_RAY_ARCHER_G:
+  case JT_SUMMON_HELLTREE:
+  case JT_EP19_LIMACINA:
+  case JT_G_EP19_LIMACINA:
+  case JT_EP20_MELIBE_ICESLUG:
+  case JT_EP20_RGAN_WARLOCK:
+  case JT_G_EP20_RGAN_WARLOCK: {
     using SpawnArrow = void (CGameMode::*)(const vector3d*, int, float, int);
     const SpawnArrow spawn = reinterpret_cast<SpawnArrow>(&CGameMode::SpawnArrowEffect);
     (mode->*spawn)(&this->render.position, target, scale, this->GetEffectiveJob(-1));
     return;
   }
-  case 0x3FC:
-  case 0x42C:
-  case 0x6A8:
-  case 0x6AD:
-  case 0x6F5:
-  case 0x75C:
-  case 0x75E:
-  case 0x7A5:
-  case 0x7A6:
-  case 0x7A7:
-  case 0x7A8:
-  case 0x7A9:
-  case 0x7C4:
+  case JT_MANDRAGORA:
+  case JT_HYDRA:
+  case JT_THA_ODIUM:
+  case JT_G_THA_ODIUM:
+  case JT_DROSERA:
+  case JT_MAVKA:
+  case JT_G_MAVKA:
+  case JT_ENTWEIHEN:
+  case JT_G_ENTWEIHEN_R:
+  case JT_G_ENTWEIHEN_H:
+  case JT_G_ENTWEIHEN_M:
+  case JT_G_ENTWEIHEN_S:
+  case JT_NEPENTHES:
   case 0xE94:
   case 0xECF:
   case 0x500B:
-  case 0x5172:
-  case 0x55BB:
-  case 0x5759:
-  case 0x575C:
-  case 0x577B:
-  case 0x577C:
-  case 0x5781:
-  case 0x5782:
-  case 0x5784:
-  case 0x5788:
-  case 0x578D:
-  case 0x5796:
-  case 0x57B2:
-  case 0x57D2:
-  case 0x57D3: {
+  case JT_SUMMON_CREEPER:
+  case JT_DEDSERA:
+  case JT_EP21_YORTUS_B:
+  case JT_EP21_B_YORTUS_B:
+  case JT_MEDJED:
+  case JT_CP_MEDJED:
+  case JT_HEKA:
+  case JT_CP_HEKA:
+  case JT_GUIDE_OF_DEAD:
+  case JT_E_SMART_ANDRE:
+  case JT_EP21_YORTUS_B_H:
+  case JT_EP21_B_YORTUS_B_H:
+  case JT_CH1_FIRE_FLOWER:
+  case JT_CH1_SHADIEST:
+  case JT_CP_CH1_SHADIEST: {
     using SpawnMandra = void (CGameMode::*)(int, int, float);
     const SpawnMandra spawn = reinterpret_cast<SpawnMandra>(&CGameMode::SpawnMandraAttack);
     (mode->*spawn)(target, this->GetEffectiveJob(-1), 0.0f);
     return;
   }
-  case 0x51C8:
-  case 0x523C:
-  case 0x569F:
-  case 0x56A0:
-  case 0x56B5:
-  case 0x56B6:
-  case 0x56B7:
-  case 0x56BC:
-  case 0x56C6:
-  case 0x56C7:
-  case 0x56C8:
-  case 0x56CA:
-  case 0x56CB:
-  case 0x56D2:
-  case 0x56D3:
-  case 0x56D8:
-  case 0x56DA:
-  case 0x56DB:
-  case 0x56E5:
-  case 0x56E6:
-  case 0x56F0:
-  case 0x5732:
-  case 0x5736:
-  case 0x5737:
-  case 0x5752:
-  case 0x5753:
-  case 0x5757:
-  case 0x575E:
-  case 0x576F:
-  case 0x5770:
-  case 0x5790:
-  case 0x5792:
-  case 0x5794:
-  case 0x57C0:
-  case 0x57C3:
-  case 0x57C4:
-  case 0x57EE:
-  case 0x57F8:
-  case 0x5800:
-  case 0x5812:
+  case JT_DISGUISER:
+  case JT_G_DISGUISER:
+  case JT_MD_PRI_RIGEL_AC:
+  case JT_MD_PRI_RIGEL_ACS:
+  case JT_SPIRIT_B_FLAME_M:
+  case JT_SPIRIT_B_FLAME_L:
+  case JT_SPIRIT_B_FLAME_SL:
+  case JT_SPIRIT_I_WATER_S:
+  case JT_SPIRIT_C_FLAME_L:
+  case JT_SPIRIT_C_FLAME_SL:
+  case JT_SPIRIT_H_WATER_S:
+  case JT_SPIRIT_H_WATER_L:
+  case JT_SPIRIT_H_WATER_SL:
+  case JT_SPIRIT_R_FLAME_L:
+  case JT_SPIRIT_R_FLAME_SL:
+  case JT_SPIRIT_C_WATER_S:
+  case JT_SPIRIT_C_WATER_L:
+  case JT_SPIRIT_C_WATER_SL:
+  case JT_VR_MD_DREGG1:
+  case JT_VR_MD_DREGG2:
+  case JT_BIO_ICE_GARGOYLE:
+  case JT_EP21_YORKER_B:
+  case JT_EP21_YOSTER_D:
+  case JT_EP21_YOSTER_E:
+  case JT_EP21_YORMI_B:
+  case JT_EP21_YORDOS_A:
+  case JT_EP21_YOSCOPUS_B:
+  case JT_G_EP21_YORDOS_A:
+  case JT_VIOLEN:
+  case JT_CP_VIOLEN:
+  case JT_EP21_YORDOS_A_H:
+  case JT_EP21_YORMI_B_H:
+  case JT_EP21_YOSCOPUS_B_H:
+  case JT_CH1_SHADOW_JAILER:
+  case JT_CH1_SCABIOSA:
+  case JT_CH1_LOBELIA:
+  case JT_CH1_RA:
+  case JT_CH1_MI:
+  case JT_CH1_RA_1:
+  case JT_CH1_MI_1:
     LaunchBulletSpriteEffect(&this->render.position, target, scale, this->GetEffectiveJob(-1));
     return;
   default:
@@ -3651,19 +3653,19 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
     hitCount = 1;
   }
 
-  if (type != 8 && type != 9 && type != 13) {
+  if (type != DMG_MULTI_HIT && type != DMG_MULTI_HIT_ENDURE && type != DMG_MULTI_HIT_CRITICAL) {
     hitCount = 1;
   }
 
   damage /= hitCount;
   switch (type) {
-    case 0:
-    case 4:
-    case 8:
-    case 9:
-    case 10:
-    case 11:
-    case 13: {
+    case DMG_NORMAL:
+    case DMG_ENDURE:
+    case DMG_MULTI_HIT:
+    case DMG_MULTI_HIT_ENDURE:
+    case DMG_CRITICAL:
+    case DMG_LUCY_DODGE:
+    case DMG_MULTI_HIT_CRITICAL: {
       if (this->unknown_0178 != 0) {
         CRagEffect* effect = this->LaunchEffect(0x83, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect != nullptr) {
@@ -3679,29 +3681,29 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
 
       this->Face(x, z);
       unsigned delay = static_cast<unsigned>(this->unknown_0378 * this->render.speed * 24.0f);
-      if (this->GetEffectiveJob(-1) == 0x3F8 || this->GetEffectiveJob(-1) == 0x58C) {
+      if (this->GetEffectiveJob(-1) == JT_ARCHER_SKELETON || this->GetEffectiveJob(-1) == JT_G_ARCHER_SKELETON) {
         delay += 0xC0;
-      } else if (this->GetEffectiveJob(-1) == 0x505 || this->GetEffectiveJob(-1) == 0x726) {
+      } else if (this->GetEffectiveJob(-1) == JT_ARCHER_GUARDIAN || this->GetEffectiveJob(-1) == JT_BOW_GUARDIAN) {
         delay += 0x390;
-      } else if (this->GetEffectiveJob(-1) == 0x506 || this->GetEffectiveJob(-1) == 0x725 || this->GetEffectiveJob(-1) == 0x507) {
+      } else if (this->GetEffectiveJob(-1) == JT_KNIGHT_GUARDIAN || this->GetEffectiveJob(-1) == JT_SWORD_GUARDIAN || this->GetEffectiveJob(-1) == JT_SOLDIER_GUARDIAN) {
         delay += 0x198;
       }
 
       int flag = -1;
       int action;
       switch (type) {
-        case 4:
-        case 9:
+        case DMG_ENDURE:
+        case DMG_MULTI_HIT_ENDURE:
           action = 0x27;
           break;
-        case 10:
+        case DMG_CRITICAL:
           action = 0x5D;
           flag = 1;
           break;
-        case 11:
+        case DMG_LUCY_DODGE:
           action = this->unknown_0178 != 0 ? 0x1A : 0x5E;
           break;
-        case 13:
+        case DMG_MULTI_HIT_CRITICAL:
           action = 0x94;
           flag = 1;
           break;
@@ -3716,24 +3718,24 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
 
       int effectId = 0;
       switch (this->GetEffectiveJob(-1)) {
-        case 0xFCE:
-        case 0xFCF:
-        case 0xFD0:
-        case 0x1081:
-        case 0x1082:
-        case 0x108E:
-        case 0x108F:
-        case 0x1090:
-        case 0x1091:
-        case 0x1092:
-        case 0x1093:
-        case 0x10CE:
-        case 0x10CF:
-        case 0x10DC:
+        case JT_TAEKWON:
+        case JT_STAR:
+        case JT_STAR2:
+        case JT_TAEKWON_B:
+        case JT_STAR_B:
+        case JT_STAR2_B:
+        case JT_STAR_EMPEROR:
+        case JT_SOUL_REAPER:
+        case JT_STAR_EMPEROR_B:
+        case JT_SOUL_REAPER_B:
+        case JT_STAR2_EMPEROR:
+        case JT_SKY_EMPEROR:
+        case JT_SOUL_ASCETIC:
+        case JT_SKY_EMPEROR2:
           effectId = 0x1B2;
           break;
-        case 0x576F:
-        case 0x5770:
+        case JT_VIOLEN:
+        case JT_CP_VIOLEN:
           effectId = 0x974;
           break;
       }
@@ -3819,13 +3821,13 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
       }
       break;
     }
-    case 1:
+    case DMG_PICKUP_ITEM:
       this->SetState(5, 1);
       return;
-    case 2:
+    case DMG_SIT_DOWN:
       this->SetState(6, 1);
       return;
-    case 3:
+    case DMG_STAND_UP:
       this->SetState(0, 1);
       return;
   }
@@ -3950,36 +3952,36 @@ void C3dGrannyGameActor::Unused7950(int) {
 // FUNCTION: fn_21197
 bool CGameActor::IsSkillWithoutAction(int skillId) {
   switch (skillId) {
-  case 0x00B:
-  case 0x02F:
-  case 0x111:
-  case 0x19D:
-  case 0x2DC:
-  case 0x8D2:
-  case 0x8EC:
-  case 0x903:
-  case 0x90D:
-  case 0x918:
-  case 0x919:
-  case 0x91C:
-  case 0x921:
-  case 0x9AC:
-  case 0x9D7:
-  case 0xA10:
-  case 0xBBE:
-  case 0xBBF:
-  case 0x13A2:
-  case 0x13B6:
-  case 0x146E:
-  case 0x1473:
-  case 0x147B:
-  case 0x147C:
-  case 0x147D:
-  case 0x1480:
-  case 0x1484:
-  case 0x14A3:
-  case 0x14A4:
-  case 0x14C4:
+  case MG_NAPALMBEAT:
+  case AC_SHOWER:
+  case MO_COMBOFINISH:
+  case TK_STORMKICK:
+  case NPC_FATALMENACE:
+  case NC_VULCANARM:
+  case SC_STARTMARK:
+  case LG_CANNONSPEAR:
+  case LG_OVERBRAND:
+  case SR_EARTHSHAKER:
+  case SR_FALLENEMPIRE:
+  case SR_RAMPAGEBLASTER:
+  case SR_WINDMILL:
+  case GN_CART_TORNADO:
+  case LG_OVERBRAND_BRANDISH:
+  case SJ_FULLMOONKICK:
+  case KO_BAKURETSU:
+  case KO_HAPPOKUNAI:
+  case SU_SV_STEMSPEAR:
+  case SU_SVG_SPIRIT:
+  case AG_ASTRAL_STRIKE:
+  case AG_CRIMSON_ARROW:
+  case IQ_MASSIVE_F_BLASTER:
+  case IQ_EXPOSION_BLASTER:
+  case IQ_FIRST_BRAND:
+  case IQ_SECOND_FLAME:
+  case IQ_THIRD_FLAME_BOMB:
+  case CD_PETITIO:
+  case CD_FRAMEN:
+  case ABC_CHAIN_REACTION_SHOT:
     return true;
   }
 
@@ -4451,94 +4453,94 @@ void CGameActor::UpdateMaxLevelAura() {
 void CGameActor::SetActorJob(int job) {
   this->unknown_025C = job;
   if (job < 0xfaf) {
-    if (job == 0xfae) {
+    if (job == JT_CHICKEN_H) {
       this->unknown_025C = 0xfa8;
-    } else if (job == 0xd) {
+    } else if (job == JT_CHICKEN) {
       this->unknown_025C = 7;
-    } else if (job == 0x15) {
+    } else if (job == JT_CHICKEN2) {
       this->unknown_025C = 0xe;
     }
   } else if (job < 0x10b7) {
-    if (job == 0x10b6) {
+    if (job == JT_WOLF_WINDHAWK) {
       this->unknown_025C = 0x10a1;
     } else {
       switch (job) {
-      case 0xfb6:
+      case JT_CHICKEN2_H:
         this->unknown_025C = 0xfaf;
         break;
-      case 0xfc4:
+      case JT_CHICKEN_B:
         this->unknown_025C = 0xfbe;
         break;
-      case 0xfcc:
+      case JT_CHICKEN2_B:
         this->unknown_025C = 0xfc5;
         break;
-      case 0xfd0:
+      case JT_STAR2:
         this->unknown_025C = 0xfcf;
         break;
-      case 0xff0:
-      case 0xff8:
-      case 0xffa:
-      case 0xffc:
-      case 0xffe:
+      case JT_RUNE_CHICKEN:
+      case JT_RUNE_CHICKEN2:
+      case JT_RUNE_CHICKEN3:
+      case JT_RUNE_CHICKEN4:
+      case JT_RUNE_CHICKEN5:
         this->unknown_025C = 0xfd6;
         break;
-      case 0xff1:
-      case 0xff9:
-      case 0xffb:
-      case 0xffd:
-      case 0xfff:
+      case JT_RUNE_CHICKEN_H:
+      case JT_RUNE_CHICKEN2_H:
+      case JT_RUNE_CHICKEN3_H:
+      case JT_RUNE_CHICKEN4_H:
+      case JT_RUNE_CHICKEN5_H:
         this->unknown_025C = 0xfdc;
         break;
-      case 0xff2:
+      case JT_ROYAL_CHICKEN:
         this->unknown_025C = 0xfe2;
         break;
-      case 0xff3:
+      case JT_ROYAL_CHICKEN_H:
         this->unknown_025C = 0xfe9;
         break;
-      case 0xff4:
+      case JT_WOLF_RANGER:
         this->unknown_025C = 0xfd8;
         break;
-      case 0xff5:
+      case JT_WOLF_RANGER_H:
         this->unknown_025C = 0xfde;
         break;
-      case 0xff6:
+      case JT_MADOGEAR:
         this->unknown_025C = 0xfda;
         break;
-      case 0xff7:
+      case JT_MADOGEAR_H:
         this->unknown_025C = 0xfe0;
         break;
-      case 0x100d:
+      case JT_RUNE_CHICKEN_B:
         this->unknown_025C = 0x1000;
         break;
-      case 0x100e:
+      case JT_ROYAL_CHICKEN_B:
         this->unknown_025C = 0x1006;
         break;
-      case 0x100f:
+      case JT_WOLF_RANGER_B:
         this->unknown_025C = 0x1002;
         break;
-      case 0x1010:
+      case JT_MADOGEAR_B:
         this->unknown_025C = 0x1004;
         break;
-      case 0x108e:
+      case JT_STAR2_B:
         this->unknown_025C = 0x1082;
         break;
-      case 0x1094:
+      case JT_STAR2_EMPEROR_B:
         this->unknown_025C = 0x1091;
         break;
       }
     }
   } else {
     switch (job) {
-    case 0x10b7:
+    case JT_MEISTER_MADOGEAR:
       this->unknown_025C = 0x109d;
       break;
-    case 0x10b8:
+    case JT_DRAGON_KNIGHT_CHICKEN:
       this->unknown_025C = 0x109c;
       break;
-    case 0x10b9:
+    case JT_IMPERIAL_GUARD_CHICKEN:
       this->unknown_025C = 0x10a2;
       break;
-    case 0x10dc:
+    case JT_SKY_EMPEROR2:
       this->unknown_025C = 0x10ce;
       break;
     }
@@ -5059,7 +5061,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
 
   if (previousBodyState != this->bodyState) {
     switch (previousBodyState) {
-    case 1: {
+    case OPT1_STONE: {
       const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
       g_soundMgr->PlayWave(
         "_stone_explosion.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
@@ -5067,7 +5069,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
       break;
     }
-    case 2: {
+    case OPT1_FREEZE: {
       this->SendMsg(nullptr, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->SendMsg(nullptr, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
@@ -5083,18 +5085,18 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
       break;
     }
-    case 3:
+    case OPT1_STUN:
       this->SendMsg(nullptr, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
       break;
-    case 4:
+    case OPT1_SLEEP:
       this->SendMsg(nullptr, 70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
       break;
-    case 7:
+    case OPT1_BURNING:
       this->SendMsg(nullptr, 140, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
-    case 8:
+    case OPT1_IMPRISON:
       while (this->HasId(802)) {
         this->SendMsg(nullptr, 109, 0, 802, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -5104,7 +5106,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
 
     switch (this->bodyState) {
-    case 1:
+    case OPT1_STONE:
       this->render.isMotionFinished = true;
       this->render.isMotionFreezed = true;
       this->render.unknown_00A3 = 1;
@@ -5112,7 +5114,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       color[2] = 0x40;
       color[0] = 0x40;
       break;
-    case 2:
+    case OPT1_FREEZE:
       this->SendMsg(nullptr, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->render.isMotionFinished = true;
       this->render.isMotionFreezed = true;
@@ -5127,7 +5129,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         );
       }
       break;
-    case 3:
+    case OPT1_STUN:
       this->SendMsg(nullptr, 71, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (notify) {
         const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
@@ -5136,19 +5138,19 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         );
       }
       break;
-    case 4:
+    case OPT1_SLEEP:
       this->SendMsg(nullptr, 69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
-    case 6:
+    case OPT1_STONEWAIT:
       this->render.unknown_00A3 = 1;
       color[1] = 0x80;
       color[2] = 0x80;
       color[0] = 0x80;
       break;
-    case 7:
+    case OPT1_BURNING:
       this->SendMsg(nullptr, 139, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
-    case 8:
+    case OPT1_IMPRISON:
       if (!this->HasId(802)) {
         this->LaunchEffect(802, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
@@ -5257,11 +5259,11 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
   }
 
-  if (this->bodyState == 0) {
+  if (this->bodyState == OPT1_NONE) {
     this->render.isMotionFreezed = false;
   }
 
-  if ((this->unknown_02C4 & 0x83) == 0 && this->bodyState != 2 && this->bodyState != 1 && this->bodyState != 6 &&
+  if ((this->unknown_02C4 & 0x83) == 0 && this->bodyState != OPT1_FREEZE && this->bodyState != OPT1_STONE && this->bodyState != OPT1_STONEWAIT &&
       static_cast<int>(this->GetInstant(3)) != 1 && static_cast<int>(this->GetInstant(12)) != 1 &&
       static_cast<int>(this->GetInstant(13)) != 1 && static_cast<int>(this->GetInstant(14)) != 1 &&
       static_cast<int>(this->GetInstant(15)) != 1) {
@@ -5301,7 +5303,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     hitCount = 1;
   }
 
-  const int level = skillId != 56 ? info->level : hitCount;
+  const int level = skillId != KN_PIERCE ? info->level : hitCount;
   const int damage = info->damage / hitCount;
   this->hitTargetAid = info->targetAid;
 
@@ -5334,22 +5336,22 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     static_cast<CGameActor*>(target)->GetEffectiveJob(-1);
   }
 
-  if (type != 8 && type != 9 && type != 13) {
+  if (type != DMG_MULTI_HIT && type != DMG_MULTI_HIT_ENDURE && type != DMG_MULTI_HIT_CRITICAL) {
     hitCount = 1;
   }
 
-  if (skillId == 2288 || skillId == 5316 || skillId == 5322 || CSkillActionMgr::GetInstance()->SuppressAttackSkillArrow(skillId)) {
+  if (skillId == SC_TRIANGLESHOT || skillId == ABC_CHAIN_REACTION_SHOT || skillId == ABC_FRENZY_SHOT || CSkillActionMgr::GetInstance()->SuppressAttackSkillArrow(skillId)) {
     this->SetArrowEffectSuppressed(true);
   }
 
   switch (type) {
-  case 4:
-  case 5:
-  case 6:
-  case 8:
-  case 9:
-  case 13:
-  case 14:
+  case DMG_ENDURE:
+  case DMG_SPLASH:
+  case DMG_SINGLE:
+  case DMG_MULTI_HIT:
+  case DMG_MULTI_HIT_ENDURE:
+  case DMG_MULTI_HIT_CRITICAL:
+  case DMG_SPLASH_ENDURE:
     break;
   default:
     return;
@@ -5357,8 +5359,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
 
   ActorDamageMessage message;
   const int address = reinterpret_cast<int>(&message);
-  if (type == 5) {
-    if (skillId == 2284 || skillId == 732) {
+  if (type == DMG_SPLASH) {
+    if (skillId == SC_STARTMARK || skillId == NPC_FATALMENACE) {
       this->SetAnimationSpeed(static_cast<float>(attackSpeed) / 432.0f * 4.0f);
     }
 
@@ -5370,26 +5372,26 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
         int effect = -1;
         int followEffect = -1;
         switch (skillId) {
-        case 5215:
-        case 5225:
-        case 5226:
-        case 5234:
-        case 5235:
-        case 5236:
-        case 5237:
-        case 5241:
-        case 5244:
-        case 5245:
-        case 5294:
-        case 5295:
-        case 5296:
-        case 5298:
-        case 5314:
-        case 5319:
-        case 5329:
-        case 5383:
-        case 5384:
-        case 5385:
+        case AG_DESTRUCTIVE_HURRICANE:
+        case AG_CRYSTAL_IMPACT:
+        case AG_CRYSTAL_IMPACT_ATK:
+        case AG_STORM_CANNON:
+        case AG_CRIMSON_ARROW:
+        case AG_CRIMSON_ARROW_ATK:
+        case AG_FROZEN_SLASH:
+        case IQ_OLEUM_SANCTUM:
+        case IQ_EXPOSION_BLASTER:
+        case IQ_FIRST_BRAND:
+        case SHC_FATAL_SHADOW_CROW:
+        case MT_AXE_STOMP:
+        case MT_RUSH_QUAKE:
+        case MT_A_MACHINE:
+        case ABC_ABYSS_DAGGER:
+        case ABC_ABYSS_STRIKE:
+        case WH_HAWKBOOMERANG:
+        case ABC_FROM_THE_ABYSS_ATK:
+        case NPC_BO_THROWROCK:
+        case NPC_BO_WOODEN_ATTACK:
           effect = g_session.FindUnknown0708(skillId);
           followEffect = g_session.FindUnknown0700(skillId);
           break;
@@ -5412,10 +5414,10 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
         target->SendMsg(this, 0x1B, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         return;
       }
-    } else if (skillId == 2450 || skillId == 739 || skillId == 5030 || skillId == 2477) {
+    } else if (skillId == SO_CLOUD_KILL || skillId == NPC_CLOUD_KILL || skillId == SU_SV_ROOTTWIST_ATK || skillId == GN_CARTCANNON) {
       return;
     }
-  } else if (type == 14) {
+  } else if (type == DMG_SPLASH_ENDURE) {
     g_session.PlaySkillEffect(skillId, hitCount, this, static_cast<CGameActor*>(target));
     if (target != nullptr) {
       if (!this->IsSkillWithoutAction(skillId)) {
@@ -5437,7 +5439,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
         target->SendMsg(this, 0x1B, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         return;
       }
-    } else if (skillId == 2450 || skillId == 739) {
+    } else if (skillId == SO_CLOUD_KILL || skillId == NPC_CLOUD_KILL) {
       return;
     }
   }
@@ -5445,29 +5447,29 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   int castEffect;
   int motion;
   g_session.GetSkillActionInfo2(skillId, castEffect, motion);
-  if (skillId != 2256 && skillId != 2257 && skillId != 490 && skillId != 3009 && !CSkillActionMgr::GetInstance()->KeepSkillAttackSpeed(skillId)) {
+  if (skillId != NC_BOOSTKNUCKLE && skillId != NC_PILEBUNKER && skillId != CR_ACIDDEMONSTRATION && skillId != KO_HUUMARANKA && !CSkillActionMgr::GetInstance()->KeepSkillAttackSpeed(skillId)) {
     this->SetModifyFactorOfmotionSpeed(attackSpeed);
   }
 
   bool keepMotion;
   switch (skillId) {
-  case 143:
-  case 263:
-  case 271:
-  case 272:
-  case 273:
-  case 371:
-  case 2317:
-  case 2326:
-  case 2328:
-  case 2329:
-  case 2519:
-  case 2579:
-  case 5382:
+  case NV_TRICKDEAD:
+  case MO_TRIPLEATTACK:
+  case MO_EXTREMITYFIST:
+  case MO_CHAINCOMBO:
+  case MO_COMBOFINISH:
+  case CH_TIGERFIST:
+  case LG_OVERBRAND:
+  case SR_DRAGONCOMBO:
+  case SR_EARTHSHAKER:
+  case SR_FALLENEMPIRE:
+  case LG_OVERBRAND_BRANDISH:
+  case SJ_NEWMOONKICK:
+  case ABC_CHAIN_REACTION_SHOT_ATK:
     keepMotion = true;
     break;
-  case 2261:
-    keepMotion = type == 8;
+  case NC_ARMSCANNON:
+    keepMotion = type == DMG_MULTI_HIT;
     break;
   default:
     keepMotion = CSkillActionMgr::GetInstance()->KeepSkillAttackMotion(skillId, type);
@@ -5484,7 +5486,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     }
   }
 
-  if (type != 5) {
+  if (type != DMG_SPLASH) {
     g_session.PlaySkillEffect(skillId, hitCount, this, static_cast<CGameActor*>(target));
   }
 
@@ -5495,19 +5497,19 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
 
   const vector3d player = reinterpret_cast<const CRenderObject*>(mode->scene->player)->render.position;
   switch (skillId) {
-  case 8601:
+  case ABR_BATTLE_BUSTER:
     g_soundMgr->PlayWave(
       "effect\\MT_SUMMON_ABR_BATTLE_WARIOR.wav", this->render.position.x - player.x, this->render.position.y, this->render.position.z - player.z, 250, 40,
       1.0f, 0
     );
     break;
-  case 8602:
+  case ABR_DUAL_CANNON_FIRE:
     g_soundMgr->PlayWave(
       "effect\\MT_SUMMON_ABR_DUAL_CANNON.wav", this->render.position.x - player.x, this->render.position.y, this->render.position.z - player.z, 250, 40,
       1.0f, 0
     );
     break;
-  case 8605:
+  case ABR_INFINITY_BUSTER:
     g_soundMgr->PlayWave(
       "effect\\MT_SUMMON_ABR_INFINITY.wav", this->render.position.x - player.x, this->render.position.y, this->render.position.z - player.z, 250, 40, 1.0f,
       0
@@ -5551,114 +5553,114 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
 
   int effect = skillId < 493 && !(skillId >= 411 && skillId <= 472) ? 0 : -1;
   switch (skillId) {
-  case 7:
-  case 17:
-  case 19:
-  case 8202:
+  case SM_MAGNUM:
+  case MG_FIREBALL:
+  case MG_FIREBOLT:
+  case MS_MAGNUM:
     effect = 0x31;
     break;
-  case 14:
-  case 15:
+  case MG_COLDBOLT:
+  case MG_FROSTDIVER:
     effect = 0x33;
     break;
-  case 20:
+  case MG_LIGHTNINGBOLT:
     effect = 0x34;
     break;
-  case 54:
+  case ALL_RESURRECTION:
     if (damage != 0) {
       effect = 0x98;
       followEffect = -1;
     }
     break;
-  case 56:
-  case 57:
-  case 58:
-  case 59:
-  case 129:
-  case 184:
-  case 185:
-  case 186:
-  case 187:
-  case 188:
-  case 189:
-  case 347:
-  case 397:
-  case 654:
+  case KN_PIERCE:
+  case KN_BRANDISHSPEAR:
+  case KN_SPEARSTAB:
+  case KN_SPEARBOOMERANG:
+  case HT_BLITZBEAT:
+  case NPC_WATERATTACK:
+  case NPC_GROUNDATTACK:
+  case NPC_FIREATTACK:
+  case NPC_WINDATTACK:
+  case NPC_POISONATTACK:
+  case NPC_HOLYATTACK:
+  case NPC_UNDEADATTACK:
+  case LK_SPIRALPIERCE:
+  case NPC_FIREBREATH:
     effect = -1;
     break;
-  case 90:
-  case 91:
-  case 770:
+  case WZ_EARTHSPIKE:
+  case WZ_HEAVENDRIVE:
+  case NPC_GROUNDDRIVE:
     effect = 0x93;
     break;
-  case 136:
+  case AS_SONICBLOW:
     effect = 0;
     break;
-  case 170:
+  case NPC_CRITICALSLASH:
     type = 10;
     break;
-  case 190:
-  case 2600:
-  case 2602:
+  case NPC_DARKNESSATTACK:
+  case SP_CURSEEXPLOSION:
+  case SP_SPA:
     effect = 0xB4;
     break;
-  case 467:
-  case 468:
+  case SL_STIN:
+  case SL_STUN:
     effect = 0x225;
     break;
-  case 2022:
+  case GC_CROSSIMPACT:
     effect = 0x61F;
     break;
-  case 2202:
+  case WL_SOULEXPANSION:
     effect = 0x637;
     followEffect = 0x638;
     break;
-  case 2307:
+  case LG_CANNONSPEAR:
     followEffect = 0x583;
     break;
-  case 2317:
-  case 2519:
+  case LG_OVERBRAND:
+  case LG_OVERBRAND_BRANDISH:
     effect = 0x699;
     break;
-  case 2323:
+  case LG_EARTHDRIVE:
     if (g_session.m_aid != this->hitTargetAid) {
       effect = 0x6AC;
     }
     break;
-  case 2414:
+  case WM_REVERBERATION:
     effect = 0x639;
     break;
-  case 2446:
+  case SO_EARTHGRAVE:
     effect = 0x657;
     break;
-  case 5243:
+  case IQ_MASSIVE_F_BLASTER:
     effect = 0x82F;
     followEffect = 0x830;
     break;
-  case 5274:
+  case CD_ARBITRIUM_ATK:
     effect = 0x722;
     break;
-  case 5320:
+  case ABC_DEFT_STAB:
     effect = 0x854;
     break;
-  case 5322:
+  case ABC_FRENZY_SHOT:
     effect = 0x843;
     break;
   }
 
   int action;
   switch (type) {
-  case 4:
-  case 9:
+  case DMG_ENDURE:
+  case DMG_MULTI_HIT_ENDURE:
     action = 0x27;
     break;
-  case 6:
+  case DMG_SINGLE:
     action = 0x61;
     break;
-  case 10:
+  case DMG_CRITICAL:
     action = 0x5D;
     break;
-  case 13:
+  case DMG_MULTI_HIT_CRITICAL:
     action = 0x94;
     break;
   default:
@@ -5681,44 +5683,44 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   message.unknown_0030 = skillId;
   message.unknown_0034 = 0;
   switch (skillId) {
-  case 273:
-  case 371:
-  case 2218:
-  case 2328:
-  case 2329:
-  case 2330:
+  case MO_COMBOFINISH:
+  case CH_TIGERFIST:
+  case WL_TETRAVORTEX_FIRE:
+  case SR_EARTHSHAKER:
+  case SR_FALLENEMPIRE:
+  case SR_TIGERCANNON:
     target->SendMsg(this, 0x1B, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
-  case 2219:
+  case WL_TETRAVORTEX_WATER:
     message.time += 500;
     target->SendMsg(this, 0x1B, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
-  case 2220:
+  case WL_TETRAVORTEX_WIND:
     message.time += 1000;
     target->SendMsg(this, 0x1B, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
-  case 2221:
+  case WL_TETRAVORTEX_GROUND:
     message.time += 1500;
     target->SendMsg(this, 0x1B, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
-  case 415:
-  case 417:
-  case 2592:
-  case 2593:
+  case TK_DOWNKICK:
+  case TK_TURNKICK:
+  case SJ_SOLARBURST:
+  case SJ_PROMINENCEKICK:
     message.time += 300;
     target->SendMsg(this, 0x82, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
-  case 413:
-  case 419:
-  case 421:
-  case 2332:
-  case 2336:
-  case 2342:
-  case 2576:
-  case 2580:
+  case TK_STORMKICK:
+  case TK_COUNTER:
+  case TK_JUMPKICK:
+  case SR_RAMPAGEBLASTER:
+  case SR_KNUCKLEARROW:
+  case SR_CRESCENTELBOW_AUTOSPELL:
+  case SJ_FULLMOONKICK:
+  case SJ_FLASHKICK:
     target->SendMsg(this, 0x82, 0, address, address >> 31, damage, damage >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
-  case 77:
+  case PR_TURNUNDEAD:
     message.time += 500;
     [[fallthrough]];
   default:
@@ -5732,13 +5734,13 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
 
   message.effectId = -1;
   switch (skillId) {
-  case 263:
+  case MO_TRIPLEATTACK:
     this->SetSequenceInterval(4);
     this->SetFrameSequence(0x58, 0, 7, 0x58, 7, 1, g_session.FindUnknown0778(this->render.accountId), 0);
     break;
-  case 266:
-  case 267:
-  case 2518:
+  case MO_INVESTIGATE:
+  case MO_FINGEROFFENSIVE:
+  case SR_RIDEINLIGHTNING:
     if (this->unknown_0314 != 5) {
       this->SetSequenceInterval(10);
       if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
@@ -5748,20 +5750,20 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
       }
     }
     break;
-  case 271:
+  case MO_EXTREMITYFIST:
     if (this->unknown_0314 != 5) {
       this->SetSequenceInterval(4);
       this->SetFrameSequence(0x58, 0, 7, 0x58, 7, 1, 3500, 0);
       this->unknown_0184 = 1;
     }
     break;
-  case 272:
+  case MO_CHAINCOMBO:
     this->SetFrameSequence(0x60, 5, 5, 0x60, 5, 1, g_session.FindUnknown0778(this->render.accountId), 0);
     static_cast<EffectActor*>(target)->LaunchEffect(0x106, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     static_cast<EffectActor*>(target)->LaunchEffect(0x111, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 273:
+  case MO_COMBOFINISH:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindUnknown0778(this->render.accountId), 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(122, 0, 0, 0, 0);
@@ -5769,20 +5771,20 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     this->LaunchEffect(0x14A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 370:
+  case CH_PALMSTRIKE:
     this->SetFrameSequence(0x60, 3, 4, 0x60, 4, 1, 1, 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(122, 0, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\맹호경파산.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     static_cast<EffectActor*>(target)->LaunchEffect(0x178, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 371:
+  case CH_TIGERFIST:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 4, 4, 0x60, 4, 1, g_session.FindUnknown0778(this->render.accountId), 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(122, 0, 0, 0, 0);
     this->LaunchEffect(0x179, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 372: {
+  case CH_CHAINCRUSH: {
     this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     CRagEffect* follow = this->LaunchEffect(0x200, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (follow != nullptr) {
@@ -5791,16 +5793,16 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     }
     break;
   }
-  case 2326:
+  case SR_DRAGONCOMBO:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 4, 4, 0x60, 4, 1, g_session.FindUnknown0778(this->render.accountId), 0);
     break;
-  case 2327:
-  case 2330:
+  case SR_SKYNETBLOW:
+  case SR_TIGERCANNON:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 5, 5, 0x60, 5, 1, g_session.FindUnknown0778(this->render.accountId), 0);
     break;
-  case 2328:
+  case SR_EARTHSHAKER:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindUnknown0778(this->render.accountId), 0);
     if (!this->HasId(0x378)) {
@@ -5810,7 +5812,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
       this->LaunchEffect(0x378, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
-  case 2329:
+  case SR_FALLENEMPIRE:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 3, 3, 0x60, 3, 1, g_session.FindUnknown0778(this->render.accountId), 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(122, 0, 0, 0, 0);
@@ -5818,7 +5820,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     g_effectMgr->Spawn(target->render.accountId, 0x622, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     g_effectMgr->Spawn(target->render.accountId, 0x623, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
-  case 2332:
+  case SR_RAMPAGEBLASTER:
     if (target != this) {
       static_cast<EffectActor*>(target)->LaunchEffect(0x225, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       static_cast<EffectActor*>(target)->LaunchEffect(0x226, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -5829,30 +5831,30 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
       }
     }
     break;
-  case 2559:
+  case RL_QD_SHOT:
     static_cast<EffectActor*>(target)->LaunchEffect(0x106, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     static_cast<EffectActor*>(target)->LaunchEffect(0x111, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 2564:
+  case RL_FALLEN_ANGEL:
     this->SetSequenceInterval(4);
     this->SetFrameSequence(0x58, 0, 7, 0x58, 7, 1, 3500, 0);
     break;
-  case 5214:
-  case 5220:
-  case 5230:
-  case 5350:
-  case 5357:
+  case AG_DEADLY_PROJECTION:
+  case AG_SOUL_VC_STRIKE:
+  case AG_ASTRAL_STRIKE:
+  case TR_RETROSPECTION:
+  case TR_SOUNDBLEND:
     this->SetFrameSequence(0x60, 1, 3, 0x60, 3, 1, 500, 0);
     break;
-  case 5251:
-  case 5252:
-  case 5253:
+  case IQ_THIRD_PUNISH:
+  case IQ_THIRD_FLAME_BOMB:
+  case IQ_THIRD_CONSECRATION:
     this->SetSequenceInterval(4);
     this->SetFrameSequence(0x60, 2, 2, 0x60, 2, 1, 500, 0);
     break;
   }
 
-  if (type != 6 && type != 8 && type != 9 && type != 13) {
+  if (type != DMG_SINGLE && type != DMG_MULTI_HIT && type != DMG_MULTI_HIT_ENDURE && type != DMG_MULTI_HIT_CRITICAL) {
     return;
   }
 
@@ -5862,7 +5864,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     ++hit;
     message.effectId = -1;
     message.unknown_0034 = hit;
-    if (skillId == 56) {
+    if (skillId == KN_PIERCE) {
       message.time += g_multiHitInterval + 80;
       total += damage;
       message.action = action;
@@ -5876,16 +5878,16 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     message.damage = damage;
     int kind = 0x1B;
     switch (skillId) {
-    case 272:
+    case MO_CHAINCOMBO:
       message.action = action;
       message.effectId = 122;
       break;
-    case 372:
+    case CH_CHAINCRUSH:
       message.action = 0x6C;
       this->SendMsg(this, 0x1B, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       message.action = action;
       break;
-    case 2211:
+    case WL_CRIMSONROCK:
       message.effectId = 0x512;
       if (g_serviceOptions.Get(229)) {
         message.action = action;
@@ -5894,7 +5896,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
       }
       message.action = action;
       break;
-    case 2213:
+    case WL_COMET:
       message.action = action;
       if (previous & 1) {
         message.unknown_001C = -1;
@@ -5906,52 +5908,52 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
         message.effectId = 0x589;
       }
       break;
-    case 5320:
+    case ABC_DEFT_STAB:
       message.unknown_001C = -1;
       message.effectId = g_session.FindUnknown0700(skillId);
       message.action = action;
       break;
-    case 5220:
-    case 5249:
-    case 5250:
-    case 5277:
-    case 5287:
-    case 5289:
-    case 5340:
-    case 5341:
-    case 5342:
-    case 5343:
-    case 5369:
-    case 5373:
-    case 5382:
-    case 5389:
-    case 5390:
-    case 5391:
-    case 5392:
-    case 5393:
-    case 8047:
-    case 8048:
-    case 8050:
+    case AG_SOUL_VC_STRIKE:
+    case IQ_SECOND_FAITH:
+    case IQ_SECOND_JUDGEMENT:
+    case CD_EFFLIGO:
+    case SHC_SAVAGE_IMPACT:
+    case SHC_ETERNAL_SLASH:
+    case BO_ACIDIFIED_ZONE_WATER:
+    case BO_ACIDIFIED_ZONE_GROUND:
+    case BO_ACIDIFIED_ZONE_WIND:
+    case BO_ACIDIFIED_ZONE_FIRE:
+    case EM_DIAMOND_STORM:
+    case EM_TERRA_DRIVE:
+    case ABC_CHAIN_REACTION_SHOT_ATK:
+    case EM_ELEMENTAL_BUSTER_FIRE:
+    case EM_ELEMENTAL_BUSTER_WATER:
+    case EM_ELEMENTAL_BUSTER_WIND:
+    case EM_ELEMENTAL_BUSTER_GROUND:
+    case EM_ELEMENTAL_BUSTER_POISON:
+    case MH_TWISTER_CUTTER:
+    case MH_ABSOLUTE_ZEPHYR:
+    case MH_BLAZING_AND_FURIOUS:
       message.effectId = g_session.FindUnknown0700(skillId);
       message.action = action;
       break;
-    case 413:
-    case 415:
-    case 417:
-    case 419:
-    case 421:
-    case 2332:
-    case 2336:
-    case 2342:
-    case 2576:
-    case 2580:
-    case 2592:
-    case 2593:
+    case TK_STORMKICK:
+    case TK_DOWNKICK:
+    case TK_TURNKICK:
+    case TK_COUNTER:
+    case TK_JUMPKICK:
+    case SR_RAMPAGEBLASTER:
+    case SR_KNUCKLEARROW:
+    case SR_CRESCENTELBOW_AUTOSPELL:
+    case SJ_FULLMOONKICK:
+    case SJ_FLASHKICK:
+    case SJ_SOLARBURST:
+    case SJ_PROMINENCEKICK:
       message.action = action;
       kind = 0x85;
       break;
-    case 737:
-    case 2321:
+    case NPC_RAYOFGENESIS:
+    case LG_RAYOFGENESIS:
       message.effectId = 0x593;
       message.action = action;
       break;

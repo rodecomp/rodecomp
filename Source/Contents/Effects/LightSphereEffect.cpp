@@ -1,4 +1,5 @@
 #include "Contents/Effects/LightSphereEffect.h"
+#include "Contents/Effects/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -44,7 +45,7 @@ void CLightSphereEffect::CreateRayParticles(int param) {
         *reinterpret_cast<float*>(particle->unknown_0058) = static_cast<float>(param);
 
         switch (this->id) {
-        case 0x4AD: {
+        case EF_LIGHTSPHERE_SUN: {
           int randVal = std::rand() % 2;
           if (randVal < 0) {
             randVal = 0;
@@ -56,7 +57,7 @@ void CLightSphereEffect::CreateRayParticles(int param) {
           }
           break;
         }
-        case 0x4AE: {
+        case EF_LIGHTSPHERE_MOON: {
           int randVal = std::rand() % 2;
           if (randVal < 0) {
             randVal = 0;
@@ -68,7 +69,7 @@ void CLightSphereEffect::CreateRayParticles(int param) {
           }
           break;
         }
-        case 0x4AF: {
+        case EF_LIGHTSPHERE_STAR: {
           int randVal = std::rand() % 2;
           if (randVal < 0) {
             randVal = 0;
@@ -132,13 +133,13 @@ void CLightSphereEffect::Open() {
       *reinterpret_cast<float*>(particle->unknown_0058) = 0.0f;
 
       switch (this->id) {
-      case 0x4AD:
+      case EF_LIGHTSPHERE_SUN:
         particle->SetColor(0xFF, 0x7C, 0x80);
         break;
-      case 0x4AE:
+      case EF_LIGHTSPHERE_MOON:
         particle->SetColor(0xFF, 0xFF, 0x37);
         break;
-      case 0x4AF:
+      case EF_LIGHTSPHERE_STAR:
         particle->SetColor(0x3B, 0xCC, 0xFF);
         break;
       }

@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "UI/Window/WindowPolicy.h"
 #include "Render/Renderer.h"
 #include "UI/Chat/UISubChatHisWnd.h"
@@ -551,84 +552,84 @@ UIWindow* UIWindowMgr::LookupWindow(int id) {
   }
 
   switch (id) {
-  case 3:
+  case WID_LOGINWND:
     return this->window_01CC;
-  case 180:
+  case WID_LOGINOTPWND:
     return this->window_01D0;
-  case 1:
+  case WID_NEWCHATWND:
     return this->window_01C8;
-  case 27:
+  case WID_CHATROOMMAKEWND:
     return this->window_0274;
-  case 30:
+  case WID_CHATROOMCHANGEWND:
     return this->window_0278;
-  case 28:
+  case WID_CHATROOMWND:
     return this->window_027C;
-  case 34:
+  case WID_MESSENGERGROUPWND:
     return this->window_02C8;
-  case 37:
+  case WID_NEWSKILLLISTWND:
     return this->window_02C4;
-  case 61:
+  case WID_GUILDMEMBERMANAGEWND:
     return this->window_0324;
-  case 60:
+  case WID_GUILDINFOMANAGEWND:
     return this->window_0320;
-  case 88:
+  case WID_PETINFOWND:
     return this->window_038C;
-  case 63:
+  case WID_GUILDSKILLWND:
     return this->window_032C;
-  case 103:
+  case WID_PROHIBITLISTWND:
     return this->window_0388;
-  case 113:
+  case WID_HOMUNINFOWND:
     return this->window_03C0;
-  case 114:
+  case WID_SKILLLISTWND_SKILLTAB_0:
     return this->window_03C4;
-  case 125:
+  case WID_MERINFOWND:
     return this->window_03C8;
-  case 126:
+  case WID_SKILLLISTWND_SKILLTAB_1:
     return this->window_03CC;
-  case 33:
+  case WID_ITEMSTOREWND:
     return this->window_0288;
-  case 196:
+  case WID_COLLECTIONSYSTEMWND:
     return this->window_4F18C;
-  case 204:
+  case WID_QUESTDISPLAY:
     return this->window_0428;
-  case 203:
+  case WID_NAVIGATIONV4WND:
     return this->window_4F174;
-  case 237:
+  case WID_CLANINFOMANAGEWND:
     return this->window_0444;
-  case 253:
+  case WID_GUILD_STORAGE_LOG:
     return this->window_044C;
-  case 273:
+  case WID_MINIMAPWND:
     return this->window_4F1CC;
-  case 277:
+  case WID_NEWSELECTCHARWND:
     return this->window_03D4;
-  case 275:
+  case WID_BANK_NEWWND:
     return this->window_0448;
-  case 274:
+  case WID_EDITCTRLWND:
     return this->window_4F1D0;
-  case 284:
+  case WID_CAPTCHAREGISTERWND:
     return this->window_4F1E8;
-  case 285:
+  case WID_MACRODETECTORWND:
     return this->window_4F1EC;
-  case 286:
+  case WID_MACROREPORTERWND:
     return this->window_4F1F0;
-  case 287:
+  case WID_MACROUSERINFOWND:
     return this->window_4F1F4;
-  case 288:
+  case WID_CAPTCHAPREVIEWWND:
     return this->window_4F1F8;
-  case 301:
+  case WID_MINIPARTYWND:
     if (!this->snapExcluded.empty()) {
       return this->snapExcluded.front();
     }
     [[fallthrough]];
-  case 318:
+  case WID_CASHSHOP_WND:
     return this->window_4F254;
-  case 315:
+  case WID_TIPBOXWND:
     return this->window_0468;
-  case 325:
+  case WID_RPIMAGEWND2:
     return this->window_4F25C;
-  case 359:
+  case WID_MACROBLACKLISTCHECKWND:
     return this->window_4F288;
-  case 10024:
+  case WID_WAITDBSAVEWND:
     return this->window_4F2AC;
   default: {
     const auto found = this->windows.find(id);
@@ -2528,30 +2529,30 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       g_modeMgr.GetGameMode()->SendMsg(100, reinterpret_cast<int>(""), -1, 1, 0);
     } else if (UIWindow* window = g_windowMgr.LookupWindow(id)) {
       switch (id) {
-      case 22:
-      case 23:
-      case 24:
-      case 25:
-      case 41:
-      case 44:
-      case 161:
-      case 174:
-      case 178:
+      case WID_ITEMSHOPWND:
+      case WID_ITEMPURCHASEWND:
+      case WID_ITEMSELLWND:
+      case WID_CHOOSESELLBUYWND:
+      case WID_MERCHANTSHOPMAKEWND_MODE_0:
+      case WID_MERCHANTITEMPURCHASEWND_MODE_0:
+      case WID_ITEMSELLWND2:
+      case WID_MERCHANTSHOPMAKEWND_MODE_1:
+      case WID_MERCHANTITEMPURCHASEWND_MODE_1:
         if (replaying != 0) {
           return false;
         }
         window->SendMsg(nullptr, 6, 185, 0, 0, 0);
         return false;
-      case 132:
-      case 181:
-      case 184:
-      case 203:
-      case 281:
-      case 326:
+      case WID_BATTLEMSGOPTIONWND:
+      case WID_SEARCH_STORE_INFO:
+      case WID_NCASHWND:
+      case WID_NAVIGATIONV4WND:
+      case WID_STYLINGSHOPWND:
+      case WID_REQUESTJOINPARTYWND:
         window->SendMsg(nullptr, 6, 201, 0, 0, 0);
         return false;
-      case 358:
-      case 10024:
+      case WID_BALLOONOPENBTN:
+      case WID_WAITDBSAVEWND:
         return false;
       }
     }
@@ -2739,7 +2740,7 @@ bool UIWindowMgr::CloseWindow(int id) {
 
   if (Replay::Instance().state == 2 && Replay::Instance().header.options.Get(ReplayRecordOption::Item) &&
       Replay::Instance().header.options.Get(ReplayRecordOption::BasicInfo) && Replay::Instance().header.options.Get(ReplayRecordOption::Status) &&
-      (id == 315 || id == 321 || id == 322)) {
+      (id == WID_TIPBOXWND || id == WID_RENEWQUESTWND || id == WID_RENEWDETAILQUESTINFOWND)) {
 #pragma pack(push, 1)
     struct WindowClosePacket {
       std::uint32_t marker;
@@ -2754,7 +2755,7 @@ bool UIWindowMgr::CloseWindow(int id) {
   }
 
   switch (id) {
-  case 1:
+  case WID_NEWCHATWND:
     this->CloseWindow(26);
     if (this->window_01C8) {
       this->Schedule(this->window_01C8);
@@ -2763,14 +2764,14 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->unknown_003C = 0;
     }
     break;
-  case 0:
+  case WID_BASICINFOWND:
     if (this->unknown_01DC) {
       this->Schedule(this->unknown_01DC);
       this->unknown_01DC = nullptr;
       closed = true;
     }
     break;
-  case 8:
+  case WID_ITEMWND:
     if (this->unknown_01D4) {
       static_cast<UIItemWnd*>(this->unknown_01D4)->ReleaseSelection(0);
       this->Schedule(this->unknown_01D4);
@@ -2779,21 +2780,21 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->unknown_054C = 0;
     }
     break;
-  case 361:
+  case WID_RUNESYSTEMWND:
     if (UIWindow* found = this->LookupWindow(id)) {
       this->CloseWindow(362);
       this->Schedule(found);
       closed = true;
     }
     break;
-  case 204:
+  case WID_QUESTDISPLAY:
     if (this->window_0428) {
       this->Schedule(this->window_0428);
       this->window_0428 = nullptr;
       closed = true;
     }
     break;
-  case 10:
+  case WID_EQUIPWND_VIEWOTHER_0:
     if (this->unknown_01E0) {
       this->Schedule(this->unknown_01E0);
       this->unknown_01E0 = nullptr;
@@ -2802,14 +2803,14 @@ bool UIWindowMgr::CloseWindow(int id) {
       g_savedWindowCloseValue = g_windowCloseValue;
     }
     break;
-  case 184:
+  case WID_NCASHWND:
     if (this->unknown_01E4) {
       this->Schedule(this->unknown_01E4);
       this->unknown_01E4 = nullptr;
       closed = true;
     }
     break;
-  case 11:
+  case WID_STATUSWND:
     if (this->unknown_01C4) {
       if (reinterpret_cast<std::uintptr_t>(this->unknown_01C4) > 8) {
         this->Schedule(this->unknown_01C4);
@@ -2819,98 +2820,98 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->unknown_0588 = 0;
     }
     break;
-  case 15:
+  case WID_ITEMDROPCNTWND:
     if (this->window_01EC) {
       this->Schedule(this->window_01EC);
       this->window_01EC = nullptr;
       closed = true;
     }
     break;
-  case 226:
+  case WID_SAYDIALOGWND_OVERLAY:
     if (this->unknown_01F4) {
       this->Schedule(this->unknown_01F4);
       this->unknown_01F4 = nullptr;
       closed = true;
     }
     break;
-  case 16:
+  case WID_SAYDIALOGWND_DIALOG:
     if (this->unknown_01F0) {
       this->Schedule(this->unknown_01F0);
       this->unknown_01F0 = nullptr;
       closed = true;
     }
     break;
-  case 28:
+  case WID_CHATROOMWND:
     if (this->window_027C) {
       this->Schedule(this->window_027C);
       this->window_027C = nullptr;
       closed = true;
     }
     break;
-  case 39:
+  case WID_CHOOSEWARPWND:
     if (this->unknown_020C) {
       this->Schedule(this->unknown_020C);
       this->unknown_020C = nullptr;
       closed = true;
     }
     break;
-  case 17:
+  case WID_CHOOSE3WND:
     if (this->unknown_01F8) {
       this->Schedule(this->unknown_01F8);
       this->unknown_01F8 = nullptr;
       closed = true;
     }
     break;
-  case 74:
+  case WID_ITEMCOMPOSITIONWND:
     if (this->unknown_0208) {
       this->Schedule(this->unknown_0208);
       this->unknown_0208 = nullptr;
       closed = true;
     }
     break;
-  case 73:
+  case WID_ITEMIDENTIFYWND:
     if (this->unknown_01FC) {
       this->Schedule(this->unknown_01FC);
       this->unknown_01FC = nullptr;
       closed = true;
     }
     break;
-  case 26:
+  case WID_COMBOBOXWND:
     if (this->unknown_0214) {
       this->Schedule(this->unknown_0214);
       this->unknown_0214 = nullptr;
       closed = true;
     }
     break;
-  case 260:
+  case WID_COMBOBOXIDWND:
     if (this->unknown_021C) {
       this->Schedule(this->unknown_021C);
       this->unknown_021C = nullptr;
       closed = true;
     }
     break;
-  case 18:
+  case WID_MENUWND:
     if (this->unknown_0210) {
       this->Schedule(this->unknown_0210);
       this->unknown_0210 = nullptr;
       closed = true;
     }
     break;
-  case 30:
+  case WID_CHATROOMCHANGEWND:
     if (this->window_0278) {
       this->Schedule(this->window_0278);
       this->window_0278 = nullptr;
       closed = true;
     }
     break;
-  case 27:
+  case WID_CHATROOMMAKEWND:
     if (this->window_0274) {
       this->Schedule(this->window_0274);
       this->window_0274 = nullptr;
       closed = true;
     }
     break;
-  case 25:
+  case WID_CHOOSESELLBUYWND:
     if (this->unknown_0264) {
       g_modeMgr.gameMode->SendMsg(291, 0, 0, 0, 0);
       this->Schedule(this->unknown_0264);
@@ -2918,7 +2919,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 24:
+  case WID_ITEMSELLWND:
     if (this->unknown_025C) {
       g_modeMgr.gameMode->SendMsg(291, 0, 0, 0, 0);
       this->Schedule(this->unknown_025C);
@@ -2926,21 +2927,21 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 161:
+  case WID_ITEMSELLWND2:
     if (this->unknown_0260) {
       this->Schedule(this->unknown_0260);
       this->unknown_0260 = nullptr;
       closed = true;
     }
     break;
-  case 44:
+  case WID_MERCHANTITEMPURCHASEWND_MODE_0:
     if (this->unknown_0308) {
       this->Schedule(this->unknown_0308);
       this->unknown_0308 = nullptr;
       closed = true;
     }
     break;
-  case 23:
+  case WID_ITEMPURCHASEWND:
     if (this->unknown_0258) {
       g_modeMgr.gameMode->SendMsg(291, 0, 0, 0, 0);
       this->Schedule(this->unknown_0258);
@@ -2948,42 +2949,42 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 45:
+  case WID_MERCHANTITEMMYSHOPWND_MODE_0:
     if (this->unknown_0304) {
       this->Schedule(this->unknown_0304);
       this->unknown_0304 = nullptr;
       closed = true;
     }
     break;
-  case 43:
+  case WID_MERCHANTITEMSHOPWND_MODE_0:
     if (this->unknown_0300) {
       this->Schedule(this->unknown_0300);
       this->unknown_0300 = nullptr;
       closed = true;
     }
     break;
-  case 22:
+  case WID_ITEMSHOPWND:
     if (this->unknown_0250) {
       this->Schedule(this->unknown_0250);
       this->unknown_0250 = nullptr;
       closed = true;
     }
     break;
-  case 160:
+  case WID_ITEMSHOPWND2:
     if (this->unknown_0254) {
       this->Schedule(this->unknown_0254);
       this->unknown_0254 = nullptr;
       closed = true;
     }
     break;
-  case 254:
+  case WID_PARAITEMSHOPWND:
     if (this->unknown_0268) {
       this->Schedule(this->unknown_0268);
       this->unknown_0268 = nullptr;
       closed = true;
     }
     break;
-  case 255:
+  case WID_PARAITEMPURCHASEWND:
     if (this->unknown_026C) {
       this->NotifyMode();
       this->Schedule(this->unknown_026C);
@@ -2991,7 +2992,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 256:
+  case WID_PARARESULTWND:
     if (this->window_0270) {
       this->NotifyMode();
       this->Schedule(this->window_0270);
@@ -2999,14 +3000,14 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 334:
+  case WID_BARTERMARKETWND:
     if (this->window_4F260) {
       this->Schedule(this->window_4F260);
       this->window_4F260 = nullptr;
       closed = true;
     }
     break;
-  case 335:
+  case WID_BARTERITEMPURCHASEWND:
     if (this->window_4F264) {
       if (g_modeMgr.gameMode) {
         g_modeMgr.gameMode->SendMsg(309, 0, 0, 0, 0);
@@ -3016,7 +3017,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 341:
+  case WID_EXPANDEDBARTERMARKETWND:
     if (this->window_4F268) {
       this->Schedule(this->window_4F268);
       closed = true;
@@ -3026,7 +3027,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       }
     }
     break;
-  case 342:
+  case WID_EXPANDEDBARTERITEMPURCHASEWND:
     if (this->window_4F26C) {
       if (g_modeMgr.gameMode) {
         g_modeMgr.gameMode->SendMsg(322, 0, 0, 0, 0);
@@ -3039,63 +3040,63 @@ bool UIWindowMgr::CloseWindow(int id) {
       }
     }
     break;
-  case 49:
+  case WID_NOTIFYJOBLEVELUPWND:
     if (this->unknown_0244) {
       this->Schedule(this->unknown_0244);
       this->unknown_0244 = nullptr;
       closed = true;
     }
     break;
-  case 21:
+  case WID_NOTIFYLEVELUPWND:
     if (this->unknown_0240) {
       this->Schedule(this->unknown_0240);
       this->unknown_0240 = nullptr;
       closed = true;
     }
     break;
-  case 143:
+  case WID_NOTIFYQUESTWND:
     if (this->unknown_0248) {
       this->Schedule(this->unknown_0248);
       this->unknown_0248 = nullptr;
       closed = true;
     }
     break;
-  case 190:
+  case WID_NCASH_CALLWND:
     if (this->unknown_024C) {
       this->Schedule(this->unknown_024C);
       this->unknown_024C = nullptr;
       closed = true;
     }
     break;
-  case 47:
+  case WID_CARDITEMILLUSTWND:
     if (this->unknown_023C) {
       this->Schedule(this->unknown_023C);
       this->unknown_023C = nullptr;
       closed = true;
     }
     break;
-  case 201:
+  case WID_MONSTERDISPLAYWND:
     if (this->unknown_0424) {
       this->Schedule(this->unknown_0424);
       this->unknown_0424 = nullptr;
       closed = true;
     }
     break;
-  case 19:
+  case WID_RESTARTWND:
     if (this->unknown_0238) {
       this->Schedule(this->unknown_0238);
       this->unknown_0238 = nullptr;
       closed = true;
     }
     break;
-  case 48:
+  case WID_QUITWND:
     if (this->unknown_0234) {
       this->Schedule(this->unknown_0234);
       this->unknown_0234 = nullptr;
       closed = true;
     }
     break;
-  case 46:
+  case WID_SKILLDESCRIBEWND:
     if (this->window_0230) {
       this->Schedule(this->window_0230);
       this->window_0230 = nullptr;
@@ -3103,21 +3104,21 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->unknown_0048 = 0;
     }
     break;
-  case 50:
+  case WID_ITEMPARAMCHANGEDISPLAYWND:
     if (this->unknown_022C) {
       this->Schedule(this->unknown_022C);
       this->unknown_022C = nullptr;
       closed = true;
     }
     break;
-  case 82:
+  case WID_COMBINEDCARDITEMCOLLECTIONWND:
     if (this->unknown_0228) {
       this->Schedule(this->unknown_0228);
       this->unknown_0228 = nullptr;
       closed = true;
     }
     break;
-  case 12:
+  case WID_ITEMCOLLECTIONWND:
     if (this->unknown_0218) {
       this->Schedule(this->unknown_0218);
       closed = true;
@@ -3127,7 +3128,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       }
     }
     break;
-  case 234:
+  case WID_ITEMCOLLECTION_COMPARISONWND:
     if (this->unknown_0220) {
       this->Schedule(this->unknown_0220);
       closed = true;
@@ -3137,21 +3138,21 @@ bool UIWindowMgr::CloseWindow(int id) {
       }
     }
     break;
-  case 250:
+  case WID_COMBINEDCARDITEMCOLLECTION_COMPARISONWND:
     if (this->unknown_0224) {
       this->Schedule(this->unknown_0224);
       this->unknown_0224 = nullptr;
       closed = true;
     }
     break;
-  case 14:
+  case WID_MINIMAPZOOMWND:
     if (this->unknown_01C0) {
       this->Schedule(this->unknown_01C0);
       this->unknown_01C0 = nullptr;
       closed = true;
     }
     break;
-  case 37:
+  case WID_NEWSKILLLISTWND:
     if (g_windowMgr.LookupWindow(10030)) {
       this->CloseWindow(10030);
     }
@@ -3163,7 +3164,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->unknown_077C = 0;
     }
     break;
-  case 33:
+  case WID_ITEMSTOREWND:
     if (this->window_0288) {
       this->Schedule(this->window_0288);
       this->window_0288 = nullptr;
@@ -3177,7 +3178,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     closed = this->CloseWindow(34);
     g_windowMgr.DismissTransient();
     break;
-  case 34:
+  case WID_MESSENGERGROUPWND:
     if (this->window_02C8) {
       this->Schedule(this->window_02C8);
       this->window_02C8 = nullptr;
@@ -3188,7 +3189,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 41:
+  case WID_MERCHANTSHOPMAKEWND_MODE_0:
     this->CloseWindow(42);
     if (this->unknown_02FC) {
       this->Schedule(this->unknown_02FC);
@@ -3196,14 +3197,14 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 42:
+  case WID_MERCHANTMIRRORITEMWND_MODE_0:
     if (this->unknown_02F8) {
       this->Schedule(reinterpret_cast<UIWindow*>(this->unknown_02F8));
       this->unknown_02F8 = 0;
       closed = true;
     }
     break;
-  case 40:
+  case WID_MERCHANTITEMWND:
     if (this->unknown_02F4) {
       this->Schedule(this->unknown_02F4);
       this->unknown_02F4 = nullptr;
@@ -3211,49 +3212,49 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->unknown_0790 = 0;
     }
     break;
-  case 51:
+  case WID_CANDIDATEWND:
     if (this->window_03A4) {
       this->Schedule(this->window_03A4);
       this->window_03A4 = nullptr;
       closed = true;
     }
     break;
-  case 52:
+  case WID_COMPOSITIONWND:
     if (this->unknown_03A8) {
       this->Schedule(this->unknown_03A8);
       this->unknown_03A8 = nullptr;
       closed = true;
     }
     break;
-  case 58:
+  case WID_NOTIFYITEMOBTAINWND:
     if (this->unknown_031C) {
       this->Schedule(this->unknown_031C);
       this->unknown_031C = nullptr;
       closed = true;
     }
     break;
-  case 56:
+  case WID_NPCEDITDIALOGWND:
     if (this->unknown_0314) {
       this->Schedule(this->unknown_0314);
       this->unknown_0314 = nullptr;
       closed = true;
     }
     break;
-  case 100:
+  case WID_NPCTEXTEDITDIALOGWND:
     if (this->unknown_0318) {
       this->Schedule(this->unknown_0318);
       this->unknown_0318 = nullptr;
       closed = true;
     }
     break;
-  case 55:
+  case WID_SKILLNAMECHANGEWND:
     if (this->unknown_0310) {
       this->Schedule(this->unknown_0310);
       this->unknown_0310 = nullptr;
       closed = true;
     }
     break;
-  case 212:
+  case WID_GUILDHELPERWND:
     if (this->unknown_0430) {
       this->unknown_0430->StoreInfo();
       this->Schedule(this->unknown_0430);
@@ -3261,21 +3262,21 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 214:
+  case WID_GUILDTIPWND:
     if (this->unknown_0434) {
       this->Schedule(this->unknown_0434);
       this->unknown_0434 = nullptr;
       closed = true;
     }
     break;
-  case 213:
+  case WID_CREATEGUILDWND_MODE_0:
     if (this->unknown_0438) {
       this->Schedule(this->unknown_0438);
       this->unknown_0438 = nullptr;
       closed = true;
     }
     break;
-  case 215:
+  case WID_CREATEGUILDWND_MODE_1:
     if (this->unknown_043C) {
       this->Schedule(this->unknown_043C);
       this->unknown_043C = nullptr;
@@ -3297,7 +3298,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   }
-  case 61:
+  case WID_GUILDMEMBERMANAGEWND:
     if (this->window_0324) {
       this->window_0324->StoreInfo();
       this->Schedule(this->window_0324);
@@ -3305,7 +3306,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 62:
+  case WID_GUILDPOSITIONMANAGEWND:
     if (this->unknown_0328) {
       this->unknown_0328->StoreInfo();
       this->Schedule(this->unknown_0328);
@@ -3313,7 +3314,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 63:
+  case WID_GUILDSKILLWND:
     if (this->window_032C) {
       this->window_032C->StoreInfo();
       this->Schedule(this->window_032C);
@@ -3321,7 +3322,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 64:
+  case WID_GUILDBANISHEDMEMBERWND:
     if (this->unknown_0330) {
       this->unknown_0330->StoreInfo();
       this->Schedule(this->unknown_0330);
@@ -3329,7 +3330,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 65:
+  case WID_GUILDNOTICEWND:
     if (this->unknown_0334) {
       this->unknown_0334->StoreInfo();
       this->Schedule(this->unknown_0334);
@@ -3337,7 +3338,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 66:
+  case WID_GUILDTOTALINFOWND:
     if (this->unknown_0338) {
       this->unknown_0338->StoreInfo();
       this->Schedule(this->unknown_0338);
@@ -3345,7 +3346,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 60:
+  case WID_GUILDINFOMANAGEWND:
     if (this->window_0320) {
       this->window_0320->StoreInfo();
       this->Schedule(this->window_0320);
@@ -3353,201 +3354,201 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 78:
+  case WID_ILLUSTWND:
     if (this->unknown_0348) {
       this->Schedule(this->unknown_0348);
       this->unknown_0348 = nullptr;
       closed = true;
     }
     break;
-  case 216: case 217: case 218: case 219: case 220: case 221: case 222: case 223: case 224: case 225:
+  case WID_MULTIILLUSTWND_SLOT_0: case WID_MULTIILLUSTWND_SLOT_1: case WID_MULTIILLUSTWND_SLOT_2: case WID_MULTIILLUSTWND_SLOT_3: case WID_MULTIILLUSTWND_SLOT_4: case WID_MULTIILLUSTWND_SLOT_5: case WID_MULTIILLUSTWND_SLOT_6: case WID_MULTIILLUSTWND_SLOT_7: case WID_MULTIILLUSTWND_SLOT_8: case WID_MULTIILLUSTWND_SLOT_9:
     if (this->unknown_034C[id - 216]) {
       this->Schedule(this->unknown_034C[id - 216]);
       this->unknown_034C[id - 216] = nullptr;
       closed = true;
     }
     break;
-  case 76:
+  case WID_GUILDBANREASONDESCWND:
     if (this->unknown_0344) {
       this->Schedule(this->unknown_0344);
       this->unknown_0344 = nullptr;
       closed = true;
     }
     break;
-  case 75:
+  case WID_GUILDLEAVEREASONDESCWND:
     if (this->unknown_0340) {
       this->Schedule(this->unknown_0340);
       this->unknown_0340 = nullptr;
       closed = true;
     }
     break;
-  case 68:
+  case WID_FRIENDOPTIONWND:
     if (this->unknown_033C) {
       this->Schedule(this->unknown_033C);
       this->unknown_033C = nullptr;
       closed = true;
     }
     break;
-  case 53:
+  case WID_PARTYSETTINGWND_PARTYCOUNT:
     if (this->unknown_030C) {
       this->Schedule(this->unknown_030C);
       this->unknown_030C = nullptr;
       closed = true;
     }
     break;
-  case 208:
+  case WID_PARTYINVITATIONTOWND:
     if (this->unknown_042C) {
       this->Schedule(this->unknown_042C);
       this->unknown_042C = nullptr;
       closed = true;
     }
     break;
-  case 207:
+  case WID_PARTYSETTINGWND_HEIGHT_220:
     this->CloseWindow(53);
     closed = true;
     break;
-  case 38:
+  case WID_TIPOFTHEDAYWND:
     if (this->unknown_02F0) {
       this->Schedule(this->unknown_02F0);
       this->unknown_02F0 = nullptr;
       closed = true;
     }
     break;
-  case 70:
+  case WID_JOINGUILDACCEPTWND:
     if (this->unknown_02E8) {
       this->Schedule(this->unknown_02E8);
       this->unknown_02E8 = nullptr;
       closed = true;
     }
     break;
-  case 72:
+  case WID_ALLYGUILDACCEPTWND:
     if (this->unknown_02EC) {
       this->Schedule(this->unknown_02EC);
       this->unknown_02EC = nullptr;
       closed = true;
     }
     break;
-  case 35:
+  case WID_JOINPARTYACCEPTWND:
     if (this->unknown_02CC) {
       this->Schedule(this->unknown_02CC);
       this->unknown_02CC = nullptr;
       closed = true;
     }
     break;
-  case 104:
+  case WID_COUPLEACCEPTWND:
     if (this->unknown_02D0) {
       this->Schedule(this->unknown_02D0);
       this->unknown_02D0 = nullptr;
       closed = true;
     }
     break;
-  case 119:
+  case WID_STARPLACEACCEPTWND:
     if (this->unknown_02D4) {
       this->Schedule(this->unknown_02D4);
       this->unknown_02D4 = nullptr;
       closed = true;
     }
     break;
-  case 163:
+  case WID_MIXACCEPTWND:
     if (this->unknown_02D8) {
       this->Schedule(this->unknown_02D8);
       this->unknown_02D8 = nullptr;
       closed = true;
     }
     break;
-  case 138:
+  case WID_YOURITEMWND:
     if (this->unknown_02DC) {
       this->Schedule(this->unknown_02DC);
       this->unknown_02DC = nullptr;
       closed = true;
     }
     break;
-  case 105:
+  case WID_BABYACCEPTWND:
     if (this->unknown_02E0) {
       this->Schedule(this->unknown_02E0);
       this->unknown_02E0 = nullptr;
       closed = true;
     }
     break;
-  case 110:
+  case WID_BABYACCEPTWND2:
     if (this->unknown_02E4) {
       this->Schedule(this->unknown_02E4);
       this->unknown_02E4 = nullptr;
       closed = true;
     }
     break;
-  case 32:
+  case WID_EXCHANGEACCEPTWND:
     if (this->unknown_0284) {
       this->Schedule(this->unknown_0284);
       this->unknown_0284 = nullptr;
       closed = true;
     }
     break;
-  case 29:
+  case WID_PASSWORDWND:
     if (this->unknown_0280) {
       this->Schedule(this->unknown_0280);
       this->unknown_0280 = nullptr;
       closed = true;
     }
     break;
-  case 79:
+  case WID_MAKETARGETLISTWND:
     if (this->unknown_0374) {
       this->Schedule(this->unknown_0374);
       this->unknown_0374 = nullptr;
     }
     break;
-  case 107:
+  case WID_ITEMREPAIRWND:
     if (this->unknown_0200) {
       this->Schedule(this->unknown_0200);
       this->unknown_0200 = nullptr;
     }
     break;
-  case 111:
+  case WID_WEAPONREFINEWND:
     if (this->unknown_0204) {
       this->Schedule(this->unknown_0204);
       this->unknown_0204 = nullptr;
     }
     break;
-  case 80:
+  case WID_MAKETARGETPROCESSWND:
     if (this->unknown_0378) {
       this->Schedule(this->unknown_0378);
       this->unknown_0378 = nullptr;
     }
     break;
-  case 81:
+  case WID_MAKETARGETRESULTWND:
     if (this->unknown_037C) {
       this->Schedule(this->unknown_037C);
       this->unknown_037C = nullptr;
     }
     break;
-  case 85:
+  case WID_KEYSTROKEWND:
     if (this->window_03AC) {
       this->Schedule(this->window_03AC);
       this->window_03AC = nullptr;
     }
     break;
-  case 86:
+  case WID_EMOTIONWND:
     if (this->unknown_0380) {
       this->Schedule(this->unknown_0380);
       this->unknown_0380 = nullptr;
       closed = true;
     }
     break;
-  case 87:
+  case WID_CASHEMOTIONLISTWND:
     if (this->unknown_0384) {
       this->Schedule(this->unknown_0384);
       this->unknown_0384 = nullptr;
       closed = true;
     }
     break;
-  case 88:
+  case WID_PETINFOWND:
     if (this->window_038C) {
       this->Schedule(this->window_038C);
       this->window_038C = nullptr;
       closed = true;
     }
     break;
-  case 90:
+  case WID_PETEGGLISTWND:
     if (this->unknown_0390) {
       this->Schedule(this->unknown_0390);
       this->unknown_0390 = nullptr;
@@ -3555,77 +3556,77 @@ bool UIWindowMgr::CloseWindow(int id) {
       g_modeMgr.gameMode->SendMsg(146, -1, 0, 0, 0);
     }
     break;
-  case 91:
+  case WID_PETTAMINGDECEIVEWND:
     if (this->unknown_0394) {
       this->Schedule(this->unknown_0394);
       this->unknown_0394 = nullptr;
       closed = true;
     }
     break;
-  case 94:
+  case WID_MAKINGARROWLISTWND:
     if (this->unknown_0398) {
       this->Schedule(this->unknown_0398);
       this->unknown_0398 = nullptr;
       closed = true;
     }
     break;
-  case 95:
+  case WID_SELECTCARTWND:
     if (this->unknown_039C) {
       this->Schedule(this->unknown_039C);
       this->unknown_039C = nullptr;
       closed = true;
     }
     break;
-  case 99:
+  case WID_SPELLLISTWND:
     if (this->unknown_03A0) {
       this->Schedule(this->unknown_03A0);
       this->unknown_03A0 = nullptr;
       closed = true;
     }
     break;
-  case 103:
+  case WID_PROHIBITLISTWND:
     if (this->window_0388) {
       this->Schedule(this->window_0388);
       this->window_0388 = nullptr;
       closed = true;
     }
     break;
-  case 106:
+  case WID_BOOKWND:
     if (this->unknown_03B0) {
       this->Schedule(this->unknown_03B0);
       this->unknown_03B0 = nullptr;
       closed = true;
     }
     break;
-  case 109:
+  case WID_JOINFRIENDACCEPTWND:
     if (this->unknown_03B4) {
       this->Schedule(this->unknown_03B4);
       this->unknown_03B4 = nullptr;
       closed = true;
     }
     break;
-  case 199:
+  case WID_SECONDPASSWORDINPUTWND:
     if (this->unknown_03B8) {
       this->Schedule(this->unknown_03B8);
       this->unknown_03B8 = nullptr;
       closed = true;
     }
     break;
-  case 200:
+  case WID_SECONDPASSWORDEDITWND:
     if (this->unknown_03BC) {
       this->Schedule(this->unknown_03BC);
       this->unknown_03BC = nullptr;
       closed = true;
     }
     break;
-  case 113:
+  case WID_HOMUNINFOWND:
     if (this->window_03C0) {
       this->Schedule(this->window_03C0);
       this->window_03C0 = nullptr;
       closed = true;
     }
     break;
-  case 114:
+  case WID_SKILLLISTWND_SKILLTAB_0:
     if (this->window_03C4) {
       this->Schedule(this->window_03C4);
       this->window_03C4 = nullptr;
@@ -3633,39 +3634,39 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->unknown_08EC = 0;
     }
     break;
-  case 125:
+  case WID_MERINFOWND:
     if (this->window_03C8) {
       this->Schedule(this->window_03C8);
       this->window_03C8 = nullptr;
       closed = true;
     }
     break;
-  case 187:
+  case WID_REPLAYCONTROLWND:
     this->Schedule(this->window_4F168);
     this->window_4F168 = nullptr;
     closed = true;
     break;
-  case 198:
+  case WID_REPLAYRECCONTROLWND:
     if (this->window_4F164) {
       this->Schedule(this->window_4F164);
       this->window_4F164 = nullptr;
       closed = true;
     }
     break;
-  case 203:
+  case WID_NAVIGATIONV4WND:
     if (this->window_4F174) {
       this->Schedule(this->window_4F174);
       this->window_4F174 = nullptr;
       closed = true;
     }
     break;
-  case 229:
+  case WID_NAVIGATIONHELPWND:
     if (UIWindow* found = this->LookupWindow(id)) {
       this->Schedule(found);
       closed = true;
     }
     break;
-  case 126:
+  case WID_SKILLLISTWND_SKILLTAB_1:
     if (this->window_03CC) {
       this->Schedule(this->window_03CC);
       this->window_03CC = nullptr;
@@ -3673,28 +3674,28 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->unknown_0910 = 0;
     }
     break;
-  case 116:
+  case WID_AUTOMESSAGEWND:
     if (this->unknown_03D0) {
       this->Schedule(this->unknown_03D0);
       this->unknown_03D0 = nullptr;
       closed = true;
     }
     break;
-  case 128:
+  case WID_CHANGENAMEWND:
     if (this->window_03DC) {
       this->Schedule(this->window_03DC);
       this->window_03DC = nullptr;
       closed = true;
     }
     break;
-  case 129:
+  case WID_REBIRTHWND:
     if (this->unknown_03E0) {
       this->Schedule(this->unknown_03E0);
       this->unknown_03E0 = nullptr;
       closed = true;
     }
     break;
-  case 130:
+  case WID_SUBCHATHISWND_UNKNOWN_03E4:
     if (this->unknown_03E4) {
       reinterpret_cast<UIWindow*>(this->unknown_03E4)->StoreInfo();
       this->Schedule(reinterpret_cast<UIWindow*>(this->unknown_03E4));
@@ -3702,7 +3703,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 131:
+  case WID_SUBCHATHISWND_UNKNOWN_03E8:
     if (this->unknown_03E8) {
       reinterpret_cast<UIWindow*>(this->unknown_03E8)->StoreInfo();
       this->Schedule(reinterpret_cast<UIWindow*>(this->unknown_03E8));
@@ -3710,21 +3711,21 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 132:
+  case WID_BATTLEMSGOPTIONWND:
     if (this->unknown_03EC) {
       this->Schedule(this->unknown_03EC);
       this->unknown_03EC = nullptr;
       closed = true;
     }
     break;
-  case 133:
+  case WID_SUBCHATMINIWND:
     if (this->unknown_03F0) {
       this->Schedule(reinterpret_cast<UIWindow*>(this->unknown_03F0));
       this->unknown_03F0 = 0;
       closed = true;
     }
     break;
-  case 137:
+  case WID_MEMORIALDUNWND:
     if (this->unknown_03F8) {
       static_cast<UIMemorialDunWnd*>(this->unknown_03F8)->ResetDungeonInfo();
       this->Schedule(this->unknown_03F8);
@@ -3733,14 +3734,14 @@ bool UIWindowMgr::CloseWindow(int id) {
       g_session.unknown_593C = 0;
     }
     break;
-  case 139:
+  case WID_EQUIPWND_VIEWOTHER_1:
     if (this->unknown_03FC) {
       this->Schedule(this->unknown_03FC);
       this->unknown_03FC = nullptr;
       closed = true;
     }
     break;
-  case 140:
+  case WID_ROMAPWND:
     if (this->modal) {
       this->Schedule(this->modal);
       this->modal = nullptr;
@@ -3751,7 +3752,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       }
     }
     break;
-  case 146: case 147: case 148: case 149: case 150: case 151: case 152:
+  case WID_ITEMSTORESUBWND_TAB_0: case WID_ITEMSTORESUBWND_TAB_1: case WID_ITEMSTORESUBWND_TAB_2: case WID_ITEMSTORESUBWND_TAB_3: case WID_ITEMSTORESUBWND_TAB_4: case WID_ITEMSTORESUBWND_TAB_5: case WID_ITEMSTORESUBWND_TAB_6:
     if (this->unknown_028C[id - 146]) {
       this->Schedule(this->unknown_028C[id - 146]);
       this->unknown_028C[id - 146] = nullptr;
@@ -3761,7 +3762,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       }
     }
     break;
-  case 309:
+  case WID_ITEMSTORESUBWND_TAB_7:
     if (this->unknown_02A8) {
       this->Schedule(this->unknown_02A8);
       this->unknown_02A8 = nullptr;
@@ -3771,28 +3772,28 @@ bool UIWindowMgr::CloseWindow(int id) {
       }
     }
     break;
-  case 153:
+  case WID_ITEMSTOREFINDWND:
     if (this->unknown_02AC) {
       this->Schedule(this->unknown_02AC);
       this->unknown_02AC = nullptr;
       closed = true;
     }
     break;
-  case 173:
+  case WID_PARTYBOOKINGHELPWND:
     if (this->unknown_02C0) {
       this->Schedule(this->unknown_02C0);
       this->unknown_02C0 = nullptr;
       closed = true;
     }
     break;
-  case 170:
+  case WID_JOBLISTWND:
     if (this->unknown_02B8) {
       this->Schedule(this->unknown_02B8);
       this->unknown_02B8 = nullptr;
       closed = true;
     }
     break;
-  case 164:
+  case WID_SEEKPARTYWND:
     if (this->unknown_02B0) {
       this->Schedule(this->unknown_02B0);
       this->unknown_02B0 = nullptr;
@@ -3800,47 +3801,47 @@ bool UIWindowMgr::CloseWindow(int id) {
       g_session.m_partyBooking.unknown_0000 = 0;
     }
     break;
-  case 168:
+  case WID_SEEKPARTYMBWND:
     if (this->unknown_02B4) {
       this->Schedule(this->unknown_02B4);
       this->unknown_02B4 = nullptr;
       closed = true;
     }
     break;
-  case 169:
+  case WID_SEEKPARTYLISTWND:
     if (this->unknown_02BC) {
       this->Schedule(this->unknown_02BC);
       this->unknown_02BC = nullptr;
       closed = true;
     }
     break;
-  case 155:
+  case WID_ESCOPTIONWND:
     if (this->unknown_0408) {
       this->Schedule(this->unknown_0408);
       this->unknown_0408 = nullptr;
       closed = true;
     }
     break;
-  case 156: case 158: case 159: case 165: case 166: case 167: case 171: case 181: case 183: case 191:
+  case WID_HOTKEYWND: case WID_RELOADLUASCRIPTWND: case WID_QUIKSLOTWND: case WID_BATTLEFIELD_DESCRIBEWND: case WID_BATTLEFIELD_STATUSWND: case WID_BATTLEFIELD_HELPWND: case 171: case WID_SEARCH_STORE_INFO: case WID_SHOWINFO_TESTLAYER: case WID_EXMACRO_SETUPWND:
     if (this->LookupWindow(id)) {
       if (UIWindow* found = this->LookupWindow(id)) {
         switch (id) {
-        case 156:
+        case WID_HOTKEYWND:
           this->Schedule(this->unknown_0404);
           this->unknown_0404 = nullptr;
           break;
-        case 157:
-        case 158:
-        case 159:
-        case 165:
-        case 166:
-        case 167:
+        case WID_JOINTO_BATTLEFIELDWND:
+        case WID_RELOADLUASCRIPTWND:
+        case WID_QUIKSLOTWND:
+        case WID_BATTLEFIELD_DESCRIBEWND:
+        case WID_BATTLEFIELD_STATUSWND:
+        case WID_BATTLEFIELD_HELPWND:
         case 171:
-        case 183:
-        case 191:
+        case WID_SHOWINFO_TESTLAYER:
+        case WID_EXMACRO_SETUPWND:
           this->Schedule(found);
           break;
-        case 181:
+        case WID_SEARCH_STORE_INFO:
           this->Schedule(found);
           g_session.ClearEntryList5BD4();
           break;
@@ -3855,7 +3856,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 174:
+  case WID_MERCHANTSHOPMAKEWND_MODE_1:
     this->CloseWindow(175);
     if (this->unknown_040C) {
       this->Schedule(this->unknown_040C);
@@ -3863,49 +3864,49 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 175:
+  case WID_MERCHANTMIRRORITEMWND_MODE_1:
     if (this->unknown_0410) {
       this->Schedule(reinterpret_cast<UIWindow*>(this->unknown_0410));
       this->unknown_0410 = 0;
       closed = true;
     }
     break;
-  case 176:
+  case WID_MERCHANTITEMMYSHOPWND_MODE_1:
     if (this->unknown_0414) {
       this->Schedule(this->unknown_0414);
       this->unknown_0414 = nullptr;
       closed = true;
     }
     break;
-  case 177:
+  case WID_MERCHANTITEMSHOPWND_MODE_1:
     if (this->unknown_0418) {
       this->Schedule(this->unknown_0418);
       this->unknown_0418 = nullptr;
       closed = true;
     }
     break;
-  case 178:
+  case WID_MERCHANTITEMPURCHASEWND_MODE_1:
     if (this->unknown_041C) {
       this->Schedule(this->unknown_041C);
       this->unknown_041C = nullptr;
       closed = true;
     }
     break;
-  case 179:
+  case WID_MERCHANTMIRRORITEMWND_MODE_2:
     if (this->unknown_0420) {
       this->Schedule(reinterpret_cast<UIWindow*>(this->unknown_0420));
       this->unknown_0420 = 0;
       closed = true;
     }
     break;
-  case 196:
+  case WID_COLLECTIONSYSTEMWND:
     if (this->window_4F18C) {
       this->Schedule(this->window_4F18C);
       this->window_4F18C = nullptr;
       closed = true;
     }
     break;
-  case 237:
+  case WID_CLANINFOMANAGEWND:
     if (this->window_0444) {
       this->window_0444->StoreInfo();
       this->Schedule(this->window_0444);
@@ -3913,28 +3914,28 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 275:
+  case WID_BANK_NEWWND:
     if (this->window_0448) {
       this->Schedule(this->window_0448);
       this->window_0448 = nullptr;
       closed = true;
     }
     break;
-  case 253:
+  case WID_GUILD_STORAGE_LOG:
     if (this->window_044C) {
       this->Schedule(this->window_044C);
       this->window_044C = nullptr;
       closed = true;
     }
     break;
-  case 262:
+  case WID_OPENMAILBOXWND:
     if (this->unknown_0450) {
       this->Schedule(this->unknown_0450);
       this->unknown_0450 = nullptr;
       closed = true;
     }
     break;
-  case 263:
+  case WID_RODEXINBOXWND:
     if (this->unknown_0454) {
       std::int16_t packet = 0x9E9;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
@@ -3946,7 +3947,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       }
     }
     break;
-  case 264:
+  case WID_RODEXCOMPOSEWND:
     if (this->unknown_0458) {
       std::int16_t packet = 0xA03;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
@@ -3957,7 +3958,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 265:
+  case WID_RODEXCONTENTSWND:
     if (this->unknown_045C) {
       g_session.ClearItemQuantities();
       this->Schedule(this->unknown_045C);
@@ -3965,21 +3966,21 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 259:
+  case WID_SECONDCOSTUMEWND:
     if (this->window_4F170) {
       this->Schedule(this->window_4F170);
       this->window_4F170 = nullptr;
       closed = true;
     }
     break;
-  case 268:
+  case WID_OPENROULLETTEWND:
     if (this->unknown_0460) {
       this->Schedule(this->unknown_0460);
       this->unknown_0460 = nullptr;
       closed = true;
     }
     break;
-  case 269:
+  case WID_ROULLETTEWND:
     if (this->unknown_0464) {
       std::int16_t packet = 0xA1D;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
@@ -3989,28 +3990,28 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 36:
+  case WID_SHORTCUTWND:
     if (this->window_01E8) {
       this->Schedule(this->window_01E8);
       this->window_01E8 = nullptr;
       closed = true;
     }
     break;
-  case 273:
+  case WID_MINIMAPWND:
     if (this->window_4F1CC) {
       this->Schedule(this->window_4F1CC);
       this->window_4F1CC = nullptr;
       closed = true;
     }
     break;
-  case 274:
+  case WID_EDITCTRLWND:
     if (this->window_4F1D0) {
       this->Schedule(this->window_4F1D0);
       this->window_4F1D0 = nullptr;
       closed = true;
     }
     break;
-  case 276:
+  case WID_ROUNDBOXTOOLTIPWND:
     if (this->window_4F1E4) {
       this->Schedule(this->window_4F1E4);
       this->window_4F1E4 = nullptr;
@@ -4018,14 +4019,14 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->visible_276 = 0;
     }
     break;
-  case 284:
+  case WID_CAPTCHAREGISTERWND:
     if (this->window_4F1E8) {
       this->Schedule(this->window_4F1E8);
       this->window_4F1E8 = nullptr;
       closed = true;
     }
     break;
-  case 285:
+  case WID_MACRODETECTORWND:
     if (this->window_4F1EC) {
       this->Schedule(this->window_4F1EC);
       this->window_4F1EC = nullptr;
@@ -4033,7 +4034,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->window_4F1FC = nullptr;
     }
     break;
-  case 286:
+  case WID_MACROREPORTERWND:
     if (this->window_4F1F0) {
       this->Schedule(this->window_4F1F0);
       this->window_4F1F0 = nullptr;
@@ -4041,28 +4042,28 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->unknown_4F210 = false;
     }
     break;
-  case 287:
+  case WID_MACROUSERINFOWND:
     if (this->window_4F1F4) {
       this->Schedule(this->window_4F1F4);
       this->window_4F1F4 = nullptr;
       closed = true;
     }
     break;
-  case 288:
+  case WID_CAPTCHAPREVIEWWND:
     if (this->window_4F1F8) {
       this->Schedule(this->window_4F1F8);
       this->window_4F1F8 = nullptr;
       closed = true;
     }
     break;
-  case 180:
+  case WID_LOGINOTPWND:
     if (UIWindow* found = this->LookupWindow(id)) {
       this->Schedule(found);
       this->window_01D0 = nullptr;
       closed = true;
     }
     break;
-  case 318:
+  case WID_CASHSHOP_WND:
     if (this->window_4F254) {
       this->Schedule(this->window_4F254);
       this->window_4F254 = nullptr;
@@ -4071,21 +4072,21 @@ bool UIWindowMgr::CloseWindow(int id) {
       GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
     }
     break;
-  case 315:
+  case WID_TIPBOXWND:
     if (this->window_0468) {
       this->Schedule(this->window_0468);
       this->window_0468 = nullptr;
       closed = true;
     }
     break;
-  case 321:
+  case WID_RENEWQUESTWND:
     if (UIWindow* found = this->LookupWindow(id)) {
       this->Schedule(found);
       this->unknown_0568 = 0;
       closed = true;
     }
     break;
-  case 324:
+  case WID_ADVENPARTYBOARDWND:
     if (this->window_4F274) {
       this->window_4F274->StoreInfo();
       this->Schedule(this->window_4F274);
@@ -4093,7 +4094,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 323:
+  case WID_REGISTERPARTYWND:
     if (this->window_4F270) {
       this->window_4F270->StoreInfo();
       this->Schedule(this->window_4F270);
@@ -4101,14 +4102,14 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 326:
+  case WID_REQUESTJOINPARTYWND:
     if (this->window_4F278) {
       this->Schedule(this->window_4F278);
       this->window_4F278 = nullptr;
       closed = true;
     }
     break;
-  case 345:
+  case WID_APPLYFORPARTYWND:
     if (this->window_4F27C) {
       this->window_4F27C->StoreInfo();
       this->Schedule(this->window_4F27C);
@@ -4116,13 +4117,13 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case 359:
+  case WID_MACROBLACKLISTCHECKWND:
     if (this->window_4F288) {
       this->Schedule(this->window_4F288);
       this->window_4F288 = nullptr;
     }
     break;
-  case 10024:
+  case WID_WAITDBSAVEWND:
     if (this->window_4F2AC) {
       this->Schedule(this->window_4F2AC);
       this->window_4F2AC = nullptr;
@@ -4663,22 +4664,22 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
 
   if (this->window_4F288) {
     switch (id) {
-    case 8:
-    case 10:
-    case 18:
-    case 40:
-    case 155:
-    case 203:
+    case WID_ITEMWND:
+    case WID_EQUIPWND_VIEWOTHER_0:
+    case WID_MENUWND:
+    case WID_MERCHANTITEMWND:
+    case WID_ESCOPTIONWND:
+    case WID_NAVIGATIONV4WND:
     case 251:
-    case 263:
-    case 275:
+    case WID_RODEXINBOXWND:
+    case WID_BANK_NEWWND:
       return nullptr;
     }
   }
 
   if (!this->IsOrderFixed(id)) {
     this->RemoveOrder(id);
-    if (id == 203) {
+    if (id == WID_NAVIGATIONV4WND) {
       this->windowHistory.push_back(int(id));
     } else {
       this->windowHistory.push_front(int(id));
@@ -4691,7 +4692,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   };
   UIWindow* window = nullptr;
   switch (id) {
-  case 0:
+  case WID_BASICINFOWND:
     window = this->unknown_01DC;
     if (window == nullptr) {
       window = new UIBasicInfoWnd();
@@ -4711,7 +4712,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(g_replayAnimationScaling ? Replay::Instance().header.options.Get(ReplayRecordOption::BasicInfo) : 1);
     if (this->savedWindowIds.size() != 0) {
       for (int savedId : this->savedWindowIds) {
-        if (savedId == 301) {
+        if (savedId == WID_MINIPARTYWND) {
           this->RebuildMiniPartyWindows();
         } else {
           this->EnsureWindow(savedId);
@@ -4757,7 +4758,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     this->ShowWindowById(36, this->m_normalItemSlotWindow.show);
     this->ShowWindowById(15, 0);
     break;
-  case 1:
+  case WID_NEWCHATWND:
     window = this->window_01C8;
     if (window == nullptr) {
       window = new UINewChatWnd();
@@ -4767,13 +4768,13 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     this->window_01C8->SendMsg(nullptr, 0x22, 0, 0, 0, 0);
     break;
-  case 2:
+  case WID_SELECTSERVERWND:
     window = new UISelectServerWnd();
     window->SetSize(280, 200);
     window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 80);
     this->AddRendered(window);
     break;
-  case 325:
+  case WID_RPIMAGEWND2:
     if (this->LookupWindow(325) == nullptr) {
       window = new UIRPImageWnd2();
       this->window_4F25C = window;
@@ -4784,33 +4785,33 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(325);
     }
     break;
-  case 3:
+  case WID_LOGINWND:
     window = new UILoginWnd();
     this->window_01CC = window;
     window->SetSize(301, 132);
     window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
     this->AddRendered(window);
     break;
-  case 180:
+  case WID_LOGINOTPWND:
     window = new UILoginOTPWnd();
     this->window_01D0 = window;
     window->SetSize(280, 142);
     window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
     this->AddRendered(window);
     break;
-  case 93:
+  case WID_NOTICEWND:
     window = new UINoticeWnd();
     window->SetSize(600, 400);
     window->Move(CenterOnViewportX(33), CenterOnViewportY(40));
     this->AddRendered(window);
     break;
-  case 4:
+  case WID_MAKECHARWND:
     window = new UIMakeCharWnd();
     window->SetSize(150, 286);
     window->Move((g_renderer->viewport.width - 150) / 2, (g_renderer->viewport.height - 286) / 2);
     this->AddRendered(window);
     break;
-  case 277: {
+  case WID_NEWSELECTCHARWND: {
     window = new UINewSelectCharWnd();
     this->window_03D4 = window;
     UIWindow* background = new UIRPImageWnd("유저인터페이스\\select_character_ver3\\bg_back1.tga", 5);
@@ -4834,7 +4835,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     break;
   }
-  case 278: {
+  case WID_NEWMAKECHARWND: {
     window = new UINewMakeCharWnd();
     UIWindow* background = new UIRPImageWnd("", 1);
     background->SetSize(1028, 768);
@@ -4845,7 +4846,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     this->AddRendered(window);
     break;
   }
-  case 8:
+  case WID_ITEMWND:
     window = this->unknown_01D4;
     if (window == nullptr) {
       this->RecordWindowPacket(8);
@@ -4863,7 +4864,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       basicInfo->SendMsg(nullptr, 6, 0x11E, 0xC2, 0, 0);
     }
     break;
-  case 204:
+  case WID_QUESTDISPLAY:
     if (this->window_0428 == nullptr) {
       UIQuestDisplay* display = new UIQuestDisplay();
       this->window_0428 = display;
@@ -4875,13 +4876,13 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->window_0428->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x570), 0, 0, 0);
     }
     break;
-  case 6:
+  case WID_WAITWND:
     window = new UIWaitWnd();
     window->SetSize(280, 120);
     window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
     this->AddRendered(window);
     break;
-  case 7:
+  case WID_LOADINGWND:
     window = this->unknown_01BC;
     if (window == nullptr) {
       window = new UILoadingWnd();
@@ -4892,13 +4893,13 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 9:
+  case WID_TOOLTIPWND:
     window = new UIToolTipWnd();
     window->SetSize(200, 120);
     window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
     this->AddRendered(window);
     break;
-  case 36:
+  case WID_SHORTCUTWND:
     window = this->window_01E8;
     if (window == nullptr) {
       window = new UIShortCutWnd();
@@ -4910,7 +4911,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       g_snapMgr.Add(window);
     }
     break;
-  case 10:
+  case WID_EQUIPWND_VIEWOTHER_0:
     window = this->unknown_01E0;
     if (window == nullptr) {
       window = new UIEquipWnd();
@@ -4925,7 +4926,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     this->unknown_05A4 = 1;
     break;
-  case 184:
+  case WID_NCASHWND:
     window = this->unknown_01E4;
     if (window == nullptr) {
       window = new UInCashWnd();
@@ -4938,7 +4939,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 11:
+  case WID_STATUSWND:
     window = this->unknown_01C4;
     if (window == nullptr) {
       window = new UIStatusWnd();
@@ -4956,7 +4957,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       basicInfo->SendMsg(nullptr, 6, 0x11E, 0xC0, 0, 0);
     }
     break;
-  case 37:
+  case WID_NEWSKILLLISTWND:
     window = this->window_02C4;
     if (window == nullptr) {
       window = new UINewSkillListWnd();
@@ -4973,7 +4974,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       basicInfo->SendMsg(nullptr, 6, 0x11E, 0xC4, 0, 0);
     }
     break;
-  case 33:
+  case WID_ITEMSTOREWND:
     window = this->window_0288;
     if (window == nullptr) {
       window = new UIItemStoreWnd();
@@ -4985,13 +4986,13 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 146:
-  case 147:
-  case 148:
-  case 149:
-  case 150:
-  case 151:
-  case 152: {
+  case WID_ITEMSTORESUBWND_TAB_0:
+  case WID_ITEMSTORESUBWND_TAB_1:
+  case WID_ITEMSTORESUBWND_TAB_2:
+  case WID_ITEMSTORESUBWND_TAB_3:
+  case WID_ITEMSTORESUBWND_TAB_4:
+  case WID_ITEMSTORESUBWND_TAB_5:
+  case WID_ITEMSTORESUBWND_TAB_6: {
     const int tab = id - 146;
     window = this->unknown_028C[tab];
     if (window == nullptr) {
@@ -5001,17 +5002,17 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       store->SetTabIndex(tab);
       int message = 0;
       switch (id) {
-      case 146:
-      case 147:
-      case 148:
-      case 149:
+      case WID_ITEMSTORESUBWND_TAB_0:
+      case WID_ITEMSTORESUBWND_TAB_1:
+      case WID_ITEMSTORESUBWND_TAB_2:
+      case WID_ITEMSTORESUBWND_TAB_3:
         message = tab + 0x5B9;
         break;
-      case 150:
+      case WID_ITEMSTORESUBWND_TAB_4:
         message = 0xC4F;
         break;
-      case 151:
-      case 152:
+      case WID_ITEMSTORESUBWND_TAB_5:
+      case WID_ITEMSTORESUBWND_TAB_6:
         message = tab + 0x5B8;
         break;
       }
@@ -5023,7 +5024,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     break;
   }
-  case 309:
+  case WID_ITEMSTORESUBWND_TAB_7:
     window = this->unknown_02A8;
     if (window == nullptr) {
       UIItemStoreSubWnd* store = new UIItemStoreSubWnd();
@@ -5031,14 +5032,14 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->unknown_02A8 = window;
       store->SetTabIndex(7);
       window->SetSize(140, 145);
-      static_cast<UIItemStoreSubWnd*>(this->unknown_02A8)->SetTitle(LookupMessage(id == 309 ? 0x5BF : 0));
+      static_cast<UIItemStoreSubWnd*>(this->unknown_02A8)->SetTitle(LookupMessage(id == WID_ITEMSTORESUBWND_TAB_7 ? 0x5BF : 0));
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
       this->unknown_02A8->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x69C), 0, 0, 0);
     }
     window->Show(1);
     break;
-  case 153:
+  case WID_ITEMSTOREFINDWND:
     window = this->unknown_02AC;
     if (window == nullptr) {
       window = new UIItemStoreFindWnd();
@@ -5051,7 +5052,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 173:
+  case WID_PARTYBOOKINGHELPWND:
     if (this->unknown_02C0 == nullptr) {
       window = new UIPartyBookingHelpWnd();
       this->unknown_02C0 = window;
@@ -5060,7 +5061,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 170:
+  case WID_JOBLISTWND:
     if (this->unknown_02B8 == nullptr) {
       window = new UIJobListWnd();
       this->unknown_02B8 = window;
@@ -5070,7 +5071,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->unknown_02B8->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x6EC), 0, 0, 0);
     }
     break;
-  case 164:
+  case WID_SEEKPARTYWND:
     window = this->unknown_02B0;
     if (window == nullptr) {
       window = new UISeekPartyWnd();
@@ -5083,7 +5084,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     g_session.m_partyBooking.unknown_0000 = 1;
     break;
-  case 168:
+  case WID_SEEKPARTYMBWND:
     if (this->unknown_02B0 == nullptr) {
       if (this->unknown_02B4 == nullptr) {
         window = new UISeekPartyMBWnd();
@@ -5097,7 +5098,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       }
     }
     break;
-  case 169:
+  case WID_SEEKPARTYLISTWND:
     if (this->unknown_02BC == nullptr) {
       window = new UISeekPartyListWnd();
       this->unknown_02BC = window;
@@ -5116,7 +5117,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->EnsureWindow(34)->SendMsg(nullptr, 6, 0xD7, 1, 0, 0);
     }
     break;
-  case 34:
+  case WID_MESSENGERGROUPWND:
     if (g_replayAnimationScaling && !Replay::Instance().header.options.Get(ReplayRecordOption::Party)) {
       break;
     }
@@ -5133,7 +5134,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     this->unknown_073C = 1;
     break;
-  case 41:
+  case WID_MERCHANTSHOPMAKEWND_MODE_0:
     window = this->unknown_02FC;
     if (window == nullptr) {
       window = new UIMerchantShopMakeWnd(0);
@@ -5146,7 +5147,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     this->EnsureWindow(42);
     break;
-  case 42:
+  case WID_MERCHANTMIRRORITEMWND_MODE_0:
     window = reinterpret_cast<UIWindow*>(this->unknown_02F8);
     if (window == nullptr) {
       window = new UIMerchantMirrorItemWnd(0);
@@ -5158,7 +5159,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 40:
+  case WID_MERCHANTITEMWND:
     if (!g_mapPropertyMgr->GetValue(g_session.unknown_0000, 40)) {
       g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x94C)), 255, 0, 0, 0);
@@ -5176,7 +5177,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     this->unknown_0790 = 1;
     break;
-  case 58:
+  case WID_NOTIFYITEMOBTAINWND:
     window = this->unknown_031C;
     if (window == nullptr) {
       window = new UINotifyItemObtainWnd();
@@ -5187,7 +5188,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 56:
+  case WID_NPCEDITDIALOGWND:
     window = this->unknown_0314;
     if (window == nullptr) {
       window = new UINpcEditDialogWnd();
@@ -5198,7 +5199,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 100:
+  case WID_NPCTEXTEDITDIALOGWND:
     window = this->unknown_0318;
     if (window == nullptr) {
       window = new UINpcTextEditDialogWnd();
@@ -5209,7 +5210,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 55:
+  case WID_SKILLNAMECHANGEWND:
     window = this->unknown_0310;
     if (window == nullptr) {
       window = new UISkillNameChangeWnd();
@@ -5220,7 +5221,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 212:
+  case WID_GUILDHELPERWND:
     window = this->unknown_0430;
     if (window == nullptr) {
       window = new UIGuildHelperWnd();
@@ -5232,7 +5233,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 214:
+  case WID_GUILDTIPWND:
     window = this->unknown_0434;
     if (window == nullptr) {
       window = new UIGuildTipWnd();
@@ -5242,7 +5243,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 213:
+  case WID_CREATEGUILDWND_MODE_0:
     window = this->unknown_0438;
     if (window == nullptr) {
       window = new UICreateGuildWnd(0);
@@ -5253,7 +5254,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 215:
+  case WID_CREATEGUILDWND_MODE_1:
     window = this->unknown_043C;
     if (window == nullptr) {
       window = new UICreateGuildWnd(1);
@@ -5294,7 +5295,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     break;
   }
-  case 61:
+  case WID_GUILDMEMBERMANAGEWND:
     window = this->window_0324;
     if (window == nullptr) {
       window = new UIGuildMemberManageWnd();
@@ -5306,7 +5307,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 62:
+  case WID_GUILDPOSITIONMANAGEWND:
     window = this->unknown_0328;
     if (window == nullptr) {
       window = new UIGuildPositionManageWnd();
@@ -5318,7 +5319,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 63:
+  case WID_GUILDSKILLWND:
     window = this->window_032C;
     if (window == nullptr) {
       window = new UIGuildSkillWnd();
@@ -5330,7 +5331,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 64:
+  case WID_GUILDBANISHEDMEMBERWND:
     window = this->unknown_0330;
     if (window == nullptr) {
       window = new UIGuildBanishedMemberWnd();
@@ -5342,7 +5343,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 65:
+  case WID_GUILDNOTICEWND:
     window = this->unknown_0334;
     if (window == nullptr) {
       window = new UIGuildNoticeWnd();
@@ -5354,7 +5355,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 66:
+  case WID_GUILDTOTALINFOWND:
     window = this->unknown_0338;
     if (window == nullptr) {
       window = new UIGuildTotalInfoWnd();
@@ -5366,7 +5367,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 60:
+  case WID_GUILDINFOMANAGEWND:
     window = this->window_0320;
     if (window == nullptr) {
       window = new UIGuildInfoManageWnd();
@@ -5378,7 +5379,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 75:
+  case WID_GUILDLEAVEREASONDESCWND:
     window = this->unknown_0340;
     if (window == nullptr) {
       window = new UIGuildLeaveReasonDescWnd();
@@ -5389,7 +5390,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 78:
+  case WID_ILLUSTWND:
     window = this->unknown_0348;
     if (window == nullptr) {
       window = new UIIllustWnd();
@@ -5404,16 +5405,16 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 216:
-  case 217:
-  case 218:
-  case 219:
-  case 220:
-  case 221:
-  case 222:
-  case 223:
-  case 224:
-  case 225:
+  case WID_MULTIILLUSTWND_SLOT_0:
+  case WID_MULTIILLUSTWND_SLOT_1:
+  case WID_MULTIILLUSTWND_SLOT_2:
+  case WID_MULTIILLUSTWND_SLOT_3:
+  case WID_MULTIILLUSTWND_SLOT_4:
+  case WID_MULTIILLUSTWND_SLOT_5:
+  case WID_MULTIILLUSTWND_SLOT_6:
+  case WID_MULTIILLUSTWND_SLOT_7:
+  case WID_MULTIILLUSTWND_SLOT_8:
+  case WID_MULTIILLUSTWND_SLOT_9:
     window = this->unknown_034C[id - 216];
     if (window == nullptr) {
       window = new UIMultiIllustWnd();
@@ -5424,7 +5425,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 76:
+  case WID_GUILDBANREASONDESCWND:
     window = this->unknown_0344;
     if (window == nullptr) {
       window = new UIGuildBanReasonDescWnd();
@@ -5435,7 +5436,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 68:
+  case WID_FRIENDOPTIONWND:
     window = this->unknown_033C;
     if (window == nullptr) {
       window = new UIFriendOptionWnd();
@@ -5447,7 +5448,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 53:
+  case WID_PARTYSETTINGWND_PARTYCOUNT:
     window = this->unknown_030C;
     if (window == nullptr) {
       window = new UIPartySettingWnd();
@@ -5459,7 +5460,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 207:
+  case WID_PARTYSETTINGWND_HEIGHT_220:
     window = this->unknown_030C;
     if (window == nullptr) {
       window = new UIPartySettingWnd();
@@ -5471,7 +5472,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 208:
+  case WID_PARTYINVITATIONTOWND:
     window = this->unknown_042C;
     if (window == nullptr) {
       window = new UIPartyInvitationToWnd();
@@ -5482,7 +5483,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 52:
+  case WID_COMPOSITIONWND:
     window = this->unknown_03A8;
     if (window == nullptr) {
       window = new UICompositionWnd();
@@ -5493,7 +5494,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 51:
+  case WID_CANDIDATEWND:
     window = this->window_03A4;
     if (window == nullptr) {
       window = new UICandidateWnd();
@@ -5506,7 +5507,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 38:
+  case WID_TIPOFTHEDAYWND:
     window = this->unknown_02F0;
     if (window == nullptr) {
       window = new UITipOfTheDayWnd();
@@ -5517,7 +5518,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 70:
+  case WID_JOINGUILDACCEPTWND:
     window = this->unknown_02E8;
     if (window == nullptr) {
       window = new UIJoinGuildAcceptWnd();
@@ -5528,7 +5529,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 72:
+  case WID_ALLYGUILDACCEPTWND:
     window = this->unknown_02EC;
     if (window == nullptr) {
       window = new UIAllyGuildAcceptWnd();
@@ -5539,7 +5540,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 35:
+  case WID_JOINPARTYACCEPTWND:
     window = this->unknown_02CC;
     if (window == nullptr) {
       window = new UIJoinPartyAcceptWnd();
@@ -5550,7 +5551,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 104:
+  case WID_COUPLEACCEPTWND:
     window = this->unknown_02D0;
     if (window == nullptr) {
       window = new UICoupleAcceptWnd();
@@ -5561,7 +5562,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 119:
+  case WID_STARPLACEACCEPTWND:
     window = this->unknown_02D4;
     if (window == nullptr) {
       window = new UIStarPlaceAcceptWnd();
@@ -5572,7 +5573,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 163:
+  case WID_MIXACCEPTWND:
     window = this->unknown_02D8;
     if (window == nullptr) {
       window = new UIMixAcceptWnd();
@@ -5583,7 +5584,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 138:
+  case WID_YOURITEMWND:
     window = this->unknown_02DC;
     if (window == nullptr) {
       window = new UIYourItemWnd();
@@ -5594,7 +5595,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 105:
+  case WID_BABYACCEPTWND:
     window = this->unknown_02E0;
     if (window == nullptr) {
       window = new UIBabyAcceptWnd();
@@ -5605,7 +5606,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 110:
+  case WID_BABYACCEPTWND2:
     window = this->unknown_02E4;
     if (window == nullptr) {
       window = new UIBabyAcceptWnd2();
@@ -5616,7 +5617,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 32:
+  case WID_EXCHANGEACCEPTWND:
     window = this->unknown_0284;
     if (window == nullptr) {
       window = new UIExchangeAcceptWnd();
@@ -5628,7 +5629,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 29:
+  case WID_PASSWORDWND:
     window = this->unknown_0280;
     if (window == nullptr) {
       window = new UIPasswordWnd();
@@ -5639,7 +5640,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 15:
+  case WID_ITEMDROPCNTWND:
     window = this->window_01EC;
     if (window == nullptr) {
       window = new UIItemDropCntWnd();
@@ -5649,7 +5650,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 16:
+  case WID_SAYDIALOGWND_DIALOG:
     window = this->unknown_01F0;
     if (window == nullptr) {
       window = new UISayDialogWnd();
@@ -5663,7 +5664,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     this->unknown_01F0->unknown_004C = 1;
     this->rendered.sort(layerGreater);
     break;
-  case 226:
+  case WID_SAYDIALOGWND_OVERLAY:
     window = this->unknown_01F4;
     if (window == nullptr) {
       window = new UISayDialogWnd();
@@ -5674,7 +5675,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 28:
+  case WID_CHATROOMWND:
     window = this->window_027C;
     if (window == nullptr) {
       window = new UIChatRoomWnd();
@@ -5686,7 +5687,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 39:
+  case WID_CHOOSEWARPWND:
     window = this->unknown_020C;
     if (window == nullptr) {
       window = new UIChooseWarpWnd();
@@ -5697,7 +5698,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 17:
+  case WID_CHOOSE3WND:
     window = this->unknown_01F8;
     if (window == nullptr) {
       window = new UIChoose3Wnd();
@@ -5709,7 +5710,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 74:
+  case WID_ITEMCOMPOSITIONWND:
     window = this->unknown_0208;
     if (window == nullptr) {
       window = new UIItemCompositionWnd();
@@ -5721,7 +5722,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 73:
+  case WID_ITEMIDENTIFYWND:
     window = this->unknown_01FC;
     if (window == nullptr) {
       window = new UIItemIdentifyWnd();
@@ -5733,7 +5734,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 26:
+  case WID_COMBOBOXWND:
     window = this->unknown_0214;
     if (window == nullptr) {
       window = new UIComboBoxWnd();
@@ -5744,7 +5745,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 260:
+  case WID_COMBOBOXIDWND:
     window = this->unknown_021C;
     if (window == nullptr) {
       window = new UIComboBoxIDWnd();
@@ -5755,7 +5756,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 18:
+  case WID_MENUWND:
     window = this->unknown_0210;
     if (window == nullptr) {
       window = new UIMenuWnd();
@@ -5766,7 +5767,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 14:
+  case WID_MINIMAPZOOMWND:
     window = this->unknown_01C0;
     if (window == nullptr) {
       window = new UIMinimapZoomWnd();
@@ -5777,7 +5778,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 30:
+  case WID_CHATROOMCHANGEWND:
     window = this->window_0278;
     if (window == nullptr) {
       window = new UIChatRoomChangeWnd();
@@ -5788,7 +5789,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 27:
+  case WID_CHATROOMMAKEWND:
     window = this->window_0274;
     if (window == nullptr) {
       window = new UIChatRoomMakeWnd();
@@ -5799,7 +5800,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 25:
+  case WID_CHOOSESELLBUYWND:
     window = this->unknown_0264;
     if (window == nullptr) {
       window = new UIChooseSellBuyWnd();
@@ -5810,7 +5811,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 24:
+  case WID_ITEMSELLWND:
     window = this->unknown_025C;
     if (window == nullptr) {
       window = new UIItemSellWnd();
@@ -5822,7 +5823,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 161:
+  case WID_ITEMSELLWND2:
     window = this->unknown_0260;
     if (window == nullptr) {
       window = new UIItemSellWnd2();
@@ -5834,7 +5835,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 44:
+  case WID_MERCHANTITEMPURCHASEWND_MODE_0:
     window = this->unknown_0308;
     if (window == nullptr) {
       window = new UIMerchantItemPurchaseWnd(0);
@@ -5846,7 +5847,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 23:
+  case WID_ITEMPURCHASEWND:
     window = this->unknown_0258;
     if (window == nullptr) {
       window = new UIItemPurchaseWnd();
@@ -5859,7 +5860,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     this->EnsureWindow(50);
     break;
-  case 45:
+  case WID_MERCHANTITEMMYSHOPWND_MODE_0:
     window = this->unknown_0304;
     if (window == nullptr) {
       window = new UIMerchantItemMyShopWnd(0);
@@ -5871,7 +5872,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 43:
+  case WID_MERCHANTITEMSHOPWND_MODE_0:
     window = this->unknown_0300;
     if (window == nullptr) {
       window = new UIMerchantItemShopWnd(0);
@@ -5883,7 +5884,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 22:
+  case WID_ITEMSHOPWND:
     window = this->unknown_0250;
     if (window == nullptr) {
       window = new UIItemShopWnd();
@@ -5895,7 +5896,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 160:
+  case WID_ITEMSHOPWND2:
     window = this->unknown_0254;
     if (window == nullptr) {
       window = new UIItemShopWnd2();
@@ -5907,7 +5908,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 254:
+  case WID_PARAITEMSHOPWND:
     window = this->unknown_0268;
     if (window == nullptr) {
       window = new UIParaItemShopWnd();
@@ -5919,7 +5920,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 255:
+  case WID_PARAITEMPURCHASEWND:
     window = this->unknown_026C;
     if (window == nullptr) {
       window = new UIParaItemPurchaseWnd();
@@ -5931,7 +5932,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 256:
+  case WID_PARARESULTWND:
     window = this->window_0270;
     if (window == nullptr) {
       window = new UIParaResultWnd();
@@ -5943,7 +5944,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 49:
+  case WID_NOTIFYJOBLEVELUPWND:
     window = this->unknown_0244;
     if (window == nullptr) {
       window = new UINotifyJobLevelUpWnd();
@@ -5954,7 +5955,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 21:
+  case WID_NOTIFYLEVELUPWND:
     window = this->unknown_0240;
     if (window == nullptr) {
       window = new UINotifyLevelUpWnd();
@@ -5965,7 +5966,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 143:
+  case WID_NOTIFYQUESTWND:
     window = this->unknown_0248;
     if (window == nullptr) {
       window = new UINotifyQuestWnd();
@@ -5976,7 +5977,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 190:
+  case WID_NCASH_CALLWND:
     window = this->unknown_024C;
     if (window == nullptr) {
       window = new UInCash_CallWnd();
@@ -5987,7 +5988,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(g_serviceOptions.Get(218));
     break;
-  case 47:
+  case WID_CARDITEMILLUSTWND:
     window = this->unknown_023C;
     if (window == nullptr) {
       window = new UICardItemIllustWnd();
@@ -5998,7 +5999,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 201:
+  case WID_MONSTERDISPLAYWND:
     window = this->unknown_0424;
     if (window == nullptr) {
       window = new UIMonsterDisplayWnd();
@@ -6009,7 +6010,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 19:
+  case WID_RESTARTWND:
     window = this->unknown_0238;
     if (window == nullptr) {
       window = new UIRestartWnd();
@@ -6020,7 +6021,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 48:
+  case WID_QUITWND:
     window = this->unknown_0234;
     if (window == nullptr) {
       window = new UIQuitWnd();
@@ -6031,7 +6032,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 46:
+  case WID_SKILLDESCRIBEWND:
     window = this->window_0230;
     if (window == nullptr) {
       window = new UISkillDescribeWnd();
@@ -6042,7 +6043,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 50:
+  case WID_ITEMPARAMCHANGEDISPLAYWND:
     window = this->unknown_022C;
     if (window == nullptr) {
       window = new UIItemParamChangeDisplayWnd();
@@ -6054,7 +6055,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 82:
+  case WID_COMBINEDCARDITEMCOLLECTIONWND:
     window = this->unknown_0228;
     if (window == nullptr) {
       window = new UICombinedCardItemCollectionWnd();
@@ -6066,7 +6067,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 12:
+  case WID_ITEMCOLLECTIONWND:
     window = this->unknown_0218;
     if (window == nullptr) {
       window = new UIItemCollectionWnd();
@@ -6078,7 +6079,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 234:
+  case WID_ITEMCOLLECTION_COMPARISONWND:
     window = this->unknown_0220;
     if (window == nullptr) {
       window = new UIItemCollection_ComparisonWnd();
@@ -6089,7 +6090,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->SendMsg(nullptr, 0x22, 0, 0, 0, 0);
     window->Show(1);
     break;
-  case 250:
+  case WID_COMBINEDCARDITEMCOLLECTION_COMPARISONWND:
     window = this->unknown_0224;
     if (window == nullptr) {
       window = new UICombinedCardItemCollection_ComparisonWnd();
@@ -6101,25 +6102,25 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 20:
+  case WID_NOTICECONFIRMWND:
     window = new UINoticeConfirmWnd();
     window->SetSize(280, 120);
     window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
     this->AddRendered(window);
     break;
-  case 332:
+  case WID_DISCONNECTEDSERVERMSGWND:
     window = new UIDisconnectedServerMsgWnd();
     window->SetSize(280, 120);
     window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
     this->AddRendered(window);
     break;
-  case 77:
+  case WID_MONSTERINFOWND:
     window = new UIMonsterInfoWnd();
     window->SetSize(400, 200);
     window->Move(0, 0);
     this->AddRendered(window);
     break;
-  case 79:
+  case WID_MAKETARGETLISTWND:
     window = this->unknown_0374;
     if (window == nullptr) {
       window = new UIMakeTargetListWnd();
@@ -6130,7 +6131,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 107:
+  case WID_ITEMREPAIRWND:
     window = this->unknown_0200;
     if (window == nullptr) {
       window = new UIItemRepairWnd();
@@ -6141,7 +6142,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 111:
+  case WID_WEAPONREFINEWND:
     window = this->unknown_0204;
     if (window == nullptr) {
       window = new UIWeaponRefineWnd();
@@ -6152,7 +6153,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 80:
+  case WID_MAKETARGETPROCESSWND:
     window = this->unknown_0378;
     if (window == nullptr) {
       window = new UIMakeTargetProcessWnd();
@@ -6163,7 +6164,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 81:
+  case WID_MAKETARGETRESULTWND:
     window = this->unknown_037C;
     if (window == nullptr) {
       window = new UIMakeTargetResultWnd();
@@ -6174,13 +6175,13 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 84:
+  case WID_TALKBOXTRAPINPUTWND:
     window = new UITalkboxTrapInputWnd();
     window->SetSize(280, 120);
     window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
     this->AddRendered(window);
     break;
-  case 85:
+  case WID_KEYSTROKEWND:
     window = this->window_03AC;
     if (window == nullptr) {
       window = new UIKeyStrokeWnd();
@@ -6191,7 +6192,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 86:
+  case WID_EMOTIONWND:
     window = this->unknown_0380;
     if (window == nullptr) {
       window = new UIEmotionWnd();
@@ -6203,7 +6204,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 87:
+  case WID_CASHEMOTIONLISTWND:
     window = this->unknown_0384;
     if (window == nullptr) {
       window = new (std::nothrow) UICashEmotionListWnd();
@@ -6218,7 +6219,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 88:
+  case WID_PETINFOWND:
     if (g_session.unknown_103C == -1) {
       break;
     }
@@ -6233,7 +6234,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 90:
+  case WID_PETEGGLISTWND:
     window = this->unknown_0390;
     if (window == nullptr) {
       window = new UIPetEggListWnd();
@@ -6244,7 +6245,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 91:
+  case WID_PETTAMINGDECEIVEWND:
     window = this->unknown_0394;
     if (window == nullptr) {
       window = new UIPetTamingDeceiveWnd();
@@ -6255,7 +6256,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 94:
+  case WID_MAKINGARROWLISTWND:
     window = this->unknown_0398;
     if (window == nullptr) {
       window = new UIMakingArrowListWnd();
@@ -6266,7 +6267,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 95:
+  case WID_SELECTCARTWND:
     window = this->unknown_039C;
     if (window == nullptr) {
       window = new UISelectCartWnd();
@@ -6277,7 +6278,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 99:
+  case WID_SPELLLISTWND:
     if (this->unknown_03A0) {
       this->Schedule(this->unknown_03A0);
       this->unknown_03A0 = nullptr;
@@ -6289,13 +6290,13 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     this->AddRendered(window);
     window->Show(1);
     break;
-  case 101:
+  case WID_GRAFFISTRBOXWND:
     window = new UIGraffiStrboxWnd();
     window->SetSize(280, 120);
     window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
     this->AddRendered(window);
     break;
-  case 103:
+  case WID_PROHIBITLISTWND:
     window = this->window_0388;
     if (window == nullptr) {
       window = new UIProhibitListWnd();
@@ -6306,7 +6307,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 106:
+  case WID_BOOKWND:
     window = this->unknown_03B0;
     if (window == nullptr) {
       window = new UIBookWnd();
@@ -6317,7 +6318,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 109:
+  case WID_JOINFRIENDACCEPTWND:
     window = this->unknown_03B4;
     if (window == nullptr) {
       window = new UIJoinFriendAcceptWnd();
@@ -6328,7 +6329,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 113:
+  case WID_HOMUNINFOWND:
     if (g_session.m_homunJob == -1) {
       break;
     }
@@ -6343,7 +6344,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 114:
+  case WID_SKILLLISTWND_SKILLTAB_0:
     window = this->window_03C4;
     if (window == nullptr) {
       window = new UISkillListWnd();
@@ -6358,7 +6359,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     this->window_03C4->Show(1);
     this->unknown_08EC = 1;
     break;
-  case 125:
+  case WID_MERINFOWND:
     if (g_session.m_mercenaryClass == -1) {
       break;
     }
@@ -6373,13 +6374,13 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 186:
+  case WID_SELECTREPLAYDATAWND:
     window = new UISelectReplayDataWnd();
     window->SetSize(280, 311);
     window->Move(CenterOnViewportX(320) - 140, CenterOnViewportY(240) - 160);
     this->AddRendered(window);
     break;
-  case 187:
+  case WID_REPLAYCONTROLWND:
     if (this->window_4F168 == nullptr) {
       window = new UIReplayControlWnd();
       this->window_4F168 = window;
@@ -6390,7 +6391,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 198:
+  case WID_REPLAYRECCONTROLWND:
     if (this->window_4F164 == nullptr) {
       if (Replay::Instance().state == 2) {
         window = new UIReplayRECControlWnd(1);
@@ -6404,7 +6405,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->window_4F164->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(this->unknown_4F154), 0, 0, 0);
     }
     break;
-  case 203:
+  case WID_NAVIGATIONV4WND:
     if (this->window_4F174 == nullptr) {
       this->RecordWindowPacket(203);
       g_navigationManager.unknown_1248 = false;
@@ -6415,7 +6416,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 229:
+  case WID_NAVIGATIONHELPWND:
     if (this->LookupWindow(229) == nullptr) {
       window = new UINavigationHelpWnd();
       window->SetSize(310, 200);
@@ -6423,7 +6424,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 306:
+  case WID_NAVIGATIONROADICONWND:
     if (this->LookupWindow(306) == nullptr) {
       int x = 200;
       int y = 200;
@@ -6437,7 +6438,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 314:
+  case WID_NAVIGATIONRUIDEWND:
     if (this->LookupWindow(314) == nullptr) {
       int x = 200;
       int y = 200;
@@ -6451,7 +6452,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 126:
+  case WID_SKILLLISTWND_SKILLTAB_1:
     window = this->window_03CC;
     if (window == nullptr) {
       window = new UISkillListWnd();
@@ -6466,7 +6467,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     this->window_03CC->Show(1);
     this->unknown_0910 = 1;
     break;
-  case 116:
+  case WID_AUTOMESSAGEWND:
     window = this->unknown_03D0;
     if (window == nullptr) {
       window = new UIAutoMessageWnd();
@@ -6477,7 +6478,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 127: {
+  case WID_SELCHARFORUSERVERWND: {
     const int width = g_session.unknown_0E94 > 12 ? 783 : 540;
     window = new UISelCharForUServerWnd();
     this->window_03D8 = window;
@@ -6486,7 +6487,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     this->AddRendered(window);
     break;
   }
-  case 128:
+  case WID_CHANGENAMEWND:
     window = this->window_03DC;
     if (window == nullptr) {
       window = new UIChangeNameWnd();
@@ -6497,7 +6498,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 129:
+  case WID_REBIRTHWND:
     window = this->unknown_03E0;
     if (window == nullptr) {
       window = new UIRebirthWnd();
@@ -6508,7 +6509,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 130:
+  case WID_SUBCHATHISWND_UNKNOWN_03E4:
     window = reinterpret_cast<UIWindow*>(this->unknown_03E4);
     if (window == nullptr) {
       window = new UISubChatHisWnd();
@@ -6520,7 +6521,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(0);
     break;
-  case 131:
+  case WID_SUBCHATHISWND_UNKNOWN_03E8:
     window = reinterpret_cast<UIWindow*>(this->unknown_03E8);
     if (window == nullptr) {
       window = new UISubChatHisWnd();
@@ -6532,7 +6533,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(0);
     break;
-  case 132:
+  case WID_BATTLEMSGOPTIONWND:
     window = this->unknown_03EC;
     if (window == nullptr) {
       window = new UIBattleMsgOptionWnd();
@@ -6543,7 +6544,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 133:
+  case WID_SUBCHATMINIWND:
     window = reinterpret_cast<UIWindow*>(this->unknown_03F0);
     if (window == nullptr) {
       window = new UISubChatMiniWnd();
@@ -6553,7 +6554,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 137:
+  case WID_MEMORIALDUNWND:
     if (g_session.unknown_5950 == "") {
       return nullptr;
     }
@@ -6572,7 +6573,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     g_session.unknown_593C = 1;
     break;
-  case 139:
+  case WID_EQUIPWND_VIEWOTHER_1:
     window = this->unknown_03FC;
     if (window == nullptr) {
       window = new UIEquipWnd();
@@ -6585,7 +6586,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 140:
+  case WID_ROMAPWND:
     window = this->modal;
     if (window == nullptr) {
       window = new UIRoMapWnd();
@@ -6598,7 +6599,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     g_windowMgr.Promote(this->modal);
     g_windowMgr.Promote(this->window_4F174);
     break;
-  case 155:
+  case WID_ESCOPTIONWND:
     if (this->window_4F1EC || this->window_4F288) {
       break;
     }
@@ -6612,22 +6613,22 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 156:
-  case 158:
-  case 159:
-  case 165:
-  case 166:
-  case 167:
-  case 181:
-  case 183:
-  case 191:
+  case WID_HOTKEYWND:
+  case WID_RELOADLUASCRIPTWND:
+  case WID_QUIKSLOTWND:
+  case WID_BATTLEFIELD_DESCRIBEWND:
+  case WID_BATTLEFIELD_STATUSWND:
+  case WID_BATTLEFIELD_HELPWND:
+  case WID_SEARCH_STORE_INFO:
+  case WID_SHOWINFO_TESTLAYER:
+  case WID_EXMACRO_SETUPWND:
     window = this->CreateLayoutWindow(id);
     if (window == nullptr) {
       break;
     }
     window->Show(1);
     break;
-  case 157:
+  case WID_JOINTO_BATTLEFIELDWND:
     window = this->LookupWindow(157);
     if (window == nullptr) {
       window = new UIEntryQueueWnd();
@@ -6637,7 +6638,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 209:
+  case WID_ENTRYQUEUESTANDBYWND:
     window = this->LookupWindow(209);
     if (window == nullptr) {
       UIEntryQueueStandByWnd* standBy = new UIEntryQueueStandByWnd();
@@ -6647,7 +6648,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 210:
+  case WID_ENTRYQUEUEREQUESTWND:
     window = this->LookupWindow(210);
     if (window == nullptr) {
       UIEntryQueueRequestWnd* request = new UIEntryQueueRequestWnd();
@@ -6657,7 +6658,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 211:
+  case WID_ENTRYQUEUEHELPWND:
     window = this->LookupWindow(211);
     if (window == nullptr) {
       window = new UIEntryQueueHelpWnd();
@@ -6666,7 +6667,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 174:
+  case WID_MERCHANTSHOPMAKEWND_MODE_1:
     window = this->unknown_040C;
     if (window == nullptr) {
       window = new UIMerchantShopMakeWnd(1);
@@ -6679,7 +6680,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     this->EnsureWindow(175);
     break;
-  case 175:
+  case WID_MERCHANTMIRRORITEMWND_MODE_1:
     window = reinterpret_cast<UIWindow*>(this->unknown_0410);
     if (window == nullptr) {
       window = new UIMerchantMirrorItemWnd(1);
@@ -6691,7 +6692,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 176:
+  case WID_MERCHANTITEMMYSHOPWND_MODE_1:
     window = this->unknown_0414;
     if (window == nullptr) {
       window = new UIMerchantItemMyShopWnd(1);
@@ -6703,7 +6704,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 177:
+  case WID_MERCHANTITEMSHOPWND_MODE_1:
     window = this->unknown_0418;
     if (window == nullptr) {
       window = new UIMerchantItemShopWnd(1);
@@ -6715,7 +6716,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 178:
+  case WID_MERCHANTITEMPURCHASEWND_MODE_1:
     window = this->unknown_041C;
     if (window == nullptr) {
       window = new UIMerchantItemPurchaseWnd(1);
@@ -6727,7 +6728,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 179:
+  case WID_MERCHANTMIRRORITEMWND_MODE_2:
     window = reinterpret_cast<UIWindow*>(this->unknown_0420);
     if (window == nullptr) {
       window = new UIMerchantMirrorItemWnd(2);
@@ -6739,7 +6740,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 196:
+  case WID_COLLECTIONSYSTEMWND:
     window = this->window_4F18C;
     if (window == nullptr) {
       window = new CUICollectionSystemWnd();
@@ -6750,7 +6751,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 199: {
+  case WID_SECONDPASSWORDINPUTWND: {
     const int rangeX = g_renderer->viewport.width - 540;
     const int minX = rangeX / 2;
     const int rangeY = g_renderer->viewport.height - 365;
@@ -6779,7 +6780,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     static_cast<UISecondPasswordInputWnd*>(this->unknown_03B8)->SetInputMode(0);
     break;
   }
-  case 200: {
+  case WID_SECONDPASSWORDEDITWND: {
     const int rangeX = g_renderer->viewport.width - 540;
     const int minX = rangeX / 2;
     const int rangeY = g_renderer->viewport.height - 365;
@@ -6808,7 +6809,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     static_cast<UISecondPasswordInputWnd*>(this->unknown_03BC)->SetInputMode(1);
     break;
   }
-  case 227:
+  case WID_MERGEITEMWND:
     window = this->LookupWindow(227);
     if (window == nullptr) {
       window = new CMergeItemWnd();
@@ -6818,7 +6819,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 230:
+  case WID_MERCHANTITEMPURCHASEMSGWND:
     if (this->LookupWindow(230) == nullptr) {
       this->CloseWindow(230);
     }
@@ -6831,7 +6832,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     this->AddRendered(window);
     break;
-  case 237:
+  case WID_CLANINFOMANAGEWND:
     window = this->window_0444;
     if (window == nullptr) {
       window = new UIClanInfoManageWnd();
@@ -6843,7 +6844,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 275:
+  case WID_BANK_NEWWND:
     if (this->LookupWindow(295)) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBC6)), 255, 0, 0, 0);
       break;
@@ -6874,7 +6875,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 253:
+  case WID_GUILD_STORAGE_LOG:
     window = this->window_044C;
     if (window == nullptr) {
       window = new UIGuild_Storage_Log();
@@ -6885,11 +6886,11 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 257:
-  case 258:
+  case WID_MERCHANTITEMLOGWND_MODE_0:
+  case WID_MERCHANTITEMLOGWND_MODE_1:
     window = this->LookupWindow(id);
     if (window == nullptr) {
-      if (id == 258) {
+      if (id == WID_MERCHANTITEMLOGWND_MODE_1) {
         window = new UIMerchantItemLogWnd(1);
       } else {
         window = new UIMerchantItemLogWnd(0);
@@ -6900,7 +6901,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 262:
+  case WID_OPENMAILBOXWND:
     window = this->unknown_0450;
     if (window == nullptr) {
       window = new UIOpenMailBoxWnd();
@@ -6911,7 +6912,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 263:
+  case WID_RODEXINBOXWND:
     window = this->unknown_0454;
     if (window == nullptr) {
       window = new UIRodexInboxWnd();
@@ -6922,7 +6923,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 264:
+  case WID_RODEXCOMPOSEWND:
     window = this->unknown_0458;
     if (window == nullptr) {
       window = new UIRodexComposeWnd();
@@ -6933,7 +6934,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 265:
+  case WID_RODEXCONTENTSWND:
     window = this->unknown_045C;
     if (window == nullptr) {
       window = new UIRodexContentsWnd();
@@ -6944,7 +6945,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 261:
+  case WID_PETEVOLUTIONWND:
     window = this->LookupWindow(261);
     if (window == nullptr) {
       window = new UIPetEvolutionWnd();
@@ -6954,7 +6955,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 259:
+  case WID_SECONDCOSTUMEWND:
     window = dynamic_cast<UIFrameWnd*>(this->LookupWindow(259));
     if (window == nullptr) {
       window = new UISecondCostumeWnd();
@@ -6965,7 +6966,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 267:
+  case WID_MILEAGEWND:
     window = this->LookupWindow(267);
     if (window == nullptr) {
       window = new UIMileageWnd();
@@ -6985,7 +6986,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(g_serviceOptions.Get(219));
     break;
-  case 268:
+  case WID_OPENROULLETTEWND:
     window = this->unknown_0460;
     if (window == nullptr) {
       window = new UIOpenRoulletteWnd();
@@ -6996,7 +6997,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(g_serviceOptions.Get(220));
     break;
-  case 269:
+  case WID_ROULLETTEWND:
     window = this->unknown_0464;
     if (window == nullptr) {
       UIRoulletteWnd* roulette = new UIRoulletteWnd();
@@ -7008,7 +7009,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 270:
+  case WID_ACHIEVEMENTWND:
     window = dynamic_cast<UIFrameWnd*>(this->LookupWindow(270));
     if (window == nullptr) {
       window = new UIAchievementWnd();
@@ -7021,7 +7022,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       basicInfo->SendMsg(nullptr, 6, 0x11E, 0x1D9, 0, 0);
     }
     break;
-  case 271:
+  case WID_ACHTRACINGWND:
     window = dynamic_cast<UIFrameWnd*>(this->LookupWindow(271));
     if (window == nullptr) {
       window = new UIAchTracingWnd();
@@ -7034,7 +7035,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x4F1D8), 0, 0, 0);
     }
     break;
-  case 273:
+  case WID_MINIMAPWND:
     if (this->window_4F1CC == nullptr) {
       window = new UIMiniMapWnd();
       this->window_4F1CC = window;
@@ -7045,7 +7046,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 274:
+  case WID_EDITCTRLWND:
     if (this->window_4F1D0 == nullptr) {
       window = new UIEditctrlWnd();
       this->window_4F1D0 = window;
@@ -7055,7 +7056,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 276:
+  case WID_ROUNDBOXTOOLTIPWND:
     if (this->LookupWindow(276) == nullptr) {
       window = new UIRoundBoxTooltipWnd();
       this->window_4F1E4 = window;
@@ -7068,7 +7069,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->window_4F1E4->Show(1);
     }
     break;
-  case 281:
+  case WID_STYLINGSHOPWND:
     window = this->LookupWindow(281);
     if (window == nullptr) {
       window = new UIStylingShopWnd();
@@ -7078,7 +7079,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 284:
+  case WID_CAPTCHAREGISTERWND:
     window = this->window_4F1E8;
     if (window == nullptr) {
       window = new UICaptchaRegisterWnd();
@@ -7089,7 +7090,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 285:
+  case WID_MACRODETECTORWND:
     window = this->window_4F1EC;
     if (window == nullptr) {
       window = new UIMacroDetectorWnd();
@@ -7101,7 +7102,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     this->window_4F1FC = static_cast<UIMacroDetectorWnd*>(this->window_4F1EC)->m_editCtrl;
     break;
-  case 286:
+  case WID_MACROREPORTERWND:
     window = this->window_4F1F0;
     if (window == nullptr) {
       window = new UIMacroReporterWnd();
@@ -7114,7 +7115,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0x4F200), 0, 0, 0);
     this->unknown_4F210 = true;
     break;
-  case 287:
+  case WID_MACROUSERINFOWND:
     window = this->window_4F1F4;
     if (window == nullptr) {
       window = new UIMacroUserInfoWnd();
@@ -7125,7 +7126,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 288:
+  case WID_CAPTCHAPREVIEWWND:
     window = this->window_4F1F8;
     if (window == nullptr) {
       window = new UICaptchaPreviewWnd();
@@ -7136,7 +7137,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 289:
+  case WID_VIEWCAMERAINFOWND:
     window = this->LookupWindow(289);
     if (window == nullptr) {
       int y = 200;
@@ -7154,7 +7155,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(g_session.unknown_61B1);
     break;
-  case 290:
+  case WID_LAPINEBOXWND:
     if (this->LookupWindow(290) == nullptr) {
       window = new UILapineBoxWnd();
       window->SetSize(400, 250);
@@ -7162,7 +7163,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 291:
+  case WID_TRANSMENUWND:
     window = this->LookupWindow(291);
     if (window == nullptr) {
       window = new UITransMenuWnd();
@@ -7173,7 +7174,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->Promote(window);
     }
     break;
-  case 294:
+  case WID_PREVIEWEQUIPWND:
     if (this->LookupWindow(294) == nullptr) {
       window = new UIPreviewEquipWnd();
       window->SetSize(280, 260);
@@ -7184,7 +7185,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(294);
     }
     break;
-  case 295: {
+  case WID_REFININGWND: {
     const int x = static_cast<int>((g_renderer->viewport.width - 264) * g_depthAverageHalf);
     const int y = static_cast<int>((g_renderer->viewport.height - 346) * g_depthAverageHalf);
     this->EnsureWindow(8);
@@ -7211,7 +7212,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     break;
   }
-  case 302:
+  case WID_LAPINEUPGRADEBOXWND:
     if (this->LookupWindow(302) == nullptr) {
       window = new UILapineUpgradeBoxWnd();
       window->SetSize(400, 250);
@@ -7221,7 +7222,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(302);
     }
     break;
-  case 303:
+  case WID_HOTKEYGUIDEWND:
     if (this->LookupWindow(303) == nullptr) {
       window = new UIHotkeyGuideWnd();
       window->SetSize(934, 498);
@@ -7231,7 +7232,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(303);
     }
     break;
-  case 304:
+  case WID_VIDEOWND:
     window = this->LookupWindow(304);
     if (window == nullptr) {
       window = new UIVideoWnd();
@@ -7240,7 +7241,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 307:
+  case WID_MENUICONWND:
     if (this->LookupWindow(307) == nullptr) {
       window = new UIMenuIconWnd();
       window->SetSize(220, 197);
@@ -7250,7 +7251,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(307);
     }
     break;
-  case 308:
+  case WID_SHOWWARPWND:
     if (this->LookupWindow(308) == nullptr) {
       window = new UIShowWarpWnd();
       window->SetSize(280, 120);
@@ -7262,7 +7263,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->Show(1);
     }
     break;
-  case 315:
+  case WID_TIPBOXWND:
     if (this->LookupWindow(315) == nullptr) {
       window = new UITipboxWnd();
       this->window_0468 = window;
@@ -7275,7 +7276,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->Show(1);
     }
     break;
-  case 318:
+  case WID_CASHSHOP_WND:
     if (this->LookupWindow(318) == nullptr) {
       window = new UICashShopWnd();
       this->window_4F254 = window;
@@ -7287,7 +7288,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(318);
     }
     break;
-  case 321:
+  case WID_RENEWQUESTWND:
     this->RecordWindowPacket(321);
     window = this->LookupWindow(id);
     if (window == nullptr) {
@@ -7302,7 +7303,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     this->CloseWindow(143);
     this->unknown_0568 = 1;
     break;
-  case 322:
+  case WID_RENEWDETAILQUESTINFOWND:
     this->RecordWindowPacket(321);
     window = this->LookupWindow(id);
     if (window == nullptr) {
@@ -7318,7 +7319,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 328:
+  case WID_CHECKATTENDANCEWND:
     if (this->LookupWindow(328) == nullptr) {
       window = new UICheckAttendanceWnd();
       window->SetSize(488, 413);
@@ -7328,7 +7329,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(328);
     }
     break;
-  case 334:
+  case WID_BARTERMARKETWND:
     if (this->LookupWindow(334) == nullptr) {
       window = new UIBartermarketWnd();
       this->window_4F260 = window;
@@ -7340,7 +7341,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(334);
     }
     break;
-  case 335:
+  case WID_BARTERITEMPURCHASEWND:
     if (this->LookupWindow(335) == nullptr) {
       window = new UIBarterItemPurchaseWnd();
       this->window_4F264 = window;
@@ -7352,7 +7353,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(335);
     }
     break;
-  case 341:
+  case WID_EXPANDEDBARTERMARKETWND:
     if (this->LookupWindow(275)) {
       g_windowMgr.CloseWindow(275);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xF7E)), 255, 0, 0, 0);
@@ -7367,7 +7368,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(341);
     }
     break;
-  case 342:
+  case WID_EXPANDEDBARTERITEMPURCHASEWND:
     if (this->LookupWindow(275)) {
       break;
     }
@@ -7381,7 +7382,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(341);
     }
     break;
-  case 333:
+  case WID_NOTEWND:
     if (this->LookupWindow(333) == nullptr) {
       window = new UINoteWnd();
       window->SetSize(358, 275);
@@ -7396,7 +7397,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->LookupWindow(333);
     }
     break;
-  case 340:
+  case WID_ACCOUNTLIMITEDTOOLWND:
     window = this->LookupWindow(340);
     if (window == nullptr) {
       window = new UIAccountLimitedToolWnd();
@@ -7406,7 +7407,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 343: {
+  case WID_GRADEENCHANTWND: {
     const int x = static_cast<int>((g_renderer->viewport.width - 400) * g_depthAverageHalf - 100.0f);
     const int y = static_cast<int>((g_renderer->viewport.height - 330) * g_depthAverageHalf);
     this->EnsureWindow(8);
@@ -7433,7 +7434,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     break;
   }
-  case 344:
+  case WID_CHANGEMATERIALWND:
     window = this->LookupWindow(344);
     if (window == nullptr) {
       window = new UIChangeMaterialWnd();
@@ -7444,7 +7445,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->SetFocus(nullptr);
     }
     break;
-  case 324:
+  case WID_ADVENPARTYBOARDWND:
     window = this->window_4F274;
     if (window == nullptr) {
       window = new UIAdvenPartyBoardWnd();
@@ -7455,7 +7456,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->window_4F274->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0xA20), 0, 0, 0);
     }
     break;
-  case 323:
+  case WID_REGISTERPARTYWND:
     window = this->window_4F270;
     if (window == nullptr) {
       window = new UIRegisterPartyWnd();
@@ -7466,7 +7467,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->window_4F270->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0xA00), 0, 0, 0);
     }
     break;
-  case 326:
+  case WID_REQUESTJOINPARTYWND:
     window = this->window_4F278;
     if (window == nullptr) {
       window = new UIRequestJoinPartyWnd();
@@ -7476,7 +7477,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 345:
+  case WID_APPLYFORPARTYWND:
     window = this->window_4F27C;
     if (window == nullptr) {
       window = new UIApplyForPartyWnd();
@@ -7487,7 +7488,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->window_4F27C->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(base + 0xA10), 0, 0, 0);
     }
     break;
-  case 346:
+  case WID_REPUTEWND:
     window = this->LookupWindow(346);
     if (window == nullptr) {
       window = new UIReputeWnd();
@@ -7496,7 +7497,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 348:
+  case WID_ITEMREFORMWND:
     window = this->LookupWindow(348);
     if (window == nullptr) {
       window = new UIItemReformWnd();
@@ -7505,7 +7506,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 358:
+  case WID_BALLOONOPENBTN:
     window = this->LookupWindow(358);
     if (window == nullptr) {
       window = new UIBalloonOpenBtn();
@@ -7514,7 +7515,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     break;
-  case 359:
+  case WID_MACROBLACKLISTCHECKWND:
     window = this->window_4F288;
     if (window == nullptr) {
       window = new UIMacroBlackListCheckWnd();
@@ -7525,7 +7526,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 361:
+  case WID_RUNESYSTEMWND:
     window = this->LookupWindow(361);
     if (window == nullptr) {
       g_runeSystemMgr->SendRequest(0xBCB, nullptr, -1);
@@ -7546,7 +7547,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case 362:
+  case WID_RUNESYSTEM_DECOMRESULTWND:
     window = this->LookupWindow(362);
     if (window == nullptr) {
       window = new UIRuneSystem_DecomResultWnd();
@@ -7559,7 +7560,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     this->Promote(window);
     break;
-  case 10032:
+  case WID_DEBUFFREMOVEWND:
     if (this->LookupWindow(10032) == nullptr) {
       window = new UIDebuffRemoveWnd();
       window->SetSize(180, 47);
@@ -7611,19 +7612,19 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
 
   if (notify) {
     switch (id) {
-    case 70:
+    case WID_JOINGUILDACCEPTWND:
       this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDA)), 0xFFFF00, 0, 0, 0);
       break;
-    case 72:
+    case WID_ALLYGUILDACCEPTWND:
       this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDB)), 0xFFFF00, 0, 0, 0);
       break;
-    case 109:
+    case WID_JOINFRIENDACCEPTWND:
       this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDC)), 0xFFFF00, 0, 0, 0);
       break;
-    case 35:
+    case WID_JOINPARTYACCEPTWND:
       this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDD)), 0xFFFF00, 0, 0, 0);
       break;
-    case 32:
+    case WID_EXCHANGEACCEPTWND:
       this->SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDE)), 0xFFFF00, 0, 0, 0);
       break;
     }

@@ -1,4 +1,5 @@
 #include "Contents/Actors/GroundScope.h"
+#include "Contents/Skills/SkillId.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -42,80 +43,80 @@ bool CGroundScope::OnProcess() {
 // FUNCTION: fn_24267
 int CGroundScope::SkillScopeType(int skillId) {
   switch (skillId) {
-    case 0x0B:
-    case 0x19:
-    case 0x2F:
-    case 0x45:
-    case 0x50:
-    case 0x56:
-    case 0x58:
-    case 0x6E:
-    case 0x81:
-    case 0x82:
-    case 0x89:
-    case 0x8C:
-    case 0x17D:
-    case 0x1E3:
-    case 0x8D5:
+    case MG_NAPALMBEAT:
+    case AL_PNEUMA:
+    case AC_SHOWER:
+    case PR_BENEDICTIO:
+    case WZ_FIREPILLAR:
+    case WZ_WATERBALL:
+    case WZ_FROSTNOVA:
+    case BS_HAMMERFALL:
+    case HT_BLITZBEAT:
+    case HT_DETECTING:
+    case AS_GRIMTOOTH:
+    case AS_VENOMDUST:
+    case SN_FALCONASSAULT:
+    case HW_GANBANTEIN:
+    case NC_ARMSCANNON:
       return 3;
-    case 0x11:
-    case 0x15:
-    case 0x46:
-    case 0x5B:
-    case 0x5C:
-    case 0x1E4:
-    case 0x302:
-    case 0x7D5:
-    case 0x7F0:
-    case 0x7FC:
+    case MG_FIREBALL:
+    case MG_THUNDERSTORM:
+    case PR_SANCTUARY:
+    case WZ_HEAVENDRIVE:
+    case WZ_QUAGMIRE:
+    case HW_GRAVITATION:
+    case NPC_GROUNDDRIVE:
+    case RK_WINDCUTTER:
+    case GC_POISONSMOKE:
+    case AB_EPICLESIS:
       return 5;
-    case 0x4F:
-    case 0x1DE:
-    case 0x2DD:
-    case 0x2E3:
-    case 0x8BD:
-    case 0x992:
-    case 0x994:
-    case 0x995:
-    case 0x996:
-    case 0x138E:
-    case 0x1395:
-    case 0x13A4:
-    case 0x13B2:
-    case 0x146B:
-    case 0x146D:
-    case 0x146E:
-    case 0x149F:
+    case PR_MAGNUS:
+    case CR_SLIMPITCHER:
+    case NPC_MAGMA_ERUPTION:
+    case NPC_CLOUD_KILL:
+    case RA_DETONATOR:
+    case SO_CLOUD_KILL:
+    case SO_WARMER:
+    case SO_VACUUM_EXTREME:
+    case SO_VARETYR_SPEAR:
+    case NC_MAGMA_ERUPTION:
+    case LG_KINGS_GRACE:
+    case SU_CN_METEOR:
+    case SU_CN_METEOR2:
+    case AG_TORNADO_STORM:
+    case AG_FLORAL_FLARE_ROAD:
+    case AG_ASTRAL_STRIKE:
+    case CD_PNEUMATICUS_PROCELLA:
       return 7;
-    case 0x53:
-    case 0x59:
-    case 0x2D3:
-    case 0x2DB:
-    case 0x301:
-    case 0x7D8:
-    case 0x8D4:
-    case 0x98E:
-    case 0x138C:
-    case 0x1462:
-    case 0x1466:
-    case 0x14C7:
-    case 0x14F9:
-    case 0x14FA:
-    case 0x14FB:
-    case 0x14FC:
-    case 0x14FD:
+    case WZ_METEOR:
+    case WZ_STORMGUST:
+    case NPC_STORMGUST2:
+    case NPC_DRAGONBREATH:
+    case NPC_RAINOFMETEOR:
+    case RK_DRAGONBREATH:
+    case NC_COLDSLOWER:
+    case SO_EARTHGRAVE:
+    case RK_DRAGONBREATH_WATER:
+    case AG_VIOLENT_QUAKE:
+    case AG_ALL_BLOOM:
+    case ABC_ABYSS_STRIKE:
+    case EM_DIAMOND_STORM:
+    case EM_LIGHTNING_LAND:
+    case EM_VENOM_SWAMP:
+    case EM_CONFLAGRATION:
+    case EM_TERRA_DRIVE:
       return 9;
-    case 0x55:
-    case 0x1461:
+    case WZ_VERMILION:
+    case AG_MYSTERY_ILLUSION:
       return 11;
-    case 0x2C4:
-    case 0x8A5:
+    case NPC_COMET:
+    case WL_COMET:
       return 18;
-    case 0x149E:
+    case CD_COMPETENTIA:
       return 19;
-    case 0x2E0:
-    case 0x98F:
-    case 0x991:
+    case NPC_PSYCHIC_WAVE:
+    case SO_DIAMONDDUST:
+    case SO_PSYCHIC_WAVE:
       return -2;
     default:
       return CSkillActionMgr::GetInstance()->GetSkillScopeType(skillId);

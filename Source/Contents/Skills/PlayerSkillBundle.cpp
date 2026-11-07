@@ -1,4 +1,5 @@
 #include "Contents/Skills/PlayerSkillBundle.h"
+#include "Contents/Skills/SkillId.h"
 #include "Client/Session.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -372,8 +373,8 @@ void CPlayerSkillBundle::ForEachGrouped(std::function<bool(CSkillInfo*)> callbac
 // FUNCTION: fn_08285
 bool IsIndexedSkill(int id) {
   switch (id) {
-  case 6579:
-  case 6580:
+  case AT_FERAL_CLAW:
+  case AT_ALPHA_CLAW:
     return true;
   default:
     return false;

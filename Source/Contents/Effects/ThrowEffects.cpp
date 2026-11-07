@@ -1,3 +1,5 @@
+#include "Contents/Combat/CombatTypes.h"
+#include "Contents/Effects/EffectTypes.h"
 #include "Contents/Effects/ThrowEffects.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -33,13 +35,13 @@ void CThrowItemEffect::Close() {
 // FUNCTION: fn_19230
 void CThrowItemEffect::Open() {
   switch (this->id) {
-  case 981:
+  case EF_THROW_HAPPOKUNAI:
     this->unknown_00D4 = 8;
     break;
-  case 982:
+  case EF_THROW_MULTIPLE_COIN:
     this->unknown_00D4 = 10;
     break;
-  case 989:
+  case EF_KAIHOU:
     if (CGameActor* owner = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
       this->unknown_00D4 = owner->unknown_03D0;
       this->unknown_00D8 = 1;
@@ -60,7 +62,7 @@ void CThrowItemEffect::Open() {
       particle->unknown_0008 = 1;
 
       switch (this->id) {
-      case 298:
+      case EF_THROWITEM:
         this->unknown_002C = 300;
         this->unknown_00E0 = 30.0f;
         this->InitTrajectory(particle);
@@ -75,11 +77,11 @@ void CThrowItemEffect::Open() {
         particle->unknown_00D8 = this->position[2];
         particle->destinationBlend = 6;
         break;
-      case 299:
+      case EF_THROWITEM2:
         particle->SetTexture("유저인터페이스\\item\\빈포션병.bmp");
         this->InitPotionParticle(particle, this->unknown_0030 == -1 ? 1 : this->unknown_0030);
         break;
-      case 308:
+      case EF_THROWITEM3:
         this->unknown_002C = 300;
         this->unknown_00E0 = 10.0f;
         particle->SetTexture("유저인터페이스\\item\\돌.bmp");
@@ -93,49 +95,49 @@ void CThrowItemEffect::Open() {
         particle->unknown_00D8 = this->position[2];
         particle->destinationBlend = 6;
         break;
-      case 539:
+      case EF_THROWITEM4:
         this->unknown_00D0 = 5;
         particle->SetTexture("유저인터페이스\\item\\화염병.bmp");
         this->InitFlameParticle(particle);
         break;
-      case 541:
+      case EF_THROWITEM5:
         particle->SetTexture("유저인터페이스\\item\\버서크포션.bmp");
         this->InitPotionParticle(particle, this->unknown_0030 == -1 ? 1 : this->unknown_0030);
         break;
-      case 600:
+      case EF_THROWITEM6:
         particle->SetTexture("유저인터페이스\\item\\베넘나이프.bmp");
         this->InitSpinParticle(particle);
         break;
-      case 613:
+      case EF_THROWITEM7:
         particle->SetTexture("유저인터페이스\\item\\수리검.bmp");
         this->InitSpinParticle(particle);
         break;
-      case 614:
+      case EF_THROWITEM8:
         particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
         this->InitSpinParticle(particle);
         break;
-      case 615:
+      case EF_THROWITEM9:
         particle->SetTexture("유저인터페이스\\item\\풍마_열화.bmp");
         this->InitSpinParticle(particle);
         break;
-      case 616:
+      case EF_THROWITEM10:
         particle->SetTexture("effect\\coin_a.bmp");
         this->InitSpinParticle(particle);
         break;
-      case 914:
+      case EF_THROWITEM11:
         particle->SetTexture("유저인터페이스\\item\\폭탄버섯포자.bmp");
         this->InitPotionParticle(particle, this->unknown_0030 == -1 ? 1 : this->unknown_0030);
         break;
-      case 980:
+      case EF_THROWITEM4_1:
         this->unknown_00D0 = 10;
         particle->SetTexture("유저인터페이스\\item\\염산병.bmp");
         this->InitFlameParticle(particle);
         break;
-      case 983:
+      case EF_THROW_BAKURETSU:
         particle->SetTexture("유저인터페이스\\item\\쿠나이_화.bmp");
         this->InitSpinParticle(particle);
         particle->unknown_00C0 = 1.0f;
-      case 981:
+      case EF_THROW_HAPPOKUNAI:
         this->unknown_002C = 200;
         this->unknown_00E0 = 1.0f;
         particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
@@ -154,7 +156,7 @@ void CThrowItemEffect::Open() {
           this->sourcePosition[0] = this->position[0] - 8.0f;
         }
         break;
-      case 982:
+      case EF_THROW_MULTIPLE_COIN:
         this->unknown_002C = 200;
         this->unknown_00E0 = 10.0f;
         particle->SetTexture("effect\\coin_a.bmp");
@@ -168,20 +170,20 @@ void CThrowItemEffect::Open() {
         particle->unknown_00D4 = this->position[1] - 8.0f;
         particle->unknown_00D0 = this->position[0];
         break;
-      case 989:
+      case EF_KAIHOU:
         if (CGameActor* owner = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
           switch (owner->charmType) {
-          case 1:
+          case CHARM_TYPE_WATER:
             particle->SetTexture("effect\\WaterOrb.bmp");
             particle->scale = 1.0f;
             break;
-          case 2:
+          case CHARM_TYPE_LAND:
             particle->SetTexture("effect\\StoneOrb.bmp");
             break;
-          case 3:
+          case CHARM_TYPE_FIRE:
             particle->SetTexture("effect\\FireOrb.bmp");
             break;
-          case 4:
+          case CHARM_TYPE_WIND:
             particle->SetTexture("effect\\LightningOrb.bmp");
             break;
           }
@@ -274,16 +276,16 @@ void CThrowItemEffect::InitSpinParticle(CParticle* particle) {
 // FUNCTION: fn_19234
 void CThrowItemEffect::InitEvents() {
   switch (this->id) {
-  case 613:
-  case 614:
-  case 615:
-  case 616:
+  case EF_THROWITEM7:
+  case EF_THROWITEM8:
+  case EF_THROWITEM9:
+  case EF_THROWITEM10:
     this->AddEvent(0, "effect\\닌자_던지기.wav", 0, 0);
     break;
-  case 298:
+  case EF_THROWITEM:
     this->AddEvent(0, "_heal_effect.wav", 0, 0);
     break;
-  case 914:
+  case EF_THROWITEM11:
     this->AddEvent(0, "effect\\G스포어익스플로젼.wav", 0, 0);
     break;
   }
@@ -433,7 +435,7 @@ void CVolcanoEffect::AddRings() {
       particle->unknown_0008 = 1;
 
       switch (this->id) {
-      case 223:
+      case EF_GANBANTEIN:
         particle->unknown_00C0 = 15.0f;
         particle->unknown_004C = 70;
         particle->unknown_0054 = 0.0f;
@@ -442,17 +444,17 @@ void CVolcanoEffect::AddRings() {
         *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(row * 90);
         particle->scale = static_cast<float>(row) + 1.0f;
         break;
-      case 225:
-      case 236:
-      case 237:
-      case 238:
-      case 261:
-      case 263:
-      case 773:
-      case 934:
-      case 936:
-      case 937:
-      case 938:
+      case EF_VOLCANO:
+      case EF_DELUGE:
+      case EF_VIOLENTGALE:
+      case EF_LANDPROTECTOR:
+      case EF_GUMGANG2:
+      case EF_GUMGANG3:
+      case EF_GUMGANG4:
+      case EF_GUMGANG6:
+      case EF_GUMGANG7:
+      case EF_GUMGANG8:
+      case EF_GUMGANG9:
         particle->unknown_00C0 = 25.0f;
         particle->unknown_004C = 80;
         particle->unknown_0054 = 0.0f;
@@ -461,7 +463,7 @@ void CVolcanoEffect::AddRings() {
         *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(baseAngle);
         particle->scale = static_cast<float>(row) + 1.0f;
         break;
-      case 886:
+      case EF_GUMGANG5:
         particle->alpha = 1;
         particle->unknown_0050 = 360;
         particle->unknown_00C0 = 25.0f;
@@ -474,31 +476,31 @@ void CVolcanoEffect::AddRings() {
       }
 
       switch (this->id) {
-      case 223:
-      case 238:
-      case 934:
+      case EF_GANBANTEIN:
+      case EF_LANDPROTECTOR:
+      case EF_GUMGANG6:
         particle->SetTexture("effect\\ring_white.tga");
         break;
-      case 225:
-      case 936:
+      case EF_VOLCANO:
+      case EF_GUMGANG7:
         particle->SetTexture("effect\\ring_red.tga");
         break;
-      case 236:
-      case 886:
+      case EF_DELUGE:
+      case EF_GUMGANG5:
         particle->SetTexture("effect\\ring_blue.tga");
         break;
-      case 237:
+      case EF_VIOLENTGALE:
         particle->SetTexture("effect\\magic_green.tga");
         break;
-      case 261:
-      case 263:
-      case 937:
+      case EF_GUMGANG2:
+      case EF_GUMGANG3:
+      case EF_GUMGANG8:
         particle->SetTexture("effect\\ring_yellow.tga");
         break;
-      case 773:
+      case EF_GUMGANG4:
         particle->SetTexture("effect\\ring_purple.tga");
         break;
-      case 938:
+      case EF_GUMGANG9:
         particle->SetTexture("effect\\ring_brown.tga");
         break;
       }
@@ -525,19 +527,19 @@ void CVolcanoEffect::Close() {
 // FUNCTION: fn_19242
 void CVolcanoEffect::Open() {
   switch (this->id) {
-  case 223:
-  case 225:
-  case 236:
-  case 237:
-  case 238:
-  case 261:
-  case 263:
-  case 773:
-  case 886:
-  case 934:
-  case 936:
-  case 937:
-  case 938:
+  case EF_GANBANTEIN:
+  case EF_VOLCANO:
+  case EF_DELUGE:
+  case EF_VIOLENTGALE:
+  case EF_LANDPROTECTOR:
+  case EF_GUMGANG2:
+  case EF_GUMGANG3:
+  case EF_GUMGANG4:
+  case EF_GUMGANG5:
+  case EF_GUMGANG6:
+  case EF_GUMGANG7:
+  case EF_GUMGANG8:
+  case EF_GUMGANG9:
     this->AddRings();
     break;
   }
@@ -568,10 +570,10 @@ void CVolcanoEffect::OnProcess() {
     particle->position.z = this->position[2];
 
     if (particle) {
-      particle->scale += this->id == 261 ? 0.1f : 0.3f;
+      particle->scale += this->id == EF_GUMGANG2 ? 0.1f : 0.3f;
 
       int tilt = particle->unknown_004C - 1;
-      if (this->id == 261) {
+      if (this->id == EF_GUMGANG2) {
         if (tilt < 30) {
           tilt = 30;
         }
@@ -581,31 +583,31 @@ void CVolcanoEffect::OnProcess() {
       particle->unknown_004C = tilt;
 
       float& spin = *reinterpret_cast<float*>(&particle->unknown_00C4);
-      spin = static_cast<float>(static_cast<int>(spin) + (this->id != 261) * 2 + 3);
+      spin = static_cast<float>(static_cast<int>(spin) + (this->id != EF_GUMGANG2) * 2 + 3);
 
       switch (this->id) {
-      case 223:
+      case EF_GANBANTEIN:
         fadeIn = 20;
         fadeOut = 8;
         break;
-      case 225:
-      case 236:
-      case 237:
-      case 238:
-      case 261:
+      case EF_VOLCANO:
+      case EF_DELUGE:
+      case EF_VIOLENTGALE:
+      case EF_LANDPROTECTOR:
+      case EF_GUMGANG2:
         fadeIn = 20;
         fadeOut = 2;
         break;
-      case 263:
-      case 773:
+      case EF_GUMGANG3:
+      case EF_GUMGANG4:
         fadeIn = 10;
         fadeOut = 2;
         break;
-      case 886:
-      case 934:
-      case 936:
-      case 937:
-      case 938:
+      case EF_GUMGANG5:
+      case EF_GUMGANG6:
+      case EF_GUMGANG7:
+      case EF_GUMGANG8:
+      case EF_GUMGANG9:
         fadeIn = 20;
         fadeOut = 5;
         break;

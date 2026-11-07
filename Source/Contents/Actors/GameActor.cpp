@@ -1,4 +1,6 @@
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Jobs/JobId.h"
+#include "Contents/Skills/SkillId.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -874,16 +876,16 @@ int __stdcall MountedJob(int job, std::uint32_t flags) {
 // FUNCTION: fn_21051
 int CGameActor::GetEffectCounter(int effectId) {
   switch (effectId) {
-  case 0x81:
-  case 0x17d:
-  case 0x14ce:
-  case 0x14d1:
-  case 0x1978:
+  case HT_BLITZBEAT:
+  case SN_FALCONASSAULT:
+  case WH_HAWKRUSH:
+  case WH_HAWKBOOMERANG:
+  case WH_WILD_WALK:
     return this->unknown_037C[0];
   }
   switch (effectId) {
-  case 0x8c3:
-  case 0x8c4:
+  case RA_WUGSTRIKE:
+  case RA_WUGBITE:
     return this->unknown_037C[1];
   }
   return 0;
@@ -903,37 +905,37 @@ float CGameActor::GetNameOffset() {
   }
 
   switch (this->GetEffectiveJob(-1)) {
-  case 0xd:
-  case 0x15:
-  case 0xfae:
-  case 0xfb6:
-  case 0xff0:
-  case 0xff1:
-  case 0xff2:
-  case 0xff3:
-  case 0xff4:
-  case 0xff5:
-  case 0xff6:
-  case 0xff7:
-  case 0xff8:
-  case 0xff9:
-  case 0xffa:
-  case 0xffb:
-  case 0xffc:
-  case 0xffd:
-  case 0xffe:
-  case 0xfff:
-  case 0x10b6:
-  case 0x10b7:
-  case 0x10b8:
-  case 0x10b9:
+  case JT_CHICKEN:
+  case JT_CHICKEN2:
+  case JT_CHICKEN_H:
+  case JT_CHICKEN2_H:
+  case JT_RUNE_CHICKEN:
+  case JT_RUNE_CHICKEN_H:
+  case JT_ROYAL_CHICKEN:
+  case JT_ROYAL_CHICKEN_H:
+  case JT_WOLF_RANGER:
+  case JT_WOLF_RANGER_H:
+  case JT_MADOGEAR:
+  case JT_MADOGEAR_H:
+  case JT_RUNE_CHICKEN2:
+  case JT_RUNE_CHICKEN2_H:
+  case JT_RUNE_CHICKEN3:
+  case JT_RUNE_CHICKEN3_H:
+  case JT_RUNE_CHICKEN4:
+  case JT_RUNE_CHICKEN4_H:
+  case JT_RUNE_CHICKEN5:
+  case JT_RUNE_CHICKEN5_H:
+  case JT_WOLF_WINDHAWK:
+  case JT_MEISTER_MADOGEAR:
+  case JT_DRAGON_KNIGHT_CHICKEN:
+  case JT_IMPERIAL_GUARD_CHICKEN:
     return scale * 6.0f;
-  case 0xfc4:
-  case 0xfcc:
-  case 0x100d:
-  case 0x100e:
-  case 0x100f:
-  case 0x1010:
+  case JT_CHICKEN_B:
+  case JT_CHICKEN2_B:
+  case JT_RUNE_CHICKEN_B:
+  case JT_ROYAL_CHICKEN_B:
+  case JT_WOLF_RANGER_B:
+  case JT_MADOGEAR_B:
     return scale * 4.0f;
   default:
     break;
@@ -962,18 +964,18 @@ float CGameActor::GetNameOffset() {
   }
 
   switch (static_cast<unsigned int>(pc->unknown_04D4)) {
-  case 0x18:
-  case 0x1077:
-  case 0x10d2:
+  case JT_GUNSLINGER:
+  case JT_REBELLION:
+  case JT_NIGHT_WATCH:
     return 0.0f;
-  case 0:
-  case 0x17:
-  case 0xfa1:
-  case 0x105e:
-  case 0x10d3:
-  case 0x10ff:
-  case 0x1101:
-  case 0x1103:
+  case JT_NOVICE:
+  case JT_SUPERNOVICE:
+  case JT_NOVICE_H:
+  case JT_SUPERNOVICE2:
+  case JT_HYPER_NOVICE:
+  case JT_DRUID:
+  case JT_KARNOS:
+  case JT_ALITEA:
     return scale + scale;
   default:
     return scale * 6.0f;
@@ -984,37 +986,37 @@ float CGameActor::GetNameOffset() {
 // FUNCTION: fn_21054
 float CGameActor::GetNameHeight() {
   switch (this->GetEffectiveJob(-1)) {
-  case 0xd:
-  case 0x15:
-  case 0xfae:
-  case 0xfb6:
-  case 0xff0:
-  case 0xff1:
-  case 0xff2:
-  case 0xff3:
-  case 0xff4:
-  case 0xff5:
-  case 0xff6:
-  case 0xff7:
-  case 0xff8:
-  case 0xff9:
-  case 0xffa:
-  case 0xffb:
-  case 0xffc:
-  case 0xffd:
-  case 0xffe:
-  case 0xfff:
-  case 0x10b6:
-  case 0x10b7:
-  case 0x10b8:
-  case 0x10b9:
+  case JT_CHICKEN:
+  case JT_CHICKEN2:
+  case JT_CHICKEN_H:
+  case JT_CHICKEN2_H:
+  case JT_RUNE_CHICKEN:
+  case JT_RUNE_CHICKEN_H:
+  case JT_ROYAL_CHICKEN:
+  case JT_ROYAL_CHICKEN_H:
+  case JT_WOLF_RANGER:
+  case JT_WOLF_RANGER_H:
+  case JT_MADOGEAR:
+  case JT_MADOGEAR_H:
+  case JT_RUNE_CHICKEN2:
+  case JT_RUNE_CHICKEN2_H:
+  case JT_RUNE_CHICKEN3:
+  case JT_RUNE_CHICKEN3_H:
+  case JT_RUNE_CHICKEN4:
+  case JT_RUNE_CHICKEN4_H:
+  case JT_RUNE_CHICKEN5:
+  case JT_RUNE_CHICKEN5_H:
+  case JT_WOLF_WINDHAWK:
+  case JT_MEISTER_MADOGEAR:
+  case JT_DRAGON_KNIGHT_CHICKEN:
+  case JT_IMPERIAL_GUARD_CHICKEN:
     return 23.0f;
-  case 0xfc4:
-  case 0xfcc:
-  case 0x100d:
-  case 0x100e:
-  case 0x100f:
-  case 0x1010:
+  case JT_CHICKEN_B:
+  case JT_CHICKEN2_B:
+  case JT_RUNE_CHICKEN_B:
+  case JT_ROYAL_CHICKEN_B:
+  case JT_WOLF_RANGER_B:
+  case JT_MADOGEAR_B:
     return 19.0f;
   default:
     break;
@@ -1035,18 +1037,18 @@ float CGameActor::GetNameHeight() {
   }
 
   switch (static_cast<unsigned int>(pc->unknown_04D4)) {
-  case 0x18:
-  case 0x1077:
-  case 0x10d2:
+  case JT_GUNSLINGER:
+  case JT_REBELLION:
+  case JT_NIGHT_WATCH:
     return 18.0f;
-  case 0:
-  case 0x17:
-  case 0xfa1:
-  case 0x105e:
-  case 0x10d3:
-  case 0x10ff:
-  case 0x1101:
-  case 0x1103:
+  case JT_NOVICE:
+  case JT_SUPERNOVICE:
+  case JT_NOVICE_H:
+  case JT_SUPERNOVICE2:
+  case JT_HYPER_NOVICE:
+  case JT_DRUID:
+  case JT_KARNOS:
+  case JT_ALITEA:
     return 19.0f;
   default:
     return 23.0f;

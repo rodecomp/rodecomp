@@ -1,4 +1,5 @@
 #include "Client/Session.h"
+#include "Contents/Jobs/JobId.h"
 #include "Contents/EquipmentResourceMgr.h"
 #include "Resource/ResourceMgr.h"
 #include "Utility/Text/FormatString.h"
@@ -213,22 +214,22 @@ void CSession::NormalizeHead(int* head, int job) {
 
   if (job < 23) {
     switch (job) {
-    case 1:
+    case JT_SWORDMAN:
       *head = 2;
       return;
-    case 4:
+    case JT_ACOLYTE:
       *head = 5;
       return;
-    case 2:
+    case JT_MAGICIAN:
       *head = 3;
       return;
-    case 3:
+    case JT_ARCHER:
       *head = 4;
       return;
-    case 5:
+    case JT_MERCHANT:
       *head = 6;
       return;
-    case 6:
+    case JT_THIEF:
       *head = 7;
       return;
     }

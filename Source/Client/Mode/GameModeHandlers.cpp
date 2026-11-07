@@ -1,4 +1,6 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Skills/SkillUnitId.h"
+#include "Network/Packets/ModeResultEnums.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Application/Launcher.h"
@@ -380,7 +382,7 @@ void CGameMode::ReceivePartyRoster(const unsigned char* packet) {
 void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
   const GroundSkillPacketExtended& packet = *reinterpret_cast<const GroundSkillPacketExtended*>(record);
   switch (packet.type) {
-  case 176: {
+  case UNT_GRAFFITI: {
     if (packet.length <= 23) {
       return;
     }
@@ -394,7 +396,7 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
     this->scene->unknown_0020.push_back(skill);
     return;
   }
-  case 0x126:
+  case UNT_SHINKIROU:
     this->SpawnMirrorActor(packet.aid, packet.owner, packet.x, packet.y);
     return;
   }
@@ -2119,8 +2121,8 @@ void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t*>(packet + 2));
   if (item.unknown_0000[1]) {
     const int result = *reinterpret_cast<const int*>(packet + 6);
-    if (result == 0 || result == 2) {
-      if (result == 0) {
+    if (result == ENCHANTGRADE_UPGRADE_SUCCESS || result == ENCHANTGRADE_UPGRADE_DOWNGRADE) {
+      if (result == ENCHANTGRADE_UPGRADE_SUCCESS) {
         item.unknown_0060 = 0;
       }
       item.unknown_0088 = *reinterpret_cast<const std::int16_t*>(packet + 4);
@@ -2132,15 +2134,15 @@ void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
   if (window) {
     const int result = *reinterpret_cast<const int*>(packet + 6);
     switch (result) {
-    case 0:
+    case ENCHANTGRADE_UPGRADE_SUCCESS:
       window->SetResult(2, 0);
       g_effectMgr->Spawn(g_session.m_aid, 1607, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(g_session.m_aid, 1608, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->SetDelay(2800);
       break;
-    case 1:
-    case 2:
-    case 3:
-    case 4:
+    case ENCHANTGRADE_UPGRADE_FAILED:
+    case ENCHANTGRADE_UPGRADE_DOWNGRADE:
+    case ENCHANTGRADE_UPGRADE_BREAK:
+    case ENCHANTGRADE_UPGRADE_PROTECTED:
       window->SetResult(2, result);
       g_effectMgr->Spawn(g_session.m_aid, 1607, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(g_session.m_aid, 1609, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->SetDelay(2800);

@@ -1,4 +1,5 @@
 #include "Contents/Effects/MandraAttackEffect.h"
+#include "Contents/Jobs/JobId.h"
 
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -49,39 +50,39 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, int message, int a, int b
   const char* sprite;
   const char* action;
   switch (f) {
-    case 0x42C:
+    case JT_HYDRA:
       sprite = "몬스터\\hydra_atk.spr";
       action = "몬스터\\hydra_atk.act";
       break;
 
-    case 0x6A8:
-    case 0x6AD:
+    case JT_THA_ODIUM:
+    case JT_G_THA_ODIUM:
       sprite = "몬스터\\tha_odium_ef.spr";
       action = "몬스터\\tha_odium_ef.act";
       break;
 
-    case 0x6F5:
-    case 0x55BB:
+    case JT_DROSERA:
+    case JT_DEDSERA:
       sprite = "몬스터\\drosera_bullet.spr";
       action = "몬스터\\drosera_bullet.act";
       break;
 
-    case 0x75C:
-    case 0x75E:
+    case JT_MAVKA:
+    case JT_G_MAVKA:
       sprite = "몬스터\\MAVKA_BULLET.spr";
       action = "몬스터\\MAVKA_BULLET.act";
       break;
 
-    case 0x7A5:
-    case 0x7A6:
-    case 0x7A7:
-    case 0x7A8:
-    case 0x7A9:
+    case JT_ENTWEIHEN:
+    case JT_G_ENTWEIHEN_R:
+    case JT_G_ENTWEIHEN_H:
+    case JT_G_ENTWEIHEN_M:
+    case JT_G_ENTWEIHEN_S:
       sprite = "몬스터\\ENTWEIHEN_BULLET.spr";
       action = "몬스터\\ENTWEIHEN_BULLET.act";
       break;
 
-    case 0x7C4:
+    case JT_NEPENTHES:
       sprite = "몬스터\\NEPENTHES_BULLET.spr";
       action = "몬스터\\NEPENTHES_BULLET.act";
       break;
@@ -97,52 +98,52 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, int message, int a, int b
       action = "몬스터\\jp_2017evt_atk.act";
       break;
 
-    case 0x5172:
+    case JT_SUMMON_CREEPER:
       sprite = "몬스터\\summon_creeper_bullet.spr";
       action = "몬스터\\summon_creeper_bullet.act";
       break;
 
-    case 0x5759:
-    case 0x578D:
+    case JT_EP21_YORTUS_B:
+    case JT_EP21_YORTUS_B_H:
       sprite = "몬스터\\EP21_YORTUS_Bullet.spr";
       action = "몬스터\\EP21_YORTUS_Bullet.act";
       break;
 
-    case 0x575C:
-    case 0x5796:
+    case JT_EP21_B_YORTUS_B:
+    case JT_EP21_B_YORTUS_B_H:
       sprite = "몬스터\\EP21_B_YORTUS_Bullet.spr";
       action = "몬스터\\EP21_B_YORTUS_Bullet.act";
       break;
 
-    case 0x577B:
-    case 0x577C:
+    case JT_MEDJED:
+    case JT_CP_MEDJED:
       sprite = "몬스터\\MEDJED_bullet.spr";
       action = "몬스터\\MEDJED_bullet.act";
       break;
 
-    case 0x5781:
-    case 0x5782:
+    case JT_HEKA:
+    case JT_CP_HEKA:
       sprite = "몬스터\\mg_corruption_root_h_bullet.spr";
       action = "몬스터\\mg_corruption_root_h_bullet.act";
       break;
 
-    case 0x5784:
+    case JT_GUIDE_OF_DEAD:
       sprite = "몬스터\\GUIDE_OF_DEAD_bullet.spr";
       action = "몬스터\\GUIDE_OF_DEAD_bullet.act";
       break;
 
-    case 0x5788:
+    case JT_E_SMART_ANDRE:
       sprite = "몬스터\\E_SMART_ANDRE_Bullet.spr";
       action = "몬스터\\E_SMART_ANDRE_Bullet.act";
       break;
 
-    case 0x57B2:
+    case JT_CH1_FIRE_FLOWER:
       sprite = "몬스터\\CH1_FIRE_FLOWER_bullet.spr";
       action = "몬스터\\CH1_FIRE_FLOWER_bullet.act";
       break;
 
-    case 0x57D2:
-    case 0x57D3:
+    case JT_CH1_SHADIEST:
+    case JT_CP_CH1_SHADIEST:
       sprite = "몬스터\\CH1_SHADIEST_bullet.spr";
       action = "몬스터\\CH1_SHADIEST_bullet.act";
       break;

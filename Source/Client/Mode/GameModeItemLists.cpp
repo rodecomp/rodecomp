@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Items/InventoryType.h"
 #include "Client/Session.h"
 #include "Contents/ClientState.h"
 #include "Contents/Items/ItemInfo.h"
@@ -97,8 +98,8 @@ namespace {
 void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const unsigned char* data) {
   const EquipListRecord* records = reinterpret_cast<const EquipListRecord*>(data);
   switch (listType) {
-  case 2:
-  case 3:
+  case INVTYPE_STORAGE:
+  case INVTYPE_GUILD_STORAGE:
     for (int i = 0; i < count; ++i) {
       const EquipListRecord record = records[i];
       if (record.location == 0x8000) {
@@ -112,7 +113,7 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       g_session.AddItem1738(item, 0);
     }
     break;
-  case 0:
+  case INVTYPE_INVENTORY:
     for (int i = 0; i < count; ++i) {
       const EquipListRecord record = records[i];
       EquipListOption options[5];
@@ -152,7 +153,7 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       }
     }
     break;
-  case 1:
+  case INVTYPE_CART:
     for (int i = 0; i < count; ++i) {
       const EquipListRecord record = records[i];
       EquipListOption options[5];
@@ -176,8 +177,8 @@ void CGameMode::ReceiveInventoryStart(const unsigned char* packet) {
   }
 
   switch (listType) {
-  case 2:
-  case 3: {
+  case INVTYPE_STORAGE:
+  case INVTYPE_GUILD_STORAGE: {
     char title[24] = {};
     memcpy_s(title, sizeof(title), packet + 5, length);
     UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(33));
@@ -189,12 +190,12 @@ void CGameMode::ReceiveInventoryStart(const unsigned char* packet) {
     }
     break;
   }
-  case 0:
+  case INVTYPE_INVENTORY:
     g_session.ClearInventory();
     g_session.ResetEquipment();
     g_session.ResetItems2B50();
     break;
-  case 1:
+  case INVTYPE_CART:
     g_session.ClearItems1740();
     break;
   }

@@ -1,4 +1,5 @@
 #include "Contents/Effects/SaintCastingEffect.h"
+#include "Contents/Effects/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -32,22 +33,22 @@ void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
       *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>((particle->unknown_0010 + 2) * 90 % 360);
 
       switch (this->id) {
-      case 342:
+      case EF_COUPLECASTING:
         particle->alpha += (3 - particle->unknown_0010) * 45;
         particle->unknown_00C0 = 20.0f - static_cast<float>(particle->unknown_0010);
         break;
-      case 367:
+      case EF_AURABLADE:
         particle->alpha = 0;
         particle->unknown_00E8 = -5 * particle->unknown_0010;
         particle->unknown_00C0 = 15.0f - static_cast<float>(particle->unknown_0010);
         break;
-      case 12:
-      case 58:
-      case 441:
-      case 454:
-      case 564:
-      case 826:
-      case 911:
+      case EF_BEGINSPELL:
+      case EF_BEGINSPELL6:
+      case EF_BLUECASTING:
+      case EF_DARKCASTING:
+      case EF_HOMUNCASTING:
+      case EF_DARKCASTING2:
+      case EF_GREENCASTING:
         particle->alpha = 0;
         particle->unknown_00E8 = -5 * particle->unknown_0010;
         particle->unknown_00C0 = 20.0f - static_cast<float>(particle->unknown_0010);
@@ -55,21 +56,21 @@ void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
       }
 
       switch (this->id) {
-      case 12:
+      case EF_BEGINSPELL:
         particle->SetColor(255, 255, 170);
         break;
-      case 342:
-      case 564:
+      case EF_COUPLECASTING:
+      case EF_HOMUNCASTING:
         particle->SetColor(255, 89, 182);
         break;
-      case 441:
+      case EF_BLUECASTING:
         particle->SetColor(100, 100, 255);
         break;
-      case 454:
-      case 826:
+      case EF_DARKCASTING:
+      case EF_DARKCASTING2:
         particle->SetColor(50, 50, 50);
         break;
-      case 911:
+      case EF_GREENCASTING:
         particle->SetColor(100, 255, 100);
         break;
       }
@@ -97,60 +98,60 @@ void CSaintCastingEffect::Open() {
   const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
 
   switch (this->id) {
-  case 12:
-  case 58:
-  case 342:
-  case 441:
-  case 454:
-  case 564:
-  case 911:
+  case EF_BEGINSPELL:
+  case EF_BEGINSPELL6:
+  case EF_COUPLECASTING:
+  case EF_BLUECASTING:
+  case EF_DARKCASTING:
+  case EF_HOMUNCASTING:
+  case EF_GREENCASTING:
     g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", this->position[0] - player.x, 0.0f, this->position[2] - player.z, 250, 40, 1.0f, 0);
     break;
   }
 
   switch (this->id) {
-  case 12:
+  case EF_BEGINSPELL:
     this->AddRing("effect\\ring_yellow.tga", 0);
     this->AddRing("effect\\ring_yellow.tga", 0);
     break;
-  case 367:
+  case EF_AURABLADE:
     this->AddRing("effect\\ring_white.tga", 0);
     this->AddRing("effect\\ring_yellow.tga", 0);
     break;
-  case 441:
+  case EF_BLUECASTING:
     this->AddRing("effect\\ring_blue.tga", 0);
     this->AddRing("effect\\ring_blue.tga", 0);
     break;
-  case 342:
-  case 564:
+  case EF_COUPLECASTING:
+  case EF_HOMUNCASTING:
     this->AddRing("effect\\ring_red.tga", 45);
     this->AddRing("effect\\ring_red.tga", 25);
     break;
-  case 454:
-  case 826:
+  case EF_DARKCASTING:
+  case EF_DARKCASTING2:
     this->AddRing("effect\\ring_black.tga", 0);
     this->AddRing("effect\\ring_black.tga", 0);
     break;
-  case 58:
-  case 911:
+  case EF_BEGINSPELL6:
+  case EF_GREENCASTING:
     this->AddRing("effect\\ring_white.tga", 0);
     this->AddRing("effect\\ring_white.tga", 0);
     break;
   }
 
   switch (this->id) {
-  case 12:
-  case 58:
+  case EF_BEGINSPELL:
+  case EF_BEGINSPELL6:
     this->unknown_002C = 56;
     break;
-  case 342:
+  case EF_COUPLECASTING:
     this->unknown_002C = 1000;
     break;
-  case 367:
-  case 454:
-  case 564:
-  case 826:
-  case 911:
+  case EF_AURABLADE:
+  case EF_DARKCASTING:
+  case EF_HOMUNCASTING:
+  case EF_DARKCASTING2:
+  case EF_GREENCASTING:
     this->unknown_002C = 60;
     break;
   }
@@ -178,13 +179,13 @@ void CSaintCastingEffect::OnProcess() {
       int alpha = previousTilt >= 10 ? particle->alpha : 0;
 
       if (scale < 4.0f) {
-        alpha += this->id == 367 ? 5 : 10;
+        alpha += this->id == EF_AURABLADE ? 5 : 10;
       } else {
         alpha -= 3;
         if (alpha <= 0) {
           alpha = 0;
           if (particle->unknown_00E8 < this->unknown_002C - 30) {
-            tilt = this->id == 367 ? 64 : 74;
+            tilt = this->id == EF_AURABLADE ? 64 : 74;
             scale = 3.37f;
           }
         }

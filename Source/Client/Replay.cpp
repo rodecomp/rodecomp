@@ -1,4 +1,5 @@
 #include "Client/Replay.h"
+#include "Network/Packets/PacketId.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Client/Session.h"
@@ -1003,9 +1004,9 @@ std::vector<unsigned char> CSession::BuildShortcutReplayRecords() {
 // FUNCTION: fn_24207
 std::vector<unsigned char> CSession::BuildSkillListReplayPacket(short id) {
   switch (id) {
-  case 0x10F:
+  case ID_ZC_SKILLINFO_LIST:
     return BuildSkillInfoListPacket(0x10F, this->m_skillBundle.skills);
-  case 0x235:
+  case ID_ZC_HOSKILLINFO_LIST:
     return BuildSkillInfoListPacket(0x235, this->m_homunSkills);
   case 0x29D:
     return BuildSkillInfoListPacket(0x29D, this->m_mercSkills);

@@ -1,3 +1,4 @@
+#include "Contents/Effects/EffectMessageId.h"
 #include "Script/LuaScript.h"
 #include "Archive/PakRegistry.h"
 #include "Client/Session.h"
@@ -209,41 +210,41 @@ int SetEmitterInfo(lua_State* state) {
 
   const int key = static_cast<int>(luaL_checknumber(state, 2));
   switch (key) {
-  case 0:
+  case MSG_SET_INIT:
     effect->ResetParticles();
     break;
-  case 1:
-  case 2:
-  case 3:
-  case 4:
-  case 5: {
+  case MSG_SET_SPAWNDIR1:
+  case MSG_SET_SPAWNDIR2:
+  case MSG_SET_GRAVITY:
+  case MSG_SET_POS:
+  case MSG_SET_EMITRADIUS: {
     const float x = static_cast<float>(luaL_checknumber(state, 3));
     const float y = static_cast<float>(luaL_checknumber(state, 4));
     const float z = static_cast<float>(luaL_checknumber(state, 5));
-    if (key == 1) {
+    if (key == MSG_SET_SPAWNDIR1) {
       effect->velocityMin.x = x;
       effect->velocityMin.y = y;
       effect->velocityMin.z = z;
-    } else if (key == 2) {
+    } else if (key == MSG_SET_SPAWNDIR2) {
       effect->velocityMax.x = x;
       effect->velocityMax.y = y;
       effect->velocityMax.z = z;
-    } else if (key == 3) {
+    } else if (key == MSG_SET_GRAVITY) {
       effect->acceleration.x = x;
       effect->acceleration.y = y;
       effect->acceleration.z = z;
-    } else if (key == 4) {
+    } else if (key == MSG_SET_POS) {
       effect->position[0] = x;
       effect->position[1] = y;
       effect->position[2] = z;
-    } else if (key == 5) {
+    } else if (key == MSG_SET_EMITRADIUS) {
       effect->spread.x = x;
       effect->spread.y = y;
       effect->spread.z = z;
     }
     break;
   }
-  case 6: {
+  case MSG_SET_COLOR: {
     const int red = (std::min)(static_cast<int>(luaL_checknumber(state, 3)), 255);
     const int green = (std::min)(static_cast<int>(luaL_checknumber(state, 4)), 255);
     const int blue = (std::min)(static_cast<int>(luaL_checknumber(state, 5)), 255);
@@ -254,47 +255,47 @@ int SetEmitterInfo(lua_State* state) {
     effect->alpha = alpha;
     break;
   }
-  case 7:
-  case 8:
-  case 9: {
+  case MSG_SET_EMITRATE:
+  case MSG_SET_SIZE:
+  case MSG_SET_LIFETIME: {
     const float minimum = static_cast<float>(luaL_checknumber(state, 3));
     const float maximum = static_cast<float>(luaL_checknumber(state, 4));
-    if (key == 7) {
+    if (key == MSG_SET_EMITRATE) {
       effect->rateMin = minimum;
       effect->rateMax = maximum;
-    } else if (key == 8) {
+    } else if (key == MSG_SET_SIZE) {
       effect->scaleMin = minimum;
       effect->scaleMax = maximum;
-    } else if (key == 9) {
+    } else if (key == MSG_SET_LIFETIME) {
       effect->lifeMin = minimum;
       effect->lifeMax = maximum;
     }
     break;
   }
-  case 10: {
+  case MSG_SET_TEXTURE: {
     std::string texture = luaL_checkstring(state, 3);
     effect->SetTexture(texture);
     break;
   }
-  case 11:
+  case MSG_SET_SPEED:
     effect->SetParticleSpeed(static_cast<float>(luaL_checknumber(state, 3)));
     break;
-  case 12:
+  case MSG_SET_SRCMODE:
     effect->sourceBlend = luaL_checknumber(state, 3);
     break;
-  case 13:
+  case MSG_SET_DESTMODE:
     effect->destinationBlend = luaL_checknumber(state, 3);
     break;
-  case 14:
+  case MSG_SET_MAXPARTICLE:
     effect->SetCount(static_cast<int>(luaL_checknumber(state, 3)));
     break;
-  case 43:
+  case MSG_SET_ZENABLE:
     effect->depth = static_cast<int>(luaL_checknumber(state, 3)) != 0;
     break;
-  case 45:
+  case MSG_SET_BILLBOARD_OFF:
     effect->billboard = static_cast<int>(luaL_checknumber(state, 3)) != 0;
     break;
-  case 46: {
+  case MSG_SET_ROTATE_ANGLE: {
     const float x = static_cast<float>(luaL_checknumber(state, 3));
     const float y = static_cast<float>(luaL_checknumber(state, 4));
     const float z = static_cast<float>(luaL_checknumber(state, 5));
@@ -303,10 +304,10 @@ int SetEmitterInfo(lua_State* state) {
     effect->rotation[2] = z;
     break;
   }
-  case 51:
+  case MSG_SET_ETERNITY:
     effect->fixedAlpha = static_cast<int>(luaL_checknumber(state, 3)) == 1;
     break;
-  case 52: {
+  case MSG_SET_SCALE: {
     const float width = static_cast<float>(luaL_checknumber(state, 3));
     const float height = static_cast<float>(luaL_checknumber(state, 4));
     effect->width = width;
@@ -331,48 +332,48 @@ int SetMagicFloorInfo(lua_State* state) {
 
   const int key = static_cast<int>(value);
   switch (key) {
-  case 0:
+  case MSG_SET_INIT:
     effect->ResetParticles();
     break;
-  case 16:
+  case MSG_SET_AREA:
     *reinterpret_cast<float*>(&effect->unknown_003C[8]) = static_cast<float>(luaL_checknumber(state, 3));
     break;
-  case 42:
+  case MSG_SET_SIZE2:
     reinterpret_cast<float&>(effect->unknown_0048) = static_cast<float>(luaL_checknumber(state, 3));
     break;
-  case 17:
+  case MSG_SET_ANGLE:
     *reinterpret_cast<int*>(effect->unknown_004C) = luaL_checknumber(state, 3);
     break;
-  case 18:
+  case MSG_SET_RISEANGLE:
     reinterpret_cast<float&>(effect->unknown_0050) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
     break;
-  case 19:
+  case MSG_SET_ALPHA:
     *reinterpret_cast<int*>(&effect->unknown_0054[0]) = luaL_checknumber(state, 3);
     break;
-  case 20:
+  case MSG_SET_FDA:
     *reinterpret_cast<int*>(&effect->unknown_0054[4]) = luaL_checknumber(state, 3);
     break;
-  case 21:
-  case 22:
-  case 23:
-  case 24:
-  case 25:
-  case 26:
-  case 27:
-  case 28:
-  case 29:
-  case 30:
-  case 31:
-  case 32:
-  case 33:
-  case 34:
-  case 35:
-  case 36:
-  case 37:
-  case 38:
-  case 39:
-  case 40:
-  case 41:
+  case MSG_SET_HEIGHT0:
+  case MSG_SET_HEIGHT1:
+  case MSG_SET_HEIGHT2:
+  case MSG_SET_HEIGHT3:
+  case MSG_SET_HEIGHT4:
+  case MSG_SET_HEIGHT5:
+  case MSG_SET_HEIGHT6:
+  case MSG_SET_HEIGHT7:
+  case MSG_SET_HEIGHT8:
+  case MSG_SET_HEIGHT9:
+  case MSG_SET_HEIGHT10:
+  case MSG_SET_HEIGHT11:
+  case MSG_SET_HEIGHT12:
+  case MSG_SET_HEIGHT13:
+  case MSG_SET_HEIGHT14:
+  case MSG_SET_HEIGHT15:
+  case MSG_SET_HEIGHT16:
+  case MSG_SET_HEIGHT17:
+  case MSG_SET_HEIGHT18:
+  case MSG_SET_HEIGHT19:
+  case MSG_SET_HEIGHT20:
     reinterpret_cast<float*>(&effect->unknown_0054[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
     break;
   }
@@ -392,16 +393,16 @@ int SetEvilsPawInfo(lua_State* state) {
   }
 
   switch (static_cast<int>(key)) {
-  case 0:
+  case MSG_SET_INIT:
     effect->ResetParticles();
     break;
-  case 8:
+  case MSG_SET_SIZE:
     effect->size = static_cast<int>(static_cast<float>(luaL_checknumber(state, 3)));
     break;
-  case 11:
+  case MSG_SET_SPEED:
     effect->frameDelay = static_cast<int>(static_cast<float>(luaL_checknumber(state, 3)));
     break;
-  case 44: {
+  case MSG_SET_OFFSET_POS: {
     const float x = static_cast<float>(luaL_checknumber(state, 3));
     const float y = static_cast<float>(luaL_checknumber(state, 4));
     const float z = static_cast<float>(luaL_checknumber(state, 5));
@@ -428,48 +429,48 @@ int SetOtherEffectInfo(lua_State* state) {
 
   const int key = static_cast<int>(luaL_checknumber(state, 3));
   switch (key) {
-  case 0:
+  case MSG_SET_INIT:
     effect->ResetParticles();
     break;
-  case 16:
+  case MSG_SET_AREA:
     *reinterpret_cast<float*>(&effect->unknown_003C[8]) = static_cast<float>(luaL_checknumber(state, 4));
     break;
-  case 42:
+  case MSG_SET_SIZE2:
     reinterpret_cast<float&>(effect->unknown_0048) = static_cast<float>(luaL_checknumber(state, 4));
     break;
-  case 17:
+  case MSG_SET_ANGLE:
     *reinterpret_cast<int*>(effect->unknown_004C) = luaL_checknumber(state, 4);
     break;
-  case 18:
+  case MSG_SET_RISEANGLE:
     reinterpret_cast<float&>(effect->unknown_0050) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
     break;
-  case 19:
+  case MSG_SET_ALPHA:
     *reinterpret_cast<int*>(&effect->unknown_0054[0]) = luaL_checknumber(state, 4);
     break;
-  case 20:
+  case MSG_SET_FDA:
     *reinterpret_cast<int*>(&effect->unknown_0054[4]) = luaL_checknumber(state, 4);
     break;
-  case 21:
-  case 22:
-  case 23:
-  case 24:
-  case 25:
-  case 26:
-  case 27:
-  case 28:
-  case 29:
-  case 30:
-  case 31:
-  case 32:
-  case 33:
-  case 34:
-  case 35:
-  case 36:
-  case 37:
-  case 38:
-  case 39:
-  case 40:
-  case 41:
+  case MSG_SET_HEIGHT0:
+  case MSG_SET_HEIGHT1:
+  case MSG_SET_HEIGHT2:
+  case MSG_SET_HEIGHT3:
+  case MSG_SET_HEIGHT4:
+  case MSG_SET_HEIGHT5:
+  case MSG_SET_HEIGHT6:
+  case MSG_SET_HEIGHT7:
+  case MSG_SET_HEIGHT8:
+  case MSG_SET_HEIGHT9:
+  case MSG_SET_HEIGHT10:
+  case MSG_SET_HEIGHT11:
+  case MSG_SET_HEIGHT12:
+  case MSG_SET_HEIGHT13:
+  case MSG_SET_HEIGHT14:
+  case MSG_SET_HEIGHT15:
+  case MSG_SET_HEIGHT16:
+  case MSG_SET_HEIGHT17:
+  case MSG_SET_HEIGHT18:
+  case MSG_SET_HEIGHT19:
+  case MSG_SET_HEIGHT20:
     reinterpret_cast<float*>(&effect->unknown_0054[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
     break;
   }
@@ -488,41 +489,41 @@ int SetAnimatedEmitterInfo(lua_State* state) {
 
   const int key = static_cast<int>(luaL_checknumber(state, 2));
   switch (key) {
-  case 0:
+  case MSG_SET_INIT:
     effect->ResetParticles();
     break;
-  case 1:
-  case 2:
-  case 3:
-  case 4:
-  case 5: {
+  case MSG_SET_SPAWNDIR1:
+  case MSG_SET_SPAWNDIR2:
+  case MSG_SET_GRAVITY:
+  case MSG_SET_POS:
+  case MSG_SET_EMITRADIUS: {
     const float x = static_cast<float>(luaL_checknumber(state, 3));
     const float y = static_cast<float>(luaL_checknumber(state, 4));
     const float z = static_cast<float>(luaL_checknumber(state, 5));
-    if (key == 1) {
+    if (key == MSG_SET_SPAWNDIR1) {
       effect->velocityMin.x = x;
       effect->velocityMin.y = y;
       effect->velocityMin.z = z;
-    } else if (key == 2) {
+    } else if (key == MSG_SET_SPAWNDIR2) {
       effect->velocityMax.x = x;
       effect->velocityMax.y = y;
       effect->velocityMax.z = z;
-    } else if (key == 3) {
+    } else if (key == MSG_SET_GRAVITY) {
       effect->acceleration.x = x;
       effect->acceleration.y = y;
       effect->acceleration.z = z;
-    } else if (key == 4) {
+    } else if (key == MSG_SET_POS) {
       effect->position[0] = x;
       effect->position[1] = y;
       effect->position[2] = z;
-    } else if (key == 5) {
+    } else if (key == MSG_SET_EMITRADIUS) {
       effect->spread.x = x;
       effect->spread.y = y;
       effect->spread.z = z;
     }
     break;
   }
-  case 6: {
+  case MSG_SET_COLOR: {
     const int red = (std::min)(static_cast<int>(luaL_checknumber(state, 3)), 255);
     const int green = (std::min)(static_cast<int>(luaL_checknumber(state, 4)), 255);
     const int blue = (std::min)(static_cast<int>(luaL_checknumber(state, 5)), 255);
@@ -533,41 +534,41 @@ int SetAnimatedEmitterInfo(lua_State* state) {
     effect->alpha = alpha;
     break;
   }
-  case 7:
-  case 8:
-  case 9: {
+  case MSG_SET_EMITRATE:
+  case MSG_SET_SIZE:
+  case MSG_SET_LIFETIME: {
     const float minimum = static_cast<float>(luaL_checknumber(state, 3));
     const float maximum = static_cast<float>(luaL_checknumber(state, 4));
-    if (key == 7) {
+    if (key == MSG_SET_EMITRATE) {
       effect->rateMin = minimum;
       effect->rateMax = maximum;
-    } else if (key == 8) {
+    } else if (key == MSG_SET_SIZE) {
       effect->scaleMin = minimum;
       effect->scaleMax = maximum;
-    } else if (key == 9) {
+    } else if (key == MSG_SET_LIFETIME) {
       effect->lifeMin = minimum;
       effect->lifeMax = maximum;
     }
     break;
   }
-  case 10: {
+  case MSG_SET_TEXTURE: {
     std::string texture = luaL_checkstring(state, 3);
     effect->SetTexture(texture);
     break;
   }
-  case 11:
+  case MSG_SET_SPEED:
     effect->SetParticleSpeed(static_cast<float>(luaL_checknumber(state, 3)));
     break;
-  case 12:
+  case MSG_SET_SRCMODE:
     effect->sourceBlend = luaL_checknumber(state, 3);
     break;
-  case 13:
+  case MSG_SET_DESTMODE:
     effect->destinationBlend = luaL_checknumber(state, 3);
     break;
-  case 14:
+  case MSG_SET_MAXPARTICLE:
     effect->SetCount(static_cast<int>(luaL_checknumber(state, 3)));
     break;
-  case 43:
+  case MSG_SET_ZENABLE:
     effect->depth = static_cast<int>(luaL_checknumber(state, 3)) != 0;
     break;
   }
@@ -587,18 +588,18 @@ int SetEZ2STRInfo(lua_State* state) {
   }
 
   switch (static_cast<int>(key)) {
-  case 47: {
+  case MSG_SET_STR_FILENAME: {
     std::string name = luaL_checkstring(state, 3);
     effect->SetResource(reinterpret_cast<int>(name.c_str()));
     break;
   }
-  case 48:
+  case MSG_SET_RENDER_FLAG:
     effect->SetFlags(static_cast<unsigned int>(luaL_checknumber(state, 3)));
     break;
-  case 49:
+  case MSG_SET_SCALE_RATIO:
     effect->SetScale(static_cast<float>(luaL_checknumber(state, 3)));
     break;
-  case 50: {
+  case MSG_SET_ALPHA_RATIO: {
     const float alpha = static_cast<float>(luaL_checknumber(state, 3));
     effect->SetAlpha(alpha >= 1.0f ? 1.0f : (std::max)(0.0f, alpha));
     break;
@@ -620,10 +621,10 @@ int SetWindEffectInfo(lua_State* state) {
   }
 
   switch (static_cast<int>(key)) {
-  case 0:
+  case MSG_SET_INIT:
     effect->ResetParticles();
     break;
-  case 4: {
+  case MSG_SET_POS: {
     const float x = static_cast<float>(luaL_checknumber(state, 3));
     const float y = static_cast<float>(luaL_checknumber(state, 4));
     const float z = static_cast<float>(luaL_checknumber(state, 5));
@@ -632,10 +633,10 @@ int SetWindEffectInfo(lua_State* state) {
     effect->position[2] = z;
     break;
   }
-  case 53:
+  case MSG_SET_NUMBER:
     effect->ringCount = static_cast<unsigned short>(luaL_checknumber(state, 3));
     break;
-  case 6: {
+  case MSG_SET_COLOR: {
     const double alpha = luaL_checknumber(state, 3);
     const double red = luaL_checknumber(state, 4);
     const double green = luaL_checknumber(state, 5);
@@ -646,22 +647,22 @@ int SetWindEffectInfo(lua_State* state) {
     effect->red = static_cast<unsigned char>(static_cast<int>(red));
     break;
   }
-  case 8:
+  case MSG_SET_SIZE:
     effect->particleScale = static_cast<float>(luaL_checknumber(state, 3));
     break;
-  case 18:
+  case MSG_SET_RISEANGLE:
     effect->width = static_cast<float>(luaL_checknumber(state, 3));
     break;
-  case 21:
+  case MSG_SET_HEIGHT0:
     effect->height = static_cast<float>(luaL_checknumber(state, 3));
     break;
-  case 11:
+  case MSG_SET_SPEED:
     effect->angleSpeed = static_cast<float>(luaL_checknumber(state, 3));
     break;
-  case 20:
+  case MSG_SET_FDA:
     effect->arcLength = static_cast<unsigned short>(luaL_checknumber(state, 3));
     break;
-  case 46: {
+  case MSG_SET_ROTATE_ANGLE: {
     const float x = static_cast<float>(luaL_checknumber(state, 3));
     const float z = static_cast<float>(luaL_checknumber(state, 4));
     effect->rotation.x = x;
@@ -669,13 +670,13 @@ int SetWindEffectInfo(lua_State* state) {
     effect->rotation.z = z;
     break;
   }
-  case 12:
+  case MSG_SET_SRCMODE:
     effect->sourceBlend = static_cast<int>(luaL_checknumber(state, 3));
     break;
-  case 13:
+  case MSG_SET_DESTMODE:
     effect->destinationBlend = static_cast<int>(luaL_checknumber(state, 3));
     break;
-  case 10: {
+  case MSG_SET_TEXTURE: {
     std::string name = luaL_checkstring(state, 3);
     std::string texture = name;
     effect->textureName = texture;

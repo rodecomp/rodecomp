@@ -1,4 +1,5 @@
 #include "Contents/Effects/CellRangeEffect.h"
+#include "Contents/Effects/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -30,19 +31,19 @@ void CCellRangeEffect::SetCellTexture(CParticle* particle) {
   const int frame = (particle->unknown_00E8 + particle->unknown_000C) / 10 % 3 + 1;
   std::string name;
   switch (this->id) {
-  case 992:
+  case EF_KO_ZENKAI_WATER:
     name = FormatOwnedString("effect\\water-%d.bmp", frame);
     break;
-  case 993:
+  case EF_KO_ZENKAI_LAND:
     name = FormatOwnedString("effect\\stone-%d.bmp", frame);
     break;
-  case 994:
+  case EF_KO_ZENKAI_FIRE:
     name = FormatOwnedString("effect\\fire-%d.bmp", frame);
     break;
-  case 995:
+  case EF_KO_ZENKAI_WIND:
     name = FormatOwnedString("effect\\lightning-%d.bmp", frame);
     break;
-  case 1007:
+  case EF_KO_MAKIBISHI:
     name = "effect\\makibishi.bmp";
     particle->scale = 2.5f;
     particle->destinationBlend = 6;

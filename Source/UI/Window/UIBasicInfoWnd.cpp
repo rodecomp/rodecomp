@@ -6,6 +6,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Jobs/JobId.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
@@ -454,19 +455,19 @@ void UIBasicInfoWnd::DrawCollapsed() {
   int fontHeight = 14;
   if (g_serviceType == 0) {
     switch (g_session.GetDisplayJob()) {
-    case 4046:
-    case 4047:
-    case 4048:
-    case 4049:
-    case 4239:
-    case 4240:
-    case 4241:
-    case 4242:
-    case 4243:
-    case 4244:
-    case 4302:
-    case 4303:
-    case 4316:
+    case JT_TAEKWON:
+    case JT_STAR:
+    case JT_STAR2:
+    case JT_LINKER:
+    case JT_STAR_EMPEROR:
+    case JT_SOUL_REAPER:
+    case JT_STAR_EMPEROR_B:
+    case JT_SOUL_REAPER_B:
+    case JT_STAR2_EMPEROR:
+    case JT_STAR2_EMPEROR_B:
+    case JT_SKY_EMPEROR:
+    case JT_SOUL_ASCETIC:
+    case JT_SKY_EMPEROR2:
       family = 0;
       fontHeight = 11;
       break;
@@ -643,20 +644,20 @@ void UIBasicInfoWnd::Paint() {
     } else {
       if (g_serviceType == 0) {
         switch (g_session.GetDisplayJob()) {
-        case 23:
-        case 4046:
-        case 4047:
-        case 4048:
-        case 4049:
-        case 4239:
-        case 4240:
-        case 4241:
-        case 4242:
-        case 4243:
-        case 4244:
-        case 4302:
-        case 4303:
-        case 4316:
+        case JT_SUPERNOVICE:
+        case JT_TAEKWON:
+        case JT_STAR:
+        case JT_STAR2:
+        case JT_LINKER:
+        case JT_STAR_EMPEROR:
+        case JT_SOUL_REAPER:
+        case JT_STAR_EMPEROR_B:
+        case JT_SOUL_REAPER_B:
+        case JT_STAR2_EMPEROR:
+        case JT_STAR2_EMPEROR_B:
+        case JT_SKY_EMPEROR:
+        case JT_SOUL_ASCETIC:
+        case JT_SKY_EMPEROR2:
           family = 0;
           fontHeight = 11;
           break;

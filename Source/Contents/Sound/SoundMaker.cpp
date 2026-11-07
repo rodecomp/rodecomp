@@ -1,4 +1,5 @@
 #include "Contents/Sound/SoundMaker.h"
+#include "Contents/Jobs/JobId.h"
 
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/EffectActors.h"
@@ -448,9 +449,9 @@ void CNpc::RegisterPos() {
   mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
 
   switch (this->GetEffectiveJob(-1)) {
-    case 45:
-    case 111:
-    case 139:
+    case JT_WARPNPC:
+    case JT_HIDDEN_NPC:
+    case JT_HIDDEN_WARP_NPC:
       break;
     default:
       mode->SendMsg(12, this->render.accountId, column, row, 0);
@@ -462,10 +463,10 @@ void CNpc::RegisterPos() {
 // FUNCTION: fn_22434
 void CNpc::UnRegisterPos() {
   switch (this->GetEffectiveJob(-1)) {
-    case 45:
-    case 104:
-    case 111:
-    case 139:
+    case JT_WARPNPC:
+    case JT_EFFECTLAUNCHER:
+    case JT_HIDDEN_NPC:
+    case JT_HIDDEN_WARP_NPC:
       break;
     default:
       g_modeMgr.GetGameMode()->SendMsg(13, this->render.accountId, 0, 0, 0);
@@ -1039,7 +1040,7 @@ void CHalluNPC::Render(int argument) {
 void CNpc::Render(int argument) {
   const float* matrix = reinterpret_cast<const float*>(argument);
   switch (this->GetEffectiveJob(-1)) {
-    case 45: {
+    case JT_WARPNPC: {
       if (!this->render.enabled) {
         this->UpdateTlvertex(matrix);
         return;
@@ -1065,10 +1066,10 @@ void CNpc::Render(int argument) {
       }
       return;
     }
-    case 104:
-    case 139:
+    case JT_EFFECTLAUNCHER:
+    case JT_HIDDEN_WARP_NPC:
       return;
-    case 111: {
+    case JT_HIDDEN_NPC: {
       float x;
       float y;
       float reciprocalDepth;
@@ -1358,16 +1359,16 @@ bool CNpc::OnProcess() {
 
   bool result = true;
   switch (this->GetEffectiveJob(-1)) {
-    case 45:
-    case 139:
+    case JT_WARPNPC:
+    case JT_HIDDEN_WARP_NPC:
       break;
-    case 104:
+    case JT_EFFECTLAUNCHER:
       if (timeGetTime() > this->unknown_0424 + this->unknown_0294 * 1000) {
         this->unknown_0424 = timeGetTime();
         this->LaunchEffect(*reinterpret_cast<int*>(&this->unknown_0170[4]), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 111:
+    case JT_HIDDEN_NPC:
       this->ProcessDamageMessages();
       this->UpdateGaugePositions();
       result = this->ProcessState();
@@ -1592,7 +1593,7 @@ void CNpc::SetState(int state, int) {
   }
 
   switch (this->GetEffectiveJob(-1)) {
-    case 45: {
+    case JT_WARPNPC: {
       int height = this->unknown_0298;
       if (height <= 10) {
         this->unknown_0298 = 10;
@@ -1613,14 +1614,14 @@ void CNpc::SetState(int state, int) {
       }
       break;
     }
-    case 104:
+    case JT_EFFECTLAUNCHER:
       this->render.position.y -= static_cast<float>(this->unknown_0298 * 5);
       break;
-    case 111:
+    case JT_HIDDEN_NPC:
       this->unknown_0294 *= 2;
       this->unknown_0298 *= 2;
       break;
-    case 139:
+    case JT_HIDDEN_WARP_NPC:
       break;
     default: {
       CGameActor* actor = static_cast<CGameActor*>(g_session.FindGameActor(this->render.accountId));
@@ -1628,7 +1629,7 @@ void CNpc::SetState(int state, int) {
       if (actor && actor->unknown_0314 == 12) {
         isDisguised = true;
       }
-      if (g_session.IsAllyActor(this->render.accountId, this->GetEffectiveJob(-1)) == 1 && this->GetEffectiveJob(-1) != 565 &&
+      if (g_session.IsAllyActor(this->render.accountId, this->GetEffectiveJob(-1)) == 1 && this->GetEffectiveJob(-1) != JT_MOB_TOMB &&
           !isDisguised) {
         this->SetAction(0, 4, 0);
         this->RegisterPos();
@@ -1708,7 +1709,7 @@ void CNpc::SetState(int state, int) {
             this->render.isMotionFreezed = false;
           }
           if (this->unknown_0314 == 8) {
-            if (this->GetEffectiveJob(-1) == 6052) {
+            if (this->GetEffectiveJob(-1) == JT_MER_ELEANOR) {
               this->SetAction(16, 4, 1);
             } else if (std::rand() % 2) {
               this->SetAction(16, 4, 1);

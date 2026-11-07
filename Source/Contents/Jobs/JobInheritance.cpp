@@ -1,3 +1,5 @@
+#include "Contents/Skills/SkillId.h"
+#include "Contents/Combat/CombatTypes.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/CGameMode.h"
@@ -821,7 +823,7 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_IMPERIAL_GUARD:
   case JT_DRAGON_KNIGHT_CHICKEN:
   case JT_IMPERIAL_GUARD_CHICKEN:
-    if (view == 4 || view == 5) {
+    if (view == W_1HSPEAR || view == W_2HSPEAR) {
       result = true;
     }
     break;
@@ -831,14 +833,14 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_MERCHANT_H:
   case JT_MAGICIAN_B:
   case JT_MERCHANT_B:
-    if (view == 1) {
+    if (view == W_DAGGER) {
       result = true;
     }
     break;
   case JT_ARCHER:
   case JT_ARCHER_H:
   case JT_ARCHER_B:
-    if (view != 11) {
+    if (view != W_BOW) {
       result = true;
     }
     break;
@@ -877,7 +879,7 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_TROUBADOUR:
   case JT_TROUVERE:
   case JT_WOLF_WINDHAWK:
-    if (view == 11) {
+    if (view == W_BOW) {
       result = true;
     }
     break;
@@ -888,7 +890,7 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_ARCHBISHOP_H:
   case JT_ARCHBISHOP_B:
   case JT_CARDINAL:
-    if (view == 15) {
+    if (view == W_BOOK) {
       result = true;
     }
     break;
@@ -904,14 +906,14 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_SOUL_REAPER_B:
   case JT_ARCH_MAGE:
   case JT_SOUL_ASCETIC:
-    if (view == 1) {
+    if (view == W_DAGGER) {
       if (slot == 1) {
         result = true;
       }
       break;
     }
 
-    if (view == 10 || view == 23) {
+    if (view == W_STAFF || view == W_2HSTAFF) {
       if (slot == 0) {
         result = true;
       }
@@ -936,10 +938,10 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_KARNOS_B:
   case JT_ALITEA:
     switch (view) {
-    case 2:
-    case 6:
-    case 7:
-    case 8:
+    case W_1HSWORD:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_MACE:
       result = true;
       break;
     default:
@@ -954,13 +956,13 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_GUILLOTINE_CROSS_B:
   case JT_SHADOW_CROSS:
     switch (view) {
-    case 16:
-    case 25:
-    case 26:
-    case 27:
-    case 28:
-    case 29:
-    case 30:
+    case W_KATAR:
+    case W_DOUBLE_DD:
+    case W_DOUBLE_SS:
+    case W_DOUBLE_AA:
+    case W_DOUBLE_DS:
+    case W_DOUBLE_DA:
+    case W_DOUBLE_SA:
       result = true;
       break;
     default:
@@ -974,7 +976,7 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_SURA_H:
   case JT_SURA_B:
   case JT_INQUISITOR:
-    if (view == 0 || view == 12) {
+    if (view == W_FIST || view == W_KNUCKLE) {
       result = true;
     }
     break;
@@ -986,10 +988,10 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_SORCERER_B:
   case JT_ELEMENTAL_MASTER:
     switch (view) {
-    case 5:
-    case 10:
-    case 15:
-    case 23:
+    case W_2HSPEAR:
+    case W_STAFF:
+    case W_BOOK:
+    case W_2HSTAFF:
       result = true;
       break;
     default:
@@ -1004,10 +1006,10 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_GENETIC_B:
   case JT_BIOLO:
     switch (view) {
-    case 2:
-    case 6:
-    case 7:
-    case 8:
+    case W_1HSWORD:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_MACE:
       result = true;
       break;
     default:
@@ -1023,7 +1025,7 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_SUPERNOVICE2_B:
   case JT_HYPER_NOVICE:
     if (slot == 0) {
-      if (view == 1) {
+      if (view == W_DAGGER) {
         result = true;
       }
       break;
@@ -1034,14 +1036,14 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
     }
 
     switch (view) {
-    case 2:
-    case 3:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
-    case 10:
-    case 23:
+    case W_1HSWORD:
+    case W_2HSWORD:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_MACE:
+    case W_2HMACE:
+    case W_STAFF:
+    case W_2HSTAFF:
       result = true;
       break;
     default:
@@ -1065,7 +1067,7 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_OBORO_B:
   case JT_SHINKIRO:
   case JT_SHIRANUI:
-    if (view == 22) {
+    if (view == W_HUUMA) {
       result = true;
     }
     break;
@@ -1364,21 +1366,21 @@ bool CSession::IsConsumableItemType(int type) const {
 // FUNCTION: fn_23857
 bool CSession::IsCostumeLocation(int location) const {
   switch (location) {
-  case 0x400:
-  case 0x800:
+  case EQP_COSTUME_HEAD_TOP:
+  case EQP_COSTUME_HEAD_MID:
   case 0xC00:
-  case 0x1000:
+  case EQP_COSTUME_HEAD_LOW:
   case 0x1400:
   case 0x1800:
   case 0x1C00:
-  case 0x2000:
+  case EQP_COSTUME_GARMENT:
   case 0x4000:
-  case 0x10000:
-  case 0x20000:
-  case 0x40000:
-  case 0x80000:
-  case 0x100000:
-  case 0x200000:
+  case EQP_SHADOW_ARMOR:
+  case EQP_SHADOW_WEAPON:
+  case EQP_SHADOW_SHIELD:
+  case EQP_SHADOW_SHOES:
+  case EQP_SHADOW_ACC_R:
+  case EQP_SHADOW_ACC_L:
     return true;
   default:
     return false;
@@ -2020,7 +2022,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   CRagEffect* effect;
 
   switch (skillId) {
-  case 0x38:
+  case KN_PIERCE:
     effect = source->LaunchEffect(0x94, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       effect->SendMsg(nullptr, 44, 0, level, 0, 0, 0, 0);
@@ -2028,28 +2030,28 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x54:
+  case WZ_JUPITEL:
     effect = source->LaunchEffect(0x5D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x5A:
+  case WZ_EARTHSPIKE:
     effect = target->LaunchEffect(0x4F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x56:
+  case WZ_WATERBALL:
     effect = source->LaunchEffect(0x75, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x3B:
+  case KN_SPEARBOOMERANG:
     effect = source->LaunchEffect(0x50, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -2061,35 +2063,35 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x3E:
+  case KN_BOWLINGBASH:
     effect = source->LaunchEffect(0x95, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = source->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x39:
+  case KN_BRANDISHSPEAR:
     effect = target->LaunchEffect(0x46, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x3A:
+  case KN_SPEARSTAB:
     effect = source->LaunchEffect(0x96, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x89:
+  case AS_GRIMTOOTH:
     effect = source->LaunchEffect(0x7B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x88:
+  case AS_SONICBLOW:
     effect = source->LaunchEffect(0x79, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -2101,28 +2103,28 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x4D:
+  case PR_TURNUNDEAD:
     effect = source->LaunchEffect(0x52, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x11:
+  case MG_FIREBALL:
     effect = source->LaunchEffect(0x18, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0xF:
+  case MG_FROSTDIVER:
     effect = source->LaunchEffect(0x1B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x2F: {
+  case AC_SHOWER: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     vector3d* sourcePosition = &source->render.position;
     mode->SpawnArrowEffect64(sourcePosition, &target->render.position, 18.0f);
@@ -2142,85 +2144,85 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     break;
   }
-  case 0xE:
+  case MG_COLDBOLT:
     effect = target->LaunchEffect(0x1A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       effect->SendMsg(nullptr, 44, 0, level, 0, 0, 0, 0);
     }
     break;
-  case 0x13:
+  case MG_FIREBOLT:
     effect = target->LaunchEffect(0x1F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       effect->SendMsg(nullptr, 44, 0, level, 0, 0, 0, 0);
     }
     break;
-  case 0x14:
+  case MG_LIGHTNINGBOLT:
     effect = target->LaunchEffect(0x1D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       effect->SendMsg(nullptr, 44, 0, level, 0, 0, 0, 0);
     }
     break;
-  case 0x15:
+  case MG_THUNDERSTORM:
     target->LaunchEffect(0x1E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x99:
+  case MC_CARTREVOLUTION:
     source->LaunchEffect(0xAA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0xA0:
+  case NPC_RANGEATTACK:
     effect = source->LaunchEffect(0x50, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0xFE:
+  case CR_GRANDCROSS:
     source->LaunchEffect(0xE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0xFA:
+  case CR_SHIELDCHARGE:
     target->LaunchEffect(0xF6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0xFB:
+  case CR_SHIELDBOOMERANG:
     effect = source->LaunchEffect(0xF9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0xD4:
+  case RG_BACKSTAP:
     effect = source->LaunchEffect(0x113, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0xE6:
+  case AM_ACIDTERROR:
     if (g_modeMgr.GetGameMode() != nullptr) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x12A, source, target, -1);
     }
     break;
-  case 0x95:
+  case TF_SPRINKLESAND:
     target->LaunchEffect(0x136, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x98:
+  case TF_THROWSTONE:
     if (g_modeMgr.GetGameMode() != nullptr) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x134, source, target, -1);
     }
     break;
-  case 0xDB:
+  case RG_INTIMIDATE:
     effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(0xE3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = source->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x107:
+  case MO_TRIPLEATTACK:
     effect = source->LaunchEffect(0x149, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x10B:
+  case MO_FINGEROFFENSIVE:
     effect = source->LaunchEffect(0x109, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -2228,7 +2230,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 44, 0, level, 0, 0, 0, 0);
     }
     break;
-  case 0x10A:
+  case MO_INVESTIGATE:
     effect = source->LaunchEffect(0x108, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -2240,80 +2242,80 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x1C:
+  case AL_HEAL:
     target->LaunchEffect(0x140, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x10F:
+  case MO_EXTREMITYFIST:
     g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\mon_아수라 패황권.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     target->LaunchEffect(0x10A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x155:
+  case NPC_DARKTHUNDER:
     effect = source->LaunchEffect(0x5D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x1E5:
+  case WS_CARTTERMINATION:
     target->LaunchEffect(0x206, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x18D:
+  case LK_SPIRALPIERCE:
     target->LaunchEffect(0x153, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x153:
+  case NPC_GRANDDARKNESS:
     source->LaunchEffect(0x1C2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0xFD:
-  case 0x152:
+  case CR_HOLYCROSS:
+  case NPC_DARKCROSS:
     target->LaunchEffect(0xF5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1E0:
+  case PA_SHIELDCHAIN:
     target->LaunchEffect(0x208, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x151:
+  case ITM_TOMAHAWK:
     effect = source->LaunchEffect(0x1EE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x1EA: {
+  case CR_ACIDDEMONSTRATION: {
     vector3d position = target->render.position;
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchDummyEffect(&position, 0x219, 100, 0);
     break;
   }
-  case 0x20B:
+  case NJ_SYURIKEN:
     if (g_modeMgr.GetGameMode() != nullptr) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x265, source, target, -1);
     }
     break;
-  case 0x20C:
+  case NJ_KUNAI:
     if (g_modeMgr.GetGameMode() != nullptr) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x266, source, target, -1);
     }
     break;
-  case 0x20D:
+  case NJ_HUUMA:
     if (g_modeMgr.GetGameMode() != nullptr) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x267, source, target, -1);
     }
     break;
-  case 0x20E:
+  case NJ_ZENYNAGE:
     if (g_modeMgr.GetGameMode() != nullptr) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x268, source, target, -1);
     }
     break;
-  case 0x216:
+  case NJ_KOUENKA:
     target->LaunchEffect(0x26A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x219:
+  case NJ_HYOUSENSOU:
     effect = target->LaunchEffect(0x26B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x21C:
+  case NJ_HUUJIN:
     effect = source->LaunchEffect(0x26D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = vector3d{0.0f, static_cast<float>(target->render.accountId), 0.0f};
@@ -2321,124 +2323,124 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 44, 0, level, 0, 0, 0, 0);
     }
     break;
-  case 0x21E:
+  case NJ_KAMAITACHI:
     effect = source->LaunchEffect(0x270, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x1F5:
+  case GS_FLING:
     target->LaunchEffect(0x224, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x212:
+  case NJ_KIRIKAGE:
     target->LaunchEffect(0x276, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x210:
+  case NJ_KASUMIKIRI:
     target->LaunchEffect(0x278, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x220:
+  case NJ_ISSEN:
     target->LaunchEffect(0x279, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x202:
+  case GS_PIERCINGSHOT:
     effect = source->LaunchEffect(0x26F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x206:
+  case GS_DUST:
     target->LaunchEffect(0x274, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x207:
+  case GS_FULLBUSTER:
     effect = source->LaunchEffect(0x248, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x203:
+  case GS_RAPIDSHOWER:
     target->LaunchEffect(0x283, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1FB:
+  case GS_MAGICALBULLET:
     target->LaunchEffect(0x284, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x200:
+  case GS_TRACKING:
     target->LaunchEffect(0x287, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1F6:
+  case GS_TRIPLEACTION:
     target->LaunchEffect(0x288, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1F7:
+  case GS_BULLSEYE:
     target->LaunchEffect(0x289, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x208:
+  case GS_SPREADATTACK:
     effect = source->LaunchEffect(0x285, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x16F:
+  case PA_PRESSURE:
     target->LaunchEffect(0x16D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x18E:
+  case LK_HEADCRUSH:
     source->LaunchEffect(0x18F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x18F:
+  case LK_JOINTBEAT:
     source->LaunchEffect(0x190, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x170:
+  case PA_SACRIFICE:
     source->LaunchEffect(0x16E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x17B:
+  case ASC_BREAKER:
     effect = source->LaunchEffect(0x169, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x16D:
+  case HW_MAGICCRASHER:
     target->LaunchEffect(0x17C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x190:
+  case HW_NAPALMVULCAN:
     target->LaunchEffect(0x191, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x17D:
+  case SN_FALCONASSAULT:
     target->LaunchEffect(0x183, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x17E:
+  case SN_SHARPSHOOTING:
     effect = source->LaunchEffect(0x184, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x18A:
+  case CG_ARROWVULCAN:
     effect = source->LaunchEffect(0x189, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x15A:
+  case NPC_SHIELDBRAKE:
     target->LaunchEffect(0x10E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x158:
+  case NPC_ARMORBRAKE:
     target->LaunchEffect(0x10F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x159:
+  case NPC_HELMBRAKE:
     target->LaunchEffect(0x110, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x19F:
+  case TK_DOWNKICK:
     target->LaunchEffect(0x19D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x1AF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1A1:
+  case TK_TURNKICK:
     target->LaunchEffect(0x1D2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x1AD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1A5:
+  case TK_JUMPKICK:
     source->LaunchEffect(0x1C9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     effect = source->LaunchEffect(0x1B7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -2447,7 +2449,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     target->LaunchEffect(0x1CA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1D3:
+  case SL_STIN:
     effect = source->LaunchEffect(0x223, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -2455,7 +2457,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     target->LaunchEffect(0x226, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1D4:
+  case SL_STUN:
     effect = source->LaunchEffect(0x22B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -2463,7 +2465,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     target->LaunchEffect(0x1AD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1D5:
+  case SL_SMA:
     target->LaunchEffect(0x1A9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     effect = source->LaunchEffect(0x229, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -2473,63 +2475,63 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(0x1AF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x22A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x2A1:
+  case NPC_CRITICALWOUND:
     target->LaunchEffect(0x2A5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x2A0:
+  case NPC_SLOWCAST:
     target->LaunchEffect(0x2A4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x2A3:
+  case NPC_STONESKIN:
     source->LaunchEffect(0xD6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x2A4:
+  case NPC_ANTIMAGIC:
     source->LaunchEffect(0x2A3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x28E:
+  case NPC_FIREBREATH:
     g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x2A2:
+  case NPC_EXPULSION:
     effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(0xE3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x29A:
-  case 0x2F7:
+  case NPC_WIDESTONE:
+  case NPC_WIDESTONE2:
     g_soundMgr->PlayWave("_stonecurse.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x29C:
-  case 0x2F8:
+  case NPC_WIDESLEEP:
+  case NPC_WIDESLEEP2:
     g_soundMgr->PlayWave("effect\\widesleep.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x29B:
-  case 0x2FA:
+  case NPC_WIDECONFUSE:
+  case NPC_WIDECONFUSE2:
     g_soundMgr->PlayWave("amon_ra_die01.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x29E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x29D:
+  case NPC_WIDESIGHT:
     source->LaunchEffect(0x16, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x293:
+  case NPC_DRAGONFEAR:
     source->LaunchEffect(0x29C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x299:
-  case 0x2F4:
+  case NPC_WIDEBLEEDING:
+  case NPC_WIDEBLEEDING2:
     source->LaunchEffect(0x29D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x295:
-  case 0x2C8:
+  case NPC_PULSESTRIKE:
+  case NPC_PULSESTRIKE2:
     source->LaunchEffect(0x199, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x28D:
-  case 0x2EE:
+  case NPC_EARTHQUAKE:
+  case NPC_EARTHQUAKE_K:
     source->LaunchEffect(0x29A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x2CA:
+  case NPC_DANCINGBLADE_ATK:
     target->LaunchEffect(0x405, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x2CB: {
+  case NPC_DARKPIERCING: {
     CRagEffect* first = target->LaunchEffect(0x406, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     CRagEffect* second = target->LaunchEffect(0x406, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (first) {
@@ -2543,15 +2545,15 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\LG_CANNONSPEAR.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   }
-  case 0x2CC:
+  case NPC_MAXPAIN:
     source->LaunchEffect(0x408, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x3EC:
+  case AS_VENOMKNIFE:
     if (g_modeMgr.GetGameMode() != nullptr) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x258, source, target, -1);
     }
     break;
-  case 0x7D4:
+  case RK_HUNDREDSPEAR:
     effect = source->LaunchEffect(0x2D3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -2563,24 +2565,24 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x7F2:
+  case GC_PHANTOMMENACE:
     source->LaunchEffect(0x300, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x305, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x7EF:
+  case GC_VENOMPRESSURE:
     source->LaunchEffect(0x300, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x24D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\EF_PoisonAttack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x7EE:
+  case GC_WEAPONCRUSH:
     effect = target->LaunchEffect(0x302, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x7F5: {
+  case GC_CROSSRIPPERSLASHER: {
     float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
       angle -= 360.0f;
@@ -2618,7 +2620,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(0x226, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }
-  case 0x7E7:
+  case GC_DARKILLUSION:
     source->LaunchEffect(0x1C9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     effect = source->LaunchEffect(0x1B7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -2627,7 +2629,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     target->LaunchEffect(0x1CA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x7E6:
+  case GC_CROSSIMPACT:
     g_effectMgr->Spawn(target->render.accountId, 0x61E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     effect = source->LaunchEffect(0x620, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -2635,35 +2637,35 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x8C6:
+  case RA_SENSITIVEKEEN:
     g_soundMgr->PlayWave("were_wolf_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x8B1:
+  case WL_SUMMON_ATK_FIRE:
     target->LaunchEffect(0x31, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x8B2:
+  case WL_SUMMON_ATK_WIND:
     target->LaunchEffect(0x34, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x8B3:
+  case WL_SUMMON_ATK_WATER:
     target->LaunchEffect(0x33, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x8B4:
+  case WL_SUMMON_ATK_GROUND:
     target->LaunchEffect(0x93, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x8AA:
+  case WL_TETRAVORTEX_FIRE:
     effect = source->LaunchEffect(0x324, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x8C4:
+  case RA_WUGBITE:
     g_soundMgr->PlayWave("wug_bite.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x8C3:
+  case RA_WUGSTRIKE:
     g_soundMgr->PlayWave("wug_strike.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x8BC: {
+  case RA_AIMEDBOLT: {
     g_effectMgr->Spawn(target->render.accountId, 0x672, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
@@ -2682,8 +2684,8 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   }
-  case 0x2D8:
-  case 0x8B9: {
+  case NPC_ARROWSTORM:
+  case RA_ARROWSTORM: {
     if (source == target) {
       return;
     }
@@ -2699,19 +2701,19 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     break;
   }
-  case 0x8BD:
+  case RA_DETONATOR:
     source->LaunchEffect(0x2EE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x7DC:
+  case RK_CRUSHSTRIKE:
     g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
     target->LaunchEffect(0x24D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("_enemy_hit_wind2.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x8A6:
-  case 0x8A7:
+  case WL_CHAINLIGHTNING:
+  case WL_CHAINLIGHTNING_ATK:
     g_effectMgr->Spawn(target->render.accountId, 0x666, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
-  case 0x7D2:
+  case RK_SONICWAVE:
     g_soundMgr->PlayWave("effect\\기공포.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effect = source->LaunchEffect(0x340, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -2724,8 +2726,8 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x807:
-  case 0x808:
+  case AB_DUPLELIGHT_MELEE:
+  case AB_DUPLELIGHT_MAGIC:
     effect = source->LaunchEffect(0x109, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -2733,7 +2735,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 44, 0, 3, 0, 0, 0, 0);
     }
     break;
-  case 0x7F6:
+  case AB_JUDEX:
     g_soundMgr->PlayWave("effect\\AB_judex.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     g_effectMgr->Spawn(source->render.accountId, 0x65B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     g_effectMgr->Spawn(source->render.accountId, 0x65C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -2759,7 +2761,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       }
     }
     break;
-  case 0x7F8:
+  case AB_ADORAMUS:
     g_soundMgr->PlayWave("effect\\AB_adoramus.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (g_serviceOptions.Get(0xE5)) {
       g_effectMgr->Spawn(
@@ -2777,7 +2779,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       );
     }
     break;
-  case 0x8A3:
+  case WL_CRIMSONROCK:
     g_soundMgr->PlayWave(
       "crimson_r.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40,
       1.0f, 0
@@ -2798,7 +2800,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       );
     }
     break;
-  case 0x8A4:
+  case WL_HELLINFERNO:
     g_effectMgr->Spawn(target->render.accountId, 0x60E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     g_effectMgr->Spawn(target->render.accountId, 0x60F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     for (int index = 0; index < 4; ++index) {
@@ -2812,7 +2814,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       g_effectMgr->Spawn(0, 0x612, spot.x, spot.y, spot.z, 0, -1, 0, 0);
     }
     break;
-  case 0x8D0:
+  case NC_BOOSTKNUCKLE:
     g_soundMgr->PlayWave("effect\\맹호경파산.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effect = source->LaunchEffect(0x326, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -2820,7 +2822,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x96D:
+  case WM_METALICSOUND:
     effect = source->LaunchEffect(0x630, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -2828,12 +2830,12 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       g_soundMgr->PlayWave("effect\\metalic.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
-  case 0x2E6:
-  case 0x990:
+  case NPC_POISON_BUSTER:
+  case SO_POISON_BUSTER:
     g_soundMgr->PlayWave("effect\\S포이즌버스터.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     target->LaunchEffect(0x39B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x914:
+  case LG_HESPERUSLIT:
     source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x383, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -2841,10 +2843,10 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(0x38A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\LG_HESPERUSLIT.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x912:
+  case LG_PIETY:
     target->LaunchEffect(0x5B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x910:
+  case LG_MOONSLASHER:
     if (!source->HasId(0x37A)) {
       source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->LaunchEffect(0x37A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -2853,27 +2855,27 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     source->LaunchEffect(0x3A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     source->LaunchEffect(0x375, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x90A:
+  case LG_RAGEBURST:
     source->LaunchEffect(0x3A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     source->LaunchEffect(0x179, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\LG_RAGEBURST.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x908:
+  case LG_PINPOINTATTACK:
     effect = source->LaunchEffect(0x38B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x906:
+  case LG_SHIELDPRESS:
     source->LaunchEffect(0x38A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x905:
+  case LG_TRAMPLE:
     g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
     source->LaunchEffect(0x389, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\LG_TRAMPLE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x904: {
+  case LG_BANISHINGPOINT: {
     float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
       angle -= 360.0f;
@@ -2924,7 +2926,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\LG_BANISHINGPOINT.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   }
-  case 0x903: {
+  case LG_CANNONSPEAR: {
     float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
       angle -= 360.0f;
@@ -2976,7 +2978,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\LG_CANNONSPEAR.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   }
-  case 0x927:
+  case SR_GATEOFHELL:
     g_effectMgr->Spawn(target->render.accountId, 0x626, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     effect = source->LaunchEffect(0x627, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -2985,11 +2987,11 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     g_soundMgr->PlayWave("effect\\SR_GATEOFHELL.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x924:
+  case SR_ASSIMILATEPOWER:
     source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\흡기.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x920:
+  case SR_KNUCKLEARROW:
     source->LaunchEffect(0x1C9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     effect = source->LaunchEffect(0x37D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3000,7 +3002,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(0x1CA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\SR_KNUCKLEARROW.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x97A:
+  case WM_GREAT_ECHO:
     effect = source->LaunchEffect(0x35F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -3010,10 +3012,10 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(0x1D2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\LG_EARTHDRIVE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x913:
+  case LG_EARTHDRIVE:
     g_soundMgr->PlayWave("effect\\LG_EARTHDRIVE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x97D:
+  case WM_SOUND_OF_DESTRUCTION:
     effect = target->LaunchEffect(0x365, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -3022,13 +3024,13 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(0x1A9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\metalic.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x96E:
+  case WM_REVERBERATION:
     target->LaunchEffect(0x621, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x63A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\REVERBERATION.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x2DC:
-  case 0x8EC: {
+  case NPC_FATALMENACE:
+  case SC_STARTMARK: {
     g_effectMgr->Spawn(source->render.accountId, 0x574, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     g_effectMgr->Spawn(source->render.accountId, 0x575, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     const int duration = static_cast<int>(source->render.speed * 100.0f + 150.0f);
@@ -3042,7 +3044,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     break;
   }
-  case 0x8F0: {
+  case SC_TRIANGLESHOT: {
     const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
     CEffect* spawned;
     if (g_serviceOptions.Get(0xE5)) {
@@ -3069,17 +3071,17 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     break;
   }
-  case 0x8DF:
+  case NC_ANALYZE:
     target->LaunchEffect(0x312, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x8E0:
+  case NC_MAGNETICFIELD:
     source->LaunchEffect(0x30D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x8DE:
+  case NC_INFRAREDSCAN:
     source->LaunchEffect(0x30C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     source->LaunchEffect(0x31A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x8D2: {
+  case NC_VULCANARM: {
     g_effectMgr->Spawn(source->render.accountId, 0x6A7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     g_effectMgr->Spawn(source->render.accountId, 0x6A8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     CEffect* spawned = g_effectMgr->Spawn(target->render.accountId, 0x6A9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -3089,11 +3091,11 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     source->LaunchEffect(0x308, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }
-  case 0x8D1:
+  case NC_PILEBUNKER:
     g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\맹호경파산.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x8E8:
+  case NC_AXETORNADO:
     if (g_serviceOptions.Get(0xE5)) {
       if (g_effectMgr->Find(source->render.accountId, 0x5D6)) {
         return;
@@ -3108,7 +3110,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       g_effectMgr->Spawn(source->render.accountId, 0x554, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
-  case 0x8E7: {
+  case NC_POWERSWING: {
     float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
       angle -= 360.0f;
@@ -3127,28 +3129,28 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_effectMgr->Spawn(target->render.accountId, 0x6A6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   }
-  case 0x8E6:
+  case NC_AXEBOOMERANG:
     g_effectMgr->Spawn(
       source->render.accountId, 0x679, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
     );
     g_effectMgr->Spawn(target->render.accountId, 0x67C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
-  case 0x928:
+  case SR_GENTLETOUCH_QUIET:
     source->LaunchEffect(0x375, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\mon_탄지신통.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x916:
+  case SR_DRAGONCOMBO:
     source->LaunchEffect(0x375, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\SR_DRAGONCOMBO.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x91A:
+  case SR_TIGERCANNON:
     g_effectMgr->Spawn(source->render.accountId, g_serviceOptions.Get(0xE5) ? 0x5FC : 0x52B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     target->LaunchEffect(0x379, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\SR_TIGERCANNON.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x917:
+  case SR_SKYNETBLOW:
     if (!source->HasId(0x37A)) {
       source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->LaunchEffect(0x37A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3157,7 +3159,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(0x224, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x226, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x91C:
+  case SR_RAMPAGEBLASTER:
     if (g_serviceOptions.Get(0xE5)) {
       g_effectMgr->Spawn(source->render.accountId, 0x5B5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(source->render.accountId, 0x5B6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -3169,8 +3171,8 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     g_soundMgr->PlayWave("effect\\SR_RAMPAGEBLASTER.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x1A3:
-  case 0xA14:
+  case TK_COUNTER:
+  case SJ_FLASHKICK:
     target->LaunchEffect(0x19F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     effect = target->LaunchEffect(0x1AE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -3178,12 +3180,12 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x2DB:
-  case 0x7D8:
-  case 0x138C:
+  case NPC_DRAGONBREATH:
+  case RK_DRAGONBREATH:
+  case RK_DRAGONBREATH_WATER:
     g_soundMgr->PlayWave("dragon_breath.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0xA2C:
+  case SP_SWHOO:
     target->LaunchEffect(0x1A9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     effect = source->LaunchEffect(0x4B6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -3193,17 +3195,17 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(0x1AF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x1A1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0xA21:
+  case SJ_PROMINENCEKICK:
     target->LaunchEffect(0x4C8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x1AD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x13A2:
+  case SU_SV_STEMSPEAR:
     g_effectMgr->Spawn(0, 0x44D, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
     g_effectMgr->Spawn(
       source->render.accountId, 0x44C, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
     );
     break;
-  case 0x14B2: {
+  case MT_A_MACHINE: {
     CEffect* machine = g_effectMgr->Find(source->render.accountId, 0x72F);
     if (machine) {
       static_cast<CAMachineEffect*>(machine)->PlayAttack();
@@ -3215,7 +3217,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     );
     break;
   }
-  case 0x13B6:
+  case SU_SVG_SPIRIT:
     g_effectMgr->Spawn(
       source->render.accountId, 0x468, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
     );
@@ -3223,7 +3225,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       target->render.accountId, 0x469, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, -1, 0, 0
     );
     break;
-  case 0x1F49:
+  case HFLI_MOON:
     if (level == 1) {
       target->LaunchEffect(0x235, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else if (level == 2) {
@@ -3232,48 +3234,48 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       target->LaunchEffect(0x237, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
-  case 0x1F5C:
+  case MH_SONIC_CRAW:
     target->LaunchEffect(0x3C5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1F64:
-  case 0x1F65:
-  case 0x1F66:
+  case MH_TINDER_BREAKER:
+  case MH_CBC:
+  case MH_EQC:
     target->LaunchEffect(0x3C6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1F5E:
+  case MH_MIDNIGHT_FRENZY:
     target->LaunchEffect(0x3C7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1F58:
+  case MH_ERASER_CUTTER:
     target->LaunchEffect(0x3C0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1F4C:
+  case HFLI_SBR44:
     target->LaunchEffect(0x237, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x1A9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x2031:
+  case MER_INVINCIBLEOFF2:
     target->LaunchEffect(0x407, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1F59:
+  case MH_XENO_SLASHER:
     effect = source->LaunchEffect(0x43A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x20D1:
+  case EL_CIRCLE_OF_FIRE:
     target->LaunchEffect(0xFC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x150, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20FA:
+  case EL_STONE_RAIN:
     target->LaunchEffect(0x3B0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20F3:
+  case EL_HURRICANE:
     target->LaunchEffect(0x1D2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (!target->HasId(0x1CC)) {
       target->LaunchEffect(0x1CC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
-  case 0x20F2:
+  case EL_WIND_SLASH:
     g_soundMgr->PlayWave("effect\\기공포.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effect = source->LaunchEffect(0x3AF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -3281,7 +3283,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x20F1:
+  case EL_TIDAL_WEAPON:
     target->LaunchEffect(0x3AE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     effect = source->LaunchEffect(0x1B7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -3289,22 +3291,22 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x20EF:
+  case EL_WATER_SCREW:
     target->LaunchEffect(0x3AD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20EE:
+  case EL_ICE_NEEDLE:
     effect = target->LaunchEffect(0x1A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       effect->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
     }
     break;
-  case 0x20E9:
+  case EL_FIRE_ARROW:
     effect = target->LaunchEffect(0x1F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       effect->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
     }
     break;
-  case 0x20EA:
+  case EL_FIRE_BOMB:
     g_soundMgr->PlayWave("effect\\화염진.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effect = source->LaunchEffect(0x18, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -3313,23 +3315,23 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x20EC:
+  case EL_FIRE_WAVE:
     target->LaunchEffect(0x385, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x11, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 0x20DA:
+  case EL_SOLID_SKIN:
     source->LaunchEffect(0xD6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0xD6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20D7:
+  case EL_WIND_STEP:
     target->LaunchEffect(0x185, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20D4:
+  case EL_WATER_SCREEN:
     source->LaunchEffect(0x1B9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x1B9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20F5:
+  case EL_TYPOON_MIS:
     g_soundMgr->PlayWave("effect\\맹호경파산.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effect = source->LaunchEffect(0x3A7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -3337,65 +3339,65 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
-  case 0x20E0:
+  case EL_AQUAPLAY:
     g_soundMgr->PlayWave("effect\\EF_FrostDiver2.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x3B5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20E1:
+  case EL_COOLER:
     g_soundMgr->PlayWave("effect\\EF_FrostDiver.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x3BA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20E2:
+  case EL_CHILLY_AIR:
     g_soundMgr->PlayWave("effect\\EF_IceArrow1.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     source->LaunchEffect(0x37E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x3B8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20E6:
+  case EL_PETROLOGY:
     g_soundMgr->PlayWave("_stonecurse.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x3AA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x3BD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20E7:
+  case EL_CURSED_SOIL:
     g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x3AA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x3B9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20E8:
+  case EL_UPHEAVAL:
     g_soundMgr->PlayWave("effect\\wizard_earthspike.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x3AA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
     target->LaunchEffect(0x3B6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20E3:
+  case EL_GUST:
     g_soundMgr->PlayWave("effect\\EF_ThunderStorm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x3A9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x3B3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20E4:
+  case EL_BLAST:
     g_soundMgr->PlayWave("effect\\EF_LightBolt1.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x3A9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x3B4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20E5:
+  case EL_WILD_STORM:
     g_soundMgr->PlayWave("effect\\EF_LightBolt3.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x3A9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
     target->LaunchEffect(0x3B7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20DD:
+  case EL_PYROTECHNIC:
     g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x3A8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x3BC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20DE:
+  case EL_HEATER:
     g_soundMgr->PlayWave("effect\\ef_firehit.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x3A8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->LaunchEffect(0x3BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x20DF:
+  case EL_TROPIC:
     g_soundMgr->PlayWave("effect\\EF_FireArrow1.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(0x3A8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);

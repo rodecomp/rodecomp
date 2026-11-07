@@ -1,4 +1,6 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Combat/CombatTypes.h"
+#include "Contents/Items/InventoryType.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
 #include "Client/Session.h"
@@ -577,8 +579,8 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
   const EquipItemListRecord* records = reinterpret_cast<const EquipItemListRecord*>(packet + sizeof(EquipItemListHeader));
   const std::size_t count = (header->length - sizeof(EquipItemListHeader)) / sizeof(EquipItemListRecord);
   switch (header->listType) {
-  case 2:
-  case 3:
+  case INVTYPE_STORAGE:
+  case INVTYPE_GUILD_STORAGE:
     for (std::int64_t i = 0; i < count; ++i) {
       const EquipItemListRecord record = records[i];
       if (record.location == 0x8000) {
@@ -592,7 +594,7 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       g_session.AddItem1738(item, 0);
     }
     break;
-  case 0:
+  case INVTYPE_INVENTORY:
     for (std::int64_t i = 0; i < count; ++i) {
       const EquipItemListRecord record = records[i];
       ItemRandomOption options[5];
@@ -632,7 +634,7 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       }
     }
     break;
-  case 1:
+  case INVTYPE_CART:
     for (std::int64_t i = 0; i < count; ++i) {
       const EquipItemListRecord record = records[i];
       ItemRandomOption options[5];
@@ -664,14 +666,14 @@ void CGameMode::ReceiveItemListPart(unsigned char listType, int count, const uns
     item.unknown_0060 = 0;
     item.unknown_0074[0] = (record->flags >> 1) & 1;
     switch (listType) {
-    case 0:
+    case INVTYPE_INVENTORY:
       g_session.UpdateInventoryItem(item, 0);
       break;
-    case 1:
+    case INVTYPE_CART:
       g_session.AddItem1740(item);
       break;
-    case 2:
-    case 3:
+    case INVTYPE_STORAGE:
+    case INVTYPE_GUILD_STORAGE:
       g_session.AddItem1738(item, 0);
       break;
     }
@@ -686,17 +688,17 @@ void CGameMode::RefreshItemListWindow(unsigned char listType, bool partial) {
   }
 
   switch (listType) {
-  case 2:
-  case 3:
+  case INVTYPE_STORAGE:
+  case INVTYPE_GUILD_STORAGE:
     if (UIWindow* window = g_windowMgr.window_0288) {
       window->SendMsg(nullptr, 23, 0, 0, 0, 0);
       reinterpret_cast<unsigned char*>(window)[0x190] = 1;
     }
     break;
-  case 0:
+  case INVTYPE_INVENTORY:
     RefreshItemWindows(&g_windowMgr);
     break;
-  case 1:
+  case INVTYPE_CART:
     g_session.RefreshItem1740Window();
     break;
   }
@@ -1175,7 +1177,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
 // FUNCTION: fn_23300
 EquipSlots CSession::GetEquipSlots(int location) {
   EquipSlots result;
-  if (location == 0x8000) {
+  if (location == EQP_AMMO) {
     result.values[0] = -1;
     result.values[1] = -1;
     result.values[2] = 15;
@@ -1184,16 +1186,16 @@ EquipSlots CSession::GetEquipSlots(int location) {
 
   int mask = location;
   switch (location) {
-  case 0x400:
+  case EQP_COSTUME_HEAD_TOP:
     mask = 0x100;
     break;
-  case 0x800:
+  case EQP_COSTUME_HEAD_MID:
     mask = 0x200;
     break;
   case 0xC00:
     mask = 0x300;
     break;
-  case 0x1000:
+  case EQP_COSTUME_HEAD_LOW:
     mask = 1;
     break;
   case 0x1400:
@@ -1205,26 +1207,26 @@ EquipSlots CSession::GetEquipSlots(int location) {
   case 0x1C00:
     mask = 0x301;
     break;
-  case 0x2000:
+  case EQP_COSTUME_GARMENT:
     mask = 4;
     break;
   case 0x4000:
-  case 0x20000:
+  case EQP_SHADOW_WEAPON:
     mask = 2;
     break;
-  case 0x10000:
+  case EQP_SHADOW_ARMOR:
     mask = 0x10;
     break;
-  case 0x40000:
+  case EQP_SHADOW_SHIELD:
     mask = 0x20;
     break;
-  case 0x80000:
+  case EQP_SHADOW_SHOES:
     mask = 0x40;
     break;
-  case 0x100000:
+  case EQP_SHADOW_ACC_R:
     mask = 8;
     break;
-  case 0x200000:
+  case EQP_SHADOW_ACC_L:
     mask = 0x80;
     break;
   }

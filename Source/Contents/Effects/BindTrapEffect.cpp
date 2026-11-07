@@ -1,4 +1,5 @@
 #include "Contents/Effects/BindTrapEffect.h"
+#include "Contents/Effects/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -50,13 +51,13 @@ void CBindTrapEffect::Close() {
 // FUNCTION: fn_06908
 void CBindTrapEffect::Open() {
   switch (this->id) {
-  case 1069:
+  case EF_BIND_TRAP1:
     this->AddParticle(0);
     break;
-  case 1070:
+  case EF_BIND_TRAP2:
     this->AddParticle(1);
     break;
-  case 1071:
+  case EF_BIND_TRAP3:
     this->AddParticle(2);
     break;
   }

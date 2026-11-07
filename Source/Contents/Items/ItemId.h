@@ -1,0 +1,40 @@
+#ifndef RAGNAROK_SOURCE_CONTENTS_ITEMS_ITEMID_H
+#define RAGNAROK_SOURCE_CONTENTS_ITEMS_ITEMID_H
+
+enum item_itemid : int {
+  ITEMID_ORIDECON = 984,
+  Elunium = 985,
+  ITEMID_FLAME_HEART = 994,
+  ITEMID_MISTIC_FROZEN = 995,
+  ITEMID_ROUGH_WIND = 996,
+  ITEMID_GREAT_NATURE = 997,
+  ITEMID_IRON = 998,
+  ITEMID_STEEL = 999,
+  ITEMID_STAR_CRUMB = 1000,
+  ITEMID_PHRACON = 1010,
+  ITEMID_EMVERETARCON = 1011,
+  Carnium = 6223,
+  Bradium = 6224,
+  HD_Carnium = 6225,
+  HD_Bradium = 6226,
+  HD_Oridecon = 6240,
+  HD_Elunium = 6241,
+  LI_HD_Bradium = 6327,
+  LI_HD_Carnium = 6906,
+  LI_HD_Oridecon = 6910,
+  LI_HD_Elunium = 6911,
+  Enriched_Elunium = 7619,
+  Enriched_Oridecon = 7620,
+  Ethernium = 1000331,
+  Etherdeocon = 1000332,
+  Enriched_Ethernium = 1000333,
+  Enriched_Etherdeocon = 1000334,
+  HD_Ethernium = 1000335,
+  HD_Etherdeocon = 1000336,
+  Etel_Bradium = 1000368,
+  HD_Etel_Bradium = 1000369,
+  Etel_Carnium = 1000370,
+  HD_Etel_Carnium = 1000371,
+};
+
+#endif

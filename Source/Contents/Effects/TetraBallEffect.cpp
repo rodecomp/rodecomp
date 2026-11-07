@@ -1,4 +1,5 @@
 #include "Contents/Effects/TetraBallEffect.h"
+#include "Contents/Effects/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -22,16 +23,16 @@ void CTetraBallEffect::AddBall(int id, int index) {
   ball->m_loop = true;
 
   switch (id) {
-  case 1262:
+  case EF_TETRA_VORTEX_BALL_1:
     ball->Open("tetravortex\\tetra_ball_01_fire\\tetra_01_fire.str");
     break;
-  case 1263:
+  case EF_TETRA_VORTEX_BALL_2:
     ball->Open("tetravortex\\tetra_ball_04_water\\tetra_04_water.str");
     break;
-  case 1264:
+  case EF_TETRA_VORTEX_BALL_3:
     ball->Open("tetravortex\\tetra_ball_02_wind\\tetra_02_wind.str");
     break;
-  case 1265:
+  case EF_TETRA_VORTEX_BALL_4:
     ball->Open("tetravortex\\tetra_ball_03_earth\\tetra_03_earth.str");
     break;
   }

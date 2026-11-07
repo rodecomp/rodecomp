@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Network/Packets/PacketId.h"
 #include "Client/Session.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -25,10 +26,10 @@ void CGameMode::ApplySkillUpdatePacket(const void* packet) {
   CSkillInfo value;
 
   switch (opcode) {
-  case 270:
+  case ID_ZC_SKILLINFO_UPDATE:
     value = g_session.m_skillBundle.Lookup(id);
     break;
-  case 569:
+  case ID_ZC_HOSKILLINFO_UPDATE:
     value = g_session.LookupHomunSkill(id);
     break;
   case 670:
@@ -45,10 +46,10 @@ void CGameMode::ApplySkillUpdatePacket(const void* packet) {
   g_session.m_skillBundle.ApplyLevelChange(value);
 
   switch (opcode) {
-  case 270:
+  case ID_ZC_SKILLINFO_UPDATE:
     g_session.UpdateSkill(value, 1, 0);
     break;
-  case 569:
+  case ID_ZC_HOSKILLINFO_UPDATE:
     g_session.UpdateHomunSkill(value, 1);
     break;
   case 670:

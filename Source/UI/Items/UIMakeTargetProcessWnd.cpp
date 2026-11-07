@@ -5,6 +5,7 @@
 #include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemId.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -23,13 +24,13 @@
 // FUNCTION: fn_13598
 void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   switch (this->makeType) {
-  case 994:
-  case 995:
-  case 996:
-  case 997:
-  case 998:
-  case 999:
-  case 1000:
+  case ITEMID_FLAME_HEART:
+  case ITEMID_MISTIC_FROZEN:
+  case ITEMID_ROUGH_WIND:
+  case ITEMID_GREAT_NATURE:
+  case ITEMID_IRON:
+  case ITEMID_STEEL:
+  case ITEMID_STAR_CRUMB:
     g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
     return;
   }
@@ -86,13 +87,13 @@ std::vector<unsigned char> UIMakeTargetProcessWnd::GetReplayData() {
 // FUNCTION: fn_13603
 ITEM_INFO UIMakeTargetProcessWnd::GetItemAt(int x, int y) {
   switch (this->makeType) {
-  case 994:
-  case 995:
-  case 996:
-  case 997:
-  case 998:
-  case 999:
-  case 1000:
+  case ITEMID_FLAME_HEART:
+  case ITEMID_MISTIC_FROZEN:
+  case ITEMID_ROUGH_WIND:
+  case ITEMID_GREAT_NATURE:
+  case ITEMID_IRON:
+  case ITEMID_STEEL:
+  case ITEMID_STAR_CRUMB:
     return ITEM_INFO(0);
   }
 
@@ -119,13 +120,13 @@ void UIMakeTargetProcessWnd::Paint() {
   this->DrawButtonBar(2, 0, 1);
 
   switch (this->makeType) {
-  case 994:
-  case 995:
-  case 996:
-  case 997:
-  case 998:
-  case 999:
-  case 1000:
+  case ITEMID_FLAME_HEART:
+  case ITEMID_MISTIC_FROZEN:
+  case ITEMID_ROUGH_WIND:
+  case ITEMID_GREAT_NATURE:
+  case ITEMID_IRON:
+  case ITEMID_STEEL:
+  case ITEMID_STAR_CRUMB:
     break;
   default: {
     const ITEM_INFO* material = this->materials;

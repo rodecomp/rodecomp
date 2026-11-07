@@ -9,6 +9,7 @@
 #include "Client/Session.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemId.h"
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
@@ -462,36 +463,36 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
     if (this->materials[slot].unknown_0004 <= 99 && this->catalystEnabled == 0) {
       int message;
       switch (this->materials[slot].itemId) {
-      case 6223:
-      case 6224:
+      case Carnium:
+      case Bradium:
         message = 2990;
         break;
-      case 6225:
-      case 6226:
-      case 6240:
-      case 6241:
-      case 6327:
-      case 6906:
-      case 6910:
-      case 6911:
-      case 1000331:
-      case 1000332:
-      case 1000333:
-      case 1000334:
+      case HD_Carnium:
+      case HD_Bradium:
+      case HD_Oridecon:
+      case HD_Elunium:
+      case LI_HD_Bradium:
+      case LI_HD_Carnium:
+      case LI_HD_Oridecon:
+      case LI_HD_Elunium:
+      case Ethernium:
+      case Etherdeocon:
+      case Enriched_Ethernium:
+      case Enriched_Etherdeocon:
         message = 2989;
         break;
-      case 984:
-      case 985:
-      case 1010:
-      case 1011:
-      case 7619:
-      case 7620:
-      case 1000335:
-      case 1000336:
-      case 1000368:
-      case 1000369:
-      case 1000370:
-      case 1000371:
+      case ITEMID_ORIDECON:
+      case Elunium:
+      case ITEMID_PHRACON:
+      case ITEMID_EMVERETARCON:
+      case Enriched_Elunium:
+      case Enriched_Oridecon:
+      case HD_Ethernium:
+      case HD_Etherdeocon:
+      case Etel_Bradium:
+      case HD_Etel_Bradium:
+      case Etel_Carnium:
+      case HD_Etel_Carnium:
         message = 2988;
         break;
       default:

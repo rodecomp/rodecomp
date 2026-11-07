@@ -1,4 +1,6 @@
 #include "Contents/Actors/Pc.h"
+#include "Contents/Effects/EffectTypes.h"
+#include "Contents/Skills/SkillUnitId.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -1531,43 +1533,43 @@ void CPc::SetSprHead(int value) {
 int CPc::MapMotion(int motion) {
   int mapped = motion;
   switch (this->GetEffectiveJob(-1)) {
-    case 6:
-    case 0xFA7:
-    case 0xFBD:
+    case JT_THIEF:
+    case JT_THIEF_H:
+    case JT_THIEF_B:
       if (motion == 8 || motion == 6 || motion == 7) {
         mapped = 2;
       }
       break;
-    case 0xC:
-    case 0x11:
-    case 0xFAD:
-    case 0xFB2:
-    case 0xFC3:
-    case 0xFC8:
-    case 0xFDB:
-    case 0xFE1:
-    case 0xFE8:
-    case 0xFEF:
-    case 0x1005:
-    case 0x100C:
-    case 0x109E:
+    case JT_ASSASSIN:
+    case JT_ROGUE:
+    case JT_ASSASSIN_H:
+    case JT_ROGUE_H:
+    case JT_ASSASSIN_B:
+    case JT_ROGUE_B:
+    case JT_GUILLOTINE_CROSS:
+    case JT_GUILLOTINE_CROSS_H:
+    case JT_SHADOW_CHASER:
+    case JT_SHADOW_CHASER_H:
+    case JT_GUILLOTINE_CROSS_B:
+    case JT_SHADOW_CHASER_B:
+    case JT_SHADOW_CROSS:
       if (motion == 8 || motion == 7) {
         mapped = 2;
       } else if (motion == 6 && (
-        this->GetEffectiveJob(-1) == 0x11 || this->GetEffectiveJob(-1) == 0xFB2 || this->GetEffectiveJob(-1) == 0xFC8
+        this->GetEffectiveJob(-1) == JT_ROGUE || this->GetEffectiveJob(-1) == JT_ROGUE_H || this->GetEffectiveJob(-1) == JT_ROGUE_B
       )) {
         mapped = 1;
       }
       break;
-    case 2:
-    case 9:
-    case 0x10:
-    case 0xFA3:
-    case 0xFAA:
-    case 0xFB1:
-    case 0xFB9:
-    case 0xFC0:
-    case 0xFC7:
+    case JT_MAGICIAN:
+    case JT_WIZARD:
+    case JT_SAGE:
+    case JT_MAGICIAN_H:
+    case JT_WIZARD_H:
+    case JT_SAGE_H:
+    case JT_MAGICIAN_B:
+    case JT_WIZARD_B:
+    case JT_SAGE_B:
       if (motion == 5) {
         mapped = 10;
       }
@@ -2315,11 +2317,11 @@ void CPc::Render(int argument) {
   }
   if (this->render.unknown_0070 == 6) {
     switch (this->GetEffectiveJob(-1)) {
-    case 0xFD0:
-    case 0x108E:
-    case 0x1093:
-    case 0x1094:
-    case 0x10DC:
+    case JT_STAR2:
+    case JT_STAR2_B:
+    case JT_STAR2_EMPEROR:
+    case JT_STAR2_EMPEROR_B:
+    case JT_SKY_EMPEROR2:
       this->DrawShadow(argument, this->render.scale);
       break;
     }
@@ -2466,13 +2468,13 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
   if (!StateFlag12(eleventh) && !StateFlag16(eleventh) && !StateFlag18(eleventh) && !StateFlag27(eleventh) &&
       !StateFlag28(eleventh) && this->unknown_03DC != 1 && this->unknown_02CC == 0) {
     switch (this->GetEffectiveJob(-1)) {
-      case 0xC:
-      case 0xFAD:
-      case 0xFC3:
-      case 0xFDB:
-      case 0xFE1:
-      case 0x1005:
-      case 0x109E:
+      case JT_ASSASSIN:
+      case JT_ASSASSIN_H:
+      case JT_ASSASSIN_B:
+      case JT_GUILLOTINE_CROSS:
+      case JT_GUILLOTINE_CROSS_H:
+      case JT_GUILLOTINE_CROSS_B:
+      case JT_SHADOW_CROSS:
         this->SetSprWeapon2(fourth, fifth);
         break;
       default:
@@ -3118,8 +3120,8 @@ void CPlayer::UpdatePendingAction() {
       if (reinterpret_cast<const int&>(this->unknown_04F8) == cellX && this->unknown_04FC == cellY) {
         return;
       }
-      if (this->render.unknown_0070 == 2 && skill->GetEffectiveJob(-1) != 141 && skill->GetEffectiveJob(-1) != 143 &&
-          skill->GetEffectiveJob(-1) != 152) {
+      if (this->render.unknown_0070 == 2 && skill->GetEffectiveJob(-1) != UNT_ICEWALL && skill->GetEffectiveJob(-1) != UNT_BLASTMINE &&
+          skill->GetEffectiveJob(-1) != UNT_CLAYMORETRAP) {
         return;
       }
       this->unknown_04FC = cellY;
@@ -3129,16 +3131,16 @@ void CPlayer::UpdatePendingAction() {
     }
 
     switch (skill->GetEffectiveJob(-1)) {
-    case 141:
-    case 143:
-    case 152:
-    case 218:
-    case 222:
-    case 230:
-    case 20852:
-    case 20853:
-    case 20854:
-    case 20855:
+    case UNT_ICEWALL:
+    case UNT_BLASTMINE:
+    case UNT_CLAYMORETRAP:
+    case UNT_REVERBERATION:
+    case UNT_NETHERWORLD:
+    case UNT_WALLOFTHORN:
+    case UNT_DEEPBLINDTRAP:
+    case UNT_SOLIDTRAP:
+    case UNT_SWIFTTRAP:
+    case UNT_FLAMETRAP:
       if (this->unknown_052C == 0) {
         if (this->unknown_0510 == 2) {
           this->SendMsg(nullptr, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -3194,87 +3196,87 @@ void CPlayer::ReapplySkillEffects() {
     const int argument4 = it->unknown_0010;
 
     switch (type) {
-    case 0x2: {
+    case EFST_TWOHANDQUICKEN: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x82, 0, 0, 0);
       }
       break;
     }
-    case 0xA1: {
+    case EFST_ONEHANDQUICKEN: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x82, 0, 0, 0);
       }
       break;
     }
-    case 0xCF: {
+    case EFST_NJ_BUNSINJYUTSU: {
       CRagEffect* effect = this->LaunchEffect(0x269, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x269, 0, 0, 0);
       }
       break;
     }
-    case 0x19: {
+    case EFST_OVERTHRUST: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x80, 0, 0, 0);
       }
       break;
     }
-    case 0xBC: {
+    case EFST_OVERTHRUSTMAX: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x80, 0, 0, 0);
       }
       break;
     }
-    case 0x1F: {
+    case EFST_ENERGYCOAT: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0xA9, 0, 0, 0);
       }
       break;
     }
-    case 0x44: {
+    case EFST_SPEARQUICKEN: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0xFA, 0, 0, 0);
       }
       break;
     }
-    case 0x56:
+    case EFST_EXPLOSIONSPIRITS:
       this->LaunchEffect(0xCB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x57:
+    case EFST_STEELBODY:
       this->LaunchEffect(0xFE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->LaunchEffect(0x46C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0xA5:
-    case 0xA6:
-    case 0xA7:
+    case EFST_SG_SUN_WARM:
+    case EFST_SG_MOON_WARM:
+    case EFST_SG_STAR_WARM:
       this->LaunchEffect(0x1A2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->LaunchEffect(0x220, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x99:
+    case EFST_KAITE:
       this->LaunchEffect(0x1A3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x67:
+    case EFST_AURABLADE:
       this->LaunchEffect(0x1DA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x6B:
+    case EFST_BERSERK:
       this->LaunchEffect(0x170, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x69:
+    case EFST_LKCONCENTRATION:
       this->LaunchEffect(0x171, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x71:
+    case EFST_MAGICPOWER:
       this->LaunchEffect(0x17E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x7B:
+    case EFST_MOON:
       this->LaunchEffect(0x18A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x98: {
+    case EFST_DEVIL1: {
       CSkillInfo skill = g_session.m_skillBundle.Lookup(0x1B9);
       int effectId = skill.level;
       if (effectId > 0) {
@@ -3298,28 +3300,28 @@ void CPlayer::ReapplySkillEffects() {
       this->unknown_0544 = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     }
-    case 0x95:
+    case EFST_SOULLINK:
       g_weatherEffect.StartDarken();
       this->LaunchEffect(0x1A8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x61:
+    case EFST_PROPERTYUNDEAD:
       this->LaunchEffect(0x28F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0xA0:
+    case EFST_SKE:
       g_weatherEffect.StartDarken();
       break;
-    case 0xE8:
+    case EFST_DAURA:
       this->LaunchEffect(0x1A2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->LaunchEffect(0x220, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0xEB:
+    case EFST_DBARRIER:
       this->LaunchEffect(0xFE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->LaunchEffect(0x46C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x107:
+    case EFST_DA_CONTRACT:
       this->LaunchEffect(0x24A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x15E: {
+    case EFST_DUPLELIGHT: {
       while (this->HasId(0x341)) {
         this->SendMsg(nullptr, 109, 0, 0x341, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3330,13 +3332,13 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     }
-    case 0x14A:
+    case EFST_ORATIO:
       this->LaunchEffect(0x2F3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x1D0:
+    case EFST_BLOOD_SUCKER:
       this->LaunchEffect(0x170, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x1BD: {
+    case EFST_STRIKING: {
       while (this->HasId(0x39D)) {
         this->SendMsg(nullptr, 109, 0, 0x39D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3346,36 +3348,36 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     }
-    case 0x148:
+    case EFST_VENOMIMPRESS:
       this->LaunchEffect(0x314, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x15F:
+    case EFST_FROSTMISTY:
       this->LaunchEffect(0x315, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x1B5:
+    case EFST_COLD:
       this->LaunchEffect(0x3AC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x168:
+    case EFST_CAMOUFLAGE:
       this->LaunchEffect(0x2E8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x18A:
+    case EFST_SHADOWFORM:
       this->LaunchEffect(0x329, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x1A6:
+    case EFST_MANHOLE:
       g_soundMgr->PlayWave("effect\\manhole.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       this->LaunchEffect(0x337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x17B:
+    case EFST_STEALTHFIELD:
       this->LaunchEffect(0x2E8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x10A:
+    case EFST_CRYSTAL:
       this->LaunchEffect(0x2A1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x16B:
-    case 0x16C:
-    case 0x16D:
-    case 0x16E:
-    case 0x16F:
+    case EFST_SUMMON1:
+    case EFST_SUMMON2:
+    case EFST_SUMMON3:
+    case EFST_SUMMON4:
+    case EFST_SUMMON5:
       if (!tetraBall) {
         CTetraBallEffect* ball;
         for (int id = 0x4EE; id <= 0x4F1; ++id) {
@@ -3421,7 +3423,7 @@ void CPlayer::ReapplySkillEffects() {
         }
       }
       break;
-    case 0x153:
+    case EFST_ROLLINGCUTTER:
       if (value < 10) {
         if (g_serviceOptions.Get(0xE5)) {
           g_effectMgr->Spawn(this->render.accountId, value + 0x5BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -3430,72 +3432,72 @@ void CPlayer::ReapplySkillEffects() {
         }
       }
       break;
-    case 0x1C4:
+    case EFST_MELODYOFSINK:
       if (this->HasId(0x57) == true) {
         this->SendMsg(nullptr, 109, 0, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x57, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x1C5:
+    case EFST_BEYOND_OF_WARCRY:
       if (this->HasId(0x31F) == true) {
         this->SendMsg(nullptr, 109, 0, 0x31F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x31F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x1C0:
+    case EFST_SATURDAY_NIGHT_FEVER:
       if (this->HasId(0x360) == true) {
         this->SendMsg(nullptr, 109, 0, 0x360, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x360, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x23B:
+    case EFST_EQUIPED_FLOOR:
       this->SendMsg(nullptr, 110, 0, 0x23B, 0, 1, 0, value, value >> 31, 0, 0, 0, 0, 0, 0);
       break;
-    case 0x265:
+    case EFST_ALL_RIDING:
       this->SetRiding(1);
       this->SetSprJob(this->GetEffectiveJob(-1));
       this->SetBodyPalette(this->render.unknown_0048);
       break;
-    case 0x2A1:
+    case EFST_ON_PUSH_CART:
       this->SendMsg(nullptr, 110, 0, type, type >> 31, 1, 0, g_session.unknown_5C1C, g_session.unknown_5C1C >> 31, 0, 0, 0, 0, 0, 0);
       break;
-    case 0x2CD:
+    case EFST_TELEKINESIS_INTENSE:
       while (this->HasId(0x418)) {
         this->SendMsg(this, 109, 0, 0x418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x418, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x2DF:
+    case EFST_WIDEWEB:
       while (this->HasId(0x194)) {
         this->SendMsg(this, 109, 0, 0x194, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x194, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x2E1:
+    case EFST_BURNT:
       while (this->HasId(0x41E)) {
         this->SendMsg(this, 109, 0, 0x41E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x41E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x2E0:
+    case EFST_CHILL:
       while (this->HasId(0x41F)) {
         this->SendMsg(this, 109, 0, 0x41F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x41F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x2CC:
+    case EFST_OFFERTORIUM:
       while (this->HasId(0x421)) {
         this->SendMsg(this, 109, 0, 0x421, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x421, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x291:
+    case EFST_ZANGETSU:
       while (this->HasId(0x3EB)) {
         this->SendMsg(this, 109, 0, 0x3EB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x3EB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x293:
+    case EFST_GENSOU:
       g_effectMgr->Retire(this->render.accountId, 0x3ED);
       if (g_effectMgr->HasAllocator(0x3ED)) {
         CEffect* orb = g_effectMgr->Spawn(this->render.accountId, 0x3ED, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -3508,25 +3510,25 @@ void CPlayer::ReapplySkillEffects() {
       }
       this->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x290:
+    case EFST_KAGEMUSYA:
       while (this->HasId(0x3EC)) {
         this->SendMsg(nullptr, 109, 0, 0x3EC, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x3EC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x2F8:
+    case EFST_ANTI_M_BLAST:
       g_effectMgr->Retire(this->render.accountId, 0x470);
       if (g_effectMgr->HasAllocator(0x470) == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x470, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       }
       break;
-    case 0x2A3:
+    case EFST_FLOWER_LEAF:
       g_effectMgr->Retire(this->render.accountId, 0x3F5);
       if (g_effectMgr->HasAllocator(0x3F5) == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x3F5, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       }
       break;
-    case 0x2DA:
+    case EFST_DARKCROW:
       while (this->HasId(0x410)) {
         this->SendMsg(nullptr, 109, 0, 0x410, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3534,8 +3536,8 @@ void CPlayer::ReapplySkillEffects() {
       this->LaunchEffect(0x410, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->LaunchEffect(0x410, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x14E:
-    case 0x365: {
+    case EFST_HALLUCINATIONWALK:
+    case EFST_NPC_HALLUCINATIONWALK: {
       while (this->HasId(0x318)) {
         this->SendMsg(nullptr, 109, 0, 0x318, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3545,115 +3547,115 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     }
-    case 0x6E:
-    case 0x1D9:
-    case 0x461:
+    case EFST_ASSUMPTIO:
+    case EFST_ASSUMPTIO2:
+    case EFST_ASSUMPTIO_BUFF:
       this->LaunchEffect(0x177, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x3A9:
+    case EFST_SPRITEMABLE:
       g_effectMgr->Retire(this->render.accountId, 0x448);
       if (g_effectMgr->HasAllocator(0x448) == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x448, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       }
       break;
-    case 0x3A5:
+    case EFST_SUHIDE:
       this->SetState(0x30, 1);
       this->render.isMotionFreezed = true;
       break;
-    case 0x397:
+    case EFST_TUNAPARTY:
       g_effectMgr->Retire(this->render.accountId, 0x449);
       if (g_effectMgr->HasAllocator(0x449) == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x449, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       }
       break;
-    case 0x380:
+    case EFST_SV_ROOTTWIST:
       g_effectMgr->Retire(this->render.accountId, 0x456);
       if (g_effectMgr->HasAllocator(0x456) == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x456, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       }
       break;
-    case 0x395:
+    case EFST_BITESCAR:
       g_effectMgr->Retire(this->render.accountId, 0x45F);
       if (g_effectMgr->HasAllocator(0x45F) == true) {
         g_effectMgr->Spawn(this->render.accountId, 0x45F, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
       }
       break;
-    case 0x3D6:
+    case EFST_SOULATTACK:
       this->unknown_04D8[0] = 1;
       break;
-    case 0x3F8:
-    case 0x3F9:
-    case 0x3FA:
-    case 0x3FB:
-    case 0x3FC:
-    case 0x3FD:
-    case 0x3FE:
-    case 0x3FF:
-    case 0x400:
-    case 0x401:
+    case EFST_IMMUNE_PROPERTY_NOTHING:
+    case EFST_IMMUNE_PROPERTY_WATER:
+    case EFST_IMMUNE_PROPERTY_GROUND:
+    case EFST_IMMUNE_PROPERTY_FIRE:
+    case EFST_IMMUNE_PROPERTY_WIND:
+    case EFST_IMMUNE_PROPERTY_POISON:
+    case EFST_IMMUNE_PROPERTY_SAINT:
+    case EFST_IMMUNE_PROPERTY_DARKNESS:
+    case EFST_IMMUNE_PROPERTY_TELEKINESIS:
+    case EFST_IMMUNE_PROPERTY_UNDEAD:
       g_effectMgr->Spawn(this->render.accountId, type + 0x87, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x41A:
+    case EFST_GRAVITYCONTROL:
       if (g_effectMgr->Has(this->render.accountId, 0x4B1) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4B1);
       }
       g_effectMgr->Spawn(this->render.accountId, 0x4B1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\t_캐스팅.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
-    case 0x410:
+    case EFST_SUNSTANCE:
       if (g_effectMgr->Has(this->render.accountId, 0x4BE) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4BE);
       }
       g_effectMgr->Spawn(this->render.accountId, 0x4BE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x40E:
+    case EFST_LUNARSTANCE:
       if (g_effectMgr->Has(this->render.accountId, 0x4BF) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4BF);
       }
       g_effectMgr->Spawn(this->render.accountId, 0x4BF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x413:
+    case EFST_STARSTANCE:
       if (g_effectMgr->Has(this->render.accountId, 0x4C0) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C0);
       }
       g_effectMgr->Spawn(this->render.accountId, 0x4C0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x40F:
+    case EFST_UNIVERSESTANCE:
       if (g_effectMgr->Has(this->render.accountId, 0x4C1) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C1);
       }
       g_effectMgr->Spawn(this->render.accountId, 0x4C1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x411:
+    case EFST_FLASHKICK:
       if (g_effectMgr->Has(this->render.accountId, 0x4C5) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C5);
       }
       g_effectMgr->Spawn(this->render.accountId, 0x4C5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x41F:
+    case EFST_SOULUNITY:
       if (g_effectMgr->Has(this->render.accountId, 0x4C6) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C6);
       }
       g_effectMgr->Spawn(this->render.accountId, 0x4C6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\t_바람방출.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
-    case 0x420:
-    case 0x421:
-    case 0x422:
-    case 0x423:
+    case EFST_SOULSHADOW:
+    case EFST_SOULFAIRY:
+    case EFST_SOULFALCON:
+    case EFST_SOULGOLEM:
       g_weatherEffect.StartDarken();
       this->LaunchEffect(0x1A8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x466:
+    case EFST_SOUND_OF_DESTRUCTION:
       g_effectMgr->Retire(this->render.accountId, 0x66C);
       g_effectMgr->Spawn(this->render.accountId, 0x66C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x47E:
+    case EFST_DEADLY_DEFEASANCE:
       if (!g_effectMgr->Has(this->render.accountId, 0x6CD)) {
         g_effectMgr->Spawn(this->render.accountId, 0x6CD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x4B5:
+    case EFST_HANDICAPSTATE_DEEPBLIND:
       if (this->HasId(0x14E) == true) {
         this->SendMsg(nullptr, 109, 0, 0x14E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -3662,82 +3664,82 @@ void CPlayer::ReapplySkillEffects() {
       this->SendMsg(nullptr, 109, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->unknown_0544 = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case 0x4B6:
-    case 0x4B9:
+    case EFST_HANDICAPSTATE_DEEPSILENCE:
+    case EFST_HANDICAPSTATE_SWOONING:
       this->SendMsg(nullptr, 156, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
-    case 0x4B7:
+    case EFST_HANDICAPSTATE_LASSITUDE:
       this->SendMsg(nullptr, 152, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
-    case 0x4B8:
+    case EFST_HANDICAPSTATE_FROSTBITE:
       g_effectMgr->Spawn(this->render.accountId, 0x8DE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x8E0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x4BA:
+    case EFST_HANDICAPSTATE_LIGHTNINGSTRIKE:
       g_effectMgr->Retire(this->render.accountId, 0x8DC);
       g_effectMgr->Spawn(this->render.accountId, 0x8DC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x4BB:
+    case EFST_HANDICAPSTATE_CRYSTALLIZATION:
       g_effectMgr->Spawn(this->render.accountId, 0x8E1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x4BC:
+    case EFST_HANDICAPSTATE_CONFLAGRATION:
       this->SendMsg(nullptr, 127, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       g_effectMgr->Retire(this->render.accountId, 0x8DD);
       g_effectMgr->Spawn(this->render.accountId, 0x8DD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x4BD:
+    case EFST_HANDICAPSTATE_MISFORTUNE:
       this->SendMsg(nullptr, 154, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
-    case 0x4BE:
+    case EFST_HANDICAPSTATE_DEADLYPOISON:
       this->SendMsg(nullptr, 127, 0, 170, 0, 0, 0, 170, 0, 0, 0, 0, 0, 0, 0);
       break;
-    case 0x4BF:
+    case EFST_HANDICAPSTATE_DEPRESSION:
       this->SendMsg(nullptr, 127, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0);
       break;
-    case 0x4C0:
+    case EFST_HANDICAPSTATE_HOLYFLAME:
       this->SendMsg(nullptr, 127, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
-    case 0x498:
+    case EFST_DRAGONIC_AURA:
       g_effectMgr->Retire(this->render.accountId, 0x6BE);
       g_effectMgr->Retire(this->render.accountId, 0x6BF);
       g_effectMgr->Spawn(this->render.accountId, 0x6BE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x6BF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x480:
+    case EFST_CLIMAX:
       if (!g_effectMgr->Has(this->render.accountId, 0x708)) {
         g_effectMgr->Spawn(this->render.accountId, 0x708, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
       }
       break;
-    case 0x4AD:
+    case EFST_MEDIALE:
       if (!g_serviceOptions.Get(0xE5) && !g_effectMgr->Has(this->render.accountId, 0x712)) {
         g_effectMgr->Spawn(this->render.accountId, 0x712, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x4DD:
+    case EFST_ABYSS_SLAYER:
       if (!g_effectMgr->Has(this->render.accountId, 0x84E)) {
         g_effectMgr->Spawn(this->render.accountId, 0x84E, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
       }
       break;
-    case 0x4D2:
+    case EFST_FIRST_FAITH_POWER:
       g_effectMgr->Spawn(this->render.accountId, 0x7B7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x4D0:
+    case EFST_SECOND_JUDGE:
       g_effectMgr->Spawn(this->render.accountId, 0x7BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x7BD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x4D1:
+    case EFST_THIRD_EXOR_FLAME:
       g_effectMgr->Spawn(this->render.accountId, 0x7BE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(this->render.accountId, 0x7C1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
-    case 0x4D5:
+    case EFST_D_MACHINE:
       if (!g_effectMgr->Has(this->render.accountId, 0x719)) {
         g_effectMgr->Spawn(this->render.accountId, 0x719, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
       }
       break;
-    case 0x4D4:
+    case EFST_A_MACHINE:
       g_effectMgr->Spawn(this->render.accountId, 0x72F, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
       break;
-    case 0x4B1:
+    case EFST_COMPETENTIA:
       if (!g_serviceOptions.Get(0xE5) && !g_effectMgr->Has(this->render.accountId, 0x73C)) {
         g_effectMgr->Spawn(this->render.accountId, 0x73C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
@@ -3745,27 +3747,27 @@ void CPlayer::ReapplySkillEffects() {
         g_effectMgr->Spawn(this->render.accountId, 0x73D, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x4E2:
+    case EFST_WINDSIGN:
       if (!g_effectMgr->Has(this->render.accountId, 0x76C)) {
         g_effectMgr->Spawn(this->render.accountId, 0x76C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x4AC:
+    case EFST_E_SLASH_COUNT:
       if (!g_effectMgr->Has(this->render.accountId, 0x779)) {
         g_effectMgr->Spawn(this->render.accountId, 0x779, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
       }
       break;
-    case 0x48D:
+    case EFST_HELLS_PLANT_ARMOR:
       if (!this->HasId(0x64A)) {
         this->LaunchEffect(0x64A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x4EA:
+    case EFST_SOUNDBLEND:
       if (!g_effectMgr->Has(this->render.accountId, 0x80C)) {
         g_effectMgr->Spawn(this->render.accountId, 0x80C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
-    case 0x4DC:
+    case EFST_ABYSSFORCEWEAPON:
       if (!g_effectMgr->Has(this->render.accountId, 0x83D)) {
         CEffect* abyss = g_effectMgr->Spawn(this->render.accountId, 0x83D, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         if (abyss) {
@@ -3773,46 +3775,46 @@ void CPlayer::ReapplySkillEffects() {
         }
       }
       break;
-    case 0x526:
+    case EFST_CLOUD_POISON:
       if (!this->HasId(0x8E5)) {
         this->LaunchEffect(0x8E5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x527:
+    case EFST_SPORE_EXPLOSION_DEBUFF:
       if (!this->HasId(0x8E6)) {
         this->LaunchEffect(0x8E6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case 0x698:
+    case EFST_BLOCK:
       g_windowMgr.EnsureWindow(0x2730);
       break;
-    case 0x4A6:
-    case 0x4CE:
-    case 0x4CF:
+    case EFST_HOLY_OIL:
+    case EFST_FIRST_BRAND:
+    case EFST_SECOND_BRAND:
       break;
-    case 0x288:
-    case 0x289:
+    case EFST_EQUIPPED_DIVINE_ARMOR:
+    case EFST_EQUIPPED_HOLY_ARMOR:
       this->SendMsg(nullptr, 110, 0, type, type >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     default:
       switch (type) {
-      case 0x2A2:
-      case 0x2CE:
-      case 0x2CF:
-      case 0x2D8:
-      case 0x30B:
-      case 0x336:
-      case 0x337:
-      case 0x339:
-      case 0x33A:
-      case 0x351:
-      case 0x359:
-      case 0x35F:
-      case 0x360:
-      case 0x368:
+      case EFST_HAT_EFFECT:
+      case EFST_MOONSTAR:
+      case EFST_STRANGELIGHTS:
+      case EFST_SUPER_STAR:
+      case EFST_DECORATION_OF_MUSIC:
+      case EFST_FLOWERSMOKE:
+      case EFST_FSTONE:
+      case EFST_QSCARABA:
+      case EFST_LJOSALFAR:
+      case EFST_HAPPINESS_STAR:
+      case EFST_MAPLE_FALLS:
+      case EFST_MERMAID_LONGING:
+      case EFST_MAGICAL_FEATHER:
+      case EFST_TIME_ACCESSORY:
         this->SendMsg(nullptr, 110, 0, type, type >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         break;
-      case 0x37F:
+      case EFST_HEAD_EQUIPMENT_EFFECT:
         this->ApplyEffectState(value + 0x9B5, true);
         break;
       default:
@@ -4405,11 +4407,11 @@ void CPc::SetState(int state, int resetPosition) {
     CGameActor::SetState(0, resetPosition);
     if (g_session.m_aid == this->render.accountId) {
       switch (g_session.m_job) {
-      case 0xFCF:
-      case 0x1082:
-      case 0x108F:
-      case 0x1091:
-      case 0x10CE:
+      case JT_STAR:
+      case JT_STAR_B:
+      case JT_STAR_EMPEROR:
+      case JT_STAR_EMPEROR_B:
+      case JT_SKY_EMPEROR:
         if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.desiredDistance > g_serviceOptionJitterScale) {
           static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.desiredDistance = g_serviceOptionJitterScale;
         }
@@ -4459,22 +4461,22 @@ void CPc::SetState(int state, int resetPosition) {
       return;
     }
     this->SetAction(action, 6, 1);
-    if (this->GetEffectiveJob(-1) == 0xFB4 || this->GetEffectiveJob(-1) == 0xFB5 || this->GetEffectiveJob(-1) == 0xFAF ||
-        this->GetEffectiveJob(-1) == 0xFE2 || this->GetEffectiveJob(-1) == 0xFE9 || this->GetEffectiveJob(-1) == 0xF ||
-        this->GetEffectiveJob(-1) == 0xFB0 || this->GetEffectiveJob(-1) == 0xFC6 || this->GetEffectiveJob(-1) == 0xFE6 ||
-        this->GetEffectiveJob(-1) == 0xFED || this->GetEffectiveJob(-1) == 0x100A || this->GetEffectiveJob(-1) == 0x10A6) {
+    if (this->GetEffectiveJob(-1) == JT_BARD_H || this->GetEffectiveJob(-1) == JT_DANCER_H || this->GetEffectiveJob(-1) == JT_CRUSADER_H ||
+        this->GetEffectiveJob(-1) == JT_ROYAL_GUARD || this->GetEffectiveJob(-1) == JT_ROYAL_GUARD_H || this->GetEffectiveJob(-1) == JT_MONK ||
+        this->GetEffectiveJob(-1) == JT_MONK_H || this->GetEffectiveJob(-1) == JT_MONK_B || this->GetEffectiveJob(-1) == JT_SURA ||
+        this->GetEffectiveJob(-1) == JT_SURA_H || this->GetEffectiveJob(-1) == JT_SURA_B || this->GetEffectiveJob(-1) == JT_INQUISITOR) {
       this->SetSequenceInterval(4);
       this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 400, 0);
-    } else if (this->GetEffectiveJob(-1) == 0x19) {
+    } else if (this->GetEffectiveJob(-1) == JT_NINJA) {
       this->SetSequenceInterval(4);
       this->SetFrameSequence(0x60, 2, 5, 0x60, 5, 1, 1000, 0);
-    } else if (this->GetEffectiveJob(-1) == 0x18) {
+    } else if (this->GetEffectiveJob(-1) == JT_GUNSLINGER) {
       this->SetSequenceInterval(4);
       this->SetFrameSequence(0x60, 0, 3, 0x60, 3, 1, 1000, 0);
-    } else if (this->GetEffectiveJob(-1) == 0x107E) {
+    } else if (this->GetEffectiveJob(-1) == JT_NINJA_B) {
       this->SetSequenceInterval(4);
       this->SetFrameSequence(0x60, 2, 5, 0x60, 5, 1, 1000, 0);
-    } else if (this->GetEffectiveJob(-1) == 0x1084) {
+    } else if (this->GetEffectiveJob(-1) == JT_GUNSLINGER_B) {
       this->SetSequenceInterval(4);
       this->SetFrameSequence(0x60, 0, 3, 0x60, 3, 1, 1000, 0);
     }
@@ -4499,18 +4501,18 @@ void CPc::SetState(int state, int resetPosition) {
 
     int attackState;
     switch (this->GetEffectiveJob(-1)) {
-    case 0xFCE:
-    case 0xFCF:
-    case 0xFD0:
-    case 0x1081:
-    case 0x1082:
-    case 0x108E:
-    case 0x108F:
-    case 0x1091:
-    case 0x1093:
-    case 0x1094:
-    case 0x10CE:
-    case 0x10DC:
+    case JT_TAEKWON:
+    case JT_STAR:
+    case JT_STAR2:
+    case JT_TAEKWON_B:
+    case JT_STAR_B:
+    case JT_STAR2_B:
+    case JT_STAR_EMPEROR:
+    case JT_STAR_EMPEROR_B:
+    case JT_STAR2_EMPEROR:
+    case JT_STAR2_EMPEROR_B:
+    case JT_SKY_EMPEROR:
+    case JT_SKY_EMPEROR2:
       if (std::max(rand() % 10, 0) < 7) {
         weaponAllowed = true;
         attackState = 9;
@@ -5102,29 +5104,29 @@ void CPc::SendMsg(
 
     int effectId;
     switch (this->unknown_04D0) {
-    case 0xFAC:
+    case JT_HUNTER_H:
       effectId = 0x17;
       break;
-    case 0xFC2:
+    case JT_HUNTER_B:
       effectId = 0x18;
       break;
-    case 0xFD2:
+    case JT_GANGSI:
       effectId = 0x20;
       break;
-    case 0xFD3:
+    case JT_DEATHKNIGHT:
       effectId = 0x21;
       break;
-    case 0xFD4:
+    case JT_COLLECTOR:
       effectId = 0x22;
       break;
-    case 0xFD8:
-    case 0xFDE:
-    case 0x1002:
-    case 0x10F1:
+    case JT_RANGER:
+    case JT_RANGER_H:
+    case JT_RANGER_B:
+    case JT_RANGER_2ND:
       effectId = 0x35;
       break;
-    case 0x10A1:
-    case 0x10B6:
+    case JT_WINDHAWK:
+    case JT_WOLF_WINDHAWK:
       effectId = 0x45;
       break;
     default:
@@ -5145,21 +5147,21 @@ void CPc::SendMsg(
 
     int effectId;
     switch (this->unknown_04D0) {
-    case 0xFD8:
-    case 0xFDE:
-    case 0xFF4:
-    case 0xFF5:
+    case JT_RANGER:
+    case JT_RANGER_H:
+    case JT_WOLF_RANGER:
+    case JT_WOLF_RANGER_H:
       effectId = 0x23;
       break;
-    case 0x1002:
-    case 0x100F:
+    case JT_RANGER_B:
+    case JT_WOLF_RANGER_B:
       effectId = 0x2A;
       break;
-    case 0x10A1:
-    case 0x10B6:
+    case JT_WINDHAWK:
+    case JT_WOLF_WINDHAWK:
       effectId = 0x46;
       break;
-    case 0x10F1:
+    case JT_RANGER_2ND:
       effectId = g_session.IsBabyJob(this->GetEffectiveJob(-1)) == true ? 0x2A : 0x23;
       break;
     default:

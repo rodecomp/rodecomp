@@ -1,3 +1,5 @@
+#include "Network/Packets/NoticeEnums.h"
+#include "Contents/Combat/CombatTypes.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Utility/EncryptedName.h"
 #include "Contents/Effects/EffectActor.h"
@@ -1980,38 +1982,38 @@ EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::GetUn
 int GetEquipLocationIndex(const int& mask) {
   int index = 0;
   switch (mask) {
-  case 0x1:
+  case EQP_HEAD_LOW:
     index = 1;
     break;
-  case 0x10:
+  case EQP_ARMOR:
     index = 2;
     break;
-  case 0x20:
+  case EQP_HAND_L:
     index = 3;
     break;
-  case 0x2:
+  case EQP_HAND_R:
   case 0x22:
     index = 4;
     break;
-  case 0x4:
+  case EQP_GARMENT:
     index = 5;
     break;
-  case 0x8:
+  case EQP_ACC_R:
     index = 7;
     break;
-  case 0x40:
+  case EQP_SHOES:
     index = 6;
     break;
   case 0x101:
     index = 1;
     break;
-  case 0x100:
+  case EQP_HEAD_TOP:
     index = 10;
     break;
-  case 0x80:
+  case EQP_ACC_L:
     index = 8;
     break;
-  case 0x200:
+  case EQP_HEAD_MID:
     index = 11;
     break;
   case 0x201:
@@ -2023,41 +2025,41 @@ int GetEquipLocationIndex(const int& mask) {
   case 0x301:
     index = 1;
     break;
-  case 0x400:
+  case EQP_COSTUME_HEAD_TOP:
   case 0xC00:
   case 0x1400:
   case 0x1C00:
     index = 20;
     break;
-  case 0x1000:
+  case EQP_COSTUME_HEAD_LOW:
     index = 22;
     break;
-  case 0x800:
+  case EQP_COSTUME_HEAD_MID:
   case 0x1800:
     index = 21;
     break;
-  case 0x2000:
+  case EQP_COSTUME_GARMENT:
     index = 23;
     break;
-  case 0x8000:
+  case EQP_AMMO:
     index = 0;
     break;
-  case 0x40000:
+  case EQP_SHADOW_SHIELD:
     index = 32;
     break;
-  case 0x20000:
+  case EQP_SHADOW_WEAPON:
     index = 31;
     break;
-  case 0x10000:
+  case EQP_SHADOW_ARMOR:
     index = 30;
     break;
-  case 0x80000:
+  case EQP_SHADOW_SHOES:
     index = 33;
     break;
-  case 0x200000:
+  case EQP_SHADOW_ACC_L:
     index = 35;
     break;
-  case 0x100000:
+  case EQP_SHADOW_ACC_R:
     index = 34;
     break;
   }
@@ -4820,37 +4822,37 @@ int GetPlayerValue(lua_State* state) {
   std::map<int, int>& traitStats = g_session.m_traits.stats;
   int value = 0;
   switch (args[0]) {
-  case 7:
+  case SP_SP:
     value = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
     break;
-  case 8:
+  case SP_MAXSP:
     value = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
     break;
-  case 11:
+  case SP_BASELEVEL:
     value = g_session.m_level;
     break;
-  case 19:
+  case SP_CLASS:
     value = g_session.m_job;
     break;
-  case 32:
+  case SP_USTR:
     value = g_session.m_standardStats[0];
     break;
-  case 33:
+  case SP_UAGI:
     value = g_session.m_standardStats[1];
     break;
-  case 34:
+  case SP_UVIT:
     value = g_session.m_standardStats[2];
     break;
-  case 35:
+  case SP_UINT:
     value = g_session.m_standardStats[3];
     break;
-  case 36:
+  case SP_UDEX:
     value = g_session.m_standardStats[4];
     break;
-  case 37:
+  case SP_ULUK:
     value = g_session.m_standardStats[5];
     break;
-  case 55:
+  case SP_JOBLEVEL:
     value = g_session.m_jobLevel;
     break;
   case 255:
@@ -6223,38 +6225,38 @@ void CGameMode::Zc_Mer_Par_Change(const unsigned char* data) {
 
   const MercenaryParChangePacket* packet = reinterpret_cast<const MercenaryParChangePacket*>(data);
   switch (packet->type) {
-  case 5:
+  case SP_HP:
     g_session.m_mercenaryHp = packet->value;
     g_session.RefreshMercenaryInfo();
     break;
-  case 7:
+  case SP_SP:
     g_session.m_mercenarySp = packet->value;
     g_session.RefreshMercenaryInfo();
     break;
-  case 6:
+  case SP_MAXHP:
     g_session.m_mercenaryMaxHp = packet->value;
     g_session.RefreshMercenaryInfo();
     break;
-  case 8:
+  case SP_MAXSP:
     g_session.m_mercenaryMaxSp = packet->value;
     g_session.RefreshMercenaryInfo();
     break;
-  case 41:
+  case SP_ATK1:
     g_session.m_mercenaryStats[0] = packet->value;
     break;
-  case 49:
+  case SP_HIT:
     g_session.m_mercenaryStats[2] = packet->value;
     break;
-  case 165:
+  case SP_MERCFLEE:
     g_session.m_mercenaryStats[6] = packet->value;
     break;
-  case 53:
+  case SP_ASPD:
     g_session.m_mercenaryStats[7] = packet->value;
     break;
-  case 189:
+  case SP_MERCKILLS:
     g_session.m_mercenaryKills = packet->value;
     break;
-  case 190:
+  case SP_MERCFAITH:
     g_session.m_mercenaryLoyalty = packet->value;
     break;
   }

@@ -1,4 +1,8 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Jobs/JobId.h"
+#include "Contents/Skills/SkillId.h"
+#include "Contents/Skills/SkillUnitId.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
@@ -650,21 +654,21 @@ int CGameMode::IsExcludedSkillEffectId(std::uint32_t id) {
 // FUNCTION: fn_21583
 int CGameMode::SubD07740(int id, int defaultResult) {
   switch (id) {
-  case 0x13:
-  case 0xFB4:
-  case 0xFCA:
-  case 0xFE4:
-  case 0xFEB:
-  case 0x1008:
-  case 0x10A7:
+  case JT_BARD:
+  case JT_BARD_H:
+  case JT_BARD_B:
+  case JT_MINSTREL:
+  case JT_MINSTREL_H:
+  case JT_MINSTREL_B:
+  case JT_TROUBADOUR:
     return 1;
-  case 0x14:
-  case 0xFB5:
-  case 0xFCB:
-  case 0xFE5:
-  case 0xFEC:
-  case 0x1009:
-  case 0x10A8:
+  case JT_DANCER:
+  case JT_DANCER_H:
+  case JT_DANCER_B:
+  case JT_WANDERER:
+  case JT_WANDERER_H:
+  case JT_WANDERER_B:
+  case JT_TROUVERE:
     return 0;
   }
 
@@ -2860,19 +2864,19 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case 0x56: {
       bool allowed = argument3 >= 0 && argument1 >= 0;
       switch (argument1) {
-        case 0x28:
-        case 0x29:
-        case 0x33:
-        case 0x87:
-        case 0x185:
-        case 0x7F1:
-        case 0x8C7:
-        case 0x8F2:
-        case 0x926:
-        case 0x9E7:
-        case 0xBB9:
-        case 0x1506:
-        case 0x1507:
+        case MC_IDENTIFY:
+        case MC_VENDING:
+        case TF_HIDING:
+        case AS_CLOAKING:
+        case ST_CHASEWALK:
+        case GC_CLOAKINGEXCEED:
+        case RA_CAMOUFLAGE:
+        case SC_INVISIBILITY:
+        case SR_CRESCENTELBOW_AUTOSPELL:
+        case ALL_BUYING_STORE:
+        case KO_YAMIKUMO:
+        case ABC_CHAIN_REACTION_SHOT_ATK:
+        case ABC_FROM_THE_ABYSS_ATK:
           allowed = false;
           break;
       }
@@ -2885,7 +2889,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       char text[64];
       char skillName[64];
-      if (argument1 == 0x14E || argument1 == 0x14F) {
+      if (argument1 == WE_MALE || argument1 == WE_FEMALE) {
         const std::string actorName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(argument3);
         std::strcpy(text, actorName.c_str());
         std::strcpy(skillName, CSkillInfo::DisplayName(*g_session.m_hotkeyScript, argument1));
@@ -2898,7 +2902,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         actor->SendMsg(nullptr, 7, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         return 0;
       }
-      if (argument1 == 0x150) {
+      if (argument1 == WE_CALLPARTNER) {
         std::sprintf(text, "%s", this->unknown_0294);
         std::strcpy(skillName, CSkillInfo::DisplayName(*g_session.m_hotkeyScript, argument1));
         if (g_serviceType == 0) {
@@ -2910,7 +2914,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         actor->SendMsg(nullptr, 7, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         return 0;
       }
-      if (argument1 == 0x146 || argument1 == 0x13E || argument1 == 0x1EC ||
+      if (argument1 == DC_SCREAM || argument1 == BA_FROSTJOKER || argument1 == ITEM_ENCHANTARMS ||
           (g_session.IsMonsterActor(actor) == 1 && actor->render.visible == 0)) {
         return 0;
       }
@@ -7700,11 +7704,11 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
     maxDistance = static_cast<float>(this->viewParameters[1] + this->viewParameters[0]);
   } else if (zoomSkill.level <= 0 && this->scene->player->render.unknown_0070 == 6 && !this->scene->player->HasId(0x14E)) {
     switch (g_session.m_job) {
-    case 0xFCF:
-    case 0x1082:
-    case 0x108F:
-    case 0x1091:
-    case 0x10CE:
+    case JT_STAR:
+    case JT_STAR_B:
+    case JT_STAR_EMPEROR:
+    case JT_STAR_EMPEROR_B:
+    case JT_SKY_EMPEROR:
       extendedZoom = true;
       break;
     }
@@ -9159,38 +9163,38 @@ static_assert(sizeof(TalkSelectPacket) == 8);
 void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   std::string defaults[3];
   std::string* parts = arguments ? arguments : defaults;
-  if (g_serviceType == 4 && talkType == 6) {
+  if (g_serviceType == 4 && talkType == TT_REQ_NUM_USER) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x5F)), 0xFFFF, 0, 0, 0);
     return;
   }
 
   switch (talkType) {
-  case 57:
+  case TT_GUILD_CHAT:
     g_windowMgr.SetUnknown04DC(parts[0].c_str());
     this->SendMsg(0x81, 0, 0, 0, 0);
     break;
-  case 18:
-  case 19: {
+  case TT_REQ_WHISPER_PC_EX:
+  case TT_REQ_WHISPER_PC_IN: {
     this->unknown_0118 = parts[0];
     if (this->unknown_0118.size() > 0x18) {
       break;
     }
     TalkWhisperSettingPacket packet;
-    if (talkType == 18) {
+    if (talkType == TT_REQ_WHISPER_PC_EX) {
       g_whisperBlockMgr->Add(this->unknown_0118);
     } else {
       g_whisperBlockMgr->Remove(this->unknown_0118);
     }
     packet.id = ID_CZ_SETTING_WHISPER_PC;
     StringFormat(packet.name, 0x18, static_cast<std::size_t>(-1), "%s", parts[0].c_str());
-    packet.type = talkType == 18 ? 0 : 1;
+    packet.type = talkType == TT_REQ_WHISPER_PC_EX ? 0 : 1;
     GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
     break;
   }
-  case 52:
+  case TT_REQ_SAVE_CHAT_FROM_CHATROOM:
     g_windowMgr.SendNotice(7, 0, 0, 0, 0, 0);
     break;
-  case 104: {
+  case TT_REQ_AUTO_SAVE_CHAT: {
     if (g_session.IsAdminSubMode(7) == 0) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x5F)), 0xFFFF, 0, 0, 0);
       break;
@@ -9223,11 +9227,11 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
     break;
   }
-  case 3:
+  case TT_UNKNOWN:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x5F)), 0xFFFF, 0, 0, 0);
     break;
-  case 0:
-  case 50: {
+  case TT_NORMAL:
+  case TT_NORMAL_FROM_CHATROOM: {
     char text[364];
     int party = 0;
     int alternate = 0;
@@ -9263,7 +9267,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     if (HIBYTE(GetAsyncKeyState(VK_CAPITAL))) {
       clanChat = 1;
     }
-    if (talkType == 50) {
+    if (talkType == TT_NORMAL_FROM_CHATROOM) {
       this->SendMsg(6, 0, 0, 0, 0);
       break;
     }
@@ -9303,7 +9307,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     break;
   }
-  case 151: {
+  case TT_EX_HI: {
     char text[256];
     if (std::strcmp(parts[0].c_str(), "") == 0) {
       g_session.HiFriends(nullptr);
@@ -9321,18 +9325,18 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x1EFFFF, 0, 0, 0);
     break;
   }
-  case 149:
+  case TT_LEVEL:
     for (int count = 32; count != 0; --count) {
       this->SendMsg(0x5B, reinterpret_cast<int>("LEVEL"), 0, 0, 0);
     }
     break;
-  case 150:
+  case TT_SP:
     for (int count = 5; count != 0; --count) {
       this->SendMsg(0x5B, reinterpret_cast<int>("SPPOINT"), 0, 0, 0);
       this->SendMsg(0x5B, reinterpret_cast<int>("JOBLEVEL"), 0, 0, 0);
     }
     break;
-  case 145: {
+  case TT_RANDOM_LOADING_SCREEN_ON_OFF: {
     const char* text;
     if (g_randomLoadingScreen) {
       g_randomLoadingScreen = false;
@@ -9344,13 +9348,13 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x6E96FF, 0, 0, 0);
     break;
   }
-  case 115:
+  case TT_SET1_ON_OFF:
     g_modeMgr.gameMode->SendMsg(0x2A, 0x71, 0, 0, 0);
     g_modeMgr.gameMode->SendMsg(0x2A, 0x6C, 0, 0, 0);
     g_modeMgr.gameMode->SendMsg(0x2A, 0x6D, 0, 0, 0);
     g_modeMgr.gameMode->SendMsg(0x2A, 0x8D, 0, 0, 0);
     break;
-  case 138:
+  case TT_SET2_ON_OFF:
     g_modeMgr.gameMode->SendMsg(0x2A, 0x71, 0, 0, 0);
     g_modeMgr.gameMode->SendMsg(0x2A, 0x6C, 0, 0, 0);
     g_modeMgr.gameMode->SendMsg(0x2A, 0x6D, 0, 0, 0);
@@ -9358,7 +9362,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_modeMgr.gameMode->SendMsg(0x2A, 0x79, 0, 0, 0);
     g_modeMgr.gameMode->SendMsg(0x2A, 0x8D, 0, 0, 0);
     break;
-  case 166:
+  case TT_SET3_ON_OFF:
     g_modeMgr.gameMode->SendMsg(0x2A, 0x71, 0, 0, 0);
     g_modeMgr.gameMode->SendMsg(0x2A, 0x6C, 0, 0, 0);
     g_modeMgr.gameMode->SendMsg(0x2A, 0x6D, 0, 0, 0);
@@ -9367,28 +9371,28 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_modeMgr.gameMode->SendMsg(0x2A, 0x87, 0, 0, 0);
     g_modeMgr.gameMode->SendMsg(0x2A, 0xA7, 0, 0, 0);
     break;
-  case 122:
+  case TT_QUICKSPELL3_ON_OFF:
     g_modeMgr.gameMode->SendMsg(0x2A, 0x78, 0, 0, 0);
     g_modeMgr.gameMode->SendMsg(0x2A, 0x79, 0, 0, 0);
     break;
-  case 113:
+  case TT_SKILLFAIL_ON_OFF:
     g_serviceOptions.Set(0x71, !g_serviceOptions.Get(0x71));
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0x71) ? 0x2DA : 0x2DB)), 0x64FFFF, 0, 0, 0);
     break;
-  case 165:
+  case TT_LOGINOUT_ON_OFF:
     g_serviceOptions.Set(0xA5, !g_serviceOptions.Get(0xA5));
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xA5) ? 0x414 : 0x415)), 0x64FFFF, 0, 0, 0);
     g_windowMgr.RefreshGameSettings();
     break;
-  case 243:
+  case TT_EMBLEM_FRAME_ON_OFF:
     g_serviceOptions.Set(0xF3, !g_serviceOptions.Get(0xF3));
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xF3) ? 0xDC7 : 0xDC8)), 0x64FFFF, 0, 0, 0);
     g_windowMgr.RefreshGameSettings();
     break;
-  case 135:
+  case TT_BATTLE_ON_OFF:
     g_windowMgr.chatModeChanged = g_windowMgr.chatModeChanged == 0;
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     if (g_windowMgr.chatModeChanged) {
@@ -9400,12 +9404,12 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x312)), 0x64FFFF, 0, 0, 0);
     }
     break;
-  case 186:
+  case TT_BATTLECHAT_ON_OFF:
     g_session.unknown_5484 = 1 - g_session.unknown_5484;
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_session.unknown_5484 ? 0x555 : 0x556)), 0x64FFFF, 0, 0, 0);
     break;
-  case 153:
+  case TT_AUTO_MSG_ON_OFF:
     g_windowToggleFlag = !g_windowToggleFlag;
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     if (g_windowToggleFlag) {
@@ -9414,7 +9418,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x3AF)), 0x64FFFF, 0, 0, 0);
     }
     break;
-  case 162:
+  case TT_TRACEAI_ON_OFF:
     g_session.m_traceAi = g_session.m_traceAi == 0;
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     if (g_session.m_traceAi != 0) {
@@ -9434,7 +9438,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x3BD)), 0x64FFFF, 0, 0, 0);
     }
     break;
-  case 12: {
+  case TT_VOLUME: {
     const int volume = std::atoi(parts[0].c_str());
     g_soundMgr->SetSampleVolume(volume);
     g_soundMgr->Set3DVolume(volume);
@@ -9444,7 +9448,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.RefreshGameSettings();
     break;
   }
-  case 13: {
+  case TT_BVOLUME: {
     const int volume = std::atoi(parts[0].c_str());
     CSoundMgr::SetVolume(g_soundMgr, volume);
     g_soundMgr->SetTargetVolume(CSoundMgr::Volume(g_soundMgr));
@@ -9454,7 +9458,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.RefreshGameSettings();
     break;
   }
-  case 11:
+  case TT_EFFECT_SOUND_ON_OFF:
     g_serviceOptions.Set(0xB, !g_serviceOptions.Get(0xB));
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xB) ? 0x1B : 0x1C)), 0x64FFFF, 0, 0, 0);
@@ -9463,16 +9467,16 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     g_windowMgr.RefreshGameSettings();
     break;
-  case 195:
+  case TT_TINGONLY_ON_OFF:
     g_soundMgr->unknown = g_soundMgr->unknown == 0;
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_soundMgr->unknown ? 0x5DA : 0x5DB)), 0x64FFFF, 0, 0, 0);
     break;
-  case 10:
+  case TT_FRAMESKIP_ON_OFF:
     g_frameskip = 1 - g_frameskip;
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_frameskip ? 0x1D : 0x1E)), 0x64FFFF, 0, 0, 0);
     break;
-  case 7:
+  case TT_MUSIC_ON_OFF:
     g_serviceOptions.Set(7, !g_serviceOptions.Get(7));
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(7) ? 0x1F : 0x20)), 0x64FFFF, 0, 0, 0);
@@ -9483,13 +9487,13 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     g_windowMgr.RefreshGameSettings();
     break;
-  case 49: {
+  case TT_REQ_MOVETO_MAP: {
     const int third = std::atoi(parts[2].c_str());
     const int second = std::atoi(parts[1].c_str());
     this->SendMsg(0x5C, reinterpret_cast<int>(parts[0].c_str()), second, third, 0);
     break;
   }
-  case 44: {
+  case TT_REQ_PK: {
     std::string value(parts[0].c_str());
     LowercaseText(value);
     if (value == "off" || value == "on") {
@@ -9497,304 +9501,304 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     break;
   }
-  case 25: {
+  case TT_REQ_EXCHANGE_ITEM: {
     const std::uint32_t id = this->nameCard.FindId(parts[0].c_str());
     if (id != 0) {
       this->SendMsg(0x31, id, 0, 0, 0);
     }
     break;
   }
-  case 42:
+  case TT_OPEN_TIP:
     if (!g_windowMgr.CloseWindow(0x13B)) {
       g_windowMgr.EnsureWindow(0x13B);
     }
     break;
-  case 29:
+  case TT_REQ_EMOTION_SURPRISE:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SURPRISE"), 0, 0, 0);
     break;
-  case 30:
+  case TT_REQ_EMOTION_QUESTION:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_QUESTION"), 0, 0, 0);
     break;
-  case 31:
+  case TT_REQ_EMOTION_DELIGHT:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_DELIGHT"), 0, 0, 0);
     break;
-  case 32:
+  case TT_REQ_EMOTION_THROB:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_THROB"), 0, 0, 0);
     break;
-  case 33:
+  case TT_REQ_EMOTION_SWEAT:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SWEAT"), 0, 0, 0);
     break;
-  case 34:
+  case TT_REQ_EMOTION_AHA:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_AHA"), 0, 0, 0);
     break;
-  case 35:
+  case TT_REQ_EMOTION_FRET:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_FRET"), 0, 0, 0);
     break;
-  case 36:
+  case TT_REQ_EMOTION_ANGER:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_ANGER"), 0, 0, 0);
     break;
-  case 37:
+  case TT_REQ_EMOTION_MONEY:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_MONEY"), 0, 0, 0);
     break;
-  case 38:
+  case TT_REQ_EMOTION_THINK:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_THINK"), 0, 0, 0);
     break;
-  case 39:
+  case TT_REQ_EMOTION_SCISSOR:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SCISSOR"), 0, 0, 0);
     break;
-  case 40:
+  case TT_REQ_EMOTION_ROCK:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_ROCK"), 0, 0, 0);
     break;
-  case 41:
+  case TT_REQ_EMOTION_WRAP:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_WRAP"), 0, 0, 0);
     break;
-  case 79:
+  case TT_REQ_EMOTION_BIGTHROB:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_BIGTHROB"), 0, 0, 0);
     break;
-  case 66:
+  case TT_REQ_EMOTION_THANKS:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_THANKS"), 0, 0, 0);
     break;
-  case 67:
+  case TT_REQ_EMOTION_KEK:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_KEK"), 0, 0, 0);
     break;
-  case 68:
+  case TT_REQ_EMOTION_SORRY:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SORRY"), 0, 0, 0);
     break;
-  case 69:
+  case TT_REQ_EMOTION_SMILE:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SMILE"), 0, 0, 0);
     break;
-  case 70:
+  case TT_REQ_EMOTION_PROFUSELY_SWEAT:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_PROFUSELY_SWEAT"), 0, 0, 0);
     break;
-  case 71:
+  case TT_REQ_EMOTION_SCRATCH:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SCRATCH"), 0, 0, 0);
     break;
-  case 72:
+  case TT_REQ_EMOTION_BEST:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_BEST"), 0, 0, 0);
     break;
-  case 73:
+  case TT_REQ_EMOTION_STARE_ABOUT:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_STARE_ABOUT"), 0, 0, 0);
     break;
-  case 74:
+  case TT_REQ_EMOTION_HUK:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_HUK"), 0, 0, 0);
     break;
-  case 75:
+  case TT_REQ_EMOTION_O:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_O"), 0, 0, 0);
     break;
-  case 76:
+  case TT_REQ_EMOTION_X:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_X"), 0, 0, 0);
     break;
-  case 77:
+  case TT_REQ_EMOTION_HELP:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_HELP"), 0, 0, 0);
     break;
-  case 78:
+  case TT_REQ_EMOTION_GO:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_GO"), 0, 0, 0);
     break;
-  case 80:
+  case TT_REQ_EMOTION_CRY:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_CRY"), 0, 0, 0);
     break;
-  case 81:
+  case TT_REQ_EMOTION_KIK:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_KIK"), 0, 0, 0);
     break;
-  case 82:
+  case TT_REQ_EMOTION_CHUP:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_CHUP"), 0, 0, 0);
     break;
-  case 83:
+  case TT_REQ_EMOTION_CHUPCHUP:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_CHUPCHUP"), 0, 0, 0);
     break;
-  case 84:
+  case TT_REQ_EMOTION_HNG:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_HNG"), 0, 0, 0);
     break;
-  case 85:
+  case TT_REQ_EMOTION_OK:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_OK"), 0, 0, 0);
     break;
-  case 123:
+  case TT_REQ_EMOTION_STARE:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_STARE"), 0, 0, 0);
     break;
-  case 124:
+  case TT_REQ_EMOTION_HUNGRY:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_HUNGRY"), 0, 0, 0);
     break;
-  case 125:
+  case TT_REQ_EMOTION_COOL:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_COOL"), 0, 0, 0);
     break;
-  case 126:
+  case TT_REQ_EMOTION_MERONG:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_MERONG"), 0, 0, 0);
     break;
-  case 127:
+  case TT_REQ_EMOTION_SHY:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SHY"), 0, 0, 0);
     break;
-  case 128:
+  case TT_REQ_EMOTION_GOODBOY:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_GOODBOY"), 0, 0, 0);
     break;
-  case 129:
+  case TT_REQ_EMOTION_SPTIME:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SPTIME"), 0, 0, 0);
     break;
-  case 130:
+  case TT_REQ_EMOTION_SEXY:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SEXY"), 0, 0, 0);
     break;
-  case 131:
+  case TT_REQ_EMOTION_COMEON:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_COMEON"), 0, 0, 0);
     break;
-  case 132:
+  case TT_REQ_EMOTION_SLEEPY:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SLEEPY"), 0, 0, 0);
     break;
-  case 133:
+  case TT_REQ_EMOTION_CONGRATULATION:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_CONGRATULATION"), 0, 0, 0);
     break;
-  case 134:
+  case TT_REQ_EMOTION_HPTIME:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_HPTIME"), 0, 0, 0);
     break;
-  case 154:
+  case TT_REQ_EMOTION_SPARK:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SPARK"), 0, 0, 0);
     break;
-  case 155:
+  case TT_REQ_EMOTION_CONFUSE:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_CONFUSE"), 0, 0, 0);
     break;
-  case 156:
+  case TT_REQ_EMOTION_OHNO:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_OHNO"), 0, 0, 0);
     break;
-  case 157:
+  case TT_REQ_EMOTION_HUM:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_HUM"), 0, 0, 0);
     break;
-  case 158:
+  case TT_REQ_EMOTION_BLABLA:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_BLABLA"), 0, 0, 0);
     break;
-  case 159:
+  case TT_REQ_EMOTION_OTL:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_OTL"), 0, 0, 0);
     break;
-  case 171:
+  case TT_REQ_EMOTION_LUV:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_LUV"), 0, 0, 0);
     break;
-  case 175:
+  case TT_REQ_EMOTION_MOBILE:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_MOBILE"), 0, 0, 0);
     break;
-  case 176:
+  case TT_REQ_EMOTION_MAIL:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_MAIL"), 0, 0, 0);
     break;
-  case 177:
+  case TT_REQ_EMOTION_ANTENNA0:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_ANTENNA0"), 0, 0, 0);
     break;
-  case 178:
+  case TT_REQ_EMOTION_ANTENNA1:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_ANTENNA1"), 0, 0, 0);
     break;
-  case 179:
+  case TT_REQ_EMOTION_ANTENNA2:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_ANTENNA2"), 0, 0, 0);
     break;
-  case 180:
+  case TT_REQ_EMOTION_ANTENNA3:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_ANTENNA3"), 0, 0, 0);
     break;
-  case 187:
+  case TT_REQ_EMOTION_HUM2:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_HUM2"), 0, 0, 0);
     break;
-  case 188:
+  case TT_REQ_EMOTION_ABS:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_ABS"), 0, 0, 0);
     break;
-  case 189:
+  case TT_REQ_EMOTION_OOPS:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_OOPS"), 0, 0, 0);
     break;
-  case 190:
+  case TT_REQ_EMOTION_SPIT:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_SPIT"), 0, 0, 0);
     break;
-  case 191:
+  case TT_REQ_EMOTION_ENE:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_ENE"), 0, 0, 0);
     break;
-  case 192:
+  case TT_REQ_EMOTION_PANIC:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_PANIC"), 0, 0, 0);
     break;
-  case 193:
+  case TT_REQ_EMOTION_WHISP:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_WHISP"), 0, 0, 0);
     break;
-  case 160:
+  case TT_REQ_EMOTION_DICE:
     this->SendMsg(0x149, reinterpret_cast<int>("ET_DICE1"), 0, 0, 0);
     break;
-  case 1:
+  case TT_BROADCAST:
     this->SendMsg(7, 0, 0, 0, 0);
     break;
-  case 87:
+  case TT_LOCALBROADCAST:
     this->SendMsg(7, 1, 0, 0, 0);
     break;
-  case 90:
+  case TT_NAMELESS_BROADCAST:
     this->SendMsg(7, 2, 0, 0, 0);
     break;
-  case 91:
+  case TT_NAMELESS_LOCALBROADCAST:
     this->SendMsg(7, 3, 0, 0, 0);
     break;
-  case 102:
+  case TT_NAMELESS_BLUEBROADCAST:
     this->SendMsg(7, 4, 0, 0, 0);
     break;
-  case 103:
+  case TT_NAMELESS_BLUELOCALBROADCAST:
     this->SendMsg(7, 5, 0, 0, 0);
     break;
-  case 6:
+  case TT_REQ_NUM_USER:
     this->SendMsg(0x20, 0, 0, 0, 0);
     break;
-  case 163:
+  case TT_HOMUN_WAIT:
     this->SendMsg(0xbd, 0, 0, 0, 0);
     break;
-  case 4:
+  case TT_DISCONNECT_CHARACTER:
     this->SendMsg(0xe, 0, 0, 0, 0);
     break;
-  case 5:
+  case TT_DISCONNECT_ALL_CHARACTER:
     this->SendMsg(0xf, 0, 0, 0, 0);
     break;
-  case 56:
+  case TT_REQ_BREAK_GUILD:
     this->SendMsg(0x6a, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 55:
+  case TT_REQ_MAKE_GUILD:
     this->SendMsg(0x70, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 26:
+  case TT_REQ_MAKE_GROUP:
     this->SendMsg(0x3a, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 196:
+  case TT_SEEK_PARTY:
     this->SendMsg(0x105, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 200:
+  case TT_REQ_RECRUIT:
     this->SendMsg(0x10d, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 48:
+  case TT_REQ_ITEM_CREATE:
     this->SendMsg(0x5b, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 95:
+  case TT_REMOVE:
     this->SendMsg(0x9b, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 96:
+  case TT_SHIFT:
     this->SendMsg(0x9c, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 97:
+  case TT_RECALL_AID:
     this->SendMsg(0x9d, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 98:
+  case TT_RECALL_GID:
     this->SendMsg(0x9e, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 143:
+  case TT_CHECK_ID:
     this->SendMsg(0xb1, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 144:
+  case TT_RC_ID:
     this->SendMsg(0xb2, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 101:
+  case TT_BILLING_INFO:
     this->SendMsg(0xa1, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 28:
+  case TT_REQ_EXPEL_GROUP_MEMBER:
     this->SendMsg(0x3e, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 61:
+  case TT_REQ_RESETSTATE:
     this->SendMsg(0x8e, 0, 0, 0, 0);
     break;
-  case 184:
+  case TT_REQ_INVITE_PARTY:
     this->SendMsg(0x3b, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 211:
+  case TT_REQ_INVITE_GUILD:
     this->SendMsg(0x11e, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 251:
+  case TT_PRISON_USER:
     this->SendMsg(0x13d, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case 252:
+  case TT_OPEN_ACCOUNT_LIMITED_TOOL:
     this->SendMsg(0x13e, 0, 0, 0, 0);
     break;
-  case 86: {
+  case TT_SHOW_EMOTIONLIST: {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x25D)), 0xFFFF64, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x224)), 0xFFFF64, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x22b)), 0xFFFF64, 0, 0, 0);
@@ -9830,16 +9834,16 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x30f)), 0xFFFF64, 0, 0, 0);
     break;
   }
-  case 62:
+  case TT_REQ_RESETSKILL:
     this->SendMsg(0x146, std::atoi(parts[0].c_str()), 0, 0, 0);
     break;
-  case 63: {
+  case TT_CHANGE_MAPTYPE: {
     const int third = std::atoi(parts[2].c_str());
     const int second = std::atoi(parts[1].c_str());
     this->SendMsg(0x8F, std::atoi(parts[0].c_str()), second, third, 0);
     break;
   }
-  case 88: {
+  case TT_HIDE: {
     std::uint32_t flags = g_session.m_jobFlags;
     if (StateFlag02(flags)) {
       ClearMemberFlags(&flags);
@@ -9849,39 +9853,39 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     this->SendMsg(0x90, 0x40, 0, 0, 0);
     break;
   }
-  case 181:
+  case TT_COPY_NAME:
     if (IsAdminAccount(g_session.m_aid)) {
       const unsigned char enabled = this->unknown_05CC[1];
       this->unknown_05CC[1] = enabled == 0;
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(enabled == 0 ? "Copy_Name_On!!" : "Copy_Name_Off!!"), 0x64FFFF, 0, 0, 0);
     }
     break;
-  case 182:
-  case 183: {
+  case TT_REQ_ACCEPT_INVITE_PARTY:
+  case TT_REQ_REFUSE_INVITE_PARTY: {
     TalkConfigPacket packet;
-    packet.value = talkType != 182;
+    packet.value = talkType != TT_REQ_ACCEPT_INVITE_PARTY;
     packet.id = ID_CZ_PARTY_CONFIG;
     GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
     break;
   }
-  case 185:
+  case TT_REQ_OPEN_EQUIPEDITEM_ONOFF:
     this->SendMsg(0xFD, *reinterpret_cast<int*>(g_session.unknown_5974) == 0, 0, 0, 0);
     break;
-  case 205: {
+  case TT_SHOW_WEB_ADDRESSBAR: {
     CWebBrowser* browser = g_windowMgr.activeBrowser;
     if (browser) {
       browser->ShowAuxiliary(browser->auxiliaryVisible == 0);
     }
     break;
   }
-  case 208: {
+  case TT_WEB_BROWSER: {
     CWebBrowser* browser = g_windowMgr.EnsureSpecialBrowser(g_renderer->viewport.width, g_renderer->viewport.height);
     if (browser) {
       browser->Navigate(parts[0].c_str());
     }
     break;
   }
-  case 209: {
+  case TT_NAVIGATION: {
     const NaviCell cell = g_navigationManager.ParseCell(parts[1].c_str());
     if (cell.x == -1 || cell.y == -1) {
       g_navigationManager.ShowRouteResult(-100, 1);
@@ -9890,7 +9894,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_navigationManager.StartNavigation(parts[0], 0, 5, true, cell.x, cell.y, 0x3EA);
     break;
   }
-  case 210: {
+  case TT_NAVIGATION2: {
     const NaviCell cell = g_navigationManager.ParseCell(parts[1].c_str());
     bool first = false;
     bool second = false;
@@ -9909,10 +9913,10 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_navigationManager.StartNavigation(parts[0], 0, mode, true, cell.x, cell.y, 0x3EA);
     break;
   }
-  case 217:
+  case TT_NAVIGATION3:
     g_windowMgr.EnsureWindow(0xCB);
     break;
-  case 207: {
+  case TT_SHOW_BUILD_INFO: {
     char text[1024];
     std::memset(text, 0, sizeof(text));
     sprintf_s(text, sizeof(text), "", "", "");
@@ -9925,11 +9929,11 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
     break;
   }
-  case 214:
+  case TT_CLAN_CHAT:
     g_windowMgr.SetUnknown04DC(parts[0].c_str());
     this->SendMsg(0x121, 0, 0, 0, 0);
     break;
-  case 218: {
+  case TT_SHOW_CASHSHOP_BTN_ON_OFF: {
     UIWindow* window = g_windowMgr.LookupWindow(0xBE);
     if (window) {
       g_serviceOptions.Set(0xDA, !g_serviceOptions.Get(0xDA));
@@ -9937,7 +9941,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     break;
   }
-  case 219: {
+  case TT_SHOW_GOLDPCCAFE_ON_OFF: {
     UIWindow* window = g_windowMgr.LookupWindow(0x10B);
     if (window) {
       g_serviceOptions.Set(0xDB, !g_serviceOptions.Get(0xDB));
@@ -9945,7 +9949,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     break;
   }
-  case 220: {
+  case TT_SHOW_ROULETTE_BTN_ON_OFF: {
     UIWindow* window = g_windowMgr.LookupWindow(0x10C);
     if (window) {
       g_serviceOptions.Set(0xDC, !g_serviceOptions.Get(0xDC));
@@ -9953,22 +9957,22 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     break;
   }
-  case 224:
-  case 226: {
+  case TT_MACRO_REGISTER:
+  case TT_MACRO_DETECTOR: {
     TalkConfigPacket packet;
-    packet.value = talkType == 224 ? 2 : 3;
+    packet.value = talkType == TT_MACRO_REGISTER ? 2 : 3;
     packet.id = 0xA68;
     GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
     break;
   }
-  case 225: {
+  case TT_MACRO_PREVIEW: {
     TalkIntPacket packet;
     packet.id = ID_CZ_REQ_PREVIEW_MACRO_DETECTOR;
     packet.value = std::atoi(parts[0].c_str());
     GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
     break;
   }
-  case 227: {
+  case TT_VIEW_CAMERAINFO_ON_OFF: {
     TalkCameraPacket packet;
     packet.range = 0.0f;
     packet.rotation = 0.0f;
@@ -9978,7 +9982,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     GetRagConnection().Send(sizeof(packet), &packet);
     break;
   }
-  case 228: {
+  case TT_SET_CAMERA: {
     CView* camera = this->camera;
     if (camera == nullptr) {
       break;
@@ -10003,22 +10007,22 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     GetRagConnection().Send(sizeof(packet), &packet);
     break;
   }
-  case 230: {
+  case TT_RESET_COOLTIME: {
     TalkConfigPacket packet;
     packet.id = ID_CZ_CMD_RESETCOOLTIME;
     GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
     break;
   }
-  case 237:
+  case TT_ADVEN_PARTY_BOARD:
     if (!g_windowMgr.CloseWindow(0x144)) {
       g_windowMgr.EnsureWindow(0x144);
     }
     break;
-  case 254:
-  case 255: {
+  case TT_REMOVE_ON:
+  case TT_REMOVE_OFF: {
     TalkSelectPacket packet;
     packet.id = 0xA5F;
-    if (talkType == 254) {
+    if (talkType == TT_REMOVE_ON) {
       packet.enabled = 1;
       packet.value = std::atoi(parts[0].c_str());
       packet.option = static_cast<unsigned char>(std::atoi(parts[1].c_str()));
@@ -10029,14 +10033,14 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
     break;
   }
-  case 260: {
+  case TT_MACRO_CHECKER_MAP: {
     TalkNamePacket packet;
     packet.id = ID_CZ_GM_CHECKER;
     strncpy_s(packet.name, sizeof(packet.name), parts[0].c_str(), _TRUNCATE);
     GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
     break;
   }
-  case 279: {
+  case TT_PROBABILITY_TEST: {
     this->unknown_0648 = this->unknown_0648 == 0;
     std::string server("Dev");
     if (g_serviceMode == 0 && server.compare(0, 3, g_launchServerName, std::strlen(g_launchServerName)) != 0) {
@@ -10076,13 +10080,13 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     break;
   }
-  case 2:
-  case 20:
-  case 137:
-  case 169:
-  case 173:
-  case 194:
-  case 203:
+  case TT_STAT:
+  case TT_IS_REDCELL:
+  case TT_SIYEON_STATUS:
+  case TT_REQ_HUNTING:
+  case TT_MINIGAME_ON_OFF:
+  case TT_PROCESS_AFFINITY:
+  case TT_GPK_DYNCODE_RELOAD:
     break;
   default:
     Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(talkType);
@@ -10651,44 +10655,44 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       int action;
       if (g_session.GetSceneUnknown004C()) {
         switch (pick->job) {
-        case 0x8D:
-        case 0x8F:
-        case 0x90:
-        case 0x91:
-        case 0x93:
-        case 0x94:
-        case 0x95:
-        case 0x96:
-        case 0x97:
-        case 0x98:
-        case 0x99:
-        case 0xBE:
-        case 0xBF:
-        case 0xC0:
-        case 0xC1:
-        case 0xC2:
-        case 0xCB:
-        case 0xD2:
-        case 0xD3:
-        case 0xD4:
-        case 0xD5:
-        case 0xD6:
-        case 0xD7:
-        case 0xD8:
-        case 0xD9:
-        case 0xDA:
-        case 0xDE:
-        case 0xE5:
-        case 0xE6:
-        case 0xE7:
-        case 0xE8:
-        case 0xE9:
-        case 0xF0:
-        case 0x108:
-        case 0x5174:
-        case 0x5175:
-        case 0x5176:
-        case 0x5177:
+        case UNT_ICEWALL:
+        case UNT_BLASTMINE:
+        case UNT_SKIDTRAP:
+        case UNT_ANKLESNARE:
+        case UNT_LANDMINE:
+        case UNT_SHOCKWAVE:
+        case UNT_SANDMAN:
+        case UNT_FLASHER:
+        case UNT_FREEZINGTRAP:
+        case UNT_CLAYMORETRAP:
+        case UNT_TALKIEBOX:
+        case UNT_GROUNDDRIFT_WIND:
+        case UNT_GROUNDDRIFT_DARK:
+        case UNT_GROUNDDRIFT_POISON:
+        case UNT_GROUNDDRIFT_WATER:
+        case UNT_GROUNDDRIFT_FIRE:
+        case UNT_EARTHSTRAIN:
+        case UNT_MAGENTATRAP:
+        case UNT_COBALTTRAP:
+        case UNT_MAIZETRAP:
+        case UNT_VERDURETRAP:
+        case UNT_FIRINGTRAP:
+        case UNT_ICEBOUNDTRAP:
+        case UNT_ELECTRICSHOCKER:
+        case UNT_CLUSTERBOMB:
+        case UNT_REVERBERATION:
+        case UNT_NETHERWORLD:
+        case UNT_THORNS_TRAP:
+        case UNT_WALLOFTHORN:
+        case UNT_DEMONIC_FIRE:
+        case UNT_FIRE_EXPANSION_SMOKE_POWDER:
+        case UNT_FIRE_EXPANSION_TEAR_GAS:
+        case UNT_POWER_OF_GAIA:
+        case UNT_GROUNDDRIFT_NEUTRAL:
+        case UNT_DEEPBLINDTRAP:
+        case UNT_SOLIDTRAP:
+        case UNT_SWIFTTRAP:
+        case UNT_FLAMETRAP:
           action = reinterpret_cast<std::intptr_t>(this->unknown_0408) == 5 ? 10 : 5;
           break;
         default:
@@ -10697,16 +10701,16 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         }
       } else {
         switch (pick->job) {
-        case 0x8D:
-        case 0x8F:
-        case 0x98:
-        case 0xDA:
-        case 0xDE:
-        case 0xE6:
-        case 0x5174:
-        case 0x5175:
-        case 0x5176:
-        case 0x5177:
+        case UNT_ICEWALL:
+        case UNT_BLASTMINE:
+        case UNT_CLAYMORETRAP:
+        case UNT_REVERBERATION:
+        case UNT_NETHERWORLD:
+        case UNT_WALLOFTHORN:
+        case UNT_DEEPBLINDTRAP:
+        case UNT_SOLIDTRAP:
+        case UNT_SWIFTTRAP:
+        case UNT_FLAMETRAP:
           action = reinterpret_cast<std::intptr_t>(this->unknown_0408) == 5 ? 10 : 5;
           break;
         default:
@@ -11002,16 +11006,16 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
   }
   case 2:
     switch (pick->job) {
-    case 0x8D:
-    case 0x8F:
-    case 0x98:
-    case 0xDA:
-    case 0xDE:
-    case 0xE6:
-    case 0x5174:
-    case 0x5175:
-    case 0x5176:
-    case 0x5177: {
+    case UNT_ICEWALL:
+    case UNT_BLASTMINE:
+    case UNT_CLAYMORETRAP:
+    case UNT_REVERBERATION:
+    case UNT_NETHERWORLD:
+    case UNT_WALLOFTHORN:
+    case UNT_DEEPBLINDTRAP:
+    case UNT_SOLIDTRAP:
+    case UNT_SWIFTTRAP:
+    case UNT_FLAMETRAP: {
       const int skill = this->unknown_040C;
       if (skill == 0xD7 || skill == 0xD8 || skill == 0xD9 || skill == 0xDA) {
         return result;

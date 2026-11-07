@@ -6,10 +6,6 @@
 #include <unordered_map>
 #include <windows.h>
 
-enum MessageId : int {
-  MSI_FAILED_ADD_TAB = 1578
-};
-
 struct MessageIdHash {
   std::size_t operator()(int id) const {
     return static_cast<std::size_t>(id);

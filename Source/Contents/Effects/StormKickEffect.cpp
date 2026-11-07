@@ -1,4 +1,5 @@
 #include "Contents/Effects/StormKickEffect.h"
+#include "Contents/Effects/EffectTypes.h"
 
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/RenderObject.h"
@@ -40,29 +41,29 @@ void CStormKickEffect::CreateStorms(int layer) {
     motion[1] = static_cast<float>(layer);
 
     switch (this->id) {
-    case 435:
+    case EF_STORMKICK:
       particle->SetColor(50, 50, 255);
       break;
-    case 459:
+    case EF_STORMKICK1:
       particle->SetColor(164, 136, 55);
       break;
-    case 460:
+    case EF_STORMKICK2:
       particle->SetColor(255, 255, 255);
       break;
-    case 461:
+    case EF_STORMKICK3:
       particle->SetColor(130, 130, 255);
       break;
-    case 464:
+    case EF_STORMKICK6:
       if (motion[1] == 0.0f) {
         particle->SetColor(255, 255, 255);
       } else if (motion[1] == 1.0f) {
         particle->SetColor(255, 55, 55);
       }
       break;
-    case 465:
+    case EF_STORMKICK7:
       particle->SetColor(155, 255, 155);
       break;
-    case 1223:
+    case EF_STORMKICK8:
       particle->SetColor(255, 255, 50);
       break;
     }
@@ -95,7 +96,7 @@ void CStormKickEffect::CreateClouds(int layer) {
       particle->unknown_004C = std::max(rand() % 21, 0) + 80;
       particle->unknown_0054 = 1.0f;
 
-      if (this->id == 1223) {
+      if (this->id == EF_STORMKICK8) {
         if (layer == 0) {
           particle->unknown_00C0 = 28.0f - ring * 5.0f;
           particle->scale = 10.0f - ring * 2.0f;
@@ -187,39 +188,39 @@ void CStormKickEffect::Open() {
   g_modeMgr.GetGameMode();
 
   switch (this->id) {
-  case 435:
-  case 459:
-  case 460:
-  case 461:
-  case 465:
+  case EF_STORMKICK:
+  case EF_STORMKICK1:
+  case EF_STORMKICK2:
+  case EF_STORMKICK3:
+  case EF_STORMKICK7:
     this->CreateStorms(0);
     this->CreateClouds(0);
     this->CreateClouds(1);
     break;
-  case 464:
+  case EF_STORMKICK6:
     this->CreateStorms(0);
     this->CreateStorms(1);
     this->CreateClouds(0);
     this->CreateClouds(1);
     break;
-  case 1223:
+  case EF_STORMKICK8:
     this->CreateClouds(0);
     this->CreateClouds(1);
     break;
   }
 
   switch (this->id) {
-  case 435:
-  case 459:
-  case 460:
-  case 461:
-  case 464:
+  case EF_STORMKICK:
+  case EF_STORMKICK1:
+  case EF_STORMKICK2:
+  case EF_STORMKICK3:
+  case EF_STORMKICK6:
     this->unknown_002C = 100;
     break;
-  case 465:
+  case EF_STORMKICK7:
     this->unknown_002C = 1000;
     break;
-  case 1223:
+  case EF_STORMKICK8:
     this->unknown_002C = 60;
     break;
   }
@@ -229,13 +230,13 @@ void CStormKickEffect::Open() {
 // FUNCTION: fn_19223
 void CStormKickEffect::InitEvents() {
   switch (this->id) {
-  case 435:
+  case EF_STORMKICK:
     this->AddEvent(0, "effect\\T_회오리차기.wav", 5, 0);
     break;
-  case 460:
+  case EF_STORMKICK2:
     this->AddEvent(0, "ice_titan_attack.wav", 5, 0);
     break;
-  case 464:
+  case EF_STORMKICK6:
     this->AddEvent(0, "effect\\REVERBERATION.wav", 0, 0);
     break;
   }
@@ -257,7 +258,7 @@ void CStormKickEffect::OnProcess() {
     particle->position.z = this->position[2];
     if (particle) {
       int alpha = particle->alpha;
-      if (particle->unknown_00E8 > 60 && this->id != 465) {
+      if (particle->unknown_00E8 > 60 && this->id != EF_STORMKICK7) {
         alpha = std::max(alpha - 1, 0);
       }
       if (particle->unknown_00E8 <= 40) {
@@ -291,7 +292,7 @@ void CStormKickEffect::OnProcess() {
       int alpha = particle->alpha;
       rotation = nextRotation;
 
-      if (this->id == 1223) {
+      if (this->id == EF_STORMKICK8) {
         if (frame > 30) {
           alpha = std::max(alpha - 3, 0);
         } else {
@@ -351,14 +352,14 @@ void CStormKickEffect::OnProcess() {
 
   float angle;
   switch (this->id) {
-  case 435:
-  case 1223:
+  case EF_STORMKICK:
+  case EF_STORMKICK8:
     if (this->frame > 47) {
       return;
     }
     angle = actor->render.angle + 30.0f;
     break;
-  case 459:
+  case EF_STORMKICK1:
     if (this->frame > 50) {
       return;
     }
@@ -383,13 +384,13 @@ void CStormKickEffect::Render() {
     const float* motion = reinterpret_cast<const float*>(particle->unknown_0058);
 
     switch (this->id) {
-    case 459:
-    case 460:
-    case 461:
-    case 465:
+    case EF_STORMKICK1:
+    case EF_STORMKICK2:
+    case EF_STORMKICK3:
+    case EF_STORMKICK7:
       particle->destinationBlend = 6;
       break;
-    case 464:
+    case EF_STORMKICK6:
       if (motion[1] == 0.0f) {
         particle->destinationBlend = 6;
         particle->alpha = alpha / 3;

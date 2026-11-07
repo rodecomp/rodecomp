@@ -176,19 +176,19 @@ int UITagTextViewer::SendMsg(
     break;
   case 0x62:
     switch (argument1) {
-    case 0x1B5:
+    case LINE_SEGMENT_URL:
       OpenTextButtonLink(static_cast<UITextButton*>(sender));
       break;
-    case 0x1D0:
+    case LINE_SEGMENT_ITEM:
       ShowTextButtonItem(static_cast<UITextButton*>(sender));
       break;
-    case 0x1B6:
+    case LINE_SEGMENT_NAVI:
       OpenTextButtonNavigation(static_cast<UITextButton*>(sender));
       break;
-    case 0x21B:
+    case LINE_SEGMENT_QUEST:
       RequestTextButtonService(static_cast<UITextButton*>(sender));
       break;
-    case 0x205:
+    case LINE_SEGMENT_TIPBOX:
       ShowTextButtonTip(static_cast<UITextButton*>(sender));
       break;
     }

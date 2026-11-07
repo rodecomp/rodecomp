@@ -41,11 +41,13 @@
 #include "Contents/Schedule/CheckGDISchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "File/ShortcutFilename.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Render/Renderer.h"
 #include "Resource/World/TerrainResource.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
@@ -361,40 +363,40 @@ void CGameMode::ReceiveStatus(const unsigned char* data) {
 void CGameMode::ReceiveStatusChange(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const StatusChangePacket*>(data);
   switch (packet->type) {
-  case 0x20:
+  case SP_USTR:
     reinterpret_cast<int*>(g_session.unknown_169C)[0] = packet->value;
     break;
-  case 0x21:
+  case SP_UAGI:
     reinterpret_cast<int*>(g_session.unknown_169C)[1] = packet->value;
     break;
-  case 0x22:
+  case SP_UVIT:
     reinterpret_cast<int*>(g_session.unknown_169C)[2] = packet->value;
     break;
-  case 0x23:
+  case SP_UINT:
     reinterpret_cast<int*>(g_session.unknown_169C)[3] = packet->value;
     break;
-  case 0x24:
+  case SP_UDEX:
     reinterpret_cast<int*>(g_session.unknown_169C)[4] = packet->value;
     break;
-  case 0x25:
+  case SP_ULUK:
     reinterpret_cast<int*>(g_session.unknown_169C)[5] = packet->value;
     break;
-  case 0xF7:
+  case SP_UPOW:
     g_session.m_traits.points[0] = packet->value;
     break;
-  case 0xF8:
+  case SP_USTA:
     g_session.m_traits.points[1] = packet->value;
     break;
-  case 0xF9:
+  case SP_UWIS:
     g_session.m_traits.points[2] = packet->value;
     break;
-  case 0xFA:
+  case SP_USPL:
     g_session.m_traits.points[3] = packet->value;
     break;
-  case 0xFB:
+  case SP_UCON:
     g_session.m_traits.points[4] = packet->value;
     break;
-  case 0xFC:
+  case SP_UCRT:
     g_session.m_traits.points[5] = packet->value;
     break;
   default:
@@ -430,105 +432,105 @@ void CGameMode::ReceiveStatusChangeAck(const unsigned char* data) {
 
   int* bonusStats = reinterpret_cast<int*>(g_session.unknown_169C);
   switch (packet->type) {
-  case 13:
+  case SP_STR:
     g_session.m_standardStats[0] = packet->value;
     g_session.InvalidateWindowFrames();
     if (window) {
       window->SendMsg(nullptr, 35, 0, 0, 0, 0);
     }
     break;
-  case 14:
+  case SP_AGI:
     g_session.m_standardStats[1] = packet->value;
     g_session.InvalidateWindowFrames();
     if (window) {
       window->SendMsg(nullptr, 35, 0, 0, 0, 0);
     }
     break;
-  case 15:
+  case SP_VIT:
     g_session.m_standardStats[2] = packet->value;
     g_session.InvalidateWindowFrames();
     if (window) {
       window->SendMsg(nullptr, 35, 0, 0, 0, 0);
     }
     break;
-  case 16:
+  case SP_INT:
     g_session.m_standardStats[3] = packet->value;
     g_session.InvalidateWindowFrames();
     if (window) {
       window->SendMsg(nullptr, 35, 0, 0, 0, 0);
     }
     break;
-  case 17:
+  case SP_DEX:
     g_session.m_standardStats[4] = packet->value;
     g_session.InvalidateWindowFrames();
     if (window) {
       window->SendMsg(nullptr, 35, 0, 0, 0, 0);
     }
     break;
-  case 18:
+  case SP_LUK:
     g_session.m_standardStats[5] = packet->value;
     g_session.InvalidateWindowFrames();
     if (window) {
       window->SendMsg(nullptr, 35, 0, 0, 0, 0);
     }
     break;
-  case 41:
+  case SP_ATK1:
     bonusStats[7] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 42:
+  case SP_ATK2:
     bonusStats[12] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 43:
+  case SP_MATK1:
     bonusStats[13] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 44:
+  case SP_MATK2:
     bonusStats[14] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 45:
+  case SP_DEF1:
     bonusStats[10] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 46:
+  case SP_DEF2:
     bonusStats[11] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 47:
+  case SP_MDEF1:
     bonusStats[8] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 48:
+  case SP_MDEF2:
     bonusStats[15] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 49:
+  case SP_HIT:
     bonusStats[16] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 50:
+  case SP_FLEE1:
     bonusStats[17] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 51:
+  case SP_FLEE2:
     bonusStats[19] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 52:
+  case SP_CRITICAL:
     bonusStats[18] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 53:
+  case SP_ASPD:
     bonusStats[6] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 54:
+  case SP_36:
     bonusStats[9] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 55:
+  case SP_JOBLEVEL:
     g_session.m_jobLevel = packet->value;
     g_session.InvalidateWindowFrames();
     g_windowMgr.EnsureWindow(49);
@@ -579,15 +581,15 @@ void CGameMode::ReceiveRodexMailDeleted(const unsigned char* packet) {
   std::map<std::int64_t, RodexMail>::iterator end;
 
   switch (deleted->type) {
-  case 0:
+  case MAIL_INBOX_NORMAL:
     mail = g_rodexMailStore->m_mails0.find(deleted->mailId);
     end = g_rodexMailStore->m_mails0.end();
     break;
-  case 1:
+  case MAIL_INBOX_ACCOUNT:
     mail = g_rodexMailStore->m_mails1.find(deleted->mailId);
     end = g_rodexMailStore->m_mails1.end();
     break;
-  case 2:
+  case MAIL_INBOX_RETURNED:
     mail = g_rodexMailStore->m_mails2.find(deleted->mailId);
     end = g_rodexMailStore->m_mails2.end();
     break;
@@ -648,23 +650,23 @@ void CGameMode::ReceiveRouletteResult(const unsigned char* packet) {
   unsigned char bonus;
 
   switch (result->result) {
-  case 0:
+  case GENERATE_ROULETTE_SUCCESS:
     g_rouletteMgr->m_stage = result->stage;
     g_rouletteMgr->SetAdditionItem(result->additionItemId);
     bonus = 0;
     break;
-  case 3:
+  case GENERATE_ROULETTE_LOSING:
     g_rouletteMgr->m_stage = result->stage;
     g_rouletteMgr->SetAdditionItem(result->additionItemId);
     bonus = 1;
     break;
-  case 1:
+  case GENERATE_ROULETTE_FAILED:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2634)), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.unknown_0464) {
       g_windowMgr.EnableRouletteWnd();
     }
     return;
-  case 2:
+  case GENERATE_ROULETTE_NO_ENOUGH_POINT:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2635)), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.unknown_0464) {
       g_windowMgr.EnableRouletteWnd();
@@ -1492,16 +1494,16 @@ void CGameMode::ReceiveRefineResult(const unsigned char* data) {
   UIRefiningWnd* window = static_cast<UIRefiningWnd*>(g_windowMgr.LookupWindow(295));
   if (window) {
     switch (packet->result) {
-    case 0:
+    case ITEMREFINING_SUCCESS:
       window->SetState(2, 3);
       break;
-    case 1:
+    case ITEMREFINING_FAILURE:
       window->SetState(2, 4);
       break;
-    case 2:
+    case ITEMREFINING_DOWNGRADE:
       window->SetState(2, 5);
       break;
-    case 3:
+    case ITEMREFINING_FAILURE2:
       window->SetState(2, 6);
       break;
     }
@@ -1509,15 +1511,15 @@ void CGameMode::ReceiveRefineResult(const unsigned char* data) {
   }
 
   switch (packet->result) {
-  case 0:
+  case ITEMREFINING_SUCCESS:
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(154, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(498)), 0xFFFF00, 0, 0, 0);
     break;
-  case 1:
+  case ITEMREFINING_FAILURE:
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(499)), 0xFFFF00, 0, 0, 0);
     break;
-  case 2:
+  case ITEMREFINING_DOWNGRADE:
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1537)), 0xFFFF00, 0, 0, 0);
     break;
@@ -1746,13 +1748,13 @@ void CloseAccountLimitedTool() {
 // FUNCTION: fn_22100
 void CGameMode::ReceiveMacroBlackListResult(int result) {
   switch (result) {
-  case 0:
+  case MCD_TIMEOUT:
     g_windowMgr.Confirm(LookupMessage(2869), 0, true, false, 0, "Message", 280, 120, 0);
     break;
-  case 1:
+  case MCD_INCORRECT:
     g_windowMgr.Confirm(LookupMessage(2870), 0, true, false, 0, "Message", 280, 120, 0);
     break;
-  case 2:
+  case MCD_GOOD:
     g_windowMgr.CloseWindow(359);
     g_windowMgr.Confirm(LookupMessage(2871), 0, true, false, 0, "Message", 280, 120, 0);
     return;
@@ -1768,13 +1770,13 @@ void CGameMode::ReceiveMacroBlackListResult(int result) {
 // FUNCTION: fn_22101
 void CGameMode::ReceiveMacroDetectorResult(int result) {
   switch (result) {
-  case 0:
+  case MCD_TIMEOUT:
     g_windowMgr.Confirm(LookupMessage(2869), 0, true, false, 0, "Message", 280, 120, 0);
     break;
-  case 1:
+  case MCD_INCORRECT:
     g_windowMgr.Confirm(LookupMessage(2870), 0, true, false, 0, "Message", 280, 120, 0);
     break;
-  case 2:
+  case MCD_GOOD:
     g_windowMgr.CloseWindow(285);
     g_windowMgr.Confirm(LookupMessage(2871), 0, true, false, 0, "Message", 280, 120, 0);
     return;
@@ -1934,13 +1936,13 @@ void CGameMode::ReceiveWindow328Result(int result, int value) {
 // FUNCTION: fn_22048
 void CGameMode::ReceiveRouletteClose(const unsigned char* packet) {
   switch (reinterpret_cast<const ByteValuePacket*>(packet)->value) {
-  case 0:
+  case CLOSE_ROULETTE_SUCCESS:
     g_rouletteMgr->Reset();
     if (g_windowMgr.unknown_0464) {
       g_windowMgr.CloseWindow(269);
     }
     break;
-  case 1:
+  case CLOSE_ROULETTE_FAILED:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2633)), 0x6464FF, 0, 0, 0);
     break;
   }
@@ -1954,7 +1956,7 @@ void CGameMode::ReceiveWindow227Result(const unsigned char* packet) {
   const unsigned short second = result->second;
 
   switch (result->result) {
-  case 0: {
+  case MERGE_ITEM_SUCCESS: {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2171)), 0x64FFFF, 0, 0, 0);
     UIWindow* window = g_windowMgr.LookupWindow(227);
     if (window) {
@@ -1962,10 +1964,10 @@ void CGameMode::ReceiveWindow227Result(const unsigned char* packet) {
     }
     break;
   }
-  case 1:
+  case MERGE_ITEM_FAILED_NOT_MERGE:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2172)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case MERGE_ITEM_FAILED_MAX_COUNT:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2173)), 0xFF, 0, 0, 0);
     break;
   }
@@ -1978,7 +1980,7 @@ void CGameMode::ReceiveWindow227Result(const unsigned char* packet) {
 void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
   const auto* open = reinterpret_cast<const RouletteOpenPacket*>(packet);
   switch (open->result) {
-  case 0:
+  case OPEN_ROULETTE_SUCCESS:
     g_rouletteMgr->unknown_0004 = open->serial;
     g_rouletteMgr->m_stage = open->stage;
     g_rouletteMgr->SetAdditionItem(open->additionItemId);
@@ -1999,7 +2001,7 @@ void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
       g_windowMgr.EnsureWindow(269);
     }
     break;
-  case 1:
+  case OPEN_ROULETTE_FAILED:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2632)), 0x6464FF, 0, 0, 0);
     break;
   }
@@ -2497,19 +2499,19 @@ void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
 
     std::map<std::int64_t, RodexMail>::iterator mail;
     switch (packet->type) {
-    case 0:
+    case MAIL_INBOX_NORMAL:
       mail = g_rodexMailStore->m_mails0.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails0.end()) {
         mail->second.unknown_0001 -= 2;
       }
       break;
-    case 1:
+    case MAIL_INBOX_ACCOUNT:
       mail = g_rodexMailStore->m_mails1.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails1.end()) {
         mail->second.unknown_0001 -= 2;
       }
       break;
-    case 2:
+    case MAIL_INBOX_RETURNED:
       mail = g_rodexMailStore->m_mails2.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails2.end()) {
         mail->second.unknown_0001 -= 2;
@@ -2690,19 +2692,19 @@ void CGameMode::ReceiveRodexItemReturn(const unsigned char* data) {
 
     std::map<std::int64_t, RodexMail>::iterator mail;
     switch (packet->type) {
-    case 0:
+    case MAIL_INBOX_NORMAL:
       mail = g_rodexMailStore->m_mails0.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails0.end()) {
         mail->second.unknown_0001 -= 4;
       }
       break;
-    case 1:
+    case MAIL_INBOX_ACCOUNT:
       mail = g_rodexMailStore->m_mails1.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails1.end()) {
         mail->second.unknown_0001 -= 4;
       }
       break;
-    case 2:
+    case MAIL_INBOX_RETURNED:
       mail = g_rodexMailStore->m_mails2.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails2.end()) {
         mail->second.unknown_0001 -= 4;
@@ -3059,7 +3061,7 @@ void CGameMode::ReceiveExchangeItemAddAck(const unsigned char* data) {
   *reinterpret_cast<int*>(&this->unknown_0100[0x00]) = 0;
   this->unknown_05CE = 1;
   switch (packet->result) {
-  case 0:
+  case EXITEM_ADD_SUCCEED:
     if (packet->index != 0) {
       ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
       item.quantity = exchangeAmount;
@@ -3071,15 +3073,15 @@ void CGameMode::ReceiveExchangeItemAddAck(const unsigned char* data) {
       g_session.SetUnknown5210(g_session.unknown_5210 + exchangeAmount);
     }
     break;
-  case 1:
+  case EXITEM_ADD_FAILED_OVERWEIGHT:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(73)), 0xFF, 0, 0, 0);
     break;
-  case 3:
+  case EXITEM_ADD_FAILED_OVERCOUNT:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1938)), 0xFF, 0, 0, 0);
     break;
-  case 4:
+  case EXITEM_ADD_FAILED_EACHITEM_OVERCOUNT:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1939)), 0xFF, 0, 0, 0);
     break;
@@ -3092,7 +3094,7 @@ void CGameMode::ReceiveExchangeRequestAck2(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ExchangeRequestAckPacket*>(data);
   const std::string& exchangeName = this->exchangeName;
   switch (packet->result) {
-  case 3: {
+  case TRADE_ACK_ACCEPT: {
     this->SendMsg(40, 0, 0, 0, 0);
     *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 1;
     g_session.ResetSlots();
@@ -3104,23 +3106,23 @@ void CGameMode::ReceiveExchangeRequestAck2(const unsigned char* data) {
     }
     break;
   }
-  case 4:
+  case TRADE_ACK_CANCEL:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(69)), 0xFF, 0, 0, 0);
     break;
-  case 0:
+  case TRADE_ACK_TOOFAR:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(70)), 0xFF, 0, 0, 0);
     break;
-  case 1:
+  case TRADE_ACK_CHARNOTEXIST:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(71)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case TRADE_ACK_FAILED:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(72)), 0xFF, 0, 0, 0);
     break;
-  case 5: {
+  case TRADE_ACK_BUSY: {
     std::string text = FormatOwnedString(LookupMessage(1708), exchangeName.c_str());
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
@@ -3134,7 +3136,7 @@ void CGameMode::ReceiveExchangeRequestAck2(const unsigned char* data) {
 void CGameMode::ReceiveExchangeRequestAck(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ExchangeRequestAckPacket*>(data);
   switch (packet->result) {
-  case 3: {
+  case TRADE_ACK_ACCEPT: {
     this->SendMsg(40, 0, 0, 0, 0);
     *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 1;
     g_session.ResetSlots();
@@ -3147,19 +3149,19 @@ void CGameMode::ReceiveExchangeRequestAck(const unsigned char* data) {
     }
     break;
   }
-  case 4:
+  case TRADE_ACK_CANCEL:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(69)), 0xFF, 0, 0, 0);
     break;
-  case 0:
+  case TRADE_ACK_TOOFAR:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(70)), 0xFF, 0, 0, 0);
     break;
-  case 1:
+  case TRADE_ACK_CHARNOTEXIST:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(71)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case TRADE_ACK_FAILED:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(72)), 0xFF, 0, 0, 0);
     break;
@@ -3607,7 +3609,7 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
   std::int64_t& jobExp = *reinterpret_cast<std::int64_t*>(&g_session.unknown_162C[0x1C]);
   bool refresh = true;
   switch (packet->type) {
-  case 1:
+  case SP_BASEEXP:
     if (g_session.IsAdminSubMode(2)) {
       const std::int64_t value = packet->value;
       const int gained = static_cast<int>(value) - static_cast<int>(exp);
@@ -3622,10 +3624,10 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
     }
     exp = packet->value;
     break;
-  case 2:
+  case SP_JOBEXP:
     jobExp = packet->value;
     break;
-  case 20:
+  case SP_ZENY:
     if (*reinterpret_cast<int*>(&this->unknown_0100[0x14])) {
       *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
       g_session.ResetSlots();
@@ -3633,10 +3635,10 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
     g_session.m_zeny = static_cast<int>(packet->value);
     g_session.RefreshHpSpWindows();
     break;
-  case 22:
+  case SP_NEXTBASEEXP:
     nextExp = packet->value;
     break;
-  case 23:
+  case SP_NEXTJOBEXP:
     nextJobExp = packet->value;
     break;
   default:
@@ -3677,7 +3679,7 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
   }
 
   int effectId = *reinterpret_cast<const int*>(packet + 6);
-  if (effectId == 0x3FD) {
+  if (effectId == EF_DUSTSTORM) {
     CEmitterEffect* emitter = static_cast<CEmitterEffect*>(g_effectMgr->Spawn(
       0, 0x3CE, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0
     ));
@@ -3714,13 +3716,13 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
 
   if (g_serviceOptions.Get(0xE5)) {
     switch (*reinterpret_cast<const int*>(packet + 6)) {
-    case 0x5A:
+    case EF_LORD:
       effectId = 0x48A;
       break;
-    case 0x5C:
+    case EF_METEORSTORM:
       effectId = 0x48B;
       break;
-    case 0x5F:
+    case EF_QUAGMIRE:
       effectId = 0x489;
       break;
     }
@@ -3733,7 +3735,7 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
     gameActor->LaunchEffect(*reinterpret_cast<const int*>(packet + 6), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 
-  if (g_session.IsMercenaryJob(gameActor->GetEffectiveJob(-1)) && *reinterpret_cast<const int*>(packet + 6) == 0x238) {
+  if (g_session.IsMercenaryJob(gameActor->GetEffectiveJob(-1)) && *reinterpret_cast<const int*>(packet + 6) == EF_HO_UP) {
     ++gameActor->unknown_0210;
     gameActor->ResetJobEffects();
     gameActor->UpdateMaxLevelAura();
@@ -4018,13 +4020,13 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     this->SendMsg(0x56, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 8), 0);
 
     switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
-    case 0x171:
+    case PA_GOSPEL:
       g_soundMgr->PlayWave("effect\\가스펠.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
-    case 0x16A:
+    case HP_BASILICA:
       g_soundMgr->PlayWave("effect\\바실리카.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
-    case 0x2F: {
+    case AC_SHOWER: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       if (actor == nullptr) {
         return;
@@ -4046,7 +4048,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       }
       break;
     }
-    case 0x21D: {
+    case NJ_RAIGEKISAI: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       float x;
       float z;
@@ -4058,12 +4060,12 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       this->LaunchDummyEffect(&position, 0x26E, 200, 0);
       break;
     }
-    case 0x2E3:
-    case 0x992:
+    case NPC_CLOUD_KILL:
+    case SO_CLOUD_KILL:
       actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\S클라우드킬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
-    case 0x89B: {
+    case WL_FROSTMISTY: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       float x;
       float z;
@@ -4075,8 +4077,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       this->LaunchDummyEffect(&position, 0x2D6, EffectLifetime(0x2D6) + 10, 0);
       break;
     }
-    case 0x2E0:
-    case 0x991: {
+    case NPC_PSYCHIC_WAVE:
+    case SO_PSYCHIC_WAVE: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       g_soundMgr->PlayWave("effect\\S사이킥웨이브.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -4114,7 +4116,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       }
       break;
     }
-    case 0x98E: {
+    case SO_EARTHGRAVE: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -4145,7 +4147,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       }
       break;
     }
-    case 0x9B3: {
+    case GN_CRAZYWEED: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       float x;
@@ -4158,7 +4160,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       this->LaunchDummyEffect(&position, 0x393, 150, 0);
       break;
     }
-    case 0x90D: {
+    case LG_OVERBRAND: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       if (actor == nullptr) {
         return;
@@ -4191,7 +4193,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       g_soundMgr->PlayWave("effect\\LG_OVERBRAND.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     }
-    case 0x9D6: {
+    case SR_RIDEINLIGHTNING: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       float x;
@@ -4207,7 +4209,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       g_soundMgr->PlayWave("effect\\SR_RIDEINLIGHTNING.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     }
-    case 0x976: {
+    case WM_LULLABY_DEEPSLEEP: {
       g_soundMgr->PlayWave("effect\\안식의자장가.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       CRagEffect* effect = actor->LaunchEffect(0x35A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect == nullptr) {
@@ -4224,7 +4226,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
       break;
     }
-    case 0x971: {
+    case WM_DOMINION_IMPULSE: {
       CRagEffect* effect = actor->LaunchEffect(0x35F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect == nullptr) {
         return;
@@ -4242,16 +4244,16 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       g_soundMgr->PlayWave("effect\\invisibility.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     }
-    case 0x8FD:
+    case SC_CHAOSPANIC:
       g_soundMgr->PlayWave("effect\\chaospanic.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
-    case 0x8FE:
+    case SC_MAELSTROM:
       g_soundMgr->PlayWave("effect\\maelstrom.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
-    case 0x8FF:
+    case SC_BLOODYLUST:
       g_soundMgr->PlayWave("effect\\bloodylust.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
-    case 0xA1B:
+    case SJ_BOOKOFCREATINGSTAR:
       if (actor == nullptr) {
         return;
       }
@@ -4262,7 +4264,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
                                                    *reinterpret_cast<const std::int16_t*>(packet + 0xC), *reinterpret_cast<const std::int16_t*>(packet + 8),
                                                    reinterpret_cast<int>(actor));
       break;
-    case 0x14FD: {
+    case EM_TERRA_DRIVE: {
       vector3d position = {0.0f, 0.0f, 0.0f};
       this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
       position.y = this->scene->terrain->Height(position.x, position.z);
@@ -4270,7 +4272,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       g_effectMgr->Spawn(0, 0x855, position.x, position.y, position.z, 0, -1, 0, 0);
       break;
     }
-    case 0x14F9: {
+    case EM_DIAMOND_STORM: {
       vector3d position = {0.0f, 0.0f, 0.0f};
       this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
       position.y = this->scene->terrain->Height(position.x, position.z);
@@ -4397,13 +4399,13 @@ void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
     const RodexMailListEntry* entry = reinterpret_cast<const RodexMailListEntry*>(packet + offset);
     std::map<std::int64_t, RodexMail>* mails = nullptr;
     switch (entry->openType) {
-    case 0:
+    case MAIL_INBOX_NORMAL:
       mails = &g_rodexMailStore->m_mails0;
       break;
-    case 1:
+    case MAIL_INBOX_ACCOUNT:
       mails = &g_rodexMailStore->m_mails1;
       break;
-    case 2:
+    case MAIL_INBOX_RETURNED:
       mails = &g_rodexMailStore->m_mails2;
       break;
     }
@@ -4415,7 +4417,7 @@ void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
       mail.unknown_0024.assign(entry->title, entry->titleLength);
       mail.unknown_0004.assign(entry->sender, std::min<std::size_t>(std::strlen(entry->sender), 24));
       mail.unknown_0020 = _time32(nullptr) + entry->expireTime;
-      if (entry->openType == 0 && !(mail.unknown_0001 & 8) && !g_session.HasUnknown809C(mail.unknown_0004)) {
+      if (entry->openType == MAIL_INBOX_NORMAL && !(mail.unknown_0001 & 8) && !g_session.HasUnknown809C(mail.unknown_0004)) {
         mail.unknown_0194 = g_session.IsKnownName(mail.unknown_0004);
       } else {
         mail.unknown_0194 = 1;
@@ -4481,25 +4483,25 @@ void CGameMode::ReceiveStatusChangeList(const unsigned char* data) {
 void CGameMode::ReceiveStatusChangeExtended(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const StatusChangeExtendedPacket*>(data);
   switch (packet->type) {
-  case 0x46:
-  case 0x47:
-  case 0x48:
-  case 0x49:
-  case 0x4A:
-  case 0x4B:
-  case 0x4C:
-  case 0x4D:
-  case 0x4E:
-  case 0x4F:
-  case 0x50:
-  case 0x51:
-  case 0x52:
-  case 0x53:
-  case 0x54:
-  case 0x1C6:
-  case 0x4ED:
-  case 0x4EE:
-  case 0x4EF:
+  case EFST_WHISTLE:
+  case EFST_ASSASSINCROSS:
+  case EFST_POEMBRAGI:
+  case EFST_APPLEIDUN:
+  case EFST_HUMMING:
+  case EFST_DONTFORGETME:
+  case EFST_FORTUNEKISS:
+  case EFST_SERVICEFORYOU:
+  case EFST_RICHMANKIM:
+  case EFST_ETERNALCHAOS:
+  case EFST_DRUMBATTLEFIELD:
+  case EFST_RINGNIBELUNGEN:
+  case EFST_ROKISWEIL:
+  case EFST_INTOABYSS:
+  case EFST_SIEGFRIED:
+  case EFST_UNLIMITED_HUMMING_VOICE:
+  case EFST_MUSICAL_INTERLUDE:
+  case EFST_JAWAII_SERENADE:
+  case EFST_PRON_MARCH:
     return;
   }
 
@@ -4612,35 +4614,35 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
   if (packet->aid == g_session.m_aid) {
     actor = this->scene->player;
     switch (packet->type) {
-    case 0:
+    case LOOK_BASE:
       g_session.UpdateBodyStyle(g_session.GetDisplayJob(), bodyStyle, bodyCostume);
       g_session.SetJob(packet->value);
       break;
-    case 1:
+    case LOOK_HAIR:
       g_session.m_head = packet->value;
       break;
-    case 2:
+    case LOOK_WEAPON:
       *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x4]) = packet->value;
       *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x8]) = 0;
       break;
-    case 3:
+    case LOOK_HEAD_BOTTOM:
       *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x0]) = packet->value;
       break;
-    case 4:
+    case LOOK_HEAD_TOP:
       *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x4]) = packet->value;
       break;
-    case 5:
+    case LOOK_HEAD_MID:
       *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x8]) = packet->value;
       break;
-    case 6:
+    case LOOK_HAIR_COLOR:
       g_session.m_headPalette = packet->value;
       break;
-    case 7: {
+    case LOOK_CLOTHES_COLOR: {
       const unsigned char style = packet->value;
       g_session.UpdateBodyStyle(g_session.GetDisplayJob(), style, bodyCostume);
       break;
     }
-    case 8:
+    case LOOK_SHIELD:
       *reinterpret_cast<int*>(&g_session.unknown_0EDC[0xC]) = packet->value;
       break;
     }
@@ -4654,7 +4656,7 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
       if (!skill) {
         return;
       }
-      if (packet->type == 0) {
+      if (packet->type == LOOK_BASE) {
         skill->SendMsg(nullptr, 47, 0, packet->value, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       return;
@@ -4662,37 +4664,37 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
   }
 
   switch (packet->type) {
-  case 0:
+  case LOOK_BASE:
     actor->SetActorJob(packet->value);
     actor->SetImfFileName();
     actor->SetHeadPaletteName();
     actor->SetBodyPaletteName();
     break;
-  case 1:
+  case LOOK_HAIR:
     actor->SetSprHead(packet->value);
     actor->SetImfFileName();
     actor->SetHeadPaletteName();
     actor->RefreshAccessory3();
     break;
-  case 2:
+  case LOOK_WEAPON:
     actor->SetSprWeapon(packet->value, 0);
     break;
-  case 3:
+  case LOOK_HEAD_BOTTOM:
     actor->SetSprAccessory(packet->value);
     break;
-  case 4:
+  case LOOK_HEAD_TOP:
     actor->SetSprAccessory2(packet->value);
     break;
-  case 5:
+  case LOOK_HEAD_MID:
     actor->SetSprAccessory3(packet->value);
     break;
-  case 6:
+  case LOOK_HAIR_COLOR:
     actor->SetHeadPalette(packet->value);
     break;
-  case 7:
+  case LOOK_CLOTHES_COLOR:
     actor->SetBodyPalette(packet->value);
     break;
-  case 8:
+  case LOOK_SHIELD:
     actor->SetSprShield(packet->value);
     break;
   }
@@ -4709,16 +4711,16 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
   if (packet->aid == g_session.m_aid) {
     actor = this->scene->player;
     switch (packet->type) {
-    case 0:
+    case LOOK_BASE:
       g_session.UpdateBodyStyle(g_session.GetDisplayJob(), bodyStyle, bodyCostume);
       if (g_session.m_job != packet->value) {
         g_session.SetJob(value);
       }
       break;
-    case 1:
+    case LOOK_HAIR:
       g_session.m_head = value;
       break;
-    case 2: {
+    case LOOK_WEAPON: {
       *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x4]) = value;
       const int shield = static_cast<int>(packet->value >> 32);
       *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x8]) = shield;
@@ -4727,31 +4729,31 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       }
       break;
     }
-    case 3:
+    case LOOK_HEAD_BOTTOM:
       *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x0]) = value;
       break;
-    case 4:
+    case LOOK_HEAD_TOP:
       *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x4]) = value;
       break;
-    case 5:
+    case LOOK_HEAD_MID:
       *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x8]) = value;
       break;
-    case 6:
+    case LOOK_HAIR_COLOR:
       g_session.m_headPalette = value;
       break;
-    case 7:
+    case LOOK_CLOTHES_COLOR:
       g_session.UpdateBodyStyle(g_session.GetDisplayJob(), value, bodyCostume);
       break;
-    case 11:
+    case LOOK_RESET_COSTUMES:
       *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x0]) = 0;
       *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x4]) = 0;
       *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x8]) = 0;
       g_session.m_robe = 0;
       break;
-    case 12:
+    case LOOK_ROBE:
       g_session.m_robe = value;
       break;
-    case 13:
+    case LOOK_BODY2:
       g_session.m_bodyCostume = value;
       break;
     case 14:
@@ -4770,7 +4772,7 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       if (!skill) {
         return;
       }
-      if (packet->type == 0) {
+      if (packet->type == LOOK_BASE) {
         skill->SendMsg(nullptr, 47, 0, value, static_cast<int>(packet->value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       return;
@@ -4778,7 +4780,7 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
   }
 
   switch (packet->type) {
-  case 0:
+  case LOOK_BASE:
     actor->SetActorJob(value);
     if (packet->aid == g_session.m_aid) {
       actor->SetBodyPalette(g_session.m_bodyStyle);
@@ -4787,24 +4789,24 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
     actor->SetHeadPaletteName();
     actor->SetBodyPaletteName();
     break;
-  case 1:
+  case LOOK_HAIR:
     actor->SetSprHead(value);
     actor->SetImfFileName();
     actor->SetHeadPaletteName();
     actor->RefreshAccessory3();
     break;
-  case 2: {
+  case LOOK_WEAPON: {
     const int shield = static_cast<int>(packet->value >> 32);
     const int weapon = value;
     const int view = GetWeaponViewValue(shield);
     switch (actor->GetEffectiveJob(-1)) {
-    case 0xC:
-    case 0xFAD:
-    case 0xFC3:
-    case 0xFDB:
-    case 0xFE1:
-    case 0x1005:
-    case 0x109E:
+    case JT_ASSASSIN:
+    case JT_ASSASSIN_H:
+    case JT_ASSASSIN_B:
+    case JT_GUILLOTINE_CROSS:
+    case JT_GUILLOTINE_CROSS_H:
+    case JT_GUILLOTINE_CROSS_B:
+    case JT_SHADOW_CROSS:
       actor->SetSprWeapon2(value, shield);
       break;
     default:
@@ -4816,34 +4818,34 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
     }
     break;
   }
-  case 3:
+  case LOOK_HEAD_BOTTOM:
     actor->SetSprAccessory(value);
     break;
-  case 4:
+  case LOOK_HEAD_TOP:
     actor->SetSprAccessory2(value);
     break;
-  case 5:
+  case LOOK_HEAD_MID:
     actor->SetSprAccessory3(value);
     break;
-  case 6:
+  case LOOK_HAIR_COLOR:
     actor->SetHeadPalette(value);
     break;
-  case 7:
+  case LOOK_CLOTHES_COLOR:
     actor->SetBodyPalette(value);
     break;
-  case 9:
+  case LOOK_SHOES:
     actor->SetSprShoe(value);
     break;
-  case 11:
+  case LOOK_RESET_COSTUMES:
     actor->SetSprAccessory(0);
     actor->SetSprAccessory2(0);
     actor->SetSprAccessory3(0);
     actor->SetSprRobe(0, 0);
     break;
-  case 12:
+  case LOOK_ROBE:
     actor->SetSprRobe(value, 0);
     break;
-  case 13:
+  case LOOK_BODY2:
     actor->SetBodyCostume(value, 1);
     if (StateFlag04(actor->GetStateFlags())) {
       actor->SendMsg(nullptr, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -5347,13 +5349,13 @@ void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
 
   std::map<std::int64_t, RodexMail>* mails;
   switch (packet->type) {
-  case 0:
+  case MAIL_INBOX_NORMAL:
     mails = &g_rodexMailStore->m_mails0;
     break;
-  case 1:
+  case MAIL_INBOX_ACCOUNT:
     mails = &g_rodexMailStore->m_mails1;
     break;
-  case 2:
+  case MAIL_INBOX_RETURNED:
     mails = &g_rodexMailStore->m_mails2;
     break;
   default:
@@ -5685,7 +5687,7 @@ void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
       mail.unknown_0001 = entry->type;
       mail.unknown_0020 = _time32(nullptr) + entry->expireTime;
       mail.unknown_0004.assign(entry->sender, (std::min)(std::strlen(entry->sender), static_cast<std::size_t>(24)));
-      if (packet->type == 0 && (mail.unknown_0001 & 8) == 0 && !g_session.HasUnknown809C(mail.unknown_0004)) {
+      if (packet->type == MAIL_INBOX_NORMAL && (mail.unknown_0001 & 8) == MAIL_INBOX_NORMAL && !g_session.HasUnknown809C(mail.unknown_0004)) {
         mail.unknown_0194 = g_session.IsKnownName(mail.unknown_0004);
       } else {
         mail.unknown_0194 = 1;
@@ -5693,17 +5695,17 @@ void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
       mail.unknown_0024.append(entry->title, entry->titleLength);
 
       switch (packet->type) {
-      case 0:
+      case MAIL_INBOX_NORMAL:
         if (g_rodexMailStore->m_mails0.find(entry->mailId) == g_rodexMailStore->m_mails0.end()) {
           g_rodexMailStore->m_mails0.insert(std::make_pair(entry->mailId, mail));
         }
         break;
-      case 1:
+      case MAIL_INBOX_ACCOUNT:
         if (g_rodexMailStore->m_mails1.find(entry->mailId) == g_rodexMailStore->m_mails1.end()) {
           g_rodexMailStore->m_mails1.insert(std::make_pair(entry->mailId, mail));
         }
         break;
-      case 2:
+      case MAIL_INBOX_RETURNED:
         if (g_rodexMailStore->m_mails2.find(entry->mailId) == g_rodexMailStore->m_mails2.end()) {
           g_rodexMailStore->m_mails2.insert(std::make_pair(entry->mailId, mail));
         }
@@ -5778,457 +5780,457 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
 
     color = 0xFFFF00;
     switch (packet->type) {
-    case 2:
-    case 37:
-    case 38:
-    case 39:
-    case 40:
-    case 68:
-    case 161:
+    case EFST_TWOHANDQUICKEN:
+    case EFST_ATTHASTE_POTION1:
+    case EFST_ATTHASTE_POTION2:
+    case EFST_ATTHASTE_POTION3:
+    case EFST_ATTHASTE_INFINITY:
+    case EFST_SPEARQUICKEN:
+    case EFST_ONEHANDQUICKEN:
       std::sprintf(message, LookupMessage(463));
       break;
-    case 896:
-    case 917:
-    case 919:
-    case 937:
-    case 982:
+    case EFST_SV_ROOTTWIST:
+    case EFST_BITESCAR:
+    case EFST_TUNAPARTY:
+    case EFST_SPRITEMABLE:
+    case EFST_SOULATTACK:
       break;
-    case 15:
+    case EFST_IMPOSITIO:
       std::sprintf(message, LookupMessage(3463));
       break;
-    case 16:
+    case EFST_SUFFRAGIUM:
       std::sprintf(message, LookupMessage(467));
       break;
-    case 6:
+    case EFST_ENCHANTPOISON:
       std::sprintf(message, LookupMessage(469));
       break;
-    case 17:
-    case 64:
+    case EFST_ASPERSIO:
+    case EFST_WEAPONPROPERTY:
       std::sprintf(message, LookupMessage(470));
       break;
-    case 18:
+    case EFST_BENEDICTIO:
       std::sprintf(message, LookupMessage(472));
       break;
-    case 19:
+    case EFST_KYRIE:
       std::sprintf(message, LookupMessage(474));
       break;
-    case 24:
+    case EFST_WEAPONPERFECT:
       std::sprintf(message, LookupMessage(476));
       break;
-    case 25:
-    case 188:
+    case EFST_OVERTHRUST:
+    case EFST_OVERTHRUSTMAX:
       std::sprintf(message, LookupMessage(465));
       break;
-    case 26:
+    case EFST_MAXIMIZE:
       std::sprintf(message, LookupMessage(480));
       break;
-    case 12:
-    case 41:
-    case 42:
+    case EFST_INC_AGI:
+    case EFST_MOVHASTE_POTION:
+    case EFST_MOVHASTE_INFINITY:
       std::sprintf(message, LookupMessage(209));
       break;
-    case 13:
+    case EFST_DEC_AGI:
       std::sprintf(message, LookupMessage(210));
       break;
-    case 7:
+    case EFST_POISONREACT:
       std::sprintf(message, LookupMessage(620));
       break;
-    case 8:
+    case EFST_QUAGMIRE:
       std::sprintf(message, LookupMessage(622));
       break;
-    case 9:
+    case EFST_ANGELUS:
       std::sprintf(message, LookupMessage(3435));
       break;
-    case 10:
+    case EFST_BLESSING:
       std::sprintf(message, LookupMessage(3434));
       break;
-    case 14:
+    case EFST_SLOWPOISON:
       std::sprintf(message, LookupMessage(630));
       break;
-    case 20:
+    case EFST_MAGNIFICAT:
       std::sprintf(message, LookupMessage(632));
       break;
-    case 21:
+    case EFST_GLORIA:
       std::sprintf(message, LookupMessage(634));
       break;
-    case 22:
+    case EFST_LEXAETERNA:
       std::sprintf(message, LookupMessage(636));
       break;
-    case 23:
-    case 147:
+    case EFST_ADRENALINE:
+    case EFST_ADRENALINE2:
       std::sprintf(message, LookupMessage(638));
       break;
-    case 29:
+    case EFST_TRICKDEAD:
       std::sprintf(message, "");
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SetAction(64, 4, 1);
         this->scene->player->render.isMotionFreezed = true;
       }
       break;
-    case 30:
+    case EFST_SHOUT:
       std::sprintf(message, LookupMessage(3433));
       break;
-    case 31:
+    case EFST_ENERGYCOAT:
       std::sprintf(message, LookupMessage(648));
       break;
-    case 32:
+    case EFST_BROKENARMOR:
       std::sprintf(message, LookupMessage(650));
       break;
-    case 33:
+    case EFST_BROKENWEAPON:
       std::sprintf(message, LookupMessage(652));
       break;
-    case 182:
+    case EFST_CHASEWALK2:
       if (packet->aid == g_session.m_aid) {
         g_soundMgr->PlayWave("lava_golem_move.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       }
       std::sprintf(message, "");
       break;
-    case 0:
-    case 1:
-    case 3:
-    case 4:
-    case 5:
-    case 11:
-    case 27:
-    case 28:
-    case 34:
-    case 54:
-    case 55:
-    case 56:
-    case 57:
-    case 61:
-    case 86:
-    case 87:
-    case 95:
-    case 97:
-    case 98:
-    case 103:
-    case 104:
-    case 105:
-    case 107:
-    case 110:
-    case 112:
-    case 113:
-    case 114:
-    case 115:
-    case 116:
-    case 117:
-    case 118:
-    case 120:
-    case 121:
-    case 122:
-    case 123:
-    case 124:
-    case 125:
-    case 130:
-    case 132:
-    case 133:
-    case 134:
-    case 135:
-    case 137:
-    case 139:
-    case 141:
-    case 143:
-    case 145:
-    case 149:
-    case 152:
-    case 153:
-    case 156:
-    case 157:
-    case 158:
-    case 159:
-    case 160:
-    case 165:
-    case 166:
-    case 167:
-    case 169:
-    case 170:
-    case 171:
-    case 181:
-    case 184:
-    case 186:
-    case 191:
-    case 197:
-    case 198:
-    case 199:
-    case 200:
-    case 201:
-    case 203:
-    case 204:
-    case 205:
-    case 206:
-    case 207:
-    case 208:
-    case 209:
-    case 210:
-    case 211:
-    case 212:
-    case 213:
-    case 214:
-    case 215:
-    case 216:
-    case 217:
-    case 218:
-    case 219:
-    case 220:
-    case 221:
-    case 222:
-    case 223:
-    case 224:
-    case 225:
-    case 226:
-    case 227:
-    case 228:
-    case 229:
-    case 230:
-    case 231:
-    case 232:
-    case 233:
-    case 234:
-    case 235:
-    case 236:
-    case 238:
-    case 239:
-    case 240:
-    case 250:
-    case 254:
-    case 255:
-    case 256:
-    case 257:
-    case 258:
-    case 259:
-    case 261:
-    case 262:
-    case 263:
-    case 264:
-    case 265:
-    case 266:
-    case 267:
-    case 268:
-    case 269:
-    case 270:
-    case 282:
-    case 286:
-    case 289:
-    case 290:
-    case 291:
-    case 292:
-    case 293:
-    case 294:
-    case 295:
-    case 296:
-    case 298:
-    case 300:
-    case 301:
-    case 302:
-    case 313:
-    case 314:
-    case 316:
-    case 318:
-    case 319:
-    case 320:
-    case 321:
-    case 322:
-    case 323:
-    case 328:
-    case 330:
-    case 333:
-    case 334:
-    case 336:
-    case 337:
-    case 339:
-    case 341:
-    case 342:
-    case 343:
-    case 344:
-    case 345:
-    case 346:
-    case 347:
-    case 348:
-    case 349:
-    case 350:
-    case 351:
-    case 352:
-    case 353:
-    case 354:
-    case 355:
-    case 357:
-    case 360:
-    case 361:
-    case 362:
-    case 363:
-    case 364:
-    case 365:
-    case 366:
-    case 367:
-    case 373:
-    case 374:
-    case 375:
-    case 377:
-    case 379:
-    case 381:
-    case 382:
-    case 383:
-    case 384:
-    case 385:
-    case 386:
-    case 387:
-    case 388:
-    case 389:
-    case 390:
-    case 393:
-    case 394:
-    case 396:
-    case 397:
-    case 398:
-    case 399:
-    case 401:
-    case 402:
-    case 403:
-    case 404:
-    case 405:
-    case 407:
-    case 408:
-    case 409:
-    case 410:
-    case 411:
-    case 412:
-    case 413:
-    case 414:
-    case 415:
-    case 416:
-    case 417:
-    case 418:
-    case 419:
-    case 421:
-    case 422:
-    case 423:
-    case 425:
-    case 426:
-    case 427:
-    case 429:
-    case 430:
-    case 433:
-    case 434:
-    case 435:
-    case 436:
-    case 437:
-    case 438:
-    case 439:
-    case 440:
-    case 441:
-    case 442:
-    case 443:
-    case 444:
-    case 445:
-    case 446:
-    case 447:
-    case 448:
-    case 450:
-    case 451:
-    case 452:
-    case 453:
-    case 454:
-    case 461:
-    case 463:
-    case 464:
-    case 472:
-    case 473:
-    case 476:
-    case 491:
-    case 492:
-    case 493:
-    case 494:
-    case 495:
-    case 496:
-    case 571:
-    case 577:
-    case 580:
-    case 581:
-    case 584:
-    case 605:
-    case 606:
-    case 607:
-    case 608:
-    case 611:
-    case 648:
-    case 649:
-    case 670:
-    case 869:
-    case 1056:
-    case 1057:
-    case 1058:
-    case 1059:
-    case 1121:
+    case EFST_PROVOKE:
+    case EFST_ENDURE:
+    case EFST_CONCENTRATION:
+    case EFST_HIDING:
+    case EFST_CLOAKING:
+    case EFST_CRUCIS:
+    case EFST_RIDING:
+    case EFST_FALCON:
+    case EFST_ILLUSION:
+    case EFST_PROTECTWEAPON:
+    case EFST_PROTECTSHIELD:
+    case EFST_PROTECTARMOR:
+    case EFST_PROTECTHELM:
+    case EFST_PROVIDENCE:
+    case EFST_EXPLOSIONSPIRITS:
+    case EFST_STEELBODY:
+    case EFST_STOP:
+    case EFST_PROPERTYUNDEAD:
+    case EFST_POWERUP:
+    case EFST_AURABLADE:
+    case EFST_PARRYING:
+    case EFST_LKCONCENTRATION:
+    case EFST_BERSERK:
+    case EFST_ASSUMPTIO:
+    case EFST_GROUNDMAGIC:
+    case EFST_MAGICPOWER:
+    case EFST_EDP:
+    case EFST_TRUESIGHT:
+    case EFST_WINDWALK:
+    case EFST_MELTDOWN:
+    case EFST_CARTBOOST:
+    case EFST_SWORDREJECT:
+    case EFST_MARIONETTE_MASTER:
+    case EFST_MARIONETTE:
+    case EFST_MOON:
+    case EFST_BLOODING:
+    case EFST_JOINTBEAT:
+    case EFST_PROTECTEXP:
+    case EFST_AUTOBERSERK:
+    case EFST_RUN:
+    case EFST_TING:
+    case EFST_STORMKICK_ON:
+    case EFST_DOWNKICK_ON:
+    case EFST_TURNKICK_ON:
+    case EFST_COUNTER_ON:
+    case EFST_DODGE_ON:
+    case EFST_STRUP:
+    case EFST_SOULLINK:
+    case EFST_DEVIL1:
+    case EFST_KAITE:
+    case EFST_KAIZEL:
+    case EFST_KAAHI:
+    case EFST_KAUPE:
+    case EFST_SMA_READY:
+    case EFST_SKE:
+    case EFST_SG_SUN_WARM:
+    case EFST_SG_MOON_WARM:
+    case EFST_SG_STAR_WARM:
+    case EFST_SUN_COMFORT:
+    case EFST_MOON_COMFORT:
+    case EFST_STAR_COMFORT:
+    case EFST_PRESERVE:
+    case EFST_CLAIRVOYANCE:
+    case EFST_DOUBLECASTING:
+    case EFST_TAROTCARD:
+    case EFST_CR_SHRINK:
+    case EFST_WZ_SIGHTBLASTER:
+    case EFST_DC_WINKCHARM:
+    case EFST_RG_CCONFINE_M:
+    case EFST_RG_CCONFINE_S:
+    case EFST_GS_MADNESSCANCEL:
+    case EFST_GS_GATLINGFEVER:
+    case EFST_EARTHSCROLL:
+    case EFST_NJ_UTSUSEMI:
+    case EFST_NJ_BUNSINJYUTSU:
+    case EFST_NJ_NEN:
+    case EFST_GS_ADJUSTMENT:
+    case EFST_GS_ACCURACY:
+    case EFST_NJ_SUITON:
+    case EFST_PET:
+    case EFST_MENTAL:
+    case EFST_EXPMEMORY:
+    case EFST_PERFORMANCE:
+    case EFST_GAIN:
+    case EFST_GRIFFON:
+    case EFST_DRIFT:
+    case EFST_WALLSHIFT:
+    case EFST_REINCARNATION:
+    case EFST_PATTACK:
+    case EFST_PSPEED:
+    case EFST_PDEFENSE:
+    case EFST_PCRITICAL:
+    case EFST_RANKING:
+    case EFST_PTRIPLE:
+    case EFST_DENERGY:
+    case EFST_WAVE1:
+    case EFST_WAVE2:
+    case EFST_WAVE3:
+    case EFST_WAVE4:
+    case EFST_DAURA:
+    case EFST_DFREEZER:
+    case EFST_DPUNISH:
+    case EFST_DBARRIER:
+    case EFST_DWARNING:
+    case EFST_DGAUGE:
+    case EFST_DACCEL:
+    case EFST_DBLOCK:
+    case EFST_CASH_PLUSEXP:
+    case EFST_DA_ENERGY:
+    case EFST_DA_FIRSTSLOT:
+    case EFST_DA_HEADDEF:
+    case EFST_DA_SPACE:
+    case EFST_DA_TRANSFORM:
+    case EFST_DA_ITEMREBUILD:
+    case EFST_DA_DARKPOWER:
+    case EFST_DA_EARPLUG:
+    case EFST_DA_CONTRACT:
+    case EFST_DA_BLACK:
+    case EFST_DA_MAGICCART:
+    case EFST_CRYSTAL:
+    case EFST_DA_REBUILD:
+    case EFST_DA_EDARKNESS:
+    case EFST_DA_EGUARDIAN:
+    case EFST_DA_TIMEOUT:
+    case EFST_SLOWCAST:
+    case EFST_CRITICALWOUND:
+    case EFST_MOVHASTE_HORSE:
+    case EFST_PROTECT_DEF:
+    case EFST_PROTECT_MDEF:
+    case EFST_HEALPLUS:
+    case EFST_S_LIFEPOTION:
+    case EFST_L_LIFEPOTION:
+    case EFST_CRITICALPERCENT:
+    case EFST_PLUSAVOIDVALUE:
+    case EFST_TARGET_ASPD:
+    case EFST_ATKER_BLOOD:
+    case EFST_TARGET_BLOOD:
+    case EFST_ARMOR_PROPERTY:
+    case EFST_PARTYFLEE:
+    case EFST_ANGEL_PROTECT:
+    case EFST_ENCHANTBLADE:
+    case EFST_REFRESH:
+    case EFST_GIANTGROWTH:
+    case EFST_STONEHARDSKIN:
+    case EFST_VITALITYACTIVATION:
+    case EFST_FIGHTINGSPIRIT:
+    case EFST_ABUNDANCE:
+    case EFST_VENOMIMPRESS:
+    case EFST_ORATIO:
+    case EFST_CLOAKINGEXCEED:
+    case EFST_HALLUCINATIONWALK:
+    case EFST_RENOVATIO:
+    case EFST_WEAPONBLOCKING:
+    case EFST_ROLLINGCUTTER:
+    case EFST_POISONINGWEAPON:
+    case EFST_TOXIN:
+    case EFST_PARALYSE:
+    case EFST_VENOMBLEED:
+    case EFST_MAGICMUSHROOM:
+    case EFST_DEATHHURT:
+    case EFST_PYREXIA:
+    case EFST_OBLIVIONCURSE:
+    case EFST_LEECHESEND:
+    case EFST_DUPLELIGHT:
+    case EFST_FROSTMISTY:
+    case EFST_FEARBREEZE:
+    case EFST_ELECTRICSHOCKER:
+    case EFST_MARSHOFABYSS:
+    case EFST_RECOGNIZEDSPELL:
+    case EFST_WUGRIDER:
+    case EFST_CAMOUFLAGE:
+    case EFST_ACCELERATION:
+    case EFST_HOVERING:
+    case EFST_SUMMON1:
+    case EFST_SUMMON2:
+    case EFST_SUMMON3:
+    case EFST_SUMMON4:
+    case EFST_SUMMON5:
+    case EFST_OVERHEAT:
+    case EFST_SHAPESHIFT:
+    case EFST_INFRAREDSCAN:
+    case EFST_NEUTRALBARRIER:
+    case EFST_STEALTHFIELD:
+    case EFST_MANU_ATK:
+    case EFST_MANU_DEF:
+    case EFST_SPL_ATK:
+    case EFST_SPL_DEF:
+    case EFST_REPRODUCE:
+    case EFST_MANU_MATK:
+    case EFST_SPL_MATK:
+    case EFST_STR_SCROLL:
+    case EFST_INT_SCROLL:
+    case EFST_LG_REFLECTDAMAGE:
+    case EFST_AUTOSHADOWSPELL:
+    case EFST_SHADOWFORM:
+    case EFST_SHIELDSPELL_DEF:
+    case EFST_SHIELDSPELL_MDEF:
+    case EFST_SHIELDSPELL_REF:
+    case EFST_BODYPAINT:
+    case EFST_ADORAMUS:
+    case EFST_PRESTIGE:
+    case EFST_INVISIBILITY:
+    case EFST_DEADLYINFECT:
+    case EFST_BANDING:
+    case EFST_INSPIRATION:
+    case EFST_ENERVATION:
+    case EFST_GROOMY:
+    case EFST_RAISINGDRAGON:
+    case EFST_IGNORANCE:
+    case EFST_LAZINESS:
+    case EFST_LIGHTNINGWALK:
+    case EFST_ACARAJE:
+    case EFST_UNLUCKY:
+    case EFST_CURSEDCIRCLE_ATKER:
+    case EFST_CURSEDCIRCLE_TARGET:
+    case EFST_WEAKNESS:
+    case EFST_CRESCENTELBOW:
+    case EFST_STRIPACCESSARY:
+    case EFST_MANHOLE:
+    case EFST_POPECOOKIE:
+    case EFST_GENTLETOUCH_ENERGYGAIN:
+    case EFST_GENTLETOUCH_CHANGE:
+    case EFST_GENTLETOUCH_REVITALIZE:
+    case EFST_SWING:
+    case EFST_SYMPHONY_LOVE:
+    case EFST_NETHERWORLD:
+    case EFST_SIREN:
+    case EFST_DEEP_SLEEP:
+    case EFST_SIRCLEOFNATURE:
+    case EFST_COLD:
+    case EFST_GLOOMYDAY:
+    case EFST_SONG_OF_MANA:
+    case EFST_CLOUD_KILL:
+    case EFST_DANCE_WITH_WUG:
+    case EFST_RUSH_WINDMILL:
+    case EFST_ECHOSONG:
+    case EFST_HARMONIZE:
+    case EFST_STRIKING:
+    case EFST_WARMER:
+    case EFST_MOONLIT_SERENADE:
+    case EFST_SATURDAY_NIGHT_FEVER:
+    case EFST_ANALYZE:
+    case EFST_LERADS_DEW:
+    case EFST_MELODYOFSINK:
+    case EFST_BEYOND_OF_WARCRY:
+    case EFST_UNLIMITED_HUMMING_VOICE:
+    case EFST_GN_CARTBOOST:
+    case EFST_THORNS_TRAP:
+    case EFST_BLOOD_SUCKER:
+    case EFST_AB_SECRAMENT:
+    case EFST_ASSUMPTIO2:
+    case EFST_STOMACHACHE:
+    case EFST_SAVAGE_STEAK:
+    case EFST_COCKTAIL_WARG_BLOOD:
+    case EFST_MINOR_BBQ:
+    case EFST_SIROMA_ICE_TEA:
+    case EFST_DROCERA_HERB_STEAMED:
+    case EFST_PUTTI_TAILS_NOODLES:
+    case EFST_EQUIPED_FLOOR:
+    case EFST_PAIN_KILLER:
+    case EFST_LIGHT_OF_REGENE:
+    case EFST_OVERED_BOOST:
+    case EFST_STYLE_CHANGE:
+    case EFST_MAGMA_FLOW:
+    case EFST_GRANITIC_ARMOR:
+    case EFST_PYROCLASTIC:
+    case EFST_VOLCANIC_ASH:
+    case EFST_MAGIC_CANDY:
+    case EFST_EQUIPPED_DIVINE_ARMOR:
+    case EFST_EQUIPPED_HOLY_ARMOR:
+    case EFST_M_LIFEPOTION:
+    case EFST_NPC_HALLUCINATIONWALK:
+    case EFST_SOULSHADOW:
+    case EFST_SOULFAIRY:
+    case EFST_SOULFALCON:
+    case EFST_SOULGOLEM:
+    case EFST_ASSUMPTIO_BUFF:
       std::sprintf(message, "");
       break;
-    case 260:
+    case EFST_DA_ILLUSION:
       if (packet->aid == g_session.m_aid) {
         g_session.unknown_5450 = 1;
       }
       std::sprintf(message, "");
       break;
-    case 241:
-    case 271:
+    case EFST_FOOD_STR:
+    case EFST_FOOD_STR_CASH:
       std::sprintf(message, LookupMessage(1231));
       break;
-    case 242:
-    case 272:
+    case EFST_FOOD_AGI:
+    case EFST_FOOD_AGI_CASH:
       std::sprintf(message, LookupMessage(1233));
       break;
-    case 243:
-    case 273:
+    case EFST_FOOD_VIT:
+    case EFST_FOOD_VIT_CASH:
       std::sprintf(message, LookupMessage(1235));
       break;
-    case 244:
-    case 274:
+    case EFST_FOOD_DEX:
+    case EFST_FOOD_DEX_CASH:
       std::sprintf(message, LookupMessage(1239));
       break;
-    case 245:
-    case 275:
+    case EFST_FOOD_INT:
+    case EFST_FOOD_INT_CASH:
       std::sprintf(message, LookupMessage(1237));
       break;
-    case 246:
-    case 276:
+    case EFST_FOOD_LUK:
+    case EFST_FOOD_LUK_CASH:
       std::sprintf(message, LookupMessage(1241));
       break;
-    case 247:
+    case EFST_FOOD_BASICAVOIDANCE:
       std::sprintf(message, LookupMessage(1243));
       break;
-    case 248:
+    case EFST_FOOD_BASICHIT:
       std::sprintf(message, LookupMessage(1245));
       break;
-    case 249:
+    case EFST_FOOD_CRITICALSUCCESSVALUE:
       std::sprintf(message, LookupMessage(1247));
       break;
-    case 251:
+    case EFST_CASH_DEATHPENALTY:
       std::sprintf(message, LookupMessage(1250));
       break;
-    case 252:
+    case EFST_CASH_RECEIVEITEM:
       std::sprintf(message, LookupMessage(1251));
       break;
-    case 253:
+    case EFST_CASH_BOSS_ALARM:
       if (packet->aid == g_session.m_aid) {
         this->unknown_05CC[0] = 1;
       }
       std::sprintf(message, LookupMessage(1252));
       break;
-    case 312:
+    case EFST_CASH_PLUSONLYJOBEXP:
       std::sprintf(message, LookupMessage(1383));
       break;
-    case 933:
+    case EFST_SUHIDE:
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SetState(48, 1);
         this->scene->player->render.isMotionFreezed = true;
       }
       break;
-    case 893:
+    case EFST_SU_STOOP:
       if (packet->aid == g_session.m_aid) {
         this->scene->GetGameActorByAID(packet->aid);
         this->scene->player->SetState(47, 1);
       }
       break;
-    case 1013:
+    case EFST_ALL_STAT_DOWN:
       color = 0xFF;
       std::sprintf(message, LookupMessage(3247));
       break;
@@ -6250,21 +6252,21 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
 
     color = 0xFF;
     switch (packet->type) {
-    case 2:
-    case 37:
-    case 38:
-    case 39:
-    case 68:
-    case 161:
+    case EFST_TWOHANDQUICKEN:
+    case EFST_ATTHASTE_POTION1:
+    case EFST_ATTHASTE_POTION2:
+    case EFST_ATTHASTE_POTION3:
+    case EFST_SPEARQUICKEN:
+    case EFST_ONEHANDQUICKEN:
       std::sprintf(message, LookupMessage(464));
       break;
-    case 15:
+    case EFST_IMPOSITIO:
       std::sprintf(message, LookupMessage(3464));
       break;
-    case 16:
+    case EFST_SUFFRAGIUM:
       std::sprintf(message, LookupMessage(468));
       break;
-    case 64:
+    case EFST_WEAPONPROPERTY:
       if (packet->aid == g_session.m_aid) {
         for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
           if (it->id - 897U <= 9) {
@@ -6277,179 +6279,179 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       }
       std::sprintf(message, LookupMessage(471));
       break;
-    case 6:
-    case 17:
+    case EFST_ENCHANTPOISON:
+    case EFST_ASPERSIO:
       std::sprintf(message, LookupMessage(471));
       break;
-    case 18:
+    case EFST_BENEDICTIO:
       std::sprintf(message, LookupMessage(473));
       break;
-    case 19:
+    case EFST_KYRIE:
       std::sprintf(message, LookupMessage(475));
       break;
-    case 24:
+    case EFST_WEAPONPERFECT:
       std::sprintf(message, LookupMessage(477));
       break;
-    case 25:
-    case 188:
+    case EFST_OVERTHRUST:
+    case EFST_OVERTHRUSTMAX:
       std::sprintf(message, LookupMessage(466));
       break;
-    case 26:
+    case EFST_MAXIMIZE:
       std::sprintf(message, LookupMessage(481));
       break;
-    case 13:
+    case EFST_DEC_AGI:
       std::sprintf(message, LookupMessage(209));
       break;
-    case 7:
+    case EFST_POISONREACT:
       std::sprintf(message, LookupMessage(621));
       break;
-    case 8:
+    case EFST_QUAGMIRE:
       std::sprintf(message, LookupMessage(623));
       break;
-    case 9:
+    case EFST_ANGELUS:
       std::sprintf(message, LookupMessage(625));
       break;
-    case 10:
+    case EFST_BLESSING:
       std::sprintf(message, LookupMessage(627));
       break;
-    case 14:
+    case EFST_SLOWPOISON:
       std::sprintf(message, LookupMessage(631));
       break;
-    case 20:
+    case EFST_MAGNIFICAT:
       std::sprintf(message, LookupMessage(633));
       break;
-    case 21:
+    case EFST_GLORIA:
       std::sprintf(message, LookupMessage(635));
       break;
-    case 22:
+    case EFST_LEXAETERNA:
       std::sprintf(message, LookupMessage(637));
       break;
-    case 23:
-    case 147:
+    case EFST_ADRENALINE:
+    case EFST_ADRENALINE2:
       std::sprintf(message, LookupMessage(639));
       break;
-    case 29:
+    case EFST_TRICKDEAD:
       std::sprintf(message, "");
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SetState(0, 1);
         this->scene->player->render.isMotionFreezed = false;
       }
       break;
-    case 70:
-    case 71:
-    case 72:
-    case 73:
-    case 74:
-    case 75:
-    case 76:
-    case 77:
-    case 78:
-    case 79:
-    case 80:
-    case 81:
-    case 82:
-    case 83:
-    case 84:
-    case 621:
-    case 645:
-    case 646:
-    case 651:
-    case 655:
-    case 656:
-    case 657:
-    case 659:
-    case 660:
-    case 665:
-    case 674:
-    case 716:
-    case 717:
-    case 718:
-    case 719:
-    case 720:
-    case 721:
-    case 728:
-    case 734:
-    case 735:
-    case 736:
-    case 737:
-    case 760:
-    case 779:
-    case 822:
-    case 823:
-    case 825:
-    case 826:
-    case 849:
-    case 856:
-    case 857:
-    case 859:
-    case 863:
-    case 864:
-    case 872:
-    case 895:
-    case 896:
-    case 917:
-    case 919:
-    case 937:
-    case 982:
-    case 1016:
-    case 1017:
-    case 1018:
-    case 1019:
-    case 1020:
-    case 1021:
-    case 1022:
-    case 1023:
-    case 1024:
-    case 1025:
-    case 1038:
-    case 1039:
-    case 1040:
-    case 1041:
-    case 1043:
-    case 1050:
-    case 1055:
-    case 1139:
-    case 1141:
-    case 1142:
-    case 1148:
-    case 1150:
-    case 1184:
-    case 1190:
-    case 1196:
-    case 1197:
-    case 1205:
-    case 1206:
-    case 1207:
-    case 1208:
-    case 1209:
-    case 1210:
-    case 1211:
-    case 1212:
-    case 1213:
-    case 1214:
-    case 1215:
-    case 1216:
-    case 1230:
-    case 1231:
-    case 1232:
-    case 1233:
-    case 1234:
-    case 1250:
-    case 1258:
-    case 1318:
-    case 1319:
-    case 1337:
-    case 1338:
-    case 1339:
-    case 1688:
+    case EFST_WHISTLE:
+    case EFST_ASSASSINCROSS:
+    case EFST_POEMBRAGI:
+    case EFST_APPLEIDUN:
+    case EFST_HUMMING:
+    case EFST_DONTFORGETME:
+    case EFST_FORTUNEKISS:
+    case EFST_SERVICEFORYOU:
+    case EFST_RICHMANKIM:
+    case EFST_ETERNALCHAOS:
+    case EFST_DRUMBATTLEFIELD:
+    case EFST_RINGNIBELUNGEN:
+    case EFST_ROKISWEIL:
+    case EFST_INTOABYSS:
+    case EFST_SIEGFRIED:
+    case EFST_MONSTER_TRANSFORM:
+    case EFST_KO_JYUMONJIKIRI:
+    case EFST_MEIKYOUSISUI:
+    case EFST_KYOUGAKU:
+    case EFST_KYOMU:
+    case EFST_KAGEMUSYA:
+    case EFST_ZANGETSU:
+    case EFST_GENSOU:
+    case EFST_AKAITSUKI:
+    case EFST_ACTIVE_MONSTER_TRANSFORM:
+    case EFST_HAT_EFFECT:
+    case EFST_OFFERTORIUM:
+    case EFST_TELEKINESIS_INTENSE:
+    case EFST_MOONSTAR:
+    case EFST_STRANGELIGHTS:
+    case EFST_FULL_THROTTLE:
+    case EFST_REBOUND:
+    case EFST_SUPER_STAR:
+    case EFST_ILLUSIONDOPING:
+    case EFST_WIDEWEB:
+    case EFST_CHILL:
+    case EFST_BURNT:
+    case EFST_ANTI_M_BLAST:
+    case EFST_DECORATION_OF_MUSIC:
+    case EFST_FLOWERSMOKE:
+    case EFST_FSTONE:
+    case EFST_QSCARABA:
+    case EFST_LJOSALFAR:
+    case EFST_HAPPINESS_STAR:
+    case EFST_DRESS_UP:
+    case EFST_MAPLE_FALLS:
+    case EFST_MARKING_USE_CHANGEMONSTER:
+    case EFST_MERMAID_LONGING:
+    case EFST_MAGICAL_FEATHER:
+    case EFST_TIME_ACCESSORY:
+    case EFST_HEAD_EQUIPMENT_EFFECT:
+    case EFST_SV_ROOTTWIST:
+    case EFST_BITESCAR:
+    case EFST_TUNAPARTY:
+    case EFST_SPRITEMABLE:
+    case EFST_SOULATTACK:
+    case EFST_IMMUNE_PROPERTY_NOTHING:
+    case EFST_IMMUNE_PROPERTY_WATER:
+    case EFST_IMMUNE_PROPERTY_GROUND:
+    case EFST_IMMUNE_PROPERTY_FIRE:
+    case EFST_IMMUNE_PROPERTY_WIND:
+    case EFST_IMMUNE_PROPERTY_POISON:
+    case EFST_IMMUNE_PROPERTY_SAINT:
+    case EFST_IMMUNE_PROPERTY_DARKNESS:
+    case EFST_IMMUNE_PROPERTY_TELEKINESIS:
+    case EFST_IMMUNE_PROPERTY_UNDEAD:
+    case EFST_LUNARSTANCE:
+    case EFST_UNIVERSESTANCE:
+    case EFST_SUNSTANCE:
+    case EFST_FLASHKICK:
+    case EFST_STARSTANCE:
+    case EFST_GRAVITYCONTROL:
+    case EFST_SOULUNITY:
+    case EFST_EARTHSHAKER:
+    case EFST_MISTY_FROST:
+    case EFST_MAGIC_POISON:
+    case EFST_PRISON:
+    case EFST_DEADLY_DEFEASANCE:
+    case EFST_CLIMAX_CRYIMP:
+    case EFST_HOLY_OIL:
+    case EFST_E_SLASH_COUNT:
+    case EFST_MEDIALE:
+    case EFST_HANDICAPSTATE_DEEPBLIND:
+    case EFST_HANDICAPSTATE_DEEPSILENCE:
+    case EFST_HANDICAPSTATE_LASSITUDE:
+    case EFST_HANDICAPSTATE_FROSTBITE:
+    case EFST_HANDICAPSTATE_SWOONING:
+    case EFST_HANDICAPSTATE_LIGHTNINGSTRIKE:
+    case EFST_HANDICAPSTATE_CRYSTALLIZATION:
+    case EFST_HANDICAPSTATE_CONFLAGRATION:
+    case EFST_HANDICAPSTATE_MISFORTUNE:
+    case EFST_HANDICAPSTATE_DEADLYPOISON:
+    case EFST_HANDICAPSTATE_DEPRESSION:
+    case EFST_HANDICAPSTATE_HOLYFLAME:
+    case EFST_FIRST_BRAND:
+    case EFST_SECOND_BRAND:
+    case EFST_SECOND_JUDGE:
+    case EFST_THIRD_EXOR_FLAME:
+    case EFST_FIRST_FAITH_POWER:
+    case EFST_WINDSIGN:
+    case EFST_SOUNDBLEND:
+    case EFST_CLOUD_POISON:
+    case EFST_SPORE_EXPLOSION_DEBUFF:
+    case EFST_CURSE_R_CUBE:
+    case EFST_CURSE_B_CUBE:
+    case EFST_KILLING_AURA:
+    case EFST_BLOCK:
       break;
-    case 30:
+    case EFST_SHOUT:
       std::sprintf(message, LookupMessage(647));
       break;
-    case 31:
+    case EFST_ENERGYCOAT:
       std::sprintf(message, LookupMessage(649));
       break;
-    case 40:
+    case EFST_ATTHASTE_INFINITY:
       if (packet->aid == g_session.m_aid) {
         for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
           if (it->id == packet->type) {
@@ -6462,11 +6464,11 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       }
       std::sprintf(message, LookupMessage(210));
       break;
-    case 41:
+    case EFST_MOVHASTE_POTION:
       std::sprintf(message, LookupMessage(210));
       break;
-    case 12:
-    case 42:
+    case EFST_INC_AGI:
+    case EFST_MOVHASTE_INFINITY:
       if (packet->aid == g_session.m_aid) {
         for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
           if (it->id == packet->type) {
@@ -6479,7 +6481,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       }
       std::sprintf(message, LookupMessage(210));
       break;
-    case 339:
+    case EFST_ROLLINGCUTTER:
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
         for (int i = 0; i < 10; ++i) {
@@ -6489,312 +6491,312 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       }
       std::sprintf(message, "");
       break;
-    case 0:
-    case 1:
-    case 3:
-    case 4:
-    case 5:
-    case 11:
-    case 27:
-    case 28:
-    case 32:
-    case 33:
-    case 34:
-    case 54:
-    case 55:
-    case 56:
-    case 57:
-    case 86:
-    case 87:
-    case 95:
-    case 97:
-    case 98:
-    case 103:
-    case 104:
-    case 105:
-    case 107:
-    case 110:
-    case 112:
-    case 113:
-    case 114:
-    case 115:
-    case 116:
-    case 117:
-    case 118:
-    case 120:
-    case 121:
-    case 122:
-    case 123:
-    case 124:
-    case 125:
-    case 130:
-    case 132:
-    case 133:
-    case 134:
-    case 135:
-    case 137:
-    case 139:
-    case 141:
-    case 143:
-    case 145:
-    case 149:
-    case 150:
-    case 151:
-    case 152:
-    case 153:
-    case 156:
-    case 157:
-    case 158:
-    case 159:
-    case 160:
-    case 165:
-    case 166:
-    case 167:
-    case 169:
-    case 170:
-    case 171:
-    case 181:
-    case 182:
-    case 184:
-    case 186:
-    case 191:
-    case 197:
-    case 198:
-    case 199:
-    case 200:
-    case 201:
-    case 203:
-    case 204:
-    case 205:
-    case 206:
-    case 207:
-    case 208:
-    case 209:
-    case 210:
-    case 211:
-    case 212:
-    case 213:
-    case 214:
-    case 215:
-    case 216:
-    case 217:
-    case 218:
-    case 219:
-    case 220:
-    case 221:
-    case 222:
-    case 223:
-    case 224:
-    case 225:
-    case 226:
-    case 227:
-    case 228:
-    case 229:
-    case 230:
-    case 231:
-    case 232:
-    case 233:
-    case 234:
-    case 235:
-    case 236:
-    case 238:
-    case 239:
-    case 240:
-    case 250:
-    case 251:
-    case 252:
-    case 254:
-    case 255:
-    case 256:
-    case 257:
-    case 258:
-    case 259:
-    case 261:
-    case 262:
-    case 263:
-    case 264:
-    case 265:
-    case 266:
-    case 267:
-    case 268:
-    case 269:
-    case 270:
-    case 282:
-    case 286:
-    case 289:
-    case 290:
-    case 291:
-    case 292:
-    case 293:
-    case 294:
-    case 295:
-    case 296:
-    case 297:
-    case 298:
-    case 299:
-    case 300:
-    case 301:
-    case 302:
-    case 312:
-    case 313:
-    case 314:
-    case 316:
-    case 318:
-    case 319:
-    case 320:
-    case 321:
-    case 322:
-    case 323:
-    case 328:
-    case 330:
-    case 333:
-    case 334:
-    case 336:
-    case 337:
-    case 341:
-    case 342:
-    case 343:
-    case 344:
-    case 345:
-    case 346:
-    case 347:
-    case 348:
-    case 349:
-    case 350:
-    case 351:
-    case 352:
-    case 353:
-    case 354:
-    case 355:
-    case 357:
-    case 360:
-    case 361:
-    case 362:
-    case 363:
-    case 364:
-    case 365:
-    case 366:
-    case 367:
-    case 373:
-    case 374:
-    case 375:
-    case 377:
-    case 379:
-    case 381:
-    case 382:
-    case 383:
-    case 384:
-    case 385:
-    case 386:
-    case 387:
-    case 388:
-    case 389:
-    case 390:
-    case 393:
-    case 394:
-    case 396:
-    case 397:
-    case 398:
-    case 399:
-    case 401:
-    case 402:
-    case 403:
-    case 404:
-    case 405:
-    case 407:
-    case 408:
-    case 409:
-    case 410:
-    case 411:
-    case 412:
-    case 413:
-    case 414:
-    case 415:
-    case 416:
-    case 417:
-    case 418:
-    case 419:
-    case 421:
-    case 422:
-    case 423:
-    case 425:
-    case 426:
-    case 427:
-    case 429:
-    case 430:
-    case 436:
-    case 437:
-    case 438:
-    case 439:
-    case 440:
-    case 441:
-    case 442:
-    case 443:
-    case 444:
-    case 445:
-    case 446:
-    case 447:
-    case 448:
-    case 450:
-    case 451:
-    case 452:
-    case 453:
-    case 454:
-    case 461:
-    case 463:
-    case 464:
-    case 472:
-    case 473:
-    case 476:
-    case 491:
-    case 492:
-    case 493:
-    case 494:
-    case 495:
-    case 496:
-    case 571:
-    case 577:
-    case 580:
-    case 581:
-    case 584:
-    case 605:
-    case 606:
-    case 607:
-    case 608:
-    case 611:
-    case 613:
-    case 618:
-    case 636:
-    case 648:
-    case 649:
-    case 670:
-    case 869:
-    case 1056:
-    case 1057:
-    case 1058:
-    case 1059:
-    case 1121:
+    case EFST_PROVOKE:
+    case EFST_ENDURE:
+    case EFST_CONCENTRATION:
+    case EFST_HIDING:
+    case EFST_CLOAKING:
+    case EFST_CRUCIS:
+    case EFST_RIDING:
+    case EFST_FALCON:
+    case EFST_BROKENARMOR:
+    case EFST_BROKENWEAPON:
+    case EFST_ILLUSION:
+    case EFST_PROTECTWEAPON:
+    case EFST_PROTECTSHIELD:
+    case EFST_PROTECTARMOR:
+    case EFST_PROTECTHELM:
+    case EFST_EXPLOSIONSPIRITS:
+    case EFST_STEELBODY:
+    case EFST_STOP:
+    case EFST_PROPERTYUNDEAD:
+    case EFST_POWERUP:
+    case EFST_AURABLADE:
+    case EFST_PARRYING:
+    case EFST_LKCONCENTRATION:
+    case EFST_BERSERK:
+    case EFST_ASSUMPTIO:
+    case EFST_GROUNDMAGIC:
+    case EFST_MAGICPOWER:
+    case EFST_EDP:
+    case EFST_TRUESIGHT:
+    case EFST_WINDWALK:
+    case EFST_MELTDOWN:
+    case EFST_CARTBOOST:
+    case EFST_SWORDREJECT:
+    case EFST_MARIONETTE_MASTER:
+    case EFST_MARIONETTE:
+    case EFST_MOON:
+    case EFST_BLOODING:
+    case EFST_JOINTBEAT:
+    case EFST_PROTECTEXP:
+    case EFST_AUTOBERSERK:
+    case EFST_RUN:
+    case EFST_TING:
+    case EFST_STORMKICK_ON:
+    case EFST_DOWNKICK_ON:
+    case EFST_TURNKICK_ON:
+    case EFST_COUNTER_ON:
+    case EFST_DODGE_ON:
+    case EFST_STRUP:
+    case EFST_SOULLINK:
+    case EFST_PLUSATTACKPOWER:
+    case EFST_PLUSMAGICPOWER:
+    case EFST_DEVIL1:
+    case EFST_KAITE:
+    case EFST_KAIZEL:
+    case EFST_KAAHI:
+    case EFST_KAUPE:
+    case EFST_SMA_READY:
+    case EFST_SKE:
+    case EFST_SG_SUN_WARM:
+    case EFST_SG_MOON_WARM:
+    case EFST_SG_STAR_WARM:
+    case EFST_SUN_COMFORT:
+    case EFST_MOON_COMFORT:
+    case EFST_STAR_COMFORT:
+    case EFST_PRESERVE:
+    case EFST_CHASEWALK2:
+    case EFST_CLAIRVOYANCE:
+    case EFST_DOUBLECASTING:
+    case EFST_TAROTCARD:
+    case EFST_CR_SHRINK:
+    case EFST_WZ_SIGHTBLASTER:
+    case EFST_DC_WINKCHARM:
+    case EFST_RG_CCONFINE_M:
+    case EFST_RG_CCONFINE_S:
+    case EFST_GS_MADNESSCANCEL:
+    case EFST_GS_GATLINGFEVER:
+    case EFST_EARTHSCROLL:
+    case EFST_NJ_UTSUSEMI:
+    case EFST_NJ_BUNSINJYUTSU:
+    case EFST_NJ_NEN:
+    case EFST_GS_ADJUSTMENT:
+    case EFST_GS_ACCURACY:
+    case EFST_NJ_SUITON:
+    case EFST_PET:
+    case EFST_MENTAL:
+    case EFST_EXPMEMORY:
+    case EFST_PERFORMANCE:
+    case EFST_GAIN:
+    case EFST_GRIFFON:
+    case EFST_DRIFT:
+    case EFST_WALLSHIFT:
+    case EFST_REINCARNATION:
+    case EFST_PATTACK:
+    case EFST_PSPEED:
+    case EFST_PDEFENSE:
+    case EFST_PCRITICAL:
+    case EFST_RANKING:
+    case EFST_PTRIPLE:
+    case EFST_DENERGY:
+    case EFST_WAVE1:
+    case EFST_WAVE2:
+    case EFST_WAVE3:
+    case EFST_WAVE4:
+    case EFST_DAURA:
+    case EFST_DFREEZER:
+    case EFST_DPUNISH:
+    case EFST_DBARRIER:
+    case EFST_DWARNING:
+    case EFST_DGAUGE:
+    case EFST_DACCEL:
+    case EFST_DBLOCK:
+    case EFST_CASH_PLUSEXP:
+    case EFST_CASH_DEATHPENALTY:
+    case EFST_CASH_RECEIVEITEM:
+    case EFST_DA_ENERGY:
+    case EFST_DA_FIRSTSLOT:
+    case EFST_DA_HEADDEF:
+    case EFST_DA_SPACE:
+    case EFST_DA_TRANSFORM:
+    case EFST_DA_ITEMREBUILD:
+    case EFST_DA_DARKPOWER:
+    case EFST_DA_EARPLUG:
+    case EFST_DA_CONTRACT:
+    case EFST_DA_BLACK:
+    case EFST_DA_MAGICCART:
+    case EFST_CRYSTAL:
+    case EFST_DA_REBUILD:
+    case EFST_DA_EDARKNESS:
+    case EFST_DA_EGUARDIAN:
+    case EFST_DA_TIMEOUT:
+    case EFST_SLOWCAST:
+    case EFST_CRITICALWOUND:
+    case EFST_MOVHASTE_HORSE:
+    case EFST_PROTECT_DEF:
+    case EFST_PROTECT_MDEF:
+    case EFST_HEALPLUS:
+    case EFST_S_LIFEPOTION:
+    case EFST_L_LIFEPOTION:
+    case EFST_CRITICALPERCENT:
+    case EFST_PLUSAVOIDVALUE:
+    case EFST_ATKER_ASPD:
+    case EFST_TARGET_ASPD:
+    case EFST_ATKER_MOVESPEED:
+    case EFST_ATKER_BLOOD:
+    case EFST_TARGET_BLOOD:
+    case EFST_ARMOR_PROPERTY:
+    case EFST_CASH_PLUSONLYJOBEXP:
+    case EFST_PARTYFLEE:
+    case EFST_ANGEL_PROTECT:
+    case EFST_ENCHANTBLADE:
+    case EFST_REFRESH:
+    case EFST_GIANTGROWTH:
+    case EFST_STONEHARDSKIN:
+    case EFST_VITALITYACTIVATION:
+    case EFST_FIGHTINGSPIRIT:
+    case EFST_ABUNDANCE:
+    case EFST_VENOMIMPRESS:
+    case EFST_ORATIO:
+    case EFST_CLOAKINGEXCEED:
+    case EFST_HALLUCINATIONWALK:
+    case EFST_RENOVATIO:
+    case EFST_WEAPONBLOCKING:
+    case EFST_POISONINGWEAPON:
+    case EFST_TOXIN:
+    case EFST_PARALYSE:
+    case EFST_VENOMBLEED:
+    case EFST_MAGICMUSHROOM:
+    case EFST_DEATHHURT:
+    case EFST_PYREXIA:
+    case EFST_OBLIVIONCURSE:
+    case EFST_LEECHESEND:
+    case EFST_DUPLELIGHT:
+    case EFST_FROSTMISTY:
+    case EFST_FEARBREEZE:
+    case EFST_ELECTRICSHOCKER:
+    case EFST_MARSHOFABYSS:
+    case EFST_RECOGNIZEDSPELL:
+    case EFST_WUGRIDER:
+    case EFST_CAMOUFLAGE:
+    case EFST_ACCELERATION:
+    case EFST_HOVERING:
+    case EFST_SUMMON1:
+    case EFST_SUMMON2:
+    case EFST_SUMMON3:
+    case EFST_SUMMON4:
+    case EFST_SUMMON5:
+    case EFST_OVERHEAT:
+    case EFST_SHAPESHIFT:
+    case EFST_INFRAREDSCAN:
+    case EFST_NEUTRALBARRIER:
+    case EFST_STEALTHFIELD:
+    case EFST_MANU_ATK:
+    case EFST_MANU_DEF:
+    case EFST_SPL_ATK:
+    case EFST_SPL_DEF:
+    case EFST_REPRODUCE:
+    case EFST_MANU_MATK:
+    case EFST_SPL_MATK:
+    case EFST_STR_SCROLL:
+    case EFST_INT_SCROLL:
+    case EFST_LG_REFLECTDAMAGE:
+    case EFST_AUTOSHADOWSPELL:
+    case EFST_SHADOWFORM:
+    case EFST_SHIELDSPELL_DEF:
+    case EFST_SHIELDSPELL_MDEF:
+    case EFST_SHIELDSPELL_REF:
+    case EFST_BODYPAINT:
+    case EFST_ADORAMUS:
+    case EFST_PRESTIGE:
+    case EFST_INVISIBILITY:
+    case EFST_DEADLYINFECT:
+    case EFST_BANDING:
+    case EFST_INSPIRATION:
+    case EFST_ENERVATION:
+    case EFST_GROOMY:
+    case EFST_RAISINGDRAGON:
+    case EFST_IGNORANCE:
+    case EFST_LAZINESS:
+    case EFST_LIGHTNINGWALK:
+    case EFST_ACARAJE:
+    case EFST_UNLUCKY:
+    case EFST_CURSEDCIRCLE_ATKER:
+    case EFST_CURSEDCIRCLE_TARGET:
+    case EFST_WEAKNESS:
+    case EFST_CRESCENTELBOW:
+    case EFST_STRIPACCESSARY:
+    case EFST_MANHOLE:
+    case EFST_POPECOOKIE:
+    case EFST_GENTLETOUCH_ENERGYGAIN:
+    case EFST_GENTLETOUCH_CHANGE:
+    case EFST_GENTLETOUCH_REVITALIZE:
+    case EFST_SWING:
+    case EFST_SYMPHONY_LOVE:
+    case EFST_SIRCLEOFNATURE:
+    case EFST_COLD:
+    case EFST_GLOOMYDAY:
+    case EFST_SONG_OF_MANA:
+    case EFST_CLOUD_KILL:
+    case EFST_DANCE_WITH_WUG:
+    case EFST_RUSH_WINDMILL:
+    case EFST_ECHOSONG:
+    case EFST_HARMONIZE:
+    case EFST_STRIKING:
+    case EFST_WARMER:
+    case EFST_MOONLIT_SERENADE:
+    case EFST_SATURDAY_NIGHT_FEVER:
+    case EFST_ANALYZE:
+    case EFST_LERADS_DEW:
+    case EFST_MELODYOFSINK:
+    case EFST_BEYOND_OF_WARCRY:
+    case EFST_UNLIMITED_HUMMING_VOICE:
+    case EFST_GN_CARTBOOST:
+    case EFST_THORNS_TRAP:
+    case EFST_BLOOD_SUCKER:
+    case EFST_AB_SECRAMENT:
+    case EFST_ASSUMPTIO2:
+    case EFST_STOMACHACHE:
+    case EFST_SAVAGE_STEAK:
+    case EFST_COCKTAIL_WARG_BLOOD:
+    case EFST_MINOR_BBQ:
+    case EFST_SIROMA_ICE_TEA:
+    case EFST_DROCERA_HERB_STEAMED:
+    case EFST_PUTTI_TAILS_NOODLES:
+    case EFST_EQUIPED_FLOOR:
+    case EFST_PAIN_KILLER:
+    case EFST_LIGHT_OF_REGENE:
+    case EFST_OVERED_BOOST:
+    case EFST_STYLE_CHANGE:
+    case EFST_MAGMA_FLOW:
+    case EFST_GRANITIC_ARMOR:
+    case EFST_PYROCLASTIC:
+    case EFST_VOLCANIC_ASH:
+    case EFST_MAGIC_CANDY:
+    case EFST_ALL_RIDING:
+    case EFST_OVERLAPEXPUP:
+    case EFST_REWARD_PLUSONLYJOBEXP:
+    case EFST_EQUIPPED_DIVINE_ARMOR:
+    case EFST_EQUIPPED_HOLY_ARMOR:
+    case EFST_M_LIFEPOTION:
+    case EFST_NPC_HALLUCINATIONWALK:
+    case EFST_SOULSHADOW:
+    case EFST_SOULFAIRY:
+    case EFST_SOULFALCON:
+    case EFST_SOULGOLEM:
+    case EFST_ASSUMPTIO_BUFF:
       std::sprintf(message, "");
       break;
-    case 434:
+    case EFST_SIREN:
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SendMsg(nullptr, 109, 0, 879, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
-    case 435:
+    case EFST_DEEP_SLEEP:
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SendMsg(nullptr, 70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
-    case 433:
+    case EFST_NETHERWORLD:
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SendMsg(nullptr, 109, 0, 453, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
-    case 358:
+    case EFST_WUGDASH:
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
         while (player->HasId(752)) {
@@ -6803,61 +6805,61 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       }
       std::sprintf(message, "");
       break;
-    case 260:
+    case EFST_DA_ILLUSION:
       if (packet->aid == g_session.m_aid) {
         g_session.unknown_5450 = 0;
       }
       std::sprintf(message, "");
       break;
-    case 241:
-    case 271:
+    case EFST_FOOD_STR:
+    case EFST_FOOD_STR_CASH:
       std::sprintf(message, LookupMessage(1232));
       break;
-    case 242:
-    case 272:
+    case EFST_FOOD_AGI:
+    case EFST_FOOD_AGI_CASH:
       std::sprintf(message, LookupMessage(1234));
       break;
-    case 243:
-    case 273:
+    case EFST_FOOD_VIT:
+    case EFST_FOOD_VIT_CASH:
       std::sprintf(message, LookupMessage(1236));
       break;
-    case 244:
-    case 274:
+    case EFST_FOOD_DEX:
+    case EFST_FOOD_DEX_CASH:
       std::sprintf(message, LookupMessage(1240));
       break;
-    case 245:
-    case 275:
+    case EFST_FOOD_INT:
+    case EFST_FOOD_INT_CASH:
       std::sprintf(message, LookupMessage(1238));
       break;
-    case 246:
-    case 276:
+    case EFST_FOOD_LUK:
+    case EFST_FOOD_LUK_CASH:
       std::sprintf(message, LookupMessage(1242));
       break;
-    case 247:
+    case EFST_FOOD_BASICAVOIDANCE:
       std::sprintf(message, LookupMessage(1244));
       break;
-    case 248:
+    case EFST_FOOD_BASICHIT:
       std::sprintf(message, LookupMessage(1246));
       break;
-    case 249:
+    case EFST_FOOD_CRITICALSUCCESSVALUE:
       std::sprintf(message, LookupMessage(1248));
       break;
-    case 253:
+    case EFST_CASH_BOSS_ALARM:
       if (packet->aid == g_session.m_aid) {
         this->unknown_05CC[0] = 0;
       }
       break;
-    case 673:
+    case EFST_ON_PUSH_CART:
       if (packet->aid == g_session.m_aid) {
         g_session.SetUnknown5C1C(0);
       }
       break;
-    case 710:
+    case EFST_HANDICAPSTATE_ICEEXPLO:
       if (packet->aid == g_session.m_aid && this->scene->player) {
         this->scene->player->SendMsg(nullptr, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 730:
+    case EFST_DARKCROW:
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
         while (player->HasId(1040)) {
@@ -6865,7 +6867,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
         }
       }
       break;
-    case 755:
+    case EFST_C_MARKER:
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
         while (player->HasId(1061)) {
@@ -6873,27 +6875,27 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
         }
       }
       break;
-    case 933:
+    case EFST_SUHIDE:
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SetState(0, 1);
         this->scene->player->render.isMotionFreezed = false;
       }
       break;
-    case 893:
+    case EFST_SU_STOOP:
       if (packet->aid == g_session.m_aid && !this->scene->player->render.unknown_0114) {
         this->scene->player->SetState(0, 1);
       }
       break;
-    case 1013:
+    case EFST_ALL_STAT_DOWN:
       color = 0xFFFF00;
       std::sprintf(message, LookupMessage(3248));
       break;
-    case 1125:
+    case EFST_SOULCURSE:
       if (CEffect* effect = g_effectMgr->Find(packet->aid, 1362)) {
         g_effectMgr->Retire(effect, 1);
       }
       break;
-    case 1149:
+    case EFST_MADOGEAR_TYPE:
     {
       CGameActor* actor;
       if (packet->aid == g_session.m_aid) {
@@ -6911,12 +6913,12 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       actor->SendMsg(nullptr, 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
-    case 1166:
+    case EFST_RELIEVE_DAMAGE:
       if (CEffect* effect = g_effectMgr->Find(packet->aid, 1599)) {
         g_effectMgr->Retire(effect, 1);
       }
       break;
-    case 1167:
+    case EFST_LOCKON_LASER:
     {
       CRenderObject* actor;
       if (packet->aid == g_session.m_aid) {
@@ -6929,7 +6931,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       }
       break;
     }
-    case 1165:
+    case EFST_HELLS_PLANT_ARMOR:
     {
       CRenderObject* actor;
       if (packet->aid == g_session.m_aid) {
@@ -6942,7 +6944,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       }
       break;
     }
-    case 1176:
+    case EFST_DRAGONIC_AURA:
       if (CEffect* effect = g_effectMgr->Find(packet->aid, 1726)) {
         g_effectMgr->Retire(effect, 1);
       }
@@ -6950,74 +6952,74 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
         g_effectMgr->Retire(effect, 1);
       }
       break;
-    case 1245:
+    case EFST_ABYSS_SLAYER:
       StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3816));
       break;
-    case 1221:
+    case EFST_ULTIMATE_S:
       _snprintf_s(message, 256, LookupMessage(3759));
       break;
-    case 1160:
+    case EFST_POWERFUL_FAITH:
       _snprintf_s(message, 256, LookupMessage(3727));
       break;
-    case 1162:
+    case EFST_FIRM_FAITH:
       _snprintf_s(message, 256, LookupMessage(3729));
       break;
-    case 1161:
+    case EFST_SINCERE_FAITH:
       _snprintf_s(message, 256, LookupMessage(3731));
       break;
-    case 1228:
+    case EFST_BENEDICTUM:
       _snprintf_s(message, 256, LookupMessage(3733));
       break;
-    case 1227:
+    case EFST_RELIGIO:
       _snprintf_s(message, 256, LookupMessage(3735));
       break;
-    case 1201:
+    case EFST_COMPETENTIA:
       _snprintf_s(message, 256, LookupMessage(3737));
       break;
-    case 1200:
+    case EFST_PRE_ACIES:
       _snprintf_s(message, 256, LookupMessage(3739));
       break;
-    case 1199:
+    case EFST_A_TELUM:
       _snprintf_s(message, 256, LookupMessage(3741));
       break;
-    case 1198:
+    case EFST_A_VITA:
       _snprintf_s(message, 256, LookupMessage(3743));
       break;
-    case 1152:
+    case EFST_CLIMAX:
       if (CEffect* effect = g_effectMgr->Find(packet->aid, 1800)) {
         g_effectMgr->Retire(effect, 1);
       }
       _snprintf_s(message, 256, LookupMessage(3761));
       break;
-    case 1194:
+    case EFST_POTENT_VENOM:
       _snprintf_s(message, 256, LookupMessage(3765));
       break;
-    case 1247:
+    case EFST_PROTECTSHADOWEQUIP:
       _snprintf_s(message, 256, LookupMessage(3783));
       break;
-    case 1248:
+    case EFST_RESEARCHREPORT:
       _snprintf_s(message, 256, LookupMessage(3779));
       break;
-    case 1249:
+    case EFST_BO_HELL_DUSTY:
       _snprintf_s(message, 256, LookupMessage(3785));
       break;
-    case 1237:
+    case EFST_D_MACHINE:
       if (CEffect* effect = g_effectMgr->Find(packet->aid, 1817)) {
         g_effectMgr->Retire(effect, 1);
         g_effectMgr->Spawn(packet->aid, 1821, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3789));
       break;
-    case 1236:
+    case EFST_A_MACHINE:
       StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3787));
       break;
-    case 1261:
+    case EFST_MUSICAL_INTERLUDE:
       StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3800));
       break;
-    case 1271:
+    case EFST_SPELL_ENCHANTING:
       StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3813));
       break;
-    case 1244:
+    case EFST_ABYSSFORCEWEAPON:
       StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3814));
       break;
     default:

@@ -2330,19 +2330,19 @@ void CUITextViewer::OnWheel(int value) {
 int CUITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 98) {
     switch (a) {
-    case 437:
+    case LINE_SEGMENT_URL:
       OpenTextButtonLink(static_cast<UITextButton*>(sender));
       break;
-    case 464:
+    case LINE_SEGMENT_ITEM:
       ShowTextButtonItem(static_cast<UITextButton*>(sender));
       break;
-    case 438:
+    case LINE_SEGMENT_NAVI:
       OpenTextButtonNavigation(static_cast<UITextButton*>(sender));
       break;
-    case 539:
+    case LINE_SEGMENT_QUEST:
       RequestTextButtonService(static_cast<UITextButton*>(sender));
       break;
-    case 517:
+    case LINE_SEGMENT_TIPBOX:
       ShowTextButtonTip(static_cast<UITextButton*>(sender));
       break;
     }

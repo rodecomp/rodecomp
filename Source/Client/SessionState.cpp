@@ -121,27 +121,27 @@ void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& 
     int delay = 0;
     if (actor) {
       switch (actor->GetEffectiveJob(-1)) {
-      case 2114:
-      case 2117:
-      case 2120:
-      case 2123:
+      case JT_EL_AGNI_S:
+      case JT_EL_AQUA_S:
+      case JT_EL_VENTUS_S:
+      case JT_EL_TERA_S:
         delay = 3000;
         break;
-      case 2115:
-      case 2118:
-      case 2121:
-      case 2124:
+      case JT_EL_AGNI_M:
+      case JT_EL_AQUA_M:
+      case JT_EL_VENTUS_M:
+      case JT_EL_TERA_M:
         delay = 6000;
         break;
-      case 2116:
-      case 2119:
-      case 2122:
-      case 2125:
-      case 20816:
-      case 20817:
-      case 20818:
-      case 20819:
-      case 20820:
+      case JT_EL_AGNI_L:
+      case JT_EL_AQUA_L:
+      case JT_EL_VENTUS_L:
+      case JT_EL_TERA_L:
+      case JT_EM_DILUVIO:
+      case JT_EM_ARDOR:
+      case JT_EM_PROCELLA:
+      case JT_EM_TERREMOTUS:
+      case JT_EM_SERPENS:
         delay = 9000;
         break;
       }

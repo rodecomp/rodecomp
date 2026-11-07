@@ -15,6 +15,7 @@
 #include "Contents/SkinMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -108,7 +109,7 @@ void UIRodexContentsWnd::OnCreate(int, int) {
 
   RodexMailStore* store = g_rodexMailStore;
   switch (store->unknown_0010) {
-  case 0: {
+  case MAIL_INBOX_NORMAL: {
     std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails0.find(store->currentMailId);
     if (mail != store->m_mails0.end()) {
       this->SetMailContents(mail->second.unknown_0004, mail->second.unknown_0024, mail->second.unknown_003C, mail->second.hasItem, mail->second.zeny,
@@ -126,7 +127,7 @@ void UIRodexContentsWnd::OnCreate(int, int) {
     }
     break;
   }
-  case 1: {
+  case MAIL_INBOX_ACCOUNT: {
     std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails1.find(store->currentMailId);
     if (mail != store->m_mails1.end()) {
       this->SetMailContents(mail->second.unknown_0004, mail->second.unknown_0024, mail->second.unknown_003C, mail->second.hasItem, mail->second.zeny,
@@ -134,7 +135,7 @@ void UIRodexContentsWnd::OnCreate(int, int) {
     }
     break;
   }
-  case 2: {
+  case MAIL_INBOX_RETURNED: {
     std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails2.find(store->currentMailId);
     if (mail != store->m_mails2.end()) {
       this->SetMailContents(mail->second.unknown_0004, mail->second.unknown_0024, mail->second.unknown_003C, mail->second.hasItem, mail->second.zeny,

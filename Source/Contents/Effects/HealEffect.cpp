@@ -1,4 +1,5 @@
 #include "Contents/Effects/HealEffect.h"
+#include "Contents/Effects/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -337,13 +338,13 @@ void CHealEffect::Open() {
 // FUNCTION: fn_19073
 void CHealEffect::InitEvents() {
   switch (this->id) {
-  case 253:
+  case EF_ABSORBSPIRITS:
     this->AddEvent(0, "effect\\흡기.wav", 0, 0);
     break;
-  case 312:
-  case 313:
-  case 320:
-  case 325:
+  case EF_HEAL:
+  case EF_HEAL2:
+  case EF_HEAL3:
+  case EF_HEAL4:
     this->AddEvent(0, "_heal_effect.wav", 0, 0);
     break;
   }
@@ -353,7 +354,7 @@ void CHealEffect::InitEvents() {
 // FUNCTION: fn_19074
 void CHealEffect::SpawnParticles() {
   switch (this->id) {
-  case 312:
+  case EF_HEAL:
     if (this->spawnTick == 0) {
       this->AddColumn(4);
     }
@@ -361,7 +362,7 @@ void CHealEffect::SpawnParticles() {
       this->AddSparks(4);
     }
     break;
-  case 313:
+  case EF_HEAL2:
     if (this->spawnTick == 0) {
       this->AddColumn(0);
       this->AddCone(0);
@@ -370,7 +371,7 @@ void CHealEffect::SpawnParticles() {
       this->AddSparks(0);
     }
     break;
-  case 320:
+  case EF_HEAL3:
     if (this->spawnTick == 0) {
       this->AddColumn(3);
     }
@@ -378,13 +379,13 @@ void CHealEffect::SpawnParticles() {
       this->AddSparks(3);
     }
     break;
-  case 253:
+  case EF_ABSORBSPIRITS:
     if (this->spawnTick == 0) {
       this->AddColumn(5);
       this->AddCone(5);
     }
     break;
-  case 325:
+  case EF_HEAL4:
     if (this->spawnTick == 0) {
       this->AddColumn(1);
       this->AddCone(1);

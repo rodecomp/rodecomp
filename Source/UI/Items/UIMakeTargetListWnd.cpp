@@ -5,6 +5,7 @@
 #include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Jobs/JobId.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
@@ -90,10 +91,10 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
       if (list->selected >= 0) {
         switch (g_session.m_job) {
-        case 4054:
-        case 4060:
-        case 4096:
-        case 4252: {
+        case JT_RUNE_KNIGHT:
+        case JT_RUNE_KNIGHT_H:
+        case JT_RUNE_KNIGHT_B:
+        case JT_DRAGON_KNIGHT: {
           ITEM_INFO materials[3];
           g_modeMgr.GetGameMode()->SendMsg(130, this->itemIds[this->m_list->selected], reinterpret_cast<int>(materials), 0, 0);
           g_windowMgr.CloseWindow(79);
