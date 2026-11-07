@@ -921,19 +921,18 @@ bool LuaScript::Load(const char* name, bool resourcePath, bool looseOnly) {
     prefix = "LuaFiles514\\";
   }
 
-  std::string path = prefix + name;
-  path += ".lub";
+  std::string path = prefix + std::string(name) + ".lub";
 
   if (resourcePath) {
     if (!ResourceExists(path.c_str(), looseOnly)) {
-      path = prefix + name + ".lua";
+      path = prefix + std::string(name) + ".lua";
       if (!ResourceExists(path.c_str(), looseOnly)) {
         return false;
       }
     }
   } else {
     if (!g_pakRegistry.Exists(path.c_str(), looseOnly)) {
-      path = prefix + name + ".lua";
+      path = prefix + std::string(name) + ".lua";
       if (!g_pakRegistry.Exists(path.c_str(), looseOnly)) {
         return false;
       }
@@ -946,7 +945,7 @@ bool LuaScript::Load(const char* name, bool resourcePath, bool looseOnly) {
   }
 
   const std::uint32_t size = file.GetSize();
-  char* buffer = new char[size + 1];
+  char* buffer = static_cast<char*>(std::malloc(size + 1));
   file.Read(buffer, size);
   buffer[size] = '\0';
   file.Close();
@@ -955,11 +954,11 @@ bool LuaScript::Load(const char* name, bool resourcePath, bool looseOnly) {
     std::string error = lua_tostring(this->m_state, -1);
     this->Error(name, "%s\n", error.c_str());
     lua_settop(this->m_state, -2);
-    delete[] buffer;
+    std::free(buffer);
     return false;
   }
 
-  delete[] buffer;
+  std::free(buffer);
   return true;
 }
 
