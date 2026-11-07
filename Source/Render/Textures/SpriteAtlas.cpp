@@ -72,13 +72,14 @@ void SpriteAtlas::Initialize(unsigned spareCount) {
 // OFFSET: 0x0056FD70
 // FUNCTION: fn_02411
 void SpriteAtlas::Clear() {
-  for (std::forward_list<SpriteAtlasPage>& pages : this->m_classes) {
+  for (int i = 0; i < 25; ++i) {
+    std::forward_list<SpriteAtlasPage>& pages = this->m_classes[i];
     for (SpriteAtlasPage& page : pages) {
       CTexture* texture = page.texture;
-      if (texture->unknown_001C) {
-        this->m_spare.push_back(texture);
-      } else {
+      if (texture->unknown_001C == 0) {
         delete texture;
+      } else {
+        this->m_spare.push_back(texture);
       }
     }
 
