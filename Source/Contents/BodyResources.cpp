@@ -4075,15 +4075,15 @@ std::string EquipmentResourceMgr::GetBodyResourceName(int type, int job, int sex
 
   const bool secondJob = g_session.IsSecondJob(costumeJob);
   const int spriteJob = g_session.GetSpriteJob(job, costumeJob, true);
-  sexName = g_session.GetSexName(sex);
-  jobName = g_session.GetBodyJobName(spriteJob);
+  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  jobName = static_cast<const std::string&>(g_session.GetBodyJobName(spriteJob));
 
   if (secondJob == true) {
-    result = this->GetBodyRacePrefix(spriteJob + 3950) +
-             FormatOwnedString("\\몸통\\%s\\costume_%d\\%s_%s_%d.%s", sexName.c_str(), 1, jobName.c_str(), sexName.c_str(), 1, g_equipmentResourceExtensions[type]);
+    result = static_cast<const std::string&>(this->GetBodyRacePrefix(spriteJob + 3950)) +
+             static_cast<const std::string&>(FormatOwnedString("\\몸통\\%s\\costume_%d\\%s_%s_%d.%s", sexName.c_str(), 1, jobName.c_str(), sexName.c_str(), 1, g_equipmentResourceExtensions[type]));
   } else {
-    result = this->GetBodyRacePrefix(spriteJob + 3950) +
-             FormatOwnedString("\\몸통\\%s\\%s_%s.%s", sexName.c_str(), jobName.c_str(), sexName.c_str(), g_equipmentResourceExtensions[type]);
+    result = static_cast<const std::string&>(this->GetBodyRacePrefix(spriteJob + 3950)) +
+             static_cast<const std::string&>(FormatOwnedString("\\몸통\\%s\\%s_%s.%s", sexName.c_str(), jobName.c_str(), sexName.c_str(), g_equipmentResourceExtensions[type]));
   }
 
   if (costume == 2) {
