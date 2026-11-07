@@ -35,8 +35,8 @@ struct PACKET_CZ_REQ_ACH_REWARD {
 
 namespace {
   // INLINED
-  const BitmapImage* AchievementBitmap(const char* name) {
-    return &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)))->image;
+  CBitmapRes* AchievementBitmap(const char* name) {
+    return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   }
 }
 
@@ -437,7 +437,7 @@ void UIAchScrollBar::Paint() {
     return;
   }
 
-  const BitmapImage* middle = AchievementBitmap("유저인터페이스\\achievement_re\\scroll_v_bg_mid.bmp");
+  CBitmapRes* middle = AchievementBitmap("유저인터페이스\\achievement_re\\scroll_v_bg_mid.bmp");
   for (int index = 0; index < this->geometry.height / this->thickness; ++index) {
     this->DrawBitmap(0, this->thickness * index, middle, false);
   }
