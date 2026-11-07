@@ -527,8 +527,7 @@ void CUIProbabilityTable::Slot16() {
     this->Move(g_renderer->viewport.centerX, (g_renderer->viewport.height - this->geometry.height) / 2);
   }
 
-  const char* title = LookupMessage(0x1017);
-  this->m_titleBar->SetTitle(title, std::strlen(title));
+  this->m_titleBar->SetTitle(LookupMessage(0x1017));
   this->m_nameHeader->SetText(LookupMessage(0x1018));
   this->m_probabilityHeader->SetText(LookupMessage(0x1019));
 }
