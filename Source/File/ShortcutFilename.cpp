@@ -7,7 +7,7 @@ std::string ShortcutFilename(std::uint32_t identifier) {
 
   for (std::uint32_t divisor = 1000000000; divisor; divisor /= 10) {
     if (!result.empty() && divisor == 100) {
-      result.push_back('-');
+      result += '-';
     }
 
     std::uint32_t digit = identifier / divisor;
@@ -15,35 +15,35 @@ std::string ShortcutFilename(std::uint32_t identifier) {
     switch (digit) {
     case 0:
       if (!result.empty()) {
-        result.push_back('3');
+        result += '3';
       }
       break;
     case 1:
-      result.push_back('8');
+      result += '8';
       break;
     case 2:
-      result.push_back('6');
+      result += '6';
       break;
     case 3:
-      result.push_back('7');
+      result += '7';
       break;
     case 4:
-      result.push_back('0');
+      result += '0';
       break;
     case 5:
-      result.push_back('1');
+      result += '1';
       break;
     case 6:
-      result.push_back('2');
+      result += '2';
       break;
     case 7:
-      result.push_back('4');
+      result += '4';
       break;
     case 8:
-      result.push_back('9');
+      result += '9';
       break;
     case 9:
-      result.push_back('5');
+      result += '5';
       break;
     }
   }
