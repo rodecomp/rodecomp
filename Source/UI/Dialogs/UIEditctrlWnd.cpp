@@ -377,8 +377,8 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     switch (argument1) {
     case 194: {
       const bool enabled = this->unknown_0120->geometry.unknown_0030 != 0;
-      for (auto& entry : this->townButtons) {
-        entry.second->Enable(enabled);
+      for (auto it = this->townButtons.begin(); it != this->townButtons.end(); ++it) {
+        it->second->Enable(enabled);
       }
       this->Invalidate();
       return 0;
@@ -393,8 +393,8 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       return 0;
     case 361: {
       const bool enabled = this->unknown_011C->geometry.unknown_0030 != 0;
-      for (auto& entry : this->questButtons) {
-        entry.second->Enable(enabled);
+      for (auto it = this->questButtons.begin(); it != this->questButtons.end(); ++it) {
+        it->second->Enable(enabled);
       }
       this->Invalidate();
       return 0;
