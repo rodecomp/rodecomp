@@ -105,7 +105,7 @@ void UIBarGraph4::Paint() {
 // OFFSET: 0x00887790
 // FUNCTION: fn_11339
 void UIBarGraph::Paint() {
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg.bmp")))->image, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg.bmp"))), false);
   if (this->m_value == 0.0f) {
     return;
   }
@@ -113,16 +113,16 @@ void UIBarGraph::Paint() {
   const std::string color = this->m_value >= 25.0f ? "blue" : "red";
   const int fill = (this->geometry.width - 8) * static_cast<int>(this->m_value) / 100;
 
-  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_left.bmp").c_str())));
-  this->DrawBitmap(0, 0, &left->image, true);
+  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_left.bmp").c_str())));
+  this->DrawBitmap(0, 0, left, true);
 
-  const auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_mid.bmp").c_str())));
+  auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_mid.bmp").c_str())));
   for (int x = 0; x < fill; ++x) {
-    this->DrawBitmap(x + 4, 0, &middle->image, true);
+    this->DrawBitmap(x + 4, 0, middle, true);
   }
 
-  const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_right.bmp").c_str())));
-  this->DrawBitmap(fill + 4, 0, &right->image, true);
+  auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_right.bmp").c_str())));
+  this->DrawBitmap(fill + 4, 0, right, true);
 }
 
 // OFFSET: 0x00887CB0
@@ -139,15 +139,15 @@ void UIBarGraphHomun::Paint() {
   }
 
   this->ClearSurface(0xFFFF00FF);
-  const auto* backLeft = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg_left.bmp")));
-  const auto* backMiddle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg_mid.bmp")));
-  const auto* backRight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg_right.bmp")));
+  auto* backLeft = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg_left.bmp")));
+  auto* backMiddle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg_mid.bmp")));
+  auto* backRight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg_right.bmp")));
   if (backLeft && backMiddle && backRight) {
-    this->DrawBitmap(0, 0, &backLeft->image, false);
+    this->DrawBitmap(0, 0, backLeft, false);
     for (std::int64_t x = 0; x < this->geometry.width - backLeft->image.width - backRight->image.width; ++x) {
-      this->DrawBitmap(static_cast<int>(x) + backLeft->image.width, 0, &backMiddle->image, false);
+      this->DrawBitmap(static_cast<int>(x) + backLeft->image.width, 0, backMiddle, false);
     }
-    this->DrawBitmap(this->geometry.width - backRight->image.width, 0, &backRight->image, false);
+    this->DrawBitmap(this->geometry.width - backRight->image.width, 0, backRight, false);
   }
 
   if (maximum == 0) {
@@ -162,16 +162,16 @@ void UIBarGraphHomun::Paint() {
   const std::string color = ratio < 0.25 ? "red" : "blue";
   const int fill = static_cast<int>(static_cast<double>(this->geometry.width - 8) * ratio);
 
-  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_left.bmp").c_str())));
-  this->DrawBitmap(0, 0, &left->image, true);
+  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_left.bmp").c_str())));
+  this->DrawBitmap(0, 0, left, true);
 
-  const auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_mid.bmp").c_str())));
+  auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_mid.bmp").c_str())));
   for (int x = 0; x < fill; ++x) {
-    this->DrawBitmap(x + 4, 0, &middle->image, true);
+    this->DrawBitmap(x + 4, 0, middle, true);
   }
 
-  const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_right.bmp").c_str())));
-  this->DrawBitmap(fill + 4, 0, &right->image, true);
+  auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_right.bmp").c_str())));
+  this->DrawBitmap(fill + 4, 0, right, true);
 
   this->DrawCenteredText(0, -2, FormatOwnedString("%3I64d  /  %3I64d", current, maximum).c_str(), this->geometry.width, 1, 13, 0, 0);
 }
@@ -189,7 +189,7 @@ void UIBarGraphPlayer::Paint() {
     return;
   }
 
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg1.bmp")))->image, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg1.bmp"))), false);
   if (maximum == 0) {
     return;
   }
@@ -198,16 +198,16 @@ void UIBarGraphPlayer::Paint() {
   const std::string color = ratio < 0.25 ? "red" : "blue";
   const int fill = static_cast<int>(static_cast<double>(this->geometry.width - 8) * ratio);
 
-  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_left.bmp").c_str())));
-  this->DrawBitmap(0, 0, &left->image, true);
+  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_left.bmp").c_str())));
+  this->DrawBitmap(0, 0, left, true);
 
-  const auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_mid.bmp").c_str())));
+  auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_mid.bmp").c_str())));
   for (int x = 0; x < fill; ++x) {
-    this->DrawBitmap(x + 4, 0, &middle->image, true);
+    this->DrawBitmap(x + 4, 0, middle, true);
   }
 
-  const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_right.bmp").c_str())));
-  this->DrawBitmap(fill + 4, 0, &right->image, true);
+  auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_right.bmp").c_str())));
+  this->DrawBitmap(fill + 4, 0, right, true);
 
   this->DrawCenteredText(0, -2, FormatOwnedString("%3I64d  /  %3I64d", current, maximum).c_str(), this->geometry.width, 1, 13, 0, 0);
 }
@@ -225,7 +225,7 @@ void UIBarGraphPlayerAP::Paint() {
     return;
   }
 
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg1.bmp")))->image, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg1.bmp"))), false);
   if (maximum > 0) {
     const double ratio = static_cast<double>(current) / static_cast<double>(maximum);
     if (ratio > 0.0) {
@@ -236,16 +236,16 @@ void UIBarGraphPlayerAP::Paint() {
 
       const int fill = static_cast<int>(static_cast<double>(this->geometry.width - 8) * ratio);
 
-      const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_left.bmp").c_str())));
-      this->DrawBitmap(0, 0, &left->image, true);
+      auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_left.bmp").c_str())));
+      this->DrawBitmap(0, 0, left, true);
 
-      const auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_mid.bmp").c_str())));
+      auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_mid.bmp").c_str())));
       for (int x = 0; x < fill; ++x) {
-        this->DrawBitmap(x + 4, 0, &middle->image, true);
+        this->DrawBitmap(x + 4, 0, middle, true);
       }
 
-      const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_right.bmp").c_str())));
-      this->DrawBitmap(fill + 4, 0, &right->image, true);
+      auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_right.bmp").c_str())));
+      this->DrawBitmap(fill + 4, 0, right, true);
     }
   }
 
