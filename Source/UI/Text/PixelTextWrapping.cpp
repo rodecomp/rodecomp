@@ -11,11 +11,14 @@
 // OFFSET: 0x00A82310
 // FUNCTION: fn_16993
 void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, int width) {
-  if (!text || *text == '\0') {
+  if (!text) {
     return;
   }
 
   const int bytes = static_cast<int>(std::strlen(text));
+  if (bytes == 0) {
+    return;
+  }
 
   if (this->TextWidth(text, bytes, 0, 12, 0, 0) <= 0) {
     return;
