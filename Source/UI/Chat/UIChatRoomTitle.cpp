@@ -50,14 +50,14 @@ void UIChatRoomTitle::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysbox_lu.bmp")));
-  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->DrawBitmap(0, 0, bitmap, false);
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysbox_ru.bmp")));
   this->DrawBitmap(this->geometry.width - bitmap->image.width, 0, &bitmap->image, false);
 
   int segments = (this->geometry.width - 24) / 12 + ((this->geometry.width - 24) % 12 != 0);
   for (int index = 0; index < segments; ++index) {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysbox_mu.bmp")));
-    this->DrawBitmap((index + 1) * 12, 0, bitmap ? &bitmap->image : nullptr, false);
+    this->DrawBitmap((index + 1) * 12, 0, bitmap, false);
   }
 
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysbox_ld.bmp")));
@@ -76,7 +76,7 @@ void UIChatRoomTitle::Paint() {
 
   const char* icon = this->roomType != 0 ? "유저인터페이스\\chat_open.bmp" : "유저인터페이스\\chat_close.bmp";
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(icon)));
-  this->DrawBitmap(3, 3, bitmap ? &bitmap->image : nullptr, true);
+  this->DrawBitmap(3, 3, bitmap, true);
 }
 
 // OFFSET: 0x0085F980

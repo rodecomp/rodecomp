@@ -65,7 +65,7 @@ void DrawItemIconById(UIWindow& window, int x, int y, const char* id, unsigned c
 // FUNCTION: fn_11719
 void DrawItemSlotBackground(UIWindow& window, int x, int y) {
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_mid.bmp")));
-  window.DrawBitmap(x, y, bitmap ? &bitmap->image : nullptr, false);
+  window.DrawBitmap(x, y, bitmap, false);
 }
 
 // OFFSET: 0x008A9040
