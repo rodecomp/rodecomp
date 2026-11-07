@@ -102,6 +102,7 @@ void C3dAnimModelRes::Unload() {
 // OFFSET: 0x00752390
 // FUNCTION: fn_07958
 bool C3dAnimModelRes::Load(const char* name) {
+  std::string rootName;
   CFile file;
 
   if (!file.Open(name, 0, true, false)) {
@@ -140,7 +141,6 @@ bool C3dAnimModelRes::Load(const char* name) {
     names[index] = std::string(field);
   }
 
-  std::string rootName;
   file.Read(field, sizeof(field));
   rootName = std::string(field);
   int nodeCount;
