@@ -2400,12 +2400,15 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->RefreshCurrentList();
     return 0;
 
-  case 2:
-    if (this->unknown_00E4) {
-      this->unknown_00E4->Enable(1);
+  case 34:
+    this->m_placement = reinterpret_cast<CashEmotionListWndInfo*>(argument1);
+    if (this->m_placement) {
+      if (!this->m_placement->IsValid()) {
+        this->m_placement->Reset();
+      }
+      this->Move(this->m_placement->x, this->m_placement->y);
     }
-    g_cashEmotionMgr->unknown_01C4 = argument1;
-    return this->SetPeriod(argument1);
+    return 0;
 
   case 6:
     switch (argument1) {
@@ -2517,15 +2520,12 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     return 0;
 
-  case 34:
-    this->m_placement = reinterpret_cast<CashEmotionListWndInfo*>(argument1);
-    if (this->m_placement) {
-      if (!this->m_placement->IsValid()) {
-        this->m_placement->Reset();
-      }
-      this->Move(this->m_placement->x, this->m_placement->y);
+  case 2:
+    if (this->unknown_00E4) {
+      this->unknown_00E4->Enable(1);
     }
-    return 0;
+    g_cashEmotionMgr->unknown_01C4 = argument1;
+    return this->SetPeriod(argument1);
 
   case 60:
     this->Invalidate();
@@ -2855,6 +2855,15 @@ int UICashEmotionMiniWnd::SendMsg(
   std::pair<int, int> entry;
 
   switch (message) {
+  case 60:
+    this->Invalidate();
+    return 0;
+
+  case 174:
+    entry.first = static_cast<int>(argument1);
+    entry.second = static_cast<int>(argument2);
+    break;
+
   case 6:
     if (argument1 == 1) {
       this->Previous();
@@ -2862,13 +2871,7 @@ int UICashEmotionMiniWnd::SendMsg(
       this->Next();
     }
     return 0;
-  case 60:
-    this->Invalidate();
-    return 0;
-  case 174:
-    entry.first = static_cast<int>(argument1);
-    entry.second = static_cast<int>(argument2);
-    break;
+
   case 176:
     if (argument1 == 13) {
       if (!this->m_selected) {
@@ -2883,6 +2886,7 @@ int UICashEmotionMiniWnd::SendMsg(
       this->Next();
     }
     return 0;
+
   default:
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
