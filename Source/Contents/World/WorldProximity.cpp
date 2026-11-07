@@ -225,23 +225,23 @@ bool WorldProximityRejectB() {
 // FUNCTION: fn_17719
 bool WorldProximityGuildMasterCallback::Invoke(const std::uint32_t& aidRef) {
   const std::uint32_t aid = aidRef;
-  for (CRenderObject* actor : this->world->actors) {
-    if (actor->render.accountId != aid) {
-      continue;
-    }
-
-    if (actor == nullptr) {
-      return false;
-    }
-
-    if (static_cast<int>(g_guildInfo.unknown_00D0) != static_cast<CGameActor*>(actor)->Slot42()) {
-      return false;
-    }
-
-    return true;
+  auto it = std::find_if(this->world->actors.begin(), this->world->actors.end(), [aid](CRenderObject* actor) {
+    return actor->render.accountId == aid;
+  });
+  if (it == this->world->actors.end()) {
+    return false;
   }
 
-  return false;
+  CGameActor* gameActor = static_cast<CGameActor*>(*it);
+  if (!gameActor) {
+    return false;
+  }
+
+  if (static_cast<int>(g_guildInfo.unknown_00D0) != gameActor->Slot42()) {
+    return false;
+  }
+
+  return true;
 }
 
 struct WorldProximityRangeCallback {
