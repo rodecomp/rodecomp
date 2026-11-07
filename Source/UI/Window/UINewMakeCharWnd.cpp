@@ -70,28 +70,28 @@ UINewMakeCharWnd::UINewMakeCharWnd()
   this->m_action = 0;
   this->m_frame = 0;
 
-  this->m_raceActions[0].assign(GetBodyActionResourceName(this->m_job, this->m_sex, 0, 0));
-  this->m_raceSprites[0].assign(g_session.GetBodySprName(this->m_job, this->m_sex, 0, 0));
+  this->m_raceActions[0].assign(static_cast<const std::string&>(GetBodyActionResourceName(this->m_job, this->m_sex, 0, 0)));
+  this->m_raceSprites[0].assign(static_cast<const std::string&>(g_session.GetBodySprName(this->m_job, this->m_sex, 0, 0)));
 
   if (!g_session.IsDoramJob(this->m_job) && this->m_sex == 1 && this->m_head == 13) {
     this->m_head = 14;
   }
 
   int head = this->m_head;
-  this->m_raceActions[1].assign(g_session.GetHeadActName(this->m_job, this->m_sex, &head));
-  this->m_raceSprites[1].assign(g_session.GetHeadSprName(this->m_job, this->m_sex, &head));
+  this->m_raceActions[1].assign(static_cast<const std::string&>(g_session.GetHeadActName(this->m_job, this->m_sex, &head)));
+  this->m_raceSprites[1].assign(static_cast<const std::string&>(g_session.GetHeadSprName(this->m_job, this->m_sex, &head)));
 
   const int bodyPalette = this->m_bodyPalette;
   this->m_head = static_cast<short>(head);
   this->m_racePaletteEnabled[1] = bodyPalette;
   if (bodyPalette > 0) {
-    this->m_racePalettes[1].assign(g_session.GetBodyPalName(this->m_job, this->m_sex, bodyPalette, 0, 0, 0));
+    this->m_racePalettes[1].assign(static_cast<const std::string&>(g_session.GetBodyPalName(this->m_job, this->m_sex, bodyPalette, 0, 0, 0)));
   }
 
   const int headPalette = this->m_headPalette;
   this->m_racePaletteEnabled[0] = headPalette;
   if (headPalette > 0) {
-    this->m_racePalettes[0].assign(g_session.GetHeadPalName(head, this->m_job, this->m_sex, headPalette));
+    this->m_racePalettes[0].assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_job, this->m_sex, headPalette)));
   }
 
   this->m_raceOffsets = GetBodyImfName(this->m_job, this->m_sex, this->m_head, this->m_costumeJob);
