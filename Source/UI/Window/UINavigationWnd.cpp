@@ -122,11 +122,10 @@ void UINavigationWnd::Slot15(int width, int height) {
   const int ids[6] = {321, 184, 189, 190, 284, 191};
 
   for (int index = 0; index < 6; ++index) {
-    UIBitmapButton* button = new UIBitmapButton();
-    this->m_buttons[index] = button;
-    button->SetBitmap((path + names[index] + "_A.bmp").c_str(), 0, 0);
-    button->SetBitmap((path + names[index] + "_B.bmp").c_str(), 1, 0);
-    button->SetBitmap((path + names[index] + "_C.bmp").c_str(), 2, 0);
+    this->m_buttons[index] = new UIBitmapButton();
+    this->m_buttons[index]->SetBitmap((path + names[index] + "_A.bmp").c_str(), 0, 0);
+    this->m_buttons[index]->SetBitmap((path + names[index] + "_B.bmp").c_str(), 1, 0);
+    this->m_buttons[index]->SetBitmap((path + names[index] + "_C.bmp").c_str(), 2, 0);
     this->m_buttons[index]->SetSize(this->m_buttons[index]->BitmapWidth(), this->m_buttons[index]->BitmapHeight());
     this->m_buttons[index]->Move(-1000, -1000);
     this->m_buttons[index]->SetId(ids[index]);
@@ -181,9 +180,8 @@ void UINavigationWnd::Slot15(int width, int height) {
     this->m_titleBar->Invalidate();
   }
 
-  UICheckBox* box = new UICheckBox();
-  this->unknown_0118 = box;
-  box->SetSize(this->TextWidth(LookupMessage(0x8A3), 10, 0, 12, 0, 0), 12);
+  this->unknown_0118 = new UICheckBox();
+  this->unknown_0118->SetSize(this->TextWidth(LookupMessage(0x8A3), 10, 0, 12, 0, 0), 12);
   path = base;
   this->unknown_0118->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A3));
   this->unknown_0118->Move(-1000, -1000);
@@ -191,9 +189,8 @@ void UINavigationWnd::Slot15(int width, int height) {
   this->unknown_0118->SetTooltip(LookupMessage(0x8A4));
   this->AddChild(this->unknown_0118);
 
-  box = new UICheckBox();
-  this->unknown_0114 = box;
-  box->SetSize(this->TextWidth(LookupMessage(0x8A5), 10, 0, 12, 0, 0), 12);
+  this->unknown_0114 = new UICheckBox();
+  this->unknown_0114->SetSize(this->TextWidth(LookupMessage(0x8A5), 10, 0, 12, 0, 0), 12);
   path = base;
   this->unknown_0114->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A5));
   this->unknown_0114->Move(-1000, -1000);
@@ -201,9 +198,8 @@ void UINavigationWnd::Slot15(int width, int height) {
   this->unknown_0114->SetTooltip(LookupMessage(0x8A6));
   this->AddChild(this->unknown_0114);
 
-  box = new UICheckBox();
-  this->unknown_011C = box;
-  box->SetSize(this->TextWidth(LookupMessage(0x8A7), 10, 0, 12, 0, 0), 12);
+  this->unknown_011C = new UICheckBox();
+  this->unknown_011C->SetSize(this->TextWidth(LookupMessage(0x8A7), 10, 0, 12, 0, 0), 12);
   path = base;
   this->unknown_011C->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A7));
   this->unknown_011C->Move(-1000, -1000);
