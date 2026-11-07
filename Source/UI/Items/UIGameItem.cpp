@@ -30,7 +30,7 @@ CUIGameItem::CUIGameItem()
 // FUNCTION: fn_14476
 void CUIGameItem::SetMode(int mode) {
   this->mode = mode;
-  this->SetSize(mode == 1 ? 75 : 24, mode == 1 ? 100 : 24);
+  this->SetSize(mode != 1 ? 24 : 75, mode != 1 ? 24 : 100);
 }
 
 // OFFSET: 0x009E72E0
