@@ -100,23 +100,25 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
   switch (argument1) {
   case 184: {
-    PartyBookingUpdatePacket packet = {ID_CZ_PARTY_BOOKING_REQ_UPDATE};
-    std::memset(packet.jobs, 0xFF, sizeof(packet.jobs));
+    PartyBookingUpdatePacket packet{};
+    packet.packetType = ID_CZ_PARTY_BOOKING_REQ_UPDATE;
+    for (int i = 0; i < 6; ++i) {
+      packet.jobs[i] = -1;
+    }
 
     int selected = 0;
     int index = 0;
-    for (auto it = g_partyBookingJobs.begin(); it != g_partyBookingJobs.end(); ++it, ++index) {
+    const auto end = g_partyBookingJobs.end();
+    for (auto it = g_partyBookingJobs.begin(); it != end; ++it, ++index) {
       UIWindow* check = this->m_jobChecks[index];
       std::int16_t job = -1;
-      bool enabled;
-      if (check == nullptr) {
-        enabled = false;
-      } else if (check->geometry.unknown_0030 == 0) {
-        enabled = false;
-      } else {
-        ++selected;
-        enabled = true;
-        job = static_cast<std::int16_t>(it->first);
+      bool enabled = false;
+      if (check != nullptr) {
+        if (check->geometry.unknown_0030 != 0) {
+          ++selected;
+          enabled = true;
+          job = static_cast<std::int16_t>(it->first);
+        }
       }
       packet.jobs[index] = job;
       it->second = enabled;
@@ -129,12 +131,13 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
     GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
   }
+    [[fallthrough]];
   case 201:
     g_windowMgr.CloseWindow(170);
-    return 0;
-  default:
-    return 0;
+    break;
   }
+
+  return 0;
 }
 
 // OFFSET: 0x00944C90
@@ -163,10 +166,10 @@ void UIJobListWnd::RefreshJobs() {
         LookupMessage(job + 0x6AF)
       );
     } else {
-      const char* text = LookupMessage(job + 0x658);
-      const std::string unchecked = path + "basic_interface\\" + "grp_offline" + ".bmp";
-      const std::string checked = path + "basic_interface\\" + "grp_online" + ".bmp";
-      this->m_jobChecks[index]->SetImages(checked.c_str(), unchecked.c_str(), text);
+      this->m_jobChecks[index]->SetImages(
+        (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
+        LookupMessage(job + 0x658)
+      );
     }
 
     this->m_jobChecks[index]->Move(10, (index + 1) * 25);
