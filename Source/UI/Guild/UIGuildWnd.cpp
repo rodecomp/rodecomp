@@ -2558,7 +2558,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     int index = 0;
     for (auto member = this->m_members.begin(); member != this->m_members.end(); ++member, ++index) {
       if (this->m_hoverRow == index) {
-        const bool valid = a1 != 0 && member->positionId != 0;
+        const int valid = a1 != 0 && member->positionId != 0;
         if (member->positionId != a1 && valid) {
           member->positionId = a1;
           member->positionName = g_guildInfo.m_positions[member->positionId];
@@ -2603,7 +2603,8 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     case 273:
       if (this->m_rowButtons[0]) {
         int row = 0;
-        for (int index = 0; index < 6; ++index) {
+        int index;
+        for (index = 0; index < 6; ++index) {
           if (this->m_rowButtons[index] == sender) {
             row = index;
             break;
@@ -2615,7 +2616,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
           g_windowMgr.CloseWindow(26);
         }
         UIWindow* menu = g_windowMgr.EnsureWindow(26);
-        int index = 0;
+        index = 0;
         const int count = static_cast<int>(g_guildInfo.m_positions.size());
         for (; index < count; ++index) {
           char text[128];
@@ -2701,7 +2702,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         }
       }
     }
-    if (!this->unknown_0150.empty()) {
+    if (this->unknown_0150.size() != 0) {
       UIWindow* menu = g_windowMgr.EnsureWindow(18);
       for (std::size_t index = 0; index < this->unknown_0150.size(); ++index) {
         menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_0150[index].text.c_str()), 0, 0, 0);
@@ -2732,13 +2733,6 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     }
 
     switch (this->unknown_0150[a1].value) {
-    case 5: {
-      GuildInfo::Member target;
-      if (this->GetMember(this->m_hoverRow, target)) {
-        g_modeMgr.gameMode->SendMsg(59, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
-      }
-      break;
-    }
     case 16: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target)) {
@@ -2763,6 +2757,13 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target)) {
         g_modeMgr.gameMode->SendMsg(109, target.accountId, 0, 0, 0);
+      }
+      break;
+    }
+    case 5: {
+      GuildInfo::Member target;
+      if (this->GetMember(this->m_hoverRow, target)) {
+        g_modeMgr.gameMode->SendMsg(59, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
       }
       break;
     }
