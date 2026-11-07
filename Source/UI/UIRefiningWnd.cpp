@@ -1042,25 +1042,25 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
   std::string background;
   switch (this->state) {
   case 0:
-    background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_wait_%02d.bmp", this->frame);
+    background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_wait_%02d.bmp", this->frame));
     break;
   case 1:
-    background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining%s_ready_%02d.bmp", this->catalystCount > 0 ? "A" : "B", this->frame);
+    background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining%s_ready_%02d.bmp", this->catalystCount > 0 ? "A" : "B", this->frame));
     break;
   case 2:
     if (this->frame < 9) {
-      background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining%s_process_%02d.bmp", this->catalystEnabled == 1 ? "A" : "B", this->frame);
+      background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining%s_process_%02d.bmp", this->catalystEnabled == 1 ? "A" : "B", this->frame));
     } else {
-      background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_process_%02d.bmp", this->frame);
+      background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_process_%02d.bmp", this->frame));
     }
     break;
   case 3:
-    background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_success_%02d.bmp", this->frame);
+    background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_success_%02d.bmp", this->frame));
     break;
   case 4:
   case 5:
   case 6:
-    background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_fail_%02d.bmp", this->frame);
+    background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_fail_%02d.bmp", this->frame));
     break;
   }
 
@@ -1070,10 +1070,9 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
 
   if (this->state == 1) {
     if (this->selectedMaterial >= 0) {
-      bitmap = static_cast<CBitmapRes*>(
-        ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\refining_renewal\\slot_select_blue%d.bmp", this->selectedMaterial).c_str()))
-      );
-      this->DrawBitmap(this->selectedMaterial * 49 + 11, 55, bitmap, false);
+      this->DrawBitmap(this->selectedMaterial * 49 + 11, 55,
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\refining_renewal\\slot_select_blue%d.bmp", this->selectedMaterial).c_str()))),
+        false);
     }
 
     if (this->catalystEnabled == 1) {
@@ -1114,10 +1113,9 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
   if (this->item.unknown_0000[1] > 0) {
     DrawItemIcon(*this, ResourceMgr::Instance(), 120, 212, this->item, 0);
     if (this->item.unknown_0088 > 0) {
-      bitmap = static_cast<CBitmapRes*>(
-        ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.unknown_0088).c_str()))
-      );
-      this->DrawBitmap(120, 224, bitmap, true);
+      this->DrawBitmap(120, 224,
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.unknown_0088).c_str()))),
+        true);
     }
   }
 
