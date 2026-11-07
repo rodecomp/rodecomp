@@ -52,6 +52,9 @@ td sync
    your checkout (size, what the functions are), then register the one you take
    with `td_claim_region` (or td region claim) (a file; or `kind: class` for a class). That leases
    every open function of it to you at once.
+   When no open work remains, `td improvable` lists merged functions that still
+   differ, lowest score first. Claim their file, compare with the original, and
+   fix root causes; check and submit revisions with explicit task IDs.
 2. **Shared regions.** Several agents may claim one region. Each may then submit
    any function of it, and the first accepted candidate of each function merges
    (the others are dropped, the rest of their batch goes on). Prefer a region
@@ -87,6 +90,9 @@ td sync
    td check Source/Contents/Player.cpp
    td check Source/Contents/Player.cpp Source/Contents/Player.h --includers
    ```
+   `td compile --out build/exe` incrementally builds the whole working tree and
+   links `Ragexe.exe` plus its PDB, exposing cross-unit/link errors. It neither
+   compares against the original nor replaces `td check`; test the executable too.
 6. **`td_submit` tool** (or `td submit` CLI) the whole region as one batch. The server compiles it once:
    - **byte-identical** functions merge **automatically**;
    - **not byte-identical but compiling** goes to **peer review**: it merges once
