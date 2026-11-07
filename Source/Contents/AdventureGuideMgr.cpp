@@ -1585,60 +1585,41 @@ bool CAdventureGuideMgr::IsAvailable(int type, int id) {
     if (!found) {
       return true;
     }
-    for (const auto& entry : **found) {
-      if (entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008) {
-        return true;
-      }
-    }
-    return false;
-  }
-  case 3: {
-    const std::optional<std::map<int, AdventureGuideContents>*> found = FindMapped(this->unknown_0044, id);
-    if (!found) {
-      return true;
-    }
-    for (const auto& entry : **found) {
-      if (entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008) {
-        return true;
-      }
-    }
-    return false;
+    return std::any_of((*found)->begin(), (*found)->end(), [](const auto& entry) {
+      return entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008;
+    });
   }
   case 4: {
     const std::optional<std::map<int, AdventureGuideContents>*> found = FindMapped(this->unknown_004C, id);
     if (!found) {
       return true;
     }
-    for (const auto& entry : **found) {
-      if (entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008) {
-        return true;
-      }
+    return std::any_of((*found)->begin(), (*found)->end(), [](const auto& entry) {
+      return entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008;
+    });
+  }
+  case 3: {
+    const std::optional<std::map<int, AdventureGuideContents>*> found = FindMapped(this->unknown_0044, id);
+    if (!found) {
+      return true;
     }
-    return false;
+    return std::any_of((*found)->begin(), (*found)->end(), [](const auto& entry) {
+      return entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008;
+    });
   }
   case 5: {
     const std::optional<std::map<int, AdventureGuideEntry>*> found = FindMapped(this->unknown_0054, id);
     if (!found) {
       return true;
     }
-    for (const auto& entry : **found) {
-      if (entry.second.IsAvailable(entry.first)) {
-        return true;
-      }
-    }
-    return false;
+    return std::any_of((*found)->begin(), (*found)->end(), [](const auto& entry) { return entry.second.IsAvailable(entry.first); });
   }
   case 6: {
     const std::optional<std::map<int, AdventureGuideEntry>*> found = FindMapped(this->unknown_005C, id);
     if (!found) {
       return true;
     }
-    for (const auto& entry : **found) {
-      if (entry.second.IsAvailable(entry.first)) {
-        return true;
-      }
-    }
-    return false;
+    return std::any_of((*found)->begin(), (*found)->end(), [](const auto& entry) { return entry.second.IsAvailable(entry.first); });
   }
   default:
     return true;
