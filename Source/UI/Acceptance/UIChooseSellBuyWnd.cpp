@@ -3547,12 +3547,15 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   switch (message) {
   case 6: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    if (a == 184) {
+    switch (a) {
+    case 184:
       g_windowMgr.CloseWindow(110);
       g_modeMgr.gameMode->SendMsg(173, this->identity, 1, 0, 0);
-    } else if (a == 185) {
+      break;
+    case 185:
       g_windowMgr.CloseWindow(110);
       g_modeMgr.gameMode->SendMsg(173, this->identity, 0, 0, 0);
+      break;
     }
     return 0;
   }
@@ -3563,33 +3566,29 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     return 0;
   }
-  }
-
-  if (message != 123) {
-    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
-  }
-
-  const auto* packet = reinterpret_cast<const unsigned char*>(a);
-  const unsigned length = static_cast<unsigned>(b);
-  std::int16_t tag;
-  std::memcpy(&tag, packet, sizeof(tag));
-  if (tag == 0x542E) {
+  case 123: {
+    const auto* packet = reinterpret_cast<const unsigned char*>(a);
+    FramedMessageHeader header;
+    std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    bool scanning = true;
-    while (scanning && offset < length) {
-      std::int32_t size;
-      std::memcpy(&tag, packet + offset, sizeof(tag));
-      std::memcpy(&size, packet + offset + 2, sizeof(size));
-      offset += 6;
-      if (tag != 0x542F) {
-        offset += size;
-      }
-      if (tag == 0x542F) {
-        scanning = false;
+    if (header.type == 0x542E) {
+      bool scanning = true;
+      while (scanning && offset < static_cast<unsigned>(b)) {
+        std::memcpy(&header, packet + offset, sizeof(header));
+        offset += 6;
+        if (header.type != 0x542F) {
+          offset += header.length;
+        }
+        if (header.type == 0x542F) {
+          scanning = false;
+        }
       }
     }
+    return 0;
   }
-  return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
 }
 
 // OFFSET: 0x008F6D00
@@ -4314,9 +4313,9 @@ void UIItemIdentifyWnd::Paint() {
     if (it->unknown_0088 > 0) {
       this->DrawBitmap(
         8, y + 12,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
-        )->image,
+        ),
         true
       );
     }
