@@ -790,14 +790,14 @@ void UIParaResultWnd::Paint() {
 
   int rows = (this->geometry.height - this->unknown_00FC - 17) / 8 + ((this->geometry.height - this->unknown_00FC - 17) % 8 != 0);
   for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, left, false);
   }
 
   rows = (this->geometry.height - this->unknown_00FC - 17) / 8 + ((this->geometry.height - this->unknown_00FC - 17) % 8 != 0);
   for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   {
@@ -848,9 +848,9 @@ void UIParaResultWnd::Paint() {
     if (it->unknown_0088 > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
-        )->image,
+        ),
         true
       );
     }
