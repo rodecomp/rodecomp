@@ -245,15 +245,15 @@ void UIComboBoxEx::Paint() {
   this->ClearSurface(Palette(6, 6));
   this->FillRegion(1, 1, (this->geometry.width - 2), (this->geometry.height - 2), Palette(2, 2));
 
-  const auto* leftUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")));
-  this->DrawBitmap(0, 0, leftUp ? &leftUp->image : nullptr, false);
-  const auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
-  this->DrawBitmap(0, (this->geometry.height - leftDown->image.height), leftDown ? &leftDown->image : nullptr, false);
-  const auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
-  this->DrawBitmap((this->geometry.width - rightUp->image.width), 0, rightUp ? &rightUp->image : nullptr, false);
-  const auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
+  auto* leftUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")));
+  this->DrawBitmap(0, 0, leftUp, false);
+  auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, (this->geometry.height - leftDown->image.height), leftDown, false);
+  auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
+  this->DrawBitmap((this->geometry.width - rightUp->image.width), 0, rightUp, false);
+  auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
   this->DrawBitmap(
-    (this->geometry.width - rightDown->image.width), (this->geometry.height - rightDown->image.height), rightDown ? &rightDown->image : nullptr, false
+    (this->geometry.width - rightDown->image.width), (this->geometry.height - rightDown->image.height), rightDown, false
   );
 
   const int top = this->topLine;
