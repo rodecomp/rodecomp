@@ -115,7 +115,7 @@ CHalluPlant::CHalluPlant() {
   this->render.animation = 0;
   this->render.previousAnimation = 4;
   this->render.curMotion = 0;
-  this->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\blue_plant.act");
+  this->SetActionName("sprite\\몬스터\\blue_plant.act");
   this->render.unknown_00A2 = 0;
   this->render.unknown_0080 = 0;
   this->render.isLieOnGround = false;
@@ -546,30 +546,26 @@ void CBlowEffect::SendMsg(
 void CBlurPC::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
-  if (a != 0) {
-    CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-    return;
+  if (a == 0) {
+    switch (message) {
+      case 0:
+        this->SetColor(180, b, d, f);
+        this->unknown_04FC = 0x8000000;
+        return;
+      case 1:
+        this->render.color &= (b << 24) + 0xFFFFFF;
+        this->unknown_04FC = d << 24;
+        return;
+      case 2:
+        this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
+        return;
+      case 3:
+        this->render.isMotionFreezed = 1;
+        return;
+    }
   }
 
-  switch (message) {
-    case 0:
-      this->SetColor(180, b, d, f);
-      this->unknown_04FC = 0x8000000;
-      break;
-    case 1:
-      this->render.color &= (b << 24) + 0xFFFFFF;
-      this->unknown_04FC = d << 24;
-      break;
-    case 2:
-      this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
-      break;
-    case 3:
-      this->render.isMotionFreezed = 1;
-      break;
-    default:
-      CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-      break;
-  }
+  CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00DA4AD0
@@ -611,30 +607,26 @@ void CGndRiser::SendMsg(
 void CHalluNPC::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
-  if (a != 0) {
-    CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-    return;
+  if (a == 0) {
+    switch (message) {
+      case 0:
+        this->SetColor(180, b, d, f);
+        this->unknown_0444 = 0x8000000;
+        return;
+      case 1:
+        this->render.color &= (b << 24) + 0xFFFFFF;
+        this->unknown_0444 = d << 24;
+        return;
+      case 2:
+        this->unknown_0440 = *reinterpret_cast<const float*>(&b);
+        return;
+      case 3:
+        this->render.isMotionFreezed = 1;
+        return;
+    }
   }
 
-  switch (message) {
-    case 0:
-      this->SetColor(180, b, d, f);
-      this->unknown_0444 = 0x8000000;
-      break;
-    case 1:
-      this->render.color &= (b << 24) + 0xFFFFFF;
-      this->unknown_0444 = d << 24;
-      break;
-    case 2:
-      this->unknown_0440 = *reinterpret_cast<const float*>(&b);
-      break;
-    case 3:
-      this->render.isMotionFreezed = 1;
-      break;
-    default:
-      CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-      break;
-  }
+  CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00DA4CC0
@@ -642,30 +634,26 @@ void CHalluNPC::SendMsg(
 void CHalluPC2::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
-  if (a != 0) {
-    CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-    return;
+  if (a == 0) {
+    switch (message) {
+      case 0:
+        this->SetColor(180, 255, 55, 55);
+        this->unknown_04FC = 0x8000000;
+        return;
+      case 1:
+        this->render.color &= (b << 24) + 0xFFFFFF;
+        this->unknown_04FC = d << 24;
+        return;
+      case 2:
+        this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
+        return;
+      case 3:
+        this->render.isMotionFreezed = 1;
+        return;
+    }
   }
 
-  switch (message) {
-    case 0:
-      this->SetColor(180, 255, 55, 55);
-      this->unknown_04FC = 0x8000000;
-      break;
-    case 1:
-      this->render.color &= (b << 24) + 0xFFFFFF;
-      this->unknown_04FC = d << 24;
-      break;
-    case 2:
-      this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
-      break;
-    case 3:
-      this->render.isMotionFreezed = 1;
-      break;
-    default:
-      CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-      break;
-  }
+  CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00DA4D90
@@ -673,30 +661,26 @@ void CHalluPC2::SendMsg(
 void CHalluPC::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
-  if (a != 0) {
-    CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-    return;
+  if (a == 0) {
+    switch (message) {
+      case 0:
+        this->SetColor(180, b, d, f);
+        this->unknown_04FC = 0x8000000;
+        return;
+      case 1:
+        this->render.color &= (b << 24) + 0xFFFFFF;
+        this->unknown_04FC = d << 24;
+        return;
+      case 2:
+        this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
+        return;
+      case 3:
+        this->render.isMotionFreezed = 1;
+        return;
+    }
   }
 
-  switch (message) {
-    case 0:
-      this->SetColor(180, b, d, f);
-      this->unknown_04FC = 0x8000000;
-      break;
-    case 1:
-      this->render.color &= (b << 24) + 0xFFFFFF;
-      this->unknown_04FC = d << 24;
-      break;
-    case 2:
-      this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
-      break;
-    case 3:
-      this->render.isMotionFreezed = 1;
-      break;
-    default:
-      CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-      break;
-  }
+  CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00DA4E60
@@ -704,25 +688,22 @@ void CHalluPC::SendMsg(
 void CHalluPlant::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
-  if (a != 0) {
-    CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  if (message == 0 && a == 0) {
+    this->SetColor(180, b, d, f);
     return;
   }
 
-  switch (message) {
-    case 0:
-      this->SetColor(180, b, d, f);
-      break;
-    case 1:
-      this->render.color &= (b << 24) + 0xFFFFFF;
-      break;
-    case 3:
-      this->render.isMotionFreezed = 1;
-      break;
-    default:
-      CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-      break;
+  if (message == 1 && a == 0) {
+    this->render.color &= (b << 24) + 0xFFFFFF;
+    return;
   }
+
+  if (message == 3 && a == 0) {
+    this->render.isMotionFreezed = 1;
+    return;
+  }
+
+  CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
 struct NpcAppearInfo {
@@ -961,8 +942,8 @@ void CNpc::Slot21(int job) {
 
   std::sprintf(spriteName, spriteFormat, g_session.GetJobName(job, -1));
   std::sprintf(actionName, actionFormat, g_session.GetJobName(job, -1));
-  this->SetSpriteName(ResourceMgr::Instance(), spriteName);
-  this->SetActionName(ResourceMgr::Instance(), actionName);
+  this->SetSpriteName(spriteName);
+  this->SetActionName(actionName);
 }
 
 // OFFSET: 0x00DA31B0
@@ -1209,7 +1190,7 @@ CHalluPC2::CHalluPC2(CPc* source) {
   this->render.animation = source->render.animation;
   this->render.previousAnimation = source->render.previousAnimation;
   this->render.curMotion = source->render.curMotion;
-  this->SetActionName(ResourceMgr::Instance(), source->GetActName());
+  this->SetActionName(source->GetActName());
   this->render.unknown_00A2 = source->render.unknown_00A2;
   this->render.unknown_0080 = source->render.unknown_0080;
   this->render.isLieOnGround = source->render.isLieOnGround;
@@ -1254,7 +1235,7 @@ CBlurPC::CBlurPC(CPc* source) {
   this->render.animation = source->render.animation;
   this->render.previousAnimation = source->render.previousAnimation;
   this->render.curMotion = source->render.curMotion;
-  this->SetActionName(ResourceMgr::Instance(), source->GetActName());
+  this->SetActionName(source->GetActName());
   this->render.unknown_00A2 = source->render.unknown_00A2;
   this->render.unknown_0080 = source->render.unknown_0080;
   this->render.isLieOnGround = source->render.isLieOnGround;
@@ -1298,7 +1279,7 @@ CHalluPC::CHalluPC(CPc* source) {
   this->render.animation = source->render.animation;
   this->render.previousAnimation = source->render.previousAnimation;
   this->render.curMotion = source->render.curMotion;
-  this->SetActionName(ResourceMgr::Instance(), source->GetActName());
+  this->SetActionName(source->GetActName());
   this->render.unknown_00A2 = source->render.unknown_00A2;
   this->render.unknown_0080 = source->render.unknown_0080;
   this->render.isLieOnGround = source->render.isLieOnGround;
