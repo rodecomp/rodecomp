@@ -118,7 +118,7 @@ int CGroundScope::SkillScopeType(int skillId) {
     case 0x991:
       return -2;
     default:
-      return CSkillActionMgr::GetInstance()->ActionSlot14(skillId);
+      return CSkillActionMgr::GetInstance()->GetSkillScopeType(skillId);
   }
 }
 

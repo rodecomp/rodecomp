@@ -890,7 +890,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     default: {
       CRenderObject* source = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAidIncludeMe(this->unknown_0410);
       CSkillActionMgr* actions = CSkillActionMgr::GetInstance();
-      actions->ObjectSlot00(this->GetEffectiveJob(-1), unit->level, this, static_cast<CGameActor*>(source));
+      actions->OnSkillObjectCreate(this->GetEffectiveJob(-1), unit->level, this, static_cast<CGameActor*>(source));
       return;
     }
     case 0x532C:
@@ -933,7 +933,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       }
     } else {
       CSkillActionMgr* actions = CSkillActionMgr::GetInstance();
-      actions->ObjectSlot01(this->GetEffectiveJob(-1), this);
+      actions->OnSkillObjectRemove(this->GetEffectiveJob(-1), this);
     }
     return;
   case 0x77:

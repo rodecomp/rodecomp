@@ -959,7 +959,7 @@ bool CSkillAction_ABC_ABYSS_FLAME_ATK::KeepSkillAttackMotion(int argument) {
 
 // OFFSET: 0x0077ACC0
 // FUNCTION: fn_08404
-std::pair<bool, int> CSkillActionMgr::ActionSlot01(int skillId) {
+std::pair<bool, int> CSkillActionMgr::GetSkillCastMotion(int skillId) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   return !action ? std::pair<bool, int>(false, 8) : std::pair<bool, int>(true, action->GetSkillCastMotion());
 }
@@ -982,7 +982,7 @@ vector3d CellWorldPosition(int column, int row) {
 
 // OFFSET: 0x0077AEA0
 // FUNCTION: fn_08406
-EfstActionMessage CSkillActionMgr::EfstSlot03(int efstId) {
+EfstActionMessage CSkillActionMgr::GetEfstBeginMessage(int efstId) {
   std::unique_ptr<CEfstAction> action(CreateAction(this->m_efstActions, efstId));
   if (!action) {
     return {nullptr, 0xFFFF00};
@@ -993,7 +993,7 @@ EfstActionMessage CSkillActionMgr::EfstSlot03(int efstId) {
 
 // OFFSET: 0x0077AF80
 // FUNCTION: fn_08407
-EfstActionMessage CSkillActionMgr::EfstSlot04(int efstId) {
+EfstActionMessage CSkillActionMgr::GetEfstEndMessage(int efstId) {
   std::unique_ptr<CEfstAction> action(CreateAction(this->m_efstActions, efstId));
   if (!action) {
     return {nullptr, 0xFF};
@@ -1004,7 +1004,7 @@ EfstActionMessage CSkillActionMgr::EfstSlot04(int efstId) {
 
 // OFFSET: 0x0077B060
 // FUNCTION: fn_08408
-int CSkillActionMgr::ActionSlot14(int skillId) {
+int CSkillActionMgr::GetSkillScopeType(int skillId) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return 0;
@@ -1015,25 +1015,25 @@ int CSkillActionMgr::ActionSlot14(int skillId) {
 
 // OFFSET: 0x0077B210
 // FUNCTION: fn_08409
-std::pair<bool, int> CSkillActionMgr::ActionSlot02(int skillId) {
+std::pair<bool, int> CSkillActionMgr::GetSkillAttackMotion(int skillId) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   return !action ? std::pair<bool, int>(false, 7) : std::pair<bool, int>(true, action->GetSkillAttackMotion());
 }
 
 // OFFSET: 0x0077B2E0
 // FUNCTION: fn_08410
-bool CSkillActionMgr::ActionSlot03(int skillId, int argument) {
+bool CSkillActionMgr::KeepSkillAttackMotion(int skillId, int skillMessageType) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
   }
 
-  return action->KeepSkillAttackMotion(argument);
+  return action->KeepSkillAttackMotion(skillMessageType);
 }
 
 // OFFSET: 0x0077B3A0
 // FUNCTION: fn_08411
-bool CSkillActionMgr::ActionSlot04(int skillId) {
+bool CSkillActionMgr::IsSkillWithoutMotion(int skillId) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
@@ -1531,7 +1531,7 @@ void CSkillAction_IQ_BLAZING_FLAME_BLAST::OnSkillEffect(int level, CGameActor* s
 
 // OFFSET: 0x0077B560
 // FUNCTION: fn_08414
-bool CSkillActionMgr::ActionSlot07(int skillId) {
+bool CSkillActionMgr::SuppressAttackSkillArrow(int skillId) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
@@ -1542,7 +1542,7 @@ bool CSkillActionMgr::ActionSlot07(int skillId) {
 
 // OFFSET: 0x0077B620
 // FUNCTION: fn_08415
-bool CSkillActionMgr::ActionSlot06(int skillId) {
+bool CSkillActionMgr::SuppressSupportSkillArrow(int skillId) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
@@ -1553,7 +1553,7 @@ bool CSkillActionMgr::ActionSlot06(int skillId) {
 
 // OFFSET: 0x0077B6E0
 // FUNCTION: fn_08416
-bool CSkillActionMgr::ActionSlot13(int skillId) {
+bool CSkillActionMgr::UseGroundSkillLastFrame(int skillId) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
@@ -1564,7 +1564,7 @@ bool CSkillActionMgr::ActionSlot13(int skillId) {
 
 // OFFSET: 0x0077B7A0
 // FUNCTION: fn_08417
-bool CSkillActionMgr::ActionSlot05(int skillId) {
+bool CSkillActionMgr::KeepSkillAttackSpeed(int skillId) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
@@ -1575,7 +1575,7 @@ bool CSkillActionMgr::ActionSlot05(int skillId) {
 
 // OFFSET: 0x0077B860
 // FUNCTION: fn_08418
-bool CSkillActionMgr::ActionSlot16(int skillId, int level, CGameActor* source, CGameActor* target) {
+bool CSkillActionMgr::OnSkillDamage(int skillId, int level, CGameActor* source, CGameActor* target) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
@@ -1587,19 +1587,19 @@ bool CSkillActionMgr::ActionSlot16(int skillId, int level, CGameActor* source, C
 
 // OFFSET: 0x0077B920
 // FUNCTION: fn_08419
-bool CSkillActionMgr::EfstSlot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+bool CSkillActionMgr::OnEfstBegin(int efstId, int value1, int value2, int value3, CRenderObject* actor, bool flag) {
   std::unique_ptr<CEfstAction> action(CreateAction(this->m_efstActions, efstId));
   if (!action) {
     return false;
   }
 
-  action->OnEfstBegin(efstId, value, argument3, argument4, actor, argument6);
+  action->OnEfstBegin(efstId, value1, value2, value3, actor, flag);
   return true;
 }
 
 // OFFSET: 0x0077B9F0
 // FUNCTION: fn_08420
-bool CSkillActionMgr::ActionSlot08(int skillId, int level, CGameActor* source) {
+bool CSkillActionMgr::OnSkillCast(int skillId, int level, CGameActor* source) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
@@ -1611,56 +1611,56 @@ bool CSkillActionMgr::ActionSlot08(int skillId, int level, CGameActor* source) {
 
 // OFFSET: 0x0077BAB0
 // FUNCTION: fn_08421
-bool CSkillActionMgr::ActionSlot09(int skillId, int argument1, int argument2, int argument3) {
+bool CSkillActionMgr::OnTargetSkillCast(int skillId, int source, int target, int delay) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
   }
 
-  action->OnTargetSkillCast(argument1, argument2, argument3);
+  action->OnTargetSkillCast(source, target, delay);
   return true;
 }
 
 // OFFSET: 0x0077BB70
 // FUNCTION: fn_08422
-bool CSkillActionMgr::ActionSlot10(int skillId, int level, CGameActor* source, short column, short row) {
+bool CSkillActionMgr::OnGroundSkillCast(int skillId, int castDelay, CGameActor* target, short column, short row) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
   }
 
   const vector3d position = CellWorldPosition(column, row);
-  action->OnGroundSkillCast(level, source, std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z));
+  action->OnGroundSkillCast(castDelay, target, std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z));
   return true;
 }
 
 // OFFSET: 0x0077BC60
 // FUNCTION: fn_08423
-bool CSkillActionMgr::EfstSlot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+bool CSkillActionMgr::OnEfstEnd(int efstId, int value1, int value2, int value3, CRenderObject* actor) {
   std::unique_ptr<CEfstAction> action(CreateAction(this->m_efstActions, efstId));
   if (!action) {
     return false;
   }
 
-  action->OnEfstEnd(efstId, argument2, argument3, argument4, actor);
+  action->OnEfstEnd(efstId, value1, value2, value3, actor);
   return true;
 }
 
 // OFFSET: 0x0077BD20
 // FUNCTION: fn_08424
-bool CSkillActionMgr::ActionSlot12(int skillId, int column, int row, int argument2, int argument3) {
+bool CSkillActionMgr::OnGroundSkillEffect(int skillId, int column, int row, int level, int actor) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
   }
 
-  action->OnGroundSkillEffect(CellWorldPosition(column, row), argument2, argument3);
+  action->OnGroundSkillEffect(CellWorldPosition(column, row), level, actor);
   return true;
 }
 
 // OFFSET: 0x0077BE10
 // FUNCTION: fn_08425
-bool CSkillActionMgr::ActionSlot15(int skillId, int level, CGameActor* source, CGameActor* target) {
+bool CSkillActionMgr::OnSkillHit(int skillId, int level, CGameActor* source, CGameActor* target) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
@@ -1672,19 +1672,19 @@ bool CSkillActionMgr::ActionSlot15(int skillId, int level, CGameActor* source, C
 
 // OFFSET: 0x0077BED0
 // FUNCTION: fn_08426
-bool CSkillActionMgr::EfstSlot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+bool CSkillActionMgr::OnEfstUpdate(int efstId, int value, int statusValue2, int statusValue3, CRenderObject* actor) {
   std::unique_ptr<CEfstAction> action(CreateAction(this->m_efstActions, efstId));
   if (!action) {
     return false;
   }
 
-  action->OnEfstUpdate(efstId, value, argument3, argument4, actor);
+  action->OnEfstUpdate(efstId, value, statusValue2, statusValue3, actor);
   return true;
 }
 
 // OFFSET: 0x0077BF90
 // FUNCTION: fn_08427
-bool CSkillActionMgr::ObjectSlot01(int skillId, CRenderObject* object) {
+bool CSkillActionMgr::OnSkillObjectRemove(int skillId, CRenderObject* object) {
   std::unique_ptr<CSkillObjectAction> action(CreateAction(this->m_skillObjectActions, skillId));
   if (!action) {
     return false;
@@ -1696,19 +1696,19 @@ bool CSkillActionMgr::ObjectSlot01(int skillId, CRenderObject* object) {
 
 // OFFSET: 0x0077C050
 // FUNCTION: fn_08428
-bool CSkillActionMgr::ObjectSlot00(int skillId, int argument, CRenderObject* object, CGameActor* source) {
+bool CSkillActionMgr::OnSkillObjectCreate(int skillId, int level, CRenderObject* object, CGameActor* source) {
   std::unique_ptr<CSkillObjectAction> action(CreateAction(this->m_skillObjectActions, skillId));
   if (!action) {
     return false;
   }
 
-  action->OnSkillObjectCreate(argument, object, source);
+  action->OnSkillObjectCreate(level, object, source);
   return true;
 }
 
 // OFFSET: 0x0077C110
 // FUNCTION: fn_08429
-bool CSkillActionMgr::ActionSlot11(int skillId, int level, CGameActor* source, CGameActor* target) {
+bool CSkillActionMgr::OnSkillEffect(int skillId, int level, CGameActor* source, CGameActor* target) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;

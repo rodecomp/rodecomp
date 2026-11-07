@@ -1124,7 +1124,7 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
       effectId = -1;
     }
     {
-      const std::pair<bool, int> action = CSkillActionMgr::GetInstance()->ActionSlot01(skillId);
+      const std::pair<bool, int> action = CSkillActionMgr::GetInstance()->GetSkillCastMotion(skillId);
       if (action.first == true) {
         motion = action.second;
       }
@@ -2256,7 +2256,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
     effectId = -1;
   }
 
-  const std::pair<bool, int> action = CSkillActionMgr::GetInstance()->ActionSlot02(skillId);
+  const std::pair<bool, int> action = CSkillActionMgr::GetInstance()->GetSkillAttackMotion(skillId);
   if (action.first == true) {
     motion = action.second;
   }

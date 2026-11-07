@@ -363,13 +363,13 @@ void CGrannyPc::SetSprWeapon2(int, int) {
 
 // OFFSET: 0x00DB3720
 // FUNCTION: fn_22648
-void CGrannyPc::SetSprWeapon(int first, int second) {
-  struct Slot23Pair {
-    int first;
-    int second;
+void CGrannyPc::SetSprWeapon(int weaponLow32, int weaponHigh32) {
+  struct WeaponValueParts {
+    int low32;
+    int high32;
   };
-  const Slot23Pair values = {first, second};
-  *reinterpret_cast<Slot23Pair*>(&this->unknown_0440) = values;
+  const WeaponValueParts values = {weaponLow32, weaponHigh32};
+  *reinterpret_cast<WeaponValueParts*>(&this->unknown_0440) = values;
 }
 
 // OFFSET: 0x00DB3C30
@@ -3816,7 +3816,7 @@ void CPlayer::ReapplySkillEffects() {
         this->ApplyEffectState(value + 0x9B5, true);
         break;
       default:
-        CSkillActionMgr::GetInstance()->EfstSlot02(type, value, argument3, argument4, this);
+        CSkillActionMgr::GetInstance()->OnEfstUpdate(type, value, argument3, argument4, this);
         break;
       }
       break;

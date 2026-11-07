@@ -1013,7 +1013,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     break;
   }
   default:
-    if (CSkillActionMgr::GetInstance()->ActionSlot13(skillId) == true) {
+    if (CSkillActionMgr::GetInstance()->UseGroundSkillLastFrame(skillId) == true) {
       this->render.previousAnimation = 0x58;
       CActRes* action = this->GetActRes();
       if (action != nullptr) {
@@ -3983,7 +3983,7 @@ bool CGameActor::IsSkillWithoutAction(int skillId) {
     return true;
   }
 
-  return CSkillActionMgr::GetInstance()->ActionSlot04(skillId);
+  return CSkillActionMgr::GetInstance()->IsSkillWithoutMotion(skillId);
 }
 
 // OFFSET: 0x00CCCAE0
@@ -5338,7 +5338,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     hitCount = 1;
   }
 
-  if (skillId == 2288 || skillId == 5316 || skillId == 5322 || CSkillActionMgr::GetInstance()->ActionSlot07(skillId)) {
+  if (skillId == 2288 || skillId == 5316 || skillId == 5322 || CSkillActionMgr::GetInstance()->SuppressAttackSkillArrow(skillId)) {
     this->SetArrowEffectSuppressed(true);
   }
 
@@ -5445,7 +5445,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   int castEffect;
   int motion;
   g_session.GetSkillActionInfo2(skillId, castEffect, motion);
-  if (skillId != 2256 && skillId != 2257 && skillId != 490 && skillId != 3009 && !CSkillActionMgr::GetInstance()->ActionSlot05(skillId)) {
+  if (skillId != 2256 && skillId != 2257 && skillId != 490 && skillId != 3009 && !CSkillActionMgr::GetInstance()->KeepSkillAttackSpeed(skillId)) {
     this->SetModifyFactorOfmotionSpeed(attackSpeed);
   }
 
@@ -5470,7 +5470,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     keepMotion = type == 8;
     break;
   default:
-    keepMotion = CSkillActionMgr::GetInstance()->ActionSlot03(skillId, type);
+    keepMotion = CSkillActionMgr::GetInstance()->KeepSkillAttackMotion(skillId, type);
     break;
   }
   if (!keepMotion) {
@@ -5488,7 +5488,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     g_session.PlaySkillEffect(skillId, hitCount, this, static_cast<CGameActor*>(target));
   }
 
-  if (target != nullptr && target != this && !CSkillActionMgr::GetInstance()->ActionSlot03(skillId, type) && this->render.unknown_0070 != 9 &&
+  if (target != nullptr && target != this && !CSkillActionMgr::GetInstance()->KeepSkillAttackMotion(skillId, type) && this->render.unknown_0070 != 9 &&
       this->render.unknown_0070 != 2) {
     this->Face(targetPos.x, targetPos.z);
   }

@@ -1789,7 +1789,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           if (this->render.angle > 360.0f) {
             this->render.angle -= 360.0f;
           }
-        } else if (!CSkillActionMgr::GetInstance()->ActionSlot16(damageMessage->unknown_0030, reinterpret_cast<int>(attacker), this, reinterpret_cast<CGameActor*>(damageMessage->unknown_0034))) {
+        } else if (!CSkillActionMgr::GetInstance()->OnSkillDamage(damageMessage->unknown_0030, reinterpret_cast<int>(attacker), this, reinterpret_cast<CGameActor*>(damageMessage->unknown_0034))) {
           if (g_effectMgr->Spawn(this->render.accountId, skillEffect, offset.x, offset.y, offset.z, 0, -1, 0, 0) == nullptr) {
             CRagEffect* effect = this->LaunchEffect(skillEffect, offset, 0.0f);
             if (effect != nullptr) {
@@ -4302,9 +4302,9 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     default:
       if (on == true) {
-        CSkillActionMgr::GetInstance()->EfstSlot00(b, f, h, l, this, (static_cast<std::int64_t>(k) << 32 | static_cast<std::uint32_t>(j)) != 0);
+        CSkillActionMgr::GetInstance()->OnEfstBegin(b, f, h, l, this, (static_cast<std::int64_t>(k) << 32 | static_cast<std::uint32_t>(j)) != 0);
       } else {
-        CSkillActionMgr::GetInstance()->EfstSlot01(b, f, h, l, this);
+        CSkillActionMgr::GetInstance()->OnEfstEnd(b, f, h, l, this);
       }
       break;
     }

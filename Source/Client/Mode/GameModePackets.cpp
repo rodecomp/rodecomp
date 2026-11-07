@@ -2944,7 +2944,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     targetSkill = nullptr;
   }
 
-  CSkillActionMgr::GetInstance()->ActionSlot15(
+  CSkillActionMgr::GetInstance()->OnSkillHit(
     skillId, reinterpret_cast<int>(source), target, static_cast<CGameActor*>(targetSkill)
   );
 
@@ -5854,7 +5854,7 @@ void CGameMode::ApplyStatusChange(
         return;
       }
       {
-        const EfstActionMessage action = CSkillActionMgr::GetInstance()->EfstSlot03(type);
+        const EfstActionMessage action = CSkillActionMgr::GetInstance()->GetEfstBeginMessage(type);
         if (action.text) {
           color = action.color;
           StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", action.text);
@@ -11166,7 +11166,7 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
 // OFFSET: 0x00D5E930
 // FUNCTION: fn_21967
 void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* target, std::uint32_t targetAid, std::uint16_t skillId, short x, short y, int delay) {
-  CSkillActionMgr::GetInstance()->ActionSlot10(skillId, delay, target, x, y);
+  CSkillActionMgr::GetInstance()->OnGroundSkillCast(skillId, delay, target, x, y);
 
   if (targetAid == 0) {
     float worldX = 0.0f;
@@ -11425,7 +11425,7 @@ void CGameMode::NotifySkillCasting(
       g_effectMgr->Spawn(source->render.accountId, 0x7C4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
 
-    CSkillActionMgr::GetInstance()->ActionSlot09(skillId, reinterpret_cast<int>(source), reinterpret_cast<int>(target), delay);
+    CSkillActionMgr::GetInstance()->OnTargetSkillCast(skillId, reinterpret_cast<int>(source), reinterpret_cast<int>(target), delay);
     if (delay == 0) {
       return;
     }
@@ -16047,7 +16047,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
 
   switch (skillId) {
   default: {
-    if (CSkillActionMgr::GetInstance()->ActionSlot08(skillId, delay, actor) == true) {
+    if (CSkillActionMgr::GetInstance()->OnSkillCast(skillId, delay, actor) == true) {
       return;
     }
 
@@ -16864,7 +16864,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         } else {
           if (motion == 2 || motion == 9) {
             source->SendMsg(nullptr, 0x51, 0, targetAid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-            if (CSkillActionMgr::GetInstance()->ActionSlot06(skillId)) {
+            if (CSkillActionMgr::GetInstance()->SuppressSupportSkillArrow(skillId)) {
               source->SetArrowEffectSuppressed(true);
             }
           }
@@ -20087,7 +20087,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   default:
     LaunchLuaSkillEffect(skillId, level, source, target);
-    CSkillActionMgr::GetInstance()->ActionSlot11(skillId, level, source, target);
+    CSkillActionMgr::GetInstance()->OnSkillEffect(skillId, level, source, target);
     break;
   }
 }

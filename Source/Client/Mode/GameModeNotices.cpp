@@ -4258,7 +4258,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       g_effectMgr->Spawn(actor->render.accountId, 0x4D0, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
       break;
     default:
-      CSkillActionMgr::GetInstance()->ActionSlot12(*reinterpret_cast<const std::uint16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 0xA),
+      CSkillActionMgr::GetInstance()->OnGroundSkillEffect(*reinterpret_cast<const std::uint16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 0xA),
                                                    *reinterpret_cast<const std::int16_t*>(packet + 0xC), *reinterpret_cast<const std::int16_t*>(packet + 8),
                                                    reinterpret_cast<int>(actor));
       break;
@@ -7022,7 +7022,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     default:
       if (CSkillActionMgr::GetInstance()->HasEfstAction(packet->type) == true) {
-        const EfstActionMessage action = CSkillActionMgr::GetInstance()->EfstSlot04(packet->type);
+        const EfstActionMessage action = CSkillActionMgr::GetInstance()->GetEfstEndMessage(packet->type);
         if (action.text) {
           color = action.color;
           StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", action.text);
