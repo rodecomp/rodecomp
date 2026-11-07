@@ -67,11 +67,11 @@ bool CWebBrowser::Navigate(std::string address) {
   }
 
   const auto length = address.size();
-  auto converted = std::make_unique_for_overwrite<wchar_t[]>(length + 1);
-  MultiByteToWideChar(CP_ACP, 0, address.c_str(), -1, converted.get(), static_cast<int>(length));
+  wchar_t* converted = new wchar_t[length + 1];
+  MultiByteToWideChar(CP_ACP, 0, address.c_str(), -1, converted, static_cast<int>(length));
   converted[length] = L'\0';
-  BSTR url = SysAllocString(converted.get());
-  converted.reset();
+  BSTR url = SysAllocString(converted);
+  delete[] converted;
 
   VARIANT optional;
   VariantInit(&optional);
