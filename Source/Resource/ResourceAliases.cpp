@@ -55,7 +55,7 @@ void ResourceAliases::Load(int) {
   }
 
   const std::uint32_t bytes = file.GetSize();
-  auto* contents = static_cast<char*>(std::malloc(bytes + 1));
+  auto* contents = new char[bytes + 1];
   file.Read(contents, bytes);
   contents[bytes] = '\0';
   file.Close();
@@ -82,6 +82,6 @@ void ResourceAliases::Load(int) {
   }
 
   if (contents) {
-    std::free(contents);
+    delete[] contents;
   }
 }
