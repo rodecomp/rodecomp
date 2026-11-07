@@ -169,6 +169,8 @@ void DestroyNavigationLinkParser() {
 static const std::string g_parserMessageTag = "<MSG>";
 // GLOBAL: gl_25507
 static const std::string g_parserMessageCloseTag = "</MSG>";
+// STRING: st_13792
+static const std::string g_parserMessageIdPrefix = "MSI_";
 // STRING: st_13793
 static const std::string g_parserLineBreakTag = "<NR>";
 // GLOBAL: gl_25498
@@ -238,18 +240,18 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
 
     const std::size_t begin = work.find(g_parserMessageTag);
     if (begin == std::string::npos) {
-      return text;
+      break;
     }
 
     work = work.substr(begin + std::strlen(g_parserMessageTag.c_str()));
     const std::size_t end = work.find(g_parserMessageCloseTag);
     if (end == std::string::npos) {
-      return text;
+      break;
     }
 
     work = work.substr(0, end);
     int messageId;
-    if (work.find("MSI_") != std::string::npos) {
+    if (work.find(g_parserMessageIdPrefix) != std::string::npos) {
       messageId = FindMessageId(work.c_str());
     } else {
       messageId = std::atoi(work.c_str());
@@ -263,7 +265,8 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
       work = expanded;
     }
     const std::string head = work.substr(0, begin);
-    const std::string tail = work.substr(work.find(g_parserMessageCloseTag) + std::strlen(g_parserMessageCloseTag.c_str()));
+    const std::size_t close = work.find(g_parserMessageCloseTag);
+    const std::string tail = work.substr(close + std::strlen(g_parserMessageCloseTag.c_str()));
     expanded.clear();
     expanded += head;
     expanded += message;
@@ -273,6 +276,8 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
       return expanded;
     }
   }
+
+  return text;
 }
 
 // OFFSET: 0x00833160
