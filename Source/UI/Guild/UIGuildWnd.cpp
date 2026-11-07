@@ -213,14 +213,8 @@ void UIGuildSkillWnd::Slot33(int, int) {
 // FUNCTION: fn_13111
 void UIGuildBanishedMemberWnd::Slot35(int delta) {
   if (this->m_scrollable != 0) {
-    int step = this->m_visibleRows - 1;
-    if (step > 3) {
-      step = 3;
-    }
-    if (delta >= 0) {
-      step = -step;
-    }
-    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+    const int step = std::min(this->m_visibleRows - 1, 3);
+    this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
   }
 }
 
@@ -228,14 +222,8 @@ void UIGuildBanishedMemberWnd::Slot35(int delta) {
 // FUNCTION: fn_13112
 void UIGuildMemberManageWnd::Slot35(int delta) {
   if (this->m_scrollable != 0) {
-    int step = this->m_visibleRows - 1;
-    if (step > 3) {
-      step = 3;
-    }
-    if (delta >= 0) {
-      step = -step;
-    }
-    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+    const int step = std::min(this->m_visibleRows - 1, 3);
+    this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
   }
 }
 
@@ -243,14 +231,8 @@ void UIGuildMemberManageWnd::Slot35(int delta) {
 // FUNCTION: fn_13113
 void UIGuildPositionManageWnd::Slot35(int delta) {
   if (this->m_scrollable != 0) {
-    int step = this->m_visibleRows - 1;
-    if (step > 3) {
-      step = 3;
-    }
-    if (delta >= 0) {
-      step = -step;
-    }
-    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+    const int step = std::min(this->m_visibleRows - 1, 3);
+    this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
   }
 }
 
@@ -258,14 +240,8 @@ void UIGuildPositionManageWnd::Slot35(int delta) {
 // FUNCTION: fn_13114
 void UIGuildSkillWnd::Slot35(int delta) {
   if (this->m_scrollable != 0) {
-    int step = this->m_visibleRows - 1;
-    if (step > 3) {
-      step = 3;
-    }
-    if (delta >= 0) {
-      step = -step;
-    }
-    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+    const int step = std::min(this->m_visibleRows - 1, 3);
+    this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
   }
 }
 
@@ -273,14 +249,8 @@ void UIGuildSkillWnd::Slot35(int delta) {
 // FUNCTION: fn_13115
 void UIGuildTotalInfoWnd::Slot35(int delta) {
   if (this->m_scrollable != 0) {
-    int step = this->m_visibleRows - 1;
-    if (step > 3) {
-      step = 3;
-    }
-    if (delta >= 0) {
-      step = -step;
-    }
-    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+    const int step = std::min(this->m_visibleRows - 1, 3);
+    this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
   }
 }
 
@@ -790,11 +760,7 @@ int UIGuildBanishedMemberWnd::SendMsg(UIWindow* sender, int message, std::intptr
     if (message == 9) {
       top = previous - this->m_visibleRows + 1;
     } else {
-      top = a1;
-      if (message == 10) {
-        top = this->m_visibleRows - 1;
-      }
-      top += previous;
+      top = (message == 10 ? this->m_visibleRows - 1 : a1) + previous;
     }
     this->m_scrollTop = top;
     if (previous != top) {
@@ -895,11 +861,7 @@ int UIGuildTotalInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1
     if (message == 9) {
       top = previous - this->m_visibleRows + 1;
     } else {
-      top = a1;
-      if (message == 10) {
-        top = this->m_visibleRows - 1;
-      }
-      top += previous;
+      top = (message == 10 ? this->m_visibleRows - 1 : a1) + previous;
     }
     this->m_scrollTop = top;
     if (previous != top) {
@@ -1123,11 +1085,14 @@ int UIGuildLeaveReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intpt
     return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
   }
 
-  if (a1 == 184) {
+  switch (a1) {
+  case 184:
     g_modeMgr.gameMode->SendMsg(110, reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0, 0);
     g_windowMgr.CloseWindow(75);
-  } else if (a1 == 185) {
+    break;
+  case 185:
     g_windowMgr.CloseWindow(75);
+    break;
   }
 
   return 0;
@@ -2041,10 +2006,13 @@ void UIGuildNoticeWnd::Slot15(int, int) {
 // OFFSET: 0x00963BF0
 // FUNCTION: fn_13130
 int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
-  if (message == 6) {
-    if (a1 == 201) {
+  switch (message) {
+  case 6:
+    switch (a1) {
+    case 201:
       g_windowMgr.CloseWindow(59);
-    } else if (a1 == 277) {
+      break;
+    case 277: {
       std::string body(this->m_bodyEdit->Text());
       if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true || g_forbiddenWords.Contains(body.c_str()) == true) {
         g_windowMgr.Confirm(LookupMessage(14), 0, true, false, 0, "Message", 280, 120, 0);
@@ -2054,10 +2022,14 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
         }
         this->InvalidateChildren();
       }
+      break;
     }
-  } else if (message == 60) {
+    }
+    break;
+  case 60:
     this->InvalidateChildren();
-  } else {
+    break;
+  default:
     return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
   }
 
