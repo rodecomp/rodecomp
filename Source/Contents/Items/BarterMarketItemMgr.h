@@ -88,7 +88,7 @@ struct BarterMarketEntry {
 
   // OFFSET: 0x00AE7450
   // FUNCTION: fn_18073
-  BarterMarketEntry() {}
+  __declspec(noinline) BarterMarketEntry() {}
 
   // OFFSET: 0x005D8DA0
   // FUNCTION: fn_03752
