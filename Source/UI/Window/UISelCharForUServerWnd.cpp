@@ -53,7 +53,7 @@ UISelCharForUServerWnd::UISelCharForUServerWnd()
 
 // OFFSET: 0x00928A60
 // FUNCTION: fn_12652
-void UISelCharForUServerWnd::Slot15(int, int) {
+void UISelCharForUServerWnd::OnCreate(int, int) {
   {
     std::string path = "유저인터페이스\\";
     this->unknown_19E4 = new UIBitmapButton();
@@ -185,9 +185,9 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
 // OFFSET: 0x00932B40
 // FUNCTION: fn_12714
-void UISelCharForUServerWnd::Slot27(int x, int y) {
+void UISelCharForUServerWnd::OnMouseMove(int x, int y) {
   this->UpdateCharInfoBalloon(x, y, static_cast<std::uint32_t>(-1));
-  UIFrameWnd::Slot27(x, y);
+  UIFrameWnd::OnMouseMove(x, y);
 }
 
 // OFFSET: 0x0093F1F0

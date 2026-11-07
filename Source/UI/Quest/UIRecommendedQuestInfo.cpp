@@ -14,18 +14,18 @@
 
 // OFFSET: 0x00A568E0
 // FUNCTION: fn_16321
-void CUIRecommendedQuestInfo::Slot53() {
+void CUIRecommendedQuestInfo::Initialize() {
   this->unknown_00B4 = 0;
   this->m_resolveSkin = true;
   this->Resize(342, 412);
   this->Move(0, 0);
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
 }
 
 // OFFSET: 0x00A570F0
 // FUNCTION: fn_16323
-void CUIRecommendedQuestInfo::Slot15(int width, int height) {
+void CUIRecommendedQuestInfo::OnCreate(int width, int height) {
   this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(342, 17);
   this->titleBar->Move(0, 0);
@@ -113,7 +113,7 @@ void CUIRecommendedQuestInfo::OnClose() {
 
 // OFFSET: 0x00A58BE0
 // FUNCTION: fn_16349
-void CUIRecommendedQuestInfo::Slot16() {
+void CUIRecommendedQuestInfo::OnInit() {
   const char* title = LookupMessage(0xD48);
   this->titleBar->SetTitle(title);
   UIWindow* window = g_windowMgr.LookupWindow(0x2718);
@@ -134,12 +134,12 @@ void CUIQuestInfo::Paint() {
 
 // OFFSET: 0x00A58BD0
 // FUNCTION: fn_16348
-void CUIQuestInfo::Slot16() {
+void CUIQuestInfo::OnInit() {
 }
 
 // OFFSET: 0x00A569F0
 // FUNCTION: fn_16322
-void CUIQuestInfo::Slot15(int width, int height) {
+void CUIQuestInfo::OnCreate(int width, int height) {
   this->textViewer = new CUITextViewer();
   this->textViewer->SetSize(300, 150);
   this->textViewer->Move(0, 0);
@@ -167,7 +167,7 @@ void CUIQuestInfo::Slot15(int width, int height) {
 
 // OFFSET: 0x00A57EF0
 // FUNCTION: fn_16324
-void CUIScrollWindow::Slot15(int width, int height) {
+void CUIScrollWindow::OnCreate(int width, int height) {
   this->background = new CUIStaticImage();
   this->background->SetSize(336, 318);
   this->background->Move(3, 2);
@@ -215,7 +215,7 @@ void CUIScrollWindow::Slot15(int width, int height) {
 
 // OFFSET: 0x00A58C70
 // FUNCTION: fn_16350
-void CUIScrollWindow::Slot16() {
+void CUIScrollWindow::OnInit() {
   this->npcSprite = new UINpcSprWnd();
   this->npcSprite->SetSize(75, 145);
   this->npcSprite->Show(0);

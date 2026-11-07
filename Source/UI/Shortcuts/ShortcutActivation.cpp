@@ -6,7 +6,7 @@
 
 // OFFSET: 0x00930900
 // FUNCTION: fn_12689
-void UIShortCutWnd::Slot26(int x, int y) {
+void UIShortCutWnd::OnLBtnDblClk(int x, int y) {
   const int column = this->m_grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
   if (column == -1) {
     return;

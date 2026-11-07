@@ -21,7 +21,7 @@
 
 // OFFSET: 0x008D0D80
 // FUNCTION: fn_12090
-void UISkillDescribeWnd::Slot43() {
+void UISkillDescribeWnd::DrawTransBox() {
   int x = 0;
   int y = 0;
   this->ToScreen(x, y);
@@ -29,7 +29,7 @@ void UISkillDescribeWnd::Slot43() {
 
 // OFFSET: 0x008D0DB0
 // FUNCTION: fn_12091
-void UIWhisperWnd::Slot43() {
+void UIWhisperWnd::DrawTransBox() {
   int x = 0;
   int y = 0;
   this->ToScreen(x, y);

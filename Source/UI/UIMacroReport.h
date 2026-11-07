@@ -31,9 +31,9 @@ public:
 
   __declspec(noinline) CUIMacroReport();
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
-  void Slot53() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
+  void Initialize() override;
 
   void OnButtonClick();
   void OnEditSubmit();

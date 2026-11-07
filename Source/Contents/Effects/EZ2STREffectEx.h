@@ -10,22 +10,22 @@ struct EZ2STREmitter;
 class CEZ2STREffectEx : public CEffect {
 public:
   CEZ2STREffectEx();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
-  void Slot14(int argument) override;
-  void Slot16(int argument) override;
-  void Slot17(float argument) override;
-  void Slot18(float argument) override;
-  void Slot19(float argument) override;
-  void Slot22(float argument) override;
-  void Slot23(float argument) override;
-  void Slot26(int argument) override;
-  void Slot27(int argument) override;
-  void Slot31() override;
-  void Slot32() override;
+  bool IsAlive() override;
+  void SetLifeTime(int argument) override;
+  void SetDelay(int argument) override;
+  void SetAngle(float argument) override;
+  void SetPitch(float argument) override;
+  void SetYaw(float argument) override;
+  void SetScale(float argument) override;
+  void SetAlpha(float argument) override;
+  void SetFlipX(int argument) override;
+  void SetFlipY(int argument) override;
+  void EnableTimeLimit() override;
+  void EnableGroundRender() override;
 
   bool IsFinished();
   void EndLoop(unsigned char fadeOut);

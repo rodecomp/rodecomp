@@ -15,8 +15,8 @@ public:
 
   void SetOnCheck(std::function<void(bool)> callback);
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot31(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
 };
 
 class CUIRadioButton : public CUICheckBox {
@@ -25,7 +25,7 @@ public:
 
   CUIRadioButton();
   void SetOnSelect(std::function<void(CUIRadioButton*)> callback);
-  void Slot25(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
 };
 
 class CUIRadioItem : public CUIControl {

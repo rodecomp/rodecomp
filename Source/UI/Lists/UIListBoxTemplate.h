@@ -18,10 +18,10 @@ public:
   __declspec(noinline) CUIListItem();
   ~CUIListItem() override;
 
-  void Slot25(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot47() override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnMouseEnter() override;
   void Paint() override;
   virtual void SetSelected(bool selected);
   virtual void SetHighlighted(bool highlighted);
@@ -49,8 +49,8 @@ class CUIPage;
 class CUISubTab : public CUIListItem {
 public:
   CUISubTab();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
 
   /* 00E8 */ CUIStaticText* unknown_00E8;
   /* 00EC */ CUIStaticImage* unknown_00EC;
@@ -61,8 +61,8 @@ public:
 class CUITab : public CUIListItem {
 public:
   CUITab();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void SetSelected(bool selected) override;
 
   void OnSelectSubTab(CUISubTab* subTab);
@@ -79,9 +79,9 @@ public:
 class CUIItemInfo : public CUIListItem {
 public:
   CUIItemInfo();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
-  void Slot32(int x, int y) override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
+  void OnRBtnDown(int x, int y) override;
 
   void SetDescription(int type, const std::vector<const char*>& description);
 
@@ -104,8 +104,8 @@ public:
 class CUIMonsterInfo : public CUIListItem {
 public:
   CUIMonsterInfo();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
   void SetMonster(const std::string& title);
 
@@ -119,8 +119,8 @@ public:
 class CUIQuestInfo : public CUIListItem {
 public:
   CUIQuestInfo();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void SetTitle(int id);
   void SetTip(int id);
   void SetStatusLines(bool first, bool second, bool third);
@@ -137,8 +137,8 @@ public:
 class CUITabInfo : public CUIListItem {
 public:
   CUITabInfo();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
 
   /* 00E8 */ CUIStaticText* unknown_00E8;
   /* 00EC */ CUIStaticText* unknown_00EC;
@@ -193,7 +193,7 @@ public:
   }
   ~CUIListBox() override;
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   // OFFSET: 0x009D23B0
   // FUNCTION: fn_14011
   // OFFSET: 0x009D23C0
@@ -206,11 +206,11 @@ public:
   // FUNCTION: fn_14017
   // OFFSET: 0x009D2450
   // FUNCTION: fn_14018
-  void Slot35(int value) override {
+  void OnWheel(int value) override {
     if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-      this->scrollBar->Slot35(value);
+      this->scrollBar->OnWheel(value);
     } else if (this->parent) {
-      this->parent->Slot35(value);
+      this->parent->OnWheel(value);
     }
   }
 
@@ -244,7 +244,7 @@ public:
     this->scrollBar->SetPosition(this->scrollBar->position);
   }
 
-  void Slot53(int resolveSkin) override;
+  void LoadSkin(int resolveSkin) override;
 
   void SelectItem(CUIListItem* item);
   T* CreateItem();
@@ -260,7 +260,7 @@ public:
     this->imageNames[1] = hover;
     this->imageNames[2] = pressed;
     this->disabledName = disabled;
-    this->Slot53(0);
+    this->LoadSkin(0);
     this->Invalidate();
   }
 
@@ -290,7 +290,7 @@ template <class T, class D> class CUIListBoxEx : public CUIControl {
 public:
   CUIListBoxEx();
   ~CUIListBoxEx() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   // OFFSET: 0x00A01E70
   // FUNCTION: fn_14832
   // OFFSET: 0x00A01E80
@@ -311,11 +311,11 @@ public:
   // FUNCTION: fn_15038
   // OFFSET: 0x00A638A0
   // FUNCTION: fn_16438
-  void Slot35(int value) override {
+  void OnWheel(int value) override {
     if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-      this->scrollBar->Slot35(value);
+      this->scrollBar->OnWheel(value);
     } else if (this->parent) {
-      this->parent->Slot35(value);
+      this->parent->OnWheel(value);
     }
   }
 
@@ -341,7 +341,7 @@ public:
   void Resize(int width, int height) override {
     UIWindow::Resize(width, height);
   }
-  void Slot53(int resolveSkin) override {
+  void LoadSkin(int resolveSkin) override {
     (void)resolveSkin;
   }
 
@@ -384,7 +384,7 @@ public:
     this->imageNames[1] = hover;
     this->imageNames[2] = pressed;
     this->disabledName = disabled;
-    this->Slot53(0);
+    this->LoadSkin(0);
     this->Invalidate();
   }
 

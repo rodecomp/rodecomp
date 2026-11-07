@@ -18,10 +18,10 @@ public:
   /* 00F0 */ std::uint32_t evenRowColor;
   /* 00F4 */ std::uint32_t oddRowColor;
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
-  void Slot53(int resolveSkin) override;
+  void LoadSkin(int resolveSkin) override;
 };
 }
 
@@ -34,11 +34,11 @@ public:
   /* 00E4 */ CUIResizer* resizer;
   /* 00E8 */ int currentTab;
 
-  bool Slot02() override;
-  bool Slot03() override;
-  bool Slot08() override;
-  void Slot15(int width, int height) override;
-  virtual void Slot53();
+  bool IsFrameWnd() override;
+  bool NeedsFrameRefresh() override;
+  bool IsTransmitMouseInput() override;
+  void OnCreate(int width, int height) override;
+  virtual void Initialize();
   void Grow(int width, int height) override;
   void Paint() override;
   void OnClickButton1();
@@ -53,7 +53,7 @@ public:
   void OnClickClose();
   void OnSelectLine(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* line, const std::string& text);
   void BindLine(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* line, const std::string& text);
-  void Slot16() override;
+  void OnInit() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SetTab(const int& tab);
   void OnChangeTab(CUITabButton* button);
@@ -64,13 +64,13 @@ CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string
 template <>
 CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::~CUIListBoxEx();
 template <>
-void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot15(int width, int height);
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::OnCreate(int width, int height);
 template <>
 void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::AddNewItem();
 template <>
 void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Resize(int width, int height);
 template <>
-void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot53(int resolveSkin);
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::LoadSkin(int resolveSkin);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine) == 0xF8);

@@ -9,7 +9,7 @@ public:
   CEmblemRes();
   CEmblemRes(const char* extension, const char* prefix);
   ~CEmblemRes() override;
-  void Slot02() override;
+  void OnProcess() override;
   bool IsTransient() override;
   CEmblemRes* Create() override;
   bool Load(const char* name) override;

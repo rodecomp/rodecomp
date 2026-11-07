@@ -19,7 +19,7 @@
 
 // OFFSET: 0x00829B50
 // FUNCTION: fn_10341
-void UIStylingshopTabParentWnd::Slot15(int, int) {
+void UIStylingshopTabParentWnd::OnCreate(int, int) {
 }
 
 // OFFSET: 0x00829B60
@@ -119,7 +119,7 @@ void UIStylingshopTabParentWnd::Paint() {
 
 // OFFSET: 0x0082A0A0
 // FUNCTION: fn_10353
-void UISlotForSelectWnd::Slot26(int, int) {
+void UISlotForSelectWnd::OnLBtnDblClk(int, int) {
   if (this->parent) {
     this->parent->SendMsg(nullptr, 121, 0, 0, 0, 0);
   }
@@ -127,15 +127,15 @@ void UISlotForSelectWnd::Slot26(int, int) {
 
 // OFFSET: 0x0082A0C0
 // FUNCTION: fn_10354
-void UI2ndCostumeCheckBox::Slot25(int x, int y) {
+void UI2ndCostumeCheckBox::OnLBtnDown(int x, int y) {
   if (this->m_disabled == 0 && this->geometry.unknown_0030 != 1) {
-    UICheckBox::Slot25(x, y);
+    UICheckBox::OnLBtnDown(x, y);
   }
 }
 
 // OFFSET: 0x0082A0E0
 // FUNCTION: fn_10355
-void UISlotForSelectWnd::Slot25(int x, int y) {
+void UISlotForSelectWnd::OnLBtnDown(int x, int y) {
   if (this->parent) {
     this->parent->SendMsg(nullptr, 6, this->geometry.id, x, y, 0);
   }
@@ -143,7 +143,7 @@ void UISlotForSelectWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x0082A110
 // FUNCTION: fn_10356
-void UIStylingShopButton::Slot31(int, int) {
+void UIStylingShopButton::OnLBtnUp(int, int) {
   if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
     return;
   }
@@ -178,7 +178,7 @@ void UIStylingShopButton::Slot31(int, int) {
 
 // OFFSET: 0x0082A1C0
 // FUNCTION: fn_10357
-void UIStylingShopButton::Slot28(int, int) {
+void UIStylingShopButton::OnMouseHover(int, int) {
   if (!this->m_names[1].empty()) {
     return;
   }
@@ -191,7 +191,7 @@ void UIStylingShopButton::Slot28(int, int) {
 
 // OFFSET: 0x0082A210
 // FUNCTION: fn_10358
-void UIStylingShopButton::Slot27(int x, int y) {
+void UIStylingShopButton::OnMouseMove(int x, int y) {
   if (this->m_disabled == 0 && g_windowMgr.Capture() == this && x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height &&
       this->geometry.unknown_0030 != 2) {
     this->geometry.unknown_0030 = 2;
@@ -201,7 +201,7 @@ void UIStylingShopButton::Slot27(int x, int y) {
 
 // OFFSET: 0x0082A270
 // FUNCTION: fn_10359
-void UIStylingShopWnd::Slot19() {
+void UIStylingShopWnd::OnProcess() {
   for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
     int id = it->first->geometry.id;
     if (id == 200) {
@@ -222,7 +222,7 @@ void UIStylingShopWnd::Slot19() {
 
 // OFFSET: 0x0082A330
 // FUNCTION: fn_10360
-void UIAccBitmapButton::Slot33(int, int) {
+void UIAccBitmapButton::OnRBtnUp(int, int) {
   this->parent->SendMsg(this, 101, this->geometry.id, this->m_argument, 0, 0);
 }
 
@@ -1538,7 +1538,7 @@ void UIStylingShopWnd::AddTab(const char* normal, const char* hover, const char*
 
 // OFFSET: 0x00829220
 // FUNCTION: fn_10339
-void UISlotOfMyStyleWnd::Slot15(int, int) {
+void UISlotOfMyStyleWnd::OnCreate(int, int) {
   UIDisplayCharacter* display = new (std::nothrow) UIDisplayCharacter();
   if (display) {
     *reinterpret_cast<unsigned char*>(&display->unknown_00B0) = 1;
@@ -1562,7 +1562,7 @@ void UISlotOfMyStyleWnd::Slot15(int, int) {
 
 // OFFSET: 0x008294D0
 // FUNCTION: fn_10340
-void UIStylingShopWnd::Slot15(int, int) {
+void UIStylingShopWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
 
   UIBasicStylingWnd* basic = new (std::nothrow) UIBasicStylingWnd();
@@ -1635,7 +1635,7 @@ void UIDisplayCharacter::Paint() {
   FuncDrawWNDChar draw(
     this, this->geometry.width / 2, this->geometry.height - 33, static_cast<unsigned char>(player->unknown_0260), static_cast<short>(player->GetEffectiveJob(-1)),
     player->unknown_04D4, static_cast<short>(this->job), static_cast<short>(this->unknown_008C), static_cast<short>(this->unknown_00A4),
-    static_cast<short>(this->unknown_009C), static_cast<short>(this->unknown_00A0), this->unknown_0088, player->unknown_02CC, player->Slot56(),
+    static_cast<short>(this->unknown_009C), static_cast<short>(this->unknown_00A0), this->unknown_0088, player->unknown_02CC, player->GetMadogearType(),
     g_session.GetBodyStyle(player->GetEffectiveJob(-1), this->unknown_0098, this->job), this->unknown_0094, this->unknown_0084, 0, this->unknown_00A8
   );
   draw.Draw(false);
@@ -2158,7 +2158,7 @@ void UIMyStyleWnd::LoadLikeList() {
 
 // OFFSET: 0x00828CA0
 // FUNCTION: fn_10337
-void UIMyStyleWnd::Slot15(int, int) {
+void UIMyStyleWnd::OnCreate(int, int) {
   this->LoadLikeList();
 
   UISlotForSelectWnd* select = new UISlotForSelectWnd();
@@ -2210,7 +2210,7 @@ void UIMyStyleWnd::Slot15(int, int) {
 }
 // OFFSET: 0x008280F0
 // FUNCTION: fn_10333
-void UIAccessoryCusWnd::Slot15(int, int) {
+void UIAccessoryCusWnd::OnCreate(int, int) {
   this->m_display = new (std::nothrow) UIDisplayCharacter();
   this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
                            static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
@@ -2310,7 +2310,7 @@ void UIDisplayCharacter::CreateButtons() {
 
 // OFFSET: 0x00828B90
 // FUNCTION: fn_10336
-void UIDisplayCharacter::Slot15(int width, int height) {
+void UIDisplayCharacter::OnCreate(int width, int height) {
   this->Resize(width, height);
   this->unknown_00A8 = timeGetTime();
   if (!*reinterpret_cast<unsigned char*>(&this->unknown_00B0)) {
@@ -2331,7 +2331,7 @@ void UIDisplayCharacter::Slot15(int width, int height) {
 
 // OFFSET: 0x00829080
 // FUNCTION: fn_10338
-void UIShowInfoWnd::Slot15(int, int) {
+void UIShowInfoWnd::OnCreate(int, int) {
   for (int i = 0; i < 8; ++i) {
     this->m_checks[i] = new (std::nothrow) UICheckBox();
     this->m_checks[i]->SetSize(17, 13);
@@ -2356,7 +2356,7 @@ void UIShowInfoWnd::Slot15(int, int) {
 
 // OFFSET: 0x00827D00
 // FUNCTION: fn_10332
-void UI2ndCostumeWnd::Slot15(int, int) {
+void UI2ndCostumeWnd::OnCreate(int, int) {
   this->m_display = new (std::nothrow) UIDisplayCharacter();
   this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
                            static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
@@ -2405,7 +2405,7 @@ void UI2ndCostumeWnd::Slot15(int, int) {
 
 // OFFSET: 0x00828380
 // FUNCTION: fn_10334
-void UIBasicStylingWnd::Slot15(int, int) {
+void UIBasicStylingWnd::OnCreate(int, int) {
   this->m_display = new (std::nothrow) UIDisplayCharacter();
   this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
                            static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
@@ -2459,7 +2459,7 @@ void UIBasicStylingWnd::Slot15(int, int) {
 
 // OFFSET: 0x008288C0
 // FUNCTION: fn_10335
-void UICostumeChangeWnd::Slot15(int, int) {
+void UICostumeChangeWnd::OnCreate(int, int) {
   this->m_display = new UIDisplayCharacter();
   this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
                            static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));

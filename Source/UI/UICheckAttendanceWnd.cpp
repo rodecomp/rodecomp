@@ -107,7 +107,7 @@ UICheckAttendanceWnd_Banner::~UICheckAttendanceWnd_Banner() {
 
 // OFFSET: 0x007DCF50
 // FUNCTION: fn_09639
-void UICheckAttendanceWnd::Slot15(int, int) {
+void UICheckAttendanceWnd::OnCreate(int, int) {
   tm end;
   end.tm_mday = g_checkAttendanceMgr->m_config1;
   end.tm_hour = 15;
@@ -232,7 +232,7 @@ void UICheckAttendanceWnd_Banner::Paint() {
 
 // OFFSET: 0x007DDBB0
 // FUNCTION: fn_09642
-void UICheckAttendanceWnd::Slot25(int x, int y) {
+void UICheckAttendanceWnd::OnLBtnDown(int x, int y) {
   if (this->SlotAt(x, y) == this->m_checkedDays) {
     this->m_highlight = 2;
     this->Invalidate();
@@ -241,7 +241,7 @@ void UICheckAttendanceWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x007DDBF0
 // FUNCTION: fn_09643
-void UICheckAttendanceWnd::Slot31(int x, int y) {
+void UICheckAttendanceWnd::OnLBtnUp(int x, int y) {
   const int slot = this->SlotAt(x, y);
   if (slot == this->m_checkedDays) {
     this->SendMsg(nullptr, 6, 184, slot, 0, 0);
@@ -250,7 +250,7 @@ void UICheckAttendanceWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x007DDC30
 // FUNCTION: fn_09644
-void UICheckAttendanceWnd_Banner::Slot31(int x, int y) {
+void UICheckAttendanceWnd_Banner::OnLBtnUp(int x, int y) {
   const std::string url = this->m_entries[this->m_current].url;
   if (!url.empty()) {
     ShellExecuteA(nullptr, "OPEN", url.c_str(), url.c_str(), nullptr, SW_SHOW);
@@ -273,7 +273,7 @@ void UICheckAttendanceWnd_Banner::Slot31(int x, int y) {
 
 // OFFSET: 0x007DDD70
 // FUNCTION: fn_09645
-void UICheckAttendanceWnd::Slot28(int x, int y) {
+void UICheckAttendanceWnd::OnMouseHover(int x, int y) {
   const int slot = this->SlotAt(x, y);
   if (slot < 0 || slot >= this->m_rewardCount) {
     return;
@@ -303,7 +303,7 @@ void UICheckAttendanceWnd_Banner::ResetCursor(int, int) {
 
 // OFFSET: 0x007DDF00
 // FUNCTION: fn_09647
-void UICheckAttendanceWnd::Slot19() {
+void UICheckAttendanceWnd::OnProcess() {
   if (this->m_blinking != 0) {
     const int highlight = timeGetTime() / 100 & 1;
     if (this->m_highlight != 2 && this->m_highlight != highlight) {
@@ -315,7 +315,7 @@ void UICheckAttendanceWnd::Slot19() {
 
 // OFFSET: 0x007DDF50
 // FUNCTION: fn_09648
-void UICheckAttendanceWnd_Banner::Slot19() {
+void UICheckAttendanceWnd_Banner::OnProcess() {
   if (this->m_lastSwitch + 5000 < timeGetTime()) {
     const unsigned int next = this->m_current + 1 < this->m_entries.size() ? this->m_current + 1 : 0;
     this->SendMsg(this->m_buttons[next], 6, 215, 0, 0, 0);
@@ -324,7 +324,7 @@ void UICheckAttendanceWnd_Banner::Slot19() {
 
 // OFFSET: 0x007DDFC0
 // FUNCTION: fn_09649
-void UICheckAttendanceWnd::Slot32(int x, int y) {
+void UICheckAttendanceWnd::OnRBtnDown(int x, int y) {
   const int slot = this->SlotAt(x, y);
   if (slot < 0 || slot >= this->m_rewardCount) {
     return;

@@ -48,10 +48,10 @@ UISwapEquipmentWnd::UISwapEquipmentWnd()
 
 // OFFSET: 0x0082F990
 // FUNCTION: fn_10390
-void UISwapEquipmentWnd::Slot10(int x, int y, std::intptr_t value) {
+void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (g_windowMgr.LookupWindow(10011)) {
-    UIWindow::Slot10(x, y, value);
+    UIWindow::DragAndDrop(x, y, value);
     return;
   }
 
@@ -178,7 +178,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
 
 // OFFSET: 0x008315E0
 // FUNCTION: fn_10400
-void UISwapEquipmentWnd::Slot32(int x, int y) {
+void UISwapEquipmentWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAtPoint(x, y);
   if (item.unknown_0000[1] > 0) {
     g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -286,7 +286,7 @@ ITEM_INFO UISwapEquipmentWnd::GetSlotItem(int slot) {
 
 // OFFSET: 0x00830760
 // FUNCTION: fn_10394
-void UISwapEquipmentWnd::Slot15(int width, int height) {
+void UISwapEquipmentWnd::OnCreate(int width, int height) {
   this->m_swapButton = new (std::nothrow) UISwapBitmapButton();
   this->m_swapButton->SetBitmap("유저인터페이스\\swap_equipment\\btn_change2_normal.bmp", 0, 0);
   this->m_swapButton->SetBitmap("유저인터페이스\\swap_equipment\\btn_change2_over.bmp", 1, 0);
@@ -374,7 +374,7 @@ void UISwapEquipmentWnd::Paint() {
 
 // OFFSET: 0x00830E20
 // FUNCTION: fn_10397
-void UISwapEquipmentWnd::Slot26(int x, int y) {
+void UISwapEquipmentWnd::OnLBtnDblClk(int x, int y) {
   if (y < 17) {
     this->SendMsg(this, 6, 0xCA, 0, 0, 0);
   }
@@ -393,7 +393,7 @@ void UISwapEquipmentWnd::Slot26(int x, int y) {
 
 // OFFSET: 0x00830F40
 // FUNCTION: fn_10398
-void UISwapEquipmentWnd::Slot25(int x, int y) {
+void UISwapEquipmentWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAtPoint(x, y);
   if (item.unknown_0000[1] <= 0 || item.quantity <= 0) {
     return;
@@ -422,7 +422,7 @@ void UISwapEquipmentWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00831130
 // FUNCTION: fn_10399
-void UISwapEquipmentWnd::Slot28(int x, int y) {
+void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
   {
     ITEM_INFO item = this->ItemAtPoint(x, y);
     if (item.unknown_0000[1] > 0) {

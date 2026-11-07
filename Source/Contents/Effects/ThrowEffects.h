@@ -12,12 +12,12 @@ class CParticle;
 class CThrowItemEffect : public CEffect {
 public:
   CThrowItemEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
-  void Slot12() override;
+  bool IsAlive() override;
+  void InitEvents() override;
   void InitFlameParticle(CParticle* particle);
   void InitPotionParticle(CParticle* particle, int kind);
   void InitSpinParticle(CParticle* particle);
@@ -43,11 +43,11 @@ static_assert(offsetof(CThrowItemEffect, particles) == 0xF8);
 
 class CVolcanoEffect : public CEffect {
 public:
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
   void AddRings();
 
   /* 00CC */ vector3d lastInner;

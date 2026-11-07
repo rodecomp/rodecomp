@@ -50,7 +50,7 @@ void UIWindowMgr::Destroy(UIWindow* window) {
     }
 
     g_snapMgr.Remove(*rendered);
-    (*rendered)->Slot11();
+    (*rendered)->StoreInfo();
     delete *rendered;
 
     this->rendered.erase(rendered);
@@ -62,7 +62,7 @@ void UIWindowMgr::Destroy(UIWindow* window) {
       continue;
     }
 
-    entry->second->Slot11();
+    entry->second->StoreInfo();
     delete entry->second;
 
     this->overlays.erase(entry);
@@ -100,7 +100,7 @@ void UIWindowMgr::SubmitActiveDialog() {
   }
 
   for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
-    if ((*entry)->Slot02()) {
+    if ((*entry)->IsFrameWnd()) {
       (*entry)->SendMsg(nullptr, 19, 0, 0, 0, 0);
     }
   }

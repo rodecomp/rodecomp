@@ -75,7 +75,7 @@ void UILapineUpgradeBoxWndNoop() {}
 
 // OFFSET: 0x006036E0
 // FUNCTION: fn_04198
-void UILapineUpgradeBoxWnd::Slot15(int, int) {
+void UILapineUpgradeBoxWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
@@ -116,7 +116,7 @@ void UILapineUpgradeBoxWnd::Slot15(int, int) {
 
 // OFFSET: 0x00603A90
 // FUNCTION: fn_04199
-void UILapineUpgradeBox_IngredientListWnd::Slot15(int width, int height) {
+void UILapineUpgradeBox_IngredientListWnd::OnCreate(int width, int height) {
   this->scrollBarWidth = 9;
   if (this->scrollBar) {
     this->RemoveChild(this->scrollBar, 0);
@@ -169,7 +169,7 @@ void UILapineUpgradeBoxWnd::Paint() {
 
 // OFFSET: 0x006035E0
 // FUNCTION: fn_04194
-void UILapineUpgradeBoxWnd::Slot10(int x, int y, std::intptr_t value) {
+void UILapineUpgradeBoxWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (this->item.unknown_0000[1] > 0) {
     mode->SendMsg(18, 0, 0, 0, 0);
@@ -184,9 +184,9 @@ void UILapineUpgradeBoxWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x00603650
 // FUNCTION: fn_04195
-void UILapineUpgradeBox_IngredientInfoWnd::Slot10(int x, int y, std::intptr_t value) {
+void UILapineUpgradeBox_IngredientInfoWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   if (this->parent) {
-    this->parent->Slot10(x + this->geometry.x, y + this->geometry.y, value);
+    this->parent->DragAndDrop(x + this->geometry.x, y + this->geometry.y, value);
   }
 }
 
@@ -198,7 +198,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::Move(int x, int y) {
 
 // OFFSET: 0x00603DB0
 // FUNCTION: fn_04203
-void UILapineUpgradeBoxWnd::Slot26(int x, int y) {
+void UILapineUpgradeBoxWnd::OnLBtnDblClk(int x, int y) {
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] != 0) {
     this->SendMsg(this, 104, this->item.unknown_0000[1], 0, 0, 0);
   }
@@ -206,7 +206,7 @@ void UILapineUpgradeBoxWnd::Slot26(int x, int y) {
 
 // OFFSET: 0x00603DF0
 // FUNCTION: fn_04204
-void UILapineUpgradeBox_IngredientInfoWnd::Slot26(int x, int y) {
+void UILapineUpgradeBox_IngredientInfoWnd::OnLBtnDblClk(int x, int y) {
   if (this->item.unknown_0000[1] > 0) {
     this->parent->SendMsg(this, 104, this->item.unknown_0000[1], 0, 0, 0);
   }
@@ -214,9 +214,9 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot26(int x, int y) {
 
 // OFFSET: 0x00603E20
 // FUNCTION: fn_04205
-void UILapineUpgradeBoxWnd::Slot25(int x, int y) {
+void UILapineUpgradeBoxWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] != 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 26, this->item, 1, -1);
@@ -225,7 +225,7 @@ void UILapineUpgradeBoxWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00603E80
 // FUNCTION: fn_04206
-void UILapineUpgradeBox_IngredientInfoWnd::Slot25(int x, int y) {
+void UILapineUpgradeBox_IngredientInfoWnd::OnLBtnDown(int x, int y) {
   if (this->item.unknown_0000[1] != 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 27, this->item, this->quantity, -1);
   }
@@ -233,7 +233,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00603EC0
 // FUNCTION: fn_04207
-void UILapineUpgradeBox_IngredientInfoWnd::Slot31(int x, int y) {
+void UILapineUpgradeBox_IngredientInfoWnd::OnLBtnUp(int x, int y) {
   this->selected = 1;
   this->Invalidate();
   if (this->parent) {
@@ -243,15 +243,15 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x00604180
 // FUNCTION: fn_04213
-void UILapineUpgradeBox_IngredientInfoWnd::Slot35(int argument) {
+void UILapineUpgradeBox_IngredientInfoWnd::OnWheel(int argument) {
   if (this->parent) {
-    this->parent->Slot35(argument);
+    this->parent->OnWheel(argument);
   }
 }
 
 // OFFSET: 0x006040E0
 // FUNCTION: fn_04211
-void UILapineUpgradeBoxWnd::Slot32(int x, int y) {
+void UILapineUpgradeBoxWnd::OnRBtnDown(int x, int y) {
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] > 0) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
     window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
@@ -260,7 +260,7 @@ void UILapineUpgradeBoxWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x00604140
 // FUNCTION: fn_04212
-void UILapineUpgradeBox_IngredientInfoWnd::Slot32(int x, int y) {
+void UILapineUpgradeBox_IngredientInfoWnd::OnRBtnDown(int x, int y) {
   if (this->item.unknown_0000[1] > 0) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
     window->SendMsg(this, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
@@ -310,7 +310,7 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
 
 // OFFSET: 0x00603680
 // FUNCTION: fn_04196
-void UILapineUpgradeBox_IngredientListWnd::Slot10(int x, int y, std::intptr_t value) {
+void UILapineUpgradeBox_IngredientListWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 26) {
@@ -368,7 +368,7 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
         y += 0x1E;
       }
     }
-    this->Slot53();
+    this->UpdateScrollRange();
     this->Invalidate();
     break;
   }
@@ -389,7 +389,7 @@ void UILapineUpgradeBox_IngredientListWnd::Paint() {
 
 // OFFSET: 0x006041A0
 // FUNCTION: fn_04214
-void UILapineUpgradeBox_IngredientListWnd::Slot35(int argument) {
+void UILapineUpgradeBox_IngredientListWnd::OnWheel(int argument) {
   if (this->wheelScroll == 1) {
     if (argument < 0) {
       this->SendMsg(this->scrollBar, 7, 15, 0, 0, 0);
@@ -418,7 +418,7 @@ inline UILapineUpgradeBox_IngredientInfoWnd* UILapineUpgradeBoxWnd::FindSelected
 
 // OFFSET: 0x00603FE0
 // FUNCTION: fn_04210
-void UILapineUpgradeBoxWnd::Slot19() {
+void UILapineUpgradeBoxWnd::OnProcess() {
   UILapineUpgradeBox_IngredientInfoWnd* selected = this->FindSelected();
   if (!selected) {
     if (this->selectButton->Disabled() == 0) {
@@ -453,8 +453,8 @@ void UILapineUpgradeBoxWnd::Slot19() {
 
 // OFFSET: 0x00603F70
 // FUNCTION: fn_04209
-void UILapineUpgradeBox_IngredientInfoWnd::Slot28(int x, int y) {
-  this->Slot27(x, y);
+void UILapineUpgradeBox_IngredientInfoWnd::OnMouseHover(int x, int y) {
+  this->OnMouseMove(x, y);
 
   if (this->tooltip.size() > 0) {
     int tipX = 0;
@@ -466,8 +466,8 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x00603EF0
 // FUNCTION: fn_04208
-void UILapineUpgradeBoxWnd::Slot28(int x, int y) {
-  this->Slot27(x, y);
+void UILapineUpgradeBoxWnd::OnMouseHover(int x, int y) {
+  this->OnMouseMove(x, y);
 
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] > 0) {
     int tipX = 101;

@@ -32,7 +32,7 @@ void CCartCannon::Close() {
 
 // OFFSET: 0x006FAA90
 // FUNCTION: fn_06897
-void CCartCannon::Slot01() {
+void CCartCannon::Open() {
   this->currentPosition.x = this->position[0];
   this->currentPosition.y = this->position[1];
   this->currentPosition.z = this->position[2];
@@ -106,7 +106,7 @@ void CCartCannon::Slot01() {
 
 // OFFSET: 0x006FAEC0
 // FUNCTION: fn_06898
-bool CCartCannon::Slot06() {
+bool CCartCannon::IsAlive() {
   if (static_cast<float>(this->currentStep) > 10.0f / this->speed) {
     return false;
   }
@@ -116,7 +116,7 @@ bool CCartCannon::Slot06() {
 
 // OFFSET: 0x006FAEF0
 // FUNCTION: fn_06899
-void CCartCannon::Slot03() {
+void CCartCannon::OnProcess() {
   if (this->delay > 0) {
     this->delay -= 16;
     return;
@@ -141,7 +141,7 @@ void CCartCannon::Slot03() {
 
 // OFFSET: 0x006FB080
 // FUNCTION: fn_06900
-void CCartCannon::Slot04() {
+void CCartCannon::Render() {
   if (this->particle) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     this->particle->DrawScreen(mode->camera->frame.view);
@@ -150,6 +150,6 @@ void CCartCannon::Slot04() {
 
 // OFFSET: 0x006FB0E0
 // FUNCTION: fn_06901
-void CCartCannon::Slot16(int delay) {
+void CCartCannon::SetDelay(int delay) {
   this->delay = delay;
 }

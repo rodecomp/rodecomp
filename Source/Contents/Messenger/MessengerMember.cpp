@@ -86,9 +86,9 @@ class UIDragMiniPartyWnd : public UIFrameWnd {
 public:
   __declspec(noinline) UIDragMiniPartyWnd(MessengerMember member);
   ~UIDragMiniPartyWnd() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot31(int argument1, int argument2) override;
+  void OnLBtnUp(int argument1, int argument2) override;
   void MoveGauge(int x, int y);
   void RemoveGauge();
   void SetUnknown010C(int first, int second);
@@ -107,8 +107,8 @@ class UIFriendOptionWnd : public UIFrameWnd {
 public:
   UIFriendOptionWnd();
   ~UIFriendOptionWnd() override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
@@ -124,9 +124,9 @@ public:
   __declspec(noinline) UIJobIconButton();
   ~UIJobIconButton() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot33(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
 
   /* 0120 */ int unknown_0120;
 };
@@ -135,16 +135,16 @@ class UIMessengerGroupWnd : public UIFrameWnd {
 public:
   UIMessengerGroupWnd();
   ~UIMessengerGroupWnd() override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot33(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
+  void OnWheel(int delta) override;
   MessengerMember MemberAt(int x, int y);
   void OpenMiniPartyWnd(int cell, const MessengerMember& member);
   void DropMember(int x, int y, int index);
@@ -316,7 +316,7 @@ UIDragMiniPartyWnd::~UIDragMiniPartyWnd() = default;
 
 // OFFSET: 0x00738640
 // FUNCTION: fn_07669
-void UIDragMiniPartyWnd::Slot15(int, int) {
+void UIDragMiniPartyWnd::OnCreate(int, int) {
   this->iconPositions.resize(2);
   this->iconPositions[0] = {5, 5, 34};
   this->iconPositions[1] = {4, 1, 27};
@@ -429,7 +429,7 @@ __declspec(noinline) void UIDragMiniPartyWnd::MoveGauge(int x, int y) {
 
 // OFFSET: 0x00738CE0
 // FUNCTION: fn_07671
-void UIDragMiniPartyWnd::Slot31(int argument1, int argument2) {
+void UIDragMiniPartyWnd::OnLBtnUp(int argument1, int argument2) {
   auto* window = static_cast<UIMessengerGroupWnd*>(g_windowMgr.LookupWindow(34));
   if (window) {
     window->DropMember(argument1 + this->geometry.x, argument2 + this->geometry.y, this->unknown_0108);
@@ -484,7 +484,7 @@ UIFriendOptionWnd::~UIFriendOptionWnd() = default;
 
 // OFFSET: 0x00738F30
 // FUNCTION: fn_07681
-void UIFriendOptionWnd::Slot15(int, int) {
+void UIFriendOptionWnd::OnCreate(int, int) {
 
   const char* label = LookupMessage(361);
   int width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
@@ -567,7 +567,7 @@ int FriendOptionWndInfo::IsValid() const {
 
 // OFFSET: 0x007392F0
 // FUNCTION: fn_07684
-void UIFriendOptionWnd::Slot11() {
+void UIFriendOptionWnd::StoreInfo() {
   if (this->saved) {
     this->saved->width = this->geometry.width;
     this->saved->height = this->geometry.height;
@@ -624,25 +624,25 @@ void UIJobIconButton::Paint() {
 
 // OFFSET: 0x007395E0
 // FUNCTION: fn_07688
-void UIJobIconButton::Slot25(int x, int y) {
+void UIJobIconButton::OnLBtnDown(int x, int y) {
   if (UIWindow* window = g_windowMgr.LookupWindow(34)) {
-    window->Slot25(x + this->geometry.x, y + this->geometry.y);
+    window->OnLBtnDown(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x00739610
 // FUNCTION: fn_07689
-void UIJobIconButton::Slot31(int x, int y) {
+void UIJobIconButton::OnLBtnUp(int x, int y) {
   if (UIWindow* window = g_windowMgr.LookupWindow(34)) {
-    window->Slot31(x + this->geometry.x, y + this->geometry.y);
+    window->OnLBtnUp(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x00739640
 // FUNCTION: fn_07690
-void UIJobIconButton::Slot33(int x, int y) {
+void UIJobIconButton::OnRBtnUp(int x, int y) {
   if (UIWindow* window = g_windowMgr.LookupWindow(34)) {
-    window->Slot33(x + this->geometry.x, y + this->geometry.y);
+    window->OnRBtnUp(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -757,7 +757,7 @@ __declspec(noinline) MessengerMember UIMessengerGroupWnd::MemberAtIndex(int inde
 
 // OFFSET: 0x0073A630
 // FUNCTION: fn_07706
-void UIMessengerGroupWnd::Slot15(int, int) {
+void UIMessengerGroupWnd::OnCreate(int, int) {
   this->iconPositions.resize(2);
   this->iconPositions[0] = {5, 5, 34};
   this->iconPositions[1] = {4, 1, 27};
@@ -1095,7 +1095,7 @@ void UIMessengerGroupWnd::Paint() {
 
 // OFFSET: 0x0073CD30
 // FUNCTION: fn_07708
-void UIMessengerGroupWnd::Slot26(int, int) {
+void UIMessengerGroupWnd::OnLBtnDblClk(int, int) {
   if (!g_session.m_lockMouse) {
     this->SendMsg(nullptr, 6, 232, 0, 0, 0);
   }
@@ -1103,7 +1103,7 @@ void UIMessengerGroupWnd::Slot26(int, int) {
 
 // OFFSET: 0x0073D460
 // FUNCTION: fn_07713
-void UIMessengerGroupWnd::Slot33(int x, int y) {
+void UIMessengerGroupWnd::OnRBtnUp(int x, int y) {
   if (g_session.m_lockMouse) {
     return;
   }
@@ -1121,9 +1121,9 @@ void UIMessengerGroupWnd::Slot33(int x, int y) {
 
 // OFFSET: 0x0073CD60
 // FUNCTION: fn_07709
-void UIMessengerGroupWnd::Slot25(int x, int y) {
+void UIMessengerGroupWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot33(x, y);
+    UIFrameWnd::OnRBtnUp(x, y);
     if (UIWindow* window = this->CompanionWindow()) {
       window->geometry.targetAlpha = 128;
       window->geometry.alphaStart = timeGetTime();
@@ -1183,8 +1183,8 @@ void UIMessengerGroupWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x0073D080
 // FUNCTION: fn_07710
-void UIMessengerGroupWnd::Slot31(int x, int y) {
-  UIFrameWnd::Slot31(x, y);
+void UIMessengerGroupWnd::OnLBtnUp(int x, int y) {
+  UIFrameWnd::OnLBtnUp(x, y);
   if (UIWindow* window = this->CompanionWindow()) {
     window->geometry.targetAlpha = 255;
     window->geometry.alphaStart = timeGetTime();
@@ -1195,9 +1195,9 @@ void UIMessengerGroupWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x0073D0E0
 // FUNCTION: fn_07711
-void UIMessengerGroupWnd::Slot28(int x, int y) {
+void UIMessengerGroupWnd::OnMouseHover(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot28(x, y);
+    UIFrameWnd::OnMouseHover(x, y);
   }
 
   if (this->mode == 0) {
@@ -1242,8 +1242,8 @@ void UIMessengerGroupWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x0073D3F0
 // FUNCTION: fn_07712
-void UIMessengerGroupWnd::Slot27(int x, int y) {
-  UIFrameWnd::Slot27(x, y);
+void UIMessengerGroupWnd::OnMouseMove(int x, int y) {
+  UIFrameWnd::OnMouseMove(x, y);
   if (UIWindow* window = this->CompanionWindow()) {
     x = 0;
     y = 0;
@@ -1254,7 +1254,7 @@ void UIMessengerGroupWnd::Slot27(int x, int y) {
 
 // OFFSET: 0x0073D530
 // FUNCTION: fn_07714
-void UIMessengerGroupWnd::Slot35(int delta) {
+void UIMessengerGroupWnd::OnWheel(int delta) {
   if (this->scrollable) {
     int step = this->visibleRows - 1;
     if (step > 3) {
@@ -1996,7 +1996,7 @@ void UIGage::SetColor(std::uint32_t color) {
 
 // OFFSET: 0x0073FD90
 // FUNCTION: fn_07719
-void UIMessengerGroupWnd::Slot11() {
+void UIMessengerGroupWnd::StoreInfo() {
   if (this->saved) {
     this->saved->width = this->geometry.width;
     this->saved->height = this->geometry.height;
@@ -2023,7 +2023,7 @@ MessengerMember UIMiniPartyWnd::GetMember() {
 
 // OFFSET: 0x00740250
 // FUNCTION: fn_07729
-void UIMiniPartyInfoWnd::Slot15(int width, int) {
+void UIMiniPartyInfoWnd::OnCreate(int width, int) {
   if (!this->m_gauge) {
     this->m_gauge = new UIPcGage();
     this->m_gauge->SetSize(static_cast<int>(static_cast<float>(width) * 0.38f), 5);

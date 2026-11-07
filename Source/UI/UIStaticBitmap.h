@@ -10,15 +10,15 @@ public:
   UIStaticBitmap();
   ~UIStaticBitmap() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   void ResetCursor(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot33(int x, int y) override;
-  void Slot35(int value) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
+  void OnWheel(int value) override;
   void SetBitmap(const char* name);
   void SetTooltip(const char* text);
 

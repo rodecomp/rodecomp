@@ -43,7 +43,7 @@ public:
 class UIPlayerGage : public UIGage {
 public:
   UIPlayerGage();
-  bool Slot03() override;
+  bool NeedsFrameRefresh() override;
   void Paint() override;
   void SetFirstValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
   void SetSecondValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);

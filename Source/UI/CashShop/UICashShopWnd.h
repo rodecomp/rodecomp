@@ -25,10 +25,10 @@ public:
   };
 
   UICashShopWnd_Banner();
-  void Slot19() override;
+  void OnProcess() override;
   void Paint() override;
   void ResetCursor(int x, int y) override;
-  void Slot31(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ std::vector<Entry> m_entries;
@@ -43,14 +43,14 @@ class UICashShopWnd_CartItem : public UIWindow {
 public:
   UICashShopWnd_CartItem();
 
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot33(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 0080 */ ITEM_INFO m_item;
@@ -60,10 +60,10 @@ class UICashShopWnd_Cart : public UIWindow {
 public:
   UICashShopWnd_Cart();
 
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot35(int delta) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ std::vector<UICashShopWnd_CartItem*> m_slots;
@@ -80,12 +80,12 @@ public:
       : UIWindow(0), m_addButton(nullptr), m_largeLayout(false), m_soldOut(nullptr) {
   }
 
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot33(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ UIBmpTextButton* m_addButton;
@@ -98,10 +98,10 @@ class UICashShopWnd : public UIFrameWnd {
 public:
   UICashShopWnd();
   ~UICashShopWnd() override;
-  bool Slot03() override;
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  bool NeedsFrameRefresh() override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void LayoutPage();

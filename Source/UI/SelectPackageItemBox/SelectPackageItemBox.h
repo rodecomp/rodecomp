@@ -24,8 +24,8 @@ public:
 class CUIItemInfo : public CUIListItem {
 public:
   CUIItemInfo();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
 
   /* 00E8 */ CUIStaticImage* image;
@@ -36,8 +36,8 @@ public:
 class CUITabInfo : public CUIListItem {
 public:
   CUITabInfo();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
 
   /* 00E8 */ CUIStaticText* nameText;
 };
@@ -46,9 +46,9 @@ public:
 class CUISelectPackageItemBox : public CUIFrameWnd {
 public:
   __declspec(noinline) CUISelectPackageItemBox();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
-  virtual void Slot53();
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
+  virtual void Initialize();
 
   void OnCancel();
   void OnClickClose();

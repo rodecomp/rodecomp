@@ -16,7 +16,7 @@ public:
 
   void Show(int visible) override;
   void Paint() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
 
@@ -30,7 +30,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void sub_90C9B0(int);
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
 };
 
 class UIStorePasswordInputWnd : public UIFrameWnd {

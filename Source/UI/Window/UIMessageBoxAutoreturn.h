@@ -12,7 +12,7 @@ class UIMessageBoxAutoreturn : public UIFrameWnd {
 public:
   UIMessageBoxAutoreturn();
 
-  void Slot19() override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void Configure(const char* text, int timeout);

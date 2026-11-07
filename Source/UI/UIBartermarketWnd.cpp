@@ -56,9 +56,9 @@ UIExpandedBartermarketWnd::UIExpandedBartermarketWnd()
 
 // OFFSET: 0x00840B30
 // FUNCTION: fn_10545
-void UIBarterItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIBarterItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   if (g_windowMgr.LookupWindow(10011)) {
-    UIWindow::Slot10(x, y, value);
+    UIWindow::DragAndDrop(x, y, value);
     return;
   }
 
@@ -80,9 +80,9 @@ void UIBarterItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x00840C00
 // FUNCTION: fn_10546
-void UIBartermarketWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIBartermarketWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   if (g_windowMgr.LookupWindow(10011)) {
-    UIWindow::Slot10(x, y, value);
+    UIWindow::DragAndDrop(x, y, value);
     return;
   }
 
@@ -229,7 +229,7 @@ int UIBarterItemPurchaseWnd::GetInventoryItemCount(int itemId) {
 
 // OFFSET: 0x00845940
 // FUNCTION: fn_10576
-void UIExpandedBarterItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIExpandedBarterItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 31) {
@@ -246,7 +246,7 @@ void UIExpandedBarterItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) 
 
 // OFFSET: 0x008459F0
 // FUNCTION: fn_10577
-void UIExpandedBartermarketWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIExpandedBartermarketWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source != 32) {
     g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
@@ -381,7 +381,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryOrChunkAt(
 
 // OFFSET: 0x00849030
 // FUNCTION: fn_10594
-void UIExpandedBarterItemPurchaseWnd::Slot35(int delta) {
+void UIExpandedBarterItemPurchaseWnd::OnWheel(int delta) {
   if (this->scrollEnabled == 1) {
     int step = this->rowCount - 1;
     if (step > 3) {
@@ -393,7 +393,7 @@ void UIExpandedBarterItemPurchaseWnd::Slot35(int delta) {
 
 // OFFSET: 0x00849080
 // FUNCTION: fn_10595
-void UIExpandedBartermarketWnd::Slot35(int delta) {
+void UIExpandedBartermarketWnd::OnWheel(int delta) {
   if (this->scrollEnabled == 1) {
     int step = this->rowCount - 1;
     if (step > 3) {
@@ -773,9 +773,9 @@ ITEM_INFO BarterMarketEntry::ToItemInfo() const {
 
 // OFFSET: 0x00843190
 // FUNCTION: fn_10556
-void UIBarterItemPurchaseWnd::Slot25(int x, int y) {
+void UIBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 
   const int previous = this->hovered;
@@ -794,9 +794,9 @@ void UIBarterItemPurchaseWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00843270
 // FUNCTION: fn_10557
-void UIBartermarketWnd::Slot25(int x, int y) {
+void UIBartermarketWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 
   const int previous = this->hovered;
@@ -831,7 +831,7 @@ void UIBartermarketWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00843DE0
 // FUNCTION: fn_10561
-void UIBarterItemPurchaseWnd::Slot32(int x, int y) {
+void UIBarterItemPurchaseWnd::OnRBtnDown(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemOrPriceAt(x, y);
   if (found.first == true) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
@@ -844,7 +844,7 @@ void UIBarterItemPurchaseWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x00843EC0
 // FUNCTION: fn_10562
-void UIBartermarketWnd::Slot32(int x, int y) {
+void UIBartermarketWnd::OnRBtnDown(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemOrPriceAt(x, y);
   if (found.first) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
@@ -857,9 +857,9 @@ void UIBartermarketWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x008481E0
 // FUNCTION: fn_10587
-void UIExpandedBarterItemPurchaseWnd::Slot25(int x, int y) {
+void UIExpandedBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 
   const int previous = this->unknown_00CC;
@@ -893,9 +893,9 @@ void UIExpandedBarterItemPurchaseWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00848320
 // FUNCTION: fn_10588
-void UIExpandedBartermarketWnd::Slot25(int x, int y) {
+void UIExpandedBartermarketWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 
   const int previous = this->unknown_00CC;
@@ -932,7 +932,7 @@ void UIExpandedBartermarketWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00848E70
 // FUNCTION: fn_10592
-void UIExpandedBarterItemPurchaseWnd::Slot32(int x, int y) {
+void UIExpandedBarterItemPurchaseWnd::OnRBtnDown(int x, int y) {
   std::pair<bool, BarterMarketEntry> found = this->GetEntryOrChunkAt(x, y);
   if (found.first == true) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
@@ -945,7 +945,7 @@ void UIExpandedBarterItemPurchaseWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x00848F50
 // FUNCTION: fn_10593
-void UIExpandedBartermarketWnd::Slot32(int x, int y) {
+void UIExpandedBartermarketWnd::OnRBtnDown(int x, int y) {
   std::pair<bool, BarterMarketEntry> found = this->GetEntryOrChunkAt(x, y);
   if (found.first == true) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
@@ -958,7 +958,7 @@ void UIExpandedBartermarketWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x00843420
 // FUNCTION: fn_10558
-void UIBarterItemPurchaseWnd::Slot28(int x, int y) {
+void UIBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
   if (found.first) {
     int tooltipX = (x - 40) / 32 * 32 + 40;
@@ -978,7 +978,7 @@ void UIBarterItemPurchaseWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x008436B0
 // FUNCTION: fn_10559
-void UIBartermarketWnd::Slot28(int x, int y) {
+void UIBartermarketWnd::OnMouseHover(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
   if (found.first) {
     int tooltipX = (x - 40) / 32 * 32 + 40;
@@ -997,7 +997,7 @@ void UIBartermarketWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x008484A0
 // FUNCTION: fn_10589
-void UIExpandedBarterItemPurchaseWnd::Slot28(int x, int y) {
+void UIExpandedBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
   std::pair<bool, BarterMarketEntry> found = this->GetEntryAt(x, y);
   if (found.first && x > 40 && x < 72) {
     int tooltipX = x;
@@ -1030,7 +1030,7 @@ void UIExpandedBarterItemPurchaseWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x00848B80
 // FUNCTION: fn_10591
-void UIExpandedBartermarketWnd::Slot28(int x, int y) {
+void UIExpandedBartermarketWnd::OnMouseHover(int x, int y) {
   std::pair<bool, BarterMarketEntry> found = this->GetEntryAt(x, y);
   if (found.first && x > 40 && x < 72) {
     int tooltipX = x;
@@ -1063,7 +1063,7 @@ void UIExpandedBartermarketWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x00843910
 // FUNCTION: fn_10560
-void UIPurchaseButton::Slot28(int x, int y) {
+void UIPurchaseButton::OnMouseHover(int x, int y) {
   std::string text;
   std::map<int, int> totals = *g_barterMarketItemMgr->GetTotals();
   int count = 0;
@@ -1110,7 +1110,7 @@ std::string UIExpandedBarterPurchaseButton::FormatChunkText(int refine, std::str
 
 // OFFSET: 0x00848790
 // FUNCTION: fn_10590
-void UIExpandedBarterPurchaseButton::Slot28(int x, int y) {
+void UIExpandedBarterPurchaseButton::OnMouseHover(int x, int y) {
   std::string text;
   std::vector<BarterChunk16> chunks = *g_expandedBarterMarketItemMgr->GetChunks();
   int index = 0;
@@ -1199,7 +1199,7 @@ bool UIBarterItemPurchaseWnd::Purchase() {
 
 // OFFSET: 0x00841A10
 // FUNCTION: fn_10552
-void UIBarterItemPurchaseWnd::Slot15(int width, int height) {
+void UIBarterItemPurchaseWnd::OnCreate(int width, int height) {
   UIResizer* resizer = new UIResizer();
   this->resizer = resizer;
   resizer->SetSize(16, 16);
@@ -1407,7 +1407,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
 // OFFSET: 0x00846FB0
 // FUNCTION: fn_10583
-void UIExpandedBarterItemPurchaseWnd::Slot15(int width, int height) {
+void UIExpandedBarterItemPurchaseWnd::OnCreate(int width, int height) {
   UIResizer* resizer = new UIResizer();
   this->resizer = resizer;
   resizer->SetSize(16, 16);
@@ -1536,7 +1536,7 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
 // OFFSET: 0x00842570
 // FUNCTION: fn_10553
-void UIBartermarketWnd::Slot15(int width, int height) {
+void UIBartermarketWnd::OnCreate(int width, int height) {
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
   static_cast<UIResizer*>(this->resizer)->SetDirection(7);
@@ -1620,7 +1620,7 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
 
 // OFFSET: 0x00847290
 // FUNCTION: fn_10584
-void UIExpandedBartermarketWnd::Slot15(int width, int height) {
+void UIExpandedBartermarketWnd::OnCreate(int width, int height) {
   this->unknown_00BC = new UIResizer();
   this->unknown_00BC->SetSize(16, 16);
   static_cast<UIResizer*>(this->unknown_00BC)->SetDirection(7);

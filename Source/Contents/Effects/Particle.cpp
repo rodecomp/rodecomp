@@ -140,7 +140,7 @@ CEZ2STRParticle::~CEZ2STRParticle() {
 
 // OFFSET: 0x00B3CFC0
 // FUNCTION: fn_18815
-void CEZ2STRParticle::Slot01() {
+void CEZ2STRParticle::ReleaseResource() {
   this->m_res = CResPtr<CEZeffectRes>();
 }
 

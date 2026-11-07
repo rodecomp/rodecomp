@@ -20,18 +20,18 @@
 
 // OFFSET: 0x009312E0
 // FUNCTION: fn_12700
-void UISubChatHisWnd::Slot25(int x, int y) {
+void UISubChatHisWnd::OnLBtnDown(int x, int y) {
   if (g_session.m_canDragWnd) {
     if (UIWindow* window = g_windowMgr.LookupWindow(132)) {
       window->SendMsg(this, 6, 193, this->m_index, 0, 2);
     }
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
 // OFFSET: 0x009309B0
 // FUNCTION: fn_12690
-void UISubChatHisWnd::Slot26(int x, int y) {
+void UISubChatHisWnd::OnLBtnDblClk(int x, int y) {
   if (g_session.m_canDragWnd && x > 0 && x < this->m_inputWidth && y > 0 && y < this->m_inputHeight) {
     this->m_edit->SetText("");
     this->m_edit->Resize(this->m_inputWidth - 10, this->m_inputHeight - 2);
@@ -42,16 +42,16 @@ void UISubChatHisWnd::Slot26(int x, int y) {
 
 // OFFSET: 0x00932B70
 // FUNCTION: fn_12715
-void UISubChatHisWnd::Slot27(int x, int y) {
+void UISubChatHisWnd::OnMouseMove(int x, int y) {
   if (g_windowMgr.Capture() == this) {
-    this->UIFrameWnd::Slot27(x, y);
+    this->UIFrameWnd::OnMouseMove(x, y);
   }
 }
 
 // OFFSET: 0x00931710
 // FUNCTION: fn_12706
-void UISubChatHisWnd::Slot31(int x, int y) {
-  this->UIFrameWnd::Slot31(x, y);
+void UISubChatHisWnd::OnLBtnUp(int x, int y) {
+  this->UIFrameWnd::OnLBtnUp(x, y);
   if (g_session.m_canDragWnd) {
     int screenX = 0;
     int screenY = 0;
@@ -82,7 +82,7 @@ void UISubChatHisWnd::Move(int x, int y) {
 
 // OFFSET: 0x0091C9E0
 // FUNCTION: fn_12619
-bool UISubChatHisWnd::Slot42(void* output) {
+bool UISubChatHisWnd::GetCustomTransBoxInfo(void* output) {
   *static_cast<SubChatHistoryState*>(output) = this->m_state;
   return true;
 }
@@ -111,7 +111,7 @@ void UISubChatHisWnd::Paint() {
 
 // OFFSET: 0x00941020
 // FUNCTION: fn_12788
-void UISubChatHisWnd::Slot11() {
+void UISubChatHisWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->width = this->geometry.width;
     this->m_saved->height = this->geometry.height;
@@ -122,7 +122,7 @@ void UISubChatHisWnd::Slot11() {
 
 // OFFSET: 0x0092A710
 // FUNCTION: fn_12655
-void UISubChatHisWnd::Slot15(int width, int height) {
+void UISubChatHisWnd::OnCreate(int width, int height) {
   {
     const std::string name = "유저인터페이스\\basic_interface\\stickon";
     this->m_stickButton = new UIBitmapButton();

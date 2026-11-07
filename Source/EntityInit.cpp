@@ -149,11 +149,11 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     entry->speed = *reinterpret_cast<const std::uint16_t*>(actor->unknown_0170 + 4);
     entry->bodyState = static_cast<std::uint16_t>(actor->bodyState);
     entry->healthState = static_cast<std::uint16_t>(actor->unknown_02C4);
-    entry->effectState = actor->Slot13();
+    entry->effectState = actor->GetStateFlags();
     entry->job = static_cast<std::uint16_t>(actor->GetEffectiveJob(-1));
     entry->head = *reinterpret_cast<const std::uint16_t*>(actor->unknown_029C);
-    entry->guildId = actor->Slot50();
-    entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->Slot50()));
+    entry->guildId = actor->GetGdid();
+    entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->GetGdid()));
     entry->isPkModeOn = actor->unknown_02C8 != 0;
     entry->sex = static_cast<std::uint8_t>(actor->unknown_0260);
     entry->xSize = static_cast<std::uint8_t>(actor->unknown_0294);
@@ -173,8 +173,8 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
       entry->accessory3 = static_cast<std::uint16_t>(pc->unknown_0458);
       entry->headPalette = static_cast<std::uint16_t>(pc->unknown_0444);
       entry->robe = static_cast<std::uint16_t>(pc->unknown_049C);
-      entry->characterId = pc->Slot42();
-      entry->body = static_cast<std::uint16_t>(pc->Slot46());
+      entry->characterId = pc->GetPkState();
+      entry->body = static_cast<std::uint16_t>(pc->GetBodyCostume());
     }
   } else {
     packet.resize(sizeof(ActorStandEntryPacket));
@@ -203,11 +203,11 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     entry->speed = *reinterpret_cast<const std::uint16_t*>(actor->unknown_0170 + 4);
     entry->bodyState = static_cast<std::uint16_t>(actor->bodyState);
     entry->healthState = static_cast<std::uint16_t>(actor->unknown_02C4);
-    entry->effectState = actor->Slot13();
+    entry->effectState = actor->GetStateFlags();
     entry->job = static_cast<std::uint16_t>(actor->GetEffectiveJob(-1));
     entry->head = *reinterpret_cast<const std::uint16_t*>(actor->unknown_029C);
-    entry->guildId = actor->Slot50();
-    entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->Slot50()));
+    entry->guildId = actor->GetGdid();
+    entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->GetGdid()));
     entry->isPkModeOn = actor->unknown_02C8 != 0;
     entry->sex = static_cast<std::uint8_t>(actor->unknown_0260);
     entry->xSize = static_cast<std::uint8_t>(actor->unknown_0294);
@@ -215,7 +215,7 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     entry->level = actor->unknown_0210;
     entry->font = static_cast<std::uint16_t>(actor->render.unknown_00FC);
     entry->bodyPalette = static_cast<std::uint16_t>(actor->render.unknown_0048);
-    entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->Slot50()));
+    entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->GetGdid()));
 
     if (actor->unknown_0314 == 0) {
       CPc* pc = static_cast<CPc*>(actor);
@@ -228,8 +228,8 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
       entry->accessory3 = static_cast<std::uint16_t>(pc->unknown_0458);
       entry->headPalette = static_cast<std::uint16_t>(pc->unknown_0444);
       entry->robe = static_cast<std::uint16_t>(pc->unknown_049C);
-      entry->characterId = pc->Slot42();
-      entry->body = static_cast<std::uint16_t>(pc->Slot46());
+      entry->characterId = pc->GetPkState();
+      entry->body = static_cast<std::uint16_t>(pc->GetBodyCostume());
     }
   }
 

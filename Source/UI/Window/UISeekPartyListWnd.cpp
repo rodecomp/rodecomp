@@ -40,7 +40,7 @@ std::map<int, PartyBookingEntry> g_friendRows;
 
 // OFFSET: 0x00925D70
 // FUNCTION: fn_12649
-void UISeekPartyListWnd::Slot15(int width, int height) {
+void UISeekPartyListWnd::OnCreate(int width, int height) {
   std::string label;
 
   {
@@ -454,7 +454,7 @@ bool UISeekPartyListWnd::MatchesFilter(PARTY_BOOKING_AD_INFO info) {
 
 // OFFSET: 0x00933630
 // FUNCTION: fn_12727
-void UISeekPartyListWnd::Slot35(int delta) {
+void UISeekPartyListWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     int step = this->m_visibleRows - 1;
     if (step > 3) {
@@ -498,7 +498,7 @@ int UISeekPartyListWnd::HitTestRow(int x, int y) {
 
 // OFFSET: 0x00930720
 // FUNCTION: fn_12687
-void UISeekPartyListWnd::Slot26(int x, int y) {
+void UISeekPartyListWnd::OnLBtnDblClk(int x, int y) {
   if (y < 0x78) {
     return;
   }
@@ -515,9 +515,9 @@ void UISeekPartyListWnd::Slot26(int x, int y) {
 
 // OFFSET: 0x00931090
 // FUNCTION: fn_12698
-void UISeekPartyListWnd::Slot25(int x, int y) {
+void UISeekPartyListWnd::OnLBtnDown(int x, int y) {
   if (y < 0x78) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 

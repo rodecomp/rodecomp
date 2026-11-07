@@ -10,11 +10,11 @@ class UIResizer : public UIWindow {
 public:
   UIResizer();
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   void ResetCursor(int x, int y) override;
-  void Slot31(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   void SetDirection(int value);
   void SetBitmapName(const char* name);
   void SetColors(std::uint32_t line, std::uint32_t background);

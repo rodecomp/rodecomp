@@ -23,7 +23,7 @@ void CSquareRangeEffect::Close() {
 
 // OFFSET: 0x00B4C790
 // FUNCTION: fn_18963
-void CSquareRangeEffect::Slot01() {
+void CSquareRangeEffect::Open() {
   if (this->id == 991) {
     this->size = 7.0f;
   }
@@ -48,7 +48,7 @@ void CSquareRangeEffect::Slot01() {
 
 // OFFSET: 0x00B4C8C0
 // FUNCTION: fn_18964
-bool CSquareRangeEffect::Slot06() {
+bool CSquareRangeEffect::IsAlive() {
   if (this->id == 991) {
     return !this->IsFinished();
   }
@@ -58,7 +58,7 @@ bool CSquareRangeEffect::Slot06() {
 
 // OFFSET: 0x00B4C8E0
 // FUNCTION: fn_18965
-void CSquareRangeEffect::Slot03() {
+void CSquareRangeEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -87,7 +87,7 @@ void CSquareRangeEffect::Slot03() {
 
 // OFFSET: 0x00B4CB40
 // FUNCTION: fn_18966
-void CSquareRangeEffect::Slot04() {
+void CSquareRangeEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);

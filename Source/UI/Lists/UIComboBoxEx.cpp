@@ -39,14 +39,14 @@ void UIComboBoxEx::Configure(int x, int y, int width, int height, unsigned char 
   this->transparent = value;
   this->UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x00886060
 // FUNCTION: fn_11321
-void UIComboBoxEx::Slot15(int width, int height) {
-  this->UIListBoxEx::Slot15(width, height);
+void UIComboBoxEx::OnCreate(int width, int height) {
+  this->UIListBoxEx::OnCreate(width, height);
 }
 
 // OFFSET: 0x00897580
@@ -64,17 +64,17 @@ void UIComboBoxEx::Resize(int width, int height) {
 
 // OFFSET: 0x00890460
 // FUNCTION: fn_11414
-void UIComboBoxEx::Slot25(int, int) {
+void UIComboBoxEx::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x00890160
 // FUNCTION: fn_11401
-void UIComboBoxEx::Slot26(int, int) {
+void UIComboBoxEx::OnLBtnDblClk(int, int) {
 }
 
 // OFFSET: 0x008920A0
 // FUNCTION: fn_11464
-void UIComboBoxEx::Slot27(int x, int y) {
+void UIComboBoxEx::OnMouseMove(int x, int y) {
   const int previous = this->selected;
   this->selected = this->LineAt(x, y);
 
@@ -85,7 +85,7 @@ void UIComboBoxEx::Slot27(int x, int y) {
 
 // OFFSET: 0x00890B70
 // FUNCTION: fn_11435
-void UIComboBoxEx::Slot31(int x, int y) {
+void UIComboBoxEx::OnLBtnUp(int x, int y) {
   this->selected = this->LineAt(x, y);
   auto& windows = g_windowMgr;
 
@@ -286,15 +286,15 @@ UIComboBoxEx2::~UIComboBoxEx2() = default;
 
 // OFFSET: 0x00885EE0
 // FUNCTION: fn_11320
-void UIComboBoxEx2::Slot15(int width, int height) {
+void UIComboBoxEx2::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar_Navi();
   this->verticalBar = vertical;
   const int thickness = vertical->thickness;
   vertical->vertical = 1;
   vertical->UIWindow::Resize(thickness, height);
   vertical->Move((width - 7), 0);
-  vertical->Slot15(thickness, height);
-  vertical->Slot22(thickness, height);
+  vertical->OnCreate(thickness, height);
+  vertical->OnSize(thickness, height);
   this->AddChild(this->verticalBar);
 
   auto* horizontal = new UIScrollBar();
@@ -303,8 +303,8 @@ void UIComboBoxEx2::Slot15(int width, int height) {
   horizontal->vertical = 0;
   horizontal->UIWindow::Resize((width - 7), horizontalHeight);
   horizontal->Move(0, (height - 7));
-  horizontal->Slot15((width - 7), horizontalHeight);
-  horizontal->Slot22((width - 7), horizontalHeight);
+  horizontal->OnCreate((width - 7), horizontalHeight);
+  horizontal->OnSize((width - 7), horizontalHeight);
   this->AddChild(this->horizontalBar);
   this->lineHeight = 18;
 }

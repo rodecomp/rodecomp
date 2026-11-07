@@ -14,7 +14,7 @@
 
 // OFFSET: 0x0085ACE0
 // FUNCTION: fn_10788
-void UIMerchantShopTitle::Slot15(int, int) {
+void UIMerchantShopTitle::OnCreate(int, int) {
   this->label = new UIStaticText();
   this->label->SetSize(this->geometry.width - 34, 15);
   this->label->Move(31, 8);
@@ -40,7 +40,7 @@ void UIMerchantShopTitle::Paint() {
 
 // OFFSET: 0x0085EC40
 // FUNCTION: fn_10843
-void UIMerchantShopTitle::Slot25(int, int) {
+void UIMerchantShopTitle::OnLBtnDown(int, int) {
   if (!g_serviceOptions.Get(167)) {
     return;
   }
@@ -57,7 +57,7 @@ void UIMerchantShopTitle::Slot25(int, int) {
 
 // OFFSET: 0x0085E920
 // FUNCTION: fn_10832
-void UIMerchantShopTitle::Slot26(int, int) {
+void UIMerchantShopTitle::OnLBtnDblClk(int, int) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (this->buyingShop != 0) {
     if (g_windowMgr.unknown_0308 == 0) {
@@ -80,7 +80,7 @@ void UIMerchantShopTitle::ResetCursor(int x, int y) {
 
 // OFFSET: 0x0085FE20
 // FUNCTION: fn_10886
-void UIMerchantShopTitle::Slot32(int, int) {
+void UIMerchantShopTitle::OnRBtnDown(int, int) {
   if (g_serviceOptions.Get(167)) {
     g_modeMgr.gameMode->SendMsg(245, 0, 0, 0, 0);
     g_session.unknown_1760.clear();

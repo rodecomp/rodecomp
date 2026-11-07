@@ -137,15 +137,15 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem();
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::AddNewItem();
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Slot53(int resolveSkin);
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::LoadSkin(int resolveSkin);
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Slot53(int resolveSkin);
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::LoadSkin(int resolveSkin);
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Slot53(int resolveSkin);
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::LoadSkin(int resolveSkin);
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Slot53(int resolveSkin);
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::LoadSkin(int resolveSkin);
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Slot53(int resolveSkin);
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::LoadSkin(int resolveSkin);
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Resize(int width, int height);
 template <>
@@ -160,7 +160,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Resize(int width, in
 void SetComboItemSkinText(GameSettingsUI::CUIComboItem* item, const std::string& name);
 // OFFSET: 0x00A2C3C0
 // FUNCTION: fn_15400
-void GameSettingsUI::CUIGroupSkin::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupSkin::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(75, 13);
   this->m_title->Move(19, 12);
@@ -458,55 +458,55 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Paint() {
 // OFFSET: 0x00A345E0
 // FUNCTION: fn_15416
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Slot35(int value) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
 // OFFSET: 0x00A34620
 // FUNCTION: fn_15417
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Slot35(int value) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
 // OFFSET: 0x00A34660
 // FUNCTION: fn_15418
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Slot35(int value) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
 // OFFSET: 0x00A346A0
 // FUNCTION: fn_15419
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Slot35(int value) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
 // OFFSET: 0x00A346E0
 // FUNCTION: fn_15420
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Slot35(int value) {
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
@@ -519,7 +519,7 @@ void CUICheckBox::SetOnCheck(std::function<void(bool)> callback) {
 // OFFSET: 0x00A354A0
 // FUNCTION: fn_15427
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Slot53(int resolveSkin) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -533,7 +533,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Slot53(int resol
 // OFFSET: 0x00A356B0
 // FUNCTION: fn_15428
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Slot53(int resolveSkin) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -547,7 +547,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Slot53(int resolve
 // OFFSET: 0x00A358C0
 // FUNCTION: fn_15429
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Slot53(int resolveSkin) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -561,7 +561,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Slot53(int resol
 // OFFSET: 0x00A35AD0
 // FUNCTION: fn_15430
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Slot53(int resolveSkin) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -575,7 +575,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Slot53(int resolve
 // OFFSET: 0x00A35CE0
 // FUNCTION: fn_15431
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Slot53(int resolveSkin) {
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -1192,7 +1192,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnScroll(int positio
 // OFFSET: 0x00A1F210
 // FUNCTION: fn_15384
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Slot15(int width, int height) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -1202,7 +1202,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Slot15(int width
 // OFFSET: 0x00A1F2E0
 // FUNCTION: fn_15385
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Slot15(int width, int height) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -1212,7 +1212,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Slot15(int width, 
 // OFFSET: 0x00A1F3B0
 // FUNCTION: fn_15386
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Slot15(int width, int height) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -1222,7 +1222,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Slot15(int width
 // OFFSET: 0x00A1F480
 // FUNCTION: fn_15387
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Slot15(int width, int height) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -1232,7 +1232,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Slot15(int width, 
 // OFFSET: 0x00A1F550
 // FUNCTION: fn_15388
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Slot15(int width, int height) {
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -1628,22 +1628,22 @@ std::string CUIListPage::GetHotkeyText(int tab, int index) {
 
 // OFFSET: 0x00A40C30
 // FUNCTION: fn_15985
-void CUIComboItem::Slot16() {
+void CUIComboItem::OnInit() {
 }
 
 // OFFSET: 0x00A41D80
 // FUNCTION: fn_15999
-void CUIListPage::Slot16() {
+void CUIListPage::OnInit() {
 }
 
 // OFFSET: 0x00A41D90
 // FUNCTION: fn_16000
-void CUIOptionItem::Slot16() {
+void CUIOptionItem::OnInit() {
 }
 
 // OFFSET: 0x00A41DA0
 // FUNCTION: fn_16001
-void CUIPage::Slot16() {
+void CUIPage::OnInit() {
   int y = 0;
   for (UIWindow* child : this->m_children) {
     child->Move(child->geometry.x, y);
@@ -1730,7 +1730,7 @@ bool CUIGraphicsPage::IsModified() {
 
 // OFFSET: 0x00A40270
 // FUNCTION: fn_15968
-void CUIListPage::Slot54(CUIOptionItem* item, const TALKTYPE& type) {
+void CUIListPage::OnSelectOption(CUIOptionItem* item, const TALKTYPE& type) {
 }
 
 // OFFSET: 0x00A41E30
@@ -1919,22 +1919,22 @@ CUIGameSettingsUI::CUIGameSettingsUI()
 
 // OFFSET: 0x00A1EE20
 // FUNCTION: fn_15383
-void CUIGameSettingsUI::Slot53() {
+void CUIGameSettingsUI::Initialize() {
   this->unknown_00B4 = 1;
   this->m_resolveSkin = true;
   this->Resize(400, 350);
   this->Move(0, 0);
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
   this->SetSkinColors(0, 0, 3, 1);
   this->m_buttonBarStyle = 3;
 }
 
 // OFFSET: 0x00A41DE0
 // FUNCTION: fn_16002
-void CUIGameSettingsUI::Slot25(int x, int y) {
+void CUIGameSettingsUI::OnLBtnDown(int x, int y) {
   if (this->m_titleBar->IsPointInside(x, y)) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
@@ -2102,13 +2102,13 @@ void SetComboItemSkinText(GameSettingsUI::CUIComboItem* item, const std::string&
 
 // OFFSET: 0x00A41C60
 // FUNCTION: fn_15996
-void GameSettingsUI::CUIGroupSpriteDetailLevel::Slot16() {
+void GameSettingsUI::CUIGroupSpriteDetailLevel::OnInit() {
   this->m_title->SetText(LookupMessage(0x144));
 }
 
 // OFFSET: 0x00A41CA0
 // FUNCTION: fn_15997
-void GameSettingsUI::CUIGroupTextureDetailLevel::Slot16() {
+void GameSettingsUI::CUIGroupTextureDetailLevel::OnInit() {
   this->m_title->SetText(LookupMessage(0x145));
 }
 
@@ -2257,7 +2257,7 @@ __declspec(noinline) void CUIGameSettingsUI::RefreshOption(int id) {
 
 // OFFSET: 0x00A41120
 // FUNCTION: fn_15987
-void GameSettingsUI::CUIGroupEmblem::Slot16() {
+void GameSettingsUI::CUIGroupEmblem::OnInit() {
   this->m_title->SetText(LookupMessage(0x1032));
   this->m_onText->SetText(LookupMessage(0x1035));
   this->m_offText->SetText(LookupMessage(0x1036));
@@ -2265,7 +2265,7 @@ void GameSettingsUI::CUIGroupEmblem::Slot16() {
 
 // OFFSET: 0x00A411C0
 // FUNCTION: fn_15988
-void GameSettingsUI::CUIGroupFullscreen::Slot16() {
+void GameSettingsUI::CUIGroupFullscreen::OnInit() {
   this->m_title->SetText(LookupMessage(0x1057));
   this->m_onText->SetText(LookupMessage(0x1058));
   this->m_offText->SetText(LookupMessage(0x1059));
@@ -2273,7 +2273,7 @@ void GameSettingsUI::CUIGroupFullscreen::Slot16() {
 
 // OFFSET: 0x00A41260
 // FUNCTION: fn_15989
-void GameSettingsUI::CUIGroupGraphics::Slot16() {
+void GameSettingsUI::CUIGroupGraphics::OnInit() {
   this->m_title->SetText(LookupMessage(0xc6d));
   this->m_modeText->SetText(LookupMessage(0xc6e));
   GetRenderSystemHolder();
@@ -2289,7 +2289,7 @@ void GameSettingsUI::CUIGroupGraphics::Slot16() {
 
 // OFFSET: 0x00A41510
 // FUNCTION: fn_15990
-void GameSettingsUI::CUIGroupGraphicsAPI::Slot16() {
+void GameSettingsUI::CUIGroupGraphicsAPI::OnInit() {
   this->m_title->SetText(LookupMessage(0x1001));
   const int backend = GetRenderSystemHolder()->Backend();
   this->m_pendingBackend = backend;
@@ -2298,7 +2298,7 @@ void GameSettingsUI::CUIGroupGraphicsAPI::Slot16() {
 
 // OFFSET: 0x00A41710
 // FUNCTION: fn_15992
-void GameSettingsUI::CUIGroupProcessPriority::Slot16() {
+void GameSettingsUI::CUIGroupProcessPriority::OnInit() {
   this->m_title->SetText(LookupMessage(0x1039));
   this->m_highText->SetText(LookupMessage(0x103A));
   const char* highTooltip = LookupMessage(0x103B);
@@ -2313,7 +2313,7 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot16() {
 
 // OFFSET: 0x00A41870
 // FUNCTION: fn_15993
-void GameSettingsUI::CUIGroupRodexSpam::Slot16() {
+void GameSettingsUI::CUIGroupRodexSpam::OnInit() {
   this->m_title->SetText(LookupMessage(0xC40));
   this->m_onText->SetText(LookupMessage(0x1038));
   this->m_offText->SetText(LookupMessage(0x1037));
@@ -2321,7 +2321,7 @@ void GameSettingsUI::CUIGroupRodexSpam::Slot16() {
 
 // OFFSET: 0x00A41CE0
 // FUNCTION: fn_15998
-void GameSettingsUI::CUIGroupTrilinear::Slot16() {
+void GameSettingsUI::CUIGroupTrilinear::OnInit() {
   this->m_title->SetText(LookupMessage(0x105A));
   this->m_onText->SetText(LookupMessage(0x1033));
   this->m_offText->SetText(LookupMessage(0x1034));
@@ -2369,7 +2369,7 @@ __declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::CUIL
 
 // OFFSET: 0x00A41B60
 // FUNCTION: fn_15995
-void GameSettingsUI::CUIGroupSound::Slot16() {
+void GameSettingsUI::CUIGroupSound::OnInit() {
   this->m_title->SetText(LookupMessage(0x5CD));
   this->m_bgmText->SetText(LookupMessage(0x5D7));
   this->unknown_0090->SetText(LookupMessage(0x1034));
@@ -2379,7 +2379,7 @@ void GameSettingsUI::CUIGroupSound::Slot16() {
 
 // OFFSET: 0x00A41560
 // FUNCTION: fn_15991
-void GameSettingsUI::CUIGroupLogInOut::Slot16() {
+void GameSettingsUI::CUIGroupLogInOut::OnInit() {
   this->m_title->SetText(LookupMessage(0x107D));
   this->m_onText->SetText(LookupMessage(0x1033));
   this->m_offText->SetText(LookupMessage(0x1034));
@@ -2394,7 +2394,7 @@ void GameSettingsUI::CUIGroupLogInOut::Slot16() {
 
 // OFFSET: 0x00A1F890
 // FUNCTION: fn_15390
-void GameSettingsUI::CUIComboItem::Slot15(int width, int height) {
+void GameSettingsUI::CUIComboItem::OnCreate(int width, int height) {
   this->m_text = new CUIStaticText();
   this->m_text->SetSize(155, 16);
   this->m_text->Move(3, 0);
@@ -2432,7 +2432,7 @@ void GameSettingsUI::CUIGroupGraphics::OnModeSelect(CUIComboItem* item, const Di
 
 // OFFSET: 0x00A41910
 // FUNCTION: fn_15994
-void GameSettingsUI::CUIGroupSkin::Slot16() {
+void GameSettingsUI::CUIGroupSkin::OnInit() {
   this->m_title->SetText(LookupMessage(0x5D9));
   this->m_combo->AddItem(std::string(LookupMessage(0xC12)), false);
   for (int index = 0; index < static_cast<int>(g_skinInfo.prefixes.size()); ++index) {
@@ -2564,7 +2564,7 @@ GameSettingsUI::CUIListPage::CUIListPage() : CUIControl(), m_optionList(nullptr)
 
 // OFFSET: 0x00A1F620
 // FUNCTION: fn_15389
-void GameSettingsUI::CUIBasicPage::Slot15(int width, int height) {
+void GameSettingsUI::CUIBasicPage::OnCreate(int width, int height) {
   this->m_skin = new CUIGroupSkin();
   this->m_skin->SetSize(400, 36);
   this->m_skin->Move(0, 0);
@@ -2593,14 +2593,14 @@ void GameSettingsUI::CUIBasicPage::Slot15(int width, int height) {
 
 // OFFSET: 0x00A32550
 // FUNCTION: fn_15405
-void GameSettingsUI::CUIListPage::Slot15(int width, int height) {
+void GameSettingsUI::CUIListPage::OnCreate(int width, int height) {
   auto* const optionList = new CUIListBoxEx<CUIOptionItem, TALKTYPE>;
   this->m_optionList = optionList;
   optionList->itemWidth = 387;
   optionList->rowHeight = 26;
   optionList->SetSize(400, 286);
   this->m_optionList->Move(0, 1);
-  this->m_optionList->SetOnSelect([this](CUIOptionItem* item, const TALKTYPE& type) { this->CUIListPage::Slot54(item, type); });
+  this->m_optionList->SetOnSelect([this](CUIOptionItem* item, const TALKTYPE& type) { this->CUIListPage::OnSelectOption(item, type); });
   this->m_optionList->SetBinder([this](CUIOptionItem* item, const TALKTYPE& type) { this->BindOption(item, type); });
   this->m_optionList->SetImages("", "", "", "");
   {
@@ -2662,7 +2662,7 @@ inline CUIHScrollBar::CUIHScrollBar() : CUIVScrollBar() {
 
 // OFFSET: 0x00A22E00
 // FUNCTION: fn_15392
-void GameSettingsUI::CUIGraphicsPage::Slot15(int width, int height) {
+void GameSettingsUI::CUIGraphicsPage::OnCreate(int width, int height) {
   this->m_graphicsApi = new CUIGroupGraphicsAPI();
   this->m_graphicsApi->SetSize(400, 32);
   this->m_graphicsApi->Move(0, 0);
@@ -2696,7 +2696,7 @@ void GameSettingsUI::CUIGraphicsPage::Slot15(int width, int height) {
 
 // OFFSET: 0x00A23070
 // FUNCTION: fn_15393
-void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupEmblem::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(85, 13);
   this->m_title->Move(19, 12);
@@ -2842,7 +2842,7 @@ void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
 
 // OFFSET: 0x00A24510
 // FUNCTION: fn_15394
-void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupFullscreen::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
@@ -2988,7 +2988,7 @@ void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
 
 // OFFSET: 0x00A259E0
 // FUNCTION: fn_15395
-void GameSettingsUI::CUIGroupGraphics::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupGraphics::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
@@ -3102,7 +3102,7 @@ void GameSettingsUI::CUIGroupGraphics::Slot15(int width, int height) {
 
 // OFFSET: 0x00A27130
 // FUNCTION: fn_15396
-void GameSettingsUI::CUIGroupGraphicsAPI::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupGraphicsAPI::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
@@ -3161,7 +3161,7 @@ void GameSettingsUI::CUIGroupGraphicsAPI::Slot15(int width, int height) {
 
 // OFFSET: 0x00A27D00
 // FUNCTION: fn_15397
-void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupLogInOut::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(100, 12);
   this->m_title->Move(19, 12);
@@ -3307,7 +3307,7 @@ void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
 
 // OFFSET: 0x00A29180
 // FUNCTION: fn_15398
-void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupProcessPriority::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(100, 13);
   this->m_title->Move(19, 12);
@@ -3512,7 +3512,7 @@ void GameSettingsUI::CUIGroupProcessPriority::Slot15(int width, int height) {
 
 // OFFSET: 0x00A2AEC0
 // FUNCTION: fn_15399
-void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupRodexSpam::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(70, 13);
   this->m_title->Move(19, 12);
@@ -3658,7 +3658,7 @@ void GameSettingsUI::CUIGroupRodexSpam::Slot15(int width, int height) {
 
 // OFFSET: 0x00A2CF80
 // FUNCTION: fn_15401
-void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(75, 13);
   this->m_title->Move(19, 12);
@@ -3920,7 +3920,7 @@ void GameSettingsUI::CUIGroupSound::Slot15(int width, int height) {
 
 // OFFSET: 0x00A2F880
 // FUNCTION: fn_15402
-void GameSettingsUI::CUIGroupSpriteDetailLevel::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupSpriteDetailLevel::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
@@ -3989,7 +3989,7 @@ void GameSettingsUI::CUIGroupSpriteDetailLevel::Slot15(int width, int height) {
 
 // OFFSET: 0x00A30490
 // FUNCTION: fn_15403
-void GameSettingsUI::CUIGroupTextureDetailLevel::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupTextureDetailLevel::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
@@ -4058,7 +4058,7 @@ void GameSettingsUI::CUIGroupTextureDetailLevel::Slot15(int width, int height) {
 
 // OFFSET: 0x00A31070
 // FUNCTION: fn_15404
-void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
+void GameSettingsUI::CUIGroupTrilinear::OnCreate(int width, int height) {
   this->m_title = new CUIStaticText();
   this->m_title->SetSize(130, 13);
   this->m_title->Move(19, 12);
@@ -4491,7 +4491,7 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
 
 // OFFSET: 0x00A1FB10
 // FUNCTION: fn_15391
-void CUIGameSettingsUI::Slot15(int width, int height) {
+void CUIGameSettingsUI::OnCreate(int width, int height) {
   this->m_titleBar = new CUITitleBar();
   this->m_titleBar->SetSize(400, 17);
   this->m_titleBar->Move(0, 0);
@@ -4954,7 +4954,7 @@ void CUIGameSettingsUI::Slot15(int width, int height) {
 
 // OFFSET: 0x00A40C40
 // FUNCTION: fn_15986
-void CUIGameSettingsUI::Slot16() {
+void CUIGameSettingsUI::OnInit() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
   static_cast<CUITitleBar*>(this->m_titleBar)->SetTitle(LookupMessage(0x946));
   static_cast<CUITextButton*>(this->m_tab->FindChildById(0))->SetText(LookupMessage(0x102E));
@@ -4976,7 +4976,7 @@ void CUIGameSettingsUI::Slot16() {
 
 // OFFSET: 0x00A33250
 // FUNCTION: fn_15406
-void GameSettingsUI::CUIOptionItem::Slot15(int width, int height) {
+void GameSettingsUI::CUIOptionItem::OnCreate(int width, int height) {
   this->m_check = new CUICheckBox();
   this->m_check->SetSize(34, 15);
   this->m_check->Move(8, 5);

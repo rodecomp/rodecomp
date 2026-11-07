@@ -102,7 +102,7 @@ void UIRodexContentsWnd::DisableZenyButton() {
 
 // OFFSET: 0x008020B0
 // FUNCTION: fn_10020
-void UIRodexContentsWnd::Slot15(int, int) {
+void UIRodexContentsWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
@@ -203,15 +203,15 @@ void UIRodexContentsWnd::Paint() {
 
 // OFFSET: 0x008026E0
 // FUNCTION: fn_10022
-void UIRodexContentsWnd::Slot25(int x, int y) {
+void UIRodexContentsWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
 // OFFSET: 0x00802700
 // FUNCTION: fn_10023
-void UIRodexContentsWnd::Slot28(int x, int y) {
+void UIRodexContentsWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (std::atoi(item.itemId.c_str()) != 0) {
     int tooltipX = this->m_itemIndex * 34 + 30;
@@ -229,7 +229,7 @@ void UIRodexContentsWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x00802910
 // FUNCTION: fn_10024
-void UIRodexContentsWnd::Slot32(int x, int y) {
+void UIRodexContentsWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (std::atoi(item.itemId.c_str()) != 0) {
     g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);

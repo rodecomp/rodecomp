@@ -390,7 +390,7 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
       cloud->spanX = spanX;
       cloud->spanZ = spanZ;
       cloud->flag = flag;
-      cloud->Slot07();
+      cloud->ResetParticles();
     }
   }
 }

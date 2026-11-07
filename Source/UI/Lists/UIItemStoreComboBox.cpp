@@ -14,7 +14,7 @@ UIItemStoreComboBox::UIItemStoreComboBox()
 
 // OFFSET: 0x00886200
 // FUNCTION: fn_11325
-void UIItemStoreComboBoxWnd::Slot15(int, int) {
+void UIItemStoreComboBoxWnd::OnCreate(int, int) {
   std::string path = "유저인터페이스\\basic_interface\\";
   const char* pressed = this->pink == 1 ? "combo_btn_pink_b" : "combo_btn_b";
   const char* disabled = this->pink == 1 ? "combo_btn_pink_c" : "combo_btn_c";

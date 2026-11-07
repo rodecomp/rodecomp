@@ -36,7 +36,7 @@ UIMerchantItemLogWnd::UIMerchantItemLogWnd(int mode) : UIItemBaseWnd() {
 
 // OFFSET: 0x0099E510
 // FUNCTION: fn_13575
-void UIMerchantItemLogWnd::Slot15(int width, int height) {
+void UIMerchantItemLogWnd::OnCreate(int width, int height) {
   UIStaticText* title = new UIStaticText();
   title->SetSize(160, 15);
   title->SetText(LookupMessage(2559 + (this->unknown_00FC != 0)), 0);
@@ -160,7 +160,7 @@ void UIMerchantItemLogWnd::Paint() {
 
 // OFFSET: 0x0099ED00
 // FUNCTION: fn_13577
-void UIMerchantItemLogWnd::Slot28(int x, int y) {
+void UIMerchantItemLogWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
   if (item.unknown_0000[1] > 0) {
     int tooltipX = (x - 40) / 32 * 32 + 40;
@@ -181,7 +181,7 @@ void UIMerchantItemLogWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x0099EF50
 // FUNCTION: fn_13578
-void UIMerchantItemLogWnd::Slot19() {
+void UIMerchantItemLogWnd::OnProcess() {
   bool changed = false;
   for (auto it = this->logs.begin(); it != this->logs.end(); ++it) {
     if (it->name.compare(LookupMessage(581)) == 0) {
@@ -197,7 +197,7 @@ void UIMerchantItemLogWnd::Slot19() {
 
 // OFFSET: 0x0099F090
 // FUNCTION: fn_13579
-void UIMerchantItemLogWnd::Slot32(int x, int y) {
+void UIMerchantItemLogWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.unknown_0000[1] > 0) {

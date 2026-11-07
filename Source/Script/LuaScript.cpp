@@ -210,7 +210,7 @@ int SetEmitterInfo(lua_State* state) {
   const int key = static_cast<int>(luaL_checknumber(state, 2));
   switch (key) {
   case 0:
-    effect->Slot07();
+    effect->ResetParticles();
     break;
   case 1:
   case 2:
@@ -332,7 +332,7 @@ int SetMagicFloorInfo(lua_State* state) {
   const int key = static_cast<int>(value);
   switch (key) {
   case 0:
-    effect->Slot07();
+    effect->ResetParticles();
     break;
   case 16:
     *reinterpret_cast<float*>(&effect->unknown_003C[8]) = static_cast<float>(luaL_checknumber(state, 3));
@@ -393,7 +393,7 @@ int SetEvilsPawInfo(lua_State* state) {
 
   switch (static_cast<int>(key)) {
   case 0:
-    effect->Slot07();
+    effect->ResetParticles();
     break;
   case 8:
     effect->size = static_cast<int>(static_cast<float>(luaL_checknumber(state, 3)));
@@ -429,7 +429,7 @@ int SetOtherEffectInfo(lua_State* state) {
   const int key = static_cast<int>(luaL_checknumber(state, 3));
   switch (key) {
   case 0:
-    effect->Slot07();
+    effect->ResetParticles();
     break;
   case 16:
     *reinterpret_cast<float*>(&effect->unknown_003C[8]) = static_cast<float>(luaL_checknumber(state, 4));
@@ -489,7 +489,7 @@ int SetAnimatedEmitterInfo(lua_State* state) {
   const int key = static_cast<int>(luaL_checknumber(state, 2));
   switch (key) {
   case 0:
-    effect->Slot07();
+    effect->ResetParticles();
     break;
   case 1:
   case 2:
@@ -589,18 +589,18 @@ int SetEZ2STRInfo(lua_State* state) {
   switch (static_cast<int>(key)) {
   case 47: {
     std::string name = luaL_checkstring(state, 3);
-    effect->Slot20(reinterpret_cast<int>(name.c_str()));
+    effect->SetResource(reinterpret_cast<int>(name.c_str()));
     break;
   }
   case 48:
-    effect->Slot21(static_cast<unsigned int>(luaL_checknumber(state, 3)));
+    effect->SetFlags(static_cast<unsigned int>(luaL_checknumber(state, 3)));
     break;
   case 49:
-    effect->Slot22(static_cast<float>(luaL_checknumber(state, 3)));
+    effect->SetScale(static_cast<float>(luaL_checknumber(state, 3)));
     break;
   case 50: {
     const float alpha = static_cast<float>(luaL_checknumber(state, 3));
-    effect->Slot23(alpha >= 1.0f ? 1.0f : (std::max)(0.0f, alpha));
+    effect->SetAlpha(alpha >= 1.0f ? 1.0f : (std::max)(0.0f, alpha));
     break;
   }
   }
@@ -621,7 +621,7 @@ int SetWindEffectInfo(lua_State* state) {
 
   switch (static_cast<int>(key)) {
   case 0:
-    effect->Slot07();
+    effect->ResetParticles();
     break;
   case 4: {
     const float x = static_cast<float>(luaL_checknumber(state, 3));

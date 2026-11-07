@@ -18,13 +18,13 @@ class UIResizer;
 class UIExpandedBarterItemPurchaseWnd : public UIFrameWnd {
 public:
   UIExpandedBarterItemPurchaseWnd();
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   bool Purchase();
   void UpdateScrollBar();
@@ -47,13 +47,13 @@ public:
 class UIExpandedBartermarketWnd : public UIFrameWnd {
 public:
   UIExpandedBartermarketWnd();
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void UpdateScrollBar();
   __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryAt(int x, int y);
@@ -74,11 +74,11 @@ class UIBarterItemPurchaseWnd : public UIItemPurchaseWnd {
 public:
   UIBarterItemPurchaseWnd();
   void Paint() override;
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   bool Purchase();
   __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemOrPriceAt(int x, int y);
@@ -90,11 +90,11 @@ class UIBartermarketWnd : public UIItemShopWnd {
 public:
   UIBartermarketWnd();
   void Paint() override;
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemAt(int x, int y);
   __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemOrPriceAt(int x, int y);
@@ -105,7 +105,7 @@ public:
   // OFFSET: 0x008401C0
   // FUNCTION: fn_10540
   UIPurchaseButton() = default;
-  void Slot28(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
 };
 
 class UIExpandedBarterPurchaseButton : public UIBitmapButton {
@@ -113,7 +113,7 @@ public:
   // OFFSET: 0x00844CA0
   // FUNCTION: fn_10568
   UIExpandedBarterPurchaseButton() = default;
-  void Slot28(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   std::string FormatChunkText(int refine, std::string name, int amount);
 };
 

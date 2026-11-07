@@ -341,12 +341,12 @@ void UIWindowMgr::DrawWindows() {
       window->Update(0);
       g_renderDiagnosticLine = 3815;
       g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
-      if (window->Slot07(&rectangle) == true) {
+      if (window->GetTransBoxInfo(&rectangle) == true) {
         DrawAlphaRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, rectangle.color);
         g_renderDiagnosticLine = 3823;
         g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
-      } else if (window->Slot42(&rectangle) == true) {
-        window->Slot43();
+      } else if (window->GetCustomTransBoxInfo(&rectangle) == true) {
+        window->DrawTransBox();
         g_renderDiagnosticLine = 3829;
         g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
       }
@@ -948,7 +948,7 @@ void UIWindowMgr::Shutdown() {
       if (this->persistentWindows.find(window) != this->persistentWindows.end()) {
         this->persistentWindows.erase(window);
       }
-      window->Slot11();
+      window->StoreInfo();
       delete window;
       window = nullptr;
     }
@@ -1035,7 +1035,7 @@ void UIWindowMgr::ClearMapWindows() {
     }
 
     this->persistentWindows.erase(window);
-    window->Slot11();
+    window->StoreInfo();
     delete window;
     entry = this->rendered.erase(entry);
   }
@@ -1959,7 +1959,7 @@ __declspec(noinline) void UIWindowMgr::BroadcastMessage21() {
   }
 
   for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-    if ((*it)->Slot02()) {
+    if ((*it)->IsFrameWnd()) {
       (*it)->SendMsg(nullptr, 21, 0, 0, 0, 0);
     }
   }
@@ -2136,7 +2136,7 @@ std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
   for (UIWindow* window : this->rendered) {
     const unsigned id = static_cast<unsigned>(window->geometry.id);
     if (id <= 10040 && this->policy[id].actions[7]) {
-      std::vector<unsigned char> state = window->Slot44();
+      std::vector<unsigned char> state = window->GetReplayData();
       std::vector<unsigned char> chunk = MakeReplayChunk(window->geometry.id + 20100, state);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
@@ -2246,7 +2246,7 @@ bool UIWindowMgr::ProcessEnterKey() {
             window = this->window_01C8;
           } else {
             for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-              if (!(*it)->Slot02()) {
+              if (!(*it)->IsFrameWnd()) {
                 continue;
               }
               if (g_replayAnimationScaling == 0) {
@@ -3174,7 +3174,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 69:
     if (this->window_02C8) {
-      this->window_02C8->Slot11();
+      this->window_02C8->StoreInfo();
     }
     closed = this->CloseWindow(34);
     g_windowMgr.DismissTransient();
@@ -3257,7 +3257,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 212:
     if (this->unknown_0430) {
-      this->unknown_0430->Slot11();
+      this->unknown_0430->StoreInfo();
       this->Schedule(this->unknown_0430);
       this->unknown_0430 = nullptr;
       closed = true;
@@ -3301,7 +3301,7 @@ bool UIWindowMgr::CloseWindow(int id) {
   }
   case 61:
     if (this->window_0324) {
-      this->window_0324->Slot11();
+      this->window_0324->StoreInfo();
       this->Schedule(this->window_0324);
       this->window_0324 = nullptr;
       closed = true;
@@ -3309,7 +3309,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 62:
     if (this->unknown_0328) {
-      this->unknown_0328->Slot11();
+      this->unknown_0328->StoreInfo();
       this->Schedule(this->unknown_0328);
       this->unknown_0328 = nullptr;
       closed = true;
@@ -3317,7 +3317,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 63:
     if (this->window_032C) {
-      this->window_032C->Slot11();
+      this->window_032C->StoreInfo();
       this->Schedule(this->window_032C);
       this->window_032C = nullptr;
       closed = true;
@@ -3325,7 +3325,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 64:
     if (this->unknown_0330) {
-      this->unknown_0330->Slot11();
+      this->unknown_0330->StoreInfo();
       this->Schedule(this->unknown_0330);
       this->unknown_0330 = nullptr;
       closed = true;
@@ -3333,7 +3333,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 65:
     if (this->unknown_0334) {
-      this->unknown_0334->Slot11();
+      this->unknown_0334->StoreInfo();
       this->Schedule(this->unknown_0334);
       this->unknown_0334 = nullptr;
       closed = true;
@@ -3341,7 +3341,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 66:
     if (this->unknown_0338) {
-      this->unknown_0338->Slot11();
+      this->unknown_0338->StoreInfo();
       this->Schedule(this->unknown_0338);
       this->unknown_0338 = nullptr;
       closed = true;
@@ -3349,7 +3349,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 60:
     if (this->window_0320) {
-      this->window_0320->Slot11();
+      this->window_0320->StoreInfo();
       this->Schedule(this->window_0320);
       this->window_0320 = nullptr;
       closed = true;
@@ -3698,7 +3698,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 130:
     if (this->unknown_03E4) {
-      reinterpret_cast<UIWindow*>(this->unknown_03E4)->Slot11();
+      reinterpret_cast<UIWindow*>(this->unknown_03E4)->StoreInfo();
       this->Schedule(reinterpret_cast<UIWindow*>(this->unknown_03E4));
       this->unknown_03E4 = 0;
       closed = true;
@@ -3706,7 +3706,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 131:
     if (this->unknown_03E8) {
-      reinterpret_cast<UIWindow*>(this->unknown_03E8)->Slot11();
+      reinterpret_cast<UIWindow*>(this->unknown_03E8)->StoreInfo();
       this->Schedule(reinterpret_cast<UIWindow*>(this->unknown_03E8));
       this->unknown_03E8 = 0;
       closed = true;
@@ -3909,7 +3909,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 237:
     if (this->window_0444) {
-      this->window_0444->Slot11();
+      this->window_0444->StoreInfo();
       this->Schedule(this->window_0444);
       this->window_0444 = nullptr;
       closed = true;
@@ -4089,7 +4089,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 324:
     if (this->window_4F274) {
-      this->window_4F274->Slot11();
+      this->window_4F274->StoreInfo();
       this->Schedule(this->window_4F274);
       this->window_4F274 = nullptr;
       closed = true;
@@ -4097,7 +4097,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 323:
     if (this->window_4F270) {
-      this->window_4F270->Slot11();
+      this->window_4F270->StoreInfo();
       this->Schedule(this->window_4F270);
       this->window_4F270 = nullptr;
       closed = true;
@@ -4112,7 +4112,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case 345:
     if (this->window_4F27C) {
-      this->window_4F27C->Slot11();
+      this->window_4F27C->StoreInfo();
       this->Schedule(this->window_4F27C);
       this->window_4F27C = nullptr;
       closed = true;

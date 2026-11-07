@@ -35,7 +35,7 @@ UIEntryQueueHelpWnd::UIEntryQueueHelpWnd() : UIFrameWnd(0), m_viewer(nullptr), m
 
 // OFFSET: 0x00BA4260
 // FUNCTION: fn_19680
-void UIEntryQueueHelpWnd::Slot18() {
+void UIEntryQueueHelpWnd::OnDestroy() {
 }
 
 // OFFSET: 0x00BA4270
@@ -47,7 +47,7 @@ void UIEntryQueueHelpWnd::Paint() {
 
 // OFFSET: 0x00BA42A0
 // FUNCTION: fn_19682
-void UIEntryQueueHelpWnd::Slot19() {
+void UIEntryQueueHelpWnd::OnProcess() {
 }
 
 // OFFSET: 0x00BA42B0
@@ -92,7 +92,7 @@ int UIEntryQueueListBox::EntryValue(int index) {
 
 // OFFSET: 0x00BA4770
 // FUNCTION: fn_19688
-void UIEntryQueueListBox::Slot31(int x, int y) {
+void UIEntryQueueListBox::OnLBtnUp(int x, int y) {
   if (this->selected != -1) {
     this->parent->SendMsg(this, 135, this->geometry.id, this->selected, 0, 0);
   }
@@ -116,8 +116,8 @@ bool UIEntryQueueRequestWnd::Create() {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
   this->SetSize(300, 250);
-  this->Slot15(300, 250);
-  this->Slot22(300, 250);
+  this->OnCreate(300, 250);
+  this->OnSize(300, 250);
   this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
 
   this->m_viewer = new UITextViewer();
@@ -172,7 +172,7 @@ bool UIEntryQueueRequestWnd::Create() {
 
 // OFFSET: 0x00BA5380
 // FUNCTION: fn_19692
-void UIEntryQueueRequestWnd::Slot18() {
+void UIEntryQueueRequestWnd::OnDestroy() {
 }
 
 // OFFSET: 0x00BA5390
@@ -194,7 +194,7 @@ void UIEntryQueueRequestWnd::Paint() {
 
 // OFFSET: 0x00BA5460
 // FUNCTION: fn_19694
-void UIEntryQueueRequestWnd::Slot19() {
+void UIEntryQueueRequestWnd::OnProcess() {
   const DWORD now = GetTickCount();
   const unsigned delta = now - this->m_lastTick;
   this->m_delta = delta;
@@ -246,8 +246,8 @@ bool UIEntryQueueStandByWnd::Create() {
   this->Resize(280, 120);
   this->AddBaseButton();
   this->SetSize(280, 120);
-  this->Slot15(280, 120);
-  this->Slot22(280, 120);
+  this->OnCreate(280, 120);
+  this->OnSize(280, 120);
   this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
 
   this->m_viewer = new UITextViewer();
@@ -282,7 +282,7 @@ bool UIEntryQueueStandByWnd::Create() {
 
 // OFFSET: 0x00BA5E50
 // FUNCTION: fn_19699
-void UIEntryQueueStandByWnd::Slot18() {
+void UIEntryQueueStandByWnd::OnDestroy() {
 }
 
 // OFFSET: 0x00BA5E60
@@ -294,7 +294,7 @@ void UIEntryQueueStandByWnd::Paint() {
 
 // OFFSET: 0x00BA5E90
 // FUNCTION: fn_19701
-void UIEntryQueueStandByWnd::Slot19() {
+void UIEntryQueueStandByWnd::OnProcess() {
 }
 
 // OFFSET: 0x00BA5EA0
@@ -357,7 +357,7 @@ int UIEntryQueueWnd::SelectedIndex() {
 
 // OFFSET: 0x00BA6420
 // FUNCTION: fn_19707
-void UIEntryQueueWnd::Slot15(int width, int height) {
+void UIEntryQueueWnd::OnCreate(int width, int height) {
 
   this->Resize(350, 350);
   this->AddBaseButton();
@@ -629,7 +629,7 @@ bool UIEntryQueueWnd::ConfirmApply(const char* type) {
 
 // OFFSET: 0x00BA7B90
 // FUNCTION: fn_19713
-void UIEntryQueueWnd::Slot11() {
+void UIEntryQueueWnd::StoreInfo() {
   if (this->saved) {
     this->saved->x = this->geometry.x;
     this->saved->y = this->geometry.y;
@@ -640,7 +640,7 @@ void UIEntryQueueWnd::Slot11() {
 
 // OFFSET: 0x00BA3A50
 // FUNCTION: fn_19679
-void UIEntryQueueHelpWnd::Slot15(int width, int height) {
+void UIEntryQueueHelpWnd::OnCreate(int width, int height) {
   this->Resize(280, 280);
 
   this->m_viewer = new UITextViewer();

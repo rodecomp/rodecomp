@@ -265,7 +265,7 @@ CParticle* CreateSpriteParticle(const vector3d* position, int flags) {
 // FUNCTION: fn_19294
 void FreeParticle(CParticle* particle) {
   if (particle) {
-    particle->Slot01();
+    particle->ReleaseResource();
   }
   g_effectMemoryMgr->Free(particle->unknown_02B0, particle);
 }

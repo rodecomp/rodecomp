@@ -8,9 +8,9 @@ class UITVBitmapButton : public UIBitmapButton {
 
 public:
   UITVBitmapButton();
-  void Slot31(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot33(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
 
 protected:
   /* 0120 */ int m_value;

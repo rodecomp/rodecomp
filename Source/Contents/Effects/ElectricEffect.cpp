@@ -68,19 +68,19 @@ void CElectricEffect::Close() {
 
 // OFFSET: 0x00B4EE80
 // FUNCTION: fn_19004
-void CElectricEffect::Slot01() {
+void CElectricEffect::Open() {
   this->unknown_002C = 300;
 }
 
 // OFFSET: 0x00B4EF40
 // FUNCTION: fn_19005
-bool CElectricEffect::Slot06() {
+bool CElectricEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B4EF50
 // FUNCTION: fn_19006
-void CElectricEffect::Slot03() {
+void CElectricEffect::OnProcess() {
   if (this->tick >= 20 && this->tick < 24) {
     this->AddBolt(0);
     this->AddBolt(180);
@@ -186,7 +186,7 @@ void CElectricEffect::Slot03() {
 
 // OFFSET: 0x00B4F930
 // FUNCTION: fn_19007
-void CElectricEffect::Slot04() {
+void CElectricEffect::Render() {
   for (auto it = this->bolts.begin(); it != this->bolts.end(); ++it) {
     CParticle* bolt = *it;
     if (bolt && static_cast<unsigned>(bolt->unknown_000C - 1) <= 17 && bolt->unknown_0008 > 0) {

@@ -15,8 +15,8 @@ class UINormalMB;
 class UIHomunInfoWnd : public UIFrameWnd {
 public:
   UIHomunInfoWnd();
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 

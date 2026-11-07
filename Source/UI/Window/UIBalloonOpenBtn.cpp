@@ -21,7 +21,7 @@ void UIBalloonOpenBtn::Paint() {
 
 // OFFSET: 0x0094F0E0
 // FUNCTION: fn_12931
-void UIBalloonOpenBtn::Slot19() {
+void UIBalloonOpenBtn::OnProcess() {
   if (this->m_balloon) {
     const std::int64_t elapsed = static_cast<std::int64_t>(timeGetTime()) - this->m_openTime;
     if (elapsed > this->m_openDelay) {

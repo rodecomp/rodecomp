@@ -103,7 +103,7 @@ ITEM_INFO UIRoulletteWnd::ItemAt(int x, int y) {
 
 // OFFSET: 0x0080BD10
 // FUNCTION: fn_10086
-void UIRoulletteWnd::Slot15(int, int) {
+void UIRoulletteWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
 
   auto* startButton = new UIBitmapButton();
@@ -230,12 +230,12 @@ void UIRoulletteWnd::Paint() {
 
 // OFFSET: 0x0080C490
 // FUNCTION: fn_10088
-void UIRoulletteWnd::Slot25(int, int) {
+void UIRoulletteWnd::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x0080C4A0
 // FUNCTION: fn_10089
-void UIRoulletteWnd::Slot28(int x, int y) {
+void UIRoulletteWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   int tooltipX = (this->m_column + this->m_row) * 36 + 155;
   int tooltipY = 330 - this->m_row * 40;
@@ -266,7 +266,7 @@ void UIRoulletteWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x0080C730
 // FUNCTION: fn_10090
-void UIRoulletteWnd::Slot19() {
+void UIRoulletteWnd::OnProcess() {
   if (g_effectDetailLevel != 2) {
     if (this->m_startButton->geometry.unknown_0030 == 1 && this->m_enabled == 1) {
       if (g_rouletteMgr->m_spinning == 0) {
@@ -337,7 +337,7 @@ void UIRoulletteWnd::Slot19() {
 
 // OFFSET: 0x0080CA70
 // FUNCTION: fn_10091
-void UIRoulletteWnd::Slot32(int x, int y) {
+void UIRoulletteWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
 
   if (static_cast<unsigned>(y - 143) < 31 && static_cast<unsigned>(x - 186) < 31 && g_rouletteMgr->m_resultShown == 1) {

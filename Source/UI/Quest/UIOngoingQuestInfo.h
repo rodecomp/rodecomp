@@ -17,11 +17,11 @@ class CUIScrollWindow;
 class CUIOngoingQuestInfo : public CUIFrameWnd {
 public:
   __declspec(noinline) CUIOngoingQuestInfo();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void OnFirstAction();
   void OnClose();
-  virtual void Slot53();
+  virtual void Initialize();
   void UpdateHuntInfo();
   void SetQuest(unsigned int id);
 
@@ -52,8 +52,8 @@ class CUIContents : public CUIControl {
 public:
   __declspec(noinline) CUIContents();
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
 
   __declspec(noinline) void UpdateHeight();
@@ -71,8 +71,8 @@ public:
 class CUIRewardItem : public CUIListItem {
 public:
   CUIRewardItem();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
 
   /* 00E8 */ CUIStaticImage* background;
@@ -85,8 +85,8 @@ class CUIRewards : public CUIControl {
 public:
   __declspec(noinline) CUIRewards();
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
 
   void OnPrepareItem(CUIRewardItem* item, const CRewardItemData& data);
@@ -113,10 +113,10 @@ class CUIScrollWindow : public CUIControl {
 public:
   __declspec(noinline) CUIScrollWindow();
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
-  void Slot35(int value) override;
+  void OnWheel(int value) override;
 
   void OnScroll(int position);
   void SetQuest(unsigned int id);

@@ -69,7 +69,7 @@ void UIMakeTargetResultWnd::Paint() {
 
 // OFFSET: 0x009A0B00
 // FUNCTION: fn_13604
-void UIItemRepairWnd::Slot15(int width, int height) {
+void UIItemRepairWnd::OnCreate(int width, int height) {
   const int listWidth = width - 24;
   const int listHeight = height - 55;
   this->m_list = new UIListBox();
@@ -101,7 +101,7 @@ void UIItemRepairWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x009A1590
 // FUNCTION: fn_13605
-void UIMakeTargetListWnd::Slot15(int width, int height) {
+void UIMakeTargetListWnd::OnCreate(int width, int height) {
   const int listWidth = width - 24;
   const int listHeight = height - 55;
   this->m_list = new UIListBox();
@@ -133,7 +133,7 @@ void UIMakeTargetListWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x009A2020
 // FUNCTION: fn_13606
-void UIMakeTargetProcessWnd::Slot15(int width, int height) {
+void UIMakeTargetProcessWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   int positions[2][2] = {{width - 91, height - 24}, {width - 46, height - 24}};
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
@@ -155,7 +155,7 @@ void UIMakeTargetProcessWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x009A29B0
 // FUNCTION: fn_13607
-void UIMakeTargetResultWnd::Slot15(int width, int height) {
+void UIMakeTargetResultWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   const int buttonX = width - 91;
   const int buttonY = height - 24;
@@ -174,7 +174,7 @@ void UIMakeTargetResultWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x009A2DD0
 // FUNCTION: fn_13608
-void UIWeaponRefineWnd::Slot15(int width, int height) {
+void UIWeaponRefineWnd::OnCreate(int width, int height) {
   const int listWidth = width - 24;
   const int listHeight = height - 55;
   this->m_list = new UIListBox();
@@ -371,7 +371,7 @@ UIItemRepairWnd::~UIItemRepairWnd() = default;
 
 // OFFSET: 0x009A0280
 // FUNCTION: fn_13599
-std::vector<unsigned char> UIItemRepairWnd::Slot44() {
+std::vector<unsigned char> UIItemRepairWnd::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = BuildReplayTaggedRecord(22150, nullptr, 0);

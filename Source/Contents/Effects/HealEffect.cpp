@@ -323,19 +323,19 @@ void CHealEffect::Close() {
 
 // OFFSET: 0x00B69050
 // FUNCTION: fn_19075
-bool CHealEffect::Slot06() {
+bool CHealEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B68770
 // FUNCTION: fn_19072
-void CHealEffect::Slot01() {
+void CHealEffect::Open() {
   this->unknown_002C = 100;
 }
 
 // OFFSET: 0x00B68780
 // FUNCTION: fn_19073
-void CHealEffect::Slot12() {
+void CHealEffect::InitEvents() {
   switch (this->id) {
   case 253:
     this->AddEvent(0, "effect\\흡기.wav", 0, 0);
@@ -431,7 +431,7 @@ void CHealEffect::SpawnParticles() {
 
 // OFFSET: 0x00B69160
 // FUNCTION: fn_19076
-void CHealEffect::Slot03() {
+void CHealEffect::OnProcess() {
   this->SpawnParticles();
 
   for (auto it = this->columnParticles.begin(); it != this->columnParticles.end(); ++it) {
@@ -592,7 +592,7 @@ void CHealEffect::Slot03() {
 
 // OFFSET: 0x00B69BC0
 // FUNCTION: fn_19077
-void CHealEffect::Slot04() {
+void CHealEffect::Render() {
   for (auto it = this->columnParticles.begin(); it != this->columnParticles.end(); ++it) {
     CParticle* particle = *it;
     if (particle && particle->unknown_000C > 0) {

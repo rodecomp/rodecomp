@@ -26,15 +26,15 @@ UIKeyStrokeWnd::UIKeyStrokeWnd() : UIFrameWnd(0) {}
 
 // OFFSET: 0x0096D6F0
 // FUNCTION: fn_13200
-void UICandidateWnd::Slot15(int, int) {}
+void UICandidateWnd::OnCreate(int, int) {}
 
 // OFFSET: 0x0096D700
 // FUNCTION: fn_13201
-void UICompositionWnd::Slot15(int, int) {}
+void UICompositionWnd::OnCreate(int, int) {}
 
 // OFFSET: 0x0096D710
 // FUNCTION: fn_13202
-void UIKeyStrokeWnd::Slot15(int, int) {}
+void UIKeyStrokeWnd::OnCreate(int, int) {}
 
 // OFFSET: 0x0096D720
 // FUNCTION: fn_13203

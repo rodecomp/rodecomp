@@ -21,10 +21,10 @@ public:
   /* 0108 */ UITextViewer* m_text;
   /* 010C */ UIBitmapButton* m_delayButton;
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  bool Slot42(void* output) override;
-  void Slot43() override;
+  bool GetCustomTransBoxInfo(void* output) override;
+  void DrawTransBox() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
 

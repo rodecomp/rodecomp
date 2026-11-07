@@ -234,7 +234,7 @@ void CSpriteParticle::Draw(char mode) {
       float offsetX = this->unknown_02C0;
       float offsetY = this->unknown_02C4;
       CGameActor* actor = static_cast<CGameActor*>(renderObject);
-      if (actor->Slot55() <= 0) {
+      if (actor->GetMonsterTransformJob() <= 0) {
         if (this->unknown_02BC != 0) {
           float extent[2];
           float* p = actor->GetExtent(extent);

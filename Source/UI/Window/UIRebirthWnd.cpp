@@ -10,7 +10,7 @@
 
 // OFFSET: 0x00924A60
 // FUNCTION: fn_12647
-void UIRebirthWnd::Slot15(int width, int height) {
+void UIRebirthWnd::OnCreate(int width, int height) {
   const std::string path = "유저인터페이스\\";
   const char* const names[5][5] = {
     {"esc_05a", "esc_05b", "esc_05c"},

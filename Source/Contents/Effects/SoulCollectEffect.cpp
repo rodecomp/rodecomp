@@ -33,7 +33,7 @@ void CSoulCollectEffect::Close() {
 
 // OFFSET: 0x0072A5F0
 // FUNCTION: fn_07460
-void CSoulCollectEffect::Slot01() {
+void CSoulCollectEffect::Open() {
   const int count = this->unknown_00B0;
   if (count < 0) {
     return;
@@ -77,13 +77,13 @@ void CSoulCollectEffect::Slot01() {
 
 // OFFSET: 0x0072A7F0
 // FUNCTION: fn_07462
-bool CSoulCollectEffect::Slot06() {
+bool CSoulCollectEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x0072A800
 // FUNCTION: fn_07463
-void CSoulCollectEffect::Slot03() {
+void CSoulCollectEffect::OnProcess() {
   float& rotation = reinterpret_cast<float&>(this->unknown_0050);
 
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
@@ -158,7 +158,7 @@ void CSoulCollectEffect::Slot03() {
 
 // OFFSET: 0x0072AD90
 // FUNCTION: fn_07464
-void CSoulCollectEffect::Slot04() {
+void CSoulCollectEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle && particle->alpha > 0) {

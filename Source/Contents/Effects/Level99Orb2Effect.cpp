@@ -31,7 +31,7 @@ void CLevel99Orb2Effect::Close() {
 
 // OFFSET: 0x00B6BFB0
 // FUNCTION: fn_19099
-void CLevel99Orb2Effect::Slot01() {
+void CLevel99Orb2Effect::Open() {
   for (int row = 0; row < 4; ++row) {
     for (int column = 0; column < 4; ++column) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 13);
@@ -66,13 +66,13 @@ void CLevel99Orb2Effect::Slot01() {
 
 // OFFSET: 0x00B6C0F0
 // FUNCTION: fn_19100
-bool CLevel99Orb2Effect::Slot06() {
+bool CLevel99Orb2Effect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B6C100
 // FUNCTION: fn_19101
-void CLevel99Orb2Effect::Slot03() {
+void CLevel99Orb2Effect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -146,7 +146,7 @@ void CLevel99Orb2Effect::Slot03() {
 
 // OFFSET: 0x00B6C920
 // FUNCTION: fn_19102
-void CLevel99Orb2Effect::Slot04() {
+void CLevel99Orb2Effect::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

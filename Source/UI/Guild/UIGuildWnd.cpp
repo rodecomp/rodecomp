@@ -126,9 +126,9 @@ void UIGuildWnd::Paint() {
 
 // OFFSET: 0x00960020
 // FUNCTION: fn_13091
-void UIGuildWnd::Slot25(int x, int y) {
+void UIGuildWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 
@@ -144,13 +144,13 @@ void UIGuildWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x0095FE10
 // FUNCTION: fn_13087
-void UIGuildNoticeWnd::Slot25(int x, int y) {
-  UIGuildWnd::Slot25(x, y);
+void UIGuildNoticeWnd::OnLBtnDown(int x, int y) {
+  UIGuildWnd::OnLBtnDown(x, y);
 }
 
 // OFFSET: 0x009602E0
 // FUNCTION: fn_13100
-void UIGuildMemberManageWnd::Slot19() {
+void UIGuildMemberManageWnd::OnProcess() {
   if (this->m_buttonTime != 0 && timeGetTime() > this->m_buttonTime + 400) {
     UIButton* button = this->m_button;
     this->m_buttonTime = 0;
@@ -161,7 +161,7 @@ void UIGuildMemberManageWnd::Slot19() {
 
 // OFFSET: 0x00960330
 // FUNCTION: fn_13101
-void UIGuildPositionManageWnd::Slot19() {
+void UIGuildPositionManageWnd::OnProcess() {
   if (this->m_buttonTime != 0 && timeGetTime() > this->m_buttonTime + 400) {
     UIButton* button = this->m_button;
     this->m_buttonTime = 0;
@@ -179,7 +179,7 @@ void UIGuildPositionManageWnd::Invalidate() {
 
 // OFFSET: 0x009603C0
 // FUNCTION: fn_13103
-void UIGuildMemberManageWnd::Slot32(int x, int y) {
+void UIGuildMemberManageWnd::OnRBtnDown(int x, int y) {
   const int previous = this->m_hoverRow;
   int row;
   if (static_cast<unsigned>(x - 5) <= 377 && static_cast<unsigned>(y - 66) <= 217) {
@@ -199,19 +199,19 @@ void UIGuildMemberManageWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x00960620
 // FUNCTION: fn_13108
-void UIGuildMemberManageWnd::Slot33(int, int) {
+void UIGuildMemberManageWnd::OnRBtnUp(int, int) {
   this->SendMsg(nullptr, 49, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00960640
 // FUNCTION: fn_13109
-void UIGuildSkillWnd::Slot33(int, int) {
+void UIGuildSkillWnd::OnRBtnUp(int, int) {
   this->SendMsg(nullptr, 49, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00960960
 // FUNCTION: fn_13111
-void UIGuildBanishedMemberWnd::Slot35(int delta) {
+void UIGuildBanishedMemberWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     const int step = std::min(this->m_visibleRows - 1, 3);
     this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
@@ -220,7 +220,7 @@ void UIGuildBanishedMemberWnd::Slot35(int delta) {
 
 // OFFSET: 0x009609B0
 // FUNCTION: fn_13112
-void UIGuildMemberManageWnd::Slot35(int delta) {
+void UIGuildMemberManageWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     const int step = std::min(this->m_visibleRows - 1, 3);
     this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
@@ -229,7 +229,7 @@ void UIGuildMemberManageWnd::Slot35(int delta) {
 
 // OFFSET: 0x00960A00
 // FUNCTION: fn_13113
-void UIGuildPositionManageWnd::Slot35(int delta) {
+void UIGuildPositionManageWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     const int step = std::min(this->m_visibleRows - 1, 3);
     this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
@@ -238,7 +238,7 @@ void UIGuildPositionManageWnd::Slot35(int delta) {
 
 // OFFSET: 0x00960A50
 // FUNCTION: fn_13114
-void UIGuildSkillWnd::Slot35(int delta) {
+void UIGuildSkillWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     const int step = std::min(this->m_visibleRows - 1, 3);
     this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
@@ -247,7 +247,7 @@ void UIGuildSkillWnd::Slot35(int delta) {
 
 // OFFSET: 0x00960AA0
 // FUNCTION: fn_13115
-void UIGuildTotalInfoWnd::Slot35(int delta) {
+void UIGuildTotalInfoWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     const int step = std::min(this->m_visibleRows - 1, 3);
     this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
@@ -422,8 +422,8 @@ CSkillInfo UIGuildSkillWnd::VisibleSkillAt(int row) {
 
 // OFFSET: 0x0095FE20
 // FUNCTION: fn_13088
-void UIGuildPositionManageWnd::Slot25(int x, int y) {
-  UIGuildWnd::Slot25(x, y);
+void UIGuildPositionManageWnd::OnLBtnDown(int x, int y) {
+  UIGuildWnd::OnLBtnDown(x, y);
   const int previous = this->m_hoverIndex;
   this->m_hoverIndex = this->PositionIndexAt(x, y);
   if (previous != this->m_hoverIndex) {
@@ -433,7 +433,7 @@ void UIGuildPositionManageWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00960430
 // FUNCTION: fn_13104
-void UIGuildPositionManageWnd::Slot32(int x, int y) {
+void UIGuildPositionManageWnd::OnRBtnDown(int x, int y) {
   const int previous = this->m_hoverIndex;
   this->m_hoverIndex = this->PositionIndexAt(x, y);
   if (previous != this->m_hoverIndex) {
@@ -443,7 +443,7 @@ void UIGuildPositionManageWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x00960470
 // FUNCTION: fn_13105
-void UIGuildSkillWnd::Slot32(int x, int y) {
+void UIGuildSkillWnd::OnRBtnDown(int x, int y) {
   const int previous = this->m_hoverIndex;
   this->m_hoverIndex = this->SkillIndexAt(x, y);
   if (previous != this->m_hoverIndex) {
@@ -562,7 +562,7 @@ void UIGuildSkillWnd::UpdateScroll() {
 
 // OFFSET: 0x00960230
 // FUNCTION: fn_13099
-void UIGuildInfoManageWnd::Slot19() {
+void UIGuildInfoManageWnd::OnProcess() {
   const std::string name = g_guildMgr->GetEmblemFilename(this->m_guildId);
   CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
   if (emblem && emblem->gif.frameChanged == true) {
@@ -572,7 +572,7 @@ void UIGuildInfoManageWnd::Slot19() {
 
 // OFFSET: 0x009656A0
 // FUNCTION: fn_13140
-void UIGuildWnd::Slot11() {
+void UIGuildWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->x = this->geometry.x;
     this->m_saved->y = this->geometry.y;
@@ -716,8 +716,8 @@ void UIGuildBanishedMemberWnd::UpdateScroll() {
 
 // OFFSET: 0x0095FBF0
 // FUNCTION: fn_13083
-void UIGuildBanishedMemberWnd::Slot25(int x, int y) {
-  UIGuildWnd::Slot25(x, y);
+void UIGuildBanishedMemberWnd::OnLBtnDown(int x, int y) {
+  UIGuildWnd::OnLBtnDown(x, y);
   const int previous = this->m_hoverRow;
   int hover = -1;
   if (x <= this->geometry.width - 14 && x >= 4 && y >= g_guildBanishedRowHeight + 46 && y < (this->m_visibleRows + 1) * g_guildBanishedRowHeight + 46) {
@@ -818,8 +818,8 @@ void UIGuildTotalInfoWnd::UpdateScroll() {
 
 // OFFSET: 0x0095FF60
 // FUNCTION: fn_13090
-void UIGuildTotalInfoWnd::Slot25(int x, int y) {
-  UIGuildWnd::Slot25(x, y);
+void UIGuildTotalInfoWnd::OnLBtnDown(int x, int y) {
+  UIGuildWnd::OnLBtnDown(x, y);
   const int previous = this->m_hoverRow;
   int hover = -1;
   if (x <= this->geometry.width - 14 && x >= 4 && y >= g_guildTotalInfoRowHeight + 46 && y < (this->m_visibleRows + 1) * g_guildTotalInfoRowHeight + 46) {
@@ -877,7 +877,7 @@ int UIGuildTotalInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1
 
 // OFFSET: 0x0095D3A0
 // FUNCTION: fn_13066
-void UIGuildTotalInfoWnd::Slot15(int, int) {
+void UIGuildTotalInfoWnd::OnCreate(int, int) {
   this->CreateTabs();
   if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
@@ -907,7 +907,7 @@ void UIGuildTotalInfoWnd::Slot15(int, int) {
 
 // OFFSET: 0x00958740
 // FUNCTION: fn_13057
-void UIGuildBanishedMemberWnd::Slot15(int, int) {
+void UIGuildBanishedMemberWnd::OnCreate(int, int) {
   this->CreateTabs();
   if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
@@ -943,7 +943,7 @@ void UIGuildBanishedMemberWnd::Slot15(int, int) {
 
 // OFFSET: 0x00958FF0
 // FUNCTION: fn_13059
-void UIGuildInfoManageWnd::Slot15(int, int) {
+void UIGuildInfoManageWnd::OnCreate(int, int) {
   this->CreateTabs();
   this->m_allyRow = -1;
   this->m_hostileRow = -1;
@@ -1016,20 +1016,20 @@ void UIGuildInfoManageWnd::HideAgitMenu() {
 
 // OFFSET: 0x00960380
 // FUNCTION: fn_13102
-void UIGuildInfoManageWnd::Slot32(int, int) {
+void UIGuildInfoManageWnd::OnRBtnDown(int, int) {
   this->HideAgitMenu();
 }
 
 // OFFSET: 0x0095FCF0
 // FUNCTION: fn_13085
-void UIGuildInfoManageWnd::Slot25(int x, int y) {
-  UIGuildWnd::Slot25(x, y);
+void UIGuildInfoManageWnd::OnLBtnDown(int x, int y) {
+  UIGuildWnd::OnLBtnDown(x, y);
   this->HideAgitMenu();
 }
 
 // OFFSET: 0x00960540
 // FUNCTION: fn_13107
-void UIGuildInfoManageWnd::Slot33(int x, int y) {
+void UIGuildInfoManageWnd::OnRBtnUp(int x, int y) {
   if (x < 201 || x > 287) {
     return;
   }
@@ -1239,8 +1239,8 @@ void UIGuildMemberManageWnd::SortMembers(int column) {
 
 // OFFSET: 0x0095FD40
 // FUNCTION: fn_13086
-void UIGuildMemberManageWnd::Slot25(int x, int y) {
-  UIGuildWnd::Slot25(x, y);
+void UIGuildMemberManageWnd::OnLBtnDown(int x, int y) {
+  UIGuildWnd::OnLBtnDown(x, y);
   if (x >= 6 && x <= 381 && y >= 47 && y <= 66) {
     int left = 6;
     for (int column = 0; column < 6; ++column) {
@@ -1571,7 +1571,7 @@ void UIGuildInfoManageWnd::Paint() {
 
 // OFFSET: 0x0095FE70
 // FUNCTION: fn_13089
-void UIGuildSkillWnd::Slot25(int x, int y) {
+void UIGuildSkillWnd::OnLBtnDown(int x, int y) {
   const int previous = this->m_hoverIndex;
   this->m_hoverIndex = this->SkillIndexAt(x, y);
   if (previous != this->m_hoverIndex) {
@@ -1593,7 +1593,7 @@ void UIGuildSkillWnd::Slot25(int x, int y) {
       }
     }
 
-    UIGuildWnd::Slot25(x, y);
+    UIGuildWnd::OnLBtnDown(x, y);
   }
 }
 
@@ -1670,7 +1670,7 @@ void UIGuildTotalInfoWnd::Paint() {
 
 // OFFSET: 0x00959F10
 // FUNCTION: fn_13061
-void UIGuildMemberManageWnd::Slot15(int, int) {
+void UIGuildMemberManageWnd::OnCreate(int, int) {
   this->CreateTabs();
   if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
@@ -1761,8 +1761,8 @@ void UIGuildMemberManageWnd::Slot15(int, int) {
 // FUNCTION: fn_13036
 void UIAgitMessageBox::InitializeMessageBox(const char* text, int width, int height) {
   this->SetSize(width, height);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 
   UITextViewer* viewer = new UITextViewer();
   viewer->Configure(10, 22, width - 20, height - 55, 0);
@@ -1963,7 +1963,7 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
 
 // OFFSET: 0x0095ACC0
 // FUNCTION: fn_13062
-void UIGuildNoticeWnd::Slot15(int, int) {
+void UIGuildNoticeWnd::OnCreate(int, int) {
   this->CreateTabs();
 
   if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
@@ -2235,7 +2235,7 @@ UIListBoxAgitMenu::UIListBoxAgitMenu() : UIListBox() {
 
 // OFFSET: 0x0095BF90
 // FUNCTION: fn_13064
-void UIGuildSkillWnd::Slot15(int, int height) {
+void UIGuildSkillWnd::OnCreate(int, int height) {
   this->CreateTabs();
   if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
@@ -2863,7 +2863,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
 // OFFSET: 0x0095B380
 // FUNCTION: fn_13063
-void UIGuildPositionManageWnd::Slot15(int, int) {
+void UIGuildPositionManageWnd::OnCreate(int, int) {
   this->CreateTabs();
   this->m_positions = reinterpret_cast<const std::list<GuildPositionEntry>&>(g_guildInfo.unknown_00D4);
   if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {

@@ -10,11 +10,11 @@
 class UIItemBaseWnd : public UIFrameWnd {
 public:
   UIItemBaseWnd();
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot35(int value) override;
+  void OnWheel(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   int GetItemIndexAt(int x, int y);

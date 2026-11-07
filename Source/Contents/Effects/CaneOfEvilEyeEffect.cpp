@@ -161,7 +161,7 @@ void CCaneOfEvilEyeEffect::Finish() {
 
 // OFFSET: 0x006F9130
 // FUNCTION: fn_06878
-void CCaneOfEvilEyeEffect::Slot01() {
+void CCaneOfEvilEyeEffect::Open() {
   this->retained = 1;
 
   std::vector<vector3d> offsets;
@@ -184,7 +184,7 @@ void CCaneOfEvilEyeEffect::Slot01() {
 
 // OFFSET: 0x006F9340
 // FUNCTION: fn_06879
-bool CCaneOfEvilEyeEffect::Slot06() {
+bool CCaneOfEvilEyeEffect::IsAlive() {
   if (this->ActorExists() && (!this->unknown_00D0.empty() || !this->unknown_00DC.empty())) {
     return true;
   }
@@ -226,7 +226,7 @@ void CCaneOfEvilEyeEffect::UpdateEyes() {
 
 // OFFSET: 0x006F95D0
 // FUNCTION: fn_06881
-void CCaneOfEvilEyeEffect::Slot03() {
+void CCaneOfEvilEyeEffect::OnProcess() {
   this->RemoveNullEmitters();
   this->UpdateEyes();
 
@@ -306,7 +306,7 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
 
 // OFFSET: 0x006F9D40
 // FUNCTION: fn_06882
-void CCaneOfEvilEyeEffect::Slot04() {
+void CCaneOfEvilEyeEffect::Render() {
   for (auto it = this->unknown_00D0.begin(); it != this->unknown_00D0.end(); ++it) {
     if (*it) {
       (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);

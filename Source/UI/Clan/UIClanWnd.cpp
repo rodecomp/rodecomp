@@ -21,13 +21,13 @@ UIClanInfoManageWnd::UIClanInfoManageWnd() : UIClanWnd(), m_emblem(nullptr) {}
 
 // OFFSET: 0x0084CEF0
 // FUNCTION: fn_10628
-int UIClanInfoManageWnd::Slot53() {
+int UIClanInfoManageWnd::Tab() {
   return 0;
 }
 
 // OFFSET: 0x0084CFD0
 // FUNCTION: fn_10629
-void UIClanInfoManageWnd::Slot15(int width, int height) {
+void UIClanInfoManageWnd::OnCreate(int width, int height) {
   if (!this->m_title) {
     const char* title = LookupMessage(2355);
     this->m_title = new UIStaticText();
@@ -161,8 +161,8 @@ void UIClanWnd::Paint() {
 
 // OFFSET: 0x0084DA30
 // FUNCTION: fn_10632
-void UIClanInfoManageWnd::Slot25(int x, int y) {
-  UIFrameWnd::Slot25(x, y);
+void UIClanInfoManageWnd::OnLBtnDown(int x, int y) {
+  UIFrameWnd::OnLBtnDown(x, y);
 }
 
 // OFFSET: 0x0084DA40
@@ -218,7 +218,7 @@ void UIClanInfoManageWnd::LoadEmblem() {
 
 // OFFSET: 0x0084DC00
 // FUNCTION: fn_10636
-void UIClanWnd::Slot11() {
+void UIClanWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->x = this->geometry.x;
     this->m_saved->y = this->geometry.y;

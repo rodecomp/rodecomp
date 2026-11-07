@@ -35,15 +35,15 @@ public:
   /* 0120 */ int m_moneyLength;
   /* 0124 */ std::string m_moneyText;
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot35(int delta) override;
-  void Slot19() override;
-  std::vector<unsigned char> Slot44() override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnWheel(int delta) override;
+  void OnProcess() override;
+  std::vector<unsigned char> GetReplayData() override;
 
   void LayoutButtons();
   void CancelInput();

@@ -20,7 +20,7 @@ CLevel150Effect::CLevel150Effect() : CEffect(-1) {
 
 // OFFSET: 0x00B465A0
 // FUNCTION: fn_18908
-void CLevel150Effect::Slot10(int blend) {
+void CLevel150Effect::SetDestinationBlend(int blend) {
   for (std::vector<CParticle*>::iterator it = this->bubbles.begin(); it != this->bubbles.end(); ++it) {
     if (blend != -1) {
       (*it)->destinationBlend = blend;
@@ -36,7 +36,7 @@ void CLevel150Effect::Slot10(int blend) {
 
 // OFFSET: 0x00B46600
 // FUNCTION: fn_18909
-void CLevel150Effect::Slot08(int red, int green, int blue) {
+void CLevel150Effect::SetColor(int red, int green, int blue) {
   for (std::vector<CParticle*>::iterator it = this->bubbles.begin(); it != this->bubbles.end(); ++it) {
     (*it)->SetColor(red, green, blue);
   }
@@ -198,7 +198,7 @@ void CLevel150Effect::Close() {
 
 // OFFSET: 0x00B46D80
 // FUNCTION: fn_18913
-void CLevel150Effect::Slot01() {
+void CLevel150Effect::Open() {
   this->AddBubbleRing(45);
   this->AddBubbleRing(25);
   this->AddShock(2);
@@ -207,13 +207,13 @@ void CLevel150Effect::Slot01() {
 
 // OFFSET: 0x00B46DB0
 // FUNCTION: fn_18914
-bool CLevel150Effect::Slot06() {
+bool CLevel150Effect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B46F00
 // FUNCTION: fn_18915
-void CLevel150Effect::Slot03() {
+void CLevel150Effect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->bubbles.begin(); it != this->bubbles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -293,7 +293,7 @@ void CLevel150Effect::Slot03() {
 
 // OFFSET: 0x00B474C0
 // FUNCTION: fn_18916
-void CLevel150Effect::Slot04() {
+void CLevel150Effect::Render() {
   for (std::vector<CParticle*>::iterator it = this->bubbles.begin(); it != this->bubbles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle || particle->unknown_000C <= 0) {
@@ -318,7 +318,7 @@ CLevel150SubEffect::CLevel150SubEffect() : CEffect(-1) {
 
 // OFFSET: 0x00B477D0
 // FUNCTION: fn_18919
-void CLevel150SubEffect::Slot10(int blend) {
+void CLevel150SubEffect::SetDestinationBlend(int blend) {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (blend != -1) {
       (*it)->destinationBlend = blend;
@@ -328,7 +328,7 @@ void CLevel150SubEffect::Slot10(int blend) {
 
 // OFFSET: 0x00B47810
 // FUNCTION: fn_18920
-void CLevel150SubEffect::Slot08(int red, int green, int blue) {
+void CLevel150SubEffect::SetColor(int red, int green, int blue) {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetColor(red, green, blue);
   }
@@ -385,19 +385,19 @@ void CLevel150SubEffect::Close() {
 
 // OFFSET: 0x00B47AD0
 // FUNCTION: fn_18923
-void CLevel150SubEffect::Slot01() {
+void CLevel150SubEffect::Open() {
   this->Init();
 }
 
 // OFFSET: 0x00B47AE0
 // FUNCTION: fn_18924
-bool CLevel150SubEffect::Slot06() {
+bool CLevel150SubEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B47AF0
 // FUNCTION: fn_18925
-void CLevel150SubEffect::Slot03() {
+void CLevel150SubEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -445,7 +445,7 @@ void CLevel150SubEffect::Slot03() {
 
 // OFFSET: 0x00B47FD0
 // FUNCTION: fn_18926
-void CLevel150SubEffect::Slot04() {
+void CLevel150SubEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }

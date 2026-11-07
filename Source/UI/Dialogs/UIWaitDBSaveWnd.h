@@ -12,11 +12,11 @@ class UIWaitDBSaveWnd : public UIWindow {
 public:
   UIWaitDBSaveWnd();
   UIWaitDBSaveWnd(const char* sprite, const char* action);
-  void Slot15(int width, int height) override;
-  void Slot18() override;
-  void Slot19() override;
+  void OnCreate(int width, int height) override;
+  void OnDestroy() override;
+  void OnProcess() override;
   void Paint() override;
-  void Slot27(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
 
   /* 007C */ int m_animation;
   /* 0080 */ int m_frame;

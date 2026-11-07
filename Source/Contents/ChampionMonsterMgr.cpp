@@ -95,7 +95,7 @@ int CChampionMonsterMgr::ApplyEffects(int id, CGameActor* actor, int aid) {
   }
 
   std::vector<int>& effects = it->second.m_effects;
-  if (actor->render.visible && actor->render.enabled && !StateFlag02(actor->Slot13())) {
+  if (actor->render.visible && actor->render.enabled && !StateFlag02(actor->GetStateFlags())) {
     for (unsigned int i = 0; i < effects.size(); ++i) {
       if (g_effectMgr->Find(aid, effects[i]) == nullptr) {
         const vector3d& position = actor->render.position;

@@ -96,7 +96,7 @@ template <> void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>
 // FUNCTION: fn_13993
 // OFFSET: 0x009C2980
 // FUNCTION: fn_13994
-template <class T> void CUIListBox<T>::Slot15(int width, int height) {
+template <class T> void CUIListBox<T>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) {
@@ -114,8 +114,8 @@ template <class T> void CUIListBox<T>::Slot15(int width, int height) {
   this->AddChild(this->scrollBar);
 }
 
-template void CUIListBox<AdventureGuide::CUISubTab>::Slot15(int, int);
-template void CUIListBox<AdventureGuide::CUITab>::Slot15(int, int);
+template void CUIListBox<AdventureGuide::CUISubTab>::OnCreate(int, int);
+template void CUIListBox<AdventureGuide::CUITab>::OnCreate(int, int);
 
 // OFFSET: 0x009C2A50
 // FUNCTION: fn_13995
@@ -125,17 +125,17 @@ template void CUIListBox<AdventureGuide::CUITab>::Slot15(int, int);
 // FUNCTION: fn_13997
 // OFFSET: 0x009C2CC0
 // FUNCTION: fn_13998
-template <class T, class D> void CUIListBoxEx<T, D>::Slot15(int width, int height) {
+template <class T, class D> void CUIListBoxEx<T, D>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
 
-template void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Slot15(int, int);
-template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::Slot15(int, int);
-template void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Slot15(int, int);
-template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Slot15(int, int);
+template void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::OnCreate(int, int);
+template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::OnCreate(int, int);
+template void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::OnCreate(int, int);
+template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::OnCreate(int, int);
 
 // OFFSET: 0x009C12B0
 // FUNCTION: fn_13987
@@ -187,7 +187,7 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::ClearItems
 
 // OFFSET: 0x009C2D90
 // FUNCTION: fn_13999
-void CUIAdventureGuide::Slot15(int width, int height) {
+void CUIAdventureGuide::OnCreate(int width, int height) {
   this->background = new CUIStaticImage();
   this->background->SetSize(750, 468);
   this->background->Move(0, 0);
@@ -512,12 +512,12 @@ void CUIAdventureGuide::OnClose() {
 
 // OFFSET: 0x009C14F0
 // FUNCTION: fn_13991
-void CUIAdventureGuide::Slot53() {
+void CUIAdventureGuide::Initialize() {
   this->unknown_00B4 = 0;
   this->Resize(750, 468);
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
 }
 
 // OFFSET: 0x009DB710
@@ -537,7 +537,7 @@ namespace AdventureGuide {
 // FUNCTION: fn_14314
 void CUITab::OnSelectSubTab(CUISubTab* subTab) {
   if (subTab) {
-    this->page->Slot54(this->type, subTab->id);
+    this->page->LoadPage(this->type, subTab->id);
   }
 }
 
@@ -656,7 +656,7 @@ void CUIQuest::Paint() {
 
 // OFFSET: 0x009DCFF0
 // FUNCTION: fn_14331
-void CUIIntro::Slot16() {
+void CUIIntro::OnInit() {
   const std::string& title = g_adventureGuideMgr->unknown_0014;
   const std::map<int, AdventureGuideText>& texts = g_adventureGuideMgr->unknown_002C;
   if (texts.empty()) {
@@ -674,17 +674,17 @@ void CUIIntro::Slot16() {
 
 // OFFSET: 0x009DD1C0
 // FUNCTION: fn_14333
-void CUIItem::Slot16() {
+void CUIItem::OnInit() {
 }
 
 // OFFSET: 0x009DD6B0
 // FUNCTION: fn_14338
-void CUIQuest::Slot16() {
+void CUIQuest::OnInit() {
 }
 
 // OFFSET: 0x009DD1D0
 // FUNCTION: fn_14334
-void CUIItemInfo::Slot16() {
+void CUIItemInfo::OnInit() {
   this->unknown_00F0->scrollBar->SetHidden(1);
   this->unknown_00F4->scrollBar->SetHidden(1);
   this->unknown_00F8->scrollBar->SetHidden(1);
@@ -729,7 +729,7 @@ void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& descr
 
 // OFFSET: 0x009DD210
 // FUNCTION: fn_14335
-void CUIMonster::Slot16() {
+void CUIMonster::OnInit() {
   std::list<AdventureGuideEpisode> episodes;
   g_adventureGuideMgr->GetEpisodeList(episodes);
   for (const AdventureGuideEpisode& episode : episodes) {
@@ -743,14 +743,14 @@ void CUIMonster::Slot16() {
 
 // OFFSET: 0x009DD680
 // FUNCTION: fn_14337
-void CUIMonsterInfo::Slot16() {
+void CUIMonsterInfo::OnInit() {
   this->unknown_00EC->scrollBar->SetHidden(1);
   this->unknown_00F0->scrollBar->SetHidden(1);
 }
 
 // OFFSET: 0x009DD6C0
 // FUNCTION: fn_14339
-void CUIQuestInfo::Slot16() {
+void CUIQuestInfo::OnInit() {
   this->unknown_00EC->scrollBar->SetHidden(1);
   CUIVScrollBar* first = this->unknown_00EC->scrollBar;
   first->dragging = 0;
@@ -763,18 +763,18 @@ void CUIQuestInfo::Slot16() {
 
 // OFFSET: 0x009DD720
 // FUNCTION: fn_14340
-void CUISubTab::Slot16() {
+void CUISubTab::OnInit() {
   this->unknown_00EC->Show(0);
 }
 
 // OFFSET: 0x009DD730
 // FUNCTION: fn_14341
-void CUITab::Slot16() {
+void CUITab::OnInit() {
 }
 
 // OFFSET: 0x009DD740
 // FUNCTION: fn_14342
-void CUITabInfo::Slot16() {
+void CUITabInfo::OnInit() {
 }
 
 // OFFSET: 0x009DC0F0
@@ -858,12 +858,12 @@ void CUIQuestInfo::SetViewerLines(const std::vector<std::string>& lines) {
 
 // OFFSET: 0x009DDA40
 // FUNCTION: fn_14347
-void CUIIntro::Slot54(int, int) {
+void CUIIntro::LoadPage(int, int) {
 }
 
 // OFFSET: 0x009DDA50
 // FUNCTION: fn_14348
-void CUIItem::Slot54(int type, int id) {
+void CUIItem::LoadPage(int type, int id) {
   this->itemList->ClearData();
   this->location = id;
   std::list<std::pair<int, AdventureGuideEntry>> entries;
@@ -888,13 +888,13 @@ void CUIItem::Slot54(int type, int id) {
 
 // OFFSET: 0x009DDE50
 // FUNCTION: fn_14350
-void CUIMonster::Slot54(int, int) {
+void CUIMonster::LoadPage(int, int) {
   this->unknown_0084->Show(0);
 }
 
 // OFFSET: 0x009DDE60
 // FUNCTION: fn_14351
-void CUIQuest::Slot54(int type, int id) {
+void CUIQuest::LoadPage(int type, int id) {
   this->questList->ClearData();
   std::list<std::pair<int, AdventureGuideContents>> contents;
   g_adventureGuideMgr->GetContentsList(contents, type, id);
@@ -992,7 +992,7 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
 
 // OFFSET: 0x009DC950
 // FUNCTION: fn_14329
-void CUIAdventureGuide::Slot16() {
+void CUIAdventureGuide::OnInit() {
   const char* title = LookupMessage(0xFD5);
   this->titleBar->SetTitle(title);
 
@@ -1148,12 +1148,12 @@ void CUIAdventureGuide::OnSelectTab(AdventureGuide::CUITab* tab) {
     }
 
     if (subTabs->selected) {
-      page->Slot54(type, subTabs->selected->id);
+      page->LoadPage(type, subTabs->selected->id);
     } else {
-      page->Slot54(type, 0);
+      page->LoadPage(type, 0);
     }
   } else {
-    page->Slot54(type, 0);
+    page->LoadPage(type, 0);
   }
 }
 
@@ -1161,7 +1161,7 @@ namespace AdventureGuide {
 
 // OFFSET: 0x009C5400
 // FUNCTION: fn_14000
-void CUICharacterInfo::Slot15(int width, int height) {
+void CUICharacterInfo::OnCreate(int width, int height) {
   this->jobIcon = new CUIStaticImage();
   this->jobIcon->SetSize(25, 25);
   this->jobIcon->Move(10, 8);
@@ -1222,7 +1222,7 @@ void CUICharacterInfo::Slot15(int width, int height) {
 
 // OFFSET: 0x009C8D00
 // FUNCTION: fn_14003
-void CUIItemInfo::Slot15(int width, int height) {
+void CUIItemInfo::OnCreate(int width, int height) {
   this->image = new CUIStaticImage();
   this->image->SetSize(75, 100);
   this->image->Move(45, 14);
@@ -1497,7 +1497,7 @@ void CUIItemInfo::Slot15(int width, int height) {
 
 // OFFSET: 0x009CC580
 // FUNCTION: fn_14005
-void CUIMonsterInfo::Slot15(int width, int height) {
+void CUIMonsterInfo::OnCreate(int width, int height) {
   this->unknown_00E8 = new CUIStaticText();
   this->unknown_00E8->SetSize(280, 12);
   this->unknown_00E8->Move(165, 19);
@@ -1691,7 +1691,7 @@ void CUIMonsterInfo::Slot15(int width, int height) {
 
 // OFFSET: 0x009CFAF0
 // FUNCTION: fn_14007
-void CUIQuestInfo::Slot15(int width, int height) {
+void CUIQuestInfo::OnCreate(int width, int height) {
   this->unknown_00E8 = new CUIStaticImage();
   this->unknown_00E8->SetSize(85, 70);
   this->unknown_00E8->Move(250, 10);
@@ -1907,7 +1907,7 @@ void CUIQuestInfo::Slot15(int width, int height) {
 
 // OFFSET: 0x009DCE10
 // FUNCTION: fn_14330
-void CUICharacterInfo::Slot16() {
+void CUICharacterInfo::OnInit() {
   this->jobIcon->SetImage(std::format("유저인터페이스\\renewalparty\\icon_jobs_{}.bmp", g_session.m_job));
   const int level = g_session.m_level;
   this->level->SetText(std::format("Lv. {}", level));
@@ -1918,7 +1918,7 @@ void CUICharacterInfo::Slot16() {
 
 // OFFSET: 0x009DD750
 // FUNCTION: fn_14343
-void CUIItemInfo::Slot32(int, int) {
+void CUIItemInfo::OnRBtnDown(int, int) {
   ITEM_INFO info;
   info.SetItemId(this->itemId);
   info.unknown_0000[0] = this->type;
@@ -2349,7 +2349,7 @@ namespace AdventureGuide {
 
 // OFFSET: 0x009C5BB0
 // FUNCTION: fn_14001
-void CUIIntro::Slot15(int width, int height) {
+void CUIIntro::OnCreate(int width, int height) {
   this->banner = new CUIStaticImage();
   this->banner->SetSize(630, 216);
   this->banner->Move(0, 0);
@@ -2487,7 +2487,7 @@ void CUIIntro::Slot15(int width, int height) {
 
 // OFFSET: 0x009C6F50
 // FUNCTION: fn_14002
-void CUIItem::Slot15(int width, int height) {
+void CUIItem::OnCreate(int width, int height) {
   CUIListBoxEx<CUIItemInfo, CItemData>* itemList = new CUIListBoxEx<CUIItemInfo, CItemData>();
   this->itemList = itemList;
   itemList->itemWidth = 603;
@@ -2650,7 +2650,7 @@ void CUIItem::Slot15(int width, int height) {
 
 // OFFSET: 0x009CDD40
 // FUNCTION: fn_14006
-void CUIQuest::Slot15(int width, int height) {
+void CUIQuest::OnCreate(int width, int height) {
   CUIListBoxEx<CUIQuestInfo, CQuestInfo>* questList = new CUIListBoxEx<CUIQuestInfo, CQuestInfo>();
   this->questList = questList;
   questList->itemWidth = 603;
@@ -2813,7 +2813,7 @@ void CUIQuest::Slot15(int width, int height) {
 
 // OFFSET: 0x009CAE30
 // FUNCTION: fn_14004
-void CUIMonster::Slot15(int width, int height) {
+void CUIMonster::OnCreate(int width, int height) {
   CUIListBoxEx<CUIMonsterInfo, CMonsterData>* monsterList = new CUIListBoxEx<CUIMonsterInfo, CMonsterData>();
   this->monsterList = monsterList;
   monsterList->itemWidth = 603;

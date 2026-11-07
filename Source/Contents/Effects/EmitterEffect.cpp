@@ -35,7 +35,7 @@ void CEmitterEffect::Close() {
 
 // OFFSET: 0x00B50050
 // FUNCTION: fn_19012
-void CEmitterEffect::Slot01() {
+void CEmitterEffect::Open() {
   for (int i = 0; i < this->count; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
     if (particle) {
@@ -79,7 +79,7 @@ void CEmitterEffect::InitParticle(CParticle* particle) {
 
 // OFFSET: 0x00B502B0
 // FUNCTION: fn_19014
-void CEmitterEffect::Slot07() {
+void CEmitterEffect::ResetParticles() {
   if (this->fixedAlpha == 1 && this->rateMin == 0.0f && this->rateMax == 0.0f) {
     this->pool.ActivateAll();
   }
@@ -95,7 +95,7 @@ void CEmitterEffect::Slot07() {
 
 // OFFSET: 0x00B50370
 // FUNCTION: fn_19015
-bool CEmitterEffect::Slot06() {
+bool CEmitterEffect::IsAlive() {
   if (this->duration > 0 && this->frame > this->duration) {
     return false;
   }
@@ -105,7 +105,7 @@ bool CEmitterEffect::Slot06() {
 
 // OFFSET: 0x00B50390
 // FUNCTION: fn_19016
-void CEmitterEffect::Slot03() {
+void CEmitterEffect::OnProcess() {
   if (!this->unknown_00C1) {
     const float rate = static_cast<float>(static_cast<int>(RandomRange(this->rateMin, this->rateMax))) * this->timeScale;
     int spawn = static_cast<int>(rate);
@@ -136,7 +136,7 @@ void CEmitterEffect::Slot03() {
 
 // OFFSET: 0x00B507E0
 // FUNCTION: fn_19017
-void CEmitterEffect::Slot04() {
+void CEmitterEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (CParticle* particle = *it) {
       ParticleQuad quad;
@@ -224,7 +224,7 @@ void CEmitterEffect::SetCount(int value) {
   if (this->count != value) {
     this->count = value;
     this->Close();
-    this->Slot01();
+    this->Open();
   }
 }
 
@@ -241,7 +241,7 @@ void CEmitterEffect::SetParticleSpeed(float value) {
 
 // OFFSET: 0x00B50CE0
 // FUNCTION: fn_19021
-void CEmitterEffect::Slot02() {
+void CEmitterEffect::CheckRange() {
   if (this->InRange() == true) {
     this->outsideRange = 0;
     this->unknown_00C1 = 0;

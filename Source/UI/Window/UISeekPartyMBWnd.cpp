@@ -263,7 +263,7 @@ UISeekPartyMBWnd::~UISeekPartyMBWnd() = default;
 
 // OFFSET: 0x009273B0
 // FUNCTION: fn_12650
-void UISeekPartyMBWnd::Slot15(int width, int height) {
+void UISeekPartyMBWnd::OnCreate(int width, int height) {
   char title[64];
   std::memset(title, 0, sizeof(title));
   std::sprintf(title, LookupMessage(0x698));

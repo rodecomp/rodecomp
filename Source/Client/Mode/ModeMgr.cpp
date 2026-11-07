@@ -50,7 +50,7 @@ void CModeMgr::Run(int mode, const char* name) {
 
 // OFFSET: 0x00AD66D0
 // FUNCTION: fn_17835
-void CMode::Slot7(int) {
+void CMode::OnChangeState(int) {
 }
 
 // OFFSET: 0x00AD66E0
@@ -65,7 +65,7 @@ void CMode::Initialize(const char*) {
 
 // OFFSET: 0x00AD6700
 // FUNCTION: fn_17838
-void CMode::Slot5(int) {
+void CMode::OnUpdateEx(int) {
 }
 
 // OFFSET: 0x00AD6720

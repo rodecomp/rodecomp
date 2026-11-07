@@ -25,16 +25,16 @@ class UIBmpRadioBtn : public UIWindow {
 public:
   UIBmpRadioBtn();
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   // INLINED
-  void Slot47() override {
+  void OnMouseEnter() override {
     this->m_hovered = true;
     this->Invalidate();
   }
   // INLINED
-  void Slot48() override {
+  void OnMouseLeave() override {
     this->m_hovered = false;
     this->Invalidate();
   }
@@ -59,8 +59,8 @@ public:
   UIBmpRadioBtn2() : UIBmpRadioBtn() {
   }
   void Invalidate() override;
-  void Slot47() override;
-  void Slot48() override;
+  void OnMouseEnter() override;
+  void OnMouseLeave() override;
 };
 
 class UICaptchaImage : public UIWindow {
@@ -68,7 +68,7 @@ public:
   UICaptchaImage();
   ~UICaptchaImage() override;
   void Paint() override;
-  void Slot28(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
 
   /* 007C */ CBitmapRes m_bitmap;
 

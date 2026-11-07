@@ -97,7 +97,7 @@ UIShortCutWnd::~UIShortCutWnd() = default;
 
 // OFFSET: 0x0091E800
 // FUNCTION: fn_12629
-bool UIShortCutWnd::Slot03() {
+bool UIShortCutWnd::NeedsFrameRefresh() {
   return true;
 }
 
@@ -115,7 +115,7 @@ void UIShortCutWnd::Move(int x, int y) {
 
 // OFFSET: 0x00940FE0
 // FUNCTION: fn_12787
-void UIShortCutWnd::Slot11() {
+void UIShortCutWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->x = this->geometry.x;
     this->m_saved->y = this->geometry.y;
@@ -140,7 +140,7 @@ void UIShortCutWnd::Show(int visible) {
 
 // OFFSET: 0x00932F30
 // FUNCTION: fn_12720
-void UIShortCutWnd::Slot19() {
+void UIShortCutWnd::OnProcess() {
   const int x = (g_mouse.x - this->geometry.x);
   const int y = (g_mouse.y - this->geometry.y);
   const int hovered = this->m_grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
@@ -152,9 +152,9 @@ void UIShortCutWnd::Slot19() {
 
 // OFFSET: 0x009316F0
 // FUNCTION: fn_12705
-void UIShortCutWnd::Slot31(int x, int y) {
-  this->UIFrameWnd::Slot31(x, y);
-  this->Slot11();
+void UIShortCutWnd::OnLBtnUp(int x, int y) {
+  this->UIFrameWnd::OnLBtnUp(x, y);
+  this->StoreInfo();
 }
 
 // INLINED
@@ -287,7 +287,7 @@ __forceinline void UIShortCutWnd::ResizeRows() {
     break;
   }
   this->m_increase->Invalidate();
-  this->Slot11();
+  this->StoreInfo();
 }
 
 // INLINED
@@ -481,7 +481,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
 // OFFSET: 0x0091C9B0
 // FUNCTION: fn_12618
-bool UINewChatWnd::Slot42(void* output) {
+bool UINewChatWnd::GetCustomTransBoxInfo(void* output) {
   std::memcpy(output, &this->m_inputX, 28);
   return true;
 }
@@ -579,15 +579,15 @@ void UINewChatWnd::SaveChatWndInfo() {
 
 // OFFSET: 0x009328F0
 // FUNCTION: fn_12712
-void UINewChatWnd::Slot27(int x, int y) {
+void UINewChatWnd::OnMouseMove(int x, int y) {
   if (g_windowMgr.Capture() == this && g_chatInputFlag == 1) {
-    this->UIFrameWnd::Slot27(x, y);
+    this->UIFrameWnd::OnMouseMove(x, y);
   }
 }
 
 // OFFSET: 0x00930D40
 // FUNCTION: fn_12695
-void UINewChatWnd::Slot25(int x, int y) {
+void UINewChatWnd::OnLBtnDown(int x, int y) {
   if (static_cast<unsigned int>(y - 1) <= 19) {
     if (static_cast<int>(this->geometry.unknown_0030) <= 0) {
       return;
@@ -619,7 +619,7 @@ void UINewChatWnd::Slot25(int x, int y) {
     }
   } else {
     g_windowMgr.SetFocus(this->m_inputEdit);
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
@@ -665,13 +665,13 @@ void UINewChatWnd::Paint() {
 
 // OFFSET: 0x009313E0
 // FUNCTION: fn_12703
-void UINewChatWnd::Slot31(int x, int y) {
-  this->UIFrameWnd::Slot31(x, y);
+void UINewChatWnd::OnLBtnUp(int x, int y) {
+  this->UIFrameWnd::OnLBtnUp(x, y);
 }
 
 // OFFSET: 0x009313F0
 // FUNCTION: fn_12704
-void UIRoMapWnd::Slot31(int x, int y) {
+void UIRoMapWnd::OnLBtnUp(int x, int y) {
   this->unknown_01FC.clear();
 
   unsigned int mapIndex = 0;
@@ -740,7 +740,7 @@ void UIMemorialDunWnd::Move(int x, int y) {
 
 // OFFSET: 0x00921260
 // FUNCTION: fn_12641
-void UIMemorialDunWnd::Slot15(int, int) {
+void UIMemorialDunWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("Alt+B", 0);
 
@@ -862,7 +862,7 @@ void UIMemorialDunWnd::Paint() {
 
 // OFFSET: 0x0092AFE0
 // FUNCTION: fn_12656
-void UISubChatMiniWnd::Slot15(int, int) {
+void UISubChatMiniWnd::OnCreate(int, int) {
   this->Resize(this->m_rowHeight * this->unknown_00B4, this->m_offsetY);
 }
 
@@ -878,7 +878,7 @@ int UISubChatMiniWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     this->Move(b, c - this->m_offsetY);
     break;
   case 202:
-    this->Slot25(this->m_rowHeight * b + 1, 0);
+    this->OnLBtnDown(this->m_rowHeight * b + 1, 0);
     break;
   }
   return 0;
@@ -912,7 +912,7 @@ void UISubChatMiniWnd::Paint() {
 
 // OFFSET: 0x00931330
 // FUNCTION: fn_12701
-void UISubChatMiniWnd::Slot25(int x, int) {
+void UISubChatMiniWnd::OnLBtnDown(int x, int) {
   if (x > 0 && x <= this->m_rowHeight) {
     g_subChatMiniFirstCollapsed = !g_subChatMiniFirstCollapsed;
   } else {
@@ -924,7 +924,7 @@ void UISubChatMiniWnd::Slot25(int x, int) {
 
 // OFFSET: 0x00940EB0
 // FUNCTION: fn_12782
-void UINewChatWnd::Slot11() {
+void UINewChatWnd::StoreInfo() {
   g_windowMgr.unknown_004C = this->geometry.unknown_0030;
   g_windowMgr.unknown_0038 = this->geometry.height;
   g_windowMgr.unknown_0030 = this->geometry.x;
@@ -1362,7 +1362,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
 // OFFSET: 0x009230A0
 // FUNCTION: fn_12644
-void UINewChatWnd::Slot15(int width, int height) {
+void UINewChatWnd::OnCreate(int width, int height) {
   if (height > this->m_inputAreaHeight) {
     int rows = (height - (static_cast<int>(this->geometry.unknown_0030) + this->m_inputOffsetY + 74)) / 42 + 1;
     if (rows > 4) {

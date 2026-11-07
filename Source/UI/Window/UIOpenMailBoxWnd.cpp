@@ -6,12 +6,12 @@
 
 // OFFSET: 0x0094F020
 // FUNCTION: fn_12927
-void UIOpenMailBoxWnd::Slot53() {
+void UIOpenMailBoxWnd::UpdateMailIcon() {
 }
 
 // OFFSET: 0x0094C410
 // FUNCTION: fn_12896
-void UIOpenMailBoxWnd::Slot15(int width, int height) {
+void UIOpenMailBoxWnd::OnCreate(int width, int height) {
   auto* button = new UIBitmapButton();
   button->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_noti_gotmail.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_noti_gotmail.bmp", 1, 0);

@@ -13,7 +13,7 @@ CCommonFloorEffect::CCommonFloorEffect() : CEffect(1056) {
 
 // OFFSET: 0x006FD8C0
 // FUNCTION: fn_06935
-void CCommonFloorEffect::Slot08(int red, int green, int blue) {
+void CCommonFloorEffect::SetColor(int red, int green, int blue) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetColor(red, green, blue);
   }
@@ -21,7 +21,7 @@ void CCommonFloorEffect::Slot08(int red, int green, int blue) {
 
 // OFFSET: 0x006FD900
 // FUNCTION: fn_06936
-void CCommonFloorEffect::Slot11(std::string name) {
+void CCommonFloorEffect::SetParticleTexture(std::string name) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetTexture(name);
   }
@@ -39,7 +39,7 @@ void CCommonFloorEffect::Close() {
 
 // OFFSET: 0x006FDB70
 // FUNCTION: fn_06938
-void CCommonFloorEffect::Slot01() {
+void CCommonFloorEffect::Open() {
   for (int i = 0; i < 2; ++i) {
     const int angle = i * 180;
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
@@ -62,7 +62,7 @@ void CCommonFloorEffect::Slot01() {
 
 // OFFSET: 0x006FDCE0
 // FUNCTION: fn_06939
-void CCommonFloorEffect::Slot07() {
+void CCommonFloorEffect::ResetParticles() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->flags = 5;
@@ -81,13 +81,13 @@ void CCommonFloorEffect::Slot07() {
 }
 // OFFSET: 0x006FDD90
 // FUNCTION: fn_06940
-bool CCommonFloorEffect::Slot06() {
+bool CCommonFloorEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x006FDDA0
 // FUNCTION: fn_06941
-void CCommonFloorEffect::Slot03() {
+void CCommonFloorEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -122,7 +122,7 @@ void CCommonFloorEffect::Slot03() {
 
 // OFFSET: 0x006FE060
 // FUNCTION: fn_06942
-void CCommonFloorEffect::Slot04() {
+void CCommonFloorEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (CParticle* particle = *it) {
       particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);

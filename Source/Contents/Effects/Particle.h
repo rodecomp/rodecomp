@@ -47,7 +47,7 @@ class CParticle {
 public:
   __declspec(noinline) CParticle(vector3d position, int flags);
   virtual ~CParticle();
-  virtual void Slot01() {}
+  virtual void ReleaseResource() {}
 
   void Reset();
   void SetQuad(RenderVertex* vertices, float top, float bottom, float left, float right);
@@ -108,7 +108,7 @@ class CEZ2STRParticle : public CParticle {
 public:
   CEZ2STRParticle(vector3d position, int flags);
   ~CEZ2STRParticle() override;
-  void Slot01() override;
+  void ReleaseResource() override;
 
   void Clear();
   std::string ResolvePath(const std::string& name);

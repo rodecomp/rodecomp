@@ -31,7 +31,7 @@ static_assert(sizeof(PartyBookingUpdatePacket) == 14);
 
 // OFFSET: 0x00920D60
 // FUNCTION: fn_12640
-void UIJobListWnd::Slot15(int width, int height) {
+void UIJobListWnd::OnCreate(int width, int height) {
   char title[9] = {};
   std::sprintf(title, "Job List");
   this->m_title = new UIStaticText();
@@ -71,7 +71,7 @@ void UIJobListWnd::Paint() {
 
 // OFFSET: 0x00940DE0
 // FUNCTION: fn_12780
-void UIJobListWnd::Slot11() {
+void UIJobListWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->width = this->geometry.width;
     this->m_saved->height = this->geometry.height;

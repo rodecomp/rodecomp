@@ -72,7 +72,7 @@ CHalluNPC::CHalluNPC(CGameActor* source) {
   this->SetUnknown0260(source->unknown_0260);
   this->SetActorJob(source->GetEffectiveJob(-1));
   this->unknown_02CC = source->unknown_02CC;
-  this->SetUnknown03C4(source->Slot55());
+  this->SetUnknown03C4(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
   this->render.unknown_005C = source->render.unknown_005C;
   this->render.unknown_0078 = source->render.unknown_0078;
@@ -87,9 +87,9 @@ CHalluNPC::CHalluNPC(CGameActor* source) {
   this->render.isSingleColor = source->render.isSingleColor;
   this->render.unknown_007C = source->render.unknown_007C;
   this->render.unknown_0048 = 0;
-  this->stateFlags = source->Slot13();
-  this->Slot18(source->GetEffectiveJob(-1), source->unknown_0260, 0);
-  this->guildId = source->Slot50();
+  this->stateFlags = source->GetStateFlags();
+  this->SetSprAct(source->GetEffectiveJob(-1), source->unknown_0260, 0);
+  this->guildId = source->GetGdid();
   this->render.accountId = 0;
   this->unknown_0440 = 0.0f;
   this->unknown_0454 = 0;
@@ -124,7 +124,7 @@ CHalluPlant::CHalluPlant() {
   this->render.unknown_007C = 0;
   this->render.unknown_0048 = 0;
   this->stateFlags = 0;
-  this->Slot18(this->GetEffectiveJob(-1), this->unknown_0260, 0);
+  this->SetSprAct(this->GetEffectiveJob(-1), this->unknown_0260, 0);
   this->guildId = 0;
   this->render.accountId = 0;
   this->unknown_0440 = 0;
@@ -286,7 +286,7 @@ bool CSoundMaker::OnProcess() {
 
 // OFFSET: 0x00DA2AF0
 // FUNCTION: fn_22378
-int CPc::Slot46() {
+int CPc::GetBodyCostume() {
   return this->unknown_04D0;
 }
 
@@ -356,25 +356,25 @@ void CHalluPlant::Render(int argument) {
 
 // OFFSET: 0x00DA2B40
 // FUNCTION: fn_22380
-bool CPc::Slot58() {
+bool CPc::IsArrowEffectSuppressed() {
   return this->unknown_04E0;
 }
 
 // OFFSET: 0x00DA2B50
 // FUNCTION: fn_22381
-int CPc::Slot56() {
+int CPc::GetMadogearType() {
   return this->unknown_04DC;
 }
 
 // OFFSET: 0x00DA2B60
 // FUNCTION: fn_22382
-int CPc::Slot42() {
+int CPc::GetPkState() {
   return this->unknown_04CC;
 }
 
 // OFFSET: 0x00DA2B70
 // FUNCTION: fn_22383
-std::int64_t CPc::Slot35() {
+std::int64_t CPc::GetWeapon() {
   return *reinterpret_cast<const std::uint64_t*>(&this->weapon);
 }
 
@@ -441,7 +441,7 @@ void CMasterChaser::ClearUnknown0138() {
 
 // OFFSET: 0x00DA3F50
 // FUNCTION: fn_22408
-void CNpc::Slot16() {
+void CNpc::RegisterPos() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   int column;
   int row;
@@ -460,7 +460,7 @@ void CNpc::Slot16() {
 
 // OFFSET: 0x00DA61C0
 // FUNCTION: fn_22434
-void CNpc::Slot17() {
+void CNpc::UnRegisterPos() {
   switch (this->GetEffectiveJob(-1)) {
     case 45:
     case 104:
@@ -475,13 +475,13 @@ void CNpc::Slot17() {
 
 // OFFSET: 0x00DA5800
 // FUNCTION: fn_22429
-void CPc::Slot59(bool value) {
+void CPc::SetArrowEffectSuppressed(bool value) {
   this->unknown_04E0 = value;
 }
 
 // OFFSET: 0x00DA5810
 // FUNCTION: fn_22430
-void CPc::Slot57(int value) {
+void CPc::SetMadogearType(int value) {
   this->unknown_04DC = value;
 }
 
@@ -510,7 +510,7 @@ bool CGndRiser::OnProcess() {
       alpha = -(frame * frame) / 25.0f;
     }
 
-    mode->scene->ground->Slot15(alpha, this->screenX, this->screenY);
+    mode->scene->ground->SetGndRiseAmount(alpha, this->screenX, this->screenY);
   }
 
   return true;
@@ -733,7 +733,7 @@ void CNpc::SendMsg(
         break;
     }
     this->render.visible = IsVisibleJob(info->job);
-    this->Slot49(info->guildId, info->guildVersion);
+    this->SetGuildInfo(info->guildId, info->guildVersion);
     return;
   }
 
@@ -902,7 +902,7 @@ void CSoundMaker::SendMsg(
 
 // OFFSET: 0x00DA5820
 // FUNCTION: fn_22431
-void CNpc::Slot18(int job, int value, int) {
+void CNpc::SetSprAct(int job, int value, int) {
   char name[64];
   this->SetActorJob(job);
   this->SetUnknown0260(value);
@@ -915,7 +915,7 @@ void CNpc::Slot18(int job, int value, int) {
 
 // OFFSET: 0x00DA58A0
 // FUNCTION: fn_22432
-void CNpc::Slot21(int job) {
+void CNpc::SetSprJob(int job) {
   char spriteName[128];
   char actionName[128];
   const char* spriteFormat;
@@ -1180,8 +1180,8 @@ CHalluPC2::CHalluPC2(CPc* source) {
   this->SetUnknown0260(source->unknown_0260);
   this->SetActorJob(source->GetEffectiveJob(-1));
   this->SetUnknown0404(source->GetUnknown0404());
-  this->Slot47(source->unknown_02CC);
-  this->SetUnknown03C4(source->Slot55());
+  this->SetRiding(source->unknown_02CC);
+  this->SetUnknown03C4(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
   this->render.unknown_005C = source->render.unknown_005C;
   this->render.unknown_0078 = source->render.unknown_0078;
@@ -1197,12 +1197,12 @@ CHalluPC2::CHalluPC2(CPc* source) {
   this->render.unknown_007C = source->render.unknown_007C;
   this->render.unknown_0048 = 0;
   this->unknown_0444 = source->unknown_0444;
-  this->stateFlags = source->Slot13();
+  this->stateFlags = source->GetStateFlags();
   this->unknown_0478 = source->unknown_0478;
   this->LoadEquipSprites(source->GetEquipSpriteNames());
   this->LoadEquipActions(source->GetEquipActionNames());
   this->unknown_0418 = source->unknown_0418;
-  this->guildId = source->Slot50();
+  this->guildId = source->GetGdid();
   this->render.accountId = source->render.accountId;
   this->unknown_04F8 = 0.0f;
   this->unknown_050C = 0;
@@ -1225,8 +1225,8 @@ CBlurPC::CBlurPC(CPc* source) {
   this->SetUnknown0260(source->unknown_0260);
   this->SetActorJob(source->GetEffectiveJob(-1));
   this->SetUnknown0404(source->GetUnknown0404());
-  this->Slot47(source->unknown_02CC);
-  this->SetUnknown03C4(source->Slot55());
+  this->SetRiding(source->unknown_02CC);
+  this->SetUnknown03C4(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
   this->render.unknown_005C = source->render.unknown_005C;
   this->render.unknown_0078 = source->render.unknown_0078;
@@ -1242,12 +1242,12 @@ CBlurPC::CBlurPC(CPc* source) {
   this->render.unknown_007C = source->render.unknown_007C;
   this->render.unknown_0048 = 0;
   this->unknown_0444 = source->unknown_0444;
-  this->stateFlags = source->Slot13();
+  this->stateFlags = source->GetStateFlags();
   this->unknown_0478 = source->unknown_0478;
   this->LoadEquipSprites(source->GetEquipSpriteNames());
   this->LoadEquipActions(source->GetEquipActionNames());
   this->unknown_0418 = source->unknown_0418;
-  this->guildId = source->Slot50();
+  this->guildId = source->GetGdid();
   this->render.accountId = source->render.accountId;
   this->unknown_04F8 = 0.0f;
   this->unknown_04FC = 0x10000000;
@@ -1269,8 +1269,8 @@ CHalluPC::CHalluPC(CPc* source) {
   this->SetUnknown0260(source->unknown_0260);
   this->SetActorJob(source->GetEffectiveJob(-1));
   this->SetUnknown0404(source->GetUnknown0404());
-  this->Slot47(source->unknown_02CC);
-  this->SetUnknown03C4(source->Slot55());
+  this->SetRiding(source->unknown_02CC);
+  this->SetUnknown03C4(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
   this->render.unknown_005C = source->render.unknown_005C;
   this->render.unknown_0078 = source->render.unknown_0078;
@@ -1286,12 +1286,12 @@ CHalluPC::CHalluPC(CPc* source) {
   this->render.unknown_007C = source->render.unknown_007C;
   this->render.unknown_0048 = 0;
   this->unknown_0444 = source->unknown_0444;
-  this->stateFlags = source->Slot13();
+  this->stateFlags = source->GetStateFlags();
   this->unknown_0478 = source->unknown_0478;
   this->LoadEquipSprites(source->GetEquipSpriteNames());
   this->LoadEquipActions(source->GetEquipActionNames());
   this->unknown_0418 = source->unknown_0418;
-  this->guildId = source->Slot50();
+  this->guildId = source->GetGdid();
   this->render.accountId = source->render.accountId;
   this->unknown_04F8 = 0.0f;
   this->unknown_050C = 0;
@@ -1299,7 +1299,7 @@ CHalluPC::CHalluPC(CPc* source) {
   this->render.unknown_0048 = source->render.unknown_0048;
   this->render.name = source->render.name;
   this->unknown_03E1 = true;
-  this->Slot44(source->Slot46(), 1);
+  this->SetBodyCostume(source->GetBodyCostume(), 1);
   this->unknown_049C = 0;
   this->unknown_0450 = 0;
   this->unknown_0454 = 0;
@@ -1370,7 +1370,7 @@ bool CNpc::OnProcess() {
     case 111:
       this->ProcessDamageMessages();
       this->UpdateGaugePositions();
-      result = this->Slot14();
+      result = this->ProcessState();
       break;
     default:
       this->ProcessBodyState();
@@ -1380,7 +1380,7 @@ bool CNpc::OnProcess() {
         this->ModifyArgb(8, 8, 8, 8);
       }
       this->UpdateGaugePositions();
-      result = this->Slot14();
+      result = this->ProcessState();
       break;
   }
 
@@ -1586,7 +1586,7 @@ void CHalluPC::Render(int argument) {
 
 // OFFSET: 0x00DA59B0
 // FUNCTION: fn_22433
-void CNpc::Slot15(int state, int) {
+void CNpc::SetState(int state, int) {
   if (state == -1) {
     return;
   }
@@ -1631,7 +1631,7 @@ void CNpc::Slot15(int state, int) {
       if (g_session.IsAllyActor(this->render.accountId, this->GetEffectiveJob(-1)) == 1 && this->GetEffectiveJob(-1) != 565 &&
           !isDisguised) {
         this->SetAction(0, 4, 0);
-        this->Slot16();
+        this->RegisterPos();
         break;
       }
 
@@ -1674,7 +1674,7 @@ void CNpc::Slot15(int state, int) {
             }
             this->unknown_02C8 = 0;
             this->render.isMotionFinished = false;
-            this->Slot16();
+            this->RegisterPos();
           } else {
             if (this->render.unknown_0070 != 0) {
               this->unknown_027C = timeGetTime();
@@ -1689,7 +1689,7 @@ void CNpc::Slot15(int state, int) {
               g_session.unknown_56A0 = 0;
               g_session.unknown_56A4 = 0;
             }
-            this->Slot16();
+            this->RegisterPos();
           }
           break;
         case 1:
@@ -1701,7 +1701,7 @@ void CNpc::Slot15(int state, int) {
           } else {
             this->SetAction(8, 4, 0);
           }
-          this->Slot17();
+          this->UnRegisterPos();
           break;
         case 2:
           if (this->bodyState != 1 && this->bodyState != 2) {
@@ -1720,8 +1720,8 @@ void CNpc::Slot15(int state, int) {
           } else {
             this->SetAction(16, 4, 1);
           }
-          this->unknown_0378 = static_cast<float>(this->Slot37());
-          this->Slot16();
+          this->unknown_0378 = static_cast<float>(this->GetAttackMotion());
+          this->RegisterPos();
           this->LaunchAttackProjectile(this->hitTargetAid, this->render.speed * this->unknown_0378);
           break;
         case 3:
@@ -1738,10 +1738,10 @@ void CNpc::Slot15(int state, int) {
           this->render.unknown_00A4Bytes[1] = 0;
           if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
             this->SetAction(64, 4, 1);
-            this->Slot17();
+            this->UnRegisterPos();
           } else {
             this->SetAction(32, 8, 1);
-            this->Slot17();
+            this->UnRegisterPos();
           }
           break;
         case 4:
@@ -1753,11 +1753,11 @@ void CNpc::Slot15(int state, int) {
             break;
           }
           if (this->render.previousAnimation >= 40) {
-            this->Slot08();
+            this->ProcessMotion();
             return;
           }
           this->SetAction(24, 4, 1);
-          this->Slot16();
+          this->RegisterPos();
           break;
         case 7:
           switch (this->unknown_0314) {

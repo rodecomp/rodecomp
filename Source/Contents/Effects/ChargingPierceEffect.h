@@ -14,11 +14,11 @@ class CChargingPierceEffect : public CEffect {
 public:
   CChargingPierceEffect();
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   int ActiveCount();
 
@@ -32,11 +32,11 @@ public:
   CChargingPierceNewEffect();
   ~CChargingPierceNewEffect() override;
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   void SetCount(int count);
 

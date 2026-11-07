@@ -46,7 +46,7 @@ public:
   /* 00A8 */ std::uint32_t innerBorderColor;
 
   void Paint() override;
-  void Slot28(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
 };
 
 class UIAchListWnd : public UIWindow {
@@ -72,9 +72,9 @@ public:
   __declspec(noinline) void UpdateScroll();
 
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
 
@@ -122,10 +122,10 @@ public:
   void SetLabel(const char* text, int group, int sub);
 
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
 
@@ -141,7 +141,7 @@ public:
   /* 00F8 */ unsigned char underline;
 
   void Paint() override;
-  void Slot25(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
   void Clear() override;
 };
 
@@ -157,8 +157,8 @@ public:
   /* 00B8 */ int unknown_00B8;
 
   void Paint() override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
 
   void Set(const char* name, const char* text, int item);
 
@@ -178,7 +178,7 @@ public:
 
   __declspec(noinline) void UpdateInfo();
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -202,7 +202,7 @@ public:
     this->title = text;
   }
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -219,7 +219,7 @@ public:
   __declspec(noinline) void UpdateInfo();
 
   void Show(int visible) override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -238,7 +238,7 @@ public:
   /* 00CC */ int sub;
   /* 00D0 */ std::map<int, AchievementInfo> achievements;
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -269,9 +269,9 @@ public:
   /* 00C4 */ UITextButton* openButtons[3];
 
   UIAchTracingWnd();
-  bool Slot08() override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  bool IsTransmitMouseInput() override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };

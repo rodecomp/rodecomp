@@ -17,13 +17,13 @@ class UIEditCtrl;
 class UIMerchantShopMakeWnd : public UIFrameWnd {
 public:
   explicit UIMerchantShopMakeWnd(int mode);
-  std::vector<unsigned char> Slot44() override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
-  void Slot19() override;
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot25(int x, int y) override;
-  void Slot35(int value) override;
+  std::vector<unsigned char> GetReplayData() override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnWheel(int value) override;
 
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void UpdateLayout();
@@ -37,7 +37,7 @@ public:
   void PrintBuyList();
   void PrintSellList();
   void Refresh();
-  void Slot32(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 

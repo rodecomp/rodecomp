@@ -65,7 +65,7 @@ class CUIEditBoxEx : public CUIControl {
 public:
   CUIEditBoxEx();
   void Resize(int width, int height) override;
-  bool Slot05() override;
+  bool IsEditable() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 

@@ -95,7 +95,7 @@ int UIRune_Decom::HitTestItem(int x, int y) {
 
 // OFFSET: 0x00818300
 // FUNCTION: fn_10174
-void UIRune_Info::Slot15(int, int) {
+void UIRune_Info::OnCreate(int, int) {
   this->m_activeWnd = new UIRuneSystem_ActiveWnd();
   this->AddChild(this->m_activeWnd);
   this->m_activeWnd->SetSize(0xEA, 0x78);
@@ -197,13 +197,13 @@ void UIRuneSetList::DrawScrollBar(bool drawLine) {
 
 // OFFSET: 0x0081BE90
 // FUNCTION: fn_10195
-void UIEquipRuneSetWnd::Slot26(int, int) {
+void UIEquipRuneSetWnd::OnLBtnDblClk(int, int) {
   this->parent->SendMsg(this, 0xAB, 0x158, 0, 0, 0);
 }
 
 // OFFSET: 0x0081BEC0
 // FUNCTION: fn_10196
-void UIRuneSet_Info::Slot26(int x, int y) {
+void UIRuneSet_Info::OnLBtnDblClk(int x, int y) {
   RuneSetData* runeSet = this->m_runeSet;
   if (!runeSet) {
     return;
@@ -228,13 +228,13 @@ void UIRuneSet_Info::Slot26(int x, int y) {
 
 // OFFSET: 0x0081BFD0
 // FUNCTION: fn_10197
-void UIEquipRuneSetWnd::Slot25(int, int) {
+void UIEquipRuneSetWnd::OnLBtnDown(int, int) {
   this->parent->SendMsg(this, 0xAB, 0xC2, -1, 0, 0);
 }
 
 // OFFSET: 0x0081C000
 // FUNCTION: fn_10198
-void UIRuneSetList::Slot25(int x, int y) {
+void UIRuneSetList::OnLBtnDown(int x, int y) {
   if (y == 0) {
     return;
   }
@@ -246,12 +246,12 @@ void UIRuneSetList::Slot25(int x, int y) {
     return;
   }
 
-  UIScrollBar::Slot25(x, y);
+  UIScrollBar::OnLBtnDown(x, y);
 }
 
 // OFFSET: 0x0081C080
 // FUNCTION: fn_10199
-void UIRuneSystemTab::Slot25(int x, int) {
+void UIRuneSystemTab::OnLBtnDown(int x, int) {
   if (!this->parent) {
     return;
   }
@@ -270,12 +270,12 @@ void UIRuneSystemTab::Slot25(int x, int) {
 
 // OFFSET: 0x0081C0E0
 // FUNCTION: fn_10200
-void UIRuneSystemWnd::Slot25(int, int) {
+void UIRuneSystemWnd::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x0081C0F0
 // FUNCTION: fn_10201
-void UIRuneSystem_tagListWnd::Slot25(int x, int) {
+void UIRuneSystem_tagListWnd::OnLBtnDown(int x, int) {
   if (x < 20 || this->geometry.width - 23 < x) {
     return;
   }
@@ -294,9 +294,9 @@ void UIRuneSystem_tagListWnd::Slot25(int x, int) {
 
 // OFFSET: 0x0081C190
 // FUNCTION: fn_10202
-void UIRuneSetReWard::Slot31(int x, int y) {
+void UIRuneSetReWard::OnLBtnUp(int x, int y) {
   if (this->m_state == 2) {
-    UIBitmapButton::Slot31(x, y);
+    UIBitmapButton::OnLBtnUp(x, y);
     return;
   }
 
@@ -314,12 +314,12 @@ void UIRuneSetReWard::Slot31(int x, int y) {
 
 // OFFSET: 0x0081C230
 // FUNCTION: fn_10203
-void UIDecomlist::Slot28(int, int) {
+void UIDecomlist::OnMouseHover(int, int) {
 }
 
 // OFFSET: 0x0081C240
 // FUNCTION: fn_10204
-void UIEquipRuneSetWnd::Slot28(int x, int y) {
+void UIEquipRuneSetWnd::OnMouseHover(int x, int y) {
   if (x >= 11 && x <= 36 && y >= 8 && y <= 27) {
     RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet();
     if (!runeSet) {
@@ -372,12 +372,12 @@ void UIEquipRuneSetWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x0081C3D0
 // FUNCTION: fn_10205
-void UIRuneList::Slot28(int, int) {
+void UIRuneList::OnMouseHover(int, int) {
 }
 
 // OFFSET: 0x0081C3E0
 // FUNCTION: fn_10206
-void UIRuneSetList::Slot28(int x, int y) {
+void UIRuneSetList::OnMouseHover(int x, int y) {
   if (x < 19 || x > 256 || y < 25 || this->geometry.height - 10 < y) {
     return;
   }
@@ -418,7 +418,7 @@ void UIRuneSetList::Slot28(int x, int y) {
 
 // OFFSET: 0x0081C6F0
 // FUNCTION: fn_10208
-void UIRuneSet_Info::Slot28(int x, int y) {
+void UIRuneSet_Info::OnMouseHover(int x, int y) {
   if (!this->m_runeSet || !this->m_runeSet->IsActive()) {
     return;
   }
@@ -442,7 +442,7 @@ void UIRuneSet_Info::Slot28(int x, int y) {
 
 // OFFSET: 0x0081C960
 // FUNCTION: fn_10210
-void UIRuneSystem_tagListWnd::Slot28(int x, int) {
+void UIRuneSystem_tagListWnd::OnMouseHover(int x, int) {
   if (x < 20 || this->geometry.width - 23 < x) {
     return;
   }
@@ -463,29 +463,29 @@ void UIRuneSystem_tagListWnd::Slot28(int x, int) {
 
 // OFFSET: 0x0081CBF0
 // FUNCTION: fn_10212
-void UIRuneSet_Info::Slot19() {
-  this->m_gauge->Slot19();
+void UIRuneSet_Info::OnProcess() {
+  this->m_gauge->OnProcess();
 }
 
 // OFFSET: 0x0081CC00
 // FUNCTION: fn_10213
-void UIRuneSystemWnd::Slot19() {
+void UIRuneSystemWnd::OnProcess() {
   switch (this->m_tab->geometry.unknown_0030) {
   case 0:
-    this->m_runeSetInfo->Slot19();
+    this->m_runeSetInfo->OnProcess();
     break;
   case 1:
-    this->m_runeInfo->Slot19();
+    this->m_runeInfo->OnProcess();
     break;
   case 2:
-    this->m_runeDecom->Slot19();
+    this->m_runeDecom->OnProcess();
     break;
   }
 }
 
 // OFFSET: 0x0081CF10
 // FUNCTION: fn_10217
-void UIRuneSetList::Slot35(int delta) {
+void UIRuneSetList::OnWheel(int delta) {
   const int previous = this->position;
   int next = previous + (delta < 0 ? 1 : -1);
   if (next < 0) {
@@ -923,7 +923,7 @@ int UIRune_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
 
 // OFFSET: 0x0081CC40
 // FUNCTION: fn_10214
-void UIRuneSetReWard::Slot32(int, int) {
+void UIRuneSetReWard::OnRBtnDown(int, int) {
   this->Invalidate();
   ITEM_INFO item;
   item.SetItemId(this->m_itemId);
@@ -936,7 +936,7 @@ void UIRuneSetReWard::Slot32(int, int) {
 
 // OFFSET: 0x0081CD10
 // FUNCTION: fn_10215
-void UIRuneSystem_ActiveWnd::Slot32(int x, int y) {
+void UIRuneSystem_ActiveWnd::OnRBtnDown(int x, int y) {
   if (this->m_listId == -1) {
     return;
   }
@@ -960,7 +960,7 @@ void UIRuneSystem_ActiveWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x0081CE10
 // FUNCTION: fn_10216
-void UIRune_Decom::Slot32(int x, int y) {
+void UIRune_Decom::OnRBtnDown(int x, int y) {
   if (!this->m_decomList) {
     return;
   }
@@ -1217,7 +1217,7 @@ void UIRuneSetList::Paint() {
 
 // OFFSET: 0x0081C510
 // FUNCTION: fn_10207
-void UIRuneSetReWard::Slot28(int, int) {
+void UIRuneSetReWard::OnMouseHover(int, int) {
   if (!this->m_itemId) {
     return;
   }
@@ -1240,7 +1240,7 @@ void UIRuneSetReWard::Slot28(int, int) {
 
 // OFFSET: 0x0081C7F0
 // FUNCTION: fn_10209
-void UIRuneSystem_ActiveWnd::Slot28(int x, int y) {
+void UIRuneSystem_ActiveWnd::OnMouseHover(int x, int y) {
   if (this->m_listId == -1) {
     return;
   }
@@ -1269,7 +1269,7 @@ void UIRuneSystem_ActiveWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x0081CA80
 // FUNCTION: fn_10211
-void UIRune_Decom::Slot28(int x, int y) {
+void UIRune_Decom::OnMouseHover(int x, int y) {
   if (!this->m_decomList) {
     return;
   }
@@ -1696,7 +1696,7 @@ void UIRune_Decom::SetItem(int itemId) {
 
 // OFFSET: 0x008184A0
 // FUNCTION: fn_10175
-void UIRune_ViewInfo::Slot15(int, int) {
+void UIRune_ViewInfo::OnCreate(int, int) {
   this->m_gauge = new UIGage_Circle();
   this->AddChild(this->m_gauge);
   this->m_gauge->SetSize(0x89, 0x7F);
@@ -1762,7 +1762,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
 // OFFSET: 0x00817EA0
 // FUNCTION: fn_10173
-void UIRune_Decom::Slot15(int, int) {
+void UIRune_Decom::OnCreate(int, int) {
   this->m_decomButton = new UIBitmapButton();
   this->AddChild(this->m_decomButton);
   this->m_decomButton->SetBitmap("유저인터페이스\\runesystem\\bt_decom_nomal.bmp", 0, 0);
@@ -1793,7 +1793,7 @@ void UIRune_Decom::Slot15(int, int) {
 
 // OFFSET: 0x008177C0
 // FUNCTION: fn_10172
-void UIRuneSystemWnd::Slot15(int, int) {
+void UIRuneSystemWnd::OnCreate(int, int) {
   this->m_tab = new UIRuneSystemTab();
   this->AddChild(this->m_tab);
   this->m_tab->SetSize(0x109, 0x1A);
@@ -1816,8 +1816,8 @@ void UIRuneSystemWnd::Slot15(int, int) {
   UIRuneSetList* list = this->m_lists[0];
   list->vertical = 1;
   list->UIWindow::Resize(0x11B, 0x159);
-  list->Slot15(0x11B, 0x159);
-  list->Slot22(0x11B, 0x159);
+  list->OnCreate(0x11B, 0x159);
+  list->OnSize(0x11B, 0x159);
   this->m_lists[0]->Move(0, this->m_equipRuneSet->geometry.height + this->m_tagList->geometry.height + top);
   int count = g_runeSystemMgr->GetTag(-1)->GetRuneCount(0);
   this->m_lists[0]->SetRange(std::max(count - 5, 0), 5, count);
@@ -1827,8 +1827,8 @@ void UIRuneSystemWnd::Slot15(int, int) {
   list = this->m_lists[1];
   list->vertical = 1;
   list->UIWindow::Resize(0x11B, 0x1AB);
-  list->Slot15(0x11B, 0x1AB);
-  list->Slot22(0x11B, 0x1AB);
+  list->OnCreate(0x11B, 0x1AB);
+  list->OnSize(0x11B, 0x1AB);
   this->m_lists[1]->Move(0, this->m_tagList->geometry.height + top);
   count = g_runeSystemMgr->GetTag(-1)->GetRuneCount(1);
   this->m_lists[1]->SetRange(std::max(count - 9, 0), 9, count);
@@ -1838,8 +1838,8 @@ void UIRuneSystemWnd::Slot15(int, int) {
   list = this->m_lists[2];
   list->vertical = 1;
   list->UIWindow::Resize(0x11B, 0x1CB);
-  list->Slot15(0x11B, 0x1CB);
-  list->Slot22(0x11B, 0x1CB);
+  list->OnCreate(0x11B, 0x1CB);
+  list->OnSize(0x11B, 0x1CB);
   this->m_lists[2]->Move(0, top);
 
   this->m_runeSetInfo = new UIRuneSet_Info();
@@ -1864,7 +1864,7 @@ void UIRuneSystemWnd::Slot15(int, int) {
 
 // OFFSET: 0x00816CB0
 // FUNCTION: fn_10171
-void UIRuneSet_Info::Slot15(int, int) {
+void UIRuneSet_Info::OnCreate(int, int) {
   this->m_activeWnd = new UIRuneSystem_ActiveWnd();
   this->AddChild(this->m_activeWnd);
   this->m_activeWnd->SetSize(0xE6, 0x8C);
@@ -1941,8 +1941,8 @@ void UIRuneSet_Info::Slot15(int, int) {
   UIRuneSetinfoList* infoList = this->m_infoList;
   infoList->vertical = 1;
   infoList->UIWindow::Resize(0xF9, 0x192);
-  infoList->Slot15(0xF9, 0x192);
-  infoList->Slot22(0xF9, 0x192);
+  infoList->OnCreate(0xF9, 0x192);
+  infoList->OnSize(0xF9, 0x192);
   this->m_infoList->Move(0x179, 0x48);
   this->m_infoList->ClearLines();
 
@@ -2385,7 +2385,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, effects[argument2], 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         const vector3d& position = positions[argument2];
-        effect->Slot24(std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z), 1, 0x169);
+        effect->SetWindowOffset(std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z), 1, 0x169);
       }
     }
     break;

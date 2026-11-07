@@ -22,7 +22,7 @@ void CMeteorEffect::Close() {
 
 // OFFSET: 0x00707810
 // FUNCTION: fn_07056
-void CMeteorEffect::Slot01() {
+void CMeteorEffect::Open() {
   switch (this->id) {
     case 1099:
     case 1111: {
@@ -103,13 +103,13 @@ void CMeteorEffect::Slot01() {
 
 // OFFSET: 0x00707B40
 // FUNCTION: fn_07057
-bool CMeteorEffect::Slot06() {
+bool CMeteorEffect::IsAlive() {
   return !this->unknown_00CC.empty();
 }
 
 // OFFSET: 0x00707B50
 // FUNCTION: fn_07058
-void CMeteorEffect::Slot03() {
+void CMeteorEffect::OnProcess() {
   for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ) {
     CParticle* particle = *it;
     if (particle->life == 0.0f || static_cast<float>(particle->unknown_00E8) < particle->life * 60.0f) {
@@ -131,7 +131,7 @@ void CMeteorEffect::Slot03() {
 
 // OFFSET: 0x00707CA0
 // FUNCTION: fn_07059
-void CMeteorEffect::Slot04() {
+void CMeteorEffect::Render() {
   for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
     CParticle* particle = *it;
     if ((particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->unknown_00E8)) && particle) {

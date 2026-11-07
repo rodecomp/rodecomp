@@ -20,7 +20,7 @@
 
 // OFFSET: 0x0099A1F0
 // FUNCTION: fn_13540
-void UIRoundBoxTooltipWnd::Slot15(int width, int height) {
+void UIRoundBoxTooltipWnd::OnCreate(int width, int height) {
   if (this->viewer) {
     return;
   }

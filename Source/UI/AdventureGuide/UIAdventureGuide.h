@@ -20,9 +20,9 @@ class CUIQuest;
 class CUIAdventureGuide : public CUIFrameWnd {
 public:
   __declspec(noinline) CUIAdventureGuide();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
-  virtual void Slot53();
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
+  virtual void Initialize();
 
   void OnButtonClick();
   void OnClose();
@@ -47,7 +47,7 @@ public:
   explicit CUIPage() : CUIControl() {
   }
 
-  virtual void Slot54(int first, int second) = 0;
+  virtual void LoadPage(int first, int second) = 0;
 };
 
 class CUICharacterInfo : public CUIControl {
@@ -57,8 +57,8 @@ public:
   __declspec(noinline) explicit CUICharacterInfo() : CUIControl(), jobIcon(nullptr), level(nullptr), jobLevel(nullptr), name(nullptr) {
   }
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
 
   /* 0080 */ CUIStaticImage* jobIcon;
   /* 0084 */ CUIStaticText* level;
@@ -73,10 +73,10 @@ public:
   __declspec(noinline) explicit CUIIntro() : CUIPage(), banner(nullptr), image(nullptr), contents(nullptr) {
   }
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
-  void Slot54(int first, int second) override;
+  void LoadPage(int first, int second) override;
 
   void OnSelectContents(CUITabInfo* item, const Guide_Intro::Contents& contents);
   void BindContents(CUITabInfo* item, const Guide_Intro::Contents& contents);
@@ -94,10 +94,10 @@ public:
       : CUIPage(), itemList(nullptr), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), location(-1) {
   }
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
-  void Slot54(int type, int id) override;
+  void LoadPage(int type, int id) override;
   void BindItem(CUIItemInfo* item, const CItemData& data);
   void OnSelectItem(CUIItemInfo* item, const CItemData& data);
   void RequestNavigation();
@@ -117,10 +117,10 @@ public:
   __declspec(noinline) explicit CUIMonster() : CUIPage(), monsterList(nullptr), unknown_0084(nullptr), unknown_0088() {
   }
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
-  void Slot54(int first, int second) override;
+  void LoadPage(int first, int second) override;
 
   void OnSelectMonster(CUIMonsterInfo* item, const CMonsterData& data);
   void BindMonster(CUIMonsterInfo* item, const CMonsterData& data);
@@ -138,10 +138,10 @@ public:
   __declspec(noinline) explicit CUIQuest() : CUIPage(), questList(nullptr), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C() {
   }
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
-  void Slot54(int type, int id) override;
+  void LoadPage(int type, int id) override;
 
   void OnSelectQuest(CUIQuestInfo* item, const CQuestInfo& data);
   void RequestNavigation();

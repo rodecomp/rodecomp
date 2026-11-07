@@ -55,27 +55,27 @@ void UIStaticBitmap::Paint() {
 
 // OFFSET: 0x0085EE10
 // FUNCTION: fn_10849
-void UIStaticBitmap::Slot25(int x, int y) {
-  this->parent->Slot25((x + this->geometry.x), (y + this->geometry.y));
+void UIStaticBitmap::OnLBtnDown(int x, int y) {
+  this->parent->OnLBtnDown((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085EA30
 // FUNCTION: fn_10836
-void UIStaticBitmap::Slot26(int x, int y) {
-  this->parent->Slot26((x + this->geometry.x), (y + this->geometry.y));
+void UIStaticBitmap::OnLBtnDblClk(int x, int y) {
+  this->parent->OnLBtnDblClk((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085F8A0
 // FUNCTION: fn_10872
-void UIStaticBitmap::Slot27(int x, int y) {
-  this->parent->Slot27((x + this->geometry.x), (y + this->geometry.y));
+void UIStaticBitmap::OnMouseMove(int x, int y) {
+  this->parent->OnMouseMove((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085F500
 // FUNCTION: fn_10865
-void UIStaticBitmap::Slot28(int x, int y) {
+void UIStaticBitmap::OnMouseHover(int x, int y) {
   if (this->forwardHover != 0) {
-    this->parent->Slot28(x, y);
+    this->parent->OnMouseHover(x, y);
   }
 
   if (!this->tooltip.empty()) {
@@ -94,24 +94,24 @@ void UIStaticBitmap::ResetCursor(int x, int y) {
 
 // OFFSET: 0x0085F000
 // FUNCTION: fn_10854
-void UIStaticBitmap::Slot31(int x, int y) {
-  this->parent->Slot31((x + this->geometry.x), (y + this->geometry.y));
+void UIStaticBitmap::OnLBtnUp(int x, int y) {
+  this->parent->OnLBtnUp((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085FEA0
 // FUNCTION: fn_10888
-void UIStaticBitmap::Slot32(int x, int y) {
-  this->parent->Slot32((x + this->geometry.x), (y + this->geometry.y));
+void UIStaticBitmap::OnRBtnDown(int x, int y) {
+  this->parent->OnRBtnDown((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085FF00
 // FUNCTION: fn_10890
-void UIStaticBitmap::Slot33(int x, int y) {
-  this->parent->Slot33((x + this->geometry.x), (y + this->geometry.y));
+void UIStaticBitmap::OnRBtnUp(int x, int y) {
+  this->parent->OnRBtnUp((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x00860010
 // FUNCTION: fn_10896
-void UIStaticBitmap::Slot35(int value) {
-  this->parent->Slot35(value);
+void UIStaticBitmap::OnWheel(int value) {
+  this->parent->OnWheel(value);
 }

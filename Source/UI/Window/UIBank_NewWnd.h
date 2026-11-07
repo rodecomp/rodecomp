@@ -8,8 +8,8 @@ class UIEditCtrl;
 class UIBank_NewWnd : public UIFrameWnd {
 public:
   UIBank_NewWnd();
-  bool Slot03() override;
-  void Slot15(int width, int height) override;
+  bool NeedsFrameRefresh() override;
+  void OnCreate(int width, int height) override;
   long long AdjustAmount(int amount);
   long long TransactionAmount(unsigned char deposit);
   void Paint() override;

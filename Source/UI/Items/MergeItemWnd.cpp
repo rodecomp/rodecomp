@@ -121,7 +121,7 @@ void CMergeItemWnd::CreateControls() {
 
 // OFFSET: 0x007DF830
 // FUNCTION: fn_09665
-void CMergeItemWnd::Slot15(int, int) {
+void CMergeItemWnd::OnCreate(int, int) {
   this->CreateControls();
   this->FitToGrid(this->geometry.width, this->geometry.height);
 }
@@ -170,9 +170,9 @@ void CMergeItemWnd::Paint() {
 
 // OFFSET: 0x007DFB20
 // FUNCTION: fn_09667
-void CMergeItemWnd::Slot25(int x, int y) {
+void CMergeItemWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 
@@ -188,7 +188,7 @@ void CMergeItemWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x007DFBA0
 // FUNCTION: fn_09668
-void CMergeItemWnd::Slot28(int x, int y) {
+void CMergeItemWnd::OnMouseHover(int x, int y) {
   const int id = this->ItemAt(x, y);
   int screenX = x;
   int screenY = y;
@@ -202,12 +202,12 @@ void CMergeItemWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x007DFD00
 // FUNCTION: fn_09669
-void CMergeItemWnd::Slot19() {
+void CMergeItemWnd::OnProcess() {
 }
 
 // OFFSET: 0x007DFD10
 // FUNCTION: fn_09670
-void CMergeItemWnd::Slot35(int delta) {
+void CMergeItemWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     int step = this->m_rows - 1;
     if (step > 3) {

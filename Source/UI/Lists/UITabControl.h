@@ -32,12 +32,12 @@ public:
   );
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Paint() override;
-  void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot31(int x, int y) override;
+  void DragAndDrop(int argument1, int argument2, std::intptr_t argument3) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
 
   /* 007C */ int unknown_007C;
   /* 0080 */ int layout;

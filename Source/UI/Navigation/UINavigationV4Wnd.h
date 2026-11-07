@@ -25,11 +25,11 @@ struct NavigationWindowInfo {
 class UINavigationV4Wnd : public UIFrameWnd {
 public:
   UINavigationV4Wnd();
-  void Slot11() override;
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
-  void Slot31(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   bool ClearRouteTexts();
   void LayoutWithoutDetails();
@@ -81,9 +81,9 @@ class UIStaticBitmap;
 class UINavigationroadiconWnd : public UIFrameWnd {
 public:
   UINavigationroadiconWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot31(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00B4 */ UIStaticBitmap* icon;
@@ -92,7 +92,7 @@ public:
 class UINavigationRuideWnd : public UIFrameWnd {
 public:
   UINavigationRuideWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void RefreshRoute();

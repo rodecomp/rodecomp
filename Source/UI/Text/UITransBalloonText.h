@@ -24,8 +24,8 @@ public:
 
   void Resize(int width, int height) override;
   void Move(int x, int y) override;
-  bool Slot07(void* output) override;
-  void Slot15(int width, int height) override;
+  bool GetTransBoxInfo(void* output) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
 
   // INLINED

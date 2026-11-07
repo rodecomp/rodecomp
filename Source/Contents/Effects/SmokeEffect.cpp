@@ -25,7 +25,7 @@ void CSmokeEffect::Close() {
 
 // OFFSET: 0x00B76580
 // FUNCTION: fn_19177
-void CSmokeEffect::Slot01() {
+void CSmokeEffect::Open() {
   for (int i = 0; i < 4; ++i) {
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
     if (particle) {
@@ -40,13 +40,13 @@ void CSmokeEffect::Slot01() {
 
 // OFFSET: 0x00B76710
 // FUNCTION: fn_19178
-bool CSmokeEffect::Slot06() {
+bool CSmokeEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B76720
 // FUNCTION: fn_19179
-void CSmokeEffect::Slot03() {
+void CSmokeEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -94,7 +94,7 @@ void CSmokeEffect::Slot03() {
 
 // OFFSET: 0x00B76D80
 // FUNCTION: fn_19180
-void CSmokeEffect::Slot04() {
+void CSmokeEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it && (*it)->unknown_000C < this->visibleCount) {
       (*it)->Draw(1);

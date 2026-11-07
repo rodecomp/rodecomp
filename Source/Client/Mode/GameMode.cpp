@@ -2355,7 +2355,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           UIWindow* window = g_windowMgr.LookupWindow(this->drag.source == 0x10 ? 0x9F : 0x24);
           if (window) {
             window->RecordDrop(argument1, argument2, this->drag, -1);
-            window->Slot10(argument1, argument2, reinterpret_cast<std::intptr_t>(&this->drag));
+            window->DragAndDrop(argument1, argument2, reinterpret_cast<std::intptr_t>(&this->drag));
           }
         } else {
           ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, this->drag.id);
@@ -3374,7 +3374,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
-      const std::uint32_t state = this->scene->player->Slot13();
+      const std::uint32_t state = this->scene->player->GetStateFlags();
       const int bodyState = this->scene->player->bodyState;
       if (StateFlag01(state) || ((bodyState == 4 || bodyState == 1) && item.GetItemId() != 0x31B5)) {
         return 0;
@@ -3402,7 +3402,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1070)), 0xFF, 0, 0, 0);
           return 0;
         }
-        if (this->scene->player->Slot50() > 0 || g_session.PartyCount() > 0) {
+        if (this->scene->player->GetGdid() > 0 || g_session.PartyCount() > 0) {
           g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1023)), 0xFF, 0, 0, 0);
           return 0;
         }
@@ -3583,7 +3583,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         case 4:
           if (this->unknown_024C == 1 || g_windowMgr.unknown_01F0 || g_windowMgr.unknown_01F8 || g_windowMgr.unknown_01F4) {
             g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x783)), 0xFFFFFF, 0, 0, 0);
-          } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->Slot13() != 2) {
+          } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->GetStateFlags() != 2) {
             this->SendMsg(0x31, this->unknown_02E0, 0, 0, 0);
           }
           return 0;
@@ -3611,7 +3611,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
             (g_session.IsGuildMemberAccount(this->unknown_02E0) ? "GuildMember" : nullptr);
           std::string code;
           if (auto* actor = dynamic_cast<CPc*>(this->scene->GetGameActorByAID(this->unknown_02E0))) {
-            code = ShortcutFilename(actor->Slot42());
+            code = ShortcutFilename(actor->GetPkState());
           }
           g_windowMgr.SendNotice(0xE, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(category),
             reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
@@ -3732,7 +3732,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           if (!actor) {
             return 0;
           }
-          const std::string code = ShortcutFilename(actor->Slot42());
+          const std::string code = ShortcutFilename(actor->GetPkState());
           HGLOBAL memory = GlobalAlloc(0x42, code.size() + 1);
           void* destination = GlobalLock(memory);
           std::memcpy(destination, code.data(), code.size());
@@ -3921,7 +3921,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         message = 0xF84;
       } else if (this->unknown_0250) {
         message = 0xBB7;
-      } else if (StateFlag01(this->scene->player->Slot13())) {
+      } else if (StateFlag01(this->scene->player->GetStateFlags())) {
         message = 0xF83;
       }
       if (message) {
@@ -4705,7 +4705,7 @@ void CGameMode::PlaceWindowAtActor(UIWindow* window, CGameActor* actor) {
 
 // OFFSET: 0x00CDD790
 // FUNCTION: fn_21318
-void CGameMode::Slot7(int value) {
+void CGameMode::OnChangeState(int value) {
 }
 
 // OFFSET: 0x00CDFA00
@@ -5603,7 +5603,7 @@ int CGameMode::Run() {
         this->cursorType = this->pendingCursorType;
         this->cursorFrame = 0;
         this->pendingCursorType = -1;
-        this->Slot7(this->cursorType);
+        this->OnChangeState(this->cursorType);
       }
     }
 
@@ -5658,9 +5658,9 @@ void CGameMode::TargetActorByAid(int aid) {
     if (scene->unknown_0048 == 0 && scene->unknown_0054 == 0) {
       if (scene->unknown_004C != 0) {
         CGameActor* actor = static_cast<CGameActor*>(scene->GetGameActorByAID(aid));
-        if (actor != nullptr && !g_session.IsLocalPlayerAid(actor->Slot50())) {
+        if (actor != nullptr && !g_session.IsLocalPlayerAid(actor->GetGdid())) {
           GuildInfo* guildInfo = &g_guildInfo;
-          if (!guildInfo->HasRelatedGuild(actor->Slot50())) {
+          if (!guildInfo->HasRelatedGuild(actor->GetGdid())) {
             force = 1;
           }
         }
@@ -5788,7 +5788,7 @@ unsigned CGameMode::ReadReplayGuildInfo(const std::vector<unsigned char>& data) 
         int emblemVersion = 0;
         std::memcpy(&emblemVersion, data.data() + offset, header.size);
         offset += header.size;
-        this->scene->player->Slot49(guildId, emblemVersion);
+        this->scene->player->SetGuildInfo(guildId, emblemVersion);
         g_guildInfo.m_guildId = guildId;
         break;
       }
@@ -5825,27 +5825,27 @@ std::vector<unsigned char> CGameMode::SaveNameCardState() {
   }
 
   {
-    const int emblemVersion = g_guildMgr->GetEmblemVersion(this->scene->player->Slot50());
-    if (this->AppendGuildEmblem(buffer, names, this->scene->player->Slot50(), emblemVersion)) {
+    const int emblemVersion = g_guildMgr->GetEmblemVersion(this->scene->player->GetGdid());
+    if (this->AppendGuildEmblem(buffer, names, this->scene->player->GetGdid(), emblemVersion)) {
       const std::vector<unsigned char> chunk = MakeDataChunk(13002, buffer);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeRecordChunk(13004, this->scene->player->Slot50());
+    const std::vector<unsigned char> chunk = MakeRecordChunk(13004, this->scene->player->GetGdid());
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeRecordChunk(13005, g_guildMgr->GetEmblemVersion(this->scene->player->Slot50()));
+    const std::vector<unsigned char> chunk = MakeRecordChunk(13005, g_guildMgr->GetEmblemVersion(this->scene->player->GetGdid()));
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   for (CRenderObject* object : this->scene->actors) {
     CGameActor* actor = static_cast<CGameActor*>(object);
-    const int emblemVersion = g_guildMgr->GetEmblemVersion(actor->Slot50());
-    if (this->AppendGuildEmblem(buffer, names, actor->Slot50(), emblemVersion)) {
+    const int emblemVersion = g_guildMgr->GetEmblemVersion(actor->GetGdid());
+    if (this->AppendGuildEmblem(buffer, names, actor->GetGdid(), emblemVersion)) {
       const std::vector<unsigned char> chunk = MakeDataChunk(13002, buffer);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
@@ -5958,7 +5958,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       stored->value000A = static_cast<std::uint16_t>(actor->unknown_0158[5]);
       stored->value000C = static_cast<std::uint16_t>(*reinterpret_cast<const int*>(actor->unknown_0170));
       stored->value000F = static_cast<std::uint16_t>(pc->unknown_0440);
-      const std::int64_t value = actor->Slot35();
+      const std::int64_t value = actor->GetWeapon();
       stored->value0011 = static_cast<int>(value);
       stored->value0015 = static_cast<int>(value >> 32);
       stored->value0019 = static_cast<std::uint16_t>(pc->unknown_0450);
@@ -5967,7 +5967,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       stored->value001F = static_cast<std::uint16_t>(pc->unknown_0444);
       stored->value0021 = static_cast<std::uint16_t>(actor->render.unknown_0048);
       stored->value0023 = static_cast<std::uint16_t>(pc->unknown_049C);
-      stored->value003D = static_cast<std::uint16_t>(actor->Slot46());
+      stored->value003D = static_cast<std::uint16_t>(actor->GetBodyCostume());
       {
         std::string name = this->nameCard.Name(actor->render.accountId);
         std::memcpy(stored->text, name.c_str(), sizeof(stored->text));
@@ -6012,7 +6012,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
-    const int count = actor->Slot56();
+    const int count = actor->GetMadogearType();
     if (count > 0) {
       GameModeStoredRecord0191 record;
       record.value000C = 9999;
@@ -6317,7 +6317,7 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
   }
 
   if (window != nullptr) {
-    window->Slot10(packet->x, packet->y, reinterpret_cast<std::intptr_t>(&drag));
+    window->DragAndDrop(packet->x, packet->y, reinterpret_cast<std::intptr_t>(&drag));
   }
 
   const int kind = packet->windowId;
@@ -6434,7 +6434,7 @@ void __stdcall OpenWordDisplay(CGameActor* actor) {
   }
 
   if (!IsAdminAccount(g_session.m_aid)) {
-    if (StateFlag02(actor->Slot13()) || StateFlag01(actor->Slot13()) || StateFlag06(actor->Slot13())) {
+    if (StateFlag02(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag06(actor->GetStateFlags())) {
       return;
     }
   }
@@ -6697,7 +6697,7 @@ void CGameMode::End() {
   }
 
   if (this->camera) {
-    this->camera->Slot2();
+    this->camera->OnExitFrame();
     delete this->camera;
   }
 
@@ -8134,12 +8134,13 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
     if (actor->unknown_0314 == 7) {
       this->SetCursorAction(0);
     } else if (g_session.GetMapProperty08() != 0 || this->scene->unknown_004C != 0) {
-      if (g_session.IsLocalPlayerAid(actor->Slot50())) {
+      if (g_session.IsLocalPlayerAid(actor->GetGdid())) {
         attack = 0;
         this->SetCursorAction(0);
       }
     } else {
       this->SetCursorAction(5);
+
     }
   }
 
@@ -8316,8 +8317,8 @@ __forceinline void CGameMode::ShowHoverActorName(CGameActor* actor) {
     this->itemNameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.unknown_0094).c_str(), 0);
   } else if (g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) && card.unknown_0094) {
     this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.unknown_0094).c_str(), 0);
-  } else if (actor->Slot50() && showEmblem) {
-    std::string emblem = g_guildMgr->GetEmblemFilename(actor->Slot50());
+  } else if (actor->GetGdid() && showEmblem) {
+    std::string emblem = g_guildMgr->GetEmblemFilename(actor->GetGdid());
     const unsigned char framedEmblem = g_serviceOptions.Get(0xF3);
     this->itemNameBalloon->SetIcon(emblem.c_str(), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_004C == 1 && framedEmblem ? 1 : 0);
   } else {
@@ -9076,7 +9077,7 @@ void CGameMode::UpdateHoverNameBalloon() {
       return;
     }
 
-    if (actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->Slot13())) {
+    if (actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->GetStateFlags())) {
       this->ShowHoverActorName(actor);
     }
   } else {
@@ -9090,14 +9091,14 @@ void CGameMode::UpdateHoverNameBalloon() {
       return;
     }
 
-    if (!actor->unknown_0314 && actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->Slot13())) {
+    if (!actor->unknown_0314 && actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->GetStateFlags())) {
       *reinterpret_cast<int*>(&this->unknown_02B8[0x10]) = 0;
       this->ShowHoverActorName(actor);
     }
   }
 
   if (actor->GetEffectiveJob(-1) != 45 &&
-      (actor->unknown_0314 || (actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->Slot13())))) {
+      (actor->unknown_0314 || (actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->GetStateFlags())))) {
     this->SendMsg(4, static_cast<int>(actor->render.position.x), static_cast<int>(actor->render.position.z), 0, 0);
     return;
   }
@@ -10130,7 +10131,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
           attack = 1;
         }
       } else if (g_session.GetMapProperty08()) {
-        if (!g_session.IsLocalPlayerAid(actor->Slot50())) {
+        if (!g_session.IsLocalPlayerAid(actor->GetGdid())) {
           attack = 1;
         }
       }
@@ -10156,14 +10157,14 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
           CGameActor* summoner = static_cast<CGameActor*>(scene->GetGameActorByAID(actor->unknown_02EC));
           if (!summoner) {
             known = this->scene->player->render.accountId == static_cast<std::uint32_t>(actor->unknown_02EC);
-          } else if (!g_session.IsLocalPlayerAid(summoner->Slot50())) {
-            friendly = guildInfo->HasRelatedGuild(summoner->Slot50());
+          } else if (!g_session.IsLocalPlayerAid(summoner->GetGdid())) {
+            friendly = guildInfo->HasRelatedGuild(summoner->GetGdid());
           }
           break;
         }
         default:
-          if (!g_session.IsLocalPlayerAid(actor->Slot50())) {
-            friendly = guildInfo->HasRelatedGuild(actor->Slot50());
+          if (!g_session.IsLocalPlayerAid(actor->GetGdid())) {
+            friendly = guildInfo->HasRelatedGuild(actor->GetGdid());
           }
           break;
         }
@@ -10304,7 +10305,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
       return;
     }
     this->SendMsg(0x1A, 1, 0, 0, 0);
-    g_hoverActorGid = actor->Slot42();
+    g_hoverActorGid = actor->GetPkState();
     *reinterpret_cast<int*>(&this->unknown_00EC[0x0C]) = 0;
   }
 
@@ -10548,14 +10549,14 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
                 attack = 1;
               }
             } else if (g_session.GetMapProperty08() && actor != nullptr) {
-              if (!g_session.IsLocalPlayerAid(actor->Slot50())) {
+              if (!g_session.IsLocalPlayerAid(actor->GetGdid())) {
                 attack = 1;
               }
             }
 
             if (this->scene->unknown_004C != 0) {
               if (actor != nullptr) {
-                if (!g_session.IsLocalPlayerAid(actor->Slot50()) && !guildInfo->HasRelatedGuild(actor->Slot50())) {
+                if (!g_session.IsLocalPlayerAid(actor->GetGdid()) && !guildInfo->HasRelatedGuild(actor->GetGdid())) {
                   attack = 1;
                 } else {
                   attack = 0;
@@ -10615,10 +10616,10 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           }
 
           CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
-          if (g_session.GetMapProperty08() && actor != nullptr && g_session.IsLocalPlayerAid(actor->Slot50())) {
+          if (g_session.GetMapProperty08() && actor != nullptr && g_session.IsLocalPlayerAid(actor->GetGdid())) {
             attack = 0;
           }
-          if (this->scene->unknown_004C != 0 && actor != nullptr && g_session.IsLocalPlayerAid(actor->Slot50())) {
+          if (this->scene->unknown_004C != 0 && actor != nullptr && g_session.IsLocalPlayerAid(actor->GetGdid())) {
             attack = 0;
           }
 
@@ -10746,7 +10747,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           if (scene->unknown_0048 == 1 || siegeMode == 1 || scene->unknown_004C == 1) {
             if (scene->unknown_004C == 1) {
               CGameActor* owner = static_cast<CGameActor*>(scene->GetGameActorByAID(actor->unknown_02EC));
-              if (owner == nullptr || g_session.IsLocalPlayerAid(owner->Slot50()) == 1 || guildInfo->HasRelatedGuild(owner->Slot50()) == true) {
+              if (owner == nullptr || g_session.IsLocalPlayerAid(owner->GetGdid()) == 1 || guildInfo->HasRelatedGuild(owner->GetGdid()) == true) {
                 break;
               }
             }

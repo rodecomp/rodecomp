@@ -3,7 +3,7 @@
 
 // OFFSET: 0x0085ADA0
 // FUNCTION: fn_10789
-void UISlotBitmap::Slot15(int, int) {
+void UISlotBitmap::OnCreate(int, int) {
   if (this->unknown_00B8 == 1) {
     this->addButton = new UIBitmapButton();
     this->addButton->SetBitmap("유저인터페이스\\select_character\\btn_add_out.bmp", 0, 0);
@@ -21,7 +21,7 @@ void UISlotBitmap::Slot15(int, int) {
 
 // OFFSET: 0x0085E980
 // FUNCTION: fn_10833
-void UISlotBitmap::Slot26(int, int) {
+void UISlotBitmap::OnLBtnDblClk(int, int) {
   if (this->parent) {
     this->parent->SendMsg(this, 6, 184, 0, 0, 0);
   }
@@ -29,7 +29,7 @@ void UISlotBitmap::Slot26(int, int) {
 
 // OFFSET: 0x0085ED30
 // FUNCTION: fn_10846
-void UISlotBitmap::Slot25(int, int) {
+void UISlotBitmap::OnLBtnDown(int, int) {
   if (this->parent) {
     this->parent->SendMsg(this, 13, this->slot, 0, 0, 0);
     this->parent->SendMsg(this, 6, this->geometry.id, 0, 0, 0);
@@ -38,7 +38,7 @@ void UISlotBitmap::Slot25(int, int) {
 
 // OFFSET: 0x0085FE60
 // FUNCTION: fn_10887
-void UISlotBitmap::Slot32(int, int) {
+void UISlotBitmap::OnRBtnDown(int, int) {
   if (this->parent) {
     this->parent->SendMsg(this, 13, this->slot, 0, 0, 0);
     this->parent->SendMsg(this, 6, this->geometry.id, 226, 0, 0);

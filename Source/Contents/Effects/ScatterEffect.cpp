@@ -25,7 +25,7 @@ void CScatterEffect::Close() {
 
 // OFFSET: 0x00B75EB0
 // FUNCTION: fn_19170
-void CScatterEffect::Slot01() {
+void CScatterEffect::Open() {
   for (int i = 0; i < 50; ++i) {
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
     if (!particle) {
@@ -58,13 +58,13 @@ void CScatterEffect::Slot01() {
 
 // OFFSET: 0x00B76120
 // FUNCTION: fn_19171
-bool CScatterEffect::Slot06() {
+bool CScatterEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B76130
 // FUNCTION: fn_19172
-void CScatterEffect::Slot03() {
+void CScatterEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -91,7 +91,7 @@ void CScatterEffect::Slot03() {
 
 // OFFSET: 0x00B76390
 // FUNCTION: fn_19173
-void CScatterEffect::Slot04() {
+void CScatterEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       (*it)->Draw(1);

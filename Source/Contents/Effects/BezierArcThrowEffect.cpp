@@ -38,7 +38,7 @@ void CBezierArcThrowEffect::Close() {
 
 // OFFSET: 0x007AB2C0
 // FUNCTION: fn_09108
-void CBezierArcThrowEffect::Slot01() {
+void CBezierArcThrowEffect::Open() {
   this->m_particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (this->m_particle) {
     this->m_particle->Load(this->m_name);
@@ -53,7 +53,7 @@ void CBezierArcThrowEffect::Slot01() {
 
 // OFFSET: 0x007AB340
 // FUNCTION: fn_09110
-void CBezierArcThrowEffect::Slot03() {
+void CBezierArcThrowEffect::OnProcess() {
   if (!this->m_active) {
     return;
   }
@@ -118,7 +118,7 @@ void CBezierArcThrowEffect::Slot03() {
 
 // OFFSET: 0x007AB800
 // FUNCTION: fn_09111
-void CBezierArcThrowEffect::Slot04() {
+void CBezierArcThrowEffect::Render() {
   if (this->m_particle) {
     this->m_particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }

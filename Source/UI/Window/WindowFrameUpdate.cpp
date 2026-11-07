@@ -6,7 +6,7 @@
 // FUNCTION: fn_17215
 void UIWindowMgr::UpdateFrameWindows() {
   for (auto window = this->rendered.begin(); window != this->rendered.end(); ++window) {
-    (*window)->Slot19();
+    (*window)->OnProcess();
   }
 
   for (auto browser = this->browsers.begin(); browser != this->browsers.end();) {
@@ -22,6 +22,6 @@ void UIWindowMgr::UpdateFrameWindows() {
   }
 
   for (auto window = this->overlays.begin(); window != this->overlays.end(); ++window) {
-    window->second->Slot19();
+    window->second->OnProcess();
   }
 }

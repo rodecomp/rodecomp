@@ -24,7 +24,7 @@ void CRotateLineEffect::Close() {
 
 // OFFSET: 0x00B743A0
 // FUNCTION: fn_19156
-void CRotateLineEffect::Slot01() {
+void CRotateLineEffect::Open() {
   int ring = 0;
   for (int startAngle = 0; startAngle < 360; startAngle += 90) {
     const int tilt = std::max(0, rand() % 21) + 80;
@@ -65,13 +65,13 @@ void CRotateLineEffect::Slot01() {
 
 // OFFSET: 0x00B74580
 // FUNCTION: fn_19157
-bool CRotateLineEffect::Slot06() {
+bool CRotateLineEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B74590
 // FUNCTION: fn_19158
-void CRotateLineEffect::Slot03() {
+void CRotateLineEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -153,7 +153,7 @@ void CRotateLineEffect::Slot03() {
 
 // OFFSET: 0x00B74B00
 // FUNCTION: fn_19159
-void CRotateLineEffect::Slot04() {
+void CRotateLineEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (CParticle* particle = *it) {
       const int segment = particle->unknown_000C;

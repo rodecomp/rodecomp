@@ -13,12 +13,12 @@ class UICheckBox;
 class UIEquipWnd : public UIFrameWnd {
 public:
   UIEquipWnd();
-  bool Slot03() override;
+  bool NeedsFrameRefresh() override;
   void Move(int x, int y) override;
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot11() override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void StoreInfo() override;
   void Paint() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   /* 00B4 */ int m_viewOther;
   /* 00B8 */ int m_highlight[3];
   /* 00C4 */ int m_show;
@@ -51,14 +51,14 @@ public:
   /* 016C */ std::vector<std::string> m_damageSkinIcons;
   /* 0178 */ UIBitmapButton* unknown_0178;
 
-  void Slot19() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnProcess() override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   void DrawDamageSkinPage();

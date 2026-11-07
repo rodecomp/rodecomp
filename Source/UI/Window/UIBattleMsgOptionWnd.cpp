@@ -17,7 +17,7 @@
 
 // OFFSET: 0x009335E0
 // FUNCTION: fn_12726
-void UIBattleMsgOptionWnd::Slot35(int delta) {
+void UIBattleMsgOptionWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     int step = this->m_visibleRows - 1;
     if (step > 3) {
@@ -70,7 +70,7 @@ UIBattleMsgOptionWnd::UIBattleMsgOptionWnd() : UIFrameWnd(0) {
 
 // OFFSET: 0x0091EC40
 // FUNCTION: fn_12636
-void UIBattleMsgOptionWnd::Slot15(int, int height) {
+void UIBattleMsgOptionWnd::OnCreate(int, int height) {
   this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->m_scrollBar);
@@ -108,17 +108,17 @@ int UIBattleMsgOptionWnd::RowAt(int x, int y) {
 
 // OFFSET: 0x009305F0
 // FUNCTION: fn_12685
-void UIBattleMsgOptionWnd::Slot26(int x, int y) {
+void UIBattleMsgOptionWnd::OnLBtnDblClk(int x, int y) {
   if (y < 17) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
 // OFFSET: 0x00930A80
 // FUNCTION: fn_12692
-void UIBattleMsgOptionWnd::Slot25(int x, int y) {
+void UIBattleMsgOptionWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 
@@ -147,7 +147,7 @@ void UIBattleMsgOptionWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x009317A0
 // FUNCTION: fn_12707
-void UIBattleMsgOptionWnd::Slot28(int x, int y) {
+void UIBattleMsgOptionWnd::OnMouseHover(int x, int y) {
   const int previous = this->unknown_00B8;
   this->unknown_00B8 = this->RowAt(x, y);
   if (previous != this->unknown_00B8) {

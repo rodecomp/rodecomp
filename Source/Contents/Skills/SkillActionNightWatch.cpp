@@ -21,141 +21,141 @@
 
 class CSkillAction_NW_INTENSIVE_AIM : public CSkillAction {
 public:
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_INTENSIVE_AIM_COUNT : public CEfstAction {
 public:
-  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
-  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+  void OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
 class CEfstAction_INTENSIVE_AIM : public CEfstAction {
 public:
-  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
 };
 
 class CSkillAction_NW_GRENADE_FRAGMENT : public CSkillAction {
 public:
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_THE_VIGILANTE_AT_NIGHT : public CSkillAction {
 public:
-  void Slot08(int level, CGameActor* source) override;
+  void OnSkillCast(int level, CGameActor* source) override;
 };
 
 class CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING : public CSkillAction {
 public:
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN : public CSkillAction {
 public:
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_ONLY_ONE_BULLET : public CSkillAction {
 public:
-  void Slot08(int level, CGameActor* source) override;
-  void Slot09(int argument1, int argument2, int argument3) override;
-  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnTargetSkillCast(int argument1, int argument2, int argument3) override;
+  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_SPIRAL_SHOOTING : public CSkillAction {
 public:
-  void Slot08(int level, CGameActor* source) override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_MAGAZINE_FOR_ONE : public CSkillAction {
 public:
-  void Slot08(int level, CGameActor* source) override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_WILD_FIRE : public CSkillAction {
 public:
-  void Slot08(int level, CGameActor* source) override;
-  void Slot12(vector3d position, int argument2, int argument3) override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
 };
 
 class CSkillAction_NW_BASIC_GRENADE : public CSkillAction {
 public:
-  void Slot08(int level, CGameActor* source) override;
-  void Slot12(vector3d position, int argument2, int argument3) override;
-  int Slot14() override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
+  int GetSkillScopeType() override;
 };
 
 class CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE : public CSkillAction {
 public:
-  bool Slot03(int argument) override;
-  void Slot08(int level, CGameActor* source) override;
-  void Slot12(vector3d position, int argument2, int argument3) override;
+  bool KeepSkillAttackMotion(int argument) override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
 };
 
 class CSkillAction_NW_GRENADES_DROPPING : public CSkillAction {
 public:
-  bool Slot03(int argument) override;
-  void Slot08(int level, CGameActor* source) override;
-  int Slot14() override;
+  bool KeepSkillAttackMotion(int argument) override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  int GetSkillScopeType() override;
 };
 
 class CSkillObjectAction_NW_GRENADES_DROPPING : public CSkillObjectAction {
 public:
-  void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
+  void OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) override;
 };
 
 class CSkillAction_NW_AUTO_FIRING_LAUNCHER : public CSkillAction {
 public:
-  void Slot08(int level, CGameActor* source) override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_HIDDEN_CARD : public CSkillAction {
 public:
-  void Slot08(int level, CGameActor* source) override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_HIDDEN_CARD : public CEfstAction {
 public:
-  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
-  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
-  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+  void OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
 class CSkillAction_NW_MISSION_BOMBARD : public CSkillAction {
 public:
-  bool Slot03(int argument) override;
-  void Slot08(int level, CGameActor* source) override;
-  int Slot14() override;
+  bool KeepSkillAttackMotion(int argument) override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  int GetSkillScopeType() override;
 };
 
 class CSkillObjectAction_NW_MISSION_BOMBARD : public CSkillObjectAction {
 public:
-  void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
+  void OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) override;
 };
 
 class CSkillAction_NW_WILD_SHOT : public CSkillAction {
 public:
-  void Slot08(int level, CGameActor* source) override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
-  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_MIDNIGHT_FALLEN : public CSkillAction {
 public:
-  bool Slot03(int argument) override;
-  void Slot08(int level, CGameActor* source) override;
-  void Slot12(vector3d position, int argument2, int argument3) override;
-  void Slot16(int level, CGameActor* source, CGameActor* target) override;
-  int Slot14() override;
+  bool KeepSkillAttackMotion(int argument) override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
+  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillScopeType() override;
 };
 
 // OFFSET: 0x0078E470
 // FUNCTION: fn_08676
-void CSkillAction_NW_INTENSIVE_AIM::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_INTENSIVE_AIM::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_helix"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -164,7 +164,7 @@ void CSkillAction_NW_INTENSIVE_AIM::Slot11(int level, CGameActor* source, CGameA
 
 // OFFSET: 0x0078E5F0
 // FUNCTION: fn_08677
-void CEfstAction_INTENSIVE_AIM_COUNT::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+void CEfstAction_INTENSIVE_AIM_COUNT::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     for (int index = 0; index <= 10; ++index) {
       EffectLists* effects = g_effectMgr;
@@ -183,13 +183,13 @@ void CEfstAction_INTENSIVE_AIM_COUNT::Slot00(int efstId, int value, int argument
 
 // OFFSET: 0x0078E9A0
 // FUNCTION: fn_08678
-void CEfstAction_INTENSIVE_AIM_COUNT::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
-  this->Slot00(efstId, value, 0, 0, actor, false);
+void CEfstAction_INTENSIVE_AIM_COUNT::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->OnEfstBegin(efstId, value, 0, 0, actor, false);
 }
 
 // OFFSET: 0x0078E9C0
 // FUNCTION: fn_08679
-void CEfstAction_INTENSIVE_AIM::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+void CEfstAction_INTENSIVE_AIM::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     for (int index = 0; index <= 10; ++index) {
       EffectLists* effects = g_effectMgr;
@@ -202,7 +202,7 @@ void CEfstAction_INTENSIVE_AIM::Slot01(int efstId, int argument2, int argument3,
 
 // OFFSET: 0x0078EBC0
 // FUNCTION: fn_08680
-void CSkillAction_NW_GRENADE_FRAGMENT::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_GRENADE_FRAGMENT::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!source) {
     return;
   }
@@ -242,7 +242,7 @@ void CSkillAction_NW_GRENADE_FRAGMENT::Slot11(int level, CGameActor* source, CGa
 
 // OFFSET: 0x0078F0D0
 // FUNCTION: fn_08681
-void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
   }
@@ -250,7 +250,7 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT::Slot08(int level, CGameActor* sourc
 
 // OFFSET: 0x0078F110
 // FUNCTION: fn_08683
-void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
@@ -271,14 +271,14 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::Slot11(int level, CGame
     effect->position[0] = static_cast<float>(index % 2 * 15 - std::max(second, 0)) + target->render.position.x;
     effect->position[2] = target->render.position.z + 0.0f;
     effect->position[1] = static_cast<float>(index % 4 / 2 * 15 - std::max(first, 0)) + target->render.position.y;
-    effect->Slot16(index * 32);
-    effect->Slot22(static_cast<float>(std::max(rand() % 51, 0) + 50) * 0.01f);
+    effect->SetDelay(index * 32);
+    effect->SetScale(static_cast<float>(std::max(rand() % 51, 0) + 50) * 0.01f);
   }
 }
 
 // OFFSET: 0x0078F540
 // FUNCTION: fn_08685
-void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
@@ -299,14 +299,14 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::Slot11(int level, CGame
     effect->position[0] = static_cast<float>(index % 2 * 10 - std::max(second, 0)) + target->render.position.x;
     effect->position[2] = target->render.position.z + 0.0f;
     effect->position[1] = static_cast<float>(index % 4 / 2 * 10 - std::max(first, 0)) + target->render.position.y;
-    effect->Slot16(index * 32);
-    effect->Slot22(static_cast<float>(std::max(rand() % 31, 0) + 70) * 0.01f);
+    effect->SetDelay(index * 32);
+    effect->SetScale(static_cast<float>(std::max(rand() % 31, 0) + 70) * 0.01f);
   }
 }
 
 // OFFSET: 0x0078F960
 // FUNCTION: fn_08687
-void CSkillAction_NW_ONLY_ONE_BULLET::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_ONLY_ONE_BULLET::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
   }
@@ -314,7 +314,7 @@ void CSkillAction_NW_ONLY_ONE_BULLET::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x0078F990
 // FUNCTION: fn_08688
-void CSkillAction_NW_ONLY_ONE_BULLET::Slot09(int argument1, int argument2, int argument3) {
+void CSkillAction_NW_ONLY_ONE_BULLET::OnTargetSkillCast(int argument1, int argument2, int argument3) {
   if (CGameActor* source = reinterpret_cast<CGameActor*>(argument2)) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("only_one_bullet"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -323,7 +323,7 @@ void CSkillAction_NW_ONLY_ONE_BULLET::Slot09(int argument1, int argument2, int a
 
 // OFFSET: 0x0078FB00
 // FUNCTION: fn_08689
-void CSkillAction_NW_ONLY_ONE_BULLET::Slot16(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_ONLY_ONE_BULLET::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   CGameActor* origin = reinterpret_cast<CGameActor*>(level);
   if (!origin || !source) {
     return;
@@ -333,13 +333,13 @@ void CSkillAction_NW_ONLY_ONE_BULLET::Slot16(int level, CGameActor* source, CGam
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("only_one_bullet_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
-    effect->Slot17(angle);
+    effect->SetAngle(angle);
   }
 }
 
 // OFFSET: 0x0078FCE0
 // FUNCTION: fn_08691
-void CSkillAction_NW_SPIRAL_SHOOTING::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_SPIRAL_SHOOTING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
   }
@@ -347,7 +347,7 @@ void CSkillAction_NW_SPIRAL_SHOOTING::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x0078FD10
 // FUNCTION: fn_08692
-void CSkillAction_NW_SPIRAL_SHOOTING::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_SPIRAL_SHOOTING::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_shooting"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -356,7 +356,7 @@ void CSkillAction_NW_SPIRAL_SHOOTING::Slot11(int level, CGameActor* source, CGam
 
 // OFFSET: 0x0078FE90
 // FUNCTION: fn_08694
-void CSkillAction_NW_MAGAZINE_FOR_ONE::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_MAGAZINE_FOR_ONE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
   }
@@ -364,7 +364,7 @@ void CSkillAction_NW_MAGAZINE_FOR_ONE::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x0078FEC0
 // FUNCTION: fn_08695
-void CSkillAction_NW_MAGAZINE_FOR_ONE::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_MAGAZINE_FOR_ONE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("magazine_for_one"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -373,7 +373,7 @@ void CSkillAction_NW_MAGAZINE_FOR_ONE::Slot11(int level, CGameActor* source, CGa
 
 // OFFSET: 0x00790040
 // FUNCTION: fn_08697
-void CSkillAction_NW_WILD_FIRE::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_WILD_FIRE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
   }
@@ -381,7 +381,7 @@ void CSkillAction_NW_WILD_FIRE::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x00790070
 // FUNCTION: fn_08698
-void CSkillAction_NW_WILD_FIRE::Slot12(vector3d position, int argument2, int argument3) {
+void CSkillAction_NW_WILD_FIRE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_fire"), position.x, position.y, position.z, 0, -1, 0, 0);
   effects = g_effectMgr;
@@ -390,7 +390,7 @@ void CSkillAction_NW_WILD_FIRE::Slot12(vector3d position, int argument2, int arg
 
 // OFFSET: 0x007902A0
 // FUNCTION: fn_08701
-void CSkillAction_NW_BASIC_GRENADE::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_BASIC_GRENADE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
   }
@@ -398,7 +398,7 @@ void CSkillAction_NW_BASIC_GRENADE::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x007902D0
 // FUNCTION: fn_08702
-void CSkillAction_NW_BASIC_GRENADE::Slot12(vector3d position, int argument2, int argument3) {
+void CSkillAction_NW_BASIC_GRENADE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("basic_grenade"), position.x, position.y, position.z, 0, -1, 0, 0);
   effects = g_effectMgr;
@@ -407,19 +407,19 @@ void CSkillAction_NW_BASIC_GRENADE::Slot12(vector3d position, int argument2, int
 
 // OFFSET: 0x007904F0
 // FUNCTION: fn_08703
-int CSkillAction_NW_BASIC_GRENADE::Slot14() {
+int CSkillAction_NW_BASIC_GRENADE::GetSkillScopeType() {
   return 3;
 }
 
 // OFFSET: 0x00790510
 // FUNCTION: fn_08705
-bool CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::Slot03(int argument) {
+bool CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::KeepSkillAttackMotion(int argument) {
   return true;
 }
 
 // OFFSET: 0x00790520
 // FUNCTION: fn_08706
-void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
   }
@@ -427,33 +427,33 @@ void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::Slot08(int level, CGameActor* sourc
 
 // OFFSET: 0x00790550
 // FUNCTION: fn_08707
-void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::Slot12(vector3d position, int argument2, int argument3) {
+void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   for (int index = 0; index < 3; ++index) {
     CEffect* effect = g_effectMgr->Spawn(
       0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_%d", index).c_str()), position.x, position.y, position.z, 0, -1, 0, 0
     );
     if (effect) {
-      effect->Slot16(index * 288);
+      effect->SetDelay(index * 288);
     }
 
     effect = g_effectMgr->Spawn(
       0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_bottom_%d", index).c_str()), position.x, position.y, position.z, 0, -1, 0, 0
     );
     if (effect) {
-      effect->Slot16(index * 288);
+      effect->SetDelay(index * 288);
     }
   }
 }
 
 // OFFSET: 0x007908E0
 // FUNCTION: fn_08710
-bool CSkillAction_NW_GRENADES_DROPPING::Slot03(int argument) {
+bool CSkillAction_NW_GRENADES_DROPPING::KeepSkillAttackMotion(int argument) {
   return true;
 }
 
 // OFFSET: 0x007908F0
 // FUNCTION: fn_08711
-void CSkillAction_NW_GRENADES_DROPPING::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_GRENADES_DROPPING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
   }
@@ -461,13 +461,13 @@ void CSkillAction_NW_GRENADES_DROPPING::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x00790920
 // FUNCTION: fn_08712
-int CSkillAction_NW_GRENADES_DROPPING::Slot14() {
+int CSkillAction_NW_GRENADES_DROPPING::GetSkillScopeType() {
   return 3;
 }
 
 // OFFSET: 0x00790930
 // FUNCTION: fn_08713
-void CSkillObjectAction_NW_GRENADES_DROPPING::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+void CSkillObjectAction_NW_GRENADES_DROPPING::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
     g_effectMgr->Spawn(object->render.accountId, 2351, object->render.position.x, object->render.position.y, object->render.position.z, 0, argument, 0, 0);
   }
@@ -475,7 +475,7 @@ void CSkillObjectAction_NW_GRENADES_DROPPING::Slot00(int argument, CRenderObject
 
 // OFFSET: 0x00790990
 // FUNCTION: fn_08715
-void CSkillAction_NW_AUTO_FIRING_LAUNCHER::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_AUTO_FIRING_LAUNCHER::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
   }
@@ -483,7 +483,7 @@ void CSkillAction_NW_AUTO_FIRING_LAUNCHER::Slot08(int level, CGameActor* source)
 
 // OFFSET: 0x007909C0
 // FUNCTION: fn_08716
-void CSkillAction_NW_AUTO_FIRING_LAUNCHER::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_AUTO_FIRING_LAUNCHER::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("auto_firing_launcher"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -494,7 +494,7 @@ void CSkillAction_NW_AUTO_FIRING_LAUNCHER::Slot11(int level, CGameActor* source,
 
 // OFFSET: 0x00790C60
 // FUNCTION: fn_08718
-void CSkillAction_NW_HIDDEN_CARD::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_HIDDEN_CARD::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(840, level / 16);
   }
@@ -502,7 +502,7 @@ void CSkillAction_NW_HIDDEN_CARD::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x00790C90
 // FUNCTION: fn_08719
-void CSkillAction_NW_HIDDEN_CARD::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_HIDDEN_CARD::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hiddencard"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -511,7 +511,7 @@ void CSkillAction_NW_HIDDEN_CARD::Slot11(int level, CGameActor* source, CGameAct
 
 // OFFSET: 0x00790DF0
 // FUNCTION: fn_08720
-void CEfstAction_HIDDEN_CARD::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+void CEfstAction_HIDDEN_CARD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hiddencard_thunder"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -520,7 +520,7 @@ void CEfstAction_HIDDEN_CARD::Slot00(int efstId, int value, int argument3, int a
 
 // OFFSET: 0x00790F70
 // FUNCTION: fn_08721
-void CEfstAction_HIDDEN_CARD::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+void CEfstAction_HIDDEN_CARD::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
     effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hiddencard_thunder"));
@@ -529,19 +529,19 @@ void CEfstAction_HIDDEN_CARD::Slot01(int efstId, int argument2, int argument3, i
 
 // OFFSET: 0x007910A0
 // FUNCTION: fn_08722
-void CEfstAction_HIDDEN_CARD::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
-  this->Slot00(efstId, value, 0, 0, actor, false);
+void CEfstAction_HIDDEN_CARD::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->OnEfstBegin(efstId, value, 0, 0, actor, false);
 }
 
 // OFFSET: 0x007910D0
 // FUNCTION: fn_08724
-bool CSkillAction_NW_MISSION_BOMBARD::Slot03(int argument) {
+bool CSkillAction_NW_MISSION_BOMBARD::KeepSkillAttackMotion(int argument) {
   return true;
 }
 
 // OFFSET: 0x007910E0
 // FUNCTION: fn_08725
-void CSkillAction_NW_MISSION_BOMBARD::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_MISSION_BOMBARD::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(840, level / 16);
   }
@@ -549,13 +549,13 @@ void CSkillAction_NW_MISSION_BOMBARD::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x00791110
 // FUNCTION: fn_08726
-int CSkillAction_NW_MISSION_BOMBARD::Slot14() {
+int CSkillAction_NW_MISSION_BOMBARD::GetSkillScopeType() {
   return 9;
 }
 
 // OFFSET: 0x00791120
 // FUNCTION: fn_08727
-void CSkillObjectAction_NW_MISSION_BOMBARD::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+void CSkillObjectAction_NW_MISSION_BOMBARD::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -569,7 +569,7 @@ void CSkillObjectAction_NW_MISSION_BOMBARD::Slot00(int argument, CRenderObject* 
 
 // OFFSET: 0x007914F0
 // FUNCTION: fn_08729
-void CSkillAction_NW_WILD_SHOT::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_WILD_SHOT::OnSkillCast(int level, CGameActor* source) {
   if (!source) {
     return;
   }
@@ -577,13 +577,13 @@ void CSkillAction_NW_WILD_SHOT::Slot08(int level, CGameActor* source) {
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
-    effect->Slot14(level);
+    effect->SetLifeTime(level);
   }
 }
 
 // OFFSET: 0x00791670
 // FUNCTION: fn_08730
-void CSkillAction_NW_WILD_SHOT::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_WILD_SHOT::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!target) {
     return;
   }
@@ -606,9 +606,9 @@ void CSkillAction_NW_WILD_SHOT::Slot11(int level, CGameActor* source, CGameActor
     const float z = offsetZ + target->render.position.z;
     CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot"), x, y, z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot22(0.8f);
-      effect->Slot16(delay);
-      effect->Slot17(static_cast<float>(std::max(rand() % 360, 0)));
+      effect->SetScale(0.8f);
+      effect->SetDelay(delay);
+      effect->SetAngle(static_cast<float>(std::max(rand() % 360, 0)));
     }
     delay += 240;
   }
@@ -616,7 +616,7 @@ void CSkillAction_NW_WILD_SHOT::Slot11(int level, CGameActor* source, CGameActor
 
 // OFFSET: 0x00791950
 // FUNCTION: fn_08731
-void CSkillAction_NW_WILD_SHOT::Slot16(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_WILD_SHOT::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (!source) {
     return;
   }
@@ -626,19 +626,19 @@ void CSkillAction_NW_WILD_SHOT::Slot16(int level, CGameActor* source, CGameActor
   effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
-    effect->Slot22(0.8f);
+    effect->SetScale(0.8f);
   }
 }
 
 // OFFSET: 0x00791BB0
 // FUNCTION: fn_08733
-bool CSkillAction_NW_MIDNIGHT_FALLEN::Slot03(int argument) {
+bool CSkillAction_NW_MIDNIGHT_FALLEN::KeepSkillAttackMotion(int argument) {
   return true;
 }
 
 // OFFSET: 0x00791BC0
 // FUNCTION: fn_08734
-void CSkillAction_NW_MIDNIGHT_FALLEN::Slot08(int level, CGameActor* source) {
+void CSkillAction_NW_MIDNIGHT_FALLEN::OnSkillCast(int level, CGameActor* source) {
   if (!source) {
     return;
   }
@@ -646,13 +646,13 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::Slot08(int level, CGameActor* source) {
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
-    effect->Slot14(level);
+    effect->SetLifeTime(level);
   }
 }
 
 // OFFSET: 0x00791D60
 // FUNCTION: fn_08735
-void CSkillAction_NW_MIDNIGHT_FALLEN::Slot12(vector3d position, int argument2, int argument3) {
+void CSkillAction_NW_MIDNIGHT_FALLEN::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   int delay = 0;
   for (int angle = 45; angle < 405; angle += 120) {
     const float radians = static_cast<float>(angle) / 180.0f * 3.141592f;
@@ -664,7 +664,7 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::Slot12(vector3d position, int argument2, i
     EffectLists* effects = g_effectMgr;
     CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_bottom"), x, y, z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot16(delay);
+      effect->SetDelay(delay);
     }
     delay += 96;
   }
@@ -672,7 +672,7 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::Slot12(vector3d position, int argument2, i
 
 // OFFSET: 0x00791FD0
 // FUNCTION: fn_08736
-void CSkillAction_NW_MIDNIGHT_FALLEN::Slot16(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_NW_MIDNIGHT_FALLEN::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
     effects->Retire(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_hit"));
@@ -683,6 +683,6 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::Slot16(int level, CGameActor* source, CGam
 
 // OFFSET: 0x00792230
 // FUNCTION: fn_08737
-int CSkillAction_NW_MIDNIGHT_FALLEN::Slot14() {
+int CSkillAction_NW_MIDNIGHT_FALLEN::GetSkillScopeType() {
   return 7;
 }

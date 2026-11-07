@@ -31,9 +31,9 @@ public:
   UIBroadcastBalloon();
   void Paint() override;
   bool CanHitTest() override;
-  void Slot19() override;
-  bool Slot42(void* output) override;
-  void Slot43() override;
+  void OnProcess() override;
+  bool GetCustomTransBoxInfo(void* output) override;
+  void DrawTransBox() override;
 
   void AddMessage(int category, const BroadcastBalloonMessage& message);
 

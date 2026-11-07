@@ -113,9 +113,9 @@ EncryptedName<85, 0x3B915119EFD523EFULL>& CashShopReplaceCartItemText::operator(
 
 // OFFSET: 0x007CE570
 // FUNCTION: fn_09529
-void UICashShopWnd::Slot10(int x, int y, std::intptr_t value) {
+void UICashShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   if (g_windowMgr.LookupWindow(10011)) {
-    UIFrameWnd::Slot10(x, y, value);
+    UIFrameWnd::DragAndDrop(x, y, value);
     return;
   }
 
@@ -143,9 +143,9 @@ void UICashShopWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x007CE630
 // FUNCTION: fn_09530
-void UICashShopWnd_Cart::Slot10(int x, int y, std::intptr_t value) {
+void UICashShopWnd_Cart::DragAndDrop(int x, int y, std::intptr_t value) {
   if (g_windowMgr.LookupWindow(10011)) {
-    UIWindow::Slot10(x, y, value);
+    UIWindow::DragAndDrop(x, y, value);
     return;
   }
 
@@ -168,17 +168,17 @@ void UICashShopWnd_Cart::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x007CE6C0
 // FUNCTION: fn_09531
-void UICashShopWnd_CartItem::Slot10(int x, int y, std::intptr_t value) {
+void UICashShopWnd_CartItem::DragAndDrop(int x, int y, std::intptr_t value) {
   if (this->parent != nullptr) {
-    this->parent->Slot10(x, y, value);
+    this->parent->DragAndDrop(x, y, value);
   }
 }
 
 // OFFSET: 0x007CE6E0
 // FUNCTION: fn_09532
-void UICashShopWnd_Item::Slot10(int x, int y, std::intptr_t value) {
+void UICashShopWnd_Item::DragAndDrop(int x, int y, std::intptr_t value) {
   if (this->parent != nullptr) {
-    this->parent->Slot10(x, y, value);
+    this->parent->DragAndDrop(x, y, value);
   }
 }
 
@@ -193,13 +193,13 @@ void FormatMessageBuffer(char* buffer, const char* format, ...) {
 
 // OFFSET: 0x007CE730
 // FUNCTION: fn_09534
-bool UICashShopWnd::Slot03() {
+bool UICashShopWnd::NeedsFrameRefresh() {
   return true;
 }
 
 // OFFSET: 0x007CE740
 // FUNCTION: fn_09535
-void UICashShopWnd::Slot15(int, int) {
+void UICashShopWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
@@ -351,7 +351,7 @@ void UICashShopWnd::Slot15(int, int) {
 
 // OFFSET: 0x007CF760
 // FUNCTION: fn_09536
-void UICashShopWnd_Cart::Slot15(int, int) {
+void UICashShopWnd_Cart::OnCreate(int, int) {
   this->m_scrollBar = new UIScrollBar_Custom();
   this->m_scrollBar->Configure(this->geometry.width - 7, 0, this->geometry.height, 1, 7, 7);
   this->m_scrollBar->SetArrowBitmaps("유저인터페이스\\cashshop\\shop_scroll_up.bmp", "유저인터페이스\\cashshop\\shop_scroll_down.bmp");
@@ -374,7 +374,7 @@ void UICashShopWnd_Cart::Slot15(int, int) {
 
 // OFFSET: 0x007CFB20
 // FUNCTION: fn_09537
-void UICashShopWnd_CartItem::Slot15(int, int) {
+void UICashShopWnd_CartItem::OnCreate(int, int) {
   UIBitmapButton* close = new UIBitmapButton();
   close->SetBitmap("유저인터페이스\\cashshop\\btn_close.bmp", 0, 0);
   close->SetBitmap("유저인터페이스\\cashshop\\btn_close.bmp", 1, 0);
@@ -405,7 +405,7 @@ void UICashShopWnd_CartItem::Slot15(int, int) {
 
 // OFFSET: 0x007CFD20
 // FUNCTION: fn_09538
-void UICashShopWnd_Item::Slot15(int, int) {
+void UICashShopWnd_Item::OnCreate(int, int) {
   this->m_addButton = new UIBmpTextButton();
   this->m_addButton->SetBitmap("유저인터페이스\\cashshop\\btn_add_normal.bmp", 0, 0);
   this->m_addButton->SetBitmap("유저인터페이스\\cashshop\\btn_add_press.bmp", 1, 0);
@@ -605,13 +605,13 @@ void UICashShopWnd_Item::Paint() {
 
 // OFFSET: 0x007D1020
 // FUNCTION: fn_09544
-void UICashShopWnd_CartItem::Slot26(int, int) {
+void UICashShopWnd_CartItem::OnLBtnDblClk(int, int) {
   this->SendMsg(this, 6, 0xD3, 0, 0, 0);
 }
 
 // OFFSET: 0x007D1040
 // FUNCTION: fn_09545
-void UICashShopWnd_CartItem::Slot25(int, int) {
+void UICashShopWnd_CartItem::OnLBtnDown(int, int) {
   if (this->m_item.unknown_0000[1] != 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())
       ->drag.BeginItem(g_windowMgr, 4, this->m_item, this->m_item.quantity, -1);
@@ -620,7 +620,7 @@ void UICashShopWnd_CartItem::Slot25(int, int) {
 
 // OFFSET: 0x007D1080
 // FUNCTION: fn_09546
-void UICashShopWnd_Item::Slot25(int, int) {
+void UICashShopWnd_Item::OnLBtnDown(int, int) {
   if (this->m_item.unknown_0000[1] != 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 6, this->m_item, 1, -1);
   }
@@ -628,7 +628,7 @@ void UICashShopWnd_Item::Slot25(int, int) {
 
 // OFFSET: 0x007D10B0
 // FUNCTION: fn_09547
-void UICashShopWnd_Banner::Slot31(int, int) {
+void UICashShopWnd_Banner::OnLBtnUp(int, int) {
   if (this->m_entries.empty()) {
     return;
   }
@@ -639,7 +639,7 @@ void UICashShopWnd_Banner::Slot31(int, int) {
 
 // OFFSET: 0x007D1160
 // FUNCTION: fn_09548
-void UICashShopWnd_CartItem::Slot28(int x, int y) {
+void UICashShopWnd_CartItem::OnMouseHover(int x, int y) {
   if (static_cast<unsigned int>(x - 0x30) <= 0x70 && static_cast<unsigned int>(y - 0xC) <= 0xB) {
     int screenX = 0;
     int screenY = -10;
@@ -650,7 +650,7 @@ void UICashShopWnd_CartItem::Slot28(int x, int y) {
 
 // OFFSET: 0x007D11D0
 // FUNCTION: fn_09549
-void UICashShopWnd_Item::Slot28(int x, int y) {
+void UICashShopWnd_Item::OnMouseHover(int x, int y) {
   if (y <= 0x17) {
     int screenX = 0;
     int screenY = -20;
@@ -667,7 +667,7 @@ void UICashShopWnd_Banner::ResetCursor(int, int) {
 
 // OFFSET: 0x007D1240
 // FUNCTION: fn_09551
-void UICashShopWnd::Slot19() {
+void UICashShopWnd::OnProcess() {
   std::string search(this->unknown_00E0->Text());
   if (search.compare(LookupMessage(3302)) != 0) {
     if (search.size() == 0) {
@@ -683,15 +683,15 @@ void UICashShopWnd::Slot19() {
     this->unknown_00F4->SetText(IntToString(0, 0).c_str());
   }
 
-  this->m_banner->Slot19();
+  this->m_banner->OnProcess();
   if (g_session.unknown_5912) {
-    this->m_secondBanner->Slot19();
+    this->m_secondBanner->OnProcess();
   }
 }
 
 // OFFSET: 0x007D14C0
 // FUNCTION: fn_09552
-void UICashShopWnd_Banner::Slot19() {
+void UICashShopWnd_Banner::OnProcess() {
   if (!this->m_entries.empty() && this->m_lastTick + 5000 < timeGetTime()) {
     const unsigned int next = this->m_index + 1;
     this->SendMsg(this->m_buttons[next < this->m_entries.size() ? next : 0], 6, 0xD7, 0, 0, 0);
@@ -700,7 +700,7 @@ void UICashShopWnd_Banner::Slot19() {
 
 // OFFSET: 0x007D1540
 // FUNCTION: fn_09553
-void UICashShopWnd_CartItem::Slot33(int x, int) {
+void UICashShopWnd_CartItem::OnRBtnUp(int x, int) {
   if (static_cast<unsigned int>(x - 4) <= 0x25) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
     if (window != nullptr) {
@@ -711,7 +711,7 @@ void UICashShopWnd_CartItem::Slot33(int x, int) {
 
 // OFFSET: 0x007D1590
 // FUNCTION: fn_09554
-void UICashShopWnd_Item::Slot33(int x, int y) {
+void UICashShopWnd_Item::OnRBtnUp(int x, int y) {
   if (static_cast<unsigned int>(x - 5) <= 0x4B && static_cast<unsigned int>(y - 0x17) <= 0x64) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
     if (window != nullptr) {
@@ -722,7 +722,7 @@ void UICashShopWnd_Item::Slot33(int x, int y) {
 
 // OFFSET: 0x007D15E0
 // FUNCTION: fn_09555
-void UICashShopWnd_Cart::Slot35(int delta) {
+void UICashShopWnd_Cart::OnWheel(int delta) {
   if (delta < 0) {
     this->SendMsg(this->m_scrollBar, 7, 1, 0, 0, 0);
   } else {
@@ -732,9 +732,9 @@ void UICashShopWnd_Cart::Slot35(int delta) {
 
 // OFFSET: 0x007D1620
 // FUNCTION: fn_09556
-void UICashShopWnd_CartItem::Slot35(int delta) {
+void UICashShopWnd_CartItem::OnWheel(int delta) {
   if (this->parent) {
-    this->parent->Slot35(delta);
+    this->parent->OnWheel(delta);
   }
 }
 

@@ -30,9 +30,9 @@
 
 // OFFSET: 0x00930EB0
 // FUNCTION: fn_12696
-void UIQuickSlotWnd::Slot25(int x, int y) {
+void UIQuickSlotWnd::OnLBtnDown(int x, int y) {
   if (x > 59 && x < this->geometry.width) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 
@@ -68,7 +68,7 @@ void UIQuickSlotWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00931920
 // FUNCTION: fn_12709
-void UIQuickSlotWnd::Slot28(int x, int y) {
+void UIQuickSlotWnd::OnMouseHover(int x, int y) {
   int index;
   if (static_cast<unsigned int>(y) <= 23 && (x <= 58 || x >= this->geometry.width)) {
     index = (x - 4) / 29;
@@ -118,7 +118,7 @@ void UIQuickSlotWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x00932F80
 // FUNCTION: fn_12722
-void UIQuickSlotWnd::Slot32(int x, int y) {
+void UIQuickSlotWnd::OnRBtnDown(int x, int y) {
   if (x > 59 && x < this->geometry.width) {
     return;
   }

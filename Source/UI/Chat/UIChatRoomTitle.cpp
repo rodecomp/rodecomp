@@ -20,7 +20,7 @@ UIChatRoomTitle::UIChatRoomTitle() : UIWindow(0) {
 
 // OFFSET: 0x0085AB80
 // FUNCTION: fn_10785
-void UIChatRoomTitle::Slot15(int, int) {
+void UIChatRoomTitle::OnCreate(int, int) {
   this->label = new UIStaticText();
   this->label->SetSize(this->geometry.width - 34, 15);
   this->label->Move(31, 8);
@@ -35,7 +35,7 @@ void UIChatRoomTitle::Slot15(int, int) {
 
 // OFFSET: 0x0085E8C0
 // FUNCTION: fn_10831
-void UIChatRoomTitle::Slot26(int, int) {
+void UIChatRoomTitle::OnLBtnDblClk(int, int) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (this->roomType == 0) {
     g_windowMgr.EnsureWindow(29)->SendMsg(nullptr, 47, this->roomId, 0, 0, 0);

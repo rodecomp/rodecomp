@@ -37,7 +37,7 @@ float g_navigationMarkerScale = 0.453125f;
 
 // OFFSET: 0x00921A70
 // FUNCTION: fn_12643
-void UINavigationWnd::Slot15(int width, int height) {
+void UINavigationWnd::OnCreate(int width, int height) {
   this->m_routePanel = new UIListBoxNavi();
   this->m_routePanel->SetSize(215, 96);
   this->m_routePanel->backgroundRed = 210;
@@ -165,11 +165,11 @@ void UINavigationWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x00931390
 // FUNCTION: fn_12702
-void UINavigationWnd::Slot31(int x, int y) {
+void UINavigationWnd::OnLBtnUp(int x, int y) {
   if (static_cast<unsigned int>(x - 8) <= 126 && static_cast<unsigned int>(y - 39) <= 126) {
     this->SendMsg(this, 6, 429, 0, 0, 0);
   }
-  this->UIFrameWnd::Slot31(x, y);
+  this->UIFrameWnd::OnLBtnUp(x, y);
 }
 
 // OFFSET: 0x0093DAB0
@@ -497,7 +497,7 @@ void UINavigationWnd::ApplyMinimized() {
 
 // OFFSET: 0x00940E20
 // FUNCTION: fn_12781
-void UINavigationWnd::Slot11() {
+void UINavigationWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->width = this->geometry.width;
     this->m_saved->height = this->geometry.height;

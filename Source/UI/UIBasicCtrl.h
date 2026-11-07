@@ -11,11 +11,11 @@
 class UIBasicItemCtrl : public UIWindow {
 public:
   UIBasicItemCtrl(WindowManagerWindows& windowList);
-  void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
+  void DragAndDrop(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
-  void Slot26(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   void DrawItemIcon(int x, int y, int unused, bool compact);
 
 protected:
@@ -29,11 +29,11 @@ protected:
 class UIBasicSkillCtrl : public UIWindow {
 public:
   UIBasicSkillCtrl();
-  void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
+  void DragAndDrop(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
-  void Slot26(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
 
 protected:
   /* 007C */ int m_skillId;

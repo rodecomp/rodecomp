@@ -31,7 +31,7 @@ void CSoulUnityEffect::Close() {
 
 // OFFSET: 0x0072B2A0
 // FUNCTION: fn_07469
-void CSoulUnityEffect::Slot01() {
+void CSoulUnityEffect::Open() {
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0);
   if (particle) {
     particle->SetTexture("effect\\soul_unity\\soul_unity.bmp");
@@ -48,13 +48,13 @@ void CSoulUnityEffect::Slot01() {
 
 // OFFSET: 0x0072B3B0
 // FUNCTION: fn_07471
-bool CSoulUnityEffect::Slot06() {
+bool CSoulUnityEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x0072B3C0
 // FUNCTION: fn_07472
-void CSoulUnityEffect::Slot03() {
+void CSoulUnityEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle) {
@@ -95,7 +95,7 @@ void CSoulUnityEffect::Slot03() {
 
 // OFFSET: 0x0072B920
 // FUNCTION: fn_07473
-void CSoulUnityEffect::Slot04() {
+void CSoulUnityEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle && particle->texture) {

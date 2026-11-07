@@ -68,7 +68,7 @@ CharacterParticleBundle::~CharacterParticleBundle() {
 
 // OFFSET: 0x005A3360
 // FUNCTION: fn_03129
-void CChopChopClawMarks::Slot36(CEZ2STRParticle* particle) {
+void CChopChopClawMarks::UpdateParticlePosition(CEZ2STRParticle* particle) {
   if (particle) {
     const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
     const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
@@ -122,7 +122,7 @@ void CChopChopClawMarks::SpawnParticle() {
 
 // OFFSET: 0x005A3820
 // FUNCTION: fn_03132
-void CChopChopClawMarks::Slot34() {
+void CChopChopClawMarks::EmitParticles() {
   const std::chrono::nanoseconds elapsed = std::chrono::steady_clock::now().time_since_epoch() - std::chrono::nanoseconds(this->startTime);
   const std::chrono::milliseconds milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
   if (milliseconds >= std::chrono::milliseconds(this->lastSpawnTime + 30)) {
@@ -166,7 +166,7 @@ const std::vector<RadialGridPoint>& CChopChopClawMarks::GetRing(int radius) {
 
 // OFFSET: 0x005A3C70
 // FUNCTION: fn_03135
-void CChopChopClawMarks::Slot35() {
+void CChopChopClawMarks::OnInit() {
   const int id = CEZ2STREffectMgr::GetInstance()->EffectId([] {
     const std::uint8_t bytes[] = {0xC2, 0x55, 0xF0, 0xA7, 0x3C, 0xEC, 0x4F, 0x36, 0xD1, 0x3D};
     thread_local EncryptedName<sizeof(bytes), 0x59278F63D79F3DA1ULL> name(bytes);
@@ -180,20 +180,20 @@ void CChopChopClawMarks::Slot35() {
 
 // OFFSET: 0x005A3E40
 // FUNCTION: fn_03136
-void CharacterParticleBundle::Slot35() {
+void CharacterParticleBundle::OnInit() {
 }
 
 // OFFSET: 0x005A3E50
 // FUNCTION: fn_03137
-void CharacterParticleBundle::Slot01() {
+void CharacterParticleBundle::Open() {
   this->unknown_00D8 = 0;
   this->startTime = std::chrono::steady_clock::now().time_since_epoch().count();
-  this->Slot35();
+  this->OnInit();
 }
 
 // OFFSET: 0x005A3E90
 // FUNCTION: fn_03138
-bool CChopChopClawMarks::Slot06() {
+bool CChopChopClawMarks::IsAlive() {
   if (this->ActorExists()) {
     const std::chrono::milliseconds limit = std::chrono::seconds(this->unknown_002C);
     const std::chrono::nanoseconds elapsed = std::chrono::steady_clock::now().time_since_epoch() - std::chrono::nanoseconds(this->startTime);
@@ -207,8 +207,8 @@ bool CChopChopClawMarks::Slot06() {
 
 // OFFSET: 0x005A3F10
 // FUNCTION: fn_03139
-void CharacterParticleBundle::Slot03() {
-  this->Slot34();
+void CharacterParticleBundle::OnProcess() {
+  this->EmitParticles();
   const auto removed = std::remove_if(this->particles.begin(), this->particles.end(), [](CEZ2STRParticle* particle) {
     if (!particle) {
       return true;
@@ -222,15 +222,15 @@ void CharacterParticleBundle::Slot03() {
   this->particles.erase(removed, this->particles.end());
 
   for (CEZ2STRParticle* particle : this->particles) {
-    this->Slot36(particle);
-    this->Slot37(particle);
+    this->UpdateParticlePosition(particle);
+    this->ProcessParticle(particle);
   }
   ++this->unknown_00D8;
 }
 
 // OFFSET: 0x005A4000
 // FUNCTION: fn_03140
-void CharacterParticleBundle::Slot37(CEZ2STRParticle* particle) {
+void CharacterParticleBundle::ProcessParticle(CEZ2STRParticle* particle) {
   if (particle) {
     particle->Process(0.0f, 0.0f, 0.0f);
   }
@@ -238,15 +238,15 @@ void CharacterParticleBundle::Slot37(CEZ2STRParticle* particle) {
 
 // OFFSET: 0x005A4030
 // FUNCTION: fn_03141
-void CharacterParticleBundle::Slot04() {
+void CharacterParticleBundle::Render() {
   for (CEZ2STRParticle* particle : this->particles) {
-    this->Slot38(particle);
+    this->RenderParticle(particle);
   }
 }
 
 // OFFSET: 0x005A4060
 // FUNCTION: fn_03142
-void CharacterParticleBundle::Slot38(CEZ2STRParticle* particle) {
+void CharacterParticleBundle::RenderParticle(CEZ2STRParticle* particle) {
   if (particle) {
     particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }

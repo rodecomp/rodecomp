@@ -69,7 +69,7 @@ void CSpriteEffect::Close() {
 
 // OFFSET: 0x00B78B40
 // FUNCTION: fn_19197
-void CSpriteEffect::Slot01() {
+void CSpriteEffect::Open() {
   CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x200));
   if (!particle) {
     return;
@@ -381,7 +381,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
 
 // OFFSET: 0x00B79C40
 // FUNCTION: fn_19201
-void CSpriteEffect::Slot04() {
+void CSpriteEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CSpriteParticle* particle = *it;
     if (particle->unknown_00E8 > 0) {
@@ -392,7 +392,7 @@ void CSpriteEffect::Slot04() {
 
 // OFFSET: 0x00B79520
 // FUNCTION: fn_19199
-bool CSpriteEffect::Slot06() {
+bool CSpriteEffect::IsAlive() {
   switch (this->id) {
   case 0x3DE:
     return !this->IsFinished();
@@ -461,7 +461,7 @@ bool CSpriteEffect::Slot06() {
 
 // OFFSET: 0x00B79780
 // FUNCTION: fn_19200
-void CSpriteEffect::Slot03() {
+void CSpriteEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CSpriteParticle* particle = *it;
     ++particle->unknown_00E8;

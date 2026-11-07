@@ -48,7 +48,7 @@ const char* g_shortcutItemKeySuffix = "\\ShortcutItem";
 // FUNCTION: fn_17156
 void UIWindowMgr::NotifyHoverWindow() {
   if (this->hoverWindow) {
-    this->hoverWindow->Slot24(0);
+    this->hoverWindow->OnFinishEdit(0);
   }
 }
 
@@ -575,7 +575,7 @@ void UIWindowMgr::ConfirmActiveDialog() {
   }
 
   for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
-    if ((*entry)->Slot02()) {
+    if ((*entry)->IsFrameWnd()) {
       (*entry)->SendMsg(nullptr, 18, 0, 0, 0, 0);
     }
   }
@@ -1095,7 +1095,7 @@ bool UIWindowMgr::DropAt(int x, int y, ModeDragState* drag) {
   window->RecordDrop(localX, localY, *drag, -1);
   drag->unknown_038C = reinterpret_cast<std::uint32_t>(window);
   if (this->window_01EC != window->Root()) {
-    window->Slot10(localX, localY, reinterpret_cast<std::intptr_t>(drag));
+    window->DragAndDrop(localX, localY, reinterpret_cast<std::intptr_t>(drag));
   }
 
   return true;
@@ -1110,13 +1110,13 @@ void UIWindowMgr::FocusWindow01C8Edit() {
 
   UIWindow* edit = *reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(this->window_01C8) + 0xBC);
   if (this->hoverWindow) {
-    this->hoverWindow->Slot24(!edit ? false : edit->Slot06() == this->hoverWindow);
+    this->hoverWindow->OnFinishEdit(!edit ? false : edit->GetEditWindow() == this->hoverWindow);
   }
 
   if (edit) {
-    this->hoverWindow = edit->Slot06();
+    this->hoverWindow = edit->GetEditWindow();
     if (this->hoverWindow) {
-      this->hoverWindow->Slot23();
+      this->hoverWindow->OnBeginEdit();
     }
   } else {
     this->hoverWindow = nullptr;

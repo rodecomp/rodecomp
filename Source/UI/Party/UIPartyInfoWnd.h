@@ -9,8 +9,8 @@ public:
   UIPartyInfoWnd();
   ~UIPartyInfoWnd() override;
   void Paint() override;
-  void Slot31(int x, int y) override;
-  void Slot33(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
   void SetInfo(const CAdvenPartyInfo& value);
   void Reset();
   CAdvenPartyInfo* Info();

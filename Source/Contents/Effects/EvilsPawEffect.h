@@ -14,12 +14,12 @@ class CEvilsPawEffect : public CEffect {
 public:
   CEvilsPawEffect();
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
-  void Slot07() override;
+  bool IsAlive() override;
+  void ResetParticles() override;
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ int frameDelay;

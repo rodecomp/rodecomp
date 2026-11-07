@@ -12,11 +12,11 @@ class CAMachineEffect : public CEffect {
 public:
   CAMachineEffect();
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
   void PlayAttack();
   __declspec(noinline) void SetState(int state);
 

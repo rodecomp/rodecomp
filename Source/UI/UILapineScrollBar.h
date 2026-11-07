@@ -28,12 +28,12 @@ public:
   UILapineUpgradeBox_IngredientListWnd(int width, int height)
       : UIScrollWnd(width, height, 0), minRefine(0), maxRefine(20) {
     this->UIWindow::Resize(width, height);
-    this->Slot15(width, height);
+    this->OnCreate(width, height);
   }
-  void Slot10(int x, int y, std::intptr_t value) override;
-  __declspec(noinline) void Slot15(int width, int height) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  __declspec(noinline) void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot35(int argument) override;
+  void OnWheel(int argument) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   UILapineUpgradeBox_IngredientInfoWnd* FindSelected();
   bool AddIngredient(std::uint32_t identity);
@@ -59,9 +59,9 @@ class UILapineBox_IngredientListWnd : public UIScrollWnd {
 
 public:
   UILapineBox_IngredientListWnd(int width, int height);
-  void Slot10(int x, int y, std::intptr_t value) override;
-  __declspec(noinline) void Slot15(int width, int height) override;
-  void Slot35(int argument) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  __declspec(noinline) void OnCreate(int width, int height) override;
+  void OnWheel(int argument) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   unsigned char AddIngredient(std::uint32_t id);
@@ -86,17 +86,17 @@ class UILapineBoxWnd : public UIFrameWnd {
 public:
   UILapineBoxWnd();
   ~UILapineBoxWnd() override;
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
-  void Slot19() override;
-  void Slot28(int x, int y) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
+  void OnMouseHover(int x, int y) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   int AddIngredient(std::uint32_t id, int quantity);
-  void Slot26(int x, int y) override;
-  void Slot25(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
   void NotifyWindow(int unused, int alsoUnused);
-  void Slot32(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   void SetIngredient(int id);
   void AddMaterial(int id, int quantity);
   __declspec(noinline) void ReadMaterial(ITEM_INFO* out, int x, int y);

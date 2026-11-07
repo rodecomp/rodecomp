@@ -113,7 +113,7 @@ void CUIMacroReport::OnEditSubmit() {
 
 // OFFSET: 0x00A47C40
 // FUNCTION: fn_16101
-void CUIMacroReport::Slot16() {
+void CUIMacroReport::OnInit() {
   this->m_resolveSkin = true;
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
 
@@ -135,13 +135,13 @@ void CUIMacroReport::OnReportTypeSelect(CUIRadioButton* button) {
 
 // OFFSET: 0x00A441F0
 // FUNCTION: fn_16052
-void CUIMacroReport::Slot53() {
+void CUIMacroReport::Initialize() {
   this->unknown_00B4 = 0;
   this->m_resolveSkin = false;
   this->Resize(0xE7, 0xBD);
   this->Move(0, 0);
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
 }
 
 // OFFSET: 0x00A44170
@@ -160,7 +160,7 @@ static bool s_registered = [] {
 
 // OFFSET: 0x00A44240
 // FUNCTION: fn_16053
-void CUIMacroReport::Slot15(int width, int height) {
+void CUIMacroReport::OnCreate(int width, int height) {
   this->m_background = new CUIStaticImage();
   this->m_background->SetSize(231, 172);
   this->m_background->Move(0, 17);

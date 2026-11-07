@@ -24,22 +24,22 @@ static_assert(sizeof(CaptchaAnswerPacket) == 18);
 
 // OFFSET: 0x007EDC00
 // FUNCTION: fn_09814
-void UIMacroDetectorWnd::Slot25(int, int) {
+void UIMacroDetectorWnd::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x007EDC10
 // FUNCTION: fn_09815
-void UIMacroDetectorWnd::Slot31(int, int) {
+void UIMacroDetectorWnd::OnLBtnUp(int, int) {
 }
 
 // OFFSET: 0x007EDC20
 // FUNCTION: fn_09816
-void UIMacroDetectorWnd::Slot27(int, int) {
+void UIMacroDetectorWnd::OnMouseMove(int, int) {
 }
 
 // OFFSET: 0x007EDC30
 // FUNCTION: fn_09817
-void UIMacroDetectorWnd::Slot19() {
+void UIMacroDetectorWnd::OnProcess() {
   if (this->messageTick + this->messageDuration < timeGetTime()) {
     this->message = "";
   }

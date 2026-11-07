@@ -88,7 +88,7 @@ void CTalismanMarkEffect::PlayEnd() {
 
 // OFFSET: 0x0072E0F0
 // FUNCTION: fn_07503
-void CTalismanMarkEffect::Slot01() {
+void CTalismanMarkEffect::Open() {
   this->retained = 1;
 
   for (int i = 0; i < std::min<unsigned int>(this->unknown_00B0, 4); ++i) {
@@ -112,7 +112,7 @@ void CTalismanMarkEffect::Slot01() {
 
 // OFFSET: 0x0072E240
 // FUNCTION: fn_07505
-void CTalismanMarkEffect::Slot03() {
+void CTalismanMarkEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end();) {
     CEZ2STRParticle* particle = *it;
     if (!particle) {
@@ -170,7 +170,7 @@ void CTalismanMarkEffect::Slot03() {
 
 // OFFSET: 0x0072E210
 // FUNCTION: fn_07504
-bool CTalismanMarkEffect::Slot06() {
+bool CTalismanMarkEffect::IsAlive() {
   if (this->ActorExists() == true && !this->particles.empty()) {
     return true;
   }
@@ -215,7 +215,7 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
 
 // OFFSET: 0x0072E5F0
 // FUNCTION: fn_07507
-void CTalismanMarkEffect::Slot04() {
+void CTalismanMarkEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CEZ2STRParticle* particle = *it;
     if (particle) {

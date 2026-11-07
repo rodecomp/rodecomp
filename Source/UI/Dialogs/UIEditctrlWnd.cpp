@@ -151,7 +151,7 @@ int UIMiniMapWnd::LoadMemos() {
 
 // OFFSET: 0x0099C090
 // FUNCTION: fn_13556
-void UIEditctrlWnd::Slot15(int, int) {
+void UIEditctrlWnd::OnCreate(int, int) {
   this->AddCloseButton(LookupMessage(2741), 0);
   this->AddNumberedButton(184, 205, 19, "minimap\\memo_ok", LookupMessage(2754), true);
 
@@ -172,7 +172,7 @@ void UIEditctrlWnd::Slot15(int, int) {
 
 // OFFSET: 0x0099C200
 // FUNCTION: fn_13557
-void UIMiniMapWnd::Slot15(int width, int height) {
+void UIMiniMapWnd::OnCreate(int width, int height) {
   const int bottom = this->geometry.height;
   const float terrainWidth = static_cast<float>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->TerrainWidth());
   const float terrainHeight = static_cast<float>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->TerrainHeight());
@@ -219,9 +219,9 @@ void UIEditctrlWnd::Paint() {
 
 // OFFSET: 0x0099C820
 // FUNCTION: fn_13560
-void UIMiniMapWnd::Slot25(int x, int y) {
+void UIMiniMapWnd::OnLBtnDown(int x, int y) {
   if (y <= 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 
@@ -306,7 +306,7 @@ void UIMiniMapWnd::UpdatePlayerHead() {
 
 // OFFSET: 0x0099DC90
 // FUNCTION: fn_13565
-void UIMiniMapWnd::Slot11() {
+void UIMiniMapWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->width = this->geometry.x;
     this->m_saved->height = this->geometry.y;

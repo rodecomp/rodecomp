@@ -29,21 +29,21 @@ void UIListBoxEx::Configure(int x, int y, int width, int height, unsigned char v
   this->transparent = value;
   UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x00886990
 // FUNCTION: fn_11327
-void UIListBoxEx::Slot15(int width, int height) {
+void UIListBoxEx::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int thickness = vertical->thickness;
   vertical->vertical = 1;
   vertical->UIWindow::Resize(thickness, height);
   vertical->Move((width - 13), 0);
-  vertical->Slot15(thickness, height);
-  vertical->Slot22(thickness, height);
+  vertical->OnCreate(thickness, height);
+  vertical->OnSize(thickness, height);
   this->AddChild(vertical);
 
   auto* horizontal = new UIScrollBar();
@@ -52,8 +52,8 @@ void UIListBoxEx::Slot15(int width, int height) {
   horizontal->vertical = 0;
   horizontal->UIWindow::Resize((width - 13), horizontalHeight);
   horizontal->Move(0, (height - 13));
-  horizontal->Slot15((width - 13), horizontalHeight);
-  horizontal->Slot22((width - 13), horizontalHeight);
+  horizontal->OnCreate((width - 13), horizontalHeight);
+  horizontal->OnSize((width - 13), horizontalHeight);
   this->AddChild(horizontal);
 }
 
@@ -122,14 +122,14 @@ void UIListBoxEx::Refresh() {
 
 // OFFSET: 0x008905A0
 // FUNCTION: fn_11419
-void UIListBoxEx::Slot25(int x, int y) {
+void UIListBoxEx::OnLBtnDown(int x, int y) {
   this->selected = this->LineAt(x, y);
   this->Invalidate();
 }
 
 // OFFSET: 0x008901B0
 // FUNCTION: fn_11404
-void UIListBoxEx::Slot26(int, int) {
+void UIListBoxEx::OnLBtnDblClk(int, int) {
   if (this->selected != -1) {
     this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
   }
@@ -137,7 +137,7 @@ void UIListBoxEx::Slot26(int, int) {
 
 // OFFSET: 0x00892EA0
 // FUNCTION: fn_11497
-void UIListBoxEx::Slot35(int value) {
+void UIListBoxEx::OnWheel(int value) {
   if (this->verticalOverflow != 0) {
     if (value < 0) {
       this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);

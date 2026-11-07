@@ -92,7 +92,7 @@ void CSaintCastingEffect::Close() {
 
 // OFFSET: 0x00B752B0
 // FUNCTION: fn_19163
-void CSaintCastingEffect::Slot01() {
+void CSaintCastingEffect::Open() {
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
 
@@ -158,13 +158,13 @@ void CSaintCastingEffect::Slot01() {
 
 // OFFSET: 0x00B756A0
 // FUNCTION: fn_19164
-bool CSaintCastingEffect::Slot06() {
+bool CSaintCastingEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B756B0
 // FUNCTION: fn_19165
-void CSaintCastingEffect::Slot03() {
+void CSaintCastingEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -237,7 +237,7 @@ void CSaintCastingEffect::Slot03() {
 
 // OFFSET: 0x00B75BB0
 // FUNCTION: fn_19166
-void CSaintCastingEffect::Slot04() {
+void CSaintCastingEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle || particle->unknown_000C <= 0) {

@@ -221,5 +221,5 @@ void CView::Reset() {
 
 // OFFSET: 0x00ADC1D0
 // FUNCTION: fn_17929
-void CView::Slot2() {
+void CView::OnExitFrame() {
 }

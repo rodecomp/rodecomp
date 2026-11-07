@@ -40,13 +40,13 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::UpdateScrollBar()
 template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Paint();
 template <>
-void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot35(int value);
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnWheel(int value);
 template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int position);
 template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem();
 template <>
-void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot53(int resolveSkin);
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::LoadSkin(int resolveSkin);
 
 
 
@@ -103,19 +103,19 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::ClearItems() {
 
 // OFFSET: 0x00A10140
 // FUNCTION: fn_15189
-void CUIExchangeUI::Slot53() {
+void CUIExchangeUI::Initialize() {
   this->unknown_00B4 = 0;
   this->m_resolveSkin = true;
   this->Resize(560, 377);
   this->Move(0, 0);
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
 }
 
 // OFFSET: 0x00A101E0
 // FUNCTION: fn_15190
 template <>
-void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot15(int width, int height) {
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -132,11 +132,11 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Paint() {
 // OFFSET: 0x00A15160
 // FUNCTION: fn_15194
 template <>
-void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot35(int value) {
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
@@ -282,7 +282,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::ClearData() {
 
 // OFFSET: 0x00A175C0
 // FUNCTION: fn_15291
-void CUIExchangeUI::Slot10(int x, int y, std::intptr_t value) {
+void CUIExchangeUI::DragAndDrop(int x, int y, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (mode == nullptr) {
     return;
@@ -339,7 +339,7 @@ void ExchangeUI::CUIItem::Paint() {
 
 // OFFSET: 0x00A17730
 // FUNCTION: fn_15298
-void CUIExchangeUI::Slot16() {
+void CUIExchangeUI::OnInit() {
   this->Move((g_renderer->viewport.width - 640) / 2 + 100, g_renderer->viewport.height * 100 / 480);
 
   {
@@ -369,7 +369,7 @@ void CUIExchangeUI::Slot16() {
 
 // OFFSET: 0x00A17BD0
 // FUNCTION: fn_15299
-void ExchangeUI::CUIItem::Slot16() {
+void ExchangeUI::CUIItem::OnInit() {
   CUIGameItem* icon = this->itemIcon;
   icon->showOverlay = 1;
   icon->Invalidate();
@@ -377,14 +377,14 @@ void ExchangeUI::CUIItem::Slot16() {
 
 // OFFSET: 0x00A17BF0
 // FUNCTION: fn_15300
-void ExchangeUI::CUIItem::Slot28(int x, int y) {
-  this->itemIcon->Slot28(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
+void ExchangeUI::CUIItem::OnMouseHover(int x, int y) {
+  this->itemIcon->OnMouseHover(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
 }
 
 // OFFSET: 0x00A17C20
 // FUNCTION: fn_15301
-void CUIExchangeUI::Slot19() {
-  if (this->zenyEdit->Slot06() != g_windowMgr.GetHoverWindow()) {
+void CUIExchangeUI::OnProcess() {
+  if (this->zenyEdit->GetEditWindow() != g_windowMgr.GetHoverWindow()) {
     return;
   }
 
@@ -415,8 +415,8 @@ void CUIExchangeUI::Slot19() {
 
 // OFFSET: 0x00A17F30
 // FUNCTION: fn_15302
-void ExchangeUI::CUIItem::Slot32(int x, int y) {
-  this->itemIcon->Slot32(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
+void ExchangeUI::CUIItem::OnRBtnDown(int x, int y) {
+  this->itemIcon->OnRBtnDown(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
 }
 
 // OFFSET: 0x00A17F60
@@ -627,7 +627,7 @@ private:
 
 // OFFSET: 0x00A149B0
 // FUNCTION: fn_15192
-void ExchangeUI::CUIItem::Slot15(int width, int height) {
+void ExchangeUI::CUIItem::OnCreate(int width, int height) {
   this->unknown_00E8 = new CUIStaticImage();
   this->unknown_00E8->SetSize(32, 32);
   this->unknown_00E8->Move(9, 0);
@@ -675,7 +675,7 @@ void ExchangeUI::CUIItem::Slot15(int width, int height) {
 
 // OFFSET: 0x00A103F0
 // FUNCTION: fn_15191
-void CUIExchangeUI::Slot15(int width, int height) {
+void CUIExchangeUI::OnCreate(int width, int height) {
   this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(560, 17);
   this->titleBar->Move(0, 0);
@@ -1376,7 +1376,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem() {
 // OFFSET: 0x00A15530
 // FUNCTION: fn_15198
 template <>
-void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot53(int resolveSkin) {
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));

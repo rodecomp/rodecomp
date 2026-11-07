@@ -50,7 +50,7 @@ void CEffect::AddEvent(int kind, const char* text, int frame, int argument) {
 // OFFSET: 0x00B4DF90
 // FUNCTION: fn_18985
 bool CEffect::RetireIfInactive() {
-  if (!this->Slot06()) {
+  if (!this->IsAlive()) {
     g_effectMgr->Retire(this, 0);
     return true;
   }
@@ -60,7 +60,7 @@ bool CEffect::RetireIfInactive() {
 
 // OFFSET: 0x00B4E0E0
 // FUNCTION: fn_18986
-bool CEffect::Slot33() {
+bool CEffect::IsVisible() {
   EffectActor* actor = static_cast<EffectActor*>(FindRenderObject(this->actor));
   if (!actor || actor->render.unknown_00A8 == 0) {
     return true;
@@ -81,7 +81,7 @@ bool CEffect::Slot33() {
 
 // OFFSET: 0x00B4E150
 // FUNCTION: fn_18987
-bool CEffect::Slot06() {
+bool CEffect::IsAlive() {
   if (this->actor != 0 && !FindRenderObject(this->actor)) {
     return false;
   }
@@ -103,8 +103,8 @@ void CEffect::SetEventFrame(int kind, int frame) {
 // OFFSET: 0x00B4E290
 // FUNCTION: fn_18989
 void CEffect::UpdateVisibility() {
-  if ((g_serviceOptions.Get(8) || this->forceRender) && this->Slot33() && !this->outsideRange) {
-    this->Slot04();
+  if ((g_serviceOptions.Get(8) || this->forceRender) && this->IsVisible() && !this->outsideRange) {
+    this->Render();
   }
 }
 
@@ -134,7 +134,7 @@ void CEffect::Update(std::uint32_t aid) {
     this->position[2] = actor->render.position.z;
   }
 
-  this->Slot02();
+  this->CheckRange();
   if (this->outsideRange) {
     return;
   }
@@ -158,7 +158,7 @@ void CEffect::Update(std::uint32_t aid) {
     }
   }
 
-  this->Slot03();
+  this->OnProcess();
   ++this->frame;
 }
 
@@ -186,7 +186,7 @@ vector3d PlayerPosition() {
 
 // OFFSET: 0x00B4E510
 // FUNCTION: fn_18994
-void CEffect::Slot02() {
+void CEffect::CheckRange() {
   const vector3d player = PlayerPosition();
   const float y = player.y - this->position[1];
   const float x = player.x - this->position[0];

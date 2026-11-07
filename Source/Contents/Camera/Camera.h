@@ -26,7 +26,7 @@ public:
   CView();
   virtual ~CView();
   virtual void Reset();
-  virtual void Slot2();
+  virtual void OnExitFrame();
   virtual void Render();
   virtual void Update();
 

@@ -61,9 +61,9 @@ void UIGuildHelperWnd::Paint() {
 
 // OFFSET: 0x0095FCB0
 // FUNCTION: fn_13084
-void UIGuildHelperWnd::Slot25(int x, int y) {
+void UIGuildHelperWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
     if (UIWindow* window = g_windowMgr.unknown_0438) {
       window->geometry.targetAlpha = 128;
       window->geometry.alphaStart = timeGetTime();
@@ -73,8 +73,8 @@ void UIGuildHelperWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00960130
 // FUNCTION: fn_13095
-void UIGuildHelperWnd::Slot31(int x, int y) {
-  UIFrameWnd::Slot31(x, y);
+void UIGuildHelperWnd::OnLBtnUp(int x, int y) {
+  UIFrameWnd::OnLBtnUp(x, y);
   if (UIWindow* window = g_windowMgr.unknown_0438) {
     window->geometry.targetAlpha = 255;
     window->geometry.alphaStart = timeGetTime();
@@ -83,8 +83,8 @@ void UIGuildHelperWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x009601D0
 // FUNCTION: fn_13098
-void UIGuildHelperWnd::Slot27(int x, int y) {
-  UIFrameWnd::Slot27(x, y);
+void UIGuildHelperWnd::OnMouseMove(int x, int y) {
+  UIFrameWnd::OnMouseMove(x, y);
   if (g_windowMgr.unknown_0438) {
     x = 0;
     y = 0;
@@ -105,17 +105,17 @@ void UICreateGuildWnd::Paint() {
 
 // OFFSET: 0x0095FBE0
 // FUNCTION: fn_13082
-void UICreateGuildWnd::Slot25(int, int) {
+void UICreateGuildWnd::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x009601C0
 // FUNCTION: fn_13097
-void UICreateGuildWnd::Slot27(int, int) {
+void UICreateGuildWnd::OnMouseMove(int, int) {
 }
 
 // OFFSET: 0x00960120
 // FUNCTION: fn_13094
-void UICreateGuildWnd::Slot31(int, int) {
+void UICreateGuildWnd::OnLBtnUp(int, int) {
 }
 
 // OFFSET: 0x0095F420
@@ -134,12 +134,12 @@ void UIGuildLeaveReasonDescWnd::Paint() {
 
 // OFFSET: 0x00965650
 // FUNCTION: fn_13138
-void UICreateGuildWnd::Slot11() {
+void UICreateGuildWnd::StoreInfo() {
 }
 
 // OFFSET: 0x00965660
 // FUNCTION: fn_13139
-void UIGuildHelperWnd::Slot11() {
+void UIGuildHelperWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->x = this->geometry.x;
     this->m_saved->y = this->geometry.y;
@@ -270,7 +270,7 @@ int UIGuildTipWnd::SendMsg(UIWindow*, int message, std::intptr_t a1, std::intptr
 
 // OFFSET: 0x00958070
 // FUNCTION: fn_13055
-void UICreateGuildWnd::Slot15(int, int) {
+void UICreateGuildWnd::OnCreate(int, int) {
   this->m_nameEdit = new UIEditCtrl();
   this->m_nameEdit->SetSize(124, 20);
   this->m_nameEdit->Move(13, 42);
@@ -312,7 +312,7 @@ void UICreateGuildWnd::Slot15(int, int) {
 
 // OFFSET: 0x00958990
 // FUNCTION: fn_13058
-void UIGuildHelperWnd::Slot15(int width, int height) {
+void UIGuildHelperWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\guild_helper\\");
   const char* names[3][3] = {{"btn_help", "btn_help_a", "btn_help_b"}, {"create_guild", "create_guild_a", "create_guild_b"}, {"btn_ok", "btn_ok_a", "btn_ok_b"}};
   int ids[3] = {343, 448, 184};
@@ -343,8 +343,8 @@ void UIGuildHelperWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x00958700
 // FUNCTION: fn_13056
-void UIGuildBanReasonDescWnd::Slot15(int width, int height) {
-  UIGuildLeaveReasonDescWnd::Slot15(width, height);
+void UIGuildBanReasonDescWnd::OnCreate(int width, int height) {
+  UIGuildLeaveReasonDescWnd::OnCreate(width, height);
 
   if (this->m_reasonText != nullptr) {
     this->m_reasonText->SetText(LookupMessage(0x20C), 0);
@@ -353,7 +353,7 @@ void UIGuildBanReasonDescWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x009597E0
 // FUNCTION: fn_13060
-void UIGuildLeaveReasonDescWnd::Slot15(int, int) {
+void UIGuildLeaveReasonDescWnd::OnCreate(int, int) {
   this->m_reasonEdit = new UIEditCtrl();
   this->m_reasonEdit->SetSize(this->geometry.width - 32, 16);
   this->m_reasonEdit->Move(15, 22);
@@ -403,7 +403,7 @@ void UIGuildLeaveReasonDescWnd::Slot15(int, int) {
 
 // OFFSET: 0x0095CCD0
 // FUNCTION: fn_13065
-void UIGuildTipWnd::Slot15(int width, int height) {
+void UIGuildTipWnd::OnCreate(int width, int height) {
   this->m_textViewer = new UITextViewer();
   this->m_textViewer->Configure(10, 22, width - 15, height - 55, 0);
 

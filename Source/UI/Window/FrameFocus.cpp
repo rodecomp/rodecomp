@@ -235,7 +235,7 @@ void UIWindowMgr::CancelActiveDialog() {
   }
 
   for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
-    if ((*entry)->Slot02()) {
+    if ((*entry)->IsFrameWnd()) {
       (*entry)->SendMsg(nullptr, 20, 0, 0, 0, 0);
     }
   }

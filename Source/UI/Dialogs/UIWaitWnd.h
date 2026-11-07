@@ -16,7 +16,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   void SetMessage(const char* text, int, int);
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
 };
 
 #endif

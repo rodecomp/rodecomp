@@ -23,11 +23,11 @@ public:
   /* 00F4 */ CUIStaticText* unknown_00F4;
 
   CUIItem();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot16() override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnInit() override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
 };
 
 class CItemData {
@@ -66,12 +66,12 @@ public:
   /* 0134 */ std::string zenyText;
 
   __declspec(noinline) CUIExchangeUI();
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
-  void Slot16() override;
-  void Slot19() override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
+  void OnProcess() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  virtual void Slot53();
+  virtual void Initialize();
 
   void Cancel();
   void Conclude();

@@ -18,12 +18,12 @@ public:
   /* 00D0 */ WindowPlacement* m_placement;
   /* 00D4 */ int unknown_00D4;
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Resize(int width, int height) override;
-  void Slot11() override;
-  void Slot19() override;
+  void StoreInfo() override;
+  void OnProcess() override;
   void Paint() override;
-  std::vector<unsigned char> Slot44() override;
+  std::vector<unsigned char> GetReplayData() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   __declspec(noinline) int ButtonX(UIBitmapButton* button);
 };

@@ -13,7 +13,7 @@
 
 // OFFSET: 0x00924810
 // FUNCTION: fn_12645
-void UIPartyBookingHelpWnd::Slot15(int width, int height) {
+void UIPartyBookingHelpWnd::OnCreate(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 

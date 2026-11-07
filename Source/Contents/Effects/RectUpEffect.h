@@ -13,14 +13,14 @@ class CRectUpEffect : public CEffect {
 public:
   CRectUpEffect();
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
-  void Slot12() override;
-  virtual void Slot34(CParticle* particle);
-  virtual void Slot35(CParticle* particle);
+  bool IsAlive() override;
+  void InitEvents() override;
+  virtual void ProcessParticle(CParticle* particle);
+  virtual void InitParticle(CParticle* particle);
 
   /* 00CC */ vector3d unknown_00CC[2];
   /* 00E4 */ int unknown_00E4;

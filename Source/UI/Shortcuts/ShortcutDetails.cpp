@@ -8,7 +8,7 @@
 
 // OFFSET: 0x009332D0
 // FUNCTION: fn_12724
-void UIShortCutWnd::Slot32(int x, int y) {
+void UIShortCutWnd::OnRBtnDown(int x, int y) {
   UIWindow& window = *this;
   ShortcutGrid& grid = this->m_grid;
   const NormalItemSlot* const* slots = this->m_slots;

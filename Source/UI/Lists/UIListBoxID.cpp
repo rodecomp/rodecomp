@@ -19,8 +19,8 @@ void UIComboBoxID::Configure(int x, int y, int width, int height, unsigned char 
   this->transparent = transparent;
   UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x0087B6E0
@@ -29,21 +29,21 @@ void UIListBoxID::Configure(int x, int y, int width, int height, unsigned char t
   this->transparent = transparent;
   UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x00886070
 // FUNCTION: fn_11322
-void UIComboBoxID::Slot15(int width, int height) {
+void UIComboBoxID::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move(width - 13, 0);
-  vertical->Slot15(verticalWidth, height);
-  vertical->Slot22(verticalWidth, height);
+  vertical->OnCreate(verticalWidth, height);
+  vertical->OnSize(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
   auto* horizontal = new UIScrollBar();
@@ -52,8 +52,8 @@ void UIComboBoxID::Slot15(int width, int height) {
   horizontal->vertical = 0;
   horizontal->UIWindow::Resize(width - 13, horizontalHeight);
   horizontal->Move(0, height - 13);
-  horizontal->Slot15(width - 13, horizontalHeight);
-  horizontal->Slot22(width - 13, horizontalHeight);
+  horizontal->OnCreate(width - 13, horizontalHeight);
+  horizontal->OnSize(width - 13, horizontalHeight);
   this->AddChild(this->horizontalBar);
 }
 

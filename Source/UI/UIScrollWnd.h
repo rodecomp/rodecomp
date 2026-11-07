@@ -14,11 +14,11 @@ public:
   UIScrollWnd(int width, int height, unsigned char cached);
   ~UIScrollWnd() override;
   void Resize(int width, int height) override;
-  void Slot15(int width, int height) override;
-  void Slot35(int delta) override;
+  void OnCreate(int width, int height) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   RenderPrimitive* DrawPrimitive() override;
-  virtual void Slot53();
+  virtual void UpdateScrollRange();
 
   RenderPrimitive* BuildPrimitive(int x, int y, int sourceX, int sourceY, int width, int height, CTexture* texture, std::uint32_t color);
   void Clear();

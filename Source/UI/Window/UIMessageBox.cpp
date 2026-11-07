@@ -267,40 +267,40 @@ void UIMessageBox::Paint() {
 
 // OFFSET: 0x008AC410
 // FUNCTION: fn_11729
-bool UIBank_NewWnd::Slot03() {
+bool UIBank_NewWnd::NeedsFrameRefresh() {
   return true;
 }
 
 // OFFSET: 0x008AC420
 // FUNCTION: fn_11730
-bool UIReplayControlWnd::Slot03() {
+bool UIReplayControlWnd::NeedsFrameRefresh() {
   return true;
 }
 
 // OFFSET: 0x008AC430
 // FUNCTION: fn_11731
-bool UIReplayRECControlWnd::Slot03() {
+bool UIReplayRECControlWnd::NeedsFrameRefresh() {
   return true;
 }
 
 // OFFSET: 0x008B7A90
 // FUNCTION: fn_11756
-void UIMessageBox::Slot18() {
+void UIMessageBox::OnDestroy() {
 }
 
 // OFFSET: 0x008B7AA0
 // FUNCTION: fn_11757
-void UINoticeWnd::Slot18() {
+void UINoticeWnd::OnDestroy() {
 }
 
 // OFFSET: 0x008B7AB0
 // FUNCTION: fn_11758
-void UISelectReplayDataWnd::Slot18() {
+void UISelectReplayDataWnd::OnDestroy() {
 }
 
 // OFFSET: 0x008B7AC0
 // FUNCTION: fn_11759
-void UISelectServerWnd::Slot18() {
+void UISelectServerWnd::OnDestroy() {
 }
 
 // OFFSET: 0x008B8610
@@ -633,8 +633,8 @@ void UIMessageBox::Configure(
 
   this->modal = modalValue;
   this->SetSize(width, height);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
   this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
   int inset = 0;
 
@@ -733,7 +733,7 @@ void UIMessageBox::Configure(
 
 // OFFSET: 0x008BADC0
 // FUNCTION: fn_11791
-void UIMessageBox::Slot19() {
+void UIMessageBox::OnProcess() {
   if (this->counting == 0) {
     return;
   }
@@ -875,7 +875,7 @@ void UIWindowMgr::SetUnknown04DC(const char* text) {
 
 // OFFSET: 0x008C35A0
 // FUNCTION: fn_11824
-void UIChatRoomWnd::Slot11() {
+void UIChatRoomWnd::StoreInfo() {
   if (this->saved) {
     this->saved->width = this->geometry.width;
     this->saved->height = this->geometry.height;
@@ -886,7 +886,7 @@ void UIChatRoomWnd::Slot11() {
 
 // OFFSET: 0x008C35E0
 // FUNCTION: fn_11825
-void UIHomunInfoWnd::Slot11() {
+void UIHomunInfoWnd::StoreInfo() {
   if (this->saved) {
     this->saved->x = this->geometry.x;
     this->saved->y = this->geometry.y;
@@ -897,7 +897,7 @@ void UIHomunInfoWnd::Slot11() {
 
 // OFFSET: 0x008B0CA0
 // FUNCTION: fn_11744
-void UIMerInfoWnd::Slot15(int, int) {
+void UIMerInfoWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
   {
     const std::string name("유저인터페이스\\btn_fired");
@@ -939,7 +939,7 @@ void UIMerInfoWnd::Slot15(int, int) {
 
 // OFFSET: 0x008C3630
 // FUNCTION: fn_11827
-void UIMerInfoWnd::Slot11() {
+void UIMerInfoWnd::StoreInfo() {
   if (this->saved) {
     this->saved->x = this->geometry.x;
     this->saved->y = this->geometry.y;
@@ -1004,7 +1004,7 @@ int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
 // OFFSET: 0x008C3670
 // FUNCTION: fn_11828
-void UIPetInfoWnd::Slot11() {
+void UIPetInfoWnd::StoreInfo() {
   if (this->saved) {
     this->saved->x = this->geometry.x;
     this->saved->y = this->geometry.y;
@@ -1015,7 +1015,7 @@ void UIPetInfoWnd::Slot11() {
 
 // OFFSET: 0x008C36B0
 // FUNCTION: fn_11829
-void UIReplayRECControlWnd::Slot11() {
+void UIReplayRECControlWnd::StoreInfo() {
   if (this->saved) {
     this->saved->width = this->geometry.width;
     this->saved->height = this->geometry.height;
@@ -1036,7 +1036,7 @@ void UIReplayRECControlWnd::AnimateLoading() {
 
 // OFFSET: 0x008AE8A0
 // FUNCTION: fn_11741
-void UILoginOTPWnd::Slot15(int, int) {
+void UILoginOTPWnd::OnCreate(int, int) {
   const char prefixSource[] = {'\x8F', '\xC8', '\x2D', '\x7F', '\xC9', '\xF9', '\xFA', '\xB4', '\x89', '\x83', '\x2D', '\x49', '\xB4', '\x8D', '\x63', '\x79'};
   thread_local EncryptedName<sizeof(prefixSource), 0x793F370985ED674FULL> prefixName(prefixSource);
   const std::string prefix(prefixName.Text());
@@ -1131,7 +1131,7 @@ void UILoginOTPWnd::Paint() {
 
 // OFFSET: 0x008C3620
 // FUNCTION: fn_11826
-void UILoginWnd::Slot11() {
+void UILoginWnd::StoreInfo() {
   this->SaveLogin();
 }
 
@@ -1413,7 +1413,7 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
 // OFFSET: 0x008BB070
 // FUNCTION: fn_11793
-void UINoticeWnd::Slot35(int delta) {
+void UINoticeWnd::OnWheel(int delta) {
   if (delta < 0) {
     this->SendMsg(this->m_scrollBar, 7, 6, 0, 0, 0);
   } else {
@@ -1534,12 +1534,12 @@ void UITalkboxTrapInputWnd::Paint() {
 
 // OFFSET: 0x008BA660
 // FUNCTION: fn_11787
-void UILoginWnd::Slot27(int, int) {
+void UILoginWnd::OnMouseMove(int, int) {
 }
 
 // OFFSET: 0x008BADB0
 // FUNCTION: fn_11790
-void UIMakeCharWnd::Slot19() {
+void UIMakeCharWnd::OnProcess() {
 }
 
 // OFFSET: 0x008AC490
@@ -1611,7 +1611,7 @@ void UIMakeCharWnd::InitHairControls() {
 
 // OFFSET: 0x008B0B60
 // FUNCTION: fn_11743
-void UIMakeCharWnd::Slot15(int, int) {
+void UIMakeCharWnd::OnCreate(int, int) {
   g_modeMgr.gameMode->SendMsg(10014, 0, 0, 0, 0);
   this->m_nameEdit = new UIBitmapEditCtrl();
   this->m_nameEdit->SetBitmapName("유저인터페이스\\login_interface\\name-edit.bmp");
@@ -1629,12 +1629,12 @@ void UIMakeCharWnd::Slot15(int, int) {
 // FUNCTION: fn_11734
 void UIChatRoomWnd::Move(int x, int y) {
   this->geometry.Move(x, y);
-  this->Slot36();
+  this->RefreshSnap();
 }
 
 // OFFSET: 0x008AD3C0
 // FUNCTION: fn_11738
-void UIChatRoomWnd::Slot15(int, int) {
+void UIChatRoomWnd::OnCreate(int, int) {
   this->m_message0 = 184;
 
   this->resizer = new UIResizer();
@@ -1679,7 +1679,7 @@ void UIChatRoomWnd::Slot15(int, int) {
 
 // OFFSET: 0x008B1760
 // FUNCTION: fn_11746
-void UINoticeWnd::Slot15(int, int) {
+void UINoticeWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\");
   const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_back", "btn_back_a", "btn_back_b"}, {"btn_next", "btn_next_a", "btn_next_b"}};
   int ids[3] = {184, 246, 218};
@@ -1840,7 +1840,7 @@ void UINoticeWnd::Slot15(int, int) {
 
 // OFFSET: 0x008B42D0
 // FUNCTION: fn_11749
-void UIReplayRECControlWnd::Slot15(int, int) {
+void UIReplayRECControlWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\replay_interface\\");
   const char* names[11] = {
     "btn_start_",      "btn_stop_",       "btn_start_",      "btn_save_",       "btn_setup_",      "btn_close_",
@@ -1946,7 +1946,7 @@ void UIReplayRECControlWnd::Slot15(int, int) {
 
 // OFFSET: 0x008B5A50
 // FUNCTION: fn_11750
-void UISelectReplayDataWnd::Slot15(int width, int height) {
+void UISelectReplayDataWnd::OnCreate(int width, int height) {
   this->m_list = new UIReplayListBox();
   this->m_list->Configure(6, 127, width - 12, height - 170, 0);
   this->m_list->backgroundRed = 240;
@@ -2005,7 +2005,7 @@ void UISelectReplayDataWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008B7040
 // FUNCTION: fn_11752
-void UITalkboxTrapInputWnd::Slot15(int, int) {
+void UITalkboxTrapInputWnd::OnCreate(int, int) {
   this->edit = new UIEditCtrl();
   this->edit->SetSize(240, 16);
   this->edit->Move(22, 50);
@@ -2035,17 +2035,17 @@ void UITalkboxTrapInputWnd::Slot15(int, int) {
 
 // OFFSET: 0x008B7A60
 // FUNCTION: fn_11753
-void UILoginOTPWnd::Slot18() {
+void UILoginOTPWnd::OnDestroy() {
 }
 
 // OFFSET: 0x008B7A70
 // FUNCTION: fn_11754
-void UILoginWnd::Slot18() {
+void UILoginWnd::OnDestroy() {
 }
 
 // OFFSET: 0x008B7A80
 // FUNCTION: fn_11755
-void UIMakeCharWnd::Slot18() {
+void UIMakeCharWnd::OnDestroy() {
 }
 
 // OFFSET: 0x008B8E90
@@ -2057,7 +2057,7 @@ void UIMessageBoxAutoreturn::Paint() {
 
 // OFFSET: 0x008BA670
 // FUNCTION: fn_11788
-void UILoginOTPWnd::Slot19() {
+void UILoginOTPWnd::OnProcess() {
   auto* login = static_cast<CLoginMode*>(g_modeMgr.GetLoginMode());
   if (login == nullptr) {
     return;
@@ -2072,7 +2072,7 @@ void UILoginOTPWnd::Slot19() {
 
 // OFFSET: 0x008BAEF0
 // FUNCTION: fn_11792
-void UIMessageBoxAutoreturn::Slot19() {
+void UIMessageBoxAutoreturn::OnProcess() {
   if (this->counting == 0) {
     return;
   }
@@ -2435,7 +2435,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
 // OFFSET: 0x008BA820
 // FUNCTION: fn_11789
-void UILoginWnd::Slot19() {
+void UILoginWnd::OnProcess() {
   if (g_windowMgr.GetHoverWindow() == this->idEdit) {
     this->idEdit->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
     if (this->idPlaceholder == true) {
@@ -2696,7 +2696,7 @@ UINoticeWnd::UINoticeWnd() : UIFrameWnd(0) {
 
 // OFFSET: 0x008AD190
 // FUNCTION: fn_11737
-void UIBank_NewWnd::Slot15(int, int) {
+void UIBank_NewWnd::OnCreate(int, int) {
   this->AddCloseButton("Exit", 0);
   this->AddBitmapButton(462, 209, 77, "bank\\btn_deposit", LookupMessage(2774));
   this->AddBitmapButton(463, 209, 102, "bank\\btn_withdraw", LookupMessage(2775));
@@ -2721,7 +2721,7 @@ void UIBank_NewWnd::Slot15(int, int) {
 
 // OFFSET: 0x008AD770
 // FUNCTION: fn_11739
-void UICntWnd::Slot15(int, int) {
+void UICntWnd::OnCreate(int, int) {
   this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(80, 16);
   this->m_edit->Move(15, 22);
@@ -3198,7 +3198,7 @@ void UIPetInfoWnd::UpdateFriendlyGauge() {
 
 // OFFSET: 0x008B1240
 // FUNCTION: fn_11745
-void UIMonsterInfoWnd::Slot15(int, int) {
+void UIMonsterInfoWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\");
   auto* button = new UIBitmapButton();
   button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
@@ -3462,7 +3462,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
 // OFFSET: 0x008ADC80
 // FUNCTION: fn_11740
-void UIHomunInfoWnd::Slot15(int, int) {
+void UIHomunInfoWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
   this->nameEdit = new UIEditCtrl2();
   this->nameEdit->SetSize(80, 16);
@@ -3729,7 +3729,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 
 // OFFSET: 0x008B2820
 // FUNCTION: fn_11747
-void UIPetInfoWnd::Slot15(int, int) {
+void UIPetInfoWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
   this->nameEdit = new UIEditCtrl2();
   this->nameEdit->SetSize(80, 16);
@@ -3954,7 +3954,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
 // OFFSET: 0x008B6520
 // FUNCTION: fn_11751
-void UISelectServerWnd::Slot15(int width, int height) {
+void UISelectServerWnd::OnCreate(int width, int height) {
   this->m_serverList = new UIServerListBox();
   this->m_serverList->Configure(12, 22, width - 24, height - 55, 0);
   this->m_serverList->backgroundRed = 240;
@@ -4000,7 +4000,7 @@ void UISelectServerWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008B31F0
 // FUNCTION: fn_11748
-void UIReplayControlWnd::Slot15(int, int) {
+void UIReplayControlWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\replay_interface\\");
   const int ids[6] = {403, 404, 405, 406, 401, 402};
   const int positions[6][2] = {{101, 89}, {149, 89}, {53, 89}, {53, 111}, {5, 89}, {-100, -100}};
@@ -4160,8 +4160,8 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
   }
 
   this->SetSize(280, 120);
-  this->Slot15(280, 120);
-  this->Slot22(280, 120);
+  this->OnCreate(280, 120);
+  this->OnSize(280, 120);
   this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
 
   this->viewer = new UITextViewer();
@@ -4378,7 +4378,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
 // OFFSET: 0x008AF190
 // FUNCTION: fn_11742
-void UILoginWnd::Slot15(int, int) {
+void UILoginWnd::OnCreate(int, int) {
   this->unknown_00BC = g_windowMgr.EnsureWindow(325);
   UIRPImageWnd2* backgroundWindow = static_cast<UIRPImageWnd2*>(this->unknown_00BC);
   const char backgroundSource[] = {'\xA7', '\x04', '\x51', '\x5F', '\x61', '\xF1', '\x26', '\xDE', '\xA1', '\x4F', '\x51', '\x69', '\x1C', '\x85', '\xBF', '\x7F', '\x08', '\xCC', '\xF8',

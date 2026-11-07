@@ -22,7 +22,7 @@ CAnimatedEmitterEffect::CAnimatedEmitterEffect() {
 
 // OFFSET: 0x006FA0F0
 // FUNCTION: fn_06890
-void CAnimatedEmitterEffect::Slot01() {
+void CAnimatedEmitterEffect::Open() {
   this->frames[0].push_back(std::string("EFFECT\\shockwave_a.bmp"));
   this->frames[0].push_back(std::string("EFFECT\\shockwave_b.bmp"));
   this->frames[0].push_back(std::string("EFFECT\\shockwave_c.bmp"));
@@ -33,7 +33,7 @@ void CAnimatedEmitterEffect::Slot01() {
   this->frames[1].push_back(std::string("EFFECT\\plazma_c.bmp"));
   this->frames[1].push_back(std::string("EFFECT\\plazma_a.bmp"));
   this->frames[1].push_back(std::string("EFFECT\\plazma_b.bmp"));
-  CEmitterEffect::Slot01();
+  CEmitterEffect::Open();
 }
 
 // OFFSET: 0x006FA7C0

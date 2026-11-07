@@ -15,7 +15,7 @@ void UITextureButton::Paint() {
 
 // OFFSET: 0x0085F060
 // FUNCTION: fn_10856
-void UITextureButton::Slot31(int x, int y) {
+void UITextureButton::OnLBtnUp(int x, int y) {
   if (this->m_disabled == 1) {
     return;
   }

@@ -54,7 +54,7 @@ void CUIFrameWnd::RefreshSkinColors() {
   }
 
   for (UIWindow* child : this->m_children) {
-    child->Slot52(this->m_resolveSkin);
+    child->ApplySkin(this->m_resolveSkin);
   }
 }
 

@@ -58,7 +58,7 @@ void CMapMagicZoneEffect::Close() {
 
 // OFFSET: 0x00B6E1D0
 // FUNCTION: fn_19114
-void CMapMagicZoneEffect::Slot01() {
+void CMapMagicZoneEffect::Open() {
   this->AddSpinner(0);
   this->AddSpinner(1);
 
@@ -113,13 +113,13 @@ void CMapMagicZoneEffect::Slot01() {
 
 // OFFSET: 0x00B6E3B0
 // FUNCTION: fn_19115
-bool CMapMagicZoneEffect::Slot06() {
+bool CMapMagicZoneEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B6E3C0
 // FUNCTION: fn_19116
-void CMapMagicZoneEffect::Slot03() {
+void CMapMagicZoneEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->spinners.begin(); it != this->spinners.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -257,7 +257,7 @@ void CMapMagicZoneEffect::UpdateSpinner(CParticle* particle) {
 
 // OFFSET: 0x00B6F010
 // FUNCTION: fn_19118
-void CMapMagicZoneEffect::Slot04() {
+void CMapMagicZoneEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->spinners.begin(); it != this->spinners.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

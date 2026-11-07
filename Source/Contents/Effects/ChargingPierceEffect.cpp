@@ -106,7 +106,7 @@ int CChargingPierceEffect::ActiveCount() {
 
 // OFFSET: 0x00703A40
 // FUNCTION: fn_07026
-void CChargingPierceEffect::Slot01() {
+void CChargingPierceEffect::Open() {
   this->retained = 1;
   for (int index = 0; index < 10; ++index) {
     this->sparks[index] = nullptr;
@@ -127,25 +127,25 @@ void CChargingPierceEffect::Slot01() {
 
 // OFFSET: 0x00703C40
 // FUNCTION: fn_07027
-void CChargingPierceNewEffect::Slot01() {
+void CChargingPierceNewEffect::Open() {
   this->retained = 1;
 }
 
 // OFFSET: 0x00703C50
 // FUNCTION: fn_07028
-bool CChargingPierceEffect::Slot06() {
+bool CChargingPierceEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00703C60
 // FUNCTION: fn_07029
-bool CChargingPierceNewEffect::Slot06() {
+bool CChargingPierceNewEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00703DC0
 // FUNCTION: fn_07030
-void CChargingPierceEffect::Slot03() {
+void CChargingPierceEffect::OnProcess() {
   for (int index = 0; index < 10; ++index) {
     const vector3d& offset = this->offsets[index];
 
@@ -224,7 +224,7 @@ void CChargingPierceEffect::Slot03() {
 
 // OFFSET: 0x00704360
 // FUNCTION: fn_07031
-void CChargingPierceNewEffect::Slot03() {
+void CChargingPierceNewEffect::OnProcess() {
   for (CEZ2STRParticle* particle : this->emitters) {
     const float x = this->position[0];
     const float y = this->position[1];
@@ -245,7 +245,7 @@ void CChargingPierceNewEffect::Slot03() {
 
 // OFFSET: 0x00704A30
 // FUNCTION: fn_07032
-void CChargingPierceEffect::Slot04() {
+void CChargingPierceEffect::Render() {
   for (int index = 0; index < 10; ++index) {
     CParticle* spark = this->sparks[index];
     if (spark) {
@@ -264,7 +264,7 @@ void CChargingPierceEffect::Slot04() {
 
 // OFFSET: 0x00704BB0
 // FUNCTION: fn_07033
-void CChargingPierceNewEffect::Slot04() {
+void CChargingPierceNewEffect::Render() {
   for (CEZ2STRParticle* particle : this->emitters) {
     particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }

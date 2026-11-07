@@ -58,7 +58,7 @@ void CRedLineEffect::Close() {
 
 // OFFSET: 0x00B71BC0
 // FUNCTION: fn_19136
-void CRedLineEffect::Slot01() {
+void CRedLineEffect::Open() {
   this->CreateLines(0);
   this->CreateLines(1);
   this->unknown_002C = 75;
@@ -66,13 +66,13 @@ void CRedLineEffect::Slot01() {
 
 // OFFSET: 0x00B71BE0
 // FUNCTION: fn_19137
-bool CRedLineEffect::Slot06() {
+bool CRedLineEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B71EA0
 // FUNCTION: fn_19138
-void CRedLineEffect::Slot03() {
+void CRedLineEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->lines.begin(); it != this->lines.end(); ++it) {
     CParticle* particle = *it;
     vector3d& position = particle->position;
@@ -165,7 +165,7 @@ void CRedLineEffect::Slot03() {
 
 // OFFSET: 0x00B72240
 // FUNCTION: fn_19139
-void CRedLineEffect::Slot04() {
+void CRedLineEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->lines.begin(); it != this->lines.end(); ++it) {
     CParticle* particle = *it;
 

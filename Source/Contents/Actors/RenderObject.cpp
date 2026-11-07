@@ -188,7 +188,7 @@ bool CRenderObject::OnProcess() {
 
 // OFFSET: 0x00CB0500
 // FUNCTION: fn_21094
-void CRenderObject::Slot08() {
+void CRenderObject::ProcessMotion() {
   this->render.previousAnimation = this->render.animation + this->Get8Dir(this->render.angle);
   g_modeMgr.GetGameMode();
   const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.unknown_008C) / 24.0);
@@ -835,7 +835,7 @@ void CRenderObject::SetInstantValue(int key, std::int64_t value) {
 
 // OFFSET: 0x00CC2060
 // FUNCTION: fn_21135
-void CGameActor::Slot49(int guildId, int version) {
+void CGameActor::SetGuildInfo(int guildId, int version) {
   if (guildId <= 0) {
     return;
   }
@@ -857,7 +857,7 @@ void CGameActor::Slot49(int guildId, int version) {
 
 // OFFSET: 0x00CC21F0
 // FUNCTION: fn_21136
-void CGameActor::Slot30() {
+void CGameActor::SetImfFileName() {
 }
 
 // OFFSET: 0x00CC27C0
@@ -881,7 +881,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
     if ((g_pickModifierKey != 0) == (g_pickInvert != 0)) {
       if (g_session.GetSceneUnknown004C() != 0) {
         if (IsPlayerJob(this->GetEffectiveJob(-1))) {
-          depth = g_session.IsLocalPlayerAid(this->Slot50()) != 0 ? 100.0f : 400.0f;
+          depth = g_session.IsLocalPlayerAid(this->GetGdid()) != 0 ? 100.0f : 400.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 200.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
@@ -903,7 +903,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
     } else {
       if (g_session.GetSceneUnknown004C() != 0) {
         if (IsPlayerJob(this->GetEffectiveJob(-1))) {
-          depth = g_session.IsLocalPlayerAid(this->Slot50()) != 0 ? 400.0f : 100.0f;
+          depth = g_session.IsLocalPlayerAid(this->GetGdid()) != 0 ? 400.0f : 100.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 100.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
@@ -1021,7 +1021,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
       }
     } else {
       this->Face(x, z);
-      this->Slot15(motion, 1);
+      this->SetState(motion, 1);
     }
     break;
   }
@@ -1170,7 +1170,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     CEffect* effect = g_effectMgr->Spawn(0, 0x426, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect != nullptr) {
       using SetFloat = void (CEffect::*)(float);
-      const SetFloat set = reinterpret_cast<SetFloat>(&CEffect::Slot13);
+      const SetFloat set = reinterpret_cast<SetFloat>(&CEffect::AdvanceFrame);
       (effect->*set)(0.4f);
     }
     break;
@@ -1217,11 +1217,11 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     g_effectMgr->Spawn(0, 0x828, position.x, position.y, position.z, 0, -1, 0, 0);
     CEffect* effect = g_effectMgr->Spawn(0, 0x82B, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect != nullptr) {
-      effect->Slot16(0x370);
+      effect->SetDelay(0x370);
     }
     effect = g_effectMgr->Spawn(0, 0x82C, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect != nullptr) {
-      effect->Slot16(0x370);
+      effect->SetDelay(0x370);
     }
     break;
   }
@@ -1249,27 +1249,27 @@ void CGameActor::SetUnknown0330(const float* value, int index) {
 
 // OFFSET: 0x00CC2DC0
 // FUNCTION: fn_21147
-void CGameActor::Slot25(int) {
+void CGameActor::SetSprAccessory(int) {
 }
 
 // OFFSET: 0x00CC2DD0
 // FUNCTION: fn_21148
-void CGameActor::Slot18(int, int, int) {
+void CGameActor::SetSprAct(int, int, int) {
 }
 
 // OFFSET: 0x00CC2DE0
 // FUNCTION: fn_21149
-void CGameActor::Slot22(int) {
+void CGameActor::SetSprHead(int) {
 }
 
 // OFFSET: 0x00CC2DF0
 // FUNCTION: fn_21150
-void CGameActor::Slot21(int) {
+void CGameActor::SetSprJob(int) {
 }
 
 // OFFSET: 0x00CC2E40
 // FUNCTION: fn_21152
-void CGameActor::Slot23(int, int) {
+void CGameActor::SetSprWeapon(int, int) {
 }
 
 // INLINED
@@ -1285,7 +1285,7 @@ static bool HasEffectOfType(const std::list<CRagEffect*>& effects, int type) {
 
 // OFFSET: 0x00CC2E50
 // FUNCTION: fn_21153
-void CGameActor::Slot15(int state, int resetPosition) {
+void CGameActor::SetState(int state, int resetPosition) {
   g_session.m_homunActionState = 0;
   g_session.m_mercenaryActionState = 0;
 
@@ -1302,7 +1302,7 @@ void CGameActor::Slot15(int state, int resetPosition) {
 
   const std::uint32_t aid = this->render.accountId;
   bool isPlayer;
-  if (g_session.m_aid != aid && this->Slot50() >= 1 && g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
+  if (g_session.m_aid != aid && this->GetGdid() >= 1 && g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
     isPlayer = true;
   } else {
     isPlayer = false;
@@ -1316,7 +1316,7 @@ void CGameActor::Slot15(int state, int resetPosition) {
   }
 
   int action;
-  if (this->Slot55() > 0) {
+  if (this->GetMonsterTransformJob() > 0) {
     action = this->ActionBase(state);
   } else {
     action = this->WeaponActionBase(state);
@@ -1325,7 +1325,7 @@ void CGameActor::Slot15(int state, int resetPosition) {
   switch (state) {
   case 0xd:
     if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
-      const std::int64_t weapon = this->Slot35();
+      const std::int64_t weapon = this->GetWeapon();
       IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, weapon);
       this->SetAction(action, 4, 1);
       this->render.isMotionFreezed = true;
@@ -1351,7 +1351,7 @@ void CGameActor::Slot15(int state, int resetPosition) {
     this->SetAction(action, 5, 1);
     const int job = this->GetEffectiveJob(-1);
     if (job != 0x8d && job != 0xe6) {
-      this->Slot16();
+      this->RegisterPos();
     }
     break;
   }
@@ -1378,8 +1378,8 @@ void CGameActor::Slot15(int state, int resetPosition) {
     if (this->GetEffectiveJob(-1) == 0x505) {
       this->LaunchAttackProjectile(this->hitTargetAid, 28.0f);
     }
-    this->unknown_0378 = static_cast<float>(this->Slot37());
-    this->Slot16();
+    this->unknown_0378 = static_cast<float>(this->GetAttackMotion());
+    this->RegisterPos();
     break;
   case 3:
     this->render.unknown_00C8 = 0;
@@ -1400,13 +1400,13 @@ void CGameActor::Slot15(int state, int resetPosition) {
     if (!IsObfuscatedMessage(this->render.accountId)) {
       this->render.isMotionFinished = true;
     }
-    this->Slot16();
+    this->RegisterPos();
     break;
   case 1:
     if (this->unknown_0184 == 0) {
       this->SetAction(action, 6, 0);
     }
-    this->Slot17();
+    this->UnRegisterPos();
     break;
   case 5:
     this->unknown_0178 = 0;
@@ -1416,7 +1416,7 @@ void CGameActor::Slot15(int state, int resetPosition) {
     break;
   case 0xc:
     this->SetAction(action, 3, 1);
-    this->Slot16();
+    this->RegisterPos();
     break;
   case 0x10:
     this->render.unknown_00C2 = 10;
@@ -1751,7 +1751,7 @@ void CGameActor::Slot15(int state, int resetPosition) {
 
 // OFFSET: 0x00CA9E50
 // FUNCTION: fn_21013
-void CRenderObject::Slot10(
+void CRenderObject::RenderBlur(
   const SpriteFrameCell* cell, const int* box, float offset, float bottomRhw, float topRhw, const std::uint32_t* palette,
   const SpriteRleImage* image, float scale, short shift
 ) {
@@ -1807,7 +1807,7 @@ void CRenderObject::Slot10(
 
 // OFFSET: 0x00CAA1F0
 // FUNCTION: fn_21015
-void CRenderObject::Slot12(SpriteQuad* quad, const int* input, float offset, int spread, int base) {
+void CRenderObject::ApplySpriteJitter(SpriteQuad* quad, const int* input, float offset, int spread, int base) {
   if ((this->render.flags & 0x2000) == 0) {
     return;
   }
@@ -1834,7 +1834,7 @@ void CRenderObject::Slot12(SpriteQuad* quad, const int* input, float offset, int
 
 // OFFSET: 0x00CAA2E0
 // FUNCTION: fn_21016
-void CRenderObject::Slot11(
+void CRenderObject::RenderAura(
   SpriteQuad* quad, const SpriteFrameCell* cell, const int* box, float offset, float bottomRhw, float topRhw,
   const std::uint32_t* palette, const SpriteRleImage* image, int blend, short shift
 ) {
@@ -2027,9 +2027,9 @@ void CRenderObject::DrawSpriteEffects(
   }
 
   CGameActor* actor = static_cast<CGameActor*>(this);
-  actor->Slot10(cell, box, offset, bottomRhw, topRhw, palette, image, static_cast<float>(box[3] - box[1]) * 0.05f, 0);
-  actor->Slot11(quad, cell, box, offset, bottomRhw, topRhw, palette, image, *blend, 0);
-  actor->Slot12(quad, box, offset, 21, 10);
+  actor->RenderBlur(cell, box, offset, bottomRhw, topRhw, palette, image, static_cast<float>(box[3] - box[1]) * 0.05f, 0);
+  actor->RenderAura(quad, cell, box, offset, bottomRhw, topRhw, palette, image, *blend, 0);
+  actor->ApplySpriteJitter(quad, box, offset, 21, 10);
 
   if ((this->render.flags & 0x100000) != 0) {
     short angle = static_cast<short>(cell->unknown_001C) + static_cast<short>(this->render.unknown_007C) + 60;
@@ -2062,25 +2062,25 @@ int CGameActor::GetShield() {
 
 // OFFSET: 0x005A1280
 // FUNCTION: fn_03042
-void CGameActor::Slot62(int value) {
+void CGameActor::SetSex(int value) {
   this->SetUnknown0260(value);
 }
 
 // OFFSET: 0x005A1290
 // FUNCTION: fn_03043
-int CGameActor::Slot46() {
+int CGameActor::GetBodyCostume() {
   return 0;
 }
 
 // OFFSET: 0x005A12A0
 // FUNCTION: fn_03044
-std::uint32_t CGameActor::Slot13() {
+std::uint32_t CGameActor::GetStateFlags() {
   return this->stateFlags;
 }
 
 // OFFSET: 0x005A12B0
 // FUNCTION: fn_03045
-int CGameActor::Slot50() {
+int CGameActor::GetGdid() {
   return this->guildId;
 }
 
@@ -2094,13 +2094,13 @@ float* CGameActor::GetExtent(float* extent) const {
 
 // OFFSET: 0x005A12E0
 // FUNCTION: fn_03047
-bool CGameActor::Slot58() {
+bool CGameActor::IsArrowEffectSuppressed() {
   return false;
 }
 
 // OFFSET: 0x005A12F0
 // FUNCTION: fn_03048
-int CGameActor::Slot45() {
+int CGameActor::GetNpcLocationRadius() {
   int radius = 0;
   g_session.m_hotkeyScript->Call("GetNpcLocationRadius", "d>d", this->GetEffectiveJob(-1), &radius);
   return radius;
@@ -2108,82 +2108,82 @@ int CGameActor::Slot45() {
 
 // OFFSET: 0x005A13B0
 // FUNCTION: fn_03049
-int CGameActor::Slot56() {
+int CGameActor::GetMadogearType() {
   return 0;
 }
 
 // OFFSET: 0x005A13C0
 // FUNCTION: fn_03050
-int CGameActor::Slot42() {
+int CGameActor::GetPkState() {
   return 0;
 }
 
 // OFFSET: 0x005A13D0
 // FUNCTION: fn_03051
-std::int64_t CGameActor::Slot35() {
+std::int64_t CGameActor::GetWeapon() {
   return -1;
 }
 
 // OFFSET: 0x005A1930
 // FUNCTION: fn_45454
-void CGameActor::Slot44(int, int) {
+void CGameActor::SetBodyCostume(int, int) {
 }
 
 // OFFSET: 0x005A1960
 // FUNCTION: fn_03054
-void CGameActor::Slot48(int value) {
+void CGameActor::SetGdid(int value) {
   this->guildId = value;
 }
 
 // OFFSET: 0x005A1990
 // FUNCTION: fn_03057
-void CGameActor::Slot40(int) {
+void CGameActor::SetHonor(int) {
 }
 
 // OFFSET: 0x005A19B0
 // FUNCTION: fn_03059
-void CGameActor::Slot59(bool) {
+void CGameActor::SetArrowEffectSuppressed(bool) {
 }
 
 // OFFSET: 0x005A19C0
 // FUNCTION: fn_03060
-void CGameActor::Slot57(int) {
+void CGameActor::SetMadogearType(int) {
 }
 
 // OFFSET: 0x005A19D0
 // FUNCTION: fn_03061
-void CGameActor::Slot41(int, int) {
+void CGameActor::SetPropensityInfo(int, int) {
 }
 
 // OFFSET: 0x005A19E0
 // FUNCTION: fn_03062
-void CGameActor::Slot47(unsigned char value) {
+void CGameActor::SetRiding(unsigned char value) {
   this->unknown_02CC = value;
 }
 
 // OFFSET: 0x005A1A40
 // FUNCTION: fn_03068
-void CGameActor::Slot60() {
+void CGameActor::RefreshAccessory3() {
 }
 
 // OFFSET: 0x005A1A70
 // FUNCTION: fn_03071
-void CGameActor::Slot43(int, int) {
+void CGameActor::SetSprRobe(int, int) {
 }
 
 // OFFSET: 0x005A1A80
 // FUNCTION: fn_03072
-void CGameActor::Slot28(int) {
+void CGameActor::SetSprShield(int) {
 }
 
 // OFFSET: 0x005A1AA0
 // FUNCTION: fn_03074
-void CGameActor::Slot24(int, int) {
+void CGameActor::SetSprWeapon2(int, int) {
 }
 
 // OFFSET: 0x00CABD40
 // FUNCTION: fn_21037
-int CGameActor::Slot37() {
+int CGameActor::GetAttackMotion() {
   const CActRes* action = this->render.action;
   const int count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
 
@@ -2200,7 +2200,7 @@ int CGameActor::Slot37() {
 
 // OFFSET: 0x00CACEF0
 // FUNCTION: fn_21048
-float* CGameActor::Slot51(int index) {
+float* CGameActor::GetMsg2AI(int index) {
   if (index == 0) {
     return this->unknown_0318;
   }
@@ -2212,7 +2212,7 @@ float* CGameActor::Slot51(int index) {
 
 // OFFSET: 0x00CAD480
 // FUNCTION: fn_21052
-float* CGameActor::Slot53(int index) {
+float* CGameActor::GetResMsg2AI(int index) {
   if (index == 0) {
     return this->unknown_0330;
   }
@@ -2230,7 +2230,7 @@ bool CGameActor::HasShapeShift() {
 
 // OFFSET: 0x00CAE500
 // FUNCTION: fn_21074
-void CGameActor::Slot38() {
+void CGameActor::MakeCorpse() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const float angle = this->render.angle;
   const int motion = this->render.curMotion;
@@ -2422,7 +2422,7 @@ void CGameActor::LaunchAttackProjectile(int target, float scale) {
 
 // OFFSET: 0x00CABEB0
 // FUNCTION: fn_21040
-int CGameActor::Slot55() {
+int CGameActor::GetMonsterTransformJob() {
   if (this->unknown_03C4 != -1) {
     return this->unknown_03C4;
   }
@@ -2444,21 +2444,21 @@ int CGameActor::GetEffectiveJob(int job) {
     job = this->unknown_025C;
   }
 
-  if (StateFlag12(this->Slot13())) {
+  if (StateFlag12(this->GetStateFlags())) {
     return JT_MARRIED;
   }
 
-  if (!StateFlag15(this->Slot13())) {
-    if (StateFlag16(this->Slot13())) {
+  if (!StateFlag15(this->GetStateFlags())) {
+    if (StateFlag16(this->GetStateFlags())) {
       return JT_SANTA;
     }
-    if (StateFlag18(this->Slot13())) {
+    if (StateFlag18(this->GetStateFlags())) {
       return JT_SUMMER;
     }
-    if (StateFlag27(this->Slot13())) {
+    if (StateFlag27(this->GetStateFlags())) {
       return JT_HANBOK;
     }
-    if (StateFlag28(this->Slot13())) {
+    if (StateFlag28(this->GetStateFlags())) {
       return JT_OKTOBERFEST;
     }
     if (this->unknown_03DC == 1) {
@@ -2466,7 +2466,7 @@ int CGameActor::GetEffectiveJob(int job) {
     }
   }
 
-  if (StateFlag05(this->Slot13())) {
+  if (StateFlag05(this->GetStateFlags())) {
     switch (job) {
       case JT_KNIGHT:
         return JT_CHICKEN;
@@ -2491,7 +2491,7 @@ int CGameActor::GetEffectiveJob(int job) {
     }
   }
 
-  if (StateFlag19(this->Slot13())) {
+  if (StateFlag19(this->GetStateFlags())) {
     switch (job) {
       case JT_RUNE_KNIGHT:
         return JT_RUNE_CHICKEN;
@@ -2502,28 +2502,28 @@ int CGameActor::GetEffectiveJob(int job) {
       case JT_DRAGON_KNIGHT:
         return JT_DRAGON_KNIGHT_CHICKEN;
     }
-  } else if (StateFlag23(this->Slot13())) {
+  } else if (StateFlag23(this->GetStateFlags())) {
     if (job == JT_RUNE_KNIGHT) {
       return JT_RUNE_CHICKEN2;
     }
     if (job == JT_RUNE_KNIGHT_H) {
       return JT_RUNE_CHICKEN2_H;
     }
-  } else if (StateFlag24(this->Slot13())) {
+  } else if (StateFlag24(this->GetStateFlags())) {
     if (job == JT_RUNE_KNIGHT) {
       return JT_RUNE_CHICKEN3;
     }
     if (job == JT_RUNE_KNIGHT_H) {
       return JT_RUNE_CHICKEN3_H;
     }
-  } else if (StateFlag25(this->Slot13())) {
+  } else if (StateFlag25(this->GetStateFlags())) {
     if (job == JT_RUNE_KNIGHT) {
       return JT_RUNE_CHICKEN4;
     }
     if (job == JT_RUNE_KNIGHT_H) {
       return JT_RUNE_CHICKEN4_H;
     }
-  } else if (StateFlag26(this->Slot13())) {
+  } else if (StateFlag26(this->GetStateFlags())) {
     if (job == JT_RUNE_KNIGHT) {
       return JT_RUNE_CHICKEN5;
     }
@@ -2532,7 +2532,7 @@ int CGameActor::GetEffectiveJob(int job) {
     }
   }
 
-  if (StateFlag21(this->Slot13())) {
+  if (StateFlag21(this->GetStateFlags())) {
     switch (job) {
       case JT_RANGER:
         return JT_WOLF_RANGER;
@@ -2545,7 +2545,7 @@ int CGameActor::GetEffectiveJob(int job) {
     }
   }
 
-  if (this->Slot56() != 0) {
+  if (this->GetMadogearType() != 0) {
     switch (job) {
       case JT_MECHANIC:
         return JT_MADOGEAR;
@@ -2558,7 +2558,7 @@ int CGameActor::GetEffectiveJob(int job) {
     }
   }
 
-  if (StateFlag15(this->Slot13())) {
+  if (StateFlag15(this->GetStateFlags())) {
     switch (job) {
       case JT_STAR:
         return JT_STAR2;
@@ -2578,7 +2578,7 @@ int CGameActor::GetEffectiveJob(int job) {
 
 // OFFSET: 0x00CCCAF0
 // FUNCTION: fn_21199
-void CGameActor::Slot39(int value) {
+void CGameActor::SetModifyFactorOfmotionSpeed(int value) {
   if (value > g_maxMoveSpeed) {
     value = g_maxMoveSpeed;
   }
@@ -2589,57 +2589,57 @@ void CGameActor::Slot39(int value) {
 
 // OFFSET: 0x005A1A30
 // FUNCTION: fn_03067
-void CGameActor::Slot19(int, int, int, int, int, int, int, int, int, int, int) {
+void CGameActor::SetSprActFull(int, int, int, int, int, int, int, int, int, int, int) {
 }
 
 // OFFSET: 0x005A1A20
 // FUNCTION: fn_03066
-void CGameActor::Slot20(int, int, int, int, int, int, int, int, int, int, int) {
+void CGameActor::SetSprAct2(int, int, int, int, int, int, int, int, int, int, int) {
 }
 
 // OFFSET: 0x005A19F0
 // FUNCTION: fn_03063
-void CGameActor::Slot26(int) {
+void CGameActor::SetSprAccessory2(int) {
 }
 
 // OFFSET: 0x005A1A00
 // FUNCTION: fn_03064
-void CGameActor::Slot27(int) {
+void CGameActor::SetSprAccessory3(int) {
 }
 
 // OFFSET: 0x005A1980
 // FUNCTION: fn_03056
-void CGameActor::Slot31() {
+void CGameActor::SetHeadPaletteName() {
 }
 
 // OFFSET: 0x005A1970
 // FUNCTION: fn_03055
-void CGameActor::Slot34(int) {
+void CGameActor::SetHeadPalette(int) {
 }
 
 // OFFSET: 0x005A1A50
 // FUNCTION: fn_03069
-void CNpc::Slot22(int) {
+void CNpc::SetSprHead(int) {
 }
 
 // OFFSET: 0x005A1A10
 // FUNCTION: fn_03065
-void CNpc::Slot25(int) {
+void CNpc::SetSprAccessory(int) {
 }
 
 // OFFSET: 0x005A1AB0
 // FUNCTION: fn_03075
-void CNpc::Slot23(int, int) {
+void CNpc::SetSprWeapon(int, int) {
 }
 
 // OFFSET: 0x005A19A0
 // FUNCTION: fn_03058
-void CNpc::Slot30() {
+void CNpc::SetImfFileName() {
 }
 
 // OFFSET: 0x005A1A60
 // FUNCTION: fn_03070
-void CCharacterNpc::Slot21(int) {
+void CCharacterNpc::SetSprJob(int) {
 }
 
 // OFFSET: 0x005A13E0
@@ -2742,7 +2742,7 @@ void CCharacterNpc::SendMsg(
   case 4:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     this->render.visible = IsVisibleJob(info->job) ? 1 : 0;
-    this->Slot49(info->unknown_0060, info->unknown_0064);
+    this->SetGuildInfo(info->unknown_0060, info->unknown_0064);
     if (this->unknown_0440 != nullptr) {
       return;
     }
@@ -2807,8 +2807,8 @@ void CGameActor::SetUnknown03B8(int value, int slot) {
   }
 
   if (value > 0) {
-    this->Slot21(value);
-    this->Slot15(this->render.unknown_0070, 1);
+    this->SetSprJob(value);
+    this->SetState(this->render.unknown_0070, 1);
     return;
   }
 
@@ -2819,9 +2819,9 @@ void CGameActor::SetUnknown03B8(int value, int slot) {
     job = this->GetUnknown0404Job();
   }
 
-  this->Slot32();
-  this->Slot21(job);
-  this->Slot15(this->render.unknown_0070, 1);
+  this->SetBodyPaletteName();
+  this->SetSprJob(job);
+  this->SetState(this->render.unknown_0070, 1);
 }
 
 // OFFSET: 0x00CC46D0
@@ -2914,7 +2914,7 @@ void CGameActor::SetUnknown008C(const std::uint32_t* value) {
 
 // OFFSET: 0x00CC41E0
 // FUNCTION: fn_21159
-void CGameActor::Slot17() {
+void CGameActor::UnRegisterPos() {
   g_modeMgr.GetGameMode()->SendMsg(13, this->render.accountId, 0, 0, 0);
 }
 
@@ -2926,8 +2926,8 @@ void CGameActor::SetUnknown03C4(int value) {
   if (value <= 0) {
     value = this->GetEffectiveJob(-1);
   }
-  this->Slot21(value);
-  this->Slot15(this->render.unknown_0070, 1);
+  this->SetSprJob(value);
+  this->SetState(this->render.unknown_0070, 1);
 }
 
 // OFFSET: 0x00CABDE0
@@ -3345,7 +3345,7 @@ int CGameActor::WeaponActionBase(int weaponType) {
     base = 40;
     break;
   case 13:
-    base = IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, this->Slot35()) ? 88 : 80;
+    base = IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, this->GetWeapon()) ? 88 : 80;
     break;
   case 16:
   case 17:
@@ -3451,7 +3451,7 @@ C3dGrannyGameActor::C3dGrannyGameActor(const char* name) {
 
 // OFFSET: 0x00CC7ED0
 // FUNCTION: fn_21189
-void C3dGrannyGameActor::Slot18(int job, int value, int) {
+void C3dGrannyGameActor::SetSprAct(int job, int value, int) {
   this->SetActorJob(job);
   this->SetUnknown0260(value);
   this->model = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(this->name));
@@ -3488,13 +3488,13 @@ void C3dGrannyGameActor::Slot18(int job, int value, int) {
 
 // OFFSET: 0x00CC5650
 // FUNCTION: fn_21176
-int C3dGrannyGameActor::Slot37() {
+int C3dGrannyGameActor::GetAttackMotion() {
   return 0;
 }
 
 // OFFSET: 0x00CC5D70
 // FUNCTION: fn_21181
-void C3dGrannyGameActor::Slot36() {
+void C3dGrannyGameActor::ProcessMotionWithDist() {
 }
 
 // OFFSET: 0x00CC5B00
@@ -3672,9 +3672,9 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
         this->unknown_0178 = 0;
       }
 
-      this->Slot39(attackSpeed);
+      this->SetModifyFactorOfmotionSpeed(attackSpeed);
       if (info->targetAid != this->render.accountId) {
-        this->Slot15(2, 1);
+        this->SetState(2, 1);
       }
 
       this->Face(x, z);
@@ -3820,20 +3820,20 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
       break;
     }
     case 1:
-      this->Slot15(5, 1);
+      this->SetState(5, 1);
       return;
     case 2:
-      this->Slot15(6, 1);
+      this->SetState(6, 1);
       return;
     case 3:
-      this->Slot15(0, 1);
+      this->SetState(0, 1);
       return;
   }
 }
 
 // OFFSET: 0x00CC5C70
 // FUNCTION: fn_21180
-void C3dGrannyGameActor::Slot08() {
+void C3dGrannyGameActor::ProcessMotion() {
   this->render.isMotionFinished = this->render.unknown_0070 != 2;
   if (this->render.unknown_0070 != 2 || !(this->render.motionSpeed < 1.0f)) {
     return;
@@ -4232,7 +4232,7 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
 
     CTexture* meshTexture;
     if (mesh == 1) {
-      const std::string name = g_guildMgr->GetEmblemFilename(this->Slot50());
+      const std::string name = g_guildMgr->GetEmblemFilename(this->GetGdid());
       CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
       if (emblem != nullptr) {
         if (this->emblemTexture == nullptr) {
@@ -4268,7 +4268,7 @@ void CGameActor::SetCharm(int type, int count) {
   this->SendMsg(this, 0x6D, 0, 0x2E2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->SendMsg(this, 0x6D, 0, 0x2DF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->SendMsg(this, 0x6D, 0, 0x2E0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  if (count <= 0 || StateFlag01(this->Slot13()) || StateFlag02(this->Slot13())) {
+  if (count <= 0 || StateFlag01(this->GetStateFlags()) || StateFlag02(this->GetStateFlags())) {
     return;
   }
 
@@ -4555,7 +4555,7 @@ void CGameActor::SetActorJob(int job) {
     slotJob = this->unknown_025C;
   }
 
-  this->Slot21(slotJob);
+  this->SetSprJob(slotJob);
   this->ResetJobEffects();
   this->UpdateMaxLevelAura();
 }
@@ -4581,14 +4581,14 @@ void CGameActor::RefreshGuildEmblemWindow() {
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  const int emblemVersion = g_guildMgr->GetEmblemVersion(static_cast<std::uint32_t>(this->Slot50()));
-  mode->ShowGuildEmblem(this, this->Slot50(), emblemVersion);
+  const int emblemVersion = g_guildMgr->GetEmblemVersion(static_cast<std::uint32_t>(this->GetGdid()));
+  mode->ShowGuildEmblem(this, this->GetGdid(), emblemVersion);
 }
 
 // OFFSET: 0x00CC4640
 // FUNCTION: fn_21165
 void CGameActor::NotifyCellMove(const float* x, const float* z) {
-  if (this->Slot50() < 1) {
+  if (this->GetGdid() < 1) {
     return;
   }
 
@@ -4609,7 +4609,7 @@ void CGameActor::NotifyCellMove(const float* x, const float* z) {
 
 // OFFSET: 0x00CC5750
 // FUNCTION: fn_21177
-void C3dGrannyGameActor::Slot38() {
+void C3dGrannyGameActor::MakeCorpse() {
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->SpawnGrannyCorpse(
     this->render.position.x, this->render.position.y, this->render.position.z, this->angle, this->name
   );
@@ -4623,13 +4623,13 @@ void CGameActor::ApplyNatureProtection() {
   }
 
   this->unknown_0408 = this->unknown_0404;
-  this->Slot15(0x51, 1);
+  this->SetState(0x51, 1);
   this->render.isMotionFreezed = true;
   this->render.unknown_0114 = 1;
   this->unknown_0404 = 3;
-  this->Slot21(this->unknown_025C);
-  const int costume = this->Slot56();
-  const int costumeJob = this->Slot46();
+  this->SetSprJob(this->unknown_025C);
+  const int costume = this->GetMadogearType();
+  const int costumeJob = this->GetBodyCostume();
   this->render.name = g_equipmentResourceMgr->GetBodyPalName(
     this->GetEffectiveJob(-1), this->unknown_0260, static_cast<int>(this->render.unknown_0048), costumeJob, costume, 0
   );
@@ -4690,12 +4690,12 @@ __declspec(noinline) void CGameActor::ProcessActorEffects() {
 // OFFSET: 0x00CC59B0
 // FUNCTION: fn_21178
 bool C3dGrannyGameActor::OnProcess() {
-  this->Slot08();
+  this->ProcessMotion();
   this->ProcessViewCheck();
   this->ProcessActorEffects();
   this->UpdateHpGauge();
 
-  const bool result = this->Slot14();
+  const bool result = this->ProcessState();
 
   float facing = this->render.angle;
   if (facing > 360.0f) {
@@ -5278,12 +5278,12 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
 
 // OFFSET: 0x005A1950
 // FUNCTION: fn_45475
-void CGameActor::Slot32() {
+void CGameActor::SetBodyPaletteName() {
 }
 
 // OFFSET: 0x005A1940
 // FUNCTION: fn_45476
-void CGameActor::Slot33(int) {
+void CGameActor::SetBodyPalette(int) {
 }
 
 // OFFSET: 0x00CCA380
@@ -5339,7 +5339,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   }
 
   if (skillId == 2288 || skillId == 5316 || skillId == 5322 || CSkillActionMgr::GetInstance()->ActionSlot07(skillId)) {
-    this->Slot59(true);
+    this->SetArrowEffectSuppressed(true);
   }
 
   switch (type) {
@@ -5446,7 +5446,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   int motion;
   g_session.GetSkillActionInfo2(skillId, castEffect, motion);
   if (skillId != 2256 && skillId != 2257 && skillId != 490 && skillId != 3009 && !CSkillActionMgr::GetInstance()->ActionSlot05(skillId)) {
-    this->Slot39(attackSpeed);
+    this->SetModifyFactorOfmotionSpeed(attackSpeed);
   }
 
   bool keepMotion;
@@ -5474,7 +5474,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     break;
   }
   if (!keepMotion) {
-    this->Slot15(motion, 1);
+    this->SetState(motion, 1);
   }
 
   if (ShowsCastEffect(skillId) && level != -2) {

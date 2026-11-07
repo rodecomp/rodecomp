@@ -50,7 +50,7 @@ namespace {
 
 // OFFSET: 0x00917640
 // FUNCTION: fn_12589
-void UIShortCutWnd::Slot10(int x, int y, std::intptr_t argument) {
+void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   UIWindow& window = *this;
   ShortcutGrid& grid = this->m_grid;
   const ModeDragState& value = *reinterpret_cast<const ModeDragState*>(argument);
@@ -225,7 +225,7 @@ namespace {
 
 // OFFSET: 0x00917100
 // FUNCTION: fn_12588
-void UIQuickSlotWnd::Slot10(int x, int y, std::intptr_t argument) {
+void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   const ModeDragState& value = *reinterpret_cast<const ModeDragState*>(argument);
   std::list<ShortcutCooldownRecord>& records = g_session.m_requestTimers;
 

@@ -145,7 +145,7 @@ void UIWindowMgr::InvalidateFrames() {
   this->unknown_04FC = 1;
 
   for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-    if ((*it)->Slot03()) {
+    if ((*it)->NeedsFrameRefresh()) {
       (*it)->InvalidateChildren();
     }
   }

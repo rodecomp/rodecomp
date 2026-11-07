@@ -260,7 +260,7 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
     SpriteQuad quad;
     int box[4];
     std::uint32_t quadColor;
-    if (!this->pc->Slot09(
+    if (!this->pc->PrepareSprite(
           layer, this->unknown_0060, this->distanceScale, *resolved.cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw,
           &topRhw, resolved.image, &quad, box, &quadColor, itemOffset.first, itemOffset.second, 0
         )) {
@@ -337,10 +337,10 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
   }
 
   std::string sprName = g_session.GetRobeSprName(
-    this->pc->GetEffectiveJob(-1), this->pc->unknown_04D4, this->pc->unknown_0260, this->pc->unknown_049C, this->pc->unknown_02CC, this->pc->Slot46()
+    this->pc->GetEffectiveJob(-1), this->pc->unknown_04D4, this->pc->unknown_0260, this->pc->unknown_049C, this->pc->unknown_02CC, this->pc->GetBodyCostume()
   );
   std::string actName = g_session.GetRobeActName(
-    this->pc->GetEffectiveJob(-1), this->pc->unknown_04D4, this->pc->unknown_0260, this->pc->unknown_049C, this->pc->unknown_02CC, this->pc->Slot46()
+    this->pc->GetEffectiveJob(-1), this->pc->unknown_04D4, this->pc->unknown_0260, this->pc->unknown_049C, this->pc->unknown_02CC, this->pc->GetBodyCostume()
   );
   if (!ResourceMgr::Instance().Exists(sprName.c_str()) || !ResourceMgr::Instance().Exists(actName.c_str())) {
     return;
@@ -378,7 +378,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
     SpriteQuad quad;
     int box[4];
     std::uint32_t quadColor;
-    this->pc->Slot09(
+    this->pc->PrepareSprite(
       this->unknown_0060, this->unknown_0060, this->distanceScale, cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
       image, &quad, box, &quadColor, 0, 0, !drawOnTop
     );
@@ -489,7 +489,7 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
       if (IsIgnoredRidingState(this->layerViews[layer], this->pc->GetEffectiveJob(-1), this->pc->render.animation, this->pc->unknown_02CC) == true) {
         offsetY = SpriteRidingOffset(
                     bodyFrame, this->pc->render.previousAnimation, this->pc->render.curMotion, this->pc->GetEffectiveJob(-1), this->pc->unknown_0260,
-                    this->pc->Slot46()
+                    this->pc->GetBodyCostume()
                   ) +
                   anchorY;
       } else {
@@ -626,7 +626,7 @@ void SpriteLayerRenderer::DrawLayer(
     SpriteQuad quad;
     int box[4];
     std::uint32_t quadColor;
-    if (!this->pc->Slot09(
+    if (!this->pc->PrepareSprite(
           index, this->unknown_0060, this->distanceScale, *resolved.cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
           resolved.image, &quad, box, &quadColor, offsetX, offsetY, 0
         )) {

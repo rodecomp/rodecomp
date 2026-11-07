@@ -22,7 +22,7 @@ public:
   void SelectPreviousStyle(const char* table, int* goods);
   std::string GetStyleTable(const int& type);
   void CreateButtons();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -61,7 +61,7 @@ public:
   bool SendStyleChange();
   void DrawPaymentItem(const int& type, const int& zeny, const int& itemId, bool enabled, const int& row);
   void DrawPayments();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -98,7 +98,7 @@ public:
   /* 0085 */ bool unknown_0085;
   /* 0086 */ bool unknown_0086;
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -106,7 +106,7 @@ public:
 class UICostumeChangeWnd : public UIStylingshopTabParentWnd {
 public:
   UICostumeChangeWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -123,8 +123,8 @@ public:
   /* 00B8 */ UIDisplayCharacter* m_preview;
   /* 00BC */ std::map<UIWindow*, UIStylingshopTabParentWnd*> m_tabs;
 
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
   void AddTab(const char* normal, const char* hover, const char* pressed, const int& id, UIStylingshopTabParentWnd* tab, const char* tooltip);
   void RefreshFavoriteButton();
@@ -140,7 +140,7 @@ class UI2ndCostumeWnd : public UIStylingshopTabParentWnd {
 
 public:
   UI2ndCostumeWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -154,7 +154,7 @@ public:
   // INLINED
   explicit UIAccessoryCusWnd() : UIStylingshopTabParentWnd() {
   }
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -179,7 +179,7 @@ public:
 class UIBasicStylingWnd : public UIStylingshopTabParentWnd {
 public:
   UIBasicStylingWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -194,7 +194,7 @@ public:
   UIMyStyleWnd();
   void LoadLikeList();
   void SaveLikeList();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -208,7 +208,7 @@ public:
 class UISlotOfMyStyleWnd : public UIStylingshopTabParentWnd {
 public:
   UISlotOfMyStyleWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -218,8 +218,8 @@ public:
   // INLINED
   explicit UISlotForSelectWnd() : UIWindow(0) {
   }
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
 };
 
 class UI2ndCostumeCheckBox : public UICheckBox {
@@ -227,7 +227,7 @@ public:
   // INLINED
   UI2ndCostumeCheckBox() : UICheckBox() {
   }
-  void Slot25(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
 };
 
 class UIStylingShopButton : public UIBitmapButton {
@@ -243,9 +243,9 @@ public:
   int Argument() const {
     return this->m_argument;
   }
-  void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot31(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
 };
 
 class UIAccBitmapButton : public UIBitmapButton {
@@ -261,7 +261,7 @@ public:
   int Argument() const {
     return this->m_argument;
   }
-  void Slot33(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
 
   /* 0120 */ int m_slot;
   /* 0124 */ int m_itemId;

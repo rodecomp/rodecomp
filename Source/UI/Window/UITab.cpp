@@ -28,7 +28,7 @@ void UITab::Paint() {
 
 // OFFSET: 0x0085EE70
 // FUNCTION: fn_10851
-void UITab::Slot25(int, int y) {
+void UITab::OnLBtnDown(int, int y) {
   if (!this->parent) {
     return;
   }

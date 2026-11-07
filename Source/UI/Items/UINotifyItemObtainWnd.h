@@ -15,8 +15,8 @@ public:
   /* 00E4 */ std::uint32_t m_shownTick;
 
   bool CanHitTest() override;
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 

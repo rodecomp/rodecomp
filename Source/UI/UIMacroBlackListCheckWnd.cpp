@@ -43,7 +43,7 @@ UIMacroBlackListCheckWnd::UIMacroBlackListCheckWnd()
 
 // OFFSET: 0x007EB230
 // FUNCTION: fn_09794
-void UIMacroBlackListCheckWnd::Slot15(int width, int height) {
+void UIMacroBlackListCheckWnd::OnCreate(int width, int height) {
   for (int i = 0; i < 10; ++i) {
     this->digits[i] = static_cast<char>(i);
   }
@@ -147,22 +147,22 @@ void UIMacroBlackListCheckWnd::Paint() {
 
 // OFFSET: 0x007EC770
 // FUNCTION: fn_09796
-void UIMacroBlackListCheckWnd::Slot25(int, int) {
+void UIMacroBlackListCheckWnd::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x007EC780
 // FUNCTION: fn_09797
-void UIMacroBlackListCheckWnd::Slot31(int, int) {
+void UIMacroBlackListCheckWnd::OnLBtnUp(int, int) {
 }
 
 // OFFSET: 0x007EC790
 // FUNCTION: fn_09798
-void UIMacroBlackListCheckWnd::Slot27(int, int) {
+void UIMacroBlackListCheckWnd::OnMouseMove(int, int) {
 }
 
 // OFFSET: 0x007EC7A0
 // FUNCTION: fn_09799
-void UIMacroBlackListCheckWnd::Slot19() {
+void UIMacroBlackListCheckWnd::OnProcess() {
   this->Invalidate();
 }
 

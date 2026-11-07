@@ -8,7 +8,7 @@
 
 // OFFSET: 0x0094C2D0
 // FUNCTION: fn_12895
-void UINoteWnd::Slot15(int width, int height) {
+void UINoteWnd::OnCreate(int width, int height) {
   UIBasicButton* button = new UIBasicButton();
   button->Configure(60, LookupMessage(0xBE5));
   button->Move(width - 68, height - 26);
@@ -37,23 +37,23 @@ void UINoteWnd_Scroll::Paint() {
 
 // OFFSET: 0x0094EE80
 // FUNCTION: fn_12919
-void UINoteWnd_Scroll::Slot25(int x, int y) {
+void UINoteWnd_Scroll::OnLBtnDown(int x, int y) {
   if (this->parent) {
-    this->parent->Slot25(x + 23, y + 27);
+    this->parent->OnLBtnDown(x + 23, y + 27);
   }
 }
 
 // OFFSET: 0x0094EF80
 // FUNCTION: fn_12924
-void UINoteWnd_Scroll::Slot31(int x, int y) {
+void UINoteWnd_Scroll::OnLBtnUp(int x, int y) {
   if (this->parent) {
-    this->parent->Slot31(x + 23, y + 27);
+    this->parent->OnLBtnUp(x + 23, y + 27);
   }
 }
 
 // OFFSET: 0x0094F2C0
 // FUNCTION: fn_12935
-void UINoteWnd_Scroll::Slot35(int delta) {
+void UINoteWnd_Scroll::OnWheel(int delta) {
   if (this->wheelScroll == 1) {
     if (delta < 0) {
       this->SendMsg(this->scrollBar, 7, 12, 0, 0, 0);

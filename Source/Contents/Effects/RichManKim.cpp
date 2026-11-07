@@ -18,7 +18,7 @@ void CRichManKim::Close() {
 
 // OFFSET: 0x0070B1A0
 // FUNCTION: fn_07115
-void CRichManKim::Slot01() {
+void CRichManKim::Open() {
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
   if (!particle) {
     return;
@@ -43,13 +43,13 @@ void CRichManKim::Slot01() {
 
 // OFFSET: 0x0070B370
 // FUNCTION: fn_07116
-bool CRichManKim::Slot06() {
+bool CRichManKim::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x0070B380
 // FUNCTION: fn_07117
-void CRichManKim::Slot03() {
+void CRichManKim::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -92,7 +92,7 @@ void CRichManKim::Slot03() {
 
 // OFFSET: 0x0070B780
 // FUNCTION: fn_07118
-void CRichManKim::Slot04() {
+void CRichManKim::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);

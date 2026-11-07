@@ -23,19 +23,19 @@ public:
   using UIBitmapButton::UIBitmapButton;
   UIHairBitmap();
 
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot29(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnMouseCheck(int x, int y) override;
   void ResetCursor(int x, int y) override;
-  void Slot31(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
 };
 
 class UIHairStyleButton : public UIBitmapButton {
 public:
   UIHairStyleButton(int style, int sex);
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
@@ -68,9 +68,9 @@ static_assert(sizeof(MakeCharacterStatus) == 0x50);
 class UINewMakeCharWnd : public UIFrameWnd {
 public:
   UINewMakeCharWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot19() override;
+  void OnProcess() override;
   void UpdatePreviewResources();
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 

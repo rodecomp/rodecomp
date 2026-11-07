@@ -17,19 +17,19 @@ public:
   UIItemWnd();
   __declspec(noinline) ~UIItemWnd() override;
   // INLINED
-  bool Slot03() override {
+  bool NeedsFrameRefresh() override {
     return true;
   }
-  void Slot11() override;
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot18() override;
-  void Slot19() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void StoreInfo() override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnDestroy() override;
+  void OnProcess() override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   void Paint() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   ITEM_INFO GetItemAt(int x, int y);

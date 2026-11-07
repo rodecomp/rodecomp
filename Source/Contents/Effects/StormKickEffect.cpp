@@ -183,7 +183,7 @@ void CStormKickEffect::Close() {
 
 // OFFSET: 0x00B7BC90
 // FUNCTION: fn_19222
-void CStormKickEffect::Slot01() {
+void CStormKickEffect::Open() {
   g_modeMgr.GetGameMode();
 
   switch (this->id) {
@@ -227,7 +227,7 @@ void CStormKickEffect::Slot01() {
 
 // OFFSET: 0x00B7BDD0
 // FUNCTION: fn_19223
-void CStormKickEffect::Slot12() {
+void CStormKickEffect::InitEvents() {
   switch (this->id) {
   case 435:
     this->AddEvent(0, "effect\\T_회오리차기.wav", 5, 0);
@@ -243,13 +243,13 @@ void CStormKickEffect::Slot12() {
 
 // OFFSET: 0x00B7BF60
 // FUNCTION: fn_19224
-bool CStormKickEffect::Slot06() {
+bool CStormKickEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B7BF70
 // FUNCTION: fn_19225
-void CStormKickEffect::Slot03() {
+void CStormKickEffect::OnProcess() {
   for (auto it = this->storms.begin(); it != this->storms.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -376,7 +376,7 @@ void CStormKickEffect::Slot03() {
 
 // OFFSET: 0x00B7C7D0
 // FUNCTION: fn_19226
-void CStormKickEffect::Slot04() {
+void CStormKickEffect::Render() {
   for (auto it = this->storms.begin(); it != this->storms.end(); ++it) {
     CParticle* particle = *it;
     const int alpha = particle->alpha;

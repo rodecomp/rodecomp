@@ -59,9 +59,9 @@ struct GuildPositionEntry {
 class UIGuildWnd : public UIFrameWnd {
 public:
   UIGuildWnd();
-  void Slot11() override;
+  void StoreInfo() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   virtual int Tab() = 0;
 
@@ -77,10 +77,10 @@ class UIGuildBanishedMemberWnd : public UIGuildWnd {
 public:
   UIGuildBanishedMemberWnd();
   int Tab() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void UpdateScroll();
 
@@ -99,12 +99,12 @@ class UIGuildInfoManageWnd : public UIGuildWnd {
 public:
   UIGuildInfoManageWnd();
   int Tab() override;
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot33(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
@@ -128,13 +128,13 @@ class UIGuildMemberManageWnd : public UIGuildWnd {
 public:
   UIGuildMemberManageWnd();
   int Tab() override;
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot33(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void UpdateScroll();
 
@@ -170,9 +170,9 @@ public:
   int Tab() override {
     return 5;
   }
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
@@ -188,13 +188,13 @@ public:
   int Tab() override {
     return 2;
   }
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   void Invalidate() override;
-  void Slot35(int delta) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void UpdateScroll();
 
@@ -225,12 +225,12 @@ class UIGuildSkillWnd : public UIGuildWnd {
 public:
   UIGuildSkillWnd();
   int Tab() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot33(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void UpdateScroll();
 
@@ -259,10 +259,10 @@ class UIGuildTotalInfoWnd : public UIGuildWnd {
 public:
   UIGuildTotalInfoWnd();
   int Tab() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void UpdateScroll();
 

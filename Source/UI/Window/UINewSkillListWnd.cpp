@@ -100,7 +100,7 @@ static int SkillTabOf(int skillId) {
 
 // OFFSET: 0x009B3E70
 // FUNCTION: fn_13826
-void UINewSkillListWnd::Slot11() {
+void UINewSkillListWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->x = this->geometry.x;
     this->m_saved->y = this->geometry.y;
@@ -111,10 +111,10 @@ void UINewSkillListWnd::Slot11() {
 
 // OFFSET: 0x009B2C60
 // FUNCTION: fn_13821
-void UINewSkillListWnd::Slot35(int delta) {
+void UINewSkillListWnd::OnWheel(int delta) {
   UIWindow* window = g_windowMgr.LookupWindow(46);
   if (window && window->geometry.visible) {
-    static_cast<UINewSkillListWnd*>(window)->m_scrollBar->Slot35(delta);
+    static_cast<UINewSkillListWnd*>(window)->m_scrollBar->OnWheel(delta);
     return;
   }
 
@@ -778,7 +778,7 @@ bool UINewSkillListWnd::IsSkillArea(int x, int y) {
 
 // OFFSET: 0x009B1050
 // FUNCTION: fn_13814
-void UINewSkillListWnd::Slot15(int width, int height) {
+void UINewSkillListWnd::OnCreate(int width, int height) {
   this->m_tabs = new UITabControl();
   this->m_tabs->Configure(0, 17, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->m_tabs->Move(0, 6);
@@ -949,13 +949,13 @@ void UINewSkillListWnd::Paint() {
 
 // OFFSET: 0x009B2590
 // FUNCTION: fn_13816
-void UINewSkillListWnd::Slot26(int x, int y) {
+void UINewSkillListWnd::OnLBtnDblClk(int x, int y) {
   if (g_session.GetOption(5) > 0) {
     return;
   }
 
   if (y < this->m_topMargin) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 
@@ -977,9 +977,9 @@ void UINewSkillListWnd::Slot26(int x, int y) {
 
 // OFFSET: 0x009B26D0
 // FUNCTION: fn_13817
-void UINewSkillListWnd::Slot25(int x, int y) {
+void UINewSkillListWnd::OnLBtnDown(int x, int y) {
   if (y < this->m_topMargin) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 
@@ -1011,10 +1011,10 @@ void UINewSkillListWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x009B2810
 // FUNCTION: fn_13818
-void UINewSkillListWnd::Slot31(int x, int y) {
+void UINewSkillListWnd::OnLBtnUp(int x, int y) {
   if (y < this->m_topMargin) {
-    UIFrameWnd::Slot31(x, y);
-    this->Slot11();
+    UIFrameWnd::OnLBtnUp(x, y);
+    this->StoreInfo();
     return;
   }
 
@@ -1034,7 +1034,7 @@ void UINewSkillListWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x009B28F0
 // FUNCTION: fn_13819
-void UINewSkillListWnd::Slot28(int x, int y) {
+void UINewSkillListWnd::OnMouseHover(int x, int y) {
   const int gate = g_session.m_simplifiedSkillList;
   if (!this->IsSkillArea(x, y) || (gate != 0 && x > 96)) {
     return;
@@ -1064,7 +1064,7 @@ void UINewSkillListWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x009B29E0
 // FUNCTION: fn_13820
-void UINewSkillListWnd::Slot33(int x, int y) {
+void UINewSkillListWnd::OnRBtnUp(int x, int y) {
   this->m_selectedSkill = this->SkillIndexAt(x, y);
   if (this->m_selectedSkill == -1) {
     this->m_showDetail = false;
@@ -1354,7 +1354,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->SendMsg(nullptr, 23, 0, 0, 0, 0);
       return 0;
     case 202:
-      this->Slot11();
+      this->StoreInfo();
       this->m_needsRedraw = 1;
       gate = gate == 0;
       if (gate != 0) {

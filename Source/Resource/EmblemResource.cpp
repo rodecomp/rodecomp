@@ -52,8 +52,8 @@ void CEmblemRes::Unload() {
 
 // OFFSET: 0x0074CD10
 // FUNCTION: fn_07883
-void CEmblemRes::Slot02() {
-  this->gif.Slot02();
+void CEmblemRes::OnProcess() {
+  this->gif.OnProcess();
 }
 
 // OFFSET: 0x0074CD20

@@ -25,7 +25,7 @@ void UIMiniBtnWnd::Paint() {
 
 // OFFSET: 0x00930CD0
 // FUNCTION: fn_12694
-void UIMiniBtnWnd::Slot25(int, int) {
+void UIMiniBtnWnd::OnLBtnDown(int, int) {
   bool visible;
   UIWindow* window = g_windowMgr.LookupWindow(this->m_windowId);
   if (window) {

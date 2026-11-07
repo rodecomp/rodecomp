@@ -21,7 +21,7 @@ void CStormGustEffect::Close() {
 
 // OFFSET: 0x00B7AA60
 // FUNCTION: fn_19212
-void CStormGustEffect::Slot01() {
+void CStormGustEffect::Open() {
   if (g_serviceOptions.Get(229)) {
     return;
   }
@@ -61,13 +61,13 @@ void CStormGustEffect::Slot01() {
 
 // OFFSET: 0x00B7ADA0
 // FUNCTION: fn_19213
-bool CStormGustEffect::Slot06() {
+bool CStormGustEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B7ADB0
 // FUNCTION: fn_19214
-void CStormGustEffect::Slot03() {
+void CStormGustEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -117,7 +117,7 @@ void CStormGustEffect::Slot03() {
 
 // OFFSET: 0x00B7B240
 // FUNCTION: fn_19215
-void CStormGustEffect::Slot04() {
+void CStormGustEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

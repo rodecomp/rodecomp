@@ -82,8 +82,8 @@ public:
 class CUIGroupEmblem : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupEmblem();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Apply() override;
   void Refresh() override;
   __declspec(noinline) void SetEnabled(bool enabled);
@@ -98,8 +98,8 @@ public:
 class CUIGroupFullscreen : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupFullscreen();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Refresh() override;
 
   /* 0084 */ CUIRadioButton* m_onButton;
@@ -111,8 +111,8 @@ public:
 class CUIGroupGraphics : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupGraphics();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Refresh() override;
   int GetPendingBackend();
   void LoadAdapters();
@@ -132,8 +132,8 @@ public:
 class CUIGroupGraphicsAPI : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupGraphicsAPI();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Apply() override;
   void Refresh() override;
   void LoadBackends();
@@ -147,8 +147,8 @@ public:
 class CUIGroupLogInOut : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupLogInOut();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Apply() override;
   void Refresh() override;
   __declspec(noinline) void SetEnabled(bool enabled);
@@ -163,8 +163,8 @@ public:
 class CUIGroupProcessPriority : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupProcessPriority();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Refresh() override;
   void OnSelect(CUIRadioButton* button);
 
@@ -179,8 +179,8 @@ public:
 class CUIGroupRodexSpam : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupRodexSpam();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Apply() override;
   void Refresh() override;
   void OnSelect(CUIRadioButton* button);
@@ -194,8 +194,8 @@ public:
 class CUIGroupSkin : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupSkin();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Apply() override;
   void Refresh() override;
   void OnSelect(CUIComboItem* item, const std::string& name);
@@ -206,8 +206,8 @@ public:
 class CUIGroupSound : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupSound();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Apply() override;
   void Paint() override;
   void Refresh() override;
@@ -232,8 +232,8 @@ public:
 class CUIGroupSpriteDetailLevel : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupSpriteDetailLevel();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
   void Refresh() override;
 
@@ -243,8 +243,8 @@ public:
 class CUIGroupTextureDetailLevel : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupTextureDetailLevel();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
   void Refresh() override;
 
@@ -254,8 +254,8 @@ public:
 class CUIGroupTrilinear : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupTrilinear();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Refresh() override;
 
   /* 0084 */ CUIRadioButton* m_onButton;
@@ -270,7 +270,7 @@ public:
   explicit CUIPage() : CUIControl() {
   }
 
-  void Slot16() override;
+  void OnInit() override;
   void Paint() override;
   virtual void Apply();
   virtual void Refresh();
@@ -279,7 +279,7 @@ public:
 class CUIBasicPage : public CUIPage {
 public:
   __declspec(noinline) CUIBasicPage();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
 
   /* 0080 */ CUIGroupSkin* m_skin;
   /* 0084 */ CUIGroupSound* m_sound;
@@ -292,7 +292,7 @@ public:
 class CUIGraphicsPage : public CUIPage {
 public:
   __declspec(noinline) CUIGraphicsPage();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   __declspec(noinline) bool IsModified();
   void ApplySettings();
   int GetPendingBackend();
@@ -309,10 +309,10 @@ public:
 class CUIListPage : public CUIControl {
 public:
   __declspec(noinline) CUIListPage();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
-  virtual void Slot54(CUIOptionItem* item, const TALKTYPE& type);
+  virtual void OnSelectOption(CUIOptionItem* item, const TALKTYPE& type);
   bool SetOptionChecked(int id);
   void BindOption(CUIOptionItem* item, const TALKTYPE& id);
   void LoadOptions(int tab);
@@ -326,8 +326,8 @@ public:
 class CUIComboItem : public CUIListItem {
 public:
   CUIComboItem();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
 
   /* 00E8 */ CUIStaticText* m_text;
 };
@@ -335,8 +335,8 @@ public:
 class CUIOptionItem : public CUIListItem {
 public:
   CUIOptionItem();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
   void RunFunction();
   void OnCheck(bool checked);
@@ -355,10 +355,10 @@ class CUIGameSettingsUI : public CUIFrameWnd {
 public:
   __declspec(noinline) CUIGameSettingsUI();
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
-  void Slot25(int x, int y) override;
-  void Slot53() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
+  void OnLBtnDown(int x, int y) override;
+  void Initialize() override;
 
   void OnApply();
   void OnCloseButton();

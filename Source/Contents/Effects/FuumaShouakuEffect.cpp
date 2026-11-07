@@ -33,7 +33,7 @@ void CFuumaShouakuEffect::Close() {
 
 // OFFSET: 0x00702A60
 // FUNCTION: fn_07010
-void CFuumaShouakuEffect::Slot01() {
+void CFuumaShouakuEffect::Open() {
   this->retained = 1;
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   this->first = particle;
@@ -61,13 +61,13 @@ void CFuumaShouakuEffect::Slot01() {
 
 // OFFSET: 0x00702CC0
 // FUNCTION: fn_07011
-bool CFuumaShouakuEffect::Slot06() {
+bool CFuumaShouakuEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00702CD0
 // FUNCTION: fn_07012
-void CFuumaShouakuEffect::Slot03() {
+void CFuumaShouakuEffect::OnProcess() {
   if (this->frame < this->unknown_00E0) {
     if (this->first) {
       this->first->position.x += this->unknown_00D4;
@@ -101,7 +101,7 @@ void CFuumaShouakuEffect::Slot03() {
 
 // OFFSET: 0x00702F30
 // FUNCTION: fn_07013
-void CFuumaShouakuEffect::Slot04() {
+void CFuumaShouakuEffect::Render() {
   if (this->first) {
     this->first->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }

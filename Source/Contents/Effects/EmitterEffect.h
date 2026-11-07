@@ -14,13 +14,13 @@ class CParticle;
 class CEmitterEffect : public CEffect {
 public:
   CEmitterEffect();
-  void Slot01() override;
-  void Slot02() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void CheckRange() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
-  void Slot07() override;
+  bool IsAlive() override;
+  void ResetParticles() override;
   ~CEmitterEffect() override;
   virtual void InitParticle(CParticle* particle);
   virtual void UpdateParticle(CParticle* particle);

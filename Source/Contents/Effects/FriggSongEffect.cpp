@@ -26,7 +26,7 @@ void CFriggSongEffect::Close() {
 
 // OFFSET: 0x00701F20
 // FUNCTION: fn_07002
-void CFriggSongEffect::Slot01() {
+void CFriggSongEffect::Open() {
   for (int segment = 0; segment <= 21; ++segment) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
     if (!particle) {
@@ -87,19 +87,19 @@ void CFriggSongEffect::Slot01() {
 
 // OFFSET: 0x007021A0
 // FUNCTION: fn_07003
-void CFriggSongEffect::Slot12() {
+void CFriggSongEffect::InitEvents() {
   this->AddEvent(0, "effect\\wm_frigg_song.wav", 0, 0);
 }
 
 // OFFSET: 0x007023D0
 // FUNCTION: fn_07004
-bool CFriggSongEffect::Slot06() {
+bool CFriggSongEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x007023E0
 // FUNCTION: fn_07005
-void CFriggSongEffect::Slot03() {
+void CFriggSongEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -135,7 +135,7 @@ void CFriggSongEffect::Slot03() {
 
 // OFFSET: 0x007027A0
 // FUNCTION: fn_07006
-void CFriggSongEffect::Slot04() {
+void CFriggSongEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle) {

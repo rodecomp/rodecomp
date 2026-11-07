@@ -11,7 +11,7 @@
 
 // OFFSET: 0x0085B000
 // FUNCTION: fn_10791
-void UIWordDisplayWnd::Slot15(int, int) {
+void UIWordDisplayWnd::OnCreate(int, int) {
 }
 
 // OFFSET: 0x0085E370
@@ -22,7 +22,7 @@ void UIWordDisplayWnd::Paint() {
 
 // OFFSET: 0x0085FD30
 // FUNCTION: fn_10885
-void UIWordDisplayWnd::Slot19() {
+void UIWordDisplayWnd::OnProcess() {
   CRenderObject* actor = g_session.FindGameActor(this->aid);
   if (this->aid == g_session.m_aid) {
     actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;

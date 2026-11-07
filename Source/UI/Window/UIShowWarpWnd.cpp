@@ -11,7 +11,7 @@
 
 // OFFSET: 0x0094CA20
 // FUNCTION: fn_12899
-void UIShowWarpWnd::Slot15(int width, int height) {
+void UIShowWarpWnd::OnCreate(int width, int height) {
   auto* list = new UIListBox();
   this->m_list = list;
   width -= 0x18;

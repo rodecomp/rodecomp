@@ -110,19 +110,19 @@ void CAstralStrikeEffect::Close() {
 
 // OFFSET: 0x006F54A0
 // FUNCTION: fn_06833
-void CAstralStrikeEffect::Slot01() {
+void CAstralStrikeEffect::Open() {
   this->Init();
 }
 
 // OFFSET: 0x006F54B0
 // FUNCTION: fn_06834
-bool CAstralStrikeEffect::Slot06() {
+bool CAstralStrikeEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x006F54C0
 // FUNCTION: fn_06835
-void CAstralStrikeEffect::Slot03() {
+void CAstralStrikeEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     if (IsParticleActive(*it) == true) {
       if (*it) {
@@ -157,7 +157,7 @@ void CAstralStrikeEffect::Slot03() {
 
 // OFFSET: 0x006F5760
 // FUNCTION: fn_06836
-void CAstralStrikeEffect::Slot04() {
+void CAstralStrikeEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
       (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);

@@ -11,11 +11,11 @@ class CEZ2STRParticle;
 class CShadowExceed : public CEffect {
 public:
   CShadowExceed();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   /* 00CC */ std::vector<CEZ2STRParticle*> emitters;
   /* 00D8 */ unsigned char unknown_00D8;

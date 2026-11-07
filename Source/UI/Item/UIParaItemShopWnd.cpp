@@ -94,9 +94,9 @@ void UIParaResultWnd::AddItem(const ITEM_INFO& item) {
 
 // OFFSET: 0x009A81F0
 // FUNCTION: fn_13747
-void UIParaItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIParaItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   if (g_windowMgr.LookupWindow(10011)) {
-    UIWindow::Slot10(x, y, value);
+    UIWindow::DragAndDrop(x, y, value);
     return;
   }
 
@@ -127,9 +127,9 @@ void UIParaItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x009A82E0
 // FUNCTION: fn_13748
-void UIParaItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIParaItemShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   if (g_windowMgr.LookupWindow(10011)) {
-    UIWindow::Slot10(x, y, value);
+    UIWindow::DragAndDrop(x, y, value);
     return;
   }
 
@@ -150,14 +150,14 @@ void UIParaItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x009A83B0
 // FUNCTION: fn_13749
-void UIParaResultWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIParaResultWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 }
 
 // OFFSET: 0x009A96C0
 // FUNCTION: fn_13754
-void UIParaResultWnd::Slot25(int x, int y) {
+void UIParaResultWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 
   int previousHovered = this->unknown_00F8;
@@ -169,7 +169,7 @@ void UIParaResultWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x009A9710
 // FUNCTION: fn_13755
-void UIParaResultWnd::Slot28(int x, int y) {
+void UIParaResultWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
   if (item.unknown_0000[1] != 0) {
     int tooltipX = (x - 40) / 32 * 32 + 40;
@@ -193,7 +193,7 @@ void UIParaResultWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x009A99C0
 // FUNCTION: fn_13756
-void UIParaResultWnd::Slot32(int x, int y) {
+void UIParaResultWnd::OnRBtnDown(int x, int y) {
   const int previousHovered = this->unknown_00F8;
   this->unknown_00F8 = this->GetItemIndexAt(x, y);
   if (previousHovered != this->unknown_00F8) {
@@ -215,7 +215,7 @@ void __stdcall Nullsub344(int, int) {
 
 // OFFSET: 0x009A83C0
 // FUNCTION: fn_13750
-void UIParaResultWnd::Slot15(int width, int height) {
+void UIParaResultWnd::OnCreate(int width, int height) {
   this->total = new UIStaticText();
   this->total->SetSize(160, 15);
   this->total->Move(12, this->geometry.height - 21);

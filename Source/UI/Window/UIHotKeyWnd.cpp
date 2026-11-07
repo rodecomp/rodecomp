@@ -73,7 +73,7 @@ namespace {
 
 // OFFSET: 0x0091FFD0
 // FUNCTION: fn_12639
-void UIHotKeyWnd::Slot15(int, int) {
+void UIHotKeyWnd::OnCreate(int, int) {
   g_session.m_automaticSkills.DisableAll();
   this->AddBaseButton();
   this->AddCloseButton("", 0);
@@ -158,7 +158,7 @@ void UIHotKeyWnd::Slot15(int, int) {
 
 // OFFSET: 0x00932F70
 // FUNCTION: fn_12721
-void UIHotKeyWnd::Slot32(int, int) {
+void UIHotKeyWnd::OnRBtnDown(int, int) {
 }
 
 // OFFSET: 0x00933B30
@@ -244,9 +244,9 @@ int UIHotKeyWnd::RowFromPoint(int x, int y) {
 
 // OFFSET: 0x00930B80
 // FUNCTION: fn_12693
-void UIHotKeyWnd::Slot25(int x, int y) {
+void UIHotKeyWnd::OnLBtnDown(int x, int y) {
   if (y < this->unknown_00BC) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 
   const int previous = this->m_selectedRow;
@@ -304,7 +304,7 @@ UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve
 
 // OFFSET: 0x009317E0
 // FUNCTION: fn_12708
-void UIHotKeyWnd::Slot28(int x, int y) {
+void UIHotKeyWnd::OnMouseHover(int x, int y) {
   const int index = this->RowFromPoint(x, y);
   if (index <= -1) {
     return;
@@ -326,7 +326,7 @@ void UIHotKeyWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x00931C80
 // FUNCTION: fn_12710
-void UISerachStoreInfoWnd::Slot28(int x, int y) {
+void UISerachStoreInfoWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.itemId.size() == 0) {
     return;

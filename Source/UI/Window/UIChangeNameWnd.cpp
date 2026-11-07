@@ -47,7 +47,7 @@ void UIChangeNameWnd::Paint() {
 
 // OFFSET: 0x0091EDA0
 // FUNCTION: fn_12637
-void UIChangeNameWnd::Slot15(int, int) {
+void UIChangeNameWnd::OnCreate(int, int) {
   {
     const std::string prefix("유저인터페이스\\");
     this->m_okButton = new UIBitmapButton();

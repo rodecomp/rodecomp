@@ -11,7 +11,7 @@ class UINameBalloonText : public UIBalloonText {
 public:
   __declspec(noinline) UINameBalloonText();
   ~UINameBalloonText() override;
-  void Slot19() override;
+  void OnProcess() override;
   void Paint() override;
   virtual void SetIcon(const char* name, unsigned char framed);
   virtual void SetName(const CActorNameCard& card, bool stripHash, unsigned char monsterType);

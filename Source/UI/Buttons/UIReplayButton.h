@@ -7,7 +7,7 @@ class UIReplayButton : public UIBitmapButton {
 public:
   UIReplayButton();
 
-  void Slot31(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
 };
 
 #endif

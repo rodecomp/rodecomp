@@ -40,13 +40,13 @@ UIVideoSkipButton::UIVideoSkipButton() : UIButton() {
 
 // OFFSET: 0x00AB4380
 // FUNCTION: fn_17440
-bool UIVideoWnd::Slot02() {
+bool UIVideoWnd::IsFrameWnd() {
   return true;
 }
 
 // OFFSET: 0x00AB4390
 // FUNCTION: fn_17441
-void UIVideoWnd::Slot15(int width, int height) {
+void UIVideoWnd::OnCreate(int width, int height) {
   UIVideoSkipButton* button = new UIVideoSkipButton();
   button->SetSize(127, 43);
   button->Move(width - button->geometry.width - 33, height - button->geometry.height - 110);
@@ -85,7 +85,7 @@ void UIVideoWnd::Paint() {
 
 // OFFSET: 0x00AB4680
 // FUNCTION: fn_17444
-void UIVideoWnd::Slot19() {
+void UIVideoWnd::OnProcess() {
   if (this->m_movie->Update() == true && this->m_movie->CopyTo(this->m_texture) == true) {
     this->Invalidate();
   }

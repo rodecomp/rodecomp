@@ -76,20 +76,20 @@ unsigned char CTetraBallEffect::ActiveCount() {
 
 // OFFSET: 0x0072EAE0
 // FUNCTION: fn_07515
-void CTetraBallEffect::Slot01() {
+void CTetraBallEffect::Open() {
   this->retained = 1;
   this->AddBall(this->id, 0);
 }
 
 // OFFSET: 0x0072EB00
 // FUNCTION: fn_07516
-bool CTetraBallEffect::Slot06() {
+bool CTetraBallEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x0072EB10
 // FUNCTION: fn_07517
-void CTetraBallEffect::Slot03() {
+void CTetraBallEffect::OnProcess() {
   for (int index = 0; index < 5; ++index) {
     CEZ2STRParticle* ball = this->balls[index];
     if (ball) {
@@ -104,7 +104,7 @@ void CTetraBallEffect::Slot03() {
 
 // OFFSET: 0x0072EBD0
 // FUNCTION: fn_07518
-void CTetraBallEffect::Slot04() {
+void CTetraBallEffect::Render() {
   for (int index = 0; index < 5; ++index) {
     if (this->balls[index]) {
       this->balls[index]->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);

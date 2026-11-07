@@ -63,7 +63,7 @@ HotkeyGuideLabel& HotkeyGuideLabel::operator=(const HotkeyGuideLabel& other) {
 
 // OFFSET: 0x00966C70
 // FUNCTION: fn_13164
-void UIHotkeyGuideWnd::Slot15(int, int) {
+void UIHotkeyGuideWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
@@ -254,7 +254,7 @@ void UIHotkeyGuideWnd::Paint() {
 
 // OFFSET: 0x0096C140
 // FUNCTION: fn_13166
-void UIHotkeyGuideWnd::Slot19() {
+void UIHotkeyGuideWnd::OnProcess() {
   auto tab = this->m_tabs.begin();
   for (; tab != this->m_tabs.end(); ++tab) {
     if ((*tab)->geometry.unknown_0030 == 2) {

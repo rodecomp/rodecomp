@@ -647,8 +647,8 @@ void CUIRenewQuestUI::Paint() {
 
 // OFFSET: 0x00A66F40
 // FUNCTION: fn_16625
-void RenewQuestUI::CUIQuestItem::Slot25(int x, int y) {
-  CUIListItem::Slot25(x, y);
+void RenewQuestUI::CUIQuestItem::OnLBtnDown(int x, int y) {
+  CUIListItem::OnLBtnDown(x, y);
   this->pressed = 1;
   UIWindow::Move(this->baseX, this->baseY + 1);
   this->Invalidate();
@@ -656,8 +656,8 @@ void RenewQuestUI::CUIQuestItem::Slot25(int x, int y) {
 
 // OFFSET: 0x00A66F80
 // FUNCTION: fn_16626
-void RenewQuestUI::CUIQuestItem::Slot31(int x, int y) {
-  CUIListItem::Slot31(x, y);
+void RenewQuestUI::CUIQuestItem::OnLBtnUp(int x, int y) {
+  CUIListItem::OnLBtnUp(x, y);
   this->pressed = 0;
   UIWindow::Move(this->baseX, this->baseY);
   this->Invalidate();
@@ -665,7 +665,7 @@ void RenewQuestUI::CUIQuestItem::Slot31(int x, int y) {
 
 // OFFSET: 0x00A66FC0
 // FUNCTION: fn_16627
-void RenewQuestUI::CUIQuestItem::Slot48() {
+void RenewQuestUI::CUIQuestItem::OnMouseLeave() {
   this->pressed = 0;
   UIWindow::Move(this->baseX, this->baseY);
   this->Invalidate();
@@ -890,7 +890,7 @@ void RenewQuestUI::CUIQuestItem::OnSimpleView(bool simpleView) {
 
 // OFFSET: 0x00A66C70
 // FUNCTION: fn_16622
-void RenewQuestUI::CUIQuestItem::Slot16() {
+void RenewQuestUI::CUIQuestItem::OnInit() {
   CUIButton* button = this->unknown_00F4;
   std::string tooltip = LookupMessage(3409);
   button->tooltip = tooltip;
@@ -898,21 +898,21 @@ void RenewQuestUI::CUIQuestItem::Slot16() {
 
 // OFFSET: 0x00A66D90
 // FUNCTION: fn_16623
-void RenewQuestUI::CUIQuestList::Slot16() {
+void RenewQuestUI::CUIQuestList::OnInit() {
   this->list->unknown_00E0 = 0;
 }
 
 // OFFSET: 0x00A5C200
 // FUNCTION: fn_16432
-void CUIRenewQuestUI::Slot53() {
+void CUIRenewQuestUI::Initialize() {
   this->unknown_00B4 = 1;
   this->m_resolveSkin = true;
   this->Resize(381, 466);
   this->Move(
     g_renderer->viewport.centerX - this->geometry.width / 2, g_renderer->viewport.centerY - this->geometry.height / 2
   );
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
 }
 
 // OFFSET: 0x00A67E10
@@ -1097,7 +1097,7 @@ int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 // OFFSET: 0x00A5C380
 // FUNCTION: fn_16433
 template <>
-void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Slot15(int width, int height) {
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -1315,7 +1315,7 @@ static bool s_registered = [] {
 
 // OFFSET: 0x00A5C590
 // FUNCTION: fn_16434
-void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
+void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
   this->icon = new CUIStaticImage();
   this->icon->SetSize(26, 29);
   this->icon->Move(8, 7);
@@ -1417,7 +1417,7 @@ void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
 
 // OFFSET: 0x00A5D850
 // FUNCTION: fn_16435
-void RenewQuestUI::CUIQuestList::Slot15(int width, int height) {
+void RenewQuestUI::CUIQuestList::OnCreate(int width, int height) {
   CUIListBoxEx<CUIQuestItem, unsigned long>* listBox = new CUIListBoxEx<CUIQuestItem, unsigned long>();
   this->list = listBox;
   listBox->itemWidth = 330;
@@ -1513,7 +1513,7 @@ void RenewQuestUI::CUIQuestList::Slot15(int width, int height) {
 
 // OFFSET: 0x00A5E8C0
 // FUNCTION: fn_16436
-void CUIRenewQuestUI::Slot15(int width, int height) {
+void CUIRenewQuestUI::OnCreate(int width, int height) {
   this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(352, 17);
   this->titleBar->Move(29, 0);
@@ -2100,7 +2100,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddNewItem() {
 // OFFSET: 0x00A63CD0
 // FUNCTION: fn_16442
 template <>
-void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Slot53(int resolveSkin) {
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -2226,7 +2226,7 @@ CUIRenewQuestUI::CUIRenewQuestUI()
 
 // OFFSET: 0x00A66DA0
 // FUNCTION: fn_16624
-void CUIRenewQuestUI::Slot16() {
+void CUIRenewQuestUI::OnInit() {
   g_windowMgr.RecordWindowPacket(0x2718);
   g_windowMgr.CloseWindow(0x8F);
 

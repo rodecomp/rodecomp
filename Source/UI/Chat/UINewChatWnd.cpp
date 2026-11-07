@@ -104,7 +104,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->ToScreen(x, y);
       g_windowMgr.ReleaseCapture();
       window->Move(x, y);
-      window->Slot25(g_mouse.x - this->m_tabWidth * a - x, g_mouse.y - y);
+      window->OnLBtnDown(g_mouse.x - this->m_tabWidth * a - x, g_mouse.y - y);
     }
     this->ApplyHeaderLayout();
     return 0;

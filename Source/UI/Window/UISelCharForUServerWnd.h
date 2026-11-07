@@ -15,9 +15,9 @@ class UICharInfoBalloonText;
 class UISelCharForUServerWnd : public UIFrameWnd {
 public:
   UISelCharForUServerWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  void Slot27(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
   void Paint() override;
   void UpdateCharInfoBalloon(int x, int y, std::uint32_t color);
 

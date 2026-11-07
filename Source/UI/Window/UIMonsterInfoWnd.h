@@ -23,8 +23,8 @@ class UIMonsterInfoWnd : public UIFrameWnd {
 public:
   UIMonsterInfoWnd();
 
-  void Slot15(int width, int height) override;
-  void Slot28(int x, int y) override;
+  void OnCreate(int width, int height) override;
+  void OnMouseHover(int x, int y) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void DrawResistance(int x, int y, const char* label, int value, std::uint32_t border, std::uint32_t fill);

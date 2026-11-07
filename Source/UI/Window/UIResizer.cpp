@@ -39,7 +39,7 @@ void UIResizer::Paint() {
 
 // OFFSET: 0x0085ECE0
 // FUNCTION: fn_10845
-void UIResizer::Slot25(int x, int y) {
+void UIResizer::OnLBtnDown(int x, int y) {
   g_windowMgr.SetCapture(this);
   this->startX = x;
   this->startY = y;
@@ -53,12 +53,12 @@ void UIResizer::Slot25(int x, int y) {
 
 // OFFSET: 0x0085F470
 // FUNCTION: fn_10862
-void UIResizer::Slot28(int, int) {
+void UIResizer::OnMouseHover(int, int) {
 }
 
 // OFFSET: 0x0085F6D0
 // FUNCTION: fn_10869
-void UIResizer::Slot27(int x, int y) {
+void UIResizer::OnMouseMove(int x, int y) {
   if (g_windowMgr.Capture() != this) {
     return;
   }
@@ -122,13 +122,13 @@ void UIResizer::ResetCursor(int x, int y) {
 
 // OFFSET: 0x0085EFD0
 // FUNCTION: fn_10853
-void UIResizer::Slot31(int, int) {
+void UIResizer::OnLBtnUp(int, int) {
   if (g_windowMgr.Capture() != this) {
     return;
   }
 
   if (this->parent) {
-    this->parent->Slot36();
+    this->parent->RefreshSnap();
   }
 
   g_windowMgr.ReleaseCapture();

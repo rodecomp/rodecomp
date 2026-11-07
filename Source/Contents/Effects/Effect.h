@@ -19,40 +19,40 @@ struct EffectEvent {
 class CEffect {
 public:
   explicit CEffect(int id);
-  virtual void Slot00(int argument);
-  virtual void Slot01();
-  virtual void Slot02();
-  virtual void Slot03() {}
-  virtual void Slot04();
+  virtual void SetRenderFunc(int argument);
+  virtual void Open();
+  virtual void CheckRange();
+  virtual void OnProcess() {}
+  virtual void Render();
   virtual void Close();
-  virtual bool Slot06();
-  virtual void Slot07();
-  virtual void Slot08(int argument1, int argument2, int argument3);
-  virtual void Slot09(int argument);
-  virtual void Slot10(int argument);
-  virtual void Slot11(std::string name);
-  virtual void Slot12();
-  virtual void Slot13(int argument);
-  virtual void Slot14(int argument);
-  virtual void Slot15(int argument);
-  virtual void Slot16(int) {}
-  virtual void Slot17(float argument);
-  virtual void Slot18(float argument);
-  virtual void Slot19(float argument);
-  virtual void Slot20(int argument);
-  virtual void Slot21(int argument);
-  virtual void Slot22(float argument);
-  virtual void Slot23(float argument);
-  virtual void Slot24(int argument1, int argument2, int argument3, int argument4, int argument5);
-  virtual vector3d Slot25();
-  virtual void Slot26(int argument);
-  virtual void Slot27(int argument);
-  virtual int Slot28();
-  virtual void Slot29(int id);
+  virtual bool IsAlive();
+  virtual void ResetParticles();
+  virtual void SetColor(int argument1, int argument2, int argument3);
+  virtual void SetSourceBlend(int argument);
+  virtual void SetDestinationBlend(int argument);
+  virtual void SetParticleTexture(std::string name);
+  virtual void InitEvents();
+  virtual void AdvanceFrame(int argument);
+  virtual void SetLifeTime(int argument);
+  virtual void SetRepeat(int argument);
+  virtual void SetDelay(int) {}
+  virtual void SetAngle(float argument);
+  virtual void SetPitch(float argument);
+  virtual void SetYaw(float argument);
+  virtual void SetResource(int argument);
+  virtual void SetFlags(int argument);
+  virtual void SetScale(float argument);
+  virtual void SetAlpha(float argument);
+  virtual void SetWindowOffset(int argument1, int argument2, int argument3, int argument4, int argument5);
+  virtual vector3d GetWindowOffset();
+  virtual void SetFlipX(int argument);
+  virtual void SetFlipY(int argument);
+  virtual int GetFrame();
+  virtual void SetId(int id);
   virtual ~CEffect();
-  virtual void Slot31();
-  virtual void Slot32();
-  virtual bool Slot33();
+  virtual void EnableTimeLimit();
+  virtual void EnableGroundRender();
+  virtual bool IsVisible();
   void AddEvent(int kind, const char* text, int frame, int argument);
   void SetActor(std::uint32_t aid);
   void SetSourceActor(std::uint32_t aid);

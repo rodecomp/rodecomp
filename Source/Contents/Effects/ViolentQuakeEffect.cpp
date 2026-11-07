@@ -56,7 +56,7 @@ void CViolentQuakeEffect::Close() {
 
 // OFFSET: 0x0072FBE0
 // FUNCTION: fn_07533
-void CViolentQuakeEffect::Slot01() {
+void CViolentQuakeEffect::Open() {
   switch (this->id) {
   case 1760: {
     CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
@@ -76,7 +76,7 @@ void CViolentQuakeEffect::Slot01() {
 
 // OFFSET: 0x0072FD00
 // FUNCTION: fn_07534
-bool CViolentQuakeEffect::Slot06() {
+bool CViolentQuakeEffect::IsAlive() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CEZ2STRParticle* emitter = *it;
     if (emitter->life == 0.0f || (emitter->life * 60.0f > static_cast<float>(emitter->unknown_00E8)) == true) {
@@ -89,7 +89,7 @@ bool CViolentQuakeEffect::Slot06() {
 
 // OFFSET: 0x0072FD60
 // FUNCTION: fn_07535
-void CViolentQuakeEffect::Slot03() {
+void CViolentQuakeEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CEZ2STRParticle* emitter = *it;
     if (!emitter) {
@@ -113,7 +113,7 @@ void CViolentQuakeEffect::Slot03() {
 
 // OFFSET: 0x00730190
 // FUNCTION: fn_07536
-void CViolentQuakeEffect::Slot04() {
+void CViolentQuakeEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
       (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);

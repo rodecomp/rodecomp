@@ -10,10 +10,10 @@ public:
   UISpriteButton();
   __declspec(noinline) ~UISpriteButton() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
 
   int FrameHeight(int action, int frame);
   int FrameWidth(int action, int frame);
@@ -48,13 +48,13 @@ class UISpriteButton2 : public UISpriteButton {
 public:
   __declspec(noinline) UISpriteButton2(UIWindow* target);
   ~UISpriteButton2() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot35(int argument) override;
-  void Slot47() override;
-  void Slot48() override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnWheel(int argument) override;
+  void OnMouseEnter() override;
+  void OnMouseLeave() override;
 
 protected:
   /* 0114 */ UIWindow* m_target;

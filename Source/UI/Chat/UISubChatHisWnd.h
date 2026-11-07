@@ -31,15 +31,15 @@ public:
   UISubChatHisWnd();
   void Resize(int width, int height) override;
   void Move(int x, int y) override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot31(int x, int y) override;
-  bool Slot42(void* output) override;
-  void Slot43() override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  bool GetCustomTransBoxInfo(void* output) override;
+  void DrawTransBox() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void ApplyButtonLayout();
   UIChatHisBox* ChatBox() const { return m_chatBox; }

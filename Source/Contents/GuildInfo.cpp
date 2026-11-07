@@ -114,7 +114,7 @@ void GuildInfo::Init() {
   if (g_modeMgr.GetGameMode() &&
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene &&
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->Slot48(0);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SetGdid(0);
   }
 
   this->unknown_00AC = 0;
@@ -191,7 +191,7 @@ int GuildInfo::DeleteMemberByCharacterId(int characterId) {
       if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
         CRenderObject* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetActorByGID(it->characterId);
         if (actor != nullptr) {
-          static_cast<CGameActor*>(actor)->Slot48(0);
+          static_cast<CGameActor*>(actor)->SetGdid(0);
         }
       }
       this->m_members.erase(it);
@@ -326,7 +326,7 @@ void GuildInfo::AddMember(const Member& member) {
   if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
     CRenderObject* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetActorByGID(member.characterId);
     if (actor != nullptr) {
-      static_cast<CGameActor*>(actor)->Slot48(this->m_guildId);
+      static_cast<CGameActor*>(actor)->SetGdid(this->m_guildId);
     }
   }
 }

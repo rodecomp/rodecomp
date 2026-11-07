@@ -97,7 +97,7 @@ void CFlowerCastingEffect::Close() {
 
 // OFFSET: 0x00B66CA0
 // FUNCTION: fn_19061
-void CFlowerCastingEffect::Slot01() {
+void CFlowerCastingEffect::Open() {
   this->unknown_002C = 400;
 
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
@@ -110,13 +110,13 @@ void CFlowerCastingEffect::Slot01() {
 
 // OFFSET: 0x00B66D20
 // FUNCTION: fn_19062
-bool CFlowerCastingEffect::Slot06() {
+bool CFlowerCastingEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B66D30
 // FUNCTION: fn_19063
-void CFlowerCastingEffect::Slot03() {
+void CFlowerCastingEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -185,7 +185,7 @@ void CFlowerCastingEffect::Slot03() {
 
 // OFFSET: 0x00B671E0
 // FUNCTION: fn_19064
-void CFlowerCastingEffect::Slot04() {
+void CFlowerCastingEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle || particle->unknown_000C <= 0) {

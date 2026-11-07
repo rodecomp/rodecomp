@@ -50,7 +50,7 @@ struct AccountLimitedRange {
 
 // OFFSET: 0x0094A450
 // FUNCTION: fn_12890
-void UIAccountLimitedToolWnd::Slot15(int, int) {
+void UIAccountLimitedToolWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
 
   const int editPositions[15][2] = {

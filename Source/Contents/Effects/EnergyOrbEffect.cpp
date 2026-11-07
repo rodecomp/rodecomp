@@ -32,7 +32,7 @@ void CEnergyOrbEffect::Close() {
 
 // OFFSET: 0x00B50EC0
 // FUNCTION: fn_19025
-void CEnergyOrbEffect::Slot01() {
+void CEnergyOrbEffect::Open() {
   for (int i = 0; i < this->count; ++i) {
     const int angle = std::max(rand() % 360, 0);
     const int phase = std::max(rand() % 3, 0);
@@ -98,13 +98,13 @@ void CEnergyOrbEffect::Slot01() {
 
 // OFFSET: 0x00B51240
 // FUNCTION: fn_19026
-bool CEnergyOrbEffect::Slot06() {
+bool CEnergyOrbEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B51250
 // FUNCTION: fn_19027
-void CEnergyOrbEffect::Slot03() {
+void CEnergyOrbEffect::OnProcess() {
   for (CParticle* particle : this->particles) {
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
@@ -157,7 +157,7 @@ void CEnergyOrbEffect::Slot03() {
 
 // OFFSET: 0x00B51750
 // FUNCTION: fn_19028
-void CEnergyOrbEffect::Slot04() {
+void CEnergyOrbEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
@@ -170,6 +170,6 @@ void CEnergyOrbEffect::Slot04() {
 void CEnergyOrbEffect::SetCount(int value) {
   if (this->count != value) {
     this->count = value;
-    this->Slot01();
+    this->Open();
   }
 }

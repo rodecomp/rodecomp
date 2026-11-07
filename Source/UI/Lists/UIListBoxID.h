@@ -20,11 +20,11 @@ public:
   __declspec(noinline) UIListBoxID();
   ~UIListBoxID() override;
   void Resize(int width, int height) override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot35(int value) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnWheel(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   virtual void Configure(int x, int y, int width, int height, unsigned char transparent);
   virtual void AddLine(const char* text, int id);
@@ -59,12 +59,12 @@ class UIComboBoxID : public UIListBoxID {
 public:
   UIComboBoxID();
   void Resize(int width, int height) override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot31(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   void Configure(int x, int y, int width, int height, unsigned char transparent) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Refresh() override;

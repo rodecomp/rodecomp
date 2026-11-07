@@ -8,7 +8,7 @@
 
 // OFFSET: 0x008E1210
 // FUNCTION: fn_12174
-void UIGraffiStrboxWnd::Slot15(int, int) {
+void UIGraffiStrboxWnd::OnCreate(int, int) {
   this->edit = new UIEditCtrl();
   this->edit->SetSize(240, 16);
   this->edit->Move(22, 50);

@@ -163,7 +163,7 @@ UIWindow::UIWindow(unsigned char cached)
 // OFFSET: 0x00A79E90
 // FUNCTION: fn_16917
 UIWindow::~UIWindow() {
-  this->Slot18();
+  this->OnDestroy();
   delete this->geometry.surface;
   this->geometry.surface = nullptr;
   this->DeleteChildren();
@@ -199,13 +199,13 @@ __declspec(noinline) void UIWindow::Resize(int width, int height) {
 
 // OFFSET: 0x005C4650
 // FUNCTION: fn_03571
-bool UIWindow::Slot02() {
+bool UIWindow::IsFrameWnd() {
   return false;
 }
 
 // OFFSET: 0x005C4670
 // FUNCTION: fn_03573
-bool UIWindow::Slot03() {
+bool UIWindow::NeedsFrameRefresh() {
   return false;
 }
 
@@ -217,25 +217,25 @@ void UIWindow::Move(int x, int y) {
 
 // OFFSET: 0x005C3220
 // FUNCTION: fn_03553
-bool UIWindow::Slot05() {
+bool UIWindow::IsEditable() {
   return false;
 }
 
 // OFFSET: 0x005C4510
 // FUNCTION: fn_03564
-UIWindow* UIWindow::Slot06() {
+UIWindow* UIWindow::GetEditWindow() {
   return this;
 }
 
 // OFFSET: 0x005C45C0
 // FUNCTION: fn_03567
-bool UIWindow::Slot07(void*) {
+bool UIWindow::GetTransBoxInfo(void*) {
   return false;
 }
 
 // OFFSET: 0x005C4660
 // FUNCTION: fn_03572
-bool UIWindow::Slot08() {
+bool UIWindow::IsTransmitMouseInput() {
   return false;
 }
 
@@ -247,23 +247,23 @@ bool UIWindow::CanHitTest() {
 
 // OFFSET: 0x00A7BB00
 // FUNCTION: fn_16933
-void UIWindow::Slot10(int, int, std::intptr_t) {
+void UIWindow::DragAndDrop(int, int, std::intptr_t) {
   g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x005CA0F0
 // FUNCTION: fn_03640
-void UIWindow::Slot11() {
+void UIWindow::StoreInfo() {
 }
 
 // OFFSET: 0x005C7B40
 // FUNCTION: fn_03623
-void UIWindow::Slot12() {
+void UIWindow::StoreMoveOrigin() {
 }
 
 // OFFSET: 0x005C4680
 // FUNCTION: fn_03574
-void UIWindow::Slot13(int, int) {
+void UIWindow::MoveFromOrigin(int, int) {
 }
 
 // OFFSET: 0x005C9630
@@ -274,12 +274,12 @@ void UIWindow::Show(int visible) {
 
 // OFFSET: 0x005C6070
 // FUNCTION: fn_03584
-void UIWindow::Slot15(int, int) {
+void UIWindow::OnCreate(int, int) {
 }
 
 // OFFSET: 0x005C6F10
 // FUNCTION: fn_03592
-void UIWindow::Slot16() {
+void UIWindow::OnInit() {
 }
 
 // OFFSET: 0x005C7340
@@ -290,12 +290,12 @@ void UIWindow::Grow(int width, int height) {
 
 // OFFSET: 0x005C6080
 // FUNCTION: fn_03585
-void UIWindow::Slot18() {
+void UIWindow::OnDestroy() {
 }
 
 // OFFSET: 0x005C72D0
 // FUNCTION: fn_03606
-void UIWindow::Slot19() {
+void UIWindow::OnProcess() {
 }
 
 // OFFSET: 0x006006C0
@@ -305,47 +305,47 @@ void UIWindow::Paint() {
 
 // OFFSET: 0x005C7320
 // FUNCTION: fn_03611
-void UIWindow::Slot21() {
+void UIWindow::OnRun() {
 }
 
 // OFFSET: 0x005C7330
 // FUNCTION: fn_03612
-void UIWindow::Slot22(int, int) {
+void UIWindow::OnSize(int, int) {
 }
 
 // OFFSET: 0x005C4C70
 // FUNCTION: fn_03578
-void UIWindow::Slot23() {
+void UIWindow::OnBeginEdit() {
 }
 
 // OFFSET: 0x005C6F00
 // FUNCTION: fn_03591
-void UIWindow::Slot24(int) {
+void UIWindow::OnFinishEdit(int) {
 }
 
 // OFFSET: 0x005FDA50
 // FUNCTION: fn_04116
-void UIWindow::Slot25(int, int) {
+void UIWindow::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x005C6F30
 // FUNCTION: fn_03594
-void UIWindow::Slot26(int, int) {
+void UIWindow::OnLBtnDblClk(int, int) {
 }
 
 // OFFSET: 0x005C7280
 // FUNCTION: fn_03602
-void UIWindow::Slot27(int, int) {
+void UIWindow::OnMouseMove(int, int) {
 }
 
 // OFFSET: 0x005C7260
 // FUNCTION: fn_03600
-void UIWindow::Slot28(int, int) {
+void UIWindow::OnMouseHover(int, int) {
 }
 
 // OFFSET: 0x005C7290
 // FUNCTION: fn_03603
-void UIWindow::Slot29(int, int) {
+void UIWindow::OnMouseCheck(int, int) {
 }
 
 // OFFSET: 0x00A81D60
@@ -356,32 +356,32 @@ void UIWindow::ResetCursor(int, int) {
 
 // OFFSET: 0x005C7240
 // FUNCTION: fn_03598
-void UIWindow::Slot31(int, int) {
+void UIWindow::OnLBtnUp(int, int) {
 }
 
 // OFFSET: 0x005C7300
 // FUNCTION: fn_03609
-void UIWindow::Slot32(int, int) {
+void UIWindow::OnRBtnDown(int, int) {
 }
 
 // OFFSET: 0x005C7310
 // FUNCTION: fn_03610
-void UIWindow::Slot33(int, int) {
+void UIWindow::OnRBtnUp(int, int) {
 }
 
 // OFFSET: 0x005C72E0
 // FUNCTION: fn_03607
-void UIWindow::Slot34(int, int) {
+void UIWindow::OnRBtnDblClk(int, int) {
 }
 
 // OFFSET: 0x005C73A0
 // FUNCTION: fn_03615
-void UIWindow::Slot35(int) {
+void UIWindow::OnWheel(int) {
 }
 
 // OFFSET: 0x005C7AB0
 // FUNCTION: fn_03620
-void UIWindow::Slot36() {
+void UIWindow::RefreshSnap() {
 }
 
 // OFFSET: 0x00A83660
@@ -416,7 +416,7 @@ void UIWindow::Invalidate() {
 // FUNCTION: fn_16984
 void UIWindow::InvalidateChildren() {
   this->m_dirty = 1;
-  this->Slot39();
+  this->OnInvalidate();
 
   for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
     UIWindow* child = *it;
@@ -428,7 +428,7 @@ void UIWindow::InvalidateChildren() {
 
 // OFFSET: 0x005C4630
 // FUNCTION: fn_03569
-void UIWindow::Slot39() {
+void UIWindow::OnInvalidate() {
 }
 
 // OFFSET: 0x00A7D6F0
@@ -512,18 +512,18 @@ bool UIWindow::Update(int redraw) {
 
 // OFFSET: 0x005C45B0
 // FUNCTION: fn_03566
-bool UIWindow::Slot42(void*) {
+bool UIWindow::GetCustomTransBoxInfo(void*) {
   return false;
 }
 
 // OFFSET: 0x005C33D0
 // FUNCTION: fn_03556
-void UIWindow::Slot43() {
+void UIWindow::DrawTransBox() {
 }
 
 // OFFSET: 0x005C4480
 // FUNCTION: fn_03560
-std::vector<unsigned char> UIWindow::Slot44() {
+std::vector<unsigned char> UIWindow::GetReplayData() {
   return std::vector<unsigned char>();
 }
 
@@ -535,18 +535,18 @@ void UIWindow::SetId(int value) {
 
 // OFFSET: 0x005C4500
 // FUNCTION: fn_03563
-int UIWindow::Slot46() {
+int UIWindow::GetWindowType() {
   return 0;
 }
 
 // OFFSET: 0x005C7250
 // FUNCTION: fn_03599
-void UIWindow::Slot47() {
+void UIWindow::OnMouseEnter() {
 }
 
 // OFFSET: 0x005C7270
 // FUNCTION: fn_03601
-void UIWindow::Slot48() {
+void UIWindow::OnMouseLeave() {
 }
 
 // OFFSET: 0x00A7FFB0
@@ -620,7 +620,7 @@ void UIWindow::VisitChildren() {
 
 // OFFSET: 0x005C7AC0
 // FUNCTION: fn_03621
-void UIWindow::Slot52(int) {
+void UIWindow::ApplySkin(int) {
 }
 
 // OFFSET: 0x00A7A080
@@ -709,9 +709,9 @@ UIWindow* UIWindow::Root() {
 // FUNCTION: fn_16960
 UIWindow* UIWindow::NextFocusable(UIWindow* child) {
   for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
-    if (*it == child && (*it)->Slot05()) {
+    if (*it == child && (*it)->IsEditable()) {
       for (++it; it != this->m_children.end(); ++it) {
-        if ((*it)->Slot05()) {
+        if ((*it)->IsEditable()) {
           return *it;
         }
       }
@@ -728,10 +728,10 @@ UIWindow* UIWindow::NextFocusable(UIWindow* child) {
 UIWindow* UIWindow::PreviousFocusable(UIWindow* child) {
   for (auto it = this->m_children.end(); it != this->m_children.begin(); --it) {
     UIWindow* window = *std::prev(it);
-    if (window == child && window->Slot05()) {
+    if (window == child && window->IsEditable()) {
       for (--it; it != this->m_children.begin(); --it) {
         UIWindow* previous = *std::prev(it);
-        if (previous->Slot05()) {
+        if (previous->IsEditable()) {
           return previous;
         }
       }
@@ -831,9 +831,9 @@ __declspec(noinline) void UIWindow::SetSize(int width, int height) {
   this->geometry.width = width;
   this->geometry.height = height;
   this->Invalidate();
-  this->Slot15(width, height);
-  this->Slot22(width, height);
-  this->Slot16();
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
+  this->OnInit();
 }
 
 // INLINED
@@ -1754,7 +1754,7 @@ int UIWindow::RestoreEditTexts(const unsigned char* data) {
   std::memset(text, 0, sizeof(text));
 
   for (UIWindow* child : this->m_children) {
-    if (child->Slot46() != 2) {
+    if (child->GetWindowType() != 2) {
       continue;
     }
 
@@ -1881,12 +1881,12 @@ void UIListBox_NaviSearch::Clear() {
 
 // OFFSET: 0x005C6F20
 // FUNCTION: fn_03593
-void UIListBox_NaviSearch::Slot26(int, int) {
+void UIListBox_NaviSearch::OnLBtnDblClk(int, int) {
 }
 
 // OFFSET: 0x005C6F40
 // FUNCTION: fn_03595
-void UIListBox_NaviSearch::Slot25(int x, int y) {
+void UIListBox_NaviSearch::OnLBtnDown(int x, int y) {
   this->selected = this->LineAt(x, y);
   if (this->selected != -1) {
     this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
@@ -1897,7 +1897,7 @@ void UIListBox_NaviSearch::Slot25(int x, int y) {
 
 // OFFSET: 0x005C7360
 // FUNCTION: fn_03614
-void UIListBox_NaviSearch::Slot35(int value) {
+void UIListBox_NaviSearch::OnWheel(int value) {
   if (this->verticalOverflow != 0) {
     if (value < 0) {
       this->SendMsg(this->verticalBar, 7, 6, 0, 0, 0);
@@ -2008,7 +2008,7 @@ void UINavigationV4Wnd::LayoutWithDetails() {
 
 // OFFSET: 0x005CA060
 // FUNCTION: fn_03639
-void UINavigationV4Wnd::Slot11() {
+void UINavigationV4Wnd::StoreInfo() {
   NavigationWindowInfo* info = this->info;
   if (!info) {
     return;
@@ -2041,7 +2041,7 @@ void UINavigationV4Wnd::Slot11() {
 
 // OFFSET: 0x005C7140
 // FUNCTION: fn_03597
-void UINavigationroadiconWnd::Slot31(int x, int y) {
+void UINavigationroadiconWnd::OnLBtnUp(int x, int y) {
   int slot = 0;
   if (y >= 25 && y <= 55) {
     if (x >= 11 && x <= 41) {
@@ -2077,7 +2077,7 @@ void UINavigationroadiconWnd::Slot31(int x, int y) {
   }
 
   this->Invalidate();
-  UIFrameWnd::Slot31(x, y);
+  UIFrameWnd::OnLBtnUp(x, y);
 }
 
 // OFFSET: 0x005C6CC0
@@ -2109,7 +2109,7 @@ void UIPrivateAirplaneWnd::Paint() {
 
 // OFFSET: 0x005C72A0
 // FUNCTION: fn_03604
-void UINavigationV4Wnd::Slot19() {
+void UINavigationV4Wnd::OnProcess() {
   if (g_navigationManager.unknown_125C == 2) {
     this->Invalidate();
   }
@@ -2117,7 +2117,7 @@ void UINavigationV4Wnd::Slot19() {
 
 // OFFSET: 0x005C72C0
 // FUNCTION: fn_03605
-void UIPrivateAirplaneWnd::Slot19() {
+void UIPrivateAirplaneWnd::OnProcess() {
 }
 
 #pragma pack(push, 1)
@@ -2146,7 +2146,7 @@ int UIWindow::RecordEditTexts() {
 
   int count = 0;
   for (UIWindow* child : this->m_children) {
-    if (child->Slot46() == 2) {
+    if (child->GetWindowType() == 2) {
       ++count;
     }
   }
@@ -2158,7 +2158,7 @@ int UIWindow::RecordEditTexts() {
   }
 
   for (UIWindow* child : this->m_children) {
-    if (child->Slot46() != 2) {
+    if (child->GetWindowType() != 2) {
       continue;
     }
 
@@ -2181,7 +2181,7 @@ int UIWindow::RecordEditTexts() {
 
 // OFFSET: 0x005C4C80
 // FUNCTION: fn_03579
-void UIListBox_NaviSearch::Slot15(int width, int height) {
+void UIListBox_NaviSearch::OnCreate(int width, int height) {
   this->verticalBar = new UIScrollBar_Navi();
   this->verticalBar->Configure(width - 7, 0, 1, height);
   this->AddChild(this->verticalBar);
@@ -2243,7 +2243,7 @@ void UIListBox_NaviSearch::Paint() {
 
 // OFFSET: 0x005C4EA0
 // FUNCTION: fn_03581
-void UINavigationV4Wnd::Slot15(int, int) {
+void UINavigationV4Wnd::OnCreate(int, int) {
   UIBitmapButton* closeButton = new UIBitmapButton();
   this->unknown_00B8 = closeButton;
   closeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_normal.bmp", 0, 0);
@@ -2427,7 +2427,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
 }
 // OFFSET: 0x005C5D40
 // FUNCTION: fn_03582
-void UINavigationroadiconWnd::Slot15(int, int) {
+void UINavigationroadiconWnd::OnCreate(int, int) {
   this->AddCloseButton(LookupMessage(3045), 0);
 
   this->icon = new UIStaticBitmap();
@@ -2905,7 +2905,7 @@ int UINavigationroadiconWnd::SendMsg(UIWindow*, int message, std::intptr_t a, st
 
 // OFFSET: 0x005C4D70
 // FUNCTION: fn_03580
-void UINavigationRuideWnd::Slot15(int width, int) {
+void UINavigationRuideWnd::OnCreate(int width, int) {
   this->AddCloseButton(LookupMessage(3045), 0);
   this->routeList = new UIListBox_NaviSearch();
   this->routeList->SetSize(width - 4, 293);
@@ -3297,8 +3297,8 @@ void UIWindow::DrawActionSprite(
 
 // OFFSET: 0x005C6F90
 // FUNCTION: fn_03596
-void UINavigationV4Wnd::Slot31(int x, int y) {
-  UIFrameWnd::Slot31(x, y);
+void UINavigationV4Wnd::OnLBtnUp(int x, int y) {
+  UIFrameWnd::OnLBtnUp(x, y);
 
   if (!g_navigationManager.unknown_1254) {
     const int mapY = y - 46;
@@ -3539,7 +3539,7 @@ void UINavigationV4Wnd::SetRoadIcon(int slot) {
 
 // OFFSET: 0x005C5E50
 // FUNCTION: fn_03583
-void UIPrivateAirplaneWnd::Slot15(int, int) {
+void UIPrivateAirplaneWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 

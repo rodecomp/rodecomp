@@ -39,7 +39,7 @@ void CStarEffect::Close() {
 
 // OFFSET: 0x00B79F10
 // FUNCTION: fn_19204
-void CStarEffect::Slot01() {
+void CStarEffect::Open() {
   for (int ring = 0; ring < 65; ++ring) {
     for (int index = 0; index < 4; ++index) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
@@ -91,13 +91,13 @@ void CStarEffect::SetupParticle(CParticle* particle) {
 
 // OFFSET: 0x00B7A160
 // FUNCTION: fn_19206
-bool CStarEffect::Slot06() {
+bool CStarEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B7A170
 // FUNCTION: fn_19207
-void CStarEffect::Slot03() {
+void CStarEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -187,7 +187,7 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
 
 // OFFSET: 0x00B7A540
 // FUNCTION: fn_19209
-void CStarEffect::Slot04() {
+void CStarEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

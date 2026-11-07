@@ -19,7 +19,7 @@ void CHitLineEffect::Close() {
 
 // OFFSET: 0x00705100
 // FUNCTION: fn_07036
-void CHitLineEffect::Slot01() {
+void CHitLineEffect::Open() {
   for (int pass = 0; pass < 4; ++pass) {
     for (int line = 0; line < 4; ++line) {
       const int delay = -std::max(rand() % 26, 0);
@@ -54,13 +54,13 @@ void CHitLineEffect::Slot01() {
 
 // OFFSET: 0x00705270
 // FUNCTION: fn_07037
-bool CHitLineEffect::Slot06() {
+bool CHitLineEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00705280
 // FUNCTION: fn_07038
-void CHitLineEffect::Slot03() {
+void CHitLineEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -95,7 +95,7 @@ void CHitLineEffect::Slot03() {
 
 // OFFSET: 0x00705510
 // FUNCTION: fn_07039
-void CHitLineEffect::Slot04() {
+void CHitLineEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle || *reinterpret_cast<int*>(particle->unknown_0048) <= 0 || particle->unknown_00E8 <= 0) {

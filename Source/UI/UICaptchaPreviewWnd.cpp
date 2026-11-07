@@ -63,7 +63,7 @@ void UIMacroDetectorWnd::AddImageData(const void* data, int size) {
 
 // OFFSET: 0x007ED660
 // FUNCTION: fn_09810
-void UICaptchaPreviewWnd::Slot15(int, int) {
+void UICaptchaPreviewWnd::OnCreate(int, int) {
   this->m_image = new UICaptchaImage();
   this->m_image->SetSize(220, 90);
   this->m_image->Move(0, 0);
@@ -73,7 +73,7 @@ void UICaptchaPreviewWnd::Slot15(int, int) {
 
 // OFFSET: 0x007ED710
 // FUNCTION: fn_09811
-void UIMacroDetectorWnd::Slot15(int, int) {
+void UIMacroDetectorWnd::OnCreate(int, int) {
   this->geometry.currentAlpha = 0xBB;
   this->geometry.targetAlpha = 0xBB;
 

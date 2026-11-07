@@ -22,7 +22,7 @@ void CEZ2STREffectEx::Close() {
 
 // OFFSET: 0x006FF770
 // FUNCTION: fn_06965
-void CEZ2STREffectEx::Slot31() {
+void CEZ2STREffectEx::EnableTimeLimit() {
   this->timed = 1;
 }
 

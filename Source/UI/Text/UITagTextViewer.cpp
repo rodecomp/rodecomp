@@ -55,7 +55,7 @@ int TagTextViewer::UIScroll::ContentHeight() {
 
 // OFFSET: 0x0083EE40
 // FUNCTION: fn_10524
-void TagTextViewer::UIScroll::Slot15(int width, int height) {
+void TagTextViewer::UIScroll::OnCreate(int width, int height) {
   this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(width - 13, 0, 1, height);
   this->AddChild(this->m_scrollBar);
@@ -75,15 +75,15 @@ void UITagTextViewer::Paint() {
 
 // OFFSET: 0x0083EF20
 // FUNCTION: fn_10526
-void UITagTextViewer::Slot19() {
+void UITagTextViewer::OnProcess() {
   for (UIWindow* child : this->m_children) {
-    child->Slot19();
+    child->OnProcess();
   }
 }
 
 // OFFSET: 0x0083EF50
 // FUNCTION: fn_10527
-void TagTextViewer::UIScroll::Slot35(int delta) {
+void TagTextViewer::UIScroll::OnWheel(int delta) {
   if (delta < 0) {
     this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
   } else {

@@ -20,16 +20,16 @@ public:
   static void SaveChatWndInfo();
 
   void Resize(int width, int height) override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Move(int x, int y) override;
-  void Slot11() override;
+  void StoreInfo() override;
   void Show(int visible) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot31(int x, int y) override;
-  bool Slot42(void* output) override;
-  void Slot43() override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  bool GetCustomTransBoxInfo(void* output) override;
+  void DrawTransBox() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SaveChatLogs();
   void RefreshTabs(bool arrange);

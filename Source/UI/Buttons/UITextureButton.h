@@ -9,7 +9,7 @@
 class UITextureButton : public UIButton {
 public:
   void Paint() override;
-  void Slot31(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   void VisitChildren() override;
 
   /* 00B4 */ int unknown_00B4;

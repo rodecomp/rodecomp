@@ -5,15 +5,15 @@
 // FUNCTION: fn_17256
 void UIWindowMgr::SetFocus(UIWindow* value) {
   if (this->hoverWindow) {
-    const bool retained = value && value->Slot06() == this->hoverWindow;
-    this->hoverWindow->Slot24(retained);
+    const bool retained = value && value->GetEditWindow() == this->hoverWindow;
+    this->hoverWindow->OnFinishEdit(retained);
   }
 
   if (value) {
-    this->hoverWindow = value->Slot06();
+    this->hoverWindow = value->GetEditWindow();
 
     if (this->hoverWindow) {
-      this->hoverWindow->Slot23();
+      this->hoverWindow->OnBeginEdit();
     }
   } else {
     this->hoverWindow = nullptr;
@@ -28,14 +28,14 @@ void UIWindowMgr::FocusFirst() {
 
     for (auto it = parent->m_children.begin(); it != parent->m_children.end(); ++it) {
       UIWindow* child = *it;
-      if (child->Slot05()) {
+      if (child->IsEditable()) {
         this->SetFocus(child);
         return;
       }
     }
 
     if (this->hoverWindow) {
-      this->hoverWindow->Slot24(0);
+      this->hoverWindow->OnFinishEdit(0);
     }
   }
 
@@ -50,14 +50,14 @@ void UIWindowMgr::FocusLast() {
 
     for (auto it = parent->m_children.rbegin(); it != parent->m_children.rend(); ++it) {
       UIWindow* child = *it;
-      if (child->Slot05()) {
+      if (child->IsEditable()) {
         this->SetFocus(child);
         return;
       }
     }
 
     if (this->hoverWindow) {
-      this->hoverWindow->Slot24(0);
+      this->hoverWindow->OnFinishEdit(0);
     }
   }
 
@@ -73,7 +73,7 @@ void UIWindowMgr::FocusNext() {
 
   UIWindow* next = this->hoverWindow->parent->NextFocusable(this->hoverWindow);
   if (next) {
-    if (next->Slot05()) {
+    if (next->IsEditable()) {
       this->SetFocus(next);
     }
   } else {
@@ -96,7 +96,7 @@ void UIWindowMgr::FocusPrevious() {
 
   UIWindow* previous = this->hoverWindow->parent->PreviousFocusable(this->hoverWindow);
   if (previous) {
-    if (previous->Slot05()) {
+    if (previous->IsEditable()) {
       this->SetFocus(previous);
     }
   } else {

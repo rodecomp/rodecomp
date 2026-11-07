@@ -20,8 +20,8 @@ class UIItemCollectionWnd : public UIFrameWnd {
 public:
   UIItemCollectionWnd();
   ~UIItemCollectionWnd() override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
 
   // INLINED
   std::string& ItemIdText() {
@@ -59,25 +59,25 @@ public:
   /* 024C */ unsigned char unknown_024C[0x4];
 
   void Move(int x, int y) override;
-  void Slot19() override;
+  void OnProcess() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot31(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SetHeight(int height);
   int CardSlotAt(int x, int y, int* slotX, int* slotY);
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   bool WrapText(std::string text, int width, std::list<std::string>& lines);
 };
 
 class UICombinedCardItemCollectionWnd : public UIItemCollectionWnd {
 public:
   UICombinedCardItemCollectionWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Move(int x, int y) override;
-  void Slot11() override;
-  void Slot31(int x, int y) override;
+  void StoreInfo() override;
+  void OnLBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 0250 */ CombinedCardItemCollectionWndInfo* m_cardPlacement;
@@ -86,20 +86,20 @@ public:
 class UIItemCollection_ComparisonWnd : public UIItemCollectionWnd {
 public:
   UIItemCollection_ComparisonWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Move(int x, int y) override;
-  void Slot25(int x, int y) override;
-  void Slot31(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  void Slot32(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
 };
 
 class UICombinedCardItemCollection_ComparisonWnd : public UIItemCollectionWnd {
 public:
   UICombinedCardItemCollection_ComparisonWnd();
-  void Slot15(int width, int height) override;
-  void Slot25(int x, int y) override;
-  void Slot31(int x, int y) override;
+  void OnCreate(int width, int height) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
 

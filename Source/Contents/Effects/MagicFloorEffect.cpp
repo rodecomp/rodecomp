@@ -101,7 +101,7 @@ void CMagicFloorEffect::Close() {
 
 // OFFSET: 0x00B48DC0
 // FUNCTION: fn_18932
-void CMagicFloorEffect::Slot01() {
+void CMagicFloorEffect::Open() {
   this->AddFloors();
   this->AddClouds(0);
   this->AddClouds(1);
@@ -109,7 +109,7 @@ void CMagicFloorEffect::Slot01() {
 
 // OFFSET: 0x00B48E70
 // FUNCTION: fn_18933
-void CMagicFloorEffect::Slot07() {
+void CMagicFloorEffect::ResetParticles() {
   for (std::vector<CParticle*>::iterator it = this->floors.begin(); it != this->floors.end(); ++it) {
     CParticle* particle = *it;
     particle->flags = 5;
@@ -129,13 +129,13 @@ void CMagicFloorEffect::Slot07() {
 
 // OFFSET: 0x00B48F20
 // FUNCTION: fn_18934
-bool CMagicFloorEffect::Slot06() {
+bool CMagicFloorEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B48F30
 // FUNCTION: fn_18935
-void CMagicFloorEffect::Slot03() {
+void CMagicFloorEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->floors.begin(); it != this->floors.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -256,7 +256,7 @@ void CMagicFloorEffect::Slot03() {
 
 // OFFSET: 0x00B49760
 // FUNCTION: fn_18936
-void CMagicFloorEffect::Slot04() {
+void CMagicFloorEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->floors.begin(); it != this->floors.end(); ++it) {
     if (*it) {
       (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);

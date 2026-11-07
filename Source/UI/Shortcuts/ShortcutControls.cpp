@@ -10,7 +10,7 @@
 
 // OFFSET: 0x0092A190
 // FUNCTION: fn_12654
-void UIShortCutWnd::Slot15(int, int) {
+void UIShortCutWnd::OnCreate(int, int) {
   this->AddCloseButton("F12", 0)->Move(this->geometry.width - 10, 0);
 
   for (int index = 0; index < 36; ++index) {

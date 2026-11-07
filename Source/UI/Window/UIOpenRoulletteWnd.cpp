@@ -17,12 +17,12 @@ struct RouletteOpenPacket {
 
 // OFFSET: 0x0094F1C0
 // FUNCTION: fn_12933
-void UIOpenRoulletteWnd::Slot19() {
+void UIOpenRoulletteWnd::OnProcess() {
 }
 
 // OFFSET: 0x0094C4E0
 // FUNCTION: fn_12897
-void UIOpenRoulletteWnd::Slot15(int width, int height) {
+void UIOpenRoulletteWnd::OnCreate(int width, int height) {
   auto* button = new UIBitmapButton();
   button->SetBitmap("유저인터페이스\\basic_interface\\roullette\\RoulletteIcon.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\roullette\\RoulletteIcon.bmp", 1, 0);

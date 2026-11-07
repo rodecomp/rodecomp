@@ -67,12 +67,12 @@ void UIMileageWnd::Paint() {
 
 // OFFSET: 0x0094EE70
 // FUNCTION: fn_12918
-void UIMileageWnd::Slot25(int x, int y) {
+void UIMileageWnd::OnLBtnDown(int x, int y) {
 }
 
 // OFFSET: 0x0094EF10
 // FUNCTION: fn_12923
-void UIMileageWnd::Slot31(int x, int y) {
+void UIMileageWnd::OnLBtnUp(int x, int y) {
   if (g_session.unknown_0000 == 20) {
     return;
   }
@@ -84,7 +84,7 @@ void UIMileageWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x0094EFC0
 // FUNCTION: fn_12926
-void UIMileageWnd::Slot28(int x, int y) {
+void UIMileageWnd::OnMouseHover(int x, int y) {
   if (this->m_tooltip.size() == 0) {
     return;
   }
@@ -97,12 +97,12 @@ void UIMileageWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x0094F040
 // FUNCTION: fn_12929
-void UIMileageWnd::Slot27(int x, int y) {
+void UIMileageWnd::OnMouseMove(int x, int y) {
 }
 
 // OFFSET: 0x0094F130
 // FUNCTION: fn_12932
-void UIMileageWnd::Slot19() {
+void UIMileageWnd::OnProcess() {
   if (!this->geometry.visible || this->m_point >= 300 || this->m_remaining == 0) {
     return;
   }
@@ -126,7 +126,7 @@ void UIMileageWnd::Slot19() {
 
 // OFFSET: 0x0094C230
 // FUNCTION: fn_12894
-void UIMileageWnd::Slot15(int width, int height) {
+void UIMileageWnd::OnCreate(int width, int height) {
   const std::string title = FormatOwnedString(LookupMessage(2619), 300);
   this->m_tooltip = title;
 }

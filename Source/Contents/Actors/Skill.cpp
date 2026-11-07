@@ -648,7 +648,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       if (source != nullptr) {
         CreateHallucinationPc(
           source->GetEffectiveJob(-1), source->unknown_0260, source->unknown_0440, &this->render.position, 180, source->render.unknown_0048,
-          source->unknown_0444, source->Slot46()
+          source->unknown_0444, source->GetBodyCostume()
         );
       }
       return;
@@ -769,7 +769,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
         }
         CEffect* effect = g_effectMgr->Spawn(this->render.accountId, static_cast<int>(effectId), position.x, position.y, position.z, 0, unit->level, 0, 0);
         if (effect != nullptr) {
-          effect->Slot17(90.0f);
+          effect->SetAngle(90.0f);
           static_cast<CEZ2STRScreenEffect*>(effect)->followCamera = 1;
         }
       }
@@ -809,11 +809,11 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       g_effectMgr->Spawn(this->render.accountId, 0x8A1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8A2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect != nullptr) {
-        effect->Slot16(10);
+        effect->SetDelay(10);
       }
       effect = g_effectMgr->Spawn(this->render.accountId, 0x8A3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect != nullptr) {
-        effect->Slot16(10);
+        effect->SetDelay(10);
       }
       return;
     }
@@ -822,11 +822,11 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       g_effectMgr->Spawn(this->render.accountId, 0x8A9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8AA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect != nullptr) {
-        effect->Slot16(10);
+        effect->SetDelay(10);
       }
       effect = g_effectMgr->Spawn(this->render.accountId, 0x8AB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect != nullptr) {
-        effect->Slot16(10);
+        effect->SetDelay(10);
       }
       return;
     }
@@ -835,11 +835,11 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       g_effectMgr->Spawn(this->render.accountId, 0x8B1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8B2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect != nullptr) {
-        effect->Slot16(10);
+        effect->SetDelay(10);
       }
       effect = g_effectMgr->Spawn(this->render.accountId, 0x8B3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect != nullptr) {
-        effect->Slot16(10);
+        effect->SetDelay(10);
       }
       return;
     }
@@ -848,11 +848,11 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       g_effectMgr->Spawn(this->render.accountId, 0x8B9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(this->render.accountId, 0x8BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect != nullptr) {
-        effect->Slot16(10);
+        effect->SetDelay(10);
       }
       effect = g_effectMgr->Spawn(this->render.accountId, 0x8BB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect != nullptr) {
-        effect->Slot16(10);
+        effect->SetDelay(10);
       }
       return;
     }

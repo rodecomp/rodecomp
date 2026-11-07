@@ -35,7 +35,7 @@ void CShadowExceed::Close() {
 
 // OFFSET: 0x00727FC0
 // FUNCTION: fn_07431
-void CShadowExceed::Slot01() {
+void CShadowExceed::Open() {
   this->unknown_00D8 = 0;
 
   CRenderObject* actor = FindRenderObject(this->actor);
@@ -83,13 +83,13 @@ void CShadowExceed::Slot01() {
 
 // OFFSET: 0x007289C0
 // FUNCTION: fn_07433
-bool CShadowExceed::Slot06() {
+bool CShadowExceed::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00728A50
 // FUNCTION: fn_07435
-void CShadowExceed::Slot03() {
+void CShadowExceed::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     CEZ2STRParticle* emitter = *it;
     if (emitter->life == 0.0f || emitter->life * 60.0f > static_cast<float>(emitter->unknown_00E8)) {
@@ -128,7 +128,7 @@ void CShadowExceed::Slot03() {
 
 // OFFSET: 0x00729230
 // FUNCTION: fn_07437
-void CShadowExceed::Slot04() {
+void CShadowExceed::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
       (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);

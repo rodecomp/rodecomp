@@ -12,18 +12,18 @@ class UIFrameWnd : public UIWindow {
 public:
   UIFrameWnd(unsigned char cached);
   ~UIFrameWnd() override;
-  bool Slot02() override;
+  bool IsFrameWnd() override;
   void Move(int x, int y) override;
-  void Slot12() override;
-  void Slot13(int dx, int dy) override;
-  void Slot25(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot36() override;
+  void StoreMoveOrigin() override;
+  void MoveFromOrigin(int dx, int dy) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void RefreshSnap() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  std::vector<unsigned char> Slot44() override;
-  int Slot46() override;
+  std::vector<unsigned char> GetReplayData() override;
+  int GetWindowType() override;
   UIBitmapButton* AddCloseButton(const char* tooltip, int width);
   UIBitmapButton* AddBaseButton();
   UIBitmapButton* AddBigCloseButton(const char* tooltip, int width);

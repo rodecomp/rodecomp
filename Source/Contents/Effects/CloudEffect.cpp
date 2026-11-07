@@ -52,7 +52,7 @@ void CCloud::Close() {
 
 // OFFSET: 0x006FBBD0
 // FUNCTION: fn_06917
-void CCloud::Slot01() {
+void CCloud::Open() {
   this->particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
   if (CParticle* particle = this->particle) {
     particle->unknown_0004 = this->id;
@@ -66,7 +66,7 @@ void CCloud::Slot01() {
 
 // OFFSET: 0x006FBC30
 // FUNCTION: fn_06918
-void CCloud::Slot07() {
+void CCloud::ResetParticles() {
   this->driftX = std::max(0, rand() % 360);
   this->driftTargetX = std::max(0, rand() % 360);
   this->driftZ = std::max(0, rand() % 360);
@@ -105,13 +105,13 @@ void CCloud::Slot07() {
 
 // OFFSET: 0x006FBEC0
 // FUNCTION: fn_06919
-bool CCloud::Slot06() {
+bool CCloud::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x006FBED0
 // FUNCTION: fn_06920
-void CCloud::Slot03() {
+void CCloud::OnProcess() {
   CParticle* particle = this->particle;
   if (!particle) {
     return;
@@ -125,7 +125,7 @@ void CCloud::Slot03() {
   } else if (frame > this->fadeOutStart) {
     this->alpha -= this->fadeOutStep;
     if (this->alpha <= 0.0f) {
-      this->Slot07();
+      this->ResetParticles();
     } else {
       particle->alpha = static_cast<int>(this->alpha);
     }
@@ -149,7 +149,7 @@ void CCloud::Slot03() {
 
 // OFFSET: 0x006FC090
 // FUNCTION: fn_06921
-void CCloud::Slot04() {
+void CCloud::Render() {
   if (this->particle) {
     this->particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }

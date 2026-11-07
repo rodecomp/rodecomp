@@ -24,14 +24,14 @@ public:
   UIEditCtrl();
   UIEditCtrl(const UIEditCtrl& other);
   ~UIEditCtrl() override;
-  bool Slot05() override;
+  bool IsEditable() override;
   void Paint() override;
-  void Slot23() override;
-  void Slot24(int retained) override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
+  void OnBeginEdit() override;
+  void OnFinishEdit(int retained) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
-  int Slot46() override;
+  int GetWindowType() override;
   virtual void SetText(const char* value);
   virtual void SelectAll();
   virtual void PaintText();
@@ -94,7 +94,7 @@ class UIEditCtrlWheel : public UIEditCtrl {
 public:
   UIEditCtrlWheel();
   ~UIEditCtrlWheel() override;
-  void Slot35(int value) override;
+  void OnWheel(int value) override;
 };
 
 class UIEditCtrl2 : public UIEditCtrl {
@@ -109,14 +109,14 @@ public:
   UIEditCtrl3();
   UIEditCtrl3(const UIEditCtrl3& other);
   ~UIEditCtrl3() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Resize(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SetText(const char* value) override;
   void PaintText() override;
   void SetLinkedText(const char* value);
-  void Slot35(int value) override;
+  void OnWheel(int value) override;
   void Trim() override;
   virtual void UpdateScrollBar();
   virtual void DrawBlinkingCaret(const std::uint32_t& color);
@@ -170,7 +170,7 @@ class UIEditCtrl4 : public UIEditCtrl {
 public:
   UIEditCtrl4();
   ~UIEditCtrl4() override;
-  void Slot23() override;
+  void OnBeginEdit() override;
   void PaintText() override;
   void SetPlaceholderEnabled(bool enabled);
   void SetPlaceholderColor(std::uint32_t color);
@@ -200,7 +200,7 @@ class UIChatEditCtrl : public UIEditCtrl {
 public:
   UIChatEditCtrl();
   void Paint() override;
-  void Slot25(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void InsertItemTag(int tagId);
   void InsertItemLink(const ITEM_INFO& item);
@@ -217,7 +217,7 @@ class UIEditCtrl_OldList : public UIEditCtrl {
 public:
   UIEditCtrl_OldList();
   void Paint() override;
-  void Slot35(int value) override;
+  void OnWheel(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void RecallHistory(int step);
   /* 011C */ std::string bitmapName;
@@ -228,8 +228,8 @@ public:
 class UIWhisperEditCtrl : public UIEditCtrl {
 public:
   UIWhisperEditCtrl();
-  void Slot23() override;
-  void Slot24(int retained) override;
+  void OnBeginEdit() override;
+  void OnFinishEdit(int retained) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SetText(const char* value) override;
   void AddHistory();
@@ -241,8 +241,8 @@ class UIEditCtrlVarId : public UIEditCtrl {
 public:
   // INLINED
   UIEditCtrlVarId() : UIEditCtrl() {}
-  void Slot24(int retained) override;
-  void Slot35(int value) override;
+  void OnFinishEdit(int retained) override;
+  void OnWheel(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SetText(const char* value) override;
 };
@@ -254,7 +254,7 @@ class UIShowAndEditTimeCtrl : public UIWindow {
 public:
   UIShowAndEditTimeCtrl();
   void Paint() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ UIEditCtrlVarId* fields[2];

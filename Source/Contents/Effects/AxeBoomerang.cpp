@@ -35,7 +35,7 @@ void CAxeBoomerang::Close() {
 
 // OFFSET: 0x006F5A70
 // FUNCTION: fn_06840
-void CAxeBoomerang::Slot01() {
+void CAxeBoomerang::Open() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->unknown_00DC, 5));
   if (this->id == 0x887) {
     particle->Load(std::string("shield_shooting\\shield_shooting\\shield_shooting.str"));
@@ -55,13 +55,13 @@ void CAxeBoomerang::Slot01() {
 
 // OFFSET: 0x006F5CD0
 // FUNCTION: fn_06841
-bool CAxeBoomerang::Slot06() {
+bool CAxeBoomerang::IsAlive() {
   return this->unknown_00D0 != 0;
 }
 
 // OFFSET: 0x006F5CE0
 // FUNCTION: fn_06842
-void CAxeBoomerang::Slot03() {
+void CAxeBoomerang::OnProcess() {
   if (this->unknown_00CC) {
     CRenderObject* actor = FindRenderObject(this->actor);
     if (!actor) {
@@ -126,7 +126,7 @@ void CAxeBoomerang::Slot03() {
 
 // OFFSET: 0x006F63F0
 // FUNCTION: fn_06843
-void CAxeBoomerang::Slot04() {
+void CAxeBoomerang::Render() {
   CEZ2STRParticle* particle = reinterpret_cast<CEZ2STRParticle*>(this->unknown_00CC);
   if (particle) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());

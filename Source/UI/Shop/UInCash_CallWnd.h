@@ -16,15 +16,15 @@ class UIStaticText;
 class UInCashWnd : public UIItemBaseWnd {
 public:
   UInCashWnd();
-  bool Slot03() override;
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
-  void Slot11() override;
+  bool NeedsFrameRefresh() override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
+  void StoreInfo() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   ITEM_INFO ItemAt(int x, int y);
   void DrawItems();
@@ -53,7 +53,7 @@ public:
 class UInCash_CallWnd : public UIFrameWnd {
 public:
   UInCash_CallWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };

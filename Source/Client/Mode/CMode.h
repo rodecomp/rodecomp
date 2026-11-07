@@ -34,9 +34,9 @@ public:
   virtual void Initialize(const char* name);
   virtual void End();
   virtual void Update();
-  virtual void Slot5(int value);
+  virtual void OnUpdateEx(int value);
   virtual int SendMsg(int event, int argument1, int argument2, int argument3, int argument4);
-  virtual void Slot7(int value);
+  virtual void OnChangeState(int value);
 
   CMode();
   std::uint32_t ClearTooltip();

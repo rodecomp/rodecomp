@@ -68,9 +68,9 @@ public:
     this->RetireEffects();
   }
 
-  void Slot03() override;
-  bool Slot06() override;
-  void Slot16(int argument) override;
+  void OnProcess() override;
+  bool IsAlive() override;
+  void SetDelay(int argument) override;
 
   void Start();
   void SetNames(const std::string& source, const std::string& target);

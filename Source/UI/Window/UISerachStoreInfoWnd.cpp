@@ -82,7 +82,7 @@ ITEM_INFO UISerachStoreInfoWnd::ItemAt(int x, int y) {
 
 // OFFSET: 0x009296E0
 // FUNCTION: fn_12653
-void UISerachStoreInfoWnd::Slot15(int width, int height) {
+void UISerachStoreInfoWnd::OnCreate(int width, int height) {
   UIRadioBtn** radio = this->m_radios;
   for (int x = 10; x < 90; x += 40) {
     *radio = new UIRadioBtn();
@@ -188,7 +188,7 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x009331F0
 // FUNCTION: fn_12723
-void UISerachStoreInfoWnd::Slot32(int x, int y) {
+void UISerachStoreInfoWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.itemId.size() != 0 && ((x > 160 && x < 330) || static_cast<unsigned int>(x - 6) <= 43)) {
     g_modeMgr.GetGameMode();
@@ -406,7 +406,7 @@ struct SearchStoreClickPacket {
 
 // OFFSET: 0x00930780
 // FUNCTION: fn_12688
-void UISerachStoreInfoWnd::Slot26(int x, int y) {
+void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.itemId.size() == 0 || static_cast<unsigned int>(x - 0x33) > 0x6C) {
     return;

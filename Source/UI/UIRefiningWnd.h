@@ -57,7 +57,7 @@ public:
   // INLINED
   UIRefining_Notice()
       : UIStaticText(), savedHighlight(0), expireTick(0), autoShown(0), highlight(0) {}
-  void Slot19() override;
+  void OnProcess() override;
   void Paint() override;
   void SetNotice(const char* value, int duration, unsigned char highlight);
 
@@ -71,16 +71,16 @@ public:
 class UIRefiningWnd : public UIFrameWnd {
 public:
   UIRefiningWnd();
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot33(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   int SlotAt(int x, int y);
   void Reset();

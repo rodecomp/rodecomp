@@ -276,5 +276,5 @@ void CView::Render() {
   this->spatial.inside.clear();
   this->spatial.clipped.clear();
 
-  this->scene->ground->Slot04(reinterpret_cast<int>(matrix));
+  this->scene->ground->RenderLod(reinterpret_cast<int>(matrix));
 }

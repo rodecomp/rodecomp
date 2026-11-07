@@ -12,8 +12,8 @@ class UIMessageBox : public UIFrameWnd {
 public:
   UIMessageBox();
   ~UIMessageBox() override;
-  void Slot18() override;
-  void Slot19() override;
+  void OnDestroy() override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void Configure(const char* text, int type, bool defaultAccept, int timeout, const char* caption, int width, int height, int modal, const char* icon);

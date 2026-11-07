@@ -13,13 +13,13 @@ class CParticle;
 class CLevel99Effect : public CEffect {
 public:
   CLevel99Effect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
-  void Slot08(int red, int green, int blue) override;
-  void Slot11(std::string name) override;
+  bool IsAlive() override;
+  void SetColor(int red, int green, int blue) override;
+  void SetParticleTexture(std::string name) override;
 
   void AddRings();
 

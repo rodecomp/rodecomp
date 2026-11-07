@@ -10,13 +10,13 @@
 
 // OFFSET: 0x009310E0
 // FUNCTION: fn_12699
-void UIShortCutWnd::Slot25(int x, int y) {
+void UIShortCutWnd::OnLBtnDown(int x, int y) {
   ShortcutGrid& grid = this->m_grid;
   const NormalItemSlot* const* slots = this->m_slots;
   const NormalItemSlot* const* itemSlots = this->m_itemSlots;
   const int columnOffset = x - 15;
   if (columnOffset >= 261 || x < 15 || y < 4) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 

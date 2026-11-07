@@ -48,7 +48,7 @@ void CBindTrapEffect::Close() {
 
 // OFFSET: 0x006FB5F0
 // FUNCTION: fn_06908
-void CBindTrapEffect::Slot01() {
+void CBindTrapEffect::Open() {
   switch (this->id) {
   case 1069:
     this->AddParticle(0);
@@ -64,13 +64,13 @@ void CBindTrapEffect::Slot01() {
 
 // OFFSET: 0x006FB620
 // FUNCTION: fn_06909
-bool CBindTrapEffect::Slot06() {
+bool CBindTrapEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x006FB630
 // FUNCTION: fn_06910
-void CBindTrapEffect::Slot03() {
+void CBindTrapEffect::OnProcess() {
   for (CParticle* particle : this->particles) {
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
@@ -97,7 +97,7 @@ void CBindTrapEffect::Slot03() {
 
 // OFFSET: 0x006FB8B0
 // FUNCTION: fn_06911
-void CBindTrapEffect::Slot04() {
+void CBindTrapEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

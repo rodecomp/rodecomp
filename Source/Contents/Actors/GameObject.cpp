@@ -307,7 +307,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
     SpriteQuad quad;
     int box[4];
     std::uint32_t color;
-    if (!static_cast<CGameActor*>(this)->Slot09(
+    if (!static_cast<CGameActor*>(this)->PrepareSprite(
           index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0
         )) {
       continue;
@@ -661,7 +661,7 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
       SpriteQuad quad;
       int box[4];
       std::uint32_t color;
-      if (!this->Slot09(index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, offsetX, offsetY, 0)) {
+      if (!this->PrepareSprite(index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, offsetX, offsetY, 0)) {
         continue;
       }
 
@@ -926,12 +926,12 @@ void CGameActor::ApplyPendingUnknown0408() {
   } else {
     value = this->unknown_025C;
   }
-  this->Slot21(value);
-  this->Slot32();
+  this->SetSprJob(value);
+  this->SetBodyPaletteName();
 
   if (this->render.unknown_0070 != 3) {
     this->render.unknown_0070 = 0;
-    this->Slot15(0, 1);
+    this->SetState(0, 1);
   }
 }
 
@@ -1451,14 +1451,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     this->unknown_03B0.push_back(effect);
     effect->SendMsg(this, 0x32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     this->unknown_037C[5] = reinterpret_cast<int>(effect);
-    this->Slot15(10, 1);
+    this->SetState(10, 1);
     break;
   }
   case 70:
     if (this->unknown_037C[5] != 0) {
       reinterpret_cast<CGameObject*>(this->unknown_037C[5])->SendMsg(nullptr, 0x35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->unknown_037C[5] = 0;
-      this->Slot15(this->render.unknown_0074, 1);
+      this->SetState(this->render.unknown_0074, 1);
     }
     break;
   case 71: {
@@ -1584,7 +1584,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       this->unknown_02B0 = 1;
       break;
     }
-    this->Slot15(3, 1);
+    this->SetState(3, 1);
     break;
   case 134: {
     if (this->unknown_037C[11] != 0) {
@@ -1622,7 +1622,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     if (this->render.unknown_0070 == 3) {
       break;
     }
-    this->Slot15(3, 1);
+    this->SetState(3, 1);
     break;
   case 96:
   case 97: {
@@ -1667,7 +1667,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     if (attacker != nullptr) {
       job = attacker->GetEffectiveJob(-1);
-      weapon = attacker->Slot35();
+      weapon = attacker->GetWeapon();
     }
 
     if (id == 94) {
@@ -1773,7 +1773,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
             position.y -= static_cast<float>(offsetY);
           }
           CEffect* effect = g_effectMgr->Spawn(0, 1567, position.x, position.y, position.z, 0, -1, 0, 0);
-          effect->Slot17(static_cast<float>(std::max(rand() % 360, 0)));
+          effect->SetAngle(static_cast<float>(std::max(rand() % 360, 0)));
         } else if (hitEffect == 2132) {
           const vector3d& playerPosition = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
           g_soundMgr->PlayWave("effect\\ABC_DEFT_STAB2.wav", playerPosition.x - this->render.position.x, 0.0f, playerPosition.z - this->render.position.z, 250, 40, 1.0f, 0);
@@ -1858,7 +1858,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           if (this->render.unknown_0070 != 3) {
             if (isPlayer) {
               if (this->render.unknown_0070 != 2 && id != 39 && id != 97) {
-                this->Slot15(4, 1);
+                this->SetState(4, 1);
                 if (motionSpeed > 1.0f) {
                   this->render.unknown_0060 = motionSpeed;
                 } else {
@@ -1867,7 +1867,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
               }
             } else if (id != 39 && id != 97) {
               if (!g_session.IsMonsterActor(this) || !(motionSpeed < -0.00001f)) {
-                this->Slot15(4, 1);
+                this->SetState(4, 1);
                 if (motionSpeed > 1.0f) {
                   this->render.unknown_0060 = motionSpeed;
                 } else {
@@ -1886,9 +1886,9 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     break;
   }
   case 108:
-    this->Slot15(2, 1);
-    this->unknown_0378 = static_cast<float>(this->Slot37());
-    this->Slot16();
+    this->SetState(2, 1);
+    this->unknown_0378 = static_cast<float>(this->GetAttackMotion());
+    this->RegisterPos();
     this->render.unknown_008C = timeGetTime();
     this->render.curMotion = 4;
     this->SetAnimationSpeed(1.0f);
@@ -1962,8 +1962,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
     *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->Slot15(0, 1);
-    this->Slot49(entry->guildId, entry->guildVersion);
+    this->SetState(0, 1);
+    this->SetGuildInfo(entry->guildId, entry->guildVersion);
     break;
   }
   case 4: {
@@ -1979,7 +1979,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     this->render.accountId = entry->aid;
     entry->job = MountedJob(entry->job, entry->stateFlags);
-    this->Slot18(entry->job, entry->unknown_0008, 0);
+    this->SetSprAct(entry->job, entry->unknown_0008, 0);
     mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
@@ -2000,23 +2000,23 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     if (Replay::Instance().state == 6) {
       switch (entry->state) {
       case 1:
-        this->Slot15(3, 1);
+        this->SetState(3, 1);
         break;
       case 2:
-        this->Slot15(6, 1);
+        this->SetState(6, 1);
         break;
       default:
-        this->Slot15(0, 1);
+        this->SetState(0, 1);
         break;
       }
     } else {
-      this->Slot15(0, 1);
+      this->SetState(0, 1);
     }
     this->unknown_02C8 = entry->unknown_0044;
     if (entry->job == 0x2D2 || entry->job == 0x508) {
-      this->Slot49(entry->guildId, entry->guildVersion);
+      this->SetGuildInfo(entry->guildId, entry->guildVersion);
     }
-    this->Slot41(entry->unknown_0068, entry->unknown_006C);
+    this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
     if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
       this->render.color = 0x44FFFFFF;
     } else if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 2 && !StateFlag06(entry->stateFlags)) {
@@ -2039,11 +2039,11 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     this->render.accountId = entry->aid;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_002C;
-    this->Slot18(entry->job, entry->unknown_0008, 0);
+    this->SetSprAct(entry->job, entry->unknown_0008, 0);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
     this->unknown_02C8 = entry->unknown_0048;
-    this->Slot49(entry->guildId, entry->guildVersion);
-    this->Slot41(entry->unknown_006C, entry->unknown_0070);
+    this->SetGuildInfo(entry->guildId, entry->guildVersion);
+    this->SetPropensityInfo(entry->unknown_006C, entry->unknown_0070);
     *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
     this->routeStartTick = entry->moveStartTick;
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -2055,10 +2055,10 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->unknown_0158[5] = entry->destX;
       *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
-      this->Slot15(1, 1);
+      this->SetState(1, 1);
       this->unknown_023C = 0;
     } else {
-      this->Slot15(0, 1);
+      this->SetState(0, 1);
     }
     break;
   }
@@ -2078,15 +2078,15 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     this->routeStartTick = entry->moveStartTick;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_002C;
-    this->Slot18(entry->job, entry->unknown_0008, 1);
+    this->SetSprAct(entry->job, entry->unknown_0008, 1);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
     this->unknown_02C8 = entry->unknown_0048;
-    this->Slot49(entry->guildId, entry->guildVersion);
-    this->Slot41(entry->unknown_006C, entry->unknown_0070);
+    this->SetGuildInfo(entry->guildId, entry->guildVersion);
+    this->SetPropensityInfo(entry->unknown_006C, entry->unknown_0070);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->unknown_0158[5] = entry->destX;
       *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
-      this->Slot15(1, 1);
+      this->SetState(1, 1);
       this->unknown_023C = 0;
     }
     break;
@@ -2097,10 +2097,10 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], *reinterpret_cast<const int*>(&this->unknown_0170[4]))) {
       this->unknown_0158[5] = route[5];
       *reinterpret_cast<int*>(this->unknown_0170) = route[6];
-      this->Slot15(1, 1);
+      this->SetState(1, 1);
       this->unknown_023C = 0;
     } else {
-      this->Slot15(0, 1);
+      this->SetState(0, 1);
     }
     break;
   }
@@ -2233,12 +2233,12 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       gameMode->CellCenter(b, d, this->render.position.x, this->render.position.z);
       this->render.position.y =
         gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
-      this->Slot17();
+      this->UnRegisterPos();
       if (lying == true) {
         this->unknown_02D0 = this->render.position.x;
         this->unknown_02D4 = this->render.position.z;
       }
-      this->Slot15(1, lying);
+      this->SetState(1, lying);
       this->unknown_023C = 0;
       if (f == 0) {
         this->unknown_0238 = 1;
@@ -2257,7 +2257,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_session.unknown_56A0 = 0;
         g_session.unknown_56A4 = 0;
       }
-      this->Slot15(0, lying);
+      this->SetState(0, lying);
     }
     break;
   }
@@ -2271,7 +2271,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     this->render.isLieOnGround = false;
     this->render.unknown_00A4Bytes[1] = 1;
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
-    this->Slot15(0, 1);
+    this->SetState(0, 1);
     break;
   case 99:
     this->render.accountId = 0xFFFFFFFF;
@@ -2796,7 +2796,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case 0x1D:
       if (on) {
         this->unknown_017C = 1;
-        if (this->Slot55() > 0) {
+        if (this->GetMonsterTransformJob() > 0) {
           this->SetAction(0x20, 4, 1);
         } else {
           this->SetAction(this->WeaponActionBase(3), 4, 1);
@@ -2807,7 +2807,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->render.unknown_0070 = 0;
         this->render.isLieOnGround = false;
         this->render.unknown_00A4Bytes[1] = 1;
-        this->Slot15(0, 1);
+        this->SetState(0, 1);
         this->render.isMotionFreezed = false;
       }
       break;
@@ -3241,19 +3241,19 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case 0x265: {
       if (this->render.unknown_0070 == 25) {
-        this->Slot15(0, 1);
+        this->SetState(0, 1);
       }
       int job;
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) > 0) {
-        this->Slot47(1);
+        this->SetRiding(1);
         job = this->GetEffectiveJob(-1);
       } else {
-        this->Slot47(0);
+        this->SetRiding(0);
         job = JobNames::BaseJob(this->GetEffectiveJob(-1));
       }
       this->SetActorJob(job);
-      this->Slot33(this->render.unknown_0048);
-      this->Slot43(0, 1);
+      this->SetBodyPalette(this->render.unknown_0048);
+      this->SetSprRobe(0, 1);
       break;
     }
     case 0x26D:
@@ -3582,10 +3582,10 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case 0x358:
       g_session.unknown_6184 = g_session.m_aid == this->render.accountId ? f : g_session.unknown_6184;
       this->unknown_03DC = f;
-      this->Slot21(this->GetEffectiveJob(-1));
-      this->Slot30();
-      this->Slot31();
-      this->Slot32();
+      this->SetSprJob(this->GetEffectiveJob(-1));
+      this->SetImfFileName();
+      this->SetHeadPaletteName();
+      this->SetBodyPaletteName();
       break;
     case 0x35B:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
@@ -3626,23 +3626,23 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case 0x3A5:
       if (on == true) {
-        this->Slot15(0x30, 1);
+        this->SetState(0x30, 1);
         this->render.isMotionFreezed = true;
         this->render.unknown_0114 = 1;
       } else {
         this->render.unknown_0070 = 0;
         this->render.isLieOnGround = false;
         this->render.unknown_00A4Bytes[1] = 1;
-        this->Slot15(0, 1);
+        this->SetState(0, 1);
         this->render.isMotionFreezed = false;
         this->render.unknown_0114 = 0;
       }
       break;
     case 0x37D:
       if (on == true) {
-        this->Slot15(0x2F, 1);
+        this->SetState(0x2F, 1);
       } else if (this->render.unknown_0114 == 0) {
-        this->Slot15(0, 1);
+        this->SetState(0, 1);
       }
       break;
     case 0x397:
@@ -3861,19 +3861,19 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         if ((static_cast<std::int64_t>(g) << 32 | static_cast<std::uint32_t>(f)) == 2) {
-          target->Slot57(2);
+          target->SetMadogearType(2);
           if (this->render.accountId == g_session.m_aid) {
             g_session.unknown_8074 = 2;
           }
         } else {
-          target->Slot57(1);
+          target->SetMadogearType(1);
           if (this->render.accountId == g_session.m_aid) {
             g_session.unknown_8074 = 1;
           }
         }
         target->SendMsg(nullptr, 0x69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       } else {
-        target->Slot57(0);
+        target->SetMadogearType(0);
         if (this->render.accountId == g_session.m_aid) {
           g_session.unknown_8074 = 0;
         }
@@ -4069,10 +4069,10 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         CEffect* const second = g_effectMgr->Spawn(this->render.accountId, 0x803, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         CEffect* const third = g_effectMgr->Spawn(this->render.accountId, 0x804, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         if (second) {
-          second->Slot16(1000);
+          second->SetDelay(1000);
         }
         if (third) {
-          third->Slot16(1000);
+          third->SetDelay(1000);
         }
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x803);
@@ -4086,10 +4086,10 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         CEffect* const second = g_effectMgr->Spawn(this->render.accountId, 0x81e, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         CEffect* const third = g_effectMgr->Spawn(this->render.accountId, 0x81f, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         if (second) {
-          second->Slot16(1000);
+          second->SetDelay(1000);
         }
         if (third) {
-          third->Slot16(1000);
+          third->SetDelay(1000);
         }
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x821);

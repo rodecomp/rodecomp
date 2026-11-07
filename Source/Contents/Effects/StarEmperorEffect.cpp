@@ -81,7 +81,7 @@ void CStarEmperorEffect::Close() {
 
 // OFFSET: 0x0072C490
 // FUNCTION: fn_07478
-void CStarEmperorEffect::Slot01() {
+void CStarEmperorEffect::Open() {
   this->unknown_002C = this->id != 1203 ? 30 : 60;
   this->BuildSphere();
 
@@ -99,7 +99,7 @@ void CStarEmperorEffect::Slot01() {
 
 // OFFSET: 0x0072C540
 // FUNCTION: fn_07479
-void CStarEmperorEffect::Slot12() {
+void CStarEmperorEffect::InitEvents() {
   if (this->id == 1203) {
     this->AddEvent(0, "effect\\wizard_fire_pillar_a.wav", 1, 0);
     this->AddEvent(0, "effect\\wizard_fire_pillar_b.wav", 31, 0);
@@ -108,7 +108,7 @@ void CStarEmperorEffect::Slot12() {
 
 // OFFSET: 0x0072C580
 // FUNCTION: fn_07480
-bool CStarEmperorEffect::Slot06() {
+bool CStarEmperorEffect::IsAlive() {
   return !this->IsFinished();
 }
 
@@ -181,7 +181,7 @@ void CStarEmperorEffect::UpdateRing(CParticle* particle) {
 
 // OFFSET: 0x0072C830
 // FUNCTION: fn_07482
-void CStarEmperorEffect::Slot03() {
+void CStarEmperorEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->sphere.begin(); it != this->sphere.end(); ++it) {
     if (CParticle* particle = *it) {
       const int frame = particle->unknown_00E8;
@@ -233,7 +233,7 @@ void CStarEmperorEffect::Slot03() {
 
 // OFFSET: 0x0072CCA0
 // FUNCTION: fn_07483
-void CStarEmperorEffect::Slot04() {
+void CStarEmperorEffect::Render() {
   for (auto it = this->sphere.begin(); it != this->sphere.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

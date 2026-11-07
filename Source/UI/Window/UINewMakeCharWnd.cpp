@@ -114,41 +114,41 @@ UINewMakeCharWnd::UINewMakeCharWnd()
 
 // OFFSET: 0x007DB320
 // FUNCTION: fn_09617
-void UIHairBitmap::Slot25(int x, int y) {
+void UIHairBitmap::OnLBtnDown(int x, int y) {
   if (this->parent) {
-    this->parent->Slot25(x, y);
+    this->parent->OnLBtnDown(x, y);
   }
 }
 
 // OFFSET: 0x007DB300
 // FUNCTION: fn_09616
-void UIHairBitmap::Slot26(int x, int y) {
+void UIHairBitmap::OnLBtnDblClk(int x, int y) {
   if (this->parent) {
-    this->parent->Slot26(x, y);
+    this->parent->OnLBtnDblClk(x, y);
   }
 }
 
 // OFFSET: 0x007DB380
 // FUNCTION: fn_09620
-void UIHairBitmap::Slot27(int x, int y) {
+void UIHairBitmap::OnMouseMove(int x, int y) {
   if (this->parent) {
-    this->parent->Slot27(x, y);
+    this->parent->OnMouseMove(x, y);
   }
 }
 
 // OFFSET: 0x007DB360
 // FUNCTION: fn_09619
-void UIHairBitmap::Slot28(int x, int y) {
+void UIHairBitmap::OnMouseHover(int x, int y) {
   if (this->parent) {
-    this->parent->Slot28(x, y);
+    this->parent->OnMouseHover(x, y);
   }
 }
 
 // OFFSET: 0x007DB3A0
 // FUNCTION: fn_09621
-void UIHairBitmap::Slot29(int x, int y) {
+void UIHairBitmap::OnMouseCheck(int x, int y) {
   if (this->parent) {
-    this->parent->Slot29(x, y);
+    this->parent->OnMouseCheck(x, y);
   }
 }
 
@@ -162,9 +162,9 @@ void UIHairBitmap::ResetCursor(int x, int y) {
 
 // OFFSET: 0x007DB340
 // FUNCTION: fn_09618
-void UIHairBitmap::Slot31(int x, int y) {
+void UIHairBitmap::OnLBtnUp(int x, int y) {
   if (this->parent) {
-    this->parent->Slot31(x, y);
+    this->parent->OnLBtnUp(x, y);
   }
 }
 
@@ -225,7 +225,7 @@ void UINewMakeCharWnd::Paint() {
 
 // OFFSET: 0x007DB3E0
 // FUNCTION: fn_09623
-void UINewMakeCharWnd::Slot19() {
+void UINewMakeCharWnd::OnProcess() {
   this->m_raceViews[this->m_race]->Invalidate();
 }
 
@@ -298,7 +298,7 @@ int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 
 // OFFSET: 0x007DA290
 // FUNCTION: fn_09613
-void UIHairStyleButton::Slot15(int width, int height) {
+void UIHairStyleButton::OnCreate(int width, int height) {
   this->m_preview = new (std::nothrow) UIHairBitmap();
   this->m_preview->SetSize(36, 37);
   this->AddChild(this->m_preview);
@@ -341,7 +341,7 @@ void UINewMakeCharWnd::UpdatePreviewResources() {
 
 // OFFSET: 0x007DA340
 // FUNCTION: fn_09614
-void UINewMakeCharWnd::Slot15(int width, int height) {
+void UINewMakeCharWnd::OnCreate(int width, int height) {
   UIBitmapButton* closeButton = new UIBitmapButton();
   closeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_close_normal.bmp", 0, 0);
   closeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_close_over.bmp", 1, 0);

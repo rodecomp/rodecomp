@@ -9,11 +9,11 @@ class CGravityControlEffect : public CEffect {
 public:
   CGravityControlEffect() : CEffect(-1), target(0), unknown_00D0(0), unknown_00D4(-20.0f) {}
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
   ~CGravityControlEffect() override;
 
   /* 00CC */ int target;

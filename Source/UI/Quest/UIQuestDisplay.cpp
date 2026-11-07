@@ -34,7 +34,7 @@ void UIQuestDisplay::Create(int width, int height) {
 
 // OFFSET: 0x0094A400
 // FUNCTION: fn_12887
-bool UIQuestDisplay::Slot08() {
+bool UIQuestDisplay::IsTransmitMouseInput() {
   return true;
 }
 
@@ -152,7 +152,7 @@ void UIQuestDisplay::Paint() {
 
 // OFFSET: 0x0094F1D0
 // FUNCTION: fn_12934
-void UIQuestDisplay::Slot33(int x, int y) {
+void UIQuestDisplay::OnRBtnUp(int x, int y) {
   const int previous = this->m_selectedIndex;
   int selected = -1;
   int single = 0;
@@ -197,7 +197,7 @@ void UIQuestDisplay::Slot33(int x, int y) {
 
 // OFFSET: 0x009515D0
 // FUNCTION: fn_12953
-void UIQuestDisplay::Slot11() {
+void UIQuestDisplay::StoreInfo() {
   if (this->m_visibleSetting) {
     *this->m_visibleSetting = this->geometry.visible;
   }

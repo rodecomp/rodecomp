@@ -32,7 +32,7 @@ void CPowderingEffect::Close() {
 
 // OFFSET: 0x00709330
 // FUNCTION: fn_07089
-void CPowderingEffect::Slot01() {
+void CPowderingEffect::Open() {
   if (this->unknown_00B0 == 1 || this->unknown_00B0 == 2) {
     this->unknown_00E4 = 3;
   } else if (this->unknown_00B0 == 3 || this->unknown_00B0 == 4) {
@@ -133,7 +133,7 @@ void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
 
 // OFFSET: 0x00709690
 // FUNCTION: fn_07091
-void CPowderingEffect::Slot12() {
+void CPowderingEffect::InitEvents() {
   if (this->id == 1104) {
     this->AddEvent(0, "effect\\su_cn_powdering.wav", 0, 0);
   }
@@ -169,7 +169,7 @@ void CPowderingEffect::InitSmokeParticle(CParticle* particle) {
 
 // OFFSET: 0x007097B0
 // FUNCTION: fn_07093
-bool CPowderingEffect::Slot06() {
+bool CPowderingEffect::IsAlive() {
   for (CParticle* particle : this->smokeParticles) {
     if (particle->unknown_00A8 != 2) {
       return true;
@@ -187,7 +187,7 @@ bool CPowderingEffect::Slot06() {
 
 // OFFSET: 0x00709800
 // FUNCTION: fn_07094
-void CPowderingEffect::Slot03() {
+void CPowderingEffect::OnProcess() {
   for (auto it = this->smokeParticles.begin(); it != this->smokeParticles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle || particle->unknown_00A8 == 2) {
@@ -279,7 +279,7 @@ void CPowderingEffect::Slot03() {
 
 // OFFSET: 0x00709E40
 // FUNCTION: fn_07095
-void CPowderingEffect::Slot04() {
+void CPowderingEffect::Render() {
   for (auto it = this->smokeParticles.begin(); it != this->smokeParticles.end(); ++it) {
     CParticle* particle = *it;
     if (particle && particle->unknown_00A8 != 2) {

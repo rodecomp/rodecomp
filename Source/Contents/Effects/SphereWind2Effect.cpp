@@ -24,7 +24,7 @@ void CSphereWind2Effect::Close() {
 
 // OFFSET: 0x00B77380
 // FUNCTION: fn_19183
-void CSphereWind2Effect::Slot01() {
+void CSphereWind2Effect::Open() {
   for (int base = 0; base < 45; base += 9) {
     int angle = base;
     for (int ring = 0; ring < 4; ++ring) {
@@ -71,13 +71,13 @@ void CSphereWind2Effect::Slot01() {
 
 // OFFSET: 0x00B775E0
 // FUNCTION: fn_19184
-bool CSphereWind2Effect::Slot06() {
+bool CSphereWind2Effect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B775F0
 // FUNCTION: fn_19185
-void CSphereWind2Effect::Slot03() {
+void CSphereWind2Effect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -143,7 +143,7 @@ void CSphereWind2Effect::Slot03() {
 
 // OFFSET: 0x00B77B40
 // FUNCTION: fn_19186
-void CSphereWind2Effect::Slot04() {
+void CSphereWind2Effect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle && particle->unknown_00E8 > 0 && particle->unknown_000C > 0) {

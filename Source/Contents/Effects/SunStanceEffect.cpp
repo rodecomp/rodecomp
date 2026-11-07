@@ -30,7 +30,7 @@ void CSunStanceEffect::Close() {
 
 // OFFSET: 0x0072D980
 // FUNCTION: fn_07495
-void CSunStanceEffect::Slot01() {
+void CSunStanceEffect::Open() {
   for (int index = 0; index < 3; ++index) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
     if (!particle) {
@@ -75,13 +75,13 @@ void CSunStanceEffect::Slot01() {
 
 // OFFSET: 0x0072DB00
 // FUNCTION: fn_07496
-bool CSunStanceEffect::Slot06() {
+bool CSunStanceEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x0072DB10
 // FUNCTION: fn_07497
-void CSunStanceEffect::Slot03() {
+void CSunStanceEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle) {
@@ -108,7 +108,7 @@ void CSunStanceEffect::Slot03() {
 
 // OFFSET: 0x0072DDD0
 // FUNCTION: fn_07498
-void CSunStanceEffect::Slot04() {
+void CSunStanceEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);

@@ -25,7 +25,7 @@
 
 template <>
 void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnScroll(int position);
-template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::AddNewItem(); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Slot53(int resolveSkin); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Resize(int width, int height);
+template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::AddNewItem(); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::LoadSkin(int resolveSkin); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Resize(int width, int height);
 // OFFSET: 0x00A4F580
 // FUNCTION: fn_16213
 bool UnusedTrueA4F580() {
@@ -89,19 +89,19 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
 
 // OFFSET: 0x00A4FE70
 // FUNCTION: fn_16224
-void CUIOngoingQuestInfo::Slot53() {
+void CUIOngoingQuestInfo::Initialize() {
   this->unknown_00B4 = 0;
   this->m_resolveSkin = true;
   this->Resize(342, 412);
   this->Move(0, 0);
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
 }
 
 // OFFSET: 0x00A4FF10
 // FUNCTION: fn_16225
 template <>
-void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Slot15(int width, int height) {
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -118,11 +118,11 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
 // OFFSET: 0x00A53A00
 // FUNCTION: fn_16232
 template <>
-void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Slot35(int value) {
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
@@ -227,18 +227,18 @@ void CUIScrollWindow::Paint() {
 
 // OFFSET: 0x00A558A0
 // FUNCTION: fn_16307
-void CUIContents::Slot16() {
+void CUIContents::OnInit() {
 }
 
 // OFFSET: 0x00A55940
 // FUNCTION: fn_16309
-void CUIRewardItem::Slot16() {
+void CUIRewardItem::OnInit() {
 }
 
 // OFFSET: 0x00A55B50
 // FUNCTION: fn_16312
-void CUIScrollWindow::Slot35(int value) {
-  this->scrollBar->Slot35(value);
+void CUIScrollWindow::OnWheel(int value) {
+  this->scrollBar->OnWheel(value);
 }
 
 // OFFSET: 0x00A55E10
@@ -308,7 +308,7 @@ void CUIRewards::OnBindItem(CUIRewardItem* item, const CRewardItemData& data) {
 
 // OFFSET: 0x00A558B0
 // FUNCTION: fn_16308
-void CUIOngoingQuestInfo::Slot16() {
+void CUIOngoingQuestInfo::OnInit() {
   const char* title = LookupMessage(0xD48);
   this->titleBar->SetTitle(title);
   UIWindow* window = g_windowMgr.LookupWindow(0x2718);
@@ -323,7 +323,7 @@ namespace OngoingQuestInfo {
 
 // OFFSET: 0x00A55A90
 // FUNCTION: fn_16311
-void CUIScrollWindow::Slot16() {
+void CUIScrollWindow::OnInit() {
   this->firstContents->EnableClip();
   this->secondContents->EnableClip();
   this->rewards->EnableClip();
@@ -338,7 +338,7 @@ namespace OngoingQuestInfo {
 
 // OFFSET: 0x00A55950
 // FUNCTION: fn_16310
-void CUIRewards::Slot16() {
+void CUIRewards::OnInit() {
   this->firstLabel->SetText(LookupMessage(0xD4C));
   this->secondLabel->SetText(LookupMessage(0xD4D));
   this->thirdLabel->SetText(LookupMessage(0xD4E));
@@ -442,7 +442,7 @@ void CUIScrollWindow::SetQuest(unsigned int id) {
 
 // OFFSET: 0x00A50970
 // FUNCTION: fn_16227
-void CUIOngoingQuestInfo::Slot15(int width, int height) {
+void CUIOngoingQuestInfo::OnCreate(int width, int height) {
   this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(342, 17);
   this->titleBar->Move(0, 0);
@@ -535,7 +535,7 @@ namespace OngoingQuestInfo {
 
 // OFFSET: 0x00A4FFE0
 // FUNCTION: fn_16226
-void CUIContents::Slot15(int width, int height) {
+void CUIContents::OnCreate(int width, int height) {
   this->icon = new CUIStaticImage();
   this->icon->SetSize(10, 9);
   this->icon->Move(9, 9);
@@ -583,7 +583,7 @@ void CUIContents::Slot15(int width, int height) {
 
 // OFFSET: 0x00A51900
 // FUNCTION: fn_16228
-void CUIRewardItem::Slot15(int width, int height) {
+void CUIRewardItem::OnCreate(int width, int height) {
   this->background = new CUIStaticImage();
   this->background->SetSize(38, 38);
   this->background->Move(0, 0);
@@ -628,7 +628,7 @@ void CUIRewardItem::Slot15(int width, int height) {
 
 // OFFSET: 0x00A53170
 // FUNCTION: fn_16230
-void CUIScrollWindow::Slot15(int width, int height) {
+void CUIScrollWindow::OnCreate(int width, int height) {
   this->firstContents = new CUIContents();
   this->firstContents->SetSize(335, 59);
   this->firstContents->Move(0, 0);
@@ -777,7 +777,7 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
 // OFFSET: 0x00A53CF0
 // FUNCTION: fn_16234
 template <>
-void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Slot53(int resolveSkin) {
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -811,7 +811,7 @@ CUIRewardItem::CUIRewardItem() : CUIListItem(), background(nullptr), gameItem(nu
 namespace OngoingQuestInfo {
 // OFFSET: 0x00A51ED0
 // FUNCTION: fn_16229
-void CUIRewards::Slot15(int width, int height) {
+void CUIRewards::OnCreate(int width, int height) {
   this->icon = new CUIStaticImage();
   this->icon->SetSize(10, 9);
   this->icon->Move(9, 9);

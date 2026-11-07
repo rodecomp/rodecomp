@@ -64,7 +64,7 @@ bool IsLocalPlayerAid(std::uint32_t aid) {
   if (!player) {
     return false;
   }
-  return player->Slot50() == static_cast<int>(aid);
+  return player->GetGdid() == static_cast<int>(aid);
 }
 
 // INLINED
@@ -102,7 +102,7 @@ int ClampTargetAttackRange(std::uint32_t aid, int distance) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(&actor->unknown_0318[5]))
     );
     if (target) {
-      return distance < target->Slot42() ? target->Slot42() : distance;
+      return distance < target->GetPkState() ? target->GetPkState() : distance;
     }
   }
   return distance;
@@ -159,7 +159,7 @@ int CMercenaryAI::Process(std::uint32_t aid) {
     if (!actor->render.isMotionFinished) {
       return 0;
     }
-    actor->Slot15(0, 1);
+    actor->SetState(0, 1);
   }
 
   if (this->actionStarted == 0) {
@@ -183,7 +183,7 @@ int CMercenaryAI::Process(std::uint32_t aid) {
       return 0;
     }
   } else if (GetTickCount() - this->actionStarted > this->actionDuration) {
-    actor->Slot15(0, 1);
+    actor->SetState(0, 1);
     if (this->kind == 0) {
       g_session.m_homunActionState = 0;
     } else if (this->kind == 1) {
@@ -280,7 +280,7 @@ int AiHomunAttack(lua_State* state) {
   if (!actor || !targetActor) {
     return 0;
   }
-  if (StateFlag06(targetActor->Slot13()) || StateFlag01(targetActor->Slot13()) || StateFlag02(targetActor->Slot13())) {
+  if (StateFlag06(targetActor->GetStateFlags()) || StateFlag01(targetActor->GetStateFlags()) || StateFlag02(targetActor->GetStateFlags())) {
     return 0;
   }
 
@@ -317,7 +317,7 @@ int AiMercenaryAttack(lua_State* state) {
   if (!actor || !targetActor) {
     return 0;
   }
-  if (StateFlag06(targetActor->Slot13()) || StateFlag01(targetActor->Slot13()) || StateFlag02(targetActor->Slot13())) {
+  if (StateFlag06(targetActor->GetStateFlags()) || StateFlag01(targetActor->GetStateFlags()) || StateFlag02(targetActor->GetStateFlags())) {
     return 0;
   }
 
@@ -388,7 +388,7 @@ int AiHomunGetV(lua_State* state) {
   case 13:
     if (actor) {
       if (aid != g_session.m_aid) {
-        if (StateFlag06(actor->Slot13()) || StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+        if (StateFlag06(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
           lua_pushnumber(state, -1.0);
           lua_pushnumber(state, -1.0);
           return 2;
@@ -572,7 +572,7 @@ int AiMercenaryGetV(lua_State* state) {
   case 13:
     if (actor) {
       if (aid != g_session.m_aid) {
-        if (StateFlag06(actor->Slot13()) || StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+        if (StateFlag06(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
           lua_pushnumber(state, -1.0);
           lua_pushnumber(state, -1.0);
           return 2;
@@ -868,7 +868,7 @@ int AiGetMsg(lua_State* state) {
     return 0;
   }
 
-  AiMessage message = *reinterpret_cast<const AiMessage*>(actor->Slot51(index));
+  AiMessage message = *reinterpret_cast<const AiMessage*>(actor->GetMsg2AI(index));
   lua_newtable(state);
   lua_pushnumber(state, 1);
   lua_pushnumber(state, message.type);
@@ -919,7 +919,7 @@ int AiGetResMsg(lua_State* state) {
     return 0;
   }
 
-  AiMessage message = *reinterpret_cast<const AiMessage*>(actor->Slot53(index));
+  AiMessage message = *reinterpret_cast<const AiMessage*>(actor->GetResMsg2AI(index));
   lua_newtable(state);
   lua_pushnumber(state, 1);
   lua_pushnumber(state, message.type);
@@ -970,7 +970,7 @@ int AiIsMonster(lua_State* state) {
         result = 0.0;
         break;
       default:
-        if (StateFlag06(actor->Slot13()) || StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+        if (StateFlag06(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
           result = 0.0;
         } else {
           result = 1.0;
@@ -983,12 +983,12 @@ int AiIsMonster(lua_State* state) {
       if (world->unknown_0048 || world->unknown_0054) {
         ally = g_session.IsPartyMember(actor->render.accountId, true);
       } else if (world->unknown_004C) {
-        ally = g_session.IsLocalPlayerAid(actor->Slot50()) != 0;
+        ally = g_session.IsLocalPlayerAid(actor->GetGdid()) != 0;
       } else {
         ally = true;
       }
       if (!ally) {
-        if (StateFlag06(actor->Slot13()) || StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+        if (StateFlag06(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
           result = 0.0;
         } else {
           result = 1.0;
@@ -1122,7 +1122,7 @@ int AiSkillObject(lua_State* state) {
   } else {
     targetActor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(target));
     if (targetActor) {
-      if (StateFlag06(targetActor->Slot13()) || StateFlag01(targetActor->Slot13()) || StateFlag02(targetActor->Slot13())) {
+      if (StateFlag06(targetActor->GetStateFlags()) || StateFlag01(targetActor->GetStateFlags()) || StateFlag02(targetActor->GetStateFlags())) {
         return 0;
       }
     }

@@ -2271,7 +2271,7 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
   }
 
   if (actor->IsPlayerClass(actor->GetEffectiveJob(-1))) {
-    if (StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+    if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
       actor->SendMsg(nullptr, 109, 0, 203, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor->SendMsg(nullptr, 109, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor->SendMsg(nullptr, 109, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -2374,7 +2374,7 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
     return;
   }
 
-  if (StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+  if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
     actor->SendMsg(nullptr, 109, 0, 203, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     actor->SendMsg(nullptr, 109, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     actor->SendMsg(nullptr, 109, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -2757,7 +2757,7 @@ __declspec(noinline) void CGameMode::ReceivePacket0B73(const unsigned char* data
     return;
   }
 
-  if (StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+  if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
     g_effectMgr->Retire(actor->render.accountId, 1225);
   }
 
@@ -2770,7 +2770,7 @@ __declspec(noinline) void CGameMode::ReceivePacket0B73(const unsigned char* data
   }
 
   effect->unknown_00B0 = packet->value;
-  effect->Slot01();
+  effect->Open();
 }
 
 // OFFSET: 0x00D25850
@@ -2962,13 +2962,13 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
       CEffect* effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(duration);
+        effect->SetDelay(duration);
       }
       break;
     }
     case 0x2C4:
       target->LaunchEffect(0x5C, origin, 0.0f);
-      source->Slot15(7, 1);
+      source->SetState(7, 1);
       break;
     case 0x2ED:
       if (source == this->scene->player) {
@@ -2985,7 +2985,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       }
       break;
     case 0x7D3:
-      source->Slot15(2, 1);
+      source->SetState(2, 1);
       target->LaunchEffect(0xB7, origin, 0.0f);
       break;
     case 0x8A5:
@@ -2997,7 +2997,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         effectId = 0x586;
       }
       g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      source->Slot15(7, 1);
+      source->SetState(7, 1);
       break;
     case 0x996:
       g_effectMgr->Spawn(target->render.accountId, 0x619, origin.x, origin.y, origin.z, 0, -1, 0, 0);
@@ -3008,31 +3008,31 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       if (g_serviceOptions.Get(0xE5)) {
         effect = g_effectMgr->Spawn(source->render.accountId, 0x5DA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
-          effect->Slot16(200);
+          effect->SetDelay(200);
         }
         effect = g_effectMgr->Spawn(target->render.accountId, 0x5D8, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
-          effect->Slot16(400);
+          effect->SetDelay(400);
         }
         effectId = 0x5D9;
       } else {
         effect = g_effectMgr->Spawn(source->render.accountId, 0x550, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
-          effect->Slot16(200);
+          effect->SetDelay(200);
         }
         effect = g_effectMgr->Spawn(source->render.accountId, 0x551, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
-          effect->Slot16(200);
+          effect->SetDelay(200);
         }
         effect = g_effectMgr->Spawn(target->render.accountId, 0x54E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
-          effect->Slot16(400);
+          effect->SetDelay(400);
         }
         effectId = 0x54F;
       }
       effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(400);
+        effect->SetDelay(400);
       }
       break;
     }
@@ -3051,7 +3051,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       const float angle = 360.0f - (heading / 3.141592f * 180.0f + yaw);
       CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x91F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot17(angle);
+        effect->SetAngle(angle);
       }
       break;
     }
@@ -3059,7 +3059,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
   }
 
   if (source != nullptr && skillId == 0x89B) {
-    source->Slot15(7, 1);
+    source->SetState(7, 1);
   }
 
   if (target != nullptr) {
@@ -3096,7 +3096,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
           if (effect) {
-            effect->Slot16(200);
+            effect->SetDelay(200);
           }
         }
         effectId = 0x5F0;
@@ -3104,18 +3104,18 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
           if (effect) {
-            effect->Slot16(200);
+            effect->SetDelay(200);
           }
         }
         effect = g_effectMgr->Spawn(target->render.accountId, 0x562, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
-          effect->Slot16(350);
+          effect->SetDelay(350);
         }
         effectId = 0x563;
       }
       effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(350);
+        effect->SetDelay(350);
       }
       g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
@@ -3146,7 +3146,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
           if (effect) {
-            effect->Slot16(200);
+            effect->SetDelay(200);
           }
         }
         effectId = 0x5F6;
@@ -3154,18 +3154,18 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
           if (effect) {
-            effect->Slot16(200);
+            effect->SetDelay(200);
           }
         }
         effect = g_effectMgr->Spawn(target->render.accountId, 0x56A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
-          effect->Slot16(350);
+          effect->SetDelay(350);
         }
         effectId = 0x56B;
       }
       effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(350);
+        effect->SetDelay(350);
       }
       g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
@@ -3252,19 +3252,19 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         if (g_serviceOptions.Get(0xE5)) {
           effect = g_effectMgr->Spawn(0, 0x5D2, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
-            effect->Slot16(duration);
+            effect->SetDelay(duration);
           }
           effectId = 0x5D3;
         } else {
           effect = g_effectMgr->Spawn(0, 0x54B, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
-            effect->Slot16(duration);
+            effect->SetDelay(duration);
           }
           effectId = 0x54C;
         }
         effect = g_effectMgr->Spawn(0, effectId, position.x, position.y, position.z, 0, -1, 0, 0);
         if (effect) {
-          effect->Slot16(duration);
+          effect->SetDelay(duration);
         }
       }
 
@@ -3292,7 +3292,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     case 0x919: {
       CEffect* effect = g_effectMgr->Spawn(target->render.accountId, 0x624, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(100);
+        effect->SetDelay(100);
       }
       break;
     }
@@ -3520,7 +3520,7 @@ void CGameMode::ReceiveDispel(const unsigned char* packet) {
     this->scene->player->SendMsg(nullptr, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     CPlayer* player = this->scene->player;
     if (player->render.unknown_0070 == 8) {
-      player->Slot15(0, 1);
+      player->SetState(0, 1);
     }
     return;
   }
@@ -3535,7 +3535,7 @@ void CGameMode::ReceiveDispel(const unsigned char* packet) {
   actor->SendMsg(nullptr, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   g_effectMgr->Retire(dispel->aid, 1114);
   if (actor->render.unknown_0070 == 8) {
-    actor->Slot15(0, 1);
+    actor->SetState(0, 1);
   }
 }
 
@@ -3849,7 +3849,7 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
     return;
   }
 
-  if (StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+  if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
     int effectId;
     switch (actor->GetEffectiveJob(-1)) {
     case 24:
@@ -3952,7 +3952,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     break;
   }
 
-  if (StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+  if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
     switch (job) {
     case 4252:
     case 4265:
@@ -3983,7 +3983,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
       return;
     }
     static_cast<CRichsCoinEffect*>(coins)->unknown_00E4 = count;
-    coins->Slot01();
+    coins->Open();
     return;
   }
   case 4252:
@@ -5709,14 +5709,14 @@ void CGameMode::ApplyStatusChange(
       break;
     case 933:
       if (aid == g_session.m_aid) {
-        this->scene->player->Slot15(48, 1);
+        this->scene->player->SetState(48, 1);
         this->scene->player->render.isMotionFreezed = true;
       }
       break;
     case 893:
       if (aid == g_session.m_aid) {
         this->scene->GetGameActorByAID(aid);
-        this->scene->player->Slot15(47, 1);
+        this->scene->player->SetState(47, 1);
       }
       break;
     case 373:
@@ -5754,12 +5754,12 @@ void CGameMode::ApplyStatusChange(
       }
 
       if (value1 == 2) {
-        actor->Slot57(2);
+        actor->SetMadogearType(2);
         if (aid == g_session.m_aid) {
           g_session.unknown_8074 = 2;
         }
       } else {
-        actor->Slot57(1);
+        actor->SetMadogearType(1);
         if (aid == g_session.m_aid) {
           g_session.unknown_8074 = 1;
         }
@@ -5947,7 +5947,7 @@ void CGameMode::ApplyStatusChange(
     case 29:
       std::sprintf(message, "");
       if (aid == g_session.m_aid) {
-        this->scene->player->Slot15(0, 1);
+        this->scene->player->SetState(0, 1);
         this->scene->player->render.isMotionFreezed = false;
       }
       break;
@@ -6359,13 +6359,13 @@ void CGameMode::ApplyStatusChange(
       break;
     case 933:
       if (aid == g_session.m_aid) {
-        this->scene->player->Slot15(0, 1);
+        this->scene->player->SetState(0, 1);
         this->scene->player->render.isMotionFreezed = false;
       }
       break;
     case 893:
       if (aid == g_session.m_aid) {
-        this->scene->player->Slot15(0, 1);
+        this->scene->player->SetState(0, 1);
       }
       break;
     case 1013:
@@ -6874,7 +6874,7 @@ void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
         g_session.unknown_55D8 = *reinterpret_cast<const int*>(packet + 8);
       } else {
         g_session.unknown_55D8 = 0;
-        actor->Slot21(actor->GetEffectiveJob(-1));
+        actor->SetSprJob(actor->GetEffectiveJob(-1));
       }
       if (g_session.IsHomunAid(*reinterpret_cast<const std::uint32_t*>(packet + 4)) && g_windowMgr.window_03C0) {
         g_windowMgr.window_03C0->Invalidate();
@@ -9107,7 +9107,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
       g_session.unknown_1038 = packet->value;
     } else {
       g_session.unknown_1038 = 0;
-      actor->Slot21(actor->GetEffectiveJob(-1));
+      actor->SetSprJob(actor->GetEffectiveJob(-1));
     }
     if (packet->aid == g_session.unknown_1010 && g_windowMgr.window_038C) {
       g_windowMgr.window_038C->Invalidate();
@@ -9116,7 +9116,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
   case 4:
     if (actor) {
       actor->SetUnknown02C8(packet->value);
-      actor->Slot15(0, 1);
+      actor->SetState(0, 1);
     }
     break;
   case 6:
@@ -10132,7 +10132,7 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
     this->scene->player->unknown_0494 = packet->count;
   } else {
     actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
-    const std::uint32_t state = actor->Slot13();
+    const std::uint32_t state = actor->GetStateFlags();
     if (StateFlag02(state) || StateFlag01(state) || StateFlag06(state)) {
       return;
     }
@@ -10463,7 +10463,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
     break;
   case 3:
     if (CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid))) {
-      if (!StateFlag06(actor->Slot13())) {
+      if (!StateFlag06(actor->GetStateFlags())) {
         this->LaunchDummyEffect(&actor->render.position, 0x130, 300, 0);
       }
     }
@@ -11209,7 +11209,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
   if (skillId == 0x14A4) {
     effect = g_effectMgr->Spawn(target->render.accountId, 0x78A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   }
@@ -11226,11 +11226,11 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     effect = g_effectMgr->Spawn(target->render.accountId, 0x635, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     const int duration = static_cast<int>(speed * 150.0f + 200.0f) + delay;
     if (effect) {
-      effect->Slot14(duration);
+      effect->SetLifeTime(duration);
     }
     effect = g_effectMgr->Spawn(target->render.accountId, 0x636, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(duration);
+      effect->SetLifeTime(duration);
     }
     return;
   }
@@ -11246,7 +11246,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     target->SendMsg(nullptr, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     effect = g_effectMgr->Spawn(target->render.accountId, 0x673, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x8D3:
@@ -11403,7 +11403,7 @@ void CGameMode::NotifySkillCasting(
   if (delay == 0 && skillId == 0xA04) {
     CEffect* effect = g_effectMgr->Find(source->render.accountId, 0x474);
     if (effect) {
-      effect->Slot01();
+      effect->Open();
     } else {
       g_effectMgr->Spawn(source->render.accountId, 0x474, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
     }
@@ -11436,7 +11436,7 @@ void CGameMode::NotifySkillCasting(
   int effectId = 0;
   int motion = 0;
   g_session.GetSkillActionInfo(skillId, effectId, motion, property, source->GetEffectiveJob(-1));
-  source->Slot15(motion, 1);
+  source->SetState(motion, 1);
 
   if (skillId != 0x3E && skillId != 0x39 && delay != 0) {
     source->SendMsg(nullptr, 0x52, 0, delay, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -12577,8 +12577,8 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
       const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
       const int guildVersion = packet->shield;
-      if (guildId > 0 && !actor->Slot50()) {
-        actor->Slot49(guildId, guildVersion);
+      if (guildId > 0 && !actor->GetGdid()) {
+        actor->SetGuildInfo(guildId, guildVersion);
       }
     }
     if (packet->objectType == 7) {
@@ -12635,7 +12635,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
       if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
         const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
         if (guildId > 0) {
-          actor->Slot49(guildId, packet->shield);
+          actor->SetGuildInfo(guildId, packet->shield);
         }
       }
     }
@@ -12686,7 +12686,7 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
     if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
       const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
       if (guildId > 0) {
-        actor->Slot49(guildId, packet->shield);
+        actor->SetGuildInfo(guildId, packet->shield);
       }
     }
     actor->unknown_0210 = packet->unknown_002A;
@@ -12699,8 +12699,8 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
   if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
     const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
     const int guildVersion = packet->shield;
-    if (guildId > 0 && !actor->Slot50()) {
-      actor->Slot49(guildId, guildVersion);
+    if (guildId > 0 && !actor->GetGdid()) {
+      actor->SetGuildInfo(guildId, guildVersion);
     }
   }
   actor->unknown_0210 = packet->unknown_002A;
@@ -12945,7 +12945,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
     if (g_session.IsPetAid(packet->aid)) {
       g_session.unknown_1038 = entry.accessory;
     }
-    if (entry.accessory && !actor->Slot50()) {
+    if (entry.accessory && !actor->GetGdid()) {
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
     }
   } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
@@ -13079,7 +13079,7 @@ void CGameMode::SpawnMovingActor(
     if (g_session.IsPetAid(aid)) {
       g_session.unknown_1038 = entry.accessory;
     }
-    if (entry.accessory && !actor->Slot50()) {
+    if (entry.accessory && !actor->GetGdid()) {
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
     }
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
@@ -13192,7 +13192,7 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
       if (g_session.unknown_1010 == packet->aid) {
         g_session.unknown_1038 = entry.accessory;
       }
-      if (entry.accessory && !actor->Slot50()) {
+      if (entry.accessory && !actor->GetGdid()) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
       }
     }
@@ -13326,7 +13326,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
       if (g_session.unknown_1010 == packet->aid) {
         g_session.unknown_1038 = entry.accessory;
       }
-      if (entry.accessory && !actor->Slot50()) {
+      if (entry.accessory && !actor->GetGdid()) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
       }
     }
@@ -13473,7 +13473,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
       if (g_session.unknown_1010 == packet->aid) {
         g_session.unknown_1038 = entry.accessory;
       }
-      if (entry.accessory && !actor->Slot50()) {
+      if (entry.accessory && !actor->GetGdid()) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
       }
     }
@@ -13608,14 +13608,14 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
     if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
       const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
       if (emblem > 0) {
-        actor->Slot49(emblem, packet->shield);
+        actor->SetGuildInfo(emblem, packet->shield);
       }
     }
     if (entry.head == 0x2E) {
       if (g_session.unknown_1010 == packet->aid) {
         g_session.unknown_1038 = entry.accessory;
       }
-      if (entry.accessory && !actor->Slot50()) {
+      if (entry.accessory && !actor->GetGdid()) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
       }
     }
@@ -13648,8 +13648,8 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
       const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
-      if (emblem > 0 && !actor->Slot50()) {
-        actor->Slot49(emblem, packet->shield);
+      if (emblem > 0 && !actor->GetGdid()) {
+        actor->SetGuildInfo(emblem, packet->shield);
       }
     }
   }
@@ -13948,7 +13948,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
     if (g_session.IsPetAid(packet->aid)) {
       g_session.unknown_1038 = entry.unknown_0030;
     }
-    if (entry.unknown_0030 && !actor->Slot50()) {
+    if (entry.unknown_0030 && !actor->GetGdid()) {
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
     }
   } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
@@ -13982,8 +13982,8 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
 
   if (packet->objectType != 0) {
     const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
-    if (guildId > 0 && !actor->Slot50()) {
-      actor->Slot49(guildId, packet->guildVersion);
+    if (guildId > 0 && !actor->GetGdid()) {
+      actor->SetGuildInfo(guildId, packet->guildVersion);
     }
   }
   this->ApplyActorStatusEffects(packet->aid, packet->effectState, packet->level, packet->virtue);
@@ -14131,10 +14131,10 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
     const int guildId = (packet->accessory2 << 16) | packet->accessory3;
     if (created) {
       if (guildId != 0) {
-        actor->Slot49(guildId, packet->guildVersion);
+        actor->SetGuildInfo(guildId, packet->guildVersion);
       }
-    } else if (guildId != 0 && !actor->Slot50()) {
-      actor->Slot49(guildId, packet->guildVersion);
+    } else if (guildId != 0 && !actor->GetGdid()) {
+      actor->SetGuildInfo(guildId, packet->guildVersion);
     }
   }
 
@@ -14593,8 +14593,8 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
       const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
-      if (emblem > 0 && !actor->Slot50()) {
-        actor->Slot49(emblem, packet->shield);
+      if (emblem > 0 && !actor->GetGdid()) {
+        actor->SetGuildInfo(emblem, packet->shield);
       }
     }
     if (entry.unknown_0024 == 0x2E) {
@@ -14638,7 +14638,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
     if ((actorJob >= 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
       const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
       if (emblem > 0) {
-        actor->Slot49(emblem, packet->shield);
+        actor->SetGuildInfo(emblem, packet->shield);
       }
     }
     if (isPc && !IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
@@ -14792,10 +14792,10 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
     const int guildId = (packet->accessory2 << 16) | packet->accessory3;
     if (created) {
       if (guildId != 0) {
-        actor->Slot49(guildId, packet->guildVersion);
+        actor->SetGuildInfo(guildId, packet->guildVersion);
       }
-    } else if (guildId != 0 && !actor->Slot50()) {
-      actor->Slot49(guildId, packet->guildVersion);
+    } else if (guildId != 0 && !actor->GetGdid()) {
+      actor->SetGuildInfo(guildId, packet->guildVersion);
     }
   }
 
@@ -15026,7 +15026,7 @@ void CGameMode::SpawnStandingActor(
     if (g_session.IsPetAid(aid)) {
       g_session.unknown_1038 = entry.unknown_0030;
     }
-    if (entry.unknown_0030 && !actor->Slot50()) {
+    if (entry.unknown_0030 && !actor->GetGdid()) {
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
     }
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
@@ -15060,8 +15060,8 @@ void CGameMode::SpawnStandingActor(
 
   if (objectType != 0) {
     const std::uint32_t emblemGuildId = (accessory2 << 16) | accessory3;
-    if (emblemGuildId > 0 && !actor->Slot50()) {
-      actor->Slot49(emblemGuildId, guildVersion);
+    if (emblemGuildId > 0 && !actor->GetGdid()) {
+      actor->SetGuildInfo(emblemGuildId, guildVersion);
     }
     this->ApplyActorStatusEffects(aid, effectState, level, virtue);
   } else {
@@ -15307,7 +15307,7 @@ void CGameMode::SpawnStateActor(
     if (g_session.IsPetAid(aid)) {
       g_session.unknown_1038 = entry.unknown_0030;
     }
-    if (entry.unknown_0030 && !actor->Slot50()) {
+    if (entry.unknown_0030 && !actor->GetGdid()) {
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
     }
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
@@ -15340,7 +15340,7 @@ void CGameMode::SpawnStateActor(
   }
 
   if (objectType != 0 && job == 0x2D2) {
-    actor->Slot49(actor->Slot50(), guildVersion);
+    actor->SetGuildInfo(actor->GetGdid(), guildVersion);
     this->ApplyActorStatusEffects(aid, effectState, level, virtue);
   } else {
     this->ApplyActorStatusEffects(aid, effectState, level, virtue);
@@ -15769,7 +15769,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     if (g_session.IsPetAid(packet->aid)) {
       g_session.unknown_1038 = entry.unknown_0030;
     }
-    if (entry.unknown_0030 && !actor->Slot50()) {
+    if (entry.unknown_0030 && !actor->GetGdid()) {
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
     }
   } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
@@ -15803,8 +15803,8 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
 
   if (packet->objectType != 0) {
     const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
-    if (guildId > 0 && !actor->Slot50()) {
-      actor->Slot49(guildId, packet->guildVersion);
+    if (guildId > 0 && !actor->GetGdid()) {
+      actor->SetGuildInfo(guildId, packet->guildVersion);
     }
   }
   this->ApplyActorStatusEffects(packet->aid, packet->effectState, packet->level, packet->virtue);
@@ -16105,13 +16105,13 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     if (primaryEffects.find(key) != primaryEffects.end()) {
       effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(primaryEffects[key]), position.x, position.y, position.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
     }
     if (secondaryEffects.find(key) != secondaryEffects.end()) {
       effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(secondaryEffects[key]), position.x, position.y, position.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
     }
     return;
@@ -16119,7 +16119,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   case 0x7D6:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x65A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x7F0:
@@ -16132,87 +16132,87 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     if (g_serviceOptions.Get(0xE5)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x5A0, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x597, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     } else {
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x4FD, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x4ED, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     }
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x8A5:
     if (g_serviceOptions.Get(0xE5)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x600, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x603, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     } else {
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x587, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x58D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     }
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x89C:
     effect = g_effectMgr->Spawn(actor->render.accountId, g_serviceOptions.Get(0xE5) ? 0x607 : 0x5A6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x8A4:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x610, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x804:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x617, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x89A:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x633, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x634, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x7F6:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x65D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x65E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x8A6:
     g_effectMgr->Spawn(actor->render.accountId, 0x663, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x664, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x8BC:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x671, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x8D5: {
@@ -16268,7 +16268,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z);
     effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5AC : 0x504, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   }
@@ -16279,7 +16279,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z);
     effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5B0 : 0x50A, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   }
@@ -16287,41 +16287,41 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     if (g_serviceOptions.Get(0xE5)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x5DB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x5DC, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     } else {
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x58E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x58F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     }
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x2E1:
   case 0x911:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x591, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x592, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x996:
     if (!g_serviceOptions.Get(0xE5)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x61B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x61C, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x8FE:
@@ -16330,271 +16330,271 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   case 0x927:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x625, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x9D5:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x62A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x62B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x96D:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x62D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x62E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x9B2:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x654, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     if (g_serviceOptions.Get(0xE5)) {
       return;
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x655, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x9BC:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x669, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x97D:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x66A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x66B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x90D:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x697, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     if (g_serviceOptions.Get(0xE5)) {
       return;
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x698, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x145E:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x145F:
   case 0x1472:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6C6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6C7, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
       effect->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
     }
     return;
   case 0x1464:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CF, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1471:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D3, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1460:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D9, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1473:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DD, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1462:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E1, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E2, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x146E:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E9, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6EA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1461:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6ED, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6EE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x146B:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F2, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F3, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1475:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F7, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1470:
     g_effectMgr->Spawn(actor->render.accountId, 0x70A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x70B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot16(200);
-      effect->Slot14(delay - 200);
+      effect->SetDelay(200);
+      effect->SetLifeTime(delay - 200);
     }
     return;
   case 0x146D:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x70D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x70E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1466:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x704, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x705, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x147E:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7B8, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x147F:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7BB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1486:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7BF, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1495:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x711, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1497:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x714, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1498:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x716, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x149B:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x718, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1499:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x71F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     if (g_serviceOptions.Get(0xE5)) {
       return;
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x71E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x149E: {
     if (!g_serviceOptions.Get(0xE5)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x73B, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
     }
 
@@ -16617,181 +16617,181 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   case 0x1469:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x740, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x741, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14B8:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x76D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14A1:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x745, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14D7:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x781, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14D3:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x751, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14D5:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x755, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14D4:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x758, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x759, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14C6:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x84F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x850, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14A2:
     if (!g_serviceOptions.Get(0xE5)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x760, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x761, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x149F:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7A6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14A0:
     if (!g_serviceOptions.Get(0xE5)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x785, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot14(delay);
+        effect->SetLifeTime(delay);
       }
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x786, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1465:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x762, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x763, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14B9:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x774, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14B6:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x78F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14B7:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x77C, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14D1:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7B1, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14F8:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7C9, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7CA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14F7:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7D4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7D5, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1503:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14C4:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DF, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x1500:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7E5, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x7E6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     return;
   case 0x14F3:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x81C, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay);
+      effect->SetLifeTime(delay);
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x81D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
@@ -16801,13 +16801,13 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   case 0x14F1:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x84B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay + 50);
+      effect->SetLifeTime(delay + 50);
     }
     return;
   case 0x1F79:
     effect = g_effectMgr->Spawn(actor->render.accountId, 0x91D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot14(delay + 50);
+      effect->SetLifeTime(delay + 50);
     }
     return;
   }
@@ -16825,7 +16825,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   int action = -1;
   if (source != nullptr) {
     if (skillId == 0xF9 || skillId == 0x201C) {
-      source->Slot15(2, 1);
+      source->SetState(2, 1);
     }
     if (g_session.IsMonsterActor(source) == 0 && skillId != 9) {
       if (skillId == 0x14E || skillId == 0x14F) {
@@ -16862,15 +16862,15 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         int motion;
         g_session.GetSkillActionInfo2(skillId, effectId, motion);
         if (source->render.unknown_0070 != 1 && motion == 1) {
-          source->Slot15(7, motion);
+          source->SetState(7, motion);
         } else {
           if (motion == 2 || motion == 9) {
             source->SendMsg(nullptr, 0x51, 0, targetAid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             if (CSkillActionMgr::GetInstance()->ActionSlot06(skillId)) {
-              source->Slot59(true);
+              source->SetArrowEffectSuppressed(true);
             }
           }
-          source->Slot15(motion, 1);
+          source->SetState(motion, 1);
         }
         break;
       }
@@ -17003,7 +17003,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case 0x3D:
     if (source != nullptr) {
       source->SendMsg(nullptr, 0x52, 0, level * 400, (level * 400) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      source->Slot15(13, 1);
+      source->SetState(13, 1);
       if (sourceAid != g_session.m_aid) {
         source->SendMsg(nullptr, 0x53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -18526,7 +18526,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       const std::uint32_t accountId = target->render.accountId;
       CEffect* effect = g_effectMgr->Spawn(accountId, 0x54D, source->render.position.x, source->render.position.y, source->render.position.z, accountId, -1, 0, 0);
       if (effect) {
-        effect->Slot16(200);
+        effect->SetDelay(200);
       }
       g_soundMgr->PlayWave("effect\\mon_침투경.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
@@ -18936,11 +18936,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       }
       CEffect* effect = g_effectMgr->Spawn(0, 0x6AA, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot22(scale);
+        effect->SetScale(scale);
       }
       effect = g_effectMgr->Spawn(0, 0x6AB, position.x, position.y, position.z, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot22(scale);
+        effect->SetScale(scale);
       }
     }
     break;
@@ -19257,11 +19257,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       g_effectMgr->Spawn(source->render.accountId, 0x6BB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(target->render.accountId, 0x6BC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(100);
+        effect->SetDelay(100);
       }
       effect = g_effectMgr->Spawn(target->render.accountId, 0x6BD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(100);
+        effect->SetDelay(100);
       }
     }
     break;
@@ -19311,7 +19311,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       g_effectMgr->Spawn(source->render.accountId, 0x7B9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x7B7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(1000);
+        effect->SetDelay(1000);
       }
     }
     break;
@@ -19321,11 +19321,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       g_effectMgr->Spawn(source->render.accountId, 0x7BC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x7BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(1000);
+        effect->SetDelay(1000);
       }
       effect = g_effectMgr->Spawn(source->render.accountId, 0x7BD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(1000);
+        effect->SetDelay(1000);
       }
     }
     break;
@@ -19335,11 +19335,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       g_effectMgr->Spawn(source->render.accountId, 0x7C0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x7BE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(1000);
+        effect->SetDelay(1000);
       }
       effect = g_effectMgr->Spawn(source->render.accountId, 0x7C1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(1000);
+        effect->SetDelay(1000);
       }
     }
     break;
@@ -19493,11 +19493,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     g_effectMgr->Spawn(targetAid, 0x71B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     CEffect* effect = g_effectMgr->Spawn(targetAid, 0x71C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot16(500);
+      effect->SetDelay(500);
     }
     effect = g_effectMgr->Spawn(targetAid, 0x719, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (effect) {
-      effect->Slot16(1430);
+      effect->SetDelay(1430);
     }
     break;
   }
@@ -19516,11 +19516,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x794, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot22(scale);
+        effect->SetScale(scale);
       }
       effect = g_effectMgr->Spawn(source->render.accountId, 0x795, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot22(scale);
+        effect->SetScale(scale);
       }
       g_effectMgr->Spawn(
         source->render.accountId, source->render.previousAnimation - source->render.animation + 0x796, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
@@ -19536,11 +19536,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (target != nullptr) {
       CEffect* effect = g_effectMgr->Spawn(target->render.accountId, 0x823, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(500);
+        effect->SetDelay(500);
       }
       effect = g_effectMgr->Spawn(target->render.accountId, 0x824, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(500);
+        effect->SetDelay(500);
       }
     }
     break;
@@ -19552,18 +19552,18 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       g_effectMgr->Spawn(source->render.accountId, 0x728, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x729, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(500);
+        effect->SetDelay(500);
       }
       effect = g_effectMgr->Spawn(source->render.accountId, 0x72A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(500);
+        effect->SetDelay(500);
         effect->AddEvent(0, "effect\\CD_REPARATIO1.wav", 0x1F, 0);
       }
     }
     if (target != nullptr) {
       CEffect* effect = g_effectMgr->Spawn(target->render.accountId, 0x72B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(800);
+        effect->SetDelay(800);
         effect->AddEvent(0, "effect\\CD_REPARATIO2.wav", 0x32, 0);
       }
     }
@@ -19573,7 +19573,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x784, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
-        effect->Slot16(400);
+        effect->SetDelay(400);
       }
       if (target != nullptr) {
         if (source->render.accountId != target->render.accountId) {
@@ -19651,7 +19651,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case 0x14C2:
     if (source != nullptr) {
       g_effectMgr->Spawn(source->render.accountId, 0x7AE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      source->Slot15(2, 1);
+      source->SetState(2, 1);
     }
     break;
   case 0x14D1:
@@ -22657,7 +22657,7 @@ void CGameMode::ProcessIncomingPackets() {
       const int version = *reinterpret_cast<const int *>(packet + 8);
       g_session.StoreEmblem(packet + 0x0C, *reinterpret_cast<const std::int16_t *>(packet + 2) - 12, guildId, version);
       if (g_guildInfo.m_guildId == guildId) {
-        this->scene->player->Slot49(guildId, version);
+        this->scene->player->SetGuildInfo(guildId, version);
         if (g_windowMgr.window_0320) {
           g_windowMgr.window_0320->SendMsg(nullptr, 60, 0, 0, 0, 0);
         }
@@ -22768,7 +22768,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_guildInfo.m_guildId = guildId;
       g_guildInfo.unknown_00B0 = (flags >> 4) & 1;
       g_guildInfo.unknown_00B4 = packet[0x0E];
-      this->scene->player->Slot49(guildId, *reinterpret_cast<const int *>(packet + 6));
+      this->scene->player->SetGuildInfo(guildId, *reinterpret_cast<const int *>(packet + 6));
       if (g_guildInfo.unknown_00C8 == 0) {
         g_guildInfo.unknown_00C8 = 1;
         g_modeMgr.gameMode->SendMsg(107, 3, 0, 0, 0);
@@ -23034,7 +23034,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x1AB:
       if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
         if (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 6) == 4) {
-          actor->Slot40(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 8));
+          actor->SetHonor(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 8));
         }
       }
       break;
@@ -23066,7 +23066,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case 0x1B0:
       if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
-        actor->Slot18(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 7), 0, 0);
+        actor->SetSprAct(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 7), 0, 0);
       }
       break;
     case 0x1B1: {
@@ -23111,7 +23111,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case 0x1B4:
       if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
-        actor->Slot49(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0xA));
+        actor->SetGuildInfo(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0xA));
       }
       break;
     case 0x1C2: {
@@ -23689,7 +23689,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (CPlayer *player = this->scene->player) {
         player->SendMsg(nullptr, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         if (*reinterpret_cast<const int *>(&player->render.unknown_0060) == 8) {
-          player->Slot15(0, 1);
+          player->SetState(0, 1);
         }
       }
       break;
@@ -23700,7 +23700,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_guildInfo.m_guildId = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
       g_guildInfo.unknown_00B0 = (flags >> 4) & 1;
       g_guildInfo.unknown_00D0 = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x2B);
-      this->scene->player->Slot49(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6));
+      this->scene->player->SetGuildInfo(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6));
       if (!g_guildInfo.unknown_00C8) {
         g_guildInfo.unknown_00C8 = 1;
         g_modeMgr.gameMode->SendMsg(107, 3, 0, 0, 0);

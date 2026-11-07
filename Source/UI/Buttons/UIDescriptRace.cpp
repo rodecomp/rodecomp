@@ -15,7 +15,7 @@ UIDescriptRace::UIDescriptRace(int race) : m_race(race), unknown_0284(0) {
 
 // OFFSET: 0x008861C0
 // FUNCTION: fn_11323
-void UIDescriptRace::Slot15(int, int) {
+void UIDescriptRace::OnCreate(int, int) {
   this->SendMsg(nullptr, 13, this->m_noRace, 0, 0, 0);
 }
 

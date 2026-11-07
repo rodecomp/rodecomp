@@ -92,7 +92,7 @@ UIGradeEnchant_BtnStart::UIGradeEnchant_BtnStart() : UIBitmapButton() {
 
 // OFFSET: 0x007E7500
 // FUNCTION: fn_09749
-void UIGradeEnchantWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIGradeEnchantWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (x >= 53 && x <= 99 && y >= 114 && y <= 160 && drag->source == 1) {
     this->SendMsg(this, 23, drag->id, 0, 0, 0);
@@ -151,7 +151,7 @@ int UIGradeEnchantWnd::SuccessRate() {
 
 // OFFSET: 0x007E7780
 // FUNCTION: fn_09753
-void UIGradeEnchantWnd::Slot15(int, int) {
+void UIGradeEnchantWnd::OnCreate(int, int) {
   if (UIBitmapButton* close = this->AddCloseButton("", 0)) {
     close->Move(0x180, 0x14);
   }
@@ -326,7 +326,7 @@ void UIGradeEnchant_BtnStart::Paint() {
 
 // OFFSET: 0x007E8990
 // FUNCTION: fn_09758
-void UIGradeEnchantWnd::Slot26(int x, int y) {
+void UIGradeEnchantWnd::OnLBtnDblClk(int x, int y) {
   if (this->item.unknown_0000[1] > 0 && x >= 53 && x <= 99 && y >= 114 && y <= 160) {
     this->ResetItem();
   }
@@ -334,9 +334,9 @@ void UIGradeEnchantWnd::Slot26(int x, int y) {
 
 // OFFSET: 0x007E89C0
 // FUNCTION: fn_09759
-void UIGradeEnchantWnd::Slot25(int x, int y) {
+void UIGradeEnchantWnd::OnLBtnDown(int x, int y) {
   if (y < 38 && x > 141) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 
@@ -347,9 +347,9 @@ void UIGradeEnchantWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x007E8A30
 // FUNCTION: fn_09760
-void UIGradeEnchantWnd::Slot31(int x, int y) {
+void UIGradeEnchantWnd::OnLBtnUp(int x, int y) {
   if (y < 80 && x > 141) {
-    UIFrameWnd::Slot31(x, y);
+    UIFrameWnd::OnLBtnUp(x, y);
     return;
   }
 
@@ -373,13 +373,13 @@ void UIGradeEnchantWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x007E8B30
 // FUNCTION: fn_09761
-void UIGradeEnchantWnd::Slot28(int x, int y) {
+void UIGradeEnchantWnd::OnMouseHover(int x, int y) {
   this->hoverMaterial = MaterialRowAt(x, y);
 }
 
 // OFFSET: 0x007E8BB0
 // FUNCTION: fn_09762
-void UIGradeEnchant_BtnEnhancedUp::Slot28(int x, int y) {
+void UIGradeEnchant_BtnEnhancedUp::OnMouseHover(int x, int y) {
   if (this->tooltipValue == 0 || this->tooltipEnabled == 0) {
     return;
   }
@@ -400,7 +400,7 @@ void UIGradeEnchant_BtnEnhancedUp::Slot28(int x, int y) {
 
 // OFFSET: 0x007E8CC0
 // FUNCTION: fn_09763
-void UIGradeEnchantWnd::Slot19() {
+void UIGradeEnchantWnd::OnProcess() {
   const int frameCounts[3] = {6, 6, 5};
   if (this->unknown_00D8 >= frameCounts[this->state]) {
     return;
@@ -462,12 +462,12 @@ void UIGradeEnchantWnd::Slot19() {
 
 // OFFSET: 0x007E8FA0
 // FUNCTION: fn_09764
-void UIGradeEnchantWnd::Slot32(int x, int y) {
+void UIGradeEnchantWnd::OnRBtnDown(int x, int y) {
 }
 
 // OFFSET: 0x007E8FB0
 // FUNCTION: fn_09765
-void UIGradeEnchantWnd::Slot33(int x, int y) {
+void UIGradeEnchantWnd::OnRBtnUp(int x, int y) {
   if (y < 80 && x > 141) {
     return;
   }

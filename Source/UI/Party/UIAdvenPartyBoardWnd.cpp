@@ -46,7 +46,7 @@ UIAdvenPartyBoardWnd::~UIAdvenPartyBoardWnd() = default;
 
 // OFFSET: 0x007C23C0
 // FUNCTION: fn_09324
-void UIAdvenPartyBoardWnd::Slot11() {
+void UIAdvenPartyBoardWnd::StoreInfo() {
   if (this->saved) {
     this->saved->width = this->geometry.width;
     this->saved->height = this->geometry.height;
@@ -57,7 +57,7 @@ void UIAdvenPartyBoardWnd::Slot11() {
 
 // OFFSET: 0x007BC220
 // FUNCTION: fn_09298
-void UIAdvenPartyBoardWnd::Slot15(int, int) {
+void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   const int level = g_session.m_level;
   this->minimum = new UIEditCtrl2();
   this->minimum->SetSize(25, 14);

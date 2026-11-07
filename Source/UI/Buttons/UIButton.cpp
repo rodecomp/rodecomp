@@ -59,7 +59,7 @@ void UIButton::Paint() {
 
 // OFFSET: 0x0085EB20
 // FUNCTION: fn_10839
-void UIButton::Slot25(int, int) {
+void UIButton::OnLBtnDown(int, int) {
   if (this->m_disabled != 0) {
     return;
   }
@@ -71,29 +71,29 @@ void UIButton::Slot25(int, int) {
 
 // OFFSET: 0x0085ED70
 // FUNCTION: fn_10847
-void UISpriteButton2::Slot25(int x, int y) {
-  UIButton::Slot25(x, y);
+void UISpriteButton2::OnLBtnDown(int x, int y) {
+  UIButton::OnLBtnDown(x, y);
   if (this->m_target) {
-    this->m_target->Slot25(this->geometry.x + x, this->geometry.y + y);
+    this->m_target->OnLBtnDown(this->geometry.x + x, this->geometry.y + y);
   }
 }
 
 // OFFSET: 0x0085EDC0
 // FUNCTION: fn_10848
-void UISpriteButton::Slot25(int x, int y) {
-  UIButton::Slot25(x, y);
-  this->Root()->Slot25(this->geometry.x + x, this->geometry.y + y);
+void UISpriteButton::OnLBtnDown(int x, int y) {
+  UIButton::OnLBtnDown(x, y);
+  this->Root()->OnLBtnDown(this->geometry.x + x, this->geometry.y + y);
 }
 
 // OFFSET: 0x0085E8B0
 // FUNCTION: fn_10830
-void UIButton::Slot26(int x, int y) {
-  this->Slot25(x, y);
+void UIButton::OnLBtnDblClk(int x, int y) {
+  this->OnLBtnDown(x, y);
 }
 
 // OFFSET: 0x0085F600
 // FUNCTION: fn_10868
-void UIButton::Slot27(int x, int y) {
+void UIButton::OnMouseMove(int x, int y) {
   if (this->m_disabled != 0) {
     return;
   }
@@ -126,16 +126,16 @@ void UIButton::Slot27(int x, int y) {
 
 // OFFSET: 0x0085F7A0
 // FUNCTION: fn_10870
-void UISpriteButton2::Slot27(int x, int y) {
-  UIButton::Slot27(x, y);
+void UISpriteButton2::OnMouseMove(int x, int y) {
+  UIButton::OnMouseMove(x, y);
   if (this->m_target) {
-    this->m_target->Slot27(this->geometry.x + x, this->geometry.y + y);
+    this->m_target->OnMouseMove(this->geometry.x + x, this->geometry.y + y);
   }
 }
 
 // OFFSET: 0x0085F180
 // FUNCTION: fn_10858
-void UIButton::Slot28(int x, int y) {
+void UIButton::OnMouseHover(int x, int y) {
   UIWindow* parent = this->parent;
   if (parent && (this->geometry.id == 201 || this->geometry.id == 202) && parent->geometry.id != 203) {
     if (this->geometry.id == 202 && parent->geometry.id != 0) {
@@ -155,13 +155,13 @@ void UIButton::Slot28(int x, int y) {
   }
 
   if (this->m_disabled == 0) {
-    this->Slot27(x, y);
+    this->OnMouseMove(x, y);
   }
 }
 
 // OFFSET: 0x0085F900
 // FUNCTION: fn_10874
-void UIButton::Slot29(int x, int y) {
+void UIButton::OnMouseCheck(int x, int y) {
   if (x < this->geometry.x || (this->geometry.x + this->geometry.width) < x || y < this->geometry.y || (this->geometry.y + this->geometry.height) < y) {
     if (this->geometry.unknown_0030 != 0) {
       this->geometry.unknown_0030 = 0;
@@ -183,7 +183,7 @@ void UIButton::ResetCursor(int x, int y) {
 
 // OFFSET: 0x0085EED0
 // FUNCTION: fn_10852
-void UIButton::Slot31(int x, int y) {
+void UIButton::OnLBtnUp(int x, int y) {
   if (this->m_disabled != 0) {
     if (g_windowMgr.Capture() == this) {
       g_windowMgr.ReleaseCapture();

@@ -19,7 +19,7 @@ void CMappillarEffect::Close() {
 
 // OFFSET: 0x00B4BBF0
 // FUNCTION: fn_18956
-void CMappillarEffect::Slot01() {
+void CMappillarEffect::Open() {
   for (int ring = 0; ring < 4; ++ring) {
     for (int segment = 0; segment <= 21; ++segment) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
@@ -87,13 +87,13 @@ void CMappillarEffect::Slot01() {
 
 // OFFSET: 0x00B4C0B0
 // FUNCTION: fn_18957
-bool CMappillarEffect::Slot06() {
+bool CMappillarEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B4C0C0
 // FUNCTION: fn_18958
-void CMappillarEffect::Slot03() {
+void CMappillarEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -136,7 +136,7 @@ void CMappillarEffect::Slot03() {
 
 // OFFSET: 0x00B4C4C0
 // FUNCTION: fn_18959
-void CMappillarEffect::Slot04() {
+void CMappillarEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

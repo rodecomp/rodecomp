@@ -20,8 +20,8 @@ class CRes {
 public:
   CRes();
   virtual ~CRes();
-  virtual bool Slot01(int argument1, int argument2, int argument3);
-  virtual void Slot02();
+  virtual bool LoadFromBuffer(int argument1, int argument2, int argument3);
+  virtual void OnProcess();
   virtual bool IsTransient();
   virtual CRes* Create() = 0;
   virtual bool Load(const char* name) = 0;

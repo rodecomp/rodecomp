@@ -72,7 +72,7 @@ UIFrameWnd::~UIFrameWnd() = default;
 
 // OFFSET: 0x005C4640
 // FUNCTION: fn_03570
-bool UIFrameWnd::Slot02() {
+bool UIFrameWnd::IsFrameWnd() {
   return true;
 }
 
@@ -80,19 +80,19 @@ bool UIFrameWnd::Slot02() {
 // FUNCTION: fn_11735
 void UIFrameWnd::Move(int x, int y) {
   this->geometry.Move(x, y);
-  this->Slot36();
+  this->RefreshSnap();
 }
 
 // OFFSET: 0x008BB3F0
 // FUNCTION: fn_11797
-void UIFrameWnd::Slot12() {
+void UIFrameWnd::StoreMoveOrigin() {
   this->m_originX = this->geometry.x;
   this->m_originY = this->geometry.y;
 }
 
 // OFFSET: 0x008AD170
 // FUNCTION: fn_11736
-void UIFrameWnd::Slot13(int dx, int dy) {
+void UIFrameWnd::MoveFromOrigin(int dx, int dy) {
   this->geometry.x = this->m_originX + dx;
   this->geometry.y = this->m_originY + dy;
 }
@@ -119,7 +119,7 @@ static __forceinline void RaiseWindow(UIWindow* window) {
 
 // OFFSET: 0x008BA1E0
 // FUNCTION: fn_11779
-void UIFrameWnd::Slot25(int x, int y) {
+void UIFrameWnd::OnLBtnDown(int x, int y) {
   RaiseWindow(this);
   g_windowMgr.SetCapture(this);
   int screenX = x;
@@ -136,7 +136,7 @@ void UIFrameWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x008BA510
 // FUNCTION: fn_11786
-void UIFrameWnd::Slot27(int x, int y) {
+void UIFrameWnd::OnMouseMove(int x, int y) {
   if (g_windowMgr.Capture() != this || x <= -g_configuredScreenWidth || y <= -g_configuredScreenHeight) {
     return;
   }
@@ -152,7 +152,7 @@ void UIFrameWnd::Slot27(int x, int y) {
     return;
   }
 
-  this->Slot13(dx, dy);
+  this->MoveFromOrigin(dx, dy);
   int ownX, ownY;
   g_windowMgr.ConstrainSnap(this, ownX, ownY, 0);
   int groupX = dx, groupY = dy;
@@ -166,19 +166,19 @@ void UIFrameWnd::Slot27(int x, int y) {
     groupY = ownY;
   }
 
-  this->Slot13(dx + groupX, dy + groupY);
+  this->MoveFromOrigin(dx + groupX, dy + groupY);
   g_windowMgr.StoreSnapRectangle(this);
   g_snapMgr.MoveConnected(this, dx + groupX, dy + groupY);
 }
 
 // OFFSET: 0x008BA3C0
 // FUNCTION: fn_11783
-void UIFrameWnd::Slot28(int, int) {
+void UIFrameWnd::OnMouseHover(int, int) {
 }
 
 // OFFSET: 0x008BA2C0
 // FUNCTION: fn_11781
-void UIFrameWnd::Slot31(int, int) {
+void UIFrameWnd::OnLBtnUp(int, int) {
   if (g_windowMgr.Capture() != this) {
     return;
   }
@@ -192,7 +192,7 @@ void UIFrameWnd::Slot31(int, int) {
 
 // OFFSET: 0x008BB340
 // FUNCTION: fn_11796
-void UIFrameWnd::Slot36() {
+void UIFrameWnd::RefreshSnap() {
   int x, y;
   g_windowMgr.ConstrainSnap(this, x, y, 0);
   this->geometry.x += x;
@@ -229,13 +229,13 @@ int UIFrameWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
 // OFFSET: 0x005C4420
 // FUNCTION: fn_03559
-std::vector<unsigned char> UIFrameWnd::Slot44() {
+std::vector<unsigned char> UIFrameWnd::GetReplayData() {
   return {};
 }
 
 // OFFSET: 0x005C44F0
 // FUNCTION: fn_03562
-int UIFrameWnd::Slot46() {
+int UIFrameWnd::GetWindowType() {
   return 1;
 }
 
@@ -398,7 +398,7 @@ UICheckBox* UIFrameWnd::AddCheckBox(int id, int width, int height, const char* t
 
 // OFFSET: 0x008BA280
 // FUNCTION: fn_11780
-void UIReplayListBox::Slot25(int x, int y) {
+void UIReplayListBox::OnLBtnDown(int x, int y) {
   this->selected = this->LineAt(x, y);
   this->Invalidate();
   this->parent->SendMsg(nullptr, 80, 0, 0, 0, 0);
@@ -406,12 +406,12 @@ void UIReplayListBox::Slot25(int x, int y) {
 
 // OFFSET: 0x008BA500
 // FUNCTION: fn_11785
-void UINoticeWnd::Slot28(int, int) {
+void UINoticeWnd::OnMouseHover(int, int) {
 }
 
 // OFFSET: 0x008BA310
 // FUNCTION: fn_11782
-void UIReplayButton::Slot31(int x, int y) {
+void UIReplayButton::OnLBtnUp(int x, int y) {
   if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
     return;
   }
@@ -434,7 +434,7 @@ void UIReplayButton::Slot31(int x, int y) {
 
 // OFFSET: 0x008BA3D0
 // FUNCTION: fn_11784
-void UIMonsterInfoWnd::Slot28(int x, int y) {
+void UIMonsterInfoWnd::OnMouseHover(int x, int y) {
   if (x < 161 || x > 259 || y < 31 || y > 41) {
     return;
   }

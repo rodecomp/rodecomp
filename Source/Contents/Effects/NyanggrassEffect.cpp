@@ -31,7 +31,7 @@ CMultiTexParticle::~CMultiTexParticle() {
 
 // OFFSET: 0x00707F60
 // FUNCTION: fn_07066
-void CMultiTexParticle::Slot01() {
+void CMultiTexParticle::ReleaseResource() {
 }
 
 // OFFSET: 0x00707F70
@@ -139,7 +139,7 @@ void CNyanggrassEffect::Close() {
 
 // OFFSET: 0x007085F0
 // FUNCTION: fn_07073
-void CNyanggrassEffect::Slot01() {
+void CNyanggrassEffect::Open() {
   switch (this->unknown_00B0) {
   case 1:
   case 2:
@@ -179,13 +179,13 @@ void CNyanggrassEffect::Slot01() {
 
 // OFFSET: 0x00708820
 // FUNCTION: fn_07074
-bool CNyanggrassEffect::Slot06() {
+bool CNyanggrassEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00708830
 // FUNCTION: fn_07075
-void CNyanggrassEffect::Slot03() {
+void CNyanggrassEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

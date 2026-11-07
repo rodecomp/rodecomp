@@ -356,12 +356,12 @@ void GroundBase::Build(CGndRes&, const float*, const float*, const float*) {
 
 // OFFSET: 0x00AC0990
 // FUNCTION: fn_17566
-void GroundGeometry::Slot04(int) {
+void GroundGeometry::RenderLod(int) {
 }
 
 // OFFSET: 0x00AC09A0
 // FUNCTION: fn_17567
-void GroundBase::Slot04(int) {
+void GroundBase::RenderLod(int) {
 }
 
 // OFFSET: 0x00AC1510
@@ -371,18 +371,18 @@ void GroundBase::UpdateWater() {
 
 // OFFSET: 0x00AC1520
 // FUNCTION: fn_17583
-bool GroundGeometry::Slot10() {
+bool GroundGeometry::IsNewVer() {
   return true;
 }
 
 // OFFSET: 0x00AC3080
 // FUNCTION: fn_17598
-void GroundBase::Slot15(float, int, int) {
+void GroundBase::SetGndRiseAmount(float, int, int) {
 }
 
 // OFFSET: 0x00AC1530
 // FUNCTION: fn_17584
-bool GroundBase::Slot10() {
+bool GroundBase::IsNewVer() {
   return false;
 }
 

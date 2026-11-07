@@ -87,8 +87,8 @@ void UITextButton::Configure(const char* text, std::uint32_t color, int family, 
   const auto extent = static_cast<std::uint32_t>(height) * static_cast<std::uint32_t>(std::strlen(text));
   const int width = static_cast<int>(extent / 2 + 4u * outline + 12u);
   this->UIWindow::Resize(width, height + 2);
-  this->Slot15(width, height + 2);
-  this->Slot22(width, height + 2);
+  this->OnCreate(width, height + 2);
+  this->OnSize(width, height + 2);
 }
 
 // OFFSET: 0x0088F820
@@ -112,7 +112,7 @@ void UITextButton::Paint() {
 
 // OFFSET: 0x00892450
 // FUNCTION: fn_11471
-void UITextButton::Slot27(int x, int y) {
+void UITextButton::OnMouseMove(int x, int y) {
   if (this->m_disabled != 0) {
     return;
   }
@@ -150,17 +150,17 @@ void UITextButton::Slot27(int x, int y) {
 
 // OFFSET: 0x00892000
 // FUNCTION: fn_11461
-void UITextButton::Slot28(int x, int y) {
+void UITextButton::OnMouseHover(int x, int y) {
   if (this->parent) {
-    this->parent->Slot28((x + this->geometry.x), (y + this->geometry.y));
+    this->parent->OnMouseHover((x + this->geometry.x), (y + this->geometry.y));
   }
 
-  UIButton::Slot28(x, y);
+  UIButton::OnMouseHover(x, y);
 }
 
 // OFFSET: 0x00891140
 // FUNCTION: fn_11445
-void UITextButton::Slot31(int x, int y) {
+void UITextButton::OnLBtnUp(int x, int y) {
   if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
     return;
   }
@@ -183,7 +183,7 @@ void UITextButton::Slot31(int x, int y) {
 
 // OFFSET: 0x00892B60
 // FUNCTION: fn_11487
-void UITextButton::Slot32(int, int) {
+void UITextButton::OnRBtnDown(int, int) {
   if (this->m_disabled == 0) {
     if (this->parent) {
       this->parent->SendMsg(this, 99, this->geometry.id, this->m_value, 0, 0);
@@ -195,7 +195,7 @@ void UITextButton::Slot32(int, int) {
 
 // OFFSET: 0x00892D60
 // FUNCTION: fn_11494
-void UITextButton::Slot33(int x, int y) {
+void UITextButton::OnRBtnUp(int x, int y) {
 
   if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
     return;
@@ -217,15 +217,15 @@ void UITextButton::Slot33(int x, int y) {
 
 // OFFSET: 0x00892F30
 // FUNCTION: fn_11500
-void UITextButton::Slot35(int value) {
+void UITextButton::OnWheel(int value) {
   if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
 // OFFSET: 0x008911D0
 // FUNCTION: fn_11446
-void UITreeView::Slot31(int x, int y) {
+void UITreeView::OnLBtnUp(int x, int y) {
   if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
     this->unknown_0088 = 0;
   }
@@ -236,30 +236,30 @@ void UITreeView::Slot31(int x, int y) {
   this->Invalidate();
 
   if (this->parent) {
-    this->parent->Slot31(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnLBtnUp(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x00891A80
 // FUNCTION: fn_11455
-void UIItemTagButton::Slot28(int x, int y) {
+void UIItemTagButton::OnMouseHover(int x, int y) {
   std::string tag = "<";
   tag += this->m_tooltip;
   tag += ">";
 
   if (this->label != tag) {
-    UIButton::Slot28(x, y);
+    UIButton::OnMouseHover(x, y);
   }
 }
 
 // OFFSET: 0x00891F10
 // FUNCTION: fn_11459
-void UIStaticItem_Illust::Slot28(int, int) {
+void UIStaticItem_Illust::OnMouseHover(int, int) {
 }
 
 // OFFSET: 0x00891810
 // FUNCTION: fn_11450
-void UIBmpRadioBtn::Slot28(int, int) {
+void UIBmpRadioBtn::OnMouseHover(int, int) {
   if (!this->m_tooltip.empty()) {
     int screenX = 0, screenY = -20;
     this->ToScreen(screenX, screenY);
@@ -369,21 +369,21 @@ void UIBmpRadioBtn2::Invalidate() {
 
 // OFFSET: 0x007C7CA0
 // FUNCTION: fn_09408
-void UIBmpRadioBtn2::Slot47() {
+void UIBmpRadioBtn2::OnMouseEnter() {
   this->m_hovered = true;
   this->Invalidate();
 }
 
 // OFFSET: 0x007C7CB0
 // FUNCTION: fn_09409
-void UIBmpRadioBtn2::Slot48() {
+void UIBmpRadioBtn2::OnMouseLeave() {
   this->m_hovered = false;
   this->Invalidate();
 }
 
 // OFFSET: 0x00891870
 // FUNCTION: fn_11451
-void UICaptchaImage::Slot28(int, int) {
+void UICaptchaImage::OnMouseHover(int, int) {
   if (this->m_tooltip.size() > 0) {
     int screenX = 0, screenY = -20;
     this->ToScreen(screenX, screenY);
@@ -394,7 +394,7 @@ void UICaptchaImage::Slot28(int, int) {
 
 // OFFSET: 0x00891240
 // FUNCTION: fn_11447
-void UIBarGraph4::Slot28(int, int) {
+void UIBarGraph4::OnMouseHover(int, int) {
   if (!this->m_current || !this->m_maximum || *this->m_maximum < *this->m_current || *this->m_maximum == 0) {
     return;
   }
@@ -415,7 +415,7 @@ void UIBarGraph4::Slot28(int, int) {
 
 // OFFSET: 0x008918D0
 // FUNCTION: fn_11452
-void UIINT64BarGraph::Slot28(int, int) {
+void UIINT64BarGraph::OnMouseHover(int, int) {
   if (this->m_maximum < this->m_current || 0 == this->m_maximum || this->m_maximum == 99999999) {
     return;
   }
@@ -436,13 +436,13 @@ void UIINT64BarGraph::Slot28(int, int) {
 
 // OFFSET: 0x00891A40
 // FUNCTION: fn_11454
-void UIItemMoveInfo::Slot28(int, int) {
+void UIItemMoveInfo::OnMouseHover(int, int) {
   g_windowMgr.EnsureWindow(276)->SendMsg(nullptr, 147, this->m_moveIndex, 0, 0, 0);
 }
 
 // OFFSET: 0x00891A10
 // FUNCTION: fn_11453
-void UIImgMenu::Slot28(int x, int y) {
+void UIImgMenu::OnMouseHover(int x, int y) {
   const int previous = this->hovered;
   this->hovered = this->ItemAt(x, y);
   if (previous != this->hovered) {
@@ -452,7 +452,7 @@ void UIImgMenu::Slot28(int x, int y) {
 
 // OFFSET: 0x00891F20
 // FUNCTION: fn_11460
-void UITabControl::Slot28(int x, int y) {
+void UITabControl::OnMouseHover(int x, int y) {
   int index = this->TabAt(x, y);
 
   if (index == -1) {
@@ -503,7 +503,7 @@ std::string SkillUseTextFlat(const char* name, int level, int sp, int ap) {
 
 // OFFSET: 0x00891350
 // FUNCTION: fn_11448
-void UIBasicItemCtrl::Slot28(int, int) {
+void UIBasicItemCtrl::OnMouseHover(int, int) {
   std::string text;
 
   if (std::atoi(this->m_item.itemId.c_str()) < 1) {
@@ -530,7 +530,7 @@ void UIBasicItemCtrl::Slot28(int, int) {
 
 // OFFSET: 0x008915E0
 // FUNCTION: fn_11449
-void UIBasicSkillCtrl::Slot28(int, int) {
+void UIBasicSkillCtrl::OnMouseHover(int, int) {
   if (this->m_skillId < 0) {
     return;
   }
@@ -569,7 +569,7 @@ void UIWindowMgr::AddRendered(UIWindow* window) {
 
 // OFFSET: 0x00891CC0
 // FUNCTION: fn_11457
-void UIServerListBox::Slot28(int x, int y) {
+void UIServerListBox::OnMouseHover(int x, int y) {
   const int index = this->LineAt(x, y);
   const int height = g_mouse.y;
   if (this->balloonTexts.begin() != this->balloonTexts.end()) {
@@ -597,7 +597,7 @@ void UIServerListBox::Slot28(int x, int y) {
 
 // OFFSET: 0x00891BC0
 // FUNCTION: fn_11456
-void UIMemberListBox::Slot28(int, int y) {
+void UIMemberListBox::OnMouseHover(int, int y) {
   const int line = this->topLine + y / this->lineHeight;
   if (line < this->topLine) {
     return;
@@ -626,7 +626,7 @@ void UIMemberListBox::Slot28(int, int y) {
 
 // OFFSET: 0x00891E40
 // FUNCTION: fn_11458
-void UIStaticItem::Slot28(int, int) {
+void UIStaticItem::OnMouseHover(int, int) {
   char text[260];
   std::memset(text, 0, sizeof(text));
   int capacity = sizeof(text);
@@ -648,7 +648,7 @@ void UIStaticItem::Slot28(int, int) {
 
 // OFFSET: 0x00892040
 // FUNCTION: fn_11462
-void UIItemMoveInfo::Slot48() {
+void UIItemMoveInfo::OnMouseLeave() {
   g_windowMgr.ShowWindowById(276, 0);
   this->Invalidate();
 }
@@ -659,8 +659,8 @@ void UIComboBox::Configure(int x, int y, int width, int height, unsigned char va
   this->transparent = value;
   UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x008974A0
@@ -679,8 +679,8 @@ void UIComboBox::Resize(int width, int height) {
 
 // OFFSET: 0x00885240
 // FUNCTION: fn_11317
-void UIComboBox::Slot15(int width, int height) {
-  UIListBox::Slot15(width, height);
+void UIComboBox::OnCreate(int width, int height) {
+  UIListBox::OnCreate(width, height);
 }
 
 // OFFSET: 0x00895AC0
@@ -937,7 +937,7 @@ int UIBmpRadioBtn::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
 
 // OFFSET: 0x00892060
 // FUNCTION: fn_11463
-void UIComboBox::Slot27(int x, int y) {
+void UIComboBox::OnMouseMove(int x, int y) {
   const int previous = this->selected;
   this->selected = this->LineAt(x, y);
 
@@ -948,7 +948,7 @@ void UIComboBox::Slot27(int x, int y) {
 
 // OFFSET: 0x00892100
 // FUNCTION: fn_11465
-void UIComboBoxID::Slot27(int x, int y) {
+void UIComboBoxID::OnMouseMove(int x, int y) {
   const int previous = this->selected;
   int line;
 
@@ -968,13 +968,13 @@ void UIComboBoxID::Slot27(int x, int y) {
 
 // OFFSET: 0x00892160
 // FUNCTION: fn_11466
-void UIImgMenu::Slot27(int x, int y) {
-  this->Slot28(x, y);
+void UIImgMenu::OnMouseMove(int x, int y) {
+  this->OnMouseHover(x, y);
 }
 
 // OFFSET: 0x00892170
 // FUNCTION: fn_11467
-void UIItemStoreComboBox::Slot27(int x, int y) {
+void UIItemStoreComboBox::OnMouseMove(int x, int y) {
   const int previous = this->selected;
   int line;
 
@@ -994,7 +994,7 @@ void UIItemStoreComboBox::Slot27(int x, int y) {
 
 // OFFSET: 0x00892340
 // FUNCTION: fn_11469
-void UITVTextButton::Slot27(int x, int y) {
+void UITVTextButton::OnMouseMove(int x, int y) {
   if (this->m_disabled != 0) {
     return;
   }
@@ -1017,7 +1017,7 @@ void UITVTextButton::Slot27(int x, int y) {
 
 // OFFSET: 0x008923D0
 // FUNCTION: fn_11470
-void UITabControl::Slot27(int x, int y) {
+void UITabControl::OnMouseMove(int x, int y) {
   if (g_windowMgr.Capture() != this) {
     return;
   }
@@ -1034,7 +1034,7 @@ void UITabControl::Slot27(int x, int y) {
 
 // OFFSET: 0x00892520
 // FUNCTION: fn_11472
-void UITreeView::Slot27(int x, int y) {
+void UITreeView::OnMouseMove(int x, int y) {
   this->unknown_00AC = x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height;
 }
 
@@ -1073,7 +1073,7 @@ void UITVTextButton::ResetCursor(int x, int y) {
 
 // OFFSET: 0x00892600
 // FUNCTION: fn_11477
-void UIEditCtrl_Currency::Slot19() {
+void UIEditCtrl_Currency::OnProcess() {
   if (this->formattedLength == this->text.size()) {
     return;
   }
@@ -1126,7 +1126,7 @@ void UIEditCtrl_Currency::Slot19() {
 
 // OFFSET: 0x00892910
 // FUNCTION: fn_11478
-void UISlotBmpButton::Slot19() {
+void UISlotBmpButton::OnProcess() {
   ++this->unknown_0134;
 
   if (this->unknown_0134 / this->unknown_0136 > 7) {
@@ -1136,7 +1136,7 @@ void UISlotBmpButton::Slot19() {
 
 // OFFSET: 0x00892940
 // FUNCTION: fn_11479
-void UIBasicItemCtrl::Slot32(int, int) {
+void UIBasicItemCtrl::OnRBtnDown(int, int) {
   if (std::atoi(this->m_item.itemId.c_str()) > 0) {
     g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
   }
@@ -1144,7 +1144,7 @@ void UIBasicItemCtrl::Slot32(int, int) {
 
 // OFFSET: 0x00892A10
 // FUNCTION: fn_11481
-void UIBitmapButton2::Slot32(int, int) {
+void UIBitmapButton2::OnRBtnDown(int, int) {
   if (this->m_disabled == 0) {
     if (this->parent) {
       this->parent->SendMsg(this, 101, this->geometry.id, 0, 0, 0);
@@ -1156,14 +1156,14 @@ void UIBitmapButton2::Slot32(int, int) {
 
 // OFFSET: 0x00892A50
 // FUNCTION: fn_11482
-void UIMemberListBox::Slot32(int x, int y) {
+void UIMemberListBox::OnRBtnDown(int x, int y) {
   this->selected = this->LineAt(x, y);
   this->Invalidate();
 }
 
 // OFFSET: 0x00892A80
 // FUNCTION: fn_11483
-void UISlotBmpButton::Slot32(int, int) {
+void UISlotBmpButton::OnRBtnDown(int, int) {
   if (this->parent) {
     this->parent->SendMsg(this, 6, this->geometry.id, 226, 0, 0);
   }
@@ -1171,13 +1171,13 @@ void UISlotBmpButton::Slot32(int, int) {
 
 // OFFSET: 0x00892AB0
 // FUNCTION: fn_11484
-void UIStaticItem::Slot32(int, int) {
+void UIStaticItem::OnRBtnDown(int, int) {
   g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
 }
 
 // OFFSET: 0x00892AE0
 // FUNCTION: fn_11485
-void UITVBitmapButton::Slot32(int, int) {
+void UITVBitmapButton::OnRBtnDown(int, int) {
   if (this->m_disabled == 0) {
     if (this->parent) {
       this->parent->SendMsg(this, 101, this->m_value, 0, 0, 0);
@@ -1189,7 +1189,7 @@ void UITVBitmapButton::Slot32(int, int) {
 
 // OFFSET: 0x00892B20
 // FUNCTION: fn_11486
-void UITVTextButton::Slot32(int x, int y) {
+void UITVTextButton::OnRBtnDown(int x, int y) {
   if (this->m_disabled == 0) {
     if (this->parent) {
       this->parent->SendMsg(this, 99, this->m_value, x, y, 0);
@@ -1201,7 +1201,7 @@ void UITVTextButton::Slot32(int x, int y) {
 
 // OFFSET: 0x00892BA0
 // FUNCTION: fn_11488
-void UIBitmapButton2::Slot33(int x, int y) {
+void UIBitmapButton2::OnRBtnUp(int x, int y) {
   if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
     return;
   }
@@ -1222,7 +1222,7 @@ void UIBitmapButton2::Slot33(int x, int y) {
 
 // OFFSET: 0x00882410
 // FUNCTION: fn_11301
-bool UIChatHisBox2::Slot08() {
+bool UIChatHisBox2::IsTransmitMouseInput() {
   return false;
 }
 
@@ -1232,19 +1232,19 @@ void UIChatHisBox2::Configure(int x, int y, int width, int height, unsigned char
   this->transparent = 0;
   UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x00892C20
 // FUNCTION: fn_11489
-void UIChatHisBox2::Slot33(int x, int y) {
-  this->parent->Slot33(x + this->geometry.x, y + this->geometry.y);
+void UIChatHisBox2::OnRBtnUp(int x, int y) {
+  this->parent->OnRBtnUp(x + this->geometry.x, y + this->geometry.y);
 }
 
 // OFFSET: 0x00892C50
 // FUNCTION: fn_11490
-void UIMemberListBox::Slot33(int, int) {
+void UIMemberListBox::OnRBtnUp(int, int) {
   if (this->parent) {
     this->parent->SendMsg(nullptr, 49, 0, 0, 0, 0);
   }
@@ -1252,7 +1252,7 @@ void UIMemberListBox::Slot33(int, int) {
 
 // OFFSET: 0x00892CA0
 // FUNCTION: fn_11492
-void UITVBitmapButton::Slot33(int x, int y) {
+void UITVBitmapButton::OnRBtnUp(int x, int y) {
   if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
     return;
   }
@@ -1273,7 +1273,7 @@ void UITVBitmapButton::Slot33(int x, int y) {
 
 // OFFSET: 0x00892D20
 // FUNCTION: fn_11493
-void UITVTextButton::Slot33(int x, int y) {
+void UITVTextButton::OnRBtnUp(int x, int y) {
   if (this->m_disabled == 0) {
     if (this->parent) {
       this->parent->SendMsg(this, 99, this->m_value, x, y, 0);
@@ -1285,7 +1285,7 @@ void UITVTextButton::Slot33(int x, int y) {
 
 // OFFSET: 0x00892DE0
 // FUNCTION: fn_11495
-void UIComboBoxV2Wnd::Slot35(int value) {
+void UIComboBoxV2Wnd::OnWheel(int value) {
   this->selected += value < 0 ? 1 : -1;
   const int count = static_cast<int>(this->list->lines.size());
 
@@ -1418,7 +1418,7 @@ void UIComboBoxID::Refresh() {
 
 // OFFSET: 0x00892EE0
 // FUNCTION: fn_11498
-void UIListBoxID::Slot35(int value) {
+void UIListBoxID::OnWheel(int value) {
   if (this->verticalOverflow != 0) {
     if (value < 0) {
       this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);
@@ -1430,7 +1430,7 @@ void UIListBoxID::Slot35(int value) {
 
 // OFFSET: 0x00892F50
 // FUNCTION: fn_11501
-void UITreeView::Slot35(int value) {
+void UITreeView::OnWheel(int value) {
   if (this->verticalOverflow != 0) {
     if (value < 0) {
       this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);
@@ -1442,8 +1442,8 @@ void UITreeView::Slot35(int value) {
 
 // OFFSET: 0x008861E0
 // FUNCTION: fn_11324
-void UIItemStoreComboBox::Slot15(int width, int height) {
-  this->UIListBoxEx::Slot15(width, height);
+void UIItemStoreComboBox::OnCreate(int width, int height) {
+  this->UIListBoxEx::OnCreate(width, height);
   this->lineHeight = 15;
 }
 
@@ -1453,12 +1453,12 @@ void UITreeView::Resize(int width, int height) {
   UIWindow::Resize(width, height);
   this->verticalBar->Move(this->geometry.width - 10, 0);
   this->verticalBar->Resize(this->verticalBar->geometry.width, height);
-  this->Slot53();
+  this->UpdateScrollBar();
 }
 
 // OFFSET: 0x008961F0
 // FUNCTION: fn_11516
-void UITreeView::Slot53() {
+void UITreeView::UpdateScrollBar() {
   const int visible = this->geometry.height / this->itemHeight;
   const int count = this->itemCount;
   const int excess = count - visible;
@@ -1561,7 +1561,7 @@ void UITVTextButton::Paint() {
 
 // OFFSET: 0x0088FFB0
 // FUNCTION: fn_11397
-void UIBasicItemCtrl::Slot26(int, int) {
+void UIBasicItemCtrl::OnLBtnDblClk(int, int) {
   this->m_item = ITEM_INFO(0);
 
   if (this->Root()) {
@@ -1574,7 +1574,7 @@ void UIBasicItemCtrl::Slot26(int, int) {
 
 // OFFSET: 0x00890080
 // FUNCTION: fn_11398
-void UIBasicSkillCtrl::Slot26(int, int) {
+void UIBasicSkillCtrl::OnLBtnDblClk(int, int) {
   this->m_skillId = -1;
 
   if (this->Root()) {
@@ -1587,18 +1587,18 @@ void UIBasicSkillCtrl::Slot26(int, int) {
 
 // OFFSET: 0x00890150
 // FUNCTION: fn_11400
-void UIComboBox::Slot26(int, int) {
+void UIComboBox::OnLBtnDblClk(int, int) {
 }
 
 // OFFSET: 0x00890170
 // FUNCTION: fn_11402
-void UIComboBoxID::Slot26(int, int) {
+void UIComboBoxID::OnLBtnDblClk(int, int) {
 }
 
 // OFFSET: 0x008902A0
 // FUNCTION: fn_11408
-void UISlotBmpButton::Slot26(int x, int y) {
-  UIBitmapButton::Slot26(x, y);
+void UISlotBmpButton::OnLBtnDblClk(int x, int y) {
+  UIBitmapButton::OnLBtnDblClk(x, y);
 
   if (this->parent) {
     this->parent->SendMsg(this, 6, 184, 0, 0, 0);
@@ -1607,7 +1607,7 @@ void UISlotBmpButton::Slot26(int x, int y) {
 
 // OFFSET: 0x008902E0
 // FUNCTION: fn_11409
-void UITVTextButton::Slot26(int x, int y) {
+void UITVTextButton::OnLBtnDblClk(int x, int y) {
   if (this->m_disabled != 0) {
     return;
   }
@@ -1623,7 +1623,7 @@ void UITVTextButton::Slot26(int x, int y) {
 
 // OFFSET: 0x00890400
 // FUNCTION: fn_11411
-void UIBmpRadioBtn::Slot25(int, int) {
+void UIBmpRadioBtn::OnLBtnDown(int, int) {
   if (this->parent) {
     this->parent->SendMsg(this, 6, this->geometry.id, this->m_value, 0, 0);
   }
@@ -1631,17 +1631,17 @@ void UIBmpRadioBtn::Slot25(int, int) {
 
 // OFFSET: 0x00890450
 // FUNCTION: fn_11413
-void UIComboBox::Slot25(int, int) {
+void UIComboBox::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x00890470
 // FUNCTION: fn_11415
-void UIComboBoxID::Slot25(int, int) {
+void UIComboBoxID::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x008905F0
 // FUNCTION: fn_11420
-void UIListBoxID::Slot25(int x, int y) {
+void UIListBoxID::OnLBtnDown(int x, int y) {
   int line;
 
   if (x < 0 || y < 0 || x >= this->geometry.width || y >= this->geometry.height) {
@@ -1657,7 +1657,7 @@ void UIListBoxID::Slot25(int x, int y) {
 
 // OFFSET: 0x00890640
 // FUNCTION: fn_11421
-void UIListBoxNavi::Slot25(int x, int y) {
+void UIListBoxNavi::OnLBtnDown(int x, int y) {
   if (g_replayAnimationScaling != 0) {
     return;
   }
@@ -1673,15 +1673,15 @@ void UIListBoxNavi::Slot25(int x, int y) {
 
 // OFFSET: 0x00890690
 // FUNCTION: fn_11422
-void UIMemberListBox::Slot25(int x, int y) {
+void UIMemberListBox::OnLBtnDown(int x, int y) {
   this->selected = this->LineAt(x, y);
   this->Invalidate();
 }
 
 // OFFSET: 0x008908A0
 // FUNCTION: fn_11426
-void UISlotBmpButton::Slot25(int x, int y) {
-  UIBitmapButton::Slot25(x, y);
+void UISlotBmpButton::OnLBtnDown(int x, int y) {
+  UIBitmapButton::OnLBtnDown(x, y);
 
   if (this->parent) {
     this->parent->SendMsg(this, 13, 0, 0, 0, 0);
@@ -1691,7 +1691,7 @@ void UISlotBmpButton::Slot25(int x, int y) {
 
 // OFFSET: 0x008908F0
 // FUNCTION: fn_11427
-void UITVTextButton::Slot25(int, int) {
+void UITVTextButton::OnLBtnDown(int, int) {
   if (this->m_disabled != 0) {
     return;
   }
@@ -1707,7 +1707,7 @@ void UITVTextButton::Slot25(int, int) {
 
 // OFFSET: 0x00890940
 // FUNCTION: fn_11428
-void UITabControl::Slot25(int x, int y) {
+void UITabControl::OnLBtnDown(int x, int y) {
   const int index = this->TabAt(x, y);
 
   if (index == -1) {
@@ -1732,15 +1732,15 @@ void UITabControl::Slot25(int x, int y) {
 
 // OFFSET: 0x00890A00
 // FUNCTION: fn_11430
-void UITreeView::Slot25(int x, int y) {
+void UITreeView::OnLBtnDown(int x, int y) {
   if (this->parent) {
-    this->parent->Slot25(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnLBtnDown(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x00890A30
 // FUNCTION: fn_11431
-void UIBitmapButton2::Slot31(int x, int y) {
+void UIBitmapButton2::OnLBtnUp(int x, int y) {
   if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
     return;
   }
@@ -1761,13 +1761,13 @@ void UIBitmapButton2::Slot31(int x, int y) {
 
 // OFFSET: 0x00890DA0
 // FUNCTION: fn_11437
-void UIComboBoxV2Wnd::Slot31(int, int) {
+void UIComboBoxV2Wnd::OnLBtnUp(int, int) {
   this->SendMsg(nullptr, 6, 273, 0, 0, 0);
 }
 
 // OFFSET: 0x00890E30
 // FUNCTION: fn_11439
-void UIItemStoreComboBox::Slot31(int x, int y) {
+void UIItemStoreComboBox::OnLBtnUp(int x, int y) {
   int line;
 
   if (x < 0 || y < 0 || x >= this->geometry.width || y >= this->geometry.height) {
@@ -1786,7 +1786,7 @@ void UIItemStoreComboBox::Slot31(int x, int y) {
 
 // OFFSET: 0x00891050
 // FUNCTION: fn_11442
-void UITVBitmapButton::Slot31(int x, int y) {
+void UITVBitmapButton::OnLBtnUp(int x, int y) {
   if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
     return;
   }
@@ -1807,7 +1807,7 @@ void UITVBitmapButton::Slot31(int x, int y) {
 
 // OFFSET: 0x008910D0
 // FUNCTION: fn_11443
-void UITVTextButton::Slot31(int x, int y) {
+void UITVTextButton::OnLBtnUp(int x, int y) {
   if (this->m_disabled != 0) {
     return;
   }
@@ -1827,7 +1827,7 @@ void UITVTextButton::Slot31(int x, int y) {
 
 // OFFSET: 0x00891130
 // FUNCTION: fn_11444
-void UITabControl::Slot31(int, int) {
+void UITabControl::OnLBtnUp(int, int) {
   g_windowMgr.ReleaseCapture();
 }
 
@@ -2177,20 +2177,20 @@ void UIZeroQuestScrollBar::Paint() {
 
 // OFFSET: 0x00884DD0
 // FUNCTION: fn_11313
-void TableBox::Slot15(int, int) {
+void TableBox::OnCreate(int, int) {
 }
 
 // OFFSET: 0x00884DE0
 // FUNCTION: fn_11314
-void UIChatHisBox2::Slot15(int width, int height) {
+void UIChatHisBox2::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move(width - 13, 0);
-  vertical->Slot15(verticalWidth, height);
-  vertical->Slot22(verticalWidth, height);
+  vertical->OnCreate(verticalWidth, height);
+  vertical->OnSize(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
   auto* horizontal = new UIScrollBar2();
@@ -2199,22 +2199,22 @@ void UIChatHisBox2::Slot15(int width, int height) {
   horizontal->vertical = 0;
   horizontal->UIWindow::Resize(width - 13, horizontalHeight);
   horizontal->Move(0, height - 13);
-  horizontal->Slot15(width - 13, horizontalHeight);
-  horizontal->Slot22(width - 13, horizontalHeight);
+  horizontal->OnCreate(width - 13, horizontalHeight);
+  horizontal->OnSize(width - 13, horizontalHeight);
   this->AddChild(this->horizontalBar);
 }
 
 // OFFSET: 0x00884F40
 // FUNCTION: fn_11315
-void UIChatHisBox3::Slot15(int width, int height) {
+void UIChatHisBox3::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar3();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move(width - 10, 0);
-  vertical->Slot15(verticalWidth, height);
-  vertical->Slot22(verticalWidth, height);
+  vertical->OnCreate(verticalWidth, height);
+  vertical->OnSize(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
   auto* horizontal = new UIScrollBar3();
@@ -2223,22 +2223,22 @@ void UIChatHisBox3::Slot15(int width, int height) {
   horizontal->vertical = 0;
   horizontal->UIWindow::Resize(width - 10, horizontalHeight);
   horizontal->Move(0, height - 10);
-  horizontal->Slot15(width - 10, horizontalHeight);
-  horizontal->Slot22(width - 10, horizontalHeight);
+  horizontal->OnCreate(width - 10, horizontalHeight);
+  horizontal->OnSize(width - 10, horizontalHeight);
   this->AddChild(this->horizontalBar);
 }
 
 // OFFSET: 0x008850C0
 // FUNCTION: fn_11316
-void UIChatHisBox::Slot15(int width, int height) {
+void UIChatHisBox::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar2();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move(width - 13, 0);
-  vertical->Slot15(verticalWidth, height);
-  vertical->Slot22(verticalWidth, height);
+  vertical->OnCreate(verticalWidth, height);
+  vertical->OnSize(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
   auto* horizontal = new UIScrollBar2();
@@ -2247,8 +2247,8 @@ void UIChatHisBox::Slot15(int width, int height) {
   horizontal->vertical = 0;
   horizontal->UIWindow::Resize(width - 13, horizontalHeight);
   horizontal->Move(0, height - 13);
-  horizontal->Slot15(width - 13, horizontalHeight);
-  horizontal->Slot22(width - 13, horizontalHeight);
+  horizontal->OnCreate(width - 13, horizontalHeight);
+  horizontal->OnSize(width - 13, horizontalHeight);
   this->AddChild(this->horizontalBar);
 }
 
@@ -2481,7 +2481,7 @@ void UITableBox::Paint() {
 
 // OFFSET: 0x008906D0
 // FUNCTION: fn_11424
-void UIPackageBoxNameList::Slot25(int x, int y) {
+void UIPackageBoxNameList::OnLBtnDown(int x, int y) {
   this->selected = this->LineAt(x, y);
   if (this->selected != -1) {
     this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
@@ -2492,15 +2492,15 @@ void UIPackageBoxNameList::Slot25(int x, int y) {
 
 // OFFSET: 0x00886AE0
 // FUNCTION: fn_11328
-void UIListBoxID::Slot15(int width, int height) {
+void UIListBoxID::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move((width - 13), 0);
-  vertical->Slot15(verticalWidth, height);
-  vertical->Slot22(verticalWidth, height);
+  vertical->OnCreate(verticalWidth, height);
+  vertical->OnSize(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
   auto* horizontal = new UIScrollBar();
@@ -2509,27 +2509,27 @@ void UIListBoxID::Slot15(int width, int height) {
   horizontal->vertical = 0;
   horizontal->UIWindow::Resize((width - 13), horizontalHeight);
   horizontal->Move(0, (height - 13));
-  horizontal->Slot15((width - 13), horizontalHeight);
-  horizontal->Slot22((width - 13), horizontalHeight);
+  horizontal->OnCreate((width - 13), horizontalHeight);
+  horizontal->OnSize((width - 13), horizontalHeight);
   this->AddChild(this->horizontalBar);
 }
 
 // OFFSET: 0x00887280
 // FUNCTION: fn_11332
-void UITableBox::Slot15(int, int) {
+void UITableBox::OnCreate(int, int) {
 }
 
 // OFFSET: 0x008872B0
 // FUNCTION: fn_11335
-void UITreeView::Slot15(int width, int height) {
+void UITreeView::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar3();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move((width - 10), 0);
-  vertical->Slot15(verticalWidth, height);
-  vertical->Slot22(verticalWidth, height);
+  vertical->OnCreate(verticalWidth, height);
+  vertical->OnSize(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
   this->edit = new UIEditCtrl2();
@@ -2551,7 +2551,7 @@ void TableBox::Paint() {
 
 // OFFSET: 0x008870B0
 // FUNCTION: fn_11331
-void UISlotBmpButton::Slot15(int, int) {
+void UISlotBmpButton::OnCreate(int, int) {
   const std::string path = "유저인터페이스\\renewalparty\\";
   char name[256];
   std::sprintf(name, "%sicon_jobs_%d.bmp", path.c_str(), 0);
@@ -2689,7 +2689,7 @@ void __stdcall Nullsub275(int, int, int, int) {
 
 // OFFSET: 0x008901E0
 // FUNCTION: fn_11405
-void UIListBoxID::Slot26(int, int) {
+void UIListBoxID::OnLBtnDblClk(int, int) {
   if (this->selected != -1) {
     this->parent->SendMsg(this, 6, this->geometry.id, this->lines[this->selected].id, 0, 0);
   }
@@ -2697,7 +2697,7 @@ void UIListBoxID::Slot26(int, int) {
 
 // OFFSET: 0x00890230
 // FUNCTION: fn_11406
-void UINewComboBoxCtrl::Slot26(int, int) {
+void UINewComboBoxCtrl::OnLBtnDblClk(int, int) {
   if (this->parent) {
     this->parent->SendMsg(this, 124, this->selected, 0, 0, 0);
   }
@@ -2705,7 +2705,7 @@ void UINewComboBoxCtrl::Slot26(int, int) {
 
 // OFFSET: 0x00890480
 // FUNCTION: fn_11416
-void UIDescriptRace::Slot25(int, int) {
+void UIDescriptRace::OnLBtnDown(int, int) {
   if (UIWindow* window = g_windowMgr.LookupWindow(278)) {
     window->SendMsg(this, 6, 204, 0, 0, 0);
   }
@@ -2720,7 +2720,7 @@ void UIDescriptRace::Paint() {
 
 // OFFSET: 0x00890330
 // FUNCTION: fn_11410
-void UITabControl::Slot26(int, int) {
+void UITabControl::OnLBtnDblClk(int, int) {
   if (this->layout == 0 || this->layout == 2 || !this->unknown_00A8) {
     return;
   }
@@ -2760,7 +2760,7 @@ void UIShowAndEditTimeCtrl::Paint() {
 // OFFSET: 0x008906C0
 // FUNCTION: fn_11423
 void __fastcall ActivateNaviLink(UINaviLinkButton* button, void*, int x, int y) {
-  button->UINaviLinkButton::Slot25(x, y);
+  button->UINaviLinkButton::OnLBtnDown(x, y);
 }
 
 // OFFSET: 0x0088AEC0
@@ -2914,7 +2914,7 @@ void UIComboBox_BmpWnd::Paint() {
 
 // OFFSET: 0x008904C0
 // FUNCTION: fn_11417
-void UIItemTagButton::Slot25(int x, int y) {
+void UIItemTagButton::OnLBtnDown(int x, int y) {
   if (this->m_disabled != 0) {
     return;
   }
@@ -2942,7 +2942,7 @@ void UIItemTagButton::Slot25(int x, int y) {
 
 // OFFSET: 0x00890AC0
 // FUNCTION: fn_11433
-void UIComboBox::Slot31(int x, int y) {
+void UIComboBox::OnLBtnUp(int x, int y) {
   this->selected = this->LineAt(x, y);
   if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
     target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
@@ -2959,7 +2959,7 @@ void UIComboBox::Slot31(int x, int y) {
 
 // OFFSET: 0x00890C20
 // FUNCTION: fn_11436
-void UIComboBoxID::Slot31(int x, int y) {
+void UIComboBoxID::OnLBtnUp(int x, int y) {
   int line;
 
   if (x < 0 || y < 0 || x >= this->geometry.width || y >= this->geometry.height) {
@@ -2996,7 +2996,7 @@ void UIComboBoxID::Slot31(int x, int y) {
 
 // OFFSET: 0x00892990
 // FUNCTION: fn_11480
-void UIBasicSkillCtrl::Slot32(int x, int y) {
+void UIBasicSkillCtrl::OnRBtnDown(int x, int y) {
   if (this->m_skillId < 0) {
     return;
   }
@@ -3291,7 +3291,7 @@ void UIRechargeGage::Paint() {
 
 // OFFSET: 0x00890DC0
 // FUNCTION: fn_11438
-void UIImgMenu::Slot31(int x, int y) {
+void UIImgMenu::OnLBtnUp(int x, int y) {
   this->hovered = this->ItemAt(x, y);
   if (this->hovered != -1 && !this->unknown_0094[this->hovered]) {
     if (UIWindow* target = g_windowMgr.LookupWindow(this->unknown_00C8)) {
@@ -3305,7 +3305,7 @@ void UIImgMenu::Slot31(int x, int y) {
 
 // OFFSET: 0x00890EE0
 // FUNCTION: fn_11441
-void UIString::Slot31(int, int) {
+void UIString::OnLBtnUp(int, int) {
   if (!this->unknown_0084.empty()) {
     UIWindow* window = g_windowMgr.EnsureWindow(201);
     window->SendMsg(nullptr, 62, reinterpret_cast<std::intptr_t>(this->unknown_0084.c_str()), 1, 0, 0);
@@ -3504,7 +3504,7 @@ void UITreeView::Paint() {
   this->HideNodes(this->root->children);
   this->itemCount = 0;
   this->LayoutNodes(this->root->children, 0, 0);
-  this->Slot53();
+  this->UpdateScrollBar();
 }
 
 // OFFSET: 0x0088F450

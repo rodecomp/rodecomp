@@ -15,11 +15,11 @@ class CParticle;
 class CCrimsonArrowEffect : public CEffect {
 public:
   CCrimsonArrowEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
 };
@@ -27,11 +27,11 @@ public:
 class CRootTwistEffect : public CEffect {
 public:
   CRootTwistEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
-  void Slot12() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
+  void InitEvents() override;
   void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -40,10 +40,10 @@ public:
 class CSpriteMableEffect : public CEffect {
 public:
   CSpriteMableEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -52,10 +52,10 @@ public:
 class CStemSpearEffect : public CEffect {
 public:
   CStemSpearEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -64,10 +64,10 @@ public:
 class CSvgSpiritEffect : public CEffect {
 public:
   CSvgSpiritEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
@@ -76,10 +76,10 @@ public:
 class CTunaPartyEffect : public CEffect {
 public:
   CTunaPartyEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -88,10 +88,10 @@ public:
 class CCurseOfCubeEffect : public CEffect {
 public:
   CCurseOfCubeEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
   virtual void SpawnStart();
   virtual void SpawnLoop();
@@ -108,10 +108,10 @@ public:
 class CWarningPlaneEffect : public CEffect {
 public:
   CWarningPlaneEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
   void AddPlane(vector3d position);
 
@@ -124,10 +124,10 @@ public:
 class CCylinderEffect : public CEffect {
 public:
   CCylinderEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
 
   /* 00CC */ unsigned int startTime;
@@ -137,10 +137,10 @@ public:
 class CDancingKnifeEffect : public CEffect {
 public:
   CDancingKnifeEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
   void SpawnFirstStrike();
   void SpawnSecondStrike();
@@ -154,10 +154,10 @@ public:
 class CEternalSlashAttackEffect : public CEffect {
 public:
   CEternalSlashAttackEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -166,10 +166,10 @@ public:
 class CEternalSlashCountEffect : public CEffect {
 public:
   CEternalSlashCountEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
@@ -178,10 +178,10 @@ public:
 class CFallenAngelEffect : public CEffect {
 public:
   CFallenAngelEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
   void SetPosition(vector3d position);
 
@@ -194,10 +194,10 @@ public:
 class CFloralFlareRoad : public CEffect {
 public:
   CFloralFlareRoad();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
 
   /* 00CC */ EZ2STREmitter* unknown_00CC;
@@ -207,11 +207,11 @@ public:
 class CFootprintEffect : public CEffect {
 public:
   CFootprintEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
-  bool Slot33() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
+  bool IsVisible() override;
   void Close() override;
   CParticle* SpawnFootprint();
 
@@ -230,11 +230,11 @@ public:
 class CFootprintStrEffect : public CEffect {
 public:
   CFootprintStrEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
-  bool Slot33() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
+  bool IsVisible() override;
   void Close() override;
   void SpawnFootprint();
 
@@ -269,11 +269,11 @@ public:
   CFromTheAbyssEffect();
   void UpdateParticle(long long key, AbyssParticle particle);
   void SetLevel(long long level);
-  void Slot03() override;
-  void Slot01() override;
-  void Slot04() override;
+  void OnProcess() override;
+  void Open() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   /* 00CC */ unsigned char unknown_00CC[4];
   /* 00D0 */ long long maxLevel;
@@ -287,9 +287,9 @@ class CParticle;
 class CFullScreenEffect : public CEffect {
 public:
   CFullScreenEffect();
-  void Slot01() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
 
   /* 00CC */ std::vector<CParticle*> particles;
@@ -300,11 +300,11 @@ public:
 class CPetitioEffect : public CEffect {
 public:
   CPetitioEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
 };
@@ -312,9 +312,9 @@ public:
 class CPneumaticusProcellaEffect : public CEffect {
 public:
   CPneumaticusProcellaEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
@@ -324,12 +324,12 @@ public:
 class CRandomHitEffect : public CEffect {
 public:
   CRandomHitEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
   // INLINED
-  bool Slot06() override {
+  bool IsAlive() override {
     return this->active;
   }
 
@@ -341,12 +341,12 @@ public:
 class CRandomOptEffect : public CEffect {
 public:
   CRandomOptEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
-  void Slot08(int red, int green, int blue) override;
-  void Slot11(std::string name) override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
+  void SetColor(int red, int green, int blue) override;
+  void SetParticleTexture(std::string name) override;
   void Close() override;
   void Init();
 
@@ -357,10 +357,10 @@ public:
 class CRichsCoinEffect : public CEffect {
 public:
   CRichsCoinEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
 
   /* 00CC */ std::vector<CParticle*> particles;
@@ -371,10 +371,10 @@ public:
 class CSavageImpactEffect : public CEffect {
 public:
   CSavageImpactEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
@@ -384,10 +384,10 @@ public:
 class CServantWeaponEffect : public CEffect {
 public:
   CServantWeaponEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
   void SetShoot(int column);
   void SetPhantomShot(long long column);
@@ -401,10 +401,10 @@ class CServantWeaponNewEffect : public CEffect {
 public:
   CServantWeaponNewEffect();
   ~CServantWeaponNewEffect() override;
-  bool Slot06() override;
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  bool IsAlive() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
   void AddWeapon();
   EZ2STREmitter* CreateShot(float angle, int skill);
@@ -418,11 +418,11 @@ class CSevereRainStorm : public CEffect {
 public:
   CSevereRainStorm();
   ~CSevereRainStorm() override;
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   void SpawnParticles();
   void SpawnCrossRain();
@@ -441,10 +441,10 @@ public:
 class CGaleStorm : public CEffect {
 public:
   CGaleStorm();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
   void SpawnArrow();
   void SpawnStorm();
@@ -462,10 +462,10 @@ public:
 class CJupitelThunderHit : public CEffect {
 public:
   CJupitelThunderHit();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
   void SpawnHit();
   void SpawnSpark();
@@ -479,10 +479,10 @@ class CNewCloudKillEffect : public CEffect {
 public:
   CNewCloudKillEffect();
   ~CNewCloudKillEffect() override;
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
   void ResetMistParticle(CParticle* particle);
   void ResetCloudParticle(CParticle* particle);
@@ -502,12 +502,12 @@ public:
 class CDropItemEffect : public CEffect {
 public:
   CDropItemEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
-  void Slot12() override;
+  void InitEvents() override;
   void OpenEmitters();
 
   /* 00CC */ int unknown_00CC;
@@ -523,11 +523,11 @@ class CHawkVumerangEffect : public CEffect {
 public:
   CHawkVumerangEffect();
   ~CHawkVumerangEffect() override;
-  void Slot01() override;
-  void Slot04() override;
-  bool Slot06() override;
+  void Open() override;
+  void Render() override;
+  bool IsAlive() override;
   void Close() override;
-  void Slot03() override;
+  void OnProcess() override;
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;

@@ -84,7 +84,7 @@ UIWaitDBSaveWnd::UIWaitDBSaveWnd() : UIWaitDBSaveWnd(WaitSpriteName(), WaitActio
 
 // OFFSET: 0x00AB4CE0
 // FUNCTION: fn_17448
-void UIWaitDBSaveWnd::Slot15(int width, int height) {
+void UIWaitDBSaveWnd::OnCreate(int width, int height) {
   UIButton* button = new UIButton();
   button->SetSize(width, height);
   button->Move(0, 0);
@@ -95,7 +95,7 @@ void UIWaitDBSaveWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x00AB4D80
 // FUNCTION: fn_17449
-void UIWaitDBSaveWnd::Slot18() {
+void UIWaitDBSaveWnd::OnDestroy() {
 }
 
 // OFFSET: 0x00AB4D90
@@ -152,12 +152,12 @@ void UIWaitDBSaveWnd::Paint() {
 
 // OFFSET: 0x00AB5060
 // FUNCTION: fn_17451
-void UIWaitDBSaveWnd::Slot27(int, int) {
+void UIWaitDBSaveWnd::OnMouseMove(int, int) {
 }
 
 // OFFSET: 0x00AB5070
 // FUNCTION: fn_17452
-void UIWaitDBSaveWnd::Slot19() {
+void UIWaitDBSaveWnd::OnProcess() {
   if (this->m_closeTime != 0 && timeGetTime() >= this->m_closeTime) {
     this->m_closeTime = 0;
     g_windowMgr.CloseWindow(10024);

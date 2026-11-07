@@ -11,8 +11,8 @@ public:
   UIStaticItem();
   ~UIStaticItem() override;
   void Paint() override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
 
 protected:
   /* 0080 */ ITEM_INFO m_item;
@@ -21,7 +21,7 @@ protected:
 class UIStaticItem_Illust : public UIStaticItem {
 public:
   void Paint() override;
-  void Slot28(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
 };
 
 #endif

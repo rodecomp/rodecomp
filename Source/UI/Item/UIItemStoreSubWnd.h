@@ -13,13 +13,13 @@ class UIStaticText;
 class UIItemStoreSubWnd : public UIItemBaseWnd {
 public:
   UIItemStoreSubWnd();
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot11() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot35(int value) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void StoreInfo() override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnWheel(int value) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
@@ -38,7 +38,7 @@ public:
   bool FilterByName1(std::string query);
   bool FilterByName2(std::string query);
   bool FilterByName3(std::string query);
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
 
   /* 00F0 */ unsigned char unknown_00F0[0x20];
   /* 0110 */ UIResizer* resizeHandle;

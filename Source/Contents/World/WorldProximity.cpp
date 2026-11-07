@@ -103,7 +103,7 @@ bool CWorld::IsGuildMaster(std::uint32_t aid) {
         return false;
       }
 
-      return gameActor->Slot42() == static_cast<int>(g_guildInfo.unknown_00D0);
+      return gameActor->GetPkState() == static_cast<int>(g_guildInfo.unknown_00D0);
     }
   }
 
@@ -113,7 +113,7 @@ bool CWorld::IsGuildMaster(std::uint32_t aid) {
 // OFFSET: 0x00AC8750
 // FUNCTION: fn_17677
 bool CWorld::IsExistGuildMasterNearby(const float& x, const float& z) {
-  if (!this->player || this->player->Slot50() < 1) {
+  if (!this->player || this->player->GetGdid() < 1) {
     return false;
   }
 
@@ -237,7 +237,7 @@ bool WorldProximityGuildMasterCallback::Invoke(const std::uint32_t& aidRef) {
     return false;
   }
 
-  if (static_cast<int>(g_guildInfo.unknown_00D0) != gameActor->Slot42()) {
+  if (static_cast<int>(g_guildInfo.unknown_00D0) != gameActor->GetPkState()) {
     return false;
   }
 
@@ -265,7 +265,7 @@ bool WorldProximityRangeCallback::Invoke() {
 // OFFSET: 0x00AC9D50
 // FUNCTION: fn_17686
 __declspec(noinline) void CWorld::PcApproachToPlayer(std::uint32_t aid, const CellFloatPos& pos) {
-  if (this->player && this->player->Slot50() > 0 && this->IsGuildMaster(aid)) {
+  if (this->player && this->player->GetGdid() > 0 && this->IsGuildMaster(aid)) {
     auto isNearby = [](const CellFloatPos& cell, const CellFloatPos& player, int range) {
       return std::fabs(cell.x - player.x) <= static_cast<float>(range) && std::fabs(cell.z - player.z) <= static_cast<float>(range);
     };

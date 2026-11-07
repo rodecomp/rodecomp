@@ -38,8 +38,8 @@ UITextViewer::~UITextViewer() = default;
 
 // OFFSET: 0x008872A0
 // FUNCTION: fn_11334
-void UITextViewer::Slot15(int width, int height) {
-  UIListBox::Slot15(width, height);
+void UITextViewer::OnCreate(int width, int height) {
+  UIListBox::OnCreate(width, height);
 }
 
 // OFFSET: 0x0087B730
@@ -48,8 +48,8 @@ void UITextViewEX::Configure(int x, int y, int width, int height, unsigned char 
   this->transparent = value;
   UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
   this->lineHeight = 21;
 }
 
@@ -71,8 +71,8 @@ void UITextViewer::Configure(int x, int y, int width, int height, unsigned char 
   this->transparent = value;
   UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x008760C0
@@ -96,17 +96,17 @@ void UITextViewer::Clear() {
 
 // OFFSET: 0x008909F0
 // FUNCTION: fn_11429
-void UITextViewer::Slot25(int, int) {
+void UITextViewer::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x007B78C0
 // FUNCTION: fn_09227
-void UITextViewer::Slot26(int, int) {
+void UITextViewer::OnLBtnDblClk(int, int) {
 }
 
 // OFFSET: 0x007B78D0
 // FUNCTION: fn_09228
-void UIAchListWnd::Slot25(int x, int y) {
+void UIAchListWnd::OnLBtnDown(int x, int y) {
   if (x < 0 || x > this->geometry.width - this->unknown_0094) {
     return;
   }
@@ -122,7 +122,7 @@ void UIAchListWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x007B7920
 // FUNCTION: fn_09229
-void UIAchTV::Slot25(int, int) {
+void UIAchTV::OnLBtnDown(int, int) {
   if (this->unknown_00EC == 1) {
     return;
   }
@@ -135,7 +135,7 @@ void UIAchTV::Slot25(int, int) {
 
 // OFFSET: 0x007B7960
 // FUNCTION: fn_09230
-void UIAchTab::Slot25(int x, int y) {
+void UIAchTab::OnLBtnDown(int x, int y) {
   int a = 0;
   int b = 0;
   if (!this->HitTestTab(x, y, &a, &b)) {
@@ -156,19 +156,19 @@ void UIAchTab::Slot25(int x, int y) {
 
 // OFFSET: 0x007B79F0
 // FUNCTION: fn_09231
-void UIAchListWnd::Slot31(int, int) {
+void UIAchListWnd::OnLBtnUp(int, int) {
   g_windowMgr.ReleaseCapture();
 }
 
 // OFFSET: 0x007B7A00
 // FUNCTION: fn_09232
-void UIAchTab::Slot31(int, int) {
+void UIAchTab::OnLBtnUp(int, int) {
   g_windowMgr.ReleaseCapture();
 }
 
 // OFFSET: 0x007B7A10
 // FUNCTION: fn_09233
-void UITextViewer::Slot31(int, int) {
+void UITextViewer::OnLBtnUp(int, int) {
 }
 
 // OFFSET: 0x0088FBB0
@@ -220,8 +220,8 @@ void UITextViewer::Paint() {
 
 // OFFSET: 0x00887290
 // FUNCTION: fn_11333
-void UITextViewEX::Slot15(int width, int height) {
-  UIListBox::Slot15(width, height);
+void UITextViewEX::OnCreate(int width, int height) {
+  UIListBox::OnCreate(width, height);
 }
 
 // OFFSET: 0x00896100

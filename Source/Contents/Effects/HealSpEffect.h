@@ -13,11 +13,11 @@ class CSpriteParticle;
 class CHealSp : public CEffect {
 public:
   ~CHealSp() override;
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   void AddRing(float inner, float outer, float height, int duration);
 

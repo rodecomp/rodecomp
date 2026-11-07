@@ -179,7 +179,7 @@ bool CGifRes::AdvanceFrame() {
 
 // OFFSET: 0x00749D20
 // FUNCTION: fn_07856
-void CGifRes::Slot02() {
+void CGifRes::OnProcess() {
   this->frameChanged = this->AdvanceFrame();
 }
 

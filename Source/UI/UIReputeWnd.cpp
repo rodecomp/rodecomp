@@ -42,13 +42,13 @@ UIReputeWnd::UIReputeWnd()
 
 // OFFSET: 0x0060F170
 // FUNCTION: fn_04312
-bool UIReputeWnd::Slot02() {
+bool UIReputeWnd::IsFrameWnd() {
   return true;
 }
 
 // OFFSET: 0x0060F180
 // FUNCTION: fn_04313
-void UIReputeWnd::Slot15(int width, int height) {
+void UIReputeWnd::OnCreate(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 

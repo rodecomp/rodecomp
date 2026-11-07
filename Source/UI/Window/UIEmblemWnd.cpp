@@ -13,7 +13,7 @@
 
 // OFFSET: 0x0085ACD0
 // FUNCTION: fn_10787
-void UIEmblemWnd::Slot15(int, int) {
+void UIEmblemWnd::OnCreate(int, int) {
 }
 
 // OFFSET: 0x0085CE40
@@ -38,7 +38,7 @@ void UIEmblemWnd::Paint() {
 
 // OFFSET: 0x0085FAF0
 // FUNCTION: fn_10883
-void UIEmblemWnd::Slot19() {
+void UIEmblemWnd::OnProcess() {
   if (g_serviceOptions.Get(243)) {
     if (this->geometry.width == 24) {
       this->Resize(28, 28);

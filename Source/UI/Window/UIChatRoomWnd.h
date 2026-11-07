@@ -20,8 +20,8 @@ class UIChatRoomWnd : public UIFrameWnd {
 public:
   UIChatRoomWnd();
   void Move(int x, int y) override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SaveChatLog();

@@ -12,11 +12,11 @@ class CParticle;
 class CLevel99Orb1Effect : public CEffect {
 public:
   CLevel99Orb1Effect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   /* 00CC */ vector3d offsets[16];
   /* 018C */ std::vector<CParticle*> particles;

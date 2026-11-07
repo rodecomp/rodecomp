@@ -23,10 +23,10 @@ class UIItemRepairWnd : public UIFrameWnd {
 public:
   UIItemRepairWnd();
   ~UIItemRepairWnd() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
-  std::vector<unsigned char> Slot44() override;
+  std::vector<unsigned char> GetReplayData() override;
 
 protected:
 

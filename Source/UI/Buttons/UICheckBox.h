@@ -17,8 +17,8 @@ public:
   UICheckBox();
   ~UICheckBox() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   void ResetCursor(int x, int y) override;
   void SetChecked(int value);
   void SetImages(const char* checked, const char* unchecked, const char* text);

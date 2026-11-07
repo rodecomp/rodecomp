@@ -64,7 +64,7 @@ void CMagnumBreak::Close() {
 
 // OFFSET: 0x00B49D40
 // FUNCTION: fn_18940
-void CMagnumBreak::Slot01() {
+void CMagnumBreak::Open() {
   this->AddRings();
   this->AddRings();
   this->AddWaves();
@@ -72,13 +72,13 @@ void CMagnumBreak::Slot01() {
 
 // OFFSET: 0x00B49E50
 // FUNCTION: fn_18941
-bool CMagnumBreak::Slot06() {
+bool CMagnumBreak::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B49E60
 // FUNCTION: fn_18942
-void CMagnumBreak::Slot03() {
+void CMagnumBreak::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->rings.begin(); it != this->rings.end(); ++it) {
     CParticle* ring = *it;
     float& growth = *reinterpret_cast<float*>(&ring->unknown_0048[0x0C]);
@@ -129,7 +129,7 @@ void CMagnumBreak::Slot03() {
 
 // OFFSET: 0x00B4A150
 // FUNCTION: fn_18943
-void CMagnumBreak::Slot04() {
+void CMagnumBreak::Render() {
   for (std::vector<CParticle*>::iterator it = this->rings.begin(); it != this->rings.end(); ++it) {
     CParticle* ring = *it;
     const int angle = static_cast<int>(*reinterpret_cast<float*>(&ring->unknown_00C4));

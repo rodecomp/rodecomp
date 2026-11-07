@@ -2694,7 +2694,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     for (int delay = 600; delay < 1200; delay += 200) {
       CEffect* arrow = g_effectMgr->Spawn(target->render.accountId, effectId + 1, position.x, position.y, position.z, 0, -1, 0, 0);
       if (arrow) {
-        arrow->Slot16(delay);
+        arrow->SetDelay(delay);
       }
     }
     break;
@@ -2751,11 +2751,11 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       const int delay = std::max(std::rand() % 10, 0) * 50;
       CEffect* spawned = g_effectMgr->Spawn(0, 0x661, spot.x, spot.y, spot.z, 0, -1, 0, 0);
       if (spawned) {
-        spawned->Slot16(delay);
+        spawned->SetDelay(delay);
       }
       spawned = g_effectMgr->Spawn(0, 0x662, spot.x, spot.y, spot.z, 0, -1, 0, 0);
       if (spawned) {
-        spawned->Slot16(delay);
+        spawned->SetDelay(delay);
       }
     }
     break;
@@ -2893,26 +2893,26 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     if (g_serviceOptions.Get(0xE5)) {
       spawned = g_effectMgr->Spawn(source->render.accountId, effectId + 0x86, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (spawned) {
-        spawned->Slot16(duration);
+        spawned->SetDelay(duration);
       }
       spawned = g_effectMgr->Spawn(target->render.accountId, 0x5DF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (spawned) {
-        spawned->Slot16(duration);
+        spawned->SetDelay(duration);
       }
       spawned = g_effectMgr->Spawn(target->render.accountId, 0x5E0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     } else {
       spawned = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (spawned) {
-        spawned->Slot16(duration);
+        spawned->SetDelay(duration);
       }
       spawned = g_effectMgr->Spawn(target->render.accountId, 0x559, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (spawned) {
-        spawned->Slot16(duration);
+        spawned->SetDelay(duration);
       }
       spawned = g_effectMgr->Spawn(target->render.accountId, 0x55A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     if (spawned) {
-      spawned->Slot16(duration);
+      spawned->SetDelay(duration);
     }
     if (g_serviceOptions.Get(0xE5)) {
       g_effectMgr->Spawn(source->render.accountId, 0x5E1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -2955,7 +2955,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
         const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
         CEffect* spawned = g_effectMgr->Spawn(source->render.accountId, effectId + 0x6F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         if (spawned) {
-          spawned->Slot16(duration);
+          spawned->SetDelay(duration);
         }
       }
     } else {
@@ -2964,7 +2964,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
         const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
         CEffect* spawned = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         if (spawned) {
-          spawned->Slot16(duration);
+          spawned->SetDelay(duration);
         }
       }
     }
@@ -3034,11 +3034,11 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     const int duration = static_cast<int>(source->render.speed * 100.0f + 150.0f);
     CEffect* spawned = g_effectMgr->Spawn(target->render.accountId, 0x572, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (spawned) {
-      spawned->Slot16(duration);
+      spawned->SetDelay(duration);
     }
     spawned = g_effectMgr->Spawn(target->render.accountId, 0x573, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (spawned) {
-      spawned->Slot16(duration);
+      spawned->SetDelay(duration);
     }
     break;
   }
@@ -3048,24 +3048,24 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     if (g_serviceOptions.Get(0xE5)) {
       spawned = g_effectMgr->Spawn(target->render.accountId, 0x5B3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (spawned) {
-        spawned->Slot16(duration);
+        spawned->SetDelay(duration);
       }
       spawned = g_effectMgr->Spawn(target->render.accountId, 0x5B4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     } else {
       spawned = g_effectMgr->Spawn(target->render.accountId, 0x510, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (spawned) {
-        spawned->Slot16(duration);
+        spawned->SetDelay(duration);
       }
       spawned = g_effectMgr->Spawn(target->render.accountId, 0x511, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     if (spawned) {
-      spawned->Slot16(duration);
+      spawned->SetDelay(duration);
     }
     spawned = g_effectMgr->Spawn(
       0, 0x52C, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
     );
     if (spawned) {
-      spawned->Slot16(duration);
+      spawned->SetDelay(duration);
     }
     break;
   }
@@ -3084,7 +3084,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_effectMgr->Spawn(source->render.accountId, 0x6A8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     CEffect* spawned = g_effectMgr->Spawn(target->render.accountId, 0x6A9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (spawned) {
-      spawned->Slot17(static_cast<float>(std::max(std::rand() % 36, 0)) * 10.0f);
+      spawned->SetAngle(static_cast<float>(std::max(std::rand() % 36, 0)) * 10.0f);
     }
     source->LaunchEffect(0x308, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;

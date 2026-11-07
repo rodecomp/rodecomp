@@ -42,7 +42,7 @@ UICaptchaRegisterWnd::UICaptchaRegisterWnd()
 
 // OFFSET: 0x007EA3B0
 // FUNCTION: fn_09788
-void UICaptchaRegisterWnd::Slot15(int width, int height) {
+void UICaptchaRegisterWnd::OnCreate(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 

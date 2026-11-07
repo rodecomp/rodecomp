@@ -78,19 +78,19 @@ void CPokJukEffect::Close() {
 
 // OFFSET: 0x00B6F7B0
 // FUNCTION: fn_19122
-void CPokJukEffect::Slot01() {
+void CPokJukEffect::Open() {
   this->SpawnParticles();
 }
 
 // OFFSET: 0x00B6F7C0
 // FUNCTION: fn_19123
-bool CPokJukEffect::Slot06() {
+bool CPokJukEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B6F7D0
 // FUNCTION: fn_19124
-void CPokJukEffect::Slot03() {
+void CPokJukEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     vector3d& position = particle->position;
@@ -177,7 +177,7 @@ void CPokJukEffect::Slot03() {
 
 // OFFSET: 0x00B6FEA0
 // FUNCTION: fn_19125
-void CPokJukEffect::Slot04() {
+void CPokJukEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
 

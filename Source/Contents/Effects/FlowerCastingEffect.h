@@ -11,11 +11,11 @@ class CParticle;
 
 class CFlowerCastingEffect : public CEffect {
 public:
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   void AddRing(int kind);
 

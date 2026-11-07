@@ -219,8 +219,8 @@ void UIChatHisBox::Configure(int x, int y, int width, int height, unsigned char)
   this->transparent = 1;
   UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x008C73C0
@@ -318,7 +318,7 @@ UIChooseWarpWnd::UIChooseWarpWnd()
 
 // OFFSET: 0x008DD290
 // FUNCTION: fn_12162
-void UIChooseSellBuyWnd::Slot15(int width, int height) {
+void UIChooseSellBuyWnd::OnCreate(int width, int height) {
   const std::string buttonPrefix("유저인터페이스\\");
   const char* names[3][3] = {{"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_sell", "btn_sell_a", "btn_sell_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
   int ids[3] = {224, 223, 185};
@@ -348,7 +348,7 @@ void UIChooseSellBuyWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008DD9A0
 // FUNCTION: fn_12163
-void UIChooseWarpWnd::Slot15(int width, int height) {
+void UIChooseWarpWnd::OnCreate(int width, int height) {
   auto* title = new UIStaticText();
   title->SetSize(this->geometry.width - 30, 15);
   title->Move(12, 9);
@@ -393,7 +393,7 @@ void UIChooseWarpWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008DE0E0
 // FUNCTION: fn_12164
-void UIChooseWnd::Slot15(int width, int height) {
+void UIChooseWnd::OnCreate(int width, int height) {
   this->m_list = new UIListBox();
   int listHeight = height - 55;
   if (listHeight < 30) {
@@ -432,7 +432,7 @@ void UIChooseWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008DE520
 // FUNCTION: fn_12169
-void UIDisconnectedServerMsgWnd::Slot15(int width, int height) {
+void UIDisconnectedServerMsgWnd::OnCreate(int width, int height) {
   auto* button = new UIBitmapButton();
   button->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
   button->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
@@ -455,7 +455,7 @@ void UIDisconnectedServerMsgWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008DE6D0
 // FUNCTION: fn_12170
-void UIEmailAddressWnd::Slot15(int, int) {
+void UIEmailAddressWnd::OnCreate(int, int) {
   g_modeMgr.gameMode->SendMsg(10013, 0, 0, 0, 0);
   this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(this->geometry.width - 77, 16);
@@ -756,7 +756,7 @@ static __forceinline UIBitmapButton* AddNumberedButtonInline(UIFrameWnd* frame, 
 
 // OFFSET: 0x008E3340
 // FUNCTION: fn_12182
-void UIMinimapZoomWnd::Slot15(int, int) {
+void UIMinimapZoomWnd::OnCreate(int, int) {
   const int ys[5] = {128, 128, 128, 128, 128};
   const int xs[5] = {1, this->geometry.width - 55, this->geometry.width - 41, this->geometry.width - 27, this->geometry.width - 13};
   const int ids[5] = {452, 216, 217, 189, 454};
@@ -1549,8 +1549,8 @@ void UInCash_CallWnd::Paint() {
 
 // OFFSET: 0x008F32D0
 // FUNCTION: fn_12264
-void UIItemIdentifyWnd::Slot26(int x, int y) {
-  this->Slot25(x, y);
+void UIItemIdentifyWnd::OnLBtnDblClk(int x, int y) {
+  this->OnLBtnDown(x, y);
   this->SendMsg(nullptr, 6, 184, 0, 0, 0);
 }
 
@@ -1659,7 +1659,7 @@ void UIStatusWnd::Paint() {
 
 // OFFSET: 0x008F3300
 // FUNCTION: fn_12265
-void UIStatusWnd::Slot26(int, int y) {
+void UIStatusWnd::OnLBtnDblClk(int, int y) {
   if (y < 17) {
     this->SendMsg(this, 6, 202, 0, 0, 0);
   }
@@ -1667,7 +1667,7 @@ void UIStatusWnd::Slot26(int, int y) {
 
 // OFFSET: 0x008F3330
 // FUNCTION: fn_12266
-void UIWhisperWnd::Slot26(int, int y) {
+void UIWhisperWnd::OnLBtnDblClk(int, int y) {
   if (y >= 17 || this->m_code.size() == 0) {
     return;
   }
@@ -1688,27 +1688,27 @@ void UIWhisperWnd::Slot26(int, int y) {
 
 // OFFSET: 0x008F3630
 // FUNCTION: fn_12268
-void UIBookWnd::Slot25(int x, int y) {
+void UIBookWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
 // OFFSET: 0x008F3650
 // FUNCTION: fn_12269
-void UICombinedCardItemCollection_ComparisonWnd::Slot25(int, int) {
+void UICombinedCardItemCollection_ComparisonWnd::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x008F38D0
 // FUNCTION: fn_12272
-void UIItemCollection_ComparisonWnd::Slot25(int, int) {
+void UIItemCollection_ComparisonWnd::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x008F38E0
 // FUNCTION: fn_12273
-void UIItemIdentifyWnd::Slot25(int x, int y) {
+void UIItemIdentifyWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 
@@ -1743,20 +1743,20 @@ void UIItemIdentifyWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x008F39B0
 // FUNCTION: fn_12274
-void UIMinimapZoomWnd::Slot25(int, int) {
+void UIMinimapZoomWnd::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x008F39C0
 // FUNCTION: fn_12275
-void UIPartySettingWnd::Slot25(int x, int y) {
+void UIPartySettingWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
 // OFFSET: 0x008F39E0
 // FUNCTION: fn_12276
-void UIPetTamingDeceiveWnd::Slot25(int, int) {
+void UIPetTamingDeceiveWnd::OnLBtnDown(int, int) {
   if (g_replayAnimationScaling != 0 || this->m_started != 0) {
     return;
   }
@@ -1806,9 +1806,9 @@ void UIPetTamingDeceiveWnd::Paint() {
 
 // OFFSET: 0x008F3A40
 // FUNCTION: fn_12277
-void UISelectCartWnd::Slot25(int x, int y) {
+void UISelectCartWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
@@ -1863,12 +1863,12 @@ void UISelectCartWnd::AddCart(int index, int type) {
 
 // OFFSET: 0x008F3860
 // FUNCTION: fn_12271
-void UIItemCollectionWnd::Slot25(int x, int y) {
+void UIItemCollectionWnd::OnLBtnDown(int x, int y) {
   if (x <= 60 || y >= 17) {
     return;
   }
 
-  this->UIFrameWnd::Slot25(x, y);
+  this->UIFrameWnd::OnLBtnDown(x, y);
   if (this->m_kind == 12) {
     UIWindow* comparison = g_windowMgr.unknown_0220;
     if (!comparison) {
@@ -1893,21 +1893,21 @@ void UIItemCollectionWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x008F3A60
 // FUNCTION: fn_12278
-void UIStatusWnd::Slot25(int x, int y) {
+void UIStatusWnd::OnLBtnDown(int x, int y) {
   if (y < this->m_titleHeight) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
 // OFFSET: 0x008F3BA0
 // FUNCTION: fn_12281
-void UICombinedCardItemCollection_ComparisonWnd::Slot31(int, int) {
+void UICombinedCardItemCollection_ComparisonWnd::OnLBtnUp(int, int) {
 }
 
 // OFFSET: 0x008F3B70
 // FUNCTION: fn_12280
-void UICombinedCardItemCollectionWnd::Slot31(int x, int y) {
-  this->UIFrameWnd::Slot31(x, y);
+void UICombinedCardItemCollectionWnd::OnLBtnUp(int x, int y) {
+  this->UIFrameWnd::OnLBtnUp(x, y);
   if (UIWindow* comparison = g_windowMgr.unknown_0224) {
     const int targetAlpha = this->geometry.targetAlpha;
     const int alphaStart = this->geometry.alphaStart;
@@ -1918,8 +1918,8 @@ void UICombinedCardItemCollectionWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x008F3BB0
 // FUNCTION: fn_12282
-void UIEquipWnd::Slot31(int x, int y) {
-  this->UIFrameWnd::Slot31(x, y);
+void UIEquipWnd::OnLBtnUp(int x, int y) {
+  this->UIFrameWnd::OnLBtnUp(x, y);
 
   if (this->m_page != 3) {
     return;
@@ -1939,8 +1939,8 @@ void UIEquipWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x008F3C20
 // FUNCTION: fn_12283
-void UIItemCollectionWnd::Slot31(int x, int y) {
-  this->UIFrameWnd::Slot31(x, y);
+void UIItemCollectionWnd::OnLBtnUp(int x, int y) {
+  this->UIFrameWnd::OnLBtnUp(x, y);
   if (UIWindow* comparison = g_windowMgr.unknown_0220) {
     const int targetAlpha = this->geometry.targetAlpha;
     const int alphaStart = this->geometry.alphaStart;
@@ -1951,12 +1951,12 @@ void UIItemCollectionWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x008F3C50
 // FUNCTION: fn_12284
-void UIItemCollection_ComparisonWnd::Slot31(int, int) {
+void UIItemCollection_ComparisonWnd::OnLBtnUp(int, int) {
 }
 
 // OFFSET: 0x008F3C60
 // FUNCTION: fn_12285
-void UIMenuWnd::Slot31(int x, int y) {
+void UIMenuWnd::OnLBtnUp(int x, int y) {
   const int index = this->ItemAt(x, y);
   this->m_selected = index;
   if (index == -1 || this->m_items[index] == g_menuSeparator) {
@@ -1987,7 +1987,7 @@ void UIMenuWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x008F4520
 // FUNCTION: fn_12288
-void UIItemCollectionWnd::Slot28(int x, int y) {
+void UIItemCollectionWnd::OnMouseHover(int x, int y) {
   int slotX;
   int slotY;
   const int index = this->CardSlotAt(x, y, &slotX, &slotY);
@@ -2014,7 +2014,7 @@ void UIItemCollectionWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x008F46C0
 // FUNCTION: fn_12290
-void UIStatusWnd::Slot28(int x, int y) {
+void UIStatusWnd::OnMouseHover(int x, int y) {
   if (this->geometry.unknown_0030 != 0) {
     return;
   }
@@ -2069,20 +2069,20 @@ void UIStatusWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x008F4A80
 // FUNCTION: fn_12291
-void UIEquipWnd::Slot27(int x, int y) {
-  this->UIFrameWnd::Slot27(x, y);
-  this->Slot28(x, y);
+void UIEquipWnd::OnMouseMove(int x, int y) {
+  this->UIFrameWnd::OnMouseMove(x, y);
+  this->OnMouseHover(x, y);
 }
 
 // OFFSET: 0x008F4AB0
 // FUNCTION: fn_12292
-void UIMenuWnd::Slot27(int x, int y) {
-  this->Slot28(x, y);
+void UIMenuWnd::OnMouseMove(int x, int y) {
+  this->OnMouseHover(x, y);
 }
 
 // OFFSET: 0x008F4680
 // FUNCTION: fn_12289
-void UIMenuWnd::Slot28(int x, int y) {
+void UIMenuWnd::OnMouseHover(int x, int y) {
   const int previous = this->m_selected;
   this->m_selected = this->ItemAt(x, y);
   if (previous != this->m_selected) {
@@ -2203,7 +2203,7 @@ void UITipboxWnd::UpdatePageText() {
 
 // OFFSET: 0x008D0230
 // FUNCTION: fn_12083
-void UIExchangeWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIExchangeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (this->unknown_00CC != 0) {
     mode->SendMsg(18, 0, 0, 0, 0);
@@ -2227,13 +2227,13 @@ void UIExchangeWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x008D0010
 // FUNCTION: fn_12082
-void UIEquipWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIEquipWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   if (this->m_viewOther != 0) {
     return;
   }
 
   if (g_windowMgr.LookupWindow(10011)) {
-    UIWindow::Slot10(x, y, value);
+    UIWindow::DragAndDrop(x, y, value);
     return;
   }
 
@@ -2278,9 +2278,9 @@ void UIEquipWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x008D02D0
 // FUNCTION: fn_12084
-void UInCashWnd::Slot10(int x, int y, std::intptr_t value) {
+void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   if (g_windowMgr.LookupWindow(10011)) {
-    UIWindow::Slot10(x, y, value);
+    UIWindow::DragAndDrop(x, y, value);
     return;
   }
 
@@ -2314,13 +2314,13 @@ void UInCashWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x008D9F00
 // FUNCTION: fn_12137
-bool UISkillDescribeWnd::Slot42(void*) {
+bool UISkillDescribeWnd::GetCustomTransBoxInfo(void*) {
   return true;
 }
 
 // OFFSET: 0x008D9F10
 // FUNCTION: fn_12138
-bool UIWhisperWnd::Slot42(void*) {
+bool UIWhisperWnd::GetCustomTransBoxInfo(void*) {
   return true;
 }
 
@@ -2346,19 +2346,19 @@ void UIEquipWnd::NotifyEquipmentChanged() {
 
 // OFFSET: 0x008DA420
 // FUNCTION: fn_12143
-bool UIMinimapZoomWnd::Slot08() {
+bool UIMinimapZoomWnd::IsTransmitMouseInput() {
   return true;
 }
 
 // OFFSET: 0x008DA430
 // FUNCTION: fn_12144
-bool UIEquipWnd::Slot03() {
+bool UIEquipWnd::NeedsFrameRefresh() {
   return true;
 }
 
 // OFFSET: 0x008DA440
 // FUNCTION: fn_12145
-bool UIStatusWnd::Slot03() {
+bool UIStatusWnd::NeedsFrameRefresh() {
   return true;
 }
 
@@ -2466,12 +2466,12 @@ void UIWhisperWnd::Move(int x, int y) {
 
 // OFFSET: 0x008F4D40
 // FUNCTION: fn_12294
-void UIEquipWnd::Slot19() {
+void UIEquipWnd::OnProcess() {
 }
 
 // OFFSET: 0x008F4F80
 // FUNCTION: fn_12296
-void UIItemCollectionWnd::Slot19() {
+void UIItemCollectionWnd::OnProcess() {
   if (this->m_previewTick != 0 && timeGetTime() > this->m_previewTick + 100) {
     this->m_readButtons[1]->Invalidate();
     this->m_previewTick = timeGetTime();
@@ -2480,7 +2480,7 @@ void UIItemCollectionWnd::Slot19() {
 
 // OFFSET: 0x008F4FC0
 // FUNCTION: fn_12297
-void UINotifyItemObtainWnd::Slot19() {
+void UINotifyItemObtainWnd::OnProcess() {
   if (timeGetTime() > this->m_shownTick + 5000) {
     g_windowMgr.CloseWindow(58);
   }
@@ -2488,7 +2488,7 @@ void UINotifyItemObtainWnd::Slot19() {
 
 // OFFSET: 0x008F4FF0
 // FUNCTION: fn_12298
-void UIPetTamingDeceiveWnd::Slot19() {
+void UIPetTamingDeceiveWnd::OnProcess() {
   this->Invalidate();
   const int frame = this->m_tick / this->m_delay;
 
@@ -2503,7 +2503,7 @@ void UIPetTamingDeceiveWnd::Slot19() {
 
 // OFFSET: 0x008F5070
 // FUNCTION: fn_12299
-void UIProhibitListWnd::Slot19() {
+void UIProhibitListWnd::OnProcess() {
   const int count = static_cast<int>(g_session.m_prohibitionLog.size());
   if (this->m_count != count) {
     this->m_count = count;
@@ -2513,26 +2513,26 @@ void UIProhibitListWnd::Slot19() {
 
 // OFFSET: 0x008F50B0
 // FUNCTION: fn_12300
-void UISayDialogWnd::Slot19() {
+void UISayDialogWnd::OnProcess() {
   for (UIWindow* child : this->m_children) {
-    child->Slot19();
+    child->OnProcess();
   }
 }
 
 // OFFSET: 0x008F5990
 // FUNCTION: fn_12307
-void UIItemIdentifyWnd::Slot33(int, int) {
+void UIItemIdentifyWnd::OnRBtnUp(int, int) {
 }
 
 // OFFSET: 0x008F59A0
 // FUNCTION: fn_12308
-void UIWhisperWnd::Slot33(int, int) {
+void UIWhisperWnd::OnRBtnUp(int, int) {
   this->SendMsg(nullptr, 49, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008F5A10
 // FUNCTION: fn_12310
-void UIExchangeWnd::Slot35(int delta) {
+void UIExchangeWnd::OnWheel(int delta) {
   if (delta < 0) {
     this->SendMsg(this->m_scrollBar, 7, 1, 0, 0, 0);
   } else {
@@ -2542,7 +2542,7 @@ void UIExchangeWnd::Slot35(int delta) {
 
 // OFFSET: 0x008F59C0
 // FUNCTION: fn_12309
-void UIEquipWnd::Slot35(int delta) {
+void UIEquipWnd::OnWheel(int delta) {
   if (g_session.unknown_80C8 > 4 && this->m_page == 3) {
     if (delta < 0) {
       this->SendMsg(this->m_scrollBar, 8, 1, 0, 0, 0);
@@ -2554,7 +2554,7 @@ void UIEquipWnd::Slot35(int delta) {
 
 // OFFSET: 0x008F5A50
 // FUNCTION: fn_12311
-void UIItemIdentifyWnd::Slot35(int delta) {
+void UIItemIdentifyWnd::OnWheel(int delta) {
   if (this->m_scrollable == 0) {
     return;
   }
@@ -3300,7 +3300,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
 // OFFSET: 0x008DEC50
 // FUNCTION: fn_12171
-void UIEquipWnd::Slot15(int width, int height) {
+void UIEquipWnd::OnCreate(int width, int height) {
   const int top = this->m_viewOther != 0 ? 0 : 20;
   this->unknown_00D8 = top;
   if (height != top + this->geometry.height) {
@@ -3902,13 +3902,13 @@ int UIListBox::LineCount() const {
 
 // OFFSET: 0x008DA450
 // FUNCTION: fn_12146
-bool UInCashWnd::Slot03() {
+bool UInCashWnd::NeedsFrameRefresh() {
   return true;
 }
 
 // OFFSET: 0x008DB750
 // FUNCTION: fn_12159
-void UIBookWnd::Slot15(int width, int height) {
+void UIBookWnd::OnCreate(int width, int height) {
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(30, 45, width - 60, height - 60, 0);
   this->AddChild(this->m_viewer);
@@ -3936,7 +3936,7 @@ void UIBookWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008E1890
 // FUNCTION: fn_12175
-void UIItemCollectionWnd::Slot15(int width, int height) {
+void UIItemCollectionWnd::OnCreate(int width, int height) {
   this->m_kind = 12;
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(91, 31, width - 98, height - 40, 0);
@@ -4006,15 +4006,15 @@ void UIItemCollectionWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008DE360
 // FUNCTION: fn_12165
-void UICombinedCardItemCollectionWnd::Slot15(int width, int height) {
-  this->UIItemCollectionWnd::Slot15(width, height);
+void UICombinedCardItemCollectionWnd::OnCreate(int width, int height) {
+  this->UIItemCollectionWnd::OnCreate(width, height);
   this->m_kind = 82;
 }
 
 // OFFSET: 0x008DE380
 // FUNCTION: fn_12166
-void UICombinedCardItemCollection_ComparisonWnd::Slot15(int width, int height) {
-  this->UIItemCollectionWnd::Slot15(width, height);
+void UICombinedCardItemCollection_ComparisonWnd::OnCreate(int width, int height) {
+  this->UIItemCollectionWnd::OnCreate(width, height);
   this->m_closeButton->Enable(0);
   this->m_kind = 250;
   const SkinPaletteCell cell = {7, 1};
@@ -4024,8 +4024,8 @@ void UICombinedCardItemCollection_ComparisonWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008E24C0
 // FUNCTION: fn_12176
-void UIItemCollection_ComparisonWnd::Slot15(int width, int height) {
-  this->UIItemCollectionWnd::Slot15(width, height);
+void UIItemCollection_ComparisonWnd::OnCreate(int width, int height) {
+  this->UIItemCollectionWnd::OnCreate(width, height);
   this->m_closeButton->Enable(0);
   this->m_kind = 234;
   unsigned red, green, blue;
@@ -4036,7 +4036,7 @@ void UIItemCollection_ComparisonWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008DBD00
 // FUNCTION: fn_12160
-void UICardItemIllustWnd::Slot15(int, int) {
+void UICardItemIllustWnd::OnCreate(int, int) {
   this->unknown_00E4 = 0;
   this->m_name = LookupMessage(527);
   this->AddCloseButton("", 0);
@@ -4044,7 +4044,7 @@ void UICardItemIllustWnd::Slot15(int, int) {
 
 // OFFSET: 0x008E2590
 // FUNCTION: fn_12178
-void UIItemIdentifyWnd::Slot15(int, int) {
+void UIItemIdentifyWnd::OnCreate(int, int) {
   this->m_title.assign(LookupMessage(521));
   this->m_selected = -1;
   this->m_scroll = 0;
@@ -4097,15 +4097,15 @@ void UIItemIdentifyWnd::Slot15(int, int) {
 
 // OFFSET: 0x008E2540
 // FUNCTION: fn_12177
-void UIItemCompositionWnd::Slot15(int width, int height) {
-  this->UIItemIdentifyWnd::Slot15(width, height);
+void UIItemCompositionWnd::OnCreate(int width, int height) {
+  this->UIItemIdentifyWnd::OnCreate(width, height);
   this->m_title = LookupMessage(522);
   this->m_compositionState = 0;
 }
 
 // OFFSET: 0x008DE490
 // FUNCTION: fn_12168
-void UIComboBoxWnd::Slot15(int width, int height) {
+void UIComboBoxWnd::OnCreate(int width, int height) {
   this->m_list = new UIComboBox();
   this->m_list->Configure(0, 0, width, height, 1);
   this->AddChild(this->m_list);
@@ -4113,7 +4113,7 @@ void UIComboBoxWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008E85C0
 // FUNCTION: fn_12199
-void UISkillDescribeWnd::Slot15(int width, int height) {
+void UISkillDescribeWnd::OnCreate(int width, int height) {
   this->unknown_00D4 = LookupMessage(526);
   this->m_skillId = -1;
   this->m_viewer = new UITextViewer();
@@ -4147,7 +4147,7 @@ void UISkillDescribeWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008E8DC0
 // FUNCTION: fn_12201
-void UIStatusWnd::Slot15(int, int) {
+void UIStatusWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("Alt+A", 0);
   this->AddMinimizeButton("Ctrl+A", 0);
@@ -4203,7 +4203,7 @@ void UIStatusWnd::Slot15(int, int) {
 
 // OFFSET: 0x008E8860
 // FUNCTION: fn_12200
-void UISkillNameChangeWnd::Slot15(int, int) {
+void UISkillNameChangeWnd::OnCreate(int, int) {
   this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(this->geometry.width - 77, 16);
   this->m_edit->Move(15, 22);
@@ -4231,7 +4231,7 @@ void UISkillNameChangeWnd::Slot15(int, int) {
 
 // OFFSET: 0x008EA780
 // FUNCTION: fn_12205
-void UIToolTipWnd::Slot15(int width, int height) {
+void UIToolTipWnd::OnCreate(int width, int height) {
   this->m_list = new UIListBox();
   width -= 24;
   height -= 60;
@@ -4266,7 +4266,7 @@ void UIToolTipWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008E7130
 // FUNCTION: fn_12194
-void UIProhibitListWnd::Slot15(int, int) {
+void UIProhibitListWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
   char tooltip[] = "Command";
 
@@ -4417,7 +4417,7 @@ void UInCashWnd::DrawItems() {
 
 // OFFSET: 0x008E3C80
 // FUNCTION: fn_12183
-void UIMonsterDisplayWnd::Slot15(int, int) {
+void UIMonsterDisplayWnd::OnCreate(int, int) {
   this->unknown_00E4 = 0;
   this->unknown_00CC = LookupMessage(527);
   this->AddCloseButton("", 0);
@@ -4425,13 +4425,13 @@ void UIMonsterDisplayWnd::Slot15(int, int) {
 
 // OFFSET: 0x008E3090
 // FUNCTION: fn_12179
-void UIItemParamChangeDisplayWnd::Slot15(int, int) {
+void UIItemParamChangeDisplayWnd::OnCreate(int, int) {
   this->SendMsg(nullptr, 60, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008E3330
 // FUNCTION: fn_12181
-void UIMenuWnd::Slot15(int, int) {
+void UIMenuWnd::OnCreate(int, int) {
 }
 
 // OFFSET: 0x008CED30
@@ -4952,7 +4952,7 @@ void UITipboxWnd::TrimAt(std::string& text, const char* marker) {
 
 // OFFSET: 0x00909DF0
 // FUNCTION: fn_12402
-void UIChooseWnd::Slot11() {
+void UIChooseWnd::StoreInfo() {
   if (this->m_placement) {
     this->m_placement->width = this->geometry.width;
     this->m_placement->height = this->geometry.height;
@@ -4963,7 +4963,7 @@ void UIChooseWnd::Slot11() {
 
 // OFFSET: 0x00909E30
 // FUNCTION: fn_12403
-void UICombinedCardItemCollectionWnd::Slot11() {
+void UICombinedCardItemCollectionWnd::StoreInfo() {
   if (this->m_cardPlacement) {
     this->m_cardPlacement->x = this->geometry.x;
     this->m_cardPlacement->y = this->geometry.y;
@@ -4974,7 +4974,7 @@ void UICombinedCardItemCollectionWnd::Slot11() {
 
 // OFFSET: 0x00909E70
 // FUNCTION: fn_12404
-void UIEquipWnd::Slot11() {
+void UIEquipWnd::StoreInfo() {
   if (this->m_placement) {
     this->m_placement->width = this->geometry.width;
     this->m_placement->height = this->geometry.height;
@@ -4986,7 +4986,7 @@ void UIEquipWnd::Slot11() {
 
 // OFFSET: 0x00909F00
 // FUNCTION: fn_12406
-void UIItemCollectionWnd::Slot11() {
+void UIItemCollectionWnd::StoreInfo() {
   if (this->m_placement) {
     this->m_placement->x = this->geometry.x;
     this->m_placement->y = this->geometry.y;
@@ -4997,7 +4997,7 @@ void UIItemCollectionWnd::Slot11() {
 
 // OFFSET: 0x00909F40
 // FUNCTION: fn_12407
-void UIItemCompositionWnd::Slot11() {
+void UIItemCompositionWnd::StoreInfo() {
   if (this->m_compositionPlacement) {
     this->m_compositionPlacement->width = this->geometry.width;
     this->m_compositionPlacement->height = this->geometry.height;
@@ -5008,7 +5008,7 @@ void UIItemCompositionWnd::Slot11() {
 
 // OFFSET: 0x00909F80
 // FUNCTION: fn_12408
-void UIItemIdentifyWnd::Slot11() {
+void UIItemIdentifyWnd::StoreInfo() {
   if (this->m_placement) {
     this->m_placement->width = this->geometry.width;
     this->m_placement->height = this->geometry.height;
@@ -5019,7 +5019,7 @@ void UIItemIdentifyWnd::Slot11() {
 
 // OFFSET: 0x00909FC0
 // FUNCTION: fn_12409
-void UIItemParamChangeDisplayWnd::Slot11() {
+void UIItemParamChangeDisplayWnd::StoreInfo() {
   if (this->m_placement) {
     this->m_placement->x = this->geometry.x;
     this->m_placement->y = this->geometry.y;
@@ -5030,7 +5030,7 @@ void UIItemParamChangeDisplayWnd::Slot11() {
 
 // OFFSET: 0x0090A000
 // FUNCTION: fn_12410
-void UIPartySettingWnd::Slot11() {
+void UIPartySettingWnd::StoreInfo() {
   if (this->m_placement) {
     this->m_placement->x = this->geometry.x;
     this->m_placement->y = this->geometry.y;
@@ -5041,7 +5041,7 @@ void UIPartySettingWnd::Slot11() {
 
 // OFFSET: 0x0090A040
 // FUNCTION: fn_12411
-void UISayDialogWnd::Slot11() {
+void UISayDialogWnd::StoreInfo() {
   if (this->m_placement) {
     this->m_placement->width = this->geometry.width;
     this->m_placement->height = this->geometry.height;
@@ -5052,7 +5052,7 @@ void UISayDialogWnd::Slot11() {
 
 // OFFSET: 0x0090A180
 // FUNCTION: fn_12414
-void UInCashWnd::Slot11() {
+void UInCashWnd::StoreInfo() {
   if (this->m_placement) {
     this->m_placement->width = this->geometry.width;
     this->m_placement->height = this->geometry.height;
@@ -5431,12 +5431,12 @@ int UIGraffiStrboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
 // OFFSET: 0x008E4380
 // FUNCTION: fn_12185
-void UINotifyItemObtainWnd::Slot15(int, int) {
+void UINotifyItemObtainWnd::OnCreate(int, int) {
 }
 
 // OFFSET: 0x008E7120
 // FUNCTION: fn_12193
-void UIPetTamingDeceiveWnd::Slot15(int, int) {
+void UIPetTamingDeceiveWnd::OnCreate(int, int) {
 }
 
 // OFFSET: 0x008D3230
@@ -5554,7 +5554,7 @@ int UIItemTagCtrl::MeasureText(const std::string& text, const unsigned& bytes) {
 
 // OFFSET: 0x008E8390
 // FUNCTION: fn_12197
-void UISayDialogWnd::Slot15(int width, int height) {
+void UISayDialogWnd::OnCreate(int width, int height) {
   auto* viewer = new UITagTextViewer();
   this->m_viewer = viewer;
   viewer->SetSize(width - 20, height - 40);
@@ -5603,7 +5603,7 @@ int UINotifyJobLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
 // OFFSET: 0x008E0A20
 // FUNCTION: fn_12173
-void UIExchangeWnd::Slot15(int, int) {
+void UIExchangeWnd::OnCreate(int, int) {
   this->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
   this->unknown_00CC = 0;
   this->unknown_00D0 = 0;
@@ -5655,7 +5655,7 @@ void UIExchangeWnd::Slot15(int, int) {
 
 // OFFSET: 0x008DE400
 // FUNCTION: fn_12167
-void UIComboBoxIDWnd::Slot15(int width, int height) {
+void UIComboBoxIDWnd::OnCreate(int width, int height) {
   auto* list = new UIComboBoxID();
   this->m_list = list;
   list->Configure(0, 0, width, height, 1);
@@ -5690,7 +5690,7 @@ void UIChatRoomMakeWnd::Paint() {
 
 // OFFSET: 0x008DBD50
 // FUNCTION: fn_12161
-void UIChatRoomMakeWnd::Slot15(int width, int height) {
+void UIChatRoomMakeWnd::OnCreate(int width, int height) {
   if (g_session.IsTrickDeadActive()) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x295)), 0xFF, 0, 0, 0);
     g_windowMgr.CloseWindow(0x1B);
@@ -6087,7 +6087,7 @@ int UIPetTamingDeceiveWnd::SendMsg(
 
 // OFFSET: 0x0090A080
 // FUNCTION: fn_12412
-void UIStatusWnd::Slot11() {
+void UIStatusWnd::StoreInfo() {
   if (this->m_info == nullptr) {
     return;
   }
@@ -6206,7 +6206,7 @@ void UIItemCollectionWnd::SetHeight(int height) {
 class UIAutoMessageWnd : public UIFrameWnd {
 public:
   UIAutoMessageWnd();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
@@ -6263,7 +6263,7 @@ struct NCashRentalPacket {
 
 // OFFSET: 0x008EB280
 // FUNCTION: fn_12208
-void UInCashWnd::Slot15(int width, int height) {
+void UInCashWnd::OnCreate(int width, int height) {
   g_session.ClearTradeItems();
   this->m_otherItems.clear();
   this->m_pageCount = 1;
@@ -6756,7 +6756,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
 
 // OFFSET: 0x008F5AA0
 // FUNCTION: fn_12312
-void UInCashWnd::Slot35(int delta) {
+void UInCashWnd::OnWheel(int delta) {
   if (g_session.GetList2Size() < 4) {
     return;
   }
@@ -6921,7 +6921,7 @@ ITEM_INFO UIEquipWnd::ItemEntryAt(int x, int y) {
 
 // OFFSET: 0x008F31C0
 // FUNCTION: fn_12263
-void UIEquipWnd::Slot26(int x, int y) {
+void UIEquipWnd::OnLBtnDblClk(int x, int y) {
   if (y < 17) {
     this->SendMsg(this, 6, 202, 0, 0, 0);
   }
@@ -6939,7 +6939,7 @@ void UIEquipWnd::Slot26(int x, int y) {
 
 // OFFSET: 0x008F3DD0
 // FUNCTION: fn_12286
-void UIEquipWnd::Slot28(int x, int y) {
+void UIEquipWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->ItemEntryAt(x, y);
   if (item.unknown_0000[1] != 0) {
     item.identified = 1;
@@ -6998,7 +6998,7 @@ void UIEquipWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x008F5400
 // FUNCTION: fn_12302
-void UIEquipWnd::Slot32(int x, int y) {
+void UIEquipWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemEntryAt(x, y);
   if (item.unknown_0000[1] != 0) {
     g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -7030,7 +7030,7 @@ ITEM_INFO UIExchangeWnd::ItemAt(int x, int y) {
 
 // OFFSET: 0x008F4300
 // FUNCTION: fn_12287
-void UIExchangeWnd::Slot28(int x, int y) {
+void UIExchangeWnd::OnMouseHover(int x, int y) {
   int tooltipY = y;
   ITEM_INFO item = this->ItemAt(x, y);
   this->m_hoverX = static_cast<short>(x);
@@ -7054,7 +7054,7 @@ void UIExchangeWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x008F54C0
 // FUNCTION: fn_12303
-void UIExchangeWnd::Slot32(int x, int y) {
+void UIExchangeWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.unknown_0000[1] != 0) {
     if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
@@ -7087,7 +7087,7 @@ ITEM_INFO UIItemIdentifyWnd::GetSelectedItem(int* found) {
 
 // OFFSET: 0x0090A0E0
 // FUNCTION: fn_12413
-void UIWhisperWnd::Slot11() {
+void UIWhisperWnd::StoreInfo() {
   if (this->unknown_0100) {
     this->unknown_0100->width = this->geometry.width;
     this->unknown_0100->height = this->geometry.height;
@@ -7180,9 +7180,9 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
 
 // OFFSET: 0x008F3A80
 // FUNCTION: fn_12279
-void UInCashWnd::Slot25(int x, int y) {
+void UInCashWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
   }
 
   ITEM_INFO item = this->ItemAt(x, y);
@@ -7202,7 +7202,7 @@ void UInCashWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x008F58C0
 // FUNCTION: fn_12306
-void UInCashWnd::Slot32(int x, int y) {
+void UInCashWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.unknown_0000[1] != 0 && this->m_selected >= 0) {
     g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -7450,7 +7450,7 @@ UIPartyInvitationToWnd::UIPartyInvitationToWnd()
 
 // OFFSET: 0x008E60A0
 // FUNCTION: fn_12191
-void UIPartySettingWnd::Slot15(int width, int height) {
+void UIPartySettingWnd::OnCreate(int width, int height) {
   this->m_expShare = g_session.unknown_54A0 == 2 ? 0 : g_session.unknown_54A0;
   this->m_itemShare = g_session.unknown_54A4;
   this->m_itemDistribute = 0;
@@ -7676,7 +7676,7 @@ UISayDialogWnd::UISayDialogWnd()
 
 // OFFSET: 0x008E3CD0
 // FUNCTION: fn_12184
-void UINoticeConfirmWnd::Slot15(int width, int height) {
+void UINoticeConfirmWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
   int ids[2] = {184, 185};
@@ -7706,7 +7706,7 @@ void UINoticeConfirmWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008E4390
 // FUNCTION: fn_12186
-void UINotifyLevelUpWnd::Slot15(int, int) {
+void UINotifyLevelUpWnd::OnCreate(int, int) {
   int ids[3] = {192};
   int positions[3] = {0};
   const char* names[8] = {"lv_up"};
@@ -7726,7 +7726,7 @@ void UINotifyLevelUpWnd::Slot15(int, int) {
 
 // OFFSET: 0x008E4970
 // FUNCTION: fn_12187
-void UINotifyQuestWnd::Slot15(int, int) {
+void UINotifyQuestWnd::OnCreate(int, int) {
   int ids[3] = {192};
   int positions[3] = {0};
   const char* names[8] = {"quest"};
@@ -7746,7 +7746,7 @@ void UINotifyQuestWnd::Slot15(int, int) {
 
 // OFFSET: 0x008E4F50
 // FUNCTION: fn_12188
-void UINpcEditDialogWnd::Slot15(int, int) {
+void UINpcEditDialogWnd::OnCreate(int, int) {
   this->edit = new UIEditCtrl();
   this->edit->SetSize(this->geometry.width - 77, 16);
   this->edit->Move(15, 22);
@@ -7774,7 +7774,7 @@ void UINpcEditDialogWnd::Slot15(int, int) {
 
 // OFFSET: 0x008E54B0
 // FUNCTION: fn_12189
-void UINpcTextEditDialogWnd::Slot15(int, int) {
+void UINpcTextEditDialogWnd::OnCreate(int, int) {
   this->edit = new UIEditCtrl();
   this->edit->SetSize(this->geometry.width - 77, 16);
   this->edit->Move(15, 22);
@@ -7802,7 +7802,7 @@ void UINpcTextEditDialogWnd::Slot15(int, int) {
 }
 // OFFSET: 0x008E7660
 // FUNCTION: fn_12195
-void UIQuitWnd::Slot15(int, int) {
+void UIQuitWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\");
   int positions[3][3] = {{29, 30, 0}, {29, 61, 0}, {29, 96, 0}};
   int ids[3] = {220, 221, 185};
@@ -7824,7 +7824,7 @@ void UIQuitWnd::Slot15(int, int) {
 
 // OFFSET: 0x008E7CB0
 // FUNCTION: fn_12196
-void UIRestartWnd::Slot15(int, int) {
+void UIRestartWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\");
   int ids[4] = {220, 252, 251, 185};
   const char* names[4][4] = {
@@ -7847,7 +7847,7 @@ void UIRestartWnd::Slot15(int, int) {
 
 // OFFSET: 0x008EAE30
 // FUNCTION: fn_12206
-void UIWaitWnd::Slot15(int width, int height) {
+void UIWaitWnd::OnCreate(int width, int height) {
   this->m_button = new UIBitmapButton();
   this->m_button->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
   this->m_button->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
@@ -7880,7 +7880,7 @@ namespace {
 
 // OFFSET: 0x008E5A20
 // FUNCTION: fn_12190
-void UIPartyInvitationToWnd::Slot15(int, int) {
+void UIPartyInvitationToWnd::OnCreate(int, int) {
   this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(120, 20);
   this->m_edit->Move(20, 42);
@@ -8363,7 +8363,7 @@ int UIYourItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
 // OFFSET: 0x008E6B40
 // FUNCTION: fn_12192
-void UIPasswordWnd::Slot15(int, int) {
+void UIPasswordWnd::OnCreate(int, int) {
   this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(90, 16);
   this->m_edit->Move(15, 22);
@@ -9018,7 +9018,7 @@ void UICardItemIllustWnd::Paint() {
 
 // OFFSET: 0x008E8480
 // FUNCTION: fn_12198
-void UISelectCartWnd::Slot15(int, int) {
+void UISelectCartWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
 
   const int levels[] = {0, 40, 65, 80, 90, 100, 110, 120, 130};
@@ -9112,7 +9112,7 @@ inline std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const
 
 // OFFSET: 0x008D3AB0
 // FUNCTION: fn_12104
-std::vector<unsigned char> UIBabyAcceptWnd2::Slot44() {
+std::vector<unsigned char> UIBabyAcceptWnd2::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = MakeReplayTaggedRecord(21550, nullptr, 0);
@@ -9127,7 +9127,7 @@ std::vector<unsigned char> UIBabyAcceptWnd2::Slot44() {
 
 // OFFSET: 0x008D4100
 // FUNCTION: fn_12106
-std::vector<unsigned char> UIChooseSellBuyWnd::Slot44() {
+std::vector<unsigned char> UIChooseSellBuyWnd::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = MakeReplayTaggedRecord(20850, nullptr, 0);
@@ -9168,37 +9168,37 @@ static __forceinline std::vector<unsigned char> BuildAcceptanceReplayRecords(UIT
 
 // OFFSET: 0x008D4A40
 // FUNCTION: fn_12109
-std::vector<unsigned char> UIExchangeAcceptWnd::Slot44() {
+std::vector<unsigned char> UIExchangeAcceptWnd::GetReplayData() {
   return BuildAcceptanceReplayRecords(this->viewer, 21650, 93);
 }
 
 // OFFSET: 0x008D3CD0
 // FUNCTION: fn_12105
-std::vector<unsigned char> UIBabyAcceptWnd::Slot44() {
+std::vector<unsigned char> UIBabyAcceptWnd::GetReplayData() {
   return BuildAcceptanceReplayRecords(this->viewer, 21500, 794);
 }
 
 // OFFSET: 0x008D5C80
 // FUNCTION: fn_12113
-std::vector<unsigned char> UIJoinFriendAcceptWnd::Slot44() {
+std::vector<unsigned char> UIJoinFriendAcceptWnd::GetReplayData() {
   return BuildAcceptanceReplayRecords(this->viewer, 21600, 818);
 }
 
 // OFFSET: 0x008D60B0
 // FUNCTION: fn_12114
-std::vector<unsigned char> UIJoinGuildAcceptWnd::Slot44() {
+std::vector<unsigned char> UIJoinGuildAcceptWnd::GetReplayData() {
   return BuildAcceptanceReplayRecords(this->viewer, 21800, 377);
 }
 
 // OFFSET: 0x008D64E0
 // FUNCTION: fn_12115
-std::vector<unsigned char> UIJoinPartyAcceptWnd::Slot44() {
+std::vector<unsigned char> UIJoinPartyAcceptWnd::GetReplayData() {
   return BuildAcceptanceReplayRecords(this->viewer, 21750, 94);
 }
 
 // OFFSET: 0x008D7110
 // FUNCTION: fn_12118
-std::vector<unsigned char> UIStarPlaceAcceptWnd::Slot44() {
+std::vector<unsigned char> UIStarPlaceAcceptWnd::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = MakeReplayTaggedRecord(21700, nullptr, 0);
@@ -9217,7 +9217,7 @@ std::vector<unsigned char> UIStarPlaceAcceptWnd::Slot44() {
 
 // OFFSET: 0x008D4600
 // FUNCTION: fn_12108
-std::vector<unsigned char> UIChooseWnd::Slot44() {
+std::vector<unsigned char> UIChooseWnd::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = MakeReplayTaggedRecord(21900, nullptr, 0);
@@ -9268,19 +9268,19 @@ static __forceinline std::vector<unsigned char> BuildItemListReplayRecords(const
 
 // OFFSET: 0x008D59B0
 // FUNCTION: fn_12112
-std::vector<unsigned char> UIItemIdentifyWnd::Slot44() {
+std::vector<unsigned char> UIItemIdentifyWnd::GetReplayData() {
   return BuildItemListReplayRecords(this->m_items, 22300, 0x177);
 }
 
 // OFFSET: 0x008D56E0
 // FUNCTION: fn_12111
-std::vector<unsigned char> UIItemCompositionWnd::Slot44() {
+std::vector<unsigned char> UIItemCompositionWnd::GetReplayData() {
   return BuildItemListReplayRecords(this->m_items, 22350, 0x17B);
 }
 
 // OFFSET: 0x008D6910
 // FUNCTION: fn_12116
-std::vector<unsigned char> UIMakingArrowListWnd::Slot44() {
+std::vector<unsigned char> UIMakingArrowListWnd::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = MakeReplayTaggedRecord(22100, nullptr, 0);
@@ -9334,7 +9334,7 @@ void UINotifyItemObtainWnd::Paint() {
 
 // OFFSET: 0x008EB010
 // FUNCTION: fn_12207
-void UIWhisperWnd::Slot15(int, int) {
+void UIWhisperWnd::OnCreate(int, int) {
   this->m_message0 = 184;
 
   this->m_resizer = new UIResizer();
@@ -9503,7 +9503,7 @@ void UInCashWnd::Paint() {
 
 // OFFSET: 0x008F4D50
 // FUNCTION: fn_12295
-void UIExchangeWnd::Slot19() {
+void UIExchangeWnd::OnProcess() {
   UIEditCtrl* edit = this->unknown_00C0;
   if (edit == nullptr) {
     return;
@@ -9642,7 +9642,7 @@ void UIItemCollectionWnd::Paint() {
 
 // OFFSET: 0x008DB1F0
 // FUNCTION: fn_12158
-void UIAutoMessageWnd::Slot15(int, int) {
+void UIAutoMessageWnd::OnCreate(int, int) {
   this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(this->geometry.width - 77, 16);
   this->m_edit->Move(15, 22);
@@ -9668,7 +9668,7 @@ void UIAutoMessageWnd::Slot15(int, int) {
 
 // OFFSET: 0x008EC840
 // FUNCTION: fn_12209
-void UInCash_CallWnd::Slot15(int, int) {
+void UInCash_CallWnd::OnCreate(int, int) {
   const int ids[] = {192};
   const int positions[] = {0};
   const char* names[] = {"NC_CashShop"};
@@ -9794,7 +9794,7 @@ UIMakingArrowListWnd::UIMakingArrowListWnd()
 
 // OFFSET: 0x008D4320
 // FUNCTION: fn_12107
-std::vector<unsigned char> UIChooseWarpWnd::Slot44() {
+std::vector<unsigned char> UIChooseWarpWnd::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = MakeReplayTaggedRecord(21950, nullptr, 0);
@@ -9813,7 +9813,7 @@ std::vector<unsigned char> UIChooseWarpWnd::Slot44() {
 
 // OFFSET: 0x008D4E70
 // FUNCTION: fn_12110
-std::vector<unsigned char> UIExchangeWnd::Slot44() {
+std::vector<unsigned char> UIExchangeWnd::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = MakeReplayTaggedRecord(20600, nullptr, 0);
@@ -9860,7 +9860,7 @@ std::vector<unsigned char> UIExchangeWnd::Slot44() {
 
 // OFFSET: 0x008D6D40
 // FUNCTION: fn_12117
-std::vector<unsigned char> UISayDialogWnd::Slot44() {
+std::vector<unsigned char> UISayDialogWnd::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = MakeReplayTaggedRecord(22500, nullptr, 0);
@@ -9884,7 +9884,7 @@ std::vector<unsigned char> UISayDialogWnd::Slot44() {
 
 // OFFSET: 0x008E30B0
 // FUNCTION: fn_12180
-void UILoadingWnd::Slot15(int, int) {
+void UILoadingWnd::OnCreate(int, int) {
   // GLOBAL: gl_25392
   static int s_loadingScreenIndex;
 
@@ -10009,7 +10009,7 @@ void UIEquipWnd::RefreshTitleList() {
 
 // OFFSET: 0x008F5580
 // FUNCTION: fn_12304
-void UIItemCollectionWnd::Slot32(int x, int y) {
+void UIItemCollectionWnd::OnRBtnDown(int x, int y) {
   int slotX;
   int slotY;
   const int index = this->CardSlotAt(x, y, &slotX, &slotY);
@@ -10046,7 +10046,7 @@ void UIItemCollectionWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x008F5790
 // FUNCTION: fn_12305
-void UIItemCollection_ComparisonWnd::Slot32(int x, int y) {
+void UIItemCollection_ComparisonWnd::OnRBtnDown(int x, int y) {
   int slotX;
   int slotY;
   const int index = this->CardSlotAt(x, y, &slotX, &slotY);
@@ -10068,9 +10068,9 @@ void UIItemCollection_ComparisonWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x008F3660
 // FUNCTION: fn_12270
-void UIEquipWnd::Slot25(int x, int y) {
+void UIEquipWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
   }
 
   if (this->m_viewOther != 0) {
@@ -10125,7 +10125,7 @@ UInCashWnd::UInCashWnd() : UIItemBaseWnd() {
 
 // OFFSET: 0x008F33F0
 // FUNCTION: fn_12267
-void UInCashWnd::Slot26(int x, int y) {
+void UInCashWnd::OnLBtnDblClk(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.unknown_0000[1] == 0 || this->m_selected >= 0) {
     return;
@@ -10272,7 +10272,7 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
 
 // OFFSET: 0x008F50E0
 // FUNCTION: fn_12301
-void UITipboxWnd::Slot19() {
+void UITipboxWnd::OnProcess() {
   if (this->unknown_00FC == true) {
     this->unknown_00FC = false;
     const int index = (std::max)(0, g_itemTagOwner->unknown_00B4);
@@ -10451,7 +10451,7 @@ void UITipboxWnd::Paint() {
 
 // OFFSET: 0x008E9370
 // FUNCTION: fn_12203
-void UITipOfTheDayWnd::Slot15(int width, int height) {
+void UITipOfTheDayWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   const char* names[3][3] = {{"btn_back", "btn_back_a", "btn_back_b"}, {"btn_next", "btn_next_a", "btn_next_b"}, {"btn_close", "btn_close_a", "btn_close_b"}};
   int positions[3][2] = {{144, this->geometry.height - 24}, {189, this->geometry.height - 24}, {234, this->geometry.height - 24}};
@@ -10502,7 +10502,7 @@ void UITipOfTheDayWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x008E9C90
 // FUNCTION: fn_12204
-void UITipboxWnd::Slot15(int width, int) {
+void UITipboxWnd::OnCreate(int width, int) {
   this->unknown_0100 = g_window315Enabled;
   this->m_message0 = 365;
 
@@ -11586,7 +11586,7 @@ void UIEquipWnd::RefreshLook()
     unknown_00F8[7] = g_session.m_headPalette;
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode->scene && mode->scene->player)
-      unknown_011C = mode->scene->player->Slot46();
+      unknown_011C = mode->scene->player->GetBodyCostume();
   } else {
     unknown_00F8[0] = g_equipWindowLook.job;
     unknown_00F8[1] = g_equipWindowLook.sex;
@@ -11645,7 +11645,7 @@ char* UIBookWnd::StripColorCodes(const char* text) {
 
 // OFFSET: 0x008F4AC0
 // FUNCTION: fn_12293
-void UIBookWnd::Slot19() {
+void UIBookWnd::OnProcess() {
   if (!this->m_autoRead || this->m_autoTick == 0 || timeGetTime() <= this->m_autoTick + 4000) {
     return;
   }
@@ -12624,11 +12624,11 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     if (this->m_compare) {
       if (this->geometry.height != 144) {
         this->SetHeight(this->m_extraHeight + 149);
-        this->Slot36();
+        this->RefreshSnap();
       }
     } else if (this->geometry.height != 120) {
       this->SetHeight(this->m_extraHeight + 120);
-      this->Slot36();
+      this->RefreshSnap();
     }
     this->unknown_01C4 = "유저인터페이스\\collection\\" + std::string(ItemResourcePath(this->m_item)) + ".bmp";
     const std::vector<const char*>& descriptions = this->m_item.Description();

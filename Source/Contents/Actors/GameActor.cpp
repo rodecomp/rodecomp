@@ -111,7 +111,7 @@ void CGameActor::ProcessDamageMessages() {
 
 // OFFSET: 0x00CB2040
 // FUNCTION: fn_21100
-void CGameActor::Slot16() {
+void CGameActor::RegisterPos() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   int column;
   int row;
@@ -122,7 +122,7 @@ void CGameActor::Slot16() {
 // OFFSET: 0x00CB0FD0
 // FUNCTION: fn_21097
 #pragma auto_inline(off)
-bool CGameActor::Slot14() {
+bool CGameActor::ProcessState() {
   if (static_cast<std::uint32_t>(this->unknown_0278) > 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
     this->render.isMotionFreezed = false;
     this->unknown_0278 = 0;
@@ -146,7 +146,7 @@ bool CGameActor::Slot14() {
     if (this->unknown_0178 == 0) {
       this->unknown_0178 = 1;
       if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1)) != 0) {
-        if (IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, this->Slot35())) {
+        if (IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, this->GetWeapon())) {
           this->SetAction(0x58, 4, 1);
         } else {
           this->SetAction(0x50, 4, 1);
@@ -159,17 +159,17 @@ bool CGameActor::Slot14() {
     if (timeGetTime() >= this->unknown_0280) {
       this->unknown_0178 = 0;
       this->render.isMotionFreezed = false;
-      this->Slot15(0, 1);
+      this->SetState(0, 1);
       this->SendMsg(nullptr, 0x53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
-    this->Slot08();
+    this->ProcessMotion();
     this->unknown_0244 = timeGetTime();
     this->unknown_0258 = serverTime;
     return true;
 
   case 0:
     if (this->render.unknown_006C == 1 && this->render.isMotionFinished) {
-      this->Slot15(0, 1);
+      this->SetState(0, 1);
     } else if (this->unknown_0314 == 7 && this->render.accountId == g_session.unknown_1010 && static_cast<std::uint32_t>(this->unknown_027C) > 0 &&
                timeGetTime() > static_cast<std::uint32_t>(this->unknown_027C) + 3000) {
       if (rand() % 100 < 25) {
@@ -182,7 +182,7 @@ bool CGameActor::Slot14() {
       }
       this->unknown_027C = 0;
     }
-    this->Slot08();
+    this->ProcessMotion();
     this->unknown_0244 = timeGetTime();
     this->unknown_0258 = serverTime;
     return true;
@@ -236,7 +236,7 @@ bool CGameActor::Slot14() {
       const float movedX = this->render.position.x - old.x;
       this->unknown_0240 += SquareRoot(movedX * movedX + (this->render.position.z - old.z) * (this->render.position.z - old.z));
       if (this->unknown_0238 == 0) {
-        this->Slot36();
+        this->ProcessMotionWithDist();
       }
       if (this->unknown_023C != -1 || serverTime < nextTick) {
         if (previousIndex != this->unknown_023C) {
@@ -254,7 +254,7 @@ bool CGameActor::Slot14() {
       this->render.position.x = destX;
       this->render.position.z = destZ;
       this->NotifyCellMove(&this->render.position.x, &this->render.position.z);
-      this->Slot15(0, 1);
+      this->SetState(0, 1);
       this->unknown_0238 = 0;
       this->render.isMotionFreezed = false;
       if (this->unknown_0184 != 0) {
@@ -277,9 +277,9 @@ bool CGameActor::Slot14() {
   case 0x39:
   case 0x3A:
   case 0x3B:
-    this->Slot08();
+    this->ProcessMotion();
     if (this->render.isMotionFinished) {
-      this->Slot15(0, 1);
+      this->SetState(0, 1);
     }
     this->unknown_0244 = timeGetTime();
     this->unknown_0258 = serverTime;
@@ -287,7 +287,7 @@ bool CGameActor::Slot14() {
 
   case 8:
     this->unknown_0178 = 0;
-    this->Slot08();
+    this->ProcessMotion();
     {
       const int frames = static_cast<int>(this->GetElapsedFrames());
       if (this->hitTargetAid != 0) {
@@ -307,9 +307,9 @@ bool CGameActor::Slot14() {
   case 7:
   case 0x2D:
     this->unknown_0178 = 0;
-    this->Slot08();
+    this->ProcessMotion();
     if (this->render.isMotionFinished) {
-      this->Slot15(0, 1);
+      this->SetState(0, 1);
     }
     this->unknown_0244 = timeGetTime();
     this->unknown_0258 = serverTime;
@@ -317,7 +317,7 @@ bool CGameActor::Slot14() {
 
   case 4:
     this->unknown_0178 = 0;
-    this->Slot08();
+    this->ProcessMotion();
     {
       const vector3d old = this->render.position;
       const float deltaX = this->unknown_02D0 - this->render.position.x;
@@ -335,7 +335,7 @@ bool CGameActor::Slot14() {
         this->render.position.x = this->unknown_02D0;
         this->render.position.z = this->unknown_02D4;
         moved = 1;
-        this->Slot15(0, 1);
+        this->SetState(0, 1);
       }
     }
     break;
@@ -346,13 +346,13 @@ bool CGameActor::Slot14() {
     this->render.unknown_00DC = 0;
     this->render.isMotionFreezed = false;
     this->unknown_0178 = 0;
-    this->Slot08();
+    this->ProcessMotion();
     if (this->render.isMotionFinished && this->unknown_02A8.size() == 0) {
       mode->SendMsg(0xD, static_cast<int>(this->render.accountId), 0, 0, 0);
       const int job = this->GetEffectiveJob(-1);
       if ((job > 31 && job < 1000) || g_session.IsMonsterClass(job) || this->unknown_0314 == 9 ||
           g_session.IsSkillIdInRange6001(job)) {
-        this->Slot38();
+        this->MakeCorpse();
         return false;
       }
     }
@@ -396,7 +396,7 @@ bool CGameActor::Slot14() {
   case 0x33:
   case 0x37:
     this->unknown_0178 = 0;
-    this->Slot08();
+    this->ProcessMotion();
     this->unknown_0244 = timeGetTime();
     this->unknown_0258 = serverTime;
     return true;
@@ -482,7 +482,7 @@ void CGameActor::ResetState() {
   this->unknown_02B0 = 0;
   this->bodyState = 0;
   this->stateFlags = 0;
-  this->Slot47(0);
+  this->SetRiding(0);
   this->unknown_02C4 = 0;
   this->unknown_02C8 = 0;
   this->unknown_02DC = 0;
@@ -585,7 +585,7 @@ void CGameActor::UpdateGaugePositions() {
     if (timeGetTime() > this->unknown_0280) {
       this->SendMsg(nullptr, 0x53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (this->render.unknown_0070 == 8) {
-        this->Slot15(0, 1);
+        this->SetState(0, 1);
       }
     } else {
       reinterpret_cast<UIWindow*>(this->unknown_0264[3])->Move(
@@ -719,7 +719,7 @@ void CGameActor::UpdateHpGauge() {
 
 // OFFSET: 0x00CB0A90
 // FUNCTION: fn_21095
-void CGameActor::Slot36() {
+void CGameActor::ProcessMotionWithDist() {
   const int frames = static_cast<int>(this->render.action->FrameCount(this->render.previousAnimation));
   this->render.curMotion = static_cast<int>(this->unknown_0240 * 0.37f * 4.0f / this->render.speed) % frames;
 }
@@ -1155,11 +1155,11 @@ void __stdcall CreateHallucinationPc(
 
   pc->unknown_0260 = sex & 1;
   pc->SetActorJob(job);
-  pc->Slot22(head);
-  pc->Slot30();
-  pc->Slot33(weapon);
-  pc->Slot34(shield);
-  pc->Slot44(bodyPalette, 0);
+  pc->SetSprHead(head);
+  pc->SetImfFileName();
+  pc->SetBodyPalette(weapon);
+  pc->SetHeadPalette(shield);
+  pc->SetBodyCostume(bodyPalette, 0);
 
   CHalluPC* hallu = new CHalluPC(pc);
   hallu->render.position = *position;

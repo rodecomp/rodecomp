@@ -18,7 +18,7 @@ public:
 
   ~CUIFrameWnd() override;
   void Paint() override;
-  virtual void Slot53() = 0;
+  virtual void Initialize() = 0;
   void RefreshSkinColors();
   void SetSkinColors(int backgroundColumn, int backgroundRow, int borderColumn, int borderRow);
 

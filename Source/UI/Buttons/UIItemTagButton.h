@@ -13,8 +13,8 @@ public:
   UIItemTagButton();
 
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
 
   /* 00F8 */ unsigned char unknown_00F8[0xF0];
   /* 01E8 */ unsigned char unknown_01E8[0x8];

@@ -4681,9 +4681,9 @@ int GetCategoryJob(lua_State* state) {
 }
 
 struct EquipLocationSource {
-  virtual void Slot00();
-  virtual void Slot01();
-  virtual void Slot02();
+  virtual void Destroy();
+  virtual void Load();
+  virtual void Clear();
   virtual int GetLocation();
 };
 
@@ -5483,7 +5483,7 @@ bool CGameMode::IsRegisterCell(int x, int y) {
       if (actor == nullptr) {
         return true;
       }
-      if (!StateFlag01(actor->Slot13())) {
+      if (!StateFlag01(actor->GetStateFlags())) {
         return true;
       }
     }

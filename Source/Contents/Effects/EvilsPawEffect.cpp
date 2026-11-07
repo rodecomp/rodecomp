@@ -28,7 +28,7 @@ void CEvilsPawEffect::Close() {
 
 // OFFSET: 0x006FED20
 // FUNCTION: fn_06957
-void CEvilsPawEffect::Slot01() {
+void CEvilsPawEffect::Open() {
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
   if (particle) {
     particle->SetColor(255, 255, 255);
@@ -54,7 +54,7 @@ void CEvilsPawEffect::Slot01() {
 
 // OFFSET: 0x006FEFC0
 // FUNCTION: fn_06958
-void CEvilsPawEffect::Slot07() {
+void CEvilsPawEffect::ResetParticles() {
   this->textureIndex = 0;
   this->delayCounter = this->frameDelay;
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
@@ -70,13 +70,13 @@ void CEvilsPawEffect::Slot07() {
 
 // OFFSET: 0x006FF060
 // FUNCTION: fn_06959
-bool CEvilsPawEffect::Slot06() {
+bool CEvilsPawEffect::IsAlive() {
   return true;
 }
 
 // OFFSET: 0x006FF070
 // FUNCTION: fn_06960
-void CEvilsPawEffect::Slot03() {
+void CEvilsPawEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -116,7 +116,7 @@ void CEvilsPawEffect::Slot03() {
 
 // OFFSET: 0x006FF3E0
 // FUNCTION: fn_06961
-void CEvilsPawEffect::Slot04() {
+void CEvilsPawEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

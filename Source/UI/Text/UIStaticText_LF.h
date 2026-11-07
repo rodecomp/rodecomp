@@ -12,9 +12,9 @@ public:
       : UIWindow(cached), m_lineSpacing(0), m_align(0), m_fontFamily(0), m_fontHeight(12), m_textColor(0), m_bold(0) {}
 
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnWheel(int delta) override;
   void SetText(std::string text);
 
 protected:

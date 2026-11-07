@@ -173,13 +173,13 @@ std::string UIMacroReporterWnd::EllipsizeText(int maxWidth, const char* text, in
 
 // OFFSET: 0x007F0480
 // FUNCTION: fn_09845
-bool UIMacroUserInfoWnd::Slot08() {
+bool UIMacroUserInfoWnd::IsTransmitMouseInput() {
   return true;
 }
 
 // OFFSET: 0x007F0EE0
 // FUNCTION: fn_09847
-void UIMacroUserInfoWnd::Slot15(int, int) {
+void UIMacroUserInfoWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
 }
 
@@ -238,7 +238,7 @@ void UIMacroUserInfoWnd::Paint() {
 
 // OFFSET: 0x007F1160
 // FUNCTION: fn_09850
-void UIMacroReporterWnd::Slot25(int x, int y) {
+void UIMacroReporterWnd::OnLBtnDown(int x, int y) {
   if (this->unknown_010C == 1 && y > 17) {
     return;
   }
@@ -261,7 +261,7 @@ void UIMacroReporterWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x007F11F0
 // FUNCTION: fn_09851
-void UIMacroReporterWnd::Slot31(int, int) {
+void UIMacroReporterWnd::OnLBtnUp(int, int) {
   if (this != g_windowMgr.Capture()) {
     return;
   }
@@ -273,7 +273,7 @@ void UIMacroReporterWnd::Slot31(int, int) {
 
 // OFFSET: 0x007F1230
 // FUNCTION: fn_09852
-void UIMacroReporterWnd::Slot19() {
+void UIMacroReporterWnd::OnProcess() {
   for (auto it = this->m_removedRows.begin(); it != this->m_removedRows.end();) {
     if (!(*it)->Disabled()) {
       ++it;
@@ -288,7 +288,7 @@ void UIMacroReporterWnd::Slot19() {
 
 // OFFSET: 0x007F12A0
 // FUNCTION: fn_09853
-void UIMacroReporterWnd::Slot35(int delta) {
+void UIMacroReporterWnd::OnWheel(int delta) {
   if (this->m_scrollable == 1) {
     if (delta < 0) {
       this->SendMsg(this->m_scrollBar, 7, 3, 0, 0, 0);
@@ -422,7 +422,7 @@ int UIMacroUserInfoWnd::SendMsg(
 
 // OFFSET: 0x007F26C0
 // FUNCTION: fn_09858
-void UIMacroReporterWnd::Slot11() {
+void UIMacroReporterWnd::StoreInfo() {
   if (this->m_state) {
     this->m_state->width = this->geometry.width;
     this->m_state->height = this->geometry.height;
@@ -455,7 +455,7 @@ void __stdcall SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second
 
 // OFFSET: 0x007F0490
 // FUNCTION: fn_09846
-void UIMacroReporterWnd::Slot15(int, int) {
+void UIMacroReporterWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 

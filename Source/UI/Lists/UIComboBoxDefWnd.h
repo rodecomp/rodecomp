@@ -11,9 +11,9 @@ class UIComboBoxDefWnd : public UIWindow {
 public:
   UIComboBoxDefWnd();
   ~UIComboBoxDefWnd() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot31(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void AddOption(std::string text, std::uint32_t color);
   void Select(int index);
@@ -49,9 +49,9 @@ public:
 class UINewComboBoxCtrl : public UIWindow {
 public:
   UINewComboBoxCtrl();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot26(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Clear();
   /* 007C */ UIBitmapButton* button;
@@ -76,7 +76,7 @@ class UIComboBoxDef2Wnd : public UIComboBoxDefWnd {
 public:
   UIComboBoxDef2Wnd();
   ~UIComboBoxDef2Wnd() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
 
   /* 00A8 */ int skin;

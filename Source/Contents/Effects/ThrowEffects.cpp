@@ -31,7 +31,7 @@ void CThrowItemEffect::Close() {
 
 // OFFSET: 0x00B7CD30
 // FUNCTION: fn_19230
-void CThrowItemEffect::Slot01() {
+void CThrowItemEffect::Open() {
   switch (this->id) {
   case 981:
     this->unknown_00D4 = 8;
@@ -272,7 +272,7 @@ void CThrowItemEffect::InitSpinParticle(CParticle* particle) {
 
 // OFFSET: 0x00B7D8B0
 // FUNCTION: fn_19234
-void CThrowItemEffect::Slot12() {
+void CThrowItemEffect::InitEvents() {
   switch (this->id) {
   case 613:
   case 614:
@@ -291,13 +291,13 @@ void CThrowItemEffect::Slot12() {
 
 // OFFSET: 0x00B7DE60
 // FUNCTION: fn_19235
-bool CThrowItemEffect::Slot06() {
+bool CThrowItemEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B7DE70
 // FUNCTION: fn_19236
-void CThrowItemEffect::Slot03() {
+void CThrowItemEffect::OnProcess() {
   for (auto particle = this->particles.begin(); particle != this->particles.end(); ++particle) {
     CParticle* target = *particle;
 
@@ -382,7 +382,7 @@ void CThrowItemEffect::Slot03() {
 
 // OFFSET: 0x00B7E660
 // FUNCTION: fn_19237
-void CThrowItemEffect::Slot04() {
+void CThrowItemEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       (*it)->Render(true, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
@@ -523,7 +523,7 @@ void CVolcanoEffect::Close() {
 
 // OFFSET: 0x00B7EEC0
 // FUNCTION: fn_19242
-void CVolcanoEffect::Slot01() {
+void CVolcanoEffect::Open() {
   switch (this->id) {
   case 223:
   case 225:
@@ -545,7 +545,7 @@ void CVolcanoEffect::Slot01() {
 
 // OFFSET: 0x00B7F190
 // FUNCTION: fn_19243
-bool CVolcanoEffect::Slot06() {
+bool CVolcanoEffect::IsAlive() {
   for (auto particle = this->particles.begin(); particle != this->particles.end(); ++particle) {
     if ((*particle)->alpha > 0) {
       return true;
@@ -557,7 +557,7 @@ bool CVolcanoEffect::Slot06() {
 
 // OFFSET: 0x00B7F1C0
 // FUNCTION: fn_19244
-void CVolcanoEffect::Slot03() {
+void CVolcanoEffect::OnProcess() {
   int fadeIn;
   int fadeOut;
 
@@ -661,7 +661,7 @@ void CVolcanoEffect::Slot03() {
 
 // OFFSET: 0x00B7F7B0
 // FUNCTION: fn_19245
-void CVolcanoEffect::Slot04() {
+void CVolcanoEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle || particle->unknown_000C <= 0) {

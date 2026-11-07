@@ -7,7 +7,7 @@ class CChangeSizeEffect : public CEffect {
 public:
   CChangeSizeEffect();
 
-  void Slot03() override;
+  void OnProcess() override;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -451,11 +451,11 @@ void UIQuickSlotWnd::Paint() {
 
 // OFFSET: 0x00924A50
 // FUNCTION: fn_12646
-void UIQuickSlotWnd::Slot15(int, int) {}
+void UIQuickSlotWnd::OnCreate(int, int) {}
 
 // OFFSET: 0x00930610
 // FUNCTION: fn_12686
-void UIQuickSlotWnd::Slot26(int x, int y) {
+void UIQuickSlotWnd::OnLBtnDblClk(int x, int y) {
   if (g_session.GetOption(5) > 0 || static_cast<unsigned>(y) > 23) {
     return;
   }
@@ -482,7 +482,7 @@ void UIQuickSlotWnd::Slot26(int x, int y) {
 
 // OFFSET: 0x00932E80
 // FUNCTION: fn_12718
-void UIQuickSlotWnd::Slot19() {
+void UIQuickSlotWnd::OnProcess() {
   this->Invalidate();
 }
 
@@ -515,7 +515,7 @@ int UIQuickSlotWnd::SlotAt(int x, int y) {
 
 // OFFSET: 0x00932E90
 // FUNCTION: fn_12719
-void UISeekPartyWnd::Slot19() {
+void UISeekPartyWnd::OnProcess() {
   int frameCounts[6] = {5, 5, 17, 11, 11, 11};
   const std::uint32_t now = GetTickCount();
   this->m_frameElapsed = now - this->m_frameTick;
@@ -529,7 +529,7 @@ void UISeekPartyWnd::Slot19() {
 
 // OFFSET: 0x00940EE0
 // FUNCTION: fn_12783
-void UIQuickSlotWnd::Slot11() {
+void UIQuickSlotWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->x = this->geometry.x;
     this->m_saved->y = this->geometry.y;
@@ -540,7 +540,7 @@ void UIQuickSlotWnd::Slot11() {
 
 // OFFSET: 0x00940F60
 // FUNCTION: fn_12785
-void UISeekPartyMBWnd::Slot11() {
+void UISeekPartyMBWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->width = this->geometry.width;
     this->m_saved->height = this->geometry.height;
@@ -597,7 +597,7 @@ int UISeekPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 
 // OFFSET: 0x00940FA0
 // FUNCTION: fn_12786
-void UISeekPartyWnd::Slot11() {
+void UISeekPartyWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->width = this->geometry.width;
     this->m_saved->height = this->geometry.height;
@@ -608,7 +608,7 @@ void UISeekPartyWnd::Slot11() {
 
 // OFFSET: 0x00940F20
 // FUNCTION: fn_12784
-void UISeekPartyListWnd::Slot11() {
+void UISeekPartyListWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->width = this->geometry.width;
     this->m_saved->height = this->geometry.height;

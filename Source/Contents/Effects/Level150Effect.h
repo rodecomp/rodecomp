@@ -12,13 +12,13 @@ class CParticle;
 class CLevel150Effect : public CEffect {
 public:
   CLevel150Effect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
-  void Slot08(int red, int green, int blue) override;
-  void Slot10(int blend) override;
+  bool IsAlive() override;
+  void SetColor(int red, int green, int blue) override;
+  void SetDestinationBlend(int blend) override;
   void AddBubbleRing(int alphaOffset);
   void AddShock(int kind);
 
@@ -30,13 +30,13 @@ public:
 class CLevel150SubEffect : public CEffect {
 public:
   CLevel150SubEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
-  void Slot08(int red, int green, int blue) override;
-  void Slot10(int blend) override;
+  bool IsAlive() override;
+  void SetColor(int red, int green, int blue) override;
+  void SetDestinationBlend(int blend) override;
   void Init();
 
   /* 00CC */ std::vector<CParticle*> particles;

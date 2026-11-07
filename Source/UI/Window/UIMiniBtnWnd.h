@@ -9,7 +9,7 @@ class UIMiniBtnWnd : public UIFrameWnd {
 public:
   UIMiniBtnWnd();
   void Paint() override;
-  void Slot25(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
   void Toggle();
 
   /* 00B4 */ std::string m_activeImage;

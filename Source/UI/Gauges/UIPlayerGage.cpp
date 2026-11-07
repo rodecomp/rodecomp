@@ -42,7 +42,7 @@ UIMonsterGage::UIMonsterGage() {
 
 // OFFSET: 0x00882450
 // FUNCTION: fn_11304
-bool UIPlayerGage::Slot03() {
+bool UIPlayerGage::NeedsFrameRefresh() {
   return true;
 }
 

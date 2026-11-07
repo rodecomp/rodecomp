@@ -27,7 +27,7 @@ void CClimaxEffect::Close() {
 
 // OFFSET: 0x00706B00
 // FUNCTION: fn_07050
-void CClimaxEffect::Slot01() {
+void CClimaxEffect::Open() {
   this->retained = 1;
 
   CParticle* particle = CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5);
@@ -63,13 +63,13 @@ void CClimaxEffect::Slot01() {
 
 // OFFSET: 0x00706F00
 // FUNCTION: fn_07051
-bool CClimaxEffect::Slot06() {
+bool CClimaxEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00706F10
 // FUNCTION: fn_07052
-void CClimaxEffect::Slot03() {
+void CClimaxEffect::OnProcess() {
   for (CParticle* particle : this->particles) {
     if (!particle) {
       continue;
@@ -103,7 +103,7 @@ void CClimaxEffect::Slot03() {
 
 // OFFSET: 0x00707270
 // FUNCTION: fn_07053
-void CClimaxEffect::Slot04() {
+void CClimaxEffect::Render() {
   for (int index = 0; index < 2; ++index) {
     if (this->particles[index]) {
       static_cast<CEZ2STRParticle*>(this->particles[index])->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);

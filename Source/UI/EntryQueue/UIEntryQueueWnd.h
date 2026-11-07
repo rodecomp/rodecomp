@@ -18,9 +18,9 @@ class UITextViewer;
 class UIEntryQueueHelpWnd : public UIFrameWnd {
 public:
   UIEntryQueueHelpWnd();
-  void Slot15(int width, int height) override;
-  void Slot18() override;
-  void Slot19() override;
+  void OnCreate(int width, int height) override;
+  void OnDestroy() override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
@@ -35,7 +35,7 @@ class UIEntryQueueListBox : public UIListBox {
 public:
   UIEntryQueueListBox();
   ~UIEntryQueueListBox() override;
-  void Slot31(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   virtual void AddEntry(const char* name, int value);
   virtual int EntryValue(int index);
 
@@ -46,8 +46,8 @@ class UIEntryQueueRequestWnd : public UIFrameWnd {
 public:
   UIEntryQueueRequestWnd();
   ~UIEntryQueueRequestWnd() override;
-  void Slot18() override;
-  void Slot19() override;
+  void OnDestroy() override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   bool Create();
@@ -69,8 +69,8 @@ class UIEntryQueueStandByWnd : public UIFrameWnd {
 public:
   UIEntryQueueStandByWnd();
   ~UIEntryQueueStandByWnd() override;
-  void Slot18() override;
-  void Slot19() override;
+  void OnDestroy() override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   bool Create();
@@ -94,8 +94,8 @@ class UIEntryQueueWnd : public UIFrameWnd {
 public:
   UIEntryQueueWnd();
   ~UIEntryQueueWnd() override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   int SelectedIndex();

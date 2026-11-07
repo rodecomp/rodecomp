@@ -25,16 +25,16 @@ class C3dGrannyGameActor : public CGameActor {
 public:
   explicit C3dGrannyGameActor(const char* name);
   void SetAction(unsigned animation, int motion, int repeat) override;
-  void Slot08() override;
-  void Slot36() override;
-  int Slot37() override;
+  void ProcessMotion() override;
+  void ProcessMotionWithDist() override;
+  int GetAttackMotion() override;
   void Unused6860(int value);
   void Unused7950(int value);
-  void Slot18(int job, int value, int unused) override;
+  void SetSprAct(int job, int value, int unused) override;
   void Render(int argument) override;
   void RenderLit(int argument, const GrannyActorLight& light);
   void RenderShadowed(int argument);
-  void Slot38() override;
+  void MakeCorpse() override;
   bool OnProcess() override;
 
   /* 0410 */ CTexture* emblemTexture;

@@ -12,7 +12,7 @@ class CParticle;
 class CAnimatedEmitterEffect : public CEmitterEffect {
 public:
   CAnimatedEmitterEffect();
-  void Slot01() override;
+  void Open() override;
   void InitParticle(CParticle* particle) override;
   void UpdateParticle(CParticle* particle) override;
 

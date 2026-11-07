@@ -68,7 +68,7 @@ void CCellRangeEffect::Close() {
 
 // OFFSET: 0x00B43420
 // FUNCTION: fn_18878
-void CCellRangeEffect::Slot01() {
+void CCellRangeEffect::Open() {
   CSkill* owner = static_cast<CSkill*>(FindRenderObject(this->actor));
   if (!owner) {
     return;
@@ -95,7 +95,7 @@ void CCellRangeEffect::Slot01() {
 
 // OFFSET: 0x00B43520
 // FUNCTION: fn_18880
-void CCellRangeEffect::Slot03() {
+void CCellRangeEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -132,7 +132,7 @@ void CCellRangeEffect::Slot03() {
 
 // OFFSET: 0x00B43920
 // FUNCTION: fn_18881
-void CCellRangeEffect::Slot04() {
+void CCellRangeEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

@@ -48,7 +48,7 @@ void UIRadioBtn::Paint() {
 
 // OFFSET: 0x0085ECB0
 // FUNCTION: fn_10844
-void UIRadioBtn::Slot25(int, int) {
+void UIRadioBtn::OnLBtnDown(int, int) {
   if (this->parent && this->enabled != 0) {
     this->parent->SendMsg(this, 6, this->geometry.id, this->value, 0, 0);
   }
@@ -56,8 +56,8 @@ void UIRadioBtn::Slot25(int, int) {
 
 // OFFSET: 0x0085F400
 // FUNCTION: fn_10861
-void UIRadioBtn::Slot28(int x, int y) {
-  this->Slot27(x, y);
+void UIRadioBtn::OnMouseHover(int x, int y) {
+  this->OnMouseMove(x, y);
   if (this->tooltip.size()) {
     x = 10;
     y = -20;

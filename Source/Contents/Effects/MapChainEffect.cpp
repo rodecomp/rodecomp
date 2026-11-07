@@ -81,7 +81,7 @@ void CMapChainEffect::Close() {
 
 // OFFSET: 0x00B4AFE0
 // FUNCTION: fn_18949
-void CMapChainEffect::Slot01() {
+void CMapChainEffect::Open() {
   this->CreateChainParticles(25);
   this->CreateChainParticles(50);
   this->CreateChainParticles(95);
@@ -91,7 +91,7 @@ void CMapChainEffect::Slot01() {
 
 // OFFSET: 0x00B4B0A0
 // FUNCTION: fn_18950
-void CMapChainEffect::Slot07() {
+void CMapChainEffect::ResetParticles() {
   const char* base = reinterpret_cast<const char*>(this);
 
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
@@ -114,13 +114,13 @@ void CMapChainEffect::Slot07() {
 
 // OFFSET: 0x00B4B130
 // FUNCTION: fn_18951
-bool CMapChainEffect::Slot06() {
+bool CMapChainEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B4B140
 // FUNCTION: fn_18952
-void CMapChainEffect::Slot03() {
+void CMapChainEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -207,7 +207,7 @@ void CMapChainEffect::Slot03() {
 
 // OFFSET: 0x00B4B740
 // FUNCTION: fn_18953
-void CMapChainEffect::Slot04() {
+void CMapChainEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle && particle->unknown_000C > 0) {

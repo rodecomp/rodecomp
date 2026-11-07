@@ -44,7 +44,7 @@ UIRegisterPartyWnd::~UIRegisterPartyWnd() = default;
 
 // OFFSET: 0x007C2440
 // FUNCTION: fn_09326
-void UIRegisterPartyWnd::Slot11() {
+void UIRegisterPartyWnd::StoreInfo() {
   if (this->saved) {
     this->saved->width = this->geometry.width;
     this->saved->height = this->geometry.height;
@@ -55,7 +55,7 @@ void UIRegisterPartyWnd::Slot11() {
 
 // OFFSET: 0x007BDD10
 // FUNCTION: fn_09300
-void UIRegisterPartyWnd::Slot15(int, int) {
+void UIRegisterPartyWnd::OnCreate(int, int) {
   auto* title = new UIStaticText();
   title->SetSize(40, 15);
   title->Move(10, 23);

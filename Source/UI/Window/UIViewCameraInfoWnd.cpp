@@ -16,13 +16,13 @@ UIViewCameraInfoWnd::UIViewCameraInfoWnd() : UIFrameWnd(0) {
 
 // OFFSET: 0x00A78C20
 // FUNCTION: fn_16894
-bool UIViewCameraInfoWnd::Slot08() {
+bool UIViewCameraInfoWnd::IsTransmitMouseInput() {
   return true;
 }
 
 // OFFSET: 0x00A78C30
 // FUNCTION: fn_16895
-void UIViewCameraInfoWnd::Slot15(int, int) {
+void UIViewCameraInfoWnd::OnCreate(int, int) {
 }
 
 // OFFSET: 0x00A78C40

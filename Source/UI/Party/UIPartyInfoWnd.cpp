@@ -125,15 +125,15 @@ void UIPartyInfoWnd::Paint() {
 
 // OFFSET: 0x007BFCA0
 // FUNCTION: fn_09308
-void UIPartyInfoWnd::Slot31(int x, int y) {
+void UIPartyInfoWnd::OnLBtnUp(int x, int y) {
   if (this->m_disabled == 0) {
-    this->UIButton::Slot31(x, y);
+    this->UIButton::OnLBtnUp(x, y);
   }
 }
 
 // OFFSET: 0x007BFE90
 // FUNCTION: fn_09310
-void UIPartyInfoWnd::Slot33(int, int) {
+void UIPartyInfoWnd::OnRBtnUp(int, int) {
   if (this->m_disabled != 0 || this->info.accountId == g_session.m_aid || this->info.characterId == g_session.m_gid) {
     return;
   }

@@ -157,7 +157,7 @@ void UISecondCostumeWnd::SelectSavedEntries() {
 
 // OFFSET: 0x0094C5B0
 // FUNCTION: fn_12898
-void UISecondCostumeWnd::Slot15(int width, int height) {
+void UISecondCostumeWnd::OnCreate(int width, int height) {
   this->LoadLists();
   this->AddCloseButton("Close", 0);
 
@@ -282,7 +282,7 @@ void UISecondCostumeWnd::RefreshList(int tab) {
 
 // OFFSET: 0x0094A410
 // FUNCTION: fn_12888
-bool UISecondCostumeWnd::Slot03() {
+bool UISecondCostumeWnd::NeedsFrameRefresh() {
   return true;
 }
 

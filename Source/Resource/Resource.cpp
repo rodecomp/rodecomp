@@ -28,13 +28,13 @@ CRes::~CRes() {
 
 // OFFSET: 0x00745260
 // FUNCTION: fn_07756
-bool CRes::Slot01(int, int, int) {
+bool CRes::LoadFromBuffer(int, int, int) {
   return false;
 }
 
 // OFFSET: 0x00745270
 // FUNCTION: fn_07757
-void CRes::Slot02() {
+void CRes::OnProcess() {
 }
 
 // OFFSET: 0x00745280

@@ -30,9 +30,9 @@ class UIDragMiniPartyWnd : public UIFrameWnd {
 public:
   UIDragMiniPartyWnd(MessengerMember member);
   ~UIDragMiniPartyWnd() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot31(int argument1, int argument2) override;
+  void OnLBtnUp(int argument1, int argument2) override;
   void MoveGauge(int x, int y);
   void RemoveGauge();
   void SetUnknown010C(int first, int second);
@@ -51,8 +51,8 @@ class UIFriendOptionWnd : public UIFrameWnd {
 public:
   UIFriendOptionWnd();
   ~UIFriendOptionWnd() override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
@@ -67,16 +67,16 @@ class UIMessengerGroupWnd : public UIFrameWnd {
 public:
   UIMessengerGroupWnd();
   ~UIMessengerGroupWnd() override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot33(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
+  void OnWheel(int delta) override;
   MessengerMember MemberAt(int x, int y);
   void OpenMiniPartyWnd(int cell, const MessengerMember& member);
   void DropMember(int x, int y, int index);

@@ -83,17 +83,17 @@ void CUIGameItemWithNum::Paint() {
 
 // OFFSET: 0x009E75E0
 // FUNCTION: fn_14481
-void CUIGameItem::Slot25(int x, int y) {
+void CUIGameItem::OnLBtnDown(int x, int y) {
   if (this->onClick) {
     this->onClick(this);
     return;
   }
-  CUIControl::Slot25(x, y);
+  CUIControl::OnLBtnDown(x, y);
 }
 
 // OFFSET: 0x009E7610
 // FUNCTION: fn_14482
-void CUIGameItem::Slot28(int x, int y) {
+void CUIGameItem::OnMouseHover(int x, int y) {
   if (this->unknown_0084 == 0 || this->name.empty()) {
     return;
   }
@@ -113,7 +113,7 @@ void CUIGameItem::Slot28(int x, int y) {
 
 // OFFSET: 0x009E7750
 // FUNCTION: fn_14483
-void CUIGameItem::Slot26(int, int) {
+void CUIGameItem::OnLBtnDblClk(int, int) {
   if (this->unknown_0085 == 0 || std::atoi(this->itemInfo.itemId.c_str()) <= 0) {
     return;
   }

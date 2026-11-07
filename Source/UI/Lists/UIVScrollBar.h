@@ -14,13 +14,13 @@ public:
   ~CUIVScrollBar() override;
   void Resize(int width, int height) override;
   void Show(int visible) override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot35(int value) override;
-  void Slot53(int resolveSkin) override;
-  virtual void Slot54();
-  virtual void Slot55(int value);
+  void OnLBtnDown(int x, int y) override;
+  void OnWheel(int value) override;
+  void LoadSkin(int resolveSkin) override;
+  virtual void UpdateThumb();
+  virtual void ScrollBy(int value);
 
   __declspec(noinline) void SetTotal(int value);
   __declspec(noinline) void SetVisible(int value);
@@ -60,11 +60,11 @@ class CUIHScrollBar : public CUIVScrollBar {
 public:
   CUIHScrollBar();
   void Resize(int width, int height) override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot35(int value) override;
-  void Slot54() override;
+  void OnLBtnDown(int x, int y) override;
+  void OnWheel(int value) override;
+  void UpdateThumb() override;
 
   void SetButtonImages(const std::string& left, const std::string& right);
   void SetThumbImages(const std::string& top, const std::string& middle, const std::string& bottom);

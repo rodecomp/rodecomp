@@ -46,7 +46,7 @@ void UIMiniPartyWnd::Move(int x, int y) {
 
 // OFFSET: 0x00742AC0
 // FUNCTION: fn_07740
-void UIMiniPartyWnd::Slot15(int, int) {
+void UIMiniPartyWnd::OnCreate(int, int) {
   UIMiniPartyInfoWnd* info = new UIMiniPartyInfoWnd();
   this->m_infoWnd = info;
   info->m_owner = this;
@@ -71,7 +71,7 @@ void UIMiniPartyWnd::Paint() {
 
 // OFFSET: 0x00742D80
 // FUNCTION: fn_07742
-void UIMiniPartyWnd::Slot25(int x, int y) {
+void UIMiniPartyWnd::OnLBtnDown(int x, int y) {
   if (g_windowMgr.lastWindowId != this->geometry.id) {
     g_windowMgr.BringToFront(this->geometry.id);
     g_windowMgr.lastWindowId = this->geometry.id;
@@ -91,9 +91,9 @@ void UIMiniPartyWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00740B80
 // FUNCTION: fn_07731
-void UIMiniPartyInfoWnd::Slot25(int x, int y) {
+void UIMiniPartyInfoWnd::OnLBtnDown(int x, int y) {
   if (!g_session.m_lockMouse) {
-    this->m_owner->Slot25(x, y);
+    this->m_owner->OnLBtnDown(x, y);
   }
 
   if (this->m_owner->GetMember().valid && this->m_owner->GetMember().offline == 0) {
@@ -106,15 +106,15 @@ void UIMiniPartyInfoWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00740D10
 // FUNCTION: fn_07732
-void UIMiniPartyInfoWnd::Slot31(int x, int y) {
+void UIMiniPartyInfoWnd::OnLBtnUp(int x, int y) {
   if (g_session.m_lockMouse != true && this == g_windowMgr.Capture()) {
-    this->m_owner->Slot31(x, y);
+    this->m_owner->OnLBtnUp(x, y);
   }
 }
 
 // OFFSET: 0x00740D40
 // FUNCTION: fn_07733
-void UIMiniPartyInfoWnd::Slot28(int, int) {
+void UIMiniPartyInfoWnd::OnMouseHover(int, int) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
@@ -146,7 +146,7 @@ void UIMiniPartyInfoWnd::Slot28(int, int) {
 
 // OFFSET: 0x00741280
 // FUNCTION: fn_07734
-void UIMiniPartyInfoWnd::Slot33(int, int) {
+void UIMiniPartyInfoWnd::OnRBtnUp(int, int) {
   if (!g_session.m_lockMouse) {
     this->SendMsg(nullptr, 0x31, 0, 0, 0, 0);
   }
@@ -399,7 +399,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
 // OFFSET: 0x00742E10
 // FUNCTION: fn_07743
-void UIMiniPartyWnd::Slot31(int x, int y) {
+void UIMiniPartyWnd::OnLBtnUp(int x, int y) {
   const int cell = reinterpret_cast<MiniPartyGrid*>(CMiniPartyWndAreaMgr::Instance())->FindCell(this->geometry.x, this->geometry.y);
   if (cell != -1) {
     UIMiniPartyWnd* other = static_cast<UIMiniPartyWnd*>(g_windowMgr.FindSnapExcludedWindow(cell));
@@ -419,7 +419,7 @@ void UIMiniPartyWnd::Slot31(int x, int y) {
     }
   }
 
-  UIFrameWnd::Slot31(x, y);
+  UIFrameWnd::OnLBtnUp(x, y);
   g_windowMgr.ArrangeMiniPartyWindows();
 }
 

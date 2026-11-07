@@ -31,8 +31,8 @@ void UILapineScrollBarNoop() {}
 
 // OFFSET: 0x005FF810
 // FUNCTION: fn_04149
-void UIIngredientInfoWnd::Slot10(int argument1, int argument2, std::intptr_t argument3) {
-  this->parent->Slot10(argument1, argument2, argument3);
+void UIIngredientInfoWnd::DragAndDrop(int argument1, int argument2, std::intptr_t argument3) {
+  this->parent->DragAndDrop(argument1, argument2, argument3);
 }
 
 // OFFSET: 0x005FF910
@@ -120,12 +120,12 @@ void UILapineBox_IngredientListWnd::Paint() {
 UILapineBox_IngredientListWnd::UILapineBox_IngredientListWnd(int width, int height)
     : UIScrollWnd(width, height, 0), minRefine(0), maxRefine(20) {
   this->Resize(width, height);
-  this->Slot15(width, height);
+  this->OnCreate(width, height);
 }
 
 // OFFSET: 0x005FF820
 // FUNCTION: fn_04150
-void UILapineBoxWnd::Slot10(int, int, std::intptr_t value) {
+void UILapineBoxWnd::DragAndDrop(int, int, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (this->items.size() < static_cast<unsigned>(this->maxItems) && drag->source == 27) {
@@ -139,7 +139,7 @@ void UILapineBoxWnd::Slot10(int, int, std::intptr_t value) {
 
 // OFFSET: 0x005FF8B0
 // FUNCTION: fn_04151
-void UILapineBox_IngredientListWnd::Slot10(int, int, std::intptr_t value) {
+void UILapineBox_IngredientListWnd::DragAndDrop(int, int, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 26) {
@@ -152,7 +152,7 @@ void UILapineBox_IngredientListWnd::Slot10(int, int, std::intptr_t value) {
 
 // OFFSET: 0x005FF920
 // FUNCTION: fn_04153
-void UILapineBoxWnd::Slot15(int, int) {
+void UILapineBoxWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
@@ -197,7 +197,7 @@ void UILapineBoxWnd::Slot15(int, int) {
 
 // OFFSET: 0x005FFCD0
 // FUNCTION: fn_04154
-void UILapineBox_IngredientListWnd::Slot15(int width, int height) {
+void UILapineBox_IngredientListWnd::OnCreate(int width, int height) {
   this->scrollBarWidth = 9;
   if (this->scrollBar != nullptr) {
     this->RemoveChild(this->scrollBar, 0);

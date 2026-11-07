@@ -23,73 +23,73 @@ struct EfstActionMessage {
 
 class CSkillAction {
 public:
-  virtual bool Slot00() {
+  virtual bool IsSupport() {
     return false;
   }
-  virtual int Slot01() {
+  virtual int GetSkillCastMotion() {
     return 8;
   }
-  virtual int Slot02() {
+  virtual int GetSkillAttackMotion() {
     return 7;
   }
-  virtual bool Slot03(int argument) {
+  virtual bool KeepSkillAttackMotion(int argument) {
     return false;
   }
-  virtual bool Slot04() {
+  virtual bool IsSkillWithoutMotion() {
     return false;
   }
-  virtual bool Slot05() {
+  virtual bool KeepSkillAttackSpeed() {
     return false;
   }
-  virtual bool Slot06() {
+  virtual bool SuppressSupportSkillArrow() {
     return false;
   }
-  virtual bool Slot07() {
+  virtual bool SuppressAttackSkillArrow() {
     return false;
   }
-  virtual void Slot08(int level, CGameActor* source) {
+  virtual void OnSkillCast(int level, CGameActor* source) {
   }
-  virtual void Slot09(int argument1, int argument2, int argument3) {
+  virtual void OnTargetSkillCast(int argument1, int argument2, int argument3) {
   }
-  virtual void Slot10(int level, CGameActor* source, int argument3, int argument4, int argument5) {
+  virtual void OnGroundSkillCast(int level, CGameActor* source, int argument3, int argument4, int argument5) {
   }
-  virtual void Slot11(int level, CGameActor* source, CGameActor* target) {
+  virtual void OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   }
-  virtual void Slot12(vector3d position, int argument2, int argument3) {
+  virtual void OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   }
-  virtual bool Slot13() {
+  virtual bool UseGroundSkillLastFrame() {
     return false;
   }
-  virtual int Slot14() {
+  virtual int GetSkillScopeType() {
     return 0;
   }
-  virtual void Slot15(int level, CGameActor* source, CGameActor* target) {
+  virtual void OnSkillHit(int level, CGameActor* source, CGameActor* target) {
   }
-  virtual void Slot16(int level, CGameActor* source, CGameActor* target) {
+  virtual void OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   }
 };
 
 class CEfstAction {
 public:
-  virtual void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  virtual void OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   }
-  virtual void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  virtual void OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   }
-  virtual void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  virtual void OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   }
-  virtual EfstActionMessage Slot03() {
+  virtual EfstActionMessage GetEfstBeginMessage() {
     return {nullptr, 0xFFFF00};
   }
-  virtual EfstActionMessage Slot04() {
+  virtual EfstActionMessage GetEfstEndMessage() {
     return {nullptr, 0xFF};
   }
 };
 
 class CSkillObjectAction {
 public:
-  virtual void Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  virtual void OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   }
-  virtual void Slot01(CRenderObject* object) {
+  virtual void OnSkillObjectRemove(CRenderObject* object) {
   }
 };
 

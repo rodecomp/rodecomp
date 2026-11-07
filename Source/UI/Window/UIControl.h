@@ -63,20 +63,20 @@ public:
   }
   ~CUIControl() override;
   bool CanHitTest() override;
-  void Slot10(int x, int y, std::intptr_t value) override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot27(int x, int y) override;
-  __declspec(noinline) void Slot28(int x, int y) override;
+  void DragAndDrop(int x, int y, std::intptr_t value) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  __declspec(noinline) void OnMouseHover(int x, int y) override;
   void ResetCursor(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot33(int x, int y) override;
-  void Slot34(int x, int y) override;
-  void Slot35(int value) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
+  void OnRBtnDblClk(int x, int y) override;
+  void OnWheel(int value) override;
   void Invalidate() override;
-  void Slot52(int value) override;
-  virtual void Slot53(int value);
+  void ApplySkin(int value) override;
+  virtual void LoadSkin(int value);
 
   bool IsPointInside(int x, int y);
   UIWindow* FindChildById(int id);
@@ -108,13 +108,13 @@ class CUIButton : public CUIControl {
 public:
   CUIButton();
   ~CUIButton() override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot26(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
   void ResetCursor(int x, int y) override;
-  void Slot31(int argument1, int argument2) override;
-  void Slot47() override;
-  void Slot48() override;
+  void OnLBtnUp(int argument1, int argument2) override;
+  void OnMouseEnter() override;
+  void OnMouseLeave() override;
 
   void SetState(int value);
   void SetOnClick(std::function<void()> handler);
@@ -133,10 +133,10 @@ class CUITextButton : public CUIButton {
 public:
   CUITextButton();
   ~CUITextButton() override;
-  void Slot28(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   void Paint() override;
-  virtual void Slot54(int value);
-  virtual void Slot55();
+  virtual void ResizeToText(int value);
+  virtual void DrawLabel();
 
   void SetShadow(bool enabled, std::uint32_t color);
   void SetOutline(bool enabled, std::uint32_t color);
@@ -178,7 +178,7 @@ public:
   CUIImageTextButton();
   ~CUIImageTextButton() override;
   void Paint() override;
-  void Slot53(int resolveSkin) override;
+  void LoadSkin(int resolveSkin) override;
 
   void SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& inactive);
 
@@ -195,8 +195,8 @@ public:
   ~CUIBasicButton() override;
   void Resize(int width, int height) override;
   void Paint() override;
-  void Slot53(int resolveSkin) override;
-  void Slot55() override;
+  void LoadSkin(int resolveSkin) override;
+  void DrawLabel() override;
 
   void Create(int width, int height);
   void SetAutoWidth(bool enabled);
@@ -214,13 +214,13 @@ public:
 class CUITabButton : public CUIImageTextButton {
 public:
   CUITabButton();
-  void Slot25(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot47() override;
-  void Slot48() override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnMouseEnter() override;
+  void OnMouseLeave() override;
   void Paint() override;
-  void Slot53(int resolveSkin) override;
-  void Slot54(int padding) override;
+  void LoadSkin(int resolveSkin) override;
+  void ResizeToText(int padding) override;
 
   __declspec(noinline) void SetSelected(bool selected);
   void SetSkinColors(int normalColumn, int normalRow, int selectedColumn, int selectedRow, int borderColumn, int borderRow);
@@ -241,7 +241,7 @@ public:
   CUIImageButton();
   ~CUIImageButton() override;
   void Paint() override;
-  void Slot53(int resolveSkin) override;
+  void LoadSkin(int resolveSkin) override;
 
   void SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& inactive);
 
@@ -260,8 +260,8 @@ public:
   }
 
   void Paint() override;
-  void Slot28(int x, int y) override;
-  void Slot53(int resolveSkin) override;
+  void OnMouseHover(int x, int y) override;
+  void LoadSkin(int resolveSkin) override;
 
   void SetImage(const std::string& name);
 
@@ -282,7 +282,7 @@ public:
 
   void Resize(int width, int height) override;
   void Paint() override;
-  void Slot53(int resolveSkin) override;
+  void LoadSkin(int resolveSkin) override;
 
   void SetImages(const std::string& left, const std::string& middle, const std::string& right);
   void SetSecondButton(CUIButton* button);
@@ -315,7 +315,7 @@ public:
         edit(nullptr), onSubmit() {
   }
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Resize(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -347,11 +347,11 @@ public:
   }
 
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot27(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
   void ResetCursor(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot53(int resolveSkin) override;
+  void OnLBtnUp(int x, int y) override;
+  void LoadSkin(int resolveSkin) override;
 
   void SetImage(const std::string& name);
 

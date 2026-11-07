@@ -1715,7 +1715,7 @@ void CGameMode::ReceiveRuneRewardPacket(const unsigned char* packet) {
     CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, 2399, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     const vector3d offset = {598.0f, 219.0f, 0.0f};
     const int* words = reinterpret_cast<const int*>(&offset);
-    effect->Slot24(words[0], words[1], words[2], 1, 361);
+    effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
     if (UIWindow* window = g_windowMgr.LookupWindow(361)) {
       window->SendMsg(window, 0x3C, 0, 0, 0, 0);
     }
@@ -1945,12 +1945,12 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
       CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, 2397, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       const vector3d offset = {784.0f, 161.0f, 0.0f};
       const int* words = reinterpret_cast<const int*>(&offset);
-      effect->Slot24(words[0], words[1], words[2], 1, 361);
+      effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
     } else if (state == 1) {
       CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, 2398, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       const vector3d offset = {784.0f, 161.0f, 0.0f};
       const int* words = reinterpret_cast<const int*>(&offset);
-      effect->Slot24(words[0], words[1], words[2], 1, 361);
+      effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
     } else {
       CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, type != 0 ? 2395 : 2396, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       vector3d offset = {0.0f, 0.0f, 0.0f};
@@ -1962,7 +1962,7 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
         offset.y = 271.0f;
       }
       const int* words = reinterpret_cast<const int*>(&offset);
-      effect->Slot24(words[0], words[1], words[2], 1, 361);
+      effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
     }
 
     if (RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet()) {
@@ -2135,7 +2135,7 @@ void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
     case 0:
       window->SetResult(2, 0);
       g_effectMgr->Spawn(g_session.m_aid, 1607, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(g_session.m_aid, 1608, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->Slot16(2800);
+      g_effectMgr->Spawn(g_session.m_aid, 1608, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->SetDelay(2800);
       break;
     case 1:
     case 2:
@@ -2143,7 +2143,7 @@ void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
     case 4:
       window->SetResult(2, result);
       g_effectMgr->Spawn(g_session.m_aid, 1607, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(g_session.m_aid, 1609, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->Slot16(2800);
+      g_effectMgr->Spawn(g_session.m_aid, 1609, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->SetDelay(2800);
       break;
     }
   }
@@ -2327,7 +2327,7 @@ void CGameMode::ReceiveGuildEmblemVersion(std::uint32_t aid, int guildId, int em
   if (this->scene) {
     CRenderObject* actor = this->scene->GetGameActorByAID(aid);
     if (actor) {
-      static_cast<CGameActor*>(actor)->Slot48(guildId);
+      static_cast<CGameActor*>(actor)->SetGdid(guildId);
     }
   }
 

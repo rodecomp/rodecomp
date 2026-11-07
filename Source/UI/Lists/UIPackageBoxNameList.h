@@ -6,7 +6,7 @@
 class UIPackageBoxNameList : public UIListBox {
 public:
   UIPackageBoxNameList();
-  void Slot25(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
 };
 
 #endif

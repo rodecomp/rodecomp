@@ -370,7 +370,7 @@ CEffect* EffectLists::Spawn(int actor, int id, float x, float y, float z, std::u
     effect->position[0] = x;
     effect->position[1] = y;
     effect->position[2] = z;
-    effect->Slot29(id);
+    effect->SetId(id);
     if (frame != -1) {
       effect->unknown_00B0 = frame;
     }
@@ -378,8 +378,8 @@ CEffect* EffectLists::Spawn(int actor, int id, float x, float y, float z, std::u
       effect->unknown_00C4 = instance;
       effect->retained = 1;
     }
-    effect->Slot01();
-    effect->Slot12();
+    effect->Open();
+    effect->InitEvents();
     this->Add(actor, effect);
   }
 
@@ -557,15 +557,15 @@ void EffectLists::SpawnLevel99(CRenderObject* actor, unsigned char flag, int ext
     effect->position[0] = position.x;
     effect->position[1] = position.y;
     effect->position[2] = position.z;
-    effect->Slot29(EF_LEVEL99);
-    effect->Slot01();
-    effect->Slot12();
+    effect->SetId(EF_LEVEL99);
+    effect->Open();
+    effect->InitEvents();
     this->Add(aid, effect);
   }
 
 applyLevel99:
-  effect->Slot11("effect\\번개3.bmp");
-  effect->Slot08(0x50, 0x50, 0xFF);
+  effect->SetParticleTexture("effect\\번개3.bmp");
+  effect->SetColor(0x50, 0x50, 0xFF);
 }
 
 namespace {
@@ -1397,7 +1397,7 @@ CGravityControlEffect::~CGravityControlEffect() {
 
 // OFFSET: 0x00B3A550
 // FUNCTION: fn_18789
-bool CGravityControlEffect::Slot06() {
+bool CGravityControlEffect::IsAlive() {
   return this->ActorExists();
 }
 

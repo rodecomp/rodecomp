@@ -184,7 +184,7 @@ void CSnapMgr::CaptureOrigins(UIWindow* window) {
   for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
     UIWindow* member = (*entry)->window;
     if (member && this->ConnectedToRoot(member)) {
-      member->Slot12();
+      member->StoreMoveOrigin();
     }
   }
 }
@@ -205,7 +205,7 @@ void CSnapMgr::ConstrainGroup(UIWindow* window, int& dx, int& dy) {
       }
 
       const int savedY = member->geometry.y;
-      member->Slot13(dx, dy);
+      member->MoveFromOrigin(dx, dy);
       int x, y;
       g_windowMgr.ConstrainSnap(member, x, y, 1);
 
@@ -234,7 +234,7 @@ void CSnapMgr::MoveConnected(UIWindow* window, int dx, int dy) {
   for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
     UIWindow* member = (*entry)->window;
     if (this->ConnectedToRoot(member)) {
-      member->Slot13(dx, dy);
+      member->MoveFromOrigin(dx, dy);
       g_windowMgr.StoreSnapRectangle(member);
     }
   }

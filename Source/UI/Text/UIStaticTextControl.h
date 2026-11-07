@@ -14,7 +14,7 @@ class CUIStaticText : public CUIControl {
 public:
   CUIStaticText();
 
-  void Slot28(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   void Paint() override;
   void UpdateText();
   void SetAlign(int horizontal, int vertical);

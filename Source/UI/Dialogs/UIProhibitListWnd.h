@@ -9,9 +9,9 @@ public:
   /* 00B4 */ int m_count;
   /* 00B8 */ std::uint32_t m_aid;
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot19() override;
+  void OnProcess() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
 

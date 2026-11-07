@@ -63,7 +63,7 @@ void UIBroadcastBalloon::AddMessage(int category, const BroadcastBalloonMessage&
 
 // OFFSET: 0x007C31C0
 // FUNCTION: fn_09334
-void UIBroadcastBalloon::Slot43() {
+void UIBroadcastBalloon::DrawTransBox() {
   int y = 0;
   for (const auto& entry : this->m_messages) {
     for (const BroadcastBalloonMessage& message : entry.second) {
@@ -78,7 +78,7 @@ void UIBroadcastBalloon::Slot43() {
 
 // OFFSET: 0x007C32C0
 // FUNCTION: fn_09335
-bool UIBroadcastBalloon::Slot42(void*) {
+bool UIBroadcastBalloon::GetCustomTransBoxInfo(void*) {
   return true;
 }
 
@@ -107,7 +107,7 @@ void UIBroadcastBalloon::Paint() {
 
 // OFFSET: 0x007C3430
 // FUNCTION: fn_09337
-void UIBroadcastBalloon::Slot19() {
+void UIBroadcastBalloon::OnProcess() {
   if (this->m_messages.size() == 0) {
     this->Show(0);
     return;

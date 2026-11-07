@@ -61,7 +61,7 @@ bool UIBalloonText::CanHitTest() {
 
 // OFFSET: 0x0085FAE0
 // FUNCTION: fn_10882
-void UIBalloonText::Slot19() {
+void UIBalloonText::OnProcess() {
   ++this->geometry.unknown_0034;
 }
 
@@ -248,7 +248,7 @@ void UIVerticalNameBalloonText::Paint() {
 
 // OFFSET: 0x0085FC90
 // FUNCTION: fn_10884
-void UINameBalloonText::Slot19() {
+void UINameBalloonText::OnProcess() {
   CEmblemRes* emblem = dynamic_cast<CEmblemRes*>(ResourceMgr::Instance().Load(this->iconName.c_str()));
   if (emblem) {
     if (emblem->gif.frameChanged == 1) {

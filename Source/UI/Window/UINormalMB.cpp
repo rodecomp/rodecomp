@@ -81,8 +81,8 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
   }
 
   this->SetSize(width, height);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
   this->Move(static_cast<int>((g_renderer->viewport.width - width) * 0.5), static_cast<int>((g_renderer->viewport.height - height) * 0.5));
 
   int inset = 0;

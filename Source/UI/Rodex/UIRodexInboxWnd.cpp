@@ -84,23 +84,23 @@ UIRodexInboxWnd::UIRodexInboxWnd()
 
 // OFFSET: 0x00807640
 // FUNCTION: fn_10049
-void UIRodexInboxWnd::Slot25(int x, int y) {
+void UIRodexInboxWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
 // OFFSET: 0x00807660
 // FUNCTION: fn_10050
-void UIRodexInboxWnd::Slot28(int, int) {}
+void UIRodexInboxWnd::OnMouseHover(int, int) {}
 
 // OFFSET: 0x00807670
 // FUNCTION: fn_10051
-void UIRodexInboxWnd::Slot19() {}
+void UIRodexInboxWnd::OnProcess() {}
 
 // OFFSET: 0x00807680
 // FUNCTION: fn_10052
-void UIRodexInboxWnd::Slot32(int, int) {}
+void UIRodexInboxWnd::OnRBtnDown(int, int) {}
 
 // OFFSET: 0x00805750
 // FUNCTION: fn_10045
@@ -127,13 +127,13 @@ void UIRodexInboxWnd::DrawMailIcons(int row, unsigned char attachments, unsigned
 
 // OFFSET: 0x008058B0
 // FUNCTION: fn_10046
-bool UIRodexInboxWnd::Slot03() {
+bool UIRodexInboxWnd::NeedsFrameRefresh() {
   return true;
 }
 
 // OFFSET: 0x008058C0
 // FUNCTION: fn_10047
-void UIRodexInboxWnd::Slot15(int width, int height) {
+void UIRodexInboxWnd::OnCreate(int width, int height) {
   g_rodexMailStore->PurgeFlagged();
   this->AddBaseButton();
   this->AddCloseButton("", 0);

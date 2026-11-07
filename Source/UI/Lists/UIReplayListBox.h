@@ -9,7 +9,7 @@ public:
   UIReplayListBox() : UIListBox() {
   }
 
-  void Slot25(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
 };
 
 #endif

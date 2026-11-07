@@ -124,18 +124,18 @@ void UIWindowMgr::RestoreInput() {
 
     for (std::list<UIWindow*>::iterator childIt = window->m_children.begin(); childIt != window->m_children.end(); ++childIt) {
       UIWindow* child = *childIt;
-      if (!child->Slot05() || child->geometry.x <= 0 || child->geometry.y <= 0) {
+      if (!child->IsEditable() || child->geometry.x <= 0 || child->geometry.y <= 0) {
         continue;
       }
 
       if (this->hoverWindow) {
-        this->hoverWindow->Slot24(child->Slot06() == this->hoverWindow);
+        this->hoverWindow->OnFinishEdit(child->GetEditWindow() == this->hoverWindow);
       }
 
-      this->hoverWindow = child->Slot06();
+      this->hoverWindow = child->GetEditWindow();
 
       if (this->hoverWindow) {
-        this->hoverWindow->Slot23();
+        this->hoverWindow->OnBeginEdit();
       }
 
       return;
@@ -178,7 +178,7 @@ int UIWindowMgr::Confirm(
   this->inputWindow = nullptr;
 
   if (this->hoverWindow) {
-    this->hoverWindow->Slot24(0);
+    this->hoverWindow->OnFinishEdit(0);
   }
 
   this->hoverWindow = nullptr;
@@ -266,7 +266,7 @@ void UIWindowMgr::AddMessageBox(
   this->inputWindow = nullptr;
 
   if (this->hoverWindow) {
-    this->hoverWindow->Slot24(0);
+    this->hoverWindow->OnFinishEdit(0);
   }
 
   this->hoverWindow = nullptr;
@@ -286,7 +286,7 @@ int UIWindowMgr::RunModal(UIWindow* window) {
   this->inputWindow = nullptr;
 
   if (this->hoverWindow) {
-    this->hoverWindow->Slot24(0);
+    this->hoverWindow->OnFinishEdit(0);
   }
 
   this->hoverWindow = nullptr;

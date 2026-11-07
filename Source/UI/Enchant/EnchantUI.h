@@ -46,10 +46,10 @@ public:
   }
   ~CUIEnchantUI() override;
   bool CanHitTest() override;
-  __declspec(noinline) void Slot15(int width, int height) override;
-  void Slot16() override;
-  void Slot25(int x, int y) override;
-  virtual void Slot53();
+  __declspec(noinline) void OnCreate(int width, int height) override;
+  void OnInit() override;
+  void OnLBtnDown(int x, int y) override;
+  virtual void Initialize();
   void SetEnchantGroup(uint64_t group);
   void OnSelectTarget(EnchantUI::CUITargetItem* item, const ITEM_INFO& info);
   void OnClickClose();
@@ -68,9 +68,9 @@ public:
   /* 00E8 */ CUIGameItem* itemIcon;
   /* 00EC */ CUIStaticText* name;
 
-  void Slot15(int width, int height) override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnCreate(int width, int height) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   void SetFrozen(bool frozen) override;
 };
 
@@ -84,9 +84,9 @@ public:
   /* 00EC */ CUIStaticImage* unknown_00EC;
   /* 00F0 */ CUIStaticText* unknown_00F0;
 
-  void Slot15(int width, int height) override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnCreate(int width, int height) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   void SetSelected(bool selected) override;
 
   ITEM_INFO* GetItemInfo();
@@ -104,7 +104,7 @@ public:
   /* 008C */ CUIStaticText* ownedText;
   /* 0090 */ CUIStaticText* requiredText;
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   __declspec(noinline) void SetMaterial(int itemId, int required);
 };
 
@@ -126,14 +126,14 @@ public:
   /* 00A8 */ uint64_t group;
   /* 00B0 */ int unknown_00B0;
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
-  virtual void Slot54(CUIEnchantItem* item, const CEnchantItemData& data);
-  virtual void Slot55() = 0;
-  virtual bool Slot56() = 0;
-  virtual void Slot57();
-  virtual void Slot58(int value);
-  virtual void Slot59(int value);
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
+  virtual void OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemData& data);
+  virtual void RequestEnchant() = 0;
+  virtual bool LoadEnchantList() = 0;
+  virtual void UpdateEnchantInfo();
+  virtual void OnSelectSlot(int value);
+  virtual void SetSlot(int value);
 
   __declspec(noinline) CUIIngredient* CreateIngredient();
   void ResetSlots();
@@ -145,7 +145,7 @@ public:
     if (info && this->SetItem(item)) {
       this->group = targetGroup;
       this->enchantInfo = info;
-      this->Slot57();
+      this->UpdateEnchantInfo();
     }
   }
 
@@ -159,50 +159,50 @@ class CUINormalRandom : public CUIEnchantPage {
 public:
   using CUIEnchantPage::CUIEnchantPage;
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
-  void Slot55() override;
-  bool Slot56() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
+  void RequestEnchant() override;
+  bool LoadEnchantList() override;
 };
 
 class CUINormalPerfect : public CUIEnchantPage {
 public:
   using CUIEnchantPage::CUIEnchantPage;
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
-  void Slot54(CUIEnchantItem* item, const CEnchantItemData& data) override;
-  void Slot55() override;
-  bool Slot56() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
+  void OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemData& data) override;
+  void RequestEnchant() override;
+  bool LoadEnchantList() override;
 };
 
 class CUIReset : public CUIEnchantPage {
 public:
   using CUIEnchantPage::CUIEnchantPage;
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
-  void Slot55() override;
-  bool Slot56() override;
-  void Slot57() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
+  void RequestEnchant() override;
+  bool LoadEnchantList() override;
+  void UpdateEnchantInfo() override;
 };
 
 class CUIUpgradeEnchantPage : public CUIEnchantPage {
 public:
   using CUIEnchantPage::CUIEnchantPage;
 
-  void Slot58(int value) override;
-  void Slot59(int value) override;
+  void OnSelectSlot(int value) override;
+  void SetSlot(int value) override;
 };
 
 class CUIUpgradeRandom : public CUIUpgradeEnchantPage {
 public:
   using CUIUpgradeEnchantPage::CUIUpgradeEnchantPage;
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
-  void Slot55() override;
-  bool Slot56() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
+  void RequestEnchant() override;
+  bool LoadEnchantList() override;
 };
 
 class CUIUpgradePerfect : public CUIUpgradeEnchantPage {
@@ -211,10 +211,10 @@ public:
 
   /* 00B8 */ bool unknown_00B8 = false;
 
-  void Slot15(int width, int height) override;
-  void Slot54(CUIEnchantItem* item, const CEnchantItemData& data) override;
-  void Slot55() override;
-  bool Slot56() override;
+  void OnCreate(int width, int height) override;
+  void OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemData& data) override;
+  void RequestEnchant() override;
+  bool LoadEnchantList() override;
 };
 
 class CUIMainPage : public CUIControl {
@@ -225,7 +225,7 @@ public:
   /* 0084 */ CUIEnchantPage* secondPage;
   /* 0088 */ CUITab* tab;
 
-  void Slot16() override;
+  void OnInit() override;
 
   // INLINED
   void LoadTarget(EnchantInfo* info, uint64_t targetGroup, const ITEM_INFO& item) {
@@ -238,14 +238,14 @@ class CUINormal : public CUIMainPage {
 public:
   using CUIMainPage::CUIMainPage;
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
 };
 
 class CUIUpgrade : public CUIMainPage {
 public:
   using CUIMainPage::CUIMainPage;
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
 };
 
 class CEnchantItemData {
@@ -264,10 +264,10 @@ public:
   /* 0084 */ CUIGameItem* itemIcon;
   /* 0088 */ CUITextViewer* description;
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
-  void Slot32(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
 
   void SelectSlot(UIWindow* button);
 };
@@ -276,32 +276,32 @@ class CUISlot0 : public CUISlot {
 public:
   using CUISlot::CUISlot;
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
 };
 
 class CUISlot1 : public CUISlot {
 public:
   using CUISlot::CUISlot;
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
 };
 
 class CUISlot2 : public CUISlot {
 public:
   using CUISlot::CUISlot;
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
 };
 
 class CUISlot3 : public CUISlot {
 public:
   using CUISlot::CUISlot;
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
 };
 }
 

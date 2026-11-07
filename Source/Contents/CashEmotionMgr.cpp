@@ -109,7 +109,7 @@ public:
 
   void UpdateExpiry(Timestamp* expiry) override;
   void ShowExpiry(__time32_t expiry) override;
-  int Slot53(int packId, bool showTooltip, bool hoverable) override;
+  int SetPack(int packId, bool showTooltip, bool hoverable) override;
 
 protected:
   /* 00E0 */ ICashEmotionAction* m_selectAction;
@@ -151,11 +151,11 @@ class UICashEmotionPack_Unpurchase : public UICashEmotionPack {
 public:
   explicit __declspec(noinline) UICashEmotionPack_Unpurchase();
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  int Slot53(int packId, bool showTooltip, bool hoverable) override;
+  int SetPack(int packId, bool showTooltip, bool hoverable) override;
 
   __declspec(noinline) void SetPressed(bool pressed, bool force);
 
@@ -179,8 +179,8 @@ protected:
 class UICashEmotionScrollWnd : public UIScrollWnd {
 public:
   __declspec(noinline) UICashEmotionScrollWnd(int width, int height, unsigned char cached);
-  void Slot15(int width, int height) override;
-  void Slot53() override;
+  void OnCreate(int width, int height) override;
+  void UpdateScrollRange() override;
 
   void AddChild(UIWindow* child);
   void UpdateScrollBars();
@@ -189,7 +189,7 @@ public:
 class UICashEmotionListChildWnd_Abstract : public UICashEmotionScrollWnd {
 public:
   __declspec(noinline) UICashEmotionListChildWnd_Abstract(int width, int height, unsigned char cached);
-  void Slot35(int delta) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   virtual void Refresh(const char* filter) = 0;
   virtual const char* Filter() = 0;
@@ -198,8 +198,8 @@ public:
 class UICashEmotionListChildWnd_Basic : public UICashEmotionListChildWnd_Abstract {
 public:
   __declspec(noinline) UICashEmotionListChildWnd_Basic(int width, int height, unsigned char cached);
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Refresh(const char* filter) override;
@@ -215,7 +215,7 @@ class UICashEmotionListChildWnd_Purchase : public UICashEmotionListChildWnd_Abst
 public:
   __declspec(noinline) UICashEmotionListChildWnd_Purchase(int width, int height);
   ~UICashEmotionListChildWnd_Purchase() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Refresh(const char* filter) override;
@@ -233,7 +233,7 @@ class UICashEmotionListChildWnd_Search : public UICashEmotionListChildWnd_Abstra
 public:
   __declspec(noinline) UICashEmotionListChildWnd_Search(int width, int height);
   ~UICashEmotionListChildWnd_Search() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Refresh(const char* filter) override;
@@ -250,7 +250,7 @@ protected:
 class UICashEmotionListChildWnd_UnPurchased : public UICashEmotionListChildWnd_Abstract {
 public:
   __declspec(noinline) UICashEmotionListChildWnd_UnPurchased(int width, int height);
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Refresh(const char* filter) override;
@@ -275,9 +275,9 @@ static_assert(sizeof(CashEmotionPurchasePacket) == 7);
 class UICashEmotionListWnd : public UIFrameWnd {
 public:
   UICashEmotionListWnd();
-  void Slot11() override;
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -314,7 +314,7 @@ class UICashEmotionMiniWnd : public UIWindow {
 public:
   UICashEmotionMiniWnd();
   ~UICashEmotionMiniWnd() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -1669,13 +1669,13 @@ __declspec(noinline) void UICashEmotionScrollWnd::UpdateScrollBars() {
     UIWindow::AddChild(this->scrollBar);
   }
 
-  this->Slot53();
+  this->UpdateScrollRange();
   this->Invalidate();
 }
 
 // OFFSET: 0x007C3AD0
 // FUNCTION: fn_09344
-void UICashEmotionListChildWnd_Abstract::Slot35(int delta) {
+void UICashEmotionListChildWnd_Abstract::OnWheel(int delta) {
   if (this->wheelScroll == 1) {
     if (delta < 0) {
       this->SendMsg(this->scrollBar, 7, 15, 0, 0, 0);
@@ -1719,7 +1719,7 @@ UICashEmotionListChildWnd_Basic::UICashEmotionListChildWnd_Basic(int width, int 
     : UICashEmotionListChildWnd_Abstract(width, height, cached) {
   this->m_selectAction = new (std::nothrow) CCashEmotionAction_Play();
   this->m_playAction = new (std::nothrow) CCashEmotionAction_Register();
-  this->Slot15(width, height);
+  this->OnCreate(width, height);
 }
 
 // OFFSET: 0x007C4100
@@ -1784,7 +1784,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Basic::Refresh(const char* f
 
 // OFFSET: 0x007C4440
 // FUNCTION: fn_09353
-void UICashEmotionListChildWnd_Basic::Slot15(int, int) {
+void UICashEmotionListChildWnd_Basic::OnCreate(int, int) {
   this->Refresh(nullptr);
 }
 
@@ -1796,10 +1796,10 @@ void UICashEmotionListChildWnd_Basic::Paint() {
 
 // OFFSET: 0x007C4460
 // FUNCTION: fn_09355
-void UICashEmotionListChildWnd_Basic::Slot19() {
+void UICashEmotionListChildWnd_Basic::OnProcess() {
   for (UIWindow* item : this->m_items) {
     if (item->geometry.visible) {
-      item->Slot19();
+      item->OnProcess();
     }
   }
 }
@@ -1829,7 +1829,7 @@ int UICashEmotionListChildWnd_Basic::SendMsg(UIWindow* sender, int message, std:
 UICashEmotionListChildWnd_Purchase::UICashEmotionListChildWnd_Purchase(int width, int height)
     : UICashEmotionListChildWnd_Abstract(width, height, 0) {
   this->unknown_00BC = new (std::nothrow) CCashEmotionAction_Play();
-  this->Slot15(width, height);
+  this->OnCreate(width, height);
 }
 
 // OFFSET: 0x007C4AD0
@@ -1880,7 +1880,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Purchase::Refresh(const char
         continue;
       }
       pack->SetSize(243, 159);
-      height = pack->Slot53(packId, true, true);
+      height = pack->SetPack(packId, true, true);
     }
 
     pack->SetSaleBadge(info->unknown_0028);
@@ -1907,7 +1907,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Purchase::Refresh(const char
 
 // OFFSET: 0x007C5290
 // FUNCTION: fn_09368
-void UICashEmotionListChildWnd_Purchase::Slot15(int, int) {
+void UICashEmotionListChildWnd_Purchase::OnCreate(int, int) {
   this->Refresh(nullptr);
 }
 
@@ -1949,7 +1949,7 @@ void UICashEmotionListChildWnd_Purchase::UpdateExpiry(int packId, Timestamp* exp
 UICashEmotionListChildWnd_Search::UICashEmotionListChildWnd_Search(int width, int height)
     : UICashEmotionListChildWnd_Abstract(width, height, 0) {
   this->m_action = new (std::nothrow) CCashEmotionAction_Play();
-  this->Slot15(width, height);
+  this->OnCreate(width, height);
 }
 
 // OFFSET: 0x007C5720
@@ -2026,7 +2026,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Search::Refresh(const char* 
 
 // OFFSET: 0x007C5D80
 // FUNCTION: fn_09383
-void UICashEmotionListChildWnd_Search::Slot15(int, int) {
+void UICashEmotionListChildWnd_Search::OnCreate(int, int) {
   this->Refresh(nullptr);
 }
 
@@ -2052,7 +2052,7 @@ int UICashEmotionListChildWnd_Search::SendMsg(UIWindow* sender, int message, std
 // FUNCTION: fn_09389
 UICashEmotionListChildWnd_UnPurchased::UICashEmotionListChildWnd_UnPurchased(int width, int height)
     : UICashEmotionListChildWnd_Abstract(width, height, 0) {
-  this->Slot15(width, height);
+  this->OnCreate(width, height);
 }
 
 // OFFSET: 0x007C6520
@@ -2095,7 +2095,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_UnPurchased::Refresh(const c
         continue;
       }
       pack->SetSize(243, 159);
-      height = pack->Slot53(packId, false, false);
+      height = pack->SetPack(packId, false, false);
     }
 
     pack->SetSaleBadge(info->unknown_0028);
@@ -2122,7 +2122,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_UnPurchased::Refresh(const c
 
 // OFFSET: 0x007C6AA0
 // FUNCTION: fn_09394
-void UICashEmotionListChildWnd_UnPurchased::Slot15(int, int) {
+void UICashEmotionListChildWnd_UnPurchased::OnCreate(int, int) {
   this->Refresh(nullptr);
 }
 
@@ -2181,7 +2181,7 @@ UIBitmapButton* UICashEmotionListWnd::CreateButton(int x, int y, int width, int 
 
 // OFFSET: 0x007C74D0
 // FUNCTION: fn_09406
-void UICashEmotionListWnd::Slot15(int width, int height) {
+void UICashEmotionListWnd::OnCreate(int width, int height) {
   this->AddCloseButton("Alt+L", 0);
   if (UIBitmapButton* base = this->AddBaseButton()) {
     base->Move(32, 3);
@@ -2284,9 +2284,9 @@ void UICashEmotionListWnd::Paint() {
 
 // OFFSET: 0x007C7CC0
 // FUNCTION: fn_09410
-void UICashEmotionListWnd::Slot19() {
+void UICashEmotionListWnd::OnProcess() {
   if (this->m_currentList) {
-    this->m_currentList->Slot19();
+    this->m_currentList->OnProcess();
   }
 }
 
@@ -2589,7 +2589,7 @@ void UICashEmotionListWnd::SetTab(char tab) {
       g_windowMgr.SetFocus(nullptr);
     }
 
-    this->m_searchEdit->Slot24(0);
+    this->m_searchEdit->OnFinishEdit(0);
     this->m_searchEdit->disabled = basic;
     this->m_searchEdit->Invalidate();
     if (basic) {
@@ -2626,7 +2626,7 @@ void UICashEmotionListWnd::StartExpirySchedule() {
 
 // OFFSET: 0x007C8AF0
 // FUNCTION: fn_09420
-void UICashEmotionListWnd::Slot11() {
+void UICashEmotionListWnd::StoreInfo() {
   if (this->m_placement) {
     this->m_placement->x = this->geometry.x;
     this->m_placement->y = this->geometry.y;
@@ -2742,7 +2742,7 @@ void UICashEmotionMiniWnd::Refresh(int first) {
 
 // OFFSET: 0x007C94A0
 // FUNCTION: fn_09431
-void UICashEmotionMiniWnd::Slot15(int width, int height) {
+void UICashEmotionMiniWnd::OnCreate(int width, int height) {
   int x = 24;
   for (UICashEmotionPiece*& piece : this->m_pieces) {
     piece = new (std::nothrow) UICashEmotionPiece();
@@ -2981,7 +2981,7 @@ std::string UICashEmotionPack::GetPriceText(int packId) {
 
 // OFFSET: 0x007CA2C0
 // FUNCTION: fn_09444
-int UICashEmotionPack::Slot53(int packId, bool showTooltip, bool hoverable) {
+int UICashEmotionPack::SetPack(int packId, bool showTooltip, bool hoverable) {
   this->unknown_00A8 = packId;
   if (this->unknown_0088) {
     this->unknown_0088->SetTextFitted(g_cashEmotionMgr->GetPackTitle(packId));
@@ -3033,7 +3033,7 @@ int UICashEmotionPack::Slot53(int packId, bool showTooltip, bool hoverable) {
 
 // OFFSET: 0x007CA550
 // FUNCTION: fn_09445
-void UICashEmotionPack::Slot15(int, int) {
+void UICashEmotionPack::OnCreate(int, int) {
   auto* priceText = new (std::nothrow) UIStaticText();
   this->unknown_0088 = priceText;
   if (priceText) {
@@ -3081,34 +3081,34 @@ void UICashEmotionPack::Paint() {
 
 // OFFSET: 0x007CA760
 // FUNCTION: fn_09447
-void UICashEmotionPack::Slot26(int, int) {
+void UICashEmotionPack::OnLBtnDblClk(int, int) {
 }
 
 // OFFSET: 0x007CA770
 // FUNCTION: fn_09448
-void UICashEmotionPack::Slot25(int, int) {
+void UICashEmotionPack::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x007CA780
 // FUNCTION: fn_09449
-void UICashEmotionPack::Slot27(int, int) {
+void UICashEmotionPack::OnMouseMove(int, int) {
 }
 
 // OFFSET: 0x007CA790
 // FUNCTION: fn_09450
-void UICashEmotionPack::Slot19() {
+void UICashEmotionPack::OnProcess() {
   for (UICashEmotionPiece* piece : this->m_pieces) {
     if (piece) {
-      piece->Slot19();
+      piece->OnProcess();
     }
   }
 }
 
 // OFFSET: 0x007CA7C0
 // FUNCTION: fn_09451
-void UICashEmotionPack::Slot35(int argument) {
+void UICashEmotionPack::OnWheel(int argument) {
   if (this->parent) {
-    this->parent->Slot35(argument);
+    this->parent->OnWheel(argument);
   }
 }
 
@@ -3208,8 +3208,8 @@ void UICashEmotionPack_Purchase::UpdateExpiry(Timestamp* expiry) {
 
 // OFFSET: 0x007CAEA0
 // FUNCTION: fn_09461
-int UICashEmotionPack_Purchase::Slot53(int packId, bool showTooltip, bool hoverable) {
-  return UICashEmotionPack::Slot53(packId, showTooltip, hoverable);
+int UICashEmotionPack_Purchase::SetPack(int packId, bool showTooltip, bool hoverable) {
+  return UICashEmotionPack::SetPack(packId, showTooltip, hoverable);
 }
 
 // OFFSET: 0x007CAEB0
@@ -3366,8 +3366,8 @@ UICashEmotionPack_Unpurchase::UICashEmotionPack_Unpurchase() : UICashEmotionPack
 
 // OFFSET: 0x007CB790
 // FUNCTION: fn_09473
-int UICashEmotionPack_Unpurchase::Slot53(int packId, bool showTooltip, bool hoverable) {
-  const int height = UICashEmotionPack::Slot53(packId, showTooltip, hoverable);
+int UICashEmotionPack_Unpurchase::SetPack(int packId, bool showTooltip, bool hoverable) {
+  const int height = UICashEmotionPack::SetPack(packId, showTooltip, hoverable);
   this->unknown_00E4 = this->GetPriceText(packId);
   return height;
 }
@@ -3383,7 +3383,7 @@ void UICashEmotionPack_Unpurchase::Paint() {
 
 // OFFSET: 0x007CB890
 // FUNCTION: fn_09475
-void UICashEmotionPack_Unpurchase::Slot26(int, int) {
+void UICashEmotionPack_Unpurchase::OnLBtnDblClk(int, int) {
   if (!this->m_pressed && this->parent) {
     this->parent->SendMsg(this, 171, this->unknown_00A8, 0, 0, 0);
   }
@@ -3391,7 +3391,7 @@ void UICashEmotionPack_Unpurchase::Slot26(int, int) {
 
 // OFFSET: 0x007CB8C0
 // FUNCTION: fn_09476
-void UICashEmotionPack_Unpurchase::Slot25(int, int) {
+void UICashEmotionPack_Unpurchase::OnLBtnDown(int, int) {
   if (!this->m_pressed && this->parent) {
     this->parent->SendMsg(this, 171, this->unknown_00A8, 0, 0, 0);
   }
@@ -3470,7 +3470,7 @@ void UICashEmotionPiece::Set(int packId, int emotionId, bool showTooltip, bool h
 
 // OFFSET: 0x007CBC70
 // FUNCTION: fn_09482
-void UICashEmotionPiece::Slot15(int width, int height) {
+void UICashEmotionPiece::OnCreate(int width, int height) {
   this->m_button = new (std::nothrow) UICashEmotionSprBtn(this);
   if (this->m_button) {
     this->m_button->SetSize(width, height);
@@ -3495,7 +3495,7 @@ void UICashEmotionPiece::Paint() {
 
 // OFFSET: 0x007CBDA0
 // FUNCTION: fn_09484
-void UICashEmotionPiece::Slot26(int, int) {
+void UICashEmotionPiece::OnLBtnDblClk(int, int) {
   if (this->parent) {
     this->parent->SendMsg(this, 175, this->m_packId, this->m_emotionId, 0, 0);
   }
@@ -3503,7 +3503,7 @@ void UICashEmotionPiece::Slot26(int, int) {
 
 // OFFSET: 0x007CBDD0
 // FUNCTION: fn_09485
-void UICashEmotionPiece::Slot47() {
+void UICashEmotionPiece::OnMouseEnter() {
   this->m_hovered = true;
   if (this->m_hoverable) {
     this->SendMsg(this, 60, 0, 0, 0, 0);
@@ -3512,7 +3512,7 @@ void UICashEmotionPiece::Slot47() {
 
 // OFFSET: 0x007CBE00
 // FUNCTION: fn_09486
-void UICashEmotionPiece::Slot48() {
+void UICashEmotionPiece::OnMouseLeave() {
   this->m_hovered = false;
   if (this->m_hoverable) {
     this->SendMsg(this, 60, 0, 0, 0, 0);
@@ -3521,7 +3521,7 @@ void UICashEmotionPiece::Slot48() {
 
 // OFFSET: 0x007CBE30
 // FUNCTION: fn_09487
-void UICashEmotionPiece::Slot19() {
+void UICashEmotionPiece::OnProcess() {
   if (this->m_button && this->m_button->unknown_00C4 != 0) {
     this->m_button->Invalidate();
   }
@@ -3529,9 +3529,9 @@ void UICashEmotionPiece::Slot19() {
 
 // OFFSET: 0x007CBE50
 // FUNCTION: fn_09488
-void UICashEmotionPiece::Slot35(int argument) {
+void UICashEmotionPiece::OnWheel(int argument) {
   if (this->parent) {
-    this->parent->Slot35(argument);
+    this->parent->OnWheel(argument);
   }
 }
 
@@ -3672,7 +3672,7 @@ void UICashEmotionScrollWnd::AddChild(UIWindow* child) {
 
 // OFFSET: 0x007CC5D0
 // FUNCTION: fn_09496
-void UICashEmotionScrollWnd::Slot15(int, int) {
+void UICashEmotionScrollWnd::OnCreate(int, int) {
   this->RemoveChild(this->horizontalBar, 1);
   this->RemoveChild(this->scrollBar, 1);
   this->horizontalBar = nullptr;
@@ -3682,8 +3682,8 @@ void UICashEmotionScrollWnd::Slot15(int, int) {
 
 // OFFSET: 0x007CC620
 // FUNCTION: fn_09497
-void UICashEmotionScrollWnd::Slot53() {
-  UIScrollWnd::Slot53();
+void UICashEmotionScrollWnd::UpdateScrollRange() {
+  UIScrollWnd::UpdateScrollRange();
   UIScrollBar* bar = this->scrollBar;
   if (bar) {
     bar->Show(1);
@@ -3821,7 +3821,7 @@ __declspec(noinline) void UICashEmotionSprBtn::SetSelected(bool selected) {
 
 // OFFSET: 0x007CCD90
 // FUNCTION: fn_09502
-void UICashEmotionSprBtn::Slot28(int x, int y) {
+void UICashEmotionSprBtn::OnMouseHover(int x, int y) {
   if (!this->m_tooltip.empty()) {
     int screenX = 0;
     int screenY = -20;
@@ -3833,7 +3833,7 @@ void UICashEmotionSprBtn::Slot28(int x, int y) {
   }
 
   if (!this->m_disabled) {
-    this->Slot27(x, y);
+    this->OnMouseMove(x, y);
   }
 }
 
@@ -4008,63 +4008,63 @@ void UISpriteButton::Paint() {
 
 // OFFSET: 0x0085E9B0
 // FUNCTION: fn_10834
-void UISpriteButton2::Slot26(int x, int y) {
-  this->Slot25(x, y);
+void UISpriteButton2::OnLBtnDblClk(int x, int y) {
+  this->OnLBtnDown(x, y);
   if (this->m_target) {
-    this->m_target->Slot26(this->geometry.x + x, this->geometry.y + y);
+    this->m_target->OnLBtnDblClk(this->geometry.x + x, this->geometry.y + y);
   }
 }
 
 // OFFSET: 0x0085E9F0
 // FUNCTION: fn_10835
-void UISpriteButton::Slot26(int x, int y) {
-  this->Slot25(x, y);
-  this->Root()->Slot26(this->geometry.x + x, this->geometry.y + y);
+void UISpriteButton::OnLBtnDblClk(int x, int y) {
+  this->OnLBtnDown(x, y);
+  this->Root()->OnLBtnDblClk(this->geometry.x + x, this->geometry.y + y);
 }
 
 // OFFSET: 0x0085F160
 // FUNCTION: fn_10857
-void UISpriteButton2::Slot47() {
+void UISpriteButton2::OnMouseEnter() {
   if (this->m_target) {
-    this->m_target->Slot47();
+    this->m_target->OnMouseEnter();
   }
 }
 
 // OFFSET: 0x0085F480
 // FUNCTION: fn_10863
-void UISpriteButton2::Slot28(int x, int y) {
-  UIButton::Slot28(x, y);
+void UISpriteButton2::OnMouseHover(int x, int y) {
+  UIButton::OnMouseHover(x, y);
   if (this->m_target) {
-    this->m_target->Slot28(this->geometry.x + x, this->geometry.y + y);
+    this->m_target->OnMouseHover(this->geometry.x + x, this->geometry.y + y);
   }
 }
 
 // OFFSET: 0x0085F4C0
 // FUNCTION: fn_10864
-void UISpriteButton::Slot28(int x, int y) {
-  UIButton::Slot28(x, y);
-  this->Root()->Slot28(this->geometry.x + x, this->geometry.y + y);
+void UISpriteButton::OnMouseHover(int x, int y) {
+  UIButton::OnMouseHover(x, y);
+  this->Root()->OnMouseHover(this->geometry.x + x, this->geometry.y + y);
 }
 
 // OFFSET: 0x0085F5E0
 // FUNCTION: fn_10867
-void UISpriteButton2::Slot48() {
+void UISpriteButton2::OnMouseLeave() {
   if (this->m_target) {
-    this->m_target->Slot48();
+    this->m_target->OnMouseLeave();
   }
 }
 
 // OFFSET: 0x0085F870
 // FUNCTION: fn_10871
-void UISpriteButton::Slot27(int x, int y) {
-  this->Root()->Slot27(this->geometry.x + x, this->geometry.y + y);
+void UISpriteButton::OnMouseMove(int x, int y) {
+  this->Root()->OnMouseMove(this->geometry.x + x, this->geometry.y + y);
 }
 
 // OFFSET: 0x0085FFF0
 // FUNCTION: fn_10895
-void UISpriteButton2::Slot35(int argument) {
+void UISpriteButton2::OnWheel(int argument) {
   if (this->m_target) {
-    this->m_target->Slot35(argument);
+    this->m_target->OnWheel(argument);
   }
 }
 

@@ -21,7 +21,7 @@
 
 // OFFSET: 0x009A0090
 // FUNCTION: fn_13598
-void UIMakeTargetProcessWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   switch (this->makeType) {
   case 994:
   case 995:
@@ -65,7 +65,7 @@ void UIMakeTargetProcessWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x009A0690
 // FUNCTION: fn_13601
-std::vector<unsigned char> UIMakeTargetProcessWnd::Slot44() {
+std::vector<unsigned char> UIMakeTargetProcessWnd::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = BuildReplayTaggedRecord(22000, nullptr, 0);
@@ -158,12 +158,12 @@ void UIMakeTargetProcessWnd::Paint() {
 
 // OFFSET: 0x009A3D10
 // FUNCTION: fn_13614
-void UIMakeTargetProcessWnd::Slot25(int x, int y) {
+void UIMakeTargetProcessWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
   if (item.unknown_0000[1] != 0) {
     g_modeMgr.gameMode->SendMsg(134, reinterpret_cast<int>(item.itemId.c_str()), 0, 0, 0);
   } else {
-    this->UIFrameWnd::Slot25(x, y);
+    this->UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 

@@ -26,7 +26,7 @@ void UITransMenuWnd::Paint() {
 
 // OFFSET: 0x0094EEC0
 // FUNCTION: fn_12921
-void UITransMenuWnd::Slot25(int x, int y) {
+void UITransMenuWnd::OnLBtnDown(int x, int y) {
   if (this->m_selected == -1) {
     return;
   }
@@ -39,7 +39,7 @@ void UITransMenuWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x0094F050
 // FUNCTION: fn_12930
-void UITransMenuWnd::Slot27(int x, int y) {
+void UITransMenuWnd::OnMouseMove(int x, int y) {
   const int margin = this->m_margin;
   const int previous = this->m_selected;
   int selected = -1;
@@ -67,7 +67,7 @@ void UITransMenuWnd::Resize(int width, int height) {
 
 // OFFSET: 0x0094CF00
 // FUNCTION: fn_12900
-void UITransMenuWnd::Slot15(int width, int height) {
+void UITransMenuWnd::OnCreate(int width, int height) {
   this->unknown_00C0 = this->geometry.x;
   this->unknown_00C4 = this->geometry.y;
   this->m_width = this->geometry.width;
@@ -79,7 +79,7 @@ void UITransMenuWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x00949B70
 // FUNCTION: fn_12884
-bool UITransMenuWnd::Slot07(void* output) {
+bool UITransMenuWnd::GetTransBoxInfo(void* output) {
   std::memcpy(output, &this->unknown_00C0, 28);
   return true;
 }

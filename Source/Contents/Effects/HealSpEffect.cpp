@@ -59,7 +59,7 @@ void CHealSp::Close() {
 
 // OFFSET: 0x00B45740
 // FUNCTION: fn_18901
-void CHealSp::Slot01() {
+void CHealSp::Open() {
   this->AddRing(2.5f, 2.5f, 15.0f, 16);
   this->AddRing(3.5f, 3.5f, 25.0f, 32);
   this->AddRing(4.5f, 4.5f, 35.0f, 64);
@@ -67,13 +67,13 @@ void CHealSp::Slot01() {
 
 // OFFSET: 0x00B457B0
 // FUNCTION: fn_18902
-bool CHealSp::Slot06() {
+bool CHealSp::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B458E0
 // FUNCTION: fn_18903
-void CHealSp::Slot03() {
+void CHealSp::OnProcess() {
   matrix rotation;
   if (this->frame % 2 == 0) {
     const float angle = static_cast<float>(std::max(rand() % 360, 0));
@@ -171,7 +171,7 @@ void CHealSp::Slot03() {
 
 // OFFSET: 0x00B46230
 // FUNCTION: fn_18905
-void CHealSp::Slot04() {
+void CHealSp::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     const int segment = particle->unknown_000C;

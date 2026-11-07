@@ -65,7 +65,7 @@ static bool IsEmitterAlive(const EZ2STREmitter* emitter) {
 
 // OFFSET: 0x0070C070
 // FUNCTION: fn_07123
-bool CCrimsonArrowEffect::Slot06() {
+bool CCrimsonArrowEffect::IsAlive() {
   EZ2STREmitter* emitter = this->emitter;
   if (emitter) {
     if (0.0f == emitter->lifetime) {
@@ -85,7 +85,7 @@ CRootTwistEffect::CRootTwistEffect() : CEffect(1110) {
 
 // OFFSET: 0x0070C0B0
 // FUNCTION: fn_07124
-void CCrimsonArrowEffect::Slot03() {
+void CCrimsonArrowEffect::OnProcess() {
   if (!this->emitter) {
     return;
   }
@@ -98,7 +98,7 @@ void CCrimsonArrowEffect::Slot03() {
 
 // OFFSET: 0x0070C120
 // FUNCTION: fn_07125
-void CCrimsonArrowEffect::Slot04() {
+void CCrimsonArrowEffect::Render() {
   if (this->emitter) {
     AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
@@ -106,7 +106,7 @@ void CCrimsonArrowEffect::Slot04() {
 
 // OFFSET: 0x0070C3B0
 // FUNCTION: fn_07130
-void CRootTwistEffect::Slot12() {
+void CRootTwistEffect::InitEvents() {
   if (this->id == 1110) {
     this->AddEvent(0, "effect\\su_roottwist.wav", 0, 0);
   }
@@ -114,13 +114,13 @@ void CRootTwistEffect::Slot12() {
 
 // OFFSET: 0x0070C3D0
 // FUNCTION: fn_07131
-bool CRootTwistEffect::Slot06() {
+bool CRootTwistEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x0070C3E0
 // FUNCTION: fn_07132
-void CRootTwistEffect::Slot03() {
+void CRootTwistEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     const vector3d position = {this->position[0] + 0.0f, this->position[1] + 3.0f, this->position[2] + 0.0f};
     EZ2STREmitter* emitter = *it;
@@ -131,7 +131,7 @@ void CRootTwistEffect::Slot03() {
 
 // OFFSET: 0x0070C440
 // FUNCTION: fn_07133
-void CRootTwistEffect::Slot04() {
+void CRootTwistEffect::Render() {
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
     AsSprite(*emitter)->Draw(1);
   }
@@ -139,13 +139,13 @@ void CRootTwistEffect::Slot04() {
 
 // OFFSET: 0x0070C7F0
 // FUNCTION: fn_07137
-bool CSprArrowEffect::Slot06() {
+bool CSprArrowEffect::IsAlive() {
   return this->unknown_00FD;
 }
 
 // OFFSET: 0x0070C800
 // FUNCTION: fn_07138
-void CSprArrowEffect::Slot03() {
+void CSprArrowEffect::OnProcess() {
   const float ticks =
       static_cast<float>(static_cast<double>(timeGetTime() - static_cast<unsigned int>(this->unknown_00D0)) / 24.0);
   if (this->unknown_00F4 > ticks) {
@@ -211,7 +211,7 @@ void CSprArrowEffect::Slot03() {
 
 // OFFSET: 0x0070CB80
 // FUNCTION: fn_07139
-void CSprArrowEffect::Slot04() {
+void CSprArrowEffect::Render() {
   if (this->unknown_00CC != 0 && this->unknown_00FC) {
     AsSprite(reinterpret_cast<EZ2STREmitter*>(this->unknown_00CC))->Draw(1);
   }
@@ -317,7 +317,7 @@ CSpriteMableEffect::CSpriteMableEffect() : CEffect(1096) {
 
 // OFFSET: 0x0070D040
 // FUNCTION: fn_07144
-void CSpriteMableEffect::Slot01() {
+void CSpriteMableEffect::Open() {
   for (int i = 0; i < 3; ++i) {
     EZ2STREmitter* emitter =
         reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
@@ -358,13 +358,13 @@ void CSpriteMableEffect::Slot01() {
 
 // OFFSET: 0x0070D150
 // FUNCTION: fn_07145
-bool CSpriteMableEffect::Slot06() {
+bool CSpriteMableEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x0070D2C0
 // FUNCTION: fn_07147
-void CSpriteMableEffect::Slot04() {
+void CSpriteMableEffect::Render() {
   if (!g_serviceOptions.Get(240)) {
     return;
   }
@@ -381,7 +381,7 @@ CStemSpearEffect::CStemSpearEffect() : CEffect(1100) {
 
 // OFFSET: 0x0070D4A0
 // FUNCTION: fn_07151
-void CStemSpearEffect::Slot01() {
+void CStemSpearEffect::Open() {
   for (int i = 0; i < 4; ++i) {
     CSpriteParticle* particle =
         static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
@@ -427,7 +427,7 @@ void __stdcall Nullsub226(int) {
 
 // OFFSET: 0x0070D660
 // FUNCTION: fn_07153
-bool CStemSpearEffect::Slot06() {
+bool CStemSpearEffect::IsAlive() {
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
     if ((*emitter)->elapsed < this->unknown_002C) {
       return true;
@@ -444,7 +444,7 @@ CSvgSpiritEffect::CSvgSpiritEffect() : CEffect(1128), emitter(nullptr) {
 
 // OFFSET: 0x0070D690
 // FUNCTION: fn_07154
-void CStemSpearEffect::Slot03() {
+void CStemSpearEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
     if (emitter->elapsed >= 0) {
@@ -475,7 +475,7 @@ void CStemSpearEffect::Slot03() {
 
 // OFFSET: 0x0070D810
 // FUNCTION: fn_07155
-void CStemSpearEffect::Slot04() {
+void CStemSpearEffect::Render() {
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
     if ((*emitter)->elapsed > 0 && (*emitter)->elapsed < this->unknown_002C) {
       AsSprite(*emitter)->Draw(1);
@@ -485,13 +485,13 @@ void CStemSpearEffect::Slot04() {
 
 // OFFSET: 0x0070DB30
 // FUNCTION: fn_07160
-bool CSvgSpiritEffect::Slot06() {
+bool CSvgSpiritEffect::IsAlive() {
   return this->emitter->elapsed < this->unknown_002C;
 }
 
 // OFFSET: 0x0070DB50
 // FUNCTION: fn_07161
-void CSvgSpiritEffect::Slot03() {
+void CSvgSpiritEffect::OnProcess() {
   EZ2STREmitter* emitter = this->emitter;
   if (emitter->elapsed >= 0) {
     this->SetSourceActor(this->sourceActor);
@@ -519,7 +519,7 @@ void CSvgSpiritEffect::Slot03() {
 
 // OFFSET: 0x0070DCD0
 // FUNCTION: fn_07162
-void CSvgSpiritEffect::Slot04() {
+void CSvgSpiritEffect::Render() {
   EZ2STREmitter* emitter = this->emitter;
   if (emitter->elapsed > 0 && emitter->elapsed < this->unknown_002C) {
     AsSprite(emitter)->Draw(1);
@@ -533,13 +533,13 @@ CTunaPartyEffect::CTunaPartyEffect() : CEffect(1097) {
 
 // OFFSET: 0x0070DF30
 // FUNCTION: fn_07167
-bool CTunaPartyEffect::Slot06() {
+bool CTunaPartyEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x0070E090
 // FUNCTION: fn_07169
-void CTunaPartyEffect::Slot04() {
+void CTunaPartyEffect::Render() {
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
     AsSprite(*emitter)->Draw(1);
   }
@@ -561,7 +561,7 @@ void CCurseOfCubeEffect::Restart() {
 
 // OFFSET: 0x0070EB30
 // FUNCTION: fn_07177
-void CCurseOfCubeEffect::Slot01() {
+void CCurseOfCubeEffect::Open() {
   this->retained = 1;
   this->SpawnStart();
   if (!this->emitters.empty()) {
@@ -571,7 +571,7 @@ void CCurseOfCubeEffect::Slot01() {
 
 // OFFSET: 0x0070EB60
 // FUNCTION: fn_07178
-bool CCurseOfCubeEffect::Slot06() {
+bool CCurseOfCubeEffect::IsAlive() {
   if (!this->ActorExists() || this->emitters.empty()) {
     return false;
   }
@@ -581,7 +581,7 @@ bool CCurseOfCubeEffect::Slot06() {
 
 // OFFSET: 0x0070F080
 // FUNCTION: fn_07180
-void CCurseOfCubeEffect::Slot04() {
+void CCurseOfCubeEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
@@ -614,12 +614,12 @@ void CWarningPlaneEffect::AddPlane(vector3d position) {
 
 // OFFSET: 0x0070F350
 // FUNCTION: fn_07185
-void CWarningPlaneEffect::Slot01() {
+void CWarningPlaneEffect::Open() {
 }
 
 // OFFSET: 0x0070F360
 // FUNCTION: fn_07186
-bool CWarningPlaneEffect::Slot06() {
+bool CWarningPlaneEffect::IsAlive() {
   if (this->expireTime != 0 && this->expireTime < timeGetTime()) {
     return false;
   }
@@ -629,7 +629,7 @@ bool CWarningPlaneEffect::Slot06() {
 
 // OFFSET: 0x0070FC60
 // FUNCTION: fn_07194
-bool CCylinderEffect::Slot06() {
+bool CCylinderEffect::IsAlive() {
   return this->startTime + this->unknown_002C >= timeGetTime();
 }
 
@@ -640,7 +640,7 @@ CCylinderEffect::CCylinderEffect() : CEffect(-1) {
 
 // OFFSET: 0x0070FB50
 // FUNCTION: fn_07193
-void CCylinderEffect::Slot01() {
+void CCylinderEffect::Open() {
   this->startTime = timeGetTime();
   for (long long i = 0; i < 21; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
@@ -670,7 +670,7 @@ void CCylinderEffect::Slot01() {
 
 // OFFSET: 0x0070F390
 // FUNCTION: fn_07187
-void CWarningPlaneEffect::Slot03() {
+void CWarningPlaneEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
     if (this->expireTime != 0 && emitter) {
@@ -708,7 +708,7 @@ void CWarningPlaneEffect::Slot03() {
 
 // OFFSET: 0x0070F670
 // FUNCTION: fn_07188
-void CWarningPlaneEffect::Slot04() {
+void CWarningPlaneEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (this->expireTime != 0 && *it) {
       AsParticle(*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
@@ -718,7 +718,7 @@ void CWarningPlaneEffect::Slot04() {
 
 // OFFSET: 0x0070FFA0
 // FUNCTION: fn_07196
-void CCylinderEffect::Slot04() {
+void CCylinderEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CEZ2STRParticle* particle = AsParticle(*it);
     if (!particle) {
@@ -745,13 +745,13 @@ CDancingKnifeEffect::CDancingKnifeEffect() : CEffect(1829) {
 
 // OFFSET: 0x00710830
 // FUNCTION: fn_07203
-bool CDancingKnifeEffect::Slot06() {
+bool CDancingKnifeEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00710A20
 // FUNCTION: fn_07205
-void CDancingKnifeEffect::Slot04() {
+void CDancingKnifeEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
       AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
@@ -772,7 +772,7 @@ CEternalSlashAttackEffect::CEternalSlashAttackEffect() : CEffect(-1) {
 
 // OFFSET: 0x00710C80
 // FUNCTION: fn_07209
-void CEternalSlashAttackEffect::Slot01() {
+void CEternalSlashAttackEffect::Open() {
   EZ2STREmitter* bottom =
       reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
   if (bottom) {
@@ -796,7 +796,7 @@ void CEternalSlashAttackEffect::Slot01() {
 
 // OFFSET: 0x00710F50
 // FUNCTION: fn_07210
-bool CEternalSlashAttackEffect::Slot06() {
+bool CEternalSlashAttackEffect::IsAlive() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
     if (emitter && IsEmitterAlive(emitter) == true) {
@@ -809,7 +809,7 @@ bool CEternalSlashAttackEffect::Slot06() {
 
 // OFFSET: 0x00710FB0
 // FUNCTION: fn_07211
-void CEternalSlashAttackEffect::Slot03() {
+void CEternalSlashAttackEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
     if (!emitter) {
@@ -826,7 +826,7 @@ void CEternalSlashAttackEffect::Slot03() {
 
 // OFFSET: 0x007110A0
 // FUNCTION: fn_07212
-void CEternalSlashAttackEffect::Slot04() {
+void CEternalSlashAttackEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
       AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
@@ -841,7 +841,7 @@ CEternalSlashCountEffect::CEternalSlashCountEffect() : CEffect(1913), emitter(nu
 
 // OFFSET: 0x00711280
 // FUNCTION: fn_07216
-void CEternalSlashCountEffect::Slot01() {
+void CEternalSlashCountEffect::Open() {
   if (static_cast<unsigned int>(this->unknown_00B0) - 1 > 4) {
     return;
   }
@@ -861,7 +861,7 @@ void CEternalSlashCountEffect::Slot01() {
 
 // OFFSET: 0x00711340
 // FUNCTION: fn_07217
-bool CEternalSlashCountEffect::Slot06() {
+bool CEternalSlashCountEffect::IsAlive() {
   EZ2STREmitter* emitter = this->emitter;
   if (emitter) {
     if (0.0f == emitter->lifetime) {
@@ -876,7 +876,7 @@ bool CEternalSlashCountEffect::Slot06() {
 
 // OFFSET: 0x00711380
 // FUNCTION: fn_07218
-void CEternalSlashCountEffect::Slot03() {
+void CEternalSlashCountEffect::OnProcess() {
   if (!this->emitter) {
     return;
   }
@@ -889,7 +889,7 @@ void CEternalSlashCountEffect::Slot03() {
 
 // OFFSET: 0x007113F0
 // FUNCTION: fn_07219
-void CEternalSlashCountEffect::Slot04() {
+void CEternalSlashCountEffect::Render() {
   if (this->emitter) {
     AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
@@ -902,7 +902,7 @@ CFallenAngelEffect::CFallenAngelEffect() : CEffect(1140), emitter(nullptr), unkn
 
 // OFFSET: 0x00711580
 // FUNCTION: fn_07223
-void CFallenAngelEffect::Slot01() {
+void CFallenAngelEffect::Open() {
   if (!this->emitter) {
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     this->emitter = reinterpret_cast<EZ2STREmitter*>(particle);
@@ -919,7 +919,7 @@ void CFallenAngelEffect::Slot01() {
 
 // OFFSET: 0x00711690
 // FUNCTION: fn_07224
-bool CFallenAngelEffect::Slot06() {
+bool CFallenAngelEffect::IsAlive() {
   if (0.0f == this->emitter->lifetime) {
     return true;
   }
@@ -929,7 +929,7 @@ bool CFallenAngelEffect::Slot06() {
 
 // OFFSET: 0x007116D0
 // FUNCTION: fn_07225
-void CFallenAngelEffect::Slot03() {
+void CFallenAngelEffect::OnProcess() {
   EZ2STREmitter* emitter = this->emitter;
   const vector3d start = emitter->position;
   const float dx = this->unknown_00D0 - this->position[0];
@@ -946,7 +946,7 @@ void CFallenAngelEffect::Slot03() {
 
 // OFFSET: 0x007117F0
 // FUNCTION: fn_07226
-void CFallenAngelEffect::Slot04() {
+void CFallenAngelEffect::Render() {
   if (this->emitter) {
     AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
@@ -971,7 +971,7 @@ CFloralFlareRoad::CFloralFlareRoad() : CEffect(1804) {
 
 // OFFSET: 0x00711A70
 // FUNCTION: fn_07231
-void CFloralFlareRoad::Slot01() {
+void CFloralFlareRoad::Open() {
   CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
   this->unknown_00CC = reinterpret_cast<EZ2STREmitter*>(bottom);
   bottom->Load(std::string("froral_flareroad\\froral_flareroad_bottom\\froral_flareroad_bottom.str"));
@@ -996,13 +996,13 @@ void CFloralFlareRoad::Slot01() {
 
 // OFFSET: 0x00711DA0
 // FUNCTION: fn_07232
-bool CFloralFlareRoad::Slot06() {
+bool CFloralFlareRoad::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00711DB0
 // FUNCTION: fn_07233
-void CFloralFlareRoad::Slot03() {
+void CFloralFlareRoad::OnProcess() {
   if (this->unknown_00CC) {
     AsParticle(this->unknown_00CC)->Process(0.0f, -80.0f, 0.0f);
   }
@@ -1023,7 +1023,7 @@ void CFloralFlareRoad::Slot03() {
 
 // OFFSET: 0x00711ED0
 // FUNCTION: fn_07234
-void CFloralFlareRoad::Slot04() {
+void CFloralFlareRoad::Render() {
   if (this->unknown_00CC) {
     AsParticle(this->unknown_00CC)
       ->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
@@ -1046,7 +1046,7 @@ CFootprintEffect::CFootprintEffect() : CEffect(2411), stepDistance(50.0), unknow
 
 // OFFSET: 0x007123C0
 // FUNCTION: fn_07238
-bool CFootprintEffect::Slot33() {
+bool CFootprintEffect::IsVisible() {
   EffectActor* actor = static_cast<EffectActor*>(FindRenderObject(this->actor));
   if (!actor || actor->render.unknown_00A8 == 0) {
     return true;
@@ -1061,7 +1061,7 @@ bool CFootprintEffect::Slot33() {
 
 // OFFSET: 0x00712410
 // FUNCTION: fn_07239
-void CFootprintEffect::Slot01() {
+void CFootprintEffect::Open() {
   char* leftFile = nullptr;
   char* rightFile = nullptr;
   g_session.m_hotkeyScript->Call("GetFootprintPngFile", "d>ss", this->unknown_00C4, &leftFile, &rightFile);
@@ -1090,7 +1090,7 @@ void CFootprintEffect::Slot01() {
 
 // OFFSET: 0x007127A0
 // FUNCTION: fn_07240
-bool CFootprintEffect::Slot06() {
+bool CFootprintEffect::IsAlive() {
   return this->ActorExists();
 }
 
@@ -1148,7 +1148,7 @@ CParticle* CFootprintEffect::SpawnFootprint() {
 
 // OFFSET: 0x00712A90
 // FUNCTION: fn_07242
-void CFootprintEffect::Slot03() {
+void CFootprintEffect::OnProcess() {
   const float dx = this->position[0] - this->lastPosition.x;
   const float dy = this->position[1] - this->lastPosition.y;
   const float dz = this->position[2] - this->lastPosition.z;
@@ -1175,7 +1175,7 @@ void CFootprintEffect::Slot03() {
 
 // OFFSET: 0x00712C50
 // FUNCTION: fn_07244
-void CFootprintEffect::Slot04() {
+void CFootprintEffect::Render() {
   for (EZ2STREmitter* emitter : this->emitters) {
     AsParticle(emitter)->Render(true, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
@@ -1204,7 +1204,7 @@ void CFootprintStrEffect::Close() {
 
 // OFFSET: 0x00713370
 // FUNCTION: fn_07248
-bool CFootprintStrEffect::Slot33() {
+bool CFootprintStrEffect::IsVisible() {
   EffectActor* actor = static_cast<EffectActor*>(FindRenderObject(this->actor));
   if (!actor || actor->render.unknown_00A8 == 0) {
     return true;
@@ -1219,7 +1219,7 @@ bool CFootprintStrEffect::Slot33() {
 
 // OFFSET: 0x007133C0
 // FUNCTION: fn_07249
-void CFootprintStrEffect::Slot01() {
+void CFootprintStrEffect::Open() {
   char* leftFile = nullptr;
   char* rightFile = nullptr;
   g_session.m_hotkeyScript->Call("GetFootprintStrFileBottom", "d>ss", this->unknown_00C4, &leftFile, &rightFile);
@@ -1248,7 +1248,7 @@ void CFootprintStrEffect::Slot01() {
 
 // OFFSET: 0x00713830
 // FUNCTION: fn_07250
-bool CFootprintStrEffect::Slot06() {
+bool CFootprintStrEffect::IsAlive() {
   return this->ActorExists();
 }
 
@@ -1319,7 +1319,7 @@ void CFootprintStrEffect::SpawnFootprint() {
 
 // OFFSET: 0x00713E00
 // FUNCTION: fn_07252
-void CFootprintStrEffect::Slot03() {
+void CFootprintStrEffect::OnProcess() {
   const float dx = this->position[0] - this->unknown_016C.x;
   const float dy = this->position[1] - this->unknown_016C.y;
   const float dz = this->position[2] - this->unknown_016C.z;
@@ -1350,7 +1350,7 @@ void CFootprintStrEffect::Slot03() {
 
 // OFFSET: 0x00713F70
 // FUNCTION: fn_07253
-void CFootprintStrEffect::Slot04() {
+void CFootprintStrEffect::Render() {
   for (EZ2STREmitter* emitter : this->emitters) {
     AsParticle(emitter)->DrawGround(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
@@ -1383,19 +1383,19 @@ void CFromTheAbyssEffect::Close() {
 
 // OFFSET: 0x00715400
 // FUNCTION: fn_07266
-void CFromTheAbyssEffect::Slot01() {
+void CFromTheAbyssEffect::Open() {
   this->retained = 1;
 }
 
 // OFFSET: 0x00715410
 // FUNCTION: fn_07267
-bool CFromTheAbyssEffect::Slot06() {
+bool CFromTheAbyssEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00715420
 // FUNCTION: fn_07268
-void CFromTheAbyssEffect::Slot03() {
+void CFromTheAbyssEffect::OnProcess() {
   for (auto it = this->unknown_00E8.begin(); it != this->unknown_00E8.end(); ++it) {
     this->UpdateParticle(it->first, it->second);
   }
@@ -1466,7 +1466,7 @@ void CFromTheAbyssEffect::UpdateParticle(long long key, AbyssParticle particle) 
 
 // OFFSET: 0x00715C80
 // FUNCTION: fn_07270
-void CFromTheAbyssEffect::Slot04() {
+void CFromTheAbyssEffect::Render() {
   for (auto it = this->unknown_00E8.begin(); it != this->unknown_00E8.end(); ++it) {
     EZ2STREmitter* emitter = it->second.emitter;
     if (emitter) {
@@ -1533,7 +1533,7 @@ CFullScreenEffect::CFullScreenEffect() : CEffect(-1), loaded(1) {
 
 // OFFSET: 0x007169A0
 // FUNCTION: fn_07277
-void CFullScreenEffect::Slot01() {
+void CFullScreenEffect::Open() {
   std::string texture;
   if (this->id == 2272) {
     texture = "effect\\state_effect\\frostbite\\frostbite_screen\\frostbite_screen.tga";
@@ -1563,7 +1563,7 @@ void CFullScreenEffect::Slot01() {
 
 // OFFSET: 0x00716BD0
 // FUNCTION: fn_07278
-bool CFullScreenEffect::Slot06() {
+bool CFullScreenEffect::IsAlive() {
   if (this->loaded == 1 && this->ActorExists()) {
     return true;
   }
@@ -1573,7 +1573,7 @@ bool CFullScreenEffect::Slot06() {
 
 // OFFSET: 0x00716BF0
 // FUNCTION: fn_07279
-void CFullScreenEffect::Slot04() {
+void CFullScreenEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle) {
@@ -1629,7 +1629,7 @@ CGaleStorm::CGaleStorm() : CEffect(1973), unknown_00D8(5), unknown_00DC(0) {
 
 // OFFSET: 0x00717DE0
 // FUNCTION: fn_07285
-void CGaleStorm::Slot01() {
+void CGaleStorm::Open() {
   long long table[10] = {5, 5, 5, 5, 7, 7, 7, 9, 9, 11};
 
   unsigned int index = this->unknown_00B0;
@@ -1642,7 +1642,7 @@ void CGaleStorm::Slot01() {
 
 // OFFSET: 0x00717EB0
 // FUNCTION: fn_07286
-bool CGaleStorm::Slot06() {
+bool CGaleStorm::IsAlive() {
   if (this->frame > this->unknown_002C && this->emitters.empty()) {
     return false;
   }
@@ -1652,7 +1652,7 @@ bool CGaleStorm::Slot06() {
 
 // OFFSET: 0x00718040
 // FUNCTION: fn_07288
-void CGaleStorm::Slot04() {
+void CGaleStorm::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
       AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
@@ -1662,7 +1662,7 @@ void CGaleStorm::Slot04() {
 
 // OFFSET: 0x007183F0
 // FUNCTION: fn_07292
-void CGravityControlEffect::Slot04() {
+void CGravityControlEffect::Render() {
   if (!this->target) {
     return;
   }
@@ -1706,13 +1706,13 @@ void CHawkVumerangEffect::Close() {
 
 // OFFSET: 0x00718B90
 // FUNCTION: fn_07299
-bool CHawkVumerangEffect::Slot06() {
+bool CHawkVumerangEffect::IsAlive() {
   return this->emitters.size() != 0;
 }
 
 // OFFSET: 0x00718BA0
 // FUNCTION: fn_07300
-void CHawkVumerangEffect::Slot03() {
+void CHawkVumerangEffect::OnProcess() {
   if (this->emitters.size() == 0) {
     return;
   }
@@ -1753,7 +1753,7 @@ void CHawkVumerangEffect::Slot03() {
 
 // OFFSET: 0x00718E70
 // FUNCTION: fn_07301
-void CHawkVumerangEffect::Slot04() {
+void CHawkVumerangEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
     if (emitter) {
@@ -1771,7 +1771,7 @@ CDropItemEffect::CDropItemEffect()
 
 // OFFSET: 0x00719400
 // FUNCTION: fn_07307
-void CDropItemEffect::Slot01() {
+void CDropItemEffect::Open() {
   if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
     return;
   }
@@ -1788,7 +1788,7 @@ void CDropItemEffect::Slot01() {
   }
 
   this->OpenEmitters();
-  this->Slot12();
+  this->InitEvents();
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetItemByAID(this->actor);
   this->position.x = this->CEffect::position[0];
   this->position.y = this->CEffect::position[1];
@@ -1803,7 +1803,7 @@ void CDropItemEffect::Slot01() {
 
 // OFFSET: 0x00719520
 // FUNCTION: fn_07308
-void CDropItemEffect::Slot12() {
+void CDropItemEffect::InitEvents() {
   for (std::size_t i = 0; i < this->emitters.size(); ++i) {
     if (this->emitters[i]) {
       this->emitters[i]->looping = 1;
@@ -1816,7 +1816,7 @@ void CDropItemEffect::Slot12() {
 
 // OFFSET: 0x00719660
 // FUNCTION: fn_07309
-bool CDropItemEffect::Slot06() {
+bool CDropItemEffect::IsAlive() {
   if (this->actor == 0) {
     return false;
   }
@@ -1867,7 +1867,7 @@ void CDropItemEffect::OpenEmitters() {
 
 // OFFSET: 0x00719C30
 // FUNCTION: fn_07311
-void CDropItemEffect::Slot03() {
+void CDropItemEffect::OnProcess() {
   for (std::size_t i = 0; i < this->emitters.size(); ++i) {
     if (this->emitters[i]) {
       AsParticle(this->emitters[i])->Process(0.0f, 0.0f, 0.0f);
@@ -1878,7 +1878,7 @@ void CDropItemEffect::Slot03() {
 
 // OFFSET: 0x00719CA0
 // FUNCTION: fn_07312
-void CDropItemEffect::Slot04() {
+void CDropItemEffect::Render() {
   for (std::size_t i = 0; i < this->emitters.size(); ++i) {
     if (this->emitters[i]) {
       AsParticle(this->emitters[i])->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
@@ -1944,7 +1944,7 @@ void CJupitelThunderHit::SpawnSpark() {
 
 // OFFSET: 0x0071C520
 // FUNCTION: fn_07323
-void CJupitelThunderHit::Slot01() {
+void CJupitelThunderHit::Open() {
   if (this->id != 1200) {
     this->SpawnSpark();
   }
@@ -1954,7 +1954,7 @@ void CJupitelThunderHit::Slot01() {
 
 // OFFSET: 0x0071C540
 // FUNCTION: fn_07324
-bool CJupitelThunderHit::Slot06() {
+bool CJupitelThunderHit::IsAlive() {
   if (this->id != 1200) {
     if (this->actor == 0) {
       return true;
@@ -1968,7 +1968,7 @@ bool CJupitelThunderHit::Slot06() {
 
 // OFFSET: 0x0071C570
 // FUNCTION: fn_07325
-void CJupitelThunderHit::Slot03() {
+void CJupitelThunderHit::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     ++(*it)->elapsed;
     CEZ2STRParticle* particle = AsParticle(*it);
@@ -2019,7 +2019,7 @@ void CJupitelThunderHit::Slot03() {
 
 // OFFSET: 0x0071CB70
 // FUNCTION: fn_07326
-void CJupitelThunderHit::Slot04() {
+void CJupitelThunderHit::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
     if (emitter && emitter->elapsed >= 0) {
@@ -2072,13 +2072,13 @@ void CNewCloudKillEffect::Close() {
 
 // OFFSET: 0x0071DEC0
 // FUNCTION: fn_07340
-bool CNewCloudKillEffect::Slot06() {
+bool CNewCloudKillEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x0071E080
 // FUNCTION: fn_07341
-void CNewCloudKillEffect::Slot03() {
+void CNewCloudKillEffect::OnProcess() {
   const unsigned int now = timeGetTime();
 
   for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
@@ -2316,7 +2316,7 @@ void CPetitioEffect::Close() {
 
 // OFFSET: 0x0071F7A0
 // FUNCTION: fn_07347
-void CPetitioEffect::Slot01() {
+void CPetitioEffect::Open() {
   CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
   EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
   bottom->Load(std::string("petitio\\petitio_bottom\\petitio_bottom.str"));
@@ -2333,7 +2333,7 @@ void CPetitioEffect::Slot01() {
 
 // OFFSET: 0x0071FA30
 // FUNCTION: fn_07348
-bool CPetitioEffect::Slot06() {
+bool CPetitioEffect::IsAlive() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
     if (IsEmitterAlive(emitter) == true) {
@@ -2346,7 +2346,7 @@ bool CPetitioEffect::Slot06() {
 
 // OFFSET: 0x0071FA90
 // FUNCTION: fn_07349
-void CPetitioEffect::Slot03() {
+void CPetitioEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
     if (!emitter) {
@@ -2363,7 +2363,7 @@ void CPetitioEffect::Slot03() {
 
 // OFFSET: 0x0071FB70
 // FUNCTION: fn_07350
-void CPetitioEffect::Slot04() {
+void CPetitioEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
       AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
@@ -2378,7 +2378,7 @@ CPneumaticusProcellaEffect::CPneumaticusProcellaEffect() : CEffect(1957) {
 
 // OFFSET: 0x0071FE40
 // FUNCTION: fn_07354
-void CPneumaticusProcellaEffect::Slot01() {
+void CPneumaticusProcellaEffect::Open() {
   double scale;
   switch (this->unknown_00B0) {
   case 1:
@@ -2436,7 +2436,7 @@ void CPneumaticusProcellaEffect::Slot01() {
 
 // OFFSET: 0x00720410
 // FUNCTION: fn_07356
-void CPneumaticusProcellaEffect::Slot04() {
+void CPneumaticusProcellaEffect::Render() {
   if (this->emitter) {
     AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
@@ -2450,7 +2450,7 @@ void CPneumaticusProcellaEffect::Slot04() {
 
 // OFFSET: 0x00720310
 // FUNCTION: fn_07355
-void CPneumaticusProcellaEffect::Slot03() {
+void CPneumaticusProcellaEffect::OnProcess() {
   if (this->emitter) {
     AsParticle(this->emitter)->Process(0.0f, -80.0f, 0.0f);
   }
@@ -2485,7 +2485,7 @@ static long long s_randomHitIndex;
 
 // OFFSET: 0x007205D0
 // FUNCTION: fn_07360
-void CRandomHitEffect::Slot01() {
+void CRandomHitEffect::Open() {
   const double offsetsX[3] = {0.0, 4.0, -4.0};
   const double offsetsY[3] = {-7.0, -6.0, -5.0};
   const double angles[3] = {0.0, 320.0, 40.0};
@@ -2521,7 +2521,7 @@ void CRandomHitEffect::Slot01() {
 
 // OFFSET: 0x007208A0
 // FUNCTION: fn_07362
-void CRandomHitEffect::Slot03() {
+void CRandomHitEffect::OnProcess() {
   if (!this->emitter) {
     return;
   }
@@ -2536,7 +2536,7 @@ void CRandomHitEffect::Slot03() {
 
 // OFFSET: 0x00720940
 // FUNCTION: fn_07363
-void CRandomHitEffect::Slot04() {
+void CRandomHitEffect::Render() {
   if (this->emitter) {
     AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
@@ -2549,7 +2549,7 @@ CRandomOptEffect::CRandomOptEffect() : CEffect(-1), offsets{} {
 
 // OFFSET: 0x00720AF0
 // FUNCTION: fn_07366
-void CRandomOptEffect::Slot08(int red, int green, int blue) {
+void CRandomOptEffect::SetColor(int red, int green, int blue) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetColor(red, green, blue);
   }
@@ -2557,7 +2557,7 @@ void CRandomOptEffect::Slot08(int red, int green, int blue) {
 
 // OFFSET: 0x00720B30
 // FUNCTION: fn_07367
-void CRandomOptEffect::Slot11(std::string name) {
+void CRandomOptEffect::SetParticleTexture(std::string name) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetTexture(name);
   }
@@ -2664,13 +2664,13 @@ void CRandomOptEffect::Init() {
 
 // OFFSET: 0x00721220
 // FUNCTION: fn_07370
-void CRandomOptEffect::Slot01() {
+void CRandomOptEffect::Open() {
   this->Init();
 }
 
 // OFFSET: 0x00721230
 // FUNCTION: fn_07371
-bool CRandomOptEffect::Slot06() {
+bool CRandomOptEffect::IsAlive() {
   if (this->actor == 0) {
     return false;
   }
@@ -2693,7 +2693,7 @@ bool CRandomOptEffect::Slot06() {
 
 // OFFSET: 0x00721270
 // FUNCTION: fn_07372
-void CRandomOptEffect::Slot03() {
+void CRandomOptEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -2717,7 +2717,7 @@ void CRandomOptEffect::Slot03() {
 
 // OFFSET: 0x00721430
 // FUNCTION: fn_07373
-void CRandomOptEffect::Slot04() {
+void CRandomOptEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle) {
@@ -2748,7 +2748,7 @@ CRichsCoinEffect::CRichsCoinEffect() : CEffect(1135), unknown_00E4(0) {
 
 // OFFSET: 0x007218D0
 // FUNCTION: fn_07377
-void CRichsCoinEffect::Slot01() {
+void CRichsCoinEffect::Open() {
   int count = this->unknown_00E4;
   if (count > 5) {
     count = 5;
@@ -2790,13 +2790,13 @@ void CRichsCoinEffect::Slot01() {
 
 // OFFSET: 0x00721AE0
 // FUNCTION: fn_07378
-bool CRichsCoinEffect::Slot06() {
+bool CRichsCoinEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00721F80
 // FUNCTION: fn_07380
-void CRichsCoinEffect::Slot04() {
+void CRichsCoinEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
@@ -2820,7 +2820,7 @@ CSavageImpactEffect::CSavageImpactEffect() : CEffect(1837) {
 
 // OFFSET: 0x00722460
 // FUNCTION: fn_07385
-bool CSavageImpactEffect::Slot06() {
+bool CSavageImpactEffect::IsAlive() {
   if (0.0f == this->emitter->lifetime) {
     return true;
   }
@@ -2830,7 +2830,7 @@ bool CSavageImpactEffect::Slot06() {
 
 // OFFSET: 0x007224A0
 // FUNCTION: fn_07386
-void CSavageImpactEffect::Slot03() {
+void CSavageImpactEffect::OnProcess() {
   CEZ2STRParticle* particle = AsParticle(this->emitter);
   const vector3d position = {this->position[0] + 0.0f, this->position[1] - 12.0f, this->position[2] + 0.0f};
   particle->position = position;
@@ -2839,7 +2839,7 @@ void CSavageImpactEffect::Slot03() {
 
 // OFFSET: 0x00722560
 // FUNCTION: fn_07387
-void CSavageImpactEffect::Slot04() {
+void CSavageImpactEffect::Render() {
   AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
 }
 
@@ -2940,7 +2940,7 @@ void CServantWeaponNewEffect::Close() {
 
 // OFFSET: 0x007237E0
 // FUNCTION: fn_07400
-void CServantWeaponEffect::Slot01() {
+void CServantWeaponEffect::Open() {
   this->retained = 1;
 
   for (int column = 0; column < 5; ++column) {
@@ -2971,19 +2971,19 @@ void CServantWeaponEffect::Slot01() {
 
 // OFFSET: 0x00723A90
 // FUNCTION: fn_07401
-void CServantWeaponNewEffect::Slot01() {
+void CServantWeaponNewEffect::Open() {
   this->retained = 1;
 }
 
 // OFFSET: 0x00723AA0
 // FUNCTION: fn_07402
-bool CServantWeaponEffect::Slot06() {
+bool CServantWeaponEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00723AB0
 // FUNCTION: fn_07403
-bool CServantWeaponNewEffect::Slot06() {
+bool CServantWeaponNewEffect::IsAlive() {
   return this->ActorExists();
 }
 
@@ -3052,7 +3052,7 @@ static __forceinline void PlaceServantEmitter(CServantWeaponEffect* effect, EZ2S
 
 // OFFSET: 0x00724100
 // FUNCTION: fn_07405
-void CServantWeaponEffect::Slot03() {
+void CServantWeaponEffect::OnProcess() {
   for (int column = 0; column < 5; ++column) {
     EZ2STREmitter* emitter = this->emitters[0][column];
     if (emitter != nullptr) {
@@ -3100,7 +3100,7 @@ static __forceinline void OrbitServantEmitter(const CServantWeaponNewEffect* eff
 
 // OFFSET: 0x00724900
 // FUNCTION: fn_07406
-void CServantWeaponNewEffect::Slot03() {
+void CServantWeaponNewEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     if (!AsParticle(*it)->Process(0.0f, 0.0f, 0.0f)) {
       const float angle = (*it)->angle;
@@ -3138,7 +3138,7 @@ void CServantWeaponNewEffect::Slot03() {
 
 // OFFSET: 0x00724EB0
 // FUNCTION: fn_07407
-void CServantWeaponEffect::Slot04() {
+void CServantWeaponEffect::Render() {
   for (int column = 0; column < 5; ++column) {
     if (this->emitters[0][column] != nullptr) {
       AsParticle(this->emitters[0][column])->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
@@ -3154,7 +3154,7 @@ void CServantWeaponEffect::Slot04() {
 
 // OFFSET: 0x00724F40
 // FUNCTION: fn_07408
-void CServantWeaponNewEffect::Slot04() {
+void CServantWeaponNewEffect::Render() {
   for (EZ2STREmitter* emitter : this->emitters) {
     AsParticle(emitter)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
@@ -3210,7 +3210,7 @@ void __stdcall fn_07334(CParticle* particle) {
 
 // OFFSET: 0x0071D760
 // FUNCTION: fn_07335
-void CNewCloudKillEffect::Slot01() {
+void CNewCloudKillEffect::Open() {
   this->unknown_00F4 = static_cast<int>(timeGetTime());
   this->unknown_00F8 = static_cast<int>(timeGetTime());
 
@@ -3873,7 +3873,7 @@ void CSevereRainStorm::Close() {
 
 // OFFSET: 0x007278C0
 // FUNCTION: fn_07423
-void CSevereRainStorm::Slot01() {
+void CSevereRainStorm::Open() {
   this->unknown_00D4 = 0;
   if (this->id == 2348) {
     this->retained = 1;
@@ -3882,7 +3882,7 @@ void CSevereRainStorm::Slot01() {
 
 // OFFSET: 0x007278E0
 // FUNCTION: fn_07424
-bool CSevereRainStorm::Slot06() {
+bool CSevereRainStorm::IsAlive() {
   switch (this->id) {
   case 1752:
   case 2165:
@@ -3917,7 +3917,7 @@ bool CSevereRainStorm::Slot06() {
 
 // OFFSET: 0x00727A10
 // FUNCTION: fn_07425
-void CSevereRainStorm::Slot03() {
+void CSevereRainStorm::OnProcess() {
   this->SpawnParticles();
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
@@ -3956,7 +3956,7 @@ void CSevereRainStorm::Slot03() {
 
 // OFFSET: 0x00727C70
 // FUNCTION: fn_07426
-void CSevereRainStorm::Slot04() {
+void CSevereRainStorm::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
     if (emitter) {
@@ -3981,7 +3981,7 @@ void CCrimsonArrowEffect::Close() {
 
 // OFFSET: 0x0070B970
 // FUNCTION: fn_07122
-void CCrimsonArrowEffect::Slot01() {
+void CCrimsonArrowEffect::Open() {
   CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (!arrow) {
     return;
@@ -4047,7 +4047,7 @@ void CCrimsonArrowEffect::Slot01() {
 
 // OFFSET: 0x0070DE90
 // FUNCTION: fn_07166
-void CTunaPartyEffect::Slot01() {
+void CTunaPartyEffect::Open() {
   EZ2STREmitter* emitter =
       reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
   if (!emitter) {
@@ -4070,7 +4070,7 @@ void CTunaPartyEffect::Slot01() {
 
 // OFFSET: 0x0070DF40
 // FUNCTION: fn_07168
-void CTunaPartyEffect::Slot03() {
+void CTunaPartyEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CSpriteParticle* particle = AsSprite(*it);
     const float phase = particle->unknown_0054 + 0.05f;
@@ -4099,7 +4099,7 @@ void CTunaPartyEffect::Slot03() {
 
 // OFFSET: 0x0070C2F0
 // FUNCTION: fn_07129
-void CRootTwistEffect::Slot01() {
+void CRootTwistEffect::Open() {
   EZ2STREmitter* emitter =
       reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
   if (emitter) {
@@ -4120,7 +4120,7 @@ void CRootTwistEffect::Slot01() {
 
 // OFFSET: 0x0070D9B0
 // FUNCTION: fn_07159
-void CSvgSpiritEffect::Slot01() {
+void CSvgSpiritEffect::Open() {
   this->emitter = reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
   if (!this->emitter) {
     return;
@@ -4177,7 +4177,7 @@ void CCurseOfCubeEffect::SpawnShock() {
 
 // OFFSET: 0x0071F0C0
 // FUNCTION: fn_07342
-void CNewCloudKillEffect::Slot04() {
+void CNewCloudKillEffect::Render() {
   for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
     CEZ2STRParticle* particle = AsParticle(*it);
     if (particle->unknown_00A8 != 0 || !particle) {
@@ -4269,7 +4269,7 @@ void CDancingKnifeEffect::SpawnSecondStrike() {
 
 // OFFSET: 0x00710800
 // FUNCTION: fn_07202
-void CDancingKnifeEffect::Slot01() {
+void CDancingKnifeEffect::Open() {
   this->secondStrike = 0;
   this->SpawnFirstStrike();
   this->AddEvent(0, "effect\\SHC_DANCING_KNIFE.wav", 0, 0);
@@ -4277,7 +4277,7 @@ void CDancingKnifeEffect::Slot01() {
 
 // OFFSET: 0x00710840
 // FUNCTION: fn_07204
-void CDancingKnifeEffect::Slot03() {
+void CDancingKnifeEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
     if (IsEmitterAlive(emitter) == true) {
@@ -4375,7 +4375,7 @@ void CCurseOfCubeEffect::SpawnStart() {
 
 // OFFSET: 0x0070EB90
 // FUNCTION: fn_07179
-void CCurseOfCubeEffect::Slot03() {
+void CCurseOfCubeEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
     if (IsEmitterAlive(emitter)) {
@@ -4413,7 +4413,7 @@ void CCurseOfCubeEffect::Slot03() {
 
 // OFFSET: 0x0070C750
 // FUNCTION: fn_07136
-void CSprArrowEffect::Slot01() {
+void CSprArrowEffect::Open() {
   CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
   this->unknown_00CC = reinterpret_cast<int>(particle);
   if (!particle) {
@@ -4472,7 +4472,7 @@ __declspec(noinline) vector3d* CylinderSlice::ComputePoints(vector3d points[2], 
 
 // OFFSET: 0x0070FC80
 // FUNCTION: fn_07195
-void CCylinderEffect::Slot03() {
+void CCylinderEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
     emitter->position.x = this->position[0];
@@ -4516,7 +4516,7 @@ void CCylinderEffect::Slot03() {
 
 // OFFSET: 0x0070D160
 // FUNCTION: fn_07146
-void CSpriteMableEffect::Slot03() {
+void CSpriteMableEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CSpriteParticle* particle = AsSprite(*it);
     particle->unknown_0054 += 0.02f;
@@ -4567,7 +4567,7 @@ void CGravityControlEffect::Close() {
 
 // OFFSET: 0x007182E0
 // FUNCTION: fn_07291
-void CGravityControlEffect::Slot03() {
+void CGravityControlEffect::OnProcess() {
   CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
   if (!actor) {
     return;
@@ -4640,7 +4640,7 @@ void CGaleStorm::SpawnStorm() {
 
 // OFFSET: 0x00717ED0
 // FUNCTION: fn_07287
-void CGaleStorm::Slot03() {
+void CGaleStorm::OnProcess() {
   const int frame = this->frame;
   if (frame <= this->unknown_002C) {
     if (frame % (100 / this->count) == 0) {
@@ -4667,7 +4667,7 @@ void CGaleStorm::Slot03() {
 
 // OFFSET: 0x007181D0
 // FUNCTION: fn_07290
-void CGravityControlEffect::Slot01() {
+void CGravityControlEffect::Open() {
   if (this->id == 0x4B1) {
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (particle) {
@@ -4683,7 +4683,7 @@ void CGravityControlEffect::Slot01() {
 
 // OFFSET: 0x007188C0
 // FUNCTION: fn_07298
-void CHawkVumerangEffect::Slot01() {
+void CHawkVumerangEffect::Open() {
   this->unknown_00FC = timeGetTime();
   this->unknown_0100.x = this->position[0];
   this->unknown_0100.y = this->position[1];
@@ -4717,7 +4717,7 @@ void CHawkVumerangEffect::Slot01() {
 
 // OFFSET: 0x00721AF0
 // FUNCTION: fn_07379
-void CRichsCoinEffect::Slot03() {
+void CRichsCoinEffect::OnProcess() {
   char name[256];
 
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
@@ -4765,7 +4765,7 @@ void CRichsCoinEffect::Slot03() {
 
 // OFFSET: 0x007221C0
 // FUNCTION: fn_07384
-void CSavageImpactEffect::Slot01() {
+void CSavageImpactEffect::Open() {
   this->emitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   float toReciprocalDepth = 0.0f;
   float fromReciprocalDepth = 0.0f;

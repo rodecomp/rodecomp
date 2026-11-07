@@ -27,7 +27,7 @@ public:
   UIChatRoomMakeWnd();
   ~UIChatRoomMakeWnd() override;
   void Paint() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00B4 */ std::string m_title;

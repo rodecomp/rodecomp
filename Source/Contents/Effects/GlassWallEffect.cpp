@@ -49,7 +49,7 @@ void CGlassWall::Close() {
 
 // OFFSET: 0x00B449B0
 // FUNCTION: fn_18892
-void CGlassWall::Slot01() {
+void CGlassWall::Open() {
   int angle = 180;
   CRenderObject* actor = FindRenderObject(this->actor);
   if (actor) {
@@ -73,19 +73,19 @@ void CGlassWall::Slot01() {
   this->effect->position[0] = this->position[0];
   this->effect->position[1] = this->position[1];
   this->effect->position[2] = this->position[2];
-  this->effect->Slot29(this->id);
-  this->effect->Slot01();
+  this->effect->SetId(this->id);
+  this->effect->Open();
 }
 
 // OFFSET: 0x00B44BC0
 // FUNCTION: fn_18893
-bool CGlassWall::Slot06() {
+bool CGlassWall::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B44BE0
 // FUNCTION: fn_18894
-void CGlassWall::Slot03() {
+void CGlassWall::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     const int frame = this->frame;
@@ -124,13 +124,13 @@ void CGlassWall::Slot03() {
   }
 
   if (this->effect) {
-    this->effect->Slot03();
+    this->effect->OnProcess();
   }
 }
 
 // OFFSET: 0x00B44F70
 // FUNCTION: fn_18895
-void CGlassWall::Slot04() {
+void CGlassWall::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     const float width = particle->scale;
@@ -151,6 +151,6 @@ void CGlassWall::Slot04() {
   }
 
   if (this->effect) {
-    this->effect->Slot04();
+    this->effect->Render();
   }
 }

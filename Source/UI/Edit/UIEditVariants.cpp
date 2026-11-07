@@ -321,7 +321,7 @@ UIEditCtrl3::UIEditCtrl3() : UIEditCtrl2() {
 // FUNCTION: fn_10658
 UIEditCtrl3::UIEditCtrl3(const UIEditCtrl3& other) : UIEditCtrl2(other) {
   this->unknown_0130 = 0;
-  this->UIEditCtrl3::Slot15(other.geometry.width, other.geometry.height);
+  this->UIEditCtrl3::OnCreate(other.geometry.width, other.geometry.height);
 
   this->unknown_0134 = other.unknown_0134;
   this->unknown_0138 = other.unknown_0138;
@@ -373,7 +373,7 @@ UIEditCtrl3::~UIEditCtrl3() {
 
 // OFFSET: 0x0085AC40
 // FUNCTION: fn_10786
-void UIEditCtrl3::Slot15(int width, int height) {
+void UIEditCtrl3::OnCreate(int width, int height) {
   this->unknown_0130 = new UIScrollBar3();
   static_cast<UIScrollBar3*>(this->unknown_0130)->Configure(width - 10, 0, 1, height);
   this->AddChild(this->unknown_0130);
@@ -398,7 +398,7 @@ int UIWhisperEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         --this->historyIndex;
       }
       this->SetText(this->history[this->historyIndex].c_str());
-      this->Slot23();
+      this->OnBeginEdit();
     }
     break;
   case 19:
@@ -406,10 +406,10 @@ int UIWhisperEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       ++this->historyIndex;
       if (this->historyIndex == static_cast<int>(this->history.size())) {
         this->SetText("");
-        this->Slot23();
+        this->OnBeginEdit();
       } else {
         this->SetText(this->history[this->historyIndex].c_str());
-        this->Slot23();
+        this->OnBeginEdit();
       }
     }
     break;
@@ -437,7 +437,7 @@ void UIEditCtrl_OldList::RecallHistory(int step) {
   }
 
   this->SetText(this->history[this->historyIndex].c_str());
-  this->Slot23();
+  this->OnBeginEdit();
   this->Invalidate();
 }
 
@@ -754,7 +754,7 @@ UIEditCtrl4::~UIEditCtrl4() = default;
 
 // OFFSET: 0x0085AA40
 // FUNCTION: fn_10782
-void UIEditCtrl4::Slot23() {
+void UIEditCtrl4::OnBeginEdit() {
   this->text = "";
   g_serverLanguage->ResetInput();
   g_serverLanguage->ReplaceInput(this->text.c_str());
@@ -843,7 +843,7 @@ void UIEditCtrl3::Paint() {
 
 // OFFSET: 0x0085FF60
 // FUNCTION: fn_10892
-void UIEditCtrl3::Slot35(int value) {
+void UIEditCtrl3::OnWheel(int value) {
   if (this->unknown_0134 == 0) {
     return;
   }
@@ -912,12 +912,12 @@ UIChatEditCtrl::UIChatEditCtrl() : UIEditCtrl(), historyLimit(30) {
 
 // OFFSET: 0x0085EB50
 // FUNCTION: fn_10840
-void UIChatEditCtrl::Slot25(int x, int y) {
+void UIChatEditCtrl::OnLBtnDown(int x, int y) {
   if (this->disabled == 0) {
     g_windowMgr.SetFocus(this);
   }
 
-  this->parent->Slot25(x + this->geometry.x, y + this->geometry.y);
+  this->parent->OnLBtnDown(x + this->geometry.x, y + this->geometry.y);
 }
 
 // OFFSET: 0x00863640
@@ -934,14 +934,14 @@ int UIChatEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
 
       this->SetText(this->history[this->unknown_0140].c_str());
-      this->Slot23();
+      this->OnBeginEdit();
     }
     break;
   case 19:
     if (this->history.size() != 0 && this->unknown_0140 < this->history.size()) {
       ++this->unknown_0140;
       this->SetText((this->unknown_0140 == this->history.size() ? this->pending : this->history[this->unknown_0140]).c_str());
-      this->Slot23();
+      this->OnBeginEdit();
     }
     break;
   default:
@@ -964,7 +964,7 @@ void UIEditCtrl_OldList::Paint() {
 
 // OFFSET: 0x0085FFC0
 // FUNCTION: fn_10894
-void UIEditCtrl_OldList::Slot35(int value) {
+void UIEditCtrl_OldList::OnWheel(int value) {
   if (value < 0) {
     this->SendMsg(nullptr, 19, 0, 0, 0, 0);
   } else {
@@ -974,7 +974,7 @@ void UIEditCtrl_OldList::Slot35(int value) {
 
 // OFFSET: 0x0085E3D0
 // FUNCTION: fn_10827
-void UIEditCtrlVarId::Slot24(int) {
+void UIEditCtrlVarId::OnFinishEdit(int) {
   this->Synchronize();
   this->Invalidate();
   this->SendMsg(this, 0, 0, 0, 0, 0);
@@ -982,9 +982,9 @@ void UIEditCtrlVarId::Slot24(int) {
 
 // OFFSET: 0x0085FFA0
 // FUNCTION: fn_10893
-void UIEditCtrlVarId::Slot35(int value) {
+void UIEditCtrlVarId::OnWheel(int value) {
   if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
@@ -1011,7 +1011,7 @@ void UIEditCtrlVarId::SetText(const char* value) {
 
 // OFFSET: 0x0085AB10
 // FUNCTION: fn_10784
-void UIWhisperEditCtrl::Slot23() {
+void UIWhisperEditCtrl::OnBeginEdit() {
   g_serverLanguage->ResetInput();
   g_serverLanguage->ReplaceInput(this->text.c_str());
   g_serverLanguage->SetPassword(this->mask != 0);
@@ -1046,7 +1046,7 @@ int UIEditCtrl_OldList::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
 // OFFSET: 0x00886F90
 // FUNCTION: fn_11330
-void UIShowAndEditTimeCtrl::Slot15(int, int) {
+void UIShowAndEditTimeCtrl::OnCreate(int, int) {
   for (int i = 0; i < 2; ++i) {
     UIEditCtrlVarId*& field = this->fields[i];
     field = new UIEditCtrlVarId();

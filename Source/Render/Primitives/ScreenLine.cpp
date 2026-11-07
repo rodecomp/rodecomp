@@ -140,7 +140,7 @@ void UIRoMapWnd::DrawRecordAreas() {
 
 // OFFSET: 0x009181F0
 // FUNCTION: fn_12592
-void UINewChatWnd::Slot43() {
+void UINewChatWnd::DrawTransBox() {
   int x = 3;
   int y = 0;
   this->ToScreen(x, y);
@@ -157,7 +157,7 @@ void UINewChatWnd::Slot43() {
 
 // OFFSET: 0x00918300
 // FUNCTION: fn_12593
-void UISubChatHisWnd::Slot43() {
+void UISubChatHisWnd::DrawTransBox() {
   int x = 0;
   int y = 0;
   this->ToScreen(x, y);

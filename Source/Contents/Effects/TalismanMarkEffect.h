@@ -13,11 +13,11 @@ public:
   /* 00CC */ std::vector<CEZ2STRParticle*> particles;
 
   CTalismanMarkEffect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   void PlayEnd();
   __declspec(noinline) void UpdateParticle(CEZ2STRParticle* particle);

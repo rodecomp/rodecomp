@@ -79,7 +79,7 @@ UIChangeMaterialWnd_ScrollBar::UIChangeMaterialWnd_ScrollBar() : UIScrollBar() {
 
 // OFFSET: 0x005E1B30
 // FUNCTION: fn_03877
-void UIChangeMaterialWnd_List::Slot15(int width, int height) {
+void UIChangeMaterialWnd_List::OnCreate(int width, int height) {
   this->m_scrollBar = new UIChangeMaterialWnd_ScrollBar();
   this->m_scrollBar->Configure(width - this->unknown_00B8, 0, 1, height);
   this->m_scrollBar->Show(0);
@@ -135,7 +135,7 @@ ITEM_INFO* UIChangeMaterialWnd::GetItemAt(int x, int y) {
 
 // OFFSET: 0x005E1300
 // FUNCTION: fn_03874
-bool UIChangeMaterialWnd::Slot02() {
+bool UIChangeMaterialWnd::IsFrameWnd() {
   return true;
 }
 
@@ -147,7 +147,7 @@ void UIChangeMaterialWnd_List::Move(int x, int y) {
 
 // OFFSET: 0x005E2590
 // FUNCTION: fn_03883
-void UIChangeMaterialWnd_List::Slot31(int, int position) {
+void UIChangeMaterialWnd_List::OnLBtnUp(int, int position) {
   const int rowHeight = this->unknown_00B4;
   const unsigned int last = static_cast<unsigned int>(this->m_items.size() - 1);
   unsigned int index = static_cast<unsigned int>(position / rowHeight + this->m_scrollOffset);
@@ -157,7 +157,7 @@ void UIChangeMaterialWnd_List::Slot31(int, int position) {
 
 // OFFSET: 0x005E25D0
 // FUNCTION: fn_03884
-void UIChangeMaterialWnd::Slot28(int x, int y) {
+void UIChangeMaterialWnd::OnMouseHover(int x, int y) {
   ITEM_INFO* item = this->GetItemAt(x, y);
   if (!item) {
     return;
@@ -174,12 +174,12 @@ void UIChangeMaterialWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x005E2840
 // FUNCTION: fn_03886
-void UIChangeMaterialWnd_List::Slot27(int x, int y) {
+void UIChangeMaterialWnd_List::OnMouseMove(int x, int y) {
 }
 
 // OFFSET: 0x005E2850
 // FUNCTION: fn_03887
-void UIChangeMaterialWnd::Slot19() {
+void UIChangeMaterialWnd::OnProcess() {
   const std::string text = this->unknown_00B8->Text();
   if (text.compare(LookupMessage(0xec0)) != 0) {
     if (text.empty()) {
@@ -193,7 +193,7 @@ void UIChangeMaterialWnd::Slot19() {
 
 // OFFSET: 0x005E29F0
 // FUNCTION: fn_03888
-void UIChangeMaterialWnd::Slot33(int x, int y) {
+void UIChangeMaterialWnd::OnRBtnUp(int x, int y) {
   ITEM_INFO* item = this->GetItemAt(x, y);
   if (!item) {
     return;
@@ -207,7 +207,7 @@ void UIChangeMaterialWnd::Slot33(int x, int y) {
 
 // OFFSET: 0x005E2A30
 // FUNCTION: fn_03889
-void UIChangeMaterialWnd_List::Slot35(int argument) {
+void UIChangeMaterialWnd_List::OnWheel(int argument) {
   if (argument < 0) {
     this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
   } else {
@@ -646,7 +646,7 @@ void UIChangeMaterialWnd_ScrollBar::Paint() {
 
 // OFFSET: 0x005E26B0
 // FUNCTION: fn_03885
-void UIChangeMaterialWnd_List::Slot28(int x, int y) {
+void UIChangeMaterialWnd_List::OnMouseHover(int x, int y) {
   const int rowHeight = this->unknown_00B4;
   const int index = y / rowHeight + this->m_scrollOffset;
   if (static_cast<unsigned int>(index) >= this->m_items.size()) {
@@ -685,7 +685,7 @@ __forceinline void UIChangeMaterialWnd_CheckBox::SetLabels(std::string ascending
 
 // OFFSET: 0x005E1320
 // FUNCTION: fn_03876
-void UIChangeMaterialWnd::Slot15(int width, int height) {
+void UIChangeMaterialWnd::OnCreate(int width, int height) {
   UIBitmapButton* close = new UIBitmapButton();
   close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
   close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 1, 0);

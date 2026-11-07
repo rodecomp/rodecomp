@@ -15,11 +15,11 @@ class UITextViewer : public UIListBox {
 public:
   UITextViewer();
   ~UITextViewer() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot31(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
   void Configure(int x, int y, int width, int height, unsigned char transparent) override;
   void AddLine(const char* text) override;
   void Clear() override;
@@ -49,7 +49,7 @@ private:
 class UITextViewEX : public UITextViewer {
 public:
   void Configure(int x, int y, int width, int height, unsigned char transparent) override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   void Clear() override;
   void Refresh() override;

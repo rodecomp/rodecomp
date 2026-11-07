@@ -13,7 +13,7 @@ CLevel99Effect::CLevel99Effect() : CEffect(200) {
 
 // OFFSET: 0x00B6A250
 // FUNCTION: fn_19081
-void CLevel99Effect::Slot08(int red, int green, int blue) {
+void CLevel99Effect::SetColor(int red, int green, int blue) {
   for (std::vector<CParticle*>::iterator it = this->sparkles.begin(); it != this->sparkles.end(); ++it) {
     (*it)->SetColor(red, green, blue);
   }
@@ -24,7 +24,7 @@ void CLevel99Effect::Slot08(int red, int green, int blue) {
 
 // OFFSET: 0x00B6A2D0
 // FUNCTION: fn_19082
-void CLevel99Effect::Slot11(std::string name) {
+void CLevel99Effect::SetParticleTexture(std::string name) {
   for (auto it = this->sparkles.begin(); it != this->sparkles.end(); ++it) {
     (*it)->SetTexture(name);
   }
@@ -123,7 +123,7 @@ void CLevel99Effect::Close() {
 
 // OFFSET: 0x00B6AAD0
 // FUNCTION: fn_19085
-void CLevel99Effect::Slot01() {
+void CLevel99Effect::Open() {
   int index = 0;
   int tilt = 0;
   int angle = 0;
@@ -153,13 +153,13 @@ void CLevel99Effect::Slot01() {
 
 // OFFSET: 0x00B6ABB0
 // FUNCTION: fn_19086
-bool CLevel99Effect::Slot06() {
+bool CLevel99Effect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B6AC90
 // FUNCTION: fn_19087
-void CLevel99Effect::Slot03() {
+void CLevel99Effect::OnProcess() {
   for (auto it = this->sparkles.begin(); it != this->sparkles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -210,7 +210,7 @@ void CLevel99Effect::Slot03() {
 
 // OFFSET: 0x00B6B0E0
 // FUNCTION: fn_19088
-void CLevel99Effect::Slot04() {
+void CLevel99Effect::Render() {
   for (std::vector<CParticle*>::iterator it = this->sparkles.begin(); it != this->sparkles.end(); ++it) {
     CParticle* sparkle = *it;
     if (sparkle) {

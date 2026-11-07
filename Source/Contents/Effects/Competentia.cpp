@@ -12,7 +12,7 @@
 
 // OFFSET: 0x007088B0
 // FUNCTION: fn_07076
-void CNyanggrassEffect::Slot04() {
+void CNyanggrassEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle != nullptr) {
@@ -39,7 +39,7 @@ void CCompetentia::Close() {
 
 // OFFSET: 0x00708AD0
 // FUNCTION: fn_07080
-void CCompetentia::Slot01() {
+void CCompetentia::Open() {
   for (int i = 0; i < 10; ++i) {
     const vector2d point = RandomDiscPoint(this->position[0], this->position[2], 50);
     vector3d pos;
@@ -61,13 +61,13 @@ void CCompetentia::Slot01() {
 
 // OFFSET: 0x00708CB0
 // FUNCTION: fn_07081
-bool CCompetentia::Slot06() {
+bool CCompetentia::IsAlive() {
   return !this->particles.empty();
 }
 
 // OFFSET: 0x00708CC0
 // FUNCTION: fn_07082
-void CCompetentia::Slot03() {
+void CCompetentia::OnProcess() {
   for (auto current = this->particles.begin(); current != this->particles.end();) {
     CParticle* particle = *current;
     if (particle->life == 0.0f || static_cast<float>(particle->unknown_00E8) < particle->life * 60.0f) {
@@ -84,7 +84,7 @@ void CCompetentia::Slot03() {
 
 // OFFSET: 0x00708DB0
 // FUNCTION: fn_07083
-void CCompetentia::Slot04() {
+void CCompetentia::Render() {
   for (auto current = this->particles.begin(); current != this->particles.end(); ++current) {
     CParticle* particle = *current;
     if (particle) {
@@ -96,7 +96,7 @@ void CCompetentia::Slot04() {
 
 // OFFSET: 0x00708E30
 // FUNCTION: fn_07084
-void CCompetentia::Slot14(int argument) {
+void CCompetentia::SetLifeTime(int argument) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

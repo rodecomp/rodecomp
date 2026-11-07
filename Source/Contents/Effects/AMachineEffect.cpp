@@ -13,7 +13,7 @@ CAMachineEffect::CAMachineEffect() : CEffect(-1), unknown_00D4(0) {
 
 // OFFSET: 0x006F6A50
 // FUNCTION: fn_06851
-void CAMachineEffect::Slot01() {
+void CAMachineEffect::Open() {
   this->retained = 1;
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
@@ -50,7 +50,7 @@ void CAMachineEffect::Close() {
 
 // OFFSET: 0x006F6DB0
 // FUNCTION: fn_06853
-void CAMachineEffect::Slot03() {
+void CAMachineEffect::OnProcess() {
   const int key = this->unknown_00D4;
   std::map<int, CEZ2STRParticle*>::iterator it = this->unknown_00CC.find(key);
   if (it == this->unknown_00CC.end()) {
@@ -80,7 +80,7 @@ void CAMachineEffect::Slot03() {
 
 // OFFSET: 0x006F7000
 // FUNCTION: fn_06854
-void CAMachineEffect::Slot04() {
+void CAMachineEffect::Render() {
   const int key = this->unknown_00D4;
   std::map<int, CEZ2STRParticle*>::iterator it = this->unknown_00CC.find(key);
   if (it == this->unknown_00CC.end()) {
@@ -97,7 +97,7 @@ void CAMachineEffect::Slot04() {
 
 // OFFSET: 0x006F6DA0
 // FUNCTION: fn_06852
-bool CAMachineEffect::Slot06() {
+bool CAMachineEffect::IsAlive() {
   return this->ActorExists();
 }
 

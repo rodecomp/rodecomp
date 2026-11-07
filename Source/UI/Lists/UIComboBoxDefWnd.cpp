@@ -46,7 +46,7 @@ UIComboBoxDefWnd::~UIComboBoxDefWnd() = default;
 
 // OFFSET: 0x00885920
 // FUNCTION: fn_11319
-void UIComboBoxDefWnd::Slot15(int, int) {
+void UIComboBoxDefWnd::OnCreate(int, int) {
   const std::string path = "유저인터페이스\\basic_interface\\";
 
   this->button = new UIBitmapButton();
@@ -122,7 +122,7 @@ void UIComboBoxDefWnd::Paint() {
 
 // OFFSET: 0x00890B50
 // FUNCTION: fn_11434
-void UIComboBoxDefWnd::Slot31(int, int) {
+void UIComboBoxDefWnd::OnLBtnUp(int, int) {
   this->SendMsg(nullptr, 6, 273, 0, 0, 0);
 }
 
@@ -263,7 +263,7 @@ UIComboBoxDef2Wnd::~UIComboBoxDef2Wnd() = default;
 
 // OFFSET: 0x00885250
 // FUNCTION: fn_11318
-void UIComboBoxDef2Wnd::Slot15(int width, int) {
+void UIComboBoxDef2Wnd::OnCreate(int width, int) {
   std::string path = "유저인터페이스\\UIadventurerAgency\\";
   if (this->skin == 1) {
     path = "유저인터페이스\\login_interface\\";
@@ -319,7 +319,7 @@ void UIComboBoxDef2Wnd::Paint() {
 
 // OFFSET: 0x00886C30
 // FUNCTION: fn_11329
-void UINewComboBoxCtrl::Slot15(int, int) {
+void UINewComboBoxCtrl::OnCreate(int, int) {
   const std::string base = "유저인터페이스\\basic_interface\\txtbox_btn_";
   this->button = new UIBitmapButton();
   this->button->SetBitmap((base + "a.bmp").c_str(), 0, 0);

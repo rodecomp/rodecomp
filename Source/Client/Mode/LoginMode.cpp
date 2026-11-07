@@ -981,7 +981,7 @@ void CLoginMode::End() {
 
 // OFFSET: 0x00D975C0
 // FUNCTION: fn_22301
-void CLoginMode::Slot5(int value) {
+void CLoginMode::OnUpdateEx(int value) {
   if (value != 0) {
     GetRagConnection().UpdateStatus();
   } else if (this->running == 0 || g_modalImmediate != 0) {
@@ -1527,7 +1527,7 @@ int CLoginMode::Run() {
         this->cursorType = this->pendingCursorType;
         this->cursorFrame = 0;
         this->pendingCursorType = -1;
-        this->Slot7(this->cursorType);
+        this->OnChangeState(this->cursorType);
       }
     }
 
@@ -1804,7 +1804,7 @@ void CLoginMode::Initialize(const char* name) {
   this->cursorType = g_loginStartMode;
   this->cursorFrame = 0;
   this->pendingCursorType = -1;
-  this->Slot7(g_loginStartMode);
+  this->OnChangeState(g_loginStartMode);
   g_loginStartMode = 3;
   g_isStopByLogin = 1;
   g_session.ClearItemContainers();
@@ -3635,7 +3635,7 @@ void __stdcall LoadCustomServerList(CLoginMode* mode) {
 
 // OFFSET: 0x00D93B20
 // FUNCTION: fn_22297
-void CLoginMode::Slot7(int value) {
+void CLoginMode::OnChangeState(int value) {
   this->otpStarted = timeGetTime();
   g_windowMgr.Shutdown();
   this->tooltip = nullptr;

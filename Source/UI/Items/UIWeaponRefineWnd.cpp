@@ -19,7 +19,7 @@
 
 // OFFSET: 0x009A07C0
 // FUNCTION: fn_13602
-std::vector<unsigned char> UIWeaponRefineWnd::Slot44() {
+std::vector<unsigned char> UIWeaponRefineWnd::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = BuildReplayTaggedRecord(22200, nullptr, 0);

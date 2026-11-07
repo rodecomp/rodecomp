@@ -13,18 +13,18 @@ class CharacterParticleBundle : public CEffect {
 public:
   CharacterParticleBundle();
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  virtual bool Slot06() = 0;
+  virtual bool IsAlive() = 0;
   ~CharacterParticleBundle() override;
-  virtual void Slot34() = 0;
-  virtual void Slot35();
-  virtual void Slot36(CEZ2STRParticle* particle) {
+  virtual void EmitParticles() = 0;
+  virtual void OnInit();
+  virtual void UpdateParticlePosition(CEZ2STRParticle* particle) {
   }
-  virtual void Slot37(CEZ2STRParticle* particle);
-  virtual void Slot38(CEZ2STRParticle* particle);
+  virtual void ProcessParticle(CEZ2STRParticle* particle);
+  virtual void RenderParticle(CEZ2STRParticle* particle);
 
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ long long startTime;
@@ -34,11 +34,11 @@ public:
 
 class CChopChopClawMarks : public CharacterParticleBundle {
 public:
-  bool Slot06() override;
+  bool IsAlive() override;
   ~CChopChopClawMarks() override;
-  void Slot34() override;
-  void Slot35() override;
-  void Slot36(CEZ2STRParticle* particle) override;
+  void EmitParticles() override;
+  void OnInit() override;
+  void UpdateParticlePosition(CEZ2STRParticle* particle) override;
 
   const std::vector<RadialGridPoint>& GetRing(int radius);
   void SpawnParticle();

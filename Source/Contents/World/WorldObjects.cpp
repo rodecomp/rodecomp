@@ -349,7 +349,7 @@ CItem* CWorld::GetItemByAID(std::uint32_t aid) const {
 CRenderObject* CWorld::GetActorByGID(int gid) const {
   auto it = std::find_if(this->actors.begin(), this->actors.end(), [gid](CRenderObject* object) {
     CGameActor* actor = static_cast<CGameActor*>(object);
-    return !actor->unknown_0314 && gid == actor->Slot42();
+    return !actor->unknown_0314 && gid == actor->GetPkState();
   });
 
   if (it != this->actors.end()) {
@@ -480,9 +480,9 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   if (((g_session.IsNpcJob(actor->GetEffectiveJob(-1)) || g_session.IsMonsterActor(actor)) && card.unknown_0094) ||
       (g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) && card.unknown_0094)) {
     this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.unknown_0094).c_str(), 0);
-  } else if (actor->Slot50() && showEmblem) {
+  } else if (actor->GetGdid() && showEmblem) {
     const unsigned char framedEmblem = g_serviceOptions.Get(0xF3);
-    std::string emblem = g_guildMgr->GetEmblemFilename(actor->Slot50());
+    std::string emblem = g_guildMgr->GetEmblemFilename(actor->GetGdid());
     this->nameBalloon->SetIcon(emblem.c_str(), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_004C == 1 && framedEmblem ? 1 : 0);
   } else if (reinterpret_cast<CGameActor*>(this->scene->player) == actor) {
     char path[256];
@@ -560,7 +560,7 @@ void CGameMode::ShowGuildEmblem(CGameActor* actor, int guildId, int unused) {
   }
 
   if (!IsAdminAccount(g_session.m_aid)) {
-    if (StateFlag02(actor->Slot13()) || StateFlag01(actor->Slot13()) || StateFlag06(actor->Slot13())) {
+    if (StateFlag02(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag06(actor->GetStateFlags())) {
       return;
     }
   }
@@ -770,12 +770,12 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       }
 
       CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
-      if (!StateFlag01(player->Slot13()) && !StateFlag02(player->Slot13())) {
+      if (!StateFlag01(player->GetStateFlags()) && !StateFlag02(player->GetStateFlags())) {
         this->actorMenuIds.push_back(0x2A);
         sprintf(line, LookupMessage(0x550), name.c_str());
         menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
       }
-      if (!StateFlag01(player->Slot13()) && !StateFlag02(player->Slot13())) {
+      if (!StateFlag01(player->GetStateFlags()) && !StateFlag02(player->GetStateFlags())) {
         this->actorMenuIds.push_back(4);
         sprintf(line, LookupMessage(0x187), name.c_str());
         menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
@@ -797,7 +797,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
 
       if (g_guildInfo.m_guildId != 0) {
         CGameActor* member = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
-        const std::uint32_t guildId = member != nullptr ? member->Slot50() : 0;
+        const std::uint32_t guildId = member != nullptr ? member->GetGdid() : 0;
         if (g_guildInfo.unknown_00AC != 0 && guildId == 0) {
           this->actorMenuIds.push_back(0x16);
           sprintf(line, LookupMessage(0x17E), name.c_str());
@@ -856,7 +856,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
 
       if (CPc* pc = dynamic_cast<CPc*>(static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId)))) {
-        const std::string code = std::string("[C-Code] : ") + ShortcutFilename(pc->Slot42());
+        const std::string code = std::string("[C-Code] : ") + ShortcutFilename(pc->GetPkState());
         this->actorMenuIds.push_back(0x39);
         menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0, 0);
       }

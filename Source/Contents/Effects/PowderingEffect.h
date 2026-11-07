@@ -13,12 +13,12 @@ class CPowderingEffect : public CEffect {
 public:
   CPowderingEffect();
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
-  void Slot12() override;
+  bool IsAlive() override;
+  void InitEvents() override;
 
   void InitSpriteParticle(CParticle* particle);
   void InitSmokeParticle(CParticle* particle);

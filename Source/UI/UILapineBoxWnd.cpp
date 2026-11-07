@@ -43,7 +43,7 @@ UILapineBoxWnd::UILapineBoxWnd()
 
 // OFFSET: 0x006006D0
 // FUNCTION: fn_04160
-void UIIngredientInfoWnd::Slot26(int, int) {
+void UIIngredientInfoWnd::OnLBtnDblClk(int, int) {
   if (this->insufficient == 1) {
     static_cast<UILapineBox_IngredientListWnd*>(this->parent)->CanUseIngredient(this->item.unknown_0000[1]);
     return;
@@ -65,7 +65,7 @@ void UIIngredientInfoWnd::Slot26(int, int) {
 
 // OFFSET: 0x00600830
 // FUNCTION: fn_04162
-void UIIngredientInfoWnd::Slot25(int x, int y) {
+void UIIngredientInfoWnd::OnLBtnDown(int x, int y) {
   if (this->insufficient != 1 && this->item.unknown_0000[1] > 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 27, this->item, this->quantity, -1);
   }
@@ -73,7 +73,7 @@ void UIIngredientInfoWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00600940
 // FUNCTION: fn_04164
-void UIIngredientInfoWnd::Slot31(int, int) {
+void UIIngredientInfoWnd::OnLBtnUp(int, int) {
   if (this->insufficient != 1) {
     this->selected = 1;
     this->Invalidate();
@@ -86,8 +86,8 @@ void UIIngredientInfoWnd::Slot31(int, int) {
 
 // OFFSET: 0x00600980
 // FUNCTION: fn_04165
-void UIIngredientInfoWnd::Slot28(int x, int y) {
-  this->Slot27(x, y);
+void UIIngredientInfoWnd::OnMouseHover(int x, int y) {
+  this->OnMouseMove(x, y);
 
   if (this->tooltip.size() > 0) {
     int tipX = 0;
@@ -99,7 +99,7 @@ void UIIngredientInfoWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x00600770
 // FUNCTION: fn_04161
-void UILapineBoxWnd::Slot26(int x, int y) {
+void UILapineBoxWnd::OnLBtnDblClk(int x, int y) {
   alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
   ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
   this->ReadMaterial(&item, x, y);
@@ -115,9 +115,9 @@ void UILapineBoxWnd::Slot26(int x, int y) {
 
 // OFFSET: 0x00600870
 // FUNCTION: fn_04163
-void UILapineBoxWnd::Slot25(int x, int y) {
+void UILapineBoxWnd::OnLBtnDown(int x, int y) {
   if (y < 0x11) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 
   alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
@@ -133,8 +133,8 @@ void UILapineBoxWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x006009F0
 // FUNCTION: fn_04166
-void UILapineBoxWnd::Slot28(int x, int y) {
-  this->Slot27(x, y);
+void UILapineBoxWnd::OnMouseHover(int x, int y) {
+  this->OnMouseMove(x, y);
 
   alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
   ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
@@ -163,7 +163,7 @@ void UILapineBoxWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x00600B60
 // FUNCTION: fn_04167
-void UILapineBoxWnd::Slot19() {
+void UILapineBoxWnd::OnProcess() {
   if (this->waiting == 0) {
     const int count = static_cast<int>(this->items.size());
     if (this->maxItems == count) {
@@ -188,7 +188,7 @@ void UILapineBoxWnd::Slot19() {
 
 // OFFSET: 0x00600C00
 // FUNCTION: fn_04168
-void UIIngredientInfoWnd::Slot32(int, int) {
+void UIIngredientInfoWnd::OnRBtnDown(int, int) {
   if (this->item.unknown_0000[1] > 0) {
     UIWindow* window = g_windowMgr.EnsureWindow(12);
     window->SendMsg(this, 0x18, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
@@ -299,7 +299,7 @@ void UILapineBoxWnd::SetWaiting(unsigned char waiting) {
 
 // OFFSET: 0x00600C40
 // FUNCTION: fn_04169
-void UILapineBoxWnd::Slot32(int x, int y) {
+void UILapineBoxWnd::OnRBtnDown(int x, int y) {
   alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
   ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
   this->ReadMaterial(&item, x, y);
@@ -314,14 +314,14 @@ void UILapineBoxWnd::Slot32(int x, int y) {
 
 // OFFSET: 0x00600D00
 // FUNCTION: fn_04170
-void UIIngredientInfoWnd::Slot35(int argument) {
+void UIIngredientInfoWnd::OnWheel(int argument) {
   if (this->parent) {
-    this->parent->Slot35(argument);
+    this->parent->OnWheel(argument);
   }
 }
 // OFFSET: 0x00600D20
 // FUNCTION: fn_04171
-void UILapineBox_IngredientListWnd::Slot35(int argument) {
+void UILapineBox_IngredientListWnd::OnWheel(int argument) {
   if (this->wheelScroll == 1) {
     if (argument < 0) {
       this->SendMsg(this->scrollBar, 7, 15, 0, 0, 0);
@@ -504,7 +504,7 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
         y += 0x1E;
       }
     }
-    this->Slot53();
+    this->UpdateScrollRange();
     this->Invalidate();
     break;
   }

@@ -12,12 +12,12 @@ class CCompetentia : public CEffect {
 public:
   CCompetentia();
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
-  void Slot14(int argument) override;
+  bool IsAlive() override;
+  void SetLifeTime(int argument) override;
 
   /* 00CC */ std::vector<CParticle*> particles;
 };

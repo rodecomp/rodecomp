@@ -86,7 +86,7 @@ void UIItemReformWnd_List::Move(int x, int y) {
 
 // OFFSET: 0x005FCD20
 // FUNCTION: fn_04108
-void UIItemReformWnd::Slot15(int width, int height) {
+void UIItemReformWnd::OnCreate(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
@@ -136,7 +136,7 @@ void UIItemReformWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x005FD1B0
 // FUNCTION: fn_04109
-void UIItemReformWnd_List::Slot15(int width, int height) {
+void UIItemReformWnd_List::OnCreate(int width, int height) {
   this->scrollBar = new UIScrollBar();
   this->scrollBar->Configure(width - 13, 0, 1, height);
   this->scrollBar->Show(0);
@@ -227,7 +227,7 @@ void UIItemReformWnd_List::Paint() {
 
 // OFFSET: 0x005FDA60
 // FUNCTION: fn_04117
-void UIItemReformWnd_List::Slot31(int x, int y) {
+void UIItemReformWnd_List::OnLBtnUp(int x, int y) {
   const unsigned int count = this->items.size();
   const unsigned int index = std::max(0u, std::min(y / this->itemHeight + this->scrollPosition, count - 1));
   if (index < count && this->selectedIndex != index) {
@@ -241,7 +241,7 @@ void UIItemReformWnd_List::Slot31(int x, int y) {
 
 // OFFSET: 0x005FDB00
 // FUNCTION: fn_04118
-void UIItemReformWnd_DetailBtn::Slot47() {
+void UIItemReformWnd_DetailBtn::OnMouseEnter() {
   if (this->parent) {
     this->parent->SendMsg(this, 167, 0, 0, 0, 0);
   }
@@ -249,7 +249,7 @@ void UIItemReformWnd_DetailBtn::Slot47() {
 
 // OFFSET: 0x005FDB20
 // FUNCTION: fn_04119
-void UIItemReformWnd_Item::Slot28(int x, int y) {
+void UIItemReformWnd_Item::OnMouseHover(int x, int y) {
   if (this->item) {
     int screenX = x;
     int screenY = y;
@@ -262,7 +262,7 @@ void UIItemReformWnd_Item::Slot28(int x, int y) {
 
 // OFFSET: 0x005FDBE0
 // FUNCTION: fn_04120
-void UIItemReformWnd_List::Slot28(int x, int y) {
+void UIItemReformWnd_List::OnMouseHover(int x, int y) {
   const unsigned int count = this->items.size();
   const unsigned int index = std::max(0u, std::min(y / this->itemHeight + this->scrollPosition, count - 1));
   if (index < count && this->hoverIndex != index) {
@@ -273,7 +273,7 @@ void UIItemReformWnd_List::Slot28(int x, int y) {
 
 // OFFSET: 0x005FDC50
 // FUNCTION: fn_04121
-void UIItemReformWnd_DetailBtn::Slot48() {
+void UIItemReformWnd_DetailBtn::OnMouseLeave() {
   if (this->parent) {
     this->parent->SendMsg(this, 168, 0, 0, 0, 0);
   }
@@ -281,7 +281,7 @@ void UIItemReformWnd_DetailBtn::Slot48() {
 
 // OFFSET: 0x005FDC80
 // FUNCTION: fn_04123
-void UIItemReformWnd::Slot19() {
+void UIItemReformWnd::OnProcess() {
   if (this->detailMsg) {
     g_windowMgr.Promote(this->detailMsg);
     this->detailMsg->Move(g_mouse.x + 5, g_mouse.y + 5);
@@ -290,7 +290,7 @@ void UIItemReformWnd::Slot19() {
 
 // OFFSET: 0x005FDCC0
 // FUNCTION: fn_04124
-void UIItemReformWnd_Item::Slot32(int x, int y) {
+void UIItemReformWnd_Item::OnRBtnDown(int x, int y) {
   if (this->item) {
     if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
       window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(this->item), 0, 0, 0);
@@ -300,7 +300,7 @@ void UIItemReformWnd_Item::Slot32(int x, int y) {
 
 // OFFSET: 0x005FDD10
 // FUNCTION: fn_04126
-void UIItemReformWnd_List::Slot33(int x, int y) {
+void UIItemReformWnd_List::OnRBtnUp(int x, int y) {
   const unsigned int count = this->items.size();
   const unsigned int index = std::max(0u, std::min(y / this->itemHeight + this->scrollPosition, count - 1));
   if (index < count) {
@@ -312,7 +312,7 @@ void UIItemReformWnd_List::Slot33(int x, int y) {
 
 // OFFSET: 0x005FDDA0
 // FUNCTION: fn_04127
-void UIItemReformWnd_List::Slot35(int delta) {
+void UIItemReformWnd_List::OnWheel(int delta) {
   if (delta < 0) {
     this->SendMsg(this->scrollBar, 10, 0, 0, 0, 0);
   } else {

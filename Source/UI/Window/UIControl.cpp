@@ -252,41 +252,41 @@ bool CUIControl::CanHitTest() {
 
 // OFFSET: 0x009EEAD0
 // FUNCTION: fn_14634
-void CUIControl::Slot10(int x, int y, std::intptr_t value) {
+void CUIControl::DragAndDrop(int x, int y, std::intptr_t value) {
   if (this->parent) {
-    this->parent->Slot10(x + this->geometry.x, y + this->geometry.y, value);
+    this->parent->DragAndDrop(x + this->geometry.x, y + this->geometry.y, value);
   }
 }
 
 // OFFSET: 0x009EF680
 // FUNCTION: fn_14639
-void CUIControl::Slot25(int x, int y) {
+void CUIControl::OnLBtnDown(int x, int y) {
   if (this->parent) {
-    this->parent->Slot25(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnLBtnDown(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x009EF650
 // FUNCTION: fn_14638
-void CUIControl::Slot26(int x, int y) {
+void CUIControl::OnLBtnDblClk(int x, int y) {
   if (this->parent) {
-    this->parent->Slot26(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnLBtnDblClk(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x009EF710
 // FUNCTION: fn_14642
-void CUIControl::Slot27(int x, int y) {
+void CUIControl::OnMouseMove(int x, int y) {
   if (this->parent) {
-    this->parent->Slot27(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnMouseMove(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x009EF6E0
 // FUNCTION: fn_14641
-void CUIControl::Slot28(int x, int y) {
+void CUIControl::OnMouseHover(int x, int y) {
   if (this->parent) {
-    this->parent->Slot28(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnMouseHover(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -300,41 +300,41 @@ void CUIControl::ResetCursor(int x, int y) {
 
 // OFFSET: 0x009EF6B0
 // FUNCTION: fn_14640
-void CUIControl::Slot31(int x, int y) {
+void CUIControl::OnLBtnUp(int x, int y) {
   if (this->parent) {
-    this->parent->Slot31(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnLBtnUp(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x009EF7A0
 // FUNCTION: fn_14645
-void CUIControl::Slot32(int x, int y) {
+void CUIControl::OnRBtnDown(int x, int y) {
   if (this->parent) {
-    this->parent->Slot32(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnRBtnDown(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x009EF7D0
 // FUNCTION: fn_14646
-void CUIControl::Slot33(int x, int y) {
+void CUIControl::OnRBtnUp(int x, int y) {
   if (this->parent) {
-    this->parent->Slot33(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnRBtnUp(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x009EF770
 // FUNCTION: fn_14644
-void CUIControl::Slot34(int x, int y) {
+void CUIControl::OnRBtnDblClk(int x, int y) {
   if (this->parent) {
-    this->parent->Slot34(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnRBtnDblClk(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x009EF800
 // FUNCTION: fn_14647
-void CUIControl::Slot35(int value) {
+void CUIControl::OnWheel(int value) {
   if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
@@ -354,17 +354,17 @@ void CUIControl::Invalidate() {
 
 // OFFSET: 0x009EF820
 // FUNCTION: fn_14648
-void CUIControl::Slot52(int value) {
-  this->Slot53(value);
+void CUIControl::ApplySkin(int value) {
+  this->LoadSkin(value);
 
   for (UIWindow* child : this->m_children) {
-    child->Slot52(value);
+    child->ApplySkin(value);
   }
 }
 
 // OFFSET: 0x009D3FC0
 // FUNCTION: fn_14036
-void CUIControl::Slot53(int) {
+void CUIControl::LoadSkin(int) {
 }
 
 // OFFSET: 0x009C0220
@@ -407,7 +407,7 @@ void CUIVScrollBar::SetPosition(int value) {
     this->position = *clamped;
   }
   this->Show(this->total > this->visible);
-  this->Slot54();
+  this->UpdateThumb();
   if (this->onChange) {
     this->onChange(this->position);
   }
@@ -416,7 +416,7 @@ void CUIVScrollBar::SetPosition(int value) {
 
 // OFFSET: 0x009F23B0
 // FUNCTION: fn_14709
-void CUIVScrollBar::Slot25(int, int y) {
+void CUIVScrollBar::OnLBtnDown(int, int y) {
   const int top = this->thumb->geometry.y;
   if (y < top) {
     this->SetPosition(this->position - this->step);
@@ -433,14 +433,14 @@ void CUITab::Paint() {
 
 // OFFSET: 0x009F2400
 // FUNCTION: fn_14710
-void CUIVThumb::Slot25(int, int y) {
+void CUIVThumb::OnLBtnDown(int, int y) {
   g_windowMgr.SetCapture(this);
   this->dragOrigin = y;
 }
 
 // OFFSET: 0x009F2420
 // FUNCTION: fn_14711
-void CUIVThumb::Slot31(int, int y) {
+void CUIVThumb::OnLBtnUp(int, int y) {
   if (this == g_windowMgr.Capture()) {
     g_windowMgr.ReleaseCapture();
   }
@@ -449,7 +449,7 @@ void CUIVThumb::Slot31(int, int y) {
 
 // OFFSET: 0x009F24B0
 // FUNCTION: fn_14713
-void CUIVThumb::Slot27(int, int y) {
+void CUIVThumb::OnMouseMove(int, int y) {
   if (this == g_windowMgr.Capture() && y != this->dragOrigin && this->onDrag) {
     this->onDrag(y - this->dragOrigin);
   }
@@ -506,14 +506,14 @@ void CUIHThumb::Paint() {
 
 // OFFSET: 0x009EE1E0
 // FUNCTION: fn_14600
-void CUIHThumb::Slot25(int x, int) {
+void CUIHThumb::OnLBtnDown(int x, int) {
   g_windowMgr.SetCapture(this);
   this->dragOrigin = x;
 }
 
 // OFFSET: 0x009EE200
 // FUNCTION: fn_14601
-void CUIHThumb::Slot31(int x, int) {
+void CUIHThumb::OnLBtnUp(int x, int) {
   if (this == g_windowMgr.Capture()) {
     g_windowMgr.ReleaseCapture();
   }
@@ -522,7 +522,7 @@ void CUIHThumb::Slot31(int x, int) {
 
 // OFFSET: 0x009EE230
 // FUNCTION: fn_14602
-void CUIHThumb::Slot27(int x, int) {
+void CUIHThumb::OnMouseMove(int x, int) {
   if (this == g_windowMgr.Capture() && x != this->dragOrigin && this->onDrag) {
     this->onDrag(x - this->dragOrigin);
   }
@@ -536,7 +536,7 @@ void CUIThumb::ResetCursor(int, int) {
 
 // OFFSET: 0x009F2450
 // FUNCTION: fn_14712
-void CUIThumb::Slot28(int, int) {
+void CUIThumb::OnMouseHover(int, int) {
   if (!this->tooltip.empty()) {
     int screenX = 0;
     int screenY = -20;
@@ -547,7 +547,7 @@ void CUIThumb::Slot28(int, int) {
 
 // OFFSET: 0x009F2500
 // FUNCTION: fn_14715
-void CUIVScrollBar::Slot35(int value) {
+void CUIVScrollBar::OnWheel(int value) {
   this->SetPosition(value > 0 ? this->position - this->step : this->step + this->position);
 }
 
@@ -558,7 +558,7 @@ void CUIThumb::SetImages(const std::string& top, const std::string& middle, cons
   this->topName = top;
   this->middleName = middle;
   this->bottomName = bottom;
-  this->Slot53(0);
+  this->LoadSkin(0);
   this->Invalidate();
 }
 
@@ -567,7 +567,7 @@ void CUIThumb::SetImages(const std::string& top, const std::string& middle, cons
 void CUIThumb::SetImage(const std::string& name) {
   this->resizable = 0;
   this->middleName = name;
-  this->Slot53(0);
+  this->LoadSkin(0);
   this->Invalidate();
 }
 
@@ -579,7 +579,7 @@ void CUIVScrollBar::Show(int visible) {
 
 // OFFSET: 0x009F25C0
 // FUNCTION: fn_14717
-void CUIVScrollBar::Slot54() {
+void CUIVScrollBar::UpdateThumb() {
   CUIThumb* bar = this->thumb;
   float offset;
   if (bar->resizable) {
@@ -623,7 +623,7 @@ void CUIVScrollBar::Paint() {
 
 // OFFSET: 0x009F2800
 // FUNCTION: fn_14719
-void CUIVScrollBar::Slot53(int resolveSkin) {
+void CUIVScrollBar::LoadSkin(int resolveSkin) {
   this->background = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->backgroundName, resolveSkin));
 }
 
@@ -680,7 +680,7 @@ void CUIVScrollBar::SetThumbImages(const std::string& top, const std::string& mi
   bar->topName = top;
   bar->middleName = middle;
   bar->bottomName = bottom;
-  bar->Slot53(0);
+  bar->LoadSkin(0);
   bar->Invalidate();
   this->Invalidate();
 }
@@ -699,7 +699,7 @@ void CUIVScrollBar::SetThumbImage(const std::string& name) {
     CUIThumb* bar = this->thumb;
     bar->resizable = 0;
     bar->middleName = name;
-    bar->Slot53(0);
+    bar->LoadSkin(0);
     bar->Invalidate();
   }
 
@@ -716,7 +716,7 @@ void CUIVScrollBar::SetThumbTooltip(const std::string& text) {
 // FUNCTION: fn_14731
 void CUIVScrollBar::SetBackground(const std::string& name) {
   this->backgroundName = name;
-  this->Slot53(0);
+  this->LoadSkin(0);
   this->Invalidate();
 }
 
@@ -768,7 +768,7 @@ void CUIVThumb::Paint() {
 #pragma inline_depth(0)
 // OFFSET: 0x009F1650
 // FUNCTION: fn_14692
-void CUITabButton::Slot47() {
+void CUITabButton::OnMouseEnter() {
   if (this->state != 1) {
     this->SetState(2);
   }
@@ -776,7 +776,7 @@ void CUITabButton::Slot47() {
 
 // OFFSET: 0x009F1670
 // FUNCTION: fn_14693
-void CUITabButton::Slot48() {
+void CUITabButton::OnMouseLeave() {
   if (this->state != 1) {
     this->SetState(0);
   }
@@ -803,13 +803,13 @@ void CUIButton::SetOnClick(std::function<void()> handler) {
 
 // OFFSET: 0x009EE920
 // FUNCTION: fn_14627
-void CUIButton::Slot26(int x, int y) {
-  this->Slot25(x, y);
+void CUIButton::OnLBtnDblClk(int x, int y) {
+  this->OnLBtnDown(x, y);
 }
 
 // OFFSET: 0x009EE930
 // FUNCTION: fn_14628
-void CUIButton::Slot25(int, int) {
+void CUIButton::OnLBtnDown(int, int) {
   this->SetState(1);
   if (!this->disabled) {
     g_windowMgr.SetCapture(this);
@@ -818,11 +818,11 @@ void CUIButton::Slot25(int, int) {
 
 // OFFSET: 0x009EE970
 // FUNCTION: fn_14629
-void CUIButton::Slot31(int, int) {
+void CUIButton::OnLBtnUp(int, int) {
   this->SetState(2);
   if (this == g_windowMgr.Capture()) {
     if (!this->disabled && this->unknown_00C4) {
-      this->unknown_00C4->Slot02();
+      this->unknown_00C4->IsFrameWnd();
     }
     g_windowMgr.ReleaseCapture();
   }
@@ -830,15 +830,15 @@ void CUIButton::Slot31(int, int) {
 
 // OFFSET: 0x009EE9D0
 // FUNCTION: fn_14630
-void CUIButton::Slot47() {
+void CUIButton::OnMouseEnter() {
   this->SetState(2);
 }
 
 // OFFSET: 0x009EEA00
 // FUNCTION: fn_14631
-void CUIButton::Slot28(int, int) {
+void CUIButton::OnMouseHover(int, int) {
   if (this->unknown_00EC) {
-    this->unknown_00EC->Slot02();
+    this->unknown_00EC->IsFrameWnd();
   }
 
   if (this->tooltip.empty()) {
@@ -855,7 +855,7 @@ void CUIButton::Slot28(int, int) {
 
 // OFFSET: 0x009EEA70
 // FUNCTION: fn_14632
-void CUIButton::Slot48() {
+void CUIButton::OnMouseLeave() {
   this->SetState(0);
 }
 
@@ -908,12 +908,12 @@ void CUITextButton::DrawVerticalLabel() {
 // FUNCTION: fn_14564
 void CUITextButton::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  this->Slot55();
+  this->DrawLabel();
 }
 
 // OFFSET: 0x009ECF60
 // FUNCTION: fn_14565
-void CUITextButton::Slot28(int, int) {
+void CUITextButton::OnMouseHover(int, int) {
   if (!this->tooltipText.empty()) {
     int screenX = 0;
     int screenY = -20;
@@ -956,7 +956,7 @@ void CUITextButton::SetShadow(bool enabled, std::uint32_t color) {
 // FUNCTION: fn_14407
 void CUIBasicButton::Resize(int width, int height) {
   UIWindow::Resize(width, height);
-  this->Slot53(0);
+  this->LoadSkin(0);
 }
 
 // OFFSET: 0x009E1DE0
@@ -965,8 +965,8 @@ void CUIBasicButton::Create(int width, int height) {
   this->defaultWidth = width;
   this->SetAlign(6, 6);
   this->Resize(width, height);
-  this->Slot15(width, height);
-  this->Slot16();
+  this->OnCreate(width, height);
+  this->OnInit();
 }
 
 // OFFSET: 0x009E1F90
@@ -994,12 +994,12 @@ void CUIBasicButton::Paint() {
     this->DrawBitmap(this->geometry.width - right->image.width, 0, right, false);
   }
 
-  this->Slot55();
+  this->DrawLabel();
 }
 
 // OFFSET: 0x009E20B0
 // FUNCTION: fn_14406
-void CUIBasicButton::Slot53(int resolveSkin) {
+void CUIBasicButton::LoadSkin(int resolveSkin) {
   this->leftImages[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_left.bmp", resolveSkin));
   this->leftImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_left.bmp", resolveSkin));
   this->leftImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_left.bmp", resolveSkin));
@@ -1016,7 +1016,7 @@ void CUIBasicButton::Slot53(int resolveSkin) {
 
 // OFFSET: 0x009F26B0
 // FUNCTION: fn_14718
-void CUIThumb::Slot53(int resolveSkin) {
+void CUIThumb::LoadSkin(int resolveSkin) {
   this->middle = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->middleName, resolveSkin));
   if (this->resizable) {
     this->top = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->topName, resolveSkin));
@@ -1154,7 +1154,7 @@ void CUITabButton::SetSelected(bool selected) {
     this->page->Show(selected);
   }
   if (selected && this->unknown_00C4) {
-    this->unknown_00C4->Slot02();
+    this->unknown_00C4->IsFrameWnd();
   }
   this->Invalidate();
 }
@@ -1169,13 +1169,13 @@ void CUITabButton::SetSkinColors(int normalColumn, int normalRow, int selectedCo
   this->borderCell.column = borderColumn;
   this->borderCell.row = borderRow;
   this->useSkinColors = 1;
-  this->Slot53(0);
+  this->LoadSkin(0);
   this->Invalidate();
 }
 
 // OFFSET: 0x009F1600
 // FUNCTION: fn_14690
-void CUITabButton::Slot25(int, int) {
+void CUITabButton::OnLBtnDown(int, int) {
   if (!this->disabled) {
     g_windowMgr.SetCapture(this);
     if (this->parent) {
@@ -1186,7 +1186,7 @@ void CUITabButton::Slot25(int, int) {
 
 // OFFSET: 0x009F1630
 // FUNCTION: fn_14691
-void CUITabButton::Slot31(int, int) {
+void CUITabButton::OnLBtnUp(int, int) {
   if (this == g_windowMgr.Capture()) {
     g_windowMgr.ReleaseCapture();
   }
@@ -1194,11 +1194,11 @@ void CUITabButton::Slot31(int, int) {
 
 // OFFSET: 0x009F1690
 // FUNCTION: fn_14694
-void CUITabButton::Slot53(int resolveSkin) {
+void CUITabButton::LoadSkin(int resolveSkin) {
   this->normalColor = SkinPaletteColor(ResourceMgr::Instance(), this->normalCell, resolveSkin);
   this->selectedColor = SkinPaletteColor(ResourceMgr::Instance(), this->selectedCell, resolveSkin);
   this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), this->borderCell, resolveSkin);
-  this->CUIImageTextButton::Slot53(resolveSkin);
+  this->CUIImageTextButton::LoadSkin(resolveSkin);
 }
 
 // OFFSET: 0x009ED6D0
@@ -1248,7 +1248,7 @@ void CUIStaticImage::Paint() {
 
 // OFFSET: 0x009F0840
 // FUNCTION: fn_14666
-void CUIStaticImage::Slot28(int, int) {
+void CUIStaticImage::OnMouseHover(int, int) {
   int x = 0;
   int y = -8;
   this->ToScreen(x, y);
@@ -1257,7 +1257,7 @@ void CUIStaticImage::Slot28(int, int) {
 
 // OFFSET: 0x009F08A0
 // FUNCTION: fn_14667
-void CUIStaticImage::Slot53(int resolveSkin) {
+void CUIStaticImage::LoadSkin(int resolveSkin) {
   this->image = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageName, resolveSkin));
 }
 
@@ -1265,7 +1265,7 @@ void CUIStaticImage::Slot53(int resolveSkin) {
 // FUNCTION: fn_14668
 void CUIStaticImage::SetImage(const std::string& name) {
   this->imageName = name;
-  this->Slot53(0);
+  this->LoadSkin(0);
   this->Invalidate();
 }
 
@@ -1297,7 +1297,7 @@ void CUITitleBar::SetImages(const std::string& left, const std::string& middle, 
   this->leftName = left;
   this->middleName = middle;
   this->rightName = right;
-  this->Slot53(0);
+  this->LoadSkin(0);
   this->Invalidate();
 }
 
@@ -1342,7 +1342,7 @@ void CUITitleBar::Paint() {
 
 // OFFSET: 0x009F1AA0
 // FUNCTION: fn_14699
-void CUITitleBar::Slot53(int resolveSkin) {
+void CUITitleBar::LoadSkin(int resolveSkin) {
   this->middle = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->middleName, resolveSkin));
   if (this->resizable) {
     this->left = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->leftName, resolveSkin));
@@ -1469,7 +1469,7 @@ void CUIImageButton::Paint() {
 
 // OFFSET: 0x009EF900
 // FUNCTION: fn_14650
-void CUIImageButton::Slot53(int resolveSkin) {
+void CUIImageButton::LoadSkin(int resolveSkin) {
   this->images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -1483,7 +1483,7 @@ void CUIImageButton::SetImages(const std::string& normal, const std::string& hov
   this->imageNames[1] = hover;
   this->imageNames[2] = pressed;
   this->disabledName = inactive;
-  this->Slot53(0);
+  this->LoadSkin(0);
   this->Invalidate();
 }
 
@@ -1509,7 +1509,7 @@ void CUICheckBox::Paint() {
 
 // OFFSET: 0x009E3230
 // FUNCTION: fn_14412
-void CUICheckBox::Slot25(int, int) {
+void CUICheckBox::OnLBtnDown(int, int) {
   if (this->disabled) {
     return;
   }
@@ -1524,7 +1524,7 @@ void CUICheckBox::Slot25(int, int) {
 
 // OFFSET: 0x009E3290
 // FUNCTION: fn_14413
-void CUICheckBox::Slot31(int, int) {
+void CUICheckBox::OnLBtnUp(int, int) {
   if (this == g_windowMgr.Capture()) {
     g_windowMgr.ReleaseCapture();
   }
@@ -1555,7 +1555,7 @@ CUIImageTextButton::~CUIImageTextButton() = default;
 
 // OFFSET: 0x009E8150
 // FUNCTION: fn_14490
-void CUIImageTextButton::Slot53(int resolveSkin) {
+void CUIImageTextButton::LoadSkin(int resolveSkin) {
   this->images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -1569,13 +1569,13 @@ void CUIImageTextButton::SetImages(const std::string& normal, const std::string&
   this->imageNames[1] = hover;
   this->imageNames[2] = pressed;
   this->disabledName = inactive;
-  this->Slot53(0);
+  this->LoadSkin(0);
   this->Invalidate();
 }
 
 // OFFSET: 0x009F01B0
 // FUNCTION: fn_14656
-void CUIListItem::Slot25(int, int) {
+void CUIListItem::OnLBtnDown(int, int) {
   if (!this->frozen) {
     g_windowMgr.SetCapture(this);
     if (this->onPress) {
@@ -1586,7 +1586,7 @@ void CUIListItem::Slot25(int, int) {
 
 // OFFSET: 0x009F0210
 // FUNCTION: fn_14658
-void CUIListItem::Slot47() {
+void CUIListItem::OnMouseEnter() {
   if (this->onHover) {
     this->onHover(this);
   }
@@ -1594,7 +1594,7 @@ void CUIListItem::Slot47() {
 
 // OFFSET: 0x009F01F0
 // FUNCTION: fn_14657
-void CUIListItem::Slot31(int, int) {
+void CUIListItem::OnLBtnUp(int, int) {
   if (this == g_windowMgr.Capture()) {
     g_windowMgr.ReleaseCapture();
   }
@@ -1602,9 +1602,9 @@ void CUIListItem::Slot31(int, int) {
 
 // OFFSET: 0x009F0230
 // FUNCTION: fn_14659
-void CUIListItem::Slot27(int, int) {
+void CUIListItem::OnMouseMove(int, int) {
   if (this->selected != 2) {
-    this->Slot47();
+    this->OnMouseEnter();
   }
 }
 
@@ -1671,44 +1671,44 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Paint() {
 // OFFSET: 0x009D2490
 // FUNCTION: fn_14019
 template <>
-void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Slot35(int value) {
+void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
 // OFFSET: 0x009D24D0
 // FUNCTION: fn_14020
 template <>
-void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::Slot35(int value) {
+void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
 // OFFSET: 0x009D2510
 // FUNCTION: fn_14021
 template <>
-void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Slot35(int value) {
+void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
 // OFFSET: 0x009D2550
 // FUNCTION: fn_14022
 template <>
-void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Slot35(int value) {
+void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
@@ -1979,7 +1979,7 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem
 // OFFSET: 0x009D3360
 // FUNCTION: fn_14030
 template <>
-void CUIListBox<AdventureGuide::CUISubTab>::Slot53(int resolveSkin) {
+void CUIListBox<AdventureGuide::CUISubTab>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -1992,7 +1992,7 @@ void CUIListBox<AdventureGuide::CUISubTab>::Slot53(int resolveSkin) {
 // OFFSET: 0x009D3570
 // FUNCTION: fn_14031
 template <>
-void CUIListBox<AdventureGuide::CUITab>::Slot53(int resolveSkin) {
+void CUIListBox<AdventureGuide::CUITab>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -2005,7 +2005,7 @@ void CUIListBox<AdventureGuide::CUITab>::Slot53(int resolveSkin) {
 // OFFSET: 0x009D3780
 // FUNCTION: fn_14032
 template <>
-void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Slot53(int resolveSkin) {
+void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -2018,7 +2018,7 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Slot5
 // OFFSET: 0x009D3990
 // FUNCTION: fn_14033
 template <>
-void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::Slot53(int resolveSkin) {
+void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -2031,7 +2031,7 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
 // OFFSET: 0x009D3BA0
 // FUNCTION: fn_14034
 template <>
-void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Slot53(int resolveSkin) {
+void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -2044,7 +2044,7 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Slo
 // OFFSET: 0x009D3DB0
 // FUNCTION: fn_14035
 template <>
-void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Slot53(int resolveSkin) {
+void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -2114,8 +2114,8 @@ template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMons
 template void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::OnScroll(int);
 template void CUIListBox<AdventureGuide::CUISubTab>::Paint();
 template void CUIListBox<AdventureGuide::CUITab>::Paint();
-template void CUIListBox<AdventureGuide::CUISubTab>::Slot35(int);
-template void CUIListBox<AdventureGuide::CUITab>::Slot35(int);
+template void CUIListBox<AdventureGuide::CUISubTab>::OnWheel(int);
+template void CUIListBox<AdventureGuide::CUITab>::OnWheel(int);
 
 // OFFSET: 0x009F1D40
 // FUNCTION: fn_14703
@@ -2175,7 +2175,7 @@ void CUIHScrollBar::Paint() {
 
 // OFFSET: 0x009EE1B0
 // FUNCTION: fn_14599
-void CUIHScrollBar::Slot25(int x, int) {
+void CUIHScrollBar::OnLBtnDown(int x, int) {
   const int left = this->thumb->geometry.x;
   if (x < left) {
     this->PageUp();
@@ -2186,7 +2186,7 @@ void CUIHScrollBar::Slot25(int x, int) {
 
 // OFFSET: 0x009EE270
 // FUNCTION: fn_14603
-void CUIHScrollBar::Slot35(int value) {
+void CUIHScrollBar::OnWheel(int value) {
   if (value > 0) {
     this->PageDown();
   } else {
@@ -2196,7 +2196,7 @@ void CUIHScrollBar::Slot35(int value) {
 
 // OFFSET: 0x009EE290
 // FUNCTION: fn_14604
-void CUIHScrollBar::Slot54() {
+void CUIHScrollBar::UpdateThumb() {
   CUIThumb* bar = this->thumb;
   float offset;
   if (bar->resizable) {
@@ -2263,7 +2263,7 @@ bool CUIPadding::CanHitTest() {
 
 // OFFSET: 0x009EAE20
 // FUNCTION: fn_14543
-void CUIRadioButton::Slot25(int, int) {
+void CUIRadioButton::OnLBtnDown(int, int) {
   if (this->disabled) {
     return;
   }
@@ -2307,21 +2307,21 @@ void CUITextViewer::Paint() {
 
 // OFFSET: 0x009EA250
 // FUNCTION: fn_14516
-void CUITextViewer::Slot19() {
+void CUITextViewer::OnProcess() {
   for (UIWindow* child : this->m_children) {
-    child->Slot19();
+    child->OnProcess();
   }
 }
 
 // OFFSET: 0x009EA280
 // FUNCTION: fn_14517
-void CUITextViewer::Slot35(int value) {
+void CUITextViewer::OnWheel(int value) {
   CUIVScrollBar* bar = this->scrollBar;
 
   if (!bar->dragging && bar->total > bar->visible) {
-    bar->Slot35(value);
+    bar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
@@ -2503,7 +2503,7 @@ void CUIResizer::Paint() {
 
 // OFFSET: 0x009E9430
 // FUNCTION: fn_14504
-void CUIResizer::Slot25(int x, int y) {
+void CUIResizer::OnLBtnDown(int x, int y) {
   if (!this->parent) {
     return;
   }
@@ -2523,13 +2523,13 @@ void CUIResizer::Slot25(int x, int y) {
 
 // OFFSET: 0x009E94B0
 // FUNCTION: fn_14505
-void CUIResizer::Slot31(int x, int y) {
+void CUIResizer::OnLBtnUp(int x, int y) {
   if (!this->parent || this != g_windowMgr.Capture()) {
     return;
   }
 
   g_windowMgr.ReleaseCapture();
-  this->parent->Slot36();
+  this->parent->RefreshSnap();
   int screenX = x;
   int screenY = y;
   this->ToScreen(screenX, screenY);
@@ -2544,7 +2544,7 @@ void CUIResizer::Slot31(int x, int y) {
 
 // OFFSET: 0x009E9540
 // FUNCTION: fn_14506
-void CUIResizer::Slot27(int x, int y) {
+void CUIResizer::OnMouseMove(int x, int y) {
   if (!this->parent || this != g_windowMgr.Capture()) {
     return;
   }
@@ -2587,7 +2587,7 @@ void CUIResizer::ResetCursor(int, int) {
 
 // OFFSET: 0x009E96C0
 // FUNCTION: fn_14508
-void CUIResizer::Slot53(int resolveSkin) {
+void CUIResizer::LoadSkin(int resolveSkin) {
   this->image = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageName, resolveSkin));
   if (this->image) {
     this->Resize(this->image->image.width, this->image->image.height);
@@ -2601,7 +2601,7 @@ void CUIResizer::Slot53(int resolveSkin) {
 // FUNCTION: fn_14509
 void CUIResizer::SetImage(const std::string& name) {
   this->imageName = name;
-  this->Slot53(0);
+  this->LoadSkin(0);
   this->Invalidate();
 }
 
@@ -2838,7 +2838,7 @@ CUITabInfo::CUITabInfo() : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nu
 
 // OFFSET: 0x009F2EC0
 // FUNCTION: fn_14733
-void CUIVScrollBar::Slot55(int value) {
+void CUIVScrollBar::ScrollBy(int value) {
   const int target = this->position - value % this->step + value;
   if (target != this->position) {
     this->SetPosition(target);
@@ -2847,9 +2847,9 @@ void CUIVScrollBar::Slot55(int value) {
 
 // OFFSET: 0x009F0A70
 // FUNCTION: fn_14670
-void CUIStaticText::Slot28(int x, int y) {
+void CUIStaticText::OnMouseHover(int x, int y) {
   if (this->Tooltip().empty()) {
-    CUIControl::Slot28(x, y);
+    CUIControl::OnMouseHover(x, y);
     return;
   }
 
@@ -3045,7 +3045,7 @@ __declspec(noinline) void CUITextButton::SetText(const std::string& value) {
 
 // OFFSET: 0x009EC930
 // FUNCTION: fn_14561
-void CUITextButton::Slot54(int) {
+void CUITextButton::ResizeToText(int) {
   if (this->orientation == 1) {
     const int height = this->VerticalTextHeight(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold
     );
@@ -3073,7 +3073,7 @@ void CUITextButton::Slot54(int) {
 
 // OFFSET: 0x009F1210
 // FUNCTION: fn_14688
-void CUITabButton::Slot54(int padding) {
+void CUITabButton::ResizeToText(int padding) {
   if (this->orientation == 1) {
     const int height = this->VerticalTextHeight(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold
     );
@@ -3101,7 +3101,7 @@ void CUITabButton::Slot54(int padding) {
 
 // OFFSET: 0x009ECA30
 // FUNCTION: fn_14562
-void CUITextButton::Slot55() {
+void CUITextButton::DrawLabel() {
   if (this->displayText.size() == 0) {
     return;
   }
@@ -3156,7 +3156,7 @@ void CUITextButton::Slot55() {
 
 // OFFSET: 0x009E1E20
 // FUNCTION: fn_14404
-void CUIBasicButton::Slot55() {
+void CUIBasicButton::DrawLabel() {
   if (this->displayText.size() == 0) {
     return;
   }
@@ -3226,7 +3226,7 @@ void CUIImageTextButton::Paint() {
   if (image) {
     this->DrawBitmap(0, 0, &image->image, false);
   }
-  this->CUITextButton::Slot55();
+  this->CUITextButton::DrawLabel();
 }
 
 // OFFSET: 0x009F1320
@@ -3271,7 +3271,7 @@ void CUITabButton::Paint() {
     this->FillRegion(this->geometry.width - 1, 3, 1, this->geometry.height - 3, this->borderColor);
     this->FillRegion(0, this->geometry.height - 1, this->geometry.width, 1, this->borderColor);
   }
-  this->CUITextButton::Slot55();
+  this->CUITextButton::DrawLabel();
 }
 
 // OFFSET: 0x009EC430
@@ -3297,7 +3297,7 @@ CUIBasicButton::CUIBasicButton()
 
 // OFFSET: 0x009E9F00
 // FUNCTION: fn_14513
-void CUITextViewer::Slot15(int width, int height) {
+void CUITextViewer::OnCreate(int width, int height) {
   this->padding = new CUIPadding();
   this->padding->SetSize(width, height);
   this->AddChild(this->padding);
@@ -3471,7 +3471,7 @@ CUIFrameWnd* CUIRegisterMgr::Create(int key) {
 
   CUIFrameWnd* window = entry->second();
   window->SetId(key);
-  window->Slot53();
+  window->Initialize();
 
   if (static_cast<unsigned char>(window->unknown_00B4) != 0) {
     auto position = this->unknown_000C.find(key);
@@ -3547,7 +3547,7 @@ CUIHThumb::CUIHThumb() : CUIVThumb() {
 
 // OFFSET: 0x009EDBE0
 // FUNCTION: fn_14596
-void CUIHScrollBar::Slot15(int, int) {
+void CUIHScrollBar::OnCreate(int, int) {
   if (!this->upButton) {
     this->upButton = new CUIImageButton();
     this->upButton->Show(0);
@@ -3563,7 +3563,7 @@ void CUIHScrollBar::Slot15(int, int) {
   if (!this->thumb) {
     this->thumb = new CUIHThumb();
     this->thumb->Show(0);
-    const std::function<void(int)> onDrag = [this](int value) { this->Slot55(value); };
+    const std::function<void(int)> onDrag = [this](int value) { this->ScrollBy(value); };
     AssignHandler(this->thumb->onDrag, onDrag);
     this->AddChild(this->thumb);
   }
@@ -3571,7 +3571,7 @@ void CUIHScrollBar::Slot15(int, int) {
 
 // OFFSET: 0x009F1DE0
 // FUNCTION: fn_14706
-void CUIVScrollBar::Slot15(int, int) {
+void CUIVScrollBar::OnCreate(int, int) {
   if (!this->upButton) {
     this->upButton = new CUIImageButton();
     this->upButton->Show(0);
@@ -3587,7 +3587,7 @@ void CUIVScrollBar::Slot15(int, int) {
   if (!this->thumb) {
     this->thumb = new CUIVThumb();
     this->thumb->Show(0);
-    const std::function<void(int)> onDrag = [this](int value) { this->Slot55(value); };
+    const std::function<void(int)> onDrag = [this](int value) { this->ScrollBy(value); };
     AssignHandler(this->thumb->onDrag, onDrag);
     this->AddChild(this->thumb);
   }
@@ -3651,7 +3651,7 @@ void CUIListItem::SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitm
 
 // OFFSET: 0x009ED5C0
 // FUNCTION: fn_14580
-void CUIEditBox::Slot15(int width, int height) {
+void CUIEditBox::OnCreate(int width, int height) {
   this->edit = new CUIEditCtrl();
   this->edit->SetSize(width, height);
   this->edit->invalidatesParent = 1;

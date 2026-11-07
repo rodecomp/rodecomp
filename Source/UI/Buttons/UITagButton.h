@@ -17,7 +17,7 @@ public:
   /* 00F8 */ ITEM_INFO item;
   /* 01F0 */ std::vector<std::string> m_strings;
 
-  void Slot31(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
 
   void AddString(std::string text);
   std::string GetString(std::size_t index);

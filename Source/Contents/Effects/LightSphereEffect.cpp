@@ -117,7 +117,7 @@ void CLightSphereEffect::Close() {
 
 // OFFSET: 0x00B6D060
 // FUNCTION: fn_19107
-void CLightSphereEffect::Slot01() {
+void CLightSphereEffect::Open() {
   for (int i = 0; i < 4; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(&this->position), 5);
     if (particle != nullptr) {
@@ -154,7 +154,7 @@ void CLightSphereEffect::Slot01() {
 
 // OFFSET: 0x00B6D160
 // FUNCTION: fn_19108
-bool CLightSphereEffect::Slot06() {
+bool CLightSphereEffect::IsAlive() {
   std::vector<CParticle*>::iterator sphere = this->spheres.begin();
   for (; sphere != this->spheres.end(); ++sphere) {
     if ((*sphere)->alpha > 0) {
@@ -174,7 +174,7 @@ bool CLightSphereEffect::Slot06() {
 
 // OFFSET: 0x00B6D1C0
 // FUNCTION: fn_19109
-void CLightSphereEffect::Slot03() {
+void CLightSphereEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->spheres.begin(); it != this->spheres.end(); ++it) {
     CParticle* particle = *it;
 
@@ -294,7 +294,7 @@ void CLightSphereEffect::Slot03() {
 
 // OFFSET: 0x00B6D990
 // FUNCTION: fn_19110
-void CLightSphereEffect::Slot04() {
+void CLightSphereEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->spheres.begin(); it != this->spheres.end(); ++it) {
     CParticle* particle = *it;
 

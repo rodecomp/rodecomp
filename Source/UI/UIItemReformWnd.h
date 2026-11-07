@@ -16,16 +16,16 @@ class UIItemReformWnd_List : public UIFrameWnd {
 public:
   UIItemReformWnd_List();
   void Move(int x, int y) override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   // INLINED
-  void Slot25(int, int) override {}
+  void OnLBtnDown(int, int) override {}
   // INLINED
-  void Slot27(int, int) override {}
-  void Slot28(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot33(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnMouseMove(int, int) override {}
+  void OnMouseHover(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 00B4 */ unsigned int itemHeight;
@@ -45,8 +45,8 @@ public:
   explicit UIItemReformWnd_Item() : UIWindow(0), item(nullptr) {
   }
   void Paint() override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
 
   /* 007C */ ITEM_INFO* item;
 };
@@ -57,8 +57,8 @@ public:
   UIItemReformWnd_DetailBtn() : UIButton() {
   }
   void Paint() override;
-  void Slot47() override;
-  void Slot48() override;
+  void OnMouseEnter() override;
+  void OnMouseLeave() override;
 };
 
 class UIItemReformWnd_DetailMsg : public UIWindow {
@@ -74,8 +74,8 @@ class UIItemReformWnd : public UIFrameWnd {
 public:
   UIItemReformWnd();
 
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SelectItem(ITEM_INFO* item);

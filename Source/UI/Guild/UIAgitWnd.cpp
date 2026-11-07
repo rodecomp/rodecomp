@@ -54,24 +54,24 @@ int UIAgitMessageBox::SendMsg(UIWindow*, int message, std::intptr_t a, std::intp
 
 // OFFSET: 0x0095D570
 // FUNCTION: fn_13067
-void UIListBoxAgit::Slot15(int width, int height) {
-  UIListBox::Slot15(width, height);
+void UIListBoxAgit::OnCreate(int width, int height) {
+  UIListBox::OnCreate(width, height);
 }
 
 // OFFSET: 0x00960090
 // FUNCTION: fn_13092
-void UIListBoxAgit::Slot25(int x, int y) {
+void UIListBoxAgit::OnLBtnDown(int x, int y) {
   if (this->parent) {
-    UIListBox::Slot25(x, y);
+    UIListBox::OnLBtnDown(x, y);
     this->parent->SendMsg(nullptr, 163, 0, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x009604B0
 // FUNCTION: fn_13106
-void UIListBoxAgit::Slot32(int x, int y) {
+void UIListBoxAgit::OnRBtnDown(int x, int y) {
   if (this->parent) {
-    UIListBox::Slot25(x, y);
+    UIListBox::OnLBtnDown(x, y);
     if (this->selected < 0) {
       this->parent->SendMsg(nullptr, 163, 0, 0, 0, 0);
       return;
@@ -109,8 +109,8 @@ void UIListBoxAgitMenu::Paint() {
 
 // OFFSET: 0x009600D0
 // FUNCTION: fn_13093
-void UIListBoxAgitMenu::Slot25(int x, int y) {
-  UIListBox::Slot25(x, y);
+void UIListBoxAgitMenu::OnLBtnDown(int x, int y) {
+  UIListBox::OnLBtnDown(x, y);
   this->SendMsg(nullptr, 48, this->selected, 0, 0, 0);
   if (this->parent) {
     this->parent->SendMsg(nullptr, 163, 0, 0, 0, 0);
@@ -119,7 +119,7 @@ void UIListBoxAgitMenu::Slot25(int x, int y) {
 
 // OFFSET: 0x00960160
 // FUNCTION: fn_13096
-void UIListBoxAgitMenu::Slot28(int x, int y) {
+void UIListBoxAgitMenu::OnMouseHover(int x, int y) {
   const int previous = this->selected;
   int line;
   if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {

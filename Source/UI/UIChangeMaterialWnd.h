@@ -69,14 +69,14 @@ public:
 class UIChangeMaterialWnd : public UIFrameWnd {
 public:
   UIChangeMaterialWnd();
-  void Slot15(int width, int height) override;
-  bool Slot02() override;
+  void OnCreate(int width, int height) override;
+  bool IsFrameWnd() override;
   void Paint() override;
-  void Slot28(int x, int y) override;
-  void Slot33(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
   ITEM_INFO* GetItemAt(int x, int y);
   void SendChangeMaterial();
-  void Slot19() override;
+  void OnProcess() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4)
     override;
 
@@ -100,10 +100,10 @@ public:
   void Paint() override;
   void Move(int x, int y) override;
   // INLINED
-  void Slot25(int, int) override {}
-  void Slot28(int x, int y) override;
-  void Slot27(int x, int y) override;
-  void Slot35(int argument) override;
+  void OnLBtnDown(int, int) override {}
+  void OnMouseHover(int x, int y) override;
+  void OnMouseMove(int x, int y) override;
+  void OnWheel(int argument) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4)
     override;
 
@@ -112,10 +112,10 @@ public:
   void RefreshVisibleEntries();
   void UpdateScrollBar();
   void SetSelectedIndex(int index);
-  void Slot31(int unknown, int position) override;
+  void OnLBtnUp(int unknown, int position) override;
   void SelectNextItem(int delta);
   void ShiftSelectedIndex(int value);
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   const MaterialListEntry* GetEntry(unsigned int index) const;
 
   /* 00B4 */ int unknown_00B4;

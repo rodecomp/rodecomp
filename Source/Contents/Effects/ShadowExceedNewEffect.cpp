@@ -29,7 +29,7 @@ void CShadowExceedNew::Close() {
 
 // OFFSET: 0x00728500
 // FUNCTION: fn_07432
-void CShadowExceedNew::Slot01() {
+void CShadowExceedNew::Open() {
   this->retained = 1;
   this->AddEvent(0, "effect\\SHC_SHADOW_EXCEED.wav", 0, 0);
 
@@ -78,7 +78,7 @@ void CShadowExceedNew::Slot01() {
 
 // OFFSET: 0x007289D0
 // FUNCTION: fn_07434
-bool CShadowExceedNew::Slot06() {
+bool CShadowExceedNew::IsAlive() {
   CRenderObject* actor = FindRenderObject(this->actor);
   if (actor) {
     if (this->frontEmitters.size() != 0 && this->backEmitters.size() != 0) {
@@ -93,7 +93,7 @@ bool CShadowExceedNew::Slot06() {
 
 // OFFSET: 0x00728DC0
 // FUNCTION: fn_07436
-void CShadowExceedNew::Slot03() {
+void CShadowExceedNew::OnProcess() {
   CRenderObject* actor = FindRenderObject(this->actor);
   if (!actor) {
     return;
@@ -139,7 +139,7 @@ void CShadowExceedNew::Slot03() {
 
 // OFFSET: 0x00729280
 // FUNCTION: fn_07438
-void CShadowExceedNew::Slot04() {
+void CShadowExceedNew::Render() {
   if (!this->unknown_00CC) {
     for (auto it = this->frontEmitters.begin(); it != this->frontEmitters.end(); ++it) {
       (*it)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);

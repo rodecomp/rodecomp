@@ -17,15 +17,15 @@ public:
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
   void Render(int argument) override;
-  void Slot15(int state, int unused) override;
-  void Slot16() override;
-  void Slot17() override;
-  void Slot18(int job, int value, int unused) override;
-  void Slot21(int value) override;
-  void Slot22(int value) override;
-  void Slot23(int first, int second) override;
-  void Slot25(int value) override;
-  void Slot30() override;
+  void SetState(int state, int unused) override;
+  void RegisterPos() override;
+  void UnRegisterPos() override;
+  void SetSprAct(int job, int value, int unused) override;
+  void SetSprJob(int value) override;
+  void SetSprHead(int value) override;
+  void SetSprWeapon(int first, int second) override;
+  void SetSprAccessory(int value) override;
+  void SetImfFileName() override;
 
   void UpdateBubblePositions();
   void UpdateMinimapMarker();
@@ -55,7 +55,7 @@ public:
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
   void Render(int argument) override;
-  void Slot21(int value) override;
+  void SetSprJob(int value) override;
 
   /* 0440 */ CGameObject* unknown_0440;
 };

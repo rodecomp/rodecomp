@@ -346,9 +346,9 @@ struct CRagEffect : CRenderObject {
   void TorchDust(char kind);
 
   void Render(int argument) override;
-  std::uint32_t Slot13() override;
-  virtual bool Slot14();
-  virtual bool Slot15();
+  std::uint32_t GetStateFlags() override;
+  virtual bool OnProcess2();
+  virtual bool OnProcess3();
   virtual void SendMsg(CGameObject* sender, int message, int first, std::int64_t second, int third, int fourth, int fifth, int sixth);
   virtual void Init(EffectActor* parent, int id, vector3d deltaPos);
   virtual int GetDuration();

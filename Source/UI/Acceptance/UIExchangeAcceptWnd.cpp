@@ -46,7 +46,7 @@ UIExchangeAcceptWnd::~UIExchangeAcceptWnd() = default;
 
 // OFFSET: 0x008E0380
 // FUNCTION: fn_12172
-void UIExchangeAcceptWnd::Slot15(int width, int height) {
+void UIExchangeAcceptWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
   int ids[2] = {184, 185};
@@ -143,7 +143,7 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
 // OFFSET: 0x00909EC0
 // FUNCTION: fn_12405
-void UIExchangeAcceptWnd::Slot11() {
+void UIExchangeAcceptWnd::StoreInfo() {
   if (this->saved) {
     this->saved->x = this->geometry.x;
     this->saved->y = this->geometry.y;

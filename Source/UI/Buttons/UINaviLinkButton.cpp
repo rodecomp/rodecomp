@@ -11,7 +11,7 @@ UINaviLinkButton::~UINaviLinkButton() = default;
 
 // OFFSET: 0x00893050
 // FUNCTION: fn_11503
-void UINaviLinkButton::Slot25(int, int) {
+void UINaviLinkButton::OnLBtnDown(int, int) {
   const auto end = this->link.find(g_naviLinkTagEnd);
 
   if (end == std::string::npos) {

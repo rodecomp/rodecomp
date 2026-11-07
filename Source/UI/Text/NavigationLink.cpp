@@ -62,14 +62,14 @@ namespace LineCutter {
     }
 
     void Paint() override;
-    void Slot25(int x, int y) override;
-    void Slot26(int x, int y) override;
-    void Slot27(int x, int y) override;
+    void OnLBtnDown(int x, int y) override;
+    void OnLBtnDblClk(int x, int y) override;
+    void OnMouseMove(int x, int y) override;
     void ResetCursor(int x, int y) override;
-    void Slot31(int x, int y) override;
-    void Slot32(int x, int y) override;
-    void Slot33(int x, int y) override;
-    void Slot35(int value) override;
+    void OnLBtnUp(int x, int y) override;
+    void OnRBtnDown(int x, int y) override;
+    void OnRBtnUp(int x, int y) override;
+    void OnWheel(int value) override;
 
     /* 007C */ std::uint32_t m_color;
     /* 0080 */ int m_fontHeight;
@@ -89,7 +89,7 @@ public:
   explicit UIEmotion(const char* sprite, const char* action);
   explicit UIEmotion();
 
-  void Slot19() override;
+  void OnProcess() override;
   void Paint() override;
 
   /* 007C */ unsigned m_animation;
@@ -110,8 +110,8 @@ public:
   explicit UIItemImage();
 
   void Paint() override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
 
 protected:
   /* 007C */ std::string m_itemId;
@@ -560,25 +560,25 @@ std::string FormatMessageArguments(std::string value, int messageId) {
 
 // OFFSET: 0x0083B250
 // FUNCTION: fn_10473
-void LineCutter::UIText::Slot25(int x, int y) {
+void LineCutter::UIText::OnLBtnDown(int x, int y) {
   if (this->parent) {
-    this->parent->Slot25(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnLBtnDown(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x0083B220
 // FUNCTION: fn_10472
-void LineCutter::UIText::Slot26(int x, int y) {
+void LineCutter::UIText::OnLBtnDblClk(int x, int y) {
   if (this->parent) {
-    this->parent->Slot26(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnLBtnDblClk(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x0083B400
 // FUNCTION: fn_10476
-void LineCutter::UIText::Slot27(int x, int y) {
+void LineCutter::UIText::OnMouseMove(int x, int y) {
   if (this->parent) {
-    this->parent->Slot27(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnMouseMove(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -592,33 +592,33 @@ void LineCutter::UIText::ResetCursor(int x, int y) {
 
 // OFFSET: 0x0083B280
 // FUNCTION: fn_10474
-void LineCutter::UIText::Slot31(int x, int y) {
+void LineCutter::UIText::OnLBtnUp(int x, int y) {
   if (this->parent) {
-    this->parent->Slot31(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnLBtnUp(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x0083B630
 // FUNCTION: fn_10480
-void LineCutter::UIText::Slot32(int x, int y) {
+void LineCutter::UIText::OnRBtnDown(int x, int y) {
   if (this->parent) {
-    this->parent->Slot32(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnRBtnDown(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x0083B660
 // FUNCTION: fn_10481
-void LineCutter::UIText::Slot33(int x, int y) {
+void LineCutter::UIText::OnRBtnUp(int x, int y) {
   if (this->parent) {
-    this->parent->Slot33(x + this->geometry.x, y + this->geometry.y);
+    this->parent->OnRBtnUp(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
 // OFFSET: 0x0083B690
 // FUNCTION: fn_10482
-void LineCutter::UIText::Slot35(int value) {
+void LineCutter::UIText::OnWheel(int value) {
   if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
@@ -645,7 +645,7 @@ void LineCutter::UIText::Paint() {
 
 // OFFSET: 0x0083B460
 // FUNCTION: fn_10478
-void UIEmotion::Slot19() {
+void UIEmotion::OnProcess() {
   if (!this->m_action || this->m_action->Speed(this->m_animation) == 0.0f) {
     return;
   }
@@ -1682,7 +1682,7 @@ void UIEmotion::Paint() {
 
 // OFFSET: 0x0083B2B0
 // FUNCTION: fn_10475
-void UIItemImage::Slot28(int, int) {
+void UIItemImage::OnMouseHover(int, int) {
   ITEM_INFO item;
   item.itemId = this->m_itemId;
   item.identified = 1;
@@ -1699,7 +1699,7 @@ void UIItemImage::Slot28(int, int) {
 
 // OFFSET: 0x0083B550
 // FUNCTION: fn_10479
-void UIItemImage::Slot32(int, int) {
+void UIItemImage::OnRBtnDown(int, int) {
   ITEM_INFO item;
   item.itemId = this->m_itemId;
   item.identified = 1;

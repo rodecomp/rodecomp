@@ -1200,7 +1200,7 @@ void CGameMode::ReceiveActorEffect228(const unsigned char* data) {
   }
 
   auto* gameActor = static_cast<CGameActor*>(actor);
-  if (StateFlag01(gameActor->Slot13()) == true || StateFlag02(gameActor->Slot13()) == true) {
+  if (StateFlag01(gameActor->GetStateFlags()) == true || StateFlag02(gameActor->GetStateFlags()) == true) {
     actor->SendMsg(nullptr, 109, 0, 228, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
@@ -4098,18 +4098,18 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
         if (g_serviceOptions.Get(0xE5)) {
           effect = g_effectMgr->Spawn(0, 0x5AE, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
-            effect->Slot16(delay);
+            effect->SetDelay(delay);
           }
           effect = g_effectMgr->Spawn(0, 0x5AF, position.x, position.y, position.z, 0, -1, 0, 0);
         } else {
           effect = g_effectMgr->Spawn(0, 0x508, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
-            effect->Slot16(delay);
+            effect->SetDelay(delay);
           }
           effect = g_effectMgr->Spawn(0, 0x509, position.x, position.y, position.z, 0, -1, 0, 0);
         }
         if (effect) {
-          effect->Slot16(delay);
+          effect->SetDelay(delay);
         }
       }
       break;
@@ -4133,13 +4133,13 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
         position.z = rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + z;
         CEffect* effect = g_effectMgr->Spawn(0, 0x5B9, position.x, position.y, position.z, 0, -1, 0, 0);
         if (effect) {
-          effect->Slot22(0.5f);
-          effect->Slot16(delay);
+          effect->SetScale(0.5f);
+          effect->SetDelay(delay);
         }
         effect = g_effectMgr->Spawn(0, 0x656, position.x, position.y, position.z, 0, -1, 0, 0);
         if (effect) {
-          effect->Slot22(0.5f);
-          effect->Slot16(delay);
+          effect->SetScale(0.5f);
+          effect->SetDelay(delay);
         }
         delay += 70;
       }
@@ -4308,18 +4308,18 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
         if (g_serviceOptions.Get(0xE5)) {
           effect = g_effectMgr->Spawn(0, 0x5AE, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
-            effect->Slot16(delay);
+            effect->SetDelay(delay);
           }
           effect = g_effectMgr->Spawn(0, 0x5AF, position.x, position.y, position.z, 0, -1, 0, 0);
         } else {
           effect = g_effectMgr->Spawn(0, 0x508, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
-            effect->Slot16(delay);
+            effect->SetDelay(delay);
           }
           effect = g_effectMgr->Spawn(0, 0x509, position.x, position.y, position.z, 0, -1, 0, 0);
         }
         if (effect) {
-          effect->Slot16(delay);
+          effect->SetDelay(delay);
         }
       }
     }
@@ -4664,36 +4664,36 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
   switch (packet->type) {
   case 0:
     actor->SetActorJob(packet->value);
-    actor->Slot30();
-    actor->Slot31();
-    actor->Slot32();
+    actor->SetImfFileName();
+    actor->SetHeadPaletteName();
+    actor->SetBodyPaletteName();
     break;
   case 1:
-    actor->Slot22(packet->value);
-    actor->Slot30();
-    actor->Slot31();
-    actor->Slot60();
+    actor->SetSprHead(packet->value);
+    actor->SetImfFileName();
+    actor->SetHeadPaletteName();
+    actor->RefreshAccessory3();
     break;
   case 2:
-    actor->Slot23(packet->value, 0);
+    actor->SetSprWeapon(packet->value, 0);
     break;
   case 3:
-    actor->Slot25(packet->value);
+    actor->SetSprAccessory(packet->value);
     break;
   case 4:
-    actor->Slot26(packet->value);
+    actor->SetSprAccessory2(packet->value);
     break;
   case 5:
-    actor->Slot27(packet->value);
+    actor->SetSprAccessory3(packet->value);
     break;
   case 6:
-    actor->Slot34(packet->value);
+    actor->SetHeadPalette(packet->value);
     break;
   case 7:
-    actor->Slot33(packet->value);
+    actor->SetBodyPalette(packet->value);
     break;
   case 8:
-    actor->Slot28(packet->value);
+    actor->SetSprShield(packet->value);
     break;
   }
 }
@@ -4756,7 +4756,7 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       break;
     case 14:
       g_session.SetFlag(static_cast<char>(value));
-      actor->Slot62(value);
+      actor->SetSex(value);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4137)), 0, 0, 0, 0);
       break;
     }
@@ -4781,17 +4781,17 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
   case 0:
     actor->SetActorJob(value);
     if (packet->aid == g_session.m_aid) {
-      actor->Slot33(g_session.m_bodyStyle);
+      actor->SetBodyPalette(g_session.m_bodyStyle);
     }
-    actor->Slot30();
-    actor->Slot31();
-    actor->Slot32();
+    actor->SetImfFileName();
+    actor->SetHeadPaletteName();
+    actor->SetBodyPaletteName();
     break;
   case 1:
-    actor->Slot22(value);
-    actor->Slot30();
-    actor->Slot31();
-    actor->Slot60();
+    actor->SetSprHead(value);
+    actor->SetImfFileName();
+    actor->SetHeadPaletteName();
+    actor->RefreshAccessory3();
     break;
   case 2: {
     const int shield = static_cast<int>(packet->value >> 32);
@@ -4805,57 +4805,57 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
     case 0xFE1:
     case 0x1005:
     case 0x109E:
-      actor->Slot24(value, shield);
+      actor->SetSprWeapon2(value, shield);
       break;
     default:
-      actor->Slot24(weapon, static_cast<int>(static_cast<std::int64_t>(weapon) >> 32));
+      actor->SetSprWeapon2(weapon, static_cast<int>(static_cast<std::int64_t>(weapon) >> 32));
       break;
     }
     if (view == -1 || shield == 0) {
-      actor->Slot28(shield);
+      actor->SetSprShield(shield);
     }
     break;
   }
   case 3:
-    actor->Slot25(value);
+    actor->SetSprAccessory(value);
     break;
   case 4:
-    actor->Slot26(value);
+    actor->SetSprAccessory2(value);
     break;
   case 5:
-    actor->Slot27(value);
+    actor->SetSprAccessory3(value);
     break;
   case 6:
-    actor->Slot34(value);
+    actor->SetHeadPalette(value);
     break;
   case 7:
-    actor->Slot33(value);
+    actor->SetBodyPalette(value);
     break;
   case 9:
-    actor->Slot29(value);
+    actor->SetSprShoe(value);
     break;
   case 11:
-    actor->Slot25(0);
-    actor->Slot26(0);
-    actor->Slot27(0);
-    actor->Slot43(0, 0);
+    actor->SetSprAccessory(0);
+    actor->SetSprAccessory2(0);
+    actor->SetSprAccessory3(0);
+    actor->SetSprRobe(0, 0);
     break;
   case 12:
-    actor->Slot43(value, 0);
+    actor->SetSprRobe(value, 0);
     break;
   case 13:
-    actor->Slot44(value, 1);
-    if (StateFlag04(actor->Slot13())) {
+    actor->SetBodyCostume(value, 1);
+    if (StateFlag04(actor->GetStateFlags())) {
       actor->SendMsg(nullptr, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor->SendMsg(nullptr, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
-    if (StateFlag20(actor->Slot13())) {
+    if (StateFlag20(actor->GetStateFlags())) {
       actor->SendMsg(nullptr, 138, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor->SendMsg(nullptr, 137, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case 14:
-    actor->Slot62(value);
+    actor->SetSex(value);
     break;
   }
 }
@@ -6218,14 +6218,14 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case 933:
       if (packet->aid == g_session.m_aid) {
-        this->scene->player->Slot15(48, 1);
+        this->scene->player->SetState(48, 1);
         this->scene->player->render.isMotionFreezed = true;
       }
       break;
     case 893:
       if (packet->aid == g_session.m_aid) {
         this->scene->GetGameActorByAID(packet->aid);
-        this->scene->player->Slot15(47, 1);
+        this->scene->player->SetState(47, 1);
       }
       break;
     case 1013:
@@ -6331,7 +6331,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     case 29:
       std::sprintf(message, "");
       if (packet->aid == g_session.m_aid) {
-        this->scene->player->Slot15(0, 1);
+        this->scene->player->SetState(0, 1);
         this->scene->player->render.isMotionFreezed = false;
       }
       break;
@@ -6875,13 +6875,13 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case 933:
       if (packet->aid == g_session.m_aid) {
-        this->scene->player->Slot15(0, 1);
+        this->scene->player->SetState(0, 1);
         this->scene->player->render.isMotionFreezed = false;
       }
       break;
     case 893:
       if (packet->aid == g_session.m_aid && !this->scene->player->render.unknown_0114) {
-        this->scene->player->Slot15(0, 1);
+        this->scene->player->SetState(0, 1);
       }
       break;
     case 1013:
@@ -6904,7 +6904,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       if (!actor) {
         break;
       }
-      actor->Slot57(0);
+      actor->SetMadogearType(0);
       if (packet->aid == g_session.m_aid) {
         g_session.unknown_8074 = 0;
       }
@@ -7167,7 +7167,7 @@ void CGameMode::ReceiveGuildMemberLeft(const unsigned char* data) {
     guildInfo->Init();
     g_windowMgr.CloseWindow(59);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(489)), 0xFF, 4, 0, 0);
-    this->scene->player->Slot49(0, 0);
+    this->scene->player->SetGuildInfo(0, 0);
     this->SendMsg(172, 0, 0, 0, 0);
     return;
   }
@@ -7229,7 +7229,7 @@ void CGameMode::ReceiveGuildExpulsion2(const unsigned char* data) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(490)), 0xFF, 4, 0, 0);
     this->SendMsg(172, 0, 0, 0, 0);
     if (this->scene != nullptr && this->scene->player != nullptr) {
-      this->scene->player->Slot48(0);
+      this->scene->player->SetGdid(0);
     }
     guildInfo->ClearUnknown0114();
     return;
@@ -7275,7 +7275,7 @@ void CGameMode::ReceiveGuildLeave2(const unsigned char* data) {
     guildInfo->Init();
     g_windowMgr.CloseWindow(59);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(489)), 0xFF, 4, 0, 0);
-    this->scene->player->Slot49(0, 0);
+    this->scene->player->SetGuildInfo(0, 0);
     this->SendMsg(172, 0, 0, 0, 0);
     return;
   }
@@ -7305,7 +7305,7 @@ void CGameMode::ReceiveGuildLeave2(const unsigned char* data) {
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
 
   if (CRenderObject* actor = this->scene->GetGameActorByAID(packet->characterId)) {
-    static_cast<CGameActor*>(actor)->Slot49(0, 0);
+    static_cast<CGameActor*>(actor)->SetGuildInfo(0, 0);
   }
 }
 

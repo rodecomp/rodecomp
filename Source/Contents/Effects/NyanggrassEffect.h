@@ -12,7 +12,7 @@ class CMultiTexParticle : public CParticle {
 public:
   CMultiTexParticle(vector3d position, int flags);
   ~CMultiTexParticle() override;
-  void Slot01() override;
+  void ReleaseResource() override;
 
   void Reset();
   void AllocateVertices(int count);
@@ -31,11 +31,11 @@ class CNyanggrassEffect : public CEffect {
 public:
   CNyanggrassEffect();
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ int unknown_00D8;

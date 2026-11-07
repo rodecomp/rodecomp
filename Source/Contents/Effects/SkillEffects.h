@@ -14,11 +14,11 @@ class CMeteorEffect : public CEffect {
 public:
   CMeteorEffect() : CEffect(-1), unknown_00D8(12), unknown_00DC(0) {}
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
   ~CMeteorEffect() override;
 
   /* 00CC */ std::vector<CParticle*> unknown_00CC;
@@ -30,11 +30,11 @@ class CShadowExceedNew : public CEffect {
 public:
   CShadowExceedNew() : CEffect(2467), unknown_00CC(0) {}
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
   ~CShadowExceedNew() override;
 
   /* 00CC */ unsigned char unknown_00CC;
@@ -49,11 +49,11 @@ public:
         unknown_00E4(0), unknown_00E8(0), unknown_00EC(1.0f), unknown_00F0(0), unknown_00F4(0), unknown_00F8(0), unknown_00FC(0),
         unknown_00FD(1) {}
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
   ~CSprArrowEffect() override;
   void SetBulletSprite(int job);
   /* 00CC */ int unknown_00CC;

@@ -107,14 +107,14 @@ void UITransBalloonText::Move(int x, int y) {
 
 // OFFSET: 0x00858F00
 // FUNCTION: fn_10770
-bool UITransBalloonText::Slot07(void* output) {
+bool UITransBalloonText::GetTransBoxInfo(void* output) {
   std::memcpy(output, &this->m_rectangle, sizeof(this->m_rectangle));
   return true;
 }
 
 // OFFSET: 0x0085AFB0
 // FUNCTION: fn_10790
-void UITransBalloonText::Slot15(int, int) {
+void UITransBalloonText::OnCreate(int, int) {
   this->m_rectangle = {this->geometry.x, this->geometry.y, this->geometry.width, this->geometry.height, 0, 1711276032u, 0};
   this->m_fontMode = 0;
 }

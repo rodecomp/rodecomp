@@ -37,23 +37,23 @@ public:
 
   virtual void SetTlvert(float x, float y);
   virtual void SetAction(unsigned animation, int motion, int repeat);
-  virtual void Slot08();
-  virtual bool Slot09(
+  virtual void ProcessMotion();
+  virtual bool PrepareSprite(
     int layer, int index, float distanceScale, const SpriteFrameCell& cell, float x, float y, const float* position, float scale,
     float* bottomRhw, float* topRhw, const SpriteRleImage* image, SpriteQuad* quad, int* box, std::uint32_t* color, int offsetX, int offsetY,
     int flags
   );
-  virtual void Slot10(
+  virtual void RenderBlur(
     const SpriteFrameCell* cell, const int* box, float shiftX, float bottomRhw, float topRhw, const std::uint32_t* palette,
     const SpriteRleImage* image, float scale, short hover
   );
-  virtual void Slot11(
+  virtual void RenderAura(
     SpriteQuad* quad, const SpriteFrameCell* cell, const int* box, float shiftX, float bottomRhw, float topRhw,
     const std::uint32_t* palette, const SpriteRleImage* image, int blend, short hover
   );
-  virtual void Slot12(SpriteQuad* quad, const int* box, float shiftX, int first, int second);
+  virtual void ApplySpriteJitter(SpriteQuad* quad, const int* box, float shiftX, int first, int second);
   // INLINED
-  virtual std::uint32_t Slot13() {
+  virtual std::uint32_t GetStateFlags() {
     return 0;
   }
   static float __stdcall Heading(float x, float z, float targetX, float targetZ);

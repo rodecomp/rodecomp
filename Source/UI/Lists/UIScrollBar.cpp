@@ -118,7 +118,7 @@ void UIScrollBar::Resize(int width, int height) {
   case 0:
     height = this->thickness;
     UIWindow::Resize(width, height);
-    this->Slot22(width, height);
+    this->OnSize(width, height);
     break;
   case 1:
     width = this->thickness;
@@ -126,14 +126,14 @@ void UIScrollBar::Resize(int width, int height) {
   }
 
   UIWindow::Resize(width, height);
-  this->Slot22(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x00882430
 // FUNCTION: fn_11303
-bool UIScrollBar::Slot08() {
+bool UIScrollBar::IsTransmitMouseInput() {
   if (this->maximum == 0 && this->parent) {
-    return this->parent->Slot08();
+    return this->parent->IsTransmitMouseInput();
   }
   return false;
 }
@@ -233,9 +233,9 @@ int UIScrollBar::Part(int x, int y) {
 
 // OFFSET: 0x00890720
 // FUNCTION: fn_11425
-void UIScrollBar::Slot25(int x, int y) {
+void UIScrollBar::OnLBtnDown(int x, int y) {
   if (this->maximum == 0) {
-    this->parent->Slot25((x + this->geometry.x), (y + this->geometry.y));
+    this->parent->OnLBtnDown((x + this->geometry.x), (y + this->geometry.y));
     return;
   }
 
@@ -295,19 +295,19 @@ void UIScrollBar::Slot25(int x, int y) {
 
 // OFFSET: 0x00890260
 // FUNCTION: fn_11407
-void UIScrollBar::Slot26(int x, int y) {
-  this->Slot25(x, y);
+void UIScrollBar::OnLBtnDblClk(int x, int y) {
+  this->OnLBtnDown(x, y);
 
   if (this->maximum == 0) {
-    this->parent->Slot26((x + this->geometry.x), (y + this->geometry.y));
+    this->parent->OnLBtnDblClk((x + this->geometry.x), (y + this->geometry.y));
   }
 }
 
 // OFFSET: 0x008921D0
 // FUNCTION: fn_11468
-void UIScrollBar::Slot27(int x, int y) {
+void UIScrollBar::OnMouseMove(int x, int y) {
   if (this->maximum == 0) {
-    this->parent->Slot27((x + this->geometry.x), (y + this->geometry.y));
+    this->parent->OnMouseMove((x + this->geometry.x), (y + this->geometry.y));
     return;
   }
 
@@ -374,9 +374,9 @@ void UIScrollBar::ResetCursor(int x, int y) {
 
 // OFFSET: 0x00890E90
 // FUNCTION: fn_11440
-void UIScrollBar::Slot31(int x, int y) {
+void UIScrollBar::OnLBtnUp(int x, int y) {
   if (this->maximum == 0) {
-    this->parent->Slot31(this->geometry.x + x, this->geometry.y + y);
+    this->parent->OnLBtnUp(this->geometry.x + x, this->geometry.y + y);
   } else if (g_windowMgr.Capture() == this) {
     g_windowMgr.ReleaseCapture();
   }
@@ -384,16 +384,16 @@ void UIScrollBar::Slot31(int x, int y) {
 
 // OFFSET: 0x00892C70
 // FUNCTION: fn_11491
-void UIScrollBar::Slot33(int x, int y) {
+void UIScrollBar::OnRBtnUp(int x, int y) {
   if (this->maximum == 0) {
-    this->parent->Slot33((x + this->geometry.x), (y + this->geometry.y));
+    this->parent->OnRBtnUp((x + this->geometry.x), (y + this->geometry.y));
   }
 }
 
 // OFFSET: 0x00892F20
 // FUNCTION: fn_11499
-void UIScrollBar::Slot35(int value) {
-  this->parent->Slot35(value);
+void UIScrollBar::OnWheel(int value) {
+  this->parent->OnWheel(value);
 }
 
 // OFFSET: 0x0088E310
@@ -493,8 +493,8 @@ void UIScrollBar::Configure(int x, int y, unsigned char vertical, int length) {
 
   this->UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x00880800
@@ -680,7 +680,7 @@ const char* UIChatHisBox::HistoryText(unsigned int index) {
 
 // OFFSET: 0x00882420
 // FUNCTION: fn_11302
-bool UIChatHisBox::Slot08() {
+bool UIChatHisBox::IsTransmitMouseInput() {
   return true;
 }
 
@@ -845,7 +845,7 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
 
 // OFFSET: 0x008900D0
 // FUNCTION: fn_11399
-void UIChatHisBox::Slot26(int, int) {
+void UIChatHisBox::OnLBtnDblClk(int, int) {
   const unsigned int index = static_cast<unsigned int>(this->selected);
 
   if (index != static_cast<unsigned int>(-1) && index < this->history.size() && this->history[index].size() > 0 && this->history[index].c_str() != nullptr) {
@@ -855,13 +855,13 @@ void UIChatHisBox::Slot26(int, int) {
 
 // OFFSET: 0x00890430
 // FUNCTION: fn_11412
-void UIChatHisBox::Slot25(int x, int y) {
+void UIChatHisBox::OnLBtnDown(int x, int y) {
   this->selected = this->LineAt(x, y);
 }
 
 // OFFSET: 0x00890AB0
 // FUNCTION: fn_11432
-void UIChatHisBox::Slot31(int, int) {
+void UIChatHisBox::OnLBtnUp(int, int) {
 }
 
 // OFFSET: 0x008973E0
@@ -938,7 +938,7 @@ void UIScrollBar::SetRange(int maximum, int visible, int total) {
 
 // OFFSET: 0x0087DF00
 // FUNCTION: fn_11261
-void UIBasicItemCtrl::Slot10(int, int, std::intptr_t argument3) {
+void UIBasicItemCtrl::DragAndDrop(int, int, std::intptr_t argument3) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(argument3);
   if (!drag->skill && drag->identified == this->m_identified) {
     this->m_item = LookupClientItemByIdentity(g_session.m_inventoryItems, drag->id);
@@ -961,7 +961,7 @@ void UIBasicItemCtrl::Slot10(int, int, std::intptr_t argument3) {
 
 // OFFSET: 0x0087E080
 // FUNCTION: fn_11262
-void UIBasicSkillCtrl::Slot10(int, int, std::intptr_t argument3) {
+void UIBasicSkillCtrl::DragAndDrop(int, int, std::intptr_t argument3) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(argument3);
   if (drag->skill) {
     std::string name = drag->skillName;
@@ -982,19 +982,19 @@ void UIBasicSkillCtrl::Slot10(int, int, std::intptr_t argument3) {
 
 // OFFSET: 0x0087E190
 // FUNCTION: fn_11263
-void UIBitmapButton2::Slot10(int argument1, int argument2, std::intptr_t argument3) {
+void UIBitmapButton2::DragAndDrop(int argument1, int argument2, std::intptr_t argument3) {
   if (g_windowMgr.LookupWindow(10011)) {
-    UIWindow::Slot10(argument1, argument2, argument3);
+    UIWindow::DragAndDrop(argument1, argument2, argument3);
   } else if (this->parent) {
-    this->parent->Slot10(argument1, argument2, argument3);
+    this->parent->DragAndDrop(argument1, argument2, argument3);
   }
 }
 
 // OFFSET: 0x0087E1D0
 // FUNCTION: fn_11264
-void UITabControl::Slot10(int argument1, int argument2, std::intptr_t argument3) {
+void UITabControl::DragAndDrop(int argument1, int argument2, std::intptr_t argument3) {
   if (this->parent) {
-    this->parent->Slot10(argument1, argument2, argument3);
+    this->parent->DragAndDrop(argument1, argument2, argument3);
   }
 }
 
@@ -1774,7 +1774,7 @@ void UITabControl::Configure(
   std::uint32_t inactiveFillColor, std::uint32_t activeBorderColor, std::uint32_t inactiveBorderColor, std::uint32_t activeTextColor,
   std::uint32_t inactiveTextColor
 ) {
-  this->Slot15(0, 0);
+  this->OnCreate(0, 0);
 
   this->layout = layout;
   this->tabHeight = tabHeight;

@@ -209,7 +209,7 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
       offset += header.bytes;
       CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
       if (player) {
-        player->Slot57(this->unknown_8074);
+        player->SetMadogearType(this->unknown_8074);
         player->SendMsg(nullptr, this->unknown_8074 ? 105 : 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;

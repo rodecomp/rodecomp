@@ -21,7 +21,7 @@ void UIBitmapTab::Paint() {
 
 // OFFSET: 0x0085EA90
 // FUNCTION: fn_10838
-void UIBitmapTab::Slot25(int, int y) {
+void UIBitmapTab::OnLBtnDown(int, int y) {
   if (!this->parent) {
     return;
   }
@@ -43,9 +43,9 @@ void UIBitmapTab::Slot25(int, int y) {
 
 // OFFSET: 0x00855190
 // FUNCTION: fn_10752
-void UIBitmapTab::Slot10(int argument1, int argument2, std::intptr_t argument3) {
+void UIBitmapTab::DragAndDrop(int argument1, int argument2, std::intptr_t argument3) {
   if (this->parent) {
-    this->parent->Slot10(argument1, argument2, argument3);
+    this->parent->DragAndDrop(argument1, argument2, argument3);
   }
 }
 

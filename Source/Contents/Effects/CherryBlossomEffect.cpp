@@ -28,7 +28,7 @@ void CCherryBlossomEffect::Close() {
 
 // OFFSET: 0x00B43B90
 // FUNCTION: fn_18885
-void CCherryBlossomEffect::Slot01() {
+void CCherryBlossomEffect::Open() {
   for (int row = 0; row < 4; ++row) {
     for (int column = 0; column < 4; ++column) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
@@ -57,7 +57,7 @@ void CCherryBlossomEffect::Slot01() {
 
 // OFFSET: 0x00B43CE0
 // FUNCTION: fn_18887
-void CCherryBlossomEffect::Slot03() {
+void CCherryBlossomEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->petals.begin(); it != this->petals.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -133,7 +133,7 @@ void CCherryBlossomEffect::Slot03() {
 
 // OFFSET: 0x00B44500
 // FUNCTION: fn_18888
-void CCherryBlossomEffect::Slot04() {
+void CCherryBlossomEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->petals.begin(); it != this->petals.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {

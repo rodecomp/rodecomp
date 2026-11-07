@@ -42,7 +42,7 @@ void UITagListBox::Clear() {
 
 // OFFSET: 0x009B9E80
 // FUNCTION: fn_13879
-void UITagListBox::Slot25(int, int) {
+void UITagListBox::OnLBtnDown(int, int) {
 }
 
 // OFFSET: 0x009B9CB0
@@ -103,12 +103,12 @@ void UITagListBox::Paint() {
 
 // OFFSET: 0x009B9E70
 // FUNCTION: fn_13878
-void UITagListBox::Slot26(int, int) {
+void UITagListBox::OnLBtnDblClk(int, int) {
 }
 
 // OFFSET: 0x009B9E90
 // FUNCTION: fn_13880
-void UITagListBox::Slot31(int, int) {
+void UITagListBox::OnLBtnUp(int, int) {
 }
 
 // OFFSET: 0x009B8210

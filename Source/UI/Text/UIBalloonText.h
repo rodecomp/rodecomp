@@ -22,7 +22,7 @@ public:
   ~UIBalloonText() override;
 
   bool CanHitTest() override;
-  void Slot19() override;
+  void OnProcess() override;
   void Paint() override;
 
   void SetText(const char* text, int width);

@@ -14,9 +14,9 @@ extern int g_partyBookingLevelMax;
 class UISeekPartyWnd : public UIFrameWnd {
 public:
   UISeekPartyWnd();
-  void Slot11() override;
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SetJobs(const std::int16_t* jobs);

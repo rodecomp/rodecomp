@@ -27,9 +27,9 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::AddNewItem();
 template <>
 void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::AddNewItem();
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Slot53(int resolveSkin);
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::LoadSkin(int resolveSkin);
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::Slot53(int resolveSkin);
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::LoadSkin(int resolveSkin);
 template <>
 void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Resize(int width, int height);
 template <>
@@ -91,12 +91,12 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 
 // OFFSET: 0x00A694F0
 // FUNCTION: fn_16661
-void CUISelectPackageItemBox::Slot53() {
+void CUISelectPackageItemBox::Initialize() {
   this->unknown_00B4 = 0;
   this->Resize(387, 283);
   this->Move(0, 0);
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
   this->SetSkinColors(0, 0, 0, 0);
   this->m_buttonBarStyle = 3;
 }
@@ -109,7 +109,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // OFFSET: 0x00A695F0
 // FUNCTION: fn_16662
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Slot15(int width, int height) {
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -119,7 +119,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Slot15(int widt
 // OFFSET: 0x00A696C0
 // FUNCTION: fn_16663
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::Slot15(int width, int height) {
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -143,22 +143,22 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // OFFSET: 0x00A6D080
 // FUNCTION: fn_16668
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Slot35(int value) {
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
 // OFFSET: 0x00A6D0C0
 // FUNCTION: fn_16669
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::Slot35(int value) {
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
@@ -305,7 +305,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // OFFSET: 0x00A6D660
 // FUNCTION: fn_16672
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Slot53(int resolveSkin) {
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -319,7 +319,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Slot53(int reso
 // OFFSET: 0x00A6D870
 // FUNCTION: fn_16673
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::Slot53(int resolveSkin) {
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -653,7 +653,7 @@ void CUIItemInfo::Paint() {
 
 // OFFSET: 0x00A703B0
 // FUNCTION: fn_16785
-void CUIItemInfo::Slot16() {
+void CUIItemInfo::OnInit() {
   auto* const item = this->gameItem;
   item->showOverlay = 1;
   item->Invalidate();
@@ -661,7 +661,7 @@ void CUIItemInfo::Slot16() {
 
 // OFFSET: 0x00A705E0
 // FUNCTION: fn_16787
-void CUITabInfo::Slot16() {
+void CUITabInfo::OnInit() {
 }
 }
 
@@ -750,7 +750,7 @@ const char* DecryptName(const Byte (&source)[Length]) {
 
 // OFFSET: 0x00A69790
 // FUNCTION: fn_16664
-void SelectPackageItemBox::CUIItemInfo::Slot15(int width, int height) {
+void SelectPackageItemBox::CUIItemInfo::OnCreate(int width, int height) {
   this->image = new CUIStaticImage();
   this->image->SetSize(200, 34);
   this->image->Move(0, 0);
@@ -796,7 +796,7 @@ void SelectPackageItemBox::CUIItemInfo::Slot15(int width, int height) {
 
 // OFFSET: 0x00A69DB0
 // FUNCTION: fn_45491
-void CUISelectPackageItemBox::Slot15(int width, int height) {
+void CUISelectPackageItemBox::OnCreate(int width, int height) {
   this->title = new CUITitleBar();
   this->title->SetSize(387, 17);
   this->title->Move(0, 0);
@@ -1237,7 +1237,7 @@ void CUISelectPackageItemBox::Slot15(int width, int height) {
 
 // OFFSET: 0x00A6CDE0
 // FUNCTION: fn_16665
-void SelectPackageItemBox::CUITabInfo::Slot15(int width, int height) {
+void SelectPackageItemBox::CUITabInfo::OnCreate(int width, int height) {
   this->nameText = new CUIStaticText();
   this->nameText->SetSize(148, 34);
   this->nameText->Move(11, 0);
@@ -1310,7 +1310,7 @@ void CUISelectPackageItemBox::BindItem(SelectPackageItemBox::CUIItemInfo* item, 
 
 // OFFSET: 0x00A703D0
 // FUNCTION: fn_16786
-void CUISelectPackageItemBox::Slot16() {
+void CUISelectPackageItemBox::OnInit() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
   auto* const list = this->itemList;
   list->unknown_00C4 = 1;

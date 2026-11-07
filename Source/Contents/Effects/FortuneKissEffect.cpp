@@ -19,7 +19,7 @@ void CFortuneKiss::Close() {
 
 // OFFSET: 0x00701560
 // FUNCTION: fn_06995
-void CFortuneKiss::Slot01() {
+void CFortuneKiss::Open() {
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
   if (!particle) {
     return;
@@ -43,13 +43,13 @@ void CFortuneKiss::Slot01() {
 
 // OFFSET: 0x00701700
 // FUNCTION: fn_06996
-bool CFortuneKiss::Slot06() {
+bool CFortuneKiss::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00701710
 // FUNCTION: fn_06997
-void CFortuneKiss::Slot03() {
+void CFortuneKiss::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -89,7 +89,7 @@ void CFortuneKiss::Slot03() {
 
 // OFFSET: 0x00701B10
 // FUNCTION: fn_06998
-void CFortuneKiss::Slot04() {
+void CFortuneKiss::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);

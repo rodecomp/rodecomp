@@ -37,7 +37,7 @@ CWorldViewMgr g_worldViewMgr;
 
 // OFFSET: 0x00931080
 // FUNCTION: fn_12697
-void UIRoMapWnd::Slot25(int, int) {
+void UIRoMapWnd::OnLBtnDown(int, int) {
 }
 
 __declspec(noinline) void SetRoMapMarker(std::string name, const WorldViewArea& area, RoMapMarker& marker);
@@ -99,7 +99,7 @@ void UIRoMapWnd::UpdateNavigationButtons() {
 
 // OFFSET: 0x009335B0
 // FUNCTION: fn_12725
-void UIRoMapWnd::Slot33(int, int) {
+void UIRoMapWnd::OnRBtnUp(int, int) {
   if (g_windowMgr.unknown_0214 != 0) {
     g_windowMgr.CloseWindow(26);
   }
@@ -503,7 +503,7 @@ bool UIRoMapWnd::LocateRecord(WorldViewRecord& record) {
 
 // OFFSET: 0x00932920
 // FUNCTION: fn_12713
-void UIRoMapWnd::Slot27(int x, int y) {
+void UIRoMapWnd::OnMouseMove(int x, int y) {
   if (this == g_windowMgr.Capture()) {
     return;
   }
@@ -985,7 +985,7 @@ void UIRoMapWnd::DrawWorld() {
 
 // OFFSET: 0x00925530
 // FUNCTION: fn_12648
-void UIRoMapWnd::Slot15(int, int) {
+void UIRoMapWnd::OnCreate(int, int) {
   this->m_worldCombo = new UIComboBoxDefWnd();
   this->m_worldCombo->dropdownHeight = 67;
   this->m_worldCombo->SetSize(110, this->m_comboHeight);

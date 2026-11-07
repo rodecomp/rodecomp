@@ -73,18 +73,18 @@ void CCloudKillEffect::Close() {
 
 // OFFSET: 0x006FCCB0
 // FUNCTION: fn_06928
-void CCloudKillEffect::Slot01() {
+void CCloudKillEffect::Open() {
 }
 
 // OFFSET: 0x006FCCC0
 // FUNCTION: fn_06929
-bool CCloudKillEffect::Slot06() {
+bool CCloudKillEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x006FCE60
 // FUNCTION: fn_06930
-void CCloudKillEffect::Slot03() {
+void CCloudKillEffect::OnProcess() {
   if (this->unknown_00E4 && this->frame % 5 == 0) {
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
     matrix& rotation = *reinterpret_cast<matrix*>(particle->unknown_0198);
@@ -179,7 +179,7 @@ void CCloudKillEffect::Slot03() {
 
 // OFFSET: 0x006FD640
 // FUNCTION: fn_06931
-void CCloudKillEffect::Slot04() {
+void CCloudKillEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       static_cast<CSpriteParticle*>(*it)->Draw(1);

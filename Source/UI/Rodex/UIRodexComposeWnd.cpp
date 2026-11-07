@@ -137,7 +137,7 @@ void UIRodexComposeWnd::InsertSkillTag(int tagId) {
 
 // OFFSET: 0x00800480
 // FUNCTION: fn_10006
-void UIRodexEditCtrl3::Slot15(int width, int height) {
+void UIRodexEditCtrl3::OnCreate(int width, int height) {
   auto* scrollBar = new UIRodexScrollBar();
   this->unknown_0130 = scrollBar;
   scrollBar->Configure(width - 5, 0, 1, height);
@@ -182,9 +182,9 @@ void UIRodexScrollBar::Paint() {
 
 // OFFSET: 0x00800ED0
 // FUNCTION: fn_10009
-void UIRodexComposeWnd::Slot25(int x, int y) {
+void UIRodexComposeWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 
   ITEM_INFO item = this->GetItemAtPoint(x, y);
@@ -195,7 +195,7 @@ void UIRodexComposeWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00800FA0
 // FUNCTION: fn_10010
-void UIRodexComposeWnd::Slot28(int x, int y) {
+void UIRodexComposeWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (std::atoi(item.itemId.c_str()) != 0) {
     int tooltipX = this->m_itemIndex * 34 + 30;
@@ -216,15 +216,15 @@ void UIRodexComposeWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x008011B0
 // FUNCTION: fn_10011
-void UIRodexComposeWnd::Slot19() {
+void UIRodexComposeWnd::OnProcess() {
   if (g_windowMgr.GetHoverWindow() == this->m_zeny) {
-    this->m_zeny->Slot19();
+    this->m_zeny->OnProcess();
   }
 }
 
 // OFFSET: 0x008011D0
 // FUNCTION: fn_10012
-void UIRodexComposeWnd::Slot32(int x, int y) {
+void UIRodexComposeWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (std::atoi(item.itemId.c_str()) != 0) {
     g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -275,9 +275,9 @@ void UIRodexComposeWnd::SetRecipient(int id, unsigned short job, unsigned short 
 
 // OFFSET: 0x007FF400
 // FUNCTION: fn_10000
-void UIRodexComposeWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIRodexComposeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   if (!g_windowMgr.unknown_0458) {
-    UIWindow::Slot10(x, y, value);
+    UIWindow::DragAndDrop(x, y, value);
     return;
   }
 
@@ -544,7 +544,7 @@ void UIRodexComposeWnd::Paint() {
 
 // OFFSET: 0x007FFB90
 // FUNCTION: fn_10005
-void UIRodexComposeWnd::Slot15(int, int) {
+void UIRodexComposeWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 

@@ -9,8 +9,8 @@ UIJobSlotButton::~UIJobSlotButton() = default;
 
 // OFFSET: 0x007BFC70
 // FUNCTION: fn_09307
-void UIJobSlotButton::Slot31(int x, int y) {
-  this->UIButton::Slot31(x, y);
+void UIJobSlotButton::OnLBtnUp(int x, int y) {
+  this->UIButton::OnLBtnUp(x, y);
   this->SetSelected(this->selected == 0);
 }
 

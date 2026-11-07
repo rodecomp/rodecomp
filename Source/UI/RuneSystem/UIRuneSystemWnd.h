@@ -39,9 +39,9 @@ public:
   UIRuneSetReWard();
 
   void Paint() override;
-  void Slot28(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 0120 */ int m_itemId;
@@ -53,7 +53,7 @@ class UIRuneSystemTab : public UIWindow {
 public:
   UIRuneSystemTab();
   void Paint() override;
-  void Slot25(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ int m_count;
@@ -65,17 +65,17 @@ public:
   UIEquipRuneSetWnd();
 
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot28(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
 };
 
 class UIRuneSystem_tagListWnd : public UIWindow {
 public:
   UIRuneSystem_tagListWnd();
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ UIBitmapButton* m_leftButton;
@@ -89,9 +89,9 @@ public:
   UIRuneSetList();
 
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void DrawScrollBar(bool drawLine);
   void ScrollBy(int delta);
@@ -108,7 +108,7 @@ public:
   UIRuneList();
 
   void Paint() override;
-  void Slot28(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
 };
 
 class UIDecomlist : public UIRuneSetList {
@@ -116,7 +116,7 @@ public:
   UIDecomlist();
 
   void Paint() override;
-  void Slot28(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
 };
 
 struct RuneSetInfoLine {
@@ -164,8 +164,8 @@ public:
   UIRuneSystem_ActiveWnd();
 
   void Paint() override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   int HitTestItem(int x, int y);
   __declspec(noinline) void DrawCount(int x, int y, int count, int total, std::uint32_t color, int fontHeight);
 
@@ -205,11 +205,11 @@ class UIRuneSet_Info : public UIWindow {
 public:
   UIRuneSet_Info();
 
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
-  void Slot26(int x, int y) override;
-  void Slot28(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   __declspec(noinline) void UpdateActivation();
   __declspec(noinline) void UpdateRewards();
@@ -234,7 +234,7 @@ class UIRune_Info : public UIWindow {
 public:
   UIRune_Info();
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -247,10 +247,10 @@ class UIRune_Decom : public UIWindow {
 public:
   UIRune_Decom();
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   __declspec(noinline) void Reset();
   int HitTestItem(int x, int y);
@@ -269,7 +269,7 @@ public:
 
 class UIRune_ViewInfo : public UIWindow {
 public:
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
 
   /* 007C */ UIGage_Circle* m_gauge;
@@ -315,10 +315,10 @@ public:
 class UIRuneSystemWnd : public UIFrameWnd {
 public:
   UIRuneSystemWnd();
-  void Slot15(int width, int height) override;
-  void Slot19() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
   void Paint() override;
-  void Slot25(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   __declspec(noinline) void SelectTab();
 

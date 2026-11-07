@@ -24,9 +24,9 @@ public:
   /* 01B0 */ std::function<void(CUIGameItem*)> onClick;
 
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot28(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   virtual void SetMode(int mode);
 
   ITEM_INFO* GetItemInfo();

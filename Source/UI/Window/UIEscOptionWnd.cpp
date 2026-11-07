@@ -11,7 +11,7 @@
 
 // OFFSET: 0x0091F4F0
 // FUNCTION: fn_12638
-void UIEscOptionWnd::Slot15(int, int) {
+void UIEscOptionWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\");
   const char* names[7] = {"esc_01", "esc_001", "esc_08", "esc_09", "esc_02", "esc_05", "esc_10"};
   int ids[7] = {371, 458, 370, 251, 185, 353, 372};

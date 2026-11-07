@@ -71,7 +71,7 @@ float CRenderObject::CalcDist(float x, float y, float z) const {
 
 // OFFSET: 0x00CA9770
 // FUNCTION: fn_21011
-bool CRenderObject::Slot09(
+bool CRenderObject::PrepareSprite(
   int unused, int layer, float scale, const SpriteFrameCell& cell, float x, float y, const float* position, float shift, float* bottomDepth,
   float* topDepth, const SpriteRleImage* image, SpriteQuad* quad, int* bounds, std::uint32_t* color, int offsetX, int offsetY, int flags
 ) {
@@ -170,7 +170,7 @@ bool CRenderObject::Slot09(
   if (this->render.unknown_00B4 == 1 && g_serviceOptions.Get(0x77)) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     GroundGeometry* ground = mode->scene->ground;
-    if (ground->Slot10()) {
+    if (ground->IsNewVer()) {
       int column = 0;
       int row = 0;
       mode->WorldCell(this->render.position.x, this->render.position.z, column, row);

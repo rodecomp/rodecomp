@@ -21,7 +21,7 @@ void CRainbowEffect::Close() {
 
 // OFFSET: 0x00B70CF0
 // FUNCTION: fn_19129
-void CRainbowEffect::Slot01() {
+void CRainbowEffect::Open() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const int angle = (360 - static_cast<int>(mode->camera->camera.yaw)) % 360;
   for (int row = 0; row < 7; ++row) {
@@ -49,13 +49,13 @@ void CRainbowEffect::Slot01() {
 
 // OFFSET: 0x00B70DF0
 // FUNCTION: fn_19130
-bool CRainbowEffect::Slot06() {
+bool CRainbowEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B70E00
 // FUNCTION: fn_19131
-void CRainbowEffect::Slot03() {
+void CRainbowEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->bands.begin(); it != this->bands.end(); ++it) {
     CParticle* particle = *it;
     vector3d& position = particle->position;
@@ -157,7 +157,7 @@ void CRainbowEffect::Slot03() {
 
 // OFFSET: 0x00B714C0
 // FUNCTION: fn_19132
-void CRainbowEffect::Slot04() {
+void CRainbowEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->bands.begin(); it != this->bands.end(); ++it) {
     CParticle* particle = *it;
 

@@ -143,7 +143,7 @@ void UINewSelectCharWnd::DisableButtonById(int id) {
 
 // OFFSET: 0x007D52B0
 // FUNCTION: fn_09590
-void UINewSelectCharWnd::Slot15(int width, int height) {
+void UINewSelectCharWnd::OnCreate(int width, int height) {
   HKEY key;
   const LSTATUS opened = RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &key);
   this->m_page = 0;
@@ -553,7 +553,7 @@ void __stdcall Nullsub244(int, int) {
 
 // OFFSET: 0x007D7750
 // FUNCTION: fn_09593
-void UINewSelectCharWnd::Slot19() {
+void UINewSelectCharWnd::OnProcess() {
   if (g_mouse.buttons[0] == 3) {
     if (g_windowMgr.unknown_0210 != 0) {
       g_windowMgr.CloseWindow(0x12);
@@ -569,7 +569,7 @@ void UINewSelectCharWnd::Slot19() {
   }
 
   if (this->m_slotButtons2[this->m_pageSlot]) {
-    this->m_slotButtons2[this->m_pageSlot]->Slot19();
+    this->m_slotButtons2[this->m_pageSlot]->OnProcess();
     this->m_slotButtons2[this->m_pageSlot]->InvalidateChildren();
   }
 }
@@ -948,15 +948,15 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     }
     case 0x1B2:
-      this->m_slotButtons2[0]->Slot25(0, 0);
+      this->m_slotButtons2[0]->OnLBtnDown(0, 0);
       this->SendMsg(nullptr, 6, 0x1B0, 0, 0, 0);
       break;
     case 0x1B3:
-      this->m_slotButtons2[1]->Slot25(0, 0);
+      this->m_slotButtons2[1]->OnLBtnDown(0, 0);
       this->SendMsg(nullptr, 6, 0x1B0, 0, 0, 0);
       break;
     case 0x1B4:
-      this->m_slotButtons2[2]->Slot25(0, 0);
+      this->m_slotButtons2[2]->OnLBtnDown(0, 0);
       this->SendMsg(nullptr, 6, 0x1B0, 0, 0, 0);
       break;
     }

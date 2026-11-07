@@ -33,7 +33,7 @@ UIApplyForPartyWnd::~UIApplyForPartyWnd() = default;
 
 // OFFSET: 0x007C2400
 // FUNCTION: fn_09325
-void UIApplyForPartyWnd::Slot11() {
+void UIApplyForPartyWnd::StoreInfo() {
   if (this->saved) {
     this->saved->width = this->geometry.width;
     this->saved->height = this->geometry.height;
@@ -44,7 +44,7 @@ void UIApplyForPartyWnd::Slot11() {
 
 // OFFSET: 0x007BD970
 // FUNCTION: fn_09299
-void UIApplyForPartyWnd::Slot15(int, int) {
+void UIApplyForPartyWnd::OnCreate(int, int) {
   UIBasicButton* button = new UIBasicButton();
   button->Configure(this->TextWidth(LookupMessage(3374), 0, 0, 12, 0, 0) + 10, LookupMessage(3374));
   button->Move(51, 165);
@@ -116,7 +116,7 @@ void UIApplyForPartyWnd::Paint() {
 
 // OFFSET: 0x007BFCC0
 // FUNCTION: fn_09309
-void UIApplyForPartyWnd::Slot28(int x, int y) {
+void UIApplyForPartyWnd::OnMouseHover(int x, int y) {
   if (static_cast<unsigned>(y) - 95u > 16u) {
     return;
   }

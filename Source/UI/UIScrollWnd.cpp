@@ -18,7 +18,7 @@ UIScrollWnd::UIScrollWnd(int width, int height, unsigned char cached)
     : UIWindow(cached), viewWidth(0), viewHeight(0), contentWidth(0), contentHeight(0), horizontalBar(nullptr), scrollBar(nullptr),
       scrollBarWidth(13), scrollBarHeight(13), unknown_009C(0), scrollPosition(0), unknown_00A4(0), wheelScroll(0) {
   this->UIWindow::Resize(width, height);
-  this->Slot15(width, height);
+  this->OnCreate(width, height);
 }
 
 // OFFSET: 0x009AC2B0
@@ -59,7 +59,7 @@ void UIScrollWnd::AddScrollChild(UIWindow* child) {
     }
   }
 
-  this->Slot53();
+  this->UpdateScrollRange();
 }
 
 // OFFSET: 0x009AC7B0
@@ -68,7 +68,7 @@ void UIScrollWnd::MoveScrollChild(UIWindow* child, int x, int y) {
   child->Move(x, y);
   this->childOrigins[child].first = x;
   this->childOrigins[child].second = y;
-  this->Slot53();
+  this->UpdateScrollRange();
 }
 
 // OFFSET: 0x009AC890
@@ -268,7 +268,7 @@ RenderPrimitive* UIScrollWnd::BuildPrimitive(int x, int y, int sourceX, int sour
 
 // OFFSET: 0x009AD3A0
 // FUNCTION: fn_13783
-__declspec(noinline) void UIScrollWnd::Slot15(int width, int height) {
+__declspec(noinline) void UIScrollWnd::OnCreate(int width, int height) {
   this->horizontalBar = new UIScrollBar();
   this->horizontalBar->Configure(0, height - this->scrollBarHeight, 0, width - this->scrollBarWidth);
   this->AddChild(this->horizontalBar);
@@ -279,7 +279,7 @@ __declspec(noinline) void UIScrollWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x009AD4A0
 // FUNCTION: fn_13784
-void UIScrollWnd::Slot35(int delta) {
+void UIScrollWnd::OnWheel(int delta) {
   if (this->wheelScroll == 1) {
     if (delta < 0) {
       this->SendMsg(this->scrollBar, 7, 3, 0, 0, 0);
@@ -291,7 +291,7 @@ void UIScrollWnd::Slot35(int delta) {
 
 // OFFSET: 0x009AD4E0
 // FUNCTION: fn_13785
-void UIScrollWnd::Slot53() {
+void UIScrollWnd::UpdateScrollRange() {
   if (!this->horizontalBar || !this->scrollBar) {
     return;
   }
@@ -430,7 +430,7 @@ void UIScrollWnd::Resize(int width, int height) {
     this->horizontalBar->Resize(width - this->scrollBarWidth, this->scrollBarHeight);
     this->horizontalBar->Move(0, height - this->scrollBarHeight);
   }
-  this->Slot53();
+  this->UpdateScrollRange();
 }
 
 // OFFSET: 0x009AD940

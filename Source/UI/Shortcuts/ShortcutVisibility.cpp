@@ -23,7 +23,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
     UIWindow* window = this->window_01C8;
 
     if (visible == 0) {
-      window->Slot11();
+      window->StoreInfo();
       return true;
     }
 
@@ -66,7 +66,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
     UIWindow* window = this->window_0230;
 
     if (visible == 0) {
-      window->Slot11();
+      window->StoreInfo();
       return true;
     }
 

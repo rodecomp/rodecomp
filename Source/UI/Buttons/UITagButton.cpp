@@ -14,7 +14,7 @@ UITagButton::UITagButton() : UITextButton(), item(), m_strings() {
 
 // OFFSET: 0x009B54A0
 // FUNCTION: fn_13844
-void UITagButton::Slot31(int x, int y) {
+void UITagButton::OnLBtnUp(int x, int y) {
   if (this->m_disabled != 0) {
     return;
   }

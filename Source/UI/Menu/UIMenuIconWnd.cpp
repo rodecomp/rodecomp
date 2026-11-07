@@ -92,7 +92,7 @@ UIWindow* UIMenuIconWnd::HitTest(int x, int y) {
 
 // OFFSET: 0x0084A960
 // FUNCTION: fn_10614
-bool UIMenuIconWnd::Slot08() {
+bool UIMenuIconWnd::IsTransmitMouseInput() {
   return true;
 }
 
@@ -106,7 +106,7 @@ void UIMenuIconWnd::Move(int x, int y) {
 
 // OFFSET: 0x0084A9A0
 // FUNCTION: fn_10616
-void UIMenuIconWnd::Slot15(int width, int height) {
+void UIMenuIconWnd::OnCreate(int width, int height) {
   const int ids[24] = {192, 195, 194, 196, 379, 199, 373, 376, 361, 219, 430, 193, 461, 399, 476, 473, 511, 512, 370, 540, 544, 567, 581, 587};
   std::string names[24] = {
     "status", "equip", "item", "skill", "booking", "party", "guild", "battle", "quest", "map", "navigation", "option",
@@ -229,15 +229,15 @@ void UIMenuIconWnd::Paint() {
 
 // OFFSET: 0x0084BD20
 // FUNCTION: fn_10618
-void UIMenuIconWnd::Slot25(int x, int y) {}
+void UIMenuIconWnd::OnLBtnDown(int x, int y) {}
 
 // OFFSET: 0x0084BD30
 // FUNCTION: fn_10619
-void UIMenuIconWnd::Slot31(int x, int y) {}
+void UIMenuIconWnd::OnLBtnUp(int x, int y) {}
 
 // OFFSET: 0x0084BD40
 // FUNCTION: fn_10620
-void UIMenuIcon::Slot27(int x, int y) {
+void UIMenuIcon::OnMouseMove(int x, int y) {
   int behaviorId = 10041;
   int message = 4698;
   bool known = true;
@@ -355,7 +355,7 @@ void UIMenuIcon::Slot27(int x, int y) {
 
 // OFFSET: 0x0084C250
 // FUNCTION: fn_10621
-void UIMenuIconWnd::Slot27(int x, int y) {}
+void UIMenuIconWnd::OnMouseMove(int x, int y) {}
 
 // OFFSET: 0x0084C260
 // FUNCTION: fn_10622

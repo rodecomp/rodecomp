@@ -27,7 +27,7 @@ CUICollectionSystemWnd::CUICollectionSystemWnd()
 
 // OFFSET: 0x0091EC30
 // FUNCTION: fn_12635
-void CUICollectionSystemWnd::Slot15(int, int) {}
+void CUICollectionSystemWnd::OnCreate(int, int) {}
 
 // OFFSET: 0x0092B830
 // FUNCTION: fn_12658
@@ -65,7 +65,7 @@ void CUICollectionSystemWnd::Paint() {
 
 // OFFSET: 0x00930A40
 // FUNCTION: fn_12691
-void CUICollectionSystemWnd::Slot25(int, int) {
+void CUICollectionSystemWnd::OnLBtnDown(int, int) {
   if (this->unknown_00BC == 0) {
     this->unknown_00BC = 1;
     g_modeMgr.GetGameMode()->SendMsg(282, this->unknown_00B8, 0, 0, 0);
@@ -74,7 +74,7 @@ void CUICollectionSystemWnd::Slot25(int, int) {
 
 // OFFSET: 0x00932E20
 // FUNCTION: fn_12717
-void CUICollectionSystemWnd::Slot19() {
+void CUICollectionSystemWnd::OnProcess() {
   this->Invalidate();
   const std::uint32_t now = timeGetTime();
   if (this->m_frame == this->m_lastFrame) {

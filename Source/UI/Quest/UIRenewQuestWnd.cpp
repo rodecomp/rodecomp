@@ -129,7 +129,7 @@ void UINpcSprWnd::Paint() {
 
 // OFFSET: 0x007F9770
 // FUNCTION: fn_09935
-void UINpcSprWnd::Slot31(int, int) {
+void UINpcSprWnd::OnLBtnUp(int, int) {
   if (this->m_mapName.size() != 0) {
     g_navigationManager.StartNavigation(this->m_mapName, 0, 5, false, this->m_destinationX, this->m_destinationY, 1002);
   }
@@ -161,7 +161,7 @@ void UINpcSprWnd::SetDestination(std::string mapName, int x, int y) {
 UIOngoingQuestScrollWnd::UIOngoingQuestScrollWnd(int width, int height)
     : UIScrollWnd(width, height, 0), m_questId(0), m_lineHeight(18) {
   this->m_huntTexts.clear();
-  static_cast<UIWindow*>(this)->Slot15(width, height);
+  static_cast<UIWindow*>(this)->OnCreate(width, height);
 }
 
 // OFFSET: 0x007F9C30
@@ -170,7 +170,7 @@ void Nullsub254() {}
 
 // OFFSET: 0x007F9C40
 // FUNCTION: fn_09943
-void UIOngoingQuestScrollWnd::Slot15(int, int) {
+void UIOngoingQuestScrollWnd::OnCreate(int, int) {
   this->scrollBarWidth = 9;
 }
 
@@ -185,7 +185,7 @@ void UIOngoingQuestScrollWnd::Paint() {
 
 // OFFSET: 0x007F9C70
 // FUNCTION: fn_09945
-void UIOngoingQuestScrollWnd::Slot35(int delta) {
+void UIOngoingQuestScrollWnd::OnWheel(int delta) {
   if (this->wheelScroll == 1) {
     if (delta < 0) {
       this->SendMsg(this->scrollBar, 7, 15, 0, 0, 0);
@@ -452,7 +452,7 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   this->scrollBar = new UIRenewQuestScrollBar();
   this->scrollBar->Configure(this->geometry.width - this->scrollBarWidth, 0, 1, this->geometry.height - this->scrollBarHeight);
   this->AddChild(this->scrollBar);
-  this->Slot53();
+  this->UpdateScrollRange();
   this->Invalidate();
 }
 
@@ -460,7 +460,7 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
 // FUNCTION: fn_09949
 UIRecommededQuestScrollWnd::UIRecommededQuestScrollWnd(int width, int height)
     : UIScrollWnd(width, height, 0), unknown_00B0(0), unknown_00B4(14) {
-  this->Slot15(width, height);
+  this->OnCreate(width, height);
 }
 
 // OFFSET: 0x007FB0C0
@@ -469,7 +469,7 @@ void Nullsub255() {}
 
 // OFFSET: 0x007FB0D0
 // FUNCTION: fn_09952
-void UIRecommededQuestScrollWnd::Slot15(int, int) {
+void UIRecommededQuestScrollWnd::OnCreate(int, int) {
   this->scrollBarWidth = 9;
 }
 
@@ -484,7 +484,7 @@ void UIRecommededQuestScrollWnd::Paint() {
 
 // OFFSET: 0x007FB100
 // FUNCTION: fn_09954
-void UIRecommededQuestScrollWnd::Slot35(int delta) {
+void UIRecommededQuestScrollWnd::OnWheel(int delta) {
   if (this->wheelScroll == 1) {
     if (delta < 0) {
       this->SendMsg(this->scrollBar, 7, 15, 0, 0, 0);
@@ -568,7 +568,7 @@ UIRenewDetailQuestInfoWnd::UIRenewDetailQuestInfoWnd()
 
 // OFFSET: 0x007FB6C0
 // FUNCTION: fn_09959
-void UIRenewDetailQuestInfoWnd::Slot15(int, int) {
+void UIRenewDetailQuestInfoWnd::OnCreate(int, int) {
   this->m_ongoingWnd = new UIOngoingQuestScrollWnd(342, 322);
   this->m_ongoingWnd->Move(0, 62);
   this->AddChild(this->m_ongoingWnd);
@@ -624,9 +624,9 @@ void UIRenewDetailQuestInfoWnd::Paint() {
 
 // OFFSET: 0x007FBAD0
 // FUNCTION: fn_09961
-void UIRenewDetailQuestInfoWnd::Slot25(int x, int y) {
+void UIRenewDetailQuestInfoWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
@@ -710,7 +710,7 @@ UIRenewQuestWnd::UIRenewQuestWnd()
 
 // OFFSET: 0x007FC4A0
 // FUNCTION: fn_09972
-void UIRenewQuestWnd::Slot15(int, int) {
+void UIRenewQuestWnd::OnCreate(int, int) {
   this->m_tabs = new UITab();
   this->m_tabs->SetSize(29, 404);
   this->m_tabs->tabCount = 4;
@@ -840,9 +840,9 @@ void UIRenewQuestWnd::Paint() {
 
 // OFFSET: 0x007FCC90
 // FUNCTION: fn_09975
-void UIRenewQuestWnd::Slot25(int x, int y) {
+void UIRenewQuestWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 
@@ -868,15 +868,15 @@ void UIRenewQuestWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x007FCD80
 // FUNCTION: fn_09976
-void UIRenewQuestWnd::Slot31(int x, int y) {
+void UIRenewQuestWnd::OnLBtnUp(int x, int y) {
   this->m_pressed = 0;
   this->Invalidate();
-  UIFrameWnd::Slot31(x, y);
+  UIFrameWnd::OnLBtnUp(x, y);
 }
 
 // OFFSET: 0x007FCDB0
 // FUNCTION: fn_09977
-void UIRenewQuestWnd::Slot35(int delta) {
+void UIRenewQuestWnd::OnWheel(int delta) {
   if (this->m_scrollable) {
     if (delta < 0) {
       this->SendMsg(this->m_scrollBar, 7, 3, 0, 0, 0);

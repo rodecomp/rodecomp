@@ -24,7 +24,7 @@ void CEvilLandEffect::Close() {
 
 // OFFSET: 0x006FE530
 // FUNCTION: fn_06948
-void CEvilLandEffect::Slot01() {
+void CEvilLandEffect::Open() {
   CTexture* texture = g_texMgr.Load("effect\\EVILLAND\\demonground.tga", 0, false, true, false);
   const float textureStepU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth()) / static_cast<float>(this->unknown_00B0);
   const float textureStepV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight()) / static_cast<float>(this->unknown_00B0);
@@ -73,13 +73,13 @@ void CEvilLandEffect::Slot01() {
 
 // OFFSET: 0x006FE830
 // FUNCTION: fn_06949
-bool CEvilLandEffect::Slot06() {
+bool CEvilLandEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x006FE840
 // FUNCTION: fn_06950
-void CEvilLandEffect::Slot03() {
+void CEvilLandEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(*it)) {
       particle->offsetV += 0.001f;
@@ -89,7 +89,7 @@ void CEvilLandEffect::Slot03() {
 
 // OFFSET: 0x006FE8B0
 // FUNCTION: fn_06951
-void CEvilLandEffect::Slot04() {
+void CEvilLandEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(*it);
     if (particle) {

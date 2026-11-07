@@ -20,12 +20,12 @@ class CUIQuestItem : public CUIListItem {
 public:
   __declspec(noinline) CUIQuestItem();
 
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Move(int x, int y) override;
-  void Slot25(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot48() override;
-  void Slot16() override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnMouseLeave() override;
+  void OnInit() override;
   void Paint() override;
   void SetSelected(bool selected) override;
   void OnActiveStateChanged(bool active);
@@ -47,9 +47,9 @@ public:
 class CUIQuestList : public CUIControl {
 public:
   __declspec(noinline) CUIQuestList();
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot16() override;
+  void OnInit() override;
   void OnSelectItem(CUIQuestItem* item, const unsigned long& questId);
   void BindItem(CUIQuestItem* item, const unsigned long& questId);
 
@@ -62,10 +62,10 @@ class CUIRenewQuestUI : public CUIFrameWnd {
 public:
   __declspec(noinline) CUIRenewQuestUI();
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
-  void Slot53() override;
+  void Initialize() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   bool MatchesFilter(const RenewQuestInfo& info) const;
 
@@ -109,7 +109,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddNewItem();
 template <>
 void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Resize(int width, int height);
 template <>
-void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Slot53(int resolveSkin);
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::LoadSkin(int resolveSkin);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenewQuestUI::CUIQuestItem) == 0x110);

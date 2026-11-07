@@ -92,175 +92,175 @@ class CSkillAction_Icing : public CSkillAction {
 
 class CSkillAction_KR_DOUBLE_SLASH : public CSkillAction_DamageWereWolfForm {
 public:
-  int Slot02() override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillAttackMotion() override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_NASTY_SLASH : public CSkillAction_DamageWereWolfForm {
 public:
-  int Slot02() override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillAttackMotion() override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_CLAW_WAVE : public CSkillAction_DamageWereWolfForm {
 public:
-  int Slot01() override;
-  int Slot02() override;
-  void Slot08(int level, CGameActor* source) override;
-  void Slot12(vector3d position, int argument2, int argument3) override;
+  int GetSkillCastMotion() override;
+  int GetSkillAttackMotion() override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
 };
 
 class CSkillAction_KR_EARTH_DRILL : public CSkillAction_Earthing {
 public:
-  int Slot02() override;
-  void Slot15(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillAttackMotion() override;
+  void OnSkillHit(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_EARTH_STAMP : public CSkillAction_Earthing {
 public:
-  int Slot02() override;
-  void Slot12(vector3d position, int argument2, int argument3) override;
+  int GetSkillAttackMotion() override;
+  void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
 };
 
 class CSkillAction_KR_GROUND_BLOOM : public CSkillAction {
 public:
-  int Slot02() override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
-  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillAttackMotion() override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_THUNDERING_CALL : public CSkillAction_ThunderingBasic {
 public:
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_THUNDERING_CALL_S : public CSkillAction_ThunderingExpand {
 public:
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_THUNDERING_FOCUS : public CSkillAction_ThunderingBasic {
 public:
-  int Slot02() override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillAttackMotion() override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_THUNDERING_FOCUS_S : public CSkillAction_ThunderingExpand {
 public:
-  int Slot02() override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillAttackMotion() override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_THUNDERING_ORB : public CSkillAction_ThunderingBasic {
 public:
-  void Slot12(vector3d position, int argument2, int argument3) override;
+  void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
 };
 
 class CSkillAction_KR_THUNDERING_ORB_S : public CSkillAction_ThunderingExpand {
 public:
-  void Slot12(vector3d position, int argument2, int argument3) override;
+  void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
 };
 
 class CSkillAction_KR_ICE_SPLASH : public CSkillAction_Icing {
 public:
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_ICE_PILLAR : public CSkillAction_Icing {
 public:
-  int Slot02() override;
-  int Slot14() override;
+  int GetSkillAttackMotion() override;
+  int GetSkillScopeType() override;
 };
 
 class CSkillObjectAction_KR_ICE_PILLAR : public CSkillObjectAction {
 public:
-  void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
-  void Slot01(CRenderObject* object) override;
+  void OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) override;
+  void OnSkillObjectRemove(CRenderObject* object) override;
 };
 
 class CSkillAction_KR_FEATHER_SPRINKLE : public CSkillAction_DamageWereRaptorForm {
 public:
-  int Slot02() override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
-  void Slot15(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillAttackMotion() override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillHit(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_SHARPEN_GUST : public CSkillAction_DamageWereRaptorForm {
 public:
-  int Slot01() override;
-  int Slot02() override;
-  void Slot08(int level, CGameActor* source) override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
-  void Slot15(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillCastMotion() override;
+  int GetSkillAttackMotion() override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillHit(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_SHARPEN_HAIL : public CSkillAction_DamageWereRaptorForm {
 public:
-  int Slot01() override;
-  int Slot02() override;
-  void Slot08(int level, CGameActor* source) override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
-  void Slot15(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillCastMotion() override;
+  int GetSkillAttackMotion() override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillHit(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_IRON_HOWLING : public CSkillAction_DamageWereWolfForm {
 public:
-  int Slot01() override;
-  int Slot02() override;
-  void Slot08(int level, CGameActor* source) override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillCastMotion() override;
+  int GetSkillAttackMotion() override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_IRON_HOWLING : public CEfstAction {
 public:
-  EfstActionMessage Slot03() override;
-  EfstActionMessage Slot04() override;
+  EfstActionMessage GetEfstBeginMessage() override;
+  EfstActionMessage GetEfstEndMessage() override;
 };
 
 class CSkillAction_KR_TYPHOON_WING : public CSkillAction_DamageWereRaptorForm {
 public:
-  int Slot01() override;
-  int Slot02() override;
-  void Slot08(int level, CGameActor* source) override;
-  void Slot12(vector3d position, int level, int argument5) override;
+  int GetSkillCastMotion() override;
+  int GetSkillAttackMotion() override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnGroundSkillEffect(vector3d position, int level, int argument5) override;
 };
 
 class CSkillAction_KR_WIND_VEIL : public CSkillAction_DamageWereRaptorForm {
 public:
-  int Slot01() override;
-  int Slot02() override;
-  void Slot08(int level, CGameActor* source) override;
+  int GetSkillCastMotion() override;
+  int GetSkillAttackMotion() override;
+  void OnSkillCast(int level, CGameActor* source) override;
 };
 
 class CEfstAction_WIND_VEIL : public CEfstAction {
 public:
-  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
-  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
-  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
-  EfstActionMessage Slot03() override;
-  EfstActionMessage Slot04() override;
+  void OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+  EfstActionMessage GetEfstBeginMessage() override;
+  EfstActionMessage GetEfstEndMessage() override;
 };
 
 class CSkillAction_SKID_KR_CHOP_CHOP : public CSkillAction_DamageWereWolfForm {
 public:
-  int Slot02() override;
-  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  int GetSkillAttackMotion() override;
+  void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_CHOP_CHOP : public CEfstAction {
 public:
-  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
 };
 
 // OFFSET: 0x005B0800
 // FUNCTION: fn_03340
-int CSkillAction_KR_DOUBLE_SLASH::Slot02() {
+int CSkillAction_KR_DOUBLE_SLASH::GetSkillAttackMotion() {
   return 72;
 }
 
 // OFFSET: 0x005B0810
 // FUNCTION: fn_03341
-void CSkillAction_KR_DOUBLE_SLASH::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_DOUBLE_SLASH::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!target) {
     return;
   }
@@ -273,25 +273,25 @@ void CSkillAction_KR_DOUBLE_SLASH::Slot11(int level, CGameActor* source, CGameAc
 
 // OFFSET: 0x005B0A10
 // FUNCTION: fn_03342
-int CSkillAction_KR_NASTY_SLASH::Slot02() {
+int CSkillAction_KR_NASTY_SLASH::GetSkillAttackMotion() {
   return 77;
 }
 
 // OFFSET: 0x005B0C80
 // FUNCTION: fn_03344
-int CSkillAction_KR_CLAW_WAVE::Slot01() {
+int CSkillAction_KR_CLAW_WAVE::GetSkillCastMotion() {
   return 60;
 }
 
 // OFFSET: 0x005B0C90
 // FUNCTION: fn_03345
-int CSkillAction_KR_CLAW_WAVE::Slot02() {
+int CSkillAction_KR_CLAW_WAVE::GetSkillAttackMotion() {
   return 71;
 }
 
 // OFFSET: 0x005B0CA0
 // FUNCTION: fn_03346
-void CSkillAction_KR_CLAW_WAVE::Slot08(int level, CGameActor* source) {
+void CSkillAction_KR_CLAW_WAVE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(54, level / 16);
   }
@@ -299,7 +299,7 @@ void CSkillAction_KR_CLAW_WAVE::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x005B0CD0
 // FUNCTION: fn_03347
-void CSkillAction_KR_CLAW_WAVE::Slot12(vector3d position, int argument2, int argument3) {
+void CSkillAction_KR_CLAW_WAVE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   const std::uint8_t effectSource[] = {0xD0, 0x0B, 0xA2, 0x24, 0xA6, 0xEC, 0x54, 0x61, 0xD6, 0x67};
   thread_local EncryptedName<sizeof(effectSource), 0x17359BF953C367B3ULL> effectName(effectSource);
   g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position.x, position.y, position.z, 0, -1, 0, 0);
@@ -307,13 +307,13 @@ void CSkillAction_KR_CLAW_WAVE::Slot12(vector3d position, int argument2, int arg
 
 // OFFSET: 0x005B0EA0
 // FUNCTION: fn_03348
-int CSkillAction_KR_EARTH_DRILL::Slot02() {
+int CSkillAction_KR_EARTH_DRILL::GetSkillAttackMotion() {
   return 62;
 }
 
 // OFFSET: 0x005B0EB0
 // FUNCTION: fn_03349
-void CSkillAction_KR_EARTH_DRILL::Slot15(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_EARTH_DRILL::OnSkillHit(int level, CGameActor* source, CGameActor* target) {
   if (!source) {
     return;
   }
@@ -329,13 +329,13 @@ void CSkillAction_KR_EARTH_DRILL::Slot15(int level, CGameActor* source, CGameAct
 
 // OFFSET: 0x005B1240
 // FUNCTION: fn_03350
-int CSkillAction_KR_EARTH_STAMP::Slot02() {
+int CSkillAction_KR_EARTH_STAMP::GetSkillAttackMotion() {
   return 63;
 }
 
 // OFFSET: 0x005B1250
 // FUNCTION: fn_03351
-void CSkillAction_KR_EARTH_STAMP::Slot12(vector3d position, int argument2, int argument3) {
+void CSkillAction_KR_EARTH_STAMP::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   const char effectSource[] = {'\xB2', '\x2E', '\x71', '\xE1', '\xB1', '\xDA', '\xDC', '\x4B', '\xB6', '\x22', '\x73', '\x95'};
   thread_local EncryptedName<sizeof(effectSource), 0x3FAF85D995034FD7ULL> effectName(effectSource);
   g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position.x, position.y, position.z, 0, -1, 0, 0);
@@ -347,13 +347,13 @@ void CSkillAction_KR_EARTH_STAMP::Slot12(vector3d position, int argument2, int a
 
 // OFFSET: 0x005B1590
 // FUNCTION: fn_03352
-int CSkillAction_KR_GROUND_BLOOM::Slot02() {
+int CSkillAction_KR_GROUND_BLOOM::GetSkillAttackMotion() {
   return 0;
 }
 
 // OFFSET: 0x005B15A0
 // FUNCTION: fn_03353
-void CSkillAction_KR_GROUND_BLOOM::Slot16(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_GROUND_BLOOM::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (!source) {
     return;
   }
@@ -365,7 +365,7 @@ void CSkillAction_KR_GROUND_BLOOM::Slot16(int level, CGameActor* source, CGameAc
 
 // OFFSET: 0x005B1610
 // FUNCTION: fn_03354
-void CSkillAction_KR_GROUND_BLOOM::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_GROUND_BLOOM::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!target) {
     return;
   }
@@ -384,7 +384,7 @@ void CSkillAction_KR_GROUND_BLOOM::Slot11(int level, CGameActor* source, CGameAc
 
 // OFFSET: 0x005B19B0
 // FUNCTION: fn_03355
-void CSkillAction_KR_THUNDERING_CALL::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_THUNDERING_CALL::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!target) {
     return;
   }
@@ -419,7 +419,7 @@ void CSkillAction_KR_THUNDERING_CALL::Slot11(int level, CGameActor* source, CGam
 
 // OFFSET: 0x005B2010
 // FUNCTION: fn_03356
-void CSkillAction_KR_THUNDERING_CALL_S::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_THUNDERING_CALL_S::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!target) {
     return;
   }
@@ -454,13 +454,13 @@ void CSkillAction_KR_THUNDERING_CALL_S::Slot11(int level, CGameActor* source, CG
 
 // OFFSET: 0x005B2670
 // FUNCTION: fn_03357
-int CSkillAction_KR_THUNDERING_FOCUS::Slot02() {
+int CSkillAction_KR_THUNDERING_FOCUS::GetSkillAttackMotion() {
   return 65;
 }
 
 // OFFSET: 0x005B2680
 // FUNCTION: fn_03358
-void CSkillAction_KR_THUNDERING_FOCUS::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_THUNDERING_FOCUS::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!target) {
     return;
   }
@@ -472,13 +472,13 @@ void CSkillAction_KR_THUNDERING_FOCUS::Slot11(int level, CGameActor* source, CGa
 
 // OFFSET: 0x005B2880
 // FUNCTION: fn_03359
-int CSkillAction_KR_THUNDERING_FOCUS_S::Slot02() {
+int CSkillAction_KR_THUNDERING_FOCUS_S::GetSkillAttackMotion() {
   return 65;
 }
 
 // OFFSET: 0x005B2890
 // FUNCTION: fn_03360
-void CSkillAction_KR_THUNDERING_FOCUS_S::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_THUNDERING_FOCUS_S::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!target) {
     return;
   }
@@ -490,7 +490,7 @@ void CSkillAction_KR_THUNDERING_FOCUS_S::Slot11(int level, CGameActor* source, C
 
 // OFFSET: 0x005B2A90
 // FUNCTION: fn_03361
-void CSkillAction_KR_THUNDERING_ORB::Slot12(vector3d position, int argument2, int argument3) {
+void CSkillAction_KR_THUNDERING_ORB::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   CGameActor* const target = reinterpret_cast<CGameActor*>(argument3);
   if (!target) {
     return;
@@ -503,20 +503,20 @@ void CSkillAction_KR_THUNDERING_ORB::Slot12(vector3d position, int argument2, in
   const char effectSource[] = {'\x47', '\x4F', '\x46', '\x61', '\xD9', '\x28', '\x4B', '\x44', '\x5D', '\x40', '\x6C', '\x60', '\xCF', '\x2F', '\x66', '\x4A', '\x33'};
   thread_local EncryptedName<sizeof(effectSource), 0x2D394DBD0F332733ULL> effectName(effectSource);
   if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
-    effect->Slot16(300);
+    effect->SetDelay(300);
   }
 
   const char bottomSource[] = {'\x33', '\x49', '\xCE', '\x85', '\x8F', '\x12', '\x6D', '\x7C', '\x29', '\x46', '\xE4', '\x84', '\x99', '\x15', '\x40', '\x72',
                                        '\x18', '\x43', '\xD4', '\x9F', '\x9F', '\x18', '\x72', '\x15'};
   thread_local EncryptedName<sizeof(bottomSource), 0x151F77EBEBBB2147ULL> bottomName(bottomSource);
   if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
-    effect->Slot16(300);
+    effect->SetDelay(300);
   }
 }
 
 // OFFSET: 0x005B2E80
 // FUNCTION: fn_03362
-void CSkillAction_KR_THUNDERING_ORB_S::Slot12(vector3d position, int argument2, int argument3) {
+void CSkillAction_KR_THUNDERING_ORB_S::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   CGameActor* const target = reinterpret_cast<CGameActor*>(argument3);
   if (!target) {
     return;
@@ -529,20 +529,20 @@ void CSkillAction_KR_THUNDERING_ORB_S::Slot12(vector3d position, int argument2, 
   const char effectSource[] = {'\xB5', '\xA7', '\xA6', '\x5D', '\xF3', '\x78', '\x8F', '\x00', '\xAF', '\xA8', '\x8C', '\x5C', '\xE5', '\x7F', '\xA2', '\x10', '\xC1'};
   thread_local EncryptedName<sizeof(effectSource), 0x69FD1D9733D3CFC1ULL> effectName(effectSource);
   if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
-    effect->Slot16(300);
+    effect->SetDelay(300);
   }
 
   const char bottomSource[] = {'\xB3', '\xA5', '\x90', '\x53', '\x7B', '\x18', '\x17', '\x9C', '\xA9', '\xAA', '\xBA', '\x52', '\x6D', '\x1F', '\x3A', '\x8C',
                                        '\x98', '\xAF', '\x8A', '\x49', '\x6B', '\x12', '\x08', '\xF5'};
   thread_local EncryptedName<sizeof(bottomSource), 0xF5657D1F3DE5CDC7ULL> bottomName(bottomSource);
   if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
-    effect->Slot16(300);
+    effect->SetDelay(300);
   }
 }
 
 // OFFSET: 0x005B3270
 // FUNCTION: fn_03363
-void CSkillAction_KR_ICE_SPLASH::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_ICE_SPLASH::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!target) {
     return;
   }
@@ -554,19 +554,19 @@ void CSkillAction_KR_ICE_SPLASH::Slot11(int level, CGameActor* source, CGameActo
 
 // OFFSET: 0x005B3470
 // FUNCTION: fn_03364
-int CSkillAction_KR_ICE_PILLAR::Slot14() {
+int CSkillAction_KR_ICE_PILLAR::GetSkillScopeType() {
   return 7;
 }
 
 // OFFSET: 0x005B3480
 // FUNCTION: fn_03365
-int CSkillAction_KR_ICE_PILLAR::Slot02() {
+int CSkillAction_KR_ICE_PILLAR::GetSkillAttackMotion() {
   return 65;
 }
 
 // OFFSET: 0x005B3490
 // FUNCTION: fn_03366
-void CSkillObjectAction_KR_ICE_PILLAR::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+void CSkillObjectAction_KR_ICE_PILLAR::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (!object) {
     return;
   }
@@ -595,7 +595,7 @@ void CSkillObjectAction_KR_ICE_PILLAR::Slot00(int argument, CRenderObject* objec
       thread_local EncryptedName<sizeof(bytes), 0x078333BB9725B7C9ULL> name(bytes);
       return name.Text();
     }());
-    effect->Slot16(990);
+    effect->SetDelay(990);
   }
   if (CEffect* effect = g_effectMgr->Spawn(object->render.accountId, 2473, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     static_cast<EffectResourceSwitcher*>(effect)->SetNames([] {
@@ -609,13 +609,13 @@ void CSkillObjectAction_KR_ICE_PILLAR::Slot00(int argument, CRenderObject* objec
       thread_local EncryptedName<sizeof(bytes), 0x5B8F49AF09390D1BULL> name(bytes);
       return name.Text();
     }());
-    effect->Slot16(990);
+    effect->SetDelay(990);
   }
 }
 
 // OFFSET: 0x005B3E30
 // FUNCTION: fn_03367
-void CSkillObjectAction_KR_ICE_PILLAR::Slot01(CRenderObject* object) {
+void CSkillObjectAction_KR_ICE_PILLAR::OnSkillObjectRemove(CRenderObject* object) {
   if (!object) {
     return;
   }
@@ -630,31 +630,31 @@ void CSkillObjectAction_KR_ICE_PILLAR::Slot01(CRenderObject* object) {
 
 // OFFSET: 0x005B3E90
 // FUNCTION: fn_03368
-int CSkillAction_KR_FEATHER_SPRINKLE::Slot02() {
+int CSkillAction_KR_FEATHER_SPRINKLE::GetSkillAttackMotion() {
   return 68;
 }
 
 // OFFSET: 0x005B4240
 // FUNCTION: fn_03370
-void CSkillAction_KR_FEATHER_SPRINKLE::Slot15(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_FEATHER_SPRINKLE::OnSkillHit(int level, CGameActor* source, CGameActor* target) {
   this->SpawnAttack01Effect(level, source);
 }
 
 // OFFSET: 0x005B4260
 // FUNCTION: fn_03371
-int CSkillAction_KR_SHARPEN_GUST::Slot01() {
+int CSkillAction_KR_SHARPEN_GUST::GetSkillCastMotion() {
   return 60;
 }
 
 // OFFSET: 0x005B4270
 // FUNCTION: fn_03372
-int CSkillAction_KR_SHARPEN_GUST::Slot02() {
+int CSkillAction_KR_SHARPEN_GUST::GetSkillAttackMotion() {
   return 78;
 }
 
 // OFFSET: 0x005B4280
 // FUNCTION: fn_03373
-void CSkillAction_KR_SHARPEN_GUST::Slot08(int level, CGameActor* source) {
+void CSkillAction_KR_SHARPEN_GUST::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
   }
@@ -662,26 +662,26 @@ void CSkillAction_KR_SHARPEN_GUST::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x005B46D0
 // FUNCTION: fn_03375
-void CSkillAction_KR_SHARPEN_GUST::Slot15(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_SHARPEN_GUST::OnSkillHit(int level, CGameActor* source, CGameActor* target) {
   this->SpawnAttack01Effect(level, source);
   this->SpawnAttack02Effect(level, source);
 }
 
 // OFFSET: 0x005B4700
 // FUNCTION: fn_03376
-int CSkillAction_KR_SHARPEN_HAIL::Slot01() {
+int CSkillAction_KR_SHARPEN_HAIL::GetSkillCastMotion() {
   return 60;
 }
 
 // OFFSET: 0x005B4710
 // FUNCTION: fn_03377
-int CSkillAction_KR_SHARPEN_HAIL::Slot02() {
+int CSkillAction_KR_SHARPEN_HAIL::GetSkillAttackMotion() {
   return 79;
 }
 
 // OFFSET: 0x005B4720
 // FUNCTION: fn_03378
-void CSkillAction_KR_SHARPEN_HAIL::Slot08(int level, CGameActor* source) {
+void CSkillAction_KR_SHARPEN_HAIL::OnSkillCast(int level, CGameActor* source) {
   if (!source) {
     return;
   }
@@ -694,7 +694,7 @@ void CSkillAction_KR_SHARPEN_HAIL::Slot08(int level, CGameActor* source) {
         thread_local EncryptedName<sizeof(bytes), 0x7FC1015DFFCF6D19ULL> name(bytes);
         return name.Text();
       }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
-    effect->Slot14(level);
+    effect->SetLifeTime(level);
   }
   effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
@@ -703,13 +703,13 @@ void CSkillAction_KR_SHARPEN_HAIL::Slot08(int level, CGameActor* source) {
         thread_local EncryptedName<sizeof(bytes), 0xCB3FBD4183DB8323ULL> name(bytes);
         return name.Text();
       }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
-    effect->Slot14(level);
+    effect->SetLifeTime(level);
   }
 }
 
 // OFFSET: 0x005B4AF0
 // FUNCTION: fn_03379
-void CSkillAction_KR_SHARPEN_HAIL::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_SHARPEN_HAIL::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!target) {
     return;
   }
@@ -762,12 +762,12 @@ void CSkillAction_KR_SHARPEN_HAIL::Slot11(int level, CGameActor* source, CGameAc
 
       CEffect* shot = g_effectMgr->Spawn(0, shotEffect, position.x, position.y, position.z, 0, -1, 0, 0);
       if (shot) {
-        shot->Slot16(startTime);
+        shot->SetDelay(startTime);
       }
 
       CEffect* bottom = g_effectMgr->Spawn(0, bottomEffect, position.x, position.y, position.z, 0, -1, 0, 0);
       if (bottom) {
-        bottom->Slot16(startTime);
+        bottom->SetDelay(startTime);
       }
     }
   }
@@ -775,25 +775,25 @@ void CSkillAction_KR_SHARPEN_HAIL::Slot11(int level, CGameActor* source, CGameAc
 
 // OFFSET: 0x005B4F70
 // FUNCTION: fn_03380
-void CSkillAction_KR_SHARPEN_HAIL::Slot15(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_SHARPEN_HAIL::OnSkillHit(int level, CGameActor* source, CGameActor* target) {
   this->SpawnAttack01Effect(level, source);
 }
 
 // OFFSET: 0x005B4F90
 // FUNCTION: fn_03381
-int CSkillAction_KR_IRON_HOWLING::Slot01() {
+int CSkillAction_KR_IRON_HOWLING::GetSkillCastMotion() {
   return 66;
 }
 
 // OFFSET: 0x005B4FA0
 // FUNCTION: fn_03382
-int CSkillAction_KR_IRON_HOWLING::Slot02() {
+int CSkillAction_KR_IRON_HOWLING::GetSkillAttackMotion() {
   return 68;
 }
 
 // OFFSET: 0x005B4FB0
 // FUNCTION: fn_03383
-void CSkillAction_KR_IRON_HOWLING::Slot08(int level, CGameActor* source) {
+void CSkillAction_KR_IRON_HOWLING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(54, level / 16);
   }
@@ -801,31 +801,31 @@ void CSkillAction_KR_IRON_HOWLING::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x005B51F0
 // FUNCTION: fn_03385
-EfstActionMessage CEfstAction_IRON_HOWLING::Slot03() {
+EfstActionMessage CEfstAction_IRON_HOWLING::GetEfstBeginMessage() {
   return {LookupMessage(4662), 0xFFFF00};
 }
 
 // OFFSET: 0x005B5220
 // FUNCTION: fn_03386
-EfstActionMessage CEfstAction_IRON_HOWLING::Slot04() {
+EfstActionMessage CEfstAction_IRON_HOWLING::GetEfstEndMessage() {
   return {LookupMessage(4663), 0xFF};
 }
 
 // OFFSET: 0x005B5250
 // FUNCTION: fn_03387
-int CSkillAction_KR_TYPHOON_WING::Slot01() {
+int CSkillAction_KR_TYPHOON_WING::GetSkillCastMotion() {
   return 66;
 }
 
 // OFFSET: 0x005B5260
 // FUNCTION: fn_03388
-int CSkillAction_KR_TYPHOON_WING::Slot02() {
+int CSkillAction_KR_TYPHOON_WING::GetSkillAttackMotion() {
   return 67;
 }
 
 // OFFSET: 0x005B5270
 // FUNCTION: fn_03389
-void CSkillAction_KR_TYPHOON_WING::Slot08(int level, CGameActor* source) {
+void CSkillAction_KR_TYPHOON_WING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
   }
@@ -833,7 +833,7 @@ void CSkillAction_KR_TYPHOON_WING::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x005B52A0
 // FUNCTION: fn_03390
-void CSkillAction_KR_TYPHOON_WING::Slot12(vector3d position, int level, int argument5) {
+void CSkillAction_KR_TYPHOON_WING::OnGroundSkillEffect(vector3d position, int level, int argument5) {
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(
     level < 6 ? std::string([] {
       const char source[] = {'\x67', '\xBE', '\x73', '\x7D', '\x94', '\xFE', '\x79', '\x10', '\x64', '\xAE', '\x6D', '\x72', '\xA4', '\xA4', '\x6F', '\x7A', '\x13'};
@@ -867,19 +867,19 @@ void CSkillAction_KR_TYPHOON_WING::Slot12(vector3d position, int level, int argu
 
 // OFFSET: 0x005B58A0
 // FUNCTION: fn_03391
-int CSkillAction_KR_WIND_VEIL::Slot01() {
+int CSkillAction_KR_WIND_VEIL::GetSkillCastMotion() {
   return 66;
 }
 
 // OFFSET: 0x005B58B0
 // FUNCTION: fn_03392
-int CSkillAction_KR_WIND_VEIL::Slot02() {
+int CSkillAction_KR_WIND_VEIL::GetSkillAttackMotion() {
   return 68;
 }
 
 // OFFSET: 0x005B58C0
 // FUNCTION: fn_03393
-void CSkillAction_KR_WIND_VEIL::Slot08(int level, CGameActor* source) {
+void CSkillAction_KR_WIND_VEIL::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
   }
@@ -887,19 +887,19 @@ void CSkillAction_KR_WIND_VEIL::Slot08(int level, CGameActor* source) {
 
 // OFFSET: 0x005B58F0
 // FUNCTION: fn_03394
-EfstActionMessage CEfstAction_WIND_VEIL::Slot03() {
+EfstActionMessage CEfstAction_WIND_VEIL::GetEfstBeginMessage() {
   return {LookupMessage(4664), 0xFFFF00};
 }
 
 // OFFSET: 0x005B5920
 // FUNCTION: fn_03395
-EfstActionMessage CEfstAction_WIND_VEIL::Slot04() {
+EfstActionMessage CEfstAction_WIND_VEIL::GetEfstEndMessage() {
   return {LookupMessage(4665), 0xFF};
 }
 
 // OFFSET: 0x005B5950
 // FUNCTION: fn_03396
-void CEfstAction_WIND_VEIL::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+void CEfstAction_WIND_VEIL::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (!actor) {
     return;
   }
@@ -920,7 +920,7 @@ void CEfstAction_WIND_VEIL::Slot00(int efstId, int value, int argument3, int arg
 
 // OFFSET: 0x005B5CE0
 // FUNCTION: fn_03397
-void CEfstAction_WIND_VEIL::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+void CEfstAction_WIND_VEIL::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (!actor) {
     return;
   }
@@ -941,21 +941,21 @@ void CEfstAction_WIND_VEIL::Slot01(int efstId, int argument2, int argument3, int
 
 // OFFSET: 0x005B6010
 // FUNCTION: fn_03398
-void CEfstAction_WIND_VEIL::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+void CEfstAction_WIND_VEIL::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    this->Slot00(efstId, value, 0, 0, actor, false);
+    this->OnEfstBegin(efstId, value, 0, 0, actor, false);
   }
 }
 
 // OFFSET: 0x005B6030
 // FUNCTION: fn_03399
-int CSkillAction_SKID_KR_CHOP_CHOP::Slot02() {
+int CSkillAction_SKID_KR_CHOP_CHOP::GetSkillAttackMotion() {
   return 75;
 }
 
 // OFFSET: 0x005B6330
 // FUNCTION: fn_03401
-void CEfstAction_CHOP_CHOP::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+void CEfstAction_CHOP_CHOP::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (!actor) {
     return;
   }
@@ -1025,7 +1025,7 @@ __declspec(noinline) void CWhirlwindEffect::SetDuration(int duration) {
 
 // OFFSET: 0x005B0A20
 // FUNCTION: fn_03343
-void CSkillAction_KR_NASTY_SLASH::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_NASTY_SLASH::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!this->CanUse(source) || !target) {
     return;
   }
@@ -1034,14 +1034,14 @@ void CSkillAction_KR_NASTY_SLASH::Slot11(int level, CGameActor* source, CGameAct
   const std::uint8_t effectSource[] = {0x49, 0x60, 0x74, 0x19, 0x7A, 0x9A, 0x80, 0x43, 0x46, 0x72, 0x6F, 0x6D};
   thread_local EncryptedName<sizeof(effectSource), 0x2FF3C5036D070127ULL> effectName(effectSource);
   if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
-    effect->Slot17(angle);
-    effect->Slot18(25.0f);
+    effect->SetAngle(angle);
+    effect->SetPitch(25.0f);
   }
 }
 
 // OFFSET: 0x005B3EA0
 // FUNCTION: fn_03369
-void CSkillAction_KR_FEATHER_SPRINKLE::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_FEATHER_SPRINKLE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!this->CanUse(source)) {
     return;
   }
@@ -1057,7 +1057,7 @@ void CSkillAction_KR_FEATHER_SPRINKLE::Slot11(int level, CGameActor* source, CGa
 
 // OFFSET: 0x005B42B0
 // FUNCTION: fn_03374
-void CSkillAction_KR_SHARPEN_GUST::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_SHARPEN_GUST::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!this->CanUse(source) || !target) {
     return;
   }
@@ -1066,21 +1066,21 @@ void CSkillAction_KR_SHARPEN_GUST::Slot11(int level, CGameActor* source, CGameAc
   const char effectSource[] = {'\x1E', '\x37', '\x98', '\x41', '\x93', '\x1E', '\x3B', '\x60', '\x0A', '\x2A', '\x8A', '\x47', '\xE3'};
   thread_local EncryptedName<sizeof(effectSource), 0x3F557BE333F95F6DULL> effectName(effectSource);
   if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
-    effect->Slot17(angle);
-    effect->Slot18(30.0f);
+    effect->SetAngle(angle);
+    effect->SetPitch(30.0f);
   }
 
   const char bottomSource[] = {'\x4A', '\x89', '\xC8', '\x9D', '\x91', '\xC2', '\x3D', '\x58', '\x5E', '\x94', '\xDA', '\x9B', '\xBE', '\xC5', '\x3C', '\x73', '\x4D', '\x8E', '\xC4', '\xEF'};
   thread_local EncryptedName<sizeof(bottomSource), 0x0753A7E1EFA9E139ULL> bottomName(bottomSource);
   if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
-    effect->Slot17(angle);
-    effect->Slot18(30.0f);
+    effect->SetAngle(angle);
+    effect->SetPitch(30.0f);
   }
 }
 
 // OFFSET: 0x005B4FE0
 // FUNCTION: fn_03384
-void CSkillAction_KR_IRON_HOWLING::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_KR_IRON_HOWLING::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!this->CanUse(source)) {
     return;
   }
@@ -1092,7 +1092,7 @@ void CSkillAction_KR_IRON_HOWLING::Slot11(int level, CGameActor* source, CGameAc
 
 // OFFSET: 0x005B6040
 // FUNCTION: fn_03400
-void CSkillAction_SKID_KR_CHOP_CHOP::Slot11(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_SKID_KR_CHOP_CHOP::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (!this->CanUse(source)) {
     return;
   }
@@ -1105,7 +1105,7 @@ void CSkillAction_SKID_KR_CHOP_CHOP::Slot11(int level, CGameActor* source, CGame
   thread_local EncryptedName<sizeof(effectSource), 0x7D750DADBDE9C3F1ULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
-    effect->Slot17(static_cast<float>(std::max(0, rand() % 360)));
+    effect->SetAngle(static_cast<float>(std::max(0, rand() % 360)));
   }
 
   if (CRagEffect* effect = source->LaunchEffect(2444, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {

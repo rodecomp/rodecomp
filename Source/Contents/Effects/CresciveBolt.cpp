@@ -26,7 +26,7 @@ void CCresciveBolt::Close() {
 
 // OFFSET: 0x0070AC30
 // FUNCTION: fn_07109
-void CCresciveBolt::Slot01() {
+void CCresciveBolt::Open() {
   float fromReciprocalDepth = 0.0f;
   float toReciprocalDepth = 0.0f;
   float fromX;
@@ -56,7 +56,7 @@ void CCresciveBolt::Slot01() {
 
 // OFFSET: 0x0070AE90
 // FUNCTION: fn_07110
-bool CCresciveBolt::Slot06() {
+bool CCresciveBolt::IsAlive() {
   if (!this->particle) {
     return false;
   }
@@ -70,7 +70,7 @@ bool CCresciveBolt::Slot06() {
 
 // OFFSET: 0x0070AED0
 // FUNCTION: fn_07111
-void CCresciveBolt::Slot03() {
+void CCresciveBolt::OnProcess() {
   if (!this->particle) {
     return;
   }
@@ -90,7 +90,7 @@ void CCresciveBolt::Slot03() {
 
 // OFFSET: 0x0070AF80
 // FUNCTION: fn_07112
-void CCresciveBolt::Slot04() {
+void CCresciveBolt::Render() {
   if (this->particle) {
     this->particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }

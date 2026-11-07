@@ -30,8 +30,8 @@ namespace TagTextViewer {
   public:
     explicit UIScroll() : UIWindow(0), m_scrollPos(0), m_scrollBar(nullptr) {
     }
-    void Slot15(int width, int height) override;
-    void Slot35(int delta) override;
+    void OnCreate(int width, int height) override;
+    void OnWheel(int delta) override;
     int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
     void UpdateScroll();
     void StorePosition(UIWindow* child);
@@ -47,7 +47,7 @@ class UITagTextViewer : public TagTextViewer::UIScroll {
 public:
   UITagTextViewer();
   void Resize(int width, int height) override;
-  void Slot19() override;
+  void OnProcess() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SetAlign(unsigned char align);

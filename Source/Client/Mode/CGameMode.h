@@ -605,7 +605,7 @@ public:
   void Update() override;
   void ProcessIncomingPackets();
   void TargetActorByAid(int aid);
-  void Slot7(int value) override;
+  void OnChangeState(int value) override;
   void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);
   void ReceiveSummonHpInit(const unsigned char* buffer);
   void ReceiveSummonHpUpdate(const unsigned char* buffer);

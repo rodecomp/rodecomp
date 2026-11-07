@@ -22,15 +22,15 @@ public:
   /* 00EC */ WindowPlacement* m_placement;
 
   UIItemIdentifyWnd();
-  void Slot11() override;
+  void StoreInfo() override;
   void Paint() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void UpdateScroll();
-  void Slot25(int x, int y) override;
-  void Slot26(int x, int y) override;
-  void Slot33(int x, int y) override;
-  void Slot35(int delta) override;
-  std::vector<unsigned char> Slot44() override;
+  void OnLBtnDown(int x, int y) override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
+  void OnWheel(int delta) override;
+  std::vector<unsigned char> GetReplayData() override;
   ITEM_INFO GetItem(int index, int* found);
   ITEM_INFO GetSelectedItem(int* found);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -40,7 +40,7 @@ class UIMakingArrowListWnd : public UIItemIdentifyWnd {
 public:
   UIMakingArrowListWnd();
   void Paint() override;
-  std::vector<unsigned char> Slot44() override;
+  std::vector<unsigned char> GetReplayData() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00F0 */ std::int16_t unknown_00F0;
@@ -56,9 +56,9 @@ public:
 class UIItemCompositionWnd : public UIItemIdentifyWnd {
 public:
   UIItemCompositionWnd();
-  void Slot11() override;
-  void Slot15(int width, int height) override;
-  std::vector<unsigned char> Slot44() override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
+  std::vector<unsigned char> GetReplayData() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00F0 */ WindowPlacement* m_compositionPlacement;

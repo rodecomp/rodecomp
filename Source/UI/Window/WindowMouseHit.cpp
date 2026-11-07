@@ -117,10 +117,10 @@ __declspec(noinline) UIWindow* UIWindowMgr::HitTestWindows(int x, int y) {
       this->previousHitUid = this->currentHitUid;
       this->currentHitUid = hit->Uid();
       if (this->previousHitUid != this->currentHitUid) {
-        hit->Slot47();
+        hit->OnMouseEnter();
 
         if (UIWindow* old = this->FindRenderedUid(this->previousHitUid)) {
-          old->Slot48();
+          old->OnMouseLeave();
         }
       }
 
@@ -139,7 +139,7 @@ __declspec(noinline) UIWindow* UIWindowMgr::HitTestWindows(int x, int y) {
   this->currentHitUid = 0;
   if (this->previousHitUid != 0) {
     if (UIWindow* old = this->FindRenderedUid(this->previousHitUid)) {
-      old->Slot48();
+      old->OnMouseLeave();
     }
   }
 
@@ -225,31 +225,31 @@ int UIWindowMgr::ProcessMouse() {
 
     if (g_mouse.buttons[0] == 1) {
       UIWindow* root = this->inputWindow->Root();
-      if (root && root->Slot02()) {
+      if (root && root->IsFrameWnd()) {
         PromoteWindow(this, root);
       }
 
-      this->inputWindow->Slot25(localX, localY);
+      this->inputWindow->OnLBtnDown(localX, localY);
     }
 
     if (g_mouse.buttons[0] == 4 && (g_replayAnimationScaling == 0 || g_modeMgr.state == 0)) {
-      this->inputWindow->Slot25(localX, localY);
-      this->inputWindow->Slot26(localX, localY);
+      this->inputWindow->OnLBtnDown(localX, localY);
+      this->inputWindow->OnLBtnDblClk(localX, localY);
     }
 
     this->inputWindow->ResetCursor(localX, localY);
     if (this->unknown_046C == x && this->unknown_0470 == y) {
-      this->inputWindow->Slot28(localX, localY);
+      this->inputWindow->OnMouseHover(localX, localY);
     } else {
-      this->inputWindow->Slot27(localX, localY);
+      this->inputWindow->OnMouseMove(localX, localY);
     }
 
     if (g_mouse.wheel != 0) {
-      this->inputWindow->Slot35(g_mouse.wheel);
+      this->inputWindow->OnWheel(g_mouse.wheel);
     }
 
     if (g_mouse.buttons[0] == 3) {
-      this->inputWindow->Slot31(localX, localY);
+      this->inputWindow->OnLBtnUp(localX, localY);
     }
   } else {
     UIWindow* window = this->HitTestWindows(x, y);
@@ -266,7 +266,7 @@ int UIWindowMgr::ProcessMouse() {
     }
 
     if (window) {
-      handled = window->Slot08() ? 2 : 1;
+      handled = window->IsTransmitMouseInput() ? 2 : 1;
       int left;
       int top;
       WindowScreenPosition(window, left, top);
@@ -274,16 +274,16 @@ int UIWindowMgr::ProcessMouse() {
       const int localY = y - top;
 
       if (g_mouse.buttons[0] == 4 && (g_replayAnimationScaling == 0 || g_modeMgr.state == 0)) {
-        window->Slot26(localX, localY);
+        window->OnLBtnDblClk(localX, localY);
       }
 
       if (g_mouse.buttons[1] == 4) {
-        window->Slot34(localX, localY);
+        window->OnRBtnDblClk(localX, localY);
       }
 
       if (g_mouse.buttons[0] == 1) {
         UIWindow* root = window->Root();
-        if (root && root->Slot02()) {
+        if (root && root->IsFrameWnd()) {
           PromoteWindow(this, root);
         }
 
@@ -292,35 +292,35 @@ int UIWindowMgr::ProcessMouse() {
           this->CloseDropDown();
         }
 
-        window->Slot25(localX, localY);
+        window->OnLBtnDown(localX, localY);
       }
 
       if (g_mouse.buttons[1] == 1) {
         UIWindow* root = window->Root();
-        if (root && root->Slot02()) {
+        if (root && root->IsFrameWnd()) {
           PromoteWindow(this, root);
         }
 
-        window->Slot32(localX, localY);
+        window->OnRBtnDown(localX, localY);
       }
 
       window->ResetCursor(localX, localY);
       if (this->unknown_046C == x && this->unknown_0470 == y) {
-        window->Slot28(localX, localY);
+        window->OnMouseHover(localX, localY);
       } else {
-        window->Slot27(localX, localY);
+        window->OnMouseMove(localX, localY);
       }
 
       if (g_mouse.wheel != 0) {
-        window->Slot35(g_mouse.wheel);
+        window->OnWheel(g_mouse.wheel);
       }
 
       if (g_mouse.buttons[1] == 3) {
-        window->Slot33(localX, localY);
+        window->OnRBtnUp(localX, localY);
       }
 
       if (g_mouse.buttons[0] == 3) {
-        window->Slot31(localX, localY);
+        window->OnLBtnUp(localX, localY);
       }
     }
 
@@ -368,7 +368,7 @@ int UIWindowMgr::ProcessMouse() {
         int left = 0;
         int top = 0;
         this->window_01B8->ToScreen(left, top);
-        this->window_01B8->Slot27(x - left, y - top);
+        this->window_01B8->OnMouseMove(x - left, y - top);
         this->window_01B8->ResetCursor(x - left, y - top);
       }
 
@@ -399,7 +399,7 @@ int UIWindowMgr::ProcessMouse() {
   }
 
   for (auto entry = this->rendered.rbegin(); entry != this->rendered.rend(); ++entry) {
-    (*entry)->Slot29(x, y);
+    (*entry)->OnMouseCheck(x, y);
   }
 
   return handled;

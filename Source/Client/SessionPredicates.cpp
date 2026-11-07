@@ -77,7 +77,7 @@ int CSession::IsLocalPlayerAid(std::uint32_t aid) const {
   }
 
   CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
-  if (player && aid == static_cast<std::uint32_t>(player->Slot50())) {
+  if (player && aid == static_cast<std::uint32_t>(player->GetGdid())) {
     return 1;
   }
   return 0;

@@ -41,7 +41,7 @@ void CJupitelThunderStormEffect::Close() {
 
 // OFFSET: 0x00706180
 // FUNCTION: fn_07043
-void CJupitelThunderStormEffect::Slot01() {
+void CJupitelThunderStormEffect::Open() {
   const float dy = this->sourcePosition[1] - this->position[1];
   const float dx = this->sourcePosition[0] - this->position[0];
   const float dz = this->sourcePosition[2] - this->position[2];
@@ -100,7 +100,7 @@ void CJupitelThunderStormEffect::Slot01() {
 
 // OFFSET: 0x007065F0
 // FUNCTION: fn_07044
-bool CJupitelThunderStormEffect::Slot06() {
+bool CJupitelThunderStormEffect::IsAlive() {
   if (this->particle && ParticleAlive(this->particle)) {
     return true;
   }
@@ -116,7 +116,7 @@ bool CJupitelThunderStormEffect::Slot06() {
 
 // OFFSET: 0x00706690
 // FUNCTION: fn_07045
-void CJupitelThunderStormEffect::Slot03() {
+void CJupitelThunderStormEffect::OnProcess() {
   if (CParticle* particle = this->particle) {
     if (ParticleAlive(particle)) {
       vector3d position;
@@ -146,7 +146,7 @@ void CJupitelThunderStormEffect::Slot03() {
 
 // OFFSET: 0x007067C0
 // FUNCTION: fn_07046
-void CJupitelThunderStormEffect::Slot04() {
+void CJupitelThunderStormEffect::Render() {
   if (this->particle) {
     static_cast<CEZ2STRParticle*>(this->particle)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }

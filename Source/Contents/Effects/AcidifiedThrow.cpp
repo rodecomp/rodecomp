@@ -39,7 +39,7 @@ void CAcidifiedThrow::Close() {
 
 // OFFSET: 0x006F37D0
 // FUNCTION: fn_06824
-void CAcidifiedThrow::Slot01() {
+void CAcidifiedThrow::Open() {
   this->unknown_00CC = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   this->unknown_00D0[0] = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   this->unknown_00D0[1] = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
@@ -92,13 +92,13 @@ void CAcidifiedThrow::Slot01() {
 
 // OFFSET: 0x006F3F90
 // FUNCTION: fn_06825
-bool CAcidifiedThrow::Slot06() {
+bool CAcidifiedThrow::IsAlive() {
   return this->active;
 }
 
 // OFFSET: 0x006F3FA0
 // FUNCTION: fn_06826
-void CAcidifiedThrow::Slot03() {
+void CAcidifiedThrow::OnProcess() {
   CRenderObject* actor = FindRenderObject(this->actor);
   if (!actor) {
     this->active = false;
@@ -225,7 +225,7 @@ void CAcidifiedThrow::Slot03() {
 
 // OFFSET: 0x006F4790
 // FUNCTION: fn_06827
-void CAcidifiedThrow::Slot04() {
+void CAcidifiedThrow::Render() {
   if (this->unknown_00CC) {
     reinterpret_cast<CEZ2STRParticle*>(this->unknown_00CC)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     return;

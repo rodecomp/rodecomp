@@ -10,7 +10,7 @@
 
 // OFFSET: 0x00932050
 // FUNCTION: fn_12711
-void UIShortCutWnd::Slot28(int x, int y) {
+void UIShortCutWnd::OnMouseHover(int x, int y) {
   UIWindow& window = *this;
   ShortcutGrid& grid = this->m_grid;
   const bool itemSlotActive = g_session.ItemSlotActive();

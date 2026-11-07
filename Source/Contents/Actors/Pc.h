@@ -39,44 +39,44 @@ public:
   ) override;
   void Render(int argument) override;
 
-  bool Slot14() override;
-  void Slot15(int state, int resetPosition) override;
-  void Slot43(int first, int second) override;
-  void Slot19(
+  bool ProcessState() override;
+  void SetState(int state, int resetPosition) override;
+  void SetSprRobe(int first, int second) override;
+  void SetSprActFull(
     int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh
   ) override;
-  void Slot20(
+  void SetSprAct2(
     int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh
   ) override;
-  void Slot21(int job) override;
-  void Slot22(int value) override;
-  void Slot23(int first, int second) override;
-  void Slot24(int first, int second) override;
-  void Slot25(int value) override;
-  void Slot26(int value) override;
-  void Slot27(int value) override;
-  void Slot28(int value) override;
-  void Slot29(int value) override;
-  void Slot30() override;
-  void Slot31() override;
-  void Slot32() override;
-  void Slot33(int value) override;
-  void Slot34(int value) override;
-  std::int64_t Slot35() override;
-  void Slot39(int value) override;
-  void Slot40(int value) override;
-  void Slot41(int first, int second) override;
-  int Slot42() override;
-  void Slot44(int first, int second) override;
-  int Slot46() override;
-  void Slot47(unsigned char value) override;
-  int Slot55() override;
-  int Slot56() override;
-  void Slot57(int value) override;
-  bool Slot58() override;
-  void Slot59(bool value) override;
-  void Slot60() override;
-  void Slot62(int value) override;
+  void SetSprJob(int job) override;
+  void SetSprHead(int value) override;
+  void SetSprWeapon(int first, int second) override;
+  void SetSprWeapon2(int first, int second) override;
+  void SetSprAccessory(int value) override;
+  void SetSprAccessory2(int value) override;
+  void SetSprAccessory3(int value) override;
+  void SetSprShield(int value) override;
+  void SetSprShoe(int value) override;
+  void SetImfFileName() override;
+  void SetHeadPaletteName() override;
+  void SetBodyPaletteName() override;
+  void SetBodyPalette(int value) override;
+  void SetHeadPalette(int value) override;
+  std::int64_t GetWeapon() override;
+  void SetModifyFactorOfmotionSpeed(int value) override;
+  void SetHonor(int value) override;
+  void SetPropensityInfo(int first, int second) override;
+  int GetPkState() override;
+  void SetBodyCostume(int first, int second) override;
+  int GetBodyCostume() override;
+  void SetRiding(unsigned char value) override;
+  int GetMonsterTransformJob() override;
+  int GetMadogearType() override;
+  void SetMadogearType(int value) override;
+  bool IsArrowEffectSuppressed() override;
+  void SetArrowEffectSuppressed(bool value) override;
+  void RefreshAccessory3() override;
+  void SetSex(int value) override;
 
   void AddMsgEffect(CGameObject* effect);
   void RenderBodyOutline(int layer, const float* position, float x, float y, float distanceScale, float scale, float depth, std::uint32_t color);
@@ -209,8 +209,8 @@ public:
 
   bool IsSpecialState(int state) const;
   void ReapplySkillEffects();
-  void Slot16() override;
-  void Slot17() override;
+  void RegisterPos() override;
+  void UnRegisterPos() override;
   void RefreshEffect164();
   void UpdateFootprints(int kind);
   void UpdateMsgEffect(bool show);
@@ -218,7 +218,7 @@ public:
   float AdjustFollowDistance(CGameActor* target, float distance);
   void UpdatePendingAction();
   void Initialize();
-  void Slot15(int state, int resetPosition) override;
+  void SetState(int state, int resetPosition) override;
 
   /* 0510 */ int unknown_0510;
   /* 0514 */ int unknown_0514;
@@ -260,25 +260,25 @@ public:
   ) override;
   void Render(int argument) override;
   void SetAction(unsigned animation, int motion, int repeat) override;
-  void Slot08() override;
-  bool Slot14() override;
-  void Slot15(int first, int second) override;
-  void Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
-  void Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
-  void Slot21(int value) override;
-  void Slot22(int value) override;
-  void Slot23(int first, int second) override;
-  void Slot24(int first, int second) override;
-  void Slot25(int value) override;
-  void Slot26(int value) override;
-  void Slot27(int value) override;
-  void Slot28(int value) override;
-  void Slot30() override;
-  void Slot31() override;
-  std::int64_t Slot35() override;
-  void Slot39(int value) override;
-  void Slot40(int value) override;
-  void Slot41(int first, int second) override;
+  void ProcessMotion() override;
+  bool ProcessState() override;
+  void SetState(int first, int second) override;
+  void SetSprActFull(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
+  void SetSprAct2(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
+  void SetSprJob(int value) override;
+  void SetSprHead(int value) override;
+  void SetSprWeapon(int first, int second) override;
+  void SetSprWeapon2(int first, int second) override;
+  void SetSprAccessory(int value) override;
+  void SetSprAccessory2(int value) override;
+  void SetSprAccessory3(int value) override;
+  void SetSprShield(int value) override;
+  void SetImfFileName() override;
+  void SetHeadPaletteName() override;
+  std::int64_t GetWeapon() override;
+  void SetModifyFactorOfmotionSpeed(int value) override;
+  void SetHonor(int value) override;
+  void SetPropensityInfo(int first, int second) override;
 
   void PlayMotion(int repeat);
   void ReleaseMeshes();

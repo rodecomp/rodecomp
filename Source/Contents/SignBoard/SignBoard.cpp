@@ -249,12 +249,12 @@ void CSignBoardWnd::ApplyColor() {
 
 // OFFSET: 0x00821B40
 // FUNCTION: fn_10263
-void CBmpObjWnd::Slot15(int width, int height) {
+void CBmpObjWnd::OnCreate(int width, int height) {
 }
 
 // OFFSET: 0x00821B50
 // FUNCTION: fn_10264
-void CSignBoardWnd::Slot15(int width, int height) {
+void CSignBoardWnd::OnCreate(int width, int height) {
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\signboard\\bg_signboard.bmp")));
   this->Resize(bitmap->image.width, bitmap->image.height);
   this->text = new (std::nothrow) UIStaticText();

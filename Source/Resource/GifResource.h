@@ -15,7 +15,7 @@ public:
   CGifRes();
   CGifRes(const char* extension, const char* prefix);
   ~CGifRes() override;
-  void Slot02() override;
+  void OnProcess() override;
   bool IsTransient() override;
   CGifRes* Create() override;
   bool Load(const char* name) override;

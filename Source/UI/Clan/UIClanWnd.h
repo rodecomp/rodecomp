@@ -12,10 +12,10 @@ public:
   // INLINED
   UIClanWnd() : UIFrameWnd(0), m_saved(nullptr), m_title(nullptr) {
   }
-  void Slot11() override;
+  void StoreInfo() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  virtual int Slot53() = 0;
+  virtual int Tab() = 0;
 
 protected:
   /* 00B4 */ ClanWndInfo* m_saved;
@@ -25,11 +25,11 @@ protected:
 class UIClanInfoManageWnd : public UIClanWnd {
 public:
   UIClanInfoManageWnd();
-  void Slot15(int width, int height) override;
-  void Slot25(int x, int y) override;
+  void OnCreate(int width, int height) override;
+  void OnLBtnDown(int x, int y) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  int Slot53() override;
+  int Tab() override;
   __declspec(noinline) void LoadEmblem();
 
 protected:

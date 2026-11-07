@@ -18,14 +18,14 @@ public:
       : UIFrameWnd(0), selected(0), insufficient(0), quantity(0) {}
   ~UIIngredientInfoWnd() override;
   void Move(int x, int y) override;
-  void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot31(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot35(int argument) override;
+  void DragAndDrop(int argument1, int argument2, std::intptr_t argument3) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnLBtnUp(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnWheel(int argument) override;
   void Paint() override;
-  void Slot26(int button, int unused) override;
+  void OnLBtnDblClk(int button, int unused) override;
   void SetIngredientItem(std::uint32_t id);
 
   /* 00B8 */ ITEM_INFO item;

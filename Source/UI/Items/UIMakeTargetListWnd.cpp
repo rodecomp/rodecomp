@@ -20,7 +20,7 @@
 
 // OFFSET: 0x009A0490
 // FUNCTION: fn_13600
-std::vector<unsigned char> UIMakeTargetListWnd::Slot44() {
+std::vector<unsigned char> UIMakeTargetListWnd::GetReplayData() {
   std::vector<unsigned char> records;
   {
     const auto record = BuildReplayTaggedRecord(22050, nullptr, 0);

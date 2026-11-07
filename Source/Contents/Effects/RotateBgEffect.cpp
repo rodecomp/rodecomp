@@ -26,7 +26,7 @@ void CRotateBgEffect::Close() {
 
 // OFFSET: 0x00B727D0
 // FUNCTION: fn_19142
-void CRotateBgEffect::Slot01() {
+void CRotateBgEffect::Open() {
   for (int ring = 0; ring < 2; ++ring) {
     const int start = std::max(rand() % 360, 0);
     for (int index = 0; index < 10; ++index) {
@@ -77,13 +77,13 @@ void CRotateBgEffect::Slot01() {
 
 // OFFSET: 0x00B729E0
 // FUNCTION: fn_19143
-bool CRotateBgEffect::Slot06() {
+bool CRotateBgEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B729F0
 // FUNCTION: fn_19144
-void CRotateBgEffect::Slot03() {
+void CRotateBgEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -230,7 +230,7 @@ void CRotateBgEffect::Slot03() {
 
 // OFFSET: 0x00B734E0
 // FUNCTION: fn_19145
-void CRotateBgEffect::Slot04() {
+void CRotateBgEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);

@@ -17,11 +17,11 @@ class CUIScrollWindow;
 class CUIRecommendedQuestInfo : public CUIFrameWnd {
 public:
   __declspec(noinline) CUIRecommendedQuestInfo();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void OnFirstAction();
   void OnClose();
-  virtual void Slot53();
+  virtual void Initialize();
   void SetQuest(unsigned int questId);
 
   /* 00D8 */ CUITitleBar* titleBar;
@@ -37,8 +37,8 @@ class CUIQuestInfo : public CUIControl {
 public:
   __declspec(noinline) CUIQuestInfo();
 
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
 
   /* 0084 */ CUITextViewer* textViewer;
@@ -47,8 +47,8 @@ public:
 class CUIScrollWindow : public CUIControl {
 public:
   __declspec(noinline) CUIScrollWindow();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void SetQuest(unsigned int questId);
 
   /* 0084 */ CUIStaticImage* background;

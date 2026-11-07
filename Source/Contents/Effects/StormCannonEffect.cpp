@@ -25,7 +25,7 @@ void CStormCannonEffect::Close() {
 
 // OFFSET: 0x0072CFA0
 // FUNCTION: fn_07487
-void CStormCannonEffect::Slot01() {
+void CStormCannonEffect::Open() {
   CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
   if (bottom) {
     bottom->Load(std::string("stormcannon\\stormcannon_bottom\\stormcannon_bottom.str"));
@@ -65,13 +65,13 @@ void CStormCannonEffect::Slot01() {
 
 // OFFSET: 0x0072D350
 // FUNCTION: fn_07488
-bool CStormCannonEffect::Slot06() {
+bool CStormCannonEffect::IsAlive() {
   return this->Alpha() > 0;
 }
 
 // OFFSET: 0x0072D360
 // FUNCTION: fn_07489
-void CStormCannonEffect::Slot03() {
+void CStormCannonEffect::OnProcess() {
   const float speed = static_cast<float>(this->speed);
   this->position[1] = speed * this->direction.y + this->position[1];
   this->position[0] = speed * this->direction.x + this->position[0];
@@ -102,7 +102,7 @@ void CStormCannonEffect::Slot03() {
 
 // OFFSET: 0x0072D540
 // FUNCTION: fn_07490
-void CStormCannonEffect::Slot04() {
+void CStormCannonEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
       (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);

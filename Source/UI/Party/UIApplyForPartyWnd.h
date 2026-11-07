@@ -9,10 +9,10 @@ class UIApplyForPartyWnd : public UIFrameWnd {
 public:
   UIApplyForPartyWnd();
   ~UIApplyForPartyWnd() override;
-  void Slot11() override;
-  void Slot15(int width, int height) override;
+  void StoreInfo() override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot28(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SetInfo(CAdvenPartyInfo value);
 

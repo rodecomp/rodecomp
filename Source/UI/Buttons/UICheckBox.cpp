@@ -90,7 +90,7 @@ void UICheckBox::SetHidden(bool hidden) {
 
 // OFFSET: 0x0085EB90
 // FUNCTION: fn_10841
-void UICheckBox::Slot25(int, int) {
+void UICheckBox::OnLBtnDown(int, int) {
   if (this->m_disabled != 0 || g_replayAnimationScaling) {
     return;
   }
@@ -104,12 +104,12 @@ void UICheckBox::Slot25(int, int) {
 
 // OFFSET: 0x0085F310
 // FUNCTION: fn_10859
-void UICheckBox::Slot28(int x, int y) {
+void UICheckBox::OnMouseHover(int x, int y) {
   if (this->m_disabled != 0) {
     return;
   }
 
-  this->Slot27(x, y);
+  this->OnMouseMove(x, y);
   if (this->m_tooltip.empty()) {
     return;
   }

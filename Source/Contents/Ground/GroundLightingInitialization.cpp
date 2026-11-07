@@ -4,7 +4,7 @@
 // OFFSET: 0x00ABFB10
 // FUNCTION: fn_17558
 void GroundGeometry::InitializeLighting() {
-  if (!this->Slot10()) {
+  if (!this->IsNewVer()) {
     return;
   }
 

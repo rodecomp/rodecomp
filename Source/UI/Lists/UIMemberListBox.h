@@ -6,11 +6,11 @@
 class UIChatHisBox2 : public UIChatHisBox {
 public:
   UIChatHisBox2();
-  bool Slot08() override;
+  bool IsTransmitMouseInput() override;
   void Paint() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Configure(int x, int y, int width, int height, unsigned char transparent) override;
-  void Slot33(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
 
   /* 0124 */ int backgroundRed;
   /* 0128 */ int backgroundGreen;
@@ -21,7 +21,7 @@ class UIChatHisBox3 : public UIChatHisBox2 {
 public:
   UIChatHisBox3();
   void Paint() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Resize(int width, int height) override;
   virtual void AddText(const char* text, int color);
 
@@ -33,10 +33,10 @@ class UIMemberListBox : public UIChatHisBox2 {
 public:
   UIMemberListBox();
   void Paint() override;
-  void Slot25(int x, int y) override;
-  void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
-  void Slot33(int x, int y) override;
+  void OnLBtnDown(int x, int y) override;
+  void OnMouseHover(int x, int y) override;
+  void OnRBtnDown(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
 };
 
 #endif

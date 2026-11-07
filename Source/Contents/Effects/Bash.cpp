@@ -33,7 +33,7 @@ void CBash::Close() {
 
 // OFFSET: 0x00B422E0
 // FUNCTION: fn_18870
-void CBash::Slot01() {
+void CBash::Open() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   RenderVertex screen;
   screen.x = 0.0f;
@@ -96,13 +96,13 @@ void CBash::Slot01() {
 
 // OFFSET: 0x00B42600
 // FUNCTION: fn_18871
-bool CBash::Slot06() {
+bool CBash::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B42720
 // FUNCTION: fn_18872
-void CBash::Slot03() {
+void CBash::OnProcess() {
   for (auto it = this->rays.begin(); it != this->rays.end(); ++it) {
     CParticle* particle = *it;
     float* values = &particle->unknown_0054;
@@ -152,7 +152,7 @@ void CBash::Slot03() {
 
 // OFFSET: 0x00B42C40
 // FUNCTION: fn_18873
-void CBash::Slot04() {
+void CBash::Render() {
   for (auto it = this->rays.begin(); it != this->rays.end(); ++it) {
     CParticle* particle = *it;
     const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4));

@@ -73,7 +73,7 @@ void UIPreviewEquipWnd::DrawCharacter() {
 
 // OFFSET: 0x007F38A0
 // FUNCTION: fn_09882
-void UIPreviewEquipWnd::Slot15(int width, int height) {
+void UIPreviewEquipWnd::OnCreate(int width, int height) {
 
   this->AddBaseButton();
   this->AddCloseButton("", 0);
@@ -160,9 +160,9 @@ void UIPreviewEquipWnd::SyncFromPlayer() {
   this->m_render->unknown_002C = player->unknown_0454;
   this->m_render->unknown_0030 = player->unknown_0458;
   this->m_render->SetRobe(player->unknown_049C);
-  this->m_render->unknown_0048 = player->Slot56();
+  this->m_render->unknown_0048 = player->GetMadogearType();
   this->m_render->unknown_004C = player->unknown_02CC;
-  this->m_render->unknown_0050 = player->Slot46();
+  this->m_render->unknown_0050 = player->GetBodyCostume();
   *reinterpret_cast<float*>(&this->m_render->unknown_0054) = -5.0f;
   this->m_render->unknown_0058 = 136.0f;
   this->RefreshHeadgearLocations();
@@ -399,7 +399,7 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
 
 // OFFSET: 0x007F4830
 // FUNCTION: fn_09888
-void UIPreviewEquipWnd::Slot11() {
+void UIPreviewEquipWnd::StoreInfo() {
   if (this->saved) {
     this->saved->x = this->geometry.x;
     this->saved->y = this->geometry.y;
@@ -408,6 +408,6 @@ void UIPreviewEquipWnd::Slot11() {
 
 // OFFSET: 0x007F3DB0
 // FUNCTION: fn_09884
-void UIPreviewEquipWnd::Slot19() {
+void UIPreviewEquipWnd::OnProcess() {
   this->Invalidate();
 }

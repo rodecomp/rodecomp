@@ -26,7 +26,7 @@ void CTriangleShotArrow::Close() {
 
 // OFFSET: 0x0072EE90
 // FUNCTION: fn_07524
-void CTriangleShotArrow::Slot01() {
+void CTriangleShotArrow::Open() {
   this->current.x = this->position[0];
   this->current.y = this->position[1];
   this->current.z = this->position[2];
@@ -88,7 +88,7 @@ void CTriangleShotArrow::Slot01() {
 
 // OFFSET: 0x0072F2B0
 // FUNCTION: fn_07525
-bool CTriangleShotArrow::Slot06() {
+bool CTriangleShotArrow::IsAlive() {
   if (static_cast<float>(this->step) > 8.0f / this->speed) {
     return false;
   }
@@ -98,7 +98,7 @@ bool CTriangleShotArrow::Slot06() {
 
 // OFFSET: 0x0072F2E0
 // FUNCTION: fn_07526
-void CTriangleShotArrow::Slot03() {
+void CTriangleShotArrow::OnProcess() {
   if (this->delay > 0) {
     this->delay -= 16;
     return;
@@ -124,7 +124,7 @@ void CTriangleShotArrow::Slot03() {
 
 // OFFSET: 0x0072F470
 // FUNCTION: fn_07527
-void CTriangleShotArrow::Slot04() {
+void CTriangleShotArrow::Render() {
   if (this->arrow) {
     this->arrow->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
@@ -132,6 +132,6 @@ void CTriangleShotArrow::Slot04() {
 
 // OFFSET: 0x0072F4D0
 // FUNCTION: fn_07528
-void CTriangleShotArrow::Slot16(int delay) {
+void CTriangleShotArrow::SetDelay(int delay) {
   this->delay = delay;
 }

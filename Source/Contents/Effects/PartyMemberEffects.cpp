@@ -57,7 +57,7 @@ int CRollingCutterRagEffect::GetDuration() {
 
 // OFFSET: 0x00612010
 // FUNCTION: fn_04339
-std::uint32_t CRagEffect::Slot13() {
+std::uint32_t CRagEffect::GetStateFlags() {
   return 0;
 }
 

@@ -8,7 +8,7 @@
 
 // OFFSET: 0x00921530
 // FUNCTION: fn_12642
-void UINavigationHelpWnd::Slot15(int width, int height) {
+void UINavigationHelpWnd::OnCreate(int width, int height) {
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(5, 22, width - 10, height - 27, 0);
   this->m_viewer->backgroundBlue = 0xd2;

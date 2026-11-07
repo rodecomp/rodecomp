@@ -10218,7 +10218,7 @@ void CRagEffect::NapalmFragments() {
 
 // OFFSET: 0x00C20240
 // FUNCTION: fn_20086
-bool CRagEffect::Slot14() {
+bool CRagEffect::OnProcess2() {
   switch (this->state.type) {
   case 300:
     if (this->state.stateCnt == 0) {
@@ -16685,7 +16685,7 @@ void CRagEffect::EmpShockBurst(const char* name, char flag) {
 
 // OFFSET: 0x00C64CA0
 // FUNCTION: fn_20264
-void CPc::Slot29(int value) {
+void CPc::SetSprShoe(int value) {
   this->unknown_0460[0] = value;
 }
 
@@ -19545,7 +19545,7 @@ void CRagEffect::TexturedClassChange(char kind) {
 
 // OFFSET: 0x00C213C0
 // FUNCTION: fn_20087
-bool CRagEffect::Slot15() {
+bool CRagEffect::OnProcess3() {
   switch (this->state.type) {
   case 1003:
     if ((this->state.parent->render.flags & 0x4000) == 0) {
@@ -22763,7 +22763,7 @@ bool CRagEffect::Slot15() {
         plant->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\red_plant.act");
         plant->SetActorJob(1078);
       }
-      plant->Slot18(plant->GetEffectiveJob(-1), plant->unknown_0260, 0);
+      plant->SetSprAct(plant->GetEffectiveJob(-1), plant->unknown_0260, 0);
       WorldObjects().push_back(plant);
     }
     break;
@@ -23260,11 +23260,11 @@ bool CRagEffect::OnProcess() {
   }
 
   if (this->state.type >= 300 && this->state.type <= 373) {
-    if (!this->Slot14()) {
+    if (!this->OnProcess2()) {
       return false;
     }
   } else if (this->state.type >= 491) {
-    if (!this->Slot15()) {
+    if (!this->OnProcess3()) {
       return false;
     }
   } else {

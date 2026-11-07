@@ -28,7 +28,7 @@ void CRotateItemEffect::Close() {
 
 // OFFSET: 0x00B739F0
 // FUNCTION: fn_19149
-void CRotateItemEffect::Slot01() {
+void CRotateItemEffect::Open() {
   for (int index = 0; index < 4; ++index) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
     if (!particle) {
@@ -53,13 +53,13 @@ void CRotateItemEffect::Slot01() {
 
 // OFFSET: 0x00B73AC0
 // FUNCTION: fn_19150
-bool CRotateItemEffect::Slot06() {
+bool CRotateItemEffect::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B73AD0
 // FUNCTION: fn_19151
-void CRotateItemEffect::Slot03() {
+void CRotateItemEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
@@ -113,7 +113,7 @@ void CRotateItemEffect::Slot03() {
 
 // OFFSET: 0x00B74110
 // FUNCTION: fn_19152
-void CRotateItemEffect::Slot04() {
+void CRotateItemEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);

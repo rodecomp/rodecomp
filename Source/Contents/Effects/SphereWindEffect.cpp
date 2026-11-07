@@ -23,7 +23,7 @@ void CSphereWindEffect::Close() {
 
 // OFFSET: 0x00B78220
 // FUNCTION: fn_19189
-void CSphereWindEffect::Slot01() {
+void CSphereWindEffect::Open() {
   for (int start = 0; start < 45; start += 9) {
     const int id = this->id;
     int tilt = start;
@@ -70,13 +70,13 @@ void CSphereWindEffect::Slot01() {
 
 // OFFSET: 0x00B78420
 // FUNCTION: fn_19190
-bool CSphereWindEffect::Slot06() {
+bool CSphereWindEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00B78430
 // FUNCTION: fn_19191
-void CSphereWindEffect::Slot03() {
+void CSphereWindEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0];
@@ -141,7 +141,7 @@ __declspec(noinline) void CSphereWindEffect::UpdateParticle(CParticle* particle)
 
 // OFFSET: 0x00B78710
 // FUNCTION: fn_19193
-void CSphereWindEffect::Slot04() {
+void CSphereWindEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle || particle->unknown_000C <= 0) {

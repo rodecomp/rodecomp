@@ -72,26 +72,26 @@ void CWindEffect::Close() {
 
 // OFFSET: 0x00730850
 // FUNCTION: fn_07541
-void CWindEffect::Slot01() {
+void CWindEffect::Open() {
   this->Init();
 }
 
 // OFFSET: 0x00730860
 // FUNCTION: fn_07542
-void CWindEffect::Slot07() {
+void CWindEffect::ResetParticles() {
   this->Close();
   this->Init();
 }
 
 // OFFSET: 0x00730870
 // FUNCTION: fn_07543
-bool CWindEffect::Slot06() {
+bool CWindEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x00730880
 // FUNCTION: fn_07544
-void CWindEffect::Slot03() {
+void CWindEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle == nullptr) {
@@ -168,7 +168,7 @@ void CWindEffect::Slot03() {
 
 // OFFSET: 0x00731030
 // FUNCTION: fn_07545
-void CWindEffect::Slot04() {
+void CWindEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle) {

@@ -34,7 +34,7 @@ UIPetEvolutionWnd::~UIPetEvolutionWnd() {
 
 // OFFSET: 0x009AB170
 // FUNCTION: fn_13763
-void UIPetEvolutionWnd::Slot15(int width, int height) {
+void UIPetEvolutionWnd::OnCreate(int width, int height) {
   this->AddCloseButton("", 0);
 
   UIBitmapButton* okButton = new UIBitmapButton();

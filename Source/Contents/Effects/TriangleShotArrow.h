@@ -12,12 +12,12 @@ class CTriangleShotArrow : public CEffect {
 public:
   CTriangleShotArrow();
 
-  void Slot01() override;
-  void Slot03() override;
+  void Open() override;
+  void OnProcess() override;
   void Close() override;
-  void Slot04() override;
-  bool Slot06() override;
-  void Slot16(int delay) override;
+  void Render() override;
+  bool IsAlive() override;
+  void SetDelay(int delay) override;
 
   /* 00CC */ CEZ2STRParticle* arrow;
   /* 00D0 */ int step;

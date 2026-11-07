@@ -21,13 +21,13 @@
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Paint();
 template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Slot35(int value);
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnWheel(int value);
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnScroll(int position);
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::AddNewItem();
 template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Slot53(int resolveSkin);
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::LoadSkin(int resolveSkin);
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Resize(int width, int height);
 
@@ -131,20 +131,20 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
 
 // OFFSET: 0x00A719E0
 // FUNCTION: fn_16807
-void CUISkillDelayInfo::Slot53() {
+void CUISkillDelayInfo::Initialize() {
   this->unknown_00B4 = 0;
   this->m_resolveSkin = true;
   this->Resize(345, 379);
   this->Move(0, 0);
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
   this->SetSkinColors(0, 0, 0, 0);
 }
 
 // OFFSET: 0x00A71B50
 // FUNCTION: fn_16808
 template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Slot15(int width, int height) {
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -155,7 +155,7 @@ namespace SkillDelayInfo {
 
 // OFFSET: 0x00A71D60
 // FUNCTION: fn_16809
-void CUIDelayItem::Slot15(int width, int height) {
+void CUIDelayItem::OnCreate(int width, int height) {
   this->level = new CUIStaticText();
   this->level->SetSize(44, 21);
   this->level->Move(0, 0);
@@ -188,7 +188,7 @@ void CUIDelayItem::Slot15(int width, int height) {
 
 // OFFSET: 0x00A75A00
 // FUNCTION: fn_16811
-void CUITime::Slot15(int width, int height) {
+void CUITime::OnCreate(int width, int height) {
   this->text = new CUIStaticText();
   this->text->SetSize(60, 21);
   this->text->Move(5, 0);
@@ -219,11 +219,11 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
 // OFFSET: 0x00A75C90
 // FUNCTION: fn_16813
 template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Slot35(int value) {
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
@@ -297,7 +297,7 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
 // OFFSET: 0x00A75F80
 // FUNCTION: fn_16815
 template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Slot53(int resolveSkin) {
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -497,14 +497,14 @@ void CUITime::Paint() {
 
 // OFFSET: 0x00A77F10
 // FUNCTION: fn_16885
-void CUIDelayItem::Slot16() {
+void CUIDelayItem::OnInit() {
   this->backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{0, 2}, true);
   this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{6, 2}, true);
 }
 
 // OFFSET: 0x00A78180
 // FUNCTION: fn_16887
-void CUITime::Slot16() {
+void CUITime::OnInit() {
 }
 
 // OFFSET: 0x00A78A10
@@ -599,7 +599,7 @@ void CUISkillDelayInfo::Paint() {
 
 // OFFSET: 0x00A77F70
 // FUNCTION: fn_16886
-void CUISkillDelayInfo::Slot16() {
+void CUISkillDelayInfo::OnInit() {
   this->backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{0, 2}, true);
   this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{6, 2}, true);
 
@@ -621,7 +621,7 @@ void CUISkillDelayInfo::Slot16() {
 
 // OFFSET: 0x00A720A0
 // FUNCTION: fn_16810
-void CUISkillDelayInfo::Slot15(int width, int height) {
+void CUISkillDelayInfo::OnCreate(int width, int height) {
   this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(345, 17);
   this->titleBar->Move(0, 0);

@@ -42,7 +42,7 @@ UIBitmapButton* UIEmotionWnd::AddCloseButton(const char* tooltip, int width) {
 
 // OFFSET: 0x008A2980
 // FUNCTION: fn_11644
-void UIEmotionWnd::Slot15(int, int) {
+void UIEmotionWnd::OnCreate(int, int) {
   int y = 23;
   auto* emotions = &g_session.m_emotionHotkeys;
   char buffer[16];
@@ -103,9 +103,9 @@ void UIEmotionWnd::Paint() {
 
 // OFFSET: 0x008A3040
 // FUNCTION: fn_11646
-void UIEmotionWnd::Slot25(int x, int y) {
+void UIEmotionWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
@@ -164,7 +164,7 @@ void UIEmotionWnd::SetMacroText(const char* text, int index) {
 
 // OFFSET: 0x008A31E0
 // FUNCTION: fn_11649
-void UIEmotionWnd::Slot11() {
+void UIEmotionWnd::StoreInfo() {
   if (this->m_saved != nullptr) {
     this->m_saved->x = this->geometry.x;
     this->m_saved->y = this->geometry.y;

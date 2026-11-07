@@ -91,19 +91,19 @@ void CSteal::Close() {
 
 // OFFSET: 0x00B4D270
 // FUNCTION: fn_18972
-void CSteal::Slot01() {
+void CSteal::Open() {
   this->SpawnParticles();
 }
 
 // OFFSET: 0x00B4D280
 // FUNCTION: fn_18973
-bool CSteal::Slot06() {
+bool CSteal::IsAlive() {
   return !this->IsFinished();
 }
 
 // OFFSET: 0x00B4D290
 // FUNCTION: fn_18974
-void CSteal::Slot03() {
+void CSteal::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CSpriteParticle* particle = *it;
     const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
@@ -147,7 +147,7 @@ void CSteal::Slot03() {
 
 // OFFSET: 0x00B4D720
 // FUNCTION: fn_18975
-void CSteal::Slot04() {
+void CSteal::Render() {
   for (std::list<CSpriteParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->Draw(1);
   }

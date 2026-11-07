@@ -135,7 +135,7 @@ template <>
 void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNewItem();
 
 template <>
-void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Slot53(int resolveSkin);
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::LoadSkin(int resolveSkin);
 
 template <>
 void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Resize(int width, int height);
@@ -200,18 +200,18 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Clear
 
 // OFFSET: 0x00A487D0
 // FUNCTION: fn_16116
-void CUIProbabilityTable::Slot53() {
+void CUIProbabilityTable::Initialize() {
   this->unknown_00B4 = 0;
   this->Resize(345, 455);
   this->Move(0, 0);
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
 }
 
 // OFFSET: 0x00A48860
 // FUNCTION: fn_16117
 template <>
-void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Slot15(int width, int height) {
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->onChange = [this](int position) { this->OnScroll(position); };
@@ -227,7 +227,7 @@ CUIItem::CUIItem() : CUIListItem(), nameText(nullptr), probabilityText(nullptr),
 
 // OFFSET: 0x00A48A70
 // FUNCTION: fn_16118
-void CUIItem::Slot15(int width, int height) {
+void CUIItem::OnCreate(int width, int height) {
   this->nameText = new CUITextViewer();
   this->nameText->SetSize(231, 29);
   this->nameText->Move(1, 0);
@@ -315,7 +315,7 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNe
 // OFFSET: 0x00A4C2F0
 // FUNCTION: fn_16123
 template <>
-void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Slot53(int resolveSkin) {
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -349,11 +349,11 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Paint
 // OFFSET: 0x00A4C000
 // FUNCTION: fn_16121
 template <>
-void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Slot35(int value) {
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnWheel(int value) {
   if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
-    this->scrollBar->Slot35(value);
+    this->scrollBar->OnWheel(value);
   } else if (this->parent) {
-    this->parent->Slot35(value);
+    this->parent->OnWheel(value);
   }
 }
 
@@ -528,7 +528,7 @@ void CUIProbabilityTable::Search() {
 
 // OFFSET: 0x00A4E280
 // FUNCTION: fn_16203
-void CUIProbabilityTable::Slot16() {
+void CUIProbabilityTable::OnInit() {
   UIWindow* anchor = g_windowMgr.LookupWindow(12);
   if (anchor) {
     this->Move(anchor->geometry.x + anchor->geometry.width, anchor->geometry.y);
@@ -559,7 +559,7 @@ void CUIProbabilityTable::BindItem(ProbabilityTable::CUIItem* item, const Probab
 
 // OFFSET: 0x00A493D0
 // FUNCTION: fn_16119
-void CUIProbabilityTable::Slot15(int width, int height) {
+void CUIProbabilityTable::OnCreate(int width, int height) {
   this->m_titleBar = new CUITitleBar();
   this->m_titleBar->SetSize(345, 17);
   this->m_titleBar->Move(0, 0);
@@ -820,14 +820,14 @@ namespace ProbabilityTable {
 
 // OFFSET: 0x00A4E250
 // FUNCTION: fn_16202
-void CUIItem::Slot16() {
+void CUIItem::OnInit() {
   this->nameText->scrollBar->SetHidden(1);
   this->probabilityText->scrollBar->SetHidden(1);
 }
 
 // OFFSET: 0x00A4E350
 // FUNCTION: fn_16204
-void CUIItem::Slot25(int, int) {
+void CUIItem::OnLBtnDown(int, int) {
 }
 
 }

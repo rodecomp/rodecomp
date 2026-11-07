@@ -9,7 +9,7 @@
 
 // OFFSET: 0x009E4310
 // FUNCTION: fn_14429
-bool CUIEditBoxEx::Slot05() {
+bool CUIEditBoxEx::IsEditable() {
   return this->edit->disabled == 0;
 }
 

@@ -81,8 +81,8 @@ void UIScrollBar::Configure(int x, int y, int length, int vertical, int arrowLen
 
   UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x0087B640
@@ -91,21 +91,21 @@ void UIListBox::Configure(int x, int y, int width, int height, unsigned char val
   this->transparent = value;
   UIWindow::Resize(width, height);
   this->Move(x, y);
-  this->Slot15(width, height);
-  this->Slot22(width, height);
+  this->OnCreate(width, height);
+  this->OnSize(width, height);
 }
 
 // OFFSET: 0x00886840
 // FUNCTION: fn_11326
-void UIListBox::Slot15(int width, int height) {
+void UIListBox::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move((width - 13), 0);
-  vertical->Slot15(verticalWidth, height);
-  vertical->Slot22(verticalWidth, height);
+  vertical->OnCreate(verticalWidth, height);
+  vertical->OnSize(verticalWidth, height);
   this->AddChild(this->verticalBar);
 
   auto* horizontal = new UIScrollBar();
@@ -114,8 +114,8 @@ void UIListBox::Slot15(int width, int height) {
   horizontal->vertical = 0;
   horizontal->UIWindow::Resize((width - 13), horizontalHeight);
   horizontal->Move(0, (height - 13));
-  horizontal->Slot15((width - 13), horizontalHeight);
-  horizontal->Slot22((width - 13), horizontalHeight);
+  horizontal->OnCreate((width - 13), horizontalHeight);
+  horizontal->OnSize((width - 13), horizontalHeight);
   this->AddChild(this->horizontalBar);
 }
 
@@ -279,14 +279,14 @@ int UIListBox::LineAt(int x, int y) const {
 
 // OFFSET: 0x00890570
 // FUNCTION: fn_11418
-void UIListBox::Slot25(int x, int y) {
+void UIListBox::OnLBtnDown(int x, int y) {
   this->selected = this->LineAt(x, y);
   this->Invalidate();
 }
 
 // OFFSET: 0x00890180
 // FUNCTION: fn_11403
-void UIListBox::Slot26(int, int) {
+void UIListBox::OnLBtnDblClk(int, int) {
   if (this->selected != -1) {
     this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
   }
@@ -294,12 +294,12 @@ void UIListBox::Slot26(int, int) {
 
 // OFFSET: 0x005C72F0
 // FUNCTION: fn_03608
-void UIListBox::Slot32(int, int) {
+void UIListBox::OnRBtnDown(int, int) {
 }
 
 // OFFSET: 0x00892E60
 // FUNCTION: fn_11496
-void UIListBox::Slot35(int value) {
+void UIListBox::OnWheel(int value) {
   if (this->verticalOverflow != 0) {
     if (value < 0) {
       this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);

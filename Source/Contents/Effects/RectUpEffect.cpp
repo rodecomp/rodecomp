@@ -17,7 +17,7 @@ CRectUpEffect::CRectUpEffect() : CEffect(1088), unknown_00CC{} {
 
 // OFFSET: 0x0070A410
 // FUNCTION: fn_07100
-void CRectUpEffect::Slot12() {
+void CRectUpEffect::InitEvents() {
   if (this->id == 1088) {
     this->AddEvent(0, "effect\\EF_FireWall.wav", 0, 0);
   }
@@ -25,13 +25,13 @@ void CRectUpEffect::Slot12() {
 
 // OFFSET: 0x0070A430
 // FUNCTION: fn_07101
-bool CRectUpEffect::Slot06() {
+bool CRectUpEffect::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x0070A440
 // FUNCTION: fn_07102
-void CRectUpEffect::Slot03() {
+void CRectUpEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->position.x = this->position[0] + particle->unknown_00D0;
@@ -49,7 +49,7 @@ void CRectUpEffect::Slot03() {
       height *= g_sinTable[particle->unknown_00E8];
     }
     particle->unknown_0054 = height;
-    this->Slot34(particle);
+    this->ProcessParticle(particle);
 
     matrix rotation;
     std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
@@ -61,7 +61,7 @@ void CRectUpEffect::Slot03() {
 
 // OFFSET: 0x0070A700
 // FUNCTION: fn_07103
-void CRectUpEffect::Slot04() {
+void CRectUpEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {
@@ -104,7 +104,7 @@ void CRectUpEffect::Slot04() {
 
 // OFFSET: 0x0070AA30
 // FUNCTION: fn_07104
-void CRectUpEffect::Slot34(CParticle* particle) {
+void CRectUpEffect::ProcessParticle(CParticle* particle) {
   if (particle && this->id == 1088) {
     particle->unknown_004C += particle->unknown_004C + 1 < 360 ? 1 : -359;
     const int base = *reinterpret_cast<int*>(particle->unknown_0048);
@@ -114,7 +114,7 @@ void CRectUpEffect::Slot34(CParticle* particle) {
 
 // OFFSET: 0x0070AAA0
 // FUNCTION: fn_07105
-void CRectUpEffect::Slot35(CParticle* particle) {
+void CRectUpEffect::InitParticle(CParticle* particle) {
   if (particle && this->id == 1088) {
     particle->SetTexture("effect\\ring_yellow.tga");
   }
@@ -131,7 +131,7 @@ void CRectUpEffect::Close() {
 
 // OFFSET: 0x0070A260
 // FUNCTION: fn_07099
-void CRectUpEffect::Slot01() {
+void CRectUpEffect::Open() {
   if (this->id != 1088) {
     return;
   }
@@ -164,7 +164,7 @@ void CRectUpEffect::Slot01() {
           std::memcpy(particle->unknown_0048, &shade, sizeof(shade));
           particle->unknown_004C = 0;
         }
-        this->Slot35(particle);
+        this->InitParticle(particle);
         InitParticleQuad(particle->vertices);
         this->particles.push_back(particle);
       }

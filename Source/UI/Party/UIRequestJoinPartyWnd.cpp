@@ -30,7 +30,7 @@ UIRequestJoinPartyWnd::~UIRequestJoinPartyWnd() = default;
 
 // OFFSET: 0x007BEFD0
 // FUNCTION: fn_09301
-void UIRequestJoinPartyWnd::Slot15(int, int) {
+void UIRequestJoinPartyWnd::OnCreate(int, int) {
   this->icon = new UIBitmapButton();
   this->icon->SetSize(25, 25);
 

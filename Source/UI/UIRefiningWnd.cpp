@@ -75,7 +75,7 @@ UIRefining_BtnReturn::UIRefining_BtnReturn() : UIBitmapButton(), highlighted(1) 
 
 // OFFSET: 0x007F5E30
 // FUNCTION: fn_09907
-void UIRefiningWnd::Slot15(int width, int height) {
+void UIRefiningWnd::OnCreate(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
@@ -131,7 +131,7 @@ void UIRefiningWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x007F5270
 // FUNCTION: fn_09902
-void UIRefiningWnd::Slot10(int x, int y, std::intptr_t value) {
+void UIRefiningWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46 && drag->source == 1) {
     this->SendMsg(this, 23, drag->id, 0, 0, 0);
@@ -413,7 +413,7 @@ void UIRefining_Notice::Paint() {
 
 // OFFSET: 0x007F72A0
 // FUNCTION: fn_09913
-void UIRefiningWnd::Slot26(int x, int y) {
+void UIRefiningWnd::OnLBtnDblClk(int x, int y) {
   if (this->item.unknown_0000[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
     this->Reset();
   }
@@ -421,9 +421,9 @@ void UIRefiningWnd::Slot26(int x, int y) {
 
 // OFFSET: 0x007F72D0
 // FUNCTION: fn_09914
-void UIRefiningWnd::Slot25(int x, int y) {
+void UIRefiningWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot25(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
 
@@ -434,9 +434,9 @@ void UIRefiningWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x007F7340
 // FUNCTION: fn_09915
-void UIRefiningWnd::Slot31(int x, int y) {
+void UIRefiningWnd::OnLBtnUp(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::Slot31(x, y);
+    UIFrameWnd::OnLBtnUp(x, y);
     return;
   }
 
@@ -522,7 +522,7 @@ void UIRefiningWnd::Slot31(int x, int y) {
 
 // OFFSET: 0x007F76C0
 // FUNCTION: fn_09916
-void UIRefiningWnd::Slot28(int x, int y) {
+void UIRefiningWnd::OnMouseHover(int x, int y) {
   if (this->state != 1) {
     return;
   }
@@ -585,9 +585,9 @@ void UIRefiningWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x007F7AA0
 // FUNCTION: fn_09917
-void UIRefiningWnd::Slot19() {
+void UIRefiningWnd::OnProcess() {
   if (this->notice) {
-    this->notice->Slot19();
+    this->notice->OnProcess();
   }
 
   if (this->state == 1 && this->refiningButton->Disabled() == 1 && this->item.unknown_0000[1] > 0 && this->selectedMaterial >= 0 &&
@@ -652,7 +652,7 @@ void UIRefiningWnd::Slot19() {
 
 // OFFSET: 0x007F7D80
 // FUNCTION: fn_09918
-void UIRefining_Notice::Slot19() {
+void UIRefining_Notice::OnProcess() {
   if (this->expireTick != 0 && timeGetTime() > this->expireTick) {
     this->expireTick = 0;
     if (this->autoShown == 1) {
@@ -670,12 +670,12 @@ void UIRefining_Notice::Slot19() {
 
 // OFFSET: 0x007F7E10
 // FUNCTION: fn_09919
-void UIRefiningWnd::Slot32(int x, int y) {
+void UIRefiningWnd::OnRBtnDown(int x, int y) {
 }
 
 // OFFSET: 0x007F7E20
 // FUNCTION: fn_09920
-void UIRefiningWnd::Slot33(int x, int y) {
+void UIRefiningWnd::OnRBtnUp(int x, int y) {
   if (y < 17) {
     return;
   }

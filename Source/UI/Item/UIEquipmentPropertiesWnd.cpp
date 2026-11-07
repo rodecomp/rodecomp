@@ -40,7 +40,7 @@ inline CEquipmentPropertiesMgr* EquipmentPropertiesMgr() {
 }
 
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Paint();
-template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot35(int);
+template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::OnWheel(int);
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::ClearItems();
 
 // OFFSET: 0x00A0EBF0
@@ -123,7 +123,7 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
 // OFFSET: 0x00A0D160
 // FUNCTION: fn_15040
 template <>
-void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot53(int resolveSkin) {
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -206,19 +206,19 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
 
 // OFFSET: 0x00A08410
 // FUNCTION: fn_15021
-bool CUIEquipmentPropertiesWnd::Slot02() {
+bool CUIEquipmentPropertiesWnd::IsFrameWnd() {
   return true;
 }
 
 // OFFSET: 0x00A08420
 // FUNCTION: fn_15022
-bool CUIEquipmentPropertiesWnd::Slot03() {
+bool CUIEquipmentPropertiesWnd::NeedsFrameRefresh() {
   return true;
 }
 
 // OFFSET: 0x00A08430
 // FUNCTION: fn_15023
-bool CUIEquipmentPropertiesWnd::Slot08() {
+bool CUIEquipmentPropertiesWnd::IsTransmitMouseInput() {
   return true;
 }
 
@@ -239,13 +239,13 @@ CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string
 
 // OFFSET: 0x00A08E70
 // FUNCTION: fn_15033
-void CUIEquipmentPropertiesWnd::Slot53() {
+void CUIEquipmentPropertiesWnd::Initialize() {
   this->Resize(300, 308);
   this->unknown_00B4 = 0x101;
   this->m_resolveSkin = true;
   this->Move(0, 0);
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
   this->SetSkinColors(0, 0, 3, 1);
   this->m_buttonBarStyle = 1;
 }
@@ -253,7 +253,7 @@ void CUIEquipmentPropertiesWnd::Slot53() {
 // OFFSET: 0x00A08F20
 // FUNCTION: fn_15034
 template <>
-void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot15(int width, int height) {
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
@@ -296,7 +296,7 @@ private:
 
 // OFFSET: 0x00A09130
 // FUNCTION: fn_15035
-void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
+void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(300, 17);
   this->titleBar->Move(0, 0);
@@ -878,7 +878,7 @@ void CUIEquipmentPropertiesWnd::Slot15(int width, int height) {
 
 // OFFSET: 0x00A0C9C0
 // FUNCTION: fn_15036
-void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot15(int width, int height) {
+void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::OnCreate(int width, int height) {
   this->unknown_00E8 = new CUIStaticText();
   this->unknown_00E8->SetSize(44, 12);
   this->unknown_00E8->Move(0, 4);
@@ -1014,14 +1014,14 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Paint() {
 
 // OFFSET: 0x00A0F1F0
 // FUNCTION: fn_15167
-void CUIEquipmentPropertiesWnd::Slot16() {
+void CUIEquipmentPropertiesWnd::OnInit() {
   EquipmentProperties::EquipmentPropertiesMgr()->SetWindow(this);
 }
 
 // OFFSET: 0x00A0F270
 // FUNCTION: fn_15168
-void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot16() {
-  this->Slot53(1);
+void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::OnInit() {
+  this->LoadSkin(1);
 }
 
 // OFFSET: 0x00A0F280
@@ -1035,7 +1035,7 @@ void CUIEquipmentPropertiesWnd::Grow(int width, int height) {
 
 // OFFSET: 0x00A0F2F0
 // FUNCTION: fn_15170
-void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot53(int resolveSkin) {
+void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::LoadSkin(int resolveSkin) {
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->evenRowColor = RGB(red, green, blue);

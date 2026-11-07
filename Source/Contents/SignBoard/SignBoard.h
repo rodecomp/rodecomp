@@ -14,7 +14,7 @@ class CBmpObjWnd : public UIWindow {
 public:
   CBmpObjWnd();
   ~CBmpObjWnd() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
 
   /* 007C */ std::string path;
@@ -24,7 +24,7 @@ class CSignBoardWnd : public UIWindow {
 public:
   CSignBoardWnd();
   ~CSignBoardWnd() override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   void ApplyColor();
 

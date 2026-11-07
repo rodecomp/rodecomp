@@ -7,5 +7,5 @@ CChangeSizeEffect::CChangeSizeEffect() : CEffect(0x946) {
 
 // OFFSET: 0x00703050
 // FUNCTION: fn_07016
-void CChangeSizeEffect::Slot03() {
+void CChangeSizeEffect::OnProcess() {
 }

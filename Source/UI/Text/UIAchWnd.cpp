@@ -103,7 +103,7 @@ void UIAchListWnd::Create(int width, int height, int rows) {
     this->AddChild(this->buttons[index]);
   }
 
-  this->Slot15(width, height);
+  this->OnCreate(width, height);
   this->Resize(width, height);
 }
 
@@ -199,7 +199,7 @@ bool UIAchTab::HitTestTab(int x, int y, int* a, int* b) {
 void UIAchievementWnd::CreateTab() {
   UIAchTab* tab = new (std::nothrow) UIAchTab();
   this->tab = tab;
-  tab->Slot15(0, 0);
+  tab->OnCreate(0, 0);
   tab->tabWidth = 102;
   tab->groupHeight = 40;
   tab->subHeight = 26;
@@ -244,10 +244,10 @@ void UIAchievementWnd::CreateTab() {
 
 // OFFSET: 0x007B52E0
 // FUNCTION: fn_09214
-void UIAchUpperWnd::Slot15(int, int) {
+void UIAchUpperWnd::OnCreate(int, int) {
   UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar();
   this->unknown_00A4 = gauge;
-  gauge->Slot15(84, 10);
+  gauge->OnCreate(84, 10);
   gauge->Resize(84, 10);
   gauge->value = 0;
   gauge->maximum = 100;
@@ -257,7 +257,7 @@ void UIAchUpperWnd::Slot15(int, int) {
 
   gauge = new (std::nothrow) UICustomGageBar();
   this->unknown_00A8 = gauge;
-  gauge->Slot15(124, 8);
+  gauge->OnCreate(124, 8);
   gauge->Resize(124, 8);
   gauge->value = 0;
   gauge->maximum = 100;
@@ -279,7 +279,7 @@ void UIAchUpperWnd::Slot15(int, int) {
 
 // OFFSET: 0x007B54F0
 // FUNCTION: fn_09215
-void UIAchViewWnd::Slot15(int, int) {
+void UIAchViewWnd::OnCreate(int, int) {
   const std::string name = "유저인터페이스\\achievement_re\\btn_receive";
   this->receiveButton = new UIBitmapButton();
   this->receiveButton->SetBitmap((name + "_out.bmp").c_str(), 0, 0);
@@ -311,7 +311,7 @@ void UIAchViewWnd::Slot15(int, int) {
   for (UICustomGageBar*& slot : this->gauges) {
     UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar();
     slot = gauge;
-    gauge->Slot15(254, 10);
+    gauge->OnCreate(254, 10);
     gauge->Resize(254, 10);
     gauge->value = 0;
     gauge->maximum = 100;
@@ -401,7 +401,7 @@ void UIAchListWnd::Paint() {
 
 // OFFSET: 0x007B5B60
 // FUNCTION: fn_09216
-void UIAchievementWnd::Slot15(int, int) {
+void UIAchievementWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
 
   this->upper = new (std::nothrow) UIAchUpperWnd();
@@ -666,7 +666,7 @@ void UIToolTipBitmapWnd::Paint() {
 
 // OFFSET: 0x007B7B60
 // FUNCTION: fn_09236
-void UIAchTab::Slot27(int x, int y) {
+void UIAchTab::OnMouseMove(int x, int y) {
   int group = 0;
   int sub = 0;
   this->HitTestTab(x, y, &group, &sub);
@@ -677,7 +677,7 @@ void UIAchTab::Slot27(int x, int y) {
 
 // OFFSET: 0x007B7BB0
 // FUNCTION: fn_09237
-void UIToolTipBitmapWnd::Slot32(int x, int y) {
+void UIToolTipBitmapWnd::OnRBtnDown(int x, int y) {
   if (this->itemId > 0 && this->unknown_00B4 <= x && x <= this->unknown_00B4 + 24 && this->unknown_00B8 <= y && y <= this->unknown_00B8 + 24) {
     ITEM_INFO item;
     item.SetItemId(this->itemId);
@@ -720,7 +720,7 @@ void UIAchievementWnd::SelectAchievement(int id) {
 
 // OFFSET: 0x007B7D90
 // FUNCTION: fn_09239
-void UIAchListWnd::Slot35(int delta) {
+void UIAchListWnd::OnWheel(int delta) {
   if (!this->scrollable) {
     return;
   }
@@ -735,7 +735,7 @@ void UIAchListWnd::Slot35(int delta) {
 
 // OFFSET: 0x007B7DD0
 // FUNCTION: fn_09240
-void UIAchTab::Slot35(int delta) {
+void UIAchTab::OnWheel(int delta) {
   if (!this->scrollable) {
     return;
   }
@@ -992,7 +992,7 @@ void UIToolTipBitmapWnd::Set(const char* name, const char* text, int item) {
 void UIAchSummaryWnd::Show(int visible) {
   this->geometry.visible = visible;
   for (int index = 0; index < 2; ++index) {
-    this->buttons[index]->Slot27(-1, -1);
+    this->buttons[index]->OnMouseMove(-1, -1);
   }
 }
 
@@ -1047,13 +1047,13 @@ UIAchTracingWnd::UIAchTracingWnd() : UIFrameWnd(0) {
 
 // OFFSET: 0x007BA460
 // FUNCTION: fn_09267
-bool UIAchTracingWnd::Slot08() {
+bool UIAchTracingWnd::IsTransmitMouseInput() {
   return true;
 }
 
 // OFFSET: 0x007BAA20
 // FUNCTION: fn_09271
-void UIAchTracingWnd::Slot11() {
+void UIAchTracingWnd::StoreInfo() {
   if (this->info) {
     this->info->x = this->geometry.x;
     this->info->y = this->geometry.y;
@@ -1062,7 +1062,7 @@ void UIAchTracingWnd::Slot11() {
 
 // OFFSET: 0x007BA470
 // FUNCTION: fn_09268
-void UIAchTracingWnd::Slot15(int, int) {
+void UIAchTracingWnd::OnCreate(int, int) {
   for (int index = 0; index < 3; ++index) {
     this->toggleButtons[index] = new UITextButton();
     this->toggleButtons[index]->Configure("", 0, 0, 12, 1, 0);
@@ -1177,7 +1177,7 @@ int UIAchTracingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
 // OFFSET: 0x007B7A20
 // FUNCTION: fn_09234
-void UICustomGageBar::Slot28(int x, int y) {
+void UICustomGageBar::OnMouseHover(int x, int y) {
   std::string label = FormatOwnedString("%s( %d / %d )", this->text.c_str(), this->value, this->maximum);
   int tipX = 0;
   int tipY = -20;
@@ -1187,8 +1187,8 @@ void UICustomGageBar::Slot28(int x, int y) {
 
 // OFFSET: 0x007B7AF0
 // FUNCTION: fn_09235
-void UIToolTipBitmapWnd::Slot28(int x, int y) {
-  this->Slot27(x, y);
+void UIToolTipBitmapWnd::OnMouseHover(int x, int y) {
+  this->OnMouseMove(x, y);
   if (this->tooltip.size() > 0) {
     x = 0;
     y = -20;
@@ -1199,17 +1199,17 @@ void UIToolTipBitmapWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x007B50C0
 // FUNCTION: fn_09213
-void UIAchSummaryWnd::Slot15(int, int) {
+void UIAchSummaryWnd::OnCreate(int, int) {
   for (int index = 0; index < this->unknown_007C; ++index) {
     UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar();
     if (index == 0) {
-      gauge->Slot15(558, 10);
+      gauge->OnCreate(558, 10);
       gauge->Resize(558, 10);
       gauge->value = 0;
       gauge->maximum = 100;
       gauge->Move(43, 49);
     } else {
-      gauge->Slot15(254, 10);
+      gauge->OnCreate(254, 10);
       gauge->Resize(254, 10);
       gauge->value = 0;
       gauge->maximum = 100;

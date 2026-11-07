@@ -54,7 +54,7 @@ void CBlastForge::Close() {
 
 // OFFSET: 0x006F7870
 // FUNCTION: fn_06862
-void CBlastForge::Slot01() {
+void CBlastForge::Open() {
   this->retained = 1;
   this->unknown_00DC = (this->unknown_00DC == 0);
   this->unknown_00CC = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
@@ -72,13 +72,13 @@ void CBlastForge::Slot01() {
 
 // OFFSET: 0x006F7A20
 // FUNCTION: fn_06863
-bool CBlastForge::Slot06() {
+bool CBlastForge::IsAlive() {
   return this->ActorExists();
 }
 
 // OFFSET: 0x006F7A30
 // FUNCTION: fn_06864
-void CBlastForge::Slot03() {
+void CBlastForge::OnProcess() {
   if (this->unknown_00CC) {
     this->unknown_00CC->position.x = this->position[0];
     this->unknown_00CC->position.y = this->position[1];
@@ -130,7 +130,7 @@ void CBlastForge::Slot03() {
 
 // OFFSET: 0x006F7EA0
 // FUNCTION: fn_06865
-void CBlastForge::Slot04() {
+void CBlastForge::Render() {
   if (!this->unknown_00D4) {
     if (this->unknown_00CC) {
       this->unknown_00CC->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);

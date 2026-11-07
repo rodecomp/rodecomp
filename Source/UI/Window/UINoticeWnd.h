@@ -7,11 +7,11 @@ class UINoticeWnd : public UIFrameWnd {
 public:
   UINoticeWnd();
 
-  void Slot15(int width, int height) override;
-  void Slot18() override;
+  void OnCreate(int width, int height) override;
+  void OnDestroy() override;
   void Paint() override;
-  void Slot28(int x, int y) override;
-  void Slot35(int delta) override;
+  void OnMouseHover(int x, int y) override;
+  void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void LoadNotice();
 

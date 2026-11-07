@@ -78,20 +78,20 @@ CEnchantMgr* Singleton<CEnchantMgr>::s_instance = nullptr;
 // FUNCTION: fn_14814
 // OFFSET: 0x009F9C10
 // FUNCTION: fn_14815
-template <class T, class D> void CUIListBoxEx<T, D>::Slot15(int width, int height) {
+template <class T, class D> void CUIListBoxEx<T, D>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
 
-template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Slot15(int, int);
-template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Slot15(int, int);
+template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::OnCreate(int, int);
+template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::OnCreate(int, int);
 
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Paint();
 template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Paint();
-template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Slot35(int);
-template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Slot35(int);
+template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::OnWheel(int);
+template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::OnWheel(int);
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::OnScroll(int);
 template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::OnScroll(int);
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::ClearItems();
@@ -181,7 +181,7 @@ void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::AddNe
 // OFFSET: 0x00A022A0
 // FUNCTION: fn_14839
 template <>
-void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Slot53(int resolveSkin) {
+void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -279,7 +279,7 @@ void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::AddNewItem() {
 // OFFSET: 0x00A024B0
 // FUNCTION: fn_14840
 template <>
-void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Slot53(int resolveSkin) {
+void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::LoadSkin(int resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -355,7 +355,7 @@ CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::~CUIListBo
 namespace EnchantUI {
 // OFFSET: 0x009F9CE0
 // FUNCTION: fn_14816
-void CUIEnchantItem::Slot15(int width, int height) {
+void CUIEnchantItem::OnCreate(int width, int height) {
   this->itemIcon = new CUIGameItem();
   this->itemIcon->SetMode(0);
   this->itemIcon->SetScale(100);
@@ -389,7 +389,7 @@ void CUIEnchantItem::Slot15(int width, int height) {
 
 // OFFSET: 0x00A00880
 // FUNCTION: fn_14828
-void CUITargetItem::Slot15(int width, int height) {
+void CUITargetItem::OnCreate(int width, int height) {
   this->itemIcon = new CUIGameItem();
   this->itemIcon->SetMode(0);
   this->itemIcon->SetScale(100);
@@ -441,7 +441,7 @@ void CUITargetItem::Slot15(int width, int height) {
 
 // OFFSET: 0x009F9880
 // FUNCTION: fn_14809
-void CUIEnchantPage::Slot58(int) {
+void CUIEnchantPage::OnSelectSlot(int) {
 }
 
 // OFFSET: 0x009F99B0
@@ -456,7 +456,7 @@ CUIIngredient* CUIEnchantPage::CreateIngredient() {
 
 // OFFSET: 0x009FB800
 // FUNCTION: fn_14818
-void CUIIngredient::Slot15(int width, int height) {
+void CUIIngredient::OnCreate(int width, int height) {
   this->unknown_0080 = new CUIStaticImage();
   this->unknown_0080->SetSize(70, 50);
   this->unknown_0080->Move(0, 0);
@@ -548,7 +548,7 @@ void CUIIngredient::Slot15(int width, int height) {
 
 // OFFSET: 0x009F9B30
 // FUNCTION: fn_14813
-void CUIEnchantPage::Slot54(CUIEnchantItem* item, const CEnchantItemData& data) {
+void CUIEnchantPage::OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemData& data) {
 }
 }
 
@@ -569,8 +569,8 @@ static bool s_registered = [] {
 namespace EnchantUI {
 // OFFSET: 0x009FD340
 // FUNCTION: fn_14823
-void CUISlot0::Slot15(int width, int height) {
-  CUISlot::Slot15(width, height);
+void CUISlot0::OnCreate(int width, int height) {
+  CUISlot::OnCreate(width, height);
   this->radioButton->Move(59, 1);
   this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
   {
@@ -611,8 +611,8 @@ void CUISlot0::Slot15(int width, int height) {
 
 // OFFSET: 0x009FDC30
 // FUNCTION: fn_14824
-void CUISlot1::Slot15(int width, int height) {
-  CUISlot::Slot15(width, height);
+void CUISlot1::OnCreate(int width, int height) {
+  CUISlot::OnCreate(width, height);
   this->radioButton->Move(59, 1);
   this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
   {
@@ -653,8 +653,8 @@ void CUISlot1::Slot15(int width, int height) {
 
 // OFFSET: 0x009FE520
 // FUNCTION: fn_14825
-void CUISlot2::Slot15(int width, int height) {
-  CUISlot::Slot15(width, height);
+void CUISlot2::OnCreate(int width, int height) {
+  CUISlot::OnCreate(width, height);
   this->radioButton->Move(3, 1);
   this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
   {
@@ -695,8 +695,8 @@ void CUISlot2::Slot15(int width, int height) {
 
 // OFFSET: 0x009FEE10
 // FUNCTION: fn_14826
-void CUISlot3::Slot15(int width, int height) {
-  CUISlot::Slot15(width, height);
+void CUISlot3::OnCreate(int width, int height) {
+  CUISlot::OnCreate(width, height);
   this->radioButton->Move(3, 1);
   this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
   {
@@ -740,7 +740,7 @@ void CUISlot3::Slot15(int width, int height) {
 namespace EnchantUI {
 // OFFSET: 0x009FC080
 // FUNCTION: fn_14819
-void CUINormal::Slot15(int width, int height) {
+void CUINormal::OnCreate(int width, int height) {
   this->firstPage = new CUINormalRandom;
   this->firstPage->SetSize(470, 377);
   this->firstPage->Move(0, 0);
@@ -869,7 +869,7 @@ void CUINormal::Slot15(int width, int height) {
 
 // OFFSET: 0x009FF700
 // FUNCTION: fn_14827
-void CUISlot::Slot15(int width, int height) {
+void CUISlot::OnCreate(int width, int height) {
   this->radioButton = new CUIRadioButton();
   this->radioButton->SetSize(44, 44);
   this->radioButton->Move(59, 1);
@@ -1024,7 +1024,7 @@ void CUISlot::Slot15(int width, int height) {
 
 // OFFSET: 0x00A00D50
 // FUNCTION: fn_14829
-void CUIUpgrade::Slot15(int width, int height) {
+void CUIUpgrade::OnCreate(int width, int height) {
   this->firstPage = new CUIUpgradeRandom;
   this->firstPage->SetSize(470, 377);
   this->firstPage->Move(0, 0);
@@ -1161,22 +1161,22 @@ void CUIRadioButton::SetOnSelect(std::function<void(CUIRadioButton*)> callback) 
 namespace EnchantUI {
 // OFFSET: 0x00A02D80
 // FUNCTION: fn_14845
-void CUIEnchantPage::Slot59(int value) {
+void CUIEnchantPage::SetSlot(int value) {
   this->unknown_00B0 = value;
 }
 
 // OFFSET: 0x00A05190
 // FUNCTION: fn_14970
-void CUIUpgradeEnchantPage::Slot58(int value) {
+void CUIUpgradeEnchantPage::OnSelectSlot(int value) {
   if (CUIMainPage* mainPage = dynamic_cast<CUIMainPage*>(this->parent)) {
-    mainPage->firstPage->Slot59(value);
-    mainPage->secondPage->Slot59(value);
+    mainPage->firstPage->SetSlot(value);
+    mainPage->secondPage->SetSlot(value);
   }
 }
 
 // OFFSET: 0x00A06B00
 // FUNCTION: fn_15006
-void CUIUpgradeEnchantPage::Slot59(int value) {
+void CUIUpgradeEnchantPage::SetSlot(int value) {
   this->unknown_00B0 = value;
   for (const auto& slot : this->unknown_0088) {
     const bool selected = value == slot.first;
@@ -1186,7 +1186,7 @@ void CUIUpgradeEnchantPage::Slot59(int value) {
     slot.second->description->SetBold(selected);
     slot.second->description->Relayout();
   }
-  this->Slot57();
+  this->UpdateEnchantInfo();
 }
 
 // OFFSET: 0x00A05290
@@ -1236,42 +1236,42 @@ void CUISlot::Paint() {
 
 // OFFSET: 0x00A05DF0
 // FUNCTION: fn_14983
-void CUIEnchantUI::Slot16() {
+void CUIEnchantUI::OnInit() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
 }
 
 namespace EnchantUI {
 // OFFSET: 0x00A06050
 // FUNCTION: fn_14988
-void CUISlot0::Slot16() {
-  CUISlot::Slot16();
+void CUISlot0::OnInit() {
+  CUISlot::OnInit();
   this->radioButton->SetId(0);
 }
 
 // OFFSET: 0x00A06090
 // FUNCTION: fn_14989
-void CUISlot1::Slot16() {
-  CUISlot::Slot16();
+void CUISlot1::OnInit() {
+  CUISlot::OnInit();
   this->radioButton->SetId(1);
 }
 
 // OFFSET: 0x00A060D0
 // FUNCTION: fn_14990
-void CUISlot2::Slot16() {
-  CUISlot::Slot16();
+void CUISlot2::OnInit() {
+  CUISlot::OnInit();
   this->radioButton->SetId(2);
 }
 
 // OFFSET: 0x00A06110
 // FUNCTION: fn_14991
-void CUISlot3::Slot16() {
-  CUISlot::Slot16();
+void CUISlot3::OnInit() {
+  CUISlot::OnInit();
   this->radioButton->SetId(3);
 }
 
 // OFFSET: 0x00A06150
 // FUNCTION: fn_14992
-void CUISlot::Slot16() {
+void CUISlot::OnInit() {
   this->itemIcon->hitEnabled = 0;
   this->description->scrollBar->SetHidden(1);
 }
@@ -1279,50 +1279,50 @@ void CUISlot::Slot16() {
 
 // OFFSET: 0x00A06190
 // FUNCTION: fn_14994
-void CUIEnchantUI::Slot25(int x, int y) {
+void CUIEnchantUI::OnLBtnDown(int x, int y) {
   if (this->titleBar->IsPointInside(x, y)) {
-    CUIFrameWnd::Slot25(x, y);
+    CUIFrameWnd::OnLBtnDown(x, y);
   }
 }
 
 namespace EnchantUI {
 // OFFSET: 0x00A061C0
 // FUNCTION: fn_14995
-void CUIEnchantItem::Slot28(int x, int y) {
-  this->itemIcon->Slot28(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
+void CUIEnchantItem::OnMouseHover(int x, int y) {
+  this->itemIcon->OnMouseHover(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
 }
 
 // OFFSET: 0x00A061F0
 // FUNCTION: fn_14996
-void CUITargetItem::Slot28(int x, int y) {
-  this->itemIcon->Slot28(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
+void CUITargetItem::OnMouseHover(int x, int y) {
+  this->itemIcon->OnMouseHover(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
 }
 
 // OFFSET: 0x00A06220
 // FUNCTION: fn_14997
-void CUIEnchantItem::Slot32(int x, int y) {
-  this->itemIcon->Slot32(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
+void CUIEnchantItem::OnRBtnDown(int x, int y) {
+  this->itemIcon->OnRBtnDown(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
 }
 
 // OFFSET: 0x00A06250
 // FUNCTION: fn_14998
-void CUISlot::Slot32(int x, int y) {
+void CUISlot::OnRBtnDown(int x, int y) {
   if (this->itemIcon->IsPointInside(x, y)) {
-    this->itemIcon->Slot32(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
+    this->itemIcon->OnRBtnDown(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
   }
 }
 
 // OFFSET: 0x00A06290
 // FUNCTION: fn_14999
-void CUITargetItem::Slot32(int x, int y) {
-  this->itemIcon->Slot32(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
+void CUITargetItem::OnRBtnDown(int x, int y) {
+  this->itemIcon->OnRBtnDown(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
 }
 
 // OFFSET: 0x00A062C0
 // FUNCTION: fn_15000
 void CUISlot::SelectSlot(UIWindow* button) {
   if (CUIEnchantPage* page = dynamic_cast<CUIEnchantPage*>(this->parent)) {
-    page->Slot58(button->geometry.id);
+    page->OnSelectSlot(button->geometry.id);
   }
 }
 
@@ -1345,7 +1345,7 @@ void CUITargetItem::SetSelected(bool selected) {
 
 // OFFSET: 0x00A04D70
 // FUNCTION: fn_14965
-void CUINormalPerfect::Slot55() {
+void CUINormalPerfect::RequestEnchant() {
   CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* list = this->enchantList;
   if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
     auto it = list->data.begin();
@@ -1360,7 +1360,7 @@ void CUINormalPerfect::Slot55() {
 
 // OFFSET: 0x00A04E60
 // FUNCTION: fn_14966
-void CUINormalRandom::Slot55() {
+void CUINormalRandom::RequestEnchant() {
   CEnchantMgr::GetInstance()->RequestRandomEnchant(
     this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]), static_cast<int16_t>(this->unknown_00B0)
   );
@@ -1368,13 +1368,13 @@ void CUINormalRandom::Slot55() {
 
 // OFFSET: 0x00A04F10
 // FUNCTION: fn_14967
-void CUIReset::Slot55() {
+void CUIReset::RequestEnchant() {
   CEnchantMgr::GetInstance()->RequestResetEnchant(this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]));
 }
 
 // OFFSET: 0x00A04FB0
 // FUNCTION: fn_14968
-void CUIUpgradePerfect::Slot55() {
+void CUIUpgradePerfect::RequestEnchant() {
   if (this->unknown_00B8) {
     CEnchantMgr::GetInstance()->RequestUpgradeEnchant(
       this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]), static_cast<int16_t>(this->unknown_00B0)
@@ -1394,7 +1394,7 @@ void CUIUpgradePerfect::Slot55() {
 
 // OFFSET: 0x00A050E0
 // FUNCTION: fn_14969
-void CUIUpgradeRandom::Slot55() {
+void CUIUpgradeRandom::RequestEnchant() {
   CEnchantMgr::GetInstance()->RequestUpgradeRandomEnchant(
     this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]), static_cast<int16_t>(this->unknown_00B0)
   );
@@ -1509,7 +1509,7 @@ void UpdateTargetItem(CUITargetItem* item, ITEM_INFO* info) {
 }
 // OFFSET: 0x00A05E20
 // FUNCTION: fn_14984
-void CUIMainPage::Slot16() {
+void CUIMainPage::OnInit() {
   CUITabButton* button = this->tab->FindButton(this->firstPage);
   if (button != nullptr) {
     button->disabled = 1;
@@ -1526,19 +1526,19 @@ void CUIMainPage::Slot16() {
 
 // OFFSET: 0x009F3160
 // FUNCTION: fn_14752
-void CUIEnchantUI::Slot53() {
+void CUIEnchantUI::Initialize() {
   this->unknown_00B4 = 0;
   this->m_resolveSkin = true;
   this->Resize(690, 470);
   this->Move(0, 0);
-  this->Slot15(this->geometry.width, this->geometry.height);
-  this->Slot16();
+  this->OnCreate(this->geometry.width, this->geometry.height);
+  this->OnInit();
 }
 
 // OFFSET: 0x00A06170
 // FUNCTION: fn_14993
-void EnchantUI::CUIUpgradeRandom::Slot16() {
-  EnchantUI::CUIEnchantPage::Slot16();
+void EnchantUI::CUIUpgradeRandom::OnInit() {
+  EnchantUI::CUIEnchantPage::OnInit();
   auto* const list = this->enchantList;
   list->unknown_00C4 = 1;
   list->Invalidate();
@@ -1547,7 +1547,7 @@ void EnchantUI::CUIUpgradeRandom::Slot16() {
 namespace EnchantUI {
 // OFFSET: 0x00A05CF0
 // FUNCTION: fn_14981
-void CUIEnchantPage::Slot16() {
+void CUIEnchantPage::OnInit() {
   for (int i = 0; i < 8; ++i) {
     CUIIngredient* ingredient = this->CreateIngredient();
     ingredient->Move(ingredient->geometry.x + i % 4 * 74, ingredient->geometry.y + i / 4 * 52);
@@ -1559,8 +1559,8 @@ void CUIEnchantPage::Slot16() {
 
 // OFFSET: 0x00A05E80
 // FUNCTION: fn_14985
-void CUINormalPerfect::Slot16() {
-  CUIEnchantPage::Slot16();
+void CUINormalPerfect::OnInit() {
+  CUIEnchantPage::OnInit();
   for (const auto& slot : this->unknown_0088) {
     auto* const radioButton = slot.second->radioButton;
     radioButton->disabled = 1;
@@ -1570,8 +1570,8 @@ void CUINormalPerfect::Slot16() {
 
 // OFFSET: 0x00A05F10
 // FUNCTION: fn_14986
-void CUINormalRandom::Slot16() {
-  CUIEnchantPage::Slot16();
+void CUINormalRandom::OnInit() {
+  CUIEnchantPage::OnInit();
   for (const auto& slot : this->unknown_0088) {
     auto* const radioButton = slot.second->radioButton;
     radioButton->disabled = 1;
@@ -1585,8 +1585,8 @@ void CUINormalRandom::Slot16() {
 
 // OFFSET: 0x00A05FB0
 // FUNCTION: fn_14987
-void CUIReset::Slot16() {
-  CUIEnchantPage::Slot16();
+void CUIReset::OnInit() {
+  CUIEnchantPage::OnInit();
   for (const auto& slot : this->unknown_0088) {
     auto* const radioButton = slot.second->radioButton;
     radioButton->disabled = 1;
@@ -1600,7 +1600,7 @@ void CUIReset::Slot16() {
 
 // OFFSET: 0x00A06350
 // FUNCTION: fn_15002
-void CUIEnchantPage::Slot57() {
+void CUIEnchantPage::UpdateEnchantInfo() {
   this->enchantList->ClearData();
   for (CUIIngredient* ingredient : this->unknown_0090) {
     ingredient->Show(0);
@@ -1613,7 +1613,7 @@ void CUIEnchantPage::Slot57() {
     button->Invalidate();
   }
 
-  const bool ready = this->Slot56();
+  const bool ready = this->LoadEnchantList();
   if (CUIMainPage* mainPage = dynamic_cast<CUIMainPage*>(this->parent)) {
     if (CUITabButton* button = mainPage->tab->FindButton(this)) {
       button->disabled = !ready;
@@ -1624,7 +1624,7 @@ void CUIEnchantPage::Slot57() {
 
 // OFFSET: 0x00A06520
 // FUNCTION: fn_15003
-void CUIReset::Slot57() {
+void CUIReset::UpdateEnchantInfo() {
   for (CUIIngredient* ingredient : this->unknown_0090) {
     ingredient->Show(0);
   }
@@ -1636,7 +1636,7 @@ void CUIReset::Slot57() {
     button->Invalidate();
   }
   this->enchantList->ClearData();
-  this->Slot56();
+  this->LoadEnchantList();
 }
 
 // OFFSET: 0x00A06800
@@ -1657,12 +1657,12 @@ void CUIEnchantPage::ResetSlots() {
     button->disabled = 1;
     button->Invalidate();
   }
-  this->Slot59(-1);
+  this->SetSlot(-1);
 }
 
 // OFFSET: 0x00A06F80
 // FUNCTION: fn_15009
-bool CUINormalPerfect::Slot56() {
+bool CUINormalPerfect::LoadEnchantList() {
   const int slot = this->FindEmptySlot();
   if (slot == -1) {
     return false;
@@ -1673,7 +1673,7 @@ bool CUINormalPerfect::Slot56() {
     return false;
   }
 
-  this->Slot59(slot);
+  this->SetSlot(slot);
   if ((*option)->perfectEnchants.size() == 0) {
     return false;
   }
@@ -1694,7 +1694,7 @@ bool CUINormalPerfect::Slot56() {
 namespace EnchantUI {
 // OFFSET: 0x00A05470
 // FUNCTION: fn_14975
-void CUINormalPerfect::Slot54(CUIEnchantItem* item, const CEnchantItemData& data) {
+void CUINormalPerfect::OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemData& data) {
   for (CUIIngredient* ingredient : this->unknown_0090) {
     ingredient->Show(0);
   }
@@ -1713,7 +1713,7 @@ void CUINormalPerfect::Slot54(CUIEnchantItem* item, const CEnchantItemData& data
 
 // OFFSET: 0x00A05640
 // FUNCTION: fn_14976
-void CUIUpgradePerfect::Slot54(CUIEnchantItem* item, const CEnchantItemData& data) {
+void CUIUpgradePerfect::OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemData& data) {
   for (CUIIngredient* ingredient : this->unknown_0090) {
     ingredient->Show(0);
   }
@@ -1736,7 +1736,7 @@ void CUIUpgradePerfect::Slot54(CUIEnchantItem* item, const CEnchantItemData& dat
 
 // OFFSET: 0x00A072E0
 // FUNCTION: fn_15011
-bool CUIReset::Slot56() {
+bool CUIReset::LoadEnchantList() {
   this->SetCost(*reinterpret_cast<const EnchantPerfectInfo*>(&this->enchantInfo->resetCost));
   if (!this->enchantInfo->resetEnabled) {
     {
@@ -1846,7 +1846,7 @@ void CUIEnchantPage::SetCost(const EnchantPerfectInfo& info) {
 
 // OFFSET: 0x00A07100
 // FUNCTION: fn_15010
-bool CUINormalRandom::Slot56() {
+bool CUINormalRandom::LoadEnchantList() {
   const int slot = this->FindEmptySlot();
   if (slot == -1) {
     return false;
@@ -1857,7 +1857,7 @@ bool CUINormalRandom::Slot56() {
     return false;
   }
 
-  this->Slot59(slot);
+  this->SetSlot(slot);
   if ((*option)->enchants.size() == 0) {
     return false;
   }
@@ -1882,7 +1882,7 @@ bool CUINormalRandom::Slot56() {
 
 // OFFSET: 0x00A075E0
 // FUNCTION: fn_15013
-bool CUIUpgradeRandom::Slot56() {
+bool CUIUpgradeRandom::LoadEnchantList() {
   if (this->unknown_00B0 == -1) {
     return false;
   }
@@ -1913,7 +1913,7 @@ bool CUIUpgradeRandom::Slot56() {
 
 // OFFSET: 0x00A07440
 // FUNCTION: fn_15012
-bool CUIUpgradePerfect::Slot56() {
+bool CUIUpgradePerfect::LoadEnchantList() {
   if (this->unknown_00B0 == -1) {
     return false;
   }
@@ -1948,7 +1948,7 @@ bool CUIUpgradePerfect::Slot56() {
 
 // OFFSET: 0x009F9FE0
 // FUNCTION: fn_14817
-void CUIEnchantPage::Slot15(int width, int height) {
+void CUIEnchantPage::OnCreate(int width, int height) {
   this->background = new CUIStaticImage;
   this->background->SetSize(470, 377);
   this->background->Move(0, 0);
@@ -2005,7 +2005,7 @@ void CUIEnchantPage::Slot15(int width, int height) {
   enchantList->rowHeight = 30;
   enchantList->SetSize(169, 377);
   this->enchantList->Move(300, 0);
-  this->enchantList->SetOnSelect([this](CUIEnchantItem* item, const CEnchantItemData& data) { this->Slot54(item, data); });
+  this->enchantList->SetOnSelect([this](CUIEnchantItem* item, const CEnchantItemData& data) { this->OnSelectEnchant(item, data); });
   this->enchantList->SetBinder([this](CUIEnchantItem* item, const CEnchantItemData& data) { this->UpdateEnchantItem(item, data); });
   {
     this->enchantList->SetImages(std::string([]() {
@@ -2132,7 +2132,7 @@ void CUIEnchantPage::Slot15(int width, int height) {
   this->unknown_00A0 = new CUIImageButton;
   this->unknown_00A0->SetSize(140, 40);
   this->unknown_00A0->Move(80, 330);
-  this->unknown_00A0->SetOnClick([this]() { this->Slot55(); });
+  this->unknown_00A0->SetOnClick([this]() { this->RequestEnchant(); });
   {
     CUIImageButton* button = this->unknown_00A0;
     button->disabled = 0;
@@ -2147,8 +2147,8 @@ void CUIEnchantPage::Slot15(int width, int height) {
 
 // OFFSET: 0x009FCDE0
 // FUNCTION: fn_14820
-void CUINormalPerfect::Slot15(int width, int height) {
-  CUIEnchantPage::Slot15(width, height);
+void CUINormalPerfect::OnCreate(int width, int height) {
+  CUIEnchantPage::OnCreate(width, height);
   {
     this->background->SetImage(std::string([]() {
       constexpr std::uint8_t bytes[] = {
@@ -2166,8 +2166,8 @@ void CUINormalPerfect::Slot15(int width, int height) {
 
 // OFFSET: 0x009FCFB0
 // FUNCTION: fn_14821
-void CUINormalRandom::Slot15(int width, int height) {
-  CUIEnchantPage::Slot15(width, height);
+void CUINormalRandom::OnCreate(int width, int height) {
+  CUIEnchantPage::OnCreate(width, height);
   {
     this->background->SetImage(std::string([]() {
       constexpr std::uint8_t bytes[] = {
@@ -2185,8 +2185,8 @@ void CUINormalRandom::Slot15(int width, int height) {
 
 // OFFSET: 0x009FD180
 // FUNCTION: fn_14822
-void CUIReset::Slot15(int width, int height) {
-  CUIEnchantPage::Slot15(width, height);
+void CUIReset::OnCreate(int width, int height) {
+  CUIEnchantPage::OnCreate(width, height);
   {
     this->background->SetImage(std::string([]() {
       constexpr std::uint8_t bytes[] = {
@@ -2204,8 +2204,8 @@ void CUIReset::Slot15(int width, int height) {
 
 // OFFSET: 0x00A01AD0
 // FUNCTION: fn_14830
-void CUIUpgradePerfect::Slot15(int width, int height) {
-  CUIUpgradeEnchantPage::Slot15(width, height);
+void CUIUpgradePerfect::OnCreate(int width, int height) {
+  CUIUpgradeEnchantPage::OnCreate(width, height);
   {
     this->background->SetImage(std::string([]() {
       constexpr std::uint8_t bytes[] = {
@@ -2223,8 +2223,8 @@ void CUIUpgradePerfect::Slot15(int width, int height) {
 
 // OFFSET: 0x00A01CA0
 // FUNCTION: fn_14831
-void CUIUpgradeRandom::Slot15(int width, int height) {
-  CUIUpgradeEnchantPage::Slot15(width, height);
+void CUIUpgradeRandom::OnCreate(int width, int height) {
+  CUIUpgradeEnchantPage::OnCreate(width, height);
   {
     this->background->SetImage(std::string([]() {
       constexpr std::uint8_t bytes[] = {
@@ -2243,7 +2243,7 @@ void CUIUpgradeRandom::Slot15(int width, int height) {
 
 // OFFSET: 0x009F31B0
 // FUNCTION: fn_14753
-void CUIEnchantUI::Slot15(int width, int height) {
+void CUIEnchantUI::OnCreate(int width, int height) {
   this->background = new CUIStaticImage;
   this->background->SetSize(690, 470);
   this->background->Move(0, 0);

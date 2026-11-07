@@ -25,8 +25,8 @@ public:
 class CUIDelayItem : public CUIListItem {
 public:
   CUIDelayItem();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
 
   /* 00E8 */ CUIStaticText* level;
@@ -39,8 +39,8 @@ class CUITime : public CUIControl {
 public:
   __declspec(noinline) CUITime();
   ~CUITime() override;
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
 
   __declspec(noinline) void SetTime(int milliseconds);
@@ -55,11 +55,11 @@ class CUITextViewer;
 class CUISkillDelayInfo : public CUIFrameWnd {
 public:
   __declspec(noinline) CUISkillDelayInfo();
-  void Slot15(int width, int height) override;
-  void Slot16() override;
+  void OnCreate(int width, int height) override;
+  void OnInit() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  virtual void Slot53();
+  virtual void Initialize();
 
   void OnButtonClick();
   void OnClose();

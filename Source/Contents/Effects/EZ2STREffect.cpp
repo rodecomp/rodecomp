@@ -1608,7 +1608,7 @@ void CEZ2STRScreenEffect::Close() {
 
 // OFFSET: 0x00B51CD0
 // FUNCTION: fn_19034
-vector3d CEZ2STRScreenEffect::Slot25() {
+vector3d CEZ2STRScreenEffect::GetWindowOffset() {
   if (CEZ2STRParticle* particle = this->particle) {
     return particle->m_windowOffset;
   }
@@ -1622,9 +1622,9 @@ vector3d CEZ2STRScreenEffect::Slot25() {
 
 // OFFSET: 0x00B51D20
 // FUNCTION: fn_19035
-bool CEZ2STRScreenEffect::Slot33() {
+bool CEZ2STRScreenEffect::IsVisible() {
   if (this->id != 0x76C) {
-    return CEffect::Slot33();
+    return CEffect::IsVisible();
   }
 
   CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
@@ -1641,7 +1641,7 @@ bool CEZ2STRScreenEffect::Slot33() {
 
 // OFFSET: 0x00B56790
 // FUNCTION: fn_19042
-bool CEZ2STRScreenEffect::Slot06() {
+bool CEZ2STRScreenEffect::IsAlive() {
   int id = this->id;
   if (this->unknown_00C8 == 1) {
     return this->ActorExists();
@@ -1773,7 +1773,7 @@ bool CEZ2STRScreenEffect::Slot06() {
 
 // OFFSET: 0x00B56D30
 // FUNCTION: fn_19043
-void CEZ2STRScreenEffect::Slot34(CEZ2STRParticle* particle, int id) {
+void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   switch (id) {
   case 0xCC:
     particle->Open("빨간포션.str");
@@ -5367,7 +5367,7 @@ void CEZ2STRScreenEffect::Slot34(CEZ2STRParticle* particle, int id) {
 
 // OFFSET: 0x00B65EE0
 // FUNCTION: fn_19044
-void CEZ2STRScreenEffect::Slot03() {
+void CEZ2STRScreenEffect::OnProcess() {
   if (this->followCamera == 1 && this->particle) {
     double yaw = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
     if (yaw != this->cameraAngle) {
@@ -5411,7 +5411,7 @@ void CEZ2STRScreenEffect::Slot03() {
     return;
   }
 
-  if (this->jobScaled == 1 && actor->Slot55() <= 0) {
+  if (this->jobScaled == 1 && actor->GetMonsterTransformJob() <= 0) {
     float factor = GetSkillFactor(actor->GetEffectiveJob(-1));
     if (this->fadePulse == 1) {
       actor->ScaleByFadePulse(factor);
@@ -5428,7 +5428,7 @@ void CEZ2STRScreenEffect::Slot03() {
 
 // OFFSET: 0x00B661B0
 // FUNCTION: fn_19045
-void CEZ2STRScreenEffect::Slot04() {
+void CEZ2STRScreenEffect::Render() {
   CEZ2STRParticle* particle = this->particle;
   if (!particle) {
     return;
@@ -5467,13 +5467,13 @@ draw:
 
 // OFFSET: 0x00B66460
 // FUNCTION: fn_19046
-void CEZ2STRScreenEffect::Slot00(int argument) {
+void CEZ2STRScreenEffect::SetRenderFunc(int argument) {
   this->particle->submit = reinterpret_cast<ParticleSubmit>(argument);
 }
 
 // OFFSET: 0x00B66480
 // FUNCTION: fn_19047
-void CEZ2STRScreenEffect::Slot23(float argument) {
+void CEZ2STRScreenEffect::SetAlpha(float argument) {
   if (this->particle) {
     this->particle->m_alpha = argument;
   }
@@ -5481,8 +5481,8 @@ void CEZ2STRScreenEffect::Slot23(float argument) {
 
 // OFFSET: 0x00B664A0
 // FUNCTION: fn_19048
-void CEZ2STRScreenEffect::Slot29(int id) {
-  CEffect::Slot29(id);
+void CEZ2STRScreenEffect::SetId(int id) {
+  CEffect::SetId(id);
   switch (id) {
   case 0x3F4:
   case 0x40A:
@@ -5512,7 +5512,7 @@ void CEZ2STRScreenEffect::Slot29(int id) {
 
 // OFFSET: 0x00B66540
 // FUNCTION: fn_19049
-void CEZ2STRScreenEffect::Slot24(int argument1, int argument2, int argument3, int argument4, int argument5) {
+void CEZ2STRScreenEffect::SetWindowOffset(int argument1, int argument2, int argument3, int argument4, int argument5) {
   CEZ2STRParticle* particle = this->particle;
   if (!particle) {
     return;
@@ -5530,13 +5530,13 @@ void CEZ2STRScreenEffect::Slot24(int argument1, int argument2, int argument3, in
 
 // OFFSET: 0x00B665B0
 // FUNCTION: fn_19050
-void CEZ2STRScreenEffect::Slot21(int argument) {
+void CEZ2STRScreenEffect::SetFlags(int argument) {
   this->particle->flags = argument;
 }
 
 // OFFSET: 0x00B665D0
 // FUNCTION: fn_19051
-void CEZ2STRScreenEffect::Slot15(int argument) {
+void CEZ2STRScreenEffect::SetRepeat(int argument) {
   if (this->particle) {
     this->particle->m_repeat = argument - 1;
   }
@@ -5544,7 +5544,7 @@ void CEZ2STRScreenEffect::Slot15(int argument) {
 
 // OFFSET: 0x00B665F0
 // FUNCTION: fn_19052
-void CEZ2STRScreenEffect::Slot14(int argument) {
+void CEZ2STRScreenEffect::SetLifeTime(int argument) {
   if (this->particle) {
     this->particle->m_lifeTime = argument;
   }
@@ -5552,7 +5552,7 @@ void CEZ2STRScreenEffect::Slot14(int argument) {
 
 // OFFSET: 0x00B66610
 // FUNCTION: fn_19053
-void CEZ2STRScreenEffect::Slot17(float argument) {
+void CEZ2STRScreenEffect::SetAngle(float argument) {
   if (this->particle) {
     this->particle->m_angle = argument;
   }
@@ -5560,7 +5560,7 @@ void CEZ2STRScreenEffect::Slot17(float argument) {
 
 // OFFSET: 0x00B66630
 // FUNCTION: fn_19054
-void CEZ2STRScreenEffect::Slot22(float argument) {
+void CEZ2STRScreenEffect::SetScale(float argument) {
   if (this->particle) {
     this->particle->m_scale = argument;
   }
@@ -5568,7 +5568,7 @@ void CEZ2STRScreenEffect::Slot22(float argument) {
 
 // OFFSET: 0x00B66650
 // FUNCTION: fn_19055
-void CEZ2STRScreenEffect::Slot13(int argument) {
+void CEZ2STRScreenEffect::AdvanceFrame(int argument) {
   if (this->particle) {
     this->particle->Advance(*reinterpret_cast<float*>(&argument));
   }
@@ -5576,7 +5576,7 @@ void CEZ2STRScreenEffect::Slot13(int argument) {
 
 // OFFSET: 0x00B66680
 // FUNCTION: fn_19056
-void CEZ2STRScreenEffect::Slot16(int argument) {
+void CEZ2STRScreenEffect::SetDelay(int argument) {
   if (this->particle) {
     this->particle->m_delay = argument;
   }
@@ -5584,21 +5584,21 @@ void CEZ2STRScreenEffect::Slot16(int argument) {
 
 // OFFSET: 0x00B666A0
 // FUNCTION: fn_19057
-void CEZ2STRScreenEffect::Slot20(int argument) {
+void CEZ2STRScreenEffect::SetResource(int argument) {
   this->name = reinterpret_cast<const char*>(argument);
   FreeParticle(this->particle);
-  this->Slot01();
+  this->Open();
 }
 
 // OFFSET: 0x00B52970
 // FUNCTION: fn_19038
-int CEZ2STRScreenEffect::Slot28() {
+int CEZ2STRScreenEffect::GetFrame() {
   return this->particle->m_frame;
 }
 
 // OFFSET: 0x00B52980
 // FUNCTION: fn_19039
-void CEZ2STRScreenEffect::Slot01() {
+void CEZ2STRScreenEffect::Open() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(
     CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5)
   );
@@ -5759,7 +5759,7 @@ void CEZ2STRScreenEffect::Slot01() {
 
   InitParticleQuad(particle->vertices);
   this->particle = particle;
-  this->Slot34(particle, this->id);
+  this->InitParticle(particle, this->id);
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   this->cameraAngle = static_cast<double>(mode->camera->camera.yaw);
@@ -5771,7 +5771,7 @@ void CEZ2STRScreenEffect::Slot01() {
 
 // OFFSET: 0x00B531E0
 // FUNCTION: fn_19040
-void CEZ2STRScreenEffect::Slot12() {
+void CEZ2STRScreenEffect::InitEvents() {
   switch (this->id) {
   case 0xCC:
   case 0xCD:
@@ -6223,13 +6223,13 @@ void CEZ2STRScreenEffect::Slot12() {
     this->particle->flags = 13;
     switch (this->unknown_00B0) {
     case 1:
-      this->Slot22(0.7f);
+      this->SetScale(0.7f);
       break;
     case 2:
     case 3:
     case 4:
     case 5:
-      this->Slot22(1.25f);
+      this->SetScale(1.25f);
       break;
     }
     break;

@@ -12,11 +12,11 @@ class CParticle;
 class CLevel99Orb2Effect : public CEffect {
 public:
   CLevel99Orb2Effect();
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
   ~CLevel99Orb2Effect() override;
 
   /* 00CC */ EffectPoint offsets[4][4];

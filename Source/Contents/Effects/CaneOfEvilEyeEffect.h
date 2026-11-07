@@ -12,11 +12,11 @@ class CCaneOfEvilEyeEffect : public CEffect {
 public:
   CCaneOfEvilEyeEffect();
 
-  void Slot01() override;
-  void Slot03() override;
-  void Slot04() override;
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
   void Close() override;
-  bool Slot06() override;
+  bool IsAlive() override;
 
   CEZ2STRParticle* CreateEye(int type, const float* position);
   CEZ2STRParticle* CreateLight(int type, const float* position);

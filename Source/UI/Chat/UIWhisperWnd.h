@@ -32,13 +32,13 @@ public:
   /* 0104 */ std::string m_code;
 
   void Move(int x, int y) override;
-  void Slot15(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
-  void Slot26(int x, int y) override;
-  void Slot33(int x, int y) override;
-  bool Slot42(void* output) override;
-  void Slot43() override;
-  void Slot11() override;
+  void OnLBtnDblClk(int x, int y) override;
+  void OnRBtnUp(int x, int y) override;
+  bool GetCustomTransBoxInfo(void* output) override;
+  void DrawTransBox() override;
+  void StoreInfo() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   void SaveChatLog();

@@ -51,38 +51,38 @@ void EffectResourceSwitcher::RetireEffects() {
 
 // OFFSET: 0x005A2110
 // FUNCTION: fn_03083
-void CEffect::Slot10(int) {
+void CEffect::SetDestinationBlend(int) {
 }
 
 // OFFSET: 0x005A2120
 // FUNCTION: fn_03084
-void CEffect::Slot08(int, int, int) {
+void CEffect::SetColor(int, int, int) {
 }
 
 // OFFSET: 0x005A2130
 // FUNCTION: fn_03085
-void CEffect::Slot11(std::string) {
+void CEffect::SetParticleTexture(std::string) {
 }
 
 // OFFSET: 0x005A2140
 // FUNCTION: fn_03086
-void CEffect::Slot09(int) {
+void CEffect::SetSourceBlend(int) {
 }
 
 // OFFSET: 0x005A2160
 // FUNCTION: fn_03088
-void CEffect::Slot31() {
+void CEffect::EnableTimeLimit() {
 }
 
 // OFFSET: 0x005A2170
 // FUNCTION: fn_03089
-vector3d CEffect::Slot25() {
+vector3d CEffect::GetWindowOffset() {
   return vector3d{0.0f, 0.0f, 0.0f};
 }
 
 // OFFSET: 0x005A2190
 // FUNCTION: fn_03090
-int CEffect::Slot28() {
+int CEffect::GetFrame() {
   return 0;
 }
 
@@ -97,7 +97,7 @@ void EffectResourceSwitcher::Start() {
 
 // OFFSET: 0x005A21C0
 // FUNCTION: fn_03092
-void CEffect::Slot01() {
+void CEffect::Open() {
 }
 
 // OFFSET: 0x005A21D0
@@ -123,17 +123,17 @@ void EffectResourceSwitcher::SetNames(const std::string& source, const std::stri
 
 // OFFSET: 0x005A22E0
 // FUNCTION: fn_03094
-void CEffect::Slot12() {
+void CEffect::InitEvents() {
 }
 
 // OFFSET: 0x005A22F0
 // FUNCTION: fn_03095
-void CEffect::Slot07() {
+void CEffect::ResetParticles() {
 }
 
 // OFFSET: 0x005A2300
 // FUNCTION: fn_03096
-bool EffectResourceSwitcher::Slot06() {
+bool EffectResourceSwitcher::IsAlive() {
   if (!this->effect) {
     return false;
   }
@@ -147,7 +147,7 @@ bool EffectResourceSwitcher::Slot06() {
 
 // OFFSET: 0x005A2330
 // FUNCTION: fn_03097
-void EffectResourceSwitcher::Slot03() {
+void EffectResourceSwitcher::OnProcess() {
   if (!this->effect || !this->active || !this->effect->IsFinished()) {
     return;
   }
@@ -165,90 +165,90 @@ void EffectResourceSwitcher::Slot03() {
 
 // OFFSET: 0x005A2430
 // FUNCTION: fn_03098
-void CEffect::Slot04() {
+void CEffect::Render() {
 }
 
 // OFFSET: 0x005A2440
 // FUNCTION: fn_03099
-void CEffect::Slot00(int) {
+void CEffect::SetRenderFunc(int) {
 }
 
 // OFFSET: 0x005A2450
 // FUNCTION: fn_03100
-void CEffect::Slot23(float) {
+void CEffect::SetAlpha(float) {
 }
 
 // OFFSET: 0x005A2460
 // FUNCTION: fn_03101
-void CEffect::Slot24(int, int, int, int, int) {
+void CEffect::SetWindowOffset(int, int, int, int, int) {
 }
 
 // OFFSET: 0x005A2470
 // FUNCTION: fn_03102
-void CEffect::Slot26(int) {
+void CEffect::SetFlipX(int) {
 }
 
 // OFFSET: 0x005A2480
 // FUNCTION: fn_03103
-void CEffect::Slot27(int) {
+void CEffect::SetFlipY(int) {
 }
 
 // OFFSET: 0x005A2490
 // FUNCTION: fn_03104
-void CEffect::Slot21(int) {
+void CEffect::SetFlags(int) {
 }
 
 // OFFSET: 0x005A24A0
 // FUNCTION: fn_03105
-void CEffect::Slot32() {
+void CEffect::EnableGroundRender() {
 }
 
 // OFFSET: 0x005A24B0
 // FUNCTION: fn_03106
-void CEffect::Slot15(int) {
+void CEffect::SetRepeat(int) {
 }
 
 // OFFSET: 0x005A24C0
 // FUNCTION: fn_03107
-void CEffect::Slot14(int) {
+void CEffect::SetLifeTime(int) {
 }
 
 // OFFSET: 0x005A24D0
 // FUNCTION: fn_03108
-void CEffect::Slot17(float) {
+void CEffect::SetAngle(float) {
 }
 
 // OFFSET: 0x005A24E0
 // FUNCTION: fn_03109
-void CEffect::Slot18(float) {
+void CEffect::SetPitch(float) {
 }
 
 // OFFSET: 0x005A24F0
 // FUNCTION: fn_03110
-void CEffect::Slot19(float) {
+void CEffect::SetYaw(float) {
 }
 
 // OFFSET: 0x005A2500
 // FUNCTION: fn_03111
-void CEffect::Slot22(float) {
+void CEffect::SetScale(float) {
 }
 
 // OFFSET: 0x005A2510
 // FUNCTION: fn_03112
-void CEffect::Slot13(int) {
+void CEffect::AdvanceFrame(int) {
 }
 
 // OFFSET: 0x005A2520
 // FUNCTION: fn_03113
-void EffectResourceSwitcher::Slot16(int argument) {
+void EffectResourceSwitcher::SetDelay(int argument) {
   if (this->effect) {
-    this->effect->Slot16(argument);
+    this->effect->SetDelay(argument);
   }
 }
 
 // OFFSET: 0x005A2540
 // FUNCTION: fn_03114
-void CEffect::Slot20(int) {
+void CEffect::SetResource(int) {
 }
 
 // OFFSET: 0x005A2630
@@ -274,7 +274,7 @@ __declspec(noinline) bool CEZ2STREffectEx::IsFinished() {
 
 // OFFSET: 0x006FFA20
 // FUNCTION: fn_06968
-void CEZ2STREffectEx::Slot01() {
+void CEZ2STREffectEx::Open() {
   EZ2STREffectInfo* info = CEZ2STREffectMgr::GetInstance()->FindById(this->id);
   if (!info) {
     return;
@@ -323,7 +323,7 @@ void CEZ2STREffectEx::Slot01() {
 
 // OFFSET: 0x006FFBF0
 // FUNCTION: fn_06969
-bool CEZ2STREffectEx::Slot06() {
+bool CEZ2STREffectEx::IsAlive() {
   EZ2STREmitter* emitter = this->emitter;
   if (!emitter) {
     return false;
@@ -334,7 +334,7 @@ bool CEZ2STREffectEx::Slot06() {
   }
 
   if (emitter->looping == 1) {
-    return CEffect::Slot06();
+    return CEffect::IsAlive();
   }
 
   if (emitter->lifetime == 0.0f) {
@@ -346,7 +346,7 @@ bool CEZ2STREffectEx::Slot06() {
 
 // OFFSET: 0x006FFC60
 // FUNCTION: fn_06970
-void CEZ2STREffectEx::Slot03() {
+void CEZ2STREffectEx::OnProcess() {
   if (!this->emitter) {
     return;
   }
@@ -386,7 +386,7 @@ void CEZ2STREffectEx::Slot03() {
 
 // OFFSET: 0x006FFEA0
 // FUNCTION: fn_06971
-void CEZ2STREffectEx::Slot04() {
+void CEZ2STREffectEx::Render() {
   if (!this->emitter) {
     return;
   }
@@ -400,7 +400,7 @@ void CEZ2STREffectEx::Slot04() {
 
 // OFFSET: 0x006FFEF0
 // FUNCTION: fn_06972
-void CEZ2STREffectEx::Slot23(float argument) {
+void CEZ2STREffectEx::SetAlpha(float argument) {
   if (this->emitter) {
     this->emitter->remainingTime = argument;
   }
@@ -408,7 +408,7 @@ void CEZ2STREffectEx::Slot23(float argument) {
 
 // OFFSET: 0x006FFF10
 // FUNCTION: fn_06973
-void CEZ2STREffectEx::Slot26(int argument) {
+void CEZ2STREffectEx::SetFlipX(int argument) {
   if (this->emitter) {
     this->emitter->unknown_3FE8 = static_cast<unsigned char>(argument);
   }
@@ -416,7 +416,7 @@ void CEZ2STREffectEx::Slot26(int argument) {
 
 // OFFSET: 0x006FFF30
 // FUNCTION: fn_06974
-void CEZ2STREffectEx::Slot27(int argument) {
+void CEZ2STREffectEx::SetFlipY(int argument) {
   if (this->emitter) {
     this->emitter->unknown_3FE9 = static_cast<unsigned char>(argument);
   }
@@ -433,13 +433,13 @@ __declspec(noinline) void CEZ2STREffectEx::EndLoop(unsigned char fadeOut) {
 
 // OFFSET: 0x006FFF80
 // FUNCTION: fn_06976
-void CEZ2STREffectEx::Slot32() {
+void CEZ2STREffectEx::EnableGroundRender() {
   this->alternateRender = 1;
 }
 
 // OFFSET: 0x006FFF90
 // FUNCTION: fn_06977
-void CEZ2STREffectEx::Slot14(int argument) {
+void CEZ2STREffectEx::SetLifeTime(int argument) {
   if (this->emitter) {
     this->emitter->unknown_3F98 = argument;
   }
@@ -447,7 +447,7 @@ void CEZ2STREffectEx::Slot14(int argument) {
 
 // OFFSET: 0x006FFFB0
 // FUNCTION: fn_06978
-void CEZ2STREffectEx::Slot17(float argument) {
+void CEZ2STREffectEx::SetAngle(float argument) {
   if (this->emitter) {
     this->emitter->unknown_3FA4 = argument;
   }
@@ -455,7 +455,7 @@ void CEZ2STREffectEx::Slot17(float argument) {
 
 // OFFSET: 0x006FFFD0
 // FUNCTION: fn_06979
-void CEZ2STREffectEx::Slot18(float argument) {
+void CEZ2STREffectEx::SetPitch(float argument) {
   if (this->emitter) {
     this->emitter->unknown_3FA8 = argument;
   }
@@ -463,7 +463,7 @@ void CEZ2STREffectEx::Slot18(float argument) {
 
 // OFFSET: 0x006FFFF0
 // FUNCTION: fn_06980
-void CEZ2STREffectEx::Slot19(float argument) {
+void CEZ2STREffectEx::SetYaw(float argument) {
   if (this->emitter) {
     this->emitter->unknown_3FAC = argument;
   }
@@ -471,7 +471,7 @@ void CEZ2STREffectEx::Slot19(float argument) {
 
 // OFFSET: 0x00700010
 // FUNCTION: fn_06981
-void CEZ2STREffectEx::Slot22(float argument) {
+void CEZ2STREffectEx::SetScale(float argument) {
   if (this->emitter) {
     this->emitter->unknown_3FB0 = argument;
   }
@@ -479,7 +479,7 @@ void CEZ2STREffectEx::Slot22(float argument) {
 
 // OFFSET: 0x00700030
 // FUNCTION: fn_06982
-void CEZ2STREffectEx::Slot16(int argument) {
+void CEZ2STREffectEx::SetDelay(int argument) {
   if (this->emitter) {
     this->emitter->duration = argument;
   }
