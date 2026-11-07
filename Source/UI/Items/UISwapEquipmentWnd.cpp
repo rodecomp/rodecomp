@@ -333,7 +333,7 @@ void UISwapEquipmentWnd::Paint() {
   const char* resolved = Resolve(background.c_str());
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(resolved));
   if (bitmap) {
-    this->DrawBitmap(0, 0, &bitmap->image, false);
+    this->DrawBitmap(0, 0, bitmap, false);
   }
 
   this->DrawCenteredText(140, 4, LookupMessage(3110), std::strlen(LookupMessage(3110)), 0, 12, 0x14234B, 0);
