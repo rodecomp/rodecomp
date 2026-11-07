@@ -102,7 +102,7 @@ void CSpriteParticle::Draw(char mode) {
     this->UpdateFrame();
   }
 
-  if (this->life != 0.0f && !(this->life * 60.0f > static_cast<float>(this->unknown_00E8))) {
+  if (!IsParticleActive(this)) {
     return;
   }
   CSprRes* sprite = this->sprite;
@@ -148,17 +148,7 @@ void CSpriteParticle::Draw(char mode) {
       record.v1 = static_cast<float>(heightTexture->ImageHeight()) / static_cast<float>(heightTexture->TextureHeight());
     }
 
-    float u0;
-    float u1;
-    if ((cell.mirrored & 1) == 0) {
-      u0 = record.u0;
-      u1 = record.u1;
-    } else {
-      u0 = record.u1;
-      u1 = record.u0;
-    }
-
-    this->SetQuad(this->vertices, record.v1, record.v0, u0, u1);
+    this->SetQuad(this->vertices, record.v1, record.v0, (cell.mirrored & 1) == 0 ? record.u0 : record.u1, (cell.mirrored & 1) == 0 ? record.u1 : record.u0);
 
     RenderPrimitive* primitive = g_renderer->primitives.Acquire();
     std::memcpy(primitive->vertices, this->vertices, sizeof(this->vertices));
