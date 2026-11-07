@@ -2923,7 +2923,10 @@ void CGameActor::Slot17() {
 void CGameActor::SetUnknown03C4(int value) {
   this->unknown_03C8 = 0;
   this->unknown_03C4 = value;
-  this->Slot21(value > 0 ? value : this->GetEffectiveJob(-1));
+  if (value <= 0) {
+    value = this->GetEffectiveJob(-1);
+  }
+  this->Slot21(value);
   this->Slot15(this->render.unknown_0070, 1);
 }
 
