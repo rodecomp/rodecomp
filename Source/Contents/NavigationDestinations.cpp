@@ -2,16 +2,6 @@
 
 #include <cstring>
 
-#pragma pack(push, 1)
-struct NavigationStateRecord {
-  /* 0000 */ int type;
-  /* 0004 */ char map[0x14];
-  /* 0018 */ int x;
-  /* 001C */ int y;
-  /* 0020 */ int nameLength;
-};
-#pragma pack(pop)
-
 // OFFSET: 0x00B974D0
 // FUNCTION: fn_19599
 bool CNavigationManager::LoadStates(std::vector<char> packet) {
@@ -20,25 +10,32 @@ bool CNavigationManager::LoadStates(std::vector<char> packet) {
   }
 
   const int count = *reinterpret_cast<const int*>(packet.data());
+  std::size_t offset = sizeof(int);
+  char map[0x14] = {};
   this->states.clear();
 
-  std::size_t offset = sizeof(int);
   for (int i = 0; i < count; ++i) {
     NavigationTarget target;
-    NavigationStateRecord record;
-    std::memcpy(&record, packet.data() + offset, sizeof(record));
-    target.type = record.type;
-    target.x = record.x;
-    target.y = record.y;
-    offset += sizeof(record);
+    std::memcpy(&target.type, packet.data() + offset, sizeof(target.type));
+    offset += sizeof(target.type);
+    std::memset(map, 0, sizeof(map));
+    std::memcpy(map, packet.data() + offset, sizeof(map));
+    offset += sizeof(map);
+    std::memcpy(&target.x, packet.data() + offset, sizeof(target.x));
+    offset += sizeof(target.x);
+    std::memcpy(&target.y, packet.data() + offset, sizeof(target.y));
+    offset += sizeof(target.y);
+    int nameLength;
+    std::memcpy(&nameLength, packet.data() + offset, sizeof(nameLength));
+    offset += sizeof(nameLength);
 
-    if (record.nameLength > 0) {
-      target.name.resize(record.nameLength, '\0');
-      std::memcpy(&target.name[0], packet.data() + offset, record.nameLength);
-      offset += record.nameLength;
+    if (nameLength > 0) {
+      target.name.resize(nameLength, '\0');
+      std::memcpy(&target.name[0], packet.data() + offset, nameLength);
+      offset += nameLength;
     }
 
-    CNaviInfo* info = this->FindObject(record.map);
+    CNaviInfo* info = this->FindObject(map);
     if (info != nullptr) {
       target.object = info;
       this->states.push_back(target);
