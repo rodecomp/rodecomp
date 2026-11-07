@@ -26,7 +26,7 @@ CRC32::~CRC32() {
 
 // OFFSET: 0x004031F0
 // FUNCTION: fn_00144
-bool CRC32::Update(const BYTE* data, int length, DWORD* checksum) {
+__declspec(noinline) bool CRC32::Update(const BYTE* data, int length, DWORD* checksum) {
   if (data == nullptr) {
     m_error = InvalidArgument;
     return false;
@@ -34,7 +34,7 @@ bool CRC32::Update(const BYTE* data, int length, DWORD* checksum) {
 
   const BYTE* end = data + length;
   while (data < end) {
-    *checksum = m_table[static_cast<BYTE>(*checksum) ^ *data++] ^ (*checksum >> 8);
+    *checksum = (*checksum >> 8) ^ m_table[static_cast<BYTE>(*checksum) ^ *data++];
   }
   return true;
 }
@@ -64,15 +64,17 @@ bool CRC32::UpdateFile(const WCHAR* filename, LONG offset, DWORD length, DWORD* 
 
   BOOL readResult = ReadFile(file, buffer, 0xFFFF, &bytesRead, nullptr);
   while (readResult && bytesRead != 0) {
-    DWORD chunkLength;
+    const BYTE* end;
     if (length > bytesRead) {
-      chunkLength = bytesRead;
+      end = buffer + bytesRead;
       length -= bytesRead;
     } else {
-      chunkLength = length;
+      end = buffer + length;
       length = 0;
     }
-    Update(buffer, chunkLength, checksum);
+    for (const BYTE* data = buffer; data < end; ++data) {
+      *checksum = (*checksum >> 8) ^ m_table[static_cast<BYTE>(*checksum) ^ *data];
+    }
     if (length == 0) {
       break;
     }
