@@ -127,12 +127,12 @@ void C3dNodeV1::Animate(double frame) {
   matrix position;
   matrix scale;
   matrix rotation;
-  position.Identity();
-  scale.Identity();
-  rotation.Identity();
-  SampleLegacyPosition(this->positionKeys, selected, position);
-  SampleLegacyRotation(this->rotationKeys, selected, rotation);
-  SampleLegacyScale(this->scaleKeys, selected, scale);
+  std::memcpy(position.values, g_identityMatrix, sizeof(g_identityMatrix));
+  std::memcpy(scale.values, g_identityMatrix, sizeof(g_identityMatrix));
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(g_identityMatrix));
+  this->positionKeys.Sample(selected, position);
+  this->rotationKeys.Sample(selected, rotation);
+  this->scaleKeys.Sample(selected, scale);
   matrix combined;
   combined.Compose(scale, rotation);
   this->transform.Compose(combined, position);
@@ -145,11 +145,11 @@ void C3dNodeV1::Animate(double frame) {
 // OFFSET: 0x00AB9210
 // FUNCTION: fn_17508
 void C3dNodeV2::Animate(double frame) {
-  this->transform.Identity();
+  std::memcpy(this->transform.values, g_identityMatrix, sizeof(g_identityMatrix));
   const float selected = static_cast<float>(frame);
-  SampleModelScale(this->scaleKeys, selected, this->transform);
-  SampleModelRotation(this->rotationKeys, selected, this->localTransform, this->transform);
-  SampleModelPosition(this->positionKeys, selected, this->localTransform, this->transform);
+  this->scaleKeys.Sample(selected, this->transform);
+  this->rotationKeys.Sample(selected, this->localTransform, this->transform);
+  this->positionKeys.Sample(selected, this->localTransform, this->transform);
   this->textureTransforms.clear();
 
   for (auto it = this->textureKeys.begin(); it != this->textureKeys.end(); ++it) {

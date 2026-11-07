@@ -6,12 +6,41 @@
 
 #include <vector>
 
-void SampleLegacyPosition(const std::vector<ModelPositionKey>& keys, int frame, matrix& output);
-void SampleLegacyRotation(const std::vector<ModelRotationKey>& keys, int frame, matrix& output);
-void SampleLegacyScale(const std::vector<ModelScaleKey>& keys, int frame, matrix& output);
-void SampleModelScale(const std::vector<ModelRotationKey>& keys, float frame, matrix& output);
-void SampleModelPosition(const std::vector<ModelRotationKey>& keys, float frame, const matrix& base, matrix& output);
-void SampleModelRotation(const std::vector<ModelRotationKey>& keys, float frame, const matrix& base, matrix& output);
+class LegacyPositionTrack : public std::vector<ModelPositionKey> {
+public:
+  using std::vector<ModelPositionKey>::operator=;
+  void Sample(int frame, matrix& output) const;
+};
+
+class LegacyRotationTrack : public std::vector<ModelRotationKey> {
+public:
+  using std::vector<ModelRotationKey>::operator=;
+  void Sample(int frame, matrix& output) const;
+};
+
+class LegacyScaleTrack : public std::vector<ModelScaleKey> {
+public:
+  using std::vector<ModelScaleKey>::operator=;
+  void Sample(int frame, matrix& output) const;
+};
+
+class ModelScaleTrack : public std::vector<ModelRotationKey> {
+public:
+  using std::vector<ModelRotationKey>::operator=;
+  void Sample(float frame, matrix& output) const;
+};
+
+class ModelPositionTrack : public std::vector<ModelRotationKey> {
+public:
+  using std::vector<ModelRotationKey>::operator=;
+  void Sample(float frame, const matrix& base, matrix& output) const;
+};
+
+class ModelRotationTrack : public std::vector<ModelRotationKey> {
+public:
+  using std::vector<ModelRotationKey>::operator=;
+  void Sample(float frame, const matrix& base, matrix& output) const;
+};
 void QuaternionMatrix(const ModelRotationKey& key, matrix& output);
 void InterpolateModelRotation(float amount, const ModelRotationKey& first, const ModelRotationKey& second, int spins, ModelRotationKey& output);
 

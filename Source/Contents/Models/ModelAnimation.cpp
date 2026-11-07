@@ -1,6 +1,7 @@
 #include "Contents/Models/ModelAnimation.h"
 
 #include <cmath>
+#include <cstring>
 
 namespace {
   __declspec(noinline) ModelRotationKey MatrixQuaternion(const matrix& matrix);
@@ -24,11 +25,12 @@ namespace {
 
 // OFFSET: 0x00540370
 // FUNCTION: fn_01721
-void SampleLegacyPosition(const std::vector<ModelPositionKey>& keys, int frame, matrix& output) {
+void LegacyPositionTrack::Sample(int frame, matrix& output) const {
+  const std::vector<ModelPositionKey>& keys = *this;
   const unsigned count = keys.size();
 
   if (count == 0) {
-    output.Identity();
+    std::memcpy(output.values, g_identityMatrix, sizeof(g_identityMatrix));
     return;
   }
 
@@ -53,11 +55,12 @@ void SampleLegacyPosition(const std::vector<ModelPositionKey>& keys, int frame, 
 
 // OFFSET: 0x00540670
 // FUNCTION: fn_01723
-void SampleLegacyRotation(const std::vector<ModelRotationKey>& keys, int frame, matrix& output) {
+void LegacyRotationTrack::Sample(int frame, matrix& output) const {
+  const std::vector<ModelRotationKey>& keys = *this;
   const unsigned count = keys.size();
 
   if (count == 0) {
-    output.Identity();
+    std::memcpy(output.values, g_identityMatrix, sizeof(g_identityMatrix));
     return;
   }
 
@@ -82,7 +85,7 @@ void SampleLegacyRotation(const std::vector<ModelRotationKey>& keys, int frame, 
   const auto& b = keys[next];
 
   if (a.rotation[3] == 1.0f && b.rotation[3] == 1.0f) {
-    output.Identity();
+    std::memcpy(output.values, g_identityMatrix, sizeof(g_identityMatrix));
     return;
   }
 
@@ -94,11 +97,12 @@ void SampleLegacyRotation(const std::vector<ModelRotationKey>& keys, int frame, 
 
 // OFFSET: 0x00540BF0
 // FUNCTION: fn_01725
-void SampleLegacyScale(const std::vector<ModelScaleKey>& keys, int, matrix& output) {
+void LegacyScaleTrack::Sample(int, matrix& output) const {
+  const std::vector<ModelScaleKey>& keys = *this;
   const unsigned count = keys.size();
 
   if (count == 0) {
-    output.Identity();
+    std::memcpy(output.values, g_identityMatrix, sizeof(g_identityMatrix));
   } else if (count == 1) {
     output.SetScale(keys[0].scale[0], keys[0].scale[1], keys[0].scale[2]);
   }
@@ -106,11 +110,12 @@ void SampleLegacyScale(const std::vector<ModelScaleKey>& keys, int, matrix& outp
 
 // OFFSET: 0x00540C60
 // FUNCTION: fn_01726
-void SampleModelScale(const std::vector<ModelRotationKey>& keys, float frame, matrix& output) {
+void ModelScaleTrack::Sample(float frame, matrix& output) const {
+  const std::vector<ModelRotationKey>& keys = *this;
   const unsigned count = keys.size();
 
   if (count == 0) {
-    output.Identity();
+    std::memcpy(output.values, g_identityMatrix, sizeof(g_identityMatrix));
     return;
   }
 
@@ -127,7 +132,7 @@ void SampleModelScale(const std::vector<ModelRotationKey>& keys, float frame, ma
   }
 
   matrix scale;
-  scale.Identity();
+  std::memcpy(scale.values, g_identityMatrix, sizeof(g_identityMatrix));
   ModelRotationKey first{0, {1, 1, 1, 1}};
   ModelRotationKey second{0, {1, 1, 1, 1}};
 
@@ -152,7 +157,8 @@ void SampleModelScale(const std::vector<ModelRotationKey>& keys, float frame, ma
 
 // OFFSET: 0x005404A0
 // FUNCTION: fn_01722
-void SampleModelPosition(const std::vector<ModelRotationKey>& keys, float frame, const matrix& base, matrix& output) {
+void ModelPositionTrack::Sample(float frame, const matrix& base, matrix& output) const {
+  const std::vector<ModelRotationKey>& keys = *this;
   const unsigned count = keys.size();
 
   if (count == 0) {
@@ -176,13 +182,18 @@ void SampleModelPosition(const std::vector<ModelRotationKey>& keys, float frame,
     return;
   }
 
-  ModelRotationKey first;
-  ModelRotationKey second;
+  ModelPositionKey first;
+  ModelPositionKey second;
 
   for (unsigned next = 0; next < count; ++next) {
     if (static_cast<float>(keys[next].frame) > frame) {
-      first = next ? keys[next - 1] : ModelRotationKey{0, {base.values[9], base.values[10], base.values[11], 0}};
-      second = keys[next];
+      if (next == 0) {
+        first = ModelPositionKey{0, {base.values[9], base.values[10], base.values[11]}};
+      } else {
+        std::memcpy(&first, &keys[next - 1], sizeof(first));
+      }
+
+      std::memcpy(&second, &keys[next], sizeof(second));
       break;
     }
   }
@@ -190,16 +201,17 @@ void SampleModelPosition(const std::vector<ModelRotationKey>& keys, float frame,
   const float amount = (frame - static_cast<float>(first.frame)) / static_cast<float>((second.frame - first.frame));
   const float previous = 1.0f - amount;
 
-  output.values[9] = first.rotation[0] * previous + second.rotation[0] * amount;
-  output.values[10] = first.rotation[1] * previous + second.rotation[1] * amount;
-  output.values[11] = first.rotation[2] * previous + second.rotation[2] * amount;
+  output.values[9] = first.position[0] * previous + second.position[0] * amount;
+  output.values[10] = first.position[1] * previous + second.position[1] * amount;
+  output.values[11] = first.position[2] * previous + second.position[2] * amount;
 }
 
 // OFFSET: 0x005407A0
 // FUNCTION: fn_01724
-void SampleModelRotation(const std::vector<ModelRotationKey>& keys, float frame, const matrix& base, matrix& output) {
+void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output) const {
+  const std::vector<ModelRotationKey>& keys = *this;
   matrix rotation;
-  rotation.Identity();
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(g_identityMatrix));
   const unsigned count = keys.size();
 
   if (count == 0) {
@@ -239,21 +251,23 @@ void SampleModelRotation(const std::vector<ModelRotationKey>& keys, float frame,
     float firstWeight;
     float secondWeight;
 
-    if (!(dot > -0.95f)) {
+    if (dot > -0.95f) {
+      if (dot <= 0.95f) {
+        const float angle = static_cast<float>(std::acos(static_cast<double>(dot)));
+        const float denominator = ClientSin(angle);
+        firstWeight = ClientSin((1.0f - amount) * angle) / denominator;
+        secondWeight = ClientSin(angle * amount) / denominator;
+      } else {
+        firstWeight = 1.0f - amount;
+        secondWeight = amount;
+      }
+    } else {
       b.rotation[0] = -a.rotation[1];
       b.rotation[1] = a.rotation[0];
       b.rotation[2] = -a.rotation[3];
       b.rotation[3] = a.rotation[2];
       firstWeight = ClientSin((0.5f - amount) * 3.141592f);
       secondWeight = ClientSin(amount * 3.141592f);
-    } else if (dot > 0.95f) {
-      firstWeight = 1.0f - amount;
-      secondWeight = amount;
-    } else {
-      const float angle = static_cast<float>(std::acos(static_cast<double>(dot)));
-      const float denominator = ClientSin(angle);
-      firstWeight = ClientSin((1.0f - amount) * angle) / denominator;
-      secondWeight = ClientSin(angle * amount) / denominator;
     }
 
     ModelRotationKey result{0, {}};

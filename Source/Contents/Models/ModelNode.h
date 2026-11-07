@@ -51,9 +51,9 @@ public:
   void Animate(double frame) override;
   void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode) override;
 
-  /* 008C */ std::vector<ModelScaleKey> scaleKeys;
-  /* 0098 */ std::vector<ModelRotationKey> rotationKeys;
-  /* 00A4 */ std::vector<ModelPositionKey> positionKeys;
+  /* 008C */ LegacyScaleTrack scaleKeys;
+  /* 0098 */ LegacyRotationTrack rotationKeys;
+  /* 00A4 */ LegacyPositionTrack positionKeys;
 };
 
 class C3dNodeV2 : public C3dNode {
@@ -66,9 +66,9 @@ public:
 
   /* 008C */ matrix resourceTransform;
   /* 00BC */ matrix localTransform;
-  /* 00EC */ std::vector<ModelRotationKey> scaleKeys;
-  /* 00F8 */ std::vector<ModelRotationKey> rotationKeys;
-  /* 0104 */ std::vector<ModelRotationKey> positionKeys;
+  /* 00EC */ ModelScaleTrack scaleKeys;
+  /* 00F8 */ ModelRotationTrack rotationKeys;
+  /* 0104 */ ModelPositionTrack positionKeys;
   /* 0110 */ std::map<int, ModelTextureChannels> textureKeys;
   /* 0118 */ std::map<int, ModelTextureTransform> textureTransforms;
 };
