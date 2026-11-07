@@ -3270,20 +3270,27 @@ ITEM_INFO UIItemBaseWnd::GetItemAt(int x, int y) {
 // OFFSET: 0x00973C20
 // FUNCTION: fn_13294
 ITEM_INFO UIItemStoreFindWnd::GetItemAt(int x, int y) {
-  if (x >= 20 && x < 52 && y > 16 && y < this->visibleRows * 32 + 17) {
+  if (x >= 20 && x < 52 && y >= 17 && y < this->visibleRows * 32 + 17) {
+    const int column = (x - 20) / 32;
+    const int row = (y - 17) / 32;
     int visible = 0;
     int index = 0;
 
-    for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    auto it = this->items.begin();
+    for (; it != this->items.end(); ++it, ++index) {
       if (index >= this->columns * this->scroll) {
         if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
-          if (visible == this->columns * ((y - 17) / 32) + (x - 20) / 32) {
-            return *it;
+          if (visible == this->columns * row + column) {
+            break;
           }
 
           ++visible;
         }
       }
+    }
+
+    if (it != this->items.end()) {
+      return *it;
     }
 
     return ITEM_INFO(0);
@@ -3295,20 +3302,27 @@ ITEM_INFO UIItemStoreFindWnd::GetItemAt(int x, int y) {
 // OFFSET: 0x00973D60
 // FUNCTION: fn_13295
 ITEM_INFO UIItemStoreSubWnd::GetItemAt(int x, int y) {
-  if (x >= 20 && x < 52 && y > 16 && y < this->visibleRows * 32 + 17) {
+  if (x >= 20 && x < 52 && y >= 17 && y < this->visibleRows * 32 + 17) {
+    const int column = (x - 20) / 32;
+    const int row = (y - 17) / 32;
     int visible = 0;
     int index = 0;
 
-    for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    auto it = this->items.begin();
+    for (; it != this->items.end(); ++it, ++index) {
       if (index >= this->columns * this->scroll) {
         if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
-          if (visible == this->columns * ((y - 17) / 32) + (x - 20) / 32) {
-            return *it;
+          if (visible == this->columns * row + column) {
+            break;
           }
 
           ++visible;
         }
       }
+    }
+
+    if (it != this->items.end()) {
+      return *it;
     }
 
     return ITEM_INFO(0);
@@ -3320,20 +3334,27 @@ ITEM_INFO UIItemStoreSubWnd::GetItemAt(int x, int y) {
 // OFFSET: 0x00973EA0
 // FUNCTION: fn_13296
 ITEM_INFO UIItemStoreWnd::GetItemAt(int x, int y) {
-  if (x >= 40 && x < 72 && y > 16 && y < this->visibleRows * 32 + 17) {
+  if (x >= 40 && x < 72 && y >= 17 && y < this->visibleRows * 32 + 17) {
+    const int column = (x - 40) / 32;
+    const int row = (y - 17) / 32;
     int visible = 0;
     int index = 0;
 
-    for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    auto it = this->items.begin();
+    for (; it != this->items.end(); ++it, ++index) {
       if (index >= this->columns * this->scroll) {
         if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
-          if (visible == this->columns * ((y - 17) / 32) + (x - 40) / 32) {
-            return *it;
+          if (visible == this->columns * row + column) {
+            break;
           }
 
           ++visible;
         }
       }
+    }
+
+    if (it != this->items.end()) {
+      return *it;
     }
 
     return ITEM_INFO(0);
