@@ -42,7 +42,7 @@ public:
   int HasError();
   std::string ErrorMessage();
   void SetHwnd(HWND window);
-  int Initialize();
+  bool Initialize();
   void IncrementCounter();
   void SetError(const char* file, int line, std::string message);
   void Send(const char* text);

@@ -233,14 +233,14 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
 
 // OFFSET: 0x0076C9D0
 // FUNCTION: fn_08209
-int CNProtectGameGuardMgr::Initialize() {
+bool CNProtectGameGuardMgr::Initialize() {
   void* created = ::operator new(1, std::nothrow);
   if (created != nullptr) {
     PreInitNPGameMonA(GameName());
   }
   this->m_gameLib = created;
   if (created == nullptr) {
-    return 0;
+    return false;
   }
 
   const int status = InitNPGameMon();
@@ -259,11 +259,11 @@ int CNProtectGameGuardMgr::Initialize() {
     const char tagSource[] = {'\xF6', '\x41', '\x9F', '\xAF', '\x7A', '\x91', '\xC9', '\x08', '\xF2', '\x31'};
     if (std::strstr(g_commandLine, DecryptName<0x4F99DF03C3EF31B7ULL>(tagSource)) == nullptr) {
       MessageBoxA(hWnd, message, title, 0);
-      return 0;
+      return false;
     }
     WriteMyLog(g_nprotectSource, 0x284, title);
   }
 
   SetCallbackToGameMon(GameGuardCallback);
-  return 1;
+  return true;
 }
