@@ -6,7 +6,7 @@
 
 // OFFSET: 0x00737680
 // FUNCTION: fn_07650
-CMiniPartyWndSortArea::CMiniPartyWndSortArea(const RECT& bounds) {
+__forceinline CMiniPartyWndSortArea::CMiniPartyWndSortArea(const RECT& bounds) {
   SetRect(&this->area, 0, 0, g_windowMgr.unknown_047C, g_windowMgr.unknown_0480);
   this->columns = (this->area.right - this->area.left) / g_miniPartyCellWidth;
   this->rows = (this->area.bottom - this->area.top) / g_miniPartyCellHeight;
