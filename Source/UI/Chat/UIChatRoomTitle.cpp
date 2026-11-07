@@ -52,7 +52,7 @@ void UIChatRoomTitle::Paint() {
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysbox_lu.bmp")));
   this->DrawBitmap(0, 0, bitmap, false);
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysbox_ru.bmp")));
-  this->DrawBitmap(this->geometry.width - bitmap->image.width, 0, &bitmap->image, false);
+  this->DrawBitmap(this->geometry.width - bitmap->image.width, 0, bitmap, false);
 
   int segments = (this->geometry.width - 24) / 12 + ((this->geometry.width - 24) % 12 != 0);
   for (int index = 0; index < segments; ++index) {
@@ -61,18 +61,18 @@ void UIChatRoomTitle::Paint() {
   }
 
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysbox_ld.bmp")));
-  this->DrawBitmap(0, this->geometry.height - bitmap->image.height - 6, &bitmap->image, false);
+  this->DrawBitmap(0, this->geometry.height - bitmap->image.height - 6, bitmap, false);
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysbox_rd.bmp")));
-  this->DrawBitmap(this->geometry.width - bitmap->image.width, this->geometry.height - bitmap->image.height - 6, &bitmap->image, false);
+  this->DrawBitmap(this->geometry.width - bitmap->image.width, this->geometry.height - bitmap->image.height - 6, bitmap, false);
 
   segments = (this->geometry.width - 24) / 12 + ((this->geometry.width - 24) % 12 != 0);
   for (int index = 0; index < segments; ++index) {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysbox_md.bmp")));
-    this->DrawBitmap((index + 1) * 12, this->geometry.height - bitmap->image.height - 6, &bitmap->image, false);
+    this->DrawBitmap((index + 1) * 12, this->geometry.height - bitmap->image.height - 6, bitmap, false);
   }
 
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysbox_arr_l.bmp")));
-  this->DrawBitmap(this->geometry.width / 2 - bitmap->image.width / 2, this->geometry.height - bitmap->image.height, &bitmap->image, false);
+  this->DrawBitmap(this->geometry.width / 2 - bitmap->image.width / 2, this->geometry.height - bitmap->image.height, bitmap, false);
 
   const char* icon = this->roomType != 0 ? "유저인터페이스\\chat_open.bmp" : "유저인터페이스\\chat_close.bmp";
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(icon)));
