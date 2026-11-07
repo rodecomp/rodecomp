@@ -59,7 +59,7 @@ namespace {
 // FUNCTION: fn_03698
 CLoadPartyListAsyncWork::CLoadPartyListAsyncWork()
     : NAsyncWork("PartyList_Load"), m_accountId(0), m_characterId(0), m_page(0),
-      m_diagnostic(Diagnostic(false, DecryptName<0x2D33791F67AD47DFULL>({0xAA, 0x29, 0xC6, 0x09, 0x70, 0x0E, 0x5D, 0x2D}), 25)), m_windows(nullptr) {
+      m_diagnostic(false, std::string(DecryptName<0x2D33791F67AD47DFULL>({0xAA, 0x29, 0xC6, 0x09, 0x70, 0x0E, 0x5D, 0x2D})), sourceFile, 25), m_windows(nullptr) {
 }
 
 // INLINED
