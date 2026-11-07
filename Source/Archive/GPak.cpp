@@ -3427,7 +3427,7 @@ __forceinline bool DecryptWithAes(PakBlockTransform transform, std::uint32_t key
   const auto iv = keyData.subspan(Deobfuscate<0xA101B199, 0x10F4BC62>(ivOffset), Deobfuscate<0xA101B199, 0x10F4BC62>(16));
   AES cipher;
   bool result = false;
-  if (cipher.Initialize(const_cast<PUCHAR>(key.data()), key.size(), iv.data(), iv.size(), mode)) {
+  if (cipher.Initialize(const_cast<PUCHAR>(key.data()), key.size(), std::span<const UCHAR>(iv.data(), iv.size()), mode)) {
     if (input.size() <= prefixSize) {
       XorWithKey16(mask, input, output);
       result = true;

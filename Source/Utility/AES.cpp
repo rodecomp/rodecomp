@@ -36,7 +36,7 @@ ULONG AES::Decrypt(PUCHAR input, ULONG inputSize, PUCHAR output, ULONG outputSiz
 
 // OFFSET: 0x0061B1A0
 // FUNCTION: fn_04419
-bool AES::Initialize(PUCHAR secret, ULONG secretSize, const UCHAR* iv, ULONG ivSize, int mode) {
+bool AES::Initialize(PUCHAR secret, ULONG secretSize, std::span<const UCHAR> iv, int mode) {
   if (m_key != nullptr) {
     BCryptDestroyKey(m_key);
     m_key = nullptr;
@@ -46,7 +46,7 @@ bool AES::Initialize(PUCHAR secret, ULONG secretSize, const UCHAR* iv, ULONG ivS
     m_algorithm = nullptr;
   }
 
-  if (!SetIV(iv, ivSize)) {
+  if (!SetIV(iv.data(), static_cast<ULONG>(iv.size()))) {
     return false;
   }
   if (BCryptOpenAlgorithmProvider(&m_algorithm, BCRYPT_AES_ALGORITHM, nullptr, 0) < 0) {
@@ -69,7 +69,7 @@ bool AES::Initialize(PUCHAR secret, ULONG secretSize, const UCHAR* iv, ULONG ivS
 // FUNCTION: fn_04420
 bool AES::Initialize(PUCHAR secret, ULONG secretSize, int mode) {
   UCHAR iv[16]{};
-  return Initialize(secret, secretSize, iv, sizeof(iv), mode);
+  return Initialize(secret, secretSize, std::span<const UCHAR>(iv), mode);
 }
 
 // OFFSET: 0x0061B410

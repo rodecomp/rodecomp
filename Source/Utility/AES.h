@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <bcrypt.h>
 #include <VersionHelpers.h>
+#include <span>
 #include <vector>
 
 class AES {
@@ -24,7 +25,7 @@ public:
 
   ~AES();
   ULONG Decrypt(PUCHAR input, ULONG inputSize, PUCHAR output, ULONG outputSize, UCHAR flags);
-  bool Initialize(PUCHAR secret, ULONG secretSize, const UCHAR* iv, ULONG ivSize, int mode);
+  bool Initialize(PUCHAR secret, ULONG secretSize, std::span<const UCHAR> iv, int mode);
   bool Initialize(PUCHAR secret, ULONG secretSize, int mode);
   bool SetIV(const UCHAR* iv, ULONG ivSize);
   bool SetMode(int mode);
