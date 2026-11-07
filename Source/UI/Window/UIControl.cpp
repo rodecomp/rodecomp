@@ -236,13 +236,6 @@ __forceinline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tool
 __forceinline CUIImageButton::CUIImageButton() : CUIButton(), images(), disabledImage(), transparent(0), imageNames(), disabledName() {
 }
 
-// OFFSET: 0x009BE480
-// FUNCTION: fn_13948
-CUIVScrollBar::CUIVScrollBar()
-    : CUIControl(), downButton(nullptr), thumb(nullptr), total(1), visible(1), step(1), position(0), maximum(0), trackLength(1), dragging(0),
-      hidden(0), transparent(0), upButton(nullptr) {
-}
-
 CUIControl::~CUIControl() = default;
 
 // OFFSET: 0x009D5490

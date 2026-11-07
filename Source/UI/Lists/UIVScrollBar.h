@@ -77,4 +77,11 @@ static_assert(offsetof(CUIVScrollBar, backgroundName) == 0xAC);
 static_assert(offsetof(CUIVScrollBar, onChange) == 0xC8);
 #endif
 
+// OFFSET: 0x009BE480
+// FUNCTION: fn_13948
+inline CUIVScrollBar::CUIVScrollBar()
+    : CUIControl(), downButton(nullptr), thumb(nullptr), total(1), visible(1), step(1), position(0), maximum(0), trackLength(1), dragging(0),
+      hidden(0), transparent(0), upButton(nullptr) {
+}
+
 #endif
