@@ -817,6 +817,11 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     this->Invalidate();
     return 0;
+  case 454:
+    if (!g_windowMgr.CloseWindow(140)) {
+      g_windowMgr.EnsureWindow(140);
+    }
+    return 0;
   case 453: {
     const auto it = this->m_zoom.find(static_cast<int>(argument2));
     if (it != this->m_zoom.end()) {
@@ -826,11 +831,6 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     this->Invalidate();
     return 0;
   }
-  case 454:
-    if (!g_windowMgr.CloseWindow(140)) {
-      g_windowMgr.EnsureWindow(140);
-    }
-    return 0;
   case 455: {
     const auto it = this->m_zoom.find(static_cast<int>(argument2));
     if (it != this->m_zoom.end()) {
@@ -3655,6 +3655,14 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 // FUNCTION: fn_12327
 int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 20:
+    this->SendMsg(this, 6, 354, 0, 0, 0);
+    break;
+
+  case 21:
+    this->SendMsg(this, 6, 355, 0, 0, 0);
+    break;
+
   case 6:
     switch (a) {
     case 201:
@@ -3692,14 +3700,62 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     }
     break;
 
-  case 20:
-    this->SendMsg(this, 6, 354, 0, 0, 0);
-    break;
+  case 94: {
+    const char* name = reinterpret_cast<const char*>(a);
+    const char* title = FindItemDescription(std::atoi(name)).identifiedName;
+    std::intptr_t page;
+    if (std::strcmp(this->m_bookName, title) == 0) {
+      if (this->m_autoRead == 0 && b == 287) {
+        break;
+      }
+      page = this->m_page;
+    } else {
+      page = c;
+    }
+    std::strcpy(this->m_bookName, title);
 
-  case 21:
-    this->SendMsg(this, 6, 355, 0, 0, 0);
-    break;
+    char path[260];
+    if (g_serviceType == 10) {
+      std::sprintf(path, "%sbook\\%s.txt", g_serverLanguage->servicePrefix.c_str(), name);
+    } else {
+      std::sprintf(path, "book\\%s.txt", name);
+    }
 
+    CFile file;
+    const char* fileName = path;
+    if (g_serverLanguage) {
+      fileName = g_serverLanguage->ServiceName(fileName);
+    }
+    if (file.Open(fileName, 0, true, false)) {
+      const std::uint32_t size = file.GetSize();
+      char* text = new char[size + 1];
+      file.Read(text, size);
+      text[size] = '\0';
+      file.Close();
+
+      this->m_lines.clear();
+      this->WrapPixelText(text, this->m_lines, this->m_viewer->geometry.width - 10);
+      this->m_lineCount = static_cast<int>(this->m_lines.size());
+      if (text[0] == '%') {
+        this->m_red = g_hexDigits[text[1]] * 16 + g_hexDigits[text[2]];
+        this->m_green = g_hexDigits[text[3]] * 16 + g_hexDigits[text[4]];
+        this->m_blue = g_hexDigits[text[5]] * 16 + g_hexDigits[text[6]];
+        if (this->m_lineCount > 0) {
+          --this->m_lineCount;
+          this->m_lines.erase(this->m_lines.begin());
+        }
+      } else {
+        SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, this->m_red, this->m_green, this->m_blue);
+      }
+
+      this->m_pageCount = this->m_lineCount / 19;
+      if (this->m_lineCount % 19 > 0) {
+        ++this->m_pageCount;
+      }
+      this->SendMsg(this, b == 287 ? 92 : 93, page, 0, 0, 0);
+    }
+    break;
+  }
   case 92: {
     this->m_autoRead = 0;
     this->Show(1);
@@ -3766,62 +3822,6 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     g_windowMgr.CloseWindow(106);
     break;
 
-  case 94: {
-    const char* name = reinterpret_cast<const char*>(a);
-    const char* title = FindItemDescription(std::atoi(name)).identifiedName;
-    std::intptr_t page;
-    if (std::strcmp(this->m_bookName, title) == 0) {
-      if (this->m_autoRead == 0 && b == 287) {
-        break;
-      }
-      page = this->m_page;
-    } else {
-      page = c;
-    }
-    std::strcpy(this->m_bookName, title);
-
-    char path[260];
-    if (g_serviceType == 10) {
-      std::sprintf(path, "%sbook\\%s.txt", g_serverLanguage->servicePrefix.c_str(), name);
-    } else {
-      std::sprintf(path, "book\\%s.txt", name);
-    }
-
-    CFile file;
-    const char* fileName = path;
-    if (g_serverLanguage) {
-      fileName = g_serverLanguage->ServiceName(fileName);
-    }
-    if (file.Open(fileName, 0, true, false)) {
-      const std::uint32_t size = file.GetSize();
-      char* text = new char[size + 1];
-      file.Read(text, size);
-      text[size] = '\0';
-      file.Close();
-
-      this->m_lines.clear();
-      this->WrapPixelText(text, this->m_lines, this->m_viewer->geometry.width - 10);
-      this->m_lineCount = static_cast<int>(this->m_lines.size());
-      if (text[0] == '%') {
-        this->m_red = g_hexDigits[text[1]] * 16 + g_hexDigits[text[2]];
-        this->m_green = g_hexDigits[text[3]] * 16 + g_hexDigits[text[4]];
-        this->m_blue = g_hexDigits[text[5]] * 16 + g_hexDigits[text[6]];
-        if (this->m_lineCount > 0) {
-          --this->m_lineCount;
-          this->m_lines.erase(this->m_lines.begin());
-        }
-      } else {
-        SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, this->m_red, this->m_green, this->m_blue);
-      }
-
-      this->m_pageCount = this->m_lineCount / 19;
-      if (this->m_lineCount % 19 > 0) {
-        ++this->m_pageCount;
-      }
-      this->SendMsg(this, b == 287 ? 92 : 93, page, 0, 0, 0);
-    }
-    break;
-  }
   }
   return 0;
 }
@@ -6397,15 +6397,121 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
   char key[512];
 
   switch (message) {
-  case 6:
-    switch (argument1) {
-    case 201: {
-      NCashClosePacket packet;
-      packet.packetType = 0x84A;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-      g_windowMgr.CloseWindow(184);
+  case 34:
+    this->m_placement = reinterpret_cast<WindowPlacement*>(argument1);
+    if (!static_cast<NCashWndInfo*>(this->m_placement)->IsValid()) {
+      static_cast<NCashWndInfo*>(this->m_placement)->Reset();
+    }
+    this->Move(this->m_placement->x, this->m_placement->y);
+    return 0;
+
+  case 122:
+    this->m_pointBalance = argument1;
+    this->m_cashBalance = argument2;
+    this->m_pointEdit->SetText("0");
+    this->SendMsg(this, 6, 386, 0, 0, 0);
+    return 0;
+
+  case 120: {
+    std::strcpy(key, g_subKey);
+    std::strcat(key, "\\NeoCash");
+    HKEY handle;
+    const LSTATUS status = RegOpenKeyExA(HKEY_LOCAL_MACHINE, key, 0, KEY_QUERY_VALUE, &handle);
+    DWORD type = REG_DWORD;
+    DWORD size = 4;
+    this->m_tab = 0;
+    if (status == ERROR_SUCCESS) {
+      RegQueryValueExA(handle, "CASH_CATEGORY", nullptr, &type, reinterpret_cast<BYTE*>(&this->m_tab), &size);
+    }
+    RegCloseKey(handle);
+    if (this->m_tab > 10) {
+      this->m_tab = 10;
+    } else if (this->m_tab < 0) {
+      this->m_tab = 0;
+    }
+    this->m_buttons[this->m_tab]->SetDisabled(1);
+    this->m_buttons[this->m_tab]->Invalidate();
+    if (this->m_tab == 8) {
+      this->m_otherScroll->Move(this->geometry.width - this->m_otherScroll->geometry.width - 10, 22);
+    } else {
+      this->m_otherScroll->Move(-100, -100);
+    }
+    this->m_pointBalance = argument1;
+    this->m_cashBalance = argument2;
+    this->SendMsg(this, 121, 0, 0, 0, 0);
+    return 0;
+  }
+
+  case 121:
+    this->m_pageCount = (g_session.GetList1788(this->m_tab) + 7) / 8;
+    if (this->m_pageCount < 1) {
+      this->m_pageCount = 1;
+    }
+    this->m_page = 1;
+    this->SendMsg(this, 60, 0, 0, 0, 0);
+    return 0;
+
+  case 7:
+    if (g_session.GetList2Size() < 4) {
       return 0;
     }
+    if (argument1 < 0) {
+      --this->m_firstOther;
+    } else if (argument1 > 0) {
+      ++this->m_firstOther;
+    }
+    if (this->m_firstOther < 0) {
+      this->m_firstOther = 0;
+    }
+    if (this->m_firstOther > g_session.GetList2Size() - 3) {
+      this->m_firstOther = g_session.GetList2Size() - 3;
+    }
+    this->m_otherScroll->SetPosition(this->m_firstOther);
+    this->m_otherScroll->Invalidate();
+    return 0;
+
+  case 9:
+    if (--this->m_firstOther < 0) {
+      this->m_firstOther = 0;
+    }
+    this->m_otherScroll->SetPosition(this->m_firstOther);
+    this->m_otherScroll->Invalidate();
+    return 0;
+
+  case 10:
+    ++this->m_firstOther;
+    if (this->m_firstOther > std::min(g_session.GetList2Size() - 3, 4)) {
+      this->m_firstOther = std::min(g_session.GetList2Size() - 3, 4);
+    }
+    this->m_otherScroll->SetPosition(this->m_firstOther);
+    this->m_otherScroll->Invalidate();
+    return 0;
+
+  case 60: {
+    this->items.clear();
+    const int count = g_session.GetList1788(this->m_tab);
+    for (int index = 0; index < count; ++index) {
+      ITEM_INFO item = g_session.GetItem1784At(this->m_tab, index);
+      if (item.unknown_0000[1] != 0 && (this->m_tab != 8 || item.unknown_0064 != 0xFFFF)) {
+        this->items.push_back(item);
+      }
+    }
+    this->Invalidate();
+    return 0;
+  }
+
+  case 6:
+    switch (argument1) {
+    case 386:
+      this->m_totalPrice = 0;
+      g_session.ClearItems1720();
+      this->m_otherItems.clear();
+      this->m_firstOther = 0;
+      this->m_otherScroll->SetPosition(0);
+      this->m_otherScroll->Invalidate();
+      this->m_otherScroll->Show(0);
+      this->Invalidate();
+      return 0;
 
     case 224: {
       if (this->m_totalPrice <= 0) {
@@ -6459,19 +6565,13 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       return 0;
     }
 
-    case 316:
-      if (this->m_page > 1) {
-        --this->m_page;
-        return 0;
-      }
-      break;
-
-    case 317:
-      if (this->m_page < this->m_pageCount) {
-        ++this->m_page;
-        return 0;
-      }
-      break;
+    case 201: {
+      NCashClosePacket packet;
+      packet.packetType = 0x84A;
+      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      g_windowMgr.CloseWindow(184);
+      return 0;
+    }
 
     case 365: {
       std::string query(this->m_searchEdit->Text());
@@ -6496,25 +6596,40 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       return 0;
     }
 
-    case 386:
-      this->m_totalPrice = 0;
-      g_session.ClearItems1720();
-      this->m_otherItems.clear();
-      this->m_firstOther = 0;
-      this->m_otherScroll->SetPosition(0);
-      this->m_otherScroll->Invalidate();
-      this->m_otherScroll->Show(0);
-      this->Invalidate();
-      return 0;
-
     case 387:
       this->m_page = 1;
       return 0;
+
+    case 316:
+      if (this->m_page > 1) {
+        --this->m_page;
+        return 0;
+      }
+      break;
+
+    case 317:
+      if (this->m_page < this->m_pageCount) {
+        ++this->m_page;
+        return 0;
+      }
+      break;
 
     case 388:
       this->m_page = this->m_pageCount;
       return 0;
 
+    case 415:
+      if (this->items.begin() != this->items.end()) {
+        for (ITEM_INFO& item : this->items) {
+          NCashRentalPacket packet;
+          packet.packetType = 0x9C3;
+          packet.accountId = g_session.m_aid;
+          packet.itemId = std::atoi(item.itemId.c_str());
+          GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        }
+        return 0;
+      }
+      break;
     case 389:
     case 390:
     case 391:
@@ -6552,63 +6667,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       return 0;
     }
 
-    case 415:
-      if (this->items.begin() != this->items.end()) {
-        for (ITEM_INFO& item : this->items) {
-          NCashRentalPacket packet;
-          packet.packetType = 0x9C3;
-          packet.accountId = g_session.m_aid;
-          packet.itemId = std::atoi(item.itemId.c_str());
-          GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-        }
-        return 0;
-      }
-      break;
     }
-    return 0;
-
-  case 7:
-    if (g_session.GetList2Size() < 4) {
-      return 0;
-    }
-    if (argument1 < 0) {
-      --this->m_firstOther;
-    } else if (argument1 > 0) {
-      ++this->m_firstOther;
-    }
-    if (this->m_firstOther < 0) {
-      this->m_firstOther = 0;
-    }
-    if (this->m_firstOther > g_session.GetList2Size() - 3) {
-      this->m_firstOther = g_session.GetList2Size() - 3;
-    }
-    this->m_otherScroll->SetPosition(this->m_firstOther);
-    this->m_otherScroll->Invalidate();
-    return 0;
-
-  case 9:
-    if (--this->m_firstOther < 0) {
-      this->m_firstOther = 0;
-    }
-    this->m_otherScroll->SetPosition(this->m_firstOther);
-    this->m_otherScroll->Invalidate();
-    return 0;
-
-  case 10:
-    ++this->m_firstOther;
-    if (this->m_firstOther > std::min(g_session.GetList2Size() - 3, 4)) {
-      this->m_firstOther = std::min(g_session.GetList2Size() - 3, 4);
-    }
-    this->m_otherScroll->SetPosition(this->m_firstOther);
-    this->m_otherScroll->Invalidate();
-    return 0;
-
-  case 34:
-    this->m_placement = reinterpret_cast<WindowPlacement*>(argument1);
-    if (!static_cast<NCashWndInfo*>(this->m_placement)->IsValid()) {
-      static_cast<NCashWndInfo*>(this->m_placement)->Reset();
-    }
-    this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
 
   case 38: {
@@ -6688,65 +6747,6 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
-
-  case 60: {
-    this->items.clear();
-    const int count = g_session.GetList1788(this->m_tab);
-    for (int index = 0; index < count; ++index) {
-      ITEM_INFO item = g_session.GetItem1784At(this->m_tab, index);
-      if (item.unknown_0000[1] != 0 && (this->m_tab != 8 || item.unknown_0064 != 0xFFFF)) {
-        this->items.push_back(item);
-      }
-    }
-    this->Invalidate();
-    return 0;
-  }
-
-  case 120: {
-    std::strcpy(key, g_subKey);
-    std::strcat(key, "\\NeoCash");
-    HKEY handle;
-    const LSTATUS status = RegOpenKeyExA(HKEY_LOCAL_MACHINE, key, 0, KEY_QUERY_VALUE, &handle);
-    DWORD type = REG_DWORD;
-    DWORD size = 4;
-    this->m_tab = 0;
-    if (status == ERROR_SUCCESS) {
-      RegQueryValueExA(handle, "CASH_CATEGORY", nullptr, &type, reinterpret_cast<BYTE*>(&this->m_tab), &size);
-    }
-    RegCloseKey(handle);
-    if (this->m_tab > 10) {
-      this->m_tab = 10;
-    } else if (this->m_tab < 0) {
-      this->m_tab = 0;
-    }
-    this->m_buttons[this->m_tab]->SetDisabled(1);
-    this->m_buttons[this->m_tab]->Invalidate();
-    if (this->m_tab == 8) {
-      this->m_otherScroll->Move(this->geometry.width - this->m_otherScroll->geometry.width - 10, 22);
-    } else {
-      this->m_otherScroll->Move(-100, -100);
-    }
-    this->m_pointBalance = argument1;
-    this->m_cashBalance = argument2;
-    this->SendMsg(this, 121, 0, 0, 0, 0);
-    return 0;
-  }
-
-  case 121:
-    this->m_pageCount = (g_session.GetList1788(this->m_tab) + 7) / 8;
-    if (this->m_pageCount < 1) {
-      this->m_pageCount = 1;
-    }
-    this->m_page = 1;
-    this->SendMsg(this, 60, 0, 0, 0, 0);
-    return 0;
-
-  case 122:
-    this->m_pointBalance = argument1;
-    this->m_cashBalance = argument2;
-    this->m_pointEdit->SetText("0");
-    this->SendMsg(this, 6, 386, 0, 0, 0);
-    return 0;
 
   default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -8611,6 +8611,13 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
   if (message == 6) {
     switch (a) {
+    case 185:
+      g_windowMgr.CloseWindow(115);
+      if (mode->cursorType == 9) {
+        g_windowMgr.EnsureWindow(277);
+      }
+      break;
+
     case 184:
       switch (this->unknown_00F4) {
       case 0:
@@ -8716,13 +8723,6 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       }
       break;
 
-    case 185:
-      g_windowMgr.CloseWindow(115);
-      if (mode->cursorType == 9) {
-        g_windowMgr.EnsureWindow(277);
-      }
-      break;
-
     case 292:
       g_session.m_storePasswordMode = 2;
       this->unknown_0108 = 1;
@@ -8734,27 +8734,6 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
       std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
       this->Paint();
-      break;
-
-    case 293:
-      if (++this->unknown_00EC > 8) {
-        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
-        break;
-      }
-      switch (this->unknown_00F4) {
-      case 0:
-      case 1:
-        std::strcat(this->unknown_00D0, "0");
-        break;
-      case 2:
-        std::strcat(this->unknown_00D9, "0");
-        break;
-      case 3:
-        std::strcat(this->unknown_00E2, "0");
-        break;
-      }
-      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
-      this->unknown_00F0 += 5;
       break;
 
     case 294:
@@ -8772,6 +8751,30 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       case 3:
         std::strcat(this->unknown_00E2, "1");
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+
+    case 304:
+      this->SendMsg(this, 6, 184, 0, 0, 0);
+      break;
+    case 293:
+      if (++this->unknown_00EC > 8) {
+        g_windowMgr.Confirm(LookupMessage(1011), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, "0");
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, "0");
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, "0");
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 112, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -8965,9 +8968,6 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       this->Paint();
       break;
 
-    case 304:
-      this->SendMsg(this, 6, 184, 0, 0, 0);
-      break;
     }
   }
 
@@ -10766,6 +10766,33 @@ public:
 int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     switch (a) {
+    case 419:
+      if (std::strlen(this->unknown_00D0) == static_cast<std::size_t>(this->unknown_010C)) {
+        std::atoi(this->unknown_00D0);
+        SecondPasswordPacket packet;
+        packet.packetType = 0x8C3;
+        packet.accountId = g_session.m_passwordWndAccountId;
+        std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        this->DisableButtons();
+        break;
+      }
+      g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+      this->unknown_00F4 = 0;
+      this->unknown_00F8 = this->unknown_00FC;
+      this->unknown_00EC = 0;
+      this->unknown_00F0 = 0;
+      std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+      std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+      std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+      break;
+    case 185:
+      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+        g_windowMgr.Schedule(this);
+      }
+      break;
+
     case 184:
     case 218:
       switch (this->unknown_00F4) {
@@ -10877,13 +10904,6 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       }
       break;
 
-    case 185:
-      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-        g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
-        g_windowMgr.Schedule(this);
-      }
-      break;
-
     case 292:
       g_session.m_storePasswordMode = 2;
       this->unknown_0108 = 1;
@@ -10903,26 +10923,6 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       this->Invalidate();
       break;
 
-    case 293:
-      if (++this->unknown_00EC > this->unknown_010C) {
-        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
-        break;
-      }
-      switch (this->unknown_00F4) {
-      case 0:
-      case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(0), 0).c_str());
-        break;
-      case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(0), 0).c_str());
-        break;
-      case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(0), 0).c_str());
-        break;
-      }
-      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
-      this->unknown_00F0 += 5;
-      break;
     case 294:
       if (++this->unknown_00EC > this->unknown_010C) {
         g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
@@ -10938,6 +10938,30 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       case 3:
         std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(1), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 304:
+      this->SendMsg(this, 6, 184, 0, 0, 0);
+      break;
+
+    case 293:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(0), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(0), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11139,10 +11163,17 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       this->ShuffleKeypad();
       break;
 
-    case 304:
-      this->SendMsg(this, 6, 184, 0, 0, 0);
-      break;
+    }
+  }
 
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+}
+
+// OFFSET: 0x00901D40
+// FUNCTION: fn_12376
+int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    switch (a) {
     case 419:
       if (std::strlen(this->unknown_00D0) == static_cast<std::size_t>(this->unknown_010C)) {
         std::atoi(this->unknown_00D0);
@@ -11163,17 +11194,13 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
       std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
       break;
-    }
-  }
+    case 185:
+      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+        g_windowMgr.Schedule(this);
+      }
+      break;
 
-  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
-}
-
-// OFFSET: 0x00901D40
-// FUNCTION: fn_12376
-int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
-    switch (a) {
     case 184:
     case 218:
       switch (this->unknown_00F4) {
@@ -11269,13 +11296,6 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       }
       break;
 
-    case 185:
-      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-        g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
-        g_windowMgr.Schedule(this);
-      }
-      break;
-
     case 292:
       g_session.m_storePasswordMode = 2;
       this->unknown_0108 = 1;
@@ -11295,26 +11315,6 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       this->Invalidate();
       break;
 
-    case 293:
-      if (++this->unknown_00EC > this->unknown_010C) {
-        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
-        break;
-      }
-      switch (this->unknown_00F4) {
-      case 0:
-      case 1:
-        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(0), 0).c_str());
-        break;
-      case 2:
-        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(0), 0).c_str());
-        break;
-      case 3:
-        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(0), 0).c_str());
-        break;
-      }
-      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
-      this->unknown_00F0 += 5;
-      break;
     case 294:
       if (++this->unknown_00EC > this->unknown_010C) {
         g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
@@ -11330,6 +11330,30 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       case 3:
         std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(1), 0).c_str());
+        break;
+      }
+      this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
+      this->unknown_00F0 += 5;
+      break;
+    case 304:
+      this->SendMsg(this, 6, 184, 0, 0, 0);
+      break;
+
+    case 293:
+      if (++this->unknown_00EC > this->unknown_010C) {
+        g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      switch (this->unknown_00F4) {
+      case 0:
+      case 1:
+        std::strcat(this->unknown_00D0, IntToString(this->FindKeypadDigit(0), 0).c_str());
+        break;
+      case 2:
+        std::strcat(this->unknown_00D9, IntToString(this->FindKeypadDigit(0), 0).c_str());
+        break;
+      case 3:
+        std::strcat(this->unknown_00E2, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
       }
       this->DrawTextAt(this->unknown_00F0 + 416, this->unknown_00F8, "*", 0, 0, 12, 0, 0, 0);
@@ -11531,30 +11555,6 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       this->ShuffleKeypad();
       break;
 
-    case 304:
-      this->SendMsg(this, 6, 184, 0, 0, 0);
-      break;
-
-    case 419:
-      if (std::strlen(this->unknown_00D0) == static_cast<std::size_t>(this->unknown_010C)) {
-        std::atoi(this->unknown_00D0);
-        SecondPasswordPacket packet;
-        packet.packetType = 0x8C3;
-        packet.accountId = g_session.m_passwordWndAccountId;
-        std::memcpy(packet.password, this->unknown_00D0, sizeof(packet.password));
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-        this->DisableButtons();
-        break;
-      }
-      g_windowMgr.Confirm(LookupMessage(1887), 0, true, false, 0, "Message", 280, 120, 0);
-      this->unknown_00F4 = 0;
-      this->unknown_00F8 = this->unknown_00FC;
-      this->unknown_00EC = 0;
-      this->unknown_00F0 = 0;
-      std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
-      std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
-      std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
-      break;
     }
   }
 
@@ -12143,91 +12143,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
-  if (a > 0xF6) {
-    if (a == 0x16D) {
-      std::string keyword(this->unknown_00B4->Text());
-      if (keyword.size() != 0) {
-        this->unknown_00B8->Show(1);
-        this->unknown_00B8->Clear();
-        this->unknown_00BC->Clear();
-        UIStaticText* const texts[2] = {this->unknown_00C0, this->unknown_00C4};
-        for (int index = 0; index < 2; ++index) {
-          texts[index]->SetText("", 0);
-        }
-        this->m_pageText->SetText("", 0);
-        this->m_pageTotalText->SetText("", 0);
-        this->unknown_00D0->Enable(0);
-        this->unknown_00D4->Enable(0);
-        this->unknown_00B4->SetText("");
-        this->m_animations.clear();
-        this->m_dots.clear();
-        this->Search(keyword);
-        this->unknown_00D8->Enable(0);
-      }
-    } else if (a == 0x205) {
-      if (!g_windowMgr.GetHoverWindow()) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1062)), 0xFF, 0, 0, 0);
-      } else {
-        const int id = g_itemTagOwner->unknown_0114;
-        switch (g_windowMgr.GetHoverWindow()->geometry.id) {
-        case 0x1EA:
-        case 0x1ED:
-        case 0x1EE:
-          static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemTag(id);
-          break;
-        case 0x1EB:
-          static_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->InsertSkillTag(id);
-          break;
-        case 0x1EC:
-          static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.unknown_0318)->InsertSkillTag(id);
-          break;
-        }
-      }
-    } else if (a == 0x21F) {
-      this->unknown_00D4->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
-      this->unknown_00D4->Invalidate();
-      this->unknown_00D4->Invalidate();
-      this->unknown_00D0->SetDisabled(1);
-      this->unknown_00D0->Invalidate();
-      this->unknown_00D0->Invalidate();
-      this->RefreshTip();
-      this->BuildAnimations();
-    }
-    return 0;
-  }
-
-  if (a == 0xF6) {
-    const int page = (std::max)(0, g_itemTagOwner->unknown_00B4);
-    g_itemTagOwner->unknown_00B4 = page - 1;
-    this->unknown_00D4->SetDisabled(0);
-    this->unknown_00D4->Invalidate();
-    this->unknown_00D4->Invalidate();
-    if (page == 1) {
-      this->unknown_00D0->SetDisabled(1);
-      this->unknown_00D0->Invalidate();
-      this->unknown_00D0->Invalidate();
-    }
-    this->RefreshTip();
-    return 0;
-  }
-
   switch (a) {
-  case 0xB8:
-    this->unknown_00D0->Enable(1);
-    this->unknown_00D4->Enable(1);
-    g_itemTagOwner->SelectTip(this->unknown_00B8->lines[this->unknown_00B8->selected].id);
-    this->unknown_00D4->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
-    this->unknown_00D4->Invalidate();
-    this->unknown_00D4->Invalidate();
-    this->unknown_00D0->SetDisabled(1);
-    this->unknown_00D0->Invalidate();
-    this->unknown_00D0->Invalidate();
-    this->RefreshTip();
-    this->BuildAnimations();
-    break;
-  case 0xC9:
-    g_windowMgr.CloseWindow(0x13B);
-    break;
   case 0xD5: {
     DWORD disposition = 0;
     this->unknown_0100 = static_cast<int>(b);
@@ -12253,6 +12169,88 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->RefreshTip();
     break;
   }
+  case 0xB8:
+    this->unknown_00D0->Enable(1);
+    this->unknown_00D4->Enable(1);
+    g_itemTagOwner->SelectTip(this->unknown_00B8->lines[this->unknown_00B8->selected].id);
+    this->unknown_00D4->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
+    this->unknown_00D4->Invalidate();
+    this->unknown_00D4->Invalidate();
+    this->unknown_00D0->SetDisabled(1);
+    this->unknown_00D0->Invalidate();
+    this->unknown_00D0->Invalidate();
+    this->RefreshTip();
+    this->BuildAnimations();
+    break;
+  case 0xC9:
+    g_windowMgr.CloseWindow(0x13B);
+    break;
+  case 0xF6: {
+    const int page = (std::max)(0, g_itemTagOwner->unknown_00B4);
+    g_itemTagOwner->unknown_00B4 = page - 1;
+    this->unknown_00D4->SetDisabled(0);
+    this->unknown_00D4->Invalidate();
+    this->unknown_00D4->Invalidate();
+    if (page == 1) {
+      this->unknown_00D0->SetDisabled(1);
+      this->unknown_00D0->Invalidate();
+      this->unknown_00D0->Invalidate();
+    }
+    this->RefreshTip();
+    break;
+  }
+  case 0x205:
+    if (!g_windowMgr.GetHoverWindow()) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1062)), 0xFF, 0, 0, 0);
+    } else {
+      const int id = g_itemTagOwner->unknown_0114;
+      switch (g_windowMgr.GetHoverWindow()->geometry.id) {
+      case 0x1EC:
+        static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.unknown_0318)->InsertSkillTag(id);
+        break;
+      case 0x1EB:
+        static_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->InsertSkillTag(id);
+        break;
+      case 0x1EA:
+      case 0x1ED:
+      case 0x1EE:
+        static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemTag(id);
+        break;
+      }
+    }
+    break;
+  case 0x16D: {
+    std::string keyword(this->unknown_00B4->Text());
+    if (keyword.size() != 0) {
+      this->unknown_00B8->Show(1);
+      this->unknown_00B8->Clear();
+      this->unknown_00BC->Clear();
+      UIStaticText* const texts[2] = {this->unknown_00C0, this->unknown_00C4};
+      for (int index = 0; index < 2; ++index) {
+        texts[index]->SetText("", 0);
+      }
+      this->m_pageText->SetText("", 0);
+      this->m_pageTotalText->SetText("", 0);
+      this->unknown_00D0->Enable(0);
+      this->unknown_00D4->Enable(0);
+      this->unknown_00B4->SetText("");
+      this->m_animations.clear();
+      this->m_dots.clear();
+      this->Search(keyword);
+      this->unknown_00D8->Enable(0);
+    }
+    break;
+  }
+  case 0x21F:
+    this->unknown_00D4->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
+    this->unknown_00D4->Invalidate();
+    this->unknown_00D4->Invalidate();
+    this->unknown_00D0->SetDisabled(1);
+    this->unknown_00D0->Invalidate();
+    this->unknown_00D0->Invalidate();
+    this->RefreshTip();
+    this->BuildAnimations();
+    break;
   }
   return 0;
 }
@@ -12507,6 +12505,17 @@ void UIExchangeWnd::Paint() {
 // FUNCTION: fn_12346
 int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
+  case 34: {
+    this->m_placement = reinterpret_cast<WindowPlacement*>(argument1);
+    ItemCollectionWndInfo* placement = static_cast<ItemCollectionWndInfo*>(this->m_placement);
+    if (!placement->IsValid()) {
+      placement->Reset();
+      this->Move((g_renderer->viewport.width - 640) / 2 + this->m_placement->x, this->m_placement->y * g_renderer->viewport.height / 480);
+      return 0;
+    }
+    this->Move(placement->x, placement->y);
+    return 0;
+  }
   case 6:
     switch (argument1) {
     case 201:
@@ -12536,6 +12545,14 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       file.Close();
       return 0;
     }
+    case 354: {
+      UIWindow* window = g_windowMgr.EnsureWindow(294);
+      if (window) {
+        window->SendMsg(this, 23, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+        return 0;
+      }
+      break;
+    }
     case 343: {
       UIWindow* window = g_windowMgr.EnsureWindow(10012);
       if (window) {
@@ -12545,19 +12562,6 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       }
       break;
     }
-    case 354: {
-      UIWindow* window = g_windowMgr.EnsureWindow(294);
-      if (window) {
-        window->SendMsg(this, 23, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
-        return 0;
-      }
-      break;
-    }
-    }
-    return 0;
-  case 14:
-    if (argument1 == 7) {
-      this->SetHeight(argument3);
     }
     return 0;
   case 24: {
@@ -12814,17 +12818,11 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     g_windowMgr.Promote(this);
     return 0;
   }
-  case 34: {
-    this->m_placement = reinterpret_cast<WindowPlacement*>(argument1);
-    ItemCollectionWndInfo* placement = static_cast<ItemCollectionWndInfo*>(this->m_placement);
-    if (!placement->IsValid()) {
-      placement->Reset();
-      this->Move((g_renderer->viewport.width - 640) / 2 + this->m_placement->x, this->m_placement->y * g_renderer->viewport.height / 480);
-      return 0;
+  case 14:
+    if (argument1 == 7) {
+      this->SetHeight(argument3);
     }
-    this->Move(placement->x, placement->y);
     return 0;
-  }
   default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
