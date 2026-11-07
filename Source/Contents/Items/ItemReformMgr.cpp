@@ -19,11 +19,6 @@ CItemReformMgr* g_itemReformMgr = nullptr;
 // STRING: st_01024
 static const char kItemReformSystemPath[] = "LuaFiles514\\Lua Files\\ItemReform\\ItemReformSystem.lub";
 
-// OFFSET: 0x005F92A0
-// FUNCTION: fn_04074
-ItemReformInfo::ItemReformInfo() {
-}
-
 // OFFSET: 0x005F91D0
 // FUNCTION: fn_04073
 CItemReformMgr::CItemReformMgr() : m_maxMaterials(6) {
@@ -113,9 +108,7 @@ void CItemReformMgr::LoadReformInfo() {
   }
 
   lua_getglobal(state, "ReformInfo");
-  if (lua_type(state, -1) != LUA_TTABLE) {
-    ShowErrorDialog("Can't find global table \"ReformInfo\"", 0);
-  } else {
+  if (lua_type(state, -1) == LUA_TTABLE) {
     lua_pushnil(state);
     while (lua_next(state, -2) != 0) {
       const std::uint64_t reformId = lua_tointeger(state, -2);
@@ -123,29 +116,27 @@ void CItemReformMgr::LoadReformInfo() {
 
       lua_pushstring(state, "BaseItem");
       lua_gettable(state, -2);
-      if (lua_isstring(state, -1) == 0) {
-        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find BaseItem", reformId), 0);
-      } else {
+      if (lua_isstring(state, -1) != 0) {
         EnsureItemDbMgr();
         info.baseItem = g_itemDbToIdMgr->GetItemID(lua_tostring(state, -1));
+      } else {
+        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find BaseItem", reformId), 0);
       }
       lua_pop(state, 1);
 
       lua_pushstring(state, "ResultItem");
       lua_gettable(state, -2);
-      if (lua_isstring(state, -1) == 0) {
-        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find ResultItem", reformId), 0);
-      } else {
+      if (lua_isstring(state, -1) != 0) {
         EnsureItemDbMgr();
         info.resultItem = g_itemDbToIdMgr->GetItemID(lua_tostring(state, -1));
+      } else {
+        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find ResultItem", reformId), 0);
       }
       lua_pop(state, 1);
 
       lua_pushstring(state, "Material");
       lua_gettable(state, -2);
-      if (lua_type(state, -1) != LUA_TTABLE) {
-        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find Material", reformId), 0);
-      } else {
+      if (lua_type(state, -1) == LUA_TTABLE) {
         lua_pushnil(state);
         while (lua_next(state, -2) != 0) {
           if (this->m_maxMaterials <= info.materials.size()) {
@@ -157,67 +148,69 @@ void CItemReformMgr::LoadReformInfo() {
           info.materials[materialId] = static_cast<unsigned int>(lua_tointeger(state, -1));
           lua_pop(state, 1);
         }
+      } else {
+        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find Material", reformId), 0);
       }
       lua_pop(state, 1);
 
       lua_pushstring(state, "NeedRefineMin");
       lua_gettable(state, -2);
-      if (lua_isnumber(state, -1) == 0) {
-        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find NeedRefineMin", reformId), 0);
-      } else {
+      if (lua_isnumber(state, -1) != 0) {
         const std::int64_t needRefineMin = lua_tointeger(state, -1);
         if (needRefineMin < 0) {
           ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ].NeedRefineMin can't be less than 0", reformId), 0);
         }
         info.needRefineMin = needRefineMin;
+      } else {
+        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find NeedRefineMin", reformId), 0);
       }
       lua_pop(state, 1);
 
       lua_pushstring(state, "NeedRefineMax");
       lua_gettable(state, -2);
-      if (lua_isnumber(state, -1) == 0) {
-        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find NeedRefineMax", reformId), 0);
-      } else {
+      if (lua_isnumber(state, -1) != 0) {
         const std::int64_t needRefineMax = lua_tointeger(state, -1);
         if (needRefineMax < info.needRefineMin || needRefineMax > 20) {
           ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ].needRefineMax must be between needRefineMin and 20", reformId), 0);
         }
         info.needRefineMax = needRefineMax;
+      } else {
+        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find NeedRefineMax", reformId), 0);
       }
       lua_pop(state, 1);
 
       lua_pushstring(state, "NeedOptionNumMin");
       lua_gettable(state, -2);
-      if (lua_isnumber(state, -1) == 0) {
-        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find NeedOptionNumMin", reformId), 0);
-      } else {
+      if (lua_isnumber(state, -1) != 0) {
         const std::int64_t needOptionNumMin = lua_tointeger(state, -1);
         if (needOptionNumMin < 0) {
           ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ].needRanOptNum can't be less than 0", reformId), 0);
         }
         info.needOptionNumMin = needOptionNumMin;
+      } else {
+        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find NeedOptionNumMin", reformId), 0);
       }
       lua_pop(state, 1);
 
       lua_pushstring(state, "IsEmptySocket");
       lua_gettable(state, -2);
-      if (lua_type(state, -1) != LUA_TBOOLEAN) {
-        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find IsEmptySocket", reformId), 0);
-      } else {
+      if (lua_type(state, -1) == LUA_TBOOLEAN) {
         info.isEmptySocket = lua_toboolean(state, -1) > 0;
+      } else {
+        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find IsEmptySocket", reformId), 0);
       }
       lua_pop(state, 1);
 
       lua_pushstring(state, "ChangeRefineValue");
       lua_gettable(state, -2);
-      if (lua_isnumber(state, -1) == 0) {
-        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find ChangeRefineValue", reformId), 0);
-      } else {
+      if (lua_isnumber(state, -1) != 0) {
         const std::int64_t changeRefineValue = lua_tointeger(state, -1);
         if (changeRefineValue < -20 || changeRefineValue > 20) {
           ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ].ChangeRefineValue can't be less than 0 and more than 20", reformId), 0);
         }
         info.changeRefineValue = changeRefineValue;
+      } else {
+        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find ChangeRefineValue", reformId), 0);
       }
       lua_pop(state, 1);
 
@@ -228,19 +221,19 @@ void CItemReformMgr::LoadReformInfo() {
 
       lua_pushstring(state, "PreserveSocketItem");
       lua_gettable(state, -2);
-      if (lua_type(state, -1) != LUA_TBOOLEAN) {
-        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find PreserveSocketItem", reformId), 0);
-      } else {
+      if (lua_type(state, -1) == LUA_TBOOLEAN) {
         info.preserveSocketItem = lua_toboolean(state, -1) > 0;
+      } else {
+        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find PreserveSocketItem", reformId), 0);
       }
       lua_pop(state, 1);
 
       lua_pushstring(state, "PreserveGrade");
       lua_gettable(state, -2);
-      if (lua_type(state, -1) != LUA_TBOOLEAN) {
-        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find PreserveGrade", reformId), 0);
-      } else {
+      if (lua_type(state, -1) == LUA_TBOOLEAN) {
         info.preserveGrade = lua_toboolean(state, -1) > 0;
+      } else {
+        ShowErrorDialog(FormatOwnedString("ReformInfo[ %I64u ] : Can't find PreserveGrade", reformId), 0);
       }
       lua_pop(state, 1);
 
@@ -261,6 +254,8 @@ void CItemReformMgr::LoadReformInfo() {
       this->m_reformInfo[reformId] = info;
       lua_pop(state, 1);
     }
+  } else {
+    ShowErrorDialog("Can't find global table \"ReformInfo\"", 0);
   }
 
   lua_pop(state, 1);

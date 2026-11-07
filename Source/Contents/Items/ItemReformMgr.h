@@ -10,7 +10,10 @@
 #include <vector>
 
 struct ItemReformInfo {
-  ItemReformInfo();
+  // OFFSET: 0x005F92A0
+  // FUNCTION: fn_04074
+  ItemReformInfo() {
+  }
 
   /* 0000 */ int baseItem;
   /* 0004 */ int resultItem;
