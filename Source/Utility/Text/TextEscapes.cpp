@@ -4,14 +4,14 @@
 // FUNCTION: fn_18244
 void DecodeTextEscapes(std::string& text) {
   for (std::size_t position = text.find("\\r"); position != std::string::npos; position = text.find("\\r")) {
-    text.replace(position, 2, "\r", 1);
+    text.replace(position, 2, "\r");
   }
 
   for (std::size_t position = text.find("\\n"); position != std::string::npos; position = text.find("\\n")) {
-    text.replace(position, 2, "\n", 1);
+    text.replace(position, 2, "\n");
   }
 
   for (std::size_t position = text.find("\\\""); position != std::string::npos; position = text.find("\\\"")) {
-    text.replace(position, 2, "\"", 1);
+    text.replace(position, 2, "\"");
   }
 }
