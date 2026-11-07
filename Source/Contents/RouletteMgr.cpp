@@ -125,7 +125,9 @@ void RouletteMgr::SetAdditionItem(int itemId) {
 // FUNCTION: fn_10079
 void RouletteMgr::StartSpin(int x, int y, int originX, int originY) {
   this->SetQuad(x, y, originX, originY);
-  this->m_quads.start = this->m_quads.current;
+  for (int i = 0; i < 6; ++i) {
+    this->m_quads.start.vertices[i] = this->m_quads.current.vertices[i];
+  }
 
   const float distance = (8 - this->m_stage) * 36.0f;
   for (int i = 0; i < 6; ++i) {
@@ -222,7 +224,9 @@ void RouletteMgr::Update() {
     }
 
     if (this->m_frame >= 8 - this->m_stage) {
-      this->m_quads.current = this->m_quads.start;
+      for (int i = 0; i < 6; ++i) {
+        this->m_quads.current.vertices[i] = this->m_quads.start.vertices[i];
+      }
       const float interval = static_cast<float>(this->m_interval);
       this->m_interval = static_cast<unsigned long>(interval * 0.34f + interval);
       ++this->m_cycle;

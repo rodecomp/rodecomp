@@ -20,28 +20,34 @@ struct RouletteSlot {
   }
 };
 
+struct RouletteVertex : RenderVertex {
+  // INLINED
+  __forceinline RouletteVertex() {
+    this->x = 0;
+    this->y = 0;
+    this->z = 0;
+    this->rhw = 0;
+    this->diffuse = 0;
+    this->specular = 0xFF000000;
+    this->u = 0;
+    this->v = 0;
+  }
+};
+
 struct RouletteQuad {
-  /* 0000 */ RenderVertex vertices[6];
+  /* 0000 */ RouletteVertex vertices[6];
 
   // INLINED
-  RouletteQuad() {
-    for (int i = 0; i < 6; ++i) {
-      this->vertices[i].x = 0;
-      this->vertices[i].y = 0;
-      this->vertices[i].z = 0;
-      this->vertices[i].rhw = 0;
-      this->vertices[i].diffuse = 0;
-      this->vertices[i].specular = 0xFF000000;
-      this->vertices[i].u = 0;
-      this->vertices[i].v = 0;
-    }
-  }
+  __forceinline RouletteQuad() {}
 };
 
 struct RouletteQuads {
   /* 0000 */ RouletteQuad current;
   /* 00C0 */ RouletteQuad start;
   /* 0180 */ RouletteQuad target;
+
+  // INLINED
+  __forceinline RouletteQuads() {}
 };
 
 class RouletteMgr {
