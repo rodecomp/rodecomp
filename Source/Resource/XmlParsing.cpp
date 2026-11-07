@@ -1,5 +1,6 @@
 #include "Resource/XmlNode.h"
 
+#include <cstdlib>
 #include <cstring>
 
 // OFFSET: 0x00AFA770
@@ -149,6 +150,10 @@ char* XmlDocument::ParseElements(XmlNode* parent, char* cursor, char* end) {
 bool XmlDocument::Parse(const char* begin, const char* end) {
   if (this->child != nullptr) {
     this->Reset();
+    if (this->buffer != nullptr) {
+      std::free(this->buffer);
+      this->buffer = nullptr;
+    }
   }
 
   const int length = static_cast<int>(end - begin);
