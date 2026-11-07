@@ -1158,9 +1158,7 @@ void UIChatEditCtrl::Paint() {
     const int span = static_cast<int>(current->unknown_0140.size() - current->taggedText.size());
     this->unknown_00F0 = span > 0 ? span : 0;
     if (current->unknown_011C == 0) {
-      if (current) {
-        delete current;
-      }
+      delete this->unknown_0144;
       this->unknown_0144 = nullptr;
     }
   }
