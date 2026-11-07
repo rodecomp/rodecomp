@@ -220,16 +220,19 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     int index = 0;
     for (auto it = g_renewQuestMgr->m_ongoingQuests.begin(); it != g_renewQuestMgr->m_ongoingQuests.end(); ++it, ++index) {
       if (index == this->m_selectedIndex) {
-        int command = this->m_menuItems[argument1].command;
-        if (command == 48) {
+        switch (this->m_menuItems[argument1].value) {
+        case 48: {
           PACKET_CZ_ACTIVE_QUEST packet;
           packet.packetType = 0x2B6;
           packet.questId = it->first;
           packet.active = !it->second.m_active;
           GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
           this->Invalidate();
-        } else if (command == 49) {
+          break;
+        }
+        case 49:
           g_renewQuestMgr->ShowOngoingQuestInfo(it->first);
+          break;
         }
         break;
       }
@@ -243,9 +246,9 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     if (this->m_selectedIndex != -1) {
       std::string text1 = LookupMessage(1622);
-      this->m_menuItems.push_back({text1.c_str(), 49});
+      this->m_menuItems.push_back(MiniPartyInfoEntry(text1.c_str(), 49));
       std::string text2 = LookupMessage(351);
-      this->m_menuItems.push_back({text2.c_str(), 48});
+      this->m_menuItems.push_back(MiniPartyInfoEntry(text2.c_str(), 48));
     }
     if (!this->m_menuItems.empty()) {
       UIWindow* menu = g_windowMgr.EnsureWindow(18);

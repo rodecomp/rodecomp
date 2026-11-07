@@ -1,16 +1,12 @@
 #ifndef RAGNAROK_SOURCE_UI_QUEST_UIQUESTDISPLAY_H
 #define RAGNAROK_SOURCE_UI_QUEST_UIQUESTDISPLAY_H
 
+#include "UI/Party/UIMiniPartyWnd.h"
 #include "UI/Window/UIWindow.h"
 #include <string>
 #include <vector>
 
 struct QuestDisplayInfo;
-
-struct QuestDisplayMenuItem {
-  std::string text;
-  int command;
-};
 
 class UIQuestDisplay : public UIWindow {
 public:
@@ -25,7 +21,7 @@ public:
 protected:
   /* 007C */ unsigned int unknown_007C;
   /* 0080 */ int m_selectedIndex;
-  /* 0084 */ std::vector<QuestDisplayMenuItem> m_menuItems;
+  /* 0084 */ std::vector<MiniPartyInfoEntry> m_menuItems;
   /* 0090 */ int* m_visibleSetting;
 };
 
