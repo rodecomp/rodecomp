@@ -202,17 +202,15 @@ void UIBasicInfoWnd::Slot28(int x, int y) {
   }
 
   int top = this->geometry.height - 20;
-  if (x < 0 || x >= 100 || y < top || y >= this->geometry.height) {
-    return;
+  if (x >= 0 && x < 100 && y >= top && y < this->geometry.height) {
+    char text[64];
+    std::sprintf(text, "Weight %d%%", g_session.m_maxWeight == 0 ? 0 : g_session.m_weight * 100 / g_session.m_maxWeight);
+
+    int screenX = 0;
+    int screenY = top - 19;
+    this->ToScreen(screenX, screenY);
+    g_modeMgr.gameMode->ShowTooltip(text, screenX, screenY, -1, false, true);
   }
-
-  char text[64];
-  std::sprintf(text, "Weight %d%%", g_session.m_maxWeight ? g_session.m_weight * 100 / g_session.m_maxWeight : 0);
-
-  int screenX = 0;
-  int screenY = top - 19;
-  this->ToScreen(screenX, screenY);
-  g_modeMgr.gameMode->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x009995A0
