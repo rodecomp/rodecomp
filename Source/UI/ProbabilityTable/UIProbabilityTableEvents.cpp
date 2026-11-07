@@ -113,11 +113,11 @@ int HighlightKeyword(std::string& text, std::string_view keyword, std::string_vi
 
   std::size_t position = 0;
   while ((position = lowerText.find(lowerKeyword, position)) != std::wstring::npos) {
-    lowerText.insert(position, widePrefix.c_str(), widePrefix.size());
-    wideText.insert(position, widePrefix.c_str(), widePrefix.size());
+    lowerText.insert(position, widePrefix);
+    wideText.insert(position, widePrefix);
     position += lowerKeyword.size() + widePrefix.size();
-    lowerText.insert(position, wideSuffix.c_str(), wideSuffix.size());
-    wideText.insert(position, wideSuffix.c_str(), wideSuffix.size());
+    lowerText.insert(position, wideSuffix);
+    wideText.insert(position, wideSuffix);
     position += suffix.size();
     ++count;
   }
