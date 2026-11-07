@@ -14,7 +14,7 @@ class UIRPData {
 public:
   UIRPData();
   virtual ~UIRPData();
-  void Draw(RenderPrimitivePool& pool, int x, int y, CTexture* texture, std::uint32_t color, int width, int height, bool stretched);
+  void Draw(int x, int y, CTexture* texture, std::uint32_t color, int width, int height, bool stretched);
   void DrawStretched(RenderPrimitivePool& pool, int x, int y, CTexture* texture, std::uint32_t color, int width, int height);
   void DrawNamed(RenderPrimitivePool& pool, int x, int y, std::string name, std::uint32_t color, int width, int height);
   void SetSolid(RenderPrimitivePool& pool, int width, int height, std::uint32_t color);

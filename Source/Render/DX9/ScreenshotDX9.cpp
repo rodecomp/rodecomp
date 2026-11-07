@@ -27,7 +27,7 @@ bool CRendererDX9::SaveScreenshot(const char* filename, int format, CTexture* ov
     x -= overlay->Width();
     y -= overlay->Height();
     ScreenshotOverlay drawing;
-    drawing.Draw(this->primitives, std::bit_cast<std::int32_t>(x), std::bit_cast<std::int32_t>(y), overlay, 0xFFFFFFFFu, 0, 0, false);
+    drawing.Draw(std::bit_cast<std::int32_t>(x), std::bit_cast<std::int32_t>(y), overlay, 0xFFFFFFFFu, 0, 0, false);
 
     if (owner.Begin(GetRenderSystemHolder()->system)) {
       ScopedDeviceStateDX9 restore(this->device->state);
