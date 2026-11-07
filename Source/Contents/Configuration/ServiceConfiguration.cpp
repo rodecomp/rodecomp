@@ -458,9 +458,9 @@ void InitializeLanguage() {
     g_textCodePage = 1256;
     break;
   default: {
-    const std::uint8_t source[] = {0xF9, 0x1E, 0x87, 0xD1, 0x00, 0x4D, 0xE4, 0x2E, 0xF6, 0x16, 0xC2, 0x9D,
-                                   0x12, 0x46, 0xF7, 0x2F, 0xFE, 0x1F, 0xC0, 0x9D, 0x40, 0x02, 0xA2, 0x5B};
-    ShowErrorDialog(DecryptText<0x5B832361BDA77197ULL>(source), 0);
+    const char source[] = {'\xF9', '\x1E', '\x87', '\xD1', '\x00', '\x4D', '\xE4', '\x2E', '\xF6', '\x16', '\xC2', '\x9D',
+                           '\x12', '\x46', '\xF7', '\x2F', '\xFE', '\x1F', '\xC0', '\x9D', '\x40', '\x02', '\xA2', '\x5B'};
+    ShowErrorDialog(DecryptString<0x5B832361BDA77197ULL>(source), 0);
   }
   case 1:
   case 6:
