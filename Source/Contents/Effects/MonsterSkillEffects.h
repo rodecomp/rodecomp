@@ -484,6 +484,10 @@ public:
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
+  void ResetMistParticle(CParticle* particle);
+  void ResetCloudParticle(CParticle* particle);
+  void ResetLightning(CParticle* particle);
+  void ResetSmokeParticle(CParticle* particle);
 
   /* 00CC */ std::list<EZ2STREmitter*> unknown_00CC;
   /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;

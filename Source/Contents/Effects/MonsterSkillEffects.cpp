@@ -54,11 +54,6 @@ static CSpriteParticle* AsSprite(EZ2STREmitter* emitter) {
   return reinterpret_cast<CSpriteParticle*>(emitter);
 }
 
-void __stdcall fn_07334(CParticle* particle);
-void __stdcall fn_07337(CParticle* particle);
-void __stdcall fn_07338(CParticle* particle);
-void __stdcall fn_07339(CParticle* particle);
-
 // INLINED
 static bool IsEmitterAlive(const EZ2STREmitter* emitter) {
   if (0.0f == emitter->lifetime) {
@@ -2087,8 +2082,8 @@ void CNewCloudKillEffect::Slot03() {
   const unsigned int now = timeGetTime();
 
   for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
-    CEZ2STRParticle* particle = AsParticle(*it);
     if (now - static_cast<unsigned int>(this->unknown_00F4) > 5000) {
+      CEZ2STRParticle* particle = AsParticle(*it);
       particle->alpha = 0xFF;
       *reinterpret_cast<float*>(&particle->unknown_00C4) = 0.0f;
       particle->unknown_00E8 = 60;
@@ -2096,11 +2091,12 @@ void CNewCloudKillEffect::Slot03() {
       InitParticleQuad(particle->vertices);
     }
 
-    if (particle != nullptr) {
+    if (CEZ2STRParticle* particle = AsParticle(*it)) {
       if (particle->unknown_00E8 == 0) {
         particle->unknown_00A8 = 1;
       } else {
-        const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4) + 1.0f) % 360;
+        int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4) + 1.0f);
+        angle %= 360;
         particle->alpha = static_cast<int>(static_cast<float>(particle->unknown_00E8) * 4.25f);
         *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
 
@@ -2121,7 +2117,7 @@ void CNewCloudKillEffect::Slot03() {
       }
     }
 
-    --particle->unknown_00E8;
+    --AsParticle(*it)->unknown_00E8;
   }
 
   if (now - static_cast<unsigned int>(this->unknown_00F4) > 5000) {
@@ -2129,16 +2125,12 @@ void CNewCloudKillEffect::Slot03() {
   }
 
   for (auto it = this->unknown_00D4.begin(); it != this->unknown_00D4.end(); ++it) {
-    CEZ2STRParticle* particle = AsParticle(*it);
     if (now - static_cast<unsigned int>(this->unknown_00F8) > 5000) {
-      fn_07337(particle);
+      ResetCloudParticle(AsParticle(*it));
     }
 
-    if (particle != nullptr) {
-      int alpha = particle->alpha - 3;
-      if (alpha < 0) {
-        alpha = 0;
-      }
+    if (CEZ2STRParticle* particle = AsParticle(*it)) {
+      int alpha = std::max(particle->alpha - 3, 0);
       particle->alpha = alpha;
       if (alpha == 0) {
         particle->unknown_00A8 = 1;
@@ -2153,12 +2145,12 @@ void CNewCloudKillEffect::Slot03() {
         particle->position.y = particle->unknown_00D4 + this->position[1];
         particle->position.z = particle->unknown_00D8 + this->position[2];
 
-        float angle = *reinterpret_cast<float*>(&particle->unknown_00C4) + 1.0f;
-        angle = static_cast<float>(static_cast<int>(angle) % 360);
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = angle;
+        int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4) + 1.0f);
+        angle %= 360;
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
 
         matrix rotation;
-        rotation.MakeZRotation(angle / 180.0f * 3.141592f);
+        rotation.MakeZRotation(static_cast<float>(angle) / 180.0f * 3.141592f);
         rotation.AppendXRotation(
             static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f
         );
@@ -2178,30 +2170,24 @@ void CNewCloudKillEffect::Slot03() {
   }
 
   for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end(); ++it) {
+    ++AsParticle(*it)->unknown_00E8;
     CEZ2STRParticle* particle = AsParticle(*it);
-    ++particle->unknown_00E8;
     if (particle->unknown_00E8 <= 0 || particle == nullptr) {
       continue;
     }
 
     const int maximum = *reinterpret_cast<int*>(particle->unknown_0048);
     if (particle->unknown_00A8 == 0) {
-      int alpha = particle->alpha + 2;
-      if (alpha > maximum) {
-        alpha = maximum;
-      }
+      int alpha = std::min(particle->alpha + 2, maximum);
       particle->alpha = alpha;
       if (alpha == maximum) {
         particle->unknown_00A8 = 1;
       }
     } else if (particle->unknown_00A8 == 1) {
-      int alpha = particle->alpha - 1;
-      if (alpha < 0) {
-        alpha = 0;
-      }
+      int alpha = std::max(particle->alpha - 1, 0);
       particle->alpha = alpha;
       if (alpha == 0) {
-        fn_07339(particle);
+        ResetSmokeParticle(particle);
         continue;
       }
       particle->scale -= particle->scale / static_cast<float>(alpha);
@@ -2231,11 +2217,10 @@ void CNewCloudKillEffect::Slot03() {
 
   for (auto it = this->unknown_00E4.begin(); it != this->unknown_00E4.end(); ++it) {
     CEZ2STRParticle* particle = AsParticle(*it);
-    if (particle->unknown_00E8 < particle->unknown_004C) {
-      int state = static_cast<signed char>(particle->unknown_00A8) - 1;
-      if (state < 0) {
-        state = 0;
-      }
+    if (particle->unknown_00E8 >= particle->unknown_004C) {
+      ResetLightning(particle);
+    } else {
+      int state = std::max(static_cast<signed char>(particle->unknown_00A8) - 1, 0);
       particle->unknown_00A8 = static_cast<unsigned char>(state);
       particle->alpha = state * 25;
 
@@ -2263,38 +2248,30 @@ void CNewCloudKillEffect::Slot03() {
                              yaw.values[7] * particle->unknown_00D8 + yaw.values[10] + this->position[1];
       particle->position.z = yaw.values[2] * particle->unknown_00D0 + yaw.values[5] * particle->unknown_00D4 +
                              yaw.values[8] * particle->unknown_00D8 + yaw.values[11] + this->position[2];
-    } else {
-      fn_07338(particle);
     }
 
-    ++particle->unknown_00E8;
+    ++AsParticle(*it)->unknown_00E8;
   }
 
   for (auto it = this->unknown_00EC.begin(); it != this->unknown_00EC.end(); ++it) {
+    ++AsParticle(*it)->unknown_00E8;
     CEZ2STRParticle* particle = AsParticle(*it);
-    ++particle->unknown_00E8;
     if (particle->unknown_00E8 <= 0 || particle == nullptr) {
       continue;
     }
 
     const int maximum = *reinterpret_cast<int*>(particle->unknown_0048);
     if (particle->unknown_00A8 == 0) {
-      int alpha = particle->alpha + 5;
-      if (alpha > maximum) {
-        alpha = maximum;
-      }
+      int alpha = std::min(particle->alpha + 5, maximum);
       particle->alpha = alpha;
       if (alpha == maximum) {
         particle->unknown_00A8 = 1;
       }
     } else if (particle->unknown_00A8 == 1) {
-      int alpha = particle->alpha - 2;
-      if (alpha < 0) {
-        alpha = 0;
-      }
+      int alpha = std::max(particle->alpha - 2, 0);
       particle->alpha = alpha;
       if (alpha == 0) {
-        fn_07334(particle);
+        ResetMistParticle(particle);
         continue;
       }
       particle->scale = (particle->scale / static_cast<float>(maximum)) * static_cast<float>(alpha);
@@ -3263,7 +3240,7 @@ void CNewCloudKillEffect::Slot01() {
       particle->unknown_0010 = 0;
       particle->unknown_0008 = 1;
       particle->SetTexture("effect\\new_cloud_kill\\ef_cloud_kill.tga");
-      fn_07337(particle);
+      ResetCloudParticle(particle);
       this->unknown_00D4.push_back(emitter);
     }
   }
@@ -3277,7 +3254,7 @@ void CNewCloudKillEffect::Slot01() {
       particle->unknown_0010 = 0;
       particle->unknown_0008 = 1;
       particle->SetTexture("effect\\new_cloud_kill\\ef_cloud_kill.tga");
-      fn_07339(particle);
+      ResetSmokeParticle(particle);
       particle->unknown_00E8 = -std::max(0, rand() % 71);
       this->unknown_00DC.push_back(emitter);
     }
@@ -3293,7 +3270,7 @@ void CNewCloudKillEffect::Slot01() {
     lightning->SetTexture("effect\\new_cloud_kill\\ef_comm_lightning_cloud.tga");
     lightning->alpha = 0xFF;
     lightning->depthOffset = 0.035f;
-    fn_07338(lightning);
+    ResetLightning(lightning);
     lightning->unknown_004C = 50;
     this->unknown_00E4.push_back(lightningEmitter);
   }
@@ -3307,7 +3284,7 @@ void CNewCloudKillEffect::Slot01() {
       particle->unknown_0010 = 0;
       particle->unknown_0008 = 1;
       particle->SetTexture("effect\\new_cloud_kill\\ef_cloud_kill.tga");
-      fn_07334(particle);
+      ResetMistParticle(particle);
       particle->unknown_00E8 = -std::max(0, rand() % 80);
       this->unknown_00EC.push_back(emitter);
     }
@@ -4763,7 +4740,8 @@ void CRichsCoinEffect::Slot03() {
         degrees += 360.0f;
       }
 
-      std::sprintf(name, "effect\\rl_richs_coin_b\\rcoin%d.bmp", static_cast<int>(degrees / 36.0f) % 5 + 1);
+      const int frame = static_cast<int>(degrees / 36.0f);
+      std::sprintf(name, "effect\\rl_richs_coin_b\\rcoin%d.bmp", frame % 5 + 1);
       particle->SetTexture(name);
     }
     ++particle->unknown_00E8;
