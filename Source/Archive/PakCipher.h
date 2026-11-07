@@ -10,7 +10,8 @@ namespace myGPack {
     PakCipher();
     explicit PakCipher(const std::uint8_t* key);
     ~PakCipher();
-    int DecodeBlock(int rounds, const std::uint8_t* input, std::uint8_t* output) const;
+    int DecodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) const;
+    int EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) const;
     int Decode(const std::uint8_t* input, int length, std::uint8_t* output, int* outputLength, int cycle) const;
     int DecodePrefix(const std::uint8_t* input, int length, std::uint8_t* output, int* outputLength) const;
 
@@ -23,7 +24,6 @@ namespace myGPack {
   static_assert(sizeof(PakCipher) == 128);
   int InitialPermutation(std::uint8_t* block);
   int FinalPermutation(std::uint8_t* block);
-  int EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output);
 
 }
 

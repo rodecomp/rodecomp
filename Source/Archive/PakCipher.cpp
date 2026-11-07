@@ -199,11 +199,7 @@ namespace myGPack {
 
   // OFFSET: 0x00AE8E70
   // FUNCTION: fn_18101
-  int PakCipher::DecodeBlock(int rounds, const std::uint8_t* input, std::uint8_t* output) const {
-    std::uint32_t inputLow;
-    std::uint32_t inputHigh;
-    std::memcpy(&inputLow, input, sizeof(inputLow));
-    std::memcpy(&inputHigh, input + 4, sizeof(inputHigh));
+  int PakCipher::DecodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) const {
     std::memcpy(output, &inputLow, sizeof(inputLow));
     std::memcpy(output + 4, &inputHigh, sizeof(inputHigh));
     InitialPermutation(output);
@@ -213,7 +209,7 @@ namespace myGPack {
 
     for (std::uint8_t round = 0; round < rounds; ++round) {
       std::uint8_t key[8];
-      std::memcpy(key, this->m_roundKeys[15 - round], sizeof(key));
+      std::memcpy(key, roundKeys[15 - round], sizeof(key));
 
       std::uint8_t expanded[8] = {};
 
@@ -291,7 +287,17 @@ namespace myGPack {
     int offset = 0;
 
     do {
-      if (block >= 20 && block % cycle != 0) {
+      if (block < 20 || block % cycle == 0) {
+        std::uint8_t blockInput[8];
+        std::uint8_t blockOutput[8];
+        std::memcpy(blockInput, input + offset, 8);
+        std::uint32_t low;
+        std::uint32_t high;
+        std::memcpy(&low, blockInput, sizeof(low));
+        std::memcpy(&high, blockInput + 4, sizeof(high));
+        this->DecodeBlock(1, this->m_roundKeys, low, high, blockOutput);
+        std::memcpy(output + offset, blockOutput, 8);
+      } else {
         if (shuffled == 7) {
           std::uint16_t pair;
           std::memcpy(&pair, input + offset + 3, 2);
@@ -312,12 +318,6 @@ namespace myGPack {
           std::memcpy(output + offset + 4, &high, sizeof(high));
           ++shuffled;
         }
-      } else {
-        std::uint8_t blockInput[8];
-        std::uint8_t blockOutput[8];
-        std::memcpy(blockInput, input + offset, 8);
-        this->DecodeBlock(1, blockInput, blockOutput);
-        std::memcpy(output + offset, blockOutput, 8);
       }
 
       offset += 8;
@@ -341,7 +341,11 @@ namespace myGPack {
       for (int i = 0; i < 8; ++i) {
         blockInput[i] = input[offset + i];
       }
-      this->DecodeBlock(1, blockInput, decoded);
+      std::uint32_t low;
+      std::uint32_t high;
+      std::memcpy(&low, blockInput, sizeof(low));
+      std::memcpy(&high, blockInput + 4, sizeof(high));
+      this->DecodeBlock(1, this->m_roundKeys, low, high, decoded);
       for (int i = 0; i < 8; ++i) {
         output[offset + i] = decoded[i];
       }
@@ -394,7 +398,7 @@ namespace myGPack {
 
   // OFFSET: 0x00AE9020
   // FUNCTION: fn_18102
-  int EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) {
+  int PakCipher::EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) const {
     std::memcpy(output, &inputLow, sizeof(inputLow));
     std::memcpy(output + 4, &inputHigh, sizeof(inputHigh));
     InitialPermutation(output);
