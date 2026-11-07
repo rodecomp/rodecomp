@@ -23,10 +23,11 @@ namespace {
   // INLINED
   void RemoveFirst(std::list<ShortcutCooldownRecord>& cooldowns, int slot) {
     for (ShortcutCooldownRecord& record : cooldowns) {
-      const auto value = std::find_if(record.main.begin(), record.main.end(), [&](const CooldownState& state) { return state.slot == slot; });
-      if (value != record.main.end()) {
-        record.main.erase(value);
-        return;
+      for (std::list<CooldownState>::iterator state = record.main.begin(); state != record.main.end(); ++state) {
+        if (state->slot == slot) {
+          record.main.erase(state);
+          return;
+        }
       }
     }
   }
@@ -206,7 +207,7 @@ void UIShortCutWnd::Slot10(int x, int y, std::intptr_t argument) {
 
 namespace {
   // INLINED
-  void RemoveAlternate(std::list<ShortcutCooldownRecord>& cooldowns, int source, int slot) {
+  __forceinline void RemoveAlternate(std::list<ShortcutCooldownRecord>& cooldowns, int source, int slot) {
     for (ShortcutCooldownRecord& record : cooldowns) {
       if (source == slot) {
         continue;
@@ -229,7 +230,7 @@ void UIQuickSlotWnd::Slot10(int x, int y, std::intptr_t argument) {
   std::list<ShortcutCooldownRecord>& records = g_session.m_requestTimers;
 
   if (value.skill != 0) {
-    const std::string copiedName(value.skillName.c_str(), value.skillName.size());
+    const std::string copiedName = value.skillName;
     const int slot = this->SlotAt(x, y);
     if (slot != -1) {
       CSkillInfo skill = g_session.LookupSkill(value.id);
