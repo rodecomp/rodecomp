@@ -655,7 +655,7 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     packet.runeId = static_cast<int>(rune->m_id);
     packet.value = static_cast<std::uint8_t>(value);
     GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
-    return 1;
+    break;
   }
   case 0x0BCB: {
     CTagData* tag = this->GetTag(value);
@@ -671,7 +671,7 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     packet.id = static_cast<std::uint16_t>(packetId);
     packet.tagId = static_cast<std::uint16_t>(tag->m_id);
     GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
-    return 1;
+    break;
   }
   case 0x0BCE:
   case 0x0BD0: {
@@ -685,7 +685,7 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     packet.runeId = static_cast<int>(rune->m_id);
     GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
     this->m_requestPending = true;
-    return 1;
+    break;
   }
   case 0x0BD2: {
     if (!this->HasRequiredItems(static_cast<RuneSetData*>(rune)->GetGradeValue())) {
@@ -698,24 +698,23 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     packet.runeId = static_cast<int>(rune->m_id);
     GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
     this->m_requestPending = true;
-    return 1;
+    break;
   }
   case 0x0BD4: {
     RuneHeaderPacket packet;
     packet.id = static_cast<std::uint16_t>(packetId);
     GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
-    return 1;
+    break;
   }
   case 0x0BD6: {
     RuneIdPacket packet;
     packet.id = static_cast<std::uint16_t>(packetId);
     packet.runeId = static_cast<int>(rune->m_id);
     GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
-    return 1;
+    break;
   }
-  default:
-    return 1;
   }
+  return 1;
 }
 
 // OFFSET: 0x007684C0
