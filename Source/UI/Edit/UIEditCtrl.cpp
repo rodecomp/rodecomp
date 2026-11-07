@@ -2710,20 +2710,20 @@ void UISkillListWnd::Paint() {
   CFile file;
   char text[80];
 
-  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
+  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
     g_skillTooltipActive ? "유저인터페이스\\basic_interface\\titlebar_left2.bmp" : "유저인터페이스\\basic_interface\\titlebar_left.bmp"
   )));
-  this->DrawBitmap(0, 0, &left->image, false);
-  const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
+  this->DrawBitmap(0, 0, left, false);
+  auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
     g_skillTooltipActive ? "유저인터페이스\\basic_interface\\titlebar_right2.bmp" : "유저인터페이스\\basic_interface\\titlebar_right.bmp"
   )));
-  this->DrawBitmap(this->geometry.width - right->image.width, 0, &right->image, false);
+  this->DrawBitmap(this->geometry.width - right->image.width, 0, right, false);
   int count = (this->geometry.width - 24) / 12 + ((this->geometry.width - 24) % 12 != 0);
   for (int x = 12; count > 0; --count, x += 12) {
-    const auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
+    auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
       g_skillTooltipActive ? "유저인터페이스\\basic_interface\\titlebar_mid2.bmp" : "유저인터페이스\\basic_interface\\titlebar_mid.bmp"
     )));
-    this->DrawBitmap(x, 0, &middle->image, false);
+    this->DrawBitmap(x, 0, middle, false);
   }
 
   if (this->geometry.height == 17) {
@@ -2732,14 +2732,14 @@ void UISkillListWnd::Paint() {
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
   for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* itemLeft = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &itemLeft->image, false);
+    auto* itemLeft = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, itemLeft, false);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
   for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* itemRight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - itemRight->image.width, y, &itemRight->image, false);
+    auto* itemRight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - itemRight->image.width, y, itemRight, false);
   }
 
   unsigned red, green, blue;
@@ -2796,8 +2796,8 @@ void UISkillListWnd::Paint() {
     }
 
     g_session.ItemBitmapPath(it->name, text);
-    const auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
-    this->DrawBitmap(x + 44, top + 21, &icon->image, true);
+    auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+    this->DrawBitmap(x + 44, top + 21, icon, true);
 
     int shade;
     if (it->level == 0) {
@@ -5429,17 +5429,67 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   }
 
   switch (message) {
+  case 0x22:
+    this->saved = reinterpret_cast<SkillListWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+    this->Move(this->saved->x, this->saved->y);
+    this->SendMsg(nullptr, 0xE, 3, this->saved->width, this->saved->height, 0);
+    return 0;
+  case 0xE:
+    if (a == 3) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 288 ? c : 288;
+      if (width < 232) {
+        width = 232;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+      width = (width - 280) / 32 * 32 + 280;
+      height = (height - 120) / 32 * 32 + 120;
+      if (width != this->geometry.width || height != this->geometry.height) {
+        this->Resize(width, height);
+        this->columns = 1;
+        this->visibleRows = (height - 38) / 32;
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->buttons[0]->Move(this->geometry.width - 107, this->geometry.height - 24);
+        this->buttons[1]->Move(this->geometry.width - 61, this->geometry.height - 24);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
+        int row = 0;
+        for (int y = 17; y < 241; y += 32, ++row) {
+          if (row < this->visibleRows && static_cast<unsigned>(this->scroll + row) < this->skills.size()) {
+            this->upgradeButtons[row]->Move(53, y);
+          } else {
+            this->upgradeButtons[row]->Move(-200, y);
+          }
+        }
+        this->UpdateScrollBar();
+        this->UpdateRowButtons();
+      }
+      g_windowMgr.StoreSnapRectangle(this);
+      return 0;
+    }
+    break;
+  case 0x3A: {
+    const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
+    if (skill->level != 0) {
+      CMode* mode = g_modeMgr.gameMode;
+      int level = 0;
+      if (this->skillTab == 0) {
+        level = g_session.HomunSkillLevel(skill->id);
+      } else if (this->skillTab == 1) {
+        level = g_session.MercSkillLevel(skill->id);
+      }
+      mode->SendMsg(0x71, a, level, 0, 0);
+      return 0;
+    }
+    break;
+  }
   case 6:
     switch (a) {
-    case 0xB8:
-      if (this->hovered != -1) {
-        CSkillInfo skill = this->GetSkillByIndex(this->hovered);
-        if (skill.available != 0 && skill.level != 0 && skill.unknown_0014 != 0) {
-          this->SendMsg(nullptr, 0x3A, reinterpret_cast<std::intptr_t>(&skill), 0, 0, 0);
-        }
-        return 0;
-      }
-      break;
     case 0xC9:
       if (this->skillTab == 0) {
         g_windowMgr.CloseWindow(0x72);
@@ -5447,6 +5497,15 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
       if (this->skillTab == 1) {
         g_windowMgr.CloseWindow(0x7E);
+        return 0;
+      }
+      break;
+    case 0xB8:
+      if (this->hovered != -1) {
+        CSkillInfo skill = this->GetSkillByIndex(this->hovered);
+        if (skill.available != 0 && skill.level != 0 && skill.unknown_0014 != 0) {
+          this->SendMsg(nullptr, 0x3A, reinterpret_cast<std::intptr_t>(&skill), 0, 0, 0);
+        }
         return 0;
       }
       break;
@@ -5487,7 +5546,33 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case 0x100:
     case 0x101:
     case 0x102:
-    case 0x103:
+    case 0x103: {
+      CSkillInfo skill = this->GetSkillByIndex(this->scroll - 0xFD + a);
+      if (skill.available != 0) {
+        const int id = skill.id;
+        int current;
+        if (this->skillTab == 0) {
+          current = g_session.HomunSkillLevel(id);
+        } else if (this->skillTab == 1) {
+          current = g_session.MercSkillLevel(id);
+        }
+        int level = current - 1;
+        if (level <= 0) {
+          level = 1;
+        }
+        if (level > skill.level) {
+          level = skill.level;
+        }
+        if (this->skillTab == 0) {
+          g_session.SetOption(8, 1, 0);
+          g_session.SetHomunSkillLevel(id, level);
+        } else if (this->skillTab == 1) {
+          g_session.SetMercSkillLevel(id, level);
+        }
+        this->Invalidate();
+      }
+      return 0;
+    }
     case 0x104:
     case 0x105:
     case 0x106:
@@ -5495,29 +5580,27 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case 0x108:
     case 0x109:
     case 0x10A: {
-      const bool lower = a < 0x104;
-      CSkillInfo skill = this->GetSkillByIndex(this->scroll + a - (lower ? 0xFD : 0x104));
+      CSkillInfo skill = this->GetSkillByIndex(this->scroll - 0x104 + a);
       if (skill.available != 0) {
-        int current = 0;
+        const int id = skill.id;
+        int current;
         if (this->skillTab == 0) {
-          current = g_session.HomunSkillLevel(skill.id);
+          current = g_session.HomunSkillLevel(id);
         } else if (this->skillTab == 1) {
-          current = g_session.MercSkillLevel(skill.id);
+          current = g_session.MercSkillLevel(id);
         }
-        int level;
-        if (lower) {
-          level = current - 1 > 0 ? current - 1 : 1;
-        } else {
-          level = current >= 0 ? current + 1 : 1;
+        int level = current + 1;
+        if (level <= 0) {
+          level = 1;
         }
         if (level > skill.level) {
           level = skill.level;
         }
         if (this->skillTab == 0) {
           g_session.SetOption(8, 1, 0);
-          g_session.SetHomunSkillLevel(skill.id, level);
+          g_session.SetHomunSkillLevel(id, level);
         } else if (this->skillTab == 1) {
-          g_session.SetMercSkillLevel(skill.id, level);
+          g_session.SetMercSkillLevel(id, level);
         }
         this->Invalidate();
       }
@@ -5545,38 +5628,6 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     return this->scroll - previous;
   }
-  case 0xE:
-    if (a == 3) {
-      int width = b <= 320 ? b : 320;
-      int height = c <= 288 ? c : 288;
-      if (width < 232) {
-        width = 232;
-      }
-      if (height < 120) {
-        height = 120;
-      }
-      width = (width - 280) / 32 * 32 + 280;
-      height = (height - 120) / 32 * 32 + 120;
-      if (width != this->geometry.width || height != this->geometry.height) {
-        this->Resize(width, height);
-        this->columns = 1;
-        this->visibleRows = (height - 38) / 32;
-        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-        this->buttons[0]->Move(this->geometry.width - 107, this->geometry.height - 24);
-        this->buttons[1]->Move(this->geometry.width - 61, this->geometry.height - 24);
-        this->scrollBar->Move(this->geometry.width - 15, 14);
-        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
-        int row = 0;
-        for (int y = 17; y < 241; y += 32, ++row) {
-          this->upgradeButtons[row]->Move(row < this->visibleRows && static_cast<unsigned>(this->scroll + row) < this->skills.size() ? 53 : -200, y);
-        }
-        this->UpdateScrollBar();
-        this->UpdateRowButtons();
-      }
-      g_windowMgr.StoreSnapRectangle(this);
-      return 0;
-    }
-    break;
   case 0x17: {
     this->skills.clear();
     int count = 0;
@@ -5607,7 +5658,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           } else if (this->skillTab == 1) {
             current = g_session.MercSkillLevel(skill.id);
           }
-          if (current < 1 || current > skill.level) {
+          if (current <= 0 || current > skill.level) {
             if (this->skillTab == 0) {
               g_session.SetHomunSkillLevel(skill.id, skill.level);
             } else if (this->skillTab == 1) {
@@ -5630,28 +5681,6 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     this->UpdateRowButtons();
     return 0;
   }
-  case 0x22:
-    this->saved = reinterpret_cast<SkillListWndInfo*>(a);
-    if (!this->saved->IsValid()) {
-      this->saved->Reset();
-    }
-    this->Move(this->saved->x, this->saved->y);
-    this->SendMsg(nullptr, 0xE, 3, this->saved->width, this->saved->height, 0);
-    return 0;
-  case 0x30:
-    if (this->hovered != -1) {
-      CSkillInfo skill = this->GetSkillByIndex(this->hovered);
-      if (skill.available != 0) {
-        const int kind = this->unknown_0138[a].value;
-        if (kind == 3) {
-          g_windowMgr.EnsureWindow(0x2E)->SendMsg(nullptr, 0x3D, skill.id, 0, 0, 0);
-        } else if (kind == 0xE) {
-          g_windowMgr.EnsureWindow(0x37)->SendMsg(nullptr, 0x44, skill.id, 0, 0, 0);
-        }
-      }
-      return 0;
-    }
-    break;
   case 0x31:
     this->unknown_0138.clear();
     if (g_windowMgr.unknown_0210) {
@@ -5681,21 +5710,20 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return 0;
     }
     break;
-  case 0x3A: {
-    const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
-    if (skill->level != 0) {
-      CMode* mode = g_modeMgr.gameMode;
-      int level = 0;
-      if (this->skillTab == 0) {
-        level = g_session.HomunSkillLevel(skill->id);
-      } else if (this->skillTab == 1) {
-        level = g_session.MercSkillLevel(skill->id);
+  case 0x30:
+    if (this->hovered != -1) {
+      CSkillInfo skill = this->GetSkillByIndex(this->hovered);
+      if (skill.available != 0) {
+        const int kind = this->unknown_0138[a].value;
+        if (kind == 3) {
+          g_windowMgr.EnsureWindow(0x2E)->SendMsg(nullptr, 0x3D, skill.id, 0, 0, 0);
+        } else if (kind == 0xE) {
+          g_windowMgr.EnsureWindow(0x37)->SendMsg(nullptr, 0x44, skill.id, 0, 0, 0);
+        }
       }
-      mode->SendMsg(0x71, a, level, 0, 0);
       return 0;
     }
     break;
-  }
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
@@ -6614,6 +6642,37 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
 // FUNCTION: fn_13430
 int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 34:
+    this->saved = reinterpret_cast<MerchantItemShopWndInfo*>(a);
+    if (!this->saved->IsValid(this->unknown_010C != 0)) {
+      this->saved->Reset(this->unknown_010C != 0);
+    }
+
+    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 28:
+    this->unknown_0100 = a;
+    return 0;
+  case 36:
+    this->unknown_00F4->SetTextAutoWidth(LookupMessage(186));
+    return 0;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (this->unknown_010C == 0) {
+      ITEM_INFO item;
+      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      g_session.RemoveItem1760(item);
+      if (g_windowMgr.unknown_0308) {
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0308)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+
+      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
   case 14:
     if (a == 3) {
       int width;
@@ -6654,37 +6713,6 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->visibleRows = std::max(this->items.size(), 4u);
     this->Resize(this->geometry.width, this->visibleRows * 32 + this->unknown_00F0);
     this->Invalidate();
-    return 0;
-  }
-  case 28:
-    this->unknown_0100 = a;
-    return 0;
-  case 34:
-    this->saved = reinterpret_cast<MerchantItemShopWndInfo*>(a);
-    if (!this->saved->IsValid(this->unknown_010C != 0)) {
-      this->saved->Reset(this->unknown_010C != 0);
-    }
-
-    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
-    this->Move(this->saved->x, this->saved->y);
-    return 0;
-  case 36:
-    this->unknown_00F4->SetTextAutoWidth(LookupMessage(186));
-    return 0;
-  case 38: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    if (this->unknown_010C == 0) {
-      ITEM_INFO item;
-      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
-      g_session.RemoveItem1760(item);
-      if (g_windowMgr.unknown_0308) {
-        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0308)->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      }
-
-      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-    }
-
-    mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
   case 119: {
@@ -8064,12 +8092,59 @@ UIItemWnd::~UIItemWnd() = default;
 // FUNCTION: fn_13423
 int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 34:
+    this->saved = reinterpret_cast<ItemShopWndInfo*>(a);
+    if (!static_cast<ItemShopWndInfo*>(this->saved)->IsValid()) {
+      static_cast<ItemShopWndInfo*>(this->saved)->Reset();
+    }
+
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
   case 6:
     if (a == 213) {
       g_windowMgr.unknown_0064 = b;
       return 0;
     }
     break;
+  case 38:
+    switch (a) {
+    case 0: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      ITEM_INFO item;
+      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      g_session.RemoveItem1720ByName(item);
+      if (g_windowMgr.unknown_0258) {
+        g_windowMgr.unknown_0258->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+
+      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+    case 1: {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      ITEM_INFO item;
+      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      CSession* lists = &g_session;
+      lists->MergeItem1718(item);
+      lists->RemoveItem1730(item);
+      if (g_windowMgr.unknown_0260) {
+        g_windowMgr.unknown_0260->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+
+      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+    }
+    break;
+  case 36:
+    this->unknown_00F8 = 1;
+    this->showQuantity = 1;
+    this->title->SetTextAutoWidth(LookupMessage(1568));
+    this->checkBox->m_disabled = 0;
+    return 0;
   case 14:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
@@ -8112,51 +8187,6 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     this->UpdateScrollBar();
     break;
   }
-  case 34:
-    this->saved = reinterpret_cast<ItemShopWndInfo*>(a);
-    if (!static_cast<ItemShopWndInfo*>(this->saved)->IsValid()) {
-      static_cast<ItemShopWndInfo*>(this->saved)->Reset();
-    }
-
-    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
-    this->Move(this->saved->x, this->saved->y);
-    return 0;
-  case 36:
-    this->unknown_00F8 = 1;
-    this->showQuantity = 1;
-    this->title->SetTextAutoWidth(LookupMessage(1568));
-    this->checkBox->m_disabled = 0;
-    return 0;
-  case 38:
-    if (a == 0) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      ITEM_INFO item;
-      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
-      g_session.RemoveItem1720ByName(item);
-      if (g_windowMgr.unknown_0258) {
-        g_windowMgr.unknown_0258->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      }
-
-      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      mode->SendMsg(18, 0, 0, 0, 0);
-      return 0;
-    }
-    if (a == 1) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      ITEM_INFO item;
-      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
-      CSession* lists = &g_session;
-      lists->MergeItem1718(item);
-      lists->RemoveItem1730(item);
-      if (g_windowMgr.unknown_0260) {
-        g_windowMgr.unknown_0260->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      }
-
-      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      mode->SendMsg(18, 0, 0, 0, 0);
-      return 0;
-    }
-    break;
   default:
     return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
   }
@@ -11148,6 +11178,39 @@ void UIItemPurchaseWnd::Slot15(int width, int height) {
 // FUNCTION: fn_13425
 int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
+  case 34:
+    this->saved = reinterpret_cast<ItemStoreFindWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->Move(this->saved->x, this->saved->y);
+    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
+    return 0;
+  case 23: {
+    this->items.erase(this->items.begin(), this->items.end());
+    const int size = g_session.GetList5Size();
+    for (int i = 0; i < size; ++i) {
+      ITEM_INFO item = g_session.GetItem1738At(i);
+      if (item.unknown_0000[1] != 0) {
+        this->items.push_back(item);
+      }
+    }
+
+    if (g_itemStoreSortMode[1]) {
+      reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort1();
+    }
+    if (g_itemStoreSortMode[2]) {
+      reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed1();
+    }
+    if (!this->searchText.empty()) {
+      reinterpret_cast<UIItemStoreSubWnd*>(this)->FilterByName1(std::string(this->searchText.c_str(), this->searchText.size()));
+    }
+
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
   case 6:
     if (a == 201) {
       g_windowMgr.CloseWindow(153);
@@ -11181,39 +11244,6 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       g_windowMgr.StoreSnapRectangle(this);
     }
     return 0;
-  case 23: {
-    this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList5Size();
-    for (int i = 0; i < size; ++i) {
-      ITEM_INFO item = g_session.GetItem1738At(i);
-      if (item.unknown_0000[1] != 0) {
-        this->items.push_back(item);
-      }
-    }
-
-    if (g_itemStoreSortMode[1]) {
-      reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort1();
-    }
-    if (g_itemStoreSortMode[2]) {
-      reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed1();
-    }
-    if (!this->searchText.empty()) {
-      reinterpret_cast<UIItemStoreSubWnd*>(this)->FilterByName1(std::string(this->searchText.c_str(), this->searchText.size()));
-    }
-
-    this->Invalidate();
-    this->UpdateScrollBar();
-    return 0;
-  }
-  case 34:
-    this->saved = reinterpret_cast<ItemStoreFindWndInfo*>(a);
-    if (!this->saved->IsValid()) {
-      this->saved->Reset();
-    }
-
-    this->Move(this->saved->x, this->saved->y);
-    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
-    return 0;
   case 38: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode->drag.source == 1) {
@@ -11225,6 +11255,10 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
+  case 246:
+    this->sorted = false;
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    return 0;
   case 55: {
     char text[64];
     std::sprintf(text, "%d/%d", a, b);
@@ -11232,10 +11266,6 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     this->Invalidate();
     return 0;
   }
-  case 246:
-    this->sorted = false;
-    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-    return 0;
   case 364:
     if (g_itemStoreSortMode[0] == true) {
       this->SendMsg(nullptr, 246, 0, 0, 0, 0);
