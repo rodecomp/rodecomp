@@ -25,19 +25,17 @@ std::uint32_t DepthAlpha(float reciprocalDepth) {
 // OFFSET: 0x005694A0
 // FUNCTION: fn_02260
 void RenderCommand::ApplyDepthAlpha() {
-  if (this->vertexCount > 0) {
-    for (int index = 0; index < this->vertexCount; ++index) {
-      this->vertices[index].specular = DepthAlpha(this->vertices[index].rhw);
-    }
+  for (int index = 0; index < this->vertexCount; ++index) {
+    RenderVertex& vertex = this->vertices[index];
+    vertex.specular = DepthAlpha(vertex.rhw);
   }
 }
 
 // OFFSET: 0x005694E0
 // FUNCTION: fn_02261
 void LightmappedPrimitive::ApplyDepthAlpha() {
-  if (this->vertexCount > 0) {
-    for (int index = 0; index < this->vertexCount; ++index) {
-      this->vertices[index].specular = DepthAlpha(this->vertices[index].rhw);
-    }
+  for (int index = 0; index < this->vertexCount; ++index) {
+    auto& vertex = this->vertices[index];
+    vertex.specular = DepthAlpha(vertex.rhw);
   }
 }
