@@ -98,6 +98,7 @@ struct MapStateEntry {
 class CLoginMode : public CMode {
 public:
   CLoginMode();
+  virtual ~CLoginMode();
   void SubD97780(int value);
   void SendKeepalive();
   /* 0058 */ int charParams[6];

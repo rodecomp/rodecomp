@@ -2234,6 +2234,12 @@ CLoginMode::CLoginMode() : wallpaperName(), unknown_6F1C(), unknown_6F2C(), unkn
   this->characterDeleted = false;
 }
 
+// OFFSET: 0x00D8C990
+// FUNCTION: fn_45557
+CLoginMode::~CLoginMode() {
+  g_inlineCharset = this->savedInlineCharset;
+}
+
 // OFFSET: 0x00D92B80
 // FUNCTION: fn_22293
 bool CLoginMode::ShowNotice(int notice, bool append) {
