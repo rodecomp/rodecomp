@@ -14,7 +14,7 @@ int UIWindow::DrawTitleBar(bool closeButton, const char* title, int width) {
   int titleHeight = 0;
   auto* leftBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp")));
   if (leftBar) {
-    this->DrawBitmap(0, 0, &leftBar->image, false);
+    this->DrawBitmap(0, 0, leftBar, false);
     left = leftBar->image.width;
   }
 
@@ -22,7 +22,7 @@ int UIWindow::DrawTitleBar(bool closeButton, const char* title, int width) {
   auto* rightBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_right.bmp")));
   if (rightBar) {
     right = rightBar->image.width;
-    this->DrawBitmap(width - right, 0, &rightBar->image, false);
+    this->DrawBitmap(width - right, 0, rightBar, false);
   }
 
   auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_mid.bmp")));
@@ -33,7 +33,7 @@ int UIWindow::DrawTitleBar(bool closeButton, const char* title, int width) {
     const int count = extent / middleWidth + (extent % middleWidth != 0);
 
     for (int index = 0; index < count; ++index) {
-      this->DrawBitmap(left, 0, &middle->image, false);
+      this->DrawBitmap(left, 0, middle, false);
       left += middleWidth;
     }
   }
