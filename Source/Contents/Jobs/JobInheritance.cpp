@@ -349,6 +349,53 @@ bool CSession::HasJobShieldSprite(int job, int shield) const {
 // FUNCTION: fn_23581
 bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
   switch (job) {
+  case JT_GUNSLINGER:
+  case JT_GUNSLINGER_B:
+    switch (weaponType) {
+    case W_REVOLVER:
+    case W_RIFLE:
+    case W_GATLING:
+    case W_SHOTGUN:
+    case W_GRENADE:
+      return true;
+    }
+    return false;
+  case JT_NINJA:
+  case JT_NINJA_B:
+    return weaponType == W_HUUMA;
+  case JT_STAR:
+  case JT_STAR2:
+  case JT_STAR_B:
+  case JT_STAR2_B:
+  case JT_STAR_EMPEROR:
+  case JT_STAR_EMPEROR_B:
+  case JT_STAR2_EMPEROR:
+  case JT_STAR2_EMPEROR_B:
+  case JT_SKY_EMPEROR:
+  case JT_SKY_EMPEROR2:
+    return weaponType == W_BOOK;
+  case JT_MAGICIAN:
+  case JT_WIZARD:
+  case JT_MAGICIAN_H:
+  case JT_WIZARD_H:
+  case JT_MAGICIAN_B:
+  case JT_WIZARD_B:
+  case JT_LINKER:
+  case JT_WARLOCK:
+  case JT_WARLOCK_H:
+  case JT_WARLOCK_B:
+  case JT_LINKER_B:
+  case JT_SOUL_REAPER:
+  case JT_SOUL_REAPER_B:
+  case JT_ARCH_MAGE:
+  case JT_SOUL_ASCETIC:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_STAFF:
+    case W_2HSTAFF:
+      return true;
+    }
+    return false;
   case JT_NOVICE:
   case JT_SUPERNOVICE:
   case JT_NOVICE_H:
@@ -368,12 +415,63 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     }
     return false;
   case JT_SWORDMAN:
+  case JT_SWORDMAN_H:
+  case JT_SWORDMAN_B:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_2HSWORD:
+    case W_1HSPEAR:
+    case W_2HSPEAR:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_MACE:
+    case W_2HMACE:
+      return true;
+    }
+    return false;
+  case JT_ACOLYTE:
+  case JT_ACOLYTE_H:
+  case JT_ACOLYTE_B:
+    switch (weaponType) {
+    case W_MACE:
+    case W_STAFF:
+    case W_2HSTAFF:
+      return true;
+    }
+    return false;
+  case JT_MERCHANT:
+  case JT_MERCHANT_H:
+  case JT_MERCHANT_B:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_MACE:
+      return true;
+    }
+    return false;
+  case JT_THIEF:
+  case JT_ROGUE:
+  case JT_THIEF_H:
+  case JT_ROGUE_H:
+  case JT_THIEF_B:
+  case JT_ROGUE_B:
+  case JT_SHADOW_CHASER:
+  case JT_SHADOW_CHASER_H:
+  case JT_SHADOW_CHASER_B:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_BOW:
+      return true;
+    }
+    return false;
   case JT_KNIGHT:
   case JT_CHICKEN:
-  case JT_SWORDMAN_H:
   case JT_KNIGHT_H:
   case JT_CHICKEN_H:
-  case JT_SWORDMAN_B:
   case JT_KNIGHT_B:
   case JT_CHICKEN_B:
   case JT_RUNE_KNIGHT:
@@ -405,25 +503,38 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
       return true;
     }
     return false;
-  case JT_MAGICIAN:
-  case JT_WIZARD:
-  case JT_MAGICIAN_H:
-  case JT_WIZARD_H:
-  case JT_MAGICIAN_B:
-  case JT_WIZARD_B:
-  case JT_LINKER:
-  case JT_WARLOCK:
-  case JT_WARLOCK_H:
-  case JT_WARLOCK_B:
-  case JT_LINKER_B:
-  case JT_SOUL_REAPER:
-  case JT_SOUL_REAPER_B:
-  case JT_ARCH_MAGE:
-  case JT_SOUL_ASCETIC:
+  case JT_PRIEST:
+  case JT_PRIEST_H:
+  case JT_PRIEST_B:
+  case JT_ARCHBISHOP:
+  case JT_ARCHBISHOP_H:
+  case JT_ARCHBISHOP_B:
+  case JT_CARDINAL:
+    switch (weaponType) {
+    case W_MACE:
+    case W_STAFF:
+    case W_BOOK:
+    case W_2HSTAFF:
+      return true;
+    }
+    return false;
+  case JT_BLACKSMITH:
+  case JT_BLACKSMITH_H:
+  case JT_BLACKSMITH_B:
+  case JT_MECHANIC:
+  case JT_MECHANIC_H:
+  case JT_MADOGEAR:
+  case JT_MADOGEAR_H:
+  case JT_MECHANIC_B:
+  case JT_MADOGEAR_B:
+  case JT_MEISTER:
+  case JT_MEISTER_MADOGEAR:
     switch (weaponType) {
     case W_DAGGER:
-    case W_STAFF:
-    case W_2HSTAFF:
+    case W_1HSWORD:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_MACE:
       return true;
     }
     return false;
@@ -443,70 +554,6 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     switch (weaponType) {
     case W_DAGGER:
     case W_BOW:
-      return true;
-    }
-    return false;
-  case JT_ACOLYTE:
-  case JT_ACOLYTE_H:
-  case JT_ACOLYTE_B:
-    switch (weaponType) {
-    case W_MACE:
-    case W_STAFF:
-    case W_2HSTAFF:
-      return true;
-    }
-    return false;
-  case JT_MERCHANT:
-  case JT_BLACKSMITH:
-  case JT_MERCHANT_H:
-  case JT_BLACKSMITH_H:
-  case JT_MERCHANT_B:
-  case JT_BLACKSMITH_B:
-  case JT_MECHANIC:
-  case JT_MECHANIC_H:
-  case JT_MADOGEAR:
-  case JT_MADOGEAR_H:
-  case JT_MECHANIC_B:
-  case JT_MADOGEAR_B:
-  case JT_MEISTER:
-  case JT_MEISTER_MADOGEAR:
-    switch (weaponType) {
-    case W_DAGGER:
-    case W_1HSWORD:
-    case W_1HAXE:
-    case W_2HAXE:
-    case W_MACE:
-      return true;
-    }
-    return false;
-  case JT_THIEF:
-  case JT_ROGUE:
-  case JT_THIEF_H:
-  case JT_ROGUE_H:
-  case JT_THIEF_B:
-  case JT_ROGUE_B:
-  case JT_SHADOW_CHASER:
-  case JT_SHADOW_CHASER_H:
-  case JT_SHADOW_CHASER_B:
-    switch (weaponType) {
-    case W_DAGGER:
-    case W_1HSWORD:
-    case W_BOW:
-      return true;
-    }
-    return false;
-  case JT_PRIEST:
-  case JT_PRIEST_H:
-  case JT_PRIEST_B:
-  case JT_ARCHBISHOP:
-  case JT_ARCHBISHOP_H:
-  case JT_ARCHBISHOP_B:
-  case JT_CARDINAL:
-    switch (weaponType) {
-    case W_MACE:
-    case W_STAFF:
-    case W_BOOK:
-    case W_2HSTAFF:
       return true;
     }
     return false;
@@ -557,6 +604,38 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
       return true;
     }
     return false;
+  case JT_BARD:
+  case JT_BARD_H:
+  case JT_BARD_B:
+  case JT_MINSTREL:
+  case JT_MINSTREL_H:
+  case JT_MINSTREL_B:
+  case JT_TROUBADOUR:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_BOW:
+    case W_MUSICAL:
+      return true;
+    }
+    return false;
+  case JT_ALCHEMIST:
+  case JT_ALCHEMIST_H:
+  case JT_ALCHEMIST_B:
+  case JT_GENETIC:
+  case JT_GENETIC_H:
+  case JT_GENETIC_B:
+  case JT_BIOLO:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_MACE:
+    case W_STAFF:
+    case W_2HSTAFF:
+      return true;
+    }
+    return false;
   case JT_MONK:
   case JT_MONK_H:
   case JT_MONK_B:
@@ -586,65 +665,22 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_BOOK:
     case W_2HSTAFF:
       return true;
+    case JT_DANCER:
+    case JT_DANCER_H:
+    case JT_DANCER_B:
+    case JT_WANDERER:
+    case JT_WANDERER_H:
+    case JT_WANDERER_B:
+    case JT_TROUVERE:
+      switch (weaponType) {
+      case W_DAGGER:
+      case W_BOW:
+      case W_WHIP:
+        return true;
+      }
+      return false;
     }
     return false;
-  case JT_ALCHEMIST:
-  case JT_ALCHEMIST_H:
-  case JT_ALCHEMIST_B:
-  case JT_GENETIC:
-  case JT_GENETIC_H:
-  case JT_GENETIC_B:
-  case JT_BIOLO:
-    switch (weaponType) {
-    case W_DAGGER:
-    case W_1HSWORD:
-    case W_1HAXE:
-    case W_2HAXE:
-    case W_MACE:
-    case W_STAFF:
-    case W_2HSTAFF:
-      return true;
-    }
-    return false;
-  case JT_BARD:
-  case JT_BARD_H:
-  case JT_BARD_B:
-  case JT_MINSTREL:
-  case JT_MINSTREL_H:
-  case JT_MINSTREL_B:
-  case JT_TROUBADOUR:
-    switch (weaponType) {
-    case W_DAGGER:
-    case W_BOW:
-    case W_MUSICAL:
-      return true;
-    }
-    return false;
-  case JT_GUNSLINGER:
-  case JT_GUNSLINGER_B:
-    switch (weaponType) {
-    case W_REVOLVER:
-    case W_RIFLE:
-    case W_GATLING:
-    case W_SHOTGUN:
-    case W_GRENADE:
-      return true;
-    }
-    return false;
-  case JT_NINJA:
-  case JT_NINJA_B:
-    return weaponType == W_HUUMA;
-  case JT_STAR:
-  case JT_STAR2:
-  case JT_STAR_B:
-  case JT_STAR2_B:
-  case JT_STAR_EMPEROR:
-  case JT_STAR_EMPEROR_B:
-  case JT_STAR2_EMPEROR:
-  case JT_STAR2_EMPEROR_B:
-  case JT_SKY_EMPEROR:
-  case JT_SKY_EMPEROR2:
-    return weaponType == W_BOOK;
   case JT_GANGSI:
   case JT_DEATHKNIGHT:
   case JT_COLLECTOR:
@@ -1204,10 +1240,10 @@ bool ResetHotkeySlots() {
 // OFFSET: 0x00E25E60
 // FUNCTION: fn_23909
 std::pair<int, int>* CSession::InsertPair(int key, int value) {
-  for (auto& entry : this->unknown_0778) {
-    if (entry.first == key) {
-      entry.second = value;
-      return &entry;
+  for (std::vector<std::pair<int, int>>::iterator it = this->unknown_0778.begin(); it != this->unknown_0778.end(); ++it) {
+    if (key == it->first) {
+      it->second = value;
+      return &*it;
     }
   }
 
