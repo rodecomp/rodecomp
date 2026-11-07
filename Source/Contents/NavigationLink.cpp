@@ -82,33 +82,39 @@ void CNavi_Link::SetDepth(int depth) {
 // OFFSET: 0x00B8D9A0
 // FUNCTION: fn_19438
 bool CNaviInfo::AddNpc(CNavi_Object* npc) {
+  std::vector<CNavi_Object*>& npcs = this->npcs;
+
   if (npc == nullptr) {
     return false;
   }
 
-  this->npcs.push_back(npc);
+  npcs.push_back(npc);
   return true;
 }
 
 // OFFSET: 0x00B8D9E0
 // FUNCTION: fn_19439
 bool CNaviInfo::AddLink(CNavi_Link* link) {
+  std::vector<CNavi_Link*>& links = this->links;
+
   if (link == nullptr) {
     return false;
   }
 
-  this->links.push_back(link);
+  links.push_back(link);
   return true;
 }
 
 // OFFSET: 0x00B8DA20
 // FUNCTION: fn_19440
 bool CNaviInfo::AddMob(CNavi_Object* mob) {
+  std::vector<CNavi_Object*>& mobs = this->mobs;
+
   if (mob == nullptr) {
     return false;
   }
 
-  this->mobs.push_back(mob);
+  mobs.push_back(mob);
   return true;
 }
 
