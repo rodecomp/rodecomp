@@ -1396,7 +1396,7 @@ void CUIEditBox::SetBackgroundColor(std::uint32_t color) {
 // OFFSET: 0x009ED7D0
 // FUNCTION: fn_14586
 void CUIEditBox::SetTextColor(std::uint32_t color) {
-  this->edit->TextColor(RGB(GetRValue(color), GetGValue(color), GetBValue(color)), 0xFFFFFFFFu);
+  this->edit->TextColor(GetRValue(color), GetGValue(color), GetBValue(color), 0xFFFFFFFFu);
 }
 
 // OFFSET: 0x009ED800
