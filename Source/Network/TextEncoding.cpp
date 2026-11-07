@@ -137,16 +137,16 @@ std::string EncodeText(UINT codePage, const std::wstring& text) {
   if (length == 0) {
     return "";
   }
-  char* converted = static_cast<char*>(std::malloc(length));
+  char* converted = new char[length];
   if (converted == nullptr) {
     return "";
   }
   if (WideCharToMultiByte(codePage, 0, text.c_str(), -1, converted, length, nullptr, nullptr) == 0) {
-    std::free(converted);
+    delete[] converted;
     return "";
   }
   std::string result(converted, std::strlen(converted));
-  std::free(converted);
+  delete[] converted;
   return result;
 }
 
