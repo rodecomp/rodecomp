@@ -730,7 +730,7 @@ int CRenderObject::HoverHeight() {
     --this->render.unknown_00FA;
   }
 
-  const short height = static_cast<short>(ClientSine(angle) * 4.0f + this->render.unknown_00FA);
+  const short height = static_cast<short>(g_sinTable[angle] * 4.0f + this->render.unknown_00FA);
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const short scaled = static_cast<short>(400.0f / mode->camera->camera.desiredDistance * height);
   return scaled < 0 ? 0 : scaled;
@@ -772,7 +772,7 @@ void CRenderObject::ScaleByPulse(float& scale) const {
   if ((this->render.flags & 0x10) != 0) {
     const unsigned index = std::max(this->render.pulsePhases[0] * 4u + 90u, 90u);
     if (index < 270) {
-      scale = ((ClientSine(index) + 1.0f) * 0.25f + 0.5f) * scale;
+      scale = ((g_sinTable[index] + 1.0f) * 0.25f + 0.5f) * scale;
     } else {
       scale = scale * 0.5f;
     }
@@ -781,7 +781,7 @@ void CRenderObject::ScaleByPulse(float& scale) const {
   if ((this->render.flags & 0x400) != 0) {
     const unsigned index = std::max(this->render.pulsePhases[1] * 4u + 90u, 90u);
     if (index < 270) {
-      scale = (1.5f - (ClientSine(index) + 1.0f) * 0.25f) * scale;
+      scale = (1.5f - (g_sinTable[index] + 1.0f) * 0.25f) * scale;
     } else {
       scale = scale * 1.5f;
     }
