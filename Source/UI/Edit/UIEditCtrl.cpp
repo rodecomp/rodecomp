@@ -3472,6 +3472,8 @@ bool UIMerchantShopMakeWnd::HasSelection() const {
   return true;
 }
 
+#pragma inline_depth(0)
+
 // OFFSET: 0x00974590
 // FUNCTION: fn_13304
 void UIMerchantShopMakeWnd::SendShopRequest() {
@@ -3482,6 +3484,8 @@ void UIMerchantShopMakeWnd::SendShopRequest() {
 
   g_modeMgr.GetGameMode()->SendMsg(296, reinterpret_cast<int>(this->unknown_00CC->Text()), 0, 0, 0);
 }
+
+#pragma inline_depth()
 
 // OFFSET: 0x00974820
 // FUNCTION: fn_13306
