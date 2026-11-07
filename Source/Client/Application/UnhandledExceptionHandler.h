@@ -9,6 +9,7 @@
 class CUnhandledExceptionHandler {
 public:
   CUnhandledExceptionHandler();
+  explicit CUnhandledExceptionHandler(int (*callback)());
 
   virtual ~CUnhandledExceptionHandler();
 };

@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Application/UnhandledExceptionHandler.h"
 #include "Client/Session.h"
+#include "Utility/Text/FormatString.h"
 
 #include <windows.h>
 #include <dbghelp.h>
@@ -42,23 +43,12 @@ CUnhandledExceptionHandler::CUnhandledExceptionHandler() {
 
 CUnhandledExceptionHandler::~CUnhandledExceptionHandler() = default;
 
-// OFFSET: 0x00635AB0
-// FUNCTION: fn_04703
-bool InitUnhandledExceptionHandler(int (*callback)()) {
-  if (g_unhandledExceptionHandler != nullptr) {
-    return false;
-  }
-
-  auto* handler = new CUnhandledExceptionHandler();
-  if (!handler) {
-    g_unhandledExceptionHandler = nullptr;
-    return false;
-  }
-
+// INLINED
+CUnhandledExceptionHandler::CUnhandledExceptionHandler(int (*callback)()) {
   g_unhandledExceptionCallback = callback;
   GetModuleFileNameA(nullptr, g_filename, sizeof(g_filename));
 
-  _snprintf_s(g_moduleBaseName, sizeof(g_moduleBaseName), static_cast<size_t>(-1), "%s", strrchr(g_filename, '\\') ? strrchr(g_filename, '\\') + 1 : g_filename);
+  StringFormat(g_moduleBaseName, sizeof(g_moduleBaseName), static_cast<size_t>(-1), "%s", strrchr(g_filename, '\\') ? strrchr(g_filename, '\\') + 1 : g_filename);
 
   if (strrchr(g_filename, '\\')) {
     *strrchr(g_filename, '\\') = '\0';
@@ -71,9 +61,17 @@ bool InitUnhandledExceptionHandler(int (*callback)()) {
   SetUnhandledExceptionFilter(TopLevelExceptionFilter);
   _set_invalid_parameter_handler(InvalidParameterHandler);
   _set_purecall_handler(PurecallHandler);
+}
 
-  g_unhandledExceptionHandler = handler;
-  return true;
+// OFFSET: 0x00635AB0
+// FUNCTION: fn_04703
+bool InitUnhandledExceptionHandler(int (*callback)()) {
+  if (g_unhandledExceptionHandler != nullptr) {
+    return false;
+  }
+
+  g_unhandledExceptionHandler = new CUnhandledExceptionHandler(callback);
+  return g_unhandledExceptionHandler != nullptr;
 }
 
 // OFFSET: 0x00635C10
