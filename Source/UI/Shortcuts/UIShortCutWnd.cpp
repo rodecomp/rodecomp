@@ -634,47 +634,44 @@ void UIRoMapWnd::Slot31(int x, int y) {
     }
   }
 
-  if (this->unknown_01FC.empty()) {
-    if (this->unknown_00C0) {
-      std::string name = this->unknown_00C0->name;
-      if (name.size() > 4) {
-        name.resize(name.size() - 4);
-      }
-
-      g_navigationMinimized = false;
-      g_navigationManager.SearchNavigation(name, 0, false);
-      if (g_windowMgr.window_4F174) {
-        static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRoute(0);
-        static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRouteNode(0);
-      }
-      this->UpdateNavigationButtons();
-    }
-    return;
-  }
-
-  if (g_windowMgr.unknown_0214 != 0) {
-    g_windowMgr.CloseWindow(26);
-  }
-
   if (!this->unknown_01FC.empty()) {
-    UIWindow* menu = g_windowMgr.EnsureWindow(26);
-    int width = 0;
-    for (const std::string& name : this->unknown_01FC) {
-      const int textWidth = this->TextWidth(name.c_str(), 0, 0, 14, 0, 0);
-      if (width < textWidth) {
-        width = textWidth;
-      }
-      menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
+    if (g_windowMgr.unknown_0214 != 0) {
+      g_windowMgr.CloseWindow(26);
     }
 
-    const int height = static_cast<int>((std::min)(this->unknown_01FC.size() * 16, 160u));
-    menu->SendMsg(nullptr, 40, 0, 0, 0, 0);
-    menu->Resize(width, height);
-    menu->SendMsg(nullptr, 83, 140, 0, 0, 0);
+    if (!this->unknown_01FC.empty()) {
+      UIWindow* menu = g_windowMgr.EnsureWindow(26);
+      int width = 0;
+      for (std::vector<std::string>::iterator name = this->unknown_01FC.begin(); name != this->unknown_01FC.end(); ++name) {
+        const int textWidth = this->TextWidth(name->c_str(), 0, 0, 14, 0, 0);
+        if (width < textWidth) {
+          width = textWidth;
+        }
+        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(name->c_str()), 0, 0, 0);
+      }
 
-    const int menuY = this->geometry.height - (y + 1) - height >= 0 ? y + 1 : this->geometry.height - height;
-    const int menuX = this->geometry.width - (x + 2) - width >= 0 ? x + 2 : this->geometry.width - width;
-    menu->Move(menuX, menuY);
+      const int height = static_cast<int>((std::min)(this->unknown_01FC.size() * 16, 160u));
+      menu->SendMsg(nullptr, 40, 0, 0, 0, 0);
+      menu->Resize(width, height);
+      menu->SendMsg(nullptr, 83, 140, 0, 0, 0);
+
+      const int menuY = this->geometry.height - (y + 1) - height >= 0 ? y + 1 : this->geometry.height - height;
+      const int menuX = this->geometry.width - (x + 2) - width >= 0 ? x + 2 : this->geometry.width - width;
+      menu->Move(menuX, menuY);
+    }
+  } else if (this->unknown_00C0) {
+    std::string name = this->unknown_00C0->name;
+    if (name.size() > 4) {
+      name.resize(name.size() - 4);
+    }
+
+    g_navigationMinimized = false;
+    g_navigationManager.SearchNavigation(name, 0, false);
+    if (g_windowMgr.window_4F174) {
+      static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRoute(0);
+      static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRouteNode(0);
+    }
+    this->UpdateNavigationButtons();
   }
 }
 
