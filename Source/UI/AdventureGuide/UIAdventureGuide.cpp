@@ -1164,7 +1164,7 @@ void CUICharacterInfo::Slot15(int width, int height) {
   this->jobIcon = new CUIStaticImage();
   this->jobIcon->SetSize(25, 25);
   this->jobIcon->Move(10, 8);
-  this->jobIcon->SetImage(std::string());
+  this->jobIcon->SetImage(std::string(""));
   this->AddChild(this->jobIcon);
 
   this->level = new CUIStaticText();
@@ -1225,7 +1225,7 @@ void CUIItemInfo::Slot15(int width, int height) {
   this->image = new CUIStaticImage();
   this->image->SetSize(75, 100);
   this->image->Move(45, 14);
-  this->image->SetImage(std::string());
+  this->image->SetImage(std::string(""));
   this->AddChild(this->image);
 
   this->nameText = new CUIStaticText();
@@ -2345,7 +2345,7 @@ void CUIIntro::Slot15(int width, int height) {
   this->banner->SetSize(630, 216);
   this->banner->Move(0, 0);
   {
-    const std::string banner([]() {
+    this->banner->SetImage(std::string([]() {
       constexpr char bytes[] = {
         '\xAD', '\x14', '\x55', '\xD7', '\x53', '\x35', '\xD2', '\x08', '\xAB', '\x5F', '\x55', '\xE1', '\x2E', '\x41', '\x4B', '\x84', '\x09', '\xCD', '\xF0',
         '\x43', '\xE7', '\x8E', '\x65', '\xA0', '\x2A', '\xCE', '\xFC', '\x49', '\xF6', '\xA7', '\x75', '\xA2', '\x32', '\xD9', '\xF4', '\x43', '\xFD', '\x9E',
@@ -2353,21 +2353,21 @@ void CUIIntro::Slot15(int width, int height) {
       constexpr EncryptedSource<44> source(bytes);
       thread_local EncryptedName<44, 0xC517FB932D95BB6DULL> name(source);
       return name.Text();
-    }());
-    this->banner->SetImage(banner);
+    }()));
   }
   this->AddChild(this->banner);
 
   this->image = new CUIStaticImage();
   this->image->SetSize(583, 162);
   this->image->Move(22, 27);
-  this->image->SetImage(std::string());
+  this->image->SetImage(std::string(""));
   this->AddChild(this->image);
 
-  this->contents = new CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>();
-  this->contents->itemWidth = 603;
-  this->contents->rowHeight = 44;
-  this->contents->SetSize(603, 166);
+  CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>* contents = new CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>();
+  this->contents = contents;
+  contents->itemWidth = 603;
+  contents->rowHeight = 44;
+  contents->SetSize(603, 166);
   this->contents->Move(10, 207);
   this->contents->SetOnSelect([this](CUITabInfo* item, const Guide_Intro::Contents& contents) { this->OnSelectContents(item, contents); });
   this->contents->SetBinder([this](CUITabInfo* item, const Guide_Intro::Contents& contents) { this->BindContents(item, contents); });
@@ -2406,8 +2406,11 @@ void CUIIntro::Slot15(int width, int height) {
       return name.Text();
     }()));
   }
-  this->contents->itemX = 0;
-  this->contents->itemY = 0;
+  {
+    CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>* contents = this->contents;
+    contents->itemX = 0;
+    contents->itemY = 0;
+  }
   this->contents->scrollBar->SetSize(8, 166);
   this->contents->scrollBar->Move(595, 0);
   this->contents->scrollBar->step = 44;
@@ -2476,13 +2479,14 @@ void CUIIntro::Slot15(int width, int height) {
 // OFFSET: 0x009C6F50
 // FUNCTION: fn_14002
 void CUIItem::Slot15(int width, int height) {
-  this->itemList = new CUIListBoxEx<CUIItemInfo, CItemData>();
-  this->itemList->itemWidth = 603;
-  this->itemList->rowHeight = 128;
-  this->itemList->SetSize(627, 355);
+  CUIListBoxEx<CUIItemInfo, CItemData>* itemList = new CUIListBoxEx<CUIItemInfo, CItemData>();
+  this->itemList = itemList;
+  itemList->itemWidth = 603;
+  itemList->rowHeight = 128;
+  itemList->SetSize(627, 355);
   this->itemList->Move(0, 0);
-  this->itemList->onSelect = [this](CUIItemInfo* item, const CItemData& data) { this->OnSelectItem(item, data); };
-  this->itemList->binder = [this](CUIItemInfo* item, const CItemData& data) { this->BindItem(item, data); };
+  this->itemList->SetOnSelect([this](CUIItemInfo* item, const CItemData& data) { this->OnSelectItem(item, data); });
+  this->itemList->SetBinder([this](CUIItemInfo* item, const CItemData& data) { this->BindItem(item, data); });
   {
     const char listDisabledSource[] = {
         '\xD1', '\x4C', '\x93', '\x63', '\x71', '\x93', '\xB0', '\x86', '\xD7', '\x07', '\x93', '\x55', '\x0C', '\xE7', '\x29', '\x0A', '\x75', '\x95', '\x36',
@@ -2638,13 +2642,14 @@ void CUIItem::Slot15(int width, int height) {
 // OFFSET: 0x009CDD40
 // FUNCTION: fn_14006
 void CUIQuest::Slot15(int width, int height) {
-  this->questList = new CUIListBoxEx<CUIQuestInfo, CQuestInfo>();
-  this->questList->itemWidth = 603;
-  this->questList->rowHeight = 97;
-  this->questList->SetSize(627, 355);
+  CUIListBoxEx<CUIQuestInfo, CQuestInfo>* questList = new CUIListBoxEx<CUIQuestInfo, CQuestInfo>();
+  this->questList = questList;
+  questList->itemWidth = 603;
+  questList->rowHeight = 97;
+  questList->SetSize(627, 355);
   this->questList->Move(0, 0);
-  this->questList->onSelect = [this](CUIQuestInfo* item, const CQuestInfo& data) { this->OnSelectQuest(item, data); };
-  this->questList->binder = [this](CUIQuestInfo* item, const CQuestInfo& data) { BindQuestInfo(item, data); };
+  this->questList->SetOnSelect([this](CUIQuestInfo* item, const CQuestInfo& data) { this->OnSelectQuest(item, data); });
+  this->questList->SetBinder([this](CUIQuestInfo* item, const CQuestInfo& data) { BindQuestInfo(item, data); });
   {
     const char listDisabledSource[] = {
         '\xD7', '\xB4', '\xED', '\x59', '\x7D', '\x25', '\x84', '\xC2', '\xD1', '\xFF', '\xED', '\x6F', '\x00', '\x51', '\x1D', '\x4E', '\x73', '\x6D', '\x48',
@@ -2800,13 +2805,14 @@ void CUIQuest::Slot15(int width, int height) {
 // OFFSET: 0x009CAE30
 // FUNCTION: fn_14004
 void CUIMonster::Slot15(int width, int height) {
-  this->monsterList = new CUIListBoxEx<CUIMonsterInfo, CMonsterData>();
-  this->monsterList->itemWidth = 603;
-  this->monsterList->rowHeight = 128;
-  this->monsterList->SetSize(627, 355);
+  CUIListBoxEx<CUIMonsterInfo, CMonsterData>* monsterList = new CUIListBoxEx<CUIMonsterInfo, CMonsterData>();
+  this->monsterList = monsterList;
+  monsterList->itemWidth = 603;
+  monsterList->rowHeight = 128;
+  monsterList->SetSize(627, 355);
   this->monsterList->Move(0, 0);
-  this->monsterList->onSelect = std::function<void(CUIMonsterInfo*, const CMonsterData&)>([this](CUIMonsterInfo* item, const CMonsterData& data) { this->OnSelectMonster(item, data); });
-  this->monsterList->binder = std::function<void(CUIMonsterInfo*, const CMonsterData&)>([this](CUIMonsterInfo* item, const CMonsterData& data) { this->BindMonster(item, data); });
+  this->monsterList->SetOnSelect([this](CUIMonsterInfo* item, const CMonsterData& data) { this->OnSelectMonster(item, data); });
+  this->monsterList->SetBinder([this](CUIMonsterInfo* item, const CMonsterData& data) { this->BindMonster(item, data); });
   {
     this->monsterList->SetImages(std::string([]() {
       constexpr char bytes[] = {
@@ -2842,8 +2848,11 @@ void CUIMonster::Slot15(int width, int height) {
       return name.Text();
     }()));
   }
-  this->monsterList->itemX = 0;
-  this->monsterList->itemY = 0;
+  {
+    CUIListBoxEx<CUIMonsterInfo, CMonsterData>* monsterList = this->monsterList;
+    monsterList->itemX = 0;
+    monsterList->itemY = 0;
+  }
   this->monsterList->scrollBar->SetSize(8, 355);
   this->monsterList->scrollBar->Move(619, 0);
   this->monsterList->scrollBar->step = 20;
@@ -2911,8 +2920,11 @@ void CUIMonster::Slot15(int width, int height) {
   this->unknown_0084->SetSize(62, 20);
   this->unknown_0084->Move(540, 363);
   this->unknown_0084->SetOnClick([this]() { this->SearchNavigation(); });
-  this->unknown_0084->disabled = 0;
-  this->unknown_0084->Invalidate();
+  {
+    CUIImageButton* button = this->unknown_0084;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   {
     this->unknown_0084->SetImages(std::string([]() {
       constexpr char bytes[] = {
