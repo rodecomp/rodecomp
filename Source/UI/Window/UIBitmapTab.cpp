@@ -13,7 +13,7 @@ void UIBitmapTab::Paint() {
     const std::string name = FormatOwnedString(this->tabs[index].name.c_str(), 'a' + (this->geometry.unknown_0030 == index));
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
     if (bitmap) {
-      this->DrawBitmap(0, y, &bitmap->image, false);
+      this->DrawBitmap(0, y, bitmap, false);
       y += bitmap->image.height;
     }
   }
