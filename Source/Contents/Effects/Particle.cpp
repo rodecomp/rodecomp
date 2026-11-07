@@ -715,6 +715,43 @@ void CEZ2STRParticle::Advance(float amount) {
   }
 }
 
+// INLINED
+static __forceinline void ResetParticle(CParticle& particle) {
+  particle.red = 0xFF;
+  particle.green = 0xFF;
+  particle.blue = 0xFF;
+  particle.scale = 1.0f;
+  particle.unknown_00C0 = 0;
+  particle.texture = nullptr;
+  particle.alpha = 0xFF;
+  particle.unknown_00C4 = 0;
+  particle.life = 0;
+  particle.unknown_00C8 = 0;
+  particle.unknown_0014 = 0;
+  particle.unknown_00E8 = 0;
+  particle.unknown_00EC = 0;
+  particle.unknown_00D0 = 0;
+  particle.unknown_00D4 = 0;
+  particle.unknown_00D8 = 0;
+  particle.sourceBlend = 5;
+  particle.destinationBlend = 2;
+  particle.primitive = RenderPrimitive();
+  particle.transform.Identity();
+  particle.depthOffset = 0;
+
+  for (int i = 0; i < 4; ++i) {
+    particle.vertices[i].x = 0;
+    particle.vertices[i].y = 0;
+    particle.vertices[i].z = 0;
+    particle.unknown_0278[i].x = 0;
+    particle.unknown_0278[i].y = 0;
+    particle.unknown_0278[i].z = 0;
+  }
+
+  InitParticleQuad(particle.vertices);
+  particle.submit = SubmitParticlePrimitive;
+}
+
 // OFFSET: 0x00B3F630
 // FUNCTION: fn_18830
 CParticle::CParticle(vector3d position, int flags) : flags(flags), position(position) {
@@ -736,7 +773,7 @@ CParticle::CParticle(vector3d position, int flags) : flags(flags), position(posi
   }
 
   this->submit = SubmitParticlePrimitive;
-  this->Reset();
+  ResetParticle(*this);
 }
 
 // OFFSET: 0x00B3F950
@@ -746,40 +783,8 @@ CParticle::~CParticle() {
 
 // OFFSET: 0x00B3F990
 // FUNCTION: fn_18833
-void CParticle::Reset() {
-  this->red = 0xFF;
-  this->green = 0xFF;
-  this->blue = 0xFF;
-  this->scale = 1.0f;
-  this->unknown_00C0 = 0;
-  this->texture = nullptr;
-  this->alpha = 0xFF;
-  this->unknown_00C4 = 0;
-  this->life = 0;
-  this->unknown_00C8 = 0;
-  this->unknown_0014 = 0;
-  this->unknown_00E8 = 0;
-  this->unknown_00EC = 0;
-  this->unknown_00D0 = 0;
-  this->unknown_00D4 = 0;
-  this->unknown_00D8 = 0;
-  this->sourceBlend = 5;
-  this->destinationBlend = 2;
-  this->primitive = RenderPrimitive();
-  this->transform.Identity();
-  this->depthOffset = 0;
-
-  for (int i = 0; i < 4; ++i) {
-    this->vertices[i].x = 0;
-    this->vertices[i].y = 0;
-    this->vertices[i].z = 0;
-    this->unknown_0278[i].x = 0;
-    this->unknown_0278[i].y = 0;
-    this->unknown_0278[i].z = 0;
-  }
-
-  InitParticleQuad(this->vertices);
-  this->submit = SubmitParticlePrimitive;
+__declspec(noinline) void CParticle::Reset() {
+  ResetParticle(*this);
 }
 
 // OFFSET: 0x00B3FBF0
