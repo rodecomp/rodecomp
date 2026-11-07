@@ -59,7 +59,7 @@ namespace {
 // FUNCTION: fn_03963
 CEmblemDataDownloadAsyncWork::CEmblemDataDownloadAsyncWork()
     : NAsyncWork("Emblem_Download"), m_accountId(0), m_guildId(0), m_version(0), m_responseCode(500),
-      m_diagnostic(Diagnostic(false, DecryptName<0xC52FB5FBB94FF917ULL>({0x62, 0x97, 0x24, 0xD7, 0x8C, 0xDA, 0x41, 0xC5}), 29)), m_connection(nullptr) {
+      m_diagnostic(false, std::string(DecryptName<0xC52FB5FBB94FF917ULL>({0x62, 0x97, 0x24, 0xD7, 0x8C, 0xDA, 0x41, 0xC5})), sourceFile, 29), m_connection(nullptr) {
 }
 
 // INLINED
