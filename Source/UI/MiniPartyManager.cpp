@@ -75,7 +75,7 @@ void UIWindowMgr::RearrangeMiniPartyWindows() {
 // FUNCTION: fn_17119
 void UIWindowMgr::AddMiniPartyWindow(UIWindow* window) {
   this->rendered.push_back(window);
-  this->snapExcluded.push_back(window);
+  this->snapExcluded.emplace_back(window);
   this->ArrangeMiniPartyWindows();
 }
 
