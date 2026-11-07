@@ -292,78 +292,59 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
 // OFFSET: 0x00D1F770
 // FUNCTION: fn_21641
 void ReceiveItemSlot(const unsigned char* data) {
-  const ItemAddSlotPacket* packet = reinterpret_cast<const ItemAddSlotPacket*>(data);
-  if (packet->slot < 0) {
+  const ItemAddSlotPacket packet = *reinterpret_cast<const ItemAddSlotPacket*>(data);
+  ItemRandomOption options[5] = {};
+  if (packet.slot < 0) {
     g_modeMgr.gameMode->SendMsg(0x35, 0, 0, 0, 0);
   }
 
-  if (packet->itemId == 0) {
-    g_session.SetUnknown5214(packet->slot);
+  if (packet.itemId == 0) {
+    g_session.SetUnknown5214(packet.slot);
     return;
   }
 
   ITEM_INFO item;
-  item.unknown_0000[0] = packet->type;
-  item.SetItemId(packet->itemId);
+  item.unknown_0000[0] = packet.type;
+  item.SetItemId(packet.itemId);
   item.unknown_0000[1] = 0xFFFFFFFF;
-  item.quantity = packet->slot;
-  std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
-  item.identified = packet->identified;
-  item.unknown_005D = packet->damaged;
-  item.unknown_0060 = packet->refine;
-  item.unknown_0098 = 0;
+  item.quantity = packet.slot;
+  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
+  item.identified = packet.identified;
+  item.unknown_005D = packet.damaged;
+  item.unknown_0060 = packet.refine;
+  item.unknown_0098 = CountItemOptions(options);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  }
   g_session.AddItemSlot(item);
 }
 
 // OFFSET: 0x00D1F970
 // FUNCTION: fn_21642
 void ReceiveItemSlotOptions(const unsigned char* data) {
-  const ItemAddSlotOptionsPacket* packet = reinterpret_cast<const ItemAddSlotOptionsPacket*>(data);
-  if (packet->slot < 0) {
+  const ItemAddSlotOptionsPacket packet = *reinterpret_cast<const ItemAddSlotOptionsPacket*>(data);
+  if (packet.slot < 0) {
     g_modeMgr.gameMode->SendMsg(0x35, 0, 0, 0, 0);
   }
 
-  if (packet->itemId == 0) {
-    g_session.SetUnknown5214(packet->slot);
+  if (packet.itemId == 0) {
+    g_session.SetUnknown5214(packet.slot);
     return;
   }
 
   ITEM_INFO item;
-  item.unknown_0000[0] = packet->type;
-  item.SetItemId(packet->itemId);
+  item.unknown_0000[0] = packet.type;
+  item.SetItemId(packet.itemId);
   item.unknown_0000[1] = 0xFFFFFFFF;
-  item.quantity = packet->slot;
-  std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
-  item.identified = packet->identified;
-  item.unknown_005D = packet->damaged;
-  item.unknown_0060 = packet->refine;
-
-  int count = 0;
-  if (packet->options[0].id != 0) {
-    ++count;
+  item.quantity = packet.slot;
+  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
+  item.identified = packet.identified;
+  item.unknown_005D = packet.damaged;
+  item.unknown_0060 = packet.refine;
+  item.unknown_0098 = CountItemOptions(packet.options);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = packet.options[index];
   }
-
-  if (packet->options[1].id != 0) {
-    ++count;
-  }
-
-  if (packet->options[2].id != 0) {
-    ++count;
-  }
-
-  if (packet->options[3].id != 0) {
-    ++count;
-  }
-
-  if (packet->options[4].id != 0) {
-    ++count;
-  }
-
-  item.unknown_0098 = count;
-  for (int index = 0; index < count; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = packet->options[index];
-  }
-
   g_session.AddItemSlot(item);
 }
 
@@ -1532,28 +1513,36 @@ void CSession::RemoveItem1710(std::uint32_t id, int quantity) {
   RefreshItemWindows(&g_windowMgr);
 }
 
+// OFFSET: 0x00DFF0E0
+// FUNCTION: fn_23609
+void CSession::RefreshItem1768Window(unsigned char alternate, int argument) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.unknown_040C : g_windowMgr.unknown_02FC)) {
+    window->SendMsg(nullptr, 23, argument, 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x00DDA5A0
 // FUNCTION: fn_23340
 bool CSession::RemoveItem1768(const ITEM_INFO& item, unsigned char alternate) {
   int index = 0;
   for (auto it = this->unknown_1768.begin(); it != this->unknown_1768.end(); ++it, ++index) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
-      if (!alternate) {
-        it->quantity -= item.quantity;
-        if (it->quantity <= 0) {
-          this->unknown_1768.erase(it);
-          reinterpret_cast<CSession*>(this)->RefreshItem1768Window(0, index + 1);
-          return true;
-        }
-        reinterpret_cast<CSession*>(this)->RefreshItem1768Window(0, 0);
+      if (alternate) {
+        this->unknown_1768.erase(it);
+        this->RefreshItem1768Window(1, 0);
         return true;
       }
-      this->unknown_1768.erase(it);
-      reinterpret_cast<CSession*>(this)->RefreshItem1768Window(1, 0);
+      it->quantity -= item.quantity;
+      if (it->quantity <= 0) {
+        this->unknown_1768.erase(it);
+        this->RefreshItem1768Window(0, index + 1);
+        return true;
+      }
+      this->RefreshItem1768Window(0, 0);
       return true;
     }
   }
-  reinterpret_cast<CSession*>(this)->RefreshItem1768Window(alternate, 0);
+  this->RefreshItem1768Window(alternate, 0);
   return false;
 }
 

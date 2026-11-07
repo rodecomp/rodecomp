@@ -2020,14 +2020,6 @@ void CSession::RefreshItem1750Window(int type) {
   }
 }
 
-// OFFSET: 0x00DFF0E0
-// FUNCTION: fn_23609
-void CSession::RefreshItem1768Window(unsigned char alternate, int argument) {
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.unknown_040C : g_windowMgr.unknown_02FC)) {
-    window->SendMsg(nullptr, 23, argument, 0, 0, 0);
-  }
-}
-
 // OFFSET: 0x00DFF120
 // FUNCTION: fn_23610
 void CSession::UpdateUnknown1708(int enabled) {
