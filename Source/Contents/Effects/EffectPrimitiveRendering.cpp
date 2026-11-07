@@ -4736,10 +4736,10 @@ void CEffectPrim::RenderRectUp(matrix& wtm) {
 // OFFSET: 0x00BE0680
 // FUNCTION: fn_19911
 void CEffectPrim::RenderSMA2(matrix& wtm) {
-  vector3d vec1;
-  ZeroVector(vec1);
-  vector3d vec3;
-  ZeroVector(vec3);
+  ZeroVector3d vec1;
+  ZeroVector3d vec3;
+  ZeroVector3d vec2;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -4764,8 +4764,8 @@ void CEffectPrim::RenderSMA2(matrix& wtm) {
       const float rx = g_cosTable[slot.riseAngle] * slot.height[order];
       const float ry = g_sinTable[slot.riseAngle] * slot.height[order];
       const vector3d& delta = this->state.deltaPos;
-      const vector3d vec2{cs1 * slot.distance + delta.x, delta.y + 0.0f, sn1 * slot.distance + delta.z};
-      const vector3d vec4{cs1 * rx + cs1 * slot.distance + delta.x, delta.y - ry, sn1 * rx + sn1 * slot.distance + delta.z};
+      vec2.Set(cs1 * slot.distance + delta.x, delta.y + 0.0f, sn1 * slot.distance + delta.z);
+      vec4.Set(cs1 * rx + cs1 * slot.distance + delta.x, delta.y - ry, sn1 * rx + sn1 * slot.distance + delta.z);
 
       if (order > 0) {
         const float tx1 = static_cast<float>(order - 1) / 21.0f;
