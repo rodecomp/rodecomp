@@ -42,7 +42,7 @@ void UIWhisperWnd::Slot43() {
 void UIEquipWnd::DrawDamageSkinPage() {
   this->DrawBitmap(
     0, this->m_contentTop + 14,
-    &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ShowDamage\\bg_damage.bmp")))->image,
+    static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ShowDamage\\bg_damage.bmp"))),
     false
   );
   int slot = 0;
@@ -54,25 +54,25 @@ void UIEquipWnd::DrawDamageSkinPage() {
     if (g_session.m_damageSkinIndex == index) {
       this->DrawBitmap(
         x, 0x3A,
-        &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
           Resolve(FormatOwnedString("유저인터페이스\\showdamage\\btn_damage_pick.bmp").c_str())
-        ))->image,
+        )),
         true
       );
     } else if (this->m_hoverSlot == index) {
       this->DrawBitmap(
         x, 0x3A,
-        &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
           Resolve(FormatOwnedString("유저인터페이스\\showdamage\\btn_damage_press.bmp").c_str())
-        ))->image,
+        )),
         true
       );
     } else {
       this->DrawBitmap(
         x, 0x3A,
-        &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
           Resolve(FormatOwnedString("유저인터페이스\\showdamage\\btn_damage.bmp").c_str())
-        ))->image,
+        )),
         true
       );
     }
@@ -90,9 +90,9 @@ void UIEquipWnd::DrawDamageSkinPage() {
     this->DrawCenteredText(x, 0x44, this->m_damageSkinNames[index].c_str(), 0x40, 0, height, 0x323232, bold);
     this->DrawBitmap(
       x + 14, 0x5A,
-      &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
         Resolve(FormatOwnedString("%s.bmp", this->m_damageSkinIcons[index].c_str()).c_str())
-      ))->image,
+      )),
       true
     );
     ++slot;
