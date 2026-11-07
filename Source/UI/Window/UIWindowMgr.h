@@ -35,6 +35,10 @@ struct WindowTextRecord {
 };
 
 struct SavedWindowRectangle {
+  // INLINED
+  SavedWindowRectangle(int left, int top, int rectangleWidth, int rectangleHeight)
+      : x(left), y(top), width(rectangleWidth), height(rectangleHeight) {}
+
   /* 0000 */ int x;
   /* 0004 */ int y;
   /* 0008 */ int width;

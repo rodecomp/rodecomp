@@ -2703,7 +2703,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->savedRectangles[id]->width = window->geometry.width;
       this->savedRectangles[id]->height = window->geometry.height;
     } else {
-      this->savedRectangles[id] = new SavedWindowRectangle{window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height};
+      this->savedRectangles[id] = new SavedWindowRectangle(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height);
     }
   }
 
