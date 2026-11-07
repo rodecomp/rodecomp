@@ -58,7 +58,7 @@ namespace {
 // OFFSET: 0x005D0470
 // FUNCTION: fn_03692
 CLoadPartyInfoAsyncWork::CLoadPartyInfoAsyncWork()
-    : NAsyncWork("PartyInfo_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x6C, 0xB2, 0x9D, 0x2F}), 25)) {
+    : NAsyncWork("PartyInfo_Load"), m_accountId(0), m_characterId(0), m_diagnostic(false, std::string(DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x6C, 0xB2, 0x9D, 0x2F})), sourceFile, 25) {
 }
 
 // INLINED
