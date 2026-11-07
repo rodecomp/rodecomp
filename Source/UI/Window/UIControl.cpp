@@ -3618,7 +3618,7 @@ void CUIListItem::Paint() {
   this->ClearSurface(0xFFFF00FF);
   if (this->frozen) {
     if (this->disabledImage) {
-      this->DrawBitmap(0, 0, &this->disabledImage->image, false);
+      this->DrawBitmap(0, 0, this->disabledImage, false);
     }
   } else if (!this->images[this->selected]) {
     switch (this->selected) {
