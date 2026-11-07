@@ -93,10 +93,10 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   int AddIngredient(std::uint32_t id, int quantity);
-  void DropMaterial(int x, int y);
-  void DragIngredient(int x, int y);
+  void Slot26(int x, int y) override;
+  void Slot25(int x, int y) override;
   void NotifyWindow(int unused, int alsoUnused);
-  void NotifyWindowAt(int x, int y);
+  void Slot32(int x, int y) override;
   void SetIngredient(int id);
   void AddMaterial(int id, int quantity);
   __declspec(noinline) void ReadMaterial(ITEM_INFO* out, int x, int y);

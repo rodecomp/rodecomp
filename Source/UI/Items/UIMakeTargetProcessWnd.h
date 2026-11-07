@@ -14,7 +14,7 @@ public:
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
-  std::vector<unsigned char> BuildReplayRecords();
+  std::vector<unsigned char> Slot44() override;
   ITEM_INFO GetItemAt(int x, int y);
 
   /* 00B4 */ int makeType;

@@ -5384,7 +5384,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->unknown_0348 = window;
       window->SetSize(4, 4);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
-      this->rendered.push_front(window);
+      this->rendered.insert(this->rendered.end(), window);
       this->unknown_0348->unknown_004C = 2;
       this->rendered.sort(layerGreater);
     } else {

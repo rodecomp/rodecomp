@@ -275,3 +275,11 @@ unsigned CActRes::FrameCount(unsigned animation) const {
   const auto& frames = this->Animation(animation);
   return (std::max)(static_cast<unsigned>(frames.size()), 1u);
 }
+
+// INLINED
+CActRes::CActRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25546
+CActRes g_actPrototype("act", "sprite\\");

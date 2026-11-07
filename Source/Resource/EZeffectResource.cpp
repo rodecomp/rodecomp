@@ -3,6 +3,7 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Resource/EZeffectResource.h"
 #include "Render/Textures/TextureCache.h"
+#include "Resource/ResourceMgr.h"
 
 #include <algorithm>
 #include <format>
@@ -141,3 +142,11 @@ CTexture* EZeffectClip::Texture(int index, const char* prefix) {
 
   return this->textures[index];
 }
+
+// INLINED
+CEZeffectRes::CEZeffectRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25555
+CEZeffectRes g_strPrototype("str", "texture\\effect\\");

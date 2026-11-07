@@ -33,7 +33,7 @@ void CRendererDX9::DrawBaseQueue() {
 // FUNCTION: fn_02226
 void CRendererDX9::DrawGroundQueues(RenderQueues& queues) {
   ScopedDeviceStateDX9 restore(this->device->state);
-  this->device->state.SetRenderState(D3DRS_COLORWRITEENABLE, 0xFFFFFFFFu);
+  this->device->state.SetRenderState(D3DRS_AMBIENT, 0xFFFFFFFFu);
   this->device->state.SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 
   if (g_serviceOptions.Get(119) != 0) {
@@ -81,6 +81,6 @@ void CRendererDX9::DrawGroundQueues(RenderQueues& queues) {
     this->DrawBaseQueue();
   }
 
-  this->device->state.SetRenderState(D3DRS_COLORWRITEENABLE, 0);
+  this->device->state.SetRenderState(D3DRS_AMBIENT, 0);
   this->device->state.SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 }

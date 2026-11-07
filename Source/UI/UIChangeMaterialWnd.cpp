@@ -79,7 +79,7 @@ UIChangeMaterialWnd_ScrollBar::UIChangeMaterialWnd_ScrollBar() : UIScrollBar() {
 
 // OFFSET: 0x005E1B30
 // FUNCTION: fn_03877
-void UIChangeMaterialWnd_List::CreateScrollBar(int width, int height) {
+void UIChangeMaterialWnd_List::Slot15(int width, int height) {
   this->m_scrollBar = new UIChangeMaterialWnd_ScrollBar();
   this->m_scrollBar->Configure(width - this->unknown_00B8, 0, 1, height);
   this->m_scrollBar->Show(0);
@@ -148,7 +148,7 @@ void UIChangeMaterialWnd_List::Move(int x, int y) {
 
 // OFFSET: 0x005E2590
 // FUNCTION: fn_03883
-void UIChangeMaterialWnd_List::SelectItemAtPosition(int, int position) {
+void UIChangeMaterialWnd_List::Slot31(int, int position) {
   const int rowHeight = this->unknown_00B4;
   const unsigned int last = static_cast<unsigned int>(this->m_items.size() - 1);
   unsigned int index = static_cast<unsigned int>(position / rowHeight + this->m_scrollOffset);
@@ -180,7 +180,7 @@ void UIChangeMaterialWnd_List::Slot27(int x, int y) {
 
 // OFFSET: 0x005E2850
 // FUNCTION: fn_03887
-void UIChangeMaterialWnd::UpdateSearchPlaceholder() {
+void UIChangeMaterialWnd::Slot19() {
   const std::string text = this->unknown_00B8->Text();
   if (text.compare(LookupMessage(0xec0)) != 0) {
     if (text.empty()) {
@@ -194,7 +194,7 @@ void UIChangeMaterialWnd::UpdateSearchPlaceholder() {
 
 // OFFSET: 0x005E29F0
 // FUNCTION: fn_03888
-void UIChangeMaterialWnd::Slot32(int x, int y) {
+void UIChangeMaterialWnd::Slot33(int x, int y) {
   ITEM_INFO* item = this->GetItemAt(x, y);
   if (!item) {
     return;
@@ -566,7 +566,7 @@ void UIChangeMaterialWnd_List::Paint() {
     const int rowHeight = this->unknown_00B4;
     if (!entry) {
       CRes* disabled = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\btn_material_disable.bmp"));
-      this->DrawBitmap(0, rowHeight * row, reinterpret_cast<const BitmapImage*>(disabled), true);
+      this->DrawBitmap(0, rowHeight * row, static_cast<CBitmapRes*>(disabled), true);
       continue;
     }
 
@@ -580,7 +580,7 @@ void UIChangeMaterialWnd_List::Paint() {
     }
 
     CRes* background = ResourceMgr::Instance().Load(Resolve(bitmap));
-    this->DrawBitmap(0, rowHeight * row, reinterpret_cast<const BitmapImage*>(background), true);
+    this->DrawBitmap(0, rowHeight * row, static_cast<CBitmapRes*>(background), true);
 
     ITEM_INFO item;
     item.SetItemId(entry->results[0].id);

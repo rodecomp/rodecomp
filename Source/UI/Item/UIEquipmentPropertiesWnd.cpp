@@ -7,6 +7,7 @@
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
 #include "UI/Text/UIStaticTextControl.h"
+#include "UI/Window/UIRegisterMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/StringUtil.h"
@@ -1089,3 +1090,11 @@ __declspec(noinline) CUIEquipmentPropertiesWnd::CUIEquipmentPropertiesWnd()
 CUIEquipmentPropertiesWnd* CreateEquipmentPropertiesWnd() {
   return new CUIEquipmentPropertiesWnd();
 }
+
+// OFFSET: 0x00492C70
+// FUNCTION: fn_45548
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateEquipmentPropertiesWnd;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10001, factory);
+  return true;
+}();

@@ -8,6 +8,7 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/ResourcePreload.h"
+#include "Resource/ResourceMgr.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -208,3 +209,11 @@ void CSprRes::Unload() {
     this->images[type].erase(this->images[type].begin(), this->images[type].end());
   }
 }
+
+// INLINED
+CSprRes::CSprRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25563
+CSprRes g_sprPrototype("spr", "sprite\\");

@@ -579,10 +579,12 @@ CMsgEffect* CGameMode::SpawnCashEmotion(int aid, int packId, int emotionId, std:
   CMsgEffect* effect = nullptr;
 
   if (data) {
-    std::string sprite;
-    std::string pack;
-    sprite = g_cashEmotionMgr->GetSprFileName(data->actId);
-    pack = g_cashEmotionMgr->GetPackName(data->sprId);
+    struct {
+      std::string sprite;
+      std::string action;
+    } names;
+    names.sprite = g_cashEmotionMgr->GetSprFileName(data->actId);
+    names.action = g_cashEmotionMgr->GetPackName(data->sprId);
 
     effect = new (std::nothrow) CMsgEffect;
     if (effect) {
@@ -591,7 +593,7 @@ CMsgEffect* CGameMode::SpawnCashEmotion(int aid, int packId, int emotionId, std:
       }
 
       effect->SendMsg(nullptr, 22, 0, duration, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      effect->SendMsg(nullptr, 14, 0, aid, aid >> 31, reinterpret_cast<int>(&sprite), reinterpret_cast<int>(&sprite) >> 31, data->unknown_0020,
+      effect->SendMsg(nullptr, 14, 0, aid, aid >> 31, reinterpret_cast<int>(&names), reinterpret_cast<int>(&names) >> 31, data->unknown_0020,
                       data->unknown_0020 >> 31, 0, 0, 0, 0, 0, 0);
     }
   }

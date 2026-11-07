@@ -169,7 +169,7 @@ int UIWindowMgr::Confirm(
     box->SendMsg(nullptr, 157, 1, 0, 0, 0);
   }
 
-  this->rendered.push_front(box);
+  this->rendered.insert(this->rendered.end(), box);
 
   if (this->inputWindow) {
     this->persistentWindows.insert(this->inputWindow->Root());

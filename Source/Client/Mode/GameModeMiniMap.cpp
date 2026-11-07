@@ -572,8 +572,6 @@ int g_minimapCoordinateValue;
 int g_minimapCoordinateDigits;
 // GLOBAL: gl_25046
 int g_minimapCoordinateDigitValues[4];
-// GLOBAL: gl_24672
-int g_screenWidth;
 
 
 // OFFSET: 0x00CD2A10

@@ -58,6 +58,7 @@ private:
 class C3dAnimModelRes : public CRes {
 public:
   C3dAnimModelRes();
+  C3dAnimModelRes(const char* extension, const char* prefix);
   ~C3dAnimModelRes() override;
   C3dAnimModelRes* Create() override;
   bool Load(const char* name) override;

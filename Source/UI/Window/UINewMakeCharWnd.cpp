@@ -63,7 +63,7 @@ UINewMakeCharWnd::UINewMakeCharWnd()
   this->unknown_0274 = 0;
   this->unknown_0276 = 0;
   this->m_costumeJob = 0;
-  this->m_sex = static_cast<unsigned char>(g_doramSex);
+  this->m_sex = static_cast<unsigned char>(g_session.m_sex);
   this->m_viewX = 500;
   this->m_viewY = 228;
   this->unknown_01FC = 0;

@@ -30,11 +30,11 @@ public:
   int Slot37() override;
   void Unused6860(int value);
   void Unused7950(int value);
-  void SetModel(int job, int value, int unused);
+  void Slot18(int job, int value, int unused) override;
   void Render(int argument) override;
   void RenderLit(int argument, const GrannyActorLight& light);
   void RenderShadowed(int argument);
-  void SpawnCorpseActor();
+  void Slot38() override;
   bool OnProcess() override;
 
   /* 0410 */ CTexture* emblemTexture;

@@ -12,6 +12,7 @@
 #include "UI/Window/UIControl.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Cipher/XorBytes.h"
+#include "UI/Window/UIRegisterMgr.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -148,6 +149,14 @@ void CUIMacroReport::Slot53() {
 CUIFrameWnd* CreateMacroReport() {
   return new CUIMacroReport();
 }
+
+// OFFSET: 0x004955B0
+// FUNCTION: fn_45550
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateMacroReport;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10005, factory);
+  return true;
+}();
 
 // OFFSET: 0x00A44240
 // FUNCTION: fn_16053

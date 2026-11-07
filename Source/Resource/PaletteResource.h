@@ -8,6 +8,7 @@
 class CPaletteRes : public CRes {
 public:
   CPaletteRes();
+  CPaletteRes(const char* extension, const char* prefix);
   ~CPaletteRes() override;
   CPaletteRes* Create() override;
   bool Load(const char* name) override;

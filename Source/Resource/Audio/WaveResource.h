@@ -10,6 +10,7 @@ class ResourceMgr;
 class CWave : public CRes {
 public:
   CWave();
+  CWave(const char* extension, const char* prefix);
   ~CWave() override;
   CWave* Create() override;
   bool Load(const char* name) override;

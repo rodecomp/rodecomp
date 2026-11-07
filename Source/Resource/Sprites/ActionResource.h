@@ -33,6 +33,7 @@ struct ActionFrame {
 class CActRes : public CRes {
 public:
   CActRes();
+  CActRes(const char* extension, const char* prefix);
   ~CActRes() override;
   CActRes* Create() override;
   bool Load(const char* name) override;

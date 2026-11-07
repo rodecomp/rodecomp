@@ -28,6 +28,16 @@ public:
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  // INLINED
+  void Slot47() override {
+    this->m_hovered = true;
+    this->Invalidate();
+  }
+  // INLINED
+  void Slot48() override {
+    this->m_hovered = false;
+    this->Invalidate();
+  }
 
   bool SetBitmap(const char* name, int state);
   void AddText(int id, int height, std::uint32_t color, bool bold, bool unknown, int x, int y);

@@ -3,6 +3,7 @@
 #include "File/File.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "Resource/ResourceMgr.h"
 
 #include <string>
 
@@ -40,3 +41,11 @@ bool CPaletteRes::Load(const char* name) {
 // FUNCTION: fn_08041
 void CPaletteRes::Unload() {
 }
+
+// INLINED
+CPaletteRes::CPaletteRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25562
+CPaletteRes g_palPrototype("pal", "palette\\");

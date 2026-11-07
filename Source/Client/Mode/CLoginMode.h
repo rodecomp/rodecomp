@@ -27,6 +27,7 @@ struct NotifyZoneServer2Packet;
 struct PasswordModePacket;
 struct AcceptEnterPositionPacket;
 struct AcceptLoginPacket;
+struct ConnectionEndpoint;
 
 #pragma pack(push, 1)
 struct CharacterInfo {
@@ -193,9 +194,7 @@ extern int g_modalImmediate;
 extern bool g_pingLogEnabled;
 extern std::uint32_t g_pingLogFirstTick;
 extern std::list<std::uint32_t> g_pingLogTicks;
-extern char g_zoneServerIp[16];
-extern int g_zoneServerPort;
-extern char g_zoneServerHost[129];
+extern ConnectionEndpoint g_zoneServerEndpoint;
 extern CharacterInfo g_charInfo;
 extern bool g_replayMode;
 extern int g_restoreSurfaces;

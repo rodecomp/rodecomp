@@ -1,3 +1,4 @@
+#include "Client/Input/Mouse.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/World/World.h"
@@ -13,7 +14,7 @@
 bool CGameMode::PickScreenTerrain(int& column, int& row) {
   WorldRayQuery query;
   float ray[6]{};
-  g_renderer->viewport.Ray(g_screenWidth, g_screenHeight, this->camera->frame.eye, this->camera->frame.inverse.values, ray);
+  g_renderer->viewport.Ray(g_mouse.x, g_mouse.y, this->camera->frame.eye, this->camera->frame.inverse.values, ray);
   query.Collect(ray, &this->scene->spatial);
   float nearest = 999999.0f;
   float result = nearest;

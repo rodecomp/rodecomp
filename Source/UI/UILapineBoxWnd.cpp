@@ -43,7 +43,7 @@ UILapineBoxWnd::UILapineBoxWnd()
 
 // OFFSET: 0x006006D0
 // FUNCTION: fn_04160
-void UIIngredientInfoWnd::Click(int, int) {
+void UIIngredientInfoWnd::Slot26(int, int) {
   if (this->insufficient == 1) {
     static_cast<UILapineBox_IngredientListWnd*>(this->parent)->CanUseIngredient(this->item.unknown_0000[1]);
     return;
@@ -99,7 +99,7 @@ void UIIngredientInfoWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x00600770
 // FUNCTION: fn_04161
-void UILapineBoxWnd::DropMaterial(int x, int y) {
+void UILapineBoxWnd::Slot26(int x, int y) {
   alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
   ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
   this->ReadMaterial(&item, x, y);
@@ -115,7 +115,7 @@ void UILapineBoxWnd::DropMaterial(int x, int y) {
 
 // OFFSET: 0x00600870
 // FUNCTION: fn_04163
-void UILapineBoxWnd::DragIngredient(int x, int y) {
+void UILapineBoxWnd::Slot25(int x, int y) {
   if (y < 0x11) {
     UIFrameWnd::Slot25(x, y);
   }
@@ -299,7 +299,7 @@ void UILapineBoxWnd::SetWaiting(unsigned char waiting) {
 
 // OFFSET: 0x00600C40
 // FUNCTION: fn_04169
-void UILapineBoxWnd::NotifyWindowAt(int x, int y) {
+void UILapineBoxWnd::Slot32(int x, int y) {
   alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
   ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
   this->ReadMaterial(&item, x, y);

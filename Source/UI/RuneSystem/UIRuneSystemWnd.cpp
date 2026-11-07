@@ -1986,29 +1986,29 @@ void UIRuneSet_Info::Slot15(int, int) {
 // FUNCTION: fn_10182
 void UIRuneSet_Info::Paint() {
   if (!this->m_runeSet) {
-    this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
-    this->DrawBitmap(0xF4, 0xB7, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset.bmp"))), true);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
+    this->DrawBitmap(0xF4, 0xB7, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset.bmp"))), true);
     return;
   }
 
-  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_center.bmp"))), true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_center.bmp"))), true);
   std::string path = FormatOwnedString("유저인터페이스\\runesystem\\runeset\\%s.bmp", this->m_runeSet->GetResName());
   CBitmapRes* runeSetBitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
   if (this->m_runeSet->IsActive()) {
-    this->DrawBitmap(0x76, 0xBF, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset.bmp"))), true);
-    this->DrawBitmap(0x76, 0xBF, reinterpret_cast<const BitmapImage*>(runeSetBitmap), true);
+    this->DrawBitmap(0x76, 0xBF, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset.bmp"))), true);
+    this->DrawBitmap(0x76, 0xBF, static_cast<CBitmapRes*>(runeSetBitmap), true);
     for (int slot = 0; slot < 6; ++slot) {
       if (!this->m_runeSet->m_slots[slot]) {
         this->DrawBitmap(
           g_runeSetSlotX[slot] - 3, g_runeSetSlotY[slot] - 3,
-          reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_empty.bmp"))), true
+          static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_empty.bmp"))), true
         );
         continue;
       }
 
       this->DrawBitmap(
         g_runeSetSlotX[slot] - 3, g_runeSetSlotY[slot] - 3,
-        reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge.bmp"))), true
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge.bmp"))), true
       );
       path = FormatOwnedString("유저인터페이스\\runesystem\\rune\\%s.bmp", this->m_runeSet->m_slots[slot]->GetResName());
       CTexture* texture = g_texMgr.Load(path.c_str(), 0, false, true, false);
@@ -2023,22 +2023,22 @@ void UIRuneSet_Info::Paint() {
       }
     }
   } else {
-    this->DrawBitmap(0x76, 0x95, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset.bmp"))), true);
-    this->DrawBitmap(0x76, 0x95, reinterpret_cast<const BitmapImage*>(runeSetBitmap), true);
+    this->DrawBitmap(0x76, 0x95, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset.bmp"))), true);
+    this->DrawBitmap(0x76, 0x95, static_cast<CBitmapRes*>(runeSetBitmap), true);
   }
 
   const std::uint32_t tab = this->m_tab->geometry.unknown_0030;
   if (tab == 0) {
     this->DrawBitmap(
-      0x179, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_desc_title.bmp"))), true
+      0x179, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_desc_title.bmp"))), true
     );
     this->DrawBitmap(
       0x179, this->geometry.height - 0x48,
-      reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_desc_down.bmp"))), true
+      static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_desc_down.bmp"))), true
     );
   } else if (tab == 1) {
     this->DrawBitmap(
-      0x179, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_reward.bmp"))), true
+      0x179, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_reward.bmp"))), true
     );
     if (this->m_runeSet->m_reward.values[0] == 1) {
       const int rewardX[7] = {0, 417, 505, 559, 559, 505, 417};
@@ -2061,14 +2061,14 @@ void UIRuneSet_Info::Paint() {
         g_session.IconPath(iconPath, item.itemId.c_str(), 1);
         CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(iconPath)));
         if (icon) {
-          this->DrawBitmap(rewardX[index], rewardY[index], reinterpret_cast<const BitmapImage*>(icon), true);
+          this->DrawBitmap(rewardX[index], rewardY[index], static_cast<CBitmapRes*>(icon), true);
         }
       }
 
       item.SetItemId(static_cast<int>(this->m_runeSet->m_reward.values[7]));
       const char* resource = ItemResourcePath(item);
       const std::string collection = std::format("유저인터페이스\\collection\\{}.bmp", resource);
-      this->DrawBitmap(0x188, 0xE1, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(collection.c_str()))), true);
+      this->DrawBitmap(0x188, 0xE1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(collection.c_str()))), true);
       if (this->m_runeSet->m_reward.values[0] != 0) {
         this->DrawTextAt(0x1BC, 0x30, LookupMessage(4203), 0, 0, 13, 0xFFF0E1, 1, 0);
         this->DrawTextAt(0x1BC, 0x31, LookupMessage(4203), 0, 0, 13, 0x864D43, 1, 0);
@@ -2076,7 +2076,7 @@ void UIRuneSet_Info::Paint() {
     }
   } else {
     this->DrawBitmap(
-      0x179, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_upgrade.bmp"))), true
+      0x179, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_upgrade.bmp"))), true
     );
     if (this->m_runeSet->m_grade < 15) {
       path = FormatOwnedString(LookupMessage(4045), static_cast<double>(static_cast<float>(g_runeSystemMgr->GetGradeFailValue(this->m_runeSet)) * 0.001f));
@@ -2108,14 +2108,14 @@ void UIRuneSet_Info::Paint() {
 // OFFSET: 0x0081AF10
 // FUNCTION: fn_10191
 void UIRune_Decom::Paint() {
-  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
-  this->DrawBitmap(0xDD, 0x8E, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge_big.bmp"))), true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
+  this->DrawBitmap(0xDD, 0x8E, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge_big.bmp"))), true);
   if (!this->m_decomList || this->unknown_0094.empty()) {
     return;
   }
 
-  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
-  this->DrawBitmap(0xDD, 0x47, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge_big.bmp"))), true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
+  this->DrawBitmap(0xDD, 0x47, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge_big.bmp"))), true);
   CTexture* texture = g_texMgr.Load(this->unknown_0094.c_str(), 0, false, true, false);
   if (texture) {
     const float scale = 180.0f / static_cast<float>(texture->Width());
@@ -2129,13 +2129,13 @@ void UIRune_Decom::Paint() {
     this->DrawTextAt(nameX - 1, 0x1A, this->unknown_007C.c_str(), 0, 0, 13, 0x864D43, 1, 0);
   }
 
-  this->DrawBitmap(200, 0x149, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_radio2.bmp"))), true);
+  this->DrawBitmap(200, 0x149, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_radio2.bmp"))), true);
   unsigned int rowIndex = 0;
   for (int y = 0x177; y < 0x1E3; y += 0x36, rowIndex += 4) {
     unsigned int index = rowIndex;
     for (int x = 0xD8; x < 0x1B0; x += 0x36, ++index) {
       this->DrawBitmap(
-        x - 1, y - 6, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\iconslot_yellow.bmp"))), true
+        x - 1, y - 6, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\iconslot_yellow.bmp"))), true
       );
       if (index >= this->m_decomList->size()) {
         continue;
@@ -2152,7 +2152,7 @@ void UIRune_Decom::Paint() {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
       }
       if (icon) {
-        this->DrawBitmap(x + 7, y, reinterpret_cast<const BitmapImage*>(icon), true);
+        this->DrawBitmap(x + 7, y, static_cast<CBitmapRes*>(icon), true);
       }
 
       const int percent = (*this->m_decomList)[index].m_percent;

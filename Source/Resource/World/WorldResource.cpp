@@ -3,6 +3,7 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Resource/World/WorldResource.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Resource/ResourceMgr.h"
 
 #include <compare>
 #include <cstdio>
@@ -374,3 +375,11 @@ bool C3dWorldRes::Load(const char* name) {
 
   return true;
 }
+
+// INLINED
+C3dWorldRes::C3dWorldRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25564
+C3dWorldRes g_rswPrototype("rsw", "");

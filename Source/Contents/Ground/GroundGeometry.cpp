@@ -368,6 +368,11 @@ bool GroundGeometry::Ground15Slot10() {
   return true;
 }
 
+// OFFSET: 0x00AC3080
+// FUNCTION: fn_17598
+void GroundGeometry::Ground15Slot15(float, int, int) {
+}
+
 // OFFSET: 0x00AC1530
 // FUNCTION: fn_17584
 bool GroundGeometry::Slot10() {

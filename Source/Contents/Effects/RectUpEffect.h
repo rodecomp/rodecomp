@@ -13,7 +13,7 @@ class CRectUpEffect : public CEffect {
 public:
   CRectUpEffect();
 
-  void Slot02() override;
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   void Close() override;

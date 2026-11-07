@@ -8,22 +8,22 @@
 
 // OFFSET: 0x006FF480
 // FUNCTION: fn_06962
-CEZ2STREffectEx::CEZ2STREffectEx() : CEffect(-1), particle(nullptr), finished(0), unknown_00D4(0), unknown_00D8(0) {
+CEZ2STREffectEx::CEZ2STREffectEx() : CEffect(-1), emitter(nullptr), timed(0), frameStep(0), alternateRender(0) {
 }
 
 // OFFSET: 0x006FF740
 // FUNCTION: fn_06964
 void CEZ2STREffectEx::Close() {
-  if (this->particle) {
-    FreeParticle(this->particle);
-    this->particle = nullptr;
+  if (this->emitter) {
+    FreeParticle(reinterpret_cast<CParticle*>(this->emitter));
+    this->emitter = nullptr;
   }
 }
 
 // OFFSET: 0x006FF770
 // FUNCTION: fn_06965
 void CEZ2STREffectEx::Slot31() {
-  this->finished = 1;
+  this->timed = 1;
 }
 
 // OFFSET: 0x006FF780

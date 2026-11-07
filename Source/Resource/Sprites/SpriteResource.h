@@ -11,6 +11,7 @@ class ResourceBytes;
 class CSprRes : public CRes {
 public:
   CSprRes();
+  CSprRes(const char* extension, const char* prefix);
   ~CSprRes() override;
   CSprRes* Create() override;
   bool Load(const char* name) override;

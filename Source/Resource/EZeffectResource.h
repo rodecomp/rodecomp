@@ -58,6 +58,7 @@ struct EZeffectClip {
 class CEZeffectRes : public CRes {
 public:
   CEZeffectRes();
+  CEZeffectRes(const char* extension, const char* prefix);
   ~CEZeffectRes() override;
   CEZeffectRes* Create() override;
   bool Load(const char* name) override;

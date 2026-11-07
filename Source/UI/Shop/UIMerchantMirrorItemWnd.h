@@ -9,7 +9,7 @@
 
 class UIMerchantMirrorItemWnd : public UIItemBaseWnd {
 public:
-  std::vector<unsigned char> BuildReplayRecords();
+  std::vector<unsigned char> Slot44() override;
   UIMerchantMirrorItemWnd(int value);
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;

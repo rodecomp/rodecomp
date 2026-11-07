@@ -314,6 +314,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
     }
 
     drawn = true;
+    quad.image = image;
     if (this->render.unknown_00A4Bytes[1] != 0) {
       const float minX = quad.left < quad.right ? quad.left : quad.right;
       const float maxX = quad.left > quad.right ? quad.left : quad.right;

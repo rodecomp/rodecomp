@@ -7,6 +7,7 @@
 #include "UI/Text/UITextViewerControl.h"
 #include "UI/Text/UIStaticTextControl.h"
 #include "Utility/Cipher/XorBytes.h"
+#include "UI/Window/UIRegisterMgr.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
@@ -556,6 +557,14 @@ void CUIEnchantPage::Slot54(CUIEnchantItem* item, const CEnchantItemData& data) 
 CUIEnchantUI* CreateEnchantUI() {
   return new CUIEnchantUI();
 }
+
+// OFFSET: 0x00492010
+// FUNCTION: fn_45547
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateEnchantUI;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10006, factory);
+  return true;
+}();
 
 namespace EnchantUI {
 // OFFSET: 0x009FD340

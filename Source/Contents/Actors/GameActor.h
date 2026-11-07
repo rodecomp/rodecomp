@@ -170,7 +170,7 @@ public:
   void SetRenderInfo(const float* bounds, float x, float y) override;
   void SetAction(unsigned animation, int motion, int repeat) override;
 
-  virtual std::uint32_t Slot13();
+  std::uint32_t Slot13() override;
   virtual bool Slot14();
   virtual void Slot15(int first, int second);
   virtual void Slot16();

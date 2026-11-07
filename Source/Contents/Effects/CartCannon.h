@@ -17,7 +17,7 @@ public:
   void Close() override;
   bool Slot06() override;
 
-  void SetDelay(int delay);
+  void Slot16(int delay) override;
 
   /* 00CC */ CEZ2STRParticle* particle;
   /* 00D0 */ int currentStep;

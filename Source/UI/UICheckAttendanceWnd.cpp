@@ -222,7 +222,7 @@ void UICheckAttendanceWnd_Banner::Paint() {
   if (this->m_entries.size() != 0) {
     this->DrawBitmap(
       0, 0,
-      reinterpret_cast<const BitmapImage*>(
+      static_cast<CBitmapRes*>(
         ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\check_attendance\\" + this->m_entries[this->m_current].image).c_str()))
       ),
       false

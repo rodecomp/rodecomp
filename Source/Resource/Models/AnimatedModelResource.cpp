@@ -7,6 +7,7 @@
 #include "Resource/Models/GrannyModelResource.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceByteReader.h"
+#include "Resource/ResourceMgr.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -266,6 +267,12 @@ C3dGrannyModelRes* C3dGrannyModelRes::Create() {
   return new C3dGrannyModelRes;
 }
 
+// OFFSET: 0x00753610
+// FUNCTION: fn_07962
+void C3dGrannyModelRes::Unload() {
+  this->Release();
+}
+
 // OFFSET: 0x00753620
 // FUNCTION: fn_07963
 bool C3dGrannyModelRes::Load(const char* name) {
@@ -375,3 +382,19 @@ bool C3dGrannyModelRes::Load(const char* name) {
   file.Close();
   return result;
 }
+
+// INLINED
+C3dAnimModelRes::C3dAnimModelRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25558
+C3dAnimModelRes g_rsxPrototype("rsx", "model\\");
+
+// INLINED
+C3dGrannyModelRes::C3dGrannyModelRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25559
+C3dGrannyModelRes g_gr2Prototype("gr2", "model\\3dmob\\");

@@ -86,3 +86,11 @@ void CWave::Unload() {
 void RegisterWaveResource(ResourceMgr& resourceMgr, CWave& prototype) {
   resourceMgr.Register("wav", "wav\\", &prototype);
 }
+
+// INLINED
+CWave::CWave(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_24585
+CWave g_wavePrototype("wav", "wav\\");

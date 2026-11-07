@@ -1,4 +1,5 @@
 #include "Resource/World/GroundResource.h"
+#include "Resource/ResourceMgr.h"
 
 #include <cstring>
 
@@ -173,3 +174,11 @@ void CGndRes::Lightmap(int index, unsigned char* output) const {
     output[66 + 3 * transposed] = blue[pixel];
   }
 }
+
+// INLINED
+CGndRes::CGndRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25556
+CGndRes g_gndPrototype("gnd", "");

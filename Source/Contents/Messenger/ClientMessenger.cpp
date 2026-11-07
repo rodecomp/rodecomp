@@ -2195,7 +2195,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
   if (state == nullptr) {
     return;
   }
-  const char* name = "EnumVar";
+  const char* name = "EnumVAR";
   lua_getfield(state, LUA_GLOBALSINDEX, name);
   if (lua_type(state, -1) == LUA_TTABLE) {
     lua_pushnil(state);

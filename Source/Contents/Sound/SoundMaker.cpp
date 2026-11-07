@@ -7,6 +7,7 @@
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Effects/MsgEffect.h"
+#include "Contents/Ground/GroundGeometry.h"
 #include "Contents/MessageTable.h"
 #include "Contents/MapSkyMgr.h"
 #include "Contents/Sound/SoundMgr.h"
@@ -509,9 +510,7 @@ bool CGndRiser::OnProcess() {
       alpha = -(frame * frame) / 25.0f;
     }
 
-    using GroundSlot15 = void(__thiscall*)(GroundGeometry*, float, int, int);
-    GroundGeometry* ground = mode->scene->ground;
-    reinterpret_cast<GroundSlot15>((*reinterpret_cast<void***>(ground))[15])(ground, alpha, this->screenX, this->screenY);
+    mode->scene->ground->Ground15Slot15(alpha, this->screenX, this->screenY);
   }
 
   return true;

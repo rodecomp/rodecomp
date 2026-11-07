@@ -37,26 +37,6 @@
 #include <cstdio>
 #include <cstring>
 
-// GLOBAL: gl_25006
-int g_sub_1319eb4 = 0;
-
-// GLOBAL: gl_25007
-int g_normalSlotCount;
-
-// GLOBAL: gl_25008
-int g_premiumSlotCount;
-
-// GLOBAL: gl_25009
-int g_billingSlotCount;
-
-// GLOBAL: gl_25010
-int g_producibleSlotCount;
-
-// GLOBAL: gl_25011
-int g_validSlotCount;
-
-// GLOBAL: gl_25012
-int g_doramSex;
 
 // GLOBAL: gl_25013
 char g_selectedSlotIndex;
@@ -107,7 +87,7 @@ UINewSelectCharWnd::UINewSelectCharWnd() : UIFrameWnd(0) {
   this->m_unknown118 = false;
   this->m_page = 0;
   this->m_pageSlot = 0;
-  this->m_totalCharacters = this->m_maxCharacters = g_normalSlotCount + g_premiumSlotCount + g_billingSlotCount;
+  this->m_totalCharacters = this->m_maxCharacters = g_session.m_normalSlotCount + g_session.m_premiumSlotCount + g_session.m_billingSlotCount;
 
   const int slotCount = std::max(static_cast<CLoginMode*>(g_modeMgr.GetLoginMode())->GetMaxCharacterSlot() + 1, this->m_maxCharacters);
   this->m_pageCount = slotCount / this->m_slotsPerPage;
@@ -401,7 +381,7 @@ void UINewSelectCharWnd::Slot15(int width, int height) {
     }
 
     if (character->sex == 'c') {
-      character->sex = static_cast<unsigned char>(g_doramSex);
+      character->sex = static_cast<unsigned char>(g_session.m_sex);
     }
 
     if (g_session.IsListedId(character->job, character->sex) == 1) {
@@ -503,17 +483,17 @@ void UINewSelectCharWnd::Paint() {
 
     const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, slot, 0, 0, 0));
     const int column = slot % this->m_slotsPerPage;
-    if (g_premiumSlotCount > 0 && slot >= g_normalSlotCount && slot < g_normalSlotCount + g_premiumSlotCount) {
+    if (g_session.m_premiumSlotCount > 0 && slot >= g_session.m_normalSlotCount && slot < g_session.m_normalSlotCount + g_session.m_premiumSlotCount) {
       this->DrawTextAt(column * 163 + 136, 50, "Premium ", 0, 1, 15, 0xFF, 0, 0);
       this->DrawTextAt(column * 163 + 142, 63, "Service", 0, 1, 15, 0xFF, 0, 0);
-    } else if (g_billingSlotCount > 0 && slot >= g_normalSlotCount + g_premiumSlotCount && slot < g_billingSlotCount + g_normalSlotCount + g_premiumSlotCount) {
+    } else if (g_session.m_billingSlotCount > 0 && slot >= g_session.m_normalSlotCount + g_session.m_premiumSlotCount && slot < g_session.m_billingSlotCount + g_session.m_normalSlotCount + g_session.m_premiumSlotCount) {
       this->DrawTextAt(column * 163 + 136, 50, "Billing ", 0, 1, 15, 0xFF, 0, 0);
       this->DrawTextAt(column * 163 + 142, 63, "Service", 0, 1, 15, 0xFF, 0, 0);
     }
 
     if (this->m_slotStatus[slot] == 0 && info) {
       const CharSlotInfo& slotInfo = this->m_charSlotInfos[slot];
-      const int sex = info->sex == 99 ? g_doramSex : info->sex;
+      const int sex = info->sex == 99 ? static_cast<int>(g_session.m_sex) : info->sex;
       FuncDrawWNDChar(
         this, slotInfo.x, slotInfo.y, sex, info->job, info->job, info->unknown_0058, info->head, info->accessory, info->accessory2, info->accessory3, info->robe,
         0, 0, info->bodyStyle, info->headPalette, slotInfo.action, slotInfo.frame, this->m_lastTick
@@ -529,7 +509,7 @@ void UINewSelectCharWnd::Paint() {
       }
 
       static_cast<UIButton*>(this->m_slotButtons2[buttonIndex])->Enable(1);
-      if (slot >= g_producibleSlotCount ? this->m_slotStatus[slot] == 1 : this->m_slotStatus[slot] == 1 && slot >= g_validSlotCount) {
+      if (slot >= g_session.m_producibleSlotCount ? this->m_slotStatus[slot] == 1 : this->m_slotStatus[slot] == 1 && slot >= g_session.m_validSlotCount) {
         auto* button = static_cast<UIButton*>(this->m_slotButtons2[buttonIndex]);
         button->SetDisabled(1);
         button->Invalidate();
@@ -621,7 +601,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(info->name));
-      g_session.SetFlag(info->sex == 'c' ? static_cast<char>(g_doramSex) : static_cast<char>(info->sex));
+      g_session.SetFlag(info->sex == 'c' ? static_cast<char>(g_session.m_sex) : static_cast<char>(info->sex));
       this->m_unknown118 = true;
       const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.unknown_07F4[0x40]);
       for (int index = 0; index < g_session.unknown_59D0; ++index) {
@@ -662,7 +642,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_pageSlot = argument2;
         this->SendMsg(this->m_slotButtons2[argument2], 6, 0xCC, 0, 0, 0);
       }
-      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1 && static_cast<unsigned char>(g_selectedSlotIndex) < g_producibleSlotCount &&
+      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1 && static_cast<unsigned char>(g_selectedSlotIndex) < g_session.m_producibleSlotCount &&
           g_windowMgr.EnsureWindow(0x116) != nullptr) {
         g_windowMgr.CloseWindow(0x115);
       }
@@ -793,7 +773,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         if (this->m_slotStatus[index] == 1) {
           button->SetSlot(-1, index);
           this->m_characterWindows[column]->SetText("", 0);
-          if (index < static_cast<unsigned>(g_producibleSlotCount)) {
+          if (index < static_cast<unsigned>(g_session.m_producibleSlotCount)) {
             button->SendMsg(nullptr, 0x1AF, 0, 0, 0, 0);
           } else {
             button->SetDisabled(1);
@@ -859,7 +839,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         if (this->m_slotStatus[index] == 1) {
           button->SetSlot(-1, index);
           this->m_characterWindows[column]->SetText("", 0);
-          if (index < static_cast<unsigned>(g_producibleSlotCount)) {
+          if (index < static_cast<unsigned>(g_session.m_producibleSlotCount)) {
             button->SendMsg(nullptr, 0x1AF, 0, 0, 0, 0);
           } else {
             button->SetDisabled(1);
@@ -1168,8 +1148,8 @@ void UINewSelectCharWnd::UpdateSlotButtons() {
     }
 
     static_cast<UISlotBmpButton*>(this->m_slotButtons2[index])->SetSlot(this->m_slotStatus[slot] ? -1 : slot, slot);
-    if (slot < g_producibleSlotCount && this->m_slotStatus[slot] == 1) {
-      if (slot < g_validSlotCount) {
+    if (slot < g_session.m_producibleSlotCount && this->m_slotStatus[slot] == 1) {
+      if (slot < g_session.m_validSlotCount) {
         this->m_slotButtons2[index]->SendMsg(nullptr, 431, 0, 0, 0, 0);
       } else {
         this->m_slotButtons2[index]->SendMsg(nullptr, 431, 1, 0, 0, 0);

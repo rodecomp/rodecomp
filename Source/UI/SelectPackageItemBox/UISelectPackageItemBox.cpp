@@ -14,6 +14,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
+#include "UI/Window/UIRegisterMgr.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
@@ -1363,6 +1364,14 @@ void CUISelectPackageItemBox::BindTab(SelectPackageItemBox::CUITabInfo* tab, con
 CUIFrameWnd* CreateSelectPackageItemBox() {
   return new CUISelectPackageItemBox();
 }
+
+// OFFSET: 0x0049B670
+// FUNCTION: fn_45555
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateSelectPackageItemBox;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10033, factory);
+  return true;
+}();
 
 // OFFSET: 0x00A6F470
 // FUNCTION: fn_16772

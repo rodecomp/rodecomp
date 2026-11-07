@@ -1,3 +1,4 @@
+#include "Client/Input/Mouse.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
@@ -2562,12 +2563,12 @@ void UINavigationV4Wnd::Paint() {
       }
     }
 
-    const int x = g_screenWidth - this->geometry.x;
+    const int x = g_mouse.x - this->geometry.x;
     if (x > 3 && x < 0x10d) {
       this->FillRegion(x, 0x2e, 2, 0x10a, 0xffaa2200);
     }
 
-    const int y = g_screenHeight - this->geometry.y;
+    const int y = g_mouse.y - this->geometry.y;
     if (y > 0x2e && y < 0x138) {
       this->FillRegion(3, y, 0x10a, 2, 0xffaa2200);
     }

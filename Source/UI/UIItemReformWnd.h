@@ -18,6 +18,10 @@ public:
   void Move(int x, int y) override;
   void Slot15(int width, int height) override;
   void Paint() override;
+  // INLINED
+  void Slot25(int, int) override {}
+  // INLINED
+  void Slot27(int, int) override {}
   void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot33(int x, int y) override;

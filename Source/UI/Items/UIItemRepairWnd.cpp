@@ -371,7 +371,7 @@ UIItemRepairWnd::~UIItemRepairWnd() = default;
 
 // OFFSET: 0x009A0280
 // FUNCTION: fn_13599
-std::vector<unsigned char> UIItemRepairWnd::BuildReplayRecords() {
+std::vector<unsigned char> UIItemRepairWnd::Slot44() {
   std::vector<unsigned char> records;
   {
     const auto record = BuildReplayTaggedRecord(22150, nullptr, 0);

@@ -234,7 +234,8 @@ public:
   /* 07F4 */ unsigned char unknown_07F4[0x6A0];
   /* 0E94 */ int unknown_0E94;
   /* 0E98 */ int unknown_0E98;
-  /* 0E9C */ unsigned char unknown_0E9C[0x3C];
+  /* 0E9C */ int m_sex;
+  /* 0EA0 */ unsigned char unknown_0EA0[0x38];
   /* 0ED8 */ int m_head;
   /* 0EDC */ unsigned char unknown_0EDC[0x10];
   /* 0EEC */ int m_bodyStyle;
@@ -500,12 +501,12 @@ public:
   /* 5970 */ int unknown_5970;
   /* 5974 */ unsigned char unknown_5974[0x48];
   /* 59BC */ int unknown_59BC;
-  /* 59C0 */ int unknown_59C0;
-  /* 59C4 */ int unknown_59C4;
-  /* 59C8 */ int unknown_59C8;
-  /* 59CC */ int unknown_59CC;
+  /* 59C0 */ int m_normalSlotCount;
+  /* 59C4 */ int m_premiumSlotCount;
+  /* 59C8 */ int m_billingSlotCount;
+  /* 59CC */ int m_producibleSlotCount;
   /* 59D0 */ int unknown_59D0;
-  /* 59D4 */ int unknown_59D4;
+  /* 59D4 */ int m_validSlotCount;
   /* 59D8 */ LuaScript* m_hotkeyScript;
   union {
     /* 59DC */ unsigned char unknown_59DC[0x19C];
@@ -1338,6 +1339,7 @@ static_assert(offsetof(CSession, m_humanFemaleHeadNames) == 0xF78);
 static_assert(offsetof(CSession, m_doramMaleHeadNames) == 0x618C);
 static_assert(offsetof(CSession, m_doramFemaleHeadNames) == 0x6198);
 static_assert(offsetof(CSession, unknown_0E98) == 0xE98);
+static_assert(offsetof(CSession, m_sex) == 0xE9C);
 static_assert(offsetof(CSession, m_petActionTable) == 0x1058);
 static_assert(offsetof(CSession, m_job) == 0x1628);
 static_assert(offsetof(CSession, m_inventoryItems) == 0x1710);

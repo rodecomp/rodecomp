@@ -40,7 +40,8 @@ public:
   void Render(int argument) override;
 
   bool Slot14() override;
-  void Slot15(int first, int second) override;
+  void Slot15(int state, int resetPosition) override;
+  void Slot43(int first, int second) override;
   void Slot19(
     int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh
   ) override;
@@ -103,7 +104,6 @@ public:
   void RenderOverlaySprite(const float* matrix, int);
   void UpdateGaugeWindow();
   void DrawLayers(const float* matrix, int unknown0030, char unknown0034);
-  void ChangeState(int state, int resetPosition);
 
   float* GetExtent(float* extent) const override;
 
@@ -218,7 +218,7 @@ public:
   float AdjustFollowDistance(CGameActor* target, float distance);
   void UpdatePendingAction();
   void Initialize();
-  void ChangeState(int state, int resetPosition);
+  void Slot15(int state, int resetPosition) override;
 
   /* 0510 */ int unknown_0510;
   /* 0514 */ int unknown_0514;

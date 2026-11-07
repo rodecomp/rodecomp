@@ -2,6 +2,7 @@
 
 #include "Contents/GuildMgr.h"
 #include "File/File.h"
+#include "Resource/ResourceMgr.h"
 
 #include <cstdint>
 #include <cstdlib>
@@ -70,3 +71,11 @@ void CEmblemRes::MissingFile(CRenderSystemBase*, const char*) {
 // FUNCTION: fn_07887
 CEmblemRes::CEmblemRes() : CRes(), gif() {
 }
+
+// INLINED
+CEmblemRes::CEmblemRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25554
+CEmblemRes g_ebmPrototype("ebm", "..\\_tmpEmblem\\");

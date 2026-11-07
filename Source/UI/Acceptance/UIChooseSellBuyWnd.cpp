@@ -4736,8 +4736,8 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
     menu->SendMsg(nullptr, 0x1E, 0, 0, 0, 0);
     menu->Move(
-      std::min(std::max(g_screenWidth + 1, 1), g_renderer->viewport.width - menu->geometry.width),
-      std::min(std::max(g_screenHeight + 1, 1), g_renderer->viewport.height - menu->geometry.height)
+      std::min(std::max(g_mouse.x + 1, 1), g_renderer->viewport.width - menu->geometry.width),
+      std::min(std::max(g_mouse.y + 1, 1), g_renderer->viewport.height - menu->geometry.height)
     );
     return 0;
   }
@@ -8994,7 +8994,7 @@ void UIBookWnd::Paint() {
 void UICardItemIllustWnd::Paint() {
   this->DrawTitleBar(false, "", 0);
   if (this->m_bitmapPath.size() != 0) {
-    this->DrawBitmap(0, 17, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapPath.c_str()))), false);
+    this->DrawBitmap(0, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapPath.c_str()))), false);
   }
 
   ITEM_INFO item;
@@ -9461,8 +9461,8 @@ void UISecondPasswordInputWnd::Paint() {
 // OFFSET: 0x008F2BC0
 // FUNCTION: fn_12260
 void UInCashWnd::Paint() {
-  if (const auto* background =
-        reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\NC_BackGround3.bmp")))) {
+  if (auto* background =
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\NC_BackGround3.bmp")))) {
     this->DrawBitmap(0, 0, background, false);
   }
 
@@ -9553,7 +9553,7 @@ void UIItemCollectionWnd::Paint() {
     this->DrawSkinBox(FormatOwnedString("유저인터페이스\\sysbox_g%d_", this->m_item.unknown_0088).c_str(), 0, 0, width, bottom, false);
     this->DrawBitmap(
       0, 0,
-      reinterpret_cast<const BitmapImage*>(
+      static_cast<CBitmapRes*>(
         ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\basic_interface\\collection_bg_g%d.bmp", this->m_item.unknown_0088).c_str()))
       ),
       true
@@ -9564,11 +9564,11 @@ void UIItemCollectionWnd::Paint() {
     background = "유저인터페이스\\basic_interface\\collection_bg.bmp";
   }
   if (background != nullptr) {
-    this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(background))), true);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background))), true);
   }
 
   if (this->unknown_01C4.size() != 0) {
-    this->DrawBitmap(10, 11, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(this->unknown_01C4.c_str()))), true);
+    this->DrawBitmap(10, 11, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->unknown_01C4.c_str()))), true);
   }
   this->DrawFittedItemName(90, 10, &this->m_item, this->m_item.identified ? 0 : 0x808080, 0, 12, 0);
 
@@ -9604,13 +9604,13 @@ void UIItemCollectionWnd::Paint() {
       for (int x = 4; x < 104; x += 25, ++slot) {
         const int card = reinterpret_cast<const int*>(this->m_item.unknown_001C)[slot];
         if (card < 1) {
-          const BitmapImage* bitmap = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\empty_card_slot.bmp")));
+          CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\empty_card_slot.bmp")));
           if (this->m_kind == 234) {
             const char* name = slot < ItemSlotsCount(this->m_item) ? "유저인터페이스\\basic_interface\\comparison_empty_card_slot.bmp"
                                                                    : "유저인터페이스\\basic_interface\\comparison_disable_card_slot.bmp";
-            bitmap = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(name)));
+            bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
           } else if (ItemSlotsCount(this->m_item) <= slot) {
-            bitmap = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\disable_card_slot.bmp")));
+            bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\disable_card_slot.bmp")));
           }
           this->DrawBitmap(x, y, bitmap, true);
         } else {

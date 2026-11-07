@@ -120,6 +120,7 @@ public:
 class C3dModelResV1 : public C3dModelRes {
 public:
   C3dModelResV1();
+  C3dModelResV1(const char* extension, const char* prefix);
   ~C3dModelResV1() override;
   C3dModelResV1* Create() override;
   bool Load(const char* name) override;
@@ -132,6 +133,7 @@ private:
 class C3dModelResV2 : public C3dModelRes {
 public:
   C3dModelResV2();
+  C3dModelResV2(const char* extension, const char* prefix);
   ~C3dModelResV2() override;
   C3dModelResV2* Create() override;
   bool Load(const char* name) override;

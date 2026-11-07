@@ -13,8 +13,6 @@ class UIStaticText;
 class CUIControl;
 
 extern char g_selectedSlotIndex;
-extern int g_doramSex;
-extern int g_sub_1319eb4;
 
 struct CharSlotInfo {
   CharSlotInfo();
@@ -51,6 +49,8 @@ public:
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
+  // INLINED
+  void Slot25(int, int) override {}
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   void UpdateDeleteButtons();

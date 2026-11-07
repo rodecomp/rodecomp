@@ -3448,7 +3448,7 @@ C3dGrannyGameActor::C3dGrannyGameActor(const char* name) {
 
 // OFFSET: 0x00CC7ED0
 // FUNCTION: fn_21189
-void C3dGrannyGameActor::SetModel(int job, int value, int) {
+void C3dGrannyGameActor::Slot18(int job, int value, int) {
   this->SetActorJob(job);
   this->SetUnknown0260(value);
   this->model = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(this->name));
@@ -4606,7 +4606,7 @@ void CGameActor::NotifyCellMove(const float* x, const float* z) {
 
 // OFFSET: 0x00CC5750
 // FUNCTION: fn_21177
-void C3dGrannyGameActor::SpawnCorpseActor() {
+void C3dGrannyGameActor::Slot38() {
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->SpawnGrannyCorpse(
     this->render.position.x, this->render.position.y, this->render.position.z, this->angle, this->name
   );

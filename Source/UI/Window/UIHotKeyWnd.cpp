@@ -304,7 +304,7 @@ UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve
 
 // OFFSET: 0x009317E0
 // FUNCTION: fn_12708
-void UIHotKeyWnd::ShowHotkeyTooltip(int x, int y) {
+void UIHotKeyWnd::Slot28(int x, int y) {
   const int index = this->RowFromPoint(x, y);
   if (index <= -1) {
     return;

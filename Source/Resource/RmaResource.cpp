@@ -3,6 +3,7 @@
 #include "File/File.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Utility/Tokenizer.h"
+#include "Resource/ResourceMgr.h"
 
 #include <cstdlib>
 #include <strstream>
@@ -100,3 +101,11 @@ void CRmaRes::Unload() {
   this->models.clear();
   this->actionModels.clear();
 }
+
+// INLINED
+CRmaRes::CRmaRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25547
+CRmaRes g_rmaPrototype("rma", "model\\");

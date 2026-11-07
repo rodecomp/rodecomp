@@ -194,9 +194,7 @@ void CView::Render() {
       model->renderFrame = g_renderer->frame;
     }
 
-    void** groundVtable = *reinterpret_cast<void***>((*node)->ground);
-    reinterpret_cast<void(__thiscall*)(void*, const float*, const int*, bool)>(groundVtable[6])(
-      (*node)->ground, matrix, (*node)->groundCells, true);
+    (*node)->ground->DrawLit(matrix, (*node)->groundCells, true);
 
     if (g_visibleMinX > (*node)->groundCells[0]) {
       g_visibleMinX = (*node)->groundCells[0];
@@ -229,9 +227,7 @@ void CView::Render() {
       }
     }
 
-    void** groundVtable = *reinterpret_cast<void***>((*node)->ground);
-    reinterpret_cast<void(__thiscall*)(void*, const float*, const int*, bool)>(groundVtable[6])(
-      (*node)->ground, matrix, (*node)->groundCells, false);
+    (*node)->ground->DrawLit(matrix, (*node)->groundCells, false);
 
     if (g_visibleMinY > (*node)->groundCells[1]) {
       g_visibleMinY = (*node)->groundCells[1];
@@ -252,15 +248,12 @@ void CView::Render() {
 
   g_navigationManager.DrawRoute(matrix);
 
-  void** sceneGroundVtable = *reinterpret_cast<void***>(this->scene->ground);
   if (g_groundOverlaySkip == 0) {
-    reinterpret_cast<void(__thiscall*)(void*, const float*, int, int, int)>(sceneGroundVtable[14])(
-      this->scene->ground, matrix, g_groundOverlayA, g_groundOverlayB, g_groundOverlayC);
+    this->scene->ground->DrawGrid(*this->scene->terrain, matrix, g_groundOverlayA, g_groundOverlayB, g_groundOverlayC);
   }
 
   if (g_session.unknown_5614 != 0 && g_session.unknown_5600 != 0 && g_session.unknown_5604 != 0) {
-    reinterpret_cast<void(__thiscall*)(void*, const float*, int, int, int)>(sceneGroundVtable[14])(
-      this->scene->ground, matrix, g_session.unknown_5600, g_session.unknown_5604, 0xfeff0000);
+    this->scene->ground->DrawGrid(*this->scene->terrain, matrix, g_session.unknown_5600, g_session.unknown_5604, 0xfeff0000);
   }
 
   for (auto it = this->scene->objects.begin(); it != this->scene->objects.end(); ++it) {
@@ -283,5 +276,5 @@ void CView::Render() {
   this->spatial.inside.clear();
   this->spatial.clipped.clear();
 
-  reinterpret_cast<void(__thiscall*)(void*, const float*)>(sceneGroundVtable[4])(this->scene->ground, matrix);
+  this->scene->ground->Ground15Slot04(reinterpret_cast<int>(matrix));
 }

@@ -12,6 +12,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/StringUtil.h"
+#include "UI/Window/UIRegisterMgr.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -176,6 +177,14 @@ CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::~CUIListBo
 CUIProbabilityTable* CreateProbabilityTable() {
   return new CUIProbabilityTable();
 }
+
+// OFFSET: 0x00496610
+// FUNCTION: fn_45551
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateProbabilityTable;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10012, factory);
+  return true;
+}();
 
 // OFFSET: 0x00A48740
 // FUNCTION: fn_16115

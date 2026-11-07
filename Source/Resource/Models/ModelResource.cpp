@@ -11,6 +11,7 @@
 #include "Resource/Models/GrannyModelResource.h"
 #include "Resource/Models/ModelResource.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Resource/ResourceMgr.h"
 
 #include <algorithm>
 #include <cmath>
@@ -1048,3 +1049,11 @@ void C3dGrannyModelRes::Release() {
   delete this->instance;
   this->instance = nullptr;
 }
+
+// INLINED
+C3dModelResV1::C3dModelResV1(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25560
+C3dModelResV1 g_rsmPrototype("rsm", "model\\");

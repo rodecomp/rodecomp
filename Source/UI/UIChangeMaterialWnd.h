@@ -73,10 +73,10 @@ public:
   bool Slot02() override;
   void Paint() override;
   void Slot28(int x, int y) override;
-  void Slot32(int x, int y) override;
+  void Slot33(int x, int y) override;
   ITEM_INFO* GetItemAt(int x, int y);
   void SendChangeMaterial();
-  void UpdateSearchPlaceholder();
+  void Slot19() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4)
     override;
 
@@ -99,6 +99,8 @@ public:
 
   void Paint() override;
   void Move(int x, int y) override;
+  // INLINED
+  void Slot25(int, int) override {}
   void Slot28(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot35(int argument) override;
@@ -110,10 +112,10 @@ public:
   void RefreshVisibleEntries();
   void UpdateScrollBar();
   void SetSelectedIndex(int index);
-  void SelectItemAtPosition(int unknown, int position);
+  void Slot31(int unknown, int position) override;
   void SelectNextItem(int delta);
   void ShiftSelectedIndex(int value);
-  void CreateScrollBar(int width, int height);
+  void Slot15(int width, int height) override;
   const MaterialListEntry* GetEntry(unsigned int index) const;
 
   /* 00B4 */ int unknown_00B4;

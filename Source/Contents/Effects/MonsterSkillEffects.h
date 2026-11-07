@@ -328,6 +328,10 @@ public:
   void Slot03() override;
   void Slot04() override;
   void Close() override;
+  // INLINED
+  bool Slot06() override {
+    return this->active;
+  }
 
   /* 00CC */ bool active;
   /* 00CD */ unsigned char unknown_00CD[3];

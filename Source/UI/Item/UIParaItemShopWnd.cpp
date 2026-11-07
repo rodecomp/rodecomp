@@ -155,14 +155,14 @@ void UIParaResultWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x009A96C0
 // FUNCTION: fn_13754
-void UIParaItemPurchaseWnd::Slot25(int x, int y) {
+void UIParaResultWnd::Slot25(int x, int y) {
   if (y < 17) {
     UIFrameWnd::Slot25(x, y);
   }
 
-  int previousHovered = this->hovered;
-  this->hovered = this->GetItemIndexAt(x, y);
-  if (previousHovered != this->hovered) {
+  int previousHovered = this->unknown_00F8;
+  this->unknown_00F8 = this->GetItemIndexAt(x, y);
+  if (previousHovered != this->unknown_00F8) {
     this->Invalidate();
   }
 }
@@ -193,7 +193,7 @@ void UIParaResultWnd::Slot28(int x, int y) {
 
 // OFFSET: 0x009A99C0
 // FUNCTION: fn_13756
-void UIParaItemShopWnd::Slot32(int x, int y) {
+void UIParaResultWnd::Slot32(int x, int y) {
   const int previousHovered = this->unknown_00F8;
   this->unknown_00F8 = this->GetItemIndexAt(x, y);
   if (previousHovered != this->unknown_00F8) {

@@ -5140,7 +5140,7 @@ static void AppendReplayRecord(std::vector<unsigned char>& records, const std::v
 
 // OFFSET: 0x00972E60
 // FUNCTION: fn_13281
-std::vector<unsigned char> UIItemPurchaseWnd::BuildReplayRecords() {
+std::vector<unsigned char> UIItemPurchaseWnd::Slot44() {
   std::vector<unsigned char> records;
   AppendReplayRecord(records, BuildReplayTaggedRecord(0x50DC, nullptr, 0));
   AppendReplayRecord(records, BuildReplayTaggedRecord(0x50DD, nullptr, 0));
@@ -5149,7 +5149,7 @@ std::vector<unsigned char> UIItemPurchaseWnd::BuildReplayRecords() {
 
 // OFFSET: 0x00972F50
 // FUNCTION: fn_13282
-std::vector<unsigned char> UIItemSellWnd2::BuildReplayRecords() {
+std::vector<unsigned char> UIItemSellWnd2::Slot44() {
   std::vector<unsigned char> records;
   AppendReplayRecord(records, BuildReplayTaggedRecord(20800, nullptr, 0));
   AppendReplayRecord(records, BuildReplayTaggedRecord(20802, &this->unknown_00FC, 4));
@@ -5159,7 +5159,7 @@ std::vector<unsigned char> UIItemSellWnd2::BuildReplayRecords() {
 
 // OFFSET: 0x00973080
 // FUNCTION: fn_13283
-std::vector<unsigned char> UIItemSellWnd::BuildReplayRecords() {
+std::vector<unsigned char> UIItemSellWnd::Slot44() {
   std::vector<unsigned char> records;
   AppendReplayRecord(records, BuildReplayTaggedRecord(0x510E, nullptr, 0));
   AppendReplayRecord(records, BuildReplayTaggedRecord(0x510F, nullptr, 0));
@@ -5168,7 +5168,7 @@ std::vector<unsigned char> UIItemSellWnd::BuildReplayRecords() {
 
 // OFFSET: 0x00973170
 // FUNCTION: fn_13284
-std::vector<unsigned char> UIItemStoreWnd::BuildReplayRecords() {
+std::vector<unsigned char> UIItemStoreWnd::Slot44() {
   std::vector<unsigned char> records;
   AppendReplayRecord(records, BuildReplayTaggedRecord(0x51A4, nullptr, 0));
   AppendReplayRecord(records, BuildReplayTaggedRecord(0x51A5, nullptr, 0));
@@ -5205,7 +5205,7 @@ std::vector<unsigned char> UIParaItemShopWnd::BuildReplayRecords() {
 
 // OFFSET: 0x009734E0
 // FUNCTION: fn_13287
-std::vector<unsigned char> UIMerchantItemShopWnd::BuildReplayRecords() {
+std::vector<unsigned char> UIMerchantItemShopWnd::Slot44() {
   std::vector<unsigned char> records;
   if (this->unknown_010C != 0) {
     AppendReplayRecord(records, BuildReplayTaggedRecord(21250, nullptr, 0));
@@ -5220,7 +5220,7 @@ std::vector<unsigned char> UIMerchantItemShopWnd::BuildReplayRecords() {
 
 // OFFSET: 0x00973670
 // FUNCTION: fn_13288
-std::vector<unsigned char> UIMerchantMirrorItemWnd::BuildReplayRecords() {
+std::vector<unsigned char> UIMerchantMirrorItemWnd::Slot44() {
   std::vector<unsigned char> records;
   AppendReplayRecord(records, BuildReplayTaggedRecord(0x5398, nullptr, 0));
   AppendReplayRecord(records, BuildReplayTaggedRecord(0x5399, nullptr, 0));
@@ -5229,7 +5229,7 @@ std::vector<unsigned char> UIMerchantMirrorItemWnd::BuildReplayRecords() {
 
 // OFFSET: 0x00973760
 // FUNCTION: fn_13289
-std::vector<unsigned char> UIMerchantShopMakeWnd::BuildReplayRecords() {
+std::vector<unsigned char> UIMerchantShopMakeWnd::Slot44() {
   std::vector<unsigned char> records;
   if (this->mode != 0) {
     AppendReplayRecord(records, BuildReplayTaggedRecord(21350, nullptr, 0));

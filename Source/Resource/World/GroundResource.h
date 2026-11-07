@@ -29,6 +29,7 @@ struct GroundLegacyLightmap {
 class CGndRes : public CRes {
 public:
   CGndRes();
+  CGndRes(const char* extension, const char* prefix);
   ~CGndRes() override;
   CGndRes* Create() override;
   bool Load(const char* name) override;

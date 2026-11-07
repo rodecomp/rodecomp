@@ -13,6 +13,7 @@
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/SkillEffects.h"
 #include "Contents/Effects/RagEffect.h"
+#include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
@@ -6509,9 +6510,9 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
 
   in_addr address;
   address.s_addr = static_cast<ULONG>(ip);
-  StringFormat(g_zoneServerIp, sizeof(g_zoneServerIp), static_cast<std::size_t>(-1), inet_ntoa(address));
-  g_zoneServerPort = port;
-  StringFormat(g_zoneServerHost, sizeof(g_zoneServerHost), static_cast<std::size_t>(-1), "%s", host.c_str());
+  StringFormat(g_zoneServerEndpoint.address, sizeof(g_zoneServerEndpoint.address), static_cast<std::size_t>(-1), inet_ntoa(address));
+  g_zoneServerEndpoint.port = port;
+  StringFormat(g_zoneServerEndpoint.overrideAddress, sizeof(g_zoneServerEndpoint.overrideAddress), static_cast<std::size_t>(-1), "%s", host.c_str());
   GetRagConnection().Close();
   g_activeSkillEffects.clear();
 
@@ -6523,7 +6524,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
   }
 
   if (g_replayAnimationScaling == 0) {
-    this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(g_zoneServerIp));
+    this->unknown_0018 = GetRagConnection().Connect(g_zoneServerEndpoint);
     if (!this->unknown_0018) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 269) {
@@ -6541,7 +6542,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
     packet.clientTime = timeGetTime();
     packet.aid = g_session.m_aid;
     packet.gid = g_session.m_gid;
-    packet.authCode = reinterpret_cast<const int*>(g_session.unknown_0E9C)[2];
+    packet.authCode = *reinterpret_cast<const int*>(&g_session.unknown_0EA0[0x04]);
     packet.sex = static_cast<unsigned char>(g_session.SyncUnknown0E98());
     GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
     g_session.SetOption(17, 1, 0);
@@ -7283,10 +7284,10 @@ void CGameMode::InitializeState() {
   this->cursorOffsetX = 0.0f;
   this->cursorOffsetY = 0.0f;
   *reinterpret_cast<int*>(this->unknown_00D8) = 0;
-  *reinterpret_cast<int*>(&this->unknown_00D8[4]) = g_screenWidth;
-  *reinterpret_cast<int*>(&this->unknown_00D8[8]) = g_screenHeight;
-  this->unknown_00E4 = g_screenWidth;
-  this->unknown_00E8 = g_screenHeight;
+  *reinterpret_cast<int*>(&this->unknown_00D8[4]) = g_mouse.x;
+  *reinterpret_cast<int*>(&this->unknown_00D8[8]) = g_mouse.y;
+  this->unknown_00E4 = g_mouse.x;
+  this->unknown_00E8 = g_mouse.y;
   this->unknown_0244 = 0;
   this->unknown_024C = 0;
   this->unknown_0250 = 0;
@@ -7371,7 +7372,7 @@ void CGameMode::InitializeState() {
     g_guildInfo.Init();
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(22)), 0xFFE6E6, 0, 0, 0);
-    inet_ntoa(*reinterpret_cast<const in_addr*>(&g_session.unknown_0E9C[0x10]));
+    inet_ntoa(*reinterpret_cast<const in_addr*>(&g_session.unknown_0EA0[0x0C]));
     if (!g_accountLinkedUserDataMgr->m_loaded) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3457)), 255, 0, 0, 0);
     }
@@ -7459,7 +7460,7 @@ void CGameMode::InitializeState() {
   }
 
   this->unknown_05FC = nullptr;
-  *reinterpret_cast<int*>(this->unknown_0600) = 0;
+  this->unknown_0600 = 0;
   s_signBoardMgr->Initialize();
   g_statusRefreshSuppressed = 0;
   int& localMapMove = g_session.m_localMapMove;
@@ -7821,7 +7822,7 @@ void CGameMode::Initialize(const char* name) {
   miniMap.append(".bmp", 4);
   std::strcpy(reinterpret_cast<char*>(this->unknown_0090), miniMap.c_str());
 
-  g_renderer->SetFog(1);
+  g_renderer->ClearDepth(1);
   g_session.m_weight = 0;
   g_session.RefreshHpSpWindows();
   g_session.InvalidateWindowFrames();
@@ -7838,7 +7839,7 @@ void CGameMode::Initialize(const char* name) {
   g_windowMgr.SendNotice(4, 0, 0, 0, 0, 0);
   g_windowMgr.CenterSurface0478();
   g_windowMgr.DrawWindows();
-  if (g_renderer->CaptureBackBuffer()) {
+  if (g_renderer->Draw()) {
     g_renderer->Present(1);
   }
 
@@ -7859,12 +7860,12 @@ void CGameMode::Initialize(const char* name) {
       g_depthEnd = static_cast<float>(std::atof((*fog)[1].c_str()));
       g_worldOverlayColor = ParseHexString((*fog)[2].c_str());
       g_fogDensity = static_cast<float>(std::atof((*fog)[3].c_str()));
-      g_renderer->SetClearColor(1);
+      g_renderer->SetFog(1);
     } else {
-      g_renderer->SetClearColor(0);
+      g_renderer->SetFog(0);
     }
   } else {
-    g_renderer->SetClearColor(0);
+    g_renderer->SetFog(0);
   }
 
   Replay::Instance().ResetPlayback();
@@ -8332,7 +8333,7 @@ __forceinline void CGameMode::ShowHoverActorName(CGameActor* actor) {
 // OFFSET: 0x00CDFE10
 // FUNCTION: fn_21328
 int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
-  if (g_sub_1319eb4 == 1 && pick) {
+  if (g_mouse.buttons[0] == 1 && pick) {
     UIMacroReporterWnd* reporter = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(286));
     if (reporter && reporter->unknown_010C == true && reporter->m_mode == 0) {
       reporter->AddPickedActor(reinterpret_cast<MacroReporterEntry*>(pick));
@@ -8350,10 +8351,10 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
 
   if (this->unknown_0028 == 0) {
     if (!pick) {
-      if (lockedPick != 0 || g_sub_1319eb4 == 1) {
+      if (lockedPick != 0 || g_mouse.buttons[0] == 1) {
         return result;
       }
-      if (this->unknown_00DC == g_screenWidth && this->unknown_00E0 == g_screenHeight) {
+      if (this->unknown_00DC == g_mouse.x && this->unknown_00E0 == g_mouse.y) {
         return result;
       }
       pickTarget = 0;
@@ -8363,7 +8364,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
   } else {
     this->SetCursorAction(5);
     if (lockedPick != 0) {
-      if (g_sub_1319eb4 == 1) {
+      if (g_mouse.buttons[0] == 1) {
         this->SendMsg(26, 0, 0, 0, 0);
       } else {
         this->SetCursorAction(0);
@@ -8373,7 +8374,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
         result = 0;
       }
     } else {
-      if (g_sub_1319eb4 == 2) {
+      if (g_mouse.buttons[0] == 2) {
         return 1;
       }
       if (!pick && clickTarget == 0 && pickTarget == 0) {
@@ -8434,9 +8435,8 @@ void __stdcall SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second
 // OFFSET: 0x00CE0210
 // FUNCTION: fn_21329
 int CGameMode::ProcessGroundClick(int result) {
-  const auto drawCell = [](GroundGeometry* ground, const float* matrix, int column, int row, std::uint32_t color) {
-    void** groundVtable = *reinterpret_cast<void***>(ground);
-    reinterpret_cast<void(__thiscall*)(GroundGeometry*, const float*, int, int, std::uint32_t)>(groundVtable[14])(ground, matrix, column, row, color);
+  const auto drawCell = [this](GroundGeometry* ground, const float* matrix, int column, int row, std::uint32_t color) {
+    ground->DrawGrid(*this->scene->terrain, matrix, column, row, color);
   };
 
   UIWindow* macroArea = g_windowMgr.LookupWindow(0x11E);
@@ -10307,7 +10307,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   }
 
   int& balloonAid = *reinterpret_cast<int*>(&this->unknown_00EC[0x00]);
-  if (this->unknown_00DC == g_screenWidth && this->unknown_00E0 == g_screenHeight) {
+  if (this->unknown_00DC == g_mouse.x && this->unknown_00E0 == g_mouse.y) {
     this->ShowActorNameBalloon(balloonAid);
     return;
   }

@@ -30,7 +30,7 @@ public:
   void SaveHotkeys();
   void SetHotkey(int tab, int index, HotkeyInfo info);
   HotkeyEntry GetHotkey(int tab, int index, bool resolve);
-  void ShowHotkeyTooltip(int x, int y);
+  void Slot28(int x, int y) override;
   void ReloadHotkeys();
   bool AssignSelectedHotkey(int mode);
   int CheckHotkeyConflict();

@@ -131,7 +131,7 @@ void CRectUpEffect::Close() {
 
 // OFFSET: 0x0070A260
 // FUNCTION: fn_07099
-void CRectUpEffect::Slot02() {
+void CRectUpEffect::Slot01() {
   if (this->id != 1088) {
     return;
   }

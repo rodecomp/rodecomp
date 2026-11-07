@@ -1,5 +1,6 @@
 #include "UI/Guild/UIGuild_Storage_Log.h"
 #include "Contents/MessageTable.h"
+#include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Lists/UITabControl.h"
@@ -192,8 +193,8 @@ void UIGuild_Storage_Log::Paint() {
   this->DrawTitleBar(true, LookupMessage(0x9F3), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
-  const BitmapImage* out = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\out.bmp")));
-  const BitmapImage* in = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\in.bmp")));
+  CBitmapRes* out = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\out.bmp")));
+  CBitmapRes* in = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\in.bmp")));
 
   for (int tab = 0; tab < static_cast<int>(this->unknown_0158->labels.size()); ++tab) {
     this->unknown_0158->colors[tab] = 0xFFFFFFFF;

@@ -65,7 +65,7 @@ void UIMakeTargetProcessWnd::Slot10(int x, int y, std::intptr_t value) {
 
 // OFFSET: 0x009A0690
 // FUNCTION: fn_13601
-std::vector<unsigned char> UIMakeTargetProcessWnd::BuildReplayRecords() {
+std::vector<unsigned char> UIMakeTargetProcessWnd::Slot44() {
   std::vector<unsigned char> records;
   {
     const auto record = BuildReplayTaggedRecord(22000, nullptr, 0);

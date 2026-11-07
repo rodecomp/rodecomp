@@ -150,6 +150,6 @@ void CCartCannon::Slot04() {
 
 // OFFSET: 0x006FB0E0
 // FUNCTION: fn_06901
-void CCartCannon::SetDelay(int delay) {
+void CCartCannon::Slot16(int delay) {
   this->delay = delay;
 }

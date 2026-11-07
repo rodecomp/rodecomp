@@ -221,7 +221,9 @@ struct GrannyHairPivot {
 class C3dGrannyModelRes : public CRes {
 public:
   C3dGrannyModelRes();
+  C3dGrannyModelRes(const char* extension, const char* prefix);
   C3dGrannyModelRes* Create() override;
+  void Unload() override;
   bool Load(const char* name) override;
   void RebindMeshes(const C3dGrannyModelRes& target);
   void InstantiateModel(GrannyModelInstance* target, const granny_model* model);

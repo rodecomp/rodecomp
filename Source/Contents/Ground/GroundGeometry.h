@@ -59,6 +59,7 @@ public:
   void Slot09(int first, int second, int third, int fourth);
   bool Slot10();
   bool Ground15Slot10();
+  void Ground15Slot15(float alpha, int x, int y);
   void Slot11();
   int Slot12(int first, int second, int third, int fourth, int fifth) const;
   void Slot14(int first, int second, int third, int fourth);

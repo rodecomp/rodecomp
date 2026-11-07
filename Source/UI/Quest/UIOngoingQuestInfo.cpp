@@ -14,6 +14,7 @@
 #include "UI/Quest/UIRenewQuestWnd.h"
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Text/UITextViewerControl.h"
+#include "UI/Window/UIRegisterMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
@@ -65,6 +66,14 @@ CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>
 CUIOngoingQuestInfo* CreateOngoingQuestInfo() {
   return new CUIOngoingQuestInfo();
 }
+
+// OFFSET: 0x00497950
+// FUNCTION: fn_45552
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateOngoingQuestInfo;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10009, factory);
+  return true;
+}();
 
 // OFFSET: 0x00A4FDE0
 // FUNCTION: fn_16223

@@ -57,8 +57,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-// GLOBAL: gl_24606
-int g_screenHeight;
 
 // OFFSET: 0x0086EEB0
 // FUNCTION: fn_11085
@@ -2155,26 +2153,26 @@ void UIZeroQuestScrollBar::Paint() {
     return;
   }
 
-  const auto* up = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_arrow_up.bmp"));
-  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(up), true);
+  auto* up = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_arrow_up.bmp"));
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(up), true);
 
-  const auto* down = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_arrow_down.bmp"));
-  this->DrawBitmap(0, this->geometry.height - this->arrowLength, reinterpret_cast<const BitmapImage*>(down), true);
+  auto* down = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_arrow_down.bmp"));
+  this->DrawBitmap(0, this->geometry.height - this->arrowLength, static_cast<CBitmapRes*>(down), true);
 
   const int extent = this->vertical == 0 ? this->geometry.width : this->geometry.height;
   int y = this->arrowLength + (this->position * (extent - this->arrowLength * 2 - this->ThumbLength())) / this->maximum;
 
-  const auto* thumbUp = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_up.bmp"));
-  this->DrawBitmap(0, y, reinterpret_cast<const BitmapImage*>(thumbUp), true);
+  auto* thumbUp = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_up.bmp"));
+  this->DrawBitmap(0, y, static_cast<CBitmapRes*>(thumbUp), true);
 
   const int bottom = y + this->ThumbLength() - 4;
   for (y += 4; y < bottom; y += 4) {
-    const auto* thumbMiddle = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_mid.bmp"));
-    this->DrawBitmap(0, y, reinterpret_cast<const BitmapImage*>(thumbMiddle), true);
+    auto* thumbMiddle = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_mid.bmp"));
+    this->DrawBitmap(0, y, static_cast<CBitmapRes*>(thumbMiddle), true);
   }
 
-  const auto* thumbDown = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_down.bmp"));
-  this->DrawBitmap(0, bottom, reinterpret_cast<const BitmapImage*>(thumbDown), true);
+  auto* thumbDown = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_down.bmp"));
+  this->DrawBitmap(0, bottom, static_cast<CBitmapRes*>(thumbDown), true);
 }
 
 // OFFSET: 0x00884DD0
@@ -3531,7 +3529,7 @@ void UIString::Paint() {
     if (!res) {
       return;
     }
-    this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(res), true);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(res), true);
     while (cur < end) {
       cur = ParseColorCode(SegmentEnd(cur, end), color);
     }

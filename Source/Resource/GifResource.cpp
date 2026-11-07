@@ -4,6 +4,7 @@
 #include "File/File.h"
 #include "Resource/GifLzw.h"
 #include "Render/DeviceContext/DCSurface.h"
+#include "Resource/ResourceMgr.h"
 
 #include <algorithm>
 #include <cstring>
@@ -390,3 +391,11 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
   delete[] globalPalette;
   return false;
 }
+
+// INLINED
+CGifRes::CGifRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25553
+CGifRes g_gifPrototype("gif", "texture\\");

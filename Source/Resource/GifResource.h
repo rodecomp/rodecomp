@@ -13,6 +13,7 @@ public:
   using Frame = std::pair<std::uint16_t, std::uint32_t*>;
 
   CGifRes();
+  CGifRes(const char* extension, const char* prefix);
   ~CGifRes() override;
   void Slot02() override;
   bool IsTransient() override;

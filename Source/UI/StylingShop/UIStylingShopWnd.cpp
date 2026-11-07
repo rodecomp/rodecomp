@@ -1952,7 +1952,7 @@ bool UIShowInfoWnd::SendStyleChange() {
 
 // OFFSET: 0x00825CA0
 // FUNCTION: fn_10321
-void UIAccessoryShowCase::Slot15(int, int) {
+void UIAccessoryShowCase::LoadAccessories(int, int) {
   int loaded = 0;
   int skipped = 0;
   int count = 0;

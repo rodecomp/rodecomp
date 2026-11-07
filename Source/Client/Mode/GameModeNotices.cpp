@@ -4367,7 +4367,7 @@ void CGameMode::ReceiveAcceptEnter(const unsigned char* data) {
       _time32(&now);
       fprintf(file, "\n");
       fprintf(file, "server:%s\n", g_session.m_accountName.c_str());
-      fprintf(file, "ip:%s\n", g_zoneServerIp);
+      fprintf(file, "ip:%s\n", g_zoneServerEndpoint.address);
       fprintf(file, "map:%s.gat\n", g_session.m_navigationPlayerMap);
       fprintf(file, "time:%s\n\n", _ctime32(&now));
       fclose(file);

@@ -1799,7 +1799,7 @@ void UIBartermarketWnd::Paint() {
 
 // OFFSET: 0x008473F0
 // FUNCTION: fn_10585
-void UIExpandedBartermarketWnd::Paint() {
+void UIExpandedBarterItemPurchaseWnd::Paint() {
   this->DrawTitleBar(false, LookupMessage(0xE69), 0);
 
   const int borderHeight = this->geometry.height - 46;
@@ -1885,7 +1885,7 @@ void UIExpandedBartermarketWnd::Paint() {
 
 // OFFSET: 0x00847AA0
 // FUNCTION: fn_10586
-void UIExpandedBarterItemPurchaseWnd::Paint() {
+void UIExpandedBartermarketWnd::Paint() {
   this->DrawTitleBar(false, LookupMessage(0xBA), 0);
 
   const int borderHeight = this->geometry.height - 46;

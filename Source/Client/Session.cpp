@@ -225,7 +225,7 @@ bool CSession::IsWithinUnknown59C0(int value) const {
     return false;
   }
 
-  return this->unknown_59C0 - this->unknown_8130 <= value;
+  return this->m_normalSlotCount - this->unknown_8130 <= value;
 }
 
 // OFFSET: 0x00E3D390
@@ -247,11 +247,11 @@ __declspec(noinline) int CSession::HasItem61B8(std::uint32_t id) const {
 // OFFSET: 0x00E3DB20
 // FUNCTION: fn_24194
 bool CSession::ResetUnknownState() {
-  this->unknown_59C0 = 1;
-  this->unknown_59C4 = 1;
-  this->unknown_59C8 = 1;
-  this->unknown_59CC = 1;
-  this->unknown_59D4 = 1;
+  this->m_normalSlotCount = 1;
+  this->m_premiumSlotCount = 1;
+  this->m_billingSlotCount = 1;
+  this->m_producibleSlotCount = 1;
+  this->m_validSlotCount = 1;
   this->unknown_59BC = 1;
   this->unknown_0E94 = 1;
   this->unknown_103C = -1;
@@ -3006,12 +3006,12 @@ void CSession::Init() {
   this->m_simplifiedSkillList = 0;
   this->m_showSkillDescription = 1;
   this->unknown_59BC = 0;
-  this->unknown_59C0 = 0;
-  this->unknown_59C4 = 0;
-  this->unknown_59C8 = 0;
-  this->unknown_59CC = 0;
+  this->m_normalSlotCount = 0;
+  this->m_premiumSlotCount = 0;
+  this->m_billingSlotCount = 0;
+  this->m_producibleSlotCount = 0;
   this->unknown_59D0 = 0;
-  this->unknown_59D4 = 0;
+  this->m_validSlotCount = 0;
   this->m_noSubChatWnds.clear();
   this->m_subChatWnds.clear();
   this->m_hotkeyScript = nullptr;
@@ -7069,6 +7069,7 @@ void CSession::LoadSessionTables() {
   session->LoadLuaDataFiles();
   session->InitWeaponHitWaveNames();
   session->InitResourceNameTables();
+  session->InitJobSpriteNames();
   session->InitJobNameTable();
   session->InitNpcLocationRadius();
   session->InitCommandTables();

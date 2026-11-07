@@ -9,6 +9,7 @@
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Text/UITextViewerControl.h"
 #include "UI/Window/WindowBorder.h"
+#include "UI/Window/UIRegisterMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include <algorithm>
 #include <cstring>
@@ -107,6 +108,14 @@ CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::~CUI
 CUISkillDelayInfo* CreateSkillDelayInfo() {
   return new CUISkillDelayInfo();
 }
+
+// OFFSET: 0x0049C2D0
+// FUNCTION: fn_45556
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateSkillDelayInfo;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10030, factory);
+  return true;
+}();
 
 // OFFSET: 0x00A71950
 // FUNCTION: fn_16806

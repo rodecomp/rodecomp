@@ -1103,7 +1103,7 @@ void UIMessengerGroupWnd::Slot26(int, int) {
 
 // OFFSET: 0x0073D460
 // FUNCTION: fn_07713
-void UIMessengerGroupWnd::Slot25(int x, int y) {
+void UIMessengerGroupWnd::Slot33(int x, int y) {
   if (g_session.m_lockMouse) {
     return;
   }
@@ -1121,7 +1121,7 @@ void UIMessengerGroupWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x0073CD60
 // FUNCTION: fn_07709
-void UIMessengerGroupWnd::Slot33(int x, int y) {
+void UIMessengerGroupWnd::Slot25(int x, int y) {
   if (y < 17) {
     UIFrameWnd::Slot33(x, y);
     if (UIWindow* window = this->CompanionWindow()) {

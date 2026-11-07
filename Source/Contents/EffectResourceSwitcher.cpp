@@ -116,7 +116,7 @@ void EffectResourceSwitcher::SetNames(const std::string& source, const std::stri
   }
 
   EffectLists* effects = g_effectMgr;
-  this->effect = static_cast<CEZ2STREffect*>(
+  this->effect = static_cast<CEZ2STREffectEx*>(
       effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
   this->spawnPosition = actor->render.position;
 }
@@ -152,10 +152,10 @@ void EffectResourceSwitcher::Slot03() {
     return;
   }
 
-  CEZ2STREffect* previous = this->effect;
+  CEZ2STREffectEx* previous = this->effect;
   this->sourceName = this->targetName;
   this->targetName = "";
-  this->effect = static_cast<CEZ2STREffect*>(g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), this->spawnPosition.x,
+  this->effect = static_cast<CEZ2STREffectEx*>(g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), this->spawnPosition.x,
                                                                 this->spawnPosition.y, this->spawnPosition.z, 0, -1, 0, 0));
   this->active = 0;
   if (previous) {
@@ -264,7 +264,7 @@ CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::GetInstance() {
 
 // OFFSET: 0x006FFA00
 // FUNCTION: fn_06967
-__declspec(noinline) bool CEZ2STREffect::IsFinished() {
+__declspec(noinline) bool CEZ2STREffectEx::IsFinished() {
   if (!this->emitter) {
     return false;
   }
@@ -274,7 +274,7 @@ __declspec(noinline) bool CEZ2STREffect::IsFinished() {
 
 // OFFSET: 0x006FFA20
 // FUNCTION: fn_06968
-void CEZ2STREffect::Slot01() {
+void CEZ2STREffectEx::Slot01() {
   EZ2STREffectInfo* info = CEZ2STREffectMgr::GetInstance()->FindById(this->id);
   if (!info) {
     return;
@@ -323,7 +323,7 @@ void CEZ2STREffect::Slot01() {
 
 // OFFSET: 0x006FFBF0
 // FUNCTION: fn_06969
-bool CEZ2STREffect::Slot06() {
+bool CEZ2STREffectEx::Slot06() {
   EZ2STREmitter* emitter = this->emitter;
   if (!emitter) {
     return false;
@@ -346,7 +346,7 @@ bool CEZ2STREffect::Slot06() {
 
 // OFFSET: 0x006FFC60
 // FUNCTION: fn_06970
-void CEZ2STREffect::Slot03() {
+void CEZ2STREffectEx::Slot03() {
   if (!this->emitter) {
     return;
   }
@@ -386,7 +386,7 @@ void CEZ2STREffect::Slot03() {
 
 // OFFSET: 0x006FFEA0
 // FUNCTION: fn_06971
-void CEZ2STREffect::Slot04() {
+void CEZ2STREffectEx::Slot04() {
   if (!this->emitter) {
     return;
   }
@@ -400,7 +400,7 @@ void CEZ2STREffect::Slot04() {
 
 // OFFSET: 0x006FFEF0
 // FUNCTION: fn_06972
-void CEZ2STREffect::Slot23(float argument) {
+void CEZ2STREffectEx::Slot23(float argument) {
   if (this->emitter) {
     this->emitter->remainingTime = argument;
   }
@@ -408,7 +408,7 @@ void CEZ2STREffect::Slot23(float argument) {
 
 // OFFSET: 0x006FFF10
 // FUNCTION: fn_06973
-void CEZ2STREffect::Slot26(int argument) {
+void CEZ2STREffectEx::Slot26(int argument) {
   if (this->emitter) {
     this->emitter->unknown_3FE8 = static_cast<unsigned char>(argument);
   }
@@ -416,7 +416,7 @@ void CEZ2STREffect::Slot26(int argument) {
 
 // OFFSET: 0x006FFF30
 // FUNCTION: fn_06974
-void CEZ2STREffect::Slot27(int argument) {
+void CEZ2STREffectEx::Slot27(int argument) {
   if (this->emitter) {
     this->emitter->unknown_3FE9 = static_cast<unsigned char>(argument);
   }
@@ -424,7 +424,7 @@ void CEZ2STREffect::Slot27(int argument) {
 
 // OFFSET: 0x006FFF50
 // FUNCTION: fn_06975
-__declspec(noinline) void CEZ2STREffect::EndLoop(unsigned char fadeOut) {
+__declspec(noinline) void CEZ2STREffectEx::EndLoop(unsigned char fadeOut) {
   if (this->emitter) {
     this->emitter->looping = 0;
     this->emitter->fadeOut = fadeOut;
@@ -433,13 +433,13 @@ __declspec(noinline) void CEZ2STREffect::EndLoop(unsigned char fadeOut) {
 
 // OFFSET: 0x006FFF80
 // FUNCTION: fn_06976
-void CEZ2STREffect::Slot32() {
+void CEZ2STREffectEx::Slot32() {
   this->alternateRender = 1;
 }
 
 // OFFSET: 0x006FFF90
 // FUNCTION: fn_06977
-void CEZ2STREffect::Slot14(int argument) {
+void CEZ2STREffectEx::Slot14(int argument) {
   if (this->emitter) {
     this->emitter->unknown_3F98 = argument;
   }
@@ -447,7 +447,7 @@ void CEZ2STREffect::Slot14(int argument) {
 
 // OFFSET: 0x006FFFB0
 // FUNCTION: fn_06978
-void CEZ2STREffect::Slot17(float argument) {
+void CEZ2STREffectEx::Slot17(float argument) {
   if (this->emitter) {
     this->emitter->unknown_3FA4 = argument;
   }
@@ -455,7 +455,7 @@ void CEZ2STREffect::Slot17(float argument) {
 
 // OFFSET: 0x006FFFD0
 // FUNCTION: fn_06979
-void CEZ2STREffect::Slot18(float argument) {
+void CEZ2STREffectEx::Slot18(float argument) {
   if (this->emitter) {
     this->emitter->unknown_3FA8 = argument;
   }
@@ -463,7 +463,7 @@ void CEZ2STREffect::Slot18(float argument) {
 
 // OFFSET: 0x006FFFF0
 // FUNCTION: fn_06980
-void CEZ2STREffect::Slot19(float argument) {
+void CEZ2STREffectEx::Slot19(float argument) {
   if (this->emitter) {
     this->emitter->unknown_3FAC = argument;
   }
@@ -471,7 +471,7 @@ void CEZ2STREffect::Slot19(float argument) {
 
 // OFFSET: 0x00700010
 // FUNCTION: fn_06981
-void CEZ2STREffect::Slot22(float argument) {
+void CEZ2STREffectEx::Slot22(float argument) {
   if (this->emitter) {
     this->emitter->unknown_3FB0 = argument;
   }
@@ -479,7 +479,7 @@ void CEZ2STREffect::Slot22(float argument) {
 
 // OFFSET: 0x00700030
 // FUNCTION: fn_06982
-void CEZ2STREffect::Slot16(int argument) {
+void CEZ2STREffectEx::Slot16(int argument) {
   if (this->emitter) {
     this->emitter->duration = argument;
   }

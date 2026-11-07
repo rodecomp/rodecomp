@@ -13,7 +13,7 @@ class UIStaticText;
 class UIMerchantItemShopWnd : public UIItemBaseWnd {
 public:
   UIMerchantItemShopWnd(int value);
-  std::vector<unsigned char> BuildReplayRecords();
+  std::vector<unsigned char> Slot44() override;
   void Slot11() override;
   void Slot19() override;
   void Slot10(int x, int y, std::intptr_t value) override;

@@ -16,6 +16,7 @@
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
+#include "UI/Window/UIRegisterMgr.h"
 
 #include <cmath>
 #include <cstddef>
@@ -1291,6 +1292,14 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
 CUIFrameWnd* CreateRenewQuestUI() {
   return new CUIRenewQuestUI();
 }
+
+// OFFSET: 0x00499210
+// FUNCTION: fn_45554
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateRenewQuestUI;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10008, factory);
+  return true;
+}();
 
 // OFFSET: 0x00A5C590
 // FUNCTION: fn_16434

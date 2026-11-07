@@ -19,6 +19,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/StringUtil.h"
 #include "Contents/Items/ItemDescription.h"
+#include "UI/Window/UIRegisterMgr.h"
 #include <cstring>
 #include <format>
 #include <list>
@@ -2194,6 +2195,14 @@ CUIListBox<CUISubTab>* CUITab::CreateSubTabList() {
 CUIAdventureGuide* CreateAdventureGuide() {
   return new CUIAdventureGuide();
 }
+
+// OFFSET: 0x00487B10
+// FUNCTION: fn_45546
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateAdventureGuide;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10002, factory);
+  return true;
+}();
 
 // OFFSET: 0x009DB280
 // FUNCTION: fn_14306

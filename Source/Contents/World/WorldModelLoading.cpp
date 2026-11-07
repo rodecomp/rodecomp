@@ -205,13 +205,9 @@ void CWorld::InitWorld() {
   }
 
   this->ground = new GroundGeometry();
-  void** groundVtbl = *reinterpret_cast<void***>(this->ground);
-  reinterpret_cast<void (__thiscall *)(GroundGeometry*, CGndRes*, const float*, const float*, const float*)>(groundVtbl[2])(
-    this->ground, groundRes, g_worldLightDirection, g_worldDiffuse, g_worldAmbient
-  );
-  *reinterpret_cast<C3dAttr**>(reinterpret_cast<char*>(this->ground) + 4) = this->terrain;
+  this->ground->Build(*groundRes, g_worldLightDirection, g_worldDiffuse, g_worldAmbient);
 
-  reinterpret_cast<GroundWaterState*>(this->ground)->Set(
+  this->ground->water.Set(
     worldRes->waterLevel,
     worldRes->waterType,
     worldRes->waterAnimation,
@@ -220,7 +216,7 @@ void CWorld::InitWorld() {
     worldRes->waveHeight
   );
 
-  reinterpret_cast<void (__thiscall *)(GroundGeometry*, CGndRes*)>(groundVtbl[13])(this->ground, groundRes);
+  this->ground->water.Import(*groundRes);
 
   ResourceMgr::Instance().Remove(groundRes);
 
@@ -274,7 +270,7 @@ void CWorld::InitWorld() {
   this->InitializeSpatial();
   this->LoadMapEffects();
 
-  reinterpret_cast<void (__thiscall *)(GroundGeometry*)>(groundVtbl[11])(this->ground);
+  this->ground->InitializeLighting(*this->terrain);
 
   this->published = static_cast<int>(this->models.size());
 

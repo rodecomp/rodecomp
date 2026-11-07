@@ -17,7 +17,7 @@ class UIEditCtrl;
 class UIMerchantShopMakeWnd : public UIFrameWnd {
 public:
   explicit UIMerchantShopMakeWnd(int mode);
-  std::vector<unsigned char> BuildReplayRecords();
+  std::vector<unsigned char> Slot44() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;

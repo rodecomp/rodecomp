@@ -15,13 +15,9 @@ EffectActor::EffectActor() {
   this->render.unknown_0130[0] = 0;
 }
 
-struct CAbleToMakeEffect : EffectActor {
-  ~CAbleToMakeEffect() override;
-};
-
 // OFFSET: 0x00CA8C40
 // FUNCTION: fn_20993
-CAbleToMakeEffect::~CAbleToMakeEffect() {
+EffectActor::~EffectActor() {
   if (!this->state.effects.empty()) {
     for (std::list<CRagEffect*>::iterator it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
       if (*it) {

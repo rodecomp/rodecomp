@@ -429,10 +429,10 @@ void UICashShopWnd_Item::Slot15(int, int) {
 // FUNCTION: fn_09539
 void UICashShopWnd::Paint() {
   const char* background = this->m_selectedTab == 9 ? "유저인터페이스\\cashshop\\img_shop_bg2.bmp" : "유저인터페이스\\cashshop\\img_shop_bg.bmp";
-  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(background))), false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background))), false);
   if (g_session.unknown_5912) {
     this->DrawBitmap(
-      0x218, 0x11, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_bg3_cover.bmp"))), false
+      0x218, 0x11, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_bg3_cover.bmp"))), false
     );
   }
 
@@ -478,7 +478,7 @@ void UICashShopWnd_Banner::Paint() {
 
   ResourceMgr& resources = ResourceMgr::Instance();
   this->DrawBitmap(
-    0, 0, reinterpret_cast<const BitmapImage*>(resources.Load(Resolve(("유저인터페이스\\cashshop\\" + this->m_entries[this->m_index].image).c_str()))),
+    0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve(("유저인터페이스\\cashshop\\" + this->m_entries[this->m_index].image).c_str()))),
     false
   );
 }
@@ -487,7 +487,7 @@ void UICashShopWnd_Banner::Paint() {
 // FUNCTION: fn_09541
 void UICashShopWnd_Cart::Paint() {
   ResourceMgr& resources = ResourceMgr::Instance();
-  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(resources.Load(Resolve("유저인터페이스\\cashshop\\img_shop_cart_bg.bmp"))), false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve("유저인터페이스\\cashshop\\img_shop_cart_bg.bmp"))), false);
 
   unsigned int index = this->m_scrollIndex;
   for (int slot = 0; slot < this->m_visibleCount; ++slot, ++index) {
@@ -504,7 +504,7 @@ void UICashShopWnd_Cart::Paint() {
 // FUNCTION: fn_09542
 void UICashShopWnd_CartItem::Paint() {
   this->DrawBitmap(
-    0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_itemBg2.bmp"))), false
+    0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_itemBg2.bmp"))), false
   );
 
   std::string name = this->FitDisplayText(0x70, this->m_item.unknown_0044.c_str(), 0, 0xB, 0);
@@ -526,7 +526,7 @@ void UICashShopWnd_CartItem::Paint() {
 void UICashShopWnd_Item::Paint() {
   if (this->m_largeLayout == true) {
     this->DrawBitmap(
-      0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_item_bg2.bmp"))), false
+      0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_item_bg2.bmp"))), false
     );
 
     std::string stock;
@@ -542,7 +542,7 @@ void UICashShopWnd_Item::Paint() {
       this->DrawCenteredText(0, 6, name.c_str(), this->geometry.width, 0, 0xC, 0xA44F3B, 1);
       this->DrawBitmap(
         5, 0x34,
-        reinterpret_cast<const BitmapImage*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\collection\\%s.bmp", ItemResourcePath(this->m_item)).c_str()))
         ),
         true
@@ -584,7 +584,7 @@ void UICashShopWnd_Item::Paint() {
     this->DrawTextAt(0x9E - endWidth, 0xAD, endText.c_str(), 0, 0, 0xB, 0, 0, 0);
   } else {
     this->DrawBitmap(
-      0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_itemBg.bmp"))), false
+      0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_itemBg.bmp"))), false
     );
     if (this->m_item.unknown_0000[1] == 0) {
       return;
@@ -594,7 +594,7 @@ void UICashShopWnd_Item::Paint() {
     this->DrawCenteredText(0, 6, name.c_str(), this->geometry.width, 0, 0xC, 0xA44F3B, 1);
     this->DrawBitmap(
       5, 0x17,
-      reinterpret_cast<const BitmapImage*>(
+      static_cast<CBitmapRes*>(
         ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\collection\\%s.bmp", ItemResourcePath(this->m_item)).c_str()))
       ),
       true

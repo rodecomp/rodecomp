@@ -52,6 +52,10 @@ public:
     const std::uint32_t* palette, const SpriteRleImage* image, int blend, short hover
   );
   virtual void Slot12(SpriteQuad* quad, const int* box, float shiftX, int first, int second);
+  // INLINED
+  virtual std::uint32_t Slot13() {
+    return 0;
+  }
   static float __stdcall Heading(float x, float z, float targetX, float targetZ);
   void Face(float x, float z);
   float CalcDist(float x, float z) const;

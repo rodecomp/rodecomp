@@ -9,6 +9,7 @@
 class C3dAttr : public CRes {
 public:
   C3dAttr();
+  C3dAttr(const char* extension, const char* prefix);
   ~C3dAttr() override;
   C3dAttr* Create() override;
   bool Load(const char* name) override;

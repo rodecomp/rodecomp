@@ -530,15 +530,15 @@ void UIDescriptRace::DrawRaceDescription() {
     CImfRes* imf = nullptr;
     switch (layer) {
       case 0:
-        act = static_cast<CActRes*>(ResourceMgr::Instance().Load(GetBodyActionResourceName(job, g_doramSex, job, 0)));
-        sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetBodySprName(job, g_doramSex, job, 0)));
-        imf = static_cast<CImfRes*>(ResourceMgr::Instance().Load(GetBodyImfName(job, g_doramSex, 1, job).c_str()));
+        act = static_cast<CActRes*>(ResourceMgr::Instance().Load(GetBodyActionResourceName(job, g_session.m_sex, job, 0)));
+        sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetBodySprName(job, g_session.m_sex, job, 0)));
+        imf = static_cast<CImfRes*>(ResourceMgr::Instance().Load(GetBodyImfName(job, g_session.m_sex, 1, job).c_str()));
         break;
       case 1: {
         int head = 1;
-        act = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetHeadActName(job, g_doramSex, &head).c_str()));
-        sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetHeadSprName(job, g_doramSex, &head).c_str()));
-        imf = static_cast<CImfRes*>(ResourceMgr::Instance().Load(GetBodyImfName(job, g_doramSex, head, job).c_str()));
+        act = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetHeadActName(job, g_session.m_sex, &head).c_str()));
+        sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetHeadSprName(job, g_session.m_sex, &head).c_str()));
+        imf = static_cast<CImfRes*>(ResourceMgr::Instance().Load(GetBodyImfName(job, g_session.m_sex, head, job).c_str()));
         break;
       }
     }
@@ -559,7 +559,7 @@ void UIDescriptRace::DrawRaceDescription() {
     const std::uint32_t* palette = sprite->palette;
     POINT point = imf->GetLongPoint(layer, action, frame);
     if (layer == 1) {
-      const ActionFrame* body = &static_cast<CActRes*>(ResourceMgr::Instance().Load(GetBodyActionResourceName(job, g_doramSex, job, 0)))->Frame(action, frame);
+      const ActionFrame* body = &static_cast<CActRes*>(ResourceMgr::Instance().Load(GetBodyActionResourceName(job, g_session.m_sex, job, 0)))->Frame(action, frame);
       if (actionFrame->anchorCount != 0 && body->anchorCount != 0 && actionFrame->anchors[0].unknown_0008 == body->anchors[0].unknown_0008) {
         point.x += body->anchors[0].x - actionFrame->anchors[0].x;
         point.y += body->anchors[0].y - actionFrame->anchors[0].y;

@@ -16,6 +16,7 @@ struct ImfData {
 class CImfRes : public CRes {
 public:
   CImfRes();
+  CImfRes(const char* extension, const char* prefix);
   CImfRes* Create() override;
   bool Load(const char* name) override;
 

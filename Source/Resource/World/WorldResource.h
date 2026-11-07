@@ -55,6 +55,7 @@ extern WorldLighting g_worldLighting;
 class C3dWorldRes : public CRes {
 public:
   C3dWorldRes();
+  C3dWorldRes(const char* extension, const char* prefix);
   ~C3dWorldRes() override;
   C3dWorldRes* Create() override;
   bool Load(const char* name) override;

@@ -5,6 +5,7 @@
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/Models/ModelResource.h"
+#include "Resource/ResourceMgr.h"
 
 #include <algorithm>
 #include <cstring>
@@ -469,3 +470,11 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
     this->volumes.push_back(volume);
   }
 }
+
+// INLINED
+C3dModelResV2::C3dModelResV2(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25561
+C3dModelResV2 g_rsm2Prototype("rsm2", "model\\");

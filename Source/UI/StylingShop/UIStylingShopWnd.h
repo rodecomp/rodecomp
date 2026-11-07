@@ -165,9 +165,9 @@ class UIAccessoryShowCase : public UIScrollWnd {
 public:
   // INLINED
   UIAccessoryShowCase(int width, int height) : UIScrollWnd(width, height, 0), m_itemFrames() {
-    this->Slot15(width, height);
+    this->LoadAccessories(width, height);
   }
-  void Slot15(int width, int height) override;
+  void LoadAccessories(int width, int height);
   void AddAccessories(int& loaded, int& skipped, const char* table, const int& count, const int& slot);
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;

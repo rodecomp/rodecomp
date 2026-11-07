@@ -19,6 +19,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/GroupedInteger.h"
+#include "UI/Window/UIRegisterMgr.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -1299,6 +1300,14 @@ ExchangeUI::CUIItem::CUIItem() : CUIListItem(), unknown_00E8(nullptr), itemIcon(
 CUIExchangeUI* CreateExchangeUI() {
   return new CUIExchangeUI();
 }
+
+// OFFSET: 0x00493AD0
+// FUNCTION: fn_45549
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateExchangeUI;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10011, factory);
+  return true;
+}();
 
 // OFFSET: 0x00A151F0
 // FUNCTION: fn_15195

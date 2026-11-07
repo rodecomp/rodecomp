@@ -1245,7 +1245,7 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(1056, this->unknown_1704, 4));
   AppendRecord(records, MakeReplayRecord(1057, &this->unknown_1708, sizeof(this->unknown_1708)));
   AppendRecord(records, MakeReplayRecord(1058, this->unknown_170C, 4));
-  AppendRecord(records, MakeReplayRecord(1059, &this->unknown_0E9C[0x34], 4));
+  AppendRecord(records, MakeReplayRecord(1059, &this->unknown_0EA0[0x30], 4));
   AppendRecord(records, MakeReplayRecord(1060, &this->m_head, sizeof(this->m_head)));
   AppendRecord(records, MakeReplayRecord(1061, &this->unknown_0EDC[0x4], 8));
   AppendRecord(records, MakeReplayRecord(1062, &this->unknown_0EDC[0xC], 4));

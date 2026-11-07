@@ -7,6 +7,7 @@
 class CEmblemRes : public CRes {
 public:
   CEmblemRes();
+  CEmblemRes(const char* extension, const char* prefix);
   ~CEmblemRes() override;
   void Slot02() override;
   bool IsTransient() override;

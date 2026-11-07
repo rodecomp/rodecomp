@@ -346,7 +346,7 @@ struct CRagEffect : CRenderObject {
   void TorchDust(char kind);
 
   void Render(int argument) override;
-  virtual int Slot13();
+  std::uint32_t Slot13() override;
   virtual bool Slot14();
   virtual bool Slot15();
   virtual void SendMsg(CGameObject* sender, int message, int first, std::int64_t second, int third, int fourth, int fifth, int sixth);

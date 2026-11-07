@@ -764,7 +764,7 @@ void CPc::LoadEquipSprites(const std::vector<std::string>& names) {
 
 // OFFSET: 0x00DB23A0
 // FUNCTION: fn_22643
-void CPc::Slot15(int first, int second) {
+void CPc::Slot43(int first, int second) {
   if (this->unknown_049C == first) {
     return;
   }
@@ -2375,7 +2375,7 @@ void CPc::UpdateGaugeWindow() {
 
 // OFFSET: 0x00DB1760
 // FUNCTION: fn_22635
-void CPc::Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
+void CPc::Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
   this->unknown_04D4 = first;
   this->SetUnknown0260(second);
   this->unknown_0440 = third;
@@ -2421,7 +2421,7 @@ void CPc::Slot20(int first, int second, int third, int fourth, int fifth, int si
 
 // OFFSET: 0x00DB0CE0
 // FUNCTION: fn_22633
-void CPc::Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
+void CPc::Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
   this->unknown_04D4 = first;
   this->SetUnknown0260(second);
   this->unknown_0440 = third;
@@ -4348,7 +4348,7 @@ void CPlayer::Initialize() {
 
 // OFFSET: 0x00DB4290
 // FUNCTION: fn_22651
-void CPc::ChangeState(int state, int resetPosition) {
+void CPc::Slot15(int state, int resetPosition) {
   int current = this->render.unknown_0070;
   if (current == 3 || this->unknown_017C != 0) {
     return;
@@ -5574,7 +5574,7 @@ bool CPc::Slot14() {
 
 // OFFSET: 0x00DBA5D0
 // FUNCTION: fn_22673
-void CPlayer::ChangeState(int state, int resetPosition) {
+void CPlayer::Slot15(int state, int resetPosition) {
   if (this->render.unknown_0070 == 3) {
     return;
   }
@@ -5600,5 +5600,5 @@ void CPlayer::ChangeState(int state, int resetPosition) {
     g_screenShakeDuration = 0;
   }
 
-  CPc::ChangeState(state, resetPosition);
+  CPc::Slot15(state, resetPosition);
 }

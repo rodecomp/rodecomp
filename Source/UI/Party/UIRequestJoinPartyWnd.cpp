@@ -89,7 +89,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
 // OFFSET: 0x007BFC20
 // FUNCTION: fn_09306
 void UIRequestJoinPartyWnd::Paint() {
-  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_admit.bmp"))), false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_admit.bmp"))), false);
   this->DrawTitleBar(true, LookupMessage(3505), 0);
 }
 

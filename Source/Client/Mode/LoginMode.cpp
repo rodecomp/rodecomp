@@ -648,11 +648,11 @@ const char* GetUserCountText(unsigned short userCount) {
 // OFFSET: 0x00D8E990
 // FUNCTION: fn_22274
 void CLoginMode::ReceiveCharacterSlots(const CharacterSlotsPacket* packet) {
-  g_session.unknown_59C0 = packet->normalSlots;
-  g_session.unknown_59C4 = packet->premiumSlots;
-  g_session.unknown_59C8 = packet->billingSlots;
-  g_session.unknown_59CC = packet->validSlots;
-  g_session.unknown_59D4 = packet->producibleSlots;
+  g_session.m_normalSlotCount = packet->normalSlots;
+  g_session.m_premiumSlotCount = packet->premiumSlots;
+  g_session.m_billingSlotCount = packet->billingSlots;
+  g_session.m_producibleSlotCount = packet->validSlots;
+  g_session.m_validSlotCount = packet->producibleSlots;
 
   SecureZeroMemory(this->characters, sizeof(this->characters));
   g_session.unknown_59BC = 0;
@@ -776,7 +776,7 @@ void CLoginMode::ReceiveCharacterPage(const CharacterPagePacket* packet) {
   _time32(&now);
   for (int i = 0; i < static_cast<int>(count); ++i) {
     if (this->characters[this->unknown_01D8 + i].sex == 99) {
-      this->characters[this->unknown_01D8 + i].sex = g_session.unknown_0E9C[0];
+      this->characters[this->unknown_01D8 + i].sex = static_cast<unsigned char>(g_session.m_sex);
     }
     if (this->characters[this->unknown_01D8 + i].deleteDate != 0) {
       this->characters[this->unknown_01D8 + i].deleteDate += now;
@@ -1570,13 +1570,7 @@ struct NotifyZoneServer2Packet {
 #pragma pack(pop)
 
 // GLOBAL: gl_25028
-char g_zoneServerIp[16];
-
-// GLOBAL: gl_25079
-int g_zoneServerPort;
-
-// GLOBAL: gl_25080
-char g_zoneServerHost[129];
+ConnectionEndpoint g_zoneServerEndpoint;
 
 // OFFSET: 0x00D929A0
 // FUNCTION: fn_22290
@@ -1593,9 +1587,9 @@ void CLoginMode::ConnectZoneServer(std::uint32_t gid, std::string mapName, std::
 
   in_addr address;
   address.s_addr = ip;
-  strcpy(g_zoneServerIp, inet_ntoa(address));
-  g_zoneServerPort = port;
-  memcpy_s(g_zoneServerHost, sizeof(g_zoneServerHost), host.c_str(), std::min<std::size_t>(sizeof(g_zoneServerHost), host.size() + 1));
+  strcpy(g_zoneServerEndpoint.address, inet_ntoa(address));
+  g_zoneServerEndpoint.port = port;
+  memcpy_s(g_zoneServerEndpoint.overrideAddress, sizeof(g_zoneServerEndpoint.overrideAddress), host.c_str(), std::min<std::size_t>(sizeof(g_zoneServerEndpoint.overrideAddress), host.size() + 1));
 
   GetRagConnection().Close();
   this->pendingCursorType = 12;
@@ -1882,7 +1876,7 @@ void CLoginMode::Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet) {
       _time32(&now);
       fprintf(file, "\n");
       fprintf(file, "server:%s\n", g_session.m_accountName.c_str());
-      fprintf(file, "ip:%s\n", g_zoneServerIp);
+      fprintf(file, "ip:%s\n", g_zoneServerEndpoint.address);
       fprintf(file, "map:%s.gat\n", g_session.m_navigationPlayerMap);
       fprintf(file, "time:%s\n\n", _ctime32(&now));
       fclose(file);
@@ -1923,7 +1917,7 @@ void CLoginMode::Zc_Accept_Enter2(const AcceptEnterPositionPacket* packet) {
       _time32(&now);
       fprintf(file, "\n");
       fprintf(file, "server:%s\n", g_session.m_accountName.c_str());
-      fprintf(file, "ip:%s\n", g_zoneServerIp);
+      fprintf(file, "ip:%s\n", g_zoneServerEndpoint.address);
       fprintf(file, "map:%s.gat\n", g_session.m_navigationPlayerMap);
       fprintf(file, "time:%s\n\n", _ctime32(&now));
       fclose(file);
@@ -2312,7 +2306,7 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
   g_loginAcceptTime = timeGetTime();
   *reinterpret_cast<std::string*>(&g_session.unknown_56B8[4]) = LookupMessage(940);
 
-  SessionAccount& account = *reinterpret_cast<SessionAccount*>(g_session.unknown_0E9C);
+  SessionAccount& account = *reinterpret_cast<SessionAccount*>(&g_session.m_sex);
   account.authCode = packet->authCode;
   account.userLevel = packet->userLevel;
   g_session.m_aid = packet->aid;
@@ -2324,13 +2318,13 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
 
   if (packet->sex >= 10) {
     g_session.SetFlag(packet->sex - 10);
-    g_doramSex = packet->sex - 10;
+    g_session.m_sex = packet->sex - 10;
   } else {
     if (g_loginExitFlag == 1) {
       exit(0);
     }
     g_session.SetFlag(packet->sex);
-    g_doramSex = packet->sex;
+    g_session.m_sex = packet->sex;
   }
 
   if (g_serviceType == 6 || g_serviceType == 10 || g_serviceType == 12) {
@@ -3128,7 +3122,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     g_windowMgr.LoadShortcutItems();
     for (int i = 0; i < this->characterCount; ++i) {
       if (this->characters[i].slot == static_cast<unsigned char>(g_selectedSlotIndex)) {
-        *reinterpret_cast<int*>(&g_session.unknown_0E9C[0x04]) = this->characters[i].slot;
+        *reinterpret_cast<int*>(&g_session.unknown_0EA0[0x00]) = this->characters[i].slot;
         g_session.SetJob(this->characters[i].job);
         g_session.m_gid = this->characters[i].gid;
         *reinterpret_cast<int*>(g_session.unknown_16F4) = this->characters[i].speed;
@@ -3184,7 +3178,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         g_session.InvalidateWindowFrames();
         g_session.m_jobLevel = *reinterpret_cast<const int*>(&this->characters[i].unknown_000C[0x0C]);
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<int*>(&g_session.unknown_0E9C[0x34]) = this->characters[i].unknown_008B[0];
+        *reinterpret_cast<int*>(&g_session.unknown_0EA0[0x30]) = this->characters[i].unknown_008B[0];
         g_session.m_head = this->characters[i].head;
         *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x04]) = 0;
         *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x08]) = 0;
@@ -3643,7 +3637,7 @@ void CLoginMode::Slot7(int value) {
   this->unknown_0018 = 1;
 
   ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(this->serverList);
-  SessionAccount& account = *reinterpret_cast<SessionAccount*>(g_session.unknown_0E9C);
+  SessionAccount& account = *reinterpret_cast<SessionAccount*>(&g_session.m_sex);
 
   switch (value) {
   case 0:
@@ -4044,7 +4038,7 @@ void CLoginMode::Slot7(int value) {
     g_session.unknown_593C = 0;
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
-    this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(g_zoneServerIp));
+    this->unknown_0018 = GetRagConnection().Connect(g_zoneServerEndpoint);
     if (!this->unknown_0018) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {

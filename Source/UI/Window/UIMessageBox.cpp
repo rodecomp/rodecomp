@@ -159,7 +159,7 @@ UIMakeCharWnd::UIMakeCharWnd()
     : UIFrameWnd(0), unknown_02C4(0), unknown_02C8(0), unknown_02CC(0), unknown_02D0(0), unknown_02D4(0), unknown_02D8(0) {
   this->geometry.unknown_0034 = 0;
   this->m_nameEdit = nullptr;
-  this->m_info.sex = static_cast<unsigned char>(g_doramSex);
+  this->m_info.sex = static_cast<unsigned char>(g_session.m_sex);
 
   const int* preset = reinterpret_cast<const int*>(g_modeMgr.gameMode->SendMsg(10016, 0, 0, 0, 0));
   this->m_info.stats[0] = static_cast<unsigned char>(preset[0]);
@@ -1452,7 +1452,8 @@ void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
 
   std::string resource(FindItemDescription(itemId).identifiedResource);
   if (!resource.empty()) {
-    this->m_image = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\collection\\{}.bmp", resource)));
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\collection\\{}.bmp", resource)));
+    this->m_image = bitmap ? &bitmap->image : nullptr;
   }
 }
 

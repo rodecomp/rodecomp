@@ -195,7 +195,7 @@ void UIMenuIconWnd::Slot15(int width, int height) {
 // OFFSET: 0x0084B940
 // FUNCTION: fn_10617
 void UIMenuIconWnd::Paint() {
-  this->m_children.clear();
+  this->m_primitives.clear();
   this->unknown_00CC->Enable(0);
   this->unknown_00D0->Enable(0);
   this->unknown_00D4->Enable(0);

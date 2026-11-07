@@ -5,6 +5,7 @@
 #include "Render/Renderer.h"
 #include "UI/Quest/UIRenewQuestWnd.h"
 #include "UI/Text/UIStaticTextControl.h"
+#include "UI/Window/UIRegisterMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>
@@ -249,6 +250,14 @@ CUIRecommendedQuestInfo::CUIRecommendedQuestInfo()
 CUIFrameWnd* CreateRecommendedQuestInfo() {
   return new CUIRecommendedQuestInfo();
 }
+
+// OFFSET: 0x004985B0
+// FUNCTION: fn_45553
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateRecommendedQuestInfo;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10010, factory);
+  return true;
+}();
 
 // OFFSET: 0x00A58E00
 // FUNCTION: fn_16351

@@ -1491,11 +1491,11 @@ void UIGuildInfoManageWnd::Paint() {
   CBitmapRes* online = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
   int x;
   if (g_serviceType == 0) {
-    this->DrawBitmap(128, 95, &online->image, true);
+    this->DrawBitmap(128, 95, online, true);
     std::sprintf(text, "   %d", guild.unknown_0068);
     x = 138;
   } else {
-    this->DrawBitmap(width + 16, 95, &online->image, true);
+    this->DrawBitmap(width + 16, 95, online, true);
     std::sprintf(text, " %d", guild.unknown_0068);
     this->TextWidth(LookupMessage(330), 0, 0, 12, 0, 0);
     x = online->image.width + 16 + width;
@@ -1520,9 +1520,9 @@ void UIGuildInfoManageWnd::Paint() {
   this->FillRegion(299, 64, 26, 26, RGB(red, green, blue));
   {
     const std::string emblemName = g_guildMgr->GetEmblemFilename(this->m_guildId);
-    CBitmapRes* emblem = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(emblemName));
+    CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(emblemName));
     if (emblem) {
-      this->DrawBitmap(300, 65, &emblem->image, true);
+      this->DrawBitmap(300, 65, &emblem->gif, true);
     }
   }
 

@@ -31,6 +31,7 @@
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/StringUtil.h"
+#include "UI/Window/UIRegisterMgr.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
@@ -2157,9 +2158,17 @@ void UIWindowMgr::RefreshGameSettingHotkeys() {
 
 // OFFSET: 0x00A1BF50
 // FUNCTION: fn_15373
-UIFrameWnd* CreateGameSettingsUI() {
+CUIFrameWnd* CreateGameSettingsUI() {
   return new CUIGameSettingsUI();
 }
+
+// OFFSET: 0x00494730
+// FUNCTION: fn_45545
+static bool s_registered = [] {
+  std::function<CUIFrameWnd*()> factory = CreateGameSettingsUI;
+  Singleton<CUIRegisterMgr>::GetInstance()->Register(10014, factory);
+  return true;
+}();
 
 // OFFSET: 0x00A1BFD0
 // FUNCTION: fn_15374

@@ -16,6 +16,10 @@ class UIItemWnd : public UIItemBaseWnd {
 public:
   UIItemWnd();
   __declspec(noinline) ~UIItemWnd() override;
+  // INLINED
+  bool Slot03() override {
+    return true;
+  }
   void Slot11() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot18() override;

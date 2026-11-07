@@ -2,6 +2,7 @@
 #include "File/File.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
 
 #include <cstring>
 #include <windows.h>
@@ -66,3 +67,20 @@ bool CBitmapRes::Decode(const char* name, const void* data, int bytes, bool icon
   ShowErrorDialog("Unsupport fileformat!", 0);
   return false;
 }
+
+// INLINED
+CBitmapRes::CBitmapRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25549
+CBitmapRes g_tgaPrototype("tga", "texture\\");
+
+// GLOBAL: gl_25550
+CBitmapRes g_jpgPrototype("jpg", "texture\\");
+
+// GLOBAL: gl_25551
+CBitmapRes g_pngPrototype("png", "texture\\");
+
+// GLOBAL: gl_25552
+CBitmapRes g_bmpPrototype("bmp", "texture\\");

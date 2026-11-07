@@ -1,5 +1,6 @@
 #include "Resource/ImfResource.h"
 #include "File/File.h"
+#include "Resource/ResourceMgr.h"
 
 // INLINED
 CImfRes::CImfRes() {
@@ -71,3 +72,11 @@ bool CImfRes::Load(const char* name) {
   file.Close();
   return true;
 }
+
+// INLINED
+CImfRes::CImfRes(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25557
+CImfRes g_imfPrototype("imf", "imf\\");

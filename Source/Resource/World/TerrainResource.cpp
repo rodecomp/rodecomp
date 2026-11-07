@@ -2,6 +2,7 @@
 #include "File/File.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Resource/World/TerrainResource.h"
+#include "Resource/ResourceMgr.h"
 
 #include <cstring>
 
@@ -76,3 +77,11 @@ void C3dAttr::Unload() {
   this->width = 0;
   this->height = 0;
 }
+
+// INLINED
+C3dAttr::C3dAttr(const char* extension, const char* prefix) {
+  ResourceMgr::Instance().Register(extension, prefix, this);
+}
+
+// GLOBAL: gl_25548
+C3dAttr g_gatPrototype("gat", "");

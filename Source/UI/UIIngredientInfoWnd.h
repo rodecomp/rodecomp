@@ -25,7 +25,7 @@ public:
   void Slot32(int x, int y) override;
   void Slot35(int argument) override;
   void Paint() override;
-  void Click(int button, int unused);
+  void Slot26(int button, int unused) override;
   void SetIngredientItem(std::uint32_t id);
 
   /* 00B8 */ ITEM_INFO item;

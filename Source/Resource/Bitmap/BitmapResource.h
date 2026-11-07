@@ -20,6 +20,7 @@ protected:
 class CBitmapRes : public CRes {
 public:
   CBitmapRes();
+  CBitmapRes(const char* extension, const char* prefix);
   ~CBitmapRes() override;
   CBitmapRes* Create() override;
   bool Load(const char* name) override;

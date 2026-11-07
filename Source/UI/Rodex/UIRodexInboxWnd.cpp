@@ -92,15 +92,15 @@ void UIRodexInboxWnd::Slot25(int x, int y) {
 
 // OFFSET: 0x00807660
 // FUNCTION: fn_10050
-void UIRodexInboxWnd::Slot26(int, int) {}
+void UIRodexInboxWnd::Slot28(int, int) {}
 
 // OFFSET: 0x00807670
 // FUNCTION: fn_10051
-void UIRodexInboxWnd::Nullsub257() {}
+void UIRodexInboxWnd::Slot19() {}
 
 // OFFSET: 0x00807680
 // FUNCTION: fn_10052
-void UIRodexInboxWnd::Slot28(int, int) {}
+void UIRodexInboxWnd::Slot32(int, int) {}
 
 // OFFSET: 0x00805750
 // FUNCTION: fn_10045
@@ -391,13 +391,13 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
 // FUNCTION: fn_10048
 void UIRodexInboxWnd::Paint() {
   this->ClearSurface(0xFF00FF);
-  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_list.bmp"))), false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_list.bmp"))), false);
   for (int i = 0; i < 6; ++i) {
     this->unknown_01A8[i]->Enable(0);
   }
 
   if (!g_rodexMailStore->unknown_001C) {
-    this->DrawBitmap(0x1F, 0x9A, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\img_notice.bmp"))), true);
+    this->DrawBitmap(0x1F, 0x9A, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\img_notice.bmp"))), true);
     this->DrawWrappedFormattedText(0x1F, 0xE5, std::string(LookupMessage(0xC76)), 0xF8, 3, 6, 0, 12, 0, 0);
     this->DrawCenteredText(0x1F, 0x10E, LookupMessage(0xC77), 0xF8, 0, 0x12, 0xC89482, 1);
     return;
