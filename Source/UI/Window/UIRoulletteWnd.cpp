@@ -201,7 +201,7 @@ void UIRoulletteWnd::Paint() {
     CBitmapRes* arrow =
       static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\roullette\\stageArrow.bmp")));
     if (arrow != nullptr) {
-      this->DrawBitmap(482, 344 - g_rouletteMgr->m_stage * 40, &arrow->image, true);
+      this->DrawBitmap(482, 344 - g_rouletteMgr->m_stage * 40, arrow, true);
     }
   }
 
