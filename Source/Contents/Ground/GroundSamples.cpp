@@ -45,6 +45,14 @@ int GroundGeometry::Slot12(int, int, int, int, int) const {
   return 0;
 }
 
+// INLINED
+static __forceinline void ReadLightmapSample(const GroundCell& cell, unsigned sample, unsigned char& alpha, unsigned char& red, unsigned char& green, unsigned char& blue) {
+  alpha = static_cast<unsigned char>(cell.top->lightmap->unknown_0028[sample] >> 24);
+  red = static_cast<unsigned char>(cell.top->lightmap->unknown_0028[sample] >> 16);
+  green = static_cast<unsigned char>(cell.top->lightmap->unknown_0028[sample] >> 8);
+  blue = static_cast<unsigned char>(cell.top->lightmap->unknown_0028[sample]);
+}
+
 // OFFSET: 0x00AC11D0
 // FUNCTION: fn_17579
 void GroundGeometry::LightmapSample(int column, int row, unsigned char& alpha, unsigned char& red, unsigned char& green, unsigned char& blue) const {
@@ -60,13 +68,21 @@ void GroundGeometry::LightmapSample(int column, int row, unsigned char& alpha, u
     return;
   }
 
-  const unsigned sample = (static_cast<unsigned>(column) & 1u) + 2u * (static_cast<unsigned>(row) & 1u);
+  const GroundCell& cell = this->cells[index];
 
-  const auto read = [&](unsigned shift) { return static_cast<unsigned char>(this->cells[index].top->lightmap->unknown_0028[sample] >> shift); };
-  alpha = read(24);
-  red = read(16);
-  green = read(8);
-  blue = read(0);
+  if ((column & 1) == 0) {
+    if ((row & 1) == 0) {
+      ReadLightmapSample(cell, 0, alpha, red, green, blue);
+    } else {
+      ReadLightmapSample(cell, 2, alpha, red, green, blue);
+    }
+  } else {
+    if ((row & 1) == 0) {
+      ReadLightmapSample(cell, 1, alpha, red, green, blue);
+    } else {
+      ReadLightmapSample(cell, 3, alpha, red, green, blue);
+    }
+  }
 }
 
 // OFFSET: 0x00AC0C40
