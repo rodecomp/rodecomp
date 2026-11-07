@@ -5917,8 +5917,8 @@ void UIMerchantShopMakeWnd::UpdateLayout() {
       this->notice->Move(12, this->geometry.height - 20);
     }
 
-    for (UIWindow* button : this->actionButtons) {
-      button->Move(button->geometry.x, this->geometry.height - 24);
+    for (int index = 0; index < 2; ++index) {
+      this->actionButtons[index]->Move(this->actionButtons[index]->geometry.x, this->geometry.height - 24);
     }
 
     if (this->unknown_0168) {
@@ -5928,12 +5928,7 @@ void UIMerchantShopMakeWnd::UpdateLayout() {
     this->scrollBar->Resize(1, this->geometry.height - 58);
   }
 
-  int visible = (this->geometry.height - top) / 42;
-  if (visible < this->unknown_0140) {
-    visible = this->unknown_0140;
-  }
-
-  this->visibleRows = visible;
+  this->visibleRows = std::max((this->geometry.height - top) / 42, this->unknown_0140);
   this->scrollBar->Invalidate();
 }
 
@@ -10133,13 +10128,13 @@ bool UIItemStoreSubWnd::UpdateItemNames3() {
   }
 
   for (std::list<ITEM_INFO>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
-    ITEM_INFO item = *it;
-    int highlightColor;
-    std::vector<char*> breaks;
     char text[256];
-    char* cursor = text;
-    std::size_t remaining = 0x100;
     char* highlight = nullptr;
+    char* cursor = text;
+    std::vector<char*> breaks;
+    ITEM_INFO item = *it;
+    std::size_t remaining = 0x100;
+    int highlightColor;
     this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
     it->SetName(text);
   }
