@@ -12,6 +12,7 @@
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UISpriteButton.h"
 
 #include <cstring>
 
@@ -26,6 +27,10 @@ UIButton::UIButton() : UIWindow(0) {
 // OFFSET: 0x00851340
 // FUNCTION: fn_10690
 UIButton::~UIButton() = default;
+
+// OFFSET: 0x00851C70
+// FUNCTION: fn_10698
+UISpriteButton::~UISpriteButton() = default;
 
 // OFFSET: 0x0085C450
 // FUNCTION: fn_10800
@@ -64,6 +69,22 @@ void UIButton::Slot25(int, int) {
   this->Invalidate();
 }
 
+// OFFSET: 0x0085ED70
+// FUNCTION: fn_10847
+void UISpriteButton2::Slot25(int x, int y) {
+  UIButton::Slot25(x, y);
+  if (this->m_target) {
+    this->m_target->Slot25(this->geometry.x + x, this->geometry.y + y);
+  }
+}
+
+// OFFSET: 0x0085EDC0
+// FUNCTION: fn_10848
+void UISpriteButton::Slot25(int x, int y) {
+  UIButton::Slot25(x, y);
+  this->Root()->Slot25(this->geometry.x + x, this->geometry.y + y);
+}
+
 // OFFSET: 0x0085E8B0
 // FUNCTION: fn_10830
 void UIButton::Slot26(int x, int y) {
@@ -100,6 +121,15 @@ void UIButton::Slot27(int x, int y) {
   UIWindow* parent = this->parent;
   if (parent == g_windowMgr.unknown_01DC) {
     parent->SendMsg(this, 6, 271, this->geometry.unknown_0030 != 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x0085F7A0
+// FUNCTION: fn_10870
+void UISpriteButton2::Slot27(int x, int y) {
+  UIButton::Slot27(x, y);
+  if (this->m_target) {
+    this->m_target->Slot27(this->geometry.x + x, this->geometry.y + y);
   }
 }
 

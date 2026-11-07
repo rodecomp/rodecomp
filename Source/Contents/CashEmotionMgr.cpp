@@ -3860,10 +3860,6 @@ UISpriteButton2::~UISpriteButton2() {
   this->m_target = nullptr;
 }
 
-// OFFSET: 0x00851C70
-// FUNCTION: fn_10698
-UISpriteButton::~UISpriteButton() = default;
-
 // OFFSET: 0x0085CF90
 // FUNCTION: fn_10810
 void UIHeadsprButton::Paint() {
@@ -4026,22 +4022,6 @@ void UISpriteButton::Slot26(int x, int y) {
   this->Root()->Slot26(this->geometry.x + x, this->geometry.y + y);
 }
 
-// OFFSET: 0x0085ED70
-// FUNCTION: fn_10847
-void UISpriteButton2::Slot25(int x, int y) {
-  UIButton::Slot25(x, y);
-  if (this->m_target) {
-    this->m_target->Slot25(this->geometry.x + x, this->geometry.y + y);
-  }
-}
-
-// OFFSET: 0x0085EDC0
-// FUNCTION: fn_10848
-void UISpriteButton::Slot25(int x, int y) {
-  UIButton::Slot25(x, y);
-  this->Root()->Slot25(this->geometry.x + x, this->geometry.y + y);
-}
-
 // OFFSET: 0x0085F160
 // FUNCTION: fn_10857
 void UISpriteButton2::Slot47() {
@@ -4071,15 +4051,6 @@ void UISpriteButton::Slot28(int x, int y) {
 void UISpriteButton2::Slot48() {
   if (this->m_target) {
     this->m_target->Slot48();
-  }
-}
-
-// OFFSET: 0x0085F7A0
-// FUNCTION: fn_10870
-void UISpriteButton2::Slot27(int x, int y) {
-  UIButton::Slot27(x, y);
-  if (this->m_target) {
-    this->m_target->Slot27(this->geometry.x + x, this->geometry.y + y);
   }
 }
 
