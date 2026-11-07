@@ -3831,9 +3831,9 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
           std::string text;
           const char* name = g_session.GetPetString(job);
           if (name == nullptr) {
-            text = FormatOwnedString(LookupMessage(2568), g_session.GetJobName(job, -1));
+            text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(2568), g_session.GetJobName(job, -1)));
           } else {
-            text = FormatOwnedString(LookupMessage(2568), name);
+            text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(2568), name));
           }
           menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(text.c_str()), 471, *it, 0);
         }
