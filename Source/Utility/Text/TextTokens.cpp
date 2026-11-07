@@ -45,17 +45,19 @@ bool IsHexColorToken(const char* text, const char* end) {
 std::string __stdcall StripColorTokens(const char* text, std::uint32_t length) {
   std::string result;
   result.reserve(length);
-  if (text != nullptr) {
-    const char* current = text;
-    const char* end = text + length;
-    while (current < end) {
-      if (IsHexColorToken(current, end)) {
-        current += 7;
-      } else if (IsPipeColorToken(current)) {
-        current += 3;
-      } else {
-        result.push_back(*current++);
-      }
+  if (text == nullptr) {
+    return result;
+  }
+
+  const char* current = text;
+  const char* end = text + length;
+  while (current < end) {
+    if (IsHexColorToken(current, end)) {
+      current += 7;
+    } else if (IsPipeColorToken(current)) {
+      current += 3;
+    } else {
+      result.push_back(*current++);
     }
   }
 
