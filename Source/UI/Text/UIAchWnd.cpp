@@ -659,7 +659,7 @@ void UIToolTipBitmapWnd::Paint() {
     g_session.IconPath(path, info.itemId.c_str(), 1);
     CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
     if (icon) {
-      this->DrawBitmap(20, 15, &icon->image, true);
+      this->DrawBitmap(20, 15, icon, true);
     }
   }
 }
