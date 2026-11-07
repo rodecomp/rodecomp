@@ -60,7 +60,7 @@ namespace {
 // FUNCTION: fn_03704
 CRegisterPartyAsyncWork::CRegisterPartyAsyncWork()
     : NAsyncWork("Register_Party"), m_accountId(0), m_characterId(0),
-      m_diagnostic(Diagnostic(false, DecryptName<0x2D33791F67AD47DFULL>({0xAA, 0x29, 0xC6, 0x09, 0x68, 0x16, 0x5D, 0x2D}), 26)) {
+      m_diagnostic(false, std::string(DecryptName<0x2D33791F67AD47DFULL>({0xAA, 0x29, 0xC6, 0x09, 0x68, 0x16, 0x5D, 0x2D})), sourceFile, 26) {
 }
 
 // INLINED
@@ -85,7 +85,7 @@ void CRegisterPartyAsyncWork::Bind(
   this->m_token = token;
   this->m_info = info;
   const std::uint8_t unknown[] = {0x80, 0xE9, 0x96, 0x93, 0x58, 0x52, 0x01, 0x93};
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x936F3D2FFDFD87F5ULL>(unknown), 50);
+  AsyncDiagnostic diagnostic(false, std::string(DecryptName<0x936F3D2FFDFD87F5ULL>(unknown)), sourceFile, 50);
   this->m_diagnostic.MoveFrom(diagnostic);
 }
 

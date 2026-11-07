@@ -63,7 +63,7 @@ namespace {
 // FUNCTION: fn_04241
 CMCStoreInfoBackupLoadAsyncWork::CMCStoreInfoBackupLoadAsyncWork()
     : NAsyncWork("MerchantStoreInformation_Load"), m_accountId(0), m_characterId(0),
-      m_diagnostic(Diagnostic(false, DecryptName<0xF535E561137F138DULL>({0xF8, 0x7D, 0x14, 0x7D, 0x16, 0x8A, 0x5B, 0xF5}), loadSource, 28)), m_type(0) {
+      m_diagnostic(false, std::string(DecryptName<0xF535E561137F138DULL>({0xF8, 0x7D, 0x14, 0x7D, 0x16, 0x8A, 0x5B, 0xF5})), loadSource, 28), m_type(0) {
 }
 
 // INLINED
@@ -88,7 +88,7 @@ void CMCStoreInfoBackupLoadAsyncWork::Bind(
   this->m_token = token;
   this->m_response = "";
   const std::uint8_t unknown[] = {0xA4, 0x0F, 0x9A, 0xE7, 0x18, 0x3E, 0x8B, 0xD3};
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xD3E5516F89F161D1ULL>(unknown), loadSource, 55);
+  AsyncDiagnostic diagnostic(false, std::string(DecryptName<0xD3E5516F89F161D1ULL>(unknown)), loadSource, 55);
   this->m_diagnostic.MoveFrom(diagnostic);
   this->m_type = type;
 }
@@ -136,7 +136,7 @@ void CMCStoreInfoBackupLoadAsyncWork::Complete() {
 // FUNCTION: fn_04247
 CMCStoreInfoBackupSaveAsyncWork::CMCStoreInfoBackupSaveAsyncWork()
     : NAsyncWork("MerchantStoreInformation_Save"), m_accountId(0), m_characterId(0),
-      m_diagnostic(Diagnostic(false, DecryptName<0x3FAF85D995034FD7ULL>({0xA2, 0x21, 0x68, 0xFB, 0xAE, 0xEA, 0xC1, 0x3F}), saveSource, 30)), m_type(0) {
+      m_diagnostic(false, std::string(DecryptName<0x3FAF85D995034FD7ULL>({0xA2, 0x21, 0x68, 0xFB, 0xAE, 0xEA, 0xC1, 0x3F})), saveSource, 30), m_type(0) {
 }
 
 // INLINED
@@ -161,7 +161,7 @@ void CMCStoreInfoBackupSaveAsyncWork::Bind(
   this->m_token = token;
   this->m_data = data;
   const std::uint8_t unknown[] = {0xCC, 0x63, 0x44, 0xCF, 0x34, 0x94, 0x61, 0x49};
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x490FFB43A12F0DB9ULL>(unknown), saveSource, 57);
+  AsyncDiagnostic diagnostic(false, std::string(DecryptName<0x490FFB43A12F0DB9ULL>(unknown)), saveSource, 57);
   this->m_diagnostic.MoveFrom(diagnostic);
   this->m_type = type;
 }
