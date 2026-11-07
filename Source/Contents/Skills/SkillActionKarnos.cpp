@@ -979,7 +979,7 @@ void CEfstAction_CHOP_CHOP::Slot01(int efstId, int argument2, int argument3, int
 // FUNCTION: fn_03403
 void CWhirlwindEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
   if (parent && !parent->HasId(0x98C)) {
-    parent->render.instant.Set(25, static_cast<std::int64_t>(parent->render.angle * 1000.0f));
+    parent->render.instant.Values()[25] = static_cast<std::int64_t>(parent->render.angle * 1000.0f);
   }
 
   this->CRagEffect::Init(parent, id, deltaPos);
@@ -1004,7 +1004,9 @@ bool CWhirlwindEffect::OnProcess() {
   }
 
   EffectActor* parent = this->state.parent;
-  const int angle = static_cast<int>(parent->GetInstant(25));
+  const std::map<int, std::int64_t>& values = parent->render.instant.Values();
+  const auto entry = values.find(25);
+  const int angle = static_cast<int>(entry == values.end() ? 0 : entry->second);
   parent->render.angle = static_cast<float>(angle) / 1000.0f;
   return false;
 }
