@@ -67,8 +67,7 @@ bool C3dModelResV2::Load(const char* name) {
   file.Read(magic, 4);
 
   if (std::strcmp(magic, "GRSM") != 0) {
-    constexpr char message[] = "모델파일이 아닙니다. 형식을 다시한번 확인해주세요.";
-    ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, "모델파일이 아닙니다. 형식을 다시한번 확인해주세요.", 0);
     file.Close();
 
     return false;
