@@ -3353,7 +3353,8 @@ quit:
 // OFFSET: 0x008BE200
 // FUNCTION: fn_11804
 int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6: {
     if (a == 185) {
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
@@ -3371,9 +3372,13 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         g_windowMgr.Confirm(LookupMessage(3249), 0, true, false, 0, "Message", 280, 120, 0);
       }
     }
-  } else if (message == 60) {
+
+    break;
+  }
+  case 60: {
     this->unknown_00B4->SetText("");
     return 0;
+  }
   }
 
   return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
