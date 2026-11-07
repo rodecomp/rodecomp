@@ -292,7 +292,8 @@ int FuncDrawWNDChar::IsSpecialLayer(int layer) {
 FuncDrawOffset FuncDrawWNDChar::BodyAnchorOffset(const ActionFrame* frame, bool keepScale) {
   FuncDrawOffset offset;
 
-  CActRes* act = this->m_resources.find(1) != this->m_resources.end() ? this->m_resources[1].second : nullptr;
+  int layer = 1;
+  CActRes* act = this->m_resources.find(layer) != this->m_resources.end() ? this->m_resources[layer].second : nullptr;
   const ActionFrame& base = act->Frame(this->m_action, this->m_motion);
   if (frame->anchorCount > 0 && base.anchorCount > 0) {
     const ActionAnchor* frameAnchor = frame->anchors.data();
@@ -327,7 +328,9 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
   const ActionFrame* current = *frame;
   FuncDrawOffset offset;
 
-  CActRes* bodyAct = this->m_resources.find(2) != this->m_resources.end() ? this->m_resources[2].second : nullptr;
+  const auto resourcesEnd = this->m_resources.end();
+  int bodyLayer = 2;
+  CActRes* bodyAct = this->m_resources.find(bodyLayer) != resourcesEnd ? this->m_resources[bodyLayer].second : nullptr;
   const ActionFrame& base = bodyAct->Frame(this->m_action, this->m_motion);
   int syncedMotion = 0;
   const ActionFrame* synced = g_session.GetSyncedFrame(bodyAct, act, this->m_action, this->m_motion, this->m_time, &syncedMotion);
