@@ -9,6 +9,20 @@
 #include <cstring>
 #include <json/value.h>
 
+// INLINED
+template <typename T>
+static __forceinline void StoreField(unsigned char* field, T value) {
+  std::memcpy(field, &value, sizeof(value));
+}
+
+// INLINED
+template <typename T>
+static __forceinline T LoadField(const unsigned char* field) {
+  T value;
+  std::memcpy(&value, field, sizeof(value));
+  return value;
+}
+
 // OFFSET: 0x00606190
 // FUNCTION: fn_04233
 void CMCStoreInfoBackup::ImportData(Json::Value& data) {
@@ -35,26 +49,19 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
     item.unknown_0060 = value.get("RefiningLevel", 0).asInt();
     item.unknown_0088 = static_cast<std::int16_t>(value.get("GradeLevel", 0).asInt());
 
-    const char* slotKeys[] = {"Slot_1", "Slot_2", "Slot_3", "Slot_4"};
-
-    for (unsigned index = 0; index < 4; ++index) {
-      const auto slot = static_cast<std::uint32_t>(value.get(slotKeys[index], 0).asInt());
-      std::memcpy(item.unknown_001C + 4 * index, &slot, sizeof(slot));
-    }
-
+    StoreField<std::int32_t>(item.unknown_001C + 0, value.get("Slot_1", 0).asInt());
+    StoreField<std::int32_t>(item.unknown_001C + 4, value.get("Slot_2", 0).asInt());
+    StoreField<std::int32_t>(item.unknown_001C + 8, value.get("Slot_3", 0).asInt());
+    StoreField<std::int32_t>(item.unknown_001C + 12, value.get("Slot_4", 0).asInt());
     item.unknown_0098 = value.get("RandomOptionCount", 0).asInt();
     Json::Value options = value["RandomOptionList"];
     int index = 0;
+    unsigned char* record = item.unknown_009C;
 
-    for (auto option = options.begin(); option != options.end() && index <= 5; ++option, ++index) {
-      const auto id = static_cast<std::uint16_t>((*option).get("OptIndex", 0).asInt());
-      const auto amount = static_cast<std::uint16_t>((*option).get("Value", 0).asInt());
-      const auto parameter = static_cast<unsigned char>((*option).get("Parm1", 0).asInt());
-      auto* record = reinterpret_cast<unsigned char*>(&item) + offsetof(ITEM_INFO, unknown_009C) + index * 5;
-
-      std::memcpy(record, &id, sizeof(id));
-      std::memcpy(record + 2, &amount, sizeof(amount));
-      record[4] = parameter;
+    for (auto option = options.begin(); option != options.end() && index <= 5; ++option, ++index, record += 5) {
+      StoreField<std::int16_t>(record, (*option).get("OptIndex", 0).asInt());
+      StoreField<std::int16_t>(record + 2, (*option).get("Value", 0).asInt());
+      record[4] = static_cast<unsigned char>((*option).get("Parm1", 0).asInt());
     }
 
     item.unknown_0014[0] = static_cast<std::uint32_t>(value.get("Price", 0).asInt());
