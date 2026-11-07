@@ -2463,7 +2463,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       g_windowToggleFlag = false;
     }
 
-    if ((this->IsHoverOnWindow01C8Button() || (!this->windowHistory.empty() && this->windowHistory.front() == 1)) && this->inputSuggestionsEnabled != 0 &&
+    if ((this->IsHoverOnWindow01C8Button() || (this->windowHistory.begin() != this->windowHistory.end() && *this->windowHistory.begin() == 1)) && this->inputSuggestionsEnabled != 0 &&
         this->chatModeChanged != 0) {
       UINewChatWnd* suggestions = static_cast<UINewChatWnd*>(this->window_01C8);
       if (suggestions && suggestions->SuggestionsVisible()) {
@@ -2479,16 +2479,17 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     if (this->window_01C8 && this->hoverWindow) {
       UIWindow* parent = this->hoverWindow->parent;
       if (parent && this->hoverWindow->geometry.x != -100) {
-        if (parent == static_cast<UINewChatWnd*>(this->window_01C8)->m_tabControl) {
+        const auto isRetained = [this](const UIWindow* window) {
+          for (auto it = this->retainedWindows.begin(); it != this->retainedWindows.end(); ++it) {
+            if (it->second == window) {
+              return true;
+            }
+          }
+          return false;
+        };
+        if (parent == static_cast<UINewChatWnd*>(this->window_01C8)->m_tabControl || isRetained(parent)) {
           parent->SendMsg(this->hoverWindow, 0, 1, 0, 0, 0);
           return false;
-        }
-
-        for (const auto& entry : this->retainedWindows) {
-          if (entry.second == parent) {
-            parent->SendMsg(this->hoverWindow, 0, 1, 0, 0, 0);
-            return false;
-          }
         }
       }
     }
@@ -2498,7 +2499,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       return false;
     }
 
-    const int id = this->windowHistory.empty() ? -1 : this->windowHistory.front();
+    const int id = this->windowHistory.begin() != this->windowHistory.end() ? *this->windowHistory.begin() : -1;
     if (g_replayAnimationScaling != 0 && (static_cast<unsigned int>(id) > 10040 || this->policy[id].actions[3] == 0)) {
       return false;
     }
