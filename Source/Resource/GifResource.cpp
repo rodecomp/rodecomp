@@ -156,7 +156,12 @@ void CGifRes::Unload() {
 // FUNCTION: fn_07856
 void CGifRes::Slot02() {
   const std::size_t count = this->frames.size();
-  if (count <= 1 || this->currentFrame >= count) {
+  if (count <= 1) {
+    this->frameChanged = false;
+    return;
+  }
+
+  if (this->currentFrame >= count) {
     this->frameChanged = false;
     return;
   }
