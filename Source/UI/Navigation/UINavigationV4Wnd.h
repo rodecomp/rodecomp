@@ -103,13 +103,5 @@ public:
   /* 00B4 */ UIListBox_NaviSearch* routeList;
 };
 
-extern int g_navigationTab;
-extern int g_navigationRoadIcon;
-extern CTexture* g_navigationMapTexture;
-extern std::string g_navigationText0;
-extern std::string g_navigationText1;
-extern std::string g_navigationText2;
-extern std::string g_navigationText3;
-extern std::string g_navigationText4;
 
 #endif

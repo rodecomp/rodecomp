@@ -27,19 +27,6 @@ struct NavigationWndInfo {
   /* 0010 */ bool minimized;
 };
 
-extern bool g_navigationMinimized;
-extern int g_navigationMode;
-extern bool g_navigationHidden;
-extern CActRes* g_navigationActions;
-extern CSprRes* g_navigationSprites;
-extern bool g_unknown16FC585;
-extern bool g_unknown16FC586;
-extern std::string g_navigationSearchText;
-extern int g_navigationActiveLabel;
-extern std::vector<NaviCell> g_navigationPoints;
-extern std::vector<NaviRouteLine> g_navigationLabels;
-extern bool g_navigationFilter;
-extern int g_navigationSearchType;
 
 class UINavigationWnd : public UIFrameWnd {
 public:

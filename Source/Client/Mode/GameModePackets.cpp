@@ -1363,15 +1363,12 @@ __declspec(noinline) void CGameMode::ReceiveUnknown173A5BC(const unsigned char* 
   }
 }
 
-// GLOBAL: gl_24967
-int g_unknown16FC588;
-
 // OFFSET: 0x00D7A0B0
 // FUNCTION: fn_22186
 __declspec(noinline) void CGameMode::ReceiveUnknown16FC588(const unsigned char* packet) {
   const signed char value = *reinterpret_cast<const signed char*>(packet + 2);
   if (value != 1 && value != 2) {
-    g_unknown16FC588 = 0;
+    g_navigationManager.unknown_1280 = 0;
   }
 }
 

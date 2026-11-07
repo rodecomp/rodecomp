@@ -83,7 +83,7 @@ void UIRoMapWnd::ResetKafraBounds() {
 // FUNCTION: fn_12634
 void UIRoMapWnd::UpdateNavigationButtons() {
   UIWindow** buttons = reinterpret_cast<UIWindow**>(reinterpret_cast<unsigned char*>(this) + 0x20C);
-  if (g_windowMgr.window_4F174 != nullptr && !g_navigationMinimized) {
+  if (g_windowMgr.window_4F174 != nullptr && !g_navigationManager.unknown_1254) {
     buttons[0]->Move(-100, -100);
     buttons[1]->Move(-100, -100);
     buttons[2]->Move(-100, -100);
@@ -91,7 +91,7 @@ void UIRoMapWnd::UpdateNavigationButtons() {
     buttons[0]->Move(335, 0);
     buttons[1]->Move(375, 3);
     buttons[2]->Move(131, 0);
-    g_navigationHidden = true;
+    g_navigationManager.unknown_1248 = true;
   }
 
   this->Invalidate();
@@ -766,7 +766,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       if (name.size() > 4) {
         name.resize(name.size() - 4);
       }
-      g_navigationMinimized = false;
+      g_navigationManager.unknown_1254 = false;
       g_navigationManager.SearchNavigation(name, 0, false);
       if (g_windowMgr.LookupWindow(203)) {
         static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRoute(0);

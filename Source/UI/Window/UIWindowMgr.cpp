@@ -2548,10 +2548,10 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       if (this->CloseWindow(id) == true) {
         return false;
       }
-    } else if (g_navigationMode == 2) {
+    } else if (g_navigationManager.unknown_1258 == 2) {
       if (g_windowMgr.Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-        g_navigationTab = 0;
-        g_navigationMinimized = false;
+        g_navigationManager.unknown_125C = 0;
+        g_navigationManager.unknown_1254 = false;
         g_navigationManager.Reset(true);
         g_worldViewMgr.ClearMarks();
         g_worldViewMgr.ClearLevels();
@@ -3734,7 +3734,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->modal = nullptr;
       closed = true;
       if (this->window_4F174) {
-        g_navigationHidden = false;
+        g_navigationManager.unknown_1248 = false;
         static_cast<UINavigationV4Wnd*>(this->window_4F174)->RefreshLayout();
       }
     }
@@ -6395,7 +6395,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   case 203:
     if (this->window_4F174 == nullptr) {
       this->RecordWindowPacket(203);
-      g_navigationHidden = false;
+      g_navigationManager.unknown_1248 = false;
       window = new UINavigationV4Wnd();
       this->window_4F174 = window;
       window->SetSize(272, 338);

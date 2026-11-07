@@ -9,6 +9,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/MessengerMember.h"
+#include "Contents/NavigationManager.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Contents/World/World.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -656,7 +657,7 @@ void UIWindowMgr::SaveVisibleWindowIds() {
 // OFFSET: 0x00AAB8A0
 // FUNCTION: fn_17282
 void UIWindowMgr::UpdateNavigationList() {
-  if (this->window_4F174 && !g_navigationMinimized && static_cast<UINavigationV4Wnd*>(this->window_4F174)->IsListShown()) {
+  if (this->window_4F174 && !g_navigationManager.unknown_1254 && static_cast<UINavigationV4Wnd*>(this->window_4F174)->IsListShown()) {
     this->window_4F174->SendMsg(nullptr, 6, 202, 0, 0, 0);
   }
 }

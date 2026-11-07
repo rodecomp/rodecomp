@@ -665,7 +665,7 @@ void UIRoMapWnd::Slot31(int x, int y) {
       name.resize(name.size() - 4);
     }
 
-    g_navigationMinimized = false;
+    g_navigationManager.unknown_1254 = false;
     g_navigationManager.SearchNavigation(name, 0, false);
     if (g_windowMgr.window_4F174) {
       static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRoute(0);

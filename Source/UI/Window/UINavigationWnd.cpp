@@ -29,56 +29,11 @@
 #include <algorithm>
 #include <string>
 
-// GLOBAL: gl_24609
-bool g_navigationMinimized;
-
-// GLOBAL: gl_24610
-int g_navigationMode;
-
-// GLOBAL: gl_24608
-bool g_navigationHidden;
-
-// GLOBAL: gl_24613
-bool g_navigationFilter;
-
-// GLOBAL: gl_25095
-bool g_unknown16FC585;
-
-// GLOBAL: gl_25096
-bool g_unknown16FC586;
-
-// GLOBAL: gl_24612
-int g_navigationSearchType;
-
-// GLOBAL: gl_25130
-std::string g_navigationSearchText;
-
-// GLOBAL: gl_24614
-int g_navigationActiveLabel;
-
-// GLOBAL: gl_25081
-int g_navigationMapCellX;
-
-// GLOBAL: gl_25082
-int g_navigationMapCellY;
-
 // GLOBAL: gl_25083
 float g_navigationPointScale = 0.0078125f;
 
 // GLOBAL: gl_25084
 float g_navigationMarkerScale = 0.453125f;
-
-// GLOBAL: gl_24616
-CActRes* g_navigationActions;
-
-// GLOBAL: gl_24617
-CSprRes* g_navigationSprites;
-
-// GLOBAL: gl_24615
-std::vector<NaviCell> g_navigationPoints;
-
-// GLOBAL: gl_24618
-std::vector<NaviRouteLine> g_navigationLabels;
 
 // OFFSET: 0x00921A70
 // FUNCTION: fn_12643
@@ -185,7 +140,7 @@ void UINavigationWnd::Slot15(int width, int height) {
   path = base;
   this->unknown_0118->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A3));
   this->unknown_0118->Move(-1000, -1000);
-  this->unknown_0118->SetChecked(g_unknown16FC585);
+  this->unknown_0118->SetChecked(g_navigationManager.unknown_127D);
   this->unknown_0118->SetTooltip(LookupMessage(0x8A4));
   this->AddChild(this->unknown_0118);
 
@@ -194,7 +149,7 @@ void UINavigationWnd::Slot15(int width, int height) {
   path = base;
   this->unknown_0114->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A5));
   this->unknown_0114->Move(-1000, -1000);
-  this->unknown_0114->SetChecked(g_navigationFilter);
+  this->unknown_0114->SetChecked(g_navigationManager.unknown_127C);
   this->unknown_0114->SetTooltip(LookupMessage(0x8A6));
   this->AddChild(this->unknown_0114);
 
@@ -203,7 +158,7 @@ void UINavigationWnd::Slot15(int width, int height) {
   path = base;
   this->unknown_011C->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A7));
   this->unknown_011C->Move(-1000, -1000);
-  this->unknown_011C->SetChecked(g_unknown16FC586);
+  this->unknown_011C->SetChecked(g_navigationManager.unknown_127E);
   this->unknown_011C->SetTooltip(LookupMessage(0x8A8));
   this->AddChild(this->unknown_011C);
 }
@@ -226,9 +181,9 @@ void UINavigationWnd::LayoutTabs() {
   this->m_searchFooter->Move(-1000, -1000);
 
   const int x = this->geometry.width - 222;
-  if (!g_navigationMinimized) {
+  if (!g_navigationManager.unknown_1254) {
     UIWindow* footer;
-    if (g_navigationTab == 1) {
+    if (g_navigationManager.unknown_125C == 1) {
       this->m_searchPanel->Move(x, 37);
       this->m_searchPanel->Invalidate();
       footer = this->m_searchFooter;
@@ -246,7 +201,7 @@ void UINavigationWnd::LayoutTabs() {
 // OFFSET: 0x0093DB80
 // FUNCTION: fn_12771
 void UINavigationWnd::RefreshHeaderTexts(int mode) {
-  if (g_navigationMinimized) {
+  if (g_navigationManager.unknown_1254) {
     if (mode == 2) {
       char text[260];
       char saved[260];
@@ -275,7 +230,7 @@ void UINavigationWnd::RefreshHeaderTexts(int mode) {
 // FUNCTION: fn_12772
 void UINavigationWnd::RefreshWorldMapMarks() {
   g_worldViewMgr.ClearMarks();
-  if (g_navigationMode == 2) {
+  if (g_navigationManager.unknown_1258 == 2) {
     std::string name;
     for (int index = 0; index < g_navigationManager.NodeCount(); ++index) {
       CNavi_Link* node = g_navigationManager.GetNode(index);
@@ -333,7 +288,7 @@ void UINavigationWnd::RefreshRouteList() {
   this->m_searchPanel->Invalidate();
 
   const int nodeCount = g_navigationManager.NodeCount();
-  if (g_navigationMode != 2) {
+  if (g_navigationManager.unknown_1258 != 2) {
     return;
   }
 
@@ -468,7 +423,7 @@ void UINavigationWnd::RefreshRouteList() {
 // OFFSET: 0x0093EB60
 // FUNCTION: fn_12776
 void UINavigationWnd::ApplyMinimized() {
-  if (g_navigationMinimized) {
+  if (g_navigationManager.unknown_1254) {
     this->Resize(134, 61);
     int x = this->geometry.x;
     int y = this->geometry.y;
@@ -570,7 +525,7 @@ void UINavigationWnd::Slot11() {
 void UINavigationWnd::Paint() {
   this->DrawTitleBar(true, this->m_title.c_str(), 0);
   this->DrawPanelBackground(0x11, 0, "");
-  if (g_navigationMinimized) {
+  if (g_navigationManager.unknown_1254) {
     this->DrawTextAt(6, 20, this->m_subtitle.c_str(), 0, 0, 12, 0, 0, 0);
     return;
   }
@@ -579,13 +534,13 @@ void UINavigationWnd::Paint() {
     return;
   }
 
-  int mapCellY = g_navigationMapCellY;
-  int mapCellX = g_navigationMapCellX;
+  int mapCellY = g_navigationManager.unknown_1290;
+  int mapCellX = g_navigationManager.unknown_128C;
   const int targetType = g_navigationManager.GetCurrentTarget().type;
   int size = 0x80;
   this->FillRegion(6, 0x25, 0x82, 0x82, 0x646464);
 
-  if (g_navigationActiveLabel == 2) {
+  if (g_navigationManager.unknown_1284 == 2) {
     int markerSize = size;
     if (targetType == 2) {
       markerSize = size - 0x3D;
@@ -597,28 +552,28 @@ void UINavigationWnd::Paint() {
     } else if (targetType == 3) {
       size = 0x20;
     }
-    this->DrawActionSprite(g_navigationSprites, g_navigationActions, 7, 0x26, markerSize, 0x80, 0x5dc, true, nullptr);
+    this->DrawActionSprite(g_navigationManager.unknown_12A4, g_navigationManager.unknown_12A0, 7, 0x26, markerSize, 0x80, 0x5dc, true, nullptr);
   }
 
   const int mapX = 0x87 - size;
   const int mapY = 0xA6 - size;
   this->FillRegion(mapX, mapY, size, size, 0);
-  if (g_navigationMapTexture != nullptr) {
-    const float scale = static_cast<float>(size) / static_cast<float>(g_navigationMapTexture->Width());
+  if (g_navigationManager.unknown_1288 != nullptr) {
+    const float scale = static_cast<float>(size) / static_cast<float>(g_navigationManager.unknown_1288->Width());
     this->geometry.surface->DrawScaledSurface(
-      mapX, mapY, size, size, g_navigationMapTexture, g_navigationMapTexture->Width(), g_navigationMapTexture->Height(), scale, scale, 0xFFFFFFFFu, false, 0, 0, 0,
+      mapX, mapY, size, size, g_navigationManager.unknown_1288, g_navigationManager.unknown_1288->Width(), g_navigationManager.unknown_1288->Height(), scale, scale, 0xFFFFFFFFu, false, 0, 0, 0,
       0
     );
   }
 
   bool drawCrosshair = true;
-  if (g_navigationMode == 2) {
+  if (g_navigationManager.unknown_1258 == 2) {
     if (g_navigationManager.IsCurrentTarget(g_session.m_navigationPlayerMap)) {
-      if (g_navigationTab == 1) {
+      if (g_navigationManager.unknown_125C == 1) {
         drawCrosshair = false;
       }
       const float scale = static_cast<float>(size) * g_navigationPointScale;
-      for (const NaviCell& point : g_navigationPoints) {
+      for (const NaviCell& point : g_navigationManager.cells) {
         this->FillRegion(static_cast<int>(point.x * scale + mapX), static_cast<int>(point.y * scale + mapY), 2, 2, 0x00F0F00A);
       }
 
@@ -644,14 +599,14 @@ void UINavigationWnd::Paint() {
     this->FillRegion(mapX + mapCellX - 1, mapY + mapCellY - 1, 2, 2, 0xFFFF);
   }
 
-  const int activeLabel = g_navigationActiveLabel;
-  const int labelCount = static_cast<int>(g_navigationLabels.size());
+  const int activeLabel = g_navigationManager.unknown_1284;
+  const int labelCount = static_cast<int>(g_navigationManager.routeLines.size());
   for (int index = 0; index < labelCount; ++index) {
-    if (g_navigationLabels[index].kind == activeLabel) {
-      const int x = g_navigationLabels[index].x;
-      const int y = g_navigationLabels[index].y;
-      this->DrawTextAt(x + 1, y + 1, g_navigationLabels[index].text.c_str(), 0, 0, 12, 0x1E1E1E, 0, 0);
-      this->DrawTextAt(x, y, g_navigationLabels[index].text.c_str(), 0, 0, 12, 0xE6E6E6, 0, 0);
+    if (g_navigationManager.routeLines[index].kind == activeLabel) {
+      const int x = g_navigationManager.routeLines[index].x;
+      const int y = g_navigationManager.routeLines[index].y;
+      this->DrawTextAt(x + 1, y + 1, g_navigationManager.routeLines[index].text.c_str(), 0, 0, 12, 0x1E1E1E, 0, 0);
+      this->DrawTextAt(x, y, g_navigationManager.routeLines[index].text.c_str(), 0, 0, 12, 0xE6E6E6, 0, 0);
     }
   }
 }
@@ -694,7 +649,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     case 0x141:
       if (this->m_titleBar->Length() != 0) {
-        g_navigationSearchText = this->m_titleBar->Text();
+        g_navigationManager.unknown_1264 = this->m_titleBar->Text();
         g_navigationManager.RefreshSearch();
         this->SendMsg(this, 6, 0xBE, 0, 0, 0);
         if (g_windowMgr.modal) {
@@ -720,16 +675,16 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       break;
     case 0x1AD:
-      if (!g_navigationMinimized && this->m_saved->minimized) {
+      if (!g_navigationManager.unknown_1254 && this->m_saved->minimized) {
         const int targetType = g_navigationManager.GetCurrentTarget().type;
         if (targetType != 1 && targetType != 6 && targetType != 0) {
-          if (g_navigationActiveLabel == 1) {
-            g_navigationActiveLabel = 2;
+          if (g_navigationManager.unknown_1284 == 1) {
+            g_navigationManager.unknown_1284 = 2;
             this->Invalidate();
             return 0;
           }
-          if (g_navigationActiveLabel == 2) {
-            g_navigationActiveLabel = 1;
+          if (g_navigationManager.unknown_1284 == 2) {
+            g_navigationManager.unknown_1284 = 1;
           }
           this->Invalidate();
           return 0;
@@ -742,16 +697,16 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->Invalidate();
       return 0;
     case 0xCA:
-      g_navigationMinimized = !g_navigationMinimized;
+      g_navigationManager.unknown_1254 = !g_navigationManager.unknown_1254;
       this->ApplyMinimized();
-      this->RefreshHeaderTexts(g_navigationMode);
-      if (g_navigationMinimized && g_windowMgr.modal) {
+      this->RefreshHeaderTexts(g_navigationManager.unknown_1258);
+      if (g_navigationManager.unknown_1254 && g_windowMgr.modal) {
         static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
         return 0;
       }
       break;
     case 0xC9:
-      if (g_navigationMode == 2) {
+      if (g_navigationManager.unknown_1258 == 2) {
         const int response = g_windowMgr.Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0);
         if (response != 0xBB) {
           break;
@@ -762,10 +717,10 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_worldViewMgr.ClearLevels();
       g_worldViewMgr.ResetSelection();
       g_navigationManager.Reset(true);
-      g_navigationMinimized = false;
-      g_navigationHidden = false;
+      g_navigationManager.unknown_1254 = false;
+      g_navigationManager.unknown_1248 = false;
       if (g_windowMgr.modal) {
-        g_navigationMinimized = true;
+        g_navigationManager.unknown_1254 = true;
         static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
         return 0;
       }
@@ -773,11 +728,11 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_windowMgr.window_4F174 = nullptr;
       return 0;
     case 0xBD:
-      g_navigationTab = 1;
+      g_navigationManager.unknown_125C = 1;
       this->LayoutTabs();
       return 0;
     case 0xBE:
-      g_navigationTab = 0;
+      g_navigationManager.unknown_125C = 0;
       this->LayoutTabs();
       return 0;
     case 0xBF: {
@@ -810,15 +765,15 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     case 0xD5:
       if (sender == this->unknown_0114) {
-        g_navigationFilter = argument2 != 0;
+        g_navigationManager.unknown_127C = argument2 != 0;
         return 0;
       }
       if (sender == this->unknown_0118) {
-        g_unknown16FC585 = argument2 != 0;
+        g_navigationManager.unknown_127D = argument2 != 0;
         return 0;
       }
       if (sender == this->unknown_011C) {
-        g_unknown16FC586 = argument2 != 0;
+        g_navigationManager.unknown_127E = argument2 != 0;
         return 0;
       }
       break;
@@ -849,7 +804,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     break;
   case 0x27:
     if (this->unknown_00EC == sender) {
-      g_navigationSearchType = static_cast<int>(argument1);
+      g_navigationManager.unknown_1260 = static_cast<int>(argument1);
       this->Invalidate();
       if (g_replayAnimationScaling != 0) {
         this->unknown_00EC->SendMsg(nullptr, 0x39, argument1, 0, 0, 0);
