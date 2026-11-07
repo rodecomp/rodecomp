@@ -516,11 +516,11 @@ bool CGameSettingsMgr::LoadSettings() {
 
   this->Init_Func();
 
-  const std::uint8_t source[] = {
-      0x5B, 0x6E, 0x4C, 0xE5, 0xD4, 0x87, 0x24, 0x7C, 0x22, 0x2A, 0x19, 0xFF, 0xF1, 0x9E, 0x20, 0x2F,
-      0x51, 0x72, 0x41, 0xC6, 0xCE, 0xB7, 0x0E, 0x7F, 0x63, 0x72, 0x42, 0xCD, 0xF4, 0x85, 0x27, 0x60,
-      0x4B, 0x5C, 0x4C, 0xCE, 0xD8, 0xB8, 0x24, 0x7B, 0x63, 0x72, 0x43, 0xC4, 0xCE, 0xC5, 0x2D, 0x7A,
-      0x75, 0x1B};
+  const char source[] = {
+      '\x5B', '\x6E', '\x4C', '\xE5', '\xD4', '\x87', '\x24', '\x7C', '\x22', '\x2A', '\x19', '\xFF', '\xF1', '\x9E', '\x20', '\x2F',
+      '\x51', '\x72', '\x41', '\xC6', '\xCE', '\xB7', '\x0E', '\x7F', '\x63', '\x72', '\x42', '\xCD', '\xF4', '\x85', '\x27', '\x60',
+      '\x4B', '\x5C', '\x4C', '\xCE', '\xD8', '\xB8', '\x24', '\x7B', '\x63', '\x72', '\x43', '\xC4', '\xCE', '\xC5', '\x2D', '\x7A',
+      '\x75', '\x1B'};
   thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
   if (!this->LoadFile(name.Text())) {
     return false;
