@@ -996,35 +996,28 @@ void CUIRenewQuestUI::OnCallback56() {
 void CUIRenewQuestUI::SelectQuest(unsigned int questId) {
   for (RenewQuestUI::CUIQuestList* list : this->questLists) {
     CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = list->list;
-    auto node = listBox->data.begin();
-    for (; node != listBox->data.end(); ++node) {
+    for (auto node = listBox->data.begin(); node != listBox->data.end(); ++node) {
       if (*node == questId) {
-        break;
-      }
-    }
+        this->tab->SelectPage(list);
+        CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* pageListBox = list->list;
 
-    if (node == listBox->data.end()) {
-      continue;
-    }
+        int index = 0;
+        for (auto it = listBox->data.begin(); it != node; ++it) {
+          ++index;
+        }
 
-    this->tab->SelectPage(list);
-    CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* pageListBox = list->list;
+        pageListBox->scrollBar->SetPosition(pageListBox->rowHeight * index);
 
-    int index = 0;
-    for (auto it = listBox->data.begin(); it != node; ++it) {
-      ++index;
-    }
+        for (RenewQuestUI::CUIQuestItem* item : pageListBox->items) {
+          if (item->index == index) {
+            pageListBox->SelectItem(item);
+            return;
+          }
+        }
 
-    pageListBox->scrollBar->SetPosition(pageListBox->rowHeight * index);
-
-    for (RenewQuestUI::CUIQuestItem* item : pageListBox->items) {
-      if (item->index == index) {
-        pageListBox->SelectItem(item);
         return;
       }
     }
-
-    return;
   }
 
   std::string text = std::format("Not found Quest Info = %lu", questId);
@@ -1404,10 +1397,11 @@ void RenewQuestUI::CUIQuestItem::Slot15(int width, int height) {
 // OFFSET: 0x00A5D850
 // FUNCTION: fn_16435
 void RenewQuestUI::CUIQuestList::Slot15(int width, int height) {
-  this->list = new CUIListBoxEx<CUIQuestItem, unsigned long>();
-  this->list->itemWidth = 330;
-  this->list->rowHeight = 46;
-  this->list->SetSize(343, 394);
+  CUIListBoxEx<CUIQuestItem, unsigned long>* listBox = new CUIListBoxEx<CUIQuestItem, unsigned long>();
+  this->list = listBox;
+  listBox->itemWidth = 330;
+  listBox->rowHeight = 46;
+  listBox->SetSize(343, 394);
   this->list->Move(0, 0);
   this->list->SetOnSelect([this](CUIQuestItem* item, const unsigned long& questId) { this->OnSelectItem(item, questId); });
   this->list->SetBinder([this](CUIQuestItem* item, const unsigned long& questId) { this->BindItem(item, questId); });
@@ -1440,8 +1434,11 @@ void RenewQuestUI::CUIQuestList::Slot15(int width, int height) {
     const std::string normal(DecryptName<0x17A9E5BF39AD4737ULL>(normalSource));
     list->SetImages(normal, hover, pressed, disabled);
   }
-  this->list->itemX = 0;
-  this->list->itemY = 7;
+  {
+    CUIListBoxEx<CUIQuestItem, unsigned long>* list = this->list;
+    list->itemX = 0;
+    list->itemY = 7;
+  }
   this->list->scrollBar->SetSize(7, 394);
   this->list->scrollBar->Move(336, 0);
   this->list->scrollBar->step = 138;
@@ -1463,7 +1460,7 @@ void RenewQuestUI::CUIQuestList::Slot15(int width, int height) {
     const std::string up(DecryptName<0xC517FB932D95BB6DULL>(upSource));
     list->scrollBar->SetButtonImages(up, down);
   }
-  this->list->scrollBar->SetBackground(std::string(""));
+  this->list->scrollBar->SetBackground("");
   {
     CUIListBoxEx<CUIQuestItem, unsigned long>* list = this->list;
     const char bottomSource[] = {
@@ -2212,8 +2209,7 @@ void CUIRenewQuestUI::Slot16() {
   g_windowMgr.RecordWindowPacket(0x2718);
   g_windowMgr.CloseWindow(0x8F);
 
-  const char* title = LookupMessage(0xD48);
-  this->titleBar->SetTitle(title, std::strlen(title));
+  this->titleBar->SetTitle(LookupMessage(0xD48));
   this->filterLabel->SetText(LookupMessage(0x7E3));
 
   bool visible = false;
