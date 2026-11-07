@@ -39,8 +39,11 @@ void CEffect::Close() {}
 // OFFSET: 0x00B4DE40
 // FUNCTION: fn_18984
 void CEffect::AddEvent(int kind, const char* text, int frame, int argument) {
-  EffectEvent event{kind, frame, argument};
+  EffectEvent event;
+  event.kind = kind;
   event.text = text ? text : "";
+  event.frame = frame;
+  event.argument = argument;
   this->events.push_back(event);
 }
 
