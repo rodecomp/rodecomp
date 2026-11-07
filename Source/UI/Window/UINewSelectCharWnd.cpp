@@ -1148,12 +1148,8 @@ void UINewSelectCharWnd::UpdateSlotButtons() {
     }
 
     static_cast<UISlotBmpButton*>(this->m_slotButtons2[index])->SetSlot(this->m_slotStatus[slot] ? -1 : slot, slot);
-    if (slot < g_session.m_producibleSlotCount && this->m_slotStatus[slot] == 1) {
-      if (slot < g_session.m_validSlotCount) {
-        this->m_slotButtons2[index]->SendMsg(nullptr, 431, 0, 0, 0, 0);
-      } else {
-        this->m_slotButtons2[index]->SendMsg(nullptr, 431, 1, 0, 0, 0);
-      }
+    if (slot < g_session.m_producibleSlotCount && this->m_slotStatus[slot] == 1 && slot < g_session.m_validSlotCount) {
+      this->m_slotButtons2[index]->SendMsg(nullptr, 431, 0, 0, 0, 0);
     } else {
       this->m_slotButtons2[index]->SendMsg(nullptr, 431, 1, 0, 0, 0);
     }
