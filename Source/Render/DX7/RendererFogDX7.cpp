@@ -114,7 +114,7 @@ void CRendererDX7::ApplyFog() {
         this->device->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
         this->device->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, g_fogVertexMode);
       } else {
-        ShowErrorDialog(GetRenderSystemHolder()->system, "Your graphic accelerator does not support fog effect.", 0);
+        ShowErrorDialog("Your graphic accelerator does not support fog effect.", 0);
       }
 
       this->device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, std::bit_cast<unsigned>(g_fogDensity));

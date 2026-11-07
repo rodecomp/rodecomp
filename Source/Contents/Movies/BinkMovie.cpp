@@ -54,7 +54,7 @@ bool BinkMovie::Open(const char* name, int loop, bool memory) {
   }
 
   if (!this->m_handle) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, BinkGetError(), 0);
+    ShowErrorDialog(BinkGetError(), 0);
     return false;
   }
 
