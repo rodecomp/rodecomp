@@ -10,25 +10,6 @@
 #include <algorithm>
 #include <cstring>
 
-namespace {
-  // INLINED
-  void ReadKeys(CFile& input, std::vector<ModelRotationKey>& keys, bool scale) {
-    int count = 0;
-    input.Read(&count, 4);
-
-    for (int index = 0; index < count; ++index) {
-      ModelRotationKey key;
-
-      if (scale) {
-        key = {0, {0, 0, 0, 1}};
-      }
-
-      input.Read(&key, sizeof(key));
-      keys.push_back(key);
-    }
-  }
-}
-
 // OFFSET: 0x007555C0
 // FUNCTION: fn_07984
 C3dModelResV2::C3dModelResV2() : framesPerSecond(0.0f), animationLength(0) {
@@ -175,10 +156,13 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
         /* 0014 */ std::uint32_t smoothing;
       } record;
       input.Read(&record, sizeof(record));
-      std::memcpy(target.vertices, record.vertices, sizeof(target.vertices));
-      std::memcpy(target.textureVertices, record.textureVertices, sizeof(target.textureVertices));
+      for (int corner = 0; corner < 3; ++corner) {
+        target.vertices[corner] = record.vertices[corner];
+      }
+      for (int corner = 0; corner < 3; ++corner) {
+        target.textureVertices[corner] = record.textureVertices[corner];
+      }
       target.texture = record.texture;
-      target.unknown_000E = record.unknown_000E;
       target.twoSided = record.twoSided;
 
       if (target.smoothing.empty()) {
@@ -188,9 +172,9 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
 
     std::sort(mesh.faces, mesh.faces + mesh.faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
     mesh.CalculateNormals();
-    ReadKeys(input, node->scaleKeys, false);
-    ReadKeys(input, node->rotationKeys, true);
-    ReadKeys(input, node->positionKeys, false);
+    node->scaleKeys.Read(input);
+    node->rotationKeys.Read(input);
+    node->positionKeys.Read(input);
     this->nodes.push_back(node);
     this->meshes[node->name] = node->mesh.get();
   }
@@ -307,9 +291,9 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
 
     std::sort(mesh.faces, mesh.faces + mesh.faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
     mesh.CalculateNormals();
-    ReadKeys(input, node->scaleKeys, false);
-    ReadKeys(input, node->rotationKeys, true);
-    ReadKeys(input, node->positionKeys, false);
+    node->scaleKeys.Read(input);
+    node->rotationKeys.Read(input);
+    node->positionKeys.Read(input);
     this->nodes.push_back(node);
     this->meshes[node->name] = node->mesh.get();
   }
@@ -416,31 +400,17 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
 
     std::sort(mesh.faces, mesh.faces + mesh.faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
     mesh.CalculateNormals();
-    ReadKeys(input, node->scaleKeys, false);
-    ReadKeys(input, node->rotationKeys, true);
-    ReadKeys(input, node->positionKeys, false);
+    node->scaleKeys.Read(input);
+    node->rotationKeys.Read(input);
+    node->positionKeys.Read(input);
     int textureAnimations = 0;
     input.Read(&textureAnimations, 4);
 
     for (int animation = 0; animation < textureAnimations; ++animation) {
       int texture = 0;
       input.Read(&texture, 4);
-      ModelTextureChannels channels;
-      int channelCount = 0;
-      input.Read(&channelCount, 4);
-
-      for (int channel = 0; channel < channelCount; ++channel) {
-        int id = 0;
-        int keyCount = 0;
-        input.Read(&id, 4);
-        input.Read(&keyCount, 4);
-
-        for (int key = 0; key < keyCount; ++key) {
-          ModelTextureKey value;
-          input.Read(&value, sizeof(value));
-          channels[id].push_back(value);
-        }
-      }
+      ModelTextureChannelMap channels;
+      channels.Read(input);
 
       node->textureKeys[texture] = std::move(channels);
     }

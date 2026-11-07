@@ -73,9 +73,6 @@ __forceinline ModelNodeV1::ModelNodeV1() = default;
 ModelNodeV1::~ModelNodeV1() = default;
 
 // INLINED
-ModelNodeV2::ModelNodeV2() = default;
-
-// INLINED
 ModelNodeV2::~ModelNodeV2() = default;
 
 // OFFSET: 0x007553E0

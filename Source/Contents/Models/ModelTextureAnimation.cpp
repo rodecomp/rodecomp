@@ -34,10 +34,6 @@ void SampleModelTexture(const ModelTextureChannels& channels, float frame, Model
   }
 }
 
-struct ModelKeyList1 : std::vector<ModelRotationKey> {
-  void Read(CFile& file);
-};
-
 // OFFSET: 0x00541160
 // FUNCTION: fn_01728
 void ModelKeyList1::Read(CFile& file) {
@@ -49,10 +45,6 @@ void ModelKeyList1::Read(CFile& file) {
     this->push_back(key);
   }
 }
-
-struct ModelKeyList2 : std::vector<ModelRotationKey> {
-  void Read(CFile& file);
-};
 
 // OFFSET: 0x005411E0
 // FUNCTION: fn_01729
@@ -66,10 +58,6 @@ void ModelKeyList2::Read(CFile& file) {
   }
 }
 
-struct ModelKeyList3 : std::vector<ModelRotationKey> {
-  void Read(CFile& file);
-};
-
 // OFFSET: 0x00541250
 // FUNCTION: fn_01730
 void ModelKeyList3::Read(CFile& file) {
@@ -82,10 +70,6 @@ void ModelKeyList3::Read(CFile& file) {
   }
 }
 
-struct ModelKeyList4 : std::vector<ModelRotationKey> {
-  void Read(CFile& file);
-};
-
 // OFFSET: 0x00541350
 // FUNCTION: fn_01731
 void ModelKeyList4::Read(CFile& file) {
@@ -97,10 +81,6 @@ void ModelKeyList4::Read(CFile& file) {
     this->push_back(key);
   }
 }
-
-struct ModelTextureChannelMap : ModelTextureChannels {
-  void Read(CFile& file);
-};
 
 // OFFSET: 0x005413D0
 // FUNCTION: fn_01732

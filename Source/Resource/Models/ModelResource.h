@@ -40,6 +40,28 @@ struct ModelTextureKey {
 
 using ModelTextureChannels = std::map<int, std::vector<ModelTextureKey>>;
 
+class CFile;
+
+struct ModelKeyList1 : std::vector<ModelRotationKey> {
+  void Read(CFile& file);
+};
+
+struct ModelKeyList2 : std::vector<ModelRotationKey> {
+  void Read(CFile& file);
+};
+
+struct ModelKeyList3 : std::vector<ModelRotationKey> {
+  void Read(CFile& file);
+};
+
+struct ModelKeyList4 : std::vector<ModelRotationKey> {
+  void Read(CFile& file);
+};
+
+struct ModelTextureChannelMap : ModelTextureChannels {
+  void Read(CFile& file);
+};
+
 static_assert(sizeof(ModelTextureKey) == 8);
 
 struct ModelVolume {
@@ -88,11 +110,14 @@ public:
   ~ModelNodeV2() override;
 
   /* 0058 */ float transform[12];
-  /* 0088 */ std::vector<ModelRotationKey> scaleKeys;
-  /* 0094 */ std::vector<ModelRotationKey> rotationKeys;
-  /* 00A0 */ std::vector<ModelRotationKey> positionKeys;
+  /* 0088 */ ModelKeyList4 scaleKeys;
+  /* 0094 */ ModelKeyList3 rotationKeys;
+  /* 00A0 */ ModelKeyList1 positionKeys;
   /* 00AC */ std::map<int, ModelTextureChannels> textureKeys;
 };
+
+// INLINED
+inline ModelNodeV2::ModelNodeV2() = default;
 
 class C3dModelRes : public CRes {
   friend class ModelNode;
