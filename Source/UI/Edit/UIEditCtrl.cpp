@@ -588,8 +588,8 @@ void UIEditCtrl3::PlaceTags(const int& x, const int& y, const int& firstLine, co
 // OFFSET: 0x00856FB0
 // FUNCTION: fn_10758
 void UIEditCtrl::DrawSelectionAt(int x, int y, int width) {
-  const int extent = x < 3 ? width + (x - 3) : width;
-  const int left = std::max(x, 3);
+  const int extent = x < 3 ? x - 3 + width : width;
+  const int left = x >= 3 ? x : 3;
   const int right = this->geometry.width;
 
   if (left < right && extent > 0) {
@@ -602,8 +602,8 @@ void UIEditCtrl::DrawSelectionAt(int x, int y, int width) {
 // OFFSET: 0x00857040
 // FUNCTION: fn_10759
 void UIEditCtrl::DrawSelection(int x, int width) {
-  const int extent = x < 3 ? width + (x - 3) : width;
-  const int left = std::max(x, 3);
+  const int extent = x < 3 ? x - 3 + width : width;
+  const int left = x >= 3 ? x : 3;
   const int right = this->geometry.width;
 
   if (left < right && extent > 0) {
@@ -2701,8 +2701,8 @@ void UIMerchantItemWnd::Paint() {
 // OFFSET: 0x009834F0
 // FUNCTION: fn_13345
 void UINoticeMessageBox_LockSellItem::Paint() {
-  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\popup_itemDeal_lock.bmp")));
-  this->DrawBitmap(0, 0, &background->image, false);
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\popup_itemDeal_lock.bmp")));
+  this->DrawBitmap(0, 0, background, false);
   this->DrawCenteredText(0, 5, LookupMessage(2951), this->geometry.width, 0, 12, 0xFFFFFF, 0);
 }
 
@@ -3418,13 +3418,14 @@ CSkillInfo UISkillListWnd::GetSkillByIndex(int index) {
 // OFFSET: 0x00974320
 // FUNCTION: fn_13300
 CSkillInfo UISkillListWnd::GetSkillAt(int x, int y) {
-  if (x >= 40 && x < 72 && y > 16 && y < this->visibleRows * 32 + 17) {
+  if (x >= 40 && x < 72 && y >= 17 && y < this->visibleRows * 32 + 17) {
+    const int row = (y - 17) / 32;
     int visible = 0;
     int index = 0;
 
     for (auto it = this->skills.begin(); it != this->skills.end(); ++it, ++index) {
       if (index >= this->scroll * this->columns) {
-        if (visible == this->columns * ((y - 17) / 32)) {
+        if (visible == this->columns * row) {
           return *it;
         }
 
@@ -4070,28 +4071,27 @@ void UIItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
 
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 3) {
-    mode->SendMsg(18, 0, 0, 0, 0);
-    return;
+  if (drag->source == 3) {
+    switch (drag->type) {
+    case 4:
+    case 5:
+    case 8:
+    case 9:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      return;
+    default:
+      g_windowMgr.ShowWindowById(15, 1);
+      g_windowMgr.window_01EC->SendMsg(nullptr, 13, 1, 0, 0, 0);
+      return;
+    }
   }
 
-  switch (drag->type) {
-  case 4:
-  case 5:
-  case 8:
-  case 9:
-  case 11:
-  case 12:
-  case 13:
-  case 14:
-  case 15:
-    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
-    return;
-  default:
-    g_windowMgr.ShowWindowById(15, 1);
-    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 1, 0, 0, 0);
-    return;
-  }
+  mode->SendMsg(18, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x009721F0
