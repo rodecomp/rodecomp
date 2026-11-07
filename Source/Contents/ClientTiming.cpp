@@ -102,8 +102,11 @@ NaviUnknownBlock::NaviUnknownBlock()
 // OFFSET: 0x00B8C710
 // FUNCTION: fn_19425
 CNavi_Object::CNavi_Object(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info)
-    : id(-1), type(type), index(index), unknown_0058(0), unknown_005C(0), unknown_0060(0), unknown_0064(0), unknown_0068(0), unknown_006C(0),
+    : cellX(0), cellY(0), unknown_0058(0), unknown_005C(0), unknown_0060(0), unknown_0064(0), unknown_0068(0), unknown_006C(0),
       unknown_0070(0), unknown_0074(0), unknown_0078(0) {
+  this->type = type;
+  this->id = -1;
+  this->index = index;
   if (name) {
     this->name = name;
   }
