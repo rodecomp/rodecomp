@@ -18,7 +18,7 @@ struct CaptchaUploadHeader {
 CCaptchaUploadSchedule::CCaptchaUploadSchedule(const std::uint64_t& timestamp, const std::uint32_t* sessionId, int size, const void* data)
     : CSchedule(timestamp, 1000, 1, ++g_schedulerSerial, 0) {
   this->size = size;
-  this->buffer = std::malloc(size);
+  this->buffer = new char[size];
   memcpy_s(this->buffer, size, data, size);
   memcpy_s(&this->sessionId, sizeof(this->sessionId), sessionId, sizeof(this->sessionId));
   this->sent = 0;
@@ -26,7 +26,7 @@ CCaptchaUploadSchedule::CCaptchaUploadSchedule(const std::uint64_t& timestamp, c
 
 CCaptchaUploadSchedule::~CCaptchaUploadSchedule() {
   if (this->buffer) {
-    std::free(this->buffer);
+    delete[] static_cast<char*>(this->buffer);
     this->buffer = nullptr;
   }
 }
@@ -50,12 +50,12 @@ void CCaptchaUploadSchedule::Process(const std::uint64_t& now) {
     header->length = static_cast<std::int16_t>(chunk + 8);
     memcpy_s(&header->sessionId, sizeof(header->sessionId), &this->sessionId, sizeof(this->sessionId));
 
-    char* packet = static_cast<char*>(std::malloc(header->length));
+    char* packet = new char[header->length];
     memcpy_s(packet, header->length, header, sizeof(*header));
     memcpy_s(packet + sizeof(*header), header->length, static_cast<char*>(this->buffer) + this->sent, chunk);
 
     GetRagConnection().Send(header->length, packet);
-    std::free(packet);
+    delete[] packet;
     delete header;
 
     this->sent += chunk;
