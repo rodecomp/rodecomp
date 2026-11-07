@@ -53,15 +53,15 @@ void CAstralStrikeEffect::SpawnStrike() {
   const __int64 ranges[10] = {5, 5, 5, 7, 7, 7, 9, 9, 9, 11};
   const __int64 range = ranges[std::min<unsigned int>(this->unknown_00B0, 10) - 1] * 50;
 
-  vector3d position = {this->position[0], this->position[1], this->position[2]};
+  vector3d position = *reinterpret_cast<const vector3d*>(this->position);
   const int span = static_cast<int>(range) + 1;
-  const int offsetX = std::max(rand() % span, 0);
+  const int offsetX = RandomIndex(span);
   const float half = static_cast<float>(range) * 0.5f;
   position.x += (static_cast<float>(offsetX) - half) * 0.1f;
-  const int offsetZ = std::max(rand() % span, 0);
+  const int offsetZ = RandomIndex(span);
   position.z += (static_cast<float>(offsetZ) - half) * 0.1f;
 
-  switch (rand() % 3) {
+  switch (RandomIndex(3)) {
   case 0: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 13));
     bottom->Load(std::string("astralstrike\\astralstrike_sub_1_bottom\\astralstrike_sub_1_bottom.str"));
