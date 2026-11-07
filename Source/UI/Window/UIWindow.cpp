@@ -2630,11 +2630,13 @@ void UINavigationroadiconWnd::Paint() {
 // FUNCTION: fn_03626
 int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 0:
-    if (sender == this->unknown_00E0 && static_cast<UIEditCtrl*>(this->unknown_00E0)->Length() > 0) {
-      this->SendMsg(this->unknown_00E0, 6, 0x141, 0, 0, 0);
-    }
+  case 0x22:
+    this->info = reinterpret_cast<NavigationWindowInfo*>(argument1);
+    this->info->Clamp();
+    this->Move(this->info->x, this->info->y);
+    this->Invalidate();
     break;
+
   case 6:
     if (argument1 != 0x150 && argument1 != 0x1B9) {
       this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
@@ -2892,12 +2894,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       break;
     }
     break;
-  case 0x22:
-    this->info = reinterpret_cast<NavigationWindowInfo*>(argument1);
-    this->info->Clamp();
-    this->Move(this->info->x, this->info->y);
-    this->Invalidate();
-    break;
+
   case 0x27:
     if (sender == this->unknown_00DC) {
       g_navigationSearchType = static_cast<int>(argument1);
@@ -2911,8 +2908,15 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       this->LoadRoute(static_cast<int>(argument1));
     }
     break;
+
   case 0x28:
     this->SetRoadIcon(static_cast<int>(argument1));
+    break;
+
+  case 0:
+    if (sender == this->unknown_00E0 && static_cast<UIEditCtrl*>(this->unknown_00E0)->Length() > 0) {
+      this->SendMsg(this->unknown_00E0, 6, 0x141, 0, 0, 0);
+    }
     break;
   }
   return 0;
