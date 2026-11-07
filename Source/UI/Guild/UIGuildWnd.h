@@ -56,11 +56,6 @@ struct GuildPositionEntry {
   /* 002C */ int canStorage;
 };
 
-struct GuildWndNameEntry {
-  /* 0000 */ std::string name;
-  /* 0018 */ int id;
-};
-
 class UIGuildWnd : public UIFrameWnd {
 public:
   UIGuildWnd();
@@ -119,7 +114,7 @@ protected:
   /* 00D0 */ UIBitmapButton* m_editButton;
   /* 00D4 */ UIBitmapButton* m_disbandButton;
   /* 00D8 */ std::list<std::string> unknown_00D8;
-  /* 00E0 */ std::vector<GuildWndNameEntry> unknown_00E0;
+  /* 00E0 */ std::vector<MiniPartyInfoEntry> unknown_00E0;
   /* 00EC */ int unknown_00EC;
   /* 00F0 */ int unknown_00F0;
   /* 00F4 */ std::uint32_t m_guildId;

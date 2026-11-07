@@ -2985,7 +2985,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   switch (message) {
   case 48: {
     CMode* gameMode = g_modeMgr.GetGameMode();
-    if (this->unknown_00E0[a1].id != 27) {
+    if (this->unknown_00E0[a1].value != 27) {
       break;
     }
 
@@ -3030,12 +3030,12 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(18);
     }
     if (g_guildInfo.unknown_00B4 != 0) {
-      this->unknown_00E0.push_back(GuildWndNameEntry{LookupMessage(351), 27});
+      this->unknown_00E0.push_back(MiniPartyInfoEntry(LookupMessage(351), 27));
     }
-    if (!this->unknown_00E0.empty()) {
+    if (this->unknown_00E0.size() != 0) {
       UIWindow* menu = g_windowMgr.EnsureWindow(18);
       for (std::size_t index = 0; index < this->unknown_00E0.size(); ++index) {
-        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_00E0[index].name.c_str()), 0, 0, 0);
+        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_00E0[index].text.c_str()), 0, 0, 0);
       }
       menu->SendMsg(nullptr, 83, 60, 0, 0, 0);
       menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
