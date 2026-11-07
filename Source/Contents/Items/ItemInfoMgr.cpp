@@ -162,25 +162,25 @@ int CItemInfoMgr::LuaAddItem(lua_State* state) {
     lua_pushstring(state, FormatItemInfoMessage("7th argment is must number").c_str());
     return 2;
   }
-  int id = static_cast<int>(lua_tonumber(state, -7));
+  lua_Number id = lua_tonumber(state, -7);
   if (!lua_isnumber(state, -2)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatItemInfoMessage("6th argment is must number [itemID:%d]", id).c_str());
+    lua_pushstring(state, FormatItemInfoMessage("6th argment is must number [itemID:%d]", static_cast<int>(id)).c_str());
   } else if (!lua_isstring(state, -3)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatItemInfoMessage("5th argment is must string [itemID:%d]", id).c_str());
+    lua_pushstring(state, FormatItemInfoMessage("5th argment is must string [itemID:%d]", static_cast<int>(id)).c_str());
   } else if (!lua_isstring(state, -4)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatItemInfoMessage("4th argment is must string [itemID:%d]", id).c_str());
+    lua_pushstring(state, FormatItemInfoMessage("4th argment is must string [itemID:%d]", static_cast<int>(id)).c_str());
   } else if (!lua_isstring(state, -5)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatItemInfoMessage("3th argment is must string [itemID:%d]", id).c_str());
+    lua_pushstring(state, FormatItemInfoMessage("3th argment is must string [itemID:%d]", static_cast<int>(id)).c_str());
   } else if (!lua_isstring(state, -6)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatItemInfoMessage("2nd argment is must string [itemID:%d]", id).c_str());
+    lua_pushstring(state, FormatItemInfoMessage("2nd argment is must string [itemID:%d]", static_cast<int>(id)).c_str());
   } else if (!lua_isnumber(state, -7)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatItemInfoMessage("1st argment is must number [itemID:%d]", id).c_str());
+    lua_pushstring(state, FormatItemInfoMessage("1st argment is must number [itemID:%d]", static_cast<int>(id)).c_str());
   } else {
     const char* unidentifiedDisplayName = lua_tostring(state, -6);
     const char* unidentifiedResourceName = lua_tostring(state, -5);
@@ -188,10 +188,10 @@ int CItemInfoMgr::LuaAddItem(lua_State* state) {
     const char* identifiedResourceName = lua_tostring(state, -3);
     int slotCount = static_cast<int>(lua_tonumber(state, -2));
     int classNum = static_cast<int>(lua_tonumber(state, -1));
-    g_itemInfoMgr->m_items[id].slotCount = slotCount;
-    g_itemInfoMgr->m_items[id].classNum = classNum;
-    g_itemInfoMgr->SetUnidentifiedName(id, unidentifiedDisplayName, unidentifiedResourceName);
-    g_itemInfoMgr->SetIdentifiedName(id, identifiedDisplayName, identifiedResourceName);
+    g_itemInfoMgr->m_items[static_cast<int>(id)].slotCount = slotCount;
+    g_itemInfoMgr->m_items[static_cast<int>(id)].classNum = classNum;
+    g_itemInfoMgr->SetUnidentifiedName(static_cast<int>(id), unidentifiedDisplayName, unidentifiedResourceName);
+    g_itemInfoMgr->SetIdentifiedName(static_cast<int>(id), identifiedDisplayName, identifiedResourceName);
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
@@ -228,8 +228,10 @@ int CItemInfoMgr::LuaAddItemIdentifiedDesc(lua_State* state) {
     lua_pushstring(state, FormatItemInfoMessage("1st argment is must number").c_str());
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
-    std::string line = lua_tostring(state, -1);
-    g_itemInfoMgr->m_items[id].identifiedDescription.push_back(line);
+    {
+      std::string line = lua_tostring(state, -1);
+      g_itemInfoMgr->m_items[id].identifiedDescription.push_back(line);
+    }
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
@@ -285,8 +287,10 @@ int CItemInfoMgr::LuaAddItemUnidentifiedDesc(lua_State* state) {
     lua_pushstring(state, FormatItemInfoMessage("1st argment is must number").c_str());
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
-    std::string line = lua_tostring(state, -1);
-    g_itemInfoMgr->m_items[id].unidentifiedDescription.push_back(line);
+    {
+      std::string line = lua_tostring(state, -1);
+      g_itemInfoMgr->m_items[id].unidentifiedDescription.push_back(line);
+    }
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
