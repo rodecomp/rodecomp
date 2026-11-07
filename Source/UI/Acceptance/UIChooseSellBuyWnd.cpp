@@ -7913,32 +7913,32 @@ void UIPartyInvitationToWnd::Slot15(int, int) {
 // OFFSET: 0x008F95F0
 // FUNCTION: fn_12339
 int UICoupleAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
-    int accepted;
-    if (a == 184) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 184:
       g_windowMgr.CloseWindow(104);
-      accepted = 1;
-    } else if (a == 185) {
+      g_modeMgr.gameMode->SendMsg(167, this->identity, 1, 0, 0);
+      break;
+    case 185:
       g_windowMgr.CloseWindow(104);
-      accepted = 0;
-    } else {
-      return 0;
+      g_modeMgr.gameMode->SendMsg(167, this->identity, 0, 0, 0);
+      break;
     }
-    g_modeMgr.gameMode->SendMsg(167, this->identity, accepted, 0, 0);
-    return 0;
+    break;
+  case 90: {
+    this->identity = static_cast<std::uint32_t>(a);
+    std::string text = "(";
+    text += reinterpret_cast<const char*>(b);
+    text += ")";
+    text += LookupMessage(737);
+    this->viewer->Clear();
+    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    break;
   }
-
-  if (message != 90) {
+  default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
-  this->identity = static_cast<std::uint32_t>(a);
-  std::string text = "(";
-  text += reinterpret_cast<const char*>(b);
-  text += ")";
-  text += LookupMessage(737);
-  this->viewer->Clear();
-  this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
   return 0;
 }
 
@@ -9375,15 +9375,13 @@ int UIAutoMessageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 // OFFSET: 0x008F79C0
 // FUNCTION: fn_12328
 int UICardItemIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
-    if (a != 201) {
-      return 0;
+  switch (message) {
+  case 6:
+    if (a == 201) {
+      g_windowMgr.CloseWindow(47);
     }
-  } else {
-    if (message != 62) {
-      return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
-    }
-
+    break;
+  case 62: {
     const char* id = reinterpret_cast<const char*>(a);
     this->unknown_00E4 = b != 0;
     const char* name = FindItemCardName(std::atoi(id)).name;
@@ -9394,11 +9392,14 @@ int UICardItemIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->m_bitmapPath += ".bmp";
       this->Invalidate();
       g_windowMgr.Promote(this);
-      return 0;
+      break;
     }
+    g_windowMgr.CloseWindow(47);
+    break;
   }
-
-  g_windowMgr.CloseWindow(47);
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
   return 0;
 }
 
