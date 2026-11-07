@@ -1,7 +1,27 @@
 #include "Client/Browser/WebBrowser.h"
 
+#include <cstdlib>
 #include <memory>
 #include <ocidl.h>
+
+namespace {
+
+template <typename Interface>
+class ComPointer {
+public:
+  ComPointer() : pointer(nullptr) {
+  }
+
+  ~ComPointer() {
+    if (this->pointer) {
+      this->pointer->Release();
+    }
+  }
+
+  Interface* pointer;
+};
+
+}
 
 // OFFSET: 0x00AB2CD0
 // FUNCTION: fn_45437
@@ -97,23 +117,15 @@ HRESULT __stdcall AdviseBrowserEvents(IUnknown* source, IUnknown* sink, REFIID e
     return E_INVALIDARG;
   }
 
-  IConnectionPointContainer* container = nullptr;
-  IConnectionPoint* point = nullptr;
-  HRESULT result = source->QueryInterface(IID_IConnectionPointContainer, reinterpret_cast<void**>(&container));
+  ComPointer<IConnectionPointContainer> container;
+  ComPointer<IConnectionPoint> point;
+  HRESULT result = source->QueryInterface(IID_IConnectionPointContainer, reinterpret_cast<void**>(&container.pointer));
 
   if (SUCCEEDED(result)) {
-    result = container->FindConnectionPoint(events, &point);
+    result = container.pointer->FindConnectionPoint(events, &point.pointer);
     if (SUCCEEDED(result)) {
-      result = point->Advise(sink, cookie);
+      result = point.pointer->Advise(sink, cookie);
     }
-  }
-
-  if (point) {
-    point->Release();
-  }
-
-  if (container) {
-    container->Release();
   }
 
   return result;
@@ -126,23 +138,15 @@ HRESULT __stdcall UnadviseBrowserEvents(IUnknown* source, REFIID events, DWORD c
     return E_INVALIDARG;
   }
 
-  IConnectionPointContainer* container = nullptr;
-  IConnectionPoint* point = nullptr;
-  HRESULT result = source->QueryInterface(IID_IConnectionPointContainer, reinterpret_cast<void**>(&container));
+  ComPointer<IConnectionPointContainer> container;
+  ComPointer<IConnectionPoint> point;
+  HRESULT result = source->QueryInterface(IID_IConnectionPointContainer, reinterpret_cast<void**>(&container.pointer));
 
   if (SUCCEEDED(result)) {
-    result = container->FindConnectionPoint(events, &point);
+    result = container.pointer->FindConnectionPoint(events, &point.pointer);
     if (SUCCEEDED(result)) {
-      result = point->Unadvise(cookie);
+      result = point.pointer->Unadvise(cookie);
     }
-  }
-
-  if (point) {
-    point->Release();
-  }
-
-  if (container) {
-    container->Release();
   }
 
   return result;
