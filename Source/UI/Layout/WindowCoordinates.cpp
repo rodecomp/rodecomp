@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+template std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>* const, UIWindow* const&);
+
 // OFFSET: 0x00AF64A0
 // FUNCTION: fn_18253
 bool WindowBoundsOverlap(const int first[4], const int second[4]) {

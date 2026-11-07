@@ -1,6 +1,8 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
+extern template std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>* const, UIWindow* const&);
+
 // OFFSET: 0x00A8B060
 // FUNCTION: fn_17120
 void UIWindowMgr::RegisterWindow(UIWindow* window) {
