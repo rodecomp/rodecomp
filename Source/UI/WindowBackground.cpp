@@ -26,7 +26,7 @@ void UIWindow::DrawPanelBackground(int y, int width, const char* bitmapName) {
   if (std::strlen(bitmapName) != 0) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(bitmapName)));
     if (bitmap) {
-      this->DrawBitmap(0, y, &bitmap->image, false);
+      this->DrawBitmap(0, y, bitmap, false);
     }
     return;
   }
@@ -53,7 +53,7 @@ void UIWindow::DrawPanelBackgroundAt(int x, int y, int width, const char* bitmap
   if (bitmapName && std::strlen(bitmapName) != 0) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(bitmapName)));
     if (bitmap) {
-      this->DrawBitmap(x, y, &bitmap->image, false);
+      this->DrawBitmap(x, y, bitmap, false);
     }
     return;
   }
