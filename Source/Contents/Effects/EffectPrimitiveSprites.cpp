@@ -21,11 +21,23 @@
 
 // OFFSET: 0x00BF58F0
 // FUNCTION: fn_19997
-void CEffectPrim::RenderLaunchEffects(matrix&) {
-  vector3d vec1{};
-  vector3d vec2{};
-  vector3d vec3{};
-  vector3d vec4{};
+__declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
+  vector3d vec1;
+  vector3d vec2;
+  vector3d vec3;
+  vector3d vec4;
+  vec1.x = 0.0f;
+  vec1.y = 0.0f;
+  vec1.z = 0.0f;
+  vec2.x = 0.0f;
+  vec2.y = 0.0f;
+  vec2.z = 0.0f;
+  vec3.x = 0.0f;
+  vec3.y = 0.0f;
+  vec3.z = 0.0f;
+  vec4.x = 0.0f;
+  vec4.y = 0.0f;
+  vec4.z = 0.0f;
 
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
