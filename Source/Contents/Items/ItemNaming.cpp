@@ -635,7 +635,7 @@ __declspec(noinline) void LoadItemNameTables() {
     char** end = cursor + tokens.size();
 
     while (cursor < end) {
-      ITEM_DESC& desc = g_itemDescriptions[std::atoi(*cursor)];
+      ITEM_DESC& desc = EnsureItemDescription(std::atoi(*cursor), g_itemDescriptions);
       cursor += 2;
       if (cursor >= end) {
         ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
@@ -694,24 +694,24 @@ __declspec(noinline) void LoadItemNameTables() {
   if (loaded == 0) {
     if (ResourceExists("EventNum2ItemDisplayNameTable.txt", 0)) {
       g_tableStorage.LoadTokens(tokens, "EventNum2ItemDisplayNameTable.txt", 0);
-      for (size_t index = 0; index + 1 < tokens.size(); index += 2) {
-        g_session.ConvertTooltipText(tokens[index + 1], tokens[index + 1]);
-        g_itemDescriptions[std::atoi(tokens[index])].unidentifiedName = tokens[index + 1];
+      for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
+        g_session.ConvertTooltipText(token[1], token[1]);
+        EnsureItemDescription(std::atoi(*token), g_itemDescriptions).unidentifiedName = token[1];
       }
     }
 
     if (ResourceExists("EventNum2itemDescTable.txt", 0)) {
       int id = 0;
       g_tableStorage.LoadTokens(tokens, "EventNum2itemDescTable.txt", 1);
-      for (size_t index = 0; index < tokens.size(); ++index) {
-        char* text = tokens[index];
+      for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); ++token) {
+        char* text = *token;
         if (text == nullptr || *text == '\0') {
           continue;
         }
 
         if (!IsNumericText(text)) {
           DecodeMessageRot(text);
-          g_itemDescriptions[id].unidentifiedDescription.push_back(text);
+          EnsureItemDescription(id, g_itemDescriptions).unidentifiedDescription.push_back(text);
         } else {
           id = std::atoi(text);
         }
@@ -720,24 +720,24 @@ __declspec(noinline) void LoadItemNameTables() {
 
     if (ResourceExists("EventIdNum2ItemDisplayNameTable.txt", 0)) {
       g_tableStorage.LoadTokens(tokens, "EventIdNum2ItemDisplayNameTable.txt", 0);
-      for (size_t index = 0; index + 1 < tokens.size(); index += 2) {
-        g_session.ConvertTooltipText(tokens[index + 1], tokens[index + 1]);
-        g_itemDescriptions[std::atoi(tokens[index])].identifiedName = tokens[index + 1];
+      for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
+        g_session.ConvertTooltipText(token[1], token[1]);
+        EnsureItemDescription(std::atoi(*token), g_itemDescriptions).identifiedName = token[1];
       }
     }
 
     if (ResourceExists("EventIdNum2itemDescTable.txt", 0)) {
       int id = 0;
       g_tableStorage.LoadTokens(tokens, "EventIdNum2itemDescTable.txt", 1);
-      for (size_t index = 0; index < tokens.size(); ++index) {
-        char* text = tokens[index];
+      for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); ++token) {
+        char* text = *token;
         if (text == nullptr || *text == '\0') {
           continue;
         }
 
         if (!IsNumericText(text)) {
           DecodeMessageRot(text);
-          g_itemDescriptions[id].identifiedDescription.push_back(text);
+          EnsureItemDescription(id, g_itemDescriptions).identifiedDescription.push_back(text);
         } else {
           id = std::atoi(text);
         }
@@ -749,61 +749,61 @@ __declspec(noinline) void LoadItemNameTables() {
 
   if (ResourceExists("EventNum2ItemResNameTable.txt", 0)) {
     g_tableStorage.LoadTokens(tokens, "EventNum2ItemResNameTable.txt", 0);
-    for (size_t index = 0; index + 1 < tokens.size(); index += 2) {
-      g_itemDescriptions[std::atoi(tokens[index])].unidentifiedResource = tokens[index + 1];
+    for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
+      EnsureItemDescription(std::atoi(*token), g_itemDescriptions).unidentifiedResource = token[1];
     }
   }
 
   if (ResourceExists("EventIdNum2ItemResNameTable.txt", 0)) {
     g_tableStorage.LoadTokens(tokens, "EventIdNum2ItemResNameTable.txt", 0);
-    for (size_t index = 0; index + 1 < tokens.size(); index += 2) {
-      g_itemDescriptions[std::atoi(tokens[index])].identifiedResource = tokens[index + 1];
+    for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
+      EnsureItemDescription(std::atoi(*token), g_itemDescriptions).identifiedResource = token[1];
     }
   }
 
   g_tableStorage.LoadTokens(tokens, "itemSlotTable.txt", 0);
-  for (size_t index = 0; index + 1 < tokens.size(); index += 2) {
-    g_itemDescriptions[std::atoi(tokens[index])].unknown_002C = std::atoi(tokens[index + 1]);
+  for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
+    EnsureItemDescription(std::atoi(*token), g_itemDescriptions).unknown_002C = std::atoi(token[1]);
   }
 
   g_tableStorage.LoadTokens(tokens, "itemParamTable.txt", 0);
-  for (size_t index = 0; index + 2 < tokens.size(); index += 3) {
-    ITEM_DESC& desc = g_itemDescriptions[std::atoi(tokens[index])];
-    desc.unknown_0034.push_back(std::atoi(tokens[index + 1]));
-    desc.unknown_0034.push_back(std::atoi(tokens[index + 2]));
+  for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 3) {
+    ITEM_DESC& desc = EnsureItemDescription(std::atoi(*token), g_itemDescriptions);
+    desc.unknown_0034.push_back(std::atoi(token[1]));
+    desc.unknown_0034.push_back(std::atoi(token[2]));
   }
 
   g_tableStorage.LoadTokens(tokens, "CardItemNameTable.txt", 0);
-  for (size_t index = 0; index < tokens.size(); ++index) {
-    EnsureItemCardName(std::atoi(tokens[index]), g_itemCardNames);
+  for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); ++token) {
+    EnsureItemCardName(std::atoi(*token), g_itemCardNames);
   }
 
   g_tableStorage.LoadTokens(tokens, "Num2CardIllustNameTable.txt", 0);
-  for (size_t index = 0; index + 1 < tokens.size(); index += 2) {
-    EnsureItemCardName(std::atoi(tokens[index]), g_itemCardNames).name = tokens[index + 1];
+  for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
+    EnsureItemCardName(std::atoi(*token), g_itemCardNames).name = token[1];
   }
 
   g_tableStorage.LoadTokens(tokens, "CardPrefixNameTable.txt", 0);
-  for (size_t index = 0; index + 1 < tokens.size(); index += 2) {
-    EnsureItemCardName(std::atoi(tokens[index]), g_itemCardNames).prefix = tokens[index + 1];
+  for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
+    EnsureItemCardName(std::atoi(*token), g_itemCardNames).prefix = token[1];
   }
 
   g_tableStorage.LoadTokens(tokens, "CardPostfixNameTable.txt", 0);
-  for (size_t index = 0; index < tokens.size(); ++index) {
-    ItemCardName& card = EnsureItemCardName(std::atoi(tokens[index]), g_itemCardNames);
+  for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); ++token) {
+    ItemCardName& card = EnsureItemCardName(std::atoi(*token), g_itemCardNames);
     card.suffix = card.prefix;
     card.prefix = "";
   }
 
   g_tableStorage.LoadTokens(tokens, "BookItemNameTable.txt", 0);
-  for (size_t index = 0; index < tokens.size(); ++index) {
-    EnsureItemDescriptionLines(std::atoi(tokens[index]), g_bookItemNames).push_back(tokens[index]);
+  for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); ++token) {
+    EnsureItemDescriptionLines(std::atoi(*token), g_bookItemNames).push_back(*token);
   }
 
   int metalId = 0;
   g_tableStorage.LoadTokens(tokens, "MetalProcessItemList.txt", 1);
-  for (size_t index = 0; index < tokens.size(); ++index) {
-    char* text = tokens[index];
+  for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); ++token) {
+    char* text = *token;
     if (text == nullptr || *text == '\0') {
       continue;
     }
@@ -815,14 +815,14 @@ __declspec(noinline) void LoadItemNameTables() {
     }
   }
 
-  ITEM_DESC& unknown = g_itemDescriptions[0];
+  ITEM_DESC& unknown = FindItemDescription(0, g_itemDescriptions);
   unknown.identifiedName = "Unknown Item";
   unknown.identifiedResource = "\xbb\xe7\xb0\xfa";
   unknown.identifiedDescription.push_back("Unknown Item");
   unknown.unidentifiedName = "Unknown Item";
   unknown.unidentifiedResource = "\xbb\xe7\xb0\xfa";
   unknown.unidentifiedDescription.push_back("Unknown Item");
-  g_itemDescriptions[-1] = unknown;
+  FindItemDescription(-1, g_itemDescriptions) = unknown;
 
   ItemCardName& sorry = FindItemCardName(0, g_itemCardNames);
   sorry.name = "sorry";
@@ -832,17 +832,17 @@ __declspec(noinline) void LoadItemNameTables() {
 
   std::vector<int> moveInfo;
   if (LoadItemMoveInfoTable(moveInfo, "ItemMoveInfoV5.txt") && !moveInfo.empty()) {
-    for (size_t index = 0; index + 8 < moveInfo.size(); index += 9) {
+    for (std::vector<int>::iterator value = moveInfo.begin(); value != moveInfo.end(); value += 9) {
       ItemMoveInfo flags;
-      flags.itemId = moveInfo[index];
-      flags.drop = moveInfo[index + 1] != 0;
-      flags.trade = moveInfo[index + 2] != 0;
-      flags.storage = moveInfo[index + 3] != 0;
-      flags.cart = moveInfo[index + 4] != 0;
-      flags.sellToNpc = moveInfo[index + 5] != 0;
-      flags.mail = moveInfo[index + 6] != 0;
-      flags.auction = moveInfo[index + 7] != 0;
-      flags.guildStorage = moveInfo[index + 8] != 0;
+      flags.itemId = value[0];
+      flags.drop = value[1] != 0;
+      flags.trade = value[2] != 0;
+      flags.storage = value[3] != 0;
+      flags.cart = value[4] != 0;
+      flags.sellToNpc = value[5] != 0;
+      flags.mail = value[6] != 0;
+      flags.auction = value[7] != 0;
+      flags.guildStorage = value[8] != 0;
       g_itemMoveInfo.insert(std::make_pair(flags.itemId, flags));
     }
   }
