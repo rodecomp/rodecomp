@@ -561,11 +561,13 @@ void UIBasicSkillCtrl::Slot28(int, int) {
   }
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x00A8B9D0
 // FUNCTION: fn_17125
 void UIWindowMgr::AddRendered(UIWindow* window) {
   this->rendered.push_back(window);
 }
+#pragma inline_depth()
 
 // OFFSET: 0x00891CC0
 // FUNCTION: fn_11457
