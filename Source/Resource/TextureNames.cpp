@@ -34,13 +34,12 @@ const char* Resolve(const char* name) {
   }
 
   const std::string original(name);
-  constexpr char marker[] = "유저인터페이스";
 
-  if (original.find(marker, 0, 14) == std::string::npos) {
+  if (original.find("유저인터페이스", 0, 14) == std::string::npos) {
     return name;
   }
 
-  if (g_modeMgr.gameMode && g_skinInfo.Selected()) {
+  if (g_modeMgr.gameMode && g_skinInfo.Selected() == true) {
     const std::string prefix(g_skinInfo.Prefix());
     // STATIC: 0x016D58CC
     // GLOBAL: gl_24385
