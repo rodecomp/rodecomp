@@ -219,11 +219,13 @@ void CSignBoardWnd::ApplyColor() {
   if (this->unknown_00B0.size() != 0) {
     int values[3] = {0, 0, 0};
     int index = 0;
-    if (this->unknown_00B0.find(",") != std::string::npos) {
-      std::string rest = this->unknown_00B0;
-      std::size_t comma = rest.find(",");
+    std::string rest = this->unknown_00B0;
+    std::string token = this->unknown_00B0;
+    std::size_t comma = this->unknown_00B0.find(",");
+    if (comma != std::string::npos) {
       while (comma != std::string::npos) {
-        values[index] = std::atoi(rest.substr(0, comma).c_str());
+        token = rest.substr(0, comma);
+        values[index] = std::atoi(token.c_str());
         index += 1;
         rest = rest.substr(comma + 1);
         comma = rest.find(",");
@@ -234,7 +236,8 @@ void CSignBoardWnd::ApplyColor() {
     green = values[1];
     blue = values[2];
     if (this->unknown_00B0.find("#") != std::string::npos) {
-      std::string hex = this->unknown_00B0.substr(this->unknown_00B0.find("#") + 1);
+      std::string hex = this->unknown_00B0;
+      hex = hex.substr(hex.find("#") + 1);
       const unsigned long color = std::strtoul(hex.c_str(), nullptr, 16);
       red = static_cast<int>((color >> 16) & 0xff);
       green = static_cast<int>((color >> 8) & 0xff);
