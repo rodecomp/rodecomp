@@ -1985,26 +1985,26 @@ void UIScrollBar2::Paint() {
     this->FillRegion(0, 11, 10, this->geometry.height - 21, 0);
     if (this->state == 1) {
       auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up.bmp").c_str())));
-      this->DrawBitmap(0, 0, up ? &up->image : nullptr, false);
+      this->DrawBitmap(0, 0, up, false);
     } else if (this->state == 4) {
       auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up.bmp").c_str())));
-      this->DrawBitmap(0, 0, up ? &up->image : nullptr, false);
+      this->DrawBitmap(0, 0, up, false);
     } else {
       auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up.bmp").c_str())));
-      this->DrawBitmap(0, 0, up ? &up->image : nullptr, false);
+      this->DrawBitmap(0, 0, up, false);
     }
 
     const int thumb = this->ThumbOffset() + this->arrowLength;
     this->FillRegion(0, thumb + 1, 10, this->ThumbLength() - 1, 0xAFAAA5);
     if (this->state == 2) {
       auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, down ? &down->image : nullptr, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, down, false);
     } else if (this->state == 5) {
       auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, down ? &down->image : nullptr, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, down, false);
     } else {
       auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, down ? &down->image : nullptr, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, down, false);
     }
   }
 }
@@ -2022,13 +2022,13 @@ void UIScrollBar3::Paint() {
     this->FillRegion(0, 10, 9, this->geometry.height - 20, 0xF1F1F1);
     if (this->state == 1) {
       auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up1.bmp").c_str())));
-      this->DrawBitmap(0, 0, up ? &up->image : nullptr, false);
+      this->DrawBitmap(0, 0, up, false);
     } else if (this->state == 4) {
       auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up1.bmp").c_str())));
-      this->DrawBitmap(0, 0, up ? &up->image : nullptr, false);
+      this->DrawBitmap(0, 0, up, false);
     } else {
       auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up1.bmp").c_str())));
-      this->DrawBitmap(0, 0, up ? &up->image : nullptr, false);
+      this->DrawBitmap(0, 0, up, false);
     }
 
     int thumb = this->ThumbOffset() + this->arrowLength;
@@ -2044,13 +2044,13 @@ void UIScrollBar3::Paint() {
     this->FillRegion(0, thumb + 1, 9, length - 1, 0xE9E9E9);
     if (this->state == 2) {
       auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down1.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength, down ? &down->image : nullptr, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength, down, false);
     } else if (this->state == 5) {
       auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down1.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength, down ? &down->image : nullptr, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength, down, false);
     } else {
       auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down1.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength, down ? &down->image : nullptr, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength, down, false);
     }
   }
 
@@ -2581,7 +2581,7 @@ void UIComboBoxV2Wnd::Paint() {
 
   if (!this->text.empty()) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->text.c_str())));
-    this->DrawBitmap(0, 0, &bitmap->image, false);
+    this->DrawBitmap(0, 0, bitmap, false);
   }
 
   const std::string selected = this->SelectedText();
