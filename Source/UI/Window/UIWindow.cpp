@@ -886,17 +886,6 @@ __declspec(noinline) void UIWindow::DrawBitmap(int x, int y, CBitmapRes* bitmap,
   this->geometry.surface->Copy(x, y, bitmap->image.width, bitmap->image.height, bitmap->image.pixels, transparent);
 }
 
-// OFFSET: 0x00A7BD60
-// FUNCTION: fn_16938
-__declspec(noinline) void UIWindow::FillRegion(int x, int y, int width, int height, std::uint32_t color) {
-  const int right = (x + width);
-  const int bottom = (y + height);
-  RECT rectangle = {
-    x < 0 ? 0 : x, y < 0 ? 0 : y, this->geometry.width < right ? this->geometry.width : right, this->geometry.height < bottom ? this->geometry.height : bottom
-  };
-  this->geometry.surface->Fill(&rectangle, color);
-}
-
 // OFFSET: 0x00A80580
 // FUNCTION: fn_16975
 int UIWindow::TextWidth(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic

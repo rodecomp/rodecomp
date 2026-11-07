@@ -8,9 +8,18 @@
 #include <algorithm>
 #include <cstdio>
 
-namespace {}
-
 __declspec(noinline) void DrawRoundedBorder(UIWindow& window, int x, int y, int width, int height, std::uint32_t color);
+
+// OFFSET: 0x00A7BD60
+// FUNCTION: fn_16938
+void UIWindow::FillRegion(int x, int y, int width, int height, std::uint32_t color) {
+  const int right = (x + width);
+  const int bottom = (y + height);
+  RECT rectangle = {
+    x < 0 ? 0 : x, y < 0 ? 0 : y, this->geometry.width < right ? this->geometry.width : right, this->geometry.height < bottom ? this->geometry.height : bottom
+  };
+  this->geometry.surface->Fill(&rectangle, color);
+}
 
 // OFFSET: 0x00A7C060
 // FUNCTION: fn_16942
