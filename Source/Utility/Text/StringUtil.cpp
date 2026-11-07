@@ -111,15 +111,17 @@ bool ContainsText(const std::string& text, std::string_view pattern) {
   return text.find(pattern) != std::string::npos;
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x0058A8F0
 // FUNCTION: fn_02759
 std::string GetFileName(const std::string& path) {
   std::size_t position = path.find_last_of("\\/");
-  if (position == std::string::npos) {
-    return path;
+  if (position != std::string::npos) {
+    return path.substr(position + 1);
   }
-  return path.substr(position + 1);
+  return path;
 }
+#pragma inline_depth()
 
 // OFFSET: 0x0058AAF0
 // FUNCTION: fn_02761
