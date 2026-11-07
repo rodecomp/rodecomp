@@ -210,18 +210,17 @@ __declspec(noinline) CWorldViewMap* CWorldViewWorld::FindMap(int id) {
 // FUNCTION: fn_04357
 CWorldViewMap* CWorldViewWorld::MapAt(unsigned int& mapIndex, int x, int y) {
   for (unsigned int index = 0; index < this->maps.size(); ++index) {
-    CWorldViewMap* map = this->maps[index];
-    if (map->id < 100) {
-      if (map->fields.empty()) {
-        if (AreaContains(map->left, map->top, map->right, map->bottom, x, y)) {
+    if (this->maps[index]->id < 100) {
+      if (this->maps[index]->fields.empty()) {
+        if (AreaContains(this->maps[index]->left, this->maps[index]->top, this->maps[index]->right, this->maps[index]->bottom, x, y)) {
           mapIndex = index;
-          return map;
+          return this->maps[index];
         }
       } else {
-        const CWorldViewField* first = map->fields.front();
+        const CWorldViewField* first = this->maps[index]->fields.front();
         if (AreaContains(first->left, first->top, first->right, first->bottom, x, y)) {
           mapIndex = index;
-          return map;
+          return this->maps[index];
         }
       }
     }
