@@ -1670,9 +1670,9 @@ void UIRune_Decom::SetItem(int itemId) {
       resource = ItemResourcePath(item);
     }
 
-    this->unknown_0094 = FormatOwnedString("유저인터페이스\\Illust\\%s.bmp", resource.c_str());
+    this->unknown_0094 = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\Illust\\%s.bmp", resource.c_str()));
     if (!ResourceMgr::Instance().Exists(this->unknown_0094.c_str())) {
-      this->unknown_0094 = FormatOwnedString("유저인터페이스\\cardbmp\\%s.bmp", resource.c_str());
+      this->unknown_0094 = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\cardbmp\\%s.bmp", resource.c_str()));
       if (!ResourceMgr::Instance().Exists(this->unknown_0094.c_str())) {
         this->unknown_0094 = "";
       }
