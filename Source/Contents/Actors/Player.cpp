@@ -4765,7 +4765,7 @@ void CPc::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
 ) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
+  switch (*reinterpret_cast<const std::int64_t*>(&message)) {
   case 100:
     if (this->render.unknown_0070 == 0 || this->render.unknown_0070 == 6) {
       this->render.curMotion = b;
