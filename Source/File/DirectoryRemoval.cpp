@@ -24,7 +24,7 @@ void RemoveDirectoryTree(const char* path) {
     std::string dot(".");
     std::string dotdot("..");
     do {
-      if (dot == found.cFileName || dotdot == found.cFileName) {
+      if (found.cFileName[0] == '.' && (found.cFileName[1] == 0 || (found.cFileName[1] == '.' && found.cFileName[2] == 0))) {
         continue;
       }
       if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
@@ -38,11 +38,11 @@ void RemoveDirectoryTree(const char* path) {
     std::strcpy(filename, path);
     std::strcat(filename, "\\");
     for (const std::string& file : files) {
-      _chmod((filename + file).c_str(), _S_IWRITE);
-      _unlink((filename + file).c_str());
+      _chmod((std::string(filename) + file).c_str(), _S_IWRITE);
+      _unlink((std::string(filename) + file).c_str());
     }
     for (const std::string& directory : directories) {
-      RemoveDirectoryTree((filename + directory).c_str());
+      RemoveDirectoryTree((std::string(filename) + directory).c_str());
     }
   }
   _rmdir(path);
