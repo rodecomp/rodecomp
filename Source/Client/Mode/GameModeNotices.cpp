@@ -4948,7 +4948,7 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
     ITEM_INFO item;
     item.SetItemId(packet->itemId);
     item.GetIdDisplayName(name, capacity, 0);
-    message = FormatOwnedString("%s아이템 %d개 지급 완료", name, packet->count);
+    message = static_cast<const std::string&>(FormatOwnedString("%s아이템 %d개 지급 완료", name, packet->count));
   }
   case 2:
     if (g_stoveMgr->unknown_0008 == 2) {
@@ -4960,7 +4960,7 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
     }
     break;
   case 1:
-    message = FormatOwnedString("Stove 유저가 아닙니다.");
+    message = static_cast<const std::string&>(FormatOwnedString("Stove 유저가 아닙니다."));
     break;
   case 3:
   case 4:
@@ -4969,10 +4969,10 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
   case 5:
   case 6:
   case 7:
-    message = FormatOwnedString("아이템 수령 실패");
+    message = static_cast<const std::string&>(FormatOwnedString("아이템 수령 실패"));
     break;
   default:
-    message = FormatOwnedString("Unknown Error (Stove:%d)", packet->result);
+    message = static_cast<const std::string&>(FormatOwnedString("Unknown Error (Stove:%d)", packet->result));
     break;
   }
 
@@ -5604,7 +5604,7 @@ void CGameMode::ReceiveQuestHuntUpdate(const unsigned char* data) {
       } else {
         name.assign(info.m_huntName[index]);
       }
-      name.assign(FormatOwnedString(LookupMessage(1610), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
+      name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(1610), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
       g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
     }
@@ -5650,7 +5650,7 @@ void CGameMode::ReceiveQuestHuntUpdate2(const unsigned char* data) {
       } else {
         name.assign(info.m_huntName[index]);
       }
-      name.assign(FormatOwnedString(LookupMessage(1610), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
+      name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(1610), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
       g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
     }
