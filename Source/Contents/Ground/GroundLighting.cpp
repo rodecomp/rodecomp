@@ -32,24 +32,31 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
     return;
   }
 
-  for (unsigned corner = 0; corner < 4; ++corner) {
-    vertices[corner].u = quad.vertices[corner][4];
-    vertices[corner].v = quad.vertices[corner][5];
-    lightUV[corner][0] = quad.vertices[corner][6];
-    lightUV[corner][1] = quad.vertices[corner][7];
+  if (!g_overrideColor && quad.selected != 0) {
+    for (unsigned corner = 0; corner < 4; ++corner) {
+      vertices[corner].u = quad.vertices[corner][4];
+      vertices[corner].v = quad.vertices[corner][5];
+      lightUV[corner][0] = quad.vertices[corner][6];
+      lightUV[corner][1] = quad.vertices[corner][7];
 
-    std::uint32_t color = std::bit_cast<std::uint32_t>(quad.vertices[corner][3]);
-    SpriteColor& channels = reinterpret_cast<SpriteColor&>(color);
+      std::uint32_t color = std::bit_cast<std::uint32_t>(quad.vertices[corner][3]);
+      reinterpret_cast<SpriteColor&>(color).alpha = 0x80;
+      vertices[corner].diffuse = color;
+    }
+  } else {
+    for (unsigned corner = 0; corner < 4; ++corner) {
+      vertices[corner].u = quad.vertices[corner][4];
+      vertices[corner].v = quad.vertices[corner][5];
+      lightUV[corner][0] = quad.vertices[corner][6];
+      lightUV[corner][1] = quad.vertices[corner][7];
 
-    if (!g_overrideColor && quad.selected != 0) {
-      channels.alpha = 0x80;
-    } else {
+      std::uint32_t color = std::bit_cast<std::uint32_t>(quad.vertices[corner][3]);
+      SpriteColor& channels = reinterpret_cast<SpriteColor&>(color);
       channels.red = static_cast<std::uint8_t>(channels.red * scales[0]);
       channels.green = static_cast<std::uint8_t>(channels.green * scales[1]);
       channels.blue = static_cast<std::uint8_t>(channels.blue * scales[2]);
+      vertices[corner].diffuse = color;
     }
-
-    vertices[corner].diffuse = color;
   }
 
   const bool enabled = g_serviceOptions.Get(119) != 0;
