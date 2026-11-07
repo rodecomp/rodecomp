@@ -468,10 +468,13 @@ bool DeviceOwnerDX7::RestoreLostSurfaces() {
     return false;
   }
 
-  const HRESULT primaryStatus = this->primary->IsLost();
-  const HRESULT depthStatus = this->depthBuffer ? this->depthBuffer->IsLost() : S_OK;
+  HRESULT status[2] = {};
+  status[0] = this->primary->IsLost();
+  if (this->depthBuffer) {
+    status[1] = this->depthBuffer->IsLost();
+  }
 
-  if (primaryStatus == DDERR_SURFACELOST && depthStatus == DDERR_SURFACELOST) {
+  if (status[0] == DDERR_SURFACELOST && status[1] == DDERR_SURFACELOST) {
     if (this->depthBuffer) {
       this->depthBuffer->Restore();
     }
