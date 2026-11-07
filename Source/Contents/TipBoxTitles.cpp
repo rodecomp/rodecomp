@@ -467,7 +467,7 @@ int AddIsTag(lua_State* state) {
   if (!lua_isnumber(state, -1)) { lua_pushboolean(state, 0); lua_pushstring(state, "1 argment is must number"); return 2; }
 
   const int id = static_cast<int>(lua_tonumber(state, -2));
-  g_itemTagOwner->m_entries[id].searchable = static_cast<int>(lua_tonumber(state, -1)) != 0;
+  g_itemTagOwner->SetSearchable(id, static_cast<int>(lua_tonumber(state, -1)) != 0);
   lua_pushboolean(state, 1);
   lua_pushstring(state, "good");
   return 2;
