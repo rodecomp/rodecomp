@@ -48,10 +48,11 @@ inline bool ImportWorldGround(
 
   ground = new GroundGeometry;
   ground->Build(*resource, lightDirection, diffuse, ambient);
-  const int pitch = TruncateToInt(world.waveSpeed);
-  const int phase = TruncateToInt(world.wavePitch);
-  ground->water.Set(world.waterLevel, world.waterType, world.waterAnimation, pitch, phase, world.waveHeight);
-  ground->water.Import(*resource);
+  ground->terrain = terrain;
+  const int pitch = TruncateToInt(world.wavePitch);
+  const int phase = TruncateToInt(world.waveSpeed);
+  ground->SetWater(world.waterLevel, world.waterType, world.waterAnimation, pitch, phase, world.waveHeight);
+  ground->ImportWater(*resource);
   resources.Remove(resource);
 
   return true;

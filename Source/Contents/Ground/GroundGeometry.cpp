@@ -46,7 +46,7 @@ namespace {
   }
 
   // INLINED
-  std::uint32_t
+  __forceinline std::uint32_t
   LitColor(const float* normal, bool normalize, bool side, const float* direction, const float* diffuse, const float* ambient, const GroundQuad* source) {
     float vector[3] = {normal[0], normal[1], normal[2]};
 
@@ -73,15 +73,22 @@ namespace {
   }
 }
 
-// OFFSET: 0x00ABD640
-// FUNCTION: fn_17546
-GroundGeometry::GroundGeometry() : cellSize(10.0f), loaded(0) {
+// INLINED
+GroundBase::GroundBase()
+    : terrain(nullptr), cellSize(10.0f), waterLevel(0.0f), waterAnimation(3), waterPitch(50), waterPhase(2), waterType(0), waterHeight(1.0f),
+      unknown_0050(0), unknown_0054(0), loaded(0) {
 }
 
 // INLINED
-GroundGeometry::~GroundGeometry() {
-  this->ClearLightmaps();
+GroundBase::~GroundBase() = default;
+
+// OFFSET: 0x00ABD640
+// FUNCTION: fn_17546
+GroundGeometry::GroundGeometry() : waterColumns(1), waterRows(1), waterPartitioned(false) {
 }
+
+// INLINED
+GroundGeometry::~GroundGeometry() = default;
 
 // OFFSET: 0x00AC3010
 // FUNCTION: fn_17595
@@ -105,7 +112,7 @@ void GroundGeometry::Reset(int columns, int rows) {
 
 // OFFSET: 0x00AC0350
 // FUNCTION: fn_17564
-void GroundGeometry::Slot01(int, int) {
+void GroundBase::Reset(int, int) {
 }
 
 // OFFSET: 0x00ABDEF0
@@ -115,7 +122,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
   this->Reset(resource.width, resource.height);
   CellNormals* normals = new CellNormals[resource.width * resource.height];
   this->cellSize = resource.cellSize;
-  this->BuildLightmaps(resource);
+  this->lightmapSet.Build(resource);
   this->tiles.clear();
   this->tiles.resize(static_cast<unsigned>(resource.tileCount));
 
@@ -175,9 +182,9 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           normals[index].side1.values[0] = next[0] <= cell.heights[2] ? 1.0f : -1.0f;
         }
 
-        const float scaleU = static_cast<float>(tile.texture->Width()) / static_cast<float>(tile.texture->TextureWidth());
-        const float scaleV = static_cast<float>(tile.texture->Height()) / static_cast<float>(tile.texture->TextureHeight());
-        GroundLightmap& lightmap = this->lightmaps[lightmapIndex];
+        const float scaleU = static_cast<float>(tile.texture->ImageWidth()) / static_cast<float>(tile.texture->TextureWidth());
+        const float scaleV = static_cast<float>(tile.texture->ImageHeight()) / static_cast<float>(tile.texture->TextureHeight());
+        GroundLightmap& lightmap = this->lightmapSet.lightmaps[lightmapIndex];
 
         tile.lightmap = &lightmap;
         tile.lightmapTexture = lightmap.texture;
@@ -344,37 +351,52 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
 
 // OFFSET: 0x00ABFB00
 // FUNCTION: fn_17557
-void GroundGeometry::Slot02(int, int, int, int) {
+void GroundBase::Build(CGndRes&, const float*, const float*, const float*) {
 }
 
 // OFFSET: 0x00AC0990
 // FUNCTION: fn_17566
-void GroundGeometry::Ground15Slot04(int) {
+void GroundGeometry::Slot04(int) {
 }
 
 // OFFSET: 0x00AC09A0
 // FUNCTION: fn_17567
-void GroundGeometry::Slot04(int) {
+void GroundBase::Slot04(int) {
 }
 
 // OFFSET: 0x00AC1510
 // FUNCTION: fn_17582
-void GroundGeometry::Slot19() {
+void GroundBase::UpdateWater() {
 }
 
 // OFFSET: 0x00AC1520
 // FUNCTION: fn_17583
-bool GroundGeometry::Ground15Slot10() {
+bool GroundGeometry::Slot10() {
   return true;
 }
 
 // OFFSET: 0x00AC3080
 // FUNCTION: fn_17598
-void GroundGeometry::Ground15Slot15(float, int, int) {
+void GroundBase::Slot15(float, int, int) {
 }
 
 // OFFSET: 0x00AC1530
 // FUNCTION: fn_17584
-bool GroundGeometry::Slot10() {
+bool GroundBase::Slot10() {
   return false;
+}
+
+// OFFSET: 0x00AC3030
+// FUNCTION: fn_17596
+void GroundBase::ClearGeometry() {
+}
+
+// OFFSET: 0x00AC3370
+// FUNCTION: fn_17601
+void GroundBase::ImportWater(const CGndRes&) {
+}
+
+// OFFSET: 0x00AC38A0
+// FUNCTION: fn_17605
+void GroundBase::DrawTerrainOverlay(const float*, int, int, std::uint32_t, CTexture*) const {
 }

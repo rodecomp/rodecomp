@@ -171,7 +171,7 @@ void CGroundScope::Render(int argument) {
       }
 
       CTexture* texture = g_texMgr.Load(name, 0, false, true, false);
-      ground->DrawGridDecal(*mode->scene->terrain, reinterpret_cast<const float*>(argument), left + column, top + row, tint, *texture, uv);
+      ground->DrawGridDecal(reinterpret_cast<const float*>(argument), left + column, top + row, tint, *texture, uv);
     }
   }
 

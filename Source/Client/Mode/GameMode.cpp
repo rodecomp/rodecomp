@@ -8435,8 +8435,8 @@ void __stdcall SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second
 // OFFSET: 0x00CE0210
 // FUNCTION: fn_21329
 int CGameMode::ProcessGroundClick(int result) {
-  const auto drawCell = [this](GroundGeometry* ground, const float* matrix, int column, int row, std::uint32_t color) {
-    ground->DrawGrid(*this->scene->terrain, matrix, column, row, color);
+  const auto drawCell = [](GroundGeometry* ground, const float* matrix, int column, int row, std::uint32_t color) {
+    ground->DrawGrid(matrix, column, row, color);
   };
 
   UIWindow* macroArea = g_windowMgr.LookupWindow(0x11E);
@@ -8839,7 +8839,7 @@ void CGameMode::Update() {
       for (int frame = frames; frame != 0; --frame) {
         g_effectMgr->Update();
         this->scene->OnProcess();
-        this->scene->ground->Slot19();
+        this->scene->ground->UpdateWater();
         this->camera->Update();
       }
     } else if (frames == 0) {

@@ -6589,7 +6589,7 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
           (u01 * scale + 3.5f) / 7.0f, (v01 * scale + 3.5f) / 7.0f, (u11 * scale + 3.5f) / 7.0f, (v11 * scale + 3.5f) / 7.0f,
         };
         ground->DrawGridDecal(
-          *gameMode->scene->terrain, wtm.values, column + x, row + z, 0xAA9999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv);
+          wtm.values, column + x, row + z, 0xAA9999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv);
 
         scale = slot.maxHeight + 0.1f;
         uv[0] = (scale * u00 + 3.5f) / 7.0f;
@@ -6601,7 +6601,7 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
         uv[6] = (scale * u11 + 3.5f) / 7.0f;
         uv[7] = (scale * v11 + 3.5f) / 7.0f;
         ground->DrawGridDecal(
-          *gameMode->scene->terrain, wtm.values, column + x, row + z, 0x559999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv);
+          wtm.values, column + x, row + z, 0x559999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv);
       }
     }
   }

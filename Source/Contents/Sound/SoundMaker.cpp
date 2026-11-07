@@ -510,7 +510,7 @@ bool CGndRiser::OnProcess() {
       alpha = -(frame * frame) / 25.0f;
     }
 
-    mode->scene->ground->Ground15Slot15(alpha, this->screenX, this->screenY);
+    mode->scene->ground->Slot15(alpha, this->screenX, this->screenY);
   }
 
   return true;

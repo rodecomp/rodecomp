@@ -86,7 +86,7 @@ void CNavigationManager::DrawRoute(const float* matrix) {
       GroundGeometry* ground = mode->scene->ground;
       const std::string name = FormatOwnedString("유저인터페이스\\navigation_interface3\\location%d.tga", g_locationFrame);
       CTexture* texture = g_texMgr.Load(name.c_str(), 0, false, true, false);
-      ground->DrawTerrainOverlay(*mode->scene->terrain, matrix, lastX, lastY, color, texture);
+      ground->DrawTerrainOverlay(matrix, lastX, lastY, color, texture);
     }
   }
 
@@ -104,7 +104,7 @@ void CNavigationManager::DrawRoute(const float* matrix) {
         CTexture* texture = g_texMgr.Load(this->labels[points[index + 1].metadata].c_str(), 0, false, true, false);
               constexpr float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
         const std::uint32_t color = blink == static_cast<int>(index) % 10 ? 0xEEFFFFFF : 0x99FFFFFF;
-        this->ground->DrawGridDecal(*mode->scene->terrain, matrix, x, y, color, *texture, uv);
+        this->ground->DrawGridDecal(matrix, x, y, color, *texture, uv);
       }
     }
   }

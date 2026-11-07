@@ -41,18 +41,18 @@ void GroundGeometry::CellBounds(int column, int row, float& minimum, float& maxi
 
 // OFFSET: 0x00AC1110
 // FUNCTION: fn_17575
-void GroundGeometry::Slot08(int, int, int) const {
+void GroundBase::HeightBounds(const int*, float&, float&) const {
 }
 
 // OFFSET: 0x00AC1120
 // FUNCTION: fn_17576
-void GroundGeometry::Slot07(int, int, int, int) const {
+void GroundBase::CellBounds(int, int, float&, float&) const {
 }
 
 // OFFSET: 0x00AC0E30
 // FUNCTION: fn_17572
-bool GroundGeometry::OverlayHeights(const C3dAttr& terrain, float* vertices, int column, int row) const {
-  const TerrainHeightCell* cell = terrain.CellAt(column, row);
+bool GroundBase::CellVertices(float* vertices, int column, int row) const {
+  const TerrainHeightCell* cell = this->terrain->CellAt(column, row);
 
   if (!cell) {
     return false;
@@ -67,7 +67,7 @@ bool GroundGeometry::OverlayHeights(const C3dAttr& terrain, float* vertices, int
 
 // OFFSET: 0x00AC0D40
 // FUNCTION: fn_17571
-bool GroundGeometry::CellVertices(const C3dAttr& terrain, float* vertices, int column, int row) const {
+bool GroundGeometry::CellVertices(float* vertices, int column, int row) const {
   if (column < 0 || (column >> 1) >= this->width || row < 0 || (row >> 1) >= this->height) {
     return false;
   }
@@ -84,7 +84,7 @@ bool GroundGeometry::CellVertices(const C3dAttr& terrain, float* vertices, int c
     }
   }
 
-  this->OverlayHeights(terrain, vertices, column, row);
+  GroundBase::CellVertices(vertices, column, row);
   return true;
 }
 
@@ -130,5 +130,5 @@ void GroundGeometry::MarkRay(const float* ray, int column, int row, float limit)
 
 // OFFSET: 0x00AC0170
 // FUNCTION: fn_17561
-void GroundGeometry::Slot09(int, int, int, int) {
+void GroundBase::MarkRay(const float*, int, int, float) {
 }

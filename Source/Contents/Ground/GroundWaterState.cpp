@@ -1,79 +1,74 @@
-#include "Contents/Ground/GroundWaterState.h"
+#include "Contents/Ground/GroundGeometry.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/World/GroundResource.h"
-#include "Utility/Math/ScalarConversion.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
-
-// INLINED
-GroundWaterState::GroundWaterState() : level(0.0f), animation(3), pitch(50), phase(2), type(0), height(1.0f), columns(1), rows(1), partitioned(false) {
-}
+#include <cstring>
 
 // OFFSET: 0x00AC3320
 // FUNCTION: fn_17600
-void GroundWaterState::Set(float newLevel, int newType, int newAnimation, int newPitch, int newPhase, float newHeight) {
-  this->animation = newAnimation;
-  this->pitch = newPitch;
-  this->level = newLevel;
-  this->height = newHeight;
-  this->phase = newPhase % 360;
-  this->type = newType;
+void GroundBase::SetWater(float newLevel, int newType, int newAnimation, int newPitch, int newPhase, float newHeight) {
+  this->waterAnimation = newAnimation;
+  this->waterPitch = newPitch;
+  this->waterLevel = newLevel;
+  this->waterHeight = newHeight;
+  this->waterPhase = newPhase % 360;
+  this->waterType = newType;
 }
 
 // OFFSET: 0x00AC30D0
 // FUNCTION: fn_17599
-bool GroundWaterState::Import(const CGndRes& resource) {
+void GroundGeometry::ImportWater(const CGndRes& resource) {
   if (resource.major == 1 && resource.minor >= 8) {
-    this->columns = resource.waterWidth;
-    this->rows = resource.waterHeight;
-    this->levels = resource.waterHeights;
-    this->surfaces.resize(resource.water.size());
+    this->waterColumns = resource.waterWidth;
+    this->waterRows = resource.waterHeight;
+    this->waterLevels = resource.waterHeights;
+    this->waterSurfaces.resize(resource.water.size());
 
-    for (std::size_t index = 0; index < resource.water.size(); ++index) {
-      const GroundWaterParameters& parameters = resource.water[index].parameters;
-      this->surfaces[index] = {parameters.level, parameters.type, parameters.height, parameters.speed, parameters.pitch, parameters.animation, 0, 0.0f,
-                               nullptr};
+    static_assert(sizeof(GroundWaterSurface) == sizeof(GroundWater));
+    if (!resource.water.empty()) {
+      std::memcpy(this->waterSurfaces.data(), resource.water.data(), resource.water.size() * sizeof(GroundWater));
     }
 
-    this->animation = resource.waterDefault.animation;
-    this->pitch = static_cast<int>(resource.waterDefault.pitch);
-    this->phase = static_cast<int>(resource.waterDefault.speed) % 360;
-    this->type = resource.waterDefault.type;
-    this->height = resource.waterDefault.height;
+    this->waterAnimation = resource.waterDefault.animation;
+    this->waterPitch = static_cast<int>(resource.waterDefault.pitch);
+    this->waterPhase = static_cast<int>(resource.waterDefault.speed) % 360;
+    this->waterType = resource.waterDefault.type;
+    this->waterHeight = resource.waterDefault.height;
   } else {
-    this->surfaces.push_back(
-      {this->level, this->type, this->height, static_cast<float>(this->phase), static_cast<float>(this->pitch), this->animation, 0, 0.0f, nullptr}
+    this->waterSurfaces.push_back(
+      {this->waterLevel, this->waterType, this->waterHeight, static_cast<float>(this->waterPhase), static_cast<float>(this->waterPitch),
+       this->waterAnimation, 0, 0.0f, nullptr}
     );
-    this->levels.push_back(this->level);
+    this->waterLevels.push_back(this->waterLevel);
   }
 
-  this->Update();
-  this->partitioned = this->levels.size() > 1;
-  return this->partitioned;
+  this->UpdateWater();
+  this->waterPartitioned = this->waterLevels.size() > 1;
 }
 
 // OFFSET: 0x00AC1390
 // FUNCTION: fn_17580
-float GroundWaterState::Level(int width, int height, int column, int row) const {
-  const int cellWidth = width / this->columns;
-  const int cellHeight = height / this->rows;
-  const int x = std::min(column / cellWidth, this->columns - 1);
-  const int z = std::min(row / cellHeight, this->rows - 1);
-  const unsigned index = static_cast<unsigned>(x) + static_cast<unsigned>(z) * static_cast<unsigned>(this->columns);
+float GroundGeometry::WaterLevel(int column, int row) const {
+  const int cellWidth = this->width / this->waterColumns;
+  const int cellHeight = this->height / this->waterRows;
+  const int x = std::min(column / cellWidth, this->waterColumns - 1);
+  const int z = std::min(row / cellHeight, this->waterRows - 1);
+  const unsigned index = static_cast<unsigned>(x) + static_cast<unsigned>(z) * static_cast<unsigned>(this->waterColumns);
 
-  return index < this->levels.size() ? this->levels[index] : 0.0f;
+  return index < this->waterLevels.size() ? this->waterLevels[index] : 0.0f;
 }
 
 // OFFSET: 0x00AC1430
 // FUNCTION: fn_17581
-void GroundWaterState::Update() {
+void GroundGeometry::UpdateWater() {
   // STATIC: 0x01159248
   // STRING: st_16830
   static constexpr char format[] = "워터\\water%d%02d.jpg";
   char name[32]{};
 
-  for (GroundWaterSurface& surface : this->surfaces) {
+  for (GroundWaterSurface& surface : this->waterSurfaces) {
     ++surface.frame;
     const int end = surface.animation * 32;
 

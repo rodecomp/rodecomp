@@ -32,7 +32,17 @@ bool GroundGeometry::CellRectangle(const C3dAttr& terrain, int column, int row, 
   vertices[9] = static_cast<float>(cellColumn - this->width / 2 + 1) * this->cellSize;
   vertices[11] = static_cast<float>(cellRow - this->height / 2 + 1) * this->cellSize;
 
-  return this->OverlayHeights(terrain, vertices, column, row);
+  const TerrainHeightCell* cell = terrain.CellAt(column, row);
+
+  if (!cell) {
+    return false;
+  }
+
+  for (unsigned corner = 0; corner < 4; ++corner) {
+    vertices[corner * 3 + 1] = cell->heights[corner];
+  }
+
+  return true;
 }
 
 namespace {
@@ -101,45 +111,45 @@ namespace {
 // OFFSET: 0x00AC3380
 // FUNCTION: fn_17602
 void GroundGeometry::DrawCellDecal(
-  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv
+  const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv
 ) const {
-  DrawDecal(*this, terrain, matrix, column, row, color, texture, uv, 0.10003052f);
+  DrawDecal(*this, *this->terrain, matrix, column, row, color, texture, uv, 0.10003052f);
 }
 
 // OFFSET: 0x00AC1710
 // FUNCTION: fn_17588
-void GroundGeometry::Slot14(int, int, int, int) {
+void GroundBase::DrawGrid(const float*, int, int, std::uint32_t) const {
 }
 
 // OFFSET: 0x00AC1720
 // FUNCTION: fn_17589
 __declspec(noinline) void GroundGeometry::DrawGridDecal(
-  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv
+  const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv
 ) const {
-  DrawDecal(*this, terrain, matrix, column, row, color, texture, uv, 3.0517578e-05f);
+  DrawDecal(*this, *this->terrain, matrix, column, row, color, texture, uv, 3.0517578e-05f);
 }
 
 // OFFSET: 0x00AC16D0
 // FUNCTION: fn_17587
 void GroundGeometry::DrawGrid(
-  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color
+  const float* matrix, int column, int row, std::uint32_t color
 ) const {
   CTexture* texture = g_texMgr.Load("grid.tga", 0, false, true, false);
   // STATIC: 0x01347EB0
   // GLOBAL: gl_25477
   static const float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
-  this->DrawGridDecal(terrain, matrix, column, row, color, *texture, uv);
+  this->DrawGridDecal(matrix, column, row, color, *texture, uv);
 }
 
 // OFFSET: 0x00AC3600
 // FUNCTION: fn_17603
-void GroundGeometry::Slot16(int, int, int, int, int, int) {
+void GroundBase::DrawCellDecal(const float*, int, int, std::uint32_t, CTexture&, const float*) const {
 }
 
 // OFFSET: 0x00AC3610
 // FUNCTION: fn_17604
 void GroundGeometry::DrawTerrainOverlay(
-  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture* texture
+  const float* matrix, int column, int row, std::uint32_t color, CTexture* texture
 ) const {
   const int cellColumn = static_cast<int>(static_cast<float>(column) * 0.5f);
   const int cellRow = static_cast<int>(static_cast<float>(row) * 0.5f);
@@ -152,7 +162,7 @@ void GroundGeometry::DrawTerrainOverlay(
     return;
   }
 
-  const TerrainHeightCell* cell = terrain.CellAt(column, row);
+  const TerrainHeightCell* cell = this->terrain->CellAt(column, row);
 
   if (!cell) {
     return;

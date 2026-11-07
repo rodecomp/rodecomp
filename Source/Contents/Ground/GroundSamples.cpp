@@ -24,24 +24,25 @@ void GroundGeometry::WorldColor(float x, float, float z, std::uint32_t* output) 
 
 // OFFSET: 0x00AC1130
 // FUNCTION: fn_17577
-void GroundGeometry::Lighting(int column, int row, float& red, float& green, float& blue) const {
+int GroundGeometry::Lighting(int column, int row, float& red, float& green, float& blue) const {
   if (column < 0 || (column >> 1) >= this->width || row < 0 || (row >> 1) >= this->height || this->lighting.empty()) {
     red = 1.0f;
     green = 1.0f;
     blue = 1.0f;
 
-    return;
+    return 1;
   }
 
   const unsigned index = static_cast<unsigned>(column) + 2u * static_cast<unsigned>(row) * static_cast<unsigned>(this->width);
   red = this->lighting[index][0];
   green = this->lighting[index][1];
   blue = this->lighting[index][2];
+  return 1;
 }
 
 // OFFSET: 0x00AC11C0
 // FUNCTION: fn_17578
-int GroundGeometry::Slot12(int, int, int, int, int) const {
+int GroundBase::Lighting(int, int, float&, float&, float&) const {
   return 0;
 }
 
@@ -116,5 +117,15 @@ bool GroundGeometry::TerrainCellCorners(const C3dAttr& terrain, int column, int 
   vertices[9] = right;
   vertices[11] = bottom;
 
-  return this->OverlayHeights(terrain, vertices, column, row);
+  const TerrainHeightCell* cell = terrain.CellAt(column, row);
+
+  if (!cell) {
+    return false;
+  }
+
+  for (unsigned corner = 0; corner < 4; ++corner) {
+    vertices[corner * 3 + 1] = cell->heights[corner];
+  }
+
+  return true;
 }

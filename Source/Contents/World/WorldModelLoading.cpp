@@ -206,8 +206,9 @@ void CWorld::InitWorld() {
 
   this->ground = new GroundGeometry();
   this->ground->Build(*groundRes, g_worldLightDirection, g_worldDiffuse, g_worldAmbient);
+  this->ground->terrain = this->terrain;
 
-  this->ground->water.Set(
+  this->ground->SetWater(
     worldRes->waterLevel,
     worldRes->waterType,
     worldRes->waterAnimation,
@@ -216,7 +217,7 @@ void CWorld::InitWorld() {
     worldRes->waveHeight
   );
 
-  this->ground->water.Import(*groundRes);
+  this->ground->ImportWater(*groundRes);
 
   ResourceMgr::Instance().Remove(groundRes);
 
@@ -270,7 +271,7 @@ void CWorld::InitWorld() {
   this->InitializeSpatial();
   this->LoadMapEffects();
 
-  this->ground->InitializeLighting(*this->terrain);
+  this->ground->InitializeLighting();
 
   this->published = static_cast<int>(this->models.size());
 

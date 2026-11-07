@@ -4686,7 +4686,7 @@ void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached)
       uv[6] = (row1 * groundSine + column1 * groundCosine + 2.5f) / 5.0f;
       uv[7] = (row1 * groundCosine - column1 * groundSine + 2.5f) / 5.0f;
       ground->DrawGridDecal(
-        *mode->scene->terrain, reinterpret_cast<const float*>(argument), column + j, row + i, 0x70FFFFFF, *this->unknown_2554, uv);
+        reinterpret_cast<const float*>(argument), column + j, row + i, 0x70FFFFFF, *this->unknown_2554, uv);
     }
   }
 }

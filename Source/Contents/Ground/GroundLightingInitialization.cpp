@@ -3,7 +3,11 @@
 
 // OFFSET: 0x00ABFB10
 // FUNCTION: fn_17558
-void GroundGeometry::InitializeLighting(const C3dAttr& terrain) {
+void GroundGeometry::InitializeLighting() {
+  if (!this->Slot10()) {
+    return;
+  }
+
   // STATIC: 0x01348128
   constexpr int offsets[5][2] = {{0, 0}, {0, -1}, {0, 1}, {1, 0}, {-1, 0}};
   const int columns = 2 * this->width;
@@ -12,7 +16,7 @@ void GroundGeometry::InitializeLighting(const C3dAttr& terrain) {
   for (int row = 0; row < rows; ++row) {
     for (int column = 0; column < columns; ++column) {
       float average = 0.0f;
-      const TerrainHeightCell* cell = terrain.CellAt(column, row);
+      const TerrainHeightCell* cell = this->terrain->CellAt(column, row);
 
       if (cell) {
         average = ((cell->heights[1] + cell->heights[0]) + cell->heights[2] + cell->heights[3]) * 0.25f;
@@ -64,5 +68,5 @@ void GroundGeometry::InitializeLighting(const C3dAttr& terrain) {
 
 // OFFSET: 0x00ABFD50
 // FUNCTION: fn_17559
-void GroundGeometry::Slot11() {
+void GroundBase::InitializeLighting() {
 }

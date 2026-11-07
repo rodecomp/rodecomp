@@ -129,7 +129,7 @@ void CGraffiSkill::Render(int argument) {
       uv[6] = 1.0f - (row1 * sine + column1 * cosine + 9.0f) / 18.0f;
       uv[7] = (row1 * cosine - column1 * sine + 9.0f) / 18.0f;
       ground->DrawGridDecal(
-        *mode->scene->terrain, reinterpret_cast<const float*>(argument), cellX - 9 + column, cellY - 9 + row, 0xFFFFFFFF, *this->m_canvas, uv);
+        reinterpret_cast<const float*>(argument), cellX - 9 + column, cellY - 9 + row, 0xFFFFFFFF, *this->m_canvas, uv);
     }
   }
 }

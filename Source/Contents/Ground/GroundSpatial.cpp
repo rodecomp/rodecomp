@@ -32,7 +32,7 @@ GroundCell::GroundCell() {
 
 // OFFSET: 0x00AC0180
 // FUNCTION: fn_17562
-void GroundGeometry::SpatialCell(float x, float z, int& column, int& row) const {
+void GroundBase::SpatialCell(float x, float z, int& column, int& row) const {
   column = static_cast<int>(std::floor(x / this->cellSize)) + this->width / 2;
   row = static_cast<int>(std::floor(z / this->cellSize)) + this->height / 2;
 }

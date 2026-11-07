@@ -6,9 +6,14 @@
 #include <algorithm>
 #include <array>
 
+// INLINED
+GroundLightmapSet::~GroundLightmapSet() {
+  this->Clear();
+}
+
 // OFFSET: 0x00AC3040
 // FUNCTION: fn_17597
-void GroundGeometry::ClearLightmaps() {
+void GroundLightmapSet::Clear() {
   this->lightmaps.clear();
 
   while (!this->lightmapTextures.empty()) {
@@ -19,11 +24,12 @@ void GroundGeometry::ClearLightmaps() {
 
 // OFFSET: 0x00AC0360
 // FUNCTION: fn_17565
-void GroundGeometry::BuildLightmaps(CGndRes& resource) {
-  this->ClearLightmaps();
-  this->lightmaps.resize(static_cast<unsigned>(resource.lightmapCount));
-  const unsigned atlasCount = (static_cast<unsigned>(resource.lightmapCount) + 1023u) / 1024u;
-  this->lightmapTextures.reserve(atlasCount);
+void GroundLightmapSet::Build(CGndRes& resource) {
+  this->Clear();
+  this->lightmapCount = resource.lightmapCount;
+  this->lightmaps.resize(static_cast<unsigned>(this->lightmapCount));
+  this->atlasCount = (static_cast<unsigned>(this->lightmapCount) + 1023u) / 1024u;
+  this->lightmapTextures.reserve(this->atlasCount);
   std::array<std::uint32_t, 256 * 256> pixels;
 
   for (int first = 0; first < resource.lightmapCount; first += 1024) {

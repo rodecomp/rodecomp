@@ -16,16 +16,16 @@
 void GroundGeometry::DrawWaterCell(
   int column, int row, GroundCell& cell, const float* matrix, const float* ambient
 ) {
-  const float level = this->water.Level(this->width, this->height, column, row);
+  const float level = this->WaterLevel(column, row);
   unsigned partition = 0;
 
-  if (this->water.partitioned) {
-    const int x = std::min(column / (this->width / this->water.columns), this->water.columns - 1);
-    const int z = std::min(row / (this->height / this->water.rows), this->water.rows - 1);
-    partition = static_cast<unsigned>(x) + static_cast<unsigned>(z) * static_cast<unsigned>(this->water.columns);
+  if (this->waterPartitioned) {
+    const int x = std::min(column / (this->width / this->waterColumns), this->waterColumns - 1);
+    const int z = std::min(row / (this->height / this->waterRows), this->waterRows - 1);
+    partition = static_cast<unsigned>(x) + static_cast<unsigned>(z) * static_cast<unsigned>(this->waterColumns);
   }
 
-  GroundWaterSurface& surface = this->water.surfaces[partition];
+  GroundWaterSurface& surface = this->waterSurfaces[partition];
   float middle = level;
   float first = level;
   float last = level;
@@ -79,7 +79,7 @@ void GroundGeometry::DrawWaterCell(
   primitive->SetPosition(2, &vertices[2].x);
   primitive->SetPosition(3, &vertices[3].x);
 
-  if (!g_overrideColor && this->water.type == 4) {
+  if (!g_overrideColor && this->waterType == 4) {
     const std::uint8_t red = static_cast<std::uint8_t>(ambient[0] * 255.0f);
     const std::uint8_t green = static_cast<std::uint8_t>(ambient[1] * 255.0f);
     const std::uint8_t blue = static_cast<std::uint8_t>(ambient[2] * 255.0f);

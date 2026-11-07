@@ -249,11 +249,11 @@ void CView::Render() {
   g_navigationManager.DrawRoute(matrix);
 
   if (g_groundOverlaySkip == 0) {
-    this->scene->ground->DrawGrid(*this->scene->terrain, matrix, g_groundOverlayA, g_groundOverlayB, g_groundOverlayC);
+    this->scene->ground->DrawGrid(matrix, g_groundOverlayA, g_groundOverlayB, g_groundOverlayC);
   }
 
   if (g_session.unknown_5614 != 0 && g_session.unknown_5600 != 0 && g_session.unknown_5604 != 0) {
-    this->scene->ground->DrawGrid(*this->scene->terrain, matrix, g_session.unknown_5600, g_session.unknown_5604, 0xfeff0000);
+    this->scene->ground->DrawGrid(matrix, g_session.unknown_5600, g_session.unknown_5604, 0xfeff0000);
   }
 
   for (auto it = this->scene->objects.begin(); it != this->scene->objects.end(); ++it) {
@@ -276,5 +276,5 @@ void CView::Render() {
   this->spatial.inside.clear();
   this->spatial.clipped.clear();
 
-  this->scene->ground->Ground15Slot04(reinterpret_cast<int>(matrix));
+  this->scene->ground->Slot04(reinterpret_cast<int>(matrix));
 }
