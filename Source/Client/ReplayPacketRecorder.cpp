@@ -264,7 +264,7 @@ void UIWindow::RecordDrop(int x, int y, const ModeDragState& drag, int target) {
     return;
   }
 
-  if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 5, this->geometry.id) == 0) {
+  if (g_windowMgr.WindowPolicy(5, this->geometry.id) == 0) {
     return;
   }
 

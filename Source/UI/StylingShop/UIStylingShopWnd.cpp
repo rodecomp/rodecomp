@@ -151,7 +151,7 @@ void UIStylingShopButton::Slot31(int, int) {
   this->geometry.unknown_0030 = 2;
   UIWindow* parent = this->parent;
   if (parent) {
-    if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 3, parent->geometry.id) != 0) {
+    if (g_windowMgr.WindowPolicy(3, parent->geometry.id) != 0) {
       int id = this->geometry.id;
       if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
         const char* text = LookupMessage(17);

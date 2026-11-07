@@ -860,7 +860,7 @@ int UIComboBoxV2Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 3, this->parent->geometry.id) == 0) {
+  if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) == 0) {
     return 0;
   }
 

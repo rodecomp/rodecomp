@@ -2157,7 +2157,7 @@ static_assert(sizeof(EditTextsRecord) == 0x1000);
 // OFFSET: 0x00A834E0
 // FUNCTION: fn_17004
 int UIWindow::RecordEditTexts() {
-  if (Replay::Instance().state != 2 || !WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 6, this->geometry.id)) {
+  if (Replay::Instance().state != 2 || !g_windowMgr.WindowPolicy(6, this->geometry.id)) {
     return 0;
   }
 
