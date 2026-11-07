@@ -651,7 +651,7 @@ void UIWindow::Slot52(int) {
 
 // OFFSET: 0x00A7A080
 // FUNCTION: fn_16920
-void UIWindow::AddChild(UIWindow* child) {
+__declspec(noinline) void UIWindow::AddChild(UIWindow* child) {
   child->parent = this;
   this->m_children.push_back(child);
 }
@@ -692,10 +692,7 @@ void UIWindow::PlaceBeside(UIWindow* anchor) {
     }
   }
 
-  int y = g_renderer->viewport.height - this->geometry.height;
-  if (this->geometry.height + anchorY <= g_renderer->viewport.height) {
-    y = anchorY;
-  }
+  const int y = this->geometry.height + anchorY <= g_renderer->viewport.height ? anchorY : g_renderer->viewport.height - this->geometry.height;
 
   int parentX = 0;
   int parentY = 0;
@@ -2104,7 +2101,7 @@ void UINavigationroadiconWnd::Slot31(int x, int y) {
 // FUNCTION: fn_03590
 void UIPrivateAirplaneWnd::Paint() {
   this->DrawBitmap(
-    0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\private_airplane\\bg_pay.bmp")))->image, false
+    0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\private_airplane\\bg_pay.bmp"))), false
   );
   this->DrawTextAt(19, 4, LookupMessage(0xd02), 0, 0, 12, 0xffffff, 0, 0);
   this->DrawTextAt(18, 3, LookupMessage(0xd02), 0, 0, 12, 0, 0, 0);
@@ -2114,7 +2111,7 @@ void UIPrivateAirplaneWnd::Paint() {
   }
 
   this->DrawBitmap(
-    7, 86, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\private_airplane\\ico_notic.bmp")))->image, true
+    7, 86, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\private_airplane\\ico_notic.bmp"))), true
   );
 
   std::list<std::string> lines;
@@ -2239,24 +2236,18 @@ void UIListBox_NaviSearch::Paint() {
     const int y = this->lineHeight * row;
     const int icon = this->icons[index];
     if (icon > 0) {
-      const char* name = nullptr;
       if (icon == 1) {
-        name = "유저인터페이스\\navigation_interface3\\icon_list_map.bmp";
+        this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\icon_list_map.bmp"))), false);
       } else if (icon == 2) {
-        name = "유저인터페이스\\navigation_interface3\\icon_list_npc.bmp";
+        this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\icon_list_npc.bmp"))), false);
       } else if (icon == 3) {
-        name = "유저인터페이스\\navigation_interface3\\icon_list_mob.bmp";
+        this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\icon_list_mob.bmp"))), false);
       } else if (icon == 100) {
-        name = "유저인터페이스\\navigation_interface3\\icon_list_Start.bmp";
+        this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\icon_list_Start.bmp"))), false);
       } else if (icon == 200) {
-        name = "유저인터페이스\\navigation_interface3\\icon_list_Riute.bmp";
+        this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\icon_list_Riute.bmp"))), false);
       } else if (icon == 300) {
-        name = "유저인터페이스\\navigation_interface3\\icon_list_Target.bmp";
-      }
-
-      if (name) {
-        CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
-        this->DrawBitmap(x, y, bitmap ? &bitmap->image : nullptr, false);
+        this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\icon_list_Target.bmp"))), false);
       }
 
       x += 11;
@@ -2275,7 +2266,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   closeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_normal.bmp", 0, 0);
   closeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_over.bmp", 1, 0);
   closeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_press.bmp", 2, 0);
-  closeButton->SetSize(closeButton->geometry.width, closeButton->geometry.height);
+  closeButton->SetSize(closeButton->BitmapWidth(), closeButton->BitmapHeight());
   closeButton->SetId(201);
   closeButton->SetTooltip(LookupMessage(0x0BE5));
   this->AddChild(closeButton);
@@ -2285,7 +2276,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   maximizeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_normal.bmp", 0, 0);
   maximizeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_over.bmp", 1, 0);
   maximizeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_press.bmp", 2, 0);
-  maximizeButton->SetSize(maximizeButton->geometry.width, maximizeButton->geometry.height);
+  maximizeButton->SetSize(maximizeButton->BitmapWidth(), maximizeButton->BitmapHeight());
   maximizeButton->SetId(200);
   maximizeButton->SetTooltip(LookupMessage(0x089B));
   this->AddChild(maximizeButton);
@@ -2301,7 +2292,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   UIBitmapButton* roadIconButton = new UIBitmapButton();
   this->unknown_00C8 = roadIconButton;
   this->SetRoadIcon(g_navigationRoadIcon);
-  roadIconButton->SetSize(roadIconButton->geometry.width, roadIconButton->geometry.height);
+  roadIconButton->SetSize(roadIconButton->BitmapWidth(), roadIconButton->BitmapHeight());
   roadIconButton->SetId(189);
   roadIconButton->SetTooltip(LookupMessage(0x0C8B));
   this->AddChild(roadIconButton);
@@ -2311,7 +2302,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   roadListButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_normal.bmp", 0, 0);
   roadListButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_over.bmp", 1, 0);
   roadListButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_press.bmp", 2, 0);
-  roadListButton->SetSize(roadListButton->geometry.width, roadListButton->geometry.height);
+  roadListButton->SetSize(roadListButton->BitmapWidth(), roadListButton->BitmapHeight());
   roadListButton->SetId(442);
   roadListButton->SetTooltip(LookupMessage(0x0C85));
   this->AddChild(roadListButton);
@@ -2348,7 +2339,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   shareButton->SetBitmap("유저인터페이스\\private_airplane\\btn_share_normal.bmp", 0, 0);
   shareButton->SetBitmap("유저인터페이스\\private_airplane\\btn_share_over.bmp", 1, 0);
   shareButton->SetBitmap("유저인터페이스\\private_airplane\\btn_share_press.bmp", 2, 0);
-  shareButton->SetSize(shareButton->geometry.width, shareButton->geometry.height);
+  shareButton->SetSize(shareButton->BitmapWidth(), shareButton->BitmapHeight());
   shareButton->SetId(354);
   shareButton->SetTooltip(LookupMessage(0x0C86));
   this->AddChild(shareButton);
@@ -2358,7 +2349,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   findButton->SetBitmap("유저인터페이스\\private_airplane\\btn_find_normal.bmp", 0, 0);
   findButton->SetBitmap("유저인터페이스\\private_airplane\\btn_find_over.bmp", 1, 0);
   findButton->SetBitmap("유저인터페이스\\private_airplane\\btn_find_press.bmp", 2, 0);
-  findButton->SetSize(findButton->geometry.width, findButton->geometry.height);
+  findButton->SetSize(findButton->BitmapWidth(), findButton->BitmapHeight());
   findButton->SetId(430);
   findButton->SetTooltip(LookupMessage(0x0895));
   this->AddChild(findButton);
@@ -2368,7 +2359,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   moveButton->SetBitmap("유저인터페이스\\private_airplane\\btn_move_normal.bmp", 0, 0);
   moveButton->SetBitmap("유저인터페이스\\private_airplane\\btn_move_over.bmp", 1, 0);
   moveButton->SetBitmap("유저인터페이스\\private_airplane\\btn_move_press.bmp", 2, 0);
-  moveButton->SetSize(moveButton->geometry.width, moveButton->geometry.height);
+  moveButton->SetSize(moveButton->BitmapWidth(), moveButton->BitmapHeight());
   moveButton->SetId(499);
   this->AddChild(moveButton);
 
@@ -2387,7 +2378,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   helpButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_off.bmp", 0, 0);
   helpButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_on.bmp", 1, 0);
   helpButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_on.bmp", 2, 0);
-  helpButton->SetSize(helpButton->geometry.width, helpButton->geometry.height);
+  helpButton->SetSize(helpButton->BitmapWidth(), helpButton->BitmapHeight());
   helpButton->SetId(343);
   helpButton->SetTooltip(LookupMessage(0x089D));
   this->AddChild(helpButton);
@@ -2397,7 +2388,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   dataButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_normal.bmp", 0, 0);
   dataButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_over.bmp", 1, 0);
   dataButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_press.bmp", 2, 0);
-  dataButton->SetSize(dataButton->geometry.width, dataButton->geometry.height);
+  dataButton->SetSize(dataButton->BitmapWidth(), dataButton->BitmapHeight());
   dataButton->SetId(191);
   dataButton->SetTooltip(LookupMessage(0x0899));
   this->AddChild(dataButton);
@@ -2416,7 +2407,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_normal.bmp", 0, 0);
   searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_over.bmp", 1, 0);
   searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_press.bmp", 2, 0);
-  searchButton->SetSize(searchButton->geometry.width, searchButton->geometry.height);
+  searchButton->SetSize(searchButton->BitmapWidth(), searchButton->BitmapHeight());
   searchButton->SetId(321);
   searchButton->SetTooltip(LookupMessage(0x0894));
   this->AddChild(searchButton);
@@ -2427,7 +2418,7 @@ void UINavigationV4Wnd::Slot15(int, int) {
   backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back.bmp", 0, 0);
   backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back_on.bmp", 1, 0);
   backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back_on.bmp", 2, 0);
-  backButton->SetSize(backButton->geometry.width, backButton->geometry.height);
+  backButton->SetSize(backButton->BitmapWidth(), backButton->BitmapHeight());
   backButton->SetId(284);
   backButton->SetTooltip(LookupMessage(0x0C88));
   this->AddChild(backButton);
@@ -2470,13 +2461,13 @@ void UINavigationroadiconWnd::Slot15(int, int) {
 // OFFSET: 0x005C62F0
 // FUNCTION: fn_03588
 void UINavigationV4Wnd::Paint() {
-  if (g_navigationMinimized) {
+  if (g_navigationMinimized == true) {
     DrawFilledRoundedBorder(*this, 0, 0, 0x86, 0x3d, 0xffffff);
     DrawFilledRoundedBorder(*this, 1, 0x11, 0x84, 0x2b, 0);
     this->DrawTextAt(3, 3, LookupMessage(0x8ad), 0, 0, 12, 0, 0, 0);
     if (g_navigationText1.size() != 0) {
       this->DrawBitmap(
-        2, 0x12, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\ico_destination.bmp")))->image, true
+        2, 0x12, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\ico_destination.bmp"))), true
       );
       this->DrawTextAt(5, 0x15, g_navigationText3.c_str(), 0, 0, 12, 0xffffff, 1, 0);
       this->DrawTextAt(5, 0x28, g_navigationText4.c_str(), 0, 0, 12, 0xffffff, 1, 0);
@@ -2489,7 +2480,7 @@ void UINavigationV4Wnd::Paint() {
   this->FillRegion(0, 0x2b, 0x110, 1, 0xcccccc);
   this->DrawBitmap(
     0, this->geometry.height - 0x18,
-    &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\bg_down.bmp")))->image, false
+    static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\bg_down.bmp"))), false
   );
 
   if (g_navigationMode == 2 && g_navigationTab == 1) {
@@ -2510,7 +2501,7 @@ void UINavigationV4Wnd::Paint() {
       const NaviCell& last = g_navigationPoints.back();
       this->DrawBitmap(
         static_cast<int>(last.x * 2.078125f + 3.0f - 8.0f), static_cast<int>(last.y * 2.078125f + 46.0f - 21.0f),
-        &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\ico_destination.bmp")))->image, true
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\ico_destination.bmp"))), true
       );
     }
 
@@ -2521,7 +2512,7 @@ void UINavigationV4Wnd::Paint() {
       g_navigationManager.MapCellToView(&view, g_session.m_navigationPlayerMap, column, row, 266.0f);
       this->DrawBitmap(
         view.x - 6, view.y + 0x1d,
-        &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\ico_location.bmp")))->image, true
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\ico_location.bmp"))), true
       );
     }
     return;
@@ -2536,7 +2527,7 @@ void UINavigationV4Wnd::Paint() {
       DrawOutlinedText(*this, 9, 0x41, info->GetName(), 0, 0xffffff, 0, 0, 0xb, 1, 0);
     }
 
-    if (timeGetTime() < static_cast<DWORD>(this->unknown_0118)) {
+    if (static_cast<DWORD>(this->unknown_0118) > timeGetTime()) {
       CTexture* background = g_texMgr.Load("유저인터페이스\\navigation_interface3\\back.bmp", 0, false, true, false);
       if (background) {
         this->geometry.surface->DrawScaledSurface(
@@ -2577,7 +2568,7 @@ void UINavigationV4Wnd::Paint() {
   this->FillRegion(0x8a, 0x2c, 1, 0x10e, 0xcccccc);
   this->FillRegion(0x8b, 0xf2, 0x84, 1, 0xcccccc);
   this->DrawBitmap(
-    5, 0x2e, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\bg_dot.bmp")))->image, false
+    5, 0x2e, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\bg_dot.bmp"))), false
   );
 
   int mapX = 0x9b;
@@ -2688,6 +2679,67 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     }
 
     switch (argument1) {
+    case 0x1AE: {
+      this->Invalidate();
+      int result = g_navigationManager.SaveCurrentTarget();
+      if (result == 0) {
+        {
+          const NavigationTarget target = g_navigationManager.GetSavedTarget();
+          result = g_navigationManager.Navigate(target.x, target.y);
+        }
+        if (result >= 0) {
+          g_navigationTab = 1;
+          g_navigationManager.SelectTarget(g_navigationManager.GetSelectedNode());
+          if (g_windowMgr.modal) {
+            static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapMarks();
+          }
+        }
+      }
+      g_navigationManager.ShowRouteResult(result, 1);
+      this->RefreshLayout();
+      if (UIWindow* window = g_windowMgr.LookupWindow(0x13A)) {
+        window->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 0x141:
+      if (static_cast<UIEditCtrl*>(this->unknown_00E0)->Length() != 0 && !g_navigationMinimized) {
+        g_navigationSearchText = static_cast<UIEditCtrl*>(this->unknown_00E0)->Text();
+        g_navigationManager.UpdateSearchResults();
+        this->unknown_00F0->Clear();
+        this->unknown_00F0->Invalidate();
+        g_navigationManager.ResetCurrentTarget();
+        g_navigationManager.LoadTargetPreview();
+        this->FillRouteGroups();
+        g_navigationTab = 0;
+        if (g_windowMgr.modal) {
+          static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
+        }
+        this->LayoutWithDetails();
+        g_serverLanguage->ResetInput();
+      }
+      break;
+    case 0xD5:
+      g_unknown16FC585 = false;
+      g_navigationFilter = argument2 != 0;
+      g_unknown16FC586 = g_navigationFilter;
+      break;
+    case 0xCA:
+      g_navigationMinimized = true;
+      this->geometry.targetAlpha = 0xAA;
+      this->geometry.alphaStart = timeGetTime();
+      if (g_windowMgr.modal) {
+        static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
+      }
+      this->RefreshLayout();
+      break;
+    case 0xC8:
+      g_navigationMinimized = false;
+      this->geometry.targetAlpha = 0xFF;
+      this->geometry.alphaStart = timeGetTime();
+      g_navigationHidden = false;
+      this->RefreshLayout();
+      break;
     case 0xBD:
       if (!g_windowMgr.CloseWindow(0x132)) {
         g_windowMgr.EnsureWindow(0x132);
@@ -2697,10 +2749,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       if (g_closeChatAfterGroups != 0) {
         g_windowMgr.CloseWindow(0x1A);
       }
-      for (std::string& text : this->unknown_0104) {
-        text.clear();
-      }
-      this->unknown_0104.erase(this->unknown_0104.begin(), this->unknown_0104.end());
+      this->ClearRouteTexts();
 
       const std::string directory = FormatOwnedString("%s\\Navigationdata\\", g_applicationDirectory);
       EnumerateFileNames(this->unknown_0104, directory.c_str(), "*.txt");
@@ -2721,91 +2770,14 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
       break;
     }
-    case 0xC8:
-      g_navigationMinimized = false;
-      this->geometry.targetAlpha = 0xFF;
-      this->geometry.alphaStart = timeGetTime();
-      g_navigationHidden = false;
-      this->RefreshLayout();
-      break;
-    case 0xC9:
-      if (g_navigationMode == 2) {
-        if (g_windowMgr.Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-          g_navigationManager.SetViewMode(1);
-          g_navigationTab = 0;
-          g_navigationManager.ClearSavedTarget();
-          g_windowMgr.CloseWindow(0x13A);
-          this->RefreshLayout();
-          g_worldViewMgr.ClearMarks();
-        }
-      } else {
-        if (g_windowMgr.modal) {
-          this->SendMsg(nullptr, 6, 0xCA, 0, 0, 0);
-        }
-        g_navigationTab = 0;
-        g_navigationMinimized = false;
-        g_navigationManager.Reset(true);
-        g_worldViewMgr.ClearMarks();
-        g_worldViewMgr.ClearLevels();
-        g_worldViewMgr.ResetSelection();
-        g_windowMgr.CloseWindow(0x13A);
-        g_windowMgr.CloseWindow(0xCB);
+    case 0x157:
+      if (!g_windowMgr.CloseWindow(0xE5)) {
+        g_windowMgr.EnsureWindow(0xE5);
       }
       break;
-    case 0xCA:
-      g_navigationMinimized = true;
-      this->geometry.targetAlpha = 0xAA;
-      this->geometry.alphaStart = timeGetTime();
-      if (g_windowMgr.modal) {
-        static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
-      }
-      this->RefreshLayout();
-      break;
-    case 0xD5:
-      g_unknown16FC585 = false;
-      g_navigationFilter = argument2 != 0;
-      g_unknown16FC586 = g_navigationFilter;
-      break;
-    case 0x11C:
-      if (!g_navigationManager.GetSavedTarget().object) {
-        if (g_navigationTab == 2) {
-          if (g_navigationMode == 2) {
-            this->LayoutWithoutDetails();
-            g_navigationTab = 1;
-            g_navigationManager.SelectTarget(g_navigationManager.GetSelectedNode());
-          } else {
-            this->LayoutWithDetails();
-            g_navigationTab = 0;
-            g_navigationManager.SelectNodeState();
-          }
-        }
-        break;
-      }
-      if (g_navigationTab == 1 || (g_navigationTab == 2 && g_navigationMode != 2)) {
-        g_navigationTab = 0;
-        g_navigationManager.SelectNodeState();
-        this->RefreshLayout();
-        break;
-      }
-      g_navigationTab = 1;
-      g_navigationManager.SelectTarget(g_navigationManager.GetSelectedNode());
-      this->RefreshLayout();
-      break;
-    case 0x141:
-      if (static_cast<UIEditCtrl*>(this->unknown_00E0)->Length() != 0 && !g_navigationMinimized) {
-        g_navigationSearchText = static_cast<UIEditCtrl*>(this->unknown_00E0)->Text();
-        g_navigationManager.UpdateSearchResults();
-        this->unknown_00F0->Clear();
-        this->unknown_00F0->Invalidate();
-        g_navigationManager.ResetCurrentTarget();
-        g_navigationManager.LoadTargetPreview();
-        this->FillRouteGroups();
-        g_navigationTab = 0;
-        if (g_windowMgr.modal) {
-          static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
-        }
-        this->LayoutWithDetails();
-        g_serverLanguage->ResetInput();
+    case 0x1BA:
+      if (!g_windowMgr.CloseWindow(0x13A) && g_navigationManager.NodeCount() != 0) {
+        g_windowMgr.EnsureWindow(0x13A);
       }
       break;
     case 0x150:
@@ -2829,9 +2801,37 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
       this->Invalidate();
       break;
-    case 0x157:
-      if (!g_windowMgr.CloseWindow(0xE5)) {
-        g_windowMgr.EnsureWindow(0xE5);
+    case 0x1B9:
+      if (g_replayAnimationScaling == 0) {
+        argument2 = this->unknown_00F0->selected;
+      }
+      if (argument2 != -1) {
+        this->SelectRouteNode(static_cast<int>(argument2));
+        this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
+      }
+      this->Invalidate();
+      break;
+    case 0x11C:
+      if (!g_navigationManager.GetSavedTarget().object) {
+        if (g_navigationTab == 2) {
+          if (g_navigationMode == 2) {
+            this->LayoutWithoutDetails();
+            g_navigationTab = 1;
+            g_navigationManager.SelectTarget(g_navigationManager.GetSelectedNode());
+          } else {
+            this->LayoutWithDetails();
+            g_navigationTab = 0;
+            g_navigationManager.SelectNodeState();
+          }
+        }
+      } else if (g_navigationTab == 1 || (g_navigationTab == 2 && g_navigationMode != 2)) {
+        g_navigationTab = 0;
+        g_navigationManager.SelectNodeState();
+        this->RefreshLayout();
+      } else {
+        g_navigationTab = 1;
+        g_navigationManager.SelectTarget(g_navigationManager.GetSelectedNode());
+        this->RefreshLayout();
       }
       break;
     case 0x162:
@@ -2856,40 +2856,28 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         }
       }
       break;
-    case 0x1AE: {
-      this->Invalidate();
-      int result = g_navigationManager.SaveCurrentTarget();
-      if (result == 0) {
-        const NavigationTarget target = g_navigationManager.GetSavedTarget();
-        result = g_navigationManager.Navigate(target.x, target.y);
-        if (result >= 0) {
-          g_navigationTab = 1;
-          g_navigationManager.SelectTarget(g_navigationManager.GetSelectedNode());
-          if (g_windowMgr.modal) {
-            static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapMarks();
-          }
+    case 0xC9:
+      if (g_navigationMode == 2) {
+        if (g_windowMgr.Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+          g_navigationManager.SetViewMode(1);
+          g_navigationTab = 0;
+          g_navigationManager.ClearSavedTarget();
+          g_windowMgr.CloseWindow(0x13A);
+          this->RefreshLayout();
+          g_worldViewMgr.ClearMarks();
         }
-      }
-      g_navigationManager.ShowRouteResult(result, 1);
-      this->RefreshLayout();
-      if (UIWindow* window = g_windowMgr.LookupWindow(0x13A)) {
-        window->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
-      }
-      break;
-    }
-    case 0x1B9:
-      if (g_replayAnimationScaling == 0) {
-        argument2 = this->unknown_00F0->selected;
-      }
-      if (argument2 != -1) {
-        this->SelectRouteNode(static_cast<int>(argument2));
-        this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
-      }
-      this->Invalidate();
-      break;
-    case 0x1BA:
-      if (!g_windowMgr.CloseWindow(0x13A) && g_navigationManager.NodeCount() != 0) {
-        g_windowMgr.EnsureWindow(0x13A);
+      } else {
+        if (g_windowMgr.modal) {
+          this->SendMsg(nullptr, 6, 0xCA, 0, 0, 0);
+        }
+        g_navigationTab = 0;
+        g_navigationMinimized = false;
+        g_navigationManager.Reset(true);
+        g_worldViewMgr.ClearMarks();
+        g_worldViewMgr.ClearLevels();
+        g_worldViewMgr.ResetSelection();
+        g_windowMgr.CloseWindow(0x13A);
+        g_windowMgr.CloseWindow(0xCB);
       }
       break;
     }
@@ -3352,7 +3340,7 @@ void UINavigationV4Wnd::Slot31(int x, int y) {
       const int cellX = static_cast<int>(static_cast<float>(mapX) * scale - static_cast<float>(static_cast<int>(std::fabs(offsetX))));
       const int cellY = static_cast<int>(static_cast<float>(size) - static_cast<float>(mapY) * scale - static_cast<float>(static_cast<int>(std::fabs(offsetY))));
 
-      if (cellX >= 0 && cellY >= 0 && cellX <= width && cellY <= height) {
+      if (cellX >= 0 && cellY >= 0 && width >= cellX && height >= cellY) {
         this->InsertNavigationLink(info->GetName(), cellX, cellY);
       }
     }
@@ -3464,24 +3452,14 @@ void UINavigationV4Wnd::SelectRouteNode(int node) {
 void UIWindow::DrawAlignedText(
   int x, int y, std::string text, int width, int align, std::uint32_t color, int outlineColor, int family, int height, int bold, unsigned char outlined
 ) {
-  int textWidth = 0;
-  if (const char* const string = text.c_str()) {
-    unsigned bytes = static_cast<unsigned>(text.size());
-    if (!bytes) {
-      bytes = static_cast<unsigned>(std::strlen(string));
-    }
-
-    if (bytes) {
-      TextContext context(*this->geometry.surface);
-      context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
-      textWidth = context.Measure(string, bytes).cx;
-    }
-  }
-
-  if (align == 2) {
+  const int textWidth = this->TextWidth(text.c_str(), static_cast<unsigned>(text.size()), family, height, static_cast<unsigned char>(bold), 0);
+  switch (align) {
+  case 2:
     x -= textWidth;
-  } else if (align == 6) {
+    break;
+  case 6:
     x = static_cast<int>((width - textWidth) * g_depthAverageHalf + x);
+    break;
   }
 
   int offset = 0;
@@ -3489,17 +3467,7 @@ void UIWindow::DrawAlignedText(
   const char* const end = current + std::strlen(current);
   while (current != end) {
     const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
-    int glyphWidth = 0;
-    {
-      const std::string glyph(current, next);
-      if (const char* const string = glyph.c_str()) {
-        if (const unsigned bytes = static_cast<unsigned>(std::strlen(string))) {
-          TextContext context(*this->geometry.surface);
-          context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
-          glyphWidth = context.Measure(string, bytes).cx;
-        }
-      }
-    }
+    const int glyphWidth = this->TextWidth(std::string(current, next).c_str(), 0, family, height, static_cast<unsigned char>(bold), 0);
 
     if (outlined == 1) {
       {
@@ -3666,7 +3634,9 @@ UIItemTagButton* UIWindow::CreateItemTagButton(const std::string& title, const s
     button->Move(0, 0);
     button->unknown_01F8 = tagId;
     if (parent) {
-      parent->AddChild(button);
+      UIWindow* const child = button;
+      child->parent = parent;
+      parent->m_children.push_back(child);
     }
   }
 
