@@ -60,7 +60,7 @@ void UIIllustWnd::Paint() {
   if (this->m_titled != 0) {
     top = this->DrawTitleBar(false, "", 0);
   }
-  this->DrawBitmap(0, top, &bitmap->image, true);
+  this->DrawBitmap(0, top, bitmap, true);
 }
 
 // OFFSET: 0x0096CD00
@@ -72,7 +72,7 @@ void UIMultiIllustWnd::Paint() {
   if (this->m_titled != 0) {
     top = this->DrawTitleBar(false, "", 0);
   }
-  this->DrawBitmap(0, top, &bitmap->image, true);
+  this->DrawBitmap(0, top, bitmap, true);
 }
 
 // OFFSET: 0x0096CD70
