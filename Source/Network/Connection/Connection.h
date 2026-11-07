@@ -8,9 +8,9 @@
 class PacketLengths;
 
 struct ConnectionEndpoint {
-  const char* address;
-  int port;
-  const char* overrideAddress;
+  /* 0000 */ char address[16];
+  /* 0010 */ int port;
+  /* 0014 */ char overrideAddress[129];
 };
 
 class CConnection {

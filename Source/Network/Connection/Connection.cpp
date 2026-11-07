@@ -35,6 +35,34 @@ CRagConnection::~CRagConnection() {
 }
 
 
+namespace {
+  // INLINED
+  unsigned long ResolveConnectionAddress(std::string overrideAddress, const char* defaultAddress) {
+    std::string address = defaultAddress;
+    if (!overrideAddress.empty()) {
+      const std::size_t colon = overrideAddress.rfind(":");
+      if (colon != std::string::npos) {
+        const std::string host = overrideAddress.substr(0, colon);
+        if (hostent* resolved = gethostbyname(host.c_str())) {
+          address = inet_ntoa(*reinterpret_cast<in_addr*>(resolved->h_addr_list[0]));
+        }
+      }
+    }
+    return inet_addr(address.c_str());
+  }
+
+  // INLINED
+  u_short ResolveConnectionPort(std::string overrideAddress, int port) {
+    if (!overrideAddress.empty()) {
+      const std::size_t colon = overrideAddress.rfind(":");
+      if (colon != std::string::npos) {
+        port = std::atoi(overrideAddress.substr(colon + 1).c_str());
+      }
+    }
+    return htons(static_cast<u_short>(port));
+  }
+}
+
 // OFFSET: 0x00C7C4D0
 // FUNCTION: fn_20389
 bool CConnection::Connect(const ConnectionEndpoint& endpoint) {
@@ -56,38 +84,16 @@ bool CConnection::Connect(const ConnectionEndpoint& endpoint) {
     return false;
   }
 
-  const int noDelay = 1;
-  setsockopt(this->m_socket, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<const char*>(&noDelay), sizeof(noDelay));
   u_long nonblocking = 1;
-
   if (ioctlsocket(this->m_socket, FIONBIO, &nonblocking) == SOCKET_ERROR) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Failed to setup select mode", 0);
+    ShowErrorDialog("Failed to setup select mode", 0);
     return false;
   }
 
   std::memset(&this->m_address, 0, sizeof(this->m_address));
-  std::string address = endpoint.address;
-  const std::string overrideAddress = endpoint.overrideAddress;
-  const std::size_t colon = overrideAddress.rfind(':');
-
-  if (!overrideAddress.empty() && colon != std::string::npos) {
-    const std::string host = overrideAddress.substr(0, colon);
-    if (hostent* resolved = gethostbyname(host.c_str())) {
-      in_addr resolvedAddress;
-      std::memcpy(&resolvedAddress, resolved->h_addr_list[0], sizeof(resolvedAddress));
-      address = inet_ntoa(resolvedAddress);
-    }
-  }
-
-  this->m_address.sin_addr.s_addr = inet_addr(address.c_str());
+  this->m_address.sin_addr.s_addr = ResolveConnectionAddress(endpoint.overrideAddress, endpoint.address);
   this->m_address.sin_family = AF_INET;
-  int port = endpoint.port;
-
-  if (!overrideAddress.empty() && colon != std::string::npos) {
-    port = std::atoi(overrideAddress.c_str() + colon + 1);
-  }
-
-  this->m_address.sin_port = htons(static_cast<u_short>(port));
+  this->m_address.sin_port = ResolveConnectionPort(endpoint.overrideAddress, endpoint.port);
   if (connect(this->m_socket, reinterpret_cast<const sockaddr*>(&this->m_address), sizeof(this->m_address)) != SOCKET_ERROR ||
       WSAGetLastError() == WSAEWOULDBLOCK) {
     this->m_status = 0;
@@ -109,7 +115,7 @@ void CConnection::Close() {
   }
 
   this->m_status = 0;
-  g_session.m_options.Set(5, 0);
+  g_session.m_options.Values()[5] = 0;
 }
 
 // OFFSET: 0x00C7C9C0
