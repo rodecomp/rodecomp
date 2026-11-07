@@ -986,12 +986,12 @@ void UIMemorialDunWnd::ArrangeButtons() {
 // OFFSET: 0x00935850
 // FUNCTION: fn_12747
 int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 0) {
+  switch (message) {
+  case 0: {
     this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
     return 0;
   }
-
-  if (message == 6) {
+  case 6: {
     switch (argument1) {
     case 184:
       g_windowMgr.CloseWindow(137);
@@ -1021,10 +1021,10 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     return 0;
   }
-
-  if (message == 0x3C) {
+  case 0x3C: {
     this->ArrangeButtons();
     return 0;
+  }
   }
 
   return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -1341,29 +1341,27 @@ void UINewChatWnd::Slot15(int width, int height) {
 
   {
     std::string name = "유저인터페이스\\basic_interface\\stickoff";
-    UIBitmapButton* button = new UIBitmapButton();
-    this->unknown_0128 = button;
-    button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(this->m_tabWidth * 2 + 4, 4);
-    button->SetId(0x166);
-    this->AddChild(button);
+    this->unknown_0128 = new UIBitmapButton();
+    static_cast<UIBitmapButton*>(this->unknown_0128)->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    static_cast<UIBitmapButton*>(this->unknown_0128)->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    static_cast<UIBitmapButton*>(this->unknown_0128)->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    static_cast<UIBitmapButton*>(this->unknown_0128)->SetSize(static_cast<UIBitmapButton*>(this->unknown_0128)->BitmapWidth(), static_cast<UIBitmapButton*>(this->unknown_0128)->BitmapHeight());
+    static_cast<UIBitmapButton*>(this->unknown_0128)->Move(this->m_tabWidth * 2 + 4, 4);
+    static_cast<UIBitmapButton*>(this->unknown_0128)->SetId(0x166);
+    this->AddChild(static_cast<UIBitmapButton*>(this->unknown_0128));
   }
 
   {
     std::string name = "유저인터페이스\\basic_interface\\battle_option";
     name.append("2", 1);
-    UIBitmapButton* button = new UIBitmapButton();
-    this->m_chatModeButton = button;
-    button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(this->m_tabWidth * 2 + 19, 5);
-    button->SetId(0xC1);
-    this->AddChild(button);
+    this->m_chatModeButton = new UIBitmapButton();
+    static_cast<UIBitmapButton*>(this->m_chatModeButton)->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    static_cast<UIBitmapButton*>(this->m_chatModeButton)->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    static_cast<UIBitmapButton*>(this->m_chatModeButton)->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    static_cast<UIBitmapButton*>(this->m_chatModeButton)->SetSize(static_cast<UIBitmapButton*>(this->m_chatModeButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->m_chatModeButton)->BitmapHeight());
+    static_cast<UIBitmapButton*>(this->m_chatModeButton)->Move(this->m_tabWidth * 2 + 19, 5);
+    static_cast<UIBitmapButton*>(this->m_chatModeButton)->SetId(0xC1);
+    this->AddChild(static_cast<UIBitmapButton*>(this->m_chatModeButton));
   }
 
   {
@@ -1420,22 +1418,20 @@ void UINewChatWnd::Slot15(int width, int height) {
   g_windowMgr.SetFocus(this->m_chatEdit);
   this->m_chatEdit->SetId(0x1ED);
 
-  UIWhisperEditCtrl* whisperEdit = new UIWhisperEditCtrl();
-  this->unknown_00C0 = whisperEdit;
-  whisperEdit->SetSize(90, 16);
-  whisperEdit->Move(6, this->geometry.height - this->m_inputAreaHeight + 4);
-  whisperEdit->maximum = 24;
-  whisperEdit->Background(240, 240, 240);
-  this->AddChild(whisperEdit);
+  this->unknown_00C0 = new UIWhisperEditCtrl();
+  static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->SetSize(90, 16);
+  static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->Move(6, this->geometry.height - this->m_inputAreaHeight + 4);
+  static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->maximum = 24;
+  static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->Background(240, 240, 240);
+  this->AddChild(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0));
   this->m_message0 = 0xB8;
 
-  UIResizer* resizer = new UIResizer();
-  this->unknown_00B8 = resizer;
-  resizer->SetBitmapName("유저인터페이스\\basic_interface\\dialog_mid.bmp");
-  resizer->SetSize(resizer->geometry.width, resizer->geometry.height);
-  resizer->SetDirection(0);
-  resizer->Move(2, this->geometry.height - resizer->geometry.height);
-  this->AddChild(resizer);
+  this->unknown_00B8 = new UIResizer();
+  static_cast<UIResizer*>(this->unknown_00B8)->SetBitmapName("유저인터페이스\\basic_interface\\dialog_mid.bmp");
+  static_cast<UIResizer*>(this->unknown_00B8)->SetSize(static_cast<UIResizer*>(this->unknown_00B8)->geometry.width, static_cast<UIResizer*>(this->unknown_00B8)->geometry.height);
+  static_cast<UIResizer*>(this->unknown_00B8)->SetDirection(0);
+  static_cast<UIResizer*>(this->unknown_00B8)->Move(2, this->geometry.height - static_cast<UIResizer*>(this->unknown_00B8)->geometry.height);
+  this->AddChild(static_cast<UIResizer*>(this->unknown_00B8));
 
   std::string basePath = "유저인터페이스\\basic_interface\\";
   const int base = this->geometry.height - this->m_inputAreaHeight;
