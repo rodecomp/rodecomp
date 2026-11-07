@@ -82,8 +82,19 @@ std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, const void*
 }
 
 // INLINED
-static void AppendReplayRecord(std::vector<unsigned char>& records, std::uint16_t id, const void* data, std::uint32_t bytes) {
-  const auto record = BuildReplayTaggedRecord(id, data, bytes);
+static std::vector<unsigned char> MakeReplayRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
+  std::vector<unsigned char> record(bytes + sizeof(ReplayTaggedRecordHeader), 0);
+  ReplayTaggedRecordHeader* header = reinterpret_cast<ReplayTaggedRecordHeader*>(record.data());
+  header->id = id;
+  header->bytes = bytes;
+  if (bytes != 0) {
+    std::memcpy(record.data() + sizeof(ReplayTaggedRecordHeader), data, bytes);
+  }
+  return record;
+}
+
+// INLINED
+template <class Record> static void AppendRecord(std::vector<unsigned char>& records, const Record& record) {
   records.insert(records.end(), record.begin(), record.end());
 }
 
@@ -291,22 +302,22 @@ int Replay::WriteHeader(int event) {
 // FUNCTION: fn_19328
 std::vector<unsigned char> Replay::BuildMetadata() {
   std::vector<unsigned char> metadata;
-  AppendReplayRecord(metadata, 950, nullptr, 0);
-  AppendReplayRecord(metadata, 961, &this->header.service, sizeof(this->header.service));
-  AppendReplayRecord(metadata, 962, &this->header.serviceType, sizeof(this->header.serviceType));
-  AppendReplayRecord(metadata, 963, &this->header.unknown_0014, sizeof(this->header.unknown_0014));
-  AppendReplayRecord(metadata, 964, this->header.characterName, sizeof(this->header.characterName));
-  AppendReplayRecord(metadata, 965, this->header.mapName, sizeof(this->header.mapName));
-  AppendReplayRecord(metadata, 966, &this->header.accountId, sizeof(this->header.accountId));
-  AppendReplayRecord(metadata, 967, &this->header.cellX, sizeof(this->header.cellX));
-  AppendReplayRecord(metadata, 968, &this->header.cellY, sizeof(this->header.cellY));
-  AppendReplayRecord(metadata, 969, &this->header.unknown_0078, sizeof(this->header.unknown_0078));
-  AppendReplayRecord(metadata, 970, &this->header.duration, sizeof(this->header.duration));
-  AppendReplayRecord(metadata, 971, &this->header.records, sizeof(this->header.records));
-  AppendReplayRecord(metadata, 972, &this->header.fileOffset, sizeof(this->header.fileOffset));
-  AppendReplayRecord(metadata, 973, &this->header.options, sizeof(this->header.options));
-  AppendReplayRecord(metadata, 960, &this->header.closingSignature, sizeof(this->header.closingSignature));
-  AppendReplayRecord(metadata, 951, nullptr, 0);
+  AppendRecord(metadata, MakeReplayRecord(950, nullptr, 0));
+  AppendRecord(metadata, MakeReplayRecord(961, &this->header.service, sizeof(this->header.service)));
+  AppendRecord(metadata, MakeReplayRecord(962, &this->header.serviceType, sizeof(this->header.serviceType)));
+  AppendRecord(metadata, MakeReplayRecord(963, &this->header.unknown_0014, sizeof(this->header.unknown_0014)));
+  AppendRecord(metadata, MakeReplayRecord(964, this->header.characterName, sizeof(this->header.characterName)));
+  AppendRecord(metadata, MakeReplayRecord(965, this->header.mapName, sizeof(this->header.mapName)));
+  AppendRecord(metadata, MakeReplayRecord(966, &this->header.accountId, sizeof(this->header.accountId)));
+  AppendRecord(metadata, MakeReplayRecord(967, &this->header.cellX, sizeof(this->header.cellX)));
+  AppendRecord(metadata, MakeReplayRecord(968, &this->header.cellY, sizeof(this->header.cellY)));
+  AppendRecord(metadata, MakeReplayRecord(969, &this->header.unknown_0078, sizeof(this->header.unknown_0078)));
+  AppendRecord(metadata, MakeReplayRecord(970, &this->header.duration, sizeof(this->header.duration)));
+  AppendRecord(metadata, MakeReplayRecord(971, &this->header.records, sizeof(this->header.records)));
+  AppendRecord(metadata, MakeReplayRecord(972, &this->header.fileOffset, sizeof(this->header.fileOffset)));
+  AppendRecord(metadata, MakeReplayRecord(973, &this->header.options, sizeof(this->header.options)));
+  AppendRecord(metadata, MakeReplayRecord(960, &this->header.closingSignature, sizeof(this->header.closingSignature)));
+  AppendRecord(metadata, MakeReplayRecord(951, nullptr, 0));
   return metadata;
 }
 
@@ -1009,22 +1020,10 @@ std::vector<unsigned char> BuildRenewQuestReplayRecords() {
 // FUNCTION: fn_24206
 std::vector<unsigned char> CSession::BuildShortcutReplayRecords() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(7000, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(7100, this->m_shortcutSlots, sizeof(this->m_shortcutSlots));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(7101, &this->unknown_06EB, sizeof(this->unknown_06EB) + sizeof(this->unknown_06F2));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(7001, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, MakeReplayRecord(7000, nullptr, 0));
+  AppendRecord(records, MakeReplayRecord(7100, this->m_shortcutSlots, sizeof(this->m_shortcutSlots)));
+  AppendRecord(records, MakeReplayRecord(7101, &this->unknown_06EB, sizeof(this->unknown_06EB) + sizeof(this->unknown_06F2)));
+  AppendRecord(records, MakeReplayRecord(7001, nullptr, 0));
   return records;
 }
 
@@ -1191,197 +1190,86 @@ std::vector<unsigned char> CSession::BuildItemReplayRecords() {
 // FUNCTION: fn_24204
 std::vector<unsigned char> CSession::BuildCompanionReplayRecords() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(5000, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5101, &this->unknown_5570[0x08], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5102, &this->unknown_5570[0x0C], 32);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5103, &this->unknown_5570[0x2C], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5104, &this->unknown_5570[0x30], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5105, &this->unknown_5570[0x34], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5106, &this->unknown_5570[0x38], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5107, &this->unknown_5570[0x3C], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5108, &this->unknown_5570[0x40], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5109, &this->unknown_5570[0x44], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5110, &this->unknown_5570[0x48], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5111, &this->m_homunJob, sizeof(this->m_homunJob));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5112, this->unknown_55C0, 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5113, &this->m_homunHp, sizeof(this->m_homunHp));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5114, this->unknown_55C8, 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5115, &this->m_homunSp, sizeof(this->m_homunSp));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5116, &this->unknown_55D0, sizeof(this->unknown_55D0));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5117, &this->unknown_55D4, sizeof(this->unknown_55D4));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5118, &this->unknown_55D8, sizeof(this->unknown_55D8));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5119, &this->m_homunExp, sizeof(this->m_homunExp));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5120, &this->m_homunMaxExp, sizeof(this->m_homunMaxExp));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5121, &this->unknown_55F0, sizeof(this->unknown_55F0));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5122, &this->unknown_55F4, sizeof(this->unknown_55F4));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5123, &this->unknown_55F8, sizeof(this->unknown_55F8));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5124, &this->unknown_55FC, sizeof(this->unknown_55FC));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5125, &this->unknown_5600, sizeof(this->unknown_5600));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5126, &this->unknown_5604, sizeof(this->unknown_5604));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5127, &this->unknown_5608, sizeof(this->unknown_5608));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5128, &this->unknown_560C, sizeof(this->unknown_560C));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5129, &this->unknown_5610, sizeof(this->unknown_5610));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5130, &this->unknown_5614, sizeof(this->unknown_5614));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5131, &this->m_traceAi, sizeof(this->m_traceAi));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5132, &this->m_homunActionState, sizeof(this->m_homunActionState));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5133, &this->unknown_5620[0x0], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5134, &this->unknown_5620[0x4], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5201, &this->unknown_5620[0x8], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(5202, this->m_mercenaryName, sizeof(this->m_mercenaryName));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  AppendBytes(records, BuildReplayTaggedRecord(5203, &this->m_mercenaryStats[0], sizeof(this->m_mercenaryStats[0])));
-  AppendBytes(records, BuildReplayTaggedRecord(5204, &this->m_mercenaryStats[1], sizeof(this->m_mercenaryStats[1])));
-  AppendBytes(records, BuildReplayTaggedRecord(5205, &this->m_mercenaryStats[2], sizeof(this->m_mercenaryStats[2])));
-  AppendBytes(records, BuildReplayTaggedRecord(5206, &this->m_mercenaryStats[3], sizeof(this->m_mercenaryStats[3])));
-  AppendBytes(records, BuildReplayTaggedRecord(5207, &this->m_mercenaryStats[4], sizeof(this->m_mercenaryStats[4])));
-  AppendBytes(records, BuildReplayTaggedRecord(5208, &this->m_mercenaryStats[5], sizeof(this->m_mercenaryStats[5])));
-  AppendBytes(records, BuildReplayTaggedRecord(5209, &this->m_mercenaryStats[6], sizeof(this->m_mercenaryStats[6])));
-  AppendBytes(records, BuildReplayTaggedRecord(5210, &this->m_mercenaryStats[7], sizeof(this->m_mercenaryStats[7])));
-  AppendBytes(records, BuildReplayTaggedRecord(5211, &this->m_mercenaryHp, sizeof(this->m_mercenaryHp)));
-  AppendBytes(records, BuildReplayTaggedRecord(5212, &this->m_mercenaryMaxHp, sizeof(this->m_mercenaryMaxHp)));
-  AppendBytes(records, BuildReplayTaggedRecord(5213, &this->m_mercenaryClass, sizeof(this->m_mercenaryClass)));
-  AppendBytes(records, BuildReplayTaggedRecord(5214, &this->m_mercenaryLevel, sizeof(this->m_mercenaryLevel)));
-  AppendBytes(records, BuildReplayTaggedRecord(5215, &this->m_mercenarySp, sizeof(this->m_mercenarySp)));
-  AppendBytes(records, BuildReplayTaggedRecord(5216, &this->m_mercenaryMaxSp, sizeof(this->m_mercenaryMaxSp)));
-  AppendBytes(records, BuildReplayTaggedRecord(5217, &this->m_mercenaryLoyalty, sizeof(this->m_mercenaryLoyalty)));
-  AppendBytes(records, BuildReplayTaggedRecord(5218, &this->m_mercenarySummons, sizeof(this->m_mercenarySummons)));
-  AppendBytes(records, BuildReplayTaggedRecord(5219, &this->m_mercenaryKills, sizeof(this->m_mercenaryKills)));
-  AppendBytes(records, BuildReplayTaggedRecord(5220, this->unknown_5690, 4));
-  AppendBytes(records, BuildReplayTaggedRecord(5221, &this->m_mercenaryExpiration, sizeof(this->m_mercenaryExpiration)));
-  AppendBytes(records, BuildReplayTaggedRecord(5222, &this->unknown_5698, sizeof(this->unknown_5698)));
-  AppendBytes(records, BuildReplayTaggedRecord(5223, &this->unknown_569C, sizeof(this->unknown_569C)));
-  AppendBytes(records, BuildReplayTaggedRecord(5224, &this->unknown_56A0, sizeof(this->unknown_56A0)));
-  AppendBytes(records, BuildReplayTaggedRecord(5225, &this->unknown_56A4, sizeof(this->unknown_56A4)));
-  AppendBytes(records, BuildReplayTaggedRecord(5226, &this->unknown_56A8, sizeof(this->unknown_56A8)));
-  AppendBytes(records, BuildReplayTaggedRecord(5227, &this->unknown_56AC, sizeof(this->unknown_56AC)));
-  AppendBytes(records, BuildReplayTaggedRecord(5228, &this->unknown_56B0, sizeof(this->unknown_56B0)));
-  AppendBytes(records, BuildReplayTaggedRecord(5229, &this->m_mercenaryActionState, sizeof(this->m_mercenaryActionState)));
-  AppendBytes(records, BuildReplayTaggedRecord(5301, &this->unknown_1010, sizeof(this->unknown_1010)));
-  AppendBytes(records, BuildReplayTaggedRecord(5302, this->unknown_1014, 4));
-  AppendBytes(records, BuildReplayTaggedRecord(5303, this->unknown_1018, 32));
-  AppendBytes(records, BuildReplayTaggedRecord(5304, &this->unknown_1038, sizeof(this->unknown_1038)));
-  AppendBytes(records, BuildReplayTaggedRecord(5305, &this->unknown_103C, sizeof(this->unknown_103C)));
-  AppendBytes(records, BuildReplayTaggedRecord(5306, &this->unknown_1040, sizeof(this->unknown_1040)));
-  AppendBytes(records, BuildReplayTaggedRecord(5307, &this->unknown_1044, sizeof(this->unknown_1044)));
-  AppendBytes(records, BuildReplayTaggedRecord(5308, &this->m_petFriendly, sizeof(this->m_petFriendly)));
-  AppendBytes(records, BuildReplayTaggedRecord(5309, &this->unknown_1050, sizeof(this->unknown_1050)));
-  AppendBytes(records, BuildReplayTaggedRecord(5310, &this->unknown_1054, sizeof(this->unknown_1054)));
-  AppendBytes(records, BuildReplayTaggedRecord(5401, &this->unknown_5BC0, sizeof(this->unknown_5BC0)));
-  AppendBytes(records, BuildReplayTaggedRecord(5402, &this->unknown_5BC4, sizeof(this->unknown_5BC4)));
-  AppendBytes(records, BuildReplayTaggedRecord(5403, &this->unknown_5BC8, sizeof(this->unknown_5BC8)));
-  AppendBytes(records, BuildReplayTaggedRecord(5404, &this->unknown_5BCC, sizeof(this->unknown_5BCC)));
-  AppendBytes(records, BuildReplayTaggedRecord(5405, &this->unknown_5BD0, sizeof(this->unknown_5BD0)));
-  AppendBytes(records, BuildReplayTaggedRecord(5001, nullptr, 0));
+  AppendRecord(records, MakeReplayRecord(5000, nullptr, 0));
+  AppendRecord(records, MakeReplayRecord(5101, &this->unknown_5570[0x08], 4));
+  AppendRecord(records, MakeReplayRecord(5102, &this->unknown_5570[0x0C], 32));
+  AppendRecord(records, MakeReplayRecord(5103, &this->unknown_5570[0x2C], 4));
+  AppendRecord(records, MakeReplayRecord(5104, &this->unknown_5570[0x30], 4));
+  AppendRecord(records, MakeReplayRecord(5105, &this->unknown_5570[0x34], 4));
+  AppendRecord(records, MakeReplayRecord(5106, &this->unknown_5570[0x38], 4));
+  AppendRecord(records, MakeReplayRecord(5107, &this->unknown_5570[0x3C], 4));
+  AppendRecord(records, MakeReplayRecord(5108, &this->unknown_5570[0x40], 4));
+  AppendRecord(records, MakeReplayRecord(5109, &this->unknown_5570[0x44], 4));
+  AppendRecord(records, MakeReplayRecord(5110, &this->unknown_5570[0x48], 4));
+  AppendRecord(records, MakeReplayRecord(5111, &this->m_homunJob, sizeof(this->m_homunJob)));
+  AppendRecord(records, MakeReplayRecord(5112, this->unknown_55C0, 4));
+  AppendRecord(records, MakeReplayRecord(5113, &this->m_homunHp, sizeof(this->m_homunHp)));
+  AppendRecord(records, MakeReplayRecord(5114, this->unknown_55C8, 4));
+  AppendRecord(records, MakeReplayRecord(5115, &this->m_homunSp, sizeof(this->m_homunSp)));
+  AppendRecord(records, MakeReplayRecord(5116, &this->unknown_55D0, sizeof(this->unknown_55D0)));
+  AppendRecord(records, MakeReplayRecord(5117, &this->unknown_55D4, sizeof(this->unknown_55D4)));
+  AppendRecord(records, MakeReplayRecord(5118, &this->unknown_55D8, sizeof(this->unknown_55D8)));
+  AppendRecord(records, MakeReplayRecord(5119, &this->m_homunExp, sizeof(this->m_homunExp)));
+  AppendRecord(records, MakeReplayRecord(5120, &this->m_homunMaxExp, sizeof(this->m_homunMaxExp)));
+  AppendRecord(records, MakeReplayRecord(5121, &this->unknown_55F0, sizeof(this->unknown_55F0)));
+  AppendRecord(records, MakeReplayRecord(5122, &this->unknown_55F4, sizeof(this->unknown_55F4)));
+  AppendRecord(records, MakeReplayRecord(5123, &this->unknown_55F8, sizeof(this->unknown_55F8)));
+  AppendRecord(records, MakeReplayRecord(5124, &this->unknown_55FC, sizeof(this->unknown_55FC)));
+  AppendRecord(records, MakeReplayRecord(5125, &this->unknown_5600, sizeof(this->unknown_5600)));
+  AppendRecord(records, MakeReplayRecord(5126, &this->unknown_5604, sizeof(this->unknown_5604)));
+  AppendRecord(records, MakeReplayRecord(5127, &this->unknown_5608, sizeof(this->unknown_5608)));
+  AppendRecord(records, MakeReplayRecord(5128, &this->unknown_560C, sizeof(this->unknown_560C)));
+  AppendRecord(records, MakeReplayRecord(5129, &this->unknown_5610, sizeof(this->unknown_5610)));
+  AppendRecord(records, MakeReplayRecord(5130, &this->unknown_5614, sizeof(this->unknown_5614)));
+  AppendRecord(records, MakeReplayRecord(5131, &this->m_traceAi, sizeof(this->m_traceAi)));
+  AppendRecord(records, MakeReplayRecord(5132, &this->m_homunActionState, sizeof(this->m_homunActionState)));
+  AppendRecord(records, MakeReplayRecord(5133, &this->unknown_5620[0x0], 4));
+  AppendRecord(records, MakeReplayRecord(5134, &this->unknown_5620[0x4], 4));
+  AppendRecord(records, MakeReplayRecord(5201, &this->unknown_5620[0x8], 4));
+  AppendRecord(records, MakeReplayRecord(5202, this->m_mercenaryName, sizeof(this->m_mercenaryName)));
+  AppendRecord(records, MakeReplayRecord(5203, &this->m_mercenaryStats[0], sizeof(this->m_mercenaryStats[0])));
+  AppendRecord(records, MakeReplayRecord(5204, &this->m_mercenaryStats[1], sizeof(this->m_mercenaryStats[1])));
+  AppendRecord(records, MakeReplayRecord(5205, &this->m_mercenaryStats[2], sizeof(this->m_mercenaryStats[2])));
+  AppendRecord(records, MakeReplayRecord(5206, &this->m_mercenaryStats[3], sizeof(this->m_mercenaryStats[3])));
+  AppendRecord(records, MakeReplayRecord(5207, &this->m_mercenaryStats[4], sizeof(this->m_mercenaryStats[4])));
+  AppendRecord(records, MakeReplayRecord(5208, &this->m_mercenaryStats[5], sizeof(this->m_mercenaryStats[5])));
+  AppendRecord(records, MakeReplayRecord(5209, &this->m_mercenaryStats[6], sizeof(this->m_mercenaryStats[6])));
+  AppendRecord(records, MakeReplayRecord(5210, &this->m_mercenaryStats[7], sizeof(this->m_mercenaryStats[7])));
+  AppendRecord(records, MakeReplayRecord(5211, &this->m_mercenaryHp, sizeof(this->m_mercenaryHp)));
+  AppendRecord(records, MakeReplayRecord(5212, &this->m_mercenaryMaxHp, sizeof(this->m_mercenaryMaxHp)));
+  AppendRecord(records, MakeReplayRecord(5213, &this->m_mercenaryClass, sizeof(this->m_mercenaryClass)));
+  AppendRecord(records, MakeReplayRecord(5214, &this->m_mercenaryLevel, sizeof(this->m_mercenaryLevel)));
+  AppendRecord(records, MakeReplayRecord(5215, &this->m_mercenarySp, sizeof(this->m_mercenarySp)));
+  AppendRecord(records, MakeReplayRecord(5216, &this->m_mercenaryMaxSp, sizeof(this->m_mercenaryMaxSp)));
+  AppendRecord(records, MakeReplayRecord(5217, &this->m_mercenaryLoyalty, sizeof(this->m_mercenaryLoyalty)));
+  AppendRecord(records, MakeReplayRecord(5218, &this->m_mercenarySummons, sizeof(this->m_mercenarySummons)));
+  AppendRecord(records, MakeReplayRecord(5219, &this->m_mercenaryKills, sizeof(this->m_mercenaryKills)));
+  AppendRecord(records, MakeReplayRecord(5220, this->unknown_5690, 4));
+  AppendRecord(records, MakeReplayRecord(5221, &this->m_mercenaryExpiration, sizeof(this->m_mercenaryExpiration)));
+  AppendRecord(records, MakeReplayRecord(5222, &this->unknown_5698, sizeof(this->unknown_5698)));
+  AppendRecord(records, MakeReplayRecord(5223, &this->unknown_569C, sizeof(this->unknown_569C)));
+  AppendRecord(records, MakeReplayRecord(5224, &this->unknown_56A0, sizeof(this->unknown_56A0)));
+  AppendRecord(records, MakeReplayRecord(5225, &this->unknown_56A4, sizeof(this->unknown_56A4)));
+  AppendRecord(records, MakeReplayRecord(5226, &this->unknown_56A8, sizeof(this->unknown_56A8)));
+  AppendRecord(records, MakeReplayRecord(5227, &this->unknown_56AC, sizeof(this->unknown_56AC)));
+  AppendRecord(records, MakeReplayRecord(5228, &this->unknown_56B0, sizeof(this->unknown_56B0)));
+  AppendRecord(records, MakeReplayRecord(5229, &this->m_mercenaryActionState, sizeof(this->m_mercenaryActionState)));
+  AppendRecord(records, MakeReplayRecord(5301, &this->unknown_1010, sizeof(this->unknown_1010)));
+  AppendRecord(records, MakeReplayRecord(5302, this->unknown_1014, 4));
+  AppendRecord(records, MakeReplayRecord(5303, this->unknown_1018, 32));
+  AppendRecord(records, MakeReplayRecord(5304, &this->unknown_1038, sizeof(this->unknown_1038)));
+  AppendRecord(records, MakeReplayRecord(5305, &this->unknown_103C, sizeof(this->unknown_103C)));
+  AppendRecord(records, MakeReplayRecord(5306, &this->unknown_1040, sizeof(this->unknown_1040)));
+  AppendRecord(records, MakeReplayRecord(5307, &this->unknown_1044, sizeof(this->unknown_1044)));
+  AppendRecord(records, MakeReplayRecord(5308, &this->m_petFriendly, sizeof(this->m_petFriendly)));
+  AppendRecord(records, MakeReplayRecord(5309, &this->unknown_1050, sizeof(this->unknown_1050)));
+  AppendRecord(records, MakeReplayRecord(5310, &this->unknown_1054, sizeof(this->unknown_1054)));
+  AppendRecord(records, MakeReplayRecord(5401, &this->unknown_5BC0, sizeof(this->unknown_5BC0)));
+  AppendRecord(records, MakeReplayRecord(5402, &this->unknown_5BC4, sizeof(this->unknown_5BC4)));
+  AppendRecord(records, MakeReplayRecord(5403, &this->unknown_5BC8, sizeof(this->unknown_5BC8)));
+  AppendRecord(records, MakeReplayRecord(5404, &this->unknown_5BCC, sizeof(this->unknown_5BCC)));
+  AppendRecord(records, MakeReplayRecord(5405, &this->unknown_5BD0, sizeof(this->unknown_5BD0)));
+  AppendRecord(records, MakeReplayRecord(5001, nullptr, 0));
   return records;
 }
 
@@ -1412,16 +1300,16 @@ struct ReplayShopFlagRecord {
 // FUNCTION: fn_24171
 std::vector<unsigned char> MessengerMember::Serialize() const {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, 251, nullptr, 0);
-  AppendReplayRecord(records, 253, &this->valid, sizeof(this->valid));
-  AppendReplayRecord(records, 254, &this->accountId, sizeof(this->accountId));
-  AppendReplayRecord(records, 255, &this->characterId, sizeof(this->characterId));
-  AppendReplayRecord(records, 258, &this->leader, sizeof(this->leader));
-  AppendReplayRecord(records, 259, &this->offline, sizeof(this->offline));
-  AppendReplayRecord(records, 260, &this->color, sizeof(this->color));
-  AppendReplayRecord(records, 256, this->name.c_str(), this->name.size());
-  AppendReplayRecord(records, 257, this->map.c_str(), this->map.size());
-  AppendReplayRecord(records, 252, nullptr, 0);
+  AppendRecord(records, MakeReplayRecord(251, nullptr, 0));
+  AppendRecord(records, MakeReplayRecord(253, &this->valid, sizeof(this->valid)));
+  AppendRecord(records, MakeReplayRecord(254, &this->accountId, sizeof(this->accountId)));
+  AppendRecord(records, MakeReplayRecord(255, &this->characterId, sizeof(this->characterId)));
+  AppendRecord(records, MakeReplayRecord(258, &this->leader, sizeof(this->leader)));
+  AppendRecord(records, MakeReplayRecord(259, &this->offline, sizeof(this->offline)));
+  AppendRecord(records, MakeReplayRecord(260, &this->color, sizeof(this->color)));
+  AppendRecord(records, BuildReplayTaggedRecord(256, this->name.c_str(), this->name.size()));
+  AppendRecord(records, BuildReplayTaggedRecord(257, this->map.c_str(), this->map.size()));
+  AppendRecord(records, MakeReplayRecord(252, nullptr, 0));
   return records;
 }
 
@@ -1683,17 +1571,17 @@ std::vector<unsigned char> CSession::BuildShopReplayRecords() {
 // FUNCTION: fn_24202
 std::vector<unsigned char> CSession::BuildExtraReplayRecords() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, 5500, nullptr, 0);
-  AppendReplayRecord(records, 5510, &this->unknown_593C, sizeof(this->unknown_593C));
-  AppendReplayRecord(records, 5511, &this->unknown_5940, sizeof(this->unknown_5940));
-  AppendReplayRecord(records, 5512, &this->unknown_5944, sizeof(this->unknown_5944));
-  AppendReplayRecord(records, 5513, &this->unknown_5948, sizeof(this->unknown_5948));
-  AppendReplayRecord(records, 5514, &this->unknown_594C, sizeof(this->unknown_594C));
-  AppendReplayRecord(records, 5515, this->unknown_5950.c_str(), this->unknown_5950.size());
-  AppendReplayRecord(records, 5516, &this->unknown_5968, sizeof(this->unknown_5968));
-  AppendReplayRecord(records, 5517, &this->unknown_596C, sizeof(this->unknown_596C));
-  AppendReplayRecord(records, 5518, &this->unknown_5970, sizeof(this->unknown_5970));
-  AppendReplayRecord(records, 5501, nullptr, 0);
+  AppendRecord(records, MakeReplayRecord(5500, nullptr, 0));
+  AppendRecord(records, MakeReplayRecord(5510, &this->unknown_593C, sizeof(this->unknown_593C)));
+  AppendRecord(records, MakeReplayRecord(5511, &this->unknown_5940, sizeof(this->unknown_5940)));
+  AppendRecord(records, MakeReplayRecord(5512, &this->unknown_5944, sizeof(this->unknown_5944)));
+  AppendRecord(records, MakeReplayRecord(5513, &this->unknown_5948, sizeof(this->unknown_5948)));
+  AppendRecord(records, MakeReplayRecord(5514, &this->unknown_594C, sizeof(this->unknown_594C)));
+  AppendRecord(records, BuildReplayTaggedRecord(5515, this->unknown_5950.c_str(), this->unknown_5950.size()));
+  AppendRecord(records, MakeReplayRecord(5516, &this->unknown_5968, sizeof(this->unknown_5968)));
+  AppendRecord(records, MakeReplayRecord(5517, &this->unknown_596C, sizeof(this->unknown_596C)));
+  AppendRecord(records, MakeReplayRecord(5518, &this->unknown_5970, sizeof(this->unknown_5970)));
+  AppendRecord(records, MakeReplayRecord(5501, nullptr, 0));
   return records;
 }
 
