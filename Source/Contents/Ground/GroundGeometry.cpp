@@ -9,8 +9,18 @@
 #include <cstring>
 
 namespace {
+  struct NormalVector {
+    // INLINED
+    NormalVector() : values{0.0f, 0.0f, 0.0f} {
+    }
+
+    float values[3];
+  };
+
   struct CellNormals {
-    float values[4][3]{};
+    NormalVector faces[2];
+    NormalVector side2;
+    NormalVector side1;
   };
 
   // INLINED
@@ -103,9 +113,10 @@ void GroundGeometry::Slot01(int, int) {
 void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const float* diffuse, const float* ambient) {
   this->loaded = resource.loaded;
   this->Reset(resource.width, resource.height);
-  std::vector<CellNormals> normals(this->cells.size());
+  CellNormals* normals = new CellNormals[resource.width * resource.height];
   this->cellSize = resource.cellSize;
   this->BuildLightmaps(resource);
+  this->tiles.clear();
   this->tiles.resize(static_cast<unsigned>(resource.tileCount));
 
   for (int row = 0; row < this->height; ++row) {
@@ -155,13 +166,13 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           std::memcpy(next, resource.cells + 28u * (index + this->width), sizeof(next));
           const float values[4][3] = {{left, cell.heights[2], bottom}, {right, cell.heights[3], bottom}, {left, next[0], bottom}, {right, next[1], bottom}};
           std::memcpy(positions, values, sizeof(positions));
-          normals[index].values[2][2] = next[0] <= cell.heights[2] ? 1.0f : -1.0f;
+          normals[index].side2.values[2] = next[0] <= cell.heights[2] ? 1.0f : -1.0f;
         } else {
           float next[4];
           std::memcpy(next, resource.cells + 28u * (index + 1), sizeof(next));
           const float values[4][3] = {{right, cell.heights[3], bottom}, {right, cell.heights[1], top}, {right, next[2], bottom}, {right, next[0], top}};
           std::memcpy(positions, values, sizeof(positions));
-          normals[index].values[3][0] = next[0] <= cell.heights[2] ? 1.0f : -1.0f;
+          normals[index].side1.values[0] = next[0] <= cell.heights[2] ? 1.0f : -1.0f;
         }
 
         const float scaleU = static_cast<float>(tile.texture->Width()) / static_cast<float>(tile.texture->TextureWidth());
@@ -189,8 +200,8 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
             cell.color[channel] = static_cast<unsigned char>(value > 255 ? 255 : value);
           }
 
-          float* first = normals[index].values[0];
-          float* second = normals[index].values[1];
+          float* first = normals[index].faces[0].values;
+          float* second = normals[index].faces[1].values;
           const float ab = cell.heights[2] - cell.heights[0];
           const float ac = cell.heights[2] - cell.heights[1];
 
@@ -241,7 +252,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
         const auto sourceIndex = static_cast<unsigned>(source - this->cells.data());
 
         for (unsigned normal = first; normal < first + count; ++normal) {
-          Add(smooth[corner], normals[sourceIndex].values[normal]);
+          Add(smooth[corner], normals[sourceIndex].faces[normal].values);
         }
       };
       add(0, &cell, 0, 1);
@@ -313,7 +324,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
       if (cell.side2) {
         for (unsigned corner = 0; corner < 4; ++corner) {
           const GroundCell* source = (corner & 1) ? southeast : south;
-          const auto color = LitColor(normals[index].values[2], false, true, lightDirection, diffuse, ambient, source ? source->top : nullptr);
+          const auto color = LitColor(normals[index].side2.values, false, true, lightDirection, diffuse, ambient, source ? source->top : nullptr);
           cell.side2->vertices[corner][3] = std::bit_cast<float>(color);
         }
       }
@@ -321,12 +332,14 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
       if (cell.side1) {
         for (unsigned corner = 0; corner < 4; ++corner) {
           const GroundCell* source = (corner & 1) ? east : southeast;
-          const auto color = LitColor(normals[index].values[3], false, true, lightDirection, diffuse, ambient, source ? source->top : nullptr);
+          const auto color = LitColor(normals[index].side1.values, false, true, lightDirection, diffuse, ambient, source ? source->top : nullptr);
           cell.side1->vertices[corner][3] = std::bit_cast<float>(color);
         }
       }
     }
   }
+
+  delete[] normals;
 }
 
 // OFFSET: 0x00ABFB00
