@@ -1,3 +1,5 @@
+#include <cstdlib>
+
 // GLOBAL: gl_25029
 unsigned char g_cryptonPermutation0[16] = {0x0F, 0x09, 0x06, 0x08, 0x09, 0x09, 0x04, 0x0C, 0x06, 0x02, 0x06, 0x0A, 0x01, 0x03, 0x05, 0x0F};
 
@@ -189,7 +191,7 @@ int g_keyedBoxRound;
 
 // INLINED
 static unsigned int CryptonRotate(unsigned int value, unsigned int shift) {
-  return (value << shift) | (value >> (32 - shift));
+  return _rotl(value, shift);
 }
 
 // INLINED
@@ -223,6 +225,21 @@ static __forceinline void CryptonRound(unsigned int* y, const unsigned int* x, c
     y[2] = g_cryptonTable3[(x[0] >> 16) & 255] ^ g_cryptonTable0[(x[1] >> 16) & 255] ^ g_cryptonTable1[(x[2] >> 16) & 255] ^ g_cryptonTable2[(x[3] >> 16) & 255] ^ key[2];
     y[3] = g_cryptonTable0[x[0] >> 24] ^ g_cryptonTable1[x[1] >> 24] ^ g_cryptonTable2[x[2] >> 24] ^ g_cryptonTable3[x[3] >> 24] ^ key[3];
   }
+}
+
+// INLINED
+static __forceinline unsigned int CryptonGammaTau(unsigned int a, unsigned int b, unsigned int c, unsigned int d, unsigned int lane, bool alternate) {
+  const unsigned int shift = lane * 8;
+  if ((lane & 1) == alternate) {
+    return g_cryptonSbox[(a >> shift) & 255] |
+           (static_cast<unsigned int>(g_cryptonInverseSbox[(b >> shift) & 255]) << 8) |
+           (static_cast<unsigned int>(g_cryptonSbox[(c >> shift) & 255]) << 16) |
+           (static_cast<unsigned int>(g_cryptonInverseSbox[(d >> shift) & 255]) << 24);
+  }
+  return g_cryptonInverseSbox[(a >> shift) & 255] |
+         (static_cast<unsigned int>(g_cryptonSbox[(b >> shift) & 255]) << 8) |
+         (static_cast<unsigned int>(g_cryptonInverseSbox[(c >> shift) & 255]) << 16) |
+         (static_cast<unsigned int>(g_cryptonSbox[(d >> shift) & 255]) << 24);
 }
 
 // INLINED
@@ -446,17 +463,19 @@ void CryptonEncryptBlock(const unsigned int* input, unsigned int* output) {
 unsigned int* CryptonSetKey(const unsigned int* input, unsigned int keyBits) {
   if (!g_cryptonTablesReady) {
     for (unsigned int i = 0; i < 256; ++i) {
-      const unsigned int high = i >> 4;
+      const unsigned int high = (i & 0xF0) >> 4;
       const unsigned int low = i & 15;
-      const unsigned int first = g_cryptonPermutation0[low];
-      const unsigned int second = g_cryptonPermutation1[first ^ high] ^ low;
-      const unsigned int value = second | ((g_cryptonPermutation2[second] ^ first ^ high) << 4);
+      unsigned int value = low ^ g_cryptonPermutation1[high ^ g_cryptonPermutation0[low]];
+      const unsigned int left = high ^ g_cryptonPermutation0[low] ^ g_cryptonPermutation2[value];
+      value |= left << 4;
       g_cryptonSbox[i] = static_cast<unsigned char>(value);
       g_cryptonInverseSbox[value] = static_cast<unsigned char>(i);
-      g_cryptonTable0[i] = (value * 0x01010101u) & 0x3FCFF3FCu;
-      g_cryptonTable1[value] = (i * 0x01010101u) & 0xFC3FCFF3u;
-      g_cryptonTable2[i] = (value * 0x01010101u) & 0xF3FC3FCFu;
-      g_cryptonTable3[value] = (i * 0x01010101u) & 0xCFF3FC3Fu;
+      const unsigned int spreadValue = value * 0x01010101u;
+      const unsigned int spreadIndex = i * 0x01010101u;
+      g_cryptonTable0[i] = spreadValue & 0x3FCFF3FCu;
+      g_cryptonTable1[value] = spreadIndex & 0xFC3FCFF3u;
+      g_cryptonTable2[i] = spreadValue & 0xF3FC3FCFu;
+      g_cryptonTable3[value] = spreadIndex & 0xCFF3FC3Fu;
     }
     g_cryptonTablesReady = 1;
   }
@@ -479,30 +498,28 @@ unsigned int* CryptonSetKey(const unsigned int* input, unsigned int keyBits) {
     g_cryptonEncryptKey[5] = input[3];
   }
 
-  unsigned int a = g_cryptonEncryptKey[0];
-  unsigned int b = g_cryptonEncryptKey[1];
-  unsigned int c = g_cryptonEncryptKey[2];
-  unsigned int d = g_cryptonEncryptKey[3];
-  unsigned int x = (a & 0x3FCFF3FCu) ^ (b & 0xFC3FCFF3u) ^ (c & 0xF3FC3FCFu) ^ (d & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[0];
-  unsigned int y = (a & 0xFC3FCFF3u) ^ (b & 0xF3FC3FCFu) ^ (c & 0xCFF3FC3Fu) ^ (d & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[1];
-  unsigned int z = (a & 0xF3FC3FCFu) ^ (b & 0xCFF3FC3Fu) ^ (c & 0x3FCFF3FCu) ^ (d & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[2];
-  unsigned int w = (a & 0xCFF3FC3Fu) ^ (b & 0x3FCFF3FCu) ^ (c & 0xFC3FCFF3u) ^ (d & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[3];
-  CryptonSubstitute(x, y, z, w, g_cryptonEncryptKey, false);
+  unsigned int x = (g_cryptonEncryptKey[0] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[1] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[2] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[3] & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[0];
+  unsigned int y = (g_cryptonEncryptKey[0] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[1] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[2] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[3] & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[1];
+  unsigned int z = (g_cryptonEncryptKey[0] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[1] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[2] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[3] & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[2];
+  unsigned int w = (g_cryptonEncryptKey[0] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[1] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[2] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[3] & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[3];
+  for (unsigned int lane = 0; lane < 4; ++lane) {
+    g_cryptonEncryptKey[lane] = CryptonGammaTau(x, y, z, w, lane, false);
+  }
 
-  a = g_cryptonEncryptKey[4];
-  b = g_cryptonEncryptKey[5];
-  c = g_cryptonEncryptKey[6];
-  d = g_cryptonEncryptKey[7];
-  x = (a & 0xFC3FCFF3u) ^ (b & 0xF3FC3FCFu) ^ (c & 0xCFF3FC3Fu) ^ (d & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[4];
-  y = (a & 0xF3FC3FCFu) ^ (b & 0xCFF3FC3Fu) ^ (c & 0x3FCFF3FCu) ^ (d & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[5];
-  z = (a & 0xCFF3FC3Fu) ^ (b & 0x3FCFF3FCu) ^ (c & 0xFC3FCFF3u) ^ (d & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[6];
-  w = (a & 0x3FCFF3FCu) ^ (b & 0xFC3FCFF3u) ^ (c & 0xF3FC3FCFu) ^ (d & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[7];
-  CryptonSubstitute(x, y, z, w, g_cryptonEncryptKey + 4, true);
+  x = (g_cryptonEncryptKey[4] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[5] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[6] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[7] & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[4];
+  y = (g_cryptonEncryptKey[4] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[5] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[6] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[7] & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[5];
+  z = (g_cryptonEncryptKey[4] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[5] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[6] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[7] & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[6];
+  w = (g_cryptonEncryptKey[4] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[5] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[6] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[7] & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[7];
+  for (unsigned int lane = 0; lane < 4; ++lane) {
+    g_cryptonEncryptKey[lane + 4] = CryptonGammaTau(x, y, z, w, lane, true);
+  }
 
   const unsigned int first = g_cryptonEncryptKey[0] ^ g_cryptonEncryptKey[1] ^ g_cryptonEncryptKey[2] ^ g_cryptonEncryptKey[3];
   const unsigned int second = g_cryptonEncryptKey[4] ^ g_cryptonEncryptKey[5] ^ g_cryptonEncryptKey[6] ^ g_cryptonEncryptKey[7];
   for (unsigned int i = 0; i < 4; ++i) {
     g_cryptonEncryptKey[i] ^= second;
+  }
+  for (unsigned int i = 0; i < 4; ++i) {
     g_cryptonEncryptKey[i + 4] ^= first;
   }
 
@@ -835,11 +852,11 @@ void SboxEncryptBlock(unsigned char* block, const unsigned short* key) {
 // FUNCTION: fn_18413
 void BuildSboxLookup() {
   for (unsigned int value = 0; value < 0x10000; ++value) {
-    g_sboxLookup[value] = static_cast<unsigned short>(
-      g_sboxEntries[0][SBOX_INDEX(value, 0)] | g_sboxEntries[1][SBOX_INDEX(value, 1)] |
-      g_sboxEntries[2][SBOX_INDEX(value, 2)] | g_sboxEntries[3][SBOX_INDEX(value, 3)] |
-      g_sboxEntries[4][SBOX_INDEX(value, 4)] | g_sboxEntries[5][SBOX_INDEX(value, 5)] |
-      g_sboxEntries[6][SBOX_INDEX(value, 6)] | g_sboxEntries[7][SBOX_INDEX(value, 7)]);
+    unsigned short result = 0;
+    for (int box = 0; box < 8; ++box) {
+      result |= g_sboxEntries[box][SBOX_INDEX(value, box)];
+    }
+    g_sboxLookup[value] = result;
   }
 }
 
