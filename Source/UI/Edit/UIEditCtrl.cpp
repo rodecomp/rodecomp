@@ -5407,11 +5407,7 @@ void UIItemShopWnd::Slot32(int x, int y) {
 // FUNCTION: fn_13409
 void UIItemBaseWnd::Slot35(int value) {
   if (this->unknown_00E4) {
-    int step = this->visibleRows - 1;
-    if (step > 3) {
-      step = 3;
-    }
-
+    const int step = std::min(this->visibleRows - 1, 3);
     this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
   }
 }
@@ -5798,11 +5794,7 @@ void UISkillListWnd::Slot15(int width, int height) {
 // FUNCTION: fn_13413
 void UISkillListWnd::Slot35(int value) {
   if (this->unknown_0128) {
-    int step = this->visibleRows - 1;
-    if (step > 3) {
-      step = 3;
-    }
-
+    const int step = std::min(this->visibleRows - 1, 3);
     this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
   }
 }
@@ -5916,11 +5908,7 @@ void UIMerchantShopMakeWnd::UpdateLayout() {
 // FUNCTION: fn_13410
 void UIItemStoreFindWnd::Slot35(int value) {
   if (this->unknown_00E4) {
-    int step = this->visibleRows - 1;
-    if (step > 3) {
-      step = 3;
-    }
-
+    const int step = std::min(this->visibleRows - 1, 3);
     this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
   }
 }
@@ -5929,11 +5917,7 @@ void UIItemStoreFindWnd::Slot35(int value) {
 // FUNCTION: fn_13411
 void UIItemStoreSubWnd::Slot35(int value) {
   if (this->unknown_00E4) {
-    int step = this->visibleRows - 1;
-    if (step > 3) {
-      step = 3;
-    }
-
+    const int step = std::min(this->visibleRows - 1, 3);
     this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
   }
 }
@@ -5942,11 +5926,7 @@ void UIItemStoreSubWnd::Slot35(int value) {
 // FUNCTION: fn_13412
 void UIMerchantShopMakeWnd::Slot35(int value) {
   if (this->unknown_0144) {
-    int step = this->unknown_0140 - 1;
-    if (step > 3) {
-      step = 3;
-    }
-
+    const int step = std::min(this->unknown_0140 - 1, 3);
     this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
   }
 }
