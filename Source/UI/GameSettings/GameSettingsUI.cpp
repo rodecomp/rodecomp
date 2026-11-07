@@ -1608,7 +1608,7 @@ void CUIGroupGraphicsAPI::Refresh() {
 
 // OFFSET: 0x00A3FCD0
 // FUNCTION: fn_15960
-std::string GetHotkeyText(int tab, int index) {
+std::string CUIListPage::GetHotkeyText(int tab, int index) {
   HotkeyInfo info;
   const char* keyText = nullptr;
   const char* description = nullptr;
@@ -4218,7 +4218,7 @@ void GameSettingsUI::CUIListPage::RefreshHotkeyLabels() {
       continue;
     }
 
-    const std::string text = GetHotkeyText(1, hotkey->second);
+    const std::string text = this->GetHotkeyText(1, hotkey->second);
     if (text.empty()) {
       if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
         Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;
@@ -4257,7 +4257,7 @@ void CUIGameSettingsUI::RefreshHotkeyLabels() {
         continue;
       }
 
-      const std::string text = GameSettingsUI::GetHotkeyText(1, hotkey->second);
+      const std::string text = page->GetHotkeyText(1, hotkey->second);
       if (text.empty()) {
         if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
           Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;

@@ -314,6 +314,7 @@ public:
   void LoadOptions(int tab);
   __declspec(noinline) void RefreshOptions();
   __declspec(noinline) void RefreshHotkeyLabels();
+  std::string GetHotkeyText(int tab, int index);
 
   /* 0080 */ CUIListBoxEx<CUIOptionItem, TALKTYPE>* m_optionList;
 };
@@ -344,7 +345,6 @@ public:
   /* 00F8 */ int m_optionId;
 };
 
-std::string GetHotkeyText(int tab, int index);
 }
 
 class CUIGameSettingsUI : public CUIFrameWnd {
