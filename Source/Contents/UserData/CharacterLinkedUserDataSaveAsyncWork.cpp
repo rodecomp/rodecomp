@@ -61,7 +61,7 @@ namespace {
 // FUNCTION: fn_03944
 CCharacterLinkedUserDataSaveAsyncWork::CCharacterLinkedUserDataSaveAsyncWork()
     : NAsyncWork("CharacterLinkedUserData_Save"), m_accountId(0), m_characterId(0),
-      m_diagnostic(Diagnostic(false, DecryptName<0xC52FB5FBB94FF917ULL>({0x62, 0x97, 0x24, 0xD7, 0x8C, 0xDA, 0x41, 0xC5}), 28)) {
+      m_diagnostic(false, std::string(DecryptName<0xC52FB5FBB94FF917ULL>({0x62, 0x97, 0x24, 0xD7, 0x8C, 0xDA, 0x41, 0xC5})), sourceFile, 28) {
 }
 
 // INLINED
