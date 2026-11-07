@@ -52,14 +52,14 @@ public:
     /* 0000 */ CReputeMgr* manager;
     /* 0004 */ std::map<std::uint64_t, ReputeGroup>* dest;
 
-    void operator()(const std::pair<const int, ReputeGroupRecord>& entry) const;
+    void operator()(const std::pair<int, ReputeGroupRecord>& entry) const;
   };
 
   struct InfoInserter {
     /* 0000 */ CReputeMgr* manager;
     /* 0004 */ std::map<std::uint64_t, ReputeInfo>* dest;
 
-    void operator()(const std::pair<const int, ReputeInfoRecord>& entry) const;
+    void operator()(const std::pair<int, ReputeInfoRecord>& entry) const;
   };
 
 protected:

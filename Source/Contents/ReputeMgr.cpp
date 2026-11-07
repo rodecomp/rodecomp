@@ -20,51 +20,33 @@ bool JsonCppLoader::GetReputeGroupData(std::map<int, ReputeGroupRecord>* out) {
     return false;
   }
 
-  JsonValue groups;
-  this->GetValue(groups, "ReputeGroup", this->document, JsonValue::OBJECT_VALUE);
-  if (groups.IsNull()) {
+  const JsonValue* groups = nullptr;
+  if (const JsonObject* root = this->document.ObjectRange()) {
+    for (const JsonMember& entry : *root) {
+      if (entry.first == "ReputeGroup") {
+        groups = &entry.second;
+        break;
+      }
+    }
+  }
+
+  if (groups == nullptr) {
     this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "ReputeGroup");
     return false;
   }
 
-  const JsonObject& members = groups.GetObject();
-  for (JsonObject::const_iterator member = members.begin(); member != members.end(); ++member) {
-    JsonValue idValue;
-    JsonValue nameValue;
-    JsonValue listValue;
-    this->GetValue(idValue, "ID", member->second, JsonValue::STRING_VALUE);
-    if (idValue.IsNull()) {
-      this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "ID");
-    }
-    this->GetValue(nameValue, "Name", member->second, JsonValue::STRING_VALUE);
-    if (nameValue.IsNull()) {
-      this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "Name");
-    }
-    this->GetValue(listValue, "ReputeList", member->second, JsonValue::ARRAY_VALUE);
-    if (listValue.IsNull()) {
-      this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "ReputeList");
-    }
-
+  const JsonObject* members = groups->ObjectRange();
+  const JsonObject none;
+  for (const JsonMember& member : members ? *members : none) {
+    const std::string name = member.first;
+    const JsonValue node = member.second;
     ReputeGroupRecord record;
-    if (!idValue.IsNull()) {
-      record.id = idValue.AsString();
-    }
-    if (!nameValue.IsNull()) {
-      record.name = nameValue.AsString();
-    }
-    if (!listValue.IsNull()) {
-      const JsonArray& ids = listValue.GetArray();
-      for (JsonArray::const_iterator id = ids.begin(); id != ids.end(); ++id) {
-        if (id->GetType() != JsonValue::INT64_VALUE) {
-          this->Fail("잘못된 데이터가 입력되었습니다. intValue 가 입력되어야 합니다. (keyName : %s)", "ReputeList");
-          break;
-        }
-        record.reputes.push_back(id->AsInt());
-      }
-    }
+    this->GetStringValue(node, "ID", &record.id);
+    this->GetStringValue(node, "Name", &record.name);
+    this->GetIntVectorValue(node, "ReputeList", &record.reputes);
 
-    if (!out->insert(std::make_pair(std::stoi(member->first), record)).second) {
-      this->Fail("중복키가 입력되었습니다. (name : %s)", member->first.c_str());
+    if (!out->insert(std::make_pair(std::stoi(name), record)).second) {
+      this->Fail("중복키가 입력되었습니다. (name : %s)", name.c_str());
       return false;
     }
   }
@@ -124,11 +106,15 @@ bool CReputeMgr::LoadReputeGroupData(std::map<std::uint64_t, ReputeGroup>& group
     return false;
   }
 
-  const auto* data = static_cast<const unsigned char*>(file.GetData());
-  std::vector<unsigned char> buffer(data, data + file.GetSize());
-
   JsonCppLoader loader;
-  if (!loader.Load(buffer, true)) {
+  const auto* data = static_cast<const unsigned char*>(file.GetData());
+  bool parsed;
+  {
+    std::vector<unsigned char> buffer(data, data + file.GetSize());
+    parsed = loader.Load(buffer, true);
+  }
+
+  if (!parsed) {
     return false;
   }
 
@@ -138,9 +124,7 @@ bool CReputeMgr::LoadReputeGroupData(std::map<std::uint64_t, ReputeGroup>& group
   }
 
   groups.clear();
-  for (std::pair<const int, ReputeGroupRecord> record : records) {
-    GroupInserter{this, &groups}(record);
-  }
+  std::for_each(records.begin(), records.end(), GroupInserter{this, &groups});
   return true;
 }
 
@@ -153,11 +137,15 @@ bool CReputeMgr::LoadReputeInfoData(std::map<std::uint64_t, ReputeInfo>& infos) 
     return false;
   }
 
-  const auto* data = static_cast<const unsigned char*>(file.GetData());
-  std::vector<unsigned char> buffer(data, data + file.GetSize());
-
   JsonCppLoader loader;
-  if (!loader.Load(buffer, true)) {
+  const auto* data = static_cast<const unsigned char*>(file.GetData());
+  bool parsed;
+  {
+    std::vector<unsigned char> buffer(data, data + file.GetSize());
+    parsed = loader.Load(buffer, true);
+  }
+
+  if (!parsed) {
     return false;
   }
 
@@ -167,9 +155,7 @@ bool CReputeMgr::LoadReputeInfoData(std::map<std::uint64_t, ReputeInfo>& infos) 
   }
 
   infos.clear();
-  for (std::pair<const int, ReputeInfoRecord> record : records) {
-    InfoInserter{this, &infos}(record);
-  }
+  std::for_each(records.begin(), records.end(), InfoInserter{this, &infos});
   return true;
 }
 
@@ -201,9 +187,9 @@ std::vector<const ReputeInfo*> CReputeMgr::GetGroupReputes(const std::string& gr
           continue;
         }
 
-        const ReputeInfo& info = found->second;
-        if (info.visibility == REPUTE_VISIBLE || (info.visibility == REPUTE_VISIBLE_WITH_POINT && info.point != 0)) {
-          reputes.push_back(&info);
+        const ReputeVisibility visibility = found->second.visibility;
+        if (visibility == REPUTE_VISIBLE || (visibility == REPUTE_VISIBLE_WITH_POINT && found->second.point != 0)) {
+          reputes.push_back(&found->second);
         }
       }
     }
@@ -223,9 +209,9 @@ std::vector<const ReputeInfo*> CReputeMgr::GetAllReputes() const {
         continue;
       }
 
-      const ReputeInfo& info = found->second;
-      if (info.visibility == REPUTE_VISIBLE || (info.visibility == REPUTE_VISIBLE_WITH_POINT && info.point != 0)) {
-        reputes.push_back(&info);
+      const ReputeVisibility visibility = found->second.visibility;
+      if (visibility == REPUTE_VISIBLE || (visibility == REPUTE_VISIBLE_WITH_POINT && found->second.point != 0)) {
+        reputes.push_back(&found->second);
       }
     }
   }
@@ -236,12 +222,16 @@ std::vector<const ReputeInfo*> CReputeMgr::GetAllReputes() const {
 // OFFSET: 0x0060DBF0
 // FUNCTION: fn_04293
 bool CReputeMgr::Load() {
-  if (this->LoadReputeInfoData(this->m_infos) && this->LoadReputeGroupData(this->m_groups)) {
-    return true;
+  if (!this->LoadReputeInfoData(this->m_infos)) {
+    ShowErrorDialog(GetRenderSystemHolder()->system, "Failed : LoadReputeInfoData", 0);
+    return false;
   }
 
-  ShowErrorDialog(GetRenderSystemHolder()->system, "Failed : LoadReputeInfoData", 0);
-  return false;
+  if (!this->LoadReputeGroupData(this->m_groups)) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x0060E4A0
@@ -312,9 +302,8 @@ void CReputeMgr::SetPointsReceived(bool received) {
 
 // OFFSET: 0x0060D440
 // FUNCTION: fn_04287
-void CReputeMgr::InfoInserter::operator()(const std::pair<const int, ReputeInfoRecord>& entry) const {
+void CReputeMgr::InfoInserter::operator()(const std::pair<int, ReputeInfoRecord>& entry) const {
   ReputeInfo info;
-  info.point = 0;
   info.name = FromUtf8(entry.second.name, g_textCodePage);
   info.unknown_0018 = entry.second.maxPointPositive;
   info.unknown_0020 = entry.second.maxPointNegative;
@@ -335,7 +324,7 @@ void CReputeMgr::InfoInserter::operator()(const std::pair<const int, ReputeInfoR
 
 // OFFSET: 0x0060D060
 // FUNCTION: fn_04286
-void CReputeMgr::GroupInserter::operator()(const std::pair<const int, ReputeGroupRecord>& entry) const {
+void CReputeMgr::GroupInserter::operator()(const std::pair<int, ReputeGroupRecord>& entry) const {
   ReputeGroup group;
   group.name = static_cast<const std::string&>(FromUtf8(entry.second.name, g_textCodePage));
   group.reputes = std::vector<std::uint64_t>(entry.second.reputes.begin(), entry.second.reputes.end());
