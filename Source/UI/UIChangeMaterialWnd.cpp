@@ -106,8 +106,7 @@ void UIChangeMaterialWnd_List::SelectNextItem(int delta) {
     int newOffset = this->m_previousScrollOffset;
     if (!(targetIndex >= newOffset && newOffset + this->m_pageSize > targetIndex)) {
       const int limit = count - this->m_pageSize;
-      const int candidate = targetIndex - this->m_pageSize + 1;
-      newOffset = static_cast<unsigned int>(candidate) < static_cast<unsigned int>(limit) ? candidate : limit;
+      newOffset = static_cast<unsigned int>(targetIndex - this->m_pageSize + 1) < static_cast<unsigned int>(limit) ? targetIndex - this->m_pageSize + 1 : limit;
     }
 
     this->m_scrollOffset = newOffset;
