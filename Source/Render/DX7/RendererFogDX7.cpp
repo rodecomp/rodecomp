@@ -11,21 +11,21 @@
 namespace {
   // OFFSET: 0x00556E50
   // FUNCTION: fn_02039
-  float Sine(float angle) {
-    return static_cast<float>(std::sin(static_cast<double>(angle)));
+  __declspec(noinline) float Sine(float angle) {
+    return sinf(angle);
   }
 
   // OFFSET: 0x00556E40
   // FUNCTION: fn_02038
-  float Cosine(float angle) {
-    return static_cast<float>(std::cos(static_cast<double>(angle)));
+  __declspec(noinline) float Cosine(float angle) {
+    return cosf(angle);
   }
 }
 
 // OFFSET: 0x00556E60
 // FUNCTION: fn_02040
 float SquareRoot(float value) {
-  return std::sqrt(value);
+  return sqrtf(value);
 }
 
 // OFFSET: 0x00548C30
