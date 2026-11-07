@@ -16,7 +16,7 @@
 
 // OFFSET: 0x00811C10
 // FUNCTION: fn_10109
-RenderPrimitive* CCharacterRender::DrawShadow(const float* matrix, float scale) const {
+__declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const float* matrix, float scale) const {
   if (scale == 0.0f || !g_modeMgr.GetGameMode() || !static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
     return nullptr;
   }
