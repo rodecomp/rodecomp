@@ -26,14 +26,43 @@ namespace {
   }
 
   // INLINED
-  std::size_t PixelBytes(int width, int height) {
-    const std::uint32_t count = static_cast<std::uint32_t>(width) * static_cast<std::uint32_t>(height);
-    return count > 0x3FFFFFFFu ? 0xFFFFFFFFu : count * 4u;
+  std::uint32_t Color(const unsigned char* data, unsigned alpha) {
+    return ((alpha << 8 | data[2]) << 8 | data[1]) << 8 | data[0];
   }
 
   // INLINED
-  std::uint32_t Color(const unsigned char* data, unsigned alpha) {
-    return data[0] | (data[1] << 8) | (data[2] << 16) | (alpha << 24);
+  __forceinline const unsigned char* ReadPalette(RGBQUAD* palette, unsigned char* first, unsigned char* second, const unsigned char* source, std::uint32_t count) {
+    std::memcpy(first, source, count * 2);
+    source += count * 2;
+    std::memcpy(second, source, count * 2);
+    source += count * 2;
+
+    for (std::uint32_t i = 0; i < count; ++i) {
+      palette[i].rgbGreen = first[2 * i];
+      palette[i].rgbReserved = second[2 * i];
+      palette[i].rgbBlue = first[2 * i + 1];
+      palette[i].rgbRed = second[2 * i + 1];
+    }
+
+    return source;
+  }
+
+  // INLINED
+  __forceinline void DecodeIndexedRows(const BitmapImage& image, unsigned char* rgb, const unsigned char* source, const RGBQUAD* palette, unsigned char* row) {
+    for (int y = image.height - 1; y >= 0; --y) {
+      const std::uint32_t stride = (image.width + 3) & ~3u;
+      std::memcpy(row, source, stride);
+      source += stride;
+      unsigned char* pixel = rgb + image.width * y * 3;
+
+      for (int x = 0; x < image.width; ++x) {
+        const RGBQUAD& color = palette[row[x]];
+        pixel[0] = color.rgbBlue;
+        pixel[1] = color.rgbGreen;
+        pixel[2] = color.rgbRed;
+        pixel += 3;
+      }
+    }
   }
 }
 
@@ -44,12 +73,12 @@ bool BitmapImage::CreateAuxiliary(int mode) {
     return false;
   }
 
-  this->auxiliary = std::malloc(PixelBytes(this->width, this->height));
+  this->auxiliary = new std::uint32_t[this->width * this->height];
   std::memset(this->auxiliary, 255, 4u * this->width * this->height);
   auto* output = static_cast<std::uint32_t*>(this->auxiliary);
   for (int y = 0; y < this->height; ++y) {
     for (int x = 0; x < this->width; ++x) {
-      const int index = x + y * this->width;
+      const int index = this->width * y + x;
       const std::uint32_t value = this->pixels[index];
       unsigned red = (value >> 16) & 255;
       unsigned green = (value >> 8) & 255;
@@ -69,7 +98,7 @@ bool BitmapImage::CreateAuxiliary(int mode) {
           blue = 200;
         }
       }
-      output[index] = (value & 0xFF000000u) | (red << 16) | (green << 8) | blue;
+      output[index] = (((value >> 24) << 8 | red) << 8 | green) << 8 | blue;
     }
   }
   return true;
@@ -88,7 +117,7 @@ std::uint32_t BitmapImage::Pixel(int x, int y) const {
 // FUNCTION: fn_07874
 void BitmapImage::ClearAuxiliary() {
   if (this->auxiliary) {
-    std::free(this->auxiliary);
+    delete[] static_cast<std::uint32_t*>(this->auxiliary);
     this->auxiliary = nullptr;
   }
 }
@@ -99,26 +128,30 @@ bool BitmapImage::DecodeBitmap(const void* input, int, bool iconOnly) {
   this->Clear();
   const auto* data = static_cast<const unsigned char*>(input);
 
-  static constexpr unsigned char signature[] = {0xC3, 0xD1, 0xBE, 0xCB, 0xC0, 0xCC, 0xBB, 0xA1, 0xC5, 0xE4, 0xB4, 0xCF, 0};
-  unsigned char prefix[13];
+  BITMAPFILEHEADER fileHeader;
+  std::memcpy(&fileHeader, data, sizeof(fileHeader));
+  char prefix[13];
   std::memcpy(prefix, data, 12);
   prefix[12] = 0;
-  const bool custom = std::strcmp(reinterpret_cast<const char*>(prefix), reinterpret_cast<const char*>(signature)) == 0;
-  unsigned bits;
+  RGBQUAD palette[256];
+  unsigned char row[3584];
   unsigned char* rgb;
-  const unsigned char* source;
-  std::uint32_t palette[256];
 
-  if (custom) {
+  if (std::strcmp(prefix, "총알이빨토니") == 0) {
     const std::uint32_t dimensions = (Read32(data + 12) >> 1) - 0x01929300u;
-    const int width = dimensions >> 16;
     const int height = static_cast<int>(dimensions & 0xFFFFu) - 1;
+    const unsigned char* source = data + 17;
+    const int width = dimensions >> 16;
+    WORD bits;
 
-    if (data[16] == 0) {
+    switch (data[16]) {
+    case 0:
       bits = 24;
-    } else if (data[16] == 1) {
+      break;
+    case 1:
       bits = 8;
-    } else {
+      break;
+    default:
       OutputDebugStringA("Only 16M or 8bit color format supported");
       return false;
     }
@@ -127,121 +160,134 @@ bool BitmapImage::DecodeBitmap(const void* input, int, bool iconOnly) {
       return false;
     }
 
-    this->width = width;
     this->height = height;
-    rgb = static_cast<unsigned char*>(std::malloc(3u * width * height));
-    this->pixels = static_cast<std::uint32_t*>(std::malloc(PixelBytes(width, height)));
-    source = data + 17;
+    this->width = width;
+    rgb = new unsigned char[height * width * 3];
+    this->pixels = new std::uint32_t[this->width * this->height];
 
     if (bits == 8) {
-      unsigned count = Read32(source);
+      const std::uint32_t count = Read32(source);
       source += 4;
-      if (!count) {
-        count = 256;
+      unsigned char first[512];
+      unsigned char second[512];
+
+      if (count != 0) {
+        source = ReadPalette(palette, first, second, source, count);
+      } else {
+        source = ReadPalette(palette, first, second, source, 256);
       }
 
-      const unsigned char* first = source;
-      const unsigned char* second = source + 2u * count;
-      source += 4u * count;
+      DecodeIndexedRows(*this, rgb, source, palette, row);
+    } else if (bits == 24) {
+      auto* first = new unsigned char[this->width * this->height * 3];
+      auto* second = new unsigned char[this->width * this->height * 2];
 
-      for (unsigned i = 0; i < count; ++i) {
-        palette[i] = first[2 * i + 1] | (first[2 * i] << 8) | (second[2 * i + 1] << 16) | (second[2 * i] << 24);
-      }
-    } else {
-      const std::uint32_t count = static_cast<std::uint32_t>(width) * height;
-      auto* first = static_cast<unsigned char*>(std::malloc(3u * count));
-      auto* second = static_cast<unsigned char*>(std::malloc(2u * count));
-      std::memcpy(first, source, 2u * count);
-      source += 2u * count;
-      std::memcpy(second, source, count);
-      source += count;
-
-      for (std::uint32_t i = 0; i < count; ++i) {
-        rgb[3 * i] = second[i];
-        rgb[3 * i + 1] = first[2 * i];
-        rgb[3 * i + 2] = first[2 * i + 1];
+      unsigned char* target = first;
+      for (int y = this->height - 1; y >= 0; --y) {
+        std::memcpy(target, source, this->width * 2);
+        target += this->width * 2;
+        source += this->width * 2;
       }
 
-      std::free(first);
-      std::free(second);
+      target = second;
+      for (int y = this->height - 1; y >= 0; --y) {
+        std::memcpy(target, source, this->width);
+        target += this->width;
+        source += this->width;
+      }
+
+      unsigned char* pixel = rgb;
+      int index = 0;
+      for (int y = 0; y < this->height; ++y) {
+        for (int x = 0; x < this->width; ++x) {
+          pixel[0] = second[x + this->width * y];
+          pixel[1] = first[index];
+          pixel[2] = first[index + 1];
+          index += 2;
+          pixel += 3;
+        }
+      }
+
+      delete[] first;
+      delete[] second;
     }
   } else {
-    if (Read16(data) != 0x4D42) {
+    if (fileHeader.bfType != 0x4D42) {
       return false;
     }
 
-    bits = Read16(data + 28);
-    if (bits != 24 && bits != 8) {
+    BITMAPINFOHEADER infoHeader;
+    std::memcpy(&infoHeader, data + sizeof(BITMAPFILEHEADER), sizeof(infoHeader));
+    const unsigned char* colors = data + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+
+    if (infoHeader.biBitCount != 24 && infoHeader.biBitCount != 8) {
       OutputDebugStringA("Only 16M or 8bit color format supported");
       return false;
     }
 
-    const int width = Signed(Read32(data + 18));
-    const int height = Signed(Read32(data + 22));
-    if (iconOnly && (width != 24 || height != 24)) {
+    if (iconOnly && (infoHeader.biWidth != 24 || infoHeader.biHeight != 24)) {
       return false;
     }
 
-    this->width = width;
-    this->height = height;
-    rgb = static_cast<unsigned char*>(std::malloc(3u * width * height));
-    this->pixels = static_cast<std::uint32_t*>(std::malloc(PixelBytes(width, height)));
-    const std::uint32_t offset = Read32(data + 10);
+    this->height = infoHeader.biHeight;
+    const std::uint32_t stride = (infoHeader.biWidth + 3) & ~3u;
+    this->width = infoHeader.biWidth;
+    rgb = new unsigned char[infoHeader.biHeight * infoHeader.biWidth * 3];
+    this->pixels = new std::uint32_t[this->width * this->height];
 
-    if (bits == 8) {
-      const unsigned count = Read32(data + 46) ? Read32(data + 46) : 256;
-      std::memcpy(palette, data + 54, 4u * count);
+    if (infoHeader.biBitCount == 8) {
+      std::uint32_t paletteSize;
 
-      if (offset > 54u + 4u * count) {
+      if (infoHeader.biClrUsed != 0) {
+        paletteSize = infoHeader.biClrUsed * sizeof(RGBQUAD);
+        std::memcpy(palette, colors, paletteSize);
+      } else {
+        std::memcpy(palette, colors, sizeof(palette));
+        paletteSize = sizeof(palette);
+      }
+
+      if (fileHeader.bfOffBits > static_cast<std::uint32_t>(colors - data) + paletteSize) {
         return false;
       }
 
-      source = data + offset;
-    } else {
-      if (offset > 54) {
+      DecodeIndexedRows(*this, rgb, data + fileHeader.bfOffBits, palette, row);
+    } else if (infoHeader.biBitCount == 24) {
+      if (fileHeader.bfOffBits > sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER)) {
         return false;
       }
 
-      source = data + offset;
-      const std::uint32_t alignedWidth = (static_cast<std::uint32_t>(width) + 3) & ~3u;
+      const unsigned char* source = data + fileHeader.bfOffBits;
 
-      for (int y = height - 1; y >= 0; --y) {
-        std::memcpy(rgb + 3u * y * width, source, 3u * width);
-        source += 3u * width;
-        if (alignedWidth != static_cast<std::uint32_t>(width)) {
-          source += static_cast<std::uint32_t>(width) - alignedWidth + 4u;
+      for (int y = this->height - 1; y >= 0; --y) {
+        std::memcpy(rgb + this->width * y * 3, source, this->width * 3);
+        source += this->width * 3;
+
+        if (stride != static_cast<std::uint32_t>(this->width)) {
+          source += this->width - stride + 4;
         }
       }
     }
   }
 
-  if (bits == 8) {
-    const std::uint32_t stride = (static_cast<std::uint32_t>(this->width) + 3) & ~3u;
-
-    for (int y = this->height - 1; y >= 0; --y) {
-      for (int x = 0; x < this->width; ++x) {
-        const std::uint32_t value = palette[source[x]];
-        auto* pixel = rgb + 3u * (static_cast<std::uint32_t>(y) * this->width + x);
-        pixel[0] = static_cast<unsigned char>(value);
-        pixel[1] = static_cast<unsigned char>(value >> 8);
-        pixel[2] = static_cast<unsigned char>(value >> 16);
-      }
-
-      source += stride;
-    }
-  }
-
   for (int y = 0; y < this->height; ++y) {
-    const std::uint32_t row = static_cast<std::uint32_t>(y) * this->width;
+    const unsigned char* source = rgb + this->width * y * 3;
+    std::uint32_t* target = this->pixels + this->width * y;
 
-    this->pixels[row] = Color(rgb + 3u * row, 255);
+    if (source && target) {
+      *target = Color(source, 255);
 
-    for (int x = 1; x < this->width; ++x) {
-      this->pixels[row + x] = Color(rgb + 3u * (row + x), 255);
+      for (int x = 1; x < this->width; ++x) {
+        ++target;
+        source += 3;
+        *target = Color(source, 255);
+      }
     }
   }
 
-  std::free(rgb);
+  if (rgb) {
+    delete[] rgb;
+  }
+
   this->alpha = 0;
   return true;
 }
@@ -258,7 +304,7 @@ bool BitmapImage::DecodeTga(const void* input, int) {
   this->width = Read16(data + 12);
   this->height = Read16(data + 14);
 
-  this->pixels = static_cast<std::uint32_t*>(std::malloc(PixelBytes(this->width, this->height)));
+  this->pixels = new std::uint32_t[this->width * this->height];
   const bool rgba = data[16] == 32;
   unsigned alpha = 255;
   // INLINED
