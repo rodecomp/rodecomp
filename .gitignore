@@ -4,3 +4,4 @@ cache/
 logs/
 tmp/
 scripts/data
+scripts/exe/__pycache__/
