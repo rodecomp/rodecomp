@@ -564,14 +564,20 @@ void CUISlot0::Slot15(int width, int height) {
   CUISlot::Slot15(width, height);
   this->radioButton->Move(59, 1);
   this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
-  this->radioButton->disabled = 0;
-  this->radioButton->Invalidate();
+  {
+    CUIRadioButton* radioButton = this->radioButton;
+    radioButton->disabled = 0;
+    radioButton->Invalidate();
+  }
   this->radioButton->SetImages(
     std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_select.bmp"),
     std::string("유저인터페이스\\EnchantUI\\btn_socket_over.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp")
   );
-  this->radioButton->checked = false;
-  this->radioButton->Invalidate();
+  {
+    CUIRadioButton* radioButton = this->radioButton;
+    radioButton->checked = false;
+    radioButton->Invalidate();
+  }
   this->itemIcon->Move(69, 11);
   this->itemIcon->unknown_0084 = 1;
   this->itemIcon->unknown_0085 = 1;
@@ -600,14 +606,20 @@ void CUISlot1::Slot15(int width, int height) {
   CUISlot::Slot15(width, height);
   this->radioButton->Move(59, 1);
   this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
-  this->radioButton->disabled = 0;
-  this->radioButton->Invalidate();
+  {
+    CUIRadioButton* radioButton = this->radioButton;
+    radioButton->disabled = 0;
+    radioButton->Invalidate();
+  }
   this->radioButton->SetImages(
     std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_select.bmp"),
     std::string("유저인터페이스\\EnchantUI\\btn_socket_over.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp")
   );
-  this->radioButton->checked = false;
-  this->radioButton->Invalidate();
+  {
+    CUIRadioButton* radioButton = this->radioButton;
+    radioButton->checked = false;
+    radioButton->Invalidate();
+  }
   this->itemIcon->Move(69, 11);
   this->itemIcon->unknown_0084 = 1;
   this->itemIcon->unknown_0085 = 1;
@@ -636,14 +648,20 @@ void CUISlot2::Slot15(int width, int height) {
   CUISlot::Slot15(width, height);
   this->radioButton->Move(3, 1);
   this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
-  this->radioButton->disabled = 0;
-  this->radioButton->Invalidate();
+  {
+    CUIRadioButton* radioButton = this->radioButton;
+    radioButton->disabled = 0;
+    radioButton->Invalidate();
+  }
   this->radioButton->SetImages(
     std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_select.bmp"),
     std::string("유저인터페이스\\EnchantUI\\btn_socket_over.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp")
   );
-  this->radioButton->checked = false;
-  this->radioButton->Invalidate();
+  {
+    CUIRadioButton* radioButton = this->radioButton;
+    radioButton->checked = false;
+    radioButton->Invalidate();
+  }
   this->itemIcon->Move(13, 11);
   this->itemIcon->unknown_0084 = 1;
   this->itemIcon->unknown_0085 = 1;
@@ -672,14 +690,20 @@ void CUISlot3::Slot15(int width, int height) {
   CUISlot::Slot15(width, height);
   this->radioButton->Move(3, 1);
   this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
-  this->radioButton->disabled = 0;
-  this->radioButton->Invalidate();
+  {
+    CUIRadioButton* radioButton = this->radioButton;
+    radioButton->disabled = 0;
+    radioButton->Invalidate();
+  }
   this->radioButton->SetImages(
     std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_select.bmp"),
     std::string("유저인터페이스\\EnchantUI\\btn_socket_over.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_socket_out.bmp")
   );
-  this->radioButton->checked = false;
-  this->radioButton->Invalidate();
+  {
+    CUIRadioButton* radioButton = this->radioButton;
+    radioButton->checked = false;
+    radioButton->Invalidate();
+  }
   this->itemIcon->Move(13, 11);
   this->itemIcon->unknown_0084 = 1;
   this->itemIcon->unknown_0085 = 1;
