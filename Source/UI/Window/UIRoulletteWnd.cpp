@@ -272,12 +272,12 @@ void UIRoulletteWnd::Slot19() {
       if (g_rouletteMgr->m_spinning == 0) {
         CBitmapRes* arrow =
           static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\roullette\\stageArrow.bmp")));
-        this->DrawBitmap(480, 337 - (this->CoinType() + g_rouletteMgr->m_stage) * 40, &arrow->image, true);
+        this->DrawBitmap(480, 337 - (this->CoinType() + g_rouletteMgr->m_stage) * 40, arrow, true);
       }
       if (g_rouletteMgr->m_resultShown == 1 && g_rouletteMgr->m_bonus == 0) {
         CBitmapRes* arrow =
           static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\roullette\\stageArrow.bmp")));
-        this->DrawBitmap(480, 297 - g_rouletteMgr->m_stage * 40, &arrow->image, true);
+        this->DrawBitmap(480, 297 - g_rouletteMgr->m_stage * 40, arrow, true);
       }
       this->m_startButton->SetState(0);
     }
