@@ -118,33 +118,71 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
 
   switch (id) {
   case 0x40B:
+    offset += 5;
+    break;
   case 0x45F:
+    offset += 5;
+    break;
   case 0x7D6:
     offset += 5;
     break;
   case 0x42C:
+    offset -= 8;
+    break;
   case 0x43B:
+    offset -= 8;
+    break;
   case 0x442:
+    offset -= 8;
+    break;
   case 0x463:
+    offset -= 8;
+    break;
   case 0x46E:
+    offset -= 8;
+    break;
   case 0x470:
+    offset -= 8;
+    break;
   case 0x472:
+    offset -= 8;
+    break;
   case 0x473:
+    offset -= 8;
+    break;
   case 0x955:
     offset -= 8;
     break;
   case 0x43C:
+    offset -= 7;
+    break;
   case 0x7E2:
     offset -= 7;
     break;
   case 0x43D:
+    offset -= 5;
+    break;
   case 0x441:
+    offset -= 5;
+    break;
   case 0x443:
+    offset -= 5;
+    break;
   case 0x447:
+    offset -= 5;
+    break;
   case 0x4ED:
+    offset -= 5;
+    break;
   case 0x552:
+    offset -= 5;
+    break;
   case 0x75E:
+    offset -= 5;
+    break;
   case 0x805:
+    offset -= 5;
+    break;
   case 0x853:
     offset -= 5;
     break;
@@ -165,65 +203,173 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     offset += 8;
     break;
   case 0x425:
+    offset -= 6;
+    break;
   case 0x46D:
+    offset -= 6;
+    break;
   case 0x476:
+    offset -= 6;
+    break;
   case 0x4C2:
+    offset -= 6;
+    break;
   case 0x4C5:
+    offset -= 6;
+    break;
   case 0x63F:
+    offset -= 6;
+    break;
   case 0x6C9:
+    offset -= 6;
+    break;
   case 0x6CC:
+    offset -= 6;
+    break;
   case 0x6D0:
+    offset -= 6;
+    break;
   case 0x6F8:
+    offset -= 6;
+    break;
   case 0x722:
+    offset -= 6;
+    break;
   case 0x726:
+    offset -= 6;
+    break;
   case 0x752:
+    offset -= 6;
+    break;
   case 0x756:
+    offset -= 6;
+    break;
   case 0x75A:
+    offset -= 6;
+    break;
   case 0x77A:
+    offset -= 6;
+    break;
   case 0x7B2:
+    offset -= 6;
+    break;
   case 0x802:
+    offset -= 6;
+    break;
   case 0x859:
+    offset -= 6;
+    break;
   case 0x86C:
+    offset -= 6;
+    break;
   case 0x870:
     offset -= 6;
     break;
   case 0x475:
+    offset -= 4;
+    break;
   case 0x4C3:
+    offset -= 4;
+    break;
   case 0x522:
+    offset -= 4;
+    break;
   case 0x5C5:
+    offset -= 4;
+    break;
   case 0x6D5:
+    offset -= 4;
+    break;
   case 0x6DF:
+    offset -= 4;
+    break;
   case 0x6E3:
+    offset -= 4;
+    break;
   case 0x6EF:
+    offset -= 4;
+    break;
   case 0x6F4:
+    offset -= 4;
+    break;
   case 0x707:
+    offset -= 4;
+    break;
   case 0x72E:
+    offset -= 4;
+    break;
   case 0x742:
+    offset -= 4;
+    break;
   case 0x74A:
+    offset -= 4;
+    break;
   case 0x753:
+    offset -= 4;
+    break;
   case 0x757:
+    offset -= 4;
+    break;
   case 0x75B:
+    offset -= 4;
+    break;
   case 0x76A:
+    offset -= 4;
+    break;
   case 0x771:
+    offset -= 4;
+    break;
   case 0x7AF:
+    offset -= 4;
+    break;
   case 0x7B6:
+    offset -= 4;
+    break;
   case 0x7CA:
+    offset -= 4;
+    break;
   case 0x7D5:
+    offset -= 4;
+    break;
   case 0x7EB:
+    offset -= 4;
+    break;
   case 0x800:
+    offset -= 4;
+    break;
   case 0x843:
+    offset -= 4;
+    break;
   case 0x889:
+    offset -= 4;
+    break;
   case 0x900:
+    offset -= 4;
+    break;
   case 0x904:
+    offset -= 4;
+    break;
   case 0x91E:
+    offset -= 4;
+    break;
   case 0x921:
+    offset -= 4;
+    break;
   case 0x923:
+    offset -= 4;
+    break;
   case 0x924:
+    offset -= 4;
+    break;
   case 0x926:
     offset -= 4;
     break;
   case 0x4C4:
+    offset -= 10;
+    break;
   case 0x4D7:
+    offset -= 10;
+    break;
   case 0x4DB:
     offset -= 10;
     break;
@@ -248,15 +394,35 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     offset -= 6;
     break;
   case 0x4EC:
+    offset -= 2;
+    break;
   case 0x747:
+    offset -= 2;
+    break;
   case 0x755:
+    offset -= 2;
+    break;
   case 0x7A1:
+    offset -= 2;
+    break;
   case 0x7E9:
+    offset -= 2;
+    break;
   case 0x810:
+    offset -= 2;
+    break;
   case 0x854:
+    offset -= 2;
+    break;
   case 0x888:
+    offset -= 2;
+    break;
   case 0x966:
+    offset -= 2;
+    break;
   case 0x967:
+    offset -= 2;
+    break;
   case 0x968:
     offset -= 2;
     break;
@@ -579,8 +745,14 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     offset -= 4;
     break;
   case 0x639:
+    offset -= 3;
+    break;
   case 0x657:
+    offset -= 3;
+    break;
   case 0x676:
+    offset -= 3;
+    break;
   case 0x774:
     offset -= 3;
     break;
@@ -647,9 +819,17 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     offset += 4;
     break;
   case 0x746:
+    --offset;
+    break;
   case 0x75F:
+    --offset;
+    break;
   case 0x7B4:
+    --offset;
+    break;
   case 0x7C3:
+    --offset;
+    break;
   case 0x7CF:
     --offset;
     break;
