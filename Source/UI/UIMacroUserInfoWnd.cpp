@@ -186,14 +186,18 @@ void UIMacroUserInfoWnd::Slot15(int, int) {
 // OFFSET: 0x007F0EF0
 // FUNCTION: fn_09848
 void UIMacroReporterWnd::Paint() {
-  if (this->m_mode == 0 || this->m_mode == 1) {
-    this->m_reportButton->SetDisabled(this->m_entries.empty());
-    this->m_reportButton->Invalidate();
-  } else if (this->m_mode == 2 || this->m_mode == 3) {
+  switch (this->m_mode) {
+  case 2:
+  case 3:
     this->m_reportButton->SetDisabled(!(this->m_namesValid == 1 && this->m_targetValid == 1));
     this->m_reportButton->Invalidate();
+    break;
+  case 0:
+  case 1:
+    this->m_reportButton->SetDisabled(this->m_entries.empty());
+    this->m_reportButton->Invalidate();
+    break;
   }
-
   DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFFFFFFFF);
   this->DrawTitleBar(true, "", 0);
   this->DrawButtonBar(1, 0, 1);
