@@ -2050,18 +2050,18 @@ void CRagEffect::Sphere() {
     return;
   }
 
-  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects());
   this->state.duration = 500 - this->state.stateCnt;
-  EffectPrimitiveState& particle = *this->state.unknown_11C84;
-  particle.duration = 300;
-  particle.radius = 0.1f;
-  particle.radiusSpeed = 0.15f;
-  particle.gravSpeed = 0.15f;
-  particle.longitude = 2.0f;
-  particle.longSpeed = 8.0f;
-  particle.longAccel = -0.01f;
-  particle.size = 1.2f;
-  reinterpret_cast<matrix*>(particle.transform)->MakeYRotation(GetRadian(static_cast<int>(particle.longitude)));
+  this->state.lastPrim->state.duration = 300;
+  this->state.lastPrim->state.radius = 0.1f;
+  this->state.lastPrim->state.radiusSpeed = 0.15f;
+  this->state.lastPrim->state.gravSpeed = 0.15f;
+  this->state.lastPrim->state.longitude = 2.0f;
+  this->state.lastPrim->state.longSpeed = 8.0f;
+  this->state.lastPrim->state.longAccel = -0.01f;
+  this->state.lastPrim->state.size = 1.2f;
+  reinterpret_cast<matrix*>(this->state.lastPrim->state.transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
+  EffectPrimitiveState& particle = this->state.lastPrim->state;
   const float* m = particle.transform;
   const float distance = particle.radius;
   particle.deltaPos2 = {
@@ -2069,14 +2069,14 @@ void CRagEffect::Sphere() {
     (m[1] * 0.0f - m[4] * 30.0f) + distance * m[7] + m[10],
     (m[2] * 0.0f - m[5] * 30.0f) + distance * m[8] + m[11]
   };
-  particle.chRadiSpeed = 1;
-  particle.unknown_01D8 = 0;
-  particle.chPoint.push_back(95.0f);
-  particle.chVal1.push_back(-0.15f);
-  particle.chVal2.push_back(particle.radiusAccel);
-  Owner(&particle).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-  Owner(&particle).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
-  Owner(&particle).InitSegment();
+  this->state.lastPrim->state.chRadiSpeed = 1;
+  this->state.lastPrim->state.unknown_01D8 = 0;
+  this->state.lastPrim->state.chPoint.push_back(95.0f);
+  this->state.lastPrim->state.chVal1.push_back(-0.15f);
+  this->state.lastPrim->state.chVal2.push_back(this->state.lastPrim->state.radiusAccel);
+  this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+  this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+  this->state.lastPrim->InitSegment();
 }
 
 // OFFSET: 0x00C17220

@@ -8,6 +8,7 @@
 
 class CRes;
 struct EffectPrimitiveState;
+struct CEffectPrim;
 struct EffectActor;
 
 struct RagEffectState {
@@ -44,7 +45,10 @@ struct RagEffectState {
   /* 11944 */ int currentKey[128];
   /* 11B44 */ int loopCount;
   /* 11B48 */ int loopLimit;
-  /* 11B4C */ EffectPrimitiveState* unknown_11C84;
+  union {
+    /* 11B4C */ EffectPrimitiveState* unknown_11C84;
+    /* 11B4C */ CEffectPrim* lastPrim;
+  };
   /* 11B50 */ std::int32_t unknown_11C88[4];
   /* 11B60 */ unsigned char forceRender;
   /* 11B61 */ unsigned char unknown_11C99[3];
