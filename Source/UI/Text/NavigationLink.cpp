@@ -323,9 +323,8 @@ std::string NavigationLinkParser::EncodeNavigationNumber(int value) {
   characters.push_back(digits[value]);
 
   std::string result;
-  const std::size_t count = characters.size();
-  for (std::size_t index = 0; index < count; ++index) {
-    result += characters[count - 1 - index];
+  for (auto it = characters.rbegin(); it != characters.rend(); ++it) {
+    result += *it;
   }
   return result;
 }
