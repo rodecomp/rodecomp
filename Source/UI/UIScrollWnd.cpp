@@ -436,12 +436,12 @@ void UIScrollWnd::Resize(int width, int height) {
 // OFFSET: 0x009AD940
 // FUNCTION: fn_13789
 int UIScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  int delta = argument1;
   switch (message) {
   case 7:
   case 9:
   case 10: {
     const int previous = this->scrollPosition;
-    int delta = argument1;
     if (message == 9) {
       delta = -1;
     } else if (message == 10) {
@@ -463,7 +463,6 @@ int UIScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   case 11:
   case 12: {
     const int previous = this->unknown_009C;
-    int delta = argument1;
     if (message == 11) {
       delta = -1;
     } else if (message == 12) {
