@@ -383,7 +383,7 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
       std::memset(guild, 0, sizeof(guild));
       strncpy_s(guild, sizeof(guild), info.unknown_0034.c_str(), info.unknown_0034.size());
       if (g_forbiddenWords.Contains(guild)) {
-        std::string masked;
+        std::string masked = "";
         g_forbiddenWords.Mask(guild, &masked);
       }
 
@@ -391,7 +391,7 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
       std::memset(position, 0, sizeof(position));
       strncpy_s(position, sizeof(position), info.unknown_004C.c_str(), info.unknown_004C.size());
       if (g_forbiddenWords.Contains(position)) {
-        std::string masked;
+        std::string masked = "";
         g_forbiddenWords.Mask(position, &masked);
       }
 
