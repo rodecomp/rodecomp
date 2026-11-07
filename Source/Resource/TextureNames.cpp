@@ -12,18 +12,20 @@
 // OFFSET: 0x00ACE510
 // FUNCTION: fn_17788
 const char* CLanguageBase::ServiceName(const char* name) {
-  if (g_serviceType == 0 || g_serviceType == 2 || g_serviceType == 20) {
-    return name;
+  if (g_serviceType != 0 && g_serviceType != 2 && g_serviceType != 20) {
+    // STATIC: 0x016D3860
+    // GLOBAL: gl_24372
+    static char path[260];
+    std::strcpy(path, this->servicePrefix.c_str());
+    std::strcat(path, name);
+    const bool exists = std::strstr(name, ".txt") || std::strstr(name, ".xml") ? ResourceExists(path, 0) : ResourceMgr::Instance().Exists(path);
+
+    if (exists) {
+      return path;
+    }
   }
 
-  // STATIC: 0x016D3860
-  // GLOBAL: gl_24372
-  static char path[260];
-  std::strcpy(path, this->servicePrefix.c_str());
-  std::strcat(path, name);
-  const bool exists = std::strstr(name, ".txt") || std::strstr(name, ".xml") ? ResourceExists(path, 0) : ResourceMgr::Instance().Exists(path);
-
-  return exists ? path : name;
+  return name;
 }
 
 // OFFSET: 0x00B01200
