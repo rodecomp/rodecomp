@@ -328,6 +328,6 @@ void CWorld::AddPcPosUnindexed(std::uint32_t aid, const CellFloatPos& cell) {
     break;
   }
 
-  this->unindexedActorIds.push_back(aid);
+  this->unindexedActorIds.emplace_back(aid);
   this->PcApproachToPlayer(aid, cell);
 }
