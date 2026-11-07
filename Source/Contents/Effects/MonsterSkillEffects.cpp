@@ -1180,8 +1180,8 @@ void CFootprintEffect::Slot03() {
 // OFFSET: 0x00712C50
 // FUNCTION: fn_07244
 void CFootprintEffect::Slot04() {
-  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    AsParticle(*it)->Render(true, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  for (EZ2STREmitter* emitter : this->emitters) {
+    AsParticle(emitter)->Render(true, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 }
 
@@ -1355,12 +1355,12 @@ void CFootprintStrEffect::Slot03() {
 // OFFSET: 0x00713F70
 // FUNCTION: fn_07253
 void CFootprintStrEffect::Slot04() {
-  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    AsParticle(*it)->DrawGround(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  for (EZ2STREmitter* emitter : this->emitters) {
+    AsParticle(emitter)->DrawGround(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
 
-  for (auto it = this->unknown_00D4.begin(); it != this->unknown_00D4.end(); ++it) {
-    AsParticle(*it)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  for (EZ2STREmitter* emitter : this->unknown_00D4) {
+    AsParticle(emitter)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
 }
 
@@ -3177,12 +3177,12 @@ void CServantWeaponEffect::Slot04() {
 // OFFSET: 0x00724F40
 // FUNCTION: fn_07408
 void CServantWeaponNewEffect::Slot04() {
-  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    AsParticle(*it)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  for (EZ2STREmitter* emitter : this->emitters) {
+    AsParticle(emitter)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
 
-  for (auto it = this->trails.begin(); it != this->trails.end(); ++it) {
-    AsParticle(*it)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  for (EZ2STREmitter* trail : this->trails) {
+    AsParticle(trail)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
 }
 
