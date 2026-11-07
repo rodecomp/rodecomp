@@ -547,16 +547,17 @@ void CGrannyPc::Slot39(int value) {
 // FUNCTION: fn_22620
 void CPc::Slot39(int value) {
   int weapon = this->weapon;
+  int speed = value;
 
   if (weapon > 105) {
     weapon = GetWeaponViewValue(weapon);
   }
 
   if (weapon != 11) {
-    value = std::min(value, g_maxMoveSpeed);
+    speed = speed > g_maxMoveSpeed ? g_maxMoveSpeed : speed;
   }
 
-  this->render.unknown_0064 = static_cast<float>(value) / 432.0f;
+  this->render.unknown_0064 = static_cast<float>(speed) / 432.0f;
 }
 
 // OFFSET: 0x00DDD190
