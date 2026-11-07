@@ -25,7 +25,7 @@
   "exeBuild": ["python", "scripts/exe/build_exe.py"],
   "lintLimits": {
     "maxInitializerNumbers": 65536,
-    "maxFiles": 400
+    "maxFiles": 1024
   },
   "compileCommands": "data/compile.json"
 }
