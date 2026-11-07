@@ -173,7 +173,7 @@ void UIHairBitmap::Slot31(int x, int y) {
 void UINewMakeCharWnd::Paint() {
   CBitmapRes* background =
     static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\make_character_ver2\\bg_makeBg.bmp")));
-  this->DrawBitmap(0, 0, &background->image, false);
+  this->DrawBitmap(0, 0, background, false);
   this->DrawTextAt(0x2C, 0x11, LookupMessage(0xD1B), 0, 0, 0xC, 0x5F5F5F, 1, 0);
 
   for (int i = 0; i < 2; ++i) {
