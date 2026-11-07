@@ -2964,10 +2964,10 @@ void CEffectPrim::RenderGlowDisc(matrix& wtm) {
 // OFFSET: 0x00BD8080
 // FUNCTION: fn_19887
 void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec2{};
-  vector3d vec3{};
-  vector3d vec4{};
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2983,7 +2983,7 @@ void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
         + slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f;
       const float shape = slot.height[10];
       int angle = slot.fullDisplayAngle;
-      vec1 = {rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]};
+      vec1.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
 
       if (shape == 0.0f) {
         angle += angle < 90 ? 270 : -90;
@@ -2995,7 +2995,7 @@ void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
           angle += 360;
         }
       }
-      vec2 = {rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]};
+      vec2.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
 
       if (shape == 0.0f) {
         angle -= 90;
@@ -3013,7 +3013,7 @@ void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
           angle += 360;
         }
       }
-      vec3 = {rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]};
+      vec3.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
 
       if (shape == 0.0f) {
         angle -= 90;
@@ -3031,7 +3031,7 @@ void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
           angle += 360;
         }
       }
-      vec4 = {rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]};
+      vec4.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
 
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
@@ -3054,7 +3054,7 @@ void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
         break;
       case 4:
         this->RenderTeiRect(
-          &rpCnt, slot.alphaB, p2, p1, p4, p3, wtm, 0, static_cast<short>(i + slot.flag1[0]) % this->state.totalTexture, 1, 255, 150, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0
+          &rpCnt, slot.alphaB, p2, p1, p4, p3, wtm, 0, static_cast<short>(i + slot.flag1[0]) % static_cast<int>(this->state.totalTexture), 1, 255, 150, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0
         );
         break;
       }
