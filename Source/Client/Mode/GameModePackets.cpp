@@ -12680,7 +12680,8 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
     actor->unknown_0314 = packet->objectType;
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
-    actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, 4, 0, static_cast<int>(value), static_cast<int>(value >> 32), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
       const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
@@ -12692,7 +12693,8 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
     return;
   }
 
-  actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+  actor->SendMsg(nullptr, 3, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   const int actorJob = actor->GetEffectiveJob(-1);
   if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
     const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
