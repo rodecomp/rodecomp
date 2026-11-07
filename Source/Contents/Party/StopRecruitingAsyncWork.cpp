@@ -80,8 +80,7 @@ void CStopRecruitingAsyncWork::Bind(std::uint32_t accountId, std::string world, 
   this->m_world = world;
   this->m_url = url;
   this->m_token = token;
-  const std::uint8_t unknown[] = {0x84, 0xA9, 0x52, 0x67, 0x60, 0x16, 0x21, 0xF1};
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xF14F79170939C7F1ULL>(unknown), 50);
+  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xF14F79170939C7F1ULL>({0x84, 0xA9, 0x52, 0x67, 0x60, 0x16, 0x21, 0xF1}), 50);
   this->m_diagnostic.MoveFrom(diagnostic);
 }
 
@@ -94,23 +93,17 @@ bool CStopRecruitingAsyncWork::Execute() {
   StringFormat(master, sizeof(master), _TRUNCATE, "%lu", this->m_masterAccountId);
   const std::string world = ToUtf8(this->m_world);
   CCURLPostHander handler(this->m_url);
-  const std::uint8_t aid[] = {0xDA, 0x1E, 0x47, 0x99};
-  handler.AddField(DecryptName<0x050505679903579BULL>(aid), account, 4);
-  const std::uint8_t worldName[] = {0xB6, 0x14, 0x8B, 0xBB, 0xB1, 0x5D, 0x58, 0xB0, 0x84, 0x7B};
-  handler.AddField(DecryptName<0xDD3913D5D7F97BE1ULL>(worldName), world, 4);
-  const std::uint8_t authToken[] = {0xE6, 0x80, 0x0B, 0x51, 0x65, 0x24, 0x40, 0xDA, 0xC9, 0xF5};
-  handler.AddField(DecryptName<0xBF2B4B31397FF5A7ULL>(authToken), this->m_token, 4);
-  const std::uint8_t masterAid[] = {0xF0, 0xDC, 0x9E, 0x43, 0xDE, 0xCD, 0xAE, 0xCA, 0xF9, 0xBD};
-  handler.AddField(DecryptName<0x83EFBFBB37EDBDBDULL>(masterAid), master, 4);
+  handler.AddField(DecryptName<0x050505679903579BULL>({0xDA, 0x1E, 0x47, 0x99}), account, 4);
+  handler.AddField(DecryptName<0xDD3913D5D7F97BE1ULL>({0xB6, 0x14, 0x8B, 0xBB, 0xB1, 0x5D, 0x58, 0xB0, 0x84, 0x7B}), world, 4);
+  handler.AddField(DecryptName<0xBF2B4B31397FF5A7ULL>({0xE6, 0x80, 0x0B, 0x51, 0x65, 0x24, 0x40, 0xDA, 0xC9, 0xF5}), this->m_token, 4);
+  handler.AddField(DecryptName<0x83EFBFBB37EDBDBDULL>({0xF0, 0xDC, 0x9E, 0x43, 0xDE, 0xCD, 0xAE, 0xCA, 0xF9, 0xBD}), master, 4);
 
   if (handler.Perform() != 0) {
-    const std::uint8_t fail[] = {0xE9, 0xF8, 0x82, 0x61, 0xB5};
-    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x39FF7FB50DEB998FULL>(fail), 92);
+    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x39FF7FB50DEB998FULL>({0xE9, 0xF8, 0x82, 0x61, 0xB5}), 92);
     this->m_diagnostic.MoveFrom(diagnostic);
   } else {
     this->m_response = FromUtf8(handler.Response());
-    const std::uint8_t success[] = {0xE4, 0x84, 0x82, 0xBE, 0xB4, 0xE0, 0x9A, 0x2F};
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x2FE993D1DDE1F197ULL>(success), 101);
+    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x2FE993D1DDE1F197ULL>({0xE4, 0x84, 0x82, 0xBE, 0xB4, 0xE0, 0x9A, 0x2F}), 101);
     this->m_diagnostic.MoveFrom(diagnostic);
   }
 
