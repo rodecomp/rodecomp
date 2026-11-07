@@ -656,15 +656,13 @@ struct ChatRoomRecordHeader {
 // FUNCTION: fn_11800
 int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 3:
-    if (this->history->verticalOverflow != 0) {
-      this->history->SendMsg(nullptr, 9, 0, 0, 0, 0);
+  case 53:
+    this->saved = reinterpret_cast<ChatRoomWndInfo*>(a);
+    if (this->saved->IsValid() == 0) {
+      this->saved->Reset();
     }
-    return 0;
-  case 4:
-    if (this->history->verticalOverflow != 0) {
-      this->history->SendMsg(nullptr, 10, 0, 0, 0, 0);
-    }
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
     return 0;
   case 6:
     switch (a) {
@@ -741,160 +739,6 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     default:
       return 0;
     }
-  case 14: {
-    if (a != 7) {
-      return 0;
-    }
-    int width = b > 512 ? 512 : b;
-    int height = c > 384 ? 384 : c;
-    if (width < 280) {
-      width = 280;
-    }
-    if (height < 120) {
-      height = 120;
-    }
-    width = (width - 280) / 32 * 32 + 280;
-    height = (height - 120) / 32 * 32 + 120;
-    if (width != this->geometry.width || height != this->geometry.height) {
-      this->Resize(width, height);
-      this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-      this->edit->Resize(this->geometry.width - 30, 16);
-      this->edit->Move(3, this->geometry.height - 18);
-      this->history->Resize(this->geometry.width - this->geometry.width * 56 / 280 - 3, this->geometry.height - 38);
-      this->history->Move(1, 17);
-      this->memberList->Resize(this->geometry.width * 56 / 280, this->geometry.height - 38, false);
-      this->memberList->Move(this->geometry.width - this->geometry.width * 56 / 280 - 1, 17);
-      this->closeButton->Move(this->geometry.width - 14, 3);
-      const std::string title = this->titleText->text;
-      this->titleText->Resize(this->geometry.width - 30, 12);
-      this->titleText->SetTextFitted(title.c_str());
-    }
-    g_windowMgr.StoreSnapRectangle(this);
-    return 0;
-  }
-  case 34: {
-    const ChatRoomTitleInfo* settings = reinterpret_cast<const ChatRoomTitleInfo*>(a);
-    this->title = settings->title;
-    this->unknown_00CC = settings->unknown_0018;
-    this->roomStatus.roomType = settings->type;
-    this->roomStatus.memberCount = settings->memberCount;
-    this->roomStatus.memberLimit = settings->memberLimit;
-    this->roomStatus.roomId = settings->id;
-
-    const std::size_t end = this->title.find('\r');
-    if (end != std::string::npos) {
-      this->title = this->title.substr(0, end);
-    }
-
-    std::string prefix;
-    prefix = LookupMessage((this->roomStatus.roomType != 0) + 89);
-    char text[256];
-    std::sprintf(text, "%s%s (%d/%d)", prefix.c_str(), this->title.c_str(), this->roomStatus.memberCount, this->roomStatus.memberLimit);
-    if (g_forbiddenWords.Contains(text)) {
-      std::string masked;
-      g_forbiddenWords.Mask(text, &masked);
-    }
-    this->titleText->SetTextFitted(text);
-    this->Invalidate();
-    return 0;
-  }
-  case 37: {
-    char* text = reinterpret_cast<char*>(a);
-    if (g_forbiddenWords.Contains(text)) {
-      std::string masked("");
-      g_forbiddenWords.Mask(text, &masked);
-    }
-
-    std::vector<std::string> lines;
-    char name[25] = {};
-    const int wrapWidth = this->geometry.width * 80 / 640;
-    {
-      const std::string message(text);
-      const int length = static_cast<int>(std::strlen(text));
-      const int enter = static_cast<int>(message.find(")님이 입장 하였습니다.", 0));
-      const int leave = static_cast<int>(message.find(")님이 퇴장 하였습니다.", 0));
-      const int colon = static_cast<int>(message.find(" :", 0));
-      if (enter > 0 && enter < length) {
-        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
-          std::memcpy(name, text + enter + 1, length - enter);
-          name[length - enter] = '\0';
-        } else {
-          std::memcpy(name, text + 1, enter - 1);
-          name[enter - 1] = '\0';
-        }
-      } else if (leave > 0 && leave < length) {
-        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
-          std::memcpy(name, text + leave + 1, length - leave);
-          name[length - leave] = '\0';
-        } else {
-          std::memcpy(name, text + 1, leave - 1);
-          name[leave - 1] = '\0';
-        }
-      } else if (colon > 0 && colon < length && colon < 24) {
-        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
-          std::memcpy(name, text + colon, length - colon);
-          name[length - colon] = '\0';
-        } else {
-          std::memcpy(name, text, colon);
-          name[colon] = '\0';
-        }
-      }
-      if (std::strcmp(name, g_session.DecodePlayerName()) == 0) {
-        name[0] = '\0';
-      }
-    }
-
-    if (_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("<ITEML>")) ||
-        _mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("</ITEML>"))) {
-      lines.push_back(std::string(text));
-    } else {
-      WrapPlainText(text, lines, wrapWidth);
-    }
-
-    for (unsigned index = 0; index < lines.size(); ++index) {
-      this->history->AddText(lines[index].c_str(), static_cast<int>(b), name);
-    }
-    return 0;
-  }
-  case 43:
-    this->memberList->Clear();
-    this->unknown_010C.erase(this->unknown_010C.begin(), this->unknown_010C.end());
-    return 0;
-  case 44: {
-    this->unknown_010C[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
-    int color = 0;
-    if (b != 0) {
-      if (g_serviceOptions.Get(11) && g_soundMgr->unknown != 0) {
-        g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      }
-    } else {
-      color = 0x808000;
-    }
-    this->memberList->AddText(reinterpret_cast<const char*>(a), color, nullptr);
-    return 0;
-  }
-  case 45: {
-    const std::map<std::string, int>::iterator found = this->unknown_010C.find(std::string(reinterpret_cast<const char*>(a)));
-    if (found == this->unknown_010C.end()) {
-      return 0;
-    }
-    this->unknown_010C.erase(found);
-    this->memberList->Clear();
-    for (std::map<std::string, int>::iterator it = this->unknown_010C.begin(); it != this->unknown_010C.end(); ++it) {
-      this->memberList->AddText(it->first.c_str(), it->second != 0 ? 0 : 0x808000, nullptr);
-    }
-    return 0;
-  }
-  case 46: {
-    if (this->unknown_010C.find(std::string(reinterpret_cast<const char*>(a))) != this->unknown_010C.end()) {
-      this->unknown_010C[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
-    }
-    this->memberList->Clear();
-    for (std::map<std::string, int>::iterator it = this->unknown_010C.begin(); it != this->unknown_010C.end(); ++it) {
-      this->memberList->AddText(it->first.c_str(), it->second != 0 ? 0 : 0x808000, nullptr);
-    }
-    return 0;
-  }
   case 48: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     switch (this->unknown_0114[a].second) {
@@ -956,7 +800,8 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         if (this->unknown_010C.find(target) == this->unknown_010C.end() || this->unknown_010C[target] == -1) {
           return 0;
         }
-        if (rank == 0) {
+        switch (rank) {
+        case 0:
           if (!(target == self)) {
             this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(127)), 0));
             this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(128)), 1));
@@ -966,11 +811,13 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
             this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(358)), 21));
           }
           this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(126)), 2));
-        } else if (rank == 1) {
+          break;
+        case 1:
           this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(129)), 3));
           if (!g_windowMgr.IsFriend(target.c_str()) && !(target == self) && g_serviceMode != 3) {
             this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(358)), 21));
           }
+          break;
         }
       } else {
         if (rank == 0) {
@@ -1008,14 +855,170 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     return 0;
   }
-  case 53:
-    this->saved = reinterpret_cast<ChatRoomWndInfo*>(a);
-    if (this->saved->IsValid() == 0) {
-      this->saved->Reset();
+  case 34: {
+    const ChatRoomTitleInfo* settings = reinterpret_cast<const ChatRoomTitleInfo*>(a);
+    this->title = settings->title;
+    this->unknown_00CC = settings->unknown_0018;
+    this->roomStatus.roomType = settings->type;
+    this->roomStatus.memberCount = settings->memberCount;
+    this->roomStatus.memberLimit = settings->memberLimit;
+    this->roomStatus.roomId = settings->id;
+
+    const std::size_t end = this->title.find('\r');
+    if (end != std::string::npos) {
+      this->title = this->title.substr(0, end);
     }
-    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
-    this->Move(this->saved->x, this->saved->y);
+
+    std::string prefix;
+    prefix = LookupMessage((this->roomStatus.roomType != 0) + 89);
+    char text[256];
+    std::sprintf(text, "%s%s (%d/%d)", prefix.c_str(), this->title.c_str(), this->roomStatus.memberCount, this->roomStatus.memberLimit);
+    if (g_forbiddenWords.Contains(text)) {
+      std::string masked;
+      g_forbiddenWords.Mask(text, &masked);
+    }
+    this->titleText->SetTextFitted(text);
+    this->Invalidate();
     return 0;
+  }
+  case 46: {
+    if (this->unknown_010C.find(std::string(reinterpret_cast<const char*>(a))) != this->unknown_010C.end()) {
+      this->unknown_010C[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
+    }
+    this->memberList->Clear();
+    for (std::map<std::string, int>::iterator it = this->unknown_010C.begin(); it != this->unknown_010C.end(); ++it) {
+      this->memberList->AddText(it->first.c_str(), it->second != 0 ? 0 : 0x808000, nullptr);
+    }
+    return 0;
+  }
+  case 45: {
+    const std::map<std::string, int>::iterator found = this->unknown_010C.find(std::string(reinterpret_cast<const char*>(a)));
+    if (found == this->unknown_010C.end()) {
+      return 0;
+    }
+    this->unknown_010C.erase(found);
+    this->memberList->Clear();
+    for (std::map<std::string, int>::iterator it = this->unknown_010C.begin(); it != this->unknown_010C.end(); ++it) {
+      this->memberList->AddText(it->first.c_str(), it->second != 0 ? 0 : 0x808000, nullptr);
+    }
+    return 0;
+  }
+  case 43:
+    this->memberList->Clear();
+    this->unknown_010C.erase(this->unknown_010C.begin(), this->unknown_010C.end());
+    return 0;
+  case 44: {
+    this->unknown_010C[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
+    int color = 0;
+    if (b != 0) {
+      if (g_serviceOptions.Get(11) && g_soundMgr->unknown != 0) {
+        g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      }
+    } else {
+      color = 0x808000;
+    }
+    this->memberList->AddText(reinterpret_cast<const char*>(a), color, nullptr);
+    return 0;
+  }
+  case 37: {
+    char* text = reinterpret_cast<char*>(a);
+    if (g_forbiddenWords.Contains(text)) {
+      std::string masked("");
+      g_forbiddenWords.Mask(text, &masked);
+    }
+
+    std::vector<std::string> lines;
+    char name[25] = {};
+    const int wrapWidth = this->geometry.width * 80 / 640;
+    {
+      const std::string message(text);
+      const int length = static_cast<int>(std::strlen(text));
+      const int enter = static_cast<int>(message.find(")님이 입장 하였습니다.", 0));
+      const int leave = static_cast<int>(message.find(")님이 퇴장 하였습니다.", 0));
+      const int colon = static_cast<int>(message.find(" :", 0));
+      if (enter > 0 && enter < length) {
+        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
+          std::memcpy(name, text + enter + 1, length - enter);
+          name[length - enter] = '\0';
+        } else {
+          std::memcpy(name, text + 1, enter - 1);
+          name[enter - 1] = '\0';
+        }
+      } else if (leave > 0 && leave < length) {
+        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
+          std::memcpy(name, text + leave + 1, length - leave);
+          name[length - leave] = '\0';
+        } else {
+          std::memcpy(name, text + 1, leave - 1);
+          name[leave - 1] = '\0';
+        }
+      } else if (colon > 0 && colon < length && colon < 24) {
+        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
+          std::memcpy(name, text + colon, length - colon);
+          name[length - colon] = '\0';
+        } else {
+          std::memcpy(name, text, colon);
+          name[colon] = '\0';
+        }
+      }
+      if (std::strcmp(name, g_session.DecodePlayerName()) == 0) {
+        name[0] = '\0';
+      }
+    }
+
+    if (_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("<ITEML>")) ||
+        _mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("</ITEML>"))) {
+      lines.push_back(std::string(text));
+    } else {
+      WrapPlainText(text, lines, wrapWidth);
+    }
+
+    for (unsigned index = 0; index < lines.size(); ++index) {
+      this->history->AddText(lines[index].c_str(), static_cast<int>(b), name);
+    }
+    return 0;
+  }
+  case 3:
+    if (this->history->verticalOverflow != 0) {
+      this->history->SendMsg(nullptr, 9, 0, 0, 0, 0);
+    }
+    return 0;
+  case 4:
+    if (this->history->verticalOverflow != 0) {
+      this->history->SendMsg(nullptr, 10, 0, 0, 0, 0);
+    }
+    return 0;
+  case 14: {
+    if (a != 7) {
+      return 0;
+    }
+    int width = b > 512 ? 512 : b;
+    int height = c > 384 ? 384 : c;
+    if (width < 280) {
+      width = 280;
+    }
+    if (height < 120) {
+      height = 120;
+    }
+    width = (width - 280) / 32 * 32 + 280;
+    height = (height - 120) / 32 * 32 + 120;
+    if (width != this->geometry.width || height != this->geometry.height) {
+      this->Resize(width, height);
+      this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+      this->edit->Resize(this->geometry.width - 30, 16);
+      this->edit->Move(3, this->geometry.height - 18);
+      this->history->Resize(this->geometry.width - this->geometry.width * 56 / 280 - 3, this->geometry.height - 38);
+      this->history->Move(1, 17);
+      this->memberList->Resize(this->geometry.width * 56 / 280, this->geometry.height - 38, false);
+      this->memberList->Move(this->geometry.width - this->geometry.width * 56 / 280 - 1, 17);
+      this->closeButton->Move(this->geometry.width - 14, 3);
+      const std::string title = this->titleText->text;
+      this->titleText->Resize(this->geometry.width - 30, 12);
+      this->titleText->SetTextFitted(title.c_str());
+    }
+    g_windowMgr.StoreSnapRectangle(this);
+    return 0;
+  }
   case 123: {
     const unsigned char* data = reinterpret_cast<const unsigned char*>(a);
     const unsigned size = static_cast<unsigned>(b);
