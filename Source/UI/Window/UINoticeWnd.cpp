@@ -26,28 +26,34 @@ void UINoticeWnd::LoadNotice() {
   buffer[size] = 0;
   std::fclose(file);
 
-  int lineStarts[10000];
-  std::memset(lineStarts, 0, 9999);
+  int lineStarts[9999];
+  std::memset(&lineStarts[1], 0, 9995);
 
   int end = 0;
+  lineStarts[0] = 0;
   int lineCount = 1;
   if (size > 0) {
     char* cursor = buffer;
     do {
-      const char c = *cursor;
-      if (c == '\n') {
-        if (end == 0) {
-          lineStarts[lineCount] = static_cast<int>(cursor + 1 - buffer);
-          ++lineCount;
-          *cursor = 0;
+      switch (*cursor) {
+      case '\n':
+        if (end != 0) {
+          break;
         }
-      } else if (c == '\r') {
+        lineStarts[lineCount] = static_cast<int>(cursor + 1 - buffer);
+        ++lineCount;
+        [[fallthrough]];
+      case '\r':
         *cursor = 0;
-      } else if (c == '^' && end == 0 && lineCount > this->m_scrollPositions[this->m_index]) {
-        end = lineCount - 1;
-        if (lineCount < 0) {
-          lineCount = 0;
+        break;
+      case '^':
+        if (end == 0 && lineCount > this->m_scrollPositions[this->m_index]) {
+          end = lineCount - 1;
+          if (lineCount < 0) {
+            lineCount = 0;
+          }
         }
+        break;
       }
       ++cursor;
     } while (--size != 0);
