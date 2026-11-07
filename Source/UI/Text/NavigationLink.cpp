@@ -490,13 +490,13 @@ static void SplitMessageArguments(const char* text, std::vector<std::string>& ar
 
   while (separator != std::string::npos) {
     std::string argument = remaining.substr(0, separator);
-    arguments.emplace_back(argument.data(), argument.size());
+    arguments.push_back(argument);
     remaining = remaining.substr(separator + 1);
     separator = remaining.find(',');
   }
 
   if (!remaining.empty()) {
-    arguments.emplace_back(remaining.data(), remaining.size());
+    arguments.push_back(remaining);
   }
 }
 
