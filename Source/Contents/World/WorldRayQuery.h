@@ -13,9 +13,9 @@ struct WorldRayQuery {
   /* 0020 */ float limit;
 
   WorldRayQuery();
-  int Intersects(const float* bounds) const;
+  __declspec(noinline) int Intersects(const float* bounds) const;
   void Collect(const float* ray, WorldSpatialTree* root);
-  void CollectNode(WorldSpatialTree* node, int depth);
+  __declspec(noinline) void CollectNode(WorldSpatialTree* node, int depth);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
