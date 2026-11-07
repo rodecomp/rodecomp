@@ -538,7 +538,7 @@ void UIEmailAddressWnd::Paint() {
 // FUNCTION: fn_12221
 void UIEquipWnd::Paint() {
   if (CBitmapRes* titleBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_fix.bmp")))) {
-    this->DrawBitmap(0, 0, &titleBar->image, false);
+    this->DrawBitmap(0, 0, titleBar, false);
   }
   this->DrawPanelBackground(17, 0, "");
   this->FillRegion(this->m_tabs->geometry.width, 34, this->geometry.width - this->m_tabs->geometry.width, 1, 0xC3C3C3);
@@ -559,7 +559,7 @@ void UIEquipWnd::Paint() {
 
   const char* background = this->m_viewOther != 0 ? "유저인터페이스\\basic_interface\\equipwin_bg.bmp" : "유저인터페이스\\basic_interface\\equipwin_bg2.bmp";
   if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)))) {
-    this->DrawBitmap(0, this->m_contentTop + 17, &bitmap->image, false);
+    this->DrawBitmap(0, this->m_contentTop + 17, bitmap, false);
   }
 
   if (this->m_page == 2) {
@@ -578,9 +578,9 @@ void UIEquipWnd::Paint() {
       for (int i = 0; i < 3; ++i) {
         const int slot = this->m_highlight[i];
         if (slot >= 0 && slot <= 7) {
-          this->DrawBitmap(columns[slot / 4], this->m_contentTop + 51 + 26 * (slot % 4), &invert->image, true);
+          this->DrawBitmap(columns[slot / 4], this->m_contentTop + 51 + 26 * (slot % 4), invert, true);
         } else if (slot == 8 || slot == 9) {
-          this->DrawBitmap(columns[slot % 4], this->m_contentTop + 25, &invert->image, true);
+          this->DrawBitmap(columns[slot % 4], this->m_contentTop + 25, invert, true);
         }
       }
     }
@@ -689,14 +689,14 @@ void UIMenuWnd::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(fillRed, fillGreen, fillBlue));
 
-  const auto* leftUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")));
-  this->DrawBitmap(0, 0, &leftUp->image, false);
-  const auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
-  this->DrawBitmap(0, this->geometry.height - leftDown->image.height, &leftDown->image, false);
-  const auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
-  this->DrawBitmap(this->geometry.width - rightUp->image.width, 0, &rightUp->image, false);
-  const auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
-  this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, &rightDown->image, false);
+  auto* leftUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")));
+  this->DrawBitmap(0, 0, leftUp, false);
+  auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, this->geometry.height - leftDown->image.height, leftDown, false);
+  auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
+  this->DrawBitmap(this->geometry.width - rightUp->image.width, 0, rightUp, false);
+  auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
+  this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, rightDown, false);
 
   SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
   const int count = static_cast<int>(this->m_items.size());
@@ -1564,7 +1564,7 @@ void UIStatusWnd::Paint() {
 
   const char* background = this->m_extended == 1 ? "유저인터페이스\\statuswnd\\w_ex_statwin_bg.bmp" : "유저인터페이스\\statuswnd\\w_statwin_bg.bmp";
   if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)))) {
-    this->DrawBitmap(0, this->m_titleHeight, &bitmap->image, true);
+    this->DrawBitmap(0, this->m_titleHeight, bitmap, true);
   }
 
   const int stats[6][2] = {
@@ -4361,7 +4361,7 @@ void UInCashWnd::DrawItems() {
     const int y = column * this->m_rowHeight + this->m_listTop;
     const std::string path = "유저인터페이스\\collection\\" + std::string(ItemResourcePath(*it)) + ".bmp";
     if (!path.empty()) {
-      this->DrawBitmap(x, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())))->image, true);
+      this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str()))), true);
     }
 
     char text[64];
@@ -4389,7 +4389,7 @@ void UInCashWnd::DrawItems() {
 
     const std::string path = "유저인터페이스\\collection\\" + std::string(ItemResourcePath(*it)) + ".bmp";
     if (!path.empty()) {
-      this->DrawBitmap(453, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())))->image, true);
+      this->DrawBitmap(453, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str()))), true);
     }
 
     char text[64];
@@ -9916,9 +9916,9 @@ UIPetEggListWnd::UIPetEggListWnd()
 // FUNCTION: fn_12096
 void UIEquipWnd::DrawEquipSlots() {
   if (this->m_page == 1) {
-    const auto* frame = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\equipwin_special.bmp")));
+    auto* frame = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\equipwin_special.bmp")));
     if (frame) {
-      this->DrawBitmap(0, this->m_contentTop + 14, &frame->image, false);
+      this->DrawBitmap(0, this->m_contentTop + 14, frame, false);
     }
   }
 
@@ -9961,24 +9961,24 @@ void UIEquipWnd::DrawEquipSlots() {
 
     if (item.unknown_0088 > 0) {
       if (slot < 8) {
-        const auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+        auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
           Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088).c_str())
         ));
-        this->DrawBitmap(iconX[slot / 4], this->m_contentTop + 56 + (slot & 3) * 26, grade ? &grade->image : nullptr, true);
+        this->DrawBitmap(iconX[slot / 4], this->m_contentTop + 56 + (slot & 3) * 26, grade, true);
       } else {
-        const auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+        auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
           Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088).c_str())
         ));
-        this->DrawBitmap(iconX[slot & 3], this->m_contentTop + 30, grade ? &grade->image : nullptr, true);
+        this->DrawBitmap(iconX[slot & 3], this->m_contentTop + 30, grade, true);
       }
     }
 
     if (shopId != -1 && g_session.GetShopEntry(0, std::atoi(item.itemId.c_str())).first == 0) {
       const unsigned row = slot & 3;
       const unsigned column = slot < 8 ? slot / 4 : row;
-      const auto* banned = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\ban.bmp")));
+      auto* banned = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\ban.bmp")));
       const int y = slot < 8 ? this->m_contentTop + (row + 1) * 26 : this->m_contentTop;
-      this->DrawBitmap(iconX[column], y + 18, banned ? &banned->image : nullptr, true);
+      this->DrawBitmap(iconX[column], y + 18, banned, true);
     }
   }
 }
@@ -10376,22 +10376,22 @@ void UITipboxWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawTitleBar(true, LookupMessage(0xCA6), 0);
 
-  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\TipboxBG.bmp")));
-  this->DrawBitmap(0, 17, background ? &background->image : nullptr, false);
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\TipboxBG.bmp")));
+  this->DrawBitmap(0, 17, background, false);
 
   if (this->unknown_00B8->geometry.visible == 1) {
     const char* path = g_itemTagOwner->HasSearchResults() ? "유저인터페이스\\tipbox\\img_loading.bmp"
                                                        : "유저인터페이스\\tipbox\\img_NoSearchResults.bmp";
-    const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
-    this->DrawBitmap(1, 17, bitmap ? &bitmap->image : nullptr, false);
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+    this->DrawBitmap(1, 17, bitmap, false);
   } else {
     CTipBoxMgr* manager = g_itemTagOwner;
     switch (manager->m_image.kind) {
     case 0:
       if (manager->m_currentEntry.unknown_0044 == 5 && manager->m_currentEntry.unknown_0048 == 100) {
         const std::string path = manager->m_currentEntry.unknown_001C + ".bmp";
-        const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
-        this->DrawBitmap(1, 17, bitmap ? &bitmap->image : nullptr, false);
+        auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+        this->DrawBitmap(1, 17, bitmap, false);
       } else {
         CTexture* texture = g_texMgr.Load(manager->m_imagePath.c_str(), 0, false, true, false);
         const int sourceHeight = texture->Height();
@@ -10422,18 +10422,18 @@ void UITipboxWnd::Paint() {
       break;
     }
     case 2: {
-      const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\img_noImage.bmp")));
-      this->DrawBitmap(1, 17, bitmap ? &bitmap->image : nullptr, false);
+      auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\img_noImage.bmp")));
+      this->DrawBitmap(1, 17, bitmap, false);
       break;
     }
     }
   }
 
   this->PaintAnimations();
-  const auto* border = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\bg_tipbox.bmp")));
-  this->DrawBitmap(241, 17, border ? &border->image : nullptr, false);
-  const auto* bottom = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\btnbar_bottom.bmp")));
-  this->DrawBitmap(0, 337, bottom ? &bottom->image : nullptr, false);
+  auto* border = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\bg_tipbox.bmp")));
+  this->DrawBitmap(241, 17, border, false);
+  auto* bottom = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\btnbar_bottom.bmp")));
+  this->DrawBitmap(0, 337, bottom, false);
 }
 
 // OFFSET: 0x008E9370
@@ -12407,9 +12407,9 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // FUNCTION: fn_12222
 void UIExchangeWnd::Paint() {
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_fix2.bmp")));
-  this->DrawBitmap(0, 0, &bitmap->image, false);
+  this->DrawBitmap(0, 0, bitmap, false);
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\exchange_bg2.bmp")));
-  this->DrawBitmap(0, 17, &bitmap->image, false);
+  this->DrawBitmap(0, 17, bitmap, false);
   DrawOutlinedText(*this, 123, this->geometry.height - 20, LookupMessage(0x727), 0, 0xFF, 0xFFFFFF, 0, 12, 1, 0);
 
   char title[128];
@@ -12434,7 +12434,7 @@ void UIExchangeWnd::Paint() {
   for (int index = 0; index < 2; ++index) {
     const std::string path = prefix + buttons[index] + "_dis.bmp";
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
-    this->DrawBitmap(buttonX[index], this->geometry.height - 23, &bitmap->image, false);
+    this->DrawBitmap(buttonX[index], this->geometry.height - 23, bitmap, false);
   }
   for (int row = 0; row < 10; ++row) {
     DrawItemSlotBackground(*this, 12, this->m_rowHeight * row + 20);
@@ -12462,7 +12462,7 @@ void UIExchangeWnd::Paint() {
     if (item.unknown_0088 > 0) {
       const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
-      this->DrawBitmap(16, y + 33, &bitmap->image, true);
+      this->DrawBitmap(16, y + 33, bitmap, true);
     }
     if (row == 9) {
       break;
@@ -12480,7 +12480,7 @@ void UIExchangeWnd::Paint() {
     if (item.unknown_0088 > 0) {
       const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
-      this->DrawBitmap(295, y + 33, &bitmap->image, true);
+      this->DrawBitmap(295, y + 33, bitmap, true);
     }
     if (row == 9) {
       break;
