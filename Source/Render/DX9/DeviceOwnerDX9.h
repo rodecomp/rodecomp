@@ -22,8 +22,8 @@ public:
   void RestoreDisplayMode();
   HRESULT Present(int unused);
   HRESULT ClipFullscreenCursor();
-  HRESULT CheckState(class CRenderSystemBase* renderSystem);
-  bool Begin(CRenderSystemBase* renderSystem);
+  HRESULT CheckState();
+  bool Begin(class CRenderSystemBase* renderSystem);
   void End();
   bool CaptureBackBuffer();
   bool RestoreBackBuffer();

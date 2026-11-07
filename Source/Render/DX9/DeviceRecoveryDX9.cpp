@@ -13,7 +13,7 @@ namespace {
 
 // OFFSET: 0x0054BB60
 // FUNCTION: fn_01913
-__declspec(noinline) HRESULT DeviceOwnerDX9::CheckState(CRenderSystemBase* renderSystem) {
+__declspec(noinline) HRESULT DeviceOwnerDX9::CheckState() {
   if (!this->device) {
     return invalidDevice;
   }
@@ -40,7 +40,7 @@ __declspec(noinline) HRESULT DeviceOwnerDX9::CheckState(CRenderSystemBase* rende
     result = this->device->ResetEx(&this->presentation, this->presentation.Windowed == 1 ? nullptr : &this->displayMode);
   } else if (FAILED(result) && lastReported != result) {
     const std::string message = std::format("{} : {}", Direct3DErrorName(result), Direct3DErrorDescription(result));
-    ShowErrorDialog(renderSystem, message.c_str(), 0);
+    ShowErrorDialog(message.c_str(), 0);
     lastReported = result;
     this->lastPresent = result;
 
@@ -58,7 +58,7 @@ __declspec(noinline) HRESULT DeviceOwnerDX9::CheckState(CRenderSystemBase* rende
 // OFFSET: 0x0054BAD0
 // FUNCTION: fn_01911
 bool DeviceOwnerDX9::Begin(CRenderSystemBase* renderSystem) {
-  if (!this->device || this->CheckState(renderSystem) != D3D_OK || FAILED(this->device->BeginScene())) {
+  if (!this->device || this->CheckState() != D3D_OK || FAILED(this->device->BeginScene())) {
     return false;
   }
 
