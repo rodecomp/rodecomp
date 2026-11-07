@@ -15,7 +15,7 @@ const unsigned char g_colorHexDigit[256] = {
 };
 
 // GLOBAL: gl_24543
-unsigned char g_inlineCharset = 0xFF;
+unsigned char g_inlineCharset;
 
 // OFFSET: 0x0054FF10
 // FUNCTION: fn_01963
