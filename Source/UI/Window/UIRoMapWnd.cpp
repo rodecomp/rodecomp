@@ -29,6 +29,7 @@
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIComboBoxDefWnd.h"
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -1032,7 +1033,7 @@ void UIRoMapWnd::OnCreate(int, int) {
     std::string unchecked = "유저인터페이스\\checkbox_0.bmp";
     this->m_labelCheck = new (std::nothrow) UICheckBox();
     this->m_labelCheck->SetSize(80, 12);
-    this->m_labelCheck->SetImages(checked.c_str(), unchecked.c_str(), LookupMessage(0x988));
+    this->m_labelCheck->SetImages(checked.c_str(), unchecked.c_str(), LookupMessage(MSI_WORLDMAP_MSG4));
     this->m_labelCheck->SetId(192);
     this->m_labelCheck->Move(closeX - 82, 3);
     this->m_labelCheck->SetChecked(this->m_showLabels);
@@ -1046,7 +1047,7 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_searchButton->SetSize(this->m_searchButton->BitmapWidth(), this->m_searchButton->BitmapHeight());
     this->m_searchButton->Move(-100, -100);
     this->m_searchButton->SetId(321);
-    this->m_searchButton->SetTooltip(LookupMessage(0x894));
+    this->m_searchButton->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHINFO));
     this->AddChild(this->m_searchButton);
 
     this->m_searchListButton = new UIBitmapButton();
@@ -1056,7 +1057,7 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_searchListButton->SetSize(this->m_searchListButton->BitmapWidth(), this->m_searchListButton->BitmapHeight());
     this->m_searchListButton->Move(-100, -100);
     this->m_searchListButton->SetId(200);
-    this->m_searchListButton->SetTooltip(LookupMessage(0xC8D));
+    this->m_searchListButton->SetTooltip(LookupMessage(MSI_NAVIGATION_V4_HELP01));
     this->AddChild(this->m_searchListButton);
 
     this->m_searchEdit = new UIEditCtrl();
@@ -1067,7 +1068,7 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_searchEdit->Border(200, 100, 100);
     this->m_searchEdit->flat = 0;
     UIEditCtrl* edit = this->m_searchEdit;
-    if (const char* tooltip = LookupMessage(0x8A2)) {
+    if (const char* tooltip = LookupMessage(MSI_NAVIGATION_SERVICE)) {
       edit->tooltip = tooltip;
     }
     this->AddChild(this->m_searchEdit);

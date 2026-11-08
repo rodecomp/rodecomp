@@ -17,6 +17,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Window/UIRegisterMgr.h"
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
@@ -620,7 +621,7 @@ void CUISelectPackageItemBox::OnOk() {
     } while (count > 0);
   }
   const int result = g_windowMgr
-                       .Confirm(FormatOwnedString(LookupMessage(3975), it->name.c_str()).c_str(), 2, true, false, 0, "Message", 280, 120, 0);
+                       .Confirm(FormatOwnedString(LookupMessage(MSI_JOB_ABYSS_CHASER), it->name.c_str()).c_str(), 2, true, false, 0, "Message", 280, 120, 0);
   if (result == 187) {
     g_modeMgr.GetGameMode()->SendMsg(MM_USE_PACKAGEITEM, this->sourceIndex, this->packageId, index, 0);
   }
@@ -1320,8 +1321,8 @@ void CUISelectPackageItemBox::OnInit() {
   auto* const ok = this->okButton;
   ok->disabled = 1;
   ok->Invalidate();
-  this->okButton->SetText(LookupMessage(3384));
-  this->cancelButton->SetText(LookupMessage(3045));
+  this->okButton->SetText(LookupMessage(MSI_PRIVATE_AIRPLANE_WARNNING_SELECT_NPC));
+  this->cancelButton->SetText(LookupMessage(MSI_ZENY_LOTTO_BUY_10));
 }
 
 // OFFSET: 0x00A705F0

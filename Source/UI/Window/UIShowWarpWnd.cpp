@@ -8,6 +8,7 @@
 #include "UI/Lists/UIListBox.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <string>
 
@@ -66,9 +67,9 @@ int UIShowWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
   case UM_SETINFO: {
     const char* name = reinterpret_cast<const char*>(argument1);
     if (std::string(name) == "Random") {
-      this->m_list->AddLine(LookupMessage(0xD4));
+      this->m_list->AddLine(LookupMessage(MSI_RANDOM_POS));
     } else if (std::string(name) == "cancel") {
-      this->m_list->AddLine(LookupMessage(0xDA));
+      this->m_list->AddLine(LookupMessage(MSI_CANCEL));
     } else {
       this->m_list->AddLine(g_session.GetMapDisplayName(g_session.GatName2RswName(name)));
     }

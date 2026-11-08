@@ -12,6 +12,7 @@
 #include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Lists/UIChatHisBox.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstring>
 #include <new>
 #include <string>
@@ -34,12 +35,12 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
       result = this->lines[line];
       const std::string label = row[index]->label;
 
-      if (label.find(LookupMessage(581)) != std::string::npos) {
-        const std::size_t found = result.find(LookupMessage(581));
+      if (label.find(LookupMessage(MSI_NAMELESS_USER)) != std::string::npos) {
+        const std::size_t found = result.find(LookupMessage(MSI_NAMELESS_USER));
         const std::string player = LookupPlayerName(row[index]->unknown_01F8);
 
         if (std::strcmp(player.c_str(), name) == 0) {
-          result.replace(found, std::strlen(LookupMessage(581)), name, std::strlen(name));
+          result.replace(found, std::strlen(LookupMessage(MSI_NAMELESS_USER)), name, std::strlen(name));
           const std::string tail = result.substr(position);
           std::string opening = "<";
           opening += name;

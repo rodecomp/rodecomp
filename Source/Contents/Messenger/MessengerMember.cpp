@@ -41,6 +41,7 @@
 #include "Resource/SkinPalette.h"
 #include "Client/Mode/CMode.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
@@ -490,29 +491,29 @@ UIFriendOptionWnd::~UIFriendOptionWnd() = default;
 // FUNCTION: fn_07681
 void UIFriendOptionWnd::OnCreate(int, int) {
 
-  const char* label = LookupMessage(361);
+  const char* label = LookupMessage(MSI_AUTOOPEN_1ON1_WINDOW);
   int width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
   this->option0Box = new UICheckBox();
   this->option0Box->SetSize(width, 12);
-  this->option0Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(361));
+  this->option0Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_AUTOOPEN_1ON1_WINDOW));
   this->option0Box->Move(6, 21);
   this->option0Box->SetChecked(g_session.m_autoOpenWhisperWindow);
   this->AddChild(this->option0Box);
 
-  label = LookupMessage(359);
+  label = LookupMessage(MSI_AUTOOPENWHISPERLISTWND_FRIEND);
   width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
   this->option2Box = new UICheckBox();
   this->option2Box->SetSize(width, 12);
-  this->option2Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(359));
+  this->option2Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_AUTOOPENWHISPERLISTWND_FRIEND));
   this->option2Box->Move(6, 37);
   this->option2Box->SetChecked(g_session.m_autoOpenFriendWhisperWindow);
   this->AddChild(this->option2Box);
 
-  label = LookupMessage(362);
+  label = LookupMessage(MSI_WHISPER_OPEN_SOUND);
   width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
   this->option1Box = new UICheckBox();
   this->option1Box->SetSize(width, 12);
-  this->option1Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(362));
+  this->option1Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_WHISPER_OPEN_SOUND));
   this->option1Box->Move(6, 53);
   this->option1Box->SetChecked(g_session.m_whisperOpenSound);
   this->AddChild(this->option1Box);
@@ -524,7 +525,7 @@ void UIFriendOptionWnd::OnCreate(int, int) {
 // FUNCTION: fn_07682
 void UIFriendOptionWnd::Paint() {
 
-  const int titleHeight = this->DrawTitleBar(true, LookupMessage(355), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(MSI_FRIEND_SETTING), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   const int barHeight = this->DrawButtonBar(0, 0, 1);
   this->FillRegion(0, this->geometry.height - barHeight, this->geometry.width, 1, 0xC0C0C0);
@@ -801,8 +802,8 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
   this->mode = 1;
 
   {
-    const char* tabLabels[2] = {LookupMessage(0x66), LookupMessage(0x67)};
-    int tabWidths[2] = {48, this->TextWidth(LookupMessage(0x67), 0, 0, 12, 0, 0) + 13};
+    const char* tabLabels[2] = {LookupMessage(MSI_FRIEND), LookupMessage(MSI_PARTY)};
+    int tabWidths[2] = {48, this->TextWidth(LookupMessage(MSI_PARTY), 0, 0, 12, 0, 0) + 13};
     int tabValues[2] = {0, 1};
     for (int index = 0; index < 2; ++index) {
       this->tabs[index] = new UIRadioBtn();
@@ -815,7 +816,7 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
   }
 
   char title[64];
-  const char* titles[2] = {LookupMessage(0x66), LookupMessage(0x67)};
+  const char* titles[2] = {LookupMessage(MSI_FRIEND), LookupMessage(MSI_PARTY)};
   if (this->mode == 1) {
     if (g_session.unknown_54C4.size()) {
       sprintf(title, "%s(%s)", titles[1], g_session.unknown_54C4.c_str());
@@ -838,12 +839,12 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
     std::string prefix = "유저인터페이스\\basic_interface\\mesbtn_0";
     int ids[11] = {544, 232, 233, 234, 235, 377, 377, 445, 446, 447, 364};
     const char* friendTooltips[10] = {
-      LookupMessage(0x62),  LookupMessage(0x63),  LookupMessage(0x64),  LookupMessage(0x163), LookupMessage(0x15F),
-      LookupMessage(0x65A), LookupMessage(0x65B), LookupMessage(0x806), LookupMessage(0x807), LookupMessage(0x808),
+      LookupMessage(MSI_MSG),  LookupMessage(MSI_1ON1),  LookupMessage(MSI_CHARACTER_INFO),  LookupMessage(MSI_FRIEND_SETTING), LookupMessage(MSI_DELETE),
+      LookupMessage(MSI_LOCK_MOUSE), LookupMessage(MSI_UNLOCK_MOUSE), LookupMessage(MSI_CREATE_PARTY), LookupMessage(MSI_WITHDRAW_PARTY), LookupMessage(MSI_INVITE_PARTY),
     };
     const char* partyTooltips[11] = {
-      LookupMessage(0xDBA), LookupMessage(0x63),  LookupMessage(0x64),  LookupMessage(0x65),  LookupMessage(0x61),  LookupMessage(0x65A),
-      LookupMessage(0x65B), LookupMessage(0x806), LookupMessage(0x807), LookupMessage(0x808), LookupMessage(0xF8F),
+      LookupMessage(MSI_CANNOT_MORE_SELECT_JOB), LookupMessage(MSI_1ON1),  LookupMessage(MSI_CHARACTER_INFO),  LookupMessage(MSI_PARTY_SETTING),  LookupMessage(MSI_EXPEL),  LookupMessage(MSI_LOCK_MOUSE),
+      LookupMessage(MSI_UNLOCK_MOUSE), LookupMessage(MSI_CREATE_PARTY), LookupMessage(MSI_WITHDRAW_PARTY), LookupMessage(MSI_INVITE_PARTY), LookupMessage(MSI_FAILED_ALL_RODEX_LIST),
     };
     unsigned char disabled[11] = {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0};
     this->hiddenButtons[0] = 0;
@@ -1040,7 +1041,7 @@ void UIMessengerGroupWnd::Paint() {
       memset(path, 0, sizeof(path));
       sprintf(path, "%sbg_partymember.bmp", prefix.c_str());
       auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
-      this->DrawTextAt(this->geometry.width - 96, this->geometry.height - 16, LookupMessage(3231), 0, 0, 12, 0, 0, 0
+      this->DrawTextAt(this->geometry.width - 96, this->geometry.height - 16, LookupMessage(MSI_CONNECT_SNS_FAIL_CUZ_NOT_CONNECTING), 0, 0, 12, 0, 0, 0
       );
       this->DrawBitmap(this->geometry.width - 58, this->geometry.height - 18, background, true);
 
@@ -1056,7 +1057,7 @@ void UIMessengerGroupWnd::Paint() {
       }
 
       if (entry.name.size() == 0) {
-        entry.name = LookupMessage(581) + g_messengerNamelessTag;
+        entry.name = LookupMessage(MSI_NAMELESS_USER) + g_messengerNamelessTag;
       } else if (!g_session.IsFriendName(entry.name.c_str())) {
         g_session.UpdateFriendName(entry.characterId, entry.name.c_str());
       }
@@ -1482,7 +1483,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->UpdateScroll();
     this->Invalidate();
     char title[64];
-    const char* titles[2] = {LookupMessage(0x66), LookupMessage(0x67)};
+    const char* titles[2] = {LookupMessage(MSI_FRIEND), LookupMessage(MSI_PARTY)};
     if (this->mode == 1) {
       if (g_session.unknown_54C4.size()) {
         sprintf(title, "%s(%s)", titles[1], g_session.unknown_54C4.c_str());
@@ -1526,32 +1527,32 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     if (this->selected != -1) {
       if (this->mode == 0) {
-        this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x168)).c_str(), 7));
-        this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0xAF8)).c_str(), 0x3A));
-        this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x15F)).c_str(), 0x13));
+        this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_OPEN_1ON1_WINDOW)).c_str(), 7));
+        this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_USA_PERSONALINFO_DEATH)).c_str(), 0x3A));
+        this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_DELETE)).c_str(), 0x13));
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && !member.offline && g_session.unknown_5464
             && !g_session.PartyByName(member.name.c_str()).valid) {
           char text[200];
-          sprintf(text, LookupMessage(0x532), member.name.c_str());
+          sprintf(text, LookupMessage(MSI_REQ_JOIN_PARTY3), member.name.c_str());
           this->menuItems.push_back(MiniPartyInfoEntry(text, 5));
         }
       } else {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
-          this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0xAF8)).c_str(), 0x3A));
+          this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_USA_PERSONALINFO_DEATH)).c_str(), 0x3A));
           if (member.name == g_session.DecodePlayerName()) {
-            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x60)).c_str(), 9));
+            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_LEAVE_PARTY)).c_str(), 9));
           } else {
-            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x168)).c_str(), 7));
+            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_OPEN_1ON1_WINDOW)).c_str(), 7));
             if (g_session.unknown_5464) {
-              this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x61)).c_str(), 0));
-              this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x5FC)).c_str(), 0x2B));
+              this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_EXPEL)).c_str(), 0));
+              this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_YIELD_PARTYMASTER)).c_str(), 0x2B));
             }
           }
           if (!member.offline) {
-            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0xC1D)).c_str(), 0x3C));
-            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0xC1E)).c_str(), 0x3D));
+            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_DATE_MM_DD)).c_str(), 0x3C));
+            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ACHIEVEMENT_NEXT_GRADE)).c_str(), 0x3D));
           }
         }
       }
@@ -1575,7 +1576,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     MessengerMember member = this->MemberAtIndex(this->selected);
     if (member.name.find(g_messengerNamelessTag, 0) != std::string::npos) {
-      g_windowMgr.Confirm(LookupMessage(0xBE1), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_CHR_DELETE_FAIL_CHN_TAREN_PERSONALNUMBER), 0, true, false, 0, "Message", 0x118, 0x78, 0);
       return 0;
     }
     if (!member.valid) {
@@ -1613,12 +1614,12 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (this->selected != -1) {
         MessengerMember target = this->MemberAtIndex(this->selected);
         if (target.valid && !target.offline) {
-          if (g_windowMgr.Confirm(LookupMessage(0x5FD), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
             g_modeMgr.gameMode->SendMsg(MM_GROUP_CHANGE_MASTER, target.accountId, 0, 0, 0);
           }
         } else {
           g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x5FE)), 0xFF, 3, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_YIELD_PARTYMASTER)), 0xFF, 3, 0, 0);
         }
       }
       return 0;
@@ -1659,7 +1660,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         if (member.valid && !(member.name == g_session.DecodePlayerName())) {
           const char* tag;
           if (g_windowMgr.IsFriend(member.name.c_str())) {
-            tag = LookupMessage(0x66);
+            tag = LookupMessage(MSI_FRIEND);
           } else {
             tag = g_session.IsGuildMemberCharacter(member.characterId) ? "GuildMember" : nullptr;
           }
@@ -1674,7 +1675,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
-          g_windowMgr.Confirm(LookupMessage(0xBF), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         }
       }
       return 0;
@@ -1712,11 +1713,11 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
           if (this->mode == 0) {
-            if (g_windowMgr.Confirm(LookupMessage(0x164), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
               g_modeMgr.gameMode->SendMsg(MM_DELETE_FRIEND, member.accountId, member.characterId, 0, 0);
             }
           } else if (!(member.name == g_session.DecodePlayerName())) {
-            if (g_windowMgr.Confirm(LookupMessage(0x16B), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_EXPEL), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
               g_modeMgr.gameMode->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
             }
           }
@@ -1730,7 +1731,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && member.name == g_session.DecodePlayerName()) {
-          if (g_windowMgr.Confirm(LookupMessage(0x165), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
             g_modeMgr.gameMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
           }
         }
@@ -1845,7 +1846,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     case ID_LEAVE_PARTY:
       if (!g_session.m_lockMouse) {
-        if (g_windowMgr.Confirm(LookupMessage(0x165), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
           g_modeMgr.gameMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
           if (g_windowMgr.unknown_042C) {
             g_windowMgr.CloseWindow(WID_PARTYINVITATIONTOWND);
@@ -1865,7 +1866,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           if (g_session.unknown_5464) {
             g_windowMgr.EnsureWindow(WID_PARTYINVITATIONTOWND);
           } else {
-            g_windowMgr.Confirm(LookupMessage(0x816), 4, true, false, 0, "Message", 0x118, 0x78, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_YOU_ARE_NOT_PARTYMASTER), 4, true, false, 0, "Message", 0x118, 0x78, 0);
           }
         }
         if (this->mode == 1) {
@@ -1961,7 +1962,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
       char title[64];
       memset(title, 0, sizeof(title));
-      const char* titles[2] = {LookupMessage(0x66), LookupMessage(0x67)};
+      const char* titles[2] = {LookupMessage(MSI_FRIEND), LookupMessage(MSI_PARTY)};
       if (this->mode == 1) {
         if (g_session.unknown_54C4.size()) {
           sprintf(title, "%s(%s)", titles[1], g_session.unknown_54C4.c_str());

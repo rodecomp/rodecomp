@@ -27,6 +27,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <list>
 #include <string>
@@ -111,7 +112,7 @@ void UIQuickSlotWnd::OnMouseHover(int x, int y) {
     }
   } else {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(id), 1);
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity));
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity));
   }
 
   if (!text.empty()) {
@@ -280,7 +281,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
           break;
         case UM_UPPUSH:
           if (*reinterpret_cast<int*>(&g_session.unknown_16F4[4]) >= 0) {
-            const std::string text = FormatOwnedString(LookupMessage(0x4CA), item.DisplayName(0).c_str());
+            const std::string text = FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str());
             if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
               mode->SendMsg(MM_USEITEM, item.unknown_0000[1], 0, 0, 0);
             }

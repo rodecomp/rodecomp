@@ -16,6 +16,7 @@
 #include "UI/Lists/UIListBox.h"
 #include "UI/Window/WindowManagerWindows.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstring>
 #include <vector>
@@ -44,7 +45,7 @@ std::vector<unsigned char> UIWeaponRefineWnd::GetReplayData() {
 // OFFSET: 0x009A3CD0
 // FUNCTION: fn_13613
 void UIWeaponRefineWnd::Paint() {
-  const int titleHeight = this->DrawTitleBar(true, LookupMessage(910), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(MSI_REFINEITEMLIST), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }

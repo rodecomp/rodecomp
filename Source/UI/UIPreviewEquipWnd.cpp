@@ -21,6 +21,7 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
 
+#include "Resource/MSGSTRINGID.h"
 // OFFSET: 0x007F2F90
 // FUNCTION: fn_09879
 UIPreviewEquipWnd::UIPreviewEquipWnd()
@@ -83,20 +84,20 @@ void UIPreviewEquipWnd::OnCreate(int width, int height) {
 
   UIStaticText* shadow = new UIStaticText();
   shadow->SetSize(
-    this->TextWidth(LookupMessage(0xB90), 0, 0, 12, 0, 0),
-    this->TextHeight(LookupMessage(0xB90), 0, 0, 12, 0, 0)
+    this->TextWidth(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0, 0, 12, 0, 0),
+    this->TextHeight(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0, 0, 12, 0, 0)
   );
-  shadow->SetText(LookupMessage(0xB90), 0);
+  shadow->SetText(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0);
   shadow->SetColor(255, 255, 255);
   shadow->Move(19, 4);
   this->AddChild(shadow);
 
   UIStaticText* title = new UIStaticText();
   title->SetSize(
-    this->TextWidth(LookupMessage(0xB90), 0, 0, 12, 0, 0),
-    this->TextHeight(LookupMessage(0xB90), 0, 0, 12, 0, 0)
+    this->TextWidth(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0, 0, 12, 0, 0),
+    this->TextHeight(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0, 0, 12, 0, 0)
   );
-  title->SetText(LookupMessage(0xB90), 0);
+  title->SetText(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0);
   title->Move(18, 3);
   this->AddChild(title);
 
@@ -126,7 +127,7 @@ void UIPreviewEquipWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_rightButton);
 
   this->unknown_00C4 = new UIBasicButton();
-  this->unknown_00C4->Configure(80, LookupMessage(0xB9F));
+  this->unknown_00C4->Configure(80, LookupMessage(MSI_BLOCK_CALL_PERMIT));
   this->unknown_00C4->Move(static_cast<int>((this->geometry.width - this->unknown_00C4->geometry.width) * 0.5), this->geometry.height - 30);
   this->unknown_00C4->SetId(0x16B);
   this->unknown_00C4->invalidateParent = 1;

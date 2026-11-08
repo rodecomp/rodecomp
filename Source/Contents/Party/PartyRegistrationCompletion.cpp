@@ -6,6 +6,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <json/reader.h>
 #include <json/value.h>
 
@@ -28,12 +29,12 @@ void CAdventurerAgencyMgr::CompleteRegistration(AsyncDiagnostic diagnostic, std:
   const int type = root["Type"].asInt();
 
   if (type == 2 || type == 3) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3417)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADVEN_TANKER)), 0xFF, 0, 0, 0);
     return;
   }
 
   this->registered = true;
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3418)), 0xFFFF64, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BASIC_EXP_ZERO)), 0xFFFF64, 0, 0, 0);
   UIWindow* board = g_windowMgr.LookupWindow(WID_ADVENPARTYBOARDWND);
 
   if (board) {

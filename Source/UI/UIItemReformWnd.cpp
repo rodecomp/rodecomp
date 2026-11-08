@@ -28,6 +28,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
@@ -94,13 +95,13 @@ void UIItemReformWnd::OnCreate(int width, int height) {
   this->AddCloseButton("", 0);
 
   UIBasicButton* cancel = new UIBasicButton();
-  cancel->Configure(60, LookupMessage(218));
+  cancel->Configure(60, LookupMessage(MSI_CANCEL));
   cancel->Move(300, 236);
   cancel->SetId(201);
   this->AddChild(cancel);
 
   this->reformButton = new UIBasicButton();
-  this->reformButton->Configure(60, LookupMessage(3847));
+  this->reformButton->Configure(60, LookupMessage(MSI_ITEM_REFORM_WARNNING_CARD_MAYBE_LOST));
   this->reformButton->Move(365, 236);
   this->reformButton->SetId(184);
   this->reformButton->SetDisabled(1);
@@ -178,7 +179,7 @@ void UIItemReformWnd::Paint() {
 // FUNCTION: fn_04111
 void UIItemReformWnd_DetailBtn::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  std::string text = LookupMessage(3854);
+  std::string text = LookupMessage(MSI_ENCHANT_SUCCESS);
   const unsigned int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
   this->DrawCenteredText(0, 0, text.c_str(), this->geometry.width, 0, 12, 0, 0);
   this->FillRegion((this->geometry.width - textWidth) * 0.5, 12, textWidth, 1, 0);
@@ -413,7 +414,7 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
     }
   }
   if (insufficient) {
-    this->warning = LookupMessage(3848);
+    this->warning = LookupMessage(MSI_ITEM_REFORM_WARNNING_ENCHANT_MAYBE_LOST);
   } else {
     this->reformButton->SetDisabled(0);
     this->reformButton->Invalidate();
@@ -422,7 +423,7 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
   this->information = info->informationString;
   if (this->information.size() != 0) {
     this->detailButton->Enable(1);
-    this->warning = LookupMessage(3855);
+    this->warning = LookupMessage(MSI_ENCHANT_FAILED);
   }
 
   this->baseIcon->item = this->selectedItem;
@@ -448,7 +449,7 @@ int UIItemReformWnd::SendMsg(
   case UM_REFRESHITEM:
     this->reformItem.SetItemId(argument1);
     if (this->list->SendMsg(this, UM_REFRESHITEM, argument1, 0, 0, 0) == -1) {
-      this->warning = LookupMessage(3856);
+      this->warning = LookupMessage(MSI_CANNOT_FIND_ENCHANT_ID);
     }
     this->Invalidate();
     break;

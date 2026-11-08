@@ -61,6 +61,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include "Resource/MSGSTRINGID.h"
 
 // OFFSET: 0x0086EEB0
 // FUNCTION: fn_11085
@@ -515,9 +516,9 @@ void UIBasicItemCtrl::OnMouseHover(int, int) {
   } else if (this->m_item.unknown_0000[1] == 0) {
     text = this->m_item.DisplayName(0);
   } else if (this->m_item.unknown_0098 != 0) {
-    text = FormatOwnedString(LookupMessage(2551), this->m_item.DisplayName(0).c_str(), this->m_item.unknown_0098, this->m_item.quantity);
+    text = FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), this->m_item.DisplayName(0).c_str(), this->m_item.unknown_0098, this->m_item.quantity);
   } else {
-    text = FormatOwnedString(LookupMessage(183), this->m_item.DisplayName(0).c_str(), this->m_item.quantity);
+    text = FormatOwnedString(LookupMessage(MSI_EA2), this->m_item.DisplayName(0).c_str(), this->m_item.quantity);
   }
 
   int screenX = 0, screenY = 0;
@@ -3605,7 +3606,7 @@ void UISlotBmpButton::Paint() {
     this->DrawBitmap(this->geometry.width / 2 - 0x2e, 0x1a, balloon, false);
 
     std::vector<std::string> lines;
-    WrapPlainText(LookupMessage(0xaed), lines, 0x14);
+    WrapPlainText(LookupMessage(MSI_ERROR_MDENGEON_IS_FULL), lines, 0x14);
     int y = 0x22;
     for (const std::string& line : lines) {
       this->DrawCenteredText(0x21, y, line.c_str(), 0x5c, 0, 0xb, 0xffffff, 0);
@@ -3630,8 +3631,8 @@ void UISlotBmpButton::Paint() {
         Timestamp expiry(info->deleteDate);
         const std::uint32_t color = expiry.IsBeforeNow() ? 0xff0000 : 0xff;
         const TIMESTAMP_STRUCT date = expiry.ToSqlTimestamp();
-        const std::string period = FormatOwnedString(LookupMessage(0xc20), date.month, date.day);
-        const std::string time = FormatOwnedString(LookupMessage(0xd15), date.hour, date.minute, date.second);
+        const std::string period = FormatOwnedString(LookupMessage(MSI_INCOMPLETE), date.month, date.day);
+        const std::string time = FormatOwnedString(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_USE_ITEM), date.hour, date.minute, date.second);
         const int periodWidth = this->TextWidth(period.c_str(), 0, 0, 0xb, 0, 0);
         this->DrawTextAt(0x4f - periodWidth / 2, 0x28, period.c_str(), 0, 0, 0xb, color, 0, 0);
         const int timeWidth = this->TextWidth(time.c_str(), 0, 0, 0xb, 0, 0);

@@ -21,6 +21,7 @@
 #include "UI/Shop/ItemDrawing.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
@@ -248,7 +249,7 @@ void UILapineBoxWnd::Paint() {
     this->DrawTitleBar(false, this->title.c_str(), 0);
   }
 
-  this->DrawCenteredText(33, 47, LookupMessage(2896), 160, 0, 11, 0xCD7A51, 0);
+  this->DrawCenteredText(33, 47, LookupMessage(MSI_LAPINE_FAIL_NOT_ENOUGH_REFINING_LEVEL), 160, 0, 11, 0xCD7A51, 0);
   this->DrawCenteredText(33, 63, this->description.c_str(), 160, 0, 11, 0x844A42, 0);
 
   const std::string count = FormatOwnedString("%d", static_cast<int>(this->items.size()));
@@ -292,7 +293,7 @@ int UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
       int highlightColor;
       this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
       if (item.identified == 1 && item.unknown_0098 != 0) {
-        sprintf_s(name, sizeof(name), LookupMessage(2600), name, item.unknown_0098);
+        sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, item.unknown_0098);
       }
       item.SetName(name);
     }

@@ -247,6 +247,7 @@
 #include "UI/Window/UIVideoWnd.h"
 #include "UI/Window/UIViewCameraInfoWnd.h"
 #include "Utility/JsonCppLoader.h"
+#include "Resource/MSGSTRINGID.h"
 #include <cstdlib>
 
 namespace {
@@ -1159,13 +1160,13 @@ int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, 
   if ((g_session.m_autoOpenWhisperWindow != 0 && !isFriend) || (g_session.m_autoOpenFriendWhisperWindow != 0 && isFriend)) {
     const char* label = nullptr;
     if (isFriend) {
-      label = LookupMessage(102);
+      label = LookupMessage(MSI_FRIEND);
     } else if (g_session.IsGuildMemberCharacter(accountId)) {
       label = "GuildMember";
     } else if (g_session.IsFriendNameDifferent(name)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(917)), 0xFFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ID_WARNING)), 0xFFFF, 0, 0, 0);
     } else if (g_session.IsGuildMemberNameDifferent(name)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(919)), 0xFFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ID_WARNING_GUILD)), 0xFFFF, 0, 0, 0);
     }
 
     shown = this->SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(name), reinterpret_cast<std::intptr_t>(label), reinterpret_cast<std::intptr_t>(ShortcutFilename(accountId).c_str()), 0, 0);
@@ -1665,7 +1666,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
   if (g_windowMgr.unknown_01DC != nullptr) {
     const bool linked = HasTextLinks(std::string(text));
     if (linked) {
-      g_windowMgr.Confirm(LookupMessage(0xE53), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_UNDEAD_MONSTERINFO), 0, true, false, 0, "Message", 280, 120, 0);
       return;
     }
   }
@@ -2566,7 +2567,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
         return false;
       }
     } else if (g_navigationManager.unknown_1258 == 2) {
-      if (g_windowMgr.Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_HELP2), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_navigationManager.unknown_125C = 0;
         g_navigationManager.unknown_1254 = false;
         g_navigationManager.Reset(true);
@@ -2601,13 +2602,13 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     }
 
     if (this->LookupWindow(WID_NEWSELECTCHARWND) && g_session.m_loginModeFlag == 1) {
-      if (g_windowMgr.Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_ENST_ANGELUS2), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.gameMode->SendMsg(LMM_GOTO_LOGIN, 0, 0, 0, 0);
       }
       return false;
     }
 
-    if (this->Confirm(LookupMessage(0x11), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+    if (this->Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
       GetRagConnection().Close();
       g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     }
@@ -4570,7 +4571,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
   case HK_SINGLEMAP_ONOFF + 100:
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0254 != 0) {
       if (!g_session.IsNavigationAllowed()) {
-        g_windowMgr.Confirm(LookupMessage(0xACF), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_BANK_0_MONEY), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!g_windowMgr.CloseWindow(WID_MINIMAPWND)) {
         g_windowMgr.EnsureWindow(WID_MINIMAPWND);
       }
@@ -5049,7 +5050,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = new UIItemStoreFindWnd();
       this->unknown_02AC = window;
       window->SetSize(140, 145);
-      static_cast<UIItemStoreFindWnd*>(this->unknown_02AC)->SetTitle(LookupMessage(0x447));
+      static_cast<UIItemStoreFindWnd*>(this->unknown_02AC)->SetTitle(LookupMessage(MSI_AUCTION_SEARCH));
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
       this->unknown_02AC->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x6AC), 0, 0, 0);
@@ -5166,7 +5167,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   case WID_MERCHANTITEMWND:
     if (!g_mapPropertyMgr->GetValue(g_session.unknown_0000, 40)) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x94C)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RANKING_NUMBER)), 255, 0, 0, 0);
       break;
     }
     window = this->unknown_02F4;
@@ -6850,23 +6851,23 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     break;
   case WID_BANK_NEWWND:
     if (this->LookupWindow(WID_REFININGWND)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBC6)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NEWMAKECHAR_HUMANJOB)), 255, 0, 0, 0);
       break;
     }
     if (this->LookupWindow(WID_GRADEENCHANTWND)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xE85)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_GRADE_ENCHANT_ITEM)), 255, 0, 0, 0);
       break;
     }
     if (this->LookupWindow(WID_ENCHANTUI)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xF05)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFORM_WARNNING_NOT_ENOUGH_MATERIAL)), 255, 0, 0, 0);
       break;
     }
     if (this->LookupWindow(WID_EXPANDEDBARTERMARKETWND)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xF7F)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PACKAGEITEM_SLEEPSTONECURSEFAIL)), 255, 0, 0, 0);
       break;
     }
     if (g_windowMgr.LookupWindow(WID_RUNESYSTEMWND)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xFD7)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_JOIN_GUILD_ACCEPT_WND)), 255, 0, 0, 0);
       break;
     }
     window = this->window_0448;
@@ -7200,11 +7201,11 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->CloseWindow(WID_RODEXCOMPOSEWND);
       this->CloseWindow(WID_RODEXCONTENTSWND);
       this->unknown_0454->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBAF)), 255, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_AURA_EFFECT_ON)), 255, 0, 0, 0);
     }
     if (this->window_0448) {
       g_windowMgr.CloseWindow(WID_BANK_NEWWND);
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBC5)), 255, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NEWMAKECHAR_HUMAN)), 255, 0, 0, 0);
     }
     if (this->LookupWindow(WID_REFININGWND) == nullptr) {
       window = new UIRefiningWnd();
@@ -7360,7 +7361,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   case WID_EXPANDEDBARTERMARKETWND:
     if (this->LookupWindow(WID_BANK_NEWWND)) {
       g_windowMgr.CloseWindow(WID_BANK_NEWWND);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xF7E)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_USESKILL_FAIL_NEED_COMMUNION_WITH_SPIRIT)), 255, 0, 0, 0);
     }
     if (this->LookupWindow(WID_EXPANDEDBARTERMARKETWND) == nullptr) {
       window = new UIExpandedBartermarketWnd();
@@ -7422,11 +7423,11 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->CloseWindow(WID_RODEXCOMPOSEWND);
       this->CloseWindow(WID_RODEXCONTENTSWND);
       this->unknown_0454->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xE82)), 255, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_BANKING_DURING_GRADE_ENCHANT)), 255, 0, 0, 0);
     }
     if (this->window_0448) {
       g_windowMgr.CloseWindow(WID_BANK_NEWWND);
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xE84)), 255, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BROADCASTING_GRADE_ENCHANT_FAIL)), 255, 0, 0, 0);
     }
     if (this->LookupWindow(WID_GRADEENCHANTWND) == nullptr) {
       window = new UIGradeEnchantWnd();
@@ -7538,11 +7539,11 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
         this->CloseWindow(WID_RODEXCOMPOSEWND);
         this->CloseWindow(WID_RODEXCONTENTSWND);
         this->unknown_0454->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
-        this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xFD8)), 255, 0, 0, 0);
+        this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_ALLY_GUILD_ACCEPT_WND)), 255, 0, 0, 0);
       }
       if (this->window_0448) {
         g_windowMgr.CloseWindow(WID_BANK_NEWWND);
-        this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xFD9)), 255, 0, 0, 0);
+        this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_JOIN_FRIEND_ACCEPT_WND)), 255, 0, 0, 0);
       }
       window = new UIRuneSystemWnd();
       window->SetSize(910, 539);
@@ -7617,19 +7618,19 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   if (notify) {
     switch (id) {
     case WID_JOINGUILDACCEPTWND:
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDA)), 0xFFFF00, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_JOIN_PARTY_ACCEPT_WND)), 0xFFFF00, 0, 0, 0);
       break;
     case WID_ALLYGUILDACCEPTWND:
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDB)), 0xFFFF00, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_EXCHANGE_ACCEPT_WND)), 0xFFFF00, 0, 0, 0);
       break;
     case WID_JOINFRIENDACCEPTWND:
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDC)), 0xFFFF00, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_WARNING)), 0xFFFF00, 0, 0, 0);
       break;
     case WID_JOINPARTYACCEPTWND:
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDD)), 0xFFFF00, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_FAILED_ITEMCREATE)), 0xFFFF00, 0, 0, 0);
       break;
     case WID_EXCHANGEACCEPTWND:
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xFDE)), 0xFFFF00, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TITLE_QUEST_BOARD_LIST)), 0xFFFF00, 0, 0, 0);
       break;
     }
   }

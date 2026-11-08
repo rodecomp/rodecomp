@@ -11,6 +11,7 @@
 #include "Script/LuaScript.h"
 #include "UI/Window/UIRoMapWnd.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <cstring>
 
@@ -603,7 +604,7 @@ CWorldViewWorld* CWorldViewMgr::CurrentWorld() {
 // OFFSET: 0x00617950
 // FUNCTION: fn_04391
 bool __stdcall IsMapDisplayNameTranslated(const char* mapName) {
-  const std::string placeholder = LookupMessage(0xBB);
+  const std::string placeholder = LookupMessage(MSI_NOWHERE);
   const std::string displayName = g_session.GetMapDisplayName(mapName);
   return placeholder != displayName;
 }

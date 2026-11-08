@@ -11,6 +11,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 // OFFSET: 0x007BAE20
 // FUNCTION: fn_09277
 UIPartyInfoWnd::UIPartyInfoWnd()
@@ -31,19 +32,19 @@ CAdvenPartyInfo* UIPartyInfoWnd::Info() {
 const char* UIPartyInfoWnd::TypeName(int value) {
   switch (value) {
   case 0:
-    return LookupMessage(3377);
+    return LookupMessage(MSI_ACCOUNT);
   case 1:
-    return LookupMessage(3360);
+    return LookupMessage(MSI_ADVEN_MD);
   case 2:
-    return LookupMessage(3361);
+    return LookupMessage(MSI_ADVEN_EDEN_GROUP);
   case 3:
-    return LookupMessage(3362);
+    return LookupMessage(MSI_ADVEN_ETC);
   case 4:
-    return LookupMessage(3363);
+    return LookupMessage(MSI_ADVEN_SEARCH);
   case 5:
-    return LookupMessage(3364);
+    return LookupMessage(MSI_ADVEN_RESET);
   case 6:
-    return LookupMessage(3365);
+    return LookupMessage(MSI_ADVEN_JOIN_PARTY);
   default:
     return "";
   }
@@ -140,7 +141,7 @@ void UIPartyInfoWnd::OnRBtnUp(int, int) {
   }
 
   const std::string name = this->info.characterName;
-  const char* relationship = g_windowMgr.IsFriend(name.c_str()) ? LookupMessage(102) : nullptr;
+  const char* relationship = g_windowMgr.IsFriend(name.c_str()) ? LookupMessage(MSI_FRIEND) : nullptr;
 
   if (g_session.IsGuildMemberAccount(this->info.accountId)) {
     relationship = "GuildMember";

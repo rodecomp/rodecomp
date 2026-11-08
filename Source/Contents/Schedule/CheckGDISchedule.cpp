@@ -9,6 +9,7 @@
 #include "Network/Connection/ConnectionRuntime.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdlib>
 #include <windows.h>
 
@@ -50,9 +51,9 @@ perform_check:
   g_timeScheduler->m_unknown_000D = true;
 
   if (roll == 2) {
-    g_windowMgr.Confirm(LookupMessage(857), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_NPGAMEMON_XP_COMPATIBILITY), 0, true, false, 0, "Message", 280, 120, 0);
   } else if (roll == 4) {
-    g_windowMgr.Confirm(LookupMessage(800), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_NPGAMEMON_ERROR_ILLEGAL_PRG), 0, true, false, 0, "Message", 280, 120, 0);
   }
 
   GetRagConnection().Close();

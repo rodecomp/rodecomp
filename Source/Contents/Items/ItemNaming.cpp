@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <vector>
+#include "Resource/MSGSTRINGID.h"
 
 // GLOBAL: gl_24725
 std::map<int, ItemMoveInfo> g_itemMoveInfo;
@@ -122,7 +123,7 @@ int ITEM_INFO::Creator(char* output, int& capacity, unsigned char consume) const
   std::string name = g_playerNameDictionary->Lookup(static_cast<unsigned>(ids[2]) + (static_cast<unsigned>(ids[3]) << 16));
 
   if (name.empty()) {
-    name = LookupMessage(581);
+    name = LookupMessage(MSI_NAMELESS_USER);
   }
 
   const int bytes = Copy(output, capacity, name.c_str());
@@ -231,21 +232,21 @@ int ITEM_INFO::Suffixes(char* output, int& capacity, unsigned char consume) cons
 
     switch (count) {
     case 2:
-      bytes = StringFormat(cursor, remaining, _TRUNCATE, " %s", LookupMessage(446));
+      bytes = StringFormat(cursor, remaining, _TRUNCATE, " %s", LookupMessage(MSI_DOUBLE));
       if (bytes > 0) {
         cursor += bytes;
         remaining -= bytes;
       }
       break;
     case 3:
-      bytes = StringFormat(cursor, remaining, _TRUNCATE, " %s", LookupMessage(447));
+      bytes = StringFormat(cursor, remaining, _TRUNCATE, " %s", LookupMessage(MSI_TRIPLE));
       if (bytes > 0) {
         cursor += bytes;
         remaining -= bytes;
       }
       break;
     case 4:
-      bytes = StringFormat(cursor, remaining, _TRUNCATE, " %s", LookupMessage(448));
+      bytes = StringFormat(cursor, remaining, _TRUNCATE, " %s", LookupMessage(MSI_QUADROPLE));
       if (bytes > 0) {
         cursor += bytes;
         remaining -= bytes;
@@ -841,16 +842,16 @@ int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const
     break;
   }
   case 1:
-    text = LookupMessage(452);
+    text = LookupMessage(MSI_MANUFACTURED_ICE_ITEM);
     break;
   case 2:
-    text = LookupMessage(454);
+    text = LookupMessage(MSI_MANUFACTURED_EARTH_ITEM);
     break;
   case 3:
-    text = LookupMessage(451);
+    text = LookupMessage(MSI_MANUFACTURED_FIRE_ITEM);
     break;
   case 4:
-    text = LookupMessage(453);
+    text = LookupMessage(MSI_MANUFACTURED_WIND_ITEM);
     break;
   default:
     return 0;
@@ -874,13 +875,13 @@ int ITEM_INFO::Star(char* output, int& capacity, unsigned char consume) const {
   const char* text = nullptr;
   switch (this->unknown_001C[5]) {
   case 5:
-    text = LookupMessage(459);
+    text = LookupMessage(MSI_ONE_STARPIECE);
     break;
   case 10:
-    text = LookupMessage(460);
+    text = LookupMessage(MSI_TWO_STARPIECE);
     break;
   case 15:
-    text = LookupMessage(461);
+    text = LookupMessage(MSI_THREE_STARPIECE);
     break;
   default:
     return 0;
@@ -901,7 +902,7 @@ int ITEM_INFO::Star(char* output, int& capacity, unsigned char consume) const {
 // OFFSET: 0x006D6D50
 // FUNCTION: fn_06586
 int ITEM_INFO::Apprentice(char* output, int& capacity, unsigned char consume) const {
-  const char* text = LookupMessage(756);
+  const char* text = LookupMessage(MSI_NAMED_PET);
   const int error = strncpy_s(output, capacity, text, _TRUNCATE);
   if (error != 0 && error != 80) {
     return 0;

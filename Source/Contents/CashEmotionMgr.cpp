@@ -49,6 +49,7 @@
 #include "UI/Emotion/UIEmotionWnd.h"
 #include "Client/Mode/CMode.h"
 
+#include "Resource/MSGSTRINGID.h"
 extern "C" {
 #include <lauxlib.h>
 #include <lua.h>
@@ -2278,7 +2279,7 @@ void UICashEmotionListWnd::OnCreate(int width, int height) {
 void UICashEmotionListWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   const int width = this->geometry.width - 30;
-  const int top = this->DrawTitleBarAt(29, width, false, LookupMessage(542));
+  const int top = this->DrawTitleBarAt(29, width, false, LookupMessage(MSI_EMOTION_LIST));
   this->DrawPanelBackgroundAt(29, top, width, nullptr);
   DrawRectangleBorder(*this, 60, 22, 161, 18, 0xB5B5B5);
   this->FillRegion(29, 46, width, 1, 0xCECECE);

@@ -18,6 +18,7 @@
 #include "UI/Text/UITextViewer.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstring>
 
@@ -131,7 +132,7 @@ void UIQuestDisplay::Paint() {
         if (goal > 0) {
           const short count = info.m_huntUnknown00E0[index];
           if (count == goal) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %s )", hunt.c_str(), LookupMessage(0x7EE)));
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %s )", hunt.c_str(), LookupMessage(MSI_COMPLETE_HUNTING_QUEST)));
           } else {
             hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %d / %d )", hunt.c_str(), count, goal));
           }
@@ -251,8 +252,8 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       this->Show(0);
     }
     if (this->m_selectedIndex != -1) {
-      this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(1622)).c_str(), 49));
-      this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(351)).c_str(), 48));
+      this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_VIEW_QUEST_INFO_MSG)).c_str(), 49));
+      this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_DELETE)).c_str(), 48));
     }
     if (this->m_menuItems.size() != 0) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);

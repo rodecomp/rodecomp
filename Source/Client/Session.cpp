@@ -60,6 +60,7 @@
 #include "Contents/PetEvolutionMgr.h"
 #include "Contents/PrivateAirplaneMgr.h"
 #include "Contents/SpecialPopupMgr.h"
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -1213,7 +1214,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     *talkType = 0x5C;
     return -1;
   }
-  if (tokenizer[0] == "/mineffect" || tokenizer[0] == LookupMessage(0x2BA)) {
+  if (tokenizer[0] == "/mineffect" || tokenizer[0] == LookupMessage(MSI_MINEFFECT)) {
     *talkType = 0xE5;
     return -1;
   }
@@ -1337,7 +1338,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     if (space != std::string::npos) {
       parts[0] = command.erase(0, space + 1);
     } else {
-      g_windowMgr.SetUnknown04DC(LookupMessage(0x9E4));
+      g_windowMgr.SetUnknown04DC(LookupMessage(MSI_NOWARPSKILL2));
     }
     return -1;
   }
@@ -1348,7 +1349,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     if (space != std::string::npos) {
       parts[0] = command.erase(0, space + 1);
     } else {
-      g_windowMgr.SetUnknown04DC(LookupMessage(0x9E5));
+      g_windowMgr.SetUnknown04DC(LookupMessage(MSI_PARA_PURCHASE_ITEM_WEIGHT));
     }
     return -1;
   }
@@ -1379,7 +1380,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     parts[0] = text + (tokenizer[0] == "/cl" ? 4 : 10);
     return -1;
   }
-  if (tokenizer[0] == LookupMessage(0x9DF)) {
+  if (tokenizer[0] == LookupMessage(MSI_PARA_RESULT_TITLE)) {
     *talkType = 0xD8;
     return -1;
   }
@@ -2203,9 +2204,9 @@ int CSession::SetFriendOffline(std::uint32_t accountId, std::uint32_t characterI
 
         char message[256];
         if (member.offline == 0) {
-          std::sprintf(message, LookupMessage(1041), member.name.c_str());
+          std::sprintf(message, LookupMessage(MSI_LOGIN_FRIEND), member.name.c_str());
         } else {
-          std::sprintf(message, LookupMessage(1042), member.name.c_str());
+          std::sprintf(message, LookupMessage(MSI_LOGOUT_FRIEND), member.name.c_str());
         }
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 0, 0, 0);
       }
@@ -3604,8 +3605,8 @@ void CSession::InitCommandTables() {
   this->m_commandIds.push_back(std::make_pair("/xkfxhl", 27));
   this->m_commandIds.push_back(std::make_pair("/leave", 27));
   this->m_commandIds.push_back(std::make_pair("/stat", 2));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(544), 29));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(545), 30));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_SURPRISE), 29));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_QUESTION), 30));
   this->m_commandIds.push_back(std::make_pair("/delight", 31));
   this->m_commandIds.push_back(std::make_pair("/ghk", 36));
   this->m_commandIds.push_back(std::make_pair("/fret", 35));
@@ -3626,7 +3627,7 @@ void CSession::InitCommandTables() {
   this->m_commandIds.push_back(std::make_pair("/whkvy", 9));
   this->m_commandIds.push_back(std::make_pair("/wkdth", 9));
   this->m_commandIds.push_back(std::make_pair("/where", 9));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(554), 38));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_THINK), 38));
   this->m_commandIds.push_back(std::make_pair("/money", 37));
   this->m_commandIds.push_back(std::make_pair("/ehs", 37));
   this->m_commandIds.push_back(std::make_pair("/anger", 36));
@@ -3701,19 +3702,19 @@ void CSession::InitCommandTables() {
   this->m_commandIds.push_back(std::make_pair("/ㄴㅅ뭉", 22));
   this->m_commandIds.push_back(std::make_pair("/ㅂ", 24));
   this->m_commandIds.push_back(std::make_pair("/탈퇴", 27));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(546), 31));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(547), 32));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(549), 33));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_DELIGHT), 31));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_THROB), 32));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_SWEAT), 33));
   this->m_commandIds.push_back(std::make_pair("/주먹", 40));
   this->m_commandIds.push_back(std::make_pair("/보", 41));
   this->m_commandIds.push_back(std::make_pair("/가위", 39));
   this->m_commandIds.push_back(std::make_pair("/바위", 40));
   this->m_commandIds.push_back(std::make_pair("/좌표", 9));
   this->m_commandIds.push_back(std::make_pair("/장소", 9));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(553), 37));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(552), 36));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(551), 35));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(550), 34));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_MONEY), 37));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_ANGER), 36));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_FRET), 35));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_AHA), 34));
   this->m_commandIds.push_back(std::make_pair("/샤ㅔ", 42));
   this->m_commandIds.push_back(std::make_pair("/기억", 43));
   this->m_commandIds.push_back(std::make_pair("/누메", 46));
@@ -3743,63 +3744,63 @@ void CSession::InitCommandTables() {
   this->m_commandIds.push_back(std::make_pair("/stateinfo", 201));
   this->m_commandIds.push_back(std::make_pair("/monsterhp", 213));
   this->m_commandIds.push_back(std::make_pair("/ㅡㅐㅜㄴㅅㄷ고ㅔ", 213));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(548), 79));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(555), 66));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_BIGTHROB), 79));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_THANKS), 66));
   this->m_commandIds.push_back(std::make_pair("/ㄳ", 66));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(556), 67));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(557), 68));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_KEK), 67));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_SORRY), 68));
   this->m_commandIds.push_back(std::make_pair("/sorry", 68));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(558), 69));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_SMILE), 69));
   this->m_commandIds.push_back(std::make_pair("/하하", 69));
   this->m_commandIds.push_back(std::make_pair("/ㅇ", 69));
   this->m_commandIds.push_back(std::make_pair("/smile", 69));
   this->m_commandIds.push_back(std::make_pair("/ㄱ", 31));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(559), 70));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(560), 71));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(561), 72));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_PROFUSELY_SWEAT), 70));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_SCRATCH), 71));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_BEST), 72));
   this->m_commandIds.push_back(std::make_pair("/원츄", 72));
   this->m_commandIds.push_back(std::make_pair("/ㅊ", 72));
   this->m_commandIds.push_back(std::make_pair("/emotion", 86));
   this->m_commandIds.push_back(std::make_pair("/lightmap", 119));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(562), 73));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(563), 74));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_STARE_ABOUT), 73));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_HUK), 74));
   this->m_commandIds.push_back(std::make_pair("/ㅎ", 74));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(564), 75));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_O), 75));
   this->m_commandIds.push_back(std::make_pair("/o", 75));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(565), 76));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_X), 76));
   this->m_commandIds.push_back(std::make_pair("/x", 76));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(566), 77));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_HELP), 77));
   this->m_commandIds.push_back(std::make_pair("/ㅊㅊ", 77));
   this->m_commandIds.push_back(std::make_pair("/help", 77));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(567), 78));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(568), 80));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(569), 81));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_GO), 78));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_CRY), 80));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_KIK), 81));
   this->m_commandIds.push_back(std::make_pair("/킥", 81));
   this->m_commandIds.push_back(std::make_pair("/ㅋ", 81));
   this->m_commandIds.push_back(std::make_pair("/케케", 81));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(570), 82));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(571), 83));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(572), 84));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_CHUP), 82));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_CHUPCHUP), 83));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_HNG), 84));
   this->m_commandIds.push_back(std::make_pair("/끄덕", 85));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(573), 85));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_OK), 85));
   this->m_commandIds.push_back(std::make_pair("/이모션", 86));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(772), 123));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_STARE), 123));
   this->m_commandIds.push_back(std::make_pair("/ㅉ", 123));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(773), 124));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(774), 125));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(775), 126));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(776), 127));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_HUNGRY), 124));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_COOL), 125));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_MERONG), 126));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_SHY), 127));
   this->m_commandIds.push_back(std::make_pair("/부", 127));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(777), 128));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(778), 129));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_GOODBOY), 128));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_SPTIME), 129));
   this->m_commandIds.push_back(std::make_pair("/엠", 129));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(779), 130));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(780), 131));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(781), 132));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_SEXY), 130));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_COMEON), 131));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_SLEEPY), 132));
   this->m_commandIds.push_back(std::make_pair("/ㅈ", 132));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(782), 133));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_CONGRATULATION), 133));
   this->m_commandIds.push_back(std::make_pair("/ㅊㅋ", 133));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(783), 134));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_HPTIME), 134));
   this->m_commandIds.push_back(std::make_pair("/피", 134));
   this->m_commandIds.push_back(std::make_pair("/e1", 123));
   this->m_commandIds.push_back(std::make_pair("/e2", 124));
@@ -3813,15 +3814,15 @@ void CSession::InitCommandTables() {
   this->m_commandIds.push_back(std::make_pair("/e10", 132));
   this->m_commandIds.push_back(std::make_pair("/e11", 133));
   this->m_commandIds.push_back(std::make_pair("/e12", 134));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(945), 154));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(946), 155));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(947), 156));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_SPARK), 154));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_CONFUSE), 155));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_OHNO), 156));
   this->m_commandIds.push_back(std::make_pair("/한숨", 156));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(948), 157));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(949), 158));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_HUM), 157));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_BLABLA), 158));
   this->m_commandIds.push_back(std::make_pair("/시끌시끌", 158));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(950), 159));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(951), 160));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_OTL), 159));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_EMOTION_DICE), 160));
   this->m_commandIds.push_back(std::make_pair("/dice", 160));
   this->m_commandIds.push_back(std::make_pair("/e19", 160));
   this->m_commandIds.push_back(std::make_pair("/e13", 154));
@@ -3872,11 +3873,11 @@ void CSession::InitCommandTables() {
   this->m_commandIds.push_back(std::make_pair("/eqopen", 185));
   this->m_commandIds.push_back(std::make_pair("/show_addressbar", 205));
   this->m_commandIds.push_back(std::make_pair("/buildinfo", 207));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(2861), 223));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_GUILD_MEMBERLIST_SORT), 223));
   this->m_commandIds.push_back(std::make_pair("/viewpointvalue", 227));
   this->m_commandIds.push_back(std::make_pair("/mable", 240));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(3513), 241));
-  this->m_commandIds.push_back(std::make_pair(LookupMessage(3532), 243));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_CHECK_LEVEL_BEFORE_REGISTER_AGENCY), 241));
+  this->m_commandIds.push_back(std::make_pair(LookupMessage(MSI_RUSSIA_PERSONALINFO_EXP), 243));
   std::stable_sort(this->m_commandIds.begin(), this->m_commandIds.end(),
                    [](const std::pair<const char*, int>& left, const std::pair<const char*, int>& right) {
                      return std::strcmp(left.first, right.first) < 0;
@@ -7069,7 +7070,7 @@ void CSession::LoadSessionTables() {
   const std::uint8_t source[] = {0xA5, 0xA8, 0x04, 0x07, 0x1C, 0xEB, 0x1E, 0xFA, 0xD7, 0x9A, 0x06, 0x1D, 0x08, 0xE9, 0x71};
   thread_local EncryptedName<sizeof(source), 0x9171997D6963C9F7ULL> setupName(source);
   if (HWND window = FindWindowA(nullptr, setupName.Text())) {
-    ShowErrorDialog(nullptr, LookupMessage(3194), 0);
+    ShowErrorDialog(nullptr, LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PASSWORD), 0);
     SendMessageA(window, WM_CLOSE, 0, 0);
   }
 

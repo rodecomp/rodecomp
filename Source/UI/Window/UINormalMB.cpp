@@ -10,6 +10,7 @@
 #include "UI/UIStaticBitmap.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <windows.h>
 
 // OFFSET: 0x00946C00
@@ -77,7 +78,7 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
   this->m_owner = owner;
   this->m_message = text;
   if (!title) {
-    this->m_title = LookupMessage(3700);
+    this->m_title = LookupMessage(MSI_ITEM_GRADE_ENCHANT_FAIL);
   } else {
     this->m_title = title;
   }

@@ -24,6 +24,7 @@
 #include "Render/Renderer.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cctype>
 #include <cstdio>
@@ -91,7 +92,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   const int positions[][2] = {{160, 23}, {178, 23}, {196, 23}, {214, 23}};
   const char* images[] = {"btn_job_def_on", "btn_job_def_off", "btn_job_heal_on", "btn_job_heal_off", "btn_job_atk_on", "btn_job_atk_off", "btn_job_buf_on", "btn_job_buf_off"};
   const std::string path = prefix;
-  const char* tooltips[] = {LookupMessage(3420), LookupMessage(3491), LookupMessage(3444), LookupMessage(3508)};
+  const char* tooltips[] = {LookupMessage(MSI_EXPLAIN_CHAT_UNBLOCK), LookupMessage(MSI_CANNOT_FIND_PARTYMASTER), LookupMessage(MSI_QUESTWND_LOWER), LookupMessage(MSI_EXPAND_SIGHT_ON)};
 
   for (int index = 0; index < 4; ++index) {
     this->jobs[index] = new UIJobSlotButton();
@@ -110,7 +111,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   memo->maximum = 150;
   memo->TextColor(0, 0xFFFFFFFFu);
   memo->SetPlaceholderEnabled(true);
-  memo->SetPlaceholder(LookupMessage(3419));
+  memo->SetPlaceholder(LookupMessage(MSI_EXPLAIN_CHAT_BLOCK));
   memo->SetPlaceholderColor(0x646464);
   memo->Move(238, 24);
   memo->Background(255, 255, 255);
@@ -124,7 +125,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
   search->Move(354, 22);
   search->SetId(365);
-  search->SetText(LookupMessage(3366));
+  search->SetText(LookupMessage(MSI_ADVEN_PURPOSE));
   this->AddChild(search);
   auto* reset = new UIBmpTextButton();
   reset->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_initialize.bmp", 0, 0);
@@ -134,7 +135,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   reset->SetSize(reset->BitmapWidth(), reset->BitmapHeight());
   reset->Move(401, 22);
   reset->SetId(363);
-  reset->SetText(LookupMessage(3367));
+  reset->SetText(LookupMessage(MSI_ADVEN_WARNING_TEXT));
   this->AddChild(reset);
   this->refresh = new UIBitmapButton();
   this->refresh->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_refresh.bmp", 0, 0);
@@ -210,13 +211,13 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->types->SetSize(76, 18);
   this->types->Move(76, 22);
   this->AddChild(this->types);
-  this->types->AddOption(LookupMessage(3377), 0);
-  this->types->AddOption(LookupMessage(3360), 0);
-  this->types->AddOption(LookupMessage(3361), 0);
-  this->types->AddOption(LookupMessage(3362), 0);
-  this->types->AddOption(LookupMessage(3363), 0);
-  this->types->AddOption(LookupMessage(3364), 0);
-  this->types->AddOption(LookupMessage(3365), 0);
+  this->types->AddOption(LookupMessage(MSI_ACCOUNT), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_MD), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_EDEN_GROUP), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_ETC), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_SEARCH), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_RESET), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_JOIN_PARTY), 0);
 
   this->types->Select(0);
   this->pageText = new UIStaticText();
@@ -231,12 +232,12 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->m_message0 = 365;
 
   auto* close = new UIBasicButton();
-  close->Configure(42, LookupMessage(3045));
+  close->Configure(42, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
   close->Move(this->geometry.width - close->geometry.width - 10, 317);
   close->SetId(201);
   this->AddChild(close);
   this->stop = new UIBasicButton();
-  this->stop->Configure((this->TextWidth(LookupMessage(3375), 0, 0, 12, 0, 0) + 10), LookupMessage(3375));
+  this->stop->Configure((this->TextWidth(LookupMessage(MSI_REQUEST_PARTY), 0, 0, 12, 0, 0) + 10), LookupMessage(MSI_REQUEST_PARTY));
   this->stop->Move(close->geometry.x - this->stop->geometry.width - 5, 317);
   this->stop->SetId(410);
   this->AddChild(this->stop);
@@ -283,7 +284,7 @@ void UIAdvenPartyBoardWnd::Registration(bool value) {
       DisableButton(this->stop, 1);
     }
   } else {
-    this->recruit->SetTooltip(LookupMessage(2047));
+    this->recruit->SetTooltip(LookupMessage(MSI_PARTY_RECRUIT_ERROR));
     this->ownParty->Enable(0);
     DisableButton(this->ownParty, 1);
     this->recruit->Enable(1);
@@ -590,7 +591,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 void UIAdvenPartyBoardWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agencyList.bmp"))), false);
-  this->DrawTitleBar(true, LookupMessage(3504), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_ADVENTURER_AGENCY_RECRUIT_STOP_FAILED), 0);
   this->DrawButtonBar(2, 0, 1);
   this->DrawTextAt(36, 25, "~", 0, 0, 12, 0, 0, 0);
 }

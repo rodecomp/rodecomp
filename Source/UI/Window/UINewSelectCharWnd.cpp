@@ -33,6 +33,7 @@
 #include "Script/LuaScript.h"
 #include "UI/Window/UIChangeNameWnd.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <windows.h>
 #include <mmsystem.h>
 #include <algorithm>
@@ -208,7 +209,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_textButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
   this->m_textButton->SetSize(this->m_textButton->BitmapWidth(), this->m_textButton->BitmapHeight());
   this->m_textButton->Move(0x33E, 0x15F);
-  this->m_textButton->SetText(LookupMessage(0xD10));
+  this->m_textButton->SetText(LookupMessage(MSI_MAKECHARWND_HAIR_COLOR));
   this->m_textButton->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_textButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_textButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
@@ -224,7 +225,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   startButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 3, 0);
   startButton->SetSize(startButton->BitmapWidth(), startButton->BitmapHeight());
   startButton->Move(0x33E, 0x142);
-  startButton->SetText(LookupMessage(0xD0B));
+  startButton->SetText(LookupMessage(MSI_SELECTCHARWND_DELETE));
   startButton->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
   startButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   startButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
@@ -243,7 +244,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   cancelDeleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
   cancelDeleteButton->SetSize(cancelDeleteButton->BitmapWidth(), cancelDeleteButton->BitmapHeight());
   cancelDeleteButton->Move(0x33E, 0x142);
-  cancelDeleteButton->SetText(LookupMessage(0xD0C));
+  cancelDeleteButton->SetText(LookupMessage(MSI_SELECTCHARWND_CHARACTER_LIST));
   cancelDeleteButton->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
   cancelDeleteButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   cancelDeleteButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
@@ -260,7 +261,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   gameStartButton->SetSize(gameStartButton->BitmapWidth(), gameStartButton->BitmapHeight());
   gameStartButton->Move(0x330, 0x197);
   gameStartButton->SetId(0xB8);
-  gameStartButton->SetText(LookupMessage(0xD0D));
+  gameStartButton->SetText(LookupMessage(MSI_SELECTCHARWND_NOTICE));
   gameStartButton->AddTextStyle(0, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
   gameStartButton->AddTextStyle(1, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
   gameStartButton->AddTextStyle(2, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
@@ -274,7 +275,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   deleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
   deleteButton->SetSize(deleteButton->BitmapWidth(), deleteButton->BitmapHeight());
   deleteButton->Move(0x33E, 0x15F);
-  deleteButton->SetText(LookupMessage(0xD0E));
+  deleteButton->SetText(LookupMessage(MSI_MAKECHARWND_CREATE));
   deleteButton->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
   deleteButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   deleteButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
@@ -347,9 +348,9 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_nextPageButton);
 
   UIStaticText* pageTitle = new UIStaticText();
-  const int titleWidth = this->TextWidth(LookupMessage(0xD0F), 0, 0, 0xC, 1, 0);
-  pageTitle->SetSize(titleWidth, this->TextHeight(LookupMessage(0xD0F), 0, 0, 0xC, 1, 0));
-  pageTitle->SetText(LookupMessage(0xD0F), 0);
+  const int titleWidth = this->TextWidth(LookupMessage(MSI_MAKECHARWND_HAIR_STYLE), 0, 0, 0xC, 1, 0);
+  pageTitle->SetSize(titleWidth, this->TextHeight(LookupMessage(MSI_MAKECHARWND_HAIR_STYLE), 0, 0, 0xC, 1, 0));
+  pageTitle->SetText(LookupMessage(MSI_MAKECHARWND_HAIR_STYLE), 0);
   pageTitle->SetColor(0x57, 0x66, 0x91);
   pageTitle->Move(0x380 - titleWidth / 2, 0x21A);
   this->AddChild(pageTitle);
@@ -390,7 +391,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
     if (g_session.IsListedId(character->job, character->sex) == 1) {
       char message[260];
       std::memset(message, 0, sizeof(message));
-      std::sprintf(message, LookupMessage(0x974), index, 0x9C41);
+      std::sprintf(message, LookupMessage(MSI_REFUSE_OVER_USERLIMIT), index, 0x9C41);
       g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 0x118, 0x78, 0);
       g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
       break;
@@ -611,7 +612,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         if (info->gid == blocked[index].gid) {
           char text[260];
           std::memset(text, 0, sizeof(text));
-          std::sprintf(text, LookupMessage(0x337), blocked[index].expireDate);
+          std::sprintf(text, LookupMessage(MSI_BLOCKED), blocked[index].expireDate);
           g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
           this->m_unknown118 = false;
           return 0;
@@ -632,10 +633,10 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_CANCEL:
       g_accountLinkedUserDataMgr->Save();
       if (g_session.m_loginModeFlag == 1) {
-        if (g_windowMgr.Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_ENST_ANGELUS2), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
           g_modeMgr.gameMode->SendMsg(LMM_GOTO_LOGIN, 0, 0, 0, 0);
         }
-      } else if (g_windowMgr.Confirm(LookupMessage(0x11), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+      } else if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
         g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
@@ -712,13 +713,13 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         if (info->gid == blocked[index].gid) {
           char text[260];
           std::memset(text, 0, sizeof(text));
-          std::sprintf(text, LookupMessage(0x337), blocked[index].expireDate);
+          std::sprintf(text, LookupMessage(MSI_BLOCKED), blocked[index].expireDate);
           g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
           return 0;
         }
       }
 
-      if (g_windowMgr.Confirm(LookupMessage(0x13), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_CHARACTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
         this->m_unknown118 = true;
         if (g_windowMgr.RunEmailAddress() == 0xB8) {
           g_modeMgr.gameMode->SendMsg(MM_COMMAND, 0x271A, 0, 0, 0);
@@ -936,7 +937,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case 0x1B1: {
       const unsigned char selected = static_cast<unsigned char>(g_selectedSlotIndex);
-      if (g_windowMgr.Confirm(LookupMessage(0x7E0), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
         const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_unknown138, 0, 0, 0));
         if (info != nullptr) {
           CharacterMovePacket packet;

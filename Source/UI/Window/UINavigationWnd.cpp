@@ -26,6 +26,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
@@ -73,7 +74,7 @@ void UINavigationWnd::OnCreate(int width, int height) {
   path += "navigation_interface\\";
 
   const char* tooltips[6] = {
-    LookupMessage(0x894), LookupMessage(0x895), LookupMessage(0x896), LookupMessage(0x897), LookupMessage(0x898), LookupMessage(0x899),
+    LookupMessage(MSI_NAVIGATION_SEARCHINFO), LookupMessage(MSI_NAVIGATION_VIEWCHANGE), LookupMessage(MSI_NAVIGATION_LIGHTCHANGE), LookupMessage(MSI_NAVIGATION_END), LookupMessage(MSI_NAVIGATION_BASE), LookupMessage(MSI_NAVIGATION_MINI),
   };
   const char* names[6] = {"NaviSearch", "NaviStart", "NaviRoute", "NaviList", "Navisyschange2", "navifolder"};
   const int ids[6] = {321, 184, 189, 190, 284, 191};
@@ -90,7 +91,7 @@ void UINavigationWnd::OnCreate(int width, int height) {
     this->AddChild(this->m_buttons[index]);
   }
 
-  this->m_closeButton = this->AddCloseButton(LookupMessage(0x89A), 0);
+  this->m_closeButton = this->AddCloseButton(LookupMessage(MSI_NAVIGATION_HELP), 0);
   this->m_minimizeButton = this->AddMinimizeButton("", 0);
 
   this->unknown_0120 = new UIBitmapButton();
@@ -100,7 +101,7 @@ void UINavigationWnd::OnCreate(int width, int height) {
   this->unknown_0120->SetSize(this->unknown_0120->BitmapWidth(), this->unknown_0120->BitmapHeight());
   this->unknown_0120->Move(this->geometry.width - 42, 3);
   this->unknown_0120->SetId(343);
-  this->unknown_0120->SetTooltip(LookupMessage(0x89D));
+  this->unknown_0120->SetTooltip(LookupMessage(MSI_NAVIGATION_NPC));
   this->AddChild(this->unknown_0120);
 
   this->unknown_00EC = new UIComboBoxDefWnd();
@@ -114,10 +115,10 @@ void UINavigationWnd::OnCreate(int width, int height) {
   this->unknown_00EC->green = 232;
   this->unknown_00EC->blue = 232;
   this->AddChild(this->unknown_00EC);
-  this->unknown_00EC->AddOption(LookupMessage(0x89E), 0);
-  this->unknown_00EC->AddOption(LookupMessage(0x89F), 0);
-  this->unknown_00EC->AddOption(LookupMessage(0x8A0), 0);
-  this->unknown_00EC->AddOption(LookupMessage(0x8A1), 0);
+  this->unknown_00EC->AddOption(LookupMessage(MSI_NAVIGATION_MOB), 0);
+  this->unknown_00EC->AddOption(LookupMessage(MSI_NAVIGATION_SETSTRING), 0);
+  this->unknown_00EC->AddOption(LookupMessage(MSI_NAVIGATION_SCROLL), 0);
+  this->unknown_00EC->AddOption(LookupMessage(MSI_NAVIGATION_USESCROLL), 0);
 
   this->m_titleBar = new UIEditCtrl();
   this->m_titleBar->SetSize(226, 18);
@@ -127,7 +128,7 @@ void UINavigationWnd::OnCreate(int width, int height) {
   this->m_titleBar->Border(200, 100, 100);
   this->m_titleBar->flat = 0;
   UIEditCtrl* edit = this->m_titleBar;
-  const char* tooltip = LookupMessage(0x8A2);
+  const char* tooltip = LookupMessage(MSI_NAVIGATION_SERVICE);
   if (tooltip) {
     edit->tooltip = tooltip;
   }
@@ -138,30 +139,30 @@ void UINavigationWnd::OnCreate(int width, int height) {
   }
 
   this->unknown_0118 = new UICheckBox();
-  this->unknown_0118->SetSize(this->TextWidth(LookupMessage(0x8A3), 10, 0, 12, 0, 0), 12);
+  this->unknown_0118->SetSize(this->TextWidth(LookupMessage(MSI_NAVIGATION_USESERVICE), 10, 0, 12, 0, 0), 12);
   path = base;
-  this->unknown_0118->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A3));
+  this->unknown_0118->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(MSI_NAVIGATION_USESERVICE));
   this->unknown_0118->Move(-1000, -1000);
   this->unknown_0118->SetChecked(g_navigationManager.unknown_127D);
-  this->unknown_0118->SetTooltip(LookupMessage(0x8A4));
+  this->unknown_0118->SetTooltip(LookupMessage(MSI_NAVIGATION_PLANE));
   this->AddChild(this->unknown_0118);
 
   this->unknown_0114 = new UICheckBox();
-  this->unknown_0114->SetSize(this->TextWidth(LookupMessage(0x8A5), 10, 0, 12, 0, 0), 12);
+  this->unknown_0114->SetSize(this->TextWidth(LookupMessage(MSI_NAVIGATION_USEPLANE), 10, 0, 12, 0, 0), 12);
   path = base;
-  this->unknown_0114->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A5));
+  this->unknown_0114->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(MSI_NAVIGATION_USEPLANE));
   this->unknown_0114->Move(-1000, -1000);
   this->unknown_0114->SetChecked(g_navigationManager.unknown_127C);
-  this->unknown_0114->SetTooltip(LookupMessage(0x8A6));
+  this->unknown_0114->SetTooltip(LookupMessage(MSI_NAVIGATION_TARGETUNKNOWN));
   this->AddChild(this->unknown_0114);
 
   this->unknown_011C = new UICheckBox();
-  this->unknown_011C->SetSize(this->TextWidth(LookupMessage(0x8A7), 10, 0, 12, 0, 0), 12);
+  this->unknown_011C->SetSize(this->TextWidth(LookupMessage(MSI_NAVIGATION_GOING), 10, 0, 12, 0, 0), 12);
   path = base;
-  this->unknown_011C->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A7));
+  this->unknown_011C->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(MSI_NAVIGATION_GOING));
   this->unknown_011C->Move(-1000, -1000);
   this->unknown_011C->SetChecked(g_navigationManager.unknown_127E);
-  this->unknown_011C->SetTooltip(LookupMessage(0x8A8));
+  this->unknown_011C->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHING));
   this->AddChild(this->unknown_011C);
 }
 
@@ -212,17 +213,17 @@ void UINavigationWnd::RefreshHeaderTexts(int mode) {
       if (g_navigationManager.SavedTargetText(saved, sizeof(saved))) {
         std::sprintf(text, ">>%s", saved);
       } else {
-        std::sprintf(text, LookupMessage(0x8A9));
+        std::sprintf(text, LookupMessage(MSI_NAVIGATION_UN));
       }
-      this->m_title = LookupMessage(0x8AA);
+      this->m_title = LookupMessage(MSI_NAVIGATION_NAVI);
       this->m_subtitle = text;
     } else {
-      this->m_title = LookupMessage(0x8AB);
-      this->m_subtitle = LookupMessage(0x8AC);
+      this->m_title = LookupMessage(MSI_NAVIGATION_SEARCHRESULT_D);
+      this->m_subtitle = LookupMessage(MSI_NAVIGATION_NPC_S_S);
     }
   } else {
-    this->m_title = LookupMessage(0x8AD);
-    this->m_subtitle = LookupMessage(0x8AC);
+    this->m_title = LookupMessage(MSI_NAVIGATION_MOB_S_S);
+    this->m_subtitle = LookupMessage(MSI_NAVIGATION_NPC_S_S);
   }
 
   this->Invalidate();
@@ -299,60 +300,60 @@ void UINavigationWnd::RefreshRouteList() {
     return;
   }
 
-  this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(LookupMessage(0x8B2)), 0, 0);
+  this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_TARGET_S_D_D)), 0, 0);
   char text[100];
   std::memset(text, 0, sizeof(text));
-  std::sprintf(text, LookupMessage(0x8B3), g_navigationManager.GetRouteResult(), nodeCount);
+  std::sprintf(text, LookupMessage(MSI_NAVIGATION_BOSS), g_navigationManager.GetRouteResult(), nodeCount);
   this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
   int lineOffset;
   if (target.type == 2) {
     CNavi_Object* npc = static_cast<CNavi_Object*>(target.object);
     std::memset(text, 0, sizeof(text));
-    std::sprintf(text, LookupMessage(0x8B4), npc->GetInfo()->GetTitle(), npc->GetInfo()->GetName());
+    std::sprintf(text, LookupMessage(MSI_NAVIGATION_NORMAL), npc->GetInfo()->GetTitle(), npc->GetInfo()->GetName());
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
     std::memset(text, 0, sizeof(text));
     NaviCell cellX;
     NaviCell cellY;
-    std::sprintf(text, LookupMessage(0x8B5), npc->GetName(), npc->GetCell(&cellX)->x, npc->GetCell(&cellY)->y);
+    std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGET_S_S), npc->GetName(), npc->GetCell(&cellX)->x, npc->GetCell(&cellY)->y);
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 5;
   } else if (target.type == 3) {
     CNavi_Object* mob = static_cast<CNavi_Object*>(target.object);
     std::memset(text, 0, sizeof(text));
-    std::sprintf(text, LookupMessage(0x8B4), mob->GetInfo()->GetTitle(), mob->GetInfo()->GetName());
+    std::sprintf(text, LookupMessage(MSI_NAVIGATION_NORMAL), mob->GetInfo()->GetTitle(), mob->GetInfo()->GetName());
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
     std::string kind;
     kind = LookupMessage(mob->GetType() == 301 ? 0x8B6 : 0x8B7);
     std::memset(text, 0, sizeof(text));
-    std::sprintf(text, LookupMessage(0x8B8), mob->GetName(), kind.c_str());
+    std::sprintf(text, LookupMessage(MSI_NAVIGATION_ITEM_S_S), mob->GetName(), kind.c_str());
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 5;
   } else if (target.type == 1) {
     CNaviInfo* map = static_cast<CNaviInfo*>(target.object);
     std::memset(text, 0, sizeof(text));
-    std::sprintf(text, LookupMessage(0x8B4), map->GetTitle(), map->GetName());
+    std::sprintf(text, LookupMessage(MSI_NAVIGATION_NORMAL), map->GetTitle(), map->GetName());
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 4;
   } else if (target.type == 0) {
     CNaviInfo* map = static_cast<CNaviInfo*>(target.object);
     std::memset(text, 0, sizeof(text));
-    std::sprintf(text, LookupMessage(0x8B4), map->GetTitle(), map->GetName());
+    std::sprintf(text, LookupMessage(MSI_NAVIGATION_NORMAL), map->GetTitle(), map->GetName());
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
     std::memset(text, 0, sizeof(text));
     NaviCell cellX;
     NaviCell cellY;
-    std::sprintf(text, LookupMessage(0x8B9), g_navigationManager.GetDestinationCell(&cellX)->x, g_navigationManager.GetDestinationCell(&cellY)->y);
+    std::sprintf(text, LookupMessage(MSI_NAVIGATION_D_S_D_D_D_D), g_navigationManager.GetDestinationCell(&cellX)->x, g_navigationManager.GetDestinationCell(&cellY)->y);
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 5;
   } else {
     return;
   }
 
-  this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(LookupMessage(0x8BA)), 0, 0);
+  this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_E_D_S_D_D_D_D)), 0, 0);
   this->m_searchPanel->SetLineOffset(lineOffset);
 
   CNavi_Link* previous = nullptr;
@@ -363,19 +364,19 @@ void UINavigationWnd::RefreshRouteList() {
     NaviCell cellY;
     if (index == 0) {
       if (node->GetType() == 400) {
-        std::sprintf(text, LookupMessage(0x8BB), index, node->GetName(), node->GetLinkedName());
+        std::sprintf(text, LookupMessage(MSI_NAVIGATION_E_D_S), index, node->GetName(), node->GetLinkedName());
       } else {
         int column = 0;
         int row = 0;
         g_navigationManager.PlayerCell(&column, &row);
         std::sprintf(
-          text, LookupMessage(0x8BC), index, node->GetInfo()->GetName(), column, row, node->GetCell(&cellX)->x, node->GetCell(&cellY)->y
+          text, LookupMessage(MSI_NAVIGATION_GOEXIT), index, node->GetInfo()->GetName(), column, row, node->GetCell(&cellX)->x, node->GetCell(&cellY)->y
         );
       }
     } else {
       std::sprintf(
         text,
-        LookupMessage(0x8BC),
+        LookupMessage(MSI_NAVIGATION_GOEXIT),
         index,
         node->GetInfo()->GetName(),
         previous->GetLinkedCell().x,
@@ -405,9 +406,9 @@ void UINavigationWnd::RefreshRouteList() {
   const int destinationY = g_navigationManager.GetDestinationCell(&cell)->y;
 
   if (savedType == 2 || savedType == 0) {
-    std::sprintf(text, LookupMessage(0x8BD), nodeCount, destination.c_str(), startX, startY, destinationX, destinationY);
+    std::sprintf(text, LookupMessage(MSI_NAVIGATION_HELPTITLE), nodeCount, destination.c_str(), startX, startY, destinationX, destinationY);
   } else {
-    std::sprintf(text, LookupMessage(0x8BE), nodeCount, destination.c_str());
+    std::sprintf(text, LookupMessage(MSI_NAVIGATION_HELP1), nodeCount, destination.c_str());
   }
   this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
@@ -441,7 +442,7 @@ void UINavigationWnd::ApplyMinimized() {
     this->unknown_0120->Move(this->geometry.width - 42, 3);
     this->m_closeButton->Move(this->geometry.width - 14, 3);
     this->m_minimizeButton->Move(this->geometry.width - 28, 3);
-    this->m_minimizeButton->SetTooltip(LookupMessage(0x89B));
+    this->m_minimizeButton->SetTooltip(LookupMessage(MSI_NAVIGATION_ALL));
 
     for (int index = 0; index < 6; ++index) {
       this->m_buttons[index]->Move(-1000, -1000);
@@ -479,7 +480,7 @@ void UINavigationWnd::ApplyMinimized() {
     this->unknown_0120->Move(this->geometry.width - 42, 3);
     this->m_closeButton->Move(this->geometry.width - 14, 3);
     this->m_minimizeButton->Move(this->geometry.width - 28, 3);
-    this->m_minimizeButton->SetTooltip(LookupMessage(0x89C));
+    this->m_minimizeButton->SetTooltip(LookupMessage(MSI_NAVIGATION_MAP));
 
     int buttonX[6] = {this->geometry.width - 66, this->geometry.width - 77, -1000, -1000, this->geometry.width - 224,
                       this->geometry.width - 31};
@@ -709,7 +710,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
     case ID_CLOSE:
       if (g_navigationManager.unknown_1258 == 2) {
-        const int response = g_windowMgr.Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0);
+        const int response = g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_HELP2), 2, true, false, 0, "Message", 280, 120, 0);
         if (response != 0xBB) {
           break;
         }
@@ -858,7 +859,7 @@ void UINavigationWnd::FillRouteList() {
 
   char text[64];
   std::memset(text, 0, sizeof(text));
-  std::sprintf(text, LookupMessage(0x8AE), g_navigationManager.StateCount());
+  std::sprintf(text, LookupMessage(MSI_NAVIGATION_MAP_S), g_navigationManager.StateCount());
   this->SendMsg(nullptr, UM_ADDITEM, 0x150, reinterpret_cast<std::intptr_t>(text), 0, 0);
   this->m_routePanel->SetLineOffset(1);
 
@@ -867,35 +868,35 @@ void UINavigationWnd::FillRouteList() {
     NavigationTarget state = g_navigationManager.GetState(index);
     if (state.type == 2) {
       CNavi_Object* object = static_cast<CNavi_Object*>(state.object);
-      std::sprintf(text, LookupMessage(0x8AF), object->GetInfo()->GetName(), object->GetName());
+      std::sprintf(text, LookupMessage(MSI_NAVIGATION_RESULTINFO), object->GetInfo()->GetName(), object->GetName());
     } else if (state.type == 3) {
       CNavi_Object* object = static_cast<CNavi_Object*>(state.object);
       const int flag = object->GetFlag();
       if (flag > 0) {
         std::string kind = "없음";
         if (flag > 99) {
-          kind = LookupMessage(0x991);
+          kind = LookupMessage(MSI_NAVIGATION_NUM4);
         } else if (flag > 49) {
-          kind = LookupMessage(0x992);
+          kind = LookupMessage(MSI_NAVIGATION_NUM5);
         } else if (flag >= 20 && flag <= 49) {
-          kind = LookupMessage(0x993);
+          kind = LookupMessage(MSI_BANK_SYSTEM_ERROR);
         } else if (flag >= 5 && flag <= 19) {
-          kind = LookupMessage(0x994);
+          kind = LookupMessage(MSI_BANK_WITHDRAW_NO_MONEY);
         } else if (flag >= 1 && flag <= 4) {
-          kind = LookupMessage(0x995);
+          kind = LookupMessage(MSI_BANK_DEPOSIT_NO_MONEY);
         }
-        std::sprintf(text, LookupMessage(0x98F), object->GetInfo()->GetName(), object->GetName(), kind.c_str());
+        std::sprintf(text, LookupMessage(MSI_NAVIGATION_NUM2), object->GetInfo()->GetName(), object->GetName(), kind.c_str());
       } else {
-        std::sprintf(text, LookupMessage(0x8B0), object->GetInfo()->GetName(), object->GetName());
+        std::sprintf(text, LookupMessage(MSI_NAVIGATION_LENGTH), object->GetInfo()->GetName(), object->GetName());
       }
     } else if (state.type == 1) {
-      std::sprintf(text, LookupMessage(0x8B1), static_cast<CNaviInfo*>(state.object)->GetName());
+      std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGETMAP_S_S), static_cast<CNaviInfo*>(state.object)->GetName());
     } else if (state.type == 0) {
       CNaviInfo* info = static_cast<CNaviInfo*>(state.object);
       if (state.name.empty()) {
-        std::sprintf(text, LookupMessage(0x975), info->GetName(), state.x, state.y);
+        std::sprintf(text, LookupMessage(MSI_REFUSE_ERRORCODE), info->GetName(), state.x, state.y);
       } else {
-        std::sprintf(text, LookupMessage(0x976), state.name.c_str(), info->GetName(), state.x, state.y);
+        std::sprintf(text, LookupMessage(MSI_REFUSE_DISCONNECT_KEEP_TIME), state.name.c_str(), info->GetName(), state.x, state.y);
       }
     }
     this->SendMsg(nullptr, UM_ADDITEM, 0x150, reinterpret_cast<std::intptr_t>(text), 0, 0);

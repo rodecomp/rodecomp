@@ -11,6 +11,7 @@
 #include "Contents/Skills/SkillInfo.h"
 #include "Utility/Math/Vector3d.h"
 
+#include "Resource/MSGSTRINGID.h"
 class CSkillAction_TR_ROSEBLOSSOM : public CSkillAction {
 public:
   void OnSkillCast(int level, CGameActor* source) override;
@@ -187,13 +188,13 @@ void CSkillAction_TR_KVASIR_SONATA::OnSkillEffect(int level, CGameActor* source,
 // OFFSET: 0x007A2820
 // FUNCTION: fn_08980
 EfstActionMessage CEfstAction_KVASIR_SONATA::GetEfstBeginMessage() {
-  return {LookupMessage(3791), 0xFFFF00};
+  return {LookupMessage(MSI_TR_MYSTIC_SYMPHONY_OFF), 0xFFFF00};
 }
 
 // OFFSET: 0x007A2850
 // FUNCTION: fn_08981
 EfstActionMessage CEfstAction_KVASIR_SONATA::GetEfstEndMessage() {
-  return {LookupMessage(3792), 0xFF};
+  return {LookupMessage(MSI_TR_GEF_NOCTURN_ON), 0xFF};
 }
 
 // OFFSET: 0x007A2880
@@ -234,13 +235,13 @@ void CEfstAction_PRON_MARCH::OnEfstBegin(int efstId, int value, int argument3, i
 // OFFSET: 0x007A2CF0
 // FUNCTION: fn_08985
 EfstActionMessage CEfstAction_PRON_MARCH::GetEfstBeginMessage() {
-  return {LookupMessage(3803), 0xFFFF00};
+  return {LookupMessage(MSI_WH_CALAMITYGALE_OFF), 0xFFFF00};
 }
 
 // OFFSET: 0x007A2D20
 // FUNCTION: fn_08986
 EfstActionMessage CEfstAction_PRON_MARCH::GetEfstEndMessage() {
-  return {LookupMessage(3804), 0xFF};
+  return {LookupMessage(MSI_WH_WIND_SIGN_ON), 0xFF};
 }
 
 // OFFSET: 0x007A2D50
@@ -283,13 +284,13 @@ void CEfstAction_JAWAII_SERENADE::OnEfstBegin(int efstId, int value, int argumen
 // OFFSET: 0x007A31E0
 // FUNCTION: fn_08990
 EfstActionMessage CEfstAction_JAWAII_SERENADE::GetEfstBeginMessage() {
-  return {LookupMessage(3801), 0xFFFF00};
+  return {LookupMessage(MSI_TR_PRON_MARCH_OFF), 0xFFFF00};
 }
 
 // OFFSET: 0x007A3210
 // FUNCTION: fn_08991
 EfstActionMessage CEfstAction_JAWAII_SERENADE::GetEfstEndMessage() {
-  return {LookupMessage(3802), 0xFF};
+  return {LookupMessage(MSI_WH_CALAMITYGALE_ON), 0xFF};
 }
 
 // OFFSET: 0x007A3240
@@ -326,13 +327,13 @@ void CEfstAction_AIN_RHAPSODY::OnEfstBegin(int efstId, int value, int argument3,
 // OFFSET: 0x007A35A0
 // FUNCTION: fn_08995
 EfstActionMessage CEfstAction_AIN_RHAPSODY::GetEfstBeginMessage() {
-  return {LookupMessage(3797), 0xFF};
+  return {LookupMessage(MSI_TR_MUSICAL_INTERLUDE_OFF), 0xFF};
 }
 
 // OFFSET: 0x007A35D0
 // FUNCTION: fn_08996
 EfstActionMessage CEfstAction_AIN_RHAPSODY::GetEfstEndMessage() {
-  return {LookupMessage(3798), 0xFFFF00};
+  return {LookupMessage(MSI_TR_JAWAII_SERENADE_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x007A3600
@@ -374,13 +375,13 @@ void CEfstAction_GEF_NOCTURN::OnEfstBegin(int efstId, int value, int argument3, 
 // OFFSET: 0x007A3A80
 // FUNCTION: fn_09000
 EfstActionMessage CEfstAction_GEF_NOCTURN::GetEfstBeginMessage() {
-  return {LookupMessage(3795), 0xFF};
+  return {LookupMessage(MSI_TR_AIN_RHAPSODY_OFF), 0xFF};
 }
 
 // OFFSET: 0x007A3AB0
 // FUNCTION: fn_09001
 EfstActionMessage CEfstAction_GEF_NOCTURN::GetEfstEndMessage() {
-  return {LookupMessage(3796), 0xFFFF00};
+  return {LookupMessage(MSI_TR_MUSICAL_INTERLUDE_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x007A3AE0
@@ -479,13 +480,13 @@ void CEfstAction_MYSTIC_SYMPHONY::OnEfstUpdate(int efstId, int value, int argume
 // OFFSET: 0x007A4900
 // FUNCTION: fn_09012
 EfstActionMessage CEfstAction_MYSTIC_SYMPHONY::GetEfstBeginMessage() {
-  return {LookupMessage(3793), 0xFFFF00};
+  return {LookupMessage(MSI_TR_GEF_NOCTURN_OFF), 0xFFFF00};
 }
 
 // OFFSET: 0x007A4930
 // FUNCTION: fn_09013
 EfstActionMessage CEfstAction_MYSTIC_SYMPHONY::GetEfstEndMessage() {
-  return {LookupMessage(3794), 0xFF};
+  return {LookupMessage(MSI_TR_AIN_RHAPSODY_ON), 0xFF};
 }
 
 // OFFSET: 0x007A4960

@@ -24,6 +24,7 @@
 #include "Utility/Text/GroupedInteger.h"
 #include "UI/Window/UIRegisterMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -234,7 +235,7 @@ void CUIExchangeUI::Conclude() {
   }
 
   if (this->logCheckBox->checked) {
-    std::string text = FormatOwnedString(LookupMessage(0x728), this->partnerName.c_str());
+    std::string text = FormatOwnedString(LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE_CHARNAME), this->partnerName.c_str());
     g_modeMgr.gameMode->SendMsg(MM_SCREENSHOT, reinterpret_cast<int>(text.c_str()), 0, 0, 0);
   }
 
@@ -265,7 +266,7 @@ void CUIExchangeUI::SubmitZeny() {
     this->lockButton->disabled = 1;
     this->lockButton->Invalidate();
   } else {
-    g_windowMgr.Confirm(LookupMessage(0x25A), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
   }
 }
 
@@ -346,11 +347,11 @@ void CUIExchangeUI::OnInit() {
   this->Move((g_renderer->viewport.width - 640) / 2 + 100, g_renderer->viewport.height * 100 / 480);
 
   {
-    const std::string title = std::format("{} : ", LookupMessage(0xCE));
+    const std::string title = std::format("{} : ", LookupMessage(MSI_EXCHANGE));
     this->titleBar->SetTitle(title);
   }
 
-  this->unknown_010C->SetText(LookupMessage(0x727));
+  this->unknown_010C->SetText(LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE));
 
   for (int count = 10; count != 0; --count) {
     this->firstList->AddData(ExchangeUI::CItemData(ITEM_INFO(), 0), false);
@@ -398,7 +399,7 @@ void CUIExchangeUI::OnProcess() {
     amount = amount < 0 ? 0 : amount;
 
     if (amount > 1000000000) {
-      g_windowMgr.Confirm(LookupMessage(0x9A3), 2, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_BASIC_EXP_MSG_INDONESIA), 2, true, false, 0, "Message", 280, 120, 0);
       FormatGroupedInteger(1000000000, text, sizeof(text));
       this->zenyEdit->SetText(text);
       this->SetZeny(1000000000);
@@ -411,7 +412,7 @@ void CUIExchangeUI::OnProcess() {
 
     this->zenyEdit->SetCursor(this->zenyEdit->Length());
   } else {
-    g_windowMgr.Confirm(LookupMessage(0x25A), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
     this->zenyEdit->SetText(this->zenyText);
   }
 }

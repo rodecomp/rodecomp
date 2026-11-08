@@ -9,6 +9,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 // GLOBAL: gl_25465
 GuildInfo g_guildInfo;
 
@@ -222,7 +223,7 @@ void GuildInfo::UpdateCharacterName(int characterId, const char* name) {
     this->unknown_0018 = name;
   }
 
-  std::string unknownName = LookupMessage(581);
+  std::string unknownName = LookupMessage(MSI_NAMELESS_USER);
   for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
     if (it->characterId == characterId) {
       if (it->name.empty() || it->name == unknownName) {

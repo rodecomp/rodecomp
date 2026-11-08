@@ -15,6 +15,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstring>
 #include <windows.h>
 
@@ -127,7 +128,7 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
 
     if (selected == 0) {
-      g_windowMgr.Confirm(LookupMessage(1767), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR1), 0, true, false, 0, "Message", 280, 120, 0);
       return 0;
     }
 

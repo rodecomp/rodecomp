@@ -9,6 +9,7 @@
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/SkillInfo.h"
 
+#include "Resource/MSGSTRINGID.h"
 class CSkillAction_WH_GALESTORM : public CSkillAction {
 public:
   void OnSkillCast(int level, CGameActor* source) override;
@@ -124,13 +125,13 @@ void CEfstAction_CALAMITYGALE::OnEfstUpdate(int efstId, int value, int argument3
 // OFFSET: 0x007A6370
 // FUNCTION: fn_09031
 EfstActionMessage CEfstAction_CALAMITYGALE::GetEfstBeginMessage() {
-  return {LookupMessage(3805), 0xFFFF00};
+  return {LookupMessage(MSI_WH_WIND_SIGN_OFF), 0xFFFF00};
 }
 
 // OFFSET: 0x007A63A0
 // FUNCTION: fn_09032
 EfstActionMessage CEfstAction_CALAMITYGALE::GetEfstEndMessage() {
-  return {LookupMessage(3806), 0xFF};
+  return {LookupMessage(MSI_THAI_PERSONALINFO_EXP2), 0xFF};
 }
 
 // OFFSET: 0x007A63D0

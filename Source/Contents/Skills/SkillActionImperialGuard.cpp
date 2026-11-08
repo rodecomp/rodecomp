@@ -14,6 +14,7 @@
 #include "Contents/World/World.h"
 #include "Utility/Math/Vector3d.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstdlib>
 #include <format>
@@ -188,13 +189,13 @@ void CEfstAction_IG_GUARDIAN_SHIELD::OnEfstUpdate(int efstId, int value, int arg
 // OFFSET: 0x007880C0
 // FUNCTION: fn_08594
 EfstActionMessage CEfstAction_IG_GUARDIAN_SHIELD::GetEfstBeginMessage() {
-  return {LookupMessage(3752), 0xFFFF00};
+  return {LookupMessage(MSI_IG_REBOUND_SHIELD_OFF), 0xFFFF00};
 }
 
 // OFFSET: 0x007880F0
 // FUNCTION: fn_08595
 EfstActionMessage CEfstAction_IG_GUARDIAN_SHIELD::GetEfstEndMessage() {
-  return {LookupMessage(3753), 0xFF};
+  return {LookupMessage(MSI_IG_HOLY_SHIELD_ON), 0xFF};
 }
 
 // OFFSET: 0x00788120
@@ -257,13 +258,13 @@ void CEfstAction_IG_HOLY_SHIELD::OnEfstUpdate(int efstId, int value, int argumen
 // OFFSET: 0x00788B20
 // FUNCTION: fn_08601
 EfstActionMessage CEfstAction_IG_HOLY_SHIELD::GetEfstBeginMessage() {
-  return {LookupMessage(3756), 0xFFFF00};
+  return {LookupMessage(MSI_IG_ULTIMATE_SACRIFICE_OFF), 0xFFFF00};
 }
 
 // OFFSET: 0x00788B50
 // FUNCTION: fn_08602
 EfstActionMessage CEfstAction_IG_HOLY_SHIELD::GetEfstEndMessage() {
-  return {LookupMessage(3757), 0xFF};
+  return {LookupMessage(MSI_AG_CLIMAX_ON), 0xFF};
 }
 
 // OFFSET: 0x00788B90
@@ -391,13 +392,13 @@ void CSkillAction_IG_REBOUND_SHIELD::OnSkillEffect(int level, CGameActor* source
 // OFFSET: 0x00789EE0
 // FUNCTION: fn_08614
 EfstActionMessage CEfstAction_REBOUND_S::GetEfstBeginMessage() {
-  return {LookupMessage(3754), 0xFFFF00};
+  return {LookupMessage(MSI_IG_HOLY_SHIELD_OFF), 0xFFFF00};
 }
 
 // OFFSET: 0x00789F10
 // FUNCTION: fn_08615
 EfstActionMessage CEfstAction_REBOUND_S::GetEfstEndMessage() {
-  return {LookupMessage(3755), 0xFF};
+  return {LookupMessage(MSI_IG_ULTIMATE_SACRIFICE_ON), 0xFF};
 }
 
 // OFFSET: 0x00789F40
@@ -644,13 +645,13 @@ void CEfstAction_IG_ATTACK_STANCE::OnEfstUpdate(int efstId, int value, int argum
 // OFFSET: 0x0078BFC0
 // FUNCTION: fn_08641
 EfstActionMessage CEfstAction_IG_ATTACK_STANCE::GetEfstBeginMessage() {
-  return {LookupMessage(3748), 0xFFFF00};
+  return {LookupMessage(MSI_IG_GUARD_STANCE_OFF), 0xFFFF00};
 }
 
 // OFFSET: 0x0078BFF0
 // FUNCTION: fn_08642
 EfstActionMessage CEfstAction_IG_ATTACK_STANCE::GetEfstEndMessage() {
-  return {LookupMessage(3749), 0xFF};
+  return {LookupMessage(MSI_IG_GUARDIAN_SHIELD_ON), 0xFF};
 }
 
 // OFFSET: 0x0078C020
@@ -869,11 +870,11 @@ void CEfstAction_IG_GUARD_STANCE::OnEfstUpdate(int efstId, int value, int argume
 // OFFSET: 0x0078C850
 // FUNCTION: fn_08649
 EfstActionMessage CEfstAction_IG_GUARD_STANCE::GetEfstBeginMessage() {
-  return {LookupMessage(3750), 0xFFFF00};
+  return {LookupMessage(MSI_IG_GUARDIAN_SHIELD_OFF), 0xFFFF00};
 }
 
 // OFFSET: 0x0078C880
 // FUNCTION: fn_08650
 EfstActionMessage CEfstAction_IG_GUARD_STANCE::GetEfstEndMessage() {
-  return {LookupMessage(3751), 0xFF};
+  return {LookupMessage(MSI_IG_REBOUND_SHIELD_ON), 0xFF};
 }

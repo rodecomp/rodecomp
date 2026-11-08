@@ -14,6 +14,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/StringUtil.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstring>
 #include <list>
@@ -343,7 +344,7 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 18);
   title->Move(18, 0);
-  title->SetText(LookupMessage(4029));
+  title->SetText(LookupMessage(MSI_SEND_TO_ALLY));
   title->SetFitText(0);
   title->SetAlign(0, 6);
   {

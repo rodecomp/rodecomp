@@ -24,6 +24,7 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 
 // OFFSET: 0x007BAD00
@@ -49,25 +50,25 @@ void UIApplyForPartyWnd::StoreInfo() {
 // FUNCTION: fn_09299
 void UIApplyForPartyWnd::OnCreate(int, int) {
   UIBasicButton* button = new UIBasicButton();
-  button->Configure(this->TextWidth(LookupMessage(3374), 0, 0, 12, 0, 0) + 10, LookupMessage(3374));
+  button->Configure(this->TextWidth(LookupMessage(MSI_ALL_AREA), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ALL_AREA));
   button->Move(51, 165);
   button->SetId(381);
   this->AddChild(button);
 
   button = new UIBasicButton();
-  button->Configure(this->TextWidth(LookupMessage(3373), 0, 0, 12, 0, 0) + 10, LookupMessage(3373));
+  button->Configure(this->TextWidth(LookupMessage(MSI_ADVEN_REWRITE), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ADVEN_REWRITE));
   button->Move(108, 165);
   button->SetId(271);
   this->AddChild(button);
 
   button = new UIBasicButton();
-  button->Configure(this->TextWidth(LookupMessage(3045), 0, 0, 12, 0, 0) + 10, LookupMessage(3045));
+  button->Configure(this->TextWidth(LookupMessage(MSI_ZENY_LOTTO_BUY_10), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
   button->Move(173, 165);
   button->SetId(201);
   this->AddChild(button);
 
   std::vector<std::string> lines;
-  WrapPlainText(LookupMessage(3370), lines, 40);
+  WrapPlainText(LookupMessage(MSI_ASK_JOIN), lines, 40);
 
   for (unsigned index = 0; index < lines.size(); ++index) {
     auto* label = new UIStaticText();
@@ -94,18 +95,18 @@ void UIApplyForPartyWnd::SetInfo(CAdvenPartyInfo value) {
 void UIApplyForPartyWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp"))), false);
-  this->DrawTitleBar(true, LookupMessage(3368), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_ADVEN_REGISTER), 0);
   const auto text = [&](int x, int y, const char* value) { this->DrawTextAt(x, y, value, 0, 0, 12, 0, 0, 0); };
-  text(10, 25, LookupMessage(3415));
+  text(10, 25, LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_SUCCESSED));
   const std::string fitted = FitText(*this->geometry.surface, this->info.characterName, 119);
   text(60, 25, fitted.c_str());
-  text(10, 49, LookupMessage(408));
+  text(10, 49, LookupMessage(MSI_LEVEL));
   char levels[10] = {};
   _snprintf_s(levels, sizeof(levels), _TRUNCATE, "%d~%d", this->info.minimumLevel, this->info.maximumLevel);
   text(60, 49, levels);
-  text(10, 73, LookupMessage(3369));
+  text(10, 73, LookupMessage(MSI_INCLUDE_BAD_WORD));
   text(60, 73, UIPartyInfoWnd::TypeName(this->info.type));
-  text(10, 97, LookupMessage(504));
+  text(10, 97, LookupMessage(MSI_JOB));
   const auto job = [&](int x, bool selected, const char* selectedImage, const char* unselectedImage) {
     this->DrawBitmap(x, 95, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(selected == 1 ? selectedImage : unselectedImage))), false);
   };
@@ -113,7 +114,7 @@ void UIApplyForPartyWnd::Paint() {
   job(78, this->info.healer, "유저인터페이스\\UIadventurerAgency\\btn_job_heal_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_heal_off.bmp");
   job(96, this->info.dealer, "유저인터페이스\\UIadventurerAgency\\btn_job_atk_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_atk_off.bmp");
   job(114, this->info.assist, "유저인터페이스\\UIadventurerAgency\\btn_job_buf_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_buf_off.bmp");
-  text(10, 121, LookupMessage(3359));
+  text(10, 121, LookupMessage(MSI_ADVEN_DUNJUN));
   text(60, 121, this->info.memo.c_str());
 }
 
@@ -130,16 +131,16 @@ void UIApplyForPartyWnd::OnMouseHover(int x, int y) {
 
   if (mouseX > 60 && mouseX < 76) {
     left = 60;
-    label = LookupMessage(3420);
+    label = LookupMessage(MSI_EXPLAIN_CHAT_UNBLOCK);
   } else if (mouseX > 78 && mouseX < 94) {
     left = 78;
-    label = LookupMessage(3491);
+    label = LookupMessage(MSI_CANNOT_FIND_PARTYMASTER);
   } else if (mouseX > 96 && mouseX < 112) {
     left = 96;
-    label = LookupMessage(3444);
+    label = LookupMessage(MSI_QUESTWND_LOWER);
   } else if (mouseX > 114 && mouseX < 130) {
     left = 114;
-    label = LookupMessage(3508);
+    label = LookupMessage(MSI_EXPAND_SIGHT_ON);
   }
 
   if (!label.empty()) {
@@ -167,7 +168,7 @@ int UIApplyForPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       const char* relationship = nullptr;
 
       if (g_windowMgr.IsFriend(name.c_str())) {
-        relationship = LookupMessage(102);
+        relationship = LookupMessage(MSI_FRIEND);
       }
 
       const char* group = g_session.IsGuildMemberAccount(this->info.accountId) ? "GuildMember" : relationship;

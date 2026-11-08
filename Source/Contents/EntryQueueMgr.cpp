@@ -11,6 +11,7 @@
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Script/LuaScript.h"
+#include "Resource/MSGSTRINGID.h"
 #include <cstring>
 #include <string>
 
@@ -135,7 +136,7 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
       text += this->current->displayName;
     }
     text += "]";
-    text += LookupMessage(0x833);
+    text += LookupMessage(MSI_BATTLEFIELD_MSG_UNKNOWN_TYPE);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x4763FF, 0, 0, 0);
     this->ready = 1;
     return;
@@ -182,18 +183,18 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
 void CEntryQueueMgr::OnCancelResult(const EntryQueueNotice* notice) {
   switch (notice->result) {
   case 1:
-    g_windowMgr.Confirm(LookupMessage(0x83E), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_FAIL_CHOICE), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
     this->ready = 0;
     break;
   case 3:
-    g_windowMgr.Confirm(LookupMessage(0x83F), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_CANCEL_JOIN), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case 11:
-    g_windowMgr.Confirm(LookupMessage(0x840), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_DOYOU_JOIN), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case 14:
-    g_windowMgr.Confirm(LookupMessage(0x841), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_HELP1), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
     this->ready = 0;
     break;
@@ -202,7 +203,7 @@ void CEntryQueueMgr::OnCancelResult(const EntryQueueNotice* notice) {
   std::string text("[");
   text += this->current->displayName;
   text += "]";
-  text += LookupMessage(0x842);
+  text += LookupMessage(MSI_BATTLEFIELD_HELP2);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
   this->current = nullptr;
 }
@@ -261,7 +262,7 @@ void CEntryQueueMgr::OnReady(const EntryQueueReady* packet) {
   std::string text("[");
   text += this->current->displayName;
   text += "]";
-  text += LookupMessage(0x843);
+  text += LookupMessage(MSI_BATTLEFIELD_HELP3);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x4763FF, 0, 0, 0);
 }
 
@@ -270,10 +271,10 @@ void CEntryQueueMgr::OnReady(const EntryQueueReady* packet) {
 void CEntryQueueMgr::OnResultNotice(const EntryQueueNotice* notice) {
   switch (notice->result) {
   case 3:
-    g_windowMgr.Confirm(LookupMessage(0x83F), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_CANCEL_JOIN), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case 11:
-    g_windowMgr.Confirm(LookupMessage(0x840), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_DOYOU_JOIN), 0, false, false, 0, "Message", 0x118, 0x78, 0);
   }
 }
 

@@ -10,6 +10,7 @@
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <string>
 
@@ -38,7 +39,7 @@ void UIPartyBookingHelpWnd::OnCreate(int width, int height) {
 // OFFSET: 0x0092D630
 // FUNCTION: fn_12670
 void UIPartyBookingHelpWnd::Paint() {
-  this->DrawTitleBar(true, LookupMessage(1716), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_DESCRIBE_PARTY_BOOKING), 0);
   this->DrawPanelBackground(17, 0, "");
 }
 

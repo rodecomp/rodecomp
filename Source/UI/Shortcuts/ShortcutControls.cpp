@@ -5,6 +5,7 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <iterator>
 #include <new>
@@ -27,7 +28,7 @@ void UIShortCutWnd::OnCreate(int, int) {
   this->m_bank->SetId(549);
   this->m_bank->Move(3, 4);
   this->m_bank->SetChecked(g_session.GetOption(10));
-  this->m_bank->SetTooltip(LookupMessage(3596));
+  this->m_bank->SetTooltip(LookupMessage(MSI_HOTKEYGUIDEWND_RIGHT));
   this->AddChild(this->m_bank);
 
   this->m_decrease = new UIBitmapButton();

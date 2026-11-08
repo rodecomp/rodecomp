@@ -82,6 +82,7 @@
 #include "Utility/Cipher/AES.h"
 #include "Utility/Cipher/Rijndael.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -405,18 +406,18 @@ void CLoginMode::SubD8D500(const char* packet) {
   UIWindow* window = g_windowMgr.window_03D4;
   switch (*reinterpret_cast<const int*>(packet + 2)) {
   case 0:
-    g_windowMgr.Confirm(LookupMessage(0x4BE), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
     if (window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME_SUCCESS, 0, 0, 0);
     }
     return;
   case 1:
-    if (g_windowMgr.Confirm(LookupMessage(0x4C2), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_ALREADY_CHANGED_NAME), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
   case 2:
-    if (g_windowMgr.Confirm(LookupMessage(0x4C3), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_NOTREGISTED_USER), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
       return;
     }
     if (window) {
@@ -424,12 +425,12 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 3:
-    if (g_windowMgr.Confirm(LookupMessage(0x4BF), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_FAILURE), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
   case 4:
-    if (g_windowMgr.Confirm(LookupMessage(0x4C4), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_DUPLICATED_CHAR_NAME), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
       return;
     }
     if (window) {
@@ -437,17 +438,17 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 5:
-    if (g_windowMgr.Confirm(LookupMessage(0x7E6), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_GUILD), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
   case 6:
-    if (g_windowMgr.Confirm(LookupMessage(0x7E7), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_PARTY), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
   case 7:
-    if (g_windowMgr.Confirm(LookupMessage(0x7EB), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_OVER_LENGTH), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
       return;
     }
     if (window) {
@@ -455,7 +456,7 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 8:
-    if (g_windowMgr.Confirm(LookupMessage(0x7EC), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_PREVENTNAM), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
       return;
     }
     if (window) {
@@ -463,7 +464,7 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 9:
-    if (g_windowMgr.Confirm(LookupMessage(0x7ED), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_FORBIDDEN), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
       return;
     }
     if (window) {
@@ -471,7 +472,7 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 10:
-    if (g_windowMgr.Confirm(LookupMessage(0x7E8), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_UNKOWN), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
@@ -634,22 +635,22 @@ int CLoginMode::GetMaxCharacterSlot() {
 // FUNCTION: fn_22273
 const char* GetUserCountText(unsigned short userCount) {
   if (userCount <= 1000) {
-    return LookupMessage(825);
+    return LookupMessage(MSI_LITTLEUSER);
   }
 
   if (userCount <= 3000) {
-    return LookupMessage(826);
+    return LookupMessage(MSI_ALITTLEUSER);
   }
 
   if (userCount <= 6000) {
-    return LookupMessage(827);
+    return LookupMessage(MSI_NORMLEUSER);
   }
 
   if (userCount <= 10000) {
-    return LookupMessage(828);
+    return LookupMessage(MSI_MANYUSER);
   }
 
-  return LookupMessage(829);
+  return LookupMessage(MSI_VERYMANYUSER);
 }
 
 // OFFSET: 0x00D8E990
@@ -710,7 +711,7 @@ void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet) {
   int message;
   switch (packet->result) {
   case 0:
-    g_windowMgr.Confirm(LookupMessage(1214), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
     if (window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME_SUCCESS, 0, 0, 0);
     }
@@ -722,12 +723,12 @@ void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet) {
     message = 1219;
     break;
   case 3:
-    if (g_windowMgr.Confirm(LookupMessage(1215), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_FAILURE), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
     return;
   case 4:
-    if (g_windowMgr.Confirm(LookupMessage(1220), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_DUPLICATED_CHAR_NAME), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
     return;
@@ -827,34 +828,34 @@ void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet) {
   std::string message;
   switch (packet->result) {
   case 0:
-    message = LookupMessage(1816);
+    message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
     break;
   case 1:
     this->characterDeleted = true;
     break;
   case 2:
-    message = LookupMessage(1820);
+    message = LookupMessage(MSI_RESULT_FAIL_CONFIGURATION);
     break;
   case 3:
-    message = LookupMessage(1817);
+    message = LookupMessage(MSI_RESULT_FAIL_DATABASE);
     break;
   case 4:
-    message = LookupMessage(1821);
+    message = LookupMessage(MSI_RESULT_FAIL_DATE);
     break;
   case 5:
-    message = LookupMessage(1822);
+    message = LookupMessage(MSI_RESULT_FAIL_BIRTH);
     break;
   case 6:
-    message = LookupMessage(2369);
+    message = LookupMessage(MSI_SPRITE_ALTER);
     break;
   case 7:
-    message = LookupMessage(301);
+    message = LookupMessage(MSI_CANNOT_DELETE_CHARACTER_EMAIL);
     break;
   case 8:
-    message = LookupMessage(3044);
+    message = LookupMessage(MSI_ZENY_LOTTO_BUY_1);
     break;
   default:
-    message = LookupMessage(1816);
+    message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
     break;
   }
 
@@ -871,7 +872,7 @@ void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet) {
 void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet) {
   std::string message;
   if (packet->result == 0) {
-    message = LookupMessage(1816);
+    message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
   } else if (packet->result == 1) {
     for (int i = 0; i < this->characterCount; ++i) {
       if (this->characters[i].gid == packet->gid) {
@@ -881,9 +882,9 @@ void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet) {
     }
     this->pendingCursorType = 7;
   } else if (packet->result == 2) {
-    message = LookupMessage(1817);
+    message = LookupMessage(MSI_RESULT_FAIL_DATABASE);
   } else {
-    message = LookupMessage(1816);
+    message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
   }
 
   if (!message.empty()) {
@@ -897,7 +898,7 @@ void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet) {
   std::string message;
   switch (packet->result) {
   case 0:
-    message = LookupMessage(1816);
+    message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
     break;
   case 1:
     for (int i = 0; i < this->characterCount; ++i) {
@@ -913,22 +914,22 @@ void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet) {
   case 2:
     break;
   case 3:
-    message = LookupMessage(1817);
+    message = LookupMessage(MSI_RESULT_FAIL_DATABASE);
     break;
   case 4:
-    message = LookupMessage(1818);
+    message = LookupMessage(MSI_RESULT_FAIL_GUILD);
     break;
   case 5:
-    message = LookupMessage(1819);
+    message = LookupMessage(MSI_RESULT_FAIL_PARTY);
     break;
   case 6:
-    message = LookupMessage(2981);
+    message = LookupMessage(MSI_RESULT_FAILED_ASSISTANT_POS_CHARACTER);
     break;
   case 7:
-    message = LookupMessage(3092);
+    message = LookupMessage(MSI_ZENY_LOTTO_RODEX_WINNER_TITLE);
     break;
   default:
-    message = LookupMessage(1816);
+    message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
     break;
   }
 
@@ -964,7 +965,7 @@ void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
   }
 
   if (this->mapStates.size() == 0) {
-    g_windowMgr.Confirm(LookupMessage(1811), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_NOT_EXIST_ENTRYMAP), 0, true, false, 0, "Message", 280, 120, 0);
     this->pendingCursorType = 7;
     return;
   }
@@ -1070,7 +1071,7 @@ void CLoginMode::SubD97780(int value) {
   case 5:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x13880) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
         this->otpStarted = timeGetTime();
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
@@ -1080,7 +1081,7 @@ void CLoginMode::SubD97780(int value) {
   case 6:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
         g_modeMgr.Quit();
       }
     }
@@ -1088,7 +1089,7 @@ void CLoginMode::SubD97780(int value) {
   case 12:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
         this->otpStarted = timeGetTime();
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
@@ -1102,7 +1103,7 @@ void CLoginMode::SubD97780(int value) {
         if (this->unknown_6F74 == true && this->unknown_6F75 == true) {
           this->unknown_6F76 = true;
           if (!g_windowMgr.HasModalWindow()) {
-            if (g_windowMgr.Confirm(LookupMessage(0xD16), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_SAME_MAP), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
               this->unknown_6F75 = false;
               this->unknown_6F76 = false;
               this->unknown_6F74 = false;
@@ -1116,7 +1117,7 @@ void CLoginMode::SubD97780(int value) {
       if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x13880) {
         GetRagConnection().Close();
         if (this->unknown_6F74 == false) {
-          if (g_windowMgr.Confirm(LookupMessage(0xD70), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_NO_PARTY_FOUND), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
             this->unknown_6F74 = false;
             this->otpStarted = timeGetTime();
             this->pendingCursorType = 3;
@@ -1206,11 +1207,11 @@ void CLoginMode::OpenAccountRegistration() {
   switch (g_serviceType) {
   case ServiceKorea:
     if (*reinterpret_cast<const int*>(&g_session.unknown_59DC[0x198]) == 1) {
-      const char* url = LookupMessage(1308);
+      const char* url = LookupMessage(MSI_SETTLE_WEB_URL_HANGAME);
       const char source[] = {'\x30', '\x45', '\xCA', '\xFB', '\x9D'};
       ShellExecuteA(hWnd, DecryptName<0xCFF3899D95AF355FULL>(source), url, nullptr, nullptr, SW_SHOWNORMAL);
     } else {
-      const char* url = LookupMessage(528);
+      const char* url = LookupMessage(MSI_SETTLE_WEB_URL);
       const char source[] = {'\x4A', '\x01', '\xCA', '\xA5', '\x0D'};
       ShellExecuteA(hWnd, DecryptName<0xE52DF30DCBAF7125ULL>(source), url, nullptr, nullptr, SW_SHOWNORMAL);
     }
@@ -1238,7 +1239,7 @@ void CLoginMode::OpenAccountRegistration() {
     break;
   }
   default: {
-    const char* url = LookupMessage(528);
+    const char* url = LookupMessage(MSI_SETTLE_WEB_URL);
     const char source[] = {'\x02', '\xCB', '\xF0', '\x43', '\x93'};
     ShellExecuteA(hWnd, DecryptName<0xC517FB932D95BB6DULL>(source), url, nullptr, nullptr, SW_SHOWNORMAL);
     break;
@@ -1263,50 +1264,50 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   char text[260];
   memset(text, 0, sizeof(text));
   {
-    const char* message = LookupMessage(3202);
+    const char* message = LookupMessage(MSI_NAVIGATION_ROADLISTVIEW);
     const char source[] = {'\x40', '\x6A', '\x45'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x891B232D09451965ULL>(source), message);
   }
 
   switch (packet->result) {
   case 1: {
-    const char* message = LookupMessage(3196);
+    const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PERSONALNUMBER);
     const char source[] = {'\x9C', '\x76', '\x77'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x758F1D0B4F7705B9ULL>(source), message);
     break;
   }
   case 2: {
-    const char* message = LookupMessage(3197);
+    const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_BLOCK);
     const char source[] = {'\x50', '\xBE', '\xED'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x35E5656B5DEDCD75ULL>(source), message);
     break;
   }
   case 3: {
-    const char* message = LookupMessage(3198);
+    const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     const char source[] = {'\xD8', '\xCA', '\xBB'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x4941FD9F21BBB9FDULL>(source), message);
     break;
   }
   case 4: {
-    const char* message = LookupMessage(3199);
+    const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN);
     const char source[] = {'\xD8', '\xA4', '\x4D'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0xE7978FB5A94DD7FDULL>(source), message);
     break;
   }
   case 5: {
-    const char* message = LookupMessage(3200);
+    const char* message = LookupMessage(MSI_NAVIGATION_ICONTITEL);
     const char source[] = {'\x4E', '\xCA', '\xC7'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0xB7FD8F670FC7B96BULL>(source), message);
     break;
   }
   case 6: {
-    const char* message = LookupMessage(3201);
+    const char* message = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
     const char source[] = {'\xAA', '\xEA', '\xEB'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x39FF7FB50DEB998FULL>(source), message);
     break;
   }
   case 7: {
-    const char* message = LookupMessage(3214);
+    const char* message = LookupMessage(MSI_NAVIGATION_V4_HELP02);
     const char source[] = {'\xB2', '\x82', '\xE1'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x2FE993D1DDE1F197ULL>(source), message);
     break;
@@ -1314,13 +1315,13 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   case 8:
   case 100:
   case 102: {
-    const char* message = LookupMessage(3202);
+    const char* message = LookupMessage(MSI_NAVIGATION_ROADLISTVIEW);
     const char source[] = {'\xE8', '\x82', '\x99'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0xAD075B8DB599F1CDULL>(source), message);
     break;
   }
   case 9: {
-    const char* message = LookupMessage(3911);
+    const char* message = LookupMessage(MSI_ZEROQUEST_SIMPLEUI_ON);
     const char source[] = {'\x5A', '\x66', '\x8D'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x2F8B0F37118D157FULL>(source), message);
     break;
@@ -1328,7 +1329,7 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   case 101: {
     char blockDate[21] = {};
     memcpy_s(blockDate, 20, packet->blockDate, 20);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(449), blockDate);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_LOGIN_REFUSE_BLOCKED_UNTIL), blockDate);
     break;
   }
   default:
@@ -1382,16 +1383,16 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     this->otpStarted = timeGetTime();
     break;
   case 500:
-    message = LookupMessage(1752);
+    message = LookupMessage(MSI_OTP_FAILED);
     break;
   case 600:
-    message = LookupMessage(7);
+    message = LookupMessage(MSI_INCORRECT_PASSWORD);
     break;
   case 700:
-    message = LookupMessage(3252);
+    message = LookupMessage(MSI_AUTHORIZATION_CODE);
     break;
   case 900: {
-    ShowErrorDialog(GetRenderSystemHolder()->system, LookupMessage(3462), 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, LookupMessage(MSI_CHECK_ATTENDANCE_REWARD), 0);
     const char parametersSource[] = {'\x7F', '\x25', '\x95', '\x31', '\x03', '\xEC', '\xAC', '\xF5', '\x78', '\x7F', '\x86',
                                      '\x2F', '\x53', '\xAC', '\xFA', '\xA9', '\x74', '\x3E', '\x8C', '\x6E', '\x39'};
     const char* parametersText = DecryptName<0x8783C33941E15117ULL>(parametersSource);
@@ -1407,7 +1408,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     message = LookupMessage(4355);
     break;
   default:
-    message = LookupMessage(1816);
+    message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
     break;
   }
 
@@ -1461,19 +1462,19 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
     this->otpStarted = timeGetTime();
     break;
   case 500:
-    message = LookupMessage(1752);
+    message = LookupMessage(MSI_OTP_FAILED);
     break;
   case 600:
-    message = LookupMessage(7);
+    message = LookupMessage(MSI_INCORRECT_PASSWORD);
     break;
   case 700:
-    message = LookupMessage(3252);
+    message = LookupMessage(MSI_AUTHORIZATION_CODE);
     break;
   case 800:
-    message = LookupMessage(3440);
+    message = LookupMessage(MSI_NO_PARTY_FOUND);
     break;
   default:
-    message = LookupMessage(1816);
+    message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
     break;
   }
 
@@ -1661,12 +1662,12 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
   case PINCODE_ILLEGAL:
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
     this->pendingCursorType = 7;
-    g_windowMgr.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case PINCODE_KSSN:
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
     this->pendingCursorType = 7;
-    g_windowMgr.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case PINCODE_PASSED:
     g_session.m_passwordWndMode = 1;
@@ -1676,29 +1677,29 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
     if (packet->count != 0) {
       this->pendingCursorType = 7;
-      std::string message = FormatOwnedString(LookupMessage(0x764), packet->count);
+      std::string message = FormatOwnedString(LookupMessage(MSI_SECOND_PASSWORD_LOGIN_FAILED), packet->count);
       g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
     } else {
-      g_windowMgr.Confirm(LookupMessage(0xD7E), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_ACCOUNTLINKEDUSERDATA_LOAD_FAIL), 0, true, false, 0, "Message", 280, 120, 0);
       this->SendMsg(MM_QUIT, 0, 0, 0, 0);
     }
     break;
   case 9: {
-    const char* text = LookupMessage(0xC81);
+    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
     const char source[] = {'\xF2', '\xE6', '\x37', '\xBE', '\x35', '\x6C', '\x87'};
     g_windowMgr.Confirm(FormatString(DecryptName<0x0B8745519B1F95D7ULL>(source), text, 9), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 10: {
-    const char* text = LookupMessage(0xC81);
+    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
     const char source[] = {'\xF0', '\x4A', '\x03', '\x6C', '\x83', '\x8E', '\x97'};
     g_windowMgr.Confirm(FormatString(DecryptName<0xA597A7E7492B39D5ULL>(source), text, 10), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 11: {
-    const char* text = LookupMessage(0xC81);
+    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
     const char source[] = {'\x56', '\x9C', '\x93', '\xF4', '\xB1', '\xCA', '\xAB'};
     g_windowMgr.Confirm(FormatString(DecryptName<0xFFABE3D5D1BBEF73ULL>(source), text, 11), 0, true, false, 0, "Message",
                                                           280, 120, 0);
@@ -1741,12 +1742,12 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
   case PINCODE_ILLEGAL:
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
     this->pendingCursorType = 7;
-    g_windowMgr.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case PINCODE_KSSN:
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
     this->pendingCursorType = 7;
-    g_windowMgr.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case PINCODE_PASSED:
     g_session.m_passwordWndMode = 1;
@@ -1758,30 +1759,30 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     const int remaining = 3 - this->passwordRetryCount;
     this->pendingCursorType = 7;
     if (remaining > 0) {
-      std::string message = FormatOwnedString(LookupMessage(0x764), remaining);
+      std::string message = FormatOwnedString(LookupMessage(MSI_SECOND_PASSWORD_LOGIN_FAILED), remaining);
       g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
     } else {
-      g_windowMgr.Confirm(LookupMessage(0x773), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_INFO_3), 0, true, false, 0, "Message", 280, 120, 0);
       this->SendMsg(MM_QUIT, 0, 0, 0, 0);
     }
     break;
   }
   case 9: {
-    const char* text = LookupMessage(0xC81);
+    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
     const char source[] = {'\x16', '\x10', '\x7D', '\xD4', '\x4D', '\x1C', '\xD3'};
     g_windowMgr.Confirm(FormatString(DecryptName<0x49D33529F1556333ULL>(source), text, 9), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 10: {
-    const char* text = LookupMessage(0xC81);
+    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
     const char source[] = {'\x14', '\x8A', '\xFB', '\xDC', '\x79', '\x66', '\xCB'};
     g_windowMgr.Confirm(FormatString(DecryptName<0x01CB4F1DF9D3F931ULL>(source), text, 10), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 11: {
-    const char* text = LookupMessage(0xC81);
+    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
     const char source[] = {'\xB2', '\xBA', '\xE1', '\xBE', '\xA9', '\x92', '\xB1'};
     g_windowMgr.Confirm(FormatString(DecryptName<0xC5B1BBCD9BC9C997ULL>(source), text, 11), 0, true, false, 0, "Message",
                                                           280, 120, 0);
@@ -1872,7 +1873,7 @@ void CLoginMode::Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet) {
   char mapName[36];
   sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
   g_modeMgr.Switch(1, mapName);
-  static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(121), 17, 1);
+  static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_PLEASE_BE_PATIENT), 17, 1);
   GetRagConnection().SetBlock(0);
   g_session.SetOption(17, 0, 0);
 
@@ -1914,7 +1915,7 @@ void CLoginMode::Zc_Accept_Enter2(const AcceptEnterPositionPacket* packet) {
   char mapName[36];
   sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
   g_modeMgr.Switch(1, mapName);
-  static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(121), 17, 1);
+  static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_PLEASE_BE_PATIENT), 17, 1);
   GetRagConnection().SetBlock(0);
 
   if (g_pingLogEnabled) {
@@ -1948,16 +1949,16 @@ void CLoginMode::ShowLoginError(int code, int argument) {
 
   switch (code) {
   case 0x1393:
-    message = LookupMessage(0x72F);
+    message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_TOKEN);
     break;
   case 0x1394: {
-    const std::string text = FormatOwnedString(LookupMessage(0x337), argument);
+    const std::string text = FormatOwnedString(LookupMessage(MSI_BLOCKED), argument);
     message = text;
     break;
   }
   case 0x1395:
   case 0x13BE:
-    message = LookupMessage(0x6FD);
+    message = LookupMessage(MSI_WITHDREW_USERS);
     break;
   case 0x1397:
     if (g_launchPassCommandLine) {
@@ -1974,16 +1975,16 @@ void CLoginMode::ShowLoginError(int code, int argument) {
       g_modeMgr.Quit();
       return;
     }
-    message = LookupMessage(0x730);
+    message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_USER);
     break;
   case 0x1399:
-    message = LookupMessage(0x731);
+    message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_AGE);
     break;
   case 0x13C7:
-    message = LookupMessage(0x701);
+    message = LookupMessage(MSI_ACCOUNT_BLOCK);
     break;
   case 0x13C8:
-    message = LookupMessage(0x702);
+    message = LookupMessage(MSI_BUG_BLOCK);
     break;
   case 0x1396:
   case 0x1398:
@@ -1998,25 +1999,25 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case 0x13C3:
   case 0x13C4:
   case 0x13C5:
-    message = LookupMessage(0x72E);
+    message = LookupMessage(MSI_SSO_ERROR_MSG);
     break;
   case 0x13BA:
-    message = LookupMessage(0x726);
+    message = LookupMessage(MSI_REFUSE_SSO_NOT_PAY_USER);
     break;
   case 0x13BB:
-    message = LookupMessage(5);
+    message = LookupMessage(MSI_DOUBLE_LOGIN_PROHIBITED);
     break;
   case 0x14B4:
-    message = LookupMessage(0xDCE);
+    message = LookupMessage(MSI_RUSSIA_PERSONALINFO_DEATH);
     break;
   case 0x14B5:
-    message = LookupMessage(0xDD3);
+    message = LookupMessage(MSI_RODEX_BUTTON_DELETE);
     break;
   case 33:
-    message = LookupMessage(0xA7A);
+    message = LookupMessage(MSI_TITLE_EQUIPMENT);
     break;
   case REFUSE_INVALID_ID:
-    message = LookupMessage(6);
+    message = LookupMessage(MSI_INCORRECT_USERID);
     break;
   case REFUSE_INVALID_PASSWD:
     if (g_serviceType == 0 && ++g_loginFailCount >= 3) {
@@ -2039,70 +2040,70 @@ void CLoginMode::ShowLoginError(int code, int argument) {
       }
       message.clear();
     } else {
-      message = LookupMessage(0x10B);
+      message = LookupMessage(MSI_INCORRECT_LOGIN_PASSWORD);
     }
     break;
   case REFUSE_ID_EXPIRED:
-    message = LookupMessage(8);
+    message = LookupMessage(MSI_ID_EXPIRED);
     break;
   case REFUSE_NOT_CONFIRMED:
   case 0x13C6:
-    message = LookupMessage(0x10A);
+    message = LookupMessage(MSI_ID_EMAIL_CONFIRM_NEEDED);
     break;
   case REFUSE_INVALID_VERSION:
-    message = LookupMessage(0x136);
+    message = LookupMessage(MSI_INVALID_VERSION);
     break;
   case REFUSE_DELETED_ACCOUNT:
-    message = LookupMessage(0x170);
+    message = LookupMessage(MSI_DELETED_ACCOUNT);
     break;
   case REFUSE_BLOCK_TEMPORARY: {
-    const std::string text = FormatOwnedString(LookupMessage(0x1C1), argument);
+    const std::string text = FormatOwnedString(LookupMessage(MSI_LOGIN_REFUSE_BLOCKED_UNTIL), argument);
     message = text;
     break;
   }
   case REFUSE_TEMP_BAN_HACKING_INVESTIGATION: {
-    const std::string text = FormatOwnedString(LookupMessage(0x32A), argument);
+    const std::string text = FormatOwnedString(LookupMessage(MSI_HACKING_INVESTIGATION), argument);
     message = text;
     break;
   }
   case REFUSE_TEMP_BAN_BUG_INVESTIGATION:
-    message = LookupMessage(0x32B);
+    message = LookupMessage(MSI_BUG_INVESTIGATION);
     break;
   case REFUSE_TEMP_BAN_DELETING_CHAR:
-    message = LookupMessage(0x35B);
+    message = LookupMessage(MSI_DELETING_CHAR);
     break;
   case REFUSE_TEMP_BAN_DELETING_SPOUSE_CHAR:
-    message = LookupMessage(0x35C);
+    message = LookupMessage(MSI_DELETING_SPOUSE_CHAR);
     break;
   case 7:
-    message = LookupMessage(0x1B7);
+    message = LookupMessage(MSI_ACCOUNT_BUSY);
     break;
   case REFUSE_NONSAKRAY_ID_BLOCKED:
-    message = LookupMessage(0x2A9);
+    message = LookupMessage(MSI_REFUSE_NONSAKRAY_ID_BLOCKED);
     break;
   case REFUSE_BAN_BY_DBA:
-    message = LookupMessage(0x2BF);
+    message = LookupMessage(MSI_REFUSE_BAN_BY_DBA);
     break;
   case REFUSE_EMAIL_NOT_CONFIRMED:
-    message = LookupMessage(0x2C0);
+    message = LookupMessage(MSI_REFUSE_EMAIL_NOT_CONFIRMED);
     break;
   case REFUSE_BAN_BY_GM:
-    message = LookupMessage(0x2C1);
+    message = LookupMessage(MSI_REFUSE_BAN_BY_GM);
     break;
   case REFUSE_TEMP_BAN_FOR_DBWORK:
-    message = LookupMessage(0x2C2);
+    message = LookupMessage(MSI_REFUSE_TEMP_BAN_FOR_DBWORK);
     break;
   case REFUSE_SELF_LOCK:
-    message = LookupMessage(0x2C3);
+    message = LookupMessage(MSI_REFUSE_SELF_LOCK);
     break;
   case REFUSE_NOT_PERMITTED_GROUP:
-    message = LookupMessage(0x2C4);
+    message = LookupMessage(MSI_REFUSE_NOT_PERMITTED_GROUP);
     break;
   case REFUSE_WAIT_FOR_SAKRAY_ACTIVE:
-    message = LookupMessage(0x2C5);
+    message = LookupMessage(MSI_REFUSE_WAIT_FOR_SAKRAY_ACTIVE);
     break;
   case REFUSE_ALREADY_CONNECT: {
-    const std::string text = FormatOwnedString(LookupMessage(0x329), argument);
+    const std::string text = FormatOwnedString(LookupMessage(MSI_ALREADY_CONNECT), argument);
     message = text;
     break;
   }
@@ -2127,13 +2128,13 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     }
     break;
   case ACCEPT_LOGIN_USER_PHONE_BLOCK:
-    message = LookupMessage(0x50D);
+    message = LookupMessage(MSI_PHONE_CONFIRM);
     break;
   case REFUSE_USER_PHONE_BLOCK:
-    message = LookupMessage(0x55C);
+    message = LookupMessage(MSI_PHONE_BLOCK);
     break;
   case 17: {
-    const std::string text = FormatOwnedString(LookupMessage(0x564), argument);
+    const std::string text = FormatOwnedString(LookupMessage(MSI_RE17), argument);
     message = text;
     if (g_windowMgr.Confirm(message.c_str(), 2, true, true, 0, "Message", 280, 120, 0) == 0xBB) {
       g_modeMgr.Quit();
@@ -2142,19 +2143,19 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     break;
   }
   case 18:
-    message = LookupMessage(0x565);
+    message = LookupMessage(MSI_RE18);
     break;
   case 19:
-    message = LookupMessage(0x6D7);
+    message = LookupMessage(MSI_DB_ERROR);
     break;
   case 20:
-    message = LookupMessage(0x6D8);
+    message = LookupMessage(MSI_OTP_FAILED);
     break;
   case 108:
-    message = LookupMessage(0x571);
+    message = LookupMessage(MSI_MAIN_USER_CANONT_LOGIN_FREE_SERVER);
     break;
   case 109:
-    message = LookupMessage(0x572);
+    message = LookupMessage(MSI_INVALID_ONETIMELIMIT);
     break;
   case 22:
   case 23:
@@ -2163,21 +2164,21 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case 26:
   case 27:
   case 30:
-    message = LookupMessage(0xD70);
+    message = LookupMessage(MSI_NO_PARTY_FOUND);
     break;
   case 28:
-    message = LookupMessage(0xAAB);
+    message = LookupMessage(MSI_FAILED_MAIL_CAUSE_TO_USE_ITEM);
     break;
   case 29:
-    message = LookupMessage(0xAAC);
+    message = LookupMessage(MSI_FAILIED_ONECLICK_ITEMIDENTIFY_NO_MAGNIFIER);
     break;
   case 21:
   case 0x139A:
-    message = LookupMessage(0x6FA);
+    message = LookupMessage(MSI_SSO_FAILED);
     break;
   case 110:
-    if (g_windowMgr.Confirm(LookupMessage(0x929), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
-      const char* file = LookupMessage(0x92A);
+    if (g_windowMgr.Confirm(LookupMessage(MSI_SHOUTDOWN_TIME), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
+      const char* file = LookupMessage(MSI_PARTIAL_SHOUTDOWN_TIME);
       const char source[] = {'\xFC', '\x05', '\xBA', '\x81', '\x4D'};
       ShellExecuteA(hWnd, DecryptName<0x9B0F234DEFDF7593ULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
       g_modeMgr.Quit();
@@ -2185,25 +2186,25 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = "";
     break;
   case 112:
-    message = LookupMessage(0x96A);
+    message = LookupMessage(MSI_NAVIGATION_HELP_3);
     break;
   case 242:
-    message = LookupMessage(0xD6F);
+    message = LookupMessage(MSI_THE_PARTY_MASTER_CANNOT_BE_REQUESTED);
     break;
   case 36: {
     const int remaining = this->unknown_6F78;
-    const std::string text = FormatOwnedString(LookupMessage(0xD7D), remaining / 3600, static_cast<int>(std::ceil(static_cast<float>(remaining % 3600) / 60.0f)));
+    const std::string text = FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_RODEX_CONTENTS), remaining / 3600, static_cast<int>(std::ceil(static_cast<float>(remaining % 3600) / 60.0f)));
     message = text;
     break;
   }
   case 243:
-    message = LookupMessage(0xE67);
+    message = LookupMessage(MSI_UPGRADESKILLERROR_MORE_THIRDJOBSKILL);
     break;
   case 244:
-    message = LookupMessage(0x105E);
+    message = LookupMessage(MSI_TIPTAG_FOCUS_WARNING);
     break;
   default: {
-    message = LookupMessage(9);
+    message = LookupMessage(MSI_ACCESS_DENIED);
     const char source[] = {'\x6B', '\x1C', '\x3F', '\x42', '\x67'};
     message += FormatOwnedString(DecryptName<0xC9712D676B5B3943ULL>(source), code);
     break;
@@ -2267,17 +2268,17 @@ bool CLoginMode::ShowNotice(int notice, bool append) {
 
   switch (notice) {
   case 45:
-    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(2163)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_MAKECHARCTER)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
     this->unknown_6F1C.push_back(45);
     break;
   case 46:
-    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(2164)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_UAE_URL)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
     this->unknown_6F1C.push_back(46);
     break;
   case 47:
-    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(2165)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_UAE_SERVERSTR)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
     this->unknown_6F1C.push_back(47);
     break;
@@ -2317,7 +2318,7 @@ static void ComputeLoginDigest(unsigned char* digest, const void* data, int size
 // FUNCTION: fn_22264
 void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version) {
   g_loginAcceptTime = timeGetTime();
-  *reinterpret_cast<std::string*>(&g_session.unknown_56B8[4]) = LookupMessage(940);
+  *reinterpret_cast<std::string*>(&g_session.unknown_56B8[4]) = LookupMessage(MSI_AUTO_MSG);
 
   SessionAccount& account = *reinterpret_cast<SessionAccount*>(&g_session.m_sex);
   account.authCode = packet->authCode;
@@ -2449,25 +2450,25 @@ void CLoginMode::PollNetworkStatus() {
       GetRagConnection().Close();
       switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
       case 1:
-        g_windowMgr.Confirm(LookupMessage(0xD0), 0, true, true, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ID_MISMATCH), 0, true, true, 0, "Message", 280, 120, 0);
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
         break;
       case 0x6F:
-        g_windowMgr.Confirm(LookupMessage(0x749), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_OVER_CONNECT_USER), 0, true, false, 0, "Message", 280, 120, 0);
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
         break;
       case 0x76:
-        g_windowMgr.Confirm(LookupMessage(0xEEA), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_GRADE_ENCHANT_REFINING_LEVEL_LACK), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 6;
         break;
       case 0x77:
-        g_windowMgr.Confirm(LookupMessage(0xB71), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_ASSISTANT_TRADE_DATE), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 6;
         break;
       default:
-        g_windowMgr.Confirm(LookupMessage(9), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ACCESS_DENIED), 0, true, false, 0, "Message", 280, 120, 0);
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
         break;
@@ -2545,7 +2546,7 @@ void CLoginMode::PollNetworkStatus() {
       this->Zc_Accept_Enter2(reinterpret_cast<const AcceptEnterPositionPacket*>(g_gameModePacketBuffer));
       return;
     case ID_ZC_REFUSE_ENTER:
-      g_windowMgr.Confirm(LookupMessage(9), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_ACCESS_DENIED), 0, true, false, 0, "Message", 280, 120, 0);
       GetRagConnection().Close();
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
@@ -2557,7 +2558,7 @@ void CLoginMode::PollNetworkStatus() {
       this->ReceiveBillingInfo(g_gameModePacketBuffer);
       break;
     case 0x1BE:
-      if (g_windowMgr.Confirm(LookupMessage(0x2B3), 2, true, false, 0, "Message", 280, 120, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_ASK_PNGAMEROOM), 2, true, false, 0, "Message", 280, 120, 0) == 0xBB) {
         GameRoomReplyPacket reply;
         reply.id = 0x1BF;
         reply.permission = 1;
@@ -2592,7 +2593,7 @@ void CLoginMode::PollNetworkStatus() {
       break;
     }
     case 0x23D:
-      g_windowMgr.Confirm(LookupMessage(0x3FC), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_EVENT_RESULT), 0, true, false, 0, "Message", 280, 120, 0);
       break;
     case 0x28B: {
       const AcceptEnterNeoUnionPacket* packet = reinterpret_cast<const AcceptEnterNeoUnionPacket*>(g_gameModePacketBuffer);
@@ -2613,7 +2614,7 @@ void CLoginMode::PollNetworkStatus() {
       const ShortResultPacket* packet = reinterpret_cast<const ShortResultPacket*>(g_gameModePacketBuffer);
       if (packet->result != 0) {
         char text[300];
-        sprintf(text, LookupMessage(0x4BD), reinterpret_cast<const char*>(&g_session.unknown_5913[5]));
+        sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), reinterpret_cast<const char*>(&g_session.unknown_5913[5]));
         if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
           ChangeCharacterNamePacket request;
           request.id = 0x28F;
@@ -2621,7 +2622,7 @@ void CLoginMode::PollNetworkStatus() {
           GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
           break;
         }
-      } else if (g_windowMgr.Confirm(LookupMessage(10), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+      } else if (g_windowMgr.Confirm(LookupMessage(MSI_CHARACTER_NAME_ALREADY_EXISTS), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
         break;
       }
 
@@ -2636,22 +2637,22 @@ void CLoginMode::PollNetworkStatus() {
     case 0x2CA:
       switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
       case 0:
-        g_windowMgr.Confirm(LookupMessage(0x546), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FR_INVALID_SLOT), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 1:
-        g_windowMgr.Confirm(LookupMessage(0x547), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FR_BASELVL), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 2:
-        g_windowMgr.Confirm(LookupMessage(0x548), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FR_INVALID_JOBLV), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 3:
-        g_windowMgr.Confirm(LookupMessage(0x549), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FR_JOB), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 4:
-        g_windowMgr.Confirm(LookupMessage(0x54A), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FR_MAP), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 5:
-        g_windowMgr.Confirm(LookupMessage(0x554), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FR_INVALID_MONEY), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
       this->pendingCursorType = GetRagConnection().NativeSocket() != INVALID_SOCKET ? 7 : 3;
@@ -2695,26 +2696,26 @@ void CLoginMode::PollNetworkStatus() {
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
-        g_windowMgr.Confirm(LookupMessage(0x761), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_MAKE_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 1:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
-        g_windowMgr.Confirm(LookupMessage(0x76A), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_MAKE_DUPLICATED_PW), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       case 2:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
-        g_windowMgr.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       case 3:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
-        g_windowMgr.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       case 4:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
-        g_windowMgr.Confirm(LookupMessage(0x765), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_MAKE_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       }
@@ -2726,11 +2727,11 @@ void CLoginMode::PollNetworkStatus() {
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
-        g_windowMgr.Confirm(LookupMessage(0x762), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_DEL_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 1:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
-        g_windowMgr.Confirm(LookupMessage(0x766), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_DEL_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       }
@@ -2742,21 +2743,21 @@ void CLoginMode::PollNetworkStatus() {
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-        g_windowMgr.Confirm(LookupMessage(0x763), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       case 1:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-        g_windowMgr.Confirm(LookupMessage(0x767), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       case 2:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-        g_windowMgr.Confirm(LookupMessage(0x768), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       case 3:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-        g_windowMgr.Confirm(LookupMessage(0x769), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       }
@@ -2768,13 +2769,13 @@ void CLoginMode::PollNetworkStatus() {
       switch (packet->result) {
       case 0:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-        g_windowMgr.Confirm(LookupMessage(0x76D), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_NOT_AVAILABLE_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
         static_cast<UINewSelectCharWnd*>(g_windowMgr.window_03D4)->EnableButtonById(0x1A2);
         g_session.m_passwordWndMode = 1;
         break;
       case 1:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-        g_windowMgr.Confirm(LookupMessage(0x76E), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_NOT_AVAILABLE_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       }
@@ -2784,12 +2785,12 @@ void CLoginMode::PollNetworkStatus() {
       switch (reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer)->result) {
       case 0:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-        g_windowMgr.Confirm(LookupMessage(0x76F), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_AVAILABLE_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
         static_cast<UINewSelectCharWnd*>(g_windowMgr.window_03D4)->DisableButtonById(0x1A2);
         break;
       case 1:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-        g_windowMgr.Confirm(LookupMessage(0x770), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_AVAILABLE_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       }
@@ -2797,7 +2798,7 @@ void CLoginMode::PollNetworkStatus() {
     case ID_HC_ACK_CHANGE_CHARACTER_SLOT_V1:
     case ID_HC_ACK_CHANGE_CHARACTER_SLOT:
       if (reinterpret_cast<const SecondPasswordStatePacket*>(g_gameModePacketBuffer)->result == 1) {
-        g_windowMgr.Confirm(LookupMessage(0x7E1), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
       }
       break;
     case ID_HC_ACK_CHANGE_CHARNAME:
@@ -2810,7 +2811,7 @@ void CLoginMode::PollNetworkStatus() {
       const tm when = *_localtime32(&endTime);
       char text[0x400];
       memset(text, 0, sizeof(text));
-      _snprintf(text, sizeof(text), LookupMessage(0x92C), when.tm_year + 1900, when.tm_mon + 1, when.tm_mday, when.tm_hour, when.tm_min, when.tm_sec);
+      _snprintf(text, sizeof(text), LookupMessage(MSI_MENU_MACROWND), when.tm_year + 1900, when.tm_mon + 1, when.tm_mday, when.tm_hour, when.tm_min, when.tm_sec);
       g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
       const std::uint64_t timestamp = static_cast<std::int64_t>(startTime) * 10000000;
       const std::int64_t interval = 3600000;
@@ -3000,7 +3001,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
   case MM_SOCKETERROR:
     GetRagConnection().Close();
-    if (g_windowMgr.Confirm(LookupMessage(2), 0, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER), 0, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
     }
@@ -3027,7 +3028,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       *reinterpret_cast<std::int16_t*>(buffer + 2) = 14;
       GetRagConnection().Send(*reinterpret_cast<std::int16_t*>(buffer + 2), buffer);
       this->window_6F14 = g_windowMgr.EnsureWindow(WID_WAITWND);
-      static_cast<UIWaitWnd*>(this->window_6F14)->SetMessage(LookupMessage(122), 16, 1);
+      static_cast<UIWaitWnd*>(this->window_6F14)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
       _freea(buffer);
     }
     return 0;
@@ -3066,7 +3067,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     memcpy_s(packet.code, sizeof(packet.code), &this->unknown_0138[0x80], sizeof(packet.code));
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
     this->window_6F14 = g_windowMgr.EnsureWindow(WID_WAITWND);
-    static_cast<UIWaitWnd*>(this->window_6F14)->SetMessage(LookupMessage(122), 16, 1);
+    static_cast<UIWaitWnd*>(this->window_6F14)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     return 0;
   }
   case LMM_QUERY_LAST_CHARACTER_INFO:
@@ -3085,7 +3086,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
 
     ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(this->serverList);
     if (servers[argument1].address.state == 3) {
-      g_windowMgr.Confirm(LookupMessage(0x2FC), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_CANT_CONNECT_TO_PAY_SERVER), 0, true, false, 0, "Message", 280, 120, 0);
       this->pendingCursorType = 6;
       return 0;
     }
@@ -3282,19 +3283,19 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     char* output = reinterpret_cast<char*>(argument1);
     switch (this->slotExtension.unknown_0001) {
     case 100:
-      std::sprintf(output, LookupMessage(0x215), this->slotExtension.unknown_0005 / 60);
+      std::sprintf(output, LookupMessage(MSI_BILLING_100), this->slotExtension.unknown_0005 / 60);
       return 0;
     case 200: {
       const std::uint32_t value = this->slotExtension.unknown_0005;
-      std::sprintf(output, LookupMessage(0x216), value / 3600, (value / 60) % 60, value % 60);
+      std::sprintf(output, LookupMessage(MSI_BILLING_200), value / 3600, (value / 60) % 60, value % 60);
       return 0;
     }
     case 300:
-      std::sprintf(output, LookupMessage(0x217));
+      std::sprintf(output, LookupMessage(MSI_BILLING_300));
       return 0;
     case 400: {
       const std::uint32_t value = this->slotExtension.unknown_0009 - this->slotExtension.unknown_0005;
-      std::sprintf(output, LookupMessage(0x218), value / 3600, (value / 60) % 60, value % 60);
+      std::sprintf(output, LookupMessage(MSI_BILLING_400), value / 3600, (value / 60) % 60, value % 60);
       return 0;
     }
     case 500: {
@@ -3304,22 +3305,22 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       return 0;
     }
     case 600:
-      std::sprintf(output, LookupMessage(0x21B));
+      std::sprintf(output, LookupMessage(MSI_BILLING_600));
       return 0;
     case 700:
-      std::sprintf(output, LookupMessage(0x21C));
+      std::sprintf(output, LookupMessage(MSI_BILLING_700));
       return 0;
     case 800:
-      std::sprintf(output, LookupMessage(0x21D));
+      std::sprintf(output, LookupMessage(MSI_BILLING_800));
       return 0;
     default:
-      std::sprintf(output, LookupMessage(0x64));
+      std::sprintf(output, LookupMessage(MSI_CHARACTER_INFO));
       return 0;
     }
   }
   case LMM_DISCONNECT_ACSVR:
     GetRagConnection().Close();
-    if (g_windowMgr.Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
       this->otpStarted = timeGetTime();
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
@@ -3683,7 +3684,7 @@ void CLoginMode::OnChangeState(int value) {
     this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&endpoint));
     if (!this->unknown_0018) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
         this->pendingCursorType = 3;
       }
       break;
@@ -3709,7 +3710,7 @@ void CLoginMode::OnChangeState(int value) {
     GetRagConnection().Send(sizeof(packet), &packet);
     this->otpStarted = timeGetTime();
     this->window_6F14 = g_windowMgr.EnsureWindow(WID_WAITWND);
-    static_cast<UIWaitWnd*>(this->window_6F14)->SetMessage(LookupMessage(122), 16, 1);
+    static_cast<UIWaitWnd*>(this->window_6F14)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
   case 2:
@@ -3771,7 +3772,7 @@ void CLoginMode::OnChangeState(int value) {
       char text[64];
       std::memset(text, 0, sizeof(text));
       if (server.address.property == 1) {
-        std::sprintf(text, LookupMessage(0x1E2));
+        std::sprintf(text, LookupMessage(MSI_SERVER_PROPERTY_NEW));
       }
       const bool custom = server.address.userCount == 4 && server.address.state == 0;
       std::sprintf(text + std::strlen(text), custom ? server.domain : server.address.name);
@@ -3783,28 +3784,28 @@ void CLoginMode::OnChangeState(int value) {
       std::string purple = "^BA00FF";
       switch (server.address.userCount) {
       case 0:
-        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", green.c_str(), LookupMessage(0xCBD), text));
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", green.c_str(), LookupMessage(MSI_SERVER_USERCOUNT_STATE_VERY_BUSY), text));
         break;
       case 1:
-        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", orange.c_str(), LookupMessage(0xCBE), text));
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", orange.c_str(), LookupMessage(MSI_MENUICON_MAP), text));
         break;
       case 2:
-        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", red.c_str(), LookupMessage(0xCBF), text));
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", red.c_str(), LookupMessage(MSI_WORLDSTORE_ONLY_INVENTORY), text));
         break;
       case 3:
-        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", purple.c_str(), LookupMessage(0xCC0), text));
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", purple.c_str(), LookupMessage(MSI_WORLDSTORE_PUT_BLOCK_PETEGG), text));
         break;
       }
 
       switch (server.address.state) {
       case 2:
-        status.append(LookupMessage(0xCBA));
+        status.append(LookupMessage(MSI_SERVER_USERCOUNT_STATE_NICE));
         break;
       case 3:
-        status.append(LookupMessage(0xCBB));
+        status.append(LookupMessage(MSI_SERVER_USERCOUNT_STATE_NORMAL));
         break;
       case 4:
-        status.append(LookupMessage(0xCBC));
+        status.append(LookupMessage(MSI_SERVER_USERCOUNT_STATE_BUSY));
         break;
       }
 
@@ -3932,7 +3933,7 @@ void CLoginMode::OnChangeState(int value) {
     this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&endpoint));
     if (!this->unknown_0018) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
       }
@@ -3956,7 +3957,7 @@ void CLoginMode::OnChangeState(int value) {
     }
     packet.clientType = static_cast<unsigned char>(GetClientType());
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
-    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(122), 16, 1);
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
   case 24:
@@ -3970,7 +3971,7 @@ void CLoginMode::OnChangeState(int value) {
     this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&g_charServerEndpoint));
     if (!this->unknown_0018) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
       }
@@ -3987,7 +3988,7 @@ void CLoginMode::OnChangeState(int value) {
     packet.userLevel = account.userLevel;
     packet.sex = static_cast<unsigned char>(account.sex);
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
-    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(122), 16, 1);
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     g_accountLinkedUserDataMgr->Load(g_session.m_aid, g_session.m_accountName);
     break;
   }
@@ -4004,7 +4005,7 @@ void CLoginMode::OnChangeState(int value) {
     packet.sex = g_charInfo.sex;
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
     if (UIWaitWnd* wait = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))) {
-      wait->SetMessage(LookupMessage(123), 17, 1);
+      wait->SetMessage(LookupMessage(MSI_MAKING_CHARACTER), 17, 1);
     }
     break;
   }
@@ -4031,7 +4032,7 @@ void CLoginMode::OnChangeState(int value) {
     } else {
       GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
     }
-    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(124), 17, 1);
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_DELETING_CHARACTER), 17, 1);
     break;
   }
   case 9: {
@@ -4042,7 +4043,7 @@ void CLoginMode::OnChangeState(int value) {
     packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
     g_cashEmotionMgr->ClearOwnedPacks();
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
-    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(122), 16, 1);
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
   case 12: {
@@ -4054,7 +4055,7 @@ void CLoginMode::OnChangeState(int value) {
     this->unknown_0018 = GetRagConnection().Connect(g_zoneServerEndpoint);
     if (!this->unknown_0018) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(1), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
       }
@@ -4088,7 +4089,7 @@ void CLoginMode::OnChangeState(int value) {
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.packetType), &packet);
     g_session.SetOption(17, 1, 0);
     GetRagConnection().SetBlock(1);
-    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(122), 16, 1);
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
   case 19:
@@ -4121,7 +4122,7 @@ void CLoginMode::OnChangeState(int value) {
     if (ReplayFileList::Instance().Open(32, 0, 0) == 1) {
       this->pendingCursorType = 28;
     } else {
-      g_windowMgr.Confirm(LookupMessage(0xC4E), 4, true, true, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_STORE_TABNAME_9), 4, true, true, 0, "Message", 280, 120, 0);
       this->pendingCursorType = 26;
     }
     break;

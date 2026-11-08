@@ -18,6 +18,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Client/Session.h"
 #include "Script/LuaScript.h"
+#include "Resource/MSGSTRINGID.h"
 // OFFSET: 0x00948D20
 // FUNCTION: fn_12882
 void UISecondCostumeWnd::DrawCharacterPreview(int x, int y) {
@@ -184,10 +185,10 @@ void UISecondCostumeWnd::OnCreate(int width, int height) {
   this->m_typeCombo->green = 232;
   this->m_typeCombo->blue = 232;
   this->AddChild(this->m_typeCombo);
-  this->m_typeCombo->AddOption(LookupMessage(2763), 0);
-  this->m_typeCombo->AddOption(LookupMessage(2764), 0);
-  this->m_typeCombo->AddOption(LookupMessage(2765), 0);
-  this->m_typeCombo->AddOption(LookupMessage(2766), 0);
+  this->m_typeCombo->AddOption(LookupMessage(MSI_DRESSROOM_BODYSTYLE), 0);
+  this->m_typeCombo->AddOption(LookupMessage(MSI_MINIMAP_MSG_16), 0);
+  this->m_typeCombo->AddOption(LookupMessage(MSI_BANK_MAX_MONEY), 0);
+  this->m_typeCombo->AddOption(LookupMessage(MSI_BANK_MIN_MONEY), 0);
   this->m_typeCombo->Select(this->m_tab);
 
   auto* previous = new UIBitmapButton();

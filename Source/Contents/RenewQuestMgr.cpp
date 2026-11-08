@@ -15,6 +15,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Session.h"
 
+#include "Resource/MSGSTRINGID.h"
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -177,7 +178,7 @@ void CRenewQuestMgr::RemoveStatusRequest(unsigned int id) {
 // OFFSET: 0x00677D80
 // FUNCTION: fn_05438
 std::string RenewQuestOngoingInfo::GetDateString() const {
-  return this->m_year > 1970 ? std::format("{0} [{1:04}/{2:02}/{3:02} {4:02}:{5:02}]", LookupMessage(2195), this->m_year,
+  return this->m_year > 1970 ? std::format("{0} [{1:04}/{2:02}/{3:02} {4:02}:{5:02}]", LookupMessage(MSI_NAVIGATION_ROUTEINFO), this->m_year,
                                            this->m_month, this->m_day, this->m_hour, this->m_minute)
                               : std::string("");
 }
@@ -204,115 +205,115 @@ std::string CRenewQuestMgr::GetMonsterConditionText(unsigned int flags, int minL
 
   if (flags != 0) {
     if (flags & 0x20000) {
-      std::string text(LookupMessage(2263));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY4));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x40000) {
-      std::string text(LookupMessage(2266));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY7));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x80000) {
-      std::string text(LookupMessage(2264));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY5));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x100000) {
-      std::string text(LookupMessage(2265));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY6));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x200000) {
-      std::string text(LookupMessage(2269));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY0));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x400000) {
-      std::string text(LookupMessage(2268));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY9));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x800000) {
-      std::string text(LookupMessage(2267));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY8));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x1000000) {
-      std::string text(LookupMessage(2270));
+      std::string text(LookupMessage(MSI_NAVIGATION_SCALE1));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x2000000) {
-      std::string text(LookupMessage(2272));
+      std::string text(LookupMessage(MSI_NAVIGATION_SCALE0));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x4000000) {
-      std::string text(LookupMessage(2271));
+      std::string text(LookupMessage(MSI_NAVIGATION_SCALE2));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x10) {
-      result = result + std::string(LookupMessage(2275)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE3)) + separator;
     }
 
     if (flags & 0x20) {
-      result = result + std::string(LookupMessage(2273)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE1)) + separator;
     }
 
     if (flags & 0x40) {
-      result = result + std::string(LookupMessage(2274)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE2)) + separator;
     }
 
     if (flags & 0x80) {
-      result = result + std::string(LookupMessage(2282)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE0)) + separator;
     }
 
     if (flags & 0x100) {
-      result = result + std::string(LookupMessage(2277)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE5)) + separator;
     }
 
     if (flags & 0x200) {
-      result = result + std::string(LookupMessage(2279)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE7)) + separator;
     }
 
     if (flags & 0x400) {
-      result = result + std::string(LookupMessage(2280)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE8)) + separator;
     }
 
     if (flags & 0x800) {
-      result = result + std::string(LookupMessage(2278)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE6)) + separator;
     }
 
     if (flags & 0x1000) {
-      result = result + std::string(LookupMessage(2281)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE9)) + separator;
     }
 
     if (flags & 0x2000) {
-      result = result + std::string(LookupMessage(2283)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_MOVECLICK)) + separator;
     }
 
     if (flags & 0x4000) {
-      result = result + std::string(LookupMessage(2276)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE4)) + separator;
     }
 
     if (flags & 0x8000) {
-      result = result + std::string(LookupMessage(2285)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_NPCCLICK)) + separator;
     }
 
     if (flags & 0x10000) {
-      result = result + std::string(LookupMessage(2284)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_NPCMOVE)) + separator;
     }
   }
 
@@ -369,7 +370,7 @@ std::string RenewQuestOngoingInfo::GetHuntText(int index) const {
   if (goal > 0) {
     const short count = this->m_huntUnknown00E0[index];
     if (count == goal) {
-      text = std::format("{} ( {} )", text, LookupMessage(2030));
+      text = std::format("{} ( {} )", text, LookupMessage(MSI_COMPLETE_HUNTING_QUEST));
     } else {
       text = std::format("{} ( {} / {} )", text, count, goal);
     }

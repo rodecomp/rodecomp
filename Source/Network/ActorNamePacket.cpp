@@ -6,6 +6,7 @@
 #include "UI/Window/UIPetInfoWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <string>
 
@@ -36,7 +37,7 @@ void CGameMode::ReceiveActorNameTitle(const ActorNameTitlePacket* packet) {
 // FUNCTION: fn_21631
 void CGameMode::ReceivePlayerNameUpdate(const PlayerNameUpdatePacket* packet) {
   if (packet->type == 4 || packet->type == 3) {
-    std::string name = packet->type == 4 ? std::string(LookupMessage(581))
+    std::string name = packet->type == 4 ? std::string(LookupMessage(MSI_NAMELESS_USER))
                                          : std::string(std::string(packet->name, packet->name + sizeof(packet->name)).c_str());
     SetPlayerName(packet->characterId, name);
   }

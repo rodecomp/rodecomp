@@ -29,6 +29,7 @@
 #include <string>
 #include "Contents/GuildInfo.h"
 
+#include "Resource/MSGSTRINGID.h"
 #pragma pack(push, 1)
 struct MenuIconBankingCheckPacket {
   /* 0000 */ std::int16_t id;
@@ -440,11 +441,11 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         break;
       case 476:
         if (g_windowMgr.LookupWindow(WID_REFININGWND)) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2992)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_AURA_EFFECT_OFF)), 255, 0, 0, 0);
         } else if (g_windowMgr.LookupWindow(WID_GRADEENCHANTWND)) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3715)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BROADCASTING_GRADE_ENCHANT_SUCCESS)), 255, 0, 0, 0);
         } else if (g_windowMgr.LookupWindow(WID_ENCHANTUI)) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3843)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENCHANT_REQUEST)), 255, 0, 0, 0);
         } else {
           this->ToggleWindow(263);
         }
@@ -478,8 +479,8 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->ToggleWindow(10002);
         break;
       case 587:
-        if (g_windowMgr.Confirm(LookupMessage(4129), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-          ShellExecuteA(hWnd, "open", LookupMessage(4128), nullptr, nullptr, SW_SHOWNORMAL);
+        if (g_windowMgr.Confirm(LookupMessage(MSI_GENDER_CHANGE_FAILED_CAUSE_MONSTER_TRANSFORM), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+          ShellExecuteA(hWnd, "open", LookupMessage(MSI_GENDER_CHANGE_FAILED_CAUSE_MARRIED), nullptr, nullptr, SW_SHOWNORMAL);
         }
         break;
       }

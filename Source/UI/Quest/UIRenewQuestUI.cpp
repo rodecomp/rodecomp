@@ -21,6 +21,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "UI/Window/UIRegisterMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -902,7 +903,7 @@ void RenewQuestUI::CUIQuestItem::OnSimpleView(bool simpleView) {
 // FUNCTION: fn_16622
 void RenewQuestUI::CUIQuestItem::OnInit() {
   CUIButton* button = this->unknown_00F4;
-  std::string tooltip = LookupMessage(3409);
+  std::string tooltip = LookupMessage(MSI_PASSWORD);
   button->tooltip = tooltip;
 }
 
@@ -1172,7 +1173,7 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     item->unknown_00F8->Show(1);
     item->unknown_00F8->checked = info.m_active;
     item->unknown_00F8->Invalidate();
-    std::string tooltip = LookupMessage(3408);
+    std::string tooltip = LookupMessage(MSI_SAVE_ID);
     item->unknown_00F8->tooltip = tooltip;
   } else {
     auto found = g_renewQuestMgr->m_ongoingQuests.find(questId);
@@ -1191,7 +1192,7 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     item->unknown_00F8->Show(this->type != 8);
     item->unknown_00F8->checked = info.m_active;
     item->unknown_00F8->Invalidate();
-    std::string tooltip = LookupMessage(3407);
+    std::string tooltip = LookupMessage(MSI_OTP_INPUT_TIME);
     item->unknown_00F8->tooltip = tooltip;
   }
 }
@@ -2240,8 +2241,8 @@ void CUIRenewQuestUI::OnInit() {
   g_windowMgr.RecordWindowPacket(0x2718);
   g_windowMgr.CloseWindow(WID_NOTIFYQUESTWND);
 
-  this->titleBar->SetTitle(LookupMessage(0xD48));
-  this->filterLabel->SetText(LookupMessage(0x7E3));
+  this->titleBar->SetTitle(LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD));
+  this->filterLabel->SetText(LookupMessage(MSI_QUEST_DISPLAY_ONOFF));
 
   bool visible = false;
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_QUESTDISPLAY)) {

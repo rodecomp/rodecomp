@@ -45,6 +45,7 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "Client/Mode/CMode.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -356,7 +357,7 @@ void UINewSkillListWnd::DrawSkillList() {
         this->DrawTextAt(levelX, textY, text, 0, 0, 12, RGB(green, green, red), 0, 0);
 
         if (skill.unknown_000C == 0) {
-          std::sprintf(text, LookupMessage(286));
+          std::sprintf(text, LookupMessage(MSI_PASSIVE));
         } else {
           int sp = static_cast<int>(skill.unknown_0014);
           const int useLevel = g_session.UseLevel(static_cast<int>(skill.id));
@@ -734,7 +735,7 @@ void UINewSkillListWnd::InitTabs() {
   }
 
   if (initialTabCount == 0) {
-    this->m_tabs->AddTab(LookupMessage(1093), "");
+    this->m_tabs->AddTab(LookupMessage(MSI_ETC), "");
   }
   this->m_tabs->unknown_007C = this->m_tab;
 }
@@ -925,8 +926,8 @@ void UINewSkillListWnd::Paint() {
     this->DrawBitmap(x, this->geometry.height - bitmap->image.height, bitmap, false);
   }
 
-  this->DrawTextAt(41, 6, LookupMessage(283), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(40, 5, LookupMessage(283), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(41, 6, LookupMessage(MSI_SKILLLIST), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(40, 5, LookupMessage(MSI_SKILLLIST), 0, 0, 12, 0, 0, 0);
 
   const int points = this->m_skillPoints;
   char text[80];
@@ -934,16 +935,16 @@ void UINewSkillListWnd::Paint() {
   if (g_session.m_simplifiedSkillList == 0) {
     const int total = g_session.m_skillPoint;
     if (points < total) {
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s^0000ff%d^000000(^ff0000%d^000000) / %d", LookupMessage(2343), points, total - points,
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s^0000ff%d^000000(^ff0000%d^000000) / %d", LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE), points, total - points,
                    total);
     } else {
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s%d", LookupMessage(2343), total);
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s%d", LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE), total);
     }
     this->DrawWrappedFormattedText(80, this->geometry.height - 23, std::string(text), 0, 0, 0, 0, 12, 0, 0);
     this->DrawSkillTree();
     this->DrawCharacter();
   } else {
-    std::sprintf(text, LookupMessage(284), points);
+    std::sprintf(text, LookupMessage(MSI_SKILLPOINT), points);
     this->TextWidth(text, 0, 0, 12, 0, 0);
     this->DrawTextAt(30, this->geometry.height - 23, text, 0, 0, 12, 0, 0, 0);
     this->DrawSkillList();
@@ -1345,7 +1346,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.CloseWindow(WID_SKILLLISTWND);
       return 0;
     case ID_APPLY:
-      if (g_windowMgr.Confirm(LookupMessage(1377), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_APPLY_SKILL_UP), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         this->ApplySkillPoints();
         this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         if (ChatWindow()) {
@@ -1553,7 +1554,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
 
       if (static_cast<int>(info->unknown_002C) <= 0) {
         const char* name = info->DisplayName(*g_session.m_hotkeyScript);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatString(LookupMessage(0xDCB), name)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatString(LookupMessage(MSI_REFUSE_LOGIN_AUTH), name)), 0xFF, 0, 0, 0);
         return false;
       }
 

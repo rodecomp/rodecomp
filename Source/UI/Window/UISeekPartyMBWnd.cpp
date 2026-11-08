@@ -18,6 +18,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -57,14 +58,14 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
 
       if (count == 0) {
-        g_windowMgr.Confirm(LookupMessage(1768), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR2), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
 
       if (count > 6) {
         char text[100];
         std::memset(text, 0, sizeof(text));
-        std::sprintf(text, LookupMessage(1769), count);
+        std::sprintf(text, LookupMessage(MSI_PARTY_BOOKING_ERR3), count);
         g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
@@ -72,7 +73,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       std::string level(this->m_levelEdit->Text());
       for (unsigned int i = 0; i < level.size(); ++i) {
         if (level[i] < '/' || level[i] > '9') {
-          g_windowMgr.Confirm(LookupMessage(1770), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR4), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
         }
       }
@@ -91,7 +92,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       } else {
         char text[260];
         std::memset(text, 0, sizeof(text));
-        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(2601), maximum);
+        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_FAILED_TO_WRITE_MAIL), maximum);
         g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
       }
       break;
@@ -202,14 +203,14 @@ void UISeekPartyMBWnd::CreateJobChecks() {
 // OFFSET: 0x009447D0
 // FUNCTION: fn_12832
 void UISeekPartyMBWnd::InitJobCategoryCombo() {
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DB), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DC), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DD), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DE), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DF), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6E0), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6E1), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6E2), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_1), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_2), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_3_1), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_3_2), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_1PLUS), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_2PLUS), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_ETC), 0);
   this->m_jobCategoryCombo->Select(0);
 }
 
@@ -268,7 +269,7 @@ UISeekPartyMBWnd::~UISeekPartyMBWnd() = default;
 void UISeekPartyMBWnd::OnCreate(int width, int height) {
   char title[64];
   std::memset(title, 0, sizeof(title));
-  std::sprintf(title, LookupMessage(0x698));
+  std::sprintf(title, LookupMessage(MSI_SEEK_PARTY_MEMBER));
 
   this->m_titleText = new UIStaticText();
   this->m_titleText->SetSize(this->geometry.width - 0x20, 0xF);
@@ -339,7 +340,7 @@ void UISeekPartyMBWnd::OnCreate(int width, int height) {
   this->m_levelEdit->Border(0x64, 0x64, 0x64);
   this->m_levelEdit->flat = 0;
   UIEditCtrl* edit = this->m_levelEdit;
-  if (const char* tooltip = LookupMessage(0x79D)) {
+  if (const char* tooltip = LookupMessage(MSI_SEEK_PARTY_LEVEL_HELP)) {
     edit->tooltip = tooltip;
   }
   this->AddChild(this->m_levelEdit);

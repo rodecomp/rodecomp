@@ -36,6 +36,7 @@
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
 
+#include "Resource/MSGSTRINGID.h"
 namespace {
   // GLOBAL: gl_25136
   int g_locationFrame = 1;
@@ -265,7 +266,7 @@ void CNavigationManager::RequestPrivateAirship(std::string mapName, int itemId) 
 
   if (itemId == 0x1AFD) {
     UIPayConfirmWnd* window = new UIPayConfirmWnd();
-    window->Configure(LookupMessage(0xFC1), 0x1AFD);
+    window->Configure(LookupMessage(MSI_ENCHANT_POSSIBLE), 0x1AFD);
     window->SendMsg(nullptr, 0x9C, 1, 0, 0, 0);
     window->SetId(0x16B);
     g_windowMgr.AddRendered(window);
@@ -318,9 +319,9 @@ std::string CNavigationManager::RouteText() {
       NaviCell cellX;
       const int y = this->data.GetCell(&cellY)->y;
       const int x = this->data.GetCell(&cellX)->x;
-      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] -> %s %d %d", LookupMessage(3585), info->GetName(), x, y);
+      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] -> %s %d %d", LookupMessage(MSI_RODEX_BUTTON_DELETE_SELECTED), info->GetName(), x, y);
     } else {
-      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] %s", LookupMessage(3585), info->GetName());
+      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] %s", LookupMessage(MSI_RODEX_BUTTON_DELETE_SELECTED), info->GetName());
     }
   }
 
@@ -334,67 +335,67 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
   std::string message;
   switch (result) {
   case -100:
-    message = LookupMessage(2294);
+    message = LookupMessage(MSI_NAVIGATION_RS_FAILTARGET);
     break;
   case -99:
-    message = LookupMessage(2295);
+    message = LookupMessage(MSI_NAVIGATION_RS_FAILROUTE);
     break;
   case -98:
-    message = LookupMessage(2296);
+    message = LookupMessage(MSI_NAVIGATION_RS_FAILPLAYER);
     break;
   case -97:
-    message = LookupMessage(2297);
+    message = LookupMessage(MSI_NAVIGATION_RS_NODATA);
     break;
   case -96:
-    message = LookupMessage(2298);
+    message = LookupMessage(MSI_NAVIGATION_RS_MAPNOTNAVIGATION);
     break;
   case -95:
-    message = LookupMessage(2299);
+    message = LookupMessage(MSI_NAVIGATION_RS_FAILTARGETROUTE);
     break;
   case -94:
-    message = LookupMessage(2300);
+    message = LookupMessage(MSI_NAVIGATION_RS_SUCCESS);
     break;
   case -93:
-    message = LookupMessage(2301);
+    message = LookupMessage(MSI_NAVIGATION_RS_START);
     break;
   case -92:
-    message = LookupMessage(2302);
+    message = LookupMessage(MSI_NAVIGATION_RS_MOBTARGETMAP);
     break;
   case 0:
-    message = LookupMessage(2303);
+    message = LookupMessage(MSI_NAVIGATION_RS_TARGETMAP);
     break;
   case 1:
-    message = LookupMessage(2304);
+    message = LookupMessage(MSI_NAVIGATION_RS_SCROLL);
     break;
   case 2:
-    message = LookupMessage(2305);
+    message = LookupMessage(MSI_NAVIGATION_RS_ROUTE_SUCCESS);
     break;
   case 3:
-    message = LookupMessage(2306);
+    message = LookupMessage(MSI_NAVIGATION_RS_MAPTMAP_SUCCESS);
     break;
   case 4:
-    message = LookupMessage(2307);
+    message = LookupMessage(MSI_NAVIGATION_RS_NPCTMAP_SUCCESS);
     break;
   case 5:
-    message = LookupMessage(2308);
+    message = LookupMessage(MSI_NAVIGATION_RS_MOBTMAP_SUCCESS);
     break;
   case 6:
-    message = LookupMessage(2309);
+    message = LookupMessage(MSI_NAVIGATION_RS_POSTMAP_SUCCESS);
     break;
   case 7:
-    message = LookupMessage(2310);
+    message = LookupMessage(MSI_NAVIGATION_RS_SAMETARGET);
     break;
   case 8:
-    message = LookupMessage(2311);
+    message = LookupMessage(MSI_NAVIGATION_RS_HERE);
     break;
   case 10:
-    message = LookupMessage(2312);
+    message = LookupMessage(MSI_NAVIGATION_PRINT_S);
     break;
   case 9:
-    message = LookupMessage(2313);
+    message = LookupMessage(MSI_NAVIGATION_PRINT_GO_S);
     break;
   case 11:
-    message = LookupMessage(2314);
+    message = LookupMessage(MSI_NAVIGATION_PRINT_MAP_S);
     break;
   case -90:
     message = LookupMessage(4692);
@@ -407,13 +408,13 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
   if (mode == 0 || mode == 1) {
     char buffer[250];
     std::memset(buffer, 0, sizeof(buffer));
-    std::sprintf(buffer, LookupMessage(2315), message.c_str());
+    std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_PRINT_SELECTMAP_S), message.c_str());
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
 
     if (result == 5 && this->selectedNode != -1 && this->nodes.size() > static_cast<unsigned>(this->selectedNode)) {
       const int type = this->nodes[this->selectedNode]->GetType();
       if (type == 201 || type == 202 || type == 203 || type == 204) {
-        std::sprintf(buffer, LookupMessage(2316), this->nodes[this->selectedNode]->GetName());
+        std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_PRINT_PLANE), this->nodes[this->selectedNode]->GetName());
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
 
         CNaviInfo* info = static_cast<CNavi_Link*>(this->nodes[this->selectedNode])->GetLinkedInfo();
@@ -421,14 +422,14 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
           char text[0x104];
           std::memset(text, 0, sizeof(text));
           std::sprintf(text, " %s[ %s ] ", info->GetTitle(), info->GetName());
-          std::sprintf(buffer, LookupMessage(2317), text);
+          std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_PRINT_WARP), text);
         }
       } else if (type == 205) {
-        std::sprintf(buffer, LookupMessage(2316), this->nodes[this->selectedNode]->GetName());
+        std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_PRINT_PLANE), this->nodes[this->selectedNode]->GetName());
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
-        std::sprintf(buffer, LookupMessage(2319));
+        std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_ZZ));
       } else {
-        std::sprintf(buffer, LookupMessage(2320));
+        std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_ZZLV));
       }
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
     }
@@ -439,7 +440,7 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
     if (mode == 4) {
       const int count = static_cast<int>(g_navigationManager.nodes.size());
       CNavi_Object* node = count == 0 ? nullptr : g_navigationManager.nodes[0];
-      std::string text(LookupMessage(2321));
+      std::string text(LookupMessage(MSI_NAVIGATION_ZZLIMIT));
       text += node->GetName();
       text += " ";
       text += static_cast<CNavi_Link*>(node)->GetLinkedName();
@@ -1124,13 +1125,13 @@ __declspec(noinline) bool CNaviData::Search(std::string query, int type, std::ve
 // OFFSET: 0x00B891C0
 // FUNCTION: fn_19385
 int CNaviData::ParseSearchKind(std::vector<std::string>& tokens) {
-  if (std::strncmp(tokens[0].c_str(), LookupMessage(0x912), std::strlen(LookupMessage(0x912))) != 0) {
+  if (std::strncmp(tokens[0].c_str(), LookupMessage(MSI_NAVIGATION_ZZALL), std::strlen(LookupMessage(MSI_NAVIGATION_ZZALL))) != 0) {
     return 1;
   }
-  std::size_t prefixLength = std::strlen(LookupMessage(0x913));
-  if (prefixLength < tokens[0].size() && std::strncmp(tokens[0].c_str(), LookupMessage(0x913), prefixLength) == 0) {
+  std::size_t prefixLength = std::strlen(LookupMessage(MSI_SHOP_ITEM_BAY_TITLE));
+  if (prefixLength < tokens[0].size() && std::strncmp(tokens[0].c_str(), LookupMessage(MSI_SHOP_ITEM_BAY_TITLE), prefixLength) == 0) {
     std::string token(tokens[0]);
-    const char* separator = std::strstr(token.c_str(), LookupMessage(0x914));
+    const char* separator = std::strstr(token.c_str(), LookupMessage(MSI_SHOP_ITEM_BAY_MAG1));
     std::string minimum;
     std::string maximum;
     if (separator == nullptr) {
@@ -1138,7 +1139,7 @@ int CNaviData::ParseSearchKind(std::vector<std::string>& tokens) {
       maximum = minimum;
     } else {
       minimum.assign(token.c_str() + prefixLength, separator);
-      maximum.assign(separator + std::strlen(LookupMessage(0x914)), token.c_str() + token.size());
+      maximum.assign(separator + std::strlen(LookupMessage(MSI_SHOP_ITEM_BAY_MAG1)), token.c_str() + token.size());
       if (maximum.size() == 0) {
         maximum = "500";
       }
@@ -1156,7 +1157,7 @@ int CNaviData::ParseSearchKind(std::vector<std::string>& tokens) {
     }
     return kind;
   }
-  if (std::strncmp(tokens[0].c_str(), LookupMessage(0x915), std::strlen(LookupMessage(0x915))) == 0) {
+  if (std::strncmp(tokens[0].c_str(), LookupMessage(MSI_SHOP_ITEM_BAY_MAG2), std::strlen(LookupMessage(MSI_SHOP_ITEM_BAY_MAG2))) == 0) {
     return 2;
   }
   return std::strncmp(tokens[0].c_str(), "$$DB", 4) == 0 ? 4 : 0;
@@ -1248,7 +1249,7 @@ bool CNavigationManager::SelectNodeState() {
   this->LoadTargetPreview();
   this->ClearRouteNodes();
   if (this->data.GetInfo() && !this->data.GetInfo()->IsSearchable(this->data.GetInfo()->GetName())) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(4195)), 0x0A0AFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_NOTMET)), 0x0A0AFF, 0, 0, 0);
   }
   return false;
 }
@@ -1565,7 +1566,7 @@ bool CNavigationManager::BuildTargetRouteLines() {
     this->routeLines.push_back(NaviRouteLine(2, 142, 125, text, 0xDCDCDC, 0xCB6B54));
 
     if (mob->GetType() == 301) {
-      this->routeLines.push_back(NaviRouteLine(2, 142, 149, LookupMessage(2230), 0xC8C8C8, 0xFF));
+      this->routeLines.push_back(NaviRouteLine(2, 142, 149, LookupMessage(MSI_NAVIGATION_TARGET_D_D), 0xC8C8C8, 0xFF));
     }
   } else if (type == 0) {
     this->AddWrappedRouteLines(1, 141, 46, static_cast<CNaviInfo*>(object)->GetName());
@@ -1671,7 +1672,7 @@ void CNavigationManager::CancelRoute() {
       static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->RefreshLayout();
     }
   }
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2309)), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_RS_POSTMAP_SUCCESS)), 0x62B0FF, 0, 0, 0);
 }
 
 // OFFSET: 0x00B97B90

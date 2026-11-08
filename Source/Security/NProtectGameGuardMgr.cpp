@@ -8,6 +8,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Threading/NSyncObject.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstring>
 #include <new>
@@ -200,21 +201,21 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
   }
   case 0x3F3: {
     const char source[] = {'\x32', '\x68', '\x05', '\x86', '\xD9', '\xC2', '\x41'};
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x136, std::string(FormatString(DecryptName<0x0F41EBBDA32D1B17ULL>(source), LookupMessage(0x3A1), code)));
+    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x136, std::string(FormatString(DecryptName<0x0F41EBBDA32D1B17ULL>(source), LookupMessage(MSI_SPEEDHACK_DETECT), code)));
     return 0;
   }
   case 0x3F4:
   case 0x3F5:
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x14B, std::string(LookupMessage(0xAF7)));
+    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x14B, std::string(LookupMessage(MSI_USA_PERSONALINFO_DROP)));
     return 0;
   case 0x3F6: {
     const char source[] = {'\x40', '\x80', '\xFF', '\x78', '\xE9', '\x3A', '\x6F'};
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x13F, std::string(FormatString(DecryptName<0x176F138D5DD7F365ULL>(source), LookupMessage(0x3A0), code)));
+    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x13F, std::string(FormatString(DecryptName<0x176F138D5DD7F365ULL>(source), LookupMessage(MSI_INIT_ERROR), code)));
     return 0;
   }
   case 0x3F7: {
     const char source[] = {'\xE4', '\x34', '\xED', '\x32', '\x85', '\xB0', '\xD5'};
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x151, std::string(FormatString(DecryptName<0xFBD599E117C547C1ULL>(source), LookupMessage(0x3A3), code)));
+    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x151, std::string(FormatString(DecryptName<0xFBD599E117C547C1ULL>(source), LookupMessage(MSI_GAMEHACK_DOUBT), code)));
     return 0;
   }
   case 0x3FB: {

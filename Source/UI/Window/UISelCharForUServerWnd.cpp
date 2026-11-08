@@ -16,6 +16,7 @@
 #include "Render/Renderer.h"
 #include "UI/Text/UICharInfoBalloonText.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -141,7 +142,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
   switch (argument1) {
   case ID_OK: {
-    if (g_windowMgr.Confirm(LookupMessage(0x4BB), 2, false, false, 0, "Message", 280, 120, 0) != 0xBB) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_CONFIRM_SELECT_CHARACTERS), 2, false, false, 0, "Message", 280, 120, 0) != 0xBB) {
       return 0;
     }
 
@@ -170,13 +171,13 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       return 0;
     }
 
-    g_windowMgr.Confirm(LookupMessage(0x4C1), 0, true, true, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_NO_SELECT_CHARACTERS), 0, true, true, 0, "Message", 280, 120, 0);
     break;
   }
   case ID_CHECK:
     this->m_checkedCount += sender->geometry.unknown_0030 != 0 ? 1 : -1;
     if (this->m_checkedCount > 9) {
-      g_windowMgr.Confirm(LookupMessage(0x4BC), 0, true, true, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_ERROR_SELECT_CHARACTERS), 0, true, true, 0, "Message", 280, 120, 0);
       static_cast<UICheckBox*>(sender)->SetChecked(0);
     }
     break;

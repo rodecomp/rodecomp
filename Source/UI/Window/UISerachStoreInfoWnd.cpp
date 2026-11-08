@@ -19,6 +19,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdlib>
 #include <cstring>
 #include <list>
@@ -95,8 +96,8 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
     this->AddChild(*radio);
     ++radio;
   }
-  this->m_radios[0]->SetText(LookupMessage(0x6F2));
-  this->m_radios[1]->SetText(LookupMessage(0x6F3));
+  this->m_radios[0]->SetText(LookupMessage(MSI_SELL));
+  this->m_radios[1]->SetText(LookupMessage(MSI_BUY));
   this->m_radios[this->unknown_00E4]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
 
   this->m_edits[1] = new UIEditCtrl();
@@ -116,7 +117,7 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
   this->m_edits[0]->Border(0xC0, 0xC0, 0xC0);
   this->m_edits[0]->flat = 0;
   UIEditCtrl* edit = this->m_edits[0];
-  if (const char* tooltip = LookupMessage(0x709)) {
+  if (const char* tooltip = LookupMessage(MSI_SSI_TOOLTIP_OF_SERACHING_THE_CARD)) {
     edit->tooltip = tooltip;
   }
   this->m_edits[0]->disabled = 1;
@@ -148,7 +149,7 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
 
   UICheckBox* check = new UICheckBox();
   check->SetSize(0xA0, 0xC);
-  check->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(0x6FC));
+  check->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_SEARCH_INCLUDED));
   check->Move(100, 0x3C);
   check->SetChecked(this->unknown_00ED);
   this->AddChild(check);
@@ -166,20 +167,20 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
   }
 
   this->m_prevButton = new UITextButton();
-  this->m_prevButton->Configure(LookupMessage(0x41D), 0x8E8E8E, 0, 0xC, 0, 0);
+  this->m_prevButton->Configure(LookupMessage(MSI_PREV_PAGE), 0x8E8E8E, 0, 0xC, 0, 0);
   this->m_prevButton->m_hoverColor = 0xEFB700;
   this->m_prevButton->Move(
-      this->geometry.width / 2 - this->TextWidth(LookupMessage(0x41D), 0, 0, 0xC, 0, 0) - 0x14,
+      this->geometry.width / 2 - this->TextWidth(LookupMessage(MSI_PREV_PAGE), 0, 0, 0xC, 0, 0) - 0x14,
       this->geometry.height - 0x15);
-  this->m_prevButton->SetTooltip(LookupMessage(0x41D));
+  this->m_prevButton->SetTooltip(LookupMessage(MSI_PREV_PAGE));
   this->m_prevButton->SetId(0x13C);
   this->AddChild(this->m_prevButton);
 
   this->m_nextButton = new UITextButton();
-  this->m_nextButton->Configure(LookupMessage(0x41E), 0x8E8E8E, 0, 0xC, 0, 0);
+  this->m_nextButton->Configure(LookupMessage(MSI_NEXT_PAGE), 0x8E8E8E, 0, 0xC, 0, 0);
   this->m_nextButton->m_hoverColor = 0xEFB700;
   this->m_nextButton->Move(this->geometry.width / 2 + 0x14, this->geometry.height - 0x15);
-  this->m_nextButton->SetTooltip(LookupMessage(0x41E));
+  this->m_nextButton->SetTooltip(LookupMessage(MSI_NEXT_PAGE));
   this->m_nextButton->SetId(0x13D);
   this->AddChild(this->m_nextButton);
 
@@ -241,7 +242,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       std::string itemName = this->m_edits[1]->Text();
       if (itemName.size() == 0) {
         this->unknown_00EC = 0;
-        this->unknown_00F0 = LookupMessage(1809);
+        this->unknown_00F0 = LookupMessage(MSI_SSI_FAILED_ENTER_THE_NAME_OF_ITEM);
       }
       if (this->unknown_00EC != 0) {
         std::list<int> itemIds;
@@ -249,12 +250,12 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         itemIds = SearchItemIds(itemName, 0, this->unknown_00ED);
         if (itemIds.size() == 0) {
           this->unknown_00EC = 0;
-          this->unknown_00F0 = LookupMessage(1799);
+          this->unknown_00F0 = LookupMessage(MSI_SSI_FAILED_ITEM_DOES_NOT_EXIST);
         } else if (cardName.size() != 0) {
           cardIds = SearchItemIds(cardName, 1, this->unknown_00ED);
           if (cardIds.size() == 0) {
             this->unknown_00EC = 0;
-            this->unknown_00F0 = LookupMessage(1812);
+            this->unknown_00F0 = LookupMessage(MSI_SSI_FAILED_NAME_OF_CARD_DOES_NOT_EXIST);
           }
         }
 
@@ -284,7 +285,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
             }
           }
           if (this->unknown_00EC == 0) {
-            this->unknown_00F0 = LookupMessage(1804);
+            this->unknown_00F0 = LookupMessage(MSI_SSI_FAILED_PRICE_ISNOT_VALID);
           }
           if (this->unknown_00EC != 0) {
             const short length = static_cast<short>(count * 4 + 15);
@@ -336,23 +337,23 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
           this->unknown_00DC = 1;
           g_session.unknown_5BD4.clear();
           reinterpret_cast<unsigned char*>(&g_session.unknown_5BE4)[1] = 0;
-          this->unknown_00F0 = LookupMessage(1803);
+          this->unknown_00F0 = LookupMessage(MSI_SSI_FAILED_SEARCH_STORE);
           --g_session.unknown_5BE0;
           break;
         case SSI_FAILED_OVER_MAXCOUNT:
-          this->unknown_00F0 = LookupMessage(1784);
+          this->unknown_00F0 = LookupMessage(MSI_SSI_FAILED_OVER_MAXCOUNT);
           break;
         case SSI_FAILED_SEARCH_CNT:
-          this->unknown_00F0 = LookupMessage(1798);
+          this->unknown_00F0 = LookupMessage(MSI_SSI_FAILED_SEARCH_CNT);
           break;
         case SSI_FAILED_LIMIT_SEARCH_TIME:
-          g_windowMgr.Confirm(LookupMessage(1800), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_SSI_FAILED_LIMIT_SERACH_TIME), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
         case SSI_FAILED_SSILIST_CLICK_TO_OPEN_STORE:
           g_session.unknown_5BE8 = -1;
           g_session.unknown_5BEC = -1;
           g_session.unknown_5BF0 = 0xFFFFFFFF;
-          g_windowMgr.Confirm(LookupMessage(1797), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_FAIL_OPEN_STORE), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
         }
       }
@@ -360,7 +361,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->m_findButton->SetDisabled(0);
       this->m_findButton->Invalidate();
     } else if (g_session.unknown_5BD4.empty() && this->unknown_00EC != 0) {
-      this->unknown_00F0 = LookupMessage(1102);
+      this->unknown_00F0 = LookupMessage(MSI_SEARCHING_ITEM);
     }
     this->m_prevButton->Enable(this->unknown_00DC != 1);
     this->m_nextButton->Enable(reinterpret_cast<unsigned char*>(&g_session.unknown_5BE4)[1]);
@@ -423,7 +424,7 @@ void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
   }
 
   if (reinterpret_cast<std::int16_t*>(&g_session.unknown_5BE4)[1] != 0 &&
-      g_windowMgr.Confirm(LookupMessage(0x6F9), 2, true, false, 0, "Message", 0x118, 0x78, 0) != 0xBB) {
+      g_windowMgr.Confirm(LookupMessage(MSI_OPEN_SEARCH_STORE), 2, true, false, 0, "Message", 0x118, 0x78, 0) != 0xBB) {
     return;
   }
 

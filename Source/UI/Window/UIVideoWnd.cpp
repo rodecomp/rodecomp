@@ -11,6 +11,7 @@
 #include "Render/Textures/TextureCache.h"
 #include "UI/Window/WindowManagerWindows.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <string>
 
@@ -115,7 +116,7 @@ int UIVideoWnd::SendMsg(
     }
     break;
   case UM_CLOSE:
-    if (g_windowMgr.Confirm(LookupMessage(3142), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_MOVE_MINI_PARTYWND), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
       g_windowMgr.CloseWindow(WID_VIDEOWND);
     }
     break;

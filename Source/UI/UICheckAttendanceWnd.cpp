@@ -30,6 +30,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <windows.h>
 #include <shellapi.h>
 #include <timeapi.h>
@@ -133,7 +134,7 @@ void UICheckAttendanceWnd::OnCreate(int, int) {
   this->m_notice->SetBitmap("유저인터페이스\\check_attendance\\bt_ok_normal.bmp", 1, 0);
   this->m_notice->SetBitmap("유저인터페이스\\check_attendance\\bt_ok_press.bmp", 2, 0);
   this->m_notice->SetSize(this->m_notice->BitmapWidth(), this->m_notice->BitmapHeight());
-  this->m_notice->SetText(LookupMessage(3045));
+  this->m_notice->SetText(LookupMessage(MSI_ZENY_LOTTO_BUY_10));
   this->m_notice->AddTextStyle(0, 14, 0x313131, 1, 1, -1000, -1000);
   this->m_notice->AddTextStyle(1, 14, 0x313131, 1, 1, -1000, -1000);
   this->m_notice->AddTextStyle(2, 14, 0x313131, 1, 1, -1000, -1000);
@@ -155,28 +156,28 @@ void UICheckAttendanceWnd::Paint() {
                                                                      : "유저인터페이스\\check_attendance\\attendance_bg.bmp";
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(backgroundName))), false);
 
-  this->DrawCenteredText(0, 41, FormatOwnedString(LookupMessage(3465), g_session.m_serverName.c_str()).c_str(), this->geometry.width, 0, 13, 0x203F66, 1);
+  this->DrawCenteredText(0, 41, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_CHECK_BEFORE), g_session.m_serverName.c_str()).c_str(), this->geometry.width, 0, 13, 0x203F66, 1);
 
   const int start = g_checkAttendanceMgr->m_config0;
   const int end = g_checkAttendanceMgr->m_config1;
   this->DrawCenteredText(
-    0, 70, FormatOwnedString(LookupMessage(3466), start % 10000 / 100, start % 100, end % 10000 / 100, end % 100).c_str(), this->geometry.width, 0, 12,
+    0, 70, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_CHECK_AFTER), start % 10000 / 100, start % 100, end % 10000 / 100, end % 100).c_str(), this->geometry.width, 0, 12,
     0x3950A4, 1
   );
 
   const int bannerHeight = this->BannerHeight();
-  this->DrawCenteredText(345, bannerHeight + 289, LookupMessage(3470), 109, 0, 14, 0x595939, 1);
+  this->DrawCenteredText(345, bannerHeight + 289, LookupMessage(MSI_CHECK_ATTENDANCE), 109, 0, 14, 0x595939, 1);
   if (this->m_daysLeft > 0) {
     this->DrawCenteredText(368, bannerHeight + 309, IntToString(this->m_daysLeft, 0).c_str(), 54, 0, 22, 0xFFFFFF, 1);
   }
-  this->DrawCenteredText(425, bannerHeight + 318, LookupMessage(3471), 0, 0, 12, 0x595939, 1);
+  this->DrawCenteredText(425, bannerHeight + 318, LookupMessage(MSI_CHECK_ATTENDANCE_NOT_EVENT), 0, 0, 12, 0x595939, 1);
 
   {
     std::string message;
     if (this->m_blinking == 1) {
-      message = FormatOwnedString(LookupMessage(3468), this->m_checkedDays + 1);
+      message = FormatOwnedString(LookupMessage(MSI_DATE_DAY), this->m_checkedDays + 1);
     } else {
-      message = FormatOwnedString(LookupMessage(3469), this->m_checkedDays);
+      message = FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_FAIL_RESTART), this->m_checkedDays);
     }
 
     if (!message.empty()) {
@@ -215,7 +216,7 @@ void UICheckAttendanceWnd::Paint() {
     const int x = (day - 1) % 5 * 62;
     const int y = (day - 1) / 5 * 64;
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x + 43, y + 109 + bannerHeight, item, 1, 0);
-    this->DrawCenteredText(x + 26, y + 140 + bannerHeight, FormatOwnedString(LookupMessage(3467), day).c_str(), 58, 0, 12, 0xA44F3B, 1);
+    this->DrawCenteredText(x + 26, y + 140 + bannerHeight, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_DDAY), day).c_str(), 58, 0, 12, 0xA44F3B, 1);
   }
 }
 

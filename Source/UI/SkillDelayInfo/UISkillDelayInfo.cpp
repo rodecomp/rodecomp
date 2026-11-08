@@ -19,6 +19,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "Resource/MSGSTRINGID.h"
 
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Paint();
@@ -512,7 +513,7 @@ void CUITime::OnInit() {
 // OFFSET: 0x00A78A10
 // FUNCTION: fn_16890
 void CUITime::SetTime(int milliseconds) {
-  const std::string text = FormatDecimal(static_cast<float>(milliseconds) / 1000.0f, 3, true) + LookupMessage(1808);
+  const std::string text = FormatDecimal(static_cast<float>(milliseconds) / 1000.0f, 3, true) + LookupMessage(MSI_SECOND);
   this->text->SetText(text.c_str(), text.size());
 }
 }

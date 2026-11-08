@@ -26,6 +26,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <windows.h>
 #include <mbstring.h>
 
@@ -128,7 +129,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     if (this->TextWidth(found->second.name.c_str(), 0, 0, 12, 0, 0) * (count + 1)
         > this->geometry.width - 0x5A) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x6F0)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_OVER_TABSIZE)), 0xFF, 0, 0, 0);
       g_windowMgr.Promote(sender);
       return 0;
     }
@@ -380,11 +381,11 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x55)), 0, 0, 0);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x56)), 0, 0, 0);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x1B5)), 0, 0, 0);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x939)), 0, 0, 0);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0xFC0)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_TO_ALL)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_TO_PARTY)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_TO_GUILD)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLAN_MANAGE_LAND)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REFINING_IMPOSSIBLE)), 0, 0, 0);
       menu->SendMsg(nullptr, UM_SETCURITEM, *reinterpret_cast<int*>(&g_session.unknown_5490[0x8]), 0, 0, 0);
       menu->Resize(0x70, 0x30);
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 1, 0, 0, 0);
@@ -402,7 +403,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history.size());
       if (count == 0) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xC0)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOWHISPERLIST)), 0xFF, 0, 0, 0);
         return 0;
       }
 
@@ -458,7 +459,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
       if (rejected) {
         static_cast<UIChatEditCtrl*>(this->m_chatEdit)->SetText("");
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBE2)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
         return 0;
       }
 
@@ -472,7 +473,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
 
       if (g_serviceType == 1 && !ValidateCharacterName(buffer)) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBE)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 0xFF, 0, 0, 0);
         return 0;
       }
 
@@ -492,7 +493,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       if (talkType == 0x37 || talkType == 0x1A || talkType == 0x12) {
         if (_mbsstr(reinterpret_cast<const unsigned char*>(buffer), reinterpret_cast<const unsigned char*>(s_chatItemLinkOpening.c_str())) != nullptr
             || _mbsstr(reinterpret_cast<const unsigned char*>(buffer), reinterpret_cast<const unsigned char*>(s_itemLinkClosing.c_str())) != nullptr) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xAFC)), 0x64FFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
       }
@@ -510,7 +511,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       int subCount = static_cast<int>(g_session.m_subChatWnds.size());
       const int total = noSubCount + subCount;
       if (total == this->unknown_0110) {
-        g_windowMgr.Confirm(LookupMessage(0x62A), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FAILED_ADD_TAB), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         return 0;
       }
 

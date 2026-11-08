@@ -17,6 +17,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -62,7 +63,7 @@ void UIPetEvolutionWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_13764
 void UIPetEvolutionWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
-  this->DrawTitleBar(true, LookupMessage(2567), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_DO_YOU_WANT_TO_EVOLVE_PET), 0);
 
   char text[260];
   std::memset(text, 0, sizeof(text));
@@ -106,7 +107,7 @@ void UIPetEvolutionWnd::Paint() {
     }
   }
 
-  this->DrawTextAt(10, 200, LookupMessage(2569), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, 200, LookupMessage(MSI_PET_EVOLUTION_FAIL_NOTEXIST_CALLPET), 0, 0, 12, 0, 0, 0);
 
   int index = 0;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++index) {
@@ -117,7 +118,7 @@ void UIPetEvolutionWnd::Paint() {
     );
   }
 
-  this->DrawTextAt(10, this->geometry.height - 52, LookupMessage(2570), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, this->geometry.height - 52, LookupMessage(MSI_PET_EVOLUTION_FAIL_NOT_PETEGG), 0, 0, 12, 0, 0, 0);
 }
 
 namespace {
@@ -141,7 +142,7 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
         ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, it->first, 1);
         if (item.quantity < it->second) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2574)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_AUTO_FEEDING)), 255, 0, 0, 0);
           return 0;
         }
         materials.push_back(static_cast<std::uint16_t>(item.unknown_0000[1]));
@@ -149,7 +150,7 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
 
       if (g_session.unknown_1038 != 0) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2607)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TIME_LINE_DAY2)), 255, 0, 0, 0);
         return 0;
       }
 

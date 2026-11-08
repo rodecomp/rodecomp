@@ -23,6 +23,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <cstring>
 
@@ -100,7 +101,7 @@ void UIEmotionWnd::OnCreate(int, int) {
 // OFFSET: 0x008A3000
 // FUNCTION: fn_11645
 void UIEmotionWnd::Paint() {
-  int titleHeight = this->UIWindow::DrawTitleBar(true, LookupMessage(574), 0);
+  int titleHeight = this->UIWindow::DrawTitleBar(true, LookupMessage(MSI_SHORTCUT_LIST), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }

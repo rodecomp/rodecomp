@@ -17,6 +17,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Client/Mode/CMode.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdlib>
 #include <format>
 #include <string>
@@ -106,7 +107,7 @@ void CUIGameItem::OnMouseHover(int x, int y) {
   const std::uint32_t color = g_session.GetItemNameColor(this->itemInfo);
   CMode* tooltip = g_modeMgr.gameMode;
   if (this->itemInfo.unknown_0098 > 0) {
-    const std::string text = FormatOwnedString(LookupMessage(0xA28), this->name.c_str(), this->itemInfo.unknown_0098);
+    const std::string text = FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), this->name.c_str(), this->itemInfo.unknown_0098);
     tooltip->ShowTooltip(text.c_str(), screenX, screenY, color, 0, 1);
   } else {
     tooltip->ShowTooltip(this->name.c_str(), screenX, screenY, color, 0, 1);

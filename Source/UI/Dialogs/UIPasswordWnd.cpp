@@ -7,6 +7,7 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Text/UIStaticText.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <string>
 
@@ -20,7 +21,7 @@ UIPasswordWnd::UIPasswordWnd() : UIItemDropCntWnd() {}
 void UISecondPasswordInputWnd::SetInputMode(int value) {
   this->unknown_011C = value;
   if (value == 0) {
-    this->unknown_0164->SetText(LookupMessage(0xa06), 0);
+    this->unknown_0164->SetText(LookupMessage(MSI_PET_EVOLUTION_NEED_ITEM), 0);
   }
 }
 
@@ -115,13 +116,13 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
 
   this->unknown_0164 = new UIStaticText();
   this->unknown_0164->SetSize(300, 15);
-  this->unknown_0164->SetText(LookupMessage(0x771), 0);
+  this->unknown_0164->SetText(LookupMessage(MSI_SECOND_PASSWORD_INFO_1), 0);
   this->unknown_0164->Move(200, 30);
   this->AddChild(this->unknown_0164);
 
   UIStaticText* notice = new UIStaticText();
   notice->SetSize(320, 15);
-  notice->SetText(LookupMessage(0x772), 0);
+  notice->SetText(LookupMessage(MSI_SECOND_PASSWORD_INFO_2), 0);
   notice->Move(200, 50);
   this->AddChild(notice);
 }

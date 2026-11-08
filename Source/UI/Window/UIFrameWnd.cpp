@@ -50,6 +50,7 @@
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -478,7 +479,7 @@ int UIAllyGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     std::string text = "(";
     text += reinterpret_cast<const char*>(b);
     text += ")";
-    text += LookupMessage(393);
+    text += LookupMessage(MSI_SUGGEST_ALLY_GUILD);
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     return 0;
@@ -518,13 +519,13 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     if (!this->m_amountEdit) {
       return 0;
     }
-    this->m_amountEdit->SetText(LookupMessage(0xADA));
+    this->m_amountEdit->SetText(LookupMessage(MSI_BANK_1_MINI));
     g_windowMgr.SetFocus(this->m_amountEdit);
     return 0;
   case 0x1CE: {
     PACKET_CZ_BANK_TRANSACTION packet;
     if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x9B9)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_WRONG_GUN)), 255, 0, 0, 0);
       return 0;
     }
     const long long amount = this->TransactionAmount(1);
@@ -532,11 +533,11 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     if (g_session.m_zeny < amount) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x998)), 255, 0, 0, 0);
-      this->m_status = LookupMessage(0xAE1);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_OVER_INT_MAX)), 255, 0, 0, 0);
+      this->m_status = LookupMessage(MSI_ITEMMOVEINFO_DROP);
     } else if (g_session.m_bankBalance + amount > 0x7FFFFFFFLL) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xAE3)), 255, 0, 0, 0);
-      this->m_status = LookupMessage(0xADF);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEMMOVEINFO_CART)), 255, 0, 0, 0);
+      this->m_status = LookupMessage(MSI_BANK_6_MINI);
     } else {
       packet.amount = static_cast<int>(amount);
       packet.id = 0x9A7;
@@ -549,7 +550,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case 0x1CF: {
     PACKET_CZ_BANK_TRANSACTION packet;
     if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x9B9)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_WRONG_GUN)), 255, 0, 0, 0);
       return 0;
     }
     const long long amount = this->TransactionAmount(0);
@@ -557,11 +558,11 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     if (g_session.m_bankBalance < amount) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x997)), 255, 0, 0, 0);
-      this->m_status = LookupMessage(0xAE2);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_WITHDRAW_ZERO)), 255, 0, 0, 0);
+      this->m_status = LookupMessage(MSI_ITEMMOVEINFO_STORE);
     } else if (static_cast<unsigned int>(g_session.m_zeny + static_cast<int>(amount)) > 0x7FFFFFFFu) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x99B)), 255, 0, 0, 0);
-      this->m_status = LookupMessage(0xAE3);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_JOBPLUSEXP_VALUE)), 255, 0, 0, 0);
+      this->m_status = LookupMessage(MSI_ITEMMOVEINFO_CART);
     } else {
       packet.amount = static_cast<int>(amount);
       packet.id = 0x9A9;
@@ -675,7 +676,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
       if (g_navigationLinkParser->HasLink(std::string(this->edit->Text()))) {
         this->edit->SetText("");
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3042)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 255, 0, 0, 0);
         return 0;
       }
 
@@ -697,7 +698,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
 
       if (g_serviceType == 1 && !ValidateCharacterName(buffer)) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(190)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 255, 0, 0, 0);
         return 0;
       }
 
@@ -765,7 +766,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_windowMgr.EnsureWindow(WID_CHATROOMCHANGEWND)->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&mode->unknown_03C8), 0, 0, 0);
       return 0;
     case 3:
-      g_windowMgr.Confirm(LookupMessage(191), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "Message", 280, 120, 0);
       return 0;
     case 11:
       this->SaveChatLog();
@@ -806,27 +807,27 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         switch (rank) {
         case 0:
           if (!(target == self)) {
-            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(127)), 0));
-            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(128)), 1));
+            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_BAN)), 0));
+            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_GIVE_GIVE_ROOM_POWER)), 1));
           }
-          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(129)), 3));
+          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_CHARACTER)), 3));
           if (g_serviceMode != 3 && !g_windowMgr.IsFriend(target.c_str()) && !(target == self)) {
-            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(358)), 21));
+            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)), 21));
           }
-          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(126)), 2));
+          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)), 2));
           break;
         case 1:
-          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(129)), 3));
+          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_CHARACTER)), 3));
           if (!g_windowMgr.IsFriend(target.c_str()) && !(target == self) && g_serviceMode != 3) {
-            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(358)), 21));
+            this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)), 21));
           }
           break;
         }
       } else {
         if (rank == 0) {
-          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(126)), 2));
+          this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)), 2));
         }
-        this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(312)), 11));
+        this->unknown_0114.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_WRITE_CHAT_TO_FILE)), 11));
       }
     }
 
@@ -1029,7 +1030,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     std::memcpy(&header, data, sizeof(header));
     if (header.tag == 0x5014) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(64)), 0xFFFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ROOM_IS_MADE)), 0xFFFF00, 0, 0, 0);
       ChatRoomTitleInfo* settings = reinterpret_cast<ChatRoomTitleInfo*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_03C8);
       unsigned offset = 6;
       while (offset < size) {

@@ -37,6 +37,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstddef>
 #include <cstring>
 
@@ -233,7 +234,7 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
     if (goal > 0) {
       const short count = quest.m_huntUnknown00E0[index];
       if (count == goal) {
-        const std::string formatted = FormatOwnedString("%s ( %s )", text.c_str(), LookupMessage(2030));
+        const std::string formatted = FormatOwnedString("%s ( %s )", text.c_str(), LookupMessage(MSI_COMPLETE_HUNTING_QUEST));
         text = formatted;
       } else {
         const std::string formatted = FormatOwnedString("%s ( %d / %d )", text.c_str(), count, goal);
@@ -286,9 +287,9 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
 
   UIStaticText* label = new UIStaticText();
   context.SetFont(0, 12, 1, 0);
-  SIZE size = context.Measure(LookupMessage(3401), static_cast<int>(std::strlen(LookupMessage(3401))));
+  SIZE size = context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP))));
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(3401), 0);
+  label->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP), 0);
   label->Move(24, 9);
   this->AddScrollChild(label);
 
@@ -324,9 +325,9 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   this->AddScrollChild(bitmap);
 
   label = new UIStaticText();
-  size = context.Measure(LookupMessage(3402), static_cast<int>(std::strlen(LookupMessage(3402))));
+  size = context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP))));
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(3402), 0);
+  label->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP), 0);
   label->Move(24, y);
   this->AddScrollChild(label);
   y += 22;
@@ -365,17 +366,17 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   this->AddScrollChild(bitmap);
 
   label = new UIStaticText();
-  size = context.Measure(LookupMessage(3403), static_cast<int>(std::strlen(LookupMessage(3403))));
+  size = context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM))));
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(3403), 0);
+  label->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM), 0);
   label->Move(24, y);
   this->AddScrollChild(label);
   y += 22;
 
   label = new UIStaticText();
-  size = context.Measure(LookupMessage(3404), static_cast<int>(std::strlen(LookupMessage(3404))));
+  size = context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM))));
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(3404), 0);
+  label->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM), 0);
   label->Move(32, y);
   this->AddScrollChild(label);
 
@@ -389,9 +390,9 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   y += 20;
 
   label = new UIStaticText();
-  size = context.Measure(LookupMessage(3405), static_cast<int>(std::strlen(LookupMessage(3405))));
+  size = context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM))));
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(3405), 0);
+  label->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM), 0);
   label->Move(32, y);
   this->AddScrollChild(label);
 
@@ -405,9 +406,9 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   y += 20;
 
   label = new UIStaticText();
-  size = context.Measure(LookupMessage(3406), static_cast<int>(std::strlen(LookupMessage(3406))));
+  size = context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM))));
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(3406), 0);
+  label->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM), 0);
   label->Move(32, y);
   this->AddScrollChild(label);
 
@@ -437,7 +438,7 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
       this->AddScrollChild(name);
 
       UIStaticText* count = new UIStaticText();
-      const std::string countText = FormatOwnedString(LookupMessage(182), quest.m_rewards[index].second);
+      const std::string countText = FormatOwnedString(LookupMessage(MSI_EA), quest.m_rewards[index].second);
       size = context.Measure(countText.c_str(), static_cast<int>(countText.size()));
       count->SetSize(size.cx + 4, 12);
       count->SetText(countText.c_str(), 0);
@@ -621,7 +622,7 @@ void UIRenewDetailQuestInfoWnd::Paint() {
     this->DrawTextAt(12, 393, this->m_timeText.c_str(), 0, 0, 12, 0x161BD2, 0, 0);
   }
 
-  this->DrawTextAt(16, 2, LookupMessage(0xD48), 0, 0, 13, 0, 0, 0);
+  this->DrawTextAt(16, 2, LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD), 0, 0, 13, 0, 0, 0);
 }
 
 // OFFSET: 0x007FBAD0
@@ -684,7 +685,7 @@ void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended)
     this->m_ongoingWnd->SetQuest(this->m_questId);
     if (quest.m_year > 1970) {
       const std::string timeText =
-        FormatOwnedString("%s [%02d/%02d/%02d %02d:%02d]", LookupMessage(2195), quest.m_year, quest.m_month, quest.m_day, quest.m_hour, quest.m_minute);
+        FormatOwnedString("%s [%02d/%02d/%02d %02d:%02d]", LookupMessage(MSI_NAVIGATION_ROUTEINFO), quest.m_year, quest.m_month, quest.m_day, quest.m_hour, quest.m_minute);
       this->m_timeText = timeText;
     }
   }
@@ -724,7 +725,7 @@ void UIRenewQuestWnd::OnCreate(int, int) {
   if (!g_windowMgr.window_0428) {
     g_windowMgr.EnsureWindow(WID_QUESTDISPLAY);
   }
-  this->m_optionCheckBox = this->AddStyledCheckBox(213, 10, 12, LookupMessage(2019), 38, 447, g_windowMgr.window_0428->geometry.visible != 0, nullptr, 12, 0x212121, "유저인터페이스\\renew_questui\\checkbox_on.bmp",
+  this->m_optionCheckBox = this->AddStyledCheckBox(213, 10, 12, LookupMessage(MSI_QUEST_DISPLAY_ONOFF), 38, 447, g_windowMgr.window_0428->geometry.visible != 0, nullptr, 12, 0x212121, "유저인터페이스\\renew_questui\\checkbox_on.bmp",
     "유저인터페이스\\renew_questui\\checkbox_off.bmp"
   );
 
@@ -749,7 +750,7 @@ void UIRenewQuestWnd::OnCreate(int, int) {
     );
     this->m_rows.checkBoxes[index] = check;
     check->m_message = 0;
-    this->m_rows.checkBoxes[index]->SetTooltip(LookupMessage(3409));
+    this->m_rows.checkBoxes[index]->SetTooltip(LookupMessage(MSI_PASSWORD));
     this->m_rows.checkBoxes[index]->SetHidden(true);
 
     UICheckBox* lock = this->AddStyledCheckBox(389 + index, 20, 17, nullptr, 344, y, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_lock_open.bmp",
@@ -795,7 +796,7 @@ void UIRenewQuestScrollBar::Paint() {
 void UIRenewQuestWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawPanelBackground(0, 0, FormatOwnedString("유저인터페이스\\renew_questui\\bg_quest%d.bmp", this->m_tab + 1).c_str());
-  this->DrawTextAt(45, 2, LookupMessage(3400), 0, 0, 13, 0, 0, 0);
+  this->DrawTextAt(45, 2, LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD), 0, 0, 13, 0, 0, 0);
 
   for (int index = 0; index < 9; ++index) {
     const int y = index * 46;
@@ -899,7 +900,7 @@ void UIRenewQuestWnd::RefreshRows() {
         const RenewQuestRecommendedInfo& quest = g_renewQuestMgr->GetRecommendedQuest(ids[index]);
         this->m_rows.lockBoxes[i]->geometry.unknown_0030 = quest.m_state;
         this->m_rows.lockBoxes[i]->Invalidate();
-        this->m_rows.lockBoxes[i]->SetTooltip(LookupMessage(3408));
+        this->m_rows.lockBoxes[i]->SetTooltip(LookupMessage(MSI_SAVE_ID));
         this->m_rows.lockBoxes[i]->SetHidden(false);
         this->m_rows.checkBoxes[i]->SetHidden(true);
         std::string bitmap = quest.m_icon.empty() ? std::string("유저인터페이스\\renew_questui\\ico_nq.bmp") : "유저인터페이스\\renew_questui\\" + quest.m_icon;
@@ -919,7 +920,7 @@ void UIRenewQuestWnd::RefreshRows() {
         } else {
           this->m_rows.lockBoxes[i]->geometry.unknown_0030 = quest.m_state;
           this->m_rows.lockBoxes[i]->Invalidate();
-          this->m_rows.lockBoxes[i]->SetTooltip(LookupMessage(3407));
+          this->m_rows.lockBoxes[i]->SetTooltip(LookupMessage(MSI_OTP_INPUT_TIME));
           this->m_rows.lockBoxes[i]->SetHidden(false);
           this->m_rows.checkBoxes[i]->geometry.unknown_0030 = quest.m_simpleView;
           this->m_rows.checkBoxes[i]->Invalidate();

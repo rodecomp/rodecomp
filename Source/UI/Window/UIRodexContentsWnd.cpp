@@ -35,6 +35,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/GroupedInteger.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -120,7 +121,7 @@ void UIRodexContentsWnd::OnCreate(int, int) {
 
       if ((mail->second.unknown_0001 & 8) == 0 && mail->second.unknown_0194 == 0) {
         UIBasicButton* report = new UIBasicButton();
-        report->Configure(70, LookupMessage(3548));
+        report->Configure(70, LookupMessage(MSI_FAILED_HOMUN_AUTO_FEEDING_BY_ITEMACTION));
         report->Move(224, 29);
         report->SetId(310);
         report->SetDisabled(0);
@@ -149,7 +150,7 @@ void UIRodexContentsWnd::OnCreate(int, int) {
   }
 
   this->unknown_0104 = new UIBasicButton();
-  this->unknown_0104->Configure(50, LookupMessage(3542));
+  this->unknown_0104->Configure(50, LookupMessage(MSI_RODEX_BUTTON_CONFIRM_ID));
   this->unknown_0104->Move(6, 376);
   this->unknown_0104->SetId(211);
   this->AddChild(this->unknown_0104);
@@ -164,7 +165,7 @@ void UIRodexContentsWnd::Paint() {
     ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_read.bmp"))
   );
   this->DrawBitmap(0, 0, &background->image, false);
-  this->DrawTitleBar(true, LookupMessage(2727), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_RODEX_CHOOSEWND_FAILED), 0);
   this->DrawTextAt(8, 29, this->m_title.c_str(), 0, 0, 12, 0x95330F, 1, 0);
   this->DrawTextAt(9, 52, this->m_sender.c_str(), 0, 0, 12, 0x313131, 0, 0);
 
@@ -223,7 +224,7 @@ void UIRodexContentsWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
     CMode* tooltip = g_modeMgr.gameMode;
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      tooltip->ShowTooltip(FormatOwnedString(LookupMessage(2600), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+      tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
                     g_session.GetItemNameColor(item), 0, 1);
     } else {
       tooltip->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
@@ -301,11 +302,11 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       if ((mail->second.unknown_0001 & 6) != 0) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA34)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILE_MAIL_RECIEVER_INFO)), 0x64FFFF, 0, 0, 0);
         break;
       }
 
-      if (g_windowMgr.Confirm(LookupMessage(0x164), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
         g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(g_rodexMailStore->currentMailId), g_rodexMailStore->unknown_0010, 0, 0);
         if (g_windowMgr.unknown_045C != 0) {
           g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
@@ -413,7 +414,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
 
   if (g_rodexMailStore->unknown_0010 == 0 && (flags & 8) == 0) {
     this->unknown_0108 = new UIBasicButton();
-    this->unknown_0108->Configure(70, LookupMessage(3543));
+    this->unknown_0108->Configure(70, LookupMessage(MSI_RODEX_TAB_ADMIN));
     this->unknown_0108->Move(224, 376);
     this->unknown_0108->SetId(305);
     this->unknown_0108->SetDisabled(0);

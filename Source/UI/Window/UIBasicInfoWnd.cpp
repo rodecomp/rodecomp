@@ -26,6 +26,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/GroupedInteger.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -280,7 +281,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         if (!g_windowMgr.unknown_02FC && !g_windowMgr.unknown_0304) {
           g_windowMgr.EnsureWindow(WID_CHATROOMMAKEWND);
         } else {
-          g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 280, 120, 0);
         }
       }
       break;
@@ -373,8 +374,8 @@ void UIBasicInfoWnd::DrawExpanded() {
   );
   this->DrawBitmap(0, 0, &background->image, false);
 
-  this->DrawTextAt(18, 3, LookupMessage(238), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(17, 2, LookupMessage(238), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(18, 3, LookupMessage(MSI_BASICINFOWND), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(17, 2, LookupMessage(MSI_BASICINFOWND), 0, 0, 12, 0, 0, 0);
 
   const bool compact = g_serviceType == 0 || g_serviceType == 14;
   const int family = compact ? 0 : 1;
@@ -382,9 +383,9 @@ void UIBasicInfoWnd::DrawExpanded() {
   const int job = g_session.GetDisplayJob();
   this->DrawTextAt(9, 36, g_session.GetJobName(job, -1), 0, family, fontHeight, 0, 0, 0
   );
-  this->DrawTextAt(9, 51, LookupMessage(3068), 0, 1, 14, 0, 0, 0);
-  this->DrawTextAt(9, 65, LookupMessage(3069), 0, 1, 14, 0, 0, 0);
-  this->DrawTextAt(9, 80, LookupMessage(3628), 0, 1, 14, 0, 0, 0);
+  this->DrawTextAt(9, 51, LookupMessage(MSI_BASICINFO_JOBLEVEL), 0, 1, 14, 0, 0, 0);
+  this->DrawTextAt(9, 65, LookupMessage(MSI_BASICINFO_EXP), 0, 1, 14, 0, 0, 0);
+  this->DrawTextAt(9, 80, LookupMessage(MSI_GUILD_AGIT_ARE_YOU_MOVE_AGIT), 0, 1, 14, 0, 0, 0);
 
   if (g_session.unknown_556C > 0) {
     const std::int64_t percent = static_cast<std::int64_t>(g_session.unknown_5568) * 100 / g_session.unknown_556C;
@@ -406,11 +407,11 @@ void UIBasicInfoWnd::DrawExpanded() {
     this->DrawTextAt(173, 80, text.c_str(), 0, 1, 14, 0, 0, 0);
   }
 
-  std::string baseLevel = FormatOwnedString(LookupMessage(1995), g_session.m_level);
+  std::string baseLevel = FormatOwnedString(LookupMessage(MSI__BASIC_MSG_BASE), g_session.m_level);
   this->DrawTextAt(17, this->layoutOffset + 71, baseLevel.c_str(), 0, 1, 14, 0, 0, 0
   );
 
-  std::string jobLevel = FormatOwnedString(LookupMessage(1996), g_session.m_jobLevel);
+  std::string jobLevel = FormatOwnedString(LookupMessage(MSI__BASIC_MSG_JOB), g_session.m_jobLevel);
   if (g_serviceType == 12) {
     jobLevel = FormatOwnedString("Classe. %d", g_session.m_jobLevel);
   }
@@ -420,7 +421,7 @@ void UIBasicInfoWnd::DrawExpanded() {
   char zenyBuffer[64];
   std::memset(zenyBuffer, 0, sizeof(zenyBuffer));
   FormatGroupedInteger(g_session.m_zeny, zenyBuffer, 64);
-  std::string zenyText = FormatOwnedString(LookupMessage(1997), zenyBuffer);
+  std::string zenyText = FormatOwnedString(LookupMessage(MSI_BASIC_MSG_ZENY), zenyBuffer);
   zenyText = " | " + zenyText;
   this->DrawRightAlignedText(this->geometry.width - 5, this->layoutOffset + 103, zenyText.c_str(), 0, 1, 14, 0, 0);
   const int zenyWidth = this->TextWidth(zenyText.c_str(), 0, 1, 14, 0, 0
@@ -429,7 +430,7 @@ void UIBasicInfoWnd::DrawExpanded() {
   std::string weightText;
   weightText = g_serviceType == 12
     ? FormatOwnedString("Peso : %3d / %3d", g_session.m_weight, g_session.m_maxWeight)
-    : FormatOwnedString(LookupMessage(1992), g_session.m_weight, g_session.m_maxWeight);
+    : FormatOwnedString(LookupMessage(MSI_WEIGHT), g_session.m_weight, g_session.m_maxWeight);
 
   const int denominator = g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight;
   const std::uint32_t weightColor = 100 * g_session.m_weight / denominator >= g_unknown173A5BC ? 255 : 0;
@@ -477,7 +478,7 @@ void UIBasicInfoWnd::DrawCollapsed() {
   }
 
   std::string title = FormatOwnedString(
-    "%s %d / %s / %s %d", LookupMessage(3070), g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1), LookupMessage(3627),
+    "%s %d / %s / %s %d", LookupMessage(MSI_ALL_ON), g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1), LookupMessage(MSI_GUILD_AGIT_INVESTMENT_INFO),
     g_session.m_jobLevel
   );
   this->DrawTextAt(8, 20, title.c_str(), 0, family, fontHeight, 0, 0, 0);
@@ -486,7 +487,7 @@ void UIBasicInfoWnd::DrawCollapsed() {
   if (g_session.unknown_556C > 0) {
     hpColor = 0.25f > static_cast<float>(g_session.unknown_5568) / static_cast<float>(g_session.unknown_556C) ? 255 : 0;
   }
-  std::string hpText = FormatOwnedString("%s %d / %d", LookupMessage(3068), g_session.unknown_5568, g_session.unknown_556C);
+  std::string hpText = FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_JOBLEVEL), g_session.unknown_5568, g_session.unknown_556C);
   this->DrawTextAt(8, 36, hpText.c_str(), 0, family, fontHeight, hpColor, 0, 0);
 
   std::int64_t current = BaseExpCurrent();
@@ -506,7 +507,7 @@ void UIBasicInfoWnd::DrawCollapsed() {
               ) *
               0.1;
   }
-  std::string expText = FormatOwnedString("| %s %.1lf%%", LookupMessage(3072), percent);
+  std::string expText = FormatOwnedString("| %s %.1lf%%", LookupMessage(MSI_SIMPLECASH_P), percent);
   this->DrawTextAt(136, 36, expText.c_str(), 0, family, fontHeight, 0, 0, 0);
 
   const int sp = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
@@ -515,10 +516,10 @@ void UIBasicInfoWnd::DrawCollapsed() {
   if (spMax > 0) {
     spColor = 0.25f > static_cast<float>(sp) / static_cast<float>(spMax) ? 255 : 0;
   }
-  std::string spText = FormatOwnedString("%s %d / %d", LookupMessage(3069), sp, spMax);
+  std::string spText = FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_EXP), sp, spMax);
   this->DrawTextAt(8, 52, spText.c_str(), 0, family, fontHeight, spColor, 0, 0);
 
-  std::string apText = FormatOwnedString("| %s %d / %d", LookupMessage(3628), g_session.GetTraitStat(232), g_session.GetTraitStat(233));
+  std::string apText = FormatOwnedString("| %s %d / %d", LookupMessage(MSI_GUILD_AGIT_ARE_YOU_MOVE_AGIT), g_session.GetTraitStat(232), g_session.GetTraitStat(233));
   this->DrawTextAt(136, 52, apText.c_str(), 0, family, fontHeight, 0, 0, 0);
 }
 
@@ -724,8 +725,8 @@ void UIBasicInfoWnd::Paint() {
       this->DrawTextAt(18, 3, "Basic Info", 0, 0, 12, 0xFFFFFF, 0, 0);
       this->DrawTextAt(17, 2, "Basic Info", 0, 0, 12, 0, 0, 0);
     } else {
-      this->DrawTextAt(18, 3, LookupMessage(238), 0, 0, 12, 0xFFFFFF, 0, 0);
-      this->DrawTextAt(17, 2, LookupMessage(238), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(18, 3, LookupMessage(MSI_BASICINFOWND), 0, 0, 12, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(17, 2, LookupMessage(MSI_BASICINFOWND), 0, 0, 12, 0, 0, 0);
     }
 
     this->DrawTextAt(17, 51, "HP", 0, 1, 14, 0, 0, 0);

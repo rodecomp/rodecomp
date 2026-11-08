@@ -8,6 +8,7 @@
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <json/reader.h>
 #include <json/value.h>
 
@@ -18,7 +19,7 @@ void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, st
 
   if (!diagnostic.success) {
     if (this->unknown_0008 == g_session.m_aid) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3507)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXPAND_SIGHT_HELP)), 0xFF, 0, 0, 0);
     }
 
     return;
@@ -35,14 +36,14 @@ void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, st
   case 2:
   case 3:
     if (this->unknown_0008 == g_session.m_aid) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3507)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXPAND_SIGHT_HELP)), 0xFF, 0, 0, 0);
     }
 
     return;
   }
 
   if (this->unknown_0008 == g_session.m_aid) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3459)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FORCED_WEB_LOGIN)), 0xFFFF64, 0, 0, 0);
   }
 
   this->registered = false;

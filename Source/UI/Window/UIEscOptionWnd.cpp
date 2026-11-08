@@ -11,6 +11,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include <string>
+#include "Resource/MSGSTRINGID.h"
 
 // OFFSET: 0x0091F4F0
 // FUNCTION: fn_12638
@@ -37,7 +38,7 @@ void UIEscOptionWnd::OnCreate(int, int) {
 // OFFSET: 0x0092BDE0
 // FUNCTION: fn_12662
 void UIEscOptionWnd::Paint() {
-  this->m_titleHeight = this->DrawTitleBar(true, FormatOwnedString("%s (%s)", LookupMessage(1483), ShortcutFilename(g_session.m_gid).c_str()).c_str(), 0);
+  this->m_titleHeight = this->DrawTitleBar(true, FormatOwnedString("%s (%s)", LookupMessage(MSI_ESC_OPTIONWND), ShortcutFilename(g_session.m_gid).c_str()).c_str(), 0);
 
   this->DrawPanelBackground(this->m_titleHeight, 0, "");
 }
@@ -127,7 +128,7 @@ int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     break;
   case ID_RETURN_TO_LOGIN:
-    if (g_windowMgr.Confirm(LookupMessage(0x60C), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_MOVETO_SAVEPOINT), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
       mode->SendMsg(MM_RESTART, 0, 0, 0, 0);
       g_windowMgr.CloseWindow(WID_ESCOPTIONWND);
     }

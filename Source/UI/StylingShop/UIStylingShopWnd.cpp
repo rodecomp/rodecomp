@@ -20,6 +20,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include <cstring>
 #include <mbstring.h>
+#include "Resource/MSGSTRINGID.h"
 
 // OFFSET: 0x00829B50
 // FUNCTION: fn_10341
@@ -158,7 +159,7 @@ void UIStylingShopButton::OnLBtnUp(int, int) {
     if (g_windowMgr.WindowPolicy(3, parent->geometry.id) != 0) {
       int id = this->geometry.id;
       if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
-        const char* text = LookupMessage(17);
+        const char* text = LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT);
         if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
           g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         }
@@ -294,7 +295,7 @@ int UIBasicStylingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           this->m_display->unknown_0094 = i + 1;
           this->m_display->Invalidate();
         } else {
-          g_windowMgr.Confirm(LookupMessage(2834), 0, false, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_BASICSTYLE), 0, false, false, 0, "Message", 280, 120, 0);
         }
       } else {
         this->m_paletteButtons[i]->SetState(0);
@@ -386,7 +387,7 @@ int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   } else {
     switch (argument1) {
     case ID_CLOSE:
-      if (g_windowMgr.Confirm(LookupMessage(2816), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_REGISTER_BOOKMARK), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
         for (int i = 0; i < 2; ++i) {
           if (sender == this->unknown_0094[i]) {
             this->RemoveChild(this->m_slots[i], 1);
@@ -693,7 +694,7 @@ void UIStylingShopWnd::SetBuyEnabled(bool enabled) {
 void UIStylingShopWnd::Paint() {
   this->RefreshFavoriteButton();
   this->ClearSurface(0xFFFFFFFF);
-  this->DrawTitleBar(true, LookupMessage(2813), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_STYLING_SHOP_DELETE_CHAR), 0);
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\bg_styling.bmp")));
   if (background) {
     this->DrawBitmap(0, 0, background, false);
@@ -1128,9 +1129,9 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case ID_BOOKMARK:
     if (this->m_favoriteButton->m_argument == 0) {
       if (shop->AddToMyStyle() == true) {
-        g_windowMgr.Confirm(LookupMessage(2819), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_PRIVATE_AIRPLANE_FAIL_LOCALIZING), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
-        this->m_favoriteButton->SetTooltip(LookupMessage(2817));
+        this->m_favoriteButton->SetTooltip(LookupMessage(MSI_STYLING_SHOP_SUGGEST_TO_GO_TO_BANK));
       }
     }
     break;
@@ -1463,7 +1464,7 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     break;
   case ID_BUY:
     if (this->m_buyButton->Argument() == 0 &&
-        g_windowMgr.Confirm(LookupMessage(2818), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+        g_windowMgr.Confirm(LookupMessage(MSI_ASK_MOVE_BY_PRIVATE_AIRPLANE), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
       for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
         UIStylingshopTabParentWnd* tab = it->second;
         if (tab->geometry.visible == 0) {
@@ -1571,27 +1572,27 @@ void UIStylingShopWnd::OnCreate(int, int) {
 
   UIBasicStylingWnd* basic = new (std::nothrow) UIBasicStylingWnd();
   this->AddTab("유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_on.bmp", 200, basic,
-               LookupMessage(2837));
+               LookupMessage(MSI_SKILL_FAIL_MHP_TOO_FEW));
   basic->Show(1);
   static_cast<UIButton*>(this->m_tabs.begin()->first)->SetState(2);
 
   UIAccessoryCusWnd* accessory = new (std::nothrow) UIAccessoryCusWnd();
   this->AddTab("유저인터페이스\\styleshop\\tab_accessories_off.bmp", "유저인터페이스\\styleshop\\tab_accessories_off_over.bmp",
-               "유저인터페이스\\styleshop\\tab_accessories_on.bmp", 497, accessory, LookupMessage(2831));
+               "유저인터페이스\\styleshop\\tab_accessories_on.bmp", 497, accessory, LookupMessage(MSI_STYLING_SHOP_IS_NOT_COLORING_HEAD));
 
   if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) != true && g_session.IsTreeGroupTwo(g_session.GetDisplayJob()) != 1) {
     UICostumeChangeWnd* costume = new UICostumeChangeWnd();
     this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", 583,
-                 costume, LookupMessage(2832));
+                 costume, LookupMessage(MSI_STYLING_SHOP_OPENING_COMMENT));
   } else {
     UICostumeChangeWnd* costume = new UICostumeChangeWnd();
     this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on_over.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on.bmp", 583,
-                 costume, LookupMessage(2832));
+                 costume, LookupMessage(MSI_STYLING_SHOP_OPENING_COMMENT));
   }
 
   UIMyStyleWnd* myStyle = new (std::nothrow) UIMyStyleWnd();
   this->AddTab("유저인터페이스\\styleshop\\tab_favorite_off.bmp", "유저인터페이스\\styleshop\\tab_favorite_off_over.bmp", "유저인터페이스\\styleshop\\tab_favorite_on.bmp", 496,
-               myStyle, LookupMessage(2833));
+               myStyle, LookupMessage(MSI_STYLING_SHOP_SUCCESS));
 
   this->m_preview = new UIDisplayCharacter();
   this->m_preview->SetSize(120, 120);
@@ -1608,7 +1609,7 @@ void UIStylingShopWnd::OnCreate(int, int) {
   this->AddChild(this->m_buyButton);
 
   char zeny[256] = {};
-  std::string text(LookupMessage(2773));
+  std::string text(LookupMessage(MSI_BANK_6));
   text += " ";
   text += FormatGroupedInteger(g_session.m_zeny, zeny, 256);
   text += "\tz";
@@ -1729,14 +1730,14 @@ void UIShowInfoWnd::DrawPayments() {
     } else if (itemId) {
       this->DrawPaymentItem(*it, zeny, itemId, payable, row);
       if (!payable) {
-        this->m_checks[row]->SetTooltip(LookupMessage(2814));
+        this->m_checks[row]->SetTooltip(LookupMessage(MSI_STYLING_SHOP_FAIL_TO_ADD_CHAR_TO_LIKE));
         if (costumeItemId) {
           const int noZeny = 0;
           const int noItem = 0;
           const bool costumePayable = this->CheckPayment(row, noZeny, noItem, costumeItemId);
           if (costumePayable == true) {
             this->DrawPaymentItem(*it, zeny, itemId, true, row);
-            this->m_checks[row]->SetTooltip(LookupMessage(2815));
+            this->m_checks[row]->SetTooltip(LookupMessage(MSI_STYLING_SHOP_ADJUST_NEW_CHAR_STYLE));
             ITEM_DESC description = FindItemDescription(costumeItemId);
             this->DrawTextAt(x, y, description.identifiedName, 0, 0, this->unknown_00A8, color, 0, 0);
           } else {
@@ -1759,7 +1760,7 @@ void UIShowInfoWnd::DrawPayments() {
       std::memset(text, 0, sizeof(text));
       if (*it == 1) {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\icon_color_off.bmp")));
-        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3912));
+        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_CASHSHOP_FREE));
       } else if (*it == 7) {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\icon_zeny.bmp")));
         StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d\tZeny", zeny);
@@ -1787,7 +1788,7 @@ void UIShowInfoWnd::DrawPayments() {
 
     if (this->unknown_00A0 == 1) {
       std::vector<std::string> lines;
-      this->WrapPixelText(LookupMessage(2835), lines, this->geometry.width - 20);
+      this->WrapPixelText(LookupMessage(MSI_UPGRADESKILLERROR_MORE_BASE_LEVEL), lines, this->geometry.width - 20);
       for (unsigned int i = 0; i < lines.size(); ++i) {
         this->DrawTextAt(20, positions[i][1], lines[i].c_str(), 0, 0, 11, 0, 0, 0);
       }
@@ -2377,7 +2378,7 @@ void UI2ndCostumeWnd::OnCreate(int, int) {
   UIStaticText* hideText = new (std::nothrow) UIStaticText();
   hideText->SetSize(100, 12);
   hideText->Move(this->m_hideCheckBox->geometry.x + this->m_hideCheckBox->geometry.width + 5, 235);
-  hideText->SetText(LookupMessage(2837), 0);
+  hideText->SetText(LookupMessage(MSI_SKILL_FAIL_MHP_TOO_FEW), 0);
   hideText->SetFont(0, 11, 0, 0);
   this->AddChild(hideText);
 
@@ -2391,7 +2392,7 @@ void UI2ndCostumeWnd::OnCreate(int, int) {
   UIStaticText* showText = new (std::nothrow) UIStaticText();
   showText->SetSize(100, 12);
   showText->Move(this->m_showCheckBox->geometry.x + this->m_showCheckBox->geometry.width + 5, 260);
-  showText->SetText(LookupMessage(2832), 0);
+  showText->SetText(LookupMessage(MSI_STYLING_SHOP_OPENING_COMMENT), 0);
   showText->SetFont(0, 11, 0, 0);
   this->AddChild(showText);
 

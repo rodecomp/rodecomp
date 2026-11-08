@@ -5,6 +5,7 @@
 #include "File/ShortcutFilename.h"
 #include "Network/TextEncoding.h"
 #include "Script/LuaInstance.h"
+#include "Resource/MSGSTRINGID.h"
 #include <direct.h>
 #include <format>
 #include <json/value.h>
@@ -73,16 +74,16 @@ void EmotionHotkeys::Save(std::uint32_t accountId, CRenderSystemBase*) const {
 // FUNCTION: fn_24191
 bool EmotionHotkeys::LoadDefaults(std::uint32_t accountId) {
   this->current.clear();
-  this->current.emplace_back(LookupMessage(544));
-  this->current.emplace_back(LookupMessage(545));
-  this->current.emplace_back(LookupMessage(546));
-  this->current.emplace_back(LookupMessage(547));
-  this->current.emplace_back(LookupMessage(549));
-  this->current.emplace_back(LookupMessage(550));
-  this->current.emplace_back(LookupMessage(551));
-  this->current.emplace_back(LookupMessage(552));
-  this->current.emplace_back(LookupMessage(553));
-  this->current.emplace_back(LookupMessage(554));
+  this->current.emplace_back(LookupMessage(MSI_EMOTION_SURPRISE));
+  this->current.emplace_back(LookupMessage(MSI_EMOTION_QUESTION));
+  this->current.emplace_back(LookupMessage(MSI_EMOTION_DELIGHT));
+  this->current.emplace_back(LookupMessage(MSI_EMOTION_THROB));
+  this->current.emplace_back(LookupMessage(MSI_EMOTION_SWEAT));
+  this->current.emplace_back(LookupMessage(MSI_EMOTION_AHA));
+  this->current.emplace_back(LookupMessage(MSI_EMOTION_FRET));
+  this->current.emplace_back(LookupMessage(MSI_EMOTION_ANGER));
+  this->current.emplace_back(LookupMessage(MSI_EMOTION_MONEY));
+  this->current.emplace_back(LookupMessage(MSI_EMOTION_THINK));
 
   CLuaInstance script;
   const bool loaded = script.LoadFile(std::format("savedata\\shortcutlist\\{}.lua", ShortcutFilename(accountId)), false);

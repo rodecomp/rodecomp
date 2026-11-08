@@ -9,6 +9,7 @@
 #include "UI/Window/UIRegisterMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstring>
 #include <format>
@@ -115,7 +116,7 @@ void CUIRecommendedQuestInfo::OnClose() {
 // OFFSET: 0x00A58BE0
 // FUNCTION: fn_16349
 void CUIRecommendedQuestInfo::OnInit() {
-  const char* title = LookupMessage(0xD48);
+  const char* title = LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD);
   this->titleBar->SetTitle(title);
   UIWindow* window = g_windowMgr.LookupWindow(WID_RENEWQUESTUI);
   if (window) {

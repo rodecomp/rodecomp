@@ -31,6 +31,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Client/Mode/ModeMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cctype>
 #include <cstdint>
@@ -183,9 +184,9 @@ void UIChangeMaterialWnd_List::OnMouseMove(int x, int y) {
 // FUNCTION: fn_03887
 void UIChangeMaterialWnd::OnProcess() {
   const std::string text = this->unknown_00B8->Text();
-  if (text.compare(LookupMessage(0xec0)) != 0) {
+  if (text.compare(LookupMessage(MSI_BO_RESEARCHREPORT_OFF)) != 0) {
     if (text.empty()) {
-      this->unknown_00B8->SetText(LookupMessage(0xec0));
+      this->unknown_00B8->SetText(LookupMessage(MSI_BO_RESEARCHREPORT_OFF));
       this->unknown_00B8->TextColor(0xb1u, 0xb1u, 0xb1u, 0xffffffffu);
     } else {
       this->unknown_00B8->TextColor(0, 0, 0, 0xffffffffu);
@@ -422,7 +423,7 @@ int UIChangeMaterialWnd::SendMsg(
         const MaterialResult& first = entry->results.front();
         const MaterialResult& last = entry->results.back();
         const std::string name = ItemDisplayName(first.id);
-        const std::string text = FormatOwnedString(LookupMessage(0xe8b), name.c_str(), first.quantity, last.quantity);
+        const std::string text = FormatOwnedString(LookupMessage(MSI_IQ_POWERFUL_FAITH_ON), name.c_str(), first.quantity, last.quantity);
         this->m_resultText = text;
       }
 
@@ -478,7 +479,7 @@ int UIChangeMaterialWnd_List::SendMsg(
   case UM_COMMAND:
     if (argument1 == 0x141 && argument2 != 0) {
       std::string filter(reinterpret_cast<const char*>(argument2));
-      if (filter.compare(LookupMessage(0xec0)) == 0) {
+      if (filter.compare(LookupMessage(MSI_BO_RESEARCHREPORT_OFF)) == 0) {
         filter = "";
       }
       this->ApplyFilter(filter);
@@ -540,7 +541,7 @@ void UIChangeMaterialWnd::Paint() {
 
   DrawItemWithQuantity(*this, ResourceMgr::Instance(), this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
 
-  const std::string amount = FormatOwnedString(LookupMessage(0xE8C), this->m_resultAmount / 10);
+  const std::string amount = FormatOwnedString(LookupMessage(MSI_IQ_POWERFUL_FAITH_OFF), this->m_resultAmount / 10);
   const int width = this->TextWidth(amount.c_str(), 0, 0x1D, 0x17, 1, 0);
   DrawOutlinedText(*this, 0x4F + (0xC8 - width) / 2, 0x64, amount.c_str(), 0, 0x5082DC, 0x643C00, 0x1D, 0x17, 1, 0);
 
@@ -597,11 +598,11 @@ void UIChangeMaterialWnd_List::Paint() {
     if (entry->state == 1) {
       DrawItemWithQuantity(*this, ResourceMgr::Instance(), 0, y, item, 1, 0);
       this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
-      this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(182), item.quantity).c_str(), 0, 0, 12, 0, 0);
+      this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0, 0);
     } else {
       DrawItemWithQuantityAuxiliary(*this, 1, 0, y, item, 1, 0);
       this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
-      this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(182), item.quantity).c_str(), 0, 0, 12, 0xAAAAAA, 0);
+      this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0xAAAAAA, 0);
     }
   }
 }
@@ -667,7 +668,7 @@ void UIChangeMaterialWnd_List::OnMouseHover(int x, int y) {
   int screenY = y;
   this->ToScreen(screenX, screenY);
 
-  const std::string text = FormatOwnedString(LookupMessage(0xB7), ItemDisplayName(entry->results.front().id).c_str(), entry->results.front().quantity);
+  const std::string text = FormatOwnedString(LookupMessage(MSI_EA2), ItemDisplayName(entry->results.front().id).c_str(), entry->results.front().quantity);
   CMode* const mode = g_modeMgr.gameMode;
   mode->ShowTooltip(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
 }
@@ -702,7 +703,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   this->unknown_00B8->Move(313, 262);
   this->unknown_00B8->maximum = 20;
   this->unknown_00B8->preserveInput = 1;
-  this->unknown_00B8->SetText(LookupMessage(3776));
+  this->unknown_00B8->SetText(LookupMessage(MSI_BO_RESEARCHREPORT_OFF));
   this->unknown_00B8->TextColor(0xB1u, 0xB1u, 0xB1u, 0xFFFFFFFFu);
   this->unknown_00B8->Background(255, 236, 207);
   this->unknown_00B8->topPadding = -1;
@@ -714,7 +715,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_press.bmp", 2, 0);
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_disable.bmp", 3, 0);
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
-  SetButtonText(search, LookupMessage(3777));
+  SetButtonText(search, LookupMessage(MSI_BO_BIONIC_PHARMACY_OK));
   search->Move(432, 259);
   search->SetId(321);
   this->AddChild(search);
@@ -732,7 +733,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   this->m_sortBox = new UIChangeMaterialWnd_CheckBox();
   this->m_sortBox->SetSize(74, 14);
   this->m_sortBox->SetBitmaps("유저인터페이스\\ChangeMaterial\\btn_sort_up.bmp", "유저인터페이스\\ChangeMaterial\\btn_sort_down.bmp");
-  this->m_sortBox->SetLabels(LookupMessage(3722), LookupMessage(3775));
+  this->m_sortBox->SetLabels(LookupMessage(MSI_MSG_IS_ILLEGAL_TAG_MSG), LookupMessage(MSI_BO_RESEARCHREPORT_ON));
   this->m_sortBox->Move(316, 24);
   this->m_sortBox->SetId(364);
   this->m_sortBox->SetChecked(1);
@@ -749,7 +750,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_button);
 
   UIBasicButton* cancel = new UIBasicButton();
-  cancel->Configure(42, LookupMessage(3045));
+  cancel->Configure(42, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
   const int cancelY = height - cancel->geometry.height - 12;
   cancel->Move(width - cancel->geometry.width - 55, cancelY);
   cancel->SetId(201);

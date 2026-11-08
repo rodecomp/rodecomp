@@ -11,6 +11,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdlib>
 #include <cstring>
 #include <windows.h>
@@ -65,7 +66,7 @@ void UIMacroDetectorWnd::ClearImageData() {
 void UIMacroDetectorWnd::SetCountdown(unsigned char count, std::uint32_t duration) {
   DWORD now = timeGetTime();
   if (this->unknown_0110 > 0) {
-    std::string text = FormatOwnedString(LookupMessage(2875), count);
+    std::string text = FormatOwnedString(LookupMessage(MSI_MACRO_REGISTER_DATA), count);
     this->message = text;
   }
 

@@ -35,6 +35,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/StringUtil.h"
 #include "UI/Window/UIRegisterMgr.h"
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
@@ -1387,7 +1388,7 @@ void CUIGroup::Apply() {
 void CUIGroupEmblem::Apply() {
   g_serviceOptions.Set(0xF3, 0);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xDC8)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADDSKILL_FAIL_INCLUDE_SKILL_YOU_CANNOT_LEARN)), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00A40480
@@ -1395,7 +1396,7 @@ void CUIGroupEmblem::Apply() {
 void CUIGroupLogInOut::Apply() {
   g_serviceOptions.Set(0xA5, 1);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x414)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LOGINOUT_ON)), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00A404F0
@@ -2104,13 +2105,13 @@ void SetComboItemSkinText(GameSettingsUI::CUIComboItem* item, const std::string&
 // OFFSET: 0x00A41C60
 // FUNCTION: fn_15996
 void GameSettingsUI::CUIGroupSpriteDetailLevel::OnInit() {
-  this->m_title->SetText(LookupMessage(0x144));
+  this->m_title->SetText(LookupMessage(MSI_SPRITE_RESOLUTION));
 }
 
 // OFFSET: 0x00A41CA0
 // FUNCTION: fn_15997
 void GameSettingsUI::CUIGroupTextureDetailLevel::OnInit() {
-  this->m_title->SetText(LookupMessage(0x145));
+  this->m_title->SetText(LookupMessage(MSI_TEXTURE_RESOLUTION));
 }
 
 // OFFSET: 0x00AA2760
@@ -2259,24 +2260,24 @@ __declspec(noinline) void CUIGameSettingsUI::RefreshOption(int id) {
 // OFFSET: 0x00A41120
 // FUNCTION: fn_15987
 void GameSettingsUI::CUIGroupEmblem::OnInit() {
-  this->m_title->SetText(LookupMessage(0x1032));
-  this->m_onText->SetText(LookupMessage(0x1035));
-  this->m_offText->SetText(LookupMessage(0x1036));
+  this->m_title->SetText(LookupMessage(MSI_GAME_SETTINGS_HIDE));
+  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY));
+  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_HIGH));
 }
 
 // OFFSET: 0x00A411C0
 // FUNCTION: fn_15988
 void GameSettingsUI::CUIGroupFullscreen::OnInit() {
-  this->m_title->SetText(LookupMessage(0x1057));
-  this->m_onText->SetText(LookupMessage(0x1058));
-  this->m_offText->SetText(LookupMessage(0x1059));
+  this->m_title->SetText(LookupMessage(MSI_MACRO_CHECKER_MAP_NOT_PROPER_MAP));
+  this->m_onText->SetText(LookupMessage(MSI_TAREN_TRWSDK_FILTER_SENSITIVEWORDS_ERROR));
+  this->m_offText->SetText(LookupMessage(MSI_TAREN_TRWSDK_FILTER_NO_SEND_BECAUSE_SENSITIVEWORDS_ERROR));
 }
 
 // OFFSET: 0x00A41260
 // FUNCTION: fn_15989
 void GameSettingsUI::CUIGroupGraphics::OnInit() {
-  this->m_title->SetText(LookupMessage(0xc6d));
-  this->m_modeText->SetText(LookupMessage(0xc6e));
+  this->m_title->SetText(LookupMessage(MSI_GRAPHIC_SETTING_MOUSE_SET));
+  this->m_modeText->SetText(LookupMessage(MSI_STORE_ASSISTANT_TRADE_FEE));
   GetRenderSystemHolder();
   this->m_pendingAdapter = SelectedRenderAdapter();
   this->m_adapter = this->m_pendingAdapter;
@@ -2291,7 +2292,7 @@ void GameSettingsUI::CUIGroupGraphics::OnInit() {
 // OFFSET: 0x00A41510
 // FUNCTION: fn_15990
 void GameSettingsUI::CUIGroupGraphicsAPI::OnInit() {
-  this->m_title->SetText(LookupMessage(0x1001));
+  this->m_title->SetText(LookupMessage(MSI_ENCHANT_MARK_2));
   const int backend = GetRenderSystemHolder()->Backend();
   this->m_pendingBackend = backend;
   this->m_backend = backend;
@@ -2300,32 +2301,32 @@ void GameSettingsUI::CUIGroupGraphicsAPI::OnInit() {
 // OFFSET: 0x00A41710
 // FUNCTION: fn_15992
 void GameSettingsUI::CUIGroupProcessPriority::OnInit() {
-  this->m_title->SetText(LookupMessage(0x1039));
-  this->m_highText->SetText(LookupMessage(0x103A));
-  const char* highTooltip = LookupMessage(0x103B);
+  this->m_title->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_NORMAL_TOOLTIP));
+  this->m_highText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_IDLE));
+  const char* highTooltip = LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_IDLE_TOOLTIP);
   this->m_highText->SetTooltip(highTooltip, std::strlen(highTooltip));
-  this->m_normalText->SetText(LookupMessage(0x103C));
-  const char* normalTooltip = LookupMessage(0x103D);
+  this->m_normalText->SetText(LookupMessage(MSI_GAME_SETTINGS_AURA));
+  const char* normalTooltip = LookupMessage(MSI_GAME_SETTINGS_SIMPLE_AURA);
   this->m_normalText->SetTooltip(normalTooltip, std::strlen(normalTooltip));
-  this->m_idleText->SetText(LookupMessage(0x103E));
-  const char* idleTooltip = LookupMessage(0x103F);
+  this->m_idleText->SetText(LookupMessage(MSI_GAME_SETTINGS_SIMPLE_AURA_OFF));
+  const char* idleTooltip = LookupMessage(MSI_GAME_SETTINGS_SIMPLE_AURA_ON);
   this->m_idleText->SetTooltip(idleTooltip, std::strlen(idleTooltip));
 }
 
 // OFFSET: 0x00A41870
 // FUNCTION: fn_15993
 void GameSettingsUI::CUIGroupRodexSpam::OnInit() {
-  this->m_title->SetText(LookupMessage(0xC40));
-  this->m_onText->SetText(LookupMessage(0x1038));
-  this->m_offText->SetText(LookupMessage(0x1037));
+  this->m_title->SetText(LookupMessage(MSI_MOVE));
+  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_NORMAL));
+  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_HIGH_TOOLTIP));
 }
 
 // OFFSET: 0x00A41CE0
 // FUNCTION: fn_15998
 void GameSettingsUI::CUIGroupTrilinear::OnInit() {
-  this->m_title->SetText(LookupMessage(0x105A));
-  this->m_onText->SetText(LookupMessage(0x1033));
-  this->m_offText->SetText(LookupMessage(0x1034));
+  this->m_title->SetText(LookupMessage(MSI_REFUSE_SDK_AUTH_FAILED));
+  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_ON));
+  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
 }
 
 // OFFSET: 0x00A193A0
@@ -2371,19 +2372,19 @@ __declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::CUIL
 // OFFSET: 0x00A41B60
 // FUNCTION: fn_15995
 void GameSettingsUI::CUIGroupSound::OnInit() {
-  this->m_title->SetText(LookupMessage(0x5CD));
-  this->m_bgmText->SetText(LookupMessage(0x5D7));
-  this->unknown_0090->SetText(LookupMessage(0x1034));
-  this->m_effectText->SetText(LookupMessage(0x5D8));
-  this->unknown_00A0->SetText(LookupMessage(0x1034));
+  this->m_title->SetText(LookupMessage(MSI_SOUND_OPTIONWND));
+  this->m_bgmText->SetText(LookupMessage(MSI_BGM));
+  this->unknown_0090->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
+  this->m_effectText->SetText(LookupMessage(MSI_SOUND));
+  this->unknown_00A0->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
 }
 
 // OFFSET: 0x00A41560
 // FUNCTION: fn_15991
 void GameSettingsUI::CUIGroupLogInOut::OnInit() {
-  this->m_title->SetText(LookupMessage(0x107D));
-  this->m_onText->SetText(LookupMessage(0x1033));
-  this->m_offText->SetText(LookupMessage(0x1034));
+  this->m_title->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_CAST_STAT));
+  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_ON));
+  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
   const char* tooltipText = []() {
     constexpr std::uint8_t bytes[] = {0x8A, 0xF1, 0x02, 0x9E, 0x0A, 0x49, 0x18, 0x76, 0xD1, 0x97, 0x42, 0x95, 0x0A, 0x27};
     constexpr EncryptedSource<14> source(bytes);
@@ -2434,8 +2435,8 @@ void GameSettingsUI::CUIGroupGraphics::OnModeSelect(CUIComboItem* item, const Di
 // OFFSET: 0x00A41910
 // FUNCTION: fn_15994
 void GameSettingsUI::CUIGroupSkin::OnInit() {
-  this->m_title->SetText(LookupMessage(0x5D9));
-  this->m_combo->AddItem(std::string(LookupMessage(0xC12)), false);
+  this->m_title->SetText(LookupMessage(MSI_SKIN));
+  this->m_combo->AddItem(std::string(LookupMessage(MSI_ACHIEVEMENT_COMMAND)), false);
   for (int index = 0; index < static_cast<int>(g_skinInfo.prefixes.size()); ++index) {
     this->m_combo->AddItem(std::string(g_skinInfo.Name(index)), false);
   }
@@ -4363,7 +4364,7 @@ void CUIGameSettingsUI::RefreshHotkeyLabels() {
 // OFFSET: 0x00A3F180
 // FUNCTION: fn_15940
 void CUIGameSettingsUI::ResetToDefaults() {
-  if (g_windowMgr.Confirm(LookupMessage(3166), 2, true, false, 0, "Message", 280, 120, 0) == 0xBC) {
+  if (g_windowMgr.Confirm(LookupMessage(MSI_GRAPHIC_SETTING_FOG_CHECK), 2, true, false, 0, "Message", 280, 120, 0) == 0xBC) {
     return;
   }
 
@@ -4957,12 +4958,12 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
 // FUNCTION: fn_15986
 void CUIGameSettingsUI::OnInit() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
-  static_cast<CUITitleBar*>(this->m_titleBar)->SetTitle(LookupMessage(0x946));
-  static_cast<CUITextButton*>(this->m_tab->FindChildById(0))->SetText(LookupMessage(0x102E));
-  static_cast<CUITextButton*>(this->m_tab->FindChildById(1))->SetText(LookupMessage(0x102F));
-  static_cast<CUITextButton*>(this->m_tab->FindChildById(2))->SetText(LookupMessage(0x1030));
-  static_cast<CUITextButton*>(this->m_tab->FindChildById(3))->SetText(LookupMessage(0x1031));
-  static_cast<CUITextButton*>(this->m_tab->FindChildById(4))->SetText(LookupMessage(0x107E));
+  static_cast<CUITitleBar*>(this->m_titleBar)->SetTitle(LookupMessage(MSI_COMMAND_LIST));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(0))->SetText(LookupMessage(MSI_GAME_SETTINGS_EMBLEM_FRAME));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(1))->SetText(LookupMessage(MSI_GAME_SETTINGS_ON));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(2))->SetText(LookupMessage(MSI_GAME_SETTINGS_OFF));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(3))->SetText(LookupMessage(MSI_GAME_SETTINGS_SHOW));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(4))->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_GLOBAL_POST));
 
   for (UIWindow* child : this->m_currentPage->m_children) {
     static_cast<GameSettingsUI::CUIGroup*>(child)->Refresh();

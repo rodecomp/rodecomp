@@ -14,6 +14,7 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/WindowManagerWindows.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstring>
 #include <windows.h>
 
@@ -36,38 +37,38 @@ void UIBattleMsgOptionWnd::OnWheel(int delta) {
 // FUNCTION: fn_12510
 UIBattleMsgOptionWnd::UIBattleMsgOptionWnd() : UIFrameWnd(0) {
   this->unknown_00B8 = -1;
-  this->messages.push_back(LookupMessage(0x50B));
+  this->messages.push_back(LookupMessage(MSI_ST_CHAT));
 
   this->unknown_0108 = -1;
   this->unknown_0110 = 1;
   this->unknown_010C = 0;
 
-  this->messages.push_back(LookupMessage(0x4FD));
-  this->messages.push_back(LookupMessage(0x4FE));
-  this->messages.push_back(LookupMessage(0x4FF));
-  this->messages.push_back(LookupMessage(0x500));
-  this->messages.push_back(LookupMessage(0xFBF));
-  this->messages.push_back(LookupMessage(0x501));
-  this->messages.push_back(LookupMessage(0x502));
-  this->messages.push_back(LookupMessage(0x503));
-  this->messages.push_back(LookupMessage(0x504));
-  this->messages.push_back(LookupMessage(0x505));
-  this->messages.push_back(LookupMessage(0x506));
-  this->messages.push_back(LookupMessage(0x507));
-  this->messages.push_back(LookupMessage(0x508));
-  this->messages.push_back(LookupMessage(0x533));
-  this->messages.push_back(LookupMessage(0x60D));
-  this->messages.push_back(LookupMessage(0x652));
-  this->messages.push_back(LookupMessage(0x653));
-  this->messages.push_back(LookupMessage(0x654));
-  this->messages.push_back(LookupMessage(0x656));
-  this->messages.push_back(LookupMessage(0x657));
-  this->messages.push_back(LookupMessage(0x93D));
-  this->messages.push_back(LookupMessage(0xBA4));
-  this->messages.push_back(LookupMessage(0xFBC));
-  this->messages.push_back(LookupMessage(0xFBE));
+  this->messages.push_back(LookupMessage(MSI_VIEW_CHAT_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_WHISPER_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_PARTY_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_GUILD_MSG));
+  this->messages.push_back(LookupMessage(MSI_REFINING_POSSIBLE));
+  this->messages.push_back(LookupMessage(MSI_VIEW_GET_ITEM_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_EQUIP_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_CHANGE_STATUS_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_GET_ITEM_PARTY_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_CHANGE_STATUS_PARTY_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_FAIL_SKILL_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_PARTY_SETUP_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_DAMAGED_EQUIP_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_SIEGE_INFO_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_SEEK_PARTY));
+  this->messages.push_back(LookupMessage(MSI_VIEW_COMBAT_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_PARTY_COMBAT_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_GETTING_EXP_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_QUEST_INFO_MSG));
+  this->messages.push_back(LookupMessage(MSI_VIEW_BATTLEFIELD_INFO_MSG));
+  this->messages.push_back(LookupMessage(MSI_STR_MAKECHARACTER));
+  this->messages.push_back(LookupMessage(MSI_RESULT_FAILED_ASSISTANT_POS));
+  this->messages.push_back(LookupMessage(MSI_ALLY_CHAT_MSG));
+  this->messages.push_back(LookupMessage(MSI_PAY_CONFIRM_BY_NYANGVINE_FRUIT));
 
-  this->text = LookupMessage(0x509);
+  this->text = LookupMessage(MSI_BATTLE_CHAT_WND_OPTION);
 }
 
 // OFFSET: 0x0091EC40
@@ -96,7 +97,7 @@ int UIBattleMsgOptionWnd::RowAt(int x, int y) {
     int row = 0;
     int index = 0;
     for (std::vector<const char*>::iterator it = this->messages.begin(); it != this->messages.end(); ++it, ++index) {
-      if (std::strcmp(LookupMessage(0x60D), *it) != 0 && index >= this->unknown_00C4) {
+      if (std::strcmp(LookupMessage(MSI_VIEW_SEEK_PARTY), *it) != 0 && index >= this->unknown_00C4) {
         if (row == (y - 17) / 20 + column) {
           return index;
         }
@@ -214,7 +215,7 @@ void UIBattleMsgOptionWnd::Paint() {
   int row = 1;
   int y = 22;
   for (std::vector<const char*>::iterator it = this->messages.begin(); it != this->messages.end(); ++it, ++index) {
-    if (std::strcmp(LookupMessage(0x60D), *it) == 0 || index < this->unknown_00C4) {
+    if (std::strcmp(LookupMessage(MSI_VIEW_SEEK_PARTY), *it) == 0 || index < this->unknown_00C4) {
       continue;
     }
 
@@ -271,7 +272,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         this->m_allCheckBox->geometry.unknown_0030 = this->unknown_010C;
         this->m_allCheckBox->Invalidate();
         this->text = info.name;
-        this->text += LookupMessage(0x6F1);
+        this->text += LookupMessage(MSI_SET_CHATINFO);
         this->Invalidate();
       }
       this->UpdateScrollBar();

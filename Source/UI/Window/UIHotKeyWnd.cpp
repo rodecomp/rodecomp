@@ -29,6 +29,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstring>
 #include <string>
 
@@ -84,7 +85,7 @@ void UIHotKeyWnd::OnCreate(int, int) {
 
   this->m_balloon = new UITransBalloonText();
   this->m_balloon->SetSize(this->geometry.width, 20);
-  this->m_balloon->SetText(LookupMessage(1486), 60);
+  this->m_balloon->SetText(LookupMessage(MSI_HOTKEYWND_NOTICE1), 60);
   this->m_balloon->Show(0);
   g_windowMgr.AddRendered(this->m_balloon);
 
@@ -93,7 +94,7 @@ void UIHotKeyWnd::OnCreate(int, int) {
   this->unknown_0100->Move(this->unknown_00C8, this->unknown_00CC + this->unknown_00BC);
   this->AddChild(this->unknown_0100);
 
-  const char* tabs[4] = {LookupMessage(1491), LookupMessage(3595), LookupMessage(1492), LookupMessage(1493)};
+  const char* tabs[4] = {LookupMessage(MSI_HOTKEYWND_TAB1), LookupMessage(MSI_HOTKEYGUIDEWND_UP), LookupMessage(MSI_HOTKEYWND_TAB2), LookupMessage(MSI_HOTKEYWND_TAB3)};
   for (int index = 0; index < 4; ++index) {
     this->unknown_0100->AddTab(tabs[index], "");
   }
@@ -130,7 +131,7 @@ void UIHotKeyWnd::OnCreate(int, int) {
   UICheckBox* checkBox = new UICheckBox();
   this->unknown_0108 = checkBox;
   checkBox->SetSize(150, 12);
-  checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(1775));
+  checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_CHATMODE_ONOFF));
   checkBox->Move(80, this->geometry.height - 22);
   checkBox->SetChecked(g_windowMgr.chatModeChanged);
   this->AddChild(this->unknown_0108);
@@ -143,7 +144,7 @@ void UIHotKeyWnd::OnCreate(int, int) {
   prevButton->SetSize(prevButton->BitmapWidth(), prevButton->BitmapHeight());
   prevButton->Move(this->geometry.width - 80, 25);
   prevButton->Enable(0);
-  prevButton->SetTooltip(LookupMessage(1053));
+  prevButton->SetTooltip(LookupMessage(MSI_PREV_PAGE));
   prevButton->SetId(316);
   this->AddChild(this->m_prevButton);
 
@@ -155,7 +156,7 @@ void UIHotKeyWnd::OnCreate(int, int) {
   nextButton->SetSize(nextButton->BitmapWidth(), nextButton->BitmapHeight());
   nextButton->Move(this->geometry.width - 20, 25);
   nextButton->Enable(0);
-  nextButton->SetTooltip(LookupMessage(1054));
+  nextButton->SetTooltip(LookupMessage(MSI_NEXT_PAGE));
   nextButton->SetId(317);
   this->AddChild(this->m_nextButton);
 }
@@ -212,7 +213,7 @@ void UIHotKeyWnd::SaveHotkeys() {
     g_session.m_hotkeyScript->Call("SaveUserHotKeys2", "s", path.c_str());
     char message[500];
     std::memset(message, 0, sizeof(message));
-    StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), "%s", LookupMessage(3572));
+    StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_TRANSLATE_TITLE));
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 1, 0, 0);
   }
 }
@@ -265,7 +266,7 @@ void UIHotKeyWnd::OnLBtnDown(int x, int y) {
       int screenX = 0;
       int screenY = 0;
       this->ToScreen(screenX, screenY);
-      const char* text = LookupMessage(0x5CE);
+      const char* text = LookupMessage(MSI_HOTKEYWND_NOTICE1);
       this->m_balloon->SetText(text, 0x3C);
       this->m_balloon->m_textColor = 0xFFFFFF;
       this->m_balloon->m_outlineColor = 0;
@@ -379,7 +380,7 @@ void UIHotKeyWnd::Paint() {
   }
 
 
-  this->unknown_00BC = this->DrawTitleBar(true, LookupMessage(1494), 0);
+  this->unknown_00BC = this->DrawTitleBar(true, LookupMessage(MSI_HOTKEYWND_TITLE), 0);
   this->unknown_00C0 = this->DrawButtonBar(2, 0, 1);
   this->DrawPanelBackground(this->unknown_00BC, 0, "");
 
@@ -401,7 +402,7 @@ void UIHotKeyWnd::Paint() {
 
     std::string text = entry.info.text;
     if (text.empty()) {
-      text = entry.info.key1 ? LookupMessage(1700) : LookupMessage(1518);
+      text = entry.info.key1 ? LookupMessage(MSI_HOTKEY_UNKOWN) : LookupMessage(MSI_HOTKEY_NOTHING);
     }
 
     const int halfWidth = this->geometry.width / 2;
@@ -541,7 +542,7 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
 
   const int balloonY =
     (this->m_selectedRow % this->m_rowsPerPage - 1) * this->unknown_00D0 + this->unknown_00CC + this->unknown_00C4 + this->unknown_00BC;
-  this->m_balloon->SetText(LookupMessage(0x5CE), 0x3C);
+  this->m_balloon->SetText(LookupMessage(MSI_HOTKEYWND_NOTICE1), 0x3C);
   this->m_balloon->m_textColor = 0xFFFFFF;
   this->m_balloon->m_outlineColor = 0;
   this->m_balloon->Move((this->geometry.width - this->m_balloon->geometry.width) / 2 + screenX, screenY + balloonY);
@@ -645,7 +646,7 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
         return 1;
       }
 
-      StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(0x5D1), info.description.c_str());
+      StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(MSI_HOTKEYWND_NOTICE4), info.description.c_str());
       if (g_windowMgr.Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) != 187) {
         return 1;
       }

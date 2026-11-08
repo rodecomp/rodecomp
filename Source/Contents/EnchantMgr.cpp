@@ -13,6 +13,7 @@
 #include "UI/Enchant/EnchantUI.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 
 namespace {
@@ -163,7 +164,7 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
 // FUNCTION: fn_05545
 void CEnchantMgr::RequestPerfectEnchant(uint64_t group, int16_t index, int16_t slot, int32_t itemId) {
   if (g_session.m_weight * 100 / g_session.m_maxWeight >= 70) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3837)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENCHANT_UPGRADE_BUTTON)), 0xFF, 0, 0, 0);
     return;
   }
 
@@ -182,7 +183,7 @@ void CEnchantMgr::RequestPerfectEnchant(uint64_t group, int16_t index, int16_t s
 // FUNCTION: fn_05546
 void CEnchantMgr::RequestRandomEnchant(uint64_t group, int16_t index, int16_t slot) {
   if (g_session.m_weight * 100 / g_session.m_maxWeight >= 70) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3837)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENCHANT_UPGRADE_BUTTON)), 0xFF, 0, 0, 0);
     return;
   }
 
@@ -200,7 +201,7 @@ void CEnchantMgr::RequestRandomEnchant(uint64_t group, int16_t index, int16_t sl
 // FUNCTION: fn_05547
 void CEnchantMgr::RequestResetEnchant(uint64_t group, int16_t index) {
   if (g_session.m_weight * 100 / g_session.m_maxWeight >= 70) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3837)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENCHANT_UPGRADE_BUTTON)), 0xFF, 0, 0, 0);
     return;
   }
 
@@ -218,7 +219,7 @@ void CEnchantMgr::RequestResetEnchant(uint64_t group, int16_t index) {
 // FUNCTION: fn_05548
 void CEnchantMgr::RequestUpgradePerfectEnchant(uint64_t group, int16_t index, int16_t slot, int32_t itemId) {
   if (g_session.m_weight * 100 / g_session.m_maxWeight >= 70) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3837)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENCHANT_UPGRADE_BUTTON)), 0xFF, 0, 0, 0);
     return;
   }
 
@@ -238,7 +239,7 @@ void CEnchantMgr::RequestUpgradePerfectEnchant(uint64_t group, int16_t index, in
 // FUNCTION: fn_05549
 void CEnchantMgr::RequestUpgradeEnchant(uint64_t group, int16_t index, int16_t slot) {
   if (g_session.m_weight * 100 / g_session.m_maxWeight >= 70) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3837)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENCHANT_UPGRADE_BUTTON)), 0xFF, 0, 0, 0);
     return;
   }
 
@@ -257,7 +258,7 @@ void CEnchantMgr::RequestUpgradeEnchant(uint64_t group, int16_t index, int16_t s
 // FUNCTION: fn_05550
 void CEnchantMgr::RequestUpgradeRandomEnchant(uint64_t group, int16_t index, int16_t slot) {
   if (g_session.m_weight * 100 / g_session.m_maxWeight >= 70) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3837)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENCHANT_UPGRADE_BUTTON)), 0xFF, 0, 0, 0);
     return;
   }
 

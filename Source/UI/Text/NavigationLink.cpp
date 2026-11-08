@@ -54,6 +54,7 @@
 #include "Utility/Text/TextEscapes.h"
 #include "Utility/Text/TextTokens.h"
 
+#include "Resource/MSGSTRINGID.h"
 namespace LineCutter {
   class UIText : public UIWindow {
   public:
@@ -1740,7 +1741,7 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
       continue;
     }
 
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xE8D)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_IQ_FIRM_FAITH_ON)), 0xFF, 0, 0, 0);
     return true;
   }
 }

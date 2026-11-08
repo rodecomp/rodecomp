@@ -8,6 +8,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 // OFFSET: 0x00932050
 // FUNCTION: fn_12711
 void UIShortCutWnd::OnMouseHover(int x, int y) {
@@ -43,7 +44,7 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
       return;
     }
 
-    const std::string text = FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity);
+    const std::string text = FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity);
     window.ToScreen(tooltipX, tooltipY);
 
     if (g_modeMgr.gameMode) {
@@ -95,7 +96,7 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
     if (item.quantity == 0) {
       text = shortcut;
     } else {
-      text = FormatOwnedString(LookupMessage(184), shortcut.c_str(), item.DisplayName(0).c_str(), item.quantity);
+      text = FormatOwnedString(LookupMessage(MSI_EA3), shortcut.c_str(), item.DisplayName(0).c_str(), item.quantity);
     }
   }
 

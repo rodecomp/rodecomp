@@ -8,6 +8,7 @@
 #include "Contents/MessageTable.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -75,7 +76,7 @@ bool CSession::ToggleTrackedAchievement(int id) {
     tracked.erase(found);
   } else {
     if (tracked.size() >= 3) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA78)), 0x64FFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GET_ROULLETE_PRIZE)), 0x64FFFF, 0, 0, 0);
       return false;
     }
 

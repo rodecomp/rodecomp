@@ -38,6 +38,7 @@
 #include "Utility/Singleton.h"
 #include "Utility/Text/StringUtil.h"
 
+#include "Resource/MSGSTRINGID.h"
 extern "C" {
 #include <lua.h>
 }
@@ -1000,7 +1001,7 @@ void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int 
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (g_serviceOptions.Get(107)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB4)), 0x64FFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_DEAD)), 0x64FFFF, 0, 0, 0);
       return;
     }
 
@@ -1273,7 +1274,7 @@ void ApplyServiceOptionWeatherFlag(int id, unsigned char value, bool notify, int
 // FUNCTION: fn_06364
 void ApplyServiceOptionWindow27() {
   if (g_windowMgr.unknown_0304 != 0) {
-    g_windowMgr.Confirm(LookupMessage(0x24B), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 0x118, 0x78, 0);
     return;
   }
 
@@ -1524,7 +1525,7 @@ void CSession::LoadOptionInfo() {
   }
 
   Singleton<CGameSettingsMgr>::GetInstance();
-  ::SetOption(LookupMessage(0xDB9), this->GetOptionInteger(LookupMessage(0xDB9), 0) != 0);
+  ::SetOption(LookupMessage(MSI_CHECK_LEVEL_BEFORE_REGISTER_AGENCY), this->GetOptionInteger(LookupMessage(MSI_CHECK_LEVEL_BEFORE_REGISTER_AGENCY), 0) != 0);
   g_serviceOptionJitterScale = g_serviceOptions.Get(0xF1) ? 730.0f : g_jitterDistanceScale;
 
   if (g_outdoorCameraPitch < -65.0f) {
@@ -1622,7 +1623,7 @@ void CSession::LoadOptionInfo() {
   this->m_itemDescendingOrder = this->GetOptionInteger("bItemDescendingOrder", 0) != 0;
   this->m_showMenuIcon = this->GetOptionInteger("bShowMenuIcon", 1) != 0;
 
-  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0xF3, LookupMessage(0xDC6));
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0xF3, LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPPED_WEAPONE));
   Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10B, "bExtendDamage");
   Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10C, "bShowMapName");
   Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10D, "bShowOnlyMineFootprint");
@@ -1707,11 +1708,11 @@ void CSession::SaveOptionInfo() {
   this->WriteOptionInteger(output, "bItemDefaultSort", this->m_itemDefaultSort != 0);
   this->WriteOptionInteger(output, "bItemAscendingOrder", this->m_itemAscendingOrder != 0);
   this->WriteOptionInteger(output, "bItemDescendingOrder", this->m_itemDescendingOrder != 0);
-  this->WriteOptionInteger(output, LookupMessage(0xDC6), g_serviceOptions.Get(0xF3));
+  this->WriteOptionInteger(output, LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPPED_WEAPONE), g_serviceOptions.Get(0xF3));
   this->WriteOptionInteger(output, "bExtendDamage", g_serviceOptions.Get(0x10B));
   this->WriteOptionInteger(output, "bShowMapName", g_serviceOptions.Get(0x10C));
   this->WriteOptionInteger(output, "bShowOnlyMineFootprint", g_serviceOptions.Get(0x10D));
-  this->WriteOptionInteger(output, LookupMessage(0xDB9), g_serviceOptions.Get(0xF1));
+  this->WriteOptionInteger(output, LookupMessage(MSI_CHECK_LEVEL_BEFORE_REGISTER_AGENCY), g_serviceOptions.Get(0xF1));
   this->WriteOptionInteger(output, "DamageSkin", this->m_damageSkinIndex);
   this->WriteOptionInteger(output, "DamageDir", this->m_damageSkinMode);
   this->WriteOptionInteger(output, "PriorityClass", this->m_priorityClass);

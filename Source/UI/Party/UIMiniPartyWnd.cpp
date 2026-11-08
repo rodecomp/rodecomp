@@ -25,6 +25,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Mode/CMode.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <windows.h>
 #include <timeapi.h>
 
@@ -206,17 +207,17 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (this->m_owner->GetMember().valid) {
-      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(2808)).c_str(), 58));
+      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_USA_PERSONALINFO_DEATH)).c_str(), 58));
       if (this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
-        this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(96)).c_str(), 9));
+        this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_LEAVE_PARTY)).c_str(), 9));
       } else {
-        this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(360)).c_str(), 7));
+        this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_OPEN_1ON1_WINDOW)).c_str(), 7));
         if (g_session.unknown_5464) {
-          this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(97)).c_str(), 0));
-          this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(1532)).c_str(), 43));
+          this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_EXPEL)).c_str(), 0));
+          this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_YIELD_PARTYMASTER)).c_str(), 43));
         }
       }
-      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(3102)).c_str(), 61));
+      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ACHIEVEMENT_NEXT_GRADE)).c_str(), 61));
     }
     if (this->m_entries.size()) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
@@ -249,7 +250,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return 0;
     }
     if (this->m_entries.empty()) {
-      g_windowMgr.Confirm(LookupMessage(3236), 0, false, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_MENUICON_TIPBOX), 0, false, false, 0, "Message", 280, 120, 0);
       return 0;
     }
     switch (this->m_entries[argument1].value) {
@@ -281,13 +282,13 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case 43:
       if (this->m_owner->m_cell != -1) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().offline == 0) {
-          if (g_windowMgr.Confirm(LookupMessage(1533), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
             g_modeMgr.gameMode->SendMsg(MM_GROUP_CHANGE_MASTER, this->m_owner->GetMember().accountId, 0, 0, 0);
             return 0;
           }
         } else {
           g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1534)), 255, 3, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_YIELD_PARTYMASTER)), 255, 3, 0, 0);
           return 0;
         }
       }
@@ -319,7 +320,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         if (this->m_owner->GetMember().valid && !(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
           const char* group;
           if (g_windowMgr.IsFriend(this->m_owner->GetMember().name.c_str())) {
-            group = LookupMessage(102);
+            group = LookupMessage(MSI_FRIEND);
           } else {
             group = g_session.IsGuildMemberCharacter(this->m_owner->GetMember().characterId) ? "GuildMember" : nullptr;
           }
@@ -333,7 +334,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case ID_FRIEND_INFO:
       if (!g_session.m_lockMouse && this->m_owner->GetMember().valid) {
-        g_windowMgr.Confirm(LookupMessage(191), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
       break;
@@ -359,7 +360,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_DELETE_FRIEND:
       if (!g_session.m_lockMouse && this->m_owner->GetMember().valid) {
         if (!(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
-          if (g_windowMgr.Confirm(LookupMessage(363), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_EXPEL), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
             g_modeMgr.gameMode->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
             return 0;
           }
@@ -369,7 +370,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_LEAVE:
       if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
-          if (g_windowMgr.Confirm(LookupMessage(357), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
             g_modeMgr.gameMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
             return 0;
           }
@@ -418,7 +419,7 @@ void UIMiniPartyWnd::OnLBtnUp(int x, int y) {
         this->m_cell = cell;
         g_session.SetRecord0734Value(this->m_member.accountId, cell);
       } else {
-        g_windowMgr.Confirm(LookupMessage(3145), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_HOTKEY_SETTING), 0, true, false, 0, "Message", 280, 120, 0);
       }
     }
   }

@@ -6,6 +6,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIJobListWnd.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <cstdlib>
 #include <string>
@@ -37,7 +38,7 @@ void UISeekPartyWnd::OnCreate(int, int) {
   if (minimum + 0xF <= maximum) {
     maximum = minimum + 0xF;
   }
-  std::sprintf(text, "%s - %d~%d", LookupMessage(0x6DA), minimum, maximum);
+  std::sprintf(text, "%s - %d~%d", LookupMessage(MSI_PARTY_BOOKING_REQURT), minimum, maximum);
 
   this->m_label = new UIStaticText();
   this->m_label->SetSize(this->geometry.width - 0x20, 0xF);

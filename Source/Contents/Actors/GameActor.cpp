@@ -28,6 +28,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 #include "Contents/Effects/RagEffect.h"
+#include "Resource/MSGSTRINGID.h"
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -75,25 +76,25 @@ void CGameActor::ProcessDamageMessages() {
 
       if (targetName.empty()) {
         const CActorNameCard& card = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LookupNameCard(targetAid);
-        targetName.assign(card.unknown_007C.empty() ? std::string(LookupMessage(1604)) : card.unknown_007C);
+        targetName.assign(card.unknown_007C.empty() ? std::string(LookupMessage(MSI_WHO_IS)) : card.unknown_007C);
       }
 
       if (attackerName.empty()) {
         const CActorNameCard& card = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LookupNameCard(attackerAid);
-        attackerName.assign(card.unknown_007C.empty() ? std::string(LookupMessage(1604)) : card.unknown_007C);
+        attackerName.assign(card.unknown_007C.empty() ? std::string(LookupMessage(MSI_WHO_IS)) : card.unknown_007C);
       }
 
       if (IsPlayerJob(this->GetEffectiveJob(-1))) {
         if (g_session.m_aid == targetAid) {
-          std::sprintf(notice, LookupMessage(1605), attackerName.c_str(), it->damage);
+          std::sprintf(notice, LookupMessage(MSI_I_RECEIVED_DAMAGE), attackerName.c_str(), it->damage);
         } else if (g_session.IsPartyMember(targetAid, true)) {
-          std::sprintf(partyNotice, LookupMessage(1606), targetName.c_str(), attackerName.c_str(), it->damage);
+          std::sprintf(partyNotice, LookupMessage(MSI_PARTY_RECEIVED_DAMAGE), targetName.c_str(), attackerName.c_str(), it->damage);
         }
       } else {
         if (g_session.m_aid == attackerAid) {
-          std::sprintf(notice, LookupMessage(1607), targetName.c_str(), it->damage);
+          std::sprintf(notice, LookupMessage(MSI_I_GAVE_DAMAGE), targetName.c_str(), it->damage);
         } else if (g_session.IsPartyMember(attackerAid, true)) {
-          std::sprintf(partyNotice, LookupMessage(1608), attackerName.c_str(), targetName.c_str(), it->damage);
+          std::sprintf(partyNotice, LookupMessage(MSI_PARTY_GAVE_DAMAGE), attackerName.c_str(), targetName.c_str(), it->damage);
         }
       }
 

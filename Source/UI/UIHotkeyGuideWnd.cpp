@@ -18,6 +18,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 // OFFSET: 0x009663D0
 // FUNCTION: fn_13154
 UIHotkeyGuideWnd::UIHotkeyGuideWnd()
@@ -77,7 +78,7 @@ void UIHotkeyGuideWnd::OnCreate(int, int) {
   this->m_labels[18] = HotkeyGuideLabel("Alt", HotkeyGuideKey(118, 249, 6, 49, 0, 36), HotkeyGuideKey());
   this->m_labels[19] = HotkeyGuideLabel("Pause", HotkeyGuideKey(702, 46, 6, 36, 0, 36), HotkeyGuideKey());
   this->m_labels[20] = HotkeyGuideLabel("Caps", HotkeyGuideKey(21, 171, 0, 75, 15, 36), HotkeyGuideKey());
-  this->m_labels[25] = HotkeyGuideLabel(LookupMessage(3147), HotkeyGuideKey(547, 249, 6, 56, 0, 36), HotkeyGuideKey());
+  this->m_labels[25] = HotkeyGuideLabel(LookupMessage(MSI_NOT_FOUND_REPLAY_FILE), HotkeyGuideKey(547, 249, 6, 56, 0, 36), HotkeyGuideKey());
   this->m_labels[27] = HotkeyGuideLabel("Esc", HotkeyGuideKey(21, 46, 6, 36, 0, 36), HotkeyGuideKey());
   this->m_labels[32] = HotkeyGuideLabel("Space", HotkeyGuideKey(170, 249, 6, 246, 0, 36), HotkeyGuideKey());
   this->m_labels[33] = HotkeyGuideLabel("PgUp", HotkeyGuideKey(702, 93, 6, 36, 0, 36), HotkeyGuideKey());
@@ -196,7 +197,7 @@ void UIHotkeyGuideWnd::OnCreate(int, int) {
   settings->SetBitmap("유저인터페이스\\hotkey_guide\\bt_keysettings_over.bmp", 1, 0);
   settings->SetBitmap("유저인터페이스\\hotkey_guide\\bt_keysettings_press.bmp", 2, 0);
   settings->SetSize(settings->BitmapWidth(), settings->BitmapHeight());
-  settings->SetText(LookupMessage(3148));
+  settings->SetText(LookupMessage(MSI_STORE_TABNAME_7));
   settings->Move(763, 462);
   settings->SetId(342);
   this->AddChild(settings);
@@ -207,7 +208,7 @@ void UIHotkeyGuideWnd::OnCreate(int, int) {
 void UIHotkeyGuideWnd::Paint() {
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bg_shortcuts.bmp")));
   this->DrawBitmap(0, 0, background, false);
-  this->DrawTitleBar(false, LookupMessage(3128), 0);
+  this->DrawTitleBar(false, LookupMessage(MSI_IMAGE_CAPTURE), 0);
 
   for (auto key = this->m_keys.begin(); key != this->m_keys.end(); ++key) {
     HotkeyGuideLabel& label = this->m_labels[*key];
@@ -246,12 +247,12 @@ void UIHotkeyGuideWnd::Paint() {
     ++index;
   }
 
-  this->DrawCenteredText(4, 32, FormatOwnedString("%s / %s", LookupMessage(3129), LookupMessage(3045)).c_str(), 75, 0, 12, 0x2B2625, 0);
-  this->DrawCenteredText(207, 34, LookupMessage(3130), 159, 0, 11, 0x5B2C24, 0);
-  this->DrawCenteredText(604, 32, LookupMessage(3131), 75, 0, 12, 0x2B2625, 0);
-  this->DrawCenteredText(791, 313, FormatOwnedString("%s / %s", LookupMessage(3132), LookupMessage(3133)).c_str(), 102, 0, 12, 0x2B2625, 0);
-  this->DrawCenteredText(770, 346, LookupMessage(3139), 55, 0, 12, 0x2B2625, 0);
-  this->DrawCenteredText(859, 346, LookupMessage(3140), 55, 0, 12, 0x2B2625, 0);
+  this->DrawCenteredText(4, 32, FormatOwnedString("%s / %s", LookupMessage(MSI_ZOOM_IN), LookupMessage(MSI_ZENY_LOTTO_BUY_10)).c_str(), 75, 0, 12, 0x2B2625, 0);
+  this->DrawCenteredText(207, 34, LookupMessage(MSI_ZOOM_OUT), 159, 0, 11, 0x5B2C24, 0);
+  this->DrawCenteredText(604, 32, LookupMessage(MSI_GUILD), 75, 0, 12, 0x2B2625, 0);
+  this->DrawCenteredText(791, 313, FormatOwnedString("%s / %s", LookupMessage(MSI_BANK), LookupMessage(MSI_MAIL)).c_str(), 102, 0, 12, 0x2B2625, 0);
+  this->DrawCenteredText(770, 346, LookupMessage(MSI_STOP_VIDEO), 55, 0, 12, 0x2B2625, 0);
+  this->DrawCenteredText(859, 346, LookupMessage(MSI_ITEM_IS_SWAP_EQUIPED), 55, 0, 12, 0x2B2625, 0);
 }
 
 // OFFSET: 0x0096C140

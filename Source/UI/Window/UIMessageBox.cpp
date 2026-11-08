@@ -99,6 +99,7 @@
 #include "Resource/PaletteResource.h"
 #include "Contents/Jobs/JobInheritance.h"
 
+#include "Resource/MSGSTRINGID.h"
 // GLOBAL: gl_25153
 static const std::string s_messageBoxItemLinkOpening = "<ITEML>";
 
@@ -319,7 +320,7 @@ void UILoginWnd::Paint() {
 void UIMakeCharWnd::Paint() {
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\login_interface\\win_make2.bmp")));
   this->DrawBitmap(0, 17, background, false);
-  this->DrawTitleBar(true, LookupMessage(0x940), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_SELECT_SEX), 0);
   this->DrawButtonBar(2, 0, 1);
 
   SpriteAtlasRecord record{};
@@ -386,12 +387,12 @@ void UIMerInfoWnd::Paint() {
   const int titleId = kind - 6017 <= 9 ? 1181 : kind - 6037 <= 9 ? 1182 : kind - 6027 <= 9 ? 1183 : 1367;
   std::sprintf(title, LookupMessage(titleId));
   this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 24, LookupMessage(407), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 47, LookupMessage(408), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 111, LookupMessage(1184), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 135, LookupMessage(1185), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 159, LookupMessage(1186), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(230, 133, LookupMessage(1187), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 24, LookupMessage(MSI_NAME), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 47, LookupMessage(MSI_LEVEL), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 111, LookupMessage(MSI_LEFT_TIME), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 135, LookupMessage(MSI_MER_FRIENDLY), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 159, LookupMessage(MSI_MER_CALLCOUNT), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(230, 133, LookupMessage(MSI_MER_KILL), 0, 0, 12, 0, 0, 0);
   char number[24] = {};
   int bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[0]);
   this->DrawRightAlignedText(79, 24, number, bytes, 1, 14, 0, 0);
@@ -420,7 +421,7 @@ void UIMerInfoWnd::Paint() {
     this->DrawTextAt(218, 70, text, bytes, 1, 14, 0, 0, 0);
     bytes = std::sprintf(text, "%d / %d", g_session.m_mercenarySp, g_session.m_mercenaryMaxSp);
     this->DrawTextAt(218, 85, text, bytes, 1, 14, 0, 0, 0);
-    std::strftime(text, 128, LookupMessage(1260), _localtime32(&g_session.m_mercenaryExpiration));
+    std::strftime(text, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(&g_session.m_mercenaryExpiration));
     this->DrawTextAt(155, 111, text, static_cast<int>(std::strlen(text)), 0, 12, 255, 0, 0);
     bytes = std::sprintf(text, "%d", g_session.m_mercenaryLoyalty);
     this->DrawTextAt(170, 133, text, bytes, 1, 14, 0, 0, 0);
@@ -436,56 +437,56 @@ void UIMerInfoWnd::Paint() {
 long long UIBank_NewWnd::TransactionAmount(unsigned char deposit) {
   std::string text = this->m_amountEdit->Text();
   this->m_amountEdit->SetText("");
-  if (text == std::string(LookupMessage(2778))) {
+  if (text == std::string(LookupMessage(MSI_BANK_1_MINI))) {
     const long long cash = g_session.m_zeny;
     const long long balance = g_session.m_bankBalance;
     const long long excess = cash + balance > 0x7FFFFFFF ? cash + balance - 0x7FFFFFFF : 0;
     if (deposit) {
       if (balance >= 0x7FFFFFFF) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2787)), 255, 0, 0, 0);
-        this->m_status = LookupMessage(2783);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEMMOVEINFO_CART)), 255, 0, 0, 0);
+        this->m_status = LookupMessage(MSI_BANK_6_MINI);
         return 0;
       }
       if (g_session.m_zeny == 0) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2770)), 255, 0, 0, 0);
-        this->m_status = LookupMessage(2780);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_3)), 255, 0, 0, 0);
+        this->m_status = LookupMessage(MSI_BANK_3_MINI);
         return 0;
       }
       const long long amount = cash - excess;
       if (amount < 0) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2465)), 255, 0, 0, 0);
-        this->m_status = LookupMessage(2780);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_VALID_AUTH_TICKET)), 255, 0, 0, 0);
+        this->m_status = LookupMessage(MSI_BANK_3_MINI);
         return 0;
       }
       return amount;
     }
     if (balance == 0) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2770)), 255, 0, 0, 0);
-      this->m_status = LookupMessage(2780);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_3)), 255, 0, 0, 0);
+      this->m_status = LookupMessage(MSI_BANK_3_MINI);
       return 0;
     }
     const long long amount = balance - excess;
     return cash + amount > 0x7FFFFFFF ? static_cast<long long>(0x7FFFFFFF - g_session.m_zeny) : amount;
   }
   if (text.empty()) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2779)), 255, 0, 0, 0);
-    this->m_status = LookupMessage(2781);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_2_MINI)), 255, 0, 0, 0);
+    this->m_status = LookupMessage(MSI_BANK_4_MINI);
     return 0;
   }
   if (!this->IsNumeric(text)) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2488)), 255, 0, 0, 0);
-    this->m_status = LookupMessage(2782);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_COMPARISON)), 255, 0, 0, 0);
+    this->m_status = LookupMessage(MSI_BANK_5_MINI);
     return 0;
   }
   const long long amount = _atoi64(text.c_str());
   if (amount > 0x7FFFFFFF) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2768)), 255, 0, 0, 0);
-    this->m_status = LookupMessage(2783);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_1)), 255, 0, 0, 0);
+    this->m_status = LookupMessage(MSI_BANK_6_MINI);
     return 0;
   }
   if (amount < 1) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2769)), 255, 0, 0, 0);
-    this->m_status = LookupMessage(2784);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_2)), 255, 0, 0, 0);
+    this->m_status = LookupMessage(MSI_BANK_7_MINI);
     return 0;
   }
   return amount;
@@ -528,16 +529,16 @@ bool UIBank_NewWnd::IsNumeric(std::string text) {
 // FUNCTION: fn_11760
 void UIBank_NewWnd::Paint() {
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\bank\\bg_bank.bmp")));
-  this->DrawBitmap(0, this->DrawTitleBar(true, LookupMessage(2771), 0), background, false);
+  this->DrawBitmap(0, this->DrawTitleBar(true, LookupMessage(MSI_BANK_4), 0), background, false);
 
   char number[260] = {};
   char text[260] = {};
-  this->DrawTextAt(30, 29, LookupMessage(2772), 0, 0, 12, 0, 0, 0);
-  const int x = this->VerticalTextHeight(LookupMessage(2772), 0, 0, 12, 0) + 43;
+  this->DrawTextAt(30, 29, LookupMessage(MSI_BANK_5), 0, 0, 12, 0, 0, 0);
+  const int x = this->VerticalTextHeight(LookupMessage(MSI_BANK_5), 0, 0, 12, 0) + 43;
   FormatGroupedInteger(g_session.m_bankBalance, number, 260);
   std::sprintf(text, "%s z", number);
   this->DrawTextAt(x, 29, text, 0, 0, 11, 0, 0, 0);
-  this->DrawTextAt(30, 46, LookupMessage(2773), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(30, 46, LookupMessage(MSI_BANK_6), 0, 0, 12, 0, 0, 0);
   FormatGroupedInteger(g_session.m_zeny, number, 260);
   std::sprintf(text, "%s z", number);
   this->DrawTextAt(x, 46, text, 0, 0, 11, 0, 0, 0);
@@ -722,7 +723,7 @@ void UIMessageBox::Configure(
     this->m_message0 = 184;
 
     auto* link = new UITextButton();
-    link->Configure(LookupMessage(3445), 0x00F4934A, 0, 12, 0, 0);
+    link->Configure(LookupMessage(MSI_FRIEND_ALREADY_FRIEND), 0x00F4934A, 0, 12, 0, 0);
     link->m_hoverColor = 0x00FF7864;
     link->Move(14, 70);
     link->SetId(426);
@@ -791,7 +792,7 @@ int UIMessageBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     return 0;
   case UM_TEXT_LBTN_UP:
     if (a == 426) {
-      ShellExecuteA(hWnd, "open", LookupMessage(3445), nullptr, nullptr, SW_SHOWNORMAL);
+      ShellExecuteA(hWnd, "open", LookupMessage(MSI_FRIEND_ALREADY_FRIEND), nullptr, nullptr, SW_SHOWNORMAL);
     }
 
     return 0;
@@ -979,7 +980,7 @@ int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     case ID_FIRE_MER: {
       CMode* mode = g_modeMgr.GetGameMode();
 
-      if (g_windowMgr.Confirm(LookupMessage(1370), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_MER), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         mode->SendMsg(MM_COMMAND_MER, 2, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_MERINFOWND);
         g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_1);
@@ -1058,34 +1059,34 @@ void UILoginOTPWnd::OnCreate(int, int) {
 
   UIStaticText* label = new UIStaticText();
   label->SetSize(80, 20);
-  label->Move(141 - this->TextWidth(LookupMessage(3410), 0, 0, 12, 0, 0), 67);
-  label->SetText(LookupMessage(3410), 0);
+  label->Move(141 - this->TextWidth(LookupMessage(MSI_ID), 0, 0, 12, 0, 0), 67);
+  label->SetText(LookupMessage(MSI_ID), 0);
   this->AddChild(label);
 
   this->timerText = new UIStaticText();
   this->timerText->SetSize(80, 20);
   this->timerText->Move(150, 66);
-  this->timerText->SetText(LookupMessage(3410), 0);
+  this->timerText->SetText(LookupMessage(MSI_ID), 0);
   this->timerText->SetFont(0, 14, 1, 0);
   this->timerText->SetColor(205, 19, 41);
   this->AddChild(this->timerText);
 
   label = new UIStaticText();
   label->SetSize(200, 40);
-  label->SetText(LookupMessage(3385), 0);
-  label->Move(static_cast<int>(141.0f - this->TextWidth(LookupMessage(3385), 0, 0, 12, 0, 0) * 0.5f), 28);
+  label->SetText(LookupMessage(MSI_JOBNAME_TAEKWON), 0);
+  label->Move(static_cast<int>(141.0f - this->TextWidth(LookupMessage(MSI_JOBNAME_TAEKWON), 0, 0, 12, 0, 0) * 0.5f), 28);
   this->AddChild(label);
 
   label = new UIStaticText();
   label->SetSize(200, 40);
-  label->SetText(LookupMessage(3386), 0);
-  label->Move(static_cast<int>(141.0f - this->TextWidth(LookupMessage(3386), 0, 0, 12, 0, 0) * 0.5f), 42);
+  label->SetText(LookupMessage(MSI_TO_BLOCK_WHISPER), 0);
+  label->Move(static_cast<int>(141.0f - this->TextWidth(LookupMessage(MSI_TO_BLOCK_WHISPER), 0, 0, 12, 0, 0) * 0.5f), 42);
   this->AddChild(label);
 
   label = new UIStaticText();
   label->SetSize(80, 20);
-  label->Move(74 - this->TextWidth(LookupMessage(3255), 0, 0, 12, 0, 0), 98);
-  label->SetText(LookupMessage(3255), 0);
+  label->Move(74 - this->TextWidth(LookupMessage(MSI_SERVER_PROPERTY_ADULT_NO_COUNT), 0, 0, 12, 0, 0), 98);
+  label->SetText(LookupMessage(MSI_SERVER_PROPERTY_ADULT_NO_COUNT), 0);
   label->SetFont(0, 12, 1, 0);
   label->SetColor(64, 64, 64);
   this->AddChild(label);
@@ -1110,7 +1111,7 @@ void UILoginOTPWnd::OnCreate(int, int) {
   button->Move(186, 92);
   button->SetId(382);
   {
-    const std::string text(LookupMessage(3384));
+    const std::string text(LookupMessage(MSI_PRIVATE_AIRPLANE_WARNNING_SELECT_NPC));
     button->text = text;
     button->Invalidate();
   }
@@ -1131,7 +1132,7 @@ void UILoginOTPWnd::Paint() {
   thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
   auto* background = static_cast<CBitmapRes*>(resources.Load(Resolve(name.Text())));
   this->DrawBitmap(0, 0, background, false);
-  this->DrawTitleBar(true, LookupMessage(3254), 280);
+  this->DrawTitleBar(true, LookupMessage(MSI_PARTY_DO_YOU_WANT_BREAKING_UP), 280);
 }
 
 // OFFSET: 0x008C3620
@@ -1429,7 +1430,7 @@ void UINoticeWnd::OnWheel(int delta) {
 // OFFSET: 0x008A8AD0
 // FUNCTION: fn_11715
 void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
-  reinterpret_cast<UIMessageBox*>(this)->Configure(text.c_str(), 2, true, 0, LookupMessage(0xFDF), 0xDC, 0x85, 1, nullptr);
+  reinterpret_cast<UIMessageBox*>(this)->Configure(text.c_str(), 2, true, 0, LookupMessage(MSI_TITLE_QUEST_BOARD_INFO), 0xDC, 0x85, 1, nullptr);
 
   this->viewer->Resize(0xA5, 0x50);
   this->viewer->Move(7, 0x17);
@@ -1495,29 +1496,29 @@ void UIReplayRECControlWnd::Paint() {
     DrawFilledRoundedBorder(*this, 0, 34, this->geometry.width, this->geometry.height - 34, 0xDEDEDE);
     DrawFilledRoundedBorder(*this, 4, 38, this->geometry.width - 8, 95, 0xFFFFFF);
     DrawFilledRoundedBorder(*this, 4, 138, this->geometry.width - 8, 57, 0xFFFFFF);
-    DrawOutlinedText(*this, 10, 42, LookupMessage(1973), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
-    DrawOutlinedText(*this, 10, 142, LookupMessage(1974), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
+    DrawOutlinedText(*this, 10, 42, LookupMessage(MSI_REPLAY_SETREPLAYSAVEDATA), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
+    DrawOutlinedText(*this, 10, 142, LookupMessage(MSI_REPLAY_SETRECOPTION), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
   }
 }
 
 // OFFSET: 0x008BA010
 // FUNCTION: fn_11776
 void UISelectReplayDataWnd::Paint() {
-  this->DrawTitleBar(true, LookupMessage(2084), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_NOT_MOVEABLE_TRADE), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
   this->FillRegion(6, 32, 268, 77, 0xFFE7E7E7);
-  this->DrawTextAt(6, 19, LookupMessage(2085), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(6, 112, LookupMessage(2086), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(6, 19, LookupMessage(MSI_GUILD_DISBAND), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(6, 112, LookupMessage(MSI_PUT_DISBAND_GUILDNAME), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008BA0B0
 // FUNCTION: fn_11777
 void UISelectServerWnd::Paint() {
-  const char* title = LookupMessage(2082);
+  const char* title = LookupMessage(MSI_REPLAY_STR_FILEINFO);
 
   if (g_modeMgr.GetLoginMode()->cursorType == 30) {
-    title = LookupMessage(2083);
+    title = LookupMessage(MSI_REPLAY_STR_FILELIST);
   }
 
   this->DrawTitleBar(true, title, 0);
@@ -1531,10 +1532,10 @@ void UITalkboxTrapInputWnd::Paint() {
   const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
-  this->DrawTextAt(17, 3, LookupMessage(435), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(16, 2, LookupMessage(435), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(17, 23, LookupMessage(436), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(16, 22, LookupMessage(436), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(17, 3, LookupMessage(MSI_TALKBOX_WINDOW), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(16, 2, LookupMessage(MSI_TALKBOX_WINDOW), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(17, 23, LookupMessage(MSI_TALKBOX_WINDOW_MSG), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(16, 22, LookupMessage(MSI_TALKBOX_WINDOW_MSG), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008BA660
@@ -1575,7 +1576,7 @@ void UIMakeCharWnd::InitHairControls() {
   this->unknown_02C4->SetSize(this->unknown_02C4->BitmapWidth(), this->unknown_02C4->BitmapHeight());
   this->unknown_02C4->Move(20, 80);
   this->unknown_02C4->SetId(227);
-  this->unknown_02C4->SetTooltip(LookupMessage(0x87E));
+  this->unknown_02C4->SetTooltip(LookupMessage(MSI_VIEW_BEFORE_WORLDINFO_TITLE));
   this->AddChild(this->unknown_02C4);
 
   this->unknown_02C8 = new (std::nothrow) UIBitmapButton();
@@ -1585,7 +1586,7 @@ void UIMakeCharWnd::InitHairControls() {
   this->unknown_02C8->SetSize(this->unknown_02C4->BitmapWidth(), this->unknown_02C4->BitmapHeight());
   this->unknown_02C8->Move(110, 80);
   this->unknown_02C8->SetId(226);
-  this->unknown_02C8->SetTooltip(LookupMessage(0x87F));
+  this->unknown_02C8->SetTooltip(LookupMessage(MSI_VIEW_BEFORE_SERVERINFO));
   this->AddChild(this->unknown_02C8);
 
   this->unknown_02D4 = this->m_info.head - 1;
@@ -1852,9 +1853,9 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
     "replay_recrun_1", "replay_recrun_2", "replay_recrun_3", "replay_recrun_4", "replay_recrun_5",
   };
   const char* tooltips[16] = {
-    LookupMessage(0x7B9), LookupMessage(0x7BA), LookupMessage(0x7BB), LookupMessage(0x7BC), LookupMessage(0x7BD), LookupMessage(0x7BE),
-    LookupMessage(0x7BF), LookupMessage(0x64),  LookupMessage(0x68),  LookupMessage(0x6A),  LookupMessage(0x11B), LookupMessage(0x7C0),
-    LookupMessage(0x7C1), LookupMessage(0x7C2), LookupMessage(0x7C3), LookupMessage(0x7C4),
+    LookupMessage(MSI_REPLAY_START), LookupMessage(MSI_REPLAY_STOP), LookupMessage(MSI_REPLAY_START2), LookupMessage(MSI_REPLAY_OPENOPTION), LookupMessage(MSI_REPLAY_CLOSEOPION), LookupMessage(MSI_REPLAY_END),
+    LookupMessage(MSI_REPLAY_TIME), LookupMessage(MSI_CHARACTER_INFO),  LookupMessage(MSI_EQUIPED_ITEM),  LookupMessage(MSI_ITEM),  LookupMessage(MSI_SKILLLIST), LookupMessage(MSI_REPLAY_PARTYFRIEND),
+    LookupMessage(MSI_REPLAY_CHAT), LookupMessage(MSI_REPLAY_SHORTCUTS), LookupMessage(MSI_REPLAY_AUTOMATICFILENAME), LookupMessage(MSI_REPLAY_CHECKINGFILE),
   };
   int ids[6] = {420, 421, 422, 423, 424, 425};
 
@@ -1893,7 +1894,7 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
   }
 
   int textSizes[2][2] = {{50, 12}, {80, 12}};
-  const char* labels[2] = {"000:00:00", LookupMessage(0x7B3)};
+  const char* labels[2] = {"000:00:00", LookupMessage(MSI_REPLAY_REPLAYOPTIONSETTING)};
   for (int index = 0; index < 2; ++index) {
     this->texts[index] = new UIStaticText();
     this->texts[index]->SetSize(textSizes[index][0], textSizes[index][1]);
@@ -1940,7 +1941,7 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
   edit->maximum = 80;
   edit->Background(232, 232, 232);
   edit->SetText("");
-  if (const char* tooltip = LookupMessage(0x7B4)) {
+  if (const char* tooltip = LookupMessage(MSI_REPLAY_ENTERTHEFILENAME)) {
     edit->tooltip = tooltip;
   }
   this->AddChild(edit);
@@ -2141,117 +2142,117 @@ void UIMonsterInfoWnd::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
   const std::uint32_t border = RGB(red, green, blue);
 
-  this->DrawTextAt(17, 3, LookupMessage(406), 0, 0, 12, 0xFFFFFF, 0, 0);
-  this->DrawTextAt(16, 2, LookupMessage(406), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(120, 30, LookupMessage(407), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(17, 3, LookupMessage(MSI_MONSTER_INFO_WINDOW), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(16, 2, LookupMessage(MSI_MONSTER_INFO_WINDOW), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(120, 30, LookupMessage(MSI_NAME), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(160, 30, this->name.c_str(), 0, 0, 12, 0, 0, 0);
 
   char text[256];
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.level);
-  this->DrawTextAt(120, 50, LookupMessage(408), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(120, 50, LookupMessage(MSI_LEVEL), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(160, 50, text, 0, 0, 12, 0, 0, 0);
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.hp);
-  this->DrawTextAt(120, 70, LookupMessage(409), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(120, 70, LookupMessage(MSI_HP), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(160, 70, text, 0, 0, 12, 0, 0, 0);
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.defense);
-  this->DrawTextAt(120, 90, LookupMessage(3910), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(120, 90, LookupMessage(MSI_ZEROQUEST_ALLSELECT), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(160, 90, text, 0, 0, 12, 0, 0, 0);
 
-  this->DrawTextAt(260, 30, LookupMessage(410), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(260, 30, LookupMessage(MSI_SIZE), 0, 0, 12, 0, 0, 0);
   switch (this->info.size) {
   case SZ_SMALL:
-    this->DrawTextAt(300, 30, LookupMessage(3907), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 30, LookupMessage(MSI_MONSTERINFO_DEF), 0, 0, 12, 0, 0, 0);
     break;
   case SZ_MEDIUM:
-    this->DrawTextAt(300, 30, LookupMessage(3908), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 30, LookupMessage(MSI_BAN_TEENAGER), 0, 0, 12, 0, 0, 0);
     break;
   case SZ_BIG:
-    this->DrawTextAt(300, 30, LookupMessage(3909), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 30, LookupMessage(MSI_STYLINGSHOP_COLOR_RESET), 0, 0, 12, 0, 0, 0);
     break;
   }
 
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.race);
-  this->DrawTextAt(260, 50, LookupMessage(411), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(260, 50, LookupMessage(MSI_RACETYPE), 0, 0, 12, 0, 0, 0);
   switch (this->info.race) {
   case RC_FORMLESS:
-    this->DrawTextAt(300, 50, LookupMessage(3887), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 50, LookupMessage(MSI_MONSTERINFO_TRIBE_PLANT), 0, 0, 12, 0, 0, 0);
     break;
   case RC_UNDEAD:
-    this->DrawTextAt(300, 50, LookupMessage(3888), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 50, LookupMessage(MSI_MONSTERINFO_TRIBE_INSECT), 0, 0, 12, 0, 0, 0);
     break;
   case RC_BRUTE:
-    this->DrawTextAt(300, 50, LookupMessage(3889), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 50, LookupMessage(MSI_MONSTERINFO_TRIBE_MARINE), 0, 0, 12, 0, 0, 0);
     break;
   case RC_PLANT:
-    this->DrawTextAt(300, 50, LookupMessage(3890), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 50, LookupMessage(MSI_MONSTERINFO_TRIBE_DEVIL), 0, 0, 12, 0, 0, 0);
     break;
   case RC_INSECT:
-    this->DrawTextAt(300, 50, LookupMessage(3891), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 50, LookupMessage(MSI_MONSTERINFO_TRIBE_HUMAN), 0, 0, 12, 0, 0, 0);
     break;
   case RC_FISH:
-    this->DrawTextAt(300, 50, LookupMessage(3892), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 50, LookupMessage(MSI_MONSTERINFO_TRIBE_ANGEL), 0, 0, 12, 0, 0, 0);
     break;
   case RC_DEMON:
-    this->DrawTextAt(300, 50, LookupMessage(3893), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 50, LookupMessage(MSI_MONSTERINFO_TRIBE_DRAGON), 0, 0, 12, 0, 0, 0);
     break;
   case RC_DEMIHUMAN:
-    this->DrawTextAt(300, 50, LookupMessage(3894), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 50, LookupMessage(MSI_MONSTERINFO_PROPERTY_NEUTURAL), 0, 0, 12, 0, 0, 0);
     break;
   case RC_ANGEL:
-    this->DrawTextAt(300, 50, LookupMessage(3895), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 50, LookupMessage(MSI_MONSTERINFO_PROPERTY_WATER), 0, 0, 12, 0, 0, 0);
     break;
   case RC_DRAGON:
-    this->DrawTextAt(300, 50, LookupMessage(3896), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 50, LookupMessage(MSI_MONSTERINFO_PROPERTY_EARTH), 0, 0, 12, 0, 0, 0);
     break;
   }
 
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.magicDefense);
-  this->DrawTextAt(260, 90, LookupMessage(412), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(260, 90, LookupMessage(MSI_MDEFPOWER), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(300, 90, text, 0, 0, 12, 0, 0, 0);
 
-  this->DrawTextAt(260, 70, LookupMessage(413), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(260, 70, LookupMessage(MSI_PROPERTY), 0, 0, 12, 0, 0, 0);
   switch (this->info.element % 20) {
   case ELE_NEUTRAL:
-    this->DrawTextAt(300, 70, LookupMessage(3897), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 70, LookupMessage(MSI_MONSTERINFO_PROPERTY_FIRE), 0, 0, 12, 0, 0, 0);
     break;
   case ELE_WATER:
-    this->DrawTextAt(300, 70, LookupMessage(3898), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 70, LookupMessage(MSI_MONSTERINFO_PROPERTY_WIND), 0, 0, 12, 0, 0, 0);
     break;
   case ELE_EARTH:
-    this->DrawTextAt(300, 70, LookupMessage(3899), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 70, LookupMessage(MSI_MONSTERINFO_PROPERTY_POISON), 0, 0, 12, 0, 0, 0);
     break;
   case ELE_FIRE:
-    this->DrawTextAt(300, 70, LookupMessage(3900), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 70, LookupMessage(MSI_MONSTERINFO_PROPERTY_SAINT), 0, 0, 12, 0, 0, 0);
     break;
   case ELE_WIND:
-    this->DrawTextAt(300, 70, LookupMessage(3901), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 70, LookupMessage(MSI_MONSTERINFO_PROPERTY_DARK), 0, 0, 12, 0, 0, 0);
     break;
   case ELE_POISON:
-    this->DrawTextAt(300, 70, LookupMessage(3902), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 70, LookupMessage(MSI_MONSTERINFO_PROPERTY_MENTAL), 0, 0, 12, 0, 0, 0);
     break;
   case ELE_HOLY:
-    this->DrawTextAt(300, 70, LookupMessage(3903), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 70, LookupMessage(MSI_MONSTERINFO_PROPERTY_UNDEAD), 0, 0, 12, 0, 0, 0);
     break;
   case ELE_DARK:
-    this->DrawTextAt(300, 70, LookupMessage(3904), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 70, LookupMessage(MSI_MONSTERINFO_SIZE_SMALL), 0, 0, 12, 0, 0, 0);
     break;
   case ELE_GHOST:
-    this->DrawTextAt(300, 70, LookupMessage(3905), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 70, LookupMessage(MSI_MONSTERINFO_SIZE_MIDDLE), 0, 0, 12, 0, 0, 0);
     break;
   case ELE_UNDEAD:
-    this->DrawTextAt(300, 70, LookupMessage(3906), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(300, 70, LookupMessage(MSI_MONSTERINFO_SIZE_BIG), 0, 0, 12, 0, 0, 0);
     break;
   }
 
-  this->DrawResistance(120, 110, LookupMessage(3898), this->info.resistances[0], border, fill);
-  this->DrawResistance(120, 128, LookupMessage(3899), this->info.resistances[1], border, fill);
-  this->DrawResistance(120, 146, LookupMessage(3900), this->info.resistances[2], border, fill);
-  this->DrawResistance(200, 110, LookupMessage(3901), this->info.resistances[3], border, fill);
-  this->DrawResistance(200, 128, LookupMessage(3902), this->info.resistances[4], border, fill);
-  this->DrawResistance(200, 146, LookupMessage(3903), this->info.resistances[5], border, fill);
-  this->DrawResistance(280, 110, LookupMessage(3904), this->info.resistances[6], border, fill);
-  this->DrawResistance(280, 128, LookupMessage(3905), this->info.resistances[7], border, fill);
-  this->DrawResistance(280, 146, LookupMessage(3906), this->info.resistances[8], border, fill);
+  this->DrawResistance(120, 110, LookupMessage(MSI_MONSTERINFO_PROPERTY_WIND), this->info.resistances[0], border, fill);
+  this->DrawResistance(120, 128, LookupMessage(MSI_MONSTERINFO_PROPERTY_POISON), this->info.resistances[1], border, fill);
+  this->DrawResistance(120, 146, LookupMessage(MSI_MONSTERINFO_PROPERTY_SAINT), this->info.resistances[2], border, fill);
+  this->DrawResistance(200, 110, LookupMessage(MSI_MONSTERINFO_PROPERTY_DARK), this->info.resistances[3], border, fill);
+  this->DrawResistance(200, 128, LookupMessage(MSI_MONSTERINFO_PROPERTY_MENTAL), this->info.resistances[4], border, fill);
+  this->DrawResistance(200, 146, LookupMessage(MSI_MONSTERINFO_PROPERTY_UNDEAD), this->info.resistances[5], border, fill);
+  this->DrawResistance(280, 110, LookupMessage(MSI_MONSTERINFO_SIZE_SMALL), this->info.resistances[6], border, fill);
+  this->DrawResistance(280, 128, LookupMessage(MSI_MONSTERINFO_SIZE_MIDDLE), this->info.resistances[7], border, fill);
+  this->DrawResistance(280, 146, LookupMessage(MSI_MONSTERINFO_SIZE_BIG), this->info.resistances[8], border, fill);
 
   char spriteName[128];
   StringFormat(spriteName, sizeof(spriteName), static_cast<std::size_t>(-1), "몬스터\\%s.spr", g_session.GetJobName(this->info.job, -1));
@@ -2703,14 +2704,14 @@ UINoticeWnd::UINoticeWnd() : UIFrameWnd(0) {
 // FUNCTION: fn_11737
 void UIBank_NewWnd::OnCreate(int, int) {
   this->AddCloseButton("Exit", 0);
-  this->AddBitmapButton(462, 209, 77, "bank\\btn_deposit", LookupMessage(2774));
-  this->AddBitmapButton(463, 209, 102, "bank\\btn_withdraw", LookupMessage(2775));
-  this->AddBitmapButton(279, 177, 89, "bank\\btn_upper", LookupMessage(2776));
-  this->AddBitmapButton(280, 177, 99, "bank\\btn_buttom", LookupMessage(2777));
+  this->AddBitmapButton(462, 209, 77, "bank\\btn_deposit", LookupMessage(MSI_BANK_7));
+  this->AddBitmapButton(463, 209, 102, "bank\\btn_withdraw", LookupMessage(MSI_BANK_MAX));
+  this->AddBitmapButton(279, 177, 89, "bank\\btn_upper", LookupMessage(MSI_BANK_NOMSG));
+  this->AddBitmapButton(280, 177, 99, "bank\\btn_buttom", LookupMessage(MSI_BANK_0_MINI));
   this->AddBitmapButton(392, 189, 132, "bank\\btn_10mil", "+ 100,000");
   this->AddBitmapButton(391, 141, 132, "bank\\btn_100mil", "+ 1,000,000");
   this->AddBitmapButton(390, 93, 132, "bank\\btn_1000mil", "+ 10,000,000");
-  this->AddBitmapButton(389, 45, 132, "bank\\btn_max", LookupMessage(2778));
+  this->AddBitmapButton(389, 45, 132, "bank\\btn_max", LookupMessage(MSI_BANK_1_MINI));
 
   this->m_amountEdit = new UIEditCtrl();
   this->m_amountEdit->SetSize(99, 17);
@@ -2817,7 +2818,7 @@ bool UIReplayControlWnd::RefreshInfo() {
   const ReplayTime duration = Replay::Instance().Duration();
   char text[100];
   std::memset(text, 0, sizeof(text));
-  std::sprintf(text, LookupMessage(1955), minutes / 60, minutes % 60, seconds % 60, duration.hours, duration.minutes, duration.seconds);
+  std::sprintf(text, LookupMessage(MSI_REPLAY_ELAPSEDTIME), minutes / 60, minutes % 60, seconds % 60, duration.hours, duration.minutes, duration.seconds);
   this->m_texts[0]->SetTextFitted(text);
 
   std::memset(text, 0, sizeof(text));
@@ -2890,14 +2891,14 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
             return 0;
           }
           Replay::Instance().CloseFile();
-          g_windowMgr.Confirm(LookupMessage(1970), 0, true, true, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_SERVERNOMATCH), 0, true, true, 0, "Message", 280, 120, 0);
         } else {
-          g_windowMgr.Confirm(LookupMessage(1969), 0, true, true, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_NOREPLAYFILE), 0, true, true, 0, "Message", 280, 120, 0);
         }
       }
       break;
     case ID_EXIT:
-      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
@@ -2932,7 +2933,7 @@ bool UISelectReplayDataWnd::UpdateInfo() {
 
   if (ReplayFileList::Instance().Open(32, 0, 0) != 1) {
     this->m_texts[0]->SetTextFitted("");
-    this->m_texts[1]->SetTextFitted(LookupMessage(1969));
+    this->m_texts[1]->SetTextFitted(LookupMessage(MSI_REPLAY_NOREPLAYFILE));
     this->m_texts[2]->SetTextFitted("");
     this->m_texts[3]->SetTextFitted("");
     this->m_texts[4]->SetTextFitted("");
@@ -2965,35 +2966,35 @@ bool UISelectReplayDataWnd::UpdateInfo() {
   default:
     service = "Data Error";
     this->m_texts[0]->SetTextFitted("");
-    this->m_texts[1]->SetTextFitted(LookupMessage(1969));
+    this->m_texts[1]->SetTextFitted(LookupMessage(MSI_REPLAY_NOREPLAYFILE));
     this->m_texts[2]->SetTextFitted("");
     this->m_texts[3]->SetTextFitted("");
     this->m_texts[4]->SetTextFitted("");
     return false;
   }
 
-  std::sprintf(buffer, LookupMessage(1964), service.c_str());
+  std::sprintf(buffer, LookupMessage(MSI_REPLAY_CHRVICEINFO), service.c_str());
   this->m_texts[0]->SetTextFitted(buffer);
   std::memset(buffer, 0, sizeof(buffer));
 
   char name[64];
   std::memcpy(name, Replay::Instance().header.characterName, sizeof(name));
-  std::sprintf(buffer, LookupMessage(1965), name);
+  std::sprintf(buffer, LookupMessage(MSI_REPLAY_CHARACTERNAME), name);
   this->m_texts[1]->SetTextFitted(buffer);
 
-  std::sprintf(buffer, LookupMessage(1966), Replay::Instance().header.mapName);
+  std::sprintf(buffer, LookupMessage(MSI_REPLAY_MAPNAME), Replay::Instance().header.mapName);
   this->m_texts[2]->SetTextFitted(buffer);
 
   const std::uint32_t date = Replay::Instance().header.key0;
   const std::uint32_t time = Replay::Instance().header.key1;
   std::sprintf(
-    buffer, LookupMessage(1967), date & 0xFFFF, static_cast<char>(date >> 16), static_cast<char>(date >> 24), static_cast<char>(time >> 8),
+    buffer, LookupMessage(MSI_REPLAY_RECORDTIME), date & 0xFFFF, static_cast<char>(date >> 16), static_cast<char>(date >> 24), static_cast<char>(time >> 8),
     static_cast<char>(time >> 16), static_cast<char>(time >> 24)
   );
   this->m_texts[3]->SetTextFitted(buffer);
 
   const ReplayTime duration = Replay::Instance().Duration();
-  std::sprintf(buffer, LookupMessage(1968), duration.hours, duration.minutes, duration.seconds);
+  std::sprintf(buffer, LookupMessage(MSI_REPLAY_PLAYTIME), duration.hours, duration.minutes, duration.seconds);
   this->m_texts[4]->SetTextFitted(buffer);
   return true;
 }
@@ -3060,7 +3061,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_modeMgr.gameMode->SendMsg(LMM_CANCEL, 0, 0, 0, 0);
       return 0;
     case ID_EXIT:
-      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
@@ -3093,27 +3094,27 @@ void UIPetInfoWnd::Paint() {
   this->DrawBitmap(this->geometry.width - rightCorner->image.width, this->geometry.height - rightCorner->image.height, rightCorner, false);
 
   char title[32];
-  StringFormat(title, 32, static_cast<std::size_t>(-1), "%s", LookupMessage(584));
+  StringFormat(title, 32, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_PET_INFO));
   this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 24, LookupMessage(407), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 44, LookupMessage(408), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 69, LookupMessage(585), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 89, LookupMessage(586), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 24, LookupMessage(MSI_NAME), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 44, LookupMessage(MSI_LEVEL), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 69, LookupMessage(MSI_PET_HUNGRY), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 89, LookupMessage(MSI_PET_FRIENDLY), 0, 0, 12, 0, 0, 0);
 
   char level[8];
   char hunger[24];
   if (g_session.unknown_1044 >= 0 && g_session.unknown_1044 <= 10) {
-    std::strcpy(hunger, LookupMessage(667));
+    std::strcpy(hunger, LookupMessage(MSI_VERY_HUNGRY));
   } else if (g_session.unknown_1044 > 10 && g_session.unknown_1044 <= 25) {
-    std::strcpy(hunger, LookupMessage(668));
+    std::strcpy(hunger, LookupMessage(MSI_HUNGRY));
   } else if (g_session.unknown_1044 > 25 && g_session.unknown_1044 <= 75) {
-    std::strcpy(hunger, LookupMessage(669));
+    std::strcpy(hunger, LookupMessage(MSI_NORMAL));
   } else if (g_session.unknown_1044 > 75 && g_session.unknown_1044 <= 90) {
-    std::strcpy(hunger, LookupMessage(670));
+    std::strcpy(hunger, LookupMessage(MSI_REPLETE));
   } else if (g_session.unknown_1044 > 90 && g_session.unknown_1044 <= 100) {
-    std::strcpy(hunger, LookupMessage(671));
+    std::strcpy(hunger, LookupMessage(MSI_VERY_REPLETE));
   } else {
-    std::strcpy(hunger, LookupMessage(676));
+    std::strcpy(hunger, LookupMessage(MSI_UNKNOWN));
   }
 
   _itoa(g_session.unknown_1040, level, 10);
@@ -3136,11 +3137,11 @@ void UIPetInfoWnd::Paint() {
     this->FillRegion(160, 44, 110, 18, 0xFAE6E6);
     const int width = this->TextWidth(command, 0, 0, 12, 0, 0);
     this->DrawTextAt(206 - width / 2, 48, command, 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(100, 119, LookupMessage(597), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(100, 119, LookupMessage(MSI_PET_ACCESSARY), 0, 0, 12, 0, 0, 0);
     this->DrawTextAt(100, 139, LookupMessage(g_session.unknown_1038 == 0 ? 600 : 598), 0, 0, 12, 0, 0, 0);
 
     if (this->unknown_00E4 == 1) {
-      this->DrawTextAt(100, 159, LookupMessage(2577), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(100, 159, LookupMessage(MSI_PET_AUTO_FEEDING_OFF), 0, 0, 12, 0, 0, 0);
     }
   }
 }
@@ -3169,28 +3170,28 @@ void UIPetInfoWnd::UpdateFriendlyGauge() {
       }
       this->friendlyText = LookupMessage(message);
     } else {
-      this->friendlyText = LookupMessage(672);
+      this->friendlyText = LookupMessage(MSI_VERY_AWKWARD);
       low = 0;
       high = 100;
     }
   } else if (g_session.m_petFriendly > 100 && g_session.m_petFriendly <= 250) {
-    this->friendlyText = LookupMessage(673);
+    this->friendlyText = LookupMessage(MSI_AWKWARD);
     low = 100;
     high = 250;
   } else if (g_session.m_petFriendly > 250 && g_session.m_petFriendly <= 750) {
-    this->friendlyText = LookupMessage(669);
+    this->friendlyText = LookupMessage(MSI_NORMAL);
     low = 250;
     high = 750;
   } else if (g_session.m_petFriendly > 750 && g_session.m_petFriendly <= 900) {
-    this->friendlyText = LookupMessage(674);
+    this->friendlyText = LookupMessage(MSI_FRIENDLY);
     low = 750;
     high = 900;
   } else if (g_session.m_petFriendly > 900 && g_session.m_petFriendly <= 1000) {
-    this->friendlyText = LookupMessage(675);
+    this->friendlyText = LookupMessage(MSI_VERY_FRIENDLY);
     low = 900;
     high = 1000;
   } else {
-    this->friendlyText = LookupMessage(676);
+    this->friendlyText = LookupMessage(MSI_UNKNOWN);
     low = 0;
     high = 0;
   }
@@ -3346,7 +3347,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
           ShellExecuteA(hWnd, verbName.Text(), url, nullptr, nullptr, SW_SHOWNORMAL);
           break;
         }
-        if (g_windowMgr.Confirm(LookupMessage(3336), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_SELECTCHARWND_RESERVE_TO_DEL_CHAR), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
           break;
         }
       }
@@ -3366,9 +3367,9 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         g_windowMgr.CloseWindow(WID_LOGINWND);
         this->SaveLogin();
       } else if (this->idEdit->Length() < 4) {
-        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(3029), 4).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BASIC_EXP_MSG2_EXCEPT_PREMIUM), 4).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
-        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(3030), 6).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_SWAP_EQUIPITEM_CANNOT_ADD_ITEM), 6).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
       }
       break;
     }
@@ -3378,7 +3379,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       break;
     case ID_EXIT:
       this->SaveLogin();
-      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         goto quit;
       }
       break;
@@ -3437,7 +3438,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   switch (message) {
   case UM_COMMAND: {
     if (a == 185) {
-      if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
@@ -3450,7 +3451,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         g_modeMgr.gameMode->SendMsg(LMM_SEND_LOGIN_AUTH_CODE, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_LOGINOTPWND);
       } else {
-        g_windowMgr.Confirm(LookupMessage(3249), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FAIL_SERVICE_CHECKING_ERROR), 0, true, false, 0, "Message", 280, 120, 0);
       }
     }
 
@@ -3569,13 +3570,13 @@ void UIHomunInfoWnd::Paint() {
   this->DrawBitmap(0, 0, background, false);
   DrawFilledRoundedBorder(*this, 0, this->geometry.height - 40, this->geometry.width, 40, 0xFFFFFF);
   char title[32];
-  std::sprintf(title, LookupMessage(936));
+  std::sprintf(title, LookupMessage(MSI_HOMUN_INFO));
   this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 24, LookupMessage(407), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 47, LookupMessage(408), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 105, LookupMessage(1019), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 131, LookupMessage(585), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 159, LookupMessage(586), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 24, LookupMessage(MSI_NAME), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 47, LookupMessage(MSI_LEVEL), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 105, LookupMessage(MSI_HOMUN_EXP), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 131, LookupMessage(MSI_PET_HUNGRY), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 159, LookupMessage(MSI_PET_FRIENDLY), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(140, 159, ":", 0, 0, 12, 0, 0, 0);
   const int* const stats = reinterpret_cast<const int*>(&g_session.unknown_5570[0x2C]);
   char number[12];
@@ -3609,25 +3610,25 @@ void UIHomunInfoWnd::Paint() {
   this->DrawRightAlignedText(200, 130, text, bytes, 1, 14, 0, 0);
   const int intimacy = g_session.unknown_55D4;
   if (intimacy >= 0 && intimacy <= 3) {
-    std::strcpy(text, LookupMessage(1022));
+    std::strcpy(text, LookupMessage(MSI_VERYHATE));
   } else if (intimacy > 3 && intimacy <= 10) {
-    std::strcpy(text, LookupMessage(1021));
+    std::strcpy(text, LookupMessage(MSI_HATE));
   } else if (intimacy > 10 && intimacy <= 100) {
-    std::strcpy(text, LookupMessage(672));
+    std::strcpy(text, LookupMessage(MSI_VERY_AWKWARD));
   } else if (intimacy > 100 && intimacy <= 250) {
-    std::strcpy(text, LookupMessage(673));
+    std::strcpy(text, LookupMessage(MSI_AWKWARD));
   } else if (intimacy > 250 && intimacy <= 750) {
-    std::strcpy(text, LookupMessage(669));
+    std::strcpy(text, LookupMessage(MSI_NORMAL));
   } else if (intimacy > 750 && intimacy <= 910) {
-    std::strcpy(text, LookupMessage(674));
+    std::strcpy(text, LookupMessage(MSI_FRIENDLY));
   } else if (intimacy > 910 && intimacy <= 1000) {
-    std::strcpy(text, LookupMessage(675));
+    std::strcpy(text, LookupMessage(MSI_VERY_FRIENDLY));
   } else {
-    std::strcpy(text, LookupMessage(676));
+    std::strcpy(text, LookupMessage(MSI_UNKNOWN));
   }
   this->DrawTextAt(150, 159, text, 0, 0, 12, 0, 0, 0);
-  this->DrawWrappedFormattedText(225, 136, std::string(LookupMessage(3279)), 0, 0, 0, 0, 12, 0, 0);
-  this->DrawWrappedFormattedText(8, 180, std::string(LookupMessage(3284)), 0, 0, 0, 0, 12, 0xFF, 0);
+  this->DrawWrappedFormattedText(225, 136, std::string(LookupMessage(MSI_HOMUN_SELF_FEEDING_ON)), 0, 0, 0, 0, 12, 0, 0);
+  this->DrawWrappedFormattedText(8, 180, std::string(LookupMessage(MSI_HOMUN_TARGET_NOT_EXIST_HOMUN_TARGAT)), 0, 0, 0, 0, 12, 0xFF, 0);
 }
 
 // OFFSET: 0x008BDD10
@@ -3647,13 +3648,13 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case ID_OK: {
       char* const name = reinterpret_cast<char*>(&g_session.unknown_5570[0x0C]);
       if (std::strlen(this->nameEdit->Text()) >= 24) {
-        g_windowMgr.Confirm(LookupMessage(938), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_HOMUN_NAME_IN23), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
                  _mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        g_windowMgr.Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
         char text[512];
-        std::sprintf(text, LookupMessage(2977), this->nameEdit->Text());
+        std::sprintf(text, LookupMessage(MSI_BLOCK_CALL_NOTIFY), this->nameEdit->Text());
         if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
           if (g_forbiddenWords.Contains(this->nameEdit->Text()) != true) {
             g_modeMgr.GetGameMode()->SendMsg(MM_MER_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
@@ -3662,7 +3663,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
             return 0;
           }
 
-          g_windowMgr.Confirm(LookupMessage(2948), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_SELL_IN_PRIVATE_TAB), 0, true, false, 0, "Message", 280, 120, 0);
         }
 
         this->nameEdit->SetText(name);
@@ -3689,12 +3690,12 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return 0;
     case ID_FEED_TO_HOMUN:
       this->unknown_00D0 = new UINormalMB();
-      this->unknown_00D0->Create(this, LookupMessage(601), 2, true, nullptr, 280, 120, nullptr);
+      this->unknown_00D0->Create(this, LookupMessage(MSI_SURE_TO_FEED_PET), 2, true, nullptr, 280, 120, nullptr);
       g_windowMgr.AddRendered(this->unknown_00D0);
       return 0;
     case ID_DELETE_HOMUN: {
       CMode* mode = g_modeMgr.GetGameMode();
-      if (g_windowMgr.Confirm(LookupMessage(955), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_HOMUN), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         mode->SendMsg(MM_COMMAND_HOMUN, 2, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_HOMUNINFOWND);
         g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_0);
@@ -3707,7 +3708,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       CMode* mode = g_modeMgr.GetGameMode();
       if (sender == this->unknown_00D0 && b == 187) {
         if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3551)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_FAILED)), 255, 0, 0, 0);
         } else {
           mode->SendMsg(MM_COMMAND_HOMUN, 1, 0, 0, 0);
         }
@@ -3777,7 +3778,7 @@ void UIPetInfoWnd::OnCreate(int, int) {
     this->AddChild(button);
   }
 
-  this->friendlyText = LookupMessage(676);
+  this->friendlyText = LookupMessage(MSI_UNKNOWN);
   this->friendlyGauge = new UIPetInfoBarGraph();
   this->friendlyGauge->SetSize(120, 9);
   this->friendlyGauge->Move(145, 105);
@@ -3790,7 +3791,7 @@ void UIPetInfoWnd::OnCreate(int, int) {
   if (this->unknown_00E4 == true) {
     this->unknown_00E8 = new UICheckBox();
     this->unknown_00E8->SetSize(12, 12);
-    this->unknown_00E8->Move(this->TextWidth(LookupMessage(2577), 0, 0, 12, 0, 0) + 110, 159);
+    this->unknown_00E8->Move(this->TextWidth(LookupMessage(MSI_PET_AUTO_FEEDING_OFF), 0, 0, 12, 0, 0) + 110, 159);
     this->unknown_00E8->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
     this->unknown_00E8->SetChecked(g_petAutoFeed);
     this->AddChild(this->unknown_00E8);
@@ -3812,11 +3813,11 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     switch (a) {
     case 467:
       if (g_windowMgr.unknown_0458) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2985)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REFINING_FAIL_ITEM_DISAPPEAR)), 255, 0, 0, 0);
         break;
       }
       this->window_00C4 = new UINormalMB();
-      this->window_00C4->Create(this, LookupMessage(601), 2, true, nullptr, 280, 120, nullptr);
+      this->window_00C4->Create(this, LookupMessage(MSI_SURE_TO_FEED_PET), 2, true, nullptr, 280, 120, nullptr);
       g_windowMgr.AddRendered(this->window_00C4);
       g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
       return 0;
@@ -3842,7 +3843,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
         return 0;
       }
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2576)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_AUTO_FEEDING_ON)), 255, 0, 0, 0);
       break;
     }
     g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
@@ -3856,13 +3857,13 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     switch (a) {
     case ID_OK:
       if (std::strlen(this->nameEdit->Text()) >= 24) {
-        g_windowMgr.Confirm(LookupMessage(682), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_PETNAME_IN23), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
                  _mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        g_windowMgr.Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
         char text[512];
-        std::sprintf(text, LookupMessage(2931), this->nameEdit->Text());
+        std::sprintf(text, LookupMessage(MSI_STORE_ASSISTANT_TRADE_CNT), this->nameEdit->Text());
         if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
           if (g_forbiddenWords.Contains(this->nameEdit->Text()) != true) {
             g_modeMgr.GetGameMode()->SendMsg(MM_PET_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
@@ -3871,7 +3872,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
             return 0;
           }
 
-          g_windowMgr.Confirm(LookupMessage(2948), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_SELL_IN_PRIVATE_TAB), 0, true, false, 0, "Message", 280, 120, 0);
         }
 
         this->nameEdit->SetText(g_session.unknown_1018);
@@ -3896,10 +3897,10 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       std::string performance;
       std::string returnToEgg;
       std::string unequip;
-      feed = LookupMessage(592);
-      performance = LookupMessage(593);
-      returnToEgg = LookupMessage(594);
-      unequip = LookupMessage(595);
+      feed = LookupMessage(MSI_PET_FEEDING);
+      performance = LookupMessage(MSI_PET_PERFORMANCE);
+      returnToEgg = LookupMessage(MSI_PET_RETURN_EGG);
+      unequip = LookupMessage(MSI_PET_ACC_OFF);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(feed.c_str()), 467, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(performance.c_str()), 468, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(unequip.c_str()), 469, 0, 0);
@@ -3912,9 +3913,9 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
           std::string text;
           const char* name = g_session.GetPetString(job);
           if (name == nullptr) {
-            text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(2568), g_session.GetJobName(job, -1)));
+            text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_PET_EVOLUTION_FAIL_UNKNOWN), g_session.GetJobName(job, -1)));
           } else {
-            text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(2568), name));
+            text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_PET_EVOLUTION_FAIL_UNKNOWN), name));
           }
           menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text.c_str()), 471, *it, 0);
         }
@@ -3932,7 +3933,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       CMode* mode = g_modeMgr.GetGameMode();
       if (sender == this->window_00C4 && b == 187) {
         if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3550)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARTERITEM_NAME_COUNT)), 255, 0, 0, 0);
           this->window_00C4 = nullptr;
           return 0;
         }
@@ -4217,7 +4218,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         error = 2812;
       } else {
         if (this->m_nameEdit->Length() < 4) {
-          g_windowMgr.Confirm(LookupMessage(21), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
           goto create;
         }
 
@@ -4231,13 +4232,13 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         const bool blank = g_session.IsBlankString(this->m_nameEdit->Text());
         if (control || !allowed || !valid || blank) {
           if (control || !allowed) {
-            g_windowMgr.Confirm(LookupMessage(20), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
           }
           if (!valid) {
-            g_windowMgr.Confirm(LookupMessage(190), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
           }
           if (blank) {
-            g_windowMgr.Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
           }
           goto create;
         }
@@ -4403,7 +4404,7 @@ void UILoginWnd::OnCreate(int, int) {
 
   UIStaticText* label = new UIStaticText();
   label->SetSize(72, 22);
-  label->SetText(LookupMessage(3411), 0);
+  label->SetText(LookupMessage(MSI_CREATE_RAG_ACCOUNT), 0);
   label->SetColor(51, 51, 51);
   label->Move(73, 87);
   label->SetFont(0, 11, 0, 0);
@@ -4430,7 +4431,7 @@ void UILoginWnd::OnCreate(int, int) {
   button->Move(13, 104);
   button->SetId(285);
   {
-    const std::string text(LookupMessage(3431));
+    const std::string text(LookupMessage(MSI_ENST_BLESSING2));
     button->text = text;
     button->Invalidate();
   }
@@ -4459,7 +4460,7 @@ void UILoginWnd::OnCreate(int, int) {
   button->Move(87, 104);
   button->SetId(267);
   {
-    const std::string text(LookupMessage(3414));
+    const std::string text(LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_FAILED));
     button->text = text;
     button->Invalidate();
   }
@@ -4554,10 +4555,10 @@ void UILoginWnd::OnCreate(int, int) {
   this->unknown_00E8->SetSize(160, 22);
   this->unknown_00E8->Move(13, 10);
   this->AddChild(this->unknown_00E8);
-  this->unknown_00E8->AddOption(LookupMessage(3250), 0);
-  this->unknown_00E8->AddOption(LookupMessage(3251), 0);
+  this->unknown_00E8->AddOption(LookupMessage(MSI_ENTER_THE_SEARCH_WORD), 0);
+  this->unknown_00E8->AddOption(LookupMessage(MSI_MOTP), 0);
   this->unknown_00E8->Clear();
-  this->unknown_00E8->AddOption(LookupMessage(3250), 0);
+  this->unknown_00E8->AddOption(LookupMessage(MSI_ENTER_THE_SEARCH_WORD), 0);
   this->unknown_00E8->Select(0);
   this->SendMsg(this->unknown_00E8, UM_COMBOBOX_SELECTED, 0, 0, 0, 0);
   this->idEdit->maximum = 24;

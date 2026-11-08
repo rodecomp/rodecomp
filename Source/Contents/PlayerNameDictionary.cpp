@@ -2,6 +2,7 @@
 #include "Contents/PlayerNameDictionary.h"
 #include "Network/Connection/Connection.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstring>
 #include <windows.h>
@@ -29,7 +30,7 @@ std::string CPlayerNameDictionary::Lookup(std::uint32_t id) {
     this->m_pending.push_back(id);
   }
 
-  return LookupMessage(581);
+  return LookupMessage(MSI_NAMELESS_USER);
 }
 
 // OFFSET: 0x0060ABB0

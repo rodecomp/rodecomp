@@ -6,6 +6,7 @@
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Utility/Cipher/XorBytes.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <json/reader.h>
 #include <json/value.h>
 
@@ -81,7 +82,7 @@ void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string resp
   case 2:
   case 3:
   case 4: {
-    const char* message = LookupMessage(3586);
+    const char* message = LookupMessage(MSI_RODEX_BUTTON_DELETE_ALL);
     g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
     break;
   }

@@ -26,6 +26,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
@@ -156,7 +157,7 @@ void UILapineUpgradeBoxWnd::Paint() {
     this->DrawTitleBar(false, this->title.c_str(), 0);
   }
 
-  this->DrawCenteredText(35, 47, LookupMessage(2896), 156, 0, 11, 0xCD7A51, 0);
+  this->DrawCenteredText(35, 47, LookupMessage(MSI_LAPINE_FAIL_NOT_ENOUGH_REFINING_LEVEL), 156, 0, 11, 0xCD7A51, 0);
   this->DrawCenteredText(35, 63, this->description.c_str(), 156, 0, 11, 0x844A42, 0);
 
   if (this->item.unknown_0000[1] != 0) {
@@ -545,7 +546,7 @@ __declspec(noinline) void UILapineUpgradeBox_IngredientInfoWnd::SetItem(std::uin
   this->BuildItemName(&this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
   if (this->item.identified == 1 && this->item.unknown_0098 != 0) {
-    sprintf_s(name, sizeof(name), LookupMessage(0xA28), name, this->item.unknown_0098);
+    sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, this->item.unknown_0098);
   }
 
   this->item.SetName(name);
@@ -581,7 +582,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
   }
 
   if (this->minRefine != 0 && this->minRefine < item.unknown_0060) {
-    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3D)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEMSHOP_CURRENCY)), 0, 0, 0);
   }
 
   if (Equipment(item) && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
@@ -589,7 +590,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
       std::uint32_t card = 0;
       std::memcpy(&card, item.unknown_001C + offset, sizeof(card));
       if (card != 0) {
-        this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3E)), 0, 0, 0);
+        this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PURCHASEWND_TOTAL)), 0, 0, 0);
         break;
       }
     }
@@ -654,7 +655,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         this->BuildItemName(&owned, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
         if (owned.identified == 1 && owned.unknown_0098 != 0) {
-          sprintf_s(name, sizeof(name), LookupMessage(2600), name, owned.unknown_0098);
+          sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, owned.unknown_0098);
         }
 
         owned.SetName(name);

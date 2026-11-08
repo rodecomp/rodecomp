@@ -7,6 +7,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIDebuffRemoveWnd.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <string>
 
 // OFFSET: 0x0094B410
@@ -88,7 +89,7 @@ void UIGuild_Storage_Log::OnCreate(int width, int height) {
   this->unknown_0158->Configure(1, 20, 50, 1, 0, 0, 0, 0, 0, 0, 0, 0);
   this->unknown_0158->Move(0, 17);
   this->AddChild(this->unknown_0158);
-  this->unknown_0158->AddTab(LookupMessage(2544), "");
-  this->unknown_0158->AddTab(LookupMessage(2545), "");
-  this->unknown_0158->AddTab(LookupMessage(2546), "");
+  this->unknown_0158->AddTab(LookupMessage(MSI_GUILD_STORAGE_LOG_WND_NAME), "");
+  this->unknown_0158->AddTab(LookupMessage(MSI_GUILD_STORAGE_LOG_CAUTION), "");
+  this->unknown_0158->AddTab(LookupMessage(MSI_GUILD_STORAGE_CLOSE_TIMEOUT), "");
 }

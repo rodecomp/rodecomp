@@ -2,16 +2,17 @@
 
 #include "Contents/MessageTable.h"
 
+#include "Resource/MSGSTRINGID.h"
 // OFFSET: 0x008C7280
 // FUNCTION: fn_11929
 UIChatRoomMakeWnd::UIChatRoomMakeWnd() : UIFrameWnd(0) {
-  this->m_title = LookupMessage(125);
+  this->m_title = LookupMessage(MSI_MAKING_ROOM);
 }
 
 // OFFSET: 0x008C7120
 // FUNCTION: fn_11928
 UIChatRoomChangeWnd::UIChatRoomChangeWnd() : UIChatRoomMakeWnd() {
-  this->m_title = LookupMessage(126);
+  this->m_title = LookupMessage(MSI_CHANGE_ROOM_SETTING);
 }
 
 // OFFSET: 0x008CA5F0

@@ -97,6 +97,7 @@
 #include <sys/stat.h>
 #include <timeapi.h>
 #include <utility>
+#include "Resource/MSGSTRINGID.h"
 
 // GLOBAL: gl_24398
 RECT Rect;
@@ -1814,8 +1815,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     const char devServerSource[] = {'\x55', '\x86', '\x25', '\x99'};
     thread_local EncryptedName<sizeof(devServerSource), 0x4B755DB19953E311ULL> devServer(devServerSource);
     if (!std::strstr(g_launchServerName, devServer.Text())) {
-      const char* parameters = LookupMessage(3445);
-      const char* file = LookupMessage(3445);
+      const char* parameters = LookupMessage(MSI_FRIEND_ALREADY_FRIEND);
+      const char* file = LookupMessage(MSI_FRIEND_ALREADY_FRIEND);
       const char openSource[] = {'\x22', '\xEF', '\x90', '\x69', '\xEB'};
       thread_local EncryptedName<sizeof(openSource), 0xD7A749EB27D5BF6DULL> open(openSource);
       ShellExecuteA(nullptr, open.Text(), file, parameters, nullptr, SW_SHOWNORMAL);

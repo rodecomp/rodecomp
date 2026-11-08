@@ -13,6 +13,7 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <string>
 
@@ -119,13 +120,13 @@ int UIChatRoomTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   std::string status;
   char text[384];
   if (this->roomType == 0) {
-    status = LookupMessage(89);
+    status = LookupMessage(MSI_ROOM_PRIVATE);
     std::sprintf(text, "%s (%d/%d)", this->title.c_str(), this->memberCount, this->memberLimit);
   } else if (this->roomType == 3) {
     status.clear();
     std::sprintf(text, "%s", this->title.c_str());
   } else {
-    status = LookupMessage(90);
+    status = LookupMessage(MSI_ROOM_PUBLIC);
     std::sprintf(text, "%s (%d/%d)", this->title.c_str(), this->memberCount, this->memberLimit);
   }
 

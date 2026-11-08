@@ -18,6 +18,7 @@
 #include "Resource/SkinPalette.h"
 #include "UI/Text/UITextViewer.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <mbstring.h>
 #include <string>
 #include <windows.h>
@@ -56,10 +57,10 @@ UIGuildBanReasonDescWnd::UIGuildBanReasonDescWnd() {
 // OFFSET: 0x0095DB20
 // FUNCTION: fn_13071
 void UIGuildHelperWnd::Paint() {
-  this->DrawTitleBar(true, LookupMessage(2074), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_GUILD_HELPER), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
-  this->DrawTextAt(15, 32, LookupMessage(2075), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(15, 32, LookupMessage(MSI_NO_GUILD_CURRENTLY_PARTICIPATED_IN), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x0095FCB0
@@ -124,7 +125,7 @@ void UICreateGuildWnd::OnLBtnUp(int, int) {
 // OFFSET: 0x0095F420
 // FUNCTION: fn_13078
 void UIGuildTipWnd::Paint() {
-  this->DrawTitleBar(true, LookupMessage(2078), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_PARTY_RECRUIT_REFUSE_VOLUNTEER), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }
@@ -166,10 +167,10 @@ int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
     this->m_nameEdit->SelectAll();
 
     if (name.empty()) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2080)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SHOW_MAPNAMETITLE)), 0xFF, 0, 0, 0);
     } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_itemLinkOpening.c_str())) ||
                _mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_itemLinkClosing.c_str()))) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2812)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0xFF, 0, 0, 0);
     } else if (this->m_mode == 0) {
       mode->SendMsg(MM_REQ_MAKE_GUILD, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     } else {
@@ -350,7 +351,7 @@ void UIGuildBanReasonDescWnd::OnCreate(int width, int height) {
   UIGuildLeaveReasonDescWnd::OnCreate(width, height);
 
   if (this->m_reasonText != nullptr) {
-    this->m_reasonText->SetText(LookupMessage(0x20C), 0);
+    this->m_reasonText->SetText(LookupMessage(MSI_PELASE_INPUT_WHY_EXPEL), 0);
   }
 }
 
@@ -370,7 +371,7 @@ void UIGuildLeaveReasonDescWnd::OnCreate(int, int) {
   this->m_reasonText = new UIStaticText();
   this->m_reasonText->SetSize(this->geometry.width - 30, 15);
   this->m_reasonText->Move(15, 6);
-  this->m_reasonText->SetText(LookupMessage(523), 0);
+  this->m_reasonText->SetText(LookupMessage(MSI_PLEASE_INPUT_WHY_LEAVING), 0);
   this->AddChild(this->m_reasonText);
 
   {

@@ -23,6 +23,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 extern "C" {
 void lua_settop(lua_State* L, int index);
 int lua_type(lua_State* L, int index);
@@ -260,7 +261,7 @@ void CSession::UnequipItem61B8(const ITEM_INFO& item) {
   if (location == 0x8000) {
     ITEM_INFO equipped = g_session.FindItemByIdentity(item.unknown_0000[1], location);
     if (equipped.unknown_0000[1] != 0) {
-      const char* message = LookupMessage(0xAB);
+      const char* message = LookupMessage(MSI_ITEM_IS_REMOVED);
       const std::string name = equipped.DisplayName(0);
       const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);

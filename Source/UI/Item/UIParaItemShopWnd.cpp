@@ -38,6 +38,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/GroupedInteger.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -228,7 +229,7 @@ void UIParaResultWnd::OnCreate(int width, int height) {
 
   this->title = new UIStaticText();
   this->title->SetSize(70, 15);
-  this->title->SetText(LookupMessage(2530), 0);
+  this->title->SetText(LookupMessage(MSI_GUILD_INVITE), 0);
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
@@ -300,7 +301,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       if (count > 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(119)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EQUIPITEM_OLNY_ONE)), 255, 0, 0, 0);
         return 0;
       }
       break;
@@ -326,7 +327,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       item.quantity += 30000 - combined;
       char text[200];
       std::memset(text, 0, sizeof(text));
-      sprintf_s(text, sizeof(text), LookupMessage(1704), 30000);
+      sprintf_s(text, sizeof(text), LookupMessage(MSI_LIMIT_BUY_ITEM2), 30000);
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 255, 0, 0, 0);
     }
@@ -335,7 +336,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     if (available != -1 && available < a) {
       item.quantity = available;
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2531)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PARA_PURCHASE_ITEM_FAIL)), 255, 0, 0, 0);
     }
 
     if (item.quantity > 0) {
@@ -350,10 +351,10 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
       if (!affordable) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(55)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INSUFFICIENT_MONEY)), 255, 0, 0, 0);
       } else if (weight + g_session.m_weight > g_session.m_maxWeight) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2536)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GUILD_STORAGE_ITEM_COUNT)), 255, 0, 0, 0);
       } else {
         if (item.unknown_0074[3] == 1) {
           g_session.RemoveItem1718(item);
@@ -529,12 +530,12 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     if (a == 1) {
       this->unknown_00F8 = 1;
       this->showQuantity = 1;
-      this->title->SetTextAutoWidth(LookupMessage(185));
+      this->title->SetTextAutoWidth(LookupMessage(MSI_ITEMSYOUCANSELL));
       this->checkBox->m_disabled = 0;
     } else {
       this->unknown_00F8 = 0;
       this->showQuantity = 0;
-      this->title->SetTextAutoWidth(LookupMessage(186));
+      this->title->SetTextAutoWidth(LookupMessage(MSI_SHOPITEMS));
       this->checkBox->m_disabled = 1;
     }
     return 0;
@@ -607,7 +608,7 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   }
   case UM_SETTITLE:
     this->showQuantity = 0;
-    this->title->SetTextAutoWidth(LookupMessage(2530));
+    this->title->SetTextAutoWidth(LookupMessage(MSI_GUILD_INVITE));
     this->SendMsg(nullptr, UM_RESIZE, 7, this->geometry.width, a, 0);
     return 0;
   case UM_RESIZE:
@@ -773,13 +774,13 @@ void UIParaItemShopWnd::Paint() {
   if (this->unknown_010C == 1) {
     std::string text;
     if (g_serviceType == 0 && g_session.m_channelCopId == 1) {
-      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(1290), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid));
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_POINT_SHOP_NHN), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid));
     } else {
-      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(1210), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid));
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_POINT_SHOP), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid));
     }
     this->DrawTextAt(12, this->geometry.height - 21, text.c_str(), text.size(), 0, 12, 0, 0, 0);
 
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(1305), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingGid));
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_POINT_SHOP2), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingGid));
     this->DrawTextAt(12, this->geometry.height - barHeight - 21, text.c_str(), text.size(), 0, 12, 0, 0, 0);
   }
 }

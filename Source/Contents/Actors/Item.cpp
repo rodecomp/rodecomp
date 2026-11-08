@@ -21,6 +21,7 @@
 #include "Render/Renderer.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstdlib>
 #include <windows.h>
@@ -167,7 +168,7 @@ void CItem::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d
   item.itemId = itemName;
   item.identified = entry->identified;
   item.unknown_0060 = 0;
-  this->name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), entry->count));
+  this->name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), entry->count));
   this->GetActRes();
   this->render.unknown_008C = timeGetTime();
 

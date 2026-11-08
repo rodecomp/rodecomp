@@ -30,6 +30,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <windows.h>
 #include <timeapi.h>
 
@@ -205,17 +206,17 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return 1;
     case 0x1FC:
       if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB9)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_CHAT)), 0xFF, 0, 0, 0);
         return 1;
       }
       if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0250) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB7)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_MERCHANTSHOP)), 0xFF, 0, 0, 0);
       } else if (g_windowMgr.unknown_0304 || g_windowMgr.unknown_0308 || g_windowMgr.unknown_02FC) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBBA)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MDUNGEON_CREATE_FAIL_PARTY_ONLINE)), 0xFF, 0, 0, 0);
       } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->unknown_0264[3]) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB8)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_USE_NPC)), 0xFF, 0, 0, 0);
       } else if (g_windowMgr.unknown_01F0 || g_windowMgr.unknown_01F8) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBBB)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_USESKILL_FAIL_NEED_MORE_ARROW_CNT)), 0xFF, 0, 0, 0);
       } else {
         g_modeMgr.GetGameMode()->SendMsg(MM_SWAP_EQUIPMENT, 0, 0, 0, 0);
       }
@@ -296,7 +297,7 @@ void UISwapEquipmentWnd::OnCreate(int width, int height) {
   this->m_swapButton->SetBitmap("유저인터페이스\\swap_equipment\\btn_change2_press.bmp", 2, 0);
   this->m_swapButton->SetSize(this->m_swapButton->BitmapWidth(), this->m_swapButton->BitmapHeight());
   UISwapBitmapButton* button = this->m_swapButton;
-  const std::string label = LookupMessage(0xC27);
+  const std::string label = LookupMessage(MSI_DESC_VIT2);
   button->label = label;
   this->m_swapButton->m_textColor = 0x172842;
   this->m_swapButton->Move(0x51, 0x9B);
@@ -304,7 +305,7 @@ void UISwapEquipmentWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_swapButton);
 
   UIBasicButton* close = new (std::nothrow) UIBasicButton();
-  close->Configure(0x32, LookupMessage(0xDA));
+  close->Configure(0x32, LookupMessage(MSI_CANCEL));
   close->Move(0xE0, 0x9B);
   close->SetId(0xB9);
   this->AddChild(close);
@@ -339,7 +340,7 @@ void UISwapEquipmentWnd::Paint() {
     this->DrawBitmap(0, 0, bitmap, false);
   }
 
-  this->DrawCenteredText(140, 4, LookupMessage(3110), std::strlen(LookupMessage(3110)), 0, 12, 0x14234B, 0);
+  this->DrawCenteredText(140, 4, LookupMessage(MSI_DESC_AGI2), std::strlen(LookupMessage(MSI_DESC_AGI2)), 0, 12, 0x14234B, 0);
 
   this->DrawEquipmentSlots();
 
@@ -441,12 +442,12 @@ void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
       std::string text;
       if (item.quantity > 1) {
         if (item.unknown_0098 != 0) {
-          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0x9F7), item.DisplayName(0)));
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0)));
         } else {
-          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0xB7), item.DisplayName(0).c_str(), item.quantity));
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity));
         }
       } else if (item.unknown_0098 != 0) {
-        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0xA28), item.DisplayName(0).c_str(), item.unknown_0098));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.unknown_0098));
       } else {
         text = static_cast<const std::string&>(item.DisplayName(0));
       }

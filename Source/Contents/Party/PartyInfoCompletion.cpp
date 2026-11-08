@@ -12,6 +12,7 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <json/reader.h>
 #include <json/value.h>
 
@@ -38,7 +39,7 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
   auto entry = root["data"].begin();
 
   if (entry == root["data"].end()) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3443)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_QUESTWND_HIGHER)), 0xFF, 0, 0, 0);
     g_windowMgr.CloseWindow(WID_APPLYFORPARTYWND);
     return;
   }
@@ -76,9 +77,9 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
   }
 
   if (info.minimumLevel > g_session.m_level || info.maximumLevel < g_session.m_level) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3416)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INPUT_SEARCH_TEXT)), 0xFF, 0, 0, 0);
   } else if (g_session.PartyCount() > 0) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(79)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_YOU_ARE_ALREADY_IN_PARTY)), 0xFF, 0, 0, 0);
   } else {
     g_modeMgr.gameMode->SendMsg(MM_PARTY_REQ_MASTER_TO_JOIN, reinterpret_cast<int>(&info.accountId), reinterpret_cast<int>(&info.characterId), 0, 0);
     g_windowMgr.CloseWindow(WID_APPLYFORPARTYWND);

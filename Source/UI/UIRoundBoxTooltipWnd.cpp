@@ -15,6 +15,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstring>
 #include <string>
@@ -112,8 +113,8 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       const ItemMoveInfo info = FindItemMoveInfo(static_cast<int>(argument1));
 
       if (info.drop) {
-        text += LookupMessage(0xAE4);
-        longest = LookupMessage(0xAE4);
+        text += LookupMessage(MSI_ITEMMOVEINFO_MAIL);
+        longest = LookupMessage(MSI_ITEMMOVEINFO_MAIL);
         ++lines;
       }
 
@@ -121,9 +122,9 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         if (!text.empty()) {
           text += "\n";
         }
-        text += LookupMessage(0xAE5);
-        if (std::strlen(LookupMessage(0xAE5)) > std::strlen(longest.c_str())) {
-          longest = LookupMessage(0xAE5);
+        text += LookupMessage(MSI_ITEMMOVEINFO_EXCHANGEWND);
+        if (std::strlen(LookupMessage(MSI_ITEMMOVEINFO_EXCHANGEWND)) > std::strlen(longest.c_str())) {
+          longest = LookupMessage(MSI_ITEMMOVEINFO_EXCHANGEWND);
         }
         ++lines;
       }
@@ -132,9 +133,9 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         if (!text.empty()) {
           text += "\n";
         }
-        text += LookupMessage(0xAE6);
-        if (std::strlen(LookupMessage(0xAE6)) > std::strlen(longest.c_str())) {
-          longest = LookupMessage(0xAE6);
+        text += LookupMessage(MSI_ITEMMOVEINFO_AUCTION);
+        if (std::strlen(LookupMessage(MSI_ITEMMOVEINFO_AUCTION)) > std::strlen(longest.c_str())) {
+          longest = LookupMessage(MSI_ITEMMOVEINFO_AUCTION);
         }
         ++lines;
       }
@@ -143,9 +144,9 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         if (!text.empty()) {
           text += "\n";
         }
-        text += LookupMessage(0xAE7);
-        if (std::strlen(LookupMessage(0xAE7)) > std::strlen(longest.c_str())) {
-          longest = LookupMessage(0xAE7);
+        text += LookupMessage(MSI_ITEMMOVEINFO_STOREOFGUILD);
+        if (std::strlen(LookupMessage(MSI_ITEMMOVEINFO_STOREOFGUILD)) > std::strlen(longest.c_str())) {
+          longest = LookupMessage(MSI_ITEMMOVEINFO_STOREOFGUILD);
         }
         ++lines;
       }
@@ -154,9 +155,9 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         if (!text.empty()) {
           text += "\n";
         }
-        text += LookupMessage(0xAE8);
-        if (std::strlen(LookupMessage(0xAE8)) > std::strlen(longest.c_str())) {
-          longest = LookupMessage(0xAE8);
+        text += LookupMessage(MSI_ITEMMOVEINFO_TONPC);
+        if (std::strlen(LookupMessage(MSI_ITEMMOVEINFO_TONPC)) > std::strlen(longest.c_str())) {
+          longest = LookupMessage(MSI_ITEMMOVEINFO_TONPC);
         }
         ++lines;
       }
@@ -165,9 +166,9 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         if (!text.empty()) {
           text += "\n";
         }
-        text += LookupMessage(0xAEA);
-        if (std::strlen(LookupMessage(0xAEA)) > std::strlen(longest.c_str())) {
-          longest = LookupMessage(0xAEA);
+        text += LookupMessage(MSI_CREATE_CHARACTER);
+        if (std::strlen(LookupMessage(MSI_CREATE_CHARACTER)) > std::strlen(longest.c_str())) {
+          longest = LookupMessage(MSI_CREATE_CHARACTER);
         }
         ++lines;
       }
@@ -176,9 +177,9 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         if (!text.empty()) {
           text += "\n";
         }
-        text += LookupMessage(0xAEB);
-        if (std::strlen(LookupMessage(0xAEB)) > std::strlen(longest.c_str())) {
-          longest = LookupMessage(0xAEB);
+        text += LookupMessage(MSI_UNEQUIP_ARROW3);
+        if (std::strlen(LookupMessage(MSI_UNEQUIP_ARROW3)) > std::strlen(longest.c_str())) {
+          longest = LookupMessage(MSI_UNEQUIP_ARROW3);
         }
         ++lines;
       }

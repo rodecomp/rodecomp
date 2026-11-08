@@ -25,6 +25,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
+#include "Resource/MSGSTRINGID.h"
 #include <cstdlib>
 #include <string>
 #include <windows.h>
@@ -133,7 +134,7 @@ void CMergeItemWnd::OnCreate(int, int) {
 void CMergeItemWnd::Paint() {
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->DrawTitleBar(true, LookupMessage(2169), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_MERGE_ITEM_FAILED_NOT_MERGE), 0);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height, RGB(red, green, blue));
 
   for (int index = 0; index < this->m_visibleCount; ++index) {
@@ -197,7 +198,7 @@ void CMergeItemWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
   if (item.unknown_0000[1] != 0) {
     this->ToScreen(screenX, screenY);
-    std::string text = FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity);
+    std::string text = FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity);
     g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
@@ -395,7 +396,7 @@ bool CMergeItemWnd::RequestMerge() {
   }
 
   if (ids.size() < this->m_minSelection) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2170)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MERGE_ITEM_FAILED_MAX_COUNT)), 0xFF, 0, 0, 0);
     return false;
   }
 

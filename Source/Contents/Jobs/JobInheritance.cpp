@@ -36,6 +36,7 @@
 #include "Resource/World/TerrainResource.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstring>
 #include <list>
 #include <new>
@@ -1852,7 +1853,7 @@ bool CSession::UnequipItem2B50(int location) {
     if (slots.values[2] < 10) {
       if (slots.values[2] != -1) {
         ITEM_INFO& item = this->unknown_2B50[slots.values[2]];
-        const char* message = LookupMessage(0xAB);
+        const char* message = LookupMessage(MSI_ITEM_IS_REMOVED);
         const std::string name = item.DisplayName(0);
         const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);

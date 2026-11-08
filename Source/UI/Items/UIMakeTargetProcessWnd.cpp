@@ -18,6 +18,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstring>
 #include <vector>
@@ -149,9 +150,9 @@ void UIMakeTargetProcessWnd::Paint() {
   item.unknown_0060 = 0;
   item.identified = 1;
   const int nameWidth = this->DrawFittedItemName(16, 2, &item, 0, 0, 12, 0);
-  this->DrawShadowedText(nameWidth + 16, 2, LookupMessage(426), 0, 0, 0xFFFFFF, 0, 12, 0);
+  this->DrawShadowedText(nameWidth + 16, 2, LookupMessage(MSI_MAKE_TARGET), 0, 0, 0xFFFFFF, 0, 12, 0);
   const int requiredWidth = this->DrawFittedItemName(16, 22, &item, 0, 0, 12, 0);
-  this->DrawShadowedText(requiredWidth + 16, 22, LookupMessage(427), 0, 0, 0xFFFFFF, 0, 12, 0);
+  this->DrawShadowedText(requiredWidth + 16, 22, LookupMessage(MSI_REQUIRE_FOR_MAKE_TARGET), 0, 0, 0xFFFFFF, 0, 12, 0);
 
   const std::vector<const char*>& lines = FindMetalProcessItems(this->makeType);
   int y = 42;

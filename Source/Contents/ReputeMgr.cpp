@@ -10,6 +10,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/JsonCppLoader.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstring>
 #include <utility>
@@ -248,7 +249,7 @@ void CReputeMgr::OpenRepute(std::uint64_t groupId, std::uint64_t reputeId) {
   const unsigned int groupIdHigh = static_cast<unsigned int>(groupId >> 32);
 
   if (groupIdLow == 0 && groupIdHigh == 0) {
-    window->SendMsg(nullptr, UM_TAB, reinterpret_cast<std::intptr_t>(LookupMessage(3829)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_TAB, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENCHANT)), 0, 0, 0);
   } else {
     auto group = this->m_groups.find(groupId);
     if (group != this->m_groups.end()) {

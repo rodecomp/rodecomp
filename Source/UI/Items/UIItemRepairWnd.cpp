@@ -22,6 +22,7 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Lists/UIListBox.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstring>
 #include <string>
@@ -46,7 +47,7 @@ struct UIItemRepairRecordHeader {
 // OFFSET: 0x009A3860
 // FUNCTION: fn_13609
 void UIItemRepairWnd::Paint() {
-  const int titleHeight = this->DrawTitleBar(true, LookupMessage(812), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(MSI_REPAIRITEMLIST), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }

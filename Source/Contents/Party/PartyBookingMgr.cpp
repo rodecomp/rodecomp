@@ -8,6 +8,7 @@
 #include "UI/Window/UISeekPartyListWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <cstring>
 #include <ctime>
@@ -182,7 +183,7 @@ void PartyBookingMgr::OnAdvertisement(PARTY_BOOKING_AD_INFO info) {
 
     if (this->m_alarm) {
       g_soundMgr->PlayWave("party_alarm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      const char* message = LookupMessage(0x6D9);
+      const char* message = LookupMessage(MSI_PARTY_BOOKING_NOTIFY);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 15, 0, 0);
     }
     return;

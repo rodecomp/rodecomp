@@ -7,6 +7,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Timestamp.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <chrono>
 #include <cstdio>
 #include <cstring>
@@ -77,7 +78,7 @@ void CPartialShutDownSchedule::Process(const std::uint64_t& now) {
   if (seconds >= 3600) {
     char text[256];
     std::memset(text, 0, 255);
-    std::sprintf(text, LookupMessage(2349), seconds / 3600, (seconds % 3600) / 60);
+    std::sprintf(text, LookupMessage(MSI_MENU_WEBBROWSERWND), seconds / 3600, (seconds % 3600) / 60);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
     return;
   }
@@ -87,7 +88,7 @@ void CPartialShutDownSchedule::Process(const std::uint64_t& now) {
       char text[256];
       std::memset(text, 0, 255);
       std::sprintf(
-        text, LookupMessage(2348), this->endTime->Year(), this->endTime->Month(), this->endTime->Day(), this->endTime->Hour(), this->endTime->Minute(),
+        text, LookupMessage(MSI_MENU_MACROWND), this->endTime->Year(), this->endTime->Month(), this->endTime->Day(), this->endTime->Hour(), this->endTime->Minute(),
         this->endTime->Second()
       );
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);

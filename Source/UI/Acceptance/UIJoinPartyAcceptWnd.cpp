@@ -12,6 +12,7 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstring>
 
 // OFFSET: 0x008C8240
@@ -47,7 +48,7 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     std::string text = "(";
     text += reinterpret_cast<const char*>(b);
     text += ")";
-    text += LookupMessage(94);
+    text += LookupMessage(MSI_SUGGEST_JOIN_PARTY);
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
 

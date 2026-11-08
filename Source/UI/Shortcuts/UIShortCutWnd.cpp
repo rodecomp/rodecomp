@@ -68,6 +68,7 @@
 #include <new>
 #include <string>
 #include <vector>
+#include "Resource/MSGSTRINGID.h"
 
 namespace {
 #pragma pack(push, 1)
@@ -360,7 +361,7 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
   case TYPE_HEAL:
   case TYPE_SCHANGE:
   case TYPE_SPECIAL:
-    if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(2373), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+    if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(MSI_COMMAND_SETTING), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
       mode->SendMsg(MM_USEITEM, item.unknown_0000[1], 0, 0, 0);
     }
 
@@ -369,7 +370,7 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
   case TYPE_CASH_POINT_ITEM:
     if (*reinterpret_cast<const int*>(&g_session.unknown_16F4[4]) >= 0) {
       const int result =
-        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(1226), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
       if (result == 187) {
         mode->SendMsg(MM_USEITEM, item.unknown_0000[1], 0, 0, 0);
       }
@@ -759,7 +760,7 @@ void UIMemorialDunWnd::OnCreate(int, int) {
   }
 
   this->m_partyButton = new (std::nothrow) UIBasicButton();
-  this->m_partyButton->Configure(125, LookupMessage(3270));
+  this->m_partyButton->Configure(125, LookupMessage(MSI_PARTY_NOT_LEAVE_PARTY_UNTIL_YIELD_PARTYMASTER));
   this->m_partyButton->Move(-100, -100);
   this->m_partyButton->SetId(211);
   this->AddChild(this->m_partyButton);
@@ -779,7 +780,7 @@ void UIMemorialDunWnd::ResetDungeonInfo() {
 // OFFSET: 0x0092C6B0
 // FUNCTION: fn_12665
 void UIMemorialDunWnd::Paint() {
-  this->DrawTitleBar(true, LookupMessage(0x538), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_MEMORIAL_DUN), 0);
   if (this->geometry.height == 17) {
     return;
   }
@@ -807,13 +808,13 @@ void UIMemorialDunWnd::Paint() {
   }
 
   if (g_session.unknown_5948 == 0) {
-    sprintf(text, LookupMessage(0x53E), g_session.unknown_5968);
+    sprintf(text, LookupMessage(MSI_MEMORIAL_DUN_PRIORITY), g_session.unknown_5968);
     const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
     DrawColoredText(*this, (this->geometry.width - width) / 2, (this->geometry.height - 17) / 2, text, 0, color, 0, 12, false);
   } else if (g_session.unknown_5948 == 1) {
     if (g_session.unknown_5970) {
-      strftime(timeText, 128, LookupMessage(0x4EC), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.unknown_5970)));
-      sprintf(text, LookupMessage(0x53F), timeText);
+      strftime(timeText, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.unknown_5970)));
+      sprintf(text, LookupMessage(MSI_MEMORIAL_DUN_NOTIFY), timeText);
       std::vector<std::string> lines;
       this->WrapPixelText(text, lines, this->geometry.width - 20);
       if (lines.size() > 1) {
@@ -829,22 +830,22 @@ void UIMemorialDunWnd::Paint() {
     }
   } else if (g_session.unknown_5948 == 2) {
     if (g_session.unknown_596C) {
-      this->DrawTextAt(10, 55, LookupMessage(0x540), 0, 0, 12, 0, 0, 0);
-      strftime(timeText, 128, LookupMessage(0x4EC), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.unknown_596C)));
+      this->DrawTextAt(10, 55, LookupMessage(MSI_MEMORIAL_DUN_NOTIFY2), 0, 0, 12, 0, 0, 0);
+      strftime(timeText, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.unknown_596C)));
       sprintf(text, "^ff0000%s^ffffff", timeText);
       const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
       DrawColoredText(*this, (this->geometry.width - width) / 2, 75, text, 0, color, 0, 12, false);
     }
   } else if (g_session.unknown_5948 == 3) {
     std::vector<std::string> lines;
-    this->WrapPixelText(LookupMessage(0x53C), lines, this->geometry.width - 20);
+    this->WrapPixelText(LookupMessage(MSI_MEMORIAL_DUN_OUT1), lines, this->geometry.width - 20);
     int y = 55;
     for (unsigned int index = 0; index < lines.size(); ++index) {
       DrawColoredText(*this, 5, y, lines[index].c_str(), 0, color, 0, 12, false);
       y += 15;
     }
 
-    this->WrapPixelText(LookupMessage(0x53D), lines, this->geometry.width - 20);
+    this->WrapPixelText(LookupMessage(MSI_MEMORIAL_DUN_OUT2), lines, this->geometry.width - 20);
     y = 70;
     for (unsigned int index = 0; index < lines.size(); ++index) {
       DrawColoredText(*this, 10, y, lines[index].c_str(), 0, color, 0, 12, false);
@@ -1202,7 +1203,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       const int measured = this->TextWidth(local.c_str(), 0, 0, 12, 0, 0);
       if (measured + 10 >= this->geometry.width - 0x32) {
-        g_windowMgr.Confirm(LookupMessage(0x629), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FAILED_CHANGE_TABNAME), 0, true, false, 0, "Message", 0x118, 0x78, 0);
       }
       this->m_edit->Move(-100, -100);
       this->m_edit->SetText("");
@@ -1487,7 +1488,7 @@ void UINewChatWnd::OnCreate(int width, int height) {
   };
   const int buttonIds[3] = {0xE1, 0xD4, 0xEE};
   const int buttonPositions[3][2] = {{0x61, base + 3}, {0x24A, base + 7}, {0x23C, base + 7}};
-  const char* const tooltips[3] = {LookupMessage(0xC73), LookupMessage(0xC75), LookupMessage(0xC74)};
+  const char* const tooltips[3] = {LookupMessage(MSI_RODEX_DOWNLOADING), LookupMessage(MSI_RODEX_TITLE), LookupMessage(MSI_RODEX_NOW_LOADING)};
   for (int index = 0; index < 3; ++index) {
     UIBitmapButton* button = new UIBitmapButton();
     this->m_inputButtons[index] = button;

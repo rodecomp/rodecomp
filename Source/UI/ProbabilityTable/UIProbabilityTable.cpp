@@ -15,6 +15,7 @@
 #include "Utility/Text/StringUtil.h"
 #include "UI/Window/UIRegisterMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstddef>
 #include <cstdint>
 #include <algorithm>
@@ -508,7 +509,7 @@ void CUIProbabilityTable::Search() {
   }
 
   if (found == list->data.end()) {
-    g_windowMgr.Confirm(LookupMessage(0x1012), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_REFINING_BLACKSMITH_BLESSING_MSG3), 0, true, false, 0, "Message", 280, 120, 0);
   } else {
     HighlightKeyword(found->name, keyword, g_probabilityHighlightBegin, g_probabilityHighlightEnd);
 
@@ -537,9 +538,9 @@ void CUIProbabilityTable::OnInit() {
     this->Move(g_renderer->viewport.centerX, (g_renderer->viewport.height - this->geometry.height) / 2);
   }
 
-  this->m_titleBar->SetTitle(LookupMessage(0x1017));
-  this->m_nameHeader->SetText(LookupMessage(0x1018));
-  this->m_probabilityHeader->SetText(LookupMessage(0x1019));
+  this->m_titleBar->SetTitle(LookupMessage(MSI_REFINING_PROBABILITY_URL));
+  this->m_nameHeader->SetText(LookupMessage(MSI_GRADE_ENCHANT_PROBABILITY_URL));
+  this->m_probabilityHeader->SetText(LookupMessage(MSI_SELLINGSLOT_SUCCESS));
 }
 
 // OFFSET: 0x00A4E030

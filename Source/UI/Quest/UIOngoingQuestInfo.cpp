@@ -19,6 +19,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstring>
 #include <format>
@@ -302,7 +303,7 @@ void CUIRewards::OnBindItem(CUIRewardItem* item, const CRewardItemData& data) {
   item->gameItem->SetItem(info);
 
   item->nameText->SetText(info.DisplayName(0));
-  item->countText->SetText(FormatOwnedString(LookupMessage(0xB6), data.count));
+  item->countText->SetText(FormatOwnedString(LookupMessage(MSI_EA), data.count));
 }
 
 }
@@ -310,7 +311,7 @@ void CUIRewards::OnBindItem(CUIRewardItem* item, const CRewardItemData& data) {
 // OFFSET: 0x00A558B0
 // FUNCTION: fn_16308
 void CUIOngoingQuestInfo::OnInit() {
-  const char* title = LookupMessage(0xD48);
+  const char* title = LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD);
   this->titleBar->SetTitle(title);
   UIWindow* window = g_windowMgr.LookupWindow(WID_RENEWQUESTUI);
   if (window) {
@@ -328,9 +329,9 @@ void CUIScrollWindow::OnInit() {
   this->firstContents->EnableClip();
   this->secondContents->EnableClip();
   this->rewards->EnableClip();
-  this->firstContents->title->SetText(LookupMessage(0xD49));
-  this->secondContents->title->SetText(LookupMessage(0xD4A));
-  this->rewards->title->SetText(LookupMessage(0xD4B));
+  this->firstContents->title->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP));
+  this->secondContents->title->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP));
+  this->rewards->title->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM));
 }
 
 }
@@ -340,9 +341,9 @@ namespace OngoingQuestInfo {
 // OFFSET: 0x00A55950
 // FUNCTION: fn_16310
 void CUIRewards::OnInit() {
-  this->firstLabel->SetText(LookupMessage(0xD4C));
-  this->secondLabel->SetText(LookupMessage(0xD4D));
-  this->thirdLabel->SetText(LookupMessage(0xD4E));
+  this->firstLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM));
+  this->secondLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM));
+  this->thirdLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM));
   this->rewardList->unknown_00C4 = 1;
   this->rewardList->Invalidate();
   this->npcSprite = new UINpcSprWnd();

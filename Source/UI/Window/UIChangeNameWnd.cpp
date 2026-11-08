@@ -20,6 +20,7 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <cstring>
 #include <string>
@@ -102,26 +103,26 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
     switch (a) {
     case ID_OK: {
       if (g_navigationLinkParser->HasLink(this->m_edit->Text()) == true) {
-        g_windowMgr.Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;
       }
 
       std::string name(this->m_edit->Text());
       if (name.find('\n', 0) != std::string::npos) {
-        g_windowMgr.Confirm(LookupMessage(3334), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_TOKENAGENCY_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;
       }
 
       if (g_serviceType == 1 && !ValidateCharacterName(this->m_edit->Text())) {
-        g_windowMgr.Confirm(LookupMessage(2018), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_CHARACTERNAME_ERROR), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;
       }
 
       if (this->m_edit->Length() < 4) {
-        g_windowMgr.Confirm(LookupMessage(21), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
 
@@ -129,16 +130,16 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
       const bool blank = g_session.IsBlankString(this->m_edit->Text());
       if (!allowed || blank) {
         if (!allowed) {
-          g_windowMgr.Confirm(LookupMessage(20), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
         }
         if (blank) {
-          g_windowMgr.Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
         }
         return 0;
       }
 
       if (this->m_edit->Length() >= 24 || !this->IsNameWithinLimit(this->m_edit->Text(), 24)) {
-        g_windowMgr.Confirm(LookupMessage(531), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;
       }
@@ -162,7 +163,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
       }
 
       char text[300];
-      std::sprintf(text, LookupMessage(1213), this->m_info.name);
+      std::sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), this->m_info.name);
       if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         CharacterRenamePacket packet;
         packet.id = 0x8FC;

@@ -24,6 +24,7 @@
 #include "Resource/TextureNames.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <cstring>
 #include <new>
@@ -176,7 +177,7 @@ void UINewMakeCharWnd::Paint() {
   CBitmapRes* background =
     static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\make_character_ver2\\bg_makeBg.bmp")));
   this->DrawBitmap(0, 0, background, false);
-  this->DrawTextAt(0x2C, 0x11, LookupMessage(0xD1B), 0, 0, 0xC, 0x5F5F5F, 1, 0);
+  this->DrawTextAt(0x2C, 0x11, LookupMessage(MSI_STOP_RECRUITING), 0, 0, 0xC, 0x5F5F5F, 1, 0);
 
   for (int i = 0; i < 2; ++i) {
     CImfRes* offsets = static_cast<CImfRes*>(ResourceMgr::Instance().Load(this->m_raceOffsets.c_str()));
@@ -359,7 +360,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   makeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_press.bmp", 2, 0);
   makeButton->SetSize(makeButton->BitmapWidth(), makeButton->BitmapHeight());
   makeButton->Move(0x268, 0x17B);
-  makeButton->SetText(LookupMessage(0xD11));
+  makeButton->SetText(LookupMessage(MSI_MAKECHARWND_DOUBLECHECK_NAME));
   makeButton->AddTextStyle(0, 0xE, 0x313131, 1, 1, -1000, -1000);
   makeButton->AddTextStyle(1, 0xE, 0x313131, 1, 1, -1000, -1000);
   makeButton->AddTextStyle(2, 0xE, 0x313131, 1, 1, -1000, -1000);
@@ -372,7 +373,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   cancelButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_press.bmp", 2, 0);
   cancelButton->SetSize(cancelButton->BitmapWidth(), cancelButton->BitmapHeight());
   cancelButton->Move(0x19, 0x17B);
-  cancelButton->SetText(LookupMessage(0xD17));
+  cancelButton->SetText(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_DEAD_STATE));
   cancelButton->AddTextStyle(0, 0xE, 0x313131, 1, 1, -1000, -1000);
   cancelButton->AddTextStyle(1, 0xE, 0x313131, 1, 1, -1000, -1000);
   cancelButton->AddTextStyle(2, 0xE, 0x313131, 1, 1, -1000, -1000);
@@ -444,7 +445,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   leftTurn->Move(0x1AA, 0xB3);
   leftTurn->SetId(0xE3);
   leftTurn->m_argument = 0;
-  leftTurn->SetTooltip(LookupMessage(0x87E));
+  leftTurn->SetTooltip(LookupMessage(MSI_VIEW_BEFORE_WORLDINFO_TITLE));
   this->AddChild(leftTurn);
 
   UIBitmapButton* rightTurn = new UIBitmapButton();
@@ -455,12 +456,12 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   rightTurn->Move(0x227, 0xB3);
   rightTurn->SetId(0xE2);
   rightTurn->m_argument = 0;
-  rightTurn->SetTooltip(LookupMessage(0x87F));
+  rightTurn->SetTooltip(LookupMessage(MSI_VIEW_BEFORE_SERVERINFO));
   this->AddChild(rightTurn);
 
   UIStaticText* hairStyleTitle = new UIStaticText();
   hairStyleTitle->SetSize(100, 0xF);
-  hairStyleTitle->SetText(LookupMessage(0xD12), 0);
+  hairStyleTitle->SetText(LookupMessage(MSI_DATE_HH_MM_SS), 0);
   hairStyleTitle->SetColor(0x40, 0x40, 0x40);
   hairStyleTitle->SetFont(0, 0xB, 1, 0);
   hairStyleTitle->Move(0x261, 0x2E);
@@ -482,7 +483,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
 
   UIStaticText* hairColorTitle = new UIStaticText();
   hairColorTitle->SetSize(100, 0xF);
-  hairColorTitle->SetText(LookupMessage(0xD13), 0);
+  hairColorTitle->SetText(LookupMessage(MSI_INPUT_TIME_EXCEEDED_SIGN_IN_AGAIN), 0);
   hairColorTitle->SetColor(0x40, 0x40, 0x40);
   hairColorTitle->SetFont(0, 0xB, 1, 0);
   hairColorTitle->Move(0x261, 0x11F);
@@ -559,7 +560,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
       if (!hasControlCharacter && allowed == 1 && valid == 1 && blank == 0) {
         if (this->m_nameEdit->Length() >= 24) {
-          g_windowMgr.Confirm(LookupMessage(0x213), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
           this->m_nameEdit->SetText("");
           return 0;
         }
@@ -584,13 +585,13 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         g_windowMgr.Schedule(this);
       } else {
         if (hasControlCharacter || allowed == 0) {
-          g_windowMgr.Confirm(LookupMessage(0x14), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
         }
         if (valid == 0) {
-          g_windowMgr.Confirm(LookupMessage(0xBE), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
         }
         if (blank == 1) {
-          g_windowMgr.Confirm(LookupMessage(199), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
         }
       }
 

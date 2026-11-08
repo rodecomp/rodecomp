@@ -55,6 +55,7 @@
 #include "Contents/MessageTable.h"
 #include "Utility/Text/GroupedInteger.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
@@ -797,14 +798,14 @@ void UISerachStoreInfoWnd::Paint() {
   this->m_edits[3]->Invalidate();
 
   this->DrawPanelBackground(0, 0, "");
-  this->DrawTitleBar(true, LookupMessage(0x6F4), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_SEARCH_STOREINFO), 0);
   DrawOutlinedText(*this, 5, 20, "Type", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
   DrawOutlinedText(*this, 98, 20, "Item", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
   DrawOutlinedText(*this, 185, 20, "Card", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
   DrawOutlinedText(*this, 273, 20, "Zeny", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
   this->DrawTextAt(353, 38, "~", 0, 0, 12, 0, 0, 0);
 
-  const std::string count = FormatOwnedString(LookupMessage(0x70A), g_session.unknown_5BE0);
+  const std::string count = FormatOwnedString(LookupMessage(MSI_SSI_REST_OF_NUMBER_OF_SEARCHES), g_session.unknown_5BE0);
   this->DrawRightAlignedText(this->geometry.width - 60, 60, count.c_str(), 0, 0, 12, 0, 0);
 
   this->FillRegion(5, 80, this->geometry.width - 10, 20, 0xDFFFFE);
@@ -813,17 +814,17 @@ void UISerachStoreInfoWnd::Paint() {
   DrawRectangleBorder(*this, 330, 80, 30, 21, 0xC0C0C0);
   this->FillRegion(5, 100, this->geometry.width - 10, 1, 0xC0C0C0);
 
-  this->DrawTextAt((110 - this->TextWidth(LookupMessage(0x6F5), 0, 0, 12, 0, 0)) / 2 + 50, 85,
-    LookupMessage(0x6F5), 0, 0, 12, 0, 0, 0
+  this->DrawTextAt((110 - this->TextWidth(LookupMessage(MSI_STORE_NAME), 0, 0, 12, 0, 0)) / 2 + 50, 85,
+    LookupMessage(MSI_STORE_NAME), 0, 0, 12, 0, 0, 0
   );
-  this->DrawTextAt((170 - this->TextWidth(LookupMessage(0x424), 0, 0, 12, 0, 0)) / 2 + 160, 85,
-    LookupMessage(0x424), 0, 0, 12, 0, 0, 0
+  this->DrawTextAt((170 - this->TextWidth(LookupMessage(MSI_ITEM2), 0, 0, 12, 0, 0)) / 2 + 160, 85,
+    LookupMessage(MSI_ITEM2), 0, 0, 12, 0, 0, 0
   );
-  this->DrawTextAt((30 - this->TextWidth(LookupMessage(0x6F6), 0, 0, 12, 0, 0)) / 2 + 330, 85,
-    LookupMessage(0x6F6), 0, 0, 12, 0, 0, 0
+  this->DrawTextAt((30 - this->TextWidth(LookupMessage(MSI_SEARCH_ITEM_COUNT), 0, 0, 12, 0, 0)) / 2 + 330, 85,
+    LookupMessage(MSI_SEARCH_ITEM_COUNT), 0, 0, 12, 0, 0, 0
   );
-  this->DrawTextAt((75 - this->TextWidth(LookupMessage(0x6F7), 0, 0, 12, 0, 0)) / 2 + 360, 85,
-    LookupMessage(0x6F7), 0, 0, 12, 0, 0, 0
+  this->DrawTextAt((75 - this->TextWidth(LookupMessage(MSI_SEARCH_ITEM_PRICE), 0, 0, 12, 0, 0)) / 2 + 360, 85,
+    LookupMessage(MSI_SEARCH_ITEM_PRICE), 0, 0, 12, 0, 0, 0
   );
 
   if (this->unknown_00F0.size() != 0) {

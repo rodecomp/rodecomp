@@ -22,6 +22,7 @@
 #include "Utility/Text/StringUtil.h"
 #include "Contents/Items/ItemDescription.h"
 #include "UI/Window/UIRegisterMgr.h"
+#include "Resource/MSGSTRINGID.h"
 #include <cstring>
 #include <format>
 #include <list>
@@ -828,24 +829,24 @@ void CUIQuestInfo::SetStatusLines(bool first, bool second, bool third) {
   reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->Clear();
   if (first == true) {
     reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0xC86464u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC2)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_ENCHANT_IMPOSSIBLE)));
   } else {
     reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0x6464C8u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC3)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_POSSIBLE)));
   }
   if (second == true) {
     reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0xC86464u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC4)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_IMPOSSIBLE)));
   } else {
     reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0x6464C8u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC5)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT)));
   }
   if (third == true) {
     reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0xC86464u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC6)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT)));
   } else {
     reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0x6464C8u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC7)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE)));
   }
 }
 
@@ -995,7 +996,7 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
 // OFFSET: 0x009DC950
 // FUNCTION: fn_14329
 void CUIAdventureGuide::OnInit() {
-  const char* title = LookupMessage(0xFD5);
+  const char* title = LookupMessage(MSI_RUNESYSTEM_CLOSE_RODEX);
   this->titleBar->SetTitle(title);
 
   if (g_adventureGuideMgr->m_intros.empty()) {
@@ -2008,60 +2009,60 @@ void CUIMonsterInfo::SetMonster(const std::string& title) {
   this->action = static_cast<CActRes*>(ResourceMgr::Instance().Load(spriteName + ".act"));
 
   if (element == 1) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8D7), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY4), elementLevel));
   } else if (element == 2) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8D8), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY5), elementLevel));
   } else if (element == 3) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8D9), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY6), elementLevel));
   } else if (element == 4) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DA), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY7), elementLevel));
   } else if (element == 5) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DB), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY8), elementLevel));
   } else if (element == 6) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DC), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY9), elementLevel));
   } else if (element == 7) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DD), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY0), elementLevel));
   } else if (element == 8) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DE), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE1), elementLevel));
   } else if (element == 9) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8DF), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE2), elementLevel));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E0), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE0), elementLevel));
   }
 
   if (race == 1) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E4)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE4)));
   } else if (race == 2) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E5)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE5)));
   } else if (race == 3) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E6)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE6)));
   } else if (race == 4) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E7)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE7)));
   } else if (race == 5) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E8)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE8)));
   } else if (race == 6) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E9)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE9)));
   } else if (race == 7) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8EA)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE0)));
   } else if (race == 8) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8EB)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_MOVECLICK)));
   } else if (race == 9) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8EC)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCMOVE)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8ED)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCCLICK)));
   }
 
   if (size == 1) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E1)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE1)));
   } else if (size == 2) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E2)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE2)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8E3)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE3)));
   }
 
   if (type == 0x12D) {
     reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetTextColor(0x6464FFu);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(0x8B6)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_TARGET_D_D)));
   }
 }
 

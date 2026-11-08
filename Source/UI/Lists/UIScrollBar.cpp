@@ -51,6 +51,7 @@
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/Text/TextFitting.h"
+#include "Resource/MSGSTRINGID.h"
 // OFFSET: 0x0086DDA0
 // FUNCTION: fn_11059
 UIListBoxTitle::UIListBoxTitle() {
@@ -1138,7 +1139,7 @@ int UITabControl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
     const int width = this->TextWidth(text.c_str(), 0, 0, this->unknown_00E8, 0, 0);
     if ((this->tabPadding + width) * this->TabCount() >= this->parent->geometry.width - 90) {
-      g_windowMgr.Confirm(LookupMessage(1577), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_FAILED_CHANGE_TABNAME), 0, true, false, 0, "Message", 280, 120, 0);
     } else {
       this->labels[this->unknown_007C] = text;
       const int previousWidth = this->geometry.width;
@@ -1963,7 +1964,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
               this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1,
               button->geometry.height);
 
-          const std::string unknownName = LookupMessage(581);
+          const std::string unknownName = LookupMessage(MSI_NAMELESS_USER);
           if (label.find(unknownName) != std::string::npos) {
             std::uint32_t creator[2];
             std::memcpy(creator, item.unknown_001C + 8, sizeof(creator));

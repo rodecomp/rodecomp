@@ -11,6 +11,7 @@
 #include "Script/NLuaState.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 extern "C" {
 #include <lauxlib.h>
 #include <lua.h>
@@ -186,7 +187,7 @@ const char* CMapInfoMgr::GetSignSubName(std::string map) {
 // OFFSET: 0x006CEFF0
 // FUNCTION: fn_06492
 bool CMapInfoMgr::LoadScript() {
-  this->m_emptyName = LookupMessage(187);
+  this->m_emptyName = LookupMessage(MSI_NOWHERE);
 
   NLuaState lua;
   if (lua.IsValid()) {

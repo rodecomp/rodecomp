@@ -6,6 +6,7 @@
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <string>
 #include <vector>
 
@@ -17,7 +18,7 @@ bool CNavigationManager::CollectStartLinks() {
     const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(g_session.m_navigationPlayerMap);
     info = this->FindObject(resolved.c_str());
     if (info == nullptr) {
-      g_windowMgr.Confirm(LookupMessage(2293), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_RS_FAILSTARTDATA), 0, true, false, 0, "Message", 280, 120, 0);
       return false;
     }
   }

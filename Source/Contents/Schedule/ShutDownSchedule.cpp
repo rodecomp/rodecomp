@@ -5,6 +5,7 @@
 #include "Contents/MessageTable.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 // GLOBAL: gl_24854
 double s_shutDownNoticeSeconds[6] = {
   1800.0,
@@ -34,7 +35,7 @@ void CShutDownSchedule::UpdateNotice() {
 void CShutDownSchedule::Process(const std::uint64_t& now) {
   if (this->noticeIndex < 6) {
     if (g_modeMgr.GetGameMode()) {
-      const char* message = LookupMessage(2020);
+      const char* message = LookupMessage(MSI_SHUTDOWN_ALERT_MSG);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 0, 0, 0);
       ++this->noticeIndex;
       this->UpdateNotice();

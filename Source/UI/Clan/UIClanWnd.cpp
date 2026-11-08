@@ -14,6 +14,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <cstring>
 #include <windows.h>
@@ -32,7 +33,7 @@ int UIClanInfoManageWnd::Tab() {
 // FUNCTION: fn_10629
 void UIClanInfoManageWnd::OnCreate(int width, int height) {
   if (!this->m_title) {
-    const char* title = LookupMessage(2355);
+    const char* title = LookupMessage(MSI_CLAN_MARK);
     this->m_title = new UIStaticText();
     this->m_title->SetSize(62, 15);
     this->m_title->SetTextFitted(title);
@@ -56,13 +57,13 @@ void UIClanInfoManageWnd::Paint() {
   UIClanWnd::Paint();
   char text[1024];
   std::memset(text, 0, sizeof(text));
-  std::sprintf(text, "%s : %s", LookupMessage(2357), g_clanInfo->m_clanName.c_str());
+  std::sprintf(text, "%s : %s", LookupMessage(MSI_HOSTILITY_CLAN), g_clanInfo->m_clanName.c_str());
   this->DrawTextAt(8, 49, text, 0, 0, 12, 0, 0, 0);
-  std::sprintf(text, "%s : %d", LookupMessage(2356), g_clanInfo->unknown_0034);
+  std::sprintf(text, "%s : %d", LookupMessage(MSI_ALLY_CLAN), g_clanInfo->unknown_0034);
   this->DrawTextAt(8, 65, text, 0, 0, 12, 0, 0, 0);
-  std::sprintf(text, "%s : %s", LookupMessage(2362), g_clanInfo->m_masterName.c_str());
+  std::sprintf(text, "%s : %s", LookupMessage(MSI_VIEW_CLAN_MSG), g_clanInfo->m_masterName.c_str());
   this->DrawTextAt(8, 81, text, 0, 0, 12, 0, 0, 0);
-  std::sprintf(text, "%s : ", LookupMessage(2363));
+  std::sprintf(text, "%s : ", LookupMessage(MSI_TWWEB_WARRING));
   this->DrawTextAt(8, 97, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s", "유저인터페이스\\basic_interface\\grp_online.bmp");
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
@@ -76,7 +77,7 @@ void UIClanInfoManageWnd::Paint() {
       map.replace(map.find(".gat"), 4, ".rsw");
     }
     map = g_mapInfoMgr->GetDisplayName(std::string(map.c_str()));
-    std::sprintf(text, "%s : %s", LookupMessage(2364), map.c_str());
+    std::sprintf(text, "%s : %s", LookupMessage(MSI_TWWEB_URL), map.c_str());
     this->DrawTextAt(8, 113, text, 0, 0, 12, 0, 0, 0);
   }
 
@@ -94,7 +95,7 @@ void UIClanInfoManageWnd::Paint() {
     this->DrawBitmap(50, 145, bitmap, true);
   }
 
-  std::sprintf(text, "%s", LookupMessage(2358));
+  std::sprintf(text, "%s", LookupMessage(MSI_SEND_TO_CLAN));
   this->DrawTextAt(200, 65, text, 0, 0, 12, 0, 0, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
@@ -102,9 +103,9 @@ void UIClanInfoManageWnd::Paint() {
   if (g_clanInfo->m_clanId != 0) {
     this->DrawBitmap(280, 65, this->m_emblem ? &this->m_emblem->image : nullptr, true);
   }
-  std::sprintf(text, "%s", LookupMessage(2359));
+  std::sprintf(text, "%s", LookupMessage(MSI_CLAN_MASTER_NAME));
   this->DrawTextAt(200, 139, text, 0, 0, 12, 0, 0, 0);
-  std::sprintf(text, "%s", LookupMessage(2360));
+  std::sprintf(text, "%s", LookupMessage(MSI_CLAN_NUM_MEMBER));
   this->DrawTextAt(200, 213, text, 0, 0, 12, 0, 0, 0);
 
   SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);

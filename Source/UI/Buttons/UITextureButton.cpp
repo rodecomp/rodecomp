@@ -10,6 +10,7 @@
 #include "UI/Buttons/UITextureButton.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include "Resource/MSGSTRINGID.h"
 // OFFSET: 0x0085E070
 // FUNCTION: fn_10822
 void UITextureButton::Paint() {
@@ -39,7 +40,7 @@ void UITextureButton::OnLBtnUp(int x, int y) {
       if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 3, parent->geometry.id) > 0) {
         int id = this->geometry.id;
         if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
-          const char* text = LookupMessage(17);
+          const char* text = LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT);
           if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
             g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
           }

@@ -8,6 +8,7 @@
 #include "Contents/PlayerNameDictionary.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
+#include "Resource/MSGSTRINGID.h"
 #include <cerrno>
 #include <cstdint>
 #include <cstring>
@@ -63,7 +64,7 @@ void CShowRankingScheduler::Process(const std::uint64_t& now) {
           }
         }
         if (!complete) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3481)), 0xffff, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STORE_ASSISTANT_TRADE_FORCED_REMOVAL_TITLE)), 0xffff, 0, 0, 0);
           return;
         }
         this->Show();
@@ -131,7 +132,7 @@ void CShowRankingScheduler::Show() {
       }
     }
     if (name.empty() || name.find(g_namelessName) != std::string::npos) {
-      name = LookupMessage(581);
+      name = LookupMessage(MSI_NAMELESS_USER);
     }
 
     std::string line = FormatOwnedString("[ %2d ] %s  :  %4d POINT", index + 1, name.c_str(), points[index]);

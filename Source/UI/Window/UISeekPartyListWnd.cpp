@@ -21,6 +21,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdlib>
 #include <cstring>
 
@@ -44,7 +45,7 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
   std::string label;
 
   {
-    std::string title(LookupMessage(0x699));
+    std::string title(LookupMessage(MSI_SEEK_PARTY_LIST));
     this->m_title = new UIStaticText();
     this->m_title->SetSize(this->geometry.width - 0x20, 0xF);
     this->m_title->SetTextFitted(title.c_str());
@@ -89,7 +90,7 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
   this->m_jobLabel->shadow = 1;
   this->AddChild(this->m_jobLabel);
 
-  label = LookupMessage(0x72A);
+  label = LookupMessage(MSI_TALK);
   this->m_footerText = new UIStaticText();
   this->m_footerText->SetSize(this->geometry.width - 10, 0x1E);
   this->m_footerText->SetText(label.c_str(), 0);
@@ -98,25 +99,25 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
 
   this->m_filterLabel0 = new UIStaticText();
   this->m_filterLabel0->SetSize(0x32, 0x14);
-  this->m_filterLabel0->SetText(LookupMessage(0x6A1), 0);
+  this->m_filterLabel0->SetText(LookupMessage(MSI_TIME), 0);
   this->m_filterLabel0->Move(0x21, 0x68);
   this->AddChild(this->m_filterLabel0);
 
   this->m_filterLabel1 = new UIStaticText();
   this->m_filterLabel1->SetSize(0x32, 0x14);
-  this->m_filterLabel1->SetText(LookupMessage(0x197), 0);
+  this->m_filterLabel1->SetText(LookupMessage(MSI_NAME), 0);
   this->m_filterLabel1->Move(0x6A, 0x68);
   this->AddChild(this->m_filterLabel1);
 
   this->m_filterLabel2 = new UIStaticText();
   this->m_filterLabel2->SetSize(0x32, 0x14);
-  this->m_filterLabel2->SetText(LookupMessage(0x198), 0);
+  this->m_filterLabel2->SetText(LookupMessage(MSI_LEVEL), 0);
   this->m_filterLabel2->Move(0xDC, 0x68);
   this->AddChild(this->m_filterLabel2);
 
   this->m_filterLabel3 = new UIStaticText();
   this->m_filterLabel3->SetSize(0x32, 0x14);
-  this->m_filterLabel3->SetText(LookupMessage(0x6A2), 0);
+  this->m_filterLabel3->SetText(LookupMessage(MSI_MAP), 0);
   this->m_filterLabel3->Move(0x16D, 0x68);
   this->AddChild(this->m_filterLabel3);
 
@@ -159,7 +160,7 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
   this->m_alarmCheck = new UICheckBox();
   this->m_alarmCheck->SetSize(0x3C, 0x14);
   this->m_alarmCheck->SetSize(100, 0xC);
-  this->m_alarmCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(0x69E));
+  this->m_alarmCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_ALRAM));
   this->m_alarmCheck->Move(0x1AE, 0x2B);
   this->m_alarmCheck->SetChecked(g_session.m_partyBooking.m_alarm);
   this->AddChild(this->m_alarmCheck);
@@ -201,9 +202,9 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
   }
 
   this->m_refreshButton = new UITextButton();
-  this->m_refreshButton->Configure(LookupMessage(0x6E3), 0, 0, 0xC, 0, 0);
+  this->m_refreshButton->Configure(LookupMessage(MSI_PARTY_BOOKING_REQURTING), 0, 0, 0xC, 0, 0);
   this->m_refreshButton->m_hoverColor = 0xEFB700;
-  this->m_refreshButton->SetTooltip(LookupMessage(0x6E4));
+  this->m_refreshButton->SetTooltip(LookupMessage(MSI_PARTY_BOOKING_REQURT_TIP));
   this->m_refreshButton->Move(10, this->geometry.height - 0x16);
   this->m_refreshButton->SetId(0x17A);
   this->AddChild(this->m_refreshButton);
@@ -272,7 +273,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       std::string text(this->m_searchEdit->Text());
       for (std::size_t i = 0; i < text.size(); ++i) {
         if (text[i] < '/' || text[i] > '9') {
-          g_windowMgr.Confirm(LookupMessage(1770), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR4), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
         }
       }
@@ -280,7 +281,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (packet.level < 0 || packet.level > g_session.m_maxLevel) {
         char buffer[260];
         std::memset(buffer, 0, sizeof(buffer));
-        StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(2601), g_session.m_maxLevel);
+        StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(MSI_FAILED_TO_WRITE_MAIL), g_session.m_maxLevel);
         g_windowMgr.Confirm(buffer, 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
@@ -319,7 +320,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->m_filterLevel = packet.level;
       this->m_filterMap = packet.mapId;
 
-      std::string title(LookupMessage(0x6E5));
+      std::string title(LookupMessage(MSI_PARTY_BOOKING_SEARCH));
       if (packet.level > 0) {
         title += " Level: ";
         title += IntToString(packet.level, 0);
@@ -424,7 +425,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 void UISeekPartyListWnd::NotifyNewAd() {
   if (this->m_alarmCheck->geometry.unknown_0030 != 0) {
     g_soundMgr->PlayWave("party_alarm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    const char* message = LookupMessage(0x6D9);
+    const char* message = LookupMessage(MSI_PARTY_BOOKING_NOTIFY);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 15, 0, 0);
   }
 }
@@ -614,19 +615,19 @@ void UISeekPartyListWnd::InitRegionFilter() {
 // OFFSET: 0x00943830
 // FUNCTION: fn_12829
 void UISeekPartyListWnd::InitJobFilter() {
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6E6), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DB), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DC), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DD), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DE), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DF), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6E0), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6E1), 0);
-  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6E2), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_ALL_SELECT), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_1), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_2), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_3_1), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_3_2), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_1PLUS), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_2PLUS), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(MSI_PARTY_BOOKING_TYPE_ETC), 0);
 
   int counts[9] = {0, 0, 6, 13, 6, 7, 6, 13, 8};
   int message = 0;
-  this->m_jobOptions[0].push_back(std::string(LookupMessage(0x6E6)));
+  this->m_jobOptions[0].push_back(std::string(LookupMessage(MSI_PARTY_BOOKING_ALL_SELECT)));
 
   for (int i = 0; i < 4; ++i) {
     std::string name(LookupMessage(0x6B0 + i));

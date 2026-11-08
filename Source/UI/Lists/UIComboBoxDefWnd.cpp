@@ -30,6 +30,7 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "Resource/MSGSTRINGID.h"
 #include <timeapi.h>
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
@@ -502,20 +503,20 @@ void UIDescriptRace::DrawRaceDescription() {
       return;
     }
 
-    this->DrawTextAt(50, 23, LookupMessage(3018), 0, 0, 12, 0x99634C, 1, 0);
-    this->DrawTextAt(49, 22, LookupMessage(3018), 0, 0, 12, 0xFFFFFF, 1, 0);
+    this->DrawTextAt(50, 23, LookupMessage(MSI_NEWMAKECHAR_DORAMINFO), 0, 0, 12, 0x99634C, 1, 0);
+    this->DrawTextAt(49, 22, LookupMessage(MSI_NEWMAKECHAR_DORAMINFO), 0, 0, 12, 0xFFFFFF, 1, 0);
     std::vector<std::string> lines;
-    WrapPlainText(LookupMessage(3021), lines, 40);
+    WrapPlainText(LookupMessage(MSI_CASH_MARK2), lines, 40);
     int y = 22;
     for (unsigned index = 0; index < lines.size(); ++index) {
       this->DrawTextAt(112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
       y += 20;
     }
   } else if (this->m_race == 0) {
-    this->DrawTextAt(50, 23, LookupMessage(3016), 0, 0, 12, 0x99634C, 1, 0);
-    this->DrawTextAt(49, 22, LookupMessage(3016), 0, 0, 12, 0xFFFFFF, 1, 0);
+    this->DrawTextAt(50, 23, LookupMessage(MSI_NEWMAKECHAR_DORAMJOB), 0, 0, 12, 0x99634C, 1, 0);
+    this->DrawTextAt(49, 22, LookupMessage(MSI_NEWMAKECHAR_DORAMJOB), 0, 0, 12, 0xFFFFFF, 1, 0);
     std::vector<std::string> lines;
-    WrapPlainText(LookupMessage(3020), lines, 40);
+    WrapPlainText(LookupMessage(MSI_CASH_MARK1), lines, 40);
     int y = 22;
     for (unsigned index = 0; index < lines.size(); ++index) {
       this->DrawTextAt(112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);

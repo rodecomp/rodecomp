@@ -26,6 +26,7 @@
 #include "Resource/TextureNames.h"
 #include "UI/Shop/ItemDrawing.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -171,11 +172,11 @@ void UIMerchantItemLogWnd::OnMouseHover(int x, int y) {
 
     if (item.identified == 1 && item.unknown_0098 != 0) {
       g_modeMgr.gameMode
-          ->ShowTooltip(FormatOwnedString(LookupMessage(2551), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+          ->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
       g_modeMgr.gameMode
-          ->ShowTooltip(FormatOwnedString(LookupMessage(183), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
+          ->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -186,7 +187,7 @@ void UIMerchantItemLogWnd::OnMouseHover(int x, int y) {
 void UIMerchantItemLogWnd::OnProcess() {
   bool changed = false;
   for (auto it = this->logs.begin(); it != this->logs.end(); ++it) {
-    if (it->name.compare(LookupMessage(581)) == 0) {
+    if (it->name.compare(LookupMessage(MSI_NAMELESS_USER)) == 0) {
       it->name = LookupPlayerName(it->characterId);
       changed = true;
     }

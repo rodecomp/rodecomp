@@ -7,11 +7,12 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 
+#include "Resource/MSGSTRINGID.h"
 // OFFSET: 0x0094C2D0
 // FUNCTION: fn_12895
 void UINoteWnd::OnCreate(int width, int height) {
   UIBasicButton* button = new UIBasicButton();
-  button->Configure(60, LookupMessage(0xBE5));
+  button->Configure(60, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
   button->Move(width - 68, height - 26);
   button->SetId(201);
   this->AddChild(button);

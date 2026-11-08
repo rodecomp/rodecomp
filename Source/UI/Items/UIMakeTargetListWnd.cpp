@@ -19,6 +19,7 @@
 #include "UI/Lists/UIListBox.h"
 #include "UI/Window/WindowManagerWindows.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstring>
 #include <vector>
@@ -45,7 +46,7 @@ std::vector<unsigned char> UIMakeTargetListWnd::GetReplayData() {
 // OFFSET: 0x009A38A0
 // FUNCTION: fn_13610
 void UIMakeTargetListWnd::Paint() {
-  const int titleHeight = this->DrawTitleBar(true, LookupMessage(425), 0);
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(MSI_MAKE_LIST), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }

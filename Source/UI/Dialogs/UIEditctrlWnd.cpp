@@ -28,6 +28,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -154,8 +155,8 @@ int UIMiniMapWnd::LoadMemos() {
 // OFFSET: 0x0099C090
 // FUNCTION: fn_13556
 void UIEditctrlWnd::OnCreate(int, int) {
-  this->AddCloseButton(LookupMessage(2741), 0);
-  this->AddNumberedButton(184, 205, 19, "minimap\\memo_ok", LookupMessage(2754), true);
+  this->AddCloseButton(LookupMessage(MSI_MINIMAP_MSG_04), 0);
+  this->AddNumberedButton(184, 205, 19, "minimap\\memo_ok", LookupMessage(MSI_EA8), true);
 
   this->edit = new UIEditCtrl();
   this->edit->SetSize(200, 18);
@@ -164,7 +165,7 @@ void UIEditctrlWnd::OnCreate(int, int) {
   this->edit->Background(232, 232, 232);
   this->edit->Border(200, 100, 100);
   this->edit->flat = 0;
-  const char* tooltip = LookupMessage(2753);
+  const char* tooltip = LookupMessage(MSI_EA7);
   if (tooltip) {
     this->edit->tooltip = tooltip;
   }
@@ -188,13 +189,13 @@ void UIMiniMapWnd::OnCreate(int width, int height) {
     this->originY = 531.0f - margin;
   }
 
-  this->unknown_011C = this->AddCheckBox(361, 100, 12, LookupMessage(2742), 20, bottom - 19, 1, LookupMessage(2743));
-  this->unknown_0120 = this->AddCheckBox(194, 100, 12, LookupMessage(2744), 120, bottom - 19, 1, LookupMessage(2745));
-  this->unknown_0124 = this->AddCheckBox(373, 100, 12, LookupMessage(2746), 220, bottom - 19, 1, LookupMessage(2747));
-  this->AddCloseButton(LookupMessage(2741), 0);
-  this->AddNumberedButton(356, this->geometry.width - 120, bottom - 23, "minimap\\memo_ready", LookupMessage(2748), true);
+  this->unknown_011C = this->AddCheckBox(361, 100, 12, LookupMessage(MSI_MINIMAP_MSG_05), 20, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_06));
+  this->unknown_0120 = this->AddCheckBox(194, 100, 12, LookupMessage(MSI_MINIMAP_MSG_07), 120, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_08));
+  this->unknown_0124 = this->AddCheckBox(373, 100, 12, LookupMessage(MSI_MINIMAP_MSG_09), 220, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_10));
+  this->AddCloseButton(LookupMessage(MSI_MINIMAP_MSG_04), 0);
+  this->AddNumberedButton(356, this->geometry.width - 120, bottom - 23, "minimap\\memo_ready", LookupMessage(MSI_MINIMAP_MSG_11), true);
   this->AddTownMarks();
-  this->unknown_012C = this->AddNumberedButton(205, -100, -100, "minimap\\boss", LookupMessage(2749), true);
+  this->unknown_012C = this->AddNumberedButton(205, -100, -100, "minimap\\boss", LookupMessage(MSI_MINIMAP_MSG_12), true);
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ResendMinimapMarkers();
   for (int index = 0; index < 20; ++index) {
     this->memoButtons[index] = this->AddNumberedButton(index + 601, -100, -100, "minimap\\memopoint", nullptr, true);
@@ -207,7 +208,7 @@ void UIMiniMapWnd::OnCreate(int width, int height) {
   this->m_playerHead->unknown_00BC = 0;
   this->m_playerHead->unknown_00C0 = 0;
   this->m_playerHead->unknown_00C4 = 0;
-  this->m_playerHead->SetTooltip(LookupMessage(2750));
+  this->m_playerHead->SetTooltip(LookupMessage(MSI_MINIMAP_MSG_13));
   this->m_playerHead->SetId(200);
   this->AddChild(this->m_playerHead);
 }
@@ -216,7 +217,7 @@ void UIMiniMapWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_13558
 void UIEditctrlWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
-  this->DrawTitleBar(true, LookupMessage(2755), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_EA9), 0);
 }
 
 // OFFSET: 0x0099C820
@@ -406,7 +407,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       return 0;
     default:
       if (argument1 >= 601 && argument1 < 621) {
-        if (g_windowMgr.Confirm(LookupMessage(2751), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_MSG_14), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
           this->memoButtons[argument1 - 601]->SetTooltip("");
           this->memoButtons[argument1 - 601]->Move(-100, -100);
 
@@ -510,7 +511,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     button->SetBitmap(name.c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->SetId(id);
-    button->SetTooltip(LookupMessage(2752));
+    button->SetTooltip(LookupMessage(MSI_MINIMAP_MSG_15));
     button->Move(static_cast<int>(static_cast<float>(argument3) * this->scale - 6.0f + this->originX),
       static_cast<int>(this->originY - (static_cast<float>(argument4) * this->scale + 6.0f)));
     this->AddChild(button);

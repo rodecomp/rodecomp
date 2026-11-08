@@ -19,6 +19,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -263,26 +264,26 @@ bool UILapineBox_IngredientListWnd::CanUseIngredient(std::uint32_t identity) {
 
   const int required = material->quantity;
   if (required > item.quantity) {
-    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xB52), required).c_str()), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_INPUT_FREE_MESSAGE), required).c_str()), 0, 0, 0);
     return false;
   }
   if (this->minRefine > item.unknown_0060) {
-    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xB53)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CAPTCHA_INPUT_ANSWER)), 0, 0, 0);
     return false;
   }
   if (this->maxRefine < item.unknown_0060) {
-    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3C)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_COUNT_INFINITY)), 0, 0, 0);
     return false;
   }
   if (this->minRefine != 0 && this->minRefine < item.unknown_0060) {
-    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3D)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEMSHOP_CURRENCY)), 0, 0, 0);
   }
 
   if (Equipment(item) && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
     const int* cards = reinterpret_cast<const int*>(item.unknown_001C);
     for (int index = 0; index < ItemSlotsCount(item); ++index) {
       if (index < 4 && cards[index] > 0) {
-        this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3E)), 0, 0, 0);
+        this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PURCHASEWND_TOTAL)), 0, 0, 0);
         return true;
       }
     }
@@ -473,12 +474,12 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
 
     const int need = found->quantity;
     if (selected->item.quantity < need) {
-      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xB52), need).c_str()), 0, 0, 0);
+      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_INPUT_FREE_MESSAGE), need).c_str()), 0, 0, 0);
       return -1;
     }
 
     if (selected->item.unknown_0060 < found->unknown_0060) {
-      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xB53)), 0, 0, 0);
+      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CAPTCHA_INPUT_ANSWER)), 0, 0, 0);
       return -1;
     }
 
@@ -592,7 +593,7 @@ void UIIngredientInfoWnd::SetIngredientItem(std::uint32_t id) {
   if (this->item.identified == 1) {
     const int count = this->item.unknown_0098;
     if (count != 0) {
-      sprintf_s(name, sizeof(name), LookupMessage(2600), name, count);
+      sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, count);
     }
   }
 

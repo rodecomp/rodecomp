@@ -23,6 +23,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "Render/Renderer.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cctype>
 #include <cstdio>
@@ -61,7 +62,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   auto* title = new UIStaticText();
   title->SetSize(40, 15);
   title->Move(10, 23);
-  title->SetText(LookupMessage(3415), 0);
+  title->SetText(LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_SUCCESSED), 0);
   title->SetColor(0, 0, 0);
   this->AddChild(title);
 
@@ -75,7 +76,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   auto* levelLabel = new UIStaticText();
   levelLabel->SetSize(40, 15);
   levelLabel->Move(10, 49);
-  levelLabel->SetText(LookupMessage(408), 0);
+  levelLabel->SetText(LookupMessage(MSI_LEVEL), 0);
   levelLabel->SetColor(0, 0, 0);
   this->AddChild(levelLabel);
   const int level = g_session.m_level;
@@ -104,13 +105,13 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   auto* typeLabel = new UIStaticText();
   typeLabel->SetSize(this->geometry.width, 15);
   typeLabel->Move(10, 73);
-  typeLabel->SetText(LookupMessage(3369), 0);
+  typeLabel->SetText(LookupMessage(MSI_INCLUDE_BAD_WORD), 0);
   typeLabel->SetColor(0, 0, 0);
   this->AddChild(typeLabel);
   auto* roleLabel = new UIStaticText();
   roleLabel->SetSize(this->geometry.width, 15);
   roleLabel->Move(10, 97);
-  roleLabel->SetText(LookupMessage(504), 0);
+  roleLabel->SetText(LookupMessage(MSI_JOB), 0);
   roleLabel->SetColor(0, 0, 0);
   roleLabel->shadow = 1;
   this->AddChild(roleLabel);
@@ -119,7 +120,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   const char* images[] = {"btn_job_def_on", "btn_job_def_off", "btn_job_heal_on", "btn_job_heal_off",
                           "btn_job_atk_on", "btn_job_atk_off", "btn_job_buf_on", "btn_job_buf_off"};
   const std::string path = "유저인터페이스\\UIadventurerAgency\\";
-  const char* tooltips[] = {LookupMessage(3420), LookupMessage(3491), LookupMessage(3444), LookupMessage(3508)};
+  const char* tooltips[] = {LookupMessage(MSI_EXPLAIN_CHAT_UNBLOCK), LookupMessage(MSI_CANNOT_FIND_PARTYMASTER), LookupMessage(MSI_QUESTWND_LOWER), LookupMessage(MSI_EXPAND_SIGHT_ON)};
 
   for (int index = 0; index < 4; ++index) {
     this->jobs[index] = new UIJobSlotButton();
@@ -135,7 +136,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   auto* memoLabel = new UIStaticText();
   memoLabel->SetSize(this->geometry.width - 32, 15);
   memoLabel->Move(10, 121);
-  memoLabel->SetText(LookupMessage(3359), 0);
+  memoLabel->SetText(LookupMessage(MSI_ADVEN_DUNJUN), 0);
   memoLabel->SetColor(0, 0, 0);
   this->AddChild(memoLabel);
   this->memo = new UIEditCtrl();
@@ -148,14 +149,14 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
 
   if (g_adventurerAgencyMgr->registered == true) {
     this->change = new UIBasicButton();
-    this->change->Configure(this->TextWidth(LookupMessage(3376), 0, 0, 12, 0, 0) + 10, LookupMessage(3376));
+    this->change->Configure(this->TextWidth(LookupMessage(MSI_LOGIN), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_LOGIN));
     this->change->Move(108, 165);
     this->change->SetId(564);
     this->m_message0 = 564;
     this->AddChild(this->change);
   } else {
     this->recruit = new UIBasicButton();
-    this->recruit->Configure(this->TextWidth(LookupMessage(3371), 0, 0, 12, 0, 0) + 10, LookupMessage(3371));
+    this->recruit->Configure(this->TextWidth(LookupMessage(MSI_CHAT_WITH_PARTYMASTER), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_CHAT_WITH_PARTYMASTER));
     this->recruit->Move(108, 165);
     this->recruit->SetId(565);
     this->m_message0 = 565;
@@ -163,7 +164,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   }
 
   std::vector<std::string> lines;
-  WrapPlainText(LookupMessage(3370), lines, 40);
+  WrapPlainText(LookupMessage(MSI_ASK_JOIN), lines, 40);
   int y = 136;
 
   for (const auto& line : lines) {
@@ -191,14 +192,14 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   this->types->SetSize(63, 18);
   this->types->Move(60, 70);
   this->AddChild(this->types);
-  this->types->AddOption(LookupMessage(3377), 0);
+  this->types->AddOption(LookupMessage(MSI_ACCOUNT), 0);
 
-  this->types->AddOption(LookupMessage(3360), 0);
-  this->types->AddOption(LookupMessage(3361), 0);
-  this->types->AddOption(LookupMessage(3362), 0);
-  this->types->AddOption(LookupMessage(3363), 0);
-  this->types->AddOption(LookupMessage(3364), 0);
-  this->types->AddOption(LookupMessage(3365), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_MD), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_EDEN_GROUP), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_ETC), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_SEARCH), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_RESET), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_JOIN_PARTY), 0);
 
   this->types->Select(0);
   this->AddBigCloseButton("", 0);
@@ -250,7 +251,7 @@ void UIRegisterPartyWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp"))), false);
   this->DrawTextAt(86, 50, "~", 0, 0, 12, 0, 0, 0);
-  this->DrawTitleBar(true, LookupMessage(3356), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_ADVEN_MEMO), 0);
 }
 
 // OFFSET: 0x007C1410
@@ -281,7 +282,7 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       if (g_session.unknown_5464 != 0) {
         if (g_forbiddenWords.Contains(this->memo->Text()) == true) {
           char text[256] = {};
-          StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(3372));
+          StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(MSI_STOP_RECRUITING_PARTY));
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
           return 0;
         }
@@ -289,7 +290,7 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         this->NormalizeLevels();
 
         if (std::atoi(this->minimum->Text()) > std::atoi(this->maximum->Text())) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3516)), 0xFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PLEASE_REOPEN_LISTWND_AFTER_A_WHILE)), 0xFF, 0, 0, 0);
           return 0;
         }
 
@@ -306,7 +307,7 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         g_adventurerAgencyMgr->RequestRegistration(info);
       } else {
         char text[256] = {};
-        StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(3506));
+        StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(MSI_EXPAND_SIGHT_OPTIONWND));
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       }
       break;

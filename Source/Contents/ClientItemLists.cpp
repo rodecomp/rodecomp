@@ -25,6 +25,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
+#include "Resource/MSGSTRINGID.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -369,7 +370,7 @@ void ReceiveFriendAddResult(const unsigned char* data) {
   int message;
   switch (packet->result) {
     case FRIEND_ADD_SUCCEED: {
-      std::sprintf(buffer, LookupMessage(821), name);
+      std::sprintf(buffer, LookupMessage(MSI_FRIEND_ADD_SUCCEED), name);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFFFF00, 0, 0, 0);
 
       MessengerMember member;
@@ -385,7 +386,7 @@ void ReceiveFriendAddResult(const unsigned char* data) {
       message = 822;
       break;
     case FRIEND_ADD_ME_OVERSIZE:
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(819)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FRIEND_ADD_ME_OVERSIZE)), 0xFF, 0, 0, 0);
       return;
     case FRIEND_ADD_OTHER_OVERSIZE:
       message = 820;
@@ -1067,7 +1068,7 @@ bool CSession::EquipUnknown17F0(const ITEM_INFO& item, const char* name) {
 // OFFSET: 0x00DFC9B0
 // FUNCTION: fn_23599
 bool CSession::OnItemEquipped(ITEM_INFO& item) {
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s %s", item.DisplayName(0).c_str(), LookupMessage(0xAA)).c_str()), 0xC8FF00, 7, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s %s", item.DisplayName(0).c_str(), LookupMessage(MSI_ITEM_IS_EQUIPED)).c_str()), 0xC8FF00, 7, 0, 0);
   if (item.unknown_0064 == 1) {
     item.unknown_0064 = 2;
   }
@@ -1111,7 +1112,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
   if (location == 0x8000) {
     const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, identity);
     if (item.unknown_0000[1] != 0) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(0xAB)).c_str()), 0xFF, 7, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(MSI_ITEM_IS_REMOVED)).c_str()), 0xFF, 7, 0, 0);
     }
     this->unknown_16EC = 0;
     g_windowMgr.InvalidateFrames();
@@ -1137,7 +1138,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
     if (slots.values[2] < 10) {
       if (slots.values[2] != -1) {
         ITEM_INFO& item = this->unknown_17F0[slots.values[2]];
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(0xAB)).c_str()), 0xFF, 7, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(MSI_ITEM_IS_REMOVED)).c_str()), 0xFF, 7, 0, 0);
         item.unknown_0000[3] = 0;
 
         bool merged = false;

@@ -18,6 +18,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include "Resource/MSGSTRINGID.h"
 #include <cstddef>
 #include <cstring>
 #include <windows.h>
@@ -31,7 +32,7 @@ UIAgitMessageBox::UIAgitMessageBox()
 // OFFSET: 0x0095D580
 // FUNCTION: fn_13068
 void UIAgitMessageBox::Paint() {
-  this->DrawTitleBar(true, LookupMessage(3640), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_USESKILL_FAIL_AP_INSUFFICIENT), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }
@@ -152,7 +153,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   switch (a) {
   case 0: {
     if (g_session.GetSceneUnknown004C() == 1) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3633)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TOOLTIP_OF_OPTIONOFF_BTN)), 0xFF, 0, 0, 0);
       return 0;
     }
 
@@ -168,7 +169,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_session.m_hotkeyScript->Call("get_agit_costzeny", "db>d", agitId, 1, &costGuildPoint);
 
       UIAgitMessageBox* box = new UIAgitMessageBox();
-      const char* text = FormatString(LookupMessage(3631), agitName, costZeny, costGuildPoint);
+      const char* text = FormatString(LookupMessage(MSI_NOT_LEARN_BASIC_SKILL), agitName, costZeny, costGuildPoint);
       box->InitializeMessageBox(text, 310, 130);
 
       int x = g_renderer->viewport.centerX - box->geometry.width / 2;
