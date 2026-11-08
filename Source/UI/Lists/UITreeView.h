@@ -48,7 +48,7 @@ public:
 
   void HideNodes(std::list<UITreeNode*>& nodes);
   bool DeleteChildNodes(UITreeNode* node);
-  int RemoveChildNode(UITreeNode* parent, int id, bool keepButtons);
+  bool RemoveChildNode(UITreeNode* parent, int id, bool keepButtons);
   void AddNodeButtons(UITreeNode* node, int id);
   void AddNodeLabel(UITreeNode* node, int id);
   int LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y);

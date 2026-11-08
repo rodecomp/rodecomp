@@ -1707,13 +1707,13 @@ bool UITreeView::DeleteChildNodes(UITreeNode* node) {
 
 // OFFSET: 0x0089E6F0
 // FUNCTION: fn_11603
-int UITreeView::RemoveChildNode(UITreeNode* parent, int id, bool keepButtons) {
+bool UITreeView::RemoveChildNode(UITreeNode* parent, int id, bool keepButtons) {
   if (!parent) {
     parent = this->root;
   }
 
   if (static_cast<int>(parent->children.size()) <= 0) {
-    return 0;
+    return false;
   }
 
   for (auto it = parent->children.begin(); it != parent->children.end(); ++it) {
@@ -1722,7 +1722,7 @@ int UITreeView::RemoveChildNode(UITreeNode* parent, int id, bool keepButtons) {
     }
 
     if (!keepButtons) {
-      if ((*it)->children.size() != 0) {
+      if ((*it)->children.size() > 0) {
         this->DeleteChildNodes(*it);
       }
 
@@ -1755,10 +1755,10 @@ int UITreeView::RemoveChildNode(UITreeNode* parent, int id, bool keepButtons) {
       }
     }
 
-    return 1;
+    return true;
   }
 
-  return 0;
+  return false;
 }
 
 // OFFSET: 0x0089E470
