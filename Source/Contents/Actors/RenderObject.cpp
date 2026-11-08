@@ -2186,13 +2186,12 @@ void CGameActor::SetSprWeapon2(int, int) {
 // OFFSET: 0x00CABD40
 // FUNCTION: fn_21037
 int CGameActor::GetAttackMotion() {
-  const CActRes* action = this->render.action;
-  const int count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+  const int count = static_cast<int>(this->render.action->FrameCount(this->render.previousAnimation));
 
   for (int frame = 0; frame < count; ++frame) {
-    const int sound = action->Frame(this->render.previousAnimation, frame).sound;
+    const int sound = this->render.action->Frame(this->render.previousAnimation, frame).sound;
 
-    if (sound != -1 && std::strcmp(action->Sound(sound), "atk") == 0) {
+    if (sound != -1 && std::strcmp(this->render.action->Sound(sound), "atk") == 0) {
       return frame;
     }
   }
