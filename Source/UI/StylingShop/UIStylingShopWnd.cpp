@@ -1301,7 +1301,7 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
   }
 
   if (bitmap) {
-    this->DrawBitmap(this->unknown_00C0, this->geometry.height / 8 * row + this->unknown_00C4, &bitmap->image, false);
+    this->DrawBitmap(this->unknown_00C0, this->geometry.height / 8 * row + this->unknown_00C4, bitmap, false);
   }
 }
 
