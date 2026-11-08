@@ -22,7 +22,7 @@ public:
   int Position();
   int Travel();
   int Part(int x, int y);
-  void Configure(int x, int y, unsigned char vertical, int length);
+  void Configure(int x, int y, int vertical, int length);
   void Configure(int x, int y, int length, int vertical, int arrowLength, int thickness);
   void SetPosition(int value);
   void SetRange(int maximum, int visible, int total);

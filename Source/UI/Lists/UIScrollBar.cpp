@@ -471,7 +471,7 @@ void UIScrollBar::Paint() {
 
 // OFFSET: 0x0087BAA0
 // FUNCTION: fn_11250
-void UIScrollBar::Configure(int x, int y, unsigned char vertical, int length) {
+void UIScrollBar::Configure(int x, int y, int vertical, int length) {
   this->vertical = vertical;
 
   int width;
