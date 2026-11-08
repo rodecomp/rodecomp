@@ -88,7 +88,7 @@ void GroundGeometry::LightmapSample(int column, int row, unsigned char& alpha, u
 
 // OFFSET: 0x00AC0C40
 // FUNCTION: fn_17570
-bool GroundGeometry::TerrainCellCorners(const C3dAttr& terrain, int column, int row, float* vertices) const {
+bool GroundGeometry::TerrainCellCorners(int column, int row, float* vertices) const {
   const int columns = 2 * this->width;
   const int rows = 2 * this->height;
 
@@ -117,7 +117,7 @@ bool GroundGeometry::TerrainCellCorners(const C3dAttr& terrain, int column, int 
   vertices[9] = right;
   vertices[11] = bottom;
 
-  const TerrainHeightCell* cell = terrain.CellAt(column, row);
+  const TerrainHeightCell* cell = this->terrain->CellAt(column, row);
 
   if (!cell) {
     return false;

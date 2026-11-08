@@ -97,7 +97,7 @@ void CMultiTexParticle::Render(int column, int row) {
     corner.z = 0.0f;
   }
 
-  if (!gameMode->scene->ground->TerrainCellCorners(*gameMode->scene->terrain, column, row, &corners[0].x)) {
+  if (!gameMode->scene->ground->TerrainCellCorners(column, row, &corners[0].x)) {
     return;
   }
 
@@ -118,8 +118,7 @@ void CMultiTexParticle::Render(int column, int row) {
     vertex.lightV = this->uv2[i][1];
   }
 
-  const float depth = 0.0f;
-  SubmitAuxiliaryPrimitive(*g_renderer, reinterpret_cast<LightmappedPrimitive*>(&this->command), depth, depth);
+  g_renderer->SubmitAuxiliaryPrimitive(reinterpret_cast<LightmappedPrimitive*>(&this->command));
 }
 
 // OFFSET: 0x00708260
