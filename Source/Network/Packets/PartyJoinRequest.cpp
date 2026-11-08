@@ -5,7 +5,7 @@
 
 // OFFSET: 0x00D3BCE0
 // FUNCTION: fn_21789
-void ReceivePartyJoinRequest(const void* packet) {
+void __stdcall ReceivePartyJoinRequest(const void* packet) {
   const auto* bytes = static_cast<const unsigned char*>(packet);
   char name[25];
   std::strncpy(name, reinterpret_cast<const char*>(bytes + 10), 24);
