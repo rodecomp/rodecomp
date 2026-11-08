@@ -155,7 +155,7 @@ bool UIWindowMgr::HasNavigationBlocker() {
 
 // OFFSET: 0x00A97380
 // FUNCTION: fn_17202
-bool UIWindowMgr::Window4F250Ready() {
+int UIWindowMgr::Window4F250Ready() {
   UIWindow* window = this->window_4F250;
   if (window == nullptr) {
     return false;
