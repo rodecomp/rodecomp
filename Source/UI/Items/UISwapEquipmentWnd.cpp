@@ -1,4 +1,5 @@
 #include "UI/Items/UISwapEquipmentWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
@@ -189,15 +190,15 @@ void UISwapEquipmentWnd::OnRBtnDown(int x, int y) {
 // FUNCTION: fn_10401
 int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 0xB9:
+    case ID_CANCEL:
       g_session.m_swapEquipmentMode = 0;
       if (g_windowMgr.unknown_01E0) {
         g_windowMgr.unknown_01E0->SendMsg(nullptr, 6, 0x1FC, 0, 0, 0);
       }
       break;
-    case 0xC9:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(0x128);
       return 1;
     case 0x1FC:
@@ -219,7 +220,7 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return 1;
     }
     break;
-  case 60:
+  case UM_REFRESH:
     this->Invalidate();
     this->InvalidateChildren();
     return 1;

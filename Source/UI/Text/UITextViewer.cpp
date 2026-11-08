@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DeviceContext.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -278,21 +279,21 @@ void UIItemTagOnMegaPhone::AddTagButton(UIWindow* button) {
 // FUNCTION: fn_11561
 int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 18:
+  case UM_UPPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
     }
     return 0;
 
-  case 19:
+  case UM_DOWNPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
     }
     return 0;
 
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->topLine;
     if (message == 9) {
       this->topLine = previous - this->geometry.height / this->lineHeight + 1;
@@ -322,7 +323,7 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     return this->topLine - previous;
   }
 
-  case 29: {
+  case UM_SETTEXT: {
     std::string text(reinterpret_cast<const char*>(argument1));
     for (UIWindow* link : this->extraLinks) {
       this->RemoveChild(link, 1);

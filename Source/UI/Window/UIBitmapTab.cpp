@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -53,14 +54,14 @@ void UIBitmapTab::DragAndDrop(int argument1, int argument2, std::intptr_t argume
 // FUNCTION: fn_10908
 int UIBitmapTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
-  case 13:
+  case UM_SETSTATE:
     this->geometry.unknown_0030 = argument1;
     this->Invalidate();
     break;
-  case 75:
+  case UM_CLEAR_ITEM:
     this->tabs.clear();
     break;
-  case 78:
+  case UM_SET_BITMAP:
     if (argument1) {
       const char* tabName = reinterpret_cast<const char*>(argument1);
       const std::string name = FormatOwnedString(tabName, 'a');
@@ -70,7 +71,7 @@ int UIBitmapTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::i
       }
     }
     break;
-  case 14:
+  case UM_RESIZE:
     if (!this->tabs.empty()) {
       int width = 0;
       int height = 0;

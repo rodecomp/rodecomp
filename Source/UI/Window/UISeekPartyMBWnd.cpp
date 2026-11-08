@@ -1,4 +1,5 @@
 #include "UI/Window/UISeekPartyMBWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -34,9 +35,9 @@ struct PACKET_CZ_PARTY_BOOKING_REQ_REGISTER {
 int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
 
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 184: {
+    case ID_OK: {
       for (int i = 0; i < 6; ++i) {
         this->m_registration.detail.job[i] = -1;
       }
@@ -94,12 +95,12 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 185:
-    case 201:
+    case ID_CANCEL:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(168);
       g_windowMgr.CloseWindow(170);
       break;
-    case 202:
+    case ID_MINI:
       if (this->m_minimized) {
         this->Resize(this->geometry.width, this->m_restoreHeight);
       } else {
@@ -112,7 +113,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       break;
     }
     break;
-  case 34:
+  case UM_SETINFO:
     this->m_saved = reinterpret_cast<SeekPartyMBWndInfo*>(a);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();
@@ -122,7 +123,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     this->SendMsg(nullptr, 14, 3, this->m_saved->width, this->m_saved->height, 0);
     this->SendMsg(nullptr, 23, 0, 0, 0, 0);
     break;
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     if (sender == this->m_typeCombo) {
       const int key = a + 2;
       this->m_subTypeCombo->Clear();

@@ -1,5 +1,6 @@
 #include "Contents/Combat/CombatTypes.h"
 #include "Contents/Effects/EffectTypes.h"
+#include "Contents/Items/ItemType.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillUnitId.h"
 #include "Network/Packets/NoticeEnums.h"
@@ -537,13 +538,13 @@ void CGameMode::ReceiveUnknown05C4Result(const unsigned char* data) {
   this->unknown_05C8 = -1;
 
   switch (packet->result) {
-  case 0:
+  case BOSS_INFO_NOT:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1223)), 0xFFFFFF, 0, 0, 0);
     g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(1223)), 0xFFFFFF, 0, 0, 0);
     return;
-  case 1:
-  case 2:
+  case BOSS_INFO_ALIVE:
+  case BOSS_INFO_ALIVE_WITHMSG:
     this->unknown_05C4 = packet->first;
     this->unknown_05C8 = packet->second;
     if (packet->result != 2) {
@@ -551,7 +552,7 @@ void CGameMode::ReceiveUnknown05C4Result(const unsigned char* data) {
     }
     std::sprintf(message, LookupMessage(1225), name);
     break;
-  case 3:
+  case BOSS_INFO_DEAD:
     if (packet->current == 0 && packet->total == 1) {
       std::sprintf(message, LookupMessage(1261), name);
     } else {
@@ -1027,20 +1028,20 @@ __declspec(noinline) void CGameMode::ReceiveHuntingList(const unsigned char* pac
 bool CGameMode::NotifyItemResult(int result) {
   int message;
   switch (result) {
-  case 5:
+  case PICKUP_OVERCOUNT_ONEITEM:
     message = 279;
     break;
-  case 4:
+  case PICKUP_OVERCOUNT:
     message = 220;
     break;
-  case 2:
+  case PICKUP_OVERWEIGHT:
     message = 52;
     break;
-  case 1:
-  case 6:
+  case PICKUP_FAILED:
+  case PICKUP_REFUSED_TIME:
     message = 53;
     break;
-  case 7:
+  case ADDITEM_STACKLIMIT:
     message = 1418;
     break;
   case 9:
@@ -6553,7 +6554,7 @@ __declspec(noinline) void CGameMode::ReceiveActorColorChat(const unsigned char* 
 __declspec(noinline) void CGameMode::ReceiveWearEquipAck(unsigned char result, std::uint16_t index, std::uint16_t look, int location) {
   *reinterpret_cast<std::uint32_t*>(&this->unknown_0100[0x04]) = timeGetTime() - 2000;
   switch (result) {
-  case 0: {
+  case ITEM_EQUIP_ACK_OK: {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
     if (item.unknown_0000[1] > 0) {
       item.unknown_0070 = look;
@@ -6562,12 +6563,12 @@ __declspec(noinline) void CGameMode::ReceiveWearEquipAck(unsigned char result, s
     }
     break;
   }
-  case 1: {
+  case ITEM_EQUIP_ACK_FAILLEVEL: {
     const char* text = LookupMessage(1953);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
     break;
   }
-  case 2: {
+  case ITEM_EQUIP_ACK_FAIL: {
     const char* text = LookupMessage(372);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
     break;
@@ -6839,14 +6840,14 @@ void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
   char text[256];
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4)));
   switch (static_cast<char>(packet[3])) {
-  case 0:
+  case HO_PRE_INIT:
     *reinterpret_cast<std::uint32_t*>(&g_session.unknown_5570[0x08]) = *reinterpret_cast<const std::uint32_t*>(packet + 4);
     if (actor) {
       g_session.unknown_5614 = 1;
       g_session.m_homunJob = actor->GetEffectiveJob(-1);
     }
     break;
-  case 1:
+  case HO_RELATIONSHIP_CHANGED:
     g_session.unknown_55D4 = *reinterpret_cast<const int*>(packet + 8);
     if (actor) {
       g_session.m_homunJob = actor->GetEffectiveJob(-1);
@@ -6859,7 +6860,7 @@ void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xF5F5F5, 0, 0, 0);
     }
     break;
-  case 2:
+  case HO_FULLNESS_CHANGED:
     g_session.unknown_55F0 = *reinterpret_cast<const int*>(packet + 8);
     g_session.RefreshHomunculusInfo();
     if (actor) {
@@ -6873,7 +6874,7 @@ void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x1EF5F5, 0, 0, 0);
     }
     break;
-  case 3:
+  case HO_ACCESSARY_CHANGED:
     if (actor) {
       if (*reinterpret_cast<const int*>(packet + 8)) {
         g_session.unknown_55D8 = *reinterpret_cast<const int*>(packet + 8);
@@ -7094,22 +7095,22 @@ void CGameMode::ReceiveItemObtainNotice(const unsigned char* packet) {
   item.unknown_0060 = 0;
   item.identified = 1;
   switch (*reinterpret_cast<const int*>(packet + 2)) {
-  case 0:
+  case MSG_WEAPONREFINE_SUCCESS:
     g_windowMgr.SendNotice(
       1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(911), item.DisplayName(0).c_str()).c_str()), 0xFFFF00, 0, 0, 0
     );
     break;
-  case 1:
+  case MSG_WEAPONREFINE_FAIL:
     g_windowMgr.SendNotice(
       1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(912), item.DisplayName(0).c_str()).c_str()), 0xCDCD00, 0, 0, 0
     );
     break;
-  case 2:
+  case MSG_WEAPONREFINE_FAIL_LEVEL:
     g_windowMgr.SendNotice(
       1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(913), item.DisplayName(0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
     );
     break;
-  case 3:
+  case MSG_WEAPONREFINE_FAIL_ITEM:
     g_windowMgr.SendNotice(
       1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(914), item.DisplayName(0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
     );
@@ -7751,31 +7752,31 @@ void CGameMode::ReceiveNotifyBan(const unsigned char* packet) {
   GetRagConnection().Close();
   std::string text;
   switch (code) {
-  case 0:
+  case BAN_UNFAIR:
     text = text + LookupMessage(3) + "(" + IntToString(0, 0) + ")";
     break;
-  case 1:
+  case BAN_SERVER_SHUTDOWN:
     text = text + LookupMessage(4) + "(" + IntToString(1, 0) + ")";
     break;
-  case 2:
+  case BAN_ANOTHER_LOGIN:
     text = text + LookupMessage(5) + "(" + IntToString(2, 0) + ")";
     break;
-  case 3:
+  case BAN_DETECTED_SPEEDHACK:
     text = text + LookupMessage(241) + "(" + IntToString(3, 0) + ")";
     break;
-  case 4:
+  case BAN_PC_OVERFLOW:
     text = text + LookupMessage(264) + "(" + IntToString(4, 0) + ")";
     break;
-  case 5:
+  case BAN_UNDER_AGE:
     text = text + LookupMessage(305) + "(" + IntToString(5, 0) + ")";
     break;
-  case 9:
+  case BAN_IP_OVERFLOW:
     text = text + LookupMessage(529) + "(" + IntToString(9, 0) + ")";
     break;
-  case 10:
+  case BAN_PAY_OUT:
     text = text + LookupMessage(530) + "(" + IntToString(10, 0) + ")";
     break;
-  case 15:
+  case BAN_OP_FORCE:
     if (g_serviceType == 4) {
       text = text + LookupMessage(579) + "(" + IntToString(15, 0) + ")";
     }
@@ -8268,7 +8269,7 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
   this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
   switch (packet->result) {
-  case 0: {
+  case PICKUP_SUCCEED: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8299,7 +8300,7 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     break;
   }
-  case 3: {
+  case RECEIVE_ITEM: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8319,15 +8320,15 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
       item.unknown_0000[3] = 0x8000;
     }
     switch (packet->type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       break;
     default:
       item.unknown_0000[2] = 0;
@@ -8365,7 +8366,7 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
   this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
   switch (packet->result) {
-  case 0: {
+  case PICKUP_SUCCEED: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8401,7 +8402,7 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     }
     break;
   }
-  case 3: {
+  case RECEIVE_ITEM: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8422,15 +8423,15 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
       item.unknown_0000[3] = 0x8000;
     }
     switch (packet->type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       break;
     default:
       item.unknown_0000[2] = 0;
@@ -8471,7 +8472,7 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
   this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
   switch (packet->result) {
-  case 0: {
+  case PICKUP_SUCCEED: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8501,7 +8502,7 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     break;
   }
-  case 3: {
+  case RECEIVE_ITEM: {
     ITEM_INFO item;
     item.unknown_0000[0] = packet->type;
     item.unknown_0000[2] = packet->location;
@@ -8520,15 +8521,15 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
       item.unknown_0000[3] = 0x8000;
     }
     switch (packet->type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       break;
     default:
       item.unknown_0000[2] = 0;
@@ -8573,7 +8574,7 @@ void CGameMode::ReceiveItemPickupAck5(
   this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
   switch (result) {
-  case 0: {
+  case PICKUP_SUCCEED: {
     {
       StoreItemOption options[5] = {};
       ITEM_INFO item;
@@ -8617,7 +8618,7 @@ void CGameMode::ReceiveItemPickupAck5(
     }
     break;
   }
-  case 3: {
+  case RECEIVE_ITEM: {
     StoreItemOption options[5] = {};
     ITEM_INFO item;
     item.unknown_0000[0] = type;
@@ -8644,15 +8645,15 @@ void CGameMode::ReceiveItemPickupAck5(
       item.unknown_0000[3] = 0x8000;
     }
     switch (type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       break;
     default:
       item.unknown_0000[2] = 0;
@@ -8693,7 +8694,7 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
   this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
   switch (packet->result) {
-  case 0: {
+  case PICKUP_SUCCEED: {
     StoreItemOption options[5];
     std::memcpy(options, packet->options, sizeof(options));
     ITEM_INFO item;
@@ -8735,7 +8736,7 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
     }
     break;
   }
-  case 3: {
+  case RECEIVE_ITEM: {
     StoreItemOption options[5];
     std::memcpy(options, packet->options, sizeof(options));
     ITEM_INFO item;
@@ -8763,15 +8764,15 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
       item.unknown_0000[3] = 0x8000;
     }
     switch (packet->type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       break;
     default:
       item.unknown_0000[2] = 0;
@@ -9260,34 +9261,34 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     if (packet->skillId == NV_BASIC) {
       switch (packet->value) {
-      case 0:
+      case ZCSK_ITEMEXCHANGE:
         notice = LookupMessage(0x9F);
         break;
-      case 1:
+      case ZCSK_EMOTION:
         this->unknown_026E[0x16] = 0;
         notice = LookupMessage(0xA0);
         break;
-      case 2:
+      case ZCSK_SIT:
         notice = LookupMessage(0xA1);
         break;
-      case 3:
+      case ZCSK_CHAT:
         notice = LookupMessage(0xA2);
         break;
-      case 4:
+      case ZCSK_PARTY:
         notice = LookupMessage(0xA3);
         break;
-      case 5:
+      case ZCSK_SHOUT:
         notice = LookupMessage(0xA4);
         break;
-      case 6:
+      case ZCSK_PK:
         notice = LookupMessage(0xA5);
         break;
-      case 7: {
+      case ZCSK_MANNERPOINT: {
         const char* text = LookupMessage(0x17F);
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0xB, 0, 0);
       }
         [[fallthrough]];
-      case 8:
+      case ZCSK_JOINPARTY:
         notice = LookupMessage(0x518);
         break;
       default:
@@ -9767,7 +9768,7 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
   this->unknown_01A4.erase(this->unknown_01A4.begin(), this->unknown_01A4.end());
 
   switch (packet->result) {
-  case 0: {
+  case PICKUP_SUCCEED: {
     StoreItemOption options[5];
     std::memcpy(options, packet->options, sizeof(options));
     ITEM_INFO item;
@@ -9812,7 +9813,7 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
     }
     break;
   }
-  case 3: {
+  case RECEIVE_ITEM: {
     StoreItemOption options[5];
     std::memcpy(options, packet->options, sizeof(options));
     ITEM_INFO item;
@@ -9841,15 +9842,15 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
       item.unknown_0000[3] = 0x8000;
     }
     switch (packet->type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       break;
     default:
       item.unknown_0000[2] = 0;
@@ -9974,15 +9975,15 @@ void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
       item.unknown_0000[3] = 0x8000;
     }
     switch (packet->type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       break;
     default:
       item.unknown_0000[2] = 0;
@@ -11561,23 +11562,23 @@ void CGameMode::ReceiveParaResultList(const unsigned char* packet) {
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3043)), 0xFF, 0, 0, 0);
     break;
-  case 0:
+  case PURCHASE_SUCCEED:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(54)), 0xFFFF00, 0, 0, 0);
     break;
-  case 1:
+  case PURCHASE_FAIL_MONEY:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(55)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case PURCHASE_FAIL_WEIGHT:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 0xFF, 0, 0, 0);
     break;
-  case 3:
+  case PURCHASE_FAIL_COUNT:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(221)), 0xFF, 0, 0, 0);
     break;
-  case 9:
+  case PURCHASE_FAIL_EACHITEM_COUNT:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1940)), 0xFF, 0, 0, 0);
     break;
@@ -12148,8 +12149,8 @@ void CGameMode::ReceivePartyMemberLeft(const unsigned char* data) {
   name[24] = '\0';
   std::memcpy(name, packet->name, sizeof(packet->name));
   switch (packet->type) {
-  case 0:
-  case 1:
+  case GROUPMEMBER_DELETE_LEAVE:
+  case GROUPMEMBER_DELETE_EXPEL:
     this->SendMsg(0x40, g_session.GetPartyMemberAid(name), 0, 0, 0);
     g_session.RemovePartyMemberByName(name);
     break;
@@ -12963,11 +12964,11 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
   }
 
   switch (actor->unknown_0314) {
-  case 0:
-  case 5:
-  case 8:
-  case 9:
-  case 10: {
+  case PC_TYPE:
+  case NPC_MOB_TYPE:
+  case NPC_HO_TYPE:
+  case NPC_MERSOL_TYPE:
+  case NPC_ELEMENTAL_TYPE: {
     const std::int64_t hp = packet->hp;
     const std::int64_t maxHp = packet->maxHp;
     actor->SendMsg(
@@ -12976,8 +12977,8 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
     );
     break;
   }
-  case 13:
-  case 14:
+  case NPC_ABR_TYPE:
+  case NPC_BIONIC_TYPE:
     actor->SendMsg(nullptr, 0x22, 0, packet->aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
@@ -13097,11 +13098,11 @@ void CGameMode::SpawnMovingActor(
   }
 
   switch (actor->unknown_0314) {
-  case 0:
-  case 5:
-  case 8:
-  case 9:
-  case 10: {
+  case PC_TYPE:
+  case NPC_MOB_TYPE:
+  case NPC_HO_TYPE:
+  case NPC_MERSOL_TYPE:
+  case NPC_ELEMENTAL_TYPE: {
     const std::int64_t currentHp = hp;
     const std::int64_t currentMaxHp = maxHp;
     actor->SendMsg(
@@ -13110,8 +13111,8 @@ void CGameMode::SpawnMovingActor(
     );
     break;
   }
-  case 13:
-  case 14:
+  case NPC_ABR_TYPE:
+  case NPC_BIONIC_TYPE:
     actor->SendMsg(nullptr, 0x22, 0, gid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
@@ -13966,11 +13967,11 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   }
 
   switch (actor->unknown_0314) {
-  case 0:
-  case 5:
-  case 8:
-  case 9:
-  case 10: {
+  case PC_TYPE:
+  case NPC_MOB_TYPE:
+  case NPC_HO_TYPE:
+  case NPC_MERSOL_TYPE:
+  case NPC_ELEMENTAL_TYPE: {
     const std::int64_t hp = packet->hp;
     const std::int64_t maxHp = packet->maxHp;
     actor->SendMsg(
@@ -13979,8 +13980,8 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
     );
     break;
   }
-  case 13:
-  case 14:
+  case NPC_ABR_TYPE:
+  case NPC_BIONIC_TYPE:
     actor->SendMsg(nullptr, 0x22, 0, packet->aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
@@ -15044,11 +15045,11 @@ void CGameMode::SpawnStandingActor(
   }
 
   switch (actor->unknown_0314) {
-  case 0:
-  case 5:
-  case 8:
-  case 9:
-  case 10: {
+  case PC_TYPE:
+  case NPC_MOB_TYPE:
+  case NPC_HO_TYPE:
+  case NPC_MERSOL_TYPE:
+  case NPC_ELEMENTAL_TYPE: {
     const std::int64_t currentHp = hp;
     const std::int64_t currentMaxHp = maxHp;
     actor->SendMsg(
@@ -15057,8 +15058,8 @@ void CGameMode::SpawnStandingActor(
     );
     break;
   }
-  case 13:
-  case 14:
+  case NPC_ABR_TYPE:
+  case NPC_BIONIC_TYPE:
     actor->SendMsg(nullptr, 0x22, 0, gid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
@@ -15325,11 +15326,11 @@ void CGameMode::SpawnStateActor(
   }
 
   switch (actor->unknown_0314) {
-  case 0:
-  case 5:
-  case 8:
-  case 9:
-  case 10: {
+  case PC_TYPE:
+  case NPC_MOB_TYPE:
+  case NPC_HO_TYPE:
+  case NPC_MERSOL_TYPE:
+  case NPC_ELEMENTAL_TYPE: {
     const std::int64_t currentHp = hp;
     const std::int64_t currentMaxHp = maxHp;
     actor->SendMsg(
@@ -15338,8 +15339,8 @@ void CGameMode::SpawnStateActor(
     );
     break;
   }
-  case 13:
-  case 14:
+  case NPC_ABR_TYPE:
+  case NPC_BIONIC_TYPE:
     actor->SendMsg(nullptr, 0x22, 0, gid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
@@ -15787,11 +15788,11 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   }
 
   switch (actor->unknown_0314) {
-  case 0:
-  case 5:
-  case 8:
-  case 9:
-  case 10: {
+  case PC_TYPE:
+  case NPC_MOB_TYPE:
+  case NPC_HO_TYPE:
+  case NPC_MERSOL_TYPE:
+  case NPC_ELEMENTAL_TYPE: {
     const std::int64_t hp = packet->hp;
     const std::int64_t maxHp = packet->maxHp;
     actor->SendMsg(
@@ -15800,8 +15801,8 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     );
     break;
   }
-  case 13:
-  case 14:
+  case NPC_ABR_TYPE:
+  case NPC_BIONIC_TYPE:
     actor->SendMsg(nullptr, 0x22, 0, packet->aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
@@ -20357,12 +20358,12 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x7A:
     case 0x83:
     case 0x84:
-    case 0x98:
+    case ID_ZC_ACK_WHISPER_0098:
     case 0x164:
     case ID_PING:
     case 0x1CC:
-    case 0x1E0:
-    case 0x1E9:
+    case ID_ZC_ACK_ACCOUNTNAME:
+    case ID_ZC_ADD_MEMBER_TO_GROUP2:
     case 0x227:
     case 0x283:
     case 0x851:
@@ -20372,7 +20373,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_OPEN_BANKING:
     case ID_ZC_ACK_CLOSE_BANKING:
     case 0x9CC:
-    case 0x9EB:
+    case ID_ZC_ACK_READ_MAIL:
     case 0xA7B:
     case 0xAB1:
     case 0xAD2:
@@ -20392,7 +20393,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x79:
       this->ReceiveActorStandEntryOld0(g_gameModePacketBuffer);
       break;
-    case 0x7B:
+    case 0x7b:
       this->ReceiveActorMoveEntryOld0(g_gameModePacketBuffer);
       break;
     case spawn_unit2Type:
@@ -20413,13 +20414,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_NPCACK_MAPMOVE:
       this->ReceiveMapMove(g_gameModePacketBuffer);
       break;
-    case 0x92:
+    case ID_ZC_NPCACK_SERVERMOVE_0092:
       this->ReceiveZoneServerChange(g_gameModePacketBuffer);
       break;
     case ID_ZC_WHISPER:
       this->ReceiveWhisper(g_gameModePacketBuffer);
       break;
-    case 0xA0:
+    case ID_ZC_ITEM_PICKUP_ACK_00a0:
       this->ReceiveItemPickupAck(g_gameModePacketBuffer);
       break;
     case ID_ZC_PAR_CHANGE:
@@ -20443,7 +20444,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_STATUS_CHANGE:
       this->ReceiveStatusChange(g_gameModePacketBuffer);
       break;
-    case 0xC3:
+    case ID_ZC_SPRITE_CHANGE:
       this->ReceiveSpriteChange(g_gameModePacketBuffer);
       break;
     case ID_ZC_PC_SELL_ITEMLIST:
@@ -20467,20 +20468,20 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_CHANGE_CHATROOM:
       this->ReceiveActorMessage34(g_gameModePacketBuffer);
       break;
-    case 0xE7:
+    case ID_ZC_ACK_EXCHANGE_ITEM_00e7:
       this->ReceiveExchangeRequestAck(g_gameModePacketBuffer);
       break;
     case ID_ZC_ACK_ADD_EXCHANGE_ITEM:
       this->ReceiveExchangeItemAddAck(g_gameModePacketBuffer);
       break;
-    case 0xFB:
+    case ID_ZC_GROUP_LIST:
       this->ReceivePartyMemberList(g_gameModePacketBuffer);
       break;
-    case 0xFD:
+    case ID_ZC_ACK_REQ_JOIN_GROUP:
     case ID_ZC_PARTY_JOIN_REQ_ACK:
       this->ReceiveNamedActionResult(g_gameModePacketBuffer);
       break;
-    case 0x104:
+    case ID_ZC_ADD_MEMBER_TO_GROUP:
       this->ReceivePartyMemberInfo(g_gameModePacketBuffer);
       break;
     case ID_ZC_DELETE_MEMBER_FROM_GROUP:
@@ -20494,7 +20495,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x29E:
       this->ApplySkillUpdatePacket(g_gameModePacketBuffer);
       break;
-    case 0x114:
+    case ID_ZC_NOTIFY_SKILL_0114:
       this->ReceiveActorSkillAction(g_gameModePacketBuffer);
       break;
     case ID_ZC_NOTIFY_SKILL_POSITION:
@@ -20503,11 +20504,11 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_NOTIFY_GROUNDSKILL:
       this->ReceiveNotifyGroundSkill(g_gameModePacketBuffer);
       break;
-    case 0x11F:
+    case ID_ZC_SKILL_ENTRY:
       this->Zc_Skill_Entry(g_gameModePacketBuffer);
       break;
-    case 0x133:
-    case 0x800:
+    case ID_ZC_PC_PURCHASE_ITEMLIST_FROMMC_0133:
+    case ID_ZC_PC_PURCHASE_ITEMLIST_FROMMC_0800:
       this->ReceiveItem1748List(g_gameModePacketBuffer);
       break;
     case ID_ZC_PC_PURCHASE_RESULT_FROMMC:
@@ -20525,19 +20526,19 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_MYGUILD_BASIC_INFO:
       this->ReceiveGuildRelationList(g_gameModePacketBuffer);
       break;
-    case 0x150:
+    case ID_ZC_GUILD_INFO_0150:
       this->ReceiveGuildInfo2(g_gameModePacketBuffer);
       break;
-    case 0x154:
+    case ID_ZC_MEMBERMGR_INFO_0154:
       this->ReceiveGuildMemberMemoList(g_gameModePacketBuffer);
       break;
-    case 0x15A:
+    case ID_ZC_ACK_LEAVE_GUILD:
       this->ReceiveGuildMemberLeft(g_gameModePacketBuffer);
       break;
     case ID_ZC_POSITION_INFO:
       this->ReceiveGuildPositionInfo(g_gameModePacketBuffer);
       break;
-    case 0x163:
+    case ID_ZC_BAN_LIST_0163:
       this->ReceiveGuildBanList(g_gameModePacketBuffer);
       break;
     case ID_ZC_POSITION_ID_NAME_INFO:
@@ -20558,7 +20559,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x182:
       this->ReceiveGuildMemberAdd(g_gameModePacketBuffer);
       break;
-    case 0x185:
+    case ID_ZC_ADD_RELATED_GUILD:
       this->ReceiveAddRelatedGuild(g_gameModePacketBuffer);
       break;
     case ID_ZC_ACK_ITEMREFINING:
@@ -20567,13 +20568,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_REQMAKINGITEM:
       this->ReceiveItemEffectResult(g_gameModePacketBuffer);
       break;
-    case 0x195:
+    case ID_ZC_ACK_REQNAMEALL_0195:
       this->ReceiveActorNameAll(reinterpret_cast<const ActorNameAllPacket *>(g_gameModePacketBuffer));
       break;
     case sc_notickType:
       this->ReceiveStatusChangeNotice(g_gameModePacketBuffer);
       break;
-    case 0x19A:
+    case ID_ZC_NOTIFY_RANKING:
       this->ReceiveEffectNumber(g_gameModePacketBuffer);
       break;
     case ID_ZC_NOTIFY_EFFECT:
@@ -20595,7 +20596,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_PET_ACT:
       this->ReceivePetAct(g_gameModePacketBuffer);
       break;
-    case 0x1B6:
+    case ID_ZC_GUILD_INFO2:
       this->ReceiveGuildInfo(g_gameModePacketBuffer);
       break;
     case ID_ZC_DISPEL:
@@ -20604,16 +20605,16 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x1C1:
       this->ReceiveBillingInfo(g_gameModePacketBuffer);
       break;
-    case 0x1C4:
+    case ID_ZC_ADD_ITEM_TO_STORE2:
       this->ReceiveItem1738Add(g_gameModePacketBuffer);
       break;
-    case 0x1C5:
+    case ID_ZC_ADD_ITEM_TO_CART2:
       this->ReceiveItem1740Add(g_gameModePacketBuffer);
       break;
     case graffiti_entryType:
       this->Zc_Skill_Entry2(g_gameModePacketBuffer);
       break;
-    case 0x1CF:
+    case ID_ZC_DEVOTIONLIST:
       this->ReceiveDevotionList(g_gameModePacketBuffer);
       break;
     case ID_ZC_BLADESTOP:
@@ -20626,16 +20627,16 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_SOUND:
       this->ReceiveSound(g_gameModePacketBuffer);
       break;
-    case 0x1D7:
+    case ID_ZC_SPRITE_CHANGE2:
       this->ReceiveSpriteChange2Mirrored(g_gameModePacketBuffer);
       break;
-    case 0x1D8:
+    case 0x1d8:
       this->ReceiveActorStateEntryOld(g_gameModePacketBuffer);
       break;
-    case 0x1D9:
+    case 0x1d9:
       this->ReceiveActorStandEntryOld(g_gameModePacketBuffer);
       break;
-    case 0x1DA:
+    case 0x1da:
       this->ReceiveActorMoveEntryOld(g_gameModePacketBuffer);
       break;
     case ID_ZC_NOTIFY_SKILL:
@@ -20665,10 +20666,10 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_FRIENDS_LIST:
       this->ReceiveFriendList(g_gameModePacketBuffer);
       break;
-    case 0x20E:
+    case ID_ZC_STARSKILL:
       this->ReceiveSpecialBroadcast(g_gameModePacketBuffer);
       break;
-    case 0x214:
+    case ID_ZC_ACK_STATUS_GM:
       this->ReceiveStatDump(g_gameModePacketBuffer);
       break;
     case ID_ZC_SKILLMSG:
@@ -20677,16 +20678,16 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_WEAPONREFINE:
       this->ReceiveItemObtainNotice(g_gameModePacketBuffer);
       break;
-    case 0x22A:
+    case 0x22a:
       this->ReceiveActorStandEntry(g_gameModePacketBuffer);
       break;
-    case 0x22B:
+    case 0x22b:
       this->ReceiveActorStandEntryOld2(g_gameModePacketBuffer);
       break;
-    case 0x22C:
+    case 0x22c:
       this->ReceiveActorMoveEntryOld2(g_gameModePacketBuffer);
       break;
-    case 0x22E:
+    case ID_ZC_PROPERTY_HOMUN_022e:
       this->ReceiveHomunculusInfo(g_gameModePacketBuffer);
       break;
     case ID_ZC_CHANGESTATE_MER:
@@ -20698,13 +20699,13 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x27B:
       this->ReceiveBroadcastBalloonNotice(g_gameModePacketBuffer);
       break;
-    case 0x284:
+    case ID_ZC_NOTIFY_EFFECT3_0284:
       this->ReceiveActorStatusValuePacket(g_gameModePacketBuffer);
       break;
     case ID_ZC_PC_CASH_POINT_ITEMLIST:
       this->ReceivePendingItem1718List(g_gameModePacketBuffer);
       break;
-    case 0x289:
+    case ID_ZC_PC_CASH_POINT_UPDATE:
       this->ReceivePendingResult(g_gameModePacketBuffer);
       break;
     case ID_ZC_NPC_SHOWEFST_UPDATE:
@@ -20716,7 +20717,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_BOSS_INFO:
       this->ReceiveUnknown05C4Result(g_gameModePacketBuffer);
       break;
-    case 0x294:
+    case ID_ZC_READ_BOOK:
       this->ReceiveBookOpen(g_gameModePacketBuffer);
       break;
     case 0x295:
@@ -20734,22 +20735,22 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_CASH_ITEM_DELETE:
       this->ReceiveUnknownD25850(g_gameModePacketBuffer);
       break;
-    case 0x29A:
+    case ID_ZC_ITEM_PICKUP_ACK2:
       this->ReceiveItemPickupAck2(g_gameModePacketBuffer);
       break;
-    case 0x29B:
+    case ID_ZC_MER_INIT:
       this->Zc_Mer_Init(g_gameModePacketBuffer);
       break;
-    case 0x2A2:
+    case ID_ZC_MER_PAR_CHANGE:
       this->Zc_Mer_Par_Change(g_gameModePacketBuffer);
       break;
-    case 0x2B8:
+    case ID_ZC_ITEM_PICKUP_PARTY_02b8:
       this->ReceivePartyItemPickupNotice(g_gameModePacketBuffer);
       break;
     case ID_ZC_EQUIPITEM_DAMAGED:
       this->ReceiveEquipItemDamaged(g_gameModePacketBuffer);
       break;
-    case 0x2C1:
+    case ID_ZC_NPC_CHAT:
       this->ReceiveActorColorChat(g_gameModePacketBuffer);
       break;
     case 0x2C2:
@@ -20770,26 +20771,26 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x2CE:
       this->ReceiveMemorialDungeonNotify(g_gameModePacketBuffer);
       break;
-    case 0x2D0:
+    case 0x2d0:
       this->ReceiveEquipItemList38(g_gameModePacketBuffer);
       break;
-    case 0x2D1:
+    case 0x2d1:
       this->ReceiveStorageEquipList2(g_gameModePacketBuffer);
       break;
-    case 0x2D2:
+    case 0x2d2:
       this->ReceiveItem1740BasicListBind(g_gameModePacketBuffer);
       break;
-    case 0x2D4:
+    case ID_ZC_ITEM_PICKUP_ACK3:
       this->ReceiveItemPickupAck3(g_gameModePacketBuffer);
       break;
     case 0x2D5:
       this->ReceiveUnknownD2D990(g_gameModePacketBuffer);
       break;
-    case 0x2D7:
-    case 0x859:
+    case ID_ZC_EQUIPWIN_MICROSCOPE_02d7:
+    case ID_ZC_EQUIPWIN_MICROSCOPE_0859:
       this->ReceiveEquipWindowMicroscope2(g_gameModePacketBuffer);
       break;
-    case 0x2D9:
+    case ID_ZC_CONFIG:
       this->ReceiveFeedOption(g_gameModePacketBuffer);
       break;
     case ID_ZC_CONFIG_NOTIFY:
@@ -20801,15 +20802,15 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACCEPT_ENTER:
       this->ReceiveAcceptEnter(g_gameModePacketBuffer);
       break;
-    case 0x2EC:
-    case 0x7F7:
+    case 0x2ec:
+    case 0x7f7:
     case 0x856:
       this->ReceiveActorMoveEntryNamed(g_gameModePacketBuffer);
       break;
-    case 0x2ED:
+    case 0x2ed:
       this->ReceiveActorStandEntryOld3(g_gameModePacketBuffer);
       break;
-    case 0x2EE:
+    case 0x2ee:
       this->ReceiveActorStandEntryFont(g_gameModePacketBuffer);
       break;
     case ID_ZC_SKILL_POSTDELAY:
@@ -20824,13 +20825,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_MILLENNIUMSHIELD:
       this->ReceiveActorEffect228(g_gameModePacketBuffer);
       break;
-    case 0x446:
+    case ID_ZC_QUEST_NOTIFY_EFFECT:
       this->ReceiveMinimapMarker(g_gameModePacketBuffer);
       break;
-    case 0x7D8:
+    case ID_ZC_REQ_GROUPINFO_CHANGE_V2:
       this->ReceiveServerRateNotice(g_gameModePacketBuffer);
       break;
-    case 0x7DB:
+    case ID_ZC_HO_PAR_CHANGE_07db:
       this->ReceiveHomunculusProperty(g_gameModePacketBuffer);
       break;
     case ID_ZC_MSG_VALUE:
@@ -20842,11 +20843,11 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x7F6:
       this->Zc_Notify_Exp(g_gameModePacketBuffer);
       break;
-    case 0x7F8:
+    case 0x7f8:
     case 0x858:
       this->ReceiveActorStandEntryNamedOld(g_gameModePacketBuffer);
       break;
-    case 0x7F9:
+    case 0x7f9:
     case 0x857:
       this->ReceiveActorStateEntryNamedOld(g_gameModePacketBuffer);
       break;
@@ -20856,31 +20857,31 @@ void CGameMode::ProcessIncomingPackets() {
     case partyleaderchangedType:
       this->ReceivePartyLeaderChange(g_gameModePacketBuffer);
       break;
-    case 0x7FE:
+    case ID_ZC_PLAY_NPC_BGM_07fe:
       this->ReceiveNpcBgm(g_gameModePacketBuffer);
       break;
-    case 0x803:
+    case ID_ZC_PARTY_BOOKING_ACK_REGISTER:
       this->ReceivePartyBookingUpdateResult(g_gameModePacketBuffer);
       break;
-    case 0x805:
+    case ID_ZC_PARTY_BOOKING_ACK_SEARCH:
       this->ReceivePartyBookingSearchResult(g_gameModePacketBuffer);
       break;
-    case 0x807:
+    case ID_ZC_PARTY_BOOKING_ACK_DELETE:
       this->ReceivePartyBookingRegisterResult(g_gameModePacketBuffer);
       break;
-    case 0x809:
+    case ID_ZC_PARTY_BOOKING_NOTIFY_INSERT:
       this->ReceivePartyBookingInsert(g_gameModePacketBuffer);
       break;
-    case 0x80A:
+    case ID_ZC_PARTY_BOOKING_NOTIFY_UPDATE:
       this->ReceivePartyBookingUpdate(g_gameModePacketBuffer);
       break;
-    case 0x80B:
+    case ID_ZC_PARTY_BOOKING_NOTIFY_DELETE:
       this->ReceivePartyBookingDelete(g_gameModePacketBuffer);
       break;
-    case 0x810:
+    case ID_ZC_OPEN_BUYING_STORE:
       this->ReceiveOpenStore(g_gameModePacketBuffer);
       break;
-    case 0x812:
+    case ID_ZC_FAILED_OPEN_BUYING_STORE_TO_BUYER:
       this->ReceiveBuyingStoreOpenResult(g_gameModePacketBuffer);
       break;
     case ID_ZC_MYITEMLIST_BUYING_STORE:
@@ -20895,13 +20896,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_ITEMLIST_BUYING_STORE:
       this->ReceiveBuyingStoreItemList(g_gameModePacketBuffer);
       break;
-    case 0x81A:
+    case ID_ZC_FAILED_TRADE_BUYING_STORE_TO_BUYER:
       this->ReceiveUnknownD2A1F0(g_gameModePacketBuffer);
       break;
-    case 0x81B:
+    case ID_ZC_UPDATE_ITEM_FROM_BUYING_STORE:
       this->ReceiveVendingItemSoldNow(g_gameModePacketBuffer);
       break;
-    case 0x81C:
+    case ID_ZC_ITEM_DELETE_BUYING_STORE:
       this->ReceiveItemSellResult(g_gameModePacketBuffer);
       break;
     case 0x81D:
@@ -20916,13 +20917,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_FAILED_TRADE_BUYING_STORE_TO_SELLER:
       this->ReceiveBuyingStoreSellResult(g_gameModePacketBuffer);
       break;
-    case 0x836:
+    case ID_ZC_SEARCH_STORE_INFO_ACK_0836:
       this->ReceiveSearchStoreItemsOld(g_gameModePacketBuffer);
       break;
     case ID_ZC_SEARCH_STORE_INFO_FAILED:
       this->ReceiveWindow181Message(g_gameModePacketBuffer);
       break;
-    case 0x839:
+    case ID_ZC_ACK_BAN_GUILD_SSO:
       this->ReceiveGuildMemberExpelled(g_gameModePacketBuffer);
       break;
     case ID_ZC_OPEN_SEARCH_STORE_INFO:
@@ -20946,13 +20947,13 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x8B6:
       this->Zc_Trycollection(g_gameModePacketBuffer);
       break;
-    case 0x8C7:
+    case ID_ZC_SKILL_ENTRY3:
       this->ReceiveGroundSkill8(g_gameModePacketBuffer);
       break;
     case ID_ZC_ACK_SCHEDULER_CASHITEM:
       this->ReceiveTypedItemList(g_gameModePacketBuffer);
       break;
-    case 0x8CB:
+    case ID_ZC_PERSONAL_INFOMATION_08cb:
     case ID_ZC_PERSONAL_INFOMATION:
       this->ReceiveRateInfo(g_gameModePacketBuffer);
       break;
@@ -20962,31 +20963,31 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_SPIRITS_ATTRIBUTE:
       this->ReceiveActorCharm(g_gameModePacketBuffer);
       break;
-    case 0x8D2:
+    case ID_ZC_FASTMOVE:
       this->ReceiveActorMessage144(g_gameModePacketBuffer);
       break;
     case ID_ZC_CLEAR_DIALOG:
       this->RefreshWindow16(g_gameModePacketBuffer);
       break;
-    case 0x8FF:
+    case ID_ZC_EFST_SET_ENTER_08ff:
       this->ReceiveStatusChangeEffect(g_gameModePacketBuffer);
       break;
     case 0x901:
       this->ReceiveEquipItemListFlags(g_gameModePacketBuffer);
       break;
-    case 0x906:
+    case ID_ZC_EQUIPWIN_MICROSCOPE_0906:
       this->ReceiveEquipWindowMicroscope(g_gameModePacketBuffer);
       break;
     case ID_ZC_INVENTORY_TAB:
       this->ReceiveInventoryItemUpdate(g_gameModePacketBuffer);
       break;
-    case 0x90F:
+    case ID_ZC_NOTIFY_NEWENTRY7:
       this->ReceiveActorStandEntryLegacy(g_gameModePacketBuffer);
       break;
-    case 0x914:
+    case ID_ZC_NOTIFY_MOVEENTRY8:
       this->ReceiveActorMoveEntryLegacy(g_gameModePacketBuffer);
       break;
-    case 0x915:
+    case ID_ZC_NOTIFY_STANDENTRY9:
       this->ReceiveActorStateEntryLegacy(g_gameModePacketBuffer);
       break;
     case 0x96B:
@@ -21013,10 +21014,10 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_UPDATE_RANKING_POINT:
       this->ReceiveTypedNotice(g_gameModePacketBuffer);
       break;
-    case 0x97F:
+    case ID_ZC_SELECTCART:
       this->ReceiveWindow95Data(g_gameModePacketBuffer);
       break;
-    case 0x983:
+    case ID_ZC_MSG_STATE_CHANGE3:
       this->ReceiveStatusChangeEffect2(g_gameModePacketBuffer);
       break;
     case ID_ZC_EFST_SET_ENTER:
@@ -21055,13 +21056,13 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x996:
       this->ReceiveStorageEquipList4(g_gameModePacketBuffer);
       break;
-    case 0x997:
+    case ID_ZC_EQUIPWIN_MICROSCOPE_0997:
       this->ReceiveEquipWindowMicroscope3(g_gameModePacketBuffer);
       break;
     case ID_ZC_MAPPROPERTY_R2:
       this->ReceiveMapProperty(g_gameModePacketBuffer);
       break;
-    case 0x99F:
+    case ID_ZC_SKILL_ENTRY4:
       this->ReceiveGroundSkill32(g_gameModePacketBuffer);
       break;
     case ID_ZC_BANKING_CHECK:
@@ -21076,7 +21077,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_C_MARKERINFO:
       this->AddMiniMapEffectMarker(g_gameModePacketBuffer);
       break;
-    case 0x9CA:
+    case ID_ZC_SKILL_ENTRY5:
       this->ReceiveGroundSkillExtended(g_gameModePacketBuffer);
       break;
     case ID_ZC_MSG_COLOR:
@@ -21091,13 +21092,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_GUILDSTORAGE_LOG:
       this->ReceiveGuildStorageLog(g_gameModePacketBuffer);
       break;
-    case 0x9DB:
+    case ID_ZC_NOTIFY_MOVEENTRY10:
       this->ReceiveActorMoveEntry(g_gameModePacketBuffer);
       break;
-    case 0x9DC:
+    case ID_ZC_NOTIFY_NEWENTRY10:
       this->ReceiveActorStandEntryNamed(g_gameModePacketBuffer);
       break;
-    case 0x9DD:
+    case ID_ZC_NOTIFY_STANDENTRY10:
       this->ReceiveActorStateEntryNamed(g_gameModePacketBuffer);
       break;
     case ID_ZC_WHISPER2:
@@ -21121,49 +21122,49 @@ void CGameMode::ProcessIncomingPackets() {
     case rodexdelete:
       this->ReceiveRodexMailDeleted(g_gameModePacketBuffer);
       break;
-    case 0x9F8:
+    case ID_ZC_ALL_QUEST_LIST3:
       this->ReceiveOngoingQuestList(g_gameModePacketBuffer);
       break;
-    case 0x9F9:
+    case ID_ZC_ADD_QUEST_EX:
       this->ReceiveAddQuest(g_gameModePacketBuffer);
       break;
-    case 0x9FA:
+    case ID_ZC_UPDATE_MISSION_HUNT_EX:
       this->ReceiveQuestHuntUpdate2(g_gameModePacketBuffer);
       break;
-    case 0x9FD:
+    case ID_ZC_NOTIFY_MOVEENTRY11:
       this->ReceiveActorMoveEntryBody(g_gameModePacketBuffer);
       break;
-    case 0x9FE:
+    case ID_ZC_NOTIFY_NEWENTRY11:
       this->ReceiveActorStandEntryNamedBody(g_gameModePacketBuffer);
       break;
-    case 0x9FF:
+    case ID_ZC_NOTIFY_STANDENTRY11:
       this->ReceiveActorStateEntryNamedBody(g_gameModePacketBuffer);
       break;
     case ID_ZC_DRESSROOM_OPEN:
       this->EnsureWindow259(g_gameModePacketBuffer);
       break;
-    case 0xA05:
+    case ID_ZC_ACK_ADD_ITEM_TO_MAIL:
       this->ReceiveItemReward(g_gameModePacketBuffer);
       break;
     case rodexremoveitem:
       this->ReceiveStackedItemReturn(g_gameModePacketBuffer);
       break;
-    case 0xA0A:
+    case ID_ZC_ADD_ITEM_TO_STORE3:
       this->ReceiveItem1738AddOptions(g_gameModePacketBuffer);
       break;
-    case 0xA0B:
+    case ID_ZC_ADD_ITEM_TO_CART3:
       this->ReceiveItem1740AddOptions(g_gameModePacketBuffer);
       break;
-    case 0xA0C:
+    case ID_ZC_ITEM_PICKUP_ACK_V6:
       this->ReceiveItemPickupAck7(g_gameModePacketBuffer);
       break;
-    case 0xA0D:
+    case 0xa0d:
       this->ReceiveInventoryEquipList2(g_gameModePacketBuffer);
       break;
-    case 0xA0F:
+    case 0xa0f:
       this->ReceiveItem1740EquipListOptions(g_gameModePacketBuffer);
       break;
-    case 0xA10:
+    case 0xa10:
       this->ReceiveStorageEquipList5(g_gameModePacketBuffer);
       break;
     case 0xA11:
@@ -21178,7 +21179,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_DYNAMICNPC_CREATE_RESULT:
       this->ReceiveDynamicNpcNotice(g_gameModePacketBuffer);
       break;
-    case 0xA1A:
+    case ID_ZC_ACK_OPEN_ROULETTE:
       this->ReceiveRouletteOpen(g_gameModePacketBuffer);
       break;
     case rouletteinfoackType:
@@ -21193,7 +21194,7 @@ void CGameMode::ProcessIncomingPackets() {
     case roulettercvitemackType:
       this->ReceiveRouletteSetResult(g_gameModePacketBuffer);
       break;
-    case 0xA2D:
+    case ID_ZC_EQUIPWIN_MICROSCOPE_0a2d:
       this->ReceiveEquipWindowMicroscope4(g_gameModePacketBuffer);
       break;
     case ID_ZC_ACK_REQNAMEALL:
@@ -21208,7 +21209,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xA36:
       this->ReceiveActorInt8(g_gameModePacketBuffer);
       break;
-    case 0xA37:
+    case ID_ZC_ITEM_PICKUP_ACK_V7:
       this->ReceiveItemPickupAck8(g_gameModePacketBuffer);
       break;
     case ID_ZC_EQUIPMENT_EFFECT:
@@ -21217,25 +21218,25 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_UPDATE_CARDSLOT:
       this->ReceiveEquipCardChange(g_gameModePacketBuffer);
       break;
-    case 0xA43:
+    case ID_ZC_ADD_MEMBER_TO_GROUP3:
       this->ReceiveUnknownD89C60(g_gameModePacketBuffer);
       break;
-    case 0xA44:
+    case 0xa44:
       this->ReceivePartyInfo2(g_gameModePacketBuffer);
       break;
     case ID_ZC_STYLE_CHANGE_RES:
       this->ReceiveCharacterRenameResult(g_gameModePacketBuffer);
       break;
-    case 0xA7D:
+    case ID_ZC_ACK_MAIL_LIST2:
       this->ReceiveRodexMailListRefresh(g_gameModePacketBuffer);
       break;
-    case 0xA82:
+    case ID_ZC_ACK_BAN_GUILD_DELNAME:
       this->ReceiveGuildExpulsion2(g_gameModePacketBuffer);
       break;
-    case 0xA83:
+    case ID_ZC_ACK_LEAVE_GUILD_DELNAME:
       this->ReceiveGuildLeave2(g_gameModePacketBuffer);
       break;
-    case 0xA84:
+    case ID_ZC_GUILD_INFO3:
       this->ReceiveGuildInfo3(g_gameModePacketBuffer);
       break;
     case 0xA85:
@@ -21244,10 +21245,10 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xA86:
       this->ReceiveGuildMemberList3(g_gameModePacketBuffer);
       break;
-    case 0xA87:
+    case ID_ZC_BAN_LIST2:
       this->ReceiveGuildBanList2(g_gameModePacketBuffer);
       break;
-    case 0xA96:
+    case ID_ZC_ADD_EXCHANGE_ITEM_0a96:
       this->ReceiveItemSlotAddOptions(g_gameModePacketBuffer);
       break;
     case 0xA98:
@@ -21262,7 +21263,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xA9D:
       this->ReceiveCharViewResult(g_gameModePacketBuffer);
       break;
-    case 0xAA5:
+    case ID_ZC_MEMBERMGR_INFO2:
       this->ReceiveGuildMemberList(g_gameModePacketBuffer);
       break;
     case 0xAA6:
@@ -21286,7 +21287,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xABF:
       this->ReceiveWindow308TextEntries(g_gameModePacketBuffer);
       break;
-    case 0xAC2:
+    case ID_ZC_ACK_MAIL_LIST3:
       this->ReceiveRodexMailList(g_gameModePacketBuffer);
       break;
     case ID_ZC_NPCACK_SERVERMOVE:
@@ -21301,7 +21302,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xACC:
       this->ReceiveExpGainNotice(g_gameModePacketBuffer);
       break;
-    case 0xADD:
+    case ID_ZC_ITEM_FALL_ENTRY5:
       this->ReceiveItemDropEntry(g_gameModePacketBuffer);
       break;
     case 0xADE:
@@ -21313,10 +21314,10 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xAE1:
       this->ReceiveNamedResultNotice(g_gameModePacketBuffer);
       break;
-    case 0xAE4:
+    case 0xae4:
       this->ReceiveUnknownD65870(g_gameModePacketBuffer);
       break;
-    case 0xAE5:
+    case 0xae5:
       this->ReceivePartyRoster(g_gameModePacketBuffer);
       break;
     case ID_ZC_ACK_RANKING2:
@@ -21328,19 +21329,19 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_GUILD_POSITION:
       this->ReceiveActorClanName(g_gameModePacketBuffer);
       break;
-    case 0xAFE:
+    case 0xafe:
       this->ReceiveQuestHuntUpdate(g_gameModePacketBuffer);
       break;
-    case 0xAFF:
+    case ID_ZC_ALL_QUEST_LIST4:
       this->ReceiveOngoingQuestList2(g_gameModePacketBuffer);
       break;
-    case 0xB03:
+    case ID_ZC_EQUIPWIN_MICROSCOPE_0b03:
       this->ReceiveEquipWindowMicroscope5(g_gameModePacketBuffer);
       break;
     case ID_ZC_INVENTORY_START:
       this->ReceiveInventoryStart(g_gameModePacketBuffer);
       break;
-    case 0xB0C:
+    case 0xb0c:
       this->ReceiveAddQuest64(g_gameModePacketBuffer);
       break;
     case ID_ZC_REMOVE_EFFECT:
@@ -21367,13 +21368,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_GUILD_AGIT_INFO:
       this->ReceiveGuildUnknown0114List(g_gameModePacketBuffer);
       break;
-    case 0xB2F:
+    case ID_ZC_PROPERTY_HOMUN_0b2f:
       this->ReceiveHomunculusInfo2(g_gameModePacketBuffer);
       break;
     case ID_ZC_EQUIPWIN_MICROSCOPE:
       this->ReceiveEquipWindowMicroscope6(g_gameModePacketBuffer);
       break;
-    case 0xB39:
+    case 0xb39:
       this->ReceiveEquipItemList(g_gameModePacketBuffer);
       break;
     case 0xB3C:
@@ -21412,7 +21413,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_NPC_MARKET_PURCHASE_RESULT:
       this->ReceiveParaResultList(g_gameModePacketBuffer);
       break;
-    case 0xB56:
+    case ID_ZC_NPC_EXPANDED_BARTER_MARKET_ITEMINFO_0b56:
       this->ReceiveExpandedBarterMarketItemList(g_gameModePacketBuffer);
       break;
     case ID_ZC_GRADE_ENCHANT_MATERIAL_LIST:
@@ -21529,7 +21530,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xC44:
       this->ReceiveSimulationResult(g_gameModePacketBuffer);
       break;
-    case 0x73: {
+    case ID_ZC_ACCEPT_ENTER_V1: {
       g_session.SetServerTime(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2));
       const unsigned char *posDir = g_gameModePacketBuffer + 6;
       g_session.SetPlayerPosition((posDir[0] << 2) | (posDir[1] >> 6), ((posDir[1] & 0x3F) << 4) | (posDir[2] >> 4), posDir[2] & 0xF);
@@ -21605,7 +21606,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->StopActorMove(packet->aid, packet->x, packet->y, 0);
       break;
     }
-    case 0x8A: {
+    case ID_ZC_NOTIFY_ACT_008a: {
       const ActorActionPacket *packet = reinterpret_cast<const ActorActionPacket *>(g_gameModePacketBuffer);
       this->ReceiveActorAction(packet->sourceAid, packet->targetAid, packet->tick, packet->attackMT, packet->attackedMT, packet->damage, packet->count,
                                packet->type, packet->damage2, 0);
@@ -21674,7 +21675,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case ID_ZC_ITEM_ENTRY:
-    case 0x9E: {
+    case ID_ZC_ITEM_FALL_ENTRY: {
       const unsigned char *packet = g_gameModePacketBuffer;
       const bool falling = static_cast<short>(type) == 0x9E;
       ItemFallEntry entry = {};
@@ -21706,7 +21707,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->RemoveUnknown01A4(aid);
       break;
     }
-    case 0xA3: {
+    case 0xa3: {
       g_session.KeepEquipment();
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(NormalItemRecord);
       const NormalItemRecord *record = reinterpret_cast<const NormalItemRecord *>(g_gameModePacketBuffer + 4);
@@ -21727,7 +21728,7 @@ void CGameMode::ProcessIncomingPackets() {
       RefreshItemWindows(&g_windowMgr);
       break;
     }
-    case 0xA4: {
+    case 0xa4: {
       g_session.RemoveEquipment();
       g_session.ResetEquipment();
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(EquipItemRecord);
@@ -21759,7 +21760,7 @@ void CGameMode::ProcessIncomingPackets() {
       RefreshItemWindows(&g_windowMgr);
       break;
     }
-    case 0xA5: {
+    case 0xa5: {
       g_windowMgr.EnsureWindow(33);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(NormalItemRecord);
       const NormalItemRecord *record = reinterpret_cast<const NormalItemRecord *>(g_gameModePacketBuffer + 4);
@@ -21780,7 +21781,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.RefreshItem1738Window();
       break;
     }
-    case 0xA6: {
+    case 0xa6: {
       g_windowMgr.EnsureWindow(33);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(EquipItemRecord);
       const EquipItemRecord *record = reinterpret_cast<const EquipItemRecord *>(g_gameModePacketBuffer + 4);
@@ -21801,7 +21802,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.RefreshItem1738Window();
       break;
     }
-    case 0xA8: {
+    case ID_ZC_USE_ITEM_ACK: {
       const ItemUseAckPacket *packet = reinterpret_cast<const ItemUseAckPacket *>(g_gameModePacketBuffer);
       if (packet->result) {
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
@@ -21815,15 +21816,15 @@ void CGameMode::ProcessIncomingPackets() {
       this->unknown_02CC = 0;
       break;
     }
-    case 0xAA: {
+    case ID_ZC_REQ_WEAR_EQUIP_ACK_00aa: {
       const unsigned char *packet = g_gameModePacketBuffer;
       *reinterpret_cast<std::uint32_t *>(&this->unknown_0100[0x04]) = timeGetTime() - 2000;
       switch (packet[8]) {
-      case 0:
-      case 2:
+      case ACK_REQ_EQUIP_FAILURE:
+      case ACK_REQ_EQUIP_FAILURE_LEVEL:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(372)), 0xFF, 7, 0, 0);
         break;
-      case 1: {
+      case ACK_REQ_EQUIP_SUCCESS: {
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(packet + 2));
         if (item.unknown_0000[1]) {
           item.unknown_0070 = *reinterpret_cast<const std::uint16_t *>(packet + 6);
@@ -21835,7 +21836,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case 0xAC: {
+    case ID_ZC_REQ_TAKEOFF_EQUIP_ACK_00ac: {
       const unsigned char *packet = g_gameModePacketBuffer;
       *reinterpret_cast<std::uint32_t *>(&this->unknown_0100[0x08]) = timeGetTime() - 2000;
       const std::uint16_t location = *reinterpret_cast<const std::uint16_t *>(packet + 4);
@@ -21936,7 +21937,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.CloseWindow(23);
       g_windowMgr.CloseWindow(24);
       break;
-    case 0xC6: {
+    case ID_ZC_PC_PURCHASE_ITEMLIST_00c6: {
       g_session.ClearTradeItems();
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(ShopItemRecord);
       const ShopItemRecord *records = reinterpret_cast<const ShopItemRecord *>(g_gameModePacketBuffer + 4);
@@ -21960,13 +21961,13 @@ void CGameMode::ProcessIncomingPackets() {
       sellWindow->SendMsg(nullptr, 23, 0, 0, 0, 0);
       break;
     }
-    case 0xCB:
+    case ID_ZC_PC_SELL_RESULT:
       switch (g_gameModePacketBuffer[2]) {
-      case 0:
+      case SELL_SUCCEED:
         g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(54)), 0xFFFF00, 0, 0, 0);
         break;
-      case 1:
+      case SELL_FAIL:
         g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(57)), 0xFF, 0, 0, 0);
         break;
@@ -21975,7 +21976,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.CloseWindow(22);
       g_windowMgr.CloseWindow(24);
       break;
-    case 0xCD: {
+    case ID_ZC_ACK_DISCONNECT_CHARACTER: {
       char text[80];
       sprintf(text, LookupMessage(g_gameModePacketBuffer[2] == 0 ? 152 : 151));
       g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
@@ -21985,22 +21986,22 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_SETTING_WHISPER_STATE:
       g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
       switch (g_gameModePacketBuffer[2]) {
-      case 0:
+      case WT_EXCLUDE_WHISPER:
         switch (g_gameModePacketBuffer[3]) {
-        case 0:
+        case WHISPER_SETTING_SUCCEED:
           g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3427)), 0xFFFF, 0, 0, 0);
           break;
-        case 1:
+        case WHIPSER_SETTING_FAILED:
           g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3428)), 0xFFFF, 0, 0, 0);
           break;
         }
         break;
-      case 1:
+      case WT_INCLUDE_WHISPER:
         switch (g_gameModePacketBuffer[3]) {
-        case 0:
+        case WHISPER_SETTING_SUCCEED:
           g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3429)), 0xFFFF, 0, 0, 0);
           break;
-        case 1:
+        case WHIPSER_SETTING_FAILED:
           g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3430)), 0xFFFF, 0, 0, 0);
           break;
         }
@@ -22091,11 +22092,11 @@ void CGameMode::ProcessIncomingPackets() {
       window->SendMsg(nullptr, 45, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
       char text[128];
       switch (g_gameModePacketBuffer[0x1C]) {
-      case 0:
+      case ROOMEXITTYPE_EXIT:
         sprintf(text, LookupMessage(180), name);
         g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text), 0x80, 0, 0, 0);
         break;
-      case 1:
+      case ROOMEXITTYPE_EXPEL:
         sprintf(text, LookupMessage(181), name);
         g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text), 0x80, 0, 0, 0);
         break;
@@ -22110,7 +22111,7 @@ void CGameMode::ProcessIncomingPackets() {
       window->SendMsg(nullptr, 46, reinterpret_cast<std::intptr_t>(name), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0);
       break;
     }
-    case 0xE5: {
+    case ID_ZC_REQ_EXCHANGE_ITEM_00e5: {
       if (g_serviceOptions.Get(136)) {
         g_modeMgr.gameMode->SendMsg(50, 4, 0, 0, 0);
         break;
@@ -22126,10 +22127,10 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_CONCLUDE_EXCHANGE_ITEM:
       if (UIWindow *window = g_windowMgr.LookupWindow(10011)) {
         switch (g_gameModePacketBuffer[2]) {
-        case 0:
+        case EXI_CONCLUDE_ME:
           window->SendMsg(nullptr, 51, 0, 0, 0, 0);
           break;
-        case 1:
+        case EXI_CONCLUDE_OTHER:
           window->SendMsg(nullptr, 52, 0, 0, 0, 0);
           break;
         }
@@ -22150,10 +22151,10 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.CloseWindow(10011);
       g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
       switch (g_gameModePacketBuffer[2]) {
-      case 0:
+      case EXITEM_EXCHANGE_SUCCEED:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(75)), 0xFFFF00, 0, 0, 0);
         break;
-      case 1:
+      case EXITEM_EXCHANGE_FAILED:
         *reinterpret_cast<int *>(&this->unknown_0100[0x14]) = 0;
         g_session.ResetSlots();
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(76)), 0xFF, 0, 0, 0);
@@ -22183,14 +22184,14 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_MAKE_GROUP:
       g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
       switch (g_gameModePacketBuffer[2]) {
-      case 0:
+      case GROUP_MAKE_SUCCEED:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(77)), 0xFFFF00, 0, 0, 0);
         g_windowMgr.EnsureWindow(34);
         break;
-      case 1:
+      case GROUP_MAKE_FAILED_SAMENAME:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(78)), 0xFF, 0, 0, 0);
         break;
-      case 2:
+      case GROUP_MAKE_FAILED_ALEADY_GROUP_MEMBER:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(79)), 0xFF, 0, 0, 0);
         break;
       case 3:
@@ -22198,7 +22199,7 @@ void CGameMode::ProcessIncomingPackets() {
         break;
       }
       break;
-    case 0xFE:
+    case ID_ZC_REQ_JOIN_GROUP:
     case ID_ZC_PARTY_JOIN_REQ: {
       char name[25];
       strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 6), 24);
@@ -22211,7 +22212,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.EnsureWindow(35)->SendMsg(nullptr, 56, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
       break;
     }
-    case 0x101: {
+    case ID_ZC_GROUPINFO_CHANGE: {
       char text[128];
       g_session.unknown_54A0 = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
       if (g_windowMgr.unknown_030C) {
@@ -22228,7 +22229,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
       break;
     }
-    case 0x106: {
+    case ID_ZC_NOTIFY_HP_TO_GROUPM_0106: {
       const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
       if (g_session.IsMercenaryAid(aid)) {
         break;
@@ -22287,7 +22288,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     case ID_ZC_SKILLINFO_LIST:
     case ID_ZC_HOSKILLINFO_LIST:
-    case 0x29D: {
+    case ID_ZC_MER_SKILLINFO_LIST: {
       std::vector<SkillListEntry> skills;
       const int count = static_cast<int>((*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4u) / sizeof(SkillListRecord));
       const SkillListRecord *record = reinterpret_cast<const SkillListRecord *>(g_gameModePacketBuffer + 4);
@@ -22315,7 +22316,7 @@ void CGameMode::ProcessIncomingPackets() {
                                 *reinterpret_cast<const std::uint16_t *>(packet + 0x0C), *reinterpret_cast<const std::uint16_t *>(packet + 8));
       break;
     }
-    case 0x119: {
+    case ID_ZC_STATE_CHANGE_0119: {
       const unsigned char *packet = g_gameModePacketBuffer;
       int state[4];
       state[0] = *reinterpret_cast<const std::int16_t *>(packet + 6);
@@ -22345,13 +22346,13 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case 0x11A: {
+    case ID_ZC_USE_SKILL_011a: {
       const unsigned char *packet = g_gameModePacketBuffer;
       this->ReceiveSkillUse(*reinterpret_cast<const std::uint16_t *>(packet + 2), *reinterpret_cast<const std::int16_t *>(packet + 4),
                             *reinterpret_cast<const std::uint32_t *>(packet + 0x0A), *reinterpret_cast<const std::uint32_t *>(packet + 6), packet[0x0E]);
       break;
     }
-    case 0x11C: {
+    case ID_ZC_WARPLIST_011c: {
       g_windowMgr.CloseWindow(39);
       UIWindow *window = g_windowMgr.EnsureWindow(39);
       window->SendMsg(nullptr, 59, *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), 0, 0, 0);
@@ -22449,7 +22450,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.RefreshItem1740Window();
       break;
     }
-    case 0x124: {
+    case ID_ZC_ADD_ITEM_TO_CART_0124: {
       const unsigned char *packet = g_gameModePacketBuffer;
       ITEM_INFO item;
       item.unknown_0000[1] = *reinterpret_cast<const std::int16_t *>(packet + 2);
@@ -22523,7 +22524,7 @@ void CGameMode::ProcessIncomingPackets() {
         actor->SendMsg(nullptr, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x137:
+    case ID_ZC_DELETEITEM_FROM_MCSTORE_0137:
       ProcessVendingSale(_time32(nullptr), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2),
                  *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 4), 0, 0);
       break;
@@ -22558,10 +22559,10 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.SetUnknown16EC(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2));
       *reinterpret_cast<std::uint32_t *>(&this->unknown_0100[0x04]) = timeGetTime() - 2000;
       break;
-    case 0x13D:
+    case ID_ZC_RECOVERY_013d:
       this->ReceiveHpSpRecovery(g_gameModePacketBuffer, 0);
       break;
-    case 0x13E:
+    case ID_ZC_USESKILL_ACK_013e:
       this->ProcessSkillUsePacket(g_gameModePacketBuffer, 0);
       break;
     case ID_ZC_OPEN_EDITDLG: {
@@ -22586,7 +22587,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->unknown_01C4[id].tick = timeGetTime();
       break;
     }
-    case 0x145: {
+    case ID_ZC_SHOW_IMAGE_0145: {
       char name[17];
       strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 2), 16);
       int index = g_gameModePacketBuffer[0x12];
@@ -22629,15 +22630,15 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case 0x14A:
+    case ID_ZC_ACK_GIVE_MANNER_POINT:
       switch (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2)) {
-      case 0:
+      case MP_SUCCESS:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(854)), 0xFFFF00, 0, 0, 0);
         break;
-      case 3:
+      case MP_SUCCESS_BY_ADMIN:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(830)), 0xFFFF, 0, 0, 0);
         break;
-      case 4:
+      case MP_BYSELF:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(833)), 0xFFFF, 0, 0, 0);
         break;
       }
@@ -22656,7 +22657,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_GUILD_MENUINTERFACE:
       g_guildInfo.unknown_00A4 = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
       break;
-    case 0x152: {
+    case ID_ZC_GUILD_EMBLEM_IMG_0152: {
       const unsigned char *packet = g_gameModePacketBuffer;
       const std::uint32_t guildId = *reinterpret_cast<const std::uint32_t *>(packet + 4);
       const int version = *reinterpret_cast<const int *>(packet + 8);
@@ -22686,16 +22687,16 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_ACK_DISORGANIZE_GUILD_RESULT:
       switch (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2)) {
-      case 0:
+      case DISRESULT_SUCCESS:
         g_session.ClearAdditionalShortcutSkills();
         g_guildInfo.Init();
         g_windowMgr.CloseWindow(59);
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(400)), 0xFFFF, 4, 0, 0);
         break;
-      case 1:
+      case DISRESULT_INVALIDKEY:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(401)), 0xFFFF, 0, 0, 0);
         break;
-      case 2:
+      case DISRESULT_MEMBEREXIST:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(402)), 0xFFFF, 4, 0, 0);
         break;
       }
@@ -22714,19 +22715,19 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     case ID_ZC_RESULT_MAKE_GUILD:
       switch (g_gameModePacketBuffer[2]) {
-      case 0:
+      case GM_SUCCESS:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(374)), 0xFFFF00, 4, 0, 0);
         g_windowMgr.CloseWindow(214);
         g_windowMgr.CloseWindow(213);
         g_windowMgr.CloseWindow(212);
         break;
-      case 1:
+      case GM_ALREADY_MEMBER:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(375)), 0xFFFF, 4, 0, 0);
         break;
-      case 2:
+      case GM_GUILD_EXIST:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(376)), 0xFFFF, 4, 0, 0);
         break;
-      case 3:
+      case GM_NONE_ITEM:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(405)), 0xFFFF, 4, 0, 0);
         break;
       case 4:
@@ -22737,16 +22738,16 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_REQ_JOIN_GUILD:
       g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
       switch (g_gameModePacketBuffer[2]) {
-      case 0:
+      case REQJOINGUILD_ALREADY_OTHERGUILDM:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(378)), 0xFF, 4, 0, 0);
         break;
-      case 1:
+      case REQJOINGUILD_REJECT:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(379)), 0xFF, 4, 0, 0);
         break;
-      case 2:
+      case REQJOINGUILD_ACCEPT:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(380)), 0xFFFF00, 4, 0, 0);
         break;
-      case 3:
+      case REQJOINGUILD_OVERSIZE:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(381)), 0xFF, 4, 0, 0);
         break;
       case 4:
@@ -22765,7 +22766,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.EnsureWindow(70)->SendMsg(nullptr, 73, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
       break;
     }
-    case 0x16C: {
+    case ID_ZC_UPDATE_GDID_016c: {
       const unsigned char *packet = g_gameModePacketBuffer;
       const int flags = *reinterpret_cast<const int *>(packet + 0x0A);
       const std::uint32_t guildId = *reinterpret_cast<const std::uint32_t *>(packet + 2);
@@ -22784,7 +22785,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case 0x16D: {
+    case ID_ZC_UPDATE_CHARSTAT_016d: {
       const unsigned char *packet = g_gameModePacketBuffer;
       const int online = *reinterpret_cast<const int *>(packet + 0x0A);
       g_guildInfo.SetMemberOnline(*reinterpret_cast<const int *>(packet + 2), online);
@@ -22810,19 +22811,19 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_ACK_REQ_ALLY_GUILD:
       switch (g_gameModePacketBuffer[2]) {
-      case 0:
+      case REQALLYGUILD_ALREADY_ALLIED:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(394)), 0xFFFF, 4, 0, 0);
         break;
-      case 1:
+      case REQALLYGUILD_REJECT:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(395)), 0xFFFF, 4, 0, 0);
         break;
-      case 2:
+      case REQALLYGUILD_ACCEPT:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(396)), 0xFFFF00, 4, 0, 0);
         break;
-      case 3:
+      case REQALLYGUILD_OVERSIZE:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(397)), 0xFFFF, 4, 0, 0);
         break;
-      case 4:
+      case REQMYGUILD_OVERSIZE:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(398)), 0xFFFF, 4, 0, 0);
         break;
       case 5:
@@ -22830,7 +22831,7 @@ void CGameMode::ProcessIncomingPackets() {
         break;
       }
       break;
-    case 0x177: {
+    case ID_ZC_ITEMIDENTIFY_LIST: {
       unsigned int count = (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4u) >> 1;
       UIWindow *window = g_windowMgr.EnsureWindow(73);
       window->SendMsg(nullptr, 75, 0, 0, 0, 0);
@@ -22846,19 +22847,19 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_ACK_ITEMIDENTIFY:
       switch (g_gameModePacketBuffer[4]) {
-      case 0: {
+      case ITEMIDENTIFY_SUCCESS: {
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(491)), 0xFFFF00, 0, 0, 0);
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2));
         item.identified = 1;
         g_session.UpdateInventoryItem(item, 1);
         break;
       }
-      case 1:
+      case ITEMIDENTIFY_FAIL:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(492)), 0xFF, 0, 0, 0);
         break;
       }
       break;
-    case 0x17B: {
+    case ID_ZC_ITEMCOMPOSITION_LIST: {
       unsigned int count = (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4u) >> 1;
       UIWindow *window = g_windowMgr.EnsureWindow(74);
       window->SendMsg(nullptr, 75, 0, 0, 0, 0);
@@ -22875,13 +22876,13 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_ACK_REQ_HOSTILE_GUILD:
       switch (g_gameModePacketBuffer[2]) {
-      case 0:
+      case RESULT_HOSTILE_SUCCESS:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(495)), 0xFFFF00, 4, 0, 0);
         break;
-      case 1:
+      case RESULT_HOSTILE_OVERSIZE:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(496)), 0xFF, 4, 0, 0);
         break;
-      case 2:
+      case RESULT_HOSTILE_ALREADY_HOSTILE:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(497)), 0xFF, 4, 0, 0);
         break;
       case 3:
@@ -22896,7 +22897,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     case ID_ZC_NOTIFY_MAPINFO:
       switch (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2)) {
-      case 0:
+      case TELEPORT_IMPOSSIBLE_AREA:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(500)), 0xFF, 0, 0, 0);
         g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(500)), 0xFF, 0, 0, 0);
         break;
@@ -22904,24 +22905,24 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(501)), 0xFFFF00, 0, 0, 0);
         g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(501)), 0xFFFF00, 0, 0, 0);
         break;
-      case 2:
+      case IMPOSSIBLE_AREA_SKILL:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1334)), 0xFFFF00, 0, 0, 0);
         g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(1334)), 0xFFFF00, 0, 0, 0);
         break;
-      case 3:
+      case IMPOSSIBLE_AREA_USEITEM:
         this->unknown_02CC = 0;
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1335)), 0xFFFF00, 0, 0, 0);
         g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(1335)), 0xFFFF00, 0, 0, 0);
         break;
       }
       break;
-    case 0x18B:
+    case ID_ZC_ACK_REQ_DISCONNECT:
       switch (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2)) {
-      case 0:
+      case DISCONNECTABLE_STATE:
         GetRagConnection().Close();
         this->SendMsg(2, 0, 0, 0, 0);
         break;
-      case 1:
+      case NOTDISCONNECTABLE_STATE:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(502)), 0xFF, 0, 0, 0);
         break;
       }
@@ -22960,12 +22961,12 @@ void CGameMode::ProcessIncomingPackets() {
       const_cast<TerrainHeightCell *>(mode->scene->terrain->CellAt(column, row))->type = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 6);
       break;
     }
-    case 0x194:
+    case ID_ZC_ACK_REQNAME_BYGID_0194:
       SetPlayerName(
           *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2),
           std::string(reinterpret_cast<const char *>(g_gameModePacketBuffer + 6), reinterpret_cast<const char *>(g_gameModePacketBuffer + 0x1E)).c_str());
       break;
-    case 0x199:
+    case ID_ZC_NOTIFY_MAPPROPERTY:
       g_serviceOptions.Set(229, *reinterpret_cast<const int *>(g_session.unknown_5454) != 0);
       switch (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2)) {
       case MAPPROPERTY_FREEPVPZONE:
@@ -23022,7 +23023,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.unknown_1040 = value;
       break;
     }
-    case 0x1A6: {
+    case ID_ZC_PETEGG_LIST: {
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) >> 1;
       UIWindow *window = g_windowMgr.EnsureWindow(90);
       window->SendMsg(nullptr, 75, 0, 0, 0, 0);
@@ -23114,7 +23115,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->SendMsg(100, reinterpret_cast<int>(name), position, 0, 0);
       break;
     }
-    case 0x1B4:
+    case ID_ZC_CHANGE_GUILD_01b4:
       if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
         actor->SetGuildInfo(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0xA));
       }
@@ -23150,7 +23151,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0x1C7:
       ShowErrorDialog(GetRenderSystemHolder()->system, "No Packet Encryption !!!", 0);
       break;
-    case 0x1C8: {
+    case ID_ZC_USE_ITEM_ACK2: {
       if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 8) == g_session.m_aid) {
         this->unknown_02CC = 0;
         if (g_gameModePacketBuffer[0xE]) {
@@ -23175,7 +23176,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case 0x1CD: {
+    case ID_ZC_AUTOSPELLLIST_01cd: {
       char count = 0;
       for (const int *skill = reinterpret_cast<const int *>(g_gameModePacketBuffer + 2); skill < reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1E);
            ++skill) {
@@ -23248,7 +23249,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case 0x1E2: {
+    case ID_ZC_REQ_COUPLE: {
       char name[25];
       strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA), 24);
       name[24] = 0;
@@ -23276,7 +23277,7 @@ void CGameMode::ProcessIncomingPackets() {
         actor->SetUnknown02E4(1);
       }
       break;
-    case 0x1EE: {
+    case 0x1ee: {
       g_session.KeepEquipment();
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemRecord);
       const CardItemRecord *record = reinterpret_cast<const CardItemRecord *>(g_gameModePacketBuffer + 4);
@@ -23299,7 +23300,7 @@ void CGameMode::ProcessIncomingPackets() {
       RefreshItemWindows(&g_windowMgr);
       break;
     }
-    case 0x1EF: {
+    case 0x1ef: {
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemRecord);
       const CardItemRecord *record = reinterpret_cast<const CardItemRecord *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++record) {
@@ -23372,7 +23373,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->exchangeName.assign(name, strlen(name));
       break;
     }
-    case 0x1F6: {
+    case ID_ZC_REQ_BABY: {
       char name[25];
       strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA), 24);
       name[24] = 0;
@@ -23382,7 +23383,7 @@ void CGameMode::ProcessIncomingPackets() {
                                            0);
       break;
     }
-    case 0x1FC: {
+    case ID_ZC_REPAIRITEMLIST_01fc: {
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / 23;
       if (count == 0) {
         g_windowMgr.Confirm(LookupMessage(424), 0, true, false, 0, "Message", 280, 120, 0);
@@ -23398,10 +23399,10 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_ACK_ITEMREPAIR:
       switch (g_gameModePacketBuffer[4]) {
-      case 0:
+      case ITEMREPAIR_SUCCESS:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(813)), 0xFFFF00, 0, 0, 0);
         break;
-      case 1:
+      case ITEMREPAIR_FAIL:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(814)), 0xFF, 0, 0, 0);
         break;
       }
@@ -23439,7 +23440,7 @@ void CGameMode::ProcessIncomingPackets() {
         g_session.RefreshWindow02C8();
       }
       break;
-    case 0x207: {
+    case ID_ZC_REQ_ADD_FRIENDS: {
       char name[25];
       strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA), 24);
       name[24] = 0;
@@ -23453,7 +23454,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case 0x209:
+    case ID_ZC_ADD_FRIENDS_LIST:
       ReceiveFriendAddResult(g_gameModePacketBuffer);
       break;
     case 0x20A:
@@ -23461,7 +23462,7 @@ void CGameMode::ProcessIncomingPackets() {
         g_session.RefreshWindow02C8();
       }
       break;
-    case 0x216:
+    case ID_ZC_BABYMSG:
       switch (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2)) {
       case 0:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(899)), 0x9B9BFF, 0, 0, 0);
@@ -23519,7 +23520,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case 0x253:
+    case ID_ZC_STARPLACE:
       g_windowMgr.EnsureWindow(119)->SendMsg(nullptr, 91, static_cast<signed char>(g_gameModePacketBuffer[2]), 0, 0, 0);
       break;
     case ID_ZC_MAKINGITEM_LIST: {
@@ -23536,7 +23537,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case 0x2B4: {
+    case ID_ZC_DEL_QUEST: {
       std::string title = g_renewQuestMgr->GetOngoingQuest(*reinterpret_cast<const unsigned int *>(g_gameModePacketBuffer + 2)).m_title;
       CRenewQuestMgr *manager = g_renewQuestMgr;
       unsigned int id = *reinterpret_cast<const unsigned int *>(g_gameModePacketBuffer + 2);
@@ -23546,7 +23547,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, 19, 0, 0);
       break;
     }
-    case 0x2B7:
+    case ID_ZC_ACTIVE_QUEST:
       g_renewQuestMgr->SetOngoingQuestState(*reinterpret_cast<const unsigned int *>(g_gameModePacketBuffer + 2), g_gameModePacketBuffer[6]);
       g_renewQuestMgr->UpdateQuestWindows();
       break;
@@ -23559,7 +23560,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case 0x2DD:
+    case ID_ZC_BATTLEFIELD_NOTIFY_CAMPINFO:
       if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == g_session.m_aid) {
         g_session.unknown_0F24[0] = g_gameModePacketBuffer[0x1E];
         break;
@@ -23575,17 +23576,17 @@ void CGameMode::ProcessIncomingPackets() {
         }
       }
       break;
-    case 0x2DE:
+    case ID_ZC_BATTLEFIELD_NOTIFY_POINT:
       g_session.m_score1 = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
       g_session.m_score2 = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
       break;
-    case 0x2DF:
+    case ID_ZC_BATTLEFIELD_NOTIFY_POSITION:
       if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) != g_session.m_aid) {
         this->SendMsg(63, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x20),
                       *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x22), 0);
       }
       break;
-    case 0x2E0:
+    case ID_ZC_BATTLEFIELD_NOTIFY_HP_02e0:
       if (g_session.IsCompanionAid(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
         break;
       }
@@ -23595,7 +23596,7 @@ void CGameMode::ProcessIncomingPackets() {
         actor->SendMsg(nullptr, 34, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
-    case 0x2E1:
+    case ID_ZC_NOTIFY_ACT2:
       this->ReceiveActorAction(
           *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6),
           *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0xA), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xE),
@@ -23603,7 +23604,7 @@ void CGameMode::ProcessIncomingPackets() {
           *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x1A), g_gameModePacketBuffer[0x1C],
           *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1D), 0);
       break;
-    case 0x2E8: {
+    case 0x2e8: {
       g_session.KeepEquipment();
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemExpiryRecord);
       const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord *>(g_gameModePacketBuffer + 4);
@@ -23628,7 +23629,7 @@ void CGameMode::ProcessIncomingPackets() {
       RefreshItemWindows(&g_windowMgr);
       break;
     }
-    case 0x2E9: {
+    case 0x2e9: {
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemExpiryRecord);
       const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++entry) {
@@ -23652,7 +23653,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.RefreshItem1740Window();
       break;
     }
-    case 0x2EA: {
+    case 0x2ea: {
       g_windowMgr.EnsureWindow(33);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemExpiryRecord);
       const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord *>(g_gameModePacketBuffer + 4);
@@ -23677,14 +23678,14 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.RefreshItem1738Window();
       break;
     }
-    case 0x2EF:
+    case ID_ZC_NOTIFY_FONT:
       if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == g_session.m_aid) {
         g_session.unknown_0F30[0] = g_gameModePacketBuffer[6];
       } else if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
         *reinterpret_cast<std::uint16_t *>(actor->render.unknown_00ECBytes) = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 6);
       }
       break;
-    case 0x2F0:
+    case ID_ZC_PROGRESS:
       if (CPlayer *player = this->scene->player) {
         player->SendMsg(nullptr, 82, 0, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6) * 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_session.unknown_555C[0x0A] = true;
@@ -23765,7 +23766,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFCDCD, 11, 0, 0);
       break;
     }
-    case 0x7FB:
+    case ID_ZC_USESKILL_ACK2:
       this->ProcessSkillUsePacket(g_gameModePacketBuffer, 1);
       break;
     case 0x85A: {
@@ -24170,15 +24171,15 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case 0x80F:
+    case ID_ZC_ADD_EXCHANGE_ITEM2:
       ReceiveItemSlot(g_gameModePacketBuffer);
       break;
     case ID_ZC_SSILIST_ITEM_CLICK_ACK:
       g_session.unknown_5BE8 = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
       g_session.unknown_5BEC = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
       break;
-    case 0x845:
-    case 0xA2B:
+    case ID_ZC_SE_CASHSHOP_OPEN_0845:
+    case ID_ZC_SE_CASHSHOP_OPEN_0a2b:
       if (!g_windowMgr.CloseWindow(318)) {
         if (UIWindow *window = g_windowMgr.EnsureWindow(318)) {
           window->SendMsg(nullptr, 120, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
@@ -24189,7 +24190,7 @@ void CGameMode::ProcessIncomingPackets() {
         }
       }
       break;
-    case 0x84B: {
+    case ID_ZC_ITEM_FALL_ENTRY4: {
       const unsigned char *packet = g_gameModePacketBuffer;
       ItemFallEntry entry = {};
       entry.count = *reinterpret_cast<const std::int16_t *>(packet + 0x13);
@@ -24228,11 +24229,11 @@ void CGameMode::ProcessIncomingPackets() {
       this->StopActorMove(packet->aid, packet->x, packet->y, 1);
       break;
     }
-    case 0x8D0: {
+    case ID_ZC_REQ_WEAR_EQUIP_ACK2: {
       const unsigned char *packet = g_gameModePacketBuffer;
       *reinterpret_cast<std::uint32_t *>(&this->unknown_0100[0x04]) = timeGetTime() - 2000;
       switch (packet[8]) {
-      case 0: {
+      case ITEM_EQUIP_ACK_OK: {
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(packet + 2));
         if (item.unknown_0000[1]) {
           item.unknown_0070 = *reinterpret_cast<const std::uint16_t *>(packet + 6);
@@ -24241,13 +24242,13 @@ void CGameMode::ProcessIncomingPackets() {
         }
         break;
       }
-      case 1:
+      case ITEM_EQUIP_ACK_FAILLEVEL:
         g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1953)), 0xFF, 7, 0, 0);
         break;
       }
       break;
     }
-    case 0x8D1: {
+    case ID_ZC_REQ_TAKEOFF_EQUIP_ACK2: {
       const unsigned char *packet = g_gameModePacketBuffer;
       *reinterpret_cast<std::uint32_t *>(&this->unknown_0100[0x08]) = timeGetTime() - 2000;
       switch (packet[6]) {
@@ -24318,13 +24319,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_WHISPER:
       this->ReceiveWhisperResult(g_gameModePacketBuffer[0x2], *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x3));
       break;
-    case 0x9E6:
+    case ID_ZC_UPDATE_ITEM_FROM_BUYING_STORE2:
       ReceiveBuyingStorePurchase(g_gameModePacketBuffer);
       break;
-    case 0x9FC:
+    case ID_ZC_PET_EVOLUTION_RESULT:
       this->NotifyResult2571(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
       break;
-    case 0xA09:
+    case ID_ZC_ADD_EXCHANGE_ITEM3:
       ReceiveItemSlotOptions(g_gameModePacketBuffer);
       break;
     case achievementRewardAckType:
@@ -24336,10 +24337,10 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xA29:
       this->ReceivePacket0A29(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
       break;
-    case 0xA2F:
+    case ID_ZC_ACK_CHANGE_TITLE:
       this->ReceiveJobTitle(g_gameModePacketBuffer[0x2], *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x3));
       break;
-    case 0xA38:
+    case ID_ZC_UI_OPEN_0a38:
       this->OpenServiceWindow(g_gameModePacketBuffer[0x2]);
       break;
     case 0xA3A:
@@ -24522,12 +24523,12 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_DIALOG_WINDOW_POS:
       this->MoveWindow16(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6));
       break;
-    case 0xBAA:
+    case ID_ZC_BATTLEFIELD_NOTIFY_HP_0baa:
       this->RejectRequest(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6),
                           *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xE),
                           *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x12));
       break;
-    case 0xBAB:
+    case ID_ZC_NOTIFY_HP_TO_GROUPM_0bab:
       this->IgnoreRemovedPacket12(reinterpret_cast<const unsigned char *>(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2)),
                                   *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x6), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA),
                                   *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xE), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x12));
@@ -24636,12 +24637,12 @@ void CGameMode::ProcessIncomingPackets() {
                                 *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8),
                                 *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4));
       break;
-    case 0xB09:
+    case 0xb09:
       this->ReceiveItemListPart(g_gameModePacketBuffer[4],
                                 static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 5) / 34,
                                 g_gameModePacketBuffer + 5);
       break;
-    case 0xB0A:
+    case 0xb0a:
       this->ReceiveEquipListPart(g_gameModePacketBuffer[4],
                                  static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 5) / 67,
                                  g_gameModePacketBuffer + 5);
@@ -24769,14 +24770,14 @@ void CGameMode::ProcessIncomingPackets() {
                                      reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 0x15),
                                      *reinterpret_cast<const __time32_t *>(g_gameModePacketBuffer + 0x3D), g_gameModePacketBuffer[0x41]);
       break;
-    case 0xB33:
+    case ID_ZC_SKILLINFO_UPDATE3:
       this->ReceiveSkillUpdate(
           *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8),
           *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xA), g_gameModePacketBuffer[0xE],
           *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xC), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4),
           *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0xF));
       break;
-    case 0xB31:
+    case ID_ZC_ADD_SKILL2:
       this->ReceiveLearnedSkill(
           *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8),
           *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), g_gameModePacketBuffer[0xE],
@@ -24811,12 +24812,12 @@ void CGameMode::ProcessIncomingPackets() {
           *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x22), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x24));
       break;
     }
-    case 0xAB9:
+    case ID_ZC_CHANGE_ITEM_OPTION_0ab9:
       this->ReceiveItemUpgrade(
           *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 4),
           *reinterpret_cast<const ItemCardSlots *>(g_gameModePacketBuffer + 6), *reinterpret_cast<const ItemSlotOptions *>(g_gameModePacketBuffer + 0x16));
       break;
-    case 0xB13:
+    case ID_ZC_CHANGE_ITEM_OPTION_0b13:
       this->RefreshInventoryOrEquipItem(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), g_gameModePacketBuffer[4],
                                         *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 5),
                                         *reinterpret_cast<const ItemCardSlots *>(g_gameModePacketBuffer + 7),
@@ -24837,7 +24838,7 @@ void CGameMode::ProcessIncomingPackets() {
         }
       }
       break;
-    case 0x990:
+    case ID_ZC_ITEM_PICKUP_ACK_V5:
       this->ReceiveItemPickupAck5(
           *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 4),
           *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), g_gameModePacketBuffer[0xA], g_gameModePacketBuffer[0xB], g_gameModePacketBuffer[0xC],
@@ -24943,7 +24944,7 @@ void CGameMode::ProcessIncomingPackets() {
           *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x21), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x23),
           reinterpret_cast<const char *>(g_gameModePacketBuffer + 0x25), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x3D));
       break;
-    case 0xB32: {
+    case ID_ZC_SKILLINFO_LIST3: {
       std::vector<SkillListEntry> skills;
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(SkillListEntry);
       const SkillListEntry *record = reinterpret_cast<const SkillListEntry *>(g_gameModePacketBuffer + 4);
@@ -25186,7 +25187,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.RefreshItem1738Window();
       break;
     }
-    case 0xB76:
+    case ID_ZC_PROPERTY_HOMUN_0b76:
       StringFormat(reinterpret_cast<char *>(g_session.unknown_5570 + 0xC), 32, static_cast<std::size_t>(-1), "%s",
                    reinterpret_cast<const char *>(g_gameModePacketBuffer + 2));
       g_session.unknown_55F8 = g_gameModePacketBuffer[0x1A];
@@ -25231,7 +25232,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       reinterpret_cast<int *>(g_session.unknown_5620)[1] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x4B);
       break;
-    case 0xB0E: {
+    case ID_ZC_NPC_BARTER_MARKET_ITEMINFO_0b0e: {
       g_barterMarketItemMgr->Clear();
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / 25;
       const unsigned char *record = g_gameModePacketBuffer + 4;
@@ -25254,7 +25255,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.EnsureWindow(335)->SendMsg(nullptr, 23, 0, 0, 0, 0);
       break;
     }
-    case 0x9D5: {
+    case ID_ZC_NPC_MARKET_OPEN_09d5: {
       g_session.ClearTradeItems();
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / 15;
       const unsigned char *record = g_gameModePacketBuffer + 4;

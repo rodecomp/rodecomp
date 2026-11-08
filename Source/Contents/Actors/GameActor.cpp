@@ -1,4 +1,5 @@
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Skills/SkillId.h"
 
@@ -144,7 +145,7 @@ bool CGameActor::ProcessState() {
   int moved = 0;
 
   switch (this->render.unknown_0070) {
-  case 0xD:
+  case ST_AUTOCOUNTER:
     if (this->unknown_0178 == 0) {
       this->unknown_0178 = 1;
       if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1)) != 0) {
@@ -169,7 +170,7 @@ bool CGameActor::ProcessState() {
     this->unknown_0258 = serverTime;
     return true;
 
-  case 0:
+  case ST_STAND:
     if (this->render.unknown_006C == 1 && this->render.isMotionFinished) {
       this->SetState(0, 1);
     } else if (this->unknown_0314 == 7 && this->render.accountId == g_session.unknown_1010 && static_cast<std::uint32_t>(this->unknown_027C) > 0 &&
@@ -189,7 +190,7 @@ bool CGameActor::ProcessState() {
     this->unknown_0258 = serverTime;
     return true;
 
-  case 1:
+  case ST_MOVE:
     if (this->route.Empty()) {
       break;
     } else {
@@ -269,9 +270,9 @@ bool CGameActor::ProcessState() {
       goto applyHeight;
     }
 
-  case 2:
-  case 9:
-  case 0xC:
+  case ST_ATTACK:
+  case ST_ATTACK2:
+  case ST_THROW:
   case 0x34:
   case 0x35:
   case 0x36:
@@ -287,7 +288,7 @@ bool CGameActor::ProcessState() {
     this->unknown_0258 = serverTime;
     return true;
 
-  case 8:
+  case ST_BEGIN_SKILL:
     this->unknown_0178 = 0;
     this->ProcessMotion();
     {
@@ -305,9 +306,9 @@ bool CGameActor::ProcessState() {
     this->unknown_0258 = serverTime;
     return true;
 
-  case 5:
-  case 7:
-  case 0x2D:
+  case ST_PICKUP:
+  case ST_SKILL:
+  case ST_AB_SPECIAL:
     this->unknown_0178 = 0;
     this->ProcessMotion();
     if (this->render.isMotionFinished) {
@@ -317,7 +318,7 @@ bool CGameActor::ProcessState() {
     this->unknown_0258 = serverTime;
     return true;
 
-  case 4:
+  case ST_DAMAGE:
     this->unknown_0178 = 0;
     this->ProcessMotion();
     {
@@ -342,7 +343,7 @@ bool CGameActor::ProcessState() {
     }
     break;
 
-  case 3:
+  case ST_DEAD:
     this->render.unknown_00C8 = 0;
     this->render.unknown_00D8 = 0;
     this->render.unknown_00DC = 0;
@@ -362,35 +363,35 @@ bool CGameActor::ProcessState() {
     this->unknown_0258 = serverTime;
     return true;
 
-  case 10:
-  case 0x10:
-  case 0x11:
-  case 0x12:
-  case 0x13:
-  case 0x14:
-  case 0x15:
-  case 0x16:
-  case 0x17:
-  case 0x18:
-  case 0x19:
-  case 0x1A:
-  case 0x1B:
-  case 0x1C:
-  case 0x1E:
-  case 0x1F:
-  case 0x20:
-  case 0x21:
-  case 0x22:
-  case 0x23:
-  case 0x24:
-  case 0x25:
-  case 0x26:
-  case 0x27:
-  case 0x28:
-  case 0x29:
-  case 0x2A:
-  case 0x2B:
-  case 0x2C:
+  case ST_SLEEP:
+  case ST_DANCE:
+  case ST_SING:
+  case ST_READYSHOT:
+  case ST_READYJUMP:
+  case ST_LANDJUMP:
+  case ST_R_STORM:
+  case ST_R_DOWN:
+  case ST_R_TURN:
+  case ST_R_COUNTER:
+  case ST_R_DODGE:
+  case ST_A_COUNTER:
+  case ST_A_JUMPKICK:
+  case ST_THROW2:
+  case ST_A_STORM:
+  case ST_A_DOWN:
+  case ST_A_TURN:
+  case ST_SG_DOWN:
+  case ST_SG_TURN:
+  case ST_NINJASKILL1:
+  case ST_NINJASKILL2:
+  case ST_NINJAREADY:
+  case ST_GUNSKILL1:
+  case ST_GUNSKILL2:
+  case ST_GUNSKILL3:
+  case ST_GUNREADY:
+  case ST_GUNREADY2:
+  case ST_MADOSKILL:
+  case ST_MADOSKILL2:
   case 0x2F:
   case 0x30:
   case 0x31:

@@ -1,4 +1,6 @@
 #include "Client/Mode/CLoginMode.h"
+#include "Client/Mode/ModeMessage.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/ModeResultEnums.h"
 #include "Utility/EncryptedName.h"
@@ -483,13 +485,13 @@ int GetClientType() {
     switch (g_serviceType) {
     case 1:
       return 14;
-    case 2:
+    case ServiceJapan:
       return 9;
-    case 3:
+    case ServiceChina:
       return 4;
-    case 4:
+    case ServiceTaiwan:
       return 5;
-    case 5:
+    case ServiceThai:
       return 7;
     case 6:
       return 13;
@@ -507,11 +509,11 @@ int GetClientType() {
       return 22;
     case 13:
       return 23;
-    case 15:
+    case ServiceVietnam:
       return 33;
     case 19:
       return 35;
-    case 14:
+    case ServiceRussia:
       return 25;
     case 20:
       return 36;
@@ -523,11 +525,11 @@ int GetClientType() {
     switch (g_serviceType) {
     case 7:
       return 27;
-    case 2:
+    case ServiceJapan:
       return 28;
-    case 5:
+    case ServiceThai:
       return 29;
-    case 15:
+    case ServiceVietnam:
       return 32;
     case 6:
       return 34;
@@ -539,13 +541,13 @@ int GetClientType() {
     switch (g_serviceType) {
     case 1:
       return 1;
-    case 2:
+    case ServiceJapan:
       return 3;
-    case 3:
+    case ServiceChina:
       return 4;
-    case 4:
+    case ServiceTaiwan:
       return 5;
-    case 5:
+    case ServiceThai:
       return 7;
     case 6:
       return 12;
@@ -563,11 +565,11 @@ int GetClientType() {
       return 22;
     case 13:
       return 23;
-    case 14:
+    case ServiceRussia:
       return 25;
-    case 15:
+    case ServiceVietnam:
       return 26;
-    case 17:
+    case ServiceChile:
       return 30;
     case 18:
       return 31;
@@ -1199,7 +1201,7 @@ void CLoginMode::SubD97F00(int) {
 // FUNCTION: fn_22308
 void CLoginMode::OpenAccountRegistration() {
   switch (g_serviceType) {
-  case 0:
+  case ServiceKorea:
     if (*reinterpret_cast<const int*>(&g_session.unknown_59DC[0x198]) == 1) {
       const char* url = LookupMessage(1308);
       const char source[] = {'\x30', '\x45', '\xCA', '\xFB', '\x9D'};
@@ -1220,9 +1222,9 @@ void CLoginMode::OpenAccountRegistration() {
     ShellExecuteA(hWnd, DecryptName<0x17A9E5BF39AD4737ULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
     break;
   }
-  case 2:
+  case ServiceJapan:
     break;
-  case 3: {
+  case ServiceChina: {
     const char urlSource[] = {'\x2B', '\x5D', '\x27', '\x57', '\xEF', '\x90', '\x66', '\xED', '\x6D', '\x42', '\x26', '\x49', '\xB9', '\xCA', '\x27', '\xB7',
                               '\x20', '\x46', '\x3E', '\x08', '\xEA', '\xDE', '\x2A', '\xED', '\x7E', '\x5F', '\x3C', '\x52', '\xB6', '\xD7', '\x2C', '\xEB',
                               '\x6D', '\x44', '\x32', '\x4E', '\xBB', '\x99', '\x2A', '\xF0', '\x27', '\x14', '\x62', '\x17', '\xE5', '\x8F', '\x6F', '\xE9',
@@ -2010,10 +2012,10 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case 33:
     message = LookupMessage(0xA7A);
     break;
-  case 0:
+  case REFUSE_INVALID_ID:
     message = LookupMessage(6);
     break;
-  case 1:
+  case REFUSE_INVALID_PASSWD:
     if (g_serviceType == 0 && ++g_loginFailCount >= 3) {
       message = std::string(PasswordRetryExceededMessage{}().Text());
       if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
@@ -2037,66 +2039,66 @@ void CLoginMode::ShowLoginError(int code, int argument) {
       message = LookupMessage(0x10B);
     }
     break;
-  case 2:
+  case REFUSE_ID_EXPIRED:
     message = LookupMessage(8);
     break;
-  case 4:
+  case REFUSE_NOT_CONFIRMED:
   case 0x13C6:
     message = LookupMessage(0x10A);
     break;
-  case 5:
+  case REFUSE_INVALID_VERSION:
     message = LookupMessage(0x136);
     break;
-  case 99:
+  case REFUSE_DELETED_ACCOUNT:
     message = LookupMessage(0x170);
     break;
-  case 6: {
+  case REFUSE_BLOCK_TEMPORARY: {
     const std::string text = FormatOwnedString(LookupMessage(0x1C1), argument);
     message = text;
     break;
   }
-  case 101: {
+  case REFUSE_TEMP_BAN_HACKING_INVESTIGATION: {
     const std::string text = FormatOwnedString(LookupMessage(0x32A), argument);
     message = text;
     break;
   }
-  case 102:
+  case REFUSE_TEMP_BAN_BUG_INVESTIGATION:
     message = LookupMessage(0x32B);
     break;
-  case 103:
+  case REFUSE_TEMP_BAN_DELETING_CHAR:
     message = LookupMessage(0x35B);
     break;
-  case 104:
+  case REFUSE_TEMP_BAN_DELETING_SPOUSE_CHAR:
     message = LookupMessage(0x35C);
     break;
   case 7:
     message = LookupMessage(0x1B7);
     break;
-  case 8:
+  case REFUSE_NONSAKRAY_ID_BLOCKED:
     message = LookupMessage(0x2A9);
     break;
-  case 9:
+  case REFUSE_BAN_BY_DBA:
     message = LookupMessage(0x2BF);
     break;
-  case 10:
+  case REFUSE_EMAIL_NOT_CONFIRMED:
     message = LookupMessage(0x2C0);
     break;
-  case 11:
+  case REFUSE_BAN_BY_GM:
     message = LookupMessage(0x2C1);
     break;
-  case 12:
+  case REFUSE_TEMP_BAN_FOR_DBWORK:
     message = LookupMessage(0x2C2);
     break;
-  case 13:
+  case REFUSE_SELF_LOCK:
     message = LookupMessage(0x2C3);
     break;
-  case 14:
+  case REFUSE_NOT_PERMITTED_GROUP:
     message = LookupMessage(0x2C4);
     break;
-  case 15:
+  case REFUSE_WAIT_FOR_SAKRAY_ACTIVE:
     message = LookupMessage(0x2C5);
     break;
-  case 100: {
+  case REFUSE_ALREADY_CONNECT: {
     const std::string text = FormatOwnedString(LookupMessage(0x329), argument);
     message = text;
     break;
@@ -2121,10 +2123,10 @@ void CLoginMode::ShowLoginError(int code, int argument) {
       message.clear();
     }
     break;
-  case 106:
+  case ACCEPT_LOGIN_USER_PHONE_BLOCK:
     message = LookupMessage(0x50D);
     break;
-  case 105:
+  case REFUSE_USER_PHONE_BLOCK:
     message = LookupMessage(0x55C);
     break;
   case 17: {
@@ -2416,13 +2418,13 @@ void CLoginMode::PollNetworkStatus() {
 
   while (GetRagConnection().ReadPacket(g_gameModePacketBuffer, nullptr, g_packetLengths)) {
     switch (GetRagConnection().GetPacketType(reinterpret_cast<const char*>(g_gameModePacketBuffer))) {
-    case 0x69:
-    case 0x6D:
+    case ID_AC_ACCEPT_LOGIN_V1:
+    case ID_HC_ACCEPT_MAKECHAR_V1:
     case ID_PING:
     case 0x283:
     case 0x8E3:
     case 0x8E4:
-    case 0x99D:
+    case ID_HC_ACK_CHARINFO_PER_PAGE_V1:
     case 0x9C2:
     case 0xA4D:
     case 0xA73:
@@ -2431,7 +2433,7 @@ void CLoginMode::PollNetworkStatus() {
     case 0xAE0:
     case 0xC20:
       break;
-    case 0x6A: {
+    case ID_AC_REFUSE_LOGIN_V1: {
       RefuseLoginPacket* packet = reinterpret_cast<RefuseLoginPacket*>(g_gameModePacketBuffer);
       packet->blockDate[19] = '\0';
       this->ShowLoginError(packet->result, reinterpret_cast<int>(packet->blockDate));
@@ -2533,10 +2535,10 @@ void CLoginMode::PollNetworkStatus() {
       this->pendingCursorType = 7;
       break;
     }
-    case 0x71:
+    case ID_HC_NOTIFY_ZONESVR_V1:
       this->ReceiveNotifyZoneServer(reinterpret_cast<const NotifyZoneServerPacket*>(g_gameModePacketBuffer));
       break;
-    case 0x73:
+    case ID_ZC_ACCEPT_ENTER_V1:
       this->Zc_Accept_Enter2(reinterpret_cast<const AcceptEnterPositionPacket*>(g_gameModePacketBuffer));
       return;
     case ID_ZC_REFUSE_ENTER:
@@ -2625,7 +2627,7 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     }
-    case 0x290:
+    case ID_HC_ACK_CHANGE_CHARNAME_V1:
       this->ReceiveCharacterResult(reinterpret_cast<const CharacterResultPacket*>(g_gameModePacketBuffer));
       break;
     case 0x2CA:
@@ -2789,7 +2791,7 @@ void CLoginMode::PollNetworkStatus() {
         break;
       }
       break;
-    case 0x8D5:
+    case ID_HC_ACK_CHANGE_CHARACTER_SLOT_V1:
     case ID_HC_ACK_CHANGE_CHARACTER_SLOT:
       if (reinterpret_cast<const SecondPasswordStatePacket*>(g_gameModePacketBuffer)->result == 1) {
         g_windowMgr.Confirm(LookupMessage(0x7E1), 0, true, false, 0, "Message", 280, 120, 0);
@@ -2969,38 +2971,38 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   (void)argument4;
 
   switch (event) {
-  case 0:
+  case MM_COMMAND:
     switch (argument1) {
-    case 10001:
+    case LMM_MAKECHARACTER:
       this->pendingCursorType = 8;
       return 0;
-    case 10002:
+    case LMM_TRANSFERCHARACTER:
       this->pendingCursorType = 9;
       return 0;
-    case 10004:
+    case LMM_SELECTCHARACTER:
       this->pendingCursorType = 7;
       return 0;
-    case 10006:
+    case LMM_CANCEL:
       if (this->cursorType == 7) {
         g_windowMgr.Shutdown();
         GetRagConnection().Close();
         this->pendingCursorType = 6;
       }
       return 0;
-    case 10010:
+    case LMM_DELETE_CHARACTER:
       this->pendingCursorType = 11;
       return 0;
     default:
       return 0;
     }
-  case 1:
+  case MM_SOCKETERROR:
     GetRagConnection().Close();
     if (g_windowMgr.Confirm(LookupMessage(2), 0, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
     }
     return 0;
-  case 8:
+  case MM_QUERYCHARICTORINFO:
     for (int i = 0; i < this->characterCount; ++i) {
       if (this->characters[i].slot == argument1) {
         return reinterpret_cast<int>(&this->characters[i]);
@@ -3069,10 +3071,10 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       return 0;
     }
     return reinterpret_cast<int>(&this->characters[this->characterCount - 1]);
-  case 10000:
+  case LMM_CONNECT_TO_ACSVR:
     this->pendingCursorType = 4;
     return 0;
-  case 10003: {
+  case LMM_SELECTSVR: {
     *reinterpret_cast<int*>(this->unknown_01C8) = argument1;
     if (argument1 == -1) {
       return 0;
@@ -3104,10 +3106,10 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     this->pendingCursorType = 5;
     return 0;
   }
-  case 10005:
+  case LMM_SENDCHARINFO:
     this->pendingCursorType = 10;
     return 0;
-  case 10006:
+  case LMM_CANCEL:
     if (this->cursorType == 6 || this->cursorType == 27) {
       GetRagConnection().Close();
       g_charServerAccountIdPending = 0;
@@ -3118,14 +3120,14 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       this->pendingCursorType = 7;
     }
     return 0;
-  case 10007:
+  case LMM_PASSWORD:
     strcpy(reinterpret_cast<char*>(this->unknown_0138), reinterpret_cast<const char*>(argument1));
     return 0;
-  case 10008:
+  case LMM_ID:
     strcpy(reinterpret_cast<char*>(&this->unknown_0138[0x40]), reinterpret_cast<const char*>(argument1));
     strcpy(reinterpret_cast<char*>(g_session.unknown_07F4), reinterpret_cast<const char*>(argument1));
     return 0;
-  case 10009: {
+  case LMM_SELECT_CHARACTER: {
     g_session.unknown_0F50 = static_cast<unsigned char>(g_selectedSlotIndex);
     g_windowMgr.LoadShortcutItems();
     for (int i = 0; i < this->characterCount; ++i) {
@@ -3206,25 +3208,25 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
     return 0;
   }
-  case 10011:
+  case LMM_GOTO_LOGIN:
     GetRagConnection().Close();
     g_charServerAccountIdPending = 0;
     this->pendingCursorType = 3;
     return 0;
-  case 10012:
+  case LMM_SET_EMAIL_ADDRESS:
     g_windowMgr.InvalidateAll();
     strcpy(reinterpret_cast<char*>(this->billingInfo), reinterpret_cast<const char*>(argument1));
     return 0;
-  case 10013:
+  case LMM_GET_EMAIL_ADDRESS:
     return reinterpret_cast<int>(this->billingInfo);
-  case 10014:
+  case LMM_GET_MAKING_CHAR_NAME:
     return reinterpret_cast<int>(&this->unknown_0078);
-  case 10015:
+  case LMM_SET_MAKING_CHAR_NAME:
     strcpy(reinterpret_cast<char*>(&this->unknown_0078), reinterpret_cast<const char*>(argument1));
     return 0;
-  case 10016:
+  case LMM_GET_CHAR_PARAM:
     return reinterpret_cast<int>(this->charParams);
-  case 10017: {
+  case LMM_SET_CHAR_PARAM: {
     const int* values = reinterpret_cast<const int*>(argument1);
     this->charParams[0] = values[0];
     this->charParams[1] = values[1];
@@ -3236,14 +3238,14 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     this->unknown_0074 = values[7];
     return 0;
   }
-  case 10018:
+  case LMM_GOTOSELECTACCOUNT:
     if (argument2 == 201) {
       g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
       return 0;
     }
     this->pendingCursorType = 2;
     return 0;
-  case 10019:
+  case LMM_SELECTACCOUNT:
     this->unknown_6F48 = argument1;
     *reinterpret_cast<int*>(&g_session.unknown_5478[4]) = argument1;
     TraceSelection(argument1);
@@ -3273,7 +3275,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
     this->pendingCursorType = (g_serviceType == 5 || g_serviceType == 7) ? 13 : 3;
     return 0;
-  case 10020: {
+  case LMM_GET_BILLING_INFO: {
     char* output = reinterpret_cast<char*>(argument1);
     switch (this->slotExtension.unknown_0001) {
     case 100:
@@ -3312,7 +3314,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       return 0;
     }
   }
-  case 10021:
+  case LMM_DISCONNECT_ACSVR:
     GetRagConnection().Close();
     if (g_windowMgr.Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
       this->otpStarted = timeGetTime();
@@ -3320,7 +3322,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       this->pendingCursorType = 3;
     }
     return 0;
-  case 10022:
+  case LMM_SELECTACCOUNT2:
     this->unknown_6F4C = argument1;
     this->unknown_6F38.clear();
     TraceSelectionRange(this->unknown_6F48, this->unknown_6F4C);

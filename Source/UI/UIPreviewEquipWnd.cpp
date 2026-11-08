@@ -1,4 +1,5 @@
 #include "UI/UIPreviewEquipWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -175,10 +176,10 @@ void UIPreviewEquipWnd::SyncFromPlayer() {
 int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     switch (a) {
-    case 0xC9:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(0x126);
       break;
-    case 0x16B:
+    case ID_RESET:
       this->SyncFromPlayer();
       break;
     case 0x180:

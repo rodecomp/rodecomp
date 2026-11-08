@@ -1,4 +1,5 @@
 #include "Script/LuaScript.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -850,9 +851,9 @@ int UIAchSummaryWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, st
 // FUNCTION: fn_09246
 int UIAchTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
-  case 7:
-  case 9:
-  case 10:
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN:
     break;
   default:
     return 0;
@@ -902,7 +903,7 @@ int UIAchUpperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 // FUNCTION: fn_09248
 int UIAchViewWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 474) {
       PACKET_CZ_REQ_ACH_REWARD packet;
       packet.packetType = ID_CZ_REQ_ACH_REWARD;
@@ -1136,14 +1137,14 @@ void UIAchTracingWnd::Paint() {
 // FUNCTION: fn_09270
 int UIAchTracingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->info = reinterpret_cast<AchTracingWndInfo*>(argument1);
     if (!this->info->IsValid()) {
       this->info->Reset();
     }
     this->Move(this->info->x, this->info->y);
     break;
-  case 98:
+  case UM_TEXT_LBTN_UP:
     switch (argument1) {
     case 478: {
       auto it = std::find_if(g_achievementTracking.begin(), g_achievementTracking.end(), [argument2](AchTracingEntry entry) {
@@ -1241,7 +1242,7 @@ void UIAchSummaryWnd::OnCreate(int, int) {
 // FUNCTION: fn_09244
 int UIAchListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (g_session.ToggleTrackedAchievement(this->ids[this->unknown_008C + argument1])) {
       UIWindow* window = g_windowMgr.EnsureWindow(271);
       if (window) {
@@ -1249,9 +1250,9 @@ int UIAchListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
       }
     }
     break;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->unknown_008C;
     if (message == 9) {
       this->unknown_008C = previous - this->rowCount + 1;
@@ -1279,7 +1280,7 @@ int UIAchListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
 // FUNCTION: fn_09249
 int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 201) {
       g_windowMgr.CloseWindow(270);
       this->Invalidate();
@@ -1287,7 +1288,7 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     break;
 
-  case 22:
+  case UM_TAB:
     if (argument1 == -1 && argument2 == -1) {
       this->SelectTab(this->group, this->sub);
       this->Invalidate();
@@ -1314,7 +1315,7 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     return 0;
   }
 
-  case 60: {
+  case UM_REFRESH: {
     this->view->UpdateInfo();
     this->summary->UpdateInfo();
 

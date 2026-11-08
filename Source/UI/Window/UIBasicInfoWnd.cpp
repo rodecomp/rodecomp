@@ -1,4 +1,5 @@
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIBasicInfoWnd.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -218,7 +219,7 @@ void UIBasicInfoWnd::OnMouseHover(int x, int y) {
 // FUNCTION: fn_13498
 int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
     case 192:
       if (!g_windowMgr.CloseWindow(11)) {
@@ -341,7 +342,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     }
     break;
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<BasicInfoWndInfo*>(argument1);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -351,7 +352,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     this->SetHeight(this->saved->height);
     this->Move(this->saved->x, this->saved->y);
     break;
-  case 60:
+  case UM_REFRESH:
     if (this->geometry.height != this->expandedHeight) {
       this->Invalidate();
     }

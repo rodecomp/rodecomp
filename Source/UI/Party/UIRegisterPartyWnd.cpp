@@ -1,4 +1,5 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Input/InputCharset.h"
 #include "Contents/MessageTable.h"
 #include "Resource/TextureNames.h"
@@ -255,13 +256,13 @@ void UIRegisterPartyWnd::Paint() {
 // FUNCTION: fn_09314
 int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     if (sender == this->types) {
       this->selectedType = static_cast<int>(a);
     }
 
     return 0;
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<RegisterPartyWndInfo*>(a);
 
     if (!this->saved->IsValid()) {
@@ -270,9 +271,9 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 201:
+    case ID_CLOSE:
       break;
     case 564:
     case 565:

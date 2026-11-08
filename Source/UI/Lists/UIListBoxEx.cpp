@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DeviceContext.h"
+#include "UI/Window/UIEnums.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
@@ -186,7 +187,7 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   const int value = static_cast<int>(a);
 
   switch (message) {
-  case 40:
+  case UM_SETCURITEM:
     this->selected = value;
 
     if (this->selected < 0) {
@@ -207,7 +208,7 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
     break;
 
-  case 18:
+  case UM_UPPUSH:
     if (--this->selected < 0) {
       this->selected = 0;
     }
@@ -218,7 +219,7 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
     break;
 
-  case 19:
+  case UM_DOWNPUSH:
     ++this->selected;
 
     if (static_cast<unsigned>(this->selected) > this->lines.size() - 1) {
@@ -231,9 +232,9 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
     break;
 
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->topLine;
     const int visible = this->geometry.height / this->lineHeight;
     const int delta = message == 9 ? (1 - visible) : message == 10 ? (visible - 1) : value;
@@ -263,9 +264,9 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     return (this->topLine - previous);
   }
 
-  case 8:
-  case 11:
-  case 12: {
+  case UM_SCROLLHORZ:
+  case UM_SCROLLHORZPAGEUP:
+  case UM_SCROLLHORZPAGEDOWN: {
     const int previous = this->horizontalOffset;
     const int delta = message == 11 ? -15 : message == 12 ? 15 : value;
     this->horizontalOffset = previous + delta;

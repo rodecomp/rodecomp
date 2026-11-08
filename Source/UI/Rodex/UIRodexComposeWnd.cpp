@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "Client/Mode/CMode.h"
@@ -311,7 +312,7 @@ std::int64_t UIRodexComposeWnd::GetZeny() {
 // FUNCTION: fn_10013
 int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 201) {
       g_windowMgr.CloseWindow(264);
     } else if (argument1 == 213) {
@@ -404,7 +405,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       g_modeMgr.GetGameMode()->SendMsg(0xC0, reinterpret_cast<int>(&mail), 0, 0, 0);
     }
     return 0;
-  case 23:
+  case UM_REFRESHITEM:
     this->m_items.clear();
     for (int i = 0; i < 5; ++i) {
       ITEM_INFO item = g_session.GetItem5C68(i);
@@ -414,13 +415,13 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     }
     this->Invalidate();
     return 0;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     g_modeMgr.GetGameMode()->SendMsg(0xC3, mode->drag.id, mode->drag.quantity, 0, 0);
     g_modeMgr.GetGameMode()->SendMsg(0x12, 0, 0, 0, 0);
     return 0;
   }
-  case 98:
+  case UM_TEXT_LBTN_UP:
     if (argument3 > 0) {
       UIWindow* window = g_windowMgr.EnsureWindow(12);
       if (window) {
@@ -428,7 +429,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
     }
     return 0;
-  case 104: {
+  case UM_DECITEM: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     g_modeMgr.GetGameMode()->SendMsg(0x126, mode->drag.id, mode->drag.quantity, 0, 0);
     g_modeMgr.GetGameMode()->SendMsg(0x12, 0, 0, 0, 0);

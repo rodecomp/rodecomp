@@ -1,4 +1,5 @@
 #include "UI/Window/UIJobListWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Contents/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -99,7 +100,7 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   }
 
   switch (argument1) {
-  case 184: {
+  case ID_OK: {
     PartyBookingUpdatePacket packet{};
     packet.packetType = ID_CZ_PARTY_BOOKING_REQ_UPDATE;
     for (int i = 0; i < 6; ++i) {
@@ -132,7 +133,7 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
   }
     [[fallthrough]];
-  case 201:
+  case ID_CLOSE:
     g_windowMgr.CloseWindow(170);
     break;
   }

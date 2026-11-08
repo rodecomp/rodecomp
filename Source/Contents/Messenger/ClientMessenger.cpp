@@ -1,4 +1,5 @@
 #include "Network/Packets/NoticeEnums.h"
+#include "Contents/Items/ItemType.h"
 #include "Contents/Combat/CombatTypes.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Utility/EncryptedName.h"
@@ -1992,7 +1993,7 @@ int GetEquipLocationIndex(const int& mask) {
     index = 3;
     break;
   case EQP_HAND_R:
-  case 0x22:
+  case (EQP_HAND_R | EQP_HAND_L):
     index = 4;
     break;
   case EQP_GARMENT:
@@ -2004,7 +2005,7 @@ int GetEquipLocationIndex(const int& mask) {
   case EQP_SHOES:
     index = 6;
     break;
-  case 0x101:
+  case (EQP_HEAD_TOP | EQP_HEAD_LOW):
     index = 1;
     break;
   case EQP_HEAD_TOP:
@@ -2016,26 +2017,26 @@ int GetEquipLocationIndex(const int& mask) {
   case EQP_HEAD_MID:
     index = 11;
     break;
-  case 0x201:
+  case (EQP_HEAD_MID | EQP_HEAD_LOW):
     index = 1;
     break;
-  case 0x300:
+  case (EQP_HEAD_TOP | EQP_HEAD_MID):
     index = 10;
     break;
-  case 0x301:
+  case (EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW):
     index = 1;
     break;
   case EQP_COSTUME_HEAD_TOP:
-  case 0xC00:
-  case 0x1400:
-  case 0x1C00:
+  case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID):
+  case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW):
+  case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW):
     index = 20;
     break;
   case EQP_COSTUME_HEAD_LOW:
     index = 22;
     break;
   case EQP_COSTUME_HEAD_MID:
-  case 0x1800:
+  case (EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW):
     index = 21;
     break;
   case EQP_COSTUME_GARMENT:
@@ -5690,15 +5691,15 @@ void CSession::ClearAllItems1784() {
 void CSession::KeepEquipment() {
   for (auto entry = this->m_inventoryItems.begin(); entry != this->m_inventoryItems.end();) {
     switch (entry->unknown_0000[0]) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       ++entry;
       break;
     default:
@@ -5723,15 +5724,15 @@ void CSession::ClearTradeItems() {
 void CSession::RemoveEquipment() {
   for (auto entry = this->m_inventoryItems.begin(); entry != this->m_inventoryItems.end();) {
     switch (entry->unknown_0000[0]) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       entry = this->m_inventoryItems.erase(entry);
       break;
     default:

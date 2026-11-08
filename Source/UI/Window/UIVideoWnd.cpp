@@ -1,4 +1,5 @@
 #include "Render/Renderer.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIVideoWnd.h"
 
 #include "Contents/MessageTable.h"
@@ -101,17 +102,17 @@ int UIVideoWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 521) {
       g_windowMgr.CloseWindow(304);
     }
     break;
-  case 0:
+  case UM_DEFPUSH:
     if (argument1 == 27) {
       this->SendMsg(nullptr, 5, 0, 0, 0, 0);
     }
     break;
-  case 5:
+  case UM_CLOSE:
     if (g_windowMgr.Confirm(LookupMessage(3142), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
       g_windowMgr.CloseWindow(304);
     }

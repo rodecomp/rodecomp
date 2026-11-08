@@ -1,4 +1,5 @@
 #include "Client/Input/InputCharset.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Input/Language.h"
 #include "Contents/SkinMgr.h"
 #include "Render/Text/FontCache.h"
@@ -57,7 +58,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   unsigned char* const lineMove = reinterpret_cast<unsigned char*>(&this->unknown_0184);
 
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     if (lineMove[1] == 0 || HIBYTE(GetKeyState(VK_SHIFT)) != 0 || lineMove[1] == 0) {
       char newline[3] = {'\r', '\n', '\0'};
       g_serverLanguage->Insert(newline);
@@ -65,9 +66,9 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->UIWindow::SendMsg(sender, 0, a, b, c, d);
     }
     return 0;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->unknown_0158;
     scrolling[0] = 1;
 
@@ -97,7 +98,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
     return this->unknown_0158 - previous;
   }
-  case 18: {
+  case UM_UPPUSH: {
     lineMove[0] = 0;
 
     const unsigned count = this->unknown_0168.size();
@@ -147,7 +148,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     lineMove[0] = 1;
     break;
   }
-  case 19: {
+  case UM_DOWNPUSH: {
     lineMove[0] = 0;
 
     const unsigned count = this->unknown_0168.size();
@@ -392,7 +393,7 @@ void UIEditCtrl3::Resize(int width, int height) {
 // FUNCTION: fn_10922
 int UIWhisperEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 18:
+  case UM_UPPUSH:
     if (this->history.size() != 0) {
       if (this->historyIndex != 0) {
         --this->historyIndex;
@@ -401,7 +402,7 @@ int UIWhisperEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->OnBeginEdit();
     }
     break;
-  case 19:
+  case UM_DOWNPUSH:
     if (this->history.size() != 0 && static_cast<std::size_t>(this->historyIndex) < this->history.size()) {
       ++this->historyIndex;
       if (this->historyIndex == static_cast<int>(this->history.size())) {
@@ -924,7 +925,7 @@ void UIChatEditCtrl::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_10909
 int UIChatEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 18:
+  case UM_UPPUSH:
     if (this->history.size() != 0) {
       if (this->unknown_0140 == this->history.size()) {
         this->pending = this->Text();
@@ -937,7 +938,7 @@ int UIChatEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       this->OnBeginEdit();
     }
     break;
-  case 19:
+  case UM_DOWNPUSH:
     if (this->history.size() != 0 && this->unknown_0140 < this->history.size()) {
       ++this->unknown_0140;
       this->SetText((this->unknown_0140 == this->history.size() ? this->pending : this->history[this->unknown_0140]).c_str());
@@ -1033,10 +1034,10 @@ void UIWhisperEditCtrl::SetText(const char* value) {
 // FUNCTION: fn_10916
 int UIEditCtrl_OldList::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 18:
+  case UM_UPPUSH:
     this->RecallHistory(-1);
     return 0;
-  case 19:
+  case UM_DOWNPUSH:
     this->RecallHistory(1);
     return 0;
   default:

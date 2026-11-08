@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
 #include "UI/UIChangeMaterialWnd.h"
 #include "Client/Mode/CMode.h"
@@ -359,20 +360,20 @@ int UIChangeMaterialWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     if (sender == reinterpret_cast<UIWindow*>(this->unknown_00B8) && reinterpret_cast<UIWindow*>(this->unknown_00B8) == g_windowMgr.GetHoverWindow()) {
       this->unknown_00B4->SendMsg(nullptr, 6, 0x141, reinterpret_cast<std::intptr_t>(this->unknown_00B8->Text()), 0, 0);
     }
     break;
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 0xb8:
+    case ID_OK:
       this->SendChangeMaterial();
       break;
-    case 0xc9:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(0x158);
       break;
-    case 0x141:
+    case ID_SEARCH:
       this->unknown_00B4->SendMsg(nullptr, 6, 0x141, reinterpret_cast<std::intptr_t>(this->unknown_00B8->Text()), 0, 0);
       break;
     case 0x16c:
@@ -385,13 +386,13 @@ int UIChangeMaterialWnd::SendMsg(
       break;
     }
     break;
-  case 0x12:
+  case UM_UPPUSH:
     this->unknown_00B4->SendMsg(nullptr, 0x12, 0, 0, 0, 0);
     break;
-  case 0x13:
+  case UM_DOWNPUSH:
     this->unknown_00B4->SendMsg(nullptr, 0x13, 0, 0, 0, 0);
     break;
-  case 0x17:
+  case UM_REFRESHITEM:
     if (argument1 != 0) {
       auto* entry = reinterpret_cast<MaterialListEntry*>(argument1);
       this->m_materials.clear();
@@ -442,24 +443,24 @@ int UIChangeMaterialWnd_List::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 0x17:
+  case UM_REFRESHITEM:
     this->RefreshVisibleEntries();
     break;
-  case 0x12:
+  case UM_UPPUSH:
     this->ShiftSelectedIndex(1);
     break;
-  case 0x13:
+  case UM_DOWNPUSH:
     this->SelectNextItem(1);
     break;
-  case 3:
+  case UM_PAGEUPPUSH:
     this->ShiftSelectedIndex(this->m_pageSize);
     break;
-  case 4:
+  case UM_PAGEDOWNPUSH:
     this->SelectNextItem(this->m_pageSize);
     break;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollOffset;
     int delta = static_cast<int>(argument1);
     if (message == 9) {
@@ -473,7 +474,7 @@ int UIChangeMaterialWnd_List::SendMsg(
     }
     return this->m_scrollOffset - previous;
   }
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 0x141 && argument2 != 0) {
       std::string filter(reinterpret_cast<const char*>(argument2));
       if (filter.compare(LookupMessage(0xec0)) == 0) {

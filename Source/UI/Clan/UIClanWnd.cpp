@@ -1,4 +1,5 @@
 #include "UI/Clan/UIClanWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Contents/ClanInfo.h"
 #include "Contents/MapInfoMgr.h"
 #include "Contents/MessageTable.h"
@@ -169,12 +170,12 @@ void UIClanInfoManageWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_10633
 int UIClanInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (a1 == 201) {
       g_windowMgr.CloseWindow(237);
     }
     return 0;
-  case 60:
+  case UM_REFRESH:
     this->LoadEmblem();
     this->InvalidateChildren();
     return 0;
@@ -187,10 +188,10 @@ int UIClanInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1
 // FUNCTION: fn_10634
 int UIClanWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 60:
+  case UM_REFRESH:
     this->InvalidateChildren();
     return 0;
-  case 34:
+  case UM_SETINFO:
     this->m_saved = reinterpret_cast<ClanWndInfo*>(a1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();

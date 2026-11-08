@@ -1,4 +1,5 @@
 #include "Client/Replay.h"
+#include "Contents/Items/ItemType.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -26,15 +27,15 @@ std::map<int, std::vector<const char*>> g_bookItemNames;
 // FUNCTION: fn_06597
 bool Equipment(const ITEM_INFO& item) {
   switch (item.unknown_0000[0]) {
-  case 4:
-  case 5:
-  case 8:
-  case 9:
-  case 11:
-  case 12:
-  case 13:
-  case 14:
-  case 15:
+  case TYPE_ARMOR:
+  case TYPE_WEAPON:
+  case TYPE_BOW:
+  case TYPE_BOTHHAND:
+  case TYPE_ARMORTM:
+  case TYPE_ARMORTB:
+  case TYPE_ARMORMB:
+  case TYPE_ARMORTMB:
+  case TYPE_GUN:
   case 21:
     return true;
   default:

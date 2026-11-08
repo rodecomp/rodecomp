@@ -1,4 +1,5 @@
 #include "Client/Session.h"
+#include "Contents/Actors/PetEnums.h"
 #include "Contents/MessageTable.h"
 
 #include <cstdlib>
@@ -9,27 +10,27 @@
 // FUNCTION: fn_23805
 const char* CSession::GetPetTalkActionName(int action) {
   switch (action) {
-  case 0:
+  case PM_FEEDING:
     return "feeding";
-  case 1:
+  case PM_HUNTING:
     return "hunting";
-  case 2:
+  case PM_DANGER:
     return "danger";
-  case 3:
+  case PM_DEAD:
     return "dead";
-  case 4:
+  case PM_NORMAL:
     return "stand";
-  case 10:
+  case PM_CONNENCT:
     return "connect";
-  case 6:
+  case PM_LEVELUP:
     return "levelup";
-  case 7:
+  case PM_PERFORMANCE1:
     return "perfor_1";
-  case 8:
+  case PM_PERFORMANCE2:
     return "perfor_2";
-  case 9:
+  case PM_PERFORMANCE3:
     return "perfor_3";
-  case 5:
+  case PM_PERFORMANCE_S:
     return "perfor_s";
   default:
     return "normal";
@@ -55,16 +56,16 @@ void CSession::GetPetTalkText(int job, int hungerState, int action, char* text) 
 
   const char* hunger;
   switch (hungerState) {
-  case 1:
+  case PET_HUNGRY:
     hunger = "bit_hungry";
     break;
-  case 2:
+  case PET_SATISFIED:
     hunger = "noting";
     break;
-  case 3:
+  case PET_ENOUGH:
     hunger = "full";
     break;
-  case 4:
+  case PET_FULL:
     hunger = "so_full";
     break;
   default:

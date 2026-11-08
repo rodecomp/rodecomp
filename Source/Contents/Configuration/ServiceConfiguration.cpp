@@ -1,4 +1,5 @@
 #include "Client/Input/InputCharset.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Client/Input/LanguageTC.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Archive/PakRegistry.h"
@@ -197,12 +198,12 @@ void InitializeServiceStrings() {
   LoadEtcInfo();
 
   switch (g_serviceType) {
-  case 0:
+  case ServiceKorea:
   case 1:
-  case 2:
-  case 3:
-  case 4:
-  case 5:
+  case ServiceJapan:
+  case ServiceChina:
+  case ServiceTaiwan:
+  case ServiceThai:
   case 6:
   case 7:
   case 8:
@@ -211,9 +212,9 @@ void InitializeServiceStrings() {
   case 11:
   case 12:
   case 13:
-  case 14:
-  case 15:
-  case 17:
+  case ServiceRussia:
+  case ServiceVietnam:
+  case ServiceChile:
   case 18:
   case 19:
   case 20:
@@ -307,17 +308,17 @@ void InitializeServiceStrings() {
 void LoadLoadingScreens(int count) {
   if (count == 0) {
     switch (g_serviceType) {
-    case 0:
+    case ServiceKorea:
       count = 7;
       break;
     case 1:
-    case 15:
+    case ServiceVietnam:
       count = 12;
       break;
-    case 3:
+    case ServiceChina:
       count = 4;
       break;
-    case 5:
+    case ServiceThai:
     case 7:
       count = 8;
       break;
@@ -390,27 +391,27 @@ void InitializeLanguage() {
   static CLanguageArabic arabicCharset;
 
   switch (g_serviceType) {
-  case 0:
+  case ServiceKorea:
     g_language = 0;
     g_textCodePage = 949;
     g_serverLanguage = &defaultCharset;
     break;
-  case 2:
+  case ServiceJapan:
     g_language = 2;
     g_textCodePage = 932;
     g_serverLanguage = &defaultCharset;
     break;
-  case 3:
+  case ServiceChina:
     g_language = 3;
     g_serverLanguage = &traditionalChineseCharset;
     g_textCodePage = 936;
     break;
-  case 4:
+  case ServiceTaiwan:
     g_language = 4;
     g_serverLanguage = &traditionalChineseCharset;
     g_textCodePage = 950;
     break;
-  case 5:
+  case ServiceThai:
     g_language = 5;
     g_serverLanguage = &thaiCharset;
     g_textCodePage = 874;
@@ -434,19 +435,19 @@ void InitializeLanguage() {
     g_textCodePage = 1252;
     g_serverLanguage = &defaultCharset;
     break;
-  case 14:
+  case ServiceRussia:
     g_language = 1;
     g_inlineCharset = 0;
     g_textCodePage = 1251;
     g_serverLanguage = &defaultCharset;
     break;
-  case 15:
+  case ServiceVietnam:
     g_language = 7;
     g_inlineCharset = 0;
     g_textCodePage = 1258;
     g_serverLanguage = &defaultCharset;
     break;
-  case 17:
+  case ServiceChile:
     g_language = 1;
     g_inlineCharset = 0;
     g_textCodePage = 1145;

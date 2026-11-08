@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UINewMakeCharWnd.h"
 
@@ -233,7 +234,7 @@ void UINewMakeCharWnd::OnProcess() {
 // FUNCTION: fn_09624
 int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 13: {
+  case UM_SETSTATE: {
     bool previous = this->m_selected;
     this->m_selected = argument1 != 0;
     if (previous != (argument1 != 0)) {
@@ -250,7 +251,7 @@ int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     }
     break;
   }
-  case 40: {
+  case UM_SETCURITEM: {
     char name[128];
     memset(name, 0, sizeof(name));
     if (this->m_race == 0) {
@@ -516,16 +517,16 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_09625
 int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 0: {
+  case UM_DEFPUSH: {
     char name[25] = {};
     strcpy(name, this->m_nameEdit->Text());
     memcpy(this->m_name, name, sizeof(this->m_name));
     this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
     return 0;
   }
-  case 6:
+  case UM_COMMAND:
     break;
-  case 13:
+  case UM_SETSTATE:
     this->m_race = static_cast<int>(argument1);
     [[fallthrough]];
   default:
@@ -533,7 +534,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   }
 
   switch (argument1) {
-  case 0xB8: {
+  case ID_OK: {
     for (int index = 0; index < 2; ++index) {
       if ((g_doramCreationEnabled || index != 1) && sender == this->m_raceViews[index]) {
         return 0;
@@ -611,12 +612,12 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     return 0;
   }
 
-  case 0xB9:
+  case ID_CANCEL:
     g_windowMgr.Schedule(this);
     g_modeMgr.gameMode->SendMsg(0, 0x2714, 0, 0, 0);
     return 0;
 
-  case 0xCC:
+  case ID_SLOT:
     if (g_doramCreationEnabled || sender != this->m_raceViews[1]) {
       for (int index = 0; index < 2; ++index) {
         if (sender == this->m_raceViews[index]) {
@@ -646,7 +647,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     return 0;
 
-  case 0xD7:
+  case ID_RADIOBTN:
     if (argument2 == 0x1EF) {
       for (int index = 0; index < 9; ++index) {
         if (sender == this->m_hairColorButtons[index]) {
@@ -663,7 +664,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     return 0;
 
-  case 0xE2:
+  case ID_RIGHT:
     if (argument2 == 0) {
       --this->m_action;
       if (this->m_action < this->unknown_01FC) {
@@ -673,7 +674,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     return 0;
 
-  case 0xE3:
+  case ID_LEFT:
     if (argument2 == 0) {
       ++this->m_action;
       if (this->m_action >= this->unknown_01FC + 8) {

@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Client/Replay.h"
 #include "UI/Window/WindowPolicy.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -166,7 +167,7 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   const int value = static_cast<int>(a);
 
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (value == 273) {
       this->expanded = this->expanded == 0;
       this->Resize(
@@ -185,7 +186,7 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
 
     return 0;
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) == 0 ||
         value < 0) {
       return 0;
@@ -195,7 +196,7 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     this->SendMsg(nullptr, 6, 273, 0, 0, 0);
     this->parent->SendMsg(this, 39, value, 0, 0, 0);
     return 0;
-  case 57:
+  case UM_CHANGEMSG:
     if (value >= 0) {
       this->label->SetText(this->list->lines[value].text.c_str(), 0);
       this->Invalidate();
@@ -213,7 +214,7 @@ int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   const int value = static_cast<int>(a);
 
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (value == 273) {
       this->expanded = this->expanded == 0;
 
@@ -237,7 +238,7 @@ int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     }
 
     return 0;
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     if (value < 0) {
       return 0;
     }

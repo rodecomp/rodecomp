@@ -1,4 +1,5 @@
 #include "UI/Guild/UIGuildHelperWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/MessageTable.h"
@@ -156,7 +157,7 @@ int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
   }
 
   switch (a1) {
-  case 184: {
+  case ID_OK: {
     CMode* mode = g_modeMgr.GetGameMode();
     std::string name = "";
     name = this->m_nameEdit->Text();
@@ -175,7 +176,7 @@ int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
     }
     break;
   }
-  case 185:
+  case ID_CANCEL:
     if (this->m_mode == 0) {
       g_windowMgr.CloseWindow(213);
     } else {
@@ -191,20 +192,20 @@ int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
 // FUNCTION: fn_13124
 int UIGuildBanReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a1) {
-    case 184: {
+    case ID_OK: {
       g_windowMgr.CloseWindow(76);
       CMode* mode = g_modeMgr.gameMode;
       mode->SendMsg(111, reinterpret_cast<int>(&this->m_target), reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0);
       break;
     }
-    case 185:
+    case ID_CANCEL:
       g_windowMgr.CloseWindow(76);
       break;
     }
     return 0;
-  case 34: {
+  case UM_SETINFO: {
     const GuildBanTarget* target = reinterpret_cast<const GuildBanTarget*>(a1);
     this->m_target.unknown_0000 = target->unknown_0000;
     this->m_target.unknown_0004 = target->unknown_0004;
@@ -220,14 +221,14 @@ int UIGuildBanReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 // FUNCTION: fn_13126
 int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a1) {
-    case 184:
+    case ID_OK:
       g_windowMgr.CloseWindow(214);
       g_windowMgr.CloseWindow(213);
       g_windowMgr.CloseWindow(212);
       break;
-    case 343:
+    case ID_HELP:
       if (!g_windowMgr.CloseWindow(214)) {
         g_windowMgr.EnsureWindow(214);
       }
@@ -245,7 +246,7 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
       break;
     }
     return 0;
-  case 34:
+  case UM_SETINFO:
     this->m_saved = reinterpret_cast<GuildHelperWndInfo*>(a1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();

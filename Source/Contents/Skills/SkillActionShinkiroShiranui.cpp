@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Combat/CombatTypes.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/RenderObject.h"
@@ -350,25 +351,25 @@ void CSkillAction_SS_FOUR_CHARM::OnSkillEffect(int level, CGameActor* source, CG
 
   EffectLists* effects;
   switch (source->charmType) {
-  case 1:
+  case CHARM_TYPE_WATER:
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_ice_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_ice"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
-  case 2:
+  case CHARM_TYPE_LAND:
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_earth_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_earth"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
-  case 3:
+  case CHARM_TYPE_FIRE:
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_fire_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_fire"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
-  case 4:
+  case CHARM_TYPE_WIND:
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_wind_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     effects = g_effectMgr;

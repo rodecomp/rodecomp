@@ -1,3 +1,4 @@
+#include "Contents/Items/ItemType.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeDragState.h"
@@ -138,10 +139,10 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   }
 
   switch (item.unknown_0000[0]) {
-  case 3:
-  case 10:
-  case 16:
-  case 17:
+  case TYPE_EVENT:
+  case TYPE_ARROW:
+  case TYPE_AMMO:
+  case TYPE_THROWWEAPON:
   case 19: {
     const int column = grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
     if (column != -1 && 9 * grid.rows <= 9 * g_session.m_hotkeyPage + column) {
@@ -160,24 +161,24 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   }
 
   switch (item.unknown_0000[0]) {
-  case 4:
-  case 5:
-  case 8:
-  case 9:
-  case 11:
-  case 12:
-  case 13:
-  case 14:
-  case 15:
+  case TYPE_ARMOR:
+  case TYPE_WEAPON:
+  case TYPE_BOW:
+  case TYPE_BOTHHAND:
+  case TYPE_ARMORTM:
+  case TYPE_ARMORTB:
+  case TYPE_ARMORMB:
+  case TYPE_ARMORTMB:
+  case TYPE_GUN:
     if (item.unknown_0000[2] == 0) {
       break;
     }
-  case 0:
-  case 1:
-  case 2:
-  case 10:
-  case 16:
-  case 17:
+  case TYPE_HEAL:
+  case TYPE_SCHANGE:
+  case TYPE_SPECIAL:
+  case TYPE_ARROW:
+  case TYPE_AMMO:
+  case TYPE_THROWWEAPON:
   case 19: {
     const int column = grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
     if (column != -1) {
@@ -277,24 +278,24 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, value.id);
     if (item.unknown_0000[1] != 0 && item.identified != 0) {
       switch (item.unknown_0000[0]) {
-      case 4:
-      case 5:
-      case 8:
-      case 9:
-      case 11:
-      case 12:
-      case 13:
-      case 14:
-      case 15:
+      case TYPE_ARMOR:
+      case TYPE_WEAPON:
+      case TYPE_BOW:
+      case TYPE_BOTHHAND:
+      case TYPE_ARMORTM:
+      case TYPE_ARMORTB:
+      case TYPE_ARMORMB:
+      case TYPE_ARMORTMB:
+      case TYPE_GUN:
         if (item.unknown_0000[2] == 0) {
           break;
         }
-      case 0:
-      case 1:
-      case 2:
-      case 10:
-      case 16:
-      case 17:
+      case TYPE_HEAL:
+      case TYPE_SCHANGE:
+      case TYPE_SPECIAL:
+      case TYPE_ARROW:
+      case TYPE_AMMO:
+      case TYPE_THROWWEAPON:
       case 19: {
         const int slot = this->SlotAt(x, y);
         if (slot != -1) {

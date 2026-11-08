@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/UIScrollWnd.h"
 #include "Render/DeviceContext/DCBitmap.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
@@ -438,9 +439,9 @@ void UIScrollWnd::Resize(int width, int height) {
 int UIScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   int delta = argument1;
   switch (message) {
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->scrollPosition;
     if (message == 9) {
       delta = -1;
@@ -459,9 +460,9 @@ int UIScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     this->Invalidate();
     return this->scrollPosition - previous;
   }
-  case 8:
-  case 11:
-  case 12: {
+  case UM_SCROLLHORZ:
+  case UM_SCROLLHORZPAGEUP:
+  case UM_SCROLLHORZPAGEDOWN: {
     const int previous = this->unknown_009C;
     if (message == 11) {
       delta = -1;

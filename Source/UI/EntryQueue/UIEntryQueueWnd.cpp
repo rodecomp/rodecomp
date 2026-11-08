@@ -1,4 +1,5 @@
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -464,7 +465,7 @@ void __stdcall Nullsub429() {
 int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   EntryQueueInfo* info = g_entryQueueMgr->current;
   switch (message) {
-  case 6: {
+  case UM_COMMAND: {
     int error;
     switch (a) {
     case 0:
@@ -534,7 +535,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     g_windowMgr.Confirm(LookupMessage(error), 0, false, false, 0, "Message", 280, 120, 0);
     return 0;
   }
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<EntryQueueWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();

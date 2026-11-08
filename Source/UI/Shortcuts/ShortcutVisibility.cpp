@@ -1,4 +1,5 @@
 #include "Client/Replay.h"
+#include "UI/Window/WindowId.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -44,7 +45,7 @@ namespace {
 // FUNCTION: fn_17269
 bool UIWindowMgr::ShowWindowById(int id, int visible) {
   switch (id) {
-  case 1: {
+  case WID_CHATWND: {
     if (g_replayAnimationScaling && !Replay::Instance().header.options.recordRestricted) {
       return false;
     }
@@ -67,7 +68,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
     return true;
   }
 
-  case 15:
+  case WID_ITEMDROPCNTWND:
     g_windowMgr.EnsureWindow(15);
 
     if (this->window_01EC->geometry.visible != visible) {
@@ -80,7 +81,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
 
     return false;
 
-  case 36:
+  case WID_SHORTCUTWND:
     if (g_replayAnimationScaling && !Replay::Instance().header.options.unknown_0007) {
       return false;
     }
@@ -107,7 +108,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
 
     return true;
 
-  case 46: {
+  case WID_SKILLDESCRIBEWND: {
     this->unknown_0048 = visible;
 
     if (!this->window_0230) {
@@ -134,11 +135,11 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
     return true;
   }
 
-  case 273:
+  case WID_MINIMAPWND:
     g_windowMgr.LookupWindow(273)->Show(visible);
     return true;
 
-  case 276:
+  case WID_ROUNDBOXTOOLTIPWND:
     this->visible_276 = visible;
 
     if (!this->window_4F1E4) {

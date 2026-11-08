@@ -1,4 +1,5 @@
 #include "UI/UISlotBitmap.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Buttons/UIBitmapButton.h"
 
 // OFFSET: 0x0085ADA0
@@ -49,12 +50,12 @@ void UISlotBitmap::OnRBtnDown(int, int) {
 // FUNCTION: fn_10920
 int UISlotBitmap::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 203 && this->parent) {
       this->parent->SendMsg(this, 6, 203, this->slot, 0, 0);
     }
     return 0;
-  case 13:
+  case UM_SETSTATE:
     this->geometry.unknown_0030 = argument1;
     return 0;
   default:

@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -252,12 +253,12 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
 int UIOngoingQuestScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2,
                                      std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-    case 6:
+    case UM_COMMAND:
       if (argument1 == 0xC9) {
         g_windowMgr.CloseWindow(0x142);
       }
       break;
-    case 0x17:
+    case UM_REFRESHITEM:
       this->RefreshHuntTexts();
       break;
   }
@@ -635,12 +636,12 @@ void UIRenewDetailQuestInfoWnd::OnLBtnDown(int x, int y) {
 int UIRenewDetailQuestInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2,
                                        std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-    case 6:
+    case UM_COMMAND:
       if (argument1 == 0xC9) {
         g_windowMgr.CloseWindow(0x142);
       }
       return 0;
-    case 0x17:
+    case UM_REFRESHITEM:
       if (this->m_recommended) {
         this->m_recommendedWnd->SendMsg(this, 0x17, 0, 0, 0, 0);
       } else {
@@ -1061,12 +1062,12 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   }
 
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 0xC9:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(0x141);
       return 0;
-    case 0xD5:
+    case ID_CHECK:
       if (g_windowMgr.window_0428) {
         g_windowMgr.window_0428->Show(argument2);
         return 0;
@@ -1110,7 +1111,7 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
     }
     break;
-  case 0x16:
+  case UM_TAB:
     if (this->m_tab != argument1) {
       this->m_tab = argument1;
       if (argument1 < 0) {
@@ -1156,7 +1157,7 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->Invalidate();
     }
     break;
-  case 0x17:
+  case UM_REFRESHITEM:
     if (argument2 != 0) {
       bool found = false;
       for (int tab = 0; tab <= 2; ++tab) {
@@ -1176,9 +1177,9 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     this->UpdateScroll();
     this->Invalidate();
     break;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scroll;
     int delta = argument1;
     if (message == 9) {

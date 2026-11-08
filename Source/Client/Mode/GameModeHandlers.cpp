@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Contents/Skills/SkillUnitId.h"
 #include "Network/Packets/ModeResultEnums.h"
 #include "Client/Mode/CLoginMode.h"
@@ -610,7 +611,7 @@ void CGameMode::ReceivePendingResult(const unsigned char* packet) {
   std::string text;
   std::uint32_t color = 0xFF;
   switch (*reinterpret_cast<const std::int16_t*>(packet + 10)) {
-  case 0:
+  case ERROR_TYPE_NONE:
   case 8:
     g_pendingAid = *reinterpret_cast<const int*>(packet + 2);
     g_pendingGid = *reinterpret_cast<const int*>(packet + 6);
@@ -624,25 +625,25 @@ void CGameMode::ReceivePendingResult(const unsigned char* packet) {
       text = LookupMessage(54);
     }
     break;
-  case 1:
+  case ERROR_TYPE_NPC:
     text = LookupMessage(1227);
     break;
-  case 2:
+  case ERROR_TYPE_SYSTEM:
     text = LookupMessage(1228);
     break;
-  case 3:
+  case ERROR_TYPE_INVENTORY_WEIGHT:
     text = LookupMessage(56);
     break;
-  case 4:
+  case ERROR_TYPE_EXCHANGE:
     text = LookupMessage(1229);
     break;
-  case 5:
+  case ERROR_TYPE_ITEM_ID:
     text = LookupMessage(1230);
     break;
-  case 6:
+  case ERROR_TYPE_MONEY:
     text = LookupMessage(1254);
     break;
-  case 7:
+  case ERROR_TYPE_AMOUNT:
     text = LookupMessage(1813);
     break;
   case 9:
@@ -695,23 +696,23 @@ void CGameMode::ReceiveItem1718BasicList(const unsigned char* packet) {
 // FUNCTION: fn_21793
 void CGameMode::ReceiveItem1718Result(const unsigned char* packet) {
   switch (packet[2]) {
-  case 0:
+  case PURCHASE_SUCCEED:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(54)), 0xFFFF00, 0, 0, 0);
     break;
-  case 1:
+  case PURCHASE_FAIL_MONEY:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(55)), 0xFF, 0, 0, 0);
     break;
-  case 3:
+  case PURCHASE_FAIL_COUNT:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(221)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case PURCHASE_FAIL_WEIGHT:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 0xFF, 0, 0, 0);
     break;
-  case 9:
+  case PURCHASE_FAIL_EACHITEM_COUNT:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1940)), 0xFF, 0, 0, 0);
     break;
@@ -1092,31 +1093,31 @@ void CGameMode::ReceiveResultNotice00FC(const unsigned char* packet) {
   this->unknown_00FC = 0;
 
   switch (packet[2]) {
-  case 0:
+  case ENTERROOM_FULL:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x43)), 0xFF, 0, 0, 0);
     break;
-  case 1:
+  case ENTERROOM_WRONG_PASSWORD:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(7)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case ENTERROOM_KICKED:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x44)), 0xFF, 0, 0, 0);
     break;
-  case 4:
+  case REFUSETYPE_ZENY:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x37)), 0xFF, 0, 0, 0);
     break;
-  case 5:
+  case REFUSETYPE_LOWLEVEL:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1B0)), 0xFF, 0, 0, 0);
     break;
-  case 6:
+  case REFUSETYPE_HIGHLEVEL:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1B1)), 0xFF, 0, 0, 0);
     break;
-  case 7:
+  case REFUSETYPE_JOB:
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1B2)), 0xFF, 0, 0, 0);
     break;
@@ -1256,13 +1257,13 @@ void CGameMode::ReceiveServerRateNotice(const unsigned char* packet) {
   std::memset(text, 0, sizeof(text));
   g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
   switch (g_session.unknown_54A0) {
-  case 0:
+  case EXP_NOTSHARED:
     std::sprintf(text, "%s - %s : %s", LookupMessage(291), LookupMessage(292), LookupMessage(287));
     break;
-  case 1:
+  case EXP_SHARED:
     std::sprintf(text, "%s - %s : %s", LookupMessage(291), LookupMessage(292), LookupMessage(288));
     break;
-  case 2:
+  case EXP_CHANGE_IMPOSSIBLE:
     std::sprintf(text, "%s - %s : %s(%s)", LookupMessage(291), LookupMessage(292), LookupMessage(287), LookupMessage(1535));
     break;
   }
@@ -1458,25 +1459,25 @@ void CGameMode::ReceiveNamedResultNotice(const unsigned char* packet) {
 void CGameMode::ReceiveResultNotice0118(const unsigned char* packet) {
   g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
   switch (packet[2]) {
-  case 0:
+  case WT_EXCLUDE_WHISPER:
     switch (packet[3]) {
-    case 1:
+    case WHIPSER_SETTING_FAILED:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((this->unknown_0118 + LookupMessage(194)).c_str()), 0xFFFF, 0, 0, 0);
       break;
-    case 2:
+    case WHISPER_SETTING_FAILED_OVERCOUNT:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((this->unknown_0118 + LookupMessage(195)).c_str()), 0xFFFF, 0, 0, 0);
       break;
     }
     break;
-  case 1:
+  case WT_INCLUDE_WHISPER:
     switch (packet[3]) {
-    case 0:
+    case WHISPER_SETTING_SUCCEED:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((this->unknown_0118 + LookupMessage(196)).c_str()), 0xFFFF, 0, 0, 0);
       break;
-    case 1:
+    case WHIPSER_SETTING_FAILED:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((this->unknown_0118 + LookupMessage(197)).c_str()), 0xFFFF, 0, 0, 0);
       break;
-    case 2:
+    case WHISPER_SETTING_FAILED_OVERCOUNT:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((this->unknown_0118 + LookupMessage(198)).c_str()), 0xFFFF, 0, 0, 0);
       break;
     }
@@ -2096,20 +2097,20 @@ void CGameMode::ReceiveServiceRequest(unsigned char type, int value) {
   case 4:
     this->OpenServiceWindow(type);
     break;
-  case 5:
+  case OUT_UI_TIP:
     if (UITipboxWnd* window = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(315))) {
       window->ShowTip(value);
     }
     break;
-  case 6:
+  case OUT_UI_QUEST:
     g_renewQuestMgr->ShowQuestInfo(value);
     break;
-  case 7:
+  case OUT_UI_ATTENDANCE:
     if (UIWindow* window = g_windowMgr.EnsureWindow(328)) {
       window->SendMsg(nullptr, 0x22, value, 0, 0, 0);
     }
     break;
-  case 8:
+  case OUT_UI_ENCHANTGRADE:
     g_windowMgr.EnsureWindow(343);
     break;
   }

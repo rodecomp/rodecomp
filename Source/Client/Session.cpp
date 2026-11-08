@@ -778,13 +778,13 @@ ITEM_INFO* CSession::GetEquippedItem(const ITEM_INFO* item) {
     equipped = &this->unknown_17F0[0];
     break;
   case EQP_HAND_R:
-  case 0x22:
+  case EQP_HAND_R | EQP_HAND_L:
     equipped = &this->unknown_17F0[1];
     break;
   case EQP_GARMENT:
     equipped = &this->unknown_17F0[2];
     break;
-  case 0x88:
+  case EQP_ACC_RL:
     equipped = &this->unknown_17F0[3];
     break;
   case EQP_ARMOR:
@@ -797,13 +797,13 @@ ITEM_INFO* CSession::GetEquippedItem(const ITEM_INFO* item) {
     equipped = &this->unknown_17F0[6];
     break;
   case EQP_HEAD_TOP:
-  case 0x101:
-  case 0x300:
-  case 0x301:
+  case EQP_HEAD_TOP | EQP_HEAD_LOW:
+  case EQP_HEAD_TOP | EQP_HEAD_MID:
+  case EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW:
     equipped = &this->unknown_17F0[8];
     break;
   case EQP_HEAD_MID:
-  case 0x201:
+  case EQP_HEAD_MID | EQP_HEAD_LOW:
     equipped = &this->unknown_17F0[9];
     break;
   case EQP_COSTUME_HEAD_LOW:
@@ -831,13 +831,13 @@ ITEM_INFO* CSession::GetEquippedItem(const ITEM_INFO* item) {
     equipped = &this->unknown_2B50[7];
     break;
   case EQP_COSTUME_HEAD_TOP:
-  case 0xC00:
-  case 0x1400:
-  case 0x1C00:
+  case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID:
+  case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW:
+  case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
     equipped = &this->unknown_2B50[8];
     break;
   case EQP_COSTUME_HEAD_MID:
-  case 0x1800:
+  case EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
     equipped = &this->unknown_2B50[9];
     break;
   }

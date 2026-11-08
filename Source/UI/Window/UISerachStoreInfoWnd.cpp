@@ -1,4 +1,5 @@
 #include "UI/Window/UISerachStoreInfoWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
@@ -201,9 +202,9 @@ void UISerachStoreInfoWnd::OnRBtnDown(int x, int y) {
 // FUNCTION: fn_12759
 int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 201: {
+    case ID_CLOSE: {
       SearchStoreRequestHeader packet;
       packet.packetType = 0x83B;
       GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
@@ -214,10 +215,10 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(181);
       break;
     }
-    case 213:
+    case ID_CHECK:
       this->unknown_00ED = argument2 != 0;
       break;
-    case 215:
+    case ID_RADIOBTN:
       for (int index = 0; index < 2; ++index) {
         this->m_radios[index]->Invalidate();
         int checked;
@@ -322,7 +323,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 
-  case 60:
+  case UM_REFRESH:
     if (argument1 != 0) {
       this->unknown_00F0 = "";
       if (argument2 == 387) {
@@ -367,7 +368,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->Invalidate();
     return 0;
 
-  case 98:
+  case UM_TEXT_LBTN_UP:
     if (argument1 == 316) {
       if (this->unknown_00DC > 1) {
         this->unknown_00E0 = -1;

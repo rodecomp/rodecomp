@@ -1,4 +1,5 @@
 #include "Contents/Actors/Skill.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillUnitId.h"
 
@@ -347,7 +348,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
 
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
-  case 7: {
+  case AM_CHAT: {
     const char* text = reinterpret_cast<const char*>(b);
     if (std::strlen(text) == 0) {
       return;
@@ -370,7 +371,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     balloon->Move(this->render.screenX - this->unknown_0288 / 2, this->render.screenY - g_renderer->viewport.height * 110 / 480);
     return;
   }
-  case 0x25: {
+  case AM_SKILL: {
     const SkillHitMessage* hit = reinterpret_cast<const SkillHitMessage*>(b);
     const int skillId = hit->skillId;
     const int unknown_0014 = hit->unknown_0014;
@@ -493,7 +494,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     }
     return;
   }
-  case 0x2D: {
+  case AM_SKILLSTANDENTRY: {
     const SkillUnitMessage* unit = reinterpret_cast<const SkillUnitMessage*>(b);
     this->range = unit->range;
     this->skillAid = unit->aid;
@@ -900,7 +901,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       return;
     }
   }
-  case 0x2F:
+  case AM_SETJOB:
     this->SetActorJob(b);
     switch (this->GetEffectiveJob(-1)) {
     case UNT_WARP_WAITING: {
@@ -927,7 +928,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       this->m_model->playback = 1;
     }
     return;
-  case 0x35:
+  case AM_DISAPPEAR:
     if (this->GetEffectiveJob(-1) == UNT_CANE_OF_EVIL_EYE) {
       CEffect* effect = g_effectMgr->Find(this->render.accountId, 0x903);
       if (effect != nullptr) {
@@ -938,7 +939,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       actions->OnSkillObjectRemove(this->GetEffectiveJob(-1), this);
     }
     return;
-  case 0x77:
+  case AM_SKILL_UPDATE:
     if (this->render.enabled) {
       return;
     }

@@ -1,4 +1,5 @@
 #include "Client/Session.h"
+#include "UI/Window/UIEnums.h"
 #include "File/ShortcutFilename.h"
 #include "Render/Renderer.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -151,9 +152,9 @@ void UIApplyForPartyWnd::OnMouseHover(int x, int y) {
 // FUNCTION: fn_09313
 int UIApplyForPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (static_cast<int>(a)) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(345);
       break;
     case 271:
@@ -176,7 +177,7 @@ int UIApplyForPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     }
 
     return 0;
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ApplyForPartyWndInfo*>(a);
 
     if (!this->saved->IsValid()) {

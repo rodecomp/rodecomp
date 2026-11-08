@@ -1,4 +1,5 @@
 #include "Client/Replay.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Client/Mode/ModeMgr.h"
@@ -381,7 +382,7 @@ int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
   } else {
     switch (argument1) {
-    case 201:
+    case ID_CLOSE:
       if (g_windowMgr.Confirm(LookupMessage(2816), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
         for (int i = 0; i < 2; ++i) {
           if (sender == this->unknown_0094[i]) {
@@ -395,7 +396,7 @@ int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         this->Invalidate();
       }
       break;
-    case 204:
+    case ID_SLOT:
       if (this->geometry.visible) {
         this->m_selectedSlot = argument2 / (this->geometry.width / 2);
       }
@@ -418,8 +419,8 @@ int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       }
       this->Invalidate();
       break;
-    case 226:
-    case 227:
+    case ID_RIGHT:
+    case ID_LEFT:
       for (int i = 0; i < 2; ++i) {
         if (sender == this->unknown_009C[i] || sender == this->unknown_00A4[i]) {
           this->m_slots[i]->m_display->SendMsg(nullptr, 6, argument1, 0, 0, 0);
@@ -1102,26 +1103,26 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   }
 
   switch (argument1) {
-  case 185:
+  case ID_CANCEL:
     this->LoadSessionStyle();
     break;
-  case 226:
+  case ID_RIGHT:
     if (this->unknown_0084 > 0) {
       --this->unknown_0084;
     } else {
       this->unknown_0084 = 7;
     }
     break;
-  case 227:
+  case ID_LEFT:
     this->unknown_0084 = this->unknown_0084 < 7 ? this->unknown_0084 + 1 : 0;
     break;
-  case 354:
+  case ID_PREVIEW:
     this->SelectPreviousStyle(this->GetStyleTable(3).c_str(), &this->unknown_0098);
     break;
-  case 355:
+  case ID_NEXTVIEW:
     this->SelectNextStyle(this->GetStyleTable(3).c_str(), &this->unknown_0098);
     break;
-  case 356:
+  case ID_BOOKMARK:
     if (this->m_favoriteButton->m_argument == 0) {
       if (shop->AddToMyStyle() == true) {
         g_windowMgr.Confirm(LookupMessage(2819), 0, true, false, 0, "Message", 280, 120, 0);
@@ -1342,7 +1343,7 @@ int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t ar
   char table[64];
   UIWindow* shop = g_windowMgr.LookupWindow(281);
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 189 && sender) {
       UIAccBitmapButton* button = static_cast<UIAccBitmapButton*>(sender);
       for (unsigned int i = 0; i < this->m_itemFrames.size(); ++i) {
@@ -1373,7 +1374,7 @@ int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     }
     break;
 
-  case 101:
+  case UM_BMP_RBTN_UP:
     if (sender) {
       UIAccBitmapButton* button = static_cast<UIAccBitmapButton*>(sender);
       memset(table, 0, sizeof(table));
@@ -1418,7 +1419,7 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   }
 
   switch (argument1) {
-  case 200:
+  case ID_BASE:
   case 496:
   case 497:
   case 498:
@@ -1454,10 +1455,10 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       this->Invalidate();
     }
     break;
-  case 201:
+  case ID_CLOSE:
     g_windowMgr.CloseWindow(281);
     break;
-  case 224:
+  case ID_BUY:
     if (this->m_buyButton->Argument() == 0 &&
         g_windowMgr.Confirm(LookupMessage(2818), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
       for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {

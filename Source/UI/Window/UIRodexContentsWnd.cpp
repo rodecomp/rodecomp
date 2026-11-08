@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Window/UIRodexContentsWnd.h"
 #include "Client/Mode/CMode.h"
@@ -274,14 +275,14 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->Invalidate();
       }
       break;
-    case 0xC9:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(265);
       g_rodexMailStore->currentMailId = 0;
       if (g_windowMgr.unknown_0454) {
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0454)->SendMsg(nullptr, 60, 0, 0, 0, 0);
       }
       break;
-    case 0xD3: {
+    case ID_DELETE: {
       RodexMailStore* store = g_rodexMailStore;
       std::map<std::int64_t, RodexMail>* mails;
       if (store->unknown_0010 == 0) {
@@ -310,7 +311,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       break;
     }
-    case 0x131:
+    case ID_SEND_MAIL:
       if (this->unknown_010C != 1) {
         g_modeMgr.GetGameMode()->SendMsg(0x10C, reinterpret_cast<int>(this->m_title.c_str()), 0, 0, 0);
       }

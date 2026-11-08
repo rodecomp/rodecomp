@@ -1,4 +1,5 @@
 #include "UI/Window/UISeekPartyListWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Party/PartyBookingMgr.h"
@@ -234,7 +235,7 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
 int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
 
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->m_saved = reinterpret_cast<SeekPartyListWndInfo*>(argument1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();
@@ -244,9 +245,9 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     this->SendMsg(nullptr, 14, 3, this->m_saved->width, this->m_saved->height, 0);
     this->SendMsg(nullptr, 23, 0, 0, 0, 0);
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 202:
+    case ID_MINI:
       if (this->m_minimized) {
         this->Resize(this->geometry.width, this->m_restoreHeight);
       } else {
@@ -259,7 +260,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case 284:
       this->Invalidate();
       return 0;
-    case 343:
+    case ID_HELP:
       g_windowMgr.EnsureWindow(0xAD);
       return 0;
     case 365:
@@ -366,22 +367,22 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       return 0;
     }
-    case 201:
+    case ID_CLOSE:
       g_session.m_partyBooking.m_alarm = this->m_alarmCheck->geometry.unknown_0030 != 0;
       g_windowMgr.CloseWindow(0xA9);
       return 0;
     default:
       return 0;
     }
-  case 98:
+  case UM_TEXT_LBTN_UP:
     if (argument1 != 378 || g_windowMgr.CloseWindow(0xA8)) {
       return 0;
     }
     g_windowMgr.EnsureWindow(0xA8);
     return 0;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_firstRow;
     int next;
     if (message == 9) {
@@ -400,7 +401,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     return next - previous;
   }
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     if (sender == this->m_regionCombo) {
       this->SelectRegion(static_cast<int>(argument1) + 1);
       this->m_region = static_cast<int>(argument1);

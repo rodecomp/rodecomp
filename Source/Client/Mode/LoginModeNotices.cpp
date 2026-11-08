@@ -1,4 +1,5 @@
 #include "Client/Mode/CLoginMode.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -151,25 +152,25 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
   GetRagConnection().Close();
 
   switch (errorCode) {
-  case 0:
+  case BAN_UNFAIR:
     strcpy(text, LookupMessage(3));
     break;
-  case 1:
+  case BAN_SERVER_SHUTDOWN:
     strcpy(text, LookupMessage(4));
     break;
-  case 2:
+  case BAN_ANOTHER_LOGIN:
     strcpy(text, LookupMessage(5));
     break;
-  case 3:
+  case BAN_DETECTED_SPEEDHACK:
     strcpy(text, LookupMessage(241));
     break;
-  case 4:
+  case BAN_PC_OVERFLOW:
     strcpy(text, LookupMessage(264));
     break;
-  case 5:
+  case BAN_UNDER_AGE:
     strcpy(text, LookupMessage(305));
     break;
-  case 6:
+  case BAN_NOT_SETTLED:
     strcpy(text, LookupMessage(438));
     if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) == 187) {
       g_modeMgr.Quit();
@@ -177,55 +178,55 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
     }
     text[0] = '\0';
     break;
-  case 7:
+  case BAN_ACCOUNT_BUSY:
     strcpy(text, LookupMessage(439));
     break;
-  case 8:
+  case BAN_INFORMATION_REMAINED:
     strcpy(text, LookupMessage(440));
     break;
-  case 9:
+  case BAN_IP_OVERFLOW:
     strcpy(text, LookupMessage(529));
     break;
-  case 10:
+  case BAN_PAY_OUT:
     strcpy(text, LookupMessage(530));
     break;
-  case 11:
+  case BAN_PAY_SUSPEND:
     strcpy(text, LookupMessage(575));
     break;
-  case 12:
+  case BAN_PAY_CHANGE:
     strcpy(text, LookupMessage(576));
     break;
-  case 13:
+  case BAN_PAY_WRONGIP:
     strcpy(text, LookupMessage(577));
     break;
-  case 14:
+  case BAN_PAY_PNGAMEROOM:
     strcpy(text, LookupMessage(578));
     break;
-  case 16:
+  case BAN_JAPAN_REFUSE1:
     strcpy(text, LookupMessage(606));
     break;
-  case 17:
+  case BAN_JAPAN_REFUSE2:
     strcpy(text, LookupMessage(607));
     break;
-  case 18:
+  case BAN_INFORMATION_REMAINED_ANOTHER_ACCOUNT:
     strcpy(text, LookupMessage(678));
     break;
-  case 100:
+  case BAN_PC_IP_UNFAIR:
     strcpy(text, LookupMessage(1123));
     break;
-  case 101:
+  case BAN_PC_IP_COUNT_ALL:
     strcpy(text, LookupMessage(1178));
     break;
-  case 102:
+  case BAN_PC_IP_COUNT:
     strcpy(text, LookupMessage(1179));
     break;
-  case 103:
+  case BAN_GRAVITY_MEM_AGREE:
     strcpy(text, LookupMessage(1309));
     break;
-  case 104:
+  case BAN_GAME_MEM_AGREE:
     strcpy(text, LookupMessage(1310));
     break;
-  case 105:
+  case BAN_HAN_VALID:
     strcpy(text, LookupMessage(1311));
     break;
   case 107:

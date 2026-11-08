@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Item/UIMerchantItemLogWnd.h"
 
@@ -210,12 +211,12 @@ void UIMerchantItemLogWnd::OnRBtnDown(int x, int y) {
 // FUNCTION: fn_13580
 int UIMerchantItemLogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (a == 201) {
       g_windowMgr.CloseWindow(this->unknown_00FC != 0 ? 258 : 257);
     }
     break;
-  case 14:
+  case UM_RESIZE:
     if (a == 3) {
       int height = c <= 336 ? c : 336;
       if (height < 120) {
@@ -237,7 +238,7 @@ int UIMerchantItemLogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.StoreSnapRectangle(this);
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     ITEM_INFO item(*reinterpret_cast<const ITEM_INFO*>(a));
     this->items.push_back(item);
 

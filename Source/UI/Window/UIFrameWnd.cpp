@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
@@ -204,17 +205,17 @@ void UIFrameWnd::RefreshSnap() {
 // FUNCTION: fn_11802
 int UIFrameWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     if (this->m_message0) {
       this->SendMsg(this, 6, this->m_message0, 0, 0, 0);
     }
     break;
-  case 1:
+  case UM_CANCELPUSH:
     if (this->m_message1) {
       this->SendMsg(this, 6, this->m_message1, 0, 0, 0);
     }
     break;
-  case 98:
+  case UM_TEXT_LBTN_UP:
     if (c > 0) {
       if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
         window->SendMsg(nullptr, 24, c, 0, 0, 0);
@@ -457,20 +458,20 @@ void UIMonsterInfoWnd::OnMouseHover(int x, int y) {
 // FUNCTION: fn_11798
 int UIAllyGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 184:
+    case ID_OK:
       g_windowMgr.CloseWindow(72);
       g_modeMgr.gameMode->SendMsg(120, this->identity, 1, 0, 0);
       break;
-    case 185:
+    case ID_CANCEL:
       g_windowMgr.CloseWindow(72);
       g_modeMgr.gameMode->SendMsg(120, this->identity, 0, 0, 0);
       break;
     }
 
     return 0;
-  case 74: {
+  case UM_SET_ALLY_GUILD_MSG: {
     this->identity = static_cast<std::uint32_t>(a);
     std::string text = "(";
     text += reinterpret_cast<const char*>(b);
@@ -502,7 +503,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
   int step;
   switch (a) {
-  case 0xC9:
+  case ID_CLOSE:
     g_windowMgr.CloseWindow(0x113);
     return 0;
   case 0x117:
@@ -596,18 +597,18 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // FUNCTION: fn_11801
 int UICntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 29:
+  case UM_SETTEXT:
     this->m_text->SetText(reinterpret_cast<const char*>(a), 0);
     return 0;
-  case 81: {
+  case UM_SET_COUNT: {
     char buffer[16];
     this->m_edit->SetText(_itoa(static_cast<int>(a), buffer, 10));
     return 0;
   }
-  case 80:
+  case UM_SET_TARGET:
     this->m_event = static_cast<int>(a);
     return 0;
-  case 6:
+  case UM_COMMAND:
     if (a == 184) {
       CMode* mode = g_modeMgr.gameMode;
       mode->SendMsg(this->m_event, std::atoi(this->m_edit->Text()), 0, 0, 0);
@@ -656,7 +657,7 @@ struct ChatRoomRecordHeader {
 // FUNCTION: fn_11800
 int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 53:
+  case UM_SETINFO2:
     this->saved = reinterpret_cast<ChatRoomWndInfo*>(a);
     if (this->saved->IsValid() == 0) {
       this->saved->Reset();
@@ -664,9 +665,9 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 184: {
+    case ID_OK: {
       if (this->edit->Length() == 0) {
         return 0;
       }
@@ -730,7 +731,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_windowMgr.SetFocus(this->edit);
       return 0;
     }
-    case 201:
+    case ID_CLOSE:
       g_modeMgr.gameMode->SendMsg(48, 0, 0, 0, 0);
       return 0;
     case 347:
@@ -739,7 +740,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     default:
       return 0;
     }
-  case 48: {
+  case UM_MENU_SELECTED: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     switch (this->unknown_0114[a].second) {
     case 0: {
@@ -779,7 +780,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
   }
-  case 49: {
+  case UM_MAKEMENU: {
     this->unknown_0114.clear();
     if (g_windowMgr.unknown_0210 != nullptr) {
       g_windowMgr.CloseWindow(18);
@@ -855,7 +856,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     return 0;
   }
-  case 34: {
+  case UM_SETINFO: {
     const ChatRoomTitleInfo* settings = reinterpret_cast<const ChatRoomTitleInfo*>(a);
     this->title = settings->title;
     this->unknown_00CC = settings->unknown_0018;
@@ -881,7 +882,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->Invalidate();
     return 0;
   }
-  case 46: {
+  case UM_ROLE_CHANGE: {
     if (this->unknown_010C.find(std::string(reinterpret_cast<const char*>(a))) != this->unknown_010C.end()) {
       this->unknown_010C[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
     }
@@ -891,7 +892,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     return 0;
   }
-  case 45: {
+  case UM_MEMBER_EXIT: {
     const std::map<std::string, int>::iterator found = this->unknown_010C.find(std::string(reinterpret_cast<const char*>(a)));
     if (found == this->unknown_010C.end()) {
       return 0;
@@ -903,11 +904,11 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     return 0;
   }
-  case 43:
+  case UM_CLEARMEMBER:
     this->memberList->Clear();
     this->unknown_010C.erase(this->unknown_010C.begin(), this->unknown_010C.end());
     return 0;
-  case 44: {
+  case UM_ADDMEMBER: {
     this->unknown_010C[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
     int color = 0;
     if (b != 0) {
@@ -920,7 +921,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->memberList->AddText(reinterpret_cast<const char*>(a), color, nullptr);
     return 0;
   }
-  case 37: {
+  case UM_ADDCHAT: {
     char* text = reinterpret_cast<char*>(a);
     if (g_forbiddenWords.Contains(text)) {
       std::string masked("");
@@ -978,17 +979,17 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     return 0;
   }
-  case 3:
+  case UM_PAGEUPPUSH:
     if (this->history->verticalOverflow != 0) {
       this->history->SendMsg(nullptr, 9, 0, 0, 0, 0);
     }
     return 0;
-  case 4:
+  case UM_PAGEDOWNPUSH:
     if (this->history->verticalOverflow != 0) {
       this->history->SendMsg(nullptr, 10, 0, 0, 0, 0);
     }
     return 0;
-  case 14: {
+  case UM_RESIZE: {
     if (a != 7) {
       return 0;
     }

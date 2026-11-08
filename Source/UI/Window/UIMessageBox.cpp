@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/Text/FontCache.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Combat/CombatTypes.h"
@@ -763,29 +764,29 @@ int UIMessageBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case 156:
     this->modal = static_cast<int>(a);
     return 0;
-  case 67:
+  case UM_SETCOUNTMSG:
     this->format = reinterpret_cast<const char*>(a);
     return 0;
-  case 57:
+  case UM_CHANGEMSG:
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, 29, a, 38, 0, 0);
     return 0;
-  case 6:
+  case UM_COMMAND:
     this->RecordResponse(static_cast<int>(a), b, c, d);
 
     if (this->modal != 0) {
       g_windowMgr.unknown_0474 = static_cast<int>(a);
     } else {
       switch (a) {
-      case 184:
-      case 187:
-      case 188:
+      case ID_OK:
+      case ID_YES:
+      case ID_NO:
         g_windowMgr.Schedule(this);
       }
     }
 
     return 0;
-  case 98:
+  case UM_TEXT_LBTN_UP:
     if (a == 426) {
       ShellExecuteA(hWnd, "open", LookupMessage(3445), nullptr, nullptr, SW_SHOWNORMAL);
     }
@@ -816,13 +817,13 @@ int UIMessageBoxAutoreturn::SendMsg(UIWindow* sender, int message, std::intptr_t
 // FUNCTION: fn_11810
 int UIMonsterInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (a == 184) {
       g_windowMgr.Schedule(this);
     }
 
     return 0;
-  case 79:
+  case UM_SET_MONSTER_INFO:
     if (a) {
       const int* source = reinterpret_cast<const int*>(a);
       int* destination = reinterpret_cast<int*>(&this->info);
@@ -847,16 +848,16 @@ int UIMonsterInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 // FUNCTION: fn_11817
 int UITalkboxTrapInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 184: {
+    case ID_OK: {
       TalkboxTrapRequest request;
       request.target = this->target;
       request.text = this->edit->Text();
       g_modeMgr.GetGameMode()->SendMsg(131, reinterpret_cast<int>(&request), 0, 0, 0);
     }
       [[fallthrough]];
-    case 185:
+    case ID_CANCEL:
       g_windowMgr.Schedule(this);
     }
     return 0;
@@ -953,26 +954,26 @@ void UIMerInfoWnd::StoreInfo() {
 // FUNCTION: fn_11807
 int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     return 0;
-  case 6:
+  case UM_COMMAND:
     this->RecordResponse(static_cast<int>(a), b, c, d);
 
     switch (a) {
-    case 184:
+    case ID_OK:
       this->Invalidate();
       return 0;
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(125);
       return 0;
-    case 349:
+    case ID_OPEN_MERSKILLLIST:
       if (!g_windowMgr.CloseWindow(126)) {
         g_windowMgr.EnsureWindow(126);
         return 0;
       }
 
       return 0;
-    case 350: {
+    case ID_FIRE_MER: {
       CMode* mode = g_modeMgr.GetGameMode();
 
       if (g_windowMgr.Confirm(LookupMessage(1370), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
@@ -989,7 +990,7 @@ int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     default:
       return 0;
     }
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<MerInfoWndInfo*>(a);
 
     if (!this->saved->IsValid()) {
@@ -1328,12 +1329,12 @@ void UINoticeWnd::Paint() {
 // FUNCTION: fn_11811
 int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     this->SendMsg(nullptr, 6, 184, 0, 0, 0);
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 184: {
+    case ID_OK: {
       g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       FILE* file = std::fopen("notice_read.txt", "wb");
       const int index = this->m_index;
@@ -1359,7 +1360,7 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       g_windowMgr.CloseWindow(93);
       break;
     }
-    case 218:
+    case ID_NEXT:
       ++this->m_index;
 
       if (this->m_index > this->m_noticeCount) {
@@ -1370,7 +1371,7 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->m_scroll = this->m_scrollPositions[this->m_index];
       this->LoadNotice();
       break;
-    case 246:
+    case ID_PREV:
       if (--this->m_index < 0) {
         this->m_index = 0;
         return 0;
@@ -1382,9 +1383,9 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     }
 
     return 0;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scroll;
     std::intptr_t delta = a;
 
@@ -2293,7 +2294,7 @@ void UIReplayRECControlWnd::UpdateRecordTime() {
 // FUNCTION: fn_11814
 int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ReplayRECControlWndInfo*>(a);
 
     if (!this->saved->IsValid()) {
@@ -2302,7 +2303,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (a) {
     case 420:
       if (!this->replayPathEnabled) {
@@ -2359,7 +2360,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       this->mode = 0;
       g_windowMgr.CloseWindow(198);
       return 0;
-    case 213:
+    case ID_CHECK:
       if (sender == this->window_0128) {
         ReplayFileList::Instance().pathEnabled = b != 0;
         this->replayPathEnabled = ReplayFileList::Instance().pathEnabled;
@@ -2418,11 +2419,11 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case 116:
     this->UpdateRecordTime();
     return 0;
-  case 87:
+  case UM_SETPOS:
     Replay::Instance().unknown_01F4 = this->geometry.x;
     Replay::Instance().unknown_01F8 = this->geometry.y;
     return 0;
-  case 60:
+  case UM_REFRESH:
     this->Invalidate();
     this->InvalidateChildren();
     return 0;
@@ -2755,7 +2756,7 @@ void UICntWnd::OnCreate(int, int) {
 // FUNCTION: fn_11813
 int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
     case 401:
       g_modeMgr.gameMode->SendMsg(276, 0, 0, 0, 0);
@@ -2782,7 +2783,7 @@ int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return 0;
     }
     return 0;
-  case 35:
+  case UM_REFRESHBUTTON:
     if (!this->m_paused) {
       this->m_playButton->Move(-100, -100);
       this->m_pauseButton->Move(5, 89);
@@ -2795,7 +2796,7 @@ int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     this->Invalidate();
     this->InvalidateChildren();
     return 0;
-  case 60:
+  case UM_REFRESH:
     this->RefreshInfo();
     return 0;
   case 251:
@@ -2851,30 +2852,30 @@ bool UIReplayControlWnd::RefreshInfo() {
 // FUNCTION: fn_11815
 int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 40:
+  case UM_SETCURITEM:
     this->m_list->SendMsg(nullptr, 40, a, 0, 0, 0);
     this->UpdateInfo();
     this->Invalidate();
     return 0;
-  case 18:
+  case UM_UPPUSH:
     this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
     this->UpdateInfo();
     this->Invalidate();
     return 0;
-  case 19:
+  case UM_DOWNPUSH:
     this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
     this->UpdateInfo();
     this->Invalidate();
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 185:
+    case ID_CANCEL:
     case 400:
       Replay::Instance().SetState(1);
       g_windowMgr.Schedule(this);
       g_modeMgr.gameMode->SendMsg(10025, 0, 0, 0, 0);
       return 0;
-    case 184:
+    case ID_OK:
       if (this->m_list->selected != -1) {
         this->UpdateInfo();
         this->Invalidate();
@@ -2892,7 +2893,7 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         }
       }
       break;
-    case 221:
+    case ID_EXIT:
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
@@ -2998,13 +2999,13 @@ bool UISelectReplayDataWnd::UpdateInfo() {
 // FUNCTION: fn_11816
 int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 40:
+  case UM_SETCURITEM:
     this->m_serverList->SendMsg(nullptr, 40, this->m_selectedServer, 0, 0, 0);
     return 0;
-  case 18:
+  case UM_UPPUSH:
     this->m_serverList->SendMsg(nullptr, 18, 0, 0, 0, 0);
     return 0;
-  case 19:
+  case UM_DOWNPUSH:
     this->m_serverList->SendMsg(nullptr, 19, 0, 0, 0, 0);
     return 0;
   case 80: {
@@ -3026,7 +3027,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     break;
   }
-  case 6:
+  case UM_COMMAND:
     switch (a) {
     case 400:
       reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
@@ -3035,7 +3036,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_modeMgr.gameMode->SendMsg(10026, 0, 0, 0, 0);
       g_windowMgr.Schedule(this);
       return 0;
-    case 184:
+    case ID_OK:
       if (this->m_serverList->selected != -1) {
         g_windowMgr.Schedule(this);
         g_modeMgr.gameMode->SendMsg(this->m_event, this->m_serverList->selected, 0, 0, 0);
@@ -3051,11 +3052,11 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         }
       }
       break;
-    case 185:
+    case ID_CANCEL:
       g_windowMgr.Schedule(this);
       g_modeMgr.gameMode->SendMsg(10006, 0, 0, 0, 0);
       return 0;
-    case 221:
+    case ID_EXIT:
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
@@ -3311,7 +3312,7 @@ EncryptedName<80, 0xF3CB6F7711A71B6DULL>& HangameJoinUrl::operator()() const {
 // FUNCTION: fn_11805
 int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     if (sender == this->unknown_00E8) {
       if (a == 0) {
         const char source[] = {'\x1A', '\x3D', '\x79', '\xB9', '\xA1'};
@@ -3330,9 +3331,9 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
     }
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 267:
+    case ID_MAKEACCOUNT:
       if (g_serviceType == 0) {
         if (g_session.m_channelCopId == 1) {
           g_modeMgr.Quit();
@@ -3349,7 +3350,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       g_modeMgr.Quit();
       this->OpenWebPage();
       break;
-    case 186: {
+    case ID_LOGIN: {
       const char soundSource[] = {'\xDC', '\xA3', '\x0F', '\xCF', '\xB1', '\x3D', '\x97', '\xEB', '\x4B', '\x22', '\xA8', '\x09', '\x0D'};
       thread_local EncryptedName<sizeof(soundSource), 0x452FEF0D7FC95565ULL> soundName(soundSource);
       g_soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -3368,17 +3369,17 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
       break;
     }
-    case 185:
+    case ID_CANCEL:
       g_loginCancelRequested = 1;
       g_modeMgr.gameMode->SendMsg(10018, 0, 0, 0, 0);
       break;
-    case 221:
+    case ID_EXIT:
       this->SaveLogin();
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         goto quit;
       }
       break;
-    case 213:
+    case ID_CHECK:
       this->saveId = b;
       this->SaveLogin();
       break;
@@ -3431,7 +3432,7 @@ quit:
 // FUNCTION: fn_11804
 int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6: {
+  case UM_COMMAND: {
     if (a == 185) {
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
@@ -3452,7 +3453,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
     break;
   }
-  case 60: {
+  case UM_REFRESH: {
     this->unknown_00B4->SetText("");
     return 0;
   }
@@ -3634,13 +3635,13 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   }
 
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     return 0;
-  case 6:
+  case UM_COMMAND:
     this->RecordResponse(static_cast<int>(a), b, c, d);
 
     switch (a) {
-    case 184: {
+    case ID_OK: {
       char* const name = reinterpret_cast<char*>(&g_session.unknown_5570[0x0C]);
       if (std::strlen(this->nameEdit->Text()) >= 24) {
         g_windowMgr.Confirm(LookupMessage(938), 0, true, false, 0, "Message", 280, 120, 0);
@@ -3666,10 +3667,10 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
       return 0;
     }
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(113);
       return 0;
-    case 213:
+    case ID_CHECK:
       if (sender == this->unknown_00D4) {
         if (b > 0) {
           g_session.SendHomunculusAutoFeedOption(1);
@@ -3678,17 +3679,17 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         }
       }
       return 0;
-    case 289:
+    case ID_OPEN_HOMUNSKILLLIST:
       if (!g_windowMgr.CloseWindow(114)) {
         g_windowMgr.EnsureWindow(114);
       }
       return 0;
-    case 290:
+    case ID_FEED_TO_HOMUN:
       this->unknown_00D0 = new UINormalMB();
       this->unknown_00D0->Create(this, LookupMessage(601), 2, true, nullptr, 280, 120, nullptr);
       g_windowMgr.AddRendered(this->unknown_00D0);
       return 0;
-    case 291: {
+    case ID_DELETE_HOMUN: {
       CMode* mode = g_modeMgr.GetGameMode();
       if (g_windowMgr.Confirm(LookupMessage(955), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         mode->SendMsg(184, 2, 0, 0, 0);
@@ -3715,7 +3716,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     default:
       return 0;
     }
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<HomunInfoWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -3801,9 +3802,9 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   }
 
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     return 0;
-  case 39: {
+  case UM_COMBOBOX_SELECTED: {
     CMode* mode = g_modeMgr.GetGameMode();
     switch (a) {
     case 467:
@@ -3844,13 +3845,13 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     g_windowMgr.CloseWindow(260);
     return 0;
   }
-  case 6:
+  case UM_COMMAND:
     if (a == 184 || a == 201) {
       this->RecordResponse(static_cast<int>(a), b, c, d);
     }
 
     switch (a) {
-    case 184:
+    case ID_OK:
       if (std::strlen(this->nameEdit->Text()) >= 24) {
         g_windowMgr.Confirm(LookupMessage(682), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
@@ -3874,10 +3875,10 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         this->nameEdit->Invalidate();
       }
       return 0;
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(88);
       return 0;
-    case 213:
+    case ID_CHECK:
       if (sender == this->unknown_00E8) {
         if (b > 0) {
           g_session.SendPetAutoFeedOption(1);
@@ -3940,7 +3941,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     default:
       return 0;
     }
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<PetInfoWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -4204,9 +4205,9 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
 // FUNCTION: fn_11806
 int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 184: {
+    case ID_OK: {
       int error;
       if (_mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
           _mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
@@ -4282,7 +4283,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_modeMgr.gameMode->SendMsg(10017, reinterpret_cast<int>(values), 0, 0, 0);
       return 0;
     }
-    case 185:
+    case ID_CANCEL:
       g_windowMgr.Schedule(this);
       g_modeMgr.gameMode->SendMsg(0, 10004, 0, 0, 0);
       return 0;
@@ -4304,16 +4305,16 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     default:
       return 0;
     }
-  case 0: {
+  case UM_DEFPUSH: {
     char name[25] = {};
     std::strcpy(name, this->m_nameEdit->Text());
     std::memcpy(this->m_info.name, name, sizeof(this->m_info.name));
     this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
     return 0;
   }
-  case 8:
-  case 11:
-  case 12: {
+  case UM_SCROLLHORZ:
+  case UM_SCROLLHORZPAGEUP:
+  case UM_SCROLLHORZPAGEDOWN: {
     const int sex = this->m_info.sex;
     if (sender == this->unknown_02CC) {
       const int previous = this->unknown_02D4;

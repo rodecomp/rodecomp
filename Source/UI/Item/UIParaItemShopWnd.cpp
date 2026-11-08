@@ -1,4 +1,6 @@
 #include "Render/Text/FontCache.h"
+#include "Contents/Items/ItemType.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Item/UIParaItemShopWnd.h"
 
@@ -104,15 +106,15 @@ void UIParaItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 3) {
     switch (drag->type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       this->SendMsg(nullptr, 38, 0, 0, 0, 0);
       return;
     default:
@@ -266,10 +268,10 @@ void UIParaResultWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_13757
 int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 36:
+  case UM_SETTITLE:
     this->title->SetTextAutoWidth("Total : 0 Zeny");
     return 0;
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ItemPurchaseWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -278,19 +280,19 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ModeDragState& drag = mode->drag;
     switch (drag.type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15: {
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN: {
       const int count = drag.unknown_03B6 == 1 ? g_session.GetItem1720Quantity(drag.id) : g_session.GetItem1720QuantityByItemId(drag.name.c_str());
       if (count > 0) {
         mode->SendMsg(18, 0, 0, 0, 0);
@@ -366,11 +368,11 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
-  case 6: {
+  case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
     switch (a) {
-    case 184: {
+    case ID_OK: {
       ITEM_INFO item = g_session.GetItem1720At(0);
       if (item.unknown_0074[3] == 1) {
         mode->SendMsg(263, 0, 0, 0, 0);
@@ -380,7 +382,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       g_session.ClearTradeItems();
       return 0;
     }
-    case 185:
+    case ID_CANCEL:
       mode->SendMsg(292, 0, 0, 0, 0);
       mode->SendMsg(40, 0, 0, 0, 0);
       g_session.ClearTradeItems();
@@ -388,7 +390,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     }
     break;
   }
-  case 14:
+  case UM_RESIZE:
     if (a == 3) {
       int width = b <= 320 ? b : 320;
       int height = c <= 336 ? c : 336;
@@ -421,7 +423,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       return 0;
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     int sum = 0;
     const int size = g_session.GetList2Size();
@@ -479,7 +481,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 // FUNCTION: fn_13758
 int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ItemShopWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -488,7 +490,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 6:
+  case UM_COMMAND:
     this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 213) {
       if (g_replayAnimationScaling != 0) {
@@ -500,7 +502,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
     break;
-  case 38:
+  case UM_DROP:
     if (a == 0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       ITEM_INFO item;
@@ -520,7 +522,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
     break;
-  case 36:
+  case UM_SETTITLE:
     if (a == 1) {
       this->unknown_00F8 = 1;
       this->showQuantity = 1;
@@ -533,7 +535,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->checkBox->m_disabled = 1;
     }
     return 0;
-  case 14:
+  case UM_RESIZE:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
       int height = c <= 336 ? c : 336;
@@ -561,7 +563,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetList1Size();
     for (int i = 0; i < size; ++i) {
@@ -586,10 +588,10 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // FUNCTION: fn_13759
 int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->total->SetTextAutoWidth("Total : 0 Zeny");
     return 0;
-  case 6: {
+  case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
@@ -600,12 +602,12 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     }
     break;
   }
-  case 36:
+  case UM_SETTITLE:
     this->showQuantity = 0;
     this->title->SetTextAutoWidth(LookupMessage(2530));
     this->SendMsg(nullptr, 14, 7, this->geometry.width, a, 0);
     return 0;
-  case 14:
+  case UM_RESIZE:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
       int height = c <= 336 ? c : 336;
@@ -635,7 +637,7 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       return 0;
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     int sum = 0;
     for (const ITEM_INFO& item : this->items) {
       sum += item.unknown_0014[1] * item.quantity;

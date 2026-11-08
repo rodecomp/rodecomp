@@ -1,3 +1,5 @@
+#include "Contents/Items/ItemType.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Client/Input/Mouse.h"
 #include "Client/Mode/ModeDragState.h"
@@ -157,7 +159,7 @@ void UIShortCutWnd::OnLBtnUp(int x, int y) {
 // INLINED
 __forceinline void UIShortCutWnd::ClickControl(int id) {
   switch (id) {
-  case 217:
+  case ID_MINUS:
     if (this->m_grid.rows > 1) {
       --this->m_grid.rows;
     }
@@ -165,7 +167,7 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
     this->SendMsg(nullptr, 14, 0, 0, 0, 0);
     return;
 
-  case 216:
+  case ID_PLUS:
     if (this->geometry.visible == 0) {
       g_windowMgr.ShowWindowById(36, 1);
       return;
@@ -180,7 +182,7 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
     this->SendMsg(nullptr, 14, 0, 0, 0, 0);
     return;
 
-  case 201:
+  case ID_CLOSE:
     g_windowMgr.ShowWindowById(36, 0);
     return;
 
@@ -352,16 +354,16 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
 
   CMode* mode = g_modeMgr.GetGameMode();
   switch (item.unknown_0000[0]) {
-  case 0:
-  case 1:
-  case 2:
+  case TYPE_HEAL:
+  case TYPE_SCHANGE:
+  case TYPE_SPECIAL:
     if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(2373), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
       mode->SendMsg(27, item.unknown_0000[1], 0, 0, 0);
     }
 
     break;
 
-  case 18:
+  case TYPE_CASH_POINT_ITEM:
     if (*reinterpret_cast<const int*>(&g_session.unknown_16F4[4]) >= 0) {
       const int result =
         g_windowMgr.Confirm(FormatOwnedString(LookupMessage(1226), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
@@ -372,9 +374,9 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
 
     break;
 
-  case 10:
-  case 16:
-  case 17:
+  case TYPE_ARROW:
+  case TYPE_AMMO:
+  case TYPE_THROWWEAPON:
   case 19:
     if (item.unknown_0000[3] == 0x8000) {
       mode->SendMsg(87, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
@@ -395,11 +397,11 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
 // FUNCTION: fn_12760
 int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 41:
+  case UM_USE_SHORTEN_ITEM:
     UseShortcutSlot(*this->m_slots[a + 9 * b]);
     return 0;
 
-  case 23: {
+  case UM_REFRESHITEM: {
     const int bank = g_session.GetOption(10);
     std::list<ShortcutCooldownRecord>& cooldowns = g_session.m_requestTimers;
     for (int index = 0; index < 36; ++index) {
@@ -452,15 +454,15 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return 0;
   }
 
-  case 34:
+  case UM_SETINFO:
     this->RestoreLayout(reinterpret_cast<NormalItemSlotWindow*>(a));
     return 0;
 
-  case 6:
+  case UM_COMMAND:
     this->ClickControl(static_cast<int>(a));
     return 0;
 
-  case 14:
+  case UM_RESIZE:
     this->ResizeRows();
     return 0;
 
@@ -874,7 +876,7 @@ int UISubChatMiniWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   case 197:
     this->Move(b, c - this->m_offsetY);
     break;
-  case 202:
+  case ID_MINI:
     this->OnLBtnDown(this->m_rowHeight * b + 1, 0);
     break;
   }
@@ -1029,16 +1031,16 @@ void UIMemorialDunWnd::ArrangeButtons() {
 // FUNCTION: fn_12747
 int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 0: {
+  case UM_DEFPUSH: {
     this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
     return 0;
   }
-  case 6: {
+  case UM_COMMAND: {
     switch (argument1) {
-    case 184:
+    case ID_OK:
       g_windowMgr.CloseWindow(137);
       return 0;
-    case 185: {
+    case ID_CANCEL: {
       MemorialDungeonCommandPacket packet;
       packet.id = 0x2CF;
       if (g_session.unknown_5948 == 0) {
@@ -1049,13 +1051,13 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
       return 0;
     }
-    case 201:
+    case ID_CLOSE:
       this->Show(0);
       if (g_session.unknown_5948 == 2) {
         g_session.unknown_593C = 0;
       }
       return 0;
-    case 211:
+    case ID_DELETE:
       if (g_session.unknown_5464 != 0) {
         g_modeMgr.GetGameMode()->SendMsg(0x132, 0, 0, 0, 0);
       }
@@ -1063,7 +1065,7 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     return 0;
   }
-  case 0x3C: {
+  case UM_REFRESH: {
     this->ArrangeButtons();
     return 0;
   }
@@ -1179,7 +1181,7 @@ void UISubChatHisWnd::Resize(int width, int height) {
 // FUNCTION: fn_12761
 int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     if (sender == this->m_edit && this->m_edit->geometry.x != -100) {
       std::string local(this->m_edit->Text());
       const int previousWidth = this->m_inputWidth;
@@ -1224,27 +1226,27 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       return 0;
     }
     return 0;
-  case 3:
+  case UM_PAGEUPPUSH:
     if (this->m_chatBox->verticalOverflow != 0) {
       this->m_chatBox->SendMsg(nullptr, 9, 0, 0, 0, 0);
       return 0;
     }
     return 0;
-  case 4:
+  case UM_PAGEDOWNPUSH:
     if (this->m_chatBox->verticalOverflow != 0) {
       this->m_chatBox->SendMsg(nullptr, 10, 0, 0, 0, 0);
       return 0;
     }
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 0xC1:
+    case ID_OPTION:
       if (UIWindow* window = g_windowMgr.EnsureWindow(0x84)) {
         window->SendMsg(this, 6, 0xC1, this->m_index, 0, 0);
         return 0;
       }
       return 0;
-    case 0xCA: {
+    case ID_MINI: {
       std::map<int, SubChatWndInfo>& names = g_session.m_subChatWnds;
       const auto found = names.find(this->m_index);
       if (found == names.end()) {
@@ -1278,10 +1280,10 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       return 0;
     }
-    case 0x15B:
+    case ID_NAME:
       g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(argument2));
       return 0;
-    case 0x165:
+    case ID_STICK_ON:
       if (ChatWindow() != nullptr) {
         ChatWindow()->SendMsg(this, 0x76, 0, 0, 0, 0);
         return 0;
@@ -1290,7 +1292,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     default:
       return 0;
     }
-  case 0xE:
+  case UM_RESIZE:
     if (g_session.m_canDragWnd != 0 && argument1 == 7) {
       int width = static_cast<int>(argument2);
       int height = static_cast<int>(argument3);
@@ -1316,7 +1318,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
     }
     return 0;
-  case 0x22: {
+  case UM_SETINFO: {
     this->m_saved = reinterpret_cast<SubChatHisWndInfo*>(argument1);
     if (this->m_saved->IsValid() == 0) {
       this->m_saved->Reset(this->geometry.id);
@@ -1325,7 +1327,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     this->Resize(this->m_saved->width, this->m_saved->height);
     return 0;
   }
-  case 0x25: {
+  case UM_ADDCHAT: {
     char detail[25];
     std::memset(detail, 0, sizeof(detail));
     if (argument3 != 0) {

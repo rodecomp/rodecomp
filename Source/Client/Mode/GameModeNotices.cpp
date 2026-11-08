@@ -1457,7 +1457,7 @@ void CGameMode::ReceiveShortcutPagePacket(const unsigned char* data) {
 void CGameMode::ReceiveCardCompositionResult(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const CardCompositionPacket*>(data);
   switch (packet->result) {
-  case 0: {
+  case ITEMCOMPOSITON_SUCCESS: {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(493)), 0xFFFF00, 0, 0, 0);
     ITEM_INFO card = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->cardIndex);
     ITEM_INFO equip = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->equipIndex);
@@ -1475,7 +1475,7 @@ void CGameMode::ReceiveCardCompositionResult(const unsigned char* data) {
     }
     break;
   }
-  case 1:
+  case ITEMCOMPOSITION_FAILURE:
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(494)), 0xFF, 0, 0, 0);
     break;
   }
@@ -2550,34 +2550,34 @@ void CGameMode::ReceivePartyMemberEffect(const unsigned char* data) {
   }
 
   switch (packet->type) {
-  case 0:
+  case LEVELUP_EFFECT:
     actor->LaunchEffect(371, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 1:
+  case JOBLEVELUP_EFFECT:
     actor->LaunchEffect(158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 7:
+  case LEVELUP_EFFECT2:
     actor->LaunchEffect(338, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 9:
+  case LEVELUP_EFFECT3:
     actor->LaunchEffect(582, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 8:
+  case JOBLEVELUP_EFFECT2:
     actor->LaunchEffect(337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 2:
+  case REFINING_FAIL_EFFECT:
     actor->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 3:
+  case REFINING_SUCCESS_EFFECT:
     actor->LaunchEffect(154, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 5:
+  case MAKEITEM_AM_SUCCESS_EFFECT:
     actor->LaunchEffect(305, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 6:
+  case MAKEITEM_AM_FAIL_EFFECT:
     actor->LaunchEffect(306, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 4:
+  case GAME_OVER_EFFECT:
     g_partyEffectNoticePending = 1;
     break;
   }

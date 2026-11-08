@@ -1,4 +1,5 @@
 #include "UI/Emotion/UIEmotionWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Session.h"
 #include "Contents/CashEmotionMgr.h"
@@ -116,12 +117,12 @@ int UIEmotionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   switch (message) {
   case 0:
     break;
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(0x56);
       break;
-    case 283:
+    case ID_OPEN_EMOTIONLIST:
       if (static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384) == nullptr) {
         g_windowMgr.EnsureWindow(0x57);
       } else {

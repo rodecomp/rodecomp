@@ -1,4 +1,5 @@
 #include "Contents/Messenger/MessengerMember.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Input/Mouse.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
@@ -530,12 +531,12 @@ void UIFriendOptionWnd::Paint() {
 // FUNCTION: fn_07683
 int UIFriendOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(68);
       break;
-    case 213:
+    case ID_CHECK:
       if (this->option0Box == sender) {
         g_session.m_autoOpenWhisperWindow = static_cast<int>(b);
       } else if (this->option2Box == sender) {
@@ -546,7 +547,7 @@ int UIFriendOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       break;
     }
     return 0;
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<FriendOptionWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -1392,7 +1393,7 @@ void UIMessengerGroupWnd::UpdateGauges() {
 // FUNCTION: fn_07718
 int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 0x22:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<MessengerGroupWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -1401,7 +1402,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->SendMsg(nullptr, 0xE, 7, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 0x17: {
+  case UM_REFRESHITEM: {
     this->members.clear();
     for (int index = 0; index < 40; ++index) {
       this->gauges[index]->Move(-100, -100);
@@ -1515,7 +1516,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->LayoutButtons();
     return 0;
   }
-  case 0x31:
+  case UM_MAKEMENU:
     this->menuItems.clear();
     if (g_windowMgr.unknown_0210) {
       g_windowMgr.CloseWindow(0x12);
@@ -1565,7 +1566,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       );
     }
     return 0;
-  case 0x30: {
+  case UM_MENU_SELECTED: {
     if (this->menuItems.begin() == this->menuItems.end()) {
       return 0;
     }
@@ -1578,14 +1579,14 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     }
     switch (this->menuItems[a].value) {
-    case 0:
-    case 0x13:
+    case MENUID_EXPEL:
+    case MENUID_DELETE_WHISPER_NAME:
       this->SendMsg(nullptr, 6, 0xEB, 0, 0, 0);
       return 0;
-    case 3:
+    case MENUID_QUERYINFO:
       this->SendMsg(nullptr, 6, 0xE9, 0, 0, 0);
       return 0;
-    case 5:
+    case MENUID_INVITE_IN_PARTY:
       if (this->selected != -1) {
         MessengerMember target = this->MemberAtIndex(this->selected);
         if (target.valid) {
@@ -1593,16 +1594,16 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         }
       }
       return 0;
-    case 6:
+    case MENUID_SEND_MSG:
       this->SendMsg(nullptr, 6, 0xE7, 0, 0, 0);
       return 0;
-    case 7:
+    case MENUID_TALKONLYTWO:
       this->SendMsg(nullptr, 6, 0xE8, 0, 0, 0);
       return 0;
-    case 9:
+    case MENUID_LEAVE:
       this->SendMsg(nullptr, 6, 0xEC, 0, 0, 0);
       return 0;
-    case 0x14:
+    case MENUID_MAKE_WHISPER_WINDOW:
       this->SendMsg(nullptr, 0x47, 0, 0, 0, 0);
       return 0;
     case 0x2B:
@@ -1642,14 +1643,14 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     return 0;
   }
-  case 6:
+  case UM_COMMAND:
     switch (a) {
     case 0xE7:
       if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
       }
       return 0;
-    case 0xE8:
+    case ID_TALK:
       if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && !(member.name == g_session.DecodePlayerName())) {
@@ -1666,7 +1667,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         }
       }
       return 0;
-    case 0xE9:
+    case ID_FRIEND_INFO:
       if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
@@ -1674,7 +1675,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         }
       }
       return 0;
-    case 0xEA:
+    case ID_PARTY_SETTING:
       if (!g_session.m_lockMouse) {
         if (g_windowMgr.unknown_042C) {
           g_windowMgr.CloseWindow(0xD0);
@@ -1703,7 +1704,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         }
       }
       return 0;
-    case 0xEB:
+    case ID_DELETE_FRIEND:
       if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
@@ -1719,10 +1720,10 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         }
       }
       return 0;
-    case 0xC9:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(0x45);
       return 0;
-    case 0xEC:
+    case ID_LEAVE:
       if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && member.name == g_session.DecodePlayerName()) {
@@ -1732,7 +1733,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         }
       }
       return 0;
-    case 0xD7: {
+    case ID_RADIOBTN: {
       UIWindow* clicked = sender;
       if (b) {
         clicked = this->tabs[b - 1];
@@ -1790,7 +1791,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       return 0;
     }
-    case 0xCA:
+    case ID_MINI:
       this->iconIndex = 1;
       this->iconModeButtons[1]->Enable(1);
       this->iconModeButtons[0]->Enable(0);
@@ -1882,9 +1883,9 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     }
     return 0;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->scrollTop;
     if (message == 9) {
       this->scrollTop = previous - this->visibleRows + 1;
@@ -1899,7 +1900,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     return this->scrollTop - previous;
   }
-  case 0xE:
+  case UM_RESIZE:
     if (a == 7) {
       int width = static_cast<int>(b);
       int height = static_cast<int>(c);

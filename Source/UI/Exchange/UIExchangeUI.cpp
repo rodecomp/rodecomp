@@ -1,4 +1,5 @@
 #include "UI/Exchange/UIExchangeUI.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Session.h"
 #include "Client/Mode/CGameMode.h"
@@ -433,7 +434,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::UpdateScrollBar()
 // FUNCTION: fn_15304
 int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 0x32:
+  case UM_SET_EXCHANGE_CHAR_NAME:
     if (argument1 == 0) {
       break;
     }
@@ -450,7 +451,7 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       this->unknown_00DC->SetText(this->partnerName);
     }
     break;
-  case 0x33:
+  case UM_MYDRAGCLOSED:
     this->zenyEdit->Show(0);
     this->FreezeItems(true);
     this->UpdateZeny(true);
@@ -464,7 +465,7 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       button->Invalidate();
     }
     break;
-  case 0x34:
+  case UM_OTHERDRAGCLOSED:
     this->FreezeItems(false);
     this->UpdateZeny(false);
     {
@@ -477,7 +478,7 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       button->Invalidate();
     }
     break;
-  case 0x17:
+  case UM_REFRESHITEM:
     this->firstList->ClearData();
     for (int index = 0; index < 10; ++index) {
       ITEM_INFO item = g_session.GetExchangeItem(index);
@@ -504,7 +505,7 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     }
     this->secondList->UpdateScrollBar();
     break;
-  case 0x26: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode != nullptr) {
       mode->SendMsg(0x33, mode->drag.id, mode->drag.quantity, 0, 0);

@@ -1,4 +1,5 @@
 #include "UI/UIMacroBlackListCheckWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Contents/MessageTable.h"
 #include "UI/Buttons/UIBitmapButton.h"
@@ -198,7 +199,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
   }
 
   switch (argument1) {
-  case 184:
+  case ID_OK:
     if (static_cast<unsigned>(this->inputLength - 4) <= 4) {
       MacroBlackListCheckPacket packet;
       packet.id = 0x0BDC;
@@ -209,7 +210,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       return 0;
     }
     break;
-  case 293:
+  case ID_STORE_PASSWORD_NUM0:
     this->ShuffleDigitButtons();
     if (this->inputLength < 8) {
       this->input[this->inputLength] = '0';
@@ -217,7 +218,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       return 0;
     }
     break;
-  case 294:
+  case ID_STORE_PASSWORD_NUM1:
     this->ShuffleDigitButtons();
     if (this->inputLength < 8) {
       this->input[this->inputLength] = '1';
@@ -225,7 +226,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       return 0;
     }
     break;
-  case 295:
+  case ID_STORE_PASSWORD_NUM2:
     this->ShuffleDigitButtons();
     if (this->inputLength < 8) {
       this->input[this->inputLength] = '2';
@@ -233,7 +234,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       return 0;
     }
     break;
-  case 296:
+  case ID_STORE_PASSWORD_NUM3:
     this->ShuffleDigitButtons();
     if (this->inputLength < 8) {
       this->input[this->inputLength] = '3';
@@ -241,7 +242,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       return 0;
     }
     break;
-  case 297:
+  case ID_STORE_PASSWORD_NUM4:
     this->ShuffleDigitButtons();
     if (this->inputLength < 8) {
       this->input[this->inputLength] = '4';
@@ -249,7 +250,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       return 0;
     }
     break;
-  case 298:
+  case ID_STORE_PASSWORD_NUM5:
     this->ShuffleDigitButtons();
     if (this->inputLength < 8) {
       this->input[this->inputLength] = '5';
@@ -257,7 +258,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       return 0;
     }
     break;
-  case 299:
+  case ID_STORE_PASSWORD_NUM6:
     this->ShuffleDigitButtons();
     if (this->inputLength < 8) {
       this->input[this->inputLength] = '6';
@@ -265,7 +266,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       return 0;
     }
     break;
-  case 300:
+  case ID_STORE_PASSWORD_NUM7:
     this->ShuffleDigitButtons();
     if (this->inputLength < 8) {
       this->input[this->inputLength] = '7';
@@ -273,7 +274,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       return 0;
     }
     break;
-  case 301:
+  case ID_STORE_PASSWORD_NUM8:
     this->ShuffleDigitButtons();
     if (this->inputLength < 8) {
       this->input[this->inputLength] = '8';
@@ -281,7 +282,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       return 0;
     }
     break;
-  case 302:
+  case ID_STORE_PASSWORD_NUM9:
     this->ShuffleDigitButtons();
     if (this->inputLength < 8) {
       this->input[this->inputLength] = '9';
@@ -289,7 +290,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       return 0;
     }
     break;
-  case 303:
+  case ID_STORE_PASSWORD_NUM_RESET:
     this->inputLength = 0;
     std::memset(this->input, 0, sizeof(this->input));
     this->ShuffleDigitButtons();

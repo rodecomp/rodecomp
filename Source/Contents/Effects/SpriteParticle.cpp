@@ -1,4 +1,5 @@
 #include "Contents/Effects/SpriteParticle.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
@@ -77,17 +78,17 @@ void CSpriteParticle::UpdateFrame() {
   }
 
   switch (this->loopMode) {
-  case 0:
+  case MT_LOOP:
     if (this->frame >= frameCount) {
       this->frame = 0;
     }
     break;
-  case 1:
+  case MT_ONETIME:
     if (this->frame >= frameCount) {
       this->life = -1.0f;
     }
     break;
-  case 2:
+  case MT_STATIC:
     if (this->frame >= frameCount) {
       this->frame = static_cast<int>(frameCount) - 1;
     }

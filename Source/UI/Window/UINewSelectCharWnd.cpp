@@ -1,4 +1,5 @@
 #include "Contents/MessageTable.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Input/Mouse.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -582,9 +583,9 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   }
 
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 0xB8: {
+    case ID_OK: {
       if (this->m_unknown13C) {
         break;
       }
@@ -626,7 +627,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       break;
     }
-    case 0xB9:
+    case ID_CANCEL:
       g_accountLinkedUserDataMgr->Save();
       if (g_session.m_loginModeFlag == 1) {
         if (g_windowMgr.Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
@@ -637,7 +638,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         g_windowMgr.Schedule(this);
       }
       break;
-    case 0xCB:
+    case ID_MAKE:
       if (this->m_pageSlot != argument2) {
         this->m_pageSlot = argument2;
         this->SendMsg(this->m_slotButtons2[argument2], 6, 0xCC, 0, 0, 0);
@@ -647,7 +648,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         g_windowMgr.CloseWindow(0x115);
       }
       break;
-    case 0xCC: {
+    case ID_SLOT: {
       if (this->m_unknown13C || g_windowMgr.HasModalWindow() == 1) {
         break;
       }
@@ -697,7 +698,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->Invalidate();
       break;
     }
-    case 0xD3: {
+    case ID_DELETE: {
       if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1) {
         break;
       }
@@ -725,15 +726,15 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       break;
     }
-    case 0x11C:
-    case 0x11E: {
+    case ID_CHARGE:
+    case ID_NOTICE: {
       char text[260];
       std::memset(text, 0, sizeof(text));
       g_modeMgr.gameMode->SendMsg(0x2724, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
       g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 0x118, 0x78, 0);
       break;
     }
-    case 0x13C: {
+    case ID_PREV_PAGE: {
       if (this->m_page <= 0) {
         break;
       }
@@ -799,7 +800,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->UpdateCharacterInfo();
       break;
     }
-    case 0x13D: {
+    case ID_NEXT_PAGE: {
       if (this->m_page >= this->m_pageCount - 1) {
         break;
       }
@@ -865,7 +866,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->UpdateCharacterInfo();
       break;
     }
-    case 0x15F: {
+    case ID_CHANGE_NAME: {
       if (g_windowMgr.window_03DC != nullptr) {
         g_windowMgr.CloseWindow(0x80);
       }
@@ -876,7 +877,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       break;
     }
-    case 0x160: {
+    case ID_CHANGE_NAME_SUCCESS: {
       CharacterInfo* info =
         reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
       if (info->gid != g_renameGid) {
@@ -961,12 +962,12 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     }
     break;
-  case 13:
+  case UM_SETSTATE:
     if (!this->m_unknown13C) {
       this->m_pageSlot = argument1;
     }
     break;
-  case 0x12:
+  case UM_UPPUSH:
     if (this->m_unknown13C) {
       break;
     }
@@ -992,7 +993,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->SaveCurrentSlot();
     }
     break;
-  case 0x13:
+  case UM_DOWNPUSH:
     if (this->m_unknown13C) {
       break;
     }
@@ -1020,7 +1021,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->SaveCurrentSlot();
     }
     break;
-  case 0x14:
+  case UM_LEFTPUSH:
     if (this->m_unknown13C) {
       break;
     }
@@ -1044,7 +1045,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->SaveCurrentSlot();
     }
     break;
-  case 0x15:
+  case UM_RIGHTPUSH:
     if (this->m_unknown13C) {
       break;
     }
@@ -1072,7 +1073,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->SaveCurrentSlot();
     }
     break;
-  case 0x21:
+  case UM_DELETE:
     this->SendMsg(nullptr, 6, 0xD3, 0, 0, 0);
     break;
   default:

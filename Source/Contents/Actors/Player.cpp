@@ -1,4 +1,6 @@
 #include "Contents/Actors/Pc.h"
+#include "Contents/Actors/ActorEnums.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Contents/Effects/EffectTypes.h"
 #include "Contents/Skills/SkillUnitId.h"
 
@@ -391,18 +393,18 @@ void CGrannyPc::SetState(int state, int resetPosition) {
   const SpawnArrow spawnArrow = reinterpret_cast<SpawnArrow>(&CGameMode::SpawnArrowEffect);
 
   switch (state) {
-  case 8:
+  case ST_BEGIN_SKILL:
     this->RegisterPos();
     this->SetAction(0x60, 6, 1);
     this->render.isMotionFinished = true;
     break;
-  case 6:
+  case ST_SIT:
     this->RegisterPos();
     this->SetAction(0x10, 4, 1);
     this->render.isMotionFinished = true;
     this->render.curMotion = this->unknown_0430;
     break;
-  case 1:
+  case ST_MOVE:
     this->unknown_0178 = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
@@ -410,7 +412,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     this->unknown_0430 = 0;
     CGameActor::SetState(1, resetPosition);
     break;
-  case 0:
+  case ST_STAND:
     CGameActor::SetState(0, resetPosition);
     this->render.curMotion = this->unknown_0430;
     if (current == 4 || current == 2 || this->unknown_02C8 != 0 || current == 8) {
@@ -418,7 +420,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
     break;
-  case 7:
+  case ST_SKILL:
     if (current == 6) {
       return;
     }
@@ -441,7 +443,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     }
     this->unknown_0378 = 6.0f;
     break;
-  case 2: {
+  case ST_ATTACK: {
     this->unknown_0178 = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
@@ -461,7 +463,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     }
     break;
   }
-  case 9: {
+  case ST_ATTACK2: {
     this->unknown_0178 = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
@@ -507,9 +509,9 @@ int CPlayer::AngleToDirection(float angle) {
 // FUNCTION: fn_22663
 bool CPlayer::IsSpecialState(int state) const {
   switch (state) {
-    case 2:
-    case 5:
-    case 6:
+    case ST_ATTACK:
+    case ST_PICKUP:
+    case ST_SIT:
     case 62:
     case 63:
     case 64:
@@ -1662,7 +1664,7 @@ int CPc::GetMonsterTransformJob() {
 __declspec(noinline) int CPc::JobActionBase(int state) {
   int base = 0;
   switch (state) {
-    case 8:
+    case ST_BEGIN_SKILL:
       base = 96;
       switch (this->GetEffectiveJob(-1)) {
         case JT_DO_SUMMONER:
@@ -1672,13 +1674,13 @@ __declspec(noinline) int CPc::JobActionBase(int state) {
           break;
       }
       break;
-    case 6:
+    case ST_SIT:
       base = 16;
       break;
-    case 0:
+    case ST_STAND:
       base = 32;
       break;
-    case 7:
+    case ST_SKILL:
       switch (this->GetEffectiveJob(-1)) {
         case JT_CRUSADER:
         case JT_BARD:
@@ -2895,8 +2897,8 @@ bool CPlayer::OnProcess() {
 void CPlayer::UpdatePendingAction() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   switch (this->unknown_0508) {
-  case 1:
-  case 5: {
+  case PT_ATTACK:
+  case PT_ATTACK_2: {
     CGameActor* target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(this->unknown_051C));
     if (target == nullptr) {
       break;
@@ -2972,7 +2974,7 @@ void CPlayer::UpdatePendingAction() {
     }
     return;
   }
-  case 3: {
+  case PT_SKILL: {
     CGameActor* target;
     if (this->unknown_051C == g_session.m_aid) {
       target = this;
@@ -3018,7 +3020,7 @@ void CPlayer::UpdatePendingAction() {
     this->SendMsg(nullptr, 91, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
-  case 4: {
+  case PT_GROUNDSKILL: {
     int groundX = this->unknown_0534;
     int groundY = this->unknown_0538;
     int column;
@@ -3052,7 +3054,7 @@ void CPlayer::UpdatePendingAction() {
     this->SendMsg(nullptr, 91, 0, groundX, groundX >> 31, groundY, groundY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
-  case 2: {
+  case PT_PICKUPITEM: {
     CItem* item = mode->scene->GetItemByAID(this->unknown_051C);
     if (item == nullptr) {
       break;
@@ -3089,7 +3091,7 @@ void CPlayer::UpdatePendingAction() {
     this->SendMsg(nullptr, 91, 0, itemX, itemX >> 31, itemY, itemY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
-  case 6: {
+  case PT_TOUCH_SKILL: {
     CGameActor* skill = static_cast<CGameActor*>(mode->scene->GetSkillByAID(this->unknown_051C));
     if (skill == nullptr) {
       break;
@@ -3845,7 +3847,7 @@ void CPlayer::SendMsg(
 ) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
-  case 0x42: {
+  case AM_REQ_GROUND_SKILL: {
     PlayerSkillRequest request;
     request.skill = this->unknown_052C;
     request.x = this->unknown_0534;
@@ -3873,20 +3875,20 @@ void CPlayer::SendMsg(
     }
     break;
   }
-  case 0x2A:
+  case AM_REQ_SKILL:
     mode->SendMsg(0x45, this->unknown_052C, this->unknown_051C, this->unknown_0530, 0);
     break;
-  case 0x28: {
+  case AM_REQ_ATTACK_REPEAT: {
     CRenderObject* target = mode->scene->GetGameActorByAID(this->unknown_051C);
     if (target == nullptr || static_cast<CGameActor*>(target)->unknown_0314 != 7) {
       mode->SendMsg(0x89, 7, this->unknown_051C, 0, 0);
     }
     break;
   }
-  case 0x1D:
+  case AM_REQ_ATTACK:
     mode->SendMsg(0x89, 0, this->unknown_051C, 0, 0);
     break;
-  case 0x1F:
+  case AM_REQ_SIT:
     if (!StateFlag01(this->stateFlags)) {
       if (this->render.unknown_0070 == 0) {
         mode->SendMsg(0x89, 2, this->unknown_051C, 0, 0);
@@ -3895,7 +3897,7 @@ void CPlayer::SendMsg(
       }
     }
     break;
-  case 0x11:
+  case AM_REQ_MOVE:
     this->SendMsg(nullptr, 0xD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (this->render.unknown_0070 != 0x4B) {
       if (this->IsSpecialState(this->render.unknown_0070)) {
@@ -3910,14 +3912,14 @@ void CPlayer::SendMsg(
       }
     }
     break;
-  case 0x5B:
+  case AM_REQ_MOVE_PRIMITIVE:
     g_unknown173AD3F = false;
     if (timeGetTime() > this->unknown_0528 + 350) {
       this->unknown_0528 = timeGetTime();
       mode->SendMsg(0x8A, b, d, 0, 0);
     }
     break;
-  case 0x10: {
+  case AM_REQ_CHANGE_DIR: {
     const std::uint32_t state = this->render.unknown_0070;
     if (state != 0 && state != 4 && state != 6) {
       break;
@@ -3978,13 +3980,13 @@ void CPlayer::SendMsg(
     mode->SendMsg(0x8B, CPlayer::AngleToDirection(this->render.angle), motion, 0, 0);
     break;
   }
-  case 0x09:
+  case AM_PREMOVE:
     this->unknown_050C = 1;
     this->unknown_0504 = timeGetTime();
     reinterpret_cast<int&>(this->unknown_04F8) = b;
     this->unknown_04FC = d;
     break;
-  case 0x00: {
+  case AM_MOVE: {
     this->unknown_050C = 0;
     const int* route = reinterpret_cast<const int*>(b);
     this->routeStartTick = route[0];
@@ -4008,15 +4010,15 @@ void CPlayer::SendMsg(
     g_navigationManager.CheckArrival(this->unknown_0158[5], *reinterpret_cast<const int*>(this->unknown_0170));
     break;
   }
-  case 0x08:
+  case AM_FREEZE:
     this->SetState(0, 1);
     break;
-  case 0x0D:
+  case AM_CANCELATTACK:
     this->unknown_0514 = 0;
     this->unknown_0508 = 0;
     mode->SendMsg(0x1A, 0, 0, 0, 0);
     break;
-  case 0x0F: {
+  case AM_ATTACKCLICKUP: {
     const int attackMode = this->unknown_0508;
     if (attackMode != 1 && attackMode != 5) {
       if (attackMode == 3) {
@@ -4036,10 +4038,10 @@ void CPlayer::SendMsg(
     }
     break;
   }
-  case 0x5A:
+  case AM_SET_SKILL_USE_LEVEL:
     this->unknown_0530 = b;
     break;
-  case 0x41:
+  case AM_PROCEEDGROUNDSKILL:
     if (this->render.unknown_0070 != 6 &&
         (!StateFlag01(this->stateFlags) || (b == 0x89 && c == 0) || (b == 0xD4 && c == 0) || (b == 0x211 && c == 0) ||
          (b == 0x212 && c == 0))) {
@@ -4050,7 +4052,7 @@ void CPlayer::SendMsg(
       this->unknown_051C = 0;
     }
     break;
-  case 0x29:
+  case AM_PROCEEDSKILL:
     if (this->render.unknown_0070 != 6 &&
         (!StateFlag01(this->stateFlags) || (d == 0x89 && e == 0) || (d == 0xD4 && e == 0) || (d == 0x211 && e == 0) ||
          (d == 0x212 && e == 0) || (d == 0x250 && e == 0))) {
@@ -4071,7 +4073,7 @@ void CPlayer::SendMsg(
       this->unknown_04FC = -1;
     }
     break;
-  case 0x0A:
+  case AM_PROCEEDATTACK:
     if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
       CRenderObject* target = mode->scene->GetGameActorByAID(b);
       if (target != nullptr) {
@@ -4087,13 +4089,13 @@ void CPlayer::SendMsg(
       }
     }
     break;
-  case 0x12:
+  case AM_PROCEEDPICKUPITEM:
     if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
       this->unknown_0508 = 2;
       this->unknown_051C = b;
     }
     break;
-  case 0x67:
+  case AM_PROCEEDTOUCHSKILL:
     if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
       const int* skill = reinterpret_cast<const int*>(d);
       this->unknown_0508 = 6;
@@ -4384,18 +4386,18 @@ void CPc::SetState(int state, int resetPosition) {
   const SpawnArrow spawnArrow = reinterpret_cast<SpawnArrow>(&CGameMode::SpawnArrowEffect);
 
   switch (state) {
-  case 8:
+  case ST_BEGIN_SKILL:
     this->RegisterPos();
     this->SetAction(action, 6, 1);
     this->render.isMotionFinished = true;
     break;
-  case 6:
+  case ST_SIT:
     this->RegisterPos();
     this->SetAction(action, 4, 1);
     this->render.isMotionFinished = true;
     this->render.curMotion = this->unknown_043C;
     break;
-  case 1:
+  case ST_MOVE:
     this->unknown_0178 = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
@@ -4403,7 +4405,7 @@ void CPc::SetState(int state, int resetPosition) {
     this->unknown_043C = 0;
     CGameActor::SetState(1, resetPosition);
     break;
-  case 0:
+  case ST_STAND:
     CGameActor::SetState(0, resetPosition);
     if (g_session.m_aid == this->render.accountId) {
       switch (g_session.m_job) {
@@ -4420,9 +4422,9 @@ void CPc::SetState(int state, int resetPosition) {
     }
     this->render.curMotion = this->unknown_043C;
     switch (current) {
-    case 2:
-    case 4:
-    case 8:
+    case ST_ATTACK:
+    case ST_DAMAGE:
+    case ST_BEGIN_SKILL:
     case 0x34:
     case 0x35:
     case 0x36:
@@ -4456,7 +4458,7 @@ void CPc::SetState(int state, int resetPosition) {
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
     break;
-  case 7:
+  case ST_SKILL:
     if (this->render.unknown_0114 == 1 || this->render.unknown_0070 == 6) {
       return;
     }
@@ -4482,7 +4484,7 @@ void CPc::SetState(int state, int resetPosition) {
     }
     this->unknown_0378 = 6.0f;
     break;
-  case 2: {
+  case ST_ATTACK: {
     this->unknown_0178 = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
@@ -4552,7 +4554,7 @@ void CPc::SetState(int state, int resetPosition) {
     }
     break;
   }
-  case 9: {
+  case ST_ATTACK2: {
     this->unknown_0178 = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
@@ -4769,18 +4771,18 @@ void CPc::SendMsg(
 ) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   switch (*reinterpret_cast<const std::int64_t*>(&message)) {
-  case 100:
+  case AM_SET_HEAD_DIR:
     if (this->render.unknown_0070 == 0 || this->render.unknown_0070 == 6) {
       this->render.curMotion = b;
     }
     break;
-  case 35:
+  case AM_REMOVEGAGE:
     if (this->unknown_0490) {
       g_windowMgr.Schedule(this->unknown_0490);
       this->unknown_0490 = nullptr;
     }
     break;
-  case 34:
+  case AM_UPDATEGAGE:
     if (!this->unknown_0490) {
       this->unknown_0490 = new UIPcGage();
       this->unknown_0490->SetSize(60, 5);
@@ -4790,7 +4792,7 @@ void CPc::SendMsg(
     static_cast<UIPcGage*>(this->unknown_0490)->SetLimits(0, 0);
     this->unknown_0490->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
     break;
-  case 3: {
+  case AM_STANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
@@ -4812,13 +4814,13 @@ void CPc::SendMsg(
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
     switch (entry->state) {
-    case 0:
+    case PCSTATE_STAND:
       this->SetState(0, 1);
       break;
-    case 1:
+    case PCSTATE_DEAD:
       this->SetState(3, 1);
       break;
-    case 2:
+    case PCSTATE_SIT:
       this->SetState(6, 1);
       break;
     default:
@@ -4827,7 +4829,7 @@ void CPc::SendMsg(
     }
     break;
   }
-  case 124: {
+  case AM_STANDENTRY2: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     this->unknown_04D0 = entry->unknown_0078;
     mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
@@ -4852,13 +4854,13 @@ void CPc::SendMsg(
     this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
     this->unknown_04CC = entry->unknown_0074;
     switch (entry->state) {
-    case 0:
+    case PCSTATE_STAND:
       this->SetState(0, 1);
       break;
-    case 1:
+    case PCSTATE_DEAD:
       this->SetState(3, 1);
       break;
-    case 2:
+    case PCSTATE_SIT:
       this->SetState(6, 1);
       break;
     default:
@@ -4883,7 +4885,7 @@ void CPc::SendMsg(
     this->SetBodyPaletteName();
     break;
   }
-  case 4: {
+  case AM_INITSTANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     this->render.accountId = entry->aid;
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -4908,13 +4910,13 @@ void CPc::SendMsg(
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
     switch (entry->state) {
-    case 0:
+    case PCSTATE_STAND:
       this->SetState(0, 1);
       break;
-    case 1:
+    case PCSTATE_DEAD:
       this->SetState(3, 1);
       break;
-    case 2:
+    case PCSTATE_SIT:
       this->SetState(6, 1);
       break;
     default:
@@ -4927,7 +4929,7 @@ void CPc::SendMsg(
     this->ShowPartyMemberEffect(entry->aid);
     break;
   }
-  case 121: {
+  case AM_INITSTANDENTRY2: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     this->unknown_04D0 = entry->unknown_0078;
     this->render.accountId = entry->aid;
@@ -4954,13 +4956,13 @@ void CPc::SendMsg(
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
     switch (entry->state) {
-    case 0:
+    case PCSTATE_STAND:
       this->SetState(0, 1);
       break;
-    case 1:
+    case PCSTATE_DEAD:
       this->SetState(3, 1);
       break;
-    case 2:
+    case PCSTATE_SIT:
       this->SetState(6, 1);
       break;
     default:
@@ -4974,7 +4976,7 @@ void CPc::SendMsg(
     this->unknown_04CC = entry->unknown_0074;
     break;
   }
-  case 6: {
+  case AM_INITMOVEENTRY: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     this->render.accountId = entry->aid;
     *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
@@ -5005,7 +5007,7 @@ void CPc::SendMsg(
     this->ShowPartyMemberEffect(entry->aid);
     break;
   }
-  case 122: {
+  case AM_INITMOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     this->unknown_04D0 = entry->unknown_007C;
     this->render.accountId = entry->aid;
@@ -5039,7 +5041,7 @@ void CPc::SendMsg(
     this->unknown_04CC = entry->unknown_0078;
     break;
   }
-  case 5: {
+  case AM_MOVEENTRY: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     this->unknown_04D0 = entry->unknown_007C;
     this->render.accountId = entry->aid;
@@ -5065,7 +5067,7 @@ void CPc::SendMsg(
     this->unknown_04CC = entry->unknown_0078;
     break;
   }
-  case 123: {
+  case AM_MOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     this->unknown_04D0 = entry->unknown_007C;
     this->render.accountId = entry->aid;
@@ -5097,7 +5099,7 @@ void CPc::SendMsg(
     this->unknown_0494 = d;
     this->unknown_0498 = b;
     break;
-  case 101: {
+  case AM_MAKE_BIRD: {
     if (this->unknown_037C[0] != 0) {
       break;
     }
@@ -5191,18 +5193,18 @@ void CGrannyPc::SendMsg(
 ) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   switch (*reinterpret_cast<const std::int64_t*>(&message)) {
-  case 100:
+  case AM_SET_HEAD_DIR:
     if (this->render.unknown_0070 == 0 || this->render.unknown_0070 == 6) {
       this->render.curMotion = b;
     }
     break;
-  case 35:
+  case AM_REMOVEGAGE:
     if (this->unknown_0478) {
       g_windowMgr.Schedule(this->unknown_0478);
       this->unknown_0478 = nullptr;
     }
     break;
-  case 34:
+  case AM_UPDATEGAGE:
     if (!this->unknown_0478) {
       this->unknown_0478 = new UIPcGage();
       this->unknown_0478->SetSize(60, 5);
@@ -5212,7 +5214,7 @@ void CGrannyPc::SendMsg(
     static_cast<UIPcGage*>(this->unknown_0478)->SetLimits(0, 0);
     this->unknown_0478->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
     break;
-  case 3: {
+  case AM_STANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
@@ -5234,13 +5236,13 @@ void CGrannyPc::SendMsg(
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
     switch (entry->state) {
-    case 0:
+    case PCSTATE_STAND:
       this->SetState(0, 1);
       break;
-    case 1:
+    case PCSTATE_DEAD:
       this->SetState(3, 1);
       break;
-    case 2:
+    case PCSTATE_SIT:
       this->SetState(6, 1);
       break;
     default:
@@ -5249,7 +5251,7 @@ void CGrannyPc::SendMsg(
     }
     break;
   }
-  case 124: {
+  case AM_STANDENTRY2: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
@@ -5271,13 +5273,13 @@ void CGrannyPc::SendMsg(
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
     switch (entry->state) {
-    case 0:
+    case PCSTATE_STAND:
       this->SetState(0, 1);
       break;
-    case 1:
+    case PCSTATE_DEAD:
       this->SetState(3, 1);
       break;
-    case 2:
+    case PCSTATE_SIT:
       this->SetState(6, 1);
       break;
     default:
@@ -5297,8 +5299,8 @@ void CGrannyPc::SendMsg(
     this->SetBodyPaletteName();
     break;
   }
-  case 4:
-  case 121: {
+  case AM_INITSTANDENTRY:
+  case AM_INITSTANDENTRY2: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     this->render.accountId = entry->aid;
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -5323,13 +5325,13 @@ void CGrannyPc::SendMsg(
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
     switch (entry->state) {
-    case 0:
+    case PCSTATE_STAND:
       this->SetState(0, 1);
       break;
-    case 1:
+    case PCSTATE_DEAD:
       this->SetState(3, 1);
       break;
-    case 2:
+    case PCSTATE_SIT:
       this->SetState(6, 1);
       break;
     default:
@@ -5342,7 +5344,7 @@ void CGrannyPc::SendMsg(
     this->ShowPartyMemberEffect(entry->aid);
     break;
   }
-  case 6: {
+  case AM_INITMOVEENTRY: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     this->render.accountId = entry->aid;
     *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
@@ -5373,7 +5375,7 @@ void CGrannyPc::SendMsg(
     this->ShowPartyMemberEffect(entry->aid);
     break;
   }
-  case 122: {
+  case AM_INITMOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     this->render.accountId = entry->aid;
     *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
@@ -5407,8 +5409,8 @@ void CGrannyPc::SendMsg(
     this->ShowPartyMemberEffect(entry->aid);
     break;
   }
-  case 5:
-  case 123: {
+  case AM_MOVEENTRY:
+  case AM_MOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     this->render.accountId = entry->aid;
     *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
@@ -5458,7 +5460,7 @@ bool CGrannyPc::ProcessState() {
 
   g_modeMgr.GetGameMode();
   switch (this->render.unknown_0070) {
-  case 8: {
+  case ST_BEGIN_SKILL: {
     this->ProcessMotion();
     const int frames = static_cast<int>(this->GetElapsedFrames());
     if (this->hitTargetAid != 0 && frames % 34 == 0) {
@@ -5469,25 +5471,25 @@ bool CGrannyPc::ProcessState() {
     }
     return true;
   }
-  case 7:
+  case ST_SKILL:
     this->ProcessMotion();
     if (this->render.isMotionFinished) {
       this->SetState(0, 1);
     }
     return true;
-  case 2:
+  case ST_ATTACK:
     this->ProcessMotion();
     this->GetElapsedFrames();
     if (this->render.isMotionFinished) {
       this->SetState(0, 1);
     }
     return true;
-  case 3:
+  case ST_DEAD:
     this->render.unknown_00C8 = 0;
     this->render.unknown_00D8 = 0;
     this->render.unknown_00DC = 0;
     this->render.isMotionFreezed = false;
-  case 6:
+  case ST_SIT:
     this->ProcessMotion();
     return true;
   default:
@@ -5509,7 +5511,7 @@ bool CPc::ProcessState() {
 
   g_modeMgr.GetGameMode();
   switch (this->render.unknown_0070) {
-  case 8: {
+  case ST_BEGIN_SKILL: {
     this->ProcessMotion();
     const int frames = static_cast<int>(this->GetElapsedFrames());
     if (this->hitTargetAid != 0 && frames % 34 == 0) {
@@ -5520,8 +5522,8 @@ bool CPc::ProcessState() {
     }
     return true;
   }
-  case 7:
-  case 45:
+  case ST_SKILL:
+  case ST_AB_SPECIAL:
   case 62:
   case 63:
   case 64:
@@ -5545,19 +5547,19 @@ bool CPc::ProcessState() {
       this->SetState(0, 1);
     }
     return true;
-  case 2:
+  case ST_ATTACK:
     this->ProcessMotion();
     this->GetElapsedFrames();
     if (this->render.isMotionFinished) {
       this->SetState(0, 1);
     }
     return true;
-  case 3:
+  case ST_DEAD:
     this->render.unknown_00C8 = 0;
     this->render.unknown_00D8 = 0;
     this->render.unknown_00DC = 0;
     this->render.isMotionFreezed = false;
-  case 6:
+  case ST_SIT:
   case 60:
   case 61:
   case 66:

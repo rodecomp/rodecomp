@@ -1,4 +1,5 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -352,8 +353,8 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   const int value = static_cast<int>(argument1);
 
   switch (message) {
-  case 19:
-  case 40: {
+  case UM_DOWNPUSH:
+  case UM_SETCURITEM: {
     this->selected = message == 19 ? (this->selected + 1) : value;
 
     if (message == 40 && this->selected < 0) {
@@ -384,7 +385,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     break;
   }
 
-  case 18:
+  case UM_UPPUSH:
     this->selected = (this->selected - 1);
 
     if (this->selected < 0) {
@@ -397,9 +398,9 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
     break;
 
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->topLine;
     const int visible = this->geometry.height / this->lineHeight;
     const int delta = message == 9 ? (1 - visible) : message == 10 ? (visible - 1) : value;
@@ -426,9 +427,9 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     return (this->topLine - previous);
   }
 
-  case 8:
-  case 11:
-  case 12: {
+  case UM_SCROLLHORZ:
+  case UM_SCROLLHORZPAGEUP:
+  case UM_SCROLLHORZPAGEDOWN: {
     const int previous = this->horizontalOffset;
     const int delta = message == 11 ? -15 : message == 12 ? 15 : value;
     this->horizontalOffset = (previous + delta);
@@ -454,7 +455,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     return (this->horizontalOffset - previous);
   }
 
-  case 98:
+  case UM_TEXT_LBTN_UP:
     if (argument3 > 0) {
       if (UIWindow* window = g_windowMgr.LookupWindow(12)) {
         window->SendMsg(nullptr, 24, argument3, 0, 0, 0);

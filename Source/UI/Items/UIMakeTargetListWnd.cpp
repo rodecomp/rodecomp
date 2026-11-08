@@ -1,4 +1,5 @@
 #include "UI/Items/UIMakeTargetListWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
@@ -52,7 +53,7 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
   ITEM_INFO item;
 
   switch (message) {
-  case 31: {
+  case UM_ADDITEM: {
     const int itemId = static_cast<int>(a);
     this->itemIds.push_back(itemId);
 
@@ -63,20 +64,20 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     return 0;
   }
 
-  case 18:
+  case UM_UPPUSH:
     this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
     return 0;
 
-  case 19:
+  case UM_DOWNPUSH:
     this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
     return 0;
 
-  case 6: {
+  case UM_COMMAND: {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, this->m_list->selected);
 
     switch (response) {
-    case 184: {
+    case ID_OK: {
       if (g_replayAnimationScaling) {
         this->m_list->selected = static_cast<int>(d);
         this->m_list->Invalidate();
@@ -112,7 +113,7 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       break;
     }
-    case 185: {
+    case ID_CANCEL: {
       ITEM_INFO materials[3];
       g_modeMgr.GetGameMode()->SendMsg(130, 0, reinterpret_cast<int>(materials), 0, 0);
       g_windowMgr.CloseWindow(79);

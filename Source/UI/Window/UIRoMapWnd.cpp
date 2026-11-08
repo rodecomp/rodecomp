@@ -1,4 +1,5 @@
 #include "UI/Window/UIRoMapWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Script/LuaScript.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -725,9 +726,9 @@ void CFlyingShipRouteInfo::BuildRoute(const std::vector<std::string>& mapNames) 
 // FUNCTION: fn_12754
 int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(140);
       return 0;
     case 192:
@@ -743,7 +744,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       }
       this->UpdateNavigationButtons();
       return 0;
-    case 321:
+    case ID_SEARCH:
       if (this->m_searchEdit->Length()) {
         std::string name(this->m_searchEdit->Text());
         if (g_navigationManager.SearchNavigation(name, 0, true) == true) {
@@ -754,7 +755,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     }
     return 0;
 
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     if (this->m_worldCombo == sender) {
       g_worldViewMgr.currentWorld = argument1;
       this->Invalidate();
@@ -779,13 +780,13 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     }
     return 0;
 
-  case 60:
+  case UM_REFRESH:
     this->ClearRecords();
     this->RefreshPartyRecords();
     this->Invalidate();
     return 0;
 
-  case 0:
+  case UM_DEFPUSH:
     if (sender == this->m_searchEdit) {
       if (this->m_searchEdit->Length() > 0) {
         this->SendMsg(this->m_searchEdit, 6, 321, 0, 0, 0);

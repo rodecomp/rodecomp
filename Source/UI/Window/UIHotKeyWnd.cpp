@@ -1,3 +1,5 @@
+#include "Contents/Hotkeys/InterfaceHotkey.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Render/Text/FontCache.h"
@@ -31,19 +33,19 @@
 namespace {
   bool HiddenHotkeyIndex(int index) {
     switch (index) {
-    case 30:
-    case 33:
-    case 34:
-    case 36:
-    case 43:
-    case 45:
-    case 53:
-    case 58:
-    case 62:
-    case 64:
-    case 65:
-    case 66:
-    case 67:
+    case HK_BATTLEFIELDWND:
+    case HK_PARTY_RECRUIT:
+    case HK_PARTY_BOOKING_LIST:
+    case HK_EXMACRO_SETUPWND:
+    case HK_BUTTONS_RELOCATE:
+    case HK_MENUICON_HIDE:
+    case HK_TWITTERWND:
+    case HK_HUNTINGQUEST_INFO_ONOFF:
+    case HK_UNKNOWN_62:
+    case HK_UNKNOWN_64:
+    case HK_UNKNOWN_65:
+    case HK_UNKNOWN_66:
+    case HK_UNKNOWN_67:
       return true;
     default:
       return false;
@@ -679,22 +681,22 @@ int UIHotKeyWnd::SendMsg(
 ) {
   if (message == 6) {
     switch (argument1) {
-    case 184:
+    case ID_OK:
       ++g_userHotkeyMgr->m_changes;
       this->SaveHotkeys();
       g_windowMgr.CloseWindow(156);
       return 0;
-    case 185:
+    case ID_CANCEL:
       this->m_selectedRow = -1;
       for (auto& map : this->hotkeys) {
         map.clear();
       }
       this->Invalidate();
       return 0;
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(156);
       return 0;
-    case 213:
+    case ID_CHECK:
       if (sender != this->unknown_0108) {
         return 0;
       }
@@ -709,19 +711,19 @@ int UIHotKeyWnd::SendMsg(
         ChatWindow()->ToggleInput();
       }
       return 0;
-    case 316:
+    case ID_PREV_PAGE:
       if (this->m_page > 1) {
         --this->m_page;
       }
       this->UpdatePageButtons();
       return 0;
-    case 317:
+    case ID_NEXT_PAGE:
       if (this->m_page < this->m_pageCount) {
         ++this->m_page;
       }
       this->UpdatePageButtons();
       return 0;
-    case 363:
+    case ID_RESET:
       this->ReloadHotkeys();
       return 0;
     default:

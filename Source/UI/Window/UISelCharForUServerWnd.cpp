@@ -1,4 +1,5 @@
 #include "UI/Window/UISelCharForUServerWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Session.h"
@@ -138,7 +139,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   }
 
   switch (argument1) {
-  case 0xB8: {
+  case ID_OK: {
     if (g_windowMgr.Confirm(LookupMessage(0x4BB), 2, false, false, 0, "Message", 280, 120, 0) != 0xBB) {
       return 0;
     }
@@ -171,7 +172,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     g_windowMgr.Confirm(LookupMessage(0x4C1), 0, true, true, 0, "Message", 280, 120, 0);
     break;
   }
-  case 0xD5:
+  case ID_CHECK:
     this->m_checkedCount += sender->geometry.unknown_0030 != 0 ? 1 : -1;
     if (this->m_checkedCount > 9) {
       g_windowMgr.Confirm(LookupMessage(0x4BC), 0, true, true, 0, "Message", 280, 120, 0);

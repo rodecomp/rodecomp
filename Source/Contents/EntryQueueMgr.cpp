@@ -1,4 +1,5 @@
 #include "Contents/EntryQueueMgr.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Client/Session.h"
 
 #include "Contents/MessageTable.h"
@@ -119,7 +120,7 @@ void CEntryQueueMgr::SetCharacterName(const EntryQueueName& name) {
 void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
   int message;
   switch (packet->result) {
-  case 1: {
+  case BG_APPLY_ACCEPT: {
     if (!g_windowMgr.CloseWindow(209)) {
       g_windowMgr.EnsureWindow(209);
     }
@@ -137,31 +138,31 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
     this->ready = 1;
     return;
   }
-  case 2:
+  case BG_APPLY_QUEUE_FINISHED:
     message = 0x834;
     break;
-  case 3:
+  case BG_APPLY_INVALID_NAME:
     message = 0x835;
     break;
-  case 4:
+  case BG_APPLY_INVALID_APP:
     message = 0x836;
     break;
-  case 5:
+  case BG_APPLY_PLAYER_COUNT:
     message = 0x837;
     break;
-  case 6:
+  case BG_APPLY_PLAYER_LEVEL:
     message = 0x838;
     break;
-  case 7:
+  case BG_APPLY_DUPLICATE:
     message = 0x839;
     break;
-  case 8:
+  case BG_APPLY_RECONNECT:
     message = 0x83A;
     break;
-  case 9:
+  case BG_APPLY_PARTYGUILD_LEADER:
     message = 0x83C;
     break;
-  case 10:
+  case BG_APPLY_PLAYER_CLASS:
     message = 0x83B;
     break;
   case 15:

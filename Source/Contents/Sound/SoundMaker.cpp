@@ -1,4 +1,5 @@
 #include "Contents/Sound/SoundMaker.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Jobs/JobId.h"
 
 #include "Contents/Actors/ActorStateFlags.h"
@@ -548,18 +549,18 @@ void CBlurPC::SendMsg(
 ) {
   if (a == 0) {
     switch (message) {
-      case 0:
+      case BM_RGB:
         this->SetColor(180, b, d, f);
         this->unknown_04FC = 0x8000000;
         return;
-      case 1:
+      case BM_ALPHA:
         this->render.color &= (b << 24) + 0xFFFFFF;
         this->unknown_04FC = d << 24;
         return;
-      case 2:
+      case BM_MOTIONY:
         this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
         return;
-      case 3:
+      case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
         return;
     }
@@ -609,18 +610,18 @@ void CHalluNPC::SendMsg(
 ) {
   if (a == 0) {
     switch (message) {
-      case 0:
+      case BM_RGB:
         this->SetColor(180, b, d, f);
         this->unknown_0444 = 0x8000000;
         return;
-      case 1:
+      case BM_ALPHA:
         this->render.color &= (b << 24) + 0xFFFFFF;
         this->unknown_0444 = d << 24;
         return;
-      case 2:
+      case BM_MOTIONY:
         this->unknown_0440 = *reinterpret_cast<const float*>(&b);
         return;
-      case 3:
+      case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
         return;
     }
@@ -636,18 +637,18 @@ void CHalluPC2::SendMsg(
 ) {
   if (a == 0) {
     switch (message) {
-      case 0:
+      case BM_RGB:
         this->SetColor(180, 255, 55, 55);
         this->unknown_04FC = 0x8000000;
         return;
-      case 1:
+      case BM_ALPHA:
         this->render.color &= (b << 24) + 0xFFFFFF;
         this->unknown_04FC = d << 24;
         return;
-      case 2:
+      case BM_MOTIONY:
         this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
         return;
-      case 3:
+      case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
         return;
     }
@@ -663,18 +664,18 @@ void CHalluPC::SendMsg(
 ) {
   if (a == 0) {
     switch (message) {
-      case 0:
+      case BM_RGB:
         this->SetColor(180, b, d, f);
         this->unknown_04FC = 0x8000000;
         return;
-      case 1:
+      case BM_ALPHA:
         this->render.color &= (b << 24) + 0xFFFFFF;
         this->unknown_04FC = d << 24;
         return;
-      case 2:
+      case BM_MOTIONY:
         this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
         return;
-      case 3:
+      case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
         return;
     }
@@ -1642,7 +1643,7 @@ void CNpc::SetState(int state, int) {
       }
 
       switch (state) {
-        case 0:
+        case ST_STAND:
           this->render.isLieOnGround = false;
           this->render.unknown_00A4Bytes[1] = 1;
           this->SetAction(0, 4, 0);
@@ -1693,7 +1694,7 @@ void CNpc::SetState(int state, int) {
             this->RegisterPos();
           }
           break;
-        case 1:
+        case ST_MOVE:
           if (this->bodyState != 1 && this->bodyState != 2) {
             this->render.isMotionFreezed = false;
           }
@@ -1704,7 +1705,7 @@ void CNpc::SetState(int state, int) {
           }
           this->UnRegisterPos();
           break;
-        case 2:
+        case ST_ATTACK:
           if (this->bodyState != 1 && this->bodyState != 2) {
             this->render.isMotionFreezed = false;
           }
@@ -1725,7 +1726,7 @@ void CNpc::SetState(int state, int) {
           this->RegisterPos();
           this->LaunchAttackProjectile(this->hitTargetAid, this->render.speed * this->unknown_0378);
           break;
-        case 3:
+        case ST_DEAD:
           this->render.unknown_00C8 = 0;
           this->render.unknown_00D8 = 0;
           this->render.unknown_00DC = 0;
@@ -1745,7 +1746,7 @@ void CNpc::SetState(int state, int) {
             this->UnRegisterPos();
           }
           break;
-        case 4:
+        case ST_DAMAGE:
           if (this->render.unknown_00C8 != 0 || this->render.unknown_00D8 != 0 || this->render.unknown_00DC != 0) {
             return;
           }
@@ -1760,7 +1761,7 @@ void CNpc::SetState(int state, int) {
           this->SetAction(24, 4, 1);
           this->RegisterPos();
           break;
-        case 7:
+        case ST_SKILL:
           switch (this->unknown_0314) {
             case 8:
             case 10:
@@ -1776,7 +1777,7 @@ void CNpc::SetState(int state, int) {
             this->SetAction(96, 6, 1);
           }
           break;
-        case 10:
+        case ST_SLEEP:
           if (this->bodyState == 2) {
             this->SendMsg(nullptr, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             this->SendMsg(nullptr, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);

@@ -1,4 +1,5 @@
 #include "Client/Session.h"
+#include "UI/Window/UIEnums.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/GuildMgr.h"
@@ -74,11 +75,11 @@ void UIEmblemWnd::OnProcess() {
 // FUNCTION: fn_10917
 int UIEmblemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->aid = argument1;
     this->guildId = argument2;
     break;
-  case 60:
+  case UM_REFRESH:
     if (this->guildId == static_cast<std::uint32_t>(argument1)) {
       this->Invalidate();
     }

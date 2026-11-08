@@ -17,8 +17,6 @@ enum e_damage_type : int {
   DMG_SPLASH_ENDURE = 14,
 };
 
-#endif
-
 enum spirit_charm_types : int {
   CHARM_TYPE_WATER = 1,
   CHARM_TYPE_LAND = 2,
@@ -83,3 +81,5 @@ enum e_size : int {
   SZ_MEDIUM = 1,
   SZ_BIG = 2,
 };
+
+#endif

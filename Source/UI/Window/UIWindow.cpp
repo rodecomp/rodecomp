@@ -1,4 +1,5 @@
 #include "Client/Input/Mouse.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
@@ -388,12 +389,12 @@ void UIWindow::RefreshSnap() {
 // FUNCTION: fn_17005
 int UIWindow::SendMsg(UIWindow*, int message, std::intptr_t, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     if (this->parent) {
       this->Parent()->SendMsg(this, 0, 0, 0, 0, 0);
     }
     break;
-  case 1:
+  case UM_CANCELPUSH:
     if (this->parent) {
       this->Parent()->SendMsg(this, 1, 0, 0, 0, 0);
     }
@@ -2604,14 +2605,14 @@ void UINavigationroadiconWnd::Paint() {
 // FUNCTION: fn_03626
 int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 0x22:
+  case UM_SETINFO:
     this->info = reinterpret_cast<NavigationWindowInfo*>(argument1);
     this->info->Clamp();
     this->Move(this->info->x, this->info->y);
     this->Invalidate();
     break;
 
-  case 6:
+  case UM_COMMAND:
     if (argument1 != 0x150 && argument1 != 0x1B9) {
       this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
       if (argument1 > 499) {
@@ -2685,7 +2686,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
       break;
     }
-    case 0x141:
+    case ID_SEARCH:
       if (static_cast<UIEditCtrl*>(this->unknown_00E0)->Length() != 0 && !g_navigationManager.unknown_1254) {
         g_navigationManager.unknown_1264 = static_cast<UIEditCtrl*>(this->unknown_00E0)->Text();
         g_navigationManager.UpdateSearchResults();
@@ -2702,12 +2703,12 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         g_serverLanguage->ResetInput();
       }
       break;
-    case 0xD5:
+    case ID_CHECK:
       g_navigationManager.unknown_127D = false;
       g_navigationManager.unknown_127C = argument2 != 0;
       g_navigationManager.unknown_127E = g_navigationManager.unknown_127C;
       break;
-    case 0xCA:
+    case ID_MINI:
       g_navigationManager.unknown_1254 = true;
       this->geometry.targetAlpha = 0xAA;
       this->geometry.alphaStart = timeGetTime();
@@ -2753,7 +2754,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
       break;
     }
-    case 0x157:
+    case ID_HELP:
       if (!g_windowMgr.CloseWindow(0xE5)) {
         g_windowMgr.EnsureWindow(0xE5);
       }
@@ -2763,7 +2764,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         g_windowMgr.EnsureWindow(0x13A);
       }
       break;
-    case 0x150:
+    case ID_SELECT_ITEM:
       if (g_replayAnimationScaling == 0) {
         argument2 = this->unknown_00EC->selected;
       }
@@ -2839,7 +2840,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         }
       }
       break;
-    case 0xC9:
+    case ID_CLOSE:
       if (g_navigationManager.unknown_1258 == 2) {
         if (g_windowMgr.Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
           g_navigationManager.SetViewMode(1);
@@ -2866,7 +2867,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     }
     break;
 
-  case 0x27:
+  case UM_COMBOBOX_SELECTED:
     if (sender == this->unknown_00DC) {
       g_navigationManager.unknown_1260 = static_cast<int>(argument1);
       g_navigationManager.BuildNodePaths();
@@ -2880,11 +2881,11 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     }
     break;
 
-  case 0x28:
+  case UM_SETCURITEM:
     this->SetRoadIcon(static_cast<int>(argument1));
     break;
 
-  case 0:
+  case UM_DEFPUSH:
     if (sender == this->unknown_00E0 && static_cast<UIEditCtrl*>(this->unknown_00E0)->Length() > 0) {
       this->SendMsg(this->unknown_00E0, 6, 0x141, 0, 0, 0);
     }
@@ -2994,12 +2995,12 @@ int UIListBox_NaviSearch::SendMsg(
 // FUNCTION: fn_03625
 int UINavigationRuideWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (a == 201) {
       g_windowMgr.CloseWindow(314);
     }
     [[fallthrough]];
-  case 60:
+  case UM_REFRESH:
     this->RefreshRoute();
     this->Invalidate();
     break;
@@ -3573,7 +3574,7 @@ int UIPrivateAirplaneWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 201) {
       if (!g_windowMgr.modalWindows.empty() && g_windowMgr.modalWindows.back()) {
         g_windowMgr.unknown_0474 = 0xBC;
@@ -3583,7 +3584,7 @@ int UIPrivateAirplaneWnd::SendMsg(
       g_navigationManager.RequestPrivateAirship(mapName, static_cast<int>(argument2));
     }
     break;
-  case 35:
+  case UM_REFRESHBUTTON:
     for (UIBasicButton* button : this->m_buttons) {
       button->SetDisabled(1);
       button->Invalidate();

@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeMessage.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CLoginMode.h"
@@ -32,10 +33,10 @@ void CModeMgr::Run(int mode, const char* name) {
     this->state = this->nextState;
     std::strcpy(this->modeName, this->nextModeName);
     switch (this->state) {
-    case 0:
+    case MT_LOGIN:
       this->gameMode = new CLoginMode();
       break;
-    case 1:
+    case MT_GAME:
       this->gameMode = new CGameMode();
       break;
     }

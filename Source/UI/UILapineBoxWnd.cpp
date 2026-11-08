@@ -1,4 +1,5 @@
 #include "UI/UILapineScrollBar.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -335,7 +336,7 @@ void UILapineBox_IngredientListWnd::OnWheel(int argument) {
 // FUNCTION: fn_04172
 int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a) {
     case 0xC9:
       g_windowMgr.CloseWindow(0x122);
@@ -384,7 +385,7 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     }
     break;
-  case 0x68: {
+  case UM_DECITEM: {
     const auto found = std::find_if(this->items.begin(), this->items.end(), [a](ITEM_INFO item) { return a == item.unknown_0000[1]; });
 
     if (found != this->items.end()) {
@@ -399,7 +400,7 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     break;
   }
-  case 0x6F:
+  case UM_RECEIVE_MSG:
     this->noticeTick = timeGetTime();
     this->notice = reinterpret_cast<const char*>(a);
     this->Invalidate();
@@ -415,7 +416,7 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c,
                                            std::intptr_t d) {
   switch (message) {
-  case 0x17:
+  case UM_REFRESHITEM:
     for (std::vector<ITEM_INFO>::iterator material = this->materials.begin(); material != this->materials.end(); ++material) {
       std::vector<int> ids = g_session.FindInventoryIndicesByItemId(std::atoi(material->itemId.c_str()), 1);
       for (std::vector<int>::iterator id = ids.begin(); id != ids.end(); ++id) {
@@ -432,7 +433,7 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
     this->SendMsg(this, 0x57, 0, 0, 0, 0);
     break;
 
-  case 6:
+  case UM_COMMAND:
     for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
       UIIngredientInfoWnd* entry = *it;
       if (sender != entry) {
@@ -443,7 +444,7 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
     this->Invalidate();
     break;
 
-  case 0x68: {
+  case UM_DECITEM: {
     std::vector<UIIngredientInfoWnd*>::iterator it;
     for (it = this->items.begin(); it != this->items.end(); ++it) {
       if (static_cast<std::uint32_t>(a) == (*it)->item.unknown_0000[1]) {
@@ -490,7 +491,7 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
     break;
   }
 
-  case 0x57: {
+  case UM_SETPOS: {
     int y = 7;
     for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end();) {
       UIIngredientInfoWnd* entry = *it;

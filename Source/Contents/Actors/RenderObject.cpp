@@ -1,4 +1,5 @@
 #include "Contents/Actors/Npc.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Combat/CombatTypes.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Actors/GrannyGameActor.h"
@@ -349,16 +350,16 @@ void CRenderObject::ProcessMotion() {
   int motion;
   float progress;
   switch (this->render.unknown_006C) {
-    case 0:
+    case MT_LOOP:
       this->render.curMotion =
         static_cast<int>(frame / this->render.speed) % static_cast<int>(action->FrameCount(this->render.previousAnimation));
       return;
-    case 1:
+    case MT_ONETIME:
       count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
       progress = frame / this->render.speed;
       motion = static_cast<int>(progress);
       break;
-    case 2: {
+    case MT_STATIC: {
       if (this->render.unknown_0070 != 2) {
         return;
       }
@@ -1325,7 +1326,7 @@ void CGameActor::SetState(int state, int resetPosition) {
   }
 
   switch (state) {
-  case 0xd:
+  case ST_AUTOCOUNTER:
     if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
       const std::int64_t weapon = this->GetWeapon();
       IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, weapon);
@@ -1336,7 +1337,7 @@ void CGameActor::SetState(int state, int resetPosition) {
       this->render.isMotionFreezed = true;
     }
     break;
-  case 4: {
+  case ST_DAMAGE: {
     if (this->render.unknown_00C8 != 0 || this->render.unknown_00D8 != 0 || this->render.unknown_00DC != 0) {
       return;
     }
@@ -1357,12 +1358,12 @@ void CGameActor::SetState(int state, int resetPosition) {
     }
     break;
   }
-  case 7:
+  case ST_SKILL:
     if (this->render.unknown_0070 == 6) {
       return;
     }
-  case 2:
-  case 9:
+  case ST_ATTACK:
+  case ST_ATTACK2:
     this->SetAction(action, 3, this->unknown_0404 == 1 ? 2 : 1);
     if (this->render.unknown_0070 != 9 && this->render.unknown_0070 != 2) {
       if (this->hitTargetAid == g_session.m_aid) {
@@ -1383,7 +1384,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->unknown_0378 = static_cast<float>(this->GetAttackMotion());
     this->RegisterPos();
     break;
-  case 3:
+  case ST_DEAD:
     this->render.unknown_00C8 = 0;
     this->render.unknown_00D8 = 0;
     this->render.unknown_00DC = 0;
@@ -1397,46 +1398,46 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->render.isMotionFreezed = false;
     this->SetAction(action, 4, 1);
     break;
-  case 0:
+  case ST_STAND:
     this->SetAction(action, 4, 0);
     if (!IsObfuscatedMessage(this->render.accountId)) {
       this->render.isMotionFinished = true;
     }
     this->RegisterPos();
     break;
-  case 1:
+  case ST_MOVE:
     if (this->unknown_0184 == 0) {
       this->SetAction(action, 6, 0);
     }
     this->UnRegisterPos();
     break;
-  case 5:
+  case ST_PICKUP:
     this->unknown_0178 = 0;
     this->render.isMotionFreezed = false;
-  case 0xb:
+  case ST_ATTACKWAIT:
     this->SetAction(action, 6, 1);
     break;
-  case 0xc:
+  case ST_THROW:
     this->SetAction(action, 3, 1);
     this->RegisterPos();
     break;
-  case 0x10:
+  case ST_DANCE:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 1, 3, 0, 0, 1, 99999999, 1);
     break;
-  case 0x11:
+  case ST_SING:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 1, 3, action, 1, 1, 99999999, 1);
     break;
-  case 0x12:
+  case ST_READYSHOT:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 3000, 0);
     break;
-  case 0x1c:
+  case ST_THROW2:
     this->render.unknown_00C2 = 10;
     this->SetAnimationSequence(action, 0, action, 1, action, 2, action, 3, action, 4, 1, 1000, 0);
     break;
-  case 0x13:
+  case ST_READYJUMP:
     if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
       this->render.unknown_00C2 = 10;
       this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
@@ -1453,51 +1454,51 @@ void CGameActor::SetState(int state, int resetPosition) {
       this->LaunchEffect(0x19b, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
-  case 0x14:
+  case ST_LANDJUMP:
     this->render.unknown_00C2 = 10;
     this->SetAnimationSequence(action, 1, action, 1, action, 1, action, 1, 8, 5, 1, 3000, 0);
     break;
-  case 0x15:
+  case ST_R_STORM:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1e:
+  case ST_A_STORM:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 1, 1, action, 1, 1, 2000, 0);
     break;
-  case 0x16:
+  case ST_R_DOWN:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 2, 2, action, 2, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x21:
+  case ST_SG_DOWN:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 2, 2, action, 2, 1, 1000, 0);
     break;
-  case 0x1f:
+  case ST_A_DOWN:
     this->render.unknown_00C2 = 5;
     this->SetAnimationSequence(0x50, 3, 0x50, 5, 0x50, 7, 0x50, 8, 0x50, 2, 1, 500, 0);
     break;
-  case 0x17:
+  case ST_R_TURN:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 3, 3, action, 3, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x22:
+  case ST_SG_TURN:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 3, 3, action, 3, 1, 1000, 0);
     break;
-  case 0x20:
+  case ST_A_TURN:
     this->render.unknown_00C2 = 5;
     this->SetAnimationSequence(action, 4, action, 5, action, 6, action, 7, action, 2, 1, 500, 0);
     break;
-  case 0x18:
+  case ST_R_COUNTER:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 4, 4, action, 4, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1a: {
+  case ST_A_COUNTER: {
     this->render.unknown_00C2 = 4;
     int frame0;
     int frame1;
@@ -1521,16 +1522,16 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->SetAnimationSequence(action, frame0, action, frame1, action, frame2, action, frame3, action, frame4, 1, 500, 0);
     break;
   }
-  case 0x19:
+  case ST_R_DODGE:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 1, 1, action, 1, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x1b:
+  case ST_A_JUMPKICK:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 5, 5, action, 5, 1, 3000, 0);
     break;
-  case 0x24:
+  case ST_NINJASKILL2:
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 2, 5, action, 5, 1, 1000, 0);
     break;
@@ -1540,7 +1541,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     break;
   case 0x38:
     this->render.isMotionFinished = false;
-  case 0x23:
+  case ST_NINJASKILL1:
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 0, 1, action, 1, 1, 500, 0);
     break;
@@ -1549,7 +1550,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 5, 5, action, 5, 1, 500, 0);
     break;
-  case 0x25: {
+  case ST_NINJAREADY: {
     this->render.unknown_00C2 = 10;
     int random = rand() % 2;
     random = random < 0 ? 0 : random;
@@ -1557,7 +1558,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->SetFrameSequence(action, frame, frame, action, frame, 1, 500, 0);
     break;
   }
-  case 0x26: {
+  case ST_GUNSKILL1: {
     this->render.unknown_00C2 = 6;
     int random = rand() % 2;
     random = random < 0 ? 0 : random;
@@ -1568,11 +1569,11 @@ void CGameActor::SetState(int state, int resetPosition) {
     }
     break;
   }
-  case 0x28:
+  case ST_GUNSKILL3:
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 0, 2, action, 2, 1, 500, 0);
     break;
-  case 0x29: {
+  case ST_GUNREADY: {
     this->render.unknown_00C2 = 10;
     int random = rand() % 2;
     random = random < 0 ? 0 : random;
@@ -1580,19 +1581,19 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->SetFrameSequence(action, frame, frame, action, frame, 1, 500, 0);
     break;
   }
-  case 0x2a:
+  case ST_GUNREADY2:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 500, 0);
     break;
-  case 0x2b:
+  case ST_MADOSKILL:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 5, 5, action, 5, 1, 500, 0);
     break;
-  case 0x2c:
+  case ST_MADOSKILL2:
     this->render.unknown_00C2 = 10;
     this->SetFrameSequence(action, 4, 4, action, 4, 1, 500, 0);
     break;
-  case 0x2d:
+  case ST_AB_SPECIAL:
   case 0x34:
   case 0x35:
   case 0x36:
@@ -1616,7 +1617,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 0, 3, action, 3, 1, 9999999, 1);
     break;
-  case 0x27:
+  case ST_GUNSKILL2:
   case 0x30:
     this->render.unknown_00C2 = 6;
     this->SetFrameSequence(action, 4, 5, action, 5, 1, 500, 0);
@@ -2740,7 +2741,7 @@ void CCharacterNpc::SendMsg(
 ) {
   CharacterNpcViewInfo* info = reinterpret_cast<CharacterNpcViewInfo*>(b);
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
-  case 4:
+  case AM_INITSTANDENTRY:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     this->render.visible = IsVisibleJob(info->job) ? 1 : 0;
     this->SetGuildInfo(info->unknown_0060, info->unknown_0064);
@@ -2750,15 +2751,15 @@ void CCharacterNpc::SendMsg(
     this->unknown_0440 = reinterpret_cast<CGameObject*>(new CCharacterRender(0, 0));
     FillCharacterNpcRenderPrimary(this, info);
     return;
-  case 3:
+  case AM_STANDENTRY:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     if (this->unknown_0440 == nullptr) {
       return;
     }
     FillCharacterNpcRenderPrimary(this, info);
     return;
-  case 6:
-  case 0x7a:
+  case AM_INITMOVEENTRY:
+  case AM_INITMOVEENTRY2:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     if (this->unknown_0440 != nullptr) {
       return;
@@ -2766,8 +2767,8 @@ void CCharacterNpc::SendMsg(
     this->unknown_0440 = reinterpret_cast<CGameObject*>(new CCharacterRender(0, 0));
     FillCharacterNpcRenderSecondary(this, info);
     return;
-  case 5:
-  case 0x7b:
+  case AM_MOVEENTRY:
+  case AM_MOVEENTRY2:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     if (this->unknown_0440 == nullptr) {
       return;
@@ -2959,16 +2960,16 @@ void CRenderObject::UpdateTlvertex(const float* matrix) {
 int CGameActor::ActionBase(int state) {
   int base = 16;
   switch (state) {
-  case 0:
+  case ST_STAND:
     base = 0;
     break;
-  case 1:
+  case ST_MOVE:
     base = 8;
     break;
-  case 4:
+  case ST_DAMAGE:
     base = 24;
     break;
-  case 3:
+  case ST_DEAD:
     base = 32;
     break;
   }
@@ -3288,15 +3289,15 @@ CActRes* CRenderObject::GetActRes() {
 int CGameActor::WeaponActionBase(int weaponType) {
   int base = 0;
   switch (weaponType) {
-  case 0:
+  case ST_STAND:
     base = 0;
     break;
-  case 1:
+  case ST_MOVE:
     base = 8;
     break;
-  case 2:
-  case 43:
-  case 44:
+  case ST_ATTACK:
+  case ST_MADOSKILL:
+  case ST_MADOSKILL2:
   case 52:
   case 60:
   case 62:
@@ -3308,20 +3309,20 @@ int CGameActor::WeaponActionBase(int weaponType) {
   case 79:
     base = 80;
     break;
-  case 3:
+  case ST_DEAD:
     base = 64;
     break;
-  case 4:
+  case ST_DAMAGE:
     base = 48;
     break;
-  case 5:
-  case 20:
-  case 25:
+  case ST_PICKUP:
+  case ST_LANDJUMP:
+  case ST_R_DODGE:
     base = 24;
     break;
-  case 9:
-  case 18:
-  case 32:
+  case ST_ATTACK2:
+  case ST_READYSHOT:
+  case ST_A_TURN:
   case 49:
   case 53:
   case 54:
@@ -3332,39 +3333,39 @@ int CGameActor::WeaponActionBase(int weaponType) {
   case 77:
     base = 88;
     break;
-  case 11:
+  case ST_ATTACKWAIT:
     base = 32;
     break;
-  case 12:
-  case 19:
-  case 28:
-  case 40:
-  case 42:
+  case ST_THROW:
+  case ST_READYJUMP:
+  case ST_THROW2:
+  case ST_GUNSKILL3:
+  case ST_GUNREADY2:
   case 50:
   case 51:
   case 58:
     base = 40;
     break;
-  case 13:
+  case ST_AUTOCOUNTER:
     base = IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, this->GetWeapon()) ? 88 : 80;
     break;
-  case 16:
-  case 17:
-  case 21:
-  case 22:
-  case 23:
-  case 24:
-  case 27:
-  case 30:
-  case 33:
-  case 34:
-  case 35:
-  case 36:
-  case 37:
-  case 38:
-  case 39:
-  case 41:
-  case 45:
+  case ST_DANCE:
+  case ST_SING:
+  case ST_R_STORM:
+  case ST_R_DOWN:
+  case ST_R_TURN:
+  case ST_R_COUNTER:
+  case ST_A_JUMPKICK:
+  case ST_A_STORM:
+  case ST_SG_DOWN:
+  case ST_SG_TURN:
+  case ST_NINJASKILL1:
+  case ST_NINJASKILL2:
+  case ST_NINJAREADY:
+  case ST_GUNSKILL1:
+  case ST_GUNSKILL2:
+  case ST_GUNREADY:
+  case ST_AB_SPECIAL:
   case 47:
   case 48:
   case 55:
@@ -3380,7 +3381,7 @@ int CGameActor::WeaponActionBase(int weaponType) {
   case 81:
     base = 96;
     break;
-  case 26:
+  case ST_A_COUNTER:
     switch (this->GetEffectiveJob(-1)) {
     case JT_LINKER:
     case JT_LINKER_B:

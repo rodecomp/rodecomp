@@ -1,4 +1,5 @@
 #include "UI/Quest/UIRenewQuestUI.h"
+#include "UI/Window/UIEnums.h"
 #include "Utility/EncryptedName.h"
 #include "Client/Replay.h"
 #include "Contents/MessageTable.h"
@@ -1082,7 +1083,7 @@ void RenewQuestUI::CUIQuestItem::SetSelected(bool selected) {
 // FUNCTION: fn_16632
 int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (a == 0xD5) {
       const bool checked = b != 0;
       this->checkBox->checked = checked;
@@ -1093,7 +1094,7 @@ int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       }
     }
     break;
-  case 0x16:
+  case UM_TAB:
     this->tab->SelectIndex(static_cast<int>(std::log2(static_cast<double>(a))));
     break;
   }

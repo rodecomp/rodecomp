@@ -1,4 +1,5 @@
 #include "Contents/Actors/GroundScope.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Skills/SkillId.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -185,20 +186,20 @@ void CGroundScope::Render(int argument) {
 // FUNCTION: fn_24299
 void CGroundScope::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
-    case 14:
+    case AM_SETPOS:
       this->m_cellX = b;
       this->m_cellY = d;
       return;
 
-    case 22:
+    case AM_SETMASTERGID:
       this->unknown_0158 = b;
       return;
 
-    case 115:
+    case AM_SETTIME:
       this->m_lastingTime = b;
       return;
 
-    case 117:
+    case AM_SET_SKILL:
       this->m_size = this->SkillScopeType(b) + 2;
       this->m_skillId = b;
       this->m_angleSpeed = this->m_size != 0 ? 0.5f / static_cast<float>(this->m_size) : 0.0f;

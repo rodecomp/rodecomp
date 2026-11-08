@@ -1,4 +1,5 @@
 #include "UI/Window/UIAccountLimitedToolWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -180,7 +181,7 @@ void UIAccountLimitedToolWnd::Paint() {
 // FUNCTION: fn_12938
 int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 64:
+  case UM_PARAM:
     switch (argument1) {
     case 2:
       if (argument2 == 1) {
@@ -293,19 +294,19 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
     }
     break;
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 211: {
+    case ID_DELETE: {
       AccountLimitedDeletePacket packet;
       packet.id = 0xB4A;
       packet.accountId = std::atoi(this->m_accountIdText->GetText().c_str());
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
       break;
     }
-    case 201:
+    case ID_CLOSE:
       g_modeMgr.GetGameMode()->SendMsg(319, 0, 0, 0, 0);
       break;
-    case 321: {
+    case ID_SEARCH: {
       const std::string name = this->m_edits[0]->Text();
       if (name.empty()) {
         this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2512)), 60, 0, 0);

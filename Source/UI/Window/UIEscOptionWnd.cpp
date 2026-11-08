@@ -1,4 +1,5 @@
 #include "UI/Window/UIEscOptionWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
@@ -97,7 +98,7 @@ int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       g_windowMgr.EnsureWindow(0x9C);
     }
     break;
-  case 0xFB:
+  case ID_QUIT:
     g_windowMgr.CloseWindow(0x9B);
     mode->SendMsg(0x58, 0, 0, 0, 0);
     break;
@@ -129,7 +130,7 @@ int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       g_windowMgr.CloseWindow(0x9B);
     }
     break;
-  case 0xB9:
+  case ID_CANCEL:
     g_windowMgr.CloseWindow(0x9B);
     break;
   }

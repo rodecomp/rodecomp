@@ -1,4 +1,5 @@
 #include "UI/Edit/UIEditBoxEx.h"
+#include "UI/Window/UIEnums.h"
 #include "Network/TextEncoding.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -420,23 +421,23 @@ void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
 int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   int position;
   switch (message) {
-  case 7:
+  case UM_SCROLLVERT:
     position = this->scrollPosition + a;
     break;
-  case 9:
+  case UM_SCROLLVERTPAGEUP:
     position = this->unknown_01F0 + this->scrollPosition;
     break;
-  case 10:
+  case UM_SCROLLVERTPAGEDOWN:
     position = this->scrollPosition - this->unknown_01F0;
     break;
-  case 0:
+  case UM_DEFPUSH:
     if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && HIBYTE(GetKeyState(VK_SHIFT))) {
       g_serverLanguage->Insert("\r\n");
       return 0;
     }
     UIWindow::SendMsg(sender, 0, a, b, c, d);
     return 0;
-  case 18:
+  case UM_UPPUSH:
     if (this->line > 0) {
       if (this->unknown_01D4 == this->line - 1) {
         g_serverLanguage->RetreatCursor(this->unknown_01D8);
@@ -485,7 +486,7 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     g_serverLanguage->Character(a, b);
     this->selectedAll = 1;
     return 3;
-  case 19:
+  case UM_DOWNPUSH:
     if (this->lines.size() - 1 > static_cast<unsigned>(this->line)) {
       if (this->unknown_01D4 == this->line + 1) {
         g_serverLanguage->AdvanceCursor(this->unknown_01D8);

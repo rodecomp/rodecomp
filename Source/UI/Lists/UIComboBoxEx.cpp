@@ -1,4 +1,5 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -137,7 +138,7 @@ void UIComboBoxEx::Refresh() {
 // FUNCTION: fn_11545
 int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
       target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
     }
@@ -148,7 +149,7 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
     return 0;
 
-  case 18:
+  case UM_UPPUSH:
     if (this->lines.size() == 0) {
       return 0;
     }
@@ -165,7 +166,7 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
     break;
 
-  case 19: {
+  case UM_DOWNPUSH: {
     const unsigned count = static_cast<unsigned>(this->lines.size());
 
     if (count == 0) {
@@ -189,16 +190,16 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     break;
   }
 
-  case 31:
+  case UM_ADDITEM:
     this->AddLine(reinterpret_cast<const char*>(a), static_cast<unsigned>(b));
     this->Invalidate();
     return 0;
 
-  case 83:
+  case UM_SET_CALLER_WID:
     this->targetId = static_cast<int>(a);
     return 0;
 
-  case 40:
+  case UM_SETCURITEM:
     this->selected = static_cast<int>(a);
 
     if (this->selected < 0) {

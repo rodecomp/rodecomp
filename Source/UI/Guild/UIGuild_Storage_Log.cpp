@@ -1,4 +1,5 @@
 #include "UI/Guild/UIGuild_Storage_Log.h"
+#include "UI/Window/UIEnums.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -41,13 +42,13 @@ UIGuild_Storage_Log::UIGuild_Storage_Log() : UIFrameWnd(0) {
 // FUNCTION: fn_12941
 int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 184:
+    case ID_OK:
       g_windowMgr.CloseWindow(253);
       break;
 
-    case 218: {
+    case ID_NEXT: {
       const unsigned page = this->m_page;
       if (this->m_category == 0) {
         if (page >= this->m_pageCounts[0]) {
@@ -69,7 +70,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     }
 
-    case 246: {
+    case ID_PREV: {
       const unsigned page = this->m_page;
       if (page > 1) {
         const int state = this->m_state;
@@ -95,7 +96,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
     return 0;
 
-  case 22:
+  case UM_TAB:
     this->m_category = static_cast<int>(a);
     this->m_page = 1;
     this->m_state = 1;
@@ -105,7 +106,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->SendMsg(this, 60, 0, 0, 0, 0);
     return 0;
 
-  case 60:
+  case UM_REFRESH:
     for (int i = 0; i < 10; ++i) {
       this->m_dateTexts[i]->SetText("", 0);
       this->m_nameTexts[i]->SetText("", 0);

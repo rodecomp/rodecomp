@@ -1,4 +1,5 @@
 #include "UI/Items/UIWeaponRefineWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
@@ -69,7 +70,7 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   ITEM_INFO item;
 
   switch (message) {
-  case 31: {
+  case UM_ADDITEM: {
     const int itemId = static_cast<int>(a);
     this->itemIds.push_back(itemId);
     this->indices.push_back(b);
@@ -81,20 +82,20 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return 0;
   }
 
-  case 18:
+  case UM_UPPUSH:
     this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
     return 0;
 
-  case 19:
+  case UM_DOWNPUSH:
     this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
     return 0;
 
-  case 6: {
+  case UM_COMMAND: {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, this->m_list->selected);
 
     switch (response) {
-    case 184: {
+    case ID_OK: {
       if (g_replayAnimationScaling) {
         this->m_list->selected = static_cast<int>(d);
         this->m_list->Invalidate();
@@ -116,7 +117,7 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       }
       break;
     }
-    case 185:
+    case ID_CANCEL:
       g_modeMgr.gameMode->SendMsg(182, -1, 0, 0, 0);
       g_windowMgr.CloseWindow(111);
       return 0;

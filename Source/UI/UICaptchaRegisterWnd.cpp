@@ -1,4 +1,5 @@
 #include "UI/UICaptchaRegisterWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
@@ -114,7 +115,7 @@ int UICaptchaRegisterWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4
 ) {
   switch (message) {
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     if (sender == this->m_fileComboBox) {
       this->m_selectedFile = this->m_fileComboBox->GetSelectedText();
       if (!this->m_selectedFile.empty()) {
@@ -150,7 +151,7 @@ int UICaptchaRegisterWnd::SendMsg(
       }
     }
     break;
-  case 6:
+  case UM_COMMAND:
     switch (a1) {
     case 345:
       if (this->m_editCtrl->Length() < 4) {
@@ -177,7 +178,7 @@ int UICaptchaRegisterWnd::SendMsg(
         }
       }
       break;
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(284);
       break;
     }

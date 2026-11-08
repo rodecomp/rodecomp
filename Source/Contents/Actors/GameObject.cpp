@@ -1,4 +1,6 @@
 #include "Contents/Actors/GameObject.h"
+#include "Contents/Actors/ActorEnums.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Effects/EffectTypes.h"
 #include "Contents/Actors/GameActor.h"
@@ -941,7 +943,7 @@ void CGameActor::ApplyPendingUnknown0408() {
 // FUNCTION: fn_21111
 void EffectActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int, int, int, int, int, int, int, int) {
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
-    case 24:
+    case AM_MASTER_DEAD:
       for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
         (*it)->SendMsg(this, 24, 0, 0, 0, 0, 0, 0);
       }
@@ -1007,7 +1009,7 @@ void EffectActor::SendMsg(CGameObject* sender, int message, int a, int b, int c,
       }
       break;
 
-    case 23:
+    case AM_EFFECT_DEAD:
       if (sender) {
         CRagEffect* const effect = static_cast<CRagEffect*>(sender);
         for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
@@ -1026,7 +1028,7 @@ void EffectActor::SendMsg(CGameObject* sender, int message, int a, int b, int c,
       }
       break;
 
-    case 109:
+    case AM_DELETE_EFFECT:
       if (g_effectMgr->HasAllocator(b) && sender) {
         g_effectMgr->Retire(static_cast<CRenderObject*>(sender)->render.accountId, b);
         return;
@@ -1074,7 +1076,7 @@ void EffectActor::SendMsg(CGameObject* sender, int message, int a, int b, int c,
       }
       break;
 
-    case 120:
+    case AM_IS_HAVE_EFFECT:
       if (g_effectMgr->HasAllocator(b) == true && sender) {
         if (g_effectMgr->Has(static_cast<CRenderObject*>(sender)->render.accountId, b) == true) {
           *reinterpret_cast<int*>(b) = -1;
@@ -1221,10 +1223,10 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
     }
     break;
-  case 81:
+  case AM_SET_TARGET_AID:
     this->hitTargetAid = b;
     break;
-  case 88: {
+  case AM_MAKE_NUMBER: {
     if ((g_session.GetSceneUnknown004C() != 0 || g_session.WorldUnknown0050() != 0) && g_session.IsAdminSubMode(7) == 0) {
       break;
     }
@@ -1245,7 +1247,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     break;
   }
-  case 89: {
+  case AM_MAKE_MISS: {
     if (!g_serviceOptions.Get(0x35)) {
       break;
     }
@@ -1258,7 +1260,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
   case 126:
     this->LaunchEffect(0x150, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 95: {
+  case AM_MAKE_LUCKY: {
     CMsgEffect* effect = mode->SpawnMsgEffect(0xD, &this->render.position, this->render.accountId, true);
     this->unknown_03B0.push_back(effect);
     effect->SendMsg(this, 0x32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -1319,7 +1321,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       this->unknown_037C[1] = 0;
     }
     break;
-  case 101: {
+  case AM_MAKE_BIRD: {
     if (this->unknown_037C[0] != 0) {
       break;
     }
@@ -1360,7 +1362,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     this->unknown_037C[0] = reinterpret_cast<int>(effect);
     break;
   }
-  case 102:
+  case AM_DELETE_BIRD:
     if (this->unknown_037C[0] != 0) {
       reinterpret_cast<CGameObject*>(this->unknown_037C[0])->SendMsg(nullptr, 0x35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       reinterpret_cast<CMsgEffect*>(this->unknown_037C[0])->m_visible = false;
@@ -1620,14 +1622,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       this->unknown_037C[12] = 0;
     }
     break;
-  case 12:
+  case AM_DEAD:
     if (this->render.unknown_0070 == 3) {
       break;
     }
     this->SetState(3, 1);
     break;
-  case 96:
-  case 97: {
+  case AM_ATTACKED_SKILL:
+  case AM_ATTACKEDNOMOTION_SKILL: {
     this->render.overrideColor = 0xFFFF0000;
     const int effectId = reinterpret_cast<const ActorDamageMessage*>(b)->effectId;
     if (effectId == 0xC6) {
@@ -1636,10 +1638,10 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       this->render.overrideColor = effectId == 0xB8 ? 0xFF505050 : this->render.overrideColor;
     }
   }
-  case 26:
-  case 39:
-  case 93:
-  case 94:
+  case AM_ATTACKED:
+  case AM_ATTACKEDNOMOTION:
+  case AM_ATTACKED_CRITICAL:
+  case AM_ATTACKED_LUCKY:
   case 111:
   case 129:
   case 132:
@@ -1899,7 +1901,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       this->SendMsg(nullptr, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
-  case 27: {
+  case AM_WILL_BE_ATTACKED: {
     ActorDamageMessage* damage = reinterpret_cast<ActorDamageMessage*>(b);
     if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
       if (damage->action != 0x94) {
@@ -1928,22 +1930,22 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     this->unknown_02A8.push_back(*damage);
     break;
   }
-  case 37:
+  case AM_SKILL:
     this->ProcessSkillMessage(sender, reinterpret_cast<const ActorSkillInfo*>(b), d, f);
     break;
-  case 38:
+  case AM_GROUNDSKILL:
     this->PlayGroundSkillEffect(reinterpret_cast<int>(sender), reinterpret_cast<const int*>(b), d, f);
     break;
-  case 11:
+  case AM_ACTION:
     this->ProcessHitMessage(sender, reinterpret_cast<const ActorHitInfo*>(b), d, f);
     break;
-  case 43: {
+  case AM_ATTR_STATE_CHANGE: {
     const int* states = reinterpret_cast<const int*>(b);
     this->SetStatusStates(states[0], states[1], states[2], true);
     this->unknown_02C8 = states[3];
     break;
   }
-  case 3: {
+  case AM_STANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     switch (this->unknown_0314) {
     case 8:
@@ -1968,7 +1970,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     break;
   }
-  case 4: {
+  case AM_INITSTANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
     switch (this->unknown_0314) {
     case 8:
@@ -2001,10 +2003,10 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
     if (Replay::Instance().state == 6) {
       switch (entry->state) {
-      case 1:
+      case PCSTATE_DEAD:
         this->SetState(3, 1);
         break;
-      case 2:
+      case PCSTATE_SIT:
         this->SetState(6, 1);
         break;
       default:
@@ -2026,8 +2028,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     break;
   }
-  case 6:
-  case 122: {
+  case AM_INITMOVEENTRY:
+  case AM_INITMOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     switch (this->unknown_0314) {
     case 8:
@@ -2064,8 +2066,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     break;
   }
-  case 5:
-  case 123: {
+  case AM_MOVEENTRY:
+  case AM_MOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     switch (this->unknown_0314) {
     case 8:
@@ -2093,7 +2095,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     break;
   }
-  case 0: {
+  case AM_MOVE: {
     const int* route = reinterpret_cast<const int*>(b);
     this->routeStartTick = route[0];
     if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], *reinterpret_cast<const int*>(&this->unknown_0170[4]))) {
@@ -2106,19 +2108,19 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     break;
   }
-  case 54:
+  case AM_DELETE_SHOP_TITLE:
     if (this->unknown_0264[2] != 0) {
       g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_0264[2]));
       this->unknown_0264[2] = 0;
     }
     break;
-  case 33:
+  case AM_DELETE_CHAT_TITLE:
     if (this->unknown_0264[1] != 0) {
       g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_0264[1]));
       this->unknown_0264[1] = 0;
     }
     break;
-  case 55:
+  case AM_MAKE_SHOP_TITLE:
     if (this->unknown_0264[2] == 0) {
       UIMerchantShopTitle* title = new UIMerchantShopTitle(0);
       this->unknown_0264[2] = reinterpret_cast<int>(title);
@@ -2132,7 +2134,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       reinterpret_cast<UIWindow*>(this->unknown_0264[2])->Show(0);
     }
     break;
-  case 32:
+  case AM_MAKE_CHAT_TITLE:
     if (this->unknown_0264[1] == 0) {
       UIChatRoomTitle* title = new UIChatRoomTitle();
       this->unknown_0264[1] = reinterpret_cast<int>(title);
@@ -2142,7 +2144,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     reinterpret_cast<UIWindow*>(this->unknown_0264[1])->SendMsg(nullptr, 0x22, b, static_cast<std::int16_t>(this->render.unknown_00FC), 0, 0);
     reinterpret_cast<UIWindow*>(this->unknown_0264[1])->Move(this->render.screenX - 70, this->render.screenY - ScaleByScreenHeight(110));
     break;
-  case 82:
+  case AM_MAKE_SKILL_RECHARGEGAGE:
     if (this->unknown_0264[3] == 0) {
       // GLOBAL: gl_25466
       static float s_gaugeOffsetY = static_cast<float>(g_renderer->viewport.height * 81 / 480);
@@ -2158,7 +2160,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     this->unknown_0280 = timeGetTime() + b;
     this->unknown_0284 = timeGetTime();
     break;
-  case 83:
+  case AM_DELETE_SKILL_RECHARGEGAGE:
     if (this->unknown_0264[3] != 0) {
       g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_0264[3]));
       this->unknown_0264[3] = 0;
@@ -2171,7 +2173,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
     }
     break;
-  case 7: {
+  case AM_CHAT: {
     std::string text(reinterpret_cast<const char*>(b));
     if (g_windowMgr.window_01C8 != nullptr) {
       text = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::string(reinterpret_cast<const char*>(b)));
@@ -2263,19 +2265,19 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     break;
   }
-  case 61:
+  case AM_CORRECT_POS:
     this->unknown_0158[5] = b;
     *reinterpret_cast<int*>(this->unknown_0170) = d;
     mode->CellCenter(b, d, this->render.position.x, this->render.position.z);
     break;
-  case 98:
+  case AM_RESURRECTION:
     this->render.unknown_0070 = 0;
     this->render.isLieOnGround = false;
     this->render.unknown_00A4Bytes[1] = 1;
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
     this->SetState(0, 1);
     break;
-  case 99:
+  case AM_OUTOFSIGHT:
     this->render.accountId = 0xFFFFFFFF;
     this->unknown_02B8 = 0;
     this->render.unknown_00A4Bytes[0] = 0;
@@ -2454,7 +2456,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     break;
   }
-  case 110: {
+  case AM_STATUS_CHANGE: {
     const bool on = (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0;
     switch (static_cast<std::int64_t>(c) << 32 | static_cast<std::uint32_t>(b)) {
     case EFST_PROVOKE:

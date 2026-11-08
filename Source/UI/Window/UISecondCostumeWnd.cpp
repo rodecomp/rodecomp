@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UISecondCostumeWnd.h"
@@ -224,13 +225,13 @@ void UISecondCostumeWnd::Paint() {
 // FUNCTION: fn_12948
 int UISecondCostumeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(259);
       break;
 
-    case 226:
+    case ID_RIGHT:
       if (this->m_page < 1) {
         this->m_page = 7;
       } else {
@@ -240,12 +241,12 @@ int UISecondCostumeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       this->Invalidate();
       return 0;
 
-    case 227:
+    case ID_LEFT:
       this->m_page = this->m_page < 7 ? this->m_page + 1 : 0;
       this->Invalidate();
       return 0;
 
-    case 336:
+    case ID_SELECT_ITEM:
       if (this->m_list->selected != -1) {
         this->m_selected[this->m_tab] = this->m_list->selected;
         this->Invalidate();
@@ -256,7 +257,7 @@ int UISecondCostumeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
     return 0;
 
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     this->m_tab = static_cast<int>(a);
     this->RefreshList(static_cast<int>(a));
     return 0;

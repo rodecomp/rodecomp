@@ -1,4 +1,5 @@
 #include "Network/TextEncoding.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/Text/FontCache.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -248,40 +249,40 @@ void UIScrollBar::OnLBtnDown(int x, int y) {
   switch (this->vertical) {
   case 0:
     switch (part) {
-    case 0:
+    case SB_UPBTN:
       this->parent->SendMsg(this, 8, -this->horizontalStep, 0, 0, 0);
       break;
-    case 1:
+    case SB_UPPAGE:
       this->parent->SendMsg(this, 11, 0, 0, 0, 0);
       break;
-    case 2:
+    case SB_THUMB:
       g_windowMgr.SetCapture(this);
       this->state = 6;
       break;
-    case 3:
+    case SB_DNPAGE:
       this->parent->SendMsg(this, 12, 0, 0, 0, 0);
       break;
-    case 4:
+    case SB_DNBTN:
       this->parent->SendMsg(this, 8, this->horizontalStep, 0, 0, 0);
       break;
     }
     break;
   case 1:
     switch (part) {
-    case 0:
+    case SB_UPBTN:
       this->parent->SendMsg(this, 7, -this->verticalStep, 0, 0, 0);
       break;
-    case 1:
+    case SB_UPPAGE:
       this->parent->SendMsg(this, 9, 0, 0, 0, 0);
       break;
-    case 2:
+    case SB_THUMB:
       g_windowMgr.SetCapture(this);
       this->state = 6;
       break;
-    case 3:
+    case SB_DNPAGE:
       this->parent->SendMsg(this, 10, 0, 0, 0, 0);
       break;
-    case 4:
+    case SB_DNBTN:
       this->parent->SendMsg(this, 7, this->verticalStep, 0, 0, 0);
       break;
     }
@@ -318,18 +319,18 @@ void UIScrollBar::OnMouseMove(int x, int y) {
   const int previous = this->state;
 
   switch (this->Part(x, y)) {
-  case -1:
-  case 1:
-  case 3:
+  case SB_NULL:
+  case SB_UPPAGE:
+  case SB_DNPAGE:
     this->state = 0;
     break;
-  case 0:
+  case SB_UPBTN:
     this->state = 1;
     break;
-  case 2:
+  case SB_THUMB:
     this->state = 3;
     break;
-  case 4:
+  case SB_DNBTN:
     this->state = 2;
     break;
   default:
@@ -1469,14 +1470,14 @@ void UIChatHisBox::Paint() {
 // FUNCTION: fn_11563
 int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     if (sender == this->edit && this->editNode) {
       this->SendMsg(nullptr, 110, 0, 1, 0, 0);
     }
     break;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     this->HideNodes(this->root->children);
     const int previous = this->unknown_00A8;
     const int visible = this->geometry.height / this->itemHeight;
@@ -1505,25 +1506,25 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
     return this->unknown_00A8 - previous;
   }
-  case 18:
+  case UM_UPPUSH:
     if (this->verticalOverflow) {
       this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
     }
     break;
-  case 19:
+  case UM_DOWNPUSH:
     if (this->verticalOverflow) {
       this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
     }
     break;
-  case 97:
+  case UM_TEXT_LBTN_DblClk:
     this->unknown_0088 = reinterpret_cast<UITreeNode*>(a);
     if (a) {
       this->parent->SendMsg(this, 97, a, sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0);
     }
     break;
-  case 98:
-  case 99:
-  case 100:
+  case UM_TEXT_LBTN_UP:
+  case UM_TEXT_RBTN_UP:
+  case UM_BMP_LBTN_UP:
     this->unknown_008C = nullptr;
     this->unknown_0090 = nullptr;
     this->unknown_0088 = reinterpret_cast<UITreeNode*>(a);
@@ -1561,14 +1562,14 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     this->unknown_008C = nullptr;
     this->unknown_0090 = nullptr;
     break;
-  case 107:
+  case UM_BEGIN_DRAG_BTN:
     this->unknown_008C = reinterpret_cast<UITreeNode*>(a);
     this->unknown_0088 = reinterpret_cast<UITreeNode*>(a);
     if (this->unknown_008C->draggable == 0) {
       this->unknown_008C = nullptr;
     }
     break;
-  case 108:
+  case UM_MOUSE_HOVER_BTN:
     g_modeMgr.gameMode->SetCursorAction(0);
     if (this->unknown_008C && this->unknown_008C->id != a) {
       UITreeNode* target = reinterpret_cast<UITreeNode*>(a);
@@ -1580,7 +1581,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->Invalidate();
     }
     break;
-  case 109:
+  case UM_END_DRAG_BTN:
     if (sender == this->parent) {
       this->unknown_0090 = nullptr;
     }
@@ -1616,7 +1617,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     this->unknown_0090 = nullptr;
     this->Invalidate();
     break;
-  case 110:
+  case UM_CHANGE_TVITEM_TEXT:
     if (b == 0) {
       this->editNode = reinterpret_cast<UITreeNode*>(a);
       this->edit->maximum = c > 361 ? 361 : static_cast<int>(c);

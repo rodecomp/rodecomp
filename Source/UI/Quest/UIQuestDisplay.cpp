@@ -1,4 +1,5 @@
 #include "UI/Chat/UINewChatWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Quest/UIQuestDisplay.h"
 #include "Client/Input/Mouse.h"
 #include "Contents/MessageTable.h"
@@ -209,7 +210,7 @@ void UIQuestDisplay::StoreInfo() {
 // FUNCTION: fn_12947
 int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 34: {
+  case UM_SETINFO: {
     this->m_visibleSetting = reinterpret_cast<int*>(argument1);
     QuestDisplayInfo* info = reinterpret_cast<QuestDisplayInfo*>(argument1);
     if (!info->IsValid()) {
@@ -218,7 +219,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     this->Show(*this->m_visibleSetting);
     break;
   }
-  case 48: {
+  case UM_MENU_SELECTED: {
     int index = 0;
     const auto end = g_renewQuestMgr->m_ongoingQuests.end();
     for (auto it = g_renewQuestMgr->m_ongoingQuests.begin(); it != end; ++it, ++index) {
@@ -242,7 +243,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     break;
   }
-  case 49: {
+  case UM_MAKEMENU: {
     this->m_menuItems.clear();
     if (g_windowMgr.unknown_0210 != 0) {
       this->Show(0);

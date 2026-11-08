@@ -1,4 +1,5 @@
 #include "UI/Items/UIIllustWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -99,13 +100,13 @@ void UIMultiIllustWnd::OnMouseMove(int x, int y) {
 // FUNCTION: fn_13190
 int UIIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-    case 6:
+    case UM_COMMAND:
       if (argument1 == 201) {
         g_modeMgr.GetGameMode()->SendMsg(100, reinterpret_cast<int>(""), -1, 1, 0);
         g_windowMgr.ReleaseCapture();
       }
       return 0;
-    case 34:
+    case UM_SETINFO:
       if (argument1 == -1) {
         this->m_titled = 0;
         this->m_closable = 0;
@@ -120,7 +121,7 @@ int UIIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
       this->m_closable = 1;
       this->Invalidate();
       return 0;
-    case 78: {
+    case UM_SET_BITMAP: {
       const char* name = reinterpret_cast<const char*>(argument1);
       this->m_bitmapName = "유저인터페이스\\Illust\\";
       this->m_bitmapName += name;
@@ -159,13 +160,13 @@ int UIIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
 // FUNCTION: fn_13191
 int UIMultiIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-    case 6:
+    case UM_COMMAND:
       if (argument1 == 201) {
         g_modeMgr.GetGameMode()->SendMsg(100, reinterpret_cast<int>(""), -1, 0, 0);
         g_windowMgr.ReleaseCapture();
       }
       return 0;
-    case 34:
+    case UM_SETINFO:
       switch (argument1) {
         case 10:
           this->m_closable = 0;
@@ -199,7 +200,7 @@ int UIMultiIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       this->m_closable = 1;
       this->Invalidate();
       return 0;
-    case 78: {
+    case UM_SET_BITMAP: {
       const char* name = reinterpret_cast<const char*>(argument1);
       this->m_bitmapName = "유저인터페이스\\Illust\\";
       this->m_bitmapName += name;

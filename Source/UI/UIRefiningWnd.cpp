@@ -1,4 +1,5 @@
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/UIRefiningWnd.h"
 
 #include "Client/Application/ApplicationWindow.h"
@@ -777,12 +778,12 @@ int UIRefiningWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
     case 510:
       ShellExecuteA(hWnd, "open", LookupMessage(4123), nullptr, nullptr, SW_SHOWNORMAL);
       break;
-    case 184:
+    case ID_OK:
       if (this->unknown_01F0 != 1) {
         const std::uint32_t index = this->item.unknown_0000[1];
         if (index != 0) {
@@ -800,8 +801,8 @@ int UIRefiningWnd::SendMsg(
         }
       }
       break;
-    case 185:
-    case 201:
+    case ID_CANCEL:
+    case ID_CLOSE:
       if (this->state != 2) {
         RefiningClosePacket packet;
         packet.id = 0xAA4;
@@ -824,7 +825,7 @@ int UIRefiningWnd::SendMsg(
       break;
     }
     break;
-  case 23:
+  case UM_REFRESHITEM:
     if (this->state == 0 || this->state == 1) {
       const ITEM_INFO info = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
       if (g_session.HasItem61B8(info.unknown_0000[1]) == 1) {

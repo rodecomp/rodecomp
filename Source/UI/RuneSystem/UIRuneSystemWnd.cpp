@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Items/RuneSystem.h"
 #include "Contents/MessageTable.h"
@@ -520,7 +521,7 @@ void UIRuneSet_Info::UpdateActivation() {
 // FUNCTION: fn_10221
 int UIRuneSetList::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
-  case 0x3C:
+  case UM_REFRESH:
     if (argument1 > 0 && this->total != argument1) {
       this->SetRange(std::max(argument1 - this->visible, 0), this->visible, argument1);
       this->SetPosition(0);
@@ -541,7 +542,7 @@ int UIRuneSetReWard::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 0x22:
+  case UM_SETINFO:
     if (static_cast<unsigned int>(argument1) <= 2 && argument2) {
       this->m_texts[argument1] = reinterpret_cast<const char*>(argument2);
     }
@@ -572,15 +573,15 @@ int UIRuneSetReWard::SendMsg(
 // FUNCTION: fn_10224
 int UIRuneSystemTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
-  case 0x4E:
+  case UM_SET_BITMAP:
     this->m_label = reinterpret_cast<const char*>(argument1);
     this->Invalidate();
     return 0;
-  case 0x16:
+  case UM_TAB:
     this->m_count = argument1;
     this->Invalidate();
     return 0;
-  case 0x0D:
+  case UM_SETSTATE:
     this->geometry.unknown_0030 = argument1;
     this->Invalidate();
     this->parent->SendMsg(this, 0x16, this->geometry.unknown_0030, 0, 0, 0);
@@ -594,14 +595,14 @@ int UIRuneSystemTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, st
 // FUNCTION: fn_10227
 int UIRuneSystem_tagListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t, std::intptr_t) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 0x13C:
+    case ID_PREV_PAGE:
       --this->m_firstTag;
       this->m_firstTag = this->m_firstTag < 0 ? 0 : this->m_firstTag;
       this->Invalidate();
       break;
-    case 0x13D: {
+    case ID_NEXT_PAGE: {
       ++this->m_firstTag;
       const int first = this->m_firstTag;
       if (g_runeSystemMgr->GetTagCount() < first + 10) {
@@ -906,12 +907,12 @@ void UIRuneSystemWnd::SelectTab() {
 // FUNCTION: fn_10229
 int UIRune_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 0x23C && (!this->parent || this->parent->SendMsg(this, 0x6A, 3000, 0, 0, 0) != 0) && this->m_rune) {
       g_runeSystemMgr->SendRequest(0xBCE, this->m_rune, -1);
     }
     [[fallthrough]];
-  case 0x3C:
+  case UM_REFRESH:
     this->m_activeWnd->Invalidate();
     this->m_activateButton->Invalidate();
     reinterpret_cast<UIRuneSet_Info*>(this)->UpdateActivation();
@@ -1023,7 +1024,7 @@ void UIRuneSystemWnd::Paint() {
 // FUNCTION: fn_10226
 int UIRuneSystem_DecomResultWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
-  case 0x0D: {
+  case UM_SETSTATE: {
     const RuneDecomResultPacket* packet = reinterpret_cast<const RuneDecomResultPacket*>(argument1);
     this->m_total = 0;
     for (int index = 0; index < 8; ++index) {
@@ -1034,7 +1035,7 @@ int UIRuneSystem_DecomResultWnd::SendMsg(UIWindow*, int message, std::intptr_t a
     this->Invalidate();
     break;
   }
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 0xB8) {
       g_windowMgr.CloseWindow(0x16A);
     }
@@ -1586,7 +1587,7 @@ UIRune_Info::UIRune_Info() : UIWindow(0), m_rune(nullptr) {
 // FUNCTION: fn_10223
 int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 0x16:
+  case UM_TAB:
     if (!this->m_runeSet) {
       break;
     }
@@ -1598,12 +1599,12 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     this->Refresh();
     break;
-  case 0x3C:
+  case UM_REFRESH:
     this->Refresh();
     break;
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 0xC3:
+    case ID_EQUIP:
       if (this->m_runeSet && (!this->parent || this->parent->SendMsg(this, 0x6A, 1500, 0, 0, 0) != 0)) {
         this->parent->SendMsg(this, 0xAB, 0xC3, reinterpret_cast<std::intptr_t>(this->m_runeSet), 0, 0);
       }
@@ -1642,9 +1643,9 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       break;
     }
     break;
-  case 7:
-  case 9:
-  case 10:
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN:
     this->m_infoList->ScrollBy(argument1);
     this->Invalidate();
     break;
@@ -2198,24 +2199,24 @@ void UIRune_Decom::Paint() {
 // FUNCTION: fn_10225
 int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 0xC9) {
       g_windowMgr.CloseWindow(0x169);
     }
     break;
-  case 7:
-  case 9:
-  case 10:
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN:
     if (this->m_lists[this->m_tab->geometry.unknown_0030]) {
       this->m_lists[this->m_tab->geometry.unknown_0030]->ScrollBy(argument1);
       this->Invalidate();
     }
     break;
-  case 0x16:
+  case UM_TAB:
     g_windowMgr.CloseWindow(0x16A);
     this->SelectTab();
     break;
-  case 0x3C: {
+  case UM_REFRESH: {
     UIRuneSetList* list = this->m_lists[this->m_tab->geometry.unknown_0030];
     if (!list) {
       break;

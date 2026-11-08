@@ -1,4 +1,5 @@
 #include "UI/Chat/UINewChatWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -207,21 +208,21 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
 // FUNCTION: fn_11562
 int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 18:
+  case UM_UPPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
     }
 
     return 0;
 
-  case 19:
+  case UM_DOWNPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
     }
 
     return 0;
 
-  case 29:
+  case UM_SETTEXT:
   {
     char* text = reinterpret_cast<char*>(argument1);
     const int width = static_cast<int>(argument2);
@@ -290,12 +291,12 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     return 0;
   }
 
-  case 7:
-  case 8:
-  case 9:
-  case 10:
-  case 11:
-  case 12: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLHORZ:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN:
+  case UM_SCROLLHORZPAGEUP:
+  case UM_SCROLLHORZPAGEDOWN: {
     const int previousX = this->horizontalOffset;
     UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 
@@ -319,7 +320,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     return 0;
   }
 
-  case 98:
+  case UM_TEXT_LBTN_UP:
   {
     auto* button = static_cast<UITextButton*>(sender);
     const int id = static_cast<int>(argument1);

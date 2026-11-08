@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Sound/SoundMgr.h"
@@ -28,7 +29,7 @@ void CGameMode::ReceiveSound(const unsigned char* data) {
   const SoundPacket* packet = reinterpret_cast<const SoundPacket*>(data);
 
   switch (packet->act) {
-  case 0: {
+  case SOUND_ACT_PLAY: {
     CRenderObject* actor = this->scene->GetGameActorByAID(packet->npcId);
     if (actor != nullptr) {
       CPlayer* player = this->scene->player;
@@ -40,7 +41,7 @@ void CGameMode::ReceiveSound(const unsigned char* data) {
     }
     break;
   }
-  case 1: {
+  case SOUND_ACT_REPEAT: {
     GameModeLoopSound sound;
     sound.name = packet->name;
     sound.term = packet->term;
@@ -50,7 +51,7 @@ void CGameMode::ReceiveSound(const unsigned char* data) {
     g_soundMgr->PlayWave(packet->name, 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   }
-  case 2:
+  case SOUNT_ACT_STOP:
     for (std::vector<GameModeLoopSound>::iterator it = this->loopSounds.begin(); it != this->loopSounds.end(); ++it) {
       GameModeLoopSound sound = *it;
       if (std::strcmp(sound.name.c_str(), packet->name) == 0) {

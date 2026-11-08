@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Items/MergeItemWnd.h"
 
@@ -324,7 +325,7 @@ void CMergeItemWnd::FitToGrid(int width, int height) {
 // FUNCTION: fn_09675
 int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t) {
   switch (message) {
-  case 34: {
+  case UM_SETINFO: {
     this->m_itemCount = argument2;
     const std::int16_t* ids = reinterpret_cast<const std::int16_t*>(argument1);
     for (int index = 0; index < this->m_itemCount; ++index) {
@@ -340,20 +341,20 @@ int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
     this->FitToGrid(this->geometry.width, this->geometry.height);
     break;
   }
-  case 60: {
+  case UM_REFRESH: {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
     g_session.RemoveItem1710(item.unknown_0000[1], item.quantity);
     item.quantity = argument2;
     g_session.AddItem1710(item, 1);
     break;
   }
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 184:
+    case ID_OK:
       this->RequestMerge();
       break;
-    case 185:
-    case 201: {
+    case ID_CANCEL:
+    case ID_CLOSE: {
       MergeItemCancelPacket packet;
       packet.id = 0x974;
       GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
@@ -362,19 +363,19 @@ int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
     }
     }
     break;
-  case 14:
+  case UM_RESIZE:
     if (argument1 == 7) {
       this->FitToGrid(argument2, argument3);
     }
     break;
-  case 7:
+  case UM_SCROLLVERT:
     if (argument1 != 0) {
       this->m_scrollRow += argument1;
       this->UpdateScroll();
       this->Invalidate();
     }
     break;
-  case 2:
+  case UM_TOGGLEPUSH:
     this->SelectSameItems(argument1);
     break;
   }

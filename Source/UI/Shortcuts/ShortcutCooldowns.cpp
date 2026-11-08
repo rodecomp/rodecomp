@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Client/Session.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -553,15 +554,15 @@ void UISeekPartyMBWnd::StoreInfo() {
 // FUNCTION: fn_12757
 int UISeekPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 201: {
+    case ID_CLOSE: {
       std::int16_t packetType = 0x806;
       GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetType), &packetType);
       g_windowMgr.CloseWindow(170);
       break;
     }
-    case 202:
+    case ID_MINI:
       if (this->m_minimized) {
         this->Resize(this->geometry.width, this->unknown_01E0);
       } else {
@@ -581,7 +582,7 @@ int UISeekPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       break;
     }
     break;
-  case 34:
+  case UM_SETINFO:
     this->m_saved = reinterpret_cast<SeekPartyWndInfo*>(argument1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();

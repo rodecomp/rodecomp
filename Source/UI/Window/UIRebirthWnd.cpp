@@ -1,4 +1,5 @@
 #include "UI/Window/UIRebirthWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/ModeMgr.h"
 #include "UI/Buttons/UIBitmapButton.h"
@@ -45,23 +46,23 @@ int UIRebirthWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   }
 
   switch (argument1) {
-  case 185:
+  case ID_CANCEL:
     g_windowMgr.CloseWindow(129);
     break;
-  case 220:
+  case ID_RESTART:
     mode->SendMsg(25, 0, 0, 0, 0);
     g_windowMgr.CloseWindow(129);
     break;
-  case 251:
+  case ID_QUIT:
     g_windowMgr.CloseWindow(129);
     mode->SendMsg(88, 0, 0, 0, 0);
     break;
-  case 252:
+  case ID_TO_CHARACTER_SELECT:
     mode->SendMsg(25, 1, 0, 0, 0);
     g_windowMgr.CloseWindow(129);
     g_windowMgr.CloseWindow(269);
     break;
-  case 353:
+  case ID_REBIRTH:
     mode->SendMsg(250, 0, 0, 0, 0);
     g_windowMgr.CloseWindow(129);
     break;

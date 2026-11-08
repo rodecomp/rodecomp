@@ -1,4 +1,5 @@
 #include "UI/Shortcuts/UIQuickSlotWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
@@ -187,7 +188,7 @@ UIQuickSlotWnd::UIQuickSlotWnd()
 // FUNCTION: fn_12752
 int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 23: {
+  case UM_REFRESHITEM: {
     const NormalItemSlot* saved = &g_session.unknown_06EB;
     for (int index = 0; index < 2; ++index) {
       const NormalItemSlot source = saved[index];
@@ -241,7 +242,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     return 0;
   }
 
-  case 34:
+  case UM_SETINFO:
     this->m_saved = reinterpret_cast<QuickSlotWndInfo*>(argument1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();
@@ -250,7 +251,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     this->Move(this->m_saved->x, this->m_saved->y);
     return 0;
 
-  case 41: {
+  case UM_USE_SHORTEN_ITEM: {
     const QuickSlotEntry entry = this->m_entries[argument1];
     if (entry.skill == 0) {
       if (entry.id == 0) {

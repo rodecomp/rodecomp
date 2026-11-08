@@ -1,4 +1,5 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Items/UIItemRepairWnd.h"
 
 #include "Client/Input/InputCharset.h"
@@ -210,7 +211,7 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   ITEM_INFO item;
 
   switch (message) {
-  case 31: {
+  case UM_ADDITEM: {
     const UIItemRepairEntry& entry = *reinterpret_cast<const UIItemRepairEntry*>(a);
     this->entries.push_back(entry);
     this->itemIds.push_back(entry.itemId);
@@ -223,20 +224,20 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     return 0;
   }
 
-  case 18:
+  case UM_UPPUSH:
     this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
     return 0;
 
-  case 19:
+  case UM_DOWNPUSH:
     this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
     return 0;
 
-  case 6: {
+  case UM_COMMAND: {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, this->m_list->selected);
 
     switch (response) {
-    case 184: {
+    case ID_OK: {
       if (g_replayAnimationScaling) {
         UIListBox* list = this->m_list;
         list->selected = static_cast<int>(d);
@@ -266,7 +267,7 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       break;
     }
 
-    case 185:
+    case ID_CANCEL:
       g_modeMgr.gameMode->SendMsg(174, -1, 0, 0, 0);
       g_windowMgr.CloseWindow(107);
       return 0;
@@ -316,11 +317,11 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 // FUNCTION: fn_13618
 int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     g_windowMgr.CloseWindow(81);
     return 0;
 
-  case 40:
+  case UM_SETCURITEM:
     this->makeType = static_cast<int>(a);
     if (b) {
       this->succeeded = true;

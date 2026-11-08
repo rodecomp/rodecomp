@@ -1,4 +1,5 @@
 #include "Contents/Effects/Particle.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/RenderObject.h"
@@ -541,7 +542,7 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
 
   if (this->m_attachToWindow == true) {
     switch (this->m_windowId) {
-    case 361:
+    case WID_RUNESYSTEMWND:
     case 10022:
     case 10023:
     case 10026:

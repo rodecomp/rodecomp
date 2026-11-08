@@ -1,4 +1,5 @@
 #include "UI/UIMacroUserInfoWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -575,7 +576,7 @@ int UIMacroReporterWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 34: {
+  case UM_SETINFO: {
     this->m_state = reinterpret_cast<MacroReporterState*>(argument1);
     if (!reinterpret_cast<MacroReporterWndInfo*>(this->m_state)->IsValid()) {
       reinterpret_cast<MacroReporterWndInfo*>(this->m_state)->Reset();
@@ -594,13 +595,13 @@ int UIMacroReporterWnd::SendMsg(
     break;
   }
 
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(286);
       break;
 
-    case 211: {
+    case ID_DELETE: {
       for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
         if (argument2 == it->id) {
           for (auto next = it + 1; next != this->m_entries.end(); ++next, ++it) {
@@ -628,7 +629,7 @@ int UIMacroReporterWnd::SendMsg(
       break;
     }
 
-    case 213:
+    case ID_CHECK:
       if (this->unknown_00D4 != sender) {
         break;
       }
@@ -651,7 +652,7 @@ int UIMacroReporterWnd::SendMsg(
       }
       break;
 
-    case 345:
+    case ID_SEND:
       if (this->m_mode == 2 || this->m_mode == 3) {
         this->m_namesValid = this->ValidateNames(1);
         this->m_targetValid = this->ValidateTarget(1);
@@ -708,7 +709,7 @@ int UIMacroReporterWnd::SendMsg(
       }
       break;
 
-    case 215: {
+    case ID_RADIOBTN: {
       if (this->unknown_010C == true) {
         switch (this->m_mode) {
         case 0:
@@ -791,7 +792,7 @@ int UIMacroReporterWnd::SendMsg(
     }
     break;
 
-  case 0:
+  case UM_DEFPUSH:
     if (this->m_mode == 2) {
       if (sender) {
         const int index = (sender->geometry.y - 56) / 22;
@@ -818,7 +819,7 @@ int UIMacroReporterWnd::SendMsg(
     }
     break;
 
-  case 98: {
+  case UM_TEXT_LBTN_UP: {
     auto entry = this->m_entries.begin();
     for (; entry != this->m_entries.end(); ++entry) {
       if (argument1 == entry->id) {
@@ -848,9 +849,9 @@ int UIMacroReporterWnd::SendMsg(
     break;
   }
 
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_firstRow;
     if (message == 9) {
       this->m_firstRow = previous - this->m_visibleRows + 1;

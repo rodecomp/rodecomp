@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
@@ -97,9 +98,9 @@ void UIRequestJoinPartyWnd::Paint() {
 // FUNCTION: fn_09315
 int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 201:
+    case ID_CLOSE:
       this->SendMsg(nullptr, 6, 542, 0, 0, 0);
       break;
     case 541:
@@ -119,7 +120,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     }
 
     return 0;
-  case 56: {
+  case UM_SET_JOIN_PARTY_MSG: {
     const auto& request = *reinterpret_cast<const PartyJoinRequest*>(a);
     this->characterId = request.characterId;
     this->level = request.job;

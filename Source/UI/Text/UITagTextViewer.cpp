@@ -1,4 +1,5 @@
 #include "UI/Text/UITagTextViewer.h"
+#include "UI/Window/UIEnums.h"
 
 #include <algorithm>
 
@@ -137,15 +138,15 @@ int TagTextViewer::UIScroll::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 0x12:
+  case UM_UPPUSH:
     this->SendMsg(this->m_scrollBar, 9, 0, 0, 0, 0);
     break;
-  case 0x13:
+  case UM_DOWNPUSH:
     this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
     break;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollPos;
     int delta = argument1;
     if (message == 9) {
@@ -169,12 +170,12 @@ int UITagTextViewer::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 0x1D:
+  case UM_SETTEXT:
     if (argument1 != 0) {
       this->AddText(std::string(reinterpret_cast<const char*>(argument1)));
     }
     break;
-  case 0x62:
+  case UM_TEXT_LBTN_UP:
     switch (argument1) {
     case LINE_SEGMENT_URL:
       OpenTextButtonLink(static_cast<UITextButton*>(sender));
@@ -193,12 +194,12 @@ int UITagTextViewer::SendMsg(
       break;
     }
     break;
-  case 0x3C:
+  case UM_REFRESH:
     this->Layout();
     break;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollPos;
     if (message == 9) {
       this->m_scrollPos = previous - 30;

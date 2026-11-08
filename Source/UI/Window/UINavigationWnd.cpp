@@ -1,4 +1,5 @@
 #include "UI/Window/UINavigationWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Application/Launcher.h"
 #include "Client/Replay.h"
@@ -616,19 +617,19 @@ void UINavigationWnd::Paint() {
 int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3,
                              std::intptr_t argument4) {
   switch (message) {
-  case 0x22:
+  case UM_SETINFO:
     this->m_saved = reinterpret_cast<NavigationWndInfo*>(argument1);
     reinterpret_cast<NavigationWindowInfo*>(this->m_saved)->Clamp();
     this->Move(this->m_saved->x, this->m_saved->y);
     this->Invalidate();
     return 0;
-  case 6:
+  case UM_COMMAND:
     if (argument1 != 0x150 && argument1 != 0x1B9) {
       this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     }
 
     switch (argument1) {
-    case 0xB8: {
+    case ID_OK: {
       this->Invalidate();
       int result = g_navigationManager.SaveCurrentTarget();
       if (result == 0) {
@@ -647,7 +648,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_navigationManager.ShowRouteResult(result, 1);
       return 0;
     }
-    case 0x141:
+    case ID_SEARCH:
       if (this->m_titleBar->Length() != 0) {
         g_navigationManager.unknown_1264 = this->m_titleBar->Text();
         g_navigationManager.RefreshSearch();
@@ -658,7 +659,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
       }
       break;
-    case 0x150:
+    case ID_SELECT_ITEM:
       if (g_replayAnimationScaling == 0) {
         argument2 = this->m_routePanel->selected;
       }
@@ -696,7 +697,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->ApplyMinimized();
       this->Invalidate();
       return 0;
-    case 0xCA:
+    case ID_MINI:
       g_navigationManager.unknown_1254 = !g_navigationManager.unknown_1254;
       this->ApplyMinimized();
       this->RefreshHeaderTexts(g_navigationManager.unknown_1258);
@@ -705,7 +706,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         return 0;
       }
       break;
-    case 0xC9:
+    case ID_CLOSE:
       if (g_navigationManager.unknown_1258 == 2) {
         const int response = g_windowMgr.Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0);
         if (response != 0xBB) {
@@ -763,7 +764,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       return 0;
     }
-    case 0xD5:
+    case ID_CHECK:
       if (sender == this->unknown_0114) {
         g_navigationManager.unknown_127C = argument2 != 0;
         return 0;
@@ -777,7 +778,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         return 0;
       }
       break;
-    case 0x157:
+    case ID_HELP:
       if (!g_windowMgr.CloseWindow(0xE5)) {
         g_windowMgr.EnsureWindow(0xE5);
         return 0;
@@ -802,7 +803,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
     }
     break;
-  case 0x27:
+  case UM_COMBOBOX_SELECTED:
     if (this->unknown_00EC == sender) {
       g_navigationManager.unknown_1260 = static_cast<int>(argument1);
       this->Invalidate();
@@ -817,21 +818,21 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       return 0;
     }
     break;
-  case 0x1F:
+  case UM_ADDITEM:
     switch (argument1) {
-    case 0x150:
+    case ID_SELECT_ITEM:
       this->m_routePanel->AddLine(reinterpret_cast<const char*>(argument2));
       break;
     case 0x1B9:
       this->m_searchPanel->AddLine(reinterpret_cast<const char*>(argument2));
       break;
     }
-  case 0:
+  case UM_DEFPUSH:
     if (this->m_titleBar == sender && this->m_titleBar->Length() > 0) {
       this->SendMsg(this->m_titleBar, 6, 0x141, 0, 0, 0);
       return 0;
     }
-  case 0xE:
+  case UM_RESIZE:
     if (argument1 == 7) {
       const int height = (std::min)((std::max)(static_cast<int>(argument3), 0x152), 0x152);
       this->m_saved->height = height;

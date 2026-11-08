@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Skills/SkillId.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/GameActor.h"
@@ -11,18 +12,18 @@
 // FUNCTION: fn_23850
 int CSession::IsState291To303(int state) const {
   switch (state) {
-  case 291:
-  case 292:
-  case 293:
-  case 294:
-  case 295:
-  case 297:
-  case 298:
-  case 299:
-  case 300:
-  case 301:
-  case 302:
-  case 303:
+  case SA_MONOCELL:
+  case SA_CLASSCHANGE:
+  case SA_SUMMONMONSTER:
+  case SA_REVERSEORCISH:
+  case SA_DEATH:
+  case SA_TAMINGMONSTER:
+  case SA_QUESTION:
+  case SA_GRAVITY:
+  case SA_LEVELUP:
+  case SA_INSTANTDEATH:
+  case SA_FULLRECOVERY:
+  case SA_COMA:
     return 1;
   default:
     return 0;

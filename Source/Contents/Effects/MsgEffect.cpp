@@ -1,4 +1,6 @@
 #include "Contents/Skills/SkillUnitId.h"
+#include "Client/Mode/GameModeEnums.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/MsgEffect.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -92,8 +94,8 @@ vector2d& vector2d::Normalize() {
 // FUNCTION: fn_24270
 bool CMsgEffect::UsesMsgEffect(int type) {
   switch (type) {
-    case 3:
-    case 18:
+    case MET_CART:
+    case MET_BIRD:
     case 27:
     case 31:
       return true;
@@ -199,15 +201,15 @@ bool CMsgEffect::OnProcess() {
 
   this->FollowOwner();
   switch (this->m_type) {
-    case 0xD:
-    case 0xE:
-    case 0xF:
-    case 0x10:
-    case 0x11:
-    case 0x12:
-    case 0x15:
-    case 0x16:
-    case 0x19:
+    case MET_MISS:
+    case MET_NUMBER:
+    case MET_CRITICAL_EFFECT:
+    case MET_NUMBER_CRITICAL:
+    case MET_LUCKY_EFFECT:
+    case MET_BIRD:
+    case MET_NUMBER_HALF:
+    case MET_NUMBER_TOTAL:
+    case MET_BLUE_EFFECT:
       break;
     default:
       if (this->m_type != 0x72) {
@@ -218,7 +220,7 @@ bool CMsgEffect::OnProcess() {
 
   float elapsed;
   switch (this->m_type) {
-    case 0x10:
+    case MET_NUMBER_CRITICAL:
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
       MsgEffectDrift(this, elapsed);
@@ -253,8 +255,8 @@ bool CMsgEffect::OnProcess() {
       return true;
     }
 
-    case 0xE:
-    case 0x15:
+    case MET_NUMBER:
+    case MET_NUMBER_HALF:
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
       MsgEffectDrift(this, elapsed);
@@ -266,7 +268,7 @@ bool CMsgEffect::OnProcess() {
       this->SetColor(static_cast<int>(250.0f - elapsed * 3.4f), -1, -1, -1);
       return !(elapsed > 70.0f);
 
-    case 0x18: {
+    case MET_GUARD: {
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
       if (this->render.curMotion == 0) {
@@ -284,7 +286,7 @@ bool CMsgEffect::OnProcess() {
       return !(elapsed > 10.0f);
     }
 
-    case 0xD:
+    case MET_MISS:
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
       this->render.position.y = this->m_baseY - elapsed * 0.54f;
@@ -293,7 +295,7 @@ bool CMsgEffect::OnProcess() {
       this->GetActRes();
       return !(elapsed > 80.0f);
 
-    case 0x16: {
+    case MET_NUMBER_TOTAL: {
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
       this->render.position.y = this->m_baseY - elapsed * 0.1f;
@@ -310,7 +312,7 @@ bool CMsgEffect::OnProcess() {
       return !(elapsed > 120.0f);
     }
 
-    case 0x19: {
+    case MET_BLUE_EFFECT: {
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
       this->render.curMotion = 0;
@@ -338,7 +340,7 @@ bool CMsgEffect::OnProcess() {
       return !(elapsed > 120.0f);
     }
 
-    case 0xF: {
+    case MET_CRITICAL_EFFECT: {
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
       MsgEffectDrift(this, elapsed);
@@ -374,10 +376,10 @@ bool CMsgEffect::OnProcess() {
       return true;
     }
 
-    case 0:
-    case 1:
-    case 2:
-    case 0x11: {
+    case MET_JUST_ANIMATE:
+    case MET_EMOTION:
+    case MET_MVP:
+    case MET_LUCKY_EFFECT: {
       CActRes* action = this->GetActRes();
       elapsed = MsgEffectElapsedFrames(this);
       const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
@@ -405,7 +407,7 @@ bool CMsgEffect::OnProcess() {
       return false;
     }
 
-    case 6: {
+    case MET_ICEBREAKEFFECT: {
       elapsed = MsgEffectElapsedFrames(this);
       CActRes* action = this->GetActRes();
       const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
@@ -417,13 +419,13 @@ bool CMsgEffect::OnProcess() {
       return false;
     }
 
-    case 4:
-    case 5:
-    case 7:
-    case 8:
-    case 9:
-    case 10:
-    case 0x1A:
+    case MET_PKEFFECT:
+    case MET_ICEEFFECT:
+    case MET_CURSE_EFFECT:
+    case MET_SLEEP_EFFECT:
+    case MET_STUN_EFFECT:
+    case MET_SILENCE_EFFECT:
+    case MET_CURSOR_EFFECT:
     case 0x25:
     case 0x26: {
       elapsed = MsgEffectElapsedFrames(this);
@@ -433,8 +435,8 @@ bool CMsgEffect::OnProcess() {
       return true;
     }
 
-    case 0xB:
-    case 0xC:
+    case MET_ANGELUS_EFFECT:
+    case MET_CRUSIS_EFFECT:
       if (this->m_owner == nullptr) {
         return true;
       }
@@ -444,7 +446,7 @@ bool CMsgEffect::OnProcess() {
       }
       return true;
 
-    case 0x12:
+    case MET_BIRD:
       if (this->unknown_01B4 != 0 && this->m_owner != nullptr) {
         CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
         this->Face(owner->render.position.x, owner->render.position.z);
@@ -1200,15 +1202,15 @@ bool CSkill::OnProcess() {
 // FUNCTION: fn_24289
 void CMsgEffect::FollowOwner() {
   switch (this->m_type) {
-    case 0xD:
-    case 0xE:
-    case 0xF:
-    case 0x10:
-    case 0x11:
-    case 0x15:
-    case 0x16:
-    case 0x18:
-    case 0x19:
+    case MET_MISS:
+    case MET_NUMBER:
+    case MET_CRITICAL_EFFECT:
+    case MET_NUMBER_CRITICAL:
+    case MET_LUCKY_EFFECT:
+    case MET_NUMBER_HALF:
+    case MET_NUMBER_TOTAL:
+    case MET_GUARD:
+    case MET_BLUE_EFFECT:
       if (this->m_owner != nullptr) {
         CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
         const float x = owner->render.position.x;
@@ -1221,8 +1223,8 @@ void CMsgEffect::FollowOwner() {
       this->render.unknown_0124 = 0x200;
       break;
 
-    case 4:
-    case 0xB:
+    case MET_PKEFFECT:
+    case MET_ANGELUS_EFFECT:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
         this->render.position.x = owner->render.position.x;
@@ -1232,7 +1234,7 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 0xC:
+    case MET_CRUSIS_EFFECT:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
         this->render.position.x = owner->render.position.x;
@@ -1242,7 +1244,7 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 5:
+    case MET_ICEEFFECT:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
         this->render.position.x = owner->render.position.x;
@@ -1291,11 +1293,11 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 1:
-    case 2:
-    case 8:
-    case 9:
-    case 10:
+    case MET_EMOTION:
+    case MET_MVP:
+    case MET_SLEEP_EFFECT:
+    case MET_STUN_EFFECT:
+    case MET_SILENCE_EFFECT:
     case 0x25:
     case 0x26:
       if (this->m_owner != nullptr) {
@@ -1311,7 +1313,7 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 7:
+    case MET_CURSE_EFFECT:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
         this->render.position.x = owner->render.position.x;
@@ -1376,7 +1378,7 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 3:
+    case MET_CART:
       if (this->m_owner != nullptr) {
         CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
         const float dist = static_cast<CRenderObject*>(this->m_owner)->CalcDist(this->render.position.x, this->render.position.z);
@@ -1403,7 +1405,7 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 0x12:
+    case MET_BIRD:
       if (this->m_owner != nullptr && this->unknown_01B4 == 0) {
         CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
         const float dist = static_cast<CRenderObject*>(this->m_owner)->CalcDist(this->render.position.x, this->render.position.z);
@@ -1453,7 +1455,7 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 0x1A:
+    case MET_CURSOR_EFFECT:
       if (this->m_owner == nullptr) {
         break;
       }
@@ -1471,7 +1473,7 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 6:
+    case MET_ICEBREAKEFFECT:
       break;
   }
 }
@@ -1490,12 +1492,12 @@ bool CSummonActorEffect::OnProcess() {
 // FUNCTION: fn_24293
 void CMsgEffect::Render(int argument) {
   switch (this->m_type) {
-    case 13:
-    case 14:
-    case 15:
-    case 16:
-    case 21:
-    case 22:
+    case MET_MISS:
+    case MET_NUMBER:
+    case MET_CRITICAL_EFFECT:
+    case MET_NUMBER_CRITICAL:
+    case MET_NUMBER_HALF:
+    case MET_NUMBER_TOTAL:
     case 114:
       if (!g_msgEffectShowSpecial) {
         return;
@@ -1513,7 +1515,7 @@ void CMsgEffect::Render(int argument) {
 void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
   const vector3d* position = reinterpret_cast<const vector3d*>(b);
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
-    case 29:
+    case AM_REQ_ATTACK:
       if (this->m_type == 18) {
         this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
         this->m_velocity.y = (position->y - this->render.position.y) / 10.0f;
@@ -1533,18 +1535,18 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       break;
 
-    case 49:
+    case AM_MSGMASTER_DEAD:
       this->m_owner = nullptr;
       switch (this->m_type) {
-        case 6:
-        case 13:
-        case 14:
-        case 15:
-        case 16:
-        case 17:
-        case 21:
-        case 22:
-        case 25:
+        case MET_ICEBREAKEFFECT:
+        case MET_MISS:
+        case MET_NUMBER:
+        case MET_CRITICAL_EFFECT:
+        case MET_NUMBER_CRITICAL:
+        case MET_LUCKY_EFFECT:
+        case MET_NUMBER_HALF:
+        case MET_NUMBER_TOTAL:
+        case MET_BLUE_EFFECT:
           break;
 
         default:
@@ -1553,15 +1555,15 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       return;
 
-    case 53:
+    case AM_DISAPPEAR:
       this->m_finished = 1;
       return;
 
-    case 50:
+    case AM_SET_MASTER_POINTER:
       this->m_owner = sender;
       switch (this->m_type) {
-        case 3:
-        case 18:
+        case MET_CART:
+        case MET_BIRD:
         case 27:
         case 31:
           if (sender != nullptr) {
@@ -1572,7 +1574,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           }
           break;
 
-        case 6:
+        case MET_ICEBREAKEFFECT:
           if (sender != nullptr) {
             const CRenderObject* owner = static_cast<const CRenderObject*>(sender);
             this->render.position.x = owner->render.position.x;
@@ -1583,11 +1585,11 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       return;
 
-    case 22:
+    case AM_SETMASTERGID:
       this->m_type = d;
       this->m_value = b;
       switch (d) {
-        case 3:
+        case MET_CART:
         case 31:
           this->render.unknown_00A2 = 0;
           this->render.unknown_0080 = 0;
@@ -1595,23 +1597,23 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           this->render.unknown_0054 = 1.0f;
           break;
 
-        case 4:
+        case MET_PKEFFECT:
           this->SetColor(0x7F, 0xFF, 0, 0);
           break;
 
-        case 7:
+        case MET_CURSE_EFFECT:
           this->SetColor(0x7F, -1, -1, -1);
           this->render.unknown_00A2 = 0;
           this->render.unknown_0080 = 5;
           break;
 
-        case 5:
-        case 6:
+        case MET_ICEEFFECT:
+        case MET_ICEBREAKEFFECT:
           this->render.unknown_00A2 = 0;
           this->render.unknown_0080 = 5;
           break;
 
-        case 18:
+        case MET_BIRD:
           this->render.unknown_00A2 = 0;
           this->render.unknown_0080 = 0;
           break;
@@ -1625,18 +1627,18 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       return;
 
-    case 64: {
+    case AM_SETPOS2: {
       int offset = 0;
       switch (this->m_type) {
-        case 13:
+        case MET_MISS:
           this->m_baseX = this->render.position.x;
           return;
 
-        case 22:
+        case MET_NUMBER_TOTAL:
           offset = 15;
-        case 14:
-        case 16:
-        case 21:
+        case MET_NUMBER:
+        case MET_NUMBER_CRITICAL:
+        case MET_NUMBER_HALF:
           this->SetSpriteName(ResourceMgr::Instance(), FormatOwnedString("%s.spr", g_session.m_damageResourceName.c_str()).c_str());
           this->SetActionName(ResourceMgr::Instance(), FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
           this->render.animation = 0;
@@ -1648,9 +1650,9 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           this->m_baseY = this->render.position.y;
           break;
 
-        case 15:
-        case 17:
-        case 18:
+        case MET_CRITICAL_EFFECT:
+        case MET_LUCKY_EFFECT:
+        case MET_BIRD:
         case 19:
         case 20:
           return;
@@ -1688,7 +1690,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       return;
     }
 
-    case 14: {
+    case AM_SETPOS: {
       this->render.visible = 1;
       this->render.unknown_008C = timeGetTime();
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
@@ -1706,24 +1708,24 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
 
       switch (this->m_type) {
-        case 3:
+        case MET_CART:
         case 27:
         case 31:
           break;
 
-        case 6:
+        case MET_ICEBREAKEFFECT:
           this->render.position.x = position->x;
           this->render.position.y = position->y;
           this->render.position.z = position->z;
           break;
 
-        case 11:
-        case 12:
+        case MET_ANGELUS_EFFECT:
+        case MET_CRUSIS_EFFECT:
           this->render.curMotion = 1;
           this->render.visible = 0;
           break;
 
-        case 13:
+        case MET_MISS:
           this->render.position.x = position->x;
           this->render.position.y = position->y;
           this->render.position.z = position->z;
@@ -1736,8 +1738,8 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           this->render.unknown_0080 = static_cast<std::uint32_t>(-5);
           break;
 
-        case 15:
-        case 25:
+        case MET_CRITICAL_EFFECT:
+        case MET_BLUE_EFFECT:
           this->render.position.x = position->x;
           this->render.position.y = position->y;
           this->render.position.z = position->z;
@@ -1760,7 +1762,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           this->m_baseY = this->render.position.y;
           break;
 
-        case 24:
+        case MET_GUARD:
           this->render.position.x = position->x;
           this->render.position.y = position->y;
           this->render.position.z = position->z;

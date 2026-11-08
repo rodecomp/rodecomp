@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Dialogs/UIEditctrlWnd.h"
 
 #include "Client/Application/Launcher.h"
@@ -247,9 +248,9 @@ void UIMiniMapWnd::ResetCursor(int, int) {
 // FUNCTION: fn_13562
 int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 184: {
+    case ID_OK: {
       std::string text = FormatOwnedString(g_miniMapMemoPath, g_applicationDirectory, g_session.m_navigationPlayerMap);
       FILE* file = std::fopen(text.c_str(), "ab");
       if (file) {
@@ -264,12 +265,12 @@ int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       }
       return 0;
     }
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(274);
       return 0;
     }
     return 0;
-  case 0:
+  case UM_DEFPUSH:
     if (this->edit == sender && this->edit->Length() > 0) {
       this->SendMsg(this->edit, 6, 184, 0, 0, 0);
       return 0;
@@ -373,7 +374,7 @@ void UIMiniMapWnd::Paint() {
 // FUNCTION: fn_13563
 int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
     case 194: {
       const bool enabled = this->unknown_0120->geometry.unknown_0030 != 0;
@@ -385,7 +386,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
     case 200:
       return 0;
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(273);
       return 0;
     case 356:
@@ -452,7 +453,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       return 0;
     }
 
-  case 34:
+  case UM_SETINFO:
     this->m_saved = reinterpret_cast<MiniMapWndInfo*>(argument1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();

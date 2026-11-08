@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/UILapineUpgradeBoxWnd.h"
 
@@ -324,7 +325,7 @@ void UILapineUpgradeBox_IngredientListWnd::DragAndDrop(int x, int y, std::intptr
 int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c,
                                                   std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     for (auto it = this->items.begin(); it != this->items.end(); ++it) {
       UILapineUpgradeBox_IngredientInfoWnd* entry = *it;
       if (sender != entry) {
@@ -335,7 +336,7 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
     this->Invalidate();
     break;
 
-  case 0x17:
+  case UM_REFRESHITEM:
     for (auto material = this->materials.begin(); material != this->materials.end(); ++material) {
       std::vector<int> identities = g_session.FindInventoryIndicesByItemId(std::atoi(material->itemId.c_str()), 1);
       for (auto identity = identities.begin(); identity != identities.end(); ++identity) {
@@ -351,11 +352,11 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
     this->SendMsg(this, 0x57, 0, 0, 0, 0);
     break;
 
-  case 0x1F:
+  case UM_ADDITEM:
     this->parent->SendMsg(this, 0x68, a, 0, 0, 0);
     break;
 
-  case 0x57: {
+  case UM_SETPOS: {
     int y = 7;
     for (auto it = this->items.begin(); it != this->items.end();) {
       if ((*it)->geometry.visible == 0) {
@@ -373,7 +374,7 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
     break;
   }
 
-  case 0x68:
+  case UM_DECITEM:
     this->parent->SendMsg(this, 0x1F, a, 0, 0, 0);
     break;
   }
@@ -605,12 +606,12 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
 // FUNCTION: fn_04215
 int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 23:
+  case UM_REFRESHITEM:
     this->SetIngredient(static_cast<int>(a));
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(302);
       return 0;
     case 505: {
@@ -637,7 +638,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       break;
     }
     break;
-  case 31:
+  case UM_ADDITEM:
     if (this->item.unknown_0000[1] == 0 && this->ingredientList->CanUseIngredient(static_cast<std::uint32_t>(a)) == 1) {
       ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(a));
       if (owned.unknown_0000[1] != 0) {
@@ -661,7 +662,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       return 0;
     }
     break;
-  case 104:
+  case UM_DECITEM:
     if (this->item.unknown_0000[1] != 0 && this->item.unknown_0000[1] == a) {
       this->item = ITEM_INFO();
       this->SendMsg(this, 111, reinterpret_cast<std::intptr_t>(""), 0, 0, 0);
@@ -670,7 +671,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       return 0;
     }
     break;
-  case 111:
+  case UM_RECEIVE_MSG:
     this->noticeTick = timeGetTime();
     this->notice = reinterpret_cast<const char*>(a);
     this->Invalidate();

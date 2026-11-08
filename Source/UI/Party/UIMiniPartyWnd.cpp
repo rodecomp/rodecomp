@@ -1,4 +1,5 @@
 #include "UI/Party/UIMiniPartyWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Input/Mouse.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -156,7 +157,7 @@ void UIMiniPartyInfoWnd::OnRBtnUp(int, int) {
 // FUNCTION: fn_07735
 int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 23: {
+  case UM_REFRESHITEM: {
     if (this->m_owner->GetMember().valid && !this->m_owner->GetMember().valid) {
       return 0;
     }
@@ -196,7 +197,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     this->m_gauge->SetValues(current, maximum);
     return 0;
   }
-  case 49:
+  case UM_MAKEMENU:
     this->m_entries.clear();
     if (g_windowMgr.unknown_0210) {
       g_windowMgr.CloseWindow(18);
@@ -240,7 +241,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return 0;
     }
     return 0;
-  case 48:
+  case UM_MENU_SELECTED:
     if (!this->m_owner->GetMember().valid) {
       return 0;
     }
@@ -249,26 +250,26 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return 0;
     }
     switch (this->m_entries[argument1].value) {
-    case 6:
+    case MENUID_SEND_MSG:
       this->SendMsg(nullptr, 6, 231, 0, 0, 0);
       return 0;
-    case 7:
+    case MENUID_TALKONLYTWO:
       this->SendMsg(nullptr, 6, 232, 0, 0, 0);
       return 0;
-    case 3:
+    case MENUID_QUERYINFO:
       this->SendMsg(nullptr, 6, 233, 0, 0, 0);
       return 0;
-    case 0:
+    case MENUID_EXPEL:
     case 19:
       this->SendMsg(nullptr, 6, 235, 0, 0, 0);
       return 0;
-    case 9:
+    case MENUID_LEAVE:
       this->SendMsg(nullptr, 6, 236, 0, 0, 0);
       return 0;
-    case 20:
+    case MENUID_MAKE_WHISPER_WINDOW:
       this->SendMsg(nullptr, 71, 0, 0, 0, 0);
       return 0;
-    case 5:
+    case MENUID_INVITE_IN_PARTY:
       if (this->m_owner->m_cell != -1 && this->m_owner->GetMember().valid) {
         g_modeMgr.gameMode->SendMsg(59, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
         return 0;
@@ -302,15 +303,15 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     }
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 231:
+    case ID_SENDMSG:
       if (!g_session.m_lockMouse) {
         this->m_owner->GetMember();
         return 0;
       }
       break;
-    case 232:
+    case ID_TALK:
       if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid && !(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
           const char* group;
@@ -327,13 +328,13 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
       }
       break;
-    case 233:
+    case ID_FRIEND_INFO:
       if (!g_session.m_lockMouse && this->m_owner->GetMember().valid) {
         g_windowMgr.Confirm(LookupMessage(191), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
       break;
-    case 234:
+    case ID_PARTY_SETTING:
       if (!g_session.m_lockMouse) {
         if (g_windowMgr.unknown_042C) {
           g_windowMgr.CloseWindow(208);
@@ -352,7 +353,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
       }
       break;
-    case 235:
+    case ID_DELETE_FRIEND:
       if (!g_session.m_lockMouse && this->m_owner->GetMember().valid) {
         if (!(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
           if (g_windowMgr.Confirm(LookupMessage(363), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
@@ -362,7 +363,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
       }
       break;
-    case 236:
+    case ID_LEAVE:
       if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
           if (g_windowMgr.Confirm(LookupMessage(357), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
@@ -427,7 +428,7 @@ void UIMiniPartyWnd::OnLBtnUp(int x, int y) {
 // FUNCTION: fn_07744
 int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 23: {
+  case UM_REFRESHITEM: {
     const MessengerMember* member = reinterpret_cast<const MessengerMember*>(argument1);
     if (member && member->valid) {
       this->m_member = *member;
@@ -437,13 +438,13 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     return 0;
   }
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 34 && this->m_member.accountId == static_cast<std::uint32_t>(argument2) && this->m_member.offline == 0 && this->m_infoWnd) {
       this->m_infoWnd->SendMsg(sender, message, 34, argument2, argument3, argument4);
       this->InvalidateChildren();
     }
     return 0;
-  case 14: {
+  case UM_RESIZE: {
     if (argument1 != 7) {
       return 0;
     }
@@ -504,10 +505,10 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     return 0;
   }
-  case 48:
+  case UM_MENU_SELECTED:
     this->m_infoWnd->SendMsg(sender, message, argument1, argument2, argument3, argument4);
     return 0;
-  case 49:
+  case UM_MAKEMENU:
     if (this->m_infoWnd) {
       this->m_infoWnd->SendMsg(sender, message, argument1, argument2, argument3, argument4);
     }

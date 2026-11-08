@@ -1,4 +1,5 @@
 #include "UI/CashShop/UICashShopWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Utility/EncryptedName.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -763,7 +764,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
   CSession& itemLists = g_session;
   const CSession& lists = g_session;
   switch (message) {
-  case 0x22:
+  case UM_SETINFO:
     if (g_session.unknown_5912) {
       if (g_session.m_hotkeyScript->Call("set_stoveshop_banner", "") == true) {
         this->m_banner->CreateButtons();
@@ -800,7 +801,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     this->Invalidate();
     return 0;
 
-  case 0x17:
+  case UM_REFRESHITEM:
     this->m_items.clear();
     for (int index = 0; index < lists.GetList1788(this->m_selectedTab); ++index) {
       ITEM_INFO item = g_session.GetItem1784At(this->m_selectedTab, index);
@@ -817,17 +818,17 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     this->LayoutPage();
     return 0;
 
-  case 0:
+  case UM_DEFPUSH:
     if (sender == this->unknown_00E0) {
       this->SendMsg(nullptr, 6, 0x141, 0, 0, 0);
     }
     return 0;
 
-  case 0x1F:
+  case UM_ADDITEM:
     this->m_cart->SendMsg(sender, 0x1F, argument1, 1, 0, 0);
     return 0;
 
-  case 0x26: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode == nullptr) {
       return 0;
@@ -902,15 +903,15 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     return 0;
   }
 
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 0xC9:
+    case ID_CLOSE:
       if (g_session.unknown_5912) {
         g_modeMgr.GetGameMode()->SendMsg(0x14B, 5, 0, 0, 0);
       }
       g_windowMgr.CloseWindow(0x13E);
       return 0;
-    case 0xD7: {
+    case ID_RADIOBTN: {
       int selected = this->m_selectedTab;
       for (std::map<int, UIWindow*>::iterator tab = this->m_tabButtons.begin(); tab != this->m_tabButtons.end(); ++tab) {
         if (tab->first != 10 && tab->first != 8 && sender == tab->second) {
@@ -937,7 +938,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       RegCloseKey(key);
       return 0;
     }
-    case 0xE0: {
+    case ID_BUY: {
       std::vector<ITEM_INFO>& cartItems = this->m_cart->m_cartItems;
       const int count = cartItems.size();
       if (cartItems.empty()) {
@@ -1000,18 +1001,18 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       GetRagConnection().Send(static_cast<short>(length), &packet);
       return 0;
     }
-    case 0x11C:
+    case ID_CHARGE:
       ShellExecuteA(nullptr, "OPEN", LookupMessage(0xCE5), LookupMessage(0xCE5), nullptr, SW_SHOW);
       return 0;
-    case 0x13C:
+    case ID_PREV_PAGE:
       this->m_page = std::max(this->m_page - 1, 0);
       this->LayoutPage();
       return 0;
-    case 0x13D:
+    case ID_NEXT_PAGE:
       this->m_page = std::min(this->m_page + 1, this->m_pageCount - 1);
       this->LayoutPage();
       return 0;
-    case 0x141: {
+    case ID_SEARCH: {
       std::string query(this->unknown_00E0->Text());
       if (query.size() != 0 && strcmp(query.c_str(), LookupMessage(0xCE6)) != 0) {
         itemLists.ClearItems1784(10);
@@ -1112,9 +1113,9 @@ int UICashShopWnd_Banner::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // FUNCTION: fn_09560
 int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int count = this->m_cartItems.size();
     if (count == 0) {
       break;
@@ -1153,7 +1154,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     this->Invalidate();
     break;
   }
-  case 0x1F: {
+  case UM_ADDITEM: {
     if (argument1 == 0) {
       return -1;
     }
@@ -1230,7 +1231,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     this->Invalidate();
     return UIWindow::SendMsg(sender, message, argument1, quantity, argument3, argument4);
   }
-  case 0x68: {
+  case UM_DECITEM: {
     if (sender == nullptr) {
       break;
     }
@@ -1267,19 +1268,19 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 int UICashShopWnd_CartItem::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   if (message == 6) {
     switch (argument1) {
-    case 0xD3:
+    case ID_DELETE:
       if (this->parent != nullptr) {
         this->parent->SendMsg(this, 0x68, atoi(this->m_item.itemId.c_str()), 0, 0, 0);
         this->Invalidate();
       }
       break;
-    case 0x117:
+    case ID_UP:
       if (this->parent != nullptr) {
         this->parent->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&this->m_item), 1, 0, 0);
       }
       this->Invalidate();
       break;
-    case 0x118:
+    case ID_DOWN:
       if (this->parent != nullptr) {
         this->parent->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&this->m_item), -1, 0, 0);
       }

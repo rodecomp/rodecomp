@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/UIReputeWnd.h"
 #include "Contents/MessageTable.h"
@@ -222,7 +223,7 @@ void UIReputeWnd::Paint() {
 // FUNCTION: fn_04315
 int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     if (sender == this->m_groupCombo) {
       std::string group = this->m_groupCombo->GetSelectedText();
       if (group.size() != 0) {
@@ -234,23 +235,23 @@ int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       }
     }
     break;
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 316:
+    case ID_PREV_PAGE:
       this->ClearUpdated();
       this->SetPage(this->m_page - 1);
       this->Invalidate();
       break;
-    case 317:
+    case ID_NEXT_PAGE:
       this->ClearUpdated();
       this->SetPage(this->m_page + 1);
       this->Invalidate();
       break;
-    case 201:
+    case ID_CLOSE:
       this->ClearUpdated();
       g_windowMgr.CloseWindow(346);
       break;
-    case 321: {
+    case ID_SEARCH: {
       std::string keyword(this->m_searchEdit->Text() ? this->m_searchEdit->Text() : "");
       if (keyword.size() == 0) {
         this->SendMsg(this->m_groupCombo, 39, 0, 0, 0, 0);
@@ -265,7 +266,7 @@ int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     }
     }
     break;
-  case 22:
+  case UM_TAB:
     if (a) {
       int index;
       if (std::string(reinterpret_cast<const char*>(a)) == LookupMessage(3829)) {

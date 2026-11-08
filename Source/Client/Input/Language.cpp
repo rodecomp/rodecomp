@@ -444,19 +444,19 @@ CLanguageBase::CLanguageBase()
   this->codePage = g_inlineCharset ? LanguageCodePage(this->language) : g_textCodePage;
 
   switch (static_cast<std::uint16_t>(GetUserDefaultLangID() & 0x3FF)) {
-  case 7:
+  case LANG_GERMAN:
     this->alternateLanguage = 7;
     this->servicePrefix = "german\\";
     break;
-  case 16:
+  case LANG_ITALIAN:
     this->alternateLanguage = 16;
     this->servicePrefix = "italian\\";
     break;
-  case 22:
+  case LANG_PORTUGUESE:
     this->alternateLanguage = 22;
     this->servicePrefix = "portuguese\\";
     break;
-  case 31:
+  case LANG_TURKISH:
     this->alternateLanguage = 31;
     this->servicePrefix = "turkish\\";
     break;

@@ -1,4 +1,6 @@
 #include "Render/Text/FontCache.h"
+#include "Contents/Items/ItemType.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "Client/Input/Mouse.h"
@@ -1391,13 +1393,13 @@ UIMerchantShopMakeWnd::UIMerchantShopMakeWnd(int mode) : UIFrameWnd(0), mode(mod
 // FUNCTION: fn_13427
 int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 36: {
+  case UM_SETTITLE: {
     char text[40];
     std::sprintf(text, "%s : %s", LookupMessage(this->unknown_0100 != 0 ? 1734 : 226), g_session.unknown_550C.c_str());
     this->title->SetTextFitted(text);
     return 0;
   }
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<MerchantItemMyShopWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -1406,7 +1408,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 14:
+  case UM_RESIZE:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
       int height = c <= 240 ? c : 240;
@@ -1441,7 +1443,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       return 0;
     }
     break;
-  case 6: {
+  case UM_COMMAND: {
     CMode* mode = g_modeMgr.gameMode;
     this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 201) {
@@ -1505,7 +1507,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
     break;
   }
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetList9Size();
     for (int i = 0; i < size; ++i) {
@@ -1567,7 +1569,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 // FUNCTION: fn_13420
 int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 36: {
+  case UM_SETTITLE: {
     this->unknown_00FC = a;
     if (a) {
       this->quantityEdit->Move(110, this->geometry.height - 50);
@@ -1591,7 +1593,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->title->SetTextAutoWidth(text);
     return 0;
   }
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ItemPurchaseWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -1600,19 +1602,19 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ModeDragState& drag = mode->drag;
     switch (drag.type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       if (g_session.GetItem1720QuantityByItemId(drag.name.c_str())) {
         mode->SendMsg(18, 0, 0, 0, 0);
         g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
@@ -1665,7 +1667,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
-  case 6: {
+  case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
@@ -1747,7 +1749,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     g_session.ClearTradeItems();
     return 0;
   }
-  case 14:
+  case UM_RESIZE:
     if (a == 3) {
       int width = b <= 320 ? b : 320;
       int height = c <= 336 ? c : 336;
@@ -1789,7 +1791,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     int total = 0;
     const int size = g_session.GetList2Size();
@@ -1856,13 +1858,13 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // FUNCTION: fn_13419
 int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     if (this->m_message0 != 0 && this->geometry.visible != 0) {
       this->SendMsg(this, 6, this->m_message0, 0, 0, 0);
       return 0;
     }
     return 0;
-  case 13:
+  case UM_SETSTATE:
     this->geometry.unknown_0030 = static_cast<std::uint32_t>(a);
     if (a == 20) {
       char text[24];
@@ -1874,14 +1876,14 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
     }
     return 0;
-  case 29:
+  case UM_SETTEXT:
     if (b != 0) {
       reinterpret_cast<UIStaticText*>(this->unknown_00B8)->SetText(reinterpret_cast<const char*>(b), 0);
       this->Invalidate();
       return 0;
     }
     return 0;
-  case 6: {
+  case UM_COMMAND: {
     if (a != 184 || this->m_edit->Length() == 0) {
       return 0;
     }
@@ -2961,15 +2963,15 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
       }
     }
     break;
-  case 4:
-  case 5:
-  case 8:
-  case 9:
-  case 11:
-  case 12:
-  case 13:
-  case 14:
-  case 15:
+  case TYPE_ARMOR:
+  case TYPE_WEAPON:
+  case TYPE_BOW:
+  case TYPE_BOTHHAND:
+  case TYPE_ARMORTM:
+  case TYPE_ARMORTB:
+  case TYPE_ARMORMB:
+  case TYPE_ARMORTMB:
+  case TYPE_GUN:
     if (!item.identified) {
       break;
     }
@@ -3797,16 +3799,16 @@ int ItemTypeSortRank(int type) {
     return 0;
   case 18:
     return 1;
-  case 4:
-  case 11:
-  case 12:
-  case 13:
-  case 14:
+  case TYPE_ARMOR:
+  case TYPE_ARMORTM:
+  case TYPE_ARMORTB:
+  case TYPE_ARMORMB:
+  case TYPE_ARMORTMB:
     return 2;
-  case 5:
-  case 8:
-  case 9:
-  case 15:
+  case TYPE_WEAPON:
+  case TYPE_BOW:
+  case TYPE_BOTHHAND:
+  case TYPE_GUN:
     return 3;
   case 10:
   case 16:
@@ -4098,15 +4100,15 @@ void UIItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 3) {
     switch (drag->type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       this->SendMsg(nullptr, 38, 0, 0, 0, 0);
       return;
     default:
@@ -5047,15 +5049,15 @@ void UIMerchantItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 12) {
     switch (drag->type) {
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
       if (g_session.GetItem1760Quantity(drag->id)) {
         mode->SendMsg(18, 0, 0, 0, 0);
         g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
@@ -5449,7 +5451,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   }
 
   switch (message) {
-  case 0x22:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<SkillListWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -5457,7 +5459,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     this->Move(this->saved->x, this->saved->y);
     this->SendMsg(nullptr, 0xE, 3, this->saved->width, this->saved->height, 0);
     return 0;
-  case 0xE:
+  case UM_RESIZE:
     if (a == 3) {
       int width = b <= 320 ? b : 320;
       int height = c <= 288 ? c : 288;
@@ -5493,7 +5495,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return 0;
     }
     break;
-  case 0x3A: {
+  case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
     if (skill->level != 0) {
       CMode* mode = g_modeMgr.gameMode;
@@ -5508,9 +5510,9 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     break;
   }
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 0xC9:
+    case ID_CLOSE:
       if (this->skillTab == 0) {
         g_windowMgr.CloseWindow(0x72);
         return 0;
@@ -5520,7 +5522,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         return 0;
       }
       break;
-    case 0xB8:
+    case ID_OK:
       if (this->hovered != -1) {
         CSkillInfo skill = this->GetSkillByIndex(this->hovered);
         if (skill.available != 0 && skill.level != 0 && skill.unknown_0014 != 0) {
@@ -5529,13 +5531,13 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         return 0;
       }
       break;
-    case 0xEF:
-    case 0xF0:
-    case 0xF1:
-    case 0xF2:
-    case 0xF3:
-    case 0xF4:
-    case 0xF5: {
+    case ID_LVLUP1:
+    case ID_LVLUP2:
+    case ID_LVLUP3:
+    case ID_LVLUP4:
+    case ID_LVLUP5:
+    case ID_LVLUP6:
+    case ID_LVLUP7: {
       if (this->skillTab == 0) {
         if (reinterpret_cast<int*>(g_session.unknown_1664)[0] == 0) {
           return 0;
@@ -5560,13 +5562,13 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
       return 0;
     }
-    case 0xFD:
-    case 0xFE:
-    case 0xFF:
-    case 0x100:
-    case 0x101:
-    case 0x102:
-    case 0x103: {
+    case ID_LVLSELECTDN1:
+    case ID_LVLSELECTDN2:
+    case ID_LVLSELECTDN3:
+    case ID_LVLSELECTDN4:
+    case ID_LVLSELECTDN5:
+    case ID_LVLSELECTDN6:
+    case ID_LVLSELECTDN7: {
       CSkillInfo skill = this->GetSkillByIndex(this->scroll - 0xFD + a);
       if (skill.available != 0) {
         const int id = skill.id;
@@ -5593,13 +5595,13 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
       return 0;
     }
-    case 0x104:
-    case 0x105:
-    case 0x106:
-    case 0x107:
-    case 0x108:
-    case 0x109:
-    case 0x10A: {
+    case ID_LVLSELECTUP1:
+    case ID_LVLSELECTUP2:
+    case ID_LVLSELECTUP3:
+    case ID_LVLSELECTUP4:
+    case ID_LVLSELECTUP5:
+    case ID_LVLSELECTUP6:
+    case ID_LVLSELECTUP7: {
       CSkillInfo skill = this->GetSkillByIndex(this->scroll - 0x104 + a);
       if (skill.available != 0) {
         const int id = skill.id;
@@ -5628,9 +5630,9 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     }
     break;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->scroll;
     int position;
     if (message == 9) {
@@ -5648,7 +5650,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     return this->scroll - previous;
   }
-  case 0x17: {
+  case UM_REFRESHITEM: {
     this->skills.clear();
     int count = 0;
     if (this->skillTab == 0) {
@@ -5701,7 +5703,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     this->UpdateRowButtons();
     return 0;
   }
-  case 0x31:
+  case UM_MAKEMENU:
     this->unknown_0138.clear();
     if (g_windowMgr.unknown_0210) {
       g_windowMgr.CloseWindow(0x12);
@@ -5730,7 +5732,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return 0;
     }
     break;
-  case 0x30:
+  case UM_MENU_SELECTED:
     if (this->hovered != -1) {
       CSkillInfo skill = this->GetSkillByIndex(this->hovered);
       if (skill.available != 0) {
@@ -6022,7 +6024,7 @@ void UIItemBaseWnd::UpdateScrollBar() {
 // FUNCTION: fn_13418
 int UIItemBaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 14:
+  case UM_RESIZE:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
       int height = c <= 240 ? c : 240;
@@ -6051,9 +6053,9 @@ int UIItemBaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     break;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->scroll;
     if (message == 9) {
       this->scroll = previous - this->visibleRows + 1;
@@ -6070,19 +6072,19 @@ int UIItemBaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
     return this->scroll - previous;
   }
-  case 4:
+  case UM_PAGEDOWNPUSH:
     if (this->unknown_00E4 == 1) {
       this->SendMsg(this->scrollBar, 7, this->visibleRows, 0, 0, 0);
       return 0;
     }
     break;
-  case 3:
+  case UM_PAGEUPPUSH:
     if (this->unknown_00E4 == 1) {
       this->SendMsg(this->scrollBar, 7, -this->visibleRows, 0, 0, 0);
     }
     break;
-  case 6:
-  case 23:
+  case UM_COMMAND:
+  case UM_REFRESHITEM:
     break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
@@ -6095,7 +6097,7 @@ int UIItemBaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // FUNCTION: fn_13431
 int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<MerchantItemWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -6104,13 +6106,13 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 6:
+  case UM_COMMAND:
     if (a == 201) {
       g_windowMgr.CloseWindow(40);
       return 0;
     }
     break;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode->drag.source == 1) {
       mode->SendMsg(76, mode->drag.id, mode->drag.quantity, 0, 0);
@@ -6121,7 +6123,7 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
-  case 14:
+  case UM_RESIZE:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
       int height = c <= 240 ? c : 240;
@@ -6150,7 +6152,7 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetList6Size();
     for (int i = 0; i < size; ++i) {
@@ -6164,7 +6166,7 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->UpdateScrollBar();
     return 0;
   }
-  case 55: {
+  case UM_SETCOUNTINFO: {
     char text[128];
     std::sprintf(text, "Num: %d/%d Weight: %d/%d", g_session.cartCount, g_session.cartMaxCount, g_session.cartWeight, g_session.cartMaxWeight);
     this->info->SetText(text, 0);
@@ -6182,7 +6184,7 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // FUNCTION: fn_13432
 int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
@@ -6213,7 +6215,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<MerchantMirrorItemWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -6222,7 +6224,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 14:
+  case UM_RESIZE:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
       int height = c <= 240 ? c : 240;
@@ -6249,7 +6251,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       return 0;
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetList8Size();
     for (int i = 0; i < size; ++i) {
@@ -6281,7 +6283,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
     break;
   }
-  case 6:
+  case UM_COMMAND:
     break;
   default:
     return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
@@ -6294,7 +6296,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 // FUNCTION: fn_13421
 int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ItemSellWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -6303,7 +6305,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
@@ -6322,7 +6324,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
-  case 6: {
+  case UM_COMMAND: {
     const int count = g_session.GetList4Size();
     CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
@@ -6343,7 +6345,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     break;
   }
-  case 14:
+  case UM_RESIZE:
     if (a == 3) {
       int width = b <= 320 ? b : 320;
       int height = c <= 336 ? c : 336;
@@ -6378,7 +6380,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return 0;
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     if (a) {
       this->unknown_00FC = a;
     }
@@ -6436,7 +6438,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 // FUNCTION: fn_13429
 int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<MerchantItemPurchaseWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -6449,7 +6451,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     this->unknown_0104 = b;
     this->unknown_00F8 = a;
     return 0;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
@@ -6526,7 +6528,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
-  case 6: {
+  case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
@@ -6575,7 +6577,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     }
     return 0;
   }
-  case 14:
+  case UM_RESIZE:
     if (a == 3) {
       int width = b <= 320 ? b : 320;
       int height = c <= 336 ? c : 336;
@@ -6601,7 +6603,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
       g_windowMgr.StoreSnapRectangle(this);
     }
     return 0;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     int sum = 0;
     const int count = g_session.GetList10Size();
@@ -6657,7 +6659,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
 // FUNCTION: fn_13430
 int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<MerchantItemShopWndInfo*>(a);
     if (!this->saved->IsValid(this->unknown_010C != 0)) {
       this->saved->Reset(this->unknown_010C != 0);
@@ -6669,10 +6671,10 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case 28:
     this->unknown_0100 = a;
     return 0;
-  case 36:
+  case UM_SETTITLE:
     this->unknown_00F4->SetTextAutoWidth(LookupMessage(186));
     return 0;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (this->unknown_010C == 0) {
       ITEM_INFO item;
@@ -6688,7 +6690,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
-  case 14:
+  case UM_RESIZE:
     if (a == 3) {
       int width;
       if (this->unknown_010C) {
@@ -6715,7 +6717,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       return 0;
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetList7Size();
     for (int i = 0; i < size; ++i) {
@@ -8107,7 +8109,7 @@ UIItemWnd::~UIItemWnd() = default;
 // FUNCTION: fn_13423
 int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ItemShopWndInfo*>(a);
     if (!static_cast<ItemShopWndInfo*>(this->saved)->IsValid()) {
       static_cast<ItemShopWndInfo*>(this->saved)->Reset();
@@ -8116,13 +8118,13 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 6:
+  case UM_COMMAND:
     if (a == 213) {
       g_windowMgr.unknown_0064 = b;
       return 0;
     }
     break;
-  case 38:
+  case UM_DROP:
     switch (a) {
     case 0: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -8154,13 +8156,13 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     }
     break;
-  case 36:
+  case UM_SETTITLE:
     this->unknown_00F8 = 1;
     this->showQuantity = 1;
     this->title->SetTextAutoWidth(LookupMessage(1568));
     this->checkBox->m_disabled = 0;
     return 0;
-  case 14:
+  case UM_RESIZE:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
       int height = c <= 336 ? c : 336;
@@ -8188,7 +8190,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return 0;
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetList1Size();
     for (int i = 0; i < size; ++i) {
@@ -8213,7 +8215,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 // FUNCTION: fn_13424
 int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ItemShopWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -8222,7 +8224,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 6: {
+  case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 213) {
       if (g_replayAnimationScaling != 0) {
@@ -8235,7 +8237,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     break;
   }
-  case 38:
+  case UM_DROP:
     if (a == 0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       ITEM_INFO item;
@@ -8265,7 +8267,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     break;
-  case 36:
+  case UM_SETTITLE:
     this->unknown_010C = b;
     if (a) {
       this->unknown_00F8 = 1;
@@ -8287,7 +8289,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     this->Invalidate();
     return 0;
-  case 14:
+  case UM_RESIZE:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
       int height = c <= 336 ? c : 336;
@@ -8315,7 +8317,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetList1Size();
     for (int i = 0; i < size; ++i) {
@@ -8340,7 +8342,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // FUNCTION: fn_45489
 int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ItemStoreFindSlotInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset(this->tabIndex);
@@ -8349,7 +8351,7 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->Move(this->saved->x, this->saved->y);
     this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
     return 0;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode->drag.source == 1) {
       mode->SendMsg(55, mode->drag.id, mode->drag.quantity, 0, 0);
@@ -8360,7 +8362,7 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetList5Size();
     for (int i = 0; i < size; ++i) {
@@ -8384,21 +8386,21 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           break;
         case 2:
           switch (type) {
-          case 4:
-          case 11:
-          case 12:
-          case 13:
-          case 14:
+          case TYPE_ARMOR:
+          case TYPE_ARMORTM:
+          case TYPE_ARMORTB:
+          case TYPE_ARMORMB:
+          case TYPE_ARMORTMB:
             matches = true;
             break;
           }
           break;
         case 3:
           switch (type) {
-          case 5:
-          case 8:
-          case 9:
-          case 15:
+          case TYPE_WEAPON:
+          case TYPE_BOW:
+          case TYPE_BOTHHAND:
+          case TYPE_GUN:
             matches = true;
             break;
           }
@@ -8434,7 +8436,7 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->UpdateScrollBar();
     return 0;
   }
-  case 14:
+  case UM_RESIZE:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
       int height = c <= 336 ? c : 336;
@@ -8460,7 +8462,7 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.StoreSnapRectangle(this);
     }
     return 0;
-  case 55: {
+  case UM_SETCOUNTINFO: {
     char text[64];
     std::sprintf(text, "%d/%d", a, b);
     this->unknown_0120 = text;
@@ -8502,13 +8504,13 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // FUNCTION: fn_45490
 int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 55:
+  case UM_SETCOUNTINFO:
     this->unknown_0188 = a;
     this->unknown_018C = b;
     this->unknown_0144 = FormatThreadText("%d/%d", a, b);
     this->Invalidate();
     return 0;
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ItemStoreFindListInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -8529,9 +8531,9 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 
     this->Invalidate();
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 201: {
+    case ID_CLOSE: {
       const int openTabs = this->saved->unknown_0010;
       for (int index = 0; index < 7; ++index) {
         g_windowMgr.CloseWindow(index + 146);
@@ -8652,7 +8654,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       break;
     }
     return 0;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode->drag.source == 1) {
       mode->SendMsg(55, mode->drag.id, mode->drag.quantity, 0, 0);
@@ -8663,7 +8665,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
-  case 14:
+  case UM_RESIZE:
     if (a == 3) {
       int height = c;
       const int maximum = g_windowMgr.unknown_0480 * 7 / 10;
@@ -8695,7 +8697,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       g_windowMgr.StoreSnapRectangle(this);
     }
     return 0;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetList5Size();
     for (int i = 0; i < size; ++i) {
@@ -8719,21 +8721,21 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           break;
         case 2:
           switch (type) {
-          case 4:
-          case 11:
-          case 12:
-          case 13:
-          case 14:
+          case TYPE_ARMOR:
+          case TYPE_ARMORTM:
+          case TYPE_ARMORTB:
+          case TYPE_ARMORMB:
+          case TYPE_ARMORTMB:
             matches = true;
             break;
           }
           break;
         case 3:
           switch (type) {
-          case 5:
-          case 8:
-          case 9:
-          case 15:
+          case TYPE_WEAPON:
+          case TYPE_BOW:
+          case TYPE_BOTHHAND:
+          case TYPE_GUN:
             matches = true;
             break;
           }
@@ -8801,7 +8803,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     return 0;
   }
-  case 22:
+  case UM_TAB:
     this->unknown_0180 = a;
     if (this->unknown_0180 < 0) {
       this->unknown_0180 = 0;
@@ -8830,7 +8832,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     return 0;
   }
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     if (sender == this->sortCombo) {
       g_session.m_itemDefaultSort = a == 0;
       g_session.m_itemAscendingOrder = a == 1;
@@ -9744,7 +9746,7 @@ bool g_sortPrivateTab;
 // FUNCTION: fn_13426
 int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a) {
     case 456:
       Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(264);
@@ -9794,7 +9796,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       this->RefreshSortButton();
       this->RefreshItems();
       return 0;
-    case 201:
+    case ID_CLOSE:
       if (this->unknown_0128 == sender) {
         this->RemoveChild(this->unknown_0128, 0);
         this->unknown_0128 = nullptr;
@@ -9803,7 +9805,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
         g_windowMgr.CloseWindow(8);
       }
       return 0;
-    case 202: {
+    case ID_MINI: {
       const int height = this->geometry.height;
       if (height == 17) {
         this->Resize(this->geometry.width, this->unknown_0110);
@@ -9819,13 +9821,13 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       }
       return 0;
     }
-    case 213:
+    case ID_CHECK:
       g_session.m_lockItemDrop = !g_session.m_lockItemDrop;
       return 0;
     default:
       return 0;
     }
-  case 14: {
+  case UM_RESIZE: {
     if (a != 7) {
       return 0;
     }
@@ -9870,11 +9872,11 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     this->unknown_012C->Move(157, this->geometry.height - 19);
     return 0;
   }
-  case 22:
+  case UM_TAB:
     this->unknown_010C = static_cast<int>(a);
     this->SendMsg(nullptr, 23, 0, 0, 0, 0);
     return 0;
-  case 23:
+  case UM_REFRESHITEM:
     if (this->unknown_010C == 3) {
       this->RefreshItems();
       return 0;
@@ -9901,15 +9903,15 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
         }
       } else if (this->unknown_010C == 1) {
         switch (type) {
-        case 4:
-        case 5:
-        case 8:
-        case 9:
-        case 11:
-        case 12:
-        case 13:
-        case 14:
-        case 15:
+        case TYPE_ARMOR:
+        case TYPE_WEAPON:
+        case TYPE_BOW:
+        case TYPE_BOTHHAND:
+        case TYPE_ARMORTM:
+        case TYPE_ARMORTB:
+        case TYPE_ARMORMB:
+        case TYPE_ARMORTMB:
+        case TYPE_GUN:
           if (this->unknown_0104 == 0) {
             include = type == 5 || type == 9 || type == 8;
           } else if (this->unknown_0104 == 1) {
@@ -9933,7 +9935,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     this->Invalidate();
     this->UpdateScrollBar();
     return 0;
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ItemWndInfo*>(a);
     if (this->saved->IsValid() == 0) {
       this->saved->Reset();
@@ -9951,7 +9953,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     }
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 38: {
+  case UM_DROP: {
     CMode* mode = g_modeMgr.GetGameMode();
     ModeDragState& drag = static_cast<CGameMode*>(mode)->drag;
     switch (drag.source) {
@@ -10013,9 +10015,9 @@ int UIMerchantItemPurchaseMSGWnd::SendMsg(UIWindow* sender, int message, std::in
   }
 
   switch (a) {
-  case 184:
+  case ID_OK:
     g_modeMgr.gameMode->SendMsg(83, this->purchaseIndex, this->unknown_00D0, 0, 0);
-  case 185:
+  case ID_CANCEL:
     g_windowMgr.CloseWindow(230);
     g_session.ClearItems1760And1748();
     break;
@@ -10805,7 +10807,7 @@ void UIItemShopWnd2::Paint() {
 // FUNCTION: fn_13422
 int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ItemSellWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -10814,7 +10816,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
@@ -10833,7 +10835,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     mode->SendMsg(18, 0, 0, 0, 0);
     return 0;
   }
-  case 6: {
+  case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
@@ -10850,7 +10852,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     g_session.ClearTradeItems();
     return 0;
   }
-  case 14:
+  case UM_RESIZE:
     if (a == 3) {
       int width = b <= 320 ? b : 320;
       int height = c <= 336 ? c : 336;
@@ -10886,7 +10888,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     break;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     int totalPrice = 0;
     const int size = g_session.GetList4Size();
@@ -11193,7 +11195,7 @@ void UIItemPurchaseWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_13425
 int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<ItemStoreFindWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
@@ -11202,7 +11204,7 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     this->Move(this->saved->x, this->saved->y);
     this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
     return 0;
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetList5Size();
     for (int i = 0; i < size; ++i) {
@@ -11226,13 +11228,13 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     this->UpdateScrollBar();
     return 0;
   }
-  case 6:
+  case UM_COMMAND:
     if (a == 201) {
       g_windowMgr.CloseWindow(153);
       static_cast<UIItemStoreWnd*>(g_windowMgr.LookupWindow(33))->unknown_0140 = 0;
       return 0;
     }
-  case 14:
+  case UM_RESIZE:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
       int height = c <= 336 ? c : 336;
@@ -11259,7 +11261,7 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       g_windowMgr.StoreSnapRectangle(this);
     }
     return 0;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode->drag.source == 1) {
       mode->SendMsg(55, mode->drag.id, mode->drag.quantity, 0, 0);
@@ -11274,7 +11276,7 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     this->sorted = false;
     this->SendMsg(nullptr, 23, 0, 0, 0, 0);
     return 0;
-  case 55: {
+  case UM_SETCOUNTINFO: {
     char text[64];
     std::sprintf(text, "%d/%d", a, b);
     this->unknown_0124.assign(text, std::strlen(text));
@@ -11349,14 +11351,14 @@ void UIItemDropCntWnd::Show(int visible) {
 int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   int error;
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<MerchantShopMakeWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
     }
     this->Move(this->saved->x, this->saved->y);
     break;
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ITEM_INFO item;
     item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
@@ -11438,7 +11440,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     mode->SendMsg(18, 0, 0, 0, 0);
     break;
   }
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.clear();
     const int count = g_session.GetList11Size();
     for (int i = 0; i < count; ++i) {
@@ -11483,9 +11485,9 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->Invalidate();
     break;
   }
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->scroll;
     if (message == 9) {
       this->scroll = previous - this->unknown_0140 + 1;
@@ -11540,7 +11542,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     }
     break;
   }
-  case 6:
+  case UM_COMMAND:
     if (a == 213) {
       g_session.m_skipPriceWarning = !g_session.m_skipPriceWarning;
     } else if (a == 343) {

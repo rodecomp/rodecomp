@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Shop/ItemDrawing.h"
@@ -507,9 +508,9 @@ int UIGradeEnchantWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 184:
+    case ID_OK:
       if (this->unknown_0220 != 1 && this->item.unknown_0000[1] > 0 && this->selectedMaterial != -1) {
         const int quantity = LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0).quantity;
         if (quantity >= this->materials[this->selectedMaterial].amount && g_session.m_zeny >= this->SelectedMaterialZeny()) {
@@ -529,21 +530,21 @@ int UIGradeEnchantWnd::SendMsg(
         }
       }
       break;
-    case 185:
-    case 201: {
+    case ID_CANCEL:
+    case ID_CLOSE: {
       GradeEnchantClosePacket packet;
       packet.id = 0xB5C;
       GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       g_windowMgr.CloseWindow(343);
       break;
     }
-    case 279:
+    case ID_UP:
       if (this->info.unknown_0000 > 0 && this->unknown_0114 < this->info.unknown_0008 * this->info.unknown_0004 &&
           LookupClientItem(g_session.m_inventoryItems, this->info.unknown_0000, 0).quantity >= this->unknown_0114 + this->info.unknown_0004) {
         this->unknown_0114 += this->info.unknown_0004;
       }
       break;
-    case 280:
+    case ID_DOWN:
       if (this->info.unknown_0000 > 0 && this->unknown_0114 > 0) {
         this->unknown_0114 -= this->info.unknown_0004;
       }
@@ -553,7 +554,7 @@ int UIGradeEnchantWnd::SendMsg(
       break;
     }
     break;
-  case 23:
+  case UM_REFRESHITEM:
     if (this->state == 0 || this->state == 1) {
       const ITEM_INFO dropped = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
       if (g_session.HasItem61B8(dropped.unknown_0000[1]) == 1) {

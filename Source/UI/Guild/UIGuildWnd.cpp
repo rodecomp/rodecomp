@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Guild/UIGuildWnd.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
@@ -620,17 +621,17 @@ __declspec(noinline) void UIGuildWnd::CreateTabs() {
 // FUNCTION: fn_13135
 int UIGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->m_saved = reinterpret_cast<GuildWndInfo*>(a1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();
     }
     this->Move(this->m_saved->x, this->m_saved->y);
     break;
-  case 60:
+  case UM_REFRESH:
     this->InvalidateChildren();
     return 0;
-  case 69: {
+  case UM_CHANGE_GUILD_TAB: {
     int permissions[7] = {0, 1, 2, 4, 16, 128, 64};
     switch (a1) {
     case 1:
@@ -746,15 +747,15 @@ void UIGuildBanishedMemberWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_13125
 int UIGuildBanishedMemberWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (a1 == 201) {
       g_windowMgr.CloseWindow(59);
       return 0;
     }
     break;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollTop;
     int top;
     if (message == 9) {
@@ -769,7 +770,7 @@ int UIGuildBanishedMemberWnd::SendMsg(UIWindow* sender, int message, std::intptr
     }
     return this->m_scrollTop - previous;
   }
-  case 60:
+  case UM_REFRESH:
     this->InvalidateChildren();
     this->UpdateScroll();
     break;
@@ -848,14 +849,14 @@ void UIGuildTotalInfoWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_13134
 int UIGuildTotalInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (a1 == 201) {
       g_windowMgr.CloseWindow(59);
     }
     return 0;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollTop;
     int top;
     if (message == 9) {
@@ -1086,11 +1087,11 @@ int UIGuildLeaveReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intpt
   }
 
   switch (a1) {
-  case 184:
+  case ID_OK:
     g_modeMgr.gameMode->SendMsg(110, reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0, 0);
     g_windowMgr.CloseWindow(75);
     break;
-  case 185:
+  case ID_CANCEL:
     g_windowMgr.CloseWindow(75);
     break;
   }
@@ -2008,12 +2009,12 @@ void UIGuildNoticeWnd::OnCreate(int, int) {
 // FUNCTION: fn_13130
 int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a1) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(59);
       break;
-    case 277: {
+    case ID_SEND_GUILD_NOTICE: {
       std::string body(this->m_bodyEdit->Text());
       if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true || g_forbiddenWords.Contains(body.c_str()) == true) {
         g_windowMgr.Confirm(LookupMessage(14), 0, true, false, 0, "Message", 280, 120, 0);
@@ -2027,7 +2028,7 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
     }
     }
     break;
-  case 60:
+  case UM_REFRESH:
     this->InvalidateChildren();
     break;
   default:
@@ -2041,12 +2042,12 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
 // FUNCTION: fn_13132
 int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (a1) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(59);
       return 0;
-    case 184:
+    case ID_OK:
       if (this->m_hoverIndex != -1) {
         CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
         if (skill.level != 0) {
@@ -2055,13 +2056,13 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
         return 0;
       }
       break;
-    case 239:
-    case 240:
-    case 241:
-    case 242:
-    case 243:
-    case 244:
-    case 245:
+    case ID_LVLUP1:
+    case ID_LVLUP2:
+    case ID_LVLUP3:
+    case ID_LVLUP4:
+    case ID_LVLUP5:
+    case ID_LVLUP6:
+    case ID_LVLUP7:
       if (g_session.m_guildSkillPoint != 0) {
         CSkillInfo skill = this->SkillAt(this->m_scrollTop + a1 - 239);
         if (skill.available != 0) {
@@ -2070,13 +2071,13 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
         return 0;
       }
       break;
-    case 253:
-    case 254:
-    case 255:
-    case 256:
-    case 257:
-    case 258:
-    case 259: {
+    case ID_LVLSELECTDN1:
+    case ID_LVLSELECTDN2:
+    case ID_LVLSELECTDN3:
+    case ID_LVLSELECTDN4:
+    case ID_LVLSELECTDN5:
+    case ID_LVLSELECTDN6:
+    case ID_LVLSELECTDN7: {
       CSkillInfo skill = this->SkillAt(this->m_scrollTop + a1 - 253);
       if (skill.available != 0) {
         int level = g_session.UseLevel(skill.id) - 1;
@@ -2091,13 +2092,13 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
       }
       return 0;
     }
-    case 260:
-    case 261:
-    case 262:
-    case 263:
-    case 264:
-    case 265:
-    case 266: {
+    case ID_LVLSELECTUP1:
+    case ID_LVLSELECTUP2:
+    case ID_LVLSELECTUP3:
+    case ID_LVLSELECTUP4:
+    case ID_LVLSELECTUP5:
+    case ID_LVLSELECTUP6:
+    case ID_LVLSELECTUP7: {
       CSkillInfo skill = this->SkillAt(this->m_scrollTop + a1 - 260);
       if (skill.available != 0) {
         int level = g_session.UseLevel(skill.id) + 1;
@@ -2115,9 +2116,9 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     }
     break;
 
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollTop;
     int top;
     if (message == 9) {
@@ -2136,7 +2137,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     return this->m_scrollTop - previous;
   }
 
-  case 23: {
+  case UM_REFRESHITEM: {
     this->m_skills.clear();
     const int count = static_cast<int>(g_session.m_additionalSkills.size());
     for (int index = 0; index < count; ++index) {
@@ -2151,7 +2152,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     return 0;
   }
 
-  case 49:
+  case UM_MAKEMENU:
     this->m_menuItems.clear();
     if (g_windowMgr.unknown_0210 != 0) {
       g_windowMgr.CloseWindow(18);
@@ -2186,7 +2187,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     }
     break;
 
-  case 48:
+  case UM_MENU_SELECTED:
     if (this->m_hoverIndex != -1) {
       CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
       if (skill.available != 0) {
@@ -2201,7 +2202,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     }
     break;
 
-  case 58: {
+  case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a1);
     if (skill->level != 0) {
       g_modeMgr.gameMode->SendMsg(113, a1, g_session.UseLevel(skill->id), 0, 0);
@@ -2333,9 +2334,9 @@ void UIGuildSkillWnd::OnCreate(int, int height) {
 // FUNCTION: fn_13131
 int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollTop;
     int top;
     if (message == 9) {
@@ -2352,9 +2353,9 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
     return this->m_scrollTop - previous;
   }
 
-  case 6:
+  case UM_COMMAND:
     switch (a1) {
-    case 184:
+    case ID_OK:
       if (this->m_positionMap.size() != 0) {
         reinterpret_cast<std::map<int, GuildPositionEntry>&>(g_guildInfo.unknown_010C) = this->m_positionMap;
         g_modeMgr.gameMode->SendMsg(104, 0, 0, 0, 0);
@@ -2367,10 +2368,10 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
         return 0;
       }
       return 0;
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(59);
       return 0;
-    case 213:
+    case ID_CHECK:
       if (this->unknown_00D0[0] && this->unknown_00FC[0] && this->unknown_0128[0]) {
         for (int index = 0; index < 11; ++index) {
           if (this->unknown_00D0[index] == sender) {
@@ -2401,7 +2402,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       return 0;
-    case 275:
+    case ID_POSNAME_EDIT:
       if (this->unknown_0180[0]) {
         int row = a1 - 275;
         for (int index = 0; index < 11; ++index) {
@@ -2420,7 +2421,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       return 0;
-    case 276:
+    case ID_PAYRATE_EDIT:
       if (this->unknown_0154[0]) {
         int row = a1 - 276;
         for (int index = 0; index < 11; ++index) {
@@ -2459,7 +2460,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
     this->InvalidateChildren();
     return 0;
 
-  case 60:
+  case UM_REFRESH:
     this->m_positions = reinterpret_cast<const std::list<GuildPositionEntry>&>(g_guildInfo.unknown_00D4);
     this->InvalidateChildren();
     if (g_guildInfo.unknown_00B4 && this->m_positionMap.size()) {
@@ -2555,7 +2556,7 @@ void UIGuildMemberManageWnd::Paint() {
 // FUNCTION: fn_13129
 int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 39: {
+  case UM_COMBOBOX_SELECTED: {
     int index = 0;
     for (auto member = this->m_members.begin(); member != this->m_members.end(); ++member, ++index) {
       if (this->m_hoverRow == index) {
@@ -2580,9 +2581,9 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     this->Invalidate();
     return 0;
   }
-  case 6:
+  case UM_COMMAND:
     switch (a1) {
-    case 184:
+    case ID_OK:
       if (!this->unknown_0180.empty()) {
         g_guildInfo.unknown_0104 = this->unknown_0180;
         g_modeMgr.gameMode->SendMsg(103, 0, 0, 0, 0);
@@ -2594,14 +2595,14 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         return 0;
       }
       break;
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(59);
       return 0;
-    case 213:
+    case ID_CHECK:
       g_session.m_guildMemberListSort = !g_session.m_guildMemberListSort;
       this->Invalidate();
       return 0;
-    case 273:
+    case ID_OPEN_MEMBER_POS_COMBO:
       if (this->m_rowButtons[0]) {
         int row = 0;
         int index;
@@ -2640,9 +2641,9 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       break;
     }
     break;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollTop;
     int top;
     if (message == 9) {
@@ -2659,7 +2660,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     }
     return this->m_scrollTop - previous;
   }
-  case 49:
+  case UM_MAKEMENU:
     this->unknown_0150.clear();
     if (g_windowMgr.unknown_0210 != 0) {
       g_windowMgr.CloseWindow(18);
@@ -2725,7 +2726,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       return 0;
     }
     break;
-  case 48: {
+  case UM_MENU_SELECTED: {
     GuildInfo::Member member;
     if ((this->GetMember(this->m_hoverRow, member) && member.name.find(g_guildNamelessTag, 0) != std::string::npos) ||
         !g_playerNameDictionary->Contains(member.characterId)) {
@@ -2734,7 +2735,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     }
 
     switch (this->unknown_0150[a1].value) {
-    case 16: {
+    case MENUID_REMOVE_GUILE_MEMBER: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target)) {
         struct {
@@ -2746,7 +2747,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       }
       break;
     }
-    case 17: {
+    case MENUID_LEAVE_GUILD: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) && target.accountId == static_cast<int>(g_session.m_aid)) {
         *reinterpret_cast<float*>(g_session.unknown_0F54) = static_cast<float>(static_cast<std::uint32_t>(target.characterId));
@@ -2754,21 +2755,21 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       }
       break;
     }
-    case 18: {
+    case MENUID_VIEW_GUILD_MEMBER_INFO: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target)) {
         g_modeMgr.gameMode->SendMsg(109, target.accountId, 0, 0, 0);
       }
       break;
     }
-    case 5: {
+    case MENUID_INVITE_IN_PARTY: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target)) {
         g_modeMgr.gameMode->SendMsg(59, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
       }
       break;
     }
-    case 20: {
+    case MENUID_MAKE_WHISPER_WINDOW: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) == true) {
         const char* relation;
@@ -2810,7 +2811,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     }
     return 0;
   }
-  case 60: {
+  case UM_REFRESH: {
     this->unknown_0180.clear();
     this->m_members = g_guildInfo.m_members;
     this->InvalidateChildren();
@@ -2824,7 +2825,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     this->UpdateScroll();
     return 0;
   }
-  case 106: {
+  case UM_SET_DISABLE: {
     this->m_members = g_guildInfo.m_members;
     const bool enabled = g_guildInfo.unknown_00B4 != 0;
     for (int index = 0; index < 6; ++index) {
@@ -2985,7 +2986,7 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
 // FUNCTION: fn_13127
 int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
-  case 48: {
+  case UM_MENU_SELECTED: {
     CMode* gameMode = g_modeMgr.GetGameMode();
     if (this->unknown_00E0[a1].value != 27) {
       break;
@@ -3026,7 +3027,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     break;
   }
-  case 49:
+  case UM_MAKEMENU:
     this->unknown_00E0.erase(this->unknown_00E0.begin(), this->unknown_00E0.end());
     if (g_windowMgr.unknown_0210 != 0) {
       g_windowMgr.CloseWindow(18);
@@ -3056,12 +3057,12 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       return 0;
     }
     break;
-  case 6:
+  case UM_COMMAND:
     switch (a1) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(59);
       return 0;
-    case 278: {
+    case ID_CHANGE_GUILE_EMBLEM: {
       if (g_windowMgr.unknown_0214 != 0) {
         g_windowMgr.CloseWindow(26);
       }
@@ -3095,9 +3096,9 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       return 0;
     }
     break;
-  case 13:
+  case UM_SETSTATE:
     break;
-  case 39: {
+  case UM_COMBOBOX_SELECTED: {
     if (this->unknown_00D8.size() == 0) {
       break;
     }
@@ -3138,7 +3139,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     return 0;
   }
-  case 60:
+  case UM_REFRESH:
     this->m_guildId = g_guildInfo.m_guildId;
     if (g_guildInfo.unknown_00B4 != 0) {
       this->m_editButton->Move(this->geometry.width - this->m_editButton->geometry.width - 8, 69);

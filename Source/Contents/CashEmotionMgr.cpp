@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -1689,7 +1690,7 @@ void UICashEmotionListChildWnd_Abstract::OnWheel(int delta) {
 // FUNCTION: fn_09345
 int UICashEmotionListChildWnd_Abstract::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 7:
+  case UM_SCROLLVERT:
     this->scrollPosition += argument1;
     if (this->scrollPosition < 0) {
       this->scrollPosition = 0;
@@ -1701,7 +1702,7 @@ int UICashEmotionListChildWnd_Abstract::SendMsg(UIWindow* sender, int message, s
     this->scrollBar->Invalidate();
     this->SendMsg(sender, 60, 0, 0, 0, 0);
     break;
-  case 60:
+  case UM_REFRESH:
     this->Invalidate();
     if (this->parent) {
       this->parent->SendMsg(sender, 60, 0, 0, 0, 0);
@@ -2400,7 +2401,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->RefreshCurrentList();
     return 0;
 
-  case 34:
+  case UM_SETINFO:
     this->m_placement = reinterpret_cast<CashEmotionListWndInfo*>(argument1);
     if (this->m_placement) {
       if (!this->m_placement->IsValid()) {
@@ -2410,7 +2411,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     return 0;
 
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
     case 189:
       if (this->m_searchEdit) {
@@ -2433,7 +2434,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
       return 0;
 
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(87);
       return 0;
 
@@ -2527,7 +2528,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     g_cashEmotionMgr->unknown_01C4 = argument1;
     return this->SetPeriod(argument1);
 
-  case 60:
+  case UM_REFRESH:
     this->Invalidate();
     return 0;
   }
@@ -2855,7 +2856,7 @@ int UICashEmotionMiniWnd::SendMsg(
   std::pair<int, int> entry;
 
   switch (message) {
-  case 60:
+  case UM_REFRESH:
     this->Invalidate();
     return 0;
 
@@ -2864,7 +2865,7 @@ int UICashEmotionMiniWnd::SendMsg(
     entry.second = static_cast<int>(argument2);
     break;
 
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 1) {
       this->Previous();
     } else if (argument1 == 2) {
@@ -3118,7 +3119,7 @@ int UICashEmotionPack::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 60:
+  case UM_REFRESH:
     this->Invalidate();
     if (this->parent) {
       this->parent->SendMsg(sender, 60, 0, 0, 0, 0);
@@ -3224,7 +3225,7 @@ int UICashEmotionPack_Purchase::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 60:
+  case UM_REFRESH:
     this->Invalidate();
     if (this->parent) {
       this->parent->SendMsg(sender, 60, 0, 0, 0, 0);
@@ -3339,7 +3340,7 @@ int UICashEmotionPack_Search_UnPurchased::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 60:
+  case UM_REFRESH:
     this->Invalidate();
     if (this->parent) {
       this->parent->SendMsg(this, 60, 0, 0, 0, 0);
@@ -3541,12 +3542,12 @@ int UICashEmotionPiece::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 189 && this->parent) {
       this->parent->SendMsg(this, 174, this->m_packId, this->m_emotionId, 0, 0);
     }
     return 0;
-  case 60:
+  case UM_REFRESH:
     this->Invalidate();
     if (this->parent) {
       this->parent->SendMsg(this, 60, 0, 0, 0, 0);

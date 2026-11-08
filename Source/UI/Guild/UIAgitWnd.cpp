@@ -1,4 +1,5 @@
 #include "UI/Guild/UIAgitWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
@@ -41,10 +42,10 @@ int UIAgitMessageBox::SendMsg(UIWindow*, int message, std::intptr_t a, std::intp
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, d);
     switch (response) {
-    case 187:
+    case ID_YES:
       g_modeMgr.GetGameMode()->SendMsg(315, this->m_agitId, 0, 0, 0);
       [[fallthrough]];
-    case 188:
+    case ID_NO:
       g_windowMgr.Schedule(this);
     }
   }

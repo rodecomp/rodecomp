@@ -1,4 +1,5 @@
 #include "Contents/Jobs/JobId.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "UI/Window/UINewSkillListWnd.h"
 #include "Client/Mode/CGameMode.h"
@@ -1300,7 +1301,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   CMode* gameMode = g_modeMgr.gameMode;
 
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->m_saved = reinterpret_cast<SkillListWndInfo*>(a);
     if (this->m_saved->IsValid() == 0) {
       this->m_saved->Reset();
@@ -1311,7 +1312,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->SendMsg(nullptr, 14, 3, 560, 400, 0);
     }
     return 0;
-  case 14:
+  case UM_RESIZE:
     if (a == 3) {
       if (gate != 0) {
         const int minimum = this->m_tabs->geometry.height + 12;
@@ -1335,12 +1336,12 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
     break;
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(37);
       return 0;
-    case 271:
+    case ID_APPLY:
       if (g_windowMgr.Confirm(LookupMessage(1377), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         this->ApplySkillPoints();
         this->SendMsg(nullptr, 23, 0, 0, 0, 0);
@@ -1354,7 +1355,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->ResetLists();
       this->SendMsg(nullptr, 23, 0, 0, 0, 0);
       return 0;
-    case 202:
+    case ID_MINI:
       this->StoreInfo();
       this->m_needsRedraw = 1;
       gate = gate == 0;
@@ -1364,18 +1365,18 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         this->SendMsg(nullptr, 14, 3, 560, 400, 0);
       }
       return 0;
-    case 213: {
+    case ID_CHECK: {
       int& flag = g_session.m_showSkillDescription;
       flag = flag == 0;
       return 0;
     }
-    case 239:
-    case 240:
-    case 241:
-    case 242:
-    case 243:
-    case 244:
-    case 245:
+    case ID_LVLUP1:
+    case ID_LVLUP2:
+    case ID_LVLUP3:
+    case ID_LVLUP4:
+    case ID_LVLUP5:
+    case ID_LVLUP6:
+    case ID_LVLUP7:
     case 246:
     case 247:
     case 248:
@@ -1421,7 +1422,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     }
     break;
-  case 22: {
+  case UM_TAB: {
     std::list<CSkillInfo>& list = this->SkillList(a, false);
     if (!this->IsExtraTab(a) && list.size() == 0) {
       this->m_tabs->unknown_007C = this->m_tab;
@@ -1441,19 +1442,19 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->Invalidate();
     return 0;
   }
-  case 23:
+  case UM_REFRESHITEM:
     this->ResetLists();
     g_session.m_skillBundle.NumberExtra();
     this->UpdateScrollBar();
     this->LayoutButtons();
     this->Invalidate();
     return 0;
-  case 60:
+  case UM_REFRESH:
     this->InitTabs();
     return 0;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_firstRow;
     int next;
     if (message == 9) {
@@ -1473,7 +1474,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     return next - previous;
   }
-  case 58: {
+  case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
     if (skill->level != 0) {
       gameMode->SendMsg(113, a, g_session.UseLevel(skill->id), 0, 0);

@@ -1,4 +1,5 @@
 #include "Contents/Effects/ViolentQuakeEffect.h"
+#include "Contents/Effects/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -58,7 +59,7 @@ void CViolentQuakeEffect::Close() {
 // FUNCTION: fn_07533
 void CViolentQuakeEffect::Open() {
   switch (this->id) {
-  case 1760: {
+  case EF_UNK_1760: {
     CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     emitter->Load(FormatOwnedString("violentquake\\violentquake\\violentquake_%02d.str", std::max(rand() % 3, 0) + 1));
     emitter->unknown_00D0 = 0.0f;
@@ -68,7 +69,7 @@ void CViolentQuakeEffect::Open() {
     this->AddEvent(0, "effect\\AG_VIOLENT_QUAKE.wav", 0, 0);
     break;
   }
-  case 1798:
+  case EF_UNK_1798:
     this->InitAllBloom();
     break;
   }

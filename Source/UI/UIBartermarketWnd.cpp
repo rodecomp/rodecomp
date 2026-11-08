@@ -1,4 +1,5 @@
 #include "UI/UIBartermarketWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
@@ -487,7 +488,7 @@ void UIExpandedBartermarketWnd::UpdateScrollBar() {
 // FUNCTION: fn_10598
 int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     std::pair<bool, BarterMarketEntry> found = g_expandedBarterMarketItemMgr->FindItem(mode->drag.unknown_03B0);
     if (!found.first) {
@@ -578,7 +579,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
     return 0;
   }
 
-  case 6: {
+  case UM_COMMAND: {
     CMode* mode = g_modeMgr.GetGameMode();
     if (a == 184) {
       if (this->Purchase()) {
@@ -593,7 +594,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
     return 0;
   }
 
-  case 14: {
+  case UM_RESIZE: {
     if (a != 3) {
       return 0;
     }
@@ -621,9 +622,9 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
     return 0;
   }
 
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->unknown_00C4;
     if (message == 9) {
       this->unknown_00C4 = previous - this->rowCount + 1;
@@ -641,7 +642,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
     return this->unknown_00C4 - previous;
   }
 
-  case 23: {
+  case UM_REFRESHITEM: {
     this->Entries().erase(this->Entries().begin(), this->Entries().end());
     std::vector<BarterMarketEntry>* entries = g_expandedBarterMarketItemMgr->GetEntries();
     for (std::vector<BarterMarketEntry>::iterator it = entries->begin(); it != entries->end(); ++it) {
@@ -661,7 +662,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
 // FUNCTION: fn_10599
 int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     std::pair<bool, BarterMarketEntry> found = g_expandedBarterMarketItemMgr->FindEntry(mode->drag.unknown_03B0);
     if (found.first) {
@@ -674,7 +675,7 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
     return 0;
   }
 
-  case 14: {
+  case UM_RESIZE: {
     if (a != 7) {
       return 0;
     }
@@ -705,9 +706,9 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
     return 0;
   }
 
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->unknown_00C4;
     if (message == 9) {
       this->unknown_00C4 = previous - this->rowCount + 1;
@@ -725,7 +726,7 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
     return this->unknown_00C4 - previous;
   }
 
-  case 23: {
+  case UM_REFRESHITEM: {
     this->Entries().clear();
     std::vector<BarterMarketEntry>* items = g_expandedBarterMarketItemMgr->GetItems();
     for (std::vector<BarterMarketEntry>::iterator it = items->begin(); it != items->end(); ++it) {
@@ -1245,7 +1246,7 @@ void UIBarterItemPurchaseWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_10563
 int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34: {
+  case UM_SETINFO: {
     this->saved = reinterpret_cast<ItemPurchaseWndInfo*>(a);
     if (!this->saved) {
       return 0;
@@ -1258,7 +1259,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     return 0;
   }
 
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (!mode) {
       return 0;
@@ -1330,7 +1331,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     return 0;
   }
 
-  case 6: {
+  case UM_COMMAND: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (!mode) {
       return 0;
@@ -1350,7 +1351,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     return 0;
   }
 
-  case 14: {
+  case UM_RESIZE: {
     if (a != 3) {
       return 0;
     }
@@ -1387,7 +1388,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     return 0;
   }
 
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.clear();
     std::list<BarterMarketItem>* items = g_barterMarketItemMgr->GetAllItems();
     for (std::list<BarterMarketItem>::iterator it = items->begin(); it != items->end(); ++it) {
@@ -1451,7 +1452,7 @@ void UIExpandedBarterItemPurchaseWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_10564
 int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 34: {
+  case UM_SETINFO: {
     this->saved = reinterpret_cast<ItemShopWndInfo*>(a);
     if (a == 0) {
       return 0;
@@ -1464,7 +1465,7 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return 0;
   }
 
-  case 38: {
+  case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (!mode) {
       return 0;
@@ -1487,7 +1488,7 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return 0;
   }
 
-  case 14: {
+  case UM_RESIZE: {
     if (a == 7) {
       int width = b <= 320 ? static_cast<int>(b) : 320;
       int height = c <= 336 ? static_cast<int>(c) : 336;
@@ -1516,7 +1517,7 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return 0;
   }
 
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.clear();
     std::list<BarterMarketItem>* items = g_barterMarketItemMgr->GetItems();
     for (std::list<BarterMarketItem>::iterator it = items->begin(); it != items->end(); ++it) {

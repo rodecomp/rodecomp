@@ -1,4 +1,5 @@
 #include "UI/Items/UIMakeTargetProcessWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
@@ -172,12 +173,12 @@ void UIMakeTargetProcessWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_13617
 int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 40:
+  case UM_SETCURITEM:
     this->makeType = static_cast<int>(a);
     this->Invalidate();
     return 0;
 
-  case 75: {
+  case UM_CLEAR_ITEM: {
     const char* name = reinterpret_cast<const char*>(a);
     for (int index = 2; index >= 0; --index) {
       ITEM_INFO& material = this->materials[index];
@@ -192,17 +193,17 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     return 0;
   }
 
-  case 6: {
+  case UM_COMMAND: {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, d);
 
     switch (response) {
-    case 184:
+    case ID_OK:
       g_modeMgr.GetGameMode()->SendMsg(130, this->makeType, reinterpret_cast<int>(this->materials), 0, 0);
       g_windowMgr.CloseWindow(80);
       return 0;
 
-    case 185: {
+    case ID_CANCEL: {
       g_modeMgr.GetGameMode()->SendMsg(130, 0, reinterpret_cast<int>(this->materials), 0, 0);
       bool restored = false;
       for (int index = 0; index < 3; ++index) {

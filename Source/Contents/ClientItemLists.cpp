@@ -1,3 +1,4 @@
+#include "Network/Packets/NoticeEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Combat/CombatTypes.h"
 #include "Contents/Items/InventoryType.h"
@@ -363,7 +364,7 @@ void ReceiveFriendAddResult(const unsigned char* data) {
   char buffer[128];
   int message;
   switch (packet->result) {
-    case 0: {
+    case FRIEND_ADD_SUCCEED: {
       std::sprintf(buffer, LookupMessage(821), name);
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0xFFFF00, 0, 0, 0);
 
@@ -376,13 +377,13 @@ void ReceiveFriendAddResult(const unsigned char* data) {
       g_session.RefreshWindow02C8();
       return;
     }
-    case 1:
+    case FRIEND_ADD_FALSE:
       message = 822;
       break;
-    case 2:
+    case FRIEND_ADD_ME_OVERSIZE:
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(819)), 0xFF, 0, 0, 0);
       return;
-    case 3:
+    case FRIEND_ADD_OTHER_OVERSIZE:
       message = 820;
       break;
     case 4:
@@ -1192,19 +1193,19 @@ EquipSlots CSession::GetEquipSlots(int location) {
   case EQP_COSTUME_HEAD_MID:
     mask = 0x200;
     break;
-  case 0xC00:
+  case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID:
     mask = 0x300;
     break;
   case EQP_COSTUME_HEAD_LOW:
     mask = 1;
     break;
-  case 0x1400:
+  case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW:
     mask = 0x101;
     break;
-  case 0x1800:
+  case EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
     mask = 0x201;
     break;
-  case 0x1C00:
+  case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
     mask = 0x301;
     break;
   case EQP_COSTUME_GARMENT:

@@ -1,4 +1,5 @@
 #include "Script/LuaScript.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/UIHotkeyGuideWnd.h"
@@ -297,7 +298,7 @@ int UIHotkeyGuideWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
     }
       [[fallthrough]];
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(303);
     }
   }

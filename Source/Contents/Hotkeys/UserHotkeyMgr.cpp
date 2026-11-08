@@ -1,26 +1,11 @@
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
+#include "Contents/Hotkeys/InterfaceHotkey.h"
 #include "Network/TextEncoding.h"
 
 #include <new>
 
 namespace {
-  enum InterfaceHotkey {
-    HK_BATTLEFIELDWND = 30,
-    HK_PARTY_RECRUIT = 33,
-    HK_PARTY_BOOKING_LIST = 34,
-    HK_EXMACRO_SETUPWND = 36,
-    HK_BUTTONS_RELOCATE = 43,
-    HK_MENUICON_HIDE = 45,
-    HK_TWITTERWND = 53,
-    HK_HUNTINGQUEST_INFO_ONOFF = 58,
-    HK_UNKNOWN_62 = 62,
-    HK_UNKNOWN_64 = 64,
-    HK_UNKNOWN_65 = 65,
-    HK_UNKNOWN_66 = 66,
-    HK_UNKNOWN_67 = 67,
-    HK_FIRST_HIDDEN = HK_BATTLEFIELDWND,
-  };
 
   // INLINED
   bool HiddenInterfaceIndex(int index) {

@@ -1,4 +1,5 @@
 #include "Contents/MessageTable.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Input/Language.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -464,7 +465,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   const int value = static_cast<int>(a);
 
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<AdvenPartyBoardWndInfo*>(a);
 
     if (!this->saved->IsValid()) {
@@ -473,18 +474,18 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 60:
+  case UM_REFRESH:
     this->RefreshRows();
     return 0;
   case 165:
     this->UpdatePagination();
     return 0;
-  case 6:
+  case UM_COMMAND:
     switch (value) {
-    case 363:
+    case ID_RESET:
       this->ResetSearch();
       break;
-    case 246:
+    case ID_PREV:
       this->page = (this->page - 1);
 
       if (this->searching == 1) {
@@ -494,7 +495,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
 
       break;
-    case 218:
+    case ID_NEXT:
       this->page = (this->page + 1);
       DisableButton(this->previous, 1);
       this->previous->Invalidate();
@@ -511,7 +512,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     case 365:
       this->Search(static_cast<int>(c));
       break;
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(324);
       break;
     case 379: {
@@ -571,7 +572,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
 
     return 0;
-  case 39:
+  case UM_COMBOBOX_SELECTED:
     if (sender == this->types) {
       this->selectedType = value;
     }

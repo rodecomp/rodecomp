@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "UI/Lists/UIComboBox.h"
 #include "UI/Lists/UIListBoxID.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -11,7 +12,7 @@ int UIComboBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
   const int value = static_cast<int>(argument1);
 
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
       target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
     }
@@ -21,7 +22,7 @@ int UIComboBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     }
 
     return 0;
-  case 18:
+  case UM_UPPUSH:
     if (this->lines.size() == 0) {
       return 0;
     }
@@ -36,7 +37,7 @@ int UIComboBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     }
 
     break;
-  case 19:
+  case UM_DOWNPUSH:
     if (this->lines.size() == 0) {
       return 0;
     }
@@ -55,14 +56,14 @@ int UIComboBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     }
 
     break;
-  case 31:
+  case UM_ADDITEM:
     this->AddLine(reinterpret_cast<const char*>(argument1));
     this->Invalidate();
     return 0;
-  case 83:
+  case UM_SET_CALLER_WID:
     this->targetId = value;
     return 0;
-  case 40:
+  case UM_SETCURITEM:
     this->selected = value;
     if (value < 0) {
       this->selected = 0;
@@ -88,7 +89,7 @@ int UIComboBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   const int value = static_cast<int>(argument1);
 
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
       int extra = 0;
       const auto found = this->unknown_00C4.find(this->selected);
@@ -106,7 +107,7 @@ int UIComboBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
 
     return 0;
-  case 18:
+  case UM_UPPUSH:
     if (this->lines.size() == 0) {
       return 0;
     }
@@ -121,7 +122,7 @@ int UIComboBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
 
     break;
-  case 19:
+  case UM_DOWNPUSH:
     if (this->lines.size() == 0) {
       return 0;
     }
@@ -140,14 +141,14 @@ int UIComboBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
 
     break;
-  case 31:
+  case UM_ADDITEM:
     this->AddLine(reinterpret_cast<const char*>(argument1), static_cast<int>(argument2), static_cast<int>(argument3));
     this->Invalidate();
     return 0;
-  case 83:
+  case UM_SET_CALLER_WID:
     this->targetId = value;
     return 0;
-  case 40:
+  case UM_SETCURITEM:
     this->selected = value;
     if (value < 0) {
       this->selected = 0;

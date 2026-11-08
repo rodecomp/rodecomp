@@ -51,7 +51,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
       window = new UISerachStoreInfoWnd();
       g_searchStoreInfoCreated = true;
       break;
-    case 0xD1:
+    case WID_ENTRYQUEUESTANDBYWND:
       window = new UIEntryQueueStandByWnd();
       break;
     }

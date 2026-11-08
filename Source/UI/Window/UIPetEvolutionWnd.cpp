@@ -1,4 +1,5 @@
 #include "UI/Window/UIPetEvolutionWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Session.h"
 #include "Contents/Items/ItemInfo.h"
@@ -133,7 +134,7 @@ namespace {
 // FUNCTION: fn_13765
 int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     if (argument1 == 184) {
       std::vector<std::uint16_t> materials;
       for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
@@ -166,7 +167,7 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     }
     break;
 
-  case 98: {
+  case UM_TEXT_LBTN_UP: {
     ITEM_INFO item;
     item.SetItemId(argument1);
     item.identified = 1;

@@ -1,3 +1,4 @@
+#include "Contents/Effects/EffectPrimId.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
@@ -179,14 +180,14 @@ void CEffectPrim::Render(int argument) {
   }
 
   switch (this->state.count) {
-    case 0:
-    case 1:
+    case PP_2DTEXTURE:
+    case PP_2DTEXTUREORBIT:
       this->Render2DPrimitive();
       break;
-    case 2:
+    case PP_2DQUAD:
       this->Render2DDiamond();
       break;
-    case 3: {
+    case PP_2DFLASH: {
       const float firstCos = ClientCosine(static_cast<int>(this->state.longitude - this->state.arcAngle));
       const float firstSin = ClientSine(static_cast<int>(this->state.longitude - this->state.arcAngle));
       const float secondCos = ClientCosine(static_cast<int>(this->state.longitude + this->state.arcAngle));
@@ -220,20 +221,20 @@ void CEffectPrim::Render(int argument) {
       g_renderer->queues.SubmitTriangle(triangle, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
       break;
     }
-    case 4:
+    case PP_2DCIRCLE:
       this->Render2DCircle();
       break;
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 21:
-    case 40:
+    case PP_3DPARTICLE:
+    case PP_3DPARTICLEGRAVITY:
+    case PP_3DPARTICLEORBIT:
+    case PP_3DPARTICLESPLINE:
+    case PP_3DPARTICLE_NOMASTER:
+    case PP_SAKURA:
     case 46:
     case 51:
-    case 84:
-    case 85:
-    case 124:
+    case PP_GHOST:
+    case PP_SUPERANGEL:
+    case PP_KOUENKA:
       this->RenderSegmentSprites2(wtm);
       break;
     case 167:
@@ -248,14 +249,14 @@ void CEffectPrim::Render(int argument) {
     case 168:
       this->RenderGroundSprite(wtm);
       break;
-    case 9:
-    case 117:
+    case PP_3DQUADHORN:
+    case PP_3DQUADHORN2:
       this->RenderPyramid(wtm);
       break;
-    case 15:
+    case PP_3DTEXTURE:
       this->DrawEffectPrimitive15(wtm);
       break;
-    case 22: {
+    case PP_3DTEXTURE_NOMASTER: {
       float x;
       float y;
       float reciprocalDepth;
@@ -314,16 +315,16 @@ void CEffectPrim::Render(int argument) {
       g_renderer->queues.SubmitTriangle(second, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
       break;
     }
-    case 16:
+    case PP_3DCROSSTEXTURE:
       this->RenderCrossPlanes(wtm);
       break;
-    case 12:
+    case PP_3DCIRCLE:
       this->RenderRecordRings(wtm);
       break;
-    case 13:
+    case PP_3DCYLINDER:
       this->RenderArcBand(wtm);
       break;
-    case 104:
+    case PP_HALFSPHERE:
       this->RenderHalfSphere(wtm);
       break;
     case 146:
@@ -344,32 +345,32 @@ void CEffectPrim::Render(int argument) {
     case 137:
       this->RenderArcWalls(wtm);
       break;
-    case 121:
+    case PP_SMA2:
       this->RenderSMA2(wtm);
       break;
-    case 73:
+    case PP_MAGNUM2:
       this->RenderMagnum2(wtm);
       break;
-    case 61:
+    case PP_GUARD:
       this->RenderSphereCage(wtm);
       break;
     case 105:
       this->RenderCone(wtm);
       break;
-    case 106:
+    case PP_ATTACKENERGY2:
       this->RenderAttackEnergy2(wtm);
       break;
-    case 76:
+    case PP_SAINTWING:
       this->RenderSaintWing(wtm);
       break;
-    case 77:
-    case 91:
+    case PP_SPHEREWIND:
+    case PP_SPHEREWIND2:
       this->RenderSphereWind(wtm);
       break;
-    case 78:
+    case PP_COLORPAPER:
       this->RenderColorPaper(wtm);
       break;
-    case 62:
+    case PP_WIND:
       this->RenderRiseArc(wtm);
       break;
     case 26:
@@ -386,35 +387,35 @@ void CEffectPrim::Render(int argument) {
     case 148:
       this->RenderGroundSquareBlend(wtm);
       break;
-    case 114:
+    case PP_HERMODE:
       this->RenderHermode(wtm);
       break;
-    case 68:
+    case PP_ASURACASTING:
     case 147:
       this->RenderHaloLayers(wtm);
       break;
     case 131:
       this->RenderRipple(wtm);
       break;
-    case 70:
+    case PP_HITLINE:
       this->RenderHitLine(wtm);
       break;
-    case 100:
+    case PP_HITLINE3:
       this->RenderHitLine3(wtm);
       break;
     case 103:
       this->RenderStackedRings(wtm);
       break;
-    case 101:
+    case PP_ELECTRIC:
       this->RenderLightningArc(wtm);
       break;
     case 135:
       this->RenderJitterSweeps(wtm);
       break;
-    case 102:
+    case PP_ELECTRIC2:
       this->RenderLightningTube(wtm);
       break;
-    case 27:
+    case PP_MAPPARTICLE:
       this->RenderGroundBubbles(wtm);
       break;
     case 29:
@@ -427,7 +428,7 @@ void CEffectPrim::Render(int argument) {
     case 130:
       this->RenderFacingQuads(wtm);
       break;
-    case 111:
+    case PP_SOULPARTICLE:
     case 115:
       this->RenderSoulParticle(wtm);
       break;
@@ -438,28 +439,28 @@ void CEffectPrim::Render(int argument) {
     case 157:
       this->RenderGlowSquare(wtm);
       break;
-    case 109:
+    case PP_SOULLINK:
       this->RenderSoulLink(wtm);
       break;
     case 151:
       this->RenderLaunchEffects(wtm);
       break;
-    case 96:
+    case PP_PEONGUP:
       this->RenderPeongUp(wtm);
       break;
-    case 94:
+    case PP_PEONG:
       this->RenderPeong(wtm);
       break;
     case 35: {
       this->RenderOrbitIcons(wtm, 1.0f, 100, 100, 255);
       break;
     }
-    case 99:
+    case PP_DOUBLEGUMGANG:
       this->RenderDoubleGumGang(wtm);
       break;
-    case 23:
-    case 24:
-    case 25:
+    case PP_3DCASTING:
+    case PP_3DCASTING_2:
+    case PP_3DCASTING_3:
     case 30:
     case 31:
     case 41:
@@ -467,38 +468,38 @@ void CEffectPrim::Render(int argument) {
     case 57:
     case 60:
     case 63:
-    case 65:
-    case 107:
-    case 108:
+    case PP_3DCASTING_4:
+    case PP_3DCASTING_5:
+    case PP_FLOWERCAST:
     case 113:
-    case 118:
+    case PP_ACIDDEMON:
     case 139:
       this->Render3DCasting(wtm);
       break;
     case 36:
-    case 110:
+    case PP_HEAL_LOW:
     case 169:
       this->Render3DCasting_LowPolygon(wtm);
       break;
-    case 34:
+    case PP_GI_3:
       this->Render3DCasting2(wtm);
       break;
-    case 37:
+    case PP_GRANDCROSS2:
       this->RenderGrandCross2(wtm);
       break;
-    case 75:
+    case PP_SLASH1:
       this->RenderSlash1(wtm);
       break;
-    case 64:
+    case PP_RECT_UP:
       this->RenderRectUp(wtm);
       break;
-    case 90:
+    case PP_RECT_UP2:
       this->RenderRectUp2(wtm);
       break;
     case 132:
       this->RenderColorPanel(wtm);
       break;
-    case 43:
+    case PP_INTIMIDATE:
       this->RenderOrbitSquare(wtm);
       break;
     case 44:
@@ -510,13 +511,13 @@ void CEffectPrim::Render(int argument) {
       break;
     case 119:
     case 122:
-    case 125:
+    case PP_STIN4:
       this->RenderFloorSquare2(wtm);
       break;
     case 126:
       this->RenderRotatedRing(wtm);
       break;
-    case 120:
+    case PP_SMA:
       this->RenderSMA3(wtm);
       break;
     case 98:
@@ -532,18 +533,18 @@ void CEffectPrim::Render(int argument) {
       this->RenderTwinFacingSquares(wtm);
       break;
     case 33:
-    case 42:
-    case 45:
-    case 47:
-    case 49:
-    case 53:
-    case 58:
-    case 59:
+    case PP_SHIELDBOOMERANG:
+    case PP_TEIHIT2:
+    case PP_BOTTOM:
+    case PP_BOTTOMOUT:
+    case PP_THROWITEM:
+    case PP_FIRSTAID:
+    case PP_PARTICLE_UP:
     case 87:
-    case 97:
-    case 116:
-    case 123:
-    case 127:
+    case PP_TANJI2:
+    case PP_SHIELDBOOMERANG3:
+    case PP_TWILIGHT:
+    case PP_BUBBLE_DROP:
       this->RenderFieldPanel(wtm);
       break;
     case 156:
@@ -553,8 +554,8 @@ void CEffectPrim::Render(int argument) {
       this->RenderSpinSquares(wtm);
       break;
     case 82:
-    case 95:
-    case 128:
+    case PP_EFFECTTEXTURE2:
+    case PP_EFFECTTEXTURE_ANI:
     case 140:
       this->RenderTeiFacingSlots(wtm);
       break;
@@ -570,7 +571,7 @@ void CEffectPrim::Render(int argument) {
     case 134:
       this->RenderBladeTrail(wtm);
       break;
-    case 54:
+    case PP_CHEMICALPROTECTION:
       this->RenderChemical(wtm);
       break;
     case 89:
@@ -594,10 +595,10 @@ void CEffectPrim::Render(int argument) {
     case 166:
       this->RenderFoldingRibbon(wtm);
       break;
-    case 55:
+    case PP_CHEMICAL2:
       this->RenderFloorRect(wtm);
       break;
-    case 56:
+    case PP_CHEMICAL3:
       this->RenderGroundBar(wtm);
       break;
     case 154:
@@ -609,7 +610,7 @@ void CEffectPrim::Render(int argument) {
     case 74:
       this->RenderHalfSphere2(wtm);
       break;
-    case 71:
+    case PP_BLIND:
       this->RenderBlind(wtm);
       break;
     case 72:
@@ -646,16 +647,16 @@ void CEffectPrim::Render(int argument) {
       }
       break;
     }
-    case 52:
+    case PP_POKJUK:
       this->RenderTrailSquares(wtm);
       break;
-    case 38:
+    case PP_LINELINK:
       this->RenderTube(wtm);
       break;
     case 69:
       this->RenderPentaRing(wtm);
       break;
-    case 66:
+    case PP_FOREST:
       this->RenderPentagon(wtm);
       break;
     case 129: {
@@ -697,23 +698,23 @@ void CEffectPrim::Render(int argument) {
     case 142:
       this->RenderStandingPanels(wtm);
       break;
-    case 93:
+    case PP_RAINBOW:
       this->RenderRainbow(wtm);
       break;
     case 81:
       this->RenderBeam(wtm);
       break;
-    case 48:
+    case PP_BOTTOM2:
       this->RenderColorPlane(wtm);
       break;
-    case 10:
-    case 11:
+    case PP_3DSPLINE:
+    case PP_3DSPIRAL:
       this->RenderRecordQuads(wtm);
       break;
-    case 14:
+    case PP_3DSPHERE:
       this->RenderSphere(wtm);
       break;
-    case 19: {
+    case PP_3DFLASH: {
       const float firstCos = ClientCosine(static_cast<int>(this->state.longitude - this->state.arcAngle));
       const float firstSin = ClientSine(static_cast<int>(this->state.longitude - this->state.arcAngle));
       const float secondCos = ClientCosine(static_cast<int>(this->state.longitude + this->state.arcAngle));
@@ -747,7 +748,7 @@ void CEffectPrim::Render(int argument) {
       g_renderer->queues.SubmitTriangle(triangle, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
       break;
     }
-    case 20: {
+    case PP_3DLINE: {
       float position[3] = {this->render.position.x, this->render.position.y, this->render.position.z};
       RenderVertex top{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       g_renderer->viewport.Project(position, wtm.values, top);

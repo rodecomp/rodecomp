@@ -1,4 +1,5 @@
 #include "Contents/Actors/MercenaryAI.h"
+#include "Contents/Actors/ActorEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -380,11 +381,11 @@ int AiHomunGetV(lua_State* state) {
 
   double result = 0.0;
   switch (property) {
-  case 0:
+  case V_OWNER:
     result = static_cast<double>(g_session.m_aid);
     break;
 
-  case 1:
+  case V_POSITION:
   case 13:
     if (actor) {
       if (aid != g_session.m_aid) {
@@ -447,7 +448,7 @@ int AiHomunGetV(lua_State* state) {
   case 2:
     return 1;
 
-  case 3:
+  case V_MOTION:
     if (!actor) {
       result = -1.0;
     } else {
@@ -455,7 +456,7 @@ int AiHomunGetV(lua_State* state) {
     }
     break;
 
-  case 4: {
+  case V_ATTACKRANGE: {
     int range = *reinterpret_cast<const int*>(&g_session.unknown_5620[4]);
     if (!actor || range == 0) {
       result = -1.0;
@@ -465,7 +466,7 @@ int AiHomunGetV(lua_State* state) {
     break;
   }
 
-  case 5:
+  case V_TARGET:
     if (!actor) {
       result = -1.0;
     } else {
@@ -473,7 +474,7 @@ int AiHomunGetV(lua_State* state) {
     }
     break;
 
-  case 6:
+  case V_SKILLATTACKRANGE:
   case 14: {
     std::uint32_t skillId = static_cast<std::uint32_t>(lua_tonumber(state, 3));
     CSkillInfo skill = g_session.LookupHomunSkill(skillId);
@@ -492,7 +493,7 @@ int AiHomunGetV(lua_State* state) {
     return 1;
   }
 
-  case 7:
+  case V_HOMUNTYPE:
     if (!actor) {
       result = -1.0;
     } else {
@@ -500,7 +501,7 @@ int AiHomunGetV(lua_State* state) {
     }
     break;
 
-  case 8:
+  case V_HP:
     if (aid == g_session.m_aid) {
       result = static_cast<double>(g_session.unknown_5568);
     } else if (!g_session.IsHomunAid(aid)) {
@@ -510,7 +511,7 @@ int AiHomunGetV(lua_State* state) {
     }
     break;
 
-  case 9:
+  case V_SP:
     if (aid == g_session.m_aid) {
       result = static_cast<double>(*reinterpret_cast<const int*>(&g_session.unknown_5570[0]));
     } else if (!g_session.IsHomunAid(aid)) {
@@ -520,7 +521,7 @@ int AiHomunGetV(lua_State* state) {
     }
     break;
 
-  case 10:
+  case V_MAXHP:
     if (aid == g_session.m_aid) {
       result = static_cast<double>(g_session.unknown_556C);
     } else if (!g_session.IsHomunAid(aid)) {
@@ -530,7 +531,7 @@ int AiHomunGetV(lua_State* state) {
     }
     break;
 
-  case 11:
+  case V_MAXSP:
     if (aid == g_session.m_aid) {
       result = static_cast<double>(*reinterpret_cast<const int*>(&g_session.unknown_5570[4]));
     } else if (!g_session.IsHomunAid(aid)) {
@@ -564,11 +565,11 @@ int AiMercenaryGetV(lua_State* state) {
 
   double result = 0.0;
   switch (property) {
-  case 0:
+  case V_OWNER:
     result = static_cast<double>(g_session.m_aid);
     break;
 
-  case 1:
+  case V_POSITION:
   case 13:
     if (actor) {
       if (aid != g_session.m_aid) {
@@ -632,7 +633,7 @@ int AiMercenaryGetV(lua_State* state) {
   case 2:
     return 1;
 
-  case 3:
+  case V_MOTION:
     if (!actor) {
       result = -1.0;
     } else {
@@ -640,7 +641,7 @@ int AiMercenaryGetV(lua_State* state) {
     }
     break;
 
-  case 4: {
+  case V_ATTACKRANGE: {
     int range = *reinterpret_cast<const int*>(&g_session.unknown_5690[0]);
     if (!actor || range == 0) {
       result = -1.0;
@@ -650,7 +651,7 @@ int AiMercenaryGetV(lua_State* state) {
     break;
   }
 
-  case 5:
+  case V_TARGET:
     if (!actor || actor->render.unknown_0070 == 3) {
       result = -1.0;
     } else {
@@ -658,7 +659,7 @@ int AiMercenaryGetV(lua_State* state) {
     }
     break;
 
-  case 6:
+  case V_SKILLATTACKRANGE:
   case 14: {
     std::uint32_t skillId = static_cast<std::uint32_t>(lua_tonumber(state, 3));
     CSkillInfo skill = g_session.LookupMercSkill(skillId);
@@ -677,7 +678,7 @@ int AiMercenaryGetV(lua_State* state) {
     return 1;
   }
 
-  case 8:
+  case V_HP:
     if (aid == g_session.m_aid) {
       result = static_cast<double>(g_session.unknown_5568);
     } else if (!g_session.IsMercenaryAid(aid)) {
@@ -687,7 +688,7 @@ int AiMercenaryGetV(lua_State* state) {
     }
     break;
 
-  case 9:
+  case V_SP:
     if (aid == g_session.m_aid) {
       result = static_cast<double>(*reinterpret_cast<const int*>(&g_session.unknown_5570[0]));
     } else if (!g_session.IsMercenaryAid(aid)) {
@@ -697,7 +698,7 @@ int AiMercenaryGetV(lua_State* state) {
     }
     break;
 
-  case 10:
+  case V_MAXHP:
     if (aid == g_session.m_aid) {
       result = static_cast<double>(g_session.unknown_556C);
     } else if (!g_session.IsMercenaryAid(aid)) {
@@ -707,7 +708,7 @@ int AiMercenaryGetV(lua_State* state) {
     }
     break;
 
-  case 11:
+  case V_MAXSP:
     if (aid == g_session.m_aid) {
       result = static_cast<double>(*reinterpret_cast<const int*>(&g_session.unknown_5570[4]));
     } else if (!g_session.IsMercenaryAid(aid)) {
@@ -717,7 +718,7 @@ int AiMercenaryGetV(lua_State* state) {
     }
     break;
 
-  case 12:
+  case V_MERTYPE:
     if (!actor) {
       result = -1.0;
     } else {
@@ -874,21 +875,21 @@ int AiGetMsg(lua_State* state) {
   lua_pushnumber(state, message.type);
   lua_settable(state, -3);
   switch (message.type) {
-  case 1:
-  case 4:
-  case 5:
+  case MOVE_CMD:
+  case ATTACK_AREA_CMD:
+  case PATROL_CMD:
     AiSetTableNumber(state, 2, message.x);
     AiSetTableNumber(state, 3, message.y);
     break;
-  case 3:
+  case ATTACK_OBJECT_CMD:
     AiSetTableNumber(state, 2, message.target);
     break;
-  case 7:
+  case SKILL_OBJECT_CMD:
     AiSetTableNumber(state, 2, message.level);
     AiSetTableNumber(state, 3, message.skill);
     AiSetTableNumber(state, 4, message.target);
     break;
-  case 8:
+  case SKILL_AREA_CMD:
     AiSetTableNumber(state, 2, message.level);
     AiSetTableNumber(state, 3, message.skill);
     AiSetTableNumber(state, 4, message.x);
@@ -925,21 +926,21 @@ int AiGetResMsg(lua_State* state) {
   lua_pushnumber(state, message.type);
   lua_settable(state, -3);
   switch (message.type) {
-  case 1:
-  case 4:
-  case 5:
+  case MOVE_CMD:
+  case ATTACK_AREA_CMD:
+  case PATROL_CMD:
     AiSetTableNumber(state, 2, message.x);
     AiSetTableNumber(state, 3, message.y);
     break;
-  case 3:
+  case ATTACK_OBJECT_CMD:
     AiSetTableNumber(state, 2, message.target);
     break;
-  case 7:
+  case SKILL_OBJECT_CMD:
     AiSetTableNumber(state, 2, message.level);
     AiSetTableNumber(state, 3, message.skill);
     AiSetTableNumber(state, 4, message.target);
     break;
-  case 8:
+  case SKILL_AREA_CMD:
     AiSetTableNumber(state, 2, message.level);
     AiSetTableNumber(state, 3, message.skill);
     AiSetTableNumber(state, 4, message.x);

@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
@@ -23,15 +24,15 @@ UIJoinPartyAcceptWnd::~UIJoinPartyAcceptWnd() = default;
 // FUNCTION: fn_12353
 int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     this->RecordResponse(static_cast<int>(a), b, c, d);
 
     switch (a) {
-    case 184:
+    case ID_OK:
       g_windowMgr.CloseWindow(35);
       g_modeMgr.gameMode->SendMsg(60, this->identity, 1, 0, 0);
       break;
-    case 185:
+    case ID_CANCEL:
       g_windowMgr.CloseWindow(35);
       g_modeMgr.gameMode->SendMsg(60, this->identity, 0, 0, 0);
       break;
@@ -39,7 +40,7 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
     return 0;
 
-  case 56: {
+  case UM_SET_JOIN_PARTY_MSG: {
     this->identity = static_cast<std::uint32_t>(a);
     std::string text = "(";
     text += reinterpret_cast<const char*>(b);

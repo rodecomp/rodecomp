@@ -1,4 +1,5 @@
 #include "Contents/Effects/RagEffect.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/MapSkyMgr.h"
 #include "Contents/Skills/ClientSkills.h"
@@ -15084,7 +15085,7 @@ void CRagEffect::SendMsg(
   const std::int64_t third = static_cast<std::int64_t>(thirdHigh) << 32 | static_cast<std::uint32_t>(thirdLow);
 
   switch (message) {
-  case 14:
+  case AM_SETPOS:
     if (first != 0) {
       const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(first));
       this->state.deltaPos[0] = position[0];
@@ -15098,10 +15099,10 @@ void CRagEffect::SendMsg(
       this->state.deltaPos2[2] = position[2];
     }
     break;
-  case 24:
+  case AM_MASTER_DEAD:
     this->state.parent = nullptr;
     break;
-  case 25:
+  case AM_CHILD_DEAD:
     if (first == 0) {
       if (sender == nullptr) {
         break;
@@ -15119,7 +15120,7 @@ void CRagEffect::SendMsg(
       this->state.primList.erase(this->state.primList.begin(), this->state.primList.end());
     }
     break;
-  case 44:
+  case AM_SETCOUNT:
     if (first == 0xFFFF) {
       if (second == 130) {
         this->render.position.x = 200.0f;
@@ -15170,7 +15171,7 @@ void CRagEffect::SendMsg(
       }
     }
     break;
-  case 46: {
+  case AM_SETPARAM: {
     const float* param = reinterpret_cast<const float*>(static_cast<std::intptr_t>(first));
     this->state.param[0] = param[0];
     this->state.param[1] = param[1];
@@ -15178,7 +15179,7 @@ void CRagEffect::SendMsg(
     this->state.param[3] = param[3];
     break;
   }
-  case 80:
+  case AM_SET_DURATION:
     this->SetStateDuration(static_cast<int>(first));
     break;
   case 127:

@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
 #include "UI/UICheckAttendanceWnd.h"
 
@@ -365,7 +366,7 @@ void UICheckAttendanceWnd_Banner::CreateButtons() {
 // FUNCTION: fn_09651
 int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 34:
+  case UM_SETINFO:
     if (g_session.m_hotkeyScript->Call("set_checkAttendance_banner", "") == true) {
       this->m_banner->CreateButtons();
     }
@@ -383,15 +384,15 @@ int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->m_blinking = this->m_checkedDays < this->m_rewardCount && this->m_blinking;
     this->Invalidate();
     break;
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 184:
+    case ID_OK:
       if (this->m_blinking) {
         CheckAttendanceRequestPacket packet = {0xAEF};
         GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       }
       break;
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(328);
       break;
     }

@@ -1,4 +1,5 @@
 #include "UI/UIItemReformWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Mouse.h"
@@ -442,16 +443,16 @@ int UIItemReformWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 23:
+  case UM_REFRESHITEM:
     this->reformItem.SetItemId(argument1);
     if (this->list->SendMsg(this, 23, argument1, 0, 0, 0) == -1) {
       this->warning = LookupMessage(3856);
     }
     this->Invalidate();
     break;
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 184:
+    case ID_OK:
       if (this->selectedItem && this->reformItem.GetItemId() != 0) {
         PACKET_CZ_ITEM_REFORM packet;
         packet.packetType = ID_CZ_ITEM_REFORM;
@@ -460,7 +461,7 @@ int UIItemReformWnd::SendMsg(
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
       }
       break;
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(348);
       break;
     case 336:
@@ -491,9 +492,9 @@ int UIItemReformWnd_List::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const unsigned int previous = this->scrollPosition;
     if (message == 9) {
       argument1 = -1;
@@ -506,7 +507,7 @@ int UIItemReformWnd_List::SendMsg(
     }
     return this->scrollPosition - previous;
   }
-  case 23: {
+  case UM_REFRESHITEM: {
     this->items.clear();
     std::vector<int> baseItems = CItemReformMgr::Instance()->GetReformBaseItems(argument1);
     for (std::vector<int>::iterator base = baseItems.begin(); base != baseItems.end(); ++base) {

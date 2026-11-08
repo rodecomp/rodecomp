@@ -1,4 +1,5 @@
 #include "UI/Window/UIChangeNameWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -93,12 +94,12 @@ UIChangeNameWnd::UIChangeNameWnd()
 // FUNCTION: fn_12743
 int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
     break;
-  case 6:
+  case UM_COMMAND:
     switch (a) {
-    case 184: {
+    case ID_OK: {
       if (g_navigationLinkParser->HasLink(this->m_edit->Text()) == true) {
         g_windowMgr.Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
@@ -173,12 +174,12 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
       }
       break;
     }
-    case 185:
+    case ID_CANCEL:
       g_windowMgr.Schedule(this);
       break;
     }
     break;
-  case 34:
+  case UM_SETINFO:
     this->m_character = reinterpret_cast<CharacterInfo*>(a);
     this->m_edit->SetText(this->m_character->name);
     break;

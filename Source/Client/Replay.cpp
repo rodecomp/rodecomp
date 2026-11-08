@@ -1008,7 +1008,7 @@ std::vector<unsigned char> CSession::BuildSkillListReplayPacket(short id) {
     return BuildSkillInfoListPacket(0x10F, this->m_skillBundle.skills);
   case ID_ZC_HOSKILLINFO_LIST:
     return BuildSkillInfoListPacket(0x235, this->m_homunSkills);
-  case 0x29D:
+  case ID_ZC_MER_SKILLINFO_LIST:
     return BuildSkillInfoListPacket(0x29D, this->m_mercSkills);
   default:
     return {};

@@ -1,4 +1,5 @@
 #include "UI/Rodex/UIRodexInboxWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Contents/MessageTable.h"
 #include "Client/Mode/CGameMode.h"
@@ -880,9 +881,9 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   }
 
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     switch (argument1) {
-    case 0xD7:
+    case ID_RADIOBTN:
       if (argument2 == 0x141) {
         for (int i = 0; i < 2; ++i) {
           UIRadioBtn* radio = this->unknown_01C0[i];
@@ -972,11 +973,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       break;
 
-    case 0xC9:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(0x107);
       break;
 
-    case 0xD3:
+    case ID_DELETE:
       if (this->unknown_01D4 == 1) {
         std::vector<RodexMailEntry> selected;
         for (int i = 0; i < 6; ++i) {
@@ -1034,7 +1035,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       break;
 
-    case 0x141:
+    case ID_SEARCH:
       if (this->unknown_01C0[0]->geometry.unknown_0030 == 1) {
         this->SearchByTitle(this->unknown_01C8->Text());
       } else if (this->unknown_01C0[1]->geometry.unknown_0030 == 1) {
@@ -1197,11 +1198,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     break;
 
-  case 0x3C:
+  case UM_REFRESH:
     this->Invalidate();
     break;
 
-  case 0x62:
+  case UM_TEXT_LBTN_UP:
     if (argument1 == 0x142) {
       if (g_rodexMailStore->unknown_0010 == MAIL_INBOX_NORMAL) {
         std::map<std::int64_t, RodexMail>::iterator mail = g_rodexMailStore->m_mails0.find(argument2);
@@ -1224,14 +1225,14 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     break;
 
-  case 0x17:
+  case UM_REFRESHITEM:
     this->RefreshMailLists();
     this->InitializeMailActions();
     this->SetButtonsDisabled(0);
     this->Invalidate();
     break;
 
-  case 0:
+  case UM_DEFPUSH:
     if (this->unknown_01C8 == sender) {
       this->SendMsg(this->unknown_01CC, 6, 0x141, 0, 0, 0);
     }

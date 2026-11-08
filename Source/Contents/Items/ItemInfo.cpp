@@ -1,4 +1,5 @@
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemId.h"
 #include "Client/Session.h"
 #include "Client/Input/InputCharset.h"
 #include "File/File.h"
@@ -543,10 +544,10 @@ bool IsNumericText(const char* text) {
 // FUNCTION: fn_06604
 bool ITEM_INFO::IsElementalStone() const {
   switch (std::atoi(this->itemId.c_str())) {
-  case 994:
-  case 995:
-  case 996:
-  case 997:
+  case ITEMID_FLAME_HEART:
+  case ITEMID_MISTIC_FROZEN:
+  case ITEMID_ROUGH_WIND:
+  case ITEMID_GREAT_NATURE:
     return true;
   default:
     return false;

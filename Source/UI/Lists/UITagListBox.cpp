@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "UI/Lists/UITagListBox.h"
 
 #include "Client/Input/InputCharset.h"
@@ -320,27 +321,27 @@ int UITagListBox::DecodeCards(std::vector<int>& fields, const char* text, int& p
 // FUNCTION: fn_13887
 int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 18:
+  case UM_UPPUSH:
     if (this->verticalOverflow) {
       this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
       return 0;
     }
     break;
-  case 19:
+  case UM_DOWNPUSH:
     if (this->verticalOverflow) {
       this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
       return 0;
     }
     break;
-  case 29:
+  case UM_SETTEXT:
     this->AppendText(argument1, argument2, argument3, argument4);
     return 0;
-  case 7:
-  case 8:
-  case 9:
-  case 10:
-  case 11:
-  case 12: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLHORZ:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN:
+  case UM_SCROLLHORZPAGEUP:
+  case UM_SCROLLHORZPAGEDOWN: {
     UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
     const int offset = this->horizontalOffset;
     for (unsigned int index = 0; index < this->m_tagWindows.size(); ++index) {
@@ -357,7 +358,7 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
     break;
   }
-  case 98:
+  case UM_TEXT_LBTN_UP:
     this->OnTagClick(argument1, sender);
     break;
   default:

@@ -1,4 +1,5 @@
 #include "Client/Input/InputCharset.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Render/Renderer.h"
@@ -886,7 +887,7 @@ int UIComboBoxV2Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 // FUNCTION: fn_11550
 int UIImgMenu::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 34: {
+  case UM_SETINFO: {
     this->horizontal = argument1;
     this->count = argument2;
     std::string name(reinterpret_cast<const char*>(argument3));
@@ -904,11 +905,11 @@ int UIImgMenu::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     return 0;
   }
 
-  case 102:
+  case UM_SETID:
     this->geometry.id = argument1;
     return 0;
 
-  case 83:
+  case UM_SET_CALLER_WID:
     this->unknown_00C8 = argument1;
     return 0;
 
@@ -916,7 +917,7 @@ int UIImgMenu::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     this->unknown_0090[argument1 - 1] = argument2 != 0;
     return 0;
 
-  case 106:
+  case UM_SET_DISABLE:
     this->unknown_0094[argument1 - 1] = argument2 != 0;
     return 0;
 

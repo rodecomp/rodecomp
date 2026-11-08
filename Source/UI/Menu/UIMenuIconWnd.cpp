@@ -1,4 +1,5 @@
 #include "Render/Renderer.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Menu/UIMenuIconWnd.h"
 
 #include "Client/Application/ApplicationWindow.h"
@@ -137,9 +138,9 @@ void UIMenuIconWnd::OnCreate(int width, int height) {
     this->unknown_00B4[ids[index]] = icon;
 
     switch (ids[index]) {
-    case 192:
-    case 194:
-    case 196:
+    case ID_STATUS:
+    case ID_ITEMS:
+    case ID_SKILL:
     case 473:
     case 476: {
       UIMenuIcon* badge = new UIMenuIcon();
@@ -242,30 +243,30 @@ void UIMenuIcon::OnMouseMove(int x, int y) {
   int message = 4698;
   bool known = true;
   switch (this->geometry.id) {
-  case 192:
+  case ID_STATUS:
     behaviorId = 11;
     message = 105;
     break;
   case 193:
     message = 265;
     break;
-  case 194:
+  case ID_ITEMS:
     behaviorId = 8;
     message = 106;
     break;
-  case 195:
+  case ID_EQUIP:
     behaviorId = 10;
     message = 104;
     break;
-  case 196:
+  case ID_SKILL:
     behaviorId = 37;
     message = 283;
     break;
-  case 199:
+  case ID_FRIEND:
     behaviorId = 69;
     message = 103;
     break;
-  case 219:
+  case ID_MAP:
     behaviorId = 140;
     message = 2859;
     break;
@@ -363,7 +364,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
   if (message == 6) {
     if (!Replay::Instance().AllowsEvent(argument1)) {
       switch (argument1) {
-      case 201:
+      case ID_CLOSE:
         g_session.m_showMenuIcon = false;
         this->Invalidate();
         break;
@@ -380,19 +381,19 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->Invalidate();
         break;
       }
-      case 192:
+      case ID_STATUS:
         this->ToggleWindow(11);
         break;
-      case 195:
+      case ID_EQUIP:
         this->ToggleWindow(10);
         break;
-      case 194:
+      case ID_ITEMS:
         this->ToggleWindow(8);
         break;
-      case 196:
+      case ID_SKILL:
         this->ToggleWindow(37);
         break;
-      case 199:
+      case ID_FRIEND:
         this->ToggleWindow(69);
         break;
       case 373:
@@ -401,7 +402,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       case 361:
         this->ToggleWindow(10008);
         break;
-      case 219:
+      case ID_MAP:
         this->ToggleWindow(140);
         break;
       case 430:

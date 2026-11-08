@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Render/Renderer.h"
@@ -78,27 +79,27 @@ void UIExchangeAcceptWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_12343
 int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6:
+  case UM_COMMAND:
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
-    case 184:
+    case ID_OK:
       g_windowMgr.CloseWindow(32);
       g_modeMgr.gameMode->SendMsg(50, 3, 0, 0, 0);
       return 0;
-    case 185:
+    case ID_CANCEL:
       g_windowMgr.CloseWindow(32);
       g_modeMgr.gameMode->SendMsg(50, 4, 0, 0, 0);
       return 0;
     }
     return 0;
-  case 34:
+  case UM_SETINFO:
     this->saved = reinterpret_cast<NormalItemSlotWindow*>(a);
     if (!reinterpret_cast<ExchangeAcceptWndInfo*>(this->saved)->IsValid()) {
       reinterpret_cast<ExchangeAcceptWndInfo*>(this->saved)->Reset();
     }
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 50: {
+  case UM_SET_EXCHANGE_CHAR_NAME: {
     std::string text = "(";
     text += reinterpret_cast<const char*>(a);
     text += ")";

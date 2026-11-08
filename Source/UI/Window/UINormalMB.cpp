@@ -1,4 +1,5 @@
 #include "UI/Window/UINormalMB.h"
+#include "UI/Window/UIEnums.h"
 #include "Contents/MessageTable.h"
 #include "Render/Renderer.h"
 #include "Resource/ResourceMgr.h"
@@ -26,7 +27,7 @@ void UINormalMB::Paint() {
 // FUNCTION: fn_12943
 int UINormalMB::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 6: {
+  case UM_COMMAND: {
     const int id = static_cast<int>(a);
     const auto action = this->m_actions.find(id);
 
@@ -47,7 +48,7 @@ int UINormalMB::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     return 0;
   }
 
-  case 57:
+  case UM_CHANGEMSG:
     this->m_viewer->Clear();
     this->m_viewer->SendMsg(nullptr, 29, a, 38, 0, 0);
     return 0;

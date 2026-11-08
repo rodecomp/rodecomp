@@ -1,4 +1,5 @@
 #include "UI/Window/UIRoulletteWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -358,7 +359,7 @@ void UIRoulletteWnd::OnRBtnDown(int x, int y) {
 int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   if (message == 6) {
     switch (argument1) {
-      case 201:
+      case ID_CLOSE:
         if (g_rouletteMgr->m_spinning == 0) {
           if (g_windowMgr.unknown_0464 != nullptr) {
             g_windowMgr.CloseWindow(269);

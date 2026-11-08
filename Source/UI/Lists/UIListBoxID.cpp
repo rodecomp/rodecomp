@@ -1,4 +1,5 @@
 #include "UI/Lists/UIListBoxID.h"
+#include "UI/Window/UIEnums.h"
 
 #include "UI/Lists/UIScrollBar.h"
 
@@ -61,7 +62,7 @@ void UIComboBoxID::OnCreate(int width, int height) {
 // FUNCTION: fn_11554
 int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 40:
+  case UM_SETCURITEM:
     this->selected = argument1;
     if (this->selected < 0) {
       this->selected = 0;
@@ -78,7 +79,7 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     this->Invalidate();
     this->Refresh();
     return 0;
-  case 18:
+  case UM_UPPUSH:
     --this->selected;
     if (this->selected < 0) {
       this->selected = 0;
@@ -89,7 +90,7 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     this->Invalidate();
     this->Refresh();
     return 0;
-  case 19:
+  case UM_DOWNPUSH:
     ++this->selected;
     if (static_cast<std::size_t>(this->selected) > this->lines.size() - 1) {
       this->selected = static_cast<int>(this->lines.size() - 1);
@@ -100,9 +101,9 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     this->Invalidate();
     this->Refresh();
     return 0;
-  case 7:
-  case 9:
-  case 10: {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->topLine;
     if (message == 9) {
       this->topLine = previous - this->geometry.height / this->lineHeight + 1;
@@ -129,9 +130,9 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     }
     return this->topLine - previous;
   }
-  case 8:
-  case 11:
-  case 12: {
+  case UM_SCROLLHORZ:
+  case UM_SCROLLHORZPAGEUP:
+  case UM_SCROLLHORZPAGEDOWN: {
     const int previous = this->horizontalOffset;
     int delta = argument1;
     if (message == 11) {
