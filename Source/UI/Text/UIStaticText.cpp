@@ -96,36 +96,32 @@ void UIStaticText::SetTextFittedCodePage(const char* value) {
   this->tooltip = value;
   this->tooltipEnabled = 0;
 
-  if (this->geometry.surface == nullptr) {
-    this->text = value;
-    this->Invalidate();
-    return;
-  }
+  if (this->geometry.surface != nullptr) {
+    int width = this->TextWidth(value, 0, this->fontFamily, this->fontHeight, 0, 0);
+    this->TextWidth("...", 0, this->fontFamily, this->fontHeight, 0, 0);
+    if (this->geometry.width >= width) {
+      this->text = value;
+    } else {
+      this->tooltipEnabled = 1;
+      this->text = value;
+      std::wstring truncated(ATL::CA2WEX<128>(value, CP_THREAD_ACP));
+      while (this->geometry.width < width) {
+        if (truncated.size() <= 1) {
+          this->text = std::string(ATL::CW2AEX<128>(truncated.c_str(), CP_THREAD_ACP)) + "...";
+          break;
+        }
 
-  int width = this->TextWidth(value, 0, this->fontFamily, this->fontHeight, 0, 0);
-  this->TextWidth("...", 0, this->fontFamily, this->fontHeight, 0, 0);
-  if (this->geometry.width >= width) {
-    this->text = value;
-    this->Invalidate();
-    return;
-  }
+        if (truncated.size() >= 2) {
+          const std::size_t size = truncated.size();
+          truncated.resize((truncated[size - 2] & 0x80) != 0 && (truncated[size - 1] & 0x80) != 0 ? size - 2 : size - 1);
+        }
 
-  this->tooltipEnabled = 1;
-  this->text = value;
-  std::wstring truncated(ATL::CA2WEX<128>(value, CP_THREAD_ACP));
-  while (this->geometry.width < width) {
-    if (truncated.size() <= 1) {
-      this->text = std::string(ATL::CW2AEX<128>(truncated.c_str(), CP_THREAD_ACP)) + "...";
-      break;
+        this->text = std::string(ATL::CW2AEX<128>(truncated.c_str(), CP_THREAD_ACP)) + "...";
+        width = this->TextWidth(this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0, 0);
+      }
     }
-
-    if (truncated.size() >= 2) {
-      const std::size_t size = truncated.size();
-      truncated.resize((truncated[size - 2] & 0x80) != 0 && (truncated[size - 1] & 0x80) != 0 ? size - 2 : size - 1);
-    }
-
-    this->text = std::string(ATL::CW2AEX<128>(truncated.c_str(), CP_THREAD_ACP)) + "...";
-    width = this->TextWidth(this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0, 0);
+  } else {
+    this->text = value;
   }
 
   this->Invalidate();
