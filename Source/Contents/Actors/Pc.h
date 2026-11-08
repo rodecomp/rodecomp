@@ -323,7 +323,7 @@ public:
   /* 0F35 */ unsigned char unknown_0F35[0x03];
   /* 0F38 */ unsigned brightness;
   /* 0F3C */ int motion;
-  /* 0F40 */ unsigned char unknown_0F40[4];
+  /* 0F40 */ unsigned char currentFrame[4];
   /* 0F44 */ char modelName[0x104];
   /* 1048 */ unsigned char unknown_1048[8];
   /* 1050 */ granny_control* controls[20];

@@ -984,7 +984,7 @@ void CLoginMode::End() {
   g_soundMgr->EndSamples();
   ResourceMgr::Instance().ClearUnused();
   g_renderer->atlas.Clear();
-  this->unknown_6F50.clear();
+  this->keycryptErrorInfo.clear();
 }
 
 // OFFSET: 0x00D975C0
@@ -2228,7 +2228,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
 
 // OFFSET: 0x00D8C6A0
 // FUNCTION: fn_22258
-CLoginMode::CLoginMode() : wallpaperName(), noticeCommands(), unknown_6F2C(), accountInfo(), unknown_6F50(), mapStates() {
+CLoginMode::CLoginMode() : wallpaperName(), noticeCommands(), unknown_6F2C(), accountInfo(), keycryptErrorInfo(), mapStates() {
   this->fadeInRequested = 1;
   this->nextKeepaliveTime = timeGetTime() + 12000;
   this->savedInlineCharset = g_inlineCharset;
@@ -3391,7 +3391,7 @@ struct CharServerEnterPacket {
   /* 0002 */ std::uint32_t aid;
   /* 0006 */ int authCode;
   /* 000A */ int userLevel;
-  /* 000E */ std::uint16_t unknown_000E;
+  /* 000E */ std::uint16_t clientType;
   /* 0010 */ unsigned char sex;
 };
 
@@ -3982,7 +3982,7 @@ void CLoginMode::OnChangeState(int value) {
     g_charServerAccountIdPending = 1;
     CharServerEnterPacket packet;
     packet.id = 0x65;
-    packet.unknown_000E = 0;
+    packet.clientType = 0;
     packet.aid = g_session.m_aid;
     packet.authCode = account.authCode;
     packet.userLevel = account.userLevel;

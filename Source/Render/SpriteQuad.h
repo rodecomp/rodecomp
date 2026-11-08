@@ -17,9 +17,9 @@ struct SpriteQuad {
   /* 0014 */ float topRhw;
   /* 0018 */ std::uint32_t color;
   /* 001C */ float angle;
-  /* 0020 */ std::int32_t unknown_0020;
-  /* 0024 */ std::int32_t unknown_0024;
-  /* 0028 */ std::int32_t unknown_0028;
+  /* 0020 */ std::int32_t cacheTextureIndex;
+  /* 0024 */ std::int32_t u;
+  /* 0028 */ std::int32_t v;
   /* 002C */ const SpriteRleImage* image;
 };
 

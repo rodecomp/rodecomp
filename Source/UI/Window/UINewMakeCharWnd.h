@@ -90,10 +90,10 @@ public:
   /* 0264 */ short m_job;
   /* 0266 */ short m_head;
   /* 0268 */ short m_costumeJob;
-  /* 026A */ short unknown_026A;
+  /* 026A */ short m_weapon;
   /* 026C */ short m_level;
   /* 026E */ short m_skillPoint;
-  /* 0270 */ short unknown_0270;
+  /* 0270 */ short m_accessory;
   /* 0272 */ short m_shield;
   /* 0274 */ short accessory2;
   /* 0276 */ short accessory3;

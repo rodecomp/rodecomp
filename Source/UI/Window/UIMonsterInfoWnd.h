@@ -7,7 +7,7 @@
 #include <string>
 
 struct MonsterInfo {
-  /* 0000 */ short unknown_0000;
+  /* 0000 */ short packetType;
   /* 0002 */ short job;
   /* 0004 */ short level;
   /* 0006 */ short size;

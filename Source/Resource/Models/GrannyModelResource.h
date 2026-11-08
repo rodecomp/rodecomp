@@ -57,7 +57,7 @@ struct granny_material_binding {
 
 struct granny_mesh {
   /* 0000 */ const char* name;
-  /* 0004 */ unsigned char unknown_0004[0x10];
+  /* 0004 */ unsigned char vertexAndTopologyData[0x10];
   /* 0014 */ std::int32_t materialBindingCount;
   /* 0018 */ granny_material_binding* materialBindings;
 };
@@ -69,7 +69,7 @@ struct granny_model_mesh_binding {
 struct granny_model {
   /* 0000 */ const char* name;
   /* 0004 */ granny_skeleton* skeleton;
-  /* 0008 */ unsigned char unknown_0008[0x44];
+  /* 0008 */ unsigned char initialPlacement[0x44];
   /* 004C */ std::int32_t meshBindingCount;
   /* 0050 */ granny_model_mesh_binding* meshBindings;
 };
@@ -78,13 +78,13 @@ struct granny_file_info {
   /* 0000 */ unsigned char unknown_0000[0x10];
   /* 0010 */ std::int32_t textureCount;
   /* 0014 */ granny_texture** textures;
-  /* 0018 */ unsigned char unknown_0018[8];
+  /* 0018 */ unsigned char materialTable[8];
   /* 0020 */ std::int32_t skeletonCount;
   /* 0024 */ granny_skeleton** skeletons;
-  /* 0028 */ unsigned char unknown_0028[0x18];
+  /* 0028 */ unsigned char geometryTables[0x18];
   /* 0040 */ std::int32_t modelCount;
   /* 0044 */ granny_model** models;
-  /* 0048 */ unsigned char unknown_0048[8];
+  /* 0048 */ unsigned char trackGroupTable[8];
   /* 0050 */ std::int32_t animationCount;
   /* 0054 */ granny_animation** animations;
 };

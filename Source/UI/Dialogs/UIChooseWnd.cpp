@@ -10,6 +10,6 @@ UIChooseWnd::~UIChooseWnd() {
 // FUNCTION: fn_11932
 UIChooseWnd::UIChooseWnd()
     : UIFrameWnd(0), m_list(nullptr), m_okButton(nullptr), m_cancelButton(nullptr) {
-  this->unknown_00B4 = -1;
+  this->m_lastItemIndex = -1;
   this->m_placement = nullptr;
 }

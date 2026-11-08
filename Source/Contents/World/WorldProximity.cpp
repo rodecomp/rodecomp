@@ -203,7 +203,7 @@ void CWorld::RemovePcPosForMove(std::uint32_t aid, bool notify) {
 }
 
 struct WorldProximityGuildMasterCallback {
-  void* unknown_0000;
+  void* vtable;
   CWorld* world;
 
   bool Invoke(const std::uint32_t& aid);
@@ -245,7 +245,7 @@ bool WorldProximityGuildMasterCallback::Invoke(const std::uint32_t& aidRef) {
 }
 
 struct WorldProximityRangeCallback {
-  void* unknown_0000;
+  void* vtable;
   int range;
   float playerX;
   float playerZ;

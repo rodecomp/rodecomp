@@ -32,7 +32,7 @@ struct EZ2STREmitter {
   /* 3F5D */ unsigned char fadeOut;
   /* 3F5E */ unsigned char unknown_3F5E[0x3A];
   /* 3F98 */ int lifetimeLimit;
-  /* 3F9C */ int unknown_3F9C;
+  /* 3F9C */ int remainingLoops;
   /* 3FA0 */ int duration;
   /* 3FA4 */ float rotationAngle;
   /* 3FA8 */ float pitch;

@@ -684,14 +684,14 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
               static_cast<CLoginMode*>(g_modeMgr.GetLoginMode())->ShowNotice(0x2E, false);
             }
           } else {
-            if (info->unknown_00A6 > 0) {
+            if (info->slotChangeCount > 0) {
               shown = static_cast<CLoginMode*>(g_modeMgr.GetLoginMode())->ShowNotice(0x2D, false);
             }
-            if (info->unknown_00AA > 0) {
+            if (info->nameChangeCount > 0) {
               static_cast<CLoginMode*>(g_modeMgr.GetLoginMode())->ShowNotice(0x2F, shown);
             }
           }
-        } else if (info != nullptr && info->unknown_00AA > 0) {
+        } else if (info != nullptr && info->nameChangeCount > 0) {
           static_cast<CLoginMode*>(g_modeMgr.GetLoginMode())->ShowNotice(0x2F, shown);
         }
       }
@@ -944,7 +944,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           packet.id = 0x8D4;
           packet.from = static_cast<std::int16_t>(this->m_unknown138);
           packet.to = selected;
-          packet.count = static_cast<std::int16_t>(info->unknown_00A6);
+          packet.count = static_cast<std::int16_t>(info->slotChangeCount);
           GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
         }
       }

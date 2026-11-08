@@ -42,7 +42,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // FUNCTION: fn_16646
 template <>
 CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::CUIListBoxEx()
-    : CUIControl(), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
+    : CUIControl(), hoverImage(), pressedImage(), disabledImage(), imageNames(), disabledName(), scrollBar(nullptr),
       itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), unknown_00C5{}, items(), data(),
       selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
 }
@@ -51,7 +51,7 @@ CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::CUIListBoxEx()
 // FUNCTION: fn_16647
 template <>
 CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::CUIListBoxEx()
-    : CUIControl(), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
+    : CUIControl(), hoverImage(), pressedImage(), disabledImage(), imageNames(), disabledName(), scrollBar(nullptr),
       itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), unknown_00C5{}, items(), data(),
       selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
 }

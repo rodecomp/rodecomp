@@ -709,7 +709,7 @@ void CHalluPlant::SendMsg(
 }
 
 struct NpcAppearInfo {
-  /* 0000 */ int unknown_0000;
+  /* 0000 */ int aid;
   /* 0004 */ int job;
   /* 0008 */ int unknown_0008[22];
   /* 0060 */ int guildId;

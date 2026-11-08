@@ -12,13 +12,13 @@ struct GroundQuad {
   GroundQuad();
 
   /* 0000 */ float vertices[4][8];
-  /* 0080 */ std::uint32_t unknown_0080;
+  /* 0080 */ std::uint32_t vertexOffset;
   /* 0084 */ CTexture* texture;
   /* 0088 */ CTexture* lightmapTexture;
   /* 008C */ GroundLightmap* lightmap;
   /* 0090 */ std::uint32_t color;
   /* 0094 */ std::uint32_t selected;
-  /* 0098 */ std::uint32_t unknown_0098;
+  /* 0098 */ std::uint32_t materialId;
 };
 
 struct GroundCell {

@@ -3617,7 +3617,7 @@ void UISlotBmpButton::Paint() {
   if (this->m_slot >= 0) {
     CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slot, 0, 0, 0));
     if (info) {
-      if (info->unknown_00AA > 0 || info->unknown_00A6 > 0) {
+      if (info->nameChangeCount > 0 || info->slotChangeCount > 0) {
         if (this->m_inRange) {
           CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\buyslot_add_ons.bmp")));
           this->DrawBitmap(0, 0, bitmap, true);

@@ -88,7 +88,7 @@ struct EffectPrimitiveState {
   /* 0200 */ int changePoint;
   /* 0204 */ unsigned totalTexture;
   /* 0208 */ std::uint32_t playWaveType;
-  /* 020C */ unsigned char unknown_020C[40];
+  /* 020C */ unsigned char notifyCounts[40];
   /* 0234 */ std::uint32_t RGBCycleDelay;
   /* 0238 */ std::uint32_t commonPattern;
   /* 023C */ int red;

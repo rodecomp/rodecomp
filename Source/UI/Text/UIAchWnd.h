@@ -22,7 +22,7 @@ class UIBitmapButton;
 class UITextButton;
 
 struct UIAchListInfo {
-  /* 0000 */ int unknown_0000;
+  /* 0000 */ int treeHead;
   /* 0004 */ int count;
 };
 

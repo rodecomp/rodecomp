@@ -58,12 +58,12 @@ protected:
   union {
     /* 00FC */ UIBitmapButton* m_buttons[6];
     struct {
-      /* 00FC */ UIWindow* unknown_00FC;
-      /* 0100 */ UIWindow* unknown_0100;
+      /* 00FC */ UIWindow* m_searchButton;
+      /* 0100 */ UIWindow* m_startButton;
       /* 0104 */ UIWindow* m_routeFooter;
       /* 0108 */ UIWindow* m_searchFooter;
-      /* 010C */ UIWindow* unknown_010C;
-      /* 0110 */ UIWindow* unknown_0110;
+      /* 010C */ UIWindow* m_systemChangeButton;
+      /* 0110 */ UIWindow* m_folderButton;
     };
   };
   /* 0114 */ UICheckBox* m_allowGates;

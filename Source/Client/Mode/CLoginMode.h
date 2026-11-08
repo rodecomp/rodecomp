@@ -59,8 +59,8 @@ struct CharacterInfo {
   /* 008E */ char mapName[16];
   /* 009E */ std::int32_t deleteDate;
   /* 00A2 */ std::int32_t robe;
-  /* 00A6 */ std::int32_t unknown_00A6;
-  /* 00AA */ std::int32_t unknown_00AA;
+  /* 00A6 */ std::int32_t slotChangeCount;
+  /* 00AA */ std::int32_t nameChangeCount;
   /* 00AE */ unsigned char sex;
 };
 
@@ -74,12 +74,12 @@ struct CharacterSlotExtension {
 #pragma pack(pop)
 
 struct LoginStringRecord {
-  /* 0000 */ std::string unknown_0000;
-  /* 0018 */ std::string unknown_0018;
-  /* 0030 */ std::string unknown_0030;
-  /* 0048 */ std::string unknown_0048;
-  /* 0060 */ std::string unknown_0060;
-  /* 0078 */ unsigned char unknown_0078[8];
+  /* 0000 */ std::string display;
+  /* 0018 */ std::string description;
+  /* 0030 */ std::string balloon;
+  /* 0048 */ std::string address;
+  /* 0060 */ std::string port;
+  /* 0078 */ unsigned char typeAndVersion[8];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -132,7 +132,7 @@ public:
   /* 6F45 */ unsigned char unknown_6F45[0x3];
   /* 6F48 */ int selectedAccount;
   /* 6F4C */ int selectedSecondaryAccount;
-  /* 6F50 */ std::string unknown_6F50;
+  /* 6F50 */ std::string keycryptErrorInfo;
   /* 6F68 */ std::vector<MapStateEntry> mapStates;
   /* 6F74 */ bool loginResponseReceived;
   /* 6F75 */ bool otpPending;
@@ -216,7 +216,7 @@ static_assert(offsetof(CLoginMode, characterCount) == 0x1CC);
 static_assert(offsetof(CLoginMode, receivedCharacterCount) == 0x1D8);
 static_assert(offsetof(CLoginMode, characters) == 0x4068);
 static_assert(offsetof(CLoginMode, slotExtension) == 0x6EFC);
-static_assert(offsetof(CLoginMode, unknown_6F50) == 0x6F50);
+static_assert(offsetof(CLoginMode, keycryptErrorInfo) == 0x6F50);
 static_assert(offsetof(CLoginMode, mapStates) == 0x6F68);
 static_assert(sizeof(CLoginMode) == 0x6F7C);
 #endif

@@ -2684,7 +2684,7 @@ void CCharacterNpc::Render(int) {
 }
 
 struct CharacterNpcViewInfo {
-  /* 0000 */ int unknown_0000;
+  /* 0000 */ int aid;
   /* 0004 */ int job;
   /* 0008 */ int unknown_0008[10];
   /* 0030 */ int standAccessory;
@@ -3452,7 +3452,7 @@ C3dGrannyGameActor::C3dGrannyGameActor(const char* name) {
   this->alpha = 0xFF;
   std::strcpy(this->name, name);
   this->renderState = 0;
-  this->unknown_0654 = 0;
+  this->cellTexture = 0;
   for (int index = 0; index < 20; ++index) {
     this->controls[index] = nullptr;
   }

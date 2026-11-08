@@ -1981,11 +1981,11 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem
 template <>
 void CUIListBox<AdventureGuide::CUISubTab>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->disabledImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUISubTab* item : this->items) {
-    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
+    item->SetImageResources(this->NormalImage(), this->hoverImage, this->pressedImage, this->disabledImage);
   }
 }
 
@@ -1994,11 +1994,11 @@ void CUIListBox<AdventureGuide::CUISubTab>::LoadSkin(int resolveSkin) {
 template <>
 void CUIListBox<AdventureGuide::CUITab>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->disabledImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUITab* item : this->items) {
-    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
+    item->SetImageResources(this->NormalImage(), this->hoverImage, this->pressedImage, this->disabledImage);
   }
 }
 
@@ -2007,11 +2007,11 @@ void CUIListBox<AdventureGuide::CUITab>::LoadSkin(int resolveSkin) {
 template <>
 void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->disabledImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUIItemInfo* item : this->items) {
-    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
+    item->SetImageResources(this->NormalImage(), this->hoverImage, this->pressedImage, this->disabledImage);
   }
 }
 
@@ -2020,11 +2020,11 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::LoadS
 template <>
 void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->disabledImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUIMonsterInfo* item : this->items) {
-    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
+    item->SetImageResources(this->NormalImage(), this->hoverImage, this->pressedImage, this->disabledImage);
   }
 }
 
@@ -2033,11 +2033,11 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
 template <>
 void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->disabledImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUIQuestInfo* item : this->items) {
-    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
+    item->SetImageResources(this->NormalImage(), this->hoverImage, this->pressedImage, this->disabledImage);
   }
 }
 
@@ -2046,11 +2046,11 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Loa
 template <>
 void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::LoadSkin(int resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  this->unknown_0084 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  this->unknown_0088 = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  this->unknown_008C = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->disabledImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (AdventureGuide::CUITabInfo* item : this->items) {
-    item->SetImageResources(this->NormalImage(), this->unknown_0084, this->unknown_0088, this->unknown_008C);
+    item->SetImageResources(this->NormalImage(), this->hoverImage, this->pressedImage, this->disabledImage);
   }
 }
 

@@ -23,7 +23,7 @@ struct MiniPartyGrid {
   int FindCell(int x, int y) const;
   void BuildAvailableCells();
 
-  /* 0000 */ std::uint32_t unknown_0000;
+  /* 0000 */ std::uint32_t vtable;
   /* 0004 */ int left;
   /* 0008 */ int top;
   /* 000C */ int right;

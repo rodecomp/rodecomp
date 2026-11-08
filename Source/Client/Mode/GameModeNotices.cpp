@@ -280,7 +280,7 @@ struct RouletteInfoSlot {
 struct RouletteInfoPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::int16_t length;
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int serial;
   /* 0008 */ RouletteInfoSlot slots[42];
 };
 #pragma pack(pop)
@@ -1305,7 +1305,7 @@ struct ItemEffectResultPacket {
 
 
 struct AchievementStatePacket {
-  /* 0000 */ std::int16_t unknown_0000;
+  /* 0000 */ std::int16_t id;
   /* 0002 */ std::int16_t type;
 };
 
@@ -3180,7 +3180,7 @@ struct GuildStorageLogPacketEntry {
   /* 0008 */ int quantity;
   /* 000C */ unsigned char operation;
   /* 000D */ int refine;
-  /* 0011 */ unsigned char unknown_0011[8];
+  /* 0011 */ unsigned char uniqueId[8];
   /* 0019 */ unsigned char identified;
   /* 001A */ std::int16_t count;
   /* 001C */ unsigned char cards[16];
@@ -5421,7 +5421,7 @@ struct RodexMailPageEntry {
   /* 0008 */ unsigned char isRead;
   /* 0009 */ unsigned char type;
   /* 000A */ char sender[24];
-  /* 0022 */ int unknown_0022;
+  /* 0022 */ int sentAt;
   /* 0026 */ int expireTime;
   /* 002A */ std::int16_t titleLength;
   /* 002C */ char title[1];
@@ -5564,7 +5564,7 @@ struct QuestHuntUpdateEntry {
 struct QuestHuntUpdatePacket {
   /* 0000 */ std::uint16_t packetType;
   /* 0002 */ std::int16_t length;
-  /* 0004 */ std::int16_t unknown_0004;
+  /* 0004 */ std::int16_t count;
   /* 0006 */ QuestHuntUpdateEntry entries[1];
 };
 #pragma pack(pop)
@@ -5580,7 +5580,7 @@ struct QuestHuntUpdateEntry2 {
 struct QuestHuntUpdatePacket2 {
   /* 0000 */ std::uint16_t packetType;
   /* 0002 */ std::int16_t length;
-  /* 0004 */ std::int16_t unknown_0004;
+  /* 0004 */ std::int16_t count;
   /* 0006 */ QuestHuntUpdateEntry2 entries[1];
 };
 #pragma pack(pop)
@@ -7365,7 +7365,7 @@ struct EquipItemUpdatePacket {
   /* 0005 */ std::uint32_t cards[4];
   /* 0015 */ ItemSlotOption options[5];
   /* 002E */ unsigned char refine;
-  /* 002F */ unsigned char unknown_002F;
+  /* 002F */ unsigned char grade;
 };
 #pragma pack(pop)
 
@@ -7430,7 +7430,7 @@ void CGameMode::RefreshInventoryOrEquipItem2(const unsigned char* data) {
   for (long long index = 0; index < item.optionCount; ++index) {
     reinterpret_cast<ItemSlotOption*>(item.options)[index] = packet->options[index];
   }
-  item.grade = packet->unknown_002F;
+  item.grade = packet->grade;
 
   if (lookup == 0) {
     g_session.UpdateInventoryItem(item, 1);
@@ -7528,7 +7528,7 @@ void CGameMode::ReceiveRankingList(const unsigned char* data) {
 
 struct GuildStorageLogItem {
   /* 0000 */ ITEM_INFO item;
-  /* 00F8 */ unsigned char unknown_00F8;
+  /* 00F8 */ unsigned char highlighted;
 };
 
 #pragma pack(push, 1)
@@ -7537,7 +7537,7 @@ struct GuildStorageLogItemRecord {
   /* 0004 */ std::uint32_t itemId;
   /* 0008 */ std::uint32_t quantity;
   /* 000C */ unsigned char operation;
-  /* 000D */ unsigned char unknown_000D[8];
+  /* 000D */ unsigned char uniqueId[8];
   /* 0015 */ unsigned char identified;
   /* 0016 */ std::int16_t type;
   /* 0018 */ std::uint32_t cards[4];

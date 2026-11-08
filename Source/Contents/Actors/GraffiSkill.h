@@ -18,7 +18,7 @@ public:
   virtual void BuildTexture();
   virtual void ReleaseTexture();
 
-  /* 0440 */ unsigned char unknown_0440[0x04];
+  /* 0440 */ unsigned char m_masterGid[0x04];
   /* 0444 */ int m_cellX;
   /* 0448 */ int m_cellY;
   /* 044C */ CTexture* m_canvas;

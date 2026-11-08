@@ -229,7 +229,7 @@ bool CUIEquipmentPropertiesWnd::IsTransmitMouseInput() {
 // FUNCTION: fn_15025
 template <>
 CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::CUIListBoxEx()
-    : CUIControl(), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
+    : CUIControl(), hoverImage(), pressedImage(), disabledImage(), imageNames(), disabledName(), scrollBar(nullptr),
       itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), unknown_00C5{}, items(), data(),
       selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
 }

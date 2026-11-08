@@ -1790,7 +1790,7 @@ public:
   int GetType() override;
   CEquipment* GetOwner();
 
-  /* 0038 */ int unknown_0038;
+  /* 0038 */ int m_slotIndex;
   /* 003C */ CEquipment* m_owner;
 };
 

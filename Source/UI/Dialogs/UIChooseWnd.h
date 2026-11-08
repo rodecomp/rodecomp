@@ -19,10 +19,10 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   std::vector<unsigned char> GetReplayData() override;
 
-  /* 00B4 */ int unknown_00B4;
+  /* 00B4 */ int m_lastItemIndex;
   /* 00B8 */ std::vector<int> m_items;
   /* 00C4 */ UIListBox* m_list;
-  /* 00C8 */ int unknown_00C8;
+  /* 00C8 */ int m_npcAid;
   /* 00CC */ ChooseWndInfo* m_placement;
   /* 00D0 */ UIBitmapButton* m_okButton;
   /* 00D4 */ UIBitmapButton* m_cancelButton;

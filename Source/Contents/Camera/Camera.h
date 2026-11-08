@@ -39,10 +39,10 @@ public:
 
   /* 0004 */ CameraShake shake;
   /* 0020 */ CameraState camera;
-  /* 0050 */ float unknown_0050[3];
-  /* 005C */ unsigned char unknown_005C[0xC];
-  /* 0068 */ float unknown_0068[3];
-  /* 0074 */ unsigned char unknown_0074[0xC];
+  /* 0050 */ float backupCurrentTarget[3];
+  /* 005C */ unsigned char backupCurrentAnglesAndDistance[0xC];
+  /* 0068 */ float backupDesiredTarget[3];
+  /* 0074 */ unsigned char backupDesiredAnglesAndDistance[0xC];
   /* 0080 */ CameraFrame frame;
   /* 00F8 */ WorldViewSpatial spatial;
   /* 01B0 */ CWorld* scene;

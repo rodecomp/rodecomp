@@ -40,7 +40,7 @@ struct ModelMesh {
   /* 0014 */ ModelTextureVertex* textureVertices;
   /* 0018 */ std::array<float, 3>* faceNormals;
   /* 001C */ std::array<float, 3>* vertexNormals;
-  /* 0020 */ unsigned char unknown_0020[4];
+  /* 0020 */ unsigned char parentMesh[4];
   /* 0024 */ std::array<std::vector<std::uint32_t>, 32> indices;
   /* 01A4 */ unsigned char unknown_01A4[48];
 

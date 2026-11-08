@@ -26,7 +26,7 @@ struct ActorHitInfo {
   /* 0008 */ int extraDamage;
   /* 000C */ int type;
   /* 0010 */ std::uint32_t targetAid;
-  /* 0014 */ int unknown_0014;
+  /* 0014 */ int startTime;
   /* 0018 */ int hitCount;
   /* 001C */ int cellX;
   /* 0020 */ int cellY;
@@ -40,7 +40,7 @@ struct ActorSkillInfo {
   /* 0004 */ int damage;
   /* 0008 */ int type;
   /* 000C */ std::uint32_t targetAid;
-  /* 0010 */ int unknown_0010;
+  /* 0010 */ int startTime;
   /* 0014 */ int level;
   /* 0018 */ int hitCount;
   /* 001C */ int cellX;
@@ -109,7 +109,7 @@ public:
   /* 0294 */ int xSize;
   /* 0298 */ int ySize;
   /* 029C */ unsigned char headType[0x04];
-  /* 02A0 */ std::list<ActorDamageMessage> unknown_02A0;
+  /* 02A0 */ std::list<ActorDamageMessage> willBeAttackList;
   /* 02A8 */ std::list<ActorDamageMessage> willBeAttackedList;
   /* 02B0 */ int willBeDead;
   /* 02B4 */ int hasLevelAura;
@@ -333,7 +333,7 @@ static_assert(offsetof(CGameActor, lastServerTime) == 0x258);
 static_assert(offsetof(CGameActor, actorWindows) == 0x264);
 static_assert(offsetof(CGameActor, nameWidth) == 0x290);
 static_assert(offsetof(CGameActor, ySize) == 0x298);
-static_assert(offsetof(CGameActor, unknown_02A0) == 0x2A0);
+static_assert(offsetof(CGameActor, willBeAttackList) == 0x2A0);
 static_assert(offsetof(CGameActor, willBeAttackedList) == 0x2A8);
 static_assert(offsetof(CGameActor, levelAuraType) == 0x2B8);
 static_assert(offsetof(CGameActor, damageDestX) == 0x2D0);

@@ -161,7 +161,7 @@ struct SubChatWndInfo {
 
 struct SessionEntry00A4 {
   /* 0000 */ std::string name;
-  /* 0018 */ unsigned char unknown_0018[0x0C];
+  /* 0018 */ unsigned char skillIdPositionAndMaxLevel[0x0C];
   /* 0024 */ std::vector<int> values;
 };
 
@@ -185,8 +185,8 @@ public:
   /* 008C */ std::list<CSkillInfo> m_mercSkills;
   /* 0094 */ std::list<ShortcutCooldownIcon> m_mainCooldownIcons;
   /* 009C */ std::list<ShortcutCooldownIcon> m_alternateCooldownIcons;
-  /* 00A4 */ std::map<std::string, SessionEntry00A4> unknown_00A4;
-  /* 00AC */ std::map<std::string, std::string> unknown_00AC;
+  /* 00A4 */ std::map<std::string, SessionEntry00A4> m_skillTreePositions;
+  /* 00AC */ std::map<std::string, std::string> m_jobInheritance;
   /* 00B4 */ int m_simplifiedSkillList;
   /* 00B8 */ int m_showSkillDescription;
   /* 00BC */ unsigned char m_hotkeyPage;
@@ -273,13 +273,13 @@ public:
   /* 0F60 */ int m_autoOpenFriendWhisperWindow;
   /* 0F64 */ unsigned char whisperOptions[0x08];
   /* 0F6C */ const char* const* m_humanMaleHeadNames;
-  /* 0F70 */ unsigned char unknown_0F70[0x08];
+  /* 0F70 */ unsigned char m_humanMaleHeadNamesEndAndCapacity[0x08];
   /* 0F78 */ const char* const* m_humanFemaleHeadNames;
-  /* 0F7C */ unsigned char unknown_0F7C[0x08];
+  /* 0F7C */ unsigned char m_humanFemaleHeadNamesEndAndCapacity[0x08];
   /* 0F84 */ const char* const* m_imfNames;
   /* 0F88 */ unsigned char additionalSpriteNames[0x14];
   /* 0F9C */ const char* const* m_shieldJobNames;
-  /* 0FA0 */ unsigned char unknown_0FA0[0x08];
+  /* 0FA0 */ unsigned char m_shieldJobNamesEndAndCapacity[0x08];
   /* 0FA8 */ std::vector<const char*> m_jobNameTable;
   /* 0FB4 */ std::map<unsigned, const char*> m_jobNameTableWoman;
   /* 0FBC */ std::map<unsigned, const char*> m_jobNameTableMan;
@@ -301,7 +301,7 @@ public:
   /* 1050 */ int petEggIndex;
   /* 1054 */ int petPreviousHunger;
   /* 1058 */ int m_petActionTable[5][5][7];
-  /* 1314 */ std::string unknown_1314[25];
+  /* 1314 */ std::string m_petTalkStrings[25];
   /* 156C */ XmlDocument m_petTalkTable;
   /* 159C */ XmlDocument m_monsterSkillInfo;
   /* 15CC */ XmlDocument m_monsterTalkTable;
@@ -369,12 +369,12 @@ public:
   /* 5280 */ std::list<int> unknown_5280;
   /* 5288 */ unsigned char unknown_5288[0x0C];
   /* 5294 */ const char* const* m_bodyJobNames;
-  /* 5298 */ unsigned char unknown_5298[0x08];
+  /* 5298 */ unsigned char m_bodyJobNamesEndAndCapacity[0x08];
   /* 52A0 */ const char* const* m_sexNames;
-  /* 52A4 */ unsigned char unknown_52A4[0x08];
+  /* 52A4 */ unsigned char m_sexNamesEndAndCapacity[0x08];
   /* 52AC */ const char* const* m_weaponNamesBegin;
   /* 52B0 */ const char* const* m_weaponNamesEnd;
-  /* 52B4 */ unsigned char unknown_52B4[0x04];
+  /* 52B4 */ unsigned char m_weaponNamesCapacityEnd[0x04];
   /* 52B8 */ std::vector<const char*> m_accessoryNames;
   /* 52C4 */ std::vector<const char*> m_robeNames;
   /* 52D0 */ std::vector<std::string> m_navigationForbiddenMaps;
@@ -417,10 +417,10 @@ public:
   /* 54A8 */ int partyItemDistribute;
   /* 54AC */ std::string partyRequestName;
   /* 54C4 */ std::string partyName;
-  /* 54DC */ std::string unknown_54DC;
-  /* 54F4 */ std::string unknown_54F4;
+  /* 54DC */ std::string accountAddress;
+  /* 54F4 */ std::string registrationUrl;
   /* 550C */ std::string storeTitle;
-  /* 5524 */ std::string unknown_5524;
+  /* 5524 */ std::string accountPort;
   /* 553C */ std::string m_serverName;
   union {
     /* 5554 */ unsigned char whisperRecordStorage[4];
@@ -559,9 +559,9 @@ public:
   /* 6184 */ int playerAppearanceState;
   /* 6188 */ int m_lastIntervalTime;
   /* 618C */ const char* const* m_doramMaleHeadNames;
-  /* 6190 */ unsigned char unknown_6190[0x08];
+  /* 6190 */ unsigned char m_doramMaleHeadNamesEndAndCapacity[0x08];
   /* 6198 */ const char* const* m_doramFemaleHeadNames;
-  /* 619C */ unsigned char unknown_619C[0x08];
+  /* 619C */ unsigned char m_doramFemaleHeadNamesEndAndCapacity[0x08];
   /* 61A4 */ int automaticSkillHotkey;
   union {
     /* 61A8 */ unsigned char hotkeyAndSortOptions[0x10];

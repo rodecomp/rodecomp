@@ -26,7 +26,7 @@ namespace {
   struct WorldLightFileRecord {
     /* 0000 */ char name[80];
     /* 0050 */ float position[3]{};
-    /* 005C */ unsigned char unknown_005C[16];
+    /* 005C */ unsigned char colorAndRange[16];
   };
 
   struct WorldLegacySoundFileRecord {

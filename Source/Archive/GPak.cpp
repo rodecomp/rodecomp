@@ -699,8 +699,8 @@ struct HashTable_655340 {
   HashNode_655340* head;
   unsigned int size;
   HashBucket_655340* buckets;
-  unsigned int unknown_10;
-  unsigned int unknown_14;
+  unsigned int bucketsEnd;
+  unsigned int bucketsCapacityEnd;
   unsigned int mask;
   unsigned int bucket_count;
 

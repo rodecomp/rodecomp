@@ -67,7 +67,7 @@ public:
   /* 0110 */ int maximumFrame;
   /* 0114 */ int fps;
   /* 0118 */ int clipCount;
-  /* 011C */ int unknown_011C;
+  /* 011C */ int endLayerCount;
   /* 0120 */ EZeffectClip clips[60];
 
 private:

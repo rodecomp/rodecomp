@@ -4757,7 +4757,7 @@ struct PcMoveEntry {
   /* 0054 */ int accessory3;
   /* 0058 */ int headPalette;
   /* 005C */ int bodyPalette;
-  /* 0060 */ int unknown_0060;
+  /* 0060 */ int headDir;
   /* 0064 */ int guildId;
   /* 0068 */ int guildVersion;
   /* 006C */ int honor;

@@ -23,14 +23,14 @@ struct CLanguageBase {
   virtual void EndComposition();
   virtual void ResetCandidate();
 
-  /* 0004 */ std::deque<unsigned int> unknown_0004;
+  /* 0004 */ std::deque<unsigned int> fakeInput;
   /* 0018 */ CANDIDATELIST* candidateList;
   /* 001C */ int candidateCount;
   /* 0020 */ int pageSize;
   /* 0024 */ int selection;
   /* 0028 */ std::vector<unsigned char> candidateStorage;
   /* 0034 */ std::string text;
-  /* 004C */ int unknown_004C;
+  /* 004C */ int inputCursor;
   /* 0050 */ int cursor;
   /* 0054 */ int anchor;
   /* 0058 */ std::string composition;
@@ -40,8 +40,8 @@ struct CLanguageBase {
   /* 008D */ unsigned char unknown_008D;
   /* 008E */ std::uint16_t language;
   /* 0090 */ unsigned codePage;
-  /* 0094 */ int unknown_0094;
-  /* 0098 */ int unknown_0098;
+  /* 0094 */ int underlineStart;
+  /* 0098 */ int underlineEnd;
   /* 009C */ std::string servicePrefix;
   /* 00B4 */ std::uint16_t alternateLanguage;
   /* 00B6 */ unsigned char unknown_00B6[2];
@@ -93,7 +93,7 @@ struct CLanguageTH : CLanguageBase {
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(CLanguageBase, unknown_0004) == 0x0004);
+static_assert(offsetof(CLanguageBase, fakeInput) == 0x0004);
 static_assert(offsetof(CLanguageBase, candidateList) == 0x0018);
 static_assert(offsetof(CLanguageBase, candidateStorage) == 0x0028);
 static_assert(offsetof(CLanguageBase, text) == 0x0034);

@@ -6084,7 +6084,7 @@ static_assert(sizeof(GameModeStoredItemEntry) == 0x19);
 
 #pragma pack(push, 1)
 struct GameModeUiMessage {
-  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0000 */ std::uint16_t packetType;
   /* 0002 */ std::uint16_t type;
   /* 0004 */ std::uint16_t length;
   /* 0006 */ int values[6];
@@ -6092,7 +6092,7 @@ struct GameModeUiMessage {
 };
 
 struct GameModeUiWhisperMessage {
-  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0000 */ std::uint16_t packetType;
   /* 0002 */ std::uint16_t type;
   /* 0004 */ std::uint16_t length;
   /* 0006 */ char target[0x19];
@@ -6100,7 +6100,7 @@ struct GameModeUiWhisperMessage {
 };
 
 struct GameModeUiKindTextMessage {
-  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0000 */ std::uint16_t packetType;
   /* 0002 */ std::uint16_t type;
   /* 0004 */ std::uint16_t length;
   /* 0006 */ int kind;
@@ -6109,7 +6109,7 @@ struct GameModeUiKindTextMessage {
 };
 
 struct GameModeUiNavigationMessage {
-  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0000 */ std::uint16_t packetType;
   /* 0002 */ std::uint16_t type;
   /* 0004 */ std::uint16_t length;
   /* 0006 */ char name[0x1E];
@@ -6122,7 +6122,7 @@ struct GameModeUiNavigationMessage {
 };
 
 struct GameModeUiDestinationMessage {
-  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0000 */ std::uint16_t packetType;
   /* 0002 */ std::uint16_t type;
   /* 0004 */ std::uint16_t length;
   /* 0006 */ char mapName[0x1E];
@@ -6131,7 +6131,7 @@ struct GameModeUiDestinationMessage {
 };
 
 struct GameModeUiDragMessage {
-  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0000 */ std::uint16_t packetType;
   /* 0002 */ std::uint16_t type;
   /* 0004 */ std::uint16_t length;
   /* 0006 */ int windowId;
@@ -8016,7 +8016,7 @@ void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntr
       skill.upgradable = entry.upgradable;
       skill.range = entry.range;
       skill.name = skill.IdName(*g_session.m_hotkeyScript);
-      skill.learnedLevel = entry.unknown_000D;
+      skill.learnedLevel = entry.learnedLevel;
       skill.apCost = skill.UseApAmount(*g_session.m_hotkeyScript, entry.level);
       g_session.m_skillBundle.ApplyLevelChange(skill);
 

@@ -27,14 +27,14 @@ public:
 
   /* 00D8 */ CUITitleBar* titleBar;
   union {
-    /* 00DC */ unsigned char unknown_00DC[0x04];
+    /* 00DC */ unsigned char backgroundStorage[0x04];
     /* 00DC */ CUIStaticImage* background;
   };
   /* 00E0 */ CUIStaticText* titleText;
   /* 00E4 */ OngoingQuestInfo::CUIScrollWindow* scrollWindow;
   /* 00E8 */ CUIStaticText* dateText;
   union {
-    /* 00EC */ unsigned char unknown_00EC[0x04];
+    /* 00EC */ unsigned char closeButtonStorage[0x04];
     /* 00EC */ CUIImageButton* closeButton;
   };
   /* 00F0 */ unsigned int questId;

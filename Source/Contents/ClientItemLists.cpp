@@ -206,7 +206,7 @@ public:
   unsigned char unknown_0004[0x9];
   bool m_dirty;
   unsigned char unknown_000E[0x12];
-  UIWindow* unknown_0020;
+  UIWindow* m_window;
   /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
   /* 0044 */ unsigned char unknown_0044[0x1B8];
 

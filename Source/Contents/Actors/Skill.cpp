@@ -38,14 +38,14 @@
 struct SkillHitMessage {
   /* 0000 */ int skillId;
   /* 0004 */ int damage;
-  /* 0008 */ int unknown_0008;
+  /* 0008 */ int action;
   /* 000C */ std::uint32_t targetAid;
-  /* 0010 */ int unknown_0010;
+  /* 0010 */ int startTime;
   /* 0014 */ int monsterValue;
   /* 0018 */ int hitCount;
   /* 001C */ int cellX;
   /* 0020 */ int cellY;
-  /* 0024 */ int unknown_0024;
+  /* 0024 */ int attackMotionTime;
   /* 0028 */ int motionSpeed;
 };
 

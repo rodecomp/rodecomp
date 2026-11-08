@@ -8,18 +8,18 @@
 #include <vector>
 
 struct RawItemData {
-  /* 0000 */ std::uint32_t unknown_0000;
+  /* 0000 */ std::uint32_t source;
   /* 0004 */ std::uint32_t index;
   /* 0008 */ std::uint32_t price;
   /* 000C */ std::uint32_t realPrice;
   /* 0010 */ std::int32_t quantity;
-  /* 0014 */ std::uint32_t unknown_0014;
+  /* 0014 */ std::uint32_t slot;
   /* 0018 */ std::uint32_t type;
   /* 001C */ std::uint32_t refiningLevel;
   /* 0020 */ unsigned char identified;
   /* 0021 */ unsigned char unknown_0021[27];
   /* 003C */ std::string itemId;
-  /* 0054 */ unsigned char unknown_0054[28];
+  /* 0054 */ unsigned char skillNameAndLevel[28];
   /* 0070 */ std::uint32_t cards[4];
   /* 0080 */ unsigned char unknown_0080[8];
   /* 0088 */ std::int32_t optionCount;

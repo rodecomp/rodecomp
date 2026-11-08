@@ -10,11 +10,11 @@ struct WorldViewRecord;
 
 struct FlyingShipRouteEntry {
   /* 0000 */ std::string name;
-  /* 0018 */ int unknown_0018[4];
-  /* 0028 */ int unknown_0028;
+  /* 0018 */ int areaBounds[4];
+  /* 0028 */ int areaFlags;
   /* 002C */ float screenPosition[2];
-  /* 0034 */ float unknown_0034;
-  /* 0038 */ float unknown_0038;
+  /* 0034 */ float width;
+  /* 0038 */ float height;
 
   FlyingShipRouteEntry() = default;
   FlyingShipRouteEntry(const FlyingShipRouteEntry& other) = default;
@@ -56,8 +56,8 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(FlyingShipRouteEntry) == 0x3C);
-static_assert(offsetof(FlyingShipRouteEntry, unknown_0018) == 0x18);
-static_assert(offsetof(FlyingShipRouteEntry, unknown_0038) == 0x38);
+static_assert(offsetof(FlyingShipRouteEntry, areaBounds) == 0x18);
+static_assert(offsetof(FlyingShipRouteEntry, height) == 0x38);
 static_assert(sizeof(CFlyingShipRouteInfo) == 0x50);
 static_assert(offsetof(CFlyingShipRouteInfo, entries) == 0x04);
 static_assert(offsetof(CFlyingShipRouteInfo, routeReset) == 0x28);

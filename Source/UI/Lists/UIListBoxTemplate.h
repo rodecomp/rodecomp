@@ -269,9 +269,9 @@ public:
   }
 
   /* 0080 */ CResPtr<CBitmapRes> normalImage;
-  /* 0084 */ CResPtr<CBitmapRes> unknown_0084;
-  /* 0088 */ CResPtr<CBitmapRes> unknown_0088;
-  /* 008C */ CResPtr<CBitmapRes> unknown_008C;
+  /* 0084 */ CResPtr<CBitmapRes> hoverImage;
+  /* 0088 */ CResPtr<CBitmapRes> pressedImage;
+  /* 008C */ CResPtr<CBitmapRes> disabledImage;
   /* 0090 */ std::map<int, std::string> imageNames;
   /* 0098 */ std::string disabledName;
   /* 00B0 */ CUIVScrollBar* scrollBar;
@@ -472,9 +472,9 @@ public:
   }
 
   /* 0080 */ CResPtr<CBitmapRes> normalImage;
-  /* 0084 */ CResPtr<CBitmapRes> unknown_0084;
-  /* 0088 */ CResPtr<CBitmapRes> unknown_0088;
-  /* 008C */ CResPtr<CBitmapRes> unknown_008C;
+  /* 0084 */ CResPtr<CBitmapRes> hoverImage;
+  /* 0088 */ CResPtr<CBitmapRes> pressedImage;
+  /* 008C */ CResPtr<CBitmapRes> disabledImage;
   /* 0090 */ std::map<int, std::string> imageNames;
   /* 0098 */ std::string disabledName;
   /* 00B0 */ CUIVScrollBar* scrollBar;

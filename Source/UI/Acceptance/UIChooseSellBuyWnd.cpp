@@ -1381,7 +1381,7 @@ int UISpellListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     return 0;
   }
   case UM_SETCHOOSE:
-    this->unknown_00FC = static_cast<short>(argument1);
+    this->m_sourceSkillId = static_cast<short>(argument1);
     return 0;
   case UM_REFRESH:
     this->UpdateScroll();
@@ -1412,14 +1412,14 @@ int UISpellListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       if (selected < 0 || static_cast<unsigned>(selected) >= this->m_skills.size()) {
         return 0;
       }
-      if (this->unknown_00FC != 0) {
-        mode->SendMsg(MM_SKILL_SELECT_RESPONSE, this->m_skills[selected], this->unknown_00FC, 0, 0);
+      if (this->m_sourceSkillId != 0) {
+        mode->SendMsg(MM_SKILL_SELECT_RESPONSE, this->m_skills[selected], this->m_sourceSkillId, 0, 0);
       } else {
         mode->SendMsg(MM_SELECT_SPELL, this->m_skills[selected], 0, 0, 0);
       }
     } else if (argument1 == ID_CANCEL) {
-      if (this->unknown_00FC != 0) {
-        mode->SendMsg(MM_SKILL_SELECT_RESPONSE, 0, this->unknown_00FC, 0, 0);
+      if (this->m_sourceSkillId != 0) {
+        mode->SendMsg(MM_SKILL_SELECT_RESPONSE, 0, this->m_sourceSkillId, 0, 0);
       } else {
         mode->SendMsg(MM_SELECT_SPELL, 0, 0, 0, 0);
       }
@@ -9736,7 +9736,7 @@ UIItemCompositionWnd::UIItemCompositionWnd()
 // OFFSET: 0x008C90E0
 // FUNCTION: fn_11976
 UISpellListWnd::UISpellListWnd() : UIItemIdentifyWnd() {
-  this->unknown_00FC = 0;
+  this->m_sourceSkillId = 0;
 }
 
 // OFFSET: 0x00900B10
@@ -11600,7 +11600,7 @@ void UIEquipWnd::RefreshLook()
     appearance[2] = g_equipWindowLook.head;
     appearance[6] = g_equipWindowLook.bodyPalette;
     appearance[7] = g_equipWindowLook.headPalette;
-    costumeJob = g_equipWindowLook.unknown_0024;
+    costumeJob = g_equipWindowLook.bodyCostume;
   }
   appearance[3] = 0;
   appearance[4] = 0;
@@ -11980,7 +11980,7 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
         }
         const int selected = this->m_list->selected;
         if (selected != -1) {
-          g_modeMgr.GetGameMode()->SendMsg(MM_CHOOSE_MENU, this->m_items[selected] + 1, this->unknown_00C8, 0, 0);
+          g_modeMgr.GetGameMode()->SendMsg(MM_CHOOSE_MENU, this->m_items[selected] + 1, this->m_npcAid, 0, 0);
           g_windowMgr.CloseWindow(WID_CHOOSEWND);
         }
       }
@@ -12003,8 +12003,8 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           text = FindItemDescription(itemId).identifiedName;
         }
         this->m_list->AddLine(text.c_str());
-        ++this->unknown_00B4;
-        this->m_items.push_back(this->unknown_00B4);
+        ++this->m_lastItemIndex;
+        this->m_items.push_back(this->m_lastItemIndex);
         const int previousWidth = this->m_list->geometry.width;
         if (previousWidth < this->m_list->contentWidth + 15) {
           this->m_list->Resize(this->m_list->contentWidth + 15, this->m_list->geometry.height);
@@ -12016,7 +12016,7 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     }
     return 0;
   case UM_SETNAID:
-    this->unknown_00C8 = static_cast<int>(a);
+    this->m_npcAid = static_cast<int>(a);
     return 0;
   case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
@@ -12052,7 +12052,7 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   }
   case UM_CANCEL_NPC_CHOICE:
     if (CMode* mode = g_modeMgr.GetGameMode()) {
-      mode->SendMsg(MM_CHOOSE_MENU, -1, this->unknown_00C8, 0, 0);
+      mode->SendMsg(MM_CHOOSE_MENU, -1, this->m_npcAid, 0, 0);
     }
     return 0;
   default:
@@ -12074,8 +12074,8 @@ int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     line = FindItemDescription(itemId).identifiedName;
   }
   this->m_list->AddLine(line);
-  ++this->unknown_00B4;
-  this->m_items.push_back(this->unknown_00B4);
+  ++this->m_lastItemIndex;
+  this->m_items.push_back(this->m_lastItemIndex);
   UIListBox* list = this->m_list;
   const int listWidth = list->geometry.width;
   const int growWidth = 0;

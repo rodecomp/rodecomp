@@ -6,10 +6,10 @@
 class UIEditCtrl;
 
 struct TalkboxTrapTarget {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
+  /* 0000 */ int skillId;
+  /* 0004 */ int cellX;
+  /* 0008 */ int cellY;
+  /* 000C */ int skillLevel;
 };
 
 struct TalkboxTrapRequest {

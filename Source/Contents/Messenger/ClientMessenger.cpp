@@ -416,11 +416,11 @@ namespace EquipmentProperties {
 namespace EquipmentProperties {
   class CEquipmentAttachable : public CEquipment {
   public:
-    /* 0038 */ int unknown_0038;
+    /* 0038 */ int m_slotIndex;
     /* 003C */ CEquipment* m_owner;
 
     // INLINED
-    CEquipmentAttachable(const int& id, int index, CEquipment* owner) : CEquipment(id), unknown_0038(index), m_owner(owner) {
+    CEquipmentAttachable(const int& id, int index, CEquipment* owner) : CEquipment(id), m_slotIndex(index), m_owner(owner) {
     }
 
     void Load(bool force) override;

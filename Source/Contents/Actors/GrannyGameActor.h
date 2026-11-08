@@ -51,10 +51,10 @@ public:
   /* 053D */ unsigned char unknown_053D[0x03];
   /* 0540 */ unsigned brightness;
   /* 0544 */ int motion;
-  /* 0548 */ unsigned char unknown_0548[0x04];
+  /* 0548 */ unsigned char currentFrame[0x04];
   /* 054C */ char name[0x104];
   /* 0650 */ int renderState;
-  /* 0654 */ int unknown_0654;
+  /* 0654 */ int cellTexture;
   /* 0658 */ granny_control* controls[20];
   /* 06A8 */ unsigned char initializeFacing;
   /* 06A9 */ unsigned char unknown_06A9[0x03];
@@ -62,7 +62,7 @@ public:
   /* 0724 */ std::uint16_t* meshIndices[30];
   /* 079C */ int meshTriangleCounts[30];
   /* 0814 */ matrix meshTransforms[30];
-  /* 0DB4 */ unsigned char unknown_0DB4[0x04];
+  /* 0DB4 */ unsigned char worldPose[0x04];
   /* 0DB8 */ CTexture* texture;
   /* 0DBC */ std::vector<vector3d> litPositions;
 };

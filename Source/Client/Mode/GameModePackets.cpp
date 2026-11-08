@@ -6495,7 +6495,7 @@ void CGameMode::ApplyStatusChange(
 
 #pragma pack(push, 1)
 struct Window107Entry {
-  /* 0000 */ unsigned char unknown_0000[0x18];
+  /* 0000 */ unsigned char repairItemData[0x18];
 };
 #pragma pack(pop)
 
@@ -8050,7 +8050,7 @@ void CGameMode::ReceiveEquipWindowMicroscope5(const unsigned char* packet) {
   g_equipWindowLook.headPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
   memcpy_s(g_equipWindowLook.name, sizeof(g_equipWindowLook.name), packet + 4, sizeof(g_equipWindowLook.name));
   g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
-  g_equipWindowLook.unknown_0024 = *reinterpret_cast<const std::int16_t*>(packet + 0x2C);
+  g_equipWindowLook.bodyCostume = *reinterpret_cast<const std::int16_t*>(packet + 0x2C);
 
   if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
     g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
@@ -8085,7 +8085,7 @@ void CGameMode::ReceiveEquipWindowMicroscope6(const unsigned char* packet) {
   g_equipWindowLook.headPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
   memcpy_s(g_equipWindowLook.name, sizeof(g_equipWindowLook.name), packet + 4, sizeof(g_equipWindowLook.name));
   g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
-  g_equipWindowLook.unknown_0024 = *reinterpret_cast<const std::int16_t*>(packet + 0x2C);
+  g_equipWindowLook.bodyCostume = *reinterpret_cast<const std::int16_t*>(packet + 0x2C);
 
   if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
     g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
@@ -15826,7 +15826,7 @@ struct PartyMemberInfoPacket {
   /* 0000 */ std::uint16_t id;
   /* 0002 */ std::uint32_t accountId;
   /* 0006 */ std::int32_t leader;
-  /* 000A */ unsigned char unknown_000A[4];
+  /* 000A */ unsigned char position[4];
   /* 000E */ unsigned char offline;
   /* 000F */ char partyName[24];
   /* 0027 */ char memberName[24];
@@ -22304,7 +22304,7 @@ void CGameMode::ProcessIncomingPackets() {
         entry.spCost = record->spCost;
         entry.range = record->range;
         entry.upgradable = record->upgradable;
-        entry.unknown_000D = record->level;
+        entry.learnedLevel = record->level;
         skills.push_back(entry);
       }
       this->ReceiveSkillList(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer), skills);

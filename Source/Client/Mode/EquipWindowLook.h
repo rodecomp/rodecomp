@@ -13,7 +13,7 @@ struct EquipWindowLook {
   /* 0018 */ int bodyPalette;
   /* 001C */ int headPalette;
   /* 0020 */ int robe;
-  /* 0024 */ int unknown_0024;
+  /* 0024 */ int bodyCostume;
   /* 0028 */ char name[24];
 };
 

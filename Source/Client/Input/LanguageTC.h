@@ -17,7 +17,7 @@ struct TraditionalKeyMapping {
 struct CLanguageTC : CLanguageBase {
   /* 00B8 */ std::list<std::uint8_t> keys;
   /* 00C0 */ std::array<TraditionalKeyMapping, 256> mappings;
-  /* 04C0 */ unsigned char unknown_04C0;
+  /* 04C0 */ unsigned char keyStrokeEnabled;
   /* 04C1 */ std::uint8_t unknown04C1;
   /* 04C2 */ unsigned char unknown_04C2[2];
 

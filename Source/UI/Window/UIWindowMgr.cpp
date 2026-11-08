@@ -867,7 +867,7 @@ void UIWindowMgr::ResetWindows() {
 // OFFSET: 0x00A88490
 // FUNCTION: fn_17086
 UIWindowMgr::UIWindowMgr()
-    : activeWindowId(0), retainedPersistentWindow(false), window_03DC(nullptr), previousMouseX(-1), previousMouseY(-1), unknown_0526(true),
+    : activeWindowId(0), retainedPersistentWindow(false), window_03DC(nullptr), previousMouseX(-1), previousMouseY(-1), basicInfoExpanded(true),
       window_0A30(nullptr), macroReporterVisible(false), unknown_4F211(false), window_4F2AC(nullptr) {
   this->ResetWindows();
   this->backgroundSurface = nullptr;

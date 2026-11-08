@@ -6,8 +6,8 @@
 struct AnimatedModelFace {
   /* 0000 */ std::uint16_t vertices[3];
   /* 0006 */ std::uint16_t textureVertices[3];
-  /* 000C */ std::uint32_t unknown_000C;
-  /* 0010 */ std::uint32_t unknown_0010;
+  /* 000C */ std::uint32_t materialIndex;
+  /* 0010 */ std::uint32_t twoSided;
   /* 0014 */ int smoothGroup;
 };
 
@@ -75,8 +75,8 @@ public:
   /* 014C */ float speed;
   /* 0150 */ std::uint32_t unknown_0150;
   /* 0154 */ float originX;
-  /* 0158 */ float unknown_0158;
-  /* 015C */ float unknown_015C;
+  /* 0158 */ float originY;
+  /* 015C */ float originZ;
   /* 0160 */ std::uint32_t alpha;
 };
 

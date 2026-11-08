@@ -20,7 +20,7 @@ struct WorldModelRecord {
   /* 00EC */ int animation;
   /* 00F0 */ int animationType;
   /* 00F4 */ float animationSpeed;
-  /* 00F8 */ unsigned char unknown_00F8[12];
+  /* 00F8 */ unsigned char legacyPosition[12];
   /* 0104 */ unsigned char flag;
   /* 0105 */ unsigned char unknown_0105[3];
   /* 0108 */ int index;

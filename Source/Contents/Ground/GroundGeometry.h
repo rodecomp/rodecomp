@@ -63,7 +63,7 @@ public:
   /* 000C */ int height;
   /* 0010 */ float cellSize;
   /* 0014 */ GroundLightmapSet lightmapSet;
-  /* 0034 */ std::uint32_t unknown_0034;
+  /* 0034 */ std::uint32_t surfaceCount;
   /* 0038 */ float waterLevel;
   /* 003C */ int waterAnimation;
   /* 0040 */ int waterPitch;

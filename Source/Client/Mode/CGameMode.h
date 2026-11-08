@@ -70,7 +70,7 @@ struct SkillListEntry {
   /* 0008 */ std::int16_t spCost;
   /* 000A */ std::int16_t range;
   /* 000C */ unsigned char upgradable;
-  /* 000D */ std::int16_t unknown_000D;
+  /* 000D */ std::int16_t learnedLevel;
 };
 #pragma pack(pop)
 
@@ -124,7 +124,7 @@ public:
   /* 00FC */ int isWaitingEnterRoom;
   /* 0100 */ unsigned char equipmentRequestState[0x18];
   /* 0118 */ std::string refuseWhisperName;
-  /* 0130 */ std::string unknown_0130;
+  /* 0130 */ std::string streamFileName;
   /* 0148 */ std::string exchangeName;
   /* 0160 */ CActorNameCardHolder nameCard;
   /* 0194 */ std::map<std::uint32_t, int> guildMemberStatusCache;
