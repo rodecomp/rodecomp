@@ -136,6 +136,7 @@ CTextureDX7::~CTextureDX7() {
 // OFFSET: 0x00544230
 // FUNCTION: fn_01815
 __forceinline bool CTextureDX7::Create(int width, int height, int format) {
+  unsigned selected = format;
   this->m_textureWidth = width;
   this->m_textureHeight = height;
   this->m_format = format;
@@ -146,23 +147,21 @@ __forceinline bool CTextureDX7::Create(int width, int height, int format) {
     this->m_surface = nullptr;
   }
 
-  if (format != TextureFormat::A1R5G5B5 && format != TextureFormat::A4R4G4B4 && format != TextureFormat::A8R8G8B8 && format != TextureFormat::R5G6B5) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Create Texture::Unsupported pixelformat", 0);
+  if (selected != TextureFormat::A1R5G5B5 && selected != TextureFormat::A4R4G4B4 && selected != TextureFormat::A8R8G8B8 && selected != TextureFormat::R5G6B5) {
+    ShowErrorDialog("Create Texture::Unsupported pixelformat", 0);
   }
-
-  unsigned selected = format;
 
   if (formats[selected].dwSize != sizeof(DDPIXELFORMAT)) {
     this->m_owner->device->EnumTextureFormats(SelectFormat, &selected);
   }
 
   if (formats[selected].dwSize != sizeof(DDPIXELFORMAT)) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "GFC ", 0);
+    ShowErrorDialog("GFC ", 0);
   }
 
-  DDSURFACEDESC2 description = {sizeof(description),
-                                 (selected == TextureFormat::R5G6B5 ? DDSD_CKSRCBLT : 0) | g_textureAllocationDX7.descriptorFlags | DDSD_CAPS | DDSD_HEIGHT |
-                                     DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE};
+  DDSURFACEDESC2 description = {sizeof(description)};
+  description.dwFlags = (selected == TextureFormat::R5G6B5 ? DDSD_CKSRCBLT : 0) | g_textureAllocationDX7.descriptorFlags | DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH |
+                        DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE;
   description.dwWidth = this->m_textureWidth;
   description.dwHeight = this->m_textureHeight;
   description.ddpfPixelFormat = formats[selected];
