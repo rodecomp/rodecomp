@@ -70,7 +70,7 @@ __declspec(noinline) UIWindow* UIWindowMgr::FindRenderedUid(std::uint32_t uid) {
 
 // OFFSET: 0x00A91B70
 // FUNCTION: fn_45428
-void WindowScreenPosition(const UIWindow* window, int& x, int& y) {
+void __stdcall WindowScreenPosition(const UIWindow* window, int& x, int& y) {
   int horizontal = 0;
   int vertical = 0;
 
@@ -85,7 +85,7 @@ void WindowScreenPosition(const UIWindow* window, int& x, int& y) {
 
 // OFFSET: 0x00A91BA0
 // FUNCTION: fn_45429
-void WindowScreenBounds(const UIWindow* window, int& left, int& top, int& right, int& bottom) {
+void __stdcall WindowScreenBounds(const UIWindow* window, int& left, int& top, int& right, int& bottom) {
   bottom = 0;
   right = 0;
   top = 0;

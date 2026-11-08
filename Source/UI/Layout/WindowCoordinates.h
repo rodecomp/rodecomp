@@ -3,9 +3,9 @@
 
 class UIWindow;
 
-void WindowScreenPosition(const UIWindow* window, int& x, int& y);
+void __stdcall WindowScreenPosition(const UIWindow* window, int& x, int& y);
 
-void WindowScreenBounds(const UIWindow* window, int& left, int& top, int& right, int& bottom);
+void __stdcall WindowScreenBounds(const UIWindow* window, int& left, int& top, int& right, int& bottom);
 
 bool WindowBoundsOverlap(const int first[4], const int second[4]);
 
