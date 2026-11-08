@@ -2431,14 +2431,22 @@ int CGameActor::GetMonsterTransformJob() {
     return this->unknown_03C4;
   }
 
+  int result = -1;
   if (this->render.accountId == g_session.m_aid) {
     return g_session.GetPairValue();
   }
 
-  const int first = this->unknown_03B8[0] != -1 ? this->unknown_03B8[0] : -1;
-  const int second = this->unknown_03B8[1] == -1 ? first : this->unknown_03B8[1];
-  const int third = this->unknown_03B8[2];
-  return third != -1 ? third : second;
+  if (this->unknown_03B8[0] != -1) {
+    result = this->unknown_03B8[0];
+  }
+  int second = this->unknown_03B8[1];
+  if (second == -1) {
+    second = result;
+  }
+  if (this->unknown_03B8[2] != -1) {
+    second = this->unknown_03B8[2];
+  }
+  return second;
 }
 
 // OFFSET: 0x00CABFA0
@@ -4580,12 +4588,13 @@ void CGameActor::RefreshGuildEmblemWindow() {
   if (g_session.GetSceneUnknown004C() == 0) {
     return;
   }
-  if (this->render.accountId == g_session.m_aid) {
+  if (g_session.m_aid == this->render.accountId) {
     return;
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  const int emblemVersion = g_guildMgr->GetEmblemVersion(static_cast<std::uint32_t>(this->GetGdid()));
+  CGuildMgr* guildMgr = g_guildMgr;
+  const int emblemVersion = guildMgr->GetEmblemVersion(static_cast<std::uint32_t>(this->GetGdid()));
   mode->ShowGuildEmblem(this, this->GetGdid(), emblemVersion);
 }
 
