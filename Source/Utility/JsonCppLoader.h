@@ -237,28 +237,28 @@ public:
   /* 0031 */ bool succeeded;
 };
 
-inline JsonValue& JsonCppLoader::GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType) {
-  out = JsonValue();
-  if (node.IsNull() || !node.IsObject()) {
-    return out;
-  }
+extern "C" {
+void JsonCopyConstruct();
+void* __cdecl JsonNull();
+}
 
-  const JsonObject& members = node.GetObject();
-  JsonObject::const_iterator member = members.begin();
-  for (; member != members.end(); ++member) {
-    if (member->first == key) {
-      break;
+inline JsonValue& JsonCppLoader::GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType) {
+  const JsonValue* source = static_cast<const JsonValue*>(JsonNull());
+  if (!node.IsNull() && node.IsObject()) {
+    const JsonObject& members = node.GetObject();
+    JsonObject::const_iterator member = members.begin();
+    for (; member != members.end(); ++member) {
+      if (member->first == key) {
+        break;
+      }
+    }
+
+    if (member != members.end() && member->second.GetType() == expectedType) {
+      source = &member->second;
     }
   }
 
-  if (member == members.end()) {
-    return out;
-  }
-
-  if (member->second.GetType() == expectedType) {
-    out = member->second;
-  }
-
+  reinterpret_cast<void(__thiscall*)(JsonValue*, const JsonValue*)>(JsonCopyConstruct)(&out, source);
   return out;
 }
 
