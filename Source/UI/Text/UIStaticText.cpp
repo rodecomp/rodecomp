@@ -130,24 +130,20 @@ void UIStaticText::SetTextFittedCodePage(const char* value) {
 // FUNCTION: fn_10820
 void UIStaticText::Paint() {
   this->ClearSurface(this->background);
-  const auto draw = [&](int x, int y, std::uint32_t color, unsigned char boldValue, unsigned char italicValue) {
-    this->DrawTextAt(x, y, this->text.c_str(), 0, this->fontFamily, this->fontHeight, color, boldValue, italicValue
-    );
-  };
 
   if (this->shadow != 0) {
-    draw(1, 1, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(1, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0xFFFFFF, 0, 0);
   }
 
   if (this->outline != 0) {
-    draw(-1, 0, this->outlineColor, 0, 0);
-    draw(1, 0, this->outlineColor, 0, 0);
-    draw(0, 1, this->outlineColor, 0, 0);
+    this->DrawTextAt(-1, 0, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, 0, 0);
+    this->DrawTextAt(1, 0, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, 0, 0);
+    this->DrawTextAt(0, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, 0, 0);
   }
 
   const unsigned color =
     static_cast<unsigned char>(this->red) | (static_cast<unsigned char>(this->green) << 8) | (static_cast<unsigned char>(this->blue) << 16);
-  draw(0, 0, color, this->bold, this->italic);
+  this->DrawTextAt(0, 0, this->text.c_str(), 0, this->fontFamily, this->fontHeight, color, this->bold, this->italic);
 }
 
 // OFFSET: 0x0085EE40
