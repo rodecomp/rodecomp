@@ -1650,11 +1650,11 @@ void UIBarterItemPurchaseWnd::Paint() {
   const int borderTiles = borderHeight / 8 + (borderHeight % 8 != 0);
   for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &bitmap->image, false);
+    this->DrawBitmap(0, y, bitmap, false);
   }
   for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - bitmap->image.width, y, &bitmap->image, false);
+    this->DrawBitmap(this->geometry.width - bitmap->image.width, y, bitmap, false);
   }
 
   unsigned red;
