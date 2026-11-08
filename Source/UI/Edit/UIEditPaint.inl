@@ -32,7 +32,7 @@ __forceinline void UIEditCtrl::PaintTextWithPolicy(const std::string* placeholde
       display = prefix + this->text;
       const unsigned prefixBytes = static_cast<unsigned>(std::strlen(prefix));
       begin = std::min(this->anchor, this->cursor) + prefixBytes;
-      end = std::max(this->anchor, this->cursor) + g_serverLanguage->compositionCursor + prefixBytes;
+      end = std::max(this->anchor, this->cursor) + g_serverLanguage->candidate.size() + prefixBytes;
     }
 
     const int left = begin ? this->TextWidth(display.c_str(), begin, 0, 12, 0, 0) : 0;
@@ -40,7 +40,7 @@ __forceinline void UIEditCtrl::PaintTextWithPolicy(const std::string* placeholde
 
     if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) != 0) {
       this->DrawSelection(left + x, right - left);
-    } else if (g_serverLanguage->compositionCursor != 0) {
+    } else if (!g_serverLanguage->candidate.empty()) {
       this->MoveCandidateWindow(left);
       this->MoveReadingWindow(right);
       if (((timeGetTime() / 500) & 1) == 0) {
