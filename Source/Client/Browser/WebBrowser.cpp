@@ -98,7 +98,7 @@ bool CWebBrowser::AttachExternalEvents() {
   this->externalEvents = new CWebEventReceiver();
   this->externalEvents->AddRef();
 
-  return static_cast<CWebEventReceiver*>(this->externalEvents)->Register(this->browser, this->host);
+  return static_cast<CWebEventReceiver*>(this->externalEvents)->Register(this->browser, this->host) != 0;
 }
 
 // OFFSET: 0x00AB3030
