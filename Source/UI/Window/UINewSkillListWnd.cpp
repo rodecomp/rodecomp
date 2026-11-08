@@ -1614,7 +1614,7 @@ void UINewSkillListWnd::DrawSkillTree() {
 
   CBitmapRes* emptySlot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\no_skill.bmp")));
   for (int slot = 0; slot < 42; ++slot) {
-    this->DrawBitmap(slot % this->m_columns * 68 + 76, slot / this->m_columns * 56 + 44, &emptySlot->image, true);
+    this->DrawBitmap(slot % this->m_columns * 68 + 76, slot / this->m_columns * 56 + 44, emptySlot, true);
   }
 
   for (const CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
@@ -1666,7 +1666,7 @@ void UINewSkillListWnd::DrawSkillTree() {
         shade = 120;
         this->DrawAuxiliary(1, x + 4, y + 44, &bitmap->image, true, true);
       } else {
-        this->DrawBitmap(x + 4, y + 44, &bitmap->image, true);
+        this->DrawBitmap(x + 4, y + 44, bitmap, true);
       }
 
       const int planned = SkillValueOf(this->m_unknown_02A0, static_cast<int>(skill.id));
