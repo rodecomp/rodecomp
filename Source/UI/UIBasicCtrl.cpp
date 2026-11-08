@@ -2,7 +2,7 @@
 
 // OFFSET: 0x0086C410
 // FUNCTION: fn_11026
-UIBasicItemCtrl::UIBasicItemCtrl(WindowManagerWindows&)
+UIBasicItemCtrl::UIBasicItemCtrl()
     : UIWindow(0), m_itemType(-1), m_itemMask(-1), m_identified(0), m_tooltip(""), m_item(0) {
 }
 

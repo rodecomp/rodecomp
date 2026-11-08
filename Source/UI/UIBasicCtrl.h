@@ -10,7 +10,7 @@
 
 class UIBasicItemCtrl : public UIWindow {
 public:
-  UIBasicItemCtrl(WindowManagerWindows& windowList);
+  UIBasicItemCtrl();
   void DragAndDrop(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
   void OnLBtnDblClk(int x, int y) override;
