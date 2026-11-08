@@ -640,8 +640,8 @@ void ReadClientInfo(XmlNode* clientInfo) {
     }
   } else if (!g_clientInfoLoaded) {
     ShowErrorDialog(
-                    DecryptText<0x078333BB9725B7C9ULL>(
-                        {0x87, 0xD8, 0x05, 0xC4, 0xDE, 0x41, 0xF5, 0x6E, 0xAA, 0xD2, 0x71, 0xEE, 0xCB, 0x56, 0xA3, 0x26, 0xE8, 0xB7}),
+                    DecryptString<0x078333BB9725B7C9ULL>(
+                        {'\x87', '\xD8', '\x05', '\xC4', '\xDE', '\x41', '\xF5', '\x6E', '\xAA', '\xD2', '\x71', '\xEE', '\xCB', '\x56', '\xA3', '\x26', '\xE8', '\xB7'}),
                     0);
   }
 
@@ -668,8 +668,8 @@ void ReadClientInfo(XmlNode* clientInfo) {
         0);
   }
 
-  if (clientInfo->FindChild(DecryptText<0xC52FB5FBB94FF917ULL>(
-          {0x7F, 0x90, 0x2B, 0xDC, 0x9A, 0xD6, 0x4C, 0xAA, 0x62, 0x97, 0x3B, 0xD5, 0x92, 0xC6, 0x5B, 0xC5}))) {
+  if (clientInfo->FindChild(DecryptString<0xC52FB5FBB94FF917ULL>(
+          {'\x7F', '\x90', '\x2B', '\xDC', '\x9A', '\xD6', '\x4C', '\xAA', '\x62', '\x97', '\x3B', '\xD5', '\x92', '\xC6', '\x5B', '\xC5'}))) {
     g_hideAccountList = true;
   }
 
@@ -687,8 +687,8 @@ void ReadClientInfo(XmlNode* clientInfo) {
          image = image->FindSibling(DecryptText<0xD98F03A52D35636DULL>({0x04, 0x0E, 0x54, 0x4A, 0xC0, 0x03}))) {
       char path[256];
       std::sprintf(path,
-                   DecryptText<0x0F0F8B6B8F9D19D1ULL>(
-                       {0x11, 0xB6, 0x5D, 0x75, 0xAB, 0x45, 0xCA, 0xC2, 0x17, 0xFD, 0x5D, 0x43, 0xD6, 0x31, 0x53, 0x2A, 0xA2, 0x19}),
+                   DecryptString<0x0F0F8B6B8F9D19D1ULL>(
+                       {'\x11', '\xB6', '\x5D', '\x75', '\xAB', '\x45', '\xCA', '\xC2', '\x17', '\xFD', '\x5D', '\x43', '\xD6', '\x31', '\x53', '\x2A', '\xA2', '\x19'}),
                    image->Text().c_str());
       g_loadingScreens.push_back(std::string(path));
     }
