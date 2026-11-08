@@ -11,6 +11,8 @@
 #include <json/value.h>
 #include <io.h>
 
+extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // OFFSET: 0x005BC230
 // FUNCTION: fn_03463
 void EmotionHotkeys::Load(Json::Value& data) {
@@ -29,8 +31,10 @@ void EmotionHotkeys::Load(Json::Value& data) {
 // FUNCTION: fn_23900
 bool EmotionHotkeys::HasChanges() const {
   if (!this->saved.empty()) {
+    const std::string* current = this->current.data();
+    const std::string* saved = this->saved.data();
     for (int i = 0; i < 10; ++i) {
-      if (this->saved[i] != this->current[i]) {
+      if (saved[i] != current[i]) {
         return true;
       }
     }

@@ -2,6 +2,8 @@
 #include "Contents/Hotkeys/UserHotkeyScript.h"
 #include "Network/TextEncoding.h"
 
+template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // OFFSET: 0x005F7D60
 // FUNCTION: fn_04055
 void ClearUserHotkeys() {
