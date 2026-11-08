@@ -463,27 +463,27 @@ void DeviceOwnerDX7::MarkSurfacesLost() {
 
 // OFFSET: 0x005495C0
 // FUNCTION: fn_01891
-bool DeviceOwnerDX7::RestoreLostSurfaces() {
-  if (!this->surfacesLost) {
-    return false;
-  }
-
-  HRESULT status[2] = {};
-  status[0] = this->primary->IsLost();
-  if (this->depthBuffer) {
-    status[1] = this->depthBuffer->IsLost();
-  }
-
-  if (status[0] == DDERR_SURFACELOST && status[1] == DDERR_SURFACELOST) {
+int DeviceOwnerDX7::RestoreLostSurfaces() {
+  if (this->surfacesLost) {
+    HRESULT status[2] = {};
+    status[0] = this->primary->IsLost();
     if (this->depthBuffer) {
-      this->depthBuffer->Restore();
+      status[1] = this->depthBuffer->IsLost();
     }
 
-    this->draw->RestoreAllSurfaces();
-    this->surfacesLost = false;
+    if (status[0] == DDERR_SURFACELOST && status[1] == DDERR_SURFACELOST) {
+      if (this->depthBuffer) {
+        this->depthBuffer->Restore();
+      }
+
+      this->draw->RestoreAllSurfaces();
+      this->surfacesLost = false;
+    }
+
+    return true;
   }
 
-  return true;
+  return false;
 }
 
 // OFFSET: 0x0054AF20

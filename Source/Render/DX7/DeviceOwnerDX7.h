@@ -21,7 +21,7 @@ public:
   HRESULT Clear(DWORD color);
   HRESULT ClearDepth();
   HRESULT Present(bool wait);
-  bool RestoreLostSurfaces();
+  int RestoreLostSurfaces();
   void MarkSurfacesLost();
   void AdjustTextureDimensions(std::uint32_t& width, std::uint32_t& height) const;
   bool SupportsTextureDimensions(std::uint32_t width, std::uint32_t height) const;
