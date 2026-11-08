@@ -507,11 +507,11 @@ void InitializeServiceConfiguration() {
   const std::uint8_t portSource[] = {0xED, 0xBA, 0xF1, 0x3F, 0xAB};
   g_servicePort = DecryptText<0xEB3D4FAB0FC183DBULL>(portSource);
 
-  const std::uint8_t webPageSource[] = {
-    0x21, 0x8B, 0xA1, 0x8F, 0xEB, 0x6C, 0x90, 0x88, 0x3E, 0x88, 0xFB, 0x8D, 0xB0, 0x24, 0xD1, 0x9E,
-    0x3B, 0x90, 0xBE, 0xD1, 0xB2, 0x2C, 0x91, 0x94, 0x3B, 0xFF
+  const char webPageSource[] = {
+    '\x21', '\x8B', '\xA1', '\x8F', '\xEB', '\x6C', '\x90', '\x88', '\x3E', '\x88', '\xFB', '\x8D', '\xB0', '\x24', '\xD1', '\x9E',
+    '\x3B', '\x90', '\xBE', '\xD1', '\xB2', '\x2C', '\x91', '\x94', '\x3B', '\xFF'
   };
-  g_webPageUrl = DecryptText<0xFFBF43D1FFD5FF49ULL>(webPageSource);
+  g_webPageUrl = DecryptString<0xFFBF43D1FFD5FF49ULL>(webPageSource);
 
   g_extendedSlot = true;
   g_serviceOverrideKey = "";
@@ -525,32 +525,32 @@ void InitializeServiceConfiguration() {
     // (jump into the empty stub 0x027AB0FE). The code from here on starts at 0x00AD237E.
     g_serviceFlag07 = 29;
     if (std::strstr(g_launchServerName, "QmSakray")) {
-      const std::uint8_t keySource[] = {
-        0x3C, 0x83, 0xDA, 0xE6, 0x72, 0x9C, 0xCE, 0x77, 0x36, 0xDF, 0xC7, 0xAA, 0x64, 0x9F, 0x82, 0x37,
-        0x38, 0x9A, 0x9B, 0xA8, 0x6C, 0xDF, 0x88, 0x37, 0x6D, 0xC7, 0x8C, 0xFB, 0x33, 0xF1
+      const char keySource[] = {
+        '\x3C', '\x83', '\xDA', '\xE6', '\x72', '\x9C', '\xCE', '\x77', '\x36', '\xDF', '\xC7', '\xAA', '\x64', '\x9F', '\x82', '\x37',
+        '\x38', '\x9A', '\x9B', '\xA8', '\x6C', '\xDF', '\x88', '\x37', '\x6D', '\xC7', '\x8C', '\xFB', '\x33', '\xF1'
       };
-      g_serviceOverrideKey = DecryptText<0x45E3F103CBB5F157ULL>(keySource);
+      g_serviceOverrideKey = DecryptString<0x45E3F103CBB5F157ULL>(keySource);
 
-      const std::uint8_t addressSource[] = {
-        0xB4, 0x35, 0xC2, 0x4A, 0x6E, 0x14, 0x1E, 0x1C, 0xBE, 0x69, 0xDF, 0x06, 0x78, 0x17, 0x52, 0x5F,
-        0xB0, 0x2C, 0x83, 0x04, 0x70, 0x57, 0x58, 0x5F, 0xE5, 0x71, 0x94, 0x52, 0x2E, 0x79
+      const char addressSource[] = {
+        '\xB4', '\x35', '\xC2', '\x4A', '\x6E', '\x14', '\x1E', '\x1C', '\xBE', '\x69', '\xDF', '\x06', '\x78', '\x17', '\x52', '\x5F',
+        '\xB0', '\x2C', '\x83', '\x04', '\x70', '\x57', '\x58', '\x5F', '\xE5', '\x71', '\x94', '\x52', '\x2E', '\x79'
       };
       const std::uint8_t formatSource[] = {0xAC, 0x4E, 0x6D};
-      StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), DecryptText<0x2F2701A7E56D3D89ULL>(formatSource), DecryptText<0x2D33791F67AD47DFULL>(addressSource));
+      StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), DecryptText<0x2F2701A7E56D3D89ULL>(formatSource), DecryptString<0x2D33791F67AD47DFULL>(addressSource));
     } else {
-      const std::uint8_t keySource[] = {
-        0x4E, 0xE3, 0x68, 0x8E, 0x80, 0x62, 0x50, 0x58, 0x0B, 0xE3, 0x66, 0xC4, 0x8F, 0x60, 0x41, 0x04,
-        0x4E, 0xBF, 0x64, 0xCC, 0xCF, 0x6A, 0x41, 0x51, 0x13, 0xA8, 0x37, 0x93, 0xE1
+      const char keySource[] = {
+        '\x4E', '\xE3', '\x68', '\x8E', '\x80', '\x62', '\x50', '\x58', '\x0B', '\xE3', '\x66', '\xC4', '\x8F', '\x60', '\x41', '\x04',
+        '\x4E', '\xBF', '\x64', '\xCC', '\xCF', '\x6A', '\x41', '\x51', '\x13', '\xA8', '\x37', '\x93', '\xE1'
       };
-      g_serviceOverrideKey = DecryptText<0x6B3301E1A3079125ULL>(keySource);
+      g_serviceOverrideKey = DecryptString<0x6B3301E1A3079125ULL>(keySource);
 
-      const std::uint8_t addressSource[] = {
-        0x08, 0x4B, 0x12, 0x8C, 0x38, 0xD2, 0xFA, 0xAD, 0x00, 0x40, 0x50, 0xD2, 0x77, 0xC7, 0xFE, 0xA4,
-        0x0D, 0x58, 0x0F, 0xCE, 0x32, 0x9B, 0xFC, 0xAC, 0x4D, 0x52, 0x0F, 0x9B, 0x6F, 0x8C, 0xAA, 0xF7,
-        0x63
+      const char addressSource[] = {
+        '\x08', '\x4B', '\x12', '\x8C', '\x38', '\xD2', '\xFA', '\xAD', '\x00', '\x40', '\x50', '\xD2', '\x77', '\xC7', '\xFE', '\xA4',
+        '\x0D', '\x58', '\x0F', '\xCE', '\x32', '\x9B', '\xFC', '\xAC', '\x4D', '\x52', '\x0F', '\x9B', '\x6F', '\x8C', '\xAA', '\xF7',
+        '\x63'
       };
       const std::uint8_t formatSource[] = {0xAC, 0x4E, 0x6D};
-      StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), DecryptText<0x2F2701A7E56D3D89ULL>(formatSource), DecryptText<0xC39FB559A17D3963ULL>(addressSource));
+      StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), DecryptText<0x2F2701A7E56D3D89ULL>(formatSource), DecryptString<0xC39FB559A17D3963ULL>(addressSource));
     }
     g_adminAccountIds.assign(std::begin(s_adminIds), std::end(s_adminIds));
     g_monsterJobs.assign(std::begin(s_monsterJobIds), std::end(s_monsterJobIds));
@@ -563,10 +563,10 @@ void InitializeServiceConfiguration() {
     break;
   }
   case 3: {
-    const std::uint8_t hostSource[] = {
-      0x3F, 0x6A, 0x58, 0xAD, 0x8A, 0x26, 0xAF, 0xA7, 0x3F, 0x6F, 0x5E, 0xAD, 0x8A, 0x20, 0xA8, 0x89
+    const char hostSource[] = {
+      '\x3F', '\x6A', '\x58', '\xAD', '\x8A', '\x26', '\xAF', '\xA7', '\x3F', '\x6F', '\x5E', '\xAD', '\x8A', '\x20', '\xA8', '\x89'
     };
-    g_serviceHost = DecryptText<0x899D11BB83695B0DULL>(hostSource);
+    g_serviceHost = DecryptString<0x899D11BB83695B0DULL>(hostSource);
     g_serviceFlag07 = 29;
     const std::uint8_t portSource[] = {0xC3, 0x1C, 0x63, 0xD9, 0xD7};
     g_servicePort = DecryptText<0x2B8725D7E95325F5ULL>(portSource);
