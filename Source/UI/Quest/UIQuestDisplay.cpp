@@ -61,7 +61,7 @@ void UIQuestDisplay::Paint() {
     }
     this->DrawShadowedText(0, top, title.c_str(), 0, 0xD6E1, 0, 0, 12, 0);
 
-    std::string description = info.m_descriptions.size() == 0 ? std::string() : info.unknown_004C;
+    std::string description = info.m_descriptions.empty() ? std::string() : info.unknown_004C;
     description = StripColorCodes(description.c_str(), description.size());
     description = static_cast<const std::string&>(DisplayUrlTextTag(description));
     description = static_cast<const std::string&>(DisplayNavigationTextTag(description));
@@ -97,14 +97,16 @@ void UIQuestDisplay::Paint() {
           const short minLevel = info.m_huntUnknown01AC[index];
           const short maxLevel = info.m_huntUnknown01B2[index];
           const char* name = info.m_huntName[index];
-          if (minLevel < 0 || maxLevel < 0 || (minLevel == 0 && maxLevel == 0)) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s", name));
-          } else if (minLevel == 0) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
-          } else if (maxLevel == 0) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, minLevel));
+          if (minLevel > -1 && maxLevel > -1 && (minLevel != 0 || maxLevel != 0)) {
+            if (minLevel == 0) {
+              hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
+            } else if (maxLevel == 0) {
+              hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, minLevel));
+            } else {
+              hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel));
+            }
           } else {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel));
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s", name));
           }
         }
 
