@@ -320,15 +320,11 @@ bool C3dGrannyModelRes::Load(const char* name) {
   this->file = GrannyReadEntireFileFromMemory(file.GetSize(), file.GetData());
   file.Close();
 
-  if (!this->file) {
-    ShowErrorDialog("Unable to load file .gr2 (C3dGrannyModelRes :: Load)", 0);
-  } else {
+  if (this->file) {
     granny_file_info* info = GrannyGetFileInfo(this->file);
     std::strcpy(this->fileName, name);
 
-    if (!info) {
-      ShowErrorDialog("Unable to access file data .gr2", 0);
-    } else {
+    if (info) {
       this->textureCount = info->textureCount;
       this->textures = new GrannyTextureEntry[this->textureCount];
 
@@ -358,12 +354,16 @@ bool C3dGrannyModelRes::Load(const char* name) {
       }
 
       result = true;
+    } else {
+      ShowErrorDialog("Unable to access file data .gr2", 0);
     }
 
     GrannyFreeFileSection(this->file, 1);
     GrannyFreeFileSection(this->file, 2);
     GrannyFreeFileSection(this->file, 4);
     GrannyFreeFileSection(this->file, 5);
+  } else {
+    ShowErrorDialog("Unable to load file .gr2 (C3dGrannyModelRes :: Load)", 0);
   }
 
   this->unknown_0110 = 1920.0f;
