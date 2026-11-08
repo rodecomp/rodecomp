@@ -648,14 +648,14 @@ bool CSession::HasItem17D4(int itemId) const {
 
 // OFFSET: 0x00DF9D30
 // FUNCTION: fn_23566
-bool CSession::IsFriendName(const char* name) const {
+int CSession::IsFriendName(const char* name) const {
   for (const MessengerMember& member : this->m_friends) {
     if (member.name == name) {
-      return true;
+      return 1;
     }
   }
 
-  return false;
+  return 0;
 }
 
 // OFFSET: 0x00E1DFB0

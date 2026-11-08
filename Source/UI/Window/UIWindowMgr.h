@@ -573,7 +573,7 @@ public:
   bool IsDropDownChild(const UIWindow* window);
   bool HasMiniPartyMember(std::uint32_t accountId);
   bool IsHoverParentVisible();
-  bool IsFriend(const char* name);
+  int IsFriend(const char* name);
   bool IsSharedWindowId(int id);
   bool HasNavigationBlocker();
   bool Window4F250Ready();

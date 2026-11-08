@@ -836,7 +836,7 @@ public:
   const char* GetPlayerMapDisplayName();
   std::uint32_t GetPartyMemberAid(const char* name);
   bool HasItem17D4(int itemId) const;
-  bool IsFriendName(const char* name) const;
+  int IsFriendName(const char* name) const;
   bool RemoveFriendByCharacterId(std::uint32_t characterId);
   void RemovePartyMemberByName(const char* name);
   bool IsGuildMemberAccount(std::uint32_t accountId) const;

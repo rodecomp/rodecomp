@@ -114,7 +114,7 @@ bool UIWindowMgr::IsHoverParentVisible() {
 
 // OFFSET: 0x00A96E90
 // FUNCTION: fn_17195
-bool UIWindowMgr::IsFriend(const char* name) {
+int UIWindowMgr::IsFriend(const char* name) {
   return g_session.IsFriendName(name) != 0;
 }
 
