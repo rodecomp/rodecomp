@@ -1,4 +1,7 @@
 #include "UI/Party/UIMiniPartyWnd.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Input/Mouse.h"
 #include "Client/Mode/CGameMode.h"
@@ -149,7 +152,7 @@ void UIMiniPartyInfoWnd::OnMouseHover(int, int) {
 // FUNCTION: fn_07734
 void UIMiniPartyInfoWnd::OnRBtnUp(int, int) {
   if (!g_session.m_lockMouse) {
-    this->SendMsg(nullptr, 0x31, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
   }
 }
 
@@ -200,7 +203,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case UM_MAKEMENU:
     this->m_entries.clear();
     if (g_windowMgr.unknown_0210) {
-      g_windowMgr.CloseWindow(18);
+      g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (this->m_owner->GetMember().valid) {
       this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(2808)).c_str(), 58));
@@ -216,13 +219,13 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(3102)).c_str(), 61));
     }
     if (this->m_entries.size()) {
-      UIWindow* menu = g_windowMgr.EnsureWindow(18);
-      menu->SendMsg(nullptr, 75, 0, 0, 0, 0);
+      UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
+      menu->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
       for (unsigned index = 0; index < this->m_entries.size(); ++index) {
-        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_entries[index].text.c_str()), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_entries[index].text.c_str()), 0, 0, 0);
       }
-      menu->SendMsg(nullptr, 83, 301, this->m_owner->m_cell, 0, 0);
-      menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SET_CALLER_WID, 301, this->m_owner->m_cell, 0, 0);
+      menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
       int x = g_mouse.x + 1;
       int y = g_mouse.y + 1;
       if (x < 1) {
@@ -251,27 +254,27 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     switch (this->m_entries[argument1].value) {
     case MENUID_SEND_MSG:
-      this->SendMsg(nullptr, 6, 231, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, ID_SENDMSG, 0, 0, 0);
       return 0;
     case MENUID_TALKONLYTWO:
-      this->SendMsg(nullptr, 6, 232, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, ID_TALK, 0, 0, 0);
       return 0;
     case MENUID_QUERYINFO:
-      this->SendMsg(nullptr, 6, 233, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, ID_FRIEND_INFO, 0, 0, 0);
       return 0;
     case MENUID_EXPEL:
     case 19:
-      this->SendMsg(nullptr, 6, 235, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, ID_DELETE_FRIEND, 0, 0, 0);
       return 0;
     case MENUID_LEAVE:
-      this->SendMsg(nullptr, 6, 236, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, ID_LEAVE, 0, 0, 0);
       return 0;
     case MENUID_MAKE_WHISPER_WINDOW:
       this->SendMsg(nullptr, 71, 0, 0, 0, 0);
       return 0;
     case MENUID_INVITE_IN_PARTY:
       if (this->m_owner->m_cell != -1 && this->m_owner->GetMember().valid) {
-        g_modeMgr.gameMode->SendMsg(59, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
         return 0;
       }
       break;
@@ -279,19 +282,19 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (this->m_owner->m_cell != -1) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().offline == 0) {
           if (g_windowMgr.Confirm(LookupMessage(1533), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
-            g_modeMgr.gameMode->SendMsg(260, this->m_owner->GetMember().accountId, 0, 0, 0);
+            g_modeMgr.gameMode->SendMsg(MM_GROUP_CHANGE_MASTER, this->m_owner->GetMember().accountId, 0, 0, 0);
             return 0;
           }
         } else {
-          g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1534)), 255, 3, 0, 0);
+          g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1534)), 255, 3, 0, 0);
           return 0;
         }
       }
       break;
     case 58:
       if (this->m_owner->GetMember().valid) {
-        g_modeMgr.gameMode->SendMsg(268, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
         return 0;
       }
       break;
@@ -337,12 +340,12 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_PARTY_SETTING:
       if (!g_session.m_lockMouse) {
         if (g_windowMgr.unknown_042C) {
-          g_windowMgr.CloseWindow(208);
+          g_windowMgr.CloseWindow(WID_PARTYINVITATIONTOWND);
         }
-        if (!g_windowMgr.CloseWindow(53) && g_session.PartyCount()) {
-          g_windowMgr.EnsureWindow(53);
+        if (!g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT) && g_session.PartyCount()) {
+          g_windowMgr.EnsureWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
         }
-        g_windowMgr.CloseWindow(68);
+        g_windowMgr.CloseWindow(WID_FRIENDOPTIONWND);
         UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_030C);
         if (window) {
           int x = 0;
@@ -357,7 +360,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (!g_session.m_lockMouse && this->m_owner->GetMember().valid) {
         if (!(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
           if (g_windowMgr.Confirm(LookupMessage(363), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
-            g_modeMgr.gameMode->SendMsg(62, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
+            g_modeMgr.gameMode->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
             return 0;
           }
         }
@@ -367,7 +370,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
           if (g_windowMgr.Confirm(LookupMessage(357), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
-            g_modeMgr.gameMode->SendMsg(61, 0, 0, 0, 0);
+            g_modeMgr.gameMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
             return 0;
           }
         }
@@ -433,7 +436,7 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     if (member && member->valid) {
       this->m_member = *member;
       if (this->m_infoWnd) {
-        this->m_infoWnd->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        this->m_infoWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
     }
     return 0;

@@ -1,4 +1,6 @@
 #include "Render/Text/FontCache.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
@@ -228,7 +230,7 @@ void UIRodexComposeWnd::OnProcess() {
 void UIRodexComposeWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (std::atoi(item.itemId.c_str()) != 0) {
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -285,17 +287,17 @@ void UIRodexComposeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source != 1) {
-    mode->SendMsg(18, 0, 0, 0, 0);
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
   if (drag->quantity == 1) {
-    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     return;
   }
 
-  g_windowMgr.ShowWindowById(15, 1);
-  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 13, 0, 0, 0);
+  g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
+  g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 13, 0, 0, 0);
 }
 
 // OFFSET: 0x007FF4A0
@@ -313,12 +315,12 @@ std::int64_t UIRodexComposeWnd::GetZeny() {
 int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == 201) {
-      g_windowMgr.CloseWindow(264);
-    } else if (argument1 == 213) {
+    if (argument1 == ID_CLOSE) {
+      g_windowMgr.CloseWindow(WID_RODEXCOMPOSEWND);
+    } else if (argument1 == ID_CHECK) {
       if (this->unknown_00B4->Length() != 0 && this->unknown_00B4->Length() < 24) {
         if (g_navigationLinkParser->HasLink(this->unknown_00B4->Text())) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xAFC)), 0x64FFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xAFC)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
 
@@ -336,45 +338,45 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
 
       if (this->unknown_00B4->Length() >= 24) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA27)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA27)), 0x64FFFF, 0, 0, 0);
       }
       if (g_navigationLinkParser->HasLink(this->unknown_00B4->Text())) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xAFC)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xAFC)), 0x64FFFF, 0, 0, 0);
       } else {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA23)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA23)), 0x64FFFF, 0, 0, 0);
       }
-    } else if (argument1 == 345) {
+    } else if (argument1 == ID_SEND) {
       if (this->unknown_00B4->Length() == 0 && this->unknown_00B8->Length() == 0) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA23)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA23)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
       if (this->unknown_00D0->Length() < 4 || this->unknown_00D0->Length() >= 51) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA24)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA24)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
       if (this->m_contents->Length() >= 1001) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA44)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA44)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
 
       const std::int64_t zeny = this->GetZeny();
       if (zeny > 0) {
         if (zeny > g_session.m_zeny) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA35)), 0x64FFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA35)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
         if (zeny + this->unknown_00F8 > g_session.m_zeny) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA53)), 0x64FFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA53)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
       }
       if (this->unknown_00F8 > 0 && this->unknown_00F8 > g_session.m_zeny) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA53)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA53)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
 
       if (this->unknown_00C8->GetText().length() <= 0) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA33)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA33)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
 
@@ -382,7 +384,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       if (g_navigationLinkParser->HasLink(this->m_contents->Text())) {
         this->m_contents->SetText("");
         body.clear();
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBE2)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBE2)), 0xFF, 0, 0, 0);
         return 0;
       }
 
@@ -402,7 +404,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       mail.title = this->unknown_00D0->Text();
       mail.body = body;
       mail.zeny = static_cast<int>(zeny);
-      g_modeMgr.GetGameMode()->SendMsg(0xC0, reinterpret_cast<int>(&mail), 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_SEND_MAIL, reinterpret_cast<int>(&mail), 0, 0, 0);
     }
     return 0;
   case UM_REFRESHITEM:
@@ -417,22 +419,22 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     return 0;
   case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    g_modeMgr.GetGameMode()->SendMsg(0xC3, mode->drag.id, mode->drag.quantity, 0, 0);
-    g_modeMgr.GetGameMode()->SendMsg(0x12, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADD_MAIL_ITEM, mode->drag.id, mode->drag.quantity, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return 0;
   }
   case UM_TEXT_LBTN_UP:
     if (argument3 > 0) {
-      UIWindow* window = g_windowMgr.EnsureWindow(12);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (window) {
-        window->SendMsg(nullptr, 24, argument3, 0, 0, 0);
+        window->SendMsg(nullptr, UM_ITEMEXPLANATION, argument3, 0, 0, 0);
       }
     }
     return 0;
   case UM_DECITEM: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    g_modeMgr.GetGameMode()->SendMsg(0x126, mode->drag.id, mode->drag.quantity, 0, 0);
-    g_modeMgr.GetGameMode()->SendMsg(0x12, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_REMOVE_RODEX_ITEM, mode->drag.id, mode->drag.quantity, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return 0;
   }
   default:

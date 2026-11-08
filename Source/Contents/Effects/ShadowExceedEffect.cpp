@@ -1,4 +1,5 @@
 #include "Contents/Effects/ShadowExceedEffect.h"
+#include "Contents/Actors/ActorEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -28,7 +29,7 @@ void CShadowExceed::Close() {
   CRenderObject* actor = FindRenderObject(this->actor);
   if (actor) {
     while (static_cast<EffectActor*>(actor)->HasId(1004) == true) {
-      actor->SendMsg(nullptr, 109, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 }
@@ -119,7 +120,7 @@ void CShadowExceed::OnProcess() {
     CRenderObject* actor = FindRenderObject(this->actor);
     if (actor) {
       while (static_cast<EffectActor*>(actor)->HasId(1004) == true) {
-        actor->SendMsg(nullptr, 109, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       static_cast<EffectActor*>(actor)->LaunchEffect(1004, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }

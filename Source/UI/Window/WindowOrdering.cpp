@@ -1,4 +1,6 @@
 #include "UI/Window/UIRoulletteWnd.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
@@ -18,7 +20,7 @@ void UIWindowMgr::InvalidateAll() {
 // FUNCTION: fn_17185
 void UIWindowMgr::RefreshClanWnd() {
   if (this->window_0444) {
-    this->window_0444->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->window_0444->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -26,25 +28,25 @@ void UIWindowMgr::RefreshClanWnd() {
 // FUNCTION: fn_17186
 void UIWindowMgr::RefreshGuildWindows() {
   if (this->window_0320) {
-    this->window_0320->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->window_0320->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   if (this->window_0324) {
-    this->window_0324->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->window_0324->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   if (this->unknown_0328) {
-    this->unknown_0328->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->unknown_0328->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   if (this->window_032C) {
-    this->window_032C->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->window_032C->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   if (this->unknown_0330) {
-    this->unknown_0330->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->unknown_0330->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   if (this->unknown_0334) {
-    this->unknown_0334->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->unknown_0334->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   if (this->unknown_0338) {
-    this->unknown_0338->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->unknown_0338->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -52,7 +54,7 @@ void UIWindowMgr::RefreshGuildWindows() {
 // FUNCTION: fn_17187
 void UIWindowMgr::RefreshRouletteWnd() {
   if (this->unknown_0464) {
-    this->unknown_0464->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->unknown_0464->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -105,7 +107,7 @@ void UIWindowMgr::Promote(UIWindow* window) {
     return;
   }
 
-  if (this->LookupWindow(278) || this->LookupWindow(4) || this->LookupWindow(199) || this->LookupWindow(200)) {
+  if (this->LookupWindow(WID_NEWMAKECHARWND) || this->LookupWindow(WID_MAKECHARWND) || this->LookupWindow(WID_SECONDPASSWORDINPUTWND) || this->LookupWindow(WID_SECONDPASSWORDEDITWND)) {
     return;
   }
 

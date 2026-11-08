@@ -1,3 +1,5 @@
+#include "UI/Window/UIEnums.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Jobs/JobId.h"
@@ -96,11 +98,11 @@ void CGameActor::ProcessDamageMessages() {
       }
 
       if (std::strlen(notice) != 0) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice), 0xFFFF, 16, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0xFFFF, 16, 0, 0);
       }
 
       if (std::strlen(partyNotice) != 0) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(partyNotice), 0xC8C8FF, 17, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(partyNotice), 0xC8C8FF, 17, 0, 0);
       }
     }
 
@@ -119,7 +121,7 @@ void CGameActor::RegisterPos() {
   int column;
   int row;
   mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
-  mode->SendMsg(0xC, this->render.accountId, column, row, 0);
+  mode->SendMsg(MM_ADDREGISTERPOS, this->render.accountId, column, row, 0);
 }
 
 // OFFSET: 0x00CB0FD0
@@ -163,7 +165,7 @@ bool CGameActor::ProcessState() {
       this->unknown_0178 = 0;
       this->render.isMotionFreezed = false;
       this->SetState(0, 1);
-      this->SendMsg(nullptr, 0x53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     this->ProcessMotion();
     this->unknown_0244 = timeGetTime();
@@ -180,8 +182,8 @@ bool CGameActor::ProcessState() {
         const int friendly = g_session.GetPetFriendlyState(g_session.m_petFriendly);
         const int action = g_session.GetPetActionNumber(hungry, friendly, 4);
         const int emotion = g_session.GetPetEmotionNumber(g_session.unknown_103C, 4, hungry);
-        mode->SendMsg(0x94, emotion, 0, 0, 0);
-        mode->SendMsg(0x94, action, 0, 0, 0);
+        mode->SendMsg(MM_PET_ACT, emotion, 0, 0, 0);
+        mode->SendMsg(MM_PET_ACT, action, 0, 0, 0);
       }
       this->unknown_027C = 0;
     }
@@ -351,7 +353,7 @@ bool CGameActor::ProcessState() {
     this->unknown_0178 = 0;
     this->ProcessMotion();
     if (this->render.isMotionFinished && this->unknown_02A8.size() == 0) {
-      mode->SendMsg(0xD, static_cast<int>(this->render.accountId), 0, 0, 0);
+      mode->SendMsg(MM_DELETEREGISTERPOS, static_cast<int>(this->render.accountId), 0, 0, 0);
       const int job = this->GetEffectiveJob(-1);
       if ((job > 31 && job < 1000) || g_session.IsMonsterClass(job) || this->unknown_0314 == 9 ||
           g_session.IsSkillIdInRange6001(job)) {
@@ -586,7 +588,7 @@ void CGameActor::UpdateGaugePositions() {
 
   if (this->unknown_0264[3] != 0) {
     if (timeGetTime() > this->unknown_0280) {
-      this->SendMsg(nullptr, 0x53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (this->render.unknown_0070 == 8) {
         this->SetState(0, 1);
       }
@@ -646,7 +648,7 @@ void CGameActor::ReleaseAttachments() {
   }
 
   for (CGameObject* object : this->unknown_03B0) {
-    object->SendMsg(nullptr, 0x31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    object->SendMsg(nullptr, AM_MSGMASTER_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   this->unknown_03B0.clear();
 
@@ -680,7 +682,7 @@ void CGameActor::UpdateStateEffects() {
     this->unknown_02D8 = 0;
     CRagEffect* effect = this->LaunchEffect(22, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
-      effect->SendMsg(nullptr, 44, 0, static_cast<std::int64_t>((static_cast<std::uint64_t>(now) >> 4) % 10 + 1), 0, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETCOUNT, 0, static_cast<std::int64_t>((static_cast<std::uint64_t>(now) >> 4) % 10 + 1), 0, 0, 0, 0);
     }
   }
 
@@ -688,7 +690,7 @@ void CGameActor::UpdateStateEffects() {
     this->unknown_02D8 = 0;
     CRagEffect* effect = this->LaunchEffect(33, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
-      effect->SendMsg(nullptr, 44, 0, static_cast<std::int64_t>((static_cast<std::uint64_t>(now) >> 4) % 10 + 1), 0, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETCOUNT, 0, static_cast<std::int64_t>((static_cast<std::uint64_t>(now) >> 4) % 10 + 1), 0, 0, 0, 0);
     }
   }
 

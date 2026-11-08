@@ -1,4 +1,5 @@
 #include "UI/UIMacroUserInfoWnd.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -292,9 +293,9 @@ void UIMacroReporterWnd::OnProcess() {
 void UIMacroReporterWnd::OnWheel(int delta) {
   if (this->m_scrollable == 1) {
     if (delta < 0) {
-      this->SendMsg(this->m_scrollBar, 7, 3, 0, 0, 0);
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, 3, 0, 0, 0);
     } else {
-      this->SendMsg(this->m_scrollBar, 7, -3, 0, 0, 0);
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -3, 0, 0, 0);
     }
   }
 }
@@ -374,7 +375,7 @@ bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
   std::string text = this->m_target;
   if (text.empty() || text.size() - 4 > 4) {
     if (notify == 1) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(4011)).c_str()), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(4011)).c_str()), 0xFF, 0, 0, 0);
     }
     return false;
   }
@@ -387,7 +388,7 @@ bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
 
   if (value == 0 && text.compare(digits) != 0) {
     if (notify == 1) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(4011)).c_str()), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(4011)).c_str()), 0xFF, 0, 0, 0);
     }
     return false;
   }
@@ -402,7 +403,7 @@ bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
 
   if (text.compare(number) != 0) {
     if (notify == 1) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(4011)).c_str()), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(4011)).c_str()), 0xFF, 0, 0, 0);
     }
     return false;
   }
@@ -415,8 +416,8 @@ bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
 int UIMacroUserInfoWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message == 6 && argument1 == 201) {
-    g_windowMgr.CloseWindow(287);
+  if (message == UM_COMMAND && argument1 == ID_CLOSE) {
+    g_windowMgr.CloseWindow(WID_MACROUSERINFOWND);
   }
   return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
@@ -492,7 +493,7 @@ void UIMacroReporterWnd::OnCreate(int, int) {
     static_cast<UIRadioBtn*>(this->m_tabs[index])->SetText(labels[index].c_str());
     static_cast<UIRadioBtn*>(this->m_tabs[index])->SetId(215);
     static_cast<UIRadioBtn*>(this->m_tabs[index])->value = index;
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SendMsg(this, 13, index == this->m_mode, 0, 0, 0);
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SendMsg(this, UM_SETSTATE, index == this->m_mode, 0, 0, 0);
     if (const char* tooltip = tooltips[index].c_str()) {
       static_cast<UIRadioBtn*>(this->m_tabs[index])->tooltip = tooltip;
     }
@@ -505,7 +506,7 @@ void UIMacroReporterWnd::OnCreate(int, int) {
     static_cast<UIRadioBtn*>(this->m_tabs[index])->SetText(labels[index].c_str());
     static_cast<UIRadioBtn*>(this->m_tabs[index])->SetId(215);
     static_cast<UIRadioBtn*>(this->m_tabs[index])->value = index;
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SendMsg(this, 13, index == this->m_mode, 0, 0, 0);
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SendMsg(this, UM_SETSTATE, index == this->m_mode, 0, 0, 0);
     if (const char* tooltip = tooltips[index].c_str()) {
       static_cast<UIRadioBtn*>(this->m_tabs[index])->tooltip = tooltip;
     }
@@ -598,7 +599,7 @@ int UIMacroReporterWnd::SendMsg(
   case UM_COMMAND:
     switch (argument1) {
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(286);
+      g_windowMgr.CloseWindow(WID_MACROREPORTERWND);
       break;
 
     case ID_DELETE: {
@@ -735,9 +736,9 @@ int UIMacroReporterWnd::SendMsg(
 
       this->m_mode = argument2;
       for (int index = 0; index < 4; ++index) {
-        this->m_tabs[index]->SendMsg(this, 13, 0, 0, 0, 0);
+        this->m_tabs[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
       }
-      sender->SendMsg(this, 13, 1, 0, 0, 0);
+      sender->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
 
       UIEditCtrl* edit = static_cast<UIEditCtrl*>(this->m_edit);
       if (sender == this->m_tabs[1]) {
@@ -837,8 +838,8 @@ int UIMacroReporterWnd::SendMsg(
       }
     }
 
-    if (!g_windowMgr.CloseWindow(287)) {
-      UIMacroUserInfoWnd* info = static_cast<UIMacroUserInfoWnd*>(g_windowMgr.EnsureWindow(287));
+    if (!g_windowMgr.CloseWindow(WID_MACROUSERINFOWND)) {
+      UIMacroUserInfoWnd* info = static_cast<UIMacroUserInfoWnd*>(g_windowMgr.EnsureWindow(WID_MACROUSERINFOWND));
       info->Move(this->geometry.x + 15, this->geometry.y + row * 22 + 78);
       const unsigned short job = entry->unknown_001C;
       std::string name = entry->name;
@@ -853,9 +854,9 @@ int UIMacroReporterWnd::SendMsg(
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_firstRow;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->m_firstRow = previous - this->m_visibleRows + 1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->m_firstRow = previous + (this->m_visibleRows - 1);
     } else {
       this->m_firstRow = previous + argument1;

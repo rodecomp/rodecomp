@@ -34,7 +34,7 @@ void UIBitmapTab::OnLBtnDown(int, int y) {
       if (this->geometry.unknown_0030 != index) {
         this->geometry.unknown_0030 = index;
         this->Invalidate();
-        this->parent->SendMsg(this, 22, this->geometry.unknown_0030, 0, 0, 0);
+        this->parent->SendMsg(this, UM_TAB, this->geometry.unknown_0030, 0, 0, 0);
       }
 
       return;

@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Client/Mode/CMode.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -173,14 +175,14 @@ void UILapineUpgradeBoxWnd::Paint() {
 void UILapineUpgradeBoxWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (this->item.unknown_0000[1] > 0) {
-    mode->SendMsg(18, 0, 0, 0, 0);
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 27) {
-    this->SendMsg(this, 31, drag->id, 0, 0, 0);
+    this->SendMsg(this, UM_ADDITEM, drag->id, 0, 0, 0);
   }
-  mode->SendMsg(18, 0, 0, 0, 0);
+  mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00603650
@@ -201,7 +203,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::Move(int x, int y) {
 // FUNCTION: fn_04203
 void UILapineUpgradeBoxWnd::OnLBtnDblClk(int x, int y) {
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] != 0) {
-    this->SendMsg(this, 104, this->item.unknown_0000[1], 0, 0, 0);
+    this->SendMsg(this, UM_DECITEM, this->item.unknown_0000[1], 0, 0, 0);
   }
 }
 
@@ -209,7 +211,7 @@ void UILapineUpgradeBoxWnd::OnLBtnDblClk(int x, int y) {
 // FUNCTION: fn_04204
 void UILapineUpgradeBox_IngredientInfoWnd::OnLBtnDblClk(int x, int y) {
   if (this->item.unknown_0000[1] > 0) {
-    this->parent->SendMsg(this, 104, this->item.unknown_0000[1], 0, 0, 0);
+    this->parent->SendMsg(this, UM_DECITEM, this->item.unknown_0000[1], 0, 0, 0);
   }
 }
 
@@ -238,7 +240,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::OnLBtnUp(int x, int y) {
   this->selected = 1;
   this->Invalidate();
   if (this->parent) {
-    this->parent->SendMsg(this, 6, 0, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, 0, 0, 0, 0);
   }
 }
 
@@ -254,8 +256,8 @@ void UILapineUpgradeBox_IngredientInfoWnd::OnWheel(int argument) {
 // FUNCTION: fn_04211
 void UILapineUpgradeBoxWnd::OnRBtnDown(int x, int y) {
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] > 0) {
-    UIWindow* window = g_windowMgr.EnsureWindow(12);
-    window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
   }
 }
 
@@ -263,8 +265,8 @@ void UILapineUpgradeBoxWnd::OnRBtnDown(int x, int y) {
 // FUNCTION: fn_04212
 void UILapineUpgradeBox_IngredientInfoWnd::OnRBtnDown(int x, int y) {
   if (this->item.unknown_0000[1] > 0) {
-    UIWindow* window = g_windowMgr.EnsureWindow(12);
-    window->SendMsg(this, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
+    window->SendMsg(this, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
   }
 }
 
@@ -300,7 +302,7 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
   g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "get_min_need_option", "d>d", id, &this->minOptionCount);
   this->ingredientList->minOptionCount = this->minOptionCount;
   g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "set_resource_item_list", "d", id);
-  this->ingredientList->SendMsg(this, 0x17, 0, 0, 0, 0);
+  this->ingredientList->SendMsg(this, UM_REFRESHITEM, 0, 0, 0, 0);
 
   const char* source = nullptr;
   g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "get_need_source_string", "d>s", id, &source);
@@ -315,9 +317,9 @@ void UILapineUpgradeBox_IngredientListWnd::DragAndDrop(int x, int y, std::intptr
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 26) {
-    this->SendMsg(this, 31, drag->id, 0, 0, 0);
+    this->SendMsg(this, UM_ADDITEM, drag->id, 0, 0, 0);
   }
-  mode->SendMsg(18, 0, 0, 0, 0);
+  mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00604680
@@ -349,11 +351,11 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
         (*it)->Show(0);
       }
     }
-    this->SendMsg(this, 0x57, 0, 0, 0, 0);
+    this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
     break;
 
   case UM_ADDITEM:
-    this->parent->SendMsg(this, 0x68, a, 0, 0, 0);
+    this->parent->SendMsg(this, UM_DECITEM, a, 0, 0, 0);
     break;
 
   case UM_SETPOS: {
@@ -375,7 +377,7 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
   }
 
   case UM_DECITEM:
-    this->parent->SendMsg(this, 0x1F, a, 0, 0, 0);
+    this->parent->SendMsg(this, UM_ADDITEM, a, 0, 0, 0);
     break;
   }
 
@@ -393,9 +395,9 @@ void UILapineUpgradeBox_IngredientListWnd::Paint() {
 void UILapineUpgradeBox_IngredientListWnd::OnWheel(int argument) {
   if (this->wheelScroll == 1) {
     if (argument < 0) {
-      this->SendMsg(this->scrollBar, 7, 15, 0, 0, 0);
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, 15, 0, 0, 0);
     } else {
-      this->SendMsg(this->scrollBar, 7, -15, 0, 0, 0);
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, -15, 0, 0, 0);
     }
   }
 }
@@ -524,7 +526,7 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
   this->AddScrollChild(entry);
   entry->Invalidate();
   this->items.push_back(entry);
-  this->SendMsg(this, 0x57, 0, 0, 0, 0);
+  this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
   return true;
 }
 
@@ -579,7 +581,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
   }
 
   if (this->minRefine != 0 && this->minRefine < item.unknown_0060) {
-    this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3D)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3D)), 0, 0, 0);
   }
 
   if (Equipment(item) && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
@@ -587,7 +589,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
       std::uint32_t card = 0;
       std::memcpy(&card, item.unknown_001C + offset, sizeof(card));
       if (card != 0) {
-        this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3E)), 0, 0, 0);
+        this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3E)), 0, 0, 0);
         break;
       }
     }
@@ -598,7 +600,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
   }
 
   entry->Show(0);
-  this->SendMsg(this, 0x57, 0, 0, 0, 0);
+  this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
   return true;
 }
 
@@ -612,17 +614,17 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_COMMAND:
     switch (a) {
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(302);
+      g_windowMgr.CloseWindow(WID_LAPINEUPGRADEBOXWND);
       return 0;
-    case 505: {
+    case ID_LAPINE_ADD_INGREDIENT: {
       UILapineUpgradeBox_IngredientInfoWnd* selected = this->ingredientList->FindSelected();
       if (selected) {
-        this->SendMsg(this, 31, selected->item.unknown_0000[1], 0, 0, 0);
+        this->SendMsg(this, UM_ADDITEM, selected->item.unknown_0000[1], 0, 0, 0);
         return 0;
       }
       break;
     }
-    case 509:
+    case ID_LAPINE_START_UPGRADE:
       if (this->item.unknown_0000[1] != 0) {
         LapineUpgradeStartPacket packet;
         packet.id = 0xAB6;
@@ -665,7 +667,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_DECITEM:
     if (this->item.unknown_0000[1] != 0 && this->item.unknown_0000[1] == a) {
       this->item = ITEM_INFO();
-      this->SendMsg(this, 111, reinterpret_cast<std::intptr_t>(""), 0, 0, 0);
+      this->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(""), 0, 0, 0);
       this->Invalidate();
       this->ingredientList->AddIngredient(static_cast<std::uint32_t>(a));
       return 0;

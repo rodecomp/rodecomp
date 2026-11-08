@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "UI/Buttons/UIDescriptRace.h"
 
 #include <windows.h>
@@ -16,13 +17,13 @@ UIDescriptRace::UIDescriptRace(int race) : m_race(race), unknown_0284(0) {
 // OFFSET: 0x008861C0
 // FUNCTION: fn_11323
 void UIDescriptRace::OnCreate(int, int) {
-  this->SendMsg(nullptr, 13, this->m_noRace, 0, 0, 0);
+  this->SendMsg(nullptr, UM_SETSTATE, this->m_noRace, 0, 0, 0);
 }
 
 // OFFSET: 0x008985D0
 // FUNCTION: fn_11548
 int UIDescriptRace::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 13 && (this->m_race != 1 || g_doramCreationEnabled)) {
+  if (message == UM_SETSTATE && (this->m_race != 1 || g_doramCreationEnabled)) {
     if (argument1) {
       this->m_noRace = 1;
       this->SetBitmap(this->m_race != 1 ? "유저인터페이스\\make_character_ver2\\img_human_on.bmp" : "유저인터페이스\\make_character_ver2\\img_doram_on.bmp", 0, 0);

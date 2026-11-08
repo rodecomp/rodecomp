@@ -1,3 +1,4 @@
+#include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
 #include "Client/Mode/ModeMgr.h"
@@ -592,7 +593,7 @@ void CSkillAction_Earthing::OnSkillDamage(int level, CGameActor* source, CGameAc
   }
 
   if (CRagEffect* effect = source->LaunchEffect(0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
   }
 }
 
@@ -907,7 +908,7 @@ void CSkillAction_AT_QUILL_SPEAR::OnSkillEffect(int level, CGameActor* source, C
     );
     effect->SetAngle(angle);
     if (CRagEffect* ragEffect = source->LaunchEffect(2442, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-      ragEffect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
+      ragEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
     }
   }
 }
@@ -930,7 +931,7 @@ void CSkillAction_AT_QUILL_SPEAR_S::OnSkillEffect(int level, CGameActor* source,
     );
     effect->SetAngle(angle);
     if (CRagEffect* ragEffect = source->LaunchEffect(2442, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-      ragEffect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
+      ragEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
     }
   }
 }
@@ -1005,7 +1006,7 @@ void CSkillAction_AT_GRAVITY_HOLE::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_AT_GRAVITY_HOLE::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     if (CRagEffect* effect = source->LaunchEffect(0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-      effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
     }
   }
 }
@@ -1867,7 +1868,7 @@ void CSkillAction_AT_SAVAGE_LUNGE::OnSkillEffect(int level, CGameActor* source, 
   }
 
   if (CRagEffect* effect = source->LaunchEffect(2439, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
   EffectLists* effects = g_effectMgr;
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {

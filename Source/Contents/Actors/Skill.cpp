@@ -180,7 +180,7 @@ void CSkill::ReleaseModel() {
   delete this->m_model;
   this->m_model = nullptr;
   if (this->m_effect != nullptr) {
-    this->m_effect->SendMsg(nullptr, 24, 0, 0, 0, 0, 0, 0);
+    this->m_effect->SendMsg(nullptr, AM_MASTER_DEAD, 0, 0, 0, 0, 0, 0);
   }
 
   this->m_effect = nullptr;
@@ -479,13 +479,13 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
 
       const int address = reinterpret_cast<int>(&damageMessage);
       int total = damage;
-      target->SendMsg(this, 0x1B, 0, address, address >> 31, total, total >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(this, AM_WILL_BE_ATTACKED, 0, address, address >> 31, total, total >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       for (int index = 0; index < hitCount - 1;) {
         ++index;
         damageMessage.time += g_multiHitInterval;
         total += damage;
         damageMessage.unknown_0034 = index;
-        target->SendMsg(this, 0x1B, 0, address, address >> 31, total, total >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        target->SendMsg(this, AM_WILL_BE_ATTACKED, 0, address, address >> 31, total, total >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
 
@@ -916,7 +916,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
           !g_effectMgr->Spawn(0, this->m_effectId, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0)) {
         CRagEffect* effect = this->LaunchEffect(this->m_effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect != nullptr) {
-          effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&this->render.position), 0, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&this->render.position), 0, 0, 0, 0);
         }
       }
       break;

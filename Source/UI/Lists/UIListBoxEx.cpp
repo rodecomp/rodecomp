@@ -1,5 +1,6 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/UIEnums.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
@@ -132,7 +133,7 @@ void UIListBoxEx::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_11404
 void UIListBoxEx::OnLBtnDblClk(int, int) {
   if (this->selected != -1) {
-    this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, this->selected, 0, 0);
   }
 }
 
@@ -141,11 +142,11 @@ void UIListBoxEx::OnLBtnDblClk(int, int) {
 void UIListBoxEx::OnWheel(int value) {
   if (this->verticalOverflow != 0) {
     if (value < 0) {
-      this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, 3, 0, 0, 0);
       return;
     }
 
-    this->SendMsg(this->verticalBar, 7, -3, 0, 0, 0);
+    this->SendMsg(this->verticalBar, UM_SCROLLVERT, -3, 0, 0, 0);
   }
 }
 
@@ -199,11 +200,11 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     }
 
     if (this->selected < this->topLine) {
-      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
+      this->SendMsg(nullptr, UM_SCROLLVERT, -1, 0, 0, 0);
     }
 
     if (this->selected > this->topLine + this->geometry.height / this->lineHeight - 1) {
-      this->SendMsg(nullptr, 7, 1, 0, 0, 0);
+      this->SendMsg(nullptr, UM_SCROLLVERT, 1, 0, 0, 0);
     }
 
     break;
@@ -214,7 +215,7 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     }
 
     if (this->selected < this->topLine) {
-      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
+      this->SendMsg(nullptr, UM_SCROLLVERT, -1, 0, 0, 0);
     }
 
     break;
@@ -227,7 +228,7 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     }
 
     if (this->selected > this->topLine + this->geometry.height / this->lineHeight - 1) {
-      this->SendMsg(nullptr, 7, 1, 0, 0, 0);
+      this->SendMsg(nullptr, UM_SCROLLVERT, 1, 0, 0, 0);
     }
 
     break;
@@ -237,7 +238,7 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->topLine;
     const int visible = this->geometry.height / this->lineHeight;
-    const int delta = message == 9 ? (1 - visible) : message == 10 ? (visible - 1) : value;
+    const int delta = message == UM_SCROLLVERTPAGEUP ? (1 - visible) : message == UM_SCROLLVERTPAGEDOWN ? (visible - 1) : value;
     this->topLine = previous + delta;
 
     if (this->topLine < 0) {
@@ -268,7 +269,7 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case UM_SCROLLHORZPAGEUP:
   case UM_SCROLLHORZPAGEDOWN: {
     const int previous = this->horizontalOffset;
-    const int delta = message == 11 ? -15 : message == 12 ? 15 : value;
+    const int delta = message == UM_SCROLLHORZPAGEUP ? -15 : message == UM_SCROLLHORZPAGEDOWN ? 15 : value;
     this->horizontalOffset = previous + delta;
 
     if (this->horizontalOffset < 0) {

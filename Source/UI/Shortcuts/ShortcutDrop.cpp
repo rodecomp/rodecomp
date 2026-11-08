@@ -1,4 +1,6 @@
 #include "Contents/Items/ItemType.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeDragState.h"
@@ -17,7 +19,7 @@
 namespace {
   // INLINED
   __forceinline void Refresh(UIWindow& window) {
-    window.SendMsg(nullptr, 23, 0, 0, 0, 0);
+    window.SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     window.Invalidate();
   }
 
@@ -64,20 +66,20 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
 
     if (column != -1) {
       if (9 * g_session.m_hotkeyPage + column == value.slot) {
-        g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return;
       }
 
       CSkillInfo skill = g_session.LookupSkill(id);
       const int index = 9 * g_session.m_hotkeyPage + column;
       if (skill.level == 0 && skill.available == 0) {
-        g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return;
       }
 
       if (grid.rows <= g_session.m_hotkeyPage) {
         if (g_modeMgr.gameMode) {
-          g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+          g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         }
 
         return;
@@ -123,18 +125,18 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
       Refresh(window);
     }
 
-    g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
   if (value.source == 6 || value.source == 9) {
-    g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, value.id);
   if (item.unknown_0000[1] == 0 || item.identified == 0) {
-    g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
@@ -152,7 +154,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
       }
 
       if (g_modeMgr.gameMode) {
-        g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       }
 
       return;
@@ -185,7 +187,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
       const int index = 9 * g_session.m_hotkeyPage + column;
       if (grid.rows <= g_session.m_hotkeyPage) {
         if (g_modeMgr.gameMode) {
-          g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+          g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         }
 
         return;
@@ -203,7 +205,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   }
   }
 
-  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 namespace {
@@ -256,7 +258,7 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
           }
         }
 
-        this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         this->Invalidate();
       }
     } else if (value.slot != -1) {
@@ -271,7 +273,7 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
       }
 
       g_session.SetHotkeyEntry(1, 0, 0, value.slot);
-      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       this->Invalidate();
     }
   } else if (value.source != 6 && value.source != 9) {
@@ -301,7 +303,7 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
         if (slot != -1) {
           g_session.SetHotkeyEntry(0, item.GetItemId(), 0, slot);
           RemoveAlternate(g_session.m_requestTimers, value.slot, slot);
-          this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           this->Invalidate();
         }
 
@@ -311,6 +313,6 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
     }
   }
 
-  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 

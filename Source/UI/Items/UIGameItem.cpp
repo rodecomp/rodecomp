@@ -1,4 +1,6 @@
 #include "UI/Items/UIGameItem.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Text/ColoredText.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
@@ -119,9 +121,9 @@ void CUIGameItem::OnLBtnDblClk(int, int) {
   }
 
   WindowManagerWindows& windows = g_windowMgr;
-  UIWindow* window = windows.EnsureWindow(12);
+  UIWindow* window = windows.EnsureWindow(WID_ITEMCOLLECTIONWND);
   if (window != nullptr) {
-    window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->itemInfo), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->itemInfo), 0, 0, 0);
   }
 }
 

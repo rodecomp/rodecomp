@@ -1,4 +1,7 @@
 #include "Client/Replay.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -138,7 +141,7 @@ void UI2ndCostumeCheckBox::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_10355
 void UISlotForSelectWnd::OnLBtnDown(int x, int y) {
   if (this->parent) {
-    this->parent->SendMsg(nullptr, 6, this->geometry.id, x, y, 0);
+    this->parent->SendMsg(nullptr, UM_COMMAND, this->geometry.id, x, y, 0);
   }
 }
 
@@ -157,7 +160,7 @@ void UIStylingShopButton::OnLBtnUp(int, int) {
       if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
         const char* text = LookupMessage(17);
         if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-          g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+          g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         }
       } else {
         if (id == 184 || id == 321) {
@@ -166,11 +169,11 @@ void UIStylingShopButton::OnLBtnUp(int, int) {
           parent = this->parent;
         }
 
-        parent->SendMsg(this, 6, id, this->m_argument, 0, 0);
+        parent->SendMsg(this, UM_COMMAND, id, this->m_argument, 0, 0);
       }
     }
   } else {
-    g_modeMgr.gameMode->SendMsg(0, this->geometry.id, this->m_argument, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_COMMAND, this->geometry.id, this->m_argument, 0, 0);
   }
 
   this->Invalidate();
@@ -224,17 +227,17 @@ void UIStylingShopWnd::OnProcess() {
 // OFFSET: 0x0082A330
 // FUNCTION: fn_10360
 void UIAccBitmapButton::OnRBtnUp(int, int) {
-  this->parent->SendMsg(this, 101, this->geometry.id, this->m_argument, 0, 0);
+  this->parent->SendMsg(this, UM_BMP_RBTN_UP, this->geometry.id, this->m_argument, 0, 0);
 }
 
 // OFFSET: 0x0082CCB0
 // FUNCTION: fn_10366
 int UI2ndCostumeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  if (argument1 == 213) {
+  if (argument1 == ID_CHECK) {
     if (sender == this->m_showCheckBox) {
       if (this->m_display && this->m_hideCheckBox && this->m_showCheckBox->geometry.unknown_0030 != 0) {
         this->m_display->job = 1;
@@ -259,7 +262,7 @@ int UI2ndCostumeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 // OFFSET: 0x0082CD70
 // FUNCTION: fn_10367
 int UIAccessoryCusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -270,7 +273,7 @@ int UIAccessoryCusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 // OFFSET: 0x0082D100
 // FUNCTION: fn_10369
 int UIBasicStylingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -316,8 +319,8 @@ int UIBasicStylingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 // OFFSET: 0x0082D3A0
 // FUNCTION: fn_10370
 int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  UIWindow* preview = g_windowMgr.LookupWindow(281);
-  if (message != 6) {
+  UIWindow* preview = g_windowMgr.LookupWindow(WID_STYLINGSHOPWND);
+  if (message != UM_COMMAND) {
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -364,18 +367,18 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 // OFFSET: 0x0082D980
 // FUNCTION: fn_10372
 int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     if (message != 121) {
       return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
     }
 
-    UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281));
+    UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND));
     if (this->m_slots[this->m_selectedSlot]) {
       UIDisplayCharacter* display = this->m_slots[this->m_selectedSlot]->m_display;
       for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
         if (it->first->geometry.id == 496 && it->second->geometry.visible == 1) {
           shop->m_preview->CopyStyle(display);
-          shop->SendMsg(nullptr, 6, 200, 0, 0, 0);
+          shop->SendMsg(nullptr, UM_COMMAND, ID_BASE, 0, 0, 0);
         }
       }
       shop->Invalidate();
@@ -423,7 +426,7 @@ int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     case ID_LEFT:
       for (int i = 0; i < 2; ++i) {
         if (sender == this->unknown_009C[i] || sender == this->unknown_00A4[i]) {
-          this->m_slots[i]->m_display->SendMsg(nullptr, 6, argument1, 0, 0, 0);
+          this->m_slots[i]->m_display->SendMsg(nullptr, UM_COMMAND, argument1, 0, 0, 0);
         }
       }
       break;
@@ -437,11 +440,11 @@ int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 // OFFSET: 0x0082DC60
 // FUNCTION: fn_10373
 int UIShowInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  if (argument1 == 189) {
+  if (argument1 == ID_BUTTON1) {
     this->Invalidate();
   }
 
@@ -451,7 +454,7 @@ int UIShowInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 // OFFSET: 0x0082DC90
 // FUNCTION: fn_10374
 int UISlotOfMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -579,7 +582,7 @@ __declspec(noinline) void UIStylingshopTabParentWnd::UpdateFavoriteButton(const 
     return;
   }
 
-  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281));
+  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND));
   if (!shop) {
     return;
   }
@@ -830,7 +833,7 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
 // OFFSET: 0x0082E500
 // FUNCTION: fn_10378
 __declspec(noinline) void ToggleStylingAccessory(int itemId, int slot) {
-  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281));
+  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND));
   UIStylingshopTabParentWnd* tab = nullptr;
   for (auto it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
     if (it->first->geometry.id == 497) {
@@ -1097,8 +1100,8 @@ void UIShowInfoWnd::UpdateChangedStyles() {
 // OFFSET: 0x0082D550
 // FUNCTION: fn_10371
 int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281));
-  if (message != 6) {
+  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND));
+  if (message != UM_COMMAND) {
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -1341,10 +1344,10 @@ UIStylingShopWnd::UIStylingShopWnd()
 // FUNCTION: fn_10368
 int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   char table[64];
-  UIWindow* shop = g_windowMgr.LookupWindow(281);
+  UIWindow* shop = g_windowMgr.LookupWindow(WID_STYLINGSHOPWND);
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == 189 && sender) {
+    if (argument1 == ID_BUTTON1 && sender) {
       UIAccBitmapButton* button = static_cast<UIAccBitmapButton*>(sender);
       for (unsigned int i = 0; i < this->m_itemFrames.size(); ++i) {
         this->m_itemFrames[i]->SetBitmap(i == button->Argument() - 1 ? "유저인터페이스\\styleshop\\shadow_item_on.bmp" : "유저인터페이스\\styleshop\\shadow_item_off.bmp");
@@ -1395,9 +1398,9 @@ int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       item.SetItemId(button->m_itemId);
       item.SetName(desc.identifiedName);
       item.identified = 1;
-      UIWindow* window = g_windowMgr.EnsureWindow(12);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (window) {
-        window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+        window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
       }
     }
     break;
@@ -1414,7 +1417,7 @@ int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t ar
 // OFFSET: 0x0082DCC0
 // FUNCTION: fn_10375
 int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -1429,7 +1432,7 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       for (it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
         if (it->second->geometry.visible == 1) {
           if (it->first->geometry.id != 496) {
-            static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281))->m_preview->CopyStyle(it->second->m_display);
+            static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND))->m_preview->CopyStyle(it->second->m_display);
           }
           break;
         }
@@ -1456,7 +1459,7 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     break;
   case ID_CLOSE:
-    g_windowMgr.CloseWindow(281);
+    g_windowMgr.CloseWindow(WID_STYLINGSHOPWND);
     break;
   case ID_BUY:
     if (this->m_buyButton->Argument() == 0 &&
@@ -1791,7 +1794,7 @@ void UIShowInfoWnd::DrawPayments() {
     }
   }
 
-  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281));
+  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND));
   if (!shop) {
     return;
   }
@@ -2447,7 +2450,7 @@ void UIBasicStylingWnd::OnCreate(int, int) {
   defaultButton->SetId(495);
   this->AddChild(defaultButton);
   this->m_defaultPaletteButton = defaultButton;
-  g_windowMgr.LookupWindow(281);
+  g_windowMgr.LookupWindow(WID_STYLINGSHOPWND);
 
   this->m_showInfo = new (std::nothrow) UIShowInfoWnd();
   this->m_showInfo->SetSize(this->geometry.width - this->m_display->geometry.width, this->geometry.height);

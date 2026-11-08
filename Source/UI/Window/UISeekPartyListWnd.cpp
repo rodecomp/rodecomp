@@ -1,4 +1,5 @@
 #include "UI/Window/UISeekPartyListWnd.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
@@ -242,8 +243,8 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
 
     this->Move(this->m_saved->x, this->m_saved->y);
-    this->SendMsg(nullptr, 14, 3, this->m_saved->width, this->m_saved->height, 0);
-    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 3, this->m_saved->width, this->m_saved->height, 0);
+    this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     return 0;
   case UM_COMMAND:
     switch (argument1) {
@@ -257,11 +258,11 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->m_minimized = !this->m_minimized;
       this->Invalidate();
       return 0;
-    case 284:
+    case ID_CHARGE:
       this->Invalidate();
       return 0;
     case ID_HELP:
-      g_windowMgr.EnsureWindow(0xAD);
+      g_windowMgr.EnsureWindow(WID_PARTYBOOKINGHELPWND);
       return 0;
     case 365:
     case 380: {
@@ -355,12 +356,12 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
         const PartyBookingEntry entry = it->second;
         if (entry.isEnd) {
-          this->SendMsg(nullptr, 6, 0x17C, 0, 0, 0);
+          this->SendMsg(nullptr, UM_COMMAND, 0x17C, 0, 0, 0);
           g_session.m_partyBooking.EraseEntry(it->first);
         } else {
           const std::string leaderName = it->second.leaderName;
           if (leaderName != g_session.DecodePlayerName()) {
-            g_windowMgr.SendNotice(14, reinterpret_cast<std::intptr_t>(leaderName.c_str()), 0, 0, 0, 0);
+            g_windowMgr.SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(leaderName.c_str()), 0, 0, 0, 0);
           }
         }
         return 0;
@@ -369,25 +370,25 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     case ID_CLOSE:
       g_session.m_partyBooking.m_alarm = this->m_alarmCheck->geometry.unknown_0030 != 0;
-      g_windowMgr.CloseWindow(0xA9);
+      g_windowMgr.CloseWindow(WID_SEEKPARTYLISTWND);
       return 0;
     default:
       return 0;
     }
   case UM_TEXT_LBTN_UP:
-    if (argument1 != 378 || g_windowMgr.CloseWindow(0xA8)) {
+    if (argument1 != 378 || g_windowMgr.CloseWindow(WID_SEEKPARTYMBWND)) {
       return 0;
     }
-    g_windowMgr.EnsureWindow(0xA8);
+    g_windowMgr.EnsureWindow(WID_SEEKPARTYMBWND);
     return 0;
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_firstRow;
     int next;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       next = previous - this->m_visibleRows + 1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       next = previous + this->m_visibleRows - 1;
     } else {
       next = static_cast<int>(argument1) + previous;
@@ -424,7 +425,7 @@ void UISeekPartyListWnd::NotifyNewAd() {
   if (this->m_alarmCheck->geometry.unknown_0030 != 0) {
     g_soundMgr->PlayWave("party_alarm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     const char* message = LookupMessage(0x6D9);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 15, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 15, 0, 0);
   }
 }
 
@@ -462,7 +463,7 @@ void UISeekPartyListWnd::OnWheel(int delta) {
     if (delta >= 0) {
       step = -step;
     }
-    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
   }
 }
 
@@ -509,7 +510,7 @@ void UISeekPartyListWnd::OnLBtnDblClk(int x, int y) {
     this->Invalidate();
   }
 
-  this->SendMsg(nullptr, 6, 0x17d, 0, 0, 0);
+  this->SendMsg(nullptr, UM_COMMAND, 0x17d, 0, 0, 0);
 }
 
 // OFFSET: 0x00931090

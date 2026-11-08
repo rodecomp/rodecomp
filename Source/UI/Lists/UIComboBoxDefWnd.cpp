@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Replay.h"
 #include "UI/Window/WindowPolicy.h"
@@ -124,7 +125,7 @@ void UIComboBoxDefWnd::Paint() {
 // OFFSET: 0x00890B50
 // FUNCTION: fn_11434
 void UIComboBoxDefWnd::OnLBtnUp(int, int) {
-  this->SendMsg(nullptr, 6, 273, 0, 0, 0);
+  this->SendMsg(nullptr, UM_COMMAND, ID_OPEN_MEMBER_POS_COMBO, 0, 0, 0);
 }
 
 // OFFSET: 0x0089F5C0
@@ -142,13 +143,13 @@ std::string UIComboBoxDefWnd::GetSelectedText() {
 // OFFSET: 0x008A25F0
 // FUNCTION: fn_11641
 void UIComboBoxDefWnd::AddOption(std::string text, std::uint32_t color) {
-  this->list->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(text.c_str()), color, 0, 0);
+  this->list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text.c_str()), color, 0, 0);
 }
 
 // OFFSET: 0x008A2730
 // FUNCTION: fn_11642
 void UIComboBoxDefWnd::Select(int index) {
-  this->list->SendMsg(nullptr, 40, index, 0, 0, 0);
+  this->list->SendMsg(nullptr, UM_SETCURITEM, index, 0, 0, 0);
   this->label->SetText(this->list->lines[index].text.c_str(), 0);
 }
 
@@ -168,7 +169,7 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 
   switch (message) {
   case UM_COMMAND:
-    if (value == 273) {
+    if (value == ID_OPEN_MEMBER_POS_COMBO) {
       this->expanded = this->expanded == 0;
       this->Resize(
         this->geometry.width, this->expanded ? (this->geometry.height + this->list->geometry.height) : (this->geometry.height - this->list->geometry.height)
@@ -181,7 +182,7 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
 
       if (this->parent) {
-        this->parent->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        this->parent->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
     }
 
@@ -193,8 +194,8 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
 
     this->label->SetText(this->list->lines[value].text.c_str(), 0);
-    this->SendMsg(nullptr, 6, 273, 0, 0, 0);
-    this->parent->SendMsg(this, 39, value, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, ID_OPEN_MEMBER_POS_COMBO, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, value, 0, 0, 0);
     return 0;
   case UM_CHANGEMSG:
     if (value >= 0) {
@@ -215,7 +216,7 @@ int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
   switch (message) {
   case UM_COMMAND:
-    if (value == 273) {
+    if (value == ID_OPEN_MEMBER_POS_COMBO) {
       this->expanded = this->expanded == 0;
 
       if (this->expanded) {
@@ -244,8 +245,8 @@ int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     }
 
     this->label->SetText(this->list->lines[value].text.c_str(), 0);
-    this->SendMsg(nullptr, 6, 273, 0, 0, 0);
-    this->parent->SendMsg(this, 39, value, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, ID_OPEN_MEMBER_POS_COMBO, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, value, 0, 0, 0);
     return 0;
   default:
     return this->UIWindow::SendMsg(sender, message, a, b, c, d);
@@ -342,8 +343,8 @@ void UINewComboBoxCtrl::OnCreate(int, int) {
 // OFFSET: 0x008994B0
 // FUNCTION: fn_11555
 int UINewComboBoxCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
-    if (message != 39) {
+  if (message != UM_COMMAND) {
+    if (message != UM_COMBOBOX_SELECTED) {
       return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
     }
 
@@ -358,7 +359,7 @@ int UINewComboBoxCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     }
 
     this->selected = index;
-    this->parent->SendMsg(this, 39, index, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, index, 0, 0, 0);
     this->Invalidate();
     this->parent->Invalidate();
     if (this->Root()) {
@@ -367,19 +368,19 @@ int UINewComboBoxCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     return 0;
   }
 
-  if (argument1 == 273) {
+  if (argument1 == ID_OPEN_MEMBER_POS_COMBO) {
     this->dropped = !this->dropped;
     if (g_windowMgr.unknown_0214) {
-      g_windowMgr.CloseWindow(26);
+      g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
 
     if (this->dropped) {
-      UIWindow* window = g_windowMgr.EnsureWindow(26);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       const int count = static_cast<int>(this->items.size());
       for (int index = 0; index < count; ++index) {
-        window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->items[index].c_str()), 0, 0, 0);
+        window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->items[index].c_str()), 0, 0, 0);
       }
-      window->SendMsg(nullptr, 40, this->selected, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETCURITEM, this->selected, 0, 0, 0);
       window->Resize(this->geometry.width, count * 16);
       static_cast<UIComboBoxWnd*>(window)->SetOwner(this);
       int x = 0;

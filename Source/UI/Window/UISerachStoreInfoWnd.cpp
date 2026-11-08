@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UISerachStoreInfoWnd.h"
 #include "UI/Window/UIEnums.h"
 
@@ -95,7 +97,7 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
   }
   this->m_radios[0]->SetText(LookupMessage(0x6F2));
   this->m_radios[1]->SetText(LookupMessage(0x6F3));
-  this->m_radios[this->unknown_00E4]->SendMsg(this, 0xD, 1, 0, 0, 0);
+  this->m_radios[this->unknown_00E4]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
 
   this->m_edits[1] = new UIEditCtrl();
   this->m_edits[1]->SetSize(0x4C, 0x10);
@@ -183,7 +185,7 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
 
   this->AddBaseButton();
   this->AddCloseButton("", 0);
-  this->SendMsg(this, 0x3C, 0, 0, 0, 0);
+  this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
   g_windowMgr.SetFocus(this->m_edits[1]);
   this->m_message0 = 0x16D;
 }
@@ -194,7 +196,7 @@ void UISerachStoreInfoWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.itemId.size() != 0 && ((x > 160 && x < 330) || static_cast<unsigned int>(x - 6) <= 43)) {
     g_modeMgr.GetGameMode();
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -212,7 +214,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_session.unknown_5BEC = -1;
       g_session.unknown_5BF0 = 0xFFFFFFFF;
       g_session.unknown_5BD4.clear();
-      g_windowMgr.CloseWindow(181);
+      g_windowMgr.CloseWindow(WID_SEARCH_STORE_INFO);
       break;
     }
     case ID_CHECK:
@@ -228,7 +230,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         } else {
           checked = 0;
         }
-        this->m_radios[index]->SendMsg(this, 13, checked, 0, 0, 0);
+        this->m_radios[index]->SendMsg(this, UM_SETSTATE, checked, 0, 0, 0);
       }
       break;
     case 365: {
@@ -259,7 +261,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         const int count = static_cast<int>(itemIds.size() + cardIds.size());
         if (this->unknown_00EC != 0) {
           if (count > 20) {
-            this->SendMsg(this, 60, 1, 1, 0, 0);
+            this->SendMsg(this, UM_REFRESH, 1, 1, 0, 0);
             return 0;
           }
 
@@ -316,7 +318,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       if (this->unknown_00EC == 0) {
         this->m_findButton->SetDisabled(0);
         this->m_findButton->Invalidate();
-        this->SendMsg(this, 60, 0, 0, 0, 0);
+        this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
       }
       break;
     }
@@ -373,7 +375,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       if (this->unknown_00DC > 1) {
         this->unknown_00E0 = -1;
         --this->unknown_00DC;
-        this->SendMsg(this, 60, 0, 0, 0, 0);
+        this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
         return 0;
       }
     } else if (argument1 == 317) {
@@ -381,7 +383,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->unknown_00E0 = -1;
       if (static_cast<unsigned int>(page * 10) < g_session.unknown_5BD4.size()) {
         this->unknown_00DC = page + 1;
-        this->SendMsg(this, 60, 0, 0, 0, 0);
+        this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
         return 0;
       }
       if (reinterpret_cast<unsigned char*>(&g_session.unknown_5BE4)[1] != 0) {

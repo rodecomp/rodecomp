@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "UI/Window/WindowId.h"
 #include "Contents/Items/InventoryType.h"
 #include "Client/Session.h"
 #include "Contents/ClientState.h"
@@ -181,7 +182,7 @@ void CGameMode::ReceiveInventoryStart(const unsigned char* packet) {
   case INVTYPE_GUILD_STORAGE: {
     char title[24] = {};
     memcpy_s(title, sizeof(title), packet + 5, length);
-    UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(33));
+    UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
     if (window) {
       const std::size_t titleLength = std::strlen(title);
       if (titleLength != 0) {

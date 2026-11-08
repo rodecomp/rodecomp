@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_NETWORK_PACKETS_PARTYJOINPACKET_H
 
 #include "Network/Connection/Connection.h"
+#include "UI/Window/WindowId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Window/WindowManagerWindows.h"
 
@@ -46,7 +47,7 @@ inline void SendPartyInvitationDecision(
   CConnection& connection, const PacketLengths& lengths, WindowManagerWindows& windows, std::string& pendingName, std::uint32_t identity, bool accepted
 ) {
   if (accepted) {
-    windows.EnsureWindow(34);
+    windows.EnsureWindow(WID_MESSENGERGROUPWND);
   } else {
     pendingName.assign("", 0);
   }

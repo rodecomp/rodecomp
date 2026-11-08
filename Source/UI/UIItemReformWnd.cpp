@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/UIItemReformWnd.h"
 #include "UI/Window/UIEnums.h"
 
@@ -234,7 +236,7 @@ void UIItemReformWnd_List::OnLBtnUp(int x, int y) {
   if (index < count && this->selectedIndex != index) {
     this->selectedIndex = index;
     if (this->parent) {
-      this->parent->SendMsg(nullptr, 6, 336, reinterpret_cast<std::intptr_t>(&this->items[index]), 0, 0);
+      this->parent->SendMsg(nullptr, UM_COMMAND, ID_SELECT_ITEM, reinterpret_cast<std::intptr_t>(&this->items[index]), 0, 0);
     }
     this->Invalidate();
   }
@@ -244,7 +246,7 @@ void UIItemReformWnd_List::OnLBtnUp(int x, int y) {
 // FUNCTION: fn_04118
 void UIItemReformWnd_DetailBtn::OnMouseEnter() {
   if (this->parent) {
-    this->parent->SendMsg(this, 167, 0, 0, 0, 0);
+    this->parent->SendMsg(this, UM_SHOW_ITEM_REFORM_DETAIL, 0, 0, 0, 0);
   }
 }
 
@@ -276,7 +278,7 @@ void UIItemReformWnd_List::OnMouseHover(int x, int y) {
 // FUNCTION: fn_04121
 void UIItemReformWnd_DetailBtn::OnMouseLeave() {
   if (this->parent) {
-    this->parent->SendMsg(this, 168, 0, 0, 0, 0);
+    this->parent->SendMsg(this, UM_HIDE_ITEM_REFORM_DETAIL, 0, 0, 0, 0);
   }
 }
 
@@ -293,8 +295,8 @@ void UIItemReformWnd::OnProcess() {
 // FUNCTION: fn_04124
 void UIItemReformWnd_Item::OnRBtnDown(int x, int y) {
   if (this->item) {
-    if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(this->item), 0, 0, 0);
+    if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(this->item), 0, 0, 0);
     }
   }
 }
@@ -305,8 +307,8 @@ void UIItemReformWnd_List::OnRBtnUp(int x, int y) {
   const unsigned int count = this->items.size();
   const unsigned int index = std::max(0u, std::min(y / this->itemHeight + this->scrollPosition, count - 1));
   if (index < count) {
-    if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
-      window->SendMsg(this, 24, reinterpret_cast<std::intptr_t>(&this->items[index]), 0, 0, 0);
+    if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
+      window->SendMsg(this, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->items[index]), 0, 0, 0);
     }
   }
 }
@@ -315,9 +317,9 @@ void UIItemReformWnd_List::OnRBtnUp(int x, int y) {
 // FUNCTION: fn_04127
 void UIItemReformWnd_List::OnWheel(int delta) {
   if (delta < 0) {
-    this->SendMsg(this->scrollBar, 10, 0, 0, 0, 0);
+    this->SendMsg(this->scrollBar, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
   } else {
-    this->SendMsg(this->scrollBar, 9, 0, 0, 0, 0);
+    this->SendMsg(this->scrollBar, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
   }
 }
 
@@ -445,7 +447,7 @@ int UIItemReformWnd::SendMsg(
   switch (message) {
   case UM_REFRESHITEM:
     this->reformItem.SetItemId(argument1);
-    if (this->list->SendMsg(this, 23, argument1, 0, 0, 0) == -1) {
+    if (this->list->SendMsg(this, UM_REFRESHITEM, argument1, 0, 0, 0) == -1) {
       this->warning = LookupMessage(3856);
     }
     this->Invalidate();
@@ -462,21 +464,21 @@ int UIItemReformWnd::SendMsg(
       }
       break;
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(348);
+      g_windowMgr.CloseWindow(WID_ITEMREFORMWND);
       break;
-    case 336:
+    case ID_SELECT_ITEM:
       this->SelectItem(reinterpret_cast<ITEM_INFO*>(argument2));
       break;
     }
     break;
-  case 167:
+  case UM_SHOW_ITEM_REFORM_DETAIL:
     if (sender == this->detailButton && !this->detailMsg) {
       this->detailMsg = new UIItemReformWnd_DetailMsg();
       this->detailMsg->SetText(this->information);
       g_windowMgr.AddRendered(this->detailMsg);
     }
     break;
-  case 168:
+  case UM_HIDE_ITEM_REFORM_DETAIL:
     if (sender == this->detailButton && this->detailMsg) {
       g_windowMgr.Schedule(this->detailMsg);
       this->detailMsg = nullptr;
@@ -496,9 +498,9 @@ int UIItemReformWnd_List::SendMsg(
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const unsigned int previous = this->scrollPosition;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       argument1 = -1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       argument1 = 1;
     }
     this->scrollPosition = previous + argument1;

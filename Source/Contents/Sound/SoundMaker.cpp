@@ -1,3 +1,4 @@
+#include "Client/Mode/ModeMessage.h"
 #include "Contents/Sound/SoundMaker.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Jobs/JobId.h"
@@ -455,7 +456,7 @@ void CNpc::RegisterPos() {
     case JT_HIDDEN_WARP_NPC:
       break;
     default:
-      mode->SendMsg(12, this->render.accountId, column, row, 0);
+      mode->SendMsg(MM_ADDREGISTERPOS, this->render.accountId, column, row, 0);
       break;
   }
 }
@@ -470,7 +471,7 @@ void CNpc::UnRegisterPos() {
     case JT_HIDDEN_WARP_NPC:
       break;
     default:
-      g_modeMgr.GetGameMode()->SendMsg(13, this->render.accountId, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_DELETEREGISTERPOS, this->render.accountId, 0, 0, 0);
       break;
   }
 }
@@ -739,7 +740,7 @@ void CNpc::SendMsg(
     return;
   }
 
-  if (message == 0x22 && a == 0) {
+  if (message == AM_UPDATEGAGE && a == 0) {
     if (g_session.IsCompanionAid(this->render.accountId)) {
       if (this->unknown_042C == nullptr) {
         this->unknown_042C = new UIPlayerGage();
@@ -1323,7 +1324,7 @@ void CNpc::UpdateMinimapMarker() {
         return;
       }
       if (this->unknown_0434) {
-        this->unknown_0434->SendMsg(nullptr, 0x35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->unknown_0434->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->unknown_0434 = nullptr;
         this->unknown_0438 = 9999;
       }
@@ -1332,7 +1333,7 @@ void CNpc::UpdateMinimapMarker() {
     const int base = marker->unknown_0004 < 6 ? 0x24 : 0x36;
     CMsgEffect* effect = mode->SpawnMsgEffect(base + marker->unknown_0004, &this->render.position, this->render.accountId, true);
     this->unknown_03B0.push_back(effect);
-    effect->SendMsg(this, 0x32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     this->unknown_0434 = effect;
     this->minimapMarkerCell[0] = marker->unknown_0004;
     this->minimapMarkerCell[1] = marker->unknown_0006;
@@ -1340,7 +1341,7 @@ void CNpc::UpdateMinimapMarker() {
   }
 
   if (this->unknown_0434) {
-    this->unknown_0434->SendMsg(nullptr, 0x35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->unknown_0434->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     this->unknown_0434 = nullptr;
     this->unknown_0438 = 9999;
   }
@@ -1408,7 +1409,7 @@ bool CNpc::OnProcess() {
       } else {
         reinterpret_cast<CMercenaryAI*>(this->unknown_030C)->Load(".\\AI\\AI.lua");
       }
-      this->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
@@ -1431,12 +1432,12 @@ bool CNpc::OnProcess() {
         path = ".\\AI\\AI_M.lua";
       }
       reinterpret_cast<CMercenaryAI*>(this->unknown_0310)->Load(path);
-      this->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
   if (g_session.IsPetAid(this->render.accountId)) {
-    this->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
   this->UpdateBubblePositions();
@@ -1672,7 +1673,7 @@ void CNpc::SetState(int state, int) {
                 break;
             }
             if (this->render.accountId == g_session.unknown_1010) {
-              g_modeMgr.GetGameMode()->SendMsg(148, emotion, 0, 0, 0);
+              g_modeMgr.GetGameMode()->SendMsg(MM_PET_ACT, emotion, 0, 0, 0);
             }
             this->unknown_02C8 = 0;
             this->render.isMotionFinished = false;
@@ -1732,8 +1733,8 @@ void CNpc::SetState(int state, int) {
           this->render.unknown_00DC = 0;
           this->render.isMotionFreezed = false;
           if (this->bodyState == 2) {
-            this->SendMsg(nullptr, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-            this->SendMsg(nullptr, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            this->SendMsg(nullptr, AM_MAKE_ICEBREAKE_FFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
           }
           this->render.isLieOnGround = true;
           this->render.isMotionFreezed = false;
@@ -1779,8 +1780,8 @@ void CNpc::SetState(int state, int) {
           break;
         case ST_SLEEP:
           if (this->bodyState == 2) {
-            this->SendMsg(nullptr, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-            this->SendMsg(nullptr, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            this->SendMsg(nullptr, AM_MAKE_ICEBREAKE_FFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
           }
           this->render.isLieOnGround = false;
           this->render.isMotionFinished = true;

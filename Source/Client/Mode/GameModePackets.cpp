@@ -1,3 +1,7 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
+#include "Client/Mode/ModeMessage.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Combat/CombatTypes.h"
 #include "Contents/Effects/EffectTypes.h"
 #include "Contents/Items/ItemType.h"
@@ -148,7 +152,7 @@
 // FUNCTION: fn_22198
 __declspec(noinline) void CGameMode::ReceiveItemDisappear(std::uint32_t itemAid) {
   if (this->scene->RemoveItem(itemAid) == true) {
-    this->SendMsg(13, static_cast<int>(itemAid), 0, 0, 0);
+    this->SendMsg(MM_DELETEREGISTERPOS, static_cast<int>(itemAid), 0, 0, 0);
   }
 }
 
@@ -539,9 +543,9 @@ void CGameMode::ReceiveUnknown05C4Result(const unsigned char* data) {
 
   switch (packet->result) {
   case BOSS_INFO_NOT:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1223)), 0xFFFFFF, 0, 0, 0);
-    g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(1223)), 0xFFFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1223)), 0xFFFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(1223)), 0xFFFFFF, 0, 0, 0);
     return;
   case BOSS_INFO_ALIVE:
   case BOSS_INFO_ALIVE_WITHMSG:
@@ -563,9 +567,9 @@ void CGameMode::ReceiveUnknown05C4Result(const unsigned char* data) {
     return;
   }
 
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
-  g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D230E0
@@ -574,63 +578,63 @@ __declspec(noinline) void CGameMode::ReceiveColoredNotice(const unsigned char* p
   std::string text;
   text.assign(reinterpret_cast<const char*>(packet + 9), *reinterpret_cast<const short*>(packet + 2) - 9);
   if (!text.empty()) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), *reinterpret_cast<const std::uint32_t*>(packet + 5), packet[4], 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), *reinterpret_cast<const std::uint32_t*>(packet + 5), packet[4], 0, 0);
   }
 }
 
 // OFFSET: 0x00D1D690
 // FUNCTION: fn_21630
 void CGameMode::ReceiveNamedActionResult(const unsigned char* packet) {
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   const std::string name = reinterpret_cast<const char*>(packet + 2);
   const int result = *reinterpret_cast<const int*>(packet + 0x1A);
 
   switch (result) {
   case PARTY_REPLY_JOIN_OTHER_PARTY:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x50)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x50)), 0xFF, 0, 0, 0);
     break;
   case PARTY_REPLY_REJECTED: {
     const std::string text = name + LookupMessage(0x80C);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
     break;
   }
   case PARTY_REPLY_ACCEPTED: {
     const std::string text = name + LookupMessage(0x80D);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF00, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF00, 0, 0, 0);
     break;
   }
   case PARTY_REPLY_FULL:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x53)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x53)), 0xFF, 0, 0, 0);
     break;
   case PARTY_REPLY_DUAL:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x260)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x260)), 0xFF, 0, 0, 0);
     break;
   }
 
   switch (result) {
   case PARTY_REPLY_JOINMSG_REFUSE:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x52C)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x52C)), 0xFF, 0, 0, 0);
     break;
   case PARTY_REPLY_OFFLINE:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x47)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x47)), 0xFF, 0, 0, 0);
     break;
   case PARTY_REPLY_INVALID_MAPPROPERTY: {
     char text[256];
     std::sprintf(text, LookupMessage(0x56C), reinterpret_cast<const char*>(packet + 2));
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     break;
   }
   case PARTY_REPLY_INVALID_MAPPROPERTY_ME:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x74F)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x74F)), 0xFF, 0, 0, 0);
     break;
   case PARTY_REPLY_MEMORIALDUNGEON:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBD3)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBD3)), 0xFF, 0, 0, 0);
     break;
   case 11:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xC9A)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xC9A)), 0xFF, 0, 0, 0);
     break;
   case 18:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xE32)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xE32)), 0xFF, 0, 0, 0);
     break;
   }
 }
@@ -644,21 +648,21 @@ void CGameMode::ReceiveStatDump(const unsigned char* packet) {
   std::sprintf(
     text, "             STR=%3d      AGI=%3d      VIT=%3d      INT=%3d      DEX=%3d      LUK=%d", packet[2], packet[4], packet[6], packet[8], packet[10], packet[12]
   );
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
   std::sprintf(
     text, "standard STR=%3d      AGI=%3d      VIT=%3d      INT=%3d      DEX=%3d      LUK=%2d", packet[3], packet[5], packet[7], packet[9], packet[11], packet[13]
   );
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF37, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF37, 0, 0, 0);
   std::sprintf(
     text, "    attPower=%3d    refiningPow=%3d    MAXmatPow=%3d    MINmatPower=%3d       ASPD=%3d", values[7], values[8], values[9], values[10], values[19]
   );
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
   std::sprintf(
     text, "itemdefPow=%3d     plusdefPow=%3d    mdefPower=%3d    plusmdefPow=%3d    plusASPD=%3d", values[11], values[12], values[13], values[14], values[20]
   );
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF37, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF37, 0, 0, 0);
   std::sprintf(text, "hitSuccessVal=%3d    avoidSuccessVal=%3d    plusAvoidSuccessValue=%3d", values[15], values[16], values[17]);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D24430
@@ -669,7 +673,7 @@ __declspec(noinline) void CGameMode::ReceiveActorText(const unsigned char* packe
   text[80] = '\0';
   if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(text);
-    actor->SendMsg(nullptr, 141, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_BUYING_SHOP_TITLE, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
@@ -688,13 +692,13 @@ __declspec(noinline) void CGameMode::ReceiveRentalItemTime(const unsigned char* 
   } else {
     std::sprintf(text, LookupMessage(1270), name, seconds);
   }
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
-  g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
   if (minutes == 1) {
     std::sprintf(text, LookupMessage(1257), name);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
-    g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
   }
 }
 
@@ -702,25 +706,25 @@ __declspec(noinline) void CGameMode::ReceiveRentalItemTime(const unsigned char* 
 // FUNCTION: fn_21679
 void CGameMode::ReceiveUnknownD264E0(const unsigned char* packet) {
   if (UIWindow* window = g_windowMgr.unknown_01F0) {
-    window->SendMsg(nullptr, 32, 0, 0, 0, 0);
-    window->SendMsg(nullptr, 63, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_DISABLENEXTBUTTON, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_ENABLECLOSEBUTTON, 0, 0, 0, 0);
   } else {
     this->unknown_024C = 0;
     this->unknown_02DC = *reinterpret_cast<const int*>(packet + 2);
-    g_windowMgr.CloseWindow(16);
-    g_windowMgr.CloseWindow(17);
-    g_windowMgr.CloseWindow(226);
+    g_windowMgr.CloseWindow(WID_SAYDIALOGWND);
+    g_windowMgr.CloseWindow(WID_CHOOSEWND);
+    g_windowMgr.CloseWindow(WID_SAYDIALOGWND_OVERLAY);
   }
 
   if (UIWindow* window = g_windowMgr.unknown_01F4) {
-    window->SendMsg(nullptr, 32, 0, 0, 0, 0);
-    window->SendMsg(nullptr, 63, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_DISABLENEXTBUTTON, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_ENABLECLOSEBUTTON, 0, 0, 0, 0);
   } else {
     this->unknown_024C = 0;
     this->unknown_02DC = *reinterpret_cast<const int*>(packet + 2);
-    g_windowMgr.CloseWindow(226);
-    g_windowMgr.CloseWindow(17);
-    g_windowMgr.CloseWindow(226);
+    g_windowMgr.CloseWindow(WID_SAYDIALOGWND_OVERLAY);
+    g_windowMgr.CloseWindow(WID_CHOOSEWND);
+    g_windowMgr.CloseWindow(WID_SAYDIALOGWND_OVERLAY);
   }
 }
 
@@ -756,7 +760,7 @@ void CGameMode::ReceiveDevotionList(const unsigned char* packet) {
 
   if (actor != nullptr) {
     for (int index = 0; index < 5; ++index) {
-      actor->SendMsg(nullptr, 109, 0, 232, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 232, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
@@ -770,16 +774,16 @@ void CGameMode::ReceiveDevotionList(const unsigned char* packet) {
       if (actor != nullptr) {
         CRagEffect* effect = actor->LaunchEffect(232, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect != nullptr) {
-          effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
         }
       }
     } else {
       char message[256];
       sprintf(message, "DEVOTION OVERFLOW : %d -- %d , %d , %d , %d , %d", list->aid, list->devotees[0], list->devotees[1], list->devotees[2],
         list->devotees[3], list->devotees[4]);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0x3232FA, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x3232FA, 0, 0, 0);
       sprintf(message, "DEVOTION OVERFLOW : 그라비티에 메일로 문의해주십시요");
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0x3232FA, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x3232FA, 0, 0, 0);
     }
   }
 }
@@ -788,7 +792,7 @@ void CGameMode::ReceiveDevotionList(const unsigned char* packet) {
 // FUNCTION: fn_21686
 __declspec(noinline) void CGameMode::ReceiveActorSignal(const unsigned char* packet) {
   if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
-    actor->SendMsg(nullptr, 142, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_BUYING_SHOP_TITLE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
@@ -838,7 +842,7 @@ __declspec(noinline) void CGameMode::ReceiveFormatStringMessage(const unsigned c
     return;
   }
 
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D2AF90
@@ -850,7 +854,7 @@ void CGameMode::IgnorePacket(const unsigned char*) {
 // FUNCTION: fn_21710
 void CGameMode::ReceiveItem1738EquipList(const unsigned char* data) {
   const ItemStoreListHeader* packet = reinterpret_cast<const ItemStoreListHeader*>(data);
-  UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(33));
+  UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (packet->title[0] != '\0') {
     std::string title(packet->title);
     window->title->SetTextFitted(title.c_str());
@@ -890,7 +894,7 @@ void CGameMode::ReceiveItem1738EquipList(const unsigned char* data) {
 // FUNCTION: fn_21711
 void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
   const ItemStoreListHeader* packet = reinterpret_cast<const ItemStoreListHeader*>(data);
-  UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(33));
+  UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (packet->title[0] != '\0') {
     std::string title(packet->title);
     window->title->SetTextFitted(title.c_str());
@@ -930,7 +934,7 @@ void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
 // FUNCTION: fn_21712
 void CGameMode::ReceiveItem1738NormalList(const unsigned char* data) {
   const ItemStoreListHeader* packet = reinterpret_cast<const ItemStoreListHeader*>(data);
-  UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(33));
+  UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (packet->title[0] != '\0') {
     std::string title(packet->title);
     window->title->SetTextFitted(title.c_str());
@@ -1017,10 +1021,10 @@ __declspec(noinline) void CGameMode::ReceiveHuntingList(const unsigned char* pac
   std::memcpy(list, packet + 4, size);
   list[size] = '\0';
   std::sprintf(text, "=========== HUNTING LIST =============");
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x9BCD9B, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(list), 0xCDFFCD, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x9BCD9B, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(list), 0xCDFFCD, 0, 0, 0);
   std::sprintf(text, "========================================");
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x9BCD9B, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x9BCD9B, 0, 0, 0);
 }
 
 // OFFSET: 0x00D2F150
@@ -1050,9 +1054,9 @@ bool CGameMode::NotifyItemResult(int result) {
   default:
     return false;
   }
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   const char* text = LookupMessage(message);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
   return true;
 }
 
@@ -1061,16 +1065,16 @@ bool CGameMode::NotifyItemResult(int result) {
 void CGameMode::ReceiveEquipAck(const unsigned char* packet) {
   switch (*reinterpret_cast<const short*>(packet + 2)) {
   case 0:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(242)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(242)), 0xFF, 0, 0, 0);
     break;
   case 1:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(243)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(243)), 0xFFFF64, 0, 0, 0);
     break;
   case 2:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(244)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(244)), 0xFFFF64, 0, 0, 0);
     break;
   case 3:
     switch (g_session.GetDisplayJob()) {
@@ -1081,16 +1085,16 @@ void CGameMode::ReceiveEquipAck(const unsigned char* packet) {
     case JT_GUILLOTINE_CROSS_H:
     case JT_GUILLOTINE_CROSS_B:
     case JT_SHADOW_CROSS:
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1040)), 0xFFFF64, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1040)), 0xFFFF64, 0, 0, 0);
       break;
     case JT_GUNSLINGER:
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1175)), 0xFFFF64, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1175)), 0xFFFF64, 0, 0, 0);
       break;
     case JT_NINJA:
     case JT_NINJA_B:
       break;
     default:
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(245)), 0xFFFF64, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(245)), 0xFFFF64, 0, 0, 0);
       break;
     }
     break;
@@ -1102,7 +1106,7 @@ void CGameMode::ReceiveEquipAck(const unsigned char* packet) {
 std::string CGameMode::MakeSimulatorFolder(const std::string& folder) {
   std::string path = g_applicationDirectory + folder;
   if (_access(path.c_str(), 0) != 0 && _mkdir(path.c_str()) != 0) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("Create Folder Fail!!! %s", path.c_str()).c_str()), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("Create Folder Fail!!! %s", path.c_str()).c_str()), 0xFF, 0, 0, 0);
     return std::string();
   }
   return path;
@@ -1128,7 +1132,7 @@ std::FILE* CGameMode::OpenPackageSimulatorFile(const std::string& folder, int it
   }
 
   std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("Simulator Result File Create %s %d!!!!!!!!!!!!", file ? "success" : "Fail", itemId).c_str()),
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("Simulator Result File Create %s %d!!!!!!!!!!!!", file ? "success" : "Fail", itemId).c_str()),
                          file ? 0xFFFF : 0xFF, 0, 0, 0);
   return file;
 }
@@ -1149,7 +1153,7 @@ std::FILE* CGameMode::OpenSimulatorFile(const std::string& folder, const std::st
   }
 
   std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s Simulator File Create %s !!!!!!!!!!!!", name.c_str(), file ? "success" : "Fail").c_str()),
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s Simulator File Create %s !!!!!!!!!!!!", name.c_str(), file ? "success" : "Fail").c_str()),
                          file ? 0xFFFF : 0xFF, 0, 0, 0);
   return file;
 }
@@ -1281,13 +1285,13 @@ void CGameMode::ReceivePackageSimulation(const unsigned char* packet) {
 // OFFSET: 0x00D612A0
 // FUNCTION: fn_21979
 __declspec(noinline) void CGameMode::ReceiveUnknownD612A0(const unsigned char* packet) {
-  UIWindow* window = g_windowMgr.EnsureWindow(267);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_MILEAGEWND);
   if (!window) {
     return;
   }
 
   window->SendMsg(
-    nullptr, 34, packet[2] != 0, *reinterpret_cast<const int*>(packet + 4), *reinterpret_cast<const int*>(packet + 8), static_cast<signed char>(packet[3])
+    nullptr, UM_SETINFO, packet[2] != 0, *reinterpret_cast<const int*>(packet + 4), *reinterpret_cast<const int*>(packet + 8), static_cast<signed char>(packet[3])
   );
 }
 
@@ -1296,16 +1300,16 @@ __declspec(noinline) void CGameMode::ReceiveUnknownD612A0(const unsigned char* p
 __declspec(noinline) void CGameMode::ReceiveUnknownD77BF0(const unsigned char* packet) {
   if (packet[2] == 1) {
     if (!g_windowMgr.unknown_0450) {
-      g_windowMgr.EnsureWindow(262);
+      g_windowMgr.EnsureWindow(WID_OPENMAILBOXWND);
     }
 
-    if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
-      window->SendMsg(nullptr, 6, 286, 476, 1, 0);
+    if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 1, 0);
     }
     return;
   }
 
-  g_windowMgr.CloseWindow(262);
+  g_windowMgr.CloseWindow(WID_OPENMAILBOXWND);
 }
 
 // OFFSET: 0x00D8A300
@@ -1333,7 +1337,7 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
       g_session.unknown_5568 = hp;
       g_session.RefreshHpSpWindows();
     }
-    player->SendMsg(nullptr, 88, 0, amount, amount >> 31, static_cast<int>(0xFF00FF00), 0, 114, 0, 0, 0, 0, 0, 0, 0);
+    player->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, amount >> 31, static_cast<int>(0xFF00FF00), 0, 114, 0, 0, 0, 0, 0, 0, 0);
     player->LaunchEffect(331, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }
@@ -1345,7 +1349,7 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
       sp = value;
       g_session.RefreshHpSpWindows();
     }
-    player->SendMsg(nullptr, 88, 0, amount, amount >> 31, static_cast<int>(0xFF0000FF), 0, 114, 0, 0, 0, 0, 0, 0, 0);
+    player->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, amount >> 31, static_cast<int>(0xFF0000FF), 0, 114, 0, 0, 0, 0, 0, 0, 0);
     player->LaunchEffect(332, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }
@@ -1406,15 +1410,15 @@ __declspec(noinline) void CGameMode::ReceiveCharViewResult(const unsigned char* 
     CMode* mode = g_modeMgr.gameMode;
     CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
     if (player->render.unknown_0070 != 0 && mode != nullptr) {
-      mode->SendMsg(137, 3, player->unknown_051C, 0, 0);
+      mode->SendMsg(MM_REQUEST_ACT, 3, player->unknown_051C, 0, 0);
     }
     return;
   }
   case 1:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3009)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3009)), 0xFF, 0, 0, 0);
     return;
   default:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3040)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3040)), 0xFF, 0, 0, 0);
     return;
   }
 }
@@ -1449,8 +1453,8 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonInfo(const unsigned c
   const int previous = g_session.unknown_5948;
   g_session.unknown_5948 = state;
   if (previous != state || state != 2 || g_session.unknown_593C != 0) {
-    if (UIWindow* window = g_windowMgr.EnsureWindow(137)) {
-      window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    if (UIWindow* window = g_windowMgr.EnsureWindow(WID_MEMORIALDUNWND)) {
+      window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     }
   }
 }
@@ -1464,21 +1468,21 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonNotify(const unsigned
   g_session.unknown_5948 = 0 != time ? 1 : 2;
   if (*reinterpret_cast<const int*>(packet + 2) == 0) {
     if (previous != (time != 0 ? 1 : 2) || time != 0 || g_session.unknown_593C != 0) {
-      if (UIWindow* window = g_windowMgr.EnsureWindow(137)) {
-        window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      if (UIWindow* window = g_windowMgr.EnsureWindow(WID_MEMORIALDUNWND)) {
+        window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       }
     }
     return;
   }
 
-  g_windowMgr.CloseWindow(137);
+  g_windowMgr.CloseWindow(WID_MEMORIALDUNWND);
   const int type = *reinterpret_cast<const int*>(packet + 2);
   if (type == 1) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1346)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1346)), 0x64FFFF, 0, 0, 0);
   } else if (type == 2) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1347)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1347)), 0x64FFFF, 0, 0, 0);
   } else if (type == 3) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1348)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1348)), 0x64FFFF, 0, 0, 0);
   }
 }
 
@@ -1488,8 +1492,8 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonSubscriptionInfo(cons
   g_session.unknown_5950 = reinterpret_cast<const char*>(packet + 2);
   g_session.unknown_5968 = *reinterpret_cast<const short*>(packet + 63);
   g_session.unknown_5948 = 0;
-  if (UIWindow* window = g_windowMgr.EnsureWindow(137)) {
-    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_MEMORIALDUNWND)) {
+    window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -1497,40 +1501,40 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonSubscriptionInfo(cons
 // FUNCTION: fn_21739
 __declspec(noinline) void CGameMode::ReceiveMemorialDungeonSubscriptionNotify(const unsigned char* packet) {
   g_session.unknown_5968 = *reinterpret_cast<const short*>(packet + 2);
-  UIWindow* window = g_windowMgr.EnsureWindow(137);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_MEMORIALDUNWND);
   if (!window) {
     return;
   }
 
   if (*reinterpret_cast<const short*>(packet + 2) > -1) {
     g_session.unknown_5948 = 0;
-    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     return;
   }
 
-  g_windowMgr.CloseWindow(137);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1345)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.CloseWindow(WID_MEMORIALDUNWND);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1345)), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D320D0
 // FUNCTION: fn_21740
 void CGameMode::ReceiveWindow17Entries(const unsigned char* packet) {
   this->unknown_024C = 1;
-  g_windowMgr.CloseWindow(17);
-  if (UIWindow* window = g_windowMgr.EnsureWindow(17)) {
+  g_windowMgr.CloseWindow(WID_CHOOSEWND);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_CHOOSEWND)) {
     const int length = *reinterpret_cast<const unsigned short*>(packet + 2) - 9;
     std::string text(reinterpret_cast<const char*>(packet + 8), length);
     const std::vector<std::string> entries = Split(text, ":");
     for (const std::string& entry : entries) {
       if (!entry.empty()) {
-        window->SendMsg(nullptr, 27, reinterpret_cast<std::intptr_t>(entry.c_str()), 0, 0, 0);
+        window->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>(entry.c_str()), 0, 0, 0);
       }
     }
-    window->SendMsg(nullptr, 28, *reinterpret_cast<const int*>(packet + 4), 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETNAID, *reinterpret_cast<const int*>(packet + 4), 0, 0, 0);
   }
 
   if (g_windowMgr.unknown_01F0) {
-    g_windowMgr.unknown_01F0->SendMsg(nullptr, 32, 0, 0, 0, 0);
+    g_windowMgr.unknown_01F0->SendMsg(nullptr, UM_DISABLENEXTBUTTON, 0, 0, 0, 0);
   }
 }
 
@@ -1575,7 +1579,7 @@ void CGameMode::Zc_Notify_Exp(const unsigned char* packet) {
     text += LookupMessage(1616);
   }
 
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), color, 18, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), color, 18, 0, 0);
 }
 
 // OFFSET: 0x00D61290
@@ -1624,7 +1628,7 @@ __declspec(noinline) void CGameMode::ReceiveActorStatusBlock(const unsigned char
   g_session.unknown_5BCC = *reinterpret_cast<const int*>(packet + 0xA);
   g_session.unknown_5BD0 = *reinterpret_cast<const int*>(packet + 0x12);
   if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
-    actor->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
@@ -1648,7 +1652,7 @@ __declspec(noinline) void CGameMode::ReceiveActorStatusUpdate(const unsigned cha
       break;
     }
     if (CRenderObject* actor = this->scene->GetGameActorByAID(g_session.unknown_5BC0)) {
-      actor->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 }
@@ -1661,7 +1665,7 @@ void CGameMode::ReceiveActorTitle(const unsigned char* packet) {
   text[80] = '\0';
   if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(text);
-    actor->SendMsg(nullptr, 0x37, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_SHOP_TITLE, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
@@ -1670,7 +1674,7 @@ void CGameMode::ReceiveActorTitle(const unsigned char* packet) {
 __declspec(noinline) void CGameMode::ReceiveActorInt8(const unsigned char* packet) {
   if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
     const std::int64_t value = *reinterpret_cast<const signed char*>(packet + 6);
-    actor->SendMsg(nullptr, 0x91, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0x14, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATE_MONSTER_GAGE, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0x14, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
@@ -1681,7 +1685,7 @@ __declspec(noinline) void CGameMode::ReceiveActorInt64Pair(const unsigned char* 
     const std::int64_t first = *reinterpret_cast<const int*>(packet + 6);
     const std::int64_t second = *reinterpret_cast<const int*>(packet + 0xA);
     actor->SendMsg(
-      nullptr, 0x91, 0, static_cast<int>(first), static_cast<int>(first >> 32), static_cast<int>(second), static_cast<int>(second >> 32), 0, 0, 0, 0, 0, 0, 0, 0
+      nullptr, AM_UPDATE_MONSTER_GAGE, 0, static_cast<int>(first), static_cast<int>(first >> 32), static_cast<int>(second), static_cast<int>(second >> 32), 0, 0, 0, 0, 0, 0, 0, 0
     );
   }
 }
@@ -1760,16 +1764,16 @@ __declspec(noinline) void CGameMode::ReceiveUnknownD26800(const unsigned char* p
   const unsigned char value = packet[2];
   *reinterpret_cast<int*>(g_session.unknown_5974) = value;
   const char* text = LookupMessage(value != 0 ? 0x54F : 0x54E);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
   if (g_windowMgr.unknown_01E0) {
-    g_windowMgr.unknown_01E0->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x00D79660
 // FUNCTION: fn_22172
 __declspec(noinline) void CGameMode::ReceiveUnknownD79660(const unsigned char* packet) {
-  UIWindow* window = g_windowMgr.LookupWindow(10032);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_DEBUFFREMOVEWND);
   if (!window) {
     return;
   }
@@ -1778,14 +1782,14 @@ __declspec(noinline) void CGameMode::ReceiveUnknownD79660(const unsigned char* p
   case 0: {
     window->Show(0);
     const char* text = LookupMessage(0x10E8);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     return;
   }
   case 1:
-    g_windowMgr.CloseWindow(10032);
+    g_windowMgr.CloseWindow(WID_DEBUFFREMOVEWND);
     return;
   case 2:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x79B)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x79B)), 0xFF, 0, 0, 0);
     return;
   case 3:
     window->Show(1);
@@ -1798,12 +1802,12 @@ __declspec(noinline) void CGameMode::ReceiveUnknownD79660(const unsigned char* p
 __declspec(noinline) void CGameMode::ReceiveUnknownD79E90(std::int16_t result, std::intptr_t value) {
   switch (result) {
   case 0:
-    if (UIWindow* window = g_windowMgr.LookupWindow(340)) {
-      window->SendMsg(nullptr, 0x40, 0, value, 0, 0);
+    if (UIWindow* window = g_windowMgr.LookupWindow(WID_ACCOUNTLIMITEDTOOLWND)) {
+      window->SendMsg(nullptr, UM_PARAM, 0, value, 0, 0);
     }
     break;
   case 1:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x9D1)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x9D1)), 0xFF, 0, 0, 0);
     break;
   }
 }
@@ -1821,13 +1825,13 @@ __declspec(noinline) void CGameMode::ReceiveRouletteSetResult(const unsigned cha
     }
     break;
   case GENERATE_ROULETTE_FAILED:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA4C)), 0x6464FF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA4C)), 0x6464FF, 0, 0, 0);
     break;
   case GENERATE_ROULETTE_NO_ENOUGH_POINT:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA4D)), 0x6464FF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA4D)), 0x6464FF, 0, 0, 0);
     break;
   case GENERATE_ROULETTE_LOSING:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA4E)), 0x6464FF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA4E)), 0x6464FF, 0, 0, 0);
     break;
   }
 }
@@ -1858,7 +1862,7 @@ __declspec(noinline) void CGameMode::ReceiveDynamicNpcNotice(const unsigned char
     return;
   }
 
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D079A0
@@ -1886,8 +1890,8 @@ void CGameMode::ReceiveWhisperResult(unsigned char kind, int argument) {
     }
 
     if (g_pendingWhisperCount <= 0) {
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, 2, reinterpret_cast<std::intptr_t>(copied.c_str()), 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, 2, reinterpret_cast<std::intptr_t>(copied.c_str()), 0);
     } else {
       --g_pendingWhisperCount;
     }
@@ -1902,22 +1906,22 @@ void CGameMode::ReceiveWhisperResult(unsigned char kind, int argument) {
       --g_pendingWhisperCount;
       return;
     }
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
     return;
   }
   case ACKWHISPER_IGNORED: {
     const std::string text = "(" + this->unknown_022C + ")" + LookupMessage(0x95);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
     return;
   }
   case ACKWHISPER_ALL_IGNORED: {
     const std::string text = "(" + this->unknown_022C + ")" + LookupMessage(0x96);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
     return;
   }
   default: {
     const std::string text = "(" + this->unknown_022C + ")" + LookupMessage(0x94);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
     if (g_session.m_whisperRecord != 0) {
       this->WriteChatLog(text.c_str());
     }
@@ -1947,24 +1951,24 @@ void __stdcall ProcessVendingSale(int field8, int itemIdWord, int quantityWord, 
   item.unknown_0000[1] = static_cast<std::uint32_t>(itemId);
   item.quantity = quantity;
   item.unknown_0014[0] = static_cast<std::uint32_t>(field14);
-  UIWindow* window = g_windowMgr.EnsureWindow(0x101);
-  window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&item), field18, field8, 0);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMLOGWND_MODE_0);
+  window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&item), field18, field8, 0);
   g_session.RemoveItem1758(item);
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   g_windowMgr.SendNotice(
-    1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE7), item.DisplayName(0).c_str(), quantity).c_str()), 0xFFFF64, 0, 0, 0
+    UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE7), item.DisplayName(0).c_str(), quantity).c_str()), 0xFFFF64, 0, 0, 0
   );
   if (g_windowMgr.unknown_02F4 != nullptr) {
-    g_windowMgr.unknown_02F4->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+    g_windowMgr.unknown_02F4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   if (g_session.GetList9Size() == 0) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x137)), 0xFF00, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x137)), 0xFF00, 0, 0, 0);
     if (g_windowMgr.unknown_0304 != nullptr) {
-      g_windowMgr.unknown_0304->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-      g_windowMgr.unknown_0304->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+      g_windowMgr.unknown_0304->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      g_windowMgr.unknown_0304->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     }
   } else if (g_windowMgr.unknown_0304 != nullptr) {
-    g_windowMgr.unknown_0304->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+    g_windowMgr.unknown_0304->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   if (g_windowMgr.unknown_0304 != nullptr && g_session.m_muteSellSound) {
     g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1978,20 +1982,20 @@ void __declspec(noinline) __stdcall ProcessBuyingStorePurchase(int field14, int 
   item.SetItemId(itemId);
   item.quantity = quantity;
   item.unknown_0014[0] = static_cast<std::uint32_t>(field8);
-  UIWindow* window = g_windowMgr.EnsureWindow(0x102);
-  window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&item), field10, field14, 0);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMLOGWND_MODE_1);
+  window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&item), field10, field14, 0);
   g_session.RemoveItem1758ByItemId(item);
   if (g_windowMgr.unknown_01D4 != nullptr) {
-    g_windowMgr.unknown_01D4->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+    g_windowMgr.unknown_01D4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   if (g_windowMgr.unknown_0414 != nullptr) {
-    g_windowMgr.unknown_0414->SendMsg(nullptr, 0x77, fieldC, 0, 0, 0);
-    g_windowMgr.unknown_0414->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+    g_windowMgr.unknown_0414->SendMsg(nullptr, UM_SET_BUYING_SHOP_ZENY, fieldC, 0, 0, 0);
+    g_windowMgr.unknown_0414->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     if (g_session.m_muteSellSound) {
       g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     if (g_session.GetList9Size() == 0) {
-      g_windowMgr.unknown_0414->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+      g_windowMgr.unknown_0414->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     }
   }
 }
@@ -2147,10 +2151,10 @@ void CGameMode::ReceiveShopItemList(
       lists->AddItem1758(item);
     }
 
-    if (UIMerchantItemMyShopWnd* window = static_cast<UIMerchantItemMyShopWnd*>(g_windowMgr.EnsureWindow(45))) {
+    if (UIMerchantItemMyShopWnd* window = static_cast<UIMerchantItemMyShopWnd*>(g_windowMgr.EnsureWindow(WID_MERCHANTITEMMYSHOPWND))) {
       window->OpenShop();
-      window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-      window->SendMsg(nullptr, 0x1C, value, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETNAID, value, 0, 0, 0);
       window->SetDuration(duration);
     }
   } else {
@@ -2160,15 +2164,15 @@ void CGameMode::ReceiveShopItemList(
       lists->AddItem1748(item);
     }
 
-    if (UIMerchantItemShopWnd* window = static_cast<UIMerchantItemShopWnd*>(g_windowMgr.EnsureWindow(43))) {
-      window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-      window->SendMsg(nullptr, 0x1C, value, 0, 0, 0);
+    if (UIMerchantItemShopWnd* window = static_cast<UIMerchantItemShopWnd*>(g_windowMgr.EnsureWindow(WID_MERCHANTITEMSHOPWND))) {
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETNAID, value, 0, 0, 0);
       window->StartTimer(duration);
     }
 
-    if (UIWindow* window = g_windowMgr.EnsureWindow(44)) {
-      window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-      window->SendMsg(nullptr, 0x1C, value, argument, 0, 0);
+    if (UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMPURCHASEWND)) {
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETNAID, value, argument, 0, 0);
     }
   }
 
@@ -2180,10 +2184,10 @@ void CGameMode::ReceiveShopItemList(
 __declspec(noinline) void CGameMode::ReceivePacket0B2E(short result) {
   switch (result) {
   case 1:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x442)), 0xff, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x442)), 0xff, 0, 0, 0);
     break;
   case 2:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xe31)), 0xff, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xe31)), 0xff, 0, 0, 0);
     break;
   }
 }
@@ -2193,17 +2197,17 @@ __declspec(noinline) void CGameMode::ReceivePacket0B2E(short result) {
 __declspec(noinline) void CGameMode::ReceiveUnknownD2A1F0(const unsigned char* packet) {
   switch (*reinterpret_cast<const std::int16_t*>(packet + 2)) {
   case 3:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x6CF)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x6CF)), 0xFF, 0, 0, 0);
     break;
   case 4:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x6D0)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x6D0)), 0xFF, 0, 0, 0);
     break;
   }
 
-  this->SendMsg(0x28, 0, 0, 0, 0);
-  g_windowMgr.CloseWindow(0xB0);
+  this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+  g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND_MODE_1);
 }
 
 // OFFSET: 0x00D7A0E0
@@ -2224,7 +2228,7 @@ __declspec(noinline) void CGameMode::ReceiveActorMessage7(const unsigned char* p
   std::memcpy(text, packet + 8, length);
   const std::int64_t value = reinterpret_cast<std::intptr_t>(text);
   actor->SendMsg(
-    nullptr, 7, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    nullptr, AM_CHAT, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   );
 }
 // OFFSET: 0x00D7AEB0
@@ -2278,11 +2282,11 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
 
   if (actor->IsPlayerClass(actor->GetEffectiveJob(-1))) {
     if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
-      actor->SendMsg(nullptr, 109, 0, 203, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, 109, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, 109, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, 109, 0, 418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, 109, 0, 586, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 203, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 586, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
 
@@ -2290,21 +2294,21 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
       if (!actor->HasId(166)) {
         CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
-          effect->SendMsg(nullptr, 44, 0, 0xFFFF, 130, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 130, 0, 0, 0);
         }
       }
     } else if (options & 0x2) {
       if (!actor->HasId(166)) {
         CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
-          effect->SendMsg(nullptr, 44, 0, 0xFFFF, 128, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 128, 0, 0, 0);
         }
       }
     } else if (options & 0x4) {
       if (!actor->HasId(166)) {
         CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
-          effect->SendMsg(nullptr, 44, 0, 0xFFFF, 169, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 169, 0, 0, 0);
         }
       }
     } else if (options & 0x4000) {
@@ -2381,10 +2385,10 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
   }
 
   if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
-    actor->SendMsg(nullptr, 109, 0, 203, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, 109, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, 109, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, 109, 0, 418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 203, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
 
@@ -2400,7 +2404,7 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
     }
   } else {
     while (actor->HasId(420)) {
-      actor->SendMsg(nullptr, 109, 0, 420, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 420, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor->LaunchEffect(540, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
@@ -2411,7 +2415,7 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
     }
   } else {
     while (actor->HasId(427)) {
-      actor->SendMsg(nullptr, 109, 0, 427, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 427, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
@@ -2422,8 +2426,8 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
     }
   } else {
     while (actor->HasId(254)) {
-      actor->SendMsg(nullptr, 109, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, 109, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
@@ -2433,7 +2437,7 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
     }
   } else {
     while (actor->HasId(655)) {
-      actor->SendMsg(nullptr, 109, 0, 655, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 655, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor->LaunchEffect(656, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
@@ -2444,7 +2448,7 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
     }
   } else {
     while (actor->HasId(667)) {
-      actor->SendMsg(nullptr, 109, 0, 667, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 667, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
@@ -2454,7 +2458,7 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
     }
   } else {
     while (actor->HasId(375)) {
-      actor->SendMsg(nullptr, 109, 0, 375, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 375, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
@@ -2464,7 +2468,7 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
     }
   } else {
     while (actor->HasId(744) == 1) {
-      actor->SendMsg(nullptr, 109, 0, 744, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 744, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 }
@@ -2472,7 +2476,7 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
 // OFFSET: 0x00D7B350
 // FUNCTION: fn_22201
 __declspec(noinline) void CGameMode::ReceivePacket0AB8(const unsigned char*) {
-  this->scene->player->SendMsg(nullptr, 149, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->scene->player->SendMsg(nullptr, AM_CLEAR_ROUTE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D78010
@@ -2507,11 +2511,11 @@ __declspec(noinline) void CGameMode::ReceiveUnknownD89C60(const unsigned char* p
 // OFFSET: 0x00D79390
 // FUNCTION: fn_22165
 __declspec(noinline) void CGameMode::ReceiveLapineBoxIngredient(const unsigned char* packet) {
-  if (g_windowMgr.LookupWindow(0x122) != nullptr) {
+  if (g_windowMgr.LookupWindow(WID_LAPINEBOXWND) != nullptr) {
     return;
   }
 
-  if (UIWindow* window = g_windowMgr.EnsureWindow(0x122)) {
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_LAPINEBOXWND)) {
     static_cast<UILapineBoxWnd*>(window)->SetIngredient(static_cast<int>(reinterpret_cast<std::intptr_t>(packet)));
   }
 }
@@ -2519,7 +2523,7 @@ __declspec(noinline) void CGameMode::ReceiveLapineBoxIngredient(const unsigned c
 // OFFSET: 0x00D79B40
 // FUNCTION: fn_22178
 __declspec(noinline) void CGameMode::ActivateMacroBlackListCheck(unsigned char state, int duration) {
-  if (UIWindow* window = g_windowMgr.LookupWindow(0x167)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_MACROBLACKLISTCHECKWND)) {
     static_cast<UIMacroBlackListCheckWnd*>(window)->Activate(state, duration);
   }
 }
@@ -2527,7 +2531,7 @@ __declspec(noinline) void CGameMode::ActivateMacroBlackListCheck(unsigned char s
 // OFFSET: 0x00D79B70
 // FUNCTION: fn_22179
 __declspec(noinline) void CGameMode::SetMacroDetectorCountdown(unsigned char count, std::uint32_t duration) {
-  if (UIWindow* window = g_windowMgr.LookupWindow(0x11D)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_MACRODETECTORWND)) {
     window->Show(1);
     static_cast<UIMacroDetectorWnd*>(window)->SetCountdown(count, duration);
   }
@@ -2536,7 +2540,7 @@ __declspec(noinline) void CGameMode::SetMacroDetectorCountdown(unsigned char cou
 // OFFSET: 0x00D79340
 // FUNCTION: fn_22164
 __declspec(noinline) void CGameMode::ReceiveCaptchaPreviewImage(const char* key, const void* data, unsigned short size) {
-  UICaptchaPreviewWnd* window = static_cast<UICaptchaPreviewWnd*>(g_windowMgr.LookupWindow(0x120));
+  UICaptchaPreviewWnd* window = static_cast<UICaptchaPreviewWnd*>(g_windowMgr.LookupWindow(WID_CAPTCHAPREVIEWWND));
   if (window != nullptr && std::strncmp(window->m_captchaKey, key, 4) == 0) {
     window->AddImageData(data, size);
   }
@@ -2545,16 +2549,16 @@ __declspec(noinline) void CGameMode::ReceiveCaptchaPreviewImage(const char* key,
 // OFFSET: 0x00D793D0
 // FUNCTION: fn_22166
 __declspec(noinline) void CGameMode::ReceiveLapineUpgradeBoxValue(int value) {
-  if (g_windowMgr.LookupWindow(0x12E) != nullptr) {
+  if (g_windowMgr.LookupWindow(WID_LAPINEUPGRADEBOXWND) != nullptr) {
     return;
   }
 
-  UIWindow* window = g_windowMgr.EnsureWindow(0x12E);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_LAPINEUPGRADEBOXWND);
   if (window == nullptr) {
     return;
   }
 
-  window->SendMsg(nullptr, 0x17, value, 0, 0, 0);
+  window->SendMsg(nullptr, UM_REFRESHITEM, value, 0, 0, 0);
 }
 
 // OFFSET: 0x00D7B420
@@ -2563,11 +2567,11 @@ __declspec(noinline) void CGameMode::Zc_Trycapture_Monster(const unsigned char* 
   UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0394);
   if (packet[2] != 0) {
     if (window) {
-      window->SendMsg(nullptr, 0x50, 1, 7, 0, 0);
+      window->SendMsg(nullptr, UM_SET_TARGET, 1, 7, 0, 0);
     }
   } else {
     if (window) {
-      window->SendMsg(nullptr, 0x50, 1, 3, 0, 0);
+      window->SendMsg(nullptr, UM_SET_TARGET, 1, 3, 0, 0);
     }
   }
 }
@@ -2575,11 +2579,11 @@ __declspec(noinline) void CGameMode::Zc_Trycapture_Monster(const unsigned char* 
 // OFFSET: 0x00D7B470
 // FUNCTION: fn_22204
 __declspec(noinline) void CGameMode::Zc_Trycollection(const unsigned char* packet) {
-  if (UIWindow* window = g_windowMgr.LookupWindow(0xC4)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_COLLECTIONSYSTEMWND)) {
     if (packet[2] != 0) {
-      window->SendMsg(nullptr, 0x50, 1, 7, 0, 0);
+      window->SendMsg(nullptr, UM_SET_TARGET, 1, 7, 0, 0);
     } else {
-      window->SendMsg(nullptr, 0x50, 1, 3, 0, 0);
+      window->SendMsg(nullptr, UM_SET_TARGET, 1, 3, 0, 0);
     }
   }
 }
@@ -2607,11 +2611,11 @@ __declspec(noinline) void CGameMode::Zc_Msg(const unsigned char* packet) {
     break;
   }
 
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   const char* text = LookupMessage(message);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), color, type, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), color, type, 0, 0);
   const char* chatText = LookupMessage(message);
-  g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(chatText), color, type, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(chatText), color, type, 0, 0);
 }
 
 // OFFSET: 0x00D328E0
@@ -2629,9 +2633,9 @@ __declspec(noinline) void CGameMode::Zc_Msg_Color(const unsigned char* packet) {
     break;
   }
 
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, 0, 0, 0);
-  g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, 0, 0, 0);
 }
 
 // OFFSET: 0x00D7B5E0
@@ -2684,12 +2688,12 @@ __declspec(noinline) void CGameMode::ReceivePacket0A29(int value) {
 // OFFSET: 0x00D79E10
 // FUNCTION: fn_22182
 __declspec(noinline) void CGameMode::ReceiveCashShopBanner(int value1, int value2, int value3) {
-  if (!g_windowMgr.CloseWindow(0x13e)) {
-    if (UIWindow* window = g_windowMgr.EnsureWindow(0x13e)) {
-      window->SendMsg(nullptr, 0xa4, value3, 0, 0, 0);
-      window->SendMsg(nullptr, 0x78, value1, value2, 0, 0);
+  if (!g_windowMgr.CloseWindow(WID_CASHSHOP_WND)) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(WID_CASHSHOP_WND)) {
+      window->SendMsg(nullptr, UM_SELECT_CASHSHOP_TAB, value3, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SET_CASHSHOP_BALANCE, value1, value2, 0, 0);
     } else {
-      g_modeMgr.gameMode->SendMsg(0x143, value3, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(MM_REQUEST_CASH_SHOP, value3, 0, 0, 0);
     }
   }
 }
@@ -2698,13 +2702,13 @@ __declspec(noinline) void CGameMode::ReceiveCashShopBanner(int value1, int value
 // FUNCTION: fn_22188
 __declspec(noinline) void CGameMode::ReceiveWindow308TextEntries(unsigned char* packet) {
   const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 16;
-  g_windowMgr.CloseWindow(0x134);
-  UIWindow* window = g_windowMgr.EnsureWindow(0x134);
+  g_windowMgr.CloseWindow(WID_SHOWWARPWND);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_SHOWWARPWND);
   for (int i = 0; i < count; ++i) {
     char* text = reinterpret_cast<char*>(packet + 4 + i * 16);
     text[15] = '\0';
     if (std::strlen(text) != 0) {
-      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     }
   }
 }
@@ -2736,17 +2740,17 @@ __declspec(noinline) void CGameMode::ReceiveActorStateValue(std::uint32_t aid, i
 __declspec(noinline) void CGameMode::ReceiveChatEntries(unsigned char* data) {
   ChatEntryListPacket* packet = reinterpret_cast<ChatEntryListPacket*>(data);
   const int count = (packet->length - 6) / static_cast<int>(sizeof(ChatTextEntry));
-  g_windowMgr.CloseWindow(39);
-  UIWindow* window = g_windowMgr.EnsureWindow(39);
-  window->SendMsg(nullptr, 0x3B, packet->unknown_0004, 0, 0, 0);
+  g_windowMgr.CloseWindow(WID_CHOOSEWARPWND);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_CHOOSEWARPWND);
+  window->SendMsg(nullptr, UM_SETSKID, packet->unknown_0004, 0, 0, 0);
   for (int i = 0; i < count; ++i) {
     ChatTextEntry* entry = &packet->entries[i];
     entry->text[15] = '\0';
     if (std::strlen(entry->text) != 0) {
-      window->SendMsg(nullptr, 0x1B, reinterpret_cast<std::intptr_t>(entry->text), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>(entry->text), 0, 0, 0);
     }
   }
-  window->SendMsg(nullptr, 0x1B, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
+  window->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
 }
 
 // OFFSET: 0x00D7A200
@@ -2788,9 +2792,9 @@ __declspec(noinline) void CGameMode::ReceiveUnknownD25850(const unsigned char* p
   _itoa(*reinterpret_cast<const int*>(packet + 4), number, 10);
   const ITEM_DESC& description = FindItemDescription(std::atoi(number));
   std::sprintf(text, LookupMessage(1258), description.identifiedName);
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
-  g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D31A40
@@ -2806,8 +2810,8 @@ __declspec(noinline) void CGameMode::ReceiveUnknownD31A40(const unsigned char* p
   }
 
   std::sprintf(text, LookupMessage(2087), text);
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D61100
@@ -2838,8 +2842,8 @@ __declspec(noinline) void CGameMode::ReceiveInventoryItemUpdate(const unsigned c
 // OFFSET: 0x00D78030
 // FUNCTION: fn_22157
 __declspec(noinline) void CGameMode::OpenWindow154() {
-  if (g_windowMgr.LookupWindow(0x154) == nullptr) {
-    g_windowMgr.EnsureWindow(0x154);
+  if (g_windowMgr.LookupWindow(WID_ACCOUNTLIMITEDTOOLWND) == nullptr) {
+    g_windowMgr.EnsureWindow(WID_ACCOUNTLIMITEDTOOLWND);
   }
 }
 
@@ -2847,10 +2851,10 @@ __declspec(noinline) void CGameMode::OpenWindow154() {
 // FUNCTION: fn_21722
 __declspec(noinline) void CGameMode::ReceiveUnknownD2D990(const unsigned char*) {
   if (g_windowMgr.unknown_03F8) {
-    g_windowMgr.CloseWindow(137);
+    g_windowMgr.CloseWindow(WID_MEMORIALDUNWND);
     GetRagConnection().Close();
     if (g_windowMgr.Confirm(LookupMessage(1349), 0, true, true, 0, "Message", 280, 120, 0) != 269) {
-      this->SendMsg(141, 0, 0, 0, 0);
+      this->SendMsg(MM_QUIT_TO_IDENTRY, 0, 0, 0, 0);
     }
   }
 }
@@ -2859,37 +2863,37 @@ __declspec(noinline) void CGameMode::ReceiveUnknownD2D990(const unsigned char*) 
 // FUNCTION: fn_21876
 void CGameMode::ReceiveUnknownD4E3F0(const unsigned char* packet) {
   unsigned int count = *reinterpret_cast<const std::uint16_t*>(packet + 2) - 4;
-  UIWindow* window = g_windowMgr.EnsureWindow(0x49);
-  window->SendMsg(nullptr, 0x4B, 0, 0, 0, 0);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMIDENTIFYWND);
+  window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
   count >>= 1;
   const std::int16_t* ids = reinterpret_cast<const std::int16_t*>(packet + 4);
   for (unsigned int index = count; index != 0; --index, ++ids) {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *ids);
     if (item.unknown_0000[1] != 0) {
-      window->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
+      window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
     }
   }
 
-  window->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D4E2A0
 // FUNCTION: fn_21875
 void CGameMode::ReceiveUnknownD4E2A0(const unsigned char* packet) {
   unsigned int count = *reinterpret_cast<const std::uint16_t*>(packet + 2) - 4;
-  UIWindow* window = g_windowMgr.EnsureWindow(0x4A);
-  window->SendMsg(nullptr, 0x4B, 0, 0, 0, 0);
-  window->SendMsg(nullptr, 0x4D, *reinterpret_cast<const int*>(this->unknown_045C), 0, 0, 0);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOMPOSITIONWND);
+  window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
+  window->SendMsg(nullptr, UM_SET_CARD_ITEM_INDEX, *reinterpret_cast<const int*>(this->unknown_045C), 0, 0, 0);
   count >>= 1;
   const std::int16_t* ids = reinterpret_cast<const std::int16_t*>(packet + 4);
   for (unsigned int index = count; index != 0; --index, ++ids) {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *ids);
     if (item.unknown_0000[1] != 0) {
-      window->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
+      window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
     }
   }
 
-  window->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D75960
@@ -2929,19 +2933,19 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
 
   if (sourceAid == g_session.m_aid) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-    this->scene->player->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_SKILL, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     source = this->scene->player;
     job = source->GetEffectiveJob(-1);
   } else {
     gameActor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(sourceAid));
     if (gameActor != nullptr) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-      gameActor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      gameActor->SendMsg(nullptr, AM_SKILL, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source = gameActor;
       job = source->GetEffectiveJob(-1);
     } else if (CRenderObject* skill = this->scene->GetSkillByAID(sourceAid)) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-      skill->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      skill->SendMsg(nullptr, AM_SKILL, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
@@ -3374,12 +3378,12 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
 
   if (source != nullptr) {
     if (g_session.IsMonsterActor(source) == 0) {
-      this->SendMsg(0x56, skillId, reinterpret_cast<std::intptr_t>(source), *reinterpret_cast<const std::int16_t*>(packet + 0x1C), 0);
+      this->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), *reinterpret_cast<const std::int16_t*>(packet + 0x1C), 0);
       return;
     }
     const unsigned char kind = source->unknown_0314;
     if (kind == 10 || kind == 13 || kind == 14) {
-      this->SendMsg(0x56, skillId, reinterpret_cast<std::intptr_t>(source), *reinterpret_cast<const std::int16_t*>(packet + 0x1C), 0);
+      this->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), *reinterpret_cast<const std::int16_t*>(packet + 0x1C), 0);
     }
   }
 
@@ -3413,24 +3417,24 @@ void CGameMode::ReceiveActorSkillAction(const unsigned char* packet) {
 
   if (*reinterpret_cast<const std::uint32_t*>(packet + 4) == g_session.m_aid) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-    this->scene->player->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_SKILL, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     actor = this->scene->player;
     job = actor->GetEffectiveJob(-1);
   } else {
     gameActor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4)));
     if (gameActor != nullptr) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-      gameActor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      gameActor->SendMsg(nullptr, AM_SKILL, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor = gameActor;
       job = actor->GetEffectiveJob(-1);
     } else if (CRenderObject* skill = this->scene->GetSkillByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4))) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-      skill->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      skill->SendMsg(nullptr, AM_SKILL, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
   if (g_session.IsMonsterActor(actor) == 0) {
-    this->SendMsg(0x56, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 0x1A), 0);
+    this->SendMsg(MM_MAKE_SKILL_USED_MSG, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 0x1A), 0);
     return;
   }
 
@@ -3464,23 +3468,23 @@ void CGameMode::ReceiveActorSkillMessage(const unsigned char* packet) {
   if (*reinterpret_cast<const std::uint32_t*>(packet + 4) == g_session.m_aid) {
     actor = this->scene->player;
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-    actor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_SKILL, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     job = actor->GetEffectiveJob(-1);
   } else {
     actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4)));
     if (actor != nullptr) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-      actor->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_SKILL, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       job = actor->GetEffectiveJob(-1);
     } else if (CRenderObject* skill = this->scene->GetSkillByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4))) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-      skill->SendMsg(nullptr, 0x25, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      skill->SendMsg(nullptr, AM_SKILL, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor = nullptr;
     }
   }
 
   if (g_session.IsMonsterActor(actor) == 0) {
-    this->SendMsg(0x56, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 0x1E), 0);
+    this->SendMsg(MM_MAKE_SKILL_USED_MSG, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 0x1E), 0);
     return;
   }
 
@@ -3521,9 +3525,9 @@ void CGameMode::ReceiveDispel(const unsigned char* packet) {
   const auto* dispel = reinterpret_cast<const DispelPacket*>(packet);
 
   if (dispel->aid == g_session.m_aid) {
-    this->scene->player->SendMsg(nullptr, 84, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    this->scene->player->SendMsg(nullptr, 87, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    this->scene->player->SendMsg(nullptr, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_DELETE_BEGIN_SPELL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     CPlayer* player = this->scene->player;
     if (player->render.unknown_0070 == 8) {
       player->SetState(0, 1);
@@ -3536,9 +3540,9 @@ void CGameMode::ReceiveDispel(const unsigned char* packet) {
     return;
   }
 
-  actor->SendMsg(nullptr, 84, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  actor->SendMsg(nullptr, 87, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  actor->SendMsg(nullptr, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, AM_DELETE_BEGIN_SPELL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   g_effectMgr->Retire(dispel->aid, 1114);
   if (actor->render.unknown_0070 == 8) {
     actor->SetState(0, 1);
@@ -3553,8 +3557,8 @@ __declspec(noinline) void CGameMode::ReceiveItem1758List(const unsigned char* pa
   }
 
   g_session.ClearItems1768();
-  g_windowMgr.CloseWindow(0xAE);
-  g_windowMgr.CloseWindow(0xAF);
+  g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
+  g_windowMgr.CloseWindow(WID_MERCHANTMIRRORITEMWND_MODE_1);
   g_session.ClearItems1758();
 
   const int count = static_cast<unsigned int>(static_cast<int>(*reinterpret_cast<const std::int16_t*>(packet + 2)) - 12) / 11u;
@@ -3572,9 +3576,9 @@ __declspec(noinline) void CGameMode::ReceiveItem1758List(const unsigned char* pa
     g_session.AddItem1758(item);
   }
 
-  UIWindow* window = g_windowMgr.EnsureWindow(0xB0);
-  window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-  window->SendMsg(nullptr, 0x77, *reinterpret_cast<const int*>(packet + 8), 0, 0, 0);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMMYSHOPWND_MODE_1);
+  window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  window->SendMsg(nullptr, UM_SET_BUYING_SHOP_ZENY, *reinterpret_cast<const int*>(packet + 8), 0, 0, 0);
   this->unknown_024C = 1;
 }
 
@@ -3582,16 +3586,16 @@ __declspec(noinline) void CGameMode::ReceiveItem1758List(const unsigned char* pa
 // FUNCTION: fn_21886
 void CGameMode::ReceiveUnknownD50810(const unsigned char* packet) {
   if (g_replayAnimationScaling != 0) {
-    g_modeMgr.GetGameMode()->SendMsg(82, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_REQ_OPENSTORE, 0, 0, 0, 0);
   }
 
   g_session.ClearItems1758();
 
   const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 8) / sizeof(Item1758StoreRecord);
   if (count == 0) {
-    this->SendMsg(40, 0, 0, 0, 0);
-    g_windowMgr.CloseWindow(43);
-    g_windowMgr.CloseWindow(44);
+    this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND);
+    g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
     g_session.ClearItems1760And1748();
     return;
   }
@@ -3647,12 +3651,12 @@ void CGameMode::ReceiveItem1748List(const unsigned char* packet) {
     g_session.AddItem1748(item);
   }
 
-  UIWindow* window = g_windowMgr.EnsureWindow(43);
-  window->SendMsg(nullptr, 23, 0, 0, 0, 0);
-  window->SendMsg(nullptr, 28, *reinterpret_cast<const std::int32_t*>(packet + 4), 0, 0, 0);
-  UIWindow* optionsWindow = g_windowMgr.EnsureWindow(44);
-  optionsWindow->SendMsg(nullptr, 23, 0, 0, 0, 0);
-  optionsWindow->SendMsg(nullptr, 28, *reinterpret_cast<const std::int32_t*>(packet + 4), *reinterpret_cast<const std::int32_t*>(packet + 8), 0, 0);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMSHOPWND);
+  window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  window->SendMsg(nullptr, UM_SETNAID, *reinterpret_cast<const std::int32_t*>(packet + 4), 0, 0, 0);
+  UIWindow* optionsWindow = g_windowMgr.EnsureWindow(WID_MERCHANTITEMPURCHASEWND);
+  optionsWindow->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  optionsWindow->SendMsg(nullptr, UM_SETNAID, *reinterpret_cast<const std::int32_t*>(packet + 4), *reinterpret_cast<const std::int32_t*>(packet + 8), 0, 0);
   this->unknown_024C = 1;
 }
 
@@ -3679,7 +3683,7 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, int amoun
         g_session.RefreshHpSpWindows();
       }
     }
-    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFF00FF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFF00FF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     break;
   case EF_SPTIME:
     if (aid == g_session.m_aid) {
@@ -3691,31 +3695,31 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, int amoun
         g_session.RefreshHpSpWindows();
       }
     }
-    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFF0000FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFF0000FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     break;
   case EF_GREEN_NUMBER:
-    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFF00FF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFF00FF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     break;
   case EF_BLUE_NUMBER:
-    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFF0000FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFF0000FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     break;
   case EF_RED_NUMBER:
-    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFFFF0000, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFF0000, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     break;
   case EF_PURPLE_NUMBER:
-    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFFFF00FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFF00FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     break;
   case EF_BLACK_NUMBER:
-    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFF000000, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFF000000, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     break;
   case EF_WHITE_NUMBER:
-    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFFFFFFFF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFFFFFF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     break;
   case EF_YELLOW_NUMBER:
-    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFFFFFF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFFFF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     break;
   case EF_PINK_NUMBER:
-    actor->SendMsg(nullptr, 0x58, 0, amount, option, 0xFFFF55B1, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFF55B1, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     break;
   default:
     break;
@@ -3752,14 +3756,14 @@ void CGameMode::ReceiveItem1718List(const unsigned char* packet) {
     g_session.AddItem1718(item, entry.quantity, static_cast<std::uint16_t>(entry.unknown_000D / 10));
   }
 
-  if (UIWindow* window = g_windowMgr.EnsureWindow(0xFE)) {
-    window->SendMsg(nullptr, 0x24, 0, 0, 0, 0);
-    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_PARAITEMSHOPWND)) {
+    window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
-  if (UIWindow* window = g_windowMgr.EnsureWindow(0xFF)) {
-    window->SendMsg(nullptr, 0x24, 0, 0, 0, 0);
-    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_PARAITEMPURCHASEWND)) {
+    window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -3787,13 +3791,13 @@ void ReceiveTradeItems(int count, const TradeItemRecord* records) {
     }
   }
 
-  if (UIWindow* window = g_windowMgr.EnsureWindow(0xfe)) {
-    window->SendMsg(nullptr, 0x24, 0, 0, 0, 0);
-    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_PARAITEMSHOPWND)) {
+    window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
-  if (UIWindow* window = g_windowMgr.EnsureWindow(0xff)) {
-    window->SendMsg(nullptr, 0x24, 0, 0, 0, 0);
-    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_PARAITEMPURCHASEWND)) {
+    window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -3806,7 +3810,7 @@ void CGameMode::ShowSpecialPopup(int popupId) {
 
   PopupData* popup = g_specialPopupMgr->GetPopup(popupId);
   if (!popup) {
-    this->SendMsg(1, reinterpret_cast<int>(FormatOwnedString("No GetPopupData : %d ", popupId).c_str()), 0xFFFF00FF, 0, 0);
+    this->SendMsg(MM_SOCKETERROR, reinterpret_cast<int>(FormatOwnedString("No GetPopupData : %d ", popupId).c_str()), 0xFFFF00FF, 0, 0);
     return;
   }
 
@@ -3816,21 +3820,21 @@ void CGameMode::ShowSpecialPopup(int popupId) {
   case 0:
     for (const std::string& description : popup->m_descriptions) {
       text = RemoveTextColors(description.c_str());
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), popup->m_color, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), popup->m_color, 0, 0, 0);
     }
     break;
   case 1:
-    if (UIWindow* popupWindow = g_windowMgr.EnsureWindow(358)) {
-      popupWindow->SendMsg(nullptr, 6, 510, popupId, 0, 0);
+    if (UIWindow* popupWindow = g_windowMgr.EnsureWindow(WID_BALLOONOPENBTN)) {
+      popupWindow->SendMsg(nullptr, UM_COMMAND, 510, popupId, 0, 0);
     }
     [[fallthrough]];
   case 2:
     for (const std::string& description : popup->m_descriptions) {
       text = RemoveTextColors(description.c_str());
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), popup->m_color, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), popup->m_color, 0, 0, 0);
     }
-    if (UIWindow* popupWindow = g_windowMgr.EnsureWindow(358)) {
-      popupWindow->SendMsg(nullptr, 6, 510, popupId, 0, 0);
+    if (UIWindow* popupWindow = g_windowMgr.EnsureWindow(WID_BALLOONOPENBTN)) {
+      popupWindow->SendMsg(nullptr, UM_COMMAND, 510, popupId, 0, 0);
     }
     break;
   }
@@ -3873,7 +3877,7 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
       break;
     }
 
-    actor->SendMsg(nullptr, 109, 0, effectId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, effectId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
 
@@ -3901,7 +3905,7 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
 
   vector3d count{static_cast<float>(packet->value), 0.0f, 0.0f};
   if (effect) {
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&count), 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&count), 0, 0, 0, 0);
   }
 }
 
@@ -3931,13 +3935,13 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     break;
   case JT_GUNSLINGER:
   case JT_GUNSLINGER_B:
-    actor->SendMsg(nullptr, 109, 0, 629, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 629, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (count == 0) {
       return;
     }
     break;
   case JT_MONK_B:
-    actor->SendMsg(nullptr, 109, 0, 504, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 504, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (count == 0) {
       return;
     }
@@ -3951,7 +3955,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     }
     break;
   default:
-    actor->SendMsg(nullptr, 109, 0, 228, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 228, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (count == 0) {
       return;
     }
@@ -4035,7 +4039,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
 
   if (effect && (effect->state.type == 228 || effect->state.type == 504 || effect->state.type == 629)) {
     vector3d value{static_cast<float>(count), 0.0f, 0.0f};
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&value), 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&value), 0, 0, 0, 0);
   }
 }
 
@@ -4072,21 +4076,21 @@ void CGameMode::ReceiveBuyingStoreItemList(const unsigned char* packet) {
     ++record;
   }
 
-  UIWindow* window = g_windowMgr.EnsureWindow(0xB1);
-  window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-  window->SendMsg(nullptr, 0x1C, *reinterpret_cast<const std::int32_t*>(packet + 4), 0, 0, 0);
-  window->SendMsg(nullptr, 0x77, *reinterpret_cast<const std::int32_t*>(packet + 12), 0, 0, 0);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMSHOPWND_MODE_1);
+  window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  window->SendMsg(nullptr, UM_SETNAID, *reinterpret_cast<const std::int32_t*>(packet + 4), 0, 0, 0);
+  window->SendMsg(nullptr, UM_SET_BUYING_SHOP_ZENY, *reinterpret_cast<const std::int32_t*>(packet + 12), 0, 0, 0);
 
-  window = g_windowMgr.EnsureWindow(0xB2);
-  window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-  window->SendMsg(nullptr, 0x1C, *reinterpret_cast<const std::int32_t*>(packet + 4), *reinterpret_cast<const std::int32_t*>(packet + 8), 0, 0);
+  window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMPURCHASEWND_MODE_1);
+  window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  window->SendMsg(nullptr, UM_SETNAID, *reinterpret_cast<const std::int32_t*>(packet + 4), *reinterpret_cast<const std::int32_t*>(packet + 8), 0, 0);
 
   window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0420);
   if (window) {
     g_session.RefreshItems1750();
-    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-  } else if ((window = g_windowMgr.EnsureWindow(0xB3)) != nullptr) {
-    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  } else if ((window = g_windowMgr.EnsureWindow(WID_MERCHANTMIRRORITEMWND_MODE_2)) != nullptr) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
   this->unknown_024C = 1;
@@ -4489,7 +4493,7 @@ __declspec(noinline) void CGameMode::ReceiveOpenStore(const unsigned char* packe
   if (mode) {
     const ModeDragState* drag = &mode->drag;
     if (drag && drag->source) {
-      this->SendMsg(81, 0, 0, 0, 0);
+      this->SendMsg(MM_REQ_CLOSESTORE, 0, 0, 0, 0);
       return;
     }
   }
@@ -4503,14 +4507,14 @@ __declspec(noinline) void CGameMode::ReceiveOpenStore(const unsigned char* packe
   }
   g_session.ClearItems1768();
   if (!g_windowMgr.window_027C && !g_windowMgr.window_0274 && !g_windowMgr.unknown_02FC) {
-    if (UIWindow* window = g_windowMgr.EnsureWindow(174)) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTSHOPMAKEWND_MODE_1)) {
       static_cast<UIMerchantShopMakeWnd*>(window)->AddActionButton();
     }
     return;
   }
 
   g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
-  this->SendMsg(270, 0, 0, 0, 0);
+  this->SendMsg(MM_REQ_CLOSE_BUYING_STORE, 0, 0, 0, 0);
 }
 
 struct ACTSTRUCT {
@@ -4537,7 +4541,7 @@ ACTSTRUCT::~ACTSTRUCT() = default;
 __declspec(noinline) void CGameMode::ReceiveSearchStoreOpen(const unsigned char* packet) {
   g_session.unknown_5BE0 = packet[4];
   reinterpret_cast<std::int16_t*>(&g_session.unknown_5BE4)[1] = *reinterpret_cast<const std::int16_t*>(packet + 2);
-  g_windowMgr.EnsureWindow(181);
+  g_windowMgr.EnsureWindow(WID_SEARCH_STORE_INFO);
 }
 
 #pragma pack(push, 1)
@@ -4574,18 +4578,18 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     if (packet->value < 0) {
       text = FormatOwnedString(LookupMessage(664), -packet->value);
       const int emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::ChatProhibit);
-      this->scene->player->SendMsg(nullptr, 160, 0, 0, 0, emotion, emotion >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_CASH_EMOTION, 0, 0, 0, emotion, emotion >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
       text = LookupMessage(665);
-      this->scene->player->SendMsg(nullptr, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_DELETE_PROHIBITEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
     *reinterpret_cast<int*>(&g_session.unknown_16F4[4]) = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_UNBREAKABLE:
     if (packet->value < -60) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(858)), 0xFFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(858)), 0xFFFF, 0, 0, 0);
     }
     break;
   case SP_HP:
@@ -4594,8 +4598,8 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
         g_session.CheckInterval(5000)) {
       const int hungerLevel = g_session.GetPetHungryState(g_session.unknown_1044);
       const int friendlyLevel = g_session.GetPetFriendlyState(g_session.m_petFriendly);
-      this->SendMsg(148, g_session.GetPetEmotionNumber(g_session.unknown_103C, 2, hungerLevel), 0, 0, 0);
-      this->SendMsg(148, g_session.GetPetActionNumber(hungerLevel, friendlyLevel, 2), 0, 0, 0);
+      this->SendMsg(MM_PET_ACT, g_session.GetPetEmotionNumber(g_session.unknown_103C, 2, hungerLevel), 0, 0, 0);
+      this->SendMsg(MM_PET_ACT, g_session.GetPetActionNumber(hungerLevel, friendlyLevel, 2), 0, 0, 0);
     }
     if (g_session.unknown_5568 != packet->value) {
       g_session.unknown_5568 = packet->value;
@@ -4608,7 +4612,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
       g_session.RefreshHpSpWindows();
     }
     if (g_windowMgr.window_02C8) {
-      g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, g_session.m_aid, 0, 0);
+      g_windowMgr.window_02C8->SendMsg(nullptr, UM_COMMAND, 34, g_session.m_aid, 0, 0);
     }
     break;
   case SP_SP:
@@ -4627,7 +4631,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     *reinterpret_cast<int*>(&g_session.unknown_1654[0]) = packet->value;
     g_session.InvalidateWindowFrames();
     if (g_windowMgr.unknown_01C4) {
-      g_windowMgr.unknown_01C4->SendMsg(nullptr, 35, 0, 0, 0, 0);
+      g_windowMgr.unknown_01C4->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
     }
     break;
   case SP_BASELEVEL: {
@@ -4679,13 +4683,13 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     this->scene->player->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
     if (g_replayAnimationScaling == 0) {
-      g_windowMgr.EnsureWindow(21);
+      g_windowMgr.EnsureWindow(WID_NOTIFYLEVELUPWND);
     }
     if (this->scene->GetGameActorByAID(g_session.unknown_1010)) {
       const int hungerLevel = g_session.GetPetHungryState(g_session.unknown_1044);
       const int friendlyLevel = g_session.GetPetFriendlyState(g_session.m_petFriendly);
-      this->SendMsg(148, g_session.GetPetEmotionNumber(g_session.unknown_103C, 6, hungerLevel), 0, 0, 0);
-      this->SendMsg(148, g_session.GetPetActionNumber(hungerLevel, friendlyLevel, 6), 0, 0, 0);
+      this->SendMsg(MM_PET_ACT, g_session.GetPetEmotionNumber(g_session.unknown_103C, 6, hungerLevel), 0, 0, 0);
+      this->SendMsg(MM_PET_ACT, g_session.GetPetActionNumber(hungerLevel, friendlyLevel, 6), 0, 0, 0);
     }
     if (g_replayAnimationScaling == 0) {
       if (g_windowMgr.unknown_01DC) {
@@ -4693,8 +4697,8 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
       }
     }
     this->RefreshActorJobEffects(true);
-    if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
-      window->SendMsg(nullptr, 6, 286, 192, 1, 0);
+    if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 192, 1, 0);
     }
     break;
   }
@@ -4704,13 +4708,13 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     this->scene->player->LaunchEffect(packet->value < 51 ? 158 : 337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
     if (g_replayAnimationScaling == 0) {
-      g_windowMgr.EnsureWindow(49);
+      g_windowMgr.EnsureWindow(WID_NOTIFYJOBLEVELUPWND);
       if (g_windowMgr.unknown_01DC) {
         reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->SetHeight(g_windowMgr.unknown_01DC->geometry.height);
       }
     }
-    if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
-      window->SendMsg(nullptr, 6, 286, 196, 1, 0);
+    if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 196, 1, 0);
     }
     break;
   case SP_SKILLPOINT:
@@ -4755,13 +4759,13 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     const int percent = (g_session.m_weight * 100) / (g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight);
     if (oldPercent < percent) {
       if (percent >= g_unknown173A5BC && oldPercent < g_unknown173A5BC) {
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         text = FormatOwnedString(LookupMessage(3311), g_unknown173A5BC);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 8, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 8, 0, 0);
       }
       if (percent > 89 && oldPercent < 90) {
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(307)), 0xFF, 8, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(307)), 0xFF, 8, 0, 0);
       }
       break;
     }
@@ -4769,15 +4773,15 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
       break;
     }
     if (percent < g_unknown173A5BC && g_unknown173A5BC <= oldPercent) {
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(308)), 0xFFFF00, 8, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(308)), 0xFFFF00, 8, 0, 0);
     }
     if (percent > 89) {
       break;
     }
     if (oldPercent >= 90) {
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(309)), 0xFFFF00, 8, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(309)), 0xFFFF00, 8, 0, 0);
     }
     break;
   }
@@ -4798,15 +4802,15 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     const int percent = (g_session.m_weight * 100) / (g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight);
     if (percent < 50) {
       if (oldPercent > 49) {
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(308)), 0xFFFF00, 8, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(308)), 0xFFFF00, 8, 0, 0);
       }
     } else if (percent > 89) {
       break;
     }
     if (oldPercent >= 90) {
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(309)), 0xFFFF00, 8, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(309)), 0xFFFF00, 8, 0, 0);
     }
     break;
   }
@@ -4920,7 +4924,7 @@ void CGameMode::ApplyStatusChange(
     CRenderObject* actor = this->scene->GetGameActorByAID(aid);
     if (actor) {
       actor->SendMsg(
-        nullptr, 110, 0, type, type >> 31, on, 0, value1, value1 >> 31, value2, value2 >> 31, flag, 0, value3, value3 >> 31
+        nullptr, AM_STATUS_CHANGE, 0, type, type >> 31, on, 0, value1, value1 >> 31, value2, value2 >> 31, flag, 0, value3, value3 >> 31
       );
     }
 
@@ -5180,7 +5184,7 @@ void CGameMode::ApplyStatusChange(
     case EFST_SIREN:
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        player->SendMsg(nullptr, 109, 0, 879, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 879, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         player->LaunchEffect(879, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         std::sprintf(message, "");
       }
@@ -5188,7 +5192,7 @@ void CGameMode::ApplyStatusChange(
     case EFST_SONG_OF_MANA:
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        player->SendMsg(nullptr, 109, 0, 865, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 865, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         player->LaunchEffect(865, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         std::sprintf(message, "");
       }
@@ -5196,7 +5200,7 @@ void CGameMode::ApplyStatusChange(
     case EFST_DANCE_WITH_WUG:
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        player->SendMsg(nullptr, 109, 0, 867, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 867, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         player->LaunchEffect(867, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         std::sprintf(message, "");
       }
@@ -5204,20 +5208,20 @@ void CGameMode::ApplyStatusChange(
     case EFST_LERADS_DEW:
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        player->SendMsg(nullptr, 109, 0, 871, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 871, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         player->LaunchEffect(871, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         std::sprintf(message, "");
       }
       break;
     case EFST_DEEP_SLEEP:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, 69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_MAKE_SLEEP_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         std::sprintf(message, "");
       }
       break;
     case EFST_NETHERWORLD:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, 109, 0, 453, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 453, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         std::sprintf(message, "");
       }
       break;
@@ -5686,7 +5690,7 @@ void CGameMode::ApplyStatusChange(
     case EFST_KYOUGAKU:
     case EFST_ACTIVE_MONSTER_TRANSFORM:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, 110, 0, type, type >> 31, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0, type, type >> 31, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
         this->RefreshStatusStateEffect(aid);
       }
       return;
@@ -5697,19 +5701,19 @@ void CGameMode::ApplyStatusChange(
       break;
     case EFST_FLOWER_LEAF:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, 110, 0, 675, 0, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0, 675, 0, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
         this->RefreshStatusStateEffect(aid);
       }
       return;
     case EFST_RAY_OF_PROTECTION:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, 110, 0, 676, 0, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0, 676, 0, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
         this->RefreshStatusStateEffect(aid);
       }
       break;
     case EFST_HANDICAPSTATE_ICEEXPLO:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, 110, 0, 710, 0, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0, 710, 0, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
         this->RefreshStatusStateEffect(aid);
       }
       break;
@@ -5770,7 +5774,7 @@ void CGameMode::ApplyStatusChange(
           g_session.unknown_8074 = 1;
         }
       }
-      actor->SendMsg(nullptr, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
     case EFST_SPELLFIST:
@@ -5993,13 +5997,13 @@ void CGameMode::ApplyStatusChange(
         CPlayer* player = this->scene->player;
         const int stage = value1 & 3;
         if (stage == 0) {
-          player->SendMsg(nullptr, 109, 0, 735, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 735, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         } else if (stage == 1) {
-          player->SendMsg(nullptr, 109, 0, 736, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 736, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         } else if (stage == 2) {
-          player->SendMsg(nullptr, 109, 0, 737, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 737, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         } else if (stage == 3) {
-          player->SendMsg(nullptr, 109, 0, 738, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 738, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
       }
       std::sprintf(message, "");
@@ -6294,19 +6298,19 @@ void CGameMode::ApplyStatusChange(
       break;
     case EFST_SIREN:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, 109, 0, 879, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 879, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
     case EFST_DEEP_SLEEP:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, 70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_SLEEP_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
     case EFST_NETHERWORLD:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, 109, 0, 453, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 453, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
@@ -6314,7 +6318,7 @@ void CGameMode::ApplyStatusChange(
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
         while (player->HasId(752)) {
-          player->SendMsg(nullptr, 109, 0, 752, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 752, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
         std::sprintf(message, "");
       }
@@ -6478,13 +6482,13 @@ void CGameMode::ApplyStatusChange(
   if (std::strlen(message) > 1) {
     char text[512];
     std::sprintf(text, "%s%s", name, message);
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), color, std::strlen(name) > 1 ? 10 : 8, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), color, std::strlen(name) > 1 ? 10 : 8, 0, 0);
   }
 
   if (aid == g_session.m_aid) {
     this->scene->player->SendMsg(
-      nullptr, 110, 0, type, type >> 31, on, 0, value1, value1 >> 31, value2, value2 >> 31, flag, 0, value3, value3 >> 31
+      nullptr, AM_STATUS_CHANGE, 0, type, type >> 31, on, 0, value1, value1 >> 31, value2, value2 >> 31, flag, 0, value3, value3 >> 31
     );
   }
 }
@@ -6501,7 +6505,7 @@ __declspec(noinline) void CGameMode::ReceiveObjectsDisappear(int count, const st
   for (int i = 0; i < count; ++i) {
     const std::uint32_t aid = aids[i];
     if (this->scene->RemoveItem(aid) == true) {
-      this->SendMsg(13, aid, 0, 0, 0);
+      this->SendMsg(MM_DELETEREGISTERPOS, aid, 0, 0, 0);
     } else if (this->scene->RemoveGroundItem(aid) == true) {
       this->RemoveUnknown01A4(aid);
     } else {
@@ -6519,12 +6523,12 @@ __declspec(noinline) void CGameMode::ReceiveWindow107List(const unsigned char* p
     return;
   }
 
-  g_windowMgr.CloseWindow(107);
-  UIWindow* window = g_windowMgr.EnsureWindow(107);
+  g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMREPAIRWND);
   const Window107Entry* entry = reinterpret_cast<const Window107Entry*>(packet + 4);
   if (count != 0 && window != nullptr) {
     for (int i = 0; i < count; ++i) {
-      window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
       ++entry;
     }
   }
@@ -6536,12 +6540,12 @@ __declspec(noinline) void CGameMode::ReceiveActorColorChat(const unsigned char* 
   char text[256];
   std::memset(text, 0, sizeof(text));
   std::memcpy(text, packet + 12, *reinterpret_cast<const std::uint16_t*>(packet + 2) - 12);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), *reinterpret_cast<const int*>(packet + 8), 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), *reinterpret_cast<const int*>(packet + 8), 0, 0, 0);
 
   CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4));
   if (actor != nullptr) {
     const int color = *reinterpret_cast<const int*>(packet + 8);
-    actor->SendMsg(nullptr, 7, 0, reinterpret_cast<int>(text), reinterpret_cast<int>(text) >> 31, color, color >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_CHAT, 0, reinterpret_cast<int>(text), reinterpret_cast<int>(text) >> 31, color, color >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
   if (g_session.m_whisperRecord != 0) {
@@ -6565,12 +6569,12 @@ __declspec(noinline) void CGameMode::ReceiveWearEquipAck(unsigned char result, s
   }
   case ITEM_EQUIP_ACK_FAILLEVEL: {
     const char* text = LookupMessage(1953);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
     break;
   }
   case ITEM_EQUIP_ACK_FAIL: {
     const char* text = LookupMessage(372);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
     break;
   }
   }
@@ -6595,7 +6599,7 @@ __declspec(noinline) void CGameMode::ReceiveFormattedMessage(const unsigned char
   }
 
   if (std::strlen(text) != 0) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
   }
 }
 
@@ -6613,7 +6617,7 @@ struct ParaResultEntry {
 // OFFSET: 0x00D77E70
 // FUNCTION: fn_22155
 __declspec(noinline) void CGameMode::ReceiveParaItemResult(unsigned char success, int count, const unsigned char* data) {
-  UIParaResultWnd* window = static_cast<UIParaResultWnd*>(g_windowMgr.EnsureWindow(256));
+  UIParaResultWnd* window = static_cast<UIParaResultWnd*>(g_windowMgr.EnsureWindow(WID_PARARESULTWND));
   if (window == nullptr) {
     return;
   }
@@ -6632,10 +6636,10 @@ __declspec(noinline) void CGameMode::ReceiveParaItemResult(unsigned char success
     window->AddItem(item);
   }
 
-  window->SendMsg(nullptr, 36, (count - 2 > 0 ? count : 0) * 32 + 120, 0, 0, 0);
-  window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  window->SendMsg(nullptr, UM_SETTITLE, (count - 2 > 0 ? count : 0) * 32 + 120, 0, 0, 0);
+  window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   if (!success) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3043)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3043)), 0xFF, 0, 0, 0);
   }
 }
 
@@ -6656,7 +6660,7 @@ void CGameMode::ReceiveResultNotice4327(const unsigned char* packet) {
   }
 
   if (!text.empty()) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
   }
 }
 
@@ -6667,7 +6671,7 @@ __declspec(noinline) void CGameMode::OpenBuyingStoreMake(unsigned char slotCount
   if (mode) {
     const ModeDragState* drag = &mode->drag;
     if (drag && drag->source) {
-      this->SendMsg(299, 0, 0, 0, 0);
+      this->SendMsg(MM_CANCEL_BUYING_STORE_MAKE, 0, 0, 0, 0);
       return;
     }
   }
@@ -6680,7 +6684,7 @@ __declspec(noinline) void CGameMode::OpenBuyingStoreMake(unsigned char slotCount
   }
   g_session.ClearItems1768();
   if (!g_windowMgr.window_027C && !g_windowMgr.window_0274 && !g_windowMgr.unknown_02FC) {
-    g_windowMgr.EnsureWindow(174);
+    g_windowMgr.EnsureWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
     if (g_windowMgr.unknown_040C) {
       static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.unknown_040C)->SetItems(0, nullptr);
     }
@@ -6688,7 +6692,7 @@ __declspec(noinline) void CGameMode::OpenBuyingStoreMake(unsigned char slotCount
   }
 
   g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
-  this->SendMsg(299, 0, 0, 0, 0);
+  this->SendMsg(MM_CANCEL_BUYING_STORE_MAKE, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D78210
@@ -6698,7 +6702,7 @@ __declspec(noinline) void CGameMode::OpenVendingMake(unsigned char slotCount, in
   if (mode) {
     const ModeDragState* drag = &mode->drag;
     if (drag && drag->source) {
-      this->SendMsg(297, 0, 0, 0, 0);
+      this->SendMsg(MM_CANCEL_VENDING_MAKE, 0, 0, 0, 0);
       return;
     }
   }
@@ -6711,7 +6715,7 @@ __declspec(noinline) void CGameMode::OpenVendingMake(unsigned char slotCount, in
   }
   g_session.ClearItems1768();
   if (!g_windowMgr.window_027C && !g_windowMgr.window_0274) {
-    g_windowMgr.EnsureWindow(41);
+    g_windowMgr.EnsureWindow(WID_MERCHANTSHOPMAKEWND);
     if (g_windowMgr.unknown_02FC) {
       static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.unknown_02FC)->SetItems(itemCount, items);
     }
@@ -6719,7 +6723,7 @@ __declspec(noinline) void CGameMode::OpenVendingMake(unsigned char slotCount, in
   }
 
   g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
-  this->SendMsg(297, 0, 0, 0, 0);
+  this->SendMsg(MM_CANCEL_VENDING_MAKE, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D799C0
@@ -6774,7 +6778,7 @@ void CGameMode::ReceiveItemFallEntry(const unsigned char* packet) {
   }
 
   const int entryAddress = reinterpret_cast<int>(&entry);
-  item->SendMsg(nullptr, 4, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  item->SendMsg(nullptr, AM_INITSTANDENTRY, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D266C0
@@ -6784,16 +6788,16 @@ __declspec(noinline) void CGameMode::ReceiveFeedOption(const unsigned char* pack
   case CONFIG_OPEN_EQUIPMENT_WINDOW: {
     *reinterpret_cast<int*>(g_session.unknown_5974) = *reinterpret_cast<const int*>(packet + 6);
     const char* text = LookupMessage((*reinterpret_cast<int*>(g_session.unknown_5974) != 0) + 0x54E);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.unknown_01E0) {
-      g_windowMgr.unknown_01E0->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+      g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     }
     break;
   }
   case CONFIG_CALL:
     g_serviceOptions.Set(231, *reinterpret_cast<const int*>(packet + 6) != 0);
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(LookupMessage((*reinterpret_cast<const int*>(packet + 6) != 0) + 0xBA2)), 0x64FFFF, 0, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage((*reinterpret_cast<const int*>(packet + 6) != 0) + 0xBA2)), 0x64FFFF, 0, 0, 0
     );
     g_windowMgr.RefreshGameSettingOption(231);
     break;
@@ -6828,7 +6832,7 @@ __declspec(noinline) void CGameMode::ReceiveTakeOffEquipResult(unsigned char res
     break;
   case 1: {
     const char* text = LookupMessage(1953);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
     break;
   }
   }
@@ -6857,7 +6861,7 @@ void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
     }
     if (g_session.IsAdminSubMode(3)) {
       std::sprintf(text, "%d", *reinterpret_cast<const int*>(packet + 8));
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xF5F5F5, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xF5F5F5, 0, 0, 0);
     }
     break;
   case HO_FULLNESS_CHANGED:
@@ -6871,7 +6875,7 @@ void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
     }
     if (g_session.IsAdminSubMode(3)) {
       std::sprintf(text, "Full : %d", *reinterpret_cast<const int*>(packet + 8));
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x1EF5F5, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x1EF5F5, 0, 0, 0);
     }
     break;
   case HO_ACCESSARY_CHANGED:
@@ -6894,9 +6898,9 @@ void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
 // FUNCTION: fn_21683
 __declspec(noinline) void CGameMode::ReceiveItemConsumed(const unsigned char* packet) {
   if (g_windowMgr.unknown_0458) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2734)), 0x64FFFF, 0, 0, 0);
-    g_modeMgr.GetGameMode()->SendMsg(293, 0, 0, 0, 0);
-    g_windowMgr.CloseWindow(264);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2734)), 0x64FFFF, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_WRITE_RODEX, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_RODEXCOMPOSEWND);
   }
 
   if (*reinterpret_cast<int*>(&this->unknown_0100[0x14])) {
@@ -6928,10 +6932,10 @@ __declspec(noinline) void CGameMode::ReceivePartyLeaderChange(const unsigned cha
     g_session.SetPartyLeader(*reinterpret_cast<const std::uint32_t*>(packet + 6), 0);
     g_session.unknown_5464 = *reinterpret_cast<const std::uint32_t*>(packet + 6) == g_session.m_aid;
     std::sprintf(text, LookupMessage(1552), member.name.c_str());
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
     RefreshPartyWindows(&g_session);
     if (g_windowMgr.unknown_03F8) {
-      g_windowMgr.unknown_03F8->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+      g_windowMgr.unknown_03F8->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     }
   }
 }
@@ -6939,12 +6943,12 @@ __declspec(noinline) void CGameMode::ReceivePartyLeaderChange(const unsigned cha
 // OFFSET: 0x00D2DA10
 // FUNCTION: fn_21723
 __declspec(noinline) void CGameMode::ReceiveItemSellResult(const unsigned char* packet) {
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   const int count = *reinterpret_cast<const std::int16_t*>(packet + 4);
   const int price = *reinterpret_cast<const int*>(packet + 6);
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t*>(packet + 2));
   g_windowMgr.SendNotice(
-    1,
+    UIM_PUSHINTOCHATHISTORY,
     reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1746), item.DisplayName(0).c_str(), count, price * count).c_str()),
     0xFFFF64, 0, 0, 0
   );
@@ -6972,7 +6976,7 @@ std::FILE* CGameMode::OpenRandomOptionSimulatorFile(const std::string& folder, c
   }
 
   std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("Simulator Result File Create %s %s!!!!!!!!!!!!", file ? "success" : "Fail", itemName.c_str()).c_str()),
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("Simulator Result File Create %s %s!!!!!!!!!!!!", file ? "success" : "Fail", itemName.c_str()).c_str()),
                          file ? 0xFFFF : 0xFF, 0, 0, 0);
   return file;
 }
@@ -7058,11 +7062,11 @@ void CGameMode::ReceiveBuyingStoreOpenResult(const unsigned char* packet) {
   char text[128];
   switch (*reinterpret_cast<const std::int16_t*>(packet + 2)) {
   case 1:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1741)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1741)), 0xFF, 0, 0, 0);
     g_session.ClearItems1768();
-    g_windowMgr.CloseWindow(174);
-    g_windowMgr.CloseWindow(175);
+    g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
+    g_windowMgr.CloseWindow(WID_MERCHANTMIRRORITEMWND_MODE_1);
     break;
   case 2:
     std::sprintf(
@@ -7074,15 +7078,15 @@ void CGameMode::ReceiveBuyingStoreOpenResult(const unsigned char* packet) {
     g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 9:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1797)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1797)), 0xFF, 0, 0, 0);
     break;
   case 10:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3229)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3229)), 0xFF, 0, 0, 0);
     g_session.ClearItems1768();
-    g_windowMgr.CloseWindow(174);
-    g_windowMgr.CloseWindow(175);
+    g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
+    g_windowMgr.CloseWindow(WID_MERCHANTMIRRORITEMWND_MODE_1);
     break;
   }
 }
@@ -7097,22 +7101,22 @@ void CGameMode::ReceiveItemObtainNotice(const unsigned char* packet) {
   switch (*reinterpret_cast<const int*>(packet + 2)) {
   case MSG_WEAPONREFINE_SUCCESS:
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(911), item.DisplayName(0).c_str()).c_str()), 0xFFFF00, 0, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(911), item.DisplayName(0).c_str()).c_str()), 0xFFFF00, 0, 0, 0
     );
     break;
   case MSG_WEAPONREFINE_FAIL:
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(912), item.DisplayName(0).c_str()).c_str()), 0xCDCD00, 0, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(912), item.DisplayName(0).c_str()).c_str()), 0xCDCD00, 0, 0, 0
     );
     break;
   case MSG_WEAPONREFINE_FAIL_LEVEL:
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(913), item.DisplayName(0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(913), item.DisplayName(0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
     );
     break;
   case MSG_WEAPONREFINE_FAIL_ITEM:
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(914), item.DisplayName(0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(914), item.DisplayName(0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
     );
     break;
   }
@@ -7132,12 +7136,12 @@ __declspec(noinline) void CGameMode::ReceiveTakeOffEquipItemResult(const unsigne
     }
     const char* suffix = LookupMessage(3144);
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), suffix).c_str()), 0xC8FF00, 7, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), suffix).c_str()), 0xC8FF00, 7, 0, 0
     );
     break;
   }
   case 1:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3009)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3009)), 0xFF, 0, 0, 0);
     if (g_session.IsCostumeLocation(*reinterpret_cast<const int*>(packet + 4))) {
       g_session.UnequipItem6B68(item);
     } else {
@@ -7152,26 +7156,26 @@ __declspec(noinline) void CGameMode::ReceiveTakeOffEquipItemResult(const unsigne
 void CGameMode::ReceiveBuyingStoreSellResult(const unsigned char* packet) {
   switch (*reinterpret_cast<const std::int16_t*>(packet + 2)) {
   case 5:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(57)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(57)), 0xFF, 0, 0, 0);
     break;
   case 6: {
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, *reinterpret_cast<const int*>(packet + 4), 0);
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1747), item.DisplayName(0).c_str()).c_str()), 0xFF, 0, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1747), item.DisplayName(0).c_str()).c_str()), 0xFF, 0, 0, 0
     );
     break;
   }
   case 7:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1745)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1745)), 0xFF, 0, 0, 0);
     break;
   }
 
-  g_windowMgr.CloseWindow(177);
-  g_windowMgr.CloseWindow(178);
-  g_windowMgr.CloseWindow(179);
+  g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND_MODE_1);
+  g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND_MODE_1);
+  g_windowMgr.CloseWindow(WID_MERCHANTMIRRORITEMWND_MODE_2);
 }
 
 struct ReputePointEntry {
@@ -7182,16 +7186,16 @@ struct ReputePointEntry {
 // OFFSET: 0x00D78060
 // FUNCTION: fn_22158
 __declspec(noinline) void CGameMode::ReceiveItemReformOpen(int itemId) {
-  UIWindow* window = g_windowMgr.EnsureWindow(0x15C);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMREFORMWND);
   if (!g_itemReformMgr) {
     g_itemReformMgr = new (std::nothrow) CItemReformMgr;
   }
   if (g_itemReformMgr->HasItem(itemId) == true) {
     if (window) {
-      window->SendMsg(nullptr, 0x17, itemId, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESHITEM, itemId, 0, 0, 0);
     }
   } else {
-    g_windowMgr.CloseWindow(0x15C);
+    g_windowMgr.CloseWindow(WID_ITEMREFORMWND);
   }
 }
 
@@ -7278,7 +7282,7 @@ __declspec(noinline) void CGameMode::ReceivePartyItemPickupNotice(const unsigned
     item.unknown_0060 = packet[0x0C];
 
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1276), member.name.c_str(), item.DisplayName(0).c_str()).c_str()),
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1276), member.name.c_str(), item.DisplayName(0).c_str()).c_str()),
       0xFFFF00, 9, 0, 0
     );
   }
@@ -7349,8 +7353,8 @@ void CGameMode::ReceiveEquipWindowMicroscope2(const unsigned char* packet) {
   std::memcpy(g_equipWindowLook.name, packet + 4, sizeof(g_equipWindowLook.name));
   g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
 
-  if (!g_windowMgr.CloseWindow(0x8B)) {
-    g_windowMgr.EnsureWindow(0x8B);
+  if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
+    g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
   }
 }
 
@@ -7401,8 +7405,8 @@ void CGameMode::ReceiveEquipWindowMicroscope3(const unsigned char* packet) {
   memcpy_s(g_equipWindowLook.name, sizeof(g_equipWindowLook.name), packet + 4, sizeof(g_equipWindowLook.name));
   g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
 
-  if (!g_windowMgr.CloseWindow(0x8B)) {
-    g_windowMgr.EnsureWindow(0x8B);
+  if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
+    g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
   }
 }
 
@@ -7540,8 +7544,8 @@ void CGameMode::ReceiveActorMessage34(const unsigned char* packet) {
     message.text.resize(60);
   }
 
-  UIWindow* window = g_windowMgr.EnsureWindow(0x1C);
-  window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&message), 0, 0, 0);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_CHATROOMWND);
+  window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&message), 0, 0, 0);
 }
 
 #pragma pack(push, 1)
@@ -7627,9 +7631,9 @@ void CGameMode::ReceiveAddQuest64(const unsigned char* data) {
 
   g_renewQuestMgr->AddOngoingQuest(packet->questId, info);
   g_renewQuestMgr->UpdateQuestWindows();
-  g_windowMgr.EnsureWindow(0x8F);
+  g_windowMgr.EnsureWindow(WID_NOTIFYQUESTWND);
   const char* text = LookupMessage(0x55E);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0x13, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0x13, 0, 0);
 }
 
 // OFFSET: 0x00D20EF0
@@ -7680,9 +7684,9 @@ void CGameMode::ReceiveAddQuest(const unsigned char* data) {
 
   g_renewQuestMgr->AddOngoingQuest(packet->questId, info);
   g_renewQuestMgr->UpdateQuestWindows();
-  g_windowMgr.EnsureWindow(0x8F);
+  g_windowMgr.EnsureWindow(WID_NOTIFYQUESTWND);
   const char* text = LookupMessage(0x55E);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0x13, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0x13, 0, 0);
 }
 
 #pragma pack(push, 1)
@@ -7737,11 +7741,11 @@ void CGameMode::ReceiveBarterMarketItemList(const unsigned char* data) {
     g_barterMarketItemMgr->items.push_back(item);
   }
 
-  if (UIWindow* window = g_windowMgr.EnsureWindow(0x14E)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_BARTERMARKETWND)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
-  if (UIWindow* window = g_windowMgr.EnsureWindow(0x14F)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_BARTERITEMPURCHASEWND)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -7799,7 +7803,7 @@ void CGameMode::ReceiveNotifyBan(const unsigned char* packet) {
     text = LookupMessage(0x718);
   }
   g_windowMgr.Confirm(text.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
-  this->SendMsg(2, 0, 0, 0, 0);
+  this->SendMsg(MM_QUIT, 0, 0, 0, 0);
 }
 
 #pragma pack(push, 1)
@@ -7830,7 +7834,7 @@ void CGameMode::ReceiveBroadcastText(const unsigned char* data) {
     g_forbiddenWords.Mask(text.data(), &masked);
   }
   if (!g_serviceOptions.Get(0x94)) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xFF9DFF, 5, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xFF9DFF, 5, 0, 0);
     if (g_session.m_whisperRecord != 0) {
       this->WriteChatLog(text.data());
     }
@@ -7853,13 +7857,13 @@ void CGameMode::ReceiveActorBroadcastText(const unsigned char* data) {
   }
   const int aid = *reinterpret_cast<const int*>(data + 4);
   if (MonsterJobColor(aid)) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
   } else if (!g_serviceOptions.Get(0x72) && !g_serviceOptions.Get(0x94)) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0x9B00FF, 1, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0x9B00FF, 1, 0, 0);
   }
   if (CRenderObject* actor = this->scene->GetGameActorByAID(aid)) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(text.data());
-    actor->SendMsg(nullptr, 7, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_CHAT, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   if (g_session.m_whisperRecord != 0) {
     this->WriteChatLog(text.data());
@@ -8013,8 +8017,8 @@ void CGameMode::ReceiveEquipWindowMicroscope4(const unsigned char* packet) {
   memcpy_s(g_equipWindowLook.name, sizeof(g_equipWindowLook.name), packet + 4, sizeof(g_equipWindowLook.name));
   g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
 
-  if (!g_windowMgr.CloseWindow(0x8B)) {
-    g_windowMgr.EnsureWindow(0x8B);
+  if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
+    g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
   }
 }
 
@@ -8048,8 +8052,8 @@ void CGameMode::ReceiveEquipWindowMicroscope5(const unsigned char* packet) {
   g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
   g_equipWindowLook.unknown_0024 = *reinterpret_cast<const std::int16_t*>(packet + 0x2C);
 
-  if (!g_windowMgr.CloseWindow(0x8B)) {
-    g_windowMgr.EnsureWindow(0x8B);
+  if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
+    g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
   }
 }
 
@@ -8083,8 +8087,8 @@ void CGameMode::ReceiveEquipWindowMicroscope6(const unsigned char* packet) {
   g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
   g_equipWindowLook.unknown_0024 = *reinterpret_cast<const std::int16_t*>(packet + 0x2C);
 
-  if (!g_windowMgr.CloseWindow(0x8B)) {
-    g_windowMgr.EnsureWindow(0x8B);
+  if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
+    g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
   }
 }
 
@@ -8291,13 +8295,13 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
 
     g_session.AddItem1710(item, 1);
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
     );
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     break;
   }
   case RECEIVE_ITEM: {
@@ -8340,12 +8344,12 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     if (current.unknown_0000[1] > 0) {
       amount -= current.quantity;
     }
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&this->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
       g_session.ResetSlots();
@@ -8390,15 +8394,15 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
 
     g_session.AddItem1710(item, 1);
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
     );
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
-      quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
     }
     break;
   }
@@ -8443,19 +8447,19 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     if (current.unknown_0000[1] > 0) {
       amount -= current.quantity;
     }
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&this->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
-    if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
-      quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
     }
     break;
   }
@@ -8493,13 +8497,13 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
 
     g_session.AddItem1710(item, 1);
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
     );
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     break;
   }
   case RECEIVE_ITEM: {
@@ -8546,12 +8550,12 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
       text = FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount);
       amount = packet->amount;
     }
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF00, 6, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF00, 6, 0, 0);
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&this->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
       g_session.ResetSlots();
@@ -8603,18 +8607,18 @@ void CGameMode::ReceiveItemPickupAck5(
       }
 
       g_session.AddItem1710(item, 1);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
 
-      UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-      window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-      window->SendMsg(nullptr, 0x24, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-      if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
-        quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+      window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+        quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
       }
     }
-    if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
-      quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
     }
     break;
   }
@@ -8665,19 +8669,19 @@ void CGameMode::ReceiveItemPickupAck5(
     if (current.unknown_0000[1] > 0) {
       count -= current.quantity;
     }
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), count).c_str()), 0xFFFF00, 6, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), count).c_str()), 0xFFFF00, 6, 0, 0);
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
-    if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
-      quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
     }
     break;
   }
@@ -8724,15 +8728,15 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
 
     g_session.AddItem1710(item, 1);
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
     );
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
-      quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
     }
     break;
   }
@@ -8784,19 +8788,19 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
     if (current.unknown_0000[1] > 0) {
       amount -= current.quantity;
     }
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
-    if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
-      quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
     }
     break;
   }
@@ -8843,8 +8847,8 @@ void CGameMode::ReceiveEquipItemDamaged(const unsigned char* packet) {
   }
 
   if (!text.empty()) {
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0xD, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0xD, 0, 0);
   }
 }
 
@@ -8934,11 +8938,11 @@ void CGameMode::ReceiveExpandedBarterMarketItemList2(const unsigned char* data) 
     g_expandedBarterMarketItemMgr->AddItem(entry);
   }
 
-  if (UIWindow* window = g_windowMgr.EnsureWindow(0x155)) {
-    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_EXPANDEDBARTERMARKETWND)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
-  if (UIWindow* window = g_windowMgr.EnsureWindow(0x156)) {
-    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_EXPANDEDBARTERITEMPURCHASEWND)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -8973,8 +8977,8 @@ void CGameMode::ReceiveExpandedBarterMarketItemList(const unsigned char* data) {
     g_expandedBarterMarketItemMgr->AddItem(entry);
   }
 
-  g_windowMgr.EnsureWindow(0x155)->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-  g_windowMgr.EnsureWindow(0x156)->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  g_windowMgr.EnsureWindow(WID_EXPANDEDBARTERMARKETWND)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  g_windowMgr.EnsureWindow(WID_EXPANDEDBARTERITEMPURCHASEWND)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
 }
 
 namespace {
@@ -8999,8 +9003,8 @@ void CGameMode::ReceiveFeedResult(const unsigned char* data) {
       const int hungerLevel = g_session.GetPetHungryState(g_session.unknown_1054);
       const int emotion = g_session.GetPetEmotionNumber(g_session.unknown_103C, 0, hungerLevel);
       const int action = g_session.GetPetActionNumber(hungerLevel, friendlyLevel, 0);
-      this->SendMsg(148, emotion, 0, 0, 0);
-      this->SendMsg(148, action, 0, 0, 0);
+      this->SendMsg(MM_PET_ACT, emotion, 0, 0, 0);
+      this->SendMsg(MM_PET_ACT, action, 0, 0, 0);
 
       const int count = LookupClientItem(g_session.m_inventoryItems, packet->itemId, 0).quantity;
       char name[260];
@@ -9009,13 +9013,13 @@ void CGameMode::ReceiveFeedResult(const unsigned char* data) {
       item.SetItemId(packet->itemId);
       int capacity = sizeof(name);
       item.GetIdDisplayName(name, capacity, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xA12), name, count).c_str()), 0xFFFF64, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xA12), name, count).c_str()), 0xFFFF64, 0, 0, 0);
     } else {
       ITEM_INFO item;
       item.SetItemId(packet->itemId);
       const std::string text = FormatOwnedString(LookupMessage(0x24F), item.DisplayName(0).c_str());
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
-      g_windowMgr.SendNotice(0x13, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
     }
   } else if (packet->packetType == 0x22F) {
     if (packet->result != 0) {
@@ -9028,16 +9032,16 @@ void CGameMode::ReceiveFeedResult(const unsigned char* data) {
       item.SetItemId(packet->itemId);
       int capacity = sizeof(name);
       item.GetIdDisplayName(name, capacity, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xCD1), name, count).c_str()), 0xFFFF64, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xCD1), name, count).c_str()), 0xFFFF64, 0, 0, 0);
     } else {
       ITEM_INFO item;
       item.SetItemId(packet->itemId);
       const std::string text = FormatOwnedString(LookupMessage(0x24F), item.DisplayName(0).c_str());
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
-      g_windowMgr.SendNotice(0x13, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
       if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]))) {
         const int emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::Sweat);
-        actor->SendMsg(nullptr, 160, 0, 0, 0, emotion, emotion >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_CASH_EMOTION, 0, 0, 0, emotion, emotion >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
   }
@@ -9066,7 +9070,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
     g_session.unknown_1010 = packet->aid;
     if (actor) {
       g_session.unknown_103C = actor->GetEffectiveJob(-1);
-      actor->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       actor->unknown_0314 = 7;
     }
     break;
@@ -9081,7 +9085,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
       window->UpdateFriendlyGauge();
     }
     if (g_session.GetDisplayJob() >= 0xFD2 && g_session.GetDisplayJob() <= 0xFD4 && packet->value < 100 && g_session.unknown_1044 < 30) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x4A4)), 0x3232FF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x4A4)), 0x3232FF, 0, 0, 0);
     }
     if (friendlyState != g_session.GetPetFriendlyState(g_session.m_petFriendly)) {
       EquipmentProperties::CEquipmentPropertiesMgr* properties = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
@@ -9097,7 +9101,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
     g_session.unknown_1044 = packet->value;
     if (actor) {
       g_session.unknown_103C = actor->GetEffectiveJob(-1);
-      actor->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_windowMgr.window_038C) {
       g_windowMgr.window_038C->Invalidate();
@@ -9128,22 +9132,22 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
   case CHANGESTATEPET_UPDATE_EGG:
     if (packet->value == 0) {
       g_session.ResetUnknown1050();
-      if (UIWindow* window = g_windowMgr.LookupWindow(8)) {
+      if (UIWindow* window = g_windowMgr.LookupWindow(WID_ITEMWND)) {
         window->Invalidate();
       }
       const int itemId = -1;
       const int kind = 0;
       EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RemoveExpansion(kind, itemId);
-      g_windowMgr.CloseWindow(0x58);
+      g_windowMgr.CloseWindow(WID_PETINFOWND);
     } else if (packet->value == 1) {
-      if (UIItemIdentifyWnd* window = static_cast<UIItemIdentifyWnd*>(g_windowMgr.LookupWindow(0x5A))) {
+      if (UIItemIdentifyWnd* window = static_cast<UIItemIdentifyWnd*>(g_windowMgr.LookupWindow(WID_PETEGGLISTWND))) {
         int found = 0;
         ITEM_INFO item = window->GetSelectedItem(&found);
         if (found == 1) {
           item.unknown_005D = 1;
           g_session.UpdateInventoryItem(item, 1);
           g_session.unknown_1050 = item.unknown_0000[1];
-          if (UIWindow* inventory = g_windowMgr.LookupWindow(8)) {
+          if (UIWindow* inventory = g_windowMgr.LookupWindow(WID_ITEMWND)) {
             inventory->Invalidate();
           }
           EquipmentProperties::CEquipmentPropertiesMgr* properties = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
@@ -9151,7 +9155,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
           const int kind = 0;
           properties->AddExpansion(kind, itemId, true);
         }
-        g_windowMgr.CloseWindow(0x5A);
+        g_windowMgr.CloseWindow(WID_PETEGGLISTWND);
       }
     }
     break;
@@ -9258,7 +9262,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   const char* notice;
   switch (packet->cause) {
   case USESKILL_FAIL_LEVEL:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     if (packet->skillId == NV_BASIC) {
       switch (packet->value) {
       case ZCSK_ITEMEXCHANGE:
@@ -9285,7 +9289,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
         break;
       case ZCSK_MANNERPOINT: {
         const char* text = LookupMessage(0x17F);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0xB, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0xB, 0, 0);
       }
         [[fallthrough]];
       case ZCSK_JOINPARTY:
@@ -9347,10 +9351,10 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     break;
   case USESKILL_FAIL:
     if (packet->skillId == WL_TETRAVORTEX || packet->skillId == WL_TETRAVORTEX_FIRE || packet->skillId == WL_TETRAVORTEX_WATER || packet->skillId == WL_TETRAVORTEX_WIND || packet->skillId == WL_TETRAVORTEX_GROUND) {
-      this->scene->player->SendMsg(nullptr, 0x8F, 0, 0x2DF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      this->scene->player->SendMsg(nullptr, 0x8F, 0, 0x2E0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      this->scene->player->SendMsg(nullptr, 0x8F, 0, 0x2E1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      this->scene->player->SendMsg(nullptr, 0x8F, 0, 0x2E2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0, 0x2DF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0, 0x2E0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0, 0x2E1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0, 0x2E2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (!showMessage) {
       return;
@@ -9469,7 +9473,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     ITEM_INFO item;
     item.SetItemId(packet->itemId);
     const std::string message = FormatOwnedString(LookupMessage(0x600), item.DisplayName(0).c_str(), packet->value);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_EQUIPMENT: {
@@ -9477,7 +9481,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     item.SetItemId(packet->itemId);
     item.identified = 1;
     const std::string message = FormatOwnedString(LookupMessage(0x602), item.DisplayName(0).c_str());
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_COMBOSKILL:
@@ -9562,17 +9566,17 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     break;
   case USESKILL_FAIL_NEED_BULLETS: {
     const std::string message = FormatOwnedString(LookupMessage(0xBB5), packet->value);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_ARROWS: {
     const std::string message = FormatOwnedString(LookupMessage(0xBBE), packet->value);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_PARTY: {
     const std::string message = FormatOwnedString(LookupMessage(0xD82), packet->value);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_PARTY_LEADER:
@@ -9592,7 +9596,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     break;
   case USESKILL_FAIL_MAX_TRAPS: {
     const std::string message = FormatOwnedString(LookupMessage(0xE00), packet->value);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_MAGIC_SPELLBOOK:
@@ -9603,7 +9607,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     break;
   case USESKILL_FAIL_NEED_SERVANT_WEAPON: {
     const std::string message = FormatOwnedString(LookupMessage(0xEBD), packet->value);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_TWINKLING_GALAXY:
@@ -9656,7 +9660,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     return;
   }
 
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice), 0xFF, 0xB, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0xFF, 0xB, 0, 0);
 }
 // OFFSET: 0x00D27420
 // FUNCTION: fn_21690
@@ -9679,7 +9683,7 @@ void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
         joined = true;
       }
     }
-    actor->SendMsg(nullptr, 0x21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_CHAT_TITLE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (joined) {
       const int count = static_cast<unsigned>(packet->length - sizeof(ChatRoomMemberListPacket)) / sizeof(ChatRoomMemberRecord);
       std::list<std::pair<std::string, int>> members;
@@ -9694,12 +9698,12 @@ void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
         members.push_back(member);
       }
 
-      UIWindow* window = g_windowMgr.EnsureWindow(0x1C);
-      window->SendMsg(nullptr, 0x2B, 0, 0, 0, 0);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_CHATROOMWND);
+      window->SendMsg(nullptr, UM_CLEARMEMBER, 0, 0, 0, 0);
       info.memberCount = static_cast<int>(members.size());
-      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
       for (std::list<std::pair<std::string, int>>::iterator it = members.begin(); it != members.end(); ++it) {
-        window->SendMsg(nullptr, 0x2C, reinterpret_cast<std::intptr_t>(it->first.c_str()), it->second, 0, 0);
+        window->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(it->first.c_str()), it->second, 0, 0);
       }
 
       this->unknown_03C8 = info.title;
@@ -9801,15 +9805,15 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
 
     g_session.AddItem1710(item, 1);
     g_windowMgr.SendNotice(
-      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
     );
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
-      quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
     }
     break;
   }
@@ -9864,19 +9868,19 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
     if (current.unknown_0000[1] > 0) {
       amount -= current.quantity;
     }
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
-    if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
-      quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
     }
     break;
   }
@@ -9926,15 +9930,15 @@ void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
 
       g_session.AddItem1710(item, 1);
       g_windowMgr.SendNotice(
-        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
+        UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
       );
 
-      UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-      window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-      window->SendMsg(nullptr, 0x24, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-      if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
-        quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+      window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETTITLE, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+        quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
       }
     }
 
@@ -9997,19 +10001,19 @@ void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
     if (current.unknown_0000[1] != 0) {
       amount -= current.quantity;
     }
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x99), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
 
-    UIWindow* window = g_windowMgr.EnsureWindow(0x3A);
-    window->SendMsg(nullptr, 0x4C, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, 0x24, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
+    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) != 0) {
       *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0100[0x14]) = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
-    if (UIWindow* quest = g_windowMgr.LookupWindow(0x133)) {
-      quest->SendMsg(nullptr, 6, 0x11E, 0xC2, 1, 0);
+    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
     }
   } else {
     this->NotifyItemResult(packet->result);
@@ -10034,21 +10038,21 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
   }
 
   if (g_windowMgr.window_027C) {
-    g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text.data()), 0x222222, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(text.data()), 0x222222, 0, 0, 0);
   } else {
     if (IsMonsterJob(aid)) {
       if (g_serviceType == 5) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xFFFF00, 1, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xFFFF00, 1, 0, 0);
       } else {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), g_serviceType == 10 ? 0x1D8DFF : 0xFFFF, 1, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), g_serviceType == 10 ? 0x1D8DFF : 0xFFFF, 1, 0, 0);
       }
     } else if (MonsterJobColor(aid)) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
     } else if (!g_serviceOptions.Get(0x72) && !g_serviceOptions.Get(0x94)) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xFFFFFF, 1, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xFFFFFF, 1, 0, 0);
     }
     if (CRenderObject* actor = this->scene->GetGameActorByAID(aid)) {
-      actor->SendMsg(nullptr, 7, 0, reinterpret_cast<int>(text.data()), reinterpret_cast<int>(text.data()) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_CHAT, 0, reinterpret_cast<int>(text.data()), reinterpret_cast<int>(text.data()) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
   if (g_session.m_whisperRecord != 0) {
@@ -10073,13 +10077,13 @@ void CGameMode::ReceivePartyChat(const unsigned char* data) {
 
   const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(data + 4);
   if (aid == g_session.m_aid) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xC8FF, 3, 0, 0);
-    this->scene->player->SendMsg(nullptr, 7, 0, reinterpret_cast<int>(text.data()), reinterpret_cast<int>(text.data()) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xC8FF, 3, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_CHAT, 0, reinterpret_cast<int>(text.data()), reinterpret_cast<int>(text.data()) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xC8C8FF, 3, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xC8C8FF, 3, 0, 0);
     if (CRenderObject* actor = this->scene->GetGameActorByAID(aid)) {
-      actor->SendMsg(nullptr, 7, 0, reinterpret_cast<int>(text.data()), reinterpret_cast<int>(text.data()) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_CHAT, 0, reinterpret_cast<int>(text.data()), reinterpret_cast<int>(text.data()) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
   if (g_session.m_whisperRecord != 0) {
@@ -10124,12 +10128,12 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
         if (count <= 10) {
           char text[260];
           std::sprintf(text, LookupMessage(0x246), g_session.DecodePlayerName(), count);
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
         }
       } else if (count > 10) {
         char text[260];
         std::sprintf(text, LookupMessage(0x247), g_session.DecodePlayerName(), count);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
       }
       CPlayer* player = this->scene->player;
       g_soundMgr->PlayWave("effect\\number_change.wav", player->render.position.x, 0.0f, player->render.position.z, 250, 40, 1.0f, 0);
@@ -10145,11 +10149,11 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
   }
 
   if (!IsAdminAccount(actor->render.accountId) || g_session.IsAdminSubMode(7)) {
-    actor->SendMsg(nullptr, 0x72, 0, packet->value, packet->value >> 31, packet->count, packet->count >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, 0x6D, 0, 0x9F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_CHANGE_RANK, 0, packet->value, packet->value >> 31, packet->count, packet->count >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x9F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (packet->count <= 10) {
       if (CRagEffect* effect = actor->LaunchEffect(0x9F, deltaPos, 0.0f)) {
-        effect->SendMsg(nullptr, 0x2C, 0, packet->count, 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, packet->count, 0, 0, 0, 0);
       }
     }
   }
@@ -10281,7 +10285,7 @@ void CGameMode::ReceiveGuildChat(const unsigned char* data) {
     g_forbiddenWords.Mask(text.data(), &masked);
   }
   if (!g_serviceOptions.Get(0x94)) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xB4FFB4, 4, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xB4FFB4, 4, 0, 0);
     if (g_session.m_whisperRecord != 0) {
       this->WriteChatLog(text.data());
     }
@@ -10336,23 +10340,23 @@ void CGameMode::ReceiveActorAction(
         const int hungerLevel = g_session.GetPetHungryState(g_session.unknown_1044);
         const int action = g_session.GetPetActionNumber(hungerLevel, g_session.GetPetFriendlyState(g_session.m_petFriendly), 1);
         if (rand() % 100 < 25 && g_session.CheckInterval(60000) == true) {
-          this->SendMsg(148, g_session.GetPetEmotionNumber(g_session.unknown_103C, 1, hungerLevel), 0, 0, 0);
-          this->SendMsg(148, action, 0, 0, 0);
+          this->SendMsg(MM_PET_ACT, g_session.GetPetEmotionNumber(g_session.unknown_103C, 1, hungerLevel), 0, 0, 0);
+          this->SendMsg(MM_PET_ACT, action, 0, 0, 0);
         }
       }
     } else {
       char text[256];
       g_session.GetMonsterTalkText(static_cast<CGameActor*>(actor)->GetEffectiveJob(-1), 0, 0, text, sourceAid);
       if (std::strcmp(text, "") != 0) {
-        actor->SendMsg(nullptr, 7, 0, reinterpret_cast<int>(text), reinterpret_cast<int>(text) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_CHAT, 0, reinterpret_cast<int>(text), reinterpret_cast<int>(text) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         if (!g_serviceOptions.Get(114) && !g_serviceOptions.Get(148)) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFAFAFA, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFAFAFA, 0, 0, 0);
         }
       }
     }
   }
   const std::int64_t value = reinterpret_cast<std::intptr_t>(&act);
-  actor->SendMsg(nullptr, 11, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, AM_ACTION, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 #pragma pack(push, 1)
@@ -10378,14 +10382,14 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
   switch (packet->type) {
   case CLR_OUTSIGHT:
     if (CRenderObject* actor = this->scene->GetGameActorByAID(packet->aid)) {
-      actor->SendMsg(nullptr, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      this->SendMsg(13, packet->aid, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_OUTOFSIGHT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(MM_DELETEREGISTERPOS, packet->aid, 0, 0, 0);
     }
     if (this->scene->RemoveItem(packet->aid) == true) {
-      this->SendMsg(13, packet->aid, 0, 0, 0);
+      this->SendMsg(MM_DELETEREGISTERPOS, packet->aid, 0, 0, 0);
     }
     if (g_windowMgr.window_02C8) {
-      g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, packet->aid, 0, 0);
+      g_windowMgr.window_02C8->SendMsg(nullptr, UM_COMMAND, 34, packet->aid, 0, 0);
     }
     break;
   case CLR_DEAD: {
@@ -10394,63 +10398,63 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
       if (packet->aid == static_cast<std::uint32_t>(player->unknown_051C)) {
         player->unknown_051C = 0;
       }
-      actor->SendMsg(nullptr, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_WILL_BE_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       const int job = actor->GetEffectiveJob(-1);
       if (g_session.IsMonsterClass(job) || actor->unknown_0314 == 9 || g_session.IsSkillIdInRange6001(job) ||
           actor->GetEffectiveJob(-1) == 0x235) {
-        this->SendMsg(13, packet->aid, 0, 0, 0);
+        this->SendMsg(MM_DELETEREGISTERPOS, packet->aid, 0, 0, 0);
       }
       if (g_windowMgr.unknown_041C) {
-        g_windowMgr.unknown_041C->SendMsg(nullptr, 6, 185, 0, 0, 0);
+        g_windowMgr.unknown_041C->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
       }
       if (g_windowMgr.unknown_0308) {
-        g_windowMgr.unknown_0308->SendMsg(nullptr, 6, 185, 0, 0, 0);
+        g_windowMgr.unknown_0308->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
       }
     }
     if (packet->aid != g_session.m_aid) {
       break;
     }
 
-    this->scene->player->SendMsg(nullptr, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    this->scene->player->SendMsg(nullptr, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_WILL_BE_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     this->unknown_024C = 1;
     this->unknown_0250 = 1;
-    g_windowMgr.CloseWindow(0x30);
-    g_windowMgr.CloseWindow(0x10);
-    g_windowMgr.CloseWindow(0x11);
-    g_windowMgr.CloseWindow(0x19);
-    g_windowMgr.CloseWindow(0x16);
-    g_windowMgr.CloseWindow(0x17);
-    g_windowMgr.CloseWindow(0x18);
-    g_windowMgr.CloseWindow(0x169);
+    g_windowMgr.CloseWindow(WID_QUITWND);
+    g_windowMgr.CloseWindow(WID_SAYDIALOGWND);
+    g_windowMgr.CloseWindow(WID_CHOOSEWND);
+    g_windowMgr.CloseWindow(WID_CHOOSESELLBUYWND);
+    g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
+    g_windowMgr.CloseWindow(WID_ITEMPURCHASEWND);
+    g_windowMgr.CloseWindow(WID_ITEMSELLWND);
+    g_windowMgr.CloseWindow(WID_RUNESYSTEMWND);
     if (g_windowMgr.unknown_02FC) {
-      g_windowMgr.unknown_02FC->SendMsg(nullptr, 6, 185, 0, 0, 0);
+      g_windowMgr.unknown_02FC->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     if (g_windowMgr.unknown_040C) {
-      g_windowMgr.unknown_040C->SendMsg(nullptr, 6, 185, 0, 0, 0);
+      g_windowMgr.unknown_040C->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     if (g_windowMgr.unknown_0304) {
-      g_windowMgr.unknown_0304->SendMsg(nullptr, 6, 201, 0, 0, 0);
+      g_windowMgr.unknown_0304->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     }
     if (g_windowMgr.unknown_0414) {
-      g_windowMgr.unknown_0414->SendMsg(nullptr, 6, 201, 0, 0, 0);
+      g_windowMgr.unknown_0414->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     }
     if (g_windowMgr.unknown_0308) {
-      g_windowMgr.unknown_0308->SendMsg(nullptr, 6, 185, 0, 0, 0);
+      g_windowMgr.unknown_0308->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     if (g_windowMgr.unknown_041C) {
-      g_windowMgr.unknown_041C->SendMsg(nullptr, 6, 185, 0, 0, 0);
+      g_windowMgr.unknown_041C->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     if (this->scene->GetGameActorByAID(g_session.unknown_1010)) {
       const int hungerLevel = g_session.GetPetHungryState(g_session.unknown_1044);
       const int action = g_session.GetPetActionNumber(hungerLevel, g_session.GetPetFriendlyState(g_session.m_petFriendly), 3);
-      this->SendMsg(148, g_session.GetPetEmotionNumber(g_session.unknown_103C, 3, hungerLevel), 0, 0, 0);
-      this->SendMsg(148, action, 0, 0, 0);
+      this->SendMsg(MM_PET_ACT, g_session.GetPetEmotionNumber(g_session.unknown_103C, 3, hungerLevel), 0, 0, 0);
+      this->SendMsg(MM_PET_ACT, action, 0, 0, 0);
     }
     if (g_serviceType == 4) {
       g_windowMgr.Confirm(LookupMessage(0x2B7), 0, true, false, 0, "Message", 280, 120, 0);
-    } else if (!g_windowMgr.CloseWindow(0x9B)) {
-      g_windowMgr.EnsureWindow(0x9B);
+    } else if (!g_windowMgr.CloseWindow(WID_ESCOPTIONWND)) {
+      g_windowMgr.EnsureWindow(WID_ESCOPTIONWND);
     }
     RefreshPartyWindows(&g_session);
     break;
@@ -10460,11 +10464,11 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
       this->LaunchDummyEffect(&actor->render.position, 0x13A, 600, 0);
     }
     if (g_windowMgr.unknown_0300 && static_cast<UIMerchantItemShopWnd*>(g_windowMgr.unknown_0300)->unknown_0100 == static_cast<int>(packet->aid)) {
-      this->SendMsg(245, 0, 0, 0, 0);
+      this->SendMsg(MM_RELEASE_QUEST_SH, 0, 0, 0, 0);
       g_session.ClearItems1760And1748();
     }
     if (this->scene->RemoveItem(packet->aid) == true) {
-      this->SendMsg(13, packet->aid, 0, 0, 0);
+      this->SendMsg(MM_DELETEREGISTERPOS, packet->aid, 0, 0, 0);
     }
     break;
   case CLR_TELEPORT:
@@ -10474,16 +10478,16 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
       }
     }
     if (this->scene->RemoveItem(packet->aid) == true) {
-      this->SendMsg(13, packet->aid, 0, 0, 0);
+      this->SendMsg(MM_DELETEREGISTERPOS, packet->aid, 0, 0, 0);
     }
     if (g_windowMgr.window_02C8) {
-      g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, packet->aid, 0, 0);
+      g_windowMgr.window_02C8->SendMsg(nullptr, UM_COMMAND, 34, packet->aid, 0, 0);
     }
     break;
   default:
     this->scene->GetGameActorByAID(packet->aid);
     if (this->scene->RemoveItem(packet->aid) == true) {
-      this->SendMsg(13, packet->aid, 0, 0, 0);
+      this->SendMsg(MM_DELETEREGISTERPOS, packet->aid, 0, 0, 0);
     }
     break;
   }
@@ -10712,7 +10716,7 @@ void CGameMode::ReceiveGuildNotice(unsigned char* data) {
   subjectLine += subject;
   subjectLine += " ]";
   if (std::strlen(subject) != 0) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(subjectLine.c_str()), 0x80FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(subjectLine.c_str()), 0x80FFFF, 0, 0, 0);
   }
 
   char notice[120];
@@ -10726,7 +10730,7 @@ void CGameMode::ReceiveGuildNotice(unsigned char* data) {
   noticeLine += notice;
   noticeLine += " ]";
   if (std::strlen(notice) != 0) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(noticeLine.c_str()), 0x80FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(noticeLine.c_str()), 0x80FFFF, 0, 0, 0);
   }
 
   guildInfo->unknown_0030 = subject;
@@ -11058,8 +11062,8 @@ void CGameMode::ReceiveMapMove(const unsigned char* data) {
 
   if (Replay::Instance().state == 2) {
     Replay::Instance().SetState(3);
-    g_windowMgr.window_4F164->SendMsg(nullptr, 0x57, 0, 0, 0, 0);
-    g_windowMgr.CloseWindow(0xC6);
+    g_windowMgr.window_4F164->SendMsg(nullptr, UM_SETPOS, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_REPLAYRECCONTROLWND);
   } else if (Replay::Instance().state == 7) {
     Replay::Instance().SetState(8);
   }
@@ -11075,7 +11079,7 @@ void CGameMode::ReceiveMapMove(const unsigned char* data) {
     g_session.m_loginTimeTicks = _Xtime_get_ticks();
     mapName.append(".rsw", 4);
     g_modeMgr.Switch(1, mapName.c_str());
-    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(6))->SetMessage(LookupMessage(121), 17, 1);
+    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(121), 17, 1);
     g_windowMgr.unknown_0474 = 185;
     g_session.ClearEntryList5BD4();
     sameMap = 0;
@@ -11151,7 +11155,7 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
         g_guildStorageLogs[2].push_back(*it);
       }
     }
-    g_windowMgr.EnsureWindow(253);
+    g_windowMgr.EnsureWindow(WID_GUILD_STORAGE_LOG);
     return;
   }
 
@@ -11165,7 +11169,7 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
     messageId = 1816;
   }
   sprintf_s(text, sizeof(text), LookupMessage(messageId));
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
   g_guildStorageLogs[0].clear();
   g_guildStorageLogs[1].clear();
   g_guildStorageLogs[2].clear();
@@ -11189,11 +11193,11 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
       return;
     }
 
-    scope->SendMsg(nullptr, 0x16, 0, source->render.accountId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    scope->SendMsg(nullptr, 0xE, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
-    scope->SendMsg(nullptr, 0x73, 0, timeGetTime() + delay, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, AM_SETMASTERGID, 0, source->render.accountId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, AM_SETPOS, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, AM_SETTIME, 0, timeGetTime() + delay, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     const int id = skillId;
-    scope->SendMsg(nullptr, 0x75, 0, id, id >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, AM_SET_SKILL, 0, id, id >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     mode->scene->objects.push_back(scope);
     return;
   }
@@ -11204,7 +11208,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
 
   if (g_session.IsSkillIdInRange6018(target->GetEffectiveJob(-1)) || target->unknown_0314 == 9) {
     if (mode->scene->unknown_0048 != 0 || mode->scene->unknown_004C != 0 || !IsSupportSkill(skillId)) {
-      source->SendMsg(nullptr, 0x51, 0, target->render.accountId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_SET_TARGET_AID, 0, target->render.accountId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
@@ -11221,7 +11225,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
   }
 
   const int delayFrames = delay / 16;
-  target->SendMsg(nullptr, 0x56, 0, 0x3C, 0, delayFrames, delayFrames >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+  target->SendMsg(nullptr, AM_MAKE_MAGIC_TARGET, 0, 0x3C, 0, delayFrames, delayFrames >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
 
   switch (skillId) {
   case CR_ACIDDEMONSTRATION:
@@ -11241,15 +11245,15 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     return;
   }
   case WL_JACKFROST:
-    target->SendMsg(nullptr, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    target->SendMsg(nullptr, 0x56, 0, 0x5A8, 0, delayFrames, delayFrames >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    target->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    target->SendMsg(nullptr, AM_MAKE_MAGIC_TARGET, 0, 0x5A8, 0, delayFrames, delayFrames >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   case WL_CHAINLIGHTNING:
-    target->SendMsg(nullptr, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    target->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     g_effectMgr->Spawn(target->render.accountId, 0x665, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     return;
   case RA_AIMEDBOLT:
-    target->SendMsg(nullptr, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    target->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     effect = g_effectMgr->Spawn(target->render.accountId, 0x673, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
@@ -11258,7 +11262,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
   case NC_FLAMELAUNCHER:
     if (CRagEffect* ragEffect = source->LaunchEffect(0x313, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
       vector3d position = target->render.position;
-      ragEffect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+      ragEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     return;
   default:
@@ -11270,16 +11274,16 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
 // FUNCTION: fn_21887
 void CGameMode::ReceiveEquipItemNotice(const unsigned char* data) {
   const EquipItemNoticePacket* packet = reinterpret_cast<const EquipItemNoticePacket*>(data);
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   switch (packet->result) {
   case 6:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x69F)), 0x6464FF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x69F)), 0x6464FF, 0, 0, 0);
     return;
   case 7:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x705)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x705)), 0xFF, 0, 0, 0);
     return;
   case 15:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xE75)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xE75)), 0xFF, 0, 0, 0);
     return;
   }
 
@@ -11288,27 +11292,27 @@ void CGameMode::ReceiveEquipItemNotice(const unsigned char* data) {
     switch (packet->result) {
     case 1:
       g_windowMgr.SendNotice(
-        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE5), item.DisplayName(0).c_str(), LookupMessage(0x37)).c_str()), 0x6464FF, 0, 0, 0
+        UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE5), item.DisplayName(0).c_str(), LookupMessage(0x37)).c_str()), 0x6464FF, 0, 0, 0
       );
       break;
     case 2:
       g_windowMgr.SendNotice(
-        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE5), item.DisplayName(0).c_str(), LookupMessage(0x38)).c_str()), 0x6464FF, 0, 0, 0
+        UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE5), item.DisplayName(0).c_str(), LookupMessage(0x38)).c_str()), 0x6464FF, 0, 0, 0
       );
       break;
     case 4:
       g_windowMgr.SendNotice(
-        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xF0), item.DisplayName(0).c_str(), packet->value).c_str()), 0x6464FF, 0, 0, 0
+        UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xF0), item.DisplayName(0).c_str(), packet->value).c_str()), 0x6464FF, 0, 0, 0
       );
       break;
     case 5:
       g_windowMgr.SendNotice(
-        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x119), item.DisplayName(0).c_str(), packet->value).c_str()), 0x6464FF, 0, 0, 0
+        UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0x119), item.DisplayName(0).c_str(), packet->value).c_str()), 0x6464FF, 0, 0, 0
       );
       break;
     case 8:
       g_windowMgr.SendNotice(
-        1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE5), item.DisplayName(0).c_str(), LookupMessage(0x756)).c_str()), 0x6464FF, 0, 0, 0
+        UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE5), item.DisplayName(0).c_str(), LookupMessage(0x756)).c_str()), 0x6464FF, 0, 0, 0
       );
       break;
     }
@@ -11356,7 +11360,7 @@ void NoticeSkillUse(CGameActor* target, CGameActor* source, std::uint16_t skillI
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(1625), skillName.c_str());
   message += text;
   if (!message.empty()) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, color, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, color, 0, 0);
   }
 }
 
@@ -11382,10 +11386,10 @@ void ApplyActorSkillState(CGameActor* actor, std::uint16_t skillId, int duration
     actor->LaunchEffect(0x192, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case WL_TETRAVORTEX:
-    actor->SendMsg(nullptr, 0x8F, 0, 0x2DF, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, 0x8F, 0, 0x2E1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, 0x8F, 0, 0x2E0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, 0x8F, 0, 0x2E2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0, 0x2DF, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0, 0x2E1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0, 0x2E0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0, 0x2E2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   case ABC_CHAIN_REACTION_SHOT:
     actor->SetFrameSequence(88, 0, 0, 88, 0, 0, 0, 0);
@@ -11417,9 +11421,9 @@ void CGameMode::NotifySkillCasting(
 
   if (silent == 0 && skillId != 0x3E && skillId != 0x39 && !g_session.IsMonsterActor(source)) {
     if (skillId == 0x14E || skillId == 0x14F) {
-      g_modeMgr.GetGameMode()->SendMsg(0x56, skillId, reinterpret_cast<std::intptr_t>(source), targetAid, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), targetAid, 0);
     } else {
-      g_modeMgr.GetGameMode()->SendMsg(0x56, skillId, reinterpret_cast<std::intptr_t>(source), 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), 0, 0);
     }
   }
 
@@ -11428,7 +11432,7 @@ void CGameMode::NotifySkillCasting(
       if (target && source != target) {
         source->Face(target->render.position.x, target->render.position.z);
       }
-      g_modeMgr.GetGameMode()->SendMsg(0x56, 0x49, reinterpret_cast<std::intptr_t>(source), 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_MAKE_SKILL_USED_MSG, 0x49, reinterpret_cast<std::intptr_t>(source), 0, 0);
     } else if (skillId == 0x1479) {
       g_effectMgr->Spawn(source->render.accountId, 0x7C4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
@@ -11445,7 +11449,7 @@ void CGameMode::NotifySkillCasting(
   source->SetState(motion, 1);
 
   if (skillId != 0x3E && skillId != 0x39 && delay != 0) {
-    source->SendMsg(nullptr, 0x52, 0, delay, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    source->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, 0, delay, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   LaunchSkillActorEffect(source, x, y, skillId, delay, effectId);
 
@@ -11509,7 +11513,7 @@ void CGameMode::ReceiveExpChange(const unsigned char* packet) {
         StringFormat(
           text, sizeof(text), static_cast<std::size_t>(-1), "%lld : %lld/%lld More : %lld", gained, value, nextExp, (nextExp - exp) / gained
         );
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xF51EF5, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xF51EF5, 0, 0, 0);
       }
     }
     exp = *reinterpret_cast<const int*>(packet + 4);
@@ -11559,39 +11563,39 @@ void CGameMode::ReceiveParaResultList(const unsigned char* packet) {
   const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 6) / sizeof(ParaResultRecord);
   switch (*reinterpret_cast<const std::int16_t*>(packet + 4)) {
   case -1:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3043)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3043)), 0xFF, 0, 0, 0);
     break;
   case PURCHASE_SUCCEED:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(54)), 0xFFFF00, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(54)), 0xFFFF00, 0, 0, 0);
     break;
   case PURCHASE_FAIL_MONEY:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(55)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(55)), 0xFF, 0, 0, 0);
     break;
   case PURCHASE_FAIL_WEIGHT:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 0xFF, 0, 0, 0);
     break;
   case PURCHASE_FAIL_COUNT:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(221)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(221)), 0xFF, 0, 0, 0);
     break;
   case PURCHASE_FAIL_EACHITEM_COUNT:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1940)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1940)), 0xFF, 0, 0, 0);
     break;
   }
 
   if (count <= 0) {
     if (CMode* mode = g_modeMgr.GetGameMode()) {
-      mode->SendMsg(292, 0, 0, 0, 0);
+      mode->SendMsg(MM_NPC_MARKET_CLOSE, 0, 0, 0, 0);
     }
     return;
   }
 
-  UIParaResultWnd* window = dynamic_cast<UIParaResultWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(256)));
+  UIParaResultWnd* window = dynamic_cast<UIParaResultWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_PARARESULTWND)));
   const ParaResultRecord* record = reinterpret_cast<const ParaResultRecord*>(packet + 6);
   for (int i = 0; i < count; ++i) {
     RawItemBasic item = {};
@@ -11604,8 +11608,8 @@ void CGameMode::ReceiveParaResultList(const unsigned char* packet) {
     ++record;
   }
 
-  window->SendMsg(nullptr, 36, (count - 2 > 0 ? count - 2 : 0) * 32 + 120, 0, 0, 0);
-  window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  window->SendMsg(nullptr, UM_SETTITLE, (count - 2 > 0 ? count - 2 : 0) * 32 + 120, 0, 0, 0);
+  window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D2C5D0
@@ -11742,7 +11746,7 @@ void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
 // OFFSET: 0x00D79500
 // FUNCTION: fn_22169
 __declspec(noinline) void CGameMode::ApplyRefiningMaterial(short itemId, unsigned char count, const unsigned char* materials, unsigned char catalystCount) {
-  UIRefiningWnd* window = static_cast<UIRefiningWnd*>(g_windowMgr.LookupWindow(0x127));
+  UIRefiningWnd* window = static_cast<UIRefiningWnd*>(g_windowMgr.LookupWindow(WID_REFININGWND));
   if (window) {
     window->ApplyItem(itemId, count, reinterpret_cast<RefiningMaterial*>(const_cast<unsigned char*>(materials)), catalystCount);
   }
@@ -11777,7 +11781,7 @@ void CGameMode::ReceiveAddRelatedGuild(const unsigned char* data) {
 void CGameMode::ReceiveEquipItemResult(const unsigned char* packet) {
   const std::uint16_t result = *reinterpret_cast<const std::uint16_t*>(packet + 8);
   if (result != 0) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(result == 3 ? 3009 : 3033)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(result == 3 ? 3009 : 3033)), 0xFF, 0, 0, 0);
     return;
   }
 
@@ -11793,7 +11797,7 @@ void CGameMode::ReceiveEquipItemResult(const unsigned char* packet) {
 
   const char* suffix = LookupMessage(3143);
   g_windowMgr.SendNotice(
-    1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), suffix).c_str()), 0xC8FF00, 7, 0, 0
+    UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), suffix).c_str()), 0xC8FF00, 7, 0, 0
   );
 }
 
@@ -11919,14 +11923,14 @@ void CGameMode::SpawnStandingPc(
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
   if (actor) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_STANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
     CPc* pc = new CPc;
     this->scene->objects.push_back(pc);
     this->scene->actors.push_back(pc);
     actor = pc;
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   actor->unknown_03E0Low = 1;
 }
@@ -11961,14 +11965,14 @@ void CGameMode::SpawnStandingPc2(
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
   if (actor) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_STANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
     CPc* pc = new CPc;
     this->scene->objects.push_back(pc);
     this->scene->actors.push_back(pc);
     actor = pc;
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   actor->unknown_03E0Low = 1;
 }
@@ -12018,7 +12022,7 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
 
     CPc* pc = new CPc;
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    pc->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    pc->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     pc->unknown_0314 = 7;
     pc->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     this->scene->objects.push_back(pc);
@@ -12040,7 +12044,7 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
   data.visible = 1;
   CSkill* skill = new CSkill(0);
   const std::int64_t value = reinterpret_cast<std::intptr_t>(&data);
-  skill->SendMsg(nullptr, 0x2D, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->scene->objects.push_back(skill);
   this->scene->unknown_0020.push_back(skill);
 }
@@ -12119,13 +12123,13 @@ void CGameMode::ReceiveItem1748List2(const unsigned char* packet) {
     g_session.AddItem1748(item);
   }
 
-  if (UIWindow* window = g_windowMgr.EnsureWindow(43)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
-    window->SendMsg(nullptr, 28, value4, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMSHOPWND)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETNAID, value4, 0, 0, 0);
   }
-  if (UIWindow* window = g_windowMgr.EnsureWindow(44)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
-    window->SendMsg(nullptr, 28, value4, value8, 0, 0);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMPURCHASEWND)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETNAID, value4, value8, 0, 0);
   }
   this->unknown_024C = 1;
 }
@@ -12151,16 +12155,16 @@ void CGameMode::ReceivePartyMemberLeft(const unsigned char* data) {
   switch (packet->type) {
   case GROUPMEMBER_DELETE_LEAVE:
   case GROUPMEMBER_DELETE_EXPEL:
-    this->SendMsg(0x40, g_session.GetPartyMemberAid(name), 0, 0, 0);
+    this->SendMsg(MM_DELETEPARTYPOS, g_session.GetPartyMemberAid(name), 0, 0, 0);
     g_session.RemovePartyMemberByName(name);
     break;
   case 2:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x750)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x750)), 0xFF, 0, 0, 0);
     return;
   case 3:
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x751)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x751)), 0xFF, 0, 0, 0);
     return;
   }
 
@@ -12168,12 +12172,12 @@ void CGameMode::ReceivePartyMemberLeft(const unsigned char* data) {
     g_session.unknown_5464 = 0;
     g_session.ClearPartyMembers();
     g_session.unknown_54C4.assign("", 0);
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x54)), 0xFFFF00, 0, 0, 0);
-    g_windowMgr.CloseWindow(0x35);
-    this->SendMsg(0x41, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x54)), 0xFFFF00, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
+    this->SendMsg(MM_DELETEPARTYPOSALL, 0, 0, 0, 0);
     if (g_windowMgr.unknown_03F8) {
-      g_windowMgr.CloseWindow(0x89);
+      g_windowMgr.CloseWindow(WID_MEMORIALDUNWND);
     }
     g_session.ClearRecords0734();
   }
@@ -12201,13 +12205,13 @@ void CGameMode::ReceiveBroadcast(const unsigned char* packet) {
   }
 
   if (g_windowMgr.window_027C == nullptr) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.data()), 0xFF00, 1, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xFF00, 1, 0, 0);
     char* message = text.data();
     this->scene->player->SendMsg(
-      nullptr, 7, 0, reinterpret_cast<int>(message), reinterpret_cast<int>(message) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      nullptr, AM_CHAT, 0, reinterpret_cast<int>(message), reinterpret_cast<int>(message) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     );
   } else {
-    g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text.data()), 0x7800, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(text.data()), 0x7800, 0, 0, 0);
   }
 
   if (g_session.m_whisperRecord != 0) {
@@ -12244,14 +12248,14 @@ void CGameMode::ReceiveItem1758StoreList(const unsigned char* packet) {
   }
 
   if (g_replayAnimationScaling != 0) {
-    g_modeMgr.GetGameMode()->SendMsg(82, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_REQ_OPENSTORE, 0, 0, 0, 0);
   }
 
   g_session.ClearItems1758();
   if (items.size() == 0) {
-    this->SendMsg(40, 0, 0, 0, 0);
-    g_windowMgr.CloseWindow(43);
-    g_windowMgr.CloseWindow(44);
+    this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND);
+    g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
     g_session.ClearItems1760And1748();
     return;
   }
@@ -12399,7 +12403,7 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
       }
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_STANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12434,7 +12438,7 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12493,7 +12497,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
       }
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_STANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12528,7 +12532,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12596,7 +12600,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
       }
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 3, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_STANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && packet->objectType != 7 && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12632,7 +12636,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 4, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (g_session.GetSceneUnknown004C() && packet->objectType != 7 && actor->unknown_0188 == 0 &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -12687,7 +12691,7 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 4, 0, static_cast<int>(value), static_cast<int>(value >> 32), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITSTANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
       const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
@@ -12700,7 +12704,7 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
   }
 
   const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-  actor->SendMsg(nullptr, 3, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, AM_STANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   const int actorJob = actor->GetEffectiveJob(-1);
   if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
     const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
@@ -12913,7 +12917,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
         member->second.y = entry.dstY;
       }
     }
-    actor->SendMsg(nullptr, 0x7B, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MOVEENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
     CGameActor* created;
     if (packet->objectType == 0) {
@@ -12937,7 +12941,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
       entry.unknown_0008 = 0;
     }
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
-    actor->SendMsg(nullptr, 0x7A, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITMOVEENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
   std::int64_t bossFlag = 0;
@@ -12972,14 +12976,14 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
     const std::int64_t hp = packet->hp;
     const std::int64_t maxHp = packet->maxHp;
     actor->SendMsg(
-      nullptr, 0x91, 0, static_cast<int>(hp), static_cast<int>(hp >> 32), static_cast<int>(maxHp), static_cast<int>(maxHp >> 32),
+      nullptr, AM_UPDATE_MONSTER_GAGE, 0, static_cast<int>(hp), static_cast<int>(hp >> 32), static_cast<int>(maxHp), static_cast<int>(maxHp >> 32),
       static_cast<int>(bossFlag), static_cast<int>(bossFlag >> 32), 0, 0, 0, 0, 0, 0
     );
     break;
   }
   case NPC_ABR_TYPE:
   case NPC_BIONIC_TYPE:
-    actor->SendMsg(nullptr, 0x22, 0, packet->aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, packet->aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
 
@@ -13047,7 +13051,7 @@ void CGameMode::SpawnMovingActor(
         member->second.y = entry.dstY;
       }
     }
-    actor->SendMsg(nullptr, 0x7B, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MOVEENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
     CGameActor* created;
     if (objectType == 0) {
@@ -13070,7 +13074,7 @@ void CGameMode::SpawnMovingActor(
     } else if (!((objectType == 1 || objectType == 6 || objectType == 12) && IsPlayerJob(job))) {
       entry.unknown_0008 = 0;
     }
-    actor->SendMsg(nullptr, 0x7A, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITMOVEENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
 
@@ -13106,14 +13110,14 @@ void CGameMode::SpawnMovingActor(
     const std::int64_t currentHp = hp;
     const std::int64_t currentMaxHp = maxHp;
     actor->SendMsg(
-      nullptr, 0x91, 0, static_cast<int>(currentHp), static_cast<int>(currentHp >> 32), static_cast<int>(currentMaxHp),
+      nullptr, AM_UPDATE_MONSTER_GAGE, 0, static_cast<int>(currentHp), static_cast<int>(currentHp >> 32), static_cast<int>(currentMaxHp),
       static_cast<int>(currentMaxHp >> 32), static_cast<int>(bossFlag), static_cast<int>(bossFlag >> 32), 0, 0, 0, 0, 0, 0
     );
     break;
   }
   case NPC_ABR_TYPE:
   case NPC_BIONIC_TYPE:
-    actor->SendMsg(nullptr, 0x22, 0, gid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, gid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
 
@@ -13193,7 +13197,7 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
   if (actor) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 0x7B, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MOVEENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (entry.head == 0x2E) {
       if (g_session.unknown_1010 == packet->aid) {
         g_session.unknown_1038 = entry.accessory;
@@ -13244,7 +13248,7 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 0x7A, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITMOVEENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && entry.head != 0x2E && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -13327,7 +13331,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
   if (actor) {
     actor->unknown_0210 = packet->level;
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 0x7B, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MOVEENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (packet->objectType == 7) {
       if (g_session.unknown_1010 == packet->aid) {
         g_session.unknown_1038 = entry.accessory;
@@ -13381,7 +13385,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    actor->SendMsg(nullptr, 0x7A, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITMOVEENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && packet->objectType == 7 && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -13474,7 +13478,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
   if (actor) {
     actor->unknown_0210 = packet->level;
     *reinterpret_cast<short*>(actor->render.unknown_00FCBytes) = packet->font;
-    actor->SendMsg(nullptr, 0x7B, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MOVEENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (packet->objectType == 7) {
       if (g_session.unknown_1010 == packet->aid) {
         g_session.unknown_1038 = entry.accessory;
@@ -13526,7 +13530,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
     actor->unknown_0314 = packet->objectType;
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
-    actor->SendMsg(nullptr, 0x7A, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITMOVEENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     *reinterpret_cast<short*>(actor->render.unknown_00FCBytes) = packet->font;
     actor->unknown_0210 = packet->level;
     if (g_session.GetSceneUnknown004C() && packet->objectType == 7 && actor->unknown_0188 == 0 &&
@@ -13609,7 +13613,7 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
 
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
   if (actor) {
-    actor->SendMsg(nullptr, 5, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MOVEENTRY, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
       const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
@@ -13650,7 +13654,7 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
     }
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
-    actor->SendMsg(nullptr, 6, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITMOVEENTRY, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
       const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
@@ -13909,10 +13913,10 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   if (actor) {
     if (packet->objectType == 0) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 3, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   } else {
     CGameActor* created;
@@ -13934,11 +13938,11 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
         actor->SetUnknown02E4(1);
       }
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
       entry.unknown_0008 = 0;
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 4, 0, static_cast<int>(value), static_cast<int>(value >> 32), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
   }
@@ -13975,14 +13979,14 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
     const std::int64_t hp = packet->hp;
     const std::int64_t maxHp = packet->maxHp;
     actor->SendMsg(
-      nullptr, 0x91, 0, static_cast<int>(hp), static_cast<int>(hp >> 32), static_cast<int>(maxHp), static_cast<int>(maxHp >> 32),
+      nullptr, AM_UPDATE_MONSTER_GAGE, 0, static_cast<int>(hp), static_cast<int>(hp >> 32), static_cast<int>(maxHp), static_cast<int>(maxHp >> 32),
       static_cast<int>(bossFlag), static_cast<int>(bossFlag >> 32), 0, 0, 0, 0, 0, 0
     );
     break;
   }
   case NPC_ABR_TYPE:
   case NPC_BIONIC_TYPE:
-    actor->SendMsg(nullptr, 0x22, 0, packet->aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, packet->aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
 
@@ -14094,7 +14098,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
     *reinterpret_cast<short*>(actor->render.unknown_00FCBytes) = packet->font;
     if (created) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (this->unknown_01B4.find(packet->aid) != this->unknown_01B4.end() || this->unknown_01BC.find(packet->aid) != this->unknown_01BC.end()) {
         actor->SetUnknown02E4(1);
       }
@@ -14102,7 +14106,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
       this->scene->actors.push_back(actor);
     } else {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -14125,10 +14129,10 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
       this->scene->objects.push_back(actor);
       this->scene->actors.push_back(actor);
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 4, 0, static_cast<int>(value), static_cast<int>(value >> 32), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 3, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_session.IsGuardianJob(packet->job) && g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -14223,7 +14227,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
       }
     }
-    actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_STANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -14255,7 +14259,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
     }
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
-    actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (isPc && !IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
       actor->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -14347,7 +14351,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
       }
     }
-    actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_STANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     actor->unknown_0210 = packet->level;
     if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -14380,7 +14384,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
     }
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
-    actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     actor->unknown_0210 = packet->level;
     if (isPc && !IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
       actor->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -14476,7 +14480,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
       }
     }
-    actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_STANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -14508,7 +14512,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
     }
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
-    actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     actor->unknown_0210 = packet->level;
     if (isPc) {
       *reinterpret_cast<short*>(actor->render.unknown_00FCBytes) = packet->font;
@@ -14611,7 +14615,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
       }
     }
-    actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_STANDENTRY, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
     int isPc = 0;
     const short job = packet->job;
@@ -14639,7 +14643,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
     }
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
-    actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_INITSTANDENTRY, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob >= 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
       const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
@@ -14759,13 +14763,13 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
     actor->unknown_0210 = packet->level;
     if (created) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 0x79, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (this->unknown_01B4.find(packet->aid) != this->unknown_01B4.end() || this->unknown_01BC.find(packet->aid) != this->unknown_01BC.end()) {
         actor->SetUnknown02E4(1);
       }
     } else {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 0x7C, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -14786,10 +14790,10 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
 
     if (created) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 4, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, 3, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_session.IsGuardianJob(packet->job) && g_session.GetSceneUnknown004C() && actor->unknown_0188 == 0) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -14889,7 +14893,7 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.unknown_0030));
       }
     }
-    actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_STANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -14920,7 +14924,7 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
     if (actor) {
-      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (g_session.GetSceneUnknown004C() && entry.unknown_0024 != 0x2E && actor->unknown_0188 == 0 &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
@@ -14988,9 +14992,9 @@ void CGameMode::SpawnStandingActor(
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
   if (actor) {
     if (objectType == 0) {
-      actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
-      actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   } else {
     CGameActor* created;
@@ -15011,12 +15015,12 @@ void CGameMode::SpawnStandingActor(
       if (this->unknown_01B4.find(aid) != this->unknown_01B4.end() || this->unknown_01BC.find(aid) != this->unknown_01BC.end()) {
         actor->SetUnknown02E4(1);
       }
-      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
       if (!((objectType == 1 || objectType == 6 || objectType == 5) && IsPlayerJob(job))) {
         entry.unknown_0008 = 0;
       }
-      actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
   }
@@ -15053,14 +15057,14 @@ void CGameMode::SpawnStandingActor(
     const std::int64_t currentHp = hp;
     const std::int64_t currentMaxHp = maxHp;
     actor->SendMsg(
-      nullptr, 0x91, 0, static_cast<int>(currentHp), static_cast<int>(currentHp >> 32), static_cast<int>(currentMaxHp),
+      nullptr, AM_UPDATE_MONSTER_GAGE, 0, static_cast<int>(currentHp), static_cast<int>(currentHp >> 32), static_cast<int>(currentMaxHp),
       static_cast<int>(currentMaxHp >> 32), static_cast<int>(bossFlag), static_cast<int>(bossFlag >> 32), 0, 0, 0, 0, 0, 0
     );
     break;
   }
   case NPC_ABR_TYPE:
   case NPC_BIONIC_TYPE:
-    actor->SendMsg(nullptr, 0x22, 0, gid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, gid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
 
@@ -15153,7 +15157,7 @@ void CGameMode::ReceiveRefineBroadcast(const unsigned char* data) {
   material.identified = 1;
 
   std::string text = FormatOwnedString(LookupMessage(0x65C), name.c_str(), material.DisplayName(0).c_str(), item.DisplayName(1).c_str());
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
     message.start = std::chrono::system_clock::now();
@@ -15174,7 +15178,7 @@ void CGameMode::ReceiveTradeBroadcast(const unsigned char* data) {
   std::string otherName(packet->otherName, 24);
 
   std::string text = FormatOwnedString(LookupMessage(0x65C), name.c_str(), otherName.c_str(), item.DisplayName(1).c_str());
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
     message.start = std::chrono::system_clock::now();
@@ -15194,7 +15198,7 @@ void CGameMode::ReceiveItemBroadcast(const unsigned char* data) {
   item.identified = 1;
 
   std::string text = FormatOwnedString(LookupMessage(0x74C), name.c_str(), item.DisplayName(0).c_str());
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
     message.start = std::chrono::system_clock::now();
@@ -15267,9 +15271,9 @@ void CGameMode::SpawnStateActor(
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
   if (actor) {
     if (objectType == 0) {
-      actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
-      actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   } else {
     CGameActor* created;
@@ -15290,14 +15294,14 @@ void CGameMode::SpawnStateActor(
       if (this->unknown_01B4.find(aid) != this->unknown_01B4.end() || this->unknown_01BC.find(aid) != this->unknown_01BC.end()) {
         actor->SetUnknown02E4(1);
       }
-      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
       if ((objectType == 1 || objectType == 6 || objectType == 12) && IsPlayerJob(job)) {
         entry.unknown_0078 = job;
       } else {
         entry.unknown_0008 = 0;
       }
-      actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
   }
@@ -15334,14 +15338,14 @@ void CGameMode::SpawnStateActor(
     const std::int64_t currentHp = hp;
     const std::int64_t currentMaxHp = maxHp;
     actor->SendMsg(
-      nullptr, 0x91, 0, static_cast<int>(currentHp), static_cast<int>(currentHp >> 32), static_cast<int>(currentMaxHp),
+      nullptr, AM_UPDATE_MONSTER_GAGE, 0, static_cast<int>(currentHp), static_cast<int>(currentHp >> 32), static_cast<int>(currentMaxHp),
       static_cast<int>(currentMaxHp >> 32), static_cast<int>(bossFlag), static_cast<int>(bossFlag >> 32), 0, 0, 0, 0, 0, 0
     );
     break;
   }
   case NPC_ABR_TYPE:
   case NPC_BIONIC_TYPE:
-    actor->SendMsg(nullptr, 0x22, 0, gid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, gid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
 
@@ -15411,11 +15415,11 @@ void CGameMode::ReceiveRateInfo(const unsigned char* packet) {
     balloon->AddMessage(0, message);
   }
 
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("=================================================================="), 0x62B0FF, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(expLine.c_str()), 0x62B0FF, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(dropLine.c_str()), 0x62B0FF, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(deathLine.c_str()), 0x62B0FF, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("=================================================================="), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("=================================================================="), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(expLine.c_str()), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(dropLine.c_str()), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(deathLine.c_str()), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("=================================================================="), 0x62B0FF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D21EB0
@@ -15451,9 +15455,9 @@ void CGameMode::ReceiveColorBroadcast(const unsigned char* data) {
     message = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(message);
     balloonMessage.lines.emplace_back(message, color);
     balloon->AddMessage(0, balloonMessage);
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), color, 0x19, 0, 0);
-    g_windowMgr.SendNotice(0x13, reinterpret_cast<std::intptr_t>(message.c_str()), color, 0x19, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), color, 0x19, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(message.c_str()), color, 0x19, 0, 0);
   }
 }
 
@@ -15551,13 +15555,13 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     }
   }
 
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   g_windowMgr.SendNotice(
-    1, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
+    UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
   );
   if (!systemMessage) {
     g_windowMgr.SendNotice(
-      0x13, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
+      UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
     );
   }
 
@@ -15634,7 +15638,7 @@ void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, un
   std::string itemName = item.DisplayName(1);
   std::string text = FormatOwnedString(LookupMessage(!success + 0x1108), playerName, itemName.c_str());
   std::string line = text;
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x62B0FF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
     message.start = std::chrono::system_clock::now();
@@ -15677,7 +15681,7 @@ void CGameMode::ReceiveItemObtainBroadcast(const unsigned char* data, bool packa
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0x65C), name.c_str(), source.c_str(), item.DisplayName(0).c_str()));
   }
 
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
     message.start = std::chrono::system_clock::now();
@@ -15733,9 +15737,9 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
   if (actor) {
     if (packet->objectType == 0) {
-      actor->SendMsg(nullptr, 0x7C, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
-      actor->SendMsg(nullptr, 3, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   } else {
     CGameActor* created;
@@ -15756,10 +15760,10 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
       if (this->unknown_01B4.find(packet->aid) != this->unknown_01B4.end() || this->unknown_01BC.find(packet->aid) != this->unknown_01BC.end()) {
         actor->SetUnknown02E4(1);
       }
-      actor->SendMsg(nullptr, 0x79, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
       entry.unknown_0008 = 0;
-      actor->SendMsg(nullptr, 4, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
   }
@@ -15796,14 +15800,14 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     const std::int64_t hp = packet->hp;
     const std::int64_t maxHp = packet->maxHp;
     actor->SendMsg(
-      nullptr, 0x91, 0, static_cast<int>(hp), static_cast<int>(hp >> 32), static_cast<int>(maxHp), static_cast<int>(maxHp >> 32),
+      nullptr, AM_UPDATE_MONSTER_GAGE, 0, static_cast<int>(hp), static_cast<int>(hp >> 32), static_cast<int>(maxHp), static_cast<int>(maxHp >> 32),
       static_cast<int>(bossFlag), static_cast<int>(bossFlag >> 32), 0, 0, 0, 0, 0, 0
     );
     break;
   }
   case NPC_ABR_TYPE:
   case NPC_BIONIC_TYPE:
-    actor->SendMsg(nullptr, 0x22, 0, packet->aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, packet->aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
 
@@ -15880,7 +15884,7 @@ void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
       g_session.unknown_5464 = 1;
     }
   } else if (member.offline == 1) {
-    this->SendMsg(0x40, member.accountId, 0, 0, 0);
+    this->SendMsg(MM_DELETEPARTYPOS, member.accountId, 0, 0, 0);
   } else {
     std::string memberMap = member.map;
     std::string currentMap = this->mapName;
@@ -15891,7 +15895,7 @@ void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
       currentMap.resize(currentMap.size() - 3);
     }
     if (memberMap != currentMap) {
-      this->SendMsg(0x40, member.accountId, 0, 0, 0);
+      this->SendMsg(MM_DELETEPARTYPOS, member.accountId, 0, 0, 0);
     }
   }
 
@@ -16010,7 +16014,7 @@ void CGameMode::UpdatePartyMemberInfo(
       g_session.unknown_5464 = 1;
     }
   } else if (member.offline == 1) {
-    this->SendMsg(0x40, accountId, 0, 0, 0);
+    this->SendMsg(MM_DELETEPARTYPOS, accountId, 0, 0, 0);
     this->SetActorUnknown02E4(accountId, 0);
   } else {
     std::string memberMap = member.map;
@@ -16023,7 +16027,7 @@ void CGameMode::UpdatePartyMemberInfo(
     }
     const bool sameMap = memberMap == currentMap;
     if (!sameMap) {
-      this->SendMsg(0x40, accountId, 0, 0, 0);
+      this->SendMsg(MM_DELETEPARTYPOS, accountId, 0, 0, 0);
     }
     this->SetActorUnknown02E4(accountId, sameMap);
   }
@@ -16047,7 +16051,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     g_effectMgr->Spawn(actor->render.accountId, effectId, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
   } else {
     const int delayFrames = delay / 16;
-    actor->SendMsg(nullptr, 0x55, 0, effectId, effectId >> 31, delayFrames, delayFrames >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_BEGIN_SPELL, 0, effectId, effectId >> 31, delayFrames, delayFrames >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
   const vector3d origin{0.0f, 0.0f, 0.0f};
@@ -16264,7 +16268,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     CRagEffect* ragEffect = actor->LaunchEffect(0xD8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (ragEffect) {
       vector3d position = actor->render.position;
-      ragEffect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+      ragEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     return;
   }
@@ -16612,11 +16616,11 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     int column;
     int row;
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->WorldCell(actor->render.position.x, actor->render.position.z, column, row);
-    scope->SendMsg(nullptr, 0x16, 0, actor->render.accountId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    scope->SendMsg(nullptr, 0xE, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
-    scope->SendMsg(nullptr, 0x73, 0, timeGetTime() + delay, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, AM_SETMASTERGID, 0, actor->render.accountId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, AM_SETPOS, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, AM_SETTIME, 0, timeGetTime() + delay, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     const int id = skillId;
-    scope->SendMsg(nullptr, 0x75, 0, id, id >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, AM_SET_SKILL, 0, id, id >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(scope);
     return;
   }
@@ -16835,9 +16839,9 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     if (g_session.IsMonsterActor(source) == 0 && skillId != MG_SRECOVERY) {
       if (skillId == WE_MALE || skillId == WE_FEMALE) {
-        this->SendMsg(0x56, skillId, reinterpret_cast<std::intptr_t>(source), targetAid, 0);
+        this->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), targetAid, 0);
       } else {
-        this->SendMsg(0x56, skillId, reinterpret_cast<std::intptr_t>(source), level, 0);
+        this->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), level, 0);
       }
     } else {
       int loopType;
@@ -16847,7 +16851,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       }
     }
     if (g_session.IsMonsterActor(source) == 1) {
-      this->SendMsg(0x56, skillId, reinterpret_cast<std::intptr_t>(source), level, 0);
+      this->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), level, 0);
     }
     if (action == -1) {
       switch (skillId) {
@@ -16871,7 +16875,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           source->SetState(7, motion);
         } else {
           if (motion == 2 || motion == 9) {
-            source->SendMsg(nullptr, 0x51, 0, targetAid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            source->SendMsg(nullptr, AM_SET_TARGET_AID, 0, targetAid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             if (CSkillActionMgr::GetInstance()->SuppressSupportSkillArrow(skillId)) {
               source->SetArrowEffectSuppressed(true);
             }
@@ -16903,10 +16907,10 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case AM_REST:
     if (sourceAid == g_session.m_aid) {
       if (g_windowMgr.window_03C0 != nullptr) {
-        g_windowMgr.CloseWindow(0x71);
+        g_windowMgr.CloseWindow(WID_HOMUNINFOWND);
       }
       if (g_windowMgr.window_03C4 != nullptr) {
-        g_windowMgr.CloseWindow(0x72);
+        g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_0);
       }
       g_session.ClearHomunStatus();
       g_session.unknown_5614 = 0;
@@ -16915,14 +16919,14 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case NPC_RANDOMBREAK:
     if (target != nullptr) {
       if (CRagEffect* effect = target->LaunchEffect(0x985, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&target->render.position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&target->render.position), 0, 0, 0, 0);
       }
     }
     break;
   case NPC_STRIP_SHADOW:
     if (target != nullptr) {
       if (CRagEffect* effect = target->LaunchEffect(0x984, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&target->render.position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&target->render.position), 0, 0, 0, 0);
       }
     }
     break;
@@ -17002,16 +17006,16 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case KN_TWOHANDQUICKEN:
   case KN_ONEHAND:
     if (source != nullptr) {
-      source->SendMsg(nullptr, 109, 0, 0x82, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x82, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->LaunchEffect(0x82, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case KN_AUTOCOUNTER:
     if (source != nullptr) {
-      source->SendMsg(nullptr, 0x52, 0, level * 400, (level * 400) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, 0, level * 400, (level * 400) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->SetState(13, 1);
       if (sourceAid != g_session.m_aid) {
-        source->SendMsg(nullptr, 0x53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        source->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
     break;
@@ -17063,7 +17067,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         static_cast<EffectActor*>(skill)->LaunchEffect(0x6F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (source->unknown_037C[0] != 0) {
           const int address = reinterpret_cast<int>(&skill->render.position);
-          reinterpret_cast<CGameObject*>(source->unknown_037C[0])->SendMsg(nullptr, 0x1D, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          reinterpret_cast<CGameObject*>(source->unknown_037C[0])->SendMsg(nullptr, AM_REQ_ATTACK, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
       }
     }
@@ -17180,7 +17184,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case NPC_SUICIDE:
     if (source != nullptr) {
       if (CRagEffect* effect = this->scene->player->LaunchEffect(0xB9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&source->render.position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&source->render.position), 0, 0, 0, 0);
       }
     }
     break;
@@ -17214,11 +17218,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       if (sourceAid == g_session.m_aid) {
         char notice[512];
         std::sprintf(notice, LookupMessage(0x651), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(target->render.accountId).c_str(), level);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice), 0xC8C8FF, 0x10, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0xC8C8FF, 0x10, 0, 0);
       }
       if (CRagEffect* effect = target->LaunchEffect(0x112, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
       target->LaunchEffect(0x10C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -17256,7 +17260,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case MG_SRECOVERY:
     if (target != nullptr) {
-      target->SendMsg(nullptr, 0x58, 0, effectLevel, effectLevel >> 31, static_cast<int>(0xFF0000FF), 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_MAKE_NUMBER, 0, effectLevel, effectLevel >> 31, static_cast<int>(0xFF0000FF), 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case CR_DEVOTION:
@@ -17287,7 +17291,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case CR_SPEARQUICKEN:
     if (source != nullptr) {
-      source->SendMsg(nullptr, 109, 0, 0xFA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0xFA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->LaunchEffect(0xFA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
@@ -17303,9 +17307,9 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case MO_EXPLOSIONSPIRITS:
     if (source != nullptr) {
-      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\mon_폭기.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->SendMsg(nullptr, 109, 0, 0xCB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0xCB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->LaunchEffect(0xCB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->LaunchEffect(0x105, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->SetSequenceInterval(30);
@@ -17315,7 +17319,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case MO_STEELBODY:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       source->LaunchEffect(0x105, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 20, 0);
     }
@@ -17329,7 +17333,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case BS_OVERTHRUST:
   case WS_OVERTHRUSTMAX:
     if (source != nullptr) {
-      source->SendMsg(nullptr, 109, 0, 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->LaunchEffect(0x80, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
@@ -17341,7 +17345,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case WE_FEMALE:
     if (target != nullptr) {
       target->LaunchEffect(0xFD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->SendMsg(nullptr, 0x58, 0, level, level >> 31, static_cast<int>(0xFF0000FF), 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_MAKE_NUMBER, 0, level, level >> 31, static_cast<int>(0xFF0000FF), 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case WE_BABY:
@@ -17351,9 +17355,9 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case LK_AURABLADE:
     if (source != nullptr) {
-      source->SendMsg(nullptr, 109, 0, 0x16F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x16F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->LaunchEffect(0x16F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->SendMsg(nullptr, 109, 0, 0x1DA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1DA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->LaunchEffect(0x1DA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->SetFrameSequence(0x20, 0, 5, 0x20, 5, 1, 1000, 0);
       g_soundMgr->PlayWave("effect\\오라 블레이드.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -17361,7 +17365,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case LK_CONCENTRATION:
     if (source != nullptr) {
-      source->SendMsg(nullptr, 109, 0, 0x171, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x171, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->LaunchEffect(0x171, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
@@ -17369,7 +17373,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (target != nullptr) {
       if (CRagEffect* effect = target->LaunchEffect(0x1EF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
     }
     break;
@@ -17522,14 +17526,14 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       source->SetFrameSequence(0x58, 0, 3, 0x58, 3, 1, 1000, 0);
       if (CRagEffect* effect = source->LaunchEffect(0x17A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
       target->LaunchEffect(0x17B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case HW_MAGICPOWER:
     if (target != nullptr) {
-      target->SendMsg(nullptr, 0x6D, 0, 0x17E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x17E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       target->LaunchEffect(0x17E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\마법력 증폭.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
@@ -17543,7 +17547,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr && target != nullptr) {
       vector3d offset{0.0f, static_cast<float>(target->render.accountId), 0.0f};
       if (CRagEffect* effect = source->LaunchEffect(0x180, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&offset), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&offset), 0, 0, 0, 0);
       }
       source->LaunchEffect(0x181, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       target->LaunchEffect(0x181, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -17585,7 +17589,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case ST_CHASEWALK:
     if (source != nullptr) {
-      source->SendMsg(nullptr, 0x3F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_MAKE_SMOKE_FFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case ST_REJECTSWORD:
@@ -17603,7 +17607,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr && target != nullptr) {
       vector3d offset{0.0f, static_cast<float>(target->render.accountId), 0.0f};
       if (CRagEffect* effect = source->LaunchEffect(0x18B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&offset), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&offset), 0, 0, 0, 0);
       }
       source->LaunchEffect(0x18C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       target->LaunchEffect(0x18C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -17646,12 +17650,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\T_바람방출.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       while (source->HasId(0x1CD)) {
-        source->SendMsg(nullptr, 0x6D, 0, 0x1CD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1CD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       source->LaunchEffect(0x1CD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       const int effectId = effectLevel + 0x1D2;
       while (source->HasId(effectId)) {
-        source->SendMsg(nullptr, 0x6D, 0, effectId, effectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, effectId, effectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       source->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -17659,11 +17663,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case TK_HIGHJUMP:
     if (source != nullptr) {
       if (source->HasId(0x1BE)) {
-        source->SendMsg(nullptr, 0x6D, 0, 0x1BE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1BE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       while (source->HasId(0x1BD)) {
-        source->SendMsg(nullptr, 0x6D, 0, 0x1BD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1BD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
     break;
@@ -17671,9 +17675,9 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SG_MOON_WARM:
   case SG_STAR_WARM:
     if (source != nullptr && target != nullptr) {
-      source->SendMsg(nullptr, 0x6D, 0, 0x1A2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1A2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->LaunchEffect(0x1A2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->SendMsg(nullptr, 0x6D, 0, 0x220, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x220, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->LaunchEffect(0x220, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->LaunchEffect(0x23C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -17682,7 +17686,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SG_MOON_COMFORT:
   case SG_STAR_COMFORT:
     if (source != nullptr) {
-      source->SendMsg(nullptr, 0x6D, 0, 0x1E8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1E8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->LaunchEffect(0x1E8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->LaunchEffect(0x21F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -17690,14 +17694,14 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SG_HATE:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_등록.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->SendMsg(nullptr, 0x6D, 0, 0x21F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x21F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       target->LaunchEffect(0x21F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SG_FUSION:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\T_변신.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
     break;
   case AM_BERSERKPITCHER:
@@ -17728,7 +17732,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SL_KAITE:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_마법반사.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->SendMsg(nullptr, 0x6D, 0, 0x1A3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1A3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       target->LaunchEffect(0x1A3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       target->LaunchEffect(0x21E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -17736,7 +17740,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SL_SWOO:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_슈웃.wav", 0.0f, -50.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->SendMsg(nullptr, 0x6D, 0, 0x1A4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1A4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       target->LaunchEffect(0x1A4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       target->LaunchEffect(0x24D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -17744,16 +17748,16 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SL_SKE:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_공격력.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->SendMsg(nullptr, 0x6D, 0, 0x1AB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1AB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       target->LaunchEffect(0x1AB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SL_SKA:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_방어형.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
-      target->SendMsg(nullptr, 0x6D, 0, 0xFE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      target->SendMsg(nullptr, 0x6D, 0, 0x46C, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0xFE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x46C, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       target->LaunchEffect(0xFE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       target->LaunchEffect(0x46C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       target->LaunchEffect(0x105, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -17801,7 +17805,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (target != nullptr) {
       if (CRagEffect* effect = target->LaunchEffect(0x273, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
     }
     break;
@@ -17830,10 +17834,10 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case MB_M_TELEPORT:
     if (source != nullptr) {
-      source->SendMsg(nullptr, 0x3F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_MAKE_SMOKE_FFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (target != nullptr) {
-      target->SendMsg(nullptr, 0x3F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_MAKE_SMOKE_FFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       target->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
@@ -17903,9 +17907,9 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (target != nullptr) {
       vector3d offset{0.0f, static_cast<float>(target->render.accountId), 0.0f};
       if (CRagEffect* effect = target->LaunchEffect(0x1F7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&offset), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&offset), 0, 0, 0, 0);
       }
-      target->SendMsg(nullptr, 109, 0, 0x1A8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1A8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       target->LaunchEffect(0x1A8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
@@ -17965,7 +17969,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr && target != nullptr) {
       if (CRagEffect* effect = target->LaunchEffect(0x41C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = source->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
     }
     break;
@@ -17978,7 +17982,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case NPC_MANDRAGORA:
     if (source != nullptr) {
       source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\G하울링오브만드라고라.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -18034,18 +18038,18 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       g_soundMgr->PlayWave("amon_ra_die01.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (CRagEffect* effect = source->LaunchEffect(0x25E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
     }
     break;
   case DC_WINKCHARM:
     if (source != nullptr && target != nullptr) {
       const std::int64_t emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::Chup);
-      source->SendMsg(nullptr, 160, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_CASH_EMOTION, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\vallentine.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (CRagEffect* effect = source->LaunchEffect(0x25F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
     }
     break;
@@ -18079,7 +18083,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case GC_COUNTERSLASH:
     if (source != nullptr) {
-      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       g_effectMgr->Spawn(source->render.accountId, 0x570, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (!g_serviceOptions.Get(0xE5)) {
@@ -18238,7 +18242,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr && target != nullptr) {
       if (CRagEffect* effect = source->LaunchEffect(0x2EF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
     }
     break;
@@ -18282,7 +18286,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           const short index = static_cast<short>(std::max(std::rand() % 36, 0) + count * 36);
           position.x += g_cosTable[index] * 80.0f;
           position.z += g_sinTable[index] * 80.0f;
-          effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
         }
       }
       g_soundMgr->PlayWave("jack_frost.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -18331,7 +18335,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case RK_DRAGONHOWLING:
     if (source != nullptr) {
-      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       source->LaunchEffect(0x2DB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("dragon_h.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
@@ -18360,7 +18364,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       source->LaunchEffect(0x11, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (target != nullptr) {
-      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       target->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       target->LaunchEffect(0x14A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -18419,7 +18423,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         CRagEffect* effect = target->LaunchEffect(0x341, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         vector3d scale{2.0f, 0.0f, 0.0f};
         if (effect) {
-          effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&scale), 0, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&scale), 0, 0, 0, 0);
         }
       }
     }
@@ -18506,7 +18510,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       g_soundMgr->PlayWave("effect\\S포이즌버스터.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       vector3d position{0.0f, static_cast<float>(target->render.accountId), 0.0f};
       if (CRagEffect* effect = target->LaunchEffect(0x3A3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
     }
     break;
@@ -18542,7 +18546,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       g_soundMgr->PlayWave("effect\\S바큠익스트림.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (CRagEffect* effect = target->LaunchEffect(0xD8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = source->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
     }
     break;
@@ -18556,7 +18560,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       g_effectMgr->Spawn(source->render.accountId, 0x667, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(source->render.accountId, 0x668, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\G하울링오브만드라고라.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -18565,7 +18569,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (CRagEffect* effect = source->LaunchEffect(0x1B7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
         g_soundMgr->PlayWave("effect\\G스포어익스플로젼.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       }
     }
@@ -18649,7 +18653,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       CRagEffect* effect = source->LaunchEffect(0x37C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect != nullptr) {
         vector3d position = target->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
         g_soundMgr->PlayWave("effect\\SR_CRESCENTELBOW.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       }
     }
@@ -18701,12 +18705,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       position.y = static_cast<float>(target->render.accountId);
       CRagEffect* targetEffect = target->LaunchEffect(0x351, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (targetEffect != nullptr) {
-        targetEffect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        targetEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
       position.y = static_cast<float>(source->render.accountId);
       CRagEffect* sourceEffect = source->LaunchEffect(0x351, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (sourceEffect != nullptr) {
-        sourceEffect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        sourceEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
       g_soundMgr->PlayWave("effect\\하모나이즈.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
@@ -18786,7 +18790,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       CRagEffect* effect = target->LaunchEffect(0x334, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect != nullptr) {
         vector3d position = target->render.position;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
     }
     break;
@@ -18799,7 +18803,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (position.y != 0.0f && position.x != 0.0f && source != nullptr) {
       CRagEffect* effect = source->LaunchEffect(0x333, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect != nullptr) {
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
     }
     break;
@@ -18986,7 +18990,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       while (source->HasId(0x430)) {
-        source->SendMsg(nullptr, 0x6D, 0, 0x430, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x430, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
     break;
@@ -19011,7 +19015,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_effectMgr->Spawn(source->render.accountId, 0x4B3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       while (source->HasId(0x1BD)) {
-        source->SendMsg(nullptr, 0x6D, 0, 0x1BD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1BD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
     break;
@@ -19032,7 +19036,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       if (source != nullptr) {
         vector3d data{0.0f, static_cast<float>(source->render.accountId), 0.0f};
         if (CRagEffect* effect = target->LaunchEffect(0x4BA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-          effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&data), 0, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&data), 0, 0, 0, 0);
         }
       }
       target->LaunchEffect(0x197, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -19045,9 +19049,9 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (target != nullptr) {
       if (CRagEffect* effect = target->LaunchEffect(0x1F7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d data{0.0f, static_cast<float>(target->render.accountId), 0.0f};
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&data), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&data), 0, 0, 0, 0);
       }
-      target->SendMsg(nullptr, 0x6D, 0, 0x1A8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1A8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       target->LaunchEffect(0x1A8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       switch (skillId) {
       case SP_SOULGOLEM:
@@ -19117,7 +19121,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       vector3d position = source->render.position;
       if (CRagEffect* effect = source->LaunchEffect(0x439, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         const std::int64_t value = reinterpret_cast<std::intptr_t>(&position);
-        effect->SendMsg(nullptr, 0x2C, 0, 0xFFFF, 0x422, 0, static_cast<int>(value), static_cast<int>(value >> 32));
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x422, 0, static_cast<int>(value), static_cast<int>(value >> 32));
       }
     }
     break;
@@ -19197,7 +19201,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       while (source->HasId(0x1BD)) {
-        source->SendMsg(nullptr, 0x6D, 0, 0x1BD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1BD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       source->LaunchEffect(0x19B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -19802,7 +19806,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case ABC_STRIP_SHADOW:
     if (target != nullptr) {
       if (CRagEffect* effect = target->LaunchEffect(0x1EF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&target->render.position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&target->render.position), 0, 0, 0, 0);
       }
     }
     break;
@@ -19847,7 +19851,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         effectId = 7;
       }
       target->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->SendMsg(nullptr, 0x58, 0, level, level >> 31, static_cast<int>(0xFF00FF00), 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_MAKE_NUMBER, 0, level, level >> 31, static_cast<int>(0xFF00FF00), 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case MH_SILENT_BREEZE:
@@ -19891,7 +19895,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case MS_PARRYING:
   case ML_AUTOGUARD:
     if (source != nullptr) {
-      source->SendMsg(nullptr, 0x7E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_MAKE_GUARD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case CR_DEFENDER:
@@ -19904,9 +19908,9 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case LK_FURY:
   case MS_BERSERK:
     if (source != nullptr) {
-      source->SendMsg(nullptr, 0x6D, 0, 0x170, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x170, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       source->LaunchEffect(0x170, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\버서크.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -20120,13 +20124,13 @@ static_assert(offsetof(CameraInfoPacket, pitch) == 0x0B);
 void CGameMode::HandleCameraInfo(const unsigned char* data) {
   const CameraInfoPacket* packet = reinterpret_cast<const CameraInfoPacket*>(data);
   if (packet->action == 1) {
-    UIWindow* window = g_windowMgr.LookupWindow(289);
+    UIWindow* window = g_windowMgr.LookupWindow(WID_VIEWCAMERAINFOWND);
     if (window == nullptr) {
-      window = g_windowMgr.EnsureWindow(289);
+      window = g_windowMgr.EnsureWindow(WID_VIEWCAMERAINFOWND);
     }
     g_session.unknown_61B1 = g_session.unknown_61B1 == 0;
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_session.unknown_61B1 == 1 ? "Camera Info On" : "Camera Info Off"), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_session.unknown_61B1 == 1 ? "Camera Info On" : "Camera Info Off"), 0x64FFFF, 0, 0, 0);
     window->Show(g_session.unknown_61B1);
   } else if (this->camera != nullptr) {
     this->camera->camera.desiredDistance = packet->distance;
@@ -20308,7 +20312,7 @@ void CGameMode::ProcessIncomingPackets() {
   if (!g_replayAnimationScaling) {
     const std::uint32_t elapsedHours = (timeGetTime() - g_loginAcceptTime) / 3600000;
     if (!GetRagConnection().Update()) {
-      g_modeMgr.gameMode->SendMsg(1, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(MM_SOCKETERROR, 0, 0, 0, 0);
     }
 
     if (g_charServerAccountIdPending == 1) {
@@ -20322,11 +20326,11 @@ void CGameMode::ProcessIncomingPackets() {
 
   const int replayState = Replay::Instance().state;
   if (replayState == 7) {
-    g_windowMgr.window_4F168->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    g_windowMgr.window_4F168->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   } else if (replayState == 2) {
     Replay::Instance().WriteHeader(12);
     if (g_windowMgr.window_4F164) {
-      g_windowMgr.window_4F164->SendMsg(nullptr, 116, 0, 0, 0, 0);
+      g_windowMgr.window_4F164->SendMsg(nullptr, UM_UPDATE_RECORD_TIME, 0, 0, 0, 0);
     }
   }
 
@@ -21588,7 +21592,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.SyncServerTime(path.tick);
       if (actor) {
         const int pathAddress = reinterpret_cast<int>(&path);
-        actor->SendMsg(nullptr, 0, 0, pathAddress, pathAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_MOVE, 0, pathAddress, pathAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
     }
@@ -21598,7 +21602,7 @@ void CGameMode::ProcessIncomingPackets() {
       DecodeSrcDst(g_gameModePacketBuffer + 6, &path.srcX, &path.srcY, &path.dstX, &path.dstY, &path.subX, &path.subY);
       g_session.SyncServerTime(path.tick);
       const int pathAddress = reinterpret_cast<int>(&path);
-      this->scene->player->SendMsg(nullptr, 0, 0, pathAddress, pathAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_MOVE, 0, pathAddress, pathAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
     case ID_ZC_STOPMOVE: {
@@ -21639,7 +21643,7 @@ void CGameMode::ProcessIncomingPackets() {
         }
       }
       const int actAddress = reinterpret_cast<int>(&act);
-      actor->SendMsg(nullptr, 11, 0, actAddress, actAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_ACTION, 0, actAddress, actAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
     case 0x93:
@@ -21671,7 +21675,7 @@ void CGameMode::ProcessIncomingPackets() {
         }
       }
       actor->render.angle = static_cast<float>(45 * (packet->direction + 4));
-      actor->SendMsg(nullptr, 100, 0, packet->headDirection, packet->headDirection >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_SET_HEAD_DIR, 0, packet->headDirection, packet->headDirection >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
     case ID_ZC_ITEM_ENTRY:
@@ -21698,7 +21702,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
 
       const int entryAddress = reinterpret_cast<int>(&entry);
-      item->SendMsg(nullptr, 4, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      item->SendMsg(nullptr, AM_INITSTANDENTRY, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
     case ID_ZC_ITEM_DISAPPEAR: {
@@ -21761,7 +21765,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case 0xa5: {
-      g_windowMgr.EnsureWindow(33);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(NormalItemRecord);
       const NormalItemRecord *record = reinterpret_cast<const NormalItemRecord *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++record) {
@@ -21782,7 +21786,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case 0xa6: {
-      g_windowMgr.EnsureWindow(33);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(EquipItemRecord);
       const EquipItemRecord *record = reinterpret_cast<const EquipItemRecord *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++record) {
@@ -21809,7 +21813,7 @@ void CGameMode::ProcessIncomingPackets() {
         if (item.unknown_0000[1]) {
           g_session.RemoveItem1710(packet->index, item.quantity - packet->amount);
           if (item.IsAboveItemId600()) {
-            this->scene->player->SendMsg(nullptr, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            this->scene->player->SendMsg(nullptr, AM_USEITEM_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
           }
         }
       }
@@ -21822,7 +21826,7 @@ void CGameMode::ProcessIncomingPackets() {
       switch (packet[8]) {
       case ACK_REQ_EQUIP_FAILURE:
       case ACK_REQ_EQUIP_FAILURE_LEVEL:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(372)), 0xFF, 7, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(372)), 0xFF, 7, 0, 0);
         break;
       case ACK_REQ_EQUIP_SUCCESS: {
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(packet + 2));
@@ -21860,7 +21864,7 @@ void CGameMode::ProcessIncomingPackets() {
       const std::int16_t amount = *reinterpret_cast<const std::int16_t *>(packet + 4);
       ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
       if (item.unknown_0000[1] && amount > 0) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1609), item.DisplayName(0).c_str(), amount).c_str()),
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1609), item.DisplayName(0).c_str(), amount).c_str()),
                                0xFFFF00, 6, 0, 0);
       }
       g_session.RemoveItem1710(index, amount);
@@ -21886,7 +21890,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->unknown_024C = 1;
       this->unknown_02DC = *reinterpret_cast<const int *>(packet + 4);
       unsigned int length = *reinterpret_cast<const std::uint16_t *>(packet + 2) - 8;
-      UIWindow *window = g_windowMgr.EnsureWindow(16);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_SAYDIALOGWND);
       char text[0x803];
       if (g_serviceType == 10) {
         sprintf(text, "|%02x", LanguageCharset(31));
@@ -21896,13 +21900,13 @@ void CGameMode::ProcessIncomingPackets() {
         memcpy(text, packet + 8, length);
       }
       text[length] = 0;
-      window->SendMsg(nullptr, 26, reinterpret_cast<std::intptr_t>(text), *reinterpret_cast<const int *>(packet + 4), 0, 0);
+      window->SendMsg(nullptr, UM_SETSAYDIALOG, reinterpret_cast<std::intptr_t>(text), *reinterpret_cast<const int *>(packet + 4), 0, 0);
       break;
     }
     case ID_ZC_WAIT_DIALOG:
       this->unknown_024C = 1;
       this->unknown_02DC = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
-      g_windowMgr.EnsureWindow(16)->SendMsg(nullptr, 25, 0, 0, 0, 0);
+      g_windowMgr.EnsureWindow(WID_SAYDIALOGWND)->SendMsg(nullptr, UM_ENABLENEXTBUTTON, 0, 0, 0, 0);
       break;
     case ID_ZC_EMOTION: {
       const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
@@ -21916,7 +21920,7 @@ void CGameMode::ProcessIncomingPackets() {
         }
       }
       const int emotion = g_gameModePacketBuffer[6];
-      actor->SendMsg(nullptr, 160, 0, 0, 0, emotion, emotion >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_CASH_EMOTION, 0, 0, 0, emotion, emotion >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
     case ID_ZC_USER_COUNT: {
@@ -21926,16 +21930,16 @@ void CGameMode::ProcessIncomingPackets() {
       } else {
         sprintf(text, LookupMessage(178), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2));
       }
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
       break;
     }
     case ID_ZC_SELECT_DEALTYPE:
       this->unknown_024C = 1;
-      g_windowMgr.EnsureWindow(25)->SendMsg(nullptr, 28, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
-      g_windowMgr.CloseWindow(22);
-      g_windowMgr.CloseWindow(23);
-      g_windowMgr.CloseWindow(24);
+      g_windowMgr.EnsureWindow(WID_CHOOSESELLBUYWND)->SendMsg(nullptr, UM_SETNAID, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
+      g_windowMgr.CloseWindow(WID_ITEMPURCHASEWND);
+      g_windowMgr.CloseWindow(WID_ITEMSELLWND);
       break;
     case ID_ZC_PC_PURCHASE_ITEMLIST_00c6: {
       g_session.ClearTradeItems();
@@ -21953,74 +21957,74 @@ void CGameMode::ProcessIncomingPackets() {
         g_session.AddItem1718(item, 0);
       }
 
-      UIWindow *buyWindow = g_windowMgr.EnsureWindow(22);
-      buyWindow->SendMsg(nullptr, 36, 0, 0, 0, 0);
-      buyWindow->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      UIWindow *sellWindow = g_windowMgr.EnsureWindow(23);
-      sellWindow->SendMsg(nullptr, 36, 0, 0, 0, 0);
-      sellWindow->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      UIWindow *buyWindow = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND);
+      buyWindow->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+      buyWindow->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      UIWindow *sellWindow = g_windowMgr.EnsureWindow(WID_ITEMPURCHASEWND);
+      sellWindow->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+      sellWindow->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       break;
     }
     case ID_ZC_PC_SELL_RESULT:
       switch (g_gameModePacketBuffer[2]) {
       case SELL_SUCCEED:
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(54)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(54)), 0xFFFF00, 0, 0, 0);
         break;
       case SELL_FAIL:
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(57)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(57)), 0xFF, 0, 0, 0);
         break;
       }
       g_session.ClearTradeItems();
-      g_windowMgr.CloseWindow(22);
-      g_windowMgr.CloseWindow(24);
+      g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
+      g_windowMgr.CloseWindow(WID_ITEMSELLWND);
       break;
     case ID_ZC_ACK_DISCONNECT_CHARACTER: {
       char text[80];
       sprintf(text, LookupMessage(g_gameModePacketBuffer[2] == 0 ? 152 : 151));
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x32FF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x32FF, 0, 0, 0);
       break;
     }
     case ID_ZC_SETTING_WHISPER_STATE:
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       switch (g_gameModePacketBuffer[2]) {
       case WT_EXCLUDE_WHISPER:
         switch (g_gameModePacketBuffer[3]) {
         case WHISPER_SETTING_SUCCEED:
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3427)), 0xFFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3427)), 0xFFFF, 0, 0, 0);
           break;
         case WHIPSER_SETTING_FAILED:
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3428)), 0xFFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3428)), 0xFFFF, 0, 0, 0);
           break;
         }
         break;
       case WT_INCLUDE_WHISPER:
         switch (g_gameModePacketBuffer[3]) {
         case WHISPER_SETTING_SUCCEED:
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3429)), 0xFFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3429)), 0xFFFF, 0, 0, 0);
           break;
         case WHIPSER_SETTING_FAILED:
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3430)), 0xFFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3430)), 0xFFFF, 0, 0, 0);
           break;
         }
         break;
       }
       break;
     case ID_ZC_WHISPER_LIST: {
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       const int length = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
       const int count = (length - 4) / 24;
       char name[25];
       name[24] = '\0';
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(count != 0 ? 3396 : 3395)), 0xFFFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(count != 0 ? 3396 : 3395)), 0xFFFF00, 0, 0, 0);
       for (int i = 0; i < count; ++i) {
         if (i * 24 + 4 > length) {
           break;
         }
         std::memcpy(name, g_gameModePacketBuffer + 4 + i * 24, 24);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(name), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(name), 0xFFFF00, 0, 0, 0);
       }
       break;
     }
@@ -22028,33 +22032,33 @@ void CGameMode::ProcessIncomingPackets() {
       this->unknown_00FC = 0;
       switch (g_gameModePacketBuffer[2]) {
       case ENTERROOM_FULL: {
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(64)), 0xFFFF00, 0, 0, 0);
-        UIWindow *window = g_windowMgr.EnsureWindow(28);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(64)), 0xFFFF00, 0, 0, 0);
+        UIWindow *window = g_windowMgr.EnsureWindow(WID_CHATROOMWND);
         this->unknown_03FC = 1;
-        window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&this->unknown_03C8), 0, 0, 0);
-        window->SendMsg(nullptr, 43, 0, 0, 0, 0);
-        window->SendMsg(nullptr, 44, reinterpret_cast<std::intptr_t>(g_session.DecodePlayerName()), 0, 0, 0);
+        window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->unknown_03C8), 0, 0, 0);
+        window->SendMsg(nullptr, UM_CLEARMEMBER, 0, 0, 0, 0);
+        window->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(g_session.DecodePlayerName()), 0, 0, 0);
         break;
       }
       case ENTERROOM_WRONG_PASSWORD:
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(65)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(65)), 0xFF, 0, 0, 0);
         break;
       case ENTERROOM_KICKED:
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(66)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(66)), 0xFF, 0, 0, 0);
         break;
       }
       break;
     case ID_ZC_DESTROY_ROOM: {
       const std::uint32_t roomId = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
       if (CRenderObject *actor = this->scene->GetGameActorByAID(this->unknown_01AC[roomId])) {
-        actor->SendMsg(nullptr, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_DELETE_CHAT_TITLE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (g_windowMgr.window_027C && static_cast<UIChatRoomWnd *>(g_windowMgr.window_027C)->roomStatus.roomId == static_cast<int>(roomId)) {
-        g_windowMgr.CloseWindow(28);
-        g_windowMgr.CloseWindow(30);
+        g_windowMgr.CloseWindow(WID_CHATROOMWND);
+        g_windowMgr.CloseWindow(WID_CHATROOMCHANGEWND);
       }
       break;
     }
@@ -22063,15 +22067,15 @@ void CGameMode::ProcessIncomingPackets() {
       std::memcpy(name, g_gameModePacketBuffer + 4, 24);
       name[24] = '\0';
       g_session.DecodePlayerName();
-      UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.EnsureWindow(28));
+      UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.EnsureWindow(WID_CHATROOMWND));
       ChatRoomMemberUpdateInfo info{window->title, window->unknown_00CC, window->roomStatus.roomType, window->roomStatus.memberCount,
                              window->roomStatus.memberLimit, window->roomStatus.roomId};
       info.memberCount = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
-      window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
-      window->SendMsg(nullptr, 44, reinterpret_cast<std::intptr_t>(name), 1, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(name), 1, 0, 0);
       char text[128];
       sprintf(text, LookupMessage(179), name);
-      g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text), 0x808000, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(text), 0x808000, 0, 0, 0);
       break;
     }
     case ID_ZC_MEMBER_EXIT: {
@@ -22079,85 +22083,85 @@ void CGameMode::ProcessIncomingPackets() {
       std::memcpy(name, g_gameModePacketBuffer + 4, 24);
       name[24] = '\0';
       if (strcmp(g_session.DecodePlayerName(), name) == 0) {
-        g_windowMgr.CloseWindow(28);
-        g_windowMgr.CloseWindow(30);
+        g_windowMgr.CloseWindow(WID_CHATROOMWND);
+        g_windowMgr.CloseWindow(WID_CHATROOMCHANGEWND);
         break;
       }
 
-      UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.EnsureWindow(28));
+      UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.EnsureWindow(WID_CHATROOMWND));
       ChatRoomMemberUpdateInfo info{window->title, window->unknown_00CC, window->roomStatus.roomType, window->roomStatus.memberCount,
                              window->roomStatus.memberLimit, window->roomStatus.roomId};
       info.memberCount = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
-      window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
-      window->SendMsg(nullptr, 45, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+      window->SendMsg(nullptr, UM_MEMBER_EXIT, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
       char text[128];
       switch (g_gameModePacketBuffer[0x1C]) {
       case ROOMEXITTYPE_EXIT:
         sprintf(text, LookupMessage(180), name);
-        g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text), 0x80, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(text), 0x80, 0, 0, 0);
         break;
       case ROOMEXITTYPE_EXPEL:
         sprintf(text, LookupMessage(181), name);
-        g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(text), 0x80, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(text), 0x80, 0, 0, 0);
         break;
       }
       break;
     }
     case ID_ZC_ROLE_CHANGE: {
-      UIWindow *window = g_windowMgr.EnsureWindow(28);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_CHATROOMWND);
       char name[25];
       std::memcpy(name, g_gameModePacketBuffer + 6, 24);
       name[24] = '\0';
-      window->SendMsg(nullptr, 46, reinterpret_cast<std::intptr_t>(name), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0);
+      window->SendMsg(nullptr, UM_ROLE_CHANGE, reinterpret_cast<std::intptr_t>(name), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0);
       break;
     }
     case ID_ZC_REQ_EXCHANGE_ITEM_00e5: {
       if (g_serviceOptions.Get(136)) {
-        g_modeMgr.gameMode->SendMsg(50, 4, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
         break;
       }
 
       char name[25];
       std::memcpy(name, g_gameModePacketBuffer + 2, 24);
       name[24] = '\0';
-      g_windowMgr.EnsureWindow(32)->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
+      g_windowMgr.EnsureWindow(WID_EXCHANGEACCEPTWND)->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
       this->exchangeName.assign(name, strlen(name));
       break;
     }
     case ID_ZC_CONCLUDE_EXCHANGE_ITEM:
-      if (UIWindow *window = g_windowMgr.LookupWindow(10011)) {
+      if (UIWindow *window = g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
         switch (g_gameModePacketBuffer[2]) {
         case EXI_CONCLUDE_ME:
-          window->SendMsg(nullptr, 51, 0, 0, 0, 0);
+          window->SendMsg(nullptr, UM_MYDRAGCLOSED, 0, 0, 0, 0);
           break;
         case EXI_CONCLUDE_OTHER:
-          window->SendMsg(nullptr, 52, 0, 0, 0, 0);
+          window->SendMsg(nullptr, UM_OTHERDRAGCLOSED, 0, 0, 0, 0);
           break;
         }
       }
       break;
     case ID_ZC_CANCEL_EXCHANGE_ITEM:
       *reinterpret_cast<int *>(&this->unknown_0100[0x00]) = 0;
-      this->SendMsg(18, 0, 0, 0, 0);
-      g_windowMgr.CloseWindow(10011);
-      g_windowMgr.CloseWindow(32);
+      this->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_EXCHANGEUI);
+      g_windowMgr.CloseWindow(WID_EXCHANGEACCEPTWND);
       *reinterpret_cast<int *>(&this->unknown_0100[0x14]) = 0;
       g_session.ResetSlots();
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(74)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(74)), 0xFF, 0, 0, 0);
       break;
     case ID_ZC_EXEC_EXCHANGE_ITEM:
-      this->SendMsg(18, 0, 0, 0, 0);
-      g_windowMgr.CloseWindow(10011);
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      this->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_EXCHANGEUI);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       switch (g_gameModePacketBuffer[2]) {
       case EXITEM_EXCHANGE_SUCCEED:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(75)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(75)), 0xFFFF00, 0, 0, 0);
         break;
       case EXITEM_EXCHANGE_FAILED:
         *reinterpret_cast<int *>(&this->unknown_0100[0x14]) = 0;
         g_session.ResetSlots();
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(76)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(76)), 0xFF, 0, 0, 0);
         break;
       }
       break;
@@ -22166,7 +22170,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.ResetSlots();
       break;
     case ID_ZC_NOTIFY_STOREITEM_COUNTINFO:
-      g_windowMgr.EnsureWindow(33)->SendMsg(nullptr, 55, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2),
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND)->SendMsg(nullptr, UM_SETCOUNTINFO, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2),
                                           *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4), 0, 0);
       break;
     case ID_ZC_DELETE_ITEM_FROM_STORE: {
@@ -22178,24 +22182,24 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case ID_ZC_CLOSE_STORE:
-      g_windowMgr.CloseWindow(33);
+      g_windowMgr.CloseWindow(WID_ITEMSTOREWND);
       g_session.ClearItems1738();
       break;
     case ID_ZC_ACK_MAKE_GROUP:
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       switch (g_gameModePacketBuffer[2]) {
       case GROUP_MAKE_SUCCEED:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(77)), 0xFFFF00, 0, 0, 0);
-        g_windowMgr.EnsureWindow(34);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(77)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.EnsureWindow(WID_MESSENGERGROUPWND);
         break;
       case GROUP_MAKE_FAILED_SAMENAME:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(78)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(78)), 0xFF, 0, 0, 0);
         break;
       case GROUP_MAKE_FAILED_ALEADY_GROUP_MEMBER:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(79)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(79)), 0xFF, 0, 0, 0);
         break;
       case 3:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1387)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1387)), 0xFF, 0, 0, 0);
         break;
       }
       break;
@@ -22209,16 +22213,16 @@ void CGameMode::ProcessIncomingPackets() {
         g_forbiddenWords.Mask(name, &masked);
       }
       g_session.unknown_54C4.assign(name, strlen(name));
-      g_windowMgr.EnsureWindow(35)->SendMsg(nullptr, 56, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
+      g_windowMgr.EnsureWindow(WID_JOINPARTYACCEPTWND)->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
       break;
     }
     case ID_ZC_GROUPINFO_CHANGE: {
       char text[128];
       g_session.unknown_54A0 = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
       if (g_windowMgr.unknown_030C) {
-        g_windowMgr.unknown_030C->SendMsg(nullptr, 60, 0, 0, 0, 0);
+        g_windowMgr.unknown_030C->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       }
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       if (g_session.unknown_54A0 == 0 || g_session.unknown_54A0 == 1) {
         sprintf(text, "%s - %s : %s", LookupMessage(291), LookupMessage(292), LookupMessage(g_session.unknown_54A0 == 0 ? 287 : 288));
       } else if (g_session.unknown_54A0 == 2) {
@@ -22226,7 +22230,7 @@ void CGameMode::ProcessIncomingPackets() {
       } else {
         break;
       }
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
       break;
     }
     case ID_ZC_NOTIFY_HP_TO_GROUPM_0106: {
@@ -22237,17 +22241,17 @@ void CGameMode::ProcessIncomingPackets() {
       const int hp = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 6);
       const int maxHp = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 8);
       if (CRenderObject *actor = this->scene->GetGameActorByAID(aid)) {
-        actor->SendMsg(nullptr, 34, 0, hp, hp >> 31, maxHp, maxHp >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, hp, hp >> 31, maxHp, maxHp >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (g_windowMgr.window_02C8) {
-        g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, aid, hp, maxHp);
+        g_windowMgr.window_02C8->SendMsg(nullptr, UM_COMMAND, 34, aid, hp, maxHp);
       }
       g_windowMgr.NotifyItemWindows(aid, hp, maxHp);
       break;
     }
     case ID_ZC_NOTIFY_POSITION_TO_GROUPM: {
       const unsigned char *packet = g_gameModePacketBuffer;
-      this->SendMsg(63, *reinterpret_cast<const int *>(packet + 2), *reinterpret_cast<const std::int16_t *>(packet + 6),
+      this->SendMsg(MM_ADDPARTYPOS, *reinterpret_cast<const int *>(packet + 2), *reinterpret_cast<const std::int16_t *>(packet + 6),
                     *reinterpret_cast<const std::int16_t *>(packet + 8), 0);
       break;
     }
@@ -22259,9 +22263,9 @@ void CGameMode::ProcessIncomingPackets() {
       item.itemId.assign(itemId, strlen(itemId));
       item.unknown_0060 = 0;
       item.identified = 0;
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       const char *suffix = LookupMessage(144);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", LookupMessage(143), item.DisplayName(0).c_str(), suffix).c_str()),
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", LookupMessage(143), item.DisplayName(0).c_str(), suffix).c_str()),
                              0xFFFF00, 0, 0, 0);
       break;
     }
@@ -22269,22 +22273,22 @@ void CGameMode::ProcessIncomingPackets() {
       char text[256];
       memset(text, 0, sizeof(text));
       StringFormat(text, 256, static_cast<std::size_t>(-1), "%s%s", LookupMessage(145), LookupMessage(146));
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 0, 0, 0);
       break;
     }
     case ID_ZC_MVP: {
       const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_MVP, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       } else if (CRenderObject *actor = this->scene->GetGameActorByAID(aid)) {
-        actor->SendMsg(nullptr, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_MVP, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
     }
     case ID_ZC_THROW_MVPITEM:
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(147)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(147)), 0xFF, 0, 0, 0);
       break;
     case ID_ZC_SKILLINFO_LIST:
     case ID_ZC_HOSKILLINFO_LIST:
@@ -22331,18 +22335,18 @@ void CGameMode::ProcessIncomingPackets() {
         *reinterpret_cast<int *>(&g_session.unknown_0F0C[0x04]) = state[2];
         g_session.m_jobFlags = state[1];
         if (g_windowMgr.unknown_01E0) {
-          g_windowMgr.unknown_01E0->SendMsg(nullptr, 60, 0, 0, 0, 0);
+          g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
         }
         if (g_session.unknown_5C1C <= 0) {
           g_session.ClearItems1740();
-          g_windowMgr.CloseWindow(40);
+          g_windowMgr.CloseWindow(WID_MERCHANTITEMWND);
         }
       } else {
         actor = this->scene->GetGameActorByAID(aid);
       }
       if (actor) {
         const int stateAddress = reinterpret_cast<int>(state);
-        actor->SendMsg(nullptr, 43, 0, stateAddress, stateAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_ATTR_STATE_CHANGE, 0, stateAddress, stateAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
     }
@@ -22353,35 +22357,35 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case ID_ZC_WARPLIST_011c: {
-      g_windowMgr.CloseWindow(39);
-      UIWindow *window = g_windowMgr.EnsureWindow(39);
-      window->SendMsg(nullptr, 59, *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_CHOOSEWARPWND);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_CHOOSEWARPWND);
+      window->SendMsg(nullptr, UM_SETSKID, *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), 0, 0, 0);
       const char *name = reinterpret_cast<const char *>(g_gameModePacketBuffer + 4);
       for (unsigned int i = 0; i < 4; ++i, name += 16) {
         if (strlen(name)) {
-          window->SendMsg(nullptr, 27, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
+          window->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
         }
       }
-      window->SendMsg(nullptr, 27, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
       break;
     }
     case ID_ZC_ACK_REMEMBER_WARPPOINT:
       switch (g_gameModePacketBuffer[2]) {
       case WARPPOINT_SUCCESS:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(217)), 0xFFFF00, 0, 0, 0);
-        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(217)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(217)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(217)), 0xFFFF00, 0, 0, 0);
         break;
       case WARPPOINT_LOW_LEVEL:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(214)), 0xFF, 0, 0, 0);
-        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(214)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(214)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(214)), 0xFF, 0, 0, 0);
         break;
       case WARPPOINT_NOT_LEARNED:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(216)), 0xFF, 0, 0, 0);
-        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(216)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(216)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(216)), 0xFF, 0, 0, 0);
         break;
       case 3:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2535)), 0xFF, 0, 0, 0);
-        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(2535)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2535)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(2535)), 0xFF, 0, 0, 0);
         break;
       }
       break;
@@ -22394,7 +22398,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (it == this->spriteMirrorActorIds.end()) {
         this->scene->RemoveSkill(aid);
       } else if (this->scene->RemoveItem(aid) == true) {
-        this->SendMsg(13, aid, 0, 0, 0);
+        this->SendMsg(MM_DELETEREGISTERPOS, aid, 0, 0, 0);
         this->spriteMirrorActorIds.erase(it);
       }
       break;
@@ -22406,7 +22410,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.cartWeight = *reinterpret_cast<const int *>(packet + 6) / 10;
       g_session.cartMaxWeight = *reinterpret_cast<const int *>(packet + 0x0A) / 10;
       if (g_windowMgr.unknown_02F4) {
-        g_windowMgr.unknown_02F4->SendMsg(nullptr, 55, 0, 0, 0, 0);
+        g_windowMgr.unknown_02F4->SendMsg(nullptr, UM_SETCOUNTINFO, 0, 0, 0, 0);
       }
       break;
     }
@@ -22473,24 +22477,24 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_CARTOFF:
       g_session.ClearItems1740();
-      g_windowMgr.CloseWindow(40);
+      g_windowMgr.CloseWindow(WID_MERCHANTITEMWND);
       break;
     case ID_ZC_ACK_ADDITEM_TO_CART:
       switch (g_gameModePacketBuffer[2]) {
       case ADDITEM_TO_CART_FAIL_WEIGHT:
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 0xFF, 0, 0, 0);
         break;
       case ADDITEM_TO_CART_FAIL_COUNT:
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(221)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(221)), 0xFF, 0, 0, 0);
         break;
       }
       break;
     case ID_ZC_OPENSTORE: {
       CGameMode *mode = static_cast<CGameMode *>(g_modeMgr.GetGameMode());
       if (mode && mode->drag.source != 0) {
-        this->SendMsg(81, 0, 0, 0, 0);
+        this->SendMsg(MM_REQ_CLOSESTORE, 0, 0, 0, 0);
         break;
       }
 
@@ -22503,8 +22507,8 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.ClearItems1768();
       if (g_windowMgr.window_027C || g_windowMgr.window_0274) {
         g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
-        this->SendMsg(81, 0, 0, 0, 0);
-      } else if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.EnsureWindow(41))) {
+        this->SendMsg(MM_REQ_CLOSESTORE, 0, 0, 0, 0);
+      } else if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.EnsureWindow(WID_MERCHANTSHOPMAKEWND))) {
         window->AddActionButton();
       }
       break;
@@ -22515,13 +22519,13 @@ void CGameMode::ProcessIncomingPackets() {
       title[80] = 0;
       if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
         const int titleAddress = reinterpret_cast<int>(title);
-        actor->SendMsg(nullptr, 55, 0, titleAddress, titleAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_MAKE_SHOP_TITLE, 0, titleAddress, titleAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
     }
     case ID_ZC_DISAPPEAR_ENTRY:
       if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
-        actor->SendMsg(nullptr, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_DELETE_SHOP_TITLE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
     case ID_ZC_DELETEITEM_FROM_MCSTORE_0137:
@@ -22535,12 +22539,12 @@ void CGameMode::ProcessIncomingPackets() {
       if (CRenderObject *actor = this->scene->GetGameActorByAID(aid)) {
         const int x = *reinterpret_cast<const std::int16_t *>(packet + 6);
         const int y = *reinterpret_cast<const std::int16_t *>(packet + 8);
-        actor->SendMsg(nullptr, 61, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_CORRECT_POS, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       const int playerX = *reinterpret_cast<const std::int16_t *>(packet + 0x0A);
       const int playerY = *reinterpret_cast<const std::int16_t *>(packet + 0x0C);
-      this->scene->player->SendMsg(nullptr, 61, 0, playerX, playerX >> 31, playerY, playerY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
-      this->scene->player->SendMsg(nullptr, 60, 0, aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_CORRECT_POS, 0, playerX, playerX >> 31, playerY, playerY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_RESUMEPROCEEDATTACK, 0, aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
     case ID_ZC_ATTACK_RANGE:
@@ -22568,7 +22572,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_OPEN_EDITDLG: {
       const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
       if (this->scene->GetGameActorByAID(aid)) {
-        g_windowMgr.EnsureWindow(56)->SendMsg(nullptr, 28, aid, 0, 0, 0);
+        g_windowMgr.EnsureWindow(WID_NPCEDITDIALOGWND)->SendMsg(nullptr, UM_SETNAID, aid, 0, 0, 0);
       }
       break;
     }
@@ -22595,7 +22599,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (index == 0xFF) {
         index = -1;
       }
-      this->SendMsg(100, reinterpret_cast<int>(name), index, 0, 0);
+      this->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(name), index, 0, 0);
       break;
     }
     case ID_ZC_AUTORUN_SKILL: {
@@ -22610,16 +22614,16 @@ void CGameMode::ProcessIncomingPackets() {
       skill.unknown_001C = *reinterpret_cast<const std::int16_t *>(packet + 0x0C);
       skill.unknown_0034 = skill.UseApAmount(*g_session.m_hotkeyScript, *reinterpret_cast<const std::int16_t *>(packet + 8));
       g_session.m_skillBundle.UpdatePending(skill);
-      this->SendMsg(113, reinterpret_cast<int>(&skill), skill.level, 1, -1);
+      this->SendMsg(MM_USING_SKILL, reinterpret_cast<int>(&skill), skill.level, 1, -1);
       break;
     }
     case ID_ZC_RESURRECTION: {
       const std::uint32_t aid = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
       if (CRenderObject *actor = this->scene->GetGameActorByAID(aid)) {
-        actor->SendMsg(nullptr, 98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_RESURRECTION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, 98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_RESURRECTION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->unknown_024C = 0;
         this->unknown_0250 = 0;
       }
@@ -22633,13 +22637,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_GIVE_MANNER_POINT:
       switch (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2)) {
       case MP_SUCCESS:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(854)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(854)), 0xFFFF00, 0, 0, 0);
         break;
       case MP_SUCCESS_BY_ADMIN:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(830)), 0xFFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(830)), 0xFFFF, 0, 0, 0);
         break;
       case MP_BYSELF:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(833)), 0xFFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(833)), 0xFFFF, 0, 0, 0);
         break;
       }
       break;
@@ -22650,7 +22654,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (g_gameModePacketBuffer[2] == 0) {
         char text[128];
         sprintf(text, LookupMessage(387), name);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 0, 0, 0);
       }
       break;
     }
@@ -22665,7 +22669,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (g_guildInfo.m_guildId == guildId) {
         this->scene->player->SetGuildInfo(guildId, version);
         if (g_windowMgr.window_0320) {
-          g_windowMgr.window_0320->SendMsg(nullptr, 60, 0, 0, 0, 0);
+          g_windowMgr.window_0320->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
         }
       }
       break;
@@ -22679,8 +22683,8 @@ void CGameMode::ProcessIncomingPackets() {
           g_guildInfo.SetMasterCharacterId(record[1]);
         }
       }
-      if (UIWindow *window = g_windowMgr.LookupWindow(61)) {
-        window->SendMsg(nullptr, 106, 0, 0, 0, 0);
+      if (UIWindow *window = g_windowMgr.LookupWindow(WID_GUILDMEMBERMANAGEWND)) {
+        window->SendMsg(nullptr, UM_SET_DISABLE, 0, 0, 0, 0);
       }
       g_windowMgr.RefreshGuildWindows();
       break;
@@ -22690,14 +22694,14 @@ void CGameMode::ProcessIncomingPackets() {
       case DISRESULT_SUCCESS:
         g_session.ClearAdditionalShortcutSkills();
         g_guildInfo.Init();
-        g_windowMgr.CloseWindow(59);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(400)), 0xFFFF, 4, 0, 0);
+        g_windowMgr.CloseWindow(WID_GUILDWND);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(400)), 0xFFFF, 4, 0, 0);
         break;
       case DISRESULT_INVALIDKEY:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(401)), 0xFFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(401)), 0xFFFF, 0, 0, 0);
         break;
       case DISRESULT_MEMBEREXIST:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(402)), 0xFFFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(402)), 0xFFFF, 4, 0, 0);
         break;
       }
       break;
@@ -22707,7 +22711,7 @@ void CGameMode::ProcessIncomingPackets() {
       reason[40] = 0;
       char text[1024];
       sprintf(text, LookupMessage(367), reason);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 4, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 4, 0, 0);
       break;
     }
     case ID_ZC_GUILD_SKILLINFO:
@@ -22716,42 +22720,42 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_RESULT_MAKE_GUILD:
       switch (g_gameModePacketBuffer[2]) {
       case GM_SUCCESS:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(374)), 0xFFFF00, 4, 0, 0);
-        g_windowMgr.CloseWindow(214);
-        g_windowMgr.CloseWindow(213);
-        g_windowMgr.CloseWindow(212);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(374)), 0xFFFF00, 4, 0, 0);
+        g_windowMgr.CloseWindow(WID_GUILDTIPWND);
+        g_windowMgr.CloseWindow(WID_CREATEGUILDWND_MODE_0);
+        g_windowMgr.CloseWindow(WID_GUILDHELPERWND);
         break;
       case GM_ALREADY_MEMBER:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(375)), 0xFFFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(375)), 0xFFFF, 4, 0, 0);
         break;
       case GM_GUILD_EXIST:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(376)), 0xFFFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(376)), 0xFFFF, 4, 0, 0);
         break;
       case GM_NONE_ITEM:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(405)), 0xFFFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(405)), 0xFFFF, 4, 0, 0);
         break;
       case 4:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2687)), 0xFFFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2687)), 0xFFFF, 4, 0, 0);
         break;
       }
       break;
     case ID_ZC_ACK_REQ_JOIN_GUILD:
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       switch (g_gameModePacketBuffer[2]) {
       case REQJOINGUILD_ALREADY_OTHERGUILDM:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(378)), 0xFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(378)), 0xFF, 4, 0, 0);
         break;
       case REQJOINGUILD_REJECT:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(379)), 0xFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(379)), 0xFF, 4, 0, 0);
         break;
       case REQJOINGUILD_ACCEPT:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(380)), 0xFFFF00, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(380)), 0xFFFF00, 4, 0, 0);
         break;
       case REQJOINGUILD_OVERSIZE:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(381)), 0xFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(381)), 0xFF, 4, 0, 0);
         break;
       case 4:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2090)), 0xFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2090)), 0xFF, 4, 0, 0);
         break;
       }
       break;
@@ -22763,7 +22767,7 @@ void CGameMode::ProcessIncomingPackets() {
         std::string masked("");
         g_forbiddenWords.Mask(name, &masked);
       }
-      g_windowMgr.EnsureWindow(70)->SendMsg(nullptr, 73, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
+      g_windowMgr.EnsureWindow(WID_JOINGUILDACCEPTWND)->SendMsg(nullptr, UM_SET_JOIN_GUILD_MSG, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
       break;
     }
     case ID_ZC_UPDATE_GDID_016c: {
@@ -22777,11 +22781,11 @@ void CGameMode::ProcessIncomingPackets() {
       this->scene->player->SetGuildInfo(guildId, *reinterpret_cast<const int *>(packet + 6));
       if (g_guildInfo.unknown_00C8 == 0) {
         g_guildInfo.unknown_00C8 = 1;
-        g_modeMgr.gameMode->SendMsg(107, 3, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 3, 0, 0, 0);
       }
       if (g_guildInfo.unknown_00C0 == 0) {
         g_guildInfo.unknown_00C0 = 1;
-        g_modeMgr.gameMode->SendMsg(107, 1, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
       }
       break;
     }
@@ -22791,10 +22795,10 @@ void CGameMode::ProcessIncomingPackets() {
       g_guildInfo.SetMemberOnline(*reinterpret_cast<const int *>(packet + 2), online);
       std::string name = LookupPlayerName(*reinterpret_cast<const std::uint32_t *>(packet + 6));
       if (name.size()) {
-        this->SendMsg(140, reinterpret_cast<int>(name.c_str()), online, 0, 0);
+        this->SendMsg(MM_GUILD_MEMBER_STATUS_CHANGE, reinterpret_cast<int>(name.c_str()), online, 0, 0);
       }
       if (online == 0) {
-        this->SendMsg(171, *reinterpret_cast<const int *>(packet + 2), 0, 0, 0);
+        this->SendMsg(MM_DELETEGUILDPOS, *reinterpret_cast<const int *>(packet + 2), 0, 0, 0);
       }
       break;
     }
@@ -22806,87 +22810,87 @@ void CGameMode::ProcessIncomingPackets() {
         std::string masked("");
         g_forbiddenWords.Mask(name, &masked);
       }
-      g_windowMgr.EnsureWindow(72)->SendMsg(nullptr, 74, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
+      g_windowMgr.EnsureWindow(WID_ALLYGUILDACCEPTWND)->SendMsg(nullptr, UM_SET_ALLY_GUILD_MSG, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), reinterpret_cast<std::intptr_t>(name), 0, 0);
       break;
     }
     case ID_ZC_ACK_REQ_ALLY_GUILD:
       switch (g_gameModePacketBuffer[2]) {
       case REQALLYGUILD_ALREADY_ALLIED:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(394)), 0xFFFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(394)), 0xFFFF, 4, 0, 0);
         break;
       case REQALLYGUILD_REJECT:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(395)), 0xFFFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(395)), 0xFFFF, 4, 0, 0);
         break;
       case REQALLYGUILD_ACCEPT:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(396)), 0xFFFF00, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(396)), 0xFFFF00, 4, 0, 0);
         break;
       case REQALLYGUILD_OVERSIZE:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(397)), 0xFFFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(397)), 0xFFFF, 4, 0, 0);
         break;
       case REQMYGUILD_OVERSIZE:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(398)), 0xFFFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(398)), 0xFFFF, 4, 0, 0);
         break;
       case 5:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1717)), 0xFFFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1717)), 0xFFFF, 4, 0, 0);
         break;
       }
       break;
     case ID_ZC_ITEMIDENTIFY_LIST: {
       unsigned int count = (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4u) >> 1;
-      UIWindow *window = g_windowMgr.EnsureWindow(73);
-      window->SendMsg(nullptr, 75, 0, 0, 0, 0);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_ITEMIDENTIFYWND);
+      window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
       const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
       for (; count != 0; --count, ++index) {
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
         if (item.unknown_0000[1]) {
-          window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
+          window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
         }
       }
-      window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       break;
     }
     case ID_ZC_ACK_ITEMIDENTIFY:
       switch (g_gameModePacketBuffer[4]) {
       case ITEMIDENTIFY_SUCCESS: {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(491)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(491)), 0xFFFF00, 0, 0, 0);
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2));
         item.identified = 1;
         g_session.UpdateInventoryItem(item, 1);
         break;
       }
       case ITEMIDENTIFY_FAIL:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(492)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(492)), 0xFF, 0, 0, 0);
         break;
       }
       break;
     case ID_ZC_ITEMCOMPOSITION_LIST: {
       unsigned int count = (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4u) >> 1;
-      UIWindow *window = g_windowMgr.EnsureWindow(74);
-      window->SendMsg(nullptr, 75, 0, 0, 0, 0);
-      window->SendMsg(nullptr, 77, *reinterpret_cast<const int *>(this->unknown_045C), 0, 0, 0);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_ITEMCOMPOSITIONWND);
+      window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SET_CARD_ITEM_INDEX, *reinterpret_cast<const int *>(this->unknown_045C), 0, 0, 0);
       const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
       for (; count != 0; --count, ++index) {
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
         if (item.unknown_0000[1]) {
-          window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
+          window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
         }
       }
-      window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       break;
     }
     case ID_ZC_ACK_REQ_HOSTILE_GUILD:
       switch (g_gameModePacketBuffer[2]) {
       case RESULT_HOSTILE_SUCCESS:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(495)), 0xFFFF00, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(495)), 0xFFFF00, 4, 0, 0);
         break;
       case RESULT_HOSTILE_OVERSIZE:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(496)), 0xFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(496)), 0xFF, 4, 0, 0);
         break;
       case RESULT_HOSTILE_ALREADY_HOSTILE:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(497)), 0xFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(497)), 0xFF, 4, 0, 0);
         break;
       case 3:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1718)), 0xFF, 4, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1718)), 0xFF, 4, 0, 0);
         break;
       }
       break;
@@ -22898,21 +22902,21 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_NOTIFY_MAPINFO:
       switch (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2)) {
       case TELEPORT_IMPOSSIBLE_AREA:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(500)), 0xFF, 0, 0, 0);
-        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(500)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(500)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(500)), 0xFF, 0, 0, 0);
         break;
       case 1:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(501)), 0xFFFF00, 0, 0, 0);
-        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(501)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(501)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(501)), 0xFFFF00, 0, 0, 0);
         break;
       case IMPOSSIBLE_AREA_SKILL:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1334)), 0xFFFF00, 0, 0, 0);
-        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(1334)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1334)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(1334)), 0xFFFF00, 0, 0, 0);
         break;
       case IMPOSSIBLE_AREA_USEITEM:
         this->unknown_02CC = 0;
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1335)), 0xFFFF00, 0, 0, 0);
-        g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(1335)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1335)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(1335)), 0xFFFF00, 0, 0, 0);
         break;
       }
       break;
@@ -22920,17 +22924,17 @@ void CGameMode::ProcessIncomingPackets() {
       switch (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2)) {
       case DISCONNECTABLE_STATE:
         GetRagConnection().Close();
-        this->SendMsg(2, 0, 0, 0, 0);
+        this->SendMsg(MM_QUIT, 0, 0, 0, 0);
         break;
       case NOTDISCONNECTABLE_STATE:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(502)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(502)), 0xFF, 0, 0, 0);
         break;
       }
       break;
     case ID_ZC_MONSTER_INFO: {
       const std::uint16_t id = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2);
       if (id != 1285 && id != 1286 && id != 1287 && id != 1829 && id != 1830) {
-        g_windowMgr.EnsureWindow(77)->SendMsg(nullptr, 79, reinterpret_cast<std::intptr_t>(g_gameModePacketBuffer), 0, 0, 0);
+        g_windowMgr.EnsureWindow(WID_MONSTERINFOWND)->SendMsg(nullptr, UM_SET_MONSTER_INFO, reinterpret_cast<std::intptr_t>(g_gameModePacketBuffer), 0, 0, 0);
       }
       break;
     }
@@ -22940,18 +22944,18 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.Confirm(LookupMessage(424), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
-      g_windowMgr.CloseWindow(79);
-      UIWindow *window = g_windowMgr.EnsureWindow(79);
+      g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_MAKETARGETLISTWND);
       const int *record = reinterpret_cast<const int *>(g_gameModePacketBuffer + 4);
       for (; count != 0; --count, record += 4) {
-        window->SendMsg(nullptr, 31, *record, 0, 0, 0);
+        window->SendMsg(nullptr, UM_ADDITEM, *record, 0, 0, 0);
       }
       break;
     }
     case ID_ZC_TALKBOX_CHATCONTENTS:
       if (CRenderObject *skill = this->scene->GetSkillByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
         const int textAddress = reinterpret_cast<int>(g_gameModePacketBuffer + 6);
-        skill->SendMsg(nullptr, 7, 0, textAddress, textAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        skill->SendMsg(nullptr, AM_CHAT, 0, textAddress, textAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
     case ID_ZC_UPDATE_MAPINFO: {
@@ -22981,7 +22985,7 @@ void CGameMode::ProcessIncomingPackets() {
         g_serviceOptions.Set(229, 1);
         break;
       case MAPPROPERTY_PKSERVERZONE:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(855)), 0x9B9BFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(855)), 0x9B9BFF, 0, 0, 0);
         break;
       }
       if (g_session.GetMapProperty0F()) {
@@ -22997,14 +23001,14 @@ void CGameMode::ProcessIncomingPackets() {
       std::int16_t &value = *reinterpret_cast<std::int16_t *>(packet + 0x1B);
       if (value >= 10000) {
         value -= 10000;
-        if (UIItemCollectionWnd *window = static_cast<UIItemCollectionWnd *>(g_windowMgr.EnsureWindow(12))) {
+        if (UIItemCollectionWnd *window = static_cast<UIItemCollectionWnd *>(g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND))) {
           window->unknown_0218 = value;
           window->unknown_021A = *reinterpret_cast<const std::int16_t *>(packet + 0x1D);
           window->unknown_021C = *reinterpret_cast<const std::int16_t *>(packet + 0x1F);
           window->unknown_0236 = *reinterpret_cast<const std::uint16_t *>(packet + 0x21);
           window->unknown_0238 = packet[0x1A];
           sprintf(reinterpret_cast<char *>(window->unknown_021E), reinterpret_cast<const char *>(packet + 2));
-          window->SendMsg(nullptr, 29, 0, 0, 0, 0);
+          window->SendMsg(nullptr, UM_SETTEXT, 0, 0, 0, 0);
         }
         break;
       }
@@ -23025,16 +23029,16 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_PETEGG_LIST: {
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) >> 1;
-      UIWindow *window = g_windowMgr.EnsureWindow(90);
-      window->SendMsg(nullptr, 75, 0, 0, 0, 0);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_PETEGGLISTWND);
+      window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
       const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++index) {
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
         if (item.unknown_0000[1]) {
-          window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
+          window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
         }
       }
-      window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       break;
     }
     case ID_ZC_PAR_CHANGE_USER:
@@ -23047,27 +23051,27 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_SKILL_UPDATE:
       if (CGameActor *skill = static_cast<CGameActor *>(this->scene->GetSkillByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
         if (skill->GetEffectiveJob(-1) > 138 && skill->GetEffectiveJob(-1) <= 153) {
-          skill->SendMsg(nullptr, 119, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          skill->SendMsg(nullptr, AM_SKILL_UPDATE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
         switch (skill->GetEffectiveJob(-1)) {
         case UNT_DEEPBLINDTRAP:
         case UNT_SOLIDTRAP:
         case UNT_SWIFTTRAP:
         case UNT_FLAMETRAP:
-          skill->SendMsg(nullptr, 119, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          skill->SendMsg(nullptr, AM_SKILL_UPDATE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
           break;
         }
       }
       break;
     case ID_ZC_MAKINGARROW_LIST: {
       const unsigned int count = static_cast<unsigned int>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4) >> 2;
-      UIWindow *window = g_windowMgr.EnsureWindow(94);
-      window->SendMsg(nullptr, 75, 0, 0, 0, 0);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_MAKINGARROWLISTWND);
+      window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
       const unsigned char *entry = g_gameModePacketBuffer + 4;
       for (unsigned int i = count; i != 0; --i, entry += 4) {
-        window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+        window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
       }
-      window->SendMsg(nullptr, 34, 2, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, 2, 0, 0, 0);
       break;
     }
     case ID_ZC_NPCSPRITE_CHANGE:
@@ -23112,7 +23116,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (position == 255) {
         position = -1;
       }
-      this->SendMsg(100, reinterpret_cast<int>(name), position, 0, 0);
+      this->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(name), position, 0, 0);
       break;
     }
     case ID_ZC_CHANGE_GUILD_01b4:
@@ -23138,10 +23142,10 @@ void CGameMode::ProcessIncomingPackets() {
                   remaining / 60, remaining % 60);
           break;
         }
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
       } else if (g_serviceType == 6) {
         sprintf(message, "Sisa waktu voucher kamu adalah %d menit.", remaining / 60);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
       }
       break;
     }
@@ -23167,7 +23171,7 @@ void CGameMode::ProcessIncomingPackets() {
           if (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 4) != 103061) {
             break;
           }
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4209)), 0xFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(4209)), 0xFF, 0, 0, 0);
         }
       }
       if (g_gameModePacketBuffer[0xE]) {
@@ -23187,11 +23191,11 @@ void CGameMode::ProcessIncomingPackets() {
       if (count <= 0) {
         break;
       }
-      if (UIWindow *window = g_windowMgr.EnsureWindow(99)) {
+      if (UIWindow *window = g_windowMgr.EnsureWindow(WID_SPELLLISTWND)) {
         for (const int *skill = reinterpret_cast<const int *>(g_gameModePacketBuffer + 2); skill < reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1E);
              ++skill) {
           if (*skill) {
-            window->SendMsg(nullptr, 31, *skill, 0, 0, 0);
+            window->SendMsg(nullptr, UM_ADDITEM, *skill, 0, 0, 0);
           }
         }
       }
@@ -23204,7 +23208,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_OPEN_EDITDLGSTR:
       if (this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)) ||
           *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == 0) {
-        g_windowMgr.EnsureWindow(100)->SendMsg(nullptr, 28, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
+        g_windowMgr.EnsureWindow(WID_NPCTEXTEDITDIALOGWND)->SendMsg(nullptr, UM_SETNAID, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
       }
       break;
     case ID_ZC_NOTIFY_MAPPROPERTY2: {
@@ -23255,19 +23259,19 @@ void CGameMode::ProcessIncomingPackets() {
       name[24] = 0;
       *reinterpret_cast<int *>(this->unknown_028C) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
       *reinterpret_cast<int *>(this->unknown_028C + 4) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
-      g_windowMgr.EnsureWindow(104)->SendMsg(nullptr, 90, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
+      g_windowMgr.EnsureWindow(WID_COUPLEACCEPTWND)->SendMsg(nullptr, UM_SET_COUPLE_MSG, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
                                            0);
       break;
     }
     case ID_ZC_NOTIFY_POSITION_TO_GUILDM:
       if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) != g_session.m_aid) {
-        this->SendMsg(170, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 6),
+        this->SendMsg(MM_ADDGUILDPOS, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 6),
                       *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 8), 0);
       }
       break;
     case 0x1EC:
       if (strcmp(g_session.m_navigationPlayerMap, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA))) {
-        this->SendMsg(171, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), 0, 0, 0);
+        this->SendMsg(MM_DELETEGUILDPOS, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), 0, 0, 0);
         if (CGameActor *actor =
                 static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6)))) {
           actor->SetUnknown02E4(0);
@@ -23323,7 +23327,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case 0x1F0: {
-      g_windowMgr.EnsureWindow(33);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemRecord);
       const CardItemRecord *record = reinterpret_cast<const CardItemRecord *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++record) {
@@ -23352,23 +23356,23 @@ void CGameMode::ProcessIncomingPackets() {
           *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x10), *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 0x12));
       std::string name = LookupPlayerName(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6));
       if (name.size()) {
-        this->SendMsg(140, reinterpret_cast<int>(name.c_str()), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA), 0, 0);
+        this->SendMsg(MM_GUILD_MEMBER_STATUS_CHANGE, reinterpret_cast<int>(name.c_str()), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA), 0, 0);
       }
       if (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA) == 0) {
-        this->SendMsg(171, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
+        this->SendMsg(MM_DELETEGUILDPOS, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), 0, 0, 0);
       }
       break;
     }
     case ID_ZC_REQ_EXCHANGE_ITEM: {
       if (g_serviceOptions.Get(136)) {
-        g_modeMgr.gameMode->SendMsg(50, 4, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
         break;
       }
 
       char name[25];
       std::memcpy(name, g_gameModePacketBuffer + 2, 24);
       name[24] = '\0';
-      g_windowMgr.EnsureWindow(32)->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(name), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1A),
+      g_windowMgr.EnsureWindow(WID_EXCHANGEACCEPTWND)->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(name), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1A),
                                           *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1E), 0);
       this->exchangeName.assign(name, strlen(name));
       break;
@@ -23379,7 +23383,7 @@ void CGameMode::ProcessIncomingPackets() {
       name[24] = 0;
       *reinterpret_cast<int *>(this->unknown_028C) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
       *reinterpret_cast<int *>(this->unknown_028C + 4) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
-      g_windowMgr.EnsureWindow(105)->SendMsg(nullptr, 91, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
+      g_windowMgr.EnsureWindow(WID_BABYACCEPTWND)->SendMsg(nullptr, UM_SET_BABY_MSG, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
                                            0);
       break;
     }
@@ -23389,21 +23393,21 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.Confirm(LookupMessage(424), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
-      g_windowMgr.CloseWindow(107);
-      UIWindow *window = g_windowMgr.EnsureWindow(107);
+      g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_ITEMREPAIRWND);
       const unsigned char *record = g_gameModePacketBuffer + 4;
       for (int i = 0; i < count; ++i, record += 23) {
-        window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(record), 0, 0, 0);
+        window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(record), 0, 0, 0);
       }
       break;
     }
     case ID_ZC_ACK_ITEMREPAIR:
       switch (g_gameModePacketBuffer[4]) {
       case ITEMREPAIR_SUCCESS:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(813)), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(813)), 0xFFFF00, 0, 0, 0);
         break;
       case ITEMREPAIR_FAIL:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(814)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(814)), 0xFF, 0, 0, 0);
         break;
       }
       break;
@@ -23428,8 +23432,8 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_DIVORCE: {
       char message[1024];
       sprintf(message, LookupMessage(836), g_session.DecodePlayerName(), reinterpret_cast<const char *>(g_gameModePacketBuffer + 2));
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 0, 0, 0);
       break;
     }
     case ID_ZC_FRIENDS_STATE:
@@ -23446,10 +23450,10 @@ void CGameMode::ProcessIncomingPackets() {
       name[24] = 0;
       const unsigned char option = g_serviceOptions.Get(136);
       if (IsMonsterJob(g_session.m_aid) || option) {
-        g_modeMgr.gameMode->SendMsg(175, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
+        g_modeMgr.gameMode->SendMsg(MM_JOIN_FRIEND, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
                                     0, 0);
       } else {
-        g_windowMgr.EnsureWindow(109)->SendMsg(nullptr, 95, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2),
+        g_windowMgr.EnsureWindow(WID_JOINFRIENDACCEPTWND)->SendMsg(nullptr, UM_SET_JOIN_FRIEND_MSG, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2),
                                              *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0);
       }
       break;
@@ -23465,13 +23469,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_BABYMSG:
       switch (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2)) {
       case 0:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(899)), 0x9B9BFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(899)), 0x9B9BFF, 0, 0, 0);
         break;
       case 1:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(900)), 0x9B9BFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(900)), 0x9B9BFF, 0, 0, 0);
         break;
       case 2:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(916)), 0x9B9BFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(916)), 0x9B9BFF, 0, 0, 0);
         break;
       }
       break;
@@ -23481,13 +23485,13 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.Confirm(LookupMessage(424), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
-      if (g_windowMgr.LookupWindow(111)) {
-        g_windowMgr.CloseWindow(111);
+      if (g_windowMgr.LookupWindow(WID_WEAPONREFINEWND)) {
+        g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
       }
-      UIWindow *window = g_windowMgr.EnsureWindow(111);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_WEAPONREFINEWND);
       const unsigned char *record = g_gameModePacketBuffer + 4;
       for (int i = 0; i < count; ++i, record += 23) {
-        window->SendMsg(nullptr, 31, *reinterpret_cast<const int *>(record + 2), *reinterpret_cast<const std::int16_t *>(record), 0, 0);
+        window->SendMsg(nullptr, UM_ADDITEM, *reinterpret_cast<const int *>(record + 2), *reinterpret_cast<const std::int16_t *>(record), 0, 0);
       }
       break;
     }
@@ -23505,35 +23509,35 @@ void CGameMode::ProcessIncomingPackets() {
         reinterpret_cast<int *>(g_session.unknown_0F0C)[1] = state[2];
         g_session.m_jobFlags = state[1];
         if (g_windowMgr.unknown_01E0) {
-          g_windowMgr.unknown_01E0->SendMsg(nullptr, 60, 0, 0, 0, 0);
+          g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
         }
         if (g_session.unknown_5C1C <= 0) {
           g_session.ClearItems1740();
-          g_windowMgr.CloseWindow(40);
+          g_windowMgr.CloseWindow(WID_MERCHANTITEMWND);
         }
       } else {
         actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2));
       }
       if (actor) {
         const int stateAddress = reinterpret_cast<int>(state);
-        actor->SendMsg(nullptr, 43, 0, stateAddress, stateAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_ATTR_STATE_CHANGE, 0, stateAddress, stateAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
     }
     case ID_ZC_STARPLACE:
-      g_windowMgr.EnsureWindow(119)->SendMsg(nullptr, 91, static_cast<signed char>(g_gameModePacketBuffer[2]), 0, 0, 0);
+      g_windowMgr.EnsureWindow(WID_STARPLACEACCEPTWND)->SendMsg(nullptr, UM_SET_BABY_MSG, static_cast<signed char>(g_gameModePacketBuffer[2]), 0, 0, 0);
       break;
     case ID_ZC_MAKINGITEM_LIST: {
       const unsigned int count = static_cast<unsigned int>(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 6) >> 2;
-      UIWindow *window = g_windowMgr.EnsureWindow(94);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_MAKINGARROWLISTWND);
       if (!window) {
         break;
       }
-      window->SendMsg(nullptr, 75, 0, 0, 0, 0);
-      window->SendMsg(nullptr, 34, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4), 0, 0, 0);
       const unsigned char *entry = g_gameModePacketBuffer + 6;
       for (unsigned int i = count; i != 0; --i, entry += 4) {
-        window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+        window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
       }
       break;
     }
@@ -23544,7 +23548,7 @@ void CGameMode::ProcessIncomingPackets() {
       manager->m_ongoingQuests.erase(id);
       manager->UpdateQuestWindows();
       std::string message = FormatOwnedString(LookupMessage(1611), title.c_str());
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, 19, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, 19, 0, 0);
       break;
     }
     case ID_ZC_ACTIVE_QUEST:
@@ -23556,7 +23560,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (item.unknown_0000[1]) {
         std::string name = item.DisplayName(0);
         std::string message = FormatOwnedString(LookupMessage(1328), name.c_str());
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0x6EFFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0x6EFFFF, 0, 0, 0);
       }
       break;
     }
@@ -23582,7 +23586,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     case ID_ZC_BATTLEFIELD_NOTIFY_POSITION:
       if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) != g_session.m_aid) {
-        this->SendMsg(63, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x20),
+        this->SendMsg(MM_ADDPARTYPOS, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x20),
                       *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x22), 0);
       }
       break;
@@ -23593,7 +23597,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
         const int x = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1E);
         const int y = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x20);
-        actor->SendMsg(nullptr, 34, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
     case ID_ZC_NOTIFY_ACT2:
@@ -23654,7 +23658,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case 0x2ea: {
-      g_windowMgr.EnsureWindow(33);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(CardItemExpiryRecord);
       const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++entry) {
@@ -23687,13 +23691,13 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     case ID_ZC_PROGRESS:
       if (CPlayer *player = this->scene->player) {
-        player->SendMsg(nullptr, 82, 0, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6) * 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        player->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, 0, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6) * 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_session.unknown_555C[0x0A] = true;
       }
       break;
     case 0x2F2:
       if (CPlayer *player = this->scene->player) {
-        player->SendMsg(nullptr, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        player->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         if (*reinterpret_cast<const int *>(&player->render.unknown_0060) == 8) {
           player->SetState(0, 1);
         }
@@ -23709,11 +23713,11 @@ void CGameMode::ProcessIncomingPackets() {
       this->scene->player->SetGuildInfo(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6));
       if (!g_guildInfo.unknown_00C8) {
         g_guildInfo.unknown_00C8 = 1;
-        g_modeMgr.gameMode->SendMsg(107, 3, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 3, 0, 0, 0);
       }
       if (!g_guildInfo.unknown_00C0) {
         g_guildInfo.unknown_00C0 = 1;
-        g_modeMgr.gameMode->SendMsg(107, 1, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
       }
       break;
     }
@@ -23725,11 +23729,11 @@ void CGameMode::ProcessIncomingPackets() {
       if (count == 0) {
         break;
       }
-      if (UIWindow *window = g_windowMgr.EnsureWindow(99)) {
-        window->SendMsg(nullptr, 27, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), 0, 0, 0);
+      if (UIWindow *window = g_windowMgr.EnsureWindow(WID_SPELLLISTWND)) {
+        window->SendMsg(nullptr, UM_SETCHOOSE, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), 0, 0, 0);
         const std::uint16_t *skills = reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8);
         for (int i = 0; i < count; ++i) {
-          window->SendMsg(nullptr, 31, skills[i], 0, 0, 0);
+          window->SendMsg(nullptr, UM_ADDITEM, skills[i], 0, 0, 0);
         }
       }
       break;
@@ -23741,9 +23745,9 @@ void CGameMode::ProcessIncomingPackets() {
       sprintf(message, LookupMessage(1930), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x1E),
               reinterpret_cast<const char *>(g_gameModePacketBuffer + 2), job);
       if (g_windowMgr.window_027C) {
-        g_windowMgr.SendNotice(5, reinterpret_cast<std::intptr_t>(message), 0x222222, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(message), 0x222222, 0, 0, 0);
       } else if (!g_serviceOptions.Get(114) && !g_serviceOptions.Get(148)) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 1, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 1, 0, 0);
       }
       if (g_session.m_whisperRecord) {
         this->WriteChatLog(message);
@@ -23763,7 +23767,7 @@ void CGameMode::ProcessIncomingPackets() {
       char message[256];
       sprintf(message, "[%s] %s", CSkillInfo::DisplayName(*g_session.m_hotkeyScript, *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2)),
               text);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFCDCD, 11, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFCDCD, 11, 0, 0);
       break;
     }
     case ID_ZC_USESKILL_ACK2:
@@ -24159,10 +24163,10 @@ void CGameMode::ProcessIncomingPackets() {
         if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
           const int hp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
           const int maxHp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA);
-          actor->SendMsg(nullptr, 34, 0, hp, hp >> 31, maxHp, maxHp >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+          actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, hp, hp >> 31, maxHp, maxHp >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
         }
         if (g_windowMgr.window_02C8) {
-          g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2),
+          g_windowMgr.window_02C8->SendMsg(nullptr, UM_COMMAND, 34, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2),
                                            *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
                                            *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA));
         }
@@ -24180,9 +24184,9 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     case ID_ZC_SE_CASHSHOP_OPEN_0845:
     case ID_ZC_SE_CASHSHOP_OPEN_0a2b:
-      if (!g_windowMgr.CloseWindow(318)) {
-        if (UIWindow *window = g_windowMgr.EnsureWindow(318)) {
-          window->SendMsg(nullptr, 120, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
+      if (!g_windowMgr.CloseWindow(WID_CASHSHOP_WND)) {
+        if (UIWindow *window = g_windowMgr.EnsureWindow(WID_CASHSHOP_WND)) {
+          window->SendMsg(nullptr, UM_SET_CASHSHOP_BALANCE, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
                           0, 0);
         } else {
           std::int16_t packetType = 0x844;
@@ -24213,7 +24217,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
 
       const int entryAddress = reinterpret_cast<int>(&entry);
-      item->SendMsg(nullptr, 4, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      item->SendMsg(nullptr, AM_INITSTANDENTRY, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
     case ID_ZC_NOTIFY_ACT:
@@ -24243,7 +24247,7 @@ void CGameMode::ProcessIncomingPackets() {
         break;
       }
       case ITEM_EQUIP_ACK_FAILLEVEL:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1953)), 0xFF, 7, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1953)), 0xFF, 7, 0, 0);
         break;
       }
       break;
@@ -24264,14 +24268,14 @@ void CGameMode::ProcessIncomingPackets() {
         break;
       }
       case 1:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1953)), 0xFF, 7, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1953)), 0xFF, 7, 0, 0);
         break;
       }
       break;
     }
     case 0x8D3:
-      if (UIWindow *window = g_windowMgr.LookupWindow(318)) {
-        window->SendMsg(nullptr, 122, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), 0,
+      if (UIWindow *window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND)) {
+        window->SendMsg(nullptr, UM_UPDATE_CASHSHOP_BALANCE, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), 0,
                         0);
       }
       break;
@@ -24411,7 +24415,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->ReceiveFeedConfig(g_gameModePacketBuffer[0x2], g_gameModePacketBuffer[0x3]);
       break;
     case ID_ZC_OPEN_REFINING_UI:
-      g_windowMgr.EnsureWindow(295);
+      g_windowMgr.EnsureWindow(WID_REFININGWND);
       break;
     case ID_ZC_RANDOM_UPGRADE_ITEM_UI_OPEN:
       this->ReceiveLapineUpgradeBoxValue(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x2));
@@ -24720,33 +24724,33 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_WAIT_DIALOG2:
       this->unknown_024C = 1;
       this->unknown_02DC = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
-      g_windowMgr.EnsureWindow(226)->SendMsg(nullptr, 25, 0, 0, 0, 0);
+      g_windowMgr.EnsureWindow(WID_SAYDIALOGWND_OVERLAY)->SendMsg(nullptr, UM_ENABLENEXTBUTTON, 0, 0, 0, 0);
       break;
     case 0xBEE:
       switch (g_gameModePacketBuffer[4]) {
       case 0:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_NYANGVINE")), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_NYANGVINE")), 0xFF, 0, 0, 0);
         break;
       case 1:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_DATE")), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_DATE")), 0xFF, 0, 0, 0);
         this->RefreshEmotionSaleSchedule();
         break;
       case 2:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ALREADY_BUY")), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ALREADY_BUY")), 0xFF, 0, 0, 0);
         break;
       case 3:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ANOTHER_SALE_BUY")), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ANOTHER_SALE_BUY")), 0xFF, 0, 0, 0);
         break;
       case 4:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 0xFF, 0,
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 0xFF, 0,
                                0, 0);
         break;
       case 5:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME")), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME")), 0xFF, 0, 0, 0);
         this->RefreshEmotionSaleSchedule();
         break;
       default:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_UNKNOWN")), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_UNKNOWN")), 0xFF, 0, 0, 0);
         break;
       }
       break;
@@ -24800,7 +24804,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     case progressbarunit:
       if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
-        actor->SendMsg(nullptr, 82, 0, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA) * 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, 0, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA) * 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
     case ID_ZC_ADVENTURER_AGENCY_JOIN_REQ: {
@@ -24826,7 +24830,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xBED:
       g_cashEmotionMgr->AcquirePack(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2),
                                     g_gameModePacketBuffer[4] ? *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 5) : 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_BUY_SUCCESS")), 0xFFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_BUY_SUCCESS")), 0xFFFF, 0, 0, 0);
       this->RefreshEmotionPurchaseSchedule();
       break;
     case ID_ZC_BATTLEFIELD_NOTIFY_HP:
@@ -24834,7 +24838,7 @@ void CGameMode::ProcessIncomingPackets() {
         if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
           const int hp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
           const int maxHp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0xA);
-          actor->SendMsg(nullptr, 34, 0, hp, hp >> 31, maxHp, maxHp >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+          actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, hp, hp >> 31, maxHp, maxHp >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
         }
       }
       break;
@@ -24850,7 +24854,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->ReceiveUnknownD264E0(g_gameModePacketBuffer);
       this->miniMapTooltipId = -1;
       this->miniMapTooltipText.assign("", 0);
-      g_windowMgr.CloseWindow(78);
+      g_windowMgr.CloseWindow(WID_ILLUSTWND);
       g_windowMgr.RestoreHiddenWindows();
       this->miniMapTooltipWindows.clear();
       break;
@@ -24867,24 +24871,24 @@ void CGameMode::ProcessIncomingPackets() {
       }
       const int first = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 6);
       const int second = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 8);
-      actor->SendMsg(nullptr, 160, 0, first, first >> 31, second, second >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_CASH_EMOTION, 0, first, first >> 31, second, second >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
     case 0xBEB:
       switch (g_gameModePacketBuffer[6]) {
       case 0:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_DATE")), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_DATE")), 0xFF, 0, 0, 0);
         g_cashEmotionMgr->RemoveOwnedPack(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2), true, true);
         this->RefreshEmotionPurchaseSchedule();
         break;
       case 1:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNPURCHASED")), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNPURCHASED")), 0xFF, 0, 0, 0);
         break;
       case 2:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_USE_FAIL_SKILL_LEVEL")), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_USE_FAIL_SKILL_LEVEL")), 0xFF, 0, 0, 0);
         break;
       default:
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNKNOWN")), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNKNOWN")), 0xFF, 0, 0, 0);
         break;
       }
       this->unknown_026E[0x16] = 0;
@@ -24903,7 +24907,7 @@ void CGameMode::ProcessIncomingPackets() {
         memcpy(text, packet + 9, length);
       }
       text[length] = 0;
-      g_windowMgr.EnsureWindow(226)->SendMsg(nullptr, 26, reinterpret_cast<std::intptr_t>(text), *reinterpret_cast<const int *>(packet + 4), 0, 0);
+      g_windowMgr.EnsureWindow(WID_SAYDIALOGWND_OVERLAY)->SendMsg(nullptr, UM_SETSAYDIALOG, reinterpret_cast<std::intptr_t>(text), *reinterpret_cast<const int *>(packet + 4), 0, 0);
       break;
     }
     case 0xBF6: {
@@ -24956,13 +24960,13 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_VIEW_CAMERAINFO:
       if (g_gameModePacketBuffer[2] == 1) {
-        UIWindow *window = g_windowMgr.LookupWindow(289);
+        UIWindow *window = g_windowMgr.LookupWindow(WID_VIEWCAMERAINFOWND);
         if (!window) {
-          window = g_windowMgr.EnsureWindow(289);
+          window = g_windowMgr.EnsureWindow(WID_VIEWCAMERAINFOWND);
         }
         g_session.unknown_61B1 = !g_session.unknown_61B1;
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_session.unknown_61B1 == true ? "Camera Info On" : "Camera Info Off"), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_session.unknown_61B1 == true ? "Camera Info On" : "Camera Info Off"), 0x64FFFF, 0, 0, 0);
         window->Show(g_session.unknown_61B1);
       } else if (CView *camera = this->camera) {
         camera->camera.desiredDistance = *reinterpret_cast<const float *>(g_gameModePacketBuffer + 3);
@@ -24981,11 +24985,11 @@ void CGameMode::ProcessIncomingPackets() {
       }
       if (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 27 > 0) {
         CGraffiSkill *skill = new CGraffiSkill;
-        skill->SendMsg(nullptr, 22, 0, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        skill->SendMsg(nullptr, AM_SETMASTERGID, 0, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         const int address = reinterpret_cast<int>(g_gameModePacketBuffer + 0x1B);
         const int x = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x10);
         const int y = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x12);
-        skill->SendMsg(nullptr, 117, 0, address, address >> 31, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0);
+        skill->SendMsg(nullptr, AM_SET_SKILL, 0, address, address >> 31, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0);
         this->scene->objects.push_back(skill);
         this->scene->unknown_0020.push_back(skill);
       }
@@ -24993,46 +24997,46 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_DEBUGMSG: {
       std::string text(reinterpret_cast<const char *>(g_gameModePacketBuffer + 8),
                        reinterpret_cast<const char *>(g_gameModePacketBuffer + *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2)));
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 4), 0, 0, 0);
       break;
     }
     case ID_ZC_ACK_OPENSTORE2:
       switch (g_gameModePacketBuffer[2]) {
       case OPENSTORE2_SUCCESS:
-        if (UIWindow *window = g_windowMgr.EnsureWindow(45)) {
-          window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        if (UIWindow *window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMMYSHOPWND)) {
+          window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         }
-        if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.EnsureWindow(41))) {
+        if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.EnsureWindow(WID_MERCHANTSHOPMAKEWND))) {
           window->PrintSellList();
         }
-        g_windowMgr.CloseWindow(41);
+        g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
         this->unknown_024C = 1;
         break;
       case OPENSTORE2_FAILED:
-        this->SendMsg(40, 0, 0, 0, 0);
-        g_windowMgr.CloseWindow(43);
-        g_windowMgr.CloseWindow(44);
+        this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND);
+        g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
         g_session.ClearItems1760And1748();
         g_session.ClearItems1758();
         g_windowMgr.Confirm(LookupMessage(2639), 0, true, false, 0, "Message", 280, 120, 0);
-        g_windowMgr.CloseWindow(41);
+        g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
         break;
       case OPENSTORE2_NOVENDING:
-        this->SendMsg(40, 0, 0, 0, 0);
-        g_windowMgr.CloseWindow(43);
-        g_windowMgr.CloseWindow(44);
+        this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND);
+        g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
         g_session.ClearItems1760And1748();
         g_session.ClearItems1758();
-        g_windowMgr.CloseWindow(41);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3229)), 0xFF, 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3229)), 0xFF, 0, 0, 0);
         break;
       }
       break;
     case 0xB55: {
       std::string text(reinterpret_cast<const char *>(g_gameModePacketBuffer + 4),
                        reinterpret_cast<const char *>(g_gameModePacketBuffer + *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2)));
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
       break;
     }
     case questUpdateType2: {
@@ -25110,7 +25114,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case 0x904: {
-      g_windowMgr.EnsureWindow(33);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(FlaggedItemRecord);
       for (int i = 0; i < count; ++i) {
         const FlaggedItemRecord *record = reinterpret_cast<const FlaggedItemRecord *>(g_gameModePacketBuffer + 4) + i;
@@ -25161,7 +25165,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case 0x905: {
-      g_windowMgr.EnsureWindow(33);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
       const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2) - 4) / sizeof(FlaggedEquipRecord);
       for (int i = 0; i < count; ++i) {
         const FlaggedEquipRecord *record = reinterpret_cast<const FlaggedEquipRecord *>(g_gameModePacketBuffer + 4) + i;
@@ -25199,7 +25203,7 @@ void CGameMode::ProcessIncomingPackets() {
       case 5:
       case 10:
         if (*reinterpret_cast<int *>(g_session.unknown_5620) != *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D)) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1018)), 0xFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1018)), 0xFF, 0, 0, 0);
           *reinterpret_cast<int *>(g_session.unknown_5620) = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D);
         }
         break;
@@ -25228,7 +25232,7 @@ void CGameMode::ProcessIncomingPackets() {
       *reinterpret_cast<int *>(g_session.unknown_1664) = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x49);
       g_session.InvalidateWindowFrames();
       if (g_windowMgr.window_03C4) {
-        g_windowMgr.window_03C4->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        g_windowMgr.window_03C4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       reinterpret_cast<int *>(g_session.unknown_5620)[1] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x4B);
       break;
@@ -25251,8 +25255,8 @@ void CGameMode::ProcessIncomingPackets() {
         item.id = *reinterpret_cast<const int *>(record + 0x15);
         g_barterMarketItemMgr->items.push_back(item);
       }
-      g_windowMgr.EnsureWindow(334)->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      g_windowMgr.EnsureWindow(335)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      g_windowMgr.EnsureWindow(WID_BARTERMARKETWND)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      g_windowMgr.EnsureWindow(WID_BARTERITEMPURCHASEWND)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       break;
     }
     case ID_ZC_NPC_MARKET_OPEN_09d5: {
@@ -25272,12 +25276,12 @@ void CGameMode::ProcessIncomingPackets() {
         g_session.AddItem1718(item, *reinterpret_cast<const int *>(entry + 9),
                               static_cast<std::uint16_t>(*reinterpret_cast<const std::uint16_t *>(entry + 0xD) / 10));
       }
-      UIWindow *window = g_windowMgr.EnsureWindow(254);
-      window->SendMsg(nullptr, 36, 0, 0, 0, 0);
-      window->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      window = g_windowMgr.EnsureWindow(255);
-      window->SendMsg(nullptr, 36, 0, 0, 0, 0);
-      window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_PARAITEMSHOPWND);
+      window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      window = g_windowMgr.EnsureWindow(WID_PARAITEMPURCHASEWND);
+      window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       break;
     }
     default:

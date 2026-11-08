@@ -1,4 +1,6 @@
 #include "Render/Text/FontCache.h"
+#include "UI/Window/UIEnums.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Render/Text/TextContext.h"
 #include "UI/UIIngredientInfoWnd.h"
 #include "UI/UILapineScrollBar.h"
@@ -129,12 +131,12 @@ void UILapineBoxWnd::DragAndDrop(int, int, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (this->items.size() < static_cast<unsigned>(this->maxItems) && drag->source == 27) {
-    const int result = this->ingredientList->SendMsg(this, 104, drag->id, 0, 0, 0);
+    const int result = this->ingredientList->SendMsg(this, UM_DECITEM, drag->id, 0, 0, 0);
     if (result >= 0) {
       this->AddIngredient(drag->id, drag->quantity);
     }
   }
-  mode->SendMsg(18, 0, 0, 0, 0);
+  mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x005FF8B0
@@ -144,10 +146,10 @@ void UILapineBox_IngredientListWnd::DragAndDrop(int, int, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 26) {
     if (this->AddIngredient(drag->id) == 1) {
-      this->parent->SendMsg(this, 104, drag->id, 0, 0, 0);
+      this->parent->SendMsg(this, UM_DECITEM, drag->id, 0, 0, 0);
     }
   }
-  mode->SendMsg(18, 0, 0, 0, 0);
+  mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x005FF920
@@ -358,7 +360,7 @@ unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
 
   info->Invalidate();
   this->items.push_back(info);
-  this->SendMsg(this, 87, 0, 0, 0, 0);
+  this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
   return 1;
 }
 

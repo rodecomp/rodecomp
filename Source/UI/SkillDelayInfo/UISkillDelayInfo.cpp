@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/SkillDelayInfo/SkillDelayInfo.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
@@ -454,7 +456,7 @@ void CUISkillDelayInfo::OnButtonClick() {
 // OFFSET: 0x00A77B00
 // FUNCTION: fn_45472
 void CUISkillDelayInfo::OnClose() {
-  g_windowMgr.CloseWindow(0x272E);
+  g_windowMgr.CloseWindow(WID_SKILLDELAYINFO);
 }
 
 // OFFSET: 0x00A77B10
@@ -518,7 +520,7 @@ void CUITime::SetTime(int milliseconds) {
 // OFFSET: 0x00A78190
 // FUNCTION: fn_16888
 int CUISkillDelayInfo::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 60) {
+  if (message != UM_REFRESH) {
     return CUIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
   if (this->skillId != 7999) {
@@ -683,7 +685,7 @@ void CUISkillDelayInfo::OnCreate(int width, int height) {
   CUIImageButton* closeButton = new CUIImageButton();
   closeButton->SetSize(11, 11);
   closeButton->Move(331, 3);
-  closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(10030); });
+  closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(WID_SKILLDELAYINFO); });
   closeButton->disabled = 0;
   closeButton->Invalidate();
   closeButton->SetImages(

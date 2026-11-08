@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Text/NavigationLink.h"
 #include "Client/Mode/CMode.h"
 
@@ -1214,9 +1216,9 @@ void ShowTextButtonItem(UITextButton* button) {
   item.unknown_0000[0] = static_cast<std::uint32_t>(index);
   item.itemId = itemId;
   item.identified = 1;
-  UIWindow* window = g_windowMgr.EnsureWindow(0xC);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
   if (window) {
-    window->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -1232,7 +1234,7 @@ void ShowTextButtonTip(UITextButton* button) {
   }
 
   const int tip = std::atoi(button->GetLine(0).c_str());
-  UITipboxWnd* window = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(0x13B));
+  UITipboxWnd* window = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(WID_TIPBOXWND));
   if (window) {
     window->ShowTip(tip);
   }
@@ -1703,9 +1705,9 @@ void UIItemImage::OnRBtnDown(int, int) {
   ITEM_INFO item;
   item.itemId = this->m_itemId;
   item.identified = 1;
-  UIWindow* window = g_windowMgr.EnsureWindow(0xC);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
   if (window) {
-    window->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -1738,7 +1740,7 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
       continue;
     }
 
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xE8D)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xE8D)), 0xFF, 0, 0, 0);
     return true;
   }
 }

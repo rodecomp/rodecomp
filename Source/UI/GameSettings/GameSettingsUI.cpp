@@ -1,3 +1,6 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
+#include "Client/Mode/ModeMessage.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -1383,16 +1386,16 @@ void CUIGroup::Apply() {
 // FUNCTION: fn_15971
 void CUIGroupEmblem::Apply() {
   g_serviceOptions.Set(0xF3, 0);
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xDC8)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xDC8)), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00A40480
 // FUNCTION: fn_15972
 void CUIGroupLogInOut::Apply() {
   g_serviceOptions.Set(0xA5, 1);
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x414)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x414)), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00A404F0
@@ -1659,7 +1662,7 @@ void CUIGroupSound::SetBgmEnabled(bool enabled) {
   this->m_bgmSlider->Invalidate();
   g_serviceOptions.Set(7, enabled);
   if (previous != enabled) {
-    g_modeMgr.gameMode->SendMsg(0x5A, 0, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_REFRESH_MUSIC, 0, 0, 0, 0);
   }
 }
 
@@ -1683,16 +1686,16 @@ void CUIGroupSound::SetEffectVolume(int volume) {
 // FUNCTION: fn_15945
 void CUIGroupEmblem::SetEnabled(bool enabled) {
   g_serviceOptions.Set(0xF3, enabled);
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? 0xDC7 : 0xDC8)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? 0xDC7 : 0xDC8)), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00A3F5C0
 // FUNCTION: fn_15946
 void CUIGroupLogInOut::SetEnabled(bool enabled) {
   g_serviceOptions.Set(0xA5, enabled);
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? 0x414 : 0x415)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? 0x414 : 0x415)), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00A3F6B0
@@ -1954,13 +1957,13 @@ void CUIGameSettingsUI::OnApply() {
 // OFFSET: 0x00A3F170
 // FUNCTION: fn_45481
 void CUIGameSettingsUI::OnCloseButton() {
-  g_windowMgr.CloseWindow(10014);
+  g_windowMgr.CloseWindow(WID_GAMESETTINGSUI);
 }
 
 // OFFSET: 0x00A3F940
 // FUNCTION: fn_45482
 void CUIGameSettingsUI::OnTitleClose() {
-  g_windowMgr.CloseWindow(10014);
+  g_windowMgr.CloseWindow(WID_GAMESETTINGSUI);
 }
 
 // OFFSET: 0x00A40240
@@ -2034,7 +2037,7 @@ void CUIGameSettingsUI::SelectTab4() {
 // OFFSET: 0x00A41E50
 // FUNCTION: fn_16004
 void __stdcall OnFullscreenOptionChanged(int option) {
-  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
+  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(WID_GAMESETTINGSUI));
   if (wnd) {
     wnd->UpdateApplyButton();
   }
@@ -2043,7 +2046,7 @@ void __stdcall OnFullscreenOptionChanged(int option) {
 // OFFSET: 0x00A41FA0
 // FUNCTION: fn_16008
 void __stdcall OnTrilinearOptionChanged(int option) {
-  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
+  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(WID_GAMESETTINGSUI));
   if (wnd) {
     wnd->UpdateApplyButton();
   }
@@ -2052,7 +2055,7 @@ void __stdcall OnTrilinearOptionChanged(int option) {
 // OFFSET: 0x00A43000
 // FUNCTION: fn_16022
 void __stdcall OnSpriteDetailLevelChanged(int option) {
-  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
+  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(WID_GAMESETTINGSUI));
   if (wnd) {
     wnd->UpdateApplyButton();
   }
@@ -2061,7 +2064,7 @@ void __stdcall OnSpriteDetailLevelChanged(int option) {
 // OFFSET: 0x00A43040
 // FUNCTION: fn_16023
 void __stdcall OnTextureDetailLevelChanged(int option) {
-  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
+  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(WID_GAMESETTINGSUI));
   if (wnd) {
     wnd->UpdateApplyButton();
   }
@@ -2113,14 +2116,14 @@ void GameSettingsUI::CUIGroupTextureDetailLevel::OnInit() {
 // OFFSET: 0x00AA2760
 // FUNCTION: fn_17216
 void ToggleGameSettingsTab4() {
-  UIWindow* window = g_windowMgr.LookupWindow(0x271E);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_GAMESETTINGSUI);
   if (!window) {
-    window = g_windowMgr.EnsureWindow(0x271E);
+    window = g_windowMgr.EnsureWindow(WID_GAMESETTINGSUI);
   }
 
   CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(window);
   if (settings->IsTab4Selected()) {
-    g_windowMgr.CloseWindow(0x271E);
+    g_windowMgr.CloseWindow(WID_GAMESETTINGSUI);
     return;
   }
 
@@ -2130,7 +2133,7 @@ void ToggleGameSettingsTab4() {
 // OFFSET: 0x00AAB070
 // FUNCTION: fn_17277
 void UIWindowMgr::RefreshGameSettingOption(int option) {
-  CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(0x271E));
+  CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(WID_GAMESETTINGSUI));
   if (settings) {
     settings->RefreshOption(option);
   }
@@ -2139,7 +2142,7 @@ void UIWindowMgr::RefreshGameSettingOption(int option) {
 // OFFSET: 0x00AAB090
 // FUNCTION: fn_17278
 void UIWindowMgr::RefreshGameSettings() {
-  CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(0x271E));
+  CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(WID_GAMESETTINGSUI));
   if (settings) {
     settings->RefreshOptions();
   }
@@ -2148,7 +2151,7 @@ void UIWindowMgr::RefreshGameSettings() {
 // OFFSET: 0x00AAB0B0
 // FUNCTION: fn_17279
 void UIWindowMgr::RefreshGameSettingHotkeys() {
-  CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(0x271E));
+  CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(WID_GAMESETTINGSUI));
   if (settings) {
     settings->RefreshHotkeyLabels();
   }
@@ -2421,7 +2424,7 @@ void GameSettingsUI::CUIGroupGraphics::OnModeSelect(CUIComboItem* item, const Di
     auto node = list->data.begin();
     std::advance(node, static_cast<int>(list->selected));
     this->m_pendingMode = *node;
-    CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
+    CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(WID_GAMESETTINGSUI));
     if (wnd) {
       wnd->UpdateApplyButton();
     }
@@ -4437,7 +4440,7 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
     g_restartClient = true;
     GetRagConnection().Close();
     if (g_modeMgr.gameMode) {
-      g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     }
     return;
   }
@@ -5041,7 +5044,7 @@ void GameSettingsUI::CUIOptionItem::OnCreate(int width, int height) {
   this->m_label->Move(47, 6);
   this->m_label->SetOnClick([this]() {
     if (this->m_label->geometry.id > 0) {
-      if (UITipboxWnd* tipbox = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(0x13B))) {
+      if (UITipboxWnd* tipbox = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(WID_TIPBOXWND))) {
         tipbox->ShowTip(this->m_label->geometry.id);
       }
     }
@@ -5088,7 +5091,7 @@ void GameSettingsUI::CUIOptionItem::OnCreate(int width, int height) {
 // FUNCTION: fn_45512
 void GameSettingsUI::CUIOptionItem::OnClickLabel() {
   if (this->m_label->geometry.id > 0) {
-    if (UITipboxWnd* tipbox = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(0x13B))) {
+    if (UITipboxWnd* tipbox = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(WID_TIPBOXWND))) {
       tipbox->ShowTip(this->m_label->geometry.id);
     }
   }

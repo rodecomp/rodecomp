@@ -1,4 +1,5 @@
 #include "UI/Quest/UIRecommendedQuestInfo.h"
+#include "UI/Window/WindowId.h"
 
 #include "Contents/MessageTable.h"
 #include "Contents/RenewQuestMgr.h"
@@ -108,7 +109,7 @@ void CUIRecommendedQuestInfo::OnFirstAction() {
 // OFFSET: 0x00A58BB0
 // FUNCTION: fn_45469
 void CUIRecommendedQuestInfo::OnClose() {
-  g_windowMgr.CloseWindow(0x271A);
+  g_windowMgr.CloseWindow(WID_RECOMMENDEDQUESTINFO);
 }
 
 // OFFSET: 0x00A58BE0
@@ -116,7 +117,7 @@ void CUIRecommendedQuestInfo::OnClose() {
 void CUIRecommendedQuestInfo::OnInit() {
   const char* title = LookupMessage(0xD48);
   this->titleBar->SetTitle(title);
-  UIWindow* window = g_windowMgr.LookupWindow(0x2718);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_RENEWQUESTUI);
   if (window) {
     this->Move(window->geometry.x + window->geometry.width, window->geometry.y);
   } else {

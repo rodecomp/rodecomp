@@ -1,4 +1,7 @@
 #include "UI/Items/UIMakeTargetListWnd.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Input/InputCharset.h"
@@ -65,11 +68,11 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
   }
 
   case UM_UPPUSH:
-    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     return 0;
 
   case UM_DOWNPUSH:
-    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     return 0;
 
   case UM_COMMAND: {
@@ -85,8 +88,8 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
       UIListBox* list = this->m_list;
       if (list->LineCount() == 0) {
-        g_windowMgr.CloseWindow(79);
-        g_windowMgr.CloseWindow(79);
+        g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
+        g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
         return 0;
       }
 
@@ -97,16 +100,16 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         case JT_RUNE_KNIGHT_B:
         case JT_DRAGON_KNIGHT: {
           ITEM_INFO materials[3];
-          g_modeMgr.GetGameMode()->SendMsg(130, this->itemIds[this->m_list->selected], reinterpret_cast<int>(materials), 0, 0);
-          g_windowMgr.CloseWindow(79);
+          g_modeMgr.GetGameMode()->SendMsg(MM_REQ_MAKING_ITEM, this->itemIds[this->m_list->selected], reinterpret_cast<int>(materials), 0, 0);
+          g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
           return 0;
         }
 
         default: {
-          UIWindow* window = g_windowMgr.EnsureWindow(80);
-          window->SendMsg(this, 40, this->itemIds[this->m_list->selected], 0, 0, 0);
+          UIWindow* window = g_windowMgr.EnsureWindow(WID_MAKETARGETPROCESSWND);
+          window->SendMsg(this, UM_SETCURITEM, this->itemIds[this->m_list->selected], 0, 0, 0);
           window->Move(this->geometry.x, this->geometry.y);
-          g_windowMgr.CloseWindow(79);
+          g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
           return 0;
         }
         }
@@ -115,8 +118,8 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     case ID_CANCEL: {
       ITEM_INFO materials[3];
-      g_modeMgr.GetGameMode()->SendMsg(130, 0, reinterpret_cast<int>(materials), 0, 0);
-      g_windowMgr.CloseWindow(79);
+      g_modeMgr.GetGameMode()->SendMsg(MM_REQ_MAKING_ITEM, 0, reinterpret_cast<int>(materials), 0, 0);
+      g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
       return 0;
     }
     }
@@ -124,7 +127,7 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     return 0;
   }
 
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     std::uint16_t marker;
     std::memcpy(&marker, bytes, sizeof(marker));
@@ -146,7 +149,7 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           int itemId = 0;
           std::memcpy(&itemId, bytes + offset, size);
           offset += size;
-          this->SendMsg(nullptr, 31, itemId, 0, 0, 0);
+          this->SendMsg(nullptr, UM_ADDITEM, itemId, 0, 0, 0);
         } else {
           offset += size;
         }

@@ -1,3 +1,4 @@
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/RagEffect.h"
 
@@ -22,7 +23,7 @@ EffectActor::~EffectActor() {
     for (std::list<CRagEffect*>::iterator it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
       if (*it) {
         CRagEffect* effect = *it;
-        effect->SendMsg(this, 0x18, 0, 0, 0, 0, 0, 0);
+        effect->SendMsg(this, AM_MASTER_DEAD, 0, 0, 0, 0, 0, 0);
       }
     }
     this->state.effects.erase(this->state.effects.begin(), this->state.effects.end());

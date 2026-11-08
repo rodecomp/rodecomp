@@ -1,4 +1,7 @@
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/UIRefiningWnd.h"
 
@@ -136,9 +139,9 @@ void UIRefiningWnd::OnCreate(int width, int height) {
 void UIRefiningWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46 && drag->source == 1) {
-    this->SendMsg(this, 23, drag->id, 0, 0, 0);
+    this->SendMsg(this, UM_REFRESHITEM, drag->id, 0, 0, 0);
   }
-  g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x007F52D0
@@ -684,22 +687,22 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
 
   if (this->state == 1) {
     if (this->selectedMaterial != -1 && x >= 81 && x <= 105 && y >= 150 && y <= 174) {
-      UIWindow* window = g_windowMgr.EnsureWindow(12);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (!window) {
         return;
       }
       ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0);
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
       return;
     }
 
     if (this->catalystEnabled == 1 && x >= 161 && x <= 185 && y >= 150 && y <= 174) {
-      UIWindow* window = g_windowMgr.EnsureWindow(12);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (!window) {
         return;
       }
       ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0);
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
       return;
     }
 
@@ -708,9 +711,9 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
       if (static_cast<unsigned>(slot) < this->materials.size()) {
         ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->materials[slot].itemId, 0);
         if (info.unknown_0000[1] > 0) {
-          UIWindow* window = g_windowMgr.EnsureWindow(12);
+          UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
           if (window) {
-            window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+            window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
           }
         }
         return;
@@ -722,9 +725,9 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
         }
         ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0);
         if (info.unknown_0000[1] > 0) {
-          UIWindow* window = g_windowMgr.EnsureWindow(12);
+          UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
           if (window) {
-            window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+            window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
           }
         }
         return;
@@ -733,9 +736,9 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
   }
 
   if (this->item.unknown_0000[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
-    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
     if (window) {
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
     }
   }
 }
@@ -807,7 +810,7 @@ int UIRefiningWnd::SendMsg(
         RefiningClosePacket packet;
         packet.id = 0xAA4;
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-        g_windowMgr.CloseWindow(295);
+        g_windowMgr.CloseWindow(WID_REFININGWND);
       }
       break;
     case 519:
@@ -821,7 +824,7 @@ int UIRefiningWnd::SendMsg(
       }
       break;
     case 520:
-      this->SendMsg(this, 6, 184, 0, 0, 0);
+      this->SendMsg(this, UM_COMMAND, ID_OK, 0, 0, 0);
       break;
     }
     break;
@@ -829,7 +832,7 @@ int UIRefiningWnd::SendMsg(
     if (this->state == 0 || this->state == 1) {
       const ITEM_INFO info = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
       if (g_session.HasItem61B8(info.unknown_0000[1]) == 1) {
-        g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return -1;
       }
 
@@ -1000,14 +1003,14 @@ void UIRefiningWnd::SetState(int state, int result) {
     }
     break;
   case 3:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(498)), 0xFFFF00, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(498)), 0xFFFF00, 0, 0, 0);
     break;
   case 5:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1537)), 0xFFFF00, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1537)), 0xFFFF00, 0, 0, 0);
     break;
   case 4:
   case 6:
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(499)), 0xFFFF00, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(499)), 0xFFFF00, 0, 0, 0);
     break;
   }
 

@@ -1,4 +1,6 @@
 #include "UI/Items/UIMakeTargetProcessWnd.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/ModeDragState.h"
@@ -32,7 +34,7 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   case ITEMID_IRON:
   case ITEMID_STEEL:
   case ITEMID_STAR_CRUMB:
-    g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
@@ -55,14 +57,14 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
         this->materials[emptySlot].quantity = 1;
         g_session.RemoveItem1710(item.unknown_0000[1], 1);
         if (g_windowMgr.unknown_01D4) {
-          reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         }
         this->Invalidate();
       }
     }
   }
 
-  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x009A0690
@@ -163,7 +165,7 @@ void UIMakeTargetProcessWnd::Paint() {
 void UIMakeTargetProcessWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
   if (item.unknown_0000[1] != 0) {
-    g_modeMgr.gameMode->SendMsg(134, reinterpret_cast<int>(item.itemId.c_str()), 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_BEGIN_DRAG_FROM_METALPROCESSWND, reinterpret_cast<int>(item.itemId.c_str()), 0, 0, 0);
   } else {
     this->UIFrameWnd::OnLBtnDown(x, y);
   }
@@ -199,12 +201,12 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
     switch (response) {
     case ID_OK:
-      g_modeMgr.GetGameMode()->SendMsg(130, this->makeType, reinterpret_cast<int>(this->materials), 0, 0);
-      g_windowMgr.CloseWindow(80);
+      g_modeMgr.GetGameMode()->SendMsg(MM_REQ_MAKING_ITEM, this->makeType, reinterpret_cast<int>(this->materials), 0, 0);
+      g_windowMgr.CloseWindow(WID_MAKETARGETPROCESSWND);
       return 0;
 
     case ID_CANCEL: {
-      g_modeMgr.GetGameMode()->SendMsg(130, 0, reinterpret_cast<int>(this->materials), 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_REQ_MAKING_ITEM, 0, reinterpret_cast<int>(this->materials), 0, 0);
       bool restored = false;
       for (int index = 0; index < 3; ++index) {
         if (this->materials[index].unknown_0000[1] > 0) {
@@ -218,10 +220,10 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       }
 
       if (g_windowMgr.unknown_01D4) {
-        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
 
-      g_windowMgr.CloseWindow(80);
+      g_windowMgr.CloseWindow(WID_MAKETARGETPROCESSWND);
       return 0;
     }
     }
@@ -229,7 +231,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     return 0;
   }
 
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
 #pragma pack(push, 1)
     struct ReplayTag {
       /* 0000 */ std::int16_t id;
@@ -263,7 +265,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         if (tag.id == 22002) {
           std::memcpy(&this->makeType, bytes + offset, tag.bytes);
           offset += tag.bytes;
-          this->SendMsg(nullptr, 40, this->makeType, 0, 0, 0);
+          this->SendMsg(nullptr, UM_SETCURITEM, this->makeType, 0, 0, 0);
         } else {
           offset += tag.bytes;
         }

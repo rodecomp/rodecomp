@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "UI/Window/UIEnums.h"
 #include "Network/Packets/PacketId.h"
 #include "Client/Session.h"
 #include "UI/Window/UIWindow.h"
@@ -112,10 +113,10 @@ void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
   g_session.m_guildSkillPoint = Read<std::int16_t>(bytes + 4);
   g_session.InvalidateWindowFrames();
   if (g_windowMgr.window_032C) {
-    g_windowMgr.window_032C->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    g_windowMgr.window_032C->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
   if (g_windowMgr.window_01E8) {
-    g_windowMgr.window_01E8->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    g_windowMgr.window_01E8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }

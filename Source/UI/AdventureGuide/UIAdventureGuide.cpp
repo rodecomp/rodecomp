@@ -1,4 +1,6 @@
 #include "Client/Session.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Contents/AdventureGuideMgr.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
@@ -507,7 +509,7 @@ void CUIAdventureGuide::OnCreate(int width, int height) {
 // OFFSET: 0x009DBF20
 // FUNCTION: fn_45467
 void CUIAdventureGuide::OnClose() {
-  g_windowMgr.CloseWindow(10002);
+  g_windowMgr.CloseWindow(WID_ADVENTUREGUIDE);
 }
 
 // OFFSET: 0x009C14F0
@@ -1967,9 +1969,9 @@ void CUIItemInfo::OnRBtnDown(int, int) {
   }
   info.unknown_0000[2] = location;
 
-  UIWindow* window = g_windowMgr.EnsureWindow(12);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
   if (window) {
-    window->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
   }
 }
 
@@ -2309,11 +2311,11 @@ void CUIItem::SearchNavigation() {
   g_navigationManager.unknown_12C8 = 0;
   g_navigationManager.SelectNodeState();
 
-  UIWindow* window = g_windowMgr.LookupWindow(203);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_NAVIGATIONV4WND);
   if (!window) {
-    window = g_windowMgr.EnsureWindow(203);
+    window = g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
   }
-  window->SendMsg(nullptr, 6, 499, 0, 0, 0);
+  window->SendMsg(nullptr, UM_COMMAND, 499, 0, 0, 0);
 }
 
 // OFFSET: 0x009DBCB0
@@ -2331,16 +2333,16 @@ void CUIQuest::SearchNavigation() {
   g_navigationManager.unknown_12C8 = 0;
   if (!g_navigationManager.SelectNodeState()) {
     this->RequestNavigation();
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4241)), 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(4241)), 0, 0, 0, 0);
     return;
   }
 
-  UIWindow* window = g_windowMgr.LookupWindow(203);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_NAVIGATIONV4WND);
   if (!window) {
-    window = g_windowMgr.EnsureWindow(203);
+    window = g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
   }
   window->Invalidate();
-  window->SendMsg(nullptr, 6, 499, 0, 0, 0);
+  window->SendMsg(nullptr, UM_COMMAND, 499, 0, 0, 0);
 }
 
 }
@@ -2980,14 +2982,14 @@ void CUIMonster::SearchNavigation() {
   g_navigationManager.unknown_12C4 = 0;
   g_navigationManager.unknown_12C8 = 0;
   g_navigationManager.SelectNodeState();
-  if (g_windowMgr.LookupWindow(203)) {
+  if (g_windowMgr.LookupWindow(WID_NAVIGATIONV4WND)) {
     g_navigationManager.SetViewMode(1);
     g_navigationManager.ClearSavedTarget();
-    g_windowMgr.CloseWindow(314);
+    g_windowMgr.CloseWindow(WID_NAVIGATIONRUIDEWND);
     static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->RefreshLayout();
-    g_windowMgr.Promote(g_windowMgr.LookupWindow(203));
+    g_windowMgr.Promote(g_windowMgr.LookupWindow(WID_NAVIGATIONV4WND));
   } else {
-    g_windowMgr.EnsureWindow(203);
+    g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
   }
 }
 

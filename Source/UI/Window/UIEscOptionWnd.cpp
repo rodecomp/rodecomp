@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEscOptionWnd.h"
 #include "UI/Window/UIEnums.h"
 
@@ -88,35 +90,35 @@ UIEscOptionWnd::UIEscOptionWnd()
 // FUNCTION: fn_12744
 int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   CMode* mode = g_modeMgr.GetGameMode();
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
   switch (argument1) {
-  case 0x172:
-    if (!g_windowMgr.CloseWindow(0x9C)) {
-      g_windowMgr.EnsureWindow(0x9C);
+  case ID_OPEN_HOTKEY:
+    if (!g_windowMgr.CloseWindow(WID_HOTKEYWND)) {
+      g_windowMgr.EnsureWindow(WID_HOTKEYWND);
     }
     break;
   case ID_QUIT:
-    g_windowMgr.CloseWindow(0x9B);
-    mode->SendMsg(0x58, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_ESCOPTIONWND);
+    mode->SendMsg(MM_QUIT_GAME, 0, 0, 0, 0);
     break;
-  case 0x161:
-    mode->SendMsg(0xFA, 0, 0, 0, 0);
-    g_windowMgr.CloseWindow(0x9B);
+  case ID_REBIRTH:
+    mode->SendMsg(MM_REBIRTH, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_ESCOPTIONWND);
     break;
-  case 0x173:
+  case ID_RETURN_TO_CHARACTER_SELECT:
     g_characterLinkedUserDataMgr->Save();
     g_adventurerAgencyMgr->RequestStop();
-    mode->SendMsg(0x19, 1, 0, 0, 0);
-    g_windowMgr.CloseWindow(0x9B);
-    g_windowMgr.CloseWindow(0xA4);
-    g_windowMgr.CloseWindow(0x10D);
+    mode->SendMsg(MM_RESTART, 1, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_ESCOPTIONWND);
+    g_windowMgr.CloseWindow(WID_SEEKPARTYWND);
+    g_windowMgr.CloseWindow(WID_ROULLETTEWND);
     break;
-  case 0x1CA:
-    if (!g_windowMgr.CloseWindow(0x271E)) {
-      g_windowMgr.EnsureWindow(0x271E);
+  case ID_OPEN_GAME_SETTINGS:
+    if (!g_windowMgr.CloseWindow(WID_GAMESETTINGSUI)) {
+      g_windowMgr.EnsureWindow(WID_GAMESETTINGSUI);
     }
     break;
   case 0x1C9:
@@ -124,14 +126,14 @@ int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       g_windowMgr.EnsureWindow(0xEC);
     }
     break;
-  case 0x174:
+  case ID_RETURN_TO_LOGIN:
     if (g_windowMgr.Confirm(LookupMessage(0x60C), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-      mode->SendMsg(0x19, 0, 0, 0, 0);
-      g_windowMgr.CloseWindow(0x9B);
+      mode->SendMsg(MM_RESTART, 0, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_ESCOPTIONWND);
     }
     break;
   case ID_CANCEL:
-    g_windowMgr.CloseWindow(0x9B);
+    g_windowMgr.CloseWindow(WID_ESCOPTIONWND);
     break;
   }
   return 0;

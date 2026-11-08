@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
 #include "Contents/Actors/MercenaryAI.h"
 #include "Contents/Actors/ActorEnums.h"
 
@@ -813,7 +815,7 @@ int AiTraceAI(lua_State* state) {
 // FUNCTION: fn_22350
 int AiTraceValue(lua_State* state) {
   std::string text = luaL_checkstring(state, 1);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 4, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 4, 0, 0);
   return 1;
 }
 
@@ -1089,9 +1091,9 @@ int AiSkillGround(lua_State* state) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   CGameActor* actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
   if (actor->render.unknown_0070 == 1 || actor->render.unknown_0070 == 0 || actor->render.unknown_0070 == 4) {
-    mode->SendMsg(0x46, reinterpret_cast<int>(skillArgs), 0, 0, 0);
+    mode->SendMsg(MM_USE_SKILL_TOGROUND, reinterpret_cast<int>(skillArgs), 0, 0, 0);
   }
-  mode->SendMsg(0x1a, 0, 0, 0, 0);
+  mode->SendMsg(MM_SETLOCKONMOUSE, 0, 0, 0, 0);
   return 0;
 }
 
@@ -1131,9 +1133,9 @@ int AiSkillObject(lua_State* state) {
 
   CGameActor* actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
   if (targetActor && (actor->render.unknown_0070 == 1 || actor->render.unknown_0070 == 0 || actor->render.unknown_0070 == 4)) {
-    mode->SendMsg(0x45, skillId, target, level, 0);
+    mode->SendMsg(MM_USE_SKILL, skillId, target, level, 0);
   }
-  mode->SendMsg(0x1a, 0, 0, 0, 0);
+  mode->SendMsg(MM_SETLOCKONMOUSE, 0, 0, 0, 0);
 
   if (IsSupportSkill(skillId)) {
     lua_pushnumber(state, 1.0);

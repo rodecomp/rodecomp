@@ -1,4 +1,5 @@
 #include "Resource/Bitmap/BitmapResource.h"
+#include "UI/Window/UIEnums.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Window/UITab.h"
@@ -45,14 +46,14 @@ void UITab::OnLBtnDown(int, int y) {
   if (this->geometry.unknown_0030 != static_cast<std::uint32_t>(index)) {
     this->geometry.unknown_0030 = index;
     this->Invalidate();
-    this->parent->SendMsg(this, 22, this->geometry.unknown_0030, 0, 0, 0);
+    this->parent->SendMsg(this, UM_TAB, this->geometry.unknown_0030, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x00865200
 // FUNCTION: fn_10921
 int UITab::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 13) {
+  if (message == UM_SETSTATE) {
     this->geometry.unknown_0030 = argument1;
     this->Invalidate();
   }

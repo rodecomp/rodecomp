@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "File/ShortcutFilename.h"
@@ -147,5 +148,5 @@ void UIPartyInfoWnd::OnRBtnUp(int, int) {
 
   std::string code;
   code = ShortcutFilename(this->info.characterId);
-  g_windowMgr.SendNotice(14, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(relationship), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
+  g_windowMgr.SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(relationship), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
 }

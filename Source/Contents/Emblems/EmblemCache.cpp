@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -133,7 +134,7 @@ void CGuildMgr::RefreshEmblem(std::uint32_t guild) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->NotifyUnknown0604(guild);
   }
 
-  UIWindow* window = g_windowMgr.LookupWindow(60);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_GUILDINFOMANAGEWND);
 
   if (window) {
     window->Invalidate();

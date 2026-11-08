@@ -1,4 +1,6 @@
 #include "Contents/Party/AdventurerAgencyMgr.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Party/UIAdvenPartyBoardWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Async/AsyncDiagnostic.h"
@@ -27,7 +29,7 @@ void CAdventurerAgencyMgr::CompleteList(AsyncDiagnostic diagnostic, std::string 
   }
 
   this->LoadList(root["data"]);
-  auto* board = static_cast<UIAdvenPartyBoardWnd*>(windows.EnsureWindow(324));
+  auto* board = static_cast<UIAdvenPartyBoardWnd*>(windows.EnsureWindow(WID_ADVENPARTYBOARDWND));
 
   if (board) {
     const int pages = root.get("totalPage", 0).asInt();
@@ -36,6 +38,6 @@ void CAdventurerAgencyMgr::CompleteList(AsyncDiagnostic diagnostic, std::string 
       board->totalPages = pages;
     }
 
-    board->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    board->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }

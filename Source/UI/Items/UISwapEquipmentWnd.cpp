@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Items/UISwapEquipmentWnd.h"
 #include "UI/Window/UIEnums.h"
 
@@ -51,7 +53,7 @@ UISwapEquipmentWnd::UISwapEquipmentWnd()
 // FUNCTION: fn_10390
 void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (g_windowMgr.LookupWindow(10011)) {
+  if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
     UIWindow::DragAndDrop(x, y, value);
     return;
   }
@@ -79,19 +81,19 @@ void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     case 16:
     case 17:
     case 19:
-      mode->SendMsg(302, drag->id, item.unknown_0000[2], 0, 0);
+      mode->SendMsg(MM_WEAR_SWAP_EQUIP, drag->id, item.unknown_0000[2], 0, 0);
       break;
     default:
       if (equipped == 1) {
-        mode->SendMsg(305, reinterpret_cast<int>(&item), 0, 0, 0);
+        mode->SendMsg(MM_SWAP_EQUIPMENT_BY_INDEX, reinterpret_cast<int>(&item), 0, 0, 0);
       } else if (item.unknown_0000[2] != 0 && item.identified != 0 && item.unknown_0000[3] == 0) {
-        mode->SendMsg(302, drag->id, item.unknown_0000[2], 0, 0);
+        mode->SendMsg(MM_WEAR_SWAP_EQUIP, drag->id, item.unknown_0000[2], 0, 0);
       }
       break;
     }
   }
 
-  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0082FD90
@@ -182,7 +184,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
 void UISwapEquipmentWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAtPoint(x, y);
   if (item.unknown_0000[1] > 0) {
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -195,27 +197,27 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_CANCEL:
       g_session.m_swapEquipmentMode = 0;
       if (g_windowMgr.unknown_01E0) {
-        g_windowMgr.unknown_01E0->SendMsg(nullptr, 6, 0x1FC, 0, 0, 0);
+        g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_COMMAND, 0x1FC, 0, 0, 0);
       }
       break;
     case ID_CLOSE:
       g_windowMgr.CloseWindow(0x128);
       return 1;
     case 0x1FC:
-      if (g_windowMgr.LookupWindow(10011)) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB9)), 0xFF, 0, 0, 0);
+      if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB9)), 0xFF, 0, 0, 0);
         return 1;
       }
       if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0250) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB7)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB7)), 0xFF, 0, 0, 0);
       } else if (g_windowMgr.unknown_0304 || g_windowMgr.unknown_0308 || g_windowMgr.unknown_02FC) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBBA)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBBA)), 0xFF, 0, 0, 0);
       } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->unknown_0264[3]) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB8)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB8)), 0xFF, 0, 0, 0);
       } else if (g_windowMgr.unknown_01F0 || g_windowMgr.unknown_01F8) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBBB)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBBB)), 0xFF, 0, 0, 0);
       } else {
-        g_modeMgr.GetGameMode()->SendMsg(0x130, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_SWAP_EQUIPMENT, 0, 0, 0, 0);
       }
       return 1;
     }
@@ -377,7 +379,7 @@ void UISwapEquipmentWnd::Paint() {
 // FUNCTION: fn_10397
 void UISwapEquipmentWnd::OnLBtnDblClk(int x, int y) {
   if (y < 17) {
-    this->SendMsg(this, 6, 0xCA, 0, 0, 0);
+    this->SendMsg(this, UM_COMMAND, ID_MINI, 0, 0, 0);
   }
 
   ITEM_INFO item = this->ItemAtPoint(x, y);
@@ -385,9 +387,9 @@ void UISwapEquipmentWnd::OnLBtnDblClk(int x, int y) {
     const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
     CMode* mode = g_modeMgr.gameMode;
     if (GetAsyncKeyState(VK_CONTROL)) {
-      mode->SendMsg(0x131, reinterpret_cast<int>(&item), 0, 0, 0);
+      mode->SendMsg(MM_SWAP_EQUIPMENT_BY_INDEX, reinterpret_cast<int>(&item), 0, 0, 0);
     } else {
-      mode->SendMsg(0x12F, slots.values[2], this->unknown_00BC == 2, 0, 0);
+      mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, slots.values[2], this->unknown_00BC == 2, 0, 0);
     }
   }
 }

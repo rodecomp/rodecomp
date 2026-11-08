@@ -1,4 +1,6 @@
 #include "Contents/NavigationManager.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 
 #include "Contents/MessageTable.h"
 #include "Utility/Text/FormatString.h"
@@ -406,13 +408,13 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
     char buffer[250];
     std::memset(buffer, 0, sizeof(buffer));
     std::sprintf(buffer, LookupMessage(2315), message.c_str());
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
 
     if (result == 5 && this->selectedNode != -1 && this->nodes.size() > static_cast<unsigned>(this->selectedNode)) {
       const int type = this->nodes[this->selectedNode]->GetType();
       if (type == 201 || type == 202 || type == 203 || type == 204) {
         std::sprintf(buffer, LookupMessage(2316), this->nodes[this->selectedNode]->GetName());
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
 
         CNaviInfo* info = static_cast<CNavi_Link*>(this->nodes[this->selectedNode])->GetLinkedInfo();
         if (info != nullptr) {
@@ -423,12 +425,12 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
         }
       } else if (type == 205) {
         std::sprintf(buffer, LookupMessage(2316), this->nodes[this->selectedNode]->GetName());
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
         std::sprintf(buffer, LookupMessage(2319));
       } else {
         std::sprintf(buffer, LookupMessage(2320));
       }
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
     }
   }
 
@@ -691,7 +693,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   if (g_windowMgr.window_4F174) {
     static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->RefreshLayout();
   } else if (!this->unknown_1248) {
-    g_windowMgr.EnsureWindow(203);
+    g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
   }
 
   {
@@ -728,9 +730,9 @@ bool CNavigationManager::SearchNavigation(std::string name, int type, bool flag)
 
     if (!this->unknown_1248) {
       if (g_windowMgr.window_4F174 == nullptr) {
-        g_windowMgr.EnsureWindow(203);
+        g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
       } else {
-        g_windowMgr.window_4F174->SendMsg(nullptr, 6, 200, 0, 0, 0);
+        g_windowMgr.window_4F174->SendMsg(nullptr, UM_COMMAND, ID_BASE, 0, 0, 0);
         if (g_windowMgr.modal != nullptr) {
           static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
         }
@@ -1246,7 +1248,7 @@ bool CNavigationManager::SelectNodeState() {
   this->LoadTargetPreview();
   this->ClearRouteNodes();
   if (this->data.GetInfo() && !this->data.GetInfo()->IsSearchable(this->data.GetInfo()->GetName())) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4195)), 0x0A0AFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(4195)), 0x0A0AFF, 0, 0, 0);
   }
   return false;
 }
@@ -1312,7 +1314,7 @@ bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
   }
 
   this->LoadTargetPreview();
-  g_windowMgr.EnsureWindow(203);
+  g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
   if (g_windowMgr.window_4F174) {
     UIWindow* window = g_windowMgr.window_4F174;
     window->geometry.targetAlpha = 255;
@@ -1669,7 +1671,7 @@ void CNavigationManager::CancelRoute() {
       static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->RefreshLayout();
     }
   }
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2309)), 0x62B0FF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2309)), 0x62B0FF, 0, 0, 0);
 }
 
 // OFFSET: 0x00B97B90
@@ -1755,7 +1757,7 @@ static_assert(sizeof(NavigationReplayHeader) == 6);
 // OFFSET: 0x00B9B080
 // FUNCTION: fn_19616
 int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) {
-  g_windowMgr.CloseWindow(203);
+  g_windowMgr.CloseWindow(WID_NAVIGATIONV4WND);
   this->Reset(true);
   if (data.empty()) {
     return -1;
@@ -1936,11 +1938,11 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
 void CNavigationManager::ResumeRoute() {
   if (this->unknown_1258 == 1) {
     this->LoadTargetPreview();
-    g_windowMgr.EnsureWindow(203);
+    g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
   } else if (this->unknown_1258 == 2) {
     this->ShowRouteResult(this->RouteFromPlayer(), 1);
     if (!this->unknown_1248) {
-      g_windowMgr.EnsureWindow(203);
+      g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
     }
   }
 }

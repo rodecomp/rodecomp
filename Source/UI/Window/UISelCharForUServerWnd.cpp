@@ -1,3 +1,4 @@
+#include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UISelCharForUServerWnd.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/CLoginMode.h"
@@ -78,7 +79,7 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
   }
 
   for (int index = 0; index < g_session.unknown_0E94; ++index) {
-    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, index, 0, 0, 0));
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
     if (!info) {
       continue;
     }
@@ -134,7 +135,7 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
 // OFFSET: 0x0093A7F0
 // FUNCTION: fn_12758
 int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -149,7 +150,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     for (int index = 0; index < g_session.unknown_0E94; ++index) {
       if (this->m_checkBoxes[index]->geometry.unknown_0030 != 0) {
         CMode* mode = g_modeMgr.gameMode;
-        const int* character = reinterpret_cast<const int*>(mode->SendMsg(8, index, 0, 0, 0));
+        const int* character = reinterpret_cast<const int*>(mode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
         if (character) {
           characterIds[count++] = *character;
         }
@@ -205,7 +206,7 @@ void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t c
   this->unknown_19EC.clear();
   if (x > 26 && x < this->geometry.width - 26 && static_cast<unsigned>(y - 95) < 270 && (y > 249 || y < 211)) {
     const int index = (y - 95) / 135 * this->m_columns + (x - 27) / 81;
-    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, index, 0, 0, 0));
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
     if (info) {
       char name[25];
       std::memcpy(name, info->name, sizeof(info->name));

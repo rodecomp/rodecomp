@@ -1,4 +1,7 @@
 #include "Client/Session.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
@@ -35,8 +38,8 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
   auto entry = root["data"].begin();
 
   if (entry == root["data"].end()) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3443)), 0xFF, 0, 0, 0);
-    g_windowMgr.CloseWindow(345);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3443)), 0xFF, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_APPLYFORPARTYWND);
     return;
   }
 
@@ -52,7 +55,7 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
   info.maximumLevel = (*entry).get("MaxLV", 999).asInt();
   info.type = (*entry).get("Type", 1).asInt();
   info.memo = (*entry).get("Memo", "").asString();
-  UIWindow* board = g_windowMgr.LookupWindow(324);
+  UIWindow* board = g_windowMgr.LookupWindow(WID_ADVENPARTYBOARDWND);
 
   if (board) {
     for (auto& value : this->entries) {
@@ -62,10 +65,10 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
       }
     }
 
-    board->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    board->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 
-  auto* application = static_cast<UIApplyForPartyWnd*>(g_windowMgr.LookupWindow(345));
+  auto* application = static_cast<UIApplyForPartyWnd*>(g_windowMgr.LookupWindow(WID_APPLYFORPARTYWND));
 
   if (application) {
     application->SetInfo(info);
@@ -73,11 +76,11 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
   }
 
   if (info.minimumLevel > g_session.m_level || info.maximumLevel < g_session.m_level) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3416)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3416)), 0xFF, 0, 0, 0);
   } else if (g_session.PartyCount() > 0) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(79)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(79)), 0xFF, 0, 0, 0);
   } else {
-    g_modeMgr.gameMode->SendMsg(265, reinterpret_cast<int>(&info.accountId), reinterpret_cast<int>(&info.characterId), 0, 0);
-    g_windowMgr.CloseWindow(345);
+    g_modeMgr.gameMode->SendMsg(MM_PARTY_REQ_MASTER_TO_JOIN, reinterpret_cast<int>(&info.accountId), reinterpret_cast<int>(&info.characterId), 0, 0);
+    g_windowMgr.CloseWindow(WID_APPLYFORPARTYWND);
   }
 }

@@ -1,4 +1,6 @@
 #include "Contents/World/World.h"
+#include "Client/Mode/ModeMessage.h"
+#include "Contents/Actors/ActorEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Effects/EffectLists.h"
@@ -16,7 +18,7 @@ SoundConfiguration g_soundConfiguration;
 // OFFSET: 0x00AC9040
 // FUNCTION: fn_17682
 void CWorld::LoadMapEffects() {
-  std::string name = reinterpret_cast<const char*>(this->gameMode->SendMsg(9, 0, 0, 0, 0));
+  std::string name = reinterpret_cast<const char*>(this->gameMode->SendMsg(MM_QUERYRSWNAME, 0, 0, 0, 0));
   C3dWorldRes* resource = static_cast<C3dWorldRes*>(ResourceMgr::Instance().Load(name.c_str()));
 
   for (auto it = resource->effects.begin(); it != resource->effects.end(); ++it) {
@@ -27,7 +29,7 @@ void CWorld::LoadMapEffects() {
     } else {
       CEffectMaker* effect = new CEffectMaker;
       const int address = reinterpret_cast<int>(record);
-      effect->SendMsg(nullptr, 14, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETPOS, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->objects.push_back(effect);
     }
   }
@@ -39,7 +41,7 @@ void CWorld::LoadMapEffects() {
       WorldSoundRecord* record = *it;
       CSoundMaker* sound = new CSoundMaker;
       const int address = reinterpret_cast<int>(record);
-      sound->SendMsg(nullptr, 14, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      sound->SendMsg(nullptr, AM_SETPOS, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->objects.push_back(sound);
     }
   }

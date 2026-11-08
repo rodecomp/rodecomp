@@ -1,4 +1,8 @@
 #include "Network/Packets/NoticeEnums.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
+#include "Client/Mode/ModeMessage.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Combat/CombatTypes.h"
 #include "Contents/Items/InventoryType.h"
@@ -223,16 +227,16 @@ static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
 // FUNCTION: fn_17229
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr) {
   if (mgr->unknown_01D4) {
-    reinterpret_cast<UIWindow*>(mgr->unknown_01D4)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    reinterpret_cast<UIWindow*>(mgr->unknown_01D4)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   if (mgr->window_01E8) {
-    mgr->window_01E8->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    mgr->window_01E8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
-  if (UIWindow* window = mgr->LookupWindow(159)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  if (UIWindow* window = mgr->LookupWindow(WID_QUIKSLOTWND)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   if (mgr->window_4F260) {
-    mgr->window_4F260->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    mgr->window_4F260->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -298,7 +302,7 @@ void ReceiveItemSlot(const unsigned char* data) {
   const ItemAddSlotPacket packet = *reinterpret_cast<const ItemAddSlotPacket*>(data);
   ItemRandomOption options[5] = {};
   if (packet.slot < 0) {
-    g_modeMgr.gameMode->SendMsg(0x35, 0, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
   }
 
   if (packet.itemId == 0) {
@@ -327,7 +331,7 @@ void ReceiveItemSlot(const unsigned char* data) {
 void ReceiveItemSlotOptions(const unsigned char* data) {
   const ItemAddSlotOptionsPacket packet = *reinterpret_cast<const ItemAddSlotOptionsPacket*>(data);
   if (packet.slot < 0) {
-    g_modeMgr.gameMode->SendMsg(0x35, 0, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
   }
 
   if (packet.itemId == 0) {
@@ -359,14 +363,14 @@ void ReceiveFriendAddResult(const unsigned char* data) {
   std::memcpy(name, packet->name, 24);
   name[24] = '\0';
 
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
 
   char buffer[128];
   int message;
   switch (packet->result) {
     case FRIEND_ADD_SUCCEED: {
       std::sprintf(buffer, LookupMessage(821), name);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0xFFFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFFFF00, 0, 0, 0);
 
       MessengerMember member;
       member.name = name;
@@ -381,7 +385,7 @@ void ReceiveFriendAddResult(const unsigned char* data) {
       message = 822;
       break;
     case FRIEND_ADD_ME_OVERSIZE:
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(819)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(819)), 0xFF, 0, 0, 0);
       return;
     case FRIEND_ADD_OTHER_OVERSIZE:
       message = 820;
@@ -403,7 +407,7 @@ void ReceiveFriendAddResult(const unsigned char* data) {
   }
 
   std::sprintf(buffer, LookupMessage(message), name);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D1FDA0
@@ -692,7 +696,7 @@ void CGameMode::RefreshItemListWindow(unsigned char listType, bool partial) {
   case INVTYPE_STORAGE:
   case INVTYPE_GUILD_STORAGE:
     if (UIWindow* window = g_windowMgr.window_0288) {
-      window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       reinterpret_cast<unsigned char*>(window)[0x190] = 1;
     }
     break;
@@ -760,7 +764,7 @@ bool CSession::AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsig
         value.quantity += item.quantity;
         if (refresh == 1) {
           if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02FC)) {
-            window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+            window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           }
         }
       }
@@ -772,7 +776,7 @@ bool CSession::AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsig
   if (refresh == 1) {
     UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.unknown_040C : g_windowMgr.unknown_02FC);
     if (window) {
-      window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     }
   }
   return true;
@@ -785,7 +789,7 @@ bool CSession::AddItem1740(const ITEM_INFO& item) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
-        window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       return false;
     }
@@ -793,7 +797,7 @@ bool CSession::AddItem1740(const ITEM_INFO& item) {
 
   this->unknown_1740.push_back(item);
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   return true;
 }
@@ -812,7 +816,7 @@ bool CSession::AddItem1750(const ITEM_INFO& item, int type, unsigned char refres
           window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
         }
         if (window) {
-          reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         }
       }
       return false;
@@ -828,7 +832,7 @@ bool CSession::AddItem1750(const ITEM_INFO& item, int type, unsigned char refres
       window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
     }
     if (window) {
-      reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     }
   }
   return true;
@@ -1023,7 +1027,7 @@ bool CSession::AddItem1738(const ITEM_INFO& item, unsigned char refresh) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       if (refresh && g_windowMgr.window_0288) {
-        g_windowMgr.window_0288->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        g_windowMgr.window_0288->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       return false;
     }
@@ -1031,7 +1035,7 @@ bool CSession::AddItem1738(const ITEM_INFO& item, unsigned char refresh) {
 
   this->unknown_1738.push_back(item);
   if (refresh && g_windowMgr.window_0288) {
-    g_windowMgr.window_0288->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    g_windowMgr.window_0288->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   return true;
 }
@@ -1063,7 +1067,7 @@ bool CSession::EquipUnknown17F0(const ITEM_INFO& item, const char* name) {
 // OFFSET: 0x00DFC9B0
 // FUNCTION: fn_23599
 bool CSession::OnItemEquipped(ITEM_INFO& item) {
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s %s", item.DisplayName(0).c_str(), LookupMessage(0xAA)).c_str()), 0xC8FF00, 7, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s %s", item.DisplayName(0).c_str(), LookupMessage(0xAA)).c_str()), 0xC8FF00, 7, 0, 0);
   if (item.unknown_0064 == 1) {
     item.unknown_0064 = 2;
   }
@@ -1096,7 +1100,7 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
     this->RemoveItem1710(item.unknown_0000[1], 1);
   }
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_022C)) {
-    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   return true;
 }
@@ -1107,7 +1111,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
   if (location == 0x8000) {
     const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, identity);
     if (item.unknown_0000[1] != 0) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(0xAB)).c_str()), 0xFF, 7, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(0xAB)).c_str()), 0xFF, 7, 0, 0);
     }
     this->unknown_16EC = 0;
     g_windowMgr.InvalidateFrames();
@@ -1125,7 +1129,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
       }
 
       if (mode->scene && mode->scene->player && mode->scene->player->unknown_0544) {
-        mode->scene->player->unknown_0544->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
+        mode->scene->player->unknown_0544->SendMsg(nullptr, AM_SETCOUNT, 0, 1, 0, 0, 0, 0);
       }
     }
   } else {
@@ -1133,7 +1137,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
     if (slots.values[2] < 10) {
       if (slots.values[2] != -1) {
         ITEM_INFO& item = this->unknown_17F0[slots.values[2]];
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(0xAB)).c_str()), 0xFF, 7, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(0xAB)).c_str()), 0xFF, 7, 0, 0);
         item.unknown_0000[3] = 0;
 
         bool merged = false;
@@ -1169,7 +1173,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
   g_equipmentPropertiesMgr->UnequipWearable(location);
   g_windowMgr.InvalidateFrames();
   if (UIWindow* window = g_windowMgr.unknown_022C) {
-    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   return true;
 }
@@ -1330,7 +1334,7 @@ void CSession::ClearPartyMembers() {
     for (auto member = this->m_partyMembers.begin(); member != this->m_partyMembers.end(); ++member) {
       CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(member->accountId);
       if (actor && static_cast<EffectActor*>(actor)->HasId(160) == true) {
-        actor->SendMsg(nullptr, 109, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
   }
@@ -1520,7 +1524,7 @@ void CSession::RemoveItem1710(std::uint32_t id, int quantity) {
 // FUNCTION: fn_23609
 void CSession::RefreshItem1768Window(unsigned char alternate, int argument) {
   if (UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.unknown_040C : g_windowMgr.unknown_02FC)) {
-    window->SendMsg(nullptr, 23, argument, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, argument, 0, 0, 0);
   }
 }
 
@@ -1565,13 +1569,13 @@ bool CSession::RemoveItem1740(const ITEM_INFO& item) {
         }
       }
       if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
-        window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       return true;
     }
   }
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   return false;
 }
@@ -1695,13 +1699,13 @@ bool CSession::RemoveItem1738(const ITEM_INFO& item) {
         }
       }
       if (UIWindow* window = g_windowMgr.window_0288) {
-        window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       return true;
     }
   }
   if (UIWindow* window = g_windowMgr.window_0288) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   return false;
 }
@@ -1838,8 +1842,8 @@ bool CSession::AddExchangeItem(ITEM_INFO item) {
     }
   }
 
-  if (UIWindow* window = g_windowMgr.LookupWindow(10011)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
   return true;

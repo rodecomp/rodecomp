@@ -1,4 +1,5 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/UIBattleMsgOptionWnd.h"
 
@@ -27,7 +28,7 @@ void UIBattleMsgOptionWnd::OnWheel(int delta) {
     if (delta >= 0) {
       step = -step;
     }
-    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
   }
 }
 
@@ -248,7 +249,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     case ID_OPTION: {
       if (this->unknown_0108 == b && this->unknown_0110 == (c != 0)) {
         if (d != 2) {
-          g_windowMgr.CloseWindow(132);
+          g_windowMgr.CloseWindow(WID_BATTLEMSGOPTIONWND);
           return 0;
         }
       } else if (d == 1) {
@@ -277,7 +278,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       return 0;
     }
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(132);
+      g_windowMgr.CloseWindow(WID_BATTLEMSGOPTIONWND);
       return 0;
     case ID_CHECK:
       this->unknown_010C = b;
@@ -295,9 +296,9 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->unknown_00C4;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->unknown_00C4 = previous - this->m_visibleRows + 1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->unknown_00C4 = previous + this->m_visibleRows - 1;
     } else {
       this->unknown_00C4 = previous + static_cast<int>(a);

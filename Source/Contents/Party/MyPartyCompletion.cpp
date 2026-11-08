@@ -1,4 +1,5 @@
 #include "Contents/Party/AdventurerAgencyMgr.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Party/UIAdvenPartyBoardWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Async/AsyncDiagnostic.h"
@@ -28,7 +29,7 @@ void CAdventurerAgencyMgr::CompleteMyParty(AsyncDiagnostic diagnostic, std::stri
 
   if (root["data"].isNull()) {
     this->registered = false;
-    auto* board = static_cast<UIAdvenPartyBoardWnd*>(windows.EnsureWindow(324));
+    auto* board = static_cast<UIAdvenPartyBoardWnd*>(windows.EnsureWindow(WID_ADVENPARTYBOARDWND));
 
     if (board) {
       board->Registration(false);
@@ -50,7 +51,7 @@ void CAdventurerAgencyMgr::CompleteMyParty(AsyncDiagnostic diagnostic, std::stri
   info.maximumLevel = data.get("MaxLV", 999).asInt();
   info.type = data.get("Type", 1).asInt();
   info.memo = data.get("Memo", "").asString();
-  auto* board = static_cast<UIAdvenPartyBoardWnd*>(windows.EnsureWindow(324));
+  auto* board = static_cast<UIAdvenPartyBoardWnd*>(windows.EnsureWindow(WID_ADVENPARTYBOARDWND));
 
   if (board) {
     board->SetOwnParty(info);

@@ -1,4 +1,5 @@
 #include "UI/Window/UIWindowFactory.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Session.h"
 #include "Render/Renderer.h"
@@ -78,11 +79,11 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
     window->Move(x, y);
     this->rendered.push_back(window);
     if (id == 0x9F) {
-      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(this->unknown_0934), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->unknown_0934), 0, 0, 0);
     } else if (id == 0x9D) {
-      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(this->unknown_0944), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->unknown_0944), 0, 0, 0);
     } else if (id == 0xD4) {
-      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(this->unknown_09D4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->unknown_09D4), 0, 0, 0);
     }
   }
 

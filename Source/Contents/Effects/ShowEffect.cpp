@@ -1,4 +1,5 @@
 #include "Contents/Effects/ShowEffect.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
@@ -59,7 +60,7 @@ void CShowEffect::Close() {
 
   for (const auto& entry : this->effects) {
     if (target) {
-      target->SendMsg(nullptr, 0x9F, 0, entry.first, entry.first >> 31, entry.second, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_TAGGED_EFFECT, 0, entry.first, entry.first >> 31, entry.second, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else if (g_effectMgr->HasAllocator(entry.second)) {
       g_effectMgr->Retire(actorId, entry.first, entry.second);
     }
@@ -91,6 +92,6 @@ void CShowEffect::Remove(int tag) {
     return;
   }
 
-  target->SendMsg(target, 0x9F, 0, tag, tag >> 31, this->effects[tag], 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  target->SendMsg(target, AM_DELETE_TAGGED_EFFECT, 0, tag, tag >> 31, this->effects[tag], 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->effects.erase(tag);
 }

@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "Client/Mode/ModeMessage.h"
 #include "UI/Shortcuts/UIQuickSlotWnd.h"
 #include "UI/Window/UIEnums.h"
 
@@ -140,12 +142,12 @@ void UIQuickSlotWnd::OnRBtnDown(int x, int y) {
   const QuickSlotEntry entry = this->m_entries[index];
   if (entry.skill) {
     WindowManagerWindows& windows = g_windowMgr;
-    UIWindow* detail = windows.EnsureWindow(46);
+    UIWindow* detail = windows.EnsureWindow(WID_SKILLDESCRIBEWND);
     if (detail) {
       if (*reinterpret_cast<std::uint32_t*>(reinterpret_cast<char*>(detail) + 0x104) == entry.id) {
-        windows.CloseWindow(46);
+        windows.CloseWindow(WID_SKILLDESCRIBEWND);
       } else {
-        detail->SendMsg(nullptr, 61, entry.id, 0, 0, 0);
+        detail->SendMsg(nullptr, UM_SKILLDESCRIBE, entry.id, 0, 0, 0);
       }
     }
 
@@ -167,8 +169,8 @@ void UIQuickSlotWnd::OnRBtnDown(int x, int y) {
   } else if (entry.id != 0) {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
     if (item.unknown_0000[1] > 0) {
-      UIWindow* detail = g_windowMgr.EnsureWindow(12);
-      detail->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      UIWindow* detail = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
+      detail->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -247,7 +249,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();
     }
-    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     this->Move(this->m_saved->x, this->m_saved->y);
     return 0;
 
@@ -262,31 +264,31 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       if (item.unknown_0000[1] != 0) {
         CMode* mode = g_modeMgr.GetGameMode();
         switch (item.unknown_0000[0]) {
-        case 0:
-        case 1:
-        case 2:
-          mode->SendMsg(0x1B, item.unknown_0000[1], 0, 0, 0);
+        case UM_DEFPUSH:
+        case UM_CANCELPUSH:
+        case UM_TOGGLEPUSH:
+          mode->SendMsg(MM_USEITEM, item.unknown_0000[1], 0, 0, 0);
           break;
-        case 10:
-        case 16:
-        case 17:
-        case 19:
+        case UM_SCROLLVERTPAGEDOWN:
+        case UM_OPENCHATWND:
+        case UM_LOADINGPERCENT:
+        case UM_DOWNPUSH:
           if (item.unknown_0000[3] == 0x8000) {
-            mode->SendMsg(0x14, 0xF, 0, 0, 0);
-            mode->SendMsg(0x57, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+            mode->SendMsg(MM_TAKE_OFF_EQUIP, 0xF, 0, 0, 0);
+            mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
           }
           break;
-        case 18:
+        case UM_UPPUSH:
           if (*reinterpret_cast<int*>(&g_session.unknown_16F4[4]) >= 0) {
             const std::string text = FormatOwnedString(LookupMessage(0x4CA), item.DisplayName(0).c_str());
             if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-              mode->SendMsg(0x1B, item.unknown_0000[1], 0, 0, 0);
+              mode->SendMsg(MM_USEITEM, item.unknown_0000[1], 0, 0, 0);
             }
           }
           break;
         default:
           if (item.unknown_0000[2] != 0 && item.unknown_0000[3] == 0 && item.identified != 0) {
-            mode->SendMsg(0x13, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+            mode->SendMsg(MM_WEAR_EQUIP, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
           }
           break;
         }
@@ -296,7 +298,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 
     CSkillInfo skill = g_session.LookupSkill(entry.id);
     if (skill.level != 0 && skill.available != 0) {
-      g_modeMgr.gameMode->SendMsg(0x71, reinterpret_cast<int>(&skill), entry.count, 0, 0);
+      g_modeMgr.gameMode->SendMsg(MM_USING_SKILL, reinterpret_cast<int>(&skill), entry.count, 0, 0);
     }
     return 0;
   }

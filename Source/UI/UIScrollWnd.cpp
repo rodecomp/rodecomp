@@ -283,10 +283,10 @@ __declspec(noinline) void UIScrollWnd::OnCreate(int width, int height) {
 void UIScrollWnd::OnWheel(int delta) {
   if (this->wheelScroll == 1) {
     if (delta < 0) {
-      this->SendMsg(this->scrollBar, 7, 3, 0, 0, 0);
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, 3, 0, 0, 0);
       return;
     }
-    this->SendMsg(this->scrollBar, 7, -3, 0, 0, 0);
+    this->SendMsg(this->scrollBar, UM_SCROLLVERT, -3, 0, 0, 0);
   }
 }
 
@@ -443,9 +443,9 @@ int UIScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->scrollPosition;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       delta = -1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       delta = 1;
     }
     this->scrollPosition = previous + delta;
@@ -464,9 +464,9 @@ int UIScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   case UM_SCROLLHORZPAGEUP:
   case UM_SCROLLHORZPAGEDOWN: {
     const int previous = this->unknown_009C;
-    if (message == 11) {
+    if (message == UM_SCROLLHORZPAGEUP) {
       delta = -1;
-    } else if (message == 12) {
+    } else if (message == UM_SCROLLHORZPAGEDOWN) {
       delta = 1;
     }
     this->unknown_009C = previous + delta;

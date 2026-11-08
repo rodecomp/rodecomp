@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Client/Mode/CMode.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/CGameMode.h"
@@ -72,7 +74,7 @@ void UIExchangeAcceptWnd::OnCreate(int width, int height) {
   this->viewer->textColor = 0xFF000000u | RGB(red, green, blue);
   this->viewer->Invalidate();
   this->AddChild(this->viewer);
-  this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>("deal"), 38, 0, 0);
+  this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>("deal"), 38, 0, 0);
 }
 
 // OFFSET: 0x008FA8C0
@@ -83,12 +85,12 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
     case ID_OK:
-      g_windowMgr.CloseWindow(32);
-      g_modeMgr.gameMode->SendMsg(50, 3, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_EXCHANGEACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 3, 0, 0, 0);
       return 0;
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(32);
-      g_modeMgr.gameMode->SendMsg(50, 4, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_EXCHANGEACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
       return 0;
     }
     return 0;
@@ -105,12 +107,12 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     text += ")";
     text += LookupMessage(93);
     this->viewer->Clear();
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 138, 0, 0);
+    this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 138, 0, 0);
     const std::string code = std::format("C-Code : {}     {}{}", ShortcutFilename(static_cast<std::uint32_t>(b)), g_serviceType == 12 ? "Nv." : "Lv.", c);
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(code.c_str()), 138, 0, 0);
+    this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(code.c_str()), 138, 0, 0);
     return 0;
   }
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     ExchangeRecordHeader header = {};
     std::memcpy(&header, bytes, sizeof(header));
@@ -126,7 +128,7 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           char text[260] = {};
           std::memcpy(text, bytes + offset, header.length);
           offset += header.length;
-          this->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+          this->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
           const std::string name = text;
           CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
           SetExchangeName(mode, name);

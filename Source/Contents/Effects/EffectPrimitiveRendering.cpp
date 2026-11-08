@@ -1,3 +1,4 @@
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/EffectPrimId.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -2302,7 +2303,7 @@ void CEffectPrim::RenderSMA3(matrix&) {
     CRagEffect* effect = gameMode->scene->player->LaunchEffect(556, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = slot.vecBNow;
-      effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     return;
   } else if (slot.flag1[0] == 99) {
@@ -2319,7 +2320,7 @@ void CEffectPrim::RenderSMA3(matrix&) {
   if (effect) {
     vector3d position = slot.vecBNow;
     float extra[3] = {static_cast<float>(slot.process), slot.process % 16 != 0 ? 1.0f : 0.0f, 0.0f};
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), reinterpret_cast<int>(extra), reinterpret_cast<int>(extra) >> 31, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), reinterpret_cast<int>(extra), reinterpret_cast<int>(extra) >> 31, 0, 0);
   }
 }
 // OFFSET: 0x00BDD0D0
@@ -4957,7 +4958,7 @@ void CEffectPrim::RenderSoulLink(matrix& wtm) {
 
       if (effect) {
         vector3d position = vecA;
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
       }
     }
 

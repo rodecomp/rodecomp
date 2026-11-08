@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Contents/Schedule/ShutDownSchedule.h"
 
 #include "Client/Mode/ModeMgr.h"
@@ -34,7 +35,7 @@ void CShutDownSchedule::Process(const std::uint64_t& now) {
   if (this->noticeIndex < 6) {
     if (g_modeMgr.GetGameMode()) {
       const char* message = LookupMessage(2020);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 0, 0, 0);
       ++this->noticeIndex;
       this->UpdateNotice();
     }

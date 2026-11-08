@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Contents/Skills/AutomaticSkills.h"
 #include "UI/Shortcuts/ShortcutActivation.h"
@@ -25,5 +26,5 @@ void UIShortCutWnd::OnLBtnDblClk(int x, int y) {
     g_session.m_automaticSkills.DisableAll();
   }
 
-  this->SendMsg(nullptr, 41, column, g_session.m_hotkeyPage, 0, 0);
+  this->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, column, g_session.m_hotkeyPage, 0, 0);
 }

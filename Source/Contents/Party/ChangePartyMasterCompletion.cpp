@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -25,8 +27,8 @@ void CAdventurerAgencyMgr::CompleteChangeMaster(AsyncDiagnostic diagnostic, std:
   const int type = root["Type"].asInt();
 
   if (type != 2 && type != 3) {
-    if (UIWindow* window = windows.LookupWindow(324)) {
-      window->SendMsg(nullptr, 6, 415, 0, 0, 0);
+    if (UIWindow* window = windows.LookupWindow(WID_ADVENPARTYBOARDWND)) {
+      window->SendMsg(nullptr, UM_COMMAND, ID_PARTY_RELOAD_FIRST_PAGE, 0, 0, 0);
     }
   }
 }

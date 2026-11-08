@@ -1,3 +1,4 @@
+#include "Client/Mode/ModeMessage.h"
 #include "Contents/Effects/Effect.h"
 
 #include "Client/Session.h"
@@ -153,7 +154,7 @@ void CEffect::Update(std::uint32_t aid) {
       }
       break;
     case 1:
-      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       break;
     }
   }

@@ -1,4 +1,6 @@
 #include "Contents/Skills/PlayerSkillBundle.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Contents/Skills/SkillId.h"
 #include "Client/Session.h"
 #include "UI/Window/UIWindow.h"
@@ -173,8 +175,8 @@ void CPlayerSkillBundle::ClearExtra() {
 // FUNCTION: fn_08274
 void CPlayerSkillBundle::AddExtra(const CSkillInfo& value) {
   this->extraIds.push_back(value.id);
-  if (UIWindow* window = g_windowMgr.LookupWindow(37)) {
-    window->SendMsg(nullptr, 161, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_SKILLLISTWND)) {
+    window->SendMsg(nullptr, UM_REFRESH_EXTRA_SKILL_TAB, 0, 0, 0, 0);
   }
 
   this->extra.push_back(value);
@@ -192,8 +194,8 @@ bool CPlayerSkillBundle::RemoveExtra(std::uint32_t id) {
     const auto item = std::find(this->extraIds.begin(), this->extraIds.end(), id);
     if (item != this->extraIds.end()) {
       this->extraIds.erase(item);
-      if (UIWindow* window = g_windowMgr.LookupWindow(37)) {
-        window->SendMsg(nullptr, 161, 0, 0, 0, 0);
+      if (UIWindow* window = g_windowMgr.LookupWindow(WID_SKILLLISTWND)) {
+        window->SendMsg(nullptr, UM_REFRESH_EXTRA_SKILL_TAB, 0, 0, 0, 0);
       }
     }
 

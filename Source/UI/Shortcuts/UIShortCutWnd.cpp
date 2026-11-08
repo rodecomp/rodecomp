@@ -1,4 +1,7 @@
 #include "Contents/Items/ItemType.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Client/Input/Mouse.h"
@@ -129,7 +132,7 @@ void UIShortCutWnd::Show(int visible) {
   this->geometry.visible = visible;
 
   if (visible) {
-    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     this->Invalidate();
     g_windowMgr.StoreSnapRectangle(this);
   } else {
@@ -164,26 +167,26 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
       --this->m_grid.rows;
     }
 
-    this->SendMsg(nullptr, 14, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 0, 0, 0, 0);
     return;
 
   case ID_PLUS:
     if (this->geometry.visible == 0) {
-      g_windowMgr.ShowWindowById(36, 1);
+      g_windowMgr.ShowWindowById(WID_SHORTCUTWND, 1);
       return;
     }
 
     ++this->m_grid.rows;
     if (this->m_grid.rows > 4) {
       this->m_grid.rows = 1;
-      g_windowMgr.ShowWindowById(36, 0);
+      g_windowMgr.ShowWindowById(WID_SHORTCUTWND, 0);
     }
 
-    this->SendMsg(nullptr, 14, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 0, 0, 0, 0);
     return;
 
   case ID_CLOSE:
-    g_windowMgr.ShowWindowById(36, 0);
+    g_windowMgr.ShowWindowById(WID_SHORTCUTWND, 0);
     return;
 
   case 549: {
@@ -196,7 +199,7 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
       record.main.clear();
     }
 
-    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     return;
   }
 
@@ -208,7 +211,7 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
     this->m_hideItems->Enable(0);
     this->m_hideItems->SetDisabled(1);
     this->m_hideItems->Invalidate();
-    this->SendMsg(nullptr, 14, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 0, 0, 0, 0);
     return;
 
   case 588:
@@ -219,7 +222,7 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
     this->m_hideItems->Enable(1);
     this->m_hideItems->SetDisabled(0);
     this->m_hideItems->Invalidate();
-    this->SendMsg(nullptr, 14, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 0, 0, 0, 0);
     return;
 
   default:
@@ -322,7 +325,7 @@ __forceinline void UIShortCutWnd::RestoreLayout(NormalItemSlotWindow* value) {
 
   this->m_grid.rows = height / 33;
   this->PlaceRowButtons();
-  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   this->Move(this->m_saved->x, this->m_saved->y);
 }
 
@@ -341,7 +344,7 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
         level = (std::min)(static_cast<int>(slot.unknown_0005), skill.level);
       }
 
-      mode->SendMsg(113, reinterpret_cast<int>(&skill), level, 0, 0);
+      mode->SendMsg(MM_USING_SKILL, reinterpret_cast<int>(&skill), level, 0, 0);
     }
 
     return;
@@ -358,7 +361,7 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
   case TYPE_SCHANGE:
   case TYPE_SPECIAL:
     if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(2373), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
-      mode->SendMsg(27, item.unknown_0000[1], 0, 0, 0);
+      mode->SendMsg(MM_USEITEM, item.unknown_0000[1], 0, 0, 0);
     }
 
     break;
@@ -368,7 +371,7 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
       const int result =
         g_windowMgr.Confirm(FormatOwnedString(LookupMessage(1226), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
       if (result == 187) {
-        mode->SendMsg(27, item.unknown_0000[1], 0, 0, 0);
+        mode->SendMsg(MM_USEITEM, item.unknown_0000[1], 0, 0, 0);
       }
     }
 
@@ -379,14 +382,14 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
   case TYPE_THROWWEAPON:
   case 19:
     if (item.unknown_0000[3] == 0x8000) {
-      mode->SendMsg(87, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+      mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
     }
 
     break;
 
   default:
     if (item.unknown_0000[2] != 0 && item.unknown_0000[3] == 0 && item.identified != 0) {
-      mode->SendMsg(19, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+      mode->SendMsg(MM_WEAR_EQUIP, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
     }
 
     break;
@@ -466,9 +469,9 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->ResizeRows();
     return 0;
 
-  case 143:
+  case UM_ROTATE_SHORTCUT_ROWS:
     if (RotateCooldownRows(g_session.m_requestTimers, static_cast<int>(a), static_cast<int>(b), g_session.unknown_06FC, g_session.unknown_06A8)) {
-      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     }
 
     return 0;
@@ -496,7 +499,7 @@ void UINewChatWnd::Move(int x, int y) {
   this->m_inputY = this->m_inputOffsetY + screenY;
 
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_03F0)) {
-    window->SendMsg(this, 6, 197, this->geometry.width + x, this->geometry.height + y, 0);
+    window->SendMsg(this, UM_COMMAND, ID_DIALOG, this->geometry.width + x, this->geometry.height + y, 0);
   }
 }
 
@@ -683,24 +686,24 @@ void UIRoMapWnd::OnLBtnUp(int x, int y) {
 
   if (!this->unknown_01FC.empty()) {
     if (g_windowMgr.unknown_0214 != 0) {
-      g_windowMgr.CloseWindow(26);
+      g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
 
     if (!this->unknown_01FC.empty()) {
-      UIWindow* menu = g_windowMgr.EnsureWindow(26);
+      UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       int width = 0;
       for (std::vector<std::string>::iterator name = this->unknown_01FC.begin(); name != this->unknown_01FC.end(); ++name) {
         const int textWidth = this->TextWidth(name->c_str(), 0, 0, 14, 0, 0);
         if (width < textWidth) {
           width = textWidth;
         }
-        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(name->c_str()), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(name->c_str()), 0, 0, 0);
       }
 
       const int height = static_cast<int>((std::min)(this->unknown_01FC.size() * 16, 160u));
-      menu->SendMsg(nullptr, 40, 0, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
       menu->Resize(width, height);
-      menu->SendMsg(nullptr, 83, 140, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SET_CALLER_WID, 140, 0, 0, 0);
 
       const int menuY = this->geometry.height - (y + 1) - height >= 0 ? y + 1 : this->geometry.height - height;
       const int menuX = this->geometry.width - (x + 2) - width >= 0 ? x + 2 : this->geometry.width - width;
@@ -868,12 +871,12 @@ void UISubChatMiniWnd::OnCreate(int, int) {
 // OFFSET: 0x0093CA50
 // FUNCTION: fn_12762
 int UISubChatMiniWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
   switch (a) {
-  case 197:
+  case ID_DIALOG:
     this->Move(b, c - this->m_offsetY);
     break;
   case ID_MINI:
@@ -886,7 +889,7 @@ int UISubChatMiniWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 // OFFSET: 0x0093CAB0
 // FUNCTION: fn_12763
 int UIWindowCallBtnWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     g_windowMgr.EnsureWindow(a);
   }
   return 0;
@@ -917,7 +920,7 @@ void UISubChatMiniWnd::OnLBtnDown(int x, int) {
   } else {
     g_subChatMiniSecondCollapsed = !g_subChatMiniSecondCollapsed;
   }
-  this->SendMsg(this, 6, 271, 0, 0, 0);
+  this->SendMsg(this, UM_COMMAND, ID_APPLY, 0, 0, 0);
   this->Invalidate();
 }
 
@@ -958,8 +961,8 @@ void UINewChatWnd::SaveChatLogs() {
       if ((*tab)->SaveChatLog(path)) {
         std::string message(path);
         message += " is Saved.";
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF00, 0, 0, 0);
       }
     }
   }
@@ -977,8 +980,8 @@ void UINewChatWnd::SaveChatLogs() {
     if (window->ChatBox()->SaveChatLog(path)) {
       std::string message(path);
       message += " is Saved.";
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF00, 0, 0, 0);
     }
   }
 }
@@ -998,8 +1001,8 @@ void UINewChatWnd::RefreshTabs(bool arrange) {
     }
   }
 
-  if (UIWindow* window = g_windowMgr.LookupWindow(132)) {
-    window->SendMsg(this, 6, 193, this->m_currentTab, 1, 2);
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_BATTLEMSGOPTIONWND)) {
+    window->SendMsg(this, UM_COMMAND, ID_OPTION, this->m_currentTab, 1, 2);
   }
 
   this->m_tabControl->Invalidate();
@@ -1032,13 +1035,13 @@ void UIMemorialDunWnd::ArrangeButtons() {
 int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_DEFPUSH: {
-    this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, this->m_message0, 0, 0, 0);
     return 0;
   }
   case UM_COMMAND: {
     switch (argument1) {
     case ID_OK:
-      g_windowMgr.CloseWindow(137);
+      g_windowMgr.CloseWindow(WID_MEMORIALDUNWND);
       return 0;
     case ID_CANCEL: {
       MemorialDungeonCommandPacket packet;
@@ -1059,7 +1062,7 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       return 0;
     case ID_DELETE:
       if (g_session.unknown_5464 != 0) {
-        g_modeMgr.GetGameMode()->SendMsg(0x132, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_MEMORIALDUNGEON_COMMAND, 0, 0, 0, 0);
       }
       return 0;
     }
@@ -1112,7 +1115,7 @@ bool UINavigationWnd::LoadRoute(int index) {
   }
 
   this->FillRouteList();
-  this->SendMsg(this, 6, 190, 0, 0, 0);
+  this->SendMsg(this, UM_COMMAND, ID_BUTTON2, 0, 0, 0);
   return true;
 }
 
@@ -1216,33 +1219,33 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       rectangle.right = span + 0x32;
       rectangle.bottom = this->m_inputHeight + 10;
       this->FillSurface(0xFFFF00FF, &rectangle);
-      if (UIWindow* window = g_windowMgr.LookupWindow(0x84)) {
-        window->SendMsg(this, 6, 0xC1, this->m_index, 0, 2);
+      if (UIWindow* window = g_windowMgr.LookupWindow(WID_BATTLEMSGOPTIONWND)) {
+        window->SendMsg(this, UM_COMMAND, ID_OPTION, this->m_index, 0, 2);
       }
       return 0;
     }
     if (ChatWindow() != nullptr) {
-      ChatWindow()->SendMsg(this, 0, 0, 0, 0, 0);
+      ChatWindow()->SendMsg(this, UM_DEFPUSH, 0, 0, 0, 0);
       return 0;
     }
     return 0;
   case UM_PAGEUPPUSH:
     if (this->m_chatBox->verticalOverflow != 0) {
-      this->m_chatBox->SendMsg(nullptr, 9, 0, 0, 0, 0);
+      this->m_chatBox->SendMsg(nullptr, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
       return 0;
     }
     return 0;
   case UM_PAGEDOWNPUSH:
     if (this->m_chatBox->verticalOverflow != 0) {
-      this->m_chatBox->SendMsg(nullptr, 10, 0, 0, 0, 0);
+      this->m_chatBox->SendMsg(nullptr, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
       return 0;
     }
     return 0;
   case UM_COMMAND:
     switch (argument1) {
     case ID_OPTION:
-      if (UIWindow* window = g_windowMgr.EnsureWindow(0x84)) {
-        window->SendMsg(this, 6, 0xC1, this->m_index, 0, 0);
+      if (UIWindow* window = g_windowMgr.EnsureWindow(WID_BATTLEMSGOPTIONWND)) {
+        window->SendMsg(this, UM_COMMAND, ID_OPTION, this->m_index, 0, 0);
         return 0;
       }
       return 0;
@@ -1264,8 +1267,8 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
       }
       g_windowMgr.ReleaseRetainedWindow(this->m_index);
-      if (UIWindow* window = g_windowMgr.LookupWindow(0x84)) {
-        window->SendMsg(this, 6, 0xC1, this->m_index, 0, 1);
+      if (UIWindow* window = g_windowMgr.LookupWindow(WID_BATTLEMSGOPTIONWND)) {
+        window->SendMsg(this, UM_COMMAND, ID_OPTION, this->m_index, 0, 1);
       }
       std::map<int, UIWindow*>& retained = g_windowMgr.retainedWindows;
       if (this->m_index != static_cast<int>(retained.size())) {
@@ -1285,7 +1288,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       return 0;
     case ID_STICK_ON:
       if (ChatWindow() != nullptr) {
-        ChatWindow()->SendMsg(this, 0x76, 0, 0, 0, 0);
+        ChatWindow()->SendMsg(this, UM_ATTACH_CHAT_TAB, 0, 0, 0, 0);
         return 0;
       }
       return 0;

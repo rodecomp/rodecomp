@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -65,7 +66,7 @@ __forceinline void UICheckBox::Notify() {
   }
 
   if (this->parent) {
-    this->parent->SendMsg(this, 6, this->geometry.id, this->geometry.unknown_0030, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, this->geometry.unknown_0030, 0, 0);
   }
 }
 
@@ -98,7 +99,7 @@ void UICheckBox::OnLBtnDown(int, int) {
   this->geometry.unknown_0030 = 1u - this->geometry.unknown_0030;
   this->Notify();
   if (this->m_notify != 0) {
-    this->parent->SendMsg(this, 2, this->m_message, 0, 0, 0);
+    this->parent->SendMsg(this, UM_TOGGLEPUSH, this->m_message, 0, 0, 0);
   }
 }
 

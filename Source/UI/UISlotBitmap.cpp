@@ -24,7 +24,7 @@ void UISlotBitmap::OnCreate(int, int) {
 // FUNCTION: fn_10833
 void UISlotBitmap::OnLBtnDblClk(int, int) {
   if (this->parent) {
-    this->parent->SendMsg(this, 6, 184, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, ID_OK, 0, 0, 0);
   }
 }
 
@@ -32,8 +32,8 @@ void UISlotBitmap::OnLBtnDblClk(int, int) {
 // FUNCTION: fn_10846
 void UISlotBitmap::OnLBtnDown(int, int) {
   if (this->parent) {
-    this->parent->SendMsg(this, 13, this->slot, 0, 0, 0);
-    this->parent->SendMsg(this, 6, this->geometry.id, 0, 0, 0);
+    this->parent->SendMsg(this, UM_SETSTATE, this->slot, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, 0, 0, 0);
   }
 }
 
@@ -41,8 +41,8 @@ void UISlotBitmap::OnLBtnDown(int, int) {
 // FUNCTION: fn_10887
 void UISlotBitmap::OnRBtnDown(int, int) {
   if (this->parent) {
-    this->parent->SendMsg(this, 13, this->slot, 0, 0, 0);
-    this->parent->SendMsg(this, 6, this->geometry.id, 226, 0, 0);
+    this->parent->SendMsg(this, UM_SETSTATE, this->slot, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, 226, 0, 0);
   }
 }
 
@@ -51,8 +51,8 @@ void UISlotBitmap::OnRBtnDown(int, int) {
 int UISlotBitmap::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == 203 && this->parent) {
-      this->parent->SendMsg(this, 6, 203, this->slot, 0, 0);
+    if (argument1 == ID_MAKE && this->parent) {
+      this->parent->SendMsg(this, UM_COMMAND, ID_MAKE, this->slot, 0, 0);
     }
     return 0;
   case UM_SETSTATE:

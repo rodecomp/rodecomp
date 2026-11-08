@@ -1,4 +1,6 @@
 #include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Lists/UIDropDownBox.h"
@@ -231,13 +233,13 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
 void UIWindowMgr::CancelActiveDialog() {
   UIWindow* window = this->window_03DC ? this->window_03DC : this->unknown_03B0;
   if (window) {
-    window->SendMsg(nullptr, 20, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_LEFTPUSH, 0, 0, 0, 0);
     return;
   }
 
   for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
     if ((*entry)->IsFrameWnd()) {
-      (*entry)->SendMsg(nullptr, 20, 0, 0, 0, 0);
+      (*entry)->SendMsg(nullptr, UM_LEFTPUSH, 0, 0, 0, 0);
     }
   }
 }

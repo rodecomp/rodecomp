@@ -1,4 +1,6 @@
 #include "UI/Guild/UIGuildHelperWnd.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -152,7 +154,7 @@ void UIGuildHelperWnd::StoreInfo() {
 // OFFSET: 0x009612E0
 // FUNCTION: fn_13123
 int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
   }
 
@@ -164,23 +166,23 @@ int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
     this->m_nameEdit->SelectAll();
 
     if (name.empty()) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2080)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2080)), 0xFF, 0, 0, 0);
     } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_itemLinkOpening.c_str())) ||
                _mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_itemLinkClosing.c_str()))) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2812)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2812)), 0xFF, 0, 0, 0);
     } else if (this->m_mode == 0) {
-      mode->SendMsg(112, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+      mode->SendMsg(MM_REQ_MAKE_GUILD, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     } else {
-      mode->SendMsg(106, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
-      g_windowMgr.CloseWindow(215);
+      mode->SendMsg(MM_REQ_DISORGANIZE_GUILD, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_CREATEGUILDWND_MODE_1);
     }
     break;
   }
   case ID_CANCEL:
     if (this->m_mode == 0) {
-      g_windowMgr.CloseWindow(213);
+      g_windowMgr.CloseWindow(WID_CREATEGUILDWND_MODE_0);
     } else {
-      g_windowMgr.CloseWindow(215);
+      g_windowMgr.CloseWindow(WID_CREATEGUILDWND_MODE_1);
     }
     break;
   }
@@ -195,13 +197,13 @@ int UIGuildBanReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   case UM_COMMAND:
     switch (a1) {
     case ID_OK: {
-      g_windowMgr.CloseWindow(76);
+      g_windowMgr.CloseWindow(WID_GUILDBANREASONDESCWND);
       CMode* mode = g_modeMgr.gameMode;
-      mode->SendMsg(111, reinterpret_cast<int>(&this->m_target), reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0);
+      mode->SendMsg(MM_REQ_BAN_GUILD, reinterpret_cast<int>(&this->m_target), reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0);
       break;
     }
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(76);
+      g_windowMgr.CloseWindow(WID_GUILDBANREASONDESCWND);
       break;
     }
     return 0;
@@ -224,18 +226,18 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
   case UM_COMMAND:
     switch (a1) {
     case ID_OK:
-      g_windowMgr.CloseWindow(214);
-      g_windowMgr.CloseWindow(213);
-      g_windowMgr.CloseWindow(212);
+      g_windowMgr.CloseWindow(WID_GUILDTIPWND);
+      g_windowMgr.CloseWindow(WID_CREATEGUILDWND_MODE_0);
+      g_windowMgr.CloseWindow(WID_GUILDHELPERWND);
       break;
     case ID_HELP:
-      if (!g_windowMgr.CloseWindow(214)) {
-        g_windowMgr.EnsureWindow(214);
+      if (!g_windowMgr.CloseWindow(WID_GUILDTIPWND)) {
+        g_windowMgr.EnsureWindow(WID_GUILDTIPWND);
       }
       break;
     case 448:
-      if (!g_windowMgr.CloseWindow(213)) {
-        g_windowMgr.EnsureWindow(213);
+      if (!g_windowMgr.CloseWindow(WID_CREATEGUILDWND_MODE_0)) {
+        g_windowMgr.EnsureWindow(WID_CREATEGUILDWND_MODE_0);
         if (g_windowMgr.unknown_0438) {
           int x = 0;
           int y = 0;
@@ -251,7 +253,7 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();
     }
-    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     this->Move(this->m_saved->x, this->m_saved->y);
     return 0;
   default:
@@ -262,8 +264,8 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
 // OFFSET: 0x00964C60
 // FUNCTION: fn_13133
 int UIGuildTipWnd::SendMsg(UIWindow*, int message, std::intptr_t a1, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message == 6 && a1 == 201) {
-    g_windowMgr.CloseWindow(214);
+  if (message == UM_COMMAND && a1 == ID_CLOSE) {
+    g_windowMgr.CloseWindow(WID_GUILDTIPWND);
   }
 
   return 0;
@@ -424,7 +426,7 @@ void UIGuildTipWnd::OnCreate(int width, int height) {
     std::vector<StringList> tipList = g_guildTip.GetTipList();
     for (const auto& tip : tipList) {
       for (unsigned int i = 0; i < tip.size(); ++i) {
-        this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(tip[i].c_str()), 50, 0, 0);
+        this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(tip[i].c_str()), 50, 0, 0);
       }
     }
   }

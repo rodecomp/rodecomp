@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Mode/CMode.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
@@ -29,12 +31,12 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
     switch (a) {
     case ID_OK:
-      g_windowMgr.CloseWindow(35);
-      g_modeMgr.gameMode->SendMsg(60, this->identity, 1, 0, 0);
+      g_windowMgr.CloseWindow(WID_JOINPARTYACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_JOIN_GROUP, this->identity, 1, 0, 0);
       break;
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(35);
-      g_modeMgr.gameMode->SendMsg(60, this->identity, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_JOINPARTYACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_JOIN_GROUP, this->identity, 0, 0, 0);
       break;
     }
 
@@ -47,12 +49,12 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     text += ")";
     text += LookupMessage(94);
     this->viewer->Clear();
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
 
     return 0;
   }
 
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     std::uint16_t marker;
     std::memcpy(&marker, bytes, sizeof(marker));
@@ -73,7 +75,7 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
           char text[260] = {};
           std::memcpy(text, bytes + offset, size);
           offset += size;
-          this->SendMsg(nullptr, 56, 0, reinterpret_cast<std::intptr_t>(text), 0, 0);
+          this->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, 0, reinterpret_cast<std::intptr_t>(text), 0, 0);
           break;
         }
         default:

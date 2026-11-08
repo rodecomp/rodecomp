@@ -1,4 +1,7 @@
 #include "Render/Text/FontCache.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Contents/Items/ItemType.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
@@ -97,7 +100,7 @@ void UIParaResultWnd::AddItem(const ITEM_INFO& item) {
 // OFFSET: 0x009A81F0
 // FUNCTION: fn_13747
 void UIParaItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
-  if (g_windowMgr.LookupWindow(10011)) {
+  if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
     UIWindow::DragAndDrop(x, y, value);
     return;
   }
@@ -115,39 +118,39 @@ void UIParaItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     case TYPE_ARMORMB:
     case TYPE_ARMORTMB:
     case TYPE_GUN:
-      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       return;
     default:
-      g_windowMgr.ShowWindowById(15, 1);
-      dynamic_cast<UIItemDropCntWnd*>(g_windowMgr.LookupWindow(15))->SendMsg(nullptr, 13, 21, 0, 0, 0);
+      g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
+      dynamic_cast<UIItemDropCntWnd*>(g_windowMgr.LookupWindow(WID_ITEMDROPCNTWND))->SendMsg(nullptr, UM_SETSTATE, 21, 0, 0, 0);
       return;
     }
   }
 
-  mode->SendMsg(18, 0, 0, 0, 0);
+  mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x009A82E0
 // FUNCTION: fn_13748
 void UIParaItemShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
-  if (g_windowMgr.LookupWindow(10011)) {
+  if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
     UIWindow::DragAndDrop(x, y, value);
     return;
   }
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source != 4) {
-    g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
   if (drag->quantity == 1) {
-    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     return;
   }
 
-  g_windowMgr.ShowWindowById(15, 1);
-  dynamic_cast<UIItemDropCntWnd*>(g_windowMgr.LookupWindow(15))->SendMsg(nullptr, 13, 22, 0, 0, 0);
+  g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
+  dynamic_cast<UIItemDropCntWnd*>(g_windowMgr.LookupWindow(WID_ITEMDROPCNTWND))->SendMsg(nullptr, UM_SETSTATE, 22, 0, 0, 0);
 }
 
 // OFFSET: 0x009A83B0
@@ -205,8 +208,8 @@ void UIParaResultWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemByIndex(this->unknown_00F8);
   if (item.unknown_0000[1] != 0) {
     g_modeMgr.GetGameMode();
-    UIWindow* window = g_windowMgr.EnsureWindow(0xC);
-    window->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -261,7 +264,7 @@ void UIParaResultWnd::OnCreate(int width, int height) {
 
   this->visibleRows = (height - this->unknown_0100 - this->unknown_00FC - 17) / 32;
   this->columns = 1;
-  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x009A9AB0
@@ -277,7 +280,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       this->saved->Reset();
     }
 
-    this->SendMsg(nullptr, 14, 3, this->saved->width, this->saved->height, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 3, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
   case UM_DROP: {
@@ -295,9 +298,9 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case TYPE_GUN: {
       const int count = drag.unknown_03B6 == 1 ? g_session.GetItem1720Quantity(drag.id) : g_session.GetItem1720QuantityByItemId(drag.name.c_str());
       if (count > 0) {
-        mode->SendMsg(18, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(119)), 255, 0, 0, 0);
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(119)), 255, 0, 0, 0);
         return 0;
       }
       break;
@@ -324,15 +327,15 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       char text[200];
       std::memset(text, 0, sizeof(text));
       sprintf_s(text, sizeof(text), LookupMessage(1704), 30000);
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 255, 0, 0, 0);
     }
 
     const int available = item.unknown_0074[3] == 1 ? g_session.GetItem1718QuantityOf(item) : g_session.GetItem1718QuantityByItemId(item);
     if (available != -1 && available < a) {
       item.quantity = available;
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2531)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2531)), 255, 0, 0, 0);
     }
 
     if (item.quantity > 0) {
@@ -346,11 +349,11 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       }
 
       if (!affordable) {
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(55)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(55)), 255, 0, 0, 0);
       } else if (weight + g_session.m_weight > g_session.m_maxWeight) {
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2536)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2536)), 255, 0, 0, 0);
       } else {
         if (item.unknown_0074[3] == 1) {
           g_session.RemoveItem1718(item);
@@ -360,12 +363,12 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           g_session.MergeItem1720ByName(item);
         }
 
-        this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-        dynamic_cast<UIParaItemShopWnd*>(g_windowMgr.LookupWindow(254))->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+        dynamic_cast<UIParaItemShopWnd*>(g_windowMgr.LookupWindow(WID_PARAITEMSHOPWND))->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
     }
 
-    mode->SendMsg(18, 0, 0, 0, 0);
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return 0;
   }
   case UM_COMMAND: {
@@ -375,16 +378,16 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case ID_OK: {
       ITEM_INFO item = g_session.GetItem1720At(0);
       if (item.unknown_0074[3] == 1) {
-        mode->SendMsg(263, 0, 0, 0, 0);
+        mode->SendMsg(MM_NPC_MARKET_PURCHASE_V2, 0, 0, 0, 0);
       } else {
-        mode->SendMsg(262, 0, 0, 0, 0);
+        mode->SendMsg(MM_NPC_MARKET_PURCHASE, 0, 0, 0, 0);
       }
       g_session.ClearTradeItems();
       return 0;
     }
     case ID_CANCEL:
-      mode->SendMsg(292, 0, 0, 0, 0);
-      mode->SendMsg(40, 0, 0, 0, 0);
+      mode->SendMsg(MM_NPC_MARKET_CLOSE, 0, 0, 0, 0);
+      mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
       g_session.ClearTradeItems();
       return 0;
     }
@@ -445,7 +448,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->UpdateScrollBar();
     return 0;
   }
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
@@ -454,14 +457,14 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
         if (header.type == 20701) {
-          UIWindow* window = g_windowMgr.EnsureWindow(22);
+          UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND);
           if (window) {
-            window->SendMsg(nullptr, 36, 0, 0, 0, 0);
-            window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+            window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+            window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           }
 
-          this->SendMsg(nullptr, 36, 0, 0, 0, 0);
-          this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          this->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           break;
         }
 
@@ -487,7 +490,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->saved->Reset();
     }
 
-    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 7, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
   case UM_COMMAND:
@@ -516,9 +519,9 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         lists->MergeItem1718ByName(item);
       }
 
-      dynamic_cast<UIParaItemPurchaseWnd*>(g_windowMgr.LookupWindow(255))->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
-      mode->SendMsg(18, 0, 0, 0, 0);
+      dynamic_cast<UIParaItemPurchaseWnd*>(g_windowMgr.LookupWindow(WID_PARAITEMPURCHASEWND))->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
     break;
@@ -595,8 +598,8 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.gameMode;
     if (a == 184) {
-      mode->SendMsg(292, 0, 0, 0, 0);
-      mode->SendMsg(40, 0, 0, 0, 0);
+      mode->SendMsg(MM_NPC_MARKET_CLOSE, 0, 0, 0, 0);
+      mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
       g_session.ClearTradeItems();
       return 0;
     }
@@ -605,7 +608,7 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   case UM_SETTITLE:
     this->showQuantity = 0;
     this->title->SetTextAutoWidth(LookupMessage(2530));
-    this->SendMsg(nullptr, 14, 7, this->geometry.width, a, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 7, this->geometry.width, a, 0);
     return 0;
   case UM_RESIZE:
     if (a == 7) {

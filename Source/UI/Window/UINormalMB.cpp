@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UINormalMB.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/MessageTable.h"
@@ -35,7 +36,7 @@ int UINormalMB::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       action->second();
     } else {
       if (this->m_owner) {
-        this->m_owner->SendMsg(this, 6, 488, id, 0, 0);
+        this->m_owner->SendMsg(this, UM_COMMAND, 488, id, 0, 0);
       }
 
       if (this->m_keepOpen) {
@@ -50,7 +51,7 @@ int UINormalMB::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
   case UM_CHANGEMSG:
     this->m_viewer->Clear();
-    this->m_viewer->SendMsg(nullptr, 29, a, 38, 0, 0);
+    this->m_viewer->SendMsg(nullptr, UM_SETTEXT, a, 38, 0, 0);
     return 0;
 
   default:
@@ -104,7 +105,7 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
   this->m_viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000u;
   this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->m_message.c_str()), static_cast<int>(width / 7.5), 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->m_message.c_str()), static_cast<int>(width / 7.5), 0, 0);
 
   switch (type) {
   case 4:

@@ -1,4 +1,5 @@
 #include "Script/LuaScript.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
@@ -62,7 +63,7 @@ void UIAchListWnd::SelectAchievement(int index) {
     if (static_cast<unsigned>(index) < this->ids.size()) {
       id = this->ids[index];
     }
-    this->parent->SendMsg(this, 135, id, 0, 0, 0);
+    this->parent->SendMsg(this, UM_LIST_SELECTION, id, 0, 0, 0);
   }
 
   this->Invalidate();
@@ -271,7 +272,7 @@ void UIAchUpperWnd::OnCreate(int, int) {
     *slot = new UIRadioBtn();
     (*slot)->SetSize(12, 12);
     (*slot)->Move(150, y);
-    (*slot)->SendMsg(this, 13, index == this->selected, 0, 0, 0);
+    (*slot)->SendMsg(this, UM_SETSTATE, index == this->selected, 0, 0, 0);
     this->AddChild(*slot);
     ++index;
     ++slot;
@@ -683,7 +684,7 @@ void UIToolTipBitmapWnd::OnRBtnDown(int x, int y) {
     ITEM_INFO item;
     item.SetItemId(this->itemId);
     item.identified = 1;
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -713,7 +714,7 @@ void UIAchievementWnd::SelectAchievement(int id) {
 
   list->scrollBar->SetPosition(list->unknown_008C);
   if (list->parent) {
-    list->parent->SendMsg(list, 135, static_cast<unsigned>(list->selectedIndex) < list->ids.size() ? list->ids[list->selectedIndex] : -1, 0, 0, 0);
+    list->parent->SendMsg(list, UM_LIST_SELECTION, static_cast<unsigned>(list->selectedIndex) < list->ids.size() ? list->ids[list->selectedIndex] : -1, 0, 0, 0);
   }
 
   list->Invalidate();
@@ -727,11 +728,11 @@ void UIAchListWnd::OnWheel(int delta) {
   }
 
   if (delta < 0) {
-    this->SendMsg(this->scrollBar, 7, 3, 0, 0, 0);
+    this->SendMsg(this->scrollBar, UM_SCROLLVERT, 3, 0, 0, 0);
     return;
   }
 
-  this->SendMsg(this->scrollBar, 7, -3, 0, 0, 0);
+  this->SendMsg(this->scrollBar, UM_SCROLLVERT, -3, 0, 0, 0);
 }
 
 // OFFSET: 0x007B7DD0
@@ -742,11 +743,11 @@ void UIAchTab::OnWheel(int delta) {
   }
 
   if (delta < 0) {
-    this->SendMsg(this->scrollBar, 7, 1, 0, 0, 0);
+    this->SendMsg(this->scrollBar, UM_SCROLLVERT, 1, 0, 0, 0);
     return;
   }
 
-  this->SendMsg(this->scrollBar, 7, -1, 0, 0, 0);
+  this->SendMsg(this->scrollBar, UM_SCROLLVERT, -1, 0, 0, 0);
 }
 
 // OFFSET: 0x007B7E10
@@ -839,7 +840,7 @@ void UIAchTab::Refresh() {
 // OFFSET: 0x007B8170
 // FUNCTION: fn_09245
 int UIAchSummaryWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message == 98 && argument1 != -1 && this->parent) {
+  if (message == UM_TEXT_LBTN_UP && argument1 != -1 && this->parent) {
     static_cast<UIAchievementWnd*>(this->parent)->SelectAchievement(argument1);
   }
 
@@ -860,10 +861,10 @@ int UIAchTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intp
   }
 
   const int previous = this->scrollPos;
-  if (message == 9) {
+  if (message == UM_SCROLLVERTPAGEUP) {
     this->scrollPos = previous - this->visibleSubs + 1;
   } else {
-    if (message == 10) {
+    if (message == UM_SCROLLVERTPAGEDOWN) {
       argument1 = this->visibleSubs - 1;
     }
     this->scrollPos = previous + argument1;
@@ -880,17 +881,17 @@ int UIAchTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intp
 // OFFSET: 0x007B8230
 // FUNCTION: fn_09247
 int UIAchUpperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message == 6 && argument1 == 215) {
+  if (message == UM_COMMAND && argument1 == ID_RADIOBTN) {
     for (int index = 0; index < 2; ++index) {
       this->buttons[index]->Invalidate();
       if (sender == this->buttons[index]) {
-        this->buttons[index]->SendMsg(this, 13, 1, 0, 0, 0);
+        this->buttons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         this->selected = index;
         if (this->parent) {
-          this->parent->SendMsg(this, 22, -1, -1, 0, 0);
+          this->parent->SendMsg(this, UM_TAB, -1, -1, 0, 0);
         }
       } else {
-        this->buttons[index]->SendMsg(this, 13, 0, 0, 0, 0);
+        this->buttons[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
       }
     }
   }
@@ -911,7 +912,7 @@ int UIAchViewWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
       GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
     }
     break;
-  case 145:
+  case UM_SELECT_ACHIEVEMENT:
     if (argument1 != -1 && this->parent) {
       static_cast<UIAchievementWnd*>(this->parent)->SelectAchievement(argument1);
       return 0;
@@ -966,7 +967,7 @@ void UIAchListWnd::SetAchievements(std::map<int, AchievementInfo>* achievements,
   this->UpdateScroll();
   this->selectedIndex = 0;
   if (this->parent) {
-    this->parent->SendMsg(this, 135, this->ids.empty() ? -1 : this->ids[0], 0, 0, 0);
+    this->parent->SendMsg(this, UM_LIST_SELECTION, this->ids.empty() ? -1 : this->ids[0], 0, 0, 0);
   }
 
   this->Invalidate();
@@ -1023,7 +1024,7 @@ void UIAchievementWnd::SelectTab(int group, int sub) {
     this->list->SetAchievements(&this->achievements, this->upper->selected);
   }
 
-  this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x007B8FA0
@@ -1158,7 +1159,7 @@ int UIAchTracingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
     }
     case 479: {
-      UIWindow* window = g_windowMgr.EnsureWindow(270);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_ACHIEVEMENTWND);
       if (window) {
         static_cast<UIAchievementWnd*>(window)->SelectAchievement(argument2);
         this->Invalidate();
@@ -1244,7 +1245,7 @@ int UIAchListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
   switch (message) {
   case UM_COMMAND:
     if (g_session.ToggleTrackedAchievement(this->ids[this->unknown_008C + argument1])) {
-      UIWindow* window = g_windowMgr.EnsureWindow(271);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_ACHTRACINGWND);
       if (window) {
         window->Invalidate();
       }
@@ -1254,10 +1255,10 @@ int UIAchListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->unknown_008C;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->unknown_008C = previous - this->rowCount + 1;
     } else {
-      if (message == 10) {
+      if (message == UM_SCROLLVERTPAGEDOWN) {
         argument1 = this->rowCount - 1;
       }
       this->unknown_008C = previous + argument1;
@@ -1281,8 +1282,8 @@ int UIAchListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
 int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == 201) {
-      g_windowMgr.CloseWindow(270);
+    if (argument1 == ID_CLOSE) {
+      g_windowMgr.CloseWindow(WID_ACHIEVEMENTWND);
       this->Invalidate();
       return 0;
     }
@@ -1298,7 +1299,7 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     this->Invalidate();
     return 0;
 
-  case 135: {
+  case UM_LIST_SELECTION: {
     UIAchViewWnd* view = this->view;
     if (this->achievements.find(argument1) == this->achievements.end()) {
       view->achievementId = -1;
@@ -1412,7 +1413,7 @@ void UIAchViewWnd::UpdateInfo() {
 
   if (this->info) {
     const SessionRecord6144 record = g_session.FindRecord6144(this->achievementId);
-    this->description->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->info->unknown_0030.c_str()), 50, 0, 0);
+    this->description->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->info->unknown_0030.c_str()), 50, 0, 0);
 
     const bool hasReward = this->info->unknown_0054 > 0 || this->info->unknown_0050 > 0 || this->info->unknown_004C > 0;
     if (hasReward && record.unknown_0030 == 0) {
@@ -1434,13 +1435,13 @@ void UIAchViewWnd::UpdateInfo() {
         const int progress = record.unknown_0004[index];
         const int target = this->info->rewards[index].unknown_0018;
         const std::string text = FormatOwnedString("%s ( %d / %d )", this->info->rewards[index].text.c_str(), progress, target);
-        condition->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 56, 0, 0);
+        condition->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 56, 0, 0);
         this->gauges[index]->Show(1);
         this->gauges[index]->value = progress;
         this->gauges[index]->maximum = target;
         this->gauges[index]->Invalidate();
       } else {
-        condition->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->info->rewards[index].text.c_str()), 56, 0, 0);
+        condition->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->info->rewards[index].text.c_str()), 56, 0, 0);
         this->gauges[index]->Show(0);
       }
 

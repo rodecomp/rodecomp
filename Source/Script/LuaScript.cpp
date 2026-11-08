@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "Contents/Effects/EffectMessageId.h"
 #include "Script/LuaScript.h"
 #include "Archive/PakRegistry.h"
@@ -736,7 +737,7 @@ int AddEntryQueue(lua_State* state) {
 int AddIngredient(lua_State* state) {
   const int id = static_cast<int>(luaL_checknumber(state, 1));
   const int quantity = static_cast<int>(luaL_checknumber(state, 2));
-  if (UIWindow* window = g_windowMgr.LookupWindow(0x122)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_LAPINEBOXWND)) {
     static_cast<UILapineBoxWnd*>(window)->AddMaterial(id, quantity);
   }
   return 0;
@@ -746,7 +747,7 @@ int AddIngredient(lua_State* state) {
 // FUNCTION: fn_18359
 int AddIngredientLapineUpgradeBox(lua_State* state) {
   const int id = static_cast<int>(luaL_checknumber(state, 1));
-  if (UIWindow* window = g_windowMgr.LookupWindow(0x12e)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_LAPINEUPGRADEBOXWND)) {
     static_cast<UILapineUpgradeBoxWnd*>(window)->AddMaterial(id);
   }
   return 0;
@@ -769,7 +770,7 @@ int LuaReturnOne() {
 int AddCashshopBanner(lua_State* state) {
   std::string image = luaL_checkstring(state, 1);
   std::string url = luaL_checkstring(state, 2);
-  if (UIWindow* window = g_windowMgr.LookupWindow(0x13e)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND)) {
     AddCashShopBanner(reinterpret_cast<CashShopBannerWindow*>(window), image, url);
   }
 
@@ -781,7 +782,7 @@ int AddCashshopBanner(lua_State* state) {
 int AddCashshopBanner2(lua_State* state) {
   std::string image = luaL_checkstring(state, 1);
   std::string url = luaL_checkstring(state, 2);
-  if (UIWindow* window = g_windowMgr.LookupWindow(0x13e)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND)) {
     AddCashShopBanner2(reinterpret_cast<CashShopBannerWindow*>(window), image, url);
   }
 
@@ -795,7 +796,7 @@ int AddCheckAttendanceBanner(lua_State* state) {
   std::string url = luaL_checkstring(state, 2);
   const int action = luaL_checkinteger(state, 3);
   const int argument = luaL_checkinteger(state, 4);
-  if (UIWindow* window = g_windowMgr.LookupWindow(0x148)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_CHECKATTENDANCEWND)) {
     AddAttendanceBanner(static_cast<UICheckAttendanceWnd*>(window), image, url, action, argument);
   }
 

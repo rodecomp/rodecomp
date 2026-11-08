@@ -1,4 +1,6 @@
 #include "Contents/ClientState.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -507,7 +509,7 @@ std::uint32_t CSession::ReadReplayExtra(const std::vector<unsigned char>& data) 
   }
 
   if (this->unknown_593C == 1) {
-    g_windowMgr.EnsureWindow(0x89);
+    g_windowMgr.EnsureWindow(WID_MEMORIALDUNWND);
   }
 
   return offset;
@@ -971,7 +973,7 @@ void CSession::SetHomunculusAutoFeed(bool enabled) {
   }
 
   const char* text = LookupMessage(message);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00E48980
@@ -979,14 +981,14 @@ void CSession::SetHomunculusAutoFeed(bool enabled) {
 void CSession::SetPetAutoFeed(bool enabled) {
   g_petAutoFeed = enabled == true;
   const char* text = LookupMessage(enabled ? 2579 : 2580);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00E489C0
 // FUNCTION: fn_24224
 void __stdcall SetPetInfoAlert(bool enabled) {
   std::string notice = LookupMessage(enabled ? 4357 : 4379);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice.c_str()), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice.c_str()), 0x64FFFF, 0, 0, 0);
   g_serviceOptions.Set(0x128, enabled);
   g_windowMgr.RefreshGameSettingOption(0x128);
 }
@@ -1006,7 +1008,7 @@ void CSession::CollectCardItems() {
 // FUNCTION: fn_24226
 void RequestBasicInfoRefresh() {
   if (g_windowMgr.unknown_01E0 != nullptr) {
-    g_windowMgr.unknown_01E0->SendMsg(nullptr, 106, 575, 0, 0, 0);
+    g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_SET_DISABLE, 575, 0, 0, 0);
   }
 }
 
@@ -1014,9 +1016,9 @@ void RequestBasicInfoRefresh() {
 // FUNCTION: fn_24232
 void CSession::SetUnknown5BC0(int value) {
   this->unknown_5BC0 = value;
-  UIWindow* window = g_windowMgr.LookupWindow(0x272E);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_SKILLDELAYINFO);
   if (window != nullptr) {
-    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -1086,9 +1088,9 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
       int value;
       std::memcpy(&value, data.data() + offset, header.bytes);
       offset += header.bytes;
-      UIEntryQueueWnd* window = dynamic_cast<UIEntryQueueWnd*>(g_windowMgr.LookupWindow(157));
+      UIEntryQueueWnd* window = dynamic_cast<UIEntryQueueWnd*>(g_windowMgr.LookupWindow(WID_JOINTO_BATTLEFIELDWND));
       if (window) {
-        window->SendMsg(nullptr, 135, 0, value, 0, 0);
+        window->SendMsg(nullptr, UM_LIST_SELECTION, 0, value, 0, 0);
       }
       break;
     }
@@ -1105,7 +1107,7 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
       std::memset(queueText, 0, sizeof(queueText));
       std::memcpy(queueText, data.data() + offset, header.bytes);
       offset += header.bytes;
-      UIEntryQueueStandByWnd* window = dynamic_cast<UIEntryQueueStandByWnd*>(g_windowMgr.LookupWindow(209));
+      UIEntryQueueStandByWnd* window = dynamic_cast<UIEntryQueueStandByWnd*>(g_windowMgr.LookupWindow(WID_ENTRYQUEUESTANDBYWND));
       if (window) {
         window->SetInfo(queueText, waiting, ranking);
       }

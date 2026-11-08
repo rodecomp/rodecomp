@@ -1,3 +1,5 @@
+#include "UI/Window/UIEnums.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Client/Application/ApplicationMessages.h"
 #include "Contents/Models/ModelActor.h"
 #include "Contents/Ground/TerrainHeight.h"
@@ -143,7 +145,7 @@ void CWorld::InitWorld() {
     static_cast<int (*)(CRenderSystemBase*, const char*, UINT)>(&ShowErrorDialog)
   );
 
-  const char* rawMapName = reinterpret_cast<const char*>(this->gameMode->SendMsg(9, 0, 0, 0, 0));
+  const char* rawMapName = reinterpret_cast<const char*>(this->gameMode->SendMsg(MM_QUERYRSWNAME, 0, 0, 0, 0));
   std::string mapName(rawMapName ? rawMapName : "");
 
   auto* worldRes = static_cast<C3dWorldRes*>(ResourceMgr::Instance().Load(mapName.c_str()));
@@ -238,7 +240,7 @@ void CWorld::InitWorld() {
     if ((percent != lastPercent && now - lastNoticeTime > 15) || percent == 100) {
       lastPercent = percent;
       lastNoticeTime = now;
-      g_windowMgr.SendNotice(4, percent, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_LOADINGPERCENT, percent, 0, 0, 0, 0);
       g_windowMgr.CenterSurface0478();
       g_windowMgr.DrawWindows();
       if (g_renderer->Draw()) {

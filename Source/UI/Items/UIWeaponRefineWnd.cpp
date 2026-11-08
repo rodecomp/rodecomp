@@ -1,4 +1,6 @@
 #include "UI/Items/UIWeaponRefineWnd.h"
+#include "UI/Window/WindowId.h"
+#include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Input/InputCharset.h"
@@ -83,11 +85,11 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   }
 
   case UM_UPPUSH:
-    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     return 0;
 
   case UM_DOWNPUSH:
-    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     return 0;
 
   case UM_COMMAND: {
@@ -103,30 +105,30 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
       UIListBox* list = this->m_list;
       if (list->LineCount() == 0) {
-        g_modeMgr.gameMode->SendMsg(182, -1, 0, 0, 0);
-        g_windowMgr.CloseWindow(111);
-        g_windowMgr.CloseWindow(111);
+        g_modeMgr.gameMode->SendMsg(MM_REFINEITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
+        g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
         return 0;
       }
 
       const int selected = list->selected;
       if (selected >= 0) {
-        g_modeMgr.gameMode->SendMsg(182, this->indices[selected], 0, 0, 0);
-        g_windowMgr.CloseWindow(111);
+        g_modeMgr.gameMode->SendMsg(MM_REFINEITEM_SELECT_FROM_LIST, this->indices[selected], 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
         return 0;
       }
       break;
     }
     case ID_CANCEL:
-      g_modeMgr.gameMode->SendMsg(182, -1, 0, 0, 0);
-      g_windowMgr.CloseWindow(111);
+      g_modeMgr.gameMode->SendMsg(MM_REFINEITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
       return 0;
     }
 
     return 0;
   }
 
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     UIWeaponRefineRecordHeader header;
     unsigned offset = 6;
@@ -145,7 +147,7 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           int values[2] = {};
           std::memcpy(values, bytes + offset, header.bytes);
           offset += header.bytes;
-          this->SendMsg(nullptr, 31, values[0], values[1], 0, 0);
+          this->SendMsg(nullptr, UM_ADDITEM, values[0], values[1], 0, 0);
           break;
         }
 

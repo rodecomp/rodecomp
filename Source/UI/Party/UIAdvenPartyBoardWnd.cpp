@@ -1,5 +1,7 @@
 #include "Contents/MessageTable.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Input/Language.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -343,7 +345,7 @@ __forceinline void UIAdvenPartyBoardWnd::RefreshRows() {
   this->previous->Move(this->geometry.width / 2 - this->previous->geometry.width - halfWidth - 3, 319);
   this->next->Move(halfWidth + this->geometry.width / 2 + 3, 319);
   this->Registration(g_adventurerAgencyMgr->registered);
-  this->SendMsg(nullptr, 165, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_UPDATE_PARTY_PAGINATION, 0, 0, 0, 0);
   this->Invalidate();
   this->InvalidateChildren();
 }
@@ -477,7 +479,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case UM_REFRESH:
     this->RefreshRows();
     return 0;
-  case 165:
+  case UM_UPDATE_PARTY_PAGINATION:
     this->UpdatePagination();
     return 0;
   case UM_COMMAND:
@@ -489,7 +491,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->page = (this->page - 1);
 
       if (this->searching == 1) {
-        this->SendMsg(nullptr, 6, 365, this->page, 246, 0);
+        this->SendMsg(nullptr, UM_COMMAND, ID_PARTY_SEARCH, this->page, 246, 0);
       } else {
         this->LoadPage(this->page);
       }
@@ -503,32 +505,32 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->next->Invalidate();
 
       if (this->searching == 1) {
-        this->SendMsg(nullptr, 6, 365, this->page, 218, 0);
+        this->SendMsg(nullptr, UM_COMMAND, ID_PARTY_SEARCH, this->page, 218, 0);
       } else {
         this->LoadPage(this->page);
       }
 
       break;
-    case 365:
+    case ID_PARTY_SEARCH:
       this->Search(static_cast<int>(c));
       break;
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(324);
+      g_windowMgr.CloseWindow(WID_ADVENPARTYBOARDWND);
       break;
-    case 379: {
+    case ID_SELECT_PARTY_LISTING: {
       const auto& info = this->rows[static_cast<int>(b)]->info;
 
       if (info.accountId == g_session.m_aid) {
-        g_windowMgr.CloseWindow(345);
-        auto* window = static_cast<UIRegisterPartyWnd*>(g_windowMgr.EnsureWindow(323));
+        g_windowMgr.CloseWindow(WID_APPLYFORPARTYWND);
+        auto* window = static_cast<UIRegisterPartyWnd*>(g_windowMgr.EnsureWindow(WID_REGISTERPARTYWND));
 
         if (window) {
           window->SetInfo(info);
           g_windowMgr.Promote(window);
         }
       } else {
-        g_windowMgr.CloseWindow(323);
-        auto* window = static_cast<UIApplyForPartyWnd*>(g_windowMgr.EnsureWindow(345));
+        g_windowMgr.CloseWindow(WID_REGISTERPARTYWND);
+        auto* window = static_cast<UIApplyForPartyWnd*>(g_windowMgr.EnsureWindow(WID_APPLYFORPARTYWND));
 
         if (window) {
           window->SetInfo(info);
@@ -538,9 +540,9 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
       break;
     }
-    case 564: {
-      g_windowMgr.CloseWindow(345);
-      auto* window = static_cast<UIRegisterPartyWnd*>(g_windowMgr.EnsureWindow(323));
+    case ID_EDIT_OWN_PARTY_LISTING: {
+      g_windowMgr.CloseWindow(WID_APPLYFORPARTYWND);
+      auto* window = static_cast<UIRegisterPartyWnd*>(g_windowMgr.EnsureWindow(WID_REGISTERPARTYWND));
 
       if (window) {
         window->SetInfo(this->ownParty->info);
@@ -549,9 +551,9 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
       break;
     }
-    case 565: {
-      g_windowMgr.CloseWindow(345);
-      UIWindow* window = g_windowMgr.EnsureWindow(323);
+    case ID_REGISTER_PARTY_LISTING: {
+      g_windowMgr.CloseWindow(WID_APPLYFORPARTYWND);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_REGISTERPARTYWND);
 
       if (window) {
         g_windowMgr.Promote(window);
@@ -562,7 +564,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     case 410:
       g_adventurerAgencyMgr->RequestStop();
       break;
-    case 415:
+    case ID_PARTY_RELOAD_FIRST_PAGE:
       this->page = 1;
       this->searching = 0;
       this->LoadPage(1);

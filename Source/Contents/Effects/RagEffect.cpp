@@ -1,4 +1,6 @@
 #include "Contents/Effects/RagEffect.h"
+#include "Client/Mode/ModeMessage.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/MapSkyMgr.h"
@@ -87,7 +89,7 @@ CRagEffect::~CRagEffect() {
   }
 
   if (this->state.parent) {
-    this->state.parent->SendMsg(this, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->state.parent->SendMsg(this, AM_EFFECT_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
   if (this->state.resource) {
@@ -2530,12 +2532,12 @@ void CRagEffect::PotionPillar(float heightSpeed, int duration) {
 // FUNCTION: fn_20094
 bool CRagEffect::Potion_Berserk() {
   if (this->state.stateCnt == 0) {
-    this->state.parent->SendMsg(nullptr, 127, 0, 250, 0, 120, 0, 120, 0, 0, 0, 0, 0, 0, 0);
+    this->state.parent->SendMsg(nullptr, AM_CHANGE_COLOR, 0, 250, 0, 120, 0, 120, 0, 0, 0, 0, 0, 0, 0);
     this->PotionPillar(1.0f, 50);
   }
 
   if (this->state.stateCnt == 18) {
-    g_modeMgr.GetGameMode()->SendMsg(122, 1, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 1, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\ac_concentration.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 
@@ -2569,7 +2571,7 @@ bool CRagEffect::Potion_Berserk() {
     return true;
   }
 
-  this->state.parent->SendMsg(nullptr, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->state.parent->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   return false;
 }
 
@@ -8867,7 +8869,7 @@ void CRagEffect::CloudDrift() {
 // FUNCTION: fn_20285
 void CRagEffect::NotifyGameMode(char value) {
   if (this->state.stateCnt == 0) {
-    g_modeMgr.gameMode->SendMsg(165, value, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_SONG_TALK, value, 0, 0, 0);
   }
 }
 
@@ -9530,7 +9532,7 @@ bool CRagEffect::FirePillarBomb() {
   }
 
   if (this->state.stateCnt == 35) {
-    g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
   }
 
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
@@ -10239,7 +10241,7 @@ bool CRagEffect::OnProcess2() {
     this->SlashFan(0);
     this->SlashFan(1);
     if (this->state.stateCnt == 44) {
-      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       this->render.position = this->state.parent->render.position;
       PlayEffectWave(*this, "effect\\연주붕격.wav");
     }
@@ -11423,11 +11425,11 @@ void CRagEffect::EarthSpike(char type) {
   }
 
   CMode* mode = g_modeMgr.GetGameMode();
-  mode->SendMsg(122, 1, 0, 0, 0);
+  mode->SendMsg(MM_QUAKE, 1, 0, 0, 0);
   float red = 1.0f;
   float green = 0.24f;
   float blue = 0.2f;
-  mode->SendMsg(135, reinterpret_cast<int>(&red), reinterpret_cast<int>(&green), reinterpret_cast<int>(&blue), 0);
+  mode->SendMsg(MM_SETQUAKEINFO, reinterpret_cast<int>(&red), reinterpret_cast<int>(&green), reinterpret_cast<int>(&blue), 0);
 
   this->state.lastPrim = CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects());
   this->state.lastPrim->state.duration = 240;
@@ -11501,7 +11503,7 @@ void CRagEffect::Sightrasher() {
   this->state.tlvertY = vertex.y;
 
   if (this->state.stateCnt == 0) {
-    this->state.parent->SendMsg(nullptr, 109, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->state.parent->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     PlayEffectWave(*this, "effect\\wizard_sightrasher.wav");
   }
 
@@ -13603,7 +13605,7 @@ void CRagEffect::StoneSpike() {
   }
 
   PlayEffectWave(*this, "effect\\wizard_earthspike.wav");
-  g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+  g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
   this->state.duration += 50;
 
   for (int z = -10; z < 15; z += 5) {
@@ -14803,7 +14805,7 @@ void CRagEffect::Gravitation() {
     return;
   }
 
-  g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+  g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
 
   for (int z = -10; z < 15; z += 5) {
     for (int x = -10; x < 15; x += 5) {
@@ -15182,12 +15184,12 @@ void CRagEffect::SendMsg(
   case AM_SET_DURATION:
     this->SetStateDuration(static_cast<int>(first));
     break;
-  case 127:
+  case AM_CHANGE_COLOR:
     this->state.unknown_11C88[0] = static_cast<std::int32_t>(first);
     this->state.unknown_11C88[1] = static_cast<std::int32_t>(second);
     this->state.unknown_11C88[2] = static_cast<std::int32_t>(third);
     break;
-  case 143:
+  case AM_EFFECT_LOOP_COUNT:
     if (first == 735 || first == 736 || first == 737 || first == 738) {
       this->state.unknown_11C84->isChangeProcessed = static_cast<std::uint32_t>(second);
     }
@@ -15279,19 +15281,19 @@ void CRagEffect::AlphaCenterRise() {
   }
 
   if (this->state.stateCnt == 35 && this->state.parent != nullptr) {
-    this->state.parent->SendMsg(nullptr, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->state.parent->SendMsg(nullptr, AM_MAKE_SMOKE_FFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 // OFFSET: 0x00C36710
 // FUNCTION: fn_20093
 bool CRagEffect::Potion_Awakening() {
   if (this->state.stateCnt == 0) {
-    this->state.parent->SendMsg(nullptr, 127, 0, 250, 0, 250, 0, 200, 0, 0, 0, 0, 0, 0, 0);
+    this->state.parent->SendMsg(nullptr, AM_CHANGE_COLOR, 0, 250, 0, 250, 0, 200, 0, 0, 0, 0, 0, 0, 0);
     this->PotionPillar(1.0f, 50);
   }
 
   if (this->state.stateCnt == 18) {
-    g_modeMgr.GetGameMode()->SendMsg(122, 1, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 1, 0, 0, 0);
   }
 
   this->render.position = this->state.parent->render.position;
@@ -15324,7 +15326,7 @@ bool CRagEffect::Potion_Awakening() {
     return true;
   }
 
-  this->state.parent->SendMsg(nullptr, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->state.parent->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   return false;
 }
 // OFFSET: 0x00C3C4E0
@@ -15339,7 +15341,7 @@ void CRagEffect::StatusIconColumn() {
   }
 
   if (this->state.count != 0) {
-    this->SendMsg(nullptr, 25, 0, 100, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_CHILD_DEAD, 0, 100, 0, 0, 0, 0);
     this->state.count = 0;
     this->state.stateCnt = 0;
   }
@@ -17352,7 +17354,7 @@ void CPlayer::UpdateFootprints(int kind) {
 // OFFSET: 0x00C74B60
 // FUNCTION: fn_20334
 void CPlayer::RefreshEffect164() {
-  this->SendMsg(nullptr, 109, 0, 164, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 164, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->unknown_0544 = this->LaunchEffect(164, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
 
@@ -20023,7 +20025,7 @@ bool CRagEffect::OnProcess3() {
       this->LineStreakLayered(11);
     }
     if (this->state.stateCnt == 44) {
-      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
     if (this->state.stateCnt >= 20 && this->state.stateCnt <= 100) {
       if ((this->state.parent->render.flags & 8) == 0) {
@@ -20364,13 +20366,13 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt != 0) {
       if (this->state.stateCnt != 40) {
         if (this->state.stateCnt == 80) {
-          g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+          g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
         }
       } else {
-        g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       }
     } else {
-      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
     this->TetraVortexPillar(4);
     for (int index = 0; index < 7; ++index) {
@@ -21109,13 +21111,13 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt != 0) {
       if (this->state.stateCnt != 35) {
         if (this->state.stateCnt == 70) {
-          g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+          g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
         }
       } else {
-        g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       }
     } else {
-      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
     break;
   case EF_BUBBLE_DROP:
@@ -21160,17 +21162,17 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
       PlayEffectWave(*this, "effect\\EF_hit2.wav");
-      this->state.parent->SendMsg(nullptr, 88, 0, 1, 0, 0xFFFF0000, 0, 114, 0, 0, 0, 0, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 0, 1, 0, 0xFFFF0000, 0, 114, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case EF_DAMAGE1_2:
     if (this->state.stateCnt == 0) {
-      this->state.parent->SendMsg(nullptr, 88, 0, 1, 0, 0xFFFF0000, 0, 114, 0, 0, 0, 0, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 0, 1, 0, 0xFFFF0000, 0, 114, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case EF_DAMAGE1_3:
     if (this->state.stateCnt == 0) {
-      this->state.parent->SendMsg(nullptr, 88, 0, 1, 0, 0xFFFF00FF, 0, 114, 0, 0, 0, 0, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 0, 1, 0, 0xFFFF00FF, 0, 114, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case EF_SPREADATTACK:
@@ -21426,7 +21428,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_NPC_STOP2_DEL:
     if (this->state.stateCnt == 0) {
-      this->state.parent->SendMsg(nullptr, 109, 0, 604, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 604, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case EF_SIGHT2:
@@ -21568,7 +21570,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_ACIDDEMON:
     if (this->state.stateCnt == 5) {
-      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
     this->TexturedFireWall("effect\\ring_black.tga", 33);
     break;
@@ -21665,7 +21667,7 @@ bool CRagEffect::OnProcess3() {
       this->LineStreakLayered(11);
     }
     if (this->state.stateCnt == 44) {
-      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       this->render.position = this->state.parent->render.position;
       PlayEffectWave(*this, "effect\\연주붕격.wav");
     }
@@ -21908,7 +21910,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_SCREEN_QUAKE:
     if (this->state.stateCnt < 100 && this->state.stateCnt % 5 == 0) {
-      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
     break;
   case EF_HITTEXTURE:
@@ -22111,7 +22113,7 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt == 1) {
       this->render.position = this->state.parent->render.position;
       PlayEffectWave(*this, "effect\\dragonfear.wav");
-      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
@@ -23030,14 +23032,14 @@ bool CRagEffect::OnProcess3() {
     }
     this->TexturedFourRing("effect\\alpha_down.tga", 0);
     this->TexturedFourRing("effect\\alpha_down.tga", 1);
-    this->SendMsg(this, 127, 0, 255, 115, 0, 0, 0);
+    this->SendMsg(this, AM_CHANGE_COLOR, 0, 255, 115, 0, 0, 0);
     break;
   case EF_GLOW_BLACK:
     this->Map_MagicZone("effect\\glow04_bk.bmp", 5);
     for (int index = 2; index < 21; index += 2) {
       this->TexturedOrbitDust("effect\\mpa3.tga", index, 2);
     }
-    this->SendMsg(this, 127, 0, 255, 115, 0, 0, 0);
+    this->SendMsg(this, AM_CHANGE_COLOR, 0, 255, 115, 0, 0, 0);
     break;
   case EF_WH_WILD_WALK:
     if (this->state.stateCnt == 0) {
@@ -23919,7 +23921,7 @@ bool CRagEffect::OnProcess() {
         break;
       }
       if (this->state.stateCnt >= 50 && this->state.stateCnt % 50 == 0 && this->state.stateCnt < 300) {
-        g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       }
       if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
         return false;
@@ -23939,7 +23941,7 @@ bool CRagEffect::OnProcess() {
         PlayEffectWave(*this, "effect\\wizard_meteor.wav");
       }
       if (this->state.stateCnt == 40) {
-        g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       }
       if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
         return false;
@@ -24426,7 +24428,7 @@ bool CRagEffect::OnProcess() {
       if (this->state.stateCnt == 0) {
         this->Hit2(1);
       } else if (this->state.stateCnt == 3 || this->state.stateCnt == 7 || this->state.stateCnt == 9) {
-        g_modeMgr.GetGameMode()->SendMsg(122, 1, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 1, 0, 0, 0);
       }
       if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
         return false;
@@ -24893,7 +24895,7 @@ bool CRagEffect::OnProcess() {
         PlayEffectWave(*this, "effect\\매직 크래쉬.wav");
       }
       if (this->state.stateCnt == 30) {
-        g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       }
       if (this->state.stateCnt >= 30 && this->state.stateCnt <= 60) {
         if ((this->state.parent->render.flags & 1) == 0) {
@@ -24948,7 +24950,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_FALCONASSAULT:
       if (this->state.stateCnt == 30) {
-        g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       }
       if (this->state.stateCnt >= 30 && this->state.stateCnt <= 54) {
         this->state.parent->render.angle += 30.0f;

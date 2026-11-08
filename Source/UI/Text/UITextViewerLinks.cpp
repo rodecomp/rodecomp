@@ -1,4 +1,5 @@
 #include "UI/Chat/UINewChatWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Input/InputCharset.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Render/Text/TextContext.h"
@@ -104,7 +105,7 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
     this->links.push_back(button);
   }
 
-  this->SendMsg(nullptr, 7, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
   return true;
 }
 
@@ -151,7 +152,7 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
     this->links.push_back(button);
   }
 
-  this->SendMsg(nullptr, 7, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
   return true;
 }
 
@@ -253,7 +254,7 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
     this->links.push_back(button);
   }
 
-  this->SendMsg(nullptr, 7, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
   return true;
 }
 
@@ -350,7 +351,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
       }
     }
 
-    this->SendMsg(nullptr, 7, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
   }
 }
 
@@ -396,7 +397,7 @@ bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
     this->links.push_back(button);
   }
 
-  this->SendMsg(nullptr, 7, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
   return true;
 }
 

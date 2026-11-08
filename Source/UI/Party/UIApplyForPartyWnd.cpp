@@ -1,5 +1,7 @@
 #include "Client/Session.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "File/ShortcutFilename.h"
 #include "Render/Renderer.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -155,12 +157,12 @@ int UIApplyForPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   case UM_COMMAND:
     switch (static_cast<int>(a)) {
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(345);
+      g_windowMgr.CloseWindow(WID_APPLYFORPARTYWND);
       break;
-    case 271:
+    case ID_APPLY:
       g_adventurerAgencyMgr->RequestInfo(this->info.accountId);
       break;
-    case 381: {
+    case ID_WHISPER_PARTY_LEADER: {
       const std::string name = this->info.characterName;
       const char* relationship = nullptr;
 
@@ -171,7 +173,7 @@ int UIApplyForPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       const char* group = g_session.IsGuildMemberAccount(this->info.accountId) ? "GuildMember" : relationship;
       std::string code;
       code = ShortcutFilename(this->info.characterId);
-      g_windowMgr.SendNotice(14, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(group), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
+      g_windowMgr.SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(group), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
       break;
     }
     }

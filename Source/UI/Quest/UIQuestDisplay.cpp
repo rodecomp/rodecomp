@@ -1,5 +1,7 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Quest/UIQuestDisplay.h"
 #include "Client/Input/Mouse.h"
 #include "Contents/MessageTable.h"
@@ -194,7 +196,7 @@ void UIQuestDisplay::OnRBtnUp(int x, int y) {
   }
 
   if (this->m_selectedIndex != -1) {
-    this->SendMsg(nullptr, 49, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
   }
 }
 
@@ -253,12 +255,12 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(351)).c_str(), 48));
     }
     if (this->m_menuItems.size() != 0) {
-      UIWindow* menu = g_windowMgr.EnsureWindow(18);
+      UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
       for (size_t i = 0; i < this->m_menuItems.size(); ++i) {
-        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_menuItems[i].text.c_str()), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_menuItems[i].text.c_str()), 0, 0, 0);
       }
-      menu->SendMsg(nullptr, 83, 204, 0, 0, 0);
-      menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SET_CALLER_WID, 204, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
 
       int x = std::max(g_mouse.x + 1, 1);
       int maxX = g_renderer->viewport.width - menu->geometry.width;

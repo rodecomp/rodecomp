@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Dialogs/UIEditctrlWnd.h"
 
@@ -230,7 +231,7 @@ void UIMiniMapWnd::OnLBtnDown(int x, int y) {
     this->dragging = 0;
     g_windowMgr.miniMapClickY = y - 6;
     g_windowMgr.miniMapClickX = x - 6 < 0 ? 0 : x - 6;
-    g_windowMgr.EnsureWindow(274);
+    g_windowMgr.EnsureWindow(WID_EDITCTRLWND);
   }
 }
 
@@ -261,18 +262,18 @@ int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         if (g_windowMgr.window_4F1CC) {
           static_cast<UIMiniMapWnd*>(g_windowMgr.window_4F1CC)->LoadMemos();
         }
-        g_windowMgr.CloseWindow(274);
+        g_windowMgr.CloseWindow(WID_EDITCTRLWND);
       }
       return 0;
     }
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(274);
+      g_windowMgr.CloseWindow(WID_EDITCTRLWND);
       return 0;
     }
     return 0;
   case UM_DEFPUSH:
     if (this->edit == sender && this->edit->Length() > 0) {
-      this->SendMsg(this->edit, 6, 184, 0, 0, 0);
+      this->SendMsg(this->edit, UM_COMMAND, ID_OK, 0, 0, 0);
       return 0;
     }
   }
@@ -376,7 +377,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   switch (message) {
   case UM_COMMAND:
     switch (argument1) {
-    case 194: {
+    case ID_ITEMS: {
       const bool enabled = this->unknown_0120->geometry.unknown_0030 != 0;
       for (auto it = this->townButtons.begin(); it != this->townButtons.end(); ++it) {
         it->second->Enable(enabled);
@@ -384,12 +385,12 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       this->Invalidate();
       return 0;
     }
-    case 200:
+    case ID_BASE:
       return 0;
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(273);
+      g_windowMgr.CloseWindow(WID_MINIMAPWND);
       return 0;
-    case 356:
+    case ID_BOOKMARK:
       this->dragging = 1;
       return 0;
     case 361: {
@@ -464,19 +465,19 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     this->unknown_0124->SetChecked(this->m_saved->unknown_0020);
     return 0;
 
-  case 481:
+  case UM_MINIMAP_SET_PLAYER_POS:
     this->m_playerHead->Move(static_cast<int>(static_cast<float>(argument1) * this->scale - 13.0f + this->originX),
       static_cast<int>(this->originY - (static_cast<float>(argument2) * this->scale + 13.0f)));
     this->Invalidate();
     return 0;
 
-  case 482:
+  case UM_MINIMAP_SET_BOSS_POS:
     this->unknown_012C->Move(static_cast<int>(static_cast<float>(argument1) * this->scale - 12.0f + this->originX),
       static_cast<int>(this->originY - (static_cast<float>(argument2) * this->scale + 12.0f)));
     this->Invalidate();
     return 0;
 
-  case 483:
+  case UM_MINIMAP_SET_MARK_POS:
     if (static_cast<unsigned>(argument1) < 3 && argument2 >= 0) {
       std::vector<MiniMapMark>& marks = (&this->partyMarks)[argument1];
       if (static_cast<unsigned>(argument2) < marks.size()) {
@@ -489,7 +490,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
     return 0;
 
-  case 484:
+  case UM_MINIMAP_SET_MARK_COUNT:
     if (argument2 >= 0) {
       std::vector<MiniMapMark>& marks = (&this->partyMarks)[argument1];
       if (static_cast<unsigned>(argument2) != marks.size()) {
@@ -500,7 +501,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
     return 0;
 
-  case 485: {
+  case UM_MINIMAP_ADD_QUEST_MARK: {
     const int id = static_cast<int>(this->questButtons.size()) + 2001;
     const std::string name = FormatOwnedString("유저인터페이스\\minimap\\Quest_%d_%d.bmp", argument1, argument2);
     UIBitmapButton* button = new UIBitmapButton();
@@ -519,7 +520,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     return 0;
   }
 
-  case 486:
+  case UM_MINIMAP_CLEAR_QUEST_MARKS:
     for (auto entry = this->townButtons.begin(); entry != this->townButtons.end(); ++entry) {
       this->RemoveChild(entry->second, 1);
     }

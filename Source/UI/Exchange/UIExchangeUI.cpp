@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Exchange/UIExchangeUI.h"
 #include "UI/Window/UIEnums.h"
 
@@ -217,7 +219,7 @@ void CUIExchangeUI::Cancel() {
     return;
   }
 
-  mode->SendMsg(0x35, 0, 0, 0, 0);
+  mode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
   CUIImageButton* button = this->unknown_0118;
   button->disabled = 1;
   button->Invalidate();
@@ -233,10 +235,10 @@ void CUIExchangeUI::Conclude() {
 
   if (this->logCheckBox->checked) {
     std::string text = FormatOwnedString(LookupMessage(0x728), this->partnerName.c_str());
-    g_modeMgr.gameMode->SendMsg(0x44, reinterpret_cast<int>(text.c_str()), 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_SCREENSHOT, reinterpret_cast<int>(text.c_str()), 0, 0, 0);
   }
 
-  mode->SendMsg(0x36, 0, 0, 0, 0);
+  mode->SendMsg(MM_EXEC_EXCHANGE_ITEM, 0, 0, 0, 0);
   this->tradeButton->disabled = 1;
   this->tradeButton->Invalidate();
 }
@@ -258,8 +260,8 @@ void CUIExchangeUI::SubmitZeny() {
       amount = value < 0 ? 0 : value;
     }
 
-    mode->SendMsg(0x33, 0, g_session.unknown_5210 + amount, 0, 0);
-    mode->SendMsg(0x34, 0, 0, 0, 0);
+    mode->SendMsg(MM_ADD_EXCHANGE_ITEM, 0, g_session.unknown_5210 + amount, 0, 0);
+    mode->SendMsg(MM_CONCLUDE_EXCHANGE_ITEM, 0, 0, 0, 0);
     this->lockButton->disabled = 1;
     this->lockButton->Invalidate();
   } else {
@@ -290,22 +292,22 @@ void CUIExchangeUI::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   if (this->firstList->unknown_00C4) {
-    mode->SendMsg(18, 0, 0, 0, 0);
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 1) {
     if (drag->quantity == 1) {
-      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     } else {
-      g_windowMgr.ShowWindowById(15, 1);
+      g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
       if (g_windowMgr.window_01EC != nullptr) {
-        g_windowMgr.window_01EC->SendMsg(nullptr, 13, 5, 0, 0, 0);
+        g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 5, 0, 0, 0);
       }
     }
   } else {
-    mode->SendMsg(18, 0, 0, 0, 0);
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
   }
 }
 
@@ -508,8 +510,8 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
   case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode != nullptr) {
-      mode->SendMsg(0x33, mode->drag.id, mode->drag.quantity, 0, 0);
-      mode->SendMsg(0x12, 0, 0, 0, 0);
+      mode->SendMsg(MM_ADD_EXCHANGE_ITEM, mode->drag.id, mode->drag.quantity, 0, 0);
+      mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     }
     break;
   }

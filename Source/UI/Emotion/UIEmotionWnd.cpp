@@ -1,5 +1,7 @@
 #include "UI/Emotion/UIEmotionWnd.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Session.h"
 #include "Contents/CashEmotionMgr.h"
@@ -115,23 +117,23 @@ void UIEmotionWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_11647
 int UIEmotionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     break;
   case UM_COMMAND:
     switch (argument1) {
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(0x56);
+      g_windowMgr.CloseWindow(WID_EMOTIONWND);
       break;
     case ID_OPEN_EMOTIONLIST:
       if (static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384) == nullptr) {
-        g_windowMgr.EnsureWindow(0x57);
+        g_windowMgr.EnsureWindow(WID_CASHEMOTIONLISTWND);
       } else {
-        g_windowMgr.CloseWindow(0x57);
+        g_windowMgr.CloseWindow(WID_CASHEMOTIONLISTWND);
       }
       break;
     }
     break;
-  case 34:
+  case UM_SETINFO:
     this->m_saved = reinterpret_cast<EmotionWndInfo*>(argument1);
     if (!this->m_saved->IsValid()) {
       this->m_saved->Reset();

@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Input/InputCharset.h"
@@ -281,14 +282,14 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         if (g_forbiddenWords.Contains(this->memo->Text()) == true) {
           char text[256] = {};
           StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(3372));
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
           return 0;
         }
 
         this->NormalizeLevels();
 
         if (std::atoi(this->minimum->Text()) > std::atoi(this->maximum->Text())) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3516)), 0xFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3516)), 0xFF, 0, 0, 0);
           return 0;
         }
 
@@ -306,14 +307,14 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       } else {
         char text[256] = {};
         StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(3506));
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       }
       break;
     default:
       return 0;
     }
 
-    g_windowMgr.CloseWindow(323);
+    g_windowMgr.CloseWindow(WID_REGISTERPARTYWND);
     return 0;
   }
 

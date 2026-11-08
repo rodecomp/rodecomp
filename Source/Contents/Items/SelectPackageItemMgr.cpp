@@ -1,4 +1,5 @@
 #include "Contents/Items/SelectPackageItemMgr.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Session.h"
 #include "Network/TextEncoding.h"
 #include "Script/LuaInstance.h"
@@ -218,8 +219,8 @@ bool CSelectPackageItemMgr::OpenItem(unsigned int itemIndex) {
   if (item.unknown_0000[1] > 0) {
     const int packageId = std::atoi(item.itemId.c_str());
     if (this->m_packages.find(packageId) != this->m_packages.end()) {
-      if (g_windowMgr.LookupWindow(0x2731) == nullptr || g_windowMgr.CloseWindow(0x2731)) {
-        CUISelectPackageItemBox* box = static_cast<CUISelectPackageItemBox*>(g_windowMgr.EnsureWindow(0x2731));
+      if (g_windowMgr.LookupWindow(WID_SELECTPACKAGEITEMBOX) == nullptr || g_windowMgr.CloseWindow(WID_SELECTPACKAGEITEMBOX)) {
+        CUISelectPackageItemBox* box = static_cast<CUISelectPackageItemBox*>(g_windowMgr.EnsureWindow(WID_SELECTPACKAGEITEMBOX));
         if (box != nullptr) {
           box->Open(itemIndex);
         }

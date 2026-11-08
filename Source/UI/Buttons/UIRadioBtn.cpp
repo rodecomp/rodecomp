@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMgr.h"
+#include "UI/Window/UIEnums.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -50,7 +51,7 @@ void UIRadioBtn::Paint() {
 // FUNCTION: fn_10844
 void UIRadioBtn::OnLBtnDown(int, int) {
   if (this->parent && this->enabled != 0) {
-    this->parent->SendMsg(this, 6, this->geometry.id, this->value, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, this->value, 0, 0);
   }
 }
 
@@ -69,7 +70,7 @@ void UIRadioBtn::OnMouseHover(int x, int y) {
 // OFFSET: 0x00865180
 // FUNCTION: fn_10919
 int UIRadioBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 13) {
+  if (message == UM_SETSTATE) {
     this->geometry.unknown_0030 = argument1;
     this->Invalidate();
   }

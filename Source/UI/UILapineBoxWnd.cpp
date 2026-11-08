@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/UILapineScrollBar.h"
 #include "UI/Window/UIEnums.h"
 
@@ -58,7 +60,7 @@ void UIIngredientInfoWnd::OnLBtnDblClk(int, int) {
   UILapineBox_IngredientListWnd* list = static_cast<UILapineBox_IngredientListWnd*>(this->parent);
   UILapineBoxWnd* box = static_cast<UILapineBoxWnd*>(list->parent);
   if (box->items.size() < static_cast<std::size_t>(box->maxItems)) {
-    if (list->SendMsg(list, 0x68, id, 0, 0, 0) >= 0) {
+    if (list->SendMsg(list, UM_DECITEM, id, 0, 0, 0) >= 0) {
       box->AddIngredient(id, this->quantity);
     }
   }
@@ -80,7 +82,7 @@ void UIIngredientInfoWnd::OnLBtnUp(int, int) {
     this->Invalidate();
 
     if (this->parent) {
-      this->parent->SendMsg(this, 6, 0, 0, 0, 0);
+      this->parent->SendMsg(this, UM_COMMAND, 0, 0, 0, 0);
     }
   }
 }
@@ -107,7 +109,7 @@ void UILapineBoxWnd::OnLBtnDblClk(int x, int y) {
 
   if (item.unknown_0000[1] != 0) {
     if (this->ingredientList->AddIngredient(item.unknown_0000[1]) == 1) {
-      this->SendMsg(this, 0x68, item.unknown_0000[1], 0, 0, 0);
+      this->SendMsg(this, UM_DECITEM, item.unknown_0000[1], 0, 0, 0);
     }
   }
 
@@ -191,8 +193,8 @@ void UILapineBoxWnd::OnProcess() {
 // FUNCTION: fn_04168
 void UIIngredientInfoWnd::OnRBtnDown(int, int) {
   if (this->item.unknown_0000[1] > 0) {
-    UIWindow* window = g_windowMgr.EnsureWindow(12);
-    window->SendMsg(this, 0x18, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
+    window->SendMsg(this, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
   }
 }
 
@@ -261,26 +263,26 @@ bool UILapineBox_IngredientListWnd::CanUseIngredient(std::uint32_t identity) {
 
   const int required = material->quantity;
   if (required > item.quantity) {
-    this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xB52), required).c_str()), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xB52), required).c_str()), 0, 0, 0);
     return false;
   }
   if (this->minRefine > item.unknown_0060) {
-    this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xB53)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xB53)), 0, 0, 0);
     return false;
   }
   if (this->maxRefine < item.unknown_0060) {
-    this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3C)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3C)), 0, 0, 0);
     return false;
   }
   if (this->minRefine != 0 && this->minRefine < item.unknown_0060) {
-    this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3D)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3D)), 0, 0, 0);
   }
 
   if (Equipment(item) && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
     const int* cards = reinterpret_cast<const int*>(item.unknown_001C);
     for (int index = 0; index < ItemSlotsCount(item); ++index) {
       if (index < 4 && cards[index] > 0) {
-        this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3E)), 0, 0, 0);
+        this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3E)), 0, 0, 0);
         return true;
       }
     }
@@ -306,8 +308,8 @@ void UILapineBoxWnd::OnRBtnDown(int x, int y) {
   this->ReadMaterial(&item, x, y);
 
   if (static_cast<unsigned>(item.unknown_0000[1]) > 0) {
-    UIWindow* window = g_windowMgr.EnsureWindow(12);
-    window->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 
   item.~ITEM_INFO();
@@ -325,9 +327,9 @@ void UIIngredientInfoWnd::OnWheel(int argument) {
 void UILapineBox_IngredientListWnd::OnWheel(int argument) {
   if (this->wheelScroll == 1) {
     if (argument < 0) {
-      this->SendMsg(this->scrollBar, 7, 15, 0, 0, 0);
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, 15, 0, 0, 0);
     } else {
-      this->SendMsg(this->scrollBar, 7, -15, 0, 0, 0);
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, -15, 0, 0, 0);
     }
   }
 }
@@ -338,10 +340,10 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   switch (message) {
   case UM_COMMAND:
     switch (a) {
-    case 0xC9:
-      g_windowMgr.CloseWindow(0x122);
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_LAPINEBOXWND);
       break;
-    case 0x1F7: {
+    case ID_LAPINE_COMBINE_ITEMS: {
       RandomCombineItemPacket* packet = new (std::nothrow) RandomCombineItemPacket;
       packet->id = ID_CZ_REQ_RANDOM_COMBINE_ITEM;
       const std::int16_t materialsLength = static_cast<std::int16_t>(this->items.size() * 4);
@@ -368,7 +370,7 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       delete[] payload;
       break;
     }
-    case 0x1F9: {
+    case ID_LAPINE_ADD_INGREDIENT: {
       const std::vector<UIIngredientInfoWnd*>& entries = this->ingredientList->items;
       const auto selected = std::find_if(entries.begin(), entries.end(), [](UIIngredientInfoWnd* entry) {
         return entry->selected == 1;
@@ -377,7 +379,7 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       if (selected != entries.end()) {
         UIIngredientInfoWnd* entry = *selected;
 
-        if (entry != nullptr && entry->insufficient != 1 && this->ingredientList->SendMsg(this, 0x68, entry->item.unknown_0000[1], 0, 0, 0) >= 0) {
+        if (entry != nullptr && entry->insufficient != 1 && this->ingredientList->SendMsg(this, UM_DECITEM, entry->item.unknown_0000[1], 0, 0, 0) >= 0) {
           this->AddIngredient(entry->item.unknown_0000[1], entry->quantity);
         }
       }
@@ -430,7 +432,7 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
         (*it)->Show(0);
       }
     }
-    this->SendMsg(this, 0x57, 0, 0, 0, 0);
+    this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
     break;
 
   case UM_COMMAND:
@@ -471,12 +473,12 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
 
     const int need = found->quantity;
     if (selected->item.quantity < need) {
-      this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xB52), need).c_str()), 0, 0, 0);
+      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xB52), need).c_str()), 0, 0, 0);
       return -1;
     }
 
     if (selected->item.unknown_0060 < found->unknown_0060) {
-      this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xB53)), 0, 0, 0);
+      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(0xB53)), 0, 0, 0);
       return -1;
     }
 
@@ -487,7 +489,7 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
       (*it)->insufficient = 1;
       (*it)->Invalidate();
     }
-    this->SendMsg(this, 0x57, 0, 0, 0, 0);
+    this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
     break;
   }
 
@@ -543,7 +545,7 @@ void UILapineBoxWnd::SetIngredient(int id) {
   g_session.m_hotkeyScript->CallTable("tblLapineDdukddakBox", "get_max_need_refine", "d>d", id, &maxRefine);
   this->ingredientList->maxRefine = maxRefine;
 
-  this->ingredientList->SendMsg(this, 0x17, 0, 0, 0, 0);
+  this->ingredientList->SendMsg(this, UM_REFRESHITEM, 0, 0, 0, 0);
 
   g_session.m_hotkeyScript->CallTable("tblLapineDdukddakBox", "get_need_item_count", "d>d", id, &this->maxItems);
 

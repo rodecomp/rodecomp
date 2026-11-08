@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIRoulletteWnd.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Input/InputCharset.h"
@@ -301,7 +302,7 @@ void UIRoulletteWnd::OnProcess() {
     this->m_startSprite->SetState(3);
     this->m_startSprite->Move(-100, -100);
     this->m_startSprite->SetTooltip("");
-    this->SendMsg(nullptr, 6, 409, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, ID_ROULETTE_GENERATE, 0, 0, 0);
     this->m_startButton->SetState(2);
   }
 
@@ -315,7 +316,7 @@ void UIRoulletteWnd::OnProcess() {
     this->m_prizeSprite->SetState(3);
     this->m_prizeSprite->Move(-100, -100);
     this->m_prizeSprite->SetTooltip("");
-    this->SendMsg(nullptr, 6, 410, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, ID_ROULETTE_RECEIVE_ITEM, 0, 0, 0);
     this->m_prizeButton->SetState(2);
   }
 
@@ -350,26 +351,26 @@ void UIRoulletteWnd::OnRBtnDown(int x, int y) {
   }
 
   if (item.quantity != 0) {
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
 // OFFSET: 0x0080CB90
 // FUNCTION: fn_10092
 int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     switch (argument1) {
       case ID_CLOSE:
         if (g_rouletteMgr->m_spinning == 0) {
           if (g_windowMgr.unknown_0464 != nullptr) {
-            g_windowMgr.CloseWindow(269);
+            g_windowMgr.CloseWindow(WID_ROULLETTEWND);
             return 0;
           }
         } else {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2640)), 0x6464FF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2640)), 0x6464FF, 0, 0, 0);
         }
         break;
-      case 409:
+      case ID_ROULETTE_GENERATE:
         if (this->m_enabled == 1) {
           RouletteGeneratePacket packet;
           packet.id = ID_CZ_REQ_GENERATE_ROULETTE;
@@ -378,7 +379,7 @@ int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
           return 0;
         }
         break;
-      case 410:
+      case ID_ROULETTE_RECEIVE_ITEM:
         if (g_rouletteMgr->m_resultShown == 1) {
           RouletteReceiveItemPacket packet;
           packet.id = ID_CZ_RECV_ROULETTE_ITEM;
@@ -391,7 +392,7 @@ int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     return 0;
   }
 
-  if (message == 60) {
+  if (message == UM_REFRESH) {
     this->Invalidate();
     return 0;
   }

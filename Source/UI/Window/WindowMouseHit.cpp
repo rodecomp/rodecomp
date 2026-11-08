@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "Client/Session.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Browser/WebBrowser.h"
@@ -27,7 +28,7 @@ static __forceinline void PromoteWindow(UIWindowMgr* manager, UIWindow* window) 
     return;
   }
 
-  if (manager->LookupWindow(278) || manager->LookupWindow(4) || manager->LookupWindow(199) || manager->LookupWindow(200)) {
+  if (manager->LookupWindow(WID_NEWMAKECHARWND) || manager->LookupWindow(WID_MAKECHARWND) || manager->LookupWindow(WID_SECONDPASSWORDINPUTWND) || manager->LookupWindow(WID_SECONDPASSWORDEDITWND)) {
     return;
   }
 
@@ -326,15 +327,15 @@ int UIWindowMgr::ProcessMouse() {
 
     if (g_mouse.buttons[0] == 1) {
       if (this->unknown_0214 && (!window || (window != this->unknown_0214 && !window->IsDescendantOf(this->unknown_0214)))) {
-        this->CloseWindow(26);
+        this->CloseWindow(WID_COMBOBOXWND);
       }
 
       if (this->unknown_021C) {
         if (!window) {
-          this->CloseWindow(260);
+          this->CloseWindow(WID_COMBOBOXIDWND);
           this->CloseDropDown();
         } else if (window != this->unknown_021C && !window->IsDescendantOf(this->unknown_021C)) {
-          this->CloseWindow(260);
+          this->CloseWindow(WID_COMBOBOXIDWND);
         }
       } else if (!window) {
         this->CloseDropDown();

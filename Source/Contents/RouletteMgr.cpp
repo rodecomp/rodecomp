@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Contents/RouletteMgr.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
@@ -144,7 +145,7 @@ void RouletteMgr::StartSpin(int x, int y, int originX, int originY) {
 
   g_windowMgr.unknown_0464->m_enabled = 0;
   if (g_windowMgr.unknown_0464) {
-    g_windowMgr.unknown_0464->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    g_windowMgr.unknown_0464->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 

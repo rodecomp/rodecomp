@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "Render/Text/FontCache.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
@@ -200,9 +201,9 @@ void UIChangeMaterialWnd::OnRBtnUp(int x, int y) {
     return;
   }
 
-  UIWindow* window = g_windowMgr.EnsureWindow(12);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
   if (window) {
-    window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(item), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(item), 0, 0, 0);
   }
 }
 
@@ -210,9 +211,9 @@ void UIChangeMaterialWnd::OnRBtnUp(int x, int y) {
 // FUNCTION: fn_03889
 void UIChangeMaterialWnd_List::OnWheel(int argument) {
   if (argument < 0) {
-    this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
   } else {
-    this->SendMsg(this->m_scrollBar, 9, 0, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
   }
 }
 
@@ -351,7 +352,7 @@ void UIChangeMaterialWnd_List::SetSelectedIndex(int index) {
   this->m_selectedIndex = index;
   this->m_previousScrollOffset = this->m_scrollOffset;
   this->Invalidate();
-  this->parent->SendMsg(nullptr, 23, reinterpret_cast<std::intptr_t>(this->GetEntry(index)), 0, 0, 0);
+  this->parent->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(this->GetEntry(index)), 0, 0, 0);
 }
 
 // OFFSET: 0x005E3C30
@@ -362,7 +363,7 @@ int UIChangeMaterialWnd::SendMsg(
   switch (message) {
   case UM_DEFPUSH:
     if (sender == reinterpret_cast<UIWindow*>(this->unknown_00B8) && reinterpret_cast<UIWindow*>(this->unknown_00B8) == g_windowMgr.GetHoverWindow()) {
-      this->unknown_00B4->SendMsg(nullptr, 6, 0x141, reinterpret_cast<std::intptr_t>(this->unknown_00B8->Text()), 0, 0);
+      this->unknown_00B4->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, reinterpret_cast<std::intptr_t>(this->unknown_00B8->Text()), 0, 0);
     }
     break;
   case UM_COMMAND:
@@ -371,26 +372,26 @@ int UIChangeMaterialWnd::SendMsg(
       this->SendChangeMaterial();
       break;
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(0x158);
+      g_windowMgr.CloseWindow(WID_CHANGEMATERIALWND);
       break;
     case ID_SEARCH:
-      this->unknown_00B4->SendMsg(nullptr, 6, 0x141, reinterpret_cast<std::intptr_t>(this->unknown_00B8->Text()), 0, 0);
+      this->unknown_00B4->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, reinterpret_cast<std::intptr_t>(this->unknown_00B8->Text()), 0, 0);
       break;
     case 0x16c:
       this->unknown_00B4->SortItems(argument2 > 0);
       break;
     case 0x19f:
-      this->unknown_00B4->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      this->unknown_00B4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       break;
     default:
       break;
     }
     break;
   case UM_UPPUSH:
-    this->unknown_00B4->SendMsg(nullptr, 0x12, 0, 0, 0, 0);
+    this->unknown_00B4->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     break;
   case UM_DOWNPUSH:
-    this->unknown_00B4->SendMsg(nullptr, 0x13, 0, 0, 0, 0);
+    this->unknown_00B4->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     break;
   case UM_REFRESHITEM:
     if (argument1 != 0) {
@@ -463,9 +464,9 @@ int UIChangeMaterialWnd_List::SendMsg(
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollOffset;
     int delta = static_cast<int>(argument1);
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       delta = -1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       delta = 1;
     }
     this->m_scrollOffset = previous + delta;
@@ -758,7 +759,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   this->unknown_00B4->SetSize(186, 216);
   this->unknown_00B4->Move(310, 41);
   this->AddChild(this->unknown_00B4);
-  this->unknown_00B4->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  this->unknown_00B4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x005E1E20

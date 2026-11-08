@@ -1,4 +1,6 @@
 #include "Render/Renderer.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Menu/UIMenuIconWnd.h"
 
@@ -187,7 +189,7 @@ void UIMenuIconWnd::OnCreate(int width, int height) {
   this->unknown_00D4->SetId(201);
   this->unknown_00D4->Enable(0);
   this->AddChild(this->unknown_00D4);
-  this->SendMsg(this, 6, g_session.m_showMenuIcon == true ? 510 : 201, 0, 0, 0);
+  this->SendMsg(this, UM_COMMAND, g_session.m_showMenuIcon == true ? 510 : 201, 0, 0, 0);
   if (this->unknown_00B4.size() > 20) {
     this->Resize(220, 238);
   }
@@ -361,14 +363,14 @@ void UIMenuIconWnd::OnMouseMove(int x, int y) {}
 // OFFSET: 0x0084C260
 // FUNCTION: fn_10622
 int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     if (!Replay::Instance().AllowsEvent(argument1)) {
       switch (argument1) {
       case ID_CLOSE:
         g_session.m_showMenuIcon = false;
         this->Invalidate();
         break;
-      case 286: {
+      case ID_NOTICE: {
         const int id = argument2;
         auto found = std::find(this->unknown_00C4.begin(), this->unknown_00C4.end(), id);
         if (argument3 > 0) {
@@ -399,7 +401,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       case 373:
         this->ToggleWindow(static_cast<int>(g_guildInfo.m_guildId) < 1 ? 212 : 59);
         break;
-      case 361:
+      case ID_QUEST:
         this->ToggleWindow(10008);
         break;
       case ID_MAP:
@@ -407,12 +409,12 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         break;
       case 430:
         if (g_windowMgr.window_4F174) {
-          g_windowMgr.window_4F174->SendMsg(nullptr, 6, 201, 0, 0, 0);
+          g_windowMgr.window_4F174->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
         } else {
-          g_windowMgr.EnsureWindow(203);
+          g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
         }
         break;
-      case 193:
+      case ID_OPTION:
         this->ToggleWindow(155);
         break;
       case 399:
@@ -437,12 +439,12 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->Invalidate();
         break;
       case 476:
-        if (g_windowMgr.LookupWindow(295)) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2992)), 255, 0, 0, 0);
-        } else if (g_windowMgr.LookupWindow(343)) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3715)), 255, 0, 0, 0);
-        } else if (g_windowMgr.LookupWindow(10006)) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3843)), 255, 0, 0, 0);
+        if (g_windowMgr.LookupWindow(WID_REFININGWND)) {
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2992)), 255, 0, 0, 0);
+        } else if (g_windowMgr.LookupWindow(WID_GRADEENCHANTWND)) {
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3715)), 255, 0, 0, 0);
+        } else if (g_windowMgr.LookupWindow(WID_ENCHANTUI)) {
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3843)), 255, 0, 0, 0);
         } else {
           this->ToggleWindow(263);
         }
@@ -454,11 +456,11 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->ToggleWindow(315);
         break;
       case 512:
-        g_modeMgr.GetGameMode()->SendMsg(323, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_REQUEST_CASH_SHOP, 0, 0, 0, 0);
         break;
       case 540:
-        if (g_windowMgr.LookupWindow(328)) {
-          g_windowMgr.CloseWindow(328);
+        if (g_windowMgr.LookupWindow(WID_CHECKATTENDANCEWND)) {
+          g_windowMgr.CloseWindow(WID_CHECKATTENDANCEWND);
         } else {
           MenuIconOpenUiPacket packet;
           packet.id = 0xA68;
@@ -482,11 +484,11 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         break;
       }
     }
-  } else if (message == 60) {
-    this->SendMsg(nullptr, 6, g_session.m_showMenuIcon == true ? 201 : 510, 0, 0, 0);
+  } else if (message == UM_REFRESH) {
+    this->SendMsg(nullptr, UM_COMMAND, g_session.m_showMenuIcon == true ? 201 : 510, 0, 0, 0);
   }
 
-  if (message == 6 && argument1 == 376 && !Replay::Instance().AllowsEvent(argument1) && g_entryQueueMgr) {
+  if (message == UM_COMMAND && argument1 == 376 && !Replay::Instance().AllowsEvent(argument1) && g_entryQueueMgr) {
     if (reinterpret_cast<const unsigned char*>(g_entryQueueMgr)[0x3C] == 1) {
       g_entryQueueMgr->SendRankingRequest();
     }

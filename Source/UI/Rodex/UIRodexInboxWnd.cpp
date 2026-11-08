@@ -1,4 +1,6 @@
 #include "UI/Rodex/UIRodexInboxWnd.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Contents/MessageTable.h"
@@ -160,7 +162,7 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
   }
   this->unknown_0138->Move(0xCF, 0x46);
   this->AddChild(this->unknown_0138);
-  this->unknown_0138->SendMsg(this, 13, 0, 0, 0, 0);
+  this->unknown_0138->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
 
   this->unknown_0134 = new UIBmpRadioBtn();
   this->unknown_0134->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
@@ -182,7 +184,7 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
   }
   this->unknown_0134->Move(0x13, 0x46);
   this->AddChild(this->unknown_0134);
-  this->unknown_0134->SendMsg(this, 13, 0, 0, 0, 0);
+  this->unknown_0134->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
 
   this->unknown_0130 = new UIBmpRadioBtn();
   this->unknown_0130->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
@@ -204,17 +206,17 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
   }
   this->unknown_0130->Move(0x71, 0x46);
   this->AddChild(this->unknown_0130);
-  this->unknown_0130->SendMsg(this, 13, 0, 0, 0, 0);
+  this->unknown_0130->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
 
   switch (g_rodexMailStore->unknown_0010) {
   case MAIL_INBOX_NORMAL:
-    this->unknown_0130->SendMsg(this, 13, 1, 0, 0, 0);
+    this->unknown_0130->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
     break;
   case MAIL_INBOX_ACCOUNT:
-    this->unknown_0134->SendMsg(this, 13, 1, 0, 0, 0);
+    this->unknown_0134->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
     break;
   case MAIL_INBOX_RETURNED:
-    this->unknown_0138->SendMsg(this, 13, 1, 0, 0, 0);
+    this->unknown_0138->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
     break;
   }
 
@@ -328,7 +330,7 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
     this->unknown_01C0[index]->textColor = 0x654939;
     this->unknown_01C0[index]->Move(x, 0x44);
     this->unknown_01C0[index]->value = 0x141;
-    this->unknown_01C0[index]->SendMsg(this, 13, 1 - index, 0, 0, 0);
+    this->unknown_01C0[index]->SendMsg(this, UM_SETSTATE, 1 - index, 0, 0, 0);
     this->AddChild(this->unknown_01C0[index]);
   }
 
@@ -370,7 +372,7 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
   }
   this->unknown_01D0->Move(0xDF, 0x56);
   this->AddChild(this->unknown_01D0);
-  this->unknown_01D0->SendMsg(this, 13, 0, 0, 0, 0);
+  this->unknown_01D0->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
 
   this->unknown_0134->Move(0x13, 0x56);
   this->unknown_0130->Move(0x57, 0x56);
@@ -812,9 +814,9 @@ bool __stdcall RequestRodexMailAction(int type, std::int64_t mailId) {
     return false;
   }
 
-  g_modeMgr.GetGameMode()->SendMsg(0xC4, static_cast<int>(mailId), type, 0, 0);
+  g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(mailId), type, 0, 0);
   if (g_windowMgr.unknown_045C != 0) {
-    g_windowMgr.CloseWindow(265);
+    g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
   }
   return true;
 }
@@ -837,7 +839,7 @@ void UIRodexInboxWnd::RequestAllMailActions() {
       }
 
       if ((mail->second.unknown_0001 & 6) == 0) {
-        g_modeMgr.GetGameMode()->SendMsg(0xC4, static_cast<int>(entry->second), entry->first, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(entry->second), entry->first, 0, 0);
         ++requested;
       } else {
         ++skipped;
@@ -852,7 +854,7 @@ void UIRodexInboxWnd::RequestAllMailActions() {
 
     for (std::map<std::int64_t, RodexMail>::iterator mail = mails->begin(); mail != mails->end(); ++mail) {
       if ((mail->second.unknown_0001 & 6) == 0) {
-        g_modeMgr.GetGameMode()->SendMsg(0xC4, static_cast<int>(mail->first), type, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(mail->first), type, 0, 0);
         ++requested;
       } else {
         ++skipped;
@@ -861,10 +863,10 @@ void UIRodexInboxWnd::RequestAllMailActions() {
   }
 
   if (requested > 0 && g_windowMgr.unknown_045C != 0) {
-    g_windowMgr.CloseWindow(265);
+    g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
   }
   if (skipped > 0) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA34)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA34)), 0x64FFFF, 0, 0, 0);
   }
 }
 
@@ -876,7 +878,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   }
 
   CMode* mode = g_modeMgr.GetGameMode();
-  if (g_rodexMailStore->unknown_001C == false && !(message == 6 && argument1 == 0xC9)) {
+  if (g_rodexMailStore->unknown_001C == false && !(message == UM_COMMAND && argument1 == ID_CLOSE)) {
     return 0;
   }
 
@@ -888,18 +890,18 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         for (int i = 0; i < 2; ++i) {
           UIRadioBtn* radio = this->unknown_01C0[i];
           if (radio == sender) {
-            radio->SendMsg(this, 13, 1, 0, 0, 0);
+            radio->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
           } else {
-            radio->SendMsg(this, 13, 0, 0, 0, 0);
+            radio->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
           }
         }
         this->Invalidate();
       } else {
-        this->unknown_0130->SendMsg(this, 13, 0, 0, 0, 0);
-        this->unknown_0134->SendMsg(this, 13, 0, 0, 0, 0);
-        this->unknown_0138->SendMsg(this, 13, 0, 0, 0, 0);
-        this->unknown_01D0->SendMsg(this, 13, 0, 0, 0, 0);
-        sender->SendMsg(this, 13, 1, 0, 0, 0);
+        this->unknown_0130->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        this->unknown_0134->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        this->unknown_0138->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        this->unknown_01D0->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        sender->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         for (int i = 0; i < 6; ++i) {
           this->checks[i]->SetChecked(0);
           this->checks[i]->m_message = 0;
@@ -918,7 +920,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       break;
 
-    case 0x13C:
+    case ID_PREV_PAGE:
       if (--this->unknown_019C < 0) {
         this->unknown_019C = 0;
       } else {
@@ -930,7 +932,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->Invalidate();
       break;
 
-    case 0x13D: {
+    case ID_NEXT_PAGE: {
       if (this->unknown_01D4 == 1) {
         if (this->searchResults.size() > static_cast<std::size_t>((this->unknown_019C + 1) * 6)) {
           this->ClearChecks();
@@ -967,14 +969,14 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
     }
 
-    case 0x131:
+    case ID_SEND_MAIL:
       if (g_windowMgr.HasNavigationBlocker() != true) {
-        mode->SendMsg(0x10C, 0, 0, 0, 0);
+        mode->SendMsg(MM_OPEN_WRITE_RODEX, 0, 0, 0, 0);
       }
       break;
 
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(0x107);
+      g_windowMgr.CloseWindow(WID_RODEXINBOXWND);
       break;
 
     case ID_DELETE:
@@ -1000,7 +1002,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
               success &= RequestRodexMailAction(entry->first, entry->second);
             }
             if (!success) {
-              g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA34)), 0x64FFFF, 0, 0, 0);
+              g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA34)), 0x64FFFF, 0, 0, 0);
             }
           }
         }
@@ -1028,7 +1030,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
               success &= RequestRodexMailAction(g_rodexMailStore->unknown_0010, *id);
             }
             if (!success) {
-              g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA34)), 0x64FFFF, 0, 0, 0);
+              g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA34)), 0x64FFFF, 0, 0, 0);
             }
           }
         }
@@ -1041,11 +1043,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       } else if (this->unknown_01C0[1]->geometry.unknown_0030 == 1) {
         this->SearchBySender(this->unknown_01C8->Text());
       }
-      this->SendMsg(this->unknown_01D0, 6, 0xD7, 0, 0, 0);
+      this->SendMsg(this->unknown_01D0, UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
       this->Invalidate();
       break;
 
-    case 0xD5: {
+    case ID_CHECK: {
       int checked = 0;
       for (int i = 0; i < 6; ++i) {
         if (this->checks[i]->geometry.unknown_0030 > 0) {
@@ -1209,19 +1211,19 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         if (mail != g_rodexMailStore->m_mails0.end() && (mail->second.unknown_0001 & 8) == 0 && mail->second.unknown_0004.size() != 0) {
           const std::pair<bool, std::string> title = RemoveLineBreakTag(mail->second.unknown_0024);
           if (title.first != true) {
-            mode->SendMsg(0x10C, reinterpret_cast<int>(mail->second.unknown_0004.c_str()), 0, 0, 0);
+            mode->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(mail->second.unknown_0004.c_str()), 0, 0, 0);
           }
         }
       }
     } else if (argument1 == 0x143) {
       std::map<std::int64_t, RodexMail>::iterator mail = g_rodexMailStore->m_mails0.find(argument2);
       if (mail != g_rodexMailStore->m_mails0.end() && mail->second.unknown_0194 == 0) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xF1B)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xF1B)), 0xFF, 0, 0, 0);
         if (g_windowMgr.Confirm(LookupMessage(0xF1B), 2, false, false, 0, "Message", 280, 120, 0) == 0xBC) {
           break;
         }
       }
-      mode->SendMsg(0xC2, argument2, g_rodexMailStore->unknown_0010, 0, 0);
+      mode->SendMsg(MM_OPEN_MAIL, argument2, g_rodexMailStore->unknown_0010, 0, 0);
     }
     break;
 
@@ -1234,7 +1236,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
   case UM_DEFPUSH:
     if (this->unknown_01C8 == sender) {
-      this->SendMsg(this->unknown_01CC, 6, 0x141, 0, 0, 0);
+      this->SendMsg(this->unknown_01CC, UM_COMMAND, ID_SEARCH, 0, 0, 0);
     }
     break;
 

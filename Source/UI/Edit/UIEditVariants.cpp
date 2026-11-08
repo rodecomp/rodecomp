@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Client/Input/InputCharset.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Input/Language.h"
@@ -35,7 +36,7 @@ UIEditCtrl2::~UIEditCtrl2() = default;
 // OFFSET: 0x00863BF0
 // FUNCTION: fn_10911
 int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 0) {
+  if (message != UM_DEFPUSH) {
     this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
   } else {
     if (g_windowMgr.IsLastFocus(g_windowMgr.GetHoverWindow())) {
@@ -63,7 +64,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       char newline[3] = {'\r', '\n', '\0'};
       g_serverLanguage->Insert(newline);
     } else {
-      this->UIWindow::SendMsg(sender, 0, a, b, c, d);
+      this->UIWindow::SendMsg(sender, UM_DEFPUSH, a, b, c, d);
     }
     return 0;
   case UM_SCROLLVERT:
@@ -72,9 +73,9 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     const int previous = this->unknown_0158;
     scrolling[0] = 1;
 
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->unknown_0158 = previous - this->geometry.height / this->unknown_0138 + 1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->unknown_0158 = previous - 1 + this->geometry.height / this->unknown_0138;
     } else {
       this->unknown_0158 = previous + a;
@@ -809,7 +810,7 @@ UIEditCtrl5::~UIEditCtrl5() = default;
 // OFFSET: 0x00864140
 // FUNCTION: fn_10913
 int UIEditCtrl5::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 0) {
+  if (message != UM_DEFPUSH) {
     this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
   } else {
     if (g_windowMgr.IsLastFocus(g_windowMgr.GetHoverWindow())) {
@@ -850,9 +851,9 @@ void UIEditCtrl3::OnWheel(int value) {
   }
 
   if (value < 0) {
-    this->SendMsg(this->unknown_0130, 7, 3, 0, 0, 0);
+    this->SendMsg(this->unknown_0130, UM_SCROLLVERT, 3, 0, 0, 0);
   } else {
-    this->SendMsg(this->unknown_0130, 7, -3, 0, 0, 0);
+    this->SendMsg(this->unknown_0130, UM_SCROLLVERT, -3, 0, 0, 0);
   }
 }
 
@@ -967,9 +968,9 @@ void UIEditCtrl_OldList::Paint() {
 // FUNCTION: fn_10894
 void UIEditCtrl_OldList::OnWheel(int value) {
   if (value < 0) {
-    this->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
   } else {
-    this->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
   }
 }
 
@@ -978,7 +979,7 @@ void UIEditCtrl_OldList::OnWheel(int value) {
 void UIEditCtrlVarId::OnFinishEdit(int) {
   this->Synchronize();
   this->Invalidate();
-  this->SendMsg(this, 0, 0, 0, 0, 0);
+  this->SendMsg(this, UM_DEFPUSH, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0085FFA0
@@ -992,12 +993,12 @@ void UIEditCtrlVarId::OnWheel(int value) {
 // OFFSET: 0x00864CE0
 // FUNCTION: fn_10915
 int UIEditCtrlVarId::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 0) {
+  if (message != UM_DEFPUSH) {
     return UIEditCtrl::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
   if (this->parent) {
-    this->parent->SendMsg(this, 6, this->geometry.id, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, 0, 0, 0);
   }
 
   return 0;
@@ -1066,7 +1067,7 @@ void UIShowAndEditTimeCtrl::OnCreate(int, int) {
 // OFFSET: 0x008996B0
 // FUNCTION: fn_11556
 int UIShowAndEditTimeCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6 && argument1 == 184) {
+  if (message == UM_COMMAND && argument1 == ID_OK) {
     for (int index = 0; index < 2; ++index) {
       if (sender == this->fields[index]) {
         int value = std::atoi(this->fields[index]->Text());

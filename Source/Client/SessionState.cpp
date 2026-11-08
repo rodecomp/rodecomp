@@ -1,3 +1,6 @@
+#include "Client/Mode/ModeMessage.h"
+#include "Contents/Actors/ActorEnums.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
@@ -260,7 +263,7 @@ void CSession::UnequipItem61B8(const ITEM_INFO& item) {
       const char* message = LookupMessage(0xAB);
       const std::string name = equipped.DisplayName(0);
       const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);
     }
     this->SetUnknown7EC8(0);
   } else {
@@ -296,7 +299,7 @@ void CSession::SetJob(int job) {
     }
 
     if (g_modeMgr.GetGameMode()) {
-      g_modeMgr.GetGameMode()->SendMsg(0x144, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_REFRESH_PLAYERGAGE, 0, 0, 0, 0);
     }
   }
 
@@ -326,7 +329,7 @@ void CSession::SetUnknown7EC8(std::uint32_t value) {
     g_activeSkillEffects.erase(it);
   }
 
-  mode->scene->player->unknown_0544->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
+  mode->scene->player->unknown_0544->SendMsg(nullptr, AM_SETCOUNT, 0, 1, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00E49930
@@ -345,8 +348,8 @@ void CSession::NotifyUnknown7F94Name(std::uint32_t id, const char* name) {
     return;
   }
 
-  chat->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
-  g_windowMgr.SendNotice(0x9A, reinterpret_cast<std::intptr_t>(name), 0, 0, 0, 0);
+  chat->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(name), 0, 0, 0, 0);
   this->unknown_7F94.erase(id);
 }
 

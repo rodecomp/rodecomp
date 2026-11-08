@@ -1,4 +1,7 @@
 #include "UI/Chat/UINewChatWnd.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Input/Mouse.h"
@@ -46,12 +49,12 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   }
 
   switch (message) {
-  case 0x9A:
+  case UM_RESOLVE_PLAYER_TAGS:
     for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_noSubChatWnds.begin(); it != g_session.m_noSubChatWnds.end(); ++it) {
       static_cast<UIChatHisBox*>(this->m_tabs[it->first])->ResolvePlayerTags(reinterpret_cast<const char*>(a));
     }
     return 0;
-  case 0x75: {
+  case UM_DETACH_CHAT_TAB: {
     if (!g_session.m_canDragWnd || g_session.m_noSubChatWnds.size() <= 1) {
       return 0;
     }
@@ -110,7 +113,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     this->ApplyHeaderLayout();
     return 0;
   }
-  case 0x76: {
+  case UM_ATTACH_CHAT_TAB: {
     if (!g_session.m_canDragWnd || this->m_tabControl->geometry.width + this->m_tabWidth > this->geometry.width - 0x5A) {
       return 0;
     }
@@ -124,8 +127,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     int count = static_cast<int>(g_session.m_noSubChatWnds.size());
     if (this->TextWidth(found->second.name.c_str(), 0, 0, 12, 0, 0) * (count + 1)
         > this->geometry.width - 0x5A) {
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x6F0)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x6F0)), 0xFF, 0, 0, 0);
       g_windowMgr.Promote(sender);
       return 0;
     }
@@ -186,8 +189,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         g_session.m_noSubChatWnds[b].name = reinterpret_cast<const char*>(a);
         this->m_tabWidth = this->m_tabControl->geometry.width / g_session.m_noSubChatWnds.size();
         g_windowMgr.SetFocus(this->m_inputEdit);
-        if (UIWindow* window = g_windowMgr.LookupWindow(0x84)) {
-          window->SendMsg(this, 6, 0xC1, this->m_currentTab, 1, 2);
+        if (UIWindow* window = g_windowMgr.LookupWindow(WID_BATTLEMSGOPTIONWND)) {
+          window->SendMsg(this, UM_COMMAND, ID_OPTION, this->m_currentTab, 1, 2);
         }
       }
       RECT rectangle;
@@ -271,7 +274,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     return 0;
   case UM_ADDCHAT:
   case UM_ADDCHAT2:
-    if (message != 0x73) {
+    if (message != UM_ADDCHAT2) {
       std::vector<std::string> lines;
       char name[25] = {};
       if (d != 0) {
@@ -333,7 +336,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       index = 0;
       for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_subChatWnds.begin(); it != g_session.m_subChatWnds.end(); ++it, ++index) {
         if (it->second.options[c] || everyTab) {
-          g_windowMgr.retainedWindows[index]->SendMsg(this, 0x25, a, b, reinterpret_cast<std::intptr_t>(name), 0);
+          g_windowMgr.retainedWindows[index]->SendMsg(this, UM_ADDCHAT, a, b, reinterpret_cast<std::intptr_t>(name), 0);
         }
       }
     }
@@ -352,14 +355,14 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case UM_COMMAND:
     switch (a) {
     case ID_OPTION:
-      if (UIWindow* window = g_windowMgr.EnsureWindow(0x84)) {
-        window->SendMsg(this, 6, 0xC1, this->m_currentTab, 1, 0);
+      if (UIWindow* window = g_windowMgr.EnsureWindow(WID_BATTLEMSGOPTIONWND)) {
+        window->SendMsg(this, UM_COMMAND, ID_OPTION, this->m_currentTab, 1, 0);
       }
       return 0;
-    case 0x15B:
+    case ID_NAME:
       g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(b));
       return 0;
-    case 0x165:
+    case ID_STICK_ON:
       *reinterpret_cast<unsigned char*>(&g_windowMgr.unknown_03F4) = 1;
       this->m_currentTab = 0;
       if (this->unknown_0118 == 0) {
@@ -368,23 +371,23 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->ResizeRows(this->unknown_0118);
       this->Invalidate();
       return 0;
-    case 0x166:
-      this->SendMsg(this, 0x75, this->m_currentTab, 0, 0, 0);
+    case ID_STICK_OFF:
+      this->SendMsg(this, UM_DETACH_CHAT_TAB, this->m_currentTab, 0, 0, 0);
       return 0;
     case ID_TALKTOWHOCOMBO: {
       this->unknown_00F0 = 1;
       if (g_windowMgr.unknown_0214 != nullptr) {
-        g_windowMgr.CloseWindow(0x1A);
+        g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
-      UIWindow* menu = g_windowMgr.EnsureWindow(0x1A);
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x55)), 0, 0, 0);
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x56)), 0, 0, 0);
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x1B5)), 0, 0, 0);
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x939)), 0, 0, 0);
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0xFC0)), 0, 0, 0);
-      menu->SendMsg(nullptr, 0x28, *reinterpret_cast<int*>(&g_session.unknown_5490[0x8]), 0, 0, 0);
+      UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x55)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x56)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x1B5)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x939)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0xFC0)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SETCURITEM, *reinterpret_cast<int*>(&g_session.unknown_5490[0x8]), 0, 0, 0);
       menu->Resize(0x70, 0x30);
-      menu->SendMsg(nullptr, 0x53, 1, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SET_CALLER_WID, 1, 0, 0, 0);
       int x = this->geometry.width - 0x73;
       int y = this->geometry.height - this->m_inputAreaHeight;
       this->ToScreen(x, y);
@@ -394,27 +397,27 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     case ID_WHISPERCOMBO: {
       this->unknown_00F0 = 0;
       if (g_windowMgr.unknown_0214 != nullptr) {
-        g_windowMgr.CloseWindow(0x1A);
+        g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
       const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history.size());
       if (count == 0) {
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xC0)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xC0)), 0xFF, 0, 0, 0);
         return 0;
       }
 
-      UIWindow* menu = g_windowMgr.EnsureWindow(0x1A);
+      UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       for (int i = 0; i < count; ++i) {
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history[i].c_str()), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history[i].c_str()), 0, 0, 0);
       }
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(""), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(""), 0, 0, 0);
       int height = (count + 1) * 16;
       if (height > 0x50) {
         height = 0x50;
       }
-      menu->SendMsg(nullptr, 0x28, static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->historyIndex, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SETCURITEM, static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->historyIndex, 0, 0, 0);
       menu->Resize(0x70, height);
-      menu->SendMsg(nullptr, 0x53, 1, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SET_CALLER_WID, 1, 0, 0, 0);
       int x = 0;
       int y = this->geometry.height - this->m_inputAreaHeight;
       this->ToScreen(x, y);
@@ -455,7 +458,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
       if (rejected) {
         static_cast<UIChatEditCtrl*>(this->m_chatEdit)->SetText("");
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBE2)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBE2)), 0xFF, 0, 0, 0);
         return 0;
       }
 
@@ -469,13 +472,13 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
 
       if (g_serviceType == 1 && !ValidateCharacterName(buffer)) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBE)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBE)), 0xFF, 0, 0, 0);
         return 0;
       }
 
       if (static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->Length() != 0 && buffer[0] != '/') {
         g_windowMgr.unknown_04DC = buffer;
-        g_modeMgr.gameMode->SendMsg(0xB, reinterpret_cast<int>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->Text()), 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->Text()), 0, 0, 0);
         return 0;
       }
 
@@ -489,20 +492,20 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       if (talkType == 0x37 || talkType == 0x1A || talkType == 0x12) {
         if (_mbsstr(reinterpret_cast<const unsigned char*>(buffer), reinterpret_cast<const unsigned char*>(s_chatItemLinkOpening.c_str())) != nullptr
             || _mbsstr(reinterpret_cast<const unsigned char*>(buffer), reinterpret_cast<const unsigned char*>(s_itemLinkClosing.c_str())) != nullptr) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xAFC)), 0x64FFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xAFC)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
       }
       if (offset != -1) {
         g_windowMgr.SetUnknown04DC(buffer + offset);
       }
-      g_modeMgr.gameMode->SendMsg(0x2A, talkType, reinterpret_cast<int>(parts), 0, 0);
+      g_modeMgr.gameMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<int>(parts), 0, 0);
       return 0;
     }
     case ID_HIS:
-      this->SendMsg(nullptr, 2, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_TOGGLEPUSH, 0, 0, 0, 0);
       return 0;
-    case 0x176: {
+    case ID_ADD_CHAT_TAB: {
       int noSubCount = static_cast<int>(g_session.m_noSubChatWnds.size());
       int subCount = static_cast<int>(g_session.m_subChatWnds.size());
       const int total = noSubCount + subCount;
@@ -581,8 +584,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
       this->RefreshTabs(true);
       this->ApplyHeaderLayout();
-      if (UIWindow* window = g_windowMgr.LookupWindow(0x84)) {
-        window->SendMsg(this, 6, 0xC1, this->m_currentTab, 1, 1);
+      if (UIWindow* window = g_windowMgr.LookupWindow(WID_BATTLEMSGOPTIONWND)) {
+        window->SendMsg(this, UM_COMMAND, ID_OPTION, this->m_currentTab, 1, 1);
       }
       return 0;
     }
@@ -625,9 +628,9 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     UIListBox* tab = static_cast<UIListBox*>(this->m_tabs[this->m_currentTab]);
     if (tab != nullptr && tab->verticalOverflow != 0) {
       if (HIBYTE(GetKeyState(VK_CONTROL))) {
-        tab->SendMsg(nullptr, 7, tab->LineCount(), 0, 0, 0);
+        tab->SendMsg(nullptr, UM_SCROLLVERT, tab->LineCount(), 0, 0, 0);
       } else {
-        tab->SendMsg(nullptr, 10, 0, 0, 0, 0);
+        tab->SendMsg(nullptr, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
       }
     }
     return 0;
@@ -636,9 +639,9 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     UIListBox* tab = static_cast<UIListBox*>(this->m_tabs[this->m_currentTab]);
     if (tab != nullptr && tab->verticalOverflow != 0) {
       if (HIBYTE(GetKeyState(VK_CONTROL))) {
-        tab->SendMsg(nullptr, 7, -tab->LineCount(), 0, 0, 0);
+        tab->SendMsg(nullptr, UM_SCROLLVERT, -tab->LineCount(), 0, 0, 0);
       } else {
-        tab->SendMsg(nullptr, 9, 0, 0, 0, 0);
+        tab->SendMsg(nullptr, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
       }
     }
     return 0;

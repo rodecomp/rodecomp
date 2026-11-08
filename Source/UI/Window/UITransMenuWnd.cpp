@@ -1,4 +1,5 @@
 #include "UI/Window/UITransMenuWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Buttons/UIButton.h"
 #include <cstring>
 
@@ -33,7 +34,7 @@ void UITransMenuWnd::OnLBtnDown(int x, int y) {
 
   const TransMenuItem& item = this->m_items[this->m_selected];
   if (item.enabled) {
-    this->SendMsg(nullptr, 48, item.command, 0, 0, 0);
+    this->SendMsg(nullptr, UM_MENU_SELECTED, item.command, 0, 0, 0);
   }
 }
 
@@ -95,7 +96,7 @@ void UITransMenuWnd::Move(int x, int y) {
 // OFFSET: 0x00951440
 // FUNCTION: fn_12950
 int UITransMenuWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 48) {
+  if (message != UM_MENU_SELECTED) {
     this->UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 

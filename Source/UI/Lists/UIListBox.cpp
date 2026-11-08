@@ -1,4 +1,5 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
@@ -289,7 +290,7 @@ void UIListBox::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_11403
 void UIListBox::OnLBtnDblClk(int, int) {
   if (this->selected != -1) {
-    this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, this->selected, 0, 0);
   }
 }
 
@@ -303,9 +304,9 @@ void UIListBox::OnRBtnDown(int, int) {
 void UIListBox::OnWheel(int value) {
   if (this->verticalOverflow != 0) {
     if (value < 0) {
-      this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, 3, 0, 0, 0);
     } else {
-      this->SendMsg(this->verticalBar, 7, -3, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, -3, 0, 0, 0);
     }
   }
 }
@@ -355,9 +356,9 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   switch (message) {
   case UM_DOWNPUSH:
   case UM_SETCURITEM: {
-    this->selected = message == 19 ? (this->selected + 1) : value;
+    this->selected = message == UM_DOWNPUSH ? (this->selected + 1) : value;
 
-    if (message == 40 && this->selected < 0) {
+    if (message == UM_SETCURITEM && this->selected < 0) {
       this->selected = 0;
     }
 
@@ -369,17 +370,17 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
     int top = this->topLine;
 
-    if (message == 40 && this->selected < top) {
-      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
+    if (message == UM_SETCURITEM && this->selected < top) {
+      this->SendMsg(nullptr, UM_SCROLLVERT, -1, 0, 0, 0);
       top = this->topLine;
     }
 
-    const int edge = message == 19 ? (top - 1) : top;
+    const int edge = message == UM_DOWNPUSH ? (top - 1) : top;
     const int rows = this->geometry.height / this->lineHeight;
-    const int bottom = (edge + (message == 19 ? rows : (rows - 1)));
+    const int bottom = (edge + (message == UM_DOWNPUSH ? rows : (rows - 1)));
 
     if (this->selected > bottom) {
-      this->SendMsg(nullptr, 7, 1, 0, 0, 0);
+      this->SendMsg(nullptr, UM_SCROLLVERT, 1, 0, 0, 0);
     }
 
     break;
@@ -393,7 +394,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     }
 
     if (this->selected < this->topLine) {
-      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
+      this->SendMsg(nullptr, UM_SCROLLVERT, -1, 0, 0, 0);
     }
 
     break;
@@ -403,7 +404,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->topLine;
     const int visible = this->geometry.height / this->lineHeight;
-    const int delta = message == 9 ? (1 - visible) : message == 10 ? (visible - 1) : value;
+    const int delta = message == UM_SCROLLVERTPAGEUP ? (1 - visible) : message == UM_SCROLLVERTPAGEDOWN ? (visible - 1) : value;
     this->topLine = (previous + delta);
 
     if (this->topLine < 0) {
@@ -431,7 +432,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   case UM_SCROLLHORZPAGEUP:
   case UM_SCROLLHORZPAGEDOWN: {
     const int previous = this->horizontalOffset;
-    const int delta = message == 11 ? -15 : message == 12 ? 15 : value;
+    const int delta = message == UM_SCROLLHORZPAGEUP ? -15 : message == UM_SCROLLHORZPAGEDOWN ? 15 : value;
     this->horizontalOffset = (previous + delta);
 
     if (this->horizontalOffset < 0) {
@@ -457,8 +458,8 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
   case UM_TEXT_LBTN_UP:
     if (argument3 > 0) {
-      if (UIWindow* window = g_windowMgr.LookupWindow(12)) {
-        window->SendMsg(nullptr, 24, argument3, 0, 0, 0);
+      if (UIWindow* window = g_windowMgr.LookupWindow(WID_ITEMCOLLECTIONWND)) {
+        window->SendMsg(nullptr, UM_ITEMEXPLANATION, argument3, 0, 0, 0);
       }
     }
 

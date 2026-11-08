@@ -1,3 +1,4 @@
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/EffectPrim.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/RagEffect.h"
@@ -87,7 +88,7 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
         CRagEffect* effect = gameMode->scene->player->LaunchEffect(850, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
           vector3d position{baseX, baseY, baseZ};
-          effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
         }
       } else {
         CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -95,7 +96,7 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
           CRagEffect* effect = actor->LaunchEffect(850, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           if (effect) {
             vector3d position{baseX, baseY, baseZ};
-            effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+            effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
           }
         }
       }
@@ -105,7 +106,7 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
         CRagEffect* effect = gameMode->scene->player->LaunchEffect(932, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
           vector3d position{baseX, baseY, baseZ};
-          effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
         }
       } else {
         CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -113,7 +114,7 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
           CRagEffect* effect = actor->LaunchEffect(932, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           if (effect) {
             vector3d position{baseX, baseY, baseZ};
-            effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+            effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
           }
         }
       }

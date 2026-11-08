@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "UI/ProbabilityTable/UIProbabilityTable.h"
 
 #include "Network/TextEncoding.h"
@@ -463,7 +464,7 @@ void CUIProbabilityTable::OnButtonClick() {
 // OFFSET: 0x00A4E010
 // FUNCTION: fn_45473
 void CUIProbabilityTable::OnClose() {
-  g_windowMgr.CloseWindow(0x271C);
+  g_windowMgr.CloseWindow(WID_PROBABILITYTABLE);
 }
 
 // OFFSET: 0x00A4DCA0
@@ -529,7 +530,7 @@ void CUIProbabilityTable::Search() {
 // OFFSET: 0x00A4E280
 // FUNCTION: fn_16203
 void CUIProbabilityTable::OnInit() {
-  UIWindow* anchor = g_windowMgr.LookupWindow(12);
+  UIWindow* anchor = g_windowMgr.LookupWindow(WID_ITEMCOLLECTIONWND);
   if (anchor) {
     this->Move(anchor->geometry.x + anchor->geometry.width, anchor->geometry.y);
   } else {

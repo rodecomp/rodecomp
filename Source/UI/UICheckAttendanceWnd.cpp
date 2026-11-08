@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Render/Text/FontCache.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
@@ -245,7 +247,7 @@ void UICheckAttendanceWnd::OnLBtnDown(int x, int y) {
 void UICheckAttendanceWnd::OnLBtnUp(int x, int y) {
   const int slot = this->SlotAt(x, y);
   if (slot == this->m_checkedDays) {
-    this->SendMsg(nullptr, 6, 184, slot, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, ID_OK, slot, 0, 0);
   }
 }
 
@@ -265,7 +267,7 @@ void UICheckAttendanceWnd_Banner::OnLBtnUp(int x, int y) {
   if (this->m_current < this->m_entries.size()) {
     const AttendanceBanner& entry = this->m_entries[this->m_current];
     if (entry.action == 318) {
-      g_modeMgr.gameMode->SendMsg(323, entry.argument, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(MM_REQUEST_CASH_SHOP, entry.argument, 0, 0, 0);
     } else {
       g_windowMgr.EnsureWindow(entry.action);
     }
@@ -319,7 +321,7 @@ void UICheckAttendanceWnd::OnProcess() {
 void UICheckAttendanceWnd_Banner::OnProcess() {
   if (this->m_lastSwitch + 5000 < timeGetTime()) {
     const unsigned int next = this->m_current + 1 < this->m_entries.size() ? this->m_current + 1 : 0;
-    this->SendMsg(this->m_buttons[next], 6, 215, 0, 0, 0);
+    this->SendMsg(this->m_buttons[next], UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
   }
 }
 
@@ -331,7 +333,7 @@ void UICheckAttendanceWnd::OnRBtnDown(int x, int y) {
     return;
   }
 
-  UIWindow* window = g_windowMgr.EnsureWindow(12);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
   if (!window) {
     return;
   }
@@ -339,7 +341,7 @@ void UICheckAttendanceWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item;
   item.SetItemId(g_checkAttendanceMgr->GetReward(slot + 1).first);
   item.identified = 1;
-  window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
 }
 
 // OFFSET: 0x007DE0C0
@@ -353,7 +355,7 @@ void UICheckAttendanceWnd_Banner::CreateButtons() {
       button->SetBitmap("유저인터페이스\\check_attendance\\btn_ad_off.bmp", 1);
       button->SetBitmap("유저인터페이스\\check_attendance\\btn_ad_on.bmp", 2);
       button->Move(this->geometry.width + (index - static_cast<int>(this->m_entries.size())) * 12 - 12, 41);
-      button->SendMsg(this, 13, index == static_cast<int>(this->m_current), 0, 0, 0);
+      button->SendMsg(this, UM_SETSTATE, index == static_cast<int>(this->m_current), 0, 0, 0);
       this->AddChild(button);
       this->m_buttons.emplace_back(button);
       ++index;
@@ -393,7 +395,7 @@ int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
       break;
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(328);
+      g_windowMgr.CloseWindow(WID_CHECKATTENDANCEWND);
       break;
     }
   }
@@ -405,13 +407,13 @@ int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 int UICheckAttendanceWnd_Banner::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message == 6 && argument1 == 215) {
+  if (message == UM_COMMAND && argument1 == ID_RADIOBTN) {
     for (unsigned int index = 0; index < this->m_buttons.size(); ++index) {
       if (sender == this->m_buttons[index]) {
-        this->m_buttons[index]->SendMsg(this, 13, 1, 0, 0, 0);
+        this->m_buttons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         this->m_current = index;
       } else {
-        this->m_buttons[index]->SendMsg(this, 13, 0, 0, 0, 0);
+        this->m_buttons[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
       }
     }
     this->m_lastSwitch = timeGetTime();

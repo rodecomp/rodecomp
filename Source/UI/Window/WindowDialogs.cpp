@@ -1,4 +1,5 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -22,85 +23,85 @@ bool UIWindowMgr::ProcessDialogKey(int, int key) {
 
   switch (key) {
   case 0x100001:
-    this->window_01E8->SendMsg(nullptr, 41, 0, 1, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 0, 1, 0, 0);
     return false;
   case 0x110001:
-    this->window_01E8->SendMsg(nullptr, 41, 1, 1, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 1, 1, 0, 0);
     return false;
   case 0x120001:
-    this->window_01E8->SendMsg(nullptr, 41, 2, 1, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 2, 1, 0, 0);
     return false;
   case 0x130001:
-    this->window_01E8->SendMsg(nullptr, 41, 3, 1, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 3, 1, 0, 0);
     return false;
   case 0x140001:
-    this->window_01E8->SendMsg(nullptr, 41, 4, 1, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 4, 1, 0, 0);
     return false;
   case 0x150001:
-    this->window_01E8->SendMsg(nullptr, 41, 5, 1, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 5, 1, 0, 0);
     return false;
   case 0x160001:
-    this->window_01E8->SendMsg(nullptr, 41, 6, 1, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 6, 1, 0, 0);
     return false;
   case 0x170001:
-    this->window_01E8->SendMsg(nullptr, 41, 7, 1, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 7, 1, 0, 0);
     return false;
   case 0x180001:
-    this->window_01E8->SendMsg(nullptr, 41, 8, 1, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 8, 1, 0, 0);
     return false;
   case 0x1E0001:
-    this->window_01E8->SendMsg(nullptr, 41, 0, 2, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 0, 2, 0, 0);
     return false;
   case 0x1F0001:
-    this->window_01E8->SendMsg(nullptr, 41, 1, 2, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 1, 2, 0, 0);
     return false;
   case 0x200001:
-    this->window_01E8->SendMsg(nullptr, 41, 2, 2, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 2, 2, 0, 0);
     return false;
   case 0x210001:
-    this->window_01E8->SendMsg(nullptr, 41, 3, 2, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 3, 2, 0, 0);
     return false;
   case 0x220001:
-    this->window_01E8->SendMsg(nullptr, 41, 4, 2, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 4, 2, 0, 0);
     return false;
   case 0x230001:
-    this->window_01E8->SendMsg(nullptr, 41, 5, 2, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 5, 2, 0, 0);
     return false;
   case 0x240001:
-    this->window_01E8->SendMsg(nullptr, 41, 6, 2, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 6, 2, 0, 0);
     return false;
   case 0x250001:
-    this->window_01E8->SendMsg(nullptr, 41, 7, 2, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 7, 2, 0, 0);
     return false;
   case 0x260001:
-    this->window_01E8->SendMsg(nullptr, 41, 8, 2, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 8, 2, 0, 0);
     return false;
   case 0x2C0001:
-    this->window_01E8->SendMsg(nullptr, 41, 0, 0, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 0, 0, 0, 0);
     return false;
   case 0x2D0001:
-    this->window_01E8->SendMsg(nullptr, 41, 1, 0, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 1, 0, 0, 0);
     return false;
   case 0x2E0001:
-    this->window_01E8->SendMsg(nullptr, 41, 2, 0, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 2, 0, 0, 0);
     return false;
   case 0x2F0001:
-    this->window_01E8->SendMsg(nullptr, 41, 3, 0, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 3, 0, 0, 0);
     return false;
   case 0x300001:
-    this->window_01E8->SendMsg(nullptr, 41, 4, 0, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 4, 0, 0, 0);
     return false;
   case 0x310001:
-    this->window_01E8->SendMsg(nullptr, 41, 5, 0, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 5, 0, 0, 0);
     return false;
   case 0x320001:
-    this->window_01E8->SendMsg(nullptr, 41, 6, 0, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 6, 0, 0, 0);
     return false;
   case 0x330001:
-    this->window_01E8->SendMsg(nullptr, 41, 7, 0, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 7, 0, 0, 0);
     return false;
   case 0x340001:
-    this->window_01E8->SendMsg(nullptr, 41, 8, 0, 0, 0);
+    this->window_01E8->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 8, 0, 0, 0);
     return false;
   default:
     return false;
@@ -154,8 +155,8 @@ int UIWindowMgr::Confirm(
   }
 
   if (UIWindow* active = this->Top()) {
-    if (active->SendMsg(nullptr, 158, 0, 0, 0, 0) == 0 && replace) {
-      active->SendMsg(nullptr, 57, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    if (active->SendMsg(nullptr, UM_IS_MESSAGE_PROTECTED, 0, 0, 0, 0) == 0 && replace) {
+      active->SendMsg(nullptr, UM_CHANGEMSG, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     }
 
     return 185;
@@ -166,7 +167,7 @@ int UIWindowMgr::Confirm(
   box->Configure(text, type, defaultAccept, timeout, caption, width, height, 1, nullptr);
 
   if (protect == 1) {
-    box->SendMsg(nullptr, 157, 1, 0, 0, 0);
+    box->SendMsg(nullptr, UM_SET_MESSAGE_PROTECTED, 1, 0, 0, 0);
   }
 
   this->rendered.insert(this->rendered.end(), box);

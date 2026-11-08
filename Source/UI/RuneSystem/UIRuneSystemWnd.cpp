@@ -1,4 +1,5 @@
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Items/RuneSystem.h"
 #include "Contents/MessageTable.h"
@@ -44,7 +45,7 @@ void UIRune_Decom::Reset() {
   for (int index = 0; index < 2; ++index) {
     this->m_radioButtons[index]->Show(0);
     this->m_radioButtons[index]->Invalidate();
-    this->m_radioButtons[index]->SendMsg(nullptr, 0x0D, this->m_decomType != index, 0, 0, 0);
+    this->m_radioButtons[index]->SendMsg(nullptr, UM_SETSTATE, this->m_decomType != index, 0, 0, 0);
   }
   this->Invalidate();
 }
@@ -265,7 +266,7 @@ void UIRuneSystemTab::OnLBtnDown(int x, int) {
   if (index < 3 && static_cast<int>(this->geometry.unknown_0030) != index) {
     this->geometry.unknown_0030 = index;
     this->Invalidate();
-    this->parent->SendMsg(this, 0x16, this->geometry.unknown_0030, 0, 0, 0);
+    this->parent->SendMsg(this, UM_TAB, this->geometry.unknown_0030, 0, 0, 0);
   }
 }
 
@@ -287,7 +288,7 @@ void UIRuneSystem_tagListWnd::OnLBtnDown(int x, int) {
     if (tag) {
       g_runeSystemMgr->SetSelectTag(tag->m_id);
       g_runeSystemMgr->SendRequest(0xBCB, nullptr, -1);
-      this->parent->SendMsg(this, 0x3C, 0, 0, 0, 0);
+      this->parent->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
       this->Invalidate();
     }
   }
@@ -302,10 +303,10 @@ void UIRuneSetReWard::OnLBtnUp(int x, int y) {
   }
 
   if (this->m_state == 3) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4200)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(4200)), 0xFF, 0, 0, 0);
   }
   if (this->m_state == 0) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4201)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(4201)), 0xFF, 0, 0, 0);
   }
 
   if (this == g_windowMgr.Capture()) {
@@ -584,7 +585,7 @@ int UIRuneSystemTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, st
   case UM_SETSTATE:
     this->geometry.unknown_0030 = argument1;
     this->Invalidate();
-    this->parent->SendMsg(this, 0x16, this->geometry.unknown_0030, 0, 0, 0);
+    this->parent->SendMsg(this, UM_TAB, this->geometry.unknown_0030, 0, 0, 0);
     break;
   }
 
@@ -630,9 +631,9 @@ void UIRune_Decom::SelectDecomType(unsigned int type) {
   if (this->m_decomType != type) {
     this->m_decomType = type;
     for (int index = 0; index < 2; ++index) {
-      this->m_radioButtons[index]->SendMsg(nullptr, 0x0D, 1, 0, 0, 0);
+      this->m_radioButtons[index]->SendMsg(nullptr, UM_SETSTATE, 1, 0, 0, 0);
     }
-    this->m_radioButtons[this->m_decomType]->SendMsg(nullptr, 0x0D, 0, 0, 0, 0);
+    this->m_radioButtons[this->m_decomType]->SendMsg(nullptr, UM_SETSTATE, 0, 0, 0, 0);
     this->m_decomList = g_runeSystemMgr->GetDecomList(this->m_itemId, this->m_decomType);
     this->Invalidate();
   }
@@ -730,7 +731,7 @@ void UIRuneSet_Info::RefreshDescription() {
 // FUNCTION: fn_10218
 void UIRuneSet_Info::UpdateRewards() {
   for (UIRuneSetReWard* reward : this->m_rewards) {
-    reward->SendMsg(this, 0x66, 0, 0, 0, 0);
+    reward->SendMsg(this, UM_SETID, 0, 0, 0, 0);
   }
 
   if (this->m_runeSet && this->m_runeSet->m_reward.values[0] != 0) {
@@ -738,15 +739,15 @@ void UIRuneSet_Info::UpdateRewards() {
       const std::int64_t itemId = this->m_runeSet->m_reward.values[index + 1];
       if (itemId != 0) {
         if (index < this->m_runeSet->m_rewardStep) {
-          this->m_rewards[index]->SendMsg(this, 0x66, 3, static_cast<std::intptr_t>(itemId), 0, 0);
+          this->m_rewards[index]->SendMsg(this, UM_SETID, 3, static_cast<std::intptr_t>(itemId), 0, 0);
         } else if (index == 0) {
-          this->m_rewards[0]->SendMsg(this, 0x66, this->m_runeSet->IsActive() ? 2 : 1, static_cast<std::intptr_t>(itemId), 0, 0);
+          this->m_rewards[0]->SendMsg(this, UM_SETID, this->m_runeSet->IsActive() ? 2 : 1, static_cast<std::intptr_t>(itemId), 0, 0);
         } else {
           int state = 2;
           if ((index != 6 && this->m_runeSet->CountActiveSlots() <= index) || this->m_runeSet->FindLastReward(index + 1) > this->m_runeSet->m_rewardStep) {
             state = 1;
           }
-          this->m_rewards[index]->SendMsg(this, 0x66, state, static_cast<std::intptr_t>(this->m_runeSet->m_reward.values[index + 1]), 0, 0);
+          this->m_rewards[index]->SendMsg(this, UM_SETID, state, static_cast<std::intptr_t>(this->m_runeSet->m_reward.values[index + 1]), 0, 0);
         }
       }
     }
@@ -900,7 +901,7 @@ void UIRuneSystemWnd::SelectTab() {
   }
   }
 
-  this->SendMsg(this, 0x3C, 0, 0, 0, 0);
+  this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0081E7F0
@@ -929,9 +930,9 @@ void UIRuneSetReWard::OnRBtnDown(int, int) {
   ITEM_INFO item;
   item.SetItemId(this->m_itemId);
   item.identified = 1;
-  UIWindow* window = g_windowMgr.EnsureWindow(12);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
   if (window) {
-    window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -952,9 +953,9 @@ void UIRuneSystem_ActiveWnd::OnRBtnDown(int x, int y) {
     ITEM_INFO item;
     item.SetItemId(itemId);
     item.identified = 1;
-    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
     if (window) {
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -971,9 +972,9 @@ void UIRune_Decom::OnRBtnDown(int x, int y) {
     ITEM_INFO item;
     item.SetItemId((*this->m_decomList)[index].m_itemId);
     item.identified = 1;
-    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
     if (window) {
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -1036,8 +1037,8 @@ int UIRuneSystem_DecomResultWnd::SendMsg(UIWindow*, int message, std::intptr_t a
     break;
   }
   case UM_COMMAND:
-    if (argument1 == 0xB8) {
-      g_windowMgr.CloseWindow(0x16A);
+    if (argument1 == ID_OK) {
+      g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
     }
     break;
   }
@@ -1622,7 +1623,7 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     case 0x253:
     case 0x254:
       if (!this->m_runeSet->IsRewardStep(argument1 - 0x24E)) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4199)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(4199)), 0xFF, 0, 0, 0);
       } else {
         g_runeSystemMgr->SendRequest(0xC16, this->m_runeSet, argument1 - 0x24D);
       }
@@ -1732,11 +1733,11 @@ void UIRune_ViewInfo::OnCreate(int, int) {
 // OFFSET: 0x0081E5D0
 // FUNCTION: fn_10228
 int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
-    if (argument1 == 0xD7) {
+  if (message == UM_COMMAND) {
+    if (argument1 == ID_RADIOBTN) {
       this->SelectDecomType(argument2);
     } else if (argument1 == 0x197) {
-      g_windowMgr.CloseWindow(0x16A);
+      g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
       if (!g_runeSystemMgr->IsRequestPending() && (!this->parent || this->parent->SendMsg(this, 0x6A, 50, 0, 0, 0) != 0) && this->m_ownedCount) {
         if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
             g_session.GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50() + 8 >=
@@ -1754,7 +1755,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         }
       }
     }
-  } else if (message == 0x3C) {
+  } else if (message == UM_REFRESH) {
     this->SetItem(this->m_itemId);
   }
 
@@ -1781,7 +1782,7 @@ void UIRune_Decom::OnCreate(int, int) {
     this->m_radioButtons[index]->Move(x, 0x153);
     const std::string text = FormatOwnedString(LookupMessage(4074), g_runeSystemMgr->GetDecomItem(index));
     this->m_radioButtons[index]->SetText(text.c_str());
-    this->m_radioButtons[index]->SendMsg(this, 0x0D, index, 0, 0, 0);
+    this->m_radioButtons[index]->SendMsg(this, UM_SETSTATE, index, 0, 0, 0);
     this->m_radioButtons[index]->SetBitmaps("유저인터페이스\\runesystem\\btn_radio_on.bmp", "유저인터페이스\\runesystem\\btn_radio_off.bmp");
     this->m_radioButtons[index]->SetDisabledBitmap("유저인터페이스\\runesystem\\btn_radio_disable.bmp");
     this->m_radioButtons[index]->value = index;
@@ -1904,7 +1905,7 @@ void UIRuneSet_Info::OnCreate(int, int) {
   this->m_tab = new UIRuneSystemTab();
   this->AddChild(this->m_tab);
   this->m_tab->SetSize(0xC4, 0x1A);
-  this->m_tab->SendMsg(this->m_tab, 0x16, 3, 0, 0, 0);
+  this->m_tab->SendMsg(this->m_tab, UM_TAB, 3, 0, 0, 0);
   this->m_tab->Move(0x180, 1);
   this->m_tab->m_label = "유저인터페이스\\runesystem\\runeset_tab_%d.bmp";
 
@@ -1958,12 +1959,12 @@ void UIRuneSet_Info::OnCreate(int, int) {
     this->m_rewards[index]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_pressed.tga", 2, 0);
     this->m_rewards[index]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_disabled.tga", 3, 0);
     this->m_rewards[index]->SetSize(this->m_rewards[index]->BitmapWidth(), this->m_rewards[index]->BitmapHeight());
-    this->m_rewards[index]->SendMsg(this, 0x22, 0, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_empty.tga"), 0, 0);
-    this->m_rewards[index]->SendMsg(this, 0x22, 1, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_complete.tga"), 0, 0);
-    this->m_rewards[index]->SendMsg(this, 0x22, 2, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_disabled_mouseon.tga"), 0, 0);
+    this->m_rewards[index]->SendMsg(this, UM_SETINFO, 0, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_empty.tga"), 0, 0);
+    this->m_rewards[index]->SendMsg(this, UM_SETINFO, 1, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_complete.tga"), 0, 0);
+    this->m_rewards[index]->SendMsg(this, UM_SETINFO, 2, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_disabled_mouseon.tga"), 0, 0);
     this->m_rewards[index]->Move(rewardX[index], rewardY[index]);
     this->m_rewards[index]->SetId(rewardIds[index]);
-    this->m_rewards[index]->SendMsg(this, 0x66, 0, 0, 0, 0);
+    this->m_rewards[index]->SendMsg(this, UM_SETID, 0, 0, 0, 0);
   }
 
   this->m_rewards[6] = new UIRuneSetReWard();
@@ -1973,12 +1974,12 @@ void UIRuneSet_Info::OnCreate(int, int) {
   this->m_rewards[6]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_l_pressed.tga", 2, 0);
   this->m_rewards[6]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_l_disabled.tga", 3, 0);
   this->m_rewards[6]->SetSize(this->m_rewards[6]->BitmapWidth(), this->m_rewards[6]->BitmapHeight());
-  this->m_rewards[6]->SendMsg(this, 0x22, 0, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_l_empty.tga"), 0, 0);
-  this->m_rewards[6]->SendMsg(this, 0x22, 1, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_l_complete.tga"), 0, 0);
-  this->m_rewards[6]->SendMsg(this, 0x22, 2, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_l_disabled_mouseon.tga"), 0, 0);
+  this->m_rewards[6]->SendMsg(this, UM_SETINFO, 0, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_l_empty.tga"), 0, 0);
+  this->m_rewards[6]->SendMsg(this, UM_SETINFO, 1, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_l_complete.tga"), 0, 0);
+  this->m_rewards[6]->SendMsg(this, UM_SETINFO, 2, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_l_disabled_mouseon.tga"), 0, 0);
   this->m_rewards[6]->Move(0x179, 0xCF);
   this->m_rewards[6]->SetId(0x254);
-  this->m_rewards[6]->SendMsg(this, 0x66, 0, 0, 0, 0);
+  this->m_rewards[6]->SendMsg(this, UM_SETID, 0, 0, 0, 0);
 
   this->Refresh();
 }
@@ -2200,8 +2201,8 @@ void UIRune_Decom::Paint() {
 int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == 0xC9) {
-      g_windowMgr.CloseWindow(0x169);
+    if (argument1 == ID_CLOSE) {
+      g_windowMgr.CloseWindow(WID_RUNESYSTEMWND);
     }
     break;
   case UM_SCROLLVERT:
@@ -2213,7 +2214,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     break;
   case UM_TAB:
-    g_windowMgr.CloseWindow(0x16A);
+    g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
     this->SelectTab();
     break;
   case UM_REFRESH: {
@@ -2226,17 +2227,17 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     switch (this->m_tab->geometry.unknown_0030) {
     case 0:
       this->m_equipRuneSet->Invalidate();
-      this->m_runeSetInfo->SendMsg(this, 0x3C, 0, 0, 0, 0);
-      this->m_lists[0]->SendMsg(this, 0x3C, g_runeSystemMgr->GetTag(-1)->GetRuneCount(0), 0, 0, 0);
+      this->m_runeSetInfo->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
+      this->m_lists[0]->SendMsg(this, UM_REFRESH, g_runeSystemMgr->GetTag(-1)->GetRuneCount(0), 0, 0, 0);
       break;
     case 1:
-      this->m_runeInfo->SendMsg(this, 0x3C, 0, 0, 0, 0);
-      this->m_lists[1]->SendMsg(this, 0x3C, g_runeSystemMgr->GetTag(-1)->GetRuneCount(1), 0, 0, 0);
+      this->m_runeInfo->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
+      this->m_lists[1]->SendMsg(this, UM_REFRESH, g_runeSystemMgr->GetTag(-1)->GetRuneCount(1), 0, 0, 0);
       break;
     case 2: {
       const int count = g_runeSystemMgr->UpdateOwnedDecomItems();
       if (this->m_lists[2]->total == count) {
-        this->m_runeDecom->SendMsg(this, 0x3C, 0, 0, 0, 0);
+        this->m_runeDecom->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
         break;
       }
 
@@ -2257,7 +2258,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     this->Invalidate();
     break;
   }
-  case 0x61:
+  case UM_TEXT_LBTN_DblClk:
     if (g_runeSystemMgr->GetCurrentRune(0, argument2)) {
       g_windowMgr.Confirm("보상을 지급 받으시겠습니까?", 2, false, false, 0, "Message", 280, 120, 0);
     }
@@ -2314,22 +2315,22 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         for (int index = 0; index < 7; ++index) {
           RuneSetData* runeSet = info->m_runeSet;
           if (runeSet->m_reward.values[0] == 0) {
-            info->m_rewards[index]->SendMsg(info, 0x66, 0, 0, 0, 0);
+            info->m_rewards[index]->SendMsg(info, UM_SETID, 0, 0, 0, 0);
             runeSet = info->m_runeSet;
           }
 
           const int itemId = static_cast<int>(runeSet->m_reward.values[index + 1]);
           if (index < runeSet->m_rewardStep) {
-            info->m_rewards[index]->SendMsg(info, 0x66, 3, itemId, 0, 0);
+            info->m_rewards[index]->SendMsg(info, UM_SETID, 3, itemId, 0, 0);
           } else if (index == 0) {
-            info->m_rewards[0]->SendMsg(info, 0x66, runeSet->IsActive() ? 2 : 1, itemId, 0, 0);
+            info->m_rewards[0]->SendMsg(info, UM_SETID, runeSet->IsActive() ? 2 : 1, itemId, 0, 0);
           } else if (index == 6) {
-            info->m_rewards[6]->SendMsg(info, 0x66, slotCount == activeCount ? 2 : 1, itemId, 0, 0);
+            info->m_rewards[6]->SendMsg(info, UM_SETID, slotCount == activeCount ? 2 : 1, itemId, 0, 0);
           } else {
-            info->m_rewards[index]->SendMsg(info, 0x66, index < activeCount ? 2 : 1, itemId, 0, 0);
+            info->m_rewards[index]->SendMsg(info, UM_SETID, index < activeCount ? 2 : 1, itemId, 0, 0);
           }
         }
-        info->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+        info->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
         this->m_runeSetInfo->Invalidate();
         break;
       }
@@ -2378,7 +2379,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
     }
     break;
-  case 0xB2:
+  case UM_RUNE_REWARD_EFFECT:
     if (argument1 == 0xE0) {
       const vector3d positions[7] = {{712.0f, 144.0f, 0.0f}, {799.0f, 169.0f, 0.0f}, {853.0f, 244.0f, 0.0f}, {853.0f, 337.0f, 0.0f},
                                      {799.0f, 412.0f, 0.0f}, {711.0f, 438.0f, 0.0f}, {712.0f, 290.0f, 0.0f}};

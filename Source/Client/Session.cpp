@@ -1,4 +1,8 @@
 #include "Client/Session.h"
+#include "Client/Mode/ModeMessage.h"
+#include "Contents/Actors/ActorEnums.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Contents/Combat/CombatTypes.h"
 #include "Utility/EncryptedName.h"
 #include "Client/Mode/CGameMode.h"
@@ -1255,62 +1259,62 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
   }
   if (tokenizer[0] == "/str+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0xD, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0xD, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/agi+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0xE, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0xE, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/luk+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0x12, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0x12, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/int+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0x10, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0x10, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/vit+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0xF, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0xF, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/dex+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x1E, 0x11, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0x11, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/pow+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xDB, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDB, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/sta+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xDC, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDC, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/wis+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xDD, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDD, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/spl+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xDE, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDE, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/con+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xDF, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDF, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/crt+" && count > 1) {
     *talkType = 0x89;
-    g_modeMgr.GetGameMode()->SendMsg(0x13A, 0xE0, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xE0, std::atoi(tokenizer[1].c_str()), 0, 0);
     return *talkType == 0 ? 0 : skipSpaces(0);
   }
   if (tokenizer[0] == "/hi") {
@@ -1868,7 +1872,7 @@ void CSession::RemovePartyMemberByName(const char* name) {
 
     CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(it->accountId);
     if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(160)) {
-      actor->SendMsg(nullptr, 109, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
     this->m_partyMembers.erase(it);
@@ -1994,7 +1998,7 @@ int CSession::GetUnknown8148() const {
 // FUNCTION: fn_23606
 void CSession::RefreshWindow02C8() {
   if (UIWindow* window = g_windowMgr.window_02C8) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -2002,7 +2006,7 @@ void CSession::RefreshWindow02C8() {
 // FUNCTION: fn_23607
 void CSession::RefreshItem1740Window() {
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -2017,7 +2021,7 @@ void CSession::RefreshItem1750Window(int type) {
   }
 
   if (window) {
-    reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -2031,7 +2035,7 @@ void CSession::UpdateUnknown1708(int enabled) {
 // FUNCTION: fn_23611
 void __fastcall RefreshPartyWindows(CSession*) {
   if (UIWindow* window = g_windowMgr.window_02C8) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   g_windowMgr.RebuildMiniPartyWindows();
 }
@@ -2040,7 +2044,7 @@ void __fastcall RefreshPartyWindows(CSession*) {
 // FUNCTION: fn_23612
 void CSession::RefreshItem1738Window() {
   if (UIWindow* window = g_windowMgr.window_0288) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -2098,7 +2102,7 @@ void CSession::SetItem1768Quantity(int index, int quantity) {
 void CSession::SetUnknown5C1C(int value) {
   this->unknown_5C1C = value;
   if (UIWindow* window = g_windowMgr.unknown_01E0) {
-    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -2108,7 +2112,7 @@ void CSession::UpdateFriendName(std::uint32_t characterId, const char* name) {
   for (auto it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
     if (it->characterId == characterId) {
       if (std::strlen(name) == 0) {
-        g_modeMgr.gameMode->SendMsg(176, it->accountId, it->characterId, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_DELETE_FRIEND, it->accountId, it->characterId, 0, 0);
         this->m_friends.erase(it);
       } else {
         it->name = name;
@@ -2117,7 +2121,7 @@ void CSession::UpdateFriendName(std::uint32_t characterId, const char* name) {
     }
   }
 
-  if (UIWindow* window = g_windowMgr.LookupWindow(34)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_MESSENGERGROUPWND)) {
     window->Invalidate();
   }
 }
@@ -2173,7 +2177,7 @@ void CSession::SetUnknown16EC(std::uint32_t value) {
   }
 
   if (mode->scene && mode->scene->player && mode->scene->player->unknown_0544) {
-    mode->scene->player->unknown_0544->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
+    mode->scene->player->unknown_0544->SendMsg(nullptr, AM_SETCOUNT, 0, 1, 0, 0, 0, 0);
   }
 }
 
@@ -2203,7 +2207,7 @@ int CSession::SetFriendOffline(std::uint32_t accountId, std::uint32_t characterI
         } else {
           std::sprintf(message, LookupMessage(1042), member.name.c_str());
         }
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 0, 0, 0);
       }
       return 1;
     }
@@ -2279,8 +2283,8 @@ void CSession::AddRecord0734(int id, std::uint32_t value) {
 // FUNCTION: fn_23632
 void CSession::SetUnknown5210(int value) {
   this->unknown_5210 = value;
-  if (UIWindow* window = g_windowMgr.LookupWindow(10011)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -2288,8 +2292,8 @@ void CSession::SetUnknown5210(int value) {
 // FUNCTION: fn_23634
 void CSession::SetUnknown5214(int value) {
   this->unknown_5214 = value;
-  if (UIWindow* window = g_windowMgr.LookupWindow(10011)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -2616,7 +2620,7 @@ int CSession::CountItems17F0() const {
 void CSession::RefreshSkillTree() {
   this->InitializeSkillTree();
   if (g_windowMgr.window_02C4) {
-    g_windowMgr.window_02C4->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    g_windowMgr.window_02C4->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 
   if (g_windowMgr.unknown_01DC) {
@@ -2691,7 +2695,7 @@ void CSession::HiFriends(char* text) {
 
   for (const MessengerMember& member : this->m_friends) {
     g_windowMgr.unknown_04DC = greeting.c_str();
-    g_modeMgr.gameMode->SendMsg(0xB, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
     if (++g_pendingWhisperCount > 40) {
       g_pendingWhisperCount = 40;
     }
@@ -3239,7 +3243,7 @@ void CSession::ClearItemContainers() {
     for (std::list<MessengerMember>::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
       CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(it->accountId);
       if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(160)) {
-        actor->SendMsg(nullptr, 109, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
   }

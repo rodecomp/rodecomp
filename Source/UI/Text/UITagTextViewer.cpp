@@ -86,9 +86,9 @@ void UITagTextViewer::OnProcess() {
 // FUNCTION: fn_10527
 void TagTextViewer::UIScroll::OnWheel(int delta) {
   if (delta < 0) {
-    this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
   } else {
-    this->SendMsg(this->m_scrollBar, 9, 0, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
   }
 }
 
@@ -129,7 +129,7 @@ void UITagTextViewer::Resize(int width, int height) {
   UIWindow::Resize(width, height);
   this->m_scrollBar->Resize(this->m_scrollBar->geometry.width, height);
   this->m_scrollBar->Move(width - this->m_scrollBar->geometry.width, 0);
-  this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0083F1C0
@@ -139,19 +139,19 @@ int TagTextViewer::UIScroll::SendMsg(
 ) {
   switch (message) {
   case UM_UPPUSH:
-    this->SendMsg(this->m_scrollBar, 9, 0, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
     break;
   case UM_DOWNPUSH:
-    this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
     break;
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollPos;
     int delta = argument1;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       delta = -10;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       delta = 10;
     }
     this->m_scrollPos = previous + delta;
@@ -201,11 +201,11 @@ int UITagTextViewer::SendMsg(
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollPos;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->m_scrollPos = previous - 30;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->m_scrollPos = previous + 30;
-    } else if (message == 7) {
+    } else if (message == UM_SCROLLVERT) {
       this->m_scrollPos = previous + static_cast<int>(argument1);
     }
 

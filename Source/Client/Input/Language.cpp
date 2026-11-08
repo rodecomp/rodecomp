@@ -1,4 +1,6 @@
 #include "Client/Input/InputCharset.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Input/Language.h"
 #include "Contents/CashEmotionMgr.h"
@@ -157,7 +159,7 @@ void CLanguageBase::CopySelection() {
 // OFFSET: 0x00ACD540
 // FUNCTION: fn_17764
 void CLanguageBase::Paste() {
-  if (g_windowMgr.window_4F1FC == g_windowMgr.GetHoverWindow() || g_windowMgr.LookupWindow(278) || g_windowMgr.LookupWindow(128)) {
+  if (g_windowMgr.window_4F1FC == g_windowMgr.GetHoverWindow() || g_windowMgr.LookupWindow(WID_NEWMAKECHARWND) || g_windowMgr.LookupWindow(WID_CHANGENAMEWND)) {
     return;
   }
 
@@ -352,7 +354,7 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
     break;
   case VK_LEFT:
     if (ChatWindow() && ChatWindow()->SuggestionsVisible() && ChatWindow()->m_suggestions) {
-      ChatWindow()->m_suggestions->SendMsg(nullptr, 176, VK_LEFT, 0, 0, 0);
+      ChatWindow()->m_suggestions->SendMsg(nullptr, UM_CASH_EMOTION_KEY, VK_LEFT, 0, 0, 0);
       return;
     }
 
@@ -361,7 +363,7 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
     break;
   case VK_RIGHT:
     if (ChatWindow() && ChatWindow()->SuggestionsVisible() && ChatWindow()->m_suggestions) {
-      ChatWindow()->m_suggestions->SendMsg(nullptr, 176, VK_RIGHT, 0, 0, 0);
+      ChatWindow()->m_suggestions->SendMsg(nullptr, UM_CASH_EMOTION_KEY, VK_RIGHT, 0, 0, 0);
       return;
     }
 
@@ -426,8 +428,8 @@ UIMacroDetectorWnd::UIMacroDetectorWnd()
     : UIFrameWnd(0), m_button(nullptr), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0), unknown_00D0(0), totalDuration(0),
       startTick(0), messageDuration(0), m_lastAnswer(), message(), unknown_0110(0), messageTick(3000), m_image(nullptr), m_editCtrl(nullptr) {
   std::memset(this->m_captchaKey, 0, sizeof(this->m_captchaKey));
-  g_windowMgr.CloseWindow(155);
-  g_windowMgr.CloseWindow(39);
+  g_windowMgr.CloseWindow(WID_ESCOPTIONWND);
+  g_windowMgr.CloseWindow(WID_CHOOSEWARPWND);
 }
 // OFFSET: 0x0099A060
 // FUNCTION: fn_13537

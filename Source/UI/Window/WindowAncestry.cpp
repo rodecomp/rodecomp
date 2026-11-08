@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Client/Replay.h"
 #include "Client/ReplayRecordOption.h"
 #include "UI/Window/UIWindow.h"
@@ -105,10 +106,10 @@ void UIWindow::PropagateMsg(UIWindow* sender, int message, std::intptr_t argumen
 // OFFSET: 0x00A81D70
 // FUNCTION: fn_16989
 void UIWindow::BroadcastMsg4() {
-  this->SendMsg(nullptr, 4, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_PAGEDOWNPUSH, 0, 0, 0, 0);
   for (std::list<UIWindow*>::iterator it = this->m_children.begin(); it != this->m_children.end(); ++it) {
     if (*it) {
-      (*it)->SendMsg(nullptr, 4, 0, 0, 0, 0);
+      (*it)->SendMsg(nullptr, UM_PAGEDOWNPUSH, 0, 0, 0, 0);
     }
   }
 }
@@ -116,10 +117,10 @@ void UIWindow::BroadcastMsg4() {
 // OFFSET: 0x00A81DC0
 // FUNCTION: fn_16990
 void UIWindow::BroadcastMsg3() {
-  this->SendMsg(nullptr, 3, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_PAGEUPPUSH, 0, 0, 0, 0);
   for (std::list<UIWindow*>::iterator it = this->m_children.begin(); it != this->m_children.end(); ++it) {
     if (*it) {
-      (*it)->SendMsg(nullptr, 3, 0, 0, 0, 0);
+      (*it)->SendMsg(nullptr, UM_PAGEUPPUSH, 0, 0, 0, 0);
     }
   }
 }

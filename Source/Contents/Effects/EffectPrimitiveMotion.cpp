@@ -1,4 +1,6 @@
 #include "Contents/Effects/EffectPrimitiveMotion.h"
+#include "Client/Mode/ModeMessage.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/EffectPrimId.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -2049,7 +2051,7 @@ void CEffectPrim::PrimTanji2() {
 
     if (effect) {
       vector3d position = slot.vecBNow;
-      effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
   }
 }
@@ -6982,7 +6984,7 @@ void CEffectPrim::PrimBubbleSwirl() {
     if (this->state.slots[0].height[9] >= -60.0f && static_cast<unsigned short>(this->state.slots[0].fullDisplayAngle - 250) < 31) {
       this->state.slots[0].flag1[4] = 0;
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      mode->SendMsg(122, 0, 0, 0, 0);
+      mode->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       return;
     }
   } else {
@@ -7002,7 +7004,7 @@ void CEffectPrim::PrimBubbleSwirl() {
     }
     if (pattern == 0 && process == 33) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      mode->SendMsg(122, 0, 0, 0, 0);
+      mode->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
     this->state.slots[0].alphaB -= 5;
     if (this->state.slots[0].alphaB < 0) {

@@ -1,4 +1,5 @@
 #include "Client/Mode/CLoginMode.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Network/Packets/NoticeEnums.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
@@ -271,6 +272,6 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
   if (g_session.m_loginModeFlag == true) {
     this->pendingCursorType = 3;
   } else {
-    g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
   }
 }

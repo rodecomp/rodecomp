@@ -1,4 +1,7 @@
 #include "UI/Window/UIEnums.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Client/Session.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -478,7 +481,7 @@ void UIQuickSlotWnd::OnLBtnDblClk(int x, int y) {
     automatic.DisableAll();
   }
 
-  this->SendMsg(nullptr, 41, slot, 0, 0, 0);
+  this->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, slot, 0, 0, 0);
 }
 
 // OFFSET: 0x00932E80
@@ -559,7 +562,7 @@ int UISeekPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     case ID_CLOSE: {
       std::int16_t packetType = 0x806;
       GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetType), &packetType);
-      g_windowMgr.CloseWindow(170);
+      g_windowMgr.CloseWindow(WID_JOBLISTWND);
       break;
     }
     case ID_MINI:
@@ -574,9 +577,9 @@ int UISeekPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       this->m_rewriteButton->Move(this->geometry.width - 92, this->geometry.height - 24);
       this->Invalidate();
       break;
-    case 284:
-      g_windowMgr.EnsureWindow(170);
-      if (auto* jobs = static_cast<UIJobListWnd*>(g_windowMgr.LookupWindow(170))) {
+    case ID_CHARGE:
+      g_windowMgr.EnsureWindow(WID_JOBLISTWND);
+      if (auto* jobs = static_cast<UIJobListWnd*>(g_windowMgr.LookupWindow(WID_JOBLISTWND))) {
         jobs->RefreshJobs();
       }
       break;
@@ -588,8 +591,8 @@ int UISeekPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       this->m_saved->Reset();
     }
     this->Move(this->m_saved->x, this->m_saved->y);
-    this->SendMsg(nullptr, 14, 3, this->m_saved->width, this->m_saved->height, 0);
-    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 3, this->m_saved->width, this->m_saved->height, 0);
+    this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     return 0;
   }
 
@@ -674,7 +677,7 @@ void UISelCharForUServerWnd::Paint() {
       int offsetX = 0;
       int offsetY = 0;
       if (g_session.IsDoramJob(slot.job) == true) {
-        const auto* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, index, 0, 0, 0));
+        const auto* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
         int x = 0;
         int y = 0;
         int item = 0;

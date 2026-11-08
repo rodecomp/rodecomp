@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemId.h"
 #include "Client/Session.h"
@@ -710,7 +711,7 @@ bool CSession::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char ref
         }
 
         if (window) {
-          reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         }
       }
       return true;
@@ -726,7 +727,7 @@ bool CSession::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char ref
     }
 
     if (window) {
-      reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     }
   }
   return false;

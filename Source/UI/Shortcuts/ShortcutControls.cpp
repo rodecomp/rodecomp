@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Contents/MessageTable.h"
 #include "Client/Session.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
@@ -80,5 +81,5 @@ void UIShortCutWnd::OnCreate(int, int) {
   this->m_hideItems->Enable(1);
   this->AddChild(this->m_hideItems);
 
-  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
 }

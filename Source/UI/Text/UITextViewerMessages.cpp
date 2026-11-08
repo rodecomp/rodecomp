@@ -1,4 +1,5 @@
 #include "UI/Chat/UINewChatWnd.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/CGameMode.h"
@@ -111,8 +112,8 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
     item.unknown_0060 = 0;
     item.itemId = button->GetLine(0);
 
-    if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
 
     break;
@@ -121,7 +122,7 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
     if (button && button->GetLinesCount() != 0) {
       const std::string& tip = button->GetLine(0);
 
-      if (UIWindow* window = g_windowMgr.EnsureWindow(315)) {
+      if (UIWindow* window = g_windowMgr.EnsureWindow(WID_TIPBOXWND)) {
         static_cast<UITipboxWnd*>(window)->ShowTip(std::atoi(tip.c_str()));
       }
     }
@@ -210,14 +211,14 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   switch (message) {
   case UM_UPPUSH:
     if (this->verticalOverflow != 0) {
-      this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
     }
 
     return 0;
 
   case UM_DOWNPUSH:
     if (this->verticalOverflow != 0) {
-      this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
     }
 
     return 0;
@@ -368,15 +369,15 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         item.unknown_0000[0] = static_cast<unsigned>(idValue);
         item.unknown_0060 = 0;
         item.itemId = button->GetLine(0);
-        if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
-          window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+        if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
+          window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
         }
       }
       break;
     case LINE_SEGMENT_TIPBOX:
       if (button && button->GetLinesCount() != 0) {
         const std::string& tip = button->GetLine(0);
-        if (UIWindow* window = g_windowMgr.EnsureWindow(315)) {
+        if (UIWindow* window = g_windowMgr.EnsureWindow(WID_TIPBOXWND)) {
           static_cast<UITipboxWnd*>(window)->ShowTip(std::atoi(tip.c_str()));
         }
       }

@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "Render/Text/FontCache.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
@@ -203,7 +204,7 @@ void UIMerchantItemLogWnd::OnRBtnDown(int x, int y) {
 
   if (item.unknown_0000[1] > 0) {
     g_modeMgr.GetGameMode();
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 

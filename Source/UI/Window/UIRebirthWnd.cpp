@@ -1,4 +1,7 @@
 #include "UI/Window/UIRebirthWnd.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/ModeMgr.h"
@@ -41,30 +44,30 @@ void UIRebirthWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_12753
 int UIRebirthWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   CMode* mode = g_modeMgr.GetGameMode();
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
   switch (argument1) {
   case ID_CANCEL:
-    g_windowMgr.CloseWindow(129);
+    g_windowMgr.CloseWindow(WID_REBIRTHWND);
     break;
   case ID_RESTART:
-    mode->SendMsg(25, 0, 0, 0, 0);
-    g_windowMgr.CloseWindow(129);
+    mode->SendMsg(MM_RESTART, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_REBIRTHWND);
     break;
   case ID_QUIT:
-    g_windowMgr.CloseWindow(129);
-    mode->SendMsg(88, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_REBIRTHWND);
+    mode->SendMsg(MM_QUIT_GAME, 0, 0, 0, 0);
     break;
   case ID_TO_CHARACTER_SELECT:
-    mode->SendMsg(25, 1, 0, 0, 0);
-    g_windowMgr.CloseWindow(129);
-    g_windowMgr.CloseWindow(269);
+    mode->SendMsg(MM_RESTART, 1, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_REBIRTHWND);
+    g_windowMgr.CloseWindow(WID_ROULLETTEWND);
     break;
   case ID_REBIRTH:
-    mode->SendMsg(250, 0, 0, 0, 0);
-    g_windowMgr.CloseWindow(129);
+    mode->SendMsg(MM_REBIRTH, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_REBIRTHWND);
     break;
   }
   return 0;

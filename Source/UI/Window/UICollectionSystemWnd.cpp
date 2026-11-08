@@ -1,4 +1,7 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UICollectionSystemWnd.h"
 
 #include "Client/Mode/ModeMgr.h"
@@ -68,7 +71,7 @@ void CUICollectionSystemWnd::Paint() {
 void CUICollectionSystemWnd::OnLBtnDown(int, int) {
   if (this->unknown_00BC == 0) {
     this->unknown_00BC = 1;
-    g_modeMgr.GetGameMode()->SendMsg(282, this->unknown_00B8, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_TRYCOLLECTION, this->unknown_00B8, 0, 0, 0);
   }
 }
 
@@ -83,7 +86,7 @@ void CUICollectionSystemWnd::OnProcess() {
       this->m_lastTick = now;
     }
     if (static_cast<int>(now - this->m_lastTick) > 2000) {
-      g_windowMgr.CloseWindow(196);
+      g_windowMgr.CloseWindow(WID_COLLECTIONSYSTEMWND);
     }
   }
 }
@@ -91,7 +94,7 @@ void CUICollectionSystemWnd::OnProcess() {
 // OFFSET: 0x00934740
 // FUNCTION: fn_12741
 int CUICollectionSystemWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t b, std::intptr_t, std::intptr_t) {
-  if (message == 80) {
+  if (message == UM_SET_TARGET) {
     if (a == 0) {
       this->unknown_00B8 = b;
       return 0;

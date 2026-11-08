@@ -1,4 +1,5 @@
 #include "UI/UIMacroReport.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
@@ -103,7 +104,7 @@ void CUIMacroReport::SendReport() {
     strncpy_s(packet.message, sizeof(packet.message), message.c_str(), _TRUNCATE);
   }
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-  g_windowMgr.CloseWindow(10005);
+  g_windowMgr.CloseWindow(WID_MACROREPORT);
 }
 
 // OFFSET: 0x00A47C30
@@ -251,7 +252,7 @@ void CUIMacroReport::OnCreate(int width, int height) {
   CUIImageButton* closeButton = new CUIImageButton();
   closeButton->SetSize(11, 11);
   closeButton->Move(217, 3);
-  closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(10005); });
+  closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(WID_MACROREPORT); });
   closeButton->disabled = 0;
   closeButton->Invalidate();
   {
@@ -349,7 +350,7 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->unknown_00EC = new CUIImageButton();
   this->unknown_00EC->SetSize(58, 20);
   this->unknown_00EC->Move(117, 165);
-  this->unknown_00EC->SetOnClick([this]() { g_windowMgr.CloseWindow(10005); });
+  this->unknown_00EC->SetOnClick([this]() { g_windowMgr.CloseWindow(WID_MACROREPORT); });
   this->unknown_00EC->disabled = 0;
   this->unknown_00EC->Invalidate();
   {

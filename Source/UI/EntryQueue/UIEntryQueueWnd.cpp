@@ -1,4 +1,5 @@
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -54,8 +55,8 @@ void UIEntryQueueHelpWnd::OnProcess() {
 // OFFSET: 0x00BA42B0
 // FUNCTION: fn_19683
 int UIEntryQueueHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6 && a == 0) {
-    g_windowMgr.CloseWindow(211);
+  if (message == UM_COMMAND && a == 0) {
+    g_windowMgr.CloseWindow(WID_ENTRYQUEUEHELPWND);
   }
 
   return 0;
@@ -95,7 +96,7 @@ int UIEntryQueueListBox::EntryValue(int index) {
 // FUNCTION: fn_19688
 void UIEntryQueueListBox::OnLBtnUp(int x, int y) {
   if (this->selected != -1) {
-    this->parent->SendMsg(this, 135, this->geometry.id, this->selected, 0, 0);
+    this->parent->SendMsg(this, UM_LIST_SELECTION, this->geometry.id, this->selected, 0, 0);
   }
 }
 
@@ -136,13 +137,13 @@ bool UIEntryQueueRequestWnd::Create() {
   }
 
   this->m_viewer->Clear();
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2127)), 38, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(""), 38, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2128)), 38, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2129)), 38, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2130)), 38, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2131)), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2127)), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(""), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2128)), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2129)), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2130)), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2131)), 38, 0, 0);
 
   const std::string path = "유저인터페이스\\";
 
@@ -186,7 +187,7 @@ void UIEntryQueueRequestWnd::Paint() {
   std::memset(text, 0, sizeof(text));
   const int remaining = 20 - static_cast<int>(this->m_elapsed / 1000 % 60);
   if (remaining <= 0) {
-    this->SendMsg(nullptr, 6, 1, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, 1, 0, 0, 0);
   }
 
   std::sprintf(text, LookupMessage(2134), remaining);
@@ -209,19 +210,19 @@ void UIEntryQueueRequestWnd::OnProcess() {
 // OFFSET: 0x00BA54A0
 // FUNCTION: fn_19695
 int UIEntryQueueRequestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
     case 0:
       g_entryQueueMgr->SendAdmissionReply(1);
-      g_windowMgr.CloseWindow(209);
-      g_windowMgr.CloseWindow(210);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2132)), 0x64FFFF, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
+      g_windowMgr.CloseWindow(WID_ENTRYQUEUEREQUESTWND);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2132)), 0x64FFFF, 0, 0, 0);
       break;
     case 1:
       g_entryQueueMgr->SendAdmissionReply(2);
-      g_windowMgr.CloseWindow(209);
-      g_windowMgr.CloseWindow(210);
+      g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
+      g_windowMgr.CloseWindow(WID_ENTRYQUEUEREQUESTWND);
       return 0;
     }
   }
@@ -301,14 +302,14 @@ void UIEntryQueueStandByWnd::OnProcess() {
 // OFFSET: 0x00BA5EA0
 // FUNCTION: fn_19702
 int UIEntryQueueStandByWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
     case 0:
       g_entryQueueMgr->SendCancel();
       break;
     case 1:
-      g_windowMgr.CloseWindow(209);
+      g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
       return 0;
     }
   }
@@ -328,9 +329,9 @@ void UIEntryQueueStandByWnd::SetInfo(const char* queueName, int waiting, int ran
 
   if (this->m_viewer) {
     this->m_viewer->Clear();
-    this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->m_queueText), 38, 0, 0);
-    this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->m_waitingText), 38, 0, 0);
-    this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->m_rankingText), 38, 0, 0);
+    this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->m_queueText), 38, 0, 0);
+    this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->m_waitingText), 38, 0, 0);
+    this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->m_rankingText), 38, 0, 0);
   }
 }
 
@@ -520,14 +521,14 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       break;
     }
     case 3:
-      if (!g_windowMgr.CloseWindow(211)) {
-        g_windowMgr.EnsureWindow(211);
+      if (!g_windowMgr.CloseWindow(WID_ENTRYQUEUEHELPWND)) {
+        g_windowMgr.EnsureWindow(WID_ENTRYQUEUEHELPWND);
       }
       return 0;
     case 4:
-    case 201:
+    case ID_CLOSE:
       this->RecordResponse(static_cast<int>(a), b, c, d);
-      g_windowMgr.CloseWindow(157);
+      g_windowMgr.CloseWindow(WID_JOINTO_BATTLEFIELDWND);
       return 0;
     default:
       return 0;
@@ -540,10 +541,10 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     if (!this->saved->IsValid()) {
       this->saved->Reset();
     }
-    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     this->Move(this->saved->x, this->saved->y);
     return 0;
-  case 135:
+  case UM_LIST_SELECTION:
     if (this->m_list) {
       const int value = this->m_list->EntryValue(static_cast<int>(b));
       std::map<int, EntryQueueInfo*>::iterator it = g_entryQueueList.find(value);
@@ -655,23 +656,23 @@ void UIEntryQueueHelpWnd::OnCreate(int width, int height) {
   char message[0x104];
   std::memset(message, 0, sizeof(message));
   strcpy_s(message, sizeof(message), LookupMessage(2116));
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
   strcpy_s(message, sizeof(message), LookupMessage(2117));
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
   strcpy_s(message, sizeof(message), LookupMessage(2118));
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
   strcpy_s(message, sizeof(message), LookupMessage(2119));
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
   strcpy_s(message, sizeof(message), LookupMessage(2120));
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
   strcpy_s(message, sizeof(message), LookupMessage(2121));
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
   strcpy_s(message, sizeof(message), LookupMessage(2122));
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
   strcpy_s(message, sizeof(message), LookupMessage(2123));
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
   strcpy_s(message, sizeof(message), LookupMessage(2124));
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
 
   const std::string path = "유저인터페이스\\";
 

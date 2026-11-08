@@ -1,4 +1,7 @@
 #include "Contents/Jobs/JobId.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "UI/Window/UINewSkillListWnd.h"
@@ -114,7 +117,7 @@ void UINewSkillListWnd::StoreInfo() {
 // OFFSET: 0x009B2C60
 // FUNCTION: fn_13821
 void UINewSkillListWnd::OnWheel(int delta) {
-  UIWindow* window = g_windowMgr.LookupWindow(46);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_SKILLDESCRIBEWND);
   if (window && window->geometry.visible) {
     static_cast<UINewSkillListWnd*>(window)->m_scrollBar->OnWheel(delta);
     return;
@@ -128,7 +131,7 @@ void UINewSkillListWnd::OnWheel(int delta) {
     if (delta >= 0) {
       step = -step;
     }
-    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
   }
 }
 
@@ -144,7 +147,7 @@ void UINewSkillListWnd::ApplySkillPoints() {
         const int next = skill->unknown_0030 + 1;
         if (next <= value) {
           for (int count = value - next + 1; count != 0; --count) {
-            g_modeMgr.gameMode->SendMsg(0x43, id, 0, 0, 0);
+            g_modeMgr.gameMode->SendMsg(MM_UPGRADE_SKILLLEVEL, id, 0, 0, 0);
           }
         }
       }
@@ -157,7 +160,7 @@ void UINewSkillListWnd::ApplySkillPoints() {
     for (auto it = pending.begin(); it != pending.end(); ++it, ++current) {
       if (current->available != 0 && current->id == it->id && current->level < it->level) {
         for (int i = 0; i < it->level - current->level; ++i) {
-          g_modeMgr.gameMode->SendMsg(0x43, current->id, 0, 0, 0);
+          g_modeMgr.gameMode->SendMsg(MM_UPGRADE_SKILLLEVEL, current->id, 0, 0, 0);
         }
       }
     }
@@ -885,7 +888,7 @@ void UINewSkillListWnd::OnCreate(int width, int height) {
   if (!g_session.m_skillBundle.extraIds.empty()) {
     this->m_tabs->SetFlag(static_cast<int>(this->m_tabs->labels.size()) - 1, true);
   }
-  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x009B2160
@@ -973,7 +976,7 @@ void UINewSkillListWnd::OnLBtnDblClk(int x, int y) {
     } else {
       automatic.DisableAll();
     }
-    this->SendMsg(nullptr, 58, reinterpret_cast<std::intptr_t>(&skill), 0, 0, 0);
+    this->SendMsg(nullptr, UM_USESKILL, reinterpret_cast<std::intptr_t>(&skill), 0, 0, 0);
   }
 }
 
@@ -1096,18 +1099,18 @@ void UINewSkillListWnd::OnRBtnUp(int x, int y) {
   }
 
   const CSkillInfo& skill = **selected;
-  UISkillDescribeWnd* describe = static_cast<UISkillDescribeWnd*>(g_windowMgr.LookupWindow(46));
+  UISkillDescribeWnd* describe = static_cast<UISkillDescribeWnd*>(g_windowMgr.LookupWindow(WID_SKILLDESCRIBEWND));
   if (describe && (describe->m_skillId == static_cast<int>(skill.id) || !skill.available)) {
-    g_windowMgr.CloseWindow(46);
+    g_windowMgr.CloseWindow(WID_SKILLDESCRIBEWND);
     return;
   }
 
-  UIWindow* window = g_windowMgr.EnsureWindow(46);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_SKILLDESCRIBEWND);
   if (!window) {
     return;
   }
 
-  window->SendMsg(nullptr, 61, skill.id, skill.unknown_0018, skill.level, 1);
+  window->SendMsg(nullptr, UM_SKILLDESCRIBE, skill.id, skill.unknown_0018, skill.level, 1);
 
   int originX = 0;
   int originY = 0;
@@ -1124,7 +1127,7 @@ void UINewSkillListWnd::OnRBtnUp(int x, int y) {
   }
 
   window->Move(left, top);
-  g_windowMgr.ShowWindowById(46, 1);
+  g_windowMgr.ShowWindowById(WID_SKILLDESCRIBEWND, 1);
 }
 
 // OFFSET: 0x009B2CD0
@@ -1307,9 +1310,9 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->m_saved->Reset();
     }
     if (gate != 0) {
-      this->SendMsg(nullptr, 14, 3, 330, this->m_saved->height, 0);
+      this->SendMsg(nullptr, UM_RESIZE, 3, 330, this->m_saved->height, 0);
     } else {
-      this->SendMsg(nullptr, 14, 3, 560, 400, 0);
+      this->SendMsg(nullptr, UM_RESIZE, 3, 560, 400, 0);
     }
     return 0;
   case UM_RESIZE:
@@ -1339,30 +1342,30 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_COMMAND:
     switch (a) {
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(37);
+      g_windowMgr.CloseWindow(WID_SKILLLISTWND);
       return 0;
     case ID_APPLY:
       if (g_windowMgr.Confirm(LookupMessage(1377), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         this->ApplySkillPoints();
-        this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         if (ChatWindow()) {
           g_windowMgr.SetFocus(ChatWindow()->m_suggestions);
           return 0;
         }
       }
       break;
-    case 363:
+    case ID_RESET:
       this->ResetLists();
-      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       return 0;
     case ID_MINI:
       this->StoreInfo();
       this->m_needsRedraw = 1;
       gate = gate == 0;
       if (gate != 0) {
-        this->SendMsg(nullptr, 14, 3, 330, this->m_saved->height, 0);
+        this->SendMsg(nullptr, UM_RESIZE, 3, 330, this->m_saved->height, 0);
       } else {
-        this->SendMsg(nullptr, 14, 3, 560, 400, 0);
+        this->SendMsg(nullptr, UM_RESIZE, 3, 560, 400, 0);
       }
       return 0;
     case ID_CHECK: {
@@ -1391,7 +1394,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         return 0;
       }
       break;
-    case 216: {
+    case ID_PLUS: {
       const int tab = this->m_tab;
       int next = 0;
       if (tab + 1 != this->m_tabs->TabCount()) {
@@ -1457,10 +1460,10 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_firstRow;
     int next;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       next = previous - this->m_visibleRows + 1;
     } else {
-      if (message == 10) {
+      if (message == UM_SCROLLVERTPAGEDOWN) {
         a = this->m_visibleRows - 1;
       }
       next = a + previous;
@@ -1477,12 +1480,12 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
     if (skill->level != 0) {
-      gameMode->SendMsg(113, a, g_session.UseLevel(skill->id), 0, 0);
+      gameMode->SendMsg(MM_USING_SKILL, a, g_session.UseLevel(skill->id), 0, 0);
       return 0;
     }
     break;
   }
-  case 161:
+  case UM_REFRESH_EXTRA_SKILL_TAB:
     if (!this->IsExtraTab(this->m_tab)) {
       this->m_tabs->SetFlag(this->m_tabs->TabCount() - 1, !g_session.m_skillBundle.extraIds.empty());
       this->m_tabs->Invalidate();
@@ -1550,7 +1553,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
 
       if (static_cast<int>(info->unknown_002C) <= 0) {
         const char* name = info->DisplayName(*g_session.m_hotkeyScript);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatString(LookupMessage(0xDCB), name)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatString(LookupMessage(0xDCB), name)), 0xFF, 0, 0, 0);
         return false;
       }
 

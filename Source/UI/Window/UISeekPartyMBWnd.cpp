@@ -1,4 +1,5 @@
 #include "UI/Window/UISeekPartyMBWnd.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
@@ -81,7 +82,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       const int maximum = g_session.m_maxLevel;
       if (this->m_registration.detail.level >= 1 && this->m_registration.detail.level <= maximum) {
         this->m_registration.detail.mapId = static_cast<short>((this->m_type + 1) * 256 | this->m_subType);
-        if (!g_windowMgr.CloseWindow(164)) {
+        if (!g_windowMgr.CloseWindow(WID_SEEKPARTYWND)) {
           PACKET_CZ_PARTY_BOOKING_REQ_REGISTER packet;
           packet.packetType = ID_CZ_PARTY_BOOKING_REQ_REGISTER;
           packet.detail = this->m_registration.detail;
@@ -97,8 +98,8 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
     case ID_CANCEL:
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(168);
-      g_windowMgr.CloseWindow(170);
+      g_windowMgr.CloseWindow(WID_SEEKPARTYMBWND);
+      g_windowMgr.CloseWindow(WID_JOBLISTWND);
       break;
     case ID_MINI:
       if (this->m_minimized) {
@@ -120,8 +121,8 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
 
     this->Move(this->m_saved->x, this->m_saved->y);
-    this->SendMsg(nullptr, 14, 3, this->m_saved->width, this->m_saved->height, 0);
-    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 3, this->m_saved->width, this->m_saved->height, 0);
+    this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     break;
   case UM_COMBOBOX_SELECTED:
     if (sender == this->m_typeCombo) {
@@ -425,5 +426,5 @@ void UISeekPartyMBWnd::LoadRegionMaps() {
   }
 
   this->m_typeCombo->Select(0);
-  this->SendMsg(this->m_typeCombo, 0x27, 0, 0, 0, 0);
+  this->SendMsg(this->m_typeCombo, UM_COMBOBOX_SELECTED, 0, 0, 0, 0);
 }

@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/MessengerMember.h"
@@ -45,7 +47,7 @@ void UIWindowMgr::ArrangeMiniPartyWindows() {
 void UIWindowMgr::RearrangeMiniPartyWindows() {
   const int height = this->unknown_0480;
   int top = static_cast<int>(static_cast<float>(height) * 0.3f);
-  if (UIWindow* window = g_windowMgr.LookupWindow(0x133)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
     top = window->geometry.height;
   }
 
@@ -137,7 +139,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
     window->SetSize(174, 52);
     window->m_cell = record.unknown_0008;
     this->AddMiniPartyWindow(window);
-    window->SendMsg(nullptr, 23, reinterpret_cast<std::intptr_t>(&member), 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&member), 0, 0, 0);
     g_session.AddRecord0734(record.id, record.unknown_0008);
 
     UIWindow* drag = this->unknown_0210;
@@ -145,7 +147,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
         *reinterpret_cast<std::uint32_t*>(reinterpret_cast<char*>(drag) + 0xCC) == record.unknown_0008) {
       const int x = drag->geometry.x;
       const int y = drag->geometry.y;
-      window->SendMsg(nullptr, 49, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
       this->unknown_0210->Move(x, y);
     }
   }

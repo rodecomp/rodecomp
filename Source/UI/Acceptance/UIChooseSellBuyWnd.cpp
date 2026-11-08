@@ -1,4 +1,6 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/Items/ItemType.h"
 #include "Client/Mode/CLoginMode.h"
@@ -279,7 +281,7 @@ UIEquipWnd::UIEquipWnd() : UIFrameWnd(0) {
 // OFFSET: 0x008CAC40
 // FUNCTION: fn_11997
 UIItemCollectionWnd::~UIItemCollectionWnd() {
-  g_windowMgr.CloseWindow(276);
+  g_windowMgr.CloseWindow(WID_ROUNDBOXTOOLTIPWND);
 }
 
 UIChooseSellBuyWnd::~UIChooseSellBuyWnd() = default;
@@ -347,7 +349,7 @@ void UIChooseSellBuyWnd::OnCreate(int width, int height) {
   this->viewer->textColor = 0xFF000000u | RGB(red, green, blue);
   this->viewer->Invalidate();
   this->AddChild(this->viewer);
-  this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(92)), 38, 0, 0);
+  this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(92)), 38, 0, 0);
 }
 
 // OFFSET: 0x008DD9A0
@@ -454,13 +456,13 @@ void UIDisconnectedServerMsgWnd::OnCreate(int width, int height) {
   this->m_viewer->textColor = 0xFF000000u | RGB(red, green, blue);
   this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2)), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2)), 38, 0, 0);
 }
 
 // OFFSET: 0x008DE6D0
 // FUNCTION: fn_12170
 void UIEmailAddressWnd::OnCreate(int, int) {
-  g_modeMgr.gameMode->SendMsg(10013, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(LMM_GET_EMAIL_ADDRESS, 0, 0, 0, 0);
   this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(this->geometry.width - 77, 16);
   this->m_edit->Move(15, 22);
@@ -631,7 +633,7 @@ void UIEquipWnd::Paint() {
   }
 
   if (this->unknown_0124) {
-    this->unknown_0124->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->unknown_0124->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -776,7 +778,7 @@ void UIMinimapZoomWnd::OnCreate(int, int) {
     buttons.push_back(button);
   }
 
-  this->SendMsg(this, 6, 502, 0, 0, 0);
+  this->SendMsg(this, UM_COMMAND, 502, 0, 0, 0);
 
   for (int index = 0;; ++index) {
     TownInfo town = g_townInfoMgr->GetTownInfo(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName(), index);
@@ -790,7 +792,7 @@ void UIMinimapZoomWnd::OnCreate(int, int) {
 // OFFSET: 0x008FF130
 // FUNCTION: fn_12357
 int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return this->UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -798,8 +800,8 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   case ID_BUTTON1:
     if (!g_session.IsNavigationAllowed()) {
       g_windowMgr.Confirm(LookupMessage(2767), 0, true, false, 0, "Message", 280, 120, 0);
-    } else if (!g_windowMgr.CloseWindow(273)) {
-      g_windowMgr.EnsureWindow(273);
+    } else if (!g_windowMgr.CloseWindow(WID_MINIMAPWND)) {
+      g_windowMgr.EnsureWindow(WID_MINIMAPWND);
     }
     return 0;
   case ID_PLUS:
@@ -822,8 +824,8 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     this->Invalidate();
     return 0;
   case 454:
-    if (!g_windowMgr.CloseWindow(140)) {
-      g_windowMgr.EnsureWindow(140);
+    if (!g_windowMgr.CloseWindow(WID_ROMAPWND)) {
+      g_windowMgr.EnsureWindow(WID_ROMAPWND);
     }
     return 0;
   case 453: {
@@ -1007,16 +1009,16 @@ void UINpcTextEditDialogWnd::Paint() {
 // FUNCTION: fn_12365
 int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   if (g_windowMgr.unknown_0458) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2730)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2730)), 0x64FFFF, 0, 0, 0);
     return 0;
   }
 
   switch (message) {
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
-    if (argument1 == 184 && this->edit->Length()) {
-      g_modeMgr.gameMode->SendMsg(99, this->unknown_00B8, std::atoi(this->edit->Text()), 0, 0);
-      g_windowMgr.CloseWindow(56);
+    if (argument1 == ID_OK && this->edit->Length()) {
+      g_modeMgr.gameMode->SendMsg(MM_SEND_NUMBER_TO_NPC, this->unknown_00B8, std::atoi(this->edit->Text()), 0, 0);
+      g_windowMgr.CloseWindow(WID_NPCEDITDIALOGWND);
     }
     return 0;
   }
@@ -1032,13 +1034,13 @@ int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 // OFFSET: 0x008FFD70
 // FUNCTION: fn_12366
 int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     if (g_windowMgr.unknown_0458) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2730)), 0x64FFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2730)), 0x64FFFF, 0, 0, 0);
       return 0;
     }
 
-    if (message == 28) {
+    if (message == UM_SETNAID) {
       this->unknown_00B8 = static_cast<int>(argument1);
       return 0;
     }
@@ -1051,7 +1053,7 @@ int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     this->edit->SetText("임시");
   }
 
-  if (argument1 != 184 || !this->edit->Length()) {
+  if (argument1 != ID_OK || !this->edit->Length()) {
     return 0;
   }
 
@@ -1064,7 +1066,7 @@ int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
   if (!g_forbiddenWords.Allows(this->edit->Text())) {
     this->edit->TextColor(RGB(255, 0, 0), 0xFFFFFFFF);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(14)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(14)), 0xFF, 0, 0, 0);
     return 0;
   }
 
@@ -1072,23 +1074,23 @@ int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   if (g_navigationLinkParser->HasLink(std::string(this->edit->Text()))
       || (!this->edit->LinkedText().empty() && this->m_tagCtrl && !this->m_tagCtrl->unknown_0140.empty())) {
     this->edit->SetText("");
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3042)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3042)), 0xFF, 0, 0, 0);
     return 0;
   }
 
   if (!this->edit->LinkedText().empty()) {
-    mode->SendMsg(164, this->unknown_00B8, reinterpret_cast<int>(this->edit->Text()), reinterpret_cast<int>(this->edit->LinkedText().c_str()), 0);
+    mode->SendMsg(MM_SEND_TEXT_TO_NPC, this->unknown_00B8, reinterpret_cast<int>(this->edit->Text()), reinterpret_cast<int>(this->edit->LinkedText().c_str()), 0);
   } else if (this->m_tagCtrl && !this->m_tagCtrl->unknown_0140.empty()) {
     if (g_navigationLinkParser->HasUnownedItemLink(std::string(this->m_tagCtrl->unknown_0140.c_str())) == true) {
       this->edit->SetText("");
       return 0;
     }
-    mode->SendMsg(164, this->unknown_00B8, reinterpret_cast<int>(this->edit->Text()), reinterpret_cast<int>(this->m_tagCtrl->unknown_0140.c_str()), 0);
+    mode->SendMsg(MM_SEND_TEXT_TO_NPC, this->unknown_00B8, reinterpret_cast<int>(this->edit->Text()), reinterpret_cast<int>(this->m_tagCtrl->unknown_0140.c_str()), 0);
   } else {
-    mode->SendMsg(164, this->unknown_00B8, reinterpret_cast<int>(this->edit->Text()), 0, 0);
+    mode->SendMsg(MM_SEND_TEXT_TO_NPC, this->unknown_00B8, reinterpret_cast<int>(this->edit->Text()), 0, 0);
   }
 
-  g_windowMgr.CloseWindow(100);
+  g_windowMgr.CloseWindow(WID_NPCTEXTEDITDIALOGWND);
   return 0;
 }
 
@@ -1128,21 +1130,21 @@ void UIPasswordWnd::Paint() {
 // OFFSET: 0x009002D0
 // FUNCTION: fn_12367
 int UIPartyInvitationToWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  if (argument1 == 184) {
+  if (argument1 == ID_OK) {
     std::string name;
     name = this->m_edit->Text();
     this->m_edit->SelectAll();
     if (std::strlen(name.c_str()) != 0) {
-      g_modeMgr.GetGameMode()->SendMsg(59, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     } else {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2072)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2072)), 0xFF, 0, 0, 0);
     }
-  } else if (argument1 == 185) {
-    g_windowMgr.CloseWindow(208);
+  } else if (argument1 == ID_CANCEL) {
+    g_windowMgr.CloseWindow(WID_PARTYINVITATIONTOWND);
   }
 
   return 0;
@@ -1156,42 +1158,42 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     switch (a) {
     case ID_OK: {
       if (this->m_mode != 50) {
-        g_windowMgr.CloseWindow(53);
+        g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
       }
       CMode* mode = g_modeMgr.GetGameMode();
       if (g_session.PartyCount() != 0) {
         if (g_session.unknown_5464 != 0) {
           if (this->m_expShare != g_session.unknown_54A0 || this->m_itemShare != g_session.unknown_54A4 ||
               this->m_itemDistribute != g_session.unknown_54A8) {
-            mode->SendMsg(259, this->m_expShare, this->m_itemShare, this->m_itemDistribute, 0);
+            mode->SendMsg(MM_GROUPINFO_CHANGE_V2, this->m_expShare, this->m_itemShare, this->m_itemDistribute, 0);
           }
         }
         return 0;
       }
       if (this->m_mode != 50) {
-        mode->SendMsg(168, 0, this->m_itemShare, this->m_itemDistribute, 0);
+        mode->SendMsg(MM_CONFORM_MAKEGROUP, 0, this->m_itemShare, this->m_itemDistribute, 0);
         return 0;
       }
 
       std::string name = this->m_nameEdit->Text();
       if (name.find('#') != std::string::npos) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2839)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2839)), 0xFF, 0, 0, 0);
       } else if (name.find(s_partyItemLinkOpen) != std::string::npos || name.find(s_partyItemLinkClose) != std::string::npos) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2812)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2812)), 0xFF, 0, 0, 0);
       } else if (std::strlen(name.c_str()) != 0) {
-        mode->SendMsg(285, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
-        g_windowMgr.CloseWindow(53);
-        g_windowMgr.CloseWindow(207);
-        mode->SendMsg(168, 0, this->m_itemShare, this->m_itemDistribute, 0);
+        mode->SendMsg(MM_WHISPER_FILTER, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
+        g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_HEIGHT_220);
+        mode->SendMsg(MM_CONFORM_MAKEGROUP, 0, this->m_itemShare, this->m_itemDistribute, 0);
       } else {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2073)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2073)), 0xFF, 0, 0, 0);
       }
       return 0;
     }
     case ID_CANCEL:
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(53);
-      g_windowMgr.CloseWindow(207);
+      g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
+      g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_HEIGHT_220);
       return 0;
     case ID_RADIOBTN:
       if (g_session.PartyCount() == 0 || g_session.unknown_5464 != 0) {
@@ -1199,9 +1201,9 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           for (int i = 0; i < 2; ++i) {
             if (sender == this->m_expShareButtons[i]) {
               this->m_expShare = i;
-              this->m_expShareButtons[i]->SendMsg(this, 13, 1, 0, 0, 0);
+              this->m_expShareButtons[i]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
             } else {
-              this->m_expShareButtons[i]->SendMsg(this, 13, 0, 0, 0, 0);
+              this->m_expShareButtons[i]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
             }
           }
         }
@@ -1209,15 +1211,15 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           for (int i = 0; i < 2; ++i) {
             if (sender == this->m_itemShareButtons[i]) {
               this->m_itemShare = i;
-              this->m_itemShareButtons[i]->SendMsg(this, 13, 1, 0, 0, 0);
+              this->m_itemShareButtons[i]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
             } else {
-              this->m_itemShareButtons[i]->SendMsg(this, 13, 0, 0, 0, 0);
+              this->m_itemShareButtons[i]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
             }
           }
         }
       } else {
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(294)), 0xFFFF64, 10, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(294)), 0xFFFF64, 10, 0, 0);
       }
       return 0;
     default:
@@ -1232,20 +1234,20 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   case UM_REFRESH:
     if (this->m_mode == 5) {
-      g_windowMgr.CloseWindow(53);
+      g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
     } else {
       this->Invalidate();
       this->m_expShare = g_session.unknown_54A0;
       this->m_itemShare = g_session.unknown_54A4;
       this->m_itemDistribute = g_session.unknown_54A8;
       for (int i = 0; i < 2; ++i) {
-        this->m_expShareButtons[i]->SendMsg(this, 13, this->m_expShare == i, 0, 0, 0);
+        this->m_expShareButtons[i]->SendMsg(this, UM_SETSTATE, this->m_expShare == i, 0, 0, 0);
         if (this->m_itemShareButtons[i]) {
-          this->m_itemShareButtons[i]->SendMsg(this, 13, this->m_itemShare == i, 0, 0, 0);
+          this->m_itemShareButtons[i]->SendMsg(this, UM_SETSTATE, this->m_itemShare == i, 0, 0, 0);
         }
       }
       if (this->m_itemDistributeButton) {
-        this->m_itemDistributeButton->SendMsg(this, 13, 1, 0, 0, 0);
+        this->m_itemDistributeButton->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
       }
     }
     break;
@@ -1260,10 +1262,10 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 int UIPasswordWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_COMMAND:
-    if (a == 184) {
+    if (a == ID_OK) {
       CMode* mode = g_modeMgr.gameMode;
-      mode->SendMsg(45, this->unknown_00BC, reinterpret_cast<int>(this->m_edit->Text()), 0, 0);
-      g_windowMgr.CloseWindow(29);
+      mode->SendMsg(MM_REQ_ENTER_ROOM, this->unknown_00BC, reinterpret_cast<int>(this->m_edit->Text()), 0, 0);
+      g_windowMgr.CloseWindow(WID_PASSWORDWND);
     }
     return 0;
   case UM_SETROOMID:
@@ -1374,7 +1376,7 @@ int UISpellListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     this->m_skills.push_back(static_cast<std::uint32_t>(argument1));
     ITEM_INFO item;
     this->m_items.push_back(item);
-    this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     return 0;
   }
   case UM_SETCHOOSE:
@@ -1388,9 +1390,9 @@ int UISpellListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scroll;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->m_scroll = previous - this->m_rows + 1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->m_scroll = previous + this->m_rows - 1;
     } else {
       this->m_scroll = previous + static_cast<int>(argument1);
@@ -1404,26 +1406,26 @@ int UISpellListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     CMode* mode = g_modeMgr.gameMode;
-    if (argument1 == 184) {
+    if (argument1 == ID_OK) {
       const int selected = this->m_selected;
       if (selected < 0 || static_cast<unsigned>(selected) >= this->m_skills.size()) {
         return 0;
       }
       if (this->unknown_00FC != 0) {
-        mode->SendMsg(256, this->m_skills[selected], this->unknown_00FC, 0, 0);
+        mode->SendMsg(MM_SKILL_SELECT_RESPONSE, this->m_skills[selected], this->unknown_00FC, 0, 0);
       } else {
-        mode->SendMsg(163, this->m_skills[selected], 0, 0, 0);
+        mode->SendMsg(MM_SELECT_SPELL, this->m_skills[selected], 0, 0, 0);
       }
-    } else if (argument1 == 185) {
+    } else if (argument1 == ID_CANCEL) {
       if (this->unknown_00FC != 0) {
-        mode->SendMsg(256, 0, this->unknown_00FC, 0, 0);
+        mode->SendMsg(MM_SKILL_SELECT_RESPONSE, 0, this->unknown_00FC, 0, 0);
       } else {
-        mode->SendMsg(163, 0, 0, 0, 0);
+        mode->SendMsg(MM_SELECT_SPELL, 0, 0, 0, 0);
       }
     } else {
       return 0;
     }
-    g_windowMgr.CloseWindow(99);
+    g_windowMgr.CloseWindow(WID_SPELLLISTWND);
     return 0;
   }
   default:
@@ -1555,7 +1557,7 @@ void UInCash_CallWnd::Paint() {
 // FUNCTION: fn_12264
 void UIItemIdentifyWnd::OnLBtnDblClk(int x, int y) {
   this->OnLBtnDown(x, y);
-  this->SendMsg(nullptr, 6, 184, 0, 0, 0);
+  this->SendMsg(nullptr, UM_COMMAND, ID_OK, 0, 0, 0);
 }
 
 // OFFSET: 0x008F0750
@@ -1665,7 +1667,7 @@ void UIStatusWnd::Paint() {
 // FUNCTION: fn_12265
 void UIStatusWnd::OnLBtnDblClk(int, int y) {
   if (y < 17) {
-    this->SendMsg(this, 6, 202, 0, 0, 0);
+    this->SendMsg(this, UM_COMMAND, ID_MINI, 0, 0, 0);
   }
 }
 
@@ -1685,8 +1687,8 @@ void UIWhisperWnd::OnLBtnDblClk(int, int y) {
     EmptyClipboard();
     SetClipboardData(CF_TEXT, memory);
     CloseClipboard();
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("C-Code copied to clipboard"), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("C-Code copied to clipboard"), 0x64FFFF, 0, 0, 0);
   }
 }
 
@@ -1768,7 +1770,7 @@ void UIPetTamingDeceiveWnd::OnLBtnDown(int, int) {
   this->m_state = 1;
   this->m_frame = 7;
   this->m_started = 1;
-  g_modeMgr.GetGameMode()->SendMsg(149, this->m_target, 0, 0, 0);
+  g_modeMgr.GetGameMode()->SendMsg(MM_PETDECEIVE_SHOOT, this->m_target, 0, 0, 0);
 }
 
 // OFFSET: 0x008EFB40
@@ -1982,11 +1984,11 @@ void UIMenuWnd::OnLBtnUp(int x, int y) {
   UIWindow* target = this->m_menuId == 301 ? g_windowMgr.FindSnapExcludedWindow(static_cast<int>(this->unknown_00CC))
                                            : g_windowMgr.LookupWindow(this->m_menuId);
   if (target) {
-    target->SendMsg(nullptr, 48, choice, 0, 0, 0);
+    target->SendMsg(nullptr, UM_MENU_SELECTED, choice, 0, 0, 0);
   } else if (this->m_menuId == 10041) {
-    g_modeMgr.gameMode->SendMsg(24, choice, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_MENUSELECTED, choice, 0, 0, 0);
   }
-  g_windowMgr.CloseWindow(18);
+  g_windowMgr.CloseWindow(WID_MENUWND);
 }
 
 // OFFSET: 0x008F4520
@@ -2178,7 +2180,7 @@ int UIMenuWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
 // FUNCTION: fn_12073
 void UITipboxWnd::ShowTip(int id) {
   g_itemTagOwner->SelectTip(id);
-  this->SendMsg(this, 6, 543, 0, 0, 0);
+  this->SendMsg(this, UM_COMMAND, 543, 0, 0, 0);
   g_windowMgr.Promote(this);
 }
 
@@ -2210,23 +2212,23 @@ void UITipboxWnd::UpdatePageText() {
 void UIExchangeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (this->unknown_00CC != 0) {
-    mode->SendMsg(18, 0, 0, 0, 0);
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 1) {
     if (drag->quantity == 1) {
-      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       return;
     }
 
-    g_windowMgr.ShowWindowById(15, 1);
-    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 5, 0, 0, 0);
+    g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
+    g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 5, 0, 0, 0);
     return;
   }
 
-  mode->SendMsg(18, 0, 0, 0, 0);
+  mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008D0010
@@ -2236,7 +2238,7 @@ void UIEquipWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  if (g_windowMgr.LookupWindow(10011)) {
+  if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
     UIWindow::DragAndDrop(x, y, value);
     return;
   }
@@ -2265,25 +2267,25 @@ void UIEquipWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     case 16:
     case 17:
     case 19:
-      mode->SendMsg(87, drag->id, item.unknown_0000[2], 0, 0);
+      mode->SendMsg(MM_WEAR_EQUIP_ARROW, drag->id, item.unknown_0000[2], 0, 0);
       break;
     default:
       if (fromStorage) {
-        mode->SendMsg(305, reinterpret_cast<int>(&item), 0, 0, 0);
+        mode->SendMsg(MM_SWAP_EQUIPMENT_BY_INDEX, reinterpret_cast<int>(&item), 0, 0, 0);
       } else if (item.identified && item.unknown_0000[2] != 0 && item.unknown_0000[3] == 0) {
-        mode->SendMsg(19, drag->id, item.unknown_0000[2], 0, 0);
+        mode->SendMsg(MM_WEAR_EQUIP, drag->id, item.unknown_0000[2], 0, 0);
       }
       break;
     }
   }
 
-  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008D02D0
 // FUNCTION: fn_12084
 void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
-  if (g_windowMgr.LookupWindow(10011)) {
+  if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
     UIWindow::DragAndDrop(x, y, value);
     return;
   }
@@ -2295,25 +2297,25 @@ void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     if (x < 445) {
       const int quantity = g_session.GetItem1720QuantityByItemId(drag->name.c_str());
       if (quantity < 2) {
-        this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+        this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
         return;
       }
 
-      g_windowMgr.ShowWindowById(15, 1);
-      g_windowMgr.window_01EC->SendMsg(nullptr, 13, 20, quantity, 0, 0);
+      g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
+      g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 20, quantity, 0, 0);
       return;
     }
     break;
   case 6:
     if (x > 444) {
-      g_windowMgr.ShowWindowById(15, 1);
-      g_windowMgr.window_01EC->SendMsg(nullptr, 13, 19, 0, 0, 0);
+      g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
+      g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 19, 0, 0, 0);
       return;
     }
     break;
   }
 
-  mode->SendMsg(18, 0, 0, 0, 0);
+  mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008D9F00
@@ -2344,7 +2346,7 @@ void UIExchangeWnd::LayoutButtons() {
 // FUNCTION: fn_12142
 void UIEquipWnd::NotifyEquipmentChanged() {
   if (this->unknown_0124) {
-    this->unknown_0124->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->unknown_0124->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -2422,7 +2424,7 @@ void UINpcTextEditDialogWnd::InsertSkillTag(int tagId) {
 void UICombinedCardItemCollectionWnd::Move(int x, int y) {
   UIFrameWnd::Move(x, y);
   if (UIWindow* comparison = g_windowMgr.unknown_0224) {
-    if (UIWindow* window = g_windowMgr.LookupWindow(82)) {
+    if (UIWindow* window = g_windowMgr.LookupWindow(WID_COMBINEDCARDITEMCOLLECTIONWND)) {
       static_cast<UIFrameWnd*>(comparison)->UIFrameWnd::Move(window->geometry.x - window->geometry.width, window->geometry.y);
     }
   }
@@ -2439,7 +2441,7 @@ void UIEquipWnd::Move(int x, int y) {
 void UIItemCollectionWnd::Move(int x, int y) {
   UIFrameWnd::Move(x, y);
   if (UIWindow* comparison = g_windowMgr.unknown_0220) {
-    if (UIWindow* window = g_windowMgr.LookupWindow(12)) {
+    if (UIWindow* window = g_windowMgr.LookupWindow(WID_ITEMCOLLECTIONWND)) {
       static_cast<UIFrameWnd*>(comparison)->UIFrameWnd::Move(window->geometry.x - window->geometry.width, window->geometry.y);
     }
   }
@@ -2486,7 +2488,7 @@ void UIItemCollectionWnd::OnProcess() {
 // FUNCTION: fn_12297
 void UINotifyItemObtainWnd::OnProcess() {
   if (timeGetTime() > this->m_shownTick + 5000) {
-    g_windowMgr.CloseWindow(58);
+    g_windowMgr.CloseWindow(WID_NOTIFYITEMOBTAINWND);
   }
 }
 
@@ -2501,7 +2503,7 @@ void UIPetTamingDeceiveWnd::OnProcess() {
       this->m_finishTime = timeGetTime();
     }
   } else if (this->m_frame == frame && this->m_delay <= this->m_maxDelay && timeGetTime() - this->m_finishTime >= 2000) {
-    g_windowMgr.CloseWindow(91);
+    g_windowMgr.CloseWindow(WID_PETTAMINGDECEIVEWND);
   }
 }
 
@@ -2531,16 +2533,16 @@ void UIItemIdentifyWnd::OnRBtnUp(int, int) {
 // OFFSET: 0x008F59A0
 // FUNCTION: fn_12308
 void UIWhisperWnd::OnRBtnUp(int, int) {
-  this->SendMsg(nullptr, 49, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008F5A10
 // FUNCTION: fn_12310
 void UIExchangeWnd::OnWheel(int delta) {
   if (delta < 0) {
-    this->SendMsg(this->m_scrollBar, 7, 1, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, 1, 0, 0, 0);
   } else {
-    this->SendMsg(this->m_scrollBar, 7, -1, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -1, 0, 0, 0);
   }
 }
 
@@ -2549,9 +2551,9 @@ void UIExchangeWnd::OnWheel(int delta) {
 void UIEquipWnd::OnWheel(int delta) {
   if (g_session.unknown_80C8 > 4 && this->m_page == 3) {
     if (delta < 0) {
-      this->SendMsg(this->m_scrollBar, 8, 1, 0, 0, 0);
+      this->SendMsg(this->m_scrollBar, UM_SCROLLHORZ, 1, 0, 0, 0);
     } else {
-      this->SendMsg(this->m_scrollBar, 8, -1, 0, 0, 0);
+      this->SendMsg(this->m_scrollBar, UM_SCROLLHORZ, -1, 0, 0, 0);
     }
   }
 }
@@ -2567,7 +2569,7 @@ void UIItemIdentifyWnd::OnWheel(int delta) {
   if (step > 3) {
     step = 3;
   }
-  this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
+  this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, delta < 0 ? step : -step, 0, 0, 0);
 }
 
 // OFFSET: 0x008F6370
@@ -2643,7 +2645,7 @@ void UIExchangeWnd::CancelInput() {
     this->unknown_00C0->Move(129, 500);
     this->unknown_00C0 = nullptr;
     if (g_windowMgr.window_01C8) {
-      g_windowMgr.window_01C8->SendMsg(nullptr, 54, 0, 0, 0, 0);
+      g_windowMgr.window_01C8->SendMsg(nullptr, UM_GET_EDIT_FOCUS, 0, 0, 0, 0);
     }
   }
   this->Invalidate();
@@ -2670,11 +2672,11 @@ void UIComboBoxWnd::Resize(int width, int height) {
 // OFFSET: 0x008F9520
 // FUNCTION: fn_12336
 int UICombinedCardItemCollection_ComparisonWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 34) {
+  if (message != UM_SETINFO) {
     return this->UIItemCollectionWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  UIWindow* window = g_windowMgr.LookupWindow(82);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_COMBINEDCARDITEMCOLLECTIONWND);
   if (window) {
     this->UIFrameWnd::Move(window->geometry.x - window->geometry.width, window->geometry.y);
   }
@@ -2684,7 +2686,7 @@ int UICombinedCardItemCollection_ComparisonWnd::SendMsg(UIWindow* sender, int me
 // OFFSET: 0x008F9460
 // FUNCTION: fn_12335
 int UICombinedCardItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 34) {
+  if (message != UM_SETINFO) {
     return this->UIItemCollectionWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -2732,21 +2734,21 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         int found;
         ITEM_INFO item = this->GetItem(this->m_selected, &found);
         if (found != 0) {
-          g_modeMgr.gameMode->SendMsg(0x7C, item.unknown_0000[1], this->m_compositionState, 0, 0);
+          g_modeMgr.gameMode->SendMsg(MM_REQ_ITEMCOMPOSITION, item.unknown_0000[1], this->m_compositionState, 0, 0);
         } else {
-          g_modeMgr.gameMode->SendMsg(0x7C, -1, -1, 0, 0);
+          g_modeMgr.gameMode->SendMsg(MM_REQ_ITEMCOMPOSITION, -1, -1, 0, 0);
         }
-        g_windowMgr.CloseWindow(0x4A);
+        g_windowMgr.CloseWindow(WID_ITEMCOMPOSITIONWND);
       }
       break;
     case ID_CANCEL:
-      g_modeMgr.gameMode->SendMsg(0x7C, -1, -1, 0, 0);
-      g_windowMgr.CloseWindow(0x4A);
+      g_modeMgr.gameMode->SendMsg(MM_REQ_ITEMCOMPOSITION, -1, -1, 0, 0);
+      g_windowMgr.CloseWindow(WID_ITEMCOMPOSITIONWND);
       break;
     }
     return 0;
   }
-  case 0x7B: {
+  case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
@@ -2801,7 +2803,7 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_ADDITEM: {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(b));
     this->m_items.push_back(item);
-    this->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     return 0;
   }
   case UM_COMMAND: {
@@ -2815,14 +2817,14 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         int found;
         ITEM_INFO item = this->GetItem(this->m_selected, &found);
         if (found != 0) {
-          g_modeMgr.gameMode->SendMsg(0x79, item.unknown_0000[1], 0, 0, 0);
+          g_modeMgr.gameMode->SendMsg(MM_REQ_ITEMIDENTIFY, item.unknown_0000[1], 0, 0, 0);
         }
-        g_windowMgr.CloseWindow(0x49);
+        g_windowMgr.CloseWindow(WID_ITEMIDENTIFYWND);
       }
       break;
     case ID_CANCEL:
-      g_modeMgr.gameMode->SendMsg(0x79, -1, 0, 0, 0);
-      g_windowMgr.CloseWindow(0x49);
+      g_modeMgr.gameMode->SendMsg(MM_REQ_ITEMIDENTIFY, -1, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_ITEMIDENTIFYWND);
       break;
     }
     return 0;
@@ -2831,9 +2833,9 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scroll;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->m_scroll = previous - this->m_rows + 1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->m_scroll = previous + this->m_rows - 1;
     } else {
       this->m_scroll = previous + static_cast<int>(a);
@@ -2844,7 +2846,7 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     return this->m_scroll - previous;
   }
-  case 0x7B: {
+  case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
@@ -2879,11 +2881,11 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // OFFSET: 0x008FD5F0
 // FUNCTION: fn_12347
 int UIItemCollection_ComparisonWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 34) {
+  if (message != UM_SETINFO) {
     return this->UIItemCollectionWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  UIWindow* window = g_windowMgr.LookupWindow(12);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_ITEMCOLLECTIONWND);
   if (window) {
     UIFrameWnd::Move(window->geometry.x - window->geometry.width, window->geometry.y);
   }
@@ -2893,8 +2895,8 @@ int UIItemCollection_ComparisonWnd::SendMsg(UIWindow* sender, int message, std::
 // OFFSET: 0x008F9570
 // FUNCTION: fn_12337
 int UIComboBoxIDWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (this->m_owner && message == 39) {
-    return this->m_owner->SendMsg(this, 39, argument1, argument2, argument3, argument4);
+  if (this->m_owner && message == UM_COMBOBOX_SELECTED) {
+    return this->m_owner->SendMsg(this, UM_COMBOBOX_SELECTED, argument1, argument2, argument3, argument4);
   }
   return this->m_list->SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
@@ -2902,8 +2904,8 @@ int UIComboBoxIDWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 // OFFSET: 0x008F95B0
 // FUNCTION: fn_12338
 int UIComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (this->m_owner && message == 39) {
-    return this->m_owner->SendMsg(this, 39, argument1, argument2, argument3, argument4);
+  if (this->m_owner && message == UM_COMBOBOX_SELECTED) {
+    return this->m_owner->SendMsg(this, UM_COMBOBOX_SELECTED, argument1, argument2, argument3, argument4);
   }
   return this->m_list->SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
@@ -2911,11 +2913,11 @@ int UIComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 // OFFSET: 0x008F97D0
 // FUNCTION: fn_12340
 int UIDisconnectedServerMsgWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-  if (argument1 == 184) {
-    g_modeMgr.GetGameMode()->SendMsg(141, 0, 0, 0, 0);
+  if (argument1 == ID_OK) {
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUIT_TO_IDENTRY, 0, 0, 0, 0);
   }
   return 0;
 }
@@ -2985,7 +2987,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
     if (this->m_page == 2 || this->m_page == 3) {
       if (this->unknown_0124 && this->unknown_0124->geometry.unknown_0030 != 0) {
-        this->SendMsg(nullptr, 6, 508, 0, 0, 0);
+        this->SendMsg(nullptr, UM_COMMAND, 508, 0, 0, 0);
       }
       if (this->unknown_012C) {
         this->unknown_012C->SetState(0);
@@ -2996,7 +2998,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       if (this->unknown_0124) {
         if (g_session.m_swapEquipmentMode == 1) {
           this->unknown_0124->geometry.unknown_0030 = 0;
-          this->SendMsg(nullptr, 6, 508, 0, 0, 0);
+          this->SendMsg(nullptr, UM_COMMAND, 508, 0, 0, 0);
         }
         static_cast<UISwapEquipmentWnd*>(this->unknown_0124)->unknown_00BC = this->m_page + 1;
         this->unknown_0124->Invalidate();
@@ -3040,7 +3042,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
     }
 
-    this->SendMsg(this, 106, 575, 0, 0, 0);
+    this->SendMsg(this, UM_SET_DISABLE, 575, 0, 0, 0);
     this->Invalidate();
     return 0;
   case UM_SETINFO:
@@ -3049,7 +3051,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       reinterpret_cast<EquipWndInfo*>(this->m_placement)->Reset();
     }
     if (this->m_placement->height != this->m_placement->show && g_session.m_swapEquipmentMode == 0) {
-      this->SendMsg(nullptr, 6, 202, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
     } else {
       const int height = this->geometry.height + 20;
       this->m_placement->show = height;
@@ -3102,26 +3104,26 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         return 0;
       }
       if (this->m_page == 1) {
-        g_modeMgr.gameMode->SendMsg(328, b, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_CONFIG_CALL, b, 0, 0, 0);
         return 0;
       }
-      g_modeMgr.gameMode->SendMsg(253, b, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(MM_OPEN_EQUIPEDITEM_CHANGE, b, 0, 0, 0);
       return 0;
     case ID_RADIOBTN:
       for (int index = 0; index < 4; ++index) {
         this->unknown_0138[index + 2]->Invalidate();
         if (sender == this->unknown_0138[index + 2]) {
           this->unknown_015C = index;
-          this->unknown_0138[index + 2]->SendMsg(this, 13, 1, 0, 0, 0);
+          this->unknown_0138[index + 2]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         } else {
-          this->unknown_0138[index + 2]->SendMsg(this, 13, 0, 0, 0, 0);
+          this->unknown_0138[index + 2]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         }
       }
       return 0;
     case ID_EQUIP_OPTION_OFF: {
       if (g_windowMgr.unknown_0304 != nullptr) {
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(525)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(525)), 255, 0, 0, 0);
         return 0;
       }
 
@@ -3141,17 +3143,17 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
       if (enabled && notice.size() != 0) {
         if (g_windowMgr.unknown_0210 != nullptr) {
-          g_windowMgr.CloseWindow(18);
+          g_windowMgr.CloseWindow(WID_MENUWND);
         }
-        UIWindow* menu = g_windowMgr.EnsureWindow(18);
+        UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
         if (!menu) {
           return 0;
         }
-        menu->SendMsg(nullptr, 75, 0, 0, 0, 0);
-        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>("Cart Off"), 0, 0, 0);
-        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(notice.c_str()), 0, 0, 0);
-        menu->SendMsg(nullptr, 83, 10, 0, 0, 0);
-        menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
+        menu->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>("Cart Off"), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(notice.c_str()), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_SET_CALLER_WID, 10, 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
         static_cast<UIMenuWnd*>(menu)->unknown_00DC = 1;
         int x = g_mouse.x + 1;
         int y = g_mouse.y + 1;
@@ -3182,9 +3184,9 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       return 0;
     }
     case ID_EQUIP_OPTION_OPEN:
-      if ((g_replayAnimationScaling == 0 || Replay::Instance().header.options.Get(ReplayRecordOption::Item) != 0) && !g_windowMgr.LookupWindow(227) &&
-          !g_windowMgr.CloseWindow(40) && g_session.unknown_5C1C > 0) {
-        g_windowMgr.EnsureWindow(40);
+      if ((g_replayAnimationScaling == 0 || Replay::Instance().header.options.Get(ReplayRecordOption::Item) != 0) && !g_windowMgr.LookupWindow(WID_MERGEITEMWND) &&
+          !g_windowMgr.CloseWindow(WID_MERCHANTITEMWND) && g_session.unknown_5C1C > 0) {
+        g_windowMgr.EnsureWindow(WID_MERCHANTITEMWND);
       }
       return 0;
     case ID_APPLY: {
@@ -3255,13 +3257,13 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       return 0;
     }
     case 582:
-      if (!g_windowMgr.CloseWindow(10001)) {
-        g_windowMgr.EnsureWindow(10001);
+      if (!g_windowMgr.CloseWindow(WID_EQUIPMENTPROPERTIESWND)) {
+        g_windowMgr.EnsureWindow(WID_EQUIPMENTPROPERTIESWND);
       }
       return 0;
     }
     return 0;
-  case 106:
+  case UM_SET_DISABLE:
     if (a == 575) {
       if (this->m_page == 1) {
         UIBitmapButton* button = this->unknown_0130;
@@ -3437,7 +3439,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
   this->unknown_0130->SetId(575);
   this->unknown_0130->SetTooltip(LookupMessage(0xF73));
   this->AddChild(this->unknown_0130);
-  this->SendMsg(this, 106, 575, 0, 0, 0);
+  this->SendMsg(this, UM_SET_DISABLE, 575, 0, 0, 0);
 
   if (this->m_viewOther == 0) {
     this->m_tabs->AddTab(LookupMessage(0xF95), LookupMessage(0xF96));
@@ -3494,7 +3496,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
       } else {
         radio->Move(index * 60 + 28, this->m_contentTop + 20);
       }
-      radio->SendMsg(this, 13, index == this->unknown_015C, 0, 0, 0);
+      radio->SendMsg(this, UM_SETSTATE, index == this->unknown_015C, 0, 0, 0);
       radio->SetText(labels[index]);
       const std::string unchecked("유저인터페이스\\tipbox\\checkBox.bmp");
       const std::string checked("유저인터페이스\\tipbox\\checkBox_check.bmp");
@@ -3519,7 +3521,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
   }
 
   if (g_session.m_swapEquipmentMode == 1) {
-    this->SendMsg(nullptr, 6, 508, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, 508, 0, 0, 0);
   }
 }
 
@@ -3553,12 +3555,12 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
     case ID_OK:
-      g_windowMgr.CloseWindow(110);
-      g_modeMgr.gameMode->SendMsg(173, this->identity, 1, 0, 0);
+      g_windowMgr.CloseWindow(WID_BABYACCEPTWND2);
+      g_modeMgr.gameMode->SendMsg(MM_JOIN_BABY, this->identity, 1, 0, 0);
       break;
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(110);
-      g_modeMgr.gameMode->SendMsg(173, this->identity, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_BABYACCEPTWND2);
+      g_modeMgr.gameMode->SendMsg(MM_JOIN_BABY, this->identity, 0, 0, 0);
       break;
     }
     return 0;
@@ -3567,10 +3569,10 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     this->identity = static_cast<std::uint32_t>(a);
     const std::string text = LookupMessage(2965);
     this->viewer->Clear();
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     return 0;
   }
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const auto* packet = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
@@ -3603,12 +3605,12 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
     case ID_OK:
-      g_windowMgr.CloseWindow(105);
-      g_windowMgr.EnsureWindow(110)->SendMsg(nullptr, 91, 184, b, 0, 0);
+      g_windowMgr.CloseWindow(WID_BABYACCEPTWND);
+      g_windowMgr.EnsureWindow(WID_BABYACCEPTWND2)->SendMsg(nullptr, UM_SET_BABY_MSG, 184, b, 0, 0);
       break;
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(105);
-      g_modeMgr.gameMode->SendMsg(173, this->identity, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_BABYACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_JOIN_BABY, this->identity, 0, 0, 0);
       break;
     }
     return 0;
@@ -3620,10 +3622,10 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     text += ")";
     text += LookupMessage(794);
     this->viewer->Clear();
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     return 0;
   }
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const auto* packet = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
@@ -3640,7 +3642,7 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
           std::memset(name, 0, sizeof(name));
           std::memcpy(name, packet + offset, header.length);
           offset += header.length;
-          this->SendMsg(nullptr, 91, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
+          this->SendMsg(nullptr, UM_SET_BABY_MSG, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
           break;
         }
         default:
@@ -3661,27 +3663,27 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_LEFTPUSH:
-    this->SendMsg(this, 6, 354, 0, 0, 0);
+    this->SendMsg(this, UM_COMMAND, ID_PREVIEW, 0, 0, 0);
     break;
 
   case UM_RIGHTPUSH:
-    this->SendMsg(this, 6, 355, 0, 0, 0);
+    this->SendMsg(this, UM_COMMAND, ID_NEXTVIEW, 0, 0, 0);
     break;
 
   case UM_COMMAND:
     switch (a) {
     case ID_CLOSE:
-      this->SendMsg(this, 6, 356, 0, 0, 0);
-      g_windowMgr.CloseWindow(106);
+      this->SendMsg(this, UM_COMMAND, ID_BOOKMARK, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_BOOKWND);
       break;
     case ID_PREVIEW:
       if (this->m_autoRead == 0) {
-        this->SendMsg(this, 92, this->m_page == 1 ? 1 : this->m_page - 1, 0, 0, 0);
+        this->SendMsg(this, UM_READBOOK, this->m_page == 1 ? 1 : this->m_page - 1, 0, 0, 0);
       }
       break;
     case ID_NEXTVIEW:
       if (this->m_autoRead == 0) {
-        this->SendMsg(this, 92, this->m_page == this->m_pageCount ? this->m_page : this->m_page + 1, 0, 0, 0);
+        this->SendMsg(this, UM_READBOOK, this->m_page == this->m_pageCount ? this->m_page : this->m_page + 1, 0, 0, 0);
       }
       break;
     case ID_BOOKMARK: {
@@ -3788,9 +3790,9 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       if (g_inlineCharset) {
         char* text = new char[this->m_lines[line].size() + 17];
         std::sprintf(text, "%s%s", g_serverLanguage->Prefix(true), this->m_lines[line].c_str());
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 100, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 100, 0, 0);
       } else {
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->m_lines[line].c_str()), 100, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->m_lines[line].c_str()), 100, 0, 0);
       }
     }
     this->Invalidate();
@@ -3824,7 +3826,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       g_windowMgr.Schedule(this->unknown_00B8);
       this->unknown_00B8 = nullptr;
     }
-    g_windowMgr.CloseWindow(106);
+    g_windowMgr.CloseWindow(WID_BOOKWND);
     break;
 
   }
@@ -3843,16 +3845,16 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     if (this->geometry.visible != 0) {
       switch (response) {
       case ID_CANCEL:
-        g_modeMgr.gameMode->SendMsg(40, 0, 0, 0, 0);
-        g_windowMgr.CloseWindow(25);
+        g_modeMgr.gameMode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_CHOOSESELLBUYWND);
         break;
       case ID_SELL:
-        g_modeMgr.gameMode->SendMsg(37, this->identity, 0, 0, 0);
-        g_windowMgr.LookupWindow(25)->Show(0);
+        g_modeMgr.gameMode->SendMsg(MM_ACK_SELL, this->identity, 0, 0, 0);
+        g_windowMgr.LookupWindow(WID_CHOOSESELLBUYWND)->Show(0);
         break;
       case ID_BUY:
-        g_modeMgr.gameMode->SendMsg(38, this->identity, 0, 0, 0);
-        g_windowMgr.LookupWindow(25)->Show(0);
+        g_modeMgr.gameMode->SendMsg(MM_ACK_BUY, this->identity, 0, 0, 0);
+        g_windowMgr.LookupWindow(WID_CHOOSESELLBUYWND)->Show(0);
         break;
       default:
         return 0;
@@ -3867,7 +3869,7 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     this->identity = static_cast<std::uint32_t>(a);
     return 0;
   }
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, bytes, sizeof(header));
@@ -3880,10 +3882,10 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
         if (header.type == 20851) {
           static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_024C = 1;
-          this->SendMsg(nullptr, 28, 0, 0, 0, 0);
-          g_windowMgr.CloseWindow(22);
-          g_windowMgr.CloseWindow(23);
-          g_windowMgr.CloseWindow(24);
+          this->SendMsg(nullptr, UM_SETNAID, 0, 0, 0, 0);
+          g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
+          g_windowMgr.CloseWindow(WID_ITEMPURCHASEWND);
+          g_windowMgr.CloseWindow(WID_ITEMSELLWND);
           break;
         }
 
@@ -4430,7 +4432,7 @@ void UIMonsterDisplayWnd::OnCreate(int, int) {
 // OFFSET: 0x008E3090
 // FUNCTION: fn_12179
 void UIItemParamChangeDisplayWnd::OnCreate(int, int) {
-  this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008E3330
@@ -4593,7 +4595,7 @@ int ScaleByScreenHeight(int value) {
 // FUNCTION: fn_12389
 int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case 154:
+  case UM_RESOLVE_PLAYER_TAGS:
     this->m_chatHistory->ResolvePlayerTags(reinterpret_cast<const char*>(a));
     return 0;
   case UM_SETINFO: {
@@ -4602,13 +4604,13 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     if (info->IsValid() == 0) {
       static_cast<WhisperWndInfo*>(this->unknown_0100)->Reset();
     }
-    this->SendMsg(nullptr, 14, 7, this->unknown_0100->width, this->unknown_0100->height, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 7, this->unknown_0100->width, this->unknown_0100->height, 0);
     this->Move(this->unknown_0100->x, this->unknown_0100->y);
     return 0;
   }
   case UM_COMMAND: {
-    if (a != 184) {
-      if (a == 201) {
+    if (a != ID_OK) {
+      if (a == ID_CLOSE) {
         g_windowMgr.Schedule(this);
       }
       return 0;
@@ -4616,7 +4618,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
     if (HasItemLinkTag(std::string(this->m_edit->Text())) == true) {
       this->m_edit->SetText("");
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3042)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3042)), 0xFF, 0, 0, 0);
       return 0;
     }
 
@@ -4629,7 +4631,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
 
     if (g_serviceType == 1 && !ValidateCharacterName(text)) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(190)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(190)), 0xFF, 0, 0, 0);
       return 0;
     }
 
@@ -4650,7 +4652,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       } else if (talkType == 51) {
         this->SaveChatLog();
       } else {
-        g_modeMgr.gameMode->SendMsg(42, talkType, reinterpret_cast<std::intptr_t>(parts), 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<std::intptr_t>(parts), 0, 0);
       }
       return 0;
     }
@@ -4663,7 +4665,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       g_windowMgr.unknown_04DC.assign(text, std::strlen(text));
     }
 
-    g_modeMgr.gameMode->SendMsg(11, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
     return 0;
   }
   case UM_MENU_SELECTED:
@@ -4674,7 +4676,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case UM_MAKEMENU: {
     this->m_log.clear();
     if (g_windowMgr.unknown_0210 != nullptr) {
-      g_windowMgr.CloseWindow(0x12);
+      g_windowMgr.CloseWindow(WID_MENUWND);
     }
 
     this->m_log.push_back(WhisperLogLine{std::string(LookupMessage(312)), 11});
@@ -4682,16 +4684,16 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->m_log.push_back(WhisperLogLine{std::string(LookupMessage(358)), 21});
     }
 
-    g_modeMgr.gameMode->SendMsg(101, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_INITWHISPERMENU, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
     if (this->m_log.empty()) {
       return 0;
     }
 
-    UIWindow* menu = g_windowMgr.EnsureWindow(0x12);
+    UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
     for (unsigned index = 0; index < this->m_log.size(); ++index) {
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(this->m_log[index].text.c_str()), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_log[index].text.c_str()), 0, 0, 0);
     }
-    menu->SendMsg(nullptr, 0x1E, 0, 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
     menu->Move(
       std::min(std::max(g_mouse.x + 1, 1), g_renderer->viewport.width - menu->geometry.width),
       std::min(std::max(g_mouse.y + 1, 1), g_renderer->viewport.height - menu->geometry.height)
@@ -4716,12 +4718,12 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   }
   case UM_PAGEUPPUSH:
     if (this->m_chatHistory->verticalOverflow != 0) {
-      this->m_chatHistory->SendMsg(nullptr, 9, 0, 0, 0, 0);
+      this->m_chatHistory->SendMsg(nullptr, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
     }
     return 0;
   case UM_PAGEDOWNPUSH:
     if (this->m_chatHistory->verticalOverflow != 0) {
-      this->m_chatHistory->SendMsg(nullptr, 10, 0, 0, 0, 0);
+      this->m_chatHistory->SendMsg(nullptr, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
     }
     return 0;
   case UM_RESIZE:
@@ -4781,8 +4783,8 @@ void UIWhisperWnd::SaveChatLog() {
   if (this->m_chatHistory->SaveChatLog(path)) {
     std::string message(path);
     message += " is Saved.";
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF00, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF00, 0, 0, 0);
   }
 }
 
@@ -4829,21 +4831,21 @@ std::vector<unsigned char> MakeFramedMessage(std::uint16_t type, const std::vect
 // FUNCTION: fn_12373
 int UIQuitWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   CMode* mode = g_modeMgr.GetGameMode();
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
   switch (argument1) {
   case ID_RESTART:
-    mode->SendMsg(25, 1, 0, 0, 0);
-    g_windowMgr.CloseWindow(48);
+    mode->SendMsg(MM_RESTART, 1, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_QUITWND);
     break;
   case ID_EXIT:
-    mode->SendMsg(88, 0, 0, 0, 0);
-    g_windowMgr.CloseWindow(48);
+    mode->SendMsg(MM_QUIT_GAME, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_QUITWND);
     break;
   case ID_CANCEL:
-    g_windowMgr.CloseWindow(48);
+    g_windowMgr.CloseWindow(WID_QUITWND);
     break;
   }
 
@@ -4854,25 +4856,25 @@ int UIQuitWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 // FUNCTION: fn_12374
 int UIRestartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   CMode* mode = g_modeMgr.GetGameMode();
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
   switch (argument1) {
   case ID_TO_CHARACTER_SELECT:
-    mode->SendMsg(25, 1, 0, 0, 0);
-    g_windowMgr.CloseWindow(19);
-    g_windowMgr.CloseWindow(269);
+    mode->SendMsg(MM_RESTART, 1, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_RESTARTWND);
+    g_windowMgr.CloseWindow(WID_ROULLETTEWND);
     break;
   case ID_RESTART:
-    mode->SendMsg(25, 0, 0, 0, 0);
+    mode->SendMsg(MM_RESTART, 0, 0, 0, 0);
     [[fallthrough]];
   case ID_CANCEL:
-    g_windowMgr.CloseWindow(19);
+    g_windowMgr.CloseWindow(WID_RESTARTWND);
     break;
   case ID_QUIT:
-    g_windowMgr.CloseWindow(19);
-    mode->SendMsg(88, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_RESTARTWND);
+    mode->SendMsg(MM_QUIT_GAME, 0, 0, 0, 0);
     break;
   }
 
@@ -4882,16 +4884,16 @@ int UIRestartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 // OFFSET: 0x00909830
 // FUNCTION: fn_12392
 int UInCash_CallWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 
-  if (a == 192) {
+  if (a == ID_STATUS) {
     if (g_session.unknown_5912) {
-      g_modeMgr.GetGameMode()->SendMsg(331, 2, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_STOVE_AUTHENTICATION, 2, 0, 0, 0);
       return 0;
     }
-    g_modeMgr.GetGameMode()->SendMsg(323, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_REQUEST_CASH_SHOP, 0, 0, 0, 0);
   }
   return 0;
 }
@@ -4901,7 +4903,7 @@ int UInCash_CallWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 void UIEquipWnd::UpdateCharacterView(int reset) {
   CMode* mode = g_modeMgr.gameMode;
   if (!reset && g_session.unknown_5C1C > 0) {
-    mode->SendMsg(80, 6, 0, 0, 0);
+    mode->SendMsg(MM_REQ_CARTOFF, 6, 0, 0, 0);
     return;
   }
 
@@ -4916,7 +4918,7 @@ void UIEquipWnd::UpdateCharacterView(int reset) {
              StateFlag25(g_session.m_jobFlags) || StateFlag26(g_session.m_jobFlags)) {
     view = 1;
   }
-  mode->SendMsg(80, view, 0, 0, 0);
+  mode->SendMsg(MM_REQ_CARTOFF, view, 0, 0, 0);
 }
 
 // OFFSET: 0x009099C0
@@ -4936,7 +4938,7 @@ void __stdcall Nullsub314(int, int, int) {
 // FUNCTION: fn_12397
 void UIWaitWnd::SetMessage(const char* text, int, int) {
   this->m_textViewer->Clear();
-  this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
+  this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
 }
 
 // OFFSET: 0x00909CE0
@@ -5069,7 +5071,7 @@ void UInCashWnd::StoreInfo() {
 // FUNCTION: fn_12375
 int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (g_windowMgr.unknown_0458) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2730)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2730)), 0x64FFFF, 0, 0, 0);
     return 0;
   }
 
@@ -5083,10 +5085,10 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
   case UM_UPPUSH:
-    this->m_viewer->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    this->m_viewer->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     return 0;
   case UM_DOWNPUSH:
-    this->m_viewer->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    this->m_viewer->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     return 0;
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, this->unknown_00C8);
@@ -5102,7 +5104,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       *reinterpret_cast<DWORD*>(&g_session.unknown_5490[0x04]) = tick;
       g_modeMgr.gameMode->SendMsg(this->unknown_00C8, this->unknown_00CC, 218, 0, 0);
       this->unknown_00D4 = 1;
-      this->SendMsg(nullptr, 32, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_DISABLENEXTBUTTON, 0, 0, 0, 0);
       break;
     }
     case 600:
@@ -5119,20 +5121,20 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         static_cast<UITagTextViewer*>(this->m_viewer)->Clear();
         this->unknown_00D4 = 0;
       }
-      this->m_viewer->SendMsg(nullptr, 29, a, c, 1, 0);
+      this->m_viewer->SendMsg(nullptr, UM_SETTEXT, a, c, 1, 0);
     }
     this->unknown_00CC = static_cast<int>(b);
     return 0;
   case UM_ENABLENEXTBUTTON:
     this->m_message0 = 218;
     this->unknown_00C8 = 22;
-    this->SendMsg(nullptr, 85, 218, reinterpret_cast<std::intptr_t>("btn_next"), 0, 0);
+    this->SendMsg(nullptr, UM_ADD_BUTTON, 218, reinterpret_cast<std::intptr_t>("btn_next"), 0, 0);
     this->Invalidate();
     return 0;
   case UM_ENABLECLOSEBUTTON:
     this->m_message0 = 201;
     this->unknown_00C8 = 89;
-    this->SendMsg(nullptr, 85, 218, reinterpret_cast<std::intptr_t>("btn_close"), 0, 0);
+    this->SendMsg(nullptr, UM_ADD_BUTTON, 218, reinterpret_cast<std::intptr_t>("btn_close"), 0, 0);
     this->Invalidate();
     return 0;
   case UM_ADD_BUTTON: {
@@ -5151,7 +5153,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   }
   case UM_DISABLENEXTBUTTON:
     this->m_message0 = 600;
-    this->SendMsg(nullptr, 86, 218, 0, 0, 0);
+    this->SendMsg(nullptr, UM_DELETE_BUTTON, 218, 0, 0, 0);
     this->Invalidate();
     return 0;
   case UM_DELETE_BUTTON:
@@ -5164,7 +5166,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
     }
     return 0;
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
@@ -5181,7 +5183,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           std::memset(text, 0, sizeof(text));
           std::memcpy(text, records + position, header.length);
           position += header.length;
-          this->SendMsg(nullptr, 26, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+          this->SendMsg(nullptr, UM_SETSAYDIALOG, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
           break;
         }
         case 22504:
@@ -5252,10 +5254,10 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         if (amount > g_session.m_zeny) {
           amount = g_session.m_zeny;
         }
-        mode->SendMsg(51, 0, g_session.unknown_5210 + amount, 0, 0);
+        mode->SendMsg(MM_ADD_EXCHANGE_ITEM, 0, g_session.unknown_5210 + amount, 0, 0);
         this->CancelInput();
       }
-      mode->SendMsg(52, 0, 0, 0, 0);
+      mode->SendMsg(MM_CONCLUDE_EXCHANGE_ITEM, 0, 0, 0, 0);
       this->unknown_00D4 = 1;
       return 0;
     case ID_EXCHANGE:
@@ -5264,9 +5266,9 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
       if (this->unknown_011C) {
         const std::string text = FormatOwnedString(LookupMessage(1832), this->unknown_00F0.c_str());
-        g_modeMgr.gameMode->SendMsg(68, reinterpret_cast<int>(text.c_str()), 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_SCREENSHOT, reinterpret_cast<int>(text.c_str()), 0, 0, 0);
       }
-      mode->SendMsg(54, 0, 0, 0, 0);
+      mode->SendMsg(MM_EXEC_EXCHANGE_ITEM, 0, 0, 0, 0);
       this->unknown_00D8 = 1;
       this->LayoutButtons();
       return 0;
@@ -5274,7 +5276,7 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       if (this->unknown_00DC != 0) {
         return 0;
       }
-      mode->SendMsg(53, 0, 0, 0, 0);
+      mode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
       this->unknown_00DC = 1;
       return 0;
     case ID_RIGHT: {
@@ -5288,7 +5290,7 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       if (amount > g_session.m_zeny) {
         amount = g_session.m_zeny;
       }
-      mode->SendMsg(51, 0, g_session.unknown_5210 + amount, 0, 0);
+      mode->SendMsg(MM_ADD_EXCHANGE_ITEM, 0, g_session.unknown_5210 + amount, 0, 0);
       this->CancelInput();
       return 0;
     }
@@ -5312,11 +5314,11 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return 0;
   case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    mode->SendMsg(51, mode->drag.id, mode->drag.quantity, 0, 0);
-    mode->SendMsg(18, 0, 0, 0, 0);
+    mode->SendMsg(MM_ADD_EXCHANGE_ITEM, mode->drag.id, mode->drag.quantity, 0, 0);
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return 0;
   }
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header{};
     std::memcpy(&header, records, sizeof(header));
@@ -5341,46 +5343,46 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           std::memset(name, 0, sizeof(name));
           std::memcpy(name, records + position, header.length);
           position += header.length;
-          this->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(name), number, level, 0);
+          this->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(name), number, level, 0);
           break;
         }
         case 20605:
           std::memcpy(&this->unknown_00CC, records + position, header.length);
           position += header.length;
           if (this->unknown_00CC != 0) {
-            this->SendMsg(nullptr, 51, 0, 0, 0, 0);
+            this->SendMsg(nullptr, UM_MYDRAGCLOSED, 0, 0, 0, 0);
           }
           break;
         case 20606:
           std::memcpy(&this->unknown_00D0, records + position, header.length);
           position += header.length;
           if (this->unknown_00D0 != 0) {
-            this->SendMsg(nullptr, 52, 0, 0, 0, 0);
+            this->SendMsg(nullptr, UM_OTHERDRAGCLOSED, 0, 0, 0, 0);
           }
           break;
         case 20607:
           std::memcpy(&this->unknown_00D4, records + position, header.length);
           position += header.length;
           if (this->unknown_00D4 != 0) {
-            this->SendMsg(nullptr, 6, 184, 0, 0, 0);
+            this->SendMsg(nullptr, UM_COMMAND, ID_OK, 0, 0, 0);
           }
           break;
         case 20608:
           std::memcpy(&this->unknown_00D8, records + position, header.length);
           position += header.length;
           if (this->unknown_00D8 != 0) {
-            this->SendMsg(nullptr, 6, 230, 0, 0, 0);
+            this->SendMsg(nullptr, UM_COMMAND, ID_EXCHANGE, 0, 0, 0);
           }
           break;
         case 20609:
           std::memcpy(&this->unknown_00DC, records + position, header.length);
           position += header.length;
           if (this->unknown_00DC != 0) {
-            this->SendMsg(nullptr, 6, 185, 0, 0, 0);
+            this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
           }
           break;
         case 20601:
-          this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           return 0;
         default:
           position += header.length;
@@ -5402,7 +5404,7 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 int UIGraffiStrboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_COMMAND: {
-    if (a == 184) {
+    if (a == ID_OK) {
       struct {
         int area[4];
         const char* text;
@@ -5412,8 +5414,8 @@ int UIGraffiStrboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       request.area[2] = this->area[2];
       request.area[3] = this->area[3];
       request.text = this->edit->Text();
-      g_modeMgr.GetGameMode()->SendMsg(131, reinterpret_cast<int>(&request), 0, 0, 0);
-    } else if (a != 185) {
+      g_modeMgr.GetGameMode()->SendMsg(MM_USE_SKILL_TOGROUND_WITH_TALKBOX, reinterpret_cast<int>(&request), 0, 0, 0);
+    } else if (a != ID_CANCEL) {
       return 0;
     }
 
@@ -5536,13 +5538,13 @@ void UIStatusWnd::ValidatePlacement() {
     }
   }
 
-  this->SendMsg(nullptr, 35, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008FEAA0
 // FUNCTION: fn_12354
 int UILoadingWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message == 17) {
+  if (message == UM_LOADINGPERCENT) {
     char text[100];
     std::sprintf(text, "Loading %d %s", static_cast<int>(argument1), "%");
     this->m_progressBar->SetValue(static_cast<float>(argument1));
@@ -5577,8 +5579,8 @@ void UISayDialogWnd::OnCreate(int width, int height) {
 int UIMonsterDisplayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND: {
-    if (argument1 == 201) {
-      g_windowMgr.CloseWindow(201);
+    if (argument1 == ID_CLOSE) {
+      g_windowMgr.CloseWindow(WID_MONSTERDISPLAYWND);
     }
     return 0;
   }
@@ -5596,11 +5598,11 @@ int UIMonsterDisplayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
 // OFFSET: 0x008FFBA0
 // FUNCTION: fn_12362
 int UINotifyJobLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIWindow::SendMsg(sender, message, a, b, c, d);
   }
-  if (a == 192) {
-    g_windowMgr.Promote(g_windowMgr.EnsureWindow(37));
+  if (a == ID_STATUS) {
+    g_windowMgr.Promote(g_windowMgr.EnsureWindow(WID_SKILLLISTWND));
   }
   return 0;
 }
@@ -5608,7 +5610,7 @@ int UINotifyJobLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 // OFFSET: 0x008E0A20
 // FUNCTION: fn_12173
 void UIExchangeWnd::OnCreate(int, int) {
-  this->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   this->unknown_00CC = 0;
   this->unknown_00D0 = 0;
   this->unknown_00D4 = 0;
@@ -5696,8 +5698,8 @@ void UIChatRoomMakeWnd::Paint() {
 // FUNCTION: fn_12161
 void UIChatRoomMakeWnd::OnCreate(int width, int height) {
   if (g_session.IsTrickDeadActive()) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x295)), 0xFF, 0, 0, 0);
-    g_windowMgr.CloseWindow(0x1B);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x295)), 0xFF, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND);
   }
 
   this->m_limit = 20;
@@ -5802,7 +5804,7 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
     this->m_publicButtons[index]->SetSize(width, 12);
     this->m_publicButtons[index]->Move(x, 70);
     this->m_publicButtons[index]->SetText(labels[index]);
-    this->m_publicButtons[index]->SendMsg(this, 13, states[index], 0, 0, 0);
+    this->m_publicButtons[index]->SendMsg(this, UM_SETSTATE, states[index], 0, 0, 0);
     this->AddChild(this->m_publicButtons[index]);
   }
 
@@ -5831,7 +5833,7 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     switch (a) {
     case ID_OK: {
       if (g_windowMgr.HasTitleAtActorCell(g_session.m_aid)) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(661)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(661)), 0xFF, 0, 0, 0);
         break;
       }
 
@@ -5852,8 +5854,8 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         setting.roomId = -1;
         setting.title = this->m_titleEdit->Text();
         setting.password = this->m_passwordEdit->Text();
-        g_modeMgr.gameMode->SendMsg(43, reinterpret_cast<int>(&setting), 0, 0, 0);
-        g_windowMgr.CloseWindow(27);
+        g_modeMgr.gameMode->SendMsg(MM_CREATE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND);
         break;
       }
       g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
@@ -5861,44 +5863,44 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     case ID_CANCEL:
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(27);
+      g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND);
       break;
     case ID_RADIOBTN:
       for (int i = 0; i < 2; ++i) {
         this->m_publicButtons[i]->Invalidate();
         if (sender == this->m_publicButtons[i]) {
           this->m_public = i;
-          this->m_publicButtons[i]->SendMsg(this, 13, 1, 0, 0, 0);
+          this->m_publicButtons[i]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         } else {
-          this->m_publicButtons[i]->SendMsg(this, 13, 0, 0, 0, 0);
+          this->m_publicButtons[i]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         }
       }
       break;
     case ID_NUMCOMBO:
     case ID_CLASSCOMBO: {
       if (g_windowMgr.unknown_0214) {
-        g_windowMgr.CloseWindow(26);
+        g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
-      UIWindow* list = g_windowMgr.EnsureWindow(26);
+      UIWindow* list = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       int count = 1;
-      if (a == 228) {
+      if (a == ID_NUMCOMBO) {
         this->m_listKind = 0;
         count = static_cast<int>(this->m_limitLabels.size());
         for (unsigned int i = 0; i < this->m_limitLabels.size(); ++i) {
-          list->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_limitLabels[i].c_str()), 0, 0, 0);
+          list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_limitLabels[i].c_str()), 0, 0, 0);
         }
-      } else if (a == 229) {
+      } else if (a == ID_CLASSCOMBO) {
         this->m_listKind = 1;
         count = static_cast<int>(this->m_typeLabels.size());
         for (unsigned int i = 0; i < this->m_typeLabels.size(); ++i) {
-          list->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_typeLabels[i].c_str()), 0, 0, 0);
+          list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_typeLabels[i].c_str()), 0, 0, 0);
         }
       }
 
       const int height = count * 16;
-      list->SendMsg(nullptr, 40, 0, 0, 0, 0);
+      list->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
       list->Resize(74, height > 48 ? 48 : height);
-      list->SendMsg(nullptr, 83, 27, 0, 0, 0);
+      list->SendMsg(nullptr, UM_SET_CALLER_WID, 27, 0, 0, 0);
       int x = this->m_listKind * 137 + 44;
       int y = 64;
       this->ToScreen(x, y);
@@ -5946,8 +5948,8 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         setting.roomId = -1;
         setting.title = this->m_titleEdit->Text();
         setting.password = this->m_passwordEdit->Text();
-        g_modeMgr.gameMode->SendMsg(44, reinterpret_cast<int>(&setting), 0, 0, 0);
-        g_windowMgr.CloseWindow(30);
+        g_modeMgr.gameMode->SendMsg(MM_CHANGE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_CHATROOMCHANGEWND);
         return 0;
       }
       g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
@@ -5955,33 +5957,33 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     case ID_CANCEL:
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(30);
+      g_windowMgr.CloseWindow(WID_CHATROOMCHANGEWND);
       return 0;
     case ID_NUMCOMBO:
     case ID_CLASSCOMBO: {
       if (g_windowMgr.unknown_0214) {
-        g_windowMgr.CloseWindow(26);
+        g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
-      UIWindow* list = g_windowMgr.EnsureWindow(26);
+      UIWindow* list = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       int count = 1;
-      if (a == 228) {
+      if (a == ID_NUMCOMBO) {
         this->m_listKind = 0;
         count = static_cast<int>(this->m_limitLabels.size());
         for (unsigned int i = 0; i < this->m_limitLabels.size(); ++i) {
-          list->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_limitLabels[i].c_str()), 0, 0, 0);
+          list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_limitLabels[i].c_str()), 0, 0, 0);
         }
-      } else if (a == 229) {
+      } else if (a == ID_CLASSCOMBO) {
         this->m_listKind = 1;
         count = static_cast<int>(this->m_typeLabels.size());
         for (unsigned int i = 0; i < this->m_typeLabels.size(); ++i) {
-          list->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_typeLabels[i].c_str()), 0, 0, 0);
+          list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_typeLabels[i].c_str()), 0, 0, 0);
         }
       }
 
       const int height = count * 16;
-      list->SendMsg(nullptr, 40, 0, 0, 0, 0);
+      list->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
       list->Resize(74, height > 48 ? 48 : height);
-      list->SendMsg(nullptr, 83, 30, 0, 0, 0);
+      list->SendMsg(nullptr, UM_SET_CALLER_WID, 30, 0, 0, 0);
       int x = this->m_listKind * 137 + 44;
       int y = 64;
       this->ToScreen(x, y);
@@ -6002,7 +6004,7 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->m_public = setting->isPublic == 0;
     for (int i = 0; i < 2; ++i) {
       this->m_publicButtons[i]->Invalidate();
-      this->m_publicButtons[i]->SendMsg(this, 13, i == this->m_public ? 1 : 0, 0, 0, 0);
+      this->m_publicButtons[i]->SendMsg(this, UM_SETSTATE, i == this->m_public ? 1 : 0, 0, 0, 0);
     }
     this->m_closeButton->SetTooltip("");
     this->Invalidate();
@@ -6059,11 +6061,11 @@ void UIPasswordWnd::Show(int visible) {
 // OFFSET: 0x00907610
 // FUNCTION: fn_12387
 int UIToolTipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  if (argument1 == 184 || argument1 == 185) {
+  if (argument1 == ID_OK || argument1 == ID_CANCEL) {
     g_windowMgr.Schedule(this);
   }
 
@@ -6075,7 +6077,7 @@ int UIToolTipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 int UIPetTamingDeceiveWnd::SendMsg(
   UIWindow*, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message == 80) {
+  if (message == UM_SET_TARGET) {
     if (argument1 == 0) {
       this->m_target = static_cast<int>(argument2);
       return 0;
@@ -6109,8 +6111,8 @@ void UIStatusWnd::StoreInfo() {
 int UIWaitWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == 185) {
-      g_modeMgr.gameMode->SendMsg(10021, 0, 0, 0, 0);
+    if (argument1 == ID_CANCEL) {
+      g_modeMgr.gameMode->SendMsg(LMM_DISCONNECT_ACSVR, 0, 0, 0, 0);
     }
     break;
   case UM_ENABLE_CANCEL:
@@ -6128,10 +6130,10 @@ int UINoticeConfirmWnd::SendMsg(
 ) {
   switch (message) {
   case UM_COMMAND: {
-    if (argument1 == 184) {
+    if (argument1 == ID_OK) {
       g_modeMgr.gameMode->SendMsg(this->m_event, 0, 0, 0, 0);
-    } else if (argument1 == 185) {
-      g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+    } else if (argument1 == ID_CANCEL) {
+      g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     }
 
     return 0;
@@ -6204,7 +6206,7 @@ void UIItemCollectionWnd::SetHeight(int height) {
   } else {
     this->m_moveInfo->Move(-1000, -1000);
   }
-  this->m_viewer->SendMsg(nullptr, 7, 0, 0, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
 }
 
 class UIAutoMessageWnd : public UIFrameWnd {
@@ -6227,11 +6229,11 @@ void UIAutoMessageWnd::Paint() {
 // OFFSET: 0x008FFC40
 // FUNCTION: fn_12364
 int UINotifyQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIWindow::SendMsg(sender, message, a, b, c, d);
   }
-  if (a == 192) {
-    if (UIWindow* window = g_windowMgr.EnsureWindow(0x2718)) {
+  if (a == ID_STATUS) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(WID_RENEWQUESTUI)) {
       g_windowMgr.Promote(window);
     }
   }
@@ -6273,7 +6275,7 @@ void UInCashWnd::OnCreate(int width, int height) {
   this->m_pageCount = 1;
   this->m_page = 1;
   g_session.ClearItems1784(10);
-  this->SendMsg(this, 60, 0, 0, 0, 0);
+  this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
   this->AddCloseButton("Alt+X", 0);
 
   const int titleWidth = this->TextWidth(LookupMessage(0x817), 0, 0, 12, 1, 0);
@@ -6409,11 +6411,11 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
 
-  case 122:
+  case UM_UPDATE_CASHSHOP_BALANCE:
     this->m_pointBalance = argument1;
     this->m_cashBalance = argument2;
     this->m_pointEdit->SetText("0");
-    this->SendMsg(this, 6, 386, 0, 0, 0);
+    this->SendMsg(this, UM_COMMAND, 386, 0, 0, 0);
     return 0;
 
   case 120: {
@@ -6442,17 +6444,17 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     }
     this->m_pointBalance = argument1;
     this->m_cashBalance = argument2;
-    this->SendMsg(this, 121, 0, 0, 0, 0);
+    this->SendMsg(this, UM_REFRESH_PAGES, 0, 0, 0, 0);
     return 0;
   }
 
-  case 121:
+  case UM_REFRESH_PAGES:
     this->m_pageCount = (g_session.GetList1788(this->m_tab) + 7) / 8;
     if (this->m_pageCount < 1) {
       this->m_pageCount = 1;
     }
     this->m_page = 1;
-    this->SendMsg(this, 60, 0, 0, 0, 0);
+    this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
     return 0;
 
   case UM_SCROLLVERT:
@@ -6565,7 +6567,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       } else {
         notice = 1860;
       }
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(notice)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(notice)), 0xFF, 0, 0, 0);
       return 0;
     }
 
@@ -6573,7 +6575,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       NCashClosePacket packet;
       packet.packetType = 0x84A;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-      g_windowMgr.CloseWindow(184);
+      g_windowMgr.CloseWindow(WID_NCASHWND);
       return 0;
     }
 
@@ -6595,7 +6597,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
           g_windowMgr.Confirm(LookupMessage(1069), 0, true, false, 0, "Message", 280, 120, 0);
         }
         this->m_searchEdit->SetText("");
-        this->SendMsg(this, 6, 398, 0, 0, 0);
+        this->SendMsg(this, UM_COMMAND, 398, 0, 0, 0);
       }
       return 0;
     }
@@ -6667,7 +6669,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         RegSetValueExA(handle, "CASH_CATEGORY", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->m_tab), 4);
         RegCloseKey(handle);
       }
-      this->SendMsg(this, 121, 0, 0, 0, 0);
+      this->SendMsg(this, UM_REFRESH_PAGES, 0, 0, 0, 0);
       return 0;
     }
 
@@ -6697,7 +6699,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       }
     } else if (mode->drag.source == 6) {
       if (g_session.GetList2Size() >= 8) {
-        mode->SendMsg(18, 0, 0, 0, 0);
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return 0;
       }
       if (this->m_tab == 8) {
@@ -6706,7 +6708,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
           if (std::atoi(entry.itemId.c_str()) == std::atoi(mode->drag.name.c_str())) {
             if (entry.quantity <= 0) {
               g_windowMgr.Confirm(LookupMessage(2523), 0, true, false, 0, "Message", 280, 120, 0);
-              mode->SendMsg(18, 0, 0, 0, 0);
+              mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
               return 0;
             }
             if (mode->drag.quantity + owned > entry.quantity) {
@@ -6748,7 +6750,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         this->m_otherItems.push_back(other);
       }
     }
-    mode->SendMsg(18, 0, 0, 0, 0);
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return 0;
   }
 
@@ -6765,9 +6767,9 @@ void UInCashWnd::OnWheel(int delta) {
     return;
   }
   if (delta < 0) {
-    this->SendMsg(this, 10, 0, 0, 0, 0);
+    this->SendMsg(this, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
   } else {
-    this->SendMsg(this, 9, 0, 0, 0, 0);
+    this->SendMsg(this, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
   }
 }
 
@@ -6836,13 +6838,13 @@ __declspec(noinline) int UIItemCollectionWnd::CardSlotAt(int x, int y, int* slot
 // OFFSET: 0x008FFBE0
 // FUNCTION: fn_12363
 int UINotifyLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIWindow::SendMsg(sender, message, a, b, c, d);
   }
-  if (a == 192) {
-    UIWindow* window = g_windowMgr.EnsureWindow(11);
+  if (a == ID_STATUS) {
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_STATUSWND);
     if (window->geometry.height == 17) {
-      window->SendMsg(nullptr, 6, 0xCA, 0, 0, 0);
+      window->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
     }
     g_windowMgr.Promote(window);
   }
@@ -6927,7 +6929,7 @@ ITEM_INFO UIEquipWnd::ItemEntryAt(int x, int y) {
 // FUNCTION: fn_12263
 void UIEquipWnd::OnLBtnDblClk(int x, int y) {
   if (y < 17) {
-    this->SendMsg(this, 6, 202, 0, 0, 0);
+    this->SendMsg(this, UM_COMMAND, ID_MINI, 0, 0, 0);
   }
 
   if (this->m_viewOther != 0) {
@@ -6937,7 +6939,7 @@ void UIEquipWnd::OnLBtnDblClk(int x, int y) {
   ITEM_INFO item = this->ItemIconAt(x, y);
   if (item.unknown_0000[1] != 0 && item.quantity > 0) {
     const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(item.unknown_0000[3]));
-    g_modeMgr.gameMode->SendMsg(20, slots.values[2], this->m_page == 1, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_TAKE_OFF_EQUIP, slots.values[2], this->m_page == 1, 0, 0);
   }
 }
 
@@ -7005,7 +7007,7 @@ void UIEquipWnd::OnMouseHover(int x, int y) {
 void UIEquipWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemEntryAt(x, y);
   if (item.unknown_0000[1] != 0) {
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -7061,8 +7063,8 @@ void UIExchangeWnd::OnMouseHover(int x, int y) {
 void UIExchangeWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.unknown_0000[1] != 0) {
-    if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
 }
@@ -7209,7 +7211,7 @@ void UInCashWnd::OnLBtnDown(int x, int y) {
 void UInCashWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.unknown_0000[1] != 0 && this->m_selected >= 0) {
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -7475,7 +7477,7 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
       this->m_expShareButtons[i]->SetSize(160, g_serviceType == 12 ? 17 : 12);
       this->m_expShareButtons[i]->Move(20, y);
       this->m_expShareButtons[i]->SetText(texts[i]);
-      this->m_expShareButtons[i]->SendMsg(this, 13, this->m_expShare == i, 0, 0, 0);
+      this->m_expShareButtons[i]->SendMsg(this, UM_SETSTATE, this->m_expShare == i, 0, 0, 0);
       this->AddChild(this->m_expShareButtons[i]);
       if (g_session.unknown_5464 == 0) {
         this->m_expShareButtons[i]->enabled = 0;
@@ -7497,7 +7499,7 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
       this->m_itemShareButtons[i]->SetSize(160, g_serviceType == 12 ? 17 : 12);
       this->m_itemShareButtons[i]->SetText(texts[i]);
       this->m_itemShareButtons[i]->Move(20, this->m_mode + offset + 37);
-      this->m_itemShareButtons[i]->SendMsg(this, 13, this->m_itemShare == i, 0, 0, 0);
+      this->m_itemShareButtons[i]->SendMsg(this, UM_SETSTATE, this->m_itemShare == i, 0, 0, 0);
       this->m_itemShareButtons[i]->enabled = g_session.PartyCount() == 0;
       if (g_session.unknown_5464 != 0) {
         this->m_itemShareButtons[i]->enabled = 1;
@@ -7510,7 +7512,7 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
   this->m_itemDistributeButton->SetSize(160, g_serviceType == 12 ? 17 : 12);
   this->m_itemDistributeButton->Move(20, this->m_mode + 102);
   this->m_itemDistributeButton->SetText(LookupMessage(739));
-  this->m_itemDistributeButton->SendMsg(this, 13, 1, 0, 0, 0);
+  this->m_itemDistributeButton->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
   this->m_itemDistributeButton->enabled = g_session.PartyCount() == 0;
   if (g_session.unknown_5464 != 0) {
     this->m_itemDistributeButton->enabled = 1;
@@ -7590,15 +7592,15 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
     case ID_OK:
-      g_windowMgr.CloseWindow(70);
-      g_windowMgr.CloseWindow(214);
-      g_windowMgr.CloseWindow(213);
-      g_windowMgr.CloseWindow(212);
-      g_modeMgr.gameMode->SendMsg(114, this->identity, 1, 0, 0);
+      g_windowMgr.CloseWindow(WID_JOINGUILDACCEPTWND);
+      g_windowMgr.CloseWindow(WID_GUILDTIPWND);
+      g_windowMgr.CloseWindow(WID_CREATEGUILDWND_MODE_0);
+      g_windowMgr.CloseWindow(WID_GUILDHELPERWND);
+      g_modeMgr.gameMode->SendMsg(MM_JOIN_GUILD, this->identity, 1, 0, 0);
       break;
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(70);
-      g_modeMgr.gameMode->SendMsg(114, this->identity, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_JOINGUILDACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_JOIN_GUILD, this->identity, 0, 0, 0);
       break;
     }
     break;
@@ -7616,10 +7618,10 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     text += ")";
     text += LookupMessage(377);
     this->viewer->Clear();
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     break;
   }
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, bytes, sizeof(header));
@@ -7635,7 +7637,7 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
           char name[260] = {};
           std::memcpy(name, bytes + offset, header.length);
           offset += header.length;
-          this->SendMsg(nullptr, 73, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
+          this->SendMsg(nullptr, UM_SET_JOIN_GUILD_MSG, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
           break;
         }
         default:
@@ -7705,7 +7707,7 @@ void UINoticeConfirmWnd::OnCreate(int width, int height) {
   this->m_viewer->textColor = 0xFF000000u | RGB(red, green, blue);
   this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(0)), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(0)), 38, 0, 0);
 }
 
 // OFFSET: 0x008E4390
@@ -7869,7 +7871,7 @@ void UIWaitWnd::OnCreate(int width, int height) {
   this->m_textViewer->textColor = 0xFF000000u | RGB(red, green, blue);
   this->m_textViewer->Invalidate();
   this->AddChild(this->m_textViewer);
-  this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(121)), 38, 0, 0);
+  this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(121)), 38, 0, 0);
 }
 
 namespace {
@@ -7920,12 +7922,12 @@ int UICoupleAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_COMMAND:
     switch (a) {
     case ID_OK:
-      g_windowMgr.CloseWindow(104);
-      g_modeMgr.gameMode->SendMsg(167, this->identity, 1, 0, 0);
+      g_windowMgr.CloseWindow(WID_COUPLEACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_JOIN_COUPLE, this->identity, 1, 0, 0);
       break;
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(104);
-      g_modeMgr.gameMode->SendMsg(167, this->identity, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_COUPLEACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_JOIN_COUPLE, this->identity, 0, 0, 0);
       break;
     }
     break;
@@ -7936,7 +7938,7 @@ int UICoupleAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     text += ")";
     text += LookupMessage(737);
     this->viewer->Clear();
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     break;
   }
   default:
@@ -8013,12 +8015,12 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
     case ID_OK:
-      g_windowMgr.CloseWindow(109);
-      g_modeMgr.gameMode->SendMsg(175, this->m_accountId, this->m_characterId, 1, 0);
+      g_windowMgr.CloseWindow(WID_JOINFRIENDACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_JOIN_FRIEND, this->m_accountId, this->m_characterId, 1, 0);
       break;
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(109);
-      g_modeMgr.gameMode->SendMsg(175, this->m_accountId, this->m_characterId, 0, 0);
+      g_windowMgr.CloseWindow(WID_JOINFRIENDACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_JOIN_FRIEND, this->m_accountId, this->m_characterId, 0, 0);
       break;
     }
     break;
@@ -8028,10 +8030,10 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     char text[128];
     std::sprintf(text, LookupMessage(818), reinterpret_cast<const char*>(c));
     this->viewer->Clear();
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
+    this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
     break;
   }
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const auto* packet = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
@@ -8048,7 +8050,7 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           std::memset(name, 0, sizeof(name));
           std::memcpy(name, packet + offset, header.length);
           offset += header.length;
-          this->SendMsg(nullptr, 95, 0, 0, reinterpret_cast<std::intptr_t>(name), 0);
+          this->SendMsg(nullptr, UM_SET_JOIN_FRIEND_MSG, 0, 0, reinterpret_cast<std::intptr_t>(name), 0);
           break;
         }
         default:
@@ -8072,14 +8074,14 @@ int UIMixAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   case UM_COMMAND:
     switch (a) {
     case ID_OK:
-      g_windowMgr.CloseWindow(160);
-      g_windowMgr.CloseWindow(161);
-      g_modeMgr.gameMode->SendMsg(266, 0, 0, 0, 0);
-      g_windowMgr.CloseWindow(163);
+      g_windowMgr.CloseWindow(WID_ITEMSHOPWND2);
+      g_windowMgr.CloseWindow(WID_ITEMSELLWND2);
+      g_modeMgr.gameMode->SendMsg(MM_ITEMLISTWIN_RES, 0, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_MIXACCEPTWND);
       g_session.ClearTradeItems();
       break;
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(163);
+      g_windowMgr.CloseWindow(WID_MIXACCEPTWND);
       break;
     }
     break;
@@ -8088,7 +8090,7 @@ int UIMixAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     std::string text;
     text = LookupMessage(1584);
     this->viewer->Clear();
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     break;
   }
   default:
@@ -8149,10 +8151,10 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   case UM_COMMAND:
     switch (a) {
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(46);
+      g_windowMgr.CloseWindow(WID_SKILLDESCRIBEWND);
       break;
     case ID_HELP: {
-      UIWindow* window = g_windowMgr.EnsureWindow(10030);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_SKILLDELAYINFO);
       if (window) {
         static_cast<CUISkillDelayInfo*>(window)->SetSkill(this->m_skillId);
         window->PlaceBeside(this);
@@ -8174,8 +8176,8 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     if (this->m_skillId == static_cast<int>(a)) {
       return -1;
     }
-    if (g_windowMgr.LookupWindow(10030)) {
-      g_windowMgr.CloseWindow(10030);
+    if (g_windowMgr.LookupWindow(WID_SKILLDELAYINFO)) {
+      g_windowMgr.CloseWindow(WID_SKILLDELAYINFO);
     }
 
     this->unknown_00EC = this->unknown_00D4 = skill.DisplayName(*g_session.m_hotkeyScript);
@@ -8208,7 +8210,7 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
           const int delay = g_session.GetShopEntry(1, this->m_skillId).first;
           if (delay != 0) {
             const std::string line = FormatOwnedString(LookupMessage(4001), static_cast<int>(delay * 0.1), delay % 10);
-            this->m_text->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(line.c_str()), 0, 0, 1);
+            this->m_text->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(line.c_str()), 0, 0, 1);
           }
         }
         const std::vector<std::string> lines = Split(text, "\r\n");
@@ -8217,11 +8219,11 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
           buffer.resize(lines[index].size() + 4);
           StringFormat(buffer.data(), buffer.size(), static_cast<std::size_t>(-1), "%s%s", g_serverLanguage->Prefix(true), lines[index].c_str());
           UIWindow* target = static_cast<int>(this->m_text->lines.size()) < 2 ? static_cast<UIWindow*>(this->m_text) : static_cast<UIWindow*>(this->m_viewer);
-          target->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(buffer.data()), 0, 1, 1);
+          target->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(buffer.data()), 0, 1, 1);
         }
       }
     } else {
-      this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>("Unknown Skill"), 33, 0, 0);
+      this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>("Unknown Skill"), 33, 0, 0);
     }
 
     const int textHeight = 18 * static_cast<int>(this->m_text->lines.size());
@@ -8250,11 +8252,11 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_COMMAND:
-    if (a == 184) {
+    if (a == ID_OK) {
       if (this->m_skillId != -1 && this->m_edit->Length() != 0) {
         g_modeMgr.gameMode->SendMsg(98, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
       }
-      g_windowMgr.CloseWindow(55);
+      g_windowMgr.CloseWindow(WID_SKILLNAMECHANGEWND);
     }
     break;
   case UM_SET_SKILL_INFO:
@@ -8276,12 +8278,12 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   switch (message) {
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    if (a == 184) {
+    if (a == ID_OK) {
       CMode* mode = g_modeMgr.GetGameMode();
-      g_windowMgr.CloseWindow(119);
-      mode->SendMsg(190, this->m_place, 0, 0, 0);
-    } else if (a == 185) {
-      g_windowMgr.CloseWindow(119);
+      g_windowMgr.CloseWindow(WID_STARPLACEACCEPTWND);
+      mode->SendMsg(MM_STARPLACE_ACCEPT, this->m_place, 0, 0, 0);
+    } else if (a == ID_CANCEL) {
+      g_windowMgr.CloseWindow(WID_STARPLACEACCEPTWND);
     }
     return 0;
   }
@@ -8294,12 +8296,12 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       text = LookupMessage(1028);
     }
     this->viewer->Clear();
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     return 0;
   }
   }
 
-  if (message != 123) {
+  if (message != UM_REPLAY_FRAMED_DATA) {
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
@@ -8320,7 +8322,7 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       if (tag == 0x54C6) {
         std::memcpy(&this->m_place, packet + offset, size);
         offset += size;
-        this->SendMsg(nullptr, 91, this->m_place, 0, 0, 0);
+        this->SendMsg(nullptr, UM_SET_BABY_MSG, this->m_place, 0, 0, 0);
       } else {
         offset += size;
       }
@@ -8342,11 +8344,11 @@ int UIYourItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       packet.index = static_cast<std::uint16_t>(this->m_index);
       packet.location = this->m_location;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-      g_windowMgr.CloseWindow(138);
+      g_windowMgr.CloseWindow(WID_YOURITEMWND);
       break;
     }
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(138);
+      g_windowMgr.CloseWindow(WID_YOURITEMWND);
       break;
     }
     break;
@@ -8354,7 +8356,7 @@ int UIYourItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     std::string text;
     text = LookupMessage(1327);
     this->viewer->Clear();
-    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     this->m_index = static_cast<int>(a);
     this->m_location = static_cast<int>(b);
     break;
@@ -8418,7 +8420,7 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   case UM_COMMAND:
     switch (a) {
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(38);
+      g_windowMgr.CloseWindow(WID_TIPOFTHEDAYWND);
       break;
     case ID_CHECK: {
       this->m_showTipsAtStartup = static_cast<int>(b);
@@ -8437,7 +8439,7 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         if (this->m_tipIndex >= g_tipOfTheDay.Size()) {
           this->m_tipIndex = 0;
         }
-        this->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(&g_tipOfTheDay.GetTip(this->m_tipIndex)), 0, 0, 0);
+        this->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(&g_tipOfTheDay.GetTip(this->m_tipIndex)), 0, 0, 0);
       }
       break;
     case ID_PREV:
@@ -8445,7 +8447,7 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         if (--this->m_tipIndex < 0) {
           this->m_tipIndex = g_tipOfTheDay.Size() - 1;
         }
-        this->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(&g_tipOfTheDay.GetTip(this->m_tipIndex)), 0, 0, 0);
+        this->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(&g_tipOfTheDay.GetTip(this->m_tipIndex)), 0, 0, 0);
       }
       break;
     }
@@ -8454,9 +8456,9 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   case UM_SETTEXT: {
     const auto& tip = *reinterpret_cast<const StringList*>(a);
     this->m_textViewer->Clear();
-    this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(175)), 38, 0, 0);
+    this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(175)), 38, 0, 0);
     for (unsigned i = 0; i < tip.size(); ++i) {
-      this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(tip[i].c_str()), 38, 0, 0);
+      this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(tip[i].c_str()), 38, 0, 0);
     }
     return 0;
   }
@@ -8469,15 +8471,15 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 // INLINED
 static __forceinline void RequestStatusPointUp(UIStatusWnd* window, CMode* mode, const int* statCosts, int statusPoint, int index) {
   if (statCosts[index] <= statusPoint) {
-    mode->SendMsg(30, 13 + index, 1, 0, 0);
-    window->SendMsg(window, 35, 0, 0, 0, 0);
+    mode->SendMsg(MM_STATUS_CHANGE, 13 + index, 1, 0, 0);
+    window->SendMsg(window, UM_REFRESHBUTTON, 0, 0, 0, 0);
   }
 }
 
 // INLINED
 static __forceinline void RequestTraitPointUp(CMode* mode, int index) {
   if (g_session.GetTraitStat(231) > 0 && g_session.m_traits.points[index] > 0) {
-    mode->SendMsg(314, 219 + index, 1, 0, 0);
+    mode->SendMsg(MM_ADVANCED_STATUS_CHANGE, 219 + index, 1, 0, 0);
   }
 }
 
@@ -8491,7 +8493,7 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case UM_COMMAND:
     switch (a) {
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(11);
+      g_windowMgr.CloseWindow(WID_STATUSWND);
       break;
     case ID_MINI: {
       const int height = this->geometry.height;
@@ -8574,14 +8576,14 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     if (!this->m_info->IsValid()) {
       this->m_info->Reset();
     }
-    this->SendMsg(nullptr, 14, 7, this->m_info->width, this->m_info->unknown_0010, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 7, this->m_info->width, this->m_info->unknown_0010, 0);
     if (this->m_info->height != this->m_info->unknown_0010) {
-      this->SendMsg(nullptr, 6, 202, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
     }
-    this->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
     this->Move(this->m_info->x, this->m_info->y);
     this->m_extended = this->m_info->unknown_0018 != 1;
-    this->SendMsg(nullptr, 6, 550, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, 550, 0, 0, 0);
     break;
   case UM_REFRESHBUTTON:
     if (this->geometry.unknown_0030 == 0) {
@@ -8625,12 +8627,12 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   CMode* mode = g_modeMgr.gameMode;
 
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     switch (a) {
     case ID_CANCEL:
       g_windowMgr.CloseWindow(115);
       if (mode->cursorType == 9) {
-        g_windowMgr.EnsureWindow(277);
+        g_windowMgr.EnsureWindow(WID_NEWSELECTCHARWND);
       }
       break;
 
@@ -8774,7 +8776,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
 
     case ID_STORE_RETURN:
-      this->SendMsg(this, 6, 184, 0, 0, 0);
+      this->SendMsg(this, UM_COMMAND, ID_OK, 0, 0, 0);
       break;
     case ID_STORE_PASSWORD_NUM0:
       if (++this->unknown_00EC > 8) {
@@ -9074,7 +9076,7 @@ int UISelectCartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     break;
   }
   case UM_COMMAND:
-    if (a != 201) {
+    if (a != ID_CLOSE) {
       const int type = static_cast<int>(a) - 9000;
       std::vector<int>::iterator cart = carts.begin();
       for (;; ++cart) {
@@ -9085,9 +9087,9 @@ int UISelectCartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
           break;
         }
       }
-      g_modeMgr.GetGameMode()->SendMsg(154, type, this->unknown_00B4, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_SELECT_CART, type, this->unknown_00B4, 0, 0);
     }
-    g_windowMgr.CloseWindow(95);
+    g_windowMgr.CloseWindow(WID_SELECTCARTWND);
     break;
   }
   return 0;
@@ -9375,15 +9377,15 @@ void UIWhisperWnd::OnCreate(int, int) {
 // OFFSET: 0x008F6A30
 // FUNCTION: fn_12324
 int UIAutoMessageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
-  if (a == 184) {
+  if (a == ID_OK) {
     reinterpret_cast<std::string&>(g_session.unknown_56B8[4]) = this->m_edit->Text();
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(942)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(942)), 0x64FFFF, 0, 0, 0);
     g_windowMgr.RestoreInput();
-    g_windowMgr.CloseWindow(116);
+    g_windowMgr.CloseWindow(WID_AUTOMESSAGEWND);
   }
   return 0;
 }
@@ -9393,8 +9395,8 @@ int UIAutoMessageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 int UICardItemIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_COMMAND:
-    if (a == 201) {
-      g_windowMgr.CloseWindow(47);
+    if (a == ID_CLOSE) {
+      g_windowMgr.CloseWindow(WID_CARDITEMILLUSTWND);
     }
     break;
   case UM_CARDITEMILLUSTRATE: {
@@ -9410,7 +9412,7 @@ int UICardItemIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       g_windowMgr.Promote(this);
       break;
     }
-    g_windowMgr.CloseWindow(47);
+    g_windowMgr.CloseWindow(WID_CARDITEMILLUSTWND);
     break;
   }
   default:
@@ -9742,7 +9744,7 @@ int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   switch (message) {
   case UM_ADDITEM:
     this->m_items.push_back(LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(argument2)));
-    this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     return 0;
   case UM_REFRESH:
     this->UpdateScroll();
@@ -9752,9 +9754,9 @@ int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scroll;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->m_scroll = previous - this->m_rows + 1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->m_scroll = previous + this->m_rows - 1;
     } else {
       this->m_scroll = previous + static_cast<int>(argument1);
@@ -9775,12 +9777,12 @@ int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       int found = 0;
       ITEM_INFO item = this->GetItem(this->m_selected, &found);
       if (found) {
-        g_modeMgr.gameMode->SendMsg(146, item.unknown_0000[1], 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_PETEGG_SELECT_FROM_LIST, item.unknown_0000[1], 0, 0, 0);
       }
       break;
     }
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(90);
+      g_windowMgr.CloseWindow(WID_PETEGGLISTWND);
       break;
     }
     return 0;
@@ -10028,9 +10030,9 @@ void UIItemCollectionWnd::OnRBtnDown(int x, int y) {
   card.unknown_0000[0] = 6;
   card.unknown_0060 = 0;
   card.SetItemId(cardId);
-  UIWindow* window = g_windowMgr.EnsureWindow(82);
-  window->SendMsg(nullptr, 76, card.identified, 0, 0, 0);
-  window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&card), index >= ItemSlotsCount(this->m_item), 0, 0);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTIONWND);
+  window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, card.identified, 0, 0, 0);
+  window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), index >= ItemSlotsCount(this->m_item), 0, 0);
 
   if (UIItemCollectionWnd* comparison = static_cast<UIItemCollectionWnd*>(g_windowMgr.unknown_0220)) {
     int compareId;
@@ -10041,9 +10043,9 @@ void UIItemCollectionWnd::OnRBtnDown(int x, int y) {
       compareCard.unknown_0000[0] = 6;
       compareCard.unknown_0060 = 0;
       compareCard.SetItemId(compareId);
-      UIWindow* compareWindow = g_windowMgr.EnsureWindow(250);
-      compareWindow->SendMsg(nullptr, 76, compareCard.identified, 0, 0, 0);
-      compareWindow->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&compareCard), 1, 0, 0);
+      UIWindow* compareWindow = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTION_COMPARISONWND);
+      compareWindow->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, compareCard.identified, 0, 0, 0);
+      compareWindow->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&compareCard), 1, 0, 0);
     }
   }
 }
@@ -10065,9 +10067,9 @@ void UIItemCollection_ComparisonWnd::OnRBtnDown(int x, int y) {
   card.unknown_0000[0] = 6;
   card.unknown_0060 = 0;
   card.SetItemId(cardId);
-  UIWindow* window = g_windowMgr.EnsureWindow(82);
-  window->SendMsg(nullptr, 76, card.identified, 0, 0, 0);
-  window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&card), index >= ItemSlotsCount(this->m_item), 0, 0);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTIONWND);
+  window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, card.identified, 0, 0, 0);
+  window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), index >= ItemSlotsCount(this->m_item), 0, 0);
 }
 
 // OFFSET: 0x008F3660
@@ -10178,7 +10180,7 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
     item.SetItemId(*reinterpret_cast<const int*>(a));
     item.identified = 1;
     this->m_items.push_back(item);
-    this->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     break;
   }
   case UM_REFRESH:
@@ -10192,9 +10194,9 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scroll;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->m_scroll = previous - this->m_rows + 1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->m_scroll = previous + this->m_rows - 1;
     } else {
       this->m_scroll = previous + static_cast<int>(a);
@@ -10217,26 +10219,26 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
       ITEM_INFO item = this->GetItem(this->m_selected, &found);
       if (found != 0) {
         if (this->unknown_00F0 == 2) {
-          g_modeMgr.gameMode->SendMsg(0x99, item.GetItemId(), 0, 0, 0);
+          g_modeMgr.gameMode->SendMsg(MM_ARROW_FROM_LIST, item.GetItemId(), 0, 0, 0);
         } else {
-          g_modeMgr.gameMode->SendMsg(0xCF, item.GetItemId(), this->unknown_00F0, 0, 0);
+          g_modeMgr.gameMode->SendMsg(MM_ITEM_FROM_LIST, item.GetItemId(), this->unknown_00F0, 0, 0);
         }
-        g_windowMgr.CloseWindow(0x5E);
+        g_windowMgr.CloseWindow(WID_MAKINGARROWLISTWND);
       }
       break;
     }
     case ID_CANCEL:
       if (this->unknown_00F0 == 2) {
-        g_modeMgr.gameMode->SendMsg(0x99, -1, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_ARROW_FROM_LIST, -1, 0, 0, 0);
       } else {
-        g_modeMgr.gameMode->SendMsg(0xCF, -1, this->unknown_00F0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_ITEM_FROM_LIST, -1, this->unknown_00F0, 0, 0);
       }
-      g_windowMgr.CloseWindow(0x5E);
+      g_windowMgr.CloseWindow(WID_MAKINGARROWLISTWND);
       break;
     }
     break;
   }
-  case 0x7B: {
+  case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
@@ -10252,14 +10254,14 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
           int value = 0;
           std::memcpy(&value, records + position, header.length);
           position += header.length;
-          this->SendMsg(nullptr, 0x22, static_cast<std::int16_t>(value), 0, 0, 0);
+          this->SendMsg(nullptr, UM_SETINFO, static_cast<std::int16_t>(value), 0, 0, 0);
           break;
         }
         case 0x5657: {
           int value = 0;
           std::memcpy(&value, records + position, header.length);
           position += header.length;
-          this->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0);
+          this->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0);
           break;
         }
         default:
@@ -10285,7 +10287,7 @@ void UITipboxWnd::OnProcess() {
     WrapPlainText(text.c_str(), lines, 1000);
     this->unknown_00BC->Clear();
     for (const std::string& line : lines) {
-      this->unknown_00BC->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(line.c_str()), 32, 0, 0);
+      this->unknown_00BC->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(line.c_str()), 32, 0, 0);
     }
     this->Invalidate();
   }
@@ -10315,10 +10317,10 @@ void UITipboxWnd::OnProcess() {
 int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_DOWNPUSH:
-    this->m_list->SendMsg(nullptr, 0x13, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     return 0;
   case UM_UPPUSH:
-    this->m_list->SendMsg(nullptr, 0x12, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     return 0;
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
@@ -10326,14 +10328,14 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     case ID_OK: {
       const int selected = this->m_list->selected;
       if (selected != -1) {
-        g_modeMgr.GetGameMode()->SendMsg(0x4A, reinterpret_cast<std::intptr_t>(this->m_choices[selected].c_str()), this->unknown_00B8, 0, 0);
-        g_windowMgr.CloseWindow(0x27);
+        g_modeMgr.GetGameMode()->SendMsg(MM_SELECT_WARPPOINT, reinterpret_cast<std::intptr_t>(this->m_choices[selected].c_str()), this->unknown_00B8, 0, 0);
+        g_windowMgr.CloseWindow(WID_CHOOSEWARPWND);
       }
       break;
     }
     case ID_CANCEL:
-      g_modeMgr.GetGameMode()->SendMsg(0x4A, reinterpret_cast<std::intptr_t>("cancel"), this->unknown_00B8, 0, 0);
-      g_windowMgr.CloseWindow(0x27);
+      g_modeMgr.GetGameMode()->SendMsg(MM_SELECT_WARPPOINT, reinterpret_cast<std::intptr_t>("cancel"), this->unknown_00B8, 0, 0);
+      g_windowMgr.CloseWindow(WID_CHOOSEWARPWND);
       break;
     }
     return 0;
@@ -10354,7 +10356,7 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       this->m_choices.push_back(choice);
     }
     return 0;
-  case 0x7B: {
+  case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
@@ -10365,13 +10367,13 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         position += sizeof(header);
         switch (header.type) {
         case 0x55BF:
-          this->SendMsg(nullptr, 0x1B, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
+          this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
           return 0;
         case 0x55C1: {
           char text[260] = {};
           std::memcpy(text, records + position, header.length);
           position += header.length;
-          this->SendMsg(nullptr, 0x1B, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+          this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
           break;
         }
         default:
@@ -10497,9 +10499,9 @@ void UITipOfTheDayWnd::OnCreate(int width, int height) {
     const int index = random % g_tipOfTheDay.Size();
     this->m_tipIndex = index;
     const StringList& tip = g_tipOfTheDay.GetTip(index);
-    this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(175)), 38, 0, 0);
+    this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(175)), 38, 0, 0);
     for (unsigned line = 0; line < tip.size(); ++line) {
-      this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(tip[line].c_str()), 38, 0, 0);
+      this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(tip[line].c_str()), 38, 0, 0);
     }
   }
 }
@@ -10781,7 +10783,7 @@ public:
 // OFFSET: 0x00903230
 // FUNCTION: fn_12377
 int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     switch (a) {
     case 419:
       if (std::strlen(this->unknown_00D0) == static_cast<std::size_t>(this->unknown_010C)) {
@@ -10805,7 +10807,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       break;
     case ID_CANCEL:
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-        g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
       break;
@@ -10961,7 +10963,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       this->unknown_00F0 += 5;
       break;
     case ID_STORE_RETURN:
-      this->SendMsg(this, 6, 184, 0, 0, 0);
+      this->SendMsg(this, UM_COMMAND, ID_OK, 0, 0, 0);
       break;
 
     case ID_STORE_PASSWORD_NUM0:
@@ -11189,7 +11191,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
 // OFFSET: 0x00901D40
 // FUNCTION: fn_12376
 int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     switch (a) {
     case 419:
       if (std::strlen(this->unknown_00D0) == static_cast<std::size_t>(this->unknown_010C)) {
@@ -11213,7 +11215,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     case ID_CANCEL:
       if (g_windowMgr.Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-        g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
       break;
@@ -11353,7 +11355,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       this->unknown_00F0 += 5;
       break;
     case ID_STORE_RETURN:
-      this->SendMsg(this, 6, 184, 0, 0, 0);
+      this->SendMsg(this, UM_COMMAND, ID_OK, 0, 0, 0);
       break;
 
     case ID_STORE_PASSWORD_NUM0:
@@ -11660,15 +11662,15 @@ void UIBookWnd::OnProcess() {
       g_windowMgr.Schedule(this->unknown_00B8);
       this->unknown_00B8 = nullptr;
     }
-    g_windowMgr.CloseWindow(106);
+    g_windowMgr.CloseWindow(WID_BOOKWND);
     return;
   }
   const char* text = this->m_lines[line].c_str();
   if ((std::strlen(text) == 0 || std::strcmp(text, " ") == 0) && line < this->m_lineCount - 1) {
     this->m_autoLine = line + 1;
   }
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(this->StripColorCodes(this->m_lines[this->m_autoLine].c_str())), 0xE1E4FF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(this->StripColorCodes(this->m_lines[this->m_autoLine].c_str())), 0xE1E4FF, 0, 0, 0);
   UIWindow* balloon = this->unknown_00B8;
   if (balloon == nullptr) {
     balloon = new UITransBalloonText();
@@ -11946,13 +11948,13 @@ bool UIItemCollectionWnd::WrapText(std::string text, int width, std::list<std::s
 // FUNCTION: fn_12334
 int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (g_windowMgr.unknown_0458 != nullptr) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xAAA)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xAAA)), 0x64FFFF, 0, 0, 0);
     return 0;
   }
 
   switch (message) {
   case UM_DOWNPUSH:
-    this->m_list->SendMsg(nullptr, 0x13, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     return 0;
   case UM_SETINFO: {
     ChooseWndInfo* placement = reinterpret_cast<ChooseWndInfo*>(a);
@@ -11962,7 +11964,7 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     return 0;
   }
   case UM_UPPUSH:
-    this->m_list->SendMsg(nullptr, 0x12, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     return 0;
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
@@ -11972,19 +11974,19 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       if (tick - *reinterpret_cast<const DWORD*>(&g_session.unknown_5490[0x04]) >= 300) {
         *reinterpret_cast<DWORD*>(&g_session.unknown_5490[0x04]) = tick;
         if (this->m_items.empty()) {
-          this->SendMsg(nullptr, 6, 185, 0, 0, 0);
+          this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
           return 0;
         }
         const int selected = this->m_list->selected;
         if (selected != -1) {
-          g_modeMgr.GetGameMode()->SendMsg(0x17, this->m_items[selected] + 1, this->unknown_00C8, 0, 0);
-          g_windowMgr.CloseWindow(0x11);
+          g_modeMgr.GetGameMode()->SendMsg(MM_CHOOSE_MENU, this->m_items[selected] + 1, this->unknown_00C8, 0, 0);
+          g_windowMgr.CloseWindow(WID_CHOOSEWND);
         }
       }
       break;
     }
     case ID_CANCEL:
-      g_modeMgr.GetGameMode()->SendMsg(0x28, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
       break;
     }
     return 0;
@@ -12015,7 +12017,7 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case UM_SETNAID:
     this->unknown_00C8 = static_cast<int>(a);
     return 0;
-  case 0x7B: {
+  case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
@@ -12033,7 +12035,7 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           char text[260] = {};
           std::memcpy(text, records + position, header.length);
           position += header.length;
-          this->SendMsg(nullptr, 0x1B, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+          this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
           break;
         }
         default:
@@ -12042,14 +12044,14 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
         }
       }
       if (g_windowMgr.unknown_01F0 != nullptr) {
-        g_windowMgr.unknown_01F0->SendMsg(nullptr, 0x20, 0, 0, 0, 0);
+        g_windowMgr.unknown_01F0->SendMsg(nullptr, UM_DISABLENEXTBUTTON, 0, 0, 0, 0);
       }
     }
     return 0;
   }
-  case 0xA6:
+  case UM_CANCEL_NPC_CHOICE:
     if (CMode* mode = g_modeMgr.GetGameMode()) {
-      mode->SendMsg(0x17, -1, this->unknown_00C8, 0, 0);
+      mode->SendMsg(MM_CHOOSE_MENU, -1, this->unknown_00C8, 0, 0);
     }
     return 0;
   default:
@@ -12061,7 +12063,7 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // FUNCTION: fn_12331
 int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   const char* text = reinterpret_cast<const char*>(a);
-  if (message != 27 || text == nullptr || std::strlen(text) == 0 || std::strcmp(text, LookupMessage(666)) == 0) {
+  if (message != UM_SETCHOOSE || text == nullptr || std::strlen(text) == 0 || std::strcmp(text, LookupMessage(666)) == 0) {
     return this->UIChooseWnd::SendMsg(sender, message, a, b, c, d);
   }
   int length = 0;
@@ -12156,7 +12158,7 @@ void UITipboxWnd::RefreshTip() {
 // OFFSET: 0x00907050
 // FUNCTION: fn_12386
 int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
@@ -12200,7 +12202,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->BuildAnimations();
     break;
   case ID_CLOSE:
-    g_windowMgr.CloseWindow(0x13B);
+    g_windowMgr.CloseWindow(WID_TIPBOXWND);
     break;
   case ID_PREV: {
     const int page = (std::max)(0, g_itemTagOwner->unknown_00B4);
@@ -12218,7 +12220,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   }
   case 0x205:
     if (!g_windowMgr.GetHoverWindow()) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x1062)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0x1062)), 0xFF, 0, 0, 0);
     } else {
       const int id = g_itemTagOwner->unknown_0114;
       switch (g_windowMgr.GetHoverWindow()->geometry.id) {
@@ -12358,17 +12360,17 @@ void UIFrameWnd::DrawItemNameText(
 int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_COMMAND: {
-    if (a == 0xC9) {
-      g_windowMgr.CloseWindow(0x67);
+    if (a == ID_CLOSE) {
+      g_windowMgr.CloseWindow(WID_PROHIBITLISTWND);
     } else if (a == 0x10C) {
-      UIWindow* menu = g_windowMgr.EnsureWindow(0x1A);
+      UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       const std::string labels[4] = {LookupMessage(0x250), LookupMessage(0x251), LookupMessage(0x252), LookupMessage(0x253)};
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x2CF)), 0, 0, 0);
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x2D0)), 0, 0, 0);
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x2D1)), 0, 0, 0);
-      menu->SendMsg(nullptr, 0x28, 0, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x2CF)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x2D0)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x2D1)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
       menu->Resize(0x82, 0x30);
-      menu->SendMsg(nullptr, 0x53, 0x67, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SET_CALLER_WID, 0x67, 0, 0, 0);
       int x = 0xA0;
       int y = 0x2C;
       this->ToScreen(x, y);
@@ -12393,11 +12395,11 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       counter->SetSize(0xB6, 0x2E);
       counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
       g_windowMgr.AddRendered(counter);
-      counter->SendMsg(nullptr, 0x50, 0x98, 0, 0, 0);
+      counter->SendMsg(nullptr, UM_SET_TARGET, 0x98, 0, 0, 0);
       text = 0x186;
     } else if (a == 1) {
       if (IsAdminAccount(g_session.m_aid)) {
-        mode->SendMsg(0x97, 30000, 0, 0, 0);
+        mode->SendMsg(MM_REQ_GIVE_MANNER_POINT_PLUS, 30000, 0, 0, 0);
       }
       return 0;
     } else {
@@ -12408,11 +12410,11 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       counter->SetSize(0xB6, 0x2E);
       counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
       g_windowMgr.AddRendered(counter);
-      counter->SendMsg(nullptr, 0x50, 0x97, 0, 0, 0);
+      counter->SendMsg(nullptr, UM_SET_TARGET, 0x97, 0, 0, 0);
       text = 0x185;
     }
-    counter->SendMsg(nullptr, 0x1D, reinterpret_cast<std::intptr_t>(LookupMessage(text)), 0, 0, 0);
-    counter->SendMsg(nullptr, 0x51, 1, 0, 0, 0);
+    counter->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(text)), 0, 0, 0);
+    counter->SendMsg(nullptr, UM_SET_COUNT, 1, 0, 0, 0);
   
     break;
   }
@@ -12539,8 +12541,8 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       g_windowMgr.CloseWindow(this->m_kind);
       return 0;
     case ID_CARDITEM: {
-      UIWindow* window = g_windowMgr.EnsureWindow(47);
-      window->SendMsg(nullptr, 62, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), this->m_item.identified, 0, 0);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_CARDITEMILLUSTWND);
+      window->SendMsg(nullptr, UM_CARDITEMILLUSTRATE, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), this->m_item.identified, 0, 0);
       return 0;
     }
     case ID_BOOKITEM:
@@ -12553,25 +12555,25 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       }
       CFile file;
       if (!file.Open(path, 0, true, false)) {
-        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("책이 없습니다"), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("책이 없습니다"), 0xFF, 0, 0, 0);
         return 0;
       }
-      UIWindow* window = g_windowMgr.EnsureWindow(106);
-      window->SendMsg(nullptr, 94, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), argument1, 0, 0);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_BOOKWND);
+      window->SendMsg(nullptr, UM_GETBOOKCONTENTS, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), argument1, 0, 0);
       file.Close();
       return 0;
     }
     case ID_PREVIEW: {
-      UIWindow* window = g_windowMgr.EnsureWindow(294);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_PREVIEWEQUIPWND);
       if (window) {
-        window->SendMsg(this, 23, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+        window->SendMsg(this, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
         return 0;
       }
       break;
     }
     case ID_HELP: {
-      UIWindow* window = g_windowMgr.EnsureWindow(10012);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_PROBABILITYTABLE);
       if (window) {
         static_cast<CUIProbabilityTable*>(window)->SetItem(this->m_item.GetItemId());
         window->PlaceBeside(this);
@@ -12592,9 +12594,9 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     g_session.IsPetEgg(std::atoi(item->itemId.c_str()));
     this->m_item = *item;
     this->m_helpButton->Enable(NEO_PACKAGEITEM::CPaidPackageItemMgr::GetInstance()->IsPaidItem(std::atoi(this->m_item.itemId.c_str())));
-    CUIProbabilityTable* table = static_cast<CUIProbabilityTable*>(g_windowMgr.LookupWindow(10012));
+    CUIProbabilityTable* table = static_cast<CUIProbabilityTable*>(g_windowMgr.LookupWindow(WID_PROBABILITYTABLE));
     if (table && table->m_itemId != this->m_item.GetItemId()) {
-      g_windowMgr.CloseWindow(10012);
+      g_windowMgr.CloseWindow(WID_PROBABILITYTABLE);
     }
     this->m_cardTexts.clear();
     this->m_extraHeight = 0;
@@ -12671,14 +12673,14 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
         const int hours = static_cast<int>(this->m_item.unknown_0068);
         StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3974), hours / 24, hours % 24);
       }
-      this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), color, 0, 0);
+      this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), color, 0, 0);
     }
     for (unsigned index = 0; index < descriptions.size(); ++index) {
       if (g_inlineCharset) {
         std::sprintf(text, "%s%s", g_serverLanguage->Prefix(true), descriptions[index]);
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 26, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 26, 0, 0);
       } else {
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(descriptions[index]), g_serviceType == 6 ? 24 : 26, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(descriptions[index]), g_serviceType == 6 ? 24 : 26, 0, 0);
       }
     }
     if (g_session.IsPetEgg(std::atoi(item->itemId.c_str())) == 1) {
@@ -12707,25 +12709,25 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       if (g_inlineCharset == 1) {
         std::memset(text, 0, sizeof(text));
         std::sprintf(text, "%s%s", g_serverLanguage->Prefix(true), state.c_str());
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 26, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 26, 0, 0);
       } else {
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(state.c_str()), g_serviceType == 6 ? 24 : 26, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(state.c_str()), g_serviceType == 6 ? 24 : 26, 0, 0);
       }
     }
     this->Invalidate();
     g_windowMgr.Promote(this);
     if (argument2 != 0 && g_windowMgr.unknown_022C) {
-      g_windowMgr.unknown_022C->SendMsg(nullptr, 64, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), this->m_item.identified, 0, 0);
+      g_windowMgr.unknown_022C->SendMsg(nullptr, UM_PARAM, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), this->m_item.identified, 0, 0);
     }
     if (this->m_kind == 12) {
       ITEM_INFO* equipped = g_session.GetEquippedItem(&this->m_item);
       if (g_serviceOptions.Get(264) && equipped && argument4 == 0) {
-        UIWindow* window = g_windowMgr.EnsureWindow(234);
+        UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTION_COMPARISONWND);
         if (window) {
-          window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(equipped), 1, 0, 0);
+          window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(equipped), 1, 0, 0);
         }
       } else {
-        g_windowMgr.CloseWindow(234);
+        g_windowMgr.CloseWindow(WID_ITEMCOLLECTION_COMPARISONWND);
       }
     }
     const int lineCount = static_cast<int>(this->m_viewer->lines.size());
@@ -12829,7 +12831,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     }
     this->m_viewer->Clear();
     for (unsigned index = 0; index < lines.size(); ++index) {
-      this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(lines[index].c_str()), 26, 0, 0);
+      this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(lines[index].c_str()), 26, 0, 0);
     }
     this->Invalidate();
     g_windowMgr.Promote(this);

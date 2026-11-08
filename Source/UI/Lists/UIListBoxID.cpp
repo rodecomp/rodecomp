@@ -71,10 +71,10 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
       this->selected = static_cast<int>(this->lines.size() - 1);
     }
     if (this->selected < this->topLine) {
-      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
+      this->SendMsg(nullptr, UM_SCROLLVERT, -1, 0, 0, 0);
     }
     if (this->selected > this->topLine + this->geometry.height / this->lineHeight - 1) {
-      this->SendMsg(nullptr, 7, 1, 0, 0, 0);
+      this->SendMsg(nullptr, UM_SCROLLVERT, 1, 0, 0, 0);
     }
     this->Invalidate();
     this->Refresh();
@@ -85,7 +85,7 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
       this->selected = 0;
     }
     if (this->selected < this->topLine) {
-      this->SendMsg(nullptr, 7, -1, 0, 0, 0);
+      this->SendMsg(nullptr, UM_SCROLLVERT, -1, 0, 0, 0);
     }
     this->Invalidate();
     this->Refresh();
@@ -96,7 +96,7 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
       this->selected = static_cast<int>(this->lines.size() - 1);
     }
     if (this->selected > this->geometry.height / this->lineHeight + this->topLine - 1) {
-      this->SendMsg(nullptr, 7, 1, 0, 0, 0);
+      this->SendMsg(nullptr, UM_SCROLLVERT, 1, 0, 0, 0);
     }
     this->Invalidate();
     this->Refresh();
@@ -105,9 +105,9 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->topLine;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->topLine = previous - this->geometry.height / this->lineHeight + 1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->topLine = previous - 1 + this->geometry.height / this->lineHeight;
     } else {
       this->topLine = previous + argument1;
@@ -135,9 +135,9 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   case UM_SCROLLHORZPAGEDOWN: {
     const int previous = this->horizontalOffset;
     int delta = argument1;
-    if (message == 11) {
+    if (message == UM_SCROLLHORZPAGEUP) {
       delta = -15;
-    } else if (message == 12) {
+    } else if (message == UM_SCROLLHORZPAGEDOWN) {
       delta = 15;
     }
     this->horizontalOffset = previous + delta;

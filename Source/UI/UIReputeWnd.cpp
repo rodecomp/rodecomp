@@ -1,4 +1,6 @@
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/UIReputeWnd.h"
 #include "Contents/MessageTable.h"
@@ -249,12 +251,12 @@ int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       break;
     case ID_CLOSE:
       this->ClearUpdated();
-      g_windowMgr.CloseWindow(346);
+      g_windowMgr.CloseWindow(WID_REPUTEWND);
       break;
     case ID_SEARCH: {
       std::string keyword(this->m_searchEdit->Text() ? this->m_searchEdit->Text() : "");
       if (keyword.size() == 0) {
-        this->SendMsg(this->m_groupCombo, 39, 0, 0, 0, 0);
+        this->SendMsg(this->m_groupCombo, UM_COMBOBOX_SELECTED, 0, 0, 0, 0);
       } else {
         this->ClearUpdated();
         this->m_reputes.clear();
@@ -279,10 +281,10 @@ int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       }
 
       this->m_groupCombo->Select(index);
-      this->SendMsg(this->m_groupCombo, 39, 0, 0, 0, 0);
+      this->SendMsg(this->m_groupCombo, UM_COMBOBOX_SELECTED, 0, 0, 0, 0);
     }
     break;
-  case 136: {
+  case UM_REFRESH_REPUTE_FILTER: {
     std::string keyword(this->m_searchEdit->Text() ? this->m_searchEdit->Text() : "");
     if (keyword.size() == 0) {
       std::string group = this->m_groupCombo->GetSelectedText();

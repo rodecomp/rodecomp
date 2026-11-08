@@ -1,4 +1,6 @@
 #include "Contents/ReputeMgr.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Contents/MessageTable.h"
@@ -237,7 +239,7 @@ bool CReputeMgr::Load() {
 // OFFSET: 0x0060E4A0
 // FUNCTION: fn_04296
 void CReputeMgr::OpenRepute(std::uint64_t groupId, std::uint64_t reputeId) {
-  UIWindow* window = g_windowMgr.EnsureWindow(346);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_REPUTEWND);
   if (!window) {
     return;
   }
@@ -246,11 +248,11 @@ void CReputeMgr::OpenRepute(std::uint64_t groupId, std::uint64_t reputeId) {
   const unsigned int groupIdHigh = static_cast<unsigned int>(groupId >> 32);
 
   if (groupIdLow == 0 && groupIdHigh == 0) {
-    window->SendMsg(nullptr, 22, reinterpret_cast<std::intptr_t>(LookupMessage(3829)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_TAB, reinterpret_cast<std::intptr_t>(LookupMessage(3829)), 0, 0, 0);
   } else {
     auto group = this->m_groups.find(groupId);
     if (group != this->m_groups.end()) {
-      window->SendMsg(nullptr, 22, reinterpret_cast<std::intptr_t>(group->second.name.c_str()), 0, 0, 0);
+      window->SendMsg(nullptr, UM_TAB, reinterpret_cast<std::intptr_t>(group->second.name.c_str()), 0, 0, 0);
     }
   }
 
@@ -293,9 +295,9 @@ std::vector<const ReputeInfo*> CReputeMgr::FindReputes(const std::string& keywor
 void CReputeMgr::SetPointsReceived(bool received) {
   this->m_waitingForPoints = !received;
   if (received == true) {
-    UIWindow* window = g_windowMgr.LookupWindow(346);
+    UIWindow* window = g_windowMgr.LookupWindow(WID_REPUTEWND);
     if (window) {
-      window->SendMsg(nullptr, 136, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESH_REPUTE_FILTER, 0, 0, 0, 0);
     }
   }
 }

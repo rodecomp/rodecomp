@@ -1,4 +1,6 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Application/ApplicationActivation.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Browser/WebBrowser.h"
@@ -66,7 +68,7 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
   const LRESULT result = g_serverLanguage->Message(window, message, wParam, lParam, handled);
   if (handled) {
     if (g_serverLanguage->candidateCount == 0) {
-      g_windowMgr.CloseWindow(0x33);
+      g_windowMgr.CloseWindow(WID_CANDIDATEWND);
     } else {
       std::string candidates[9];
       int info[4];
@@ -83,13 +85,13 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
       for (int i = 0; i < count; ++i) {
         candidates[i] = g_serverLanguage->Candidate(first + i);
       }
-      g_windowMgr.EnsureWindow(0x33)->SendMsg(nullptr, 0x41, reinterpret_cast<std::intptr_t>(candidates), reinterpret_cast<std::intptr_t>(info), 0, 0);
+      g_windowMgr.EnsureWindow(WID_CANDIDATEWND)->SendMsg(nullptr, UM_IME_SET_CANDIDATE, reinterpret_cast<std::intptr_t>(candidates), reinterpret_cast<std::intptr_t>(info), 0, 0);
     }
 
     if (g_serverLanguage->DisplayLength()) {
-      g_windowMgr.EnsureWindow(0x55)->Invalidate();
+      g_windowMgr.EnsureWindow(WID_KEYSTROKEWND)->Invalidate();
     } else {
-      g_windowMgr.CloseWindow(0x55);
+      g_windowMgr.CloseWindow(WID_KEYSTROKEWND);
     }
 
     if (message == WM_IME_COMPOSITION) {
@@ -190,8 +192,8 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
     }
     break;
   case WM_KEYDOWN:
-    if (UIWindow* target = g_windowMgr.LookupWindow(0x130)) {
-      target->SendMsg(nullptr, 0, wParam, 0, 0, 0);
+    if (UIWindow* target = g_windowMgr.LookupWindow(WID_VIDEOWND)) {
+      target->SendMsg(nullptr, UM_DEFPUSH, wParam, 0, 0, 0);
       return 0;
     }
     if (g_windowMgr.ProcessKeyDown(wParam, lParam, ~(static_cast<unsigned>(lParam) >> 30) & 1)) {
@@ -218,7 +220,7 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
     }
     return 0;
   case WM_CHAR:
-    if (!g_windowMgr.LookupWindow(0x130) && g_windowMgr.unknown_0025) {
+    if (!g_windowMgr.LookupWindow(WID_VIDEOWND) && g_windowMgr.unknown_0025) {
       if (g_windowMgr.GetHoverWindow() && g_windowMgr.GetHoverWindow()->SendMsg(nullptr, WM_CHAR, wParam, lParam, 0, 0) == 3) {
         return 0;
       }

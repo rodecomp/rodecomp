@@ -1,4 +1,5 @@
 #include "Contents/Skills/SkillUnitId.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Client/Mode/GameModeEnums.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/MsgEffect.h"
@@ -77,7 +78,7 @@ CMsgEffect::CMsgEffect() {
 // FUNCTION: fn_24258
 CMsgEffect::~CMsgEffect() {
   if (this->m_owner != nullptr) {
-    this->m_owner->SendMsg(this, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->m_owner->SendMsg(this, AM_MSGEFFECT_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
@@ -402,7 +403,7 @@ bool CMsgEffect::OnProcess() {
         return false;
       }
       if (this->m_value == static_cast<int>(g_session.m_aid)) {
-        g_modeMgr.GetGameMode()->SendMsg(0x21, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_PLAYER_EMOTION_END, 0, 0, 0, 0);
       }
       return false;
     }
@@ -535,7 +536,7 @@ bool CSkill::OnProcess() {
     }
     if (this->m_effect) {
       this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
-      g_modeMgr.GetGameMode()->SendMsg(0x7A, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
     break;
 

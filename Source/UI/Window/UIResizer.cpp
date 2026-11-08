@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -105,7 +106,7 @@ void UIResizer::OnMouseMove(int x, int y) {
     break;
   }
 
-  this->parent->SendMsg(this, 14, this->direction, width, height, 0);
+  this->parent->SendMsg(this, UM_RESIZE, this->direction, width, height, 0);
 }
 
 // OFFSET: 0x0085FA20

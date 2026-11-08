@@ -1,4 +1,5 @@
 #include "UI/Window/UIPetEvolutionWnd.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Session.h"
@@ -135,12 +136,12 @@ namespace {
 int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == 184) {
+    if (argument1 == ID_OK) {
       std::vector<std::uint16_t> materials;
       for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
         ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, it->first, 1);
         if (item.quantity < it->second) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2574)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2574)), 255, 0, 0, 0);
           return 0;
         }
         materials.push_back(static_cast<std::uint16_t>(item.unknown_0000[1]));
@@ -148,7 +149,7 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
 
       if (g_session.unknown_1038 != 0) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2607)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2607)), 255, 0, 0, 0);
         return 0;
       }
 
@@ -161,9 +162,9 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       packet.evolvedEggId = this->m_evolvedEggId;
       std::memcpy(packet.materials, materials.data(), count * 2);
       GetRagConnection().Send(static_cast<short>(length), &packet);
-      g_windowMgr.CloseWindow(261);
-    } else if (argument1 == 185 || argument1 == 201) {
-      g_windowMgr.CloseWindow(261);
+      g_windowMgr.CloseWindow(WID_PETEVOLUTIONWND);
+    } else if (argument1 == ID_CANCEL || argument1 == ID_CLOSE) {
+      g_windowMgr.CloseWindow(WID_PETEVOLUTIONWND);
     }
     break;
 
@@ -171,11 +172,11 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     ITEM_INFO item;
     item.SetItemId(argument1);
     item.identified = 1;
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     break;
   }
 
-  case 142: {
+  case UM_SET_PET_EVOLUTION_MATERIALS: {
     this->m_materials.clear();
     this->m_petEggId = argument1;
     this->m_evolvedEggId = argument2;

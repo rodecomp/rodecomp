@@ -1,4 +1,5 @@
 #include "UI/Guild/UIGuild_Storage_Log.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -45,7 +46,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
   case UM_COMMAND:
     switch (a) {
     case ID_OK:
-      g_windowMgr.CloseWindow(253);
+      g_windowMgr.CloseWindow(WID_GUILD_STORAGE_LOG);
       break;
 
     case ID_NEXT: {
@@ -66,7 +67,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->m_page = page + 1;
       this->unknown_0174 = 0;
       this->unknown_0188 = this->unknown_0184;
-      this->SendMsg(this, 60, 0, 0, 0, 0);
+      this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
       return 0;
     }
 
@@ -87,7 +88,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         this->m_offset = std::max(0u, offset);
         this->m_page = std::max(1u, page - 1);
         this->unknown_0188 = this->unknown_0184;
-        this->SendMsg(this, 60, 0, 0, 0, 0);
+        this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
         return 0;
       }
       break;
@@ -103,7 +104,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->unknown_0174 = 0;
     this->m_offset = 0;
     this->unknown_0188 = this->unknown_0184;
-    this->SendMsg(this, 60, 0, 0, 0, 0);
+    this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
     return 0;
 
   case UM_REFRESH:

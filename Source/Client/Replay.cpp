@@ -1,4 +1,5 @@
 #include "Client/Replay.h"
+#include "UI/Window/WindowId.h"
 #include "Network/Packets/PacketId.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Skills/SkillInfo.h"
@@ -118,11 +119,11 @@ std::vector<unsigned char> BuildEntryQueueReplayRecords() {
   if (text.size() != 0) {
     AppendRecord(records, BuildReplayTaggedRecord(6514, text.c_str(), text.size()));
   }
-  if (UIEntryQueueWnd* window = dynamic_cast<UIEntryQueueWnd*>(g_windowMgr.LookupWindow(157))) {
+  if (UIEntryQueueWnd* window = dynamic_cast<UIEntryQueueWnd*>(g_windowMgr.LookupWindow(WID_JOINTO_BATTLEFIELDWND))) {
     const int selected = window->SelectedIndex();
     AppendRecord(records, MakeReplayRecord(6515, &selected, sizeof(selected)));
   }
-  if (UIEntryQueueStandByWnd* window = dynamic_cast<UIEntryQueueStandByWnd*>(g_windowMgr.LookupWindow(209))) {
+  if (UIEntryQueueStandByWnd* window = dynamic_cast<UIEntryQueueStandByWnd*>(g_windowMgr.LookupWindow(WID_ENTRYQUEUESTANDBYWND))) {
     AppendRecord(records, MakeReplayRecord(6517, &window->m_waiting, sizeof(window->m_waiting)));
     AppendRecord(records, MakeReplayRecord(6518, &window->m_ranking, sizeof(window->m_ranking)));
     AppendRecord(records, BuildReplayTaggedRecord(6516, window->m_queueName.c_str(), window->m_queueName.size()));

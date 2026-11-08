@@ -1,4 +1,6 @@
 #include "Contents/EntryQueueMgr.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "Network/Packets/NoticeEnums.h"
 #include "Client/Session.h"
 
@@ -121,8 +123,8 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
   int message;
   switch (packet->result) {
   case BG_APPLY_ACCEPT: {
-    if (!g_windowMgr.CloseWindow(209)) {
-      g_windowMgr.EnsureWindow(209);
+    if (!g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND)) {
+      g_windowMgr.EnsureWindow(WID_ENTRYQUEUESTANDBYWND);
     }
 
     strcpy_s(this->queueName.text, sizeof(this->queueName.text), packet->queueName);
@@ -134,7 +136,7 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
     }
     text += "]";
     text += LookupMessage(0x833);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x4763FF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x4763FF, 0, 0, 0);
     this->ready = 1;
     return;
   }
@@ -181,7 +183,7 @@ void CEntryQueueMgr::OnCancelResult(const EntryQueueNotice* notice) {
   switch (notice->result) {
   case 1:
     g_windowMgr.Confirm(LookupMessage(0x83E), 0, false, false, 0, "Message", 0x118, 0x78, 0);
-    g_windowMgr.CloseWindow(209);
+    g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
     this->ready = 0;
     break;
   case 3:
@@ -192,7 +194,7 @@ void CEntryQueueMgr::OnCancelResult(const EntryQueueNotice* notice) {
     break;
   case 14:
     g_windowMgr.Confirm(LookupMessage(0x841), 0, false, false, 0, "Message", 0x118, 0x78, 0);
-    g_windowMgr.CloseWindow(209);
+    g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
     this->ready = 0;
     break;
   }
@@ -201,7 +203,7 @@ void CEntryQueueMgr::OnCancelResult(const EntryQueueNotice* notice) {
   text += this->current->displayName;
   text += "]";
   text += LookupMessage(0x842);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
   this->current = nullptr;
 }
 
@@ -221,9 +223,9 @@ void CEntryQueueMgr::IgnorePacket(const unsigned char* packet) {
 // FUNCTION: fn_19671
 void CEntryQueueMgr::OnStatus(const EntryQueueStatus* packet) {
   this->ready = 1;
-  UIWindow* window = g_windowMgr.LookupWindow(209);
-  if (!window && !g_windowMgr.CloseWindow(209)) {
-    window = g_windowMgr.EnsureWindow(209);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_ENTRYQUEUESTANDBYWND);
+  if (!window && !g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND)) {
+    window = g_windowMgr.EnsureWindow(WID_ENTRYQUEUESTANDBYWND);
   }
 
   if (!this->current) {
@@ -241,7 +243,7 @@ void CEntryQueueMgr::OnStatus(const EntryQueueStatus* packet) {
     );
   }
 
-  g_windowMgr.CloseWindow(157);
+  g_windowMgr.CloseWindow(WID_JOINTO_BATTLEFIELDWND);
 }
 
 // OFFSET: 0x00BA2C70
@@ -249,18 +251,18 @@ void CEntryQueueMgr::OnStatus(const EntryQueueStatus* packet) {
 void CEntryQueueMgr::OnReady(const EntryQueueReady* packet) {
   strcpy_s(this->queueName.text, sizeof(this->queueName.text), packet->queueName);
   strcpy_s(this->characterName.text, sizeof(this->characterName.text), packet->characterName);
-  if (g_windowMgr.CloseWindow(210)) {
+  if (g_windowMgr.CloseWindow(WID_ENTRYQUEUEREQUESTWND)) {
     return;
   }
 
-  g_windowMgr.EnsureWindow(210);
+  g_windowMgr.EnsureWindow(WID_ENTRYQUEUEREQUESTWND);
   g_soundMgr->PlayWave("se_btg_ready.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
 
   std::string text("[");
   text += this->current->displayName;
   text += "]";
   text += LookupMessage(0x843);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x4763FF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x4763FF, 0, 0, 0);
 }
 
 // OFFSET: 0x00BA2E50

@@ -1,4 +1,7 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Utility/EncryptedName.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Mode/CGameMode.h"
@@ -223,7 +226,7 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
       const char captionSource[] = {'\x27', '\x1D', '\xFA', '\x7E', '\x2A', '\xB1', '\xE1'};
       const char* caption = DecryptName<0x91E147EBBD47C39FULL>(captionSource);
       MessageBoxA(hWnd, message.c_str(), caption, MB_OK);
-      g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+      g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     } else if (g_modeMgr.state == 0) {
       g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
     } else {
@@ -234,9 +237,9 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
         balloon.lines.push_back(BroadcastBalloonLine{message, 0x62B0FF, 0});
         balloonWindow->AddMessage(0, balloon);
       }
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0x62B0FF, 0, 0, 0);
-      g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(message.c_str()), 0x62B0FF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0x62B0FF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(message.c_str()), 0x62B0FF, 0, 0, 0);
     }
   } else {
     const char captionSource[] = {'\x6B', '\x33', '\x2A', '\xD6', '\x8C', '\xAD', '\xA5'};
@@ -472,18 +475,18 @@ void ConfirmPurchaseCallback::operator()(Stove::PCSDK::CallbackResult callbackRe
   g_stoveWaitingCallback = false;
   if (callbackResult.GetResult().IsSuccessful()) {
     if (count != 0 && purchased == true) {
-      g_modeMgr.GetGameMode()->SendMsg(331, 4, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_STOVE_AUTHENTICATION, 4, 0, 0, 0);
       g_stoveMgr->FetchAllProducts();
-      UIWindow* window = g_windowMgr.LookupWindow(318);
+      UIWindow* window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND);
       if (window != nullptr) {
-        window->SendMsg(nullptr, 122, 0, 0, 0, 0);
-        window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        window->SendMsg(nullptr, UM_UPDATE_CASHSHOP_BALANCE, 0, 0, 0, 0);
+        window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
     } else {
-      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       const char noticeSource[] = {'\x50', '\x23', '\x4B', '\xBE', '\x58', '\x4F', '\xDF', '\xDF', '\x27', '\x5B', '\x3F', '\xBE', '\x36', '\x47', '\x33', '\x41', '\x5F', '\x63', '\x4E', '\xBB', '\x59', '\x48', '\x4B', '\xB8', '\xCF', '\x9B'};
       const char* notice = DecryptName<0x61FF87ED7BF39BE1ULL>(noticeSource);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice), 0xFFE6E6, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0xFFE6E6, 0, 0, 0);
     }
   } else {
     const char captionSource[] = {'\x8B', '\xF9', '\x8E', '\xCC', '\x7C', '\xBB', '\x39'};
@@ -658,7 +661,7 @@ void CStoveMgr::WaitForCallback() {
 void TermsAgreementCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url) const {
   g_stoveWaitingCallback = false;
   if (callbackResult.GetResult().IsSuccessful()) {
-    g_modeMgr.GetGameMode()->SendMsg(323, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_REQUEST_CASH_SHOP, 0, 0, 0, 0);
   } else {
     std::string path = EncodeText(CP_ACP, std::wstring(url));
     const char source[] = {'\x68', '\x51', '\x42', '\x23', '\x03'};

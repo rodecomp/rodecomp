@@ -1,4 +1,5 @@
 #include "UI/Window/UINoteWnd.h"
+#include "UI/Window/UIEnums.h"
 #include "Contents/MessageTable.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -56,9 +57,9 @@ void UINoteWnd_Scroll::OnLBtnUp(int x, int y) {
 void UINoteWnd_Scroll::OnWheel(int delta) {
   if (this->wheelScroll == 1) {
     if (delta < 0) {
-      this->SendMsg(this->scrollBar, 7, 12, 0, 0, 0);
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, 12, 0, 0, 0);
     } else {
-      this->SendMsg(this->scrollBar, 7, -12, 0, 0, 0);
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, -12, 0, 0, 0);
     }
   }
 }
@@ -72,11 +73,11 @@ UINoteWnd::UINoteWnd()
 // OFFSET: 0x00950840
 // FUNCTION: fn_12944
 int UINoteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
-    if (argument1 == 201) {
+  if (message == UM_COMMAND) {
+    if (argument1 == ID_CLOSE) {
       g_windowMgr.CloseWindow(this->geometry.id);
     }
-  } else if (message == 0x22) {
+  } else if (message == UM_SETINFO) {
     UINoteWnd_Scroll* scroll = this->m_scroll;
     const std::string text = LookupMessage(static_cast<int>(argument1));
     UIStaticText_LF* label = new UIStaticText_LF(0);

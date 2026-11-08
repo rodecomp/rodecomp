@@ -1,3 +1,5 @@
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIPartyBookingHelpWnd.h"
 #include "Client/Session.h"
 
@@ -28,7 +30,7 @@ void UIPartyBookingHelpWnd::OnCreate(int width, int height) {
     if (help.size()) {
       char* text = new char[help.size() + 4];
       sprintf(text, "%s%s", g_serverLanguage->Prefix(true), help.c_str());
-      this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 0, 1, 1);
+      this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 0, 1, 1);
     }
   }
 }
@@ -43,11 +45,11 @@ void UIPartyBookingHelpWnd::Paint() {
 // OFFSET: 0x00938810
 // FUNCTION: fn_12751
 int UIPartyBookingHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
   if (argument1 == 201) {
-    g_windowMgr.CloseWindow(173);
+    g_windowMgr.CloseWindow(WID_PARTYBOOKINGHELPWND);
   }
   return 0;
 }

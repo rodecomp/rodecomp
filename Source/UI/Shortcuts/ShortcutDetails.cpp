@@ -1,4 +1,6 @@
 #include "Client/Session.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Skill/UISkillDescribeWnd.h"
 #include "Render/DX7/RenderSystemDX7.h"
@@ -41,8 +43,8 @@ void UIShortCutWnd::OnRBtnDown(int x, int y) {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot->itemId), 1);
 
     if (item.unknown_0000[1] != 0) {
-      UIWindow* detail = g_windowMgr.EnsureWindow(12);
-      detail->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      UIWindow* detail = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
+      detail->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
 
     return;
@@ -54,13 +56,13 @@ void UIShortCutWnd::OnRBtnDown(int x, int y) {
     return;
   }
 
-  UIWindow* detail = g_windowMgr.EnsureWindow(46);
+  UIWindow* detail = g_windowMgr.EnsureWindow(WID_SKILLDESCRIBEWND);
 
   if (detail) {
     if (static_cast<std::uint32_t>(static_cast<UISkillDescribeWnd*>(detail)->m_skillId) == skill.id) {
-      g_windowMgr.CloseWindow(46);
+      g_windowMgr.CloseWindow(WID_SKILLDESCRIBEWND);
     } else {
-      detail->SendMsg(nullptr, 61, skill.id, 0, 0, 0);
+      detail->SendMsg(nullptr, UM_SKILLDESCRIBE, skill.id, 0, 0, 0);
     }
   }
 

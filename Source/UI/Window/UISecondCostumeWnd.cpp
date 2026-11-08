@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -228,7 +229,7 @@ int UISecondCostumeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   case UM_COMMAND:
     switch (a) {
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(259);
+      g_windowMgr.CloseWindow(WID_SECONDCOSTUMEWND);
       break;
 
     case ID_RIGHT:

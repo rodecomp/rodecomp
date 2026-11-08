@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Contents/UserData/AccountService.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Store/MCStoreInfoBackup.h"
@@ -131,12 +132,12 @@ void CMCStoreInfoBackup::CompleteSave(AsyncDiagnostic diagnostic, std::string re
     return;
   }
 
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
 
   if (this->type == 0) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3685)), 0xFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3685)), 0xFFFF, 0, 0, 0);
   } else if (this->type == 1) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3686)), 0xFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3686)), 0xFFFF, 0, 0, 0);
   }
 }
 

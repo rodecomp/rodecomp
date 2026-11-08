@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Window/UIWindow.h"
@@ -95,13 +96,13 @@ void UIWindowMgr::SubmitActiveDialog() {
   if (window || (window = this->unknown_01F0) != nullptr || (window = this->unknown_01F4) != nullptr || (window = this->unknown_0214) != nullptr ||
       (window = this->unknown_021C) != nullptr || (window = this->unknown_020C) != nullptr || (window = this->unknown_0374) != nullptr ||
       (window = this->hoverWindow) != nullptr) {
-    window->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     return;
   }
 
   for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
     if ((*entry)->IsFrameWnd()) {
-      (*entry)->SendMsg(nullptr, 19, 0, 0, 0, 0);
+      (*entry)->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     }
   }
 }

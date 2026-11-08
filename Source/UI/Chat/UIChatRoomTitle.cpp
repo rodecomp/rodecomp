@@ -1,4 +1,7 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/ForbiddenWords.h"
 #include "Contents/MessageTable.h"
@@ -38,9 +41,9 @@ void UIChatRoomTitle::OnCreate(int, int) {
 void UIChatRoomTitle::OnLBtnDblClk(int, int) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (this->roomType == 0) {
-    g_windowMgr.EnsureWindow(29)->SendMsg(nullptr, 47, this->roomId, 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_PASSWORDWND)->SendMsg(nullptr, UM_SETROOMID, this->roomId, 0, 0, 0);
   } else if (this->roomType != 3) {
-    mode->SendMsg(45, this->roomId, 0, 0, 0);
+    mode->SendMsg(MM_REQ_ENTER_ROOM, this->roomId, 0, 0, 0);
   }
 }
 
@@ -92,11 +95,11 @@ void UIChatRoomTitle::ResetCursor(int x, int y) {
 // OFFSET: 0x008637A0
 // FUNCTION: fn_10910
 int UIChatRoomTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     return 0;
   }
 
-  if (message != 34) {
+  if (message != UM_SETINFO) {
     return UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 

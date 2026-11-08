@@ -1,4 +1,5 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -91,12 +92,12 @@ void UIComboBoxEx::OnLBtnUp(int x, int y) {
   auto& windows = g_windowMgr;
 
   if (UIWindow* target = windows.LookupWindow(this->targetId)) {
-    target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
+    target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
   } else if (this->parent) {
-    this->parent->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
+    this->parent->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
   }
 
-  windows.CloseWindow(26);
+  windows.CloseWindow(WID_COMBOBOXWND);
 }
 
 // OFFSET: 0x00895C30
@@ -140,11 +141,11 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   switch (message) {
   case UM_DEFPUSH:
     if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
-      target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
+      target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
     }
 
     if (g_windowMgr.unknown_0214) {
-      g_windowMgr.CloseWindow(26);
+      g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
 
     return 0;

@@ -1,4 +1,5 @@
 #include "Contents/Effects/SkillEffects.h"
+#include "Client/Mode/ModeMessage.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -117,7 +118,7 @@ void CMeteorEffect::OnProcess() {
         CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
         spriteParticle->UpdateFrame();
         if (static_cast<long long>(spriteParticle->frame) == *reinterpret_cast<const long long*>(&this->unknown_00D8)) {
-          g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+          g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
         }
         ++particle->unknown_00E8;
       }

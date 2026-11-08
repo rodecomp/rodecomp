@@ -1,4 +1,6 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UINavigationHelpWnd.h"
 
 #include "Contents/MessageTable.h"
@@ -16,36 +18,36 @@ void UINavigationHelpWnd::OnCreate(int width, int height) {
   this->m_viewer->backgroundRed = 0xd2;
   this->AddChild(this->m_viewer);
 
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2241)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2242)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2243)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2244)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2245)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2246)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2247)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2248)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2249)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2250)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2251)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2252)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2253)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2254)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2255)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2256)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(3216)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(3217)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(3218)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2241)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2242)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2243)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2244)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2245)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2246)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2247)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2248)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2249)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2250)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2251)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2252)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2253)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2254)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2255)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2256)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(3216)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(3217)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(3218)), 0x30, 0, 0);
 
   this->AddCloseButton(LookupMessage(2202), 0);
 }
@@ -60,8 +62,8 @@ void UINavigationHelpWnd::Paint() {
 // OFFSET: 0x009359D0
 // FUNCTION: fn_12748
 int UINavigationHelpWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message == 6 && a == 201) {
-    g_windowMgr.CloseWindow(229);
+  if (message == UM_COMMAND && a == ID_CLOSE) {
+    g_windowMgr.CloseWindow(WID_NAVIGATIONHELPWND);
   }
   return 0;
 }

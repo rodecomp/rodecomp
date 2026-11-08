@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeDragState.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Session.h"
 #include "Contents/Items/BarterMarketItemMgr.h"
 #include "Contents/Items/ItemDescription.h"
@@ -33,7 +34,7 @@ void ModeDragState::Clear() {
 void ModeDragState::BeginItem(
   WindowManagerWindows& windows, int sourceValue, const ITEM_INFO& item, int quantityValue, int slotValue
 ) {
-  windows.ShowWindowById(15, 0);
+  windows.ShowWindowById(WID_ITEMDROPCNTWND, 0);
 
   this->Clear();
   if (item.unknown_0000[1] == 0) {
@@ -70,7 +71,7 @@ void ModeDragState::BeginItem(
 void ModeDragState::BeginSkill(
   WindowManagerWindows& windows, ResourceMgr& resources, int sourceValue, std::uint32_t idValue, const char* nameValue, int level, int slotValue
 ) {
-  UIWindow* window = windows.EnsureWindow(15);
+  UIWindow* window = windows.EnsureWindow(WID_ITEMDROPCNTWND);
   if (window->geometry.visible != 0) {
     window->Show(0);
   }
@@ -90,7 +91,7 @@ void ModeDragState::BeginSkill(
 // OFFSET: 0x00CFDF90
 // FUNCTION: fn_21427
 void ModeDragState::BeginBarterItem(int sourceValue, const BarterMarketItem& item, int quantityValue, int slotValue) {
-  g_windowMgr.ShowWindowById(15, 0);
+  g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 0);
   this->Clear();
   this->source = sourceValue;
   this->quantity = quantityValue;
@@ -107,7 +108,7 @@ void ModeDragState::BeginBarterItem(int sourceValue, const BarterMarketItem& ite
 // OFFSET: 0x00CFE060
 // FUNCTION: fn_21428
 void ModeDragState::BeginBarterEntry(int sourceValue, const BarterMarketEntry& entry, int quantityValue, int slotValue) {
-  g_windowMgr.ShowWindowById(15, 0);
+  g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 0);
   this->Clear();
   this->source = sourceValue;
   this->quantity = quantityValue;

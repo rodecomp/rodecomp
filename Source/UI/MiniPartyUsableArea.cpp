@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "UI/MiniPartyGrid.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -7,7 +8,7 @@
 RECT UIWindowMgr::GetMiniPartyUsableArea() {
   const int height = this->unknown_0480;
   int top = static_cast<int>(height * 0.3f);
-  if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
     top = window->geometry.height;
   }
 

@@ -1,4 +1,5 @@
 #include "Contents/ChampionMonsterMgr.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Effects/EffectActor.h"
@@ -108,7 +109,7 @@ int CChampionMonsterMgr::ApplyEffects(int id, CGameActor* actor, int aid) {
   } else {
     for (unsigned int i = 0; i < effects.size(); ++i) {
       const int effect = effects[i];
-      actor->SendMsg(actor, 109, 0, effect, effect >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(actor, AM_DELETE_EFFECT, 0, effect, effect >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 

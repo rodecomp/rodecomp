@@ -1,4 +1,5 @@
 #include "Contents/Effects/EffectMaker.h"
+#include "Contents/Actors/ActorEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -57,7 +58,7 @@ bool CEffectMaker::OnProcess() {
     this->unknown_0158 = 0;
     CRagEffect* effect = this->LaunchEffect(this->unknown_0160, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect != nullptr) {
-      effect->SendMsg(nullptr, 46, 0, reinterpret_cast<int>(&this->unknown_0164), 0, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETPARAM, 0, reinterpret_cast<int>(&this->unknown_0164), 0, 0, 0, 0);
     }
   }
 

@@ -1,5 +1,7 @@
 #include "Render/Renderer.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIVideoWnd.h"
 
 #include "Contents/MessageTable.h"
@@ -92,7 +94,7 @@ void UIVideoWnd::OnProcess() {
   }
 
   if (this->m_movie->State() == 2) {
-    g_windowMgr.CloseWindow(304);
+    g_windowMgr.CloseWindow(WID_VIDEOWND);
   }
 }
 
@@ -103,21 +105,21 @@ int UIVideoWnd::SendMsg(
 ) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == 521) {
-      g_windowMgr.CloseWindow(304);
+    if (argument1 == ID_CLOSE_VIDEO) {
+      g_windowMgr.CloseWindow(WID_VIDEOWND);
     }
     break;
   case UM_DEFPUSH:
     if (argument1 == 27) {
-      this->SendMsg(nullptr, 5, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_CLOSE, 0, 0, 0, 0);
     }
     break;
   case UM_CLOSE:
     if (g_windowMgr.Confirm(LookupMessage(3142), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-      g_windowMgr.CloseWindow(304);
+      g_windowMgr.CloseWindow(WID_VIDEOWND);
     }
     break;
-  case 150:
+  case UM_OPEN_VIDEO:
     if (this->m_movie->Open(reinterpret_cast<const char*>(argument1), 0, false) && this->m_movie) {
       if (this->m_texture) {
         g_texMgr.Remove(this->m_texture);
@@ -128,14 +130,14 @@ int UIVideoWnd::SendMsg(
       this->m_texture = CreateTexture(handle->width, handle->height, 4, false, false);
     }
     break;
-  case 159:
+  case UM_SET_VIDEO_VOLUME:
     BinkSetVolume(this->m_movie->Handle(), 0, argument1 << 8);
     if (argument2 == 0) {
       this->m_savedVolume = CSoundMgr::Volume(g_soundMgr);
       CSoundMgr::SetVolume(g_soundMgr, 0);
     }
     break;
-  case 151: {
+  case UM_TOGGLE_VIDEO_PAUSE: {
     BinkHandle* handle = this->m_movie->Handle();
     BinkPause(handle, handle->paused == 1 ? 0 : 1);
     break;

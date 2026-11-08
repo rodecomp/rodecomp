@@ -1,3 +1,4 @@
+#include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Combat/CombatTypes.h"
 #include "Client/Mode/ModeMgr.h"
@@ -544,7 +545,7 @@ void CEfstAction_SHADOW_CLOCK::OnEfstBegin(int efstId, int value, int argument3,
 void CEfstAction_SHADOW_CLOCK::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     while (static_cast<EffectActor*>(actor)->HasId(963)) {
-      actor->SendMsg(nullptr, 109, 0, 963, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 963, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 }

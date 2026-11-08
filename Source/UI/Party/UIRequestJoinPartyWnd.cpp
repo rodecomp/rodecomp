@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/MessageTable.h"
@@ -83,7 +84,7 @@ void UIRequestJoinPartyWnd::OnCreate(int, int) {
   this->blockText->Invalidate();
   this->AddChild(this->blockText);
   this->blockText->lineHeight = 15;
-  this->blockText->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(3518)), 30, 0, 0);
+  this->blockText->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(3518)), 30, 0, 0);
   this->AddBigCloseButton("", 0);
 }
 
@@ -101,10 +102,10 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_COMMAND:
     switch (a) {
     case ID_CLOSE:
-      this->SendMsg(nullptr, 6, 542, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, 542, 0, 0, 0);
       break;
     case 541:
-      g_modeMgr.gameMode->SendMsg(264, this->characterId, 1, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
+      g_modeMgr.gameMode->SendMsg(MM_PARTY_REQ_ACK_MASTER_TO_JOIN, this->characterId, 1, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
       g_requestJoinPartyMgr->Advance();
       this->block->SetChecked(0);
       break;
@@ -113,7 +114,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         g_requestJoinPartyMgr->Block(this->accountId);
       }
 
-      g_modeMgr.gameMode->SendMsg(264, this->characterId, 0, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
+      g_modeMgr.gameMode->SendMsg(MM_PARTY_REQ_ACK_MASTER_TO_JOIN, this->characterId, 0, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
       g_requestJoinPartyMgr->Advance();
       this->block->SetChecked(0);
       break;
@@ -143,7 +144,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->details->Clear();
     char messageText[1024] = {};
     _snprintf_s(messageText, sizeof(messageText), _TRUNCATE, LookupMessage(3378), request.name);
-    this->details->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(messageText), 0, 0, 1);
+    this->details->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(messageText), 0, 0, 1);
     this->details->Move(43, this->details->lines.size() == 3 ? 20 : 30);
     this->InvalidateChildren();
 

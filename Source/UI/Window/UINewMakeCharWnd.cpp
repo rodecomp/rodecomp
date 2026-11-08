@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UINewMakeCharWnd.h"
@@ -37,7 +38,7 @@ UINewMakeCharWnd::UINewMakeCharWnd()
       m_raceViews() {
   this->geometry.unknown_0034 = 0;
 
-  const int* preset = reinterpret_cast<const int*>(g_modeMgr.gameMode->SendMsg(10016, 0, 0, 0, 0));
+  const int* preset = reinterpret_cast<const int*>(g_modeMgr.gameMode->SendMsg(LMM_GET_CHAR_PARAM, 0, 0, 0, 0));
   this->m_stats[0] = static_cast<unsigned char>(preset[0]);
   this->m_stats[1] = static_cast<unsigned char>(preset[1]);
   this->m_stats[2] = static_cast<unsigned char>(preset[2]);
@@ -303,7 +304,7 @@ void UIHairStyleButton::OnCreate(int width, int height) {
   this->m_preview = new (std::nothrow) UIHairBitmap();
   this->m_preview->SetSize(36, 37);
   this->AddChild(this->m_preview);
-  this->SendMsg(nullptr, 40, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x007DBFD0
@@ -475,7 +476,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
     this->m_hairStyleButtons[index]->Move((index % 4) * 0x26 + 0x25E, (index / 4) * 0x25 + 0x3B);
     this->AddChild(this->m_hairStyleButtons[index]);
     if (index == 0) {
-      this->m_hairStyleButtons[0]->SendMsg(this, 13, 1, 0, 0, 0);
+      this->m_hairStyleButtons[0]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
     }
   }
 
@@ -501,7 +502,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
     sprintf(name, "유저인터페이스\\make_character_ver2\\color%02d_on.bmp", index + 1);
     button->SetBitmap(name, 2);
     if (index == 0) {
-      button->SendMsg(this, 13, 1, 0, 0, 0);
+      button->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
     }
     button->m_value = 0x1EF;
     button->Move((index % 5) * 0x1B + 0x26B, (index / 5) * 0x18 + 0x132);
@@ -521,7 +522,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     char name[25] = {};
     strcpy(name, this->m_nameEdit->Text());
     memcpy(this->m_name, name, sizeof(this->m_name));
-    this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, this->m_message0, 0, 0, 0);
     return 0;
   }
   case UM_COMMAND:
@@ -579,7 +580,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
           return 0;
         }
 
-        g_modeMgr.gameMode->SendMsg(0x2715, 0, 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(LMM_SENDCHARINFO, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       } else {
         if (hasControlCharacter || allowed == 0) {
@@ -594,7 +595,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       }
 
       CMode* mode = g_modeMgr.gameMode;
-      mode->SendMsg(0x271F, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
+      mode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
       int payload[8];
       payload[0] = this->m_stats[0];
       payload[1] = this->m_stats[1];
@@ -604,7 +605,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       payload[5] = this->m_stats[5];
       payload[6] = this->m_headPalette;
       payload[7] = this->m_head;
-      mode->SendMsg(0x2721, reinterpret_cast<int>(payload), 0, 0, 0);
+      mode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(payload), 0, 0, 0);
       return 0;
     }
 
@@ -614,7 +615,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
   case ID_CANCEL:
     g_windowMgr.Schedule(this);
-    g_modeMgr.gameMode->SendMsg(0, 0x2714, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_COMMAND, 0x2714, 0, 0, 0);
     return 0;
 
   case ID_SLOT:
@@ -622,9 +623,9 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       for (int index = 0; index < 2; ++index) {
         if (sender == this->m_raceViews[index]) {
           this->m_race = index;
-          this->m_raceViews[index]->SendMsg(this, 13, 1, 0, 0, 0);
+          this->m_raceViews[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         } else {
-          this->m_raceViews[index]->SendMsg(this, 13, 0, 0, 0, 0);
+          this->m_raceViews[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         }
         this->m_raceViews[index]->Invalidate();
       }
@@ -632,9 +633,9 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       if (sender == this->m_raceViews[this->m_race]) {
         this->m_head = 1;
         for (int index = 0; index < 24; ++index) {
-          this->m_hairStyleButtons[index]->SendMsg(this, 13, index == 0, 0, 0, 0);
+          this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, index == 0, 0, 0, 0);
           this->m_hairStyleButtons[index]->m_race = this->m_race;
-          this->m_hairStyleButtons[index]->SendMsg(nullptr, 0x28, 0, 0, 0, 0);
+          this->m_hairStyleButtons[index]->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
         }
 
         if (this->m_race == 0) {
@@ -651,14 +652,14 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     if (argument2 == 0x1EF) {
       for (int index = 0; index < 9; ++index) {
         if (sender == this->m_hairColorButtons[index]) {
-          this->m_hairColorButtons[index]->SendMsg(this, 13, 1, 0, 0, 0);
+          this->m_hairColorButtons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
           this->m_headPalette = static_cast<short>(index);
           if (this->m_headPalette < 0) {
             this->m_headPalette = 8;
           }
           this->UpdatePreviewResources();
         } else {
-          this->m_hairColorButtons[index]->SendMsg(this, 13, 0, 0, 0, 0);
+          this->m_hairColorButtons[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         }
       }
     }
@@ -690,14 +691,14 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         if (index >= (g_session.IsDoramJob(this->m_job) == true ? 6 : 0x17)) {
           return 0;
         }
-        this->m_hairStyleButtons[index]->SendMsg(this, 13, 1, 0, 0, 0);
+        this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         this->m_head = static_cast<short>(index + 1);
         if (this->m_head < 0) {
           this->m_head = 0;
         }
         this->UpdatePreviewResources();
       } else {
-        this->m_hairStyleButtons[index]->SendMsg(this, 13, 0, 0, 0, 0);
+        this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
       }
     }
     return 0;
@@ -724,7 +725,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
     for (int index = 0; index < 24; ++index) {
       this->m_hairStyleButtons[index]->m_sex = this->m_sex;
-      this->m_hairStyleButtons[index]->SendMsg(nullptr, 0x28, 0, 0, 0, 0);
+      this->m_hairStyleButtons[index]->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
     }
     this->UpdatePreviewResources();
     return 0;

@@ -1,3 +1,6 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Network/Packets/NoticeEnums.h"
@@ -270,9 +273,9 @@ void CPc::SetHeadPalette(int value) {
 void CGrannyPc::SetHonor(int value) {
   if (value < 0) {
     const std::int64_t emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::ChatProhibit);
-    this->SendMsg(nullptr, 160, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_CASH_EMOTION, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
-    this->SendMsg(nullptr, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_DELETE_PROHIBITEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   this->unknown_0428 = value;
 }
@@ -282,9 +285,9 @@ void CGrannyPc::SetHonor(int value) {
 void CPc::SetHonor(int value) {
   if (value < 0) {
     const std::int64_t emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::ChatProhibit);
-    this->SendMsg(nullptr, 160, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_CASH_EMOTION, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
-    this->SendMsg(nullptr, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_DELETE_PROHIBITEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   this->unknown_0430 = value;
 }
@@ -1496,9 +1499,9 @@ void CPc::SetSprAccessory2(int value) {
   );
 
   if (this->HasId(678)) {
-    this->SendMsg(nullptr, 109, 0, 678, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    this->SendMsg(nullptr, 109, 0, 679, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    this->SendMsg(nullptr, 109, 0, 680, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 678, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 679, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 680, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
@@ -2144,7 +2147,7 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
     }
 
     int effectId;
-    this->SendMsg(nullptr, 120, 0, reinterpret_cast<int>(&effectId), reinterpret_cast<int>(&effectId) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_IS_HAVE_EFFECT, 0, reinterpret_cast<int>(&effectId), reinterpret_cast<int>(&effectId) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     this->DrawQuad(quad, palette, 0x101, 0.0f, 0.0f, 0);
   }
 
@@ -2264,7 +2267,7 @@ bool CPc::OnProcess() {
       if (!this->msgEffect) {
         CMsgEffect* effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
         this->AddMsgEffect(effect);
-        effect->SendMsg(this, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->msgEffect = effect;
       }
       return result;
@@ -2272,7 +2275,7 @@ bool CPc::OnProcess() {
   }
 
   if (this->msgEffect) {
-    this->msgEffect->SendMsg(nullptr, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->msgEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     this->msgEffect = nullptr;
   }
 
@@ -2600,7 +2603,7 @@ __declspec(noinline) void CPlayer::UpdateMsgEffect(bool show) {
       if (!this->msgEffect) {
         CMsgEffect* effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
         this->AddMsgEffect(effect);
-        effect->SendMsg(this, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->msgEffect = effect;
       }
       return;
@@ -2608,7 +2611,7 @@ __declspec(noinline) void CPlayer::UpdateMsgEffect(bool show) {
   }
 
   if (this->msgEffect) {
-    this->msgEffect->SendMsg(nullptr, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->msgEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     this->msgEffect = nullptr;
   }
 }
@@ -2861,7 +2864,7 @@ bool CPlayer::OnProcess() {
     request.destinationX = reinterpret_cast<const int&>(this->unknown_04F8);
     request.destinationY = this->unknown_04FC;
     const int address = reinterpret_cast<int>(&request);
-    this->SendMsg(nullptr, 0, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_MOVE, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
   this->UpdatePendingAction();
@@ -2883,7 +2886,7 @@ bool CPlayer::OnProcess() {
   this->UpdateMsgEffect(this->GetMonsterTransformJob() > 0);
 
   if (g_session.unknown_61B1) {
-    UIWindow* window = g_windowMgr.LookupWindow(289);
+    UIWindow* window = g_windowMgr.LookupWindow(WID_VIEWCAMERAINFOWND);
     if (window != nullptr) {
       window->Invalidate();
     }
@@ -2953,13 +2956,13 @@ void CPlayer::UpdatePendingAction() {
         reinterpret_cast<int&>(this->unknown_04F8) = cellX;
         this->unknown_04FC = cellY;
         this->unknown_0524 = timeGetTime();
-        this->SendMsg(nullptr, 91, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       return;
     }
 
     if (this->unknown_0510 == 2) {
-      this->SendMsg(nullptr, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (this->unknown_0514 != 0 || timeGetTime() <= this->unknown_0500 + 1200) {
       return;
@@ -2968,9 +2971,9 @@ void CPlayer::UpdatePendingAction() {
     this->unknown_0500 = timeGetTime();
     this->unknown_0514 = 1;
     if (this->unknown_0510 != 2) {
-      this->SendMsg(nullptr, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_REQ_ATTACK_REPEAT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
-      this->SendMsg(nullptr, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_REQ_ATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     return;
   }
@@ -3004,7 +3007,7 @@ void CPlayer::UpdatePendingAction() {
     );
     const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
     if ((reinterpret_cast<const int&>(this->unknown_04F8) == column && this->unknown_04FC == row) || inRange) {
-      this->SendMsg(nullptr, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_REQ_SKILL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
 
@@ -3017,7 +3020,7 @@ void CPlayer::UpdatePendingAction() {
     this->unknown_04FC = cellY;
     reinterpret_cast<int&>(this->unknown_04F8) = cellX;
     this->ApplyFollowOffset(target, x, z, &cellY, &cellX);
-    this->SendMsg(nullptr, 91, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
   case PT_GROUNDSKILL: {
@@ -3039,7 +3042,7 @@ void CPlayer::UpdatePendingAction() {
     const float distance = this->CalcDist(x, this->render.position.y, z);
     const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
     if ((reinterpret_cast<const int&>(this->unknown_04F8) == column && this->unknown_04FC == row) || inRange) {
-      this->SendMsg(nullptr, 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_REQ_GROUND_SKILL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
 
@@ -3051,7 +3054,7 @@ void CPlayer::UpdatePendingAction() {
     }
     this->unknown_04FC = groundY;
     reinterpret_cast<int&>(this->unknown_04F8) = groundX;
-    this->SendMsg(nullptr, 91, 0, groundX, groundX >> 31, groundY, groundY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, groundX, groundX >> 31, groundY, groundY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
   case PT_PICKUPITEM: {
@@ -3075,10 +3078,10 @@ void CPlayer::UpdatePendingAction() {
     }
 
     if (mode->IsWithinRange(column, row, targetX, targetY, 1)) {
-      this->SendMsg(nullptr, 16, 0, targetX, targetX >> 31, targetY, targetY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_REQ_CHANGE_DIR, 0, targetX, targetX >> 31, targetY, targetY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       if (!mode->HasUnknown01A4(this->unknown_051C)) {
         mode->PushUnknown01A4(this->unknown_051C);
-        mode->SendMsg(136, this->unknown_051C, 0, 0, 0);
+        mode->SendMsg(MM_ITEMPICKUP, this->unknown_051C, 0, 0, 0);
       }
       break;
     }
@@ -3088,7 +3091,7 @@ void CPlayer::UpdatePendingAction() {
     }
     this->unknown_04FC = itemY;
     reinterpret_cast<int&>(this->unknown_04F8) = itemX;
-    this->SendMsg(nullptr, 91, 0, itemX, itemX >> 31, itemY, itemY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, itemX, itemX >> 31, itemY, itemY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
   case PT_TOUCH_SKILL: {
@@ -3104,7 +3107,7 @@ void CPlayer::UpdatePendingAction() {
     int cellY;
     mode->WorldCell(skill->render.position.x, skill->render.position.z, cellX, cellY);
     int range = mode->GetSkillAttackRange(this->unknown_052C, this->unknown_0530);
-    if (mode->SendMsg(95, 0, 0, 0, 0) == 0 && range < 5 && this->unknown_052C != 124) {
+    if (mode->SendMsg(MM_GET_SKILL_USE_TYPE, 0, 0, 0, 0) == 0 && range < 5 && this->unknown_052C != 124) {
       range = g_session.unknown_0F4C > 5 ? g_session.unknown_0F4C : 5;
     }
     float x;
@@ -3128,7 +3131,7 @@ void CPlayer::UpdatePendingAction() {
       }
       this->unknown_04FC = cellY;
       reinterpret_cast<int&>(this->unknown_04F8) = cellX;
-      this->SendMsg(nullptr, 91, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
 
@@ -3145,7 +3148,7 @@ void CPlayer::UpdatePendingAction() {
     case UNT_FLAMETRAP:
       if (this->unknown_052C == 0) {
         if (this->unknown_0510 == 2) {
-          this->SendMsg(nullptr, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
         if (this->unknown_0514 != 0 || timeGetTime() <= this->unknown_0500 + 1200) {
           return;
@@ -3154,22 +3157,22 @@ void CPlayer::UpdatePendingAction() {
         this->unknown_0500 = timeGetTime();
         this->unknown_0514 = 1;
         if (this->unknown_0510 != 2) {
-          this->SendMsg(nullptr, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          this->SendMsg(nullptr, AM_REQ_ATTACK_REPEAT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         } else {
-          this->SendMsg(nullptr, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          this->SendMsg(nullptr, AM_REQ_ATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
         return;
       }
       break;
     }
-    this->SendMsg(nullptr, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_REQ_SKILL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     break;
   }
   default:
     return;
   }
 
-  this->SendMsg(nullptr, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00DB68B0
@@ -3201,49 +3204,49 @@ void CPlayer::ReapplySkillEffects() {
     case EFST_TWOHANDQUICKEN: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x82, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x82, 0, 0, 0);
       }
       break;
     }
     case EFST_ONEHANDQUICKEN: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x82, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x82, 0, 0, 0);
       }
       break;
     }
     case EFST_NJ_BUNSINJYUTSU: {
       CRagEffect* effect = this->LaunchEffect(0x269, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x269, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x269, 0, 0, 0);
       }
       break;
     }
     case EFST_OVERTHRUST: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x80, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x80, 0, 0, 0);
       }
       break;
     }
     case EFST_OVERTHRUSTMAX: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x80, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x80, 0, 0, 0);
       }
       break;
     }
     case EFST_ENERGYCOAT: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0xA9, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0xA9, 0, 0, 0);
       }
       break;
     }
     case EFST_SPEARQUICKEN: {
       CRagEffect* effect = this->LaunchEffect(0xA6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0xFA, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0xFA, 0, 0, 0);
       }
       break;
     }
@@ -3293,12 +3296,12 @@ void CPlayer::ReapplySkillEffects() {
         }
         for (int id = 0x1DB; id < 0x1E5; ++id) {
           if (this->HasId(id) == true) {
-            this->SendMsg(nullptr, 109, 0, id, id >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, id, id >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
           }
         }
         this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
-      this->SendMsg(nullptr, 109, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->unknown_0544 = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     }
@@ -3325,12 +3328,12 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case EFST_DUPLELIGHT: {
       while (this->HasId(0x341)) {
-        this->SendMsg(nullptr, 109, 0, 0x341, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x341, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       CRagEffect* effect = this->LaunchEffect(0x341, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       vector3d scale{2.0f, 0.0f, 0.0f};
       if (effect) {
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&scale), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&scale), 0, 0, 0, 0);
       }
       break;
     }
@@ -3342,11 +3345,11 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case EFST_STRIKING: {
       while (this->HasId(0x39D)) {
-        this->SendMsg(nullptr, 109, 0, 0x39D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x39D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       CRagEffect* effect = this->LaunchEffect(0x39D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x39D, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x39D, 0, 0, 0);
       }
       break;
     }
@@ -3436,24 +3439,24 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case EFST_MELODYOFSINK:
       if (this->HasId(0x57) == true) {
-        this->SendMsg(nullptr, 109, 0, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x57, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_BEYOND_OF_WARCRY:
       if (this->HasId(0x31F) == true) {
-        this->SendMsg(nullptr, 109, 0, 0x31F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x31F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x31F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_SATURDAY_NIGHT_FEVER:
       if (this->HasId(0x360) == true) {
-        this->SendMsg(nullptr, 109, 0, 0x360, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x360, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x360, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_EQUIPED_FLOOR:
-      this->SendMsg(nullptr, 110, 0, 0x23B, 0, 1, 0, value, value >> 31, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_STATUS_CHANGE, 0, 0x23B, 0, 1, 0, value, value >> 31, 0, 0, 0, 0, 0, 0);
       break;
     case EFST_ALL_RIDING:
       this->SetRiding(1);
@@ -3461,41 +3464,41 @@ void CPlayer::ReapplySkillEffects() {
       this->SetBodyPalette(this->render.unknown_0048);
       break;
     case EFST_ON_PUSH_CART:
-      this->SendMsg(nullptr, 110, 0, type, type >> 31, 1, 0, g_session.unknown_5C1C, g_session.unknown_5C1C >> 31, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_STATUS_CHANGE, 0, type, type >> 31, 1, 0, g_session.unknown_5C1C, g_session.unknown_5C1C >> 31, 0, 0, 0, 0, 0, 0);
       break;
     case EFST_TELEKINESIS_INTENSE:
       while (this->HasId(0x418)) {
-        this->SendMsg(this, 109, 0, 0x418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(this, AM_DELETE_EFFECT, 0, 0x418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x418, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_WIDEWEB:
       while (this->HasId(0x194)) {
-        this->SendMsg(this, 109, 0, 0x194, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(this, AM_DELETE_EFFECT, 0, 0x194, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x194, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_BURNT:
       while (this->HasId(0x41E)) {
-        this->SendMsg(this, 109, 0, 0x41E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(this, AM_DELETE_EFFECT, 0, 0x41E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x41E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_CHILL:
       while (this->HasId(0x41F)) {
-        this->SendMsg(this, 109, 0, 0x41F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(this, AM_DELETE_EFFECT, 0, 0x41F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x41F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_OFFERTORIUM:
       while (this->HasId(0x421)) {
-        this->SendMsg(this, 109, 0, 0x421, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(this, AM_DELETE_EFFECT, 0, 0x421, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x421, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_ZANGETSU:
       while (this->HasId(0x3EB)) {
-        this->SendMsg(this, 109, 0, 0x3EB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(this, AM_DELETE_EFFECT, 0, 0x3EB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x3EB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
@@ -3508,13 +3511,13 @@ void CPlayer::ReapplySkillEffects() {
         }
       }
       while (this->HasId(0x3C3)) {
-        this->SendMsg(nullptr, 109, 0, 0x3C3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x3C3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_KAGEMUSYA:
       while (this->HasId(0x3EC)) {
-        this->SendMsg(nullptr, 109, 0, 0x3EC, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x3EC, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x3EC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
@@ -3532,7 +3535,7 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case EFST_DARKCROW:
       while (this->HasId(0x410)) {
-        this->SendMsg(nullptr, 109, 0, 0x410, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x410, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x410, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->LaunchEffect(0x410, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3541,11 +3544,11 @@ void CPlayer::ReapplySkillEffects() {
     case EFST_HALLUCINATIONWALK:
     case EFST_NPC_HALLUCINATIONWALK: {
       while (this->HasId(0x318)) {
-        this->SendMsg(nullptr, 109, 0, 0x318, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x318, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       CRagEffect* effect = this->LaunchEffect(0x318, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, 44, 0, 0xFFFF, 0x318, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x318, 0, 0, 0);
       }
       break;
     }
@@ -3659,19 +3662,19 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case EFST_HANDICAPSTATE_DEEPBLIND:
       if (this->HasId(0x14E) == true) {
-        this->SendMsg(nullptr, 109, 0, 0x14E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x14E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(0x14E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_overrideColor = 1;
-      this->SendMsg(nullptr, 109, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->unknown_0544 = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_HANDICAPSTATE_DEEPSILENCE:
     case EFST_HANDICAPSTATE_SWOONING:
-      this->SendMsg(nullptr, 156, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_MAKE_DEEPSILENCE_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     case EFST_HANDICAPSTATE_LASSITUDE:
-      this->SendMsg(nullptr, 152, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_MAKE_LASSITUDE_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     case EFST_HANDICAPSTATE_FROSTBITE:
       g_effectMgr->Spawn(this->render.accountId, 0x8DE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -3685,21 +3688,21 @@ void CPlayer::ReapplySkillEffects() {
       g_effectMgr->Spawn(this->render.accountId, 0x8E1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_HANDICAPSTATE_CONFLAGRATION:
-      this->SendMsg(nullptr, 127, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_CHANGE_COLOR, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       g_effectMgr->Retire(this->render.accountId, 0x8DD);
       g_effectMgr->Spawn(this->render.accountId, 0x8DD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_HANDICAPSTATE_MISFORTUNE:
-      this->SendMsg(nullptr, 154, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_MAKE_MISFORTUNE_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     case EFST_HANDICAPSTATE_DEADLYPOISON:
-      this->SendMsg(nullptr, 127, 0, 170, 0, 0, 0, 170, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_CHANGE_COLOR, 0, 170, 0, 0, 0, 170, 0, 0, 0, 0, 0, 0, 0);
       break;
     case EFST_HANDICAPSTATE_DEPRESSION:
-      this->SendMsg(nullptr, 127, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_CHANGE_COLOR, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0);
       break;
     case EFST_HANDICAPSTATE_HOLYFLAME:
-      this->SendMsg(nullptr, 127, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_CHANGE_COLOR, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     case EFST_DRAGONIC_AURA:
       g_effectMgr->Retire(this->render.accountId, 0x6BE);
@@ -3788,7 +3791,7 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     case EFST_BLOCK:
-      g_windowMgr.EnsureWindow(0x2730);
+      g_windowMgr.EnsureWindow(WID_DEBUFFREMOVEWND);
       break;
     case EFST_HOLY_OIL:
     case EFST_FIRST_BRAND:
@@ -3796,7 +3799,7 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case EFST_EQUIPPED_DIVINE_ARMOR:
     case EFST_EQUIPPED_HOLY_ARMOR:
-      this->SendMsg(nullptr, 110, 0, type, type >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_STATUS_CHANGE, 0, type, type >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     default:
       switch (type) {
@@ -3814,7 +3817,7 @@ void CPlayer::ReapplySkillEffects() {
       case EFST_MERMAID_LONGING:
       case EFST_MAGICAL_FEATHER:
       case EFST_TIME_ACCESSORY:
-        this->SendMsg(nullptr, 110, 0, type, type >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_STATUS_CHANGE, 0, type, type >> 31, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         break;
       case EFST_HEAD_EQUIPMENT_EFFECT:
         this->ApplyEffectState(value + 0x9B5, true);
@@ -3854,9 +3857,9 @@ void CPlayer::SendMsg(
     request.y = this->unknown_0538;
     request.level = this->unknown_0530;
     if (request.skill == 0x7D) {
-      g_windowMgr.EnsureWindow(0x54)->SendMsg(nullptr, 0x44, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+      g_windowMgr.EnsureWindow(WID_TALKBOXTRAPINPUTWND)->SendMsg(nullptr, UM_SET_SKILL_INFO, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
     } else if (request.skill == 0xDC) {
-      g_windowMgr.EnsureWindow(0x65)->SendMsg(nullptr, 0x44, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+      g_windowMgr.EnsureWindow(WID_GRAFFISTRBOXWND)->SendMsg(nullptr, UM_SET_SKILL_INFO, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
     } else if (request.skill == 0x108 || request.skill == 0xA04) {
       int metadata = 0;
       int column = 0;
@@ -3869,36 +3872,36 @@ void CPlayer::SendMsg(
       if (g_pathFinder.FindPath(timeGetTime(), column, row, subColumn, subRow, this->unknown_0534, this->unknown_0538, 150, route, 15) == true) {
         metadata = route.EndMetadata();
       }
-      mode->SendMsg(0x46, reinterpret_cast<int>(&request), metadata, 0, 0);
+      mode->SendMsg(MM_USE_SKILL_TOGROUND, reinterpret_cast<int>(&request), metadata, 0, 0);
     } else {
-      mode->SendMsg(0x46, reinterpret_cast<int>(&request), 0, 0, 0);
+      mode->SendMsg(MM_USE_SKILL_TOGROUND, reinterpret_cast<int>(&request), 0, 0, 0);
     }
     break;
   }
   case AM_REQ_SKILL:
-    mode->SendMsg(0x45, this->unknown_052C, this->unknown_051C, this->unknown_0530, 0);
+    mode->SendMsg(MM_USE_SKILL, this->unknown_052C, this->unknown_051C, this->unknown_0530, 0);
     break;
   case AM_REQ_ATTACK_REPEAT: {
     CRenderObject* target = mode->scene->GetGameActorByAID(this->unknown_051C);
     if (target == nullptr || static_cast<CGameActor*>(target)->unknown_0314 != 7) {
-      mode->SendMsg(0x89, 7, this->unknown_051C, 0, 0);
+      mode->SendMsg(MM_REQUEST_ACT, 7, this->unknown_051C, 0, 0);
     }
     break;
   }
   case AM_REQ_ATTACK:
-    mode->SendMsg(0x89, 0, this->unknown_051C, 0, 0);
+    mode->SendMsg(MM_REQUEST_ACT, 0, this->unknown_051C, 0, 0);
     break;
   case AM_REQ_SIT:
     if (!StateFlag01(this->stateFlags)) {
       if (this->render.unknown_0070 == 0) {
-        mode->SendMsg(0x89, 2, this->unknown_051C, 0, 0);
+        mode->SendMsg(MM_REQUEST_ACT, 2, this->unknown_051C, 0, 0);
       } else if (this->render.unknown_0070 == 6) {
-        mode->SendMsg(0x89, 3, this->unknown_051C, 0, 0);
+        mode->SendMsg(MM_REQUEST_ACT, 3, this->unknown_051C, 0, 0);
       }
     }
     break;
   case AM_REQ_MOVE:
-    this->SendMsg(nullptr, 0xD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (this->render.unknown_0070 != 0x4B) {
       if (this->IsSpecialState(this->render.unknown_0070)) {
         this->unknown_0518 = 1;
@@ -3908,7 +3911,7 @@ void CPlayer::SendMsg(
         this->unknown_0518 = 0;
         this->unknown_053C = -1;
         this->unknown_0540 = -1;
-        this->SendMsg(nullptr, 0x5B, 0, b, b >> 31, d, d >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, b, b >> 31, d, d >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
     break;
@@ -3916,7 +3919,7 @@ void CPlayer::SendMsg(
     g_unknown173AD3F = false;
     if (timeGetTime() > this->unknown_0528 + 350) {
       this->unknown_0528 = timeGetTime();
-      mode->SendMsg(0x8A, b, d, 0, 0);
+      mode->SendMsg(MM_REQUEST_MOVE, b, d, 0, 0);
     }
     break;
   case AM_REQ_CHANGE_DIR: {
@@ -3977,7 +3980,7 @@ void CPlayer::SendMsg(
     const int motion = this->unknown_043C;
     this->render.curMotion = motion;
     this->render.angle = static_cast<float>((CPlayer::AngleToDirection(this->render.angle) + 4) * 45);
-    mode->SendMsg(0x8B, CPlayer::AngleToDirection(this->render.angle), motion, 0, 0);
+    mode->SendMsg(MM_CHANGE_DIRECTION, CPlayer::AngleToDirection(this->render.angle), motion, 0, 0);
     break;
   }
   case AM_PREMOVE:
@@ -4016,13 +4019,13 @@ void CPlayer::SendMsg(
   case AM_CANCELATTACK:
     this->unknown_0514 = 0;
     this->unknown_0508 = 0;
-    mode->SendMsg(0x1A, 0, 0, 0, 0);
+    mode->SendMsg(MM_SETLOCKONMOUSE, 0, 0, 0, 0);
     break;
   case AM_ATTACKCLICKUP: {
     const int attackMode = this->unknown_0508;
     if (attackMode != 1 && attackMode != 5) {
       if (attackMode == 3) {
-        mode->SendMsg(0x1A, 0, 0, 0, 0);
+        mode->SendMsg(MM_SETLOCKONMOUSE, 0, 0, 0, 0);
         break;
       }
       if (attackMode != 6) {
@@ -4032,8 +4035,8 @@ void CPlayer::SendMsg(
     if (this->unknown_0510 != 0) {
       this->unknown_0510 = 2;
       if (this->unknown_0520 != 0) {
-        this->SendMsg(nullptr, 0xD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        mode->SendMsg(0x49, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        mode->SendMsg(MM_CANCEL_LOCKON, 0, 0, 0, 0);
       }
     }
     break;
@@ -4061,7 +4064,7 @@ void CPlayer::SendMsg(
       this->unknown_052C = d;
     }
     break;
-  case 0x3C:
+  case AM_RESUMEPROCEEDATTACK:
     if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
       const int attackMode = this->unknown_0508 == 1 ? 5 : 1;
       this->unknown_0524 = timeGetTime() - 1200;
@@ -4107,7 +4110,7 @@ void CPlayer::SendMsg(
       this->unknown_0520 = 0;
     }
     break;
-  case 0x95:
+  case AM_CLEAR_ROUTE:
     this->route.points.clear();
     break;
   default:
@@ -4331,7 +4334,7 @@ void CPlayer::Initialize() {
   this->SetSprRobe(g_session.m_robe, 0);
   if (g_session.unknown_6184 != 0) {
     const int value = g_session.unknown_6184;
-    this->SendMsg(nullptr, 110, 0, 856, 0, 1, 0, value, value >> 31, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_STATUS_CHANGE, 0, 856, 0, 1, 0, value, value >> 31, 0, 0, 0, 0, 0, 0);
   }
   this->bodyState = bodyState;
   this->stateFlags = stateFlags;
@@ -4340,7 +4343,7 @@ void CPlayer::Initialize() {
     *reinterpret_cast<const int*>(&g_session.unknown_0F0C[0]), g_session.m_jobFlags, *reinterpret_cast<const int*>(&g_session.unknown_0F0C[4]), false
   );
 
-  this->SendMsg(nullptr, 109, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->unknown_0544 = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   if (!g_statusRefreshSuppressed) {
     this->ReapplySkillEffects();
@@ -4869,8 +4872,8 @@ void CPc::SendMsg(
     }
     break;
   }
-  case 105:
-  case 106:
+  case AM_MAKE_CHICKEN:
+  case AM_DELETE_CHICKEN:
   case 136: {
     this->SetSprJob(this->GetEffectiveJob(-1));
     this->SetImfFileName();
@@ -5095,7 +5098,7 @@ void CPc::SendMsg(
     this->unknown_04D0 = entry->unknown_007C;
     break;
   }
-  case 114:
+  case AM_CHANGE_RANK:
     this->unknown_0494 = d;
     this->unknown_0498 = b;
     break;
@@ -5136,13 +5139,13 @@ void CPc::SendMsg(
       break;
     }
     CMsgEffect* effect = mode->SpawnMsgEffect(effectId, &this->render.position, this->render.accountId, true);
-    effect->SendMsg(this, 0x32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     effect->SetAnimationSpeed(6.0f);
     this->AddMsgEffect(effect);
     this->unknown_037C[0] = reinterpret_cast<int>(effect);
     break;
   }
-  case 137: {
+  case AM_MAKE_WOLF: {
     if (this->unknown_037C[1] != 0) {
       break;
     }
@@ -5173,7 +5176,7 @@ void CPc::SendMsg(
     if (!effect) {
       break;
     }
-    effect->SendMsg(this, 0x32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     this->AddMsgEffect(effect);
     this->unknown_037C[1] = reinterpret_cast<int>(effect);
     break;
@@ -5288,8 +5291,8 @@ void CGrannyPc::SendMsg(
     }
     break;
   }
-  case 105:
-  case 106: {
+  case AM_MAKE_CHICKEN:
+  case AM_DELETE_CHICKEN: {
     this->SetSprJob(this->GetEffectiveJob(-1));
     this->SetImfFileName();
     const std::int64_t weapon = this->GetWeapon();
@@ -5434,7 +5437,7 @@ void CGrannyPc::SendMsg(
     this->ShowPartyMemberEffect(entry->aid);
     break;
   }
-  case 114:
+  case AM_CHANGE_RANK:
     this->unknown_047C = d;
     this->unknown_0480 = b;
     break;
@@ -5595,12 +5598,12 @@ void CPlayer::SetState(int state, int resetPosition) {
     this->unknown_0518 = 0;
     this->unknown_053C = -1;
     this->unknown_0540 = -1;
-    this->SendMsg(nullptr, 91, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
   if (state == 3) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    mode->SendMsg(5, 0, 0, 0, 0);
+    mode->SendMsg(MM_HIDEMOUSEPOINTER, 0, 0, 0, 0);
     mode->LaunchDummyEffect(&this->render.position, 0x174, 300, 0);
     g_screenShakeDuration = 0;
   }

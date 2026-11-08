@@ -1,4 +1,5 @@
 #include "Client/ModeScreenshot.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Application/Launcher.h"
 #include "Client/Mode/CMode.h"
@@ -126,7 +127,7 @@ void CMode::TakeScreenshot() {
 
     g_renderer->SaveLogo(path);
     path += " is Saved.";
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(path.c_str()), 0xFF00, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(path.c_str()), 0xFF00, 0, 0, 0);
     this->screenshotName = "";
   }
 }

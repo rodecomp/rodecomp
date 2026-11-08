@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "Contents/RenewQuestMgr.h"
 #include "Contents/MessageTable.h"
 #include "File/File.h"
@@ -633,7 +635,7 @@ int CRenewQuestMgr::L_AddQuestIconTooltip(lua_State* state) {
 // OFFSET: 0x0067B620
 // FUNCTION: fn_05457
 void CRenewQuestMgr::ShowOngoingQuestInfo(unsigned int questId) {
-  if (auto* window = static_cast<CUIOngoingQuestInfo*>(g_windowMgr.EnsureWindow(0x2719))) {
+  if (auto* window = static_cast<CUIOngoingQuestInfo*>(g_windowMgr.EnsureWindow(WID_ONGOINGQUESTINFO))) {
     window->SetQuest(questId);
   }
 }
@@ -641,7 +643,7 @@ void CRenewQuestMgr::ShowOngoingQuestInfo(unsigned int questId) {
 // OFFSET: 0x0067B650
 // FUNCTION: fn_05458
 void CRenewQuestMgr::ShowQuestInfo(unsigned int questId) {
-  if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.EnsureWindow(0x2718))) {
+  if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.EnsureWindow(WID_RENEWQUESTUI))) {
     window->UpdateQuestLists(0xF);
     window->SelectQuest(questId);
   }
@@ -650,7 +652,7 @@ void CRenewQuestMgr::ShowQuestInfo(unsigned int questId) {
 // OFFSET: 0x0067B690
 // FUNCTION: fn_05459
 void CRenewQuestMgr::UpdateOngoingQuestInfo() {
-  if (auto* window = static_cast<CUIOngoingQuestInfo*>(g_windowMgr.LookupWindow(0x2719))) {
+  if (auto* window = static_cast<CUIOngoingQuestInfo*>(g_windowMgr.LookupWindow(WID_ONGOINGQUESTINFO))) {
     window->UpdateHuntInfo();
   }
 }
@@ -662,7 +664,7 @@ void CRenewQuestMgr::UpdateQuestWindows() {
     g_windowMgr.window_0428->Invalidate();
   }
 
-  if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(0x2718))) {
+  if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(WID_RENEWQUESTUI))) {
     window->UpdateQuestLists(0xD);
   }
 }
@@ -782,7 +784,7 @@ void CRenewQuestMgr::ReadOngoingQuests(const char* buffer, unsigned int) {
     g_windowMgr.window_0428->Invalidate();
   }
 
-  if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(0x2718))) {
+  if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(WID_RENEWQUESTUI))) {
     window->UpdateQuestLists(0xD);
   }
 }

@@ -1,3 +1,7 @@
+#include "Client/Mode/ModeMessage.h"
+#include "Contents/Actors/ActorEnums.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Utility/EncryptedName.h"
 #include "Contents/Actors/Pc.h"
@@ -418,7 +422,7 @@ __declspec(noinline) void ApplyServiceOption(int id, unsigned char value, bool n
 // FUNCTION: fn_45461
 void GreetFriends() {
   g_session.HiFriends(nullptr);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("[ To Friends ] : (Hi) *^_^*"), 0x1EFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("[ To Friends ] : (Hi) *^_^*"), 0x1EFFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x006BFE60
@@ -790,8 +794,8 @@ void NotifyServiceOption(unsigned char enabled, int enabledMessage, int disabled
   }
 
   if (!text.empty()) {
-    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), color, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), color, 0, 0, 0);
   }
 }
 
@@ -799,7 +803,7 @@ void NotifyServiceOption(unsigned char enabled, int enabledMessage, int disabled
 // FUNCTION: fn_06372
 void NotifyGameModeOption() {
   if (CMode* mode = g_modeMgr.GetGameMode()) {
-    mode->SendMsg(0x11F, 0, 0, 0, 0);
+    mode->SendMsg(MM_REQ_RANKING, 0, 0, 0, 0);
   }
 }
 
@@ -807,7 +811,7 @@ void NotifyGameModeOption() {
 // FUNCTION: fn_06373
 void NotifyGameModeOptionAlt() {
   if (CMode* mode = g_modeMgr.GetGameMode()) {
-    mode->SendMsg(0x11F, 2, 0, 0, 0);
+    mode->SendMsg(MM_REQ_RANKING, 2, 0, 0, 0);
   }
 }
 
@@ -815,7 +819,7 @@ void NotifyGameModeOptionAlt() {
 // FUNCTION: fn_06374
 void NotifyGameModeMenu() {
   if (CMode* mode = g_modeMgr.GetGameMode()) {
-    mode->SendMsg(0x4B, 0, 0, 0, 0);
+    mode->SendMsg(MM_REMEMBER_WARPPOINT, 0, 0, 0, 0);
   }
 }
 
@@ -849,7 +853,7 @@ void RotatePlayerDirection(bool clockwise) {
     }
   }
 
-  mode->SendMsg(0x8B, (static_cast<int>(angle) + 180) / 45 % 8, 0, 0, 0);
+  mode->SendMsg(MM_CHANGE_DIRECTION, (static_cast<int>(angle) + 180) / 45 % 8, 0, 0, 0);
 }
 
 #pragma inline_depth(0)
@@ -931,7 +935,7 @@ void ToggleSitStand() {
   const int motion = (player->render.curMotion != 2) + 1;
   player->render.curMotion = motion;
   player->render.angle = static_cast<float>(std::ceil(player->render.angle));
-  mode->SendMsg(0x8B, (static_cast<int>(player->render.angle) + 180) / 45 % 8, motion, 0, 0);
+  mode->SendMsg(MM_CHANGE_DIRECTION, (static_cast<int>(player->render.angle) + 180) / 45 % 8, motion, 0, 0);
 
   if (player->render.unknown_0070 == 6) {
     std::list<unsigned long>& times = mode->unknown_05D4;
@@ -939,7 +943,7 @@ void ToggleSitStand() {
     times.push_back(timeGetTime());
     const unsigned long elapsed = times.back() - times.front();
     if (elapsed - 1501 <= 1498) {
-      mode->SendMsg(0xA9, 0, 0, 0, 0);
+      mode->SendMsg(MM_DORIDORI, 0, 0, 0, 0);
       for (unsigned long& time : times) {
         time = 0;
       }
@@ -996,7 +1000,7 @@ void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int 
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (g_serviceOptions.Get(107)) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB4)), 0x64FFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB4)), 0x64FFFF, 0, 0, 0);
       return;
     }
 
@@ -1026,13 +1030,13 @@ void ApplyServiceOptionActorRefresh(int id, unsigned char value, bool notify, in
 // OFFSET: 0x006C4750
 // FUNCTION: fn_06359
 void ShowHelpMessages() {
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   int count = 0;
   g_session.m_hotkeyScript->Call("GetTableSizeForC", "s>d", "HelpMsgStr", &count);
   for (int index = 1; index <= count; ++index) {
     const char* text = nullptr;
     if (g_session.m_hotkeyScript->Call("getHelpMsg", "d>s", index, &text) && std::strlen(text) != 0) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF64, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF64, 0, 0, 0);
     }
   }
 }
@@ -1101,7 +1105,7 @@ void ApplyServiceOptionWindow159(int id, unsigned char value, bool notify, int e
     }
   }
 
-  if (UIWindow* window = g_windowMgr.EnsureWindow(0x9F)) {
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_QUIKSLOTWND)) {
     window->Show(value);
   }
 }
@@ -1118,7 +1122,7 @@ void ApplyServiceOptionWindow190(int id, unsigned char value, bool notify, int e
     }
   }
 
-  if (UIWindow* window = g_windowMgr.LookupWindow(0xBE)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_NCASH_CALLWND)) {
     window->Show(value);
   }
 }
@@ -1135,7 +1139,7 @@ void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int e
     }
   }
 
-  if (UIWindow* window = g_windowMgr.LookupWindow(0x10B)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_MILEAGEWND)) {
     window->Show(value);
   }
 }
@@ -1168,7 +1172,7 @@ void ApplyServiceOptionNotifyWindow(int id, unsigned char value, bool notify, in
   }
 
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C0)) {
-    window->SendMsg(nullptr, 6, 0x1F6, 0, 0, 0);
+    window->SendMsg(nullptr, UM_COMMAND, 0x1F6, 0, 0, 0);
   }
 }
 #pragma inline_depth()
@@ -1184,7 +1188,7 @@ void ApplyServiceOptionWindow268(int id, unsigned char value, bool notify, int e
     }
   }
 
-  if (UIWindow* window = g_windowMgr.LookupWindow(0x10C)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_OPENROULLETTEWND)) {
     window->Show(value);
   }
 }
@@ -1276,12 +1280,12 @@ void ApplyServiceOptionWindow27() {
   if (g_windowMgr.unknown_02FC != 0) {
     CMode* mode = g_modeMgr.GetGameMode();
     if (mode) {
-      mode->SendMsg(0x52, 0, 0, 0, 0);
+      mode->SendMsg(MM_REQ_OPENSTORE, 0, 0, 0, 0);
     }
     return;
   }
 
-  g_windowMgr.EnsureWindow(0x1B);
+  g_windowMgr.EnsureWindow(WID_CHATROOMMAKEWND);
 }
 
 // GLOBAL: gl_24912
@@ -1322,7 +1326,7 @@ void ApplyServiceOptionJitterScale(int id, unsigned char value, bool notify, int
 // FUNCTION: fn_45463
 void RequestModeAction48() {
   if (CMode* mode = g_modeMgr.GetGameMode()) {
-    mode->SendMsg(0x30, 0, 0, 0, 0);
+    mode->SendMsg(MM_REQ_EXIT_ROOM, 0, 0, 0, 0);
   }
 }
 
@@ -1345,7 +1349,7 @@ void ApplyItemWndServiceOption(int id, unsigned char value, bool notify, int ena
 // FUNCTION: fn_45464
 void RequestModeAction61() {
   if (CMode* mode = g_modeMgr.GetGameMode()) {
-    mode->SendMsg(0x3D, 0, 0, 0, 0);
+    mode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
   }
 }
 
@@ -1353,7 +1357,7 @@ void RequestModeAction61() {
 // FUNCTION: fn_45465
 void NotifyGameModeOptionFirst() {
   if (CMode* mode = g_modeMgr.GetGameMode()) {
-    mode->SendMsg(0x11F, 1, 0, 0, 0);
+    mode->SendMsg(MM_REQ_RANKING, 1, 0, 0, 0);
   }
 }
 
@@ -1362,7 +1366,7 @@ void NotifyGameModeOptionFirst() {
 void RequestPlayerAction31() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (CPlayer* player = mode->scene->player) {
-    player->SendMsg(nullptr, 0x1F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    player->SendMsg(nullptr, AM_REQ_SIT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
@@ -1389,15 +1393,15 @@ void ShowPlayerLocation() {
   }
 
   const std::string text = std::format("{}({}) : {}, {}", g_session.GetMapDisplayName(mode->MapName().c_str()), name.c_str(), column, row);
-  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x64FFFF, 0, 0, 0);
   if (g_serviceType != 10) {
-    g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(text.c_str()), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(text.c_str()), 0x64FFFF, 0, 0, 0);
   }
 }
 
 static void ShowNoticeType6() {
-  g_windowMgr.SendNotice(6, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_SAVE_CHAT_TO_FILE, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x006C4950

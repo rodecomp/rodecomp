@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "UI/Quest/UIOngoingQuestInfo.h"
 
 #include "Client/Input/InputCharset.h"
@@ -191,7 +192,7 @@ void CUIOngoingQuestInfo::OnFirstAction() {
 // OFFSET: 0x00A55660
 // FUNCTION: fn_45468
 void CUIOngoingQuestInfo::OnClose() {
-  g_windowMgr.CloseWindow(10009);
+  g_windowMgr.CloseWindow(WID_ONGOINGQUESTINFO);
 }
 
 namespace OngoingQuestInfo {
@@ -311,7 +312,7 @@ void CUIRewards::OnBindItem(CUIRewardItem* item, const CRewardItemData& data) {
 void CUIOngoingQuestInfo::OnInit() {
   const char* title = LookupMessage(0xD48);
   this->titleBar->SetTitle(title);
-  UIWindow* window = g_windowMgr.LookupWindow(0x2718);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_RENEWQUESTUI);
   if (window) {
     this->Move(window->geometry.x + window->geometry.width, window->geometry.y);
   } else {

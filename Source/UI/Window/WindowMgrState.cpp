@@ -1,3 +1,6 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/ModeDragState.h"
@@ -135,7 +138,7 @@ void UIWindowMgr::RestoreMiniPartyWindows() {
     window->SetSize(174, 52);
     window->m_cell = record.unknown_0008;
     this->AddMiniPartyWindow(window);
-    window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&member), 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&member), 0, 0, 0);
   }
 }
 
@@ -570,13 +573,13 @@ void UIWindowMgr::ConfirmActiveDialog() {
   if (window || (window = this->unknown_01F0) != nullptr || (window = this->unknown_01F4) != nullptr || (window = this->unknown_0214) != nullptr ||
       (window = this->unknown_021C) != nullptr || (window = this->unknown_020C) != nullptr || (window = this->unknown_0374) != nullptr ||
       (window = this->hoverWindow) != nullptr) {
-    window->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     return;
   }
 
   for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
     if ((*entry)->IsFrameWnd()) {
-      (*entry)->SendMsg(nullptr, 18, 0, 0, 0, 0);
+      (*entry)->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     }
   }
 }
@@ -658,7 +661,7 @@ void UIWindowMgr::SaveVisibleWindowIds() {
 // FUNCTION: fn_17282
 void UIWindowMgr::UpdateNavigationList() {
   if (this->window_4F174 && !g_navigationManager.unknown_1254 && static_cast<UINavigationV4Wnd*>(this->window_4F174)->IsListShown()) {
-    this->window_4F174->SendMsg(nullptr, 6, 202, 0, 0, 0);
+    this->window_4F174->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
   }
 }
 
@@ -1046,31 +1049,31 @@ void UIWindowMgr::SendFlagEffect(int message) {
 
   switch (message) {
   case 210:
-    mode->SendMsg(329, reinterpret_cast<int>("ET_FLAG"), 0, 0, 0);
+    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG"), 0, 0, 0);
     break;
   case 211:
-    mode->SendMsg(329, reinterpret_cast<int>("ET_INDONESIA_FLAG"), 0, 0, 0);
+    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_INDONESIA_FLAG"), 0, 0, 0);
     break;
   case 212:
-    mode->SendMsg(329, reinterpret_cast<int>("ET_PH_FLAG"), 0, 0, 0);
+    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_PH_FLAG"), 0, 0, 0);
     break;
   case 213:
-    mode->SendMsg(329, reinterpret_cast<int>("ET_MY_FLAG"), 0, 0, 0);
+    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_MY_FLAG"), 0, 0, 0);
     break;
   case 214:
-    mode->SendMsg(329, reinterpret_cast<int>("ET_SI_FLAG"), 0, 0, 0);
+    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_SI_FLAG"), 0, 0, 0);
     break;
   case 215:
-    mode->SendMsg(329, reinterpret_cast<int>("ET_BR_FLAG"), 0, 0, 0);
+    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_BR_FLAG"), 0, 0, 0);
     break;
   case 216:
-    mode->SendMsg(329, reinterpret_cast<int>("ET_INDIA_FLAG"), 0, 0, 0);
+    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_INDIA_FLAG"), 0, 0, 0);
     break;
   case 217:
-    mode->SendMsg(329, reinterpret_cast<int>("ET_FLAG8"), 0, 0, 0);
+    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG8"), 0, 0, 0);
     break;
   case 218:
-    mode->SendMsg(329, reinterpret_cast<int>("ET_FLAG9"), 0, 0, 0);
+    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG9"), 0, 0, 0);
     break;
   }
 }
@@ -1139,7 +1142,7 @@ void UIWindowMgr::RestoreHiddenWindows() {
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode && mode->unknown_0254 == 1) {
-    this->EnsureWindow(14);
+    this->EnsureWindow(WID_MINIMAPZOOMWND);
   }
 
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->RefreshEffect164();

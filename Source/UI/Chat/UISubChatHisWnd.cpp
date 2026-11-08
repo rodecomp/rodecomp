@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Chat/UISubChatHisWnd.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Client/Session.h"
@@ -22,8 +24,8 @@
 // FUNCTION: fn_12700
 void UISubChatHisWnd::OnLBtnDown(int x, int y) {
   if (g_session.m_canDragWnd) {
-    if (UIWindow* window = g_windowMgr.LookupWindow(132)) {
-      window->SendMsg(this, 6, 193, this->m_index, 0, 2);
+    if (UIWindow* window = g_windowMgr.LookupWindow(WID_BATTLEMSGOPTIONWND)) {
+      window->SendMsg(this, UM_COMMAND, ID_OPTION, this->m_index, 0, 2);
     }
     this->UIFrameWnd::OnLBtnDown(x, y);
   }
@@ -57,11 +59,11 @@ void UISubChatHisWnd::OnLBtnUp(int x, int y) {
     int screenY = 0;
     this->ToScreen(screenX, screenY);
 
-    UIWindow* window = g_windowMgr.LookupWindow(1);
+    UIWindow* window = g_windowMgr.LookupWindow(WID_CHATWND);
     if (window && window->geometry.x <= screenX && screenX <= window->geometry.width + window->geometry.x) {
       const int bottom = this->geometry.height + screenY;
       if (window->geometry.y <= bottom && bottom <= window->geometry.height + window->geometry.y) {
-        window->SendMsg(this, 118, 0, 0, 0, 0);
+        window->SendMsg(this, UM_ATTACH_CHAT_TAB, 0, 0, 0, 0);
       }
     }
   }

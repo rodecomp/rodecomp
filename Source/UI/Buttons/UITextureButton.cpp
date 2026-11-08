@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Replay.h"
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -39,7 +41,7 @@ void UITextureButton::OnLBtnUp(int x, int y) {
         if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
           const char* text = LookupMessage(17);
           if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-            g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+            g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
           }
         } else {
           if (id == 184 || id == 321) {
@@ -47,11 +49,11 @@ void UITextureButton::OnLBtnUp(int x, int y) {
             id = this->geometry.id;
           }
 
-          this->parent->SendMsg(this, 6, id, this->m_argument, 0, 0);
+          this->parent->SendMsg(this, UM_COMMAND, id, this->m_argument, 0, 0);
         }
       }
     } else {
-      g_modeMgr.gameMode->SendMsg(0, this->geometry.id, this->m_argument, 0, 0);
+      g_modeMgr.gameMode->SendMsg(MM_COMMAND, this->geometry.id, this->m_argument, 0, 0);
     }
   }
 

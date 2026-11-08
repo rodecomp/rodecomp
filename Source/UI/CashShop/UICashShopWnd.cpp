@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "UI/CashShop/UICashShopWnd.h"
 #include "UI/Window/UIEnums.h"
 #include "Utility/EncryptedName.h"
@@ -115,7 +117,7 @@ EncryptedName<85, 0x3B915119EFD523EFULL>& CashShopReplaceCartItemText::operator(
 // OFFSET: 0x007CE570
 // FUNCTION: fn_09529
 void UICashShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
-  if (g_windowMgr.LookupWindow(10011)) {
+  if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
     UIFrameWnd::DragAndDrop(x, y, value);
     return;
   }
@@ -127,25 +129,25 @@ void UICashShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source != 4) {
-    mode->SendMsg(18, 0, 0, 0, 0);
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
   if (drag->quantity <= 1) {
-    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     return;
   }
 
-  g_windowMgr.ShowWindowById(15, 1);
+  g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
   if (g_windowMgr.window_01EC != nullptr) {
-    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 20, drag->quantity, 0, 0);
+    g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 20, drag->quantity, 0, 0);
   }
 }
 
 // OFFSET: 0x007CE630
 // FUNCTION: fn_09530
 void UICashShopWnd_Cart::DragAndDrop(int x, int y, std::intptr_t value) {
-  if (g_windowMgr.LookupWindow(10011)) {
+  if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
     UIWindow::DragAndDrop(x, y, value);
     return;
   }
@@ -157,13 +159,13 @@ void UICashShopWnd_Cart::DragAndDrop(int x, int y, std::intptr_t value) {
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source != 6) {
-    mode->SendMsg(18, 0, 0, 0, 0);
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
-  g_windowMgr.ShowWindowById(15, 1);
+  g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
   if (g_windowMgr.window_01EC != nullptr) {
-    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 19, 0, 0, 0);
+    g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 19, 0, 0, 0);
   }
 }
 
@@ -227,7 +229,7 @@ void UICashShopWnd::OnCreate(int, int) {
       button->SetBitmap(FormatOwnedString("유저인터페이스\\cashshop\\img_shop_tap%d_disable.bmp", tab).c_str(), 3);
       button->Move(tabX, 0x48);
       button->m_tooltip = LookupMessage(tooltips[tab]);
-      button->SendMsg(this, 13, tab == this->m_selectedTab, 0, 0, 0);
+      button->SendMsg(this, UM_SETSTATE, tab == this->m_selectedTab, 0, 0, 0);
       tabX += 0x3A;
       this->AddChild(button);
     }
@@ -341,9 +343,9 @@ void UICashShopWnd::OnCreate(int, int) {
   this->m_cart->Move(0x219, 0x48);
   this->AddChild(this->m_cart);
 
-  this->SendMsg(this->m_tabButtons[this->m_selectedTab], 6, 0xD7, 0, 0, 0);
-  this->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
-  g_modeMgr.GetGameMode()->SendMsg(0x140, 0, 0, 0, 0);
+  this->SendMsg(this->m_tabButtons[this->m_selectedTab], UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
+  this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  g_modeMgr.GetGameMode()->SendMsg(MM_GET_ACCOUNT_LIMITED_SALE_LIST, 0, 0, 0, 0);
   if (g_session.unknown_5912) {
     charge->Enable(0);
     this->unknown_00F4->Show(0);
@@ -494,7 +496,7 @@ void UICashShopWnd_Cart::Paint() {
   for (int slot = 0; slot < this->m_visibleCount; ++slot, ++index) {
     UICashShopWnd_CartItem* item = this->m_slots[slot];
     if (index < this->m_cartItems.size()) {
-      item->SendMsg(this, 0x17, reinterpret_cast<std::intptr_t>(&this->m_cartItems[index]), 0, 0, 0);
+      item->SendMsg(this, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&this->m_cartItems[index]), 0, 0, 0);
     } else {
       item->Show(0);
     }
@@ -607,7 +609,7 @@ void UICashShopWnd_Item::Paint() {
 // OFFSET: 0x007D1020
 // FUNCTION: fn_09544
 void UICashShopWnd_CartItem::OnLBtnDblClk(int, int) {
-  this->SendMsg(this, 6, 0xD3, 0, 0, 0);
+  this->SendMsg(this, UM_COMMAND, ID_DELETE, 0, 0, 0);
 }
 
 // OFFSET: 0x007D1040
@@ -695,7 +697,7 @@ void UICashShopWnd::OnProcess() {
 void UICashShopWnd_Banner::OnProcess() {
   if (!this->m_entries.empty() && this->m_lastTick + 5000 < timeGetTime()) {
     const unsigned int next = this->m_index + 1;
-    this->SendMsg(this->m_buttons[next < this->m_entries.size() ? next : 0], 6, 0xD7, 0, 0, 0);
+    this->SendMsg(this->m_buttons[next < this->m_entries.size() ? next : 0], UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
   }
 }
 
@@ -703,9 +705,9 @@ void UICashShopWnd_Banner::OnProcess() {
 // FUNCTION: fn_09553
 void UICashShopWnd_CartItem::OnRBtnUp(int x, int) {
   if (static_cast<unsigned int>(x - 4) <= 0x25) {
-    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
     if (window != nullptr) {
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
     }
   }
 }
@@ -714,9 +716,9 @@ void UICashShopWnd_CartItem::OnRBtnUp(int x, int) {
 // FUNCTION: fn_09554
 void UICashShopWnd_Item::OnRBtnUp(int x, int y) {
   if (static_cast<unsigned int>(x - 5) <= 0x4B && static_cast<unsigned int>(y - 0x17) <= 0x64) {
-    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
     if (window != nullptr) {
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
     }
   }
 }
@@ -725,9 +727,9 @@ void UICashShopWnd_Item::OnRBtnUp(int x, int y) {
 // FUNCTION: fn_09555
 void UICashShopWnd_Cart::OnWheel(int delta) {
   if (delta < 0) {
-    this->SendMsg(this->m_scrollBar, 7, 1, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, 1, 0, 0, 0);
   } else {
-    this->SendMsg(this->m_scrollBar, 7, -1, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -1, 0, 0, 0);
   }
 }
 
@@ -749,7 +751,7 @@ void UICashShopWnd_Banner::CreateButtons() {
     button->SetBitmap("유저인터페이스\\cashshop\\btn_ad_off.bmp", 1);
     button->SetBitmap("유저인터페이스\\cashshop\\btn_ad_on.bmp", 2);
     button->Move(this->geometry.width + (index - static_cast<int>(this->m_entries.size())) * 12 - 12, 0x29);
-    button->SendMsg(this, 13, index == this->m_index, 0, 0, 0);
+    button->SendMsg(this, UM_SETSTATE, index == this->m_index, 0, 0, 0);
     this->AddChild(button);
     this->m_buttons.emplace_back(button);
     ++index;
@@ -779,8 +781,8 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     }
     return 0;
 
-  case 0x78:
-  case 0x7A: {
+  case UM_SET_CASHSHOP_BALANCE:
+  case UM_UPDATE_CASHSHOP_BALANCE: {
     HKEY key;
     if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
       DWORD type = REG_DWORD;
@@ -792,11 +794,11 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     this->unknown_00E8 = argument1;
     this->unknown_00EC = argument2;
     this->unknown_00F4->SetText(IntToString(0, 0).c_str());
-    this->SendMsg(this, 6, 0x182, 0, 0, 0);
+    this->SendMsg(this, UM_COMMAND, 0x182, 0, 0, 0);
     return 0;
   }
 
-  case 0x9B:
+  case UM_SET_CASHSHOP_TOTAL_PRICE:
     this->unknown_00F0 = argument1;
     this->Invalidate();
     return 0;
@@ -820,12 +822,12 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
   case UM_DEFPUSH:
     if (sender == this->unknown_00E0) {
-      this->SendMsg(nullptr, 6, 0x141, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, 0, 0, 0);
     }
     return 0;
 
   case UM_ADDITEM:
-    this->m_cart->SendMsg(sender, 0x1F, argument1, 1, 0, 0);
+    this->m_cart->SendMsg(sender, UM_ADDITEM, argument1, 1, 0, 0);
     return 0;
 
   case UM_DROP: {
@@ -850,9 +852,9 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
       if (entry != cartItems.end()) {
         if (entry->quantity > drag->quantity) {
-          this->m_cart->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&*entry), -drag->quantity, 0, 0);
+          this->m_cart->SendMsg(this, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&*entry), -drag->quantity, 0, 0);
         } else {
-          this->m_cart->SendMsg(this, 0x68, entry->GetItemId(), 0, 0, 0);
+          this->m_cart->SendMsg(this, UM_DECITEM, entry->GetItemId(), 0, 0, 0);
         }
       }
     } else if (drag->source == 6) {
@@ -868,8 +870,8 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
           const int stock = product->unknown_0078[3];
           if (stock <= 0) {
             g_windowMgr.Confirm(LookupMessage(0xE50), 0, true, false, 0, "Message", 0x118, 0x78, 0);
-            mode->SendMsg(0x12, 0, 0, 0, 0);
-            mode->SendMsg(0x12, 0, 0, 0, 0);
+            mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+            mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
             return 0;
           }
 
@@ -895,11 +897,11 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       }
 
       if (product != this->m_items.end()) {
-        this->m_cart->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&*product), drag->quantity, 0, 0);
+        this->m_cart->SendMsg(this, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&*product), drag->quantity, 0, 0);
       }
     }
 
-    mode->SendMsg(0x12, 0, 0, 0, 0);
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return 0;
   }
 
@@ -907,9 +909,9 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     switch (argument1) {
     case ID_CLOSE:
       if (g_session.unknown_5912) {
-        g_modeMgr.GetGameMode()->SendMsg(0x14B, 5, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_STOVE_AUTHENTICATION, 5, 0, 0, 0);
       }
-      g_windowMgr.CloseWindow(0x13E);
+      g_windowMgr.CloseWindow(WID_CASHSHOP_WND);
       return 0;
     case ID_RADIOBTN: {
       int selected = this->m_selectedTab;
@@ -922,11 +924,11 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       if (selected != this->m_selectedTab) {
         for (std::map<int, UIWindow*>::iterator tab = this->m_tabButtons.begin(); tab != this->m_tabButtons.end(); ++tab) {
           if (tab->first != 10 && tab->first != 8 && tab->second != nullptr) {
-            tab->second->SendMsg(this, 13, selected == tab->first, 0, 0, 0);
+            tab->second->SendMsg(this, UM_SETSTATE, selected == tab->first, 0, 0, 0);
           }
         }
         this->m_selectedTab = selected;
-        this->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+        this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
 
       this->unknown_00E4->Enable(this->m_selectedTab == 9);
@@ -952,7 +954,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
           return 0;
         }
 
-        g_modeMgr.GetGameMode()->SendMsg(0x14B, 3, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_STOVE_AUTHENTICATION, 3, 0, 0, 0);
         return 0;
       }
 
@@ -1041,7 +1043,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
           this->m_pageCount = this->m_items.size() / this->m_itemsPerPage + (this->m_items.size() % this->m_itemsPerPage != 0);
           for (std::map<int, UIWindow*>::iterator tab = this->m_tabButtons.begin(); tab != this->m_tabButtons.end(); ++tab) {
             if (tab->second != nullptr) {
-              tab->second->SendMsg(this, 13, 0, 0, 0, 0);
+              tab->second->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
             }
           }
           this->LayoutPage();
@@ -1055,7 +1057,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     case 0x182:
       this->unknown_00F0 = 0;
       this->m_cart->m_cartItems.clear();
-      this->m_cart->SendMsg(this->m_cart, 7, 0, 0, 0, 0);
+      this->m_cart->SendMsg(this->m_cart, UM_SCROLLVERT, 0, 0, 0, 0);
       this->m_cart->Invalidate();
       this->Invalidate();
       return 0;
@@ -1067,21 +1069,21 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       this->m_page = this->m_pageCount - 1;
       this->LayoutPage();
       return 0;
-    case 0x19F:
-      g_modeMgr.GetGameMode()->SendMsg(0x140, 0, 0, 0, 0);
+    case ID_PARTY_RELOAD_FIRST_PAGE:
+      g_modeMgr.GetGameMode()->SendMsg(MM_GET_ACCOUNT_LIMITED_SALE_LIST, 0, 0, 0, 0);
       return 0;
     }
     return 0;
 
-  case 0xA4:
+  case UM_SELECT_CASHSHOP_TAB:
     if (argument1 != 0 && argument1 != this->m_selectedTab) {
       for (std::map<int, UIWindow*>::iterator tab = this->m_tabButtons.begin(); tab != this->m_tabButtons.end(); ++tab) {
         if (tab->first != 10 && tab->first != 8 && tab->second != nullptr) {
-          tab->second->SendMsg(this, 13, argument1 == tab->first, 0, 0, 0);
+          tab->second->SendMsg(this, UM_SETSTATE, argument1 == tab->first, 0, 0, 0);
         }
       }
       this->m_selectedTab = argument1;
-      this->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     }
     return 0;
   }
@@ -1092,13 +1094,13 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 // OFFSET: 0x007D2C00
 // FUNCTION: fn_09559
 int UICashShopWnd_Banner::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6 && argument1 == 0xD7) {
+  if (message == UM_COMMAND && argument1 == 0xD7) {
     for (unsigned int index = 0; index < this->m_buttons.size(); ++index) {
       if (sender == this->m_buttons[index]) {
-        this->m_buttons[index]->SendMsg(this, 13, 1, 0, 0, 0);
+        this->m_buttons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         this->m_index = index;
       } else {
-        this->m_buttons[index]->SendMsg(this, 13, 0, 0, 0, 0);
+        this->m_buttons[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
       }
     }
 
@@ -1200,7 +1202,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       entry.quantity = quantity;
       this->m_cartItems.push_back(entry);
-      this->SendMsg(this, 7, 1, 0, 0, 0);
+      this->SendMsg(this, UM_SCROLLVERT, 1, 0, 0, 0);
     } else {
       const int limit = it->unknown_0078[3];
       if (limit != 0 && it->quantity + quantity > limit) {
@@ -1218,7 +1220,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       } else {
         it->quantity = total > 0 ? total : 1;
       }
-      this->SendMsg(this, 7, 0, 0, 0, 0);
+      this->SendMsg(this, UM_SCROLLVERT, 0, 0, 0, 0);
     }
 
     if (this->parent != nullptr) {
@@ -1226,7 +1228,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       for (const ITEM_INFO& entry : this->m_cartItems) {
         price += entry.unknown_0014[0] * entry.quantity;
       }
-      this->parent->SendMsg(this, 0x9B, price, 0, 0, 0);
+      this->parent->SendMsg(this, UM_SET_CASHSHOP_TOTAL_PRICE, price, 0, 0, 0);
     }
     this->Invalidate();
     return UIWindow::SendMsg(sender, message, argument1, quantity, argument3, argument4);
@@ -1252,9 +1254,9 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       for (const ITEM_INFO& entry : this->m_cartItems) {
         price += entry.unknown_0014[0] * entry.quantity;
       }
-      this->parent->SendMsg(this, 0x9B, price, 0, 0, 0);
+      this->parent->SendMsg(this, UM_SET_CASHSHOP_TOTAL_PRICE, price, 0, 0, 0);
     }
-    this->SendMsg(this, 7, 0, 0, 0, 0);
+    this->SendMsg(this, UM_SCROLLVERT, 0, 0, 0, 0);
     this->Invalidate();
     break;
   }
@@ -1266,28 +1268,28 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 // OFFSET: 0x007D3430
 // FUNCTION: fn_09561
 int UICashShopWnd_CartItem::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     switch (argument1) {
     case ID_DELETE:
       if (this->parent != nullptr) {
-        this->parent->SendMsg(this, 0x68, atoi(this->m_item.itemId.c_str()), 0, 0, 0);
+        this->parent->SendMsg(this, UM_DECITEM, atoi(this->m_item.itemId.c_str()), 0, 0, 0);
         this->Invalidate();
       }
       break;
     case ID_UP:
       if (this->parent != nullptr) {
-        this->parent->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&this->m_item), 1, 0, 0);
+        this->parent->SendMsg(this, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&this->m_item), 1, 0, 0);
       }
       this->Invalidate();
       break;
     case ID_DOWN:
       if (this->parent != nullptr) {
-        this->parent->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&this->m_item), -1, 0, 0);
+        this->parent->SendMsg(this, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&this->m_item), -1, 0, 0);
       }
       this->Invalidate();
       break;
     }
-  } else if (message == 0x17) {
+  } else if (message == UM_REFRESHITEM) {
     this->m_item = *reinterpret_cast<const ITEM_INFO*>(argument1);
     this->Show(1);
     this->Invalidate();
@@ -1299,11 +1301,11 @@ int UICashShopWnd_CartItem::SendMsg(UIWindow* sender, int message, std::intptr_t
 // OFFSET: 0x007D3540
 // FUNCTION: fn_09562
 int UICashShopWnd_Item::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     if (argument1 == 0xE0 && this->parent != nullptr) {
-      this->parent->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+      this->parent->SendMsg(this, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
     }
-  } else if (message == 0x17) {
+  } else if (message == UM_REFRESHITEM) {
     this->m_item = *reinterpret_cast<const ITEM_INFO*>(argument1);
     this->Show(1);
     this->m_addButton->SetDisabled(0);
@@ -1368,7 +1370,7 @@ void UICashShopWnd::LayoutPage() {
       this->m_itemWindows[slot]->Move(slot % this->m_columns * 0xAF + 8, slot / this->m_columns * 0x7F + 0x6B);
     }
 
-    this->m_itemWindows[slot]->SendMsg(this, 0x17, reinterpret_cast<std::intptr_t>(&*item), this->m_selectedTab, 0, 0);
+    this->m_itemWindows[slot]->SendMsg(this, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&*item), this->m_selectedTab, 0, 0);
   }
 
   this->Invalidate();

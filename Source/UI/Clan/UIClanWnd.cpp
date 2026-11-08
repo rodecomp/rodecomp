@@ -1,5 +1,7 @@
 #include "UI/Clan/UIClanWnd.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "Contents/ClanInfo.h"
 #include "Contents/MapInfoMgr.h"
 #include "Contents/MessageTable.h"
@@ -172,7 +174,7 @@ int UIClanInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1
   switch (message) {
   case UM_COMMAND:
     if (a1 == 201) {
-      g_windowMgr.CloseWindow(237);
+      g_windowMgr.CloseWindow(WID_CLANINFOMANAGEWND);
     }
     return 0;
   case UM_REFRESH:

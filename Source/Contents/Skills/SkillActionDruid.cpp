@@ -1,3 +1,4 @@
+#include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
@@ -1213,7 +1214,7 @@ void CSkillAction_DR_CRUEL_BITE::OnSkillEffect(int level, CGameActor* source, CG
   }
 
   if (CRagEffect* effect = source->LaunchEffect(2439, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
 
   const char effectSource[] = {'\xC2', '\x4F', '\xEA', '\xB2', '\x0F', '\xD0', '\x45', '\x30', '\xD5', '\x58', '\x9F'};

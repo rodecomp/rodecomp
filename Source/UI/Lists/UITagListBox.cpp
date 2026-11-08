@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Lists/UITagListBox.h"
 
@@ -323,13 +324,13 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   switch (message) {
   case UM_UPPUSH:
     if (this->verticalOverflow) {
-      this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
       return 0;
     }
     break;
   case UM_DOWNPUSH:
     if (this->verticalOverflow) {
-      this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
       return 0;
     }
     break;
@@ -572,8 +573,8 @@ void UITagListBox::OnTagClick(std::intptr_t type, UIWindow* sender) {
   }
   case LINE_SEGMENT_ITEM:
   case LINE_SEGMENT_ITEM_LINK:
-    if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&button->item), 0, 0, 0);
+    if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&button->item), 0, 0, 0);
     }
     break;
   }
@@ -669,7 +670,7 @@ void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& 
   for (std::vector<STagInfoV2>::iterator tag = tags.begin(); tag != tags.end(); ++tag) {
     this->AddTagButton(*tag, static_cast<int>(this->lines.size()) - firstLine);
   }
-  this->SendMsg(nullptr, 7, 0, 0, 0, 0);
+  this->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x009B7A20

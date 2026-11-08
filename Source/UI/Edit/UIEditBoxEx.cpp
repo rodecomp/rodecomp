@@ -1,5 +1,6 @@
 #include "UI/Edit/UIEditBoxEx.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/UIEnums.h"
 #include "Network/TextEncoding.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -311,7 +312,7 @@ void CUIEditBoxEx::Resize(int width, int height) {
 // OFFSET: 0x009E5AE0
 // FUNCTION: fn_14449
 int CUIEditBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 0 && this->onSubmit) {
+  if (message == UM_DEFPUSH && this->onSubmit) {
     this->onSubmit();
   }
   return UIWindow::SendMsg(sender, message, a, b, c, d);
@@ -435,7 +436,7 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_serverLanguage->Insert("\r\n");
       return 0;
     }
-    UIWindow::SendMsg(sender, 0, a, b, c, d);
+    UIWindow::SendMsg(sender, UM_DEFPUSH, a, b, c, d);
     return 0;
   case UM_UPPUSH:
     if (this->line > 0) {

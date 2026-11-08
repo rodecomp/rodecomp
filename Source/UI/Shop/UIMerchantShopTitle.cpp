@@ -1,4 +1,6 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -48,10 +50,10 @@ void UIMerchantShopTitle::OnLBtnDown(int, int) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (this->buyingShop != 0) {
     if (g_windowMgr.unknown_0308 == 0) {
-      mode->SendMsg(272, this->ownerAid, 0, 0, 0);
+      mode->SendMsg(MM_REQ_CLICK_TO_BUYING_STORE, this->ownerAid, 0, 0, 0);
     }
   } else if (g_windowMgr.unknown_0418 == 0) {
-    mode->SendMsg(84, this->ownerAid, 0, 0, 0);
+    mode->SendMsg(MM_REQ_BUY_FROMMC, this->ownerAid, 0, 0, 0);
   }
 }
 
@@ -61,10 +63,10 @@ void UIMerchantShopTitle::OnLBtnDblClk(int, int) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (this->buyingShop != 0) {
     if (g_windowMgr.unknown_0308 == 0) {
-      mode->SendMsg(272, this->ownerAid, 0, 0, 0);
+      mode->SendMsg(MM_REQ_CLICK_TO_BUYING_STORE, this->ownerAid, 0, 0, 0);
     }
   } else if (g_windowMgr.unknown_0418 == 0) {
-    mode->SendMsg(84, this->ownerAid, 0, 0, 0);
+    mode->SendMsg(MM_REQ_BUY_FROMMC, this->ownerAid, 0, 0, 0);
   }
 }
 
@@ -82,7 +84,7 @@ void UIMerchantShopTitle::ResetCursor(int x, int y) {
 // FUNCTION: fn_10886
 void UIMerchantShopTitle::OnRBtnDown(int, int) {
   if (g_serviceOptions.Get(167)) {
-    g_modeMgr.gameMode->SendMsg(245, 0, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_RELEASE_QUEST_SH, 0, 0, 0, 0);
     g_session.unknown_1760.clear();
     g_session.unknown_1748.clear();
   }
@@ -97,14 +99,14 @@ UIMerchantShopTitle::UIMerchantShopTitle(int buyingShop) : UIWindow(0), buyingSh
 // OFFSET: 0x00864DB0
 // FUNCTION: fn_10918
 int UIMerchantShopTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     return 0;
   }
-  if (message == 28) {
+  if (message == UM_SETNAID) {
     this->ownerAid = a;
     return 0;
   }
-  if (message != 34) {
+  if (message != UM_SETINFO) {
     return UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 

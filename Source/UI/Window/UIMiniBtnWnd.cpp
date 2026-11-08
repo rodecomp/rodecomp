@@ -1,4 +1,5 @@
 #include "UI/Window/UIMiniBtnWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -37,7 +38,7 @@ void UIMiniBtnWnd::OnLBtnDown(int, int) {
 
   if (window) {
     window->Show(visible);
-    window->SendMsg(this, 6, 271, visible, 0, 0);
+    window->SendMsg(this, UM_COMMAND, ID_APPLY, visible, 0, 0);
   }
   this->Invalidate();
 }
@@ -56,7 +57,7 @@ void UIMiniBtnWnd::Toggle() {
 
   if (window) {
     window->Show(visible);
-    window->SendMsg(this, 6, 271, visible, 0, 0);
+    window->SendMsg(this, UM_COMMAND, ID_APPLY, visible, 0, 0);
   }
   this->Invalidate();
 }

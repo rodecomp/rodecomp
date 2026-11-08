@@ -4,6 +4,8 @@
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 
 #include <algorithm>
 #include <cstddef>
@@ -139,9 +141,9 @@ void CBarterMarketItemMgr::AddItem(const BarterMarketItem& item)
         it->value -= item.value;
         if (it->value <= 0) {
           this->items.erase(it);
-          UIWindow* window = g_windowMgr.LookupWindow(334);
+          UIWindow* window = g_windowMgr.LookupWindow(WID_BARTERMARKETWND);
           if (window != NULL) {
-            window->SendMsg(NULL, 23, 0, 0, 0, 0);
+            window->SendMsg(NULL, UM_REFRESHITEM, 0, 0, 0, 0);
           }
         }
       }
@@ -160,9 +162,9 @@ void CBarterMarketItemMgr::RemoveItem(const BarterMarketItem& item)
       it->value -= item.value;
       if (it->value <= 0) {
         this->allItems.erase(it);
-        UIWindow* window = g_windowMgr.LookupWindow(335);
+        UIWindow* window = g_windowMgr.LookupWindow(WID_BARTERITEMPURCHASEWND);
         if (window != NULL) {
-          window->SendMsg(NULL, 23, 0, 0, 0, 0);
+          window->SendMsg(NULL, UM_REFRESHITEM, 0, 0, 0, 0);
         }
       }
       break;

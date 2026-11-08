@@ -1,4 +1,5 @@
 #include "UI/Window/UIShowWarpWnd.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "Client/Replay.h"
@@ -55,11 +56,11 @@ void UIShowWarpWnd::Paint() {
 int UIShowWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_DOWNPUSH:
-    this->m_list->SendMsg(nullptr, 0x13, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     return 0;
 
   case UM_UPPUSH:
-    this->m_list->SendMsg(nullptr, 0x12, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     return 0;
 
   case UM_SETINFO: {
@@ -76,8 +77,8 @@ int UIShowWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
   case UM_COMMAND:
     this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
-    if (argument1 == 201) {
-      g_windowMgr.CloseWindow(0x134);
+    if (argument1 == ID_CLOSE) {
+      g_windowMgr.CloseWindow(WID_SHOWWARPWND);
     }
     return 0;
 

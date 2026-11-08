@@ -1,4 +1,5 @@
 #include "Contents/SpriteLayerDrawing.h"
+#include "Contents/Actors/ActorEnums.h"
 
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
@@ -655,7 +656,7 @@ void SpriteLayerRenderer::DrawLayer(
     quad.image = resolved.image;
     const std::uint32_t* palette = this->GetPalette(layer, sprite, action);
     int effect = 0xA6;
-    this->pc->SendMsg(nullptr, 0x78, 0, reinterpret_cast<int>(&effect), reinterpret_cast<int>(&effect) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->pc->SendMsg(nullptr, AM_IS_HAVE_EFFECT, 0, reinterpret_cast<int>(&effect), reinterpret_cast<int>(&effect) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     int blend;
     switch (layer) {

@@ -1,4 +1,6 @@
 #include "Network/Packets/NoticeEnums.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Contents/Items/ItemType.h"
 #include "Contents/Combat/CombatTypes.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -807,7 +809,7 @@ void EquipmentProperties::CEquipment::CallOnStartEquip(lua_State* state) {
   if (lua_type(state, -1) == LUA_TFUNCTION) {
     if (lua_pcall(state, 0, 0, 0) != 0) {
       std::string message = lua_tolstring(state, -1, nullptr);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0, 0, 0);
       lua_settop(state, -2);
     }
   } else {
@@ -1037,7 +1039,7 @@ void EquipmentProperties::CEquipment::NotifyProperties(const COLORREF& color, bo
         ReplaceAll(line, "#", " ");
         RemoveAll(line, "{~}");
         if (line.size() > 0) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(std::format("{0}{1}", suffix, line).c_str()), color, 0x18, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(std::format("{0}{1}", suffix, line).c_str()), color, 0x18, 0, 0);
         }
       }
     }
@@ -4111,13 +4113,13 @@ void EquipmentProperties::CEquipmentPropertiesMgr::AddExpansion(const int& kind,
   CEquipmentExpansion* expansion = new CEquipmentExpansion(itemId, kind);
   CEquipment* equipment = this->properties2.insert({key, expansion}).first->second;
   if (kind == 1) {
-    notify = g_windowMgr.LookupWindow(0x169) != nullptr;
+    notify = g_windowMgr.LookupWindow(WID_RUNESYSTEMWND) != nullptr;
   }
   equipment->Load(notify);
   this->EquipItem(equipment->GetId(), notify);
 
   if (this->unknown_0020 != nullptr) {
-    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    this->unknown_0020->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -4140,7 +4142,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RemoveExpansion(const int& ki
   }
 
   if (this->unknown_0020 != nullptr) {
-    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    this->unknown_0020->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -4168,7 +4170,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& k
   }
 
   if (this->unknown_0020 != nullptr) {
-    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    this->unknown_0020->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -4197,7 +4199,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshShop() {
   }
   this->unknown_0014 = shopId;
   if (this->unknown_0020 != nullptr) {
-    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    this->unknown_0020->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -4241,7 +4243,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshPretend() {
   }
 
   if (this->unknown_0020 != nullptr) {
-    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    this->unknown_0020->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -4934,7 +4936,7 @@ int C_Logger(lua_State* state) {
   }
 
   const std::string text = lua_tostring(state, -1);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FromUtf8(text, g_textCodePage).c_str()), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FromUtf8(text, g_textCodePage).c_str()), 0xFFFF, 0, 0, 0);
   return 0;
 }
 
@@ -5182,7 +5184,7 @@ __declspec(noinline) void UIWindowMgr::NotifyItemWindows(int accountId, int lowe
       matches = member.accountId == accountId;
     }
     if (matches) {
-      window->SendMsg(nullptr, 6, 34, accountId, lower, upper);
+      window->SendMsg(nullptr, UM_COMMAND, 34, accountId, lower, upper);
       break;
     }
   }
@@ -5253,7 +5255,7 @@ void CGameMode::NotifyItemBounds() {
     this->itemWindow->Invalidate();
   }
   if (g_windowMgr.window_02C8) {
-    g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, g_session.m_aid, 0, 0);
+    g_windowMgr.window_02C8->SendMsg(nullptr, UM_COMMAND, 34, g_session.m_aid, 0, 0);
   }
   g_windowMgr.NotifyItemWindows(g_session.m_aid, g_session.unknown_5568, g_session.unknown_556C);
 }
@@ -5957,7 +5959,7 @@ UIWindow* UIWindowMgr::FindItemWindow(int accountId) {
 // FUNCTION: fn_17230
 void UIWindowMgr::NotifyMemberWindows(const MessengerMember* target) {
   if (this->window_02C8) {
-    this->window_02C8->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->window_02C8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   for (UIWindow* window : this->snapExcluded) {
     bool matches;
@@ -5967,7 +5969,7 @@ void UIWindowMgr::NotifyMemberWindows(const MessengerMember* target) {
     }
     if (matches) {
       if (window) {
-        window->SendMsg(nullptr, 23, reinterpret_cast<std::intptr_t>(target), 0, 0, 0);
+        window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(target), 0, 0, 0);
       }
       break;
     }
@@ -6354,7 +6356,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::UnequipWearable(const int& ma
     this->properties1.erase(found);
   }
   if (this->unknown_0020 != nullptr) {
-    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    this->unknown_0020->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -6377,7 +6379,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshWearable(const int& ke
   }
 
   if (this->unknown_0020 != nullptr) {
-    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    this->unknown_0020->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -6800,7 +6802,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::EquipWearable(const ITEM_INFO
     }
   }
   if (this->unknown_0020 != nullptr) {
-    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    this->unknown_0020->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 

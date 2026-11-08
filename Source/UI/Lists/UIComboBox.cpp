@@ -1,4 +1,5 @@
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Lists/UIComboBox.h"
 #include "UI/Lists/UIListBoxID.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -14,11 +15,11 @@ int UIComboBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
   switch (message) {
   case UM_DEFPUSH:
     if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
-      target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
+      target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
     }
 
     if (g_windowMgr.unknown_0214 != nullptr) {
-      g_windowMgr.CloseWindow(26);
+      g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
 
     return 0;
@@ -99,11 +100,11 @@ int UIComboBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       }
 
       const int lineId = this->lines[this->selected].id;
-      target->SendMsg(nullptr, 39, lineId, extra, 0, 0);
+      target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, lineId, extra, 0, 0);
     }
 
     if (g_windowMgr.unknown_0214 != nullptr) {
-      g_windowMgr.CloseWindow(26);
+      g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
 
     return 0;

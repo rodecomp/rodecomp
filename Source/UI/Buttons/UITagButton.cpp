@@ -1,4 +1,5 @@
 #include "UI/Buttons/UITagButton.h"
+#include "UI/Window/UIEnums.h"
 
 #include "UI/Window/UIWindowMgr.h"
 
@@ -37,7 +38,7 @@ void UITagButton::OnLBtnUp(int x, int y) {
     this->geometry.unknown_0030 = 1;
 
     if (this->parent) {
-      this->parent->SendMsg(this, 98, this->geometry.id, this->m_value, 0, 0);
+      this->parent->SendMsg(this, UM_TEXT_LBTN_UP, this->geometry.id, this->m_value, 0, 0);
     }
   }
 

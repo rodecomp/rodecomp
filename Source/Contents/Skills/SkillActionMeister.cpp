@@ -1,3 +1,4 @@
+#include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
@@ -176,7 +177,7 @@ void CSkillAction_MT_RUSH_STRIKE::OnSkillEffect(int level, CGameActor* source, C
   }
 
   if (CRagEffect* ragEffect = static_cast<EffectActor*>(source)->LaunchEffect(1568, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-    ragEffect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
+    ragEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
   EffectLists* effects = g_effectMgr;
   effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -237,7 +238,7 @@ void CEfstAction_GRADUAL_GRAVITY::OnEfstBegin(int efstId, int value, int argumen
 void CEfstAction_GRADUAL_GRAVITY::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     while (static_cast<EffectActor*>(actor)->HasId(779)) {
-      actor->SendMsg(nullptr, 109, 0, 779, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 779, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 }

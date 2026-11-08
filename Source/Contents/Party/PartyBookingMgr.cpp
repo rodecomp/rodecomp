@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "Contents/Party/PartyBookingMgr.h"
 
 #include "Client/Session.h"
@@ -152,7 +154,7 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
 // OFFSET: 0x00B175B0
 // FUNCTION: fn_18448
 void PartyBookingMgr::OnAdvertisement(PARTY_BOOKING_AD_INFO info) {
-  UISeekPartyListWnd* window = static_cast<UISeekPartyListWnd*>(g_windowMgr.LookupWindow(0xA9));
+  UISeekPartyListWnd* window = static_cast<UISeekPartyListWnd*>(g_windowMgr.LookupWindow(WID_SEEKPARTYLISTWND));
   if (window == nullptr) {
     if (this->m_filterEnabled) {
       PARTY_BOOKING_AD_INFO ad = info;
@@ -181,7 +183,7 @@ void PartyBookingMgr::OnAdvertisement(PARTY_BOOKING_AD_INFO info) {
     if (this->m_alarm) {
       g_soundMgr->PlayWave("party_alarm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       const char* message = LookupMessage(0x6D9);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 15, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 15, 0, 0);
     }
     return;
   }

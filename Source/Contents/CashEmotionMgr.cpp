@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -380,7 +382,7 @@ bool CCashEmotionAction_Play::Execute(int packId, int emotionId) {
     emotionId = this->m_yutEmotion + std::max(rand() % 7, 0);
   }
 
-  mode->SendMsg(31, emotionId, packId, 0, 0);
+  mode->SendMsg(MM_REQ_EMOTION, emotionId, packId, 0, 0);
   return true;
 }
 
@@ -424,7 +426,7 @@ bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
 
   UICashEmotionListWnd* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384);
   if (!listWnd) {
-    listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.EnsureWindow(87));
+    listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.EnsureWindow(WID_CASHEMOTIONLISTWND));
   }
 
   const unsigned int now = g_cashEmotionMgr->GetServerTime();
@@ -438,9 +440,9 @@ bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
   const unsigned int endTime = g_cashEmotionMgr->GetPackEndTime(packId);
   if (endTime) {
     const char* key = now < endTime ? "EMSG_NOT_YET_SALE_START_TIME" : "EMSG_EMOTION_EXPANTION_FAIL_DATE";
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString(key)), 255, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString(key)), 255, 0, 0, 0);
   } else if (g_cashEmotionMgr->GetPackStartTime(packId) > now) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME")), 255, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME")), 255, 0, 0, 0);
   }
 
   return true;
@@ -1679,10 +1681,10 @@ __declspec(noinline) void UICashEmotionScrollWnd::UpdateScrollBars() {
 void UICashEmotionListChildWnd_Abstract::OnWheel(int delta) {
   if (this->wheelScroll == 1) {
     if (delta < 0) {
-      this->SendMsg(this->scrollBar, 7, 15, 0, 0, 0);
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, 15, 0, 0, 0);
       return;
     }
-    this->SendMsg(this->scrollBar, 7, -15, 0, 0, 0);
+    this->SendMsg(this->scrollBar, UM_SCROLLVERT, -15, 0, 0, 0);
   }
 }
 
@@ -1700,12 +1702,12 @@ int UICashEmotionListChildWnd_Abstract::SendMsg(UIWindow* sender, int message, s
     }
     this->scrollBar->SetPosition(this->scrollPosition);
     this->scrollBar->Invalidate();
-    this->SendMsg(sender, 60, 0, 0, 0, 0);
+    this->SendMsg(sender, UM_REFRESH, 0, 0, 0, 0);
     break;
   case UM_REFRESH:
     this->Invalidate();
     if (this->parent) {
-      this->parent->SendMsg(sender, 60, 0, 0, 0, 0);
+      this->parent->SendMsg(sender, UM_REFRESH, 0, 0, 0, 0);
     }
     break;
   default:
@@ -1810,10 +1812,10 @@ void UICashEmotionListChildWnd_Basic::OnProcess() {
 int UICashEmotionListChildWnd_Basic::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   ICashEmotionAction* action;
   switch (message) {
-  case 174:
+  case UM_CASH_EMOTION_ACTIVATE:
     action = this->m_playAction;
     break;
-  case 175:
+  case UM_CASH_EMOTION_SELECT:
     action = this->m_selectAction;
     break;
   default:
@@ -1921,7 +1923,7 @@ void UICashEmotionListChildWnd_Purchase::Paint() {
 // OFFSET: 0x007C52B0
 // FUNCTION: fn_09370
 int UICashEmotionListChildWnd_Purchase::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 174) {
+  if (message != UM_CASH_EMOTION_ACTIVATE) {
     return UICashEmotionListChildWnd_Abstract::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
   if (this->unknown_00BC) {
@@ -2040,7 +2042,7 @@ void UICashEmotionListChildWnd_Search::Paint() {
 // OFFSET: 0x007C5DA0
 // FUNCTION: fn_09385
 int UICashEmotionListChildWnd_Search::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 174) {
+  if (message != UM_CASH_EMOTION_ACTIVATE) {
     return UICashEmotionListChildWnd_Abstract::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
   if (this->m_action) {
@@ -2136,11 +2138,11 @@ void UICashEmotionListChildWnd_UnPurchased::Paint() {
 // OFFSET: 0x007C6AC0
 // FUNCTION: fn_09396
 int UICashEmotionListChildWnd_UnPurchased::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 171) {
+  if (message != UM_CASH_EMOTION_SELECT_PACK) {
     return UICashEmotionListChildWnd_Abstract::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
   if (this->parent) {
-    this->parent->SendMsg(sender, 2, argument1, 0, 0, 0);
+    this->parent->SendMsg(sender, UM_TOGGLEPUSH, argument1, 0, 0, 0);
     for (UICashEmotionPack* pack : this->m_items) {
       UICashEmotionPack_Unpurchase* item = static_cast<UICashEmotionPack_Unpurchase*>(pack);
       item->SetPressed(item->unknown_00A8 == argument1, false);
@@ -2210,7 +2212,7 @@ void UICashEmotionListWnd::OnCreate(int width, int height) {
     tab->Move(0, x);
 
     const char id = static_cast<char>(index + 1);
-    tab->SendMsg(this, 13, id == 1, 0, 0, 0);
+    tab->SendMsg(this, UM_SETSTATE, id == 1, 0, 0, 0);
     this->AddChild(tab);
     this->m_tabs.insert(std::make_pair(id, static_cast<UIWindow*>(tab)));
 
@@ -2258,7 +2260,7 @@ void UICashEmotionListWnd::OnCreate(int width, int height) {
 
   auto first = this->m_tabs.find(1);
   if (first != this->m_tabs.end()) {
-    this->SendMsg(first->second, 6, 215, 0, 0, 0);
+    this->SendMsg(first->second, UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
   }
 
   this->m_period = new UIStaticText();
@@ -2309,7 +2311,7 @@ void UICashEmotionListWnd::ShowPack(int packId) {
 
   auto tab = this->m_tabs.find(3);
   if (tab != this->m_tabs.end()) {
-    this->SendMsg(tab->second, 6, 215, 0, 0, 0);
+    this->SendMsg(tab->second, UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
   }
 
   if (this->m_searchEdit) {
@@ -2323,7 +2325,7 @@ void UICashEmotionListWnd::ShowPack(int packId) {
   }
 
   if (this->m_currentList) {
-    this->m_currentList->SendMsg(this, 171, packId, 0, 0, 0);
+    this->m_currentList->SendMsg(this, UM_CASH_EMOTION_SELECT_PACK, packId, 0, 0, 0);
   }
 }
 
@@ -2380,7 +2382,7 @@ int UICashEmotionListWnd::SetPeriod(int packId) {
     this->m_period->Show(1);
   }
 
-  return this->SendMsg(this, 60, 0, 0, 0, 0);
+  return this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x007C80C0
@@ -2397,7 +2399,7 @@ void UICashEmotionListWnd::RestartExpirySchedule() {
 // FUNCTION: fn_09417
 int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case 0:
+  case UM_DEFPUSH:
     this->RefreshCurrentList();
     return 0;
 
@@ -2413,7 +2415,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
   case UM_COMMAND:
     switch (argument1) {
-    case 189:
+    case ID_BUTTON1:
       if (this->m_searchEdit) {
         this->m_searchEdit->SetText("");
       }
@@ -2422,23 +2424,23 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
       return 0;
 
-    case 190:
+    case ID_BUTTON2:
       this->RefreshCurrentList();
       return 0;
 
     case 191:
-      if (!g_windowMgr.LookupWindow(86)) {
-        g_windowMgr.EnsureWindow(86);
+      if (!g_windowMgr.LookupWindow(WID_EMOTIONWND)) {
+        g_windowMgr.EnsureWindow(WID_EMOTIONWND);
       } else {
-        g_windowMgr.CloseWindow(86);
+        g_windowMgr.CloseWindow(WID_EMOTIONWND);
       }
       return 0;
 
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(87);
+      g_windowMgr.CloseWindow(WID_CASHEMOTIONLISTWND);
       return 0;
 
-    case 215: {
+    case ID_RADIOBTN: {
       if (this->m_tab != 0) {
         auto current = std::as_const(this->m_tabs).find(this->m_tab);
         if (current == this->m_tabs.end() || sender == current->second) {
@@ -2449,10 +2451,10 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       char selected = 0;
       for (auto& tab : this->m_tabs) {
         if (sender == tab.second) {
-          tab.second->SendMsg(nullptr, 13, 1, 0, 0, 0);
+          tab.second->SendMsg(nullptr, UM_SETSTATE, 1, 0, 0, 0);
           selected = tab.first;
         } else {
-          tab.second->SendMsg(nullptr, 13, 0, 0, 0, 0);
+          tab.second->SendMsg(nullptr, UM_SETSTATE, 0, 0, 0, 0);
         }
       }
       this->SetTab(selected);
@@ -2469,13 +2471,13 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       if (g_session.IsDoramJob(g_session.GetDisplayJob())) {
         skill = g_session.m_skillBundle.Find(5018);
         if (!skill || skill->level <= 0) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 255, 0, 0, 0);
           return 0;
         }
       } else {
         skill = g_session.m_skillBundle.Find(1);
         if (!skill || skill->level <= 1) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 255, 0, 0, 0);
           return 0;
         }
       }
@@ -2487,7 +2489,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
       const bool free = price == 0;
       if (!free && g_session.GetInventoryItemCount(g_cashEmotionMgr->unknown_01C8) < price) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_NYANGVINE")), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_NYANGVINE")), 255, 0, 0, 0);
         return 0;
       }
 
@@ -2521,7 +2523,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     return 0;
 
-  case 2:
+  case UM_TOGGLEPUSH:
     if (this->unknown_00E4) {
       this->unknown_00E4->Enable(1);
     }
@@ -2860,7 +2862,7 @@ int UICashEmotionMiniWnd::SendMsg(
     this->Invalidate();
     return 0;
 
-  case 174:
+  case UM_CASH_EMOTION_ACTIVATE:
     entry.first = static_cast<int>(argument1);
     entry.second = static_cast<int>(argument2);
     break;
@@ -2873,7 +2875,7 @@ int UICashEmotionMiniWnd::SendMsg(
     }
     return 0;
 
-  case 176:
+  case UM_CASH_EMOTION_KEY:
     if (argument1 == 13) {
       if (!this->m_selected) {
         return 0;
@@ -3122,12 +3124,12 @@ int UICashEmotionPack::SendMsg(
   case UM_REFRESH:
     this->Invalidate();
     if (this->parent) {
-      this->parent->SendMsg(sender, 60, 0, 0, 0, 0);
+      this->parent->SendMsg(sender, UM_REFRESH, 0, 0, 0, 0);
     }
     return 0;
-  case 174:
+  case UM_CASH_EMOTION_ACTIVATE:
     if (this->parent) {
-      this->parent->SendMsg(sender, 174, argument1, argument2, argument3, argument4);
+      this->parent->SendMsg(sender, UM_CASH_EMOTION_ACTIVATE, argument1, argument2, argument3, argument4);
     }
     return 0;
   default:
@@ -3196,7 +3198,7 @@ void UICashEmotionPack_Purchase::ShowExpiry(__time32_t expiry) {
     this->m_titleText->SetTextFitted(text.c_str());
   }
 
-  this->SendMsg(this, 60, 0, 0, 0, 0);
+  this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x007CAE70
@@ -3228,13 +3230,13 @@ int UICashEmotionPack_Purchase::SendMsg(
   case UM_REFRESH:
     this->Invalidate();
     if (this->parent) {
-      this->parent->SendMsg(sender, 60, 0, 0, 0, 0);
+      this->parent->SendMsg(sender, UM_REFRESH, 0, 0, 0, 0);
     }
     return 0;
-  case 174:
+  case UM_CASH_EMOTION_ACTIVATE:
     this->m_purchaseAction->Execute(static_cast<int>(argument1), static_cast<int>(argument2));
     return 0;
-  case 175:
+  case UM_CASH_EMOTION_SELECT:
     this->m_selectAction->Execute(static_cast<int>(argument1), static_cast<int>(argument2));
     return 0;
   default:
@@ -3310,7 +3312,7 @@ UICashEmotionPack_Search_Normal::~UICashEmotionPack_Search_Normal() {
 int UICashEmotionPack_Search_Normal::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message != 175) {
+  if (message != UM_CASH_EMOTION_SELECT) {
     return UICashEmotionPack::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -3343,10 +3345,10 @@ int UICashEmotionPack_Search_UnPurchased::SendMsg(
   case UM_REFRESH:
     this->Invalidate();
     if (this->parent) {
-      this->parent->SendMsg(this, 60, 0, 0, 0, 0);
+      this->parent->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
     }
     return 0;
-  case 174:
+  case UM_CASH_EMOTION_ACTIVATE:
     if (this->m_action) {
       this->m_action->Execute(static_cast<int>(argument1), static_cast<int>(argument2));
       return 0;
@@ -3386,7 +3388,7 @@ void UICashEmotionPack_Unpurchase::Paint() {
 // FUNCTION: fn_09475
 void UICashEmotionPack_Unpurchase::OnLBtnDblClk(int, int) {
   if (!this->m_pressed && this->parent) {
-    this->parent->SendMsg(this, 171, this->unknown_00A8, 0, 0, 0);
+    this->parent->SendMsg(this, UM_CASH_EMOTION_SELECT_PACK, this->unknown_00A8, 0, 0, 0);
   }
 }
 
@@ -3394,7 +3396,7 @@ void UICashEmotionPack_Unpurchase::OnLBtnDblClk(int, int) {
 // FUNCTION: fn_09476
 void UICashEmotionPack_Unpurchase::OnLBtnDown(int, int) {
   if (!this->m_pressed && this->parent) {
-    this->parent->SendMsg(this, 171, this->unknown_00A8, 0, 0, 0);
+    this->parent->SendMsg(this, UM_CASH_EMOTION_SELECT_PACK, this->unknown_00A8, 0, 0, 0);
   }
 }
 
@@ -3418,12 +3420,12 @@ void UICashEmotionPack_Unpurchase::SetPressed(bool pressed, bool force) {
 int UICashEmotionPack_Unpurchase::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message != 174) {
+  if (message != UM_CASH_EMOTION_ACTIVATE) {
     return UICashEmotionPack::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
   if (!this->m_pressed && this->parent) {
-    this->parent->SendMsg(this, 171, this->unknown_00A8, 0, 0, 0);
+    this->parent->SendMsg(this, UM_CASH_EMOTION_SELECT_PACK, this->unknown_00A8, 0, 0, 0);
   }
 
   return 0;
@@ -3498,7 +3500,7 @@ void UICashEmotionPiece::Paint() {
 // FUNCTION: fn_09484
 void UICashEmotionPiece::OnLBtnDblClk(int, int) {
   if (this->parent) {
-    this->parent->SendMsg(this, 175, this->m_packId, this->m_emotionId, 0, 0);
+    this->parent->SendMsg(this, UM_CASH_EMOTION_SELECT, this->m_packId, this->m_emotionId, 0, 0);
   }
 }
 
@@ -3507,7 +3509,7 @@ void UICashEmotionPiece::OnLBtnDblClk(int, int) {
 void UICashEmotionPiece::OnMouseEnter() {
   this->m_hovered = true;
   if (this->m_hoverable) {
-    this->SendMsg(this, 60, 0, 0, 0, 0);
+    this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -3516,7 +3518,7 @@ void UICashEmotionPiece::OnMouseEnter() {
 void UICashEmotionPiece::OnMouseLeave() {
   this->m_hovered = false;
   if (this->m_hoverable) {
-    this->SendMsg(this, 60, 0, 0, 0, 0);
+    this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -3544,13 +3546,13 @@ int UICashEmotionPiece::SendMsg(
   switch (message) {
   case UM_COMMAND:
     if (argument1 == 189 && this->parent) {
-      this->parent->SendMsg(this, 174, this->m_packId, this->m_emotionId, 0, 0);
+      this->parent->SendMsg(this, UM_CASH_EMOTION_ACTIVATE, this->m_packId, this->m_emotionId, 0, 0);
     }
     return 0;
   case UM_REFRESH:
     this->Invalidate();
     if (this->parent) {
-      this->parent->SendMsg(this, 60, 0, 0, 0, 0);
+      this->parent->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
     }
     return 0;
   default:

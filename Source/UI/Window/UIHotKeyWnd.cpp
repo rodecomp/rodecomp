@@ -1,5 +1,7 @@
 #include "Contents/Hotkeys/InterfaceHotkey.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Render/Text/FontCache.h"
@@ -211,7 +213,7 @@ void UIHotKeyWnd::SaveHotkeys() {
     char message[500];
     std::memset(message, 0, sizeof(message));
     StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), "%s", LookupMessage(3572));
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 1, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 1, 0, 0);
   }
 }
 
@@ -679,12 +681,12 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
 int UIHotKeyWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     switch (argument1) {
     case ID_OK:
       ++g_userHotkeyMgr->m_changes;
       this->SaveHotkeys();
-      g_windowMgr.CloseWindow(156);
+      g_windowMgr.CloseWindow(WID_HOTKEYWND);
       return 0;
     case ID_CANCEL:
       this->m_selectedRow = -1;
@@ -694,7 +696,7 @@ int UIHotKeyWnd::SendMsg(
       this->Invalidate();
       return 0;
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(156);
+      g_windowMgr.CloseWindow(WID_HOTKEYWND);
       return 0;
     case ID_CHECK:
       if (sender != this->unknown_0108) {
@@ -731,8 +733,8 @@ int UIHotKeyWnd::SendMsg(
     }
   }
 
-  if (message == 22) {
-    if (sender == g_windowMgr.LookupWindow(303)) {
+  if (message == UM_TAB) {
+    if (sender == g_windowMgr.LookupWindow(WID_HOTKEYGUIDEWND)) {
       this->unknown_0100->SelectTab(static_cast<int>(argument1));
       return 0;
     }

@@ -1,4 +1,5 @@
 #include "Contents/Effects/DummyEffectLauncher.h"
+#include "Contents/Actors/ActorEnums.h"
 
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/RagEffect.h"
@@ -17,7 +18,7 @@ bool CDummyEffectLauncher::OnProcess() {
 // OFFSET: 0x00E50A60
 // FUNCTION: fn_24296
 __declspec(safebuffers) void CDummyEffectLauncher::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
-  if (message != 14 || a != 0) {
+  if (message != AM_SETPOS || a != 0) {
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
@@ -41,7 +42,7 @@ __declspec(safebuffers) void CDummyEffectLauncher::SendMsg(CGameObject* sender, 
       value.z = 0.0f;
       value.x = static_cast<float>(static_cast<std::int64_t>(i) << 32 | static_cast<std::uint32_t>(h));
       if (effect != nullptr) {
-        effect->SendMsg(nullptr, 14, 0, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0, 0);
       }
     }
   } else {

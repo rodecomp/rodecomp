@@ -1,3 +1,5 @@
+#include "UI/Window/UIEnums.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Client/Replay.h"
 #include "Client/Session.h"
 #include "UI/Window/WindowPolicy.h"
@@ -120,7 +122,7 @@ void UIButton::OnMouseMove(int x, int y) {
 
   UIWindow* parent = this->parent;
   if (parent == g_windowMgr.unknown_01DC) {
-    parent->SendMsg(this, 6, 271, this->geometry.unknown_0030 != 0, 0, 0);
+    parent->SendMsg(this, UM_COMMAND, ID_APPLY, this->geometry.unknown_0030 != 0, 0, 0);
   }
 }
 
@@ -207,7 +209,7 @@ void UIButton::OnLBtnUp(int x, int y) {
         if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
           const char* text = LookupMessage(17);
           if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-            g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+            g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
           }
         } else {
           if (id == 184 || id == 321) {
@@ -216,11 +218,11 @@ void UIButton::OnLBtnUp(int x, int y) {
             parent = this->parent;
           }
 
-          parent->SendMsg(this, 6, id, this->m_argument, 0, 0);
+          parent->SendMsg(this, UM_COMMAND, id, this->m_argument, 0, 0);
         }
       }
     } else {
-      g_modeMgr.gameMode->SendMsg(0, this->geometry.id, this->m_argument, 0, 0);
+      g_modeMgr.gameMode->SendMsg(MM_COMMAND, this->geometry.id, this->m_argument, 0, 0);
     }
   }
 

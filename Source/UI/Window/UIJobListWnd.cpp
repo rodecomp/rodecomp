@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIJobListWnd.h"
 #include "UI/Window/UIEnums.h"
 
@@ -84,8 +85,8 @@ void UIJobListWnd::StoreInfo() {
 // OFFSET: 0x00935610
 // FUNCTION: fn_12746
 int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 6) {
-    if (message != 34) {
+  if (message != UM_COMMAND) {
+    if (message != UM_SETINFO) {
       return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
     }
 
@@ -94,8 +95,8 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       this->m_saved->Reset();
     }
     this->Move(this->m_saved->x, this->m_saved->y);
-    this->SendMsg(nullptr, 14, 3, this->m_saved->width, this->m_saved->height, 0);
-    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_RESIZE, 3, this->m_saved->width, this->m_saved->height, 0);
+    this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     return 0;
   }
 
@@ -134,7 +135,7 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   }
     [[fallthrough]];
   case ID_CLOSE:
-    g_windowMgr.CloseWindow(170);
+    g_windowMgr.CloseWindow(WID_JOBLISTWND);
     break;
   }
 

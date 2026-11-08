@@ -1,3 +1,5 @@
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Session.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
@@ -16,7 +18,7 @@ void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, st
 
   if (!diagnostic.success) {
     if (this->unknown_0008 == g_session.m_aid) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3507)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3507)), 0xFF, 0, 0, 0);
     }
 
     return;
@@ -33,21 +35,21 @@ void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, st
   case 2:
   case 3:
     if (this->unknown_0008 == g_session.m_aid) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3507)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3507)), 0xFF, 0, 0, 0);
     }
 
     return;
   }
 
   if (this->unknown_0008 == g_session.m_aid) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3459)), 0xFFFF64, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3459)), 0xFFFF64, 0, 0, 0);
   }
 
   this->registered = false;
-  auto* board = static_cast<UIAdvenPartyBoardWnd*>(g_windowMgr.LookupWindow(324));
+  auto* board = static_cast<UIAdvenPartyBoardWnd*>(g_windowMgr.LookupWindow(WID_ADVENPARTYBOARDWND));
 
   if (board) {
     board->stop->Enable(0);
-    board->SendMsg(nullptr, 6, 415, 0, 0, 0);
+    board->SendMsg(nullptr, UM_COMMAND, ID_PARTY_RELOAD_FIRST_PAGE, 0, 0, 0);
   }
 }

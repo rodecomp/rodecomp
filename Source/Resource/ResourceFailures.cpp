@@ -1,4 +1,5 @@
 #include "Resource/ResourceFailures.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Threading/NSyncObject.h"
 
@@ -29,7 +30,7 @@ void ResourceFailures::Report(std::string requested, std::string resolved) {
     this->m_reported.insert(resolved);
   }
 
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("Resource File Loading fail"), 255, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(requested.c_str()), 255, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(resolved.c_str()), 255, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("Resource File Loading fail"), 255, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(requested.c_str()), 255, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(resolved.c_str()), 255, 0, 0, 0);
 }

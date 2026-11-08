@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "Render/Text/FontCache.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
@@ -217,7 +218,7 @@ void CMergeItemWnd::OnWheel(int delta) {
     if (delta >= 0) {
       step = -step;
     }
-    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
   }
 }
 
@@ -358,7 +359,7 @@ int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
       MergeItemCancelPacket packet;
       packet.id = 0x974;
       GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-      g_windowMgr.CloseWindow(227);
+      g_windowMgr.CloseWindow(WID_MERGEITEMWND);
       break;
     }
     }
@@ -394,7 +395,7 @@ bool CMergeItemWnd::RequestMerge() {
   }
 
   if (ids.size() < this->m_minSelection) {
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2170)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(2170)), 0xFF, 0, 0, 0);
     return false;
   }
 

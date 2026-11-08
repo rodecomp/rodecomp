@@ -1,4 +1,6 @@
 #include "UI/SelectPackageItemBox/SelectPackageItemBox.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
@@ -598,7 +600,7 @@ void CUISelectPackageItemBox::OnCancel() {
 // OFFSET: 0x00A6FBD0
 // FUNCTION: fn_45494
 void CUISelectPackageItemBox::OnClickClose() {
-  g_windowMgr.CloseWindow(0x2731);
+  g_windowMgr.CloseWindow(WID_SELECTPACKAGEITEMBOX);
 }
 
 // OFFSET: 0x00A6FBE0
@@ -620,7 +622,7 @@ void CUISelectPackageItemBox::OnOk() {
   const int result = g_windowMgr
                        .Confirm(FormatOwnedString(LookupMessage(3975), it->name.c_str()).c_str(), 2, true, false, 0, "Message", 280, 120, 0);
   if (result == 187) {
-    g_modeMgr.GetGameMode()->SendMsg(325, this->sourceIndex, this->packageId, index, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_USE_PACKAGEITEM, this->sourceIndex, this->packageId, index, 0);
   }
 }
 
@@ -636,7 +638,7 @@ __declspec(noinline) void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_I
 // OFFSET: 0x00A6FE00
 // FUNCTION: fn_45493
 void CUISelectPackageItemBox::OnClose() {
-  g_windowMgr.CloseWindow(0x2731);
+  g_windowMgr.CloseWindow(WID_SELECTPACKAGEITEMBOX);
 }
 
 // OFFSET: 0x00A6FE10

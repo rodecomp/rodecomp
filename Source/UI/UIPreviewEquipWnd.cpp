@@ -1,4 +1,5 @@
 #include "UI/UIPreviewEquipWnd.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -174,10 +175,10 @@ void UIPreviewEquipWnd::SyncFromPlayer() {
 // OFFSET: 0x007F3EF0
 // FUNCTION: fn_09886
 int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     switch (a) {
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(0x126);
+      g_windowMgr.CloseWindow(WID_PREVIEWEQUIPWND);
       break;
     case ID_RESET:
       this->SyncFromPlayer();
@@ -197,7 +198,7 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->Invalidate();
       break;
     }
-  } else if (message == 0x17) {
+  } else if (message == UM_REFRESHITEM) {
     if (a != 0) {
       const ITEM_INFO* item = reinterpret_cast<const ITEM_INFO*>(a);
       switch (item->unknown_0000[2]) {
@@ -288,7 +289,7 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         break;
       }
     }
-  } else if (message == 0x22) {
+  } else if (message == UM_SETINFO) {
     this->saved = reinterpret_cast<PreviewEquipWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();

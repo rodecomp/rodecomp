@@ -1,3 +1,5 @@
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Session.h"
 #include "Contents/AchievementMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
@@ -39,8 +41,8 @@ int CSession::AddUnknown6160(int id) {
   this->unknown_6160.push_back(value);
   std::sort(this->unknown_6160.begin(), this->unknown_6160.end(), JobTitleLess());
 
-  if (UIWindow* window = g_windowMgr.LookupWindow(10)) {
-    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_EQUIPWND)) {
+    window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 
   return value;
@@ -73,7 +75,7 @@ bool CSession::ToggleTrackedAchievement(int id) {
     tracked.erase(found);
   } else {
     if (tracked.size() >= 3) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA78)), 0x64FFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA78)), 0x64FFFF, 0, 0, 0);
       return false;
     }
 
@@ -116,7 +118,7 @@ bool CSession::ToggleTrackedAchievement(int id) {
   }
 
   if (tracked.size() == 0) {
-    g_windowMgr.CloseWindow(0x10F);
+    g_windowMgr.CloseWindow(WID_ACHTRACINGWND);
     return false;
   }
 

@@ -1,3 +1,5 @@
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/UIRoundBoxTooltipWnd.h"
 
 #include "Client/Input/Mouse.h"
@@ -79,7 +81,7 @@ void UIRoundBoxTooltipWnd::Paint() {
 // OFFSET: 0x0099A430
 // FUNCTION: fn_13543
 int UIColoringTextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 29) {
+  if (message != UM_SETTEXT) {
     return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -96,11 +98,11 @@ int UIColoringTextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // OFFSET: 0x0099A5E0
 // FUNCTION: fn_13544
 int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
-    if (argument1 == 201) {
-      g_windowMgr.CloseWindow(276);
+  if (message == UM_COMMAND) {
+    if (argument1 == ID_CLOSE) {
+      g_windowMgr.CloseWindow(WID_ROUNDBOXTOOLTIPWND);
     }
-  } else if (message == 147) {
+  } else if (message == UM_SET_ITEM_MOVE_TOOLTIP) {
     if (argument1 != 0) {
       std::string text;
       std::string longest;
@@ -182,7 +184,7 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
 
       if (text.empty()) {
-        g_windowMgr.ShowWindowById(276, 0);
+        g_windowMgr.ShowWindowById(WID_ROUNDBOXTOOLTIPWND, 0);
         return 0;
       }
 
@@ -192,7 +194,7 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->viewer->Resize(width + 15, static_cast<int>(static_cast<float>(height * lines + 10) + static_cast<float>(lines - 1) * 4.8f + 1.0f));
       this->Resize(this->viewer->geometry.width + 2, this->viewer->geometry.height + 2);
       this->Move(g_mouse.x + 26, g_mouse.y);
-      this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 0, 0, 0);
+      this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 0, 0, 0);
     }
   } else {
     return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);

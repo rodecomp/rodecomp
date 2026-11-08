@@ -1,4 +1,5 @@
 #include "Contents/Effects/RagEffect.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/PartyMemberEffects.h"
 #include "Client/Application/LaunchInfo.h"
@@ -161,7 +162,7 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
 CRagEffect* EffectActor::LaunchEffect(int effectId, int duration) {
   CRagEffect* effect = this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   if (effect) {
-    effect->SendMsg(nullptr, 80, 0, duration, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SET_DURATION, 0, duration, 0, 0, 0, 0);
   }
 
   return effect;

@@ -1,4 +1,5 @@
 #include "UI/UICaptchaRegisterWnd.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Application/Launcher.h"
@@ -144,7 +145,7 @@ int UICaptchaRegisterWnd::SendMsg(
               this->m_captchaBitmap->Invalidate();
               this->Invalidate();
             } else {
-              g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("image size error"), 0xFF, 0, 0, 0);
+              g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("image size error"), 0xFF, 0, 0, 0);
             }
           }
         }
@@ -153,13 +154,13 @@ int UICaptchaRegisterWnd::SendMsg(
     break;
   case UM_COMMAND:
     switch (a1) {
-    case 345:
+    case ID_SEND:
       if (this->m_editCtrl->Length() < 4) {
         g_windowMgr.Confirm(LookupMessage(2872), 0, 1, 0, 0, "Message", 280, 120, 0);
       } else if (this->m_selectedFile.empty()) {
         g_windowMgr.Confirm(LookupMessage(2874), 0, 1, 0, 0, "Message", 280, 120, 0);
       } else if (this->m_decompressedSize == 0) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("compress data size error"), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("compress data size error"), 0xFF, 0, 0, 0);
       } else {
         const int result =
           g_windowMgr.Confirm(FormatOwnedString(LookupMessage(2873), this->m_editCtrl->Text()).c_str(), 2, 0, 0, 0, "Message", 280, 120, 0);
@@ -179,7 +180,7 @@ int UICaptchaRegisterWnd::SendMsg(
       }
       break;
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(284);
+      g_windowMgr.CloseWindow(WID_CAPTCHAREGISTERWND);
       break;
     }
     break;

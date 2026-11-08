@@ -1,3 +1,4 @@
+#include "Client/Mode/ModeMessage.h"
 #include "UI/Guild/UIAgitWnd.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
@@ -38,12 +39,12 @@ void UIAgitMessageBox::Paint() {
 // OFFSET: 0x00961260
 // FUNCTION: fn_13122
 int UIAgitMessageBox::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     const int response = static_cast<int>(a);
     this->RecordResponse(response, b, c, d);
     switch (response) {
     case ID_YES:
-      g_modeMgr.GetGameMode()->SendMsg(315, this->m_agitId, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_REQ_MOVE_GUILD_AGIT, this->m_agitId, 0, 0, 0);
       [[fallthrough]];
     case ID_NO:
       g_windowMgr.Schedule(this);
@@ -64,7 +65,7 @@ void UIListBoxAgit::OnCreate(int width, int height) {
 void UIListBoxAgit::OnLBtnDown(int x, int y) {
   if (this->parent) {
     UIListBox::OnLBtnDown(x, y);
-    this->parent->SendMsg(nullptr, 163, 0, 0, 0, 0);
+    this->parent->SendMsg(nullptr, UM_HIDE_AGIT_MENU, 0, 0, 0, 0);
   }
 }
 
@@ -74,10 +75,10 @@ void UIListBoxAgit::OnRBtnDown(int x, int y) {
   if (this->parent) {
     UIListBox::OnLBtnDown(x, y);
     if (this->selected < 0) {
-      this->parent->SendMsg(nullptr, 163, 0, 0, 0, 0);
+      this->parent->SendMsg(nullptr, UM_HIDE_AGIT_MENU, 0, 0, 0, 0);
       return;
     }
-    this->parent->SendMsg(nullptr, 162, this->geometry.width + this->geometry.x - 3, this->geometry.y - y % this->lineHeight + y + 2, 0, 0);
+    this->parent->SendMsg(nullptr, UM_SHOW_AGIT_MENU, this->geometry.width + this->geometry.x - 3, this->geometry.y - y % this->lineHeight + y + 2, 0, 0);
   }
 }
 
@@ -112,9 +113,9 @@ void UIListBoxAgitMenu::Paint() {
 // FUNCTION: fn_13093
 void UIListBoxAgitMenu::OnLBtnDown(int x, int y) {
   UIListBox::OnLBtnDown(x, y);
-  this->SendMsg(nullptr, 48, this->selected, 0, 0, 0);
+  this->SendMsg(nullptr, UM_MENU_SELECTED, this->selected, 0, 0, 0);
   if (this->parent) {
-    this->parent->SendMsg(nullptr, 163, 0, 0, 0, 0);
+    this->parent->SendMsg(nullptr, UM_HIDE_AGIT_MENU, 0, 0, 0, 0);
   }
 }
 
@@ -144,14 +145,14 @@ void UIListBoxAgitMenu::OnMouseHover(int x, int y) {
 // OFFSET: 0x00964F80
 // FUNCTION: fn_13136
 int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 48) {
+  if (message != UM_MENU_SELECTED) {
     return this->UIListBox::SendMsg(sender, message, a, b, c, d);
   }
 
   switch (a) {
   case 0: {
     if (g_session.GetSceneUnknown004C() == 1) {
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3633)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3633)), 0xFF, 0, 0, 0);
       return 0;
     }
 
@@ -182,7 +183,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     CMode* mode = g_modeMgr.GetGameMode();
     GuildInfo* guildInfo = &g_guildInfo;
     uint16_t agitId = static_cast<uint16_t>(guildInfo->GetUnknown0114(this->m_agitIndex));
-    mode->SendMsg(316, agitId, 0, 0, 0);
+    mode->SendMsg(MM_REQ_AGIT_INVESTMENT, agitId, 0, 0, 0);
     break;
   }
   }

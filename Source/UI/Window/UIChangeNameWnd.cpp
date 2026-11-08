@@ -1,3 +1,4 @@
+#include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIChangeNameWnd.h"
 #include "UI/Window/UIEnums.h"
 
@@ -72,7 +73,7 @@ void UIChangeNameWnd::OnCreate(int, int) {
     this->AddChild(this->m_cancelButton);
   }
 
-  g_modeMgr.gameMode->SendMsg(10014, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(LMM_GET_MAKING_CHAR_NAME, 0, 0, 0, 0);
   this->m_edit = new UIBitmapEditCtrl();
   this->m_edit->SetBitmapName("유저인터페이스\\login_interface\\name-edit.bmp");
   this->m_edit->SetSize(this->m_edit->geometry.width, this->m_edit->geometry.height);
@@ -95,7 +96,7 @@ UIChangeNameWnd::UIChangeNameWnd()
 int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
   case UM_DEFPUSH:
-    this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, this->m_message0, 0, 0, 0);
     break;
   case UM_COMMAND:
     switch (a) {

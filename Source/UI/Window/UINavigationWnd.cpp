@@ -1,4 +1,5 @@
 #include "UI/Window/UINavigationWnd.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Application/Launcher.h"
@@ -168,7 +169,7 @@ void UINavigationWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_12702
 void UINavigationWnd::OnLBtnUp(int x, int y) {
   if (static_cast<unsigned int>(x - 8) <= 126 && static_cast<unsigned int>(y - 39) <= 126) {
-    this->SendMsg(this, 6, 429, 0, 0, 0);
+    this->SendMsg(this, UM_COMMAND, 429, 0, 0, 0);
   }
   this->UIFrameWnd::OnLBtnUp(x, y);
 }
@@ -298,60 +299,60 @@ void UINavigationWnd::RefreshRouteList() {
     return;
   }
 
-  this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(LookupMessage(0x8B2)), 0, 0);
+  this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(LookupMessage(0x8B2)), 0, 0);
   char text[100];
   std::memset(text, 0, sizeof(text));
   std::sprintf(text, LookupMessage(0x8B3), g_navigationManager.GetRouteResult(), nodeCount);
-  this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+  this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
   int lineOffset;
   if (target.type == 2) {
     CNavi_Object* npc = static_cast<CNavi_Object*>(target.object);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(0x8B4), npc->GetInfo()->GetTitle(), npc->GetInfo()->GetName());
-    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
     std::memset(text, 0, sizeof(text));
     NaviCell cellX;
     NaviCell cellY;
     std::sprintf(text, LookupMessage(0x8B5), npc->GetName(), npc->GetCell(&cellX)->x, npc->GetCell(&cellY)->y);
-    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 5;
   } else if (target.type == 3) {
     CNavi_Object* mob = static_cast<CNavi_Object*>(target.object);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(0x8B4), mob->GetInfo()->GetTitle(), mob->GetInfo()->GetName());
-    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
     std::string kind;
     kind = LookupMessage(mob->GetType() == 301 ? 0x8B6 : 0x8B7);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(0x8B8), mob->GetName(), kind.c_str());
-    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 5;
   } else if (target.type == 1) {
     CNaviInfo* map = static_cast<CNaviInfo*>(target.object);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(0x8B4), map->GetTitle(), map->GetName());
-    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 4;
   } else if (target.type == 0) {
     CNaviInfo* map = static_cast<CNaviInfo*>(target.object);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(0x8B4), map->GetTitle(), map->GetName());
-    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
     std::memset(text, 0, sizeof(text));
     NaviCell cellX;
     NaviCell cellY;
     std::sprintf(text, LookupMessage(0x8B9), g_navigationManager.GetDestinationCell(&cellX)->x, g_navigationManager.GetDestinationCell(&cellY)->y);
-    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 5;
   } else {
     return;
   }
 
-  this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(LookupMessage(0x8BA)), 0, 0);
+  this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(LookupMessage(0x8BA)), 0, 0);
   this->m_searchPanel->SetLineOffset(lineOffset);
 
   CNavi_Link* previous = nullptr;
@@ -383,7 +384,7 @@ void UINavigationWnd::RefreshRouteList() {
         node->GetCell(&cellY)->y
       );
     }
-    this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     previous = node;
   }
 
@@ -408,7 +409,7 @@ void UINavigationWnd::RefreshRouteList() {
   } else {
     std::sprintf(text, LookupMessage(0x8BE), nodeCount, destination.c_str());
   }
-  this->SendMsg(nullptr, 31, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+  this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
   if (g_navigationManager.GetSelectedNode() == -1) {
     if (g_navigationManager.GetRouteFlag()) {
@@ -624,7 +625,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     this->Invalidate();
     return 0;
   case UM_COMMAND:
-    if (argument1 != 0x150 && argument1 != 0x1B9) {
+    if (argument1 != ID_SELECT_ITEM && argument1 != 0x1B9) {
       this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     }
 
@@ -638,7 +639,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
           result = g_navigationManager.Navigate(target.x, target.y);
         }
         if (result >= 0) {
-          this->SendMsg(this, 6, 0xBD, 0, 0, 0);
+          this->SendMsg(this, UM_COMMAND, ID_BUTTON1, 0, 0, 0);
           this->RefreshRouteList();
           if (g_windowMgr.modal) {
             static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapMarks();
@@ -652,7 +653,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       if (this->m_titleBar->Length() != 0) {
         g_navigationManager.unknown_1264 = this->m_titleBar->Text();
         g_navigationManager.RefreshSearch();
-        this->SendMsg(this, 6, 0xBE, 0, 0, 0);
+        this->SendMsg(this, UM_COMMAND, ID_BUTTON2, 0, 0, 0);
         if (g_windowMgr.modal) {
           static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
           return 0;
@@ -728,17 +729,17 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_windowMgr.Schedule(this);
       g_windowMgr.window_4F174 = nullptr;
       return 0;
-    case 0xBD:
+    case ID_BUTTON1:
       g_navigationManager.unknown_125C = 1;
       this->LayoutTabs();
       return 0;
-    case 0xBE:
+    case ID_BUTTON2:
       g_navigationManager.unknown_125C = 0;
       this->LayoutTabs();
       return 0;
     case 0xBF: {
       if (g_windowMgr.unknown_0214) {
-        g_windowMgr.CloseWindow(0x1A);
+        g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
 
       this->ClearHistory();
@@ -747,15 +748,15 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       EnumerateFileNames(this->m_history, directory.c_str(), "txt");
       const int count = static_cast<int>(this->m_history.size());
       if (count != 0) {
-        UIWindow* historyWindow = g_windowMgr.EnsureWindow(0x1A);
+        UIWindow* historyWindow = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
         for (std::vector<std::string>::iterator it = this->m_history.begin(); it != this->m_history.end(); ++it) {
-          historyWindow->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(it->c_str()), 0, 0, 0);
+          historyWindow->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(it->c_str()), 0, 0, 0);
         }
 
         const int height = (std::min)(0xA0, count * 0x10);
-        historyWindow->SendMsg(nullptr, 0x28, 0, 0, 0, 0);
+        historyWindow->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
         historyWindow->Resize(0xA0, height);
-        historyWindow->SendMsg(nullptr, 0x53, 0xCB, 0, 0, 0);
+        historyWindow->SendMsg(nullptr, UM_SET_CALLER_WID, 0xCB, 0, 0, 0);
 
         int x = this->geometry.width - 0xA5;
         int y = 0x24;
@@ -779,8 +780,8 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       break;
     case ID_HELP:
-      if (!g_windowMgr.CloseWindow(0xE5)) {
-        g_windowMgr.EnsureWindow(0xE5);
+      if (!g_windowMgr.CloseWindow(WID_NAVIGATIONHELPWND)) {
+        g_windowMgr.EnsureWindow(WID_NAVIGATIONHELPWND);
         return 0;
       }
       break;
@@ -808,7 +809,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_navigationManager.unknown_1260 = static_cast<int>(argument1);
       this->Invalidate();
       if (g_replayAnimationScaling != 0) {
-        this->unknown_00EC->SendMsg(nullptr, 0x39, argument1, 0, 0, 0);
+        this->unknown_00EC->SendMsg(nullptr, UM_CHANGEMSG, argument1, 0, 0, 0);
         return 0;
       }
       break;
@@ -829,7 +830,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
   case UM_DEFPUSH:
     if (this->m_titleBar == sender && this->m_titleBar->Length() > 0) {
-      this->SendMsg(this->m_titleBar, 6, 0x141, 0, 0, 0);
+      this->SendMsg(this->m_titleBar, UM_COMMAND, ID_SEARCH, 0, 0, 0);
       return 0;
     }
   case UM_RESIZE:
@@ -858,7 +859,7 @@ void UINavigationWnd::FillRouteList() {
   char text[64];
   std::memset(text, 0, sizeof(text));
   std::sprintf(text, LookupMessage(0x8AE), g_navigationManager.StateCount());
-  this->SendMsg(nullptr, 0x1F, 0x150, reinterpret_cast<std::intptr_t>(text), 0, 0);
+  this->SendMsg(nullptr, UM_ADDITEM, 0x150, reinterpret_cast<std::intptr_t>(text), 0, 0);
   this->m_routePanel->SetLineOffset(1);
 
   for (int index = 0; index < g_navigationManager.StateCount(); ++index) {
@@ -897,7 +898,7 @@ void UINavigationWnd::FillRouteList() {
         std::sprintf(text, LookupMessage(0x976), state.name.c_str(), info->GetName(), state.x, state.y);
       }
     }
-    this->SendMsg(nullptr, 0x1F, 0x150, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    this->SendMsg(nullptr, UM_ADDITEM, 0x150, reinterpret_cast<std::intptr_t>(text), 0, 0);
   }
 }
 

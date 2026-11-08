@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIRoMapWnd.h"
 #include "UI/Window/UIEnums.h"
 #include "Script/LuaScript.h"
@@ -102,7 +104,7 @@ void UIRoMapWnd::UpdateNavigationButtons() {
 // FUNCTION: fn_12725
 void UIRoMapWnd::OnRBtnUp(int, int) {
   if (g_windowMgr.unknown_0214 != 0) {
-    g_windowMgr.CloseWindow(26);
+    g_windowMgr.CloseWindow(WID_COMBOBOXWND);
   }
 
   this->unknown_0208 = 0;
@@ -283,7 +285,7 @@ void UIRoMapWnd::DrawFieldLabels() {
 // OFFSET: 0x0091A7D0
 // FUNCTION: fn_12601
 void UIRoMapWnd::DrawRecordBorders() {
-  const std::string mapName = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(9, 0, 0, 0, 0));
+  const std::string mapName = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(MM_QUERYRSWNAME, 0, 0, 0, 0));
   for (std::list<WorldViewRecord>::const_iterator it = this->m_records.begin(); it != this->m_records.end(); ++it) {
     if (g_worldViewMgr.currentWorld != it->worldIndex) {
       continue;
@@ -419,7 +421,7 @@ void UIRoMapWnd::DrawMarks() {
 // OFFSET: 0x0091B170
 // FUNCTION: fn_12604
 void UIRoMapWnd::DrawRecordFaces(int) {
-  const std::string mapName = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(9, 0, 0, 0, 0));
+  const std::string mapName = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(MM_QUERYRSWNAME, 0, 0, 0, 0));
   const int faceSize = g_worldViewMgr.screenScale * 2 + 8;
   std::string image = "유저인터페이스\\worldview_interface\\wv_face1.bmp";
   for (std::list<WorldViewRecord>::const_iterator it = this->m_records.begin(); it != this->m_records.end(); ++it) {
@@ -476,7 +478,7 @@ void UIRoMapWnd::RefreshPartyRecords() {
       }
     }
   } else {
-    std::string map = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(9, 0, 0, 0, 0));
+    std::string map = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(MM_QUERYRSWNAME, 0, 0, 0, 0));
     WorldViewRecord record;
     record.name = map;
     std::string name = g_session.DecodePlayerName();
@@ -729,18 +731,18 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
   case UM_COMMAND:
     switch (argument1) {
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(140);
+      g_windowMgr.CloseWindow(WID_ROMAPWND);
       return 0;
-    case 192:
+    case ID_STATUS:
       this->m_showLabels = !this->m_showLabels;
       this->m_labelCheck->geometry.unknown_0030 = this->m_showLabels;
       this->m_labelCheck->Invalidate();
       this->Invalidate();
       return 0;
-    case 200:
-      g_windowMgr.EnsureWindow(203);
+    case ID_BASE:
+      g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
       if (g_windowMgr.window_4F174) {
-        g_windowMgr.window_4F174->SendMsg(nullptr, 6, 200, 0, 0, 0);
+        g_windowMgr.window_4F174->SendMsg(nullptr, UM_COMMAND, ID_BASE, 0, 0, 0);
       }
       this->UpdateNavigationButtons();
       return 0;
@@ -769,7 +771,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       }
       g_navigationManager.unknown_1254 = false;
       g_navigationManager.SearchNavigation(name, 0, false);
-      if (g_windowMgr.LookupWindow(203)) {
+      if (g_windowMgr.LookupWindow(WID_NAVIGATIONV4WND)) {
         static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRoute(0);
         static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRouteNode(0);
       }
@@ -789,7 +791,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
   case UM_DEFPUSH:
     if (sender == this->m_searchEdit) {
       if (this->m_searchEdit->Length() > 0) {
-        this->SendMsg(this->m_searchEdit, 6, 321, 0, 0, 0);
+        this->SendMsg(this->m_searchEdit, UM_COMMAND, ID_SEARCH, 0, 0, 0);
         return 0;
       }
     }

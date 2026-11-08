@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Skills/SkillInfo.h"
@@ -51,7 +52,7 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
       this->m_secondaryShortcutSlots[destination] = {};
     }
 
-    modeEvents->SendMsg(313, destination, bank, 0, 0);
+    modeEvents->SendMsg(MM_SHORTCUT_KEY_CHANGE, destination, bank, 0, 0);
     return;
   }
 
@@ -91,7 +92,7 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
     } else if (bank == 1) {
       this->m_secondaryShortcutSlots[index] = {};
     }
-    modeEvents->SendMsg(313, index, bank, 0, 0);
+    modeEvents->SendMsg(MM_SHORTCUT_KEY_CHANGE, index, bank, 0, 0);
   }
 
   if (bank == 0) {
@@ -104,7 +105,7 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
     this->m_secondaryShortcutSlots[destination].itemId = id;
   }
 
-  modeEvents->SendMsg(313, destination, bank, 0, 0);
+  modeEvents->SendMsg(MM_SHORTCUT_KEY_CHANGE, destination, bank, 0, 0);
 }
 
 // OFFSET: 0x00E492D0

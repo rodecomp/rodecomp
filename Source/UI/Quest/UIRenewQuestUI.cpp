@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Quest/UIRenewQuestUI.h"
 #include "UI/Window/UIEnums.h"
 #include "Utility/EncryptedName.h"
@@ -844,8 +846,8 @@ __declspec(noinline) bool CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long
 // OFFSET: 0x00A65F20
 // FUNCTION: fn_16603
 CUIRenewQuestUI::~CUIRenewQuestUI() {
-  g_windowMgr.CloseWindow(10010);
-  g_windowMgr.CloseWindow(10009);
+  g_windowMgr.CloseWindow(WID_RECOMMENDEDQUESTINFO);
+  g_windowMgr.CloseWindow(WID_ONGOINGQUESTINFO);
 }
 
 // OFFSET: 0x00A65FD0
@@ -865,7 +867,7 @@ void RenewQuestUI::CUIQuestItem::OnActiveStateChanged(bool active) {
   const int questId = this->questId;
   if (this->questType == 2) {
     g_renewQuestMgr->SetRecommendedQuestActive(questId, active);
-    if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(0x2718))) {
+    if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(WID_RENEWQUESTUI))) {
       window->UpdateQuestLists(this->questType);
     }
     g_renewQuestMgr->SaveRecommendedActiveList();
@@ -891,7 +893,7 @@ void RenewQuestUI::CUIQuestItem::OnActiveStateChanged(bool active) {
 void RenewQuestUI::CUIQuestItem::OnSimpleView(bool simpleView) {
   g_renewQuestMgr->SetOngoingSimpleView(this->questId, simpleView);
   g_renewQuestMgr->SaveOngoingSimpleViewList();
-  if (UIWindow* window = g_windowMgr.LookupWindow(204)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_QUESTDISPLAY)) {
     window->Invalidate();
   }
 }
@@ -948,7 +950,7 @@ template void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::ClearData
 // FUNCTION: fn_16612
 void UIWindow::RecordWindowFlag(bool value) {
   this->RecordValues(6, 0xd5, value, 0, 0);
-  if (UIWindow* window = g_windowMgr.LookupWindow(0xcc)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_QUESTDISPLAY)) {
     window->Show(value);
   }
 }
@@ -1084,12 +1086,12 @@ void RenewQuestUI::CUIQuestItem::SetSelected(bool selected) {
 int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_COMMAND:
-    if (a == 0xD5) {
+    if (a == ID_CHECK) {
       const bool checked = b != 0;
       this->checkBox->checked = checked;
       this->checkBox->Invalidate();
       this->RecordValues(6, a, b != 0, 0, 0);
-      if (UIWindow* window = g_windowMgr.LookupWindow(0xCC)) {
+      if (UIWindow* window = g_windowMgr.LookupWindow(WID_QUESTDISPLAY)) {
         window->Show(checked);
       }
     }
@@ -1132,19 +1134,19 @@ void RenewQuestUI::CUIQuestList::OnSelectItem(CUIQuestItem* item, const unsigned
   }
 
   if (item->questType == 2) {
-    if (CUIRecommendedQuestInfo* info = dynamic_cast<CUIRecommendedQuestInfo*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(0x271a)))) {
+    if (CUIRecommendedQuestInfo* info = dynamic_cast<CUIRecommendedQuestInfo*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_RECOMMENDEDQUESTINFO)))) {
       info->SetQuest(item->questId);
-      if (UIWindow* other = g_windowMgr.LookupWindow(0x2719)) {
+      if (UIWindow* other = g_windowMgr.LookupWindow(WID_ONGOINGQUESTINFO)) {
         info->Move(other->geometry.x, other->geometry.y);
-        g_windowMgr.CloseWindow(0x2719);
+        g_windowMgr.CloseWindow(WID_ONGOINGQUESTINFO);
       }
     }
   } else {
-    if (CUIOngoingQuestInfo* info = dynamic_cast<CUIOngoingQuestInfo*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(0x2719)))) {
+    if (CUIOngoingQuestInfo* info = dynamic_cast<CUIOngoingQuestInfo*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_ONGOINGQUESTINFO)))) {
       info->SetQuest(item->questId);
-      if (UIWindow* other = g_windowMgr.LookupWindow(0x271a)) {
+      if (UIWindow* other = g_windowMgr.LookupWindow(WID_RECOMMENDEDQUESTINFO)) {
         info->Move(other->geometry.x, other->geometry.y);
-        g_windowMgr.CloseWindow(0x271a);
+        g_windowMgr.CloseWindow(WID_RECOMMENDEDQUESTINFO);
       }
     }
   }
@@ -1817,7 +1819,7 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   this->closeButton = new CUIImageButton();
   this->closeButton->SetSize(42, 20);
   this->closeButton->Move(327, 442);
-  this->closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(0x2718); });
+  this->closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(WID_RENEWQUESTUI); });
   this->closeButton->disabled = 0;
   this->closeButton->Invalidate();
   this->closeButton->SetImages(
@@ -2215,7 +2217,7 @@ void CUIRenewQuestUI::OnSearchSubmit() {
 // OFFSET: 0x00A66100
 // FUNCTION: fn_45519
 void CUIRenewQuestUI::OnClose() {
-  g_windowMgr.CloseWindow(0x2718);
+  g_windowMgr.CloseWindow(WID_RENEWQUESTUI);
 }
 
 // OFFSET: 0x00A66370
@@ -2236,13 +2238,13 @@ CUIRenewQuestUI::CUIRenewQuestUI()
 // FUNCTION: fn_16624
 void CUIRenewQuestUI::OnInit() {
   g_windowMgr.RecordWindowPacket(0x2718);
-  g_windowMgr.CloseWindow(0x8F);
+  g_windowMgr.CloseWindow(WID_NOTIFYQUESTWND);
 
   this->titleBar->SetTitle(LookupMessage(0xD48));
   this->filterLabel->SetText(LookupMessage(0x7E3));
 
   bool visible = false;
-  if (UIWindow* window = g_windowMgr.LookupWindow(0xCC)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_QUESTDISPLAY)) {
     visible = window->geometry.visible != 0;
   }
   this->checkBox->checked = visible;

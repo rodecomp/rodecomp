@@ -2,6 +2,7 @@
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMessage.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
@@ -185,11 +186,11 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     switch (argument1) {
     case 2:
       if (argument2 == 1) {
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2518)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2518)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, 7, lineCount, 0, 0, 0);
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
         }
       } else {
         this->m_viewer->SendMsg(
@@ -198,7 +199,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, 7, lineCount, 0, 0, 0);
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
         }
         this->m_edits[0]->SetText("");
         this->m_accountIdText->SetText("", 0);
@@ -221,11 +222,11 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     case 1:
       switch (argument2) {
       case 3: {
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2516)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2516)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, 7, lineCount, 0, 0, 0);
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
         }
         UIBitmapButton* addButton = this->m_buttons[1];
         addButton->SetDisabled(1);
@@ -236,11 +237,11 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       case 1: {
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2516)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2516)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, 7, lineCount, 0, 0, 0);
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
         }
         UIBitmapButton* addButton = this->m_buttons[1];
         addButton->SetDisabled(1);
@@ -256,12 +257,12 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           std::atoi(this->m_edits[4]->Text()), std::atoi(this->m_edits[5]->Text()), std::atoi(this->m_edits[6]->Text()), std::atoi(this->m_edits[7]->Text()),
           std::atoi(this->m_edits[8]->Text()), std::atoi(this->m_edits[9]->Text()), std::atoi(this->m_edits[10]->Text()), std::atoi(this->m_edits[11]->Text())
         );
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 60, 0, 0);
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2515)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2515)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, 7, lineCount, 0, 0, 0);
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
         }
         UIBitmapButton* deleteButton = this->m_buttons[2];
         deleteButton->SetDisabled(0);
@@ -304,16 +305,16 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     }
     case ID_CLOSE:
-      g_modeMgr.GetGameMode()->SendMsg(319, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_CLOSE_ACCOUNT_LIMITED_TOOL, 0, 0, 0, 0);
       break;
     case ID_SEARCH: {
       const std::string name = this->m_edits[0]->Text();
       if (name.empty()) {
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2512)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2512)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, 7, lineCount, 0, 0, 0);
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
         }
         this->m_edits[0]->SelectAll();
       } else if (name.size() < 50) {
@@ -327,11 +328,11 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
     case 561: {
       if (std::atoi(this->m_edits[1]->Text()) < 1) {
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2508)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2508)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, 7, lineCount, 0, 0, 0);
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
         }
         this->m_edits[1]->SelectAll();
         return 0;
@@ -340,22 +341,22 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       const AccountLimitedRange ranges[5] = {{23, 999}, {1, 12}, {1, 31}, {0, 23}, {0, 59}};
       for (int i = 2; i < 12; ++i) {
         if (this->m_edits[i]->Length() == 0) {
-          this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2509)), 60, 0, 0);
+          this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2509)), 60, 0, 0);
           UITextViewer* viewer = this->m_viewer;
           if (viewer->verticalOverflow != 0) {
             const int lineCount = viewer->LineCount();
-            viewer->SendMsg(nullptr, 7, lineCount, 0, 0, 0);
+            viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
             this->m_edits[i]->SelectAll();
             return 0;
           }
 
           const AccountLimitedRange& range = ranges[i % 5 - 2];
           if (std::atoi(this->m_edits[i]->Text()) < range.minimum || std::atoi(this->m_edits[i]->Text()) > range.maximum) {
-            this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2510)), 60, 0, 0);
+            this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(2510)), 60, 0, 0);
             UITextViewer* rangeViewer = this->m_viewer;
             if (rangeViewer->verticalOverflow != 0) {
               const int lineCount = rangeViewer->LineCount();
-              rangeViewer->SendMsg(nullptr, 7, lineCount, 0, 0, 0);
+              rangeViewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
             }
             this->m_edits[i]->SelectAll();
             return 0;
@@ -364,7 +365,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       }
 
       if (std::atoi(this->m_edits[12]->Text()) > 14) {
-        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(3917)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(3917)), 60, 0, 0);
         this->m_edits[12]->SelectAll();
         return 0;
       }

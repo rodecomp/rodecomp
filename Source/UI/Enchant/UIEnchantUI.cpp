@@ -1,4 +1,5 @@
 #include "UI/Enchant/EnchantUI.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Session.h"
 #include "Contents/EnchantMgr.h"
 #include "Render/Renderer.h"
@@ -1443,7 +1444,7 @@ void CUIEnchantUI::OnSelectTarget(EnchantUI::CUITargetItem* item, const ITEM_INF
 void CUIEnchantUI::SetEnchantGroup(uint64_t group) {
   this->enchantInfo = CEnchantMgr::GetInstance()->GetEnchantInfo(group);
   if (!this->enchantInfo) {
-    g_windowMgr.CloseWindow(0x2716);
+    g_windowMgr.CloseWindow(WID_ENCHANTUI);
     return;
   }
 
@@ -2811,5 +2812,5 @@ void CUIEnchantUI::OnCreate(int width, int height) {
 }
 
 void CUIEnchantUI::OnClickClose() {
-  g_windowMgr.CloseWindow(10006);
+  g_windowMgr.CloseWindow(WID_ENCHANTUI);
 }

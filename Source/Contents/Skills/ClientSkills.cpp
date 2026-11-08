@@ -1,4 +1,6 @@
 #include "Contents/Skills/ClientSkills.h"
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Application/ErrorDialog.h"
@@ -178,15 +180,15 @@ CSkillInfo CSession::LookupSkill(std::uint32_t id) {
 // FUNCTION: fn_23904
 void CSession::NotifySkillWindows() {
   if (g_windowMgr.window_02C4) {
-    g_windowMgr.window_02C4->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    g_windowMgr.window_02C4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
   if (g_windowMgr.window_01E8) {
-    g_windowMgr.window_01E8->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    g_windowMgr.window_01E8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
-  if (UIWindow* window = g_windowMgr.LookupWindow(159)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_QUIKSLOTWND)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -405,7 +407,7 @@ void CSession::AddStackedItem(ITEM_INFO item) {
   }
 
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0458)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -725,11 +727,11 @@ CSkillInfo CSession::HomunSkillAt(int index) const {
 // FUNCTION: fn_23902
 __declspec(noinline) void CSession::NotifyHomunSkillWindows() {
   if (g_windowMgr.window_03C4) {
-    g_windowMgr.window_03C4->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    g_windowMgr.window_03C4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
   if (g_windowMgr.window_01E8) {
-    g_windowMgr.window_01E8->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    g_windowMgr.window_01E8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -737,11 +739,11 @@ __declspec(noinline) void CSession::NotifyHomunSkillWindows() {
 // FUNCTION: fn_23903
 __declspec(noinline) void CSession::NotifyMercSkillWindows() {
   if (g_windowMgr.window_03CC) {
-    g_windowMgr.window_03CC->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    g_windowMgr.window_03CC->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
   if (g_windowMgr.window_01E8) {
-    g_windowMgr.window_01E8->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    g_windowMgr.window_01E8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -938,7 +940,7 @@ void CSession::ReturnStackedItem(int index, int count) {
   }
 
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0458)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 

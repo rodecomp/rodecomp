@@ -1,4 +1,5 @@
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/UIBasicInfoWnd.h"
 #include "Client/Mode/CMode.h"
@@ -115,7 +116,7 @@ void UIBasicInfoWnd::SetHeight(int height) {
     }
   }
 
-  if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
     int screenX = 0;
     int screenY = 0;
     this->ToScreen(screenX, screenY);
@@ -180,7 +181,7 @@ void UIBasicInfoWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_13493
 void UIBasicInfoWnd::OnLBtnDblClk(int x, int y) {
   if (y < 17) {
-    this->SendMsg(this, 6, 202, 0, 0, 0);
+    this->SendMsg(this, UM_COMMAND, ID_MINI, 0, 0, 0);
   }
 }
 
@@ -188,7 +189,7 @@ void UIBasicInfoWnd::OnLBtnDblClk(int x, int y) {
 // FUNCTION: fn_13496
 void UIBasicInfoWnd::OnMouseMove(int x, int y) {
   UIFrameWnd::OnMouseMove(x, y);
-  if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
     int screenX = 0;
     int screenY = 0;
     this->ToScreen(screenX, screenY);
@@ -221,30 +222,30 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   switch (message) {
   case UM_COMMAND:
     switch (argument1) {
-    case 192:
-      if (!g_windowMgr.CloseWindow(11)) {
-        g_windowMgr.EnsureWindow(11);
+    case ID_STATUS:
+      if (!g_windowMgr.CloseWindow(WID_STATUSWND)) {
+        g_windowMgr.EnsureWindow(WID_STATUSWND);
       }
       break;
-    case 193:
-      if (!g_windowMgr.CloseWindow(155)) {
-        g_windowMgr.EnsureWindow(155);
+    case ID_OPTION:
+      if (!g_windowMgr.CloseWindow(WID_ESCOPTIONWND)) {
+        g_windowMgr.EnsureWindow(WID_ESCOPTIONWND);
       }
       break;
-    case 194:
-      if (!g_windowMgr.CloseWindow(8)) {
-        g_windowMgr.EnsureWindow(8);
+    case ID_ITEMS:
+      if (!g_windowMgr.CloseWindow(WID_ITEMWND)) {
+        g_windowMgr.EnsureWindow(WID_ITEMWND);
       }
       break;
-    case 195: {
-      UIEquipWnd* equip = dynamic_cast<UIEquipWnd*>(g_windowMgr.LookupWindow(10));
+    case ID_EQUIP: {
+      UIEquipWnd* equip = dynamic_cast<UIEquipWnd*>(g_windowMgr.LookupWindow(WID_EQUIPWND));
       if (equip) {
         if (equip->m_page == 0) {
-          g_windowMgr.CloseWindow(10);
+          g_windowMgr.CloseWindow(WID_EQUIPWND);
           return 0;
         }
       } else {
-        equip = dynamic_cast<UIEquipWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(10)));
+        equip = dynamic_cast<UIEquipWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_EQUIPWND)));
         if (!equip) {
           return 0;
         }
@@ -253,17 +254,17 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       equip->m_tabs->SelectTab(0);
       break;
     }
-    case 196:
-      if (!g_windowMgr.CloseWindow(37)) {
-        g_windowMgr.EnsureWindow(37);
+    case ID_SKILL:
+      if (!g_windowMgr.CloseWindow(WID_SKILLLISTWND)) {
+        g_windowMgr.EnsureWindow(WID_SKILLLISTWND);
       }
       break;
-    case 199:
-      if (!g_windowMgr.CloseWindow(69)) {
-        g_windowMgr.EnsureWindow(69);
+    case ID_FRIEND:
+      if (!g_windowMgr.CloseWindow(WID_MESSENGERWND)) {
+        g_windowMgr.EnsureWindow(WID_MESSENGERWND);
       }
       break;
-    case 202: {
+    case ID_MINI: {
       const int height = this->geometry.height;
       this->SetHeight(height == this->collapsedHeight ? this->expandedHeight : this->collapsedHeight);
       g_windowMgr.StoreSnapRectangle(this);
@@ -275,63 +276,63 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       break;
     }
     case 214:
-      if (!g_windowMgr.CloseWindow(27) && !g_windowMgr.window_027C) {
+      if (!g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND) && !g_windowMgr.window_027C) {
         if (!g_windowMgr.unknown_02FC && !g_windowMgr.unknown_0304) {
-          g_windowMgr.EnsureWindow(27);
+          g_windowMgr.EnsureWindow(WID_CHATROOMMAKEWND);
         } else {
           g_windowMgr.Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
         }
       }
       break;
-    case 219:
-      if (!g_windowMgr.CloseWindow(140)) {
-        g_windowMgr.EnsureWindow(140);
+    case ID_MAP:
+      if (!g_windowMgr.CloseWindow(WID_ROMAPWND)) {
+        g_windowMgr.EnsureWindow(WID_ROMAPWND);
       }
       break;
     case 222:
-      g_windowMgr.CloseWindow(11);
+      g_windowMgr.CloseWindow(WID_STATUSWND);
       g_windowMgr.CloseWindow(13);
-      g_windowMgr.CloseWindow(8);
-      g_windowMgr.CloseWindow(10008);
-      g_windowMgr.CloseWindow(10);
-      g_windowMgr.CloseWindow(69);
-      g_windowMgr.CloseWindow(27);
-      g_windowMgr.CloseWindow(30);
-      g_windowMgr.CloseWindow(37);
-      g_windowMgr.CloseWindow(38);
-      g_windowMgr.CloseWindow(88);
-      g_windowMgr.CloseWindow(86);
-      g_windowMgr.CloseWindow(87);
-      g_windowMgr.CloseWindow(40);
-      g_windowMgr.CloseWindow(59);
-      g_windowMgr.ShowWindowById(36, 0);
+      g_windowMgr.CloseWindow(WID_ITEMWND);
+      g_windowMgr.CloseWindow(WID_RENEWQUESTUI);
+      g_windowMgr.CloseWindow(WID_EQUIPWND);
+      g_windowMgr.CloseWindow(WID_MESSENGERWND);
+      g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND);
+      g_windowMgr.CloseWindow(WID_CHATROOMCHANGEWND);
+      g_windowMgr.CloseWindow(WID_SKILLLISTWND);
+      g_windowMgr.CloseWindow(WID_TIPOFTHEDAYWND);
+      g_windowMgr.CloseWindow(WID_PETINFOWND);
+      g_windowMgr.CloseWindow(WID_EMOTIONWND);
+      g_windowMgr.CloseWindow(WID_CASHEMOTIONLISTWND);
+      g_windowMgr.CloseWindow(WID_MERCHANTITEMWND);
+      g_windowMgr.CloseWindow(WID_GUILDWND);
+      g_windowMgr.ShowWindowById(WID_SHORTCUTWND, 0);
       this->SetHeight(this->collapsedHeight);
       g_windowMgr.StoreSnapRectangle(this);
       break;
     case 247:
-      if (!g_windowMgr.LookupWindow(227) && !g_windowMgr.CloseWindow(40) && g_session.unknown_5C1C > 0) {
-        g_windowMgr.EnsureWindow(40);
+      if (!g_windowMgr.LookupWindow(WID_MERGEITEMWND) && !g_windowMgr.CloseWindow(WID_MERCHANTITEMWND) && g_session.unknown_5C1C > 0) {
+        g_windowMgr.EnsureWindow(WID_MERCHANTITEMWND);
       }
       break;
-    case 361:
-      if (!g_windowMgr.CloseWindow(10008)) {
-        g_windowMgr.EnsureWindow(10008);
+    case ID_QUEST:
+      if (!g_windowMgr.CloseWindow(WID_RENEWQUESTUI)) {
+        g_windowMgr.EnsureWindow(WID_RENEWQUESTUI);
       }
       break;
     case 373:
-      if (!g_windowMgr.CloseWindow(59)) {
-        g_windowMgr.EnsureWindow(59);
+      if (!g_windowMgr.CloseWindow(WID_GUILDWND)) {
+        g_windowMgr.EnsureWindow(WID_GUILDWND);
       }
       break;
     case 578: {
-      UIEquipWnd* equip = dynamic_cast<UIEquipWnd*>(g_windowMgr.LookupWindow(10));
+      UIEquipWnd* equip = dynamic_cast<UIEquipWnd*>(g_windowMgr.LookupWindow(WID_EQUIPWND));
       if (equip) {
         if (equip->m_page == 1) {
-          g_windowMgr.CloseWindow(10);
+          g_windowMgr.CloseWindow(WID_EQUIPWND);
           return 0;
         }
       } else {
-        equip = dynamic_cast<UIEquipWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(10)));
+        equip = dynamic_cast<UIEquipWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_EQUIPWND)));
         if (!equip) {
           return 0;
         }

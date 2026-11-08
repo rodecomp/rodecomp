@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "Network/TextEncoding.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/FontCache.h"
@@ -250,40 +252,40 @@ void UIScrollBar::OnLBtnDown(int x, int y) {
   case 0:
     switch (part) {
     case SB_UPBTN:
-      this->parent->SendMsg(this, 8, -this->horizontalStep, 0, 0, 0);
+      this->parent->SendMsg(this, UM_SCROLLHORZ, -this->horizontalStep, 0, 0, 0);
       break;
     case SB_UPPAGE:
-      this->parent->SendMsg(this, 11, 0, 0, 0, 0);
+      this->parent->SendMsg(this, UM_SCROLLHORZPAGEUP, 0, 0, 0, 0);
       break;
     case SB_THUMB:
       g_windowMgr.SetCapture(this);
       this->state = 6;
       break;
     case SB_DNPAGE:
-      this->parent->SendMsg(this, 12, 0, 0, 0, 0);
+      this->parent->SendMsg(this, UM_SCROLLHORZPAGEDOWN, 0, 0, 0, 0);
       break;
     case SB_DNBTN:
-      this->parent->SendMsg(this, 8, this->horizontalStep, 0, 0, 0);
+      this->parent->SendMsg(this, UM_SCROLLHORZ, this->horizontalStep, 0, 0, 0);
       break;
     }
     break;
   case 1:
     switch (part) {
     case SB_UPBTN:
-      this->parent->SendMsg(this, 7, -this->verticalStep, 0, 0, 0);
+      this->parent->SendMsg(this, UM_SCROLLVERT, -this->verticalStep, 0, 0, 0);
       break;
     case SB_UPPAGE:
-      this->parent->SendMsg(this, 9, 0, 0, 0, 0);
+      this->parent->SendMsg(this, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
       break;
     case SB_THUMB:
       g_windowMgr.SetCapture(this);
       this->state = 6;
       break;
     case SB_DNPAGE:
-      this->parent->SendMsg(this, 10, 0, 0, 0, 0);
+      this->parent->SendMsg(this, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
       break;
     case SB_DNBTN:
-      this->parent->SendMsg(this, 7, this->verticalStep, 0, 0, 0);
+      this->parent->SendMsg(this, UM_SCROLLVERT, this->verticalStep, 0, 0, 0);
       break;
     }
     break;
@@ -347,7 +349,7 @@ void UIScrollBar::OnMouseMove(int x, int y) {
       const int delta = (x - this->pressX) * (this->maximum + 1) / this->Travel() - this->dragAmount;
 
       if (delta != 0) {
-        this->dragAmount += this->parent->SendMsg(this, 8, delta, 0, 0, 0);
+        this->dragAmount += this->parent->SendMsg(this, UM_SCROLLHORZ, delta, 0, 0, 0);
       }
       break;
     }
@@ -355,7 +357,7 @@ void UIScrollBar::OnMouseMove(int x, int y) {
       const int delta = (y - this->pressY) * (this->maximum + 1) / this->Travel() - this->dragAmount;
 
       if (delta != 0) {
-        this->dragAmount += this->parent->SendMsg(this, 7, delta, 0, 0, 0);
+        this->dragAmount += this->parent->SendMsg(this, UM_SCROLLVERT, delta, 0, 0, 0);
       }
       break;
     }
@@ -545,7 +547,7 @@ void UITabControl::SelectTab(int index) {
   this->edit->Move(-100, -100);
 
   if (this->parent) {
-    this->parent->SendMsg(this, 22, this->unknown_007C, 0, 0, 0);
+    this->parent->SendMsg(this, UM_TAB, this->unknown_007C, 0, 0, 0);
     this->parent->Invalidate();
   }
 
@@ -850,7 +852,7 @@ void UIChatHisBox::OnLBtnDblClk(int, int) {
   const unsigned int index = static_cast<unsigned int>(this->selected);
 
   if (index != static_cast<unsigned int>(-1) && index < this->history.size() && this->history[index].size() > 0 && this->history[index].c_str() != nullptr) {
-    this->parent->SendMsg(this, 6, 347, reinterpret_cast<std::intptr_t>(this->HistoryText(index)), 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, ID_NAME, reinterpret_cast<std::intptr_t>(this->HistoryText(index)), 0, 0);
   }
 }
 
@@ -957,7 +959,7 @@ void UIBasicItemCtrl::DragAndDrop(int, int, std::intptr_t argument3) {
       }
     }
   }
-  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0087E080
@@ -978,13 +980,13 @@ void UIBasicSkillCtrl::DragAndDrop(int, int, std::intptr_t argument3) {
       }
     }
   }
-  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0087E190
 // FUNCTION: fn_11263
 void UIBitmapButton2::DragAndDrop(int argument1, int argument2, std::intptr_t argument3) {
-  if (g_windowMgr.LookupWindow(10011)) {
+  if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
     UIWindow::DragAndDrop(argument1, argument2, argument3);
   } else if (this->parent) {
     this->parent->DragAndDrop(argument1, argument2, argument3);
@@ -1117,13 +1119,13 @@ void UITabControl::HideEdit() {
 // OFFSET: 0x00899A30
 // FUNCTION: fn_11559
 int UITabControl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 0) {
+  if (message != UM_DEFPUSH) {
     return 0;
   }
 
   if (sender != this->edit || this->edit->geometry.x == -100) {
     if (this->parent) {
-      this->parent->SendMsg(this, 0, 0, 0, 0, 0);
+      this->parent->SendMsg(this, UM_DEFPUSH, 0, 0, 0, 0);
     }
     return 0;
   }
@@ -1472,7 +1474,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   switch (message) {
   case UM_DEFPUSH:
     if (sender == this->edit && this->editNode) {
-      this->SendMsg(nullptr, 110, 0, 1, 0, 0);
+      this->SendMsg(nullptr, UM_CHANGE_TVITEM_TEXT, 0, 1, 0, 0);
     }
     break;
   case UM_SCROLLVERT:
@@ -1481,9 +1483,9 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     this->HideNodes(this->root->children);
     const int previous = this->unknown_00A8;
     const int visible = this->geometry.height / this->itemHeight;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->unknown_00A8 = previous - visible + 1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->unknown_00A8 = previous - 1 + visible;
     } else {
       this->unknown_00A8 = previous + static_cast<int>(a);
@@ -1508,18 +1510,18 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   }
   case UM_UPPUSH:
     if (this->verticalOverflow) {
-      this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
     }
     break;
   case UM_DOWNPUSH:
     if (this->verticalOverflow) {
-      this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
     }
     break;
   case UM_TEXT_LBTN_DblClk:
     this->unknown_0088 = reinterpret_cast<UITreeNode*>(a);
     if (a) {
-      this->parent->SendMsg(this, 97, a, sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0);
+      this->parent->SendMsg(this, UM_TEXT_LBTN_DblClk, a, sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0);
     }
     break;
   case UM_TEXT_LBTN_UP:
@@ -1532,15 +1534,15 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       break;
     }
 
-    if (message == 99) {
-      this->parent->SendMsg(this, 99, a, sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0);
+    if (message == UM_TEXT_RBTN_UP) {
+      this->parent->SendMsg(this, UM_TEXT_RBTN_UP, a, sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0);
       break;
     }
 
     if (this->unknown_0088->children.size() != 0) {
       this->HideNodes(this->root->children);
       const int x = sender->geometry.x;
-      const int y = message == 98 ? sender->geometry.y - 6 : sender->geometry.y;
+      const int y = message == UM_TEXT_LBTN_UP ? sender->geometry.y - 6 : sender->geometry.y;
       UIWindow* button;
       if (this->unknown_0088->expanded == 0) {
         this->unknown_0088->expanded = 1;
@@ -1553,7 +1555,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->Invalidate();
     }
 
-    if (message == 98) {
+    if (message == UM_TEXT_LBTN_UP) {
       this->parent->SendMsg(
         this, 98, reinterpret_cast<std::intptr_t>(this->unknown_0088), sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0
       );
@@ -1628,7 +1630,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       if (g_windowMgr.GetHoverWindow() == this->edit) {
         const std::size_t length = std::strlen(this->edit->Text());
         if (this->parent) {
-          this->parent->SendMsg(this, 110, reinterpret_cast<std::intptr_t>(this->edit->Text()), length + 1, 0, 0);
+          this->parent->SendMsg(this, UM_CHANGE_TVITEM_TEXT, reinterpret_cast<std::intptr_t>(this->edit->Text()), length + 1, 0, 0);
         }
       }
     } else {

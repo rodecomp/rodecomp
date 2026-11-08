@@ -1,4 +1,7 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Actors/ActorEnums.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Mode/GameModeEnums.h"
 #include "Client/Session.h"
 #include "Contents/Actors/EffectActors.h"
@@ -180,7 +183,7 @@ void CWorld::OnProcess() {
         break;
       }
 
-      skill->SendMsg(nullptr, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      skill->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (skill->HasPendingDamage()) {
         bool found = false;
         for (const std::uint32_t pendingAid : this->pendingActorIds) {
@@ -288,7 +291,7 @@ void CGameMode::SpawnArrowEffect(std::uint32_t aid, int target, char flag, int a
 
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, 14, 0, static_cast<int>(aid), static_cast<int>(aid) >> 31, target, 0, reinterpret_cast<int>(&flag),
+    effect->SendMsg(nullptr, AM_SETPOS, 0, static_cast<int>(aid), static_cast<int>(aid) >> 31, target, 0, reinterpret_cast<int>(&flag),
                     reinterpret_cast<int>(&flag) >> 31, argument, argument >> 31, 0, 0, 0, 0);
   }
 }
@@ -300,7 +303,7 @@ void CGameMode::SpawnArrowEffect64(const vector3d* source, const vector3d* targe
 
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, 64, 0, reinterpret_cast<int>(source), reinterpret_cast<int>(source) >> 31, reinterpret_cast<int>(target),
+    effect->SendMsg(nullptr, AM_SETPOS2, 0, reinterpret_cast<int>(source), reinterpret_cast<int>(source) >> 31, reinterpret_cast<int>(target),
                     reinterpret_cast<int>(target) >> 31, reinterpret_cast<int>(&speed), reinterpret_cast<int>(&speed) >> 31, 0, 0, 0, 0, 0, 0);
   }
 }
@@ -423,9 +426,9 @@ bool CGameMode::LaunchTargetEffect(int effectId, CGameActor* source, CGameActor*
   }
 
   vector3d position = target->render.position;
-  effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+  effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
   if (argument != -1) {
-    effect->SendMsg(nullptr, 44, 0, argument, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETCOUNT, 0, argument, 0, 0, 0, 0);
   }
   return true;
 }
@@ -567,7 +570,7 @@ void CGameMode::ShowGuildEmblem(CGameActor* actor, int guildId, int unused) {
   }
 
   UIEmblemWnd* window = new UIEmblemWnd;
-  window->SendMsg(nullptr, 34, actor->render.accountId, guildId, 0, 0);
+  window->SendMsg(nullptr, UM_SETINFO, actor->render.accountId, guildId, 0, 0);
   g_windowMgr.AddRenderedFront(window);
   actor->unknown_0188 = reinterpret_cast<int>(window);
   this->AddUnknown0604(window);
@@ -593,8 +596,8 @@ CMsgEffect* CGameMode::SpawnCashEmotion(int aid, int packId, int emotionId, std:
         this->scene->objects.emplace_back(effect);
       }
 
-      effect->SendMsg(nullptr, 22, 0, duration, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      effect->SendMsg(nullptr, 14, 0, aid, aid >> 31, reinterpret_cast<int>(&names), reinterpret_cast<int>(&names) >> 31, data->unknown_0020,
+      effect->SendMsg(nullptr, AM_SETMASTERGID, 0, duration, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETPOS, 0, aid, aid >> 31, reinterpret_cast<int>(&names), reinterpret_cast<int>(&names) >> 31, data->unknown_0020,
                       data->unknown_0020 >> 31, 0, 0, 0, 0, 0, 0);
     }
   }
@@ -629,7 +632,7 @@ void CGameMode::SpawnMandraAttack(std::uint32_t aid, int target, char flag) {
 
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, 14, 0, aid, 0, reinterpret_cast<int>(&flag), reinterpret_cast<int>(&flag) >> 31, target, target >> 31, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, 0, aid, 0, reinterpret_cast<int>(&flag), reinterpret_cast<int>(&flag) >> 31, target, target >> 31, 0, 0, 0, 0, 0, 0);
   }
 }
 
@@ -656,58 +659,58 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
 
   if (actor != nullptr && g_session.IsHomunAid(actor->render.accountId)) {
     if (g_windowMgr.unknown_0210 != nullptr) {
-      g_windowMgr.CloseWindow(0x12);
+      g_windowMgr.CloseWindow(WID_MENUWND);
     }
     this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
-    menu = g_windowMgr.EnsureWindow(0x12);
+    menu = g_windowMgr.EnsureWindow(WID_MENUWND);
     this->unknown_02E0 = pick->accountId;
 
     this->actorMenuIds.push_back(0x25);
     sprintf(text, LookupMessage(0x458));
-    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     this->actorMenuIds.push_back(0x26);
     sprintf(text, LookupMessage(0x459));
-    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     this->actorMenuIds.push_back(0x27);
     sprintf(text, LookupMessage(0x45A));
-    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
   } else if (actor != nullptr && g_session.IsMercenaryAid(pick->accountId)) {
     if (g_windowMgr.unknown_0210 != nullptr) {
-      g_windowMgr.CloseWindow(0x12);
+      g_windowMgr.CloseWindow(WID_MENUWND);
     }
     this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
-    menu = g_windowMgr.EnsureWindow(0x12);
+    menu = g_windowMgr.EnsureWindow(WID_MENUWND);
     this->unknown_02E0 = pick->accountId;
 
     this->actorMenuIds.push_back(0x28);
     sprintf(text, LookupMessage(0x458));
-    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     this->actorMenuIds.push_back(0x29);
     sprintf(text, LookupMessage(0x45A));
-    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
   } else if (actor != nullptr && pick->accountId == g_session.unknown_1010 && actor->unknown_0314 == 7) {
     if (g_windowMgr.unknown_0210 != nullptr) {
-      g_windowMgr.CloseWindow(0x12);
+      g_windowMgr.CloseWindow(WID_MENUWND);
     }
     this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
-    menu = g_windowMgr.EnsureWindow(0x12);
+    menu = g_windowMgr.EnsureWindow(WID_MENUWND);
     this->unknown_02E0 = pick->accountId;
 
     this->actorMenuIds.push_back(0x21);
     sprintf(text, LookupMessage(0x254));
-    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     this->actorMenuIds.push_back(0x1D);
     sprintf(text, LookupMessage(0x250));
-    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     this->actorMenuIds.push_back(0x1E);
     sprintf(text, LookupMessage(0x251));
-    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     this->actorMenuIds.push_back(0x20);
     sprintf(text, LookupMessage(0x253));
-    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     this->actorMenuIds.push_back(0x1F);
     sprintf(text, LookupMessage(0x252));
-    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
   } else {
     if (pick->accountId == g_session.m_aid) {
       return;
@@ -739,14 +742,14 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       }
 
       if (g_windowMgr.unknown_0210 != nullptr) {
-        g_windowMgr.CloseWindow(0x12);
+        g_windowMgr.CloseWindow(WID_MENUWND);
       }
       this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
-      menu = g_windowMgr.EnsureWindow(0x12);
+      menu = g_windowMgr.EnsureWindow(WID_MENUWND);
       this->unknown_02E0 = pick->accountId;
 
       this->actorMenuIds.push_back(0x41);
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0xDA5)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0xDA5)), 0, 0, 0);
     } else {
       std::string name;
       if (target->unknown_02F8 == 1 && (this->scene->unknown_0048 == 1 || this->scene->unknown_004C == 1)) {
@@ -756,10 +759,10 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       }
 
       if (g_windowMgr.unknown_0210 != nullptr) {
-        g_windowMgr.CloseWindow(0x12);
+        g_windowMgr.CloseWindow(WID_MENUWND);
       }
       this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
-      menu = g_windowMgr.EnsureWindow(0x12);
+      menu = g_windowMgr.EnsureWindow(WID_MENUWND);
       this->unknown_02E0 = pick->accountId;
 
       char line[128];
@@ -767,19 +770,19 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       if (isAdmin) {
         this->actorMenuIds.push_back(0x1C);
         sprintf(line, LookupMessage(0x1CA), name.c_str());
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
       }
 
       CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
       if (!StateFlag01(player->GetStateFlags()) && !StateFlag02(player->GetStateFlags())) {
         this->actorMenuIds.push_back(0x2A);
         sprintf(line, LookupMessage(0x550), name.c_str());
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
       }
       if (!StateFlag01(player->GetStateFlags()) && !StateFlag02(player->GetStateFlags())) {
         this->actorMenuIds.push_back(4);
         sprintf(line, LookupMessage(0x187), name.c_str());
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
       }
 
       const bool canInviteParty =
@@ -787,13 +790,13 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       if (canInviteParty) {
         this->actorMenuIds.push_back(5);
         sprintf(line, LookupMessage(0x188), name.c_str());
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
       }
 
       if (g_session.IsPartyRecommendTarget(pick->accountId) == true) {
         this->actorMenuIds.push_back(0x24);
         sprintf(line, LookupMessage(0x377), name.c_str());
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
       }
 
       if (g_guildInfo.m_guildId != 0) {
@@ -802,73 +805,73 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
         if (g_guildInfo.unknown_00AC != 0 && guildId == 0) {
           this->actorMenuIds.push_back(0x16);
           sprintf(line, LookupMessage(0x17E), name.c_str());
-          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+          menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
         }
         if (g_guildInfo.unknown_00B4 != 0 && guildId != g_guildInfo.m_guildId) {
-          menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+          menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
           this->actorMenuIds.push_back(0x19);
-          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x18F)), 0, 0, 0);
+          menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x18F)), 0, 0, 0);
           this->actorMenuIds.push_back(0x1A);
-          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x193)), 0, 0, 0);
+          menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x193)), 0, 0, 0);
         }
       }
 
-      menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
       this->actorMenuIds.push_back(0x14);
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x168)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x168)), 0, 0, 0);
       if (!IsAdminAccount(pick->accountId) && !g_windowMgr.IsFriend(name.c_str()) && g_serviceMode != 3) {
         this->actorMenuIds.push_back(10);
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x166)), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x166)), 0, 0, 0);
       }
       this->actorMenuIds.push_back(0x3A);
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0xAF8)), 0, 0, 0);
-      menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0xAF8)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
 
       if (g_whisperBlockMgr->Contains(name)) {
         this->actorMenuIds.push_back(0xD);
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0xEEB)), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0xEEB)), 0, 0, 0);
       } else {
         this->actorMenuIds.push_back(0xC);
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0xEEC)), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0xEEC)), 0, 0, 0);
       }
 
       if (IsAdminAccount(g_session.m_aid)) {
-        menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
         this->actorMenuIds.push_back(0x2C);
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x636)), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x636)), 0, 0, 0);
         if (g_serviceMode != 3) {
           this->actorMenuIds.push_back(0x17);
-          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x185)), 0, 0, 0);
+          menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x185)), 0, 0, 0);
           this->actorMenuIds.push_back(0x18);
-          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x186)), 0, 0, 0);
+          menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0x186)), 0, 0, 0);
           sprintf(line, LookupMessage(0x2C9), g_session.CountProhibitionLog(this->unknown_02E0));
           this->actorMenuIds.push_back(0x23);
-          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+          menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
         }
         sprintf(line, "%s : %d (GID) : %s", g_session.m_serverName.c_str(), this->unknown_02E0, name.c_str());
         this->actorMenuIds.push_back(0x22);
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
       }
 
       this->unknown_02EC = name;
-      menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
       this->actorMenuIds.push_back(0x3F);
-      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0xFE3)), 0xFF, 0, 0);
-      menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(0xFE3)), 0xFF, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
 
       if (CPc* pc = dynamic_cast<CPc*>(static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId)))) {
         const std::string code = std::string("[C-Code] : ") + ShortcutFilename(pc->GetPkState());
         this->actorMenuIds.push_back(0x39);
-        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0, 0);
       }
 
-      menu->SendMsg(nullptr, 0x1E, 0, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
       menu->Move(g_mouse.x + 1, g_mouse.y + 1);
       return;
     }
   }
 
-  menu->SendMsg(nullptr, 0x1E, 0, 0, 0, 0);
+  menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
   menu->Move(g_mouse.x + 1, g_mouse.y + 1);
 }
 
@@ -906,7 +909,7 @@ bool CWorld::RemoveSkill(std::uint32_t aid) {
         return false;
       }
 
-      skill->SendMsg(nullptr, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      skill->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
       if (skill->HasPendingDamage() == true) {
         for (std::uint32_t pending : this->pendingActorIds) {
@@ -941,8 +944,8 @@ CMsgEffect* CGameMode::SpawnDamageMsgEffect(const vector3d* position, std::uint3
   CMsgEffect* effect = new CMsgEffect;
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, 22, 0, accountId, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(position), reinterpret_cast<int>(position) >> 31, reinterpret_cast<int>(&names),
+    effect->SendMsg(nullptr, AM_SETMASTERGID, 0, accountId, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(position), reinterpret_cast<int>(position) >> 31, reinterpret_cast<int>(&names),
                     reinterpret_cast<int>(&names) >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     effect->render.color = color;
     effect->render.unknown_00B4 = 0;
@@ -1351,9 +1354,9 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
 
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, 22, 0, accountId, 0, type, type >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETMASTERGID, 0, accountId, 0, type, type >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     effect->m_visible = visible;
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(position), reinterpret_cast<int>(position) >> 31, reinterpret_cast<int>(names),
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(position), reinterpret_cast<int>(position) >> 31, reinterpret_cast<int>(names),
                     reinterpret_cast<int>(names) >> 31, animation, animation >> 31, 0, 0, 0, 0, 0, 0);
   }
 

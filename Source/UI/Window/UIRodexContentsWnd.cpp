@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "Render/Text/FontCache.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
@@ -234,16 +236,16 @@ void UIRodexContentsWnd::OnMouseHover(int x, int y) {
 void UIRodexContentsWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (std::atoi(item.itemId.c_str()) != 0) {
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
 // OFFSET: 0x008029E0
 // FUNCTION: fn_10025
 int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     switch (argument1) {
-    case 0xBD:
+    case ID_BUTTON1:
       if (this->m_items.size() != 0) {
         if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == 1) {
           break;
@@ -259,7 +261,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->Invalidate();
       }
       break;
-    case 0xBE:
+    case ID_BUTTON2:
       if (this->m_zeny > 0) {
         if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == 1) {
           break;
@@ -276,10 +278,10 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       break;
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(265);
+      g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
       g_rodexMailStore->currentMailId = 0;
       if (g_windowMgr.unknown_0454) {
-        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0454)->SendMsg(nullptr, 60, 0, 0, 0, 0);
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0454)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       }
       break;
     case ID_DELETE: {
@@ -299,24 +301,24 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       if ((mail->second.unknown_0001 & 6) != 0) {
-        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA34)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(0xA34)), 0x64FFFF, 0, 0, 0);
         break;
       }
 
       if (g_windowMgr.Confirm(LookupMessage(0x164), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-        g_modeMgr.GetGameMode()->SendMsg(0xC4, static_cast<int>(g_rodexMailStore->currentMailId), g_rodexMailStore->unknown_0010, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(g_rodexMailStore->currentMailId), g_rodexMailStore->unknown_0010, 0, 0);
         if (g_windowMgr.unknown_045C != 0) {
-          g_windowMgr.CloseWindow(265);
+          g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
         }
       }
       break;
     }
     case ID_SEND_MAIL:
       if (this->unknown_010C != 1) {
-        g_modeMgr.GetGameMode()->SendMsg(0x10C, reinterpret_cast<int>(this->m_title.c_str()), 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(this->m_title.c_str()), 0, 0, 0);
       }
       break;
-    case 0x136: {
+    case ID_REPORT_RODEX: {
       RodexMailReportPacket packet;
       packet.packetType = 0xB98;
       packet.mailId = static_cast<std::int32_t>(g_rodexMailStore->currentMailId);
@@ -324,7 +326,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     }
     }
-  } else if (message == 23) {
+  } else if (message == UM_REFRESHITEM) {
     this->m_items.clear();
     for (int i = 0; i < 5; ++i) {
       ITEM_INFO item = g_session.GetItem5C68(i);
@@ -333,7 +335,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
     }
     this->Invalidate();
-  } else if (message == 106) {
+  } else if (message == UM_SET_DISABLE) {
     if (this->unknown_010C && this->unknown_0108) {
       UIBasicButton* button = this->unknown_0108;
       button->SetDisabled(1);
@@ -380,7 +382,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   if (text.find("<NAVIL>") == std::string::npos && text.find("</NAVIL>") == std::string::npos) {
     this->m_contents->SetText(text.c_str());
   } else {
-    this->m_contents->SendMsg(nullptr, 0x99, reinterpret_cast<std::intptr_t>(text.c_str()), 0, 0, 0);
+    this->m_contents->SendMsg(nullptr, UM_INSERT_ITEM_LINK, reinterpret_cast<std::intptr_t>(text.c_str()), 0, 0, 0);
   }
 
   this->m_contents->SetTagColor(0xD630A9);
@@ -420,7 +422,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   }
 
   if (this->unknown_010C == 1) {
-    this->SendMsg(nullptr, 106, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_SET_DISABLE, 0, 0, 0, 0);
   }
 }
 

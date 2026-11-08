@@ -130,7 +130,7 @@ void UIAchTV::OnLBtnDown(int, int) {
 
   const int id = this->geometry.id;
   if (id != -1 && this->parent) {
-    this->parent->SendMsg(nullptr, 145, id, 0, 0, 0);
+    this->parent->SendMsg(nullptr, UM_SELECT_ACHIEVEMENT, id, 0, 0, 0);
   }
 }
 
@@ -146,7 +146,7 @@ void UIAchTab::OnLBtnDown(int x, int y) {
   this->unknown_007C = a;
   this->unknown_0080 = b;
   if (this->parent) {
-    this->parent->SendMsg(this, 22, a, b, 0, 0);
+    this->parent->SendMsg(this, UM_TAB, a, b, 0, 0);
     this->parent->Invalidate();
   }
 
@@ -281,13 +281,13 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   switch (message) {
   case UM_UPPUSH:
     if (this->verticalOverflow != 0) {
-      this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
     }
     return 0;
 
   case UM_DOWNPUSH:
     if (this->verticalOverflow != 0) {
-      this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
     }
     return 0;
 
@@ -295,9 +295,9 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->topLine;
-    if (message == 9) {
+    if (message == UM_SCROLLVERTPAGEUP) {
       this->topLine = previous - this->geometry.height / this->lineHeight + 1;
-    } else if (message == 10) {
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->topLine = previous + this->geometry.height / this->lineHeight - 1;
     } else {
       this->topLine = previous + static_cast<int>(argument1);

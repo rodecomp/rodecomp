@@ -1,4 +1,7 @@
 #include "UI/Window/UIEnums.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Shop/ItemDrawing.h"
@@ -97,10 +100,10 @@ UIGradeEnchant_BtnStart::UIGradeEnchant_BtnStart() : UIBitmapButton() {
 void UIGradeEnchantWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (x >= 53 && x <= 99 && y >= 114 && y <= 160 && drag->source == 1) {
-    this->SendMsg(this, 23, drag->id, 0, 0, 0);
+    this->SendMsg(this, UM_REFRESHITEM, drag->id, 0, 0, 0);
   }
 
-  g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+  g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x007E7560
@@ -428,19 +431,19 @@ void UIGradeEnchantWnd::OnProcess() {
   if (this->state == 2 && now >= this->unknown_00E0 + 3000) {
     switch (this->result) {
     case ENCHANTGRADE_UPGRADE_SUCCESS:
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3702)), 0xFFFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3702)), 0xFFFF00, 0, 0, 0);
       break;
     case ENCHANTGRADE_UPGRADE_FAILED:
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3703)), 0xFFFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3703)), 0xFFFF00, 0, 0, 0);
       break;
     case ENCHANTGRADE_UPGRADE_DOWNGRADE:
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3704)), 0xFFFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3704)), 0xFFFF00, 0, 0, 0);
       break;
     case ENCHANTGRADE_UPGRADE_BREAK:
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3705)), 0xFFFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3705)), 0xFFFF00, 0, 0, 0);
       break;
     case ENCHANTGRADE_UPGRADE_PROTECTED:
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3706)), 0xFFFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3706)), 0xFFFF00, 0, 0, 0);
       break;
     }
     this->ResetItem();
@@ -477,27 +480,27 @@ void UIGradeEnchantWnd::OnRBtnUp(int x, int y) {
   if (this->state == 1) {
     const int row = MaterialRowAt(x, y);
     if (row >= 0 && static_cast<unsigned>(row) < this->materials.size()) {
-      UIWindow* window = g_windowMgr.EnsureWindow(12);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (window) {
         ITEM_INFO material = LookupClientItem(g_session.m_inventoryItems, this->materials[row].itemId, 0);
-        window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&material), 0, 0, 0);
+        window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&material), 0, 0, 0);
       }
       return;
     }
 
     if (x >= 195 && x <= 219 && y >= 228 && y <= 252) {
-      UIWindow* window = g_windowMgr.EnsureWindow(12);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (window) {
         ITEM_INFO blessing = LookupClientItem(g_session.m_inventoryItems, this->info.unknown_0000, 0);
-        window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&blessing), 0, 0, 0);
+        window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&blessing), 0, 0, 0);
       }
     }
   }
 
   if (this->item.unknown_0000[1] > 0 && x >= 53 && x <= 99 && y >= 114 && y <= 160) {
-    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
     if (window) {
-      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
     }
   }
 }
@@ -535,7 +538,7 @@ int UIGradeEnchantWnd::SendMsg(
       GradeEnchantClosePacket packet;
       packet.id = 0xB5C;
       GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-      g_windowMgr.CloseWindow(343);
+      g_windowMgr.CloseWindow(WID_GRADEENCHANTWND);
       break;
     }
     case ID_UP:
@@ -558,7 +561,7 @@ int UIGradeEnchantWnd::SendMsg(
     if (this->state == 0 || this->state == 1) {
       const ITEM_INFO dropped = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
       if (g_session.HasItem61B8(dropped.unknown_0000[1]) == 1) {
-        g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return -1;
       }
 

@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Mode/EquipWindowLook.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemInfo.h"
@@ -59,7 +60,7 @@ void CGameMode::ReceiveEquipWindowMicroscope(const unsigned char* packet) {
   std::memcpy(g_equipWindowLook.name, packet + 4, sizeof(g_equipWindowLook.name));
   g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
 
-  if (!g_windowMgr.CloseWindow(0x8B)) {
-    g_windowMgr.EnsureWindow(0x8B);
+  if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
+    g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
   }
 }

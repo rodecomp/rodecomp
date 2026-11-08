@@ -1,3 +1,4 @@
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Chat/UISubChatHisWnd.h"
@@ -116,7 +117,7 @@ void UISubChatHisWnd::ApplyButtonLayout() {
 // FUNCTION: fn_12768
 void UINewChatWnd::ResizeRows(int count) {
   if (g_windowMgr.unknown_0214) {
-    g_windowMgr.CloseWindow(26);
+    g_windowMgr.CloseWindow(WID_COMBOBOXWND);
   }
 
   UIWindow& chat = *this;

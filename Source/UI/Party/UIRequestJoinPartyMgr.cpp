@@ -1,4 +1,6 @@
 #include "UI/Party/UIRequestJoinPartyMgr.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
 
@@ -64,11 +66,11 @@ void UIRequestJoinPartyMgr::Add(std::uint32_t accountId, std::uint32_t character
   request.job = job;
   request.level = level;
 
-  if (this->m_windows->LookupWindow(326)) {
+  if (this->m_windows->LookupWindow(WID_REQUESTJOINPARTYWND)) {
     this->m_pending.push_back(request);
   } else {
-    UIWindow* window = this->m_windows->EnsureWindow(326);
-    window->SendMsg(nullptr, 56, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+    UIWindow* window = this->m_windows->EnsureWindow(WID_REQUESTJOINPARTYWND);
+    window->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
   }
 }
 
@@ -76,11 +78,11 @@ void UIRequestJoinPartyMgr::Add(std::uint32_t accountId, std::uint32_t character
 // FUNCTION: fn_09297
 void UIRequestJoinPartyMgr::Advance() {
   if (this->m_pending.empty()) {
-    this->m_windows->CloseWindow(326);
+    this->m_windows->CloseWindow(WID_REQUESTJOINPARTYWND);
   }
 
   while (!this->m_pending.empty()) {
-    UIWindow* window = this->m_windows->LookupWindow(326);
+    UIWindow* window = this->m_windows->LookupWindow(WID_REQUESTJOINPARTYWND);
 
     if (!window) {
       return;
@@ -90,7 +92,7 @@ void UIRequestJoinPartyMgr::Advance() {
     const bool blocked = std::find(this->m_blocked.begin(), this->m_blocked.end(), request.accountId) != this->m_blocked.end();
 
     if (!blocked) {
-      window->SendMsg(nullptr, 56, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
       this->m_pending.pop_front();
       return;
     }
@@ -98,7 +100,7 @@ void UIRequestJoinPartyMgr::Advance() {
     this->m_pending.pop_front();
 
     if (this->m_pending.empty()) {
-      this->m_windows->CloseWindow(326);
+      this->m_windows->CloseWindow(WID_REQUESTJOINPARTYWND);
     }
   }
 }

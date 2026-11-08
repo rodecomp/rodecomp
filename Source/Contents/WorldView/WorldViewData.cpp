@@ -1,3 +1,4 @@
+#include "Client/Mode/ModeMessage.h"
 #include "Contents/WorldView/WorldViewData.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/CMode.h"
@@ -355,7 +356,7 @@ unsigned int CWorldViewMgr::FindWorld(int mapId) {
     if (!mode) {
       return 0;
     }
-    const std::string modeName(reinterpret_cast<const char*>(mode->SendMsg(9, 0, 0, 0, 0)));
+    const std::string modeName(reinterpret_cast<const char*>(mode->SendMsg(MM_QUERYRSWNAME, 0, 0, 0, 0)));
     name = modeName;
   }
 

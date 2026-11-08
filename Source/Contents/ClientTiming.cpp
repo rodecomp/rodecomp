@@ -1,3 +1,5 @@
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Session.h"
 #include "Contents/AchievementMgr.h"
@@ -609,8 +611,8 @@ void CSession::AddItemSlot(ITEM_INFO item) {
     }
   }
 
-  if (UIWindow* window = g_windowMgr.LookupWindow(10011)) {
-    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 

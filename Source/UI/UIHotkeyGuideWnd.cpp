@@ -1,4 +1,5 @@
 #include "Script/LuaScript.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -289,17 +290,17 @@ void UIHotkeyGuideWnd::OnProcess() {
 // OFFSET: 0x0096C260
 // FUNCTION: fn_13167
 int UIHotkeyGuideWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     switch (a) {
     case 342: {
-      UIWindow* window = g_windowMgr.EnsureWindow(156);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_HOTKEYWND);
       if (window) {
-        window->SendMsg(this, 22, 1, 0, 0, 0);
+        window->SendMsg(this, UM_TAB, 1, 0, 0, 0);
       }
     }
       [[fallthrough]];
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(303);
+      g_windowMgr.CloseWindow(WID_HOTKEYGUIDEWND);
     }
   }
 

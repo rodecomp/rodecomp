@@ -1,4 +1,5 @@
 #include "UI/Dialogs/UIWaitDBSaveWnd.h"
+#include "UI/Window/WindowId.h"
 
 #include "Render/Textures/SpritePixels.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -160,7 +161,7 @@ void UIWaitDBSaveWnd::OnMouseMove(int, int) {
 void UIWaitDBSaveWnd::OnProcess() {
   if (this->m_closeTime != 0 && timeGetTime() >= this->m_closeTime) {
     this->m_closeTime = 0;
-    g_windowMgr.CloseWindow(10024);
+    g_windowMgr.CloseWindow(WID_WAITDBSAVEWND);
     return;
   }
 

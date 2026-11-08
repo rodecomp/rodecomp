@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
@@ -917,7 +918,7 @@ void CEfstAction_SHADOW_EXCEED::OnEfstEnd(int efstId, int argument2, int argumen
 
   auto* effectActor = static_cast<EffectActor*>(actor);
   while (effectActor->HasId(1004)) {
-    actor->SendMsg(nullptr, 109, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
@@ -1199,7 +1200,7 @@ void CSkillAction_ABC_CHASING_BREAK::OnSkillEffect(int level, CGameActor* source
   }
 
   if (CRagEffect* effect = static_cast<EffectActor*>(source)->LaunchEffect(2416, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
 
   for (int angle = 0; angle < 360; angle += 45) {
@@ -1236,7 +1237,7 @@ void CSkillAction_ABC_CHASING_SHOT::OnSkillEffect(int level, CGameActor* source,
   }
 
   if (CRagEffect* effect = static_cast<EffectActor*>(source)->LaunchEffect(2416, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
 
   for (int angle = 0; angle < 360; angle += 45) {

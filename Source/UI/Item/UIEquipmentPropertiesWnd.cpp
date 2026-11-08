@@ -1,3 +1,5 @@
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Item/UIEquipmentPropertiesWnd.h"
 
 #include "Contents/MessageTable.h"
@@ -957,7 +959,7 @@ void CUIEquipmentPropertiesWnd::OnClickButton9() {
 // OFFSET: 0x00A0EF10
 // FUNCTION: fn_45511
 void CUIEquipmentPropertiesWnd::OnClickClose() {
-  g_windowMgr.CloseWindow(10001);
+  g_windowMgr.CloseWindow(WID_EQUIPMENTPROPERTIESWND);
 }
 
 // OFFSET: 0x00A0EF20
@@ -1063,7 +1065,7 @@ void CUIEquipmentPropertiesWnd::SetTab(const int& tab) {
 int CUIEquipmentPropertiesWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message == 60) {
+  if (message == UM_REFRESH) {
     this->SetTab(this->currentTab);
   }
   return 0;

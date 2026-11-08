@@ -1,3 +1,4 @@
+#include "UI/Window/UIEnums.h"
 #include "Contents/ShowRankingScheduler.h"
 #include "Client/Session.h"
 #include "Contents/Schedule/CheckGDISchedule.h"
@@ -62,7 +63,7 @@ void CShowRankingScheduler::Process(const std::uint64_t& now) {
           }
         }
         if (!complete) {
-          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3481)), 0xffff, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3481)), 0xffff, 0, 0, 0);
           return;
         }
         this->Show();
@@ -111,7 +112,7 @@ void CShowRankingScheduler::Show() {
     background = 0;
     color = 0;
   }
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(title), color, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(title), color, 0, 0, 0);
 
   const auto* ids = reinterpret_cast<const std::uint32_t*>(this->rankingData + 4);
   const auto* points = reinterpret_cast<const int*>(this->rankingData + 44);
@@ -134,13 +135,13 @@ void CShowRankingScheduler::Show() {
     }
 
     std::string line = FormatOwnedString("[ %2d ] %s  :  %4d POINT", index + 1, name.c_str(), points[index]);
-    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line.c_str()), background, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(line.c_str()), background, 0, 0, 0);
   }
 
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
   std::string mine = FormatOwnedString("MY POINT    :  %4d POINT ", *reinterpret_cast<const int*>(this->rankingData + 84));
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(mine.c_str()), background, 0, 0, 0);
-  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(mine.c_str()), background, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
 }
 
 // OFFSET: 0x00E493E0

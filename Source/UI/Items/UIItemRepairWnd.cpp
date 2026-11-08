@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Items/UIItemRepairWnd.h"
@@ -225,11 +227,11 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   }
 
   case UM_UPPUSH:
-    this->m_list->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     return 0;
 
   case UM_DOWNPUSH:
-    this->m_list->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    this->m_list->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     return 0;
 
   case UM_COMMAND: {
@@ -246,9 +248,9 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 
       UIListBox* list = this->m_list;
       if (list->LineCount() == 0) {
-        g_modeMgr.gameMode->SendMsg(174, -1, 0, 0, 0);
-        g_windowMgr.CloseWindow(107);
-        g_windowMgr.CloseWindow(107);
+        g_modeMgr.gameMode->SendMsg(MM_REPAIRITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
+        g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
         return 0;
       }
 
@@ -256,27 +258,27 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       if (selected >= 0) {
         for (UIItemRepairEntry& entry : this->entries) {
           if (entry.index == this->indices[selected]) {
-            g_modeMgr.gameMode->SendMsg(174, reinterpret_cast<int>(&entry), 0, 0, 0);
+            g_modeMgr.gameMode->SendMsg(MM_REPAIRITEM_SELECT_FROM_LIST, reinterpret_cast<int>(&entry), 0, 0, 0);
             break;
           }
         }
 
-        g_windowMgr.CloseWindow(107);
+        g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
         return 0;
       }
       break;
     }
 
     case ID_CANCEL:
-      g_modeMgr.gameMode->SendMsg(174, -1, 0, 0, 0);
-      g_windowMgr.CloseWindow(107);
+      g_modeMgr.gameMode->SendMsg(MM_REPAIRITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
       return 0;
     }
 
     return 0;
   }
 
-  case 123: {
+  case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     UIItemRepairRecordHeader header;
     unsigned offset = 6;
@@ -295,7 +297,7 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
           UIItemRepairEntry entry;
           std::memcpy(&entry, bytes + offset, header.bytes);
           offset += header.bytes;
-          this->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(&entry), 0, 0, 0);
+          this->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&entry), 0, 0, 0);
           break;
         }
 
@@ -318,7 +320,7 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_COMMAND:
-    g_windowMgr.CloseWindow(81);
+    g_windowMgr.CloseWindow(WID_MAKETARGETRESULTWND);
     return 0;
 
   case UM_SETCURITEM:

@@ -1,4 +1,5 @@
 #include "UI/Items/UIIllustWnd.h"
+#include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/CMode.h"
@@ -101,8 +102,8 @@ void UIMultiIllustWnd::OnMouseMove(int x, int y) {
 int UIIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
     case UM_COMMAND:
-      if (argument1 == 201) {
-        g_modeMgr.GetGameMode()->SendMsg(100, reinterpret_cast<int>(""), -1, 1, 0);
+      if (argument1 == ID_CLOSE) {
+        g_modeMgr.GetGameMode()->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(""), -1, 1, 0);
         g_windowMgr.ReleaseCapture();
       }
       return 0;
@@ -161,8 +162,8 @@ int UIIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
 int UIMultiIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
     case UM_COMMAND:
-      if (argument1 == 201) {
-        g_modeMgr.GetGameMode()->SendMsg(100, reinterpret_cast<int>(""), -1, 0, 0);
+      if (argument1 == ID_CLOSE) {
+        g_modeMgr.GetGameMode()->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(""), -1, 0, 0);
         g_windowMgr.ReleaseCapture();
       }
       return 0;

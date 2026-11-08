@@ -1,4 +1,6 @@
 #include "UI/Window/UIBalloonOpenBtn.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 
 #include "Client/Session.h"
 #include "Contents/SpecialPopupMgr.h"
@@ -25,7 +27,7 @@ void UIBalloonOpenBtn::OnProcess() {
   if (this->m_balloon) {
     const std::int64_t elapsed = static_cast<std::int64_t>(timeGetTime()) - this->m_openTime;
     if (elapsed > this->m_openDelay) {
-      g_windowMgr.CloseWindow(0x166);
+      g_windowMgr.CloseWindow(WID_BALLOONOPENBTN);
     }
   }
 }
@@ -40,7 +42,7 @@ UIBalloonOpenBtn::UIBalloonOpenBtn()
 // OFFSET: 0x00950200
 // FUNCTION: fn_12939
 int UIBalloonOpenBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6 && argument1 == 510) {
+  if (message == UM_COMMAND && argument1 == 510) {
     if (argument2 > 0) {
       this->m_balloonId = static_cast<int>(argument2);
     }
@@ -57,7 +59,7 @@ int UIBalloonOpenBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     PopupData* popup = g_specialPopupMgr->GetPopup(this->m_balloonId);
     if (popup == nullptr) {
       const std::string text = FormatOwnedString("balloon No GetPopupData : %d ", this->m_balloonId);
-      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF0000, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF0000, 0, 0, 0);
       return 0;
     }
 

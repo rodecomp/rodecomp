@@ -1,3 +1,5 @@
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -54,7 +56,7 @@ void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
   Json::Value& active = data["ItemSlotActive"];
   itemSlotActive = active.isNull() ? true : active.asBool();
 
-  UIWindow* window = g_windowMgr.LookupWindow(36);
+  UIWindow* window = g_windowMgr.LookupWindow(WID_SHORTCUTWND);
 
   if (!window) {
     return;
@@ -66,6 +68,6 @@ void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
   window->geometry.height = saved.height;
 
   g_windowMgr.ShowShortcutWindow(saved.show);
-  window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&saved), 0, 0, 0);
-  window->SendMsg(nullptr, 6, itemSlotActive ? 588 : 589, 0, 0, 0);
+  window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&saved), 0, 0, 0);
+  window->SendMsg(nullptr, UM_COMMAND, itemSlotActive ? 588 : 589, 0, 0, 0);
 }

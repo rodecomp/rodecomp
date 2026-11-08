@@ -1,4 +1,7 @@
 #include "Client/Input/InputCharset.h"
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -172,7 +175,7 @@ void UITextButton::OnLBtnUp(int x, int y) {
     this->geometry.unknown_0030 = 1;
 
     if (this->parent) {
-      this->parent->SendMsg(this, 98, this->geometry.id, this->m_value, 0, 0);
+      this->parent->SendMsg(this, UM_TEXT_LBTN_UP, this->geometry.id, this->m_value, 0, 0);
       g_windowMgr.ReleaseCapture();
       return;
     }
@@ -187,7 +190,7 @@ void UITextButton::OnLBtnUp(int x, int y) {
 void UITextButton::OnRBtnDown(int, int) {
   if (this->m_disabled == 0) {
     if (this->parent) {
-      this->parent->SendMsg(this, 99, this->geometry.id, this->m_value, 0, 0);
+      this->parent->SendMsg(this, UM_TEXT_RBTN_UP, this->geometry.id, this->m_value, 0, 0);
     }
 
     this->Invalidate();
@@ -208,7 +211,7 @@ void UITextButton::OnRBtnUp(int x, int y) {
     this->geometry.unknown_0030 = 1;
 
     if (this->parent) {
-      this->parent->SendMsg(this, 99, this->geometry.id, this->m_value, 0, 0);
+      this->parent->SendMsg(this, UM_TEXT_RBTN_UP, this->geometry.id, this->m_value, 0, 0);
     }
   }
 
@@ -364,7 +367,7 @@ void UIBmpRadioBtn2::Invalidate() {
   UIWindow::Invalidate();
 
   if (this->parent != nullptr && !this->parent->IsCached()) {
-    this->parent->SendMsg(this, 60, 0, 0, 0, 0);
+    this->parent->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -438,7 +441,7 @@ void UIINT64BarGraph::OnMouseHover(int, int) {
 // OFFSET: 0x00891A40
 // FUNCTION: fn_11454
 void UIItemMoveInfo::OnMouseHover(int, int) {
-  g_windowMgr.EnsureWindow(276)->SendMsg(nullptr, 147, this->m_moveIndex, 0, 0, 0);
+  g_windowMgr.EnsureWindow(WID_ROUNDBOXTOOLTIPWND)->SendMsg(nullptr, UM_SET_ITEM_MOVE_TOOLTIP, this->m_moveIndex, 0, 0, 0);
 }
 
 // OFFSET: 0x00891A10
@@ -650,7 +653,7 @@ void UIStaticItem::OnMouseHover(int, int) {
 // OFFSET: 0x00892040
 // FUNCTION: fn_11462
 void UIItemMoveInfo::OnMouseLeave() {
-  g_windowMgr.ShowWindowById(276, 0);
+  g_windowMgr.ShowWindowById(WID_ROUNDBOXTOOLTIPWND, 0);
   this->Invalidate();
 }
 
@@ -843,7 +846,7 @@ int TableBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, st
 // OFFSET: 0x008984E0
 // FUNCTION: fn_11547
 int UIComboBoxV2Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 6) {
+  if (message == UM_COMMAND) {
     if (argument1 != 273) {
       return 0;
     }
@@ -864,7 +867,7 @@ int UIComboBoxV2Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     return 0;
   }
 
-  if (message != 39) {
+  if (message != UM_COMBOBOX_SELECTED) {
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -872,11 +875,11 @@ int UIComboBoxV2Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     return 0;
   }
 
-  this->SendMsg(nullptr, 6, 273, 0, 0, 0);
+  this->SendMsg(nullptr, UM_COMMAND, ID_OPEN_MEMBER_POS_COMBO, 0, 0, 0);
   this->selected = argument1;
 
   if (this->parent) {
-    this->parent->SendMsg(this, 39, argument1, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, argument1, 0, 0, 0);
   }
 
   this->Invalidate();
@@ -929,7 +932,7 @@ int UIImgMenu::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 // OFFSET: 0x00897BF0
 // FUNCTION: fn_11541
 int UIBmpRadioBtn::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
-  if (message == 13) {
+  if (message == UM_SETSTATE) {
     this->geometry.unknown_0030 = static_cast<std::uint32_t>(argument1);
     this->Invalidate();
   }
@@ -1005,7 +1008,7 @@ void UITVTextButton::OnMouseMove(int x, int y) {
       this->geometry.unknown_0030 = 1;
 
       if (this->parent && this->unknown_00B6 == 0) {
-        this->parent->SendMsg(this, 108, this->m_value, 0, 0, 0);
+        this->parent->SendMsg(this, UM_MOUSE_HOVER_BTN, this->m_value, 0, 0, 0);
       }
     }
   } else if (this->geometry.unknown_0030 != 0) {
@@ -1139,7 +1142,7 @@ void UISlotBmpButton::OnProcess() {
 // FUNCTION: fn_11479
 void UIBasicItemCtrl::OnRBtnDown(int, int) {
   if (std::atoi(this->m_item.itemId.c_str()) > 0) {
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
   }
 }
 
@@ -1148,7 +1151,7 @@ void UIBasicItemCtrl::OnRBtnDown(int, int) {
 void UIBitmapButton2::OnRBtnDown(int, int) {
   if (this->m_disabled == 0) {
     if (this->parent) {
-      this->parent->SendMsg(this, 101, this->geometry.id, 0, 0, 0);
+      this->parent->SendMsg(this, UM_BMP_RBTN_UP, this->geometry.id, 0, 0, 0);
     }
 
     this->Invalidate();
@@ -1166,14 +1169,14 @@ void UIMemberListBox::OnRBtnDown(int x, int y) {
 // FUNCTION: fn_11483
 void UISlotBmpButton::OnRBtnDown(int, int) {
   if (this->parent) {
-    this->parent->SendMsg(this, 6, this->geometry.id, 226, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, 226, 0, 0);
   }
 }
 
 // OFFSET: 0x00892AB0
 // FUNCTION: fn_11484
 void UIStaticItem::OnRBtnDown(int, int) {
-  g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+  g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
 }
 
 // OFFSET: 0x00892AE0
@@ -1181,7 +1184,7 @@ void UIStaticItem::OnRBtnDown(int, int) {
 void UITVBitmapButton::OnRBtnDown(int, int) {
   if (this->m_disabled == 0) {
     if (this->parent) {
-      this->parent->SendMsg(this, 101, this->m_value, 0, 0, 0);
+      this->parent->SendMsg(this, UM_BMP_RBTN_UP, this->m_value, 0, 0, 0);
     }
 
     this->Invalidate();
@@ -1193,7 +1196,7 @@ void UITVBitmapButton::OnRBtnDown(int, int) {
 void UITVTextButton::OnRBtnDown(int x, int y) {
   if (this->m_disabled == 0) {
     if (this->parent) {
-      this->parent->SendMsg(this, 99, this->m_value, x, y, 0);
+      this->parent->SendMsg(this, UM_TEXT_RBTN_UP, this->m_value, x, y, 0);
     }
 
     this->Invalidate();
@@ -1213,7 +1216,7 @@ void UIBitmapButton2::OnRBtnUp(int x, int y) {
     this->geometry.unknown_0030 = 1;
 
     if (this->parent) {
-      this->parent->SendMsg(this, 101, this->geometry.id, 0, 0, 0);
+      this->parent->SendMsg(this, UM_BMP_RBTN_UP, this->geometry.id, 0, 0, 0);
     }
   }
 
@@ -1247,7 +1250,7 @@ void UIChatHisBox2::OnRBtnUp(int x, int y) {
 // FUNCTION: fn_11490
 void UIMemberListBox::OnRBtnUp(int, int) {
   if (this->parent) {
-    this->parent->SendMsg(nullptr, 49, 0, 0, 0, 0);
+    this->parent->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
   }
 }
 
@@ -1264,7 +1267,7 @@ void UITVBitmapButton::OnRBtnUp(int x, int y) {
     this->geometry.unknown_0030 = 1;
 
     if (this->parent) {
-      this->parent->SendMsg(this, 101, this->m_value, 0, 0, 0);
+      this->parent->SendMsg(this, UM_BMP_RBTN_UP, this->m_value, 0, 0, 0);
     }
   }
 
@@ -1277,7 +1280,7 @@ void UITVBitmapButton::OnRBtnUp(int x, int y) {
 void UITVTextButton::OnRBtnUp(int x, int y) {
   if (this->m_disabled == 0) {
     if (this->parent) {
-      this->parent->SendMsg(this, 99, this->m_value, x, y, 0);
+      this->parent->SendMsg(this, UM_TEXT_RBTN_UP, this->m_value, x, y, 0);
     }
 
     this->Invalidate();
@@ -1299,7 +1302,7 @@ void UIComboBoxV2Wnd::OnWheel(int value) {
   }
 
   if (this->parent) {
-    this->parent->SendMsg(this, 39, this->selected, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
   }
 
   this->Invalidate();
@@ -1422,9 +1425,9 @@ void UIComboBoxID::Refresh() {
 void UIListBoxID::OnWheel(int value) {
   if (this->verticalOverflow != 0) {
     if (value < 0) {
-      this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, 3, 0, 0, 0);
     } else {
-      this->SendMsg(this->verticalBar, 7, -3, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, -3, 0, 0, 0);
     }
   }
 }
@@ -1434,9 +1437,9 @@ void UIListBoxID::OnWheel(int value) {
 void UITreeView::OnWheel(int value) {
   if (this->verticalOverflow != 0) {
     if (value < 0) {
-      this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, 3, 0, 0, 0);
     } else {
-      this->SendMsg(this->verticalBar, 7, -3, 0, 0, 0);
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, -3, 0, 0, 0);
     }
   }
 }
@@ -1602,7 +1605,7 @@ void UISlotBmpButton::OnLBtnDblClk(int x, int y) {
   UIBitmapButton::OnLBtnDblClk(x, y);
 
   if (this->parent) {
-    this->parent->SendMsg(this, 6, 184, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, ID_OK, 0, 0, 0);
   }
 }
 
@@ -1616,7 +1619,7 @@ void UITVTextButton::OnLBtnDblClk(int x, int y) {
   this->geometry.unknown_0030 = 1;
 
   if (this->parent) {
-    this->parent->SendMsg(this, 97, this->m_value, x, y, 0);
+    this->parent->SendMsg(this, UM_TEXT_LBTN_DblClk, this->m_value, x, y, 0);
   }
 
   this->Invalidate();
@@ -1626,7 +1629,7 @@ void UITVTextButton::OnLBtnDblClk(int x, int y) {
 // FUNCTION: fn_11411
 void UIBmpRadioBtn::OnLBtnDown(int, int) {
   if (this->parent) {
-    this->parent->SendMsg(this, 6, this->geometry.id, this->m_value, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, this->m_value, 0, 0);
   }
 }
 
@@ -1666,7 +1669,7 @@ void UIListBoxNavi::OnLBtnDown(int x, int y) {
   this->selected = this->LineAt(x, y);
 
   if (this->selected != -1) {
-    this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, this->selected, 0, 0);
   }
 
   this->Invalidate();
@@ -1685,8 +1688,8 @@ void UISlotBmpButton::OnLBtnDown(int x, int y) {
   UIBitmapButton::OnLBtnDown(x, y);
 
   if (this->parent) {
-    this->parent->SendMsg(this, 13, 0, 0, 0, 0);
-    this->parent->SendMsg(this, 6, this->geometry.id, 0, 0, 0);
+    this->parent->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, 0, 0, 0);
   }
 }
 
@@ -1701,7 +1704,7 @@ void UITVTextButton::OnLBtnDown(int, int) {
   this->Invalidate();
 
   if (this->parent) {
-    this->parent->SendMsg(this, 107, this->m_value, 0, 0, 0);
+    this->parent->SendMsg(this, UM_BEGIN_DRAG_BTN, this->m_value, 0, 0, 0);
     this->unknown_00B6 = 1;
   }
 }
@@ -1723,7 +1726,7 @@ void UITabControl::OnLBtnDown(int x, int y) {
   this->edit->Move(-100, -100);
 
   if (this->parent) {
-    this->parent->SendMsg(this, 22, this->unknown_007C, 0, 0, 0);
+    this->parent->SendMsg(this, UM_TAB, this->unknown_007C, 0, 0, 0);
     this->parent->Invalidate();
   }
 
@@ -1752,7 +1755,7 @@ void UIBitmapButton2::OnLBtnUp(int x, int y) {
     this->geometry.unknown_0030 = 1;
 
     if (this->parent) {
-      this->parent->SendMsg(this, 100, this->geometry.id, 0, 0, 0);
+      this->parent->SendMsg(this, UM_BMP_LBTN_UP, this->geometry.id, 0, 0, 0);
     }
   }
 
@@ -1763,7 +1766,7 @@ void UIBitmapButton2::OnLBtnUp(int x, int y) {
 // OFFSET: 0x00890DA0
 // FUNCTION: fn_11437
 void UIComboBoxV2Wnd::OnLBtnUp(int, int) {
-  this->SendMsg(nullptr, 6, 273, 0, 0, 0);
+  this->SendMsg(nullptr, UM_COMMAND, ID_OPEN_MEMBER_POS_COMBO, 0, 0, 0);
 }
 
 // OFFSET: 0x00890E30
@@ -1781,7 +1784,7 @@ void UIItemStoreComboBox::OnLBtnUp(int x, int y) {
   this->selected = line;
 
   if (this->parent) {
-    this->parent->SendMsg(nullptr, 39, line, 0, 0, 0);
+    this->parent->SendMsg(nullptr, UM_COMBOBOX_SELECTED, line, 0, 0, 0);
   }
 }
 
@@ -1798,7 +1801,7 @@ void UITVBitmapButton::OnLBtnUp(int x, int y) {
     this->geometry.unknown_0030 = 1;
 
     if (this->parent) {
-      this->parent->SendMsg(this, 100, this->m_value, 0, 0, 0);
+      this->parent->SendMsg(this, UM_BMP_LBTN_UP, this->m_value, 0, 0, 0);
     }
   }
 
@@ -1815,9 +1818,9 @@ void UITVTextButton::OnLBtnUp(int x, int y) {
 
   if (this->parent) {
     if (this->unknown_00B6 != 0) {
-      this->parent->SendMsg(this, 98, this->m_value, x, y, 0);
+      this->parent->SendMsg(this, UM_TEXT_LBTN_UP, this->m_value, x, y, 0);
     } else {
-      this->parent->SendMsg(this, 109, this->m_value, 0, 0, 0);
+      this->parent->SendMsg(this, UM_END_DRAG_BTN, this->m_value, 0, 0, 0);
     }
 
     this->unknown_00B6 = 0;
@@ -2485,7 +2488,7 @@ void UITableBox::Paint() {
 void UIPackageBoxNameList::OnLBtnDown(int x, int y) {
   this->selected = this->LineAt(x, y);
   if (this->selected != -1) {
-    this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, this->selected, 0, 0);
   }
 
   this->Invalidate();
@@ -2692,7 +2695,7 @@ void __stdcall Nullsub275(int, int, int, int) {
 // FUNCTION: fn_11405
 void UIListBoxID::OnLBtnDblClk(int, int) {
   if (this->selected != -1) {
-    this->parent->SendMsg(this, 6, this->geometry.id, this->lines[this->selected].id, 0, 0);
+    this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, this->lines[this->selected].id, 0, 0);
   }
 }
 
@@ -2707,8 +2710,8 @@ void UINewComboBoxCtrl::OnLBtnDblClk(int, int) {
 // OFFSET: 0x00890480
 // FUNCTION: fn_11416
 void UIDescriptRace::OnLBtnDown(int, int) {
-  if (UIWindow* window = g_windowMgr.LookupWindow(278)) {
-    window->SendMsg(this, 6, 204, 0, 0, 0);
+  if (UIWindow* window = g_windowMgr.LookupWindow(WID_NEWMAKECHARWND)) {
+    window->SendMsg(this, UM_COMMAND, ID_SLOT, 0, 0, 0);
   }
 }
 
@@ -2921,7 +2924,7 @@ void UIItemTagButton::OnLBtnDown(int x, int y) {
   }
 
   if (this->m_value == 517) {
-    if (UITipboxWnd* tipbox = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(315))) {
+    if (UITipboxWnd* tipbox = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(WID_TIPBOXWND))) {
       tipbox->ShowTip(this->unknown_01F8);
     }
     return;
@@ -2932,7 +2935,7 @@ void UIItemTagButton::OnLBtnDown(int x, int y) {
   } else {
     this->geometry.unknown_0030 = 1;
     if (this->parent) {
-      this->parent->SendMsg(this, 98, this->geometry.id, this->m_value, reinterpret_cast<std::intptr_t>(this->unknown_00F8), 0);
+      this->parent->SendMsg(this, UM_TEXT_LBTN_UP, this->geometry.id, this->m_value, reinterpret_cast<std::intptr_t>(this->unknown_00F8), 0);
       this->Invalidate();
       return;
     }
@@ -2946,16 +2949,16 @@ void UIItemTagButton::OnLBtnDown(int x, int y) {
 void UIComboBox::OnLBtnUp(int x, int y) {
   this->selected = this->LineAt(x, y);
   if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
-    target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
-    g_windowMgr.CloseWindow(26);
+    target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     return;
   }
 
   if (this->parent) {
-    this->parent->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
+    this->parent->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
   }
 
-  g_windowMgr.CloseWindow(26);
+  g_windowMgr.CloseWindow(WID_COMBOBOXWND);
 }
 
 // OFFSET: 0x00890C20
@@ -2980,7 +2983,7 @@ void UIComboBoxID::OnLBtnUp(int x, int y) {
       extra = found->second;
     }
 
-    target->SendMsg(nullptr, 39, this->lines[this->selected].id, extra, 0, 0);
+    target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, extra, 0, 0);
   } else if (this->parent) {
     int extra = 0;
     const auto found = this->unknown_00C4.find(this->selected);
@@ -2989,10 +2992,10 @@ void UIComboBoxID::OnLBtnUp(int x, int y) {
       extra = found->second;
     }
 
-    this->parent->SendMsg(nullptr, 39, this->lines[this->selected].id, extra, 0, 0);
+    this->parent->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, extra, 0, 0);
   }
 
-  g_windowMgr.CloseWindow(26);
+  g_windowMgr.CloseWindow(WID_COMBOBOXWND);
 }
 
 // OFFSET: 0x00892990
@@ -3002,8 +3005,8 @@ void UIBasicSkillCtrl::OnRBtnDown(int x, int y) {
     return;
   }
 
-  UIWindow* window = g_windowMgr.EnsureWindow(46);
-  window->SendMsg(nullptr, 61, this->m_skillId, 0, 0, 0);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_SKILLDESCRIBEWND);
+  window->SendMsg(nullptr, UM_SKILLDESCRIBE, this->m_skillId, 0, 0, 0);
   int screenX = 0;
   int screenY = 0;
   this->ToScreen(screenX, screenY);
@@ -3020,7 +3023,7 @@ void UISlotBmpButton::SetSlot(int slot, int fallback) {
     return;
   }
 
-  const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, this->m_slot, 0, 0, 0));
+  const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slot, 0, 0, 0));
   if (!info) {
     this->icon->Show(0);
     return;
@@ -3296,7 +3299,7 @@ void UIImgMenu::OnLBtnUp(int x, int y) {
   this->hovered = this->ItemAt(x, y);
   if (this->hovered != -1 && !this->unknown_0094[this->hovered]) {
     if (UIWindow* target = g_windowMgr.LookupWindow(this->unknown_00C8)) {
-      target->SendMsg(nullptr, 48, this->hovered, this->geometry.id, 0, 0);
+      target->SendMsg(nullptr, UM_MENU_SELECTED, this->hovered, this->geometry.id, 0, 0);
     }
     g_windowMgr.CloseWindow(0x7A);
   }
@@ -3308,9 +3311,9 @@ void UIImgMenu::OnLBtnUp(int x, int y) {
 // FUNCTION: fn_11441
 void UIString::OnLBtnUp(int, int) {
   if (!this->unknown_0084.empty()) {
-    UIWindow* window = g_windowMgr.EnsureWindow(201);
-    window->SendMsg(nullptr, 62, reinterpret_cast<std::intptr_t>(this->unknown_0084.c_str()), 1, 0, 0);
-    UIWindow* frame = g_windowMgr.LookupWindow(10008);
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_MONSTERDISPLAYWND);
+    window->SendMsg(nullptr, UM_CARDITEMILLUSTRATE, reinterpret_cast<std::intptr_t>(this->unknown_0084.c_str()), 1, 0, 0);
+    UIWindow* frame = g_windowMgr.LookupWindow(WID_RENEWQUESTUI);
     UIWindow* parent = this->parent;
     window->Move(
       frame->geometry.x + (parent->geometry.x + 100 + this->geometry.x), frame->geometry.y + (parent->geometry.y - 60 + this->geometry.y)
@@ -3318,7 +3321,7 @@ void UIString::OnLBtnUp(int, int) {
   } else if (!this->unknown_00AC.empty()) {
     ITEM_INFO item;
     item.itemId = this->unknown_00AC;
-    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -3543,12 +3546,12 @@ void UIString::Paint() {
 // OFFSET: 0x00899780
 // FUNCTION: fn_11557
 int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 0x0D) {
+  if (message == UM_SETSTATE) {
     this->unknown_0124 = argument1 != 0;
     return 0;
   }
 
-  if (message != 0x1AF) {
+  if (message != UM_SET_CHARACTER_SLOT_STYLE) {
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
@@ -3611,7 +3614,7 @@ void UISlotBmpButton::Paint() {
   }
 
   if (this->m_slot >= 0) {
-    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(8, this->m_slot, 0, 0, 0));
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slot, 0, 0, 0));
     if (info) {
       if (info->unknown_00AA > 0 || info->unknown_00A6 > 0) {
         if (this->m_inRange) {
