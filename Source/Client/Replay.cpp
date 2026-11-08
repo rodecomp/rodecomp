@@ -1351,134 +1351,38 @@ std::vector<unsigned char> CSession::BuildExtraReplayRecords() {
 // FUNCTION: fn_24198
 std::vector<unsigned char> CSession::BuildStatsReplayRecords() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(2000, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2010, &this->unknown_166C, sizeof(this->unknown_166C));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2011, &this->unknown_1670, sizeof(this->unknown_1670));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2012, &this->unknown_1674, sizeof(this->unknown_1674));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2013, &this->unknown_1678, sizeof(this->unknown_1678));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2014, &this->unknown_167C, sizeof(this->unknown_167C));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2015, &this->unknown_1680, sizeof(this->unknown_1680));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2016, &this->unknown_0F4C, sizeof(this->unknown_0F4C));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2017, &this->m_weight, sizeof(this->m_weight));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2018, &this->m_maxWeight, sizeof(this->m_maxWeight));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2019, &this->unknown_532C, sizeof(this->unknown_532C));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2020, &this->unknown_5330, sizeof(this->unknown_5330));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2021, &this->unknown_5334, sizeof(this->unknown_5334));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2022, &this->unknown_5338, sizeof(this->unknown_5338));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2023, &this->unknown_533C, sizeof(this->unknown_533C));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2024, this->unknown_5340, sizeof(this->unknown_5340));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2025, this->unknown_5370, sizeof(this->unknown_5370));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2026, this->unknown_53A0, sizeof(this->unknown_53A0));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2027, this->unknown_53D0, sizeof(this->unknown_53D0));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2028, this->unknown_5400, 0x30);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2029, &this->unknown_5568, sizeof(this->unknown_5568));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2030, &this->unknown_556C, sizeof(this->unknown_556C));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2031, &this->unknown_5570[0], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2032, &this->unknown_5570[4], 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2033, &this->m_prohibitionTarget, sizeof(this->m_prohibitionTarget));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2034, &this->unknown_5480, sizeof(this->unknown_5480));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2035, &this->unknown_5484, sizeof(this->unknown_5484));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2036, &this->unknown_5488, sizeof(this->unknown_5488));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2037, &this->unknown_548C, sizeof(this->unknown_548C));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2038, this->m_accountName.c_str(), this->m_accountName.size());
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2052, &this->unknown_8074, sizeof(this->unknown_8074));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(2001, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, MakeReplayRecord(2000, nullptr, 0));
+  AppendRecord(records, MakeReplayRecord(2010, &this->unknown_166C, sizeof(this->unknown_166C)));
+  AppendRecord(records, MakeReplayRecord(2011, &this->unknown_1670, sizeof(this->unknown_1670)));
+  AppendRecord(records, MakeReplayRecord(2012, &this->unknown_1674, sizeof(this->unknown_1674)));
+  AppendRecord(records, MakeReplayRecord(2013, &this->unknown_1678, sizeof(this->unknown_1678)));
+  AppendRecord(records, MakeReplayRecord(2014, &this->unknown_167C, sizeof(this->unknown_167C)));
+  AppendRecord(records, MakeReplayRecord(2015, &this->unknown_1680, sizeof(this->unknown_1680)));
+  AppendRecord(records, BuildReplayTaggedRecord(2016, &this->unknown_0F4C, sizeof(this->unknown_0F4C)));
+  AppendRecord(records, BuildReplayTaggedRecord(2017, &this->m_weight, sizeof(this->m_weight)));
+  AppendRecord(records, BuildReplayTaggedRecord(2018, &this->m_maxWeight, sizeof(this->m_maxWeight)));
+  AppendRecord(records, BuildReplayTaggedRecord(2019, &this->unknown_532C, sizeof(this->unknown_532C)));
+  AppendRecord(records, BuildReplayTaggedRecord(2020, &this->unknown_5330, sizeof(this->unknown_5330)));
+  AppendRecord(records, BuildReplayTaggedRecord(2021, &this->unknown_5334, sizeof(this->unknown_5334)));
+  AppendRecord(records, BuildReplayTaggedRecord(2022, &this->unknown_5338, sizeof(this->unknown_5338)));
+  AppendRecord(records, BuildReplayTaggedRecord(2023, &this->unknown_533C, sizeof(this->unknown_533C)));
+  AppendRecord(records, BuildReplayTaggedRecord(2024, this->unknown_5340, sizeof(this->unknown_5340)));
+  AppendRecord(records, BuildReplayTaggedRecord(2025, this->unknown_5370, sizeof(this->unknown_5370)));
+  AppendRecord(records, BuildReplayTaggedRecord(2026, this->unknown_53A0, sizeof(this->unknown_53A0)));
+  AppendRecord(records, BuildReplayTaggedRecord(2027, this->unknown_53D0, sizeof(this->unknown_53D0)));
+  AppendRecord(records, BuildReplayTaggedRecord(2028, this->unknown_5400, 0x30));
+  AppendRecord(records, BuildReplayTaggedRecord(2029, &this->unknown_5568, sizeof(this->unknown_5568)));
+  AppendRecord(records, BuildReplayTaggedRecord(2030, &this->unknown_556C, sizeof(this->unknown_556C)));
+  AppendRecord(records, BuildReplayTaggedRecord(2031, &this->unknown_5570[0], 4));
+  AppendRecord(records, BuildReplayTaggedRecord(2032, &this->unknown_5570[4], 4));
+  AppendRecord(records, BuildReplayTaggedRecord(2033, &this->m_prohibitionTarget, sizeof(this->m_prohibitionTarget)));
+  AppendRecord(records, BuildReplayTaggedRecord(2034, &this->unknown_5480, sizeof(this->unknown_5480)));
+  AppendRecord(records, BuildReplayTaggedRecord(2035, &this->unknown_5484, sizeof(this->unknown_5484)));
+  AppendRecord(records, BuildReplayTaggedRecord(2036, &this->unknown_5488, sizeof(this->unknown_5488)));
+  AppendRecord(records, BuildReplayTaggedRecord(2037, &this->unknown_548C, sizeof(this->unknown_548C)));
+  AppendRecord(records, BuildReplayTaggedRecord(2038, this->m_accountName.c_str(), this->m_accountName.size()));
+  AppendRecord(records, BuildReplayTaggedRecord(2052, &this->unknown_8074, sizeof(this->unknown_8074)));
+  AppendRecord(records, MakeReplayRecord(2001, nullptr, 0));
   return records;
 }
 
