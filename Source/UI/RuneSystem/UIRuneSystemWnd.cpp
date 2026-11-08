@@ -2177,7 +2177,7 @@ void UIRune_Decom::Paint() {
           text += FormatOwnedString("%.3f", value);
         }
       } else {
-        text = FormatOwnedString("%d", whole);
+        text = static_cast<const std::string&>(FormatOwnedString("%d", whole));
       }
       text += "%";
 
@@ -2185,7 +2185,7 @@ void UIRune_Decom::Paint() {
       this->DrawTextAt(x - width + 0x23, y + 0x13, text.c_str(), 0, 0, 12, 0xFFF7E7, 0, 0);
       this->DrawTextAt(x - width + 0x22, y + 0x12, text.c_str(), 0, 0, 12, 0x875F51, 0, 0);
 
-      text = FormatOwnedString("%d ~ %d", (*this->m_decomList)[index].m_minCount, (*this->m_decomList)[index].m_maxCount);
+      text = static_cast<const std::string&>(FormatOwnedString("%d ~ %d", (*this->m_decomList)[index].m_minCount, (*this->m_decomList)[index].m_maxCount));
       width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
       this->DrawTextAt(x - static_cast<int>(static_cast<float>(width) * 0.5f) + 0x13, y + 0x23, text.c_str(), 0, 0, 11,
         0x875F51, 0, 0
