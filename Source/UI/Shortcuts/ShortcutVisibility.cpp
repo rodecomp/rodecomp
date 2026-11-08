@@ -4,6 +4,42 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowMgr.inl"
 
+#include <algorithm>
+
+namespace {
+  // INLINED
+  __forceinline void PromoteWindow(UIWindow* window) {
+    if ((g_windowMgr.modal != nullptr && g_windowMgr.window_4F174 != window) || g_windowMgr.LookupWindow(278) || g_windowMgr.LookupWindow(4) ||
+        g_windowMgr.LookupWindow(199) || g_windowMgr.LookupWindow(200)) {
+      return;
+    }
+
+    int companion = -1;
+    if (window->geometry.id == 12) {
+      companion = 234;
+    } else if (window->geometry.id == 82) {
+      companion = 250;
+    }
+
+    if (companion != -1) {
+      const auto found = std::find_if(g_windowMgr.rendered.begin(), g_windowMgr.rendered.end(), [&](const UIWindow* value) {
+        return value->geometry.id == companion;
+      });
+      if (found != g_windowMgr.rendered.end()) {
+        UIWindow* value = *found;
+        g_windowMgr.rendered.erase(found);
+        g_windowMgr.rendered.push_back(value);
+      }
+    }
+
+    const auto found = std::find(g_windowMgr.rendered.begin(), g_windowMgr.rendered.end(), window);
+    if (found != g_windowMgr.rendered.end()) {
+      g_windowMgr.rendered.erase(found);
+      g_windowMgr.rendered.push_back(window);
+    }
+  }
+}
+
 // OFFSET: 0x00AAA310
 // FUNCTION: fn_17269
 bool UIWindowMgr::ShowWindowById(int id, int visible) {
@@ -27,7 +63,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
       return true;
     }
 
-    g_windowMgr.Promote(window);
+    PromoteWindow(window);
     return true;
   }
 
@@ -39,13 +75,37 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
     }
 
     if (visible != 0) {
-      g_windowMgr.Promote(this->window_01EC);
+      PromoteWindow(this->window_01EC);
     }
 
     return false;
 
   case 36:
-    return this->ShowShortcutWindow(visible);
+    if (g_replayAnimationScaling && !Replay::Instance().header.options.unknown_0007) {
+      return false;
+    }
+
+    this->m_normalItemSlotWindow.show = visible;
+    g_windowMgr.EnsureWindow(36);
+    this->window_01E8->Show(visible);
+
+    if (visible != 0) {
+      PromoteWindow(this->window_01E8);
+    }
+
+    if (g_serviceOptions.Get(0x10E)) {
+      g_windowMgr.EnsureWindow(159);
+    }
+
+    if (UIWindow* companion = g_windowMgr.LookupWindow(159)) {
+      companion->Show(visible);
+
+      if (visible != 0) {
+        PromoteWindow(companion);
+      }
+    }
+
+    return true;
 
   case 46: {
     this->unknown_0048 = visible;
@@ -70,7 +130,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
       return true;
     }
 
-    g_windowMgr.Promote(window);
+    PromoteWindow(window);
     return true;
   }
 
