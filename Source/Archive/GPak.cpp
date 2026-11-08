@@ -8,6 +8,7 @@
 #include "Utility/XxHash3.h"
 
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
@@ -523,6 +524,11 @@ unsigned int Triple32Hash(unsigned int value) {
 }
 
 
+// INLINED
+__declspec(noinline) void FillUint32(unsigned int* first, unsigned int* last, const unsigned int& value) {
+  std::fill(first, last, value);
+}
+
 struct VectorUint32_654D10 {
   unsigned int* first;
   unsigned int* last;
@@ -536,7 +542,7 @@ struct VectorUint32_654D10 {
 __declspec(noinline) void VectorUint32_654D10::AssignFill(unsigned int count, unsigned int val) {
   unsigned int old_size = static_cast<unsigned int>(this->last - this->first);
   if (count <= old_size) {
-    std::fill(this->first, this->last, val);
+    FillUint32(this->first, this->last, val);
     return;
   }
   if (count > 0x3fffffff) {
@@ -581,6 +587,11 @@ __declspec(noinline) void VectorUint32_654D10::AssignFill(unsigned int count, un
   }
 }
 
+// INLINED
+__declspec(noinline) void FillInt32(int* first, int* last, const int& value) {
+  std::fill(first, last, value);
+}
+
 struct VectorInt32_654E00 {
   int* first;
   int* last;
@@ -594,7 +605,7 @@ struct VectorInt32_654E00 {
 __declspec(noinline) void VectorInt32_654E00::AssignFill(unsigned int count, int val) {
   unsigned int old_size = static_cast<unsigned int>(this->last - this->first);
   if (count <= old_size) {
-    std::fill(this->first, this->last, val);
+    FillInt32(this->first, this->last, val);
     return;
   }
   if (count > 0x3fffffff) {
@@ -1544,6 +1555,7 @@ void CGPak::ReadAuxiliary(std::vector<std::uint8_t>& output, std::uint64_t* iden
 // FUNCTION: fn_18137
 void CGPak::ApplyAuxiliary(const void* data, std::uint32_t size, const void* auxData, std::uint32_t auxSize) {
   this->m_auxiliary.Apply(data, size, auxData, auxSize);
+  std::atomic_signal_fence(std::memory_order_seq_cst);
 }
 
 // OFFSET: 0x00E555A0
