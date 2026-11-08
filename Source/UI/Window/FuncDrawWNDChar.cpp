@@ -376,34 +376,34 @@ __declspec(safebuffers) void FuncDrawWNDChar::LoadResources(const std::list<int>
     std::string sprName;
     std::string actName;
     switch (layer) {
-      case 0:
-      case 7:
-        if (this->m_shield == 0) {
-          sprName = g_session.GetRobeSprName(this->m_job, this->m_hairColor, this->m_sex, this->m_robe, this->m_flags, this->m_body);
-          actName = g_session.GetRobeActName(this->m_job, this->m_hairColor, this->m_sex, this->m_robe, this->m_flags, this->m_body);
-        }
-        break;
       case 1: {
         int job = this->m_flags == 1 ? g_session.GetRidingJob(this->m_job) : this->m_job;
-        sprName = g_session.GetBodySprName(job, this->m_sex, this->m_body, this->m_shield);
-        actName = GetBodyActionResourceName(job, this->m_sex, this->m_body, this->m_shield);
-        this->unknown_0050 = g_session.GetBodyPalName(job, this->m_sex, this->m_bodyStyle, this->m_body, this->m_shield, 0);
+        sprName = static_cast<const std::string&>(g_session.GetBodySprName(job, this->m_sex, this->m_body, this->m_shield));
+        actName = static_cast<const std::string&>(GetBodyActionResourceName(job, this->m_sex, this->m_body, this->m_shield));
+        this->unknown_0050 = static_cast<const std::string&>(g_session.GetBodyPalName(job, this->m_sex, this->m_bodyStyle, this->m_body, this->m_shield, 0));
         break;
       }
       case 2: {
         int head = this->m_head;
-        sprName = g_session.GetHeadSprName(this->m_job, this->m_sex, &head);
-        actName = g_session.GetHeadActName(this->m_job, this->m_sex, &head);
+        sprName = static_cast<const std::string&>(g_session.GetHeadSprName(this->m_job, this->m_sex, &head));
+        actName = static_cast<const std::string&>(g_session.GetHeadActName(this->m_job, this->m_sex, &head));
         this->m_head = static_cast<short>(head);
-        this->unknown_0068 = g_session.GetHeadPalName(this->m_head, this->m_job, this->m_sex, this->m_headPalette);
+        this->unknown_0068 = static_cast<const std::string&>(g_session.GetHeadPalName(this->m_head, this->m_job, this->m_sex, this->m_headPalette));
         break;
       }
       case 3:
       case 4:
       case 5:
       case 6:
-        sprName = g_session.GetAccessorySprName(this->m_job, this->m_sex, this->m_head, this->m_layers[layer]);
-        actName = g_session.GetAccessoryActName(this->m_job, this->m_sex, this->m_head, this->m_layers[layer]);
+        sprName = static_cast<const std::string&>(g_session.GetAccessorySprName(this->m_job, this->m_sex, this->m_head, this->m_layers[layer]));
+        actName = static_cast<const std::string&>(g_session.GetAccessoryActName(this->m_job, this->m_sex, this->m_head, this->m_layers[layer]));
+        break;
+      case 0:
+      case 7:
+        if (this->m_shield == 0) {
+          sprName = g_session.GetRobeSprName(this->m_job, this->m_hairColor, this->m_sex, this->m_robe, this->m_flags, this->m_body);
+          actName = g_session.GetRobeActName(this->m_job, this->m_hairColor, this->m_sex, this->m_robe, this->m_flags, this->m_body);
+        }
         break;
     }
 
