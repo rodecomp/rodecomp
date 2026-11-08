@@ -5824,7 +5824,8 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
 // OFFSET: 0x008F80B0
 // FUNCTION: fn_12330
 int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 6) {
+  switch (message) {
+  case 6:
     switch (a) {
     case 184: {
       if (g_windowMgr.HasTitleAtActorCell(g_session.m_aid)) {
@@ -5903,19 +5904,18 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       break;
     }
     }
-    return 0;
-  }
-
-  if (message != 39) {
+    break;
+  case 39:
+    if (this->m_listKind == 0) {
+      this->m_limitText->SetText(this->m_limitLabels[a].c_str(), 0);
+      this->m_limit = this->m_limits[a];
+    } else if (this->m_listKind == 1) {
+      this->m_typeText->SetText(this->m_typeLabels[a].c_str(), 0);
+      this->m_type = this->m_types[a];
+    }
+    break;
+  default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
-  }
-
-  if (this->m_listKind == 0) {
-    this->m_limitText->SetText(this->m_limitLabels[a].c_str(), 0);
-    this->m_limit = this->m_limits[a];
-  } else if (this->m_listKind == 1) {
-    this->m_typeText->SetText(this->m_typeLabels[a].c_str(), 0);
-    this->m_type = this->m_types[a];
   }
   return 0;
 }
