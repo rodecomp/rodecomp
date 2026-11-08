@@ -12,7 +12,7 @@ struct vector3d;
 struct EffectEvent {
   /* 0000 */ int kind;
   /* 0004 */ int frame;
-  /* 0008 */ int argument;
+  /* 0008 */ float argument;
   /* 000C */ std::string text;
 };
 

@@ -43,7 +43,7 @@ void CEffect::AddEvent(int kind, const char* text, int frame, int argument) {
   event.kind = kind;
   event.text = text ? text : "";
   event.frame = frame;
-  event.argument = argument;
+  event.argument = std::bit_cast<float>(argument);
   this->events.push_back(event);
 }
 
@@ -148,7 +148,7 @@ void CEffect::Update(std::uint32_t aid) {
     switch (event->kind) {
     case 0:
       if (!event->text.empty()) {
-        g_soundMgr->PlayWave(event->text.c_str(), this->position[0] - player.x, std::bit_cast<float>(event->argument),
+        g_soundMgr->PlayWave(event->text.c_str(), this->position[0] - player.x, event->argument,
                              this->position[2] - player.z, 250, 40, 1.0f, 0);
       }
       break;
