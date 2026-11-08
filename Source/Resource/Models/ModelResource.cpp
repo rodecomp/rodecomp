@@ -570,7 +570,7 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
   bool result = false;
 
   if (!GrannyVersionsMatch_(2, 1, 0, 5)) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "doesn't match the .h file used during compilation", 0);
+    ShowErrorDialog("doesn't match the .h file used during compilation", 0);
     return false;
   }
 
@@ -639,7 +639,7 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
 
         entry.deformer = GrannyNewMeshDeformer(GrannyGetMeshVertexType(mesh), GrannyPNT332VertexType, 2);
         if (!entry.deformer) {
-          ShowErrorDialog(GetRenderSystemHolder()->system, "Granny didn't find a matching deformer for the vertex format used by mesh", 0);
+          ShowErrorDialog("Granny didn't find a matching deformer for the vertex format used by mesh", 0);
         }
       }
     }
@@ -654,7 +654,7 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
       if (granny_file* animationFile = this->ReadAnimationFile(this->fileName, "")) {
         if (granny_file_info* animationInfo = GrannyGetFileInfo(animationFile)) {
           if (!instance->instance || animationInfo->animationCount != 1) {
-            ShowErrorDialog(GetRenderSystemHolder()->system, "This sample only supports single-animation files", 0);
+            ShowErrorDialog("This sample only supports single-animation files", 0);
             this->animations[job][action] = nullptr;
             return false;
           }
@@ -678,7 +678,7 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
 
     result = true;
   } else {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Unable to access file data .gr2", 0);
+    ShowErrorDialog("Unable to access file data .gr2", 0);
   }
 
   GrannyFreeFileSection(this->file, 1);
