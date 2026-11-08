@@ -187,7 +187,7 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
 }
 
 // INLINED
-static __forceinline void DrawTrailSpriteQuad(
+static __declspec(safebuffers) __forceinline void DrawTrailSpriteQuad(
   CEffectPrim& prim, const vector3d& base, float top, float left, float bottom, float right, float screenY, float depth, float depthBias,
   float angle, std::uint32_t color, const SpriteRleImage* image, const std::uint32_t* palette, int blend
 ) {
@@ -214,7 +214,7 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-    if (slot.life <= 0 || this->state.alpha <= 0.0f) {
+    if (slot.life <= 0 || !(this->state.alpha > 0.0f)) {
       continue;
     }
 
