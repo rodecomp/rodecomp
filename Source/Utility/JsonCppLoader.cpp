@@ -3,17 +3,29 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+
+extern "C" void JsonDestroy();
+
+struct JsonValueLocal {
+  JsonValue value;
+
+  // INLINED
+  ~JsonValueLocal() {
+    reinterpret_cast<void(__thiscall*)(JsonValue*)>(JsonDestroy)(&this->value);
+  }
+};
+
 // OFFSET: 0x00509940
 // FUNCTION: fn_00891
 bool JsonCppLoader::GetMapStringBoolValue(const JsonValue& node, const std::string& key, std::map<std::string, bool>* out) {
-  JsonValue value;
-  this->GetValue(value, key, node, JsonValue::OBJECT_VALUE);
-  if (value.IsNull()) {
+  JsonValueLocal value;
+  this->GetValue(value.value, key, node, JsonValue::OBJECT_VALUE);
+  if (value.value.IsNull() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  const JsonObject& members = value.GetObject();
+  const JsonObject& members = value.value.GetObject();
   for (JsonObject::const_iterator member = members.begin(); member != members.end(); ++member) {
     std::string name = member->first;
     JsonValue element = member->second;
@@ -35,14 +47,14 @@ bool JsonCppLoader::GetMapStringBoolValue(const JsonValue& node, const std::stri
 // OFFSET: 0x005086D0
 // FUNCTION: fn_00887
 bool JsonCppLoader::GetStringValue(const JsonValue& node, const std::string& key, std::string* out) {
-  JsonValue value;
-  this->GetValue(value, key, node, JsonValue::STRING_VALUE);
-  if (value.IsNull()) {
+  JsonValueLocal value;
+  this->GetValue(value.value, key, node, JsonValue::STRING_VALUE);
+  if (value.value.IsNull() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  *out = value.AsString();
+  *out = value.value.AsString();
   return true;
 }
 
@@ -265,14 +277,14 @@ void JsonCppLoader::Fail(const char* format, ...) {
 // OFFSET: 0x00508570
 // FUNCTION: fn_00886
 bool JsonCppLoader::GetIntValue(const JsonValue& node, const std::string& key, int* out) {
-  JsonValue value;
-  this->GetValue(value, key, node, JsonValue::INT64_VALUE);
-  if (value.IsNull()) {
+  JsonValueLocal value;
+  this->GetValue(value.value, key, node, JsonValue::INT64_VALUE);
+  if (value.value.IsNull() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  *out = value.AsInt();
+  *out = value.value.AsInt();
   return true;
 }
 
@@ -309,7 +321,7 @@ bool JsonCppLoader::GetMapStringIntValue(const JsonValue& node, const std::strin
 bool JsonCppLoader::GetMapStringStringValue(const JsonValue& node, const std::string& key, std::map<std::string, std::string>* out) {
   JsonValue value;
   this->GetValue(value, key, node, JsonValue::OBJECT_VALUE);
-  if (value.IsNull()) {
+  if (value.IsNull() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
@@ -337,7 +349,7 @@ bool JsonCppLoader::GetMapStringStringValue(const JsonValue& node, const std::st
 bool JsonCppLoader::GetMapStringIntVectorValue(const JsonValue& node, const std::string& key, std::map<std::string, std::vector<int> >* out) {
   JsonValue value;
   this->GetValue(value, key, node, JsonValue::OBJECT_VALUE);
-  if (value.IsNull()) {
+  if (value.IsNull() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
@@ -376,7 +388,7 @@ bool JsonCppLoader::GetMapStringIntVectorValue(const JsonValue& node, const std:
 bool JsonCppLoader::GetIntVectorValue(const JsonValue& node, const std::string& key, std::vector<int>* out) {
   JsonValue value;
   this->GetValue(value, key, node, JsonValue::ARRAY_VALUE);
-  if (value.IsNull()) {
+  if (value.IsNull() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
@@ -397,13 +409,13 @@ bool JsonCppLoader::GetIntVectorValue(const JsonValue& node, const std::string& 
 // OFFSET: 0x00509F70
 // FUNCTION: fn_00893
 bool JsonCppLoader::GetBoolValue(const JsonValue& node, const std::string& key, bool* out) {
-  JsonValue value;
-  this->GetValue(value, key, node, JsonValue::BOOL_VALUE);
-  if (value.IsNull()) {
+  JsonValueLocal value;
+  this->GetValue(value.value, key, node, JsonValue::BOOL_VALUE);
+  if (value.value.IsNull() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  *out = value.AsBool();
+  *out = value.value.AsBool();
   return true;
 }
