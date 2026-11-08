@@ -359,11 +359,8 @@ int PacketCodecStub(void* data, std::size_t size, std::size_t* outSize, int) {
 // OFFSET: 0x00C7E030
 // FUNCTION: fn_20412
 const unsigned char* __stdcall FindCodeMarker(const unsigned char* code) {
-  if (std::memcmp(code, g_codeMarker, sizeof(g_codeMarker)) != 0) {
-    do {
-      ++code;
-    } while (*reinterpret_cast<const int*>(code) != *reinterpret_cast<const int*>(g_codeMarker) ||
-             *reinterpret_cast<const short*>(code + 4) != *reinterpret_cast<const short*>(g_codeMarker + 4));
+  while (std::memcmp(code, g_codeMarker, sizeof(g_codeMarker)) != 0) {
+    ++code;
   }
   return code;
 }
