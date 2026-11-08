@@ -115,8 +115,19 @@ void UIWindowMgr::RefreshFocus(UIWindow* const& excludedRoot) {
   }
 }
 
-// OFFSET: 0x00AA9E60
-// FUNCTION: fn_17261
+// INLINED
 void SetPressedWindowRoot(UIWindow*& pressedRoot, UIWindow* window) {
   pressedRoot = window ? window->Root() : nullptr;
+}
+
+// OFFSET: 0x00AA9E60
+// FUNCTION: fn_17261
+void UIWindowMgr::SetPressedWindowRoot(UIWindow* window) {
+  UIWindow* root = window;
+  if (root != nullptr) {
+    while (root->parent != nullptr) {
+      root = root->parent;
+    }
+  }
+  this->window_4F1D4 = root;
 }

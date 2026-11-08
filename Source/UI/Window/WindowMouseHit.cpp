@@ -262,7 +262,7 @@ int UIWindowMgr::ProcessMouse() {
     }
 
     if (g_mouse.buttons[0] == 1) {
-      SetPressedWindowRoot(this->window_4F1D4, window);
+      ::SetPressedWindowRoot(this->window_4F1D4, window);
     }
 
     if (window) {

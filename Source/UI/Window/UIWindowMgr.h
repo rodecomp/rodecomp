@@ -564,6 +564,7 @@ public:
   bool IsLastFocus(UIWindow* value);
   void FocusPrevious();
   void RefreshFocus(UIWindow* const& excludedRoot);
+  void SetPressedWindowRoot(UIWindow* window);
   bool IsHoverOnWindow01C8Button();
   void SelectWhisperName(const char* name);
   void AddWhisperName(const char* name);

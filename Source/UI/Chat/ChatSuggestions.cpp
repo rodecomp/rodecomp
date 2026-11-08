@@ -189,7 +189,7 @@ void UINewChatWnd::ToggleInput() {
     if (strlen(this->m_chatEdit->Text()) == 0) {
       g_windowMgr.inputSuggestionsEnabled = false;
       this->ApplyInputLayout();
-      SetPressedWindowRoot(g_windowMgr.window_4F1D4, nullptr);
+      g_windowMgr.SetPressedWindowRoot(nullptr);
     }
   } else {
     g_windowMgr.inputSuggestionsEnabled = true;
@@ -201,7 +201,7 @@ void UINewChatWnd::ToggleInput() {
       this->ResizeRows(static_cast<int>(this->geometry.unknown_0030));
     }
 
-    SetPressedWindowRoot(g_windowMgr.window_4F1D4, this->m_inputEdit);
+    g_windowMgr.SetPressedWindowRoot(this->m_inputEdit);
   }
 
   if (UIItemTagOnChat* tags = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->unknown_0144) {
